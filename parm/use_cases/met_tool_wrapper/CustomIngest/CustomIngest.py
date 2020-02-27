@@ -2,7 +2,7 @@
 CustomIngest
 ============
 
-This use case will run the CustomIngest wrapper tool to utilize the MET Python Embedding functionality to read in a 2D plane of data using a user's Python script and write it out to a NetCDF file that can be read by the other MET tools.
+This use case will run the CustomIngest wrapper tool to utilize the MET Python Embedding functionality to read in a 2D plane of data using a user's Python script in the MET tool RegridDataPlane and write it out to a NetCDF file that can be read by the other MET tools.
 
 """
 ##############################################################################
@@ -102,4 +102,4 @@ This use case will run the CustomIngest wrapper tool to utilize the MET Python E
 # Keywords
 # --------
 #
-# .. note:: `CustomIngestToolUseCase <https://ncar.github.io/METplus/search.html?q=CustomIngestToolUseCase&check_keywords=yes&area=default>`_, `PythonEmbeddingUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>`_
+# .. note:: `CustomIngest Tool <https://ncar.github.io/METplus/search.html?q=CustomIngestToolUseCase&check_keywords=yes&area=default>`_, `Python Embedding File <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_, `RegridDataPlane Tool <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_

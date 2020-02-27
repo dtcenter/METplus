@@ -23,7 +23,7 @@ Use Cases by MET Tool:
 
 Use Cases by Organization:
 --------------------------
-| `NCAR  <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
+| `National Center for Atmospheric Research (NCAR)  <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA Weather Prediction Center (WPC)  <https://ncar.github.io/METplus/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA Space Weather Prediction Center (SWPC)  <https://ncar.github.io/METplus/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA Environmental Modeling Center (EMC)  <https://ncar.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_
@@ -39,13 +39,13 @@ Use Cases by Plot Type
 
 Use Cases by Application:
 -------------------------
-| `ConvectionAllowingModels  <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_
-| `MediumRange  <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_
-| `Precipitation  <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_
-| `SpaceWeather  <https://ncar.github.io/METplus/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
-| `S2S  <https://ncar.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
-| `TCandExtraTC  <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
-| `Probabilistic  <https://ncar.github.io/METplus/search.html?q=ProbabilisticAppUseCase&check_keywords=yes&area=default>`_
+| `Convection Allowing Models <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_
+| `Medium Range <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_
+| `Precipitation <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_
+| `Space Weather <https://ncar.github.io/METplus/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
+| `Subseasonal to Seasonal <https://ncar.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
+| `Tropical Cyclone and Extra Tropical Cyclone <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
+| `Probabilistic <https://ncar.github.io/METplus/search.html?q=ProbabilisticAppUseCase&check_keywords=yes&area=default>`_
 
 
 Use Cases by METplus Feature:
@@ -54,10 +54,10 @@ Use Cases by METplus Feature:
 | `CustomIngest <https://ncar.github.io/METplus/search.html?q=CustomIngestToolUseCase&check_keywords=yes&area=default>`_
 | `GempakToCF <https://ncar.github.io/METplus/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_
 | `Looping by month or year  <https://ncar.github.io/METplus/search.html?q=MonthLoopFeatureUseCase&check_keywords=yes&area=default>`_
-| `SeriesByInit  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
-| `SeriesByInitSpecificTimeRange  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseSpecificTimeRangeUseCase&check_keywords=yes&area=default>`_
-| `SeriesByLead  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
-| `SeriesByLeadGrouping  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadGroupingUseCase&check_keywords=yes&area=default>`_
+| `Series by Initialization  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
+| `Series by Initialization Specific Time Range  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseSpecificTimeRangeUseCase&check_keywords=yes&area=default>`_
+| `Series by Forecast Lead  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
+| `Series by Forecast Lead Grouping  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadGroupingUseCase&check_keywords=yes&area=default>`_
 | `MET_PYTHON_EXE environment variable  <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
 
 

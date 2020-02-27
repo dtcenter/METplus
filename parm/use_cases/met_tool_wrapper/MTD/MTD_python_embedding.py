@@ -1,8 +1,8 @@
 """
-MTD
-========
+MTD using Python Embedding
+==========================
 
-This use case will run the MET MTD (MODE Time Domain) tool to compare gridded forecast data to gridded observation data over time.
+This use case will run the MET MTD (MODE Time Domain) tool to compare gridded forecast data to gridded observation data over time. The input data is read in via Python Embedding.
 
 """
 ##############################################################################
@@ -16,29 +16,25 @@ This use case will run the MET MTD (MODE Time Domain) tool to compare gridded fo
 # Datasets
 # --------
 #
-# | **Forecast:** WRF GRIB Precipitation Accumulation
-# | **Observation:** Stage 2 NetCDF Precipitation Accumulation (converted from GRIB format)
+# | **Forecast:** Dummy text files found in the MET shared directory
+# | **Observation:** Dummy text files found in the MET shared directory
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus MTD wrapper to search for
-# files that are valid at a given run time and generate a command to run
-# the MET tool mode if all required files are found.
+# This use case utilizes the METplus MTD wrapper to read in files using Python Embedding to demonstrate how to read in data this way.
+#
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# MTD is the only tool called in this example. It processes the following
-# run times:
+# MTD is the only tool called in this example. It processes a single run time with three forecast leads. The input data are simple text files with no timing information, so the list of forecast leads simply duplicates the same file multiple times to demonstrate how data is read in via Python Embedding.
 #
-# | **Init:** 2005-08-07_0Z
-# | **Forecast leads:** 6, 9, and 12 hours
 
 ##############################################################################
 # METplus Configuration
@@ -46,10 +42,11 @@ This use case will run the MET MTD (MODE Time Domain) tool to compare gridded fo
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/MTD/MTD.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/MTD/MTD_python_embedding.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/MTD/MTD.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/MTD/MTD_python_embedding.conf
+#
 
 ##############################################################################
 # MET Configuration
@@ -85,13 +82,13 @@ This use case will run the MET MTD (MODE Time Domain) tool to compare gridded fo
 #
 # This use case can be run two ways:
 #
-# 1) Passing in MTD.conf then a user-specific system configuration file::
+# 1) Passing in MTD_python_embedding.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MTD/MTD.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MTD/MTD_python_embedding.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in MTD.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in MTD_python_embedding.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MTD/MTD.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MTD/MTD_python_embedding.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -118,15 +115,13 @@ This use case will run the MET MTD (MODE Time Domain) tool to compare gridded fo
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in mtd/2005080712 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in met_tool_wrapper/MTD/mtd_python_embedding (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 
-# * mtd_PROB_WRF_APCP_vs_MC_PCP_APCP_03_A03_20050807_060000V_2d.txt
-# * mtd_PROB_WRF_APCP_vs_MC_PCP_APCP_03_A03_20050807_060000V_3d_single_simple.txt
-# * mtd_PROB_WRF_APCP_vs_MC_PCP_APCP_03_A03_20050807_060000V_obj.nc
+# * out.nc
 
 ##############################################################################
 # Keywords
 # --------
 #
-# .. note:: `MTDUseCase <https://ncar.github.io/METplus/search.html?q=MTDUseCase&check_keywords=yes&area=default>`_
+# .. note:: `MTD Tool <https://ncar.github.io/METplus/search.html?q=MTDUseCase&check_keywords=yes&area=default>`_, `Python Embedding <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>`_
