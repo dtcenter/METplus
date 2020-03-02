@@ -15,9 +15,12 @@ Condition codes: 0 for success, 1 for failure
 import metplus_check_python_version
 
 import os
+from datetime import datetime
+
 import met_util as util
 import time_util
-from command_builder import CommandBuilder
+#from command_builder import CommandBuilder
+from compare_gridded_wrapper import CompareGriddedWrapper
 from string_template_substitution import StringSub
 
 '''!@namespace SeriesAnalysisWrapper
@@ -25,8 +28,7 @@ from string_template_substitution import StringSub
 @endcode
 '''
 
-
-class SeriesAnalysisWrapper(CommandBuilder):
+class SeriesAnalysisWrapper(CompareGriddedWrapper):
     def __init__(self, config, logger):
         super().__init__(config, logger)
         self.app_name = "series_analysis"
@@ -35,53 +37,89 @@ class SeriesAnalysisWrapper(CommandBuilder):
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
+
+        # eventually move this to be used by all wrappers
+        c_dict['CUSTOM_LOOP_LIST'] = util.get_custom_string_list(self.config, 'series_analysis')
+
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_SERIES_ANALYSIS_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'SERIES_ANALYSIS_CONFIG_FILE', '')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config', 'SERIES_ANALYSIS_CONFIG_FILE', '')
         if not c_dict['CONFIG_FILE']:
             self.log_error("SERIES_ANALYSIS_CONFIG_FILE is required to run SeriesAnalysis wrapper")
             self.isOK = False
 
+        # check that any config files actually exist
+        for custom_string in c_dict['CUSTOM_LOOP_LIST']:
+            met_config_file = StringSub(self.config.logger,
+                                        c_dict['CONFIG_FILE'],
+                                        custom=custom_string).do_string_sub()
+            if not os.path.exists(met_config_file):
+                self.log_error(f"Config file does not exist: {met_config_file}")
+                self.isOK = False
+
+        stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST', ''))
+        # replace single quotes with double quotes
+        c_dict['STAT_LIST'] = str(stat_list).replace("'", '"')
+
         c_dict['PAIRED'] = self.config.getstr('config', 'SERIES_ANALYSIS_IS_PAIRED', False)
 
         # get clock time from start of execution for input time dictionary
-        clock_time_obj = datetime.datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
+        clock_time_obj = datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
                                                     '%Y%m%d%H%M%S')
-        c_dict['INPUT_TIME_DICT'] = {'now': clock_time_obj}
 
-        # get start run time from either INIT_BEG or VALID_BEG based on LOOP_BY and set INPUT_TIME_DICT
+        # get start run time and set INPUT_TIME_DICT
+        c_dict['INPUT_TIME_DICT'] = {'now': clock_time_obj}
         start_time, _, _ = util.get_start_end_interval_times(self.config) or (None, None, None)
-        if not start_time:
-            self.config.logger.error("Could not get [INIT/VALID] time information from configuration file")
-            self.isOK = False
-        else:
+        if start_time:
+            # set init or valid based on LOOP_BY
             if util.is_loop_by_init(self.config):
                 c_dict['INPUT_TIME_DICT']['init'] = start_time
             else:
                 c_dict['INPUT_TIME_DICT']['valid'] = start_time
+        else:
+            self.config.logger.error("Could not get [INIT/VALID] time information from configuration file")
+            self.isOK = False
 
+        # get input dir, template, and datatype for FCST, OBS, and BOTH
         for data_type in ('FCST', 'OBS', 'BOTH'):
-            c_dict[f'{data_type}_INPUT_DIR'] = self.config.getdir(f'{data_type}_SERIES_ANALYSIS_INPUT_DIR', '')
-            c_dict[f'{data_type}_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                              f'{data_type}_SERIES_ANALYSIS_INPUT_TEMPLATE',
-                                                              '')
+            c_dict[f'{data_type}_INPUT_DIR'] = \
+              self.config.getdir(f'{data_type}_SERIES_ANALYSIS_INPUT_DIR', '')
+            c_dict[f'{data_type}_INPUT_TEMPLATE'] = \
+              self.config.getraw('filename_templates',
+                                 f'{data_type}_SERIES_ANALYSIS_INPUT_TEMPLATE',
+                                 '')
+            c_dict[f'{data_type}_INPUT_DATATYPE'] = \
+              self.config.getstr('config', f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE', '')
 
-        c_dict['USING_BOTH'] = False
+            # initialize list path to None for each type
+            c_dict[f'{data_type}_LIST_PATH'] = None
+
         # if BOTH is set, neither FCST or OBS can be set
+        c_dict['USING_BOTH'] = False
         if c_dict['BOTH_INPUT_TEMPLATE']:
             if c_dict['FCST_INPUT_TEMPLATE'] or c_dict['OBS_INPUT_TEMPLATE']:
-                self.log_error("Cannot set FCST_SERIES_ANALYSIS_INPUT_TEMPLATE or OBS_SERIES_ANALYSIS_INPUT_TEMPLATE "
+                self.log_error("Cannot set FCST_SERIES_ANALYSIS_INPUT_TEMPLATE or "
+                               "OBS_SERIES_ANALYSIS_INPUT_TEMPLATE "
                                "if BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE is set.")
                 self.isOK = False
 
             c_dict['USING_BOTH'] = True
-        # if BOTH is not set, at least one of FCST or OBS must be set
+
+            # set *_WINDOW_* variables for BOTH (used in CommandBuilder.find_data function)
+            self.handle_window_variables(c_dict, 'series_analysis', dtypes=['BOTH'])
+
+        # if BOTH is not set, both FCST or OBS must be set
         else:
-            if not c_dict['FCST_INPUT_TEMPLATE'] and not c_dict['OBS_INPUT_TEMPLATE']:
-                self.log_error("Must set FCST_SERIES_ANALYSIS_INPUT_TEMPLATE, OBS_SERIES_ANALYSIS_INPUT_TEMPLATE "
-                               "or BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE to run SeriesAnalysis wrapper.")
+            if not c_dict['FCST_INPUT_TEMPLATE'] or not c_dict['OBS_INPUT_TEMPLATE']:
+                self.log_error("Must either set BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE or both "
+                               "FCST_SERIES_ANALYSIS_INPUT_TEMPLATE and "
+                               "OBS_SERIES_ANALYSIS_INPUT_TEMPLATE to run "
+                               "SeriesAnalysis wrapper.")
                 self.isOK = False
+
+            # set *_WINDOW_* variables for FCST and OBS
+            self.handle_window_variables(c_dict, 'series_analysis', dtypes=['FCST', 'OBS'])
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
@@ -91,6 +129,8 @@ class SeriesAnalysisWrapper(CommandBuilder):
             self.log_error("Must set SERIES_ANALYSIS_OUTPUT_TEMPLATE to run SeriesAnalysis wrapper")
             self.isOK = False
 
+        # get climatology config variables
+        self.read_climo_wrapper_specific('SERIES_ANALYSIS', c_dict)
 
         # used to override the file type for fcst/obs if using python embedding for input
         c_dict['FCST_FILE_TYPE'] = ''
@@ -98,7 +138,12 @@ class SeriesAnalysisWrapper(CommandBuilder):
 
         return c_dict
 
-    def set_environment_variables(self, time_info):
+    def clear(self):
+        super().clear()
+        for data_type in ('FCST', 'OBS', 'BOTH'):
+            self.c_dict[f'{data_type}_LIST_PATH'] = None
+
+    def set_environment_variables(self, fcst_field, obs_field, time_info):
         """!Set environment variables that will be read by the MET config file.
             Reformat as needed. Print list of variables that were set and their values.
             Args:
@@ -106,6 +151,17 @@ class SeriesAnalysisWrapper(CommandBuilder):
         # set environment variables needed for MET application
         self.add_env_var("FCST_FILE_TYPE", self.c_dict['FCST_FILE_TYPE'])
         self.add_env_var("OBS_FILE_TYPE", self.c_dict['OBS_FILE_TYPE'])
+
+        # set environment variables needed for MET application
+        self.add_env_var("MODEL", self.c_dict['MODEL'])
+        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
+        self.add_env_var("STAT_LIST", self.c_dict['STAT_LIST'])
+        self.add_env_var("FCST_FIELD", fcst_field)
+        self.add_env_var("OBS_FIELD", obs_field)
+
+        # set climatology environment variables
+        self.set_climo_env_vars()
+
         # set user environment variables
         self.set_user_environment(time_info)
 
@@ -115,25 +171,18 @@ class SeriesAnalysisWrapper(CommandBuilder):
     def get_command(self):
         cmd = self.app_path
 
-        # don't run if no input or output files were found
-        if not self.infiles:
-            self.log_error("No input files were found")
-            return
-
-        if self.outfile == "":
-            self.log_error("No output file specified")
-            return
-
-        # add input files
-        for infile in self.infiles:
-            cmd += ' ' + infile
+        if self.c_dict['USING_BOTH']:
+            cmd += f" -both {self.c_dict['BOTH_LIST_PATH']}"
+        else:
+            cmd += f" -fcst {self.c_dict['FCST_LIST_PATH']}"
+            cmd += f" -obs {self.c_dict['OBS_LIST_PATH']}"
 
         # add output path
         out_path = self.get_output_path()
-        cmd += ' ' + out_path
+        cmd += f' -out {out_path}'
 
         parent_dir = os.path.dirname(out_path)
-        if parent_dir == '':
+        if not parent_dir:
             self.log_error('Must specify path to output file')
             return None
 
@@ -152,7 +201,7 @@ class SeriesAnalysisWrapper(CommandBuilder):
         """! Get start time, loop over forecast leads and run SeriesAnalysis
         """
         # get input time dictionary
-        input_dict = c_dict['INPUT_TIME_DICT']
+        input_dict = self.c_dict['INPUT_TIME_DICT']
 
         # loop over forecast leads and process
         lead_seq = util.get_lead_sequence(self.config, input_dict)
@@ -175,8 +224,26 @@ class SeriesAnalysisWrapper(CommandBuilder):
              Args:
                 @param time_info dictionary containing timing information
         """
+
+        # parse var list for FCST and/or OBS fields
+        var_list = util.parse_var_list(self.config,
+                                       time_info,
+                                       met_tool=self.app_name)
+
+        # loop of var list and process for each
+        for var_info in var_list:
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                self.logger.info(f"Processing custom string: {custom_string}")
+                time_info['custom'] = custom_string
+                self.process_field_at_time(time_info, var_info)
+
+    def process_field_at_time(self, time_info, var_info):
+
+        # clear variables for next run
+        self.clear()
+
         # get input files
-        if self.find_input_files(time_info) is None:
+        if not self.find_input_files(time_info, var_info):
             return
 
         # get output path
@@ -184,10 +251,13 @@ class SeriesAnalysisWrapper(CommandBuilder):
             return
 
         # get other configurations for command
-        self.set_command_line_arguments()
+        self.set_command_line_arguments(time_info)
+
+        # get formatted field dictionary to pass into the MET config file
+        fcst_field, obs_field = self.get_formatted_fields(var_info)
 
         # set environment variables if using config file
-        self.set_environment_variables(time_info)
+        self.set_environment_variables(fcst_field, obs_field, time_info)
 
         # build command and run
         cmd = self.get_command()
@@ -197,65 +267,71 @@ class SeriesAnalysisWrapper(CommandBuilder):
 
         self.build()
 
-    def find_input_files(self, time_info):
+    def find_input_files(self, time_info, var_info):
         if self.c_dict['USING_BOTH']:
-            #
-            both_file_ext = self.check_for_python_embedding('BOTH', var_info)
-
-            # if check_for_python_embedding returns None, an error occurred
-            if not both_file_ext:
-                return
+            if not self.get_files_and_create_list(time_info, var_info, 'BOTH'):
+                return False
         else:
-            if self.c_dict['FCST_INPUT_TEMPLATE']:
-                fcst_file_ext = self.check_for_python_embedding('FCST', var_info)
+            if not self.get_files_and_create_list(time_info, var_info, 'FCST'):
+                return False
 
-            if self.c_dict['FCST_INPUT_TEMPLATE']:
-                obs_file_ext = self.check_for_python_embedding('OBS', var_info)
+            if not self.get_files_and_create_list(time_info, var_info, 'OBS'):
+                return False
 
-            # if check_for_python_embedding returns None, an error occurred
-            if not fcst_file_ext or not obs_file_ext:
-                return
+        return True
 
-        # if using python embedding input, don't check if file exists,
-        # just substitute time info and add to input file list
-        if self.c_dict['ASCII_FORMAT'] == 'python':
-            filename = StringSub(self.logger,
-                                 self.c_dict['OBS_INPUT_TEMPLATE'],
-                                 **time_info).do_string_sub()
-            self.infiles.append(filename)
-            return self.infiles
+    def get_files_and_create_list(self, time_info, var_info, data_type):
+        found_files = self.find_data(time_info,
+                                     var_info=var_info,
+                                     data_type=data_type,
+                                     mandatory=True,
+                                     return_list=True,
+                                     )
 
-        obs_path = self.find_obs(time_info, None)
-        if obs_path is None:
-            return None
+        file_ext = self.check_for_python_embedding(data_type, var_info)
 
-        if isinstance(obs_path, list):
-            self.infiles.extend(obs_path)
-        else:
-            self.infiles.append(obs_path)
-        return self.infiles
+        # if check_for_python_embedding returns None, an error occurred
+        if not file_ext:
+            return False
 
-    def set_command_line_arguments(self):
+        list_file = time_info['valid_fmt'] + f'_SA_{data_type.lower()}_' + file_ext + '.txt'
+        list_path = self.write_list_file(list_file, found_files)
+        self.c_dict[f'{data_type}_LIST_PATH'] = list_path
+        return True
+
+    def set_command_line_arguments(self, time_info):
         # add input data format if set
         if self.c_dict['PAIRED']:
             self.args.append(" -paired")
 
-        # add config file if set
-        if self.c_dict['CONFIG_FILE']:
-            self.args.append(" -config {}".format(self.c_dict['CONFIG_FILE']))
+        # add config file - passing through StringSub to get custom string if set
+        config_file = StringSub(self.logger,
+                                self.c_dict['CONFIG_FILE'],
+                                **time_info).do_string_sub()
+        self.args.append(f" -config {config_file}")
 
-        # add mask grid if set
-        if self.c_dict['MASK_GRID']:
-            self.args.append(" -mask_grid {}".format(self.c_dict['MASK_GRID']))
+    def get_formatted_fields(self, var_info):
+        # get field info field a single field to pass to the MET config file
+        fcst_field_list = self.get_field_info(v_level=var_info['fcst_level'],
+                                              v_thresh=var_info['fcst_thresh'],
+                                              v_name=var_info['fcst_name'],
+                                              v_extra=var_info['fcst_extra'],
+                                              d_type='FCST')
 
-        # add mask poly if set
-        if self.c_dict['MASK_POLY']:
-            self.args.append(" -mask_poly {}".format(self.c_dict['MASK_POLY']))
+        obs_field_list = self.get_field_info(v_level=var_info['obs_level'],
+                                             v_thresh=var_info['obs_thresh'],
+                                             v_name=var_info['obs_name'],
+                                             v_extra=var_info['obs_extra'],
+                                             d_type='OBS')
 
-        # add mask SID if set
-        if self.c_dict['MASK_SID']:
-            self.args.append(" -mask_sid {}".format(self.c_dict['MASK_SID']))
+        if fcst_field_list is None or obs_field_list is None:
+            return
+
+        fcst_fields = ','.join(fcst_field_list)
+        obs_fields = ','.join(obs_field_list)
+
+        return fcst_fields, obs_fields
 
 
 if __name__ == "__main__":
-    util.run_stand_alone(__file__, "ASCII2NC")
+    util.run_stand_alone(__file__, "SeriesAnalysis")

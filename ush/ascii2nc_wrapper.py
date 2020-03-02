@@ -221,14 +221,12 @@ class ASCII2NCWrapper(CommandBuilder):
             self.infiles.append(filename)
             return self.infiles
 
-        obs_path = self.find_obs(time_info, None)
+        # get list of files even if only one is found (return_list=True)
+        obs_path = self.find_obs(time_info, var_info=None, return_list=True)
         if obs_path is None:
             return None
 
-        if isinstance(obs_path, list):
-            self.infiles.extend(obs_path)
-        else:
-            self.infiles.append(obs_path)
+        self.infiles.extend(obs_path)
         return self.infiles
 
     def set_command_line_arguments(self):

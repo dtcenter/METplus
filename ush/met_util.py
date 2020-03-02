@@ -518,8 +518,6 @@ def handle_deprecated(old, alt, depr_info, conf, all_sed_cmds, w_list, e_list):
                         all_sed_cmds.append(f"sed -i 's|{{{old}}}|{{{alt}}}|g' {config_file}")
 
 def check_for_deprecated_met_config(config):
-    deprecated_met_list = ['MET_VALID_HHMM', 'GRID_VX', 'CONFIG_DIR']
-    deprecated_output_prefix_list = ['FCST_VAR', 'OBS_VAR']
     sed_cmds = []
     all_good = True
 
@@ -539,53 +537,76 @@ def check_for_deprecated_met_config(config):
     met_config_keys = [key for key in config.keys('config') if key.endswith('CONFIG_FILE')]
 
     for met_config_key in met_config_keys:
-        met_config = config.getstr('config', met_config_key)
-        if not met_config:
-            continue
         met_tool = met_config_key.replace('_CONFIG_FILE', '')
-        config.logger.debug(f"Checking for deprecated environment variables in: {met_config}")
-        with open(met_config, 'r') as f:
-            for line in f:
 
-                for deprecated_item in deprecated_met_list:
-                    if '${' + deprecated_item + '}' in line:
-                        all_good = False
-                        config.logger.error("Please remove deprecated environment variable "
-                                            f"${{{deprecated_item}}} found in MET config file: "
-                                            f"{met_config}")
+        # get custom loop list to check if multiple config files are used based on the custom string
+        custom_list = get_custom_string_list(config, met_tool)
 
-                        if 'to_grid' in line:
-                            config.logger.error("MET to_grid variable should reference "
-                                                "${REGRID_TO_GRID} environment variable")
-                            new_line = "   to_grid    = ${REGRID_TO_GRID};"
-                            sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
-                            break
+        for custom_string in custom_list:
+            met_config = config.getraw('config', met_config_key)
+            if not met_config:
+                continue
 
-                        if deprecated_item == 'MET_VALID_HHMM' and 'file_name' in line:
-                            config.logger.error("Set [GRID/POINT]_STAT_CLIMO_INPUT_[DIR/TEMPLATE] in a "
-                                                "METplus config file to set CLIMO_FILE in a MET config")
-                            new_line = "   file_name = [ ${CLIMO_FILE} ];"
-                            sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
-                            break
+            met_config_file = StringSub(config.logger, met_config, custom=custom_string).do_string_sub()
 
-                for deprecated_item in deprecated_output_prefix_list:
-                    # if deprecated item found in output prefix or to_grid line, replace line to use
-                    # env var OUTPUT_PREFIX or REGRID_TO_GRID
-                    if '${' + deprecated_item + '}' in line and 'output_prefix' in line:
-                        config.logger.error("output_prefix variable should reference "
-                                            "${OUTPUT_PREFIX} environment variable")
-                        new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
-                        sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
-                        config.logger.info(f"You will need to add {met_tool}_OUTPUT_PREFIX to the METplus config file"
-                                           f" that sets {met_tool}_CONFIG_FILE. Set it to:")
-                        output_prefix = replace_output_prefix(line)
-                        add_line = f"{met_tool}_OUTPUT_PREFIX = {output_prefix}"
-                        config.logger.info(add_line)
-                        sed_cmds.append(f"#Add {add_line}")
-                        all_good = False
-                        break
+            if not check_for_deprecated_met_config_file(config, met_config_file, sed_cmds):
+                all_good = False
 
     return all_good, sed_cmds
+
+def check_for_deprecated_met_config_file(config, met_config, sed_cmds):
+
+    all_good = True
+    if not os.path.exists(met_config):
+        config.logger.error(f"Config file does not exist: {met_config}")
+        return False
+
+    deprecated_met_list = ['MET_VALID_HHMM', 'GRID_VX', 'CONFIG_DIR']
+    deprecated_output_prefix_list = ['FCST_VAR', 'OBS_VAR']
+    config.logger.debug(f"Checking for deprecated environment variables in: {met_config}")
+
+    with open(met_config, 'r') as f:
+        for line in f:
+
+            for deprecated_item in deprecated_met_list:
+                if '${' + deprecated_item + '}' in line:
+                    all_good = False
+                    config.logger.error("Please remove deprecated environment variable "
+                                        f"${{{deprecated_item}}} found in MET config file: "
+                                        f"{met_config}")
+
+                    if 'to_grid' in line:
+                        config.logger.error("MET to_grid variable should reference "
+                                            "${REGRID_TO_GRID} environment variable")
+                        new_line = "   to_grid    = ${REGRID_TO_GRID};"
+                        sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+                        break
+
+                    if deprecated_item == 'MET_VALID_HHMM' and 'file_name' in line:
+                        config.logger.error("Set [GRID/POINT]_STAT_CLIMO_INPUT_[DIR/TEMPLATE] in a "
+                                            "METplus config file to set CLIMO_FILE in a MET config")
+                        new_line = "   file_name = [ ${CLIMO_FILE} ];"
+                        sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+                        break
+
+            for deprecated_item in deprecated_output_prefix_list:
+                # if deprecated item found in output prefix or to_grid line, replace line to use
+                # env var OUTPUT_PREFIX or REGRID_TO_GRID
+                if '${' + deprecated_item + '}' in line and 'output_prefix' in line:
+                    config.logger.error("output_prefix variable should reference "
+                                        "${OUTPUT_PREFIX} environment variable")
+                    new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
+                    sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+                    config.logger.info(f"You will need to add {met_tool}_OUTPUT_PREFIX to the METplus config file"
+                                       f" that sets {met_tool}_CONFIG_FILE. Set it to:")
+                    output_prefix = replace_output_prefix(line)
+                    add_line = f"{met_tool}_OUTPUT_PREFIX = {output_prefix}"
+                    config.logger.info(add_line)
+                    sed_cmds.append(f"#Add {add_line}")
+                    all_good = False
+                    break
+
+    return all_good
 
 def replace_output_prefix(line):
     op_replacements = {'${MODEL}': '{MODEL}',
@@ -600,6 +621,18 @@ def replace_output_prefix(line):
         prefix = prefix.replace(key, value)
 
     return prefix
+
+def get_custom_string_list(config, met_tool):
+    custom_loop_list = config.getstr_nocheck('config',
+                                             f'{met_tool.upper()}_CUSTOM_LOOP_LIST',
+                                             config.getstr_nocheck('config',
+                                                                   'CUSTOM_LOOP_LIST',
+                                                                   ''))
+    custom_loop_list = getlist(custom_loop_list)
+    if not custom_loop_list:
+        custom_loop_list.append('')
+
+    return custom_loop_list
 
 def handle_tmp_dir(config):
     """! if env var MET_TMP_DIR is set, override config TMP_DIR with value
@@ -1699,6 +1732,7 @@ def get_process_list(config):
                              'pcpcombine': 'PCPCombine',
                              'pointstat': 'PointStat',
                              'regriddataplane': 'RegridDataPlane',
+                             'seriesanalysis': 'SeriesAnalysis',
                              'seriesbyinit': 'SeriesByInit',
                              'seriesbylead': 'SeriesByLead',
                              'statanalysis': 'StatAnalysis',
@@ -2239,11 +2273,12 @@ def split_level(level):
     return '', ''
 
 def remove_quotes(input_string):
-    """!Remove double quotes from string"""
+    """!Remove quotes from string"""
     if not input_string:
         return ''
 
-    return input_string.strip('"')
+    # strip off double and single quotes
+    return input_string.strip('"').strip("'")
 
 def get_filetype(filepath, logger=None):
     """!This function determines if the filepath is a NETCDF or GRIB file
