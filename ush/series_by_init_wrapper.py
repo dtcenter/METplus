@@ -34,6 +34,9 @@ class SeriesByInitWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                     'bin/series_analysis')
+        self.app_name = os.path.basename(self.app_path)
         super().__init__(config, logger)
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
@@ -53,11 +56,6 @@ class SeriesByInitWrapper(CommandBuilder):
         # Needed for generating plots
         self.sbi_plotting_out_dir = ''
 
-        # For building the argument string via
-        # CommandBuilder:
-        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
-        self.app_path = os.path.join(met_install_dir, 'bin/series_analysis')
-        self.app_name = os.path.basename(self.app_path)
         self.inaddons = []
         self.infiles = []
         self.outdir = ""

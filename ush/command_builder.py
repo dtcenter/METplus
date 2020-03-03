@@ -75,6 +75,10 @@ class CommandBuilder:
         c_dict['ALLOW_MULTIPLE_FILES'] = False
         c_dict['CURRENT_VAR_INFO'] = None
 
+        c_dict['CUSTOM_LOOP_LIST'] = util.get_custom_string_list(self.config,
+                                                                 self.app_name)
+
+
         return c_dict
 
     def clear(self):

@@ -169,8 +169,14 @@ that reformat gridded data
                 self.logger.debug('Skipping run time')
                 continue
 
-            # Run for given init/valid time and forecast lead combination
-            self.run_at_time_once(time_info)
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                if custom_string:
+                    self.logger.info(f"Processing custom string: {custom_string}")
+
+                time_info['custom'] = custom_string
+
+                # Run for given init/valid time and forecast lead combination
+                self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
         """! Build MET command for a given init/valid time and forecast lead combination

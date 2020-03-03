@@ -30,33 +30,22 @@ from string_template_substitution import StringSub
 
 class SeriesAnalysisWrapper(CompareGriddedWrapper):
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = "series_analysis"
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
+        super().__init__(config, logger)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
 
-        # eventually move this to be used by all wrappers
-        c_dict['CUSTOM_LOOP_LIST'] = util.get_custom_string_list(self.config, 'series_analysis')
-
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_SERIES_ANALYSIS_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
+
         c_dict['CONFIG_FILE'] = self.config.getraw('config', 'SERIES_ANALYSIS_CONFIG_FILE', '')
         if not c_dict['CONFIG_FILE']:
             self.log_error("SERIES_ANALYSIS_CONFIG_FILE is required to run SeriesAnalysis wrapper")
             self.isOK = False
-
-        # check that any config files actually exist
-        for custom_string in c_dict['CUSTOM_LOOP_LIST']:
-            met_config_file = StringSub(self.config.logger,
-                                        c_dict['CONFIG_FILE'],
-                                        custom=custom_string).do_string_sub()
-            if not os.path.exists(met_config_file):
-                self.log_error(f"Config file does not exist: {met_config_file}")
-                self.isOK = False
 
         stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST', ''))
         # replace single quotes with double quotes
@@ -233,7 +222,9 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         # loop of var list and process for each
         for var_info in var_list:
             for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                self.logger.info(f"Processing custom string: {custom_string}")
+                if custom_string:
+                    self.logger.info(f"Processing custom string: {custom_string}")
+
                 time_info['custom'] = custom_string
                 self.process_field_at_time(time_info, var_info)
 
@@ -249,6 +240,8 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         # get output path
         if not self.find_and_check_output_file(time_info):
             return
+
+        self.handle_climo(time_info)
 
         # get other configurations for command
         self.set_command_line_arguments(time_info)

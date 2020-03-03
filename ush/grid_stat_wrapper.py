@@ -28,10 +28,10 @@ class GridStatWrapper(CompareGriddedWrapper):
     '''!Wraps the MET tool grid_stat to compare gridded datasets
     '''
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = 'grid_stat'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
+        super().__init__(config, logger)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()

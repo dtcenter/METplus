@@ -44,10 +44,10 @@ class TCPairsWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = 'tc_pairs'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
+        super().__init__(config, logger)
         self.adeck = []
         self.bdeck = []
         self.edeck = []
