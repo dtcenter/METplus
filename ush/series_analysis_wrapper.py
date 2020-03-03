@@ -51,7 +51,7 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         # replace single quotes with double quotes
         c_dict['STAT_LIST'] = str(stat_list).replace("'", '"')
 
-        c_dict['PAIRED'] = self.config.getstr('config', 'SERIES_ANALYSIS_IS_PAIRED', False)
+        c_dict['PAIRED'] = self.config.getbool('config', 'SERIES_ANALYSIS_IS_PAIRED', False)
 
         # get clock time from start of execution for input time dictionary
         clock_time_obj = datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
@@ -280,6 +280,9 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
                                      mandatory=True,
                                      return_list=True,
                                      )
+
+        if not found_files:
+            return False
 
         file_ext = self.check_for_python_embedding(data_type, var_info)
 
