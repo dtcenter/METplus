@@ -42,6 +42,8 @@ all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/SeriesByInit/SeriesByInit.conf",
                 use_case_dir + "/met_tool_wrapper/SeriesByLead/SeriesByLead.conf",
                 use_case_dir + "/met_tool_wrapper/StatAnalysis/StatAnalysis.conf",
+                use_case_dir + "/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis.conf",
+                use_case_dir + "/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_ETC.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_HWRF.conf",
                 use_case_dir + "/met_tool_wrapper/TCStat/TCStat.conf",
