@@ -1,5 +1,5 @@
-ßMETplus Configuration Glossary
-===========================================================
+METplus Configuration Glossary
+==============================
 
 .. glossary::
    :sorted:

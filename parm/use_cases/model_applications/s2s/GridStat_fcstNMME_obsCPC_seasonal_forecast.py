@@ -187,7 +187,7 @@ Seasonal forecast use case running GridStat, then passing the output into Series
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/GridStatConfig_seasonal_forecast
 #
-# See the following file for more information about the environment variables set in this configuration file.
+# See the following file for more information about the environment variables set in this configuration file::
 #   parm/use_cases/met_tool_wrapper/GridStat/GridStat.py
 #
 # **SeriesAnalysisConfig_seasonal_forecast_climo**
@@ -200,7 +200,7 @@ Seasonal forecast use case running GridStat, then passing the output into Series
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/SeriesAnalysisConfig_seasonal_forecast_full_stats
 #
-# See the following file for more information about the environment variables set in these configuration files.
+# See the following file for more information about the environment variables set in these configuration files::
 #   parm/use_cases/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis.conf
 #
 
