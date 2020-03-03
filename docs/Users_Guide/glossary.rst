@@ -4785,7 +4785,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_STORM_NAME
-     Set the :term:`STORM_NAME` for use with the MET tc_stat tool.
+     Set the environment variable STORM_NAME for use with the MET tc_stat tool.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
