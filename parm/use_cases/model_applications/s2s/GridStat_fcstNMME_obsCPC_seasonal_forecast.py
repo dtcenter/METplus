@@ -2,7 +2,7 @@
 BMKG APIK Seasonal Forecast
 ===========================
 
-Brief summary of this use case...
+Seasonal forecast use case running GridStat, then passing the output into SeriesAnalysis.
 
 """
 
@@ -133,6 +133,7 @@ Brief summary of this use case...
 # ------------------
 #
 # This use case loops over initialization years and processes forecast lead months with GridStat
+# It also processes the output of GridStat using two calls to SeriesAnalysis.
 #
 
 ##############################################################################
@@ -165,64 +166,6 @@ Brief summary of this use case...
 # | **Init:** 2010-07
 # | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
 #
-# Because not all of this use case has been incorporated into the METplus wrappers framework, the application of
-# seasonal forecast verification is split into two steps:
-#
-# 1.	work with ~30-years of hindcasts to determine how well forecasting mechanisms worked
-# 	in the past. This is done using the python-wrapped tools of METplus that are ready
-# 	for automated processing using the GridStat tool.
-# 2.	select one or more verification criteria and investigate these in context of the
-# 	hindcast archive to generate a mask that then is applied to the actual forecast.
-# 	This step users StatAnalysis, an element of this use case that has not yet been configured in
-# 	the METplus wrappers, and thus it needs to be run directly under MET.
-#
-# Step 1: GridStat using METplus
-# In order to run the python-based METplus packages, the user needs to issue a command to
-# activate the appropriate version of python on the system. In the virtual machine delivered
-# to BMKG, this is done with the following command:
-#
-# 		conda activate py3.6.3
-#
-# The GridStat tool is driven by the following ASCII configuration and run-scripts:
-#
-# •	METplus: run_grid_stat_metplus.bash sets key variables and executes the
-# 	master_metplus.py with configurations. Look for …/ush/master_metplus.py call:
-# •	user-config: “apik.conf”: defines which met version is used, where input data is to
-# 	be found, and where output. It also provides the filters for the formats of both input
-# 	and output.
-# •	met_config: contains "GridStatConfig_seasonal_forecast" where it sets all the
-# 	GridStat parameters for data handling as well as types of statistics to be computed.
-# •	use-case config: points to the specific configuration file, in this case
-# 	“grid_to_grid_s2s_use_case_1_August-December.conf”, though a separate configuration
-# 	file for the 6th month of the example is needed because the forecast for January is
-# 	located in a file with a year parameter that is advanced over August through December.
-# 	In future versions this separation will not be necessary.
-#
-# Step 2: SeriesAnalysis and StatAnalysis using MET
-# The SeriesAnalysis and StatAnalysis tools are core MET tools that offer analysis
-# capabilities based on prior processing and calculation steps. Series Analysis can
-# generate initial products, but it can also pickup secondary products and analyze
-# them in a time-series context. For the purpose of the use case, two sequential
-# calculations are necessary. First, a summary of each statistical quantity has to be
-# computed across the different hindcast cases (each of which had been processed separately
-# before). This includes the application of thresholds and counting of occurrences above or
-# below these thresholds. Then second, based on these climatologies, the full statistics
-# can now be computed across the collection to provide the overall skill computation
-# within the hindcast context.
-#
-# The following scripts define the process:
-# 	MET run script: run_sereis_analysis.bash sets all key configurations determining
-# 	input and output data, provides templates for reading variables inside the statistics
-# 	files. Because this part of the use case is not yet run via the METplus wrappers, the run-script has
-# 	to cover many aspects of the configuration that in METplus are better generalized.
-# 	SeriesAnalysis Climatology: SeriesAnalysisConfig_seasonal_forecast_climo
-# 	contains the parameters that calculate the climatological mean difference between the
-# 	hindcast experiments and their associated observations.
-# 	SeriesAnalysis 2: SeriesAnalysisConfig_seasonal_forecast_full_stats
-# 	contains all necessary configurations to compute the skill statistics. The options for
-# 	these statistics are listed in the MET-Users Guide. There are many options, and
-# 	turning them on is done in the context of the different groups or “packages”.
-#
 
 ##############################################################################
 # METplus Configuration
@@ -239,11 +182,27 @@ Brief summary of this use case...
 # METplus sets environment variables based on the values in the METplus configuration file.
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
+# **GridStatConfig_seasonal_forecast**
+#
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/GridStatConfig_seasonal_forecast
 #
-# See the following files for more information about the environment variables set in this configuration file.
+# See the following file for more information about the environment variables set in this configuration file.
 #   parm/use_cases/met_tool_wrapper/GridStat/GridStat.py
+#
+# **SeriesAnalysisConfig_seasonal_forecast_climo**
+#
+# .. highlight:: bash
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/SeriesAnalysisConfig_seasonal_forecast_climo
+#
+# **SeriesAnalysisConfig_seasonal_forecast_full_stats**
+#
+# .. highlight:: bash
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/SeriesAnalysisConfig_seasonal_forecast_full_stats
+#
+# See the following file for more information about the environment variables set in these configuration files.
+#   parm/use_cases/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis.conf
+#
 
 ##############################################################################
 # Running METplus
@@ -288,9 +247,16 @@ Brief summary of this use case...
 #
 # For each month and year there will be two files written::
 #
-# * grid_stat_NMME-hindcast_precip_vs_CPC_IC{%Y}{%N}01_2301360000L_20081001_000000V.stat
-# * grid_stat_NMME-hindcast_precip_vs_CPC_IC{%Y}{%N}01_2301360000L_20081001_000000V_pairs.nc
-
+# * grid_stat_NMME-hindcast_precip_vs_CPC_IC{%Y%b}01_2301360000L_20081001_000000V.stat
+# * grid_stat_NMME-hindcast_precip_vs_CPC_IC{%Y%b}01_2301360000L_20081001_000000V_pairs.nc
+#
+# Output from SeriesAnalysis will be found in model_applications/s2s/GridStat_fcstNMME_obsCPC_seasonal_forecast/SeriesAnalysis (relative to **OUTPUT_BASE**)
+#
+# For each month there will be two files written::
+#
+# * series_analysis_NMME_CPC_stats_ICJul_{%m}_climo.nc
+# * series_analysis_NMME_CPC_stats_ICJul_{%m}_full_stats.nc
+#
 
 ##############################################################################
 # Keywords
