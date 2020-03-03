@@ -121,6 +121,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                                 d_type+'_PCP_COMBINE_CONSTANT_INIT',
                                                                 False)
 
+        # initialize custom string for tests
+        c_dict['CUSTOM_STRING'] = ''
+
         if run_method not in self.valid_run_methods:
             self.log_error(f"Invalid value for {d_type}_PCP_COMBINE_METHOD: "
                            f"{run_method}. Valid options are "
@@ -698,7 +701,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         input_dict2 = { 'init' : time_info['init'],
                        'lead' : lead2 }
         time_info2 = time_util.ti_calculate(input_dict2)
-        time_info2['custom'] = time_info['custom']
+        if hasattr(time_info, 'custom'):
+            time_info2['custom'] = time_info['custom']
 
         pcpSts2 = sts.StringSub(self.logger,
                                 in_template,
