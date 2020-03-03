@@ -4054,13 +4054,13 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** A directory for generic use. The user can store input files (if INPUT_BASE is not defined), intermediate files, and any other project-related files.
 
    REFERENCE_TMPL
-     .. warning:: **DEPRECATED:** Please use TC_PAIRS_BDECK_TEMPLATE.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_BDECK_TEMPLATE`.
 
    REGION
-     .. warning:: **DEPRECATED:** Please use VX_MASK_LIST instead.
+     .. warning:: **DEPRECATED:** Please use :term:`VX_MASK_LIST` instead.
 
    REGION_LIST
-     .. warning:: **DEPRECATED:** Please use VX_MASK_LIST instead.
+     .. warning:: **DEPRECATED:** Please use :term:`VX_MASK_LIST` instead.
 
    VX_MASK_LIST
      Specify the values of the VX_MASK column in the MET .stat file to use; a list of the verification regions of interest.
@@ -4105,10 +4105,10 @@ METplus Configuration Glossary
      | *Default:*  /path/to
 
    RM_EXE
-     .. warning:: **DEPRECATED:** Please use RM.
+     .. warning:: **DEPRECATED:** Please use :term:`RM`.
 
    RP_DIFF
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_RP_DIFF instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_RP_DIFF` instead.
 
    TCMPR_PLOTTER_RP_DIFF
      This corresponds to the optional -rp_diff flag of the plot_TCMPR.R script (which is wrapped by TCMPRPlotter). This a comma-separated list of thresholds to specify meaningful differences for the relative performance plot.
@@ -4118,7 +4118,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    SAVE
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_SAVE instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SAVE` instead.
 
    TCMPR_PLOTTER_SAVE
      Corresponds to the optional -save flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is a yes/no value to indicate whether to save the image (yes).
@@ -4128,7 +4128,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    SAVE_DATA
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_SAVE_DATA instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SAVE_DATA` instead.
 
    TCMPR_PLOTTER_SAVE_DATA
      Corresponds to the optional -save_data flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). Indicates whether to save the filtered track data to a file instead of deleting it.
@@ -4138,7 +4138,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    SCATTER_X
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_SCATTER_X instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SCATTER_X` instead.
 
    TCMPR_PLOTTER_SCATTER_X
      Corresponds to the optional -scatter_x flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is a comma-separated list of x-axis variable columns to plot.
@@ -4148,7 +4148,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    SCATTER_Y
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_SCATTER_Y instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SCATTER_Y` instead.
 
    TCMPR_PLOTTER_SCATTER_Y
      Corresponds to the optional -scatter_y flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is a comma-separated list of y-axis variable columns to plot.
@@ -4165,7 +4165,7 @@ METplus Configuration Glossary
      | *Default:*  False
 
    SERIES
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_SERIES instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SERIES` instead.
 
    TCMPR_PLOTTER_SERIES
      Corresponds to the optional -series flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is the column whose unique values define the series on the plot, optionally followed by a comma-separated list of values, including: ALL, OTHER, and colon-separated groups.
@@ -4182,10 +4182,10 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    SERIES_ANALYSIS_BY_INIT_CONFIG_FILE
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_CONFIG_FILE instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_CONFIG_FILE` instead.
 
    SERIES_ANALYSIS_BY_LEAD_CONFIG_FILE
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_CONFIG_FILE instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_CONFIG_FILE` instead.
 
    SERIES_ANALYSIS_FILTER_OPTS
      Filtering options to be applied during series analysis. Filter options are performed by invoking the MET tc_stat tool within the METplus wrapper. Refer to the MET User's Guide for the syntax to use for performing filtering via the MET tc_stat tool.
@@ -4195,7 +4195,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    SERIES_ANALYSIS_FILTERED_OUTPUT
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR` instead.
 
 
    SERIES_ANALYSIS_FILTERED_OUTPUT_DIR
@@ -4206,16 +4206,16 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    SERIES_BY_INIT_FILTERED_OUTPUT_DIR
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR` instead.
 
    SERIES_BY_INIT_OUTPUT_DIR
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_OUTPUT_DIR instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OUTPUT_DIR` instead.
 
    SERIES_BY_LEAD_FILTERED_OUTPUT_DIR
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR` instead.
 
    SERIES_BY_LEAD_FILTERED_OUTPUT
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR` instead.
 
    SERIES_ANALYSIS_GROUP_FCSTS
      Set to True to aggregate the series by lead results into bins of time.
@@ -4225,10 +4225,10 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    SERIES_BY_LEAD_GROUP_FCSTS
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_GROUP_FCSTS instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_GROUP_FCSTS` instead.
 
    SERIES_CI
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_SERIES_CI instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SERIES_CI` instead.
 
    TCMPR_PLOTTER_SERIES_CI
      Corresponds to the optional -series_ci flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is a list of true/false for confidence intervals. This list can be optionally followed by a comma-separated list of values, including ALL, OTHER, and colon-separated groups.
@@ -4238,7 +4238,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    SERIES_INIT_FILTERED_OUT_DIR
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR` instead.
 
    SERIES_ANALYSIS_INPUT_DIR
      Specify the directory to read input to SeriesAnalysis. It is recommended to set this to {EXTRACT_TILES_OUTPUT_DIR}.
@@ -4255,19 +4255,19 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    SERIES_INIT_OUT_DIR
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_OUTPUT_DIR instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OUTPUT_DIR` instead.
 
    SERIES_LEAD_FILTERED_OUT_DIR
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_FILTERED_OUTPUT_DIR.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR`.
 
    SERIES_LEAD_OUT_DIR
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_OUTPUT_DIR instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OUTPUT_DIR` instead.
 
    SERIES_BY_LEAD_OUTPUT_DIR
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_OUTPUT_DIR instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OUTPUT_DIR` instead.
 
    SKILL_REF
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_SKILL_REF instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SKILL_REF` instead.
 
    TCMPR_PLOTTER_SKILL_REF
      This corresponds to the optional -skill_ref flag in plot_TCMPR.R (which is wrapped by TCMPRPlotter). This is the identifier for the skill score reference.
@@ -4277,7 +4277,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    START_DATE
-     .. warning:: **DEPRECATED:** Please use INIT_BEG or VALID_BEG instead.
+     .. warning:: **DEPRECATED:** Please use :term:`INIT_BEG` or :term:`VALID_BEG` instead.
 
    STAGING_DIR
      Directory to uncompress or convert data into for use in METplus.
@@ -4287,10 +4287,10 @@ METplus Configuration Glossary
      | *Default:*  OUTPUT_BASE/stage
 
    START_HOUR
-     .. warning:: **DEPRECATED:** Please use INIT_BEG or VALID_BEG instead.
+     .. warning:: **DEPRECATED:** Please use :term:`INIT_BEG` or :term:`VALID_BEG` instead.
 
    STAT_ANALYSIS_CONFIG
-     .. warning:: **DEPRECATED:** Please use STAT_ANALYSIS_CONFIG_FILE instead.
+     .. warning:: **DEPRECATED:** Please use :term:`STAT_ANALYSIS_CONFIG_FILE` instead.
 
    STAT_ANALYSIS_CONFIG_FILE
      Specify the absolute path for the configuration file used with the MET stat_analysis tool. It is recommended to set this to {PARM_BASE}/use_cases/plotting/met_config/STATAnalysisConfig.
@@ -4300,17 +4300,17 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    STAT_ANALYSIS_DUMP_ROW_TMPL
-     .. warning:: **DEPRECATED:** Please use MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE instead.
+     .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE` instead.
 
    MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE
-     Specify the template to use for the stat_analysis dump_row file. A user customized template to use for the dump_row file. If left blank and a dump_row file is requested, a default version will be used. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the template to use for the stat_analysis dump_row file. A user customized template to use for the dump_row file. If left blank and a dump_row file is requested, a default version will be used. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [filename_templates]
      | *Default:* None
 
    STAT_ANALYSIS_LOOKIN_DIR
-     .. warning:: **DEPRECATED:** Please use MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR instead.
+     .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR` instead.
 
    MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR
      Specify the input directory where the MET stat_analysis tool will find input files. This is the directory that the stat_analysis wrapper will use to build the argument to -lookin for the MET stat_analysis tool. It can contain wildcards, i.e. \*.
@@ -4320,17 +4320,17 @@ METplus Configuration Glossary
      | *Default:*  None
 
    STAT_ANALYSIS_OUT_STAT_TMPL
-     .. warning:: **DEPRECATED:** Please use MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE instead.
+     .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE` instead.
 
    MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE
-     Specify the template to use for the stat_analysis out_stat file. A user customized template to use for the out_stat file. If left blank and a out_stat file is requested, a default version will be used. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the template to use for the stat_analysis out_stat file. A user customized template to use for the out_stat file. If left blank and a out_stat file is requested, a default version will be used. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [filename_templates]
      | *Default:* None
 
    STAT_ANALYSIS_OUT_DIR
-     .. warning:: **DEPRECATED:** Please use STAT_ANALYSIS_OUTPUT_DIR instead.
+     .. warning:: **DEPRECATED:** Please use :term:`STAT_ANALYSIS_OUTPUT_DIR` instead.
 
    STAT_ANALYSIS_OUTPUT_DIR
      This is the base directory where the output from running stat_analysis_wrapper will be put.
@@ -4340,7 +4340,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    STAT_FILES_INPUT_DIR
-      .. warning:: **DEPRECATED:** Please use MAKE_PLOTS_INPUT_DIR instead. 
+      .. warning:: **DEPRECATED:** Please use :term:`MAKE_PLOTS_INPUT_DIR` instead. 
 
    SERIES_ANALYSIS_STAT_LIST
      Specify a list of statistics to be computed by the MET series_analysis tool.
@@ -4350,16 +4350,16 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    STAT_LIST
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_STAT_LIST instead.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_STAT_LIST` instead.
 
    STORM_ID
-     .. warning:: **DEPRECATED:** Please use TC_PAIRS_STORM_ID or TC_STAT_STORM_ID.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_STORM_ID` or :term:`TC_STAT_STORM_ID`.
 
    STORM_NAME
-     .. warning:: **DEPRECATED:** Please use TC_PAIRS_STORM_NAME.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_STORM_NAME`.
 
    SUBTITLE
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_SUBTITLE.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_SUBTITLE`.
 
    TCMPR_PLOTTER_SUBTITLE
      The subtitle of the plot.
@@ -4369,7 +4369,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TCMPR_DATA_DIR
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_TCMPR_DATA_DIR.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_TCMPR_DATA_DIR`.
 
    TCMPR_PLOTTER_TCMPR_DATA_DIR
      Provide the input directory for the track data for the TC Matched Pairs plotting tool.
@@ -4379,7 +4379,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TCMPR_PLOT_OUT_DIR
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_PLOT_OUTPUT_DIR.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_PLOT_OUTPUT_DIR`.
 
    TCMPR_PLOTTER_PLOT_OUTPUT_DIR
      Provide the output directory where the TC Matched Pairs plotting tool will create files.
@@ -4396,13 +4396,13 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_PAIRS_ADECK_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use TC_PAIRS_ADECK_INPUT_TEMPLATE.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_ADECK_INPUT_TEMPLATE`.
 
    TC_PAIRS_BDECK_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use TC_PAIRS_BDECK_INPUT_TEMPLATE.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_BDECK_INPUT_TEMPLATE`.
 
    TC_PAIRS_EDECK_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use TC_PAIRS_EDECK_INPUT_TEMPLATE.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_EDECK_INPUT_TEMPLATE`.
 
    TC_PAIRS_ADECK_INPUT_TEMPLATE
      Template of the file names of ADECK data.
@@ -4468,13 +4468,13 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_PAIRS_DIR
-     .. warning:: **DEPRECATED:** Please use TC_PAIRS_OUTPUT_DIR.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_OUTPUT_DIR`.
 
    TC_PAIRS_FORCE_OVERWRITE
      .. warning:: **DEPRECATED:** Please use TC_PAIRS_SKIP_IF_OUTPUT_EXISTS.
 
    TC_PAIRS_MODEL
-     .. warning:: **DEPRECATED:** Please use MODEL instead.
+     .. warning:: **DEPRECATED:** Please use :term:`MODEL` instead.
 
    TC_PAIRS_MISSING_VAL
      Specify the missing value code.
@@ -4512,28 +4512,28 @@ METplus Configuration Glossary
      | *Default:*  no
 
    TC_PAIRS_REFORMAT_DECK
-     Set to true or yes if using cyclone data that needs to be reformatted to match the ATCF (Automated Tropical Cyclone Forecasting) format. If set to true or yes, you will need to set TC_PAIRS_REFORMAT_TYPE to specify which type of reformatting to perform.
+     Set to true or yes if using cyclone data that needs to be reformatted to match the ATCF (Automated Tropical Cyclone Forecasting) format. If set to true or yes, you will need to set :term:`TC_PAIRS_REFORMAT_TYPE` to specify which type of reformatting to perform.
 
      | *Used by:*  TcPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_PAIRS_REFORMAT_DIR
-     Specify the directory to write reformatted track data to be read by tc_pairs. Used only if TC_PAIRS_REFORMAT_DECK is true or yes.
+     Specify the directory to write reformatted track data to be read by tc_pairs. Used only if :term:`TC_PAIRS_REFORMAT_DECK` is true or yes.
 
      | *Used by:*  TcPairs
      | *Family:*  [dir]
      | *Default:* {OUTPUT_BASE}/track_data_atcf
 
    TC_PAIRS_REFORMAT_TYPE
-     Specify which type of reformatting to perform on cyclone data. Currently only SBU extra tropical cyclone reformatting is available. Only used if TC_PAIRS_REFORMAT_DECK is true or yes.Acceptable values: SBU
+     Specify which type of reformatting to perform on cyclone data. Currently only SBU extra tropical cyclone reformatting is available. Only used if :term:`TC_PAIRS_REFORMAT_DECK` is true or yes.Acceptable values: SBU
 
      | *Used by:*  TcPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_PAIRS_SKIP_IF_REFORMAT_EXISTS
-     Specify whether to overwrite the reformatted cyclone data or not. If set to true or yes and the reformatted file already exists for a given run, the reformatting code will not be run. Used only when TC_PAIRS_REFORMAT_DECK is set to true or yes.Acceptable values: yes/no
+     Specify whether to overwrite the reformatted cyclone data or not. If set to true or yes and the reformatted file already exists for a given run, the reformatting code will not be run. Used only when :term:`TC_PAIRS_REFORMAT_DECK` is set to true or yes.Acceptable values: yes/no
 
      | *Used by:*  TcPairs
      | *Family:*  [config]
@@ -4561,21 +4561,21 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_AMODEL
-     Specify the AMODEL for the MET tc_stat tool.
+     Specify the :term:`AMODEL` for the MET tc_stat tool.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_BASIN
-     Specify the BASIN for the MET tc_stat tool.
+     Specify the :term:`BASIN` for the MET tc_stat tool.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_BMODEL
-     Specify the BMODEL for the MET tc_stat tool.
+     Specify the :term:`BMODEL` for the MET tc_stat tool.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4596,7 +4596,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_COLUMN_STR_VAL
-     Specify the values for the columns set via the TC_STAT_COLUMN_STR_NAME option for use with the MET tc_stat tool.
+     Specify the values for the columns set via the :term:`TC_STAT_COLUMN_STR_NAME` option for use with the MET tc_stat tool.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4610,7 +4610,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_COLUMN_THRESH_VAL
-     Specify the values used for thresholding the columns specified in the TC_STAT_COLUMN_THRESH_NAME option for use with the MET tc_stat tool.
+     Specify the values used for thresholding the columns specified in the :term:`TC_STAT_COLUMN_THRESH_NAME` option for use with the MET tc_stat tool.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4624,14 +4624,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_INIT_THRESH_VAL
-     Specify the values used for thresholding the columns specified in the TC_STAT_INIT_THRESH_NAME option for use with the MET tc_stat tool.
+     Specify the values used for thresholding the columns specified in the :term:`TC_STAT_INIT_THRESH_NAME` option for use with the MET tc_stat tool.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_CYCLONE
-     Specify the CYCLONE of interest for use with the MET tc_stat tool.
+     Specify the:term:` CYCLONE` of interest for use with the MET tc_stat tool.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4645,14 +4645,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_INIT_BEG
-     Specify the beginning initialization time for stratification when using the MET tc_stat tool.Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+     Specify the beginning initialization time for stratification when using the MET tc_stat tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INIT_END
-     Specify the ending initialization time for stratification when using the MET tc_stat tool.Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+     Specify the ending initialization time for stratification when using the MET tc_stat tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4722,28 +4722,28 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_LANDFALL
-     Specify whether only those points occurring near landfall should be retained when using the MET tc_stat tool.Acceptable values: True/False
+     Specify whether only those points occurring near landfall should be retained when using the MET tc_stat tool. Acceptable values: True/False
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  False
 
    TC_STAT_LANDFALL_BEG
-     Specify the beginning of the landfall window for use with the MET tc_stat tool.Acceptable formats: HH, HHmmss
+     Specify the beginning of the landfall window for use with the MET tc_stat tool. Acceptable formats: HH, HHmmss
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  -24
 
    TC_STAT_LANDFALL_END
-     Specify the end of the landfall window for use with the MET tc_stat tool.Acceptable formats: HH, HHmmss
+     Specify the end of the landfall window for use with the MET tc_stat tool. Acceptable formats: HH, HHmmss
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_LEAD
-     Specify the lead times to stratify by when using the MET tc_stat tool.Acceptable formats: HH, HHmmss
+     Specify the lead times to stratify by when using the MET tc_stat tool. Acceptable formats: HH, HHmmss
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4757,7 +4757,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_MATCH_POINTS
-     Specify whether only those points common to both the ADECK and BDECK tracks should be written out or not when using the MET tc_stat tool.Acceptable values: True/False
+     Specify whether only those points common to both the ADECK and BDECK tracks should be written out or not when using the MET tc_stat tool. Acceptable values: True/False
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4771,7 +4771,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_RUN_VIA
-     Specify the method for running the MET tc_stat tool.Acceptable values: CONFIG. If left blank (unset), tc_stat will run via the command line.
+     Specify the method for running the MET tc_stat tool. Acceptable values: CONFIG. If left blank (unset), tc_stat will run via the command line.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4785,35 +4785,35 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_STORM_NAME
-     Set the STORM_NAME for use with the MET tc_stat tool.
+     Set the :term:`STORM_NAME` for use with the MET tc_stat tool.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_TRACK_WATCH_WARN
-     Specify which watches and warnings to stratify over when using the MET tc_stat tool.Acceptable values: HUWARN, HUWATCH, TSWARN, TSWATCH, ALLIf left blank (unset), no stratification will be done.
+     Specify which watches and warnings to stratify over when using the MET tc_stat tool. Acceptable values: HUWARN, HUWATCH, TSWARN, TSWATCH, ALLIf left blank (unset), no stratification will be done.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_VALID_BEG
-     Specify a comma separated list of beginning valid times to stratify with when using the MET tc_stat tool.Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+     Specify a comma separated list of beginning valid times to stratify with when using the MET tc_stat tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_VALID_END
-     Specify a comma separated list of ending valid times to stratify with when using the MET tc_stat tool.Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+     Specify a comma separated list of ending valid times to stratify with when using the MET tc_stat tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_VALID_EXCLUDE
-     Specify a comma separated list of valid times to exclude from the stratification with when using the MET tc_stat tool.Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+     Specify a comma separated list of valid times to exclude from the stratification with when using the MET tc_stat tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4827,7 +4827,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_VALID_INCLUDE
-     Specify a comma separated list of valid times to include in the stratification with when using the MET tc_stat tool.Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+     Specify a comma separated list of valid times to include in the stratification with when using the MET tc_stat tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4848,22 +4848,22 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TIME_METHOD
-     .. warning:: **DEPRECATED:** Please use LOOP_BY instead.
+     .. warning:: **DEPRECATED:** Please use :term:`LOOP_BY` instead.
 
    TIME_SUMMARY_BEG
-     .. warning:: **DEPRECATED:** Please use PB2NC_TIME_SUMMARY_BEG instead.
+     .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_BEG` instead.
 
    TIME_SUMMARY_END
-     .. warning:: **DEPRECATED:** Please use PB2NC_TIME_SUMMARY_END instead.
+     .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_END` instead.
 
    TIME_SUMMARY_FLAG
-     .. warning:: **DEPRECATED:** Please use PB2NC_TIME_SUMMARY_FLAG instead.
+     .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_FLAG` instead.
 
    TIME_SUMMARY_TYPES
-     .. warning:: **DEPRECATED:** Please use PB2NC_TIME_SUMMARY_TYPES instead.
+     .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_TYPES` instead.
 
    TITLE
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_TITLE instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_TITLE` instead.
 
    TCMPR_PLOTTER_TITLE
      Specify a title string for the TC Matched Pairs plotting tool.
@@ -4880,19 +4880,19 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TOP_LEVEL_DIRS
-     .. warning:: **DEPRECATED:** Please use TC_PAIRS_READ_ALL_FILES.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_READ_ALL_FILES`.
 
    TRACK_DATA_DIR
      .. warning:: **DEPRECATED:** Please use TC_PAIRS_[A/B/E]DECK_INPUT_DIR.
 
    TRACK_DATA_MOD_FORCE_OVERWRITE
-     .. warning:: **DEPRECATED:** Please use TC_PAIRS_SKIP_IF_REFORMAT_EXISTS.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_SKIP_IF_REFORMAT_EXISTS`.
 
    TRACK_DATA_SUBDIR_MOD
      .. warning:: **DEPRECATED:** No longer used.
 
    TRACK_TYPE
-     .. warning:: **DEPRECATED:** Please use TC_PAIRS_REFORMAT_DECK.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_REFORMAT_DECK`.
 
    TR
      Specify the path to the Linux "tr" executable.
@@ -4902,17 +4902,17 @@ METplus Configuration Glossary
      | *Default:*  /path/to
 
    TR_EXE
-     .. warning:: **DEPRECATED:** Please use TR.
+     .. warning:: **DEPRECATED:** Please use :term:`TR`.
 
    VALID_BEG
-     Specify a begin time for valid times for use in the analysis. This is the starting date in the format set in the VALID_TIME_FMT. It is named accordingly to the value set for LOOP_BY. However, in StatAnalysis, it is named accordingly to the value set for PLOT_TIME. See :ref:`Looping_by_Valid_Time` for more information.
+     Specify a begin time for valid times for use in the analysis. This is the starting date in the format set in the :term:`VALID_TIME_FMT`. It is named accordingly to the value set for :term:`LOOP_BY`. However, in StatAnalysis, it is named accordingly to the value set for :term:`PLOT_TIME`. See :ref:`Looping_by_Valid_Time` for more information.
 
      | *Used by:*  All
      | *Family:*  [config]
      | *Default:*  Varies
 
    VALID_END
-     Specify an end time for valid times for use in the analysis. This is the ending date in the format set in the VALID_TIME_FMT. It is named accordingly to the value set for LOOP_BY. See :ref:`Looping_by_Valid_Time` for more information.
+     Specify an end time for valid times for use in the analysis. This is the ending date in the format set in the :term:`VALID_TIME_FMT`. It is named accordingly to the value set for :term:`LOOP_BY`. See :ref:`Looping_by_Valid_Time` for more information.
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -4933,13 +4933,13 @@ METplus Configuration Glossary
      | *Default:*  None
 
    VALID_HOUR_BEG
-     .. warning:: **DEPRECATED:** Please use FCST_VALID_HOUR_LIST or OBS_VALID_HOUR_LIST instead.
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_VALID_HOUR_LIST` or :term:`OBS_VALID_HOUR_LIST` instead.
 
    VALID_HOUR_END
-     .. warning:: **DEPRECATED:** Please use FCST_VALID_HOUR_LIST or OBS_VALID_HOUR_LIST instead.
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_VALID_HOUR_LIST` or :term:`OBS_VALID_HOUR_LIST` instead.
 
    VALID_HOUR_INCREMENT
-     .. warning:: **DEPRECATED:** Please use FCST_VALID_HOUR_LIST or OBS_VALID_HOUR_LIST instead.
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_VALID_HOUR_LIST` or :term:`OBS_VALID_HOUR_LIST` instead.
 
    VALID_HOUR_METHOD
      .. warning:: **DEPRECATED:** No longer used.
@@ -4952,7 +4952,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    VALID_TIME_FMT
-     Specify a strftime formatting string for use with VALID_BEG and VALID_END. See :ref:`Looping_by_Valid_Time` for more information.
+     Specify a strftime formatting string for use with :term:`VALID_BEG` and :term:`VALID_END`. See :ref:`Looping_by_Valid_Time` for more information.
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -4966,7 +4966,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    VAR_LIST
-     .. warning:: **DEPRECATED:** Please use SERIES_ANALYSIS_VAR_LIST.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_VAR_LIST`.
 
    VAR<n>_FOURIER_DECOMP
      Specify if Fourier decomposition is to be considered (True) or not (False). If this is set to True, data stratification will be done for the Fourier decomposition of FCS_VAR<n>_NAME. This should have been previously run in grid_stat_wrapper. The default value is set to False.
@@ -4983,13 +4983,13 @@ METplus Configuration Glossary
      | *Default:* None
 
    VERIFICATION_GRID
-     .. warning:: **DEPRECATED:** Please use REGRID_DATA_PLANE_VERIF_GRID instead.
+     .. warning:: **DEPRECATED:** Please use :term:`REGRID_DATA_PLANE_VERIF_GRID` instead.
 
    VERIF_CASE
-     .. warning:: **DEPRECATED:** Please use MAKE_PLOTS_VERIF_CASE instead.
+     .. warning:: **DEPRECATED:** Please use :term:`MAKE_PLOTS_VERIF_CASE` instead.
 
    VERIF_GRID
-     .. warning:: **DEPRECATED:** Please use MAKE_PLOTS_VERIF_GRID instead.
+     .. warning:: **DEPRECATED:** Please use :term:`MAKE_PLOTS_VERIF_GRID` instead.
 
    MAKE_PLOTS_VERIF_GRID
      Specify a string describing the grid the verification was performed on. This is the name of the grid upon which the verification was done on, ex. G002.
@@ -4999,7 +4999,7 @@ METplus Configuration Glossary
      | *Default:*
 
    VERIF_TYPE
-     .. warning:: **DEPRECATED:** Please use MAKE_PLOTS_VERIF_TYPE instead.
+     .. warning:: **DEPRECATED:** Please use :term:`MAKE_PLOTS_VERIF_TYPE` instead.
 
    MAKE_PLOTS_VERIF_TYPE
      Specify a string describing the type of verification being performed. For MAKE_PLOTS_VERIF_CASE = grid2grid, valid options are anom, pres, and sfc. For MAKE_PLOTS_VERIF_CASE = grid2obs, valid options are conus_sfc and upper_air. For MAKE_PLOTS_VERIF_CASE = precip, any accumulation amount is valid, ex. A24.
@@ -5012,7 +5012,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Specify the vertical location desired when using the MET pb2nc tool.
 
    XLAB
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_XLAB instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_XLAB` instead.
 
    TCMPR_PLOTTER_XLAB
      Specify the x-axis label when using the TC Matched Pairs plotting tool.
@@ -5022,7 +5022,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    XLIM
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_XLIM instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_XLIM` instead.
 
    TCMPR_PLOTTER_XLIM
      Specify the x-axis limit when using the TC Matched Pairs plotting tool.
@@ -5032,7 +5032,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    YLAB
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_YLAB instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_YLAB` instead.
 
    TCMPR_PLOTTER_YLAB
      Specify the y-axis label when using the TC Matched Pairs plotting tool.
@@ -5042,7 +5042,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    YLIM
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_YLIM instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_YLIM` instead.
 
    TCMPR_PLOTTER_YLIM
      Specify the y-axis limit when using the TC Matched Pairs plotting tool.
@@ -5054,11 +5054,11 @@ METplus Configuration Glossary
    FCST_PCP_COMBINE_INPUT_ACCUMS
      Specify what accumulation levels should be used from the forecast data for the analysis. This is a list of input accumulations in the order of preference to use to build the desired accumulation. If an accumulation cannot be used (i.e. it is larger than the remaining accumulation that needs to be built) then the next value in the list is tried. Units are assumed to be hours unless a time identifier such as Y, m, d, H, M, S is specifed at the end of the value, i.e. 30M or 1m.
 
-     If the name and/or level of the accumulation value must be specified for the data, then a list of equal length to this variable must be set for FCST_PCP_COMBINE_INPUT_NAMES and FCST_PCP_COMBINE_INPUT_LEVELS. See this sections for more information.
+     If the name and/or level of the accumulation value must be specified for the data, then a list of equal length to this variable must be set for :term:`FCST_PCP_COMBINE_INPUT_NAMES` and :term:`FCST_PCP_COMBINE_INPUT_LEVELS`. See this sections for more information.
 
-     This variable can be set to {lead} if the accumulation found in a given file corresponds to the forecast lead of the data. If this is the case, FCST_PCP_COMBINE_BUCKET_INTERVAL can be used to reset the accumulation at a given interval.
+     This variable can be set to {lead} if the accumulation found in a given file corresponds to the forecast lead of the data. If this is the case, :term:`FCST_PCP_COMBINE_BUCKET_INTERVAL` can be used to reset the accumulation at a given interval.
 
-     A corresponding variable exists for observation data called OBS_PCP_COMBINE_INPUT_ACCUMS.
+     A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_ACCUMS`.
 
      Examples:
 
@@ -5071,31 +5071,31 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_INPUT_ACCUMS
-     See FCST_PCP_COMBINE_INPUT_ACCUMS
+     See :term:`FCST_PCP_COMBINE_INPUT_ACCUMS`
 
      | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_BUCKET_INTERVAL
-     Used when FCST_PCP_COMBINE_INPUT_ACCUMS contains {lead} in the list. This is the interval to reset the bucket accumulation. For example, if the accumulation is reset every 3 hours (forecast 1 hour has 1 hour accum, forecast 2 hour has 2 hour accum, forecast 3 hour has 3 hour accum, forecast 4 hour has 1 hour accum, etc.) then this should be set to 3 or 3H. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
+     Used when :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` contains {lead} in the list. This is the interval to reset the bucket accumulation. For example, if the accumulation is reset every 3 hours (forecast 1 hour has 1 hour accum, forecast 2 hour has 2 hour accum, forecast 3 hour has 3 hour accum, forecast 4 hour has 1 hour accum, etc.) then this should be set to 3 or 3H. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
 
      | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_BUCKET_INTERVAL
-     See FCST_PCP_COMBINE_BUCKET_INTERVAL.
+     See :term:`FCST_PCP_COMBINE_BUCKET_INTERVAL`.
 
      | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_INPUT_NAMES
-     Specify which field names correspond to each accumulation specifed in FCST_PCP_COMBINE_INPUT_ACCUMS for the forecast data for the analysis. See FCST_PCP_COMBINE_INPUT_ACCUMS for more information. A corresponding variable exists for observation data called OBS_PCP_COMBINE_INPUT_NAMES. Examples:
+     Specify which field names correspond to each accumulation specifed in FCST_PCP_COMBINE_INPUT_ACCUMS for the forecast data for the analysis. See :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` for more information. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_NAMES`. Examples:
 
-     FCST_PCP_COMBINE_INPUT_ACCUMS = 6, 1
-     FCST_PCP_COMBINE_INPUT_NAMES = P06M_NONE, P01M_NONE
+     | FCST_PCP_COMBINE_INPUT_ACCUMS = 6, 1
+     | FCST_PCP_COMBINE_INPUT_NAMES = P06M_NONE, P01M_NONE
 
      This says that the 6 hour accumulation field name is P06M_NONE and the 1 hour accumulation field name is P01M_NONE.
 
@@ -5106,18 +5106,18 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_INPUT_NAMES
-     See FCST_PCP_COMBINE_INPUT_NAMES
+     See :term:`FCST_PCP_COMBINE_INPUT_NAMES`
 
      | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_INPUT_LEVELS
-     Specify which levels correspond to each accumulation specifed in FCST_PCP_COMBINE_INPUT_ACCUMS for the forecast data for the analysis. See FCST_PCP_COMBINE_INPUT_ACCUMS for more information. A corresponding variable exists for observation data called OBS_PCP_COMBINE_INPUT_LEVELS. Examples:
+     Specify which levels correspond to each accumulation specifed in FCST_PCP_COMBINE_INPUT_ACCUMS for the forecast data for the analysis. See :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` for more information. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_LEVELS`. Examples:
 
-     FCST_PCP_COMBINE_INPUT_ACCUMS = 1
-     FCST_PCP_COMBINE_INPUT_NAMES = P01M_NONE
-     FCST_PCP_COMBINE_INPUT_LEVELS = "(0,*,*)"
+     | FCST_PCP_COMBINE_INPUT_ACCUMS = 1
+     | FCST_PCP_COMBINE_INPUT_NAMES = P01M_NONE
+     | FCST_PCP_COMBINE_INPUT_LEVELS = "(0,*,*)"
 
      This says that the 1 hour accumulation field name is P01M_NONE and the level (0,*,*), which is NetCDF format to specify the first item of the first dimension.
 
@@ -5126,25 +5126,25 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_INPUT_LEVELS
-     See FCST_PCP_COMBINE_INPUT_LEVELS
+     See :term:`FCST_PCP_COMBINE_INPUT_LEVELS`
 
      | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_INPUT_OPTIONS
-     Specify optional additional options that correspond to each accumulation specifed in FCST_PCP_COMBINE_INPUT_ACCUMS for the forecast data for the analysis. See FCST_PCP_COMBINE_INPUT_ACCUMS for more information. A corresponding variable exists for observation data called OBS_PCP_COMBINE_INPUT_OPTIONS. Examples:
+     Specify optional additional options that correspond to each accumulation specifed in FCST_PCP_COMBINE_INPUT_ACCUMS for the forecast data for the analysis. See :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` for more information. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_OPTIONS`. Examples:
 
-     FCST_PCP_COMBINE_INPUT_ACCUMS = 6, 1
-     FCST_PCP_COMBINE_INPUT_NAMES = P06M_NONE, P01M_NONE
-     FCST_PCP_COMBINE_INPUT_OPTIONS = something = else;, another_thing = else;
+     | FCST_PCP_COMBINE_INPUT_ACCUMS = 6, 1
+     | FCST_PCP_COMBINE_INPUT_NAMES = P06M_NONE, P01M_NONE
+     | FCST_PCP_COMBINE_INPUT_OPTIONS = something = else;, another_thing = else;
 
      | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_INPUT_OPTIONS
-     See FCST_PCP_COMBINE_INPUT_OPTIONS
+     See :term:`FCST_PCP_COMBINE_INPUT_OPTIONS`
 
      | *Used by:*  PCPCombine
      | *Family:*  [config]
@@ -5153,7 +5153,7 @@ METplus Configuration Glossary
    FCST_PCP_COMBINE_OUTPUT_ACCUM
      Specify desired accumulation to be built from the forecast data. Units are assumed to be hours unless a time identifier such as Y, m, d, H, M, S is specifed at the end of the value, i.e. 30M or 1m. If this variable is not set, then FCST_VAR<n>_LEVELS is used.
 
-     A corresponding variable exists for observation data called OBS_PCP_COMBINE_OUTPUT_ACCUM.
+     A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM`.
 
      Examples:
 
@@ -5168,23 +5168,23 @@ METplus Configuration Glossary
    FCST_PCP_COMBINE_OUTPUT_NAME
      Specify the output field name from processing forecast data. If this variable is not set, then :term:`FCST_VAR<n>_NAME` is used.
 
-     A corresponding variable exists for observation data called OBS_PCP_COMBINE_OUTPUT_NAME.
+     A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_OUTPUT_NAME`.
 
      Example: APCP
 
    OBS_PCP_COMBINE_OUTPUT_ACCUM
-     See FCST_PCP_COMBINE_OUTPUT_NAME.
+     See :term:`FCST_PCP_COMBINE_OUTPUT_NAME`.
 
      | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_OUTPUT_NAME
-     See FCST_PCP_COMBINE_OUTPUT_NAME.
+     See :term:`FCST_PCP_COMBINE_OUTPUT_NAME`.
 
      | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    PREPBUFR_DATA_DIR
-     .. warning:: **DEPRECATED:** Please use PB2NC_INPUT_DIR instead.
+     .. warning:: **DEPRECATED:** Please use :term:`PB2NC_INPUT_DIR` instead.
