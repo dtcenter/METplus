@@ -76,10 +76,17 @@ that reformat gridded data
 
                 self.logger.info("Processing forecast lead {}".format(time_info['lead_string']))
 
-                var_list = util.parse_var_list(self.config, time_info, data_type=to_run)
-                if not var_list:
-                    self.run_at_time_once(time_info, None, to_run)
-                    continue
+                # loop over custom string list and set custom in the time_info dictionary
+                for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                    if custom_string:
+                        self.logger.info(f"Processing custom string: {custom_string}")
 
-                for var_info in var_list:
-                    self.run_at_time_once(time_info, var_info, to_run)
+                    time_info['custom'] = custom_string
+
+                    var_list = util.parse_var_list(self.config, time_info, data_type=to_run)
+                    if not var_list:
+                        self.run_at_time_once(time_info, None, to_run)
+                        continue
+
+                    for var_info in var_list:
+                        self.run_at_time_once(time_info, var_info, to_run)

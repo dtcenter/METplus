@@ -49,11 +49,12 @@ class TCMPRPlotterWrapper(CommandBuilder):
             @param logger:  A logger, can be None
         """
 
+        self.app_name = 'tcmpr_plotter'
+
         # pylint:disable=too-many-instance-attributes
         # All these instance attributes are needed to support the
         # plot_tcmpr.R functionality.
         super().__init__(config, logger)
-        self.app_name = 'plot_tcmpr.R'
 
         self._init_tcmpr_script()
 
@@ -381,9 +382,6 @@ class TCMPRPlotterWrapper(CommandBuilder):
              files differently because it wraps an R-script, plot_tcmpr.R
              rather than a typical MET tool. Build command to run from
              arguments"""
-        if self.app_path is None:
-            self.log_error("No app path specified. You must use a subclass")
-            return None
 
         return self.cmd
 

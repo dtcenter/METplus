@@ -56,6 +56,7 @@ from gempak_to_cf_wrapper import GempakToCFWrapper
 from example_wrapper import ExampleWrapper
 from custom_ingest_wrapper import CustomIngestWrapper
 from ascii2nc_wrapper import ASCII2NCWrapper
+from series_analysis_wrapper import SeriesAnalysisWrapper
 
 # if using plotting wrappers, import them
 if not disable_plotting:

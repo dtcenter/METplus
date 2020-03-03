@@ -34,11 +34,10 @@ class CyclonePlotterWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
+        self.app_name = 'cyclone_plotter'
+
         # pylint:disable=redefined-outer-name
         super().__init__(config, logger)
-        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                     'bin/tc_pairs')
-        self.app_name = os.path.basename(self.app_path)
         self.input_data = self.config.getdir('CYCLONE_PLOTTER_INPUT_DIR')
         self.output_dir = self.config.getdir('CYCLONE_PLOTTER_OUTPUT_DIR')
         self.init_date = self.config.getstr('config', 'CYCLONE_PLOTTER_INIT_DATE')

@@ -39,10 +39,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     valid_run_methods = ['ADD', 'SUM', 'SUBTRACT', 'DERIVE', 'CUSTOM']
 
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = 'pcp_combine'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
+        super().__init__(config, logger)
         self.inaddons = []
         self.method = ""
         self.pcp_dir = ""

@@ -29,10 +29,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
     """!Wraps the MET tool ensemble_stat to compare ensemble datasets
     """
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = 'ensemble_stat'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
+        super().__init__(config, logger)
 
     def create_c_dict(self):
         """!Create a dictionary containing the values set in the config file

@@ -28,22 +28,19 @@ class MakePlotsWrapper(CommandBuilder):
     """! Wrapper to used to filter make plots from MET data
     """
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_path = 'python'
         self.app_name = 'make_plots'
+        super().__init__(config, logger)
         
     def set_plotting_script(self, plotting_script_path):
         self.plotting_script = plotting_script_path
 
     def get_command(self):
-        if self.app_path is None:
-            self.log_error(self.app_name + ": No app path specified. \
-                              You must use a subclass")
-            return None
+
         cmd = self.app_path + " "
         
         if self.plotting_script == "":
-            self.log_error(self.app_name+": No plotting script specified")
+            self.log_error("No plotting script specified")
             return None
         cmd += self.plotting_script
 

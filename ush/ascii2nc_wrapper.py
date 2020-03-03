@@ -28,10 +28,10 @@ from string_template_substitution import StringSub
 
 class ASCII2NCWrapper(CommandBuilder):
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = "ascii2nc"
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
+        super().__init__(config, logger)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -182,8 +182,15 @@ class ASCII2NCWrapper(CommandBuilder):
         for lead in lead_seq:
             self.clear()
             input_dict['lead'] = lead
+
             time_info = time_util.ti_calculate(input_dict)
-            self.run_at_time_once(time_info)
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                if custom_string:
+                    self.logger.info(f"Processing custom string: {custom_string}")
+
+                time_info['custom'] = custom_string
+
+                self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
         """! Process runtime and try to build command to run ascii2nc
@@ -221,14 +228,12 @@ class ASCII2NCWrapper(CommandBuilder):
             self.infiles.append(filename)
             return self.infiles
 
-        obs_path = self.find_obs(time_info, None)
+        # get list of files even if only one is found (return_list=True)
+        obs_path = self.find_obs(time_info, var_info=None, return_list=True)
         if obs_path is None:
             return None
 
-        if isinstance(obs_path, list):
-            self.infiles.extend(obs_path)
-        else:
-            self.infiles.append(obs_path)
+        self.infiles.extend(obs_path)
         return self.infiles
 
     def set_command_line_arguments(self):

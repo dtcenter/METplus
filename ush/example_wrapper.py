@@ -23,10 +23,8 @@ from string_template_substitution import StringSub
 class ExampleWrapper(CommandBuilder):
     """!Wrapper can be used as a base to develop a new wrapper"""
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = 'example'
-        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        super().__init__(config, logger)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()

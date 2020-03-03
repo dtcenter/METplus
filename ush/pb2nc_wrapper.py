@@ -28,10 +28,10 @@ class PB2NCWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = 'pb2nc'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
+        super().__init__(config, logger)
 
     def create_c_dict(self):
         """! Create a data structure (dictionary) that contains all the
@@ -218,14 +218,13 @@ class PB2NCWrapper(CommandBuilder):
         for offset in self.c_dict['OFFSETS']:
             input_dict['offset_hours'] = offset
             time_info = time_util.ti_calculate(input_dict)
-            infile = self.find_obs(time_info, None, False)
+
+            # get a list of files even if only one is returned
+            infile = self.find_obs(time_info, None, mandatory=False, return_list=True)
 
             if infile is not None:
-                if isinstance(infile, list):
-                    self.infiles.extend(infile)
-                else:
-                    self.infiles.append(infile)
-                self.logger.debug('Adding input file {}'.format(infile))
+                self.infiles.extend(infile)
+                self.logger.debug(f"Adding input: {' and '.join(infile)}")
                 break
 
         # if file is found, return timing info dict so output template can use offset value
