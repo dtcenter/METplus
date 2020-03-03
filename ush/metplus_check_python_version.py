@@ -35,8 +35,10 @@ def check_metplus_python_version(user_py, supported_py):
             break
 
         # a lower version is used - report and exit
-        print("Must be using Python {} or higher.".format(supported_py))
+        print("ERROR: Must be using Python {} or higher ".format(supported_py)+
+              "with the required packages installed.")
         print("You are using {}.".format(user_py))
+        print("See the METplus documentation for more information.")
         return False
 
     return True
