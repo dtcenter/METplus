@@ -1421,7 +1421,7 @@
      | *Default:*  Varies
 
    FCST_NATIVE_DATA_TYPE
-     .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_INPUT_DATA_TYPE` instead
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_INPUT_DATATYPE` instead
 
    FCST_NC_TILE_REGEX
      .. warning:: **DEPRECATED:** Please use :term:`FCST_SERIES_ANALYSIS_NC_TILE_REGEX` instead.
@@ -1450,7 +1450,7 @@
      | *Family:*  [config]
      | *Default:* Varies
 
-   FCST_PCP_COMBINE_INPUT_DATA_TYPE
+   FCST_PCP_COMBINE_INPUT_DATATYPE
      Specify the data type of the input directory for forecast files used with the MET pcp_combine tool. Currently valid options are NETCDF, GRIB, and GEMPAK. Required by pcp_combine if :term:`FCST_PCP_COMBINE_RUN` is True. Replaces deprecated variable :term:`FCST_NATIVE_DATA_TYPE`. A corresponding variable exists for observation data called OBS_PCP_COMBINE_INPUT_DATATYPE.
 
      | *Used by:*  PcpCombine
@@ -2678,7 +2678,7 @@
      | *Family:*  [config]
      | *Default:*  Models listed as MODEL<n>
  
-   MODEL<n>_NAME MODEL<n>_NAME
+   MODEL<n>_NAME
         .. warning:: **DEPRECATED:** Please use :term:`MODEL\<n\>`.
 			     
    MODEL<n>
@@ -3322,7 +3322,7 @@
      | *Default:* Varies
 
    OBS_PCP_COMBINE_INPUT_DATATYPE
-     See :term:`FCST_PCP_COMBINE_INPUT_DATA_TYPE`.
+     See :term:`FCST_PCP_COMBINE_INPUT_DATATYPE`.
 
      | *Used by:*  PcpCombine
      | *Family:*  [config]
