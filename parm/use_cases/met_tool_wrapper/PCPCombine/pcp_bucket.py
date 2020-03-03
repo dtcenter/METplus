@@ -98,7 +98,7 @@ This use case will run the MET PCPCombine tool in ADD mode to build a 15 hour ac
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in pcp_combine_bucket_interval (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in met_tool_wrapper/PCPCombine/pcp_bucket (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * gfs_2012040915_A015.nc

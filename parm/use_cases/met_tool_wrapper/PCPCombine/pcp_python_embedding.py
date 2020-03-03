@@ -115,7 +115,7 @@ This use case will run the MET PCPCombine tool in ADD mode using a python script
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in pcp_combine_py_embed (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in met_tool_wrapper/PCPCombine/pcp_py_embed (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * .

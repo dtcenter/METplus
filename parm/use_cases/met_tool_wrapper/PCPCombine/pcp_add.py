@@ -98,7 +98,7 @@ This use case will run the MET PCPCombine tool in ADD mode to build a 15 minute 
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in pcp_combine_add (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in met_tool_wrapper/PCPCombine/pcp_add (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * NEWSe5min_mem00_lag00.nc
