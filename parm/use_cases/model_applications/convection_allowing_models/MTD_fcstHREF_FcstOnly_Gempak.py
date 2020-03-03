@@ -132,6 +132,6 @@ This use case processes data over time.
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/conection_allowing_models-MTD_fcstHREF_FcstOnly_Gempak.png'
+# sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-MTD_fcstHREF_FcstOnly_Gempak.png'
 #
 # .. note:: `MTDToolUseCase <https://ncar.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_, `NOAAHMTOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_, `GEMPAKFileUseCase <https://ncar.github.io/METplus/search.html?q=GEMPAKFileUseCase&check_keywords=yes&area=default>`_

@@ -98,7 +98,7 @@ This use case will run the MET PCPCombine tool in SUBTRACT mode to extract a 3 h
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in pcp_combine_subtract (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in met_tool_wrapper/PCPCombine/pcp_subtract (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * wrfprs_ruc13_2005080700_f24_A18.nc

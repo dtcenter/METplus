@@ -321,7 +321,7 @@ class StringSub(object):
                 obj += self.shift_seconds
                 return format_hms(fmt, obj)
             # if string, format if possible
-            elif isinstance(obj, str) or isinstance(obj, unicode):
+            elif isinstance(obj, str):
                 return '{}'.format(obj)
             else:
                 self.logger.error('Could not format item {} with format {} in {}'

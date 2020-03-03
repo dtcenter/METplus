@@ -121,6 +121,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                                 d_type+'_PCP_COMBINE_CONSTANT_INIT',
                                                                 False)
 
+        # initialize custom string for tests
+        c_dict['CUSTOM_STRING'] = ''
+
         if run_method not in self.valid_run_methods:
             self.log_error(f"Invalid value for {d_type}_PCP_COMBINE_METHOD: "
                            f"{run_method}. Valid options are "
@@ -226,6 +229,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             input_dict['valid'] = valid_time
             input_dict['lead_seconds'] = forecast_lead
             time_info = time_util.ti_calculate(input_dict)
+            time_info['custom'] = self.c_dict['CUSTOM_STRING']
             fSts = sts.StringSub(self.logger,
                                  template,
                                  **time_info)
@@ -263,7 +267,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             # check if file exists
             dSts = sts.StringSub(self.logger,
                                  file_template,
-                                 valid=search_time)
+                                 valid=search_time,
+                                 custom=self.c_dict['CUSTOM_STRING'])
             search_file = os.path.join(self.input_dir,
                                        dSts.do_string_sub())
             search_file = util.preprocess_file(search_file,
@@ -282,7 +287,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # assuming that was the intent in Python 2.
         lead = int((diff.days * 24) // (data_interval))
         lead += int((diff).seconds // (data_interval*3600)) - 1
-        search_time_info = { 'valid' : search_time }
+        search_time_info = { 'valid' : search_time,
+                             'custom': self.c_dict['CUSTOM_STRING']}
 
         # get name of input level item that matches the accumulation to extract from daily file
         accum_seconds = time_util.get_seconds_from_string(accum, 'H')
@@ -315,7 +321,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             return search_accum
 
         # perform string substitution on name in case it uses filename templates
-        field_name = sts.StringSub(self.logger, field_name, valid=search_time).do_string_sub()
+        field_name = sts.StringSub(self.logger,
+                                   field_name,
+                                   valid=search_time,
+                                   custom=self.c_dict['CUSTOM_STRING']).do_string_sub()
         addon = "'name=\"" + field_name + "\";"
 
         if not util.is_python_script(field_name) and field_level is not None:
@@ -340,7 +349,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             input_dict = { 'valid': valid_time }
 
         time_info = time_util.ti_calculate(input_dict)
-
+        time_info['custom'] = self.c_dict['CUSTOM_STRING']
         input_file = sts.StringSub(self.logger,
                                    in_template,
                                    level=int(search_accum),
@@ -355,7 +364,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # apply string substitution to accum amount
         search_time_dict = {'valid': search_time, 'lead_seconds': lead}
         search_time_info = time_util.ti_calculate(search_time_dict)
-
+        search_time_info['custom'] = self.c_dict['CUSTOM_STRING']
         amount = sts.StringSub(self.logger,
                                accum_dict['template'],
                                **search_time_info).do_string_sub()
@@ -692,6 +701,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         input_dict2 = { 'init' : time_info['init'],
                        'lead' : lead2 }
         time_info2 = time_util.ti_calculate(input_dict2)
+        if hasattr(time_info, 'custom'):
+            time_info2['custom'] = time_info['custom']
+
         pcpSts2 = sts.StringSub(self.logger,
                                 in_template,
                                 level=accum,

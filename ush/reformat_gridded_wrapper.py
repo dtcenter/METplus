@@ -82,6 +82,7 @@ that reformat gridded data
                         self.logger.info(f"Processing custom string: {custom_string}")
 
                     time_info['custom'] = custom_string
+                    self.c_dict['CUSTOM_STRING'] = custom_string
 
                     var_list = util.parse_var_list(self.config, time_info, data_type=to_run)
                     if not var_list:
