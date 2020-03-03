@@ -121,6 +121,8 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         # get climatology config variables
         self.read_climo_wrapper_specific('SERIES_ANALYSIS', c_dict)
 
+        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'SERIES_ANALYSIS_REGRID_TO_GRID', '')
+
         # used to override the file type for fcst/obs if using python embedding for input
         c_dict['FCST_FILE_TYPE'] = ''
         c_dict['OBS_FILE_TYPE'] = ''
@@ -142,7 +144,8 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_FILE_TYPE", self.c_dict['OBS_FILE_TYPE'])
 
         # set environment variables needed for MET application
-        self.add_env_var("MODEL", self.c_dict['MODEL'])
+        self.add_common_envs(time_info)
+
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("STAT_LIST", self.c_dict['STAT_LIST'])
         self.add_env_var("FCST_FIELD", fcst_field)
@@ -150,9 +153,6 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
 
         # set climatology environment variables
         self.set_climo_env_vars()
-
-        # set user environment variables
-        self.set_user_environment(time_info)
 
         # send environment variables to logger
         self.print_all_envs()
