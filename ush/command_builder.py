@@ -376,41 +376,53 @@ class CommandBuilder:
         return self.find_file_in_window(**arg_dict)
 
     def find_exact_file(self, level, data_type, time_info, mandatory=True, return_list=False):
-        template = self.c_dict[f'{data_type}_INPUT_TEMPLATE']
+        input_template = self.c_dict[f'{data_type}_INPUT_TEMPLATE']
         data_dir = self.c_dict[f'{data_type}_INPUT_DIR']
 
         check_file_list = []
         found_file_list = []
 
-        # perform string substitution
-        dsts = sts.StringSub(self.logger,
-                             template,
-                             level=(int(level.split('-')[0]) * 3600),
-                             **time_info)
-        filename = dsts.do_string_sub()
+        # check if there is a list of files provided in the template
+        # process each template in the list (or single template)
+        template_list = [template.strip() for template in input_template.split(',')]
 
-        # build full path with data directory and filename
-        full_path = os.path.join(data_dir, filename)
+        # return None if a list is provided for a wrapper that doesn't allow
+        # multiple files to be processed
+        if len(template_list) > 1 and not self.c_dict['ALLOW_MULTIPLE_FILES']:
+            self.log_error("List of templates specified for a wrapper that "
+                           "does not allow multiple files to be provided.")
+            return None
 
-        self.logger.debug(f"Looking for {data_type} file {full_path}")
+        for template in template_list:
+            # perform string substitution
+            dsts = sts.StringSub(self.logger,
+                                 template,
+                                 level=(int(level.split('-')[0]) * 3600),
+                                 **time_info)
+            filename = dsts.do_string_sub()
 
-        # if wildcard expression, get all files that match
-        if '?' in full_path or '*' in full_path:
-            if not self.c_dict['ALLOW_MULTIPLE_FILES']:
-                self.log_error("Wildcard character found in file path when using wrapper that "
-                               "does not allow multiple files to be provided.")
-                return None
+            # build full path with data directory and filename
+            full_path = os.path.join(data_dir, filename)
 
-            wildcard_files = sorted(glob.glob(full_path))
-            self.logger.debug(f'Wildcard file pattern: {full_path}')
-            self.logger.debug(f'{str(len(wildcard_files))} files match pattern')
+            self.logger.debug(f"Looking for {data_type} file {full_path}")
 
-            # add files to list of files
-            for wildcard_file in wildcard_files:
-                check_file_list.append(wildcard_file)
-        else:
-            # add single file to list
-            check_file_list.append(full_path)
+            # if wildcard expression, get all files that match
+            if '?' in full_path or '*' in full_path:
+                if not self.c_dict['ALLOW_MULTIPLE_FILES']:
+                    self.log_error("Wildcard character found in file path when using wrapper that "
+                                   "does not allow multiple files to be provided.")
+                    return None
+
+                wildcard_files = sorted(glob.glob(full_path))
+                self.logger.debug(f'Wildcard file pattern: {full_path}')
+                self.logger.debug(f'{str(len(wildcard_files))} files match pattern')
+
+                # add files to list of files
+                for wildcard_file in wildcard_files:
+                    check_file_list.append(wildcard_file)
+            else:
+                # add single file to list
+                check_file_list.append(full_path)
 
         for file_path in check_file_list:
             # check if file exists
