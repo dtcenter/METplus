@@ -121,5 +121,6 @@ This use case processes precipitation accumulation data over time.
 # Keywords
 # --------
 #
+# sphinx_gallery_thumbnail_path = '_static/precipitation-MTD_fcstHRRR-TLE_obsMRMS.png'
 #
-# .. note:: `MTD <https://ncar.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_, `Precipitation <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_, `GRIB2 <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_, `NetCDF <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_
+# .. note:: `MTDToolUseCase <https://ncar.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_, `PrecipitationAppUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_, `GRIB2FileUseCase <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_, `NetCDFFileUseCase <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_

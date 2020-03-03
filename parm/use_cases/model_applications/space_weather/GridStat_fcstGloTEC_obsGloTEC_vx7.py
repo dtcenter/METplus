@@ -170,7 +170,7 @@ from two runs of the GloTEC model.
 # Keywords
 # --------
 #
-# .. note:: GridStatUseCase SpaceWeatherAppUseCase NOAASWPCOrgUseCase GloTECModelUseCase
+# .. note:: GridStatToolUseCase SpaceWeatherAppUseCase NOAASWPCOrgUseCase GloTECModelUseCase
 #
 # sphinx_gallery_thumbnail_path = '_static/space_weather-GridStat_fcstGloTEC_obsGloTEC_vx7.jpg'
 #

@@ -296,4 +296,5 @@ Brief summary of this use case...
 # Keywords
 # --------
 #
-# .. note:: `GridStat <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, `NetCDF <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_
+# sphinx_gallery_thumbnail_path = '_static/s2s-GridStat_fcstNMME_obsCPC_seasonal_forecast.png'
+# .. note:: `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, `NetCDFFileUseCase <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_

@@ -146,7 +146,7 @@ case is being run.
 # Keywords
 # --------
 #
+# sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-Plotter_fcstGFS_obsGFS_RPlotting.png'
 #
 #
-#
-# .. note:: `TcPairs <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_, `TCandExtraTC <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
+# .. note:: `TcPairsUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_, `TCandExtraTCAppUseCase <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_

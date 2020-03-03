@@ -26,10 +26,10 @@ class PointStatWrapper(CompareGriddedWrapper):
     """! Wrapper to the MET tool, Point-Stat."""
 
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = 'point_stat'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
+        super().__init__(config, logger)
 
     def create_c_dict(self):
         """! Create a dictionary that holds all the values set in the
@@ -105,20 +105,6 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.isOK = False
 
         return c_dict
-
-    def run_at_time(self, input_dict):
-        """! Stub, not yet implemented """
-
-        # loop of forecast leads and process each
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            input_dict['lead'] = lead
-
-            lead_string = time_util.ti_calculate(input_dict)['lead_string']
-            self.logger.info("Processing forecast lead {}".format(lead_string))
-
-            # Run for given init/valid time and forecast lead combination
-            self.run_at_time_once(input_dict)
 
     def run_at_time_once(self, input_dict):
          # clear any settings leftover from previous run

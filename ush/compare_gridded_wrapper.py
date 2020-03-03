@@ -36,6 +36,10 @@ that reformat gridded data
     climo_types = ['MEAN', 'STDEV']
 
     def __init__(self, config, logger):
+        # set app_name if not set by child class to allow tests to run on this wrapper
+        if not hasattr(self, 'app_name'):
+            self.app_name = 'compare_gridded'
+
         super().__init__(config, logger)
         # check to make sure all necessary probabilistic settings are set correctly
         # this relies on the subclass to finish creating the c_dict, so it has to
@@ -169,8 +173,14 @@ that reformat gridded data
                 self.logger.debug('Skipping run time')
                 continue
 
-            # Run for given init/valid time and forecast lead combination
-            self.run_at_time_once(time_info)
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                if custom_string:
+                    self.logger.info(f"Processing custom string: {custom_string}")
+
+                time_info['custom'] = custom_string
+
+                # Run for given init/valid time and forecast lead combination
+                self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
         """! Build MET command for a given init/valid time and forecast lead combination

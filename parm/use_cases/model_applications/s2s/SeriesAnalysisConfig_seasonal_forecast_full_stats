@@ -11,18 +11,18 @@
 //
 // Output model name to be written
 //
-model = "NMME";
+model = "${MODEL}";
 
 //
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
-desc = "hindcast";
+desc = "${DESCRIPTION}";
 
 //
 // Output observation type to be written
 //
-obtype = "CPC";
+obtype = "${OBTYPE}";
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -50,10 +50,10 @@ cnt_logic     = UNION;
 // Forecast and observation fields to be verified
 //
 fcst = {
-   field = [ { name  = "FCST_pr_FULL"; level = "(*,*)"; } ];
+   field = [ ${FCST_FIELD} ];
 }
 obs = {
-   field = [ { name  = "OBS_precip_FULL"; level = "(*,*)"; } ];
+   field = [ ${OBS_FIELD} ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -63,8 +63,8 @@ obs = {
 //
 climo_mean = {
 
-//   file_name = [ "${OUTFILE_CLIMO";
-   file_name = [ "/home/demo/APIK/output_met/s2s_use_case_1/series_analysis/series_analysis_NMME_CPC_stats_ICJul_08_climo.nc" ];
+   file_name = [ ${CLIMO_MEAN_FILE} ];
+//   file_name = [ "/home/demo/APIK/output_met/s2s_use_case_1/series_analysis/series_analysis_NMME_CPC_stats_ICJul_08_climo.nc" ];
    field     = [ { name  = "series_cnt_OBAR"; level = "(*,*)"; } ];
 
    regrid = {
@@ -172,6 +172,6 @@ output_stats = {
 
 rank_corr_flag = FALSE;
 tmp_dir        = "/tmp";
-version        = "V8.1";
+version        = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////

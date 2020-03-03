@@ -28,10 +28,10 @@ class GridStatWrapper(CompareGriddedWrapper):
     '''!Wraps the MET tool grid_stat to compare gridded datasets
     '''
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = 'grid_stat'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
+        super().__init__(config, logger)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -90,10 +90,10 @@ class GridStatWrapper(CompareGriddedWrapper):
         if self.c_dict['CURRENT_VAR_INFO'] is not None:
             var_info = self.c_dict['CURRENT_VAR_INFO']
 
-        self.config.set('config', 'CURRENT_FCST_NAME', var_info['fcst_name'])
-        self.config.set('config', 'CURRENT_OBS_NAME', var_info['obs_name'])
-        self.config.set('config', 'CURRENT_FCST_LEVEL', var_info['fcst_level'])
-        self.config.set('config', 'CURRENT_OBS_LEVEL', var_info['obs_level'])
+        self.config.set('config', 'CURRENT_FCST_NAME', var_info['fcst_name'] if 'fcst_name' in var_info else '')
+        self.config.set('config', 'CURRENT_OBS_NAME', var_info['obs_name'] if 'obs_name' in var_info else '')
+        self.config.set('config', 'CURRENT_FCST_LEVEL', var_info['fcst_level'] if 'fcst_level' in var_info else '')
+        self.config.set('config', 'CURRENT_OBS_LEVEL', var_info['obs_level'] if 'obs_level' in var_info else '')
 
         # set environment variables needed for MET application
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
