@@ -275,6 +275,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # model_template is a list of 1 or more.
         ens_members_path = []
+
         # get all files that exist
         for ens_member_template in self.c_dict['FCST_INPUT_TEMPLATE']:
             model_ss = sts.StringSub(self.logger, ens_member_template,
@@ -300,7 +301,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                                      self.config)
 
                 # if the file exists, add it to the list
-                if expected_path != None:
+                if expected_path:
                     ens_members_path.append(expected_path)
                 else:
                     # add relative path to fake dir and add to list
