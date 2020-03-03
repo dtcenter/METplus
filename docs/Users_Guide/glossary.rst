@@ -4631,7 +4631,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_CYCLONE
-     Specify the:term:` CYCLONE` of interest for use with the MET tc_stat tool.
+     Specify the cyclone of interest for use with the MET tc_stat tool.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
