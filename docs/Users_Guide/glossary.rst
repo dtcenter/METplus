@@ -315,7 +315,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    LOG_MTD_VERBOSITY
-     Overrides the log verbosity for MTD only. If not set, the verbosity level is controlled by LOG_MET_VERBOSITY.
+     Overrides the log verbosity for MTD only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
 
      | *Used by:* MTD
      | *Family:* [config]
@@ -385,7 +385,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    OBS_PCP_COMBINE_COMMAND
-     Used only when :term:`OBS_PCP_COMBINE_METHOD` = CUSTOM. Custom command to run PcpCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for forecast data called :term:`FCST_PCP_COMBINE_COMMAND`.
+     Used only when OBS_PCP_COMBINE_METHOD = CUSTOM. Custom command to run PcpCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for forecast data called :term:`FCST_PCP_COMBINE_COMMAND`.
 
      | *Used by:* PcpCombine
      | *Family:* [config]
@@ -406,7 +406,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    CUSTOM_INGEST_<n>_OUTPUT_GRID
-     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the grid information that RegridDataPlane will use to generate a file that can be read by the MET tools. This can be a file path or a grid definition. See the MET User's Guide section regarding Regrid-Data-Plane for more information. See also :term:`CUSTOM_INGEST_<n>_TYPE`, :term:`CUSTOM_INGEST_<n>_SCRIPT`, :term:`CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`CUSTOM_INGEST_<n>_OUTPUT_DIR`.
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the grid information that RegridDataPlane will use to generate a file that can be read by the MET tools. This can be a file path or a grid definition. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ section regarding Regrid-Data-Plane for more information. See also :term:`CUSTOM_INGEST_<n>_TYPE`, :term:`CUSTOM_INGEST_<n>_SCRIPT`, :term:`CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`CUSTOM_INGEST_<n>_OUTPUT_DIR`.
 
      | *Used by:* CustomIngest
      | *Family:* [config]
@@ -518,77 +518,77 @@ METplus Configuration Glossary
      | *Default:* None
 
    ASCII2NC_TIME_SUMMARY_FLAG
-     Boolean value to turn on/off time summarization. Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the MET User's Guide section regarding Ascii2Nc configuration for more information.
+     Boolean value to turn on/off time summarization. Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ section regarding Ascii2Nc configuration for more information.
 
      | *Used by:* Ascii2Nc
      | *Family:* [config]
      | *Default:* False
 
    ASCII2NC_TIME_SUMMARY_RAW_DATA
-     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the MET User's Guide section regarding Ascii2Nc configuration files for more information.
+     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ section regarding Ascii2Nc configuration files for more information.
 
      | *Used by:* Ascii2Nc
      | *Family:* [config]
      | *Default:* None
 
    ASCII2NC_TIME_SUMMARY_BEG
-     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the MET User's Guide section regarding Ascii2Nc configuration files for more information.
+     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ section regarding Ascii2Nc configuration files for more information.
 
      | *Used by:* Ascii2Nc
      | *Family:* [config]
      | *Default:* None
 
    ASCII2NC_TIME_SUMMARY_END
-     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the MET User's Guide section regarding Ascii2Nc configuration files for more information.
+     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ section regarding Ascii2Nc configuration files for more information.
 
      | *Used by:* Ascii2Nc
      | *Family:* [config]
      | *Default:* None
 
    ASCII2NC_TIME_SUMMARY_STEP
-     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the MET User's Guide section regarding Ascii2Nc configuration files for more information.
+     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ section regarding Ascii2Nc configuration files for more information.
 
      | *Used by:* Ascii2Nc
      | *Family:* [config]
      | *Default:* None
 
    ASCII2NC_TIME_SUMMARY_WIDTH
-     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the MET User's Guide section regarding Ascii2Nc configuration files for more information.
+     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ section regarding Ascii2Nc configuration files for more information.
 
      | *Used by:* Ascii2Nc
      | *Family:* [config]
      | *Default:* None
 
    ASCII2NC_TIME_SUMMARY_GRIB_CODES
-     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the MET User's Guide section regarding Ascii2Nc configuration files for more information.
+     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ section regarding Ascii2Nc configuration files for more information.
 
      | *Used by:* Ascii2Nc
      | *Family:* [config]
      | *Default:* None
 
    ASCII2NC_TIME_SUMMARY_VAR_NAMES
-     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the MET User's Guide section regarding Ascii2Nc configuration files for more information.
+     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ section regarding Ascii2Nc configuration files for more information.
 
      | *Used by:* Ascii2Nc
      | *Family:* [config]
      | *Default:* None
 
    ASCII2NC_TIME_SUMMARY_TYPES
-     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the MET User's Guide section regarding Ascii2Nc configuration files for more information.
+     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ section regarding Ascii2Nc configuration files for more information.
 
      | *Used by:* Ascii2Nc
      | *Family:* [config]
      | *Default:* None
 
    ASCII2NC_TIME_SUMMARY_VALID_FREQ
-     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the MET User's Guide section regarding Ascii2Nc configuration files for more information.
+     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ section regarding Ascii2Nc configuration files for more information.
 
      | *Used by:* Ascii2Nc
      | *Family:* [config]
      | *Default:* None
 
    ASCII2NC_TIME_SUMMARY_VALID_THRESH
-     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the MET User's Guide section regarding Ascii2Nc configuration files for more information.
+     Read by the Ascii2Nc configuration file if specified by :term:`ASCII2NC_CONFIG_FILE`. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ section regarding Ascii2Nc configuration files for more information.
 
      | *Used by:* Ascii2Nc
      | *Family:* [config]
@@ -692,7 +692,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    POINT_STAT_CLIMO_STDEV_INPUT_DIR
-     Directory containing the climatology standard deviation file used by PointStat. This variable is optional because you can specify the full path to a climatology file using POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE.
+     Directory containing the climatology standard deviation file used by PointStat. This variable is optional because you can specify the full path to a climatology file using :term:`POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE`.
 
      | *Used by:* PointStat
      | *Family:* [dir]
@@ -872,7 +872,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_DEMO_YR` instead.
 
    TCMPR_PLOTTER_DEMO_YR
-     The demo year. This is an optional value used by the plot_TCMPR.R script, (which is wrapped by TCMPRPlotter). Please refer to the MET User's Guide for more details.
+     The demo year. This is an optional value used by the plot_TCMPR.R script, (which is wrapped by TCMPRPlotter). Please refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more details.
 
      | *Used by:*  TCMPRPlotter
      | *Family:*  [config]
@@ -882,7 +882,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_DEP_VARS` instead.
 
    TCMPR_PLOTTER_DEP_VARS
-     Corresponds to the optional flag -dep in the plot_TCMPR.R script, which is wrapped by TCMPRPlotter. The value to this flag is a comma-separated list (no whitespace) of dependent variable columns to plot ( e.g. AMSLP-BMSLP, AMAX_WIND-BMAX_WIND, TK_ERR). If this is undefined, then the default plot for TK_ERR (track error) is generated. Note, if you want the track error plot generated, in addition to other plots, then you need to explicitly list this with the other variables. Please refer to the MET User's Guide for more details.
+     Corresponds to the optional flag -dep in the plot_TCMPR.R script, which is wrapped by TCMPRPlotter. The value to this flag is a comma-separated list (no whitespace) of dependent variable columns to plot ( e.g. AMSLP-BMSLP, AMAX_WIND-BMAX_WIND, TK_ERR). If this is undefined, then the default plot for TK_ERR (track error) is generated. Note, if you want the track error plot generated, in addition to other plots, then you need to explicitly list this with the other variables. Please refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more details.
 
      | *Used by:*  TCMPRPlotter
      | *Family:*  [config]
@@ -972,21 +972,21 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_REGRID_TO_GRID`.
 
    ENSEMBLE_STAT_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET EnsembleStat config file. See the MET User's Guide for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET EnsembleStat config file. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:* NONE
 
    GRID_STAT_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET GridStat config file. See the MET User's Guide for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET GridStat config file. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  GridStat
      | *Family:*  [config]
      | *Default:* NONE
 
    POINT_STAT_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET PointStat config file. See the MET User's Guide for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET PointStat config file. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  PointStat
      | *Family:*  [config]
@@ -997,21 +997,21 @@ METplus Configuration Glossary
 
 
    MODE_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET MODE config file. See the MET User's Guide for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET MODE config file. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:* NONE
 
    MTD_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET MTD config file. See the MET User's Guide for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET MTD config file. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  MTD
      | *Family:*  [config]
      | *Default:* NONE
 
    SERIES_ANALYSIS_REGRID_TO_GRID
-     Used to set the regrid dictionary item 'to_grid' in the MET SeriesAnalysis config file. See the MET User's Guide for more information.
+     Used to set the regrid dictionary item 'to_grid' in the MET SeriesAnalysis config file. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  SeriesByLead, SeriesByInit
      | *Family:*  [config]
@@ -1146,7 +1146,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    EXTRACT_TILES_VAR_LIST
-     Control what variables the METplus extract_tiles utility runs on. Additional filtering by summary (via the MET tc_stat tool). Please refer to the MET Users Guide (TC-STAT Tools) for all the available options for filtering by summary method in tc-stat. If no additional filtering is required, simply leave the value to :term:`EXTRACT_TILES_FILTER_OPTS` blank/empty in the METplus configuration file.
+     Control what variables the METplus extract_tiles utility runs on. Additional filtering by summary (via the MET tc_stat tool). Please refer to the `MET Users Guide <https://dtcenter.org/sites/default/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ (TC-STAT Tools) for all the available options for filtering by summary method in tc-stat. If no additional filtering is required, simply leave the value to :term:`EXTRACT_TILES_FILTER_OPTS` blank/empty in the METplus configuration file.
 
      | *Used by:*  ExtractTiles
      | *Family:*  [config]
@@ -1451,7 +1451,7 @@ METplus Configuration Glossary
      | *Default:* Varies
 
    FCST_PCP_COMBINE_INPUT_DATATYPE
-     Specify the data type of the input directory for forecast files used with the MET pcp_combine tool. Currently valid options are NETCDF, GRIB, and GEMPAK. Required by pcp_combine if :term:`FCST_PCP_COMBINE_RUN` is True. Replaces deprecated variable :term:`FCST_NATIVE_DATA_TYPE`. A corresponding variable exists for observation data called OBS_PCP_COMBINE_INPUT_DATATYPE.
+     Specify the data type of the input directory for forecast files used with the MET pcp_combine tool. Currently valid options are NETCDF, GRIB, and GEMPAK. Required by pcp_combine if :term:`FCST_PCP_COMBINE_RUN` is True. Replaces deprecated variable :term:`FCST_NATIVE_DATA_TYPE`. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_DATATYPE`.
 
      | *Used by:*  PcpCombine
      | *Family:*  [config]
@@ -1543,7 +1543,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_TIMES_PER_FILE
-     Specify the number of accumulation intervals of the forecast dataset used by the MET pcp_combine tool when processing daily input files. A corresponding variable exists for observation data called OBS_PCP_COMBINE_TIMES_PER_FILE.
+     Specify the number of accumulation intervals of the forecast dataset used by the MET pcp_combine tool when processing daily input files. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_TIMES_PER_FILE`.
 
      | *Used by:*  PcpCombine
      | *Family:*  [config]
@@ -1644,14 +1644,14 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_THRESH_LIST` instead.
 
    FCST_THRESH_LIST
-     Specify the values of the FCST_THRESH column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the FCST_THRESH column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
      | *Default:* None
 
    OBS_THRESH_LIST
-     Specify the values of the OBS_THRESH column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the OBS_THRESH column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
@@ -1677,7 +1677,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_LEVEL_LIST` instead.
 
    FCST_LEVEL_LIST
-     Specify the values of the FCST_LEV column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the FCST_LEV column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
@@ -1687,14 +1687,14 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_VAR_LIST` instead.
 
    FCST_VAR_LIST
-     Specify the values of the FCST_VAR column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the FCST_VAR column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
      | *Default:*  None
 
    FCST_UNITS_LIST
-     Specify the values of the FCST_UNITS column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the FCST_UNITS column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
@@ -1731,7 +1731,7 @@ METplus Configuration Glossary
 
      See :ref:`Field_Info` for more information.
 
-     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the MET User's Guide for more information about Python Embedding in the MET tools.
+     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information about Python Embedding in the MET tools.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]
@@ -2260,28 +2260,28 @@ METplus Configuration Glossary
      | *Default:* False
 
    GRID_STAT_NEIGHBORHOOD_WIDTH
-     Sets the neighborhood width used by GridStat. See MET User's Guide for more information.
+     Sets the neighborhood width used by GridStat. See `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  GridStat
      | *Family:*  [config]
      | *Default:* 1
 
    GRID_STAT_NEIGHBORHOOD_SHAPE
-     Sets the neighborhood shape used by GridStat. See MET User's Guide for more information.
+     Sets the neighborhood shape used by GridStat. See `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  GridStat
      | *Family:*  [config]
      | *Default:* 1
 
    POINT_STAT_NEIGHBORHOOD_WIDTH
-     Sets the neighborhood width used by PointStat. See MET User's Guide for more information.
+     Sets the neighborhood width used by PointStat. See `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  PointStat
      | *Family:*  [config]
      | *Default:* 1
 
    POINT_STAT_NEIGHBORHOOD_SHAPE
-     Sets the neighborhood shape used by PointStat. See MET User's Guide for more information.
+     Sets the neighborhood shape used by PointStat. See `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  PointStat
      | *Family:*  [config]
@@ -2312,7 +2312,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    HFIP_BASELINE
-     .. warning:: **DEPRECATED:** Please use TCMPR_PLOTTER_HFIP_BASELINE instead.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_HFIP_BASELINE` instead.
 
    TCMPR_PLOTTER_HFIP_BASELINE
      Corresponds to the optional -hfip_bsln flag in the plot_TCMPR.R script which is wrapped by TCMPRPlotter. This is a string that indicates whether to add the HFIP baseline, and indicates the version (no, 0, 5, 10 year goal).
@@ -2427,7 +2427,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`STAT_ANALYSIS_JOB_ARGS` instead.
 
    STAT_ANALYSIS_JOB_ARGS
-     Specify stat_analysis job arguments to run. The job agruments that are to be run with the cooresponding :term:`STAT_ANALYSIS_JOB_NAME`. If using -dump_row, use -dump_row [dump_row_filename]. If using -out_stat, -out_stat [out_stat_filename]. For more information on these job agruments, please see the MET Users Guide.
+     Specify stat_analysis job arguments to run. The job arguments that are to be run with the coresponding :term:`STAT_ANALYSIS_JOB_NAME`. If using -dump_row, use -dump_row [dump_row_filename]. If using -out_stat, -out_stat [out_stat_filename]. For more information on these job arguments, please see the `MET Users Guide <https://dtcenter.org/sites/default/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
@@ -2437,7 +2437,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`STAT_ANALYSIS_JOB_NAME` instead.
 
    STAT_ANALYSIS_JOB_NAME
-     Specify stat_analysis job name to run. Valid options are filter, summary, aggregate, aggregate_stat, go_index, and ramp. For more information on these job names and what they do, please see the MET Users Guide.
+     Specify stat_analysis job name to run. Valid options are filter, summary, aggregate, aggregate_stat, go_index, and ramp. For more information on these job names and what they do, please see the `MET Users Guide <https://dtcenter.org/sites/default/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
@@ -2530,7 +2530,7 @@ METplus Configuration Glossary
 
 
    LINE_TYPE_LIST
-     Specify the MET STAT line types to be considered. For TCMPRPlotter, this is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the MET STAT line types to be considered. For TCMPRPlotter, this is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  MakePlots, StatAnalysis, TCMPRPlotter
      | *Family:*  [config]
@@ -2587,7 +2587,7 @@ METplus Configuration Glossary
      | *Default:*  %Y%m%d
 
    LOG_TIMESTAMP_USE_DATATIME
-     True/False. Determines which time to use for the log filenames. If True, use :term:`INIT_BEG` if :term:`LOOP_BY` is INIT or :term:`VALID_BEG` if LOOP_BY is VALID. If False, use current time.
+     True/False. Determines which time to use for the log filenames. If True, use :term:`INIT_BEG` if LOOP_BY is INIT or :term:`VALID_BEG` if LOOP_BY is VALID. If False, use current time.
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -2604,7 +2604,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_LON_ADJ` instead.
 
    LOOP_BY
-     Control whether the analysis is processed across valid or initialization times. See .. :ref:`LOOP_BY_ref` for more information.
+     Control whether the analysis is processed across valid or initialization times. See section :ref:`LOOP_BY_ref` for more information.
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -2757,7 +2757,7 @@ METplus Configuration Glossary
      | *Default:*
 
    MODE_CONV_THRESH
-     Comma separated list of convolution threshold values used by mode for both forecast and observation fields. Has the same behavior as setting FCST_MODE_CONV_THRESH and OBS_MODE_CONV_THRESH to the same value.
+     Comma separated list of convolution threshold values used by mode for both forecast and observation fields. Has the same behavior as setting :term:`FCST_MODE_CONV_THRESH` and :term:`OBS_MODE_CONV_THRESH` to the same value.
 
      | *Used by:*  Mode
      | *Family:*  [config]
@@ -2813,7 +2813,7 @@ METplus Configuration Glossary
      | *Default:*  >0.45
 
    MODE_OBS_CONV_RADIUS
-     .. warning:: **DEPRECATED:** Please see `MET Users Guide <https://ncar.github.io/METplus/Users_Guide/glossary.html#term-obs-mode-conv-radius>` instead.
+     .. warning:: **DEPRECATED:** Please see `MET Users Guide <https://dtcenter.org/sites/default/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ instead.
 
    MODE_OBS_CONV_THRESH
      .. warning:: **DEPRECATED:** Please use :term:`OBS_MODE_CONV_THRESH` instead.
@@ -2887,7 +2887,7 @@ METplus Configuration Glossary
      | *Default:*  5
 
    MTD_MIN_VOLUME
-     Sets min_volume in the MET Mode-TD config file. Refer to the MET User's Guide for more information.
+     Sets min_volume in the MET Mode-TD config file. Refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:* MTD
      | *Family:*  [config]
@@ -2942,7 +2942,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    MTD_OUTPUT_TEMPLATE
-     Sets the subdirectories below MTD_OUTPUT_DIR using a template to allow run time information. If LOOP_BY = VALID, default value is valid time YYYYMMDDHHMM/mtd. If LOOP_BY = INIT, default value is init time YYYYMMDDHHMM/mtd.
+     Sets the subdirectories below :term:`MTD_OUTPUT_DIR` using a template to allow run time information. If LOOP_BY = VALID, default value is valid time YYYYMMDDHHMM/mtd. If LOOP_BY = INIT, default value is init time YYYYMMDDHHMM/mtd.
 
      | *Used by:* MTD
      | *Family:*  [filename_templates]
@@ -3002,7 +3002,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_NO_LOG` instead.
 
    TCMPR_PLOTTER_NO_LOG
-     Set the :term:`NO_LOG` flag for the TC Matched Pairs plotting utility.Acceptable values: yes/no
+     Set the NO_LOG flag for the TC Matched Pairs plotting utility.Acceptable values: yes/no
 
      | *Used by:*  TCMPRPlotter
      | *Family:*  [config]
@@ -3070,42 +3070,42 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by EnsembleStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by EnsembleStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:* :term:`OBS_FILE_WINDOW_BEGIN`
 
    OBS_ENSEMBLE_STAT_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by EnsembleStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by EnsembleStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:* :term:`OBS_FILE_WINDOW_END`
 
    OBS_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN` is set, the GridStat wrapper will use that value. If :term:`PB2NC_FILE_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use :term:`OBS_FILE_WINDOW_BEGIN`.A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_BEGIN`.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN` is set, the GridStat wrapper will use that value. If :term:`PB2NC_FILE_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use :term:`OBS_FILE_WINDOW_BEGIN`.A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_BEGIN`.
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_WINDOW_END` is set, the GridStat wrapper will use that value. If :term:`PB2NC_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_END`.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_WINDOW_END` is set, the GridStat wrapper will use that value. If :term:`PB2NC_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_END`.
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_GRID_STAT_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by GridStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by GridStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  GridStat
      | *Family:*  [config]
      | *Default:* :term:`OBS_FILE_WINDOW_BEGIN`
 
    OBS_GRID_STAT_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by GridStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If :term:`OBS_GRID_STAT_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by GridStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_GRID_STAT_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  GridStat
      | *Family:*  [config]
@@ -3192,14 +3192,14 @@ METplus Configuration Glossary
      | *Default:*
 
    OBS_MODE_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by Mode. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If :term:`OBS_MODE_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by Mode. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_MODE_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  Mode
      | *Family:*  [config]
      | *Default:* :term:`OBS_FILE_WINDOW_BEGIN`
 
    OBS_MODE_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by Mode. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If :term:`OBS_MODE_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by Mode. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_MODE_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  Mode
      | *Family:*  [config] | *Default:* :term:`OBS_FILE_WINDOW_END`
@@ -3254,14 +3254,14 @@ METplus Configuration Glossary
      | *Default:*
 
    OBS_MTD_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by MTD. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If :term:`OBS_MTD_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by MTD. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_MTD_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*
      | *Family:*  [config]
      | *Default:* :term:`OBS_FILE_WINDOW_BEGIN`
 
    OBS_MTD_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by MTD. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If :term:`OBS_MTD_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by MTD. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_MTD_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:* MTD
      | *Family:*  [config]
@@ -3413,14 +3413,14 @@ METplus Configuration Glossary
      | *Default:*
 
    OBS_POINT_STAT_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by PointStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If :term:`OBS_POINT_STAT_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by PointStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_POINT_STAT_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  PointStat
      | *Family:*  [config]
      | *Default:* :term:`OBS_FILE_WINDOW_BEGIN`
 
    OBS_POINT_STAT_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by PointStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If :term:`OBS_POINT_STAT_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by PointStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_POINT_STAT_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  PointStat
      | *Family:*  [config]
@@ -3608,7 +3608,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`OBS_LEVEL_LIST` instead.
 
    OBS_LEVEL_LIST
-     Specify the values of the OBS_LEV column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the OBS_LEV column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
@@ -3625,7 +3625,7 @@ METplus Configuration Glossary
      | *Default:*  None
 
    OBS_UNITS_LIST
-     Specify the values of the OBS_UNITS column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
+     Specify the values of the OBS_UNITS column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
@@ -3660,7 +3660,7 @@ METplus Configuration Glossary
      | ...
      | OBS_VAR<n>_NAME
 
-     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the MET User's Guide for more information about Python Embedding in the MET tools.
+     This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information about Python Embedding in the MET tools.
 
      | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
      | *Family:*  [config]
@@ -3756,14 +3756,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    PB2NC_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by PB2NC. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If :term:`PB2NC_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by PB2NC. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`PB2NC_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  PB2NC
      | *Family:*  [config]
      | *Default:* :term:`OBS_FILE_WINDOW_BEGIN`
 
    PB2NC_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by PB2NC. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Use Windows to Find Valid Files.' Units are seconds. If :term:`PB2NC_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by PB2NC. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`PB2NC_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
      | *Used by:*  PB2NC
      | *Family:*  [config]
@@ -3847,28 +3847,28 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    PB2NC_TIME_SUMMARY_FLAG
-     Specify the time summary flag item in the MET pb2nc config file. Refer to the MET User's Guide for more information.
+     Specify the time summary flag item in the MET pb2nc config file. Refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  PB2NC
      | *Family:*  [config]
      | *Default:*  Varies
 
    PB2NC_TIME_SUMMARY_BEG
-     Specify the time summary beg item in the MET pb2nc config file. Refer to the MET User's Guide for more information.
+     Specify the time summary beg item in the MET pb2nc config file. Refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  PB2NC
      | *Family:*  [config]
      | *Default:*  Varies
 
    PB2NC_TIME_SUMMARY_END
-     Specify the time summary end item in the MET pb2nc config file. Refer to the MET User's Guide for more information.
+     Specify the time summary end item in the MET pb2nc config file. Refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  PB2NC
      | *Family:*  [config]
      | *Default:*  Varies
 
    PB2NC_TIME_SUMMARY_VAR_NAMES
-     Specify the time summary obs_var list item in the MET pb2nc config file. Refer to the MET User's Guide for more information.
+     Specify the time summary obs_var list item in the MET pb2nc config file. Refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  PB2NC
      | *Family:*  [config]
@@ -3881,7 +3881,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_TYPES` instead.
 
    PB2NC_TIME_SUMMARY_TYPES
-     Specify the time summary type list item in the MET pb2nc config file. Refer to the MET User's Guide for more information.
+     Specify the time summary type list item in the MET pb2nc config file. Refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  PB2NC
      | *Family:*  [config]
@@ -4070,7 +4070,7 @@ METplus Configuration Glossary
      | *Default:*  None
 
    REGRID_DATA_PLANE_METHOD
-     Sets the method used by regrid_data_plane. See MET User's Guide for more information.
+     Sets the method used by regrid_data_plane. See `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  RegridDataPlane
      | *Family:*  [config]
@@ -4084,7 +4084,7 @@ METplus Configuration Glossary
      | *Default:*  False
 
    REGRID_DATA_PLANE_WIDTH
-     Sets the width used by regrid_data_plane. See MET User's Guide for more information.
+     Sets the width used by regrid_data_plane. See `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  RegridDataPlane
      | *Family:*  [config]
@@ -4188,7 +4188,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_CONFIG_FILE` instead.
 
    SERIES_ANALYSIS_FILTER_OPTS
-     Filtering options to be applied during series analysis. Filter options are performed by invoking the MET tc_stat tool within the METplus wrapper. Refer to the MET User's Guide for the syntax to use for performing filtering via the MET tc_stat tool.
+     Filtering options to be applied during series analysis. Filter options are performed by invoking the MET tc_stat tool within the METplus wrapper. Refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for the syntax to use for performing filtering via the MET tc_stat tool.
 
      | *Used by:*  SeriesByLead, SeriesByInit
      | *Family:*  [config]
@@ -4412,7 +4412,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_PAIRS_BASIN
-     Control what basins are desired for tropical cyclone analysis.Per the MET users' guide, acceptable basin ID's are:WP = Western Northern PacificIO = Northern Indian OceanSH = Southern HemisphereCP = Central Northern PacificEP = Eastern Northern PacificAL = Northern AtlanticSL = Southern Atlantic
+     Control what basins are desired for tropical cyclone analysis. Per the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_, acceptable basin ID's are:WP = Western Northern PacificIO = Northern Indian OceanSH = Southern HemisphereCP = Central Northern PacificEP = Eastern Northern PacificAL = Northern AtlanticSL = Southern Atlantic
 
      | *Used by:*  TcPairs
      | *Family:* [config]
@@ -4440,14 +4440,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_PAIRS_CYCLONE
-     Specify which cyclone numbers to include in the tropical cyclone analysis. Per the MET users' guide, this can be any number 01-99 (HH format). Use a space or comma separated list, or leave unset if all cyclones are desired.
+     Specify which cyclone numbers to include in the tropical cyclone analysis. Per the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_, this can be any number 01-99 (HH format). Use a space or comma separated list, or leave unset if all cyclones are desired.
 
      | *Used by:*  TcPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_PAIRS_DLAND_FILE
-     The file generated by the MET tool tc_dland, containing the gridded representation of the minimum distance to land. Please refer to the MET User's Guide for more information about the tc_dland tool.
+     The file generated by the MET tool tc_dland, containing the gridded representation of the minimum distance to land. Please refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information about the tc_dland tool.
 
      | *Used by:*  TcPairs
      | *Family:*  [config]
@@ -4471,7 +4471,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_OUTPUT_DIR`.
 
    TC_PAIRS_FORCE_OVERWRITE
-     .. warning:: **DEPRECATED:** Please use TC_PAIRS_SKIP_IF_OUTPUT_EXISTS.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_SKIP_IF_OUTPUT_EXISTS`.
 
    TC_PAIRS_MODEL
      .. warning:: **DEPRECATED:** Please use :term:`MODEL` instead.
@@ -4505,7 +4505,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_PAIRS_READ_ALL_FILES
-     Specify whether to pass the value specified in TC_PAIRS_[A/B/E]DECK_INPUT_DIR to the MET tc_pairs utility or have the wrapper search for valid files in that directory based on the value of TC_PAIRS_[A/B/E]DECK_TEMPLATE and pass them individually to tc_pairs. Set to false or no to have the wrapper find valid files. This can speed up execution time of tc_pairs.Acceptable values: yes/no
+     Specify whether to pass the value specified in :term:`TC_PAIRS_ADECK_INPUT_DIR`, :term:`TC_PAIRS_BDECK_INPUT_DIR` and  :term:`TC_PAIRS_EDECK_INPUT_DIR`  to the MET tc_pairs utility or have the wrapper search for valid files in that directory based on the value of :term:`TC_PAIRS_ADECK_TEMPLATE`, :term:`TC_PAIRS_BDECK_TEMPLATE` and  :term:`TC_PAIRS_EDECK_TEMPLATE` and pass them individually to tc_pairs. Set to false or no to have the wrapper find valid files. This can speed up execution time of tc_pairs.Acceptable values: yes/no
 
      | *Used by:*  TcPairs
      | *Family:*  [config]
@@ -4561,28 +4561,28 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_AMODEL
-     Specify the :term:`AMODEL` for the MET tc_stat tool.
+     Specify the AMODEL for the MET tc_stat tool.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_BASIN
-     Specify the :term:`BASIN` for the MET tc_stat tool.
+     Specify the BASIN for the MET tc_stat tool.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_BMODEL
-     Specify the :term:`BMODEL` for the MET tc_stat tool.
+     Specify the BMODEL for the MET tc_stat tool.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_CMD_LINE_JOB
-     Specify expression(s) that will be passed to the MET tc_stat tool via the command line. Only specify if TC_STAT_RUN_VIA=CLI. Please refer to the MET User's Guide chapter for tc-stat for the details on performing job summaries and job filters.
+     Specify expression(s) that will be passed to the MET tc_stat tool via the command line. Only specify if TC_STAT_RUN_VIA=CLI. Please refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ chapter for tc-stat for the details on performing job summaries and job filters.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4680,21 +4680,21 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_INIT_MASK
-     This corresponds to the INIT_MASK keyword in the MET tc_stat config file. For more information, please refer to the MET User's Guide.
+     This corresponds to the INIT_MASK keyword in the MET tc_stat config file. For more information, please refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ .
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INIT_STR_NAME
-     This corresponds to the INIT_STR_NAME keyword in the MET tc_stat config file. Please refer to  the MET User's Guide for more details.
+     This corresponds to the INIT_STR_NAME keyword in the MET tc_stat config file. Please refer to  the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more details.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INIT_STR_VAL
-     This corresponds to the INIT_STR_VAL keyword in the MET tc_stat config file. Please refer to the MET User's Guide for more information.
+     This corresponds to the INIT_STR_VAL keyword in the MET tc_stat config file. Please refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4820,7 +4820,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_VALID_HOUR
-     This corresponds to the VALID_HOUR keyword in the MET tc_stat config file. For more information, please refer to the MET User's Guide.
+     This corresponds to the VALID_HOUR keyword in the MET tc_stat config file. For more information, please refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4834,7 +4834,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_VALID_MASK
-     This corresponds to the VALID_MASK in the MET tc_stat config file. Please refer to the MET User's Guide for more information.
+     This corresponds to the VALID_MASK in the MET tc_stat config file. Please refer to the `MET Users Guide <https://dtcenter.org/sites/defau\lt/files/community-code/met/docs/user-guide/MET_Users_Guide_v8.1.2.pdf>`_ for more information.
 
      | *Used by:*  TcStat
      | *Family:*  [config]
@@ -4883,7 +4883,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_READ_ALL_FILES`.
 
    TRACK_DATA_DIR
-     .. warning:: **DEPRECATED:** Please use TC_PAIRS_[A/B/E]DECK_INPUT_DIR.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_ADECK_INPUT_DIR`, :term:`TC_PAIRS_BDECK_INPUT_DIR` and :term:`TC_PAIRS_EDECK_INPUT_DIR`.
 
    TRACK_DATA_MOD_FORCE_OVERWRITE
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_SKIP_IF_REFORMAT_EXISTS`.
