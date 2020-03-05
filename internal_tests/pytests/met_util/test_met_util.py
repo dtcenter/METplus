@@ -466,7 +466,7 @@ def test_get_lead_sequence_lead_list(key, value):
         ('begin_end_incr(0,10800,3600)S, 4H',  [ '0S', '3600S', '7200S', '10800S', '4H']),
     ]
 )
-def test_getlist(key, value):
+def test_getlist_begin_end_incr(key, value):
     assert(util.getlist(key) == value)
 
 # @pytest.mark.parametrize(
