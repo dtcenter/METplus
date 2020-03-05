@@ -367,14 +367,14 @@ A list of text strings can be defined in the METplus wrappers configuration file
   [filename_templates]
   FCST_PCP_COMBINE_INPUT_TEMPLATE = {custom?fmt=%s}/{valid?fmt=%Y%m%d}.nc
 
-This configuration will run the following::
+This configuration will run the following:
 
-  * PCPCombine at 2019-02-01 reading from /d1/ensemble/mem_001/20190201.nc
-  * PCPCombine at 2019-02-01 reading from /d1/ensemble/mem_002/20190201.nc
-  * PCPCombine at 2019-02-02 reading from /d1/ensemble/mem_001/20190202.nc
-  * PCPCombine at 2019-02-02 reading from /d1/ensemble/mem_002/20190202.nc
-  * PCPCombine at 2019-02-03 reading from /d1/ensemble/mem_001/20190203.nc
-  * PCPCombine at 2019-02-03 reading from /d1/ensemble/mem_002/20190203.nc
+* PCPCombine at 2019-02-01 reading from /d1/ensemble/mem_001/20190201.nc
+* PCPCombine at 2019-02-01 reading from /d1/ensemble/mem_002/20190201.nc
+* PCPCombine at 2019-02-02 reading from /d1/ensemble/mem_001/20190202.nc
+* PCPCombine at 2019-02-02 reading from /d1/ensemble/mem_002/20190202.nc
+* PCPCombine at 2019-02-03 reading from /d1/ensemble/mem_001/20190203.nc
+* PCPCombine at 2019-02-03 reading from /d1/ensemble/mem_002/20190203.nc
 
 
 **Example 2 Configuration** (Using different MET config files)::
@@ -388,19 +388,19 @@ This configuration will run the following::
 
   SERIES_ANALYSIS_CUSTOM_LOOP_LIST = one, two
 
-  SERIES_ANALYSIS_CONFIG_FILE = {CONFIG_DIR}/SeriesAnalysisConfig_{custom?fmt=%s}
+  SERIES_ANALYSIS_CONFIG_FILE = {CONFIG_DIR}/SAConfig_{custom?fmt=%s}
 
   [dir]
-  SERIES_ANALYSIS_OUTPUT_DIR = {OUTPUT_BASE}/SeriesAnalysis/{custom?fmt=%s}
+  SERIES_ANALYSIS_OUTPUT_DIR = {OUTPUT_BASE}/SA/{custom?fmt=%s}
 
-This configuration will run SeriesAnalysis::
+This configuration will run SeriesAnalysis:
 
-  * At 2019-02-01 using SeriesAnalysisConfig_one config file and writing output to SeriesAnalysis/one
-  * At 2019-02-01 using SeriesAnalysisConfig_two config file and writing output to SeriesAnalysis/two
-  * At 2019-02-02 using SeriesAnalysisConfig_one config file and writing output to SeriesAnalysis/one
-  * At 2019-02-02 using SeriesAnalysisConfig_two config file and writing output to SeriesAnalysis/two
-  * At 2019-02-03 using SeriesAnalysisConfig_one config file and writing output to SeriesAnalysis/one
-  * At 2019-02-03 using SeriesAnalysisConfig_two config file and writing output to SeriesAnalysis/two
+* At 2019-02-01 using SAConfig_one config file and writing output to {OUTPUT_BASE}/SA/one
+* At 2019-02-01 using SAConfig_two config file and writing output to {OUTPUT_BASE}/SA/two
+* At 2019-02-02 using SAConfig_one config file and writing output to {OUTPUT_BASE}/SA/one
+* At 2019-02-02 using SAConfig_two config file and writing output to {OUTPUT_BASE}/SA/two
+* At 2019-02-03 using SAConfig_one config file and writing output to {OUTPUT_BASE}/SA/one
+* At 2019-02-03 using SAConfig_two config file and writing output to {OUTPUT_BASE}/SA/two
 
 
 .. _Field_Info:   
