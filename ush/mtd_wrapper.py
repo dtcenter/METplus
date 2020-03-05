@@ -123,6 +123,21 @@ class MTDWrapper(MODEWrapper):
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
+              over the list of user-defined strings and runs the application for each.
+              Overrides run_at_time in compare_gridded_wrapper.py
+              Args:
+                @param input_dict dictionary containing timing information
+        """
+        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+            if custom_string:
+                self.logger.info(f"Processing custom string: {custom_string}")
+
+            input_dict['custom'] = custom_string
+            self.run_at_time_loop_string(input_dict)
+
+
+    def run_at_time_loop_string(self, input_dict):
+        """! Runs the MET application for a given run time. This function loops
               over the list of forecast leads and runs the application for each.
               Overrides run_at_time in compare_gridded_wrapper.py
               Args:

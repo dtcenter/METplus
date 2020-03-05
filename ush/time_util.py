@@ -191,6 +191,10 @@ def ti_calculate(input_dict):
         out_dict['now'] = input_dict['now']
         out_dict['today'] = out_dict['now'].strftime('%Y%m%d')
 
+    # if custom is set in input dictionary, set it in the output dictionary
+    if 'custom' in input_dict.keys():
+        out_dict['custom'] = input_dict['custom']
+
     # read in input dictionary items and compute missing items
     # valid inputs: valid, init, lead, offset
 
