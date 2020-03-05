@@ -203,4 +203,4 @@ This use case will loop over run times and output information for each run regar
 # Keywords
 # --------
 #
-# .. note:: `Example Tool <https://ncar.github.io/METplus/search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_
+# .. note:: `ExampleToolUseCase <https://ncar.github.io/METplus/search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_

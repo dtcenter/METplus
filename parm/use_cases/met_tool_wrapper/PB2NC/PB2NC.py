@@ -122,4 +122,4 @@ This use case will run the MET PB2NC tool to convert prepBUFR point observation 
 # Keywords
 # --------
 #
-# .. note:: `PB2NCUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCUseCase&check_keywords=yes&area=default>`_
+# .. note:: `PB2NCToolUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_

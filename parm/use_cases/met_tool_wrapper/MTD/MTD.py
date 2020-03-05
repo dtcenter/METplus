@@ -129,4 +129,4 @@ This use case will run the MET MTD (MODE Time Domain) tool to compare gridded fo
 # Keywords
 # --------
 #
-# .. note:: `MTDUseCase <https://ncar.github.io/METplus/search.html?q=MTDUseCase&check_keywords=yes&area=default>`_
+# .. note:: `MTDToolUseCase <https://ncar.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_

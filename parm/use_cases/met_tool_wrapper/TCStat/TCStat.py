@@ -114,4 +114,4 @@ from a TCPairs run.
 # Keywords
 # --------
 #
-# .. note:: `TCStatUseCase <https://ncar.github.io/METplus/search.html?q=TCStatUseCase&check_keywords=yes&area=default>`_
+# .. note:: `TCStatToolUseCase <https://ncar.github.io/METplus/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_

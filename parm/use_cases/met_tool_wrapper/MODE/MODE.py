@@ -133,4 +133,4 @@ This use case will run the MET MODE tool to compare gridded forecast data to gri
 # Keywords
 # --------
 #
-# .. note:: `MODEUseCase <https://ncar.github.io/METplus/search.html?q=MODEUseCase&check_keywords=yes&area=default>`_
+# .. note:: `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_

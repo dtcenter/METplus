@@ -155,5 +155,5 @@ output files.
 # Keywords
 # --------
 #
-# .. note:: `StatAnalysisUseCase <https://ncar.github.io/METplus/search.html?q=StatAnalysisUseCase&check_keywords=yes&area=default>`_
+# .. note:: `StatAnalysisToolUseCase <https://ncar.github.io/METplus/search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
 

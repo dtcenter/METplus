@@ -129,4 +129,4 @@ point observation data.
 # Keywords
 # --------
 #
-# .. note:: `PointStatUseCase <https://ncar.github.io/METplus/search.html?q=PointStatUseCase&check_keywords=yes&area=default>`_
+# .. note:: `PointStatToolUseCase <https://ncar.github.io/METplus/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
