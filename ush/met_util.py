@@ -1660,6 +1660,23 @@ def get_dirs(base_dir):
 
     return dir_list
 
+def begin_end_incr_evaluate(item):
+    match = re.match(r'^(.*)begin_end_incr\(\s*(-*\d*),(-*\d*),(-*\d*)\s*\)(.*)$',
+                     item)
+    if match:
+        before = match.group(1)
+        after = match.group(5)
+        start = int(match.group(2))
+        end = int(match.group(3))
+        step = int(match.group(4))
+        if start <= end:
+            int_list = range(start, end+1, step)
+        else:
+            int_list = range(start, end-1, step)
+
+        return [f"{before}{str(out_str)}{after}" for out_str in int_list]
+
+    return None
 
 def getlist(list_str, logger=None):
     """! Returns a list of string elements from a comma
@@ -1681,25 +1698,18 @@ def getlist(list_str, logger=None):
     # remove space around commas
     list_str = re.sub(r'\s*,\s*', ',', list_str)
 
-    # support beg, end, step to generate a int list
-    # begin_end_incr(0, 10, 2) will create a list of 0, 2, 4, 6, 8, 10 (inclusive)
-    match = re.match(r'^begin_end_incr\(\s*(-*\d*),(-*\d*),(-*\d*)\s*\)$', list_str)
-    if match:
-        start = int(match.group(1))
-        end = int(match.group(2))
-        step = int(match.group(3))
-        if start <= end:
-            int_list = range(start, end+1, step)
-        else:
-            int_list = range(start, end-1, step)
-
-        return list(map(lambda int_list: str(int_list), int_list))
+    # find begin_end_incr and any text before and after that are not a comma
+    matches = re.findall(r'([^,]*begin_end_incr\(\s*-*\d*,-*\d*,-*\d*\s*\)[^,]*)',
+                       list_str)
+    for match in matches:
+        item_list = begin_end_incr_evaluate(match)
+        if item_list:
+            list_str = list_str.replace(match, ','.join(item_list))
 
     # use csv reader to divide comma list while preserving strings with comma
-    list_str = reader([list_str])
     # convert the csv reader to a list and get first item (which is the whole list)
-    list_str = list(list_str)[0]
-    return list_str
+    item_list = list(reader([list_str]))[0]
+    return item_list
 
 def getlistfloat(list_str):
     """!Get list and convert all values to float"""
