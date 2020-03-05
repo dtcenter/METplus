@@ -49,8 +49,8 @@ from two runs of the GloTEC model.
 # | Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-space_weather-3.0.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
-# | **Data Source:** NOAA Space Weather Prediction Center (SWPC)
-# | Data contact: Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
+# | **Data source:** NOAA Space Weather Prediction Center (SWPC)
+# | **Data contact:** Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
 #
 
 ##############################################################################
