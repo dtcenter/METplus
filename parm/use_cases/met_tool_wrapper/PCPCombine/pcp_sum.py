@@ -106,4 +106,4 @@ This use case will run the MET PCPCombine tool in SUM mode to build a 15 minute 
 # Keywords
 # --------
 #
-# .. note:: `PCPCombineUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>`_
+# .. note:: `PCPCombineToolUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_

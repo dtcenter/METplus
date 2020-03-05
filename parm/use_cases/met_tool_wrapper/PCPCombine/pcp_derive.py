@@ -109,4 +109,4 @@ This use case will run the MET PCPCombine tool in DERIVE mode to generate statis
 # Keywords
 # --------
 #
-# .. note:: `PCPCombineUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>`_
+# .. note:: `PCPCombineToolUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_

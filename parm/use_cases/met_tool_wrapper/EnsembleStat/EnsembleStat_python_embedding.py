@@ -130,4 +130,4 @@ forecast data to gridded AND point observation data. The input data is read in v
 # Keywords
 # --------
 #
-# .. note:: `EnsembleStat Tool <https://ncar.github.io/METplus/search.html?q=EnsembleStatUseCase&check_keywords=yes&area=default>`_, `Python Embedding <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>`_
+# .. note:: `EnsembleStatToolUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_, `PythonEmbeddingFileUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
