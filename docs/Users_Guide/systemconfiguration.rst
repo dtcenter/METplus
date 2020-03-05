@@ -348,7 +348,7 @@ will run in the following order::
 Custom Looping
 ~~~~~~~~~~~~~~
 
-A list of text strings can be defined in the METplus wrappers configuration files to allow each wrapper to process data multiple times for each run time. The strings can be referenced in various places in the METplus configuration files to change input/output file paths, configuration file paths, and more. The value of each list item can be referenced by using {custom?fmt=%s}.
+A list of text strings can be defined in the METplus wrappers configuration files to allow each wrapper to process data multiple times for each run time. The strings can be referenced in various places in the METplus configuration files to change input/output file paths, configuration file paths, and more. The value of each list item can be referenced in the METplus configuration variables by using {custom?fmt=%s}. The variable CUSTOM_LOOP_LIST will apply the values to each wrapper in the PROCESS_LIST unless the wrapper does not support this functionality (i.e. CyclonePlotter and StatAnalysis). If the variable is not set or set to an empty string, the wrapper will execute as normal without additional runs. The name of the wrapper-specific variables contain the name of the wrapper, i.e. SERIES_ANALYSIS_CUSTOM_LOOP_LIST, PCP_COMBINE_CUSTOM_LOOP_LIST, GRID_STAT_CUSTOM_LOOP_LIST, etc. Setting these variables will override the value set for CUSTOM_LOOP_LIST for that wrapper only.
 
 **Example 1 Configuration** (Reading different ensembles)::
 
