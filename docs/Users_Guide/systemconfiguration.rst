@@ -343,6 +343,66 @@ will run in the following order::
 .. note::
     If running a MET tool that processes data over a time range such as SeriesAnalysis or StatAnalysis must be run with LOOP_ORDER = processes.
 
+.. _Custom_Looping:
+
+Custom Looping
+~~~~~~~~~~~~~~
+
+A list of text strings can be defined in the METplus wrappers configuration files to allow each wrapper to process data multiple times for each run time. The strings can be referenced in various places in the METplus configuration files to change input/output file paths, configuration file paths, and more. The value of each list item can be referenced by using {custom?fmt=%s}.
+
+**Example 1 Configuration** (Reading different ensembles)::
+
+  [config]
+  PROCESS_LIST = PCPCombine
+
+  VALID_BEG = 20190201
+  VALID_END = 20190203
+  VALID_INCREMENT = 1d
+
+  PCP_COMBINE_CUSTOM_LOOP_LIST = mem_001, mem_002
+
+  [dir]
+  FCST_PCP_COMBINE_INPUT_DIR = /d1/ensemble
+
+  [filename_templates]
+  FCST_PCP_COMBINE_INPUT_TEMPLATE = {custom?fmt=%s}/{valid?fmt=%Y%m%d}.nc
+
+This configuration will run the following::
+
+  * PCPCombine at 2019-02-01 reading from /d1/ensemble/mem_001/20190201.nc
+  * PCPCombine at 2019-02-01 reading from /d1/ensemble/mem_002/20190201.nc
+  * PCPCombine at 2019-02-02 reading from /d1/ensemble/mem_001/20190202.nc
+  * PCPCombine at 2019-02-02 reading from /d1/ensemble/mem_002/20190202.nc
+  * PCPCombine at 2019-02-03 reading from /d1/ensemble/mem_001/20190203.nc
+  * PCPCombine at 2019-02-03 reading from /d1/ensemble/mem_002/20190203.nc
+
+
+**Example 2 Configuration** (Using different MET config files)::
+
+  [config]
+  PROCESS_LIST = SeriesAnalysis
+
+  VALID_BEG = 20190201
+  VALID_END = 20190203
+  VALID_INCREMENT = 1d
+
+  SERIES_ANALYSIS_CUSTOM_LOOP_LIST = one, two
+
+  SERIES_ANALYSIS_CONFIG_FILE = {CONFIG_DIR}/SeriesAnalysisConfig_{custom?fmt=%s}
+
+  [dir]
+  SERIES_ANALYSIS_OUTPUT_DIR = {OUTPUT_BASE}/SeriesAnalysis/{custom?fmt=%s}
+
+This configuration will run SeriesAnalysis::
+
+  * At 2019-02-01 using SeriesAnalysisConfig_one config file and writing output to SeriesAnalysis/one
+  * At 2019-02-01 using SeriesAnalysisConfig_two config file and writing output to SeriesAnalysis/two
+  * At 2019-02-02 using SeriesAnalysisConfig_one config file and writing output to SeriesAnalysis/one
+  * At 2019-02-02 using SeriesAnalysisConfig_two config file and writing output to SeriesAnalysis/two
+  * At 2019-02-03 using SeriesAnalysisConfig_one config file and writing output to SeriesAnalysis/one
+  * At 2019-02-03 using SeriesAnalysisConfig_two config file and writing output to SeriesAnalysis/two
+
+
 .. _Field_Info:   
 
 Field Info
