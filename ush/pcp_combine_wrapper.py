@@ -55,7 +55,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.field_level = ""
         self.output_name = ""
         self.name = ""
-        self.logfile = ""
         self.compress = -1
         self.custom_command = ''
 
@@ -91,7 +90,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict[d_type+'_ACCUMS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_ACCUMS', ''))
         c_dict[d_type+'_NAMES'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_NAMES', ''))
         c_dict[d_type+'_LEVELS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_LEVELS', ''))
-        c_dict[d_type+'_OPTIONS'] = self.config.getstr('config', d_type+'_PCP_COMBINE_INPUT_OPTIONS', '')
+        c_dict[d_type+'_OPTIONS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_OPTIONS', ''))
         c_dict[d_type+'_OUTPUT_ACCUM'] = self.config.getstr('config', d_type+'_PCP_COMBINE_OUTPUT_ACCUM', '')
         c_dict[d_type+'_OUTPUT_NAME'] = self.config.getstr('config', d_type+'_PCP_COMBINE_OUTPUT_NAME', '')
         c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
@@ -183,7 +182,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.field_extra = ""
         self.output_name = ""
         self.name = ""
-        self.logfile = ""
         self.compress = -1
         self.custom_command = ''
 
@@ -316,7 +314,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.add_input_file(search_file, addon)
         return True
 
-    def get_addon(self, field_name, search_accum, search_time, field_level):
+    def get_addon(self, accum_dict, search_accum, search_time):
+        field_name = accum_dict['name']
+        field_level = accum_dict['level']
+        field_extra = accum_dict['extra']
         if field_name is None:
             return search_accum
 
@@ -329,6 +330,17 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         if not util.is_python_script(field_name) and field_level is not None:
             addon += f" level=\"{field_level}\";"
+
+        if field_extra:
+            search_time_info = {'valid': search_time,
+                                'custom': self.c_dict['CUSTOM_STRING']}
+
+            field_extra = sts.StringSub(self.logger,
+                                        field_extra,
+                                        **search_time_info).do_string_sub()
+
+            field_extra = field_extra.replace('"', '\"')
+            addon += f" {field_extra}"
 
         addon += "'"
         return addon
@@ -346,7 +358,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             input_dict = {'init': init_time,
                           'lead': lead}
         else:
-            input_dict = { 'valid': valid_time }
+            if self.c_dict[f'{data_src}_CONSTANT_INIT']:
+                input_dict = { 'init': init_time }
+            else:
+                input_dict = { 'valid': valid_time }
+
 
         time_info = time_util.ti_calculate(input_dict)
         time_info['custom'] = self.c_dict['CUSTOM_STRING']
@@ -459,8 +475,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                         accum_amount = accum_dict['amount']
 
                     accum_met_time = time_util.time_string_to_met_time(accum_amount)
-                    addon = self.get_addon(accum_dict['name'], accum_met_time, search_time,
-                                           accum_dict['level'])
+                    addon = self.get_addon(accum_dict, accum_met_time, search_time)
                     # add file to input list and step back in time to find more data
                     self.add_input_file(search_file, addon)
                     self.logger.debug(f"Adding input file: {search_file} with {addon}")
@@ -534,18 +549,21 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
 
         # set -field options if set
-        if self.field_name is not None:
-            cmd += " -field 'name=\""+self.field_name+"\";"
-            if self.field_level != "":
+        if self.field_name:
+            cmd += "-field 'name=\""+self.field_name+"\";"
+
+            if self.field_level:
                 cmd += " level=\""+self.field_level+"\";"
-            if self.field_extra != "":
-                cmd += ' ' + self.field_extra
+
+            if self.field_extra:
+                cmd += f' {self.field_extra}'
+
             cmd += "' "
 
-        if self.output_name != '':
-            cmd += f' -name "{self.output_name}" '
+        if self.output_name:
+            cmd += f'-name "{self.output_name}" '
 
-        if self.outfile == "":
+        if not self.outfile:
             self.log_error("No output filename specified")
             return None
 
@@ -555,24 +573,22 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if not os.path.exists(os.path.dirname(out_path)):
             os.makedirs(os.path.dirname(out_path))
 
-        cmd += out_path
+        cmd += f"{out_path} "
 
-        if self.pcp_dir != "":
-            cmd += " -pcpdir "+self.pcp_dir
+        if self.pcp_dir:
+            cmd += f"-pcpdir {self.pcp_dir} "
 
-        if self.pcp_regex != "":
-            cmd += " -pcprx "+self.pcp_regex
+        if self.pcp_regex:
+            cmd += f"-pcprx {self.pcp_regex} "
 
-        if self.name != "":
-            cmd += " -name "+self.name
-
-        if self.logfile != "":
-            cmd += " -log "+self.logfile
+        if self.name:
+            cmd += f"-name {self.name} "
 
         if self.compress != -1:
-            cmd += " -compress "+str(self.compress)
+            cmd += f"-compress {str(self.compress)} "
 
-        return cmd
+        # remove whitespace at beginning/end and return command
+        return cmd.strip()
 
     def run_at_time_once(self, time_info, var_info, data_src):
         self.clear()
@@ -769,8 +785,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # set field name and level if set in config
         if self.c_dict[f'{data_src}_NAMES']:
             self.field_name = self.c_dict[f'{data_src}_NAMES'][0]
+
         if self.c_dict[f'{data_src}_LEVELS']:
             self.field_level = self.c_dict[f'{data_src}_LEVELS'][0]
+
+        if self.c_dict[f'{data_src}_OPTIONS']:
+            self.field_extra = sts.StringSub(self.logger,
+                                             self.c_dict[f'{data_src}_OPTIONS'][0],
+                                             **time_info).do_string_sub()
 
         init_time = time_info['init'].strftime('%Y%m%d_%H%M%S')
         valid_time = time_info['valid'].strftime('%Y%m%d_%H%M%S')
@@ -873,7 +895,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.field_level = self.c_dict[f"{data_src}_LEVELS"][0]
 
         if self.c_dict[f"{data_src}_OPTIONS"]:
-            self.field_extra = self.c_dict[f"{data_src}_OPTIONS"]
+            self.field_extra = sts.StringSub(self.logger,
+                                             self.c_dict[f'{data_src}_OPTIONS'][0],
+                                             **time_info).do_string_sub()
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
@@ -954,6 +978,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         accum_list = self.c_dict[data_src + '_ACCUMS']
         level_list = self.c_dict[data_src + '_LEVELS']
         name_list = self.c_dict[data_src + '_NAMES']
+        extra_list = self.c_dict[data_src + '_OPTIONS']
 
         # if no name list, create list of None values
         if not name_list:
@@ -963,8 +988,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if not level_list:
             level_list = [None] * len(accum_list)
 
+        # do the same for extra list
+        if not extra_list:
+            extra_list = [None] * len(accum_list)
+
         accum_dict_list = []
-        for accum, level, name in zip(accum_list, level_list, name_list):
+        for accum, level, name, extra in zip(accum_list, level_list, name_list, extra_list):
 
             template = None
             # if accum is forecast lead, set amount to 999999 and save template
@@ -975,7 +1004,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             # convert accum amount to seconds from time string
             amount = time_util.get_seconds_from_string(accum, 'H', time_info['valid'])
 
-            accum_dict_list.append({'amount' : amount, 'name' : name, 'level': level, 'template': template})
+            accum_dict_list.append({'amount': amount,
+                                    'name': name,
+                                    'level': level,
+                                    'template': template,
+                                    'extra': extra})
 
         self.c_dict['ACCUM_DICT_LIST'] = accum_dict_list
 
