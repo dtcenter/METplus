@@ -58,26 +58,24 @@ Acronyms
 Authors
 -------
 * Daniel Adriaansen [1]_
-* Minna Win-Gildenmeister [1]_, [4]_
-* James Frimel [2]_, [4]_
-* Julie Prestopnik [1]_, [4]_
+* Minna Win-Gildenmeister [1]_
+* James Frimel [2]_
+* Julie Prestopnik [1]_
 * Mallory Row [3]_
-* John Halley Gotway [1]_, [4]_
-* George McCabe [1]_, [4]_
-* Tara Jensen [1]_, [4]_
-* Jonathan Vigh [1]_, [4]_
+* John Halley Gotway [1]_
+* George McCabe [1]_
+* Tara Jensen [1]_
+* Jonathan Vigh [1]_
 * Christina Kalb [1]_
 * Hank Fisher [1]_
-* John Opatz [1]_, [4]_ 
+* John Opatz [1]_
 
 .. [#] `National Center for Atmospheric Research, Research
-       Applications Laboratory <https://ral.ucar.edu/>`_
+       Applications Laboratory <https://ral.ucar.edu/>`_, `Developmental Testbed Center <https://dtcenter.org/>`_
 .. [#] `Cooperative Institute for Research in the Atmosphere at
        National Oceanic and Atmospheric Administration (NOAA) Earth
        System Research Laboratory <https://www.esrl.noaa.gov/>`_
 .. [#] `I.M. Systems Group at NOAA Environmental Modeling Center <https://imsg.com/>`_
-.. [#] `Developmental Testbed Center <https://dtcenter.org/>`_
-
 
 
 .. toctree::
