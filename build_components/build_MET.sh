@@ -14,10 +14,10 @@ wget https://dtcenter.org/sites/default/files/community-code/met/compile_scripts
 tar -xzvf tar_files.tgz
 
 ## link the git hub source code directory to the current directory - serious hack for now
-ln -s ../MET/met .
+ln -s ../MET/met met
 
 ## Create a tarball which is what the compile script wants right now - hopefully change this later
-tar -cvzhf tar_files/met.tar.gz ../MET/met
+tar -cvzhf tar_files/met.tar.gz met
 
 ### Source environment variables and run the compile_all script
 source env_vars.bash
