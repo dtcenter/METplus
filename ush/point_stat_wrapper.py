@@ -43,13 +43,18 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_POINT_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'POINT_STAT_OFFSETS', '0'))
+        c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config',
+                                                               'POINT_STAT_OFFSETS',
+                                                               '0'))
         c_dict['FCST_INPUT_TEMPLATE'] = \
             self.config.getraw('filename_templates',
-                               'FCST_POINT_STAT_INPUT_TEMPLATE')
+                               'FCST_POINT_STAT_INPUT_TEMPLATE',
+                               '')
+
         c_dict['OBS_INPUT_TEMPLATE'] = \
             self.config.getraw('filename_templates',
-                               'OBS_POINT_STAT_INPUT_TEMPLATE')
+                               'OBS_POINT_STAT_INPUT_TEMPLATE',
+                               '')
 
         c_dict['FCST_INPUT_DATATYPE'] = \
             self.config.getstr('config', 'FCST_POINT_STAT_INPUT_DATATYPE', '')
@@ -59,18 +64,16 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_DIR'] = self.config.getdir('FCST_POINT_STAT_INPUT_DIR')
         c_dict['OBS_INPUT_DIR'] = self.config.getdir('OBS_POINT_STAT_INPUT_DIR')
         c_dict['OUTPUT_DIR'] = \
-            self.config.getdir('POINT_STAT_OUTPUT_DIR')
+            self.config.getdir('POINT_STAT_OUTPUT_DIR', '')
 
         # get climatology config variables
         self.read_climo_wrapper_specific('POINT_STAT', c_dict)
 
         # Configuration
         c_dict['CONFIG_FILE'] = \
-            self.config.getstr('config', 'POINT_STAT_CONFIG_FILE')
+            self.config.getraw('config', 'POINT_STAT_CONFIG_FILE', '')
 
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL')
-        c_dict['POINT_STAT_CONFIG_FILE'] = \
-            self.config.getstr('config', 'POINT_STAT_CONFIG_FILE')
 
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'POINT_STAT_REGRID_TO_GRID', '')
 
@@ -84,7 +87,8 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
-                               'POINT_STAT_VERIFICATION_MASK_TEMPLATE')
+                               'POINT_STAT_VERIFICATION_MASK_TEMPLATE',
+                               '')
         c_dict['VERIFICATION_MASK'] = ''
 
         c_dict['FCST_PROB_THRESH'] = self.config.getstr('config',
@@ -102,6 +106,10 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         if c_dict['OUTPUT_DIR'] == '':
             self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
+            self.isOK = False
+
+        if not c_dict['CONFIG_FILE']:
+            self.log_error("POINT_STAT_CONFIG_FILE must be set.")
             self.isOK = False
 
         return c_dict

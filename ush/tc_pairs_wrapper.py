@@ -69,9 +69,12 @@ class TCPairsWrapper(CommandBuilder):
             self.config.getstr('config', 'TC_PAIRS_MISSING_VAL_TO_REPLACE', '-99')
         c_dict['MISSING_VAL'] =\
             self.config.getstr('config', 'TC_PAIRS_MISSING_VAL', '-9999')
-        c_dict['TC_PAIRS_CONFIG_FILE'] = self.config.getstr('config',
-                                                            'TC_PAIRS_CONFIG_FILE')
-
+        c_dict['CONFIG_FILE'] = self.config.getraw('config',
+                                                   'TC_PAIRS_CONFIG_FILE',
+                                                   '')
+        if not c_dict['CONFIG_FILE']:
+            self.log_error("TC_PAIRS_CONFIG_FILE is required to run TCPairs wrapper")
+            self.isOK = False
 
         c_dict['INIT_TIME_FMT'] = self.config.getstr('config', 'INIT_TIME_FMT')
         clock_time = datetime.datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
@@ -201,6 +204,19 @@ class TCPairsWrapper(CommandBuilder):
                  input_dict dictionary containing init or valid time
              Returns:
         """
+        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+            if custom_string:
+                self.logger.info(f"Processing custom string: {custom_string}")
+
+            input_dict['custom'] = custom_string
+            self.run_at_time_loop_string(input_dict)
+
+    def run_at_time_loop_string(self, input_dict):
+        """! Create the arguments to run MET tc_pairs
+             Args:
+                 input_dict dictionary containing init or valid time
+             Returns:
+        """
         # fill in time info dictionary
         time_info = time_util.ti_calculate(input_dict)
 
@@ -210,6 +226,11 @@ class TCPairsWrapper(CommandBuilder):
 
         # set output dir
         self.outdir = self.c_dict['OUTPUT_DIR']
+
+        # string substitute config file in case custom string is used
+        self.c_dict['CONFIG_FILE'] = StringSub(self.logger,
+                                               self.c_dict['CONFIG_FILE'],
+                                               **time_info).do_string_sub()
 
         # get items to filter bdeck files
         # set each to default wildcard character unless specified in conf
@@ -671,7 +692,7 @@ class TCPairsWrapper(CommandBuilder):
             self.log_error('BDECK file not set')
             return None
 
-        config_file = self.c_dict['TC_PAIRS_CONFIG_FILE']
+        config_file = self.c_dict['CONFIG_FILE']
         if not config_file:
             self.log_error('Config file not set')
             return None

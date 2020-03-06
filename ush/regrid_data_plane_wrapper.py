@@ -16,7 +16,7 @@ import metplus_check_python_version
 
 import os
 import met_util as util
-import string_template_substitution as sts
+from string_template_substitution import StringSub
 from reformat_gridded_wrapper import ReformatGriddedWrapper
 
 '''!@namespace RegridDataPlaneWrapper
@@ -42,63 +42,68 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = \
           self.config.getbool('config', f'{app}_SKIP_IF_OUTPUT_EXISTS',
                               False)
-        if self.config.has_option('filename_templates',
-                                  f'FCST_{app}_INPUT_TEMPLATE'):
+
+        c_dict['FCST_INPUT_TEMPLATE'] = \
+            self.config.getraw('filename_templates',
+                               f'FCST_{app}_INPUT_TEMPLATE',
+                               '')
+
+        if not c_dict['FCST_INPUT_TEMPLATE']:
             c_dict['FCST_INPUT_TEMPLATE'] = \
                 self.config.getraw('filename_templates',
-                                   f'FCST_{app}_INPUT_TEMPLATE')
-        elif self.config.has_option('filename_templates',
-                                    f'FCST_{app}_TEMPLATE'):
-            c_dict['FCST_INPUT_TEMPLATE'] = \
-                self.config.getraw('filename_templates',
-                                   f'FCST_{app}_TEMPLATE')
-        else:
-            c_dict['FCST_INPUT_TEMPLATE'] = ''
+                                   f'FCST_{app}_TEMPLATE',
+                                   '')
 
-        if self.config.has_option('filename_templates',
-                                  'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE'):
+        c_dict['OBS_INPUT_TEMPLATE'] = \
+            self.config.getraw('filename_templates',
+                               'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE',
+                               '')
+
+        if not c_dict['OBS_INPUT_TEMPLATE']:
             c_dict['OBS_INPUT_TEMPLATE'] = \
                 self.config.getraw('filename_templates',
-                                   'OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE')
-        elif self.config.has_option('filename_templates',
-                                    'OBS_REGRID_DATA_PLANE_TEMPLATE'):
-            c_dict['OBS_INPUT_TEMPLATE'] = \
-                self.config.getraw('filename_templates',
-                                   'OBS_REGRID_DATA_PLANE_TEMPLATE')
-        else:
-            c_dict['OBS_INPUT_TEMPLATE'] = ''
+                                   'OBS_REGRID_DATA_PLANE_TEMPLATE',
+                                   '')
 
-        if self.config.has_option('filename_templates',
-                                  'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'):
+        c_dict['FCST_OUTPUT_TEMPLATE'] = \
+            self.config.getraw('filename_templates',
+                               'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE',
+                               '')
+
+        if not c_dict['FCST_OUTPUT_TEMPLATE']:
             c_dict['FCST_OUTPUT_TEMPLATE'] = \
                 self.config.getraw('filename_templates',
-                                   'FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE')
-        elif self.config.has_option('filename_templates',
-                                    'FCST_REGRID_DATA_PLANE_TEMPLATE'):
-            c_dict['FCST_OUTPUT_TEMPLATE'] = \
-                self.config.getraw('filename_templates',
-                                   'FCST_REGRID_DATA_PLANE_TEMPLATE')
-        else:
-            c_dict['FCST_OUTPUT_TEMPLATE'] = ''
+                                   'FCST_REGRID_DATA_PLANE_TEMPLATE',
+                                   '')
 
-        if self.config.has_option('filename_templates',
-                                  'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'):
+        c_dict['OBS_OUTPUT_TEMPLATE'] = \
+            self.config.getraw('filename_templates',
+                               'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE',
+                               '')
+
+        if not c_dict['OBS_OUTPUT_TEMPLATE']:
             c_dict['OBS_OUTPUT_TEMPLATE'] = \
                 self.config.getraw('filename_templates',
-                                   'OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE')
-        elif self.config.has_option('filename_templates',
-                                    'OBS_REGRID_DATA_PLANE_TEMPLATE'):
-            c_dict['OBS_OUTPUT_TEMPLATE'] = \
-                self.config.getraw('filename_templates',
-                                   'OBS_REGRID_DATA_PLANE_TEMPLATE')
-        else:
-            c_dict['OBS_OUTPUT_TEMPLATE'] = ''
+                                   'OBS_REGRID_DATA_PLANE_TEMPLATE',
+                                   '')
 
         if self.config.getbool('config', 'FCST_REGRID_DATA_PLANE_RUN', False):
             c_dict['FCST_INPUT_DIR'] = \
                 self.config.getdir('FCST_REGRID_DATA_PLANE_INPUT_DIR', '')
+
             c_dict['FCST_OUTPUT_DIR'] = \
                 self.config.getdir('FCST_REGRID_DATA_PLANE_OUTPUT_DIR', '')
+
+            if not c_dict['FCST_INPUT_TEMPLATE']:
+                self.log_error("FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE must be set if "
+                               "FCST_REGRID_DATA_PLANE_RUN is True")
+                self.isOK = False
+
+            if not c_dict['FCST_OUTPUT_TEMPLATE']:
+                self.log_error("FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE must be set if "
+                               "FCST_REGRID_DATA_PLANE_RUN is True")
+                self.isOK = False
+
 
         if self.config.getbool('config', 'OBS_REGRID_DATA_PLANE_RUN', False):
             c_dict['OBS_INPUT_DIR'] = \
@@ -107,8 +112,22 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             c_dict['OBS_OUTPUT_DIR'] = \
                 self.config.getdir('OBS_REGRID_DATA_PLANE_OUTPUT_DIR', '')
 
+            if not c_dict['OBS_INPUT_TEMPLATE']:
+                self.log_error("OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE must be set if "
+                               "OBS_REGRID_DATA_PLANE_RUN is True")
+                self.isOK = False
+
+            if not c_dict['OBS_OUTPUT_TEMPLATE']:
+                self.log_error("OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE must be set if "
+                               "OBS_REGRID_DATA_PLANE_RUN is True")
+                self.isOK = False
+
         c_dict['VERIFICATION_GRID'] = \
-            self.config.getstr('config', 'REGRID_DATA_PLANE_VERIF_GRID', '')
+            self.config.getraw('config', 'REGRID_DATA_PLANE_VERIF_GRID', '')
+
+        if not c_dict['VERIFICATION_GRID']:
+            self.log_error("REGRID_DATA_PLANE_VERIF_GRID must be set.")
+            self.isOK = False
 
         c_dict['METHOD'] = \
           self.config.getstr('config', 'REGRID_DATA_PLANE_METHOD', '')
@@ -168,23 +187,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 @param v var_info object containing variable information
         """
         self.clear()
-
-        # exit if input or output template is not set
-        if self.c_dict[dtype+'_INPUT_TEMPLATE'] == '':
-            self.log_error('Must set {}_REGRID_DATA_PLANE_INPUT_TEMPLATE'.format(dtype) +\
-                              ' in config file')
-            exit(1)
-
-        if self.c_dict[dtype+'_OUTPUT_TEMPLATE'] == '':
-            self.log_error('Must set {}_REGRID_DATA_PLANE_OUTPUT_TEMPLATE'.format(dtype) +\
-                              ' in config file')
-            exit(1)
-
-        if self.c_dict['VERIFICATION_GRID'] == '':
-            self.log_error('No verification grid specified! ' + \
-                              'Set REGRID_DATA_PLANE_VERIF_GRID')
-            exit(1)
-
 
         # check if any RDP VAR<n>_INPUT_FIELD_* configs are set
         # get a list of the indices that are set
@@ -266,17 +268,17 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         output_name = field_info['output_name']
 
         # run through StringSub in case the field name contains a template
-        field_name = sts.StringSub(self.logger,
-                                   field_name,
-                                   **time_info).do_string_sub()
+        field_name = StringSub(self.logger,
+                               field_name,
+                               **time_info).do_string_sub()
 
-        input_level = sts.StringSub(self.logger,
-                                    input_level,
-                                    **time_info).do_string_sub()
+        input_level = StringSub(self.logger,
+                                input_level,
+                                **time_info).do_string_sub()
 
-        output_name = sts.StringSub(self.logger,
-                                    output_name,
-                                    **time_info).do_string_sub()
+        output_name = StringSub(self.logger,
+                                output_name,
+                                **time_info).do_string_sub()
 
         # strip off quotes around input_level if found
         input_level = util.remove_quotes(input_level)
@@ -293,10 +295,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         else:
             f_level = level
 
-        input_file = sts.StringSub(self.logger,
-                                   input_template,
-                                   level=(int(f_level)*3600),
-                                   **time_info).do_string_sub()
+        input_file = StringSub(self.logger,
+                               input_template,
+                               level=(int(f_level)*3600),
+                               **time_info).do_string_sub()
         full_path = os.path.join(input_dir, input_file)
 
         infile = \
@@ -312,15 +314,18 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             self.log_error(f"Could not find {dtype} file {full_path} using template {input_template}")
             return False
 
-        verif_grid = self.c_dict['VERIFICATION_GRID']
+        verif_grid = StringSub(self.logger,
+                               self.c_dict['VERIFICATION_GRID'],
+                               **time_info).do_string_sub()
+
         # put quotes around verification grid in case it is a grid description
         self.infiles.append(f'"{verif_grid}"')
 
         # get output path and check if it already exists, skip if necessary
-        outfile = sts.StringSub(self.logger,
-                                output_template,
-                                level=(int(f_level)*3600),
-                                **time_info).do_string_sub()
+        outfile = StringSub(self.logger,
+                            output_template,
+                            level=(int(f_level)*3600),
+                            **time_info).do_string_sub()
         self.set_output_path(os.path.join(output_dir, outfile))
 
         outpath = self.get_output_path()

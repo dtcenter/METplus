@@ -236,7 +236,7 @@ class MODEWrapper(CompareGriddedWrapper):
             self.create_and_set_output_dir(time_info)
             self.infiles.append(model_path)
             self.infiles.append(obs_path)
-            self.add_merge_config_file()
+            self.add_merge_config_file(time_info)
 
             self.set_environment_variables(fcst_field,obs_field, var_info, time_info)
             cmd = self.get_command()
