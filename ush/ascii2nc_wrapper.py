@@ -38,7 +38,7 @@ class ASCII2NCWrapper(CommandBuilder):
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_ASCII2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'ASCII2NC_CONFIG_FILE', '')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config', 'ASCII2NC_CONFIG_FILE', '')
         c_dict['ASCII_FORMAT'] = self.config.getstr('config', 'ASCII2NC_INPUT_FORMAT', '')
         c_dict['MASK_GRID'] = self.config.getstr('config', 'ASCII2NC_MASK_GRID', '')
         c_dict['MASK_POLY'] = self.config.getstr('config', 'ASCII2NC_MASK_POLY', '')
@@ -206,7 +206,8 @@ class ASCII2NCWrapper(CommandBuilder):
             return
 
         # get other configurations for command
-        self.set_command_line_arguments()
+        self.set_command_line_arguments(time_info)
+
         # set environment variables if using config file
         self.set_environment_variables(time_info)
 
@@ -236,14 +237,17 @@ class ASCII2NCWrapper(CommandBuilder):
         self.infiles.extend(obs_path)
         return self.infiles
 
-    def set_command_line_arguments(self):
+    def set_command_line_arguments(self, time_info):
         # add input data format if set
         if self.c_dict['ASCII_FORMAT']:
             self.args.append(" -format {}".format(self.c_dict['ASCII_FORMAT']))
 
-        # add config file if set
+        # add config file - passing through StringSub to get custom string if set
         if self.c_dict['CONFIG_FILE']:
-            self.args.append(" -config {}".format(self.c_dict['CONFIG_FILE']))
+            config_file = StringSub(self.logger,
+                                    self.c_dict['CONFIG_FILE'],
+                                    **time_info).do_string_sub()
+            self.args.append(f" -config {config_file}")
 
         # add mask grid if set
         if self.c_dict['MASK_GRID']:

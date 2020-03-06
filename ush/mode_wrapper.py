@@ -17,6 +17,7 @@ import metplus_check_python_version
 import os
 import met_util as util
 from compare_gridded_wrapper import CompareGriddedWrapper
+from string_template_substitution import StringSub
 
 class MODEWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""
@@ -28,16 +29,19 @@ class MODEWrapper(CompareGriddedWrapper):
                                          'bin', self.app_name)
         super().__init__(config, logger)
 
-    def add_merge_config_file(self):
+    def add_merge_config_file(self, time_info):
         """!If merge config file is defined, add it to the command"""
         if self.c_dict['MERGE_CONFIG_FILE'] != '':
-            self.args.append('-config_merge {}'.format(self.c_dict['MERGE_CONFIG_FILE']))
+            merge_config_file = StringSub(self.logger,
+                                          self.c_dict['MERGE_CONFIG_FILE'],
+                                          **time_info).do_string_sub()
+            self.args.append('-config_merge {}'.format(merge_config_file))
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MODE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG_FILE', '')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config', 'MODE_CONFIG_FILE', '')
         if not c_dict['CONFIG_FILE']:
             self.log_error('MODE_CONFIG_FILE must be set')
             self.isOK = False
@@ -110,7 +114,7 @@ class MODEWrapper(CompareGriddedWrapper):
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
-        c_dict['MERGE_CONFIG_FILE'] = self.config.getstr('config', 'MODE_MERGE_CONFIG_FILE', '')
+        c_dict['MERGE_CONFIG_FILE'] = self.config.getraw('config', 'MODE_MERGE_CONFIG_FILE', '')
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'mode')
@@ -226,7 +230,9 @@ class MODEWrapper(CompareGriddedWrapper):
 
         # loop through fields and call MODE
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
-            self.param = self.c_dict['CONFIG_FILE']
+            self.param = StringSub(self.logger,
+                                   self.c_dict['CONFIG_FILE'],
+                                   **time_info).do_string_sub()
             self.create_and_set_output_dir(time_info)
             self.infiles.append(model_path)
             self.infiles.append(obs_path)

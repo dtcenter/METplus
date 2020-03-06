@@ -54,6 +54,22 @@ class ExtractTilesWrapper(CommandBuilder):
         self.tc_stat_exe = os.path.join(met_install_dir, 'bin/tc_stat')
 
     def run_at_time(self, input_dict):
+        """!Loops over loop strings and calls run_at_time_loop_string() to process data
+        Args:
+            input_dict:  Time dictionary
+        Returns:
+            None
+        """
+
+        # Do some set up
+        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+            if custom_string:
+                self.logger.info(f"Processing custom string: {custom_string}")
+
+            input_dict['custom'] = custom_string
+            self.run_at_time_loop_string(input_dict)
+
+    def run_at_time_loop_string(self, input_dict):
         """!Get TC-paris data then regrid tiles centered on the storm.
 
         Get TC-pairs track data and GFS model data, do any necessary
