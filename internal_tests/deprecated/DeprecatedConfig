@@ -219,7 +219,7 @@ nc_pairs_flag   = {
 
 grid_weight_flag = COS_LAT;
 tmp_dir          = "/tmp";
-output_prefix    = "${MODEL}_vs_${OBTYPE}";
+output_prefix    = "${FCST_VAR}_vs_${OBS_VAR}";
 //version		 = "V8.1";
 
 ////////////////////////////////////////////////////////////////////////////////
