@@ -74,8 +74,8 @@ We thank all the METplus sponsors including: DTC partners (NOAA, NCAR, USAF, and
 
    overview
    installation
-   wrappers
    systemconfiguration
+   wrappers
    usecases
    references
    quicksearch
