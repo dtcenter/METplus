@@ -125,10 +125,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         c_dict['VERIFICATION_GRID'] = \
             self.config.getraw('config', 'REGRID_DATA_PLANE_VERIF_GRID', '')
 
-        if not c_dict['VERIFICATION_GRID']:
-            self.log_error("REGRID_DATA_PLANE_VERIF_GRID must be set.")
-            self.isOK = False
-
         c_dict['METHOD'] = \
           self.config.getstr('config', 'REGRID_DATA_PLANE_METHOD', '')
 
@@ -140,6 +136,14 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         c_dict['GAUSSIAN_RADIUS'] = \
          self.config.getstr('config', 'REGRID_DATA_PLANE_GAUSSIAN_RADIUS', '')
+
+        # only check if VERIFICATION_GRID is set if running the tool from the process list
+        # RegridDataPlane can be called from other tools like CustomIngest, which sets the
+        # verification grid itself
+        if 'RegridDataPlane' in util.get_process_list(self.config):
+            if not c_dict['VERIFICATION_GRID']:
+                self.log_error("REGRID_DATA_PLANE_VERIF_GRID must be set.")
+                self.isOK = False
 
         return c_dict
 
