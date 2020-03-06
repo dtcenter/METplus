@@ -549,12 +549,12 @@ def check_for_deprecated_met_config(config):
 
             met_config_file = StringSub(config.logger, met_config, custom=custom_string).do_string_sub()
 
-            if not check_for_deprecated_met_config_file(config, met_config_file, sed_cmds):
+            if not check_for_deprecated_met_config_file(config, met_config_file, sed_cmds, met_tool):
                 all_good = False
 
     return all_good, sed_cmds
 
-def check_for_deprecated_met_config_file(config, met_config, sed_cmds):
+def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool):
 
     all_good = True
     if not os.path.exists(met_config):
@@ -575,19 +575,25 @@ def check_for_deprecated_met_config_file(config, met_config, sed_cmds):
                                         f"${{{deprecated_item}}} found in MET config file: "
                                         f"{met_config}")
 
+                    if deprecated_item == 'MET_VALID_HHMM' and 'file_name' in line:
+                        config.logger.error(f"Set {met_tool}_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in a "
+                                            "METplus config file to set CLIMO_MEAN_FILE in a MET config")
+                        new_line = "   file_name = [ ${CLIMO_MEAN_FILE} ];"
+                        sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+                        add_line = f"{met_tool}_CLIMO_MEAN_INPUT_TEMPLATE"
+                        sed_cmds.append(f"#Add {add_line}")
+                        break
+
                     if 'to_grid' in line:
                         config.logger.error("MET to_grid variable should reference "
                                             "${REGRID_TO_GRID} environment variable")
                         new_line = "   to_grid    = ${REGRID_TO_GRID};"
                         sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+                        config.logger.info(f"Be sure to set {met_tool}_REGRID_TO_GRID to the correct value.")
+                        add_line = f"{met_tool}_REGRID_TO_GRID"
+                        sed_cmds.append(f"#Add {add_line}")
                         break
 
-                    if deprecated_item == 'MET_VALID_HHMM' and 'file_name' in line:
-                        config.logger.error("Set [GRID/POINT]_STAT_CLIMO_INPUT_[DIR/TEMPLATE] in a "
-                                            "METplus config file to set CLIMO_FILE in a MET config")
-                        new_line = "   file_name = [ ${CLIMO_FILE} ];"
-                        sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
-                        break
 
             for deprecated_item in deprecated_output_prefix_list:
                 # if deprecated item found in output prefix or to_grid line, replace line to use
