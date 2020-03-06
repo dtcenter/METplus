@@ -281,7 +281,7 @@ Example::
     (met_util.py) ERROR: [dir] MODEL_DATA_DIR should be replaced with EXTRACT_TILES_GRID_INPUT_DIR
     (met_util.py) ERROR: [config] STAT_LIST should be replaced with SERIES_ANALYSIS_STAT_LIST
 
-These cases can be handled automatically by using the :ref:`_validate_config`.
+These cases can be handled automatically by using the :ref:`validate_config`.
 
 FCST/OBS/BOTH Variables
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -299,19 +299,19 @@ Example::
     (met_util.py) ERROR: If FCST_VAR1_LEVELS is set, you must either set OBS_VAR1_LEVELS or change FCST_VAR1_LEVELS to BOTH_VAR1_LEVELS
     (met_util.py) ERROR: If FCST_VAR2_LEVELS is set, you must either set OBS_VAR2_LEVELS or change FCST_VAR2_LEVELS to BOTH_VAR2_LEVELS
 
-These cases can be handled automatically by using the :ref:`_validate_config`, but users should review the suggested changes, as they may want to update differently.
+These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes, as they may want to update differently.
 
 PCPCombine Input Levels
 ~~~~~~~~~~~~~~~~~~~~~~~
 Prior to METplus 3.0, the PCPCombine wrapper only allowed the user to define a single input accumulation amount to be used to build a desired accumulation. However, some data sets include more than one accumulation field.
 PCPCombine wrapper was enhanced in version 3.0 to allow users to specify a list of accumulations available in the input data.
-Instead of only being able to specify FCST_PCP_COMBINE_INPUT_LEVEL, users can now specify a list of accumulations with :term:`FCST_PCP_COMINE_INPUT_ACCUMS`.
+Instead of only being able to specify FCST_PCP_COMBINE_INPUT_LEVEL, users can now specify a list of accumulations with :term:`FCST_PCP_COMBINE_INPUT_ACCUMS`.
 
 Example::
 
     (met_util.py) ERROR: [config] OBS_PCP_COMBINE_INPUT_LEVEL should be replaced with OBS_PCP_COMBINE_INPUT_ACCUMS
 
-These cases can be handled automatically by using the :ref:`_validate_config`, but users should review the suggested changes, as they may want to include other available input accumulations.
+These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes, as they may want to include other available input accumulations.
 
 MET Configuration Files
 ~~~~~~~~~~~~~~~~~~~~~~~
@@ -321,9 +321,9 @@ EnsembleStat previously set GRID_VX to define the grid to use to regrid data wit
 
 MET_VALID_HHMM was used by GridStat wrapper to set part of the climatology file path. This was replaced by the METplus configuration variables <MET-tool>_CLIMO_[MEAN/STDEV]_INPUT_[DIR/TEMPLATE] (i.e. :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`).
 
-The output_prefix variable in the MET config files was previously set by referencing variable environment variables set by METplus. This has since been changed so that output_prefix references the $OUTPUT_PREFIX environment variable. This value is now set in the METplus configuration files using the wrapper-specific configuration variable, such as :term:`GRID_STAT_OUTPUT_PREFIX: or :term:`ENSEMBLE_STAT_OUTPUT_PREFIX`.
+The output_prefix variable in the MET config files was previously set by referencing variable environment variables set by METplus. This has since been changed so that output_prefix references the $OUTPUT_PREFIX environment variable. This value is now set in the METplus configuration files using the wrapper-specific configuration variable, such as :term:`GRID_STAT_OUTPUT_PREFIX` or :term:`ENSEMBLE_STAT_OUTPUT_PREFIX`.
 
-Due to these changes, MET configuration files that refer to any of these deprecated environment variables will throw an error. While the :ref:`_validate_config` will automatically remove any invalid environment variables that may be set in the MET configuration files, the user will be responsible for adding the corresponding METplus configuration variable to reproduce the intended behavior. The tool will give a suggested value for <MET-tool>_OUTPUT_PREFIX.
+Due to these changes, MET configuration files that refer to any of these deprecated environment variables will throw an error. While the :ref:`validate_config` will automatically remove any invalid environment variables that may be set in the MET configuration files, the user will be responsible for adding the corresponding METplus configuration variable to reproduce the intended behavior. The tool will give a suggested value for <MET-tool>_OUTPUT_PREFIX.
 
 Example::
 
@@ -339,13 +339,13 @@ Example::
     (met_util.py) INFO: You will need to add GRID_STAT_OUTPUT_PREFIX to the METplus config file that sets GRID_STAT_CONFIG_FILE. Set it to:
     (met_util.py) INFO: GRID_STAT_OUTPUT_PREFIX = {CURRENT_FCST_NAME}_vs_{CURRENT_OBS_NAME}
 
-These cases can be handled automatically by using the :ref:`_validate_config`, but users should review the suggested changes and make sure they add the appropriate recommended METplus configuration variables to their files to achieve the same behavior.
+These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes and make sure they add the appropriate recommended METplus configuration variables to their files to achieve the same behavior.
 
 SED Commands
 ~~~~~~~~~~~~
 Running master_metplus.py with one or more configuration files that contain deprecated variables that can be fixed with a find/replace command will generate a file in the {OUTPUT_BASE} called sed_commands.txt. This file contains a list of commands that can be run to update the configuration file.
 
-The :ref:`_validate_config` will step you through each of these commands and execute them upon your approval.
+The :ref:`validate_config` will step you through each of these commands and execute them upon your approval.
 
 Example sed_commands.txt content::
 
@@ -362,12 +362,11 @@ Example sed_commands.txt content::
 
 Validate Config Helper Script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 The script named validate_config.py is found in the same directory as master_metplus.py. To use this script, call it with the same arguments that you would pass to master_metplus.py. You must pass a valid configuration to the script, as in you must properly set MET_INSTALL_DIR, INPUT_BASE, and OUTPUT_BASE, or it will not run.
-The script will evaluate all of the configuration files, including any MET configuration file that is referenced in a *_CONFIG_FILE variable, such as GRID_STAT_CONFIG_FILE.  For each deprecated item that is found, the script will suggest a replacement for the file where the deprecated item was found.
+The script will evaluate all of the configuration files, including any MET configuration file that is referenced in a _CONFIG_FILE variable, such as GRID_STAT_CONFIG_FILE.  For each deprecated item that is found, the script will suggest a replacement for the file where the deprecated item was found.
 The following replacement is suggested for /d1/mccabe/METplus-2.2/parm/use_cases/feature_relative/feature_relative.conf
 
-Example 1(Simple Rename)::
+Example 1 (Simple Rename)::
 
     The following replacement is suggested for ./deprecated.conf
 
