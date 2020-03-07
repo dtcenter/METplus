@@ -315,17 +315,35 @@ These cases can be handled automatically by using the :ref:`validate_config`, bu
 
 MET Configuration Files
 ~~~~~~~~~~~~~~~~~~~~~~~
-The METplus wrapper set environment variables that are read by the MET configuration files to customize each run.
+The METplus wrappers set environment variables that are read by the MET configuration files to customize each run. Some of the environment variables that were previously set by METplus wrappers to handle very specific use cases are no longer set in favor of using a common set of variables across the MET tools. The following are examples of changes that have occurred in METplus regarding environment variables.
 
-EnsembleStat previously set GRID_VX to define the grid to use to regrid data within the tool. In version 3.0, MET tools that have a 'to_grid' value in the 'grid' dictionary of the MET config file have a uniformly named METplus configuration variable called <MET-tool>_REGRID_TO_GRID (i.e. :term:`ENSEMBLE_STAT_REGRID_TO_GRID`) that is used to define this value.
+EnsembleStat previously set $GRID_VX to define the grid to use to regrid data within the tool. In version 3.0, MET tools that have a 'to_grid' value in the 'grid' dictionary of the MET config file have a uniformly named METplus configuration variable called <MET-tool>_REGRID_TO_GRID (i.e. :term:`ENSEMBLE_STAT_REGRID_TO_GRID`) that is used to define this value::
 
-MET_VALID_HHMM was used by GridStat wrapper to set part of the climatology file path. This was replaced by the METplus configuration variables <MET-tool>_CLIMO_[MEAN/STDEV]_INPUT_[DIR/TEMPLATE] (i.e. :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`).
+    Before:
+       to_grid    = ${GRID_VX};
 
-The output_prefix variable in the MET config files was previously set by referencing variable environment variables set by METplus. This has since been changed so that output_prefix references the $OUTPUT_PREFIX environment variable. This value is now set in the METplus configuration files using the wrapper-specific configuration variable, such as :term:`GRID_STAT_OUTPUT_PREFIX` or :term:`ENSEMBLE_STAT_OUTPUT_PREFIX`.
+    After:
+       to_grid    = ${REGRID_TO_GRID};
+
+MET_VALID_HHMM was used by GridStat wrapper to set part of the climatology file path. This was replaced by the METplus configuration variables <MET-tool>_CLIMO_[MEAN/STDEV]_INPUT_[DIR/TEMPLATE] (i.e. :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`)::
+
+  Before:
+     file_name = [ "${INPUT_BASE}/grid_to_grid/nwprod/fix/cmean_1d.1959${MET_VALID_HHMM}" ];
+
+  After:
+     file_name = [ ${CLIMO_MEAN_FILE} ];
+
+The output_prefix variable in the MET config files was previously set by referencing variable environment variables set by METplus. This has since been changed so that output_prefix references the $OUTPUT_PREFIX environment variable. This value is now set in the METplus configuration files using the wrapper-specific configuration variable, such as :term:`GRID_STAT_OUTPUT_PREFIX` or :term:`ENSEMBLE_STAT_OUTPUT_PREFIX`::
+
+  Before:
+     output_prefix    = "${FCST_VAR}_vs_${OBS_VAR}";
+
+  After:
+     output_prefix    = "${OUTPUT_PREFIX}";
 
 Due to these changes, MET configuration files that refer to any of these deprecated environment variables will throw an error. While the :ref:`validate_config` will automatically remove any invalid environment variables that may be set in the MET configuration files, the user will be responsible for adding the corresponding METplus configuration variable to reproduce the intended behavior. The tool will give a suggested value for <MET-tool>_OUTPUT_PREFIX.
 
-Example::
+Example log output::
 
     (met_util.py) DEBUG: Checking for deprecated environment variables in: DeprecatedConfig
     (met_util.py) ERROR: Please remove deprecated environment variable ${GRID_VX} found in MET config file: DeprecatedConfig
@@ -343,7 +361,7 @@ These cases can be handled automatically by using the :ref:`validate_config`, bu
 
 SED Commands
 ~~~~~~~~~~~~
-Running master_metplus.py with one or more configuration files that contain deprecated variables that can be fixed with a find/replace command will generate a file in the {OUTPUT_BASE} called sed_commands.txt. This file contains a list of commands that can be run to update the configuration file.
+Running master_metplus.py with one or more configuration files that contain deprecated variables that can be fixed with a find/replace command will generate a file in the {OUTPUT_BASE} called sed_commands.txt. This file contains a list of commands that can be run to update the configuration file. Lines that start with "#Add" are intended to notify the user to add a variable to their METplus configuration file.
 
 The :ref:`validate_config` will step you through each of these commands and execute them upon your approval.
 
@@ -362,9 +380,14 @@ Example sed_commands.txt content::
 
 Validate Config Helper Script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The script named validate_config.py is found in the same directory as master_metplus.py. To use this script, call it with the same arguments that you would pass to master_metplus.py. You must pass a valid configuration to the script, as in you must properly set MET_INSTALL_DIR, INPUT_BASE, and OUTPUT_BASE, or it will not run.
-The script will evaluate all of the configuration files, including any MET configuration file that is referenced in a _CONFIG_FILE variable, such as GRID_STAT_CONFIG_FILE.  For each deprecated item that is found, the script will suggest a replacement for the file where the deprecated item was found.
-The following replacement is suggested for /d1/mccabe/METplus-2.2/parm/use_cases/feature_relative/feature_relative.conf
+The script named validate_config.py is found in the same directory as master_metplus.py. To use this script, call it with the same arguments that you would pass to master_metplus.py::
+
+  master_metplus.py  -c ./my_conf.py -c ./another_config.py
+  validate_config.py -c ./my_conf.py -c ./another_config.py
+
+You must pass a valid configuration to the script, as in you must properly set :term:`MET_INSTALL_DIR`, :term:`INPUT_BASE`, and :term:`OUTPUT_BASE`, or it will not run.
+
+The script will evaluate all of the configuration files, including any MET configuration file that is referenced in a _CONFIG_FILE variable, such as :term:`GRID_STAT_CONFIG_FILE`.  For each deprecated item that is found, the script will suggest a replacement for the file where the deprecated item was found.
 
 Example 1 (Simple Rename)::
 
@@ -402,7 +425,7 @@ Example 3 (PCPCombine Input Levels)::
 
     Would you like the make this change to ./deprecated.conf? (y/n)[n]
 
-Example 4 (MET Configuration Files)::
+Example 4 (MET Configuration File)::
 
     The following replacement is suggested for DeprecatedConfig
 
@@ -414,8 +437,30 @@ Example 4 (MET Configuration Files)::
 
     Would you like the make this change to DeprecatedConfig? (y/n)[n]
 
+    IMPORTANT: If it is not already set, add the following in the [config] section to your METplus configuration file that sets GRID_STAT_CONFIG_FILE:
+
+    GRID_STAT_REGRID_TO_GRID
+    Make this change before continuing! [OK]
+
+Example 5 (Another MET Configuration File)::
+
+  The following replacement is suggested for DeprecatedConfig
+
+  Before:
+  output_prefix    = "${FCST_VAR}_vs_${OBS_VAR}";
+
+  After:
+  output_prefix    = "${OUTPUT_PREFIX}";
+
+  Would you like the make this change to DeprecatedConfig? (y/n)[n]
+
+  IMPORTANT: If it is not already set, add the following in the [config] section to your METplus configuration file that sets GRID_STAT_CONFIG_FILE:
+
+  GRID_STAT_OUTPUT_PREFIX = {CURRENT_FCST_NAME}_vs_{CURRENT_OBS_NAME}
+  Make this change before continuing! [OK]
+
 .. note::
-    Please note that while we are very diligent about including deprecated variables in this functionality, some may slip through the cracks. When upgrading to a new version of METplus, it is important to test and review your use cases to ensure they produce the same results as the previous version.
+    While the METplus developers are very diligent to include deprecated variables in this functionality, some may slip through the cracks. When upgrading to a new version of METplus, it is important to test and review your use cases to ensure they produce the same results as the previous version. Please contact met_help@ucar.edu with any questions.
 
 Running METplus Wrappers
 ------------------------
