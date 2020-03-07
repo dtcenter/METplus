@@ -579,7 +579,11 @@ def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool)
                         config.logger.error(f"Set {met_tool}_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in a "
                                             "METplus config file to set CLIMO_MEAN_FILE in a MET config")
                         new_line = "   file_name = [ ${CLIMO_MEAN_FILE} ];"
-                        sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+
+                        # escape [ and ] because they are special characters in sed commands
+                        old_line = line.rstrip().replace('[', '\[').replace(']', '\]')
+
+                        sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
                         add_line = f"{met_tool}_CLIMO_MEAN_INPUT_TEMPLATE"
                         sed_cmds.append(f"#Add {add_line}")
                         break
@@ -588,7 +592,11 @@ def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool)
                         config.logger.error("MET to_grid variable should reference "
                                             "${REGRID_TO_GRID} environment variable")
                         new_line = "   to_grid    = ${REGRID_TO_GRID};"
-                        sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+
+                        # escape [ and ] because they are special characters in sed commands
+                        old_line = line.rstrip().replace('[', '\[').replace(']', '\]')
+
+                        sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
                         config.logger.info(f"Be sure to set {met_tool}_REGRID_TO_GRID to the correct value.")
                         add_line = f"{met_tool}_REGRID_TO_GRID"
                         sed_cmds.append(f"#Add {add_line}")
@@ -602,7 +610,11 @@ def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool)
                     config.logger.error("output_prefix variable should reference "
                                         "${OUTPUT_PREFIX} environment variable")
                     new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
-                    sed_cmds.append(f"sed -i 's|^{line.rstrip()}|{new_line}|g' {met_config}")
+
+                    # escape [ and ] because they are special characters in sed commands
+                    old_line = line.rstrip().replace('[', '\[').replace(']', '\]')
+
+                    sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
                     config.logger.info(f"You will need to add {met_tool}_OUTPUT_PREFIX to the METplus config file"
                                        f" that sets {met_tool}_CONFIG_FILE. Set it to:")
                     output_prefix = replace_output_prefix(line)
