@@ -4124,8 +4124,15 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
+   INPUT_BASE
+     Location of sample input data to run use cases found in the METplus repository. Must be set correctly to run any of the use cases. Each of the sample data tarballs attached to the METplus release should be untarred in this directory. If done correctly, this directory should contain a directory named 'met_test' and a directory named 'model_applications.'
+
+     | *Used by:*  All
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
    PROJ_DIR
-     .. warning:: **DEPRECATED:** A directory for generic use. The user can store input files (if INPUT_BASE is not defined), intermediate files, and any other project-related files.
+     .. warning:: **DEPRECATED:** Please use :term:`INPUT_BASE` instead.
 
    REFERENCE_TMPL
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_BDECK_TEMPLATE`.
