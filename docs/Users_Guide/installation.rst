@@ -264,7 +264,7 @@ configuration files.
 Deprecated Configuration Variables
 ----------------------------------
 
-If you have used a previous release of METplus before, this content is important to getting started.
+If you have used a previous release of METplus before, this content is important to getting started using a newly released version.
 
 METplus developers strive to allow backwards compatibility so new versions of the tools will continue to work as they did in previous versions.
 However, sometimes changes are necessary for clarity and cohesion. Many configuration variable names have changed in version 3.0 in an attempt to make their function more clear.
