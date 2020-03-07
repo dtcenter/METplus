@@ -59,7 +59,10 @@ def main():
                           f"your METplus configuration file that sets {met_tool}_CONFIG_FILE:\n")
                     print(add_line)
                     input("Make this change before continuing! [OK]")
-                    continue
+                else:
+                    print("ERROR: Something went wrong in the validate_config.py script. Please send an email to met_help@ucar.edu.")
+
+                continue
 
             # remove -i from sed command to avoid replacing in the file
             cmd_no_inline = cmd.replace('sed -i', 'sed')
