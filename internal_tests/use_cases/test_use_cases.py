@@ -84,7 +84,7 @@ if 'METPLUS_DISABLE_PLOT_WRAPPERS' not in os.environ or not os.environ['METPLUS_
 # running so that git doesn't complain about differences
 use_cases_to_run = all_use_cases
 #use_cases_to_run = [
-#                use_case_dir+"/met_tool_wrapper/ASCII2NC.conf",
+#                use_case_dir+"/met_tool_wrapper/ASCII2NC/ASCII2NC.conf",
 #    ]
 
 def get_param_list(param):
