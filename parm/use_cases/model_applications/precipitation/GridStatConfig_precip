@@ -47,7 +47,8 @@ cnt_logic     = UNION;
 wind_thresh   = [ NA ];
 wind_logic    = UNION;
 eclv_points   = 0.05;
-nc_pairs_var_str = "";
+nc_pairs_var_suffix = "";
+nc_pairs_var_name = "";
 rank_corr_flag   = FALSE;
 
 //
