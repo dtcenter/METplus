@@ -6,7 +6,7 @@ import os
 import met_util as util
 import time_util
 from compare_gridded_wrapper import CompareGriddedWrapper
-
+from string_template_substitution import StringSub
 
 """
 Program Name: point_stat_wrapper.py
@@ -82,6 +82,9 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['POINT_STAT_STATION_ID'] = self.config.getstr('config', 'POINT_STAT_STATION_ID', '')
         c_dict['POINT_STAT_MESSAGE_TYPE'] = self.config.getstr('config', 'POINT_STAT_MESSAGE_TYPE', '')
 
+        c_dict['OBS_VALID_BEG'] = self.config.getraw('config', 'POINT_STAT_OBS_VALID_BEG', '')
+        c_dict['OBS_VALID_END'] = self.config.getraw('config', 'POINT_STAT_OBS_VALID_END', '')
+
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'point_stat')
 
@@ -113,6 +116,15 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.isOK = False
 
         return c_dict
+
+    def add_obs_valid_args(self, time_info):
+        for ext in ['BEG', 'END']:
+            if self.c_dict[f'OBS_VALID_{ext}']:
+                obs_valid = StringSub(self.logger,
+                                      self.c_dict[f'OBS_VALID_{ext}'],
+                                      **time_info).do_string_sub()
+                self.args.append(f"-obs_valid_{ext.lower()} {obs_valid}")
+
 
     def run_at_time_once(self, input_dict):
          # clear any settings leftover from previous run
@@ -185,6 +197,8 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         fcst_field = ','.join(fcst_field_list)
         obs_field = ','.join(obs_field_list)
+
+        self.add_obs_valid_args(time_info)
 
         self.process_fields(time_info, fcst_field, obs_field)
 

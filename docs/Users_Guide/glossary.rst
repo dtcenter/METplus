@@ -2361,6 +2361,20 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:* 1
 
+   POINT_STAT_OBS_VALID_BEG
+     Optional variable that sets the -obs_valid_beg command line argument for PointStat if set to something other than an empty string. Accepts filename template syntax, i.e. {valid?fmt=%Y%m%d_%H}
+
+     | *Used by:* PointStat
+     | *Family:* [config]
+     | *Default:*
+
+   POINT_STAT_OBS_VALID_END
+     Optional variable that sets the -obs_valid_end command line argument for PointStat if set to something other than an empty string. Accepts filename template syntax, i.e. {valid?fmt=%Y%m%d_%H}
+
+     | *Used by:* PointStat
+     | *Family:* [config]
+     | *Default:*
+
    GRID_STAT_OUT_DIR
      .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_OUTPUT_DIR` instead.
 

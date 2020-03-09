@@ -825,6 +825,8 @@ Configuration
 | :term:`OBS_POINT_STAT_VAR<n>_LEVELS` (optional)
 | :term:`OBS_POINT_STAT_VAR<n>_THRESH` (optional)
 | :term:`OBS_POINT_STAT_VAR<n>_OPTIONS` (optional)
+| :term:`POINT_STAT_OBS_VALID_BEG` (optional)
+| :term:`POINT_STAT_OBS_VALID_END` (optional)
 
 .. warning:: **DEPRECATED:**
 
