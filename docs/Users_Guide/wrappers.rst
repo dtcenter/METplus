@@ -667,7 +667,7 @@ Configuration
    | :term:`OVERWRITE_NC_OUTPUT`
    | :term:`VERTICAL_LOCATION`
 
-PcpCombine
+PCPCombine
 ----------
 
 .. _description-13:
@@ -675,8 +675,8 @@ PcpCombine
 Description
 ~~~~~~~~~~~
 
-The PcpCombine wrapper is a Python script that encapsulates the MET
-pcp_combine tool. It provides the infrastructure to combine or extract
+The PCPCombine wrapper is a Python script that encapsulates the MET
+PCPCombine tool. It provides the infrastructure to combine or extract
 from files to build desired accumulations.
 
 .. _configuration-13:
