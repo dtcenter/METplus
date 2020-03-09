@@ -581,7 +581,7 @@ def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool)
                         new_line = "   file_name = [ ${CLIMO_MEAN_FILE} ];"
 
                         # escape [ and ] because they are special characters in sed commands
-                        old_line = line.rstrip().replace('[', '\[').replace(']', '\]')
+                        old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
 
                         sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
                         add_line = f"{met_tool}_CLIMO_MEAN_INPUT_TEMPLATE"
@@ -594,7 +594,7 @@ def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool)
                         new_line = "   to_grid    = ${REGRID_TO_GRID};"
 
                         # escape [ and ] because they are special characters in sed commands
-                        old_line = line.rstrip().replace('[', '\[').replace(']', '\]')
+                        old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
 
                         sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
                         config.logger.info(f"Be sure to set {met_tool}_REGRID_TO_GRID to the correct value.")
@@ -612,7 +612,7 @@ def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool)
                     new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
 
                     # escape [ and ] because they are special characters in sed commands
-                    old_line = line.rstrip().replace('[', '\[').replace(']', '\]')
+                    old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
 
                     sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
                     config.logger.info(f"You will need to add {met_tool}_OUTPUT_PREFIX to the METplus config file"
