@@ -4139,7 +4139,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    INPUT_BASE
-     Location of sample input data to run use cases found in the METplus repository. Must be set correctly to run any of the use cases. Each of the sample data tarballs attached to the METplus release should be untarred in this directory. If done correctly, this directory should contain a directory named 'met_test' and a directory named 'model_applications.'
+     Provide a path to the top level output directory for METplus.  It is required and must be set correctly to run any of the use cases. This can be the location of sample input data to run use cases found in the METplus repository.  Each of the sample data tarballs attached to the METplus release should be untarred in this directory. If done correctly, this directory should contain a directory named 'met_test' and a directory named 'model_applications.'
 
      | *Used by:*  All
      | *Family:*  [dir]
