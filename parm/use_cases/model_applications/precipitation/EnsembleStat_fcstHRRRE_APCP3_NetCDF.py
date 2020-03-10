@@ -2,35 +2,34 @@
 HRRR Ensemble Use Case
 ======================
 
-This use case builds a 3 hour gridded precipitation accumulation using 1 hour accumulation fields,
+This use case creates ensemble statistics from a previously accumulated 3 hour
+precipitation case 
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Describe the scientific objective of the use case here. This can be fairly
-# simple, or complex depending on the task.
+# This creaets ensemble mean, standard deviation, min and max from 3 HRRRE
+# ensemble members. 
+# 
 
 ##############################################################################
 # Datasets
 # --------
 #
-# Describe the datasets here. Relevant information about the datasets that would
-# be beneficial include:
 # 
-#  * Forecast dataset: RUC GRIB 3 hour precipitation accumulation
-#  * Observation dataset: Stage II GRIB 1 hour precipitation accumulation
-#  * Sources of data (links, contacts, etc...)
+#  * Forecast dataset: HRRRE 3 member ensemble netcdf 3 hour precipitation accumulation
 #
 
-##############################################################################
+###############################################################################
 # METplus Components
 # ------------------
 #
-# This use case runs EnsembleStat on the GRIB HRRRE data
+# This use case runs EnsembleStat on HRRRE ensemble data from 3 members after
+# running it through pcp_combine to create a 3 hour precipitation accumulattion
 
-##############################################################################
+###############################################################################
 # METplus Workflow
 # ----------------
 #
@@ -148,11 +147,6 @@ This use case builds a 3 hour gridded precipitation accumulation using 1 hour ac
 # Keywords
 # --------
 #
-# Choose from the following pool of keywords, and include them in a note directive below.
-# Remove any keywords you don't use.
+# sphinx_gallery_thumbnail_path = ''
 #
-# EnsembleStatUseCase, PrecipitationUseCase
-#
-# Now include them like this:
-#
-# .. note:: EnsembleStatUseCase, PrecipitationUseCases
+# .. note:: `EnsembleStat <https://ncar.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_, `NOAA Hazardous Weather Testbed (HWT)  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_, `Precipitation <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_, `NetCDF  <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_
