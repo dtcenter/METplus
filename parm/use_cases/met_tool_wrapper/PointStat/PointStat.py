@@ -129,4 +129,6 @@ point observation data.
 # Keywords
 # --------
 #
+# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-PointStat.png'
+#
 # .. note:: `PointStatToolUseCase <https://ncar.github.io/METplus/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_

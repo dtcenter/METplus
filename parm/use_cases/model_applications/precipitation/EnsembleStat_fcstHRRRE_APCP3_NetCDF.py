@@ -1,24 +1,21 @@
 """
 HRRR Ensemble Use Case
 ======================
-
 This use case creates ensemble statistics from a previously accumulated 3 hour
 precipitation case 
-
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# This creaets ensemble mean, standard deviation, min and max from 3 HRRRE
-# ensemble members. 
-# 
+# To provide useful, statistical information on the relationship between observation data
+# and an ensemble forecast. This information can be used to help correct ensemble
+# member deviations from observed values.
 
 ##############################################################################
 # Datasets
 # --------
 #
-# 
 #  * Forecast dataset: HRRRE 3 member ensemble netcdf 3 hour precipitation accumulation
 #
 
@@ -26,18 +23,18 @@ precipitation case
 # METplus Components
 # ------------------
 #
-# This use case runs EnsembleStat on HRRRE ensemble data from 3 members after
-# running it through pcp_combine to create a 3 hour precipitation accumulattion
+# This use case runs EnsembleStat on HRRRE data from 3 members after
+# running it through pcp_combine to create a 3 hour precipitation accumulation
 
 ###############################################################################
 # METplus Workflow
 # ----------------
 #
 # The following tools are used for each run time:
-#  EnsembleStat
+# EnsembleStat
 #
 # This example loops by initialization time. For each initialization time
-#  it will process forecast leads 3, 6, 9 and 12 for 2 initilization times
+# it will process forecast leads 3, 6, 9 and 12
 #
 # Run times:
 #
@@ -88,7 +85,8 @@ precipitation case
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/EnsembleStatConfig_APCP03
 #
 # See the following files for more information about the environment variables set in this configuration file.
-#   parm/use_cases/met_tool_wrapper/EnsembleStat.py
+#
+# parm/use_cases/met_tool_wrapper/EnsembleStat.py
 
 ##############################################################################
 # Running METplus
@@ -96,7 +94,7 @@ precipitation case
 #
 # This use case can be run two ways:
 #
-# 1) Passing in EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf then a user-specific system configuration file::
+# 1) Passing in EnsembleStat_fcstHRRRE_APCP3_NetCDF.conf then a user-specific system configuration file::
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstHRRRE_APCP3_NetCDF.conf -c /path/to/user_system.conf
 #
@@ -129,24 +127,28 @@ precipitation case
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/precipitation/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField/201807091200 (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+# Output for this use case will be found in model_applications/precipitation/EnsembleStat_fcstHRRRE_APCP3_NetCDF/EnsembleStat (relative to **OUTPUT_BASE**)
+# The following folder/file combination will be created:
+#
+# -201905191200
 #
 # * ensemble_stat_APCP_03_20190519_150000V_ens.nc
 # * ensemble_stat_APCP_03_20190519_180000V_ens.nc
 # * ensemble_stat_APCP_03_20190519_210000V_ens.nc
 # * ensemble_stat_APCP_03_20190520_000000V_ens.nc
+#
+# -201905200000
+#
 # * ensemble_stat_APCP_03_20190520_030000V_ens.nc
 # * ensemble_stat_APCP_03_20190520_060000V_ens.nc
 # * ensemble_stat_APCP_03_20190520_090000V_ens.nc
 # * ensemble_stat_APCP_03_20190520_120000V_ens.nc
-#
 
 
 ##############################################################################
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = ''
+# sphinx_gallery_thumbnail_path = '_static/precipitation-EnsembleStat_fcstHRRRE_APCP3_NetCDF.png'
 #
 # .. note:: `EnsembleStat <https://ncar.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_, `NOAA Hazardous Weather Testbed (HWT)  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_, `Precipitation <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_, `NetCDF  <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_

@@ -122,4 +122,6 @@ This use case will run the MET PB2NC tool to convert prepBUFR point observation 
 # Keywords
 # --------
 #
+# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-PB2NC.png'
+#
 # .. note:: `PB2NCToolUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_

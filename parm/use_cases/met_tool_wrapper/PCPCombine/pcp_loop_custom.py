@@ -118,4 +118,6 @@ This use case will run the MET PCPCombine tool in ADD mode and read in files. It
 # Keywords
 # --------
 #
+# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-PCPCombine.png'
+#
 # .. note:: `PCPCombineToolUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_

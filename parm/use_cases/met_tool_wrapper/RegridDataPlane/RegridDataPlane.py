@@ -107,4 +107,6 @@ This use case will run the MET RegridDataPlane tool to regrid observation data i
 # Keywords
 # --------
 #
+# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-RegridDataPlane.png'
+#
 # .. note:: `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
