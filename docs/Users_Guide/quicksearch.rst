@@ -53,7 +53,7 @@ Use Cases by Application:
 Use Cases by METplus Feature:
 -----------------------------
 | `Example <https://ncar.github.io/METplus/search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_
-| `CustomIngest <https://ncar.github.io/METplus/search.html?q=CustomIngestToolUseCase&check_keywords=yes&area=default>`_
+| `PyEmbedIngest <https://ncar.github.io/METplus/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_
 | `GempakToCF <https://ncar.github.io/METplus/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_
 | `Looping by month or year  <https://ncar.github.io/METplus/search.html?q=MonthLoopFeatureUseCase&check_keywords=yes&area=default>`_
 | `Series by Initialization  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_

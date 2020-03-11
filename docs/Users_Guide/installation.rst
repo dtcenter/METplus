@@ -503,25 +503,28 @@ When the above command is run, a usage message appears indicating that other con
 
   Currently available processes are:
   - ASCII2NC
-  - CustomIngest
   - CyclonePlotter
   - EnsembleStat
+  - Example
   - ExtractTiles
   - GempakToCF
   - GridStat
-  - MakePlots
-  - Mode
+  - MODE
   - MTD
+  - MakePlots
   - PB2NC
-  - PcpCombine
+  - PCPCombine
   - PointStat
+  - PyEmbedIngest
   - RegridDataPlane
+  - SeriesAnalysis
   - SeriesByInit
   - SeriesByLead
   - StatAnalysis
   - TCMPRPlotter
-  - TcPairs
-  - TcStat
+  - TCPairs
+  - TCStat
+  - Usage
 
 **Example 2: Using a use-case configuration:**
 

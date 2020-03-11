@@ -54,7 +54,7 @@ from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TCStatWrapper
 from gempak_to_cf_wrapper import GempakToCFWrapper
 from example_wrapper import ExampleWrapper
-from custom_ingest_wrapper import CustomIngestWrapper
+from py_embed_ingest_wrapper import PyEmbedIngestWrapper
 from ascii2nc_wrapper import ASCII2NCWrapper
 from series_analysis_wrapper import SeriesAnalysisWrapper
 

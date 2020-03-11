@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 """
-Program Name: custom_ingest_wrapper.py
+Program Name: py_embed_ingest_wrapper.py
 Contact(s): George McCabe
 Abstract: 
 History Log:  Initial version
@@ -25,11 +25,11 @@ from string_template_substitution import StringSub
 
 VALID_PYTHON_EMBED_TYPES = ['NUMPY', 'XARRAY', 'PANDAS']
 
-class CustomIngestWrapper(CommandBuilder):
+class PyEmbedIngestWrapper(CommandBuilder):
     """!Wrapper to utilize Python Embedding in the MET tools to read in
     data using a python script"""
     def __init__(self, config, logger):
-        self.app_name = 'custom_ingest'
+        self.app_name = 'py_embed_ingest'
         super().__init__(config, logger)
 
     def create_c_dict(self):
@@ -38,35 +38,35 @@ class CustomIngestWrapper(CommandBuilder):
 
         c_dict['INGESTERS'] = []
 
-        # find all CUSTOM_INGEST_<n>_TEMPLATE keys in the conf files
+        # find all PY_EMBED_INGEST_<n>_TEMPLATE keys in the conf files
         all_conf = self.config.keys('config')
         indices = []
-        regex = re.compile(r"CUSTOM_INGEST_(\d+)_SCRIPT")
+        regex = re.compile(r"PY_EMBED_INGEST_(\d+)_SCRIPT")
         for conf in all_conf:
             result = regex.match(conf)
             if result is not None:
                 indices.append(result.group(1))
 
         for index in indices:
-            ingest_script = self.config.getraw('config', 'CUSTOM_INGEST_{}_SCRIPT'.format(index))
-            input_type = self.config.getstr('config', 'CUSTOM_INGEST_{}_TYPE'.format(index))
+            ingest_script = self.config.getraw('config', 'PY_EMBED_INGEST_{}_SCRIPT'.format(index))
+            input_type = self.config.getstr('config', 'PY_EMBED_INGEST_{}_TYPE'.format(index))
             input_type = input_type.upper()
             if input_type not in VALID_PYTHON_EMBED_TYPES:
-                self.log_error(f'CUSTOM_INGEST_{index}_TYPE ({input_type}) not valid. '
+                self.log_error(f'PY_EMBED_INGEST_{index}_TYPE ({input_type}) not valid. '
                                f"Valid types are {', '.join(VALID_PYTHON_EMBED_TYPES)}")
                 self.isOK = False
 
             # If input type is PANDAS, call ascii2nc? instead of RegridDataPlane
             if input_type == 'PANDAS':
-                self.log_error('Running CustomIngester on pandas data not yet implemented')
+                self.log_error('Running PyEmbedIngester on pandas data not yet implemented')
                 self.isOK = False
 
-            output_dir = self.config.getdir('CUSTOM_INGEST_{}_OUTPUT_DIR'.format(index), '')
+            output_dir = self.config.getdir('PY_EMBED_INGEST_{}_OUTPUT_DIR'.format(index), '')
             output_template = self.config.getraw('filename_templates',
-                                                 'CUSTOM_INGEST_{}_OUTPUT_TEMPLATE'.format(index))
-            output_grid = self.config.getraw('config', 'CUSTOM_INGEST_{}_OUTPUT_GRID'.format(index), '')
+                                                 'PY_EMBED_INGEST_{}_OUTPUT_TEMPLATE'.format(index))
+            output_grid = self.config.getraw('config', 'PY_EMBED_INGEST_{}_OUTPUT_GRID'.format(index), '')
             if output_grid == '':
-                self.log_error(f'Must set CUSTOM_INGEST_{index}_OUTPUT_GRID')
+                self.log_error(f'Must set PY_EMBED_INGEST_{index}_OUTPUT_GRID')
                 self.isOK = False
 
             ingester_dict = {'output_dir': output_dir,
@@ -100,7 +100,7 @@ class CustomIngestWrapper(CommandBuilder):
 
             for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
                 if custom_string:
-                    self.logger.info(f"Processing custom string: {custom_string}")
+                    self.logger.info(f"Processing loop string: {custom_string}")
 
                 time_info['custom'] = custom_string
 
@@ -141,11 +141,11 @@ class CustomIngestWrapper(CommandBuilder):
             if cmd is None:
                 self.log_error("Could not generate command")
                 return
-            self.logger.info(f'Running Custom Ingester {index}')
+            self.logger.info(f'Running PyEmbed Ingester {index}')
 
             # run command and add to errors if it failed
             if not rdp.build():
                 self.errors += 1
 
 if __name__ == "__main__":
-    util.run_stand_alone(__file__, "CustomIngest")
+    util.run_stand_alone(__file__, "PyEmbedIngest")

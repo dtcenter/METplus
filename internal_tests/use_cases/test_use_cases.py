@@ -20,7 +20,7 @@ all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/ASCII2NC/ASCII2NC.conf",
                 use_case_dir + "/met_tool_wrapper/ASCII2NC/ASCII2NC_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/ASCII2NC/ASCII2NC_python_embedding_user_py.conf",
-                use_case_dir + "/met_tool_wrapper/CustomIngest/CustomIngest.conf",
+                use_case_dir + "/met_tool_wrapper/PyEmbedIngest/PyEmbedIngest.conf",
                 use_case_dir + "/met_tool_wrapper/EnsembleStat/EnsembleStat.conf",
                 use_case_dir + "/met_tool_wrapper/EnsembleStat/EnsembleStat_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/Example/Example.conf",

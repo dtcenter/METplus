@@ -46,6 +46,32 @@ baseinputconfs = ['metplus_config/metplus_system.conf',
 
 PYTHON_EMBEDDING_TYPES = ['PYTHON_NUMPY', 'PYTHON_XARRAY', 'PYTHON_PANDAS']
 
+LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
+                         'cycloneplotter': 'CyclonePlotter',
+                         'ensemblestat': 'EnsembleStat',
+                         'example': 'Example',
+                         'extracttiles': 'ExtractTiles',
+                         'gempaktocf': 'GempakToCF',
+                         'gridstat': 'GridStat',
+                         'makeplots': 'MakePlots',
+                         'mode': 'MODE',
+                         'mtd': 'MTD',
+                         'modetimedomain': 'MTD',
+                         'pb2nc': 'PB2NC',
+                         'pcpcombine': 'PCPCombine',
+                         'pointstat': 'PointStat',
+                         'pyembedingest': 'PyEmbedIngest',
+                         'regriddataplane': 'RegridDataPlane',
+                         'seriesanalysis': 'SeriesAnalysis',
+                         'seriesbyinit': 'SeriesByInit',
+                         'seriesbylead': 'SeriesByLead',
+                         'statanalysis': 'StatAnalysis',
+                         'tcpairs': 'TCPairs',
+                         'tcstat': 'TCStat',
+                         'tcmprplotter': 'TCMPRPlotter',
+                         'usage': 'Usage',
+                         }
+
 def pre_run_setup(filename, app_name):
     filebasename = os.path.basename(filename)
     logger = logging.getLogger(app_name)
@@ -117,7 +143,7 @@ def run_metplus(config, process_list):
                 # if Usage specified in PROCESS_LIST, print usage and exit
                 if item == 'Usage':
                     command_builder.run_all_times()
-                    return 1
+                    return 0
             except AttributeError:
                 raise NameError("Process %s doesn't exist" % item)
 
@@ -1745,31 +1771,6 @@ def getlistint(list_str):
 def get_process_list(config):
     """!Read process list, remove dashes/underscores and change to lower case. Then
         map the name to the correct wrapper name"""
-    lower_to_wrapper_name = {'ascii2nc': 'ASCII2NC',
-                             'customingest': 'CustomIngest',
-                             'cycloneplotter': 'CyclonePlotter',
-                             'ensemblestat': 'EnsembleStat',
-                             'example': 'Example',
-                             'extracttiles': 'ExtractTiles',
-                             'gempaktocf': 'GempakToCF',
-                             'gridstat': 'GridStat',
-                             'makeplots': 'MakePlots',
-                             'mode': 'MODE',
-                             'mtd': 'MTD',
-                             'modetimedomain': 'MTD',
-                             'pb2nc': 'PB2NC',
-                             'pcpcombine': 'PCPCombine',
-                             'pointstat': 'PointStat',
-                             'regriddataplane': 'RegridDataPlane',
-                             'seriesanalysis': 'SeriesAnalysis',
-                             'seriesbyinit': 'SeriesByInit',
-                             'seriesbylead': 'SeriesByLead',
-                             'statanalysis': 'StatAnalysis',
-                             'tcpairs': 'TCPairs',
-                             'tcstat': 'TCStat',
-                             'tcmprplotter': 'TCMPRPlotter',
-                             'usage': 'Usage',
-                            }
 
     # get list of processes
     process_list = getlist(config.getstr('config', 'PROCESS_LIST'))
@@ -1778,8 +1779,8 @@ def get_process_list(config):
     # for each item remove dashes, underscores, and cast to lower-case
     for process in process_list:
         lower_process = process.replace('-', '').replace('_', '').lower()
-        if lower_process in lower_to_wrapper_name.keys():
-            out_process_list.append(lower_to_wrapper_name[lower_process])
+        if lower_process in LOWER_TO_WRAPPER_NAME.keys():
+            out_process_list.append(LOWER_TO_WRAPPER_NAME[lower_process])
         else:
             config.logger.warning(f"PROCESS_LIST item {process} may be invalid.")
             out_process_list.append(process)

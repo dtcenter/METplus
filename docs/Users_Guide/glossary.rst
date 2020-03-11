@@ -4,11 +4,11 @@ METplus Configuration Glossary
 .. glossary::
    :sorted:
 
-   SERIES_ANALYSIS_CUSTOM_LOOP_LIST
-     List of strings that are used to run SeriesAnalysis multiple times for each run time to allow the tool to be run with different configurations. The filename template tag {custom?fmt=%s} can be used throughout the METplus configuration file. For example, the text can be used to supply different configuration files and output filenames/directories. If you have two SeriesAnalysis configuration files, SeriesAnalysisConfig_one and SeriesAnalysisConfig_two, you can set::
+   CUSTOM_LOOP_LIST
+     List of strings that are used to run each item in the :term:`PROCESS_LIST` multiple times for each run time to allow the tool to be run with different configurations. The filename template tag {custom?fmt=%s} can be used throughout the METplus configuration file. For example, the text can be used to supply different configuration files (if the MET tool uses them) and output filenames/directories. If you have two configuration files, SeriesAnalysisConfig_one and SeriesAnalysisConfig_two, you can set::
 
        [config]
-       SERIES_ANALYSIS_CUSTOM_LOOP_LIST = one, two
+       CUSTOM_LOOP_LIST = one, two
        SERIES_ANALYSIS_CONFIG_FILE = {CONFIG_DIR}/SeriesAnalysisConfig_{custom?fmt=%s}
 
        [dir]
@@ -16,16 +16,114 @@ METplus Configuration Glossary
 
     With this configuration, SeriesAnalysis will be called twice. The first run will use SeriesAnalysisConfig_one and write output to {OUTPUT_BASE}/one. The second run will use SeriesAnalysisConfig_two and write output to {OUTPUT_BASE}/two.
 
-    If unset or left blank, SeriesAnalysis will run once per run time.
+    If unset or left blank, the wrapper will run once per run time. There are also wrapper-specific configuration variables to define a custom string loop list for a single wrapper, i.e. :term:`SERIES_ANALYSIS_CUSTOM_LOOP_LIST` and :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`.
+
+     | *Used by:* Many
+     | *Family:* config
+     | *Default:* None
+
+   SERIES_ANALYSIS_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
 
      | *Used by:* SeriesAnalysis
      | *Family:* config
      | *Default:* None
 
    PCP_COMBINE_CUSTOM_LOOP_LIST
-     List of strings that are used to run PCPCombine multiple times for each run time to allow the tool to be run with different configurations. The filename template tag {custom?fmt=%s} can be used throughout the METplus configuration file. If unset or left blank, PCPCombine will run once per run time.
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
 
      | *Used by:* PCPCombine
+     | *Family:* config
+     | *Default:* None
+
+   ASCII2NC_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* ASCII2NC
+     | *Family:* config
+     | *Default:* None
+
+   ENSEMBLE_STAT_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* EnsembleStat
+     | *Family:* config
+     | *Default:* None
+
+   EXAMPLE_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* Example
+     | *Family:* config
+     | *Default:* None
+
+   GEMPAKTOCF_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* GempakToCF
+     | *Family:* config
+     | *Default:* None
+
+   GRID_STAT_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* GridStat
+     | *Family:* config
+     | *Default:* None
+
+   MODE_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* MODE
+     | *Family:* config
+     | *Default:* None
+
+   MTD_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* MTD
+     | *Family:* config
+     | *Default:* None
+
+   PB2NC_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* PB2NC
+     | *Family:* config
+     | *Default:* None
+
+   POINT_STAT_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* PointStat
+     | *Family:* config
+     | *Default:* None
+
+   PY_EMBED_INGEST_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* PyEmbedIngest
+     | *Family:* config
+     | *Default:* None
+
+   REGRID_DATA_PLANE_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* RegridDataPlane
+     | *Family:* config
+     | *Default:* None
+
+   TC_PAIRS_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* TCPairs
+     | *Family:* config
+     | *Default:* None
+
+   EXTRACT_TILES_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* ExtractTiles
      | *Family:* config
      | *Default:* None
 
@@ -423,40 +521,55 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* None
 
-   CUSTOM_INGEST_<n>_SCRIPT
-     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the python script with arguments to run through RegridDataPlane to generate a file that can be read by the MET tools. This variable supports filename template syntax, so you can specify filenames with time information, i.e. {valid?fmt=%Y%m%d}. See also :term:`CUSTOM_INGEST_<n>_TYPE`, :term:`CUSTOM_INGEST_<n>_OUTPUT_GRID`, :term:`CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`CUSTOM_INGEST_<n>_OUTPUT_DIR`.
+   PY_EMBED_INGEST_<n>_SCRIPT
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the python script with arguments to run through RegridDataPlane to generate a file that can be read by the MET tools. This variable supports filename template syntax, so you can specify filenames with time information, i.e. {valid?fmt=%Y%m%d}. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`.
 
-     | *Used by:* CustomIngest
+     | *Used by:* PyEmbedIngest
      | *Family:* [config]
      | *Default:* None
 
-   CUSTOM_INGEST_<n>_TYPE
-     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the type of output generated by the Python script. Valid options are NUMPY, XARRAY, and PANDAS. See also :term:`CUSTOM_INGEST_<n>_SCRIPT`, :term:`CUSTOM_INGEST_<n>_OUTPUT_GRID`, :term:`CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`CUSTOM_INGEST_<n>_OUTPUT_DIR`.
+   PY_EMBED_INGEST_<n>_TYPE
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the type of output generated by the Python script. Valid options are NUMPY, XARRAY, and PANDAS. See also :term:`PY_EMBED_INGEST_<n>_SCRIPT`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`.
 
-     | *Used by:* CustomIngest
+     | *Used by:* PyEmbedIngest
      | *Family:* [config]
      | *Default:* None
 
-   CUSTOM_INGEST_<n>_OUTPUT_GRID
-     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the grid information that RegridDataPlane will use to generate a file that can be read by the MET tools. This can be a file path or a grid definition. See the MET User's Guide section regarding Regrid-Data-Plane for more information. See also :term:`CUSTOM_INGEST_<n>_TYPE`, :term:`CUSTOM_INGEST_<n>_SCRIPT`, :term:`CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`CUSTOM_INGEST_<n>_OUTPUT_DIR`.
+   PY_EMBED_INGEST_<n>_OUTPUT_GRID
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the grid information that RegridDataPlane will use to generate a file that can be read by the MET tools. This can be a file path or a grid definition. See the MET User's Guide section regarding Regrid-Data-Plane for more information. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_SCRIPT`, :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`.
 
-     | *Used by:* CustomIngest
+     | *Used by:* PyEmbedIngest
      | *Family:* [config]
      | *Default:* None
 
-   CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE
-     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the output filename using filename template syntax. The value will be substituted with time information and appended to :term:`CUSTOM_INGEST_<n>_OUTPUT_DIR` if it is set. See also :term:`CUSTOM_INGEST_<n>_TYPE`, :term:`CUSTOM_INGEST_<n>_SCRIPT`, and :term:`CUSTOM_INGEST_<n>_OUTPUT_GRID`.
+   PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the output filename using filename template syntax. The value will be substituted with time information and appended to :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR` if it is set. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_SCRIPT`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`.
 
-     | *Used by:* CustomIngest
+     | *Used by:* PyEmbedIngest
      | *Family:* [filename_templates]
      | *Default:* None
 
-   CUSTOM_INGEST_<n>_OUTPUT_DIR
-     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the output diirectory to write data. See also :term:`CUSTOM_INGEST_<n>_TYPE`, :term:`CUSTOM_INGEST_<n>_SCRIPT`, and :term:`CUSTOM_INGEST_<n>_OUTPUT_GRID`, and :term:`CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE`.
+   PY_EMBED_INGEST_<n>_OUTPUT_DIR
+     Used to use Python embedding to process multiple files. <n> is an integer greater than or equal to 1. Specifies the output diirectory to write data. See also :term:`PY_EMBED_INGEST_<n>_TYPE`, :term:`PY_EMBED_INGEST_<n>_SCRIPT`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`, and :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`.
 
-     | *Used by:* CustomIngest
+     | *Used by:* PyEmbedIngest
      | *Family:* [dir]
      | *Default:* None
+
+   CUSTOM_INGEST_<n>_SCRIPT
+     .. warning:: **DEPRECATED:** Please use :term:`PY_EMBED_INGEST_<n>_SCRIPT`.
+
+   CUSTOM_INGEST_<n>_TYPE
+     .. warning:: **DEPRECATED:** Please use :term:`PY_EMBED_INGEST_<n>_TYPE`.
+
+   CUSTOM_INGEST_<n>_OUTPUT_GRID
+     .. warning:: **DEPRECATED:** Please use :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`.
+
+   CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE
+     .. warning:: **DEPRECATED:** Please use :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`.
+
+   CUSTOM_INGEST_<n>_OUTPUT_DIR
+     .. warning:: **DEPRECATED:** Please use :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`.
 
    ASCII2NC_CONFIG_FILE
      Path to optional configuration file read by ASCII2NC.

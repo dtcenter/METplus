@@ -1,4 +1,4 @@
-﻿
+
 
 ============
 User's Guide
@@ -35,7 +35,7 @@ Wrappers, including Dan Adriaansen, Minna Win-Gildenmeister, George McCabe, Juli
 * Added support for python embedding to supply gridded input data to MET tools (PcpCombine, GridStat, PointStat (gridded data only), RegridDataPlane...
 * PcpCombine now supports custom user-defined commands to build atypical use case calls
 * Improved logging to help debugging by listing expected file path
-* CustomIngester wrapper added to allow python embedding for multiple data sources (in progress)
+* PyEmbedIngester wrapper added to allow python embedding for multiple data sources
 * Added support for month and year intervals for [INIT/VALID]_INCREMENT and LEAD_SEQ
 * Addition of contributor/developer guide as part of documentation
 * Documentation moved online using GitHub Pages and completely renamed, PDF option TBD.
@@ -70,7 +70,7 @@ We thank all the METplus sponsors including: DTC partners (NOAA, NCAR, USAF, and
 
 .. toctree::
    :titlesonly:
-   :numbered:
+   :numbered: 4
 
    overview
    installation
