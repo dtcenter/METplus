@@ -1,6 +1,6 @@
 """
-PCPCombine loop CUSTOM
-======================
+PCPCombine Custom String Looping
+================================
 
 This use case will run the MET PCPCombine tool in ADD mode and read in files. It highlights the ability to loop over a user-defined list of strings, which are used to extract the multiple input files across a given run time.
 
@@ -120,4 +120,6 @@ This use case will run the MET PCPCombine tool in ADD mode and read in files. It
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-PCPCombine.png'
 #
-# .. note:: `PCPCombineToolUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_
+# .. note::
+#    `PCPCombineToolUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_,
+#    `CustomStringLoopingUseCase <https://ncar.github.io/METplus/search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_
