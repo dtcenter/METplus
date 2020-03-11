@@ -117,8 +117,13 @@ This use case will run the MET MTD (MODE Time Domain) tool to compare gridded fo
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
 # Output for this use case will be found in met_tool_wrapper/MTD/mtd_python_embedding (relative to **OUTPUT_BASE**)
 # and will contain the following files:
-
-# * out.nc
+#
+# * mtd_PYTHON_20050807_120000V_2d.txt
+# * mtd_PYTHON_20050807_120000V_3d_pair_cluster.txt
+# * mtd_PYTHON_20050807_120000V_3d_pair_simple.txt
+# * mtd_PYTHON_20050807_120000V_3d_single_cluster.txt
+# * mtd_PYTHON_20050807_120000V_3d_single_simple.txt
+# * mtd_PYTHON_20050807_120000V_obj.nc
 
 ##############################################################################
 # Keywords
