@@ -18,7 +18,7 @@ This use case will run the GempakToCF (external) tool to convert Gempak data to 
 #
 # | **Observations:** MRMS QPE
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-met_test-9.0.tgz
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** Unknown
