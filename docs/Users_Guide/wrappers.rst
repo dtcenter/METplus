@@ -289,7 +289,6 @@ Configuration
 [config]
 
 | :term:`GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS`
-
 | :term:`GEMPAKTOCF_CUSTOM_LOOP_LIST`
 
 .. warning:: **DEPRECATED:**

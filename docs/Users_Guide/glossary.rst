@@ -508,14 +508,14 @@ METplus Configuration Glossary
      | *Default:* %m/%d %H:%M:%S
 
    FCST_PCP_COMBINE_COMMAND
-     Used only when :term:`FCST_PCP_COMBINE_METHOD` = CUSTOM. Custom command to run PcpCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_COMMAND`.
+     Used only when :term:`FCST_PCP_COMBINE_METHOD` = USER_DEFINED. Custom command to run PcpCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_COMMAND`.
 
      | *Used by:* PcpCombine
      | *Family:* [config]
      | *Default:* None
 
    OBS_PCP_COMBINE_COMMAND
-     Used only when :term:`OBS_PCP_COMBINE_METHOD` = CUSTOM. Custom command to run PcpCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for forecast data called :term:`FCST_PCP_COMBINE_COMMAND`.
+     Used only when :term:`OBS_PCP_COMBINE_METHOD` = USER_DEFINED. Custom command to run PcpCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for forecast data called :term:`FCST_PCP_COMBINE_COMMAND`.
 
      | *Used by:* PcpCombine
      | *Family:* [config]
@@ -1669,7 +1669,7 @@ METplus Configuration Glossary
      | *Default:*  False
 
    FCST_PCP_COMBINE_METHOD
-     Specify the method to be used with the MET pcp_combine tool processing forecast data.Valid options are ADD, SUM, SUBTRACT, DERIVE, and CUSTOM. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_METHOD`.
+     Specify the method to be used with the MET pcp_combine tool processing forecast data.Valid options are ADD, SUM, SUBTRACT, DERIVE, and USER_DEFINED. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_METHOD`.
 
      | *Used by:*  PcpCombine
      | *Family:*  [config]

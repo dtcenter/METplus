@@ -36,7 +36,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     precipitation accumulations"""
 
     # valid values for [FCST/OBS]_PCP_COMBINE_METHOD
-    valid_run_methods = ['ADD', 'SUM', 'SUBTRACT', 'DERIVE', 'CUSTOM']
+    valid_run_methods = ['ADD', 'SUM', 'SUBTRACT', 'DERIVE', 'USER_DEFINED']
 
     def __init__(self, config, logger):
         self.app_name = 'pcp_combine'
@@ -56,7 +56,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.output_name = ""
         self.name = ""
         self.compress = -1
-        self.custom_command = ''
+        self.user_command = ''
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -106,6 +106,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         run_method = \
             self.config.getstr('config', d_type+'_PCP_COMBINE_METHOD', '').upper()
+
+        # support run method of CUSTOM, but warn and change it to USER_DEFINED
+        if run_method == 'CUSTOM':
+            self.logger.warning(f'{d_type}_PCP_COMBINE_RUN_METHOD should be set to USER_DEFINED. CUSTOM method is deprecated')
+            run_method = 'USER_DEFINED'
 
         c_dict[d_type+'_RUN_METHOD'] = run_method
 
@@ -183,7 +188,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.output_name = ""
         self.name = ""
         self.compress = -1
-        self.custom_command = ''
+        self.user_command = ''
 
     def add_input_file(self, filename, addon):
         self.infiles.append(filename)
@@ -506,8 +511,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         for a in self.args:
             cmd += a + " "
 
-        if self.method == "CUSTOM":
-            cmd += self.custom_command
+        if self.method == "USER_DEFINED":
+            cmd += self.user_command
             return cmd
         elif self.method == "SUM":
             if self.init_time == -1:
@@ -595,14 +600,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         cmd = None
         self.method = self.c_dict[data_src+'_RUN_METHOD']
 
-        # if method is not CUSTOM or DERIVE, check that field information is set
-        if self.method == "CUSTOM":
-            cmd = self.setup_custom_method(time_info, data_src)
+        # if method is not USER_DEFINED or DERIVE, check that field information is set
+        if self.method == "USER_DEFINED":
+            cmd = self.setup_user_method(time_info, data_src)
         elif self.method == "DERIVE":
             cmd = self.setup_derive_method(time_info, var_info, data_src)
         elif var_info is None and not self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
             self.log_error('Cannot run PCPCombine without specifying fields to process '
-                           'unless running in CUSTOM mode. You must set '
+                           'unless running in USER_DEFINED mode. You must set '
                            f'{data_src}_VAR<n>_[NAME/LEVELS] or {data_src}_OUTPUT_[NAME/LEVEL]')
             return False
 
@@ -623,7 +628,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # if output file exists and we want to skip it, warn and continue
         outfile = self.get_output_path()
-        if not self.method == "CUSTOM" and os.path.exists(outfile) and \
+        if not self.method == "USER_DEFINED" and os.path.exists(outfile) and \
           self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
             self.logger.debug('Skip writing output file {} because it already '
                               'exists. Remove file or change '
@@ -936,8 +941,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.c_dict['STAT_LIST'] = self.c_dict[f"{data_src}_STAT_LIST"]
         return self.get_command()
 
-    def setup_custom_method(self, time_info, data_src):
-        """!Setup pcp_combine to derive stats
+    def setup_user_method(self, time_info, data_src):
+        """!Setup pcp_combine to call user defined command
         Args:
           @param time_info dictionary containing timing information
           @param var_info object containing variable information
@@ -945,7 +950,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
           @rtype string
           @return path to output file"""
         command_template = self.config.getraw('config', data_src + '_PCP_COMBINE_COMMAND')
-        self.custom_command = sts.StringSub(self.logger, command_template, **time_info).do_string_sub()
+        self.user_command = sts.StringSub(self.logger, command_template, **time_info).do_string_sub()
 
         # get output accumulation in case output template uses level
         accum_string = '0'
@@ -957,7 +962,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if accum_seconds is not None:
             time_info['level'] = int(accum_seconds)
 
-        # add output path to custom command
+        # add output path to user defined command
         self.outdir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
 
         self.outfile = sts.StringSub(self.logger,
@@ -970,9 +975,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if not os.path.exists(os.path.dirname(out_path)):
             os.makedirs(os.path.dirname(out_path))
 
-        self.custom_command += ' ' + out_path
+        self.user_command += ' ' + out_path
 
-        return '{} -v {} {}'.format(self.app_path, self.c_dict['VERBOSITY'], self.custom_command)
+        return '{} -v {} {}'.format(self.app_path, self.c_dict['VERBOSITY'], self.user_command)
 
     def build_input_accum_list(self, data_src, time_info):
         accum_list = self.c_dict[data_src + '_ACCUMS']

@@ -33,7 +33,7 @@ all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_sum.conf",
                 use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_add.conf",
                 use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_bucket.conf",
-                use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_custom.conf",
+                use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_user_defined.conf",
                 use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_derive.conf",
                 use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_loop_custom.conf",
 #                use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_python_embedding.conf",
