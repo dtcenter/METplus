@@ -19,6 +19,7 @@ import met_util as util
 import time_util
 from mode_wrapper import MODEWrapper
 from compare_gridded_wrapper import CompareGriddedWrapper
+from string_template_substitution import StringSub
 
 class MTDWrapper(MODEWrapper):
 
@@ -41,7 +42,7 @@ class MTDWrapper(MODEWrapper):
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('MTD_OUTPUT_DIR',
                                            self.config.getdir('OUTPUT_BASE'))
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MTD_CONFIG_FILE', '')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config', 'MTD_CONFIG_FILE', '')
         c_dict['MIN_VOLUME'] = self.config.getstr('config', 'MTD_MIN_VOLUME', '2000')
         c_dict['SINGLE_RUN'] = self.config.getbool('config', 'MTD_SINGLE_RUN', False)
         c_dict['SINGLE_DATA_SRC'] = self.config.getstr('config', 'MTD_SINGLE_DATA_SRC', 'FCST')
@@ -122,6 +123,20 @@ class MTDWrapper(MODEWrapper):
         return c_dict
 
     def run_at_time(self, input_dict):
+        """! Runs the MET application for a given run time. This function loops
+              over the list of user-defined strings and runs the application for each.
+              Overrides run_at_time in compare_gridded_wrapper.py
+              Args:
+                @param input_dict dictionary containing timing information
+        """
+        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+            if custom_string:
+                self.logger.info(f"Processing custom string: {custom_string}")
+
+            input_dict['custom'] = custom_string
+            self.run_at_time_loop_string(input_dict)
+
+    def run_at_time_loop_string(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
               over the list of forecast leads and runs the application for each.
               Overrides run_at_time in compare_gridded_wrapper.py
@@ -331,7 +346,9 @@ class MTDWrapper(MODEWrapper):
 
         # loop through fields and call MTD
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
-            self.param = self.c_dict['CONFIG_FILE']
+            self.param  = StringSub(self.logger,
+                                    self.c_dict['CONFIG_FILE'],
+                                    **time_info).do_string_sub()
             self.create_and_set_output_dir(time_info)
 
             self.set_environment_variables(fcst_field, obs_field, var_info, time_info)

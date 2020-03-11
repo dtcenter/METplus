@@ -43,12 +43,27 @@ def main():
         for cmd in sed_cmds:
             if cmd.startswith('#Add'):
                 add_line = cmd.replace('#Add ', '')
-                met_tool = add_line.split('_OUTPUT_PREFIX')[0]
-                print(f"\nIMPORTANT: Add the following in the [config] section to your METplus "
-                      f"configuration file that sets {met_tool}_CONFIG_FILE:\n")
-                print(add_line)
-                user_answer = input("Make this change before continuing! [OK]")
+                met_tool = None
+                for suffix in ['_REGRID_TO_GRID', '_OUTPUT_PREFIX']:
+                    if suffix in add_line:
+                        met_tool = add_line.split(suffix)[0]
+                        section = 'config'
+
+                for suffix in ['_CLIMO_MEAN_INPUT_TEMPLATE']:
+                    if suffix in add_line:
+                        met_tool = add_line.split(suffix)[0]
+                        section = 'filename_templates'
+
+                if met_tool:
+                    print(f"\nIMPORTANT: If it is not already set, add the following in the [{section}] section to "
+                          f"your METplus configuration file that sets {met_tool}_CONFIG_FILE:\n")
+                    print(add_line)
+                    input("Make this change before continuing! [OK]")
+                else:
+                    print("ERROR: Something went wrong in the validate_config.py script. Please send an email to met_help@ucar.edu.")
+
                 continue
+
             # remove -i from sed command to avoid replacing in the file
             cmd_no_inline = cmd.replace('sed -i', 'sed')
             split_cmd = shlex.split(cmd_no_inline)
@@ -76,7 +91,7 @@ def main():
 
             # ask the user if they want to make the changes to their file (y/n default is no)
             run_sed = False
-            user_answer = input("Would you like the make this change to {original_file}? (y/n)[n]")
+            user_answer = input(f"Would you like the make this change to {original_file}? (y/n)[n]")
 
             if user_answer and user_answer[0] == 'y':
                 run_sed = True

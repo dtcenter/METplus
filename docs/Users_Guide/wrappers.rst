@@ -667,7 +667,7 @@ Configuration
    | :term:`OVERWRITE_NC_OUTPUT`
    | :term:`VERTICAL_LOCATION`
 
-PcpCombine
+PCPCombine
 ----------
 
 .. _description-13:
@@ -675,8 +675,8 @@ PcpCombine
 Description
 ~~~~~~~~~~~
 
-The PcpCombine wrapper is a Python script that encapsulates the MET
-pcp_combine tool. It provides the infrastructure to combine or extract
+The PCPCombine wrapper is a Python script that encapsulates the MET
+PCPCombine tool. It provides the infrastructure to combine or extract
 from files to build desired accumulations.
 
 .. _configuration-13:
@@ -825,6 +825,8 @@ Configuration
 | :term:`OBS_POINT_STAT_VAR<n>_LEVELS` (optional)
 | :term:`OBS_POINT_STAT_VAR<n>_THRESH` (optional)
 | :term:`OBS_POINT_STAT_VAR<n>_OPTIONS` (optional)
+| :term:`POINT_STAT_OBS_VALID_BEG` (optional)
+| :term:`POINT_STAT_OBS_VALID_END` (optional)
 
 .. warning:: **DEPRECATED:**
 
@@ -898,10 +900,51 @@ Configuration
 
    | :term:`VERIFICATION_GRID`
 
+SeriesAnalysis
+----------------
+
+.. _description-16:
+
+Description
+~~~~~~~~~~~
+
+The SeriesAnalysis wrapper is used to find files and build a command that calls the MET tool SeriesAnalysis.
+
+.. _configuration-16:
+
+Configuration
+~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`FCST_SERIES_ANALYSIS_INPUT_DIR`
+| :term:`OBS_SERIES_ANALYSIS_INPUT_DIR`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_DIR`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_DIR`
+| :term:`SERIES_ANALYSIS_OUTPUT_DIR`
+
+[filename_templates]
+
+| :term:`FCST_SERIES_ANALYSIS_INPUT_TEMPLATE`
+| :term:`OBS_SERIES_ANALYSIS_INPUT_TEMPLATE`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE`
+| :term:`SERIES_ANALYSIS_OUTPUT_TEMPLATE`
+
+[config]
+
+| :term:`LOG_SERIES_ANALYSIS_VERBOSITY`
+| :term:`SERIES_ANALYSIS_IS_PAIRED`
+| :term:`SERIES_ANALYSIS_CONFIG_FILE`
+| :term:`SERIES_ANALYSIS_REGRID_TO_GRID`
+| :term:`SERIES_ANALYSIS_STAT_LIST`
+| :term:`SERIES_ANALYSIS_CUSTOM_LOOP_LIST`
+
+
 SeriesByInit
 ------------
 
-.. _description-16:
+.. _description-17:
 
 Description
 ~~~~~~~~~~~
@@ -909,7 +952,7 @@ Description
 The SeriesByInit wrapper provides the infrastructure needed to demonstrates the use  of the series analysis tool using tropical cyclone data, based on initialization times. The SeriesByInit_wrapper creates numerous plots that represent the
 field, level, and statistic for each initialization time.
 
-.. _configuration-16:
+.. _configuration-17:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -955,7 +998,7 @@ Configuration
 SeriesByLead
 ------------
 
-.. _description-17:
+.. _description-18:
 
 Description
 ~~~~~~~~~~~
@@ -969,7 +1012,7 @@ forecast hour groupings. Performing a series analysis by valid time with
 forecast hour groupings can be useful when analyzing storm tracks based
 on time 'bins' such as by days (eg. day 1, day 2, day 3, etc.).
 
-.. _configuration-17:
+.. _configuration-18:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1023,7 +1066,7 @@ would set the following:
 StatAnalysis
 ------------
 
-.. _description-18:
+.. _description-19:
 
 Description
 ~~~~~~~~~~~
@@ -1037,7 +1080,7 @@ lines over a span of dates, to use this method set LOOP_ORDER =
 processes. To run StatAnalysis wrapper, include StatAnalysis in
 PROCESS_LIST.
 
-.. _configuration-18:
+.. _configuration-19:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1176,7 +1219,7 @@ file for running with LOOP_ORDER = processes:
 TCMPRPlotter
 -------------
 
-.. _description-19:
+.. _description-20:
 
 Description
 ~~~~~~~~~~~
@@ -1187,7 +1230,7 @@ statistics for the output from the MET-TC tools. This script, and other
 R scripts are included in the MET installation. Please refer to section
 21.2.3 of the MET User's Guide for usage information.
 
-.. _configuration-19:
+.. _configuration-20:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1262,7 +1305,7 @@ set to 'yes', then set the flag
 TcPairs
 -------
 
-.. _description-20:
+.. _description-21:
 
 Description
 ~~~~~~~~~~~
@@ -1274,7 +1317,7 @@ provided in the METplus tutorial), or ATCF formatted track data. If data
 is in an extra tropical cyclone (non-ATCF) format, the data is
 reformatted into an ATCF format that is recognized by MET.
 
-.. _configuration-20:
+.. _configuration-21:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1336,7 +1379,7 @@ Configuration
 TcStat
 ------
 
-.. _description-21:
+.. _description-22:
 
 Description
 ~~~~~~~~~~~
@@ -1345,7 +1388,7 @@ Used to configure the MET tool tc_stat. This wrapper can be run by
 listing it in the PROCESS_LIST, or can be called from the ExtractTiles
 wrapper (via the MET tc-stat command line commands).
 
-.. _configuration-21:
+.. _configuration-22:
 
 Configuration
 ~~~~~~~~~~~~~

@@ -72,8 +72,14 @@ class GempakToCFWrapper(CommandBuilder):
         for lead in lead_seq:
             self.clear()
             input_dict['lead'] = lead
-            time_info = time_util.ti_calculate(input_dict)
-            self.run_at_time_once(time_info)
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                if custom_string:
+                    self.logger.info(f"Processing custom string: {custom_string}")
+
+                input_dict['custom'] = custom_string
+
+                time_info = time_util.ti_calculate(input_dict)
+                self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination

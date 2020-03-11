@@ -22,6 +22,7 @@ all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/ASCII2NC/ASCII2NC_python_embedding_user_py.conf",
                 use_case_dir + "/met_tool_wrapper/CustomIngest/CustomIngest.conf",
                 use_case_dir + "/met_tool_wrapper/EnsembleStat/EnsembleStat.conf",
+                use_case_dir + "/met_tool_wrapper/EnsembleStat/EnsembleStat_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/Example/Example.conf",
                 use_case_dir + "/met_tool_wrapper/GempakToCF/GempakToCF.conf",
                 use_case_dir + "/met_tool_wrapper/GridStat/GridStat.conf",
@@ -34,6 +35,7 @@ all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_bucket.conf",
                 use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_custom.conf",
                 use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_derive.conf",
+                use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_loop_custom.conf",
 #                use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/PCPCombine/pcp_subtract.conf",
                 use_case_dir + "/met_tool_wrapper/PointStat/PointStat.conf",
@@ -57,6 +59,7 @@ all_use_cases = [
                 use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf",
                 use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_Sfc_MultiField.conf",
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstGFS_obsCCPA_GRIB.conf",
+                use_case_dir + "/model_applications/precipitation/EnsembleStat_fcstHRRRE_APCP3_NetCDF.conf",
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf",
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_NetCDF.conf",
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf",
@@ -83,7 +86,7 @@ if 'METPLUS_DISABLE_PLOT_WRAPPERS' not in os.environ or not os.environ['METPLUS_
 # running so that git doesn't complain about differences
 use_cases_to_run = all_use_cases
 #use_cases_to_run = [
-#                use_case_dir+"/met_tool_wrapper/ASCII2NC.conf",
+#                use_case_dir+"/met_tool_wrapper/ASCII2NC/ASCII2NC.conf",
 #    ]
 
 def get_param_list(param):

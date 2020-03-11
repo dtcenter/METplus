@@ -18,7 +18,7 @@ import os
 import glob
 import met_util as util
 from compare_gridded_wrapper import CompareGriddedWrapper
-import string_template_substitution as sts
+from string_template_substitution import StringSub
 
 """!@namespace EnsembleStatWrapper
 @brief Wraps the MET tool ensemble_stat to compare ensemble datasets
@@ -80,7 +80,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             c_dict['OBS_INPUT_DATATYPE'] = c_dict['OBS_GRID_INPUT_DATATYPE']
 
         c_dict['CONFIG_FILE'] = \
-            self.config.getstr('config', 'ENSEMBLE_STAT_CONFIG_FILE', '')
+            self.config.getraw('config', 'ENSEMBLE_STAT_CONFIG_FILE', '')
 
         if not c_dict['CONFIG_FILE']:
             self.log_error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
@@ -278,8 +278,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # get all files that exist
         for ens_member_template in self.c_dict['FCST_INPUT_TEMPLATE']:
-            model_ss = sts.StringSub(self.logger, ens_member_template,
-                                     **time_info)
+            model_ss = StringSub(self.logger,
+                                 ens_member_template,
+                                 **time_info)
             member_file = model_ss.do_string_sub()
             expected_path = os.path.join(model_dir, member_file)
 
@@ -380,7 +381,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 @param obs_field field information formatted for MET config file
         """
         # set config file since command is reset after each run
-        self.param = self.c_dict['CONFIG_FILE']
+        self.param = StringSub(self.logger,
+                               self.c_dict['CONFIG_FILE'],
+                               **time_info).do_string_sub()
 
         # set up output dir with time info
         self.create_and_set_output_dir(time_info)

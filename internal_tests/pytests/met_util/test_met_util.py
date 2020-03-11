@@ -426,7 +426,11 @@ def test_get_lead_sequence_lead():
         ('begin_end_incr(0,10,2)',  [ 0, 2, 4, 6, 8, 10]),
         ('begin_end_incr(10,0,-2)',  [ 10, 8, 6, 4, 2, 0]),
         ('begin_end_incr(2,2,20)',  [ 2 ]),
-        ('begin_end_incr(72,72,6)',  [ 72 ])
+        ('begin_end_incr(72,72,6)',  [ 72 ]),
+        ('begin_end_incr(0,12,1), begin_end_incr(15,60,3)', [0,1,2,3,4,5,6,7,8,9,10,11,12,15,18,21,24,27,30,33,36,39,42,45,48,51,54,57,60]),
+        ('begin_end_incr(0,10,2), 12',  [ 0, 2, 4, 6, 8, 10, 12]),
+        ('begin_end_incr(0,10,2)H, 12',  [ 0, 2, 4, 6, 8, 10, 12]),
+        ('begin_end_incr(0,10800,3600)S, 4H',  [ 0, 1, 2, 3, 4]),
     ]
 )
 def test_get_lead_sequence_lead_list(key, value):
@@ -440,6 +444,30 @@ def test_get_lead_sequence_lead_list(key, value):
         hour_seq.append(time_util.ti_get_seconds_from_relativedelta(test) // 3600)
     lead_seq = value
     assert(hour_seq == lead_seq)
+
+
+
+@pytest.mark.parametrize(
+    'key, value', [
+        ('begin_end_incr(3,12,3)',  [ '3', '6', '9', '12']),
+        ('1,2,3,4',  [ '1', '2', '3', '4']),
+        (' 1,2,3,4',  [ '1', '2', '3', '4']),
+        ('1,2,3,4 ',  [ '1', '2', '3', '4']),
+        (' 1,2,3,4 ',  [ '1', '2', '3', '4']),
+        ('1, 2,3,4',  [ '1', '2', '3', '4']),
+        ('1,2, 3, 4',  [ '1', '2', '3', '4']),
+        ('begin_end_incr( 3,12 , 3)',  [ '3', '6', '9', '12']),
+        ('begin_end_incr(0,10,2)',  [ '0', '2', '4', '6', '8', '10']),
+        ('begin_end_incr(10,0,-2)',  [ '10', '8', '6', '4', '2', '0']),
+        ('begin_end_incr(2,2,20)',  [ '2' ]),
+        ('begin_end_incr(0,2,1), begin_end_incr(3,9,3)', ['0','1','2','3','6','9']),
+        ('mem_begin_end_incr(0,2,1), mem_begin_end_incr(3,9,3)', ['mem_0','mem_1','mem_2','mem_3','mem_6','mem_9']),
+        ('begin_end_incr(0,10,2)H, 12',  [ '0H', '2H', '4H', '6H', '8H', '10H', '12']),
+        ('begin_end_incr(0,10800,3600)S, 4H',  [ '0S', '3600S', '7200S', '10800S', '4H']),
+    ]
+)
+def test_getlist_begin_end_incr(key, value):
+    assert(util.getlist(key) == value)
 
 # @pytest.mark.parametrize(
 #     'key, value', [

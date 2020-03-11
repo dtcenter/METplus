@@ -6,7 +6,7 @@ import os
 import met_util as util
 import time_util
 from compare_gridded_wrapper import CompareGriddedWrapper
-
+from string_template_substitution import StringSub
 
 """
 Program Name: point_stat_wrapper.py
@@ -43,13 +43,18 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_POINT_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'POINT_STAT_OFFSETS', '0'))
+        c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config',
+                                                               'POINT_STAT_OFFSETS',
+                                                               '0'))
         c_dict['FCST_INPUT_TEMPLATE'] = \
             self.config.getraw('filename_templates',
-                               'FCST_POINT_STAT_INPUT_TEMPLATE')
+                               'FCST_POINT_STAT_INPUT_TEMPLATE',
+                               '')
+
         c_dict['OBS_INPUT_TEMPLATE'] = \
             self.config.getraw('filename_templates',
-                               'OBS_POINT_STAT_INPUT_TEMPLATE')
+                               'OBS_POINT_STAT_INPUT_TEMPLATE',
+                               '')
 
         c_dict['FCST_INPUT_DATATYPE'] = \
             self.config.getstr('config', 'FCST_POINT_STAT_INPUT_DATATYPE', '')
@@ -59,18 +64,16 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_DIR'] = self.config.getdir('FCST_POINT_STAT_INPUT_DIR')
         c_dict['OBS_INPUT_DIR'] = self.config.getdir('OBS_POINT_STAT_INPUT_DIR')
         c_dict['OUTPUT_DIR'] = \
-            self.config.getdir('POINT_STAT_OUTPUT_DIR')
+            self.config.getdir('POINT_STAT_OUTPUT_DIR', '')
 
         # get climatology config variables
         self.read_climo_wrapper_specific('POINT_STAT', c_dict)
 
         # Configuration
         c_dict['CONFIG_FILE'] = \
-            self.config.getstr('config', 'POINT_STAT_CONFIG_FILE')
+            self.config.getraw('config', 'POINT_STAT_CONFIG_FILE', '')
 
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL')
-        c_dict['POINT_STAT_CONFIG_FILE'] = \
-            self.config.getstr('config', 'POINT_STAT_CONFIG_FILE')
 
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'POINT_STAT_REGRID_TO_GRID', '')
 
@@ -79,12 +82,16 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['POINT_STAT_STATION_ID'] = self.config.getstr('config', 'POINT_STAT_STATION_ID', '')
         c_dict['POINT_STAT_MESSAGE_TYPE'] = self.config.getstr('config', 'POINT_STAT_MESSAGE_TYPE', '')
 
+        c_dict['OBS_VALID_BEG'] = self.config.getraw('config', 'POINT_STAT_OBS_VALID_BEG', '')
+        c_dict['OBS_VALID_END'] = self.config.getraw('config', 'POINT_STAT_OBS_VALID_END', '')
+
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'point_stat')
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
-                               'POINT_STAT_VERIFICATION_MASK_TEMPLATE')
+                               'POINT_STAT_VERIFICATION_MASK_TEMPLATE',
+                               '')
         c_dict['VERIFICATION_MASK'] = ''
 
         c_dict['FCST_PROB_THRESH'] = self.config.getstr('config',
@@ -104,7 +111,20 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
             self.isOK = False
 
+        if not c_dict['CONFIG_FILE']:
+            self.log_error("POINT_STAT_CONFIG_FILE must be set.")
+            self.isOK = False
+
         return c_dict
+
+    def add_obs_valid_args(self, time_info):
+        for ext in ['BEG', 'END']:
+            if self.c_dict[f'OBS_VALID_{ext}']:
+                obs_valid = StringSub(self.logger,
+                                      self.c_dict[f'OBS_VALID_{ext}'],
+                                      **time_info).do_string_sub()
+                self.args.append(f"-obs_valid_{ext.lower()} {obs_valid}")
+
 
     def run_at_time_once(self, input_dict):
          # clear any settings leftover from previous run
@@ -177,6 +197,8 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         fcst_field = ','.join(fcst_field_list)
         obs_field = ','.join(obs_field_list)
+
+        self.add_obs_valid_args(time_info)
 
         self.process_fields(time_info, fcst_field, obs_field)
 

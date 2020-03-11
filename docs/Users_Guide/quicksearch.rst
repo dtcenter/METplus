@@ -15,9 +15,9 @@ Use Cases by MET Tool:
 | `PointStat <https://ncar.github.io/METplus/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
 | `RegridDataPlane <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
 | `SeriesAnalysis <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
-| `StatAnalysis <https://ncar.github.io/METplus/search.html?q=StatAnalysisUseCase&check_keywords=yes&area=default>`_
+| `StatAnalysis <https://ncar.github.io/METplus/search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
 | `TCMPRPlotter <https://ncar.github.io/METplus/search.html?q=TCMPRPlotterUseCase&check_keywords=yes&area=default>`_
-| `TCPairs <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_
+| `TCPairs <https://ncar.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_
 | `TCStat <https://ncar.github.io/METplus/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_
 
 
@@ -30,6 +30,7 @@ Use Cases by Organization:
 | `Stony Brook University (SBU)  <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA Hydrometeorology Testbed (HMT)  <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA Hazardous Weather Testbed (HWT)  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_
+| `NCAR Developmental Testbed Center (DTC)  <https://ncar.github.io/METplus/searxch.html?q=NCARDTCOrgUseCase&check_keywords=yes&area=default>`_
 
 
 Use Cases by Plot Type
@@ -46,6 +47,7 @@ Use Cases by Application:
 | `Subseasonal to Seasonal <https://ncar.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
 | `Tropical Cyclone and Extra Tropical Cyclone <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
 | `Probabilistic <https://ncar.github.io/METplus/search.html?q=ProbabilisticAppUseCase&check_keywords=yes&area=default>`_
+| `Ensemble  <https://ncar.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
 
 
 Use Cases by METplus Feature:
@@ -59,6 +61,8 @@ Use Cases by METplus Feature:
 | `Series by Forecast Lead  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
 | `Series by Forecast Lead Grouping  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadGroupingUseCase&check_keywords=yes&area=default>`_
 | `MET_PYTHON_EXE environment variable  <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
+| `Feature Relative  <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_
+| `Revision Series <https://ncar.github.io/METplus/search.html?q=RevisionSeriesUseCase&check_keywords=yes&area=default>`_
 
 
 Use cases by File Format:

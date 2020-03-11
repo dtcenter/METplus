@@ -73,19 +73,25 @@ class ExampleWrapper(CommandBuilder):
             # recalculate time info items
             time_info = time_util.ti_calculate(time_info)
 
-            # log init, valid, and forecast lead times for current loop iteration
-            self.logger.info('Processing forecast lead {} initialized at {} and valid at {}'
-                             .format(time_info['lead_string'], time_info['init'].strftime('%Y-%m-%d %HZ'),
-                                     time_info['valid'].strftime('%Y-%m-%d %HZ')))
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                if custom_string:
+                    self.logger.info(f"Processing custom string: {custom_string}")
 
-            # perform string substitution to find filename based on template and current run time
-            # pass in logger, then template, then any items to use to fill in template
-            # pass time info with ** in front to expand each dictionary item to a variable
-            #  i.e. time_info['init'] becomes init=init_value
-            filename = StringSub(self.logger,
-                                 input_template,
-                                 **time_info).do_string_sub()
-            self.logger.info('Looking in input directory for file: {}'.format(filename))
+                time_info['custom'] = custom_string
+
+                # log init, valid, and forecast lead times for current loop iteration
+                self.logger.info('Processing forecast lead {} initialized at {} and valid at {}'
+                                 .format(time_info['lead_string'], time_info['init'].strftime('%Y-%m-%d %HZ'),
+                                         time_info['valid'].strftime('%Y-%m-%d %HZ')))
+
+                # perform string substitution to find filename based on template and current run time
+                # pass in logger, then template, then any items to use to fill in template
+                # pass time info with ** in front to expand each dictionary item to a variable
+                #  i.e. time_info['init'] becomes init=init_value
+                filename = StringSub(self.logger,
+                                     input_template,
+                                     **time_info).do_string_sub()
+                self.logger.info('Looking in input directory for file: {}'.format(filename))
 
         return True
 

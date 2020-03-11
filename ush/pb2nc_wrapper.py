@@ -72,8 +72,9 @@ class PB2NCWrapper(CommandBuilder):
         c_dict['OBS_INPUT_DATATYPE'] = self.config.getstr('config', 'PB2NC_INPUT_DATATYPE', '')
 
         # Configuration
-        c_dict['CONFIG_FILE'] = self.config.getstr('config',
-                                                   'PB2NC_CONFIG_FILE')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config',
+                                                   'PB2NC_CONFIG_FILE',
+                                                   '')
         if c_dict['CONFIG_FILE'] == '':
             self.log_error('PB2NC_CONFIG_FILE is required')
             self.isOK = False
@@ -282,8 +283,14 @@ class PB2NCWrapper(CommandBuilder):
             lead_string = time_util.ti_calculate(input_dict)['lead_string']
             self.logger.info("Processing forecast lead {}".format(lead_string))
 
-            # Run for given init/valid time and forecast lead combination
-            self.run_at_time_once(input_dict)
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                if custom_string:
+                    self.logger.info(f"Processing custom string: {custom_string}")
+
+                input_dict['custom'] = custom_string
+
+                # Run for given init/valid time and forecast lead combination
+                self.run_at_time_once(input_dict)
 
 
     def run_at_time_once(self, input_dict):
@@ -306,6 +313,11 @@ class PB2NCWrapper(CommandBuilder):
         self.set_environment_variables(time_info)
 
         self.set_valid_window_variables(time_info)
+
+        # handle config file substitution
+        self.c_dict['CONFIG_FILE'] = StringSub(self.logger,
+                                self.c_dict['CONFIG_FILE'],
+                                **time_info).do_string_sub()
 
         # build command and run if successful
         cmd = self.get_command()

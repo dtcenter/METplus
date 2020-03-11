@@ -107,5 +107,5 @@ Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 # Keywords
 # --------
 #
-# .. note:: `Cyclone Plotter <https://ncar.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
+# .. note:: `CyclonePlotterUseCase <https://ncar.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
 

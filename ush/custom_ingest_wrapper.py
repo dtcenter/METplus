@@ -98,8 +98,14 @@ class CustomIngestWrapper(CommandBuilder):
             # recalculate time info items
             time_info = time_util.ti_calculate(input_dict)
 
-            if self.run_at_time_lead(time_info) is None:
-                return False
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                if custom_string:
+                    self.logger.info(f"Processing custom string: {custom_string}")
+
+                time_info['custom'] = custom_string
+
+                if self.run_at_time_lead(time_info) is None:
+                    return False
 
         return True
 
