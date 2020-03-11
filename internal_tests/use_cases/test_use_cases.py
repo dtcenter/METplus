@@ -59,7 +59,7 @@ all_use_cases = [
                 use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf",
                 use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_Sfc_MultiField.conf",
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstGFS_obsCCPA_GRIB.conf",
-                use_case_dir + "/model_applications/precipitation/EnsembleStat_fcstHRRRE_APCP3_NetCDF.conf",
+                use_case_dir + "/model_applications/precipitation/EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.conf",
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf",
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_NetCDF.conf",
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf",
