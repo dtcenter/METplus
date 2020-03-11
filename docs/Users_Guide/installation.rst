@@ -261,8 +261,8 @@ configuration files are fully defined. Individual users have the option
 to make customizations by over-riding any of these values in their own
 configuration files.
 
-Deprecated Configuration Variables
-----------------------------------
+Updating Configuration Files - Handling Deprecated Configuration Variables
+--------------------------------------------------------------------------
 
 If you have used a previous release of METplus before, this content is important to getting started using a newly released version.
 
