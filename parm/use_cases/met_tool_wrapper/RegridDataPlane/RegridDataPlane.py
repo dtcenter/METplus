@@ -17,7 +17,7 @@ This use case will run the MET RegridDataPlane tool to regrid observation data i
 #
 # | **Observations:** Stage 2 NetCDF 1-hour Precipitation Accumulation
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 
 ##############################################################################
