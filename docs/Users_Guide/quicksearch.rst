@@ -48,7 +48,8 @@ Use Cases by Application:
 | `Tropical Cyclone and Extra Tropical Cyclone <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
 | `Probabilistic <https://ncar.github.io/METplus/search.html?q=ProbabilisticAppUseCase&check_keywords=yes&area=default>`_
 | `Ensemble  <https://ncar.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
-
+| `Probability Generation  <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_
+| `Probability Verification  <https://ncar.github.io/METplus/search.html?q=ProbabilityVerificationAppUseCase&check_keywords=yes&area=default>`_
 
 Use Cases by METplus Feature:
 -----------------------------

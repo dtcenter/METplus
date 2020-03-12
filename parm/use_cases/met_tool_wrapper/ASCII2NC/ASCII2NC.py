@@ -121,6 +121,8 @@ This use case will run the MET ASCII2NC tool to convert point observation data i
 # Keywords
 # --------
 #
+# .. note::
+#    `ASCII2NCToolUseCase <https://ncar.github.io/METplus/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
+#
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-ASCII2NC.png'
 #
-# .. note:: `ASCII2NCToolUseCase <https://ncar.github.io/METplus/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
