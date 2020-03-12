@@ -115,11 +115,13 @@ models against sea ice observations. For now, it is limited to observation again
 # This list of files should be found for every time run through METplus. Using the output for 20190201 as
 # and example.
 #
-# **GridStat output**::
+# **GridStat output**:
+#
 # * grid_stat_IMS_ICEC_vs_NCEP_ICEC_Z0_000000L_20190201_220000V_pairs.nc
 # * grid_stat_IMS_ICEC_vs_NCEP_ICEC_Z0_000000L_20190201_220000V.stat
 #
-# **MODE output**::
+# **MODE output**:
+#
 # * mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R1_T1_cts.txt
 # * mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R1_T1_obj.nc
 # * mode_IMS_ICEC_vs_NCEP_ICEC_000000L_20190201_220000V_000000A_R1_T1_obj.txt
