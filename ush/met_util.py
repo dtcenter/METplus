@@ -452,6 +452,11 @@ def check_for_deprecated_config(conf):
         'CLIMO_POINT_STAT_INPUT_DIR': {'sec': 'dir', 'alt': 'POINT_STAT_CLIMO_MEAN_INPUT_DIR'},
         'CLIMO_POINT_STAT_INPUT_TEMPLATE': {'sec': 'filename_templates', 'alt': 'POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE'},
         'GEMPAKTOCF_CLASSPATH': {'sec': 'exe', 'alt': 'GEMPAKTOCF_JAR', 'copy': False},
+        'CUSTOM_INGEST_<n>_OUTPUT_DIR': {'sec': 'dir', 'alt': 'PY_EMBED_INGEST_<n>_OUTPUT_DIR'},
+        'CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE': {'sec': 'filename_templates', 'alt': 'PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE'},
+        'CUSTOM_INGEST_<n>_OUTPUT_GRID': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_OUTPUT_GRID'},
+        'CUSTOM_INGEST_<n>_SCRIPT': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_SCRIPT'},
+        'CUSTOM_INGEST_<n>_TYPE': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_TYPE'},
     }
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
