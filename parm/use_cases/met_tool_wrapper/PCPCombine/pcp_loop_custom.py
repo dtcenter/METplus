@@ -1,6 +1,6 @@
 """
-PCPCombine loop CUSTOM
-======================
+PCPCombine Custom String Looping
+================================
 
 This use case will run the MET PCPCombine tool in ADD mode and read in files. It highlights the ability to loop over a user-defined list of strings, which are used to extract the multiple input files across a given run time.
 
@@ -19,7 +19,7 @@ This use case will run the MET PCPCombine tool in ADD mode and read in files. It
 #
 # | **Forecast:** WRF-ARW precipitation 24h accumulation fields
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** WRF-AFW
@@ -120,4 +120,6 @@ This use case will run the MET PCPCombine tool in ADD mode and read in files. It
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-PCPCombine.png'
 #
-# .. note:: `PCPCombineToolUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_
+# .. note::
+#    `PCPCombineToolUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_,
+#    `CustomStringLoopingUseCase <https://ncar.github.io/METplus/search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_

@@ -29,7 +29,7 @@ The end time is the same as the begin time, so it runs quickly.
 # | **Observation:** Best Track - B Deck
 # |     track_data/201412/b??q201412*.gfso.*
 #
-# | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** GFS

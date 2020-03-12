@@ -261,8 +261,8 @@ configuration files are fully defined. Individual users have the option
 to make customizations by over-riding any of these values in their own
 configuration files.
 
-Deprecated Configuration Variables
-----------------------------------
+Updating Configuration Files - Handling Deprecated Configuration Variables
+--------------------------------------------------------------------------
 
 If you have used a previous release of METplus before, this content is important to getting started using a newly released version.
 
@@ -503,25 +503,28 @@ When the above command is run, a usage message appears indicating that other con
 
   Currently available processes are:
   - ASCII2NC
-  - CustomIngest
   - CyclonePlotter
   - EnsembleStat
+  - Example
   - ExtractTiles
   - GempakToCF
   - GridStat
-  - MakePlots
-  - Mode
+  - MODE
   - MTD
+  - MakePlots
   - PB2NC
-  - PcpCombine
+  - PCPCombine
   - PointStat
+  - PyEmbedIngest
   - RegridDataPlane
+  - SeriesAnalysis
   - SeriesByInit
   - SeriesByLead
   - StatAnalysis
   - TCMPRPlotter
-  - TcPairs
-  - TcStat
+  - TCPairs
+  - TCStat
+  - Usage
 
 **Example 2: Using a use-case configuration:**
 

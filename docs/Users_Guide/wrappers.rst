@@ -59,40 +59,14 @@ Configuration
 | :term:`ASCII2NC_TIME_SUMMARY_TYPES`
 | :term:`ASCII2NC_TIME_SUMMARY_VALID_FREQ`
 | :term:`ASCII2NC_TIME_SUMMARY_VALID_THRESH`
+| :term:`ASCII2NC_CUSTOM_LOOP_LIST`
 
-CustomIngest
-------------
 
-.. _description-2:
-
-Description
-~~~~~~~~~~~
-
-Used to configure the CustomIngest wrapper that runs RegridDataPlane to convert data using python embedding scripts into NetCDF so it can be read by the MET tools.
-
-.. _configuration-2:
-
-Configuration
-~~~~~~~~~~~~~
-
-[dir]
-
-| :term:`CUSTOM_INGEST_<n>_OUTPUT_DIR`
-
-[filename_templates]
-
-| :term:`CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE`
-
-[config]
-
-| :term:`CUSTOM_INGEST_<n>_SCRIPT`
-| :term:`CUSTOM_INGEST_<n>_TYPE`
-| :term:`CUSTOM_INGEST_<n>_OUTPUT_GRID`
 
 CyclonePlotter
 --------------
 
-.. _description-3:
+.. _description-2:
 
 Description
 ~~~~~~~~~~~
@@ -101,7 +75,7 @@ This wrapper does not have a corresponding MET tool but instead wraps
 the logic necessary to create plots of cyclone tracks. Currently only
 the output from the MET tc-pairs tool can be plotted.
 
-.. _configuration-3:
+.. _configuration-2:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -135,14 +109,14 @@ Configuration
 EnsembleStat
 ------------
 
-.. _description-4:
+.. _description-3:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool ensemble_stat.
 
-.. _configuration-4:
+.. _configuration-3:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -181,6 +155,7 @@ Configuration
 | :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN`
 | :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_END`
 | :term:`ENSEMBLE_STAT_ENS_THRESH`
+| :term:`ENSEMBLE_STAT_CUSTOM_LOOP_LIST`
 | :term:`ENS_VAR<n>_NAME` (optional)
 | :term:`ENS_VAR<n>_LEVELS` (optional)
 | :term:`ENS_VAR<n>_THRESH` (optional)
@@ -205,14 +180,14 @@ Configuration
 Example
 --------
 
-.. _description-5:
+.. _description-4:
 
 Description
 ~~~~~~~~~~~
 
-Used to configure the CustomIngest wrapper that runs RegridDataPlane to convert data using python embedding scripts into NetCDF so it can be read by the MET tools.
+Used to demonstrate how the METplus wrappers handle looping and building commands.
 
-.. _configuration-5:
+.. _configuration-4:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -225,11 +200,14 @@ Configuration
 
 | :term:`EXAMPLE_INPUT_TEMPLATE`
 
+[config]
+| :term:`EXAMPLE_CUSTOM_LOOP_LIST`
+
 
 ExtractTiles
 ------------
 
-.. _description-6:
+.. _description-5:
 
 3.5.1 Description
 ~~~~~~~~~~~~~~~~~
@@ -243,7 +221,7 @@ paired track data. This information is then used to create tiles of
 subregions. The ExtractTiles wrapper creates a 2n degree x 2m degree
 grid/tile with each storm located at the center.
 
-.. _configuration-6:
+.. _configuration-5:
 
 Configuration 
 ~~~~~~~~~~~~~
@@ -267,6 +245,7 @@ the dimensions and density of the tiles comprising the subregion:
 | :term:`EXTRACT_TILES_FILTER_OPTS`
 | :term:`EXTRACT_TILES_VAR_LIST`
 | :term:`EXTRACT_TILES_OVERWRITE_TRACK`
+| :term:`EXTRACT_TILES_CUSTOM_LOOP_LIST`
 
 .. warning:: **DEPRECATED:**
 
@@ -281,14 +260,14 @@ the dimensions and density of the tiles comprising the subregion:
 GempakToCF
 ----------
 
-.. _description-7:
+.. _description-6:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the utility GempakToCF.
 
-.. _configuration-7:
+.. _configuration-6:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -310,6 +289,7 @@ Configuration
 [config]
 
 | :term:`GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS`
+| :term:`GEMPAKTOCF_CUSTOM_LOOP_LIST`
 
 .. warning:: **DEPRECATED:**
 
@@ -318,14 +298,14 @@ Configuration
 GridStat
 --------
 
-.. _description-8:
+.. _description-7:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool grid_stat.
 
-.. _configuration-8:
+.. _configuration-7:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -356,6 +336,7 @@ Configuration
 | :term:`FCST_GRID_STAT_INPUT_DATATYPE` 
 | :term:`OBS_GRID_STAT_INPUT_DATATYPE` 
 | :term:`GRID_STAT_ONCE_PER_FIELD`
+| :term:`GRID_STAT_CUSTOM_LOOP_LIST`
 | :term:`FCST_GRID_STAT_PROB_THRESH` (optional) 
 | :term:`OBS_GRID_STAT_PROB_THRESH` (optional) 
 | :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` (optional)
@@ -387,7 +368,7 @@ Configuration
 MakePlots
 ---------
 
-.. _description-9:
+.. _description-8:
 
 Description
 ~~~~~~~~~~~
@@ -397,7 +378,7 @@ scripts for the various METplus Wrappers use cases. This can only be run
 following StatAnalysis wrapper when LOOP_ORDER = processes. To run
 MakePlots wrapper, include MakePlots in PROCESS_LIST.
 
-.. _configuration-9:
+.. _configuration-8:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -479,14 +460,14 @@ configuration file:
 MODE
 ----
 
-.. _description-10:
+.. _description-9:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET Method for Object-based Diagnostic Evaluation tool mode.
 
-.. _configuration-10:
+.. _configuration-9:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -534,6 +515,7 @@ Configuration
 | :term:`FCST_MODE_FILE_WINDOW_END`
 | :term:`OBS_MODE_FILE_WINDOW_BEGIN`
 | :term:`OBS_MODE_FILE_WINDOW_END`
+| :term:`MODE_CUSTOM_LOOP_LIST`
 | :term:`FCST_MODE_VAR<n>_NAME` (optional)
 | :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MODE_VAR<n>_THRESH` (optional)
@@ -552,14 +534,14 @@ Configuration
 MTD
 ---
 
-.. _description-11:
+.. _description-10:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET MODE Time Domain tool mtd.  This tools follows objects through time and can also be used to track objects.
 
-.. _configuration-11:
+.. _configuration-10:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -588,6 +570,7 @@ Configuration
 | :term:`FCST_MTD_CONV_THRESH`
 | :term:`OBS_MTD_CONV_RADIUS`
 | :term:`OBS_MTD_CONV_THRESH`
+| :term:`MTD_CUSTOM_LOOP_LIST`
 | :term:`FCST_MTD_VAR<n>_NAME` (optional)
 | :term:`FCST_MTD_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MTD_VAR<n>_THRESH` (optional)
@@ -606,7 +589,7 @@ Configuration
 PB2NC
 -----
 
-.. _description-12:
+.. _description-11:
 
 Description
 ~~~~~~~~~~~
@@ -614,7 +597,7 @@ Description
 The PB2NC wrapper is a Python script that encapsulates the behavior of
 the MET pb2nc tool to convert prepBUFR files into netCDF.
 
-.. _configuration-12:
+.. _configuration-11:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -649,6 +632,7 @@ Configuration
 | :term:`PB2NC_WINDOW_END`
 | :term:`PB2NC_VALID_BEGIN`
 | :term:`PB2NC_VALID_END`
+| :term:`PB2NC_CUSTOM_LOOP_LIST`
 
 .. warning:: **DEPRECATED:**
 
@@ -670,7 +654,7 @@ Configuration
 PCPCombine
 ----------
 
-.. _description-13:
+.. _description-12:
 
 Description
 ~~~~~~~~~~~
@@ -679,7 +663,7 @@ The PCPCombine wrapper is a Python script that encapsulates the MET
 PCPCombine tool. It provides the infrastructure to combine or extract
 from files to build desired accumulations.
 
-.. _configuration-13:
+.. _configuration-12:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -738,6 +722,7 @@ Configuration
 | :term:`OBS_PCP_COMBINE_IS_DAILY_FILE`
 | :term:`FCST_PCP_COMBINE_COMMAND`
 | :term:`OBS_PCP_COMBINE_COMMAND`
+| :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`
 | :term:`FCST_PCP_COMBINE_OUTPUT_ACCUM` (optional)
 | :term:`FCST_PCP_COMBINE_OUTPUT_NAME` (optional)
 | :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM` (optional)
@@ -766,7 +751,7 @@ Configuration
 PointStat
 ---------
 
-.. _description-14:
+.. _description-13:
 
 Description
 ~~~~~~~~~~~
@@ -776,7 +761,7 @@ point_stat tool. It provides the infrastructure to read in gridded model
 data and netCDF point observation data to perform grid-to-point
 (grid-to-obs) verification.
 
-.. _configuration-14:
+.. _configuration-13:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -810,7 +795,8 @@ Configuration
 | :term:`POINT_STAT_GRID` 
 | :term:`POINT_STAT_POLY` 
 | :term:`POINT_STAT_STATION_ID` 
-| :term:`POINT_STAT_MESSAGE_TYPE` 
+| :term:`POINT_STAT_MESSAGE_TYPE`
+| :term:`POINT_STAT_CUSTOM_LOOP_LIST`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional) 
 | :term:`FCST_POINT_STAT_WINDOW_END` (optional) 
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional) 
@@ -847,6 +833,46 @@ Configuration
    | :term:`REGRID_TO_GRID`
    | :term:`CLIMO_POINT_STAT_INPUT_DIR`
    | :term:`CLIMO_POINT_STAT_INPUT_TEMPLATE`
+
+
+PyEmbedIngest
+-------------
+
+.. _description-14:
+
+Description
+~~~~~~~~~~~
+
+Used to configure the PyEmbedIngest wrapper that runs RegridDataPlane to convert data using python embedding scripts into NetCDF so it can be read by the MET tools.
+
+.. _configuration-14:
+
+Configuration
+~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`
+
+[filename_templates]
+
+| :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`
+
+[config]
+
+| :term:`PY_EMBED_INGEST_<n>_SCRIPT`
+| :term:`PY_EMBED_INGEST_<n>_TYPE`
+| :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`
+| :term:`PY_EMBED_INGEST_CUSTOM_LOOP_LIST`
+
+.. warning:: **DEPRECATED:**
+
+    | :term:`CUSTOM_INGEST_<n>_OUTPUT_DIR`
+    | :term:`CUSTOM_INGEST_<n>_OUTPUT_TEMPLATE`
+    | :term:`CUSTOM_INGEST_<n>_SCRIPT`
+    | :term:`CUSTOM_INGEST_<n>_TYPE`
+    | :term:`CUSTOM_INGEST_<n>_OUTPUT_GRID`
+
 
 RegridDataPlane
 ---------------
@@ -889,6 +915,7 @@ Configuration
 | :term:`REGRID_DATA_PLANE_GAUSSIAN_RADIUS`
 | :term:`REGRID_DATA_PLANE_WIDTH`
 | :term:`REGRID_DATA_PLANE_METHOD`
+| :term:`REGRID_DATA_PLANE_CUSTOM_LOOP_LIST`
 | :term:`FCST_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME` (optional)
 | :term:`FCST_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL` (optional)
 | :term:`FCST_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME` (optional)
@@ -1356,6 +1383,7 @@ Configuration
 | :term:`TC_PAIRS_SKIP_IF_OUTPUT_EXISTS`
 | :term:`TC_PAIRS_REFORMAT_DECK`
 | :term:`TC_PAIRS_REFORMAT_TYPE`
+| :term:`TC_PAIRS_CUSTOM_LOOP_LIST`
 
 .. warning:: **DEPRECATED:**
 
