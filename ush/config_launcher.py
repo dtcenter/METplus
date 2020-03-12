@@ -498,7 +498,8 @@ class METplusConfig(ProdConfig):
             elif not in_brackets:
                 out_template += character
 
-        return out_template
+        # replace double slash in path to single slash
+        return out_template.replace('//', '/')
 
     def check_default(self, sec, name, default):
         """!helper function for get methods, report error and exit if
@@ -572,24 +573,24 @@ class METplusConfig(ProdConfig):
             self.logger.error(f"Path must exist: {dir_path}")
             return None
 
-        return dir_path
+        return dir_path.replace('//', '/')
 
     def getdir_nocheck(self, dir_name, default=None):
-        return super().getdir(dir_name, default=default)
+        return super().getdir(dir_name, default=default).replace('//', '/')
 
     def getstr_nocheck(self, sec, name, default=None):
-        return super().getstr(sec, name, default=default)
+        return super().getstr(sec, name, default=default).replace('//', '/')
 
 
     def getstr(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Wraps produtil getstr to gracefully report if variable is not set
             and no default value is specified"""
         if self.has_option(sec, name):
-            return super().getstr(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getstr(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars).replace('//', '/')
 
         # config item was not found
         self.check_default(sec, name, default)
-        return default
+        return default.replace('//', '/')
 
     def getbool(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Wraps produtil getbool to gracefully report if variable is not set
