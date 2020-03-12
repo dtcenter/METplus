@@ -102,7 +102,7 @@ def metplus_config():
 #         # expected.
 #             assert actual_key == key
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-METPLUS_BASE = os.getcwd().split('METplus')[0]+'METplus'
+METPLUS_BASE = os.getcwd().replace('/internal_tests/pytests/plotting/stat_analysis', '')
 
 def test_set_lists_as_loop_or_group():
     # Independently test that the lists that are set
