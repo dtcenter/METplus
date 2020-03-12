@@ -1831,14 +1831,14 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_THRESH_LIST` instead.
 
    FCST_THRESH_LIST
-     Specify the values of the FCST_THRESH column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the values of the FCST_THRESH column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
      | *Default:* None
 
    OBS_THRESH_LIST
-     Specify the values of the OBS_THRESH column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the values of the OBS_THRESH column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
@@ -1864,7 +1864,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_LEVEL_LIST` instead.
 
    FCST_LEVEL_LIST
-     Specify the values of the FCST_LEV column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the values of the FCST_LEV column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
@@ -1874,14 +1874,14 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_VAR_LIST` instead.
 
    FCST_VAR_LIST
-     Specify the values of the FCST_VAR column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the values of the FCST_VAR column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
      | *Default:*  None
 
    FCST_UNITS_LIST
-     Specify the values of the FCST_UNITS column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the values of the FCST_UNITS column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
@@ -2628,7 +2628,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`STAT_ANALYSIS_JOB_ARGS` instead.
 
    STAT_ANALYSIS_JOB_ARGS
-     Specify stat_analysis job arguments to run. The job arguments that are to be run with the coresponding :term:`STAT_ANALYSIS_JOB_NAME`. If using -dump_row, use -dump_row [dump_row_filename]. If using -out_stat, -out_stat [out_stat_filename]. For more information on these job arguments, please see the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_.
+     Specify stat_analysis job arguments to run. The job arguments that are to be run with the corresponding :term:`STAT_ANALYSIS_JOB_NAME`. If using -dump_row, use -dump_row [dump_row_filename]. If using -out_stat, -out_stat [out_stat_filename]. For more information on these job arguments, please see the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
@@ -2731,7 +2731,7 @@ METplus Configuration Glossary
 
 
    LINE_TYPE_LIST
-     Specify the MET STAT line types to be considered. For TCMPRPlotter, this is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the MET STAT line types to be considered. For TCMPRPlotter, this is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
 
      | *Used by:*  MakePlots, StatAnalysis, TCMPRPlotter
      | *Family:*  [config]
@@ -3809,7 +3809,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`OBS_LEVEL_LIST` instead.
 
    OBS_LEVEL_LIST
-     Specify the values of the OBS_LEV column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the values of the OBS_LEV column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
@@ -3819,14 +3819,14 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`OBS_VAR_LIST` instead.
 
    OBS_VAR_LIST
-     Specify the values of the OBS_VAR column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the values of the OBS_VAR column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
      | *Default:*  None
 
    OBS_UNITS_LIST
-     Specify the values of the OBS_UNITS column in the MET .stat file to use. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the values of the OBS_UNITS column in the MET .stat file to use. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
@@ -4539,7 +4539,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE` instead.
 
    MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE
-     Specify the template to use for the stat_analysis dump_row file. A user customized template to use for the dump_row file. If left blank and a dump_row file is requested, a default version will be used. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the template to use for the stat_analysis dump_row file. A user customized template to use for the dump_row file. If left blank and a dump_row file is requested, a default version will be used. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [filename_templates]
@@ -4559,7 +4559,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE` instead.
 
    MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE
-     Specify the template to use for the stat_analysis out_stat file. A user customized template to use for the out_stat file. If left blank and a out_stat file is requested, a default version will be used. This is optional in the METplus configuration file for running with LOOP_ORDER = times.
+     Specify the template to use for the stat_analysis out_stat file. A user customized template to use for the out_stat file. If left blank and a out_stat file is requested, a default version will be used. This is optional in the METplus configuration file for running with :term:`LOOP_ORDER` = times.
 
      | *Used by:*  StatAnalysis
      | *Family:*  [filename_templates]
