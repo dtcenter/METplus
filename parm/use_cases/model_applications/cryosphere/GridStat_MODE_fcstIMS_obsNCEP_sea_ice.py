@@ -24,26 +24,22 @@ models against sea ice observations. For now, it is limited to observation again
 # of MET, IMS is referred to as "forecast" and NCEP is referred to as "observation".
 #
 #  * Forecast dataset: IMS Sea Ice Concentration
-#    - Variable of interest: ICEC; ICEC is a binary field where "1" means a sea ice concentration of 
-#      >=0.40 and "0" means a sea ice concentration of <0.40.
-#    - Level: Z0 (surface)
-#    - Dates: 20190201 - 20190228
-#    - Valid time: 22 UTC
-#    - Format: Grib2
-#    - Projection: 4-km Polar Stereographic
+#      - Variable of interest: ICEC; ICEC is a binary field where "1" means a sea ice concentration of >=0.40 and "0" means a sea ice concentration of <0.40.
+#      - Level: Z0 (surface)
+#      - Dates: 20190201 - 20190228
+#      - Valid time: 22 UTC
+#      - Format: Grib2
+#      - Projection: 4-km Polar Stereographic
 #
 #  * Observation dataset: NCEP Sea Ice Concentration
-#    - Variable of interest: ICEC; ICEC is the sea ice concentration with values from 0.0 - 1.0. 
-#      Values >1.0 && <=1.28 indicate flagged data to be included and should be set to ==1.0 when 
-#      running MET. Values <1.28 should be ignored as that indicates an invalid observation.
-#    - Level: Z0 (surface)
-#    - Dates: 20190201 - 20190228
-#    - Valid time: 00 UTC
-#    - Format: Grib2
-#    - Projection: 12.7-km Polar Stereographic
+#      - Variable of interest: ICEC; ICEC is the sea ice concentration with values from 0.0 - 1.0. Values >1.0 && <=1.28 indicate flagged data to be included and should be set to ==1.0 when running MET. Values <1.28 should be ignored as that indicates an invalid observation.
+#      - Level: Z0 (surface)
+#      - Dates: 20190201 - 20190228
+#      - Valid time: 00 UTC
+#      - Format: Grib2
+#      - Projection: 12.7-km Polar Stereographic
 #    
-#  * Data source: Received from Robert Grumbine at EMC. IMS data is originally from the NIC. NCEP 
-#    data is originally from NCEP. 
+#  * Data source: Received from Robert Grumbine at EMC. IMS data is originally from the NIC. NCEP data is originally from NCEP.
 #  
 #  * Location: All input data is located on eyewall. 
 
