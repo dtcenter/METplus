@@ -1,4 +1,4 @@
-METplus Quick Search for Use Cases
+﻿METplus Quick Search for Use Cases
 ==================================
 
 Use Cases by MET Tool:
@@ -30,12 +30,7 @@ Use Cases by Organization:
 | `Stony Brook University (SBU)  <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA Hydrometeorology Testbed (HMT)  <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA Hazardous Weather Testbed (HWT)  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_
-| `NCAR Developmental Testbed Center (DTC)  <https://ncar.github.io/METplus/searxch.html?q=NCARDTCOrgUseCase&check_keywords=yes&area=default>`_
-
-
-Use Cases by Plot Type
-----------------------
-| `Histogram  <https://ncar.github.io/METplus/search.html?q=HistogramPlotUseCase&check_keywords=yes&area=default>`_
+| `Developmental Testbed Center (DTC)  <https://ncar.github.io/METplus/searxch.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_
 
 
 Use Cases by Application:
@@ -46,7 +41,6 @@ Use Cases by Application:
 | `Space Weather <https://ncar.github.io/METplus/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
 | `Subseasonal to Seasonal <https://ncar.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
 | `Tropical Cyclone and Extra Tropical Cyclone <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
-| `Probabilistic <https://ncar.github.io/METplus/search.html?q=ProbabilisticAppUseCase&check_keywords=yes&area=default>`_
 | `Ensemble  <https://ncar.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
 | `Probability Generation  <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_
 | `Probability Verification  <https://ncar.github.io/METplus/search.html?q=ProbabilityVerificationAppUseCase&check_keywords=yes&area=default>`_
