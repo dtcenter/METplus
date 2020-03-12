@@ -64,6 +64,7 @@ models against sea ice observations. For now, it is limited to observation again
 # 
 # METplus first loads all of the configuration files found in parm/metplus_config. Then, it loads
 # any configuration files passed to METplus by the command line with the -c option.
+#
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
 #
@@ -80,7 +81,7 @@ models against sea ice observations. For now, it is limited to observation again
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/cryosphere/GridStatConfig_sea_ice
 #
-# See the following file for more information about the environment variables set in this configuration file::
+# See the following file for more information about the environment variables set in this configuration file:
 #   parm/use_cases/met_tool_wrapper/GridStat/GridStat.py
 #
 # **MODEConfig_sea_ice**
@@ -88,7 +89,7 @@ models against sea ice observations. For now, it is limited to observation again
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/cryosphere/MODEConfig_sea_ice
 #
-# See the following file for more information about the environment variables set in this configuration file::
+# See the following file for more information about the environment variables set in this configuration file:
 #   parm/use_cases/met_tool_wrapper/MODE/MODE.py
 #
 
