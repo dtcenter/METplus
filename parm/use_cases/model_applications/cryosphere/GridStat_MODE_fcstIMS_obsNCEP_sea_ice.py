@@ -68,44 +68,34 @@ models against sea ice observations. For now, it is limited to observation again
 # 
 # METplus first loads all of the configuration files found in parm/metplus_config. Then, it loads
 # any configuration files passed to METplus by the command line with the -c option.
+# .. highlight:: bash
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
 #
 
 ###################################################################################################
 # MET Configuration
 # -----------------
 # 
-# METplus sets environment variables based on the values in the METplus configuration file. 
+# METplus sets environment variables based on the values in the METplus configuration file.
+# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
-# These variables are referenced in the MET configuration files.
-# ${MODEL} - Name of the forecast input. Corresponds to MODEL in the METplus configuration file.
-# ${OBTYPE} - Name of the observation input. Corresponds to OBTYPE in the METplus configuration file.
-# ${FCST_FIELD} - Formatted forecast field information. Generated from FCST_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] 
-#                 in the METplus configuration file. 
-# ${OBS_FIELD} - Formatted observation field information. Generated from OBS_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS]
-#                in the METplus configuration file. 
-# ${FCST_VAR} - Field name of forecast data to process. Used in output_prefix to include input information in
-#               the output filenames. Corresponds to FCST_VAR<n>_NAME in the METplus configuration file. 
-# ${OBS_VAR} - Field name of observation data to process. Used in output_prefix to include input information in
-#              the output filenames. Corresponds to OBS_VAR<n>_NAME in the METplus configuration file. 
-# ${LEVEL} - Vertical level of the forecast input data. Used in output_prefix to include input information in
-#            the output filenames. Corresponds to FCST_VAR<n>_LEVELS in the METplus configuration file.
-# ${QUILT} - True/FAlse to perform quilting. Corresponds to MODE_QUILT in the METplus configuration file.
-# ${FCST_CONV_RADIUS} - Convolution radius/radii used for forecast data. Corresponds to FCST_MODE_CONV_RADIUS in the
-#                       METplus configuration file. 
-# ${FCST_CONV_THRESH} - Convolution threshold(s) used for forecast data. Corresponds to FCST_CONV_THRESH in the
-#                       METplus configuration file. 
-# ${FCST_MERGE_THRESH} - Merge threshold(s) used for forecast data. Corresponds to FCST_MODE_CONV_THRESH in the
-#                        METplus configuration file.
-# ${FCST_MERGE_FLAG} - True/False merge flag used for forecast data. Corresponds to FCST_MODE_MERGE_FLAG in the
-#                      METplus configuration file.
-# ${OBS_CONV_RADIUS} - Convultion radius/radii used for observation data. Corresponds to OBS_CONV_RADIUS in the
-#                      METplus configuration file.
-# ${OBS_CONV_THRESH} - Convolution threshold(s) used for observation data. Corresponds to OBS_MODE_CONV_THRESH
-#                      in the METplus configuration file.
-# ${OBS_MERGE_THRESH} - Merge threshold(s) used for observation data. Corresponds to OBS_MODE_MERGE_FLAG in the
-#                       METplus configuration file.
-# ${OBS_MERGE_FLAG} - True/False merge flag used for observation data. Corresponds to OBS_MODE_MERGE_FLAG in the
-#                     METplus configuration file.
+# **GridStatConfig_sea_ice**
+#
+# .. highlight:: bash
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/cryosphere/GridStatConfig_sea_ice
+#
+# See the following file for more information about the environment variables set in this configuration file::
+#   parm/use_cases/met_tool_wrapper/GridStat/GridStat.py
+#
+# **MODEConfig_sea_ice**
+#
+# .. highlight:: bash
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/cryosphere/MODEConfig_sea_ice
+#
+# See the following file for more information about the environment variables set in this configuration file::
+#   parm/use_cases/met_tool_wrapper/MODE/MODE.py
+#
+
 
 ###################################################################################################
 # Running METplus
@@ -113,7 +103,7 @@ models against sea ice observations. For now, it is limited to observation again
 #
 # The command to run this use case is: 
 #       
-#  master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/cryosphere/sea_ice.conf
+#  master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
 
 ####################################################################################################
 # Expected Output
@@ -158,4 +148,7 @@ models against sea ice observations. For now, it is limited to observation again
 # Keywords
 # --------
 #
-# .. note:: GridStatUseCase, MODEUseCase
+# .. note::
+#    `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
+#    `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
+#
