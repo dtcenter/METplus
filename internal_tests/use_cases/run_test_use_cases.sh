@@ -6,7 +6,11 @@ ush_dir=$script_dir"/../../ush"
 
 export PYTHONPATH=$ush_dir:$PYTHONPATH
 
-host=$HOSTNAME
+host=$1
+if [ -z "$host" ]; then
+    host=$HOSTNAME
+fi
+
 test_env_file=$script_dir"/metplus_test_env."$host".sh"
 
 if [ ! -e $test_env_file ]; then

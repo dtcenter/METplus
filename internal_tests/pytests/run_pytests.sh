@@ -8,7 +8,11 @@ pytest_rel_path="internal_tests/pytests"
 ush_dir=${script_dir%"$pytest_rel_path"}ush
 export PYTHONPATH=$ush_dir:$PYTHONPATH
 
-host=$HOSTNAME
+host=$1
+if [ -z "$host" ]; then
+    host=$HOSTNAME
+fi
+
 minimum_pytest_env_file=$script_dir"/minimum_pytest."$host".sh"
 if [ ! -e $minimum_pytest_env_file ]; then
     echo Cannot only run run_pytests.sh with minimum pytest environment file. Create minimum_pytest.$host.sh to run on this host
