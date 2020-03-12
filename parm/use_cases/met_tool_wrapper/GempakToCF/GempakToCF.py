@@ -125,4 +125,4 @@ This use case will run the GempakToCF (external) tool to convert Gempak data to 
 # --------
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-GempakToCF.png'
-# .. note:: `GempakToCFToolUseCase <https://ncar.github.io/METplus/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_, `GEMPAKFileUseCase <https://ncar.github.io/METplus/search.html?q=GEMPAKFileUseCase&check_keywords=yes&area=default>`_
+# .. note:: `GempakToCFToolUseCase <https://ncar.github.io/METplus/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_, `GEMPAKFileUseCase <https://ncar.github.io/METplus/search.html?q=GEMPAKFileUseCase&check_keywords=yes&area=default>`_, `NOAAHMTOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_, `NOAAWPCOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_
