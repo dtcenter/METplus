@@ -1,16 +1,16 @@
-﻿"""
+"""
 HRRR Ensemble Use Case
 ======================
-This use case creates ensemble fields from a previously accumulated 3 hour
+This use case creates ensemble statistics from a previously accumulated 3 hour
 precipitation case 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Post-process ensemble members to derive simple (non-bias-corrected) mean,
-# standard deviation (spread), minimum, maximum, and range fields for use in 
-# other MET tools.
+# To provide useful, statistical information on the relationship between observation data
+# and an ensemble forecast. This information can be used to help correct ensemble
+# member deviations from observed values.
 
 ##############################################################################
 # Datasets
@@ -23,7 +23,7 @@ precipitation case
 # METplus Components
 # ------------------
 #
-# This use case runs Ensemble-Stat on HRRRE data from 3 members after
+# This use case runs EnsembleStat on HRRRE data from 3 members after
 # running it through pcp_combine to create a 3 hour precipitation accumulation
 
 ###############################################################################
@@ -151,4 +151,4 @@ precipitation case
 #
 # sphinx_gallery_thumbnail_path = '_static/precipitation-EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.png'
 #
-# .. note:: `EnsembleStatToolUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_, `NOAAHWTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_, `PrecipitationAppUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_, `NetCDFFileUseCase  <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_, `EnsembleAppUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_, `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_, `ProbabilityGenerationAppUseCase <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_, `NOAAHWTOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_
+# .. note:: `EnsembleStatToolUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_, `NOAAHWTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_, `PrecipitationAppUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_, `NetCDFFileUseCase  <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_
