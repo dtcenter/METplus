@@ -51,7 +51,7 @@ Use Cases by METplus Feature:
 | `Custom String Looping <https://ncar.github.io/METplus/search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_
 | `Feature Relative  <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_
 | `GempakToCF <https://ncar.github.io/METplus/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_
-| `Looping by month or year  <https://ncar.github.io/METplus/search.html?q=MonthLoopFeatureUseCase&check_keywords=yes&area=default>`_
+| `Looping by month or year  <https://ncar.github.io/METplus/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
 | `Masking  <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
 | `MET_PYTHON_EXE environment variable  <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
 | `Python Embedding Ingest <https://ncar.github.io/METplus/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_
