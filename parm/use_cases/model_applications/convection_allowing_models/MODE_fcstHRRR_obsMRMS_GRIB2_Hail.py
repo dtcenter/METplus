@@ -11,7 +11,12 @@ comparing the resulting data to forecast data
 # --------------------
 #
 # To provide statistical inforation on the forecast hail size compared to the 
-# observed hail size from MRMS MESH data.
+# observed hail size from MRMS MESH data.  Using objects to verify hail size
+# avoids the "unfair penalty" issue, where a CAM must first generate convection
+# to have any chance of accurately predicting the hail size.  In addition,
+# studies have shown that MRMS MESH observed hail sizes do not correlate one-
+# to-one with obswerved sizes but can only be used to group storms into general
+# categories.  Running MODE allows a user to do this.
 
 ##############################################################################
 # Datasets
@@ -26,8 +31,7 @@ comparing the resulting data to forecast data
 # ------------------
 #
 # This use case runs MODE to create object statistics on forecast hail size 
-# from the HRRR version 4 model and the observed MRMS MESH hail size.  Using
-# objects 
+# from the HRRR version 4 model and the observed MRMS MESH hail size.  
 
 ##############################################################################
 # METplus Workflow
