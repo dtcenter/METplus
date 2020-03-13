@@ -60,7 +60,7 @@ def metplus_config():
 #         # expected.
 #             assert actual_key == key
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-METPLUS_BASE = os.getcwd().split('METplus')[0]+'METplus'
+METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 sys.path.append(METPLUS_BASE+'/ush/plotting_scripts')
 import plot_util
 logger = logging.getLogger('~/metplus_pytest_plot_util.log')

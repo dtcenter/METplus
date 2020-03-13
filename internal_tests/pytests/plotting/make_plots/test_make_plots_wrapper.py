@@ -101,7 +101,7 @@ def metplus_config():
 #         # expected.
 #             assert actual_key == key
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-METPLUS_BASE = os.getcwd().replace('/internal_tests/pytests/plotting/make_plots', '')
+METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
 def test_set_plotting_script():
     # Independently test that plotting script
