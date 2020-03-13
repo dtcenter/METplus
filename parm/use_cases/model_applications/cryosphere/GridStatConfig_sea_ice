@@ -28,7 +28,7 @@ obtype = "${OBTYPE}";
 // Verification grid
 //
 regrid = {
-   to_grid    = OBS;
+   to_grid    = ${REGRID_TO_GRID};
    method     = NEAREST;
    width      = 1;
    vld_thresh = 0.5;
@@ -45,7 +45,8 @@ cnt_logic        = UNION;
 wind_thresh      = [ NA ];
 wind_logic       = UNION;
 eclv_points      = 0.05;
-nc_pairs_var_str = "";
+nc_pairs_var_name = "";
+nc_pairs_var_suffix = "";
 rank_corr_flag   = FALSE;
 
 //
@@ -99,7 +100,7 @@ climo_cdf_bins = 1;
 //
 mask = {
    grid = [ "" ];
-   poly = ["${INPUT_BASE}/seaice_nland127.nc"];
+   poly = [ ${VERIF_MASK} ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -222,7 +223,7 @@ nc_pairs_flag = {
 
 grid_weight_flag = NONE;
 tmp_dir          = "/tmp";
-output_prefix    = "${MODEL}_${FCST_VAR}_vs_${OBTYPE}_${OBS_VAR}_${LEVEL}";
-version          = "V8.1";
+output_prefix    = "${OUTPUT_PREFIX}";
+version          = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////
