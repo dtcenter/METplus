@@ -113,7 +113,15 @@ comparing the resulting data to forecast data
 # Output for this use case will be found in model_applications/convection_allowing_models/MODE_fcstHRRRE_obsMRMS_GRIB2_Hail/20190529 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * TBD 
+# mode_260000L_20190529_020000V_010000A_cts.txt
+# mode_260000L_20190529_020000V_010000A_obj.nc
+# mode_260000L_20190529_020000V_010000A_obj.txt
+# mode_260000L_20190529_020000V_010000A.ps
+# mode_270000L_20190529_030000V_010000A_cts.txt
+# mode_270000L_20190529_030000V_010000A_obj.nc
+# mode_270000L_20190529_030000V_010000A_obj.txt
+# mode_270000L_20190529_030000V_010000A.ps
+
 
 
 ##############################################################################
@@ -122,4 +130,4 @@ comparing the resulting data to forecast data
 #
 # sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-MODE_fcstHRRRE_obsMRMS_GRIB2_Hail.png'
 #
-# .. note:: `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=ModeToolUseCase&check_keywords=yes&area=default>`_, `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_, `GRIB2FileUseCase <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_, `HWTUseCase <https://ncar.github.io/METplus/search.html?q=HWTUseCase&check_keywords=yes&area=default>`_,  `ProbabilityGenerationAppUseCase <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_
+# .. note:: `MODE <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_, `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_, `GRIB2FileUseCase <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_, `NOAA Hazardous Weather Testbed (HWT)  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_
