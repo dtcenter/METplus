@@ -1,4 +1,4 @@
-"""
+﻿"""
 BMKG APIK Seasonal Forecast
 ===========================
 
@@ -262,7 +262,7 @@ Seasonal forecast use case running GridStat, then passing the output into Series
 # Keywords
 # --------
 #
-# .. note:: `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, `NetCDFFileUseCase <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_
+# .. note:: `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, `NetCDFFileUseCase <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_, `LoopByMonthFeature  <https://ncar.github.io/METplus/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_, `NCAROrgUseCase  <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
 #
 # sphinx_gallery_thumbnail_path = '_static/s2s-GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.png'
 #
