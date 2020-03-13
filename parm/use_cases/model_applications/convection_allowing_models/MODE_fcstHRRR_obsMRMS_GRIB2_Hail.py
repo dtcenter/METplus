@@ -10,6 +10,8 @@ comparing the resulting data to forecast data
 # Scientific Objective
 # --------------------
 #
+# To provide statistical inforation on the forecast hail size compared to the 
+# observed hail size from MRMS MESH data.
 
 ##############################################################################
 # Datasets
@@ -23,6 +25,8 @@ comparing the resulting data to forecast data
 # METplus Components
 # ------------------
 #
+# This use case runs MODE to create object statistics on forecast hail size 
+# from the HRRR version 4 model and the observed MRMS MESH hail size.
 
 ##############################################################################
 # METplus Workflow
