@@ -152,7 +152,7 @@ This use case will run both the MET GridStat and MODE tools to generate statisti
 #    `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
 #    `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_,
 #    `MarineAndCryoUseCase <https://ncar.github.io/METplus/search.html?q=MarineAndCryoAppUseCase&check_keywords=yes&area=default>`_,
-#    `ModelValidationUseCase  <https://ncar.github.io/METplus/search.html?q=ModelValidationUseCase&check_keywords=yes&area=default>`_,
+#    `ValidationUseCase  <https://ncar.github.io/METplus/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_,
 #    `S2SAppUseCase <https://ncar.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_, 
 #    `NOAA Environmental Modeling Center (EMC)  <https://ncar.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_
 #
