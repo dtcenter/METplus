@@ -2,15 +2,18 @@
 HRRR-TLE vs. Stage IV GRIB Use Case
 ===================================
 
-This use case compares gridded probabilistic 6 hour forecast precipitation accumulation data to
-gridded 6 hour observation precipitation accumulation data.
+This use case compares a 6-hour gridded probabilistic quantitative precipitation forecast (PQPF) to a gridded 6-hour observed quantitative precipitation estimate (QPE).  It computes probabilistic statistics for a field generated outside of METplus.
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# This use case demonstrates allowing different accumulation amounts based on
+# This use case demonstrates the evaluation of a probabilistic field.  The
+# HRRR-Time Lag Ensemble (TLE) used in this example was used to demonstrate
+# prototype ensemble post-processing techniques. A time-lagged ensemble can
+# provide higher temporal resolution and be used to compute several different
+# accumulation amounts based on
 # what data is available for each run time. 6 hour and 1 hour observation data
 # is available at 6Z, so the 6 hour accumulation data is used. However, at 7Z
 # only a 1 hour accumulation field is available, so it uses the 1 hour field,
@@ -141,6 +144,18 @@ gridded 6 hour observation precipitation accumulation data.
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/precipitation-GridStat_fcstHRRR-TLE_obsStgIV_GRIB.png'
+# .. note::
+#     `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
+#     `PrecipitationAppUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_,
+#     `PCPCombineToolUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_,
+#     `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_,
+#     `GRIBFileUseCase <https://ncar.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_,
+#     `GRIB2FileUseCase <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_,
+#     `NetCDFFileUseCase <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_,
+#     `NOAAWPCOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_,
+#     `NOAAHMTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_,
+#     `NOAAHWTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,
+#     `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_,
+#     `ProbabilityVerificationAppUseCase  <https://ncar.github.io/METplus/search.html?q=ProbabilityVerificationAppUseCase&check_keywords=yes&area=default>`_
 #
-# .. note:: `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, `PrecipitationAppUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_, `PCPCombineToolUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_, `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_, `GRIBFileUseCase <https://ncar.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_, `GRIB2FileUseCase <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_
+# sphinx_gallery_thumbnail_path = '_static/precipitation-GridStat_fcstHRRR-TLE_obsStgIV_GRIB.png'
