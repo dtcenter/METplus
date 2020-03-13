@@ -52,10 +52,10 @@ comparing the resulting data to forecast data
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/convection_allowing_models/MODE_fcstHRRRE_obsMRMS_GRIB2_Hail.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/convection_allowing_models/MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/MODE_fcstHRRRE_obsMRMS_GRIB2_Hail.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.conf
 
 ##############################################################################
 # MET Configuration
@@ -77,13 +77,13 @@ comparing the resulting data to forecast data
 #
 # This use case can be run two ways:
 #
-# 1) Passing in MODE_fcstHRRRE_obsMRMS_GRIB2_Hail.conf then a user-specific system configuration file::
+# 1) Passing in MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/MODE_fcstHRRRE_obsMRMS_GRIB2_Hail.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in MODE_fcstHRRRE_obsMRMS_GRIB2_Hail.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/MODE_fcstHRRRE_obsMRMS_GRIB2_Hail.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -110,7 +110,7 @@ comparing the resulting data to forecast data
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/convection_allowing_models/MODE_fcstHRRRE_obsMRMS_GRIB2_Hail/20190529 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/convection_allowing_models/MODE_fcstHRRRE_obsMRMS_Hail_GRIB2/20190529 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # mode_260000L_20190529_020000V_010000A_cts.txt
@@ -128,6 +128,6 @@ comparing the resulting data to forecast data
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-MODE_fcstHRRRE_obsMRMS_GRIB2_Hail.png'
+# sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.png'
 #
 # .. note:: `MODE <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_, `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_, `GRIB2FileUseCase <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_, `NOAA Hazardous Weather Testbed (HWT)  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_

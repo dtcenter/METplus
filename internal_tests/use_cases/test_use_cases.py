@@ -51,7 +51,7 @@ all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/TCStat/TCStat.conf",
                 use_case_dir + "/model_applications/convection_allowing_models/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf",
                 use_case_dir + "/model_applications/convection_allowing_models/MTD_fcstHREF_FcstOnly_Gempak.conf",
-                use_case_dir + "/model_applications/convection_allowing_models/MODE_fcstHRRR_obsMRMS_GRIB2_Hail.conf",
+                use_case_dir + "/model_applications/convection_allowing_models/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf",
 
                 use_case_dir + "/model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf",
                 use_case_dir + "/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf",
