@@ -1,4 +1,4 @@
-﻿METplus Quick Search for Use Cases
+METplus Quick Search for Use Cases
 ==================================
 
 Use Cases by MET Tool:
@@ -32,7 +32,6 @@ Use Cases by Organization:
 | `NOAA Hazardous Weather Testbed (HWT)  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_
 | `Stony Brook University (SBU)  <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
 
-
 Use Cases by Application:
 -------------------------
 | `Convection Allowing Models <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_
@@ -43,7 +42,6 @@ Use Cases by Application:
 | `Space Weather <https://ncar.github.io/METplus/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
 | `Subseasonal to Seasonal <https://ncar.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
 | `Tropical Cyclone and Extra Tropical Cyclone <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
-
 
 Use Cases by METplus Feature:
 -----------------------------
@@ -61,7 +59,6 @@ Use Cases by METplus Feature:
 | `Revision Series <https://ncar.github.io/METplus/search.html?q=RevisionSeriesUseCase&check_keywords=yes&area=default>`_
 | `Series by Initialization  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
 | `Series by Forecast Lead  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
-
 
 Use cases by File Format:
 -------------------------
