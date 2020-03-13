@@ -1,4 +1,4 @@
-"""
+﻿"""
 HRRR Ensemble Use Case
 ======================
 
@@ -10,9 +10,10 @@ comparing the resulting data to forecast data
 # Scientific Objective
 # --------------------
 #
-# To provide useful statistical information on the relationship between observation
-# data (in both grid and point formats) to an ensemble forecast. These values
-# can be used to help correct ensemble member deviations from observed values.
+# To provide useful statistical information about the ensemble characteristics
+# such as how dispersive it is and the relationship between spread and skill.
+# This example also shows how to compute simple probability fields called
+# ensemble relative frequency.
 
 ##############################################################################
 # Datasets
