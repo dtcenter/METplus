@@ -33,7 +33,14 @@ comparing the resulting data to forecast data
 # METplus Workflow
 # ----------------
 #
-# The MODE tool is run for each time.  
+# The MODE tool is run for each time. This example loops by valid time.  It
+# processes 2 valid times, listed below.
+#
+# | **Valid:** 2019-05-29_02Z
+# | **Forecast lead:** 26
+#
+# | **Valid:** 2019-05-29_03Z
+# | **Forecast lead:** 27
 
 ##############################################################################
 # METplus Configuration
