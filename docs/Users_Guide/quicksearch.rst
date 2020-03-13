@@ -52,6 +52,7 @@ Use Cases by METplus Feature:
 | `Looping by month or year  <https://ncar.github.io/METplus/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
 | `Masking  <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
 | `MET_PYTHON_EXE environment variable  <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
+| `Model Validation  <https://ncar.github.io/METplus/search.html?q=ModelValidationUseCase&check_keywords=yes&area=default>`_
 | `Python Embedding Ingest <https://ncar.github.io/METplus/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_
 | `Probability Generation  <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_
 | `Probability Verification  <https://ncar.github.io/METplus/search.html?q=ProbabilityVerificationAppUseCase&check_keywords=yes&area=default>`_
@@ -59,6 +60,7 @@ Use Cases by METplus Feature:
 | `Revision Series <https://ncar.github.io/METplus/search.html?q=RevisionSeriesUseCase&check_keywords=yes&area=default>`_
 | `Series by Initialization  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
 | `Series by Forecast Lead  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
+
 
 Use cases by File Format:
 -------------------------

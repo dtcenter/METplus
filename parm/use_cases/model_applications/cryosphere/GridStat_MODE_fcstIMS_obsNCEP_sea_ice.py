@@ -2,19 +2,19 @@
 Use Case: Sea Ice Validation and Verification
 ====================================================================================================
 
-This use case will run both the MET GridStat and MODE tools to compare the National Ice Center (NIC) 
-Interactive Multisensor Snow and Ice Mapping System (IMS; https://www.natice.noaa.gov/ims/index.html)
-and the National Centers for Environmental Prediction (NCEP) sea ice analysis 
-(https://polar.ncep.noaa.gov/seaice/Analyses.shtml). Future uses include comparing sea ice forecast 
-models against sea ice observations. For now, it is limited to observation against observation.
+Compare IMS sea ice concentration analysis to NCEP sea ice concentration analysis.  
+This use case will run both the MET GridStat and MODE tools to generate statistics and diagnostics.
+
 
 """
 ####################################################################################################
 # Scientific Objective
 # --------------------
 #
-# Compare IMS sea ice concentration analysis to NCEP sea ice concentration
-# analysis. Generate statistics of the results.
+# Run Grid-Stat and MODE to compare the National Ice Center (NIC) Interactive Multisensor Snow
+# and Ice Mapping System (IMS) and the National Centers for Environmental Prediction (NCEP)
+# sea ice analysis.  This is a validation and diagnostics use case because it is limited to a
+# comparison between IMS analysis to NCEP analysis.
 
 ####################################################################################################
 # Datasets
@@ -41,7 +41,7 @@ models against sea ice observations. For now, it is limited to observation again
 #    
 #  * Data source: Received from Robert Grumbine at EMC. IMS data is originally from the NIC. NCEP data is originally from NCEP.
 #  
-#  * Location: All input data is located on eyewall. 
+#  * Location: IMS: https://www.natice.noaa.gov/ims/index.html; IMS - (https://polar.ncep.noaa.gov/seaice/Analyses.shtml) 
 
 ###################################################################################################
 # METplus Components
@@ -150,5 +150,9 @@ models against sea ice observations. For now, it is limited to observation again
 #
 # .. note::
 #    `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
-#    `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
+#    `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_,
+#    `MarineAndCryoUseCase <https://ncar.github.io/METplus/search.html?q=MarineAndCryoAppUseCase&check_keywords=yes&area=default>`_,
+#    `ModelValidationUseCase  <https://ncar.github.io/METplus/search.html?q=ModelValidationUseCase&check_keywords=yes&area=default>`_,
+#    `S2SAppUseCase <https://ncar.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_, 
+#    `NOAA Environmental Modeling Center (EMC)  <https://ncar.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_
 #
