@@ -1,8 +1,8 @@
 """
-SeriesAnalysis
-==============
+Basic SeriesAnalysis Use Case
+================================
 
-This use case will run the MET SeriesAnalysis tool over a series of input files and computes the selected statistics. Several optional adjustments are presented but not used in this example, including the ability to loop over a list of strings that will run SeriesAnalysis multiple times for varying filename templates.
+This use case will run the MET Seriesi-Analysis tool over a series of input files and computes the selected statistics. Several optional adjustments are presented but not used in this example, including the ability to loop over a list of strings that will run Series-Analysis multiple times for varying filename templates.
 
 """
 ##############################################################################

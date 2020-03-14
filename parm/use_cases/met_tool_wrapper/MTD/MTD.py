@@ -1,6 +1,6 @@
 """
-MTD
-========
+Basic MTD Use Case
+===================
 
 This use case will run the MET MTD (MODE Time Domain) tool to compare gridded forecast data to gridded observation data over time.
 

@@ -1,9 +1,9 @@
 """
-HRRR Ensemble Use Case
-======================
+HRRR Ensemble Characteristics Use Case
+===========================================
 
-This use case builds hourly gridded fields for multiple variables,
-comparing the resulting data to forecast data
+This use case uses PB2NC to prepare observations for multiple variables to
+be used to evaluate ensemble characteristics
 
 """
 ##############################################################################

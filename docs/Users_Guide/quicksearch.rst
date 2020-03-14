@@ -45,14 +45,14 @@ Use Cases by Application:
 
 Use Cases by METplus Feature:
 -----------------------------
-| `Simple Example <https://ncar.github.io/METplus/search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_
+| `Introductory Example <https://ncar.github.io/METplus/search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_
 | `Custom String Looping <https://ncar.github.io/METplus/search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_
+| `Diagnostics <https://ncar.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
 | `Feature Relative  <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_
 | `GempakToCF <https://ncar.github.io/METplus/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_
 | `Looping by month or year  <https://ncar.github.io/METplus/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
 | `Masking  <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
 | `MET_PYTHON_EXE environment variable  <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
-| `Model or Analysis Validation  <https://ncar.github.io/METplus/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
 | `Python Embedding Ingest <https://ncar.github.io/METplus/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_
 | `Probability Generation  <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_
 | `Probability Verification  <https://ncar.github.io/METplus/search.html?q=ProbabilityVerificationAppUseCase&check_keywords=yes&area=default>`_
@@ -60,6 +60,7 @@ Use Cases by METplus Feature:
 | `Revision Series <https://ncar.github.io/METplus/search.html?q=RevisionSeriesUseCase&check_keywords=yes&area=default>`_
 | `Series by Initialization  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
 | `Series by Forecast Lead  <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
+| `Validation of Models or Analyses  <https://ncar.github.io/METplus/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
 
 
 Use cases by File Format:

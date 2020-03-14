@@ -1,8 +1,9 @@
 """
-HRRR Ensemble Use Case
-======================
+HRRR Ensemble Mean and Probability Computation Use Case
+================================================================
 This use case creates ensemble fields from a previously accumulated 3 hour
 precipitation case 
+
 """
 ##############################################################################
 # Scientific Objective

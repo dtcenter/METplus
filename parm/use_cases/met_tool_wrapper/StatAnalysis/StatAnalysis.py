@@ -1,8 +1,8 @@
 """
-StatAnalysis
-============
+Basic StatAnalysis Use Case
+==============================
 
-This use case will run the MET StatAnalysis tool providing
+This use case will run the MET Stat-Analysis tool providing
 summary statistical information and a way to filter STAT
 output files.
 
@@ -12,7 +12,7 @@ output files.
 # Scientific Objective
 # --------------------
 #
-# This demonstrates how the StatAnalysis tool can tie together results from other
+# This demonstrates how the Stat-Analysis tool can tie together results from other
 # MET tools (including PointStat, GridStat, EnsembleStat, and WaveletStat)
 # and provide summary statistical information.
 

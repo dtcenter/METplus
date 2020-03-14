@@ -1,8 +1,10 @@
 """
-PyEmbedIngest
-=============
+Basic PyEmbedIngest Use Case
+=========================================
 
-This use case will run the PyEmbedIngest wrapper tool to utilize the MET Python Embedding functionality to read in a 2D plane of data using a user's Python script in the MET tool RegridDataPlane and write it out to a NetCDF file that can be read by the other MET tools.
+This use case will run the Python Embedding Ingest (PyEmbedIngest) wrapper tool to utilize the
+MET Python Embedding functionality to read in a 2D plane of data using a user's Python script
+in the MET tool RegridDataPlane and write it out to a NetCDF file that can be read by the other MET tools.
 
 """
 ##############################################################################

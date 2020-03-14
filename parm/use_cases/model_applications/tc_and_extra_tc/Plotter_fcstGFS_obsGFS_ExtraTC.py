@@ -1,5 +1,5 @@
 """
-Cyclone Plotter Use case
+Cyclone Plotter for TC-Pairs Output Use case
 ==================================================================
 This use case generates a plot of tropical cyclone tracks using output from
 the MET tc-pairs tool.  The CyclonePlotter wrapper does not directly wrap a
@@ -9,7 +9,7 @@ specific MET tool.  This is a data visualization written entirely in Python.
 ##############################################################################
 # Scientific Objective
 # --------------------
-# Provide visualization of storm tracks using output from the MET tc-pairs tool.
+# Provide visualization of storm tracks using output from the MET TC-Pairs tool.
 # The date and hour associated with each storm track indicates the first time
 # the storm was tracked in the model.
 
@@ -27,7 +27,7 @@ specific MET tool.  This is a data visualization written entirely in Python.
 # ------------------
 #
 # This use case first runs TcPairs and then generates the storm track plot
-# for all storm tracks found in the .tcst output file created by the MET tc-pairs tool.
+# for all storm tracks found in the .tcst output file created by the MET TC-Pairs tool.
 #
 
 ##############################################################################

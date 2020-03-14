@@ -1,6 +1,6 @@
 """
-MODE
-========
+Basic MODE Use Case
+====================
 
 This use case will run the MET MODE tool to compare gridded forecast data to gridded observation data.
 

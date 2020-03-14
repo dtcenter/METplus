@@ -1,6 +1,6 @@
 """
-TCStat
-========
+Basic TCStat Use Case
+=======================
 
 This use case will run the MET TCStat tool to provide summary statistics
 from a TCPairs run.

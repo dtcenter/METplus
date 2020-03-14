@@ -1,8 +1,8 @@
 """
-Example
-========
+Introductory Example
+=======================
 
-This use case will loop over run times and output information for each run regarding filename templates. This case does not run any MET tool. It is designed to help familiarize a new user with how the METplus time looping variables and filename template variables behave.
+This is METplus' version of a "Hello World" use case. It will loop over run times and output information for each run regarding filename templates. This case does not run any MET tool. It is designed to help familiarize a new user with how the METplus time looping variables and filename template variables behave.
 
 """
 ##############################################################################

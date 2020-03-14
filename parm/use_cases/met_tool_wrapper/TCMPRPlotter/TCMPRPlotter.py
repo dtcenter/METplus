@@ -1,6 +1,6 @@
 """
-TCMPRPlotter
-============
+Basic TCMPR Plotter Use Case
+=======================================================
 
 This use case will run the MET R script tcmpr_plotter.R to generate various statistical
 plots of tropical cyclone tracks.
@@ -10,7 +10,7 @@ plots of tropical cyclone tracks.
 # Scientific Objective
 # --------------------
 #
-# Generate statistical plots of tropical cyclone tracks.
+# Generate plots of tropical cyclone tracks.
 
 ##############################################################################
 # Datasets

@@ -1,6 +1,6 @@
 """
-PB2NC
-========
+Basic PB2NC Use Case
+=====================
 
 This use case will run the MET PB2NC tool to convert prepBUFR point observation data to NetCDF format.
 
@@ -9,7 +9,7 @@ This use case will run the MET PB2NC tool to convert prepBUFR point observation 
 # Scientific Objective
 # --------------------
 #
-# None. Simply converting file formats so point observations can be read by the MET tools.
+# Simply converting file formats so point observations can be read by the MET tools.
 
 ##############################################################################
 # Datasets

@@ -1,15 +1,15 @@
 """
-RegridDataPlane
-===============
+Basic RegridDataPlane Use Case
+===================================
 
-This use case will run the MET RegridDataPlane tool to regrid observation data in GRIB format.
+This use case will run the MET Regrid-Data-Plane tool to regrid observation data in GRIB format.
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# None. Simply regridding data to match a desired grid domain for comparisons.
+# Simply regridding data to match a desired grid domain for comparisons.
 
 ##############################################################################
 # Datasets
