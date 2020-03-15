@@ -62,7 +62,7 @@ meaningful temporal groups (i.e. 6,12,18,24 hour leads = Day 1).
 # TcPairs > RegridDataPlane, TCStat > SeriesAnalysis
 #
 # This example loops by forecast/lead time (with begin, end, and increment as specified in the METplus
-# TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_FhrGrouping.conf file).
+# TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf file).
 # The following will be run based on the availability of data corresponding to the initialization time
 # (in this example, we only have 20141214 as our initialization time) and the requested forecast leads, resulting
 # in the run times below.
@@ -86,12 +86,10 @@ meaningful temporal groups (i.e. 6,12,18,24 hour leads = Day 1).
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf
-# -c parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_FhrGrouping.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_FhrGrouping.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
 
 ##############################################################################
 # MET Configuration
@@ -109,8 +107,6 @@ meaningful temporal groups (i.e. 6,12,18,24 hour leads = Day 1).
 #
 # parm/use_cases/met_tool_wrapper/TCPairs/TCPairs.py
 #
-# parm/use_cases/met_tool_wrapper/SeriesByLead/SeriesByLead.py
-#
 
 ##############################################################################
 # Running METplus
@@ -118,16 +114,14 @@ meaningful temporal groups (i.e. 6,12,18,24 hour leads = Day 1).
 #
 # This use case can be run two ways:
 #
-# 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf and TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_FhrGrouping.conf, then a user-specific system configuration file::
+# 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf, then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf
-#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_FhrGrouping.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
 #        -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf and TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_FhrGrouping.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_Standard.conf
-#                          -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_FhrGrouping.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -237,6 +231,6 @@ meaningful temporal groups (i.e. 6,12,18,24 hour leads = Day 1).
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/medium_range-TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_FhrGrouping.png'
+# sphinx_gallery_thumbnail_path = '_static/medium_range-TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.png'
 #
 # .. note:: `TCPairsToolUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_, `SeriesByLeadUseCase <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_, `TCStatToolUseCase <https://ncar.github.io/METplus/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_, `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_, `MediumRangeAppUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,  `SeriesAnalysisUseCase <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_, `GRIB2FileUseCase <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_, `FeatureRelativeUseCase <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_, `SBUOrgUseCase <htpps://ncar.github.io/Metplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
