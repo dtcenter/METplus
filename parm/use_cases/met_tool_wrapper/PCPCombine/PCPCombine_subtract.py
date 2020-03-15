@@ -1,6 +1,6 @@
 """
-PCPCombine SUBTRACT
-===================
+PCPCombine: SUBTRACT Use Case
+=============================================================================
 
 This use case will run the MET PCPCombine tool in SUBTRACT mode to extract a 3 hour accumulation field
 

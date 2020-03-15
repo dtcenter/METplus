@@ -1,13 +1,13 @@
 """
-Series by Lead (for forecast hour groupings)
-============================================
-This use case performs a series analysis on tropical cyclone
-data based on all lead times. This use case illustrates how one can "build" on an existing
-configuration file by overriding configuration settings. In this example, we have
-requested a series analysis based on forecast hours rather than by initialization times. This
-series by lead example illustrates that results can be grouped based on forecast hours.
-For example, one can readily aggregate series analysis results by the first, second, and third days of
-a storm event, rather than by all the forecast hours/lead times.
+Multi_Tool: Feature Relative by Lead (with lead groupings) (Adeck,GFS:Bdeck,GFS:ATCF,Grib2)
+==================================================================================================
+This use case calls multiple tools to produce diagnostic plots of systematic errors  
+about a feature (e.g. extra-tropical cyclone, tropical cyclone, MCS, etc...).  
+It also illustrates how one can "build" or "daisy chain" conf files to override
+configuration settings.  This example computes scores over varying forecast leads
+all valid at a given time and shows how the results can be grouped into 
+meaningful temporal groups (i.e. 6,12,18,24 hour leads = Day 1).
+
 """
 
 ##############################################################################
@@ -31,8 +31,10 @@ a storm event, rather than by all the forecast hours/lead times.
 #
 # Relevant information about the datasets that would be beneficial include:
 #
-#  * Forecast dataset: ADeck non-ATCF tropical cyclone data (GFS)
-#  * Observation dataset: non-ATCF tropical cyclone "best track"(BDeck) cyclone data (GFS)
+#  * TC-Pairs/TC-Stat Forecast dataset: ADeck modified-ATCF tropical cyclone data
+#  * Series-Analysis Forecast dataset: GFS
+#  * TC-Pairs/TC-Stat Observation  dataset: BDeck modified-ATCF tropical cyclone data
+#  * Series-Analysis Observation dataset: GFS Analysis
 #  * Sources of data (links, contacts, etc...)
 #
 

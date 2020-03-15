@@ -1,6 +1,6 @@
 """
-SeriesAnalysis Python Embedding
-===============================
+SeriesAnalysis: Using Python Embedding
+============================================================================
 
 This use case will run the MET SeriesAnalysis tool over a series of input files via python Embedding. This example highlights the ability to read in non-standard MET formatted files through the use of external python scripts.
 

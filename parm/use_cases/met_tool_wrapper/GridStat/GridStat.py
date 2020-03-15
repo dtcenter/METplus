@@ -1,5 +1,5 @@
 """
-Basic GridStat Use Case
+GridStat: Basic Use Case
 =========================
 
 This use case will run the MET Grid-Stat tool to compare gridded forecast data to

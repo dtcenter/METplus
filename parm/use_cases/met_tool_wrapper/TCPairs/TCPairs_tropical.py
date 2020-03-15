@@ -1,7 +1,7 @@
 """
 
-Basic TCPairsHWRF Use Case 
-================================================
+TCPairs: Basic Use Case for Tropical Cyclones
+==========================================================================
 
 This use case runs the MET tc_pairs tool on ATCF file format data generated
 by the GFDL cyclone tracker run on HWRF output. METPlus looping is 

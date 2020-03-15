@@ -1,8 +1,8 @@
 """
-HRRR Ensemble Mean and Probability Computation Use Case
+Ensemble-Stat: Basic Post-Processing only  
 ================================================================
-This use case creates ensemble fields from a previously accumulated 3 hour
-precipitation case 
+This use case creates ensemble fields from HRRR-E accumulated 3 hour
+precipitation case.  This is a forecast-only example.  
 
 """
 ##############################################################################
@@ -160,4 +160,3 @@ precipitation case
 #    `EnsembleAppUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_,
 #    `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_,
 #    `ProbabilityGenerationAppUseCase <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_,
-#    `NOAAHWTOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_

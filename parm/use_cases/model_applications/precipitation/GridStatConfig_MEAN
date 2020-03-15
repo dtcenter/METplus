@@ -148,7 +148,7 @@ interp = {
 nbrhd = {
    field      = BOTH;
    shape      = SQUARE;
-   width      = [ 1 ];
+   width      = [ 3,7,15 ];
    cov_thresh = [ >=0.5 ];
    vld_thresh = 1.0;
 }
@@ -209,12 +209,12 @@ output_flag = {
    pstd   = NONE;
    pjc    = NONE;
    prc    = NONE;
-   eclv   = BOTH;
+   eclv   = NONE;
    nbrctc = NONE;
    nbrcts = NONE;
    nbrcnt = NONE;
-   grad   = BOTH;
-   dmap   = NONE;
+   grad   = NONE;
+   dmap   = STAT;
 }
 
 //
@@ -231,7 +231,7 @@ nc_pairs_flag = {
    nbrhd        = FALSE;
    fourier      = FALSE;
    gradient     = FALSE;
-   distance_map = FALSE;
+   distance_map = TRUE;
    apply_mask   = FALSE;
 }
 

@@ -1,8 +1,12 @@
 """
-Feature Relative Standard Use Case (simple series analysis by initialization times)
+Multi_Tool: Feature Relative by Init (Adeck,GFS:Bdeck,GFS:ATCF,Grib2)
 ===================================================================================
-This use case performs a series analysis on tropical cyclone
-data, based on initialization times.
+This use case calls multiple tools to produce diagnostic plots of systematic errors
+about a feature (e.g. extra-tropical cyclone, tropical cyclone, MCS, etc...).  It
+also illustrates how one can "build" or "daisy chain" METplus conf files to 
+overiride configuraiton settings. This example computes scores over varying
+forecast initializations (or cycles) at a given lead time.  
+
 """
 
 ##############################################################################
@@ -24,8 +28,10 @@ data, based on initialization times.
 #
 # Relevant information about the datasets that would be beneficial include:
 #
-#  * Forecast dataset: ADeck non-ATCF tropical cyclone data (GFS)
-#  * Observation dataset: non-ATCF tropical cyclone "best track"(BDeck) cyclone data (GFS)
+#  * TC-Pairs/TC-Stat Forecast dataset: ADeck modified-ATCF tropical cyclone data
+#  * Series-Analysis Forecast dataset: GFS
+#  * TC-Pairs/TC-Stat Observation dataset: BDeck modified-ATCF tropical cyclone data
+#  * Series-Analysis Observation dataset: GFS Analysis
 #  * Sources of data (links, contacts, etc...)
 #
 
