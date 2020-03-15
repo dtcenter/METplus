@@ -100,18 +100,20 @@ together.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in GridStat.conf, then GridStat_forecast.conf, then GridStat_observation.conf, then a user-specific system configuration file::
+# 1) Passing in GridStat.conf, GridStat_forecast.conf, GridStat_observation.conf, an explicit override of the output directory, then a user-specific system configuration file::
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 #        -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf
 #        -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf
+#        -c dir.GRID_STAT_OUTPUT_DIR={OUTPUT_BASE}/met_tool_wrapper/GridStat/GridStat_multiple_config
 #        -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat.conf, then GridStat_foreacst.conf, GridStat_observation.conf::
+# 2) Modifying the configurations in parm/metplus_config, passing in GridStat.conf, GridStat_foreacst.conf, GridStat_observation.conf, and an explicit override of the output directory::
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 #        -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf
 #        -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf
+#        -c dir.GRID_STAT_OUTPUT_DIR={OUTPUT_BASE}/met_tool_wrapper/GridStat/GridStat_multiple_config
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
