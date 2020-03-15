@@ -26,7 +26,7 @@ all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/Example/Example.conf",
                 use_case_dir + "/met_tool_wrapper/GempakToCF/GempakToCF.conf",
                 use_case_dir + "/met_tool_wrapper/GridStat/GridStat.conf",
-                use_case_dir + "/met_tool_wrapper/GridStat/GridStat.conf," + use_case_dir + "/met_tool_wrapper/GridStat/GridStat_forecast.conf, -c dir.GRID_STAT_OUTPUT_DIR={OUTPUT_BASE}/met_tool_wrapper/GridStat/GridStat_multiple_config," + use_case_dir + "/met_tool_wrapper/GridStat/GridStat_observation.conf",
+                use_case_dir + "/met_tool_wrapper/GridStat/GridStat.conf," + use_case_dir + "/met_tool_wrapper/GridStat/GridStat_forecast.conf,dir.GRID_STAT_OUTPUT_DIR={OUTPUT_BASE}/met_tool_wrapper/GridStat/GridStat_multiple_config," + use_case_dir + "/met_tool_wrapper/GridStat/GridStat_observation.conf",
                 use_case_dir + "/met_tool_wrapper/MODE/MODE.conf",
                 use_case_dir + "/met_tool_wrapper/MTD/MTD.conf",
                 use_case_dir + "/met_tool_wrapper/MTD/MTD_python_embedding.conf",
