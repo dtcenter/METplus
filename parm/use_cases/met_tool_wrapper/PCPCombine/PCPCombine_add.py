@@ -1,35 +1,35 @@
 """
-PCPCombine SUBTRACT
-===================
+PCPCombine ADD
+==============
 
-This use case will run the MET PCPCombine tool in SUBTRACT mode to extract a 3 hour accumulation field
+This use case will run the MET PCPCombine tool in ADD mode to build a 15 minute accumulation field
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Extract a 3 hour precipitation accumulation field by subtracting a 15 hour accumulation field from an 18 hour accumulation field.
+# Build a 15 minute precipitation accumulation field from 5 minute accumulation fields.
 #
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** WRF precipitation accumulation fields (18 hour and 15 hour forecast leads)
+# | **Forecast:** NEWSe 5 minute precipitation accumulation
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
-# | **Data Source:** WRF
+# | **Data Source:** NEWSe
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus PCPCombine wrapper to search for files to extract the desired accumulation for a given run time
-# using a filename template, forecast lead, and output accumulation. It will a generate a command to run PCPCombine to subtract
-# a field from another field to extract the desired accumulation.
+# This use case utilizes the METplus PCPCombine wrapper to search for files to build the desired accumulation for a given run time
+# using a filename template and a list of available input accumulations. If enough files meeting the criteria are found to build
+# the output accumulation, it will generate a command to run PCPCombine to combine the data.
 
 ##############################################################################
 # METplus Workflow
@@ -38,8 +38,8 @@ This use case will run the MET PCPCombine tool in SUBTRACT mode to extract a 3 h
 # PCPCombine is the only tool called in this example. It processes the following
 # run times:
 #
-# | **Valid:** 2005-08-07_00Z
-# | **Forecast lead:** 18 hour
+# | **Valid:** 2019-08-02_18:15Z
+# | **Forecast lead:** 15 minute
 
 ##############################################################################
 # METplus Configuration
@@ -47,10 +47,10 @@ This use case will run the MET PCPCombine tool in SUBTRACT mode to extract a 3 h
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine/pcp_subtract.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_add.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/pcp_subtract.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_add.conf
 
 ##############################################################################
 # MET Configuration
@@ -65,13 +65,13 @@ This use case will run the MET PCPCombine tool in SUBTRACT mode to extract a 3 h
 #
 # This use case can be run two ways:
 #
-# 1) Passing in pcp_subtract.conf then a user-specific system configuration file::
+# 1) Passing in PCPCombine_add.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_subtract.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_add.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in pcp_subtract.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in PCPCombine_add.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_subtract.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_add.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -98,10 +98,10 @@ This use case will run the MET PCPCombine tool in SUBTRACT mode to extract a 3 h
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in met_tool_wrapper/PCPCombine/pcp_subtract (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in met_tool_wrapper/PCPCombine/PCPCombine_add (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * wrfprs_ruc13_2005080700_f24_A18.nc
+# * NEWSe5min_mem00_lag00.nc
 #
 
 ##############################################################################

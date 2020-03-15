@@ -1,35 +1,40 @@
 """
-PCPCombine ADD
-==============
+PCPCombine User-defined Command
+===============================
 
-This use case will run the MET PCPCombine tool in ADD mode to build a 15 minute accumulation field
+This use case will run the MET PCPCombine tool in USER_DEFINED mode to generate a command defined by the user.
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Build a 15 minute precipitation accumulation field from 5 minute accumulation fields.
+# Derive statistics (sum, minimum, maximum, range, mean, standard deviation, and valid count) using six 3 hour
+# precipitation accumulation fields. This use case builds the same command as pcp_derive.conf, but the command
+# is defined completely by the user in the METplus configuration file.
 #
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** NEWSe 5 minute precipitation accumulation
+# | **Forecast:** WRF precipitation accumulation fields (24, 21, 18, 15, 12, and 9 hour forecast leads)
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
-# | **Data Source:** NEWSe
+# | **Data Source:** WRF
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus PCPCombine wrapper to search for files to build the desired accumulation for a given run time
-# using a filename template and a list of available input accumulations. If enough files meeting the criteria are found to build
-# the output accumulation, it will generate a command to run PCPCombine to combine the data.
+# This use case utilizes the METplus PCPCombine wrapper to generate a command to run PCPCombine to derive
+# statistics from the fields. FCST_PCP_COMBINE_COMMAND is used to define all arguments to the call to the MET tool
+# pcp_combine. This variable uses filename template notation using the 'shift' keyword to define filenames that
+# are valid at a time slightly shifted from the run time, i.e. wrfprs_ruc13_{lead?fmt=%HH?shift=-3H}.tm00_G212.
+# It also references other configuration variables in the METplus
+# configuration file, such as FCST_PCP_COMBINE_INPUT_NAMES and FCST_PCP_COMBINE_INPUT_LEVELS, and FCST_PCP_COMBINE_INPUT_DIR.
 
 ##############################################################################
 # METplus Workflow
@@ -38,8 +43,8 @@ This use case will run the MET PCPCombine tool in ADD mode to build a 15 minute 
 # PCPCombine is the only tool called in this example. It processes the following
 # run times:
 #
-# | **Valid:** 2019-08-02_18:15Z
-# | **Forecast lead:** 15 minute
+# | **Valid:** 2005-08-07_00Z
+# | **Forecast lead:** 24 hour
 
 ##############################################################################
 # METplus Configuration
@@ -47,10 +52,10 @@ This use case will run the MET PCPCombine tool in ADD mode to build a 15 minute 
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine/pcp_add.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_user_defined.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/pcp_add.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_user_defined.conf
 
 ##############################################################################
 # MET Configuration
@@ -65,13 +70,13 @@ This use case will run the MET PCPCombine tool in ADD mode to build a 15 minute 
 #
 # This use case can be run two ways:
 #
-# 1) Passing in pcp_add.conf then a user-specific system configuration file::
+# 1) Passing in PCPCombine_user_defined.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_add.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_user_defined.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in pcp_add.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in PCPCombine_user_defined.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_add.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_user_defined.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -98,10 +103,10 @@ This use case will run the MET PCPCombine tool in ADD mode to build a 15 minute 
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in met_tool_wrapper/PCPCombine/pcp_add (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in met_tool_wrapper/PCPCombine/PCPCombine_user_defined (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * NEWSe5min_mem00_lag00.nc
+# * wrfprs_ruc13_2005080700_f24_A24.nc
 #
 
 ##############################################################################

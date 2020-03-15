@@ -48,10 +48,10 @@ This use case will run the MET PCPCombine tool in DERIVE mode to generate statis
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine/pcp_derive.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_derive.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/pcp_derive.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_derive.conf
 
 ##############################################################################
 # MET Configuration
@@ -66,13 +66,13 @@ This use case will run the MET PCPCombine tool in DERIVE mode to generate statis
 #
 # This use case can be run two ways:
 #
-# 1) Passing in pcp_derive.conf then a user-specific system configuration file::
+# 1) Passing in PCPCombine_derive.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_derive.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_derive.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in pcp_derive.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in PCPCombine_derive.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_derive.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_derive.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -99,7 +99,7 @@ This use case will run the MET PCPCombine tool in DERIVE mode to generate statis
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in met_tool_wrapper/PCPCombine/pcp_derive (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in met_tool_wrapper/PCPCombine/PCPCombine_derive (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * wrfprs_ruc13_2005080700_f24_A18.nc

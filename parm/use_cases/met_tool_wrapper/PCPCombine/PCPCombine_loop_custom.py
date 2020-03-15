@@ -1,52 +1,37 @@
 """
-PCPCombine Python Embedding
-===========================
+PCPCombine Custom String Looping
+================================
 
-This use case will run the MET PCPCombine tool in ADD mode using a python script to read input data and build a 2 hour accumulation field
+This use case will run the MET PCPCombine tool in ADD mode and read in files. It highlights the ability to loop over a user-defined list of strings, which are used to extract the multiple input files across a given run time.
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Build a 2 hour precipitation accumulation field from 30 minute IMERG data.
+# None. This wrapper's purpose is to demonstrate the ability to read in a user-defined
+# list of strings, processing each item in the list for the given run time.
 #
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** IMERG HDF5 30 minute precipitation accumulation
+# | **Forecast:** WRF-ARW precipitation 24h accumulation fields
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
-# | **Data Source:** IMERG
-
-##############################################################################
-# External Dependencies
-# ---------------------
-#
-# You will need to use a version of Python 3.6+ that has the following packages installed::
-#
-# * h5-py
-# * numpy
-#
-# If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
-#
-# If this it the case, you will need to set the MET_PYTHON_EXE environment variable to the path of the version of Python you want to use. If you want this version of Python to only apply to this use case, set it in the [user_env_vars] section of a METplus configuration file.:
-#
-#    [user_env_vars]
-#    MET_PYTHON_EXE = /path/to/python/with/h5-py/and/numpy/packages/bin/python
-#
+# | **Data Source:** WRF-AFW
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus PCPCombine wrapper to run a Python script to read input data to build the desired accumulation for a given run time
-# using a filename template and a list of available input accumulations. If enough files meeting the criteria are found to build
-# the output accumulation, it will generate a command to run PCPCombine to combine the data.
+# This use case utilizes the METplus PCPCombine wrapper to run across a user-provided
+# list of strings, executing each item in the list for each run time. In this example,
+# the ADD mode of PCPCombine is used, but only a single file is processed for each run time.
+# Because it is executed in this manner, the output will match the input.
 
 ##############################################################################
 # METplus Workflow
@@ -55,8 +40,8 @@ This use case will run the MET PCPCombine tool in ADD mode using a python script
 # PCPCombine is the only tool called in this example. It processes the following
 # run times:
 #
-# | **Valid:** 2018-01-02_13:30Z
-#
+# | **Valid:** 2009-12-31_12Z
+# | **Forecast lead:** 24 hour
 
 ##############################################################################
 # METplus Configuration
@@ -64,10 +49,10 @@ This use case will run the MET PCPCombine tool in ADD mode using a python script
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine/pcp_python_embedding.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_loop_custom.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/pcp_python_embedding.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_loop_custom.conf
 
 ##############################################################################
 # MET Configuration
@@ -82,13 +67,13 @@ This use case will run the MET PCPCombine tool in ADD mode using a python script
 #
 # This use case can be run two ways:
 #
-# 1) Passing in pcp_python_embedding.conf then a user-specific system configuration file::
+# 1) Passing in PCPCombine_loop_custom.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_python_embedding.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_loop_custom.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in pcp_python_embedding.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in PCPCombine_loop_custom.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/pcp_python_embedding.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_loop_custom.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -115,11 +100,19 @@ This use case will run the MET PCPCombine tool in ADD mode using a python script
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in met_tool_wrapper/PCPCombine/pcp_py_embed (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+# Output for this use case will be found in met_tool_wrapper/PCPCombine/PCPCombine_loop_custom (relative to **OUTPUT_BASE**)
+# and will contain the following folders:
 #
-# * .
+# * arw-fer-gep1
+# * arw-fer-gep5
+# * arw-sch-gep2
+# * arw-sch-gep6
+# * arw-tom-gep3
+# * arw-tom-gep7
 #
+# and each of the folders will contain a single file titled:
+#
+# * d01_2009123112_02400.nc
 
 ##############################################################################
 # Keywords
@@ -127,4 +120,6 @@ This use case will run the MET PCPCombine tool in ADD mode using a python script
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-PCPCombine.png'
 #
-# .. note:: `PCPCombineToolUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_, `PythonEmbeddingFileUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_, `MET_PYTHON_EXEUseCase <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
+# .. note::
+#    `PCPCombineToolUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_,
+#    `CustomStringLoopingUseCase <https://ncar.github.io/METplus/search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_
