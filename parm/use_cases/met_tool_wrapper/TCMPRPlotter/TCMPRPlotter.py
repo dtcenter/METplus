@@ -1,5 +1,5 @@
 """
-Basic TCMPR Plotter Use Case
+TCMPRPlotter: Basic Use Case
 =======================================================
 
 This use case will run the MET R script tcmpr_plotter.R to generate various statistical

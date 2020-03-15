@@ -1,6 +1,6 @@
 """
-Basic CyclonePlotter Use Case
-===============================
+CyclonePlotter: Basic Use Case
+============================================================================
 
 Generates a plot of cyclone tracks.  No MET tool is invoked for this example.
 

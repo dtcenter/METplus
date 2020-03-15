@@ -1,5 +1,5 @@
 """
-Use Case: Sea Ice Validation and Verification
+Grid-Stat and MODE: Sea Ice Validation (IMS:NCEPanalysis:Grib2)  
 ====================================================================================================
 
 Compare IMS sea ice concentration analysis to NCEP sea ice concentration analysis.  

@@ -1,15 +1,20 @@
 """
-ASCII2NC using Python Embedding with User Python
-================================================
+ASCII2NC: Using Python Embedding with MET_PYTHON_EXE 
+==============================================================================
 
-This use case will run the MET ASCII2NC tool to convert point observation data in ASCII text format to NetCDF format using Python Embedding functionality and specifying a different user-defined version of Python to run the script.
+This use case will run the MET ASCII2NC tool to convert point observation data in ASCII text format to NetCDF format using Python Embedding
+functionality and specifying a different user-defined version of Python to run the script. It additionally shows how to configure METplus
+to use an Python environment or package that was not used in building the MET tools.
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# None. Simply converting file formats so point observations can be read by the MET tools.
+# Simply converting file formats so point observations can be read by the MET tools through the use of a user-defined
+# Python script and running in either a different environment that the MET build or using a package not currently a
+# METplus dependency.
+
 
 ##############################################################################
 # Datasets

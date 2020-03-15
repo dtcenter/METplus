@@ -1,6 +1,6 @@
 """
-HRRR Hail MODE Use Case
-=======================
+MODE: Hail Verification (HRRR:MRMS:Grib2) 
+===========================================
 
 This use case builds hourly gridded fields for multiple variables pertinent to
 hail prediction and uses them to evaluate hail forecasts from the HRRRv4
@@ -15,7 +15,7 @@ hail prediction and uses them to evaluate hail forecasts from the HRRRv4
 # avoids the "unfair penalty" issue, where a CAM must first generate convection
 # to have any chance of accurately predicting the hail size.  In addition,
 # studies have shown that MRMS MESH observed hail sizes do not correlate one-
-# to-one with obswerved sizes but can only be used to group storms into general
+# to-one with observed sizes but can only be used to group storms into general
 # categories.  Running MODE allows a user to do this.
 
 ##############################################################################

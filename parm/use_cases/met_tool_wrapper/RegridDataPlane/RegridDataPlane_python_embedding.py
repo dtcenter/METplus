@@ -1,6 +1,6 @@
 """
-RegridDataPlane with Python Embedding
-=====================================
+RegridDataPlane: Using Python Embedding
+=============================================================================
 
 This use case will run the MET RegridDataPlane tool to regrid data using a python embedding script to read the input data.
 

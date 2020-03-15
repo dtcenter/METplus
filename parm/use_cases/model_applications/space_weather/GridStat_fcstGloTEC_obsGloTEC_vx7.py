@@ -1,8 +1,8 @@
 """
-Glotec vs. Glotec
-=================
+Grid-Stat: GloTEC validation (GloTEC:GloTEC:NetCDF with multiple times)
+==============================================================================
 
-This use case runs the MET GridStat tool to compare gridded forecast data 
+This use case runs the MET GridStat tool to compare gridded analyses  
 from two runs of the GloTEC model. This demonstrates the use of METplus
 for model validation purposes as both the "forecast" and "obs" fields are 
 from different versions of the same model. 

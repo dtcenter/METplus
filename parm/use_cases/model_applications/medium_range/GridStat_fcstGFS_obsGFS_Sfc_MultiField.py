@@ -1,16 +1,19 @@
 """
-Grid Comparison
-===============
+Grid-Stat: Standard Verification of Surface Fields (GFS:GFS:Grib) 
+================================================================================
 
-This use case will run the MET GridStat tool to compare gridded forecast data to gridded observation data over a few valid times and generate statistics over time.
+This use case will run the MET GridStat tool to compare gridded forecast
+data to gridded observation data over a few valid times and generate
+Continous statistics over time.
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 # To provide useful statistical information on the relationship between observation
-# data in gridded format to a gridded forecast. These values can be used to help
-# correct model deviations from observed values.
+# data in gridded format to a gridded forecast. These values can be used to assess 
+# the skill of the prediction.  Statistics stored only as partial sums to save space.
+# Stat-Analysis must be used to compute Continuous Statistics.
 
 ##############################################################################
 # Datasets
@@ -131,4 +134,4 @@ This use case will run the MET GridStat tool to compare gridded forecast data to
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-GridStat_fcstGFS_obsGFS_Sfc_MultiField.png'
 #
-# .. note:: `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, `MediumRangeAppUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_, `GRIBFileUseCase <https://ncar.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_, `NOAAEMCOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_
+# .. note:: `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, `MediumRangeAppUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_, `GRIBFileUseCase <https://ncar.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_, `NOAAEMCOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_ 

@@ -1,6 +1,6 @@
 """
-PCPCombine Python Embedding
-===========================
+PCPCombine: Python Embedding Use Case
+============================================================================
 
 This use case will run the MET PCPCombine tool in ADD mode using a python script to read input data and build a 2 hour accumulation field
 

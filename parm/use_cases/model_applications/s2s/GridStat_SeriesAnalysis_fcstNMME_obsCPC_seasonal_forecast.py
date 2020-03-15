@@ -1,8 +1,9 @@
 """
-BMKG APIK Seasonal Forecast
-===========================
+Grid-Stat and Series-Analysis: BMKG APIK Seasonal Forecast (NMME:CPC:NetCDF)
+=============================================================================
 
-Seasonal forecast use case running GridStat, then passing the output into SeriesAnalysis.
+Seasonal forecast use case running Gridi-Stat then passing the output
+into Series-Analysis.
 
 """
 
@@ -117,7 +118,8 @@ Seasonal forecast use case running GridStat, then passing the output into Series
 #
 #
 # Forecast Datasets:
-#
+# 
+# NMME
 # * variable of interest: pr (precipitation: cumulative monthly sum)
 # * format of precipitation variable: time,lat,lon (here dimensions: 29,181,361) with time variable representing 29 samples of same Julian Init-Time of hindcasts over past 29 years.
 #

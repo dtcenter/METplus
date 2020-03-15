@@ -1,8 +1,9 @@
 """
-HREF MODE Time Domain Use Case
-==============================
+MTD: Basic Object Tracking through Time (HREF Gempak) 
+===========================================================================
 
-This use case processes data over time.
+This use case identifies objects through space and time. HREF data in GEMPak
+format is used.  There is no comparison to an observation/analysis file.
 
 """
 ##############################################################################

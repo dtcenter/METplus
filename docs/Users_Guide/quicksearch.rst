@@ -28,9 +28,10 @@ Use Cases by Organization:
 | `NOAA Weather Prediction Center (WPC)  <https://ncar.github.io/METplus/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA Space Weather Prediction Center (SWPC)  <https://ncar.github.io/METplus/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA Environmental Modeling Center (EMC)  <https://ncar.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_
+| `NOAA Global Systems Laboratory (GSL)  <https://ncar.github.io/METplus/search.html?q=NOAAGSLOrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA Hydrometeorology Testbed (HMT)  <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA Hazardous Weather Testbed (HWT)  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_
-| `Stony Brook University (SBU)  <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
+| `State University of New York-Stony Brook University (SUNY-SBU)  <https://ncar.github.io/METplus/search.html?q=SUNYSBUOrgUseCase&check_keywords=yes&area=default>`_
 
 Use Cases by Application:
 -------------------------
@@ -41,7 +42,7 @@ Use Cases by Application:
 | `Precipitation <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_
 | `Space Weather <https://ncar.github.io/METplus/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
 | `Subseasonal to Seasonal <https://ncar.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
-| `Tropical Cyclone and Extra Tropical Cyclone <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
+| `Tropical Cyclone and Extra-Tropical Cyclone <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
 
 Use Cases by METplus Feature:
 -----------------------------
@@ -50,12 +51,14 @@ Use Cases by METplus Feature:
 | `Diagnostics <https://ncar.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
 | `Feature Relative  <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_
 | `GempakToCF <https://ncar.github.io/METplus/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_
-| `Looping by month or year  <https://ncar.github.io/METplus/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
-| `Masking  <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
+| `Looping by Month or Year  <https://ncar.github.io/METplus/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
+| `Masking for Regions of Interest <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
 | `MET_PYTHON_EXE environment variable  <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
+| `Observation Time Summary <https://ncar.github.io/METplus/search.html?q=ObsTimeSummaryUseCase&check_keywords=yes&area=default>`_
+| `Observation Uncertainty <https://ncar.github.io/METplus/search.html?q=ObsUncertaintyUseCase&check_keywords=yes&area=default>`_
 | `Python Embedding Ingest <https://ncar.github.io/METplus/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_
-| `Probability Generation  <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_
-| `Probability Verification  <https://ncar.github.io/METplus/search.html?q=ProbabilityVerificationAppUseCase&check_keywords=yes&area=default>`_
+| `Probability Generation  <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationUseCase&check_keywords=yes&area=default>`_
+| `Probability Verification  <https://ncar.github.io/METplus/search.html?q=ProbabilityVerificationUseCase&check_keywords=yes&area=default>`_
 | `Regridding in Tool <https://ncar.github.io/METplus/search.html?q=RegriddingInToolUseCase&check_keywords=yes&area=default>`_
 | `Revision Series <https://ncar.github.io/METplus/search.html?q=RevisionSeriesUseCase&check_keywords=yes&area=default>`_
 | `Series by Initialization  <https://ncar.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_

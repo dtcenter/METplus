@@ -1,6 +1,6 @@
 """
-PCPCombine User-defined Command
-===============================
+PCPCombine: User-defined Command Use Case
+=============================================================================
 
 This use case will run the MET PCPCombine tool in USER_DEFINED mode to generate a command defined by the user.
 
