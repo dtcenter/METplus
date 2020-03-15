@@ -169,7 +169,7 @@ def main():
         exit(0)
 
     print("\nIf files or directories were only found in one run, they will appear when you run the following:\n")
-    diff_cmd = f"diff -r {output_base_prev} {output_base} | grep Only"
+    diff_cmd = f'diff -r {output_base_prev} {output_base} | grep "Only in" | less'
     print(diff_cmd)
 
     print("\nCompare the output from previous run (" + output_base_prev + ") to this run"+\
