@@ -1,8 +1,9 @@
 """
-HRRR-TLE vs. Stage IV GRIB Use Case
-===================================
+Grid-Stat: 6hr PQPF Probability Verification
+==========================================================================
 
-This use case compares a 6-hour gridded probabilistic quantitative precipitation forecast (PQPF) to a gridded 6-hour observed quantitative precipitation estimate (QPE).  It computes probabilistic statistics for a field generated outside of METplus.
+Computes probabilistic statistics for probabilistic QPF.
+(HRRE-TLE:StageIV:Grib2,Grib1)
 
 """
 ##############################################################################
@@ -155,7 +156,7 @@ This use case compares a 6-hour gridded probabilistic quantitative precipitation
 #     `NOAAWPCOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_,
 #     `NOAAHMTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_,
 #     `NOAAHWTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,
-#     `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_,
-#     `ProbabilityVerificationAppUseCase  <https://ncar.github.io/METplus/search.html?q=ProbabilityVerificationAppUseCase&check_keywords=yes&area=default>`_
+#     `ConvectionAllowingModelsUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsUseCase&check_keywords=yes&area=default>`_,
+#     `ProbabilityVerificationUseCase  <https://ncar.github.io/METplus/search.html?q=ProbabilityVerificationUseCase&check_keywords=yes&area=default>`_
 #
 # sphinx_gallery_thumbnail_path = '_static/precipitation-GridStat_fcstHRRR-TLE_obsStgIV_GRIB.png'

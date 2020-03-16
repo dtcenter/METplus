@@ -1,10 +1,9 @@
 """
 Track and Intensity Plotter: Generate mean, median and box plots (ADeck:BDeck:ATCF)
 ======================================================================================
-This use case generates plots of TC-pairs .tcst output files
-using the MET R script plot_tcmpr.R.  There is a pre-requisite for running
-this use case, the user must have R installed on the computer where the use
-case is being run.
+Generates plots of TC-pairs .tcst using plot_tcmpr.R thus R is a pre-requisite
+to run this case (ADeck:BDeck:ATCF)
+
 """
 
 ##############################################################################

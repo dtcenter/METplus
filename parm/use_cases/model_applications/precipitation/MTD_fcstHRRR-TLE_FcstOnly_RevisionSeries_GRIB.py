@@ -1,15 +1,23 @@
 """
-HRRR-TLE MODE Time Domain Use Case
-==================================
+MTD: Build Revision Series to Evaluate Forecast Consistency 
+===========================================================================
 
-This use case compares a 6-hour gridded quantitative precipitation forecast (QPF) to a gridded 6-hour observed quantitative precipitation estimate (QPE).  It holds the valid time constant and loops over the lead-times in reverse order to build a dataset for a revision series computation (aka forecast consistency)
+Holds the valid time constant and loops over lead-times to build a 
+dataset for a revision series computation (aka forecast consistency).
+This is a forecast only use-case. (HRRR-TLE:NA:Grib2)
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# This use case demonstrates the use of the MTD tool to evaluate an updating forecast field and evaluate the forecast consistency.  The use case looks for all forecasts valid at a given time and passes them into MTD.  Objects are identified and tracked through time via the tool.  The output can then be loaded into METviewer to compute the revision series and assess the consistency either of one case or many.  See other HRRR-TLE use cases for a description of the Time Lagged Ensemble (TLE) field.
+# This use case demonstrates the use of the MTD tool to evaluate an updating
+# forecast field and evaluate the forecast consistency.  The use case looks
+# for all forecasts valid at a given time and passes them into MTD.  Objects
+# are identified and tracked through time via the tool.  The output can then
+# be loaded into METviewer to compute the revision series and assess the
+# consistency either of one case or many.  See other HRRR-TLE use cases
+# for a description of the Time Lagged Ensemble (TLE) field.
 
 ##############################################################################
 # Datasets

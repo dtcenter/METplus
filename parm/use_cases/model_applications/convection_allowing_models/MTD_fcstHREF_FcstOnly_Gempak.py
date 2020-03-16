@@ -1,9 +1,9 @@
 """
-MTD: Basic Object Tracking through Time (HREF Gempak) 
+MTD: Basic Object Tracking through Time  
 ===========================================================================
 
-This use case identifies objects through space and time. HREF data in GEMPak
-format is used.  There is no comparison to an observation/analysis file.
+This use case identifies objects through space and time.
+This is a forecast only use-case. (HRRR-TLE:NA:Gempak) 
 
 """
 ##############################################################################

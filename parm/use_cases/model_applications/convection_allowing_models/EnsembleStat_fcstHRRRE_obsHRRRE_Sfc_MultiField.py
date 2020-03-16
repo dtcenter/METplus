@@ -2,11 +2,10 @@
 Ensemble-Stat: Ensemble Statistics using Obs Uncertainty (HRRR-e,RAP-DA)
 =============================================================================
 
-This use case demonstrates both features of Ensemble-Stat, basic ensemble
-postprocessing and computation of ensemble statistics. It also uses PB2NC  
-to be used to compute measures like Rank Histograms and Spread-Skill.  
+Demonstrates both features of Ensemble-Stat, basic ensemble
+postprocessing and computation of ensemble statistics. 
 It also provides an example of using observational error estimates in the
-computation of those measures.
+computation of those measures. (HRRR-e:RAP-DA:Grib)
 
 """
 ##############################################################################

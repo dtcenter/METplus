@@ -1,9 +1,9 @@
 """
-Cyclone Plotter: From TC-Pairs Output (ADeck:BDeck:modified ATCF) 
+Cyclone Plotter: From TC-Pairs Output 
 ===========================================================================
-This use case generates a plot of tropical cyclone tracks using output from
+Plot of tropical cyclone tracks using output from
 the MET tc-pairs tool.  The CyclonePlotter wrapper does not directly wrap a
-specific MET tool. 
+specific MET tool. (ADeck:BDeck:modified ATCF)
 
 """
 ##############################################################################

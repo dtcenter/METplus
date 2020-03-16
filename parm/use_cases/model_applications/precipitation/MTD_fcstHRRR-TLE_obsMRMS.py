@@ -1,8 +1,8 @@
 """
-HRRR-TLE MODE Time Domain Use Case
+MTD: 6hr QPF Use Case
 ==================================
 
-This use case compares a 6-hour gridded quantitative precipitation forecast (QPF) to a gridded 6-hour observed NCEP MRMS quantitative precipitation estimate (QPE).  It identifies objects in each fields and tracks them through time.
+Identifies objects in each fields and tracks them through time. (HRRR-TLE:MRMS:Grib2)
 
 """
 ##############################################################################
@@ -131,6 +131,6 @@ This use case compares a 6-hour gridded quantitative precipitation forecast (QPF
 #  `NOAAHMTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_,
 #  `NOAAHWTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,
 #  `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_,
-#  `ProbabilityVerificationAppUseCase  <https://ncar.github.io/METplus/search.html?q=ProbabilityVerificationAppUseCase&check_keywords=yes&area=default>`_
+#  `ProbabilityVerificationUseCase  <https://ncar.github.io/METplus/search.html?q=ProbabilityVerificationUseCase&check_keywords=yes&area=default>`_
 #
 # sphinx_gallery_thumbnail_path = '_static/precipitation-MTD_fcstHRRR-TLE_obsMRMS.png'

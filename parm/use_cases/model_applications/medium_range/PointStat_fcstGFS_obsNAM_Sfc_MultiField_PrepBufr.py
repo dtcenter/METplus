@@ -2,9 +2,9 @@
 Point-Stat: Standard Verification for CONUS Surface (GFS:NAM:Grib:prepBUFR)
 ==============================================================================
 
-This use case will run PB2NC to convert PrepBufr format files to NetCDF and then
-compare a gridded forecast field to point observations and compute Continuous
-statistics over time.
+Convert prepBufr format files to NetCDF and then
+compute Continuous statistics for surface fields. 
+(GFS:NAM:Grib,prepBUFR)
 
 """
 ##############################################################################
@@ -155,4 +155,4 @@ statistics over time.
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.png'
 #
-# .. note:: `PB2NCToolUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_, `MediumRangeAppUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_, `PointStatToolUseCase <https://ncar.github.io/METplus/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_, `GRIBFileUseCase <https://ncar.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_, `prepBUFRFileUseCase <https://ncar.github.io/METplus/search.html?q=prepBUFRFileUseCase&check_keywords=yes&area=default>`_, `NOAAEMCOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_, `RegriddinginTool <https://ncar.github.io/METplus/search.html?q=RegriddingInToolUseCase&check_keywords=yes&area=default>`_  , `ObsTimeSummary <https://ncar.github.io/METplus/search.html?q=ObsTimeSummaryUseCase&check_keywords=yes&area=default>`_
+# .. note:: `PB2NCToolUseCase <https://ncar.github.io/METplus/search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_, `MediumRangeAppUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_, `PointStatToolUseCase <https://ncar.github.io/METplus/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_, `GRIBFileUseCase <https://ncar.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_, `prepBUFRFileUseCase <https://ncar.github.io/METplus/search.html?q=prepBUFRFileUseCase&check_keywords=yes&area=default>`_, `NOAAEMCOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_, `RegriddinginToolUseCase <https://ncar.github.io/METplus/search.html?q=RegriddingInToolUseCase&check_keywords=yes&area=default>`_  , `ObsTimeSummaryUseCase <https://ncar.github.io/METplus/search.html?q=ObsTimeSummaryUseCase&check_keywords=yes&area=default>`_

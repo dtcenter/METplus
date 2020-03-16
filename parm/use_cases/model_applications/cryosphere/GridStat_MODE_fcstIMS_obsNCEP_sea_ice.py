@@ -2,9 +2,8 @@
 Grid-Stat and MODE: Sea Ice Validation (IMS:NCEPanalysis:Grib2)  
 ====================================================================================================
 
-Compare IMS sea ice concentration analysis to NCEP sea ice concentration analysis.  
-This use case will run both the MET GridStat and MODE tools to generate statistics and diagnostics.
-
+Runs bot GridStat and MODE tools to compare two ice concentration analyses 
+and generate statistics and diagnostics. (IMS:NCEPAnalysis:Grib2) 
 
 """
 ####################################################################################################
