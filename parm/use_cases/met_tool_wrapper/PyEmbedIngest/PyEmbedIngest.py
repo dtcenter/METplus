@@ -105,7 +105,7 @@ in the MET tool RegridDataPlane and write it out to a NetCDF file that can be re
 # --------
 #
 # .. note::
-#     `PyEmbedIngestToolUseCase <https://ncar.github.io/METplus/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_,
-#     `Python Embedding File <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_,
-#     `RegridDataPlane Tool <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
+#   `PyEmbedIngestToolUseCase <https://ncar.github.io/METplus/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_,
+#   `PythonEmbeddingFileUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_,
+#   `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
 #

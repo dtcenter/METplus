@@ -108,4 +108,5 @@ plots of tropical cyclone tracks.
 # Keywords
 # --------
 #
-# .. note:: `TCMPRPlotterUseCase <https://ncar.github.io/METplus/search.html?q=TCMPRPlotterUseCase&check_keywords=yes&area=default>`_
+# .. note::
+#  `TCMPRPlotterUseCase <https://ncar.github.io/METplus/search.html?q=TCMPRPlotterUseCase&check_keywords=yes&area=default>`_
