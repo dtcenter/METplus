@@ -51,7 +51,7 @@ Pint==0.9
 plotly==4.1.1
 pluggy==0.13.0
 pooch==0.5.2
-psutil==5.6.3
+psutil==5.6.6
 py==1.8.0
 pycodestyle==2.5.0
 pycparser==2.19
