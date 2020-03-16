@@ -1,10 +1,10 @@
 """
-Grid-Stat: Standard Verification of Surface Fields (GFS:GFS:Grib) 
+Grid-Stat: Standard Verification of Surface Fields
 ================================================================================
 
-This use case will run the MET GridStat tool to compare gridded forecast
+Run the MET GridStat tool to compare gridded forecast
 data to gridded observation data over a few valid times and generate
-Continous statistics over time.
+Continiuous statistics over time. (GFS:GFS:Grib)
 
 """
 ##############################################################################

@@ -147,6 +147,8 @@ and generate statistics and diagnostics. (IMS:NCEPAnalysis:Grib2)
 # Keywords
 # --------
 #
+# sphinx_gallery_thumbnail_path = '_static/cryosphere_GridStat_MODE_fcstIMS_obsNCEP_Sea_Ice.png'
+#
 # .. note::
 #    `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
 #    `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_,

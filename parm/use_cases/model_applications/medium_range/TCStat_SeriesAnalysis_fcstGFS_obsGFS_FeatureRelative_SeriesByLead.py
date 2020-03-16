@@ -1,12 +1,10 @@
 """
 Multi_Tool: Feature Relative by Lead (with lead groupings) (Adeck,GFS:Bdeck,GFS:ATCF,Grib2)
 ==================================================================================================
-This use case calls multiple tools to produce diagnostic plots of systematic errors  
-about a feature (e.g. extra-tropical cyclone, tropical cyclone, MCS, etc...).  
-It also illustrates how one can "build" or "daisy chain" conf files to override
-configuration settings.  This example computes scores over varying forecast leads
-all valid at a given time and shows how the results can be grouped into 
-meaningful temporal groups (i.e. 6,12,18,24 hour leads = Day 1).
+Calls multiple tools to produce diagnostic plots of systematic errors  
+relative to a feature (e.g. cyclone, MCS, etc...).  
+This example computes scores over varying forecast leads. 
+(ADeck,GFS:BDeck,GFS:ATCF,Grib2)
 
 """
 

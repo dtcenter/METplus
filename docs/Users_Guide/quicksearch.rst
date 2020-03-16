@@ -35,7 +35,7 @@ Use Cases by Application:
 
 Use Cases by Organization:
 --------------------------
-| `Developmental Testbed Center (DTC)  <https://ncar.github.io/METplus/searxch.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_
+| `Developmental Testbed Center (DTC)  <https://ncar.github.io/METplus/search.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_
 | `National Center for Atmospheric Research (NCAR)  <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA Weather Prediction Center (WPC)  <https://ncar.github.io/METplus/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_
 | `NOAA Space Weather Prediction Center (SWPC)  <https://ncar.github.io/METplus/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_
@@ -55,7 +55,8 @@ Use Cases by METplus Feature:
 | `GempakToCF <https://ncar.github.io/METplus/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_
 | `Looping by Month or Year  <https://ncar.github.io/METplus/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
 | `Masking for Regions of Interest <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
-| `MET_PYTHON_EXE environment variable  <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
+| `MET_PYTHON_EXE Environment Variable  <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
+| `Multiple Conf File Use <https://ncar.github.io/METplus/search.html?q=MultiConfUseCase&check_keywords=yes&area=default>`_
 | `Observation Time Summary <https://ncar.github.io/METplus/search.html?q=ObsTimeSummaryUseCase&check_keywords=yes&area=default>`_
 | `Observation Uncertainty <https://ncar.github.io/METplus/search.html?q=ObsUncertaintyUseCase&check_keywords=yes&area=default>`_
 | `Python Embedding Ingest <https://ncar.github.io/METplus/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_

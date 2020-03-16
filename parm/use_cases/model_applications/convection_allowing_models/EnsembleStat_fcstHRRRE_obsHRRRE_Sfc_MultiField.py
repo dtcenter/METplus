@@ -1,5 +1,5 @@
 """
-Ensemble-Stat: Ensemble Statistics using Obs Uncertainty (HRRR-e,RAP-DA)
+Ensemble-Stat: Ensemble Statistics using Obs Uncertainty 
 =============================================================================
 
 Demonstrates both features of Ensemble-Stat, basic ensemble

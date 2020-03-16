@@ -1,11 +1,10 @@
 """
-Multi_Tool: Feature Relative by Init (Adeck,GFS:Bdeck,GFS:ATCF,Grib2)
+Multi_Tool: Feature Relative by Init 
 ===================================================================================
-This use case calls multiple tools to produce diagnostic plots of systematic errors
-about a feature (e.g. extra-tropical cyclone, tropical cyclone, MCS, etc...).  It
-also illustrates how one can "build" or "daisy chain" METplus conf files to 
-overiride configuraiton settings. This example computes scores over varying
-forecast initializations (or cycles) at a given lead time.  
+Calls multiple tools to produce diagnostic plots of systematic errors
+relative to a feature (e.g. cyclone, tropical cyclone, MCS, etc...).
+This example holds the forecast lead constant and loops over init times.
+(Adeck,GFS:Bdeck,GFS:ATCF,Grib2)
 
 """
 
