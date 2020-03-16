@@ -136,4 +136,5 @@ The end time is the same as the begin time, so it runs quickly.
 #
 # .. note:: `TCPairsToolUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_,
 #           `SBUOrgUseCase <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
-
+#
+# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-TCPairs.png'

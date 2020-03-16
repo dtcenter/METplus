@@ -135,3 +135,5 @@ one task (TCPairs) defined in the PROCESS_LIST (so there is no next task).
 #
 # .. note:: `TCPairsToolUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_,
 #           `HWRFOrgUseCase <https://ncar.github.io/METplus/search.html?q=HWRFOrgUseCase&check_keywords=yes&area=default>`_
+#
+# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-TCPairs.png'
