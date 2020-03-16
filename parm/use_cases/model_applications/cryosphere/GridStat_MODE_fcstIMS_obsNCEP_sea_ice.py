@@ -1,5 +1,5 @@
 """
-Grid-Stat and MODE: Sea Ice Validation (IMS:NCEPanalysis:Grib2)  
+Grid-Stat and MODE: Sea Ice Validation   
 ====================================================================================================
 
 Runs bot GridStat and MODE tools to compare two ice concentration analyses 

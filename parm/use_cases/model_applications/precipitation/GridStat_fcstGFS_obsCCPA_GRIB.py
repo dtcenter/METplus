@@ -1,5 +1,5 @@
 """
-Grid-Stat: 24-hour Accum Precip Use Case
+Grid-Stat: 24-hour QPF Use Case
 ================================================
 Demonstrates use of in-tool regridding and application of masking
 regions. (GFS:CCPA:Grib2)

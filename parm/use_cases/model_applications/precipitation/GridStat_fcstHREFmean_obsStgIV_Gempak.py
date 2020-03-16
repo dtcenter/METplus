@@ -1,5 +1,5 @@
 """
-Grid-Stat: 6hr Accum Precip in GEMPAK format
+Grid-Stat: 6hr QPF in GEMPAK format
 ===============================================================================
 
 Compares a 6-hour gridded quantitative precipitation forecast

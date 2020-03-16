@@ -1,5 +1,5 @@
 """
-Multi_Tool: Feature Relative by Lead (with lead groupings) (Adeck,GFS:Bdeck,GFS:ATCF,Grib2)
+Multi_Tool: Feature Relative by Lead (with lead groupings) 
 ==================================================================================================
 Calls multiple tools to produce diagnostic plots of systematic errors  
 relative to a feature (e.g. cyclone, MCS, etc...).  

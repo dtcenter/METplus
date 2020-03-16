@@ -1,5 +1,5 @@
 """
-Point-Stat: Standard Verification for CONUS Surface (GFS:NAM:Grib:prepBUFR)
+Point-Stat: Standard Verification for CONUS Surface 
 ==============================================================================
 
 Convert prepBufr format files to NetCDF and then

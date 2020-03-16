@@ -1,5 +1,5 @@
 """
-Grid-Stat: 6hr Accum Precip in NetCDF format
+Grid-Stat: 6hr QPF in NetCDF format
 ==============================================================================
 
 Compares a 6-hour gridded quantitative precipitation forecast (QPF) to a
