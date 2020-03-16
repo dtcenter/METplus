@@ -46,7 +46,7 @@ OWSLib==0.18.0
 packaging==19.2
 pandas==0.25.1
 partd==1.0.0
-Pillow==5.3.0
+Pillow==6.2.0
 Pint==0.9
 plotly==4.1.1
 pluggy==0.13.0
