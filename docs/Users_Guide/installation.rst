@@ -120,7 +120,9 @@ following directory structure::
 
   METplus/
     docs/
+    build_components/
     internal_tests/
+    manage_exernals/
     parm/
     sorc/
     ush/
@@ -135,8 +137,14 @@ documentation can be created and viewed via web browser if the developer
 has Doxygen installed on the host.  The Doxygen documentation is useful to contributors and is not
 necessary for METplus end-users.
 
+The build_components/ directory contains scripts that use manage_externals
+and files available on dtcenter.org to download MET and start the build process
+
 The internal_tests/ directory contains unit test scripts that are only
 relevant to METplus Wrappers developers and contributors.
+
+The manage_externals/ directory contains scripts used to facilitate the downloading and management
+of components that METplus interacts with such as MET and METviewer
 
 The parm/ directory contains all the configuration files for MET and
 METplus Wrappers.
@@ -148,6 +156,19 @@ The src/ directory contains the source code for each of the wrappers in
 METplus Wrappers.
 
 The ush/ directory contains the Python wrappers to the MET tools.
+
+Build_components and using manage_externals
+-------------------------------------------
+
+Running build_components/build_MET.sh will
+
+-  clone MET and METviewer from github using the manage_externals scripts
+-  grab the current MET compile script and all of the necessary external libraries
+-  build the external libraries
+-  attempt to build met
+
+Building MET requires fine tuning on just about all systems, this should at least get most of
+the way through the process and allow just a few manual changes to get it completely built.
 
 Set up your environment
 -----------------------
