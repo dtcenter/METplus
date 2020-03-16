@@ -129,6 +129,9 @@ This use case will run the MET MTD (MODE Time Domain) tool to compare gridded fo
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-MTD.png'
+# .. note::
+#  `MTDToolUseCase <https://ncar.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_,
+#  `PythonEmbeddingFileUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
+#  `DiagnosticsUseCase <https://ncar.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
 #
-# .. note:: `MTDToolUseCase <https://ncar.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_, `PythonEmbeddingFileUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
+# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-MTD.png'

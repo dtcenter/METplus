@@ -127,5 +127,6 @@ gridded observation data.
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-GridStat.png'
 # .. note:: `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
+#
+# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-GridStat.png'
