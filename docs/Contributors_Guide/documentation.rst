@@ -8,7 +8,7 @@ Documentation
 |     https://ncar.github.io/METplus
 |
 
-| ** Doxygen Source Code Documentation**
+| **Doxygen Source Code Documentation**
 |
 | The source code documentation is found here:
 |     https://ncar.github.io/METplus/doxygen
