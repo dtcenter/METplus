@@ -121,4 +121,4 @@ This use case will run the MET Seriesi-Analysis tool over a series of input file
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-SeriesAnalysis.png'
 #
-# .. note:: `SeriesAnalysisUseCase <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
+# .. note:: `SeriesAnalysisUseCase <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_, `DiagnosticsUseCase <https://ncar.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_

@@ -156,4 +156,4 @@ and generate statistics and diagnostics. (IMS:NCEPAnalysis:Grib2)
 #    `ValidationUseCase  <https://ncar.github.io/METplus/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_,
 #    `S2SAppUseCase <https://ncar.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_, 
 #    `NOAAEMCOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_
-#
+#    `DiagnosticsUseCase <https://ncar.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
