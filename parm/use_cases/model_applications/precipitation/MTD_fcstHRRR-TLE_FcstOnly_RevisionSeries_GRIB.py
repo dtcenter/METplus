@@ -136,6 +136,7 @@ This is a forecast only use-case. (HRRR-TLE:NA:Grib2)
 #     `NOAAHMTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_,
 #     `NOAAHWTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,
 #     `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_,
-#     `RevisionSeriesUseCase  <https://ncar.github.io/METplus/search.html?q=RevisionSeriesUseCase&check_keywords=yes&area=default>`_
+#     `RevisionSeriesUseCase  <https://ncar.github.io/METplus/search.html?q=RevisionSeriesUseCase&check_keywords=yes&area=default>`_,
+#     `DiagnosticsUseCase <https://ncar.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
 #
 # sphinx_gallery_thumbnail_path = '_static/precipitation-MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.png'
