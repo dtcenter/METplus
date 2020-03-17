@@ -148,8 +148,11 @@ forecast data to gridded AND point observation data.
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-EnsembleStat.png'
+# .. note::
+#  `EnsembleStatToolUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_,
+#  `PythonEmbeddingFileUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_,
+#  `EnsembleAppUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_,
+#  `ProbabilityGenerationAppUseCase <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_
+#  `GRIBFileUseCase <https://ncar.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_,
 #
-# .. note::C
-#    EnsembleStat Tool (`EnsembleStatToolUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_),
-#    GRIB File (`GRIBFileUseCase <https://ncar.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_), `EnsembleAppUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_, `ProbabilityGenerationAppUseCase <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_
+# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-EnsembleStat.png'

@@ -1,11 +1,10 @@
 """
-Grid-Stat: GloTEC validation (GloTEC:GloTEC:NetCDF with multiple times)
+Grid-Stat: Analysis validation 
 ==============================================================================
 
-This use case runs the MET GridStat tool to compare gridded analyses  
-from two runs of the GloTEC model. This demonstrates the use of METplus
-for model validation purposes as both the "forecast" and "obs" fields are 
-from different versions of the same model. 
+Demonstrates the use of METplus for model validation as both of the 
+"forecast" and "obs" fields are from different versions of the same model. 
+(GloTEC:GloTEC:NetCDF with multiple times in file) 
 
 """
 
@@ -172,12 +171,11 @@ from different versions of the same model.
 #
 # .. note::
 #
-#    `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
-#    `SpaceWeatherAppUseCase <https://ncar.github.io/METplus/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_,
-#    `NOAASWPCOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_,
-#    `CustomStringLoopingUseCase <https://ncar.github.io/METplus/search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_, `MaskingFeatureUseCase  <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_,
-#    `ValidationUseCase  <https://ncar.github.io/METplus/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
+#  `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
+#  `SpaceWeatherAppUseCase <https://ncar.github.io/METplus/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_,
+#  `NOAASWPCOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_,
+#  `CustomStringLoopingUseCase <https://ncar.github.io/METplus/search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_,
+#  `MaskingFeatureUseCase  <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_,
+#  `ValidationUseCase  <https://ncar.github.io/METplus/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
     
-
 # sphinx_gallery_thumbnail_path = '_static/space_weather-GridStat_fcstGloTEC_obsGloTEC_vx7.jpg'
-#

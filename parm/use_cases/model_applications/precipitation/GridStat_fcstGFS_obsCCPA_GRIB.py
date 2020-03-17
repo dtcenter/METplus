@@ -1,9 +1,9 @@
 """
-GFS to CCPA GRIB Use Case
-===============================
-This use case compares gridded forecast precipitation accumulation data to
-gridded 24 hour observation precipitation accumulation data. This example demonstrates
-the use of in-tool regridding and the application of masking regions.
+Grid-Stat: 24-hour QPF Use Case
+================================================
+Demonstrates use of in-tool regridding and application of masking
+regions. (GFS:CCPA:Grib2)
+
 """
 ##############################################################################
 # Scientific Objective

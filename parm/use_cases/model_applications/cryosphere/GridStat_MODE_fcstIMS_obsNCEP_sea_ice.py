@@ -1,10 +1,9 @@
 """
-Grid-Stat and MODE: Sea Ice Validation (IMS:NCEPanalysis:Grib2)  
+Grid-Stat and MODE: Sea Ice Validation   
 ====================================================================================================
 
-Compare IMS sea ice concentration analysis to NCEP sea ice concentration analysis.  
-This use case will run both the MET GridStat and MODE tools to generate statistics and diagnostics.
-
+Runs bot GridStat and MODE tools to compare two ice concentration analyses 
+and generate statistics and diagnostics. (IMS:NCEPAnalysis:Grib2) 
 
 """
 ####################################################################################################
@@ -148,11 +147,13 @@ This use case will run both the MET GridStat and MODE tools to generate statisti
 # Keywords
 # --------
 #
+# sphinx_gallery_thumbnail_path = '_static/cryosphere_GridStat_MODE_fcstIMS_obsNCEP_Sea_Ice.png'
+#
 # .. note::
 #    `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
 #    `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_,
-#    `MarineAndCryoUseCase <https://ncar.github.io/METplus/search.html?q=MarineAndCryoAppUseCase&check_keywords=yes&area=default>`_,
+#    `MarineAndCryoAppUseCase <https://ncar.github.io/METplus/search.html?q=MarineAndCryoAppUseCase&check_keywords=yes&area=default>`_,
 #    `ValidationUseCase  <https://ncar.github.io/METplus/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_,
 #    `S2SAppUseCase <https://ncar.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_, 
-#    `NOAA Environmental Modeling Center (EMC)  <https://ncar.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_
-#
+#    `NOAAEMCOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_
+#    `DiagnosticsUseCase <https://ncar.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_

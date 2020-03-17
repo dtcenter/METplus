@@ -103,4 +103,6 @@ This use case will run the MET ASCII2NC tool to convert point observation data i
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-ASCII2NC.png'
 #
-# .. note:: `ASCII2NCToolUseCase <https://ncar.github.io/METplus/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_, `Python Embedding <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingUseCase&check_keywords=yes&area=default>`_
+# .. note::
+#  `ASCII2NCToolUseCase <https://ncar.github.io/METplus/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_,
+#  `PythonEmbeddingFileUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_

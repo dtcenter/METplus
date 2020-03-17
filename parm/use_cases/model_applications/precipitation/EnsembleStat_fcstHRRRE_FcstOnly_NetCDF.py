@@ -1,8 +1,8 @@
 """
 Ensemble-Stat: Basic Post-Processing only  
 ================================================================
-This use case creates ensemble fields from HRRR-E accumulated 3 hour
-precipitation case.  This is a forecast-only example.  
+Creates ensemble fields from ensemble members. This is a forecast-only
+example (HRRR-e:NA:Grib2)
 
 """
 ##############################################################################

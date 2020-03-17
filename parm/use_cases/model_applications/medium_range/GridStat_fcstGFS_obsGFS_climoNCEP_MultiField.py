@@ -1,9 +1,8 @@
 """
-Grid-Stat: Compute Anomaly Correlation using Climatology (GFS:GFS:NCEP:Grib) 
-==================================================================================
+Grid-Stat: Compute Anomaly Correlation using Climatology  
+============================================================================
 
-This use case will run the MET GridStat and StatAnalysis tools to compare gridded forecast data
-to gridded observation data over a few valid times and generate statistics over time.
+Run the Grid-Stat and Stat-Analysis tools to anomaly statistics. (GFS:GFS:NCEP:Grib) 
 
 """
 ##############################################################################
@@ -11,7 +10,7 @@ to gridded observation data over a few valid times and generate statistics over 
 # --------------------
 # To provide useful statistical information on the relationship between observation
 # data in gridded format to a gridded forecast. These values can be used to help
-# correct model deviations from observed values.
+# correct model deviations from observed values. 
 
 ##############################################################################
 # Datasets

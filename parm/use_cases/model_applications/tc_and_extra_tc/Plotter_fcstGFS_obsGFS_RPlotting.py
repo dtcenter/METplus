@@ -1,10 +1,9 @@
 """
-Track and Intensity Plotter: Generate mean, median and box plots (ADeck:BDeck:ATCF)
+Track and Intensity Plotter: Generate mean, median and box plots 
 ======================================================================================
-This use case generates plots of TC-pairs .tcst output files
-using the MET R script plot_tcmpr.R.  There is a pre-requisite for running
-this use case, the user must have R installed on the computer where the use
-case is being run.
+Generates plots of TC-pairs .tcst using plot_tcmpr.R thus R is a pre-requisite
+to run this case (ADeck:BDeck:ATCF)
+
 """
 
 ##############################################################################
@@ -146,7 +145,13 @@ case is being run.
 # Keywords
 # --------
 #
+#
+# .. note::
+#  `TCPairsToolUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_,
+#  `TCandExtraTCAppUseCase <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_,
+#  `FeatureRelativeUseCase  <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_,
+#  `MediumRangeAppUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,
+#  `SBUOrgUseCase <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_,
+#  `DTCOrgUseCase <https://ncar.github.io/METplus/search.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_
+
 # sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-Plotter_fcstGFS_obsGFS_RPlotting.png'
-#
-#
-# .. note:: `TcPairsUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_, `TCandExtraTCAppUseCase <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_, , `FeatureRelativeUseCase  <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_, `MediumRangeAppUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_, `SBUOrgUseCase <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_, `DTCOrgUseCase <https://ncar.github.io/METplus/search.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_

@@ -1,8 +1,10 @@
 """
-HREF-mean to Stage IV QPE GEMPAK Use Case
-=========================================
+Grid-Stat: 6hr QPF in GEMPAK format
+===============================================================================
 
-This use case compares a 6-hour gridded quantitative precipitation forecast (QPF) to a gridded 6-hour observed quantitative precipitation estimate (QPE).
+Compares a 6-hour gridded quantitative precipitation forecast
+(QPF) to a gridded 6-hour observed quantitative precipitation estimate (QPE).
+(HREF:StageIV:GEMPAK)
 
 """
 ##############################################################################

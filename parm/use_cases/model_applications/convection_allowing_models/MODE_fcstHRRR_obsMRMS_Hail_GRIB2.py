@@ -1,9 +1,9 @@
 """
-MODE: Hail Verification (HRRR:MRMS:Grib2) 
-===========================================
+MODE: Hail Verification  
+=========================================================================
 
-This use case builds hourly gridded fields for multiple variables pertinent to
-hail prediction and uses them to evaluate hail forecasts from the HRRRv4
+Builds hourly gridded fields for multiple variables pertinent to
+hail prediction. (HRRR:MRMS MESH:Grib2)
 
 """
 ##############################################################################
@@ -130,4 +130,4 @@ hail prediction and uses them to evaluate hail forecasts from the HRRRv4
 #
 # sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-MODE_fcstHRRRE_obsMRMS_Hail_GRIB2.png'
 #
-# .. note:: `MODE <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_, `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_, `GRIB2FileUseCase <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_, `RegriddingInToolUseCase <https://ncar.github.io/METplus/search.html?q=RegriddingInToolUseCase&check_keywords=yes&area=default>`_, `NOAAHWTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,  `NCAROrgUseCase <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
+# .. note:: `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_, `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_, `GRIB2FileUseCase <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_, `RegriddingInToolUseCase <https://ncar.github.io/METplus/search.html?q=RegriddingInToolUseCase&check_keywords=yes&area=default>`_, `NOAAHWTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,  `NCAROrgUseCase <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_, `DiagnosticsUseCase <https://ncar.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_

@@ -21,5 +21,8 @@ tar -cvzhf tar_files/met.tar.gz met
 
 ### Source environment variables and run the compile_all script
 source env_vars.bash
+cd met
+./bootstrap
+cd ../
 bash compile_MET_all.sh
 
