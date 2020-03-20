@@ -2,8 +2,8 @@
 Grid-Stat: 6hr PQPF Probability Verification
 ==========================================================================
 
-Computes probabilistic statistics for probabilistic QPF.
-(HRRE-TLE:StageIV:Grib2,Grib1)
+GridStat_fcstHRRR
+_obsStgIV_GRIB.conf
 
 """
 ##############################################################################

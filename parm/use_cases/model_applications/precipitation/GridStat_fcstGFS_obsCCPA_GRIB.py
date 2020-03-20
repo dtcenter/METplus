@@ -1,8 +1,9 @@
 """
 Grid-Stat: 24-hour QPF Use Case
 ================================================
-Demonstrates use of in-tool regridding and application of masking
-regions. (GFS:CCPA:Grib2)
+
+GridStat_fcstGFS
+_obsCCPA_Grib.conf
 
 """
 ##############################################################################

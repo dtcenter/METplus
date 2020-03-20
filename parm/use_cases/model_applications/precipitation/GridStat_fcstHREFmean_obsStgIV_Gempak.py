@@ -2,9 +2,8 @@
 Grid-Stat: 6hr QPF in GEMPAK format
 ===============================================================================
 
-Compares a 6-hour gridded quantitative precipitation forecast
-(QPF) to a gridded 6-hour observed quantitative precipitation estimate (QPE).
-(HREF:StageIV:GEMPAK)
+GridStat_fcstHREFmean
+_obsStgIV_Gempak.conf
 
 """
 ##############################################################################

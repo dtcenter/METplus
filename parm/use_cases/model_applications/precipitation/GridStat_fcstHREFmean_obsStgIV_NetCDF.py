@@ -2,9 +2,8 @@
 Grid-Stat: 6hr QPF in NetCDF format
 ==============================================================================
 
-Compares a 6-hour gridded quantitative precipitation forecast (QPF) to a
-gridded 6-hour observed quantitative precipitation estimate (QPE).
-(HREF:StageIV:NetCDF)
+GridStat_fcstHREFmean
+_obsStgIV_Netcdf.conf
 
 """
 ##############################################################################
