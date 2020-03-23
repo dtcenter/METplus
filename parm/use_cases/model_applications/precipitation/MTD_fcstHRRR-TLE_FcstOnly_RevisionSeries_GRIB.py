@@ -2,9 +2,8 @@
 MTD: Build Revision Series to Evaluate Forecast Consistency 
 ===========================================================================
 
-Holds the valid time constant and loops over lead-times to build a 
-dataset for a revision series computation (aka forecast consistency).
-This is a forecast only use-case. (HRRR-TLE:NA:Grib2)
+MTD_fcstHRRR-TLE_FcstOnly
+_RevisionSeries_GRIB.conf
 
 """
 ##############################################################################

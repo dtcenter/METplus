@@ -2,7 +2,8 @@
 MTD: 6hr QPF Use Case
 ==================================
 
-Identifies objects in each fields and tracks them through time. (HRRR-TLE:MRMS:Grib2)
+MTD_fcstHRRR-TLE
+_obsMRMS.conf
 
 """
 ##############################################################################

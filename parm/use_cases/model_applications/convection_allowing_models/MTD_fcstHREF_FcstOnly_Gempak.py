@@ -2,8 +2,8 @@
 MTD: Basic Object Tracking through Time  
 ===========================================================================
 
-This use case identifies objects through space and time.
-This is a forecast only use-case. (HRRR-TLE:NA:Gempak) 
+MTD_fcstHREF_FcstOnly
+_Gempak.conf
 
 """
 ##############################################################################

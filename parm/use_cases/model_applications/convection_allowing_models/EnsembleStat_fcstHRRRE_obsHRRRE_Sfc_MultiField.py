@@ -2,10 +2,8 @@
 Ensemble-Stat: Ensemble Statistics using Obs Uncertainty 
 =============================================================================
 
-Demonstrates both features of Ensemble-Stat, basic ensemble
-postprocessing and computation of ensemble statistics. 
-It also provides an example of using observational error estimates in the
-computation of those measures. (HRRR-e:RAP-DA:Grib)
+EnsembleStat_fcstHRRRE
+_obsHRRRE_Sfc_MultiField.conf
 
 """
 ##############################################################################

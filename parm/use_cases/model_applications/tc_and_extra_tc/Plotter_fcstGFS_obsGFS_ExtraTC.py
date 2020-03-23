@@ -1,10 +1,9 @@
 """
 Cyclone Plotter: From TC-Pairs Output 
 ===========================================================================
-Plot of tropical cyclone tracks using output from
-the MET tc-pairs tool.  The CyclonePlotter wrapper does not directly wrap a
-specific MET tool. (ADeck:BDeck:modified ATCF)
 
+Plotter_fcstGFS
+_obsGFS_ExtraTC.conf
 """
 ##############################################################################
 # Scientific Objective

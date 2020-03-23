@@ -2,12 +2,10 @@
 Grid-Stat: Analysis validation 
 ==============================================================================
 
-Demonstrates the use of METplus for model validation as both of the 
-"forecast" and "obs" fields are from different versions of the same model. 
-(GloTEC:GloTEC:NetCDF with multiple times in file) 
+GridStat_fcstGloTEC
+_obsGloTEC_vx7.conf
 
 """
-
 ##############################################################################
 # Overview
 # --------

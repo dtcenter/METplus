@@ -2,11 +2,11 @@
 Grid-Stat and Series-Analysis: BMKG APIK Seasonal Forecast 
 =============================================================================
 
-Seasonal forecast use case running Gridi-Stat then passing the output
-into Series-Analysis. (NMME:CPC:NetCDF)
+GridStat_SeriesAnalysis
+_fcstNMME_obsCPC
+_seasonal_forecast.conf
 
 """
-
 ##############################################################################
 # Scientific Objective
 # --------------------

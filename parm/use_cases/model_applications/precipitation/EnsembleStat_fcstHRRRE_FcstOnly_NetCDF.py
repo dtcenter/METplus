@@ -1,8 +1,9 @@
 """
 Ensemble-Stat: Basic Post-Processing only  
 ================================================================
-Creates ensemble fields from ensemble members. This is a forecast-only
-example (HRRR-e:NA:Grib2)
+
+EnsembleStat_fcstHRRRE
+_FcstOnly_NetCDF.conf
 
 """
 ##############################################################################

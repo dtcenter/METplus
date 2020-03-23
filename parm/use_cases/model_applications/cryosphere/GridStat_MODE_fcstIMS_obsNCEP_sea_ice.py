@@ -2,8 +2,8 @@
 Grid-Stat and MODE: Sea Ice Validation   
 ====================================================================================================
 
-Runs bot GridStat and MODE tools to compare two ice concentration analyses 
-and generate statistics and diagnostics. (IMS:NCEPAnalysis:Grib2) 
+GridStat_MODE_fcstIMS
+_obsNCEP_sea_ice.conf
 
 """
 ####################################################################################################

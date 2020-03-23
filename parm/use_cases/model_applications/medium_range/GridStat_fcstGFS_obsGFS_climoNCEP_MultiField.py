@@ -2,7 +2,8 @@
 Grid-Stat: Compute Anomaly Correlation using Climatology  
 ============================================================================
 
-Run the Grid-Stat and Stat-Analysis tools to anomaly statistics. (GFS:GFS:NCEP:Grib) 
+GridStat_fcstGFS_obsGFS
+_climoNCEP_MultiField.conf
 
 """
 ##############################################################################

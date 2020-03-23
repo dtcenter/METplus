@@ -2,8 +2,8 @@
 MODE: Hail Verification  
 =========================================================================
 
-Builds hourly gridded fields for multiple variables pertinent to
-hail prediction. (HRRR:MRMS MESH:Grib2)
+MODE_fcstHRRR_obsMRMS
+_Hail_GRIB2.conf
 
 """
 ##############################################################################
