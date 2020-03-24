@@ -1,10 +1,10 @@
 """
 Multi_Tool: Feature Relative by Lead (with lead groupings) 
 ==================================================================================================
-Calls multiple tools to produce diagnostic plots of systematic errors  
-relative to a feature (e.g. cyclone, MCS, etc...).  
-This example computes scores over varying forecast leads. 
-(ADeck,GFS:BDeck,GFS:ATCF,Grib2)
+
+TCStat_SeriesAnalysis_fcstGFS
+_obsGFS_FeatureRelative
+_SeriesByLead.conf
 
 """
 

@@ -1,11 +1,10 @@
 """
 Track and Intensity Plotter: Generate mean, median and box plots 
 ======================================================================================
-Generates plots of TC-pairs .tcst using plot_tcmpr.R thus R is a pre-requisite
-to run this case (ADeck:BDeck:ATCF)
 
+Plotter_fcstGFS
+_obsGFS_RPlotting.conf
 """
-
 ##############################################################################
 # Scientific Objective
 # --------------------

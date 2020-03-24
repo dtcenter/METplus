@@ -1,10 +1,10 @@
 """
 Multi_Tool: Feature Relative by Init 
 ===================================================================================
-Calls multiple tools to produce diagnostic plots of systematic errors
-relative to a feature (e.g. cyclone, tropical cyclone, MCS, etc...).
-This example holds the forecast lead constant and loops over init times.
-(Adeck,GFS:Bdeck,GFS:ATCF,Grib2)
+
+TCStat_SeriesAnalysis_fcstGFS
+_obsGFS_FeatureRelative
+_SeriesByInit.conf
 
 """
 

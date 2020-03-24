@@ -2,9 +2,9 @@
 Point-Stat: Standard Verification of Global Upper Air  
 =============================================================================
 
-Convert prepBUFR point format to NetCDF and then 
-compute Continuous statistics for  upper air fields.  
-(GFS:GDAS:Grib,prepBUFR)
+PointStat_fcstGFS_obsGDAS
+_UpperAir_MultiField
+_PrepBufr.conf
 
 """
 ##############################################################################

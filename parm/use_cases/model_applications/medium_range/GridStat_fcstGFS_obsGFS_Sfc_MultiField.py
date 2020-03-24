@@ -2,9 +2,8 @@
 Grid-Stat: Standard Verification of Surface Fields
 ================================================================================
 
-Run the MET GridStat tool to compare gridded forecast
-data to gridded observation data over a few valid times and generate
-Continiuous statistics over time. (GFS:GFS:Grib)
+GridStat_fcstGFS_obsGFS
+_Sfc_MultiField.conf
 
 """
 ##############################################################################

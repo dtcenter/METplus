@@ -2,9 +2,8 @@
 Point-Stat: Standard Verification for CONUS Surface 
 ==============================================================================
 
-Convert prepBufr format files to NetCDF and then
-compute Continuous statistics for surface fields. 
-(GFS:NAM:Grib,prepBUFR)
+PointStat_fcstGFS_obsNAM_Sfc
+_MultiField_PrepBufr.conf
 
 """
 ##############################################################################
