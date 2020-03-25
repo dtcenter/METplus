@@ -19,7 +19,7 @@ assignees: ''
 Describe your runtime environment:
 *1. Machine: (e.g. HPC name, Linux Workstation, Mac Laptop)*
 *2. OS: (e.g. RedHat Linux, MacOS)*
-*3. MET software version number*
+*3. Software version number(s)*
 
 ### To Reproduce ###
 Describe the steps to reproduce the behavior:
