@@ -1,5 +1,5 @@
 ---
-name: New featue request
+name: New feature request
 about: Make it do something new
 title: ''
 labels: 'type: new feature'
