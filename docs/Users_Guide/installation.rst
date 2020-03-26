@@ -516,13 +516,16 @@ When the above command is run, a usage message appears indicating that other con
 
 .. code-block:: none
 
-  USAGE: This is a default process, please indicate more specific processes in the PROCESS_LIST variable in one or more of the following configuration files:
-  
-  -parm/metplus_config/metplus_runtime.conf
-  -parm/metplus_use_cases/<usecase_name>/<usecase_name.conf>
-  -parm/metplus_use_cases/<usecase_name>/examples/<example_name>.conf
+  USAGE: This text is displayed when [config] PROCESS_LIST = Usage.
+  Pass in a configuration file (with -c or --config) that overrides [config] PROCESS_LIST to run other processes. For example:
 
-  Currently available processes are:
+  master_metplus.py -c parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+
+  or
+
+  master_metplus.py --config parm/use_cases/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
+
+  Possible processes:
   - ASCII2NC
   - CyclonePlotter
   - EnsembleStat
