@@ -2,7 +2,8 @@
 ASCII2NC: Using Python Embedding
 =============================================================================
 
-This use case will run the MET ASCII2NC tool to convert point observation data in ASCII text format to NetCDF format using Python Embedding
+ASCII2NC_python
+_embedding.conf
 
 """
 ##############################################################################

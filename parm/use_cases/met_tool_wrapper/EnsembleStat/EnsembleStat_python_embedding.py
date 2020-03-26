@@ -2,9 +2,8 @@
 EnsembleStat: Using Python Embedding
 =============================================================================
 
-This use case will run the MET EnsembleStat tool to compare gridded ensemble
-forecast data to gridded AND point observation data. The input data is read
-in via Python Embedding.
+EnsembleStat_python
+_embedding.conf
 
 """
 

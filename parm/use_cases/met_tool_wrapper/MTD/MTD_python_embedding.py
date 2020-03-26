@@ -2,7 +2,7 @@
 MTD using Python Embedding
 ==========================
 
-This use case will run the MET MTD (MODE Time Domain) tool to compare gridded forecast data to gridded observation data over time. The input data is read in via Python Embedding.
+MTD_python_embedding.conf
 
 """
 ##############################################################################

@@ -2,9 +2,8 @@
 GridStat: Multiple Config Files Use Case
 ========================================
 
-This use case will run the MET Grid-Stat tool to compare gridded forecast data to
-gridded observation data. This use case is run by daisy-chaining multiple config files
-together.
+GridStat_multiple
+_config_files.conf
 
 """
 ##############################################################################
