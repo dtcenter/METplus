@@ -2,7 +2,7 @@
 PCPCombine: Bucket Interval Use Case
 ==============================================================================
 
-This use case will run the MET PCPCombine tool in ADD mode to build a 15 hour accumulation field from precipitation accumulation data that dumps the buckets at regular intervals.
+PCPCombine_bucket.conf
 
 """
 ##############################################################################

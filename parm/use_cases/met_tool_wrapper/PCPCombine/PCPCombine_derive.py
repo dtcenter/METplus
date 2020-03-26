@@ -2,7 +2,7 @@
 PCPCombine: DERIVE Use Case
 =============================================================================
 
-This use case will run the MET PCPCombine tool in DERIVE mode to generate statistics using multiple input files.
+PCPCombine_derive.conf
 
 """
 ##############################################################################

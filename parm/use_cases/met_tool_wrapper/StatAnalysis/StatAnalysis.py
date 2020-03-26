@@ -2,9 +2,7 @@
 StatAnalysis: Basic Use Case
 ===========================================================================
 
-This use case will run the MET Stat-Analysis tool providing
-summary statistical information and a way to filter STAT
-output files.
+StatAnalysis.conf
 
 """
 

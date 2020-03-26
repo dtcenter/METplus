@@ -2,7 +2,8 @@
 PCPCombine: Custom String Looping Use Case
 ============================================================================
 
-This use case will run the MET PCPCombine tool in ADD mode and read in files. It highlights the ability to loop over a user-defined list of strings, which are used to extract the multiple input files across a given run time.
+PCPCombine_loop
+_custom.conf
 
 """
 ##############################################################################

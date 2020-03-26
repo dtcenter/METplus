@@ -2,7 +2,7 @@
 RegridDataPlane: Basic Use Case
 =============================================================================
 
-This use case will run the MET Regrid-Data-Plane tool to regrid observation data in GRIB format.
+RegridDataPlane.conf
 
 """
 ##############################################################################
