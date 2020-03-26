@@ -2,7 +2,7 @@
 PB2NC: Basic Use Case
 =====================
 
-This use case will run the MET PB2NC tool to convert prepBUFR point observation data to NetCDF format.
+PB2NC.conf
 
 """
 ##############################################################################

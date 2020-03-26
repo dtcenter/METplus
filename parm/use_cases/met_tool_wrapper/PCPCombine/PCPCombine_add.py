@@ -2,7 +2,7 @@
 PCPCombine: ADD Use Case
 =============================================================================
 
-This use case will run the MET PCPCombine tool in ADD mode to build a 15 minute accumulation field
+PCPCombine_add.conf
 
 """
 ##############################################################################

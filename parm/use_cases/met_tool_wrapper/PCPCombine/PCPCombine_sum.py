@@ -2,7 +2,7 @@
 PCPCombine: SUM Use Case
 =============================================================================
 
-This use case will run the MET PCPCombine tool in SUM mode to build a 15 minute accumulation field
+PCPCombine_sum.conf
 
 """
 ##############################################################################

@@ -2,15 +2,9 @@
 TCPairs: Basic Use Case for Tropical Cyclones
 ==========================================================================
 
-This use case runs the MET tc_pairs tool on ATCF file format data generated
-by the GFDL cyclone tracker run on HWRF output. METPlus looping is 
-by initialization times, so each time defined in the INIT_BEG to INIT_END 
-time window, is run for each task in the PROCESS_LIST. 
-Note: This is a single application use case example, as such, there is only
-one task (TCPairs) defined in the PROCESS_LIST (so there is no next task).
+TCPairs_tropical.conf
 
 """
-
 ###########################################
 # Scientific Objective
 # --------------------

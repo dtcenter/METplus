@@ -2,8 +2,7 @@
 TCStat: Basic Use Case
 ============================================================================
 
-This use case will run the MET TCi-Stat tool to provide summary statistics
-from a TC-Pairs run.
+TCStat.conf
 
 """
 ##############################################################################

@@ -2,8 +2,7 @@
 TCMPRPlotter: Basic Use Case
 =======================================================
 
-This use case will run the MET R script tcmpr_plotter.R to generate various statistical
-plots of tropical cyclone tracks.
+TCMPRPlotter.conf
 
 """
 ##############################################################################
