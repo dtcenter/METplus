@@ -25,13 +25,11 @@ class UsageWrapper(CommandBuilder):
         self.available_processes.sort()
 
     def run_all_times(self):
-        print("USAGE:\n  This is a default process, please indicate more " +
-              " specific processes in the PROCESS_LIST variable in one " +
-              "or more of the following configuration files:\n " +
-              "-parm/metplus_config/metplus_runtime.conf\n " +
-              "-parm/metplus_use_cases/<usecase_name>/<usecase_name>.conf\n " +
-              "-parm/metplus_use_cases/<usecase_name>/" +
-              "examples/<example_name>.conf \n")
-        print("Currently available processes are: ")
+        print("USAGE: This text is displayed when [config] PROCESS_LIST = Usage.\n"
+              "Pass in a configuration file (with -c or --config) that overrides [config] PROCESS_LIST "
+              "to run other processes. For example:\n\n"
+              "master_metplus.py -c parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf\n\nor\n\n"
+              "master_metplus.py --config parm/use_cases/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf\n\n"
+              "Possible processes: ")
         for process in self.available_processes:
             print("  - {}".format(process))
