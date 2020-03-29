@@ -181,7 +181,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('config',
                                    f'{d_type}_{app}_VAR{index}_FIELD_NAME',
                                    '')
-
+        print(input_field_name)
         return input_field_name, input_field_level, output_field_name
 
     def run_at_time_once(self, time_info, var_info, dtype):
@@ -347,7 +347,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if util.is_python_script(field_name):
             self.args.append(f"-field 'name=\"{field_name}\";'")
         elif self.config.getbool('config', dtype + '_PCP_COMBINE_RUN', False):
-            name = "{:s}_{:s}".format(field_name, str(level))
+            if len(str(level)) > 0:
+               name = "{:s}_{:s}".format(field_name, str(level))
+            else:
+               name = "{:s}".format(field_name)
             self.args.append(f"-field 'name=\"{name}\"; level=\"(*,*)\";'")
         else:
             name = "{:s}".format(field_name)
