@@ -489,7 +489,7 @@ Running METplus Wrappers
 Running METplus Wrappers involves invoking the Python script
 master_metplus.py from any directory followed by a list of configuration
 files (file path relative to the
-*<path_to_METplus_install_dir*>/METplus/parm directory).
+*<path_to_METplus_install_dir>*/METplus/parm directory).
 
 **Example 1: Using a "default" configuration:**
 Copy and paste the following into an empty text file and name it 'my_user_config.conf':
@@ -516,13 +516,16 @@ When the above command is run, a usage message appears indicating that other con
 
 .. code-block:: none
 
-  USAGE: This is a default process, please indicate more specific processes in the PROCESS_LIST variable in one or more of the following configuration files:
+  USAGE: This text is displayed when [config] PROCESS_LIST = Usage.
+  Pass in a configuration file (with -c or --config) that overrides [config] PROCESS_LIST to run other processes. For example:
   
-  -parm/metplus_config/metplus_runtime.conf
-  -parm/metplus_use_cases/<usecase_name>/<usecase_name.conf>
-  -parm/metplus_use_cases/<usecase_name>/examples/<example_name>.conf
-
-  Currently available processes are:
+  master_metplus.py -c parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+  
+  or
+  
+  master_metplus.py --config parm/use_cases/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
+  
+  Possible processes:
   - ASCII2NC
   - CyclonePlotter
   - EnsembleStat
@@ -553,9 +556,9 @@ The command:
 
 .. code-block:: none
 
-  master_metplus.py -c use_cases/feature_relative/feature_relative.conf
+  master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
-will run METplus using the defaults set in the three config files found in parm/metplus_config. Any variables defined in these three config files can be over-ridden in the parm/use_cases/feature_relative/feature_relative.conf file. METplus will run using the values specified in the feature_relative.conf file.
+will run METplus using the defaults set in the three config files found in parm/metplus_config. Any variables defined in these three config files can be overridden in the parm/use_cases/GridStat/GridStat.conf file. METplus will run using the values specified in the GridStat.conf file.
 
 **Example 3: Using example configuration to perform a specific evaluation (e.g. Model 1 vs. Obs 1, Model 1 vs. Obs 2, Model 2 vs. Obs 1, etc...):**
 
@@ -563,10 +566,19 @@ The command:
 
 .. code-block:: none
   
-  master_metplus.py -c use_cases/feature_relative/feature_relative.conf \
-  -c use_cases/feature_relative/examples/series_by_lead_all_fhrs.conf
+  master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
+  -c use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf \
+  -c use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf
 
-will run METplus using the defaults set in the three config files in parm/metplus_config, where variables can be over-ridden by parm/use_cases/feature_relative/feature_relative.conf or in parm/use_cases/feature_relative/examples/series_by_lead_all_fhrs.conf. The order in which conf files are called is important. Variables that are defined in intermediate conf files will be over-ridden by the same variables set in the conf file following it, or the last conf file.
+will run METplus using the defaults set in the config files in parm/metplus_config, where variables can be overridden by parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf then by parm/use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf, then by parm/use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf. The order in which conf files are called is important. Variables that are defined in intermediate conf files will be overridden by the same variables set in the conf file following it, or the last conf file. For example, if FCST_VAR1_NAME = TMP in GridStat.conf and FCST_VAR1_NAME = TEMP in GridStat_forecast.conf, the value used will be TEMP because GridStat_forecast.conf was read after GridStat.conf.
+
+Separating configurations into multiple files can be useful if you want to compare different forecasts or observations in the same way. For example, to compare a different forecast to the observation in this example, copy GridStat_forecast.conf into a directory outside of the METplus repository (i.e. /home/user/METplus_user_config), rename it (i.e. GridStat_myforecast.conf), then change the values to match the new data set (input directory, input filename template, field name, etc.). Then you can run the new use case:
+
+.. code-block:: none
+
+  master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
+  -c /home/user/METplus_user_config/GridStat_myforecast.conf \
+  -c use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf
 
 .. [1]
    R version 3.2.5 is required when the TCMPRPlotter wraps the
