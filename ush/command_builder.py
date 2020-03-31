@@ -70,13 +70,15 @@ class CommandBuilder:
         # wrappers that support this functionality can override this value
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = False
-        c_dict['FCST_INPUT_DATATYPE'] = ''
-        c_dict['OBS_INPUT_DATATYPE'] = ''
         c_dict['ALLOW_MULTIPLE_FILES'] = False
         c_dict['CURRENT_VAR_INFO'] = None
 
+        app_name = ''
+        if hasattr(self, 'app_name'):
+            app_name = self.app_name
+
         c_dict['CUSTOM_LOOP_LIST'] = util.get_custom_string_list(self.config,
-                                                                 self.app_name)
+                                                                 app_name)
 
 
         return c_dict
@@ -408,10 +410,6 @@ class CommandBuilder:
 
             # if wildcard expression, get all files that match
             if '?' in full_path or '*' in full_path:
-                if not self.c_dict['ALLOW_MULTIPLE_FILES']:
-                    self.log_error("Wildcard character found in file path when using wrapper that "
-                                   "does not allow multiple files to be provided.")
-                    return None
 
                 wildcard_files = sorted(glob.glob(full_path))
                 self.logger.debug(f'Wildcard file pattern: {full_path}')
@@ -424,10 +422,18 @@ class CommandBuilder:
                 # add single file to list
                 check_file_list.append(full_path)
 
+        # if multiple files are not supported by the wrapper and multiple files are found, error and exit
+        # this will allow a wildcard to be used to find a single file. Previously a wildcard would produce
+        # an error if only 1 file is allowed.
+        if not self.c_dict['ALLOW_MULTIPLE_FILES'] and len(check_file_list) > 1:
+            self.log_error("Multiple files found when wrapper does not support multiple files.")
+            return None
+
         for file_path in check_file_list:
             # check if file exists
+            input_data_type = self.c_dict.get(data_type + '_INPUT_DATATYPE', '')
             processed_path = util.preprocess_file(file_path,
-                                                  self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                                  input_data_type,
                                                   self.config)
 
             # report error if file path could not be found
@@ -521,14 +527,14 @@ class CommandBuilder:
         # if one file was found and return_list if False, return single file
         if len(closest_files) == 1 and not return_list:
             return util.preprocess_file(closest_files[0],
-                                        self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                        self.c_dict.get(data_type + '_INPUT_DATATYPE', ''),
                                         self.config)
 
         # return list if multiple files are found
         out = []
         for close_file in closest_files:
             outfile = util.preprocess_file(close_file,
-                                           self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                           self.c_dict.get(data_type + '_INPUT_DATATYPE', ''),
                                            self.config)
             out.append(outfile)
 
@@ -652,7 +658,7 @@ class CommandBuilder:
 
         # if it is a python script, set file extension to show that and make sure *_INPUT_DATATYPE is a valid PYTHON_* string
         file_ext = 'python_embedding'
-        data_type = self.c_dict[f'{input_type}_INPUT_DATATYPE']
+        data_type = self.c_dict.get(f'{input_type}_INPUT_DATATYPE', '')
         if data_type not in util.PYTHON_EMBEDDING_TYPES:
             self.log_error(f"{input_type}_{self.app_name.upper()}_INPUT_DATATYPE ({data_type}) must be set to a valid Python Embedding type "
                            f"if supplying a Python script as the {input_type}_VAR<n>_NAME. Valid options: "
@@ -662,6 +668,42 @@ class CommandBuilder:
         # set file type string to be set in MET config file to specify Python Embedding is being used for this dataset
         self.c_dict[f'{input_type}_FILE_TYPE'] = f"file_type = {data_type};"
         return file_ext
+
+    def get_optional_number_from_config(self, section, name, typeobj, default=None):
+        """!Helper function to read optional configuration variable that should be an integer. If the variable is set
+            in the config and it is not an integer, log an error and set self.isOK to False
+            Args:
+                @param section configuration file section of variable, i.e. [config] or [dir]
+                @param name configuration variable name
+                @param typeobj type of number to read, i.e. int or float
+                @param default default value to use if config variable is not set, default value is -999
+                @returns Empty string if configuration variable is not set, integer value if value is an integer or default if unset
+        """
+        value = self.config.getstr(section,
+                                   name,
+                                   '')
+        try:
+            if value:
+                return typeobj(value)
+
+            # if a default value was specified, return that
+            if default:
+                return default
+
+            # if no default was set, return missing data value for int or float
+            if typeobj == int:
+                return util.MISSING_DATA_VALUE_INT
+
+            if typeobj == float:
+                return util.MISSING_DATA_VALUE_FLOAT
+
+            # if neither int or float was specified, return None
+            return None
+
+        except ValueError:
+            self.log_error(f"[{section}] {name} must be an {typeobj}. Value is {value}")
+            self.isOK = False
+            return None
 
     def get_command(self):
         """! Builds the command to run the MET application
