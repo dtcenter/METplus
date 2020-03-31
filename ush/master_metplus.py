@@ -53,6 +53,7 @@ from pb2nc_wrapper import PB2NCWrapper
 from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TCStatWrapper
 from gempak_to_cf_wrapper import GempakToCFWrapper
+from gen_vx_mask_wrapper import GenVxMaskWrapper
 from example_wrapper import ExampleWrapper
 from py_embed_ingest_wrapper import PyEmbedIngestWrapper
 from ascii2nc_wrapper import ASCII2NCWrapper
