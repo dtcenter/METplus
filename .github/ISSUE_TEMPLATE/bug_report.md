@@ -50,3 +50,23 @@ Describe the steps to reproduce the behavior:
 ### Projects and Milestone ###
 - [ ] Review **projects** and select relevant **Repository** and **Organization** ones
 - [ ] Select **milestone**
+
+## Define Related Issue(s) ##
+Consider the impact to the other METplus components.
+- [ ] [METplus](https://github.com/NCAR/METplus/issues/new/choose), [MET](https://github.com/NCAR/MET/issues/new/choose), [METdb](https://github.com/NCAR/METdb/issues/new/choose), [METviewer](https://github.com/NCAR/METviewer/issues/new/choose), [METexpress](https://github.com/NCAR/METexpress/issues/new/choose), [METcalcpy](https://github.com/NCAR/METcalcpy/issues/new/choose), [METplotpy](https://github.com/NCAR/METplotpy/issues/new/choose)
+
+## Bugfix Checklist ##
+See the [METplus Workflow](https://ncar.github.io/METplus/Contributors_Guide/github_workflow.html) for details.
+- [ ] Complete the issue definition above.
+- [ ] Fork this repository or create a branch of **master_\<Version>**.
+Branch name: `bugfix_<Issue Number>_master_<Version>_<Description>`
+- [ ] Fix the bug and test your changes.
+- [ ] Add/update unit tests.
+- [ ] Add/update documentation.
+- [ ] Push local changes to GitHub.
+- [ ] Submit a pull request to merge into **master_\<Version>**, listing the **\<Issue Number\>** in the title.
+- [ ] Iterate until the reviewer(s) accept and merge your changes.
+- [ ] Delete your fork or branch.
+- [ ] Complete the steps above to fix the bug on the **develop** branch.
+Branch name: `bugfix_<Issue Number>_develop_<Description>`
+- [ ] Close this issue.
