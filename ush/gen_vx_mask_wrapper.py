@@ -60,19 +60,36 @@ class GenVxMaskWrapper(CommandBuilder):
         c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                           'GEN_VX_MASK_INPUT_TEMPLATE')
 
-        c_dict['MASK_INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_MASK_DIR',
+        c_dict['MASK_INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_MASK_DIR',
                                                       '')
         c_dict['MASK_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                          'GEN_VX_MASK_MASK_TEMPLATE')
+                                                           'GEN_VX_MASK_INPUT_MASK_TEMPLATE')
         c_dict['OUTPUT_DIR'] = self.config.getdir('GEN_VX_MASK_OUTPUT_DIR',
                                                   '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                        'GEN_VX_MASK_OUTPUT_TEMPLATE')
 
+        # handle window variables [GEN_VX_MASK_]FILE_WINDOW_[BEGIN/END]
+        c_dict['OBS_FILE_WINDOW_BEGIN'] = \
+          self.config.getseconds('config', 'GEN_VX_MASK_FILE_WINDOW_BEGIN',
+                                 self.config.getseconds('config',
+                                                        'OBS_FILE_WINDOW_BEGIN', 0))
+        c_dict['OBS_FILE_WINDOW_END'] = \
+          self.config.getseconds('config', 'GEN_VX_MASK_FILE_WINDOW_END',
+                                 self.config.getseconds('config',
+                                                        'OBS_FILE_WINDOW_END', 0))
+
+        # use the same file windows for input and mask files
+        c_dict['MASK_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
+        c_dict['MASK_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
+
         # optional arguments
         c_dict['TYPE'] = self.config.getstr('config',
                                             'GEN_VX_MASK_TYPE',
                                             'poly')
+        # if type is not set, set it to poly
+        if not c_dict['TYPE']:
+            c_dict['TYPE'] = 'poly'
 
         # check if value set for type is one of the valid options
         if c_dict['TYPE'] not in self.VALID_MASKING_TYPES:
@@ -84,7 +101,7 @@ class GenVxMaskWrapper(CommandBuilder):
                                                    'GEN_VX_MASK_INPUT_FIELD',
                                                    '')
         c_dict['MASK_FIELD'] = self.config.getraw('config',
-                                                  'GEN_VX_MASK_MASK_FIELD',
+                                                  'GEN_VX_MASK_INPUT_MASK_FIELD',
                                                   '')
         c_dict['COMPLEMENT_FLAG'] = self.config.getbool('config',
                                                         'GEN_VX_MASK_COMPLEMENT_FLAG',
@@ -114,50 +131,27 @@ class GenVxMaskWrapper(CommandBuilder):
                                               'GEN_VX_MASK_THRESH',
                                               '')
 
-        c_dict['HEIGHT'] = self.get_optional_integer_from_config('config',
-                                                                 'GEN_VX_MASK_HEIGHT',
-                                                                 default=0)
+        c_dict['HEIGHT'] = self.get_optional_number_from_config('config',
+                                                                'GEN_VX_MASK_HEIGHT',
+                                                                int)
 
-        c_dict['WIDTH'] = self.get_optional_integer_from_config('config',
-                                                                'GEN_VX_MASK_WIDTH',
-                                                                 default=0)
+        c_dict['WIDTH'] = self.get_optional_number_from_config('config',
+                                                               'GEN_VX_MASK_WIDTH',
+                                                               int)
 
-        c_dict['SHAPENO'] = self.get_optional_integer_from_config('config',
-                                                                  'GEN_VX_MASK_SHAPE_NUMBER',
-                                                                 default=-999)
+        c_dict['SHAPENO'] = self.get_optional_number_from_config('config',
+                                                                 'GEN_VX_MASK_SHAPE_NUMBER',
+                                                                 int)
 
-        c_dict['VALUE'] = self.get_optional_integer_from_config('config',
-                                                                'GEN_VX_MASK_VALUE',
-                                                                default=-999)
+        c_dict['VALUE'] = self.get_optional_number_from_config('config',
+                                                               'GEN_VX_MASK_VALUE',
+                                                               float)
 
         c_dict['NAME'] = self.config.getstr('config',
                                             'GEN_VX_MASK_OUTPUT_NAME',
                                             '')
 
         return c_dict
-
-    def get_optional_integer_from_config(self, section, name, default=-999):
-        """!Helper function to read optional configuration variable that should be an integer. If the variable is set
-            in the config and it is not an integer, log an error and set self.isOK to False
-            Args:
-                @param section configuration file section of variable, i.e. [config] or [dir]
-                @param name configuration variable name
-                @param default default value to use if config variable is not set, default value is -999
-                @returns Empty string if configuration variable is not set, integer value if value is an integer or default if unset
-        """
-        value = self.config.getstr(section,
-                                   name,
-                                   '')
-        try:
-            if value:
-                value = int(value)
-            else:
-                return default
-        except ValueError:
-            self.log_error(f"[{section}] {name} must be an integer. Value is {value}")
-            self.isOK = False
-        finally:
-            return value
 
     def set_environment_variables(self, time_info):
         """!Set environment variables that will be read set when running this tool.
@@ -205,7 +199,7 @@ class GenVxMaskWrapper(CommandBuilder):
             os.makedirs(parent_dir)
 
         # add arguments
-        cmd += ' '.join(self.args)
+        cmd += ' ' + ' '.join(self.args)
 
         # add verbosity
         cmd += ' -v ' + self.c_dict['VERBOSITY']
@@ -260,22 +254,29 @@ class GenVxMaskWrapper(CommandBuilder):
         self.build()
 
     def find_input_files(self, time_info):
-        """!TODO"""
-        # if using python embedding input, don't check if file exists,
-        # just substitute time info and add to input file list
-        if self.c_dict['ASCII_FORMAT'] == 'python':
-            filename = StringSub(self.logger,
-                                 self.c_dict['OBS_INPUT_TEMPLATE'],
-                                 **time_info).do_string_sub()
-            self.infiles.append(filename)
-            return self.infiles
-
-        # get list of files even if only one is found (return_list=True)
-        obs_path = self.find_obs(time_info, var_info=None, return_list=True)
-        if obs_path is None:
+        """!Find input file and mask file and add them to the list of input files.
+            Args:
+                @param time_info time dictionary for current run time
+                @returns List of input files found or None if either file was not found
+        """
+        # get input file
+        # calling find_obs because we set OBS_ variables in c_dict for the input data
+        input_path = self.find_obs(time_info,
+                                   var_info=None)
+        if input_path is None:
             return None
 
-        self.infiles.extend(obs_path)
+        self.infiles.append(input_path)
+
+        # get mask file
+        mask_path = self.find_data(time_info,
+                                   var_info=None,
+                                   data_type='MASK')
+        if mask_path is None:
+            return None
+
+        self.infiles.append(mask_path)
+
         return self.infiles
 
     def set_command_line_arguments(self, time_info):
@@ -304,7 +305,7 @@ class GenVxMaskWrapper(CommandBuilder):
             self.args.append("-union")
 
         if self.c_dict['INTERSECTION_FLAG']:
-            self.args.append(" -intersection")
+            self.args.append("-intersection")
 
         if self.c_dict['SYMDIFF_FLAG']:
             self.args.append("-symdiff")
@@ -312,16 +313,17 @@ class GenVxMaskWrapper(CommandBuilder):
         if self. c_dict['THRESH']:
             self.args.append(f"-thresh {self.c_dict['THRESH']}")
 
-        if self.c_dict['HEIGHT']:
+        print(f"HEIGHT: {self.c_dict['HEIGHT']} and MISSING: {util.MISSING_DATA_VALUE_INT}")
+        if self.c_dict['HEIGHT'] != util.MISSING_DATA_VALUE_INT:
             self.args.append(f"-height {self.c_dict['HEIGHT']}")
 
-        if self.c_dict['WIDTH']:
+        if self.c_dict['WIDTH'] != util.MISSING_DATA_VALUE_INT:
             self.args.append(f"-width {self.c_dict['WIDTH']}")
 
-        if self.c_dict['SHAPENO'] != -999:
+        if self.c_dict['SHAPENO'] != util.MISSING_DATA_VALUE_INT:
             self.args.append(f"-shapeno {self.c_dict['SHAPENO']}")
 
-        if self.c_dict['VALUE'] != -999:
+        if self.c_dict['VALUE'] != util.MISSING_DATA_VALUE_INT:
             self.args.append(f"-value {self.c_dict['VALUE']}")
 
         if self.c_dict['NAME']:
