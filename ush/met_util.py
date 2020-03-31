@@ -52,6 +52,7 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'example': 'Example',
                          'extracttiles': 'ExtractTiles',
                          'gempaktocf': 'GempakToCF',
+                         'genvxmask': 'GenVxMask',
                          'gridstat': 'GridStat',
                          'makeplots': 'MakePlots',
                          'mode': 'MODE',
@@ -71,6 +72,12 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'tcmprplotter': 'TCMPRPlotter',
                          'usage': 'Usage',
                          }
+
+# missing data value used to check if integer values are not set
+# we often check for None if a variable is not set, but 0 and None
+# have the same result in a test. 0 may be a valid integer value
+MISSING_DATA_VALUE_INT = -9999
+MISSING_DATA_VALUE_FLOAT = -9999.0
 
 def pre_run_setup(filename, app_name):
     filebasename = os.path.basename(filename)
@@ -2649,7 +2656,6 @@ def remove_staged_files(staged_dir, filename_regex, logger):
 
     # if we get here, all went well...
     return 0
-
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
