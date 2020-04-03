@@ -194,7 +194,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # get point observation file if requested
         if self.c_dict['OBS_POINT_INPUT_TEMPLATE']:
-            point_obs_path = self.find_data(time_info, first_var_info, 'OBS_POINT')
+            point_obs_path = self.find_data(time_info, first_var_info, 'OBS_POINT_')
             if point_obs_path is None:
                 return
 
@@ -202,7 +202,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # get grid observation file if requested
         if self.c_dict['OBS_GRID_INPUT_TEMPLATE']:
-            grid_obs_path = self.find_data(time_info, first_var_info, 'OBS_GRID')
+            grid_obs_path = self.find_data(time_info, first_var_info, 'OBS_GRID_')
             if grid_obs_path is None:
                 return
 

@@ -262,13 +262,13 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
 
     def find_input_files(self, time_info, var_info):
         if self.c_dict['USING_BOTH']:
-            if not self.get_files_and_create_list(time_info, var_info, 'BOTH'):
+            if not self.get_files_and_create_list(time_info, var_info, 'BOTH_'):
                 return False
         else:
-            if not self.get_files_and_create_list(time_info, var_info, 'FCST'):
+            if not self.get_files_and_create_list(time_info, var_info, 'FCST_'):
                 return False
 
-            if not self.get_files_and_create_list(time_info, var_info, 'OBS'):
+            if not self.get_files_and_create_list(time_info, var_info, 'OBS_'):
                 return False
 
         return True

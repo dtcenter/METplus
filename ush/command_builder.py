@@ -306,7 +306,7 @@ class CommandBuilder:
         self.logger.warning('Using default values for {}'.format(gen_name))
         return default, default
 
-    def find_model(self, time_info, var_info, mandatory=True, return_list=False):
+    def find_model(self, time_info, var_info=None, mandatory=True, return_list=False):
         """! Finds the model file to compare
               Args:
                 @param time_info dictionary containing timing information
@@ -316,11 +316,13 @@ class CommandBuilder:
                 @rtype string
                 @return Returns the path to an model file
         """
-        return self.find_data(time_info, var_info, "FCST",
+        return self.find_data(time_info,
+                              var_info=var_info,
+                              data_type="FCST_",
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_obs(self, time_info, var_info, mandatory=True, return_list=False):
+    def find_obs(self, time_info, var_info=None, mandatory=True, return_list=False):
         """! Finds the observation file to compare
               Args:
                 @param time_info dictionary containing timing information
@@ -330,16 +332,18 @@ class CommandBuilder:
                 @rtype string
                 @return Returns the path to an observation file
         """
-        return self.find_data(time_info, var_info, "OBS",
+        return self.find_data(time_info,
+                              var_info=var_info,
+                              data_type="OBS_",
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_data(self, time_info, var_info, data_type, mandatory=True, return_list=False):
+    def find_data(self, time_info, var_info=None, data_type='', mandatory=True, return_list=False):
         """! Finds the data file to compare
               Args:
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
-                @param data_type type of data to find (FCST or OBS)
+                @param data_type type of data to find (i.e. FCST_ or OBS_)
                 @param mandatory if True, report error if not found, warning if not
                   default is True
                 @rtype string
@@ -369,8 +373,8 @@ class CommandBuilder:
                     'return_list': return_list}
 
         # if looking for a file with an exact time match:
-        if self.c_dict[data_type + '_FILE_WINDOW_BEGIN'] == 0 and \
-                self.c_dict[data_type + '_FILE_WINDOW_END'] == 0:
+        if self.c_dict[data_type + 'FILE_WINDOW_BEGIN'] == 0 and \
+                self.c_dict[data_type + 'FILE_WINDOW_END'] == 0:
 
             return self.find_exact_file(**arg_dict)
 
@@ -378,8 +382,8 @@ class CommandBuilder:
         return self.find_file_in_window(**arg_dict)
 
     def find_exact_file(self, level, data_type, time_info, mandatory=True, return_list=False):
-        input_template = self.c_dict[f'{data_type}_INPUT_TEMPLATE']
-        data_dir = self.c_dict[f'{data_type}_INPUT_DIR']
+        input_template = self.c_dict[f'{data_type}INPUT_TEMPLATE']
+        data_dir = self.c_dict[f'{data_type}INPUT_DIR']
 
         check_file_list = []
         found_file_list = []
@@ -406,7 +410,11 @@ class CommandBuilder:
             # build full path with data directory and filename
             full_path = os.path.join(data_dir, filename)
 
-            self.logger.debug(f"Looking for {data_type} file {full_path}")
+            if os.path.sep not in full_path:
+                self.logger.debug(f"{full_path} is not a file path. Returning that string.")
+                return full_path
+
+            self.logger.debug(f"Looking for {data_type}INPUT file {full_path}")
 
             # if wildcard expression, get all files that match
             if '?' in full_path or '*' in full_path:
@@ -431,14 +439,14 @@ class CommandBuilder:
 
         for file_path in check_file_list:
             # check if file exists
-            input_data_type = self.c_dict.get(data_type + '_INPUT_DATATYPE', '')
+            input_data_type = self.c_dict.get(data_type + 'INPUT_DATATYPE', '')
             processed_path = util.preprocess_file(file_path,
                                                   input_data_type,
                                                   self.config)
 
             # report error if file path could not be found
             if not processed_path:
-                msg = f"Could not find {data_type} file {file_path} using template {template}"
+                msg = f"Could not find {data_type}INPUT file {file_path} using template {template}"
                 if mandatory:
                     self.log_error(msg)
                 else:
@@ -455,8 +463,8 @@ class CommandBuilder:
         return found_file_list
 
     def find_file_in_window(self, level, data_type, time_info, mandatory=True, return_list=False):
-        template = self.c_dict[f'{data_type}_INPUT_TEMPLATE']
-        data_dir = self.c_dict[f'{data_type}_INPUT_DIR']
+        template = self.c_dict[f'{data_type}INPUT_TEMPLATE']
+        data_dir = self.c_dict[f'{data_type}INPUT_DIR']
 
         # convert valid_time to unix time
         valid_time = time_info['valid_fmt']
@@ -466,14 +474,14 @@ class CommandBuilder:
         closest_time = 9999999
 
         # get range of times that will be considered
-        valid_range_lower = self.c_dict[data_type + '_FILE_WINDOW_BEGIN']
-        valid_range_upper = self.c_dict[data_type + '_FILE_WINDOW_END']
+        valid_range_lower = self.c_dict[data_type + 'FILE_WINDOW_BEGIN']
+        valid_range_upper = self.c_dict[data_type + 'FILE_WINDOW_END']
         lower_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
                                             "%Y%m%d%H%M%S").strftime("%s"))
         upper_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
                                             "%Y%m%d%H%M%S").strftime("%s"))
 
-        msg = f"Looking for {data_type} files under {data_dir} within range " +\
+        msg = f"Looking for {data_type}INPUT files under {data_dir} within range " +\
               f"[{valid_range_lower},{valid_range_upper}] using template {template}"
         self.logger.debug(msg)
 
@@ -515,7 +523,7 @@ class CommandBuilder:
                         closest_files.append(fullpath)
 
         if not closest_files:
-            msg = f"Could not find {data_type} files under {data_dir} within range " +\
+            msg = f"Could not find {data_type}INPUT files under {data_dir} within range " +\
                   f"[{valid_range_lower},{valid_range_upper}] using template {template}"
             if mandatory:
                 self.log_error(msg)
@@ -527,14 +535,14 @@ class CommandBuilder:
         # if one file was found and return_list if False, return single file
         if len(closest_files) == 1 and not return_list:
             return util.preprocess_file(closest_files[0],
-                                        self.c_dict.get(data_type + '_INPUT_DATATYPE', ''),
+                                        self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
                                         self.config)
 
         # return list if multiple files are found
         out = []
         for close_file in closest_files:
             outfile = util.preprocess_file(close_file,
-                                           self.c_dict.get(data_type + '_INPUT_DATATYPE', ''),
+                                           self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
                                            self.config)
             out.append(outfile)
 
