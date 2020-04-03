@@ -347,7 +347,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if util.is_python_script(field_name):
             self.args.append(f"-field 'name=\"{field_name}\";'")
         elif self.config.getbool('config', dtype + '_PCP_COMBINE_RUN', False):
-            name = "{:s}_{:s}".format(field_name, str(level))
+            if len(str(level)) > 0:
+               name = "{:s}_{:s}".format(field_name, str(level))
+            else:
+               name = "{:s}".format(field_name)
             self.args.append(f"-field 'name=\"{name}\"; level=\"(*,*)\";'")
         else:
             name = "{:s}".format(field_name)
