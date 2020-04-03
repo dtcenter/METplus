@@ -41,6 +41,11 @@ class GenVxMaskWrapper(CommandBuilder):
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = \
+          self.config.getbool('config',
+                              'GEN_VX_MASK_SKIP_IF_OUTPUT_EXISTS',
+                              False)
+
         # input and output files
         c_dict['INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_DIR',
                                                  '')
