@@ -2657,5 +2657,35 @@ def remove_staged_files(staged_dir, filename_regex, logger):
     # if we get here, all went well...
     return 0
 
+def iterate_is_first(input_list):
+    """!Use an iterator to loop over the list and keep track if the current item is the first in the loop
+        Args:
+            @param input_list list of items to iterate over
+            @returns tuple containing the next item and a boolean that is only True for the first item"""
+    iterate_check_position(input_list, check_first=True)
+
+def iterate_is_last(input_list):
+    """!Use an iterator to loop over the list and keep track if the current item is the last in the loop
+        Args:
+            @param input_list list of items to iterate over
+            @returns tuple containing the next item and a boolean that is only True for the last item"""
+    iterate_check_position(input_list, check_first=False)
+
+def iterate_check_position(input_list, check_first):
+    """!Use an iterator to loop over the list and keep track if the current item is the first or last in the loop
+        Args:
+            @param input_list list of items to iterate over
+            @param check_first if True, return True if the current item is the first item, if False, return True
+                if the current item is the last item
+            @returns tuple containing the next item and a boolean that is only True for the first/last item"""
+    it = iter(input_list)
+    last = next(it)
+
+    for item in it:
+        yield last, check_first
+        last = item
+
+    yield last, not check_first
+
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
