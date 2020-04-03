@@ -187,7 +187,9 @@ class GenVxMaskWrapper(CommandBuilder):
 
             # set mask input template and command line arguments
             self.c_dict['MASK_INPUT_TEMPLATE'] = mask_template
-            self.args = cmd_args
+            self.args = StringSub(self.logger,
+                                  cmd_args,
+                                  **time_info).do_string_sub()
 
             if not self.find_input_files(time_info, temp_file):
                 return
