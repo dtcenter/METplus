@@ -7,8 +7,8 @@ Abstract: Builds command for and runs gen_vx_mask
 History Log:  Initial version
 Usage:
 Parameters: None
-Input Files: ascii files
-Output Files: nc files
+Input Files: Valid MET input files
+Output Files: NetCDF files
 Condition codes: 0 for success, 1 for failure
 """
 
@@ -27,19 +27,6 @@ from string_template_substitution import StringSub
 
 
 class GenVxMaskWrapper(CommandBuilder):
-    # valid values for the -type argument
-    VALID_MASKING_TYPES = ["poly",
-                           "box",
-                           "circle",
-                           "track",
-                           "grid",
-                           "data",
-                           "solar_alt",
-                           "solar_azi",
-                           "lat",
-                           "lon",
-                           "shape",
-                           ]
 
     def __init__(self, config, logger):
         self.app_name = "gen_vx_mask"
@@ -55,101 +42,52 @@ class GenVxMaskWrapper(CommandBuilder):
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
         # input and output files
-        c_dict['OBS_INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_DIR',
-                                                     '')
-        c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                          'GEN_VX_MASK_INPUT_TEMPLATE')
+        c_dict['INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_DIR',
+                                                 '')
+        c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+                                                      'GEN_VX_MASK_INPUT_TEMPLATE')
 
-        c_dict['MASK_INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_MASK_DIR',
-                                                      '')
-        c_dict['MASK_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                           'GEN_VX_MASK_INPUT_MASK_TEMPLATE')
         c_dict['OUTPUT_DIR'] = self.config.getdir('GEN_VX_MASK_OUTPUT_DIR',
                                                   '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                        'GEN_VX_MASK_OUTPUT_TEMPLATE')
 
+        c_dict['MASK_INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_MASK_DIR',
+                                                      '')
+        c_dict['MASK_INPUT_TEMPLATES'] = util.getlist(self.config.getraw('filename_templates',
+                                                           'GEN_VX_MASK_INPUT_MASK_TEMPLATE'))
+
+        if not c_dict['MASK_INPUT_TEMPLATES']:
+            self.log_error("Must set GEN_VX_MASK_INPUT_MASK_TEMPLATE to run GenVxMask wrapper")
+            self.isOK = False
+
+        # optional arguments
+        c_dict['COMMAND_OPTIONS'] = util.getlist(self.config.getraw('config',
+                                                                    'GEN_VX_MASK_OPTIONS'))
+
+        # if no options were specified, set to a list with an empty string
+        if not c_dict['COMMAND_OPTIONS']:
+            c_dict['COMMAND_OPTIONS'] = ['']
+
+        # make sure the list of mask templates is the same size as the list of
+        # command line options that correspond to each mask
+        if len(c_dict['MASK_INPUT_TEMPLATES']) != len(c_dict['COMMAND_OPTIONS']):
+            self.log_error("Number of items in GEN_VX_MASK_INPUT_MASK_TEMPLATE must "
+                           "be equal to the number of items in GEN_VX_MASK_OPTIONS")
+
         # handle window variables [GEN_VX_MASK_]FILE_WINDOW_[BEGIN/END]
-        c_dict['OBS_FILE_WINDOW_BEGIN'] = \
+        c_dict['FILE_WINDOW_BEGIN'] = \
           self.config.getseconds('config', 'GEN_VX_MASK_FILE_WINDOW_BEGIN',
                                  self.config.getseconds('config',
                                                         'OBS_FILE_WINDOW_BEGIN', 0))
-        c_dict['OBS_FILE_WINDOW_END'] = \
+        c_dict['FILE_WINDOW_END'] = \
           self.config.getseconds('config', 'GEN_VX_MASK_FILE_WINDOW_END',
                                  self.config.getseconds('config',
                                                         'OBS_FILE_WINDOW_END', 0))
 
         # use the same file windows for input and mask files
-        c_dict['MASK_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
-        c_dict['MASK_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
-
-        # optional arguments
-        c_dict['TYPE'] = self.config.getstr('config',
-                                            'GEN_VX_MASK_TYPE',
-                                            'poly')
-        # if type is not set, set it to poly
-        if not c_dict['TYPE']:
-            c_dict['TYPE'] = 'poly'
-
-        # check if value set for type is one of the valid options
-        if c_dict['TYPE'] not in self.VALID_MASKING_TYPES:
-            self.log_error(f"GEN_VX_MASK_TYPE value ({c_dict['TYPE']})is invalid. "
-                           f"Valid options are {self.VALID_MASKING_TYPES}")
-            self.isOK = False
-
-        c_dict['INPUT_FIELD'] = self.config.getraw('config',
-                                                   'GEN_VX_MASK_INPUT_FIELD',
-                                                   '')
-        c_dict['MASK_FIELD'] = self.config.getraw('config',
-                                                  'GEN_VX_MASK_INPUT_MASK_FIELD',
-                                                  '')
-        c_dict['COMPLEMENT_FLAG'] = self.config.getbool('config',
-                                                        'GEN_VX_MASK_COMPLEMENT_FLAG',
-                                                        False)
-
-        c_dict['UNION_FLAG'] = self.config.getbool('config',
-                                                   'GEN_VX_MASK_UNION_FLAG',
-                                                   False)
-
-        c_dict['INTERSECTION_FLAG'] = self.config.getbool('config',
-                                                          'GEN_VX_MASK_INTERSECTION_FLAG',
-                                                          False)
-
-        c_dict['SYMDIFF_FLAG'] = self.config.getbool('config',
-                                                     'GEN_VX_MASK_SYMDIFF_FLAG',
-                                                     False)
-
-        # only one combination flag can be set. In sum, False becomes 0 and True becomes 1
-        # so a sum greater than 1 means more than one value is True
-        if sum([c_dict['UNION_FLAG'], c_dict['INTERSECTION_FLAG'], c_dict['SYMDIFF_FLAG']]) > 1:
-            self.log_error("Only one combination flag (GEN_VX_MASK_[UNION/INTERSECTION/SYMDIFF]_FLAG)"
-                           "can be set.")
-            self.isOK = False
-
-
-        c_dict['THRESH'] = self.config.getstr('config',
-                                              'GEN_VX_MASK_THRESH',
-                                              '')
-
-        c_dict['HEIGHT'] = self.get_optional_number_from_config('config',
-                                                                'GEN_VX_MASK_HEIGHT',
-                                                                int)
-
-        c_dict['WIDTH'] = self.get_optional_number_from_config('config',
-                                                               'GEN_VX_MASK_WIDTH',
-                                                               int)
-
-        c_dict['SHAPENO'] = self.get_optional_number_from_config('config',
-                                                                 'GEN_VX_MASK_SHAPE_NUMBER',
-                                                                 int)
-
-        c_dict['VALUE'] = self.get_optional_number_from_config('config',
-                                                               'GEN_VX_MASK_VALUE',
-                                                               float)
-
-        c_dict['NAME'] = self.config.getstr('config',
-                                            'GEN_VX_MASK_OUTPUT_NAME',
-                                            '')
+        c_dict['MASK_FILE_WINDOW_BEGIN'] = c_dict['FILE_WINDOW_BEGIN']
+        c_dict['MASK_FILE_WINDOW_END'] = c_dict['FILE_WINDOW_END']
 
         return c_dict
 
@@ -190,7 +128,7 @@ class GenVxMaskWrapper(CommandBuilder):
         cmd += ' ' + out_path
 
         parent_dir = os.path.dirname(out_path)
-        if parent_dir == '':
+        if not parent_dir:
             self.log_error('Must specify path to output file')
             return None
 
@@ -199,7 +137,7 @@ class GenVxMaskWrapper(CommandBuilder):
             os.makedirs(parent_dir)
 
         # add arguments
-        cmd += ' ' + ' '.join(self.args)
+        cmd += ' ' + self.args
 
         # add verbosity
         cmd += ' -v ' + self.c_dict['VERBOSITY']
@@ -211,6 +149,7 @@ class GenVxMaskWrapper(CommandBuilder):
               each.
               Args:
                 @param input_dict dictionary containing timing information
+                @returns None
         """
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
@@ -224,110 +163,85 @@ class GenVxMaskWrapper(CommandBuilder):
 
                 time_info['custom'] = custom_string
 
-                self.run_at_time_once(time_info)
+                self.run_at_time_all(time_info)
 
-    def run_at_time_once(self, time_info):
-        """! Process runtime and try to build command to run gen_vx_mask
-             Args:
-                @param time_info dictionary containing timing information
+    def run_at_time_all(self, time_info):
+        """!Loop over list of mask templates and call GenVxMask for each, adding the
+            corresponding command line arguments for each call
+            Args:
+                @param time_info time dictionary for current runtime
+                @returns None
         """
-        # get input files
-        if self.find_input_files(time_info) is None:
-            return
-
-        # get output path
-        if not self.find_and_check_output_file(time_info):
-            return
-
-        # get other configurations for command
-        self.set_command_line_arguments(time_info)
-
         # set environment variables if using config file
         self.set_environment_variables(time_info)
 
-        # build command and run
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
+        # loop over mask templates and command line args,
+        temp_file = ''
+        for index, (mask_template, cmd_args) in enumerate(zip(self.c_dict['MASK_INPUT_TEMPLATES'],
+                                                              self.c_dict['COMMAND_OPTIONS'])):
+
+            # set mask input template and command line arguments
+            self.c_dict['MASK_INPUT_TEMPLATE'] = mask_template
+            self.args = cmd_args
+
+            if not self.find_input_files(time_info, temp_file):
+                return
+
+            # break out of loop if this is the last iteration to
+            # run final command that writes to the output file
+            if index+1 == len(self.c_dict['MASK_INPUT_TEMPLATES']):
+                break
+
+            # if not the last iteration, write to temporary file
+            temp_file = os.path.join(self.config.getdir('STAGING_DIR'),
+                                     'gen_vx_mask',
+                                     f'temp_{index}.nc')
+            self.set_output_path(temp_file)
+
+            # run GenVxMask
+            self.build_and_run_command()
+
+        # use final output path for last (or only) run
+        if not self.find_and_check_output_file(time_info):
             return
 
-        self.build()
+        # run GenVxMask
+        self.build_and_run_command()
 
-    def find_input_files(self, time_info):
-        """!Find input file and mask file and add them to the list of input files.
+    def find_input_files(self, time_info, temp_file):
+        """!Handle setting of input file list.
             Args:
-                @param time_info time dictionary for current run time
-                @returns List of input files found or None if either file was not found
+                @param time_info time dictionary for current runtime
+                @param temp_file path to temporary file used for previous run or empty string on first iteration
+                @returns True if successfully found all inputs, False if not
         """
-        # get input file
-        # calling find_obs because we set OBS_ variables in c_dict for the input data
-        input_path = self.find_obs(time_info,
-                                   var_info=None)
-        if input_path is None:
-            return None
 
+        # clear out input file list
+        self.infiles.clear()
+
+        # if temp file is not set, this is the first iteration, so read input file
+        if not temp_file:
+            input_path = self.find_data(time_info)
+
+            # return if file was not found
+            if not input_path:
+                return False
+
+        # if temp file is set, use that as input
+        else:
+            input_path = temp_file
+
+        # find mask file, using MASK_INPUT_TEMPLATE
+        mask_file = self.find_data(time_info,
+                                   data_type='MASK_')
+        if not mask_file:
+            return False
+
+        # add input and mask file to input file list
         self.infiles.append(input_path)
+        self.infiles.append(mask_file)
 
-        # get mask file
-        mask_path = self.find_data(time_info,
-                                   var_info=None,
-                                   data_type='MASK')
-        if mask_path is None:
-            return None
-
-        self.infiles.append(mask_path)
-
-        return self.infiles
-
-    def set_command_line_arguments(self, time_info):
-        """!Set command line arguments from c_dict
-            Args:
-                @param time_info time dictionary to use for string substitution"""
-        if self.c_dict['TYPE']:
-            self.args.append(f"-type {self.c_dict['TYPE']}")
-
-        if self.c_dict['INPUT_FIELD']:
-            input_field = StringSub(self.logger,
-                                    self.c_dict['INPUT_FIELD'],
-                                    **time_info).do_string_sub()
-            self.args.append(f"-input_field {input_field}")
-
-        if self.c_dict['MASK_FIELD']:
-            mask_field = StringSub(self.logger,
-                                   self.c_dict['MASK_FIELD'],
-                                   **time_info).do_string_sub()
-            self.args.append(f"-mask_field {mask_field}")
-
-        if self.c_dict['COMPLEMENT_FLAG']:
-            self.args.append("-complement")
-
-        if self.c_dict['UNION_FLAG']:
-            self.args.append("-union")
-
-        if self.c_dict['INTERSECTION_FLAG']:
-            self.args.append("-intersection")
-
-        if self.c_dict['SYMDIFF_FLAG']:
-            self.args.append("-symdiff")
-
-        if self. c_dict['THRESH']:
-            self.args.append(f"-thresh {self.c_dict['THRESH']}")
-
-        print(f"HEIGHT: {self.c_dict['HEIGHT']} and MISSING: {util.MISSING_DATA_VALUE_INT}")
-        if self.c_dict['HEIGHT'] != util.MISSING_DATA_VALUE_INT:
-            self.args.append(f"-height {self.c_dict['HEIGHT']}")
-
-        if self.c_dict['WIDTH'] != util.MISSING_DATA_VALUE_INT:
-            self.args.append(f"-width {self.c_dict['WIDTH']}")
-
-        if self.c_dict['SHAPENO'] != util.MISSING_DATA_VALUE_INT:
-            self.args.append(f"-shapeno {self.c_dict['SHAPENO']}")
-
-        if self.c_dict['VALUE'] != util.MISSING_DATA_VALUE_INT:
-            self.args.append(f"-value {self.c_dict['VALUE']}")
-
-        if self.c_dict['NAME']:
-            self.args.append(f"-name {self.c_dict['NAME']}")
+        return True
 
 if __name__ == "__main__":
     util.run_stand_alone(__file__, "GenVxMask")
