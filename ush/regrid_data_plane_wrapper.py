@@ -181,7 +181,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.config.getraw('config',
                                    f'{d_type}_{app}_VAR{index}_FIELD_NAME',
                                    '')
-        print(input_field_name)
+
         return input_field_name, input_field_level, output_field_name
 
     def run_at_time_once(self, time_info, var_info, dtype):
