@@ -84,11 +84,11 @@ class GenVxMaskWrapper(CommandBuilder):
         c_dict['FILE_WINDOW_BEGIN'] = \
           self.config.getseconds('config', 'GEN_VX_MASK_FILE_WINDOW_BEGIN',
                                  self.config.getseconds('config',
-                                                        'OBS_FILE_WINDOW_BEGIN', 0))
+                                                        'FILE_WINDOW_BEGIN', 0))
         c_dict['FILE_WINDOW_END'] = \
           self.config.getseconds('config', 'GEN_VX_MASK_FILE_WINDOW_END',
                                  self.config.getseconds('config',
-                                                        'OBS_FILE_WINDOW_END', 0))
+                                                        'FILE_WINDOW_END', 0))
 
         # use the same file windows for input and mask files
         c_dict['MASK_FILE_WINDOW_BEGIN'] = c_dict['FILE_WINDOW_BEGIN']
