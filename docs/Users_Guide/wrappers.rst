@@ -295,6 +295,42 @@ Configuration
 
    | :term:`GEMPAKTOCF_CLASSPATH`
 
+GenVxMask
+---------
+
+.. _description-6a:
+
+Description
+~~~~~~~~~~~
+
+Used to configure the MET tool GenVxMask to define and generate masking regions.
+
+.. _configuration-6a:
+
+Configuration
+~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`GEN_VX_MASK_INPUT_DIR`
+| :term:`GEN_VX_MASK_INPUT_MASK_DIR`
+| :term:`GEN_VX_MASK_OUTPUT_DIR`
+
+[filename_templates]
+
+| :term:`GEN_VX_MASK_INPUT_TEMPLATE`
+| :term:`GEN_VX_MASK_INPUT_MASK_TEMPLATE`
+| :term:`GEN_VX_MASK_OUTPUT_TEMPLATE`
+
+[config]
+
+| :term:`GEN_VX_MASK_OPTIONS`
+| :term:`LOG_GEN_VX_MASK_VERBOSITY`
+| :term:`GEN_VX_MASK_SKIP_IF_OUTPUT_EXISTS`
+| :term:`GEN_VX_MASK_CUSTOM_LOOP_LIST`
+| :term:`GEN_VX_MASK_FILE_WINDOW_BEGIN`
+| :term:`GEN_VX_MASK_FILE_WINDOW_END`
+
 GridStat
 --------
 
