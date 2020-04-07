@@ -194,7 +194,7 @@ that reformat gridded data
         self.c_dict['VAR_LIST'] = util.parse_var_list(self.config, time_info,
                                                       met_tool=self.app_name)
 
-        if not self.c_dict['VAR_LIST']:
+        if (not self.c_dict['VAR_LIST']) and (self.app_name != 'ensemble_stat'):
             self.log_error('No input fields were specified. You must set '
                            f'[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
             return None
