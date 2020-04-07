@@ -183,6 +183,12 @@ class CommandBuilder:
             c_dict[dtype + '_FILE_WINDOW_' + edge] = \
                 self.config.getseconds('config',
                                        dtype + '_FILE_WINDOW_' + edge)
+        # if generic FILE_WINDOW_ is set, use that
+        elif self.config.has_option('config',
+                                    'FILE_WINDOW_' + edge):
+            c_dict['FILE_WINDOW_' + edge] = \
+                self.config.getseconds('config',
+                                       'FILE_WINDOW_' + edge)
         # otherwise set to 0
         else:
             c_dict[dtype + '_FILE_WINDOW_' + edge] = 0
