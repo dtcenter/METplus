@@ -3300,14 +3300,14 @@ METplus Configuration Glossary
 
    FILE_WINDOW_BEGIN
      Used to control the lower bound of the window around the valid time to determine if a file should be used
-for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called
-'Using Windows to Find Valid Files.' Units are seconds. This value will be used for all wrappers that look for
-all files unless it is overridden by a wrapper specific configuration variable. For example,
-if :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN` is set, the GridStat wrapper will use that value.
-If :term:`PB2NC_FILE_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use
-:term:`OBS_FILE_WINDOW_BEGIN`. If :term:`OBS_FILE_WINDOW_BEGIN` is not set, it will use FILE_WINDOW_BEGIN if it
-is set. If not, it will default to 0. If the begin and end file window values are both 0, then only a file
-matching the exact run time will be considered.
+     for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called
+     'Using Windows to Find Valid Files.' Units are seconds. This value will be used for all wrappers that look for
+     all files unless it is overridden by a wrapper specific configuration variable. For example,
+     if :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN` is set, the GridStat wrapper will use that value.
+     If :term:`PB2NC_FILE_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use
+     :term:`OBS_FILE_WINDOW_BEGIN`. If :term:`OBS_FILE_WINDOW_BEGIN` is not set, it will use FILE_WINDOW_BEGIN if it
+     is set. If not, it will default to 0. If the begin and end file window values are both 0, then only a file
+     matching the exact run time will be considered.
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -3315,14 +3315,14 @@ matching the exact run time will be considered.
 
    FILE_WINDOW_END
      Used to control the upper bound of the window around the valid time to determine if a file should be used
-for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called
-'Using Windows to Find Valid Files.' Units are seconds. This value will be used for all wrappers that look for
-all files unless it is overridden by a wrapper specific configuration variable. For example,
-if :term:`OBS_GRID_STAT_FILE_WINDOW_END` is set, the GridStat wrapper will use that value.
-If :term:`PB2NC_FILE_WINDOW_END` is not set, then the PB2NC wrapper will use
-:term:`OBS_FILE_WINDOW_END`. If :term:`OBS_FILE_WINDOW_END` is not set, it will use FILE_WINDOW_END if it
-is set. If not, it will default to 0. If the begin and end file window values are both 0, then only a file
-matching the exact run time will be considered.
+     for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called
+     'Using Windows to Find Valid Files.' Units are seconds. This value will be used for all wrappers that look for
+     all files unless it is overridden by a wrapper specific configuration variable. For example,
+     if :term:`OBS_GRID_STAT_FILE_WINDOW_END` is set, the GridStat wrapper will use that value.
+     If :term:`PB2NC_FILE_WINDOW_END` is not set, then the PB2NC wrapper will use
+     :term:`OBS_FILE_WINDOW_END`. If :term:`OBS_FILE_WINDOW_END` is not set, it will use FILE_WINDOW_END if it
+     is set. If not, it will default to 0. If the begin and end file window values are both 0, then only a file
+     matching the exact run time will be considered.
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -5457,7 +5457,7 @@ matching the exact run time will be considered.
 
    GEN_VX_MASK_INPUT_DIR
      Directory containing input data to GenVxMask. This variable is optional because you can specify a
-full path to the input files using :term:`GEN_VX_MASK_INPUT_TEMPLATE`.
+     full path to the input files using :term:`GEN_VX_MASK_INPUT_TEMPLATE`.
 
      | *Used by:* GenVxMask
      | *Family:* [dir]
@@ -5465,7 +5465,7 @@ full path to the input files using :term:`GEN_VX_MASK_INPUT_TEMPLATE`.
 
    GEN_VX_MASK_INPUT_TEMPLATE
      Filename template of the input grid used by GenVxMask. This can be an input filename or a grid definition.
-See also :term:`GEN_VX_MASK_INPUT_DIR`.
+     See also :term:`GEN_VX_MASK_INPUT_DIR`.
 
      | *Used by:* GenVxMask
      | *Family:* [filename_templates]
@@ -5473,7 +5473,7 @@ See also :term:`GEN_VX_MASK_INPUT_DIR`.
 
    GEN_VX_MASK_INPUT_MASK_DIR
      Directory containing mask data used by GenVxMask. This variable is optional because you can specify the
-full path to the input files using :term:`GEN_VX_MASK_INPUT_MASK_TEMPLATE`.
+     full path to the input files using :term:`GEN_VX_MASK_INPUT_MASK_TEMPLATE`.
 
      | *Used by:* GenVxMask
      | *Family:* [dir]
@@ -5481,12 +5481,12 @@ full path to the input files using :term:`GEN_VX_MASK_INPUT_MASK_TEMPLATE`.
 
    GEN_VX_MASK_INPUT_MASK_TEMPLATE
      Filename template of the mask files used by GenVxMask. This can be a list of files or grids separated
-by commas to apply to the input grid. The wrapper will call GenVxMask one for each item in the list, passing
-its output to temporary files until the final command, which will write to the file specified by
-:term:`GEN_VX_MASK_OUTPUT_TEMPLATE` (and optionally :term:`GEN_VX_MASK_OUTPUT_DIR`. The length of this
-list must be the same length as :term:`GEN_VX_MASK_OPTIONS`. When "-type lat" or "-type lon" is set in
-:term:`GEN_VX_MASK_OPTIONS`, the corresponding mask template is ignored, but must be set to a placeholder
-string. See also :term:`GEN_VX_MASK_INPUT_MASK_DIR`.
+     by commas to apply to the input grid. The wrapper will call GenVxMask one for each item in the list, passing
+     its output to temporary files until the final command, which will write to the file specified by
+     :term:`GEN_VX_MASK_OUTPUT_TEMPLATE` (and optionally :term:`GEN_VX_MASK_OUTPUT_DIR`. The length of this
+     list must be the same length as :term:`GEN_VX_MASK_OPTIONS`. When "-type lat" or "-type lon" is set in
+     :term:`GEN_VX_MASK_OPTIONS`, the corresponding mask template is ignored, but must be set to a placeholder
+     string. See also :term:`GEN_VX_MASK_INPUT_MASK_DIR`.
 
      | *Used by:* GenVxMask
      | *Family:* [filename_templates]
@@ -5494,8 +5494,8 @@ string. See also :term:`GEN_VX_MASK_INPUT_MASK_DIR`.
 
    GEN_VX_MASK_OPTIONS
      Command line arguments to pass to each call of GenVxMask. This can be a list of sets of arguments
-separated by commas to apply to the input grid. The length of this list must be the same length as
-:term:`GEN_VX_MASK_INPUT_MASK_TEMPLATE`.
+     separated by commas to apply to the input grid. The length of this list must be the same length as
+     :term:`GEN_VX_MASK_INPUT_MASK_TEMPLATE`.
 
      | *Used by:* GenVxMask
      | *Family:* [config]
@@ -5503,7 +5503,7 @@ separated by commas to apply to the input grid. The length of this list must be 
 
    GEN_VX_MASK_OUTPUT_DIR
      Directory to write output data generated by GenVxMask. This variable is optional because you can
-specify the full path to the input files using :term:`GEN_VX_MASK_OUTPUT_TEMPLATE`.
+     specify the full path to the input files using :term:`GEN_VX_MASK_OUTPUT_TEMPLATE`.
 
      | *Used by:* GenVxMask
      | *Family:* [dir]
