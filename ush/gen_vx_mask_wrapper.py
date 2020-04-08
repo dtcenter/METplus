@@ -240,7 +240,7 @@ class GenVxMaskWrapper(CommandBuilder):
 
         # find mask file, using MASK_INPUT_TEMPLATE
         mask_file = self.find_data(time_info,
-                                   data_type='MASK_')
+                                   data_type='MASK')
         if not mask_file:
             return False
 

@@ -86,14 +86,6 @@ class GridStatWrapper(CompareGriddedWrapper):
 
     def set_environment_variables(self, fcst_field, obs_field, time_info):
         """!Set environment variables that are referenced by the MET config file"""
-        var_info = self.c_dict['VAR_LIST'][0]
-        if self.c_dict['CURRENT_VAR_INFO'] is not None:
-            var_info = self.c_dict['CURRENT_VAR_INFO']
-
-        self.config.set('config', 'CURRENT_FCST_NAME', var_info['fcst_name'] if 'fcst_name' in var_info else '')
-        self.config.set('config', 'CURRENT_OBS_NAME', var_info['obs_name'] if 'obs_name' in var_info else '')
-        self.config.set('config', 'CURRENT_FCST_LEVEL', var_info['fcst_level'] if 'fcst_level' in var_info else '')
-        self.config.set('config', 'CURRENT_OBS_LEVEL', var_info['obs_level'] if 'obs_level' in var_info else '')
 
         # set environment variables needed for MET application
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])

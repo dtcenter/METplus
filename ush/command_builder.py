@@ -324,7 +324,7 @@ class CommandBuilder:
         """
         return self.find_data(time_info,
                               var_info=var_info,
-                              data_type="FCST_",
+                              data_type="FCST",
                               mandatory=mandatory,
                               return_list=return_list)
 
@@ -340,7 +340,7 @@ class CommandBuilder:
         """
         return self.find_data(time_info,
                               var_info=var_info,
-                              data_type="OBS_",
+                              data_type="OBS",
                               mandatory=mandatory,
                               return_list=return_list)
 
@@ -355,9 +355,15 @@ class CommandBuilder:
                 @rtype string
                 @return Returns the path to an observation file
         """
+
+        data_type_fmt = data_type
+        # add underscore at end of data_type if not found unless empty string
+        if data_type and not data_type.endswith('_'):
+            data_type_fmt += '_'
+
         if var_info is not None:
             # set level based on input data type
-            if data_type.startswith("OBS"):
+            if data_type_fmt.startswith("OBS"):
                 v_level = var_info['obs_level']
             else:
                 v_level = var_info['fcst_level']
@@ -373,14 +379,14 @@ class CommandBuilder:
 
         # arguments for find helper functions
         arg_dict = {'level': level,
-                    'data_type': data_type,
+                    'data_type': data_type_fmt,
                     'mandatory': mandatory,
                     'time_info': time_info,
                     'return_list': return_list}
 
         # if looking for a file with an exact time match:
-        if self.c_dict[data_type + 'FILE_WINDOW_BEGIN'] == 0 and \
-                self.c_dict[data_type + 'FILE_WINDOW_END'] == 0:
+        if self.c_dict[data_type_fmt + 'FILE_WINDOW_BEGIN'] == 0 and \
+                self.c_dict[data_type_fmt + 'FILE_WINDOW_END'] == 0:
 
             return self.find_exact_file(**arg_dict)
 
@@ -661,7 +667,6 @@ class CommandBuilder:
               @param input_type type of field input, i.e. FCST, OBS, ENS, POINT_OBS, GRID_OBS, or BOTH
               @param var_info dictionary item containing field information for the current *_VAR<n>_* configs being handled
               @returns field name if not a python script, 'python_embedding' if it is, and None if configuration is invalid"""
-
         var_input_type = input_type.lower() if input_type != 'BOTH' else 'fcst'
         # reset file type to empty string to handle if python embedding is used for one field but not for the next
         self.c_dict[f'{input_type}_FILE_TYPE'] = ''
