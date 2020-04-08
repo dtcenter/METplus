@@ -1,23 +1,23 @@
 """
-GenVxMask: Basic Use Case
-=========================
+GenVxMask: Using Arguments
+==========================
 
-GenVxMask.conf
+GenVxMask_with_arguments.conf
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Creating masking region files to be used by other MET tools.
+# Creating masking region files to be used by other MET tools. This use case adds command line arguments to define the mask applied to the input grid.
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Input Grid:** GFS
+# | **Input Grid:** WRF Precipitation
 #
-# | **Mask:** CONUS polyline file
+# | **Mask:** WRF Temperature
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
@@ -36,10 +36,10 @@ GenVxMask.conf
 # GenVxMask is the only tool called in this example. It processes the following
 # run time:
 #
-# | **Initialization:** 2012-04-09_0Z
-# | **Forecast Lead:** 12 hour
+# | **Initialization:** 2005-08-07 0Z
+# | **Forecast Lead:** 24 hour
 #
-# The input file is read to define the output grid and the CONUS polyline file is applied to create the mask.
+# The input file is read to define the output grid. Command line arguments are added to the call to define which data to use to apply a mask.
 
 ##############################################################################
 # METplus Configuration
@@ -47,10 +47,10 @@ GenVxMask.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GenVxMask/GenVxMask.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GenVxMask/GenVxMask_with_arguments.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/GenVxMask/GenVxMask.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/GenVxMask/GenVxMask_with_arguments.conf
 
 ##############################################################################
 # MET Configuration
@@ -67,11 +67,11 @@ GenVxMask.conf
 #
 # 1) Passing in the use case config file then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GenVxMask/GenVxMask.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GenVxMask/GenVxMask_with_arguments.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in the use case config file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GenVxMask/GenVxMask.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GenVxMask/GenVxMask_with_arguments.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -101,7 +101,7 @@ GenVxMask.conf
 # Output for this use case will be found in met_tool_wrapper/GenVxMask (relative to **OUTPUT_BASE**)
 # and will contain the following file:
 #
-# * POLY_GFS_LATLON_CONUS_mask.nc
+# * DATA_INPUT_FIELD_APCP_24_where_TMP_Z2_le300.nc
 
 ##############################################################################
 # Keywords
