@@ -899,6 +899,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if self.c_dict[f"{data_src}_LEVELS"]:
             self.field_level = self.c_dict[f"{data_src}_LEVELS"][0]
 
+        if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
+            self.output_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
+
         if self.c_dict[f"{data_src}_OPTIONS"]:
             self.field_extra = sts.StringSub(self.logger,
                                              self.c_dict[f'{data_src}_OPTIONS'][0],

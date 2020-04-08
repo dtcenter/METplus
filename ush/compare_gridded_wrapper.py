@@ -195,7 +195,7 @@ that reformat gridded data
                                        time_info,
                                        met_tool=self.app_name)
 
-        if not var_list:
+        if not var_list and (self.app_name != 'ensemble_stat'):
             self.log_error('No input fields were specified. You must set '
                            f'[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
             return None
