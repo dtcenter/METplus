@@ -49,6 +49,7 @@ class CommandBuilder:
         self.outdir = ""
         self.outfile = ""
         self.param = ""
+        self.all_commands = []
         self.env = os.environ.copy()
         if hasattr(config, 'env'):
             self.env = config.env
@@ -787,6 +788,9 @@ class CommandBuilder:
         cmd = self.get_command()
         if cmd is None:
             return False
+
+        # add command to list of all commands run
+        self.all_commands.append(cmd)
 
         ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name,
                                               copyable_env=self.get_env_copy())
