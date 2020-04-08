@@ -629,7 +629,7 @@ def test_parse_var_list_wrapper_specific():
         # MET documentation syntax (with dashes)
         ('Pcp-Combine, Grid-Stat, Ensemble-Stat', ['PCPCombine', 'GridStat', 'EnsembleStat']),
         ('Point-Stat', ['PointStat']),
-        ('Mode, Mode-Time-Domain', ['MODE', 'MTD']),
+        ('Mode, MODE Time Domain', ['MODE', 'MTD']),
         # actual tool name (lower case underscore)
         ('point_stat, grid_stat, ensemble_stat', ['PointStat', 'GridStat', 'EnsembleStat']),
         ('mode, mtd', ['MODE', 'MTD']),

@@ -1790,7 +1790,7 @@ def get_process_list(config):
     out_process_list = []
     # for each item remove dashes, underscores, and cast to lower-case
     for process in process_list:
-        lower_process = process.replace('-', '').replace('_', '').lower()
+        lower_process = process.replace('-', '').replace('_', '').replace(' ', '').lower()
         if lower_process in LOWER_TO_WRAPPER_NAME.keys():
             out_process_list.append(LOWER_TO_WRAPPER_NAME[lower_process])
         else:
