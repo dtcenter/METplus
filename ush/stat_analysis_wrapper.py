@@ -1113,6 +1113,28 @@ class StatAnalysisWrapper(CommandBuilder):
             model_info_list.append(mod)
         return model_info_list, model_indices
 
+    def get_level_list(self, data_type):
+        """!Read forecast or observation level list from config.
+            Format list items to match the format expected by
+            StatAnalysis by removing parenthesis and any quotes,
+            then adding back single quotes
+            Args:
+              @param data_type type of list to get, FCST or OBS
+              @returns list containing the formatted level list
+        """
+        level_list = []
+
+        level_input = util.getlist(
+            self.config.getstr('config', f'{data_type}_LEVEL_LIST', '')
+        )
+
+        for level in level_input:
+            level = level.strip('(').strip(')')
+            level = f"'{util.remove_quotes(level)}'"
+            level_list.append(level)
+
+        return level_list
+
     def run_stat_analysis_job(self, date_beg, date_end, date_type):
         """! This runs stat_analysis over a period of valid
              or initialization dates for a job defined by
@@ -1146,12 +1168,10 @@ class StatAnalysisWrapper(CommandBuilder):
         self.c_dict['OBS_UNITS_LIST'] = util.getlist(
             self.config.getstr('config', 'OBS_UNITS_LIST', '')
         )
-        self.c_dict['FCST_LEVEL_LIST'] = util.getlist(
-            self.config.getstr('config', 'FCST_LEVEL_LIST', '')
-        )
-        self.c_dict['OBS_LEVEL_LIST'] = util.getlist(
-            self.config.getstr('config', 'OBS_LEVEL_LIST', '')
-        )
+
+        self.c_dict['FCST_LEVEL_LIST'] = self.get_level_list('FCST')
+        self.c_dict['OBS_LEVEL_LIST'] = self.get_level_list('OBS')
+
         self.c_dict['FCST_THRESH_LIST'] = util.getlist(
             self.config.getstr('config', 'FCST_THRESH_LIST', '')
         )
