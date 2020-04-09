@@ -1130,7 +1130,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
         for level in level_input:
             level = level.strip('(').strip(')')
-            level = f"'{util.remove_quotes(level)}'"
+            level = f'{util.remove_quotes(level)}'
             level_list.append(level)
 
         return level_list
