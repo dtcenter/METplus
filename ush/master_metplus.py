@@ -50,6 +50,7 @@ from mtd_wrapper import MTDWrapper
 from usage_wrapper import UsageWrapper
 from command_builder import CommandBuilder
 from pb2nc_wrapper import PB2NCWrapper
+from point2grid_wrapper import Point2GridWrapper
 from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TCStatWrapper
 from gempak_to_cf_wrapper import GempakToCFWrapper

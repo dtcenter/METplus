@@ -65,44 +65,44 @@ class Point2GridWrapper(CommandBuilder):
                                  self.config.getseconds('config',
                                                         'OBS_FILE_WINDOW_END', 0))
 
-        # optional arguments
         c_dict['GRID'] = self.config.getstr('config',
                                             'POINT_2_GRID_TO_GRID',
                                             '')
 
+        # optional arguments
         c_dict['INPUT_FIELD'] = self.config.getraw('config',
                                                    'POINT_2_GRID_INPUT_FIELD',
+                                                   '')
+
+        c_dict['INPUT_LEVEL'] = self.config.getraw('config',
+                                                   'POINT_2_GRID_INPUT_LEVEL',
                                                    '')
 
         c_dict['QC_FLAGS'] = self.config.getbool('config',
                                                         'POINT_2_GRID_QC_FLAGS',
                                                         '')
-        c_dict['ADP'] = self.config.getbool('config',
+        c_dict['ADP'] = self.config.getstr('config',
                                                         'POINT_2_GRID_ADP',
                                                         '')
 
-        c_dict['REGRID_METHOD'] = self.config.getbool('config',
+        c_dict['REGRID_METHOD'] = self.config.getstr('config',
                                                    'POINT_2_GRID_REGRID_METHOD',
-                                                   'UW_MEAN')
+                                                   '')
 
-        c_dict['GAUSSIAN_DX'] = self.config.getbool('config',
+        c_dict['GAUSSIAN_DX'] = self.config.getstr('config',
                                                           'POINT_2_GRID_GAUSSIAN_DX',
-                                                          '81.271')
+                                                          '')
 
-        c_dict['GAUSSIAN_RADIUS'] = self.config.getbool('config',
+        c_dict['GAUSSIAN_RADIUS'] = self.config.getstr('config',
                                                      'POINT_2_GRID_GAUSSIAN_RADIUS',
-                                                     '120')
+                                                     '')
 
         c_dict['PROB_CAT_THRESH'] = self.config.getstr('config',
                                               'POINT_2_GRID_PROB_CAT_THRESH',
                                               '')
 
-        c_dict['NAME_LIST'] = self.get_optional_number_from_config('config',
-                                                                'POINT_2_GRID_NAME_LIST',
-                                                                int)
-
-        c_dict['PROB_VLD_THRESH'] = self.config.getstr('config',
-                                              'POINT_2_GRID_PROB_VLD_THRESH',
+        c_dict['VLD_THRESH'] = self.config.getstr('config',
+                                              'POINT_2_GRID_VLD_THRESH',
                                               '.5')
 
         return c_dict
@@ -138,6 +138,12 @@ class Point2GridWrapper(CommandBuilder):
         # add input files
         for infile in self.infiles:
             cmd += ' ' + infile
+
+        # add grid name. point2grid requires a grid name between the input and output files
+        if not self.c_dict['GRID']:
+            self.log_error('Must specify a grid name')
+            return None
+        cmd += ' ' + self.c_dict['GRID'] 
 
         # add output path
         out_path = self.get_output_path()
@@ -222,15 +228,6 @@ class Point2GridWrapper(CommandBuilder):
 
         self.infiles.append(input_path)
 
-        # get mask file
-        mask_path = self.find_data(time_info,
-                                   var_info=None,
-                                   data_type='MASK')
-        if mask_path is None:
-            return None
-
-        self.infiles.append(mask_path)
-
         return self.infiles
 
     def set_command_line_arguments(self, time_info):
@@ -242,10 +239,8 @@ class Point2GridWrapper(CommandBuilder):
             input_field = StringSub(self.logger,
                                     self.c_dict['INPUT_FIELD'],
                                     **time_info).do_string_sub()
-            self.args.append(f"-input_field {input_field}")
-
-        if self.c_dict['GRID']:
-            self.args.append("-to_grid")
+            input_level = self.c_dict['INPUT_LEVEL']
+            self.args.append(f"-field 'name=\"{input_field}\"; level=\"{input_level}\";'")
 
         if self.c_dict['QC_FLAGS']:
             self.args.append("-qc")
@@ -254,13 +249,13 @@ class Point2GridWrapper(CommandBuilder):
             self.args.append("-adp")
 
         if self.c_dict['REGRID_METHOD']:
-            self.args.append("-method")
+            self.args.append(f"-method {self.c_dict['REGRID_METHOD']}")
 
         if self.c_dict['GAUSSIAN_DX']:
-            self.args.append("-gaussian_dx")
+            self.args.append(f"-gaussian_dx {self.c_dict['GAUSSIAN_DX']}")
 
         if self.c_dict['GAUSSIAN_RADIUS']:
-            self.args.append("-gaussian_radius")
+            self.args.append(f"-gaussian_radius {self.c_dict['GAUSSIAN_RADIUS']}")
 
         if self. c_dict['PROB_CAT_THRESH']:
             self.args.append(f"-prob_cat_thresh {self.c_dict['PROB_CAT_THRESH']}")
@@ -268,8 +263,6 @@ class Point2GridWrapper(CommandBuilder):
         if self. c_dict['VLD_THRESH']:
             self.args.append(f"-vld_cat_thresh {self.c_dict['VLD_THRESH']}")
 
-        if self.c_dict['NAME_LIST']:
-            self.args.append(f"-name {self.c_dict['NAME_LIST']}")
 
 if __name__ == "__main__":
     util.run_stand_alone(__file__, "Point2Grid")
