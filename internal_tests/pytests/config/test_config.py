@@ -5,6 +5,7 @@ import pytest
 import datetime
 from config_launcher import METplusConfig
 import met_util as util
+from command_builder import CommandBuilder
 import produtil
 import os
 import config_metplus
@@ -54,3 +55,31 @@ def test_getseconds(key, value):
     conf.set('config', 'TEST_SECONDS', key)
     seconds = conf.getseconds('config', 'TEST_SECONDS')
     assert(seconds == value)
+
+@pytest.mark.parametrize(
+    'input_value, typeobj, default, result', [
+        ('1', int, None, 1),
+        ('1', float, None, 1.0),
+        ('1.0', float, None, 1.0),
+        ('1.0', int, None, None),
+        ('', int, None, util.MISSING_DATA_VALUE_INT),
+        ('', float, None, util.MISSING_DATA_VALUE_FLOAT),
+        ('x', int, None, None),
+        ('x', float, None, None),
+        ('1', int, 2, 1),
+        ('1', float, 2.0, 1.0),
+        ('1.0', float, 2.0, 1.0),
+        ('1.0', int, 2, None),
+        ('', int, 2, 2),
+        ('', float, 2.0, 2.0),
+        ('x', int, 2, None),
+        ('x', float, 2.0, None),
+
+    ]
+)
+def test_get_optional_number_from_config(input_value, typeobj, default, result):
+    conf = metplus_config()
+    conf.set('config', 'TEST_OPT_NUMBER', input_value)
+    cb = CommandBuilder(conf, conf.logger)
+    output_value = cb.get_optional_number_from_config('config', 'TEST_OPT_NUMBER', typeobj, default)
+    assert(output_value == result)

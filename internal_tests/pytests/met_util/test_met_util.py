@@ -622,3 +622,27 @@ def test_parse_var_list_wrapper_specific():
            g_var_list[1]['fcst_name'] == "GNAME1" and
            g_var_list[0]['fcst_level'] == "GLEVELS11" and
            g_var_list[1]['fcst_level'] == "GLEVELS12")
+
+@pytest.mark.parametrize(
+    'input_list, expected_list', [
+        ('Point2Grid', ['Point2Grid']),
+        # MET documentation syntax (with dashes)
+        ('Pcp-Combine, Grid-Stat, Ensemble-Stat', ['PCPCombine', 'GridStat', 'EnsembleStat']),
+        ('Point-Stat', ['PointStat']),
+        ('Mode, MODE Time Domain', ['MODE', 'MTD']),
+        # actual tool name (lower case underscore)
+        ('point_stat, grid_stat, ensemble_stat', ['PointStat', 'GridStat', 'EnsembleStat']),
+        ('mode, mtd', ['MODE', 'MTD']),
+        ('ascii2nc, pb2nc, regrid_data_plane', ['ASCII2NC', 'PB2NC', 'RegridDataPlane']),
+        ('pcp_combine, tc_pairs, tc_stat', ['PCPCombine', 'TCPairs', 'TCStat']),
+        ('gen_vx_mask, stat_analysis, series_analysis', ['GenVxMask', 'StatAnalysis', 'SeriesAnalysis']),
+        # old capitalization format
+        ('PcpCombine, Ascii2Nc, TcStat, TcPairs', ['PCPCombine', 'ASCII2NC', 'TCStat', 'TCPairs']),
+
+    ]
+)
+def test_get_process_list(input_list, expected_list):
+    conf = metplus_config()
+    conf.set('config', 'PROCESS_LIST', input_list)
+    output_list = util.get_process_list(conf)
+    assert(output_list == expected_list)

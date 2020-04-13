@@ -52,6 +52,7 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'example': 'Example',
                          'extracttiles': 'ExtractTiles',
                          'gempaktocf': 'GempakToCF',
+                         'genvxmask': 'GenVxMask',
                          'gridstat': 'GridStat',
                          'makeplots': 'MakePlots',
                          'mode': 'MODE',
@@ -71,6 +72,12 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'tcmprplotter': 'TCMPRPlotter',
                          'usage': 'Usage',
                          }
+
+# missing data value used to check if integer values are not set
+# we often check for None if a variable is not set, but 0 and None
+# have the same result in a test. 0 may be a valid integer value
+MISSING_DATA_VALUE_INT = -9999
+MISSING_DATA_VALUE_FLOAT = -9999.0
 
 def pre_run_setup(filename, app_name):
     filebasename = os.path.basename(filename)
@@ -1783,7 +1790,7 @@ def get_process_list(config):
     out_process_list = []
     # for each item remove dashes, underscores, and cast to lower-case
     for process in process_list:
-        lower_process = process.replace('-', '').replace('_', '').lower()
+        lower_process = process.replace('-', '').replace('_', '').replace(' ', '').lower()
         if lower_process in LOWER_TO_WRAPPER_NAME.keys():
             out_process_list.append(LOWER_TO_WRAPPER_NAME[lower_process])
         else:
@@ -2650,6 +2657,35 @@ def remove_staged_files(staged_dir, filename_regex, logger):
     # if we get here, all went well...
     return 0
 
+def iterate_is_first(input_list):
+    """!Use an iterator to loop over the list and keep track if the current item is the first in the loop
+        Args:
+            @param input_list list of items to iterate over
+            @returns tuple containing the next item and a boolean that is only True for the first item"""
+    iterate_check_position(input_list, check_first=True)
+
+def iterate_is_last(input_list):
+    """!Use an iterator to loop over the list and keep track if the current item is the last in the loop
+        Args:
+            @param input_list list of items to iterate over
+            @returns tuple containing the next item and a boolean that is only True for the last item"""
+    iterate_check_position(input_list, check_first=False)
+
+def iterate_check_position(input_list, check_first):
+    """!Use an iterator to loop over the list and keep track if the current item is the first or last in the loop
+        Args:
+            @param input_list list of items to iterate over
+            @param check_first if True, return True if the current item is the first item, if False, return True
+                if the current item is the last item
+            @returns tuple containing the next item and a boolean that is only True for the first/last item"""
+    it = iter(input_list)
+    last = next(it)
+
+    for item in it:
+        yield last, check_first
+        last = item
+
+    yield last, not check_first
 
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")
