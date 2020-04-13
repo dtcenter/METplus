@@ -43,6 +43,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
           self.config.getbool('config', f'{app}_SKIP_IF_OUTPUT_EXISTS',
                               False)
 
+        c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
+                                                       f'{app}_ONCE_PER_FIELD',
+                                                       True)
+
         c_dict['FCST_INPUT_TEMPLATE'] = \
             self.config.getraw('filename_templates',
                                f'FCST_{app}_INPUT_TEMPLATE',
@@ -183,6 +187,124 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                    '')
 
         return input_field_name, input_field_level, output_field_name
+
+    def get_input_indicies(self, data_type):
+        # check if any RDP VAR<n>_INPUT_FIELD_* configs are set
+        # get a list of the indices that are set
+        input_regex = f'({data_type})_{self.app_name.upper()}_'+r'VAR(\d+)_INPUT_FIELD_NAME'
+        rdp_input_indices = \
+          util.find_indices_in_config_section(input_regex, self.config, 'config').keys()
+
+        # check RDP VAR<n>_FIELD_NAME if INPUT_FIELD is not set
+        if not rdp_input_indices:
+            input_regex = f'({data_type})_{self.app_name.upper()}_'+r'VAR(\d+)_FIELD_NAME'
+            rdp_input_indices = \
+              util.find_indices_in_config_section(input_regex, self.config, 'config').keys()
+
+        return rdp_input_indices
+
+    def get_field_info_list(self, var_list, data_type):
+        # get list of fields to process
+        rdp_input_indices = self.get_input_indices(data_type)
+
+        # if no field info or input field configs are set, error and return
+        if not var_list and not rdp_input_indices:
+            self.log_error('No input fields were specified to RegridDataPlane. You must set either '
+                           f'{data_type}_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME or '
+                           f'{data_type}_VAR<n>_NAME.')
+            return None
+
+        # get list of fields from var_list and rdp_input_indices
+        field_info_list = var_list if var_list else []
+
+        # replace values in field info list from RDP explicit values if they are set
+        for index in rdp_input_indices:
+
+            input_name, input_level, output_name = (
+                self.get_explicit_field_names(index, dtype)
+                )
+
+            # if index exists in field info list, replace values if they are set
+            found_index = False
+            for field_info in field_info_list:
+                if field_info['index'] == index:
+                    found_index = True
+                    if input_name:
+                        field_info[f'{data_type}_name'] = input_name
+
+                    if input_level:
+                        field_info[f'{data_type}_level'] = input_name
+
+                    # also add output name
+                    if output_name:
+                        field_info[f'{data_type}_output_name'] = output_name
+
+            # if index does not exist, add an entry to the list
+            if not found_index:
+                field_info = {f"{data_type}_name": input_name,
+                              f"{data_type}_level": input_level,
+                              'index': index,
+                            }
+
+                if output_name:
+                    field_info[f"{data_type}_output_name"] = output_name
+
+                field_info_list.append(field_info)
+
+        return field_info_list
+
+    def run_at_time_all_vars(self, time_info, var_list, data_type):
+        self.clear()
+
+        field_info_list = self.get_field_info_list(var_list, data_type)
+        if not field_info_list:
+            self.log_error("Could not build field info list")
+            return
+
+        # add first field level to time_info dict so it can be referenced in filename template
+        level = field_info_list[0][f'{data_type}_level']
+        time_info['level'] = time_util.get_seconds_from_string(level, 'H')
+
+        if not self.find_input_files(time_info, data_type, field_info_list):
+            self.log_error(f"Could not find {dtype} file {full_path} using template {input_template}")
+            return
+
+        if not self.find_and_check_output_file(time_info):
+            return
+
+        # set environment variables
+
+        # determine if running once for all fields or once per field
+        # if running once per field, loop over field list and run once for each
+        if self.c_dict.get('ONCE_PER_FIELD', True):
+
+        # if not, process all fields and run once
+        else:
+
+        # set command line arguments
+
+        # build and run commands
+
+    def find_input_files(self, time_info, data_type, field_info_list):
+        """!Get input file and verification grid to process. Use the first field in the list to substitute
+            level if that is provided in the filename template"""
+        # get list of files even if only one is found (return_list=True)
+#        input_path = self.find_data(time_info, var_info=field_info_list[0], data_type=data_type, return_list=True)
+        input_path = self.find_data(time_info, var_info=field_info_list[0], data_type=data_type)
+        if not input_path:
+            return None
+
+#        self.infiles.extend(input_path)
+        self.infiles.append(input_path)
+
+        verif_grid = StringSub(self.logger,
+                               self.c_dict['VERIFICATION_GRID'],
+                               **time_info).do_string_sub()
+
+        # put quotes around verification grid in case it is a grid description
+        self.infiles.append(f'"{verif_grid}"')
+
+        return self.infiles
 
     def run_at_time_once(self, time_info, var_info, dtype):
         """! Runs the MET application for a given time and forecast lead combination

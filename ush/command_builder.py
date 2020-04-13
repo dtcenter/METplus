@@ -359,6 +359,12 @@ class CommandBuilder:
         else:
             level = '0'
 
+        # if level is a range, use the first value, i.e. if 250-500 use 250
+        level = level.split('-')[0]
+
+        # if level is in hours, convert to seconds
+        level = time_util.get_seconds_from_string(level, 'H')
+
         # arguments for find helper functions
         arg_dict = {'level': level,
                     'data_type': data_type,
@@ -367,8 +373,8 @@ class CommandBuilder:
                     'return_list': return_list}
 
         # if looking for a file with an exact time match:
-        if self.c_dict[data_type + '_FILE_WINDOW_BEGIN'] == 0 and \
-                self.c_dict[data_type + '_FILE_WINDOW_END'] == 0:
+        if self.c_dict.get(data_type + '_FILE_WINDOW_BEGIN', 0) == 0 and \
+                self.c_dict.get(data_type + '_FILE_WINDOW_END', 0) == 0:
 
             return self.find_exact_file(**arg_dict)
 
@@ -388,7 +394,7 @@ class CommandBuilder:
 
         # return None if a list is provided for a wrapper that doesn't allow
         # multiple files to be processed
-        if len(template_list) > 1 and not self.c_dict['ALLOW_MULTIPLE_FILES']:
+        if len(template_list) > 1 and not self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
             self.log_error("List of templates specified for a wrapper that "
                            "does not allow multiple files to be provided.")
             return None
@@ -397,7 +403,8 @@ class CommandBuilder:
             # perform string substitution
             dsts = sts.StringSub(self.logger,
                                  template,
-                                 level=(int(level.split('-')[0]) * 3600),
+                                 level=level,
+#                                 level=(int(level.split('-')[0]) * 3600),
                                  **time_info)
             filename = dsts.do_string_sub()
 
@@ -427,7 +434,7 @@ class CommandBuilder:
         for file_path in check_file_list:
             # check if file exists
             processed_path = util.preprocess_file(file_path,
-                                                  self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                                  self.c_dict.get(data_type + '_INPUT_DATATYPE', ''),
                                                   self.config)
 
             # report error if file path could not be found
@@ -521,14 +528,14 @@ class CommandBuilder:
         # if one file was found and return_list if False, return single file
         if len(closest_files) == 1 and not return_list:
             return util.preprocess_file(closest_files[0],
-                                        self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                        self.c_dict.get(data_type + '_INPUT_DATATYPE', ''),
                                         self.config)
 
         # return list if multiple files are found
         out = []
         for close_file in closest_files:
             outfile = util.preprocess_file(close_file,
-                                           self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                           self.c_dict.get(data_type + '_INPUT_DATATYPE', ''),
                                            self.config)
             out.append(outfile)
 
@@ -652,7 +659,7 @@ class CommandBuilder:
 
         # if it is a python script, set file extension to show that and make sure *_INPUT_DATATYPE is a valid PYTHON_* string
         file_ext = 'python_embedding'
-        data_type = self.c_dict[f'{input_type}_INPUT_DATATYPE']
+        data_type = self.c_dict.get(f'{input_type}_INPUT_DATATYPE', '')
         if data_type not in util.PYTHON_EMBEDDING_TYPES:
             self.log_error(f"{input_type}_{self.app_name.upper()}_INPUT_DATATYPE ({data_type}) must be set to a valid Python Embedding type "
                            f"if supplying a Python script as the {input_type}_VAR<n>_NAME. Valid options: "
