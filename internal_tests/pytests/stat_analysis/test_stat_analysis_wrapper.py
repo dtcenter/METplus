@@ -810,3 +810,24 @@ def test_run_stat_analysis_job():
     assert(os.path.exists(expected_filename))
     assert(os.path.getsize(expected_filename)
            == os.path.getsize(comparison_filename))
+
+
+@pytest.mark.parametrize(
+    'data_type, config_list, expected_list', [
+        ('FCST', '\"0,*,*\"', ["0,*,*"]),
+        ('FCST', '\"(0,*,*)\"', ["0,*,*"]),
+        ('FCST', '\"0,*,*\", \"1,*,*\"', ["0,*,*", "1,*,*"]),
+        ('FCST', '\"(0,*,*)\", \"(1,*,*)\"', ["0,*,*", "1,*,*"]),
+        ('OBS', '\"0,*,*\"', ["0,*,*"]),
+        ('OBS', '\"(0,*,*)\"', ["0,*,*"]),
+        ('OBS', '\"0,*,*\", \"1,*,*\"', ["0,*,*", "1,*,*"]),
+        ('OBS', '\"(0,*,*)\", \"(1,*,*)\"', ["0,*,*", "1,*,*"]),
+    ]
+)
+def test_get_level_list(data_type, config_list, expected_list):
+    config = metplus_config()
+    config.set('config', f'{data_type}_LEVEL_LIST', config_list)
+
+    saw = StatAnalysisWrapper(config, config.logger)
+
+    assert(saw.get_level_list(data_type) == expected_list)
