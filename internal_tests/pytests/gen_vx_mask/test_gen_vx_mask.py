@@ -111,7 +111,7 @@ def test_run_gen_vx_mask_twice():
     wrap.c_dict['OUTPUT_DIR'] = os.path.join(wrap.config.getdir('OUTPUT_BASE'),
                                              'GenVxMask_test')
     wrap.c_dict['OUTPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ZENITH_LAT_LON_MASK.nc'
-    cmd_args = ["-type lat -thresh 'ge30&&le50'", "-type lon -thresh 'le-70&&ge-130' -intersection"]
+    cmd_args = ["-type lat -thresh 'ge30&&le50'", "-type lon -thresh 'le-70&&ge-130' -intersection -name lat_lon_mask"]
     wrap.c_dict['COMMAND_OPTIONS'] = cmd_args
 
     wrap.run_at_time_all(time_info)
