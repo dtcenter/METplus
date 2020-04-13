@@ -5481,7 +5481,7 @@ METplus Configuration Glossary
 
    GEN_VX_MASK_INPUT_MASK_TEMPLATE
      Filename template of the mask files used by GenVxMask. This can be a list of files or grids separated
-     by commas to apply to the input grid. The wrapper will call GenVxMask one for each item in the list, passing
+     by commas to apply to the input grid. The wrapper will call GenVxMask once for each item in the list, passing
      its output to temporary files until the final command, which will write to the file specified by
      :term:`GEN_VX_MASK_OUTPUT_TEMPLATE` (and optionally :term:`GEN_VX_MASK_OUTPUT_DIR`. The length of this
      list must be the same length as :term:`GEN_VX_MASK_OPTIONS`. When "-type lat" or "-type lon" is set in
