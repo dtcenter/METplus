@@ -270,7 +270,6 @@ that reformat gridded data
 
         # get model from first var to compare
         model_path = self.find_model(time_info, var_list[0])
-        print(f"MODEL PATH IS {model_path}")
         if not model_path:
             return
 
