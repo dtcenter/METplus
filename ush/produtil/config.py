@@ -514,7 +514,8 @@ class ProdConfig(object):
     should use the produtil.config.from_string or produtil.config.from_file to
     read configuration information from an in-memory string or a file."""
 
-    def __init__(self,conf=None,quoted_literals=False,strict=False, inline_comment_prefixes=(';',)):
+    def __init__(self,conf=None,quoted_literals=False,strict=False, inline_comment_prefixes=(';',),
+                 interpolation=configparser.BasicInterpolation()):
         """!ProdConfig constructor
 
         Creates a new ProdConfig object.
@@ -545,10 +546,8 @@ class ProdConfig(object):
         self._time_formatter=ConfTimeFormatter(bool(quoted_literals))
         self._datastore=None
         self._tasknames=set()
-        # Added strict=False and inline_comment_prefixes for Python 3, 
-        # so everything works as it did before in Python 2.
-        #self._conf=ConfigParser(strict=False, inline_comment_prefixes=(';',)) if (conf is None) else conf
-        self._conf=ConfigParser(strict=strict, inline_comment_prefixes=inline_comment_prefixes) if (conf is None) else conf
+        self._conf=ConfigParser(strict=strict, inline_comment_prefixes=inline_comment_prefixes,
+                                interpolation=interpolation) if (conf is None) else conf
         self._conf.optionxform=str
 
         self._conf.add_section('config')

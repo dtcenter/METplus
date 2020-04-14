@@ -412,7 +412,9 @@ class METplusConfig(ProdConfig):
     def __init__(self, conf=None):
         """!Creates a new METplusConfig
         @param conf The configuration file."""
-        super().__init__(conf)
+        # set interpolation to None so you can supply filename template
+        # that contain % to config.set
+        super().__init__(conf, interpolation=None)
         self._cycle = None
         self._logger = logging.getLogger('metplus')
         # config.logger is called in wrappers, so set this name
