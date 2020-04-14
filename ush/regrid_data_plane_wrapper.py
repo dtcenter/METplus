@@ -193,11 +193,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                    '')
 
         # run through StringSub in case the field name contains a template
-        print(f"NAME: {input_field_name}")
         input_field_name = StringSub(self.logger,
                                      input_field_name,
                                      **time_info).do_string_sub()
-        print(f"NAME: {input_field_name}")
         input_field_level = StringSub(self.logger,
                                       input_field_level,
                                       **time_info).do_string_sub()
