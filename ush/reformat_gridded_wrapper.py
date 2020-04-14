@@ -86,11 +86,6 @@ that reformat gridded data
 
                     var_list = util.parse_var_list(self.config, time_info, data_type=to_run)
                     if not var_list:
-                        self.run_at_time_once(time_info, None, to_run)
-                        continue
+                        var_list = None
 
-                    if self.c_dict.get('ONCE_PER_FIELD', True):
-                        for var_info in var_list:
-                            self.run_at_time_once(time_info, var_info, to_run)
-                    else:
-                        self.run_at_time_all_vars(time_info, var_list, to_run)
+                    self.run_at_time_once(time_info, var_list, to_run)
