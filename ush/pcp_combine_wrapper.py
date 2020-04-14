@@ -595,7 +595,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # remove whitespace at beginning/end and return command
         return cmd.strip()
 
-    def run_at_time_once(self, time_info, var_info, data_src):
+    def run_at_time_once(self, time_info, var_list, data_src):
+        for var_info in var_list:
+            self.run_at_time_one_field(time_info, var_info, data_src)
+
+    def run_at_time_one_field(self, time_info, var_info, data_src):
+
         self.clear()
         cmd = None
         self.method = self.c_dict[data_src+'_RUN_METHOD']
@@ -621,8 +626,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # invalid method should never happen because value is checked on init
 
         if cmd is None:
-            init_time = time_info['init_fmt']
-            lead = time_info['lead_hours']
             self.log_error("pcp_combine could not generate command")
             return False
 
