@@ -212,7 +212,8 @@ that reformat gridded data
         else:
             # loop over all variables and all them to the field list, then call the app once
             self.clear()
-            self.c_dict['CURRENT_VAR_INFO'] = var_list[0]
+            if var_list:
+                self.c_dict['CURRENT_VAR_INFO'] = var_list[0]
             self.run_at_time_all_fields(time_info)
 
     def run_at_time_one_field(self, time_info, var_info):
