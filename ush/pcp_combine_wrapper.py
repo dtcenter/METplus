@@ -596,6 +596,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         return cmd.strip()
 
     def run_at_time_once(self, time_info, var_list, data_src):
+        if not var_list:
+            var_list = [None]
+
         for var_info in var_list:
             self.run_at_time_one_field(time_info, var_info, data_src)
 
@@ -610,7 +613,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             cmd = self.setup_user_method(time_info, data_src)
         elif self.method == "DERIVE":
             cmd = self.setup_derive_method(time_info, var_info, data_src)
-        elif var_info is None and not self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
+        elif not var_info and not self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
             self.log_error('Cannot run PCPCombine without specifying fields to process '
                            'unless running in USER_DEFINED mode. You must set '
                            f'{data_src}_VAR<n>_[NAME/LEVELS] or {data_src}_OUTPUT_[NAME/LEVEL]')
