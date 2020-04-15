@@ -682,6 +682,38 @@ class CommandBuilder:
                              self.config.getraw('config', f'{self.app_name.upper()}_OUTPUT_PREFIX', ''),
                              **time_info).do_string_sub()
 
+    def add_field_info_to_time_info(self, time_info, field_info):
+        """!Add name and level values from field info to time info dict to be used in string substitution
+            Args:
+                @param time_info time dictionary to add items to
+                @param field_info field dictionary to get values from
+        """
+        field_items = ['fcst_name', 'fcst_level', 'obs_name', 'obs_level']
+        for field_item in field_items:
+            time_info[field_item] = field_info[field_item] if field_item in field_info else ''
+
+    def set_current_field_config(self, field_info=None):
+        """!Sets config variables for current fcst/obs name/level that can be referenced
+            by other config variables such as OUTPUT_PREFIX. Only sets then if CURRENT_VAR_INFO
+            is set in c_dict.
+            Args:
+                @param field_info optional dictionary containing field information. If not provided, use
+                [config] CURRENT_VAR_INFO
+        """
+        if not field_info:
+            field_info = self.c_dict.get('CURRENT_VAR_INFO', None)
+
+        if field_info is not None:
+
+            self.config.set('config', 'CURRENT_FCST_NAME',
+                            field_info['fcst_name'] if 'fcst_name' in field_info else '')
+            self.config.set('config', 'CURRENT_OBS_NAME',
+                            field_info['obs_name'] if 'obs_name' in field_info else '')
+            self.config.set('config', 'CURRENT_FCST_LEVEL',
+                            field_info['fcst_level'] if 'fcst_level' in field_info else '')
+            self.config.set('config', 'CURRENT_OBS_LEVEL',
+                            field_info['obs_level'] if 'obs_level' in field_info else '')
+
     def check_for_python_embedding(self, input_type, var_info):
         """!Check if field name of given input type is a python script. If it is not, return the field name.
             If it is, check if the input datatype is a valid Python Embedding string, set the c_dict item
