@@ -44,6 +44,8 @@ all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/PCPCombine/PCPCombine_subtract.conf",
                 use_case_dir + "/met_tool_wrapper/PointStat/PointStat.conf",
                 use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf",
+                use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane_multi_field_multi_file.conf",
+                use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane_multi_field_one_file.conf",
                 use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/StatAnalysis/StatAnalysis.conf",
                 use_case_dir + "/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis.conf",
