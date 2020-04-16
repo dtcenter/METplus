@@ -437,7 +437,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         """!Returns False if command should not be run"""
 
         # set regrid method is explicitly set
-        if self.c_dict['METHOD'] != '':
+        if self.c_dict['METHOD']:
             self.args.append("-method {}".format(self.c_dict['METHOD']))
 
         # set width argument
