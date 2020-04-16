@@ -907,6 +907,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
             self.output_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
+            # if list of output names, remove whitespace between items
+            self.output_name = [name.strip() for name in self.output_name.split(',')]
+            self.output_name = ','.join(self.output_name)
 
         if self.c_dict[f"{data_src}_OPTIONS"]:
             self.field_extra = sts.StringSub(self.logger,
