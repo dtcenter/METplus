@@ -41,6 +41,7 @@ def rdp_wrapper():
          to over-ride these /path/to values."""
 
     config = metplus_config()
+    config.set('config', 'DO_NOT_RUN_EXE', True)
     return RegridDataPlaneWrapper(config, config.logger)
 
 #@pytest.fixture
@@ -57,27 +58,6 @@ def metplus_config():
 
 # ------------------------ TESTS GO HERE --------------------------
 
-
-# ------------------------
-#  test_find_obs_no_dated
-# ------------------------
-"""
-def test_find_obs_no_dated():
-    pcw = grid_stat_wrapper()
-    v = {}
-    v['obs_level'] = "6"
-    task_info = {}
-    task_info['valid'] = datetime.datetime.strptime("201802010000",'%Y%m%d%H%M')
-    task_info['lead'] = 0
-    time_info = time_util.ti_calculate(task_info)
-    
-    pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = -3600
-    pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
-    pcw.c_dict['OBS_INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
-    pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
-    obs_file = pcw.find_obs(time_info, v)
-    assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180201_0045')
-"""
 # conf_dict is produtil config items set before creating grid_stat wrapper instance
 # out_dict is grid_stat wrapper c_dict values set by initialization
 @pytest.mark.parametrize(
@@ -193,5 +173,260 @@ def test_get_field_info_list(conf_dict, expected_field_info_list):
                 print(f"{actual_field[key]} not equal to {value}")
                 is_good = False
 
-    assert(is_good)
+# field info is the input dictionary with name and level info to parse
+# run_pcp is a boolean if FCST_PCP_COMBINE_RUN is set or not
+# expected_arg is the argument that should be set by the function
+# note: did not include OBS because they are handled the same way as FCST
+@pytest.mark.parametrize(
+    'field_info, run_pcp, expected_arg', [
 
+        # 0) name/level
+        ({'fcst_name': 'F_NAME',
+          'fcst_level': "\"(1,*,*)\""},
+          False,
+          "-field 'name=\"F_NAME\"; level=\"(1,*,*)\";'"
+         ),
+
+        # 1) python embedding script
+        ({'fcst_name': 'my_script.py some args',
+          'fcst_level': "A06"},
+         False,
+         "-field 'name=\"my_script.py some args\";'"
+         ),
+
+        # 2) name/level PCPCombine is run
+        ({'fcst_name': 'F_NAME',
+          'fcst_level': "A06"},
+         True,
+         "-field 'name=\"F_NAME_06\"; level=\"(*,*)\";'"
+         ),
+
+        # 3) name/level PCPCombine is run, no level
+        ({'fcst_name': 'F_NAME',
+          'fcst_level': ""},
+         True,
+         "-field 'name=\"F_NAME\"; level=\"(*,*)\";'"
+         ),
+
+        # 4) python embedding script, PCPCombine is run
+        ({'fcst_name': 'my_script.py some args',
+          'fcst_level': "A06"},
+         True,
+         "-field 'name=\"my_script.py some args\";'"
+         ),
+    ]
+)
+
+def test_set_field_command_line_arguments(field_info, run_pcp, expected_arg):
+    data_type = 'FCST'
+
+    config = metplus_config()
+    if run_pcp:
+        config.set('config', f"{data_type}_PCP_COMBINE_RUN", True)
+
+    rdp = RegridDataPlaneWrapper(config, config.logger)
+
+    rdp.set_field_command_line_arguments(field_info, data_type)
+    assert(rdp.args[0] == expected_arg)
+
+@pytest.mark.parametrize(
+    'field_info, input_name, expected_name', [
+
+        # 0) use fcst name
+        ({'fcst_output_name': 'F_NAME'},
+         "INPUT_NAME",
+          'F_NAME',
+         ),
+
+        # 1) empty fcst name, use input name
+        ({'fcst_output_name': ''},
+         "INPUT_NAME",
+         'INPUT_NAME',
+         ),
+
+        # 2) no fcst name, use input name
+        ({'fcst_name': 'F_NAME'},
+         "INPUT_NAME",
+         'INPUT_NAME',
+         ),
+    ]
+)
+def test_get_output_name(field_info, input_name, expected_name):
+    data_type = 'FCST'
+
+    config = metplus_config()
+    rdp = RegridDataPlaneWrapper(config, config.logger)
+
+    assert(rdp.get_output_name(field_info, data_type, input_name) == expected_name)
+
+def test_run_rdp_once_per_field():
+    data_type = 'FCST'
+
+    input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),
+                  'lead': 0}
+    time_info = time_util.ti_calculate(input_dict)
+
+    var_list = [{'index': '1', 'fcst_name': 'FNAME1', 'fcst_level': 'A06'},
+                {'index': '2', 'fcst_name': 'FNAME2', 'fcst_level': 'A03', 'fcst_output_name': 'OUTNAME2'},
+                ]
+
+    wrap = rdp_wrapper()
+    wrap.c_dict['ONCE_PER_FIELD'] = True
+    wrap.c_dict['FCST_OUTPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_accum{level?fmt=%2H}.nc'
+
+    wrap.c_dict['FCST_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ZENITH'
+    wrap.c_dict['METHOD'] = 'BUDGET'
+    wrap.c_dict['WIDTH'] = 2
+    wrap.c_dict['VERIFICATION_GRID'] = 'VERIF_GRID'
+    wrap.c_dict['FCST_OUTPUT_DIR'] = os.path.join(wrap.config.getdir('OUTPUT_BASE'),
+                                                  'RDP_test')
+
+    wrap.run_at_time_once(time_info, var_list, data_type)
+
+    expected_cmds = [f"{wrap.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
+                     "level=\"A06\";' -name FNAME1 2018020100_ZENITH \"VERIF_GRID\" "
+                     f"{wrap.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum06.nc",
+                     f"{wrap.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME2\"; "
+                     "level=\"A03\";' -name OUTNAME2 2018020100_ZENITH \"VERIF_GRID\" "
+                     f"{wrap.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_accum03.nc",
+                     ]
+
+    test_passed = True
+
+    if len(wrap.all_commands) != len(expected_cmds):
+        print("Number of commands run is not the same as expected")
+        assert(False)
+
+    for cmd, expected_cmd in zip(wrap.all_commands, expected_cmds):
+        print(f"  ACTUAL:{cmd}")
+        print(f"EXPECTED:{expected_cmd}")
+        if cmd != expected_cmd:
+            test_passed = False
+
+    assert(test_passed)
+
+def test_run_rdp_all_fields():
+    data_type = 'FCST'
+
+    input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),
+                  'lead': 0}
+    time_info = time_util.ti_calculate(input_dict)
+
+    var_list = [{'index': '1', 'fcst_name': 'FNAME1', 'fcst_level': 'A06'},
+                {'index': '2', 'fcst_name': 'FNAME2', 'fcst_level': 'A03', 'fcst_output_name': 'OUTNAME2'},
+                ]
+
+    wrap = rdp_wrapper()
+    wrap.c_dict['ONCE_PER_FIELD'] = False
+    wrap.c_dict['FCST_OUTPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ALL.nc'
+
+    wrap.c_dict['FCST_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ZENITH'
+    wrap.c_dict['METHOD'] = 'BUDGET'
+    wrap.c_dict['WIDTH'] = 2
+    wrap.c_dict['VERIFICATION_GRID'] = 'VERIF_GRID'
+    wrap.c_dict['FCST_OUTPUT_DIR'] = os.path.join(wrap.config.getdir('OUTPUT_BASE'),
+                                                  'RDP_test')
+
+    wrap.run_at_time_once(time_info, var_list, data_type)
+
+    expected_cmds = [f"{wrap.app_path} -v 2 -method BUDGET -width 2 -field 'name=\"FNAME1\"; "
+                     "level=\"A06\";' -field 'name=\"FNAME2\"; level=\"A03\";' "
+                     "-name FNAME1,OUTNAME2 2018020100_ZENITH \"VERIF_GRID\" "
+                     f"{wrap.config.getdir('OUTPUT_BASE')}/RDP_test/2018020100_ALL.nc",
+                     ]
+
+    test_passed = True
+
+    if len(wrap.all_commands) != len(expected_cmds):
+        print("Number of commands run is not the same as expected")
+        assert(False)
+
+    for cmd, expected_cmd in zip(wrap.all_commands, expected_cmds):
+        print(f"  ACTUAL:{cmd}")
+        print(f"EXPECTED:{expected_cmd}")
+        if cmd != expected_cmd:
+            test_passed = False
+
+    assert(test_passed)
+
+def test_set_command_line_arguments():
+    test_passed = True
+    wrap = rdp_wrapper()
+
+    expected_args = ['-width 1',]
+
+    wrap.set_command_line_arguments()
+    if wrap.args != expected_args:
+        test_passed = False
+        print("Test 0 failed")
+        print(f"ARGS: {wrap.args}")
+        print(f"EXP: {expected_args}")
+
+    wrap.c_dict['GAUSSIAN_DX'] = 2
+
+    expected_args = ['-width 1',
+                     '-gaussian_dx 2',
+                     ]
+
+    wrap.args.clear()
+
+    wrap.set_command_line_arguments()
+    if wrap.args != expected_args:
+        test_passed = False
+        print("Test 1 failed")
+        print(f"ARGS: {wrap.args}")
+        print(f"EXP: {expected_args}")
+
+    wrap.args.clear()
+
+    wrap.c_dict['METHOD'] = 'BUDGET'
+
+    expected_args = ['-method BUDGET',
+                     '-width 1',
+                     '-gaussian_dx 2',
+                     ]
+
+    wrap.set_command_line_arguments()
+    if wrap.args != expected_args:
+        test_passed = False
+        print("Test 2 failed")
+        print(f"ARGS: {wrap.args}")
+        print(f"EXP: {expected_args}")
+
+    wrap.args.clear()
+
+    wrap.c_dict['GAUSSIAN_RADIUS'] = 3
+
+    expected_args = ['-method BUDGET',
+                     '-width 1',
+                     '-gaussian_dx 2',
+                     '-gaussian_radius 3',
+                     ]
+
+    wrap.set_command_line_arguments()
+    if wrap.args != expected_args:
+        test_passed = False
+        print("Test 3 failed")
+        print(f"ARGS: {wrap.args}")
+        print(f"EXP: {expected_args}")
+
+    wrap.args.clear()
+
+    wrap.c_dict['WIDTH'] = 4
+
+    expected_args = ['-method BUDGET',
+                     '-width 4',
+                     '-gaussian_dx 2',
+                     '-gaussian_radius 3',
+                     ]
+
+    wrap.set_command_line_arguments()
+    if wrap.args != expected_args:
+        test_passed = False
+        print("Test 4 failed")
+        print(f"ARGS: {wrap.args}")
+        print(f"EXP: {expected_args}")
+
+    wrap.args.clear()
+
+    assert(test_passed)
