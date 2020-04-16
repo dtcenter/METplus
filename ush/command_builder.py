@@ -409,8 +409,8 @@ class CommandBuilder:
                     'return_list': return_list}
 
         # if looking for a file with an exact time match:
-        if self.c_dict[data_type_fmt + 'FILE_WINDOW_BEGIN'] == 0 and \
-                self.c_dict[data_type_fmt + 'FILE_WINDOW_END'] == 0:
+        if self.c_dict.get(data_type_fmt + 'FILE_WINDOW_BEGIN', 0) == 0 and \
+                self.c_dict.get(data_type_fmt + 'FILE_WINDOW_END', 0) == 0:
 
             return self.find_exact_file(**arg_dict)
 
@@ -419,7 +419,7 @@ class CommandBuilder:
 
     def find_exact_file(self, level, data_type, time_info, mandatory=True, return_list=False):
         input_template = self.c_dict[f'{data_type}INPUT_TEMPLATE']
-        data_dir = self.c_dict[f'{data_type}INPUT_DIR']
+        data_dir = self.c_dict.get(f'{data_type}INPUT_DIR', '')
 
         check_file_list = []
         found_file_list = []
@@ -790,19 +790,19 @@ class CommandBuilder:
                               'You must use a subclass')
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
+        cmd = '{} -v {}'.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for arg in self.args:
-            cmd += arg + " "
+            cmd += " " + arg
 
         if not self.infiles:
             self.log_error("No input filenames specified")
             return None
 
         for infile in self.infiles:
-            cmd += infile + " "
+            cmd += " " + infile
 
-        if self.outfile == "":
+        if not self.outfile:
             self.log_error("No output filename specified")
             return None
 
@@ -810,7 +810,7 @@ class CommandBuilder:
 
         # create outdir (including subdir in outfile) if it doesn't exist
         parent_dir = os.path.dirname(out_path)
-        if parent_dir == '':
+        if not parent_dir:
             self.log_error('Must specify path to output file')
             return None
 
@@ -819,7 +819,7 @@ class CommandBuilder:
 
         cmd += " " + out_path
 
-        if self.param != "":
+        if self.param:
             cmd += ' ' + self.param
 
         return cmd
