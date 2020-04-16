@@ -440,7 +440,6 @@ class CommandBuilder:
             dsts = sts.StringSub(self.logger,
                                  template,
                                  level=level,
-#                                 level=(int(level.split('-')[0]) * 3600),
                                  **time_info)
             filename = dsts.do_string_sub()
 
