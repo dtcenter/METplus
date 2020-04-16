@@ -376,7 +376,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         self.args.append("-name " + ','.join(output_names))
 
         if not self.handle_output_file(time_info,
-                                       field_info,
+                                       field_info_list[0],
                                        data_type):
             return
 
