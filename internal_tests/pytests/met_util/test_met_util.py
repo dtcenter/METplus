@@ -622,3 +622,28 @@ def test_parse_var_list_wrapper_specific():
            g_var_list[1]['fcst_name'] == "GNAME1" and
            g_var_list[0]['fcst_level'] == "GLEVELS11" and
            g_var_list[1]['fcst_level'] == "GLEVELS12")
+
+@pytest.mark.parametrize(
+    'time_from_conf, fmt, is_datetime', [
+        ('', '%Y', False),
+        ('a', '%Y', False),
+        ('1987', '%Y', True),
+        ('1987', '%Y%m', False),
+        ('198702', '%Y%m', True),
+        ('198702', '%Y%m%d', False),
+        ('19870201', '%Y%m%d', True),
+        ('19870201', '%Y%m%d%H', False),
+        ('{now?fmt=%Y%m%d}', '%Y%m%d', True),
+        ('{now?fmt=%Y%m%d}', '%Y%m%d%H', True),
+        ('{now?fmt=%Y%m%d}00', '%Y%m%d%H', True),
+        ('{today}', '%Y%m%d', True),
+        ('{today}', '%Y%m%d%H', True),
+    ]
+)
+
+def test_get_time_obj(time_from_conf, fmt, is_datetime):
+    clock_time = datetime.datetime(2019, 12, 31, 15, 30)
+
+    time_obj = util.get_time_obj(time_from_conf, fmt, clock_time)
+
+    assert(isinstance(time_obj, datetime.datetime) == is_datetime)
