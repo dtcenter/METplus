@@ -755,12 +755,31 @@ def is_loop_by_init(config):
 
 
 def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
-    """!Substitute today or now into [INIT/VALID]_[BEG/END] if used"""
-    sts = StringSub(logger, time_from_conf,
-                    now=clock_time,
-                    today=clock_time.strftime('%Y%m%d'))
-    time_str = sts.do_string_sub()
-    return datetime.datetime.strptime(time_str, fmt)
+    """!Substitute today or now into [INIT/VALID]_[BEG/END] if used
+        Args:
+            @param time_from_conf value from [INIT/VALID]_[BEG/END] that
+                   may include now or today tags
+            @param fmt format of time_from_conf, i.e. %Y%m%d
+            @param clock_time datetime object for time when execution started
+            @param logger log object to write error messages - None if not provided
+            @returns datetime object if successful, None if not
+    """
+    time_str = StringSub(logger, time_from_conf,
+                         now=clock_time,
+                         today=clock_time.strftime('%Y%m%d')).do_string_sub()
+    try:
+        time_t = datetime.datetime.strptime(time_str, fmt)
+    except ValueError:
+        error_message = (f"[INIT/VALID]_TIME_FMT ({fmt}) does not match "
+                         f"[INIT/VALID]_[BEG/END] ({time_str})")
+        if logger:
+            logger.error(error_message)
+        else:
+            print(f"ERROR: {error_message}")
+
+        return None
+
+    return time_t
 
 def get_start_end_interval_times(config):
     clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
@@ -777,20 +796,18 @@ def get_start_end_interval_times(config):
         end_t = config.getraw('config', 'VALID_END')
         time_interval = time_util.get_relativedelta(config.getstr('config', 'VALID_INCREMENT'))
 
-    # verify that *_TIME_FMT matches *_BEG and *_END
-    time_format_len = len(datetime.datetime.now().strftime(time_format))
-    if len(start_t) != time_format_len:
-        config.logger.error(f"[INIT/VALID]_TIME_FMT {time_format} does not match [INIT/VALID]_BEG {start_t}.")
-        return None
-
-    if len(end_t) != time_format_len:
-        config.logger.error(f"[INIT/VALID]_TIME_FMT ({time_format}) does not match [INIT/VALID]_END ({end_t}).")
-        return None
-
     start_time = get_time_obj(start_t, time_format,
                              clock_time_obj, config.logger)
+    if not start_time:
+        config.logger.error("Could not format start time")
+        return None
+
     end_time = get_time_obj(end_t, time_format,
                             clock_time_obj, config.logger)
+
+    if not end_time:
+        config.logger.error("Could not format end time")
+        return None
 
     if start_time + time_interval < start_time + datetime.timedelta(seconds=60):
         config.logger.error("[INIT/VALID]_INCREMENT must be greater than or equal to 60 seconds")
