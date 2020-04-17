@@ -813,6 +813,10 @@ def get_start_end_interval_times(config):
         config.logger.error("[INIT/VALID]_INCREMENT must be greater than or equal to 60 seconds")
         return None
 
+    if start_time > end_time:
+        config.logger.error("Start time must come before end time")
+        return None
+
     return start_time, end_time, time_interval
 
 def loop_over_times_and_call(config, processes):
