@@ -431,11 +431,6 @@ that reformat gridded data
         # return list of field dictionary items
         return fields
 
-    def set_environment_variables(self, fcst_field, obs_field, time_info):
-        """!Set environment variables that are referenced by the MET config file.
-            Implemented in child class"""
-        return None
-
     def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
         """! Set and print environment variables, then build/run MET command
               Args:

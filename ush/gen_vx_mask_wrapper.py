@@ -96,22 +96,6 @@ class GenVxMaskWrapper(CommandBuilder):
 
         return c_dict
 
-    def set_environment_variables(self, time_info):
-        """!Set environment variables that will be read set when running this tool.
-            This tool does not have a config file, but environment variables may still
-            need to be set, such as MET_TMP_DIR and MET_PYTHON_EXE.
-            Reformat as needed. Print list of variables that were set and their values.
-            This function could be moved up to CommandBuilder so all wrappers have access to it.
-            Wrappers could override it to set wrapper-specific values, then call the CommandBuilder
-            version to handle user configs and printing
-            Args:
-              @param time_info dictionary containing timing info from current run"""
-        # set user environment variables
-        self.set_user_environment(time_info)
-
-        # send environment variables to logger
-        self.print_all_envs()
-
     def get_command(self):
         cmd = self.app_path
 
