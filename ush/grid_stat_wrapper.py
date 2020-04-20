@@ -110,11 +110,7 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
-        self.add_common_envs(time_info)
-
-        # send environment variables to logger
-        self.print_all_envs()
-
+        super().set_environment_variables(time_info)
 
 if __name__ == "__main__":
     util.run_stand_alone(__file__, "GridStat")

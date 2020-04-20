@@ -161,7 +161,8 @@ class GenVxMaskWrapper(CommandBuilder):
                 @param time_info time dictionary for current runtime
                 @returns None
         """
-        # set environment variables if using config file
+        # set environment variables
+        # there is no config file, so using CommandBuilder implementation
         self.set_environment_variables(time_info)
 
         # loop over mask templates and command line args,

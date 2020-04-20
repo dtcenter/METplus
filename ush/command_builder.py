@@ -99,14 +99,11 @@ class CommandBuilder:
         # add MET_TMP_DIR back to env_list
         self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
 
-    def set_environment_variables(self, time_info):
+    def set_environment_variables(self, time_info=None):
         """!Set environment variables that will be read set when running this tool.
             This tool does not have a config file, but environment variables may still
             need to be set, such as MET_TMP_DIR and MET_PYTHON_EXE.
             Reformat as needed. Print list of variables that were set and their values.
-            This function could be moved up to CommandBuilder so all wrappers have access to it.
-            Wrappers could override it to set wrapper-specific values, then call the CommandBuilder
-            version to handle user configs and printing
             Args:
               @param time_info dictionary containing timing info from current run"""
         # set user environment variables
@@ -138,8 +135,10 @@ class CommandBuilder:
                                           **time_info).do_string_sub()
             self.add_env_var(env_var, env_var_value)
 
-    def add_common_envs(self, time_info=None):
-        # Set the environment variables
+    def add_common_envs(self):
+        """!Set the environment variables that are common to many wrappers.
+        This currently includes model (MODEL) and regrid.to_grid (REGRID_TO_GRID).
+        """
         self.add_env_var('MODEL', str(self.c_dict['MODEL']))
 
         to_grid = self.c_dict['REGRID_TO_GRID'].strip('"')
@@ -151,9 +150,6 @@ class CommandBuilder:
             to_grid = f'"{to_grid}"'
 
         self.add_env_var('REGRID_TO_GRID', to_grid)
-
-        # set user environment variables
-        self.set_user_environment(time_info)
 
     def print_all_envs(self):
         # send environment variables to logger
@@ -239,7 +235,7 @@ class CommandBuilder:
         """!Sets an environment variable so that the MET application
         can reference it in the parameter file or the application itself
         """
-        self.env[key] = name
+        self.env[key] = str(name)
         self.env_list.add(key)
 
     def print_env(self):

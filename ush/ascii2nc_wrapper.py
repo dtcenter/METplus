@@ -130,10 +130,7 @@ class ASCII2NCWrapper(CommandBuilder):
                          self.c_dict['TIME_SUMMARY_VALID_THRESH'])
 
         # set user environment variables
-        self.set_user_environment(time_info)
-
-        # send environment variables to logger
-        self.print_all_envs()
+        super().set_environment_variables(time_info)
 
     def get_command(self):
         cmd = self.app_path

@@ -427,9 +427,7 @@ class MTDWrapper(MODEWrapper):
         self.add_env_var("FCST_FILE_TYPE", self.c_dict['FCST_FILE_TYPE'])
         self.add_env_var("OBS_FILE_TYPE", self.c_dict['OBS_FILE_TYPE'])
 
-        self.add_common_envs(time_info)
-
-        self.print_all_envs()
+        CompareGriddedWrapper.set_environment_variables(self, time_info)
 
     def get_command(self):
         """! Builds the command to run the MET application

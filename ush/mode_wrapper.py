@@ -169,9 +169,7 @@ class MODEWrapper(CompareGriddedWrapper):
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
-        self.add_common_envs(time_info)
-
-        self.print_all_envs()
+        super().set_environment_variables(time_info)
 
     def run_at_time_one_field(self, time_info, var_info):
         """! Runs mode instances for a given time and forecast lead combination

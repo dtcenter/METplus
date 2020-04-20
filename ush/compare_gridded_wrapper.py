@@ -88,6 +88,17 @@ that reformat gridded data
 
         return c_dict
 
+    def set_environment_variables(self, time_info):
+        """!Set environment variables that will be read set when running this tool.
+            Wrappers could override it to set wrapper-specific values, then call super
+            version to handle user configs and printing
+            Args:
+              @param time_info dictionary containing timing info from current run"""
+
+        self.add_common_envs()
+
+        super().set_environment_variables(time_info)
+
     def check_probabilistic_settings(self):
         """!If dataset is probabilistic, check if *_PROB_IN_GRIB_PDS or INPUT_DATATYPE
             are set. If not enough information is set, report an error and set isOK to False"""
