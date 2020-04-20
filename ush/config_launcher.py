@@ -17,6 +17,7 @@ import collections
 import datetime
 import shutil
 from os.path import dirname, realpath
+from configparser import ConfigParser
 
 from produtil.config import ProdConfig
 import produtil.fileop
@@ -287,7 +288,6 @@ def load(filename):
     the launch command.
 
     @param filename The metplus*.conf file created by launch()"""
-
     conf = METplusConfig()
     conf.read(filename)
     return conf
@@ -412,6 +412,9 @@ class METplusConfig(ProdConfig):
     def __init__(self, conf=None):
         """!Creates a new METplusConfig
         @param conf The configuration file."""
+        # set interpolation to None so you can supply filename template
+        # that contain % to config.set
+        conf = ConfigParser(strict=False, inline_comment_prefixes=(';',), interpolation=None) if (conf is None) else conf
         super().__init__(conf)
         self._cycle = None
         self._logger = logging.getLogger('metplus')

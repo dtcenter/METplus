@@ -436,23 +436,6 @@ that reformat gridded data
             Implemented in child class"""
         return None
 
-    def set_current_field_config(self):
-        """!Sets config variables for current fcst/obs name/level that can be referenced
-            by other config variables such as OUTPUT_PREFIX. Only sets then if CURRENT_VAR_INFO
-            is set in c_dict."""
-        if self.c_dict.get('CURRENT_VAR_INFO', None) is not None:
-            var_info = self.c_dict['CURRENT_VAR_INFO']
-
-            self.config.set('config', 'CURRENT_FCST_NAME',
-                            var_info['fcst_name'] if 'fcst_name' in var_info else '')
-            self.config.set('config', 'CURRENT_OBS_NAME',
-                            var_info['obs_name'] if 'obs_name' in var_info else '')
-            self.config.set('config', 'CURRENT_FCST_LEVEL',
-                            var_info['fcst_level'] if 'fcst_level' in var_info else '')
-            self.config.set('config', 'CURRENT_OBS_LEVEL',
-                            var_info['obs_level'] if 'obs_level' in var_info else '')
-
-
     def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
         """! Set and print environment variables, then build/run MET command
               Args:
