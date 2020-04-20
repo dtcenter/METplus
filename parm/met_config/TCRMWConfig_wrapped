@@ -1,0 +1,64 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// TC-RMW configuration file.
+//
+// For additional information, see the MET_BASE/config/README_TC file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Model
+//
+model = "${MODEL}";
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// May be set separately in each "field" entry
+//
+censor_thresh = [];
+censor_val    = [];
+
+//
+// Data fields
+//
+data = {
+   field = [ ${DATA_FIELD} ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Regridding options
+//
+regrid = {
+   to_grid    = ${REGRID_TO_GRID};
+   width      = 1;
+   vld_thresh = 0.5;
+   shape      = SQUARE;
+}
+
+//
+// Range-Azimuth grid parameters 
+//
+// The following environmnet variables set the text if the corresponding
+// variables at defined in the METplus config. If not, they are set to
+// and empty string, which will cause MET to use the value defined in the
+// default configuration file.
+// ${N_RANGE} sets "n_range = <user setting>;"
+// ${N_AZIMUTH} sets "n_azimuth = <user setting>;"
+// ${MAX_RANGE_KM} sets "max_range_km = <user setting>;"
+// ${DELTA_RANGE_KM} sets "delta_range_km = <user setting>;"
+// ${RMW_SCALE} sets "rmw_scale = <user setting>;"
+
+${N_RANGE}
+${N_AZIMUTH}
+#{MAX_RANGE_KM}
+${DELTA_RANGE_KM}
+${RMW_SCALE}
+
+////////////////////////////////////////////////////////////////////////////////
+
+version = "V9.0";
+
+////////////////////////////////////////////////////////////////////////////////
