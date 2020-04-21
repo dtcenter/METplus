@@ -426,7 +426,7 @@ class CommandBuilder:
 
         # check if there is a list of files provided in the template
         # process each template in the list (or single template)
-        template_list = [template.strip() for template in input_template.split(',')]
+        template_list = util.getlist(input_template)
 
         # return None if a list is provided for a wrapper that doesn't allow
         # multiple files to be processed
@@ -776,7 +776,7 @@ class CommandBuilder:
             return None
 
         except ValueError:
-            self.log_error(f"[{section}] {name} must be an {typeobj}. Value is {value}")
+            self.log_error(f"[{section}] {name} (value: {value}) must be an {typeobj.__class__.__name__}")
             self.isOK = False
             return None
 
