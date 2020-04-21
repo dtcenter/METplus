@@ -191,10 +191,11 @@ that reformat gridded data
         # get verification mask if available
         self.get_verification_mask(time_info)
 
-        self.c_dict['VAR_LIST'] = util.parse_var_list(self.config, time_info,
-                                                      met_tool=self.app_name)
+        var_list = util.parse_var_list(self.config,
+                                       time_info,
+                                       met_tool=self.app_name)
 
-        if (not self.c_dict['VAR_LIST']) and (self.app_name != 'ensemble_stat'):
+        if not var_list and (self.app_name != 'ensemble_stat'):
             self.log_error('No input fields were specified. You must set '
                            f'[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
             return None
@@ -204,13 +205,15 @@ that reformat gridded data
         if self.c_dict['ONCE_PER_FIELD']:
             # loop over all fields and levels (and probability thresholds) and
             # call the app once for each
-            for var_info in self.c_dict['VAR_LIST']:
+            for var_info in var_list:
                 self.clear()
                 self.c_dict['CURRENT_VAR_INFO'] = var_info
                 self.run_at_time_one_field(time_info, var_info)
         else:
             # loop over all variables and all them to the field list, then call the app once
             self.clear()
+            if var_list:
+                self.c_dict['CURRENT_VAR_INFO'] = var_list[0]
             self.run_at_time_all_fields(time_info)
 
     def run_at_time_one_field(self, time_info, var_info):
@@ -220,6 +223,7 @@ that reformat gridded data
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
         """
+
         # get model to compare, return None if not found
         model_path = self.find_model(time_info, var_info)
         if model_path is None:
@@ -261,15 +265,19 @@ that reformat gridded data
               Args:
                 @param time_info dictionary containing timing information
         """
+        var_list = util.parse_var_list(self.config,
+                                       time_info,
+                                       met_tool=self.app_name)
+
         # get model from first var to compare
-        model_path = self.find_model(time_info, self.c_dict['VAR_LIST'][0])
-        if model_path is None:
+        model_path = self.find_model(time_info, var_list[0])
+        if not model_path:
             return
 
         self.infiles.append(model_path)
 
         # get observation to from first var compare
-        obs_path = self.find_obs(time_info, self.c_dict['VAR_LIST'][0])
+        obs_path = self.find_obs(time_info, var_list[0])
         if obs_path is None:
             return
 
@@ -277,7 +285,7 @@ that reformat gridded data
 
         fcst_field_list = []
         obs_field_list = []
-        for var_info in self.c_dict['VAR_LIST']:
+        for var_info in var_list:
             next_fcst = self.get_field_info(v_level=var_info['fcst_level'],
                                             v_thresh=var_info['fcst_thresh'],
                                             v_name=var_info['fcst_name'],
@@ -444,6 +452,8 @@ that reformat gridded data
 
         # set up output dir with time info
         self.create_and_set_output_dir(time_info)
+
+        self.set_current_field_config()
 
         # set environment variables needed by MET config file
         self.set_environment_variables(fcst_field, obs_field, time_info)

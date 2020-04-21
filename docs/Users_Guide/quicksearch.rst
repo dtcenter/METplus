@@ -7,6 +7,7 @@ Use Cases by MET Tool:
 | `ASCII2NC <https://ncar.github.io/METplus/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
 | `CyclonePlotter <https://ncar.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
 | `EnsembleStat <https://ncar.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_
+| `GenVxMask <https://ncar.github.io/METplus/search.html?q=GenVxMaskToolUseCase&check_keywords=yes&area=default>`_
 | `GridStat <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
 | `MODE <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
 | `MTD <https://ncar.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_

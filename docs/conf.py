@@ -77,6 +77,7 @@ sphinx_gallery_conf = {
       'log_level': {'backreference_missing': 'warning'},
       'ignore_pattern': r'__init__\.py|sum_IMERG_V06_HDF5\.py|tmp_file\.py',
       'backreferences_dir': 'gen_modules/backreferences',
+      'remove_config_comments': True,
 }
 
 # -- Intersphinx control ---------------------------------------------------------------

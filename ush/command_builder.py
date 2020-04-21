@@ -19,6 +19,7 @@ from inspect import getframeinfo, stack
 
 from command_runner import CommandRunner
 import met_util as util
+import time_util
 import string_template_substitution as sts
 
 # pylint:disable=pointless-string-statement
@@ -49,6 +50,7 @@ class CommandBuilder:
         self.outdir = ""
         self.outfile = ""
         self.param = ""
+        self.all_commands = []
         self.env = os.environ.copy()
         if hasattr(config, 'env'):
             self.env = config.env
@@ -70,13 +72,15 @@ class CommandBuilder:
         # wrappers that support this functionality can override this value
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = False
-        c_dict['FCST_INPUT_DATATYPE'] = ''
-        c_dict['OBS_INPUT_DATATYPE'] = ''
         c_dict['ALLOW_MULTIPLE_FILES'] = False
         c_dict['CURRENT_VAR_INFO'] = None
 
+        app_name = ''
+        if hasattr(self, 'app_name'):
+            app_name = self.app_name
+
         c_dict['CUSTOM_LOOP_LIST'] = util.get_custom_string_list(self.config,
-                                                                 self.app_name)
+                                                                 app_name)
 
 
         return c_dict
@@ -94,6 +98,22 @@ class CommandBuilder:
 
         # add MET_TMP_DIR back to env_list
         self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
+
+    def set_environment_variables(self, time_info):
+        """!Set environment variables that will be read set when running this tool.
+            This tool does not have a config file, but environment variables may still
+            need to be set, such as MET_TMP_DIR and MET_PYTHON_EXE.
+            Reformat as needed. Print list of variables that were set and their values.
+            This function could be moved up to CommandBuilder so all wrappers have access to it.
+            Wrappers could override it to set wrapper-specific values, then call the CommandBuilder
+            version to handle user configs and printing
+            Args:
+              @param time_info dictionary containing timing info from current run"""
+        # set user environment variables
+        self.set_user_environment(time_info)
+
+        # send environment variables to logger
+        self.print_all_envs()
 
     def log_error(self, error_string):
         caller = getframeinfo(stack()[1][0])
@@ -181,6 +201,12 @@ class CommandBuilder:
             c_dict[dtype + '_FILE_WINDOW_' + edge] = \
                 self.config.getseconds('config',
                                        dtype + '_FILE_WINDOW_' + edge)
+        # if generic FILE_WINDOW_ is set, use that
+        elif self.config.has_option('config',
+                                    'FILE_WINDOW_' + edge):
+            c_dict['FILE_WINDOW_' + edge] = \
+                self.config.getseconds('config',
+                                       'FILE_WINDOW_' + edge)
         # otherwise set to 0
         else:
             c_dict[dtype + '_FILE_WINDOW_' + edge] = 0
@@ -304,7 +330,7 @@ class CommandBuilder:
         self.logger.warning('Using default values for {}'.format(gen_name))
         return default, default
 
-    def find_model(self, time_info, var_info, mandatory=True, return_list=False):
+    def find_model(self, time_info, var_info=None, mandatory=True, return_list=False):
         """! Finds the model file to compare
               Args:
                 @param time_info dictionary containing timing information
@@ -314,11 +340,13 @@ class CommandBuilder:
                 @rtype string
                 @return Returns the path to an model file
         """
-        return self.find_data(time_info, var_info, "FCST",
+        return self.find_data(time_info,
+                              var_info=var_info,
+                              data_type="FCST",
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_obs(self, time_info, var_info, mandatory=True, return_list=False):
+    def find_obs(self, time_info, var_info=None, mandatory=True, return_list=False):
         """! Finds the observation file to compare
               Args:
                 @param time_info dictionary containing timing information
@@ -328,24 +356,32 @@ class CommandBuilder:
                 @rtype string
                 @return Returns the path to an observation file
         """
-        return self.find_data(time_info, var_info, "OBS",
+        return self.find_data(time_info,
+                              var_info=var_info,
+                              data_type="OBS",
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_data(self, time_info, var_info, data_type, mandatory=True, return_list=False):
+    def find_data(self, time_info, var_info=None, data_type='', mandatory=True, return_list=False):
         """! Finds the data file to compare
               Args:
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
-                @param data_type type of data to find (FCST or OBS)
+                @param data_type type of data to find (i.e. FCST_ or OBS_)
                 @param mandatory if True, report error if not found, warning if not
                   default is True
                 @rtype string
                 @return Returns the path to an observation file
         """
+
+        data_type_fmt = data_type
+        # add underscore at end of data_type if not found unless empty string
+        if data_type and not data_type.endswith('_'):
+            data_type_fmt += '_'
+
         if var_info is not None:
             # set level based on input data type
-            if data_type.startswith("OBS"):
+            if data_type_fmt.startswith("OBS"):
                 v_level = var_info['obs_level']
             else:
                 v_level = var_info['fcst_level']
@@ -359,16 +395,22 @@ class CommandBuilder:
         else:
             level = '0'
 
+        # if level is a range, use the first value, i.e. if 250-500 use 250
+        level = level.split('-')[0]
+
+        # if level is in hours, convert to seconds
+        level = time_util.get_seconds_from_string(level, 'H')
+
         # arguments for find helper functions
         arg_dict = {'level': level,
-                    'data_type': data_type,
+                    'data_type': data_type_fmt,
                     'mandatory': mandatory,
                     'time_info': time_info,
                     'return_list': return_list}
 
         # if looking for a file with an exact time match:
-        if self.c_dict[data_type + '_FILE_WINDOW_BEGIN'] == 0 and \
-                self.c_dict[data_type + '_FILE_WINDOW_END'] == 0:
+        if self.c_dict.get(data_type_fmt + 'FILE_WINDOW_BEGIN', 0) == 0 and \
+                self.c_dict.get(data_type_fmt + 'FILE_WINDOW_END', 0) == 0:
 
             return self.find_exact_file(**arg_dict)
 
@@ -376,8 +418,8 @@ class CommandBuilder:
         return self.find_file_in_window(**arg_dict)
 
     def find_exact_file(self, level, data_type, time_info, mandatory=True, return_list=False):
-        input_template = self.c_dict[f'{data_type}_INPUT_TEMPLATE']
-        data_dir = self.c_dict[f'{data_type}_INPUT_DIR']
+        input_template = self.c_dict[f'{data_type}INPUT_TEMPLATE']
+        data_dir = self.c_dict.get(f'{data_type}INPUT_DIR', '')
 
         check_file_list = []
         found_file_list = []
@@ -388,7 +430,7 @@ class CommandBuilder:
 
         # return None if a list is provided for a wrapper that doesn't allow
         # multiple files to be processed
-        if len(template_list) > 1 and not self.c_dict['ALLOW_MULTIPLE_FILES']:
+        if len(template_list) > 1 and not self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
             self.log_error("List of templates specified for a wrapper that "
                            "does not allow multiple files to be provided.")
             return None
@@ -397,21 +439,21 @@ class CommandBuilder:
             # perform string substitution
             dsts = sts.StringSub(self.logger,
                                  template,
-                                 level=(int(level.split('-')[0]) * 3600),
+                                 level=level,
                                  **time_info)
             filename = dsts.do_string_sub()
 
             # build full path with data directory and filename
             full_path = os.path.join(data_dir, filename)
 
-            self.logger.debug(f"Looking for {data_type} file {full_path}")
+            if os.path.sep not in full_path:
+                self.logger.debug(f"{full_path} is not a file path. Returning that string.")
+                return full_path
+
+            self.logger.debug(f"Looking for {data_type}INPUT file {full_path}")
 
             # if wildcard expression, get all files that match
             if '?' in full_path or '*' in full_path:
-                if not self.c_dict['ALLOW_MULTIPLE_FILES']:
-                    self.log_error("Wildcard character found in file path when using wrapper that "
-                                   "does not allow multiple files to be provided.")
-                    return None
 
                 wildcard_files = sorted(glob.glob(full_path))
                 self.logger.debug(f'Wildcard file pattern: {full_path}')
@@ -424,15 +466,23 @@ class CommandBuilder:
                 # add single file to list
                 check_file_list.append(full_path)
 
+        # if multiple files are not supported by the wrapper and multiple files are found, error and exit
+        # this will allow a wildcard to be used to find a single file. Previously a wildcard would produce
+        # an error if only 1 file is allowed.
+        if not self.c_dict['ALLOW_MULTIPLE_FILES'] and len(check_file_list) > 1:
+            self.log_error("Multiple files found when wrapper does not support multiple files.")
+            return None
+
         for file_path in check_file_list:
             # check if file exists
+            input_data_type = self.c_dict.get(data_type + 'INPUT_DATATYPE', '')
             processed_path = util.preprocess_file(file_path,
-                                                  self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                                  input_data_type,
                                                   self.config)
 
             # report error if file path could not be found
             if not processed_path:
-                msg = f"Could not find {data_type} file {file_path} using template {template}"
+                msg = f"Could not find {data_type}INPUT file {file_path} using template {template}"
                 if mandatory:
                     self.log_error(msg)
                 else:
@@ -449,8 +499,8 @@ class CommandBuilder:
         return found_file_list
 
     def find_file_in_window(self, level, data_type, time_info, mandatory=True, return_list=False):
-        template = self.c_dict[f'{data_type}_INPUT_TEMPLATE']
-        data_dir = self.c_dict[f'{data_type}_INPUT_DIR']
+        template = self.c_dict[f'{data_type}INPUT_TEMPLATE']
+        data_dir = self.c_dict[f'{data_type}INPUT_DIR']
 
         # convert valid_time to unix time
         valid_time = time_info['valid_fmt']
@@ -460,14 +510,14 @@ class CommandBuilder:
         closest_time = 9999999
 
         # get range of times that will be considered
-        valid_range_lower = self.c_dict[data_type + '_FILE_WINDOW_BEGIN']
-        valid_range_upper = self.c_dict[data_type + '_FILE_WINDOW_END']
+        valid_range_lower = self.c_dict[data_type + 'FILE_WINDOW_BEGIN']
+        valid_range_upper = self.c_dict[data_type + 'FILE_WINDOW_END']
         lower_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
                                             "%Y%m%d%H%M%S").strftime("%s"))
         upper_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
                                             "%Y%m%d%H%M%S").strftime("%s"))
 
-        msg = f"Looking for {data_type} files under {data_dir} within range " +\
+        msg = f"Looking for {data_type}INPUT files under {data_dir} within range " +\
               f"[{valid_range_lower},{valid_range_upper}] using template {template}"
         self.logger.debug(msg)
 
@@ -509,7 +559,7 @@ class CommandBuilder:
                         closest_files.append(fullpath)
 
         if not closest_files:
-            msg = f"Could not find {data_type} files under {data_dir} within range " +\
+            msg = f"Could not find {data_type}INPUT files under {data_dir} within range " +\
                   f"[{valid_range_lower},{valid_range_upper}] using template {template}"
             if mandatory:
                 self.log_error(msg)
@@ -521,14 +571,14 @@ class CommandBuilder:
         # if one file was found and return_list if False, return single file
         if len(closest_files) == 1 and not return_list:
             return util.preprocess_file(closest_files[0],
-                                        self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                        self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
                                         self.config)
 
         # return list if multiple files are found
         out = []
         for close_file in closest_files:
             outfile = util.preprocess_file(close_file,
-                                           self.c_dict[data_type + '_INPUT_DATATYPE'],
+                                           self.c_dict.get(data_type + 'INPUT_DATATYPE', ''),
                                            self.config)
             out.append(outfile)
 
@@ -631,6 +681,38 @@ class CommandBuilder:
                              self.config.getraw('config', f'{self.app_name.upper()}_OUTPUT_PREFIX', ''),
                              **time_info).do_string_sub()
 
+    def add_field_info_to_time_info(self, time_info, field_info):
+        """!Add name and level values from field info to time info dict to be used in string substitution
+            Args:
+                @param time_info time dictionary to add items to
+                @param field_info field dictionary to get values from
+        """
+        field_items = ['fcst_name', 'fcst_level', 'obs_name', 'obs_level']
+        for field_item in field_items:
+            time_info[field_item] = field_info[field_item] if field_item in field_info else ''
+
+    def set_current_field_config(self, field_info=None):
+        """!Sets config variables for current fcst/obs name/level that can be referenced
+            by other config variables such as OUTPUT_PREFIX. Only sets then if CURRENT_VAR_INFO
+            is set in c_dict.
+            Args:
+                @param field_info optional dictionary containing field information. If not provided, use
+                [config] CURRENT_VAR_INFO
+        """
+        if not field_info:
+            field_info = self.c_dict.get('CURRENT_VAR_INFO', None)
+
+        if field_info is not None:
+
+            self.config.set('config', 'CURRENT_FCST_NAME',
+                            field_info['fcst_name'] if 'fcst_name' in field_info else '')
+            self.config.set('config', 'CURRENT_OBS_NAME',
+                            field_info['obs_name'] if 'obs_name' in field_info else '')
+            self.config.set('config', 'CURRENT_FCST_LEVEL',
+                            field_info['fcst_level'] if 'fcst_level' in field_info else '')
+            self.config.set('config', 'CURRENT_OBS_LEVEL',
+                            field_info['obs_level'] if 'obs_level' in field_info else '')
+
     def check_for_python_embedding(self, input_type, var_info):
         """!Check if field name of given input type is a python script. If it is not, return the field name.
             If it is, check if the input datatype is a valid Python Embedding string, set the c_dict item
@@ -641,7 +723,6 @@ class CommandBuilder:
               @param input_type type of field input, i.e. FCST, OBS, ENS, POINT_OBS, GRID_OBS, or BOTH
               @param var_info dictionary item containing field information for the current *_VAR<n>_* configs being handled
               @returns field name if not a python script, 'python_embedding' if it is, and None if configuration is invalid"""
-
         var_input_type = input_type.lower() if input_type != 'BOTH' else 'fcst'
         # reset file type to empty string to handle if python embedding is used for one field but not for the next
         self.c_dict[f'{input_type}_FILE_TYPE'] = ''
@@ -652,7 +733,7 @@ class CommandBuilder:
 
         # if it is a python script, set file extension to show that and make sure *_INPUT_DATATYPE is a valid PYTHON_* string
         file_ext = 'python_embedding'
-        data_type = self.c_dict[f'{input_type}_INPUT_DATATYPE']
+        data_type = self.c_dict.get(f'{input_type}_INPUT_DATATYPE', '')
         if data_type not in util.PYTHON_EMBEDDING_TYPES:
             self.log_error(f"{input_type}_{self.app_name.upper()}_INPUT_DATATYPE ({data_type}) must be set to a valid Python Embedding type "
                            f"if supplying a Python script as the {input_type}_VAR<n>_NAME. Valid options: "
@@ -662,6 +743,42 @@ class CommandBuilder:
         # set file type string to be set in MET config file to specify Python Embedding is being used for this dataset
         self.c_dict[f'{input_type}_FILE_TYPE'] = f"file_type = {data_type};"
         return file_ext
+
+    def get_optional_number_from_config(self, section, name, typeobj, default=None):
+        """!Helper function to read optional configuration variable that should be an integer. If the variable is set
+            in the config and it is not an integer, log an error and set self.isOK to False
+            Args:
+                @param section configuration file section of variable, i.e. [config] or [dir]
+                @param name configuration variable name
+                @param typeobj type of number to read, i.e. int or float
+                @param default default value to use if config variable is not set, default value is -999
+                @returns Empty string if configuration variable is not set, integer value if value is an integer or default if unset
+        """
+        value = self.config.getstr(section,
+                                   name,
+                                   '')
+        try:
+            if value:
+                return typeobj(value)
+
+            # if a default value was specified, return that
+            if default:
+                return default
+
+            # if no default was set, return missing data value for int or float
+            if typeobj == int:
+                return util.MISSING_DATA_VALUE_INT
+
+            if typeobj == float:
+                return util.MISSING_DATA_VALUE_FLOAT
+
+            # if neither int or float was specified, return None
+            return None
+
+        except ValueError:
+            self.log_error(f"[{section}] {name} must be an {typeobj}. Value is {value}")
+            self.isOK = False
+            return None
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -673,19 +790,19 @@ class CommandBuilder:
                               'You must use a subclass')
             return None
 
-        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
+        cmd = '{} -v {}'.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for arg in self.args:
-            cmd += arg + " "
+            cmd += " " + arg
 
         if not self.infiles:
             self.log_error("No input filenames specified")
             return None
 
         for infile in self.infiles:
-            cmd += infile + " "
+            cmd += " " + infile
 
-        if self.outfile == "":
+        if not self.outfile:
             self.log_error("No output filename specified")
             return None
 
@@ -693,7 +810,7 @@ class CommandBuilder:
 
         # create outdir (including subdir in outfile) if it doesn't exist
         parent_dir = os.path.dirname(out_path)
-        if parent_dir == '':
+        if not parent_dir:
             self.log_error('Must specify path to output file')
             return None
 
@@ -702,7 +819,7 @@ class CommandBuilder:
 
         cmd += " " + out_path
 
-        if self.param != "":
+        if self.param:
             cmd += ' ' + self.param
 
         return cmd
@@ -726,6 +843,9 @@ class CommandBuilder:
         cmd = self.get_command()
         if cmd is None:
             return False
+
+        # add command to list of all commands run
+        self.all_commands.append(cmd)
 
         ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name,
                                               copyable_env=self.get_env_copy())

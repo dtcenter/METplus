@@ -12,13 +12,17 @@ Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 '''
 
+import os
+
+#pylint:disable=unused-import
 import metplus_check_python_version
 
-import os
 import met_util as util
+import time_util
 from string_template_substitution import StringSub
 from reformat_gridded_wrapper import ReformatGriddedWrapper
 
+# pylint:disable=pointless-string-statement
 '''!@namespace RegridDataPlaneWrapper
 @brief Wraps the MET tool regrid_data_plane to reformat gridded datasets
 @endcode
@@ -42,6 +46,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = \
           self.config.getbool('config', f'{app}_SKIP_IF_OUTPUT_EXISTS',
                               False)
+
+        c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
+                                                       f'{app}_ONCE_PER_FIELD',
+                                                       True)
 
         c_dict['FCST_INPUT_TEMPLATE'] = \
             self.config.getraw('filename_templates',
@@ -87,7 +95,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                    'OBS_REGRID_DATA_PLANE_TEMPLATE',
                                    '')
 
+        window_types = []
         if self.config.getbool('config', 'FCST_REGRID_DATA_PLANE_RUN', False):
+            window_types.append('FCST')
             c_dict['FCST_INPUT_DIR'] = \
                 self.config.getdir('FCST_REGRID_DATA_PLANE_INPUT_DIR', '')
 
@@ -106,6 +116,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
 
         if self.config.getbool('config', 'OBS_REGRID_DATA_PLANE_RUN', False):
+            window_types.append('OBS')
             c_dict['OBS_INPUT_DIR'] = \
                 self.config.getdir('OBS_REGRID_DATA_PLANE_INPUT_DIR', '')
 
@@ -121,6 +132,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.log_error("OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE must be set if "
                                "OBS_REGRID_DATA_PLANE_RUN is True")
                 self.isOK = False
+
+        self.handle_window_variables(c_dict, self.app_name, dtypes=window_types)
 
         c_dict['VERIFICATION_GRID'] = \
             self.config.getraw('config', 'REGRID_DATA_PLANE_VERIF_GRID', '')
@@ -147,176 +160,269 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         return c_dict
 
-    def get_explicit_field_names(self, index, d_type):
+    def get_explicit_field_names(self, index, data_type, time_info):
         """! Get output field name from [FCST/OBS]_<APP_NAME>_*
              Use input/output field name if it exists, then use generic
              field name, then return empty string if neither are set
              Args:
                @param index integer n corresponding to [FCST/OBS]_VAR<n>_*
-               @param d_type type of data being processed (FCST or OBS)
+               @param data_type type of data being processed (FCST or OBS)
                @return tuple containing input and output field names to use
         """
         app = self.app_name.upper()
         input_field_name = \
             self.config.getraw('config',
-                               f'{d_type}_{app}_VAR{index}_INPUT_FIELD_NAME',
+                               f'{data_type}_{app}_VAR{index}_INPUT_FIELD_NAME',
                                '')
         if not input_field_name:
             input_field_name = \
                 self.config.getraw('config',
-                                   f'{d_type}_{app}_VAR{index}_FIELD_NAME',
+                                   f'{data_type}_{app}_VAR{index}_FIELD_NAME',
                                    '')
 
         input_field_level = \
             self.config.getraw('config',
-                               f'{d_type}_{app}_VAR{index}_INPUT_LEVEL',
+                               f'{data_type}_{app}_VAR{index}_INPUT_LEVEL',
                                '')
 
         output_field_name = \
             self.config.getraw('config',
-                               f'{d_type}_{app}_VAR{index}_OUTPUT_FIELD_NAME',
+                               f'{data_type}_{app}_VAR{index}_OUTPUT_FIELD_NAME',
                                '')
         if not output_field_name:
             output_field_name = \
                 self.config.getraw('config',
-                                   f'{d_type}_{app}_VAR{index}_FIELD_NAME',
+                                   f'{data_type}_{app}_VAR{index}_FIELD_NAME',
                                    '')
+
+        # run through StringSub in case the field name contains a template
+        input_field_name = StringSub(self.logger,
+                                     input_field_name,
+                                     **time_info).do_string_sub()
+        input_field_level = StringSub(self.logger,
+                                      input_field_level,
+                                      **time_info).do_string_sub()
+
+        output_field_name = StringSub(self.logger,
+                                      output_field_name,
+                                      **time_info).do_string_sub()
 
         return input_field_name, input_field_level, output_field_name
 
-    def run_at_time_once(self, time_info, var_info, dtype):
-        """! Runs the MET application for a given time and forecast lead combination
-              Args:
-                @param ti time_info object containing timing information
-                @param v var_info object containing variable information
+    def get_input_indices(self, data_type):
+        """!Find all n in [FCST/OBS]_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME or
+           [FCST/OBS]_REGRID_DATA_PLANE_VAR<n>_FIELD_NAME. Used to see if there are
+           any fields defined that don't correspond to an item in [FCST/OBS]_VAR<n>_
+           variables.
+           Args:
+               @param data_type type of field to look for (FCST or OBS)
+               @returns list of indices that are set
         """
-        self.clear()
-
-        # check if any RDP VAR<n>_INPUT_FIELD_* configs are set
-        # get a list of the indices that are set
-        input_regex = f'({dtype})_{self.app_name.upper()}_'+r'VAR(\d+)_INPUT_FIELD_NAME'
+        input_regex = f'({data_type})_{self.app_name.upper()}_'+r'VAR(\d+)_INPUT_FIELD_NAME'
         rdp_input_indices = \
           util.find_indices_in_config_section(input_regex, self.config, 'config').keys()
 
         # check RDP VAR<n>_FIELD_NAME if INPUT_FIELD is not set
         if not rdp_input_indices:
-            input_regex = f'({dtype})_{self.app_name.upper()}_'+r'VAR(\d+)_FIELD_NAME'
+            input_regex = f'({data_type})_{self.app_name.upper()}_'+r'VAR(\d+)_FIELD_NAME'
             rdp_input_indices = \
               util.find_indices_in_config_section(input_regex, self.config, 'config').keys()
 
+        return rdp_input_indices
+
+    def get_field_info_list(self, var_list, data_type, time_info):
+        """!Read field list (var_list) generated from [FCST/OBS]_VAR<n>_ variables replace values
+            from [FCST/OBS]_REGRID_DATA_PLANE_VAR<n>_INPUT_ variables if they are set
+            Args:
+                @param var_list list of field info objects populated from
+                [FCST/OBS]_VAR<n>_ variables
+                @param data_type type of data to process, i.e. FCST or OBS
+                @returns field list values combined with wrapper specific info"""
+        # get list of fields to process
+        rdp_input_indices = self.get_input_indices(data_type)
+
         # if no field info or input field configs are set, error and return
-        if var_info is None and not rdp_input_indices:
+        if not var_list and not rdp_input_indices:
             self.log_error('No input fields were specified to RegridDataPlane. You must set either '
-                           f'{dtype}_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME or '
-                           f'{dtype}_VAR<n>_NAME.')
-            return
+                           f'{data_type}_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME or '
+                           f'{data_type}_VAR<n>_NAME.')
+            return None
 
-        # if var info is set, build command using that item's info
-        # unless the corresponding index RDP_VAR<index>_INPUT_* info is set
+        # get list of fields from var_list and rdp_input_indices
+        field_info_list = var_list if var_list else []
 
-        # set output name
-        # if [FCST/OBS]_REGRID_DATA_PLANE_OUTPUT_FIELD_NAME is not explicitly set,
-        # use the input field name. If input comes from a python script, report error
-        if var_info is not None:
-            index = var_info['index']
-            input_name, input_level, output_name = \
-              self.get_explicit_field_names(index, dtype)
+        var_indices = []
+        # if index exists in field info list, replace values if they are set
+        for field_info in field_info_list:
 
-            # get input field name/level from [FCST/OBS]_VAR<n>_* if not set explicitly
-            if not input_name:
-                input_name = var_info[f'{dtype.lower()}_name']
+            input_name, input_level, output_name = (
+                self.get_explicit_field_names(field_info['index'], data_type, time_info)
+            )
 
-            if not input_level:
-                input_level = var_info[f'{dtype.lower()}_level']
+            if input_name:
+                field_info[f'{data_type.lower()}_name'] = input_name
 
-            if not output_name and util.is_python_script(input_name):
-                    self.log_error('Must explicitly set '
-                                      f'{dtype}_REGRID_DATA_PLANE_VAR{index}_'
-                                      'OUTPUT_FIELD_NAME '
-                                      'if input field comes from a python script.')
-                    return
+            if input_level:
+                field_info[f'{data_type.lower()}_level'] = input_level
 
-            field_info = {'input_name': input_name,
-                          'input_level': input_level,
-                          'output_name': output_name}
+            # also add output name
+            if output_name:
+                field_info[f'{data_type.lower()}_output_name'] = output_name
 
-            if not self.set_arguments(field_info, time_info, dtype):
-                # do not run if error or output should be skipped
+            var_indices.append(field_info['index'])
+
+        # get list of indices from wrapper-specific that are not in var list
+        rdp_only_indices = list(set(rdp_input_indices) - set(var_indices))
+
+        # if index does not exist, add an entry to the list
+        for rdp_only_index in rdp_only_indices:
+            input_name, input_level, output_name = (
+                self.get_explicit_field_names(rdp_only_index, data_type, time_info)
+            )
+
+            field_info = {f"{data_type.lower()}_name": input_name,
+                          f"{data_type.lower()}_level": input_level,
+                          'index': rdp_only_index,
+                          }
+
+            if output_name:
+                field_info[f"{data_type.lower()}_output_name"] = output_name
+
+            field_info_list.append(field_info)
+
+        return field_info_list
+
+    def get_output_name(self, field_info, data_type, input_name):
+        """!Set output name if set in field info or use input name if not
+            Args:
+               @param field_info field dictionary to read level information
+               @param data_type type of data to process, i.e. FCST or OBS
+               @param input_name name of input field to be used as output name not explicitly set
+               @returns output name
+        """
+        output_name = field_info.get(f'{data_type.lower()}_output_name', None)
+        if not output_name:
+            output_name = input_name
+
+        return output_name
+
+    def handle_output_file(self, time_info, field_info, data_type):
+        """!Add field level to time_info dict so it can be referenced in
+            filename template, then set output file path and check if it should be skipped
+            if it exists.
+            Args:
+                 @param time_info time dictionary used for string substitution
+                 @param field_info field dictionary to read level information
+                 @param data_type type of data to process, i.e. FCST or OBS
+                 @returns True if command should be run, False if it should not be run
+        """
+        _, level = util.split_level(field_info[f'{data_type.lower()}_level'])
+        time_info['level'] = time_util.get_seconds_from_string(level, 'H')
+        return self.find_and_check_output_file(time_info)
+
+    def run_once_per_field(self, time_info, field_info_list, data_type):
+        """!Loop over fields and run command for each.
+            Args:
+                @param time_info time dictionary used for string substitution
+                @param field_info_list list of field dictionaries to process
+                @param data_type type of data to process, i.e. FCST or OBS
+        """
+        for field_info in field_info_list:
+            self.args.clear()
+
+            self.set_command_line_arguments()
+
+            self.add_field_info_to_time_info(time_info,
+                                             field_info)
+
+            input_name = self.set_field_command_line_arguments(field_info,
+                                                               data_type)
+
+            self.args.append("-name " + self.get_output_name(field_info,
+                                                             data_type,
+                                                             input_name))
+
+            if not self.handle_output_file(time_info,
+                                           field_info,
+                                           data_type):
                 return
 
-            # try to build and run command
             self.build_and_run_command()
 
-        # if var info is not set, build command for each RDP_VAR<n>_INPUT_NAME
+    def run_once_for_all_fields(self, time_info, field_info_list, data_type):
+        """!Loop over fields to add each field info, then run command once to
+            process all fields.
+            Args:
+                @param time_info time dictionary used for string substitution
+                @param field_info_list list of field dictionaries to process
+                @param data_type type of data to process, i.e. FCST or OBS
+        """
+        self.set_command_line_arguments()
+        output_names = []
+        for field_info in field_info_list:
+            self.add_field_info_to_time_info(time_info,
+                                             field_info)
+
+            input_name = self.set_field_command_line_arguments(field_info,
+                                                               data_type)
+
+            # get list of output names
+            output_names.append(self.get_output_name(field_info,
+                                                     data_type,
+                                                     input_name))
+
+
+        # add list of output names
+        self.args.append("-name " + ','.join(output_names))
+
+        if not self.handle_output_file(time_info,
+                                       field_info_list[0],
+                                       data_type):
+            return
+
+        # build and run commands
+        self.build_and_run_command()
+
+    def run_at_time_once(self, time_info, var_list, data_type):
+        """!Build command or commands to run at the given run time
+            Args:
+                @param time_info time dictionary used for string substitution
+                @param var_list list of field dictionaries to process
+                @param data_type type of data to process, i.e. FCST or OBS
+        """
+        self.clear()
+
+        # set output dir and template to current data type's values
+        self.c_dict['OUTPUT_DIR'] = self.c_dict[f'{data_type}_OUTPUT_DIR']
+        self.c_dict['OUTPUT_TEMPLATE'] = self.c_dict[f'{data_type}_OUTPUT_TEMPLATE']
+
+        field_info_list = self.get_field_info_list(var_list, data_type, time_info)
+        if not field_info_list:
+            self.log_error("Could not build field info list")
+            return
+
+        if not self.find_input_files(time_info, data_type, field_info_list):
+            return
+
+        # set environment variables
+        self.set_environment_variables(time_info)
+
+        # determine if running once for all fields or once per field
+        # if running once per field, loop over field list and run once for each
+        if self.c_dict['ONCE_PER_FIELD']:
+            self.run_once_per_field(time_info, field_info_list, data_type)
         else:
-            for index in rdp_input_indices:
-                self.clear()
-                input_name, input_level, output_name = \
-                  self.get_explicit_field_names(index, dtype)
+            # if not running once per field, process all fields and run once
+            self.run_once_for_all_fields(time_info, field_info_list, data_type)
 
-                field_info = {'input_name': input_name,
-                              'input_level': input_level,
-                              'output_name': output_name}
+    def find_input_files(self, time_info, data_type, field_info_list):
+        """!Get input file and verification grid to process. Use the first field in the
+            list to substitute level if that is provided in the filename template"""
+        input_path = self.find_data(time_info, var_info=field_info_list[0], data_type=data_type)
+        if not input_path:
+            return None
 
-                if not self.set_arguments(field_info, time_info, dtype):
-                    # do not run if error or output should be skipped
-                    continue
-
-                # try to build and run command
-                self.build_and_run_command()
-
-    def set_arguments(self, field_info, time_info, dtype):
-        """!Returns False if command should not be run"""
-        field_name = field_info['input_name']
-        input_level = field_info['input_level']
-        output_name = field_info['output_name']
-
-        # run through StringSub in case the field name contains a template
-        field_name = StringSub(self.logger,
-                               field_name,
-                               **time_info).do_string_sub()
-
-        input_level = StringSub(self.logger,
-                                input_level,
-                                **time_info).do_string_sub()
-
-        output_name = StringSub(self.logger,
-                                output_name,
-                                **time_info).do_string_sub()
-
-        # strip off quotes around input_level if found
-        input_level = util.remove_quotes(input_level)
-
-        _, level = util.split_level(input_level)
-
-        input_dir = self.c_dict[dtype+'_INPUT_DIR']
-        input_template = self.c_dict[dtype+'_INPUT_TEMPLATE']
-        output_dir = self.c_dict[dtype+'_OUTPUT_DIR']
-        output_template = self.c_dict[dtype+'_OUTPUT_TEMPLATE']
-
-        if not level.isdigit():
-            f_level = '0'
-        else:
-            f_level = level
-
-        input_file = StringSub(self.logger,
-                               input_template,
-                               level=(int(f_level)*3600),
-                               **time_info).do_string_sub()
-        full_path = os.path.join(input_dir, input_file)
-
-        infile = \
-          util.preprocess_file(full_path,
-                               self.config.getstr('config',
-                                                  dtype+'_REGRID_DATA_PLANE_INPUT_DATATYPE',
-                                                  ''),
-                               self.config)
-
-        if infile is not None:
-            self.infiles.append(infile)
-        else:
-            self.log_error(f"Could not find {dtype} file {full_path} using template {input_template}")
-            return False
+        self.infiles.append(input_path)
 
         verif_grid = StringSub(self.logger,
                                self.c_dict['VERIFICATION_GRID'],
@@ -325,48 +431,17 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         # put quotes around verification grid in case it is a grid description
         self.infiles.append(f'"{verif_grid}"')
 
-        # get output path and check if it already exists, skip if necessary
-        outfile = StringSub(self.logger,
-                            output_template,
-                            level=(int(f_level)*3600),
-                            **time_info).do_string_sub()
-        self.set_output_path(os.path.join(output_dir, outfile))
+        return self.infiles
 
-        outpath = self.get_output_path()
-        if os.path.exists(outpath) and \
-          self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
-            self.logger.debug('Skip writing output file {} because it already '
-                              'exists. Remove file or change '
-                              'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS to True to process'
-                              .format(outpath))
-            return False
-
-        # if using python script to supply input data, just set field name
-        # if PcpCombine has been run on this data, set field name = name_level
-        # and level=(*,*), otherwise set name=name and level=level
-        if util.is_python_script(field_name):
-            self.args.append(f"-field 'name=\"{field_name}\";'")
-        elif self.config.getbool('config', dtype + '_PCP_COMBINE_RUN', False):
-            if len(str(level)) > 0:
-               name = "{:s}_{:s}".format(field_name, str(level))
-            else:
-               name = "{:s}".format(field_name)
-            self.args.append(f"-field 'name=\"{name}\"; level=\"(*,*)\";'")
-        else:
-            name = "{:s}".format(field_name)
-            self.args.append(f"-field 'name=\"{name}\"; level=\"{input_level}\";'")
-
-        if not output_name:
-            output_name = name
+    def set_command_line_arguments(self):
+        """!Returns False if command should not be run"""
 
         # set regrid method is explicitly set
-        if self.c_dict['METHOD'] != '':
+        if self.c_dict['METHOD']:
             self.args.append("-method {}".format(self.c_dict['METHOD']))
 
         # set width argument
         self.args.append("-width {}".format(self.c_dict['WIDTH']))
-
-        self.args.append("-name " + output_name)
 
         if self.c_dict['GAUSSIAN_DX']:
             self.args.append(f"-gaussian_dx {self.c_dict['GAUSSIAN_DX']}")
@@ -375,6 +450,38 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             self.args.append(f"-gaussian_radius {self.c_dict['GAUSSIAN_RADIUS']}")
 
         return True
+
+    def set_field_command_line_arguments(self, field_info, data_type):
+        """!Sets command line arguments for an input field.
+            Args:
+                @param field_info field dictionary to read level information
+                @param data_type type of data to process, i.e. FCST or OBS
+                @returns input name to be used as output name if not explicitly set
+        """
+
+        field_name = field_info[f'{data_type.lower()}_name']
+        # strip off quotes around input_level if found
+        input_level = util.remove_quotes(field_info[f'{data_type.lower()}_level'])
+
+        _, level = util.split_level(input_level)
+
+        # if using python script to supply input data, just set field name
+        # if PcpCombine has been run on this data, set field name = name_level
+        # and level=(*,*), otherwise set name=name and level=level
+        if util.is_python_script(field_name):
+            self.args.append(f"-field 'name=\"{field_name}\";'")
+            name = field_name
+        elif self.config.getbool('config', data_type + '_PCP_COMBINE_RUN', False):
+            if len(str(level)) > 0:
+                name = "{:s}_{:s}".format(field_name, str(level))
+            else:
+                name = "{:s}".format(field_name)
+            self.args.append(f"-field 'name=\"{name}\"; level=\"(*,*)\";'")
+        else:
+            name = "{:s}".format(field_name)
+            self.args.append(f"-field 'name=\"{name}\"; level=\"{input_level}\";'")
+
+        return name
 
 if __name__ == "__main__":
     util.run_stand_alone(__file__, "RegridDataPlane")
