@@ -42,39 +42,53 @@ class TCRMWWrapper(CommandBuilder):
 
         c_dict['INPUT_DIR'] = self.config.getdir('TC_RMW_INPUT_DIR', '')
         c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                          'TC_RMW_INPUT_TEMPLATE')
+                                                      'TC_RMW_INPUT_TEMPLATE')
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('TC_RMW_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                        'TC_RMW_OUTPUT_TEMPLATE')
+
+        c_dict['ADECK_INPUT_DIR'] = self.config.getdir('TC_RMW_ADECK_INPUT_DIR', '')
+        c_dict['ADECK_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+                                                            'TC_RMW_ADECK_TEMPLATE')
 
         # values used in configuration file
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'GFS')
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'TC_RMW_REGRID_TO_GRID', '')
 
         c_dict['N_RANGE'] = ''
-        conf_value = self.config.getint('config', 'TC_RMW_N_RANGE', util.MISSING_DATA_VALUE_INT)
-        if conf_value != util.MISSING_DATA_VALUE_INT:
+        conf_value = self.config.getint('config', 'TC_RMW_N_RANGE')
+        if conf_value is None:
+            self.isOK = False
+        elif conf_value != util.MISSING_DATA_VALUE_INT:
             c_dict['N_RANGE'] = f"n_range = {str(conf_value)};"
 
         c_dict['N_AZIMUTH'] = ''
-        conf_value = self.config.getint('config', 'TC_RMW_N_AZIMUTH', util.MISSING_DATA_VALUE_INT)
-        if conf_value != util.MISSING_DATA_VALUE_INT:
+        conf_value = self.config.getint('config', 'TC_RMW_N_AZIMUTH')
+        if conf_value is None:
+            self.isOK = False
+        elif conf_value != util.MISSING_DATA_VALUE_INT:
             c_dict['N_AZIMUTH'] = f"n_azimuth = {str(conf_value)};"
 
         c_dict['MAX_RANGE_KM'] = ''
-        conf_value = self.config.getfloat('config', 'TC_RMW_MAX_RANGE_KM', util.MISSING_DATA_VALUE_FLOAT)
-        if conf_value != util.MISSING_DATA_VALUE_FLOAT:
+        conf_value = self.config.getfloat('config', 'TC_RMW_MAX_RANGE_KM',)
+        if conf_value is None:
+            self.isOK = False
+        elif conf_value != util.MISSING_DATA_VALUE_FLOAT:
             c_dict['MAX_RANGE_KM'] = f"max_range_km = {str(conf_value)};"
 
         c_dict['DELTA_RANGE_KM'] = ''
-        conf_value = self.config.getfloat('config', 'TC_RMW_DELTA_RANGE_KM', util.MISSING_DATA_VALUE_FLOAT)
-        if conf_value != util.MISSING_DATA_VALUE_FLOAT:
+        conf_value = self.config.getfloat('config', 'TC_RMW_DELTA_RANGE_KM')
+        if conf_value is None:
+            self.isOK = False
+        elif conf_value != util.MISSING_DATA_VALUE_FLOAT:
             c_dict['DELTA_RANGE_KM'] = f"delta_range_km = {str(conf_value)};"
 
         c_dict['RMW_SCALE'] = ''
-        conf_value = self.config.getfloat('config', 'TC_RMW_SCALE', util.MISSING_DATA_VALUE_FLOAT)
-        if conf_value != util.MISSING_DATA_VALUE_FLOAT:
+        conf_value = self.config.getfloat('config', 'TC_RMW_SCALE')
+        if conf_value is None:
+            self.isOK = False
+        elif conf_value != util.MISSING_DATA_VALUE_FLOAT:
             c_dict['RMW_SCALE'] = f"rmw_scale = {str(conf_value)};"
 
         return c_dict
@@ -85,21 +99,28 @@ class TCRMWWrapper(CommandBuilder):
             Args:
               @param time_info dictionary containing timing info from current run"""
 
-        self.add_env_var('DATA_FIELD', self.c_dict.get('DATA_FIELD', ''))
+        self.add_env_var('DATA_FIELD',
+                         self.c_dict.get('DATA_FIELD', ''))
 
         self.add_env_var('N_RANGE',
-                         self.c_dict['N_RANGE'])
-        self.add_env_var('N_AZIMUTH',
-                         self.c_dict['N_AZIMUTH'])
-        self.add_env_var('MAX_RANGE_KM',
-                         self.c_dict['MAX_RANGE_KM'])
-        self.add_env_var('DELTA_RANGE_KM',
-                         self.c_dict['DELTA_RANGE_KM'])
-        self.add_env_var('RMW_SCALE',
-                         self.c_dict['RMW_SCALE'])
+                         self.c_dict.get('N_RANGE', ''))
 
-        # add model (MODEL) and regrid.to_grid (REGRID_TO_GRID)
-        self.add_common_envs()
+        self.add_env_var('N_AZIMUTH',
+                         self.c_dict.get('N_AZIMUTH', ''))
+
+        self.add_env_var('MAX_RANGE_KM',
+                         self.c_dict.get('MAX_RANGE_KM', ''))
+
+        self.add_env_var('DELTA_RANGE_KM',
+                         self.c_dict.get('DELTA_RANGE_KM', ''))
+
+        self.add_env_var('RMW_SCALE',
+                         self.c_dict.get('RMW_SCALE', ''))
+
+        model = self.c_dict.get('MODEL', '')
+        if model:
+            model = f"model = {model};"
+        self.add_env_var('MODEL', model)
 
         super().set_environment_variables(time_info)
 
@@ -178,7 +199,8 @@ class TCRMWWrapper(CommandBuilder):
             return
 
         # get field information to set in MET config
-        self.get_field_info
+        if not self.set_data_field(time_info):
+            return
 
         # get other configurations for command
         self.set_command_line_arguments(time_info)
@@ -194,10 +216,44 @@ class TCRMWWrapper(CommandBuilder):
 
         self.build()
 
+    def set_data_field(self, time_info):
+        self.c_dict['DATA_FIELD'] = ''
+        field_list = util.parse_var_list(self.config,
+                                         time_info,
+                                         met_tool=self.app_name)
+        if not field_list:
+            self.log_error("Could not get field information from config.")
+            return False
+
+        for field in field_list:
+            field_list = self.get_field_info(d_type='FCST',
+                                             v_name=field['fcst_name'],
+                                             v_level=field['fcst_level'],
+                                             )
+            if field_list is None:
+                return False
+
+            formatted_fields = ','.join(field_list)
+            self.c_dict['DATA_FIELD'] = formatted_fields
+            return True
+
     def find_input_files(self, time_info):
         # get a list of the input data files, write to an ascii file if there are more than one
+        input_files = self.find_data(time_info, return_list=True)
+        if not input_files:
+            return None
 
-        # get adeck file?
+        if len(input_files) > 1:
+
+        else:
+            input_file = input_files[0]
+
+        self.infiles.append(input_file)
+
+        # get adeck file
+        adeck_file = self.find_data(time_info, data_type='ADECK')
+        if not adeck_file:
+            return None
 
         # get list of files even if only one is found (return_list=True)
 #        obs_path = self.find_obs(time_info, var_info=None, return_list=True)
