@@ -89,17 +89,6 @@ def get_tags(template):
         i += 1
     return tags
 
-def get_seconds_from_template(split_item):
-    """!Get seconds value from tag that contains a shift or truncate item"""
-    shift_split_string = \
-        split_item.split(FORMATTING_VALUE_DELIMITER)
-
-    if len(shift_split_string) != 2:
-        return
-
-    seconds = shift_split_string[1]
-    return int(time_util.get_seconds_from_string(seconds, default_unit='S'))
-
 def format_one_time_item(item, time_str, unit):
     """!Determine precision of time offset value and format
         Args:
@@ -267,6 +256,27 @@ class StringSub(object):
             for key, value in kwargs.items():
                 setattr(self, key, value)
 
+    def get_seconds_from_template(self, split_item):
+        """!Get seconds value from tag that contains a shift or truncate item
+            Args:
+                @param split_item key/value from string sub tag to evalute, i.e. shift=-1H
+                @returns integer number of seconds that correspond to the item, i.e. -3600
+        """
+        shift_split_string = \
+            split_item.split(FORMATTING_VALUE_DELIMITER)
+
+        if len(shift_split_string) != 2:
+            return
+
+        valid_time = self.kwargs.get('valid',
+                                     self.kwargs.get('now',
+                                                     None))
+
+        seconds = shift_split_string[1]
+        return int(time_util.get_seconds_from_string(seconds,
+                                                     default_unit='S',
+                                                     valid_time=valid_time))
+
     def round_time_down(self, obj):
         """!If template value needs to be truncated, round the value down
             to the given truncate interval"""
@@ -433,12 +443,12 @@ class StringSub(object):
             # if shift is set, get that value before handling formatting
             for split_item in split_string:
                 if split_item.startswith(SHIFT_STRING):
-                    self.shift_seconds = get_seconds_from_template(split_item)
+                    self.shift_seconds = self.get_seconds_from_template(split_item)
 
             # if truncate is set, get that value before handling formatting
             for split_item in split_string:
                 if split_item.startswith(TRUNCATE_STRING):
-                    self.truncate_seconds = get_seconds_from_template(split_item)
+                    self.truncate_seconds = self.get_seconds_from_template(split_item)
 
             # format times appropriately and add to replacement_dict
             formatted = False
