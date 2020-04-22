@@ -17,7 +17,7 @@ import collections
 import datetime
 import shutil
 from os.path import dirname, realpath
-from configparser import ConfigParser
+from configparser import ConfigParser, NoOptionError
 
 from produtil.config import ProdConfig
 import produtil.fileop
@@ -607,23 +607,41 @@ class METplusConfig(ProdConfig):
 
     def getint(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Wraps produtil getint to gracefully report if variable is not set
-            and no default value is specified"""
-        if self.has_option(sec, name):
-            return super().getint(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            and no default value is specified
+            @returns Value if set, default of missing value if not set, None if value is an incorrect type"""
+        try:
+            # call ProdConfig function with no default set so we can log and set the default
+            return super().getint(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+        except NoOptionError:
+            # if config variable is not set
+            if default is None:
+                default = util.MISSING_DATA_VALUE_INT
 
-        # config item was not found
-        self.check_default(sec, name, default)
-        return default
+            self.check_default(sec, name, default)
+            return default
+        except ValueError:
+            # if value is not correct type, log error and return None
+            self.logger.error(f"[{sec}] {name} must be an integer.")
+            return None
 
     def getfloat(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
-        """!Wraps produtil getfloat to gracefully report if variable is not set
-            and no default value is specified"""
-        if self.has_option(sec, name):
-            return super().getfloat(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+        """!Wraps produtil getint to gracefully report if variable is not set
+            and no default value is specified
+            @returns Value if set, default of missing value if not set, None if value is an incorrect type"""
+        try:
+            # call ProdConfig function with no default set so we can log and set the default
+            return super().getfloat(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+        except NoOptionError:
+            # if config variable is not set
+            if default is None:
+                default = util.MISSING_DATA_VALUE_FLOAT
 
-        # config item was not found
-        self.check_default(sec, name, default)
-        return default
+            self.check_default(sec, name, default)
+            return default
+        except ValueError:
+            # if value is not correct type, log error and return None
+            self.logger.error(f"[{sec}] {name} must be a float.")
+            return None
 
     def getseconds(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Converts time values ending in H, M, or S to seconds"""
