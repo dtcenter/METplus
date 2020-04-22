@@ -49,12 +49,13 @@ Consider the impact to the other METplus components.
 See the [METplus Workflow](https://ncar.github.io/METplus/Contributors_Guide/github_workflow.html) for details.
 - [ ] Complete the issue definition above.
 - [ ] Fork this repository or create a branch of **develop**.
-Branch name: `feature_<Issue Number>_<Description>`
+Branch name:  `feature_<Issue Number>_<Description>`
 - [ ] Complete the task and verify your changes.
 - [ ] Add/update unit tests.
 - [ ] Add/update documentation.
 - [ ] Push local changes to GitHub.
-- [ ] Submit a pull request to merge into **develop**, listing the **\<Issue Number\>** in the title.
+- [ ] Submit a pull request to merge into **develop**.
+Pull request: `feature <Issue Number> <Description>`
 - [ ] Iterate until the reviewer(s) accept and merge your changes.
 - [ ] Delete your fork or branch.
 - [ ] Close this issue.
