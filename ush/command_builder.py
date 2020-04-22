@@ -776,6 +776,129 @@ class CommandBuilder:
             self.isOK = False
             return None
 
+    def get_field_info(self, d_type, v_name, v_level='', v_thresh=[], v_extra=''):
+        """! Format field information into format expected by MET config file
+              Args:
+                @param v_level level of data to extract
+                @param v_thresh threshold value to use in comparison
+                @param v_name name of field to process
+                @param v_extra additional field information to add if available
+                @param d_type type of data to find i.e. FCST or OBS
+                @rtype string
+                @return Returns formatted field information
+        """
+        # separate character from beginning of numeric level value if applicable
+        _, level = util.split_level(v_level)
+
+        # list to hold field information
+        fields = []
+
+        # get cat thresholds if available
+        cat_thresh = ""
+        threshs = [None]
+        if len(v_thresh) != 0:
+            threshs = v_thresh
+            cat_thresh = "cat_thresh=[ " + ','.join(threshs) + " ];"
+
+        # if neither input is probabilistic, add all cat thresholds to same field info item
+        if not self.c_dict.get('FCST_IS_PROB', False) and not self.c_dict.get('OBS_IS_PROB', False):
+
+            # if pcp_combine was run, use name_level, (*,*) format
+            # if not, use user defined name/level combination
+            if d_type != 'ENS' and self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
+                field = "{ name=\"" + v_name + "_" + level + \
+                        "\"; level=\"(*,*)\";"
+            else:
+                field = "{ name=\"" + v_name + "\";"
+
+                # add level if it is set
+                if v_level:
+                    field += " level=\"" +  v_level + "\";"
+
+            # add threshold if it is set
+            if cat_thresh:
+                field += ' ' + cat_thresh
+
+            # add extra info if it is set
+            if v_extra:
+                field += ' ' + v_extra
+
+            field += ' }'
+            fields.append(field)
+
+        # if either input is probabilistic, create separate item for each threshold
+        else:
+
+            # if input currently being processed if probabilistic, format accordingly
+            if self.c_dict.get(d_type + '_IS_PROB', False):
+                # if probabilistic data for either fcst or obs, thresholds are required
+                # to be specified or no field items will be created. Create a field dict
+                # item for each threshold value
+                for thresh in threshs:
+                    # if utilizing python embedding for prob input, just set the
+                    # field name to the call to the script
+                    if util.is_python_script(v_name):
+                        field = "{ name=\"" + v_name + "\"; prob=TRUE;"
+                    elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF' or \
+                      not self.c_dict[d_type + '_PROB_IN_GRIB_PDS']:
+                        field = "{ name=\"" + v_name + "\";"
+                        if v_level:
+                            field += " level=\"" +  v_level + "\";"
+                        field += " prob=TRUE;"
+                    else:
+                        # a threshold value is required for GRIB prob DICT data
+                        if thresh is None:
+                            self.log_error('No threshold was specified for probabilistic '
+                                              'forecast GRIB data')
+                            return None
+
+                        thresh_str = ""
+                        thresh_tuple_list = util.get_threshold_via_regex(thresh)
+                        for comparison, number in thresh_tuple_list:
+                            if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
+                                thresh_str += "thresh_lo=" + str(number) + "; "
+                            if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
+                                thresh_str += "thresh_hi=" + str(number) + "; "
+
+                        field = "{ name=\"PROB\"; level=\"" + v_level + \
+                                "\"; prob={ name=\"" + v_name + \
+                                "\"; " + thresh_str + "}"
+
+                    # add probabilistic cat thresh if different from default ==0.1
+                    prob_cat_thresh = self.c_dict[d_type + '_PROB_THRESH']
+                    if prob_cat_thresh is not None:
+                        field += " cat_thresh=[" + prob_cat_thresh + "];"
+
+                    if v_extra:
+                        field += ' ' + v_extra
+
+                    field += ' }'
+                    fields.append(field)
+            else:
+                # if input being processed is not probabilistic but the other input is
+                for thresh in threshs:
+                    # if pcp_combine was run, use name_level, (*,*) format
+                    # if not, use user defined name/level combination
+                    if self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
+                        field = "{ name=\"" + v_name + "_" + level + \
+                                "\"; level=\"(*,*)\";"
+                    else:
+                        field = "{ name=\"" + v_name + "\";"
+                        if v_level:
+                            field += " level=\"" + v_level + "\";"
+
+                    if thresh is not None:
+                        field += " cat_thresh=[ " + str(thresh) + " ];"
+
+                    if v_extra:
+                        field += ' ' + v_extra
+
+                    field += ' }'
+                    fields.append(field)
+
+        # return list of field dictionary items
+        return fields
+
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string
