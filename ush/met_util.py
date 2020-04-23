@@ -1717,25 +1717,72 @@ def get_dirs(base_dir):
 
     return dir_list
 
+def handle_begin_end_incr(list_str):
+    """!Check for instances of begin_end_incr() in the input string and evaluate as needed
+        Args:
+            @param list_str string that contains a comma separated list
+            @returns string that has list expanded"""
+
+    matches = begin_end_incr_findall(list_str)
+
+    for match in matches:
+        item_list = begin_end_incr_evaluate(match)
+        if item_list:
+            list_str = list_str.replace(match, ','.join(item_list))
+
+    return list_str
+
+def begin_end_incr_findall(list_str):
+    """!Find all instances of begin_end_incr in list string
+        Args:
+            @param list_str string that contains a comma separated list
+            @returns list of strings that have begin_end_incr() characters"""
+    # remove space around commas (again to make sure)
+    # this makes the regex slightly easier because we don't have to include
+    # as many \s* instances in the regex string
+    list_str = re.sub(r'\s*,\s*', ',', list_str)
+
+    # find begin_end_incr and any text before and after that are not a comma
+    # [^,\s]* evaluates to any character that is not a comma or space
+    return re.findall(r"([^,]*begin_end_incr\(\s*-?\d*,-?\d*,-*\d*,?\d*\s*\)[^,]*)",
+                      list_str)
+
 def begin_end_incr_evaluate(item):
-    match = re.match(r'^(.*)begin_end_incr\(\s*(-*\d*),(-*\d*),(-*\d*)\s*\)(.*)$',
+    """!Expand begin_end_incr() items into a list of values
+        Args:
+            @param item string containing begin_end_incr() tag with
+            possible text before and after
+            @returns list of items expanded from begin_end_incr
+    """
+    match = re.match(r"^(.*)begin_end_incr\(\s*(-*\d*),(-*\d*),(-*\d*),?(\d*)\s*\)(.*)$",
                      item)
     if match:
-        before = match.group(1)
-        after = match.group(5)
+        before = match.group(1).strip()
+        after = match.group(6).strip()
         start = int(match.group(2))
         end = int(match.group(3))
         step = int(match.group(4))
+        precision = match.group(5).strip()
+
         if start <= end:
             int_list = range(start, end+1, step)
         else:
             int_list = range(start, end-1, step)
 
-        return [f"{before}{str(out_str)}{after}" for out_str in int_list]
+        out_list = []
+        for int_values in int_list:
+            out_str = str(int_values)
+
+            if precision:
+                out_str = out_str.zfill(int(precision))
+
+            out_list.append(f"{before}{out_str}{after}")
+
+        return out_list
 
     return None
 
-def getlist(list_str, logger=None):
+def getlist(list_str):
     """! Returns a list of string elements from a comma
          separated string of values.
          This function MUST also return an empty list [] if s is '' empty.
@@ -1748,6 +1795,7 @@ def getlist(list_str, logger=None):
          a conf file returns '' an empty string.
 
         @param list_str the string being converted to a list.
+        @returns list of strings formatted properly and expanded as needed
     """
     # FIRST remove surrounding comma, and spaces, form the string.
     list_str = list_str.strip().strip(',').strip()
@@ -1755,13 +1803,7 @@ def getlist(list_str, logger=None):
     # remove space around commas
     list_str = re.sub(r'\s*,\s*', ',', list_str)
 
-    # find begin_end_incr and any text before and after that are not a comma
-    matches = re.findall(r'([^,]*begin_end_incr\(\s*-*\d*,-*\d*,-*\d*\s*\)[^,]*)',
-                       list_str)
-    for match in matches:
-        item_list = begin_end_incr_evaluate(match)
-        if item_list:
-            list_str = list_str.replace(match, ','.join(item_list))
+    list_str = handle_begin_end_incr(list_str)
 
     # use csv reader to divide comma list while preserving strings with comma
     # convert the csv reader to a list and get first item (which is the whole list)
@@ -1769,13 +1811,21 @@ def getlist(list_str, logger=None):
     return item_list
 
 def getlistfloat(list_str):
-    """!Get list and convert all values to float"""
+    """!Get list and convert all values to float
+        Args:
+            @param list_str the string being converted to a list.
+            @returns list of floats
+    """
     list_str = getlist(list_str)
     list_str = [float(i) for i in list_str]
     return list_str
 
 def getlistint(list_str):
-    """!Get list and convert all values to int"""
+    """!Get list and convert all values to int
+            Args:
+            @param list_str the string being converted to a list.
+            @returns list of ints
+    """
     list_str = getlist(list_str)
     list_str = [int(i) for i in list_str]
     return list_str
