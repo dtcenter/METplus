@@ -17,22 +17,9 @@ def metplus_config():
          reflect different paths, directories, values, etc. for individual
          tests.
     """
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='test ',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='test ')
-        produtil.log.postmsg('config test is starting')
-
-        # Read in the configuration object CONFIG
-        config = config_metplus.setup(util.baseinputconfs)
-        return config
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'config test failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
+    # Read in the configuration object CONFIG
+    config = config_metplus.setup(util.baseinputconfs)
+    return config
 
 @pytest.mark.parametrize(
     'key, value', [
@@ -83,3 +70,51 @@ def test_get_optional_number_from_config(input_value, typeobj, default, result):
     cb = CommandBuilder(conf, conf.logger)
     output_value = cb.get_optional_number_from_config('config', 'TEST_OPT_NUMBER', typeobj, default)
     assert(output_value == result)
+
+# value = None -- config variable not set
+@pytest.mark.parametrize(
+    'input_value, default, result', [
+        ('1', None, '1'),
+        ('1', 2, '1'),
+        ('integer', None, 'integer'),
+        ('integer', 1, 'integer'),
+        ('1.7', '2', '1.7'),
+        ('1.0', None, '1.0'),
+        ('', None, ''),
+        ('', '2', ''),
+#        (None, None, None),
+        (None, '1', '1'),
+    ]
+)
+def test_getstr(input_value, default, result):
+    conf = metplus_config()
+    if input_value is not None:
+        conf.set('config', 'TEST_GETSTR', input_value)
+
+    assert(result == conf.getstr('config', 'TEST_GETSTR', default))
+
+
+# value = None -- config variable not set
+@pytest.mark.parametrize(
+    'input_value, default, result', [
+        ('1', None, 1),
+        ('1', 2, 1),
+        (None, None, util.MISSING_DATA_VALUE_INT),
+        (None, 1, 1),
+        ('integer', None, None),
+        ('integer', 1, None),
+        ('0', None, 0),
+        ('0', 2, 0),
+        ('', None, None),
+        ('', 2, None),
+        ('1.7', 2, None),
+        ('1.0', None, None),
+        ('1.0', 2, None),
+    ]
+)
+def test_getint(input_value, default, result):
+    conf = metplus_config()
+    if input_value is not None:
+        conf.set('config', 'TEST_GETINT', input_value)
+
+    assert(result == conf.getint('config', 'TEST_GETINT', default))
