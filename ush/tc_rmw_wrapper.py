@@ -56,39 +56,34 @@ class TCRMWWrapper(CommandBuilder):
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'GFS')
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'TC_RMW_REGRID_TO_GRID', '')
 
-        c_dict['N_RANGE'] = ''
         conf_value = self.config.getint('config', 'TC_RMW_N_RANGE')
         if conf_value is None:
             self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE_INT:
+        elif conf_value != util.MISSING_DATA_VALUE:
             c_dict['N_RANGE'] = f"n_range = {str(conf_value)};"
 
-        c_dict['N_AZIMUTH'] = ''
         conf_value = self.config.getint('config', 'TC_RMW_N_AZIMUTH')
         if conf_value is None:
             self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE_INT:
+        elif conf_value != util.MISSING_DATA_VALUE:
             c_dict['N_AZIMUTH'] = f"n_azimuth = {str(conf_value)};"
 
-        c_dict['MAX_RANGE_KM'] = ''
         conf_value = self.config.getfloat('config', 'TC_RMW_MAX_RANGE_KM',)
         if conf_value is None:
             self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE_FLOAT:
+        elif conf_value != util.MISSING_DATA_VALUE:
             c_dict['MAX_RANGE_KM'] = f"max_range_km = {str(conf_value)};"
 
-        c_dict['DELTA_RANGE_KM'] = ''
         conf_value = self.config.getfloat('config', 'TC_RMW_DELTA_RANGE_KM')
         if conf_value is None:
             self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE_FLOAT:
+        elif conf_value != util.MISSING_DATA_VALUE:
             c_dict['DELTA_RANGE_KM'] = f"delta_range_km = {str(conf_value)};"
 
-        c_dict['RMW_SCALE'] = ''
         conf_value = self.config.getfloat('config', 'TC_RMW_SCALE')
         if conf_value is None:
             self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE_FLOAT:
+        elif conf_value != util.MISSING_DATA_VALUE:
             c_dict['RMW_SCALE'] = f"rmw_scale = {str(conf_value)};"
 
         return c_dict
@@ -243,10 +238,10 @@ class TCRMWWrapper(CommandBuilder):
         if not input_files:
             return None
 
-        if len(input_files) > 1:
+#        if len(input_files) > 1:
 
-        else:
-            input_file = input_files[0]
+#        else:
+#            input_file = input_files[0]
 
         self.infiles.append(input_file)
 
