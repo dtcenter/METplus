@@ -76,8 +76,7 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
 # missing data value used to check if integer values are not set
 # we often check for None if a variable is not set, but 0 and None
 # have the same result in a test. 0 may be a valid integer value
-MISSING_DATA_VALUE_INT = -9999
-MISSING_DATA_VALUE_FLOAT = -9999.0
+MISSING_DATA_VALUE = -9999
 
 def pre_run_setup(filename, app_name):
     filebasename = os.path.basename(filename)
@@ -109,11 +108,11 @@ def pre_run_setup(filename, app_name):
             config.logger.error(f"Find/Replace commands have been generated in {sed_file}")
 
         logger.error("Correct configuration variables and rerun. Exiting.")
-        exit(1)
+        sys.exit(1)
 
     if not config.getdir('MET_INSTALL_DIR', must_exist=True):
         logger.error('MET_INSTALL_DIR must be set correctly to run METplus')
-        exit(1)
+        sys.exit(1)
 
     # set staging dir to OUTPUT_BASE/stage if not set
     if not config.has_option('dir', 'STAGING_DIR'):

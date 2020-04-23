@@ -425,17 +425,9 @@ class METplusConfig(ProdConfig):
         # get the OS environment and store it
         self.env = os.environ.copy()
 
-        # TODO: does this do anything?
-        logger = self._logger
-
-    ##@var _cycle
-    # The cycle for this METplus run.
-
-    # Overrides method in ProdConfig
     def log(self, sublog=None):
-        """!returns a logging.Logger object
-
-        Returns a logging.Logger object.  If the sublog argument is
+        """!Overrides method in ProdConfig
+        If the sublog argument is
         provided, then the logger will be under that subdomain of the
         "metplus" logging domain.  Otherwise, this METpluslauncher's logger
         (usually the "metplus" domain) is returned.
@@ -466,7 +458,7 @@ class METplusConfig(ProdConfig):
                 @param default: Default value to use if config is not set
                 @param count: Counter used to stop recursion to prevent infinite
             Returns:
-                Raw string
+                Raw string or empty string if function calls itself too many times
         """
         count = count + 1
         if count >= 10:
@@ -505,15 +497,16 @@ class METplusConfig(ProdConfig):
         return out_template.replace('//', '/')
 
     def check_default(self, sec, name, default):
-        """!helper function for get methods, report error and exit if
-            default is not set """
+        """!helper function for get methods, report error and raise NoOptionError if
+            default is not set. If default is set, set the config variable to the
+            default value so that the value is stored in the final conf
+            Args:
+                @param sec section of config
+                @param name name of config variable
+                @param default value to use - if set to None, error and raise exception
+        """
         if default is None:
-            msg = 'Requested conf [{}] {} was not set in config file'.format(sec, name)
-            if self.logger:
-                self.logger.error(msg)
-            else:
-                print('ERROR: {}'.format(msg))
-            exit(1)
+            raise
 
         # print debug message saying default value was used
         msg = "Setting [{}] {} to default value: {}.".format(sec,
@@ -529,18 +522,18 @@ class METplusConfig(ProdConfig):
         #  using a default value
         self.set(sec, name, default)
 
-    def getexe(self, exe_name, default=None, morevars=None):
+    def getexe(self, exe_name):
         """!Wraps produtil exe with checks to see if option is set and if
             exe actually exists. Returns None if not found instead of exiting"""
-        if not self.has_option('exe', exe_name):
-            msg = 'Requested [exe] {} was not set in config file'.format(exe_name)
+        try:
+            exe_path = super().getexe(exe_name)
+        except NoOptionError as e:
             if self.logger:
-                self.logger.error(msg)
+                self.logger.error(e)
             else:
-                print('ERROR: {}'.format(msg))
-            return None
+                print(e)
 
-        exe_path = super().getexe(exe_name)
+            return None
 
         full_exe_path = shutil.which(exe_path)
         if full_exe_path is None:
@@ -557,20 +550,14 @@ class METplusConfig(ProdConfig):
 
     def getdir(self, dir_name, default=None, morevars=None,taskvars=None, must_exist=False):
         """!Wraps produtil getdir and reports an error if it is set to /path/to"""
-        if not self.has_option('dir', dir_name):
+        try:
+            dir_path = super().getdir(dir_name, default=None)
+        except NoOptionError:
             self.check_default('dir', dir_name, default)
             dir_path = default
-        else:
-            dir_path = super().getdir(dir_name)
 
         if '/path/to' in dir_path:
-            msg = 'Directory {} is set to or contains /path/to.'.format(dir_name)+\
-                  ' Please set this to a valid location'
-            if self.logger:
-                self.logger.error(msg)
-            else:
-                print('ERROR: {}'.format(msg))
-            exit(1)
+            raise ValueError(f"[dir] {dir_name} cannot be set to or contain '/path/to'")
 
         if must_exist and not os.path.exists(dir_path):
             self.logger.error(f"Path must exist: {dir_path}")
@@ -586,24 +573,40 @@ class METplusConfig(ProdConfig):
 
 
     def getstr(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
-        """!Wraps produtil getstr to gracefully report if variable is not set
-            and no default value is specified"""
-        if self.has_option(sec, name):
-            return super().getstr(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars).replace('//', '/')
-
-        # config item was not found
-        self.check_default(sec, name, default)
-        return default.replace('//', '/')
+        """!Wraps produtil getstr. Config variable is checked with a default value of None
+            because if the config is not set and a default is specified, it will just return
+            that value. We want to log that a default was used and set it in the config so
+            it will show up in the final conf that is generated at the end of execution.
+            If no default was specified in the call, the NoOptionError is raised again.
+            Replace double forward slash with single to prevent error that occurs if that
+            is found inside a MET config file (because it considers // the start of a comment
+        """
+        try:
+            return super().getstr(sec, name, default=None, badtypeok=badtypeok, morevars=morevars,
+                                  taskvars=taskvars).replace('//', '/')
+        except NoOptionError:
+            # if config variable is not set
+            self.check_default(sec, name, default)
+            return default.replace('//', '/')
 
     def getbool(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
-        """!Wraps produtil getbool to gracefully report if variable is not set
-            and no default value is specified"""
-        if self.has_option(sec, name):
-            return super().getbool(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
-
-        # config item was not found
-        self.check_default(sec, name, default)
-        return default
+        """!Wraps produtil getbool. Config variable is checked with a default value of None
+             because if the config is not set and a default is specified, it will just return
+             that value. We want to log that a default was used and set it in the config so
+             it will show up in the final conf that is generated at the end of execution.
+             If no default was specified in the call, the NoOptionError is raised again.
+             @returns None if value is not a boolean (or yes/no), value if set, default if not set
+         """
+        try:
+            return super().getbool(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+        except NoOptionError:
+            # config item was not set
+            self.check_default(sec, name, default)
+            return default
+        except ValueError:
+            # if value is not correct type, log error and return None
+            self.logger.error(f"[{sec}] {name} must be an boolean.")
+            return None
 
     def getint(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Wraps produtil getint to gracefully report if variable is not set
@@ -612,14 +615,21 @@ class METplusConfig(ProdConfig):
         try:
             # call ProdConfig function with no default set so we can log and set the default
             return super().getint(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+
+        # if config variable is not set
         except NoOptionError:
-            # if config variable is not set
             if default is None:
-                default = util.MISSING_DATA_VALUE_INT
+                default = util.MISSING_DATA_VALUE
 
             self.check_default(sec, name, default)
             return default
+
+        # if invalid value
         except ValueError:
+            # check if it was an empty string and return MISSING_DATA_VALUE if so
+            if super().getstr(sec, name) == '':
+                return util.MISSING_DATA_VALUE
+
             # if value is not correct type, log error and return None
             self.logger.error(f"[{sec}] {name} must be an integer.")
             return None
@@ -631,24 +641,31 @@ class METplusConfig(ProdConfig):
         try:
             # call ProdConfig function with no default set so we can log and set the default
             return super().getfloat(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+
+        # if config variable is not set
         except NoOptionError:
-            # if config variable is not set
             if default is None:
-                default = util.MISSING_DATA_VALUE_FLOAT
+                default = float(util.MISSING_DATA_VALUE)
 
             self.check_default(sec, name, default)
             return default
+
+        # if invalid value
         except ValueError:
+            # check if it was an empty string and return MISSING_DATA_VALUE if so
+            if super().getstr(sec, name) == '':
+                return util.MISSING_DATA_VALUE
+
             # if value is not correct type, log error and return None
             self.logger.error(f"[{sec}] {name} must be a float.")
             return None
 
     def getseconds(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Converts time values ending in H, M, or S to seconds"""
-        if self.has_option(sec, name):
+        try:
             # convert value to seconds
             # Valid options match format 3600, 3600S, 60M, or 1H
-            value = super().getstr(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            value = super().getstr(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
             regex_and_multiplier = {r'(-*)(\d+)S': 1,
                                     r'(-*)(\d+)M': 60,
                                     r'(-*)(\d+)H': 3600,
@@ -669,8 +686,9 @@ class METplusConfig(ProdConfig):
             else:
                 print('ERROR: {}'.format(msg))
 
-            exit(1)
+            return None
 
-        # config item was not found
-        self.check_default(sec, name, default)
-        return default
+        except NoOptionError:
+            # config item was not found
+            self.check_default(sec, name, default)
+            return default
