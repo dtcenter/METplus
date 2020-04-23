@@ -151,8 +151,6 @@ _FcstOnly_NetCDF.conf
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/precipitation-EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.png'
-#
 # .. note::
 #    `EnsembleStatToolUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_,
 #    `NOAAHWTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,
@@ -161,3 +159,6 @@ _FcstOnly_NetCDF.conf
 #    `EnsembleAppUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_,
 #    `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_,
 #    `ProbabilityGenerationAppUseCase <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_,
+#    `ListExpansionFeatureUseCase <https://ncar.github.io/METplus/search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
+
+# sphinx_gallery_thumbnail_path = '_static/precipitation-EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.png'

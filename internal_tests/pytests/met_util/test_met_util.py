@@ -445,29 +445,63 @@ def test_get_lead_sequence_lead_list(key, value):
     lead_seq = value
     assert(hour_seq == lead_seq)
 
-
-
 @pytest.mark.parametrize(
-    'key, value', [
-        ('begin_end_incr(3,12,3)',  [ '3', '6', '9', '12']),
-        ('1,2,3,4',  [ '1', '2', '3', '4']),
-        (' 1,2,3,4',  [ '1', '2', '3', '4']),
-        ('1,2,3,4 ',  [ '1', '2', '3', '4']),
-        (' 1,2,3,4 ',  [ '1', '2', '3', '4']),
-        ('1, 2,3,4',  [ '1', '2', '3', '4']),
-        ('1,2, 3, 4',  [ '1', '2', '3', '4']),
-        ('begin_end_incr( 3,12 , 3)',  [ '3', '6', '9', '12']),
-        ('begin_end_incr(0,10,2)',  [ '0', '2', '4', '6', '8', '10']),
-        ('begin_end_incr(10,0,-2)',  [ '10', '8', '6', '4', '2', '0']),
-        ('begin_end_incr(2,2,20)',  [ '2' ]),
-        ('begin_end_incr(0,2,1), begin_end_incr(3,9,3)', ['0','1','2','3','6','9']),
-        ('mem_begin_end_incr(0,2,1), mem_begin_end_incr(3,9,3)', ['mem_0','mem_1','mem_2','mem_3','mem_6','mem_9']),
+    'list_string, output_list', [
+        ('begin_end_incr(3,12,3)',
+         ['3', '6', '9', '12']),
+
+        ('1,2,3,4',
+         ['1', '2', '3', '4']),
+
+        (' 1,2,3,4',
+         ['1', '2', '3', '4']),
+
+        ('1,2,3,4 ',
+         ['1', '2', '3', '4']),
+
+        (' 1,2,3,4 ',
+         ['1', '2', '3', '4']),
+
+        ('1, 2,3,4',
+         ['1', '2', '3', '4']),
+
+        ('1,2, 3, 4',
+         ['1', '2', '3', '4']),
+
+        ('begin_end_incr( 3,12 , 3)',
+         ['3', '6', '9', '12']),
+
+        ('begin_end_incr(0,10,2)',
+         ['0', '2', '4', '6', '8', '10']),
+
+        ('begin_end_incr(10,0,-2)',
+         ['10', '8', '6', '4', '2', '0']),
+
+        ('begin_end_incr(2,2,20)',
+         ['2']),
+
+        ('begin_end_incr(0,2,1), begin_end_incr(3,9,3)',
+         ['0','1','2','3','6','9']),
+
+        ('mem_begin_end_incr(0,2,1), mem_begin_end_incr(3,9,3)',
+         ['mem_0','mem_1','mem_2','mem_3','mem_6','mem_9']),
+
+        ('mem_begin_end_incr(0,2,1,3), mem_begin_end_incr(3,12,3,3)',
+         ['mem_000', 'mem_001', 'mem_002', 'mem_003', 'mem_006', 'mem_009', 'mem_012']),
+
         ('begin_end_incr(0,10,2)H, 12',  [ '0H', '2H', '4H', '6H', '8H', '10H', '12']),
+
         ('begin_end_incr(0,10800,3600)S, 4H',  [ '0S', '3600S', '7200S', '10800S', '4H']),
+
+        ('data.{init?fmt=%Y%m%d%H?shift=begin_end_incr(0, 3, 3)H}.ext',
+         ['data.{init?fmt=%Y%m%d%H?shift=0H}.ext',
+          'data.{init?fmt=%Y%m%d%H?shift=3H}.ext',
+          ]),
+
     ]
 )
-def test_getlist_begin_end_incr(key, value):
-    assert(util.getlist(key) == value)
+def test_getlist_begin_end_incr(list_string, output_list):
+    assert(util.getlist(list_string) == output_list)
 
 # @pytest.mark.parametrize(
 #     'key, value', [
@@ -646,3 +680,28 @@ def test_get_process_list(input_list, expected_list):
     conf.set('config', 'PROCESS_LIST', input_list)
     output_list = util.get_process_list(conf)
     assert(output_list == expected_list)
+
+@pytest.mark.parametrize(
+    'time_from_conf, fmt, is_datetime', [
+        ('', '%Y', False),
+        ('a', '%Y', False),
+        ('1987', '%Y', True),
+        ('1987', '%Y%m', False),
+        ('198702', '%Y%m', True),
+        ('198702', '%Y%m%d', False),
+        ('19870201', '%Y%m%d', True),
+        ('19870201', '%Y%m%d%H', False),
+        ('{now?fmt=%Y%m%d}', '%Y%m%d', True),
+        ('{now?fmt=%Y%m%d}', '%Y%m%d%H', True),
+        ('{now?fmt=%Y%m%d}00', '%Y%m%d%H', True),
+        ('{today}', '%Y%m%d', True),
+        ('{today}', '%Y%m%d%H', True),
+    ]
+)
+
+def test_get_time_obj(time_from_conf, fmt, is_datetime):
+    clock_time = datetime.datetime(2019, 12, 31, 15, 30)
+
+    time_obj = util.get_time_obj(time_from_conf, fmt, clock_time)
+
+    assert(isinstance(time_obj, datetime.datetime) == is_datetime)

@@ -37,6 +37,7 @@ class ASCII2NCWrapper(CommandBuilder):
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_ASCII2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'ASCII2NC_SKIP_IF_OUTPUT_EXISTS', False)
         c_dict['ALLOW_MULTIPLE_FILES'] = True
         c_dict['CONFIG_FILE'] = self.config.getraw('config', 'ASCII2NC_CONFIG_FILE', '')
         c_dict['ASCII_FORMAT'] = self.config.getstr('config', 'ASCII2NC_INPUT_FORMAT', '')
