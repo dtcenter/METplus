@@ -81,6 +81,54 @@ def test_getstr(input_value, default, result):
 # value = None -- config variable not set
 @pytest.mark.parametrize(
     'input_value, default, result', [
+        ('/some/test/dir', None, '/some/test/dir'),
+        ('/some//test/dir', None, '/some/test/dir'),
+        ('/path/to', None, 'ValueError'),
+        (None, None, 'NoOptionError'),
+        (None, '/default/path', '/default/path'),
+
+    ]
+)
+def test_getdir(input_value, default, result):
+    conf = metplus_config()
+    if input_value is not None:
+        conf.set('dir', 'TEST_GETDIR', input_value)
+
+    # catch NoOptionError exception and pass test if default is None
+    try:
+        assert(result == conf.getdir('TEST_GETSTR', default=default))
+    except NoOptionError:
+        if result is 'NoOptionError':
+            assert(True)
+    except ValueError:
+        if result is 'ValueError':
+            assert(True)
+
+# value = None -- config variable not set
+@pytest.mark.parametrize(
+    'input_value, default, result', [
+        ('some_text', None, 'some_text'),
+        ('{valid?fmt=%Y%m%d}', None, '{valid?fmt=%Y%m%d}'),
+        ('%Y%m%d', None, '%Y%m%d'),
+        ('{valid?fmt=%Y%m%d}_{TEST_EXTRA}', None, '{valid?fmt=%Y%m%d}_extra'),
+        ('{valid?fmt=%Y%m%d}_{TEST_EXTRA2}', None, '{valid?fmt=%Y%m%d}_extra_extra'),
+        ('{valid?fmt=%Y%m%d}_{NOT_REAL_VAR}', None, '{valid?fmt=%Y%m%d}_{NOT_REAL_VAR}'),
+    ]
+)
+def test_getraw(input_value, default, result):
+    conf = metplus_config()
+    conf.set('config', 'TEST_EXTRA', 'extra')
+    conf.set('config', 'TEST_EXTRA2', '{TEST_EXTRA}_extra')
+
+    if input_value is not None:
+        conf.set('config', 'TEST_GETRAW', input_value)
+
+    assert(result == conf.getraw('config', 'TEST_GETRAW', default=default))
+
+
+# value = None -- config variable not set
+@pytest.mark.parametrize(
+    'input_value, default, result', [
         ('True', None, True),
         ('True', 2, True),
         ('False', None, False),
@@ -124,7 +172,7 @@ def test_getbool(input_value, default, result):
 def test_getexe(input_value, result):
     conf = metplus_config()
     if input_value is not None:
-        conf.set('config', 'TEST_GETEXE', input_value)
+        conf.set('exe', 'TEST_GETEXE', input_value)
 
     assert(result == conf.getexe('TEST_GETEXE'))
 
@@ -182,5 +230,3 @@ def test_getint(input_value, default, result):
     except ValueError:
         if result is None:
             assert(True)
-
-# ADD TESTS FOR getdir AND getraw
