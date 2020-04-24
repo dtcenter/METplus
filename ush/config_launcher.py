@@ -557,7 +557,7 @@ class METplusConfig(ProdConfig):
             dir_path = default
 
         if '/path/to' in dir_path:
-            raise ValueError(f"[dir] {dir_name} cannot be set to or contain '/path/to'")
+            raise ValueError("[dir] " + dir_name + " cannot be set to or contain '/path/to'")
 
         if must_exist and not os.path.exists(dir_path):
             self.logger.error(f"Path must exist: {dir_path}")
