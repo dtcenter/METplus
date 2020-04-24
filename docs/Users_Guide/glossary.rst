@@ -585,6 +585,14 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* None
 
+   ASCII2NC_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run ASCII2NC if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  ASCII2NC
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+		       
    TC_STAT_CONFIG_FILE
      Path to optional configuration file read by TCStat.
 
