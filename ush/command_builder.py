@@ -486,6 +486,7 @@ class CommandBuilder:
 
                 return None
 
+            self.logger.debug(f"Found file: {processed_path}")
             found_file_list.append(processed_path)
 
         # if only one item found and return_list is False, return single item
@@ -591,6 +592,7 @@ class CommandBuilder:
         self.logger.debug(f"Writing list of filenames to {list_path}")
         with open(list_path, 'w') as file_handle:
             for f_path in file_list:
+                self.logger.debug(f"Adding file to list: {f_path}")
                 file_handle.write(f_path + '\n')
         return list_path
 
