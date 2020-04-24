@@ -67,9 +67,9 @@ html_logo = os.path.join('_static','METplus_logo.png')
 
 # -- Sphinx Gallery control -----------------------------------------------------------
 sphinx_gallery_conf = {
-      'examples_dirs': ['../parm/use_cases/template',
-                        '../parm/use_cases/met_tool_wrapper',
-                        '../parm/use_cases/model_applications'],
+      'examples_dirs': ['use_cases/template',
+                        'use_cases/met_tool_wrapper',
+                        'use_cases/model_applications'],
       'gallery_dirs': ['Users_Guide/template',
                        'Users_Guide/met_tool_wrapper',
                        'Users_Guide/model_applications'],
