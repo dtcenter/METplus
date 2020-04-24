@@ -131,13 +131,13 @@ class TCRMWWrapper(CommandBuilder):
             self.log_error("No output file specified")
             return
 
+        # add adeck
+        cmd += ' -adeck ' + self.c_dict['ADECK_FILE']
+
         # add input files
         cmd += ' -data'
         for infile in self.infiles:
             cmd += ' ' + infile
-
-        # add adeck
-        cmd += ' -adeck ' + self.c_dict['ADECK_FILE']
 
         # add arguments
         cmd += ' ' + ' '.join(self.args)
@@ -233,6 +233,11 @@ class TCRMWWrapper(CommandBuilder):
             return True
 
     def find_input_files(self, time_info):
+        # get adeck file
+        adeck_file = self.find_data(time_info, data_type='ADECK')
+        if not adeck_file:
+            return None
+
         # get a list of the input data files, write to an ascii file if there are more than one
         input_files = self.find_data(time_info, return_list=True)
         if not input_files:
@@ -244,11 +249,6 @@ class TCRMWWrapper(CommandBuilder):
 #            input_file = input_files[0]
 
         self.infiles.append(input_file)
-
-        # get adeck file
-        adeck_file = self.find_data(time_info, data_type='ADECK')
-        if not adeck_file:
-            return None
 
         # get list of files even if only one is found (return_list=True)
 #        obs_path = self.find_obs(time_info, var_info=None, return_list=True)
