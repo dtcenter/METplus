@@ -52,6 +52,7 @@ from command_builder import CommandBuilder
 from pb2nc_wrapper import PB2NCWrapper
 from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TCStatWrapper
+from tc_rmw_wrapper import TCRMWWrapper
 from gempak_to_cf_wrapper import GempakToCFWrapper
 from gen_vx_mask_wrapper import GenVxMaskWrapper
 from example_wrapper import ExampleWrapper
