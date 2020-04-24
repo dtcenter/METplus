@@ -53,8 +53,26 @@ class TCRMWWrapper(CommandBuilder):
                                                             'TC_RMW_ADECK_TEMPLATE')
 
         # values used in configuration file
-        c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'GFS')
-        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'TC_RMW_REGRID_TO_GRID', '')
+
+        conf_value = self.config.getstr('config', 'TC_RMW_REGRID_METHOD', '')
+        if conf_value:
+            c_dict['REGRID_METHOD'] = f"method = {conf_value};"
+
+        conf_value = self.config.getint('config', 'TC_RMW_REGRID_WIDTH')
+        if conf_value is None:
+            self.isOK = False
+        elif conf_value != util.MISSING_DATA_VALUE:
+            c_dict['REGRID_WIDTH'] = f"width = {str(conf_value)};"
+
+        conf_value = self.config.getfloat('config', 'TC_RMW_REGRID_VLD_THRESH', )
+        if conf_value is None:
+            self.isOK = False
+        elif conf_value != util.MISSING_DATA_VALUE:
+            c_dict['REGRID_VLD_THRESH'] = f"vld_thresh = {str(conf_value)};"
+
+        conf_value = self.config.getstr('config', 'TC_RMW_REGRID_SHAPE', '')
+        if conf_value:
+            c_dict['REGRID_SHAPE'] = f"shape = {conf_value};"
 
         conf_value = self.config.getint('config', 'TC_RMW_N_RANGE')
         if conf_value is None:
@@ -97,6 +115,20 @@ class TCRMWWrapper(CommandBuilder):
         self.add_env_var('DATA_FIELD',
                          self.c_dict.get('DATA_FIELD', ''))
 
+        regrid_dict_string = ''
+        # if any regrid items are set, create the regrid dictionary and add them
+        if (self.c_dict.get('REGRID_METHOD', '') or self.c_dict.get('REGRID_WIDTH', '') or
+                self.c_dict.get('REGRID_VLD_THRESH', '') or self.c_dict.get('REGRID_SHAPE', '')):
+            regrid_dict_string = 'regrid = {'
+            regrid_dict_string += f"{self.c_dict.get('REGRID_METHOD', '')}"
+            regrid_dict_string += f"{self.c_dict.get('REGRID_WIDTH', '')}"
+            regrid_dict_string += f"{self.c_dict.get('REGRID_VLD_THRESH', '')}"
+            regrid_dict_string += f"{self.c_dict.get('REGRID_SHAPE', '')}"
+            regrid_dict_string += '}'
+
+        self.add_env_var('REGRID_DICT',
+                         regrid_dict_string)
+
         self.add_env_var('N_RANGE',
                          self.c_dict.get('N_RANGE', ''))
 
@@ -111,11 +143,6 @@ class TCRMWWrapper(CommandBuilder):
 
         self.add_env_var('RMW_SCALE',
                          self.c_dict.get('RMW_SCALE', ''))
-
-        model = self.c_dict.get('MODEL', '')
-        if model:
-            model = f"model = {model};"
-        self.add_env_var('MODEL', model)
 
         super().set_environment_variables(time_info)
 
@@ -215,11 +242,13 @@ class TCRMWWrapper(CommandBuilder):
         self.c_dict['DATA_FIELD'] = ''
         field_list = util.parse_var_list(self.config,
                                          time_info,
+                                         data_type='FCST',
                                          met_tool=self.app_name)
         if not field_list:
             self.log_error("Could not get field information from config.")
             return False
 
+        all_fields = []
         for field in field_list:
             field_list = self.get_field_info(d_type='FCST',
                                              v_name=field['fcst_name'],
@@ -228,34 +257,33 @@ class TCRMWWrapper(CommandBuilder):
             if field_list is None:
                 return False
 
-            formatted_fields = ','.join(field_list)
-            self.c_dict['DATA_FIELD'] = formatted_fields
-            return True
+            all_fields.extend(field_list)
+
+        self.c_dict['DATA_FIELD'] = ','.join(all_fields)
+
+        return True
 
     def find_input_files(self, time_info):
+        self.c_dict['ADECK_FILE'] = ''
+
         # get adeck file
         adeck_file = self.find_data(time_info, data_type='ADECK')
         if not adeck_file:
             return None
+
+        self.c_dict['ADECK_FILE'] = adeck_file
 
         # get a list of the input data files, write to an ascii file if there are more than one
         input_files = self.find_data(time_info, return_list=True)
         if not input_files:
             return None
 
-#        if len(input_files) > 1:
+        # create an ascii file with a list of the input files
+        list_file = self.write_list_file(f"{os.path.basename(adeck_file)}_data_files.txt",
+                                         input_files)
+#        self.infiles.append(list_file)
+        self.infiles.extend(input_files)
 
-#        else:
-#            input_file = input_files[0]
-
-        self.infiles.append(input_file)
-
-        # get list of files even if only one is found (return_list=True)
-#        obs_path = self.find_obs(time_info, var_info=None, return_list=True)
-#        if obs_path is None:
-#            return None
-
-#        self.infiles.extend(obs_path)
         return self.infiles
 
     def set_command_line_arguments(self, time_info):

@@ -7,13 +7,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// Model
-//
-model = "${MODEL}";
-
-////////////////////////////////////////////////////////////////////////////////
-
-//
 // May be set separately in each "field" entry
 //
 censor_thresh = [];
@@ -31,12 +24,7 @@ data = {
 //
 // Regridding options
 //
-regrid = {
-   to_grid    = ${REGRID_TO_GRID};
-   width      = 1;
-   vld_thresh = 0.5;
-   shape      = SQUARE;
-}
+${REGRID_DICT}
 
 //
 // Range-Azimuth grid parameters 
@@ -53,7 +41,7 @@ regrid = {
 
 ${N_RANGE}
 ${N_AZIMUTH}
-#{MAX_RANGE_KM}
+${MAX_RANGE_KM}
 ${DELTA_RANGE_KM}
 ${RMW_SCALE}
 
