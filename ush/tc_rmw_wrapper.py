@@ -52,6 +52,10 @@ class TCRMWWrapper(CommandBuilder):
         c_dict['ADECK_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                             'TC_RMW_ADECK_TEMPLATE')
 
+        data_type = self.config.getstr('config', 'TC_RMW_INPUT_DATATYPE', '')
+        if data_type:
+            c_dict[f'DATA_FILE_TYPE'] = f"file_type = {data_type};"
+
         # values used in configuration file
 
         conf_value = self.config.getstr('config', 'TC_RMW_REGRID_METHOD', '')
@@ -111,6 +115,9 @@ class TCRMWWrapper(CommandBuilder):
             Reformat as needed. Print list of variables that were set and their values.
             Args:
               @param time_info dictionary containing timing info from current run"""
+
+        self.add_env_var('DATA_FILE_TYPE',
+                         self.c_dict.get('DATA_FILE_TYPE', ''))
 
         self.add_env_var('DATA_FIELD',
                          self.c_dict.get('DATA_FIELD', ''))
@@ -193,19 +200,15 @@ class TCRMWWrapper(CommandBuilder):
               Args:
                 @param input_dict dictionary containing timing information
         """
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            self.clear()
-            input_dict['lead'] = lead
+        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+            if custom_string:
+                self.logger.info(f"Processing custom string: {custom_string}")
+
+            input_dict['custom'] = custom_string
 
             time_info = time_util.ti_calculate(input_dict)
-            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if custom_string:
-                    self.logger.info(f"Processing custom string: {custom_string}")
 
-                time_info['custom'] = custom_string
-
-                self.run_at_time_once(time_info)
+            self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
         """! Process runtime and try to build command to run ascii2nc
@@ -239,7 +242,14 @@ class TCRMWWrapper(CommandBuilder):
         self.build()
 
     def set_data_field(self, time_info):
-        self.c_dict['DATA_FIELD'] = ''
+        """!Get list of fields from config to process. Build list of field info
+            that are formatted to be read by the MET config file. Set DATA_FIELD
+            item of c_dict with the formatted list of fields.
+            Args:
+                @param time_info time dictionary to use for string substitution
+                @returns True if field list could be built, False if not.
+        """
+
         field_list = util.parse_var_list(self.config,
                                          time_info,
                                          data_type='FCST',
@@ -264,6 +274,18 @@ class TCRMWWrapper(CommandBuilder):
         return True
 
     def find_input_files(self, time_info):
+        """!Get ADECK file and list of input data files and set c_dict items.
+            Args:
+                @param time_info time dictionary to use for string substitution
+                @returns Input file list if all files were found, None if not.
+        """
+
+        # tc_rmw currently doesn't support an ascii file that contains a list of input files
+        # setting this to False will list each file in the command, which can be difficult to read
+        # when the tool supports reading a file list file, we should use the logic when
+        # use_file_list = True
+        use_file_list = False
+
         self.c_dict['ADECK_FILE'] = ''
 
         # get adeck file
@@ -273,16 +295,32 @@ class TCRMWWrapper(CommandBuilder):
 
         self.c_dict['ADECK_FILE'] = adeck_file
 
-        # get a list of the input data files, write to an ascii file if there are more than one
-        input_files = self.find_data(time_info, return_list=True)
-        if not input_files:
+        all_input_files = []
+
+        lead_seq = util.get_lead_sequence(self.config, time_info)
+        for lead in lead_seq:
+            self.clear()
+            time_info['lead'] = lead
+
+            time_info = time_util.ti_calculate(time_info)
+
+            # get a list of the input data files, write to an ascii file if there are more than one
+            input_files = self.find_data(time_info, return_list=True)
+            if not input_files:
+                continue
+
+            all_input_files.extend(input_files)
+
+        if not all_input_files:
             return None
 
-        # create an ascii file with a list of the input files
-        list_file = self.write_list_file(f"{os.path.basename(adeck_file)}_data_files.txt",
-                                         input_files)
-#        self.infiles.append(list_file)
-        self.infiles.extend(input_files)
+        if use_file_list:
+            # create an ascii file with a list of the input files
+            list_file = self.write_list_file(f"{os.path.basename(adeck_file)}_data_files.txt",
+                                             all_input_files)
+            self.infiles.append(list_file)
+        else:
+            self.infiles.extend(all_input_files)
 
         return self.infiles
 

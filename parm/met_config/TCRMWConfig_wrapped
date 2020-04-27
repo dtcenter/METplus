@@ -16,6 +16,8 @@ censor_val    = [];
 // Data fields
 //
 data = {
+   ${DATA_FILE_TYPE}
+
    field = [ ${DATA_FIELD} ];
 }
 
