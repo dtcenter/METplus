@@ -60,6 +60,9 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'modetimedomain': 'MTD',
                          'pb2nc': 'PB2NC',
                          'pcpcombine': 'PCPCombine',
+                         'point2grid': 'Point2Grid',
+                         'pointtogrid': 'Point2Grid',
+                         'Point_2_Grid': 'Point2Grid',
                          'pointstat': 'PointStat',
                          'pyembedingest': 'PyEmbedIngest',
                          'regriddataplane': 'RegridDataPlane',
@@ -760,14 +763,32 @@ def is_loop_by_init(config):
 
     exit(1)
 
-
 def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
-    """!Substitute today or now into [INIT/VALID]_[BEG/END] if used"""
-    sts = StringSub(logger, time_from_conf,
-                    now=clock_time,
-                    today=clock_time.strftime('%Y%m%d'))
-    time_str = sts.do_string_sub()
-    return datetime.datetime.strptime(time_str, fmt)
+    """!Substitute today or now into [INIT/VALID]_[BEG/END] if used
+        Args:
+            @param time_from_conf value from [INIT/VALID]_[BEG/END] that
+                   may include now or today tags
+            @param fmt format of time_from_conf, i.e. %Y%m%d
+            @param clock_time datetime object for time when execution started
+            @param logger log object to write error messages - None if not provided
+            @returns datetime object if successful, None if not
+    """
+    time_str = StringSub(logger, time_from_conf,
+                         now=clock_time,
+                         today=clock_time.strftime('%Y%m%d')).do_string_sub()
+    try:
+        time_t = datetime.datetime.strptime(time_str, fmt)
+    except ValueError:
+        error_message = (f"[INIT/VALID]_TIME_FMT ({fmt}) does not match "
+                         f"[INIT/VALID]_[BEG/END] ({time_str})")
+        if logger:
+            logger.error(error_message)
+        else:
+            print(f"ERROR: {error_message}")
+
+        return None
+
+    return time_t
 
 def get_start_end_interval_times(config):
     clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
@@ -784,23 +805,24 @@ def get_start_end_interval_times(config):
         end_t = config.getraw('config', 'VALID_END')
         time_interval = time_util.get_relativedelta(config.getstr('config', 'VALID_INCREMENT'))
 
-    # verify that *_TIME_FMT matches *_BEG and *_END
-    time_format_len = len(datetime.datetime.now().strftime(time_format))
-    if len(start_t) != time_format_len:
-        config.logger.error(f"[INIT/VALID]_TIME_FMT {time_format} does not match [INIT/VALID]_BEG {start_t}.")
-        return None
-
-    if len(end_t) != time_format_len:
-        config.logger.error(f"[INIT/VALID]_TIME_FMT ({time_format}) does not match [INIT/VALID]_END ({end_t}).")
-        return None
-
     start_time = get_time_obj(start_t, time_format,
                              clock_time_obj, config.logger)
+    if not start_time:
+        config.logger.error("Could not format start time")
+        return None
+
     end_time = get_time_obj(end_t, time_format,
                             clock_time_obj, config.logger)
+    if not end_time:
+        config.logger.error("Could not format end time")
+        return None
 
     if start_time + time_interval < start_time + datetime.timedelta(seconds=60):
         config.logger.error("[INIT/VALID]_INCREMENT must be greater than or equal to 60 seconds")
+        return None
+
+    if start_time > end_time:
+        config.logger.error("Start time must come before end time")
         return None
 
     return start_time, end_time, time_interval
@@ -1717,25 +1739,72 @@ def get_dirs(base_dir):
 
     return dir_list
 
+def handle_begin_end_incr(list_str):
+    """!Check for instances of begin_end_incr() in the input string and evaluate as needed
+        Args:
+            @param list_str string that contains a comma separated list
+            @returns string that has list expanded"""
+
+    matches = begin_end_incr_findall(list_str)
+
+    for match in matches:
+        item_list = begin_end_incr_evaluate(match)
+        if item_list:
+            list_str = list_str.replace(match, ','.join(item_list))
+
+    return list_str
+
+def begin_end_incr_findall(list_str):
+    """!Find all instances of begin_end_incr in list string
+        Args:
+            @param list_str string that contains a comma separated list
+            @returns list of strings that have begin_end_incr() characters"""
+    # remove space around commas (again to make sure)
+    # this makes the regex slightly easier because we don't have to include
+    # as many \s* instances in the regex string
+    list_str = re.sub(r'\s*,\s*', ',', list_str)
+
+    # find begin_end_incr and any text before and after that are not a comma
+    # [^,\s]* evaluates to any character that is not a comma or space
+    return re.findall(r"([^,]*begin_end_incr\(\s*-?\d*,-?\d*,-*\d*,?\d*\s*\)[^,]*)",
+                      list_str)
+
 def begin_end_incr_evaluate(item):
-    match = re.match(r'^(.*)begin_end_incr\(\s*(-*\d*),(-*\d*),(-*\d*)\s*\)(.*)$',
+    """!Expand begin_end_incr() items into a list of values
+        Args:
+            @param item string containing begin_end_incr() tag with
+            possible text before and after
+            @returns list of items expanded from begin_end_incr
+    """
+    match = re.match(r"^(.*)begin_end_incr\(\s*(-*\d*),(-*\d*),(-*\d*),?(\d*)\s*\)(.*)$",
                      item)
     if match:
-        before = match.group(1)
-        after = match.group(5)
+        before = match.group(1).strip()
+        after = match.group(6).strip()
         start = int(match.group(2))
         end = int(match.group(3))
         step = int(match.group(4))
+        precision = match.group(5).strip()
+
         if start <= end:
             int_list = range(start, end+1, step)
         else:
             int_list = range(start, end-1, step)
 
-        return [f"{before}{str(out_str)}{after}" for out_str in int_list]
+        out_list = []
+        for int_values in int_list:
+            out_str = str(int_values)
+
+            if precision:
+                out_str = out_str.zfill(int(precision))
+
+            out_list.append(f"{before}{out_str}{after}")
+
+        return out_list
 
     return None
 
-def getlist(list_str, logger=None):
+def getlist(list_str):
     """! Returns a list of string elements from a comma
          separated string of values.
          This function MUST also return an empty list [] if s is '' empty.
@@ -1748,6 +1817,7 @@ def getlist(list_str, logger=None):
          a conf file returns '' an empty string.
 
         @param list_str the string being converted to a list.
+        @returns list of strings formatted properly and expanded as needed
     """
     # FIRST remove surrounding comma, and spaces, form the string.
     list_str = list_str.strip().strip(',').strip()
@@ -1755,13 +1825,7 @@ def getlist(list_str, logger=None):
     # remove space around commas
     list_str = re.sub(r'\s*,\s*', ',', list_str)
 
-    # find begin_end_incr and any text before and after that are not a comma
-    matches = re.findall(r'([^,]*begin_end_incr\(\s*-*\d*,-*\d*,-*\d*\s*\)[^,]*)',
-                       list_str)
-    for match in matches:
-        item_list = begin_end_incr_evaluate(match)
-        if item_list:
-            list_str = list_str.replace(match, ','.join(item_list))
+    list_str = handle_begin_end_incr(list_str)
 
     # use csv reader to divide comma list while preserving strings with comma
     # convert the csv reader to a list and get first item (which is the whole list)
@@ -1769,13 +1833,21 @@ def getlist(list_str, logger=None):
     return item_list
 
 def getlistfloat(list_str):
-    """!Get list and convert all values to float"""
+    """!Get list and convert all values to float
+        Args:
+            @param list_str the string being converted to a list.
+            @returns list of floats
+    """
     list_str = getlist(list_str)
     list_str = [float(i) for i in list_str]
     return list_str
 
 def getlistint(list_str):
-    """!Get list and convert all values to int"""
+    """!Get list and convert all values to int
+            Args:
+            @param list_str the string being converted to a list.
+            @returns list of ints
+    """
     list_str = getlist(list_str)
     list_str = [int(i) for i in list_str]
     return list_str
