@@ -55,6 +55,7 @@ Use Cases by METplus Feature:
 | `Feature Relative  <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_
 | `GempakToCF <https://ncar.github.io/METplus/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_
 | `Looping by Month or Year  <https://ncar.github.io/METplus/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
+| `List Expansion (using begin_end_incr syntax)  <https://ncar.github.io/METplus/search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
 | `Masking for Regions of Interest <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
 | `MET_PYTHON_EXE Environment Variable  <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
 | `Multiple Conf File Use <https://ncar.github.io/METplus/search.html?q=MultiConfUseCase&check_keywords=yes&area=default>`_
