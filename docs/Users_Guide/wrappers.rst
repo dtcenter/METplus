@@ -1489,7 +1489,7 @@ METplus Configuration
 | :term:`TC_RMW_STORM_NAME`
 
 MET Configuration
-~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
 
 The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
 
