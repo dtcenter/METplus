@@ -1367,7 +1367,7 @@ set to 'yes', then set the flag
    | :term:`PLOT_CONFIG_OPTS`
    | :term:`SAVE_DATA`
 
-TcPairs
+TCPairs
 -------
 
 .. _description-21:
@@ -1375,7 +1375,7 @@ TcPairs
 Description
 ~~~~~~~~~~~
 
-The TcPairs wrapper encapsulates the behavior of the MET tc_pairs tool.
+The TCPairs wrapper encapsulates the behavior of the MET tc_pairs tool.
 The wrapper accepts Adeck and Bdeck (Best track) cyclone track data in
 extra tropical cyclone format (such as the data used by sample data
 provided in the METplus tutorial), or ATCF formatted track data. If data
@@ -1442,10 +1442,137 @@ Configuration
    | :term:`MISSING_VAL_TO_REPLACE`
    | :term:`MISSING_VAL`
 
-TcStat
+TCRMW
 ------
 
 .. _description-22:
+
+Description
+~~~~~~~~~~~
+
+Used to configure the MET tool tc_rmw.
+
+.. _configuration-22:
+
+METplus Configuration
+~~~~~~~~~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`TC_RMW_INPUT_DIR`
+| :term:`TC_RMW_ADECK_INPUT_DIR`
+| :term:`TC_RMW_OUTPUT_DIR`
+
+[filename_templates]
+
+| :term:`TC_RMW_ADECK_TEMPLATE`
+| :term:`TC_RMW_INPUT_TEMPLATE`
+| :term:`TC_PAIRS_OUTPUT_TEMPLATE`
+
+[config]
+
+| :term:`LOG_TC_RMW_VERBOSITY`
+| :term:`TC_RMW_CONFIG_FILE`
+| :term:`TC_RMW_INPUT_DATATYPE`
+| :term:`TC_RMW_REGRID_METHOD`
+| :term:`TC_RMW_REGRID_WIDTH`
+| :term:`TC_RMW_REGRID_VLD_THRESH`
+| :term:`TC_RMW_REGRID_SHAPE`
+| :term:`TC_RMW_N_RANGE`
+| :term:`TC_RMW_N_AZIMUTH`
+| :term:`TC_RMW_MAX_RANGE_KM`
+| :term:`TC_RMW_DELTA_RANGE_KM`
+| :term:`TC_RMW_SCALE`
+| :term:`TC_RMW_STORM_ID`
+| :term:`TC_RMW_BASIN`
+| :term:`TC_RMW_CYCLONE`
+| :term:`TC_RMW_STORM_NAME`
+
+METplus Configuration
+~~~~~~~~~~~~~~~~~~~~~
+
+The following environment variables are referenced in the MET configuration file. The values are defined in the METplus configuration files.
+
+* **${DATA_FIELD}** - Formatted input field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+METplus Configuration::
+    [config]
+    BOTH_VAR1_NAME = PRMSL
+    BOTH_VAR1_LEVELS = L0
+    BOTH_VAR2_NAME = TMP
+    BOTH_VAR2_LEVELS = P1000, P750
+
+Resulting value::
+    { name="PRMSL"; level="L0"; },{ name="TMP"; level="P1000"; },{ name="TMP"; level="P750"; }
+
+* **${DATA_FILE_TYPE}** - Type of input data set only if necessary to allow MET to read the data. Generated from TC_RMW_INPUT_DATATYPE in the METplus configuration file.
+METplus Configuration::
+    [config]
+    TC_RMW_INPUT_DATATYPE = GRIB2
+
+Resulting value::
+    file_type = GRIB2;
+
+* **${N_RANGE}** - Corresponds to TC_RMW_N_RANGE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+METplus Configuration::
+    [config]
+    TC_RMW_N_RANGE = 100
+
+Resulting value::
+    n_range = 100;
+
+* **${N_AZIMUTH}** - Corresponds to TC_RMW_N_AZIMUTH in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+METplus Configuration::
+    [config]
+    TC_RMW_N_AZIMUTH = 180
+
+Resulting value::
+    n_azimuth = 180;
+
+* **${MAX_RANGE_KM}** - Corresponds to TC_RMW_MAX_RANGE_KM in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+METplus Configuration::
+    [config]
+    TC_RMW_MAX_RANGE_KM = 1000.0
+
+Resulting value::
+    max_range_km = 1000.0;
+
+* **${DELTA_RANGE_KM}** - Corresponds to TC_RMW_DELTA_RANGE_KM in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+METplus Configuration::
+    [config]
+    TC_RMW_DELTA_RANGE_KM = 10.0
+
+Resulting value::
+    delta_range_km = 10.0;
+
+* **${RMW_SCALE}** - Corresponds to TC_RMW_SCALE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+METplus Configuration::
+    [config]
+    TC_RMW_SCALE = 0.2
+
+Resulting value::
+    rmw_scale = 0.2;
+
+* **${REGRID_DICT}** - Corresponds to TC_RMW_REGRID_METHOD, TC_RMW_REGRID_WIDTH, TC_RMW_REGRID_VLD_THRESH, and TC_RMW_REGRID_SHAPE in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET TCRMW configuration file will be used.
+METplus Configuration 1::
+    [config]
+    TC_RMW_REGRID_SHAPE = SQUARE
+
+Resulting value 1::
+    regrid = {shape = SQUARE;}
+
+METplus Configuration 2::
+    [config]
+    TC_RMW_REGRID_WIDTH = 2
+    TC_RMW_REGRID_SHAPE = SQUARE
+
+Resulting value 2::
+    regrid = {width = 2; shape = SQUARE;}
+
+
+TCStat
+------
+
+.. _description-23:
 
 Description
 ~~~~~~~~~~~
@@ -1454,7 +1581,7 @@ Used to configure the MET tool tc_stat. This wrapper can be run by
 listing it in the PROCESS_LIST, or can be called from the ExtractTiles
 wrapper (via the MET tc-stat command line commands).
 
-.. _configuration-22:
+.. _configuration-23:
 
 Configuration
 ~~~~~~~~~~~~~
