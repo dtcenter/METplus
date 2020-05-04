@@ -108,6 +108,22 @@ class TCRMWWrapper(CommandBuilder):
         elif conf_value != util.MISSING_DATA_VALUE:
             c_dict['RMW_SCALE'] = f"rmw_scale = {str(conf_value)};"
 
+        conf_value = self.config.getstr('config', 'TC_RMW_BASIN', '')
+        if conf_value:
+            c_dict['BASIN'] = f"basin = {conf_value};"
+
+        conf_value = self.config.getstr('config', 'TC_RMW_STORM_NAME', '')
+        if conf_value:
+            c_dict['STORM_NAME'] = f"storm_name = {conf_value};"
+
+        conf_value = self.config.getstr('config', 'TC_RMW_STORM_ID', '')
+        if conf_value:
+            c_dict['STORM_ID'] = f"storm_id = {conf_value};"
+
+        conf_value = self.config.getstr('config', 'TC_RMW_CYCLONE', '')
+        if conf_value:
+            c_dict['CYCLONE'] = f"cyclone = {conf_value};"
+
         return c_dict
 
     def set_environment_variables(self, time_info):
@@ -148,8 +164,20 @@ class TCRMWWrapper(CommandBuilder):
         self.add_env_var('DELTA_RANGE_KM',
                          self.c_dict.get('DELTA_RANGE_KM', ''))
 
-        self.add_env_var('RMW_SCALE',
-                         self.c_dict.get('RMW_SCALE', ''))
+        self.add_env_var('BASIN',
+                         self.c_dict.get('BASIN', ''))
+
+        self.add_env_var('STORM_NAME',
+                         self.c_dict.get('STORM_NAME', ''))
+
+        self.add_env_var('STORM_ID',
+                         self.c_dict.get('STORM_ID', ''))
+
+        self.add_env_var('CYCLONE',
+                         self.c_dict.get('CYCLONE', ''))
+
+        self.add_env_var('INIT_TIME',
+                         time_info['init_fmt'])
 
         super().set_environment_variables(time_info)
 
