@@ -61,7 +61,6 @@ model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_matthew.conf
 # .. literalinclude:: ../../../../parm/met_config/TCRMWConfig_wrapped
 #
 # See the Python Wrapper section of the User's Guide for more information on the environment variables set in this file.
-# Note the following variables are referenced in the MET configuration file.
 #
 
 ##############################################################################
