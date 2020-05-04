@@ -5650,6 +5650,13 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
+   TC_RMW_N_RANGE
+     Specify the value for 'n_range' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
    TC_RMW_MAX_RANGE_KM
      Specify the value for 'max_range_km' in the MET configuration file for TCRMW.
 
@@ -5672,7 +5679,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_RMW_INPUT_DIR
-     Directory containing input data to TCRMW. This variable is optional because you can specify the full path to the input files using :term:`TCRMW_INPUT_TEMPLATE`.
+     Directory containing input data to TCRMW. This variable is optional because you can specify the full path to the input files using :term:`TC_RMW_INPUT_TEMPLATE`.
 
      | *Used by:* TCRMW
      | *Family:* [dir]
@@ -5686,7 +5693,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    TC_RMW_ADECK_INPUT_DIR
-     Directory containing ADECK input data to TCRMW. This variable is optional because you can specify the full path to the input files using :term:`TCRMW_ADECK_TEMPLATE`.
+     Directory containing ADECK input data to TCRMW. This variable is optional because you can specify the full path to the input files using :term:`TC_RMW_ADECK_TEMPLATE`.
 
      | *Used by:* TCRMW
      | *Family:* [dir]
@@ -5700,7 +5707,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    TC_RMW_OUTPUT_DIR
-     Directory to write output data from TCRMW. This variable is optional because you can specify the full path to the output file using :term:`TCRMW_OUTPUT_TEMPLATE`.
+     Directory to write output data from TCRMW. This variable is optional because you can specify the full path to the output file using :term:`TC_RMW_OUTPUT_TEMPLATE`.
 
      | *Used by:* TCRMW
      | *Family:* [dir]

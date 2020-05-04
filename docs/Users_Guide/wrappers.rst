@@ -1450,7 +1450,7 @@ TCRMW
 Description
 ~~~~~~~~~~~
 
-Used to configure the MET tool tc_rmw.
+Used to configure the MET tool TC-RMW.
 
 .. _configuration-22:
 
@@ -1488,13 +1488,15 @@ METplus Configuration
 | :term:`TC_RMW_CYCLONE`
 | :term:`TC_RMW_STORM_NAME`
 
-METplus Configuration
+MET Configuration
 ~~~~~~~~~~~~~~~~~~~~~
 
-The following environment variables are referenced in the MET configuration file. The values are defined in the METplus configuration files.
+The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
 
-* **${DATA_FIELD}** - Formatted input field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+**${DATA_FIELD}** - Formatted input field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+
 METplus Configuration::
+
     [config]
     BOTH_VAR1_NAME = PRMSL
     BOTH_VAR1_LEVELS = L0
@@ -1502,70 +1504,94 @@ METplus Configuration::
     BOTH_VAR2_LEVELS = P1000, P750
 
 Resulting value::
+
     { name="PRMSL"; level="L0"; },{ name="TMP"; level="P1000"; },{ name="TMP"; level="P750"; }
 
-* **${DATA_FILE_TYPE}** - Type of input data set only if necessary to allow MET to read the data. Generated from TC_RMW_INPUT_DATATYPE in the METplus configuration file.
+**${DATA_FILE_TYPE}** - Type of input data set only if necessary to allow MET to read the data. Generated from TC_RMW_INPUT_DATATYPE in the METplus configuration file.
+
 METplus Configuration::
+
     [config]
     TC_RMW_INPUT_DATATYPE = GRIB2
 
 Resulting value::
+
     file_type = GRIB2;
 
-* **${N_RANGE}** - Corresponds to TC_RMW_N_RANGE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${N_RANGE}** - Corresponds to TC_RMW_N_RANGE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
 METplus Configuration::
+
     [config]
     TC_RMW_N_RANGE = 100
 
 Resulting value::
+
     n_range = 100;
 
-* **${N_AZIMUTH}** - Corresponds to TC_RMW_N_AZIMUTH in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${N_AZIMUTH}** - Corresponds to TC_RMW_N_AZIMUTH in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
 METplus Configuration::
+
     [config]
     TC_RMW_N_AZIMUTH = 180
 
 Resulting value::
+
     n_azimuth = 180;
 
-* **${MAX_RANGE_KM}** - Corresponds to TC_RMW_MAX_RANGE_KM in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${MAX_RANGE_KM}** - Corresponds to TC_RMW_MAX_RANGE_KM in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
 METplus Configuration::
+
     [config]
     TC_RMW_MAX_RANGE_KM = 1000.0
 
 Resulting value::
+
     max_range_km = 1000.0;
 
-* **${DELTA_RANGE_KM}** - Corresponds to TC_RMW_DELTA_RANGE_KM in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${DELTA_RANGE_KM}** - Corresponds to TC_RMW_DELTA_RANGE_KM in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
 METplus Configuration::
+
     [config]
     TC_RMW_DELTA_RANGE_KM = 10.0
 
 Resulting value::
+
     delta_range_km = 10.0;
 
-* **${RMW_SCALE}** - Corresponds to TC_RMW_SCALE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${RMW_SCALE}** - Corresponds to TC_RMW_SCALE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
 METplus Configuration::
+
     [config]
     TC_RMW_SCALE = 0.2
 
 Resulting value::
+
     rmw_scale = 0.2;
 
-* **${REGRID_DICT}** - Corresponds to TC_RMW_REGRID_METHOD, TC_RMW_REGRID_WIDTH, TC_RMW_REGRID_VLD_THRESH, and TC_RMW_REGRID_SHAPE in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${REGRID_DICT}** - Corresponds to TC_RMW_REGRID_METHOD, TC_RMW_REGRID_WIDTH, TC_RMW_REGRID_VLD_THRESH, and TC_RMW_REGRID_SHAPE in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
 METplus Configuration 1::
+
     [config]
     TC_RMW_REGRID_SHAPE = SQUARE
 
 Resulting value 1::
+
     regrid = {shape = SQUARE;}
 
 METplus Configuration 2::
+
     [config]
     TC_RMW_REGRID_WIDTH = 2
     TC_RMW_REGRID_SHAPE = SQUARE
 
 Resulting value 2::
+
     regrid = {width = 2; shape = SQUARE;}
 
 
