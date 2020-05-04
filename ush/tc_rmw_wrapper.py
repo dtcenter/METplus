@@ -164,6 +164,9 @@ class TCRMWWrapper(CommandBuilder):
         self.add_env_var('DELTA_RANGE_KM',
                          self.c_dict.get('DELTA_RANGE_KM', ''))
 
+        self.add_env_var('RMW_SCALE',
+                         self.c_dict.get('RMW_SCALE', ''))
+
         self.add_env_var('BASIN',
                          self.c_dict.get('BASIN', ''))
 
