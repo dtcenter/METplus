@@ -103,7 +103,7 @@ class Point2GridWrapper(CommandBuilder):
 
         c_dict['VLD_THRESH'] = self.config.getstr('config',
                                               'POINT_2_GRID_VLD_THRESH',
-                                              '.5')
+                                              '')
 
         return c_dict
 
