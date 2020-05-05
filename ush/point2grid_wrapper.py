@@ -261,7 +261,7 @@ class Point2GridWrapper(CommandBuilder):
             self.args.append(f"-prob_cat_thresh {self.c_dict['PROB_CAT_THRESH']}")
 
         if self. c_dict['VLD_THRESH']:
-            self.args.append(f"-vld_cat_thresh {self.c_dict['VLD_THRESH']}")
+            self.args.append(f"-vld_thresh {self.c_dict['VLD_THRESH']}")
 
 
 if __name__ == "__main__":

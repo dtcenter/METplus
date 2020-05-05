@@ -9,7 +9,7 @@ import produtil
 import pytest
 import datetime
 import config_metplus
-from regrid_data_plane_wrapper import Point2GridWrapper
+from point2grid_wrapper import Point2GridWrapper
 import met_util as util
 import time_util
 
@@ -61,17 +61,25 @@ def metplus_config():
 
 def test_set_command_line_arguments():
     test_passed = True
-    wrap = p2g()
+    wrap = p2g_wrapper()
 
-    wrap.c_dict['METHOD'] = 'UW_MEAN'
+    input_dict = {'valid': datetime.datetime.strptime("202003050000", '%Y%m%d%H%M'),
+                  'lead': 0}
+    time_info = time_util.ti_calculate(input_dict)
+
+
+    wrap.c_dict['REGRID_METHOD'] = 'UW_MEAN'
+
     expected_args = ['-method UW_MEAN',]
 
-    wrap.set_command_line_arguments()
+    wrap.set_command_line_arguments(time_info)
     if wrap.args != expected_args:
         test_passed = False
         print("Test 0 failed")
         print(f"ARGS: {wrap.args}")
         print(f"EXP: {expected_args}")
+
+    wrap.args.clear()
 
     wrap.c_dict['GAUSSIAN_DX'] = 2
 
@@ -79,9 +87,7 @@ def test_set_command_line_arguments():
                      '-gaussian_dx 2',
                      ]
 
-    wrap.args.clear()
-
-    wrap.set_command_line_arguments()
+    wrap.set_command_line_arguments(time_info)
     if wrap.args != expected_args:
         test_passed = False
         print("Test 1 failed")
@@ -93,11 +99,11 @@ def test_set_command_line_arguments():
     wrap.c_dict['PROB_CAT_THRESH'] = 1
 
     expected_args = ['-method UW_MEAN',
-                     '-prob_cat_thresh 1',
                      '-gaussian_dx 2',
+                     '-prob_cat_thresh 1',
                      ]
 
-    wrap.set_command_line_arguments()
+    wrap.set_command_line_arguments(time_info)
     if wrap.args != expected_args:
         test_passed = False
         print("Test 2 failed")
@@ -109,12 +115,12 @@ def test_set_command_line_arguments():
     wrap.c_dict['GAUSSIAN_RADIUS'] = 3
 
     expected_args = ['-method UW_MEAN',
-                     '-prob_cat_thresh 1',
                      '-gaussian_dx 2',
                      '-gaussian_radius 3',
+                     '-prob_cat_thresh 1',
                      ]
 
-    wrap.set_command_line_arguments()
+    wrap.set_command_line_arguments(time_info)
     if wrap.args != expected_args:
         test_passed = False
         print("Test 3 failed")
@@ -126,13 +132,13 @@ def test_set_command_line_arguments():
     wrap.c_dict['VLD_THRESH'] = .5
 
     expected_args = ['-method UW_MEAN',
-                     '-prob_cat_thresh 1',
                      '-gaussian_dx 2',
                      '-gaussian_radius 3',
-                     '-vld_thresh .5',
+                     '-prob_cat_thresh 1',
+                     '-vld_thresh 0.5',
                      ]
 
-    wrap.set_command_line_arguments()
+    wrap.set_command_line_arguments(time_info)
     if wrap.args != expected_args:
         test_passed = False
         print("Test 4 failed")
