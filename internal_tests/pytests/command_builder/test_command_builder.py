@@ -42,7 +42,7 @@ def metplus_config():
     """
     # Read in the configuration object CONFIG
     config = config_metplus.setup(util.baseinputconfs)
-    logger = util.get_logger(config)
+    util.get_logger(config)
     return config
 
 
@@ -106,6 +106,24 @@ def test_find_data_not_a_path(data_type):
     obs_file = pcw.find_data(time_info, var_info=None, data_type=data_type)
     assert(obs_file == 'G003')
 
+def test_find_obs_no_dated():
+    config = metplus_config()
+
+    pcw = CommandBuilder(config, config.logger)
+    v = {}
+    v['obs_level'] = "6"
+    task_info = {}
+    task_info['valid'] = datetime.datetime.strptime("201802010000", '%Y%m%d%H%M')
+    task_info['lead'] = 0
+    time_info = time_util.ti_calculate(task_info)
+
+    pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = -3600
+    pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
+    pcw.c_dict['OBS_INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE') + "/internal_tests/data/obs"
+    pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
+    obs_file = pcw.find_obs(time_info, v)
+    assert (obs_file == pcw.c_dict['OBS_INPUT_DIR'] + '/20180201_0045')
+
 def test_find_obs_dated():
     config = metplus_config()
     
@@ -123,6 +141,26 @@ def test_find_obs_dated():
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
     obs_file = pcw.find_obs(time_info, v)
     assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180201/20180201_0013')
+
+def test_find_obs_offset():
+    config = metplus_config()
+
+    pcw = CommandBuilder(config, config.logger)
+    v = {}
+    v['obs_level'] = "6"
+    task_info = {}
+    task_info['valid'] = datetime.datetime.strptime("201802010000", '%Y%m%d%H%M')
+    task_info['lead'] = 0
+    time_info = time_util.ti_calculate(task_info)
+
+    pcw.c_dict['OFFSETS'] = [2]
+    pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = -3600
+    pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
+    pcw.c_dict['OBS_INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE') + "/internal_tests/data/obs"
+    pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
+    obs_file, time_info = pcw.find_obs_offset(time_info, v)
+    assert (obs_file == pcw.c_dict['OBS_INPUT_DIR'] + '/20180201_0045' and time_info['offset'] == 7200 )
+
 
 def test_find_obs_dated_previous_day():
     config = metplus_config()
