@@ -213,48 +213,16 @@ class PB2NCWrapper(CommandBuilder):
     def find_input_files(self, input_dict):
         """!Find prepbufr data to convert. If file(s) are found, return timing information
             dictionary containing offset information of input file. Return None otherwise"""
-        infile = None
 
-        # loop over offset list and find first file that matches
-        for offset in self.c_dict['OFFSETS']:
-            input_dict['offset_hours'] = offset
-            time_info = time_util.ti_calculate(input_dict)
-
-            # get a list of files even if only one is returned
-            infile = self.find_obs(time_info, None, mandatory=False, return_list=True)
-
-            if infile is not None:
-                self.infiles.extend(infile)
-                self.logger.debug(f"Adding input: {' and '.join(infile)}")
-                break
+        infiles, time_info = self.find_obs_offset(input_dict, None, mandatory=False, return_list=True)
 
         # if file is found, return timing info dict so output template can use offset value
-        if infile is not None:
-            return time_info
+        if infiles is None:
+            return None
 
-        self.log_error('Could not find input file in {} matching template {} using offsets {}'
-                          .format(self.c_dict['OBS_INPUT_DIR'],
-                                  self.c_dict['OBS_INPUT_TEMPLATE'],
-                                  self.c_dict['OFFSETS']))
-
-    '''
-    def find_and_check_output_file(self, time_info):
-        """!Look for expected output file. If it exists and configured to skip if it does, then return False"""
-        outfile = StringSub(self.logger,
-                            self.c_dict['OUTPUT_TEMPLATE'],
-                            **time_info).do_string_sub()
-        outpath = os.path.join(self.c_dict['OUTPUT_DIR'], outfile)
-        self.set_output_path(outpath)
-
-        if not os.path.exists(outpath) or not self.c_dict['SKIP_IF_OUTPUT_EXISTS']:
-            return True
-
-        # if the output file exists and we are supposed to skip, don't run pb2nc
-        self.logger.debug(f'Skip writing output file {outpath} because it already '
-                          'exists. Remove file or change '
-                          f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
-                          'to process')
-    '''
+        self.logger.debug(f"Adding input: {' and '.join(infiles)}")
+        self.infiles.extend(infiles)
+        return time_info
 
     def set_valid_window_variables(self, time_info):
         begin_template = self.c_dict['VALID_BEGIN_TEMPLATE']
