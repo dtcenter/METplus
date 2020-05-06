@@ -47,15 +47,22 @@ git:
 
 # This defines what is allowed to build.
 # Build only the safelist
-# feature_185_initial_travis_ci
-# feature_998_mfo_travis_poc
-# develop
+#   feature_my_travis_ci_testing
+#   develop
+# 
+# Temp: until proper solution is determined.
+# feature_my_travis_ci_testing, intention is for 
+# use ONLY in your fork. If you create
+# this so named branch in your fork than travis
+# will run that branch and  you don't have to edit 
+# the travis yml file. It gives you a sandbox branch to 
+# work in, since you shouldn't be working in the develop
+# branch fork.
+# 
 branches:
   only:
   - develop
-  - feature_185_initial_travis_ci
-  - feature_998_mfo_travis_poc
-  - feature_999_mfo_travis_testing
+  - feature_my_travis_ci_testing
 
 cache:
   - pip
@@ -86,12 +93,13 @@ env:
     - DOCKERHUB_USER_TAGNAME=test
     # set to true to use default settings
     # if set to false, to use DOCKER_USER_* settings, your dockerhub container.
-    - DOCKERHUB_USE_DEFAULT=false
+    - DOCKERHUB_USE_DEFAULT=true
 
   matrix:
     - TASK=docs
 
-# Stage 1 runs 4 jobs  x.1, x.2, x.3, x.4
+# Stage 1 runs 2 jobs  x.1, x.2 
+# based on the python: keyword setting 3.7,3.6 above.
 stage: "Stage 1"
 #name: "Unit Tests"
 # ${TRAVIS_BUILD_DIR} = /home/travis/build/<user ie. NCAR>/METplus
