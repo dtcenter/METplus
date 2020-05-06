@@ -214,7 +214,10 @@ class PB2NCWrapper(CommandBuilder):
         """!Find prepbufr data to convert. If file(s) are found, return timing information
             dictionary containing offset information of input file. Return None otherwise"""
 
-        infiles, time_info = self.find_obs_offset(input_dict, None, mandatory=False, return_list=True)
+        infiles, time_info = self.find_obs_offset(input_dict,
+                                                  None,
+                                                  mandatory=True,
+                                                  return_list=True)
 
         # if file is found, return timing info dict so output template can use offset value
         if infiles is None:
