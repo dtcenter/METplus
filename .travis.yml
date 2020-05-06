@@ -47,11 +47,11 @@ git:
 
 # This defines what is allowed to build.
 # Build only the safelist
-#   feature_my_travis_ci_testing
+#   feature_mfo_travis_ci_testing
 #   develop
 # 
 # Temp: until proper solution is determined.
-# feature_my_travis_ci_testing, intention is for 
+# feature_mfo_travis_ci_testing, intention is for 
 # use ONLY in your fork. If you create
 # this so named branch in your fork than travis
 # will run that branch and  you don't have to edit 
@@ -62,7 +62,7 @@ git:
 branches:
   only:
   - develop
-  - feature_my_travis_ci_testing
+  - feature_mfo_travis_ci_testing
 
 cache:
   - pip
