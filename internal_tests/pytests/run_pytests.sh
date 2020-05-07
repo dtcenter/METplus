@@ -37,10 +37,10 @@ if [ $ret == 0 ]; then
     exit_script=0
 fi
 
-ls $METPLUS_TEST_OUTPUT_BASE &> /dev/null
+[ "$(ls -A $METPLUS_TEST_OUTPUT_BASE)" ]
 ret=$?
 if [ $ret == 0 ]; then
-    echo -e "\n\nRemove $METPLUS_TEST_OUTPUT_BASE before running tests."
+    echo -e "\n\nRemove all finds under $METPLUS_TEST_OUTPUT_BASE before running tests."
     echo Exiting...
     exit 1
 fi
