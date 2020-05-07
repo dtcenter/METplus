@@ -45,6 +45,7 @@ all_use_cases = [
 #                use_case_dir + "/met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/PCPCombine/PCPCombine_subtract.conf",
                 use_case_dir + "/met_tool_wrapper/PointStat/PointStat.conf",
+                use_case_dir + "/met_tool_wrapper/PointStat/PointStat_once_per_field.conf",
                 use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf",
                 use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane_multi_field_multi_file.conf",
                 use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane_multi_field_one_file.conf",
@@ -91,9 +92,13 @@ if 'METPLUS_DISABLE_PLOT_WRAPPERS' not in os.environ or not os.environ['METPLUS_
 # use cases from all_use_cases. this makes it easier to clean up after
 # running so that git doesn't complain about differences
 use_cases_to_run = all_use_cases
+#use_cases_to_run = [
+#                use_case_dir+"/met_tool_wrapper/ASCII2NC/ASCII2NC.conf",
+#    ]
 use_cases_to_run = [
-                use_case_dir+"/met_tool_wrapper/ASCII2NC/ASCII2NC.conf",
-    ]
+                use_case_dir + "/met_tool_wrapper/PointStat/PointStat.conf",
+                use_case_dir + "/met_tool_wrapper/PointStat/PointStat_once_per_field.conf",
+]
 
 def get_param_list(param):
     conf = metplus_home+"/internal_tests/use_cases/system.conf"
