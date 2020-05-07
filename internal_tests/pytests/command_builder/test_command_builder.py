@@ -142,25 +142,39 @@ def test_find_obs_dated():
     obs_file = pcw.find_obs(time_info, v)
     assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180201/20180201_0013')
 
-def test_find_obs_offset():
+@pytest.mark.parametrize(
+    'offsets, expected_file, offset_seconds', [
+        ([2], '14z.prepbufr.tm02.20200201', 7200),
+        ([6, 2], '18z.prepbufr.tm06.20200201', 21600),
+        ([2, 6], '14z.prepbufr.tm02.20200201', 7200),
+        ([3, 7, 2, 6], '14z.prepbufr.tm02.20200201', 7200),
+        ([3, 7], None, None),
+        ([], None, None),
+        ]
+)
+def test_find_obs_offset(offsets, expected_file, offset_seconds):
     config = metplus_config()
 
     pcw = CommandBuilder(config, config.logger)
     v = {}
     v['obs_level'] = "6"
     task_info = {}
-    task_info['valid'] = datetime.datetime.strptime("201802010000", '%Y%m%d%H%M')
+    task_info['valid'] = datetime.datetime.strptime("2020020112", '%Y%m%d%H')
     task_info['lead'] = 0
     time_info = time_util.ti_calculate(task_info)
 
-    pcw.c_dict['OFFSETS'] = [2]
-    pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = -3600
-    pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
+    pcw.c_dict['OFFSETS'] = offsets
     pcw.c_dict['OBS_INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE') + "/internal_tests/data/obs"
-    pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
+    pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{da_init?fmt=%2H}z.prepbufr.tm{offset?fmt=%2H}.{da_init?fmt=%Y%m%d}"
     obs_file, time_info = pcw.find_obs_offset(time_info, v)
-    assert (obs_file == pcw.c_dict['OBS_INPUT_DIR'] + '/20180201_0045' and time_info['offset'] == 7200 )
 
+    print(f"OBSFILE: {obs_file}")
+    print(f"EXPECTED FILE: {expected_file}")
+
+    if expected_file is None:
+        assert(not obs_file)
+    else:
+        assert (os.path.basename(obs_file) == expected_file and time_info['offset'] == offset_seconds)
 
 def test_find_obs_dated_previous_day():
     config = metplus_config()
