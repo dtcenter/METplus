@@ -47,22 +47,15 @@ git:
 
 # This defines what is allowed to build.
 # Build only the safelist
-#   feature_mfo_travis_ci_testing
 #   develop
-# 
-# Temp: until proper solution is determined.
-# feature_mfo_travis_ci_testing, intention is for 
-# use ONLY in your fork. If you create
-# this so named branch in your fork than travis
-# will run that branch and  you don't have to edit 
-# the travis yml file. It gives you a sandbox branch to 
-# work in, since you shouldn't be working in the develop
-# branch fork.
+#   feature_ branches
+#   master_ branches
 # 
 branches:
   only:
   - develop
-  - feature_mfo_travis_ci_testing
+  - /^feature_.*/
+  - /^master_.*/
 
 cache:
   - pip
