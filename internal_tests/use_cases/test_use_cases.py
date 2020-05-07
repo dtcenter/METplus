@@ -98,6 +98,7 @@ use_cases_to_run = all_use_cases
 use_cases_to_run = [
                 use_case_dir + "/met_tool_wrapper/PointStat/PointStat.conf",
                 use_case_dir + "/met_tool_wrapper/PointStat/PointStat_once_per_field.conf",
+                use_case_dir + "/met_tool_wrapper/GempakToCF/GempakToCF.conf",
 ]
 
 def get_param_list(param):
