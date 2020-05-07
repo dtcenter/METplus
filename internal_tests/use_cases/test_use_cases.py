@@ -12,6 +12,8 @@ import time
 import calendar
 import met_util as util
 
+failed_runs = []
+
 metplus_home = dirname(dirname(dirname(realpath(__file__))))
 use_case_dir = os.path.join(metplus_home,"parm/use_cases")
 
@@ -89,9 +91,9 @@ if 'METPLUS_DISABLE_PLOT_WRAPPERS' not in os.environ or not os.environ['METPLUS_
 # use cases from all_use_cases. this makes it easier to clean up after
 # running so that git doesn't complain about differences
 use_cases_to_run = all_use_cases
-#use_cases_to_run = [
-#                use_case_dir+"/met_tool_wrapper/ASCII2NC/ASCII2NC.conf",
-#    ]
+use_cases_to_run = [
+                use_case_dir+"/met_tool_wrapper/ASCII2NC/ASCII2NC.conf",
+    ]
 
 def get_param_list(param):
     conf = metplus_home+"/internal_tests/use_cases/system.conf"
@@ -115,6 +117,7 @@ def get_params(param):
     return params, p
 
 def run_test_use_case(param, test_metplus_base):
+    global failed_runs
 
     params, p = get_params(param)
     out_dir = os.path.join(p.getdir('OUTPUT_BASE'), os.path.basename(params[-2]))
@@ -125,9 +128,13 @@ def run_test_use_case(param, test_metplus_base):
     cmd += ' -c dir.OUTPUT_BASE='+out_dir
     print("CMD:"+cmd)
     process = subprocess.Popen(cmd, shell=True)
-    process.wait()
+    process.communicate()[0]
+    returncode = process.returncode
+    if returncode:
+        failed_runs.append(cmd)
 
 def main():
+    global failed_runs
 
     if os.environ.get('METPLUS_TEST_METPLUS_BASE') is None:
         test_metplus_base = metplus_home
@@ -180,6 +187,18 @@ def main():
     print("\nCompare the output from previous run (" + output_base_prev + ") to this run"+\
           " (" + output_base + ").\nRun the following to compare results:")
     print(f"diff -r {output_base_prev} {output_base} | grep -v Binary | grep -v SSH | grep -v CONDA | grep -v OLDPWD | grep -v tmp | grep -v CLOCK_TIME | grep -v XDG | grep -v GSL | grep -v METPLUS | grep -v \"METplus took\" | grep -v \"Finished\" | grep -v \"\-\-\-\" | egrep -v \"^[[:digit:]]*c[[:digit:]]*$\" | less")
-    
+
+    # list any commands that failed
+    print('\n')
+    for failed_run in failed_runs:
+        print(f"ERROR: Use case failed: {failed_run}")
+
+    if len(failed_runs) > 0:
+        print(f"\nERROR: {len(failed_runs)} use cases failed")
+        sys.exit(1)
+    else:
+        print("\nINFO: All use cases returned 0. Success!")
+        sys.exit(0)
+
 if __name__ == "__main__":
     main()
