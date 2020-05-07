@@ -16,7 +16,7 @@ fi
 minimum_pytest_env_file=$script_dir"/minimum_pytest."$host".sh"
 if [ ! -e $minimum_pytest_env_file ]; then
     echo Cannot only run run_pytests.sh with minimum pytest environment file. Create minimum_pytest.$host.sh to run on this host
-    exit
+    exit 1
 fi
 
 source $minimum_pytest_env_file
@@ -42,7 +42,7 @@ ret=$?
 if [ $ret == 0 ]; then
     echo -e "\n\nRemove $METPLUS_TEST_OUTPUT_BASE before running tests."
     echo Exiting...
-    exit
+    exit 1
 fi
 
 if [ "$remove_commands" != "\n" ]; then
@@ -60,7 +60,7 @@ fi
 
 
 if [ $exit_script == 0 ]; then
-    exit
+    exit 1
 fi
 
 all_good=0
