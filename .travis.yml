@@ -146,7 +146,7 @@ matrix:
         - docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
         - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/pytests/run_pytests_docker.sh
         # Dump the output directories from running METplus
-        - ls -alR /home/travis/build/jimfrimel/pytmp.docker
+        - ls -alR ${OWNER_BUILD_DIR}/pytmp.docker
     - name: "Integration Tests"
       python: 3.7
       script:
@@ -164,7 +164,7 @@ matrix:
         - docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
         - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases_docker.sh
         # Dump the output directories from running METplus
-        - ls -alR /home/travis/build/jimfrimel/pytmp.docker
+        - ls -alR ${OWNER_BUILD_DIR}/pytmp.docker
         # Dump and see how much space is left on Travis disk.
         - df -h
 
