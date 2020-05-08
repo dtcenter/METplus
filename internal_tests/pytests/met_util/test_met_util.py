@@ -10,6 +10,7 @@ import os
 import subprocess
 import shutil
 from dateutil.relativedelta import relativedelta
+from csv import reader
 import config_metplus
 
 #@pytest.fixture
@@ -705,3 +706,24 @@ def test_get_time_obj(time_from_conf, fmt, is_datetime):
     time_obj = util.get_time_obj(time_from_conf, fmt, clock_time)
 
     assert(isinstance(time_obj, datetime.datetime) == is_datetime)
+
+@pytest.mark.parametrize(
+     'list_str, expected_fixed_list', [
+         ('some,items,here', ['some', 'items', 'here']),
+         ('(*,*)', ['(*,*)']),
+        ("-type solar_alt -thresh 'ge45' -name solar_altitude_ge_45_mask -input_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;' -mask_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;\'",
+        ["-type solar_alt -thresh 'ge45' -name solar_altitude_ge_45_mask -input_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;' -mask_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;\'"]),
+     ]
+)
+def test_fix_list(list_str, expected_fixed_list):
+    item_list = list(reader([list_str]))[0]
+    fixed_list = util.fix_list(item_list)
+    print("FIXED LIST:")
+    for fixed in fixed_list:
+        print(f"ITEM: {fixed}")
+
+    print("EXPECTED LIST")
+    for expected in expected_fixed_list:
+        print(f"ITEM: {expected}")
+
+    assert(fixed_list == expected_fixed_list)
