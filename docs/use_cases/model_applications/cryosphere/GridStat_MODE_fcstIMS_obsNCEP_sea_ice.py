@@ -112,7 +112,7 @@ _obsNCEP_sea_ice.conf
 # A successful run will have the following output files in the location defined by {OUTPUT_BASE}, which
 # is located in the metplus_system.conf configuration file located in /path/to/METplus/parm/metplus_config.
 # This list of files should be found for every time run through METplus. Using the output for 20190201 as
-# and example.
+# an example.
 #
 # **GridStat output**:
 #
