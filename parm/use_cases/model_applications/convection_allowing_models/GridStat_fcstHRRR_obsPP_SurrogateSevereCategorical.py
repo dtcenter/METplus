@@ -1,5 +1,5 @@
 """
-GridStat: Surrogate Severe and Practically Perfect Evaluation 
+Grid-Stat: Surrogate Severe and Practically Perfect Evaluation 
 =========================================================================
 GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 """
@@ -7,13 +7,8 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 # Scientific Objective
 # --------------------
 #
-# To provide statistical inforation on the forecast hail size compared to the 
-# observed hail size from MRMS MESH data.  Using objects to verify hail size
-# avoids the "unfair penalty" issue, where a CAM must first generate convection
-# to have any chance of accurately predicting the hail size.  In addition,
-# studies have shown that MRMS MESH observed hail sizes do not correlate one-
-# to-one with observed sizes but can only be used to group storms into general
-# categories.  Running MODE allows a user to do this.
+# To evaluate the surrogate severe forecasts at predicting the daily 
+# (12Z - 12Z) practically perfect storm reports.
 
 ##############################################################################
 # Datasets
@@ -27,14 +22,15 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 # METplus Components
 # ------------------
 #
-# This use case runs MODE to create object statistics on forecast hail size 
-# from the HRRR version 4 model and the observed MRMS MESH hail size.  
+# This use case runs grid_stat to create categorical statistics on 
+# surrogate severe from the HRRR model and Practially Perfect observations 
+# computed from local storm reports.  
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# The MODE tool is run for each time. This example loops by valid time.  It
+# The grid_stat tool is run for each time. This example loops by valid time.  It
 # processes 2 valid times, listed below.
 #
 # | **Valid:** 2019-05-29_02Z
