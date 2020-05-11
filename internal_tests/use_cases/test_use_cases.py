@@ -171,7 +171,7 @@ def main():
                 shutil.rmtree(output_base_prev)
             else:
                 print("Directory must be empty to proceed with tests")
-                exit(1)
+                sys.exit(1)
 
         print("Moving " + output_base + " to " + output_base_prev)
         os.rename(output_base, output_base_prev)
@@ -184,15 +184,14 @@ def main():
     if not os.path.exists(output_base_prev) or not os.listdir(output_base_prev):
         print("No files were found in previous OUTPUT_BASE: " + output_base_prev +\
               "\nRun this script again to compare results to previous run")
-        exit(0)
+    else:
+        print("\nIf files or directories were only found in one run, they will appear when you run the following:\n")
+        diff_cmd = f'diff -r {output_base_prev} {output_base} | grep "Only in" | less'
+        print(diff_cmd)
 
-    print("\nIf files or directories were only found in one run, they will appear when you run the following:\n")
-    diff_cmd = f'diff -r {output_base_prev} {output_base} | grep "Only in" | less'
-    print(diff_cmd)
-
-    print("\nCompare the output from previous run (" + output_base_prev + ") to this run"+\
-          " (" + output_base + ").\nRun the following to compare results:")
-    print(f"diff -r {output_base_prev} {output_base} | grep -v Binary | grep -v SSH | grep -v CONDA | grep -v OLDPWD | grep -v tmp | grep -v CLOCK_TIME | grep -v XDG | grep -v GSL | grep -v METPLUS | grep -v \"METplus took\" | grep -v \"Finished\" | grep -v \"\-\-\-\" | egrep -v \"^[[:digit:]]*c[[:digit:]]*$\" | less")
+        print("\nCompare the output from previous run (" + output_base_prev + ") to this run"+\
+              " (" + output_base + ").\nRun the following to compare results:")
+        print(f"diff -r {output_base_prev} {output_base} | grep -v Binary | grep -v SSH | grep -v CONDA | grep -v OLDPWD | grep -v tmp | grep -v CLOCK_TIME | grep -v XDG | grep -v GSL | grep -v METPLUS | grep -v \"METplus took\" | grep -v \"Finished\" | grep -v \"\-\-\-\" | egrep -v \"^[[:digit:]]*c[[:digit:]]*$\" | less")
 
     # list any commands that failed
     print('\n')
