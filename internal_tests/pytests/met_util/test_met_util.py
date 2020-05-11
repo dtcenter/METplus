@@ -709,10 +709,15 @@ def test_get_time_obj(time_from_conf, fmt, is_datetime):
 
 @pytest.mark.parametrize(
      'list_str, expected_fixed_list', [
-         ('some,items,here', ['some', 'items', 'here']),
+         ('some,items,here', ['some',
+                              'items',
+                              'here']),
          ('(*,*)', ['(*,*)']),
         ("-type solar_alt -thresh 'ge45' -name solar_altitude_ge_45_mask -input_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;' -mask_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;\'",
         ["-type solar_alt -thresh 'ge45' -name solar_altitude_ge_45_mask -input_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;' -mask_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;\'"]),
+        ("(*,*),'level=\"(0,*,*)\"' -censor_thresh [lt12.3,gt8.8],other", ['(*,*)',
+                                                                           "'level=\"(0,*,*)\"' -censor_thresh [lt12.3,gt8.8]",
+                                                                           'other']),
      ]
 )
 def test_fix_list(list_str, expected_fixed_list):
