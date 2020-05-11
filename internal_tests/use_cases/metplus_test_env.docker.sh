@@ -15,13 +15,10 @@ export METPLUS_TEST_PREV_OUTPUT_BASE=/metplus/test-use-case-output-old
 # location of input data to use in tests
 export METPLUS_TEST_INPUT_BASE=/metplus/test.metplus.data
 
-# the following are not currently available in docker
-# we will need to update these variables when they are
-
 # location of GempakToCF to run tests that use Gempak
-export METPLUS_TEST_GEMPAKTOCF_JAR=/d1/personal/mccabe/GempakToCF.jar
+export METPLUS_TEST_GEMPAKTOCF_JAR=${METPLUS_TEST_INPUT_BASE}/GempakToCF.jar
 # Location of ncap2 exe
-export METPLUS_TEST_NCAP2=/usr/local/nco/bin/ncap2
+export METPLUS_TEST_NCAP2=/usr/local/bin/ncap2
 
 # Location of ncdump exe
-export METPLUS_TEST_NCDUMP=/usr/local/netcdf/bin/ncdump
+export METPLUS_TEST_NCDUMP=/usr/local/bin/ncdump
