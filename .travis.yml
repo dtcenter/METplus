@@ -159,7 +159,7 @@ matrix:
         - cd ${OWNER_BUILD_DIR}/test.metplus.data;
           curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0-beta3/sample_data-convection_allowing_models-3.0.tgz; curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0-beta3/sample_data-medium_range-3.0.tgz; curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0-beta3/sample_data-met_test-9.0.tgz; curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0-beta3/sample_data-precipitation-3.0.tgz; curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0-beta3/sample_data-s2s-3.0.tgz; curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0-beta3/sample_data-space_weather-3.0.tgz; curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0-beta3/sample_data-tc_and_extra_tc-3.0.tgz
         - tar xfzp sample_data-convection_allowing_models-3.0.tgz; tar xfzp sample_data-medium_range-3.0.tgz; tar xfzp sample_data-met_test-9.0.tgz; tar xfzp sample_data-precipitation-3.0.tgz; tar xfzp sample_data-s2s-3.0.tgz; tar xfzp sample_data-space_weather-3.0.tgz; tar xfzp sample_data-tc_and_extra_tc-3.0.tgz
-	- curl -L -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
+	# - curl -L -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
         - docker pull ${DOCKERHUB_TAG}
         - docker images
         - docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
