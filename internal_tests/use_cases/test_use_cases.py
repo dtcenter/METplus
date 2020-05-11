@@ -27,7 +27,7 @@ all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/EnsembleStat/EnsembleStat.conf",
                 use_case_dir + "/met_tool_wrapper/EnsembleStat/EnsembleStat_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/Example/Example.conf",
-                use_case_dir + "/met_tool_wrapper/GempakToCF/GempakToCF.conf",
+#                use_case_dir + "/met_tool_wrapper/GempakToCF/GempakToCF.conf",
                 use_case_dir + "/met_tool_wrapper/GenVxMask/GenVxMask.conf",
                 use_case_dir + "/met_tool_wrapper/GenVxMask/GenVxMask_multiple.conf",
                 use_case_dir + "/met_tool_wrapper/GenVxMask/GenVxMask_with_arguments.conf",
@@ -58,7 +58,7 @@ all_use_cases = [
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_tropical.conf",
                 use_case_dir + "/met_tool_wrapper/TCStat/TCStat.conf",
                 use_case_dir + "/model_applications/convection_allowing_models/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf",
-                use_case_dir + "/model_applications/convection_allowing_models/MTD_fcstHREF_FcstOnly_Gempak.conf",
+#                use_case_dir + "/model_applications/convection_allowing_models/MTD_fcstHREF_FcstOnly_Gempak.conf",
                 use_case_dir + "/model_applications/convection_allowing_models/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf",
                 use_case_dir + "/model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf",
                 use_case_dir + "/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf",
@@ -68,7 +68,7 @@ all_use_cases = [
                 use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_Sfc_MultiField.conf",
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstGFS_obsCCPA_GRIB.conf",
                 use_case_dir + "/model_applications/precipitation/EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.conf",
-                use_case_dir + "/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf",
+#                use_case_dir + "/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf",
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_NetCDF.conf",
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf",
                 use_case_dir + "/model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.conf",
@@ -96,11 +96,7 @@ use_cases_to_run = all_use_cases
 #use_cases_to_run = [
 #                use_case_dir+"/met_tool_wrapper/ASCII2NC/ASCII2NC.conf",
 #    ]
-use_cases_to_run = [
-                use_case_dir + "/met_tool_wrapper/PointStat/PointStat.conf",
-                use_case_dir + "/met_tool_wrapper/PointStat/PointStat_once_per_field.conf",
-                use_case_dir + "/met_tool_wrapper/GempakToCF/GempakToCF.conf",
-]
+
 
 def get_param_list(param):
     conf = metplus_home+"/internal_tests/use_cases/system.conf"
