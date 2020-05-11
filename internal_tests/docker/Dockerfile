@@ -1,8 +1,6 @@
 FROM dtcenter/met:9.0
 MAINTAINER Jim Frimel <james.t.frimel@noaa.gov>
 
-# FROM jtfmet9   - will pull from local docker image
-# FROM jimfrimel/jtfmet9 - will pull imager from dockerhub repo
 # 
 # This Dockerfile extends the MET image file to run METplus
 #
