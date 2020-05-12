@@ -34,6 +34,12 @@ Julie Prestopnik, Jim Frimel, John Opatz, John Halley Gotway,
 Tara Jensen, Jonathan Vigh, Mallory Row, Christana Kalb, Hank Fisher,
 Lisa Goodrich, Lindsay Blank, and Todd Arbetter.
 
+**Bug Fixes for METplus Wrappers v3.0.1**
+
+* Fixed {now} functionality in [INIT/VALID]_[BEG/END]
+* Fixed formatting for field level in StatAnalysis wrapper
+* Updated MODE Time Domain use cases to produce better results
+
 **New for METplus Wrappers v3.0**
 
 * Moved to using Python 3.6.3
