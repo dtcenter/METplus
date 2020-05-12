@@ -802,6 +802,10 @@ def get_start_end_interval_times(config):
         end_t = config.getraw('config', 'VALID_END')
         time_interval = time_util.get_relativedelta(config.getstr('config', 'VALID_INCREMENT'))
 
+    if not time_interval:
+        config.logger.error("Could not format time interval")
+        return None
+
     start_time = get_time_obj(start_t, time_format,
                              clock_time_obj, config.logger)
     if not start_time:
