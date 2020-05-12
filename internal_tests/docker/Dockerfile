@@ -1,8 +1,6 @@
 FROM dtcenter/met:9.0
 MAINTAINER Jim Frimel <james.t.frimel@noaa.gov>
 
-# FROM jtfmet9   - will pull from local docker image
-# FROM jimfrimel/jtfmet9 - will pull imager from dockerhub repo
 # 
 # This Dockerfile extends the MET image file to run METplus
 #
@@ -58,9 +56,11 @@ ENV METPLUS_DISABLE_PLOT_WRAPPERS yes
 #  - *dateutil, pytest
 #
 # Install nco tools for ncap2
+# Install Java 1.8.0 OpenJDK for GempakToCF.jar
 # Install pytest
 RUN yum -y update \
  && yum -y install nco.x86_64 \
+ && yum -y install java-1.8.0-openjdk \
  && python3 -m pip install pytest
 
 

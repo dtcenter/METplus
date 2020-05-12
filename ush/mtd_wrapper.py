@@ -227,15 +227,10 @@ class MTDWrapper(MODEWrapper):
         single_list = []
 
         data_src = self.c_dict['SINGLE_DATA_SRC']
-
         if data_src == 'OBS':
             find_method = self.find_obs
-            s_name = var_info['obs_name']
-            s_level = var_info['obs_level']
         else:
             find_method = self.find_model
-            s_name = var_info['fcst_name']
-            s_level = var_info['fcst_level']
 
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
