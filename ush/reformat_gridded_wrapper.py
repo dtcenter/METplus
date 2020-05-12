@@ -86,7 +86,10 @@ that reformat gridded data
                     time_info['custom'] = custom_string
                     self.c_dict['CUSTOM_STRING'] = custom_string
 
-                    var_list = util.parse_var_list(self.config, time_info, data_type=to_run)
+                    var_list = util.parse_var_list(self.config,
+                                                   time_info,
+                                                   data_type=to_run,
+                                                   met_tool=self.app_name)
                     if not var_list:
                         var_list = None
 
