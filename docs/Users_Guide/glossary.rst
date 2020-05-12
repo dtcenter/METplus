@@ -1235,13 +1235,6 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*
 
-   ENSEMBLE_STAT_ONCE_PER_FIELD
-     If True, run ensemble_stat separately for each field name/level combination specified in the configuration file. See  :ref:`Field_Info` for more information on how fields are specified. If False, run ensemble_stat once with all of the fields specified.
-
-     | *Used by:*  EnsembleStat
-     | *Family:*  [config]
-     | *Default:*  False
-
    ENSEMBLE_STAT_OUTPUT_DIR
      Specify the output directory where files from the MET ensemble_stat tool are written.
 
