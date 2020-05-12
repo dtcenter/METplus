@@ -78,6 +78,25 @@ all_use_cases = [
               ]
 
 plotting_use_cases = [
+                use_case_dir + "/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf",
+                use_case_dir + "/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf",
+                use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf",
+                use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf",
+              ]
+
+# if METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string, add plotting use cases
+if 'METPLUS_DISABLE_PLOT_WRAPPERS' not in os.environ or not os.environ['METPLUS_DISABLE_PLOT_WRAPPERS']:
+    all_use_cases += plotting_use_cases
+
+# list of use cases to run
+# to run a subset of use cases, uncomment the 2nd variable and copy
+# use cases from all_use_cases. this makes it easier to clean up after
+# running so that git doesn't complain about differences
+use_cases_to_run = all_use_cases
+#use_cases_to_run = [
+#                use_case_dir+"/met_tool_wrapper/ASCII2NC/ASCII2NC.conf",
+#    ]
+use_cases_to_run = [
                 use_case_dir + "/met_tool_wrapper/ASCII2NC/ASCII2NC.conf",
                 use_case_dir + "/met_tool_wrapper/ASCII2NC/ASCII2NC_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/ASCII2NC/ASCII2NC_python_embedding_user_py.conf",
@@ -113,25 +132,6 @@ plotting_use_cases = [
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_extra_tropical.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_tropical.conf",
                 use_case_dir + "/met_tool_wrapper/TCStat/TCStat.conf",
-                use_case_dir + "/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf",
-                use_case_dir + "/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf",
-                use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf",
-                use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf",
-              ]
-
-# if METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string, add plotting use cases
-if 'METPLUS_DISABLE_PLOT_WRAPPERS' not in os.environ or not os.environ['METPLUS_DISABLE_PLOT_WRAPPERS']:
-    all_use_cases += plotting_use_cases
-
-# list of use cases to run
-# to run a subset of use cases, uncomment the 2nd variable and copy
-# use cases from all_use_cases. this makes it easier to clean up after
-# running so that git doesn't complain about differences
-use_cases_to_run = all_use_cases
-#use_cases_to_run = [
-#                use_case_dir+"/met_tool_wrapper/ASCII2NC/ASCII2NC.conf",
-#    ]
-use_cases_to_run = [
                 use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf",
                 use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_Sfc_MultiField.conf",
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstGFS_obsCCPA_GRIB.conf",
