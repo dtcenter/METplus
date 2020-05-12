@@ -643,7 +643,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             return True
 
         # set user environment variables if needed
-        self.set_user_environment()
+        self.set_user_environment(time_info)
 
         # send environment variables to logger
         self.print_all_envs()
@@ -690,6 +690,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                           f"accumulation by subtracting {time_util.ti_get_lead_string(lead2, False)} "
                           f"from {time_util.ti_get_lead_string(lead, False)}.")
 
+        if lead2 < 0:
+            self.logger.warning("Building an accumulation interval larger "
+                                "than the forecast lead by subtracting "
+                                "is not currently supported. Skipping.")
+            return None
+
         # set output file information
         outSts = sts.StringSub(self.logger,
                                out_template,
@@ -708,11 +714,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         file1 = util.preprocess_file(file1_expected,
                                      self.c_dict[data_src+'_INPUT_DATATYPE'],
                                      self.config)
-
+					
         if file1 is None:
             self.log_error(f'Could not find {data_src} file {file1_expected} using template {in_template}')
             return None
 
+        self.logger.debug(f'Found input file: {file1}')
+         
         # if level type is A (accum) and second lead is 0, then
         # run PCPCombine in -add mode with just the first file
         if lead2 == 0 and level_type == 'A':
@@ -728,7 +736,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         input_dict2 = { 'init' : time_info['init'],
                        'lead' : lead2 }
         time_info2 = time_util.ti_calculate(input_dict2)
-        if hasattr(time_info, 'custom'):
+        #if hasattr(time_info, 'custom'):
+        if 'custom' in time_info.keys():
             time_info2['custom'] = time_info['custom']
 
         pcpSts2 = sts.StringSub(self.logger,
@@ -743,6 +752,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if file2 is None:
             self.log_error(f'Could not find {data_src} file {file2_expected} using template {in_template}')
             return None
+
+        self.logger.debug(f'Found input file: {file2}')
 
         if self.c_dict[data_src+'_INPUT_DATATYPE'] != 'GRIB':
             field_name_1 = sts.StringSub(self.logger, field_name, **time_info).do_string_sub()
