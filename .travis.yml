@@ -163,10 +163,10 @@ matrix:
       python: 3.7
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range
-    - name: "Use Case Tests - cryosphere, s2s, space_weather, tc_and_extra_tc"
+    - name: "Use Case Tests - s2s, space_weather, tc_and_extra_tc"
       python: 3.7
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh cryosphere s2s space_weather tc_and_extra_tc
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh s2s space_weather tc_and_extra_tc
 
   # stage 1 fails due to doc8 has errors.
   # This allows stage 1 to fail so the build can continue.
