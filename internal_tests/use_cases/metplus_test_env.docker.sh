@@ -6,13 +6,13 @@ export METPLUS_TEST_METPLUS_BASE=
 export METPLUS_TEST_MET_INSTALL_DIR=/usr/local
 
 # location to write output from test run
-export METPLUS_TEST_OUTPUT_BASE=${OWNER_BUILD_DIR}/test-use-case-output
+export METPLUS_TEST_OUTPUT_BASE=/metplus/test-use-case-output
 
 # location of output from previous test run to compare to current run
-export METPLUS_TEST_PREV_OUTPUT_BASE=${OWNER_BUILD_DIR}/test-use-case-output-old
+export METPLUS_TEST_PREV_OUTPUT_BASE=/metplus/test-use-case-output-old
 
 # location of input data to use in tests
-export METPLUS_TEST_INPUT_BASE=${OWNER_BUILD_DIR}/test.metplus.data
+export METPLUS_TEST_INPUT_BASE=/metplus/test.metplus.data
 
 # location of GempakToCF to run tests that use Gempak
 export METPLUS_TEST_GEMPAKTOCF_JAR=${METPLUS_TEST_INPUT_BASE}/GempakToCF.jar
