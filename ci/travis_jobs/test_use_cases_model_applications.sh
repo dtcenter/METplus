@@ -13,8 +13,8 @@ do
     continue
   fi
     
-  echo curl -L -O https://github.com/NCAR/METplus/releases/download/v${version}/sample_data-${i}-${version}.tgz
-  echo tar xfzp sample_data-${i}-${version}.tgz
+  curl -L -O https://github.com/NCAR/METplus/releases/download/v${version}/sample_data-${i}-${version}.tgz
+  tar xfzp sample_data-${i}-${version}.tgz
   test_args=${test_args}" --"${i}
 done
 
