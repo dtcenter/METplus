@@ -171,7 +171,7 @@ matrix:
     - name: "Use Case Tests - precipitation"
       python: 3.7
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_case_precipitation.sh
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_case_precipitation.sh
 
   # stage 1 fails due to doc8 has errors.
   # This allows stage 1 to fail so the build can continue.
