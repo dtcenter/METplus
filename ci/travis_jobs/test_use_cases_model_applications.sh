@@ -18,6 +18,11 @@ do
   test_args=${test_args}" --"${i}
 done
 
+# get met_test data because some cases use this data still
+curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-met_test-9.0.tgz
+tar xfzp sample_data-met_test-9.0.tgz
+
+# get GempakToCF jar file in case any use cases use GEMPAK data
 curl -L -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
 
 docker pull ${DOCKERHUB_TAG}
