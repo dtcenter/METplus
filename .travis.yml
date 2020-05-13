@@ -147,27 +147,31 @@ matrix:
         - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/pytests/run_pytests.sh docker
         # Dump the output directories from running METplus
         - ls -alR ${OWNER_BUILD_DIR}/pytmp.docker
-    - name: "Integration Tests"
+    - name: "Use Case Tests - met_tool_wrapper"
       python: 3.7
       script:
         # These commands should all be in a script in METplus repo.
         # ie.
         # - ${TRAVIS_BUILD_DIR}/ci/travis_job_integration_tests.sh
         #
-        - mkdir -p ${OWNER_BUILD_DIR}/pytmp.docker;
+        - mkdir -p ${OWNER_BUILD_DIR}/test-use-case-output;
         - mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data;
         - cd ${OWNER_BUILD_DIR}/test.metplus.data;
-          curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-convection_allowing_models-3.0.tgz; curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-medium_range-3.0.tgz; curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-met_test-9.0.tgz; curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-precipitation-3.0.tgz; curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-s2s-3.0.tgz; curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-space_weather-3.0.tgz; curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-tc_and_extra_tc-3.0.tgz
-        - tar xfzp sample_data-convection_allowing_models-3.0.tgz; tar xfzp sample_data-medium_range-3.0.tgz; tar xfzp sample_data-met_test-9.0.tgz; tar xfzp sample_data-precipitation-3.0.tgz; tar xfzp sample_data-s2s-3.0.tgz; tar xfzp sample_data-space_weather-3.0.tgz; tar xfzp sample_data-tc_and_extra_tc-3.0.tgz
+          curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-met_test-9.0.tgz;
+        - tar xfzp sample_data-met_test-9.0.tgz;
         - curl -L -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
         - docker pull ${DOCKERHUB_TAG}
         - docker images
         - docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
-        - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker
+        - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper
         # Dump the output directories from running METplus
-        - ls -alR ${OWNER_BUILD_DIR}/pytmp.docker
+        - ls -alR ${OWNER_BUILD_DIR}/test-use-case-output
         # Dump and see how much space is left on Travis disk.
         - df -h
+    - name: "Use Case Tests - precipitation"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_case_precipitation.sh
 
   # stage 1 fails due to doc8 has errors.
   # This allows stage 1 to fail so the build can continue.
