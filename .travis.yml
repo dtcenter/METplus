@@ -150,28 +150,23 @@ matrix:
     - name: "Use Case Tests - met_tool_wrapper"
       python: 3.7
       script:
-        # These commands should all be in a script in METplus repo.
-        # ie.
-        # - ${TRAVIS_BUILD_DIR}/ci/travis_job_integration_tests.sh
-        #
-        - mkdir -p ${OWNER_BUILD_DIR}/test-use-case-output;
-        - mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data;
-        - cd ${OWNER_BUILD_DIR}/test.metplus.data;
-          curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-met_test-9.0.tgz;
-        - tar xfzp sample_data-met_test-9.0.tgz;
-        - curl -L -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
-        - docker pull ${DOCKERHUB_TAG}
-        - docker images
-        - docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
-        - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper
-        # Dump the output directories from running METplus
-        - ls -alR ${OWNER_BUILD_DIR}/test-use-case-output
-        # Dump and see how much space is left on Travis disk.
-        - df -h
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_met_tool_wrapper.sh
     - name: "Use Case Tests - precipitation"
       python: 3.7
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_case_precipitation.sh
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh precipitation
+    - name: "Use Case Tests - convection_allowing_models"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh convection_allowing_models
+    - name: "Use Case Tests - medium_range"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range
+    - name: "Use Case Tests - cryosphere, s2s, space_weather, tc_and_extra_tc"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh cryosphere s2s space_weather tc_and_extra_tc
 
   # stage 1 fails due to doc8 has errors.
   # This allows stage 1 to fail so the build can continue.
