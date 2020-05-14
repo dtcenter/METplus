@@ -171,7 +171,7 @@ matrix:
       python: 3.7
       script:
         # add travis_wait before command because a case takes longer than 10 minutes to return
-        - travis_wait ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh cryosphere
+        - travis_wait 30 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh cryosphere
 
   # stage 1 fails due to doc8 has errors.
   # This allows stage 1 to fail so the build can continue.
