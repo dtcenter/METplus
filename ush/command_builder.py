@@ -73,7 +73,6 @@ class CommandBuilder:
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
         c_dict['SKIP_IF_OUTPUT_EXISTS'] = False
         c_dict['ALLOW_MULTIPLE_FILES'] = False
-        c_dict['CURRENT_VAR_INFO'] = None
 
         app_name = ''
         if hasattr(self, 'app_name'):
@@ -362,6 +361,48 @@ class CommandBuilder:
                               mandatory=mandatory,
                               return_list=return_list)
 
+    def find_obs_offset(self, time_info, var_info=None, mandatory=True, return_list=False):
+        """! Finds the observation file to compare, looping through offset list until a file is found
+              Args:
+                @param time_info dictionary containing timing information
+                @param var_info object containing variable information
+                @param mandatory if True, report error if not found, warning if not
+                  default is True
+                @rtype string
+                @return Returns tuple of the path to an observation file and the time_info object
+                used to find the data so the value of offset can be preserved
+        """
+        offsets = self.c_dict.get('OFFSETS', [0])
+        # if no offsets are specified, use argument to determine if file is mandatory
+        # if offsets are specified, set mandatory to False to avoid errors when searching
+        # through offset list
+        is_mandatory = mandatory if offsets == [0] else False
+
+        for offset in offsets:
+            time_info['offset_hours'] = offset
+            time_info = time_util.ti_calculate(time_info)
+            obs_path = self.find_obs(time_info,
+                                     var_info=var_info,
+                                     mandatory=is_mandatory,
+                                     return_list=return_list)
+
+            if obs_path is not None:
+                return obs_path, time_info
+
+        # if no files are found return None
+        # if offsets are specified, log error with list offsets used
+        log_message = "Could not find observation file"
+        if offsets == [0]:
+            log_message = f"{log_message} using offsets {','.join(str(offsets))}"
+
+        # if mandatory, report error, otherwise report warning
+        if mandatory:
+            self.log_error(log_message)
+        else:
+            self.logger.warning(log_message)
+
+        return None, None
+
     def find_data(self, time_info, var_info=None, data_type='', mandatory=True, return_list=False):
         """! Finds the data file to compare
               Args:
@@ -426,7 +467,7 @@ class CommandBuilder:
 
         # check if there is a list of files provided in the template
         # process each template in the list (or single template)
-        template_list = [template.strip() for template in input_template.split(',')]
+        template_list = util.getlist(input_template)
 
         # return None if a list is provided for a wrapper that doesn't allow
         # multiple files to be processed
@@ -469,7 +510,7 @@ class CommandBuilder:
         # if multiple files are not supported by the wrapper and multiple files are found, error and exit
         # this will allow a wildcard to be used to find a single file. Previously a wildcard would produce
         # an error if only 1 file is allowed.
-        if not self.c_dict['ALLOW_MULTIPLE_FILES'] and len(check_file_list) > 1:
+        if not self.c_dict.get('ALLOW_MULTIPLE_FILES', False) and len(check_file_list) > 1:
             self.log_error("Multiple files found when wrapper does not support multiple files.")
             return None
 
@@ -548,7 +589,7 @@ class CommandBuilder:
 
                     # if only 1 file is allowed, check if file is
                     # closer to desired valid time than previous match
-                    if not self.c_dict['ALLOW_MULTIPLE_FILES']:
+                    if not self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
                         diff = abs(valid_seconds - file_valid_seconds)
                         if diff < closest_time:
                             closest_time = diff
@@ -776,7 +817,7 @@ class CommandBuilder:
             return None
 
         except ValueError:
-            self.log_error(f"[{section}] {name} must be an {typeobj}. Value is {value}")
+            self.log_error(f"[{section}] {name} (value: {value}) must be an {typeobj.__class__.__name__}")
             self.isOK = False
             return None
 

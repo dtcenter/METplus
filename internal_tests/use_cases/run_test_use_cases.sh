@@ -20,4 +20,4 @@ fi
 
 source $test_env_file
 
-python $script_dir/test_use_cases.py
+python $script_dir/test_use_cases.py $@

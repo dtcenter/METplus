@@ -69,6 +69,7 @@ def get_relativedelta(value, default_unit='S'):
             return relativedelta(years=time_value)
 
         # unsupported time unit specified, return None
+        return None
 
 def get_seconds_from_string(value, default_unit='S', valid_time=None):
     """!Convert string of time (optionally ending with time letter, i.e. HMSyMD to seconds
