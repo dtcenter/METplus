@@ -231,7 +231,7 @@ def post_run_cleanup(config, app_name, total_errors):
         error_msg += '.'
         logger.error(error_msg)
         logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
-
+        sys.exit(1)
 
 def check_for_deprecated_config(conf):
     """!Checks user configuration files and reports errors or warnings if any deprecated variable
@@ -1804,6 +1804,63 @@ def begin_end_incr_evaluate(item):
 
     return None
 
+def fix_list(item_list):
+    item_list = fix_list_helper(item_list, '(')
+    item_list = fix_list_helper(item_list, '[')
+    return item_list
+
+def fix_list_helper(item_list, type):
+    if type == '(':
+        close_regex = r"[^(]+\).*"
+        open_regex = r".*\([^)]*$"
+    elif type == '[':
+        close_regex = r"[^\[]+\].*"
+        open_regex = r".*\[[^\]]*$"
+    else:
+        return item_list
+
+    # combine items that had a comma between ()s or []s
+    fixed_list = []
+    incomplete_item = None
+    found_close = False
+    for index, item in enumerate(item_list):
+        # if we have found an item that ends with ( but
+        if incomplete_item:
+            # check if item has ) before (
+            match = re.match(close_regex, item)
+            if match:
+                # add rest of text, add it to output list, then reset incomplete_item
+                incomplete_item += ',' + item
+                found_close = True
+            else:
+                # if not ) before (, add text and continue
+                incomplete_item += ',' + item
+
+        match = re.match(open_regex, item)
+        # if we find ( without ) after it
+        if match:
+            # if we are still putting together an item, append comma and new item
+            if incomplete_item:
+                if not found_close:
+                    incomplete_item += ',' + item
+            # if not, start new incomplete item to put together
+            else:
+                incomplete_item = item
+
+            found_close = False
+        # if we don't find ( without )
+        else:
+            # if we are putting together item, we can add to the output list and reset incomplete_item
+            if incomplete_item:
+                if found_close:
+                    fixed_list.append(incomplete_item)
+                    incomplete_item = None
+            # if we are not within brackets and we found no brackets, add item to output list
+            else:
+                fixed_list.append(item)
+
+    return fixed_list
+
 def getlist(list_str):
     """! Returns a list of string elements from a comma
          separated string of values.
@@ -1830,6 +1887,9 @@ def getlist(list_str):
     # use csv reader to divide comma list while preserving strings with comma
     # convert the csv reader to a list and get first item (which is the whole list)
     item_list = list(reader([list_str]))[0]
+
+    item_list = fix_list(item_list)
+
     return item_list
 
 def getlistfloat(list_str):
