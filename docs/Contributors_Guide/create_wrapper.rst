@@ -70,11 +70,11 @@ If the wrapper will not loop and process for each forecast lead, put the logic t
 
 * It is recommended to divide up the logic into components, as illustrated above, the make the code more readable and easier to test.
 
-* The function self.set_environment_variables should be called by all wrappers even if the MET tool does not have a config file. This is done to set environment variables that MET expects to be set when running, such as MET_TMP_DIR and MET_PYTHON_EXE.
+* The function self.set_environment_variables should be called by all wrappers even if the MET tool does not have a config file. This is done to set environment variables that MET expects to be set when running, such as MET_TMP_DIR and MET_PYTHON_EXE. If no environment variables need to be set specific to the wrapper, you do not need to write your own implementation of the function in the wrapper. You can call the implementation of the function from CommandBuilder, which sets the environment variables defined in the [user_env_vars] section of the configuration file and outputs DEBUG logs for each environment variable that has been set in the wrapper. MET_TMP_DIR is automatically set for each wrapper.
 
 * Once you have provided all the necessary information to create the MET command, call self.build_and_run_command(). This calls self.get_command() to assemble the command and verify that the command your wrapper generated contains all of the required arguments.  You may need to override get_command() in your wrapper if your MET application is different from the example.  For instance, some MET tools require flags such as -f to precede the input filename.  You can override get_command in the wrapper to prepend the required flag to the filename in your constructed MET command.
 
-* Call self.clear() at the beginning of each loop iteration to prevent inadvertently reusing/re-running commands that were previously created.
+* Call self.clear() at the beginning of each loop iteration that tries to build/run a MET command to prevent inadvertently reusing/re-running commands that were previously created.
 
 * Update the METplus/ush/master_metplus.py file to recognize your wrapper by adding an import statement::
 
@@ -127,8 +127,12 @@ Some wrappers require multiple entries to cover all of the bases. For example, u
 
 * Add an entry for each METplus configuration variable added to the wrapper to the METplus Configuration Glossary.
 
-* Create a directory named after the new wrapper to hold the use case configuration files in the met_tool_wrapper directory that users can run to try out the new wrapper. Be sure to include a corresponding .py file that contains the documentation for that use case and a README file to create a header for the documentation page.
+* Create a directory named after the new wrapper to hold the use case configuration files in the met_tool_wrapper directory that users can run to try out the new wrapper. In the corresponding directory under docs/use_cases, be sure to include a .py file that contains the documentation for that use case and a README file to create a header for the documentation page.
 
 Your use case/example configuration file is located in a directory structure like the following::
 
     METplus/parm/use_cases/met_tool_wrapper/NewTool/NewTool.conf
+    METplus/docs/use_cases/met_tool_wrapper/NewTool/NewTool.py
+    METplus/docs/use_cases/met_tool_wrapper/NewTool/README.md
+
+Note the documentation file is in METplus/docs while the use case conf file is in METplus/parm
