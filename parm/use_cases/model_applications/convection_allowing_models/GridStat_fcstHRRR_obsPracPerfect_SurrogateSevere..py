@@ -7,8 +7,8 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 # Scientific Objective
 # --------------------
 #
-# To evaluate the surrogate severe forecasts at predicting the daily 
-# (12Z - 12Z) practically perfect storm reports.
+# To evaluate the surrogate severe forecasts at predicting Severe weather
+# using the (12Z - 12Z) practically perfect storm reports.
 
 ##############################################################################
 # Datasets
@@ -33,11 +33,9 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 # The grid_stat tool is run for each time. This example loops by valid time.  It
 # processes 2 valid times, listed below.
 #
-# | **Valid:** 2019-05-29_02Z
-# | **Forecast lead:** 26
+# | **Valid:** 2020-02-06_12Z
+# | **Forecast lead:** 36
 #
-# | **Valid:** 2019-05-29_03Z
-# | **Forecast lead:** 27
 
 ##############################################################################
 # METplus Configuration
@@ -45,10 +43,10 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/convection_allowing_models/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/convection_allowing_models/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 
 ##############################################################################
 # MET Configuration
@@ -62,7 +60,7 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 #
 # See the following files for more information about the environment variables set in this configuration file.
 #
-# parm/use_cases/met_tool_wrapper/MODE/MODE.py
+# parm/use_cases/met_tool_wrapper/GridStat/GridStat.py
 
 ##############################################################################
 # Running METplus
