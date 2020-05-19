@@ -101,7 +101,7 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/convection_allowing_models/surrogate_severe_prac_perfect (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/convection_allowing_models/surrogate_severe_prac_perfect/grid_stat (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # mode_260000L_20190529_020000V_010000A_cts.txt
