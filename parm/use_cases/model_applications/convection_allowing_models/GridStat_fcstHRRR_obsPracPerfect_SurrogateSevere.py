@@ -104,10 +104,9 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 # Output for this use case will be found in model_applications/convection_allowing_models/surrogate_severe_prac_perfect/grid_stat (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# mode_260000L_20190529_020000V_010000A_cts.txt
-# mode_260000L_20190529_020000V_010000A_obj.nc
-# mode_260000L_20190529_020000V_010000A_obj.txt
-# mode_260000L_20190529_020000V_010000A.ps
+# grid_stat_360000L_20200206_120000V_ctc.txt
+# grid_stat_360000L_20200206_120000V_cts.txt
+# grid_stat_360000L_20200206_120000V.stat
 
 ##############################################################################
 # Keywords
