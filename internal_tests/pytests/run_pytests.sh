@@ -16,7 +16,7 @@ fi
 minimum_pytest_env_file=$script_dir"/minimum_pytest."$host".sh"
 if [ ! -e $minimum_pytest_env_file ]; then
     echo Cannot only run run_pytests.sh with minimum pytest environment file. Create minimum_pytest.$host.sh to run on this host
-    exit
+    exit 1
 fi
 
 source $minimum_pytest_env_file
@@ -37,12 +37,12 @@ if [ $ret == 0 ]; then
     exit_script=0
 fi
 
-ls $METPLUS_TEST_OUTPUT_BASE &> /dev/null
+[ "$(ls -A $METPLUS_TEST_OUTPUT_BASE)" ]
 ret=$?
 if [ $ret == 0 ]; then
-    echo -e "\n\nRemove $METPLUS_TEST_OUTPUT_BASE before running tests."
+    echo -e "\n\nRemove all finds under $METPLUS_TEST_OUTPUT_BASE before running tests."
     echo Exiting...
-    exit
+    exit 1
 fi
 
 if [ "$remove_commands" != "\n" ]; then
@@ -60,7 +60,7 @@ fi
 
 
 if [ $exit_script == 0 ]; then
-    exit
+    exit 1
 fi
 
 all_good=0
@@ -90,6 +90,7 @@ run_pytest_and_check pcp_combine -c ./test1.conf
 run_pytest_and_check stat_analysis -c ./test_stat_analysis.conf
 run_pytest_and_check StringTemplateSubstitution
 run_pytest_and_check compare_gridded
+run_pytest_and_check regrid_data_plane
 run_pytest_and_check time_util
 #run_pytest_and_check series_lead
 run_pytest_and_check pb2nc -c ./conf1

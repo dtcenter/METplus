@@ -80,6 +80,8 @@ class GenVxMaskWrapper(CommandBuilder):
             self.log_error("Number of items in GEN_VX_MASK_INPUT_MASK_TEMPLATE must "
                            "be equal to the number of items in GEN_VX_MASK_OPTIONS")
 
+            self.isOK = False
+
         # handle window variables [GEN_VX_MASK_]FILE_WINDOW_[BEGIN/END]
         c_dict['FILE_WINDOW_BEGIN'] = \
           self.config.getseconds('config', 'GEN_VX_MASK_FILE_WINDOW_BEGIN',

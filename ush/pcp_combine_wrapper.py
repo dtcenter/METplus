@@ -141,11 +141,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.isOK = False
 
         if not c_dict[d_type+'_INPUT_TEMPLATE'] and c_dict[d_type+'_RUN_METHOD'] != 'SUM':
-            self.log_error("Must set {d_type}_PCP_COMBINE_INPUT_TEMPLATE unless using SUM method")
+            self.log_error(f"Must set {d_type}_PCP_COMBINE_INPUT_TEMPLATE unless using SUM method")
             self.isOK = False
 
         if not c_dict[d_type+'_OUTPUT_TEMPLATE']:
-            self.log_error("Must set {d_type}_PCP_COMBINE_OUTPUT_TEMPLATE")
+            self.log_error(f"Must set {d_type}_PCP_COMBINE_OUTPUT_TEMPLATE")
             self.isOK = False
 
         if run_method == 'DERIVE' or run_method == 'ADD':
@@ -595,7 +595,15 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # remove whitespace at beginning/end and return command
         return cmd.strip()
 
-    def run_at_time_once(self, time_info, var_info, data_src):
+    def run_at_time_once(self, time_info, var_list, data_src):
+        if not var_list:
+            var_list = [None]
+
+        for var_info in var_list:
+            self.run_at_time_one_field(time_info, var_info, data_src)
+
+    def run_at_time_one_field(self, time_info, var_info, data_src):
+
         self.clear()
         cmd = None
         self.method = self.c_dict[data_src+'_RUN_METHOD']
@@ -605,7 +613,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             cmd = self.setup_user_method(time_info, data_src)
         elif self.method == "DERIVE":
             cmd = self.setup_derive_method(time_info, var_info, data_src)
-        elif var_info is None and not self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
+        elif not var_info and not self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
             self.log_error('Cannot run PCPCombine without specifying fields to process '
                            'unless running in USER_DEFINED mode. You must set '
                            f'{data_src}_VAR<n>_[NAME/LEVELS] or {data_src}_OUTPUT_[NAME/LEVEL]')
@@ -621,8 +629,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # invalid method should never happen because value is checked on init
 
         if cmd is None:
-            init_time = time_info['init_fmt']
-            lead = time_info['lead_hours']
             self.log_error("pcp_combine could not generate command")
             return False
 
@@ -901,6 +907,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
             self.output_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
+            # if list of output names, remove whitespace between items
+            self.output_name = [name.strip() for name in self.output_name.split(',')]
+            self.output_name = ','.join(self.output_name)
 
         if self.c_dict[f"{data_src}_OPTIONS"]:
             self.field_extra = sts.StringSub(self.logger,

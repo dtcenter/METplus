@@ -4,6 +4,13 @@ METplus Configuration Glossary
 .. glossary::
    :sorted:
 
+   REGRID_DATA_PLANE_ONCE_PER_FIELD
+     If True, run RegridDataPlane separately for each field name/level combination specified in the configuration file. See  :ref:`Field_Info` for more information on how fields are specified. If False, run RegridDataPlane once with all of the fields specified.
+
+     | *Used by:*  RegridDataPlane
+     | *Family:*  [config]
+     | *Default:*  True
+
    CUSTOM_LOOP_LIST
      List of strings that are used to run each item in the :term:`PROCESS_LIST` multiple times for each run time to allow the tool to be run with different configurations. The filename template tag {custom?fmt=%s} can be used throughout the METplus configuration file. For example, the text can be used to supply different configuration files (if the MET tool uses them) and output filenames/directories. If you have two configuration files, SeriesAnalysisConfig_one and SeriesAnalysisConfig_two, you can set::
 
@@ -578,6 +585,14 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* None
 
+   ASCII2NC_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run ASCII2NC if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  ASCII2NC
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+		       
    TC_STAT_CONFIG_FILE
      Path to optional configuration file read by TCStat.
 
@@ -1219,13 +1234,6 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:*
-
-   ENSEMBLE_STAT_ONCE_PER_FIELD
-     If True, run ensemble_stat separately for each field name/level combination specified in the configuration file. See  :ref:`Field_Info` for more information on how fields are specified. If False, run ensemble_stat once with all of the fields specified.
-
-     | *Used by:*  EnsembleStat
-     | *Family:*  [config]
-     | *Default:*  False
 
    ENSEMBLE_STAT_OUTPUT_DIR
      Specify the output directory where files from the MET ensemble_stat tool are written.

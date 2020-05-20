@@ -187,6 +187,7 @@ that reformat gridded data
               Args:
                 @param time_info dictionary containing timing information
         """
+        self.clear()
 
         # get verification mask if available
         self.get_verification_mask(time_info)
@@ -195,14 +196,14 @@ that reformat gridded data
                                        time_info,
                                        met_tool=self.app_name)
 
-        if not var_list and (self.app_name != 'ensemble_stat'):
+        if not var_list and self.c_dict.get('VAR_LIST_OPTIONAL', False):
             self.log_error('No input fields were specified. You must set '
                            f'[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
             return None
 
         self.handle_climo(time_info)
 
-        if self.c_dict['ONCE_PER_FIELD']:
+        if self.c_dict.get('ONCE_PER_FIELD', False):
             # loop over all fields and levels (and probability thresholds) and
             # call the app once for each
             for var_info in var_list:
@@ -211,8 +212,9 @@ that reformat gridded data
                 self.run_at_time_one_field(time_info, var_info)
         else:
             # loop over all variables and all them to the field list, then call the app once
-            self.clear()
-            self.c_dict['CURRENT_VAR_INFO'] = var_list[0]
+            if var_list:
+                self.c_dict['CURRENT_VAR_INFO'] = var_list[0]
+
             self.run_at_time_all_fields(time_info)
 
     def run_at_time_one_field(self, time_info, var_info):
@@ -224,18 +226,24 @@ that reformat gridded data
         """
 
         # get model to compare, return None if not found
-        model_path = self.find_model(time_info, var_info)
+        model_path = self.find_model(time_info,
+                                     var_info,
+                                     mandatory=True,
+                                     return_list=True)
         if model_path is None:
             return
 
-        self.infiles.append(model_path)
+        self.infiles.extend(model_path)
 
         # get observation to compare, return None if not found
-        obs_path = self.find_obs(time_info, var_info)
+        obs_path, time_info = self.find_obs_offset(time_info,
+                                                   var_info,
+                                                   mandatory=True,
+                                                   return_list=True)
         if obs_path is None:
             return
 
-        self.infiles.append(obs_path)
+        self.infiles.extend(obs_path)
 
         # get field info field a single field to pass to the MET config file
         fcst_field_list = self.get_field_info(v_level=var_info['fcst_level'],
@@ -269,18 +277,24 @@ that reformat gridded data
                                        met_tool=self.app_name)
 
         # get model from first var to compare
-        model_path = self.find_model(time_info, var_list[0])
+        model_path = self.find_model(time_info,
+                                     var_list[0],
+                                     mandatory=True,
+                                     return_list=True)
         if not model_path:
             return
 
-        self.infiles.append(model_path)
+        self.infiles.extend(model_path)
 
         # get observation to from first var compare
-        obs_path = self.find_obs(time_info, var_list[0])
+        obs_path, time_info = self.find_obs_offset(time_info,
+                                                   var_list[0],
+                                                   mandatory=True,
+                                                   return_list=True)
         if obs_path is None:
             return
 
-        self.infiles.append(obs_path)
+        self.infiles.extend(obs_path)
 
         fcst_field_list = []
         obs_field_list = []
@@ -434,23 +448,6 @@ that reformat gridded data
         """!Set environment variables that are referenced by the MET config file.
             Implemented in child class"""
         return None
-
-    def set_current_field_config(self):
-        """!Sets config variables for current fcst/obs name/level that can be referenced
-            by other config variables such as OUTPUT_PREFIX. Only sets then if CURRENT_VAR_INFO
-            is set in c_dict."""
-        if self.c_dict.get('CURRENT_VAR_INFO', None) is not None:
-            var_info = self.c_dict['CURRENT_VAR_INFO']
-
-            self.config.set('config', 'CURRENT_FCST_NAME',
-                            var_info['fcst_name'] if 'fcst_name' in var_info else '')
-            self.config.set('config', 'CURRENT_OBS_NAME',
-                            var_info['obs_name'] if 'obs_name' in var_info else '')
-            self.config.set('config', 'CURRENT_FCST_LEVEL',
-                            var_info['fcst_level'] if 'fcst_level' in var_info else '')
-            self.config.set('config', 'CURRENT_OBS_LEVEL',
-                            var_info['obs_level'] if 'obs_level' in var_info else '')
-
 
     def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
         """! Set and print environment variables, then build/run MET command

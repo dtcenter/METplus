@@ -32,9 +32,7 @@ release = '3.0'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-#extensions = ['sphinx.ext.autodoc','sphinx_gallery.gen_gallery','sphinx.ext.intersphinx']
 extensions = ['sphinx.ext.autodoc','sphinx.ext.intersphinx','sphinx_gallery.gen_gallery']
-#extensions = ['sphinx.ext.autodoc','sphinx_gallery.gen_gallery']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -42,7 +40,12 @@ templates_path = ['_templates']
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
-exclude_patterns = ['_build', 'Thumbs.db', '.DS_Store', 'Users_Guide/METplus_*.rst']
+exclude_patterns = ['_build',
+                    'Thumbs.db',
+                    '.DS_Store',
+                    'Users_Guide/METplus_*.rst',
+                    'use_cases',
+                    ]
 
 # Suppress certain warning messages
 suppress_warnings = ['ref.citation']
@@ -67,15 +70,12 @@ html_logo = os.path.join('_static','METplus_logo.png')
 
 # -- Sphinx Gallery control -----------------------------------------------------------
 sphinx_gallery_conf = {
-      'examples_dirs': ['../parm/use_cases/template',
-                        '../parm/use_cases/met_tool_wrapper',
-                        '../parm/use_cases/model_applications'],
-      'gallery_dirs': ['Users_Guide/template',
-                       'Users_Guide/met_tool_wrapper',
+      'examples_dirs': ['use_cases/met_tool_wrapper',
+                        'use_cases/model_applications'],
+      'gallery_dirs': ['Users_Guide/met_tool_wrapper',
                        'Users_Guide/model_applications'],
       'default_thumb_file': '_static/METplus_logo.png',
       'log_level': {'backreference_missing': 'warning'},
-      'ignore_pattern': r'__init__\.py|sum_IMERG_V06_HDF5\.py|tmp_file\.py',
       'backreferences_dir': 'gen_modules/backreferences',
       'remove_config_comments': True,
 }
