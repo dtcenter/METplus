@@ -6,13 +6,6 @@ GenVxMask_fcstGloTEC_solar_altitude.conf
 
 """
 ##############################################################################
-# Scientific Objective
-# --------------------
-#
-# Creating masking region files to be used by other MET tools.
-# This use case applies a solar altitude mask (solar altitude restriction) to the
-# input grid, creating a separate masked output file for each time level of the input file.
-
 # Overview
 # --------
 #
@@ -38,6 +31,16 @@ GenVxMask_fcstGloTEC_solar_altitude.conf
 # and is measured in degrees. The altitude is zero at sunrise and sunset, and can reach a
 # maximum of 90 degrees (directly overhead) at noon at latitudes near the equator.
 # [Source: https://sciencing.com/solar-altitude-23364.html]
+
+
+##############################################################################
+# Scientific Objective
+# --------------------
+#
+# Creating masking region files to be used by other MET tools.
+# This use case applies a solar altitude mask (solar altitude restriction) to the
+# input grid, creating a separate masked output file for each time level of the input file.
+
 
 ##############################################################################
 # Datasets
@@ -93,7 +96,7 @@ GenVxMask_fcstGloTEC_solar_altitude.conf
 # with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GenVxMask/GenVxMask_multiple.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/GenVxMask/GenVxMask_glotec_solar_altitude.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/GenVxMask/GenVxMask_fcstGloTEC_solar_altitude.conf
 
 ##############################################################################
 # MET Configuration
@@ -141,7 +144,7 @@ GenVxMask_fcstGloTEC_solar_altitude.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/space_weather/GenVxMask_glotec_solar_altitude (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/space_weather/GenVxMask_fcstGloTEC_solar_altitude (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * GloTEC_TEC_solar_altitude_le_45_masked_2015_03_17_0005.nc
