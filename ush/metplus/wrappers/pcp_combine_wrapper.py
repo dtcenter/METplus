@@ -15,11 +15,11 @@ Condition codes: 0 for success, 1 for failure
 import os
 import datetime
 
-import metplus_check_python_version
+from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util.config import string_template_substitution as sts
-from .reformat_gridded_wrapper import ReformatGriddedWrapper
+from . import ReformatGriddedWrapper
 
 '''!@namespace PCPCombineWrapper
 @brief Wraps the MET tool pcp_combine to combine or divide

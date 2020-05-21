@@ -15,7 +15,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import met_util as util
-from .command_builder import CommandBuilder
+from . import CommandBuilder
 from ..util import time_util
 from ..util.config.string_template_substitution import StringSub
 

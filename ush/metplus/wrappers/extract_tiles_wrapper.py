@@ -14,7 +14,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 import sys
 
-import metplus_check_python_version
+from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import feature_util
 from .tc_stat_wrapper import TCStatWrapper

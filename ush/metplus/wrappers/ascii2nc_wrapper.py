@@ -12,12 +12,12 @@ Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 """
 
-import metplus_check_python_version
+from ..util import metplus_check_python_version
 
 import os
 from ..util import met_util as util
 from ..util import time_util
-from .command_builder import CommandBuilder
+from . import CommandBuilder
 from ..util.config.string_template_substitution import StringSub
 
 '''!@namespace ASCII2NCWrapper

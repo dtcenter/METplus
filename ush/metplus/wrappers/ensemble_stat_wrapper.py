@@ -12,13 +12,13 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 '''
 
-import metplus_check_python_version
+from ..util import metplus_check_python_version
 
 import os
 import glob
 
 from ..util import met_util as util
-from .compare_gridded_wrapper import CompareGriddedWrapper
+from . import CompareGriddedWrapper
 from ..util.config.string_template_substitution import StringSub
 
 """!@namespace EnsembleStatWrapper

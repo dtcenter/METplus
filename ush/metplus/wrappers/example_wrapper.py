@@ -14,11 +14,10 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-import metplus_check_python_version
-from ..util import met_util as util
-from ..util import time_util
-from .command_builder import CommandBuilder
-from ..util.config.string_template_substitution import StringSub
+from ..util import metplus_check_python_version
+from ..util import StringSub
+from ..util import run_stand_alone, StringSub, ti_calculate, get_lead_sequence
+from . import CommandBuilder
 
 class ExampleWrapper(CommandBuilder):
     """!Wrapper can be used as a base to develop a new wrapper"""
@@ -50,7 +49,7 @@ class ExampleWrapper(CommandBuilder):
                         generally contains 'now' (current) time and 'init' or 'valid' time
         """
         # fill in time info dictionary
-        time_info = time_util.ti_calculate(input_dict)
+        time_info = ti_calculate(input_dict)
 
         # check if looping by valid or init and log time for run
         loop_by = time_info['loop_by']
@@ -64,14 +63,14 @@ class ExampleWrapper(CommandBuilder):
         self.logger.info('Input template is {}'.format(input_template))
 
         # get forecast leads to loop over
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        lead_seq = get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
 
             # set forecast lead time in hours
             time_info['lead'] = lead
 
             # recalculate time info items
-            time_info = time_util.ti_calculate(time_info)
+            time_info = ti_calculate(time_info)
 
             for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
                 if custom_string:
@@ -96,4 +95,4 @@ class ExampleWrapper(CommandBuilder):
         return True
 
 if __name__ == "__main__":
-    util.run_stand_alone(__file__, "Example")
+    run_stand_alone(__file__, "Example")

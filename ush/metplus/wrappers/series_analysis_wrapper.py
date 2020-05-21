@@ -15,7 +15,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 from datetime import datetime
 
-import metplus_check_python_version
+from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from .compare_gridded_wrapper import CompareGriddedWrapper

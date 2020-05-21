@@ -20,7 +20,7 @@ import sys
 import produtil.setup
 from produtil.run import ExitStatusException
 
-import metplus_check_python_version
+from ..util import metplus_check_python_version
 from ..util import met_util as util
 from .command_builder import CommandBuilder
 
