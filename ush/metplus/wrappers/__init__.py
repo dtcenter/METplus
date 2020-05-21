@@ -1,9 +1,8 @@
-from os.path import dirname, basename, isfile, join
 from os import environ
-import glob
-import sys
-import pkgutil
-import importlib
+from inspect import isclass
+from pkgutil import iter_modules
+from pathlib import Path
+from importlib import import_module
 
 # these wrappers should not be imported if plotting is disabled
 plotting_wrappers = [
@@ -12,12 +11,31 @@ plotting_wrappers = [
     'make_plots_wrapper',
 ]
 
-# loop through modules and skip plotting wrappers if they are disabled
-for (module_loader, name, ispkg) in pkgutil.iter_modules([dirname(__file__)]):
-    if environ.get('METPLUS_DISABLE_PLOT_WRAPPERS', False) and name in plotting_wrappers:
+# import CommandBuilder and parent classes because other wrappers import them
+parent_classes = {
+    'command_builder': 'CommandBuilder',
+    'reformat_gridded_wrapper': 'ReformatGriddedWrapper',
+    'compare_gridded_wrapper': 'CompareGriddedWrapper',
+}
+
+for module_name, attribute_name in parent_classes.items():
+    module = import_module(f"{__name__}.{module_name}")
+    attribute = getattr(module, attribute_name)
+    globals()[attribute_name] = attribute
+
+# iterate through the modules in the current package
+package_dir = Path(__file__).resolve().parent
+for (_, module_name, _) in iter_modules([package_dir]):
+
+    # skip plotting wrappers if disabled
+    if environ.get('METPLUS_DISABLE_PLOT_WRAPPERS', False) and module_name in plotting_wrappers:
         continue
 
-    importlib.import_module('.'+name, __package__)
+    # import the module and iterate through its attributes
+    module = import_module(f"{__name__}.{module_name}")
+    for attribute_name in dir(module):
+        attribute = getattr(module, attribute_name)
 
-modules = glob.glob(join(dirname(__file__), "*_wrapper.py"))
-__all__ = [ basename(f)[:-3] for f in modules if isfile(f) and not f.endswith('__init__.py')]
+        if isclass(attribute) and attribute_name not in globals() and attribute_name.endswith("Wrapper"):
+            # Add the class to this package's variables
+            globals()[attribute_name] = attribute
