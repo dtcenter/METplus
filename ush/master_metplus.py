@@ -33,7 +33,7 @@ import metplus.util.config.config_metplus as config_metplus
 
 # check if env var METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string
 disable_plotting = False
-if 'METPLUS_DISABLE_PLOT_WRAPPERS' in os.environ and os.environ['METPLUS_DISABLE_PLOT_WRAPPERS']:
+if os.environ.get('METPLUS_DISABLE_PLOT_WRAPPERS', False):
     disable_plotting = True
 
 # wrappers are referenced dynamically based on PROCESS_LIST values
