@@ -31,7 +31,7 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 # ----------------
 #
 # The grid_stat tool is run for each time. This example loops by valid time.  It
-# processes 2 valid times, listed below.
+# processes 1 valid time, listed below.
 #
 # | **Valid:** 2020-02-06_12Z
 # | **Forecast lead:** 36
