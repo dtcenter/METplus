@@ -22,11 +22,12 @@ import shutil
 import subprocess
 import filecmp
 import logging
-import config_launcher
 import time
 import calendar
 import argparse
-import met_util as util
+
+from metplus.util.config import config_launcher
+from metplus.util met_util as util
 
 # keep track of use cases that failed to report at the end of execution
 failed_runs = []
