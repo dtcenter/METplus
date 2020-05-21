@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 
 import os
-import config_metplus
 import datetime
 import sys
 import logging
 import pytest
 import datetime
-from make_plots_wrapper import MakePlotsWrapper
-import met_util as util
+
 import produtil.setup
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.make_plots_wrapper import MakePlotsWrapper
+from metplus.util import met_util as util
 
 #
 # These are tests (not necessarily unit tests) for the
@@ -40,7 +42,7 @@ def cmdopt(request):
 #
 # ------------Pytest fixtures that can be used for all tests ---------------
 #
-@pytest.fixture
+#@pytest.fixture
 def make_plots_wrapper():
     """! Returns a default MakePlotsWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -53,7 +55,7 @@ def make_plots_wrapper():
     return MakePlotsWrapper(config, config.logger)
 
 
-@pytest.fixture
+#@pytest.fixture
 def metplus_config():
     try:
         if 'JLOGFILE' in os.environ:
@@ -101,7 +103,7 @@ def metplus_config():
 #         # expected.
 #             assert actual_key == key
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-METPLUS_BASE = os.getcwd().split('METplus')[0]+'METplus'
+METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
 def test_set_plotting_script():
     # Independently test that plotting script
@@ -136,11 +138,13 @@ def test_create_c_dict():
     c_dict = mp.create_c_dict()
     assert(c_dict['LOOP_ORDER'] == 'processes')
     assert(c_dict['PROCESS_LIST'] == 'StatAnalysis, MakePlots')
-    assert(c_dict['INPUT_BASE_DIR'] == mp.config.getdir('INPUT_BASE')
+    # NOTE: MakePlots relies on output from StatAnalysis
+    #       so its input resides in the output of StatAnalysis
+    assert(c_dict['INPUT_BASE_DIR'] == mp.config.getdir('OUTPUT_BASE')
                                        +'/plotting/stat_analysis')
     assert(c_dict['OUTPUT_BASE_DIR'] == mp.config.getdir('OUTPUT_BASE')
                                        +'/plotting/make_plots') 
-    assert(c_dict['SCRIPTS_BASE_DIR'] == METPLUS_BASE+'/ush/plotting_scripts')
+    assert(os.path.realpath(c_dict['SCRIPTS_BASE_DIR']) == METPLUS_BASE+'/ush/plotting_scripts')
     assert(c_dict['DATE_TYPE'] == 'VALID')
     assert(c_dict['VALID_BEG'] == '20190101')
     assert(c_dict['VALID_END'] == '20190101')
@@ -185,9 +189,8 @@ def test_create_c_dict():
                                     +'/logs/master_metplus.log.'
                                     +mp.config.getstr('config',
                                                       'LOG_TIMESTAMP'))
-    assert(c_dict['LOG_LEVEL'] == 'DEBUG')
-    assert(c_dict['MET_BASE'] == mp.config.getdir('MET_INSTALL_DIR')
-                                 +'/share/met')
+    assert(c_dict['LOG_LEVEL'] == 'INFO')
+
 def test_list_to_str():
     # Independently test that a list of strings
     # are being converted to a one

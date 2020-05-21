@@ -1,0 +1,250 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// MODE Time Domain configuration file.
+//
+// For additional information, see the MET_BASE/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+   //
+   // Output model name to be written
+   //
+
+model = "${MODEL}";
+
+   //
+   // Output description to be written
+   //
+
+desc = "NA";
+
+   //
+   // Output observation type to be written
+   //
+
+obtype = "${OBTYPE}";
+
+////////////////////////////////////////////////////////////////////////////////
+
+   //
+   //  Verification grid
+   //  May be set separately in each "field" entry
+   //
+
+regrid = {
+   to_grid    = ${REGRID_TO_GRID};
+   method     = NEAREST;
+   width      = 1;
+   vld_thresh = 0.5;
+   shape     = SQUARE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+   //
+   // Approximate grid resolution (km)
+   //
+
+grid_res = 4;
+
+////////////////////////////////////////////////////////////////////////////////
+
+   //
+   // Forecast and observation fields to be verified
+   //
+
+fcst = {
+
+   ${FCST_FILE_TYPE}
+
+   field = ${FCST_FIELD};
+
+   censor_thresh     = [];
+   censor_val        = [];
+   conv_time_window  = { beg = -1; end = 1; };
+   conv_radius       = ${FCST_CONV_RADIUS};
+   conv_thresh       = ${FCST_CONV_THRESH};
+
+}
+
+obs = {
+
+   ${OBS_FILE_TYPE}
+
+   field = ${OBS_FIELD};
+
+   censor_thresh     = [];
+   censor_val        = [];
+   conv_time_window  = { beg = -1; end = 1; };
+   conv_radius       = ${OBS_CONV_RADIUS};
+   conv_thresh       = ${OBS_CONV_THRESH};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+   //
+   // Intensity percentile value to be written
+   //
+
+inten_perc_value = 99;
+
+////////////////////////////////////////////////////////////////////////////////
+
+   //
+   //  Throw away 3D objects with volumes smaller than this
+   //
+
+min_volume = ${MIN_VOLUME};
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+   //
+   // Fuzzy engine weights
+   //
+
+weight = {
+
+   space_centroid_dist  = 1.0;
+
+   time_centroid_delta  = 1.0;
+
+   speed_delta          = 1.0;
+
+   direction_diff       = 1.0;
+
+   volume_ratio         = 1.0;
+
+   axis_angle_diff      = 1.0;
+
+   start_time_delta     = 1.0;
+
+   end_time_delta       = 1.0;
+
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+   //
+   // Fuzzy engine interest functions
+   //
+
+interest_function = {
+
+   space_centroid_dist = (
+
+      (   0.0, 1.0 )
+      (  50.0, 0.5 )
+      ( 100.0, 0.0 )
+
+   );
+
+   time_centroid_delta = (
+
+      ( -3.0, 0.0 )
+      ( -2.0, 0.5 )
+      ( -1.0, 0.8 )
+      (  0.0, 1.0 )
+      (  1.0, 0.8 )
+      (  2.0, 0.5 )
+      (  3.0, 0.0 )
+
+   );
+
+   speed_delta = (
+
+      ( -10.0, 0.0 )
+      (  -5.0, 0.5 )
+      (   0.0, 1.0 )
+      (   5.0, 0.5 )
+      (  10.0, 0.0 )
+
+   );
+
+   direction_diff = (
+
+      (   0.0, 1.0 )
+      (  90.0, 0.0 )
+      ( 180.0, 0.0 )
+
+   );
+
+   volume_ratio = (
+
+      (  0.0, 0.0 )
+      (  0.5, 0.5 )
+      (  1.0, 1.0 )
+      (  1.5, 0.5 )
+      (  2.0, 0.0 )
+
+   );
+
+   axis_angle_diff = (
+
+      (  0.0, 1.0 )
+      ( 30.0, 1.0 )
+      ( 90.0, 0.0 )
+
+   );
+
+   start_time_delta = (
+
+      ( -5.0, 0.0 )
+      ( -3.0, 0.5 )
+      (  0.0, 1.0 )
+      (  3.0, 0.5 )
+      (  5.0, 0.0 )
+
+   );
+
+   end_time_delta = (
+
+      ( -5.0, 0.0 )
+      ( -3.0, 0.5 )
+      (  0.0, 1.0 )
+      (  3.0, 0.5 )
+      (  5.0, 0.0 )
+
+   );
+
+}   //  interest functions
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+   //
+   // Total interest threshold for determining matches
+   //
+
+total_interest_thresh = 0.7;
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+   //
+   // Output flags
+   //
+
+nc_output = {
+
+   latlon       = true;
+   raw          = true;
+   object_id    = true;
+   cluster_id   = true;
+
+}
+
+txt_output = {
+
+   attributes_2d   = true;
+   attributes_3d   = true;
+
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+output_prefix    = "${OUTPUT_PREFIX}";
+//version        = "V9.0";
+
+////////////////////////////////////////////////////////////////////////////////

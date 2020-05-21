@@ -3,7 +3,6 @@
 DOXYGEN_PATH="${DOXYGEN_PATH:-/user/did/not/set/DOXYGEN_PATH}"
 # EYEWALL_DAKOTA is doxygen-1.8.13
 EYEWALL_DAKOTA_PATH=/usr/local/doxygen/bin/doxygen
-THEIA_PATH=/scratch3/NCEPDEV/hwrf/save/Samuel.Trahan/doxygen-1.8.10/bin/doxygen
 JET_PATH=/contrib/doxygen/1.8.10/bin/doxygen
 LUNA_PATH=/gpfs/hps/emc/hwrf/noscrub/soft/doxygen-1.8.10/bin/doxygen
 TIDE_PATH=/hwrf/noscrub/soft/doxygen-1.8.10/bin/doxygen
@@ -11,7 +10,7 @@ TIDE_PATH=/hwrf/noscrub/soft/doxygen-1.8.10/bin/doxygen
 rm -f doxyloc
 
 found=''
-for exe in $DOXYGEN_PATH $EYEWALL_DAKOTA_PATH $THEIA_PATH $JET_PATH $TIDE_PATH $LUNA_PATH ; do
+for exe in $DOXYGEN_PATH $EYEWALL_DAKOTA_PATH $JET_PATH $TIDE_PATH $LUNA_PATH ; do
     if [[ -x "$exe" && -s "$exe" ]] ; then
         if ( $exe --version ) ; then
             found="$exe"
@@ -42,7 +41,7 @@ fi
 #doxygen='/usr/bin/doxygen'
 #version="trunk@5501"
 
-metplus_ver='METplusV2.0'
+metplus_ver='METplusV3.0'
 echo "version='$metplus_ver'" >> doxygenloc
 
 # ----

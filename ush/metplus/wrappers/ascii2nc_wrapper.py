@@ -12,10 +12,13 @@ Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 """
 
+import metplus_check_python_version
+
 import os
-import metplus.util.met_util as util
-import metplus.util.time_util as time_util
-from metplus.wrappers.command_builder import CommandBuilder
+from ..util import met_util as util
+from ..util import time_util
+from .command_builder import CommandBuilder
+from ..util.config.string_template_substitution import StringSub
 
 '''!@namespace ASCII2NCWrapper
 @brief Wraps the ASCII2NC tool to reformat ascii format to NetCDF
@@ -25,17 +28,18 @@ from metplus.wrappers.command_builder import CommandBuilder
 
 class ASCII2NCWrapper(CommandBuilder):
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = "ascii2nc"
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
+        super().__init__(config, logger)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_ASCII2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'ASCII2NC_SKIP_IF_OUTPUT_EXISTS', False)
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'ASCII2NC_CONFIG_FILE', '')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config', 'ASCII2NC_CONFIG_FILE', '')
         c_dict['ASCII_FORMAT'] = self.config.getstr('config', 'ASCII2NC_INPUT_FORMAT', '')
         c_dict['MASK_GRID'] = self.config.getstr('config', 'ASCII2NC_MASK_GRID', '')
         c_dict['MASK_POLY'] = self.config.getstr('config', 'ASCII2NC_MASK_POLY', '')
@@ -55,11 +59,11 @@ class ASCII2NCWrapper(CommandBuilder):
                                                         'ASCII2NC_TIME_SUMMARY_BEG')
         # add quotes if not already added
         if c_dict['TIME_SUMMARY_BEG'][0] != '"' and c_dict['TIME_SUMMARY_BEG'][-1] != '"':
-            c_dict['TIME_SUMMARY_BEG'] = f"\"{c_dict['TIME_SUMMARY_BEG']}\""
+            c_dict['TIME_SUMMARY_BEG'] = "\"{}\"".format(c_dict['TIME_SUMMARY_BEG'])
         c_dict['TIME_SUMMARY_END'] = self.config.getstr('config',
                                                         'ASCII2NC_TIME_SUMMARY_END')
         if c_dict['TIME_SUMMARY_END'][0] != '"' and c_dict['TIME_SUMMARY_END'][-1] != '"':
-            c_dict['TIME_SUMMARY_END'] = f"\"{c_dict['TIME_SUMMARY_END']}\""
+            c_dict['TIME_SUMMARY_END'] = "\"{}\"".format(c_dict['TIME_SUMMARY_END'])
 
         c_dict['TIME_SUMMARY_STEP'] = self.config.getstr('config',
                                                          'ASCII2NC_TIME_SUMMARY_STEP')
@@ -102,15 +106,6 @@ class ASCII2NCWrapper(CommandBuilder):
             Reformat as needed. Print list of variables that were set and their values.
             Args:
               @param time_info dictionary containing timing info from current run"""
-        # list of fields to print to log
-        print_list = ["TIME_SUMMARY_FLAG", "TIME_SUMMARY_RAW_DATA",
-                      "TIME_SUMMARY_BEG", "TIME_SUMMARY_END",
-                      "TIME_SUMMARY_STEP", "TIME_SUMMARY_WIDTH",
-                      "TIME_SUMMARY_GRIB_CODES", "TIME_SUMMARY_VAR_NAMES",
-                      "TIME_SUMMARY_TYPES", "TIME_SUMMARY_VALID_FREQ",
-                      "TIME_SUMMARY_VALID_THRESH",
-                      ]
-
         # set environment variables needed for MET application
         self.add_env_var('TIME_SUMMARY_FLAG',
                          self.c_dict['TIME_SUMMARY_FLAG'])
@@ -139,36 +134,31 @@ class ASCII2NCWrapper(CommandBuilder):
         self.set_user_environment(time_info)
 
         # send environment variables to logger
-        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_user_env_items()
-        for l in print_list:
-            self.print_env_item(l)
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(print_list)
+        self.print_all_envs()
 
     def get_command(self):
         cmd = self.app_path
 
         # don't run if no input or output files were found
         if not self.infiles:
-            self.logger.error("No input files were found")
+            self.log_error("No input files were found")
             return
 
         if self.outfile == "":
-            self.logger.error("No output file specified")
+            self.log_error("No output file specified")
             return
 
         # add input files
         for infile in self.infiles:
-            cmd += f' {infile}'
+            cmd += ' ' + infile
 
         # add output path
         out_path = self.get_output_path()
-        cmd += f' {out_path}'
+        cmd += ' ' + out_path
 
         parent_dir = os.path.dirname(out_path)
         if parent_dir == '':
-            self.logger.error('Must specify path to output file')
+            self.log_error('Must specify path to output file')
             return None
 
         # create full output dir if it doesn't already exist
@@ -179,7 +169,7 @@ class ASCII2NCWrapper(CommandBuilder):
         cmd += ''.join(self.args)
 
         # add verbosity
-        cmd += f" -v {self.c_dict['VERBOSITY']}"
+        cmd += ' -v ' + self.c_dict['VERBOSITY']
         return cmd
 
     def run_at_time(self, input_dict):
@@ -193,9 +183,15 @@ class ASCII2NCWrapper(CommandBuilder):
         for lead in lead_seq:
             self.clear()
             input_dict['lead'] = lead
-            self.config.set('config', 'CURRENT_LEAD_TIME', lead)
+
             time_info = time_util.ti_calculate(input_dict)
-            self.run_at_time_once(time_info)
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                if custom_string:
+                    self.logger.info(f"Processing custom string: {custom_string}")
+
+                time_info['custom'] = custom_string
+
+                self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
         """! Process runtime and try to build command to run ascii2nc
@@ -211,46 +207,61 @@ class ASCII2NCWrapper(CommandBuilder):
             return
 
         # get other configurations for command
-        self.set_command_line_arguments()
+        self.set_command_line_arguments(time_info)
+
         # set environment variables if using config file
         self.set_environment_variables(time_info)
 
         # build command and run
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("Could not generate command")
+            self.log_error("Could not generate command")
             return
 
         self.build()
 
     def find_input_files(self, time_info):
-        obs_path = self.find_obs(time_info, None)
-        if obs_path is None:
-            return
+        # if using python embedding input, don't check if file exists,
+        # just substitute time info and add to input file list
+        if self.c_dict['ASCII_FORMAT'] == 'python':
+            filename = StringSub(self.logger,
+                                 self.c_dict['OBS_INPUT_TEMPLATE'],
+                                 **time_info).do_string_sub()
+            self.infiles.append(filename)
+            return self.infiles
 
-        if isinstance(obs_path, list):
-            self.infiles.extend(obs_path)
-        else:
-            self.infiles.append(obs_path)
+        # get list of files even if only one is found (return_list=True)
+        obs_path = self.find_obs(time_info, var_info=None, return_list=True)
+        if obs_path is None:
+            return None
+
+        self.infiles.extend(obs_path)
         return self.infiles
 
-    def set_command_line_arguments(self):
+    def set_command_line_arguments(self, time_info):
         # add input data format if set
         if self.c_dict['ASCII_FORMAT']:
-            self.args.append(f" -format {self.c_dict['ASCII_FORMAT']}")
+            self.args.append(" -format {}".format(self.c_dict['ASCII_FORMAT']))
 
-        # add config file if set
+        # add config file - passing through StringSub to get custom string if set
         if self.c_dict['CONFIG_FILE']:
-            self.args.append(f" -config {self.c_dict['CONFIG_FILE']}")
+            config_file = StringSub(self.logger,
+                                    self.c_dict['CONFIG_FILE'],
+                                    **time_info).do_string_sub()
+            self.args.append(f" -config {config_file}")
 
         # add mask grid if set
         if self.c_dict['MASK_GRID']:
-            self.args.append(f" -mask_grid {self.c_dict['MASK_GRID']}")
+            self.args.append(" -mask_grid {}".format(self.c_dict['MASK_GRID']))
 
         # add mask poly if set
         if self.c_dict['MASK_POLY']:
-            self.args.append(f" -mask_poly {self.c_dict['MASK_POLY']}")
+            self.args.append(" -mask_poly {}".format(self.c_dict['MASK_POLY']))
 
         # add mask SID if set
         if self.c_dict['MASK_SID']:
-            self.args.append(f" -mask_sid {self.c_dict['MASK_SID']}")
+            self.args.append(" -mask_sid {}".format(self.c_dict['MASK_SID']))
+
+
+if __name__ == "__main__":
+    util.run_stand_alone(__file__, "ASCII2NC")

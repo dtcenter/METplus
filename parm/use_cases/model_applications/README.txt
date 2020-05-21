@@ -1,1 +1,0 @@
-model_applications.rst

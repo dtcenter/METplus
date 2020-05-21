@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 
 import os
-import config_metplus
 import datetime
 import sys
 import logging
 import pytest
 import datetime
-from stat_analysis_wrapper import StatAnalysisWrapper
-import met_util as util
+
 import produtil.setup
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.stat_analysis_wrapper import StatAnalysisWrapper
+from metplus.util import met_util as util
+
 
 #
 # These are tests (not necessarily unit tests) for the
@@ -40,7 +43,7 @@ def cmdopt(request):
 #
 # ------------Pytest fixtures that can be used for all tests ---------------
 #
-@pytest.fixture
+#@pytest.fixture
 def stat_analysis_wrapper():
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -50,10 +53,11 @@ def stat_analysis_wrapper():
     # Default, empty StatAnalysisWrapper with some configuration values set
     # to /path/to:
     config = metplus_config()
+    util.handle_tmp_dir(config)
     return StatAnalysisWrapper(config, config.logger)
 
 
-@pytest.fixture
+#@pytest.fixture
 def metplus_config():
     try:
         if 'JLOGFILE' in os.environ:
@@ -101,7 +105,7 @@ def metplus_config():
 #         # expected.
 #             assert actual_key == key
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-METPLUS_BASE = os.getcwd().split('METplus')[0]+'METplus'
+METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
 def test_set_lookin_dir():
     # Independently test that the -lookin part of the
@@ -141,8 +145,8 @@ def test_create_c_dict():
     c_dict = st.create_c_dict()
     assert(c_dict['LOOP_ORDER'] == 'times')
     assert(c_dict['PROCESS_LIST'] == 'StatAnalysis')
-    assert(c_dict['CONFIG_FILE'] == (METPLUS_BASE+'/parm/use_cases/grid_to_grid/'
-                                     +'met_config/STATAnalysisConfig'))
+    assert(os.path.realpath(c_dict['CONFIG_FILE']) == (METPLUS_BASE+'/internal_tests/'
+                                                       +'config/STATAnalysisConfig'))
     assert(c_dict['OUTPUT_BASE_DIR'] == (st.config.getdir('OUTPUT_BASE')
                                          +'/stat_analysis'))
     assert(c_dict['GROUP_LIST_ITEMS'] == [ 'FCST_INIT_HOUR_LIST' ])
@@ -809,3 +813,23 @@ def test_run_stat_analysis_job():
     assert(os.path.exists(expected_filename))
     assert(os.path.getsize(expected_filename)
            == os.path.getsize(comparison_filename))
+
+@pytest.mark.parametrize(
+    'data_type, config_list, expected_list', [
+      ('FCST', '\"0,*,*\"', ["0,*,*"]),
+      ('FCST', '\"(0,*,*)\"', ["0,*,*"]),
+      ('FCST', '\"0,*,*\", \"1,*,*\"', ["0,*,*", "1,*,*"]),
+      ('FCST', '\"(0,*,*)\", \"(1,*,*)\"', ["0,*,*", "1,*,*"]),
+      ('OBS', '\"0,*,*\"', ["0,*,*"]),
+      ('OBS', '\"(0,*,*)\"', ["0,*,*"]),
+      ('OBS', '\"0,*,*\", \"1,*,*\"', ["0,*,*", "1,*,*"]),
+      ('OBS', '\"(0,*,*)\", \"(1,*,*)\"', ["0,*,*", "1,*,*"]),
+    ]
+)
+def test_get_level_list(data_type, config_list, expected_list):
+    config = metplus_config()
+    config.set('config', f'{data_type}_LEVEL_LIST', config_list)
+
+    saw = StatAnalysisWrapper(config, config.logger)
+
+    assert(saw.get_level_list(data_type) == expected_list)

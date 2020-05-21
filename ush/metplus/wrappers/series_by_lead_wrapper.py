@@ -6,15 +6,13 @@ import sys
 import errno
 import glob
 
-import produtil.setup
-import metplus.util.met_util as util
-import metplus.util.time_util as time_util
-import metplus.util.feature_util
-from metplus.wrappers.command_builder import CommandBuilder
-import metplus.util.config.config_metplus
-from metplus.wrappers.tc_stat_wrapper import TCStatWrapper
-from metplus.wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
-
+import metplus_check_python_version
+from ..util import met_util as util
+from ..util import time_util
+from ..util import feature_util
+from .command_builder import CommandBuilder
+from .tc_stat_wrapper import TCStatWrapper
+from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 
 ## @namespace SeriesByLeadWrapper
 # @brief Performs any optional filtering of input tcst data then performs
@@ -39,21 +37,24 @@ class SeriesByLeadWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
+        self.app_name = 'series_analysis'
         super().__init__(config, logger)
-        self.app_name = 'SeriesByLead'
         # Retrieve any necessary values from the parm file(s)
         self.do_fhr_by_group = self.config.getbool('config',
                                                    'SERIES_ANALYSIS_GROUP_FCSTS')
         self.fhr_group_labels = []
-        self.var_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_VAR_LIST'))
         self.stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST'))
         self.plot_data_plane_exe = os.path.join(
             self.config.getdir('MET_INSTALL_DIR'),
             'bin/plot_data_plane')
+
         self.convert_exe = self.config.getexe('CONVERT')
         self.ncap2_exe = self.config.getexe('NCAP2')
         self.ncdump_exe = self.config.getexe('NCDUMP')
         self.rm_exe = self.config.getexe("RM")
+        if not self.convert_exe or not self.ncap2_exe or not self.ncdump_exe or not self.rm_exe:
+            self.isOK = False
+
         met_install_dir = self.config.getdir('MET_INSTALL_DIR')
         self.series_analysis_exe = os.path.join(met_install_dir,
                                                 'bin/series_analysis')
@@ -61,7 +62,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.series_lead_filtered_out_dir = \
             self.config.getdir('SERIES_ANALYSIS_FILTERED_OUTPUT_DIR')
         self.series_lead_out_dir = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR')
-        self.tmp_dir = self.config.getdir('TMP_DIR')
+        self.staging_dir = self.config.getdir('STAGING_DIR')
         self.background_map = self.config.getbool('config', 'SERIES_ANALYSIS_BACKGROUND_MAP')
         self.series_filter_opts = \
             self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
@@ -81,6 +82,11 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         self.logger.info("Initialized SeriesByLeadWrapper")
 
+    def create_c_dict(self):
+        c_dict = super().create_c_dict()
+        c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
+        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'SERIES_ANALYSIS_REGRID_TO_GRID', '')
+        return c_dict
 
     def get_lead_sequences(self):
         # output will be a dictionary where the key will be the
@@ -103,10 +109,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             else:
                 log_msg = 'Need to set LEAD_SEQ_{}_LABEL to describe ' +\
                           'LEAD_SEQ_{}'.format(n, n)
-                if self.config.logger:
-                    self.config.logger.error(log_msg)
-                else:
-                    print(log_msg)
+                self.log_error(log_msg)
                 exit(1)
 
             # get forecast list for n
@@ -162,7 +165,7 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         # For example, we want tmp_stat_string to look like
         #   '["TOTAL","FBAR"]', NOT "['TOTAL','FBAR']"
-        os.environ['STAT_LIST'] = tmp_stat_string
+        self.add_env_var('STAT_LIST', tmp_stat_string)
 
         self.logger.info("Begin series analysis by lead...")
 
@@ -180,7 +183,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         except OSError:
             msg = ("Missing 30x30 tile files." +
                    "  Extract tiles needs to be run")
-            self.logger.error(msg)
+            self.log_error(msg)
 
         # Apply optional filtering via tc_stat, as indicated in the
         # parameter/config file.
@@ -223,7 +226,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             self.apply_series_filters(tile_dir, init_times,
                                       self.series_lead_filtered_out_dir,
                                       self.series_filter_opts,
-                                      self.tmp_dir)
+                                      self.staging_dir)
 
             # Remove any empty files and directories to avoid
             # errors or performance degradation when performing
@@ -349,7 +352,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             except IOError as io_error:
                 msg = ("Could not create requested" +
                         " ASCII file: " + ascii_fcst_file + " | ")
-                self.logger.error(msg + io_error)
+                self.log_error(msg + io_error)
 
             # For ANLY
             try:
@@ -367,7 +370,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             except IOError as io_error:
                 msg = ("Could not create requested" +
                         " ASCII file: " + ascii_anly_file + " | ")
-                self.logger.error(msg + io_error)
+                self.log_error(msg + io_error)
 
             # Remove any empty directories that were created when no
             # files were written.
@@ -383,20 +386,15 @@ class SeriesByLeadWrapper(CommandBuilder):
             self.logger.debug('obs param: ' + obs_param)
 
             # Create the -out portion of the series_analysis command.
-            for cur_var in self.var_list:
-                # Get the name and level to create the -out param
-                # and set the NAME and LEVEL environment variables that
-                # are needed by the MET series analysis binary.
-                match = re.match(r'(.*)/(.*)', cur_var)
-                name = match.group(1)
-                level = match.group(2)
-                os.environ['NAME'] = name
-                os.environ['LEVEL'] = level
+            full_vars_list = feature_util.retrieve_var_name_levels(self.config)
+            for cur_var in full_vars_list:
+                name, level = cur_var
+                self.add_env_var('LEVEL', level)
 
                 # Set the NAME environment to <name>_<level> format if
                 # regridding method is to be done with the MET tool
                 # regrid_data_plane.
-                os.environ['NAME'] = name + '_' + level
+                self.add_env_var('NAME', name + '_' + level)
                 out_param_parts = ['-out ', out_dir, '/series_F',
                                     cur_beg_str, '_to_F', cur_end_str,
                                     '_', name, '_', level, '.nc']
@@ -412,6 +410,10 @@ class SeriesByLeadWrapper(CommandBuilder):
                                                 ' ', out_param]
                 series_analysis_cmd = ''.join(series_analysis_cmd_parts)
 
+                self.add_common_envs()
+
+                self.print_all_envs()
+
                 # Since this wrapper is not using the CommandBuilder
                 # to build the cmd, we need to add the met verbosity
                 # level to the MET cmd created before we run
@@ -420,7 +422,11 @@ class SeriesByLeadWrapper(CommandBuilder):
                     self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                    (series_analysis_cmd, env=None, app_name=self.app_name)
+                    (series_analysis_cmd, env=self.env, app_name='series_analysis')
+
+                if ret != 0:
+                    self.log_error(f"MET command returned a non-zero return code: {series_analysis_cmd}")
+                    self.logger.info("Check the logfile for more information on why it failed")
 
                 # Clean up any empty files and directories that still
                 # persist.
@@ -445,7 +451,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         for fhr in lead_seq:
             fcst_seconds = time_util.ti_get_seconds_from_relativedelta(fhr)
             if fcst_seconds is None:
-                self.logger.error(f'Invalid forecast units used: {fhr}')
+                self.log_error(f'Invalid forecast units used: {fhr}')
                 exit(1)
 
             cur_fhr = str(fcst_seconds // 3600).zfill(3)
@@ -486,7 +492,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             except IOError as io_error:
                 msg = ("Could not create requested" +
                        " ASCII file: " + ascii_fcst_file + " | ")
-                self.logger.error(msg + io_error)
+                self.log_error(msg + io_error)
 
             # Gather all the anly gridded tile files
             # so they can be saved in ASCII files.
@@ -514,7 +520,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                         file_handle.write(anly_tiles)
 
             except IOError:
-                self.logger.error("Could not create requested " +
+                self.log_error("Could not create requested " +
                                   "ASCII file: " + ascii_anly_file)
 
             # Remove any empty directories that result from
@@ -532,18 +538,16 @@ class SeriesByLeadWrapper(CommandBuilder):
 
             # Create the -out param and invoke the MET series
             # analysis binary
-            for cur_var in self.var_list:
-                # Get the name and level to create the -out param
-                # and set the NAME and LEVEL environment variables that
-                # are needed by the MET series analysis binary.
-                match = re.match(r'(.*)/(.*)', cur_var)
-                name = match.group(1)
-                level = match.group(2)
-                os.environ['NAME'] = name
-                os.environ['LEVEL'] = level
+            # Get the name and level to create the -out param
+            # and set the NAME and LEVEL environment variables that
+            # are needed by the MET series analysis binary.
+            full_vars_list = feature_util.retrieve_var_name_levels(self.config)
+            for cur_var in full_vars_list:
+                name, level = cur_var
+                self.add_env_var('LEVEL', level)
 
                 # Set NAME to name_level
-                os.environ['NAME'] = name + '_' + level
+                self.add_env_var('NAME', name + '_' + level)
                 out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr,
                                    '_', name, '_', level, '.nc']
                 out_param = ''.join(out_param_parts)
@@ -558,6 +562,10 @@ class SeriesByLeadWrapper(CommandBuilder):
                                              out_param]
                 series_analysis_cmd = ''.join(series_analysis_cmd_parts)
 
+                self.add_common_envs()
+
+                self.print_all_envs()
+
                 # Since this wrapper is not using the CommandBuilder
                 # to build the cmd, we need to add the met verbosity
                 # level to the MET cmd created before we run
@@ -565,7 +573,11 @@ class SeriesByLeadWrapper(CommandBuilder):
                 series_analysis_cmd = self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                    (series_analysis_cmd, env=None , app_name=self.app_name)
+                    (series_analysis_cmd, env=self.env, app_name='series_analysis')
+
+                if ret != 0:
+                    self.log_error(f"MET command returned a non-zero return code: {series_analysis_cmd}")
+                    self.logger.info("Check the logfile for more information on why it failed")
 
                 # Make sure there aren't any emtpy
                 # files or directories that still persist.
@@ -593,10 +605,6 @@ class SeriesByLeadWrapper(CommandBuilder):
         # Need to call sys.__getframe() to get the filename and method/func
         # for logging information.
 
-        # TODO: Fix ncdump commands so they do not need to be run_inshell
-        # The issue is that > redirect symbol in the command.
-        # This can be fixed by removing that and using .out()
-
         # Useful for logging
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
@@ -615,7 +623,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         else:
             msg = ("Cannot determine base directory path for " +
                    "netCDF files... exiting")
-            self.logger.error(msg)
+            self.log_error(msg)
             sys.exit(1)
 
         # TODO: critical. harden Do we ant to add -O overwrite option to
@@ -626,14 +634,16 @@ class SeriesByLeadWrapper(CommandBuilder):
         # series_cnt_TOTAL pair.
         nseries_nc_path = os.path.join(base_nc_dir, 'nseries.nc')
 
-        nco_nseries_cmd_parts = [self.ncap2_exe, ' -v -s ', '"',
+        nco_nseries_cmd_parts = [self.ncap2_exe, ' -O -v -s ', '"',
                                  'max=max(series_cnt_TOTAL)', '" ',
                                  nc_var_file, ' ', nseries_nc_path]
         nco_nseries_cmd = ''.join(nco_nseries_cmd_parts)
         (ret, nco_nseries_cmd) = self.cmdrunner.run_cmd \
-            (nco_nseries_cmd, env=None, ismetcmd=False)
-        # nco_nseries_cmd = batchexe('sh')['-c', nco_nseries_cmd].err2out()
-        # run(nco_nseries_cmd)
+            (nco_nseries_cmd, env=self.env, ismetcmd=False)
+
+        if ret != 0:
+            self.log_error(f"Command returned a non-zero return code: {nco_nseries_cmd}")
+            self.logger.info("Check the logfile for more information on why it failed")
 
         # Create an ASCII file with the max value, which can be parsed.
         nseries_txt_path = os.path.join(base_nc_dir, 'nseries.txt')
@@ -642,9 +652,12 @@ class SeriesByLeadWrapper(CommandBuilder):
                                 '> ', nseries_txt_path]
         ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
         (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
-            (ncdump_max_cmd, env=None, ismetcmd=False, run_inshell=True)
-        # ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
-        # run(ncdump_max_cmd)
+            (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True)
+
+        if ret != 0:
+            self.log_error(f"Command returned a non-zero return code: {ncdump_max_cmd}")
+            self.logger.info("Check the logfile for more information on why it failed")
+
 
         # Look for the max value for this netCDF file.
         try:
@@ -670,7 +683,7 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         except IOError:
             msg = ("cannot open the max text file")
-            self.logger.error(msg)
+            self.log_error(msg)
 
     def get_netcdf_min_max(self, do_fhr_by_range, nc_var_files, cur_stat):
         """! Determine the min and max for all lead times for each
@@ -721,7 +734,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             else:
                 msg = ("Cannot determine base directory path " +
                        "for netCDF files. Exiting...")
-                self.logger.error(msg)
+                self.log_error(msg)
                 sys.exit(1)
 
             # Create file paths for temporary files for min value...
@@ -735,15 +748,17 @@ class SeriesByLeadWrapper(CommandBuilder):
             util.cleanup_temporary_files(min_temporary_files)
 
             # Use NCO ncap2 to get the min for the current stat-var pairing.
-            nco_min_cmd_parts = [self.ncap2_exe, ' -v -s ', '"',
+            nco_min_cmd_parts = [self.ncap2_exe, ' -O -v -s ', '"',
                                  'min=min(series_cnt_', cur_stat, ')',
                                  '" ', cur_nc, ' ', min_nc_path]
             nco_min_cmd = ''.join(nco_min_cmd_parts)
             self.logger.debug('nco_min_cmd: ' + nco_min_cmd)
             (ret, nco_min_cmd) = self.cmdrunner.run_cmd \
-                (nco_min_cmd, env=None, ismetcmd=False)
-            # nco_min_cmd = batchexe('sh')['-c', nco_min_cmd].err2out()
-            # run(nco_min_cmd)
+                (nco_min_cmd, env=self.env, ismetcmd=False)
+
+            if ret != 0:
+                self.log_error(f"Command returned a non-zero return code: {nco_min_cmd}")
+                self.logger.info("Check the logfile for more information on why it failed")
 
             # now set up file paths for the max value...
             max_nc_path = os.path.join(base_nc_dir, 'max.nc')
@@ -758,15 +773,16 @@ class SeriesByLeadWrapper(CommandBuilder):
             # Using NCO ncap2 to perform arithmetic processing to retrieve
             #  the max from each
             # netCDF file's stat-var pairing.
-            nco_max_cmd_parts = [self.ncap2_exe, ' -v -s ', '"',
+            nco_max_cmd_parts = [self.ncap2_exe, ' -O -v -s ', '"',
                                  'max=max(series_cnt_', cur_stat, ')',
                                  '" ', cur_nc, ' ', max_nc_path]
             nco_max_cmd = ''.join(nco_max_cmd_parts)
             self.logger.debug('nco_max_cmd: ' + nco_max_cmd)
-            (ret, nco_max_cmd) = self.cmdrunner.run_cmd(nco_max_cmd, env=None,
+            (ret, nco_max_cmd) = self.cmdrunner.run_cmd(nco_max_cmd, env=self.env,
                                                         ismetcmd=False)
-            # nco_max_cmd = batchexe('sh')['-c', nco_max_cmd].err2out()
-            # run(nco_max_cmd)
+            if ret != 0:
+                self.log_error(f"Command returned a non-zero return code: {nco_max_cmd}")
+                self.logger.info("Check the logfile for more information on why it failed")
 
             # Create ASCII files with the min and max values, using the
             # NCO utility ncdump.
@@ -775,17 +791,22 @@ class SeriesByLeadWrapper(CommandBuilder):
                                     '/min.nc > ', min_txt_path]
             ncdump_min_cmd = ''.join(ncdump_min_cmd_parts)
             (ret, ncdump_min_cmd) = self.cmdrunner.run_cmd \
-                (ncdump_min_cmd, env=None, ismetcmd=False, run_inshell=True)
-            # ncdump_min_cmd = batchexe('sh')['-c', ncdump_min_cmd].err2out()
-            # run(ncdump_min_cmd)
+                (ncdump_min_cmd, env=self.env, ismetcmd=False, run_inshell=True)
+
+            if ret != 0:
+                self.log_error(f"Command returned a non-zero return code: {ncdump_min_cmd}")
+                self.logger.info("Check the logfile for more information on why it failed")
+
 
             ncdump_max_cmd_parts = [self.ncdump_exe, ' ', base_nc_dir,
                                     '/max.nc > ', max_txt_path]
             ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
             (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
-                (ncdump_max_cmd, env=None, ismetcmd=False, run_inshell=True)
-            # ncdump_max_cmd = batchexe('sh')['-c', ncdump_max_cmd].err2out()
-            # run(ncdump_max_cmd)
+                (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True)
+
+            if ret != 0:
+                self.log_error(f"Command returned a non-zero return code: {ncdump_max_cmd}")
+                self.logger.info("Check the logfile for more information on why it failed")
 
             # Search for 'min' in the min.txt file.
             try:
@@ -799,7 +820,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                 vmin = cur_min
             except IOError:
                 msg = ("cannot open the min text file")
-                self.logger.error(msg)
+                self.log_error(msg)
 
             # Search for 'max' in the max.txt file.
             try:
@@ -813,7 +834,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                 vmax = cur_max
             except IOError:
                 msg = ("cannot open the max text file")
-                self.logger.error(msg)
+                self.log_error(msg)
 
             # Clean up min.nc, min.txt, max.nc and max.txt temporary files.
             util.cleanup_temporary_files(min_temporary_files)
@@ -932,7 +953,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             match = re.match(type_regex, cur_tile)
             if not match:
                 msg = ("No matching storm id found, exiting...")
-                self.logger.error(msg)
+                self.log_error(msg)
                 return ''
 
             fhr_tiles += cur_tile
@@ -1055,7 +1076,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         # Check that we have netCDF files, if not, something went
         # wrong.
         if not nc_list:
-            self.logger.error("could not find any netCDF files to convert"
+            self.log_error("could not find any netCDF files to convert"
                               " to PS and PNG.  Exiting...")
             sys.exit(1)
         else:
@@ -1063,16 +1084,14 @@ class SeriesByLeadWrapper(CommandBuilder):
                    str(len(nc_list)))
             self.logger.debug(msg)
 
-        for cur_var in self.var_list:
-            # Get the name and level to set the NAME and LEVEL
-            # environment variables that
-            # are needed by the MET series analysis binary.
-            match = re.match(r'(.*)/(.*)', cur_var)
-            name = match.group(1)
-            level = match.group(2)
-
-            os.environ['LEVEL'] = level
-            os.environ['NAME'] = name + '_' + level
+        # Get the name and level to set the NAME and LEVEL
+        # environment variables that
+        # are needed by the MET series analysis binary.
+        full_vars_list = feature_util.retrieve_var_name_levels(self.config)
+        for cur_var in full_vars_list:
+            name, level = cur_var
+            self.add_env_var('LEVEL', level)
+            self.add_env_var('NAME', name + '_' + level)
 
             # Retrieve only those netCDF files that correspond to
             # the current variable.
@@ -1087,11 +1106,11 @@ class SeriesByLeadWrapper(CommandBuilder):
             for cur_stat in self.stat_list:
                 # Set environment variable required by MET
                 # application Plot_Data_Plane.
-                os.environ['CUR_STAT'] = cur_stat
+                self.add_env_var('CUR_STAT', cur_stat)
                 vmin, vmax = self.get_netcdf_min_max(do_fhr_by_range,
                                                      nc_var_list,
                                                      cur_stat)
-                msg = ("Plotting range for " + cur_var + " " +
+                msg = ("Plotting range for " + name + " " + level + " " +
                        cur_stat + ":  " + str(vmin) + " to " + str(vmax))
                 self.logger.debug(msg)
 
@@ -1149,6 +1168,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                     else:
                         map_data = "map_data={source=[];}  "
 
+                    self.print_all_envs()
+
                     plot_data_plane_parts = [self.plot_data_plane_exe, ' ',
                                              cur_nc, ' ', ps_file, ' ',
                                              "'", 'name = ', '"',
@@ -1158,7 +1179,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                                              "'", ' -title ', '"GFS ',
                                              str(fhr),
                                              ' Forecasts (N = ', str(nseries),
-                                             '), ', cur_stat, ' for ', cur_var,
+                                             '), ', cur_stat, ' for ', name,
+                                             ' ', level,
                                              '"', ' -plot_range ', str(vmin),
                                              ' ', str(vmax)]
 
@@ -1172,17 +1194,24 @@ class SeriesByLeadWrapper(CommandBuilder):
                         self.cmdrunner.insert_metverbosity_opt\
                         (plot_data_plane_cmd)
                     (ret, plot_data_plane_cmd) = self.cmdrunner.run_cmd\
-                        (plot_data_plane_cmd, env=None, app_name=self.app_name)
+                        (plot_data_plane_cmd, env=self.env, app_name='plot_data_plane')
+
+                    if ret != 0:
+                        self.log_error(f"MET Command returned a non-zero return code: {plot_data_plane_cmd}")
+                        self.logger.info("Check the logfile for more information on why it failed")
 
                     # Create the convert command.
                     convert_parts = [self.convert_exe, ' -rotate 90 ',
                                      ' -background white -flatten ',
                                      ps_file, ' ', png_file]
                     convert_cmd = ''.join(convert_parts)
-                    (ret, convert_cmd) = self.cmdrunner.run_cmd(convert_cmd, env=None,
+                    (ret, convert_cmd) = self.cmdrunner.run_cmd(convert_cmd, env=self.env,
                                                                 ismetcmd=False)
-                    # convert_cmd = batchexe('sh')['-c', convert_cmd].err2out()
-                    # run(convert_cmd)
+
+                    if ret != 0:
+                        self.log_error(f"Command returned a non-zero return code: {convert_cmd}")
+                        self.logger.info("Check the logfile for more information on why it failed")
+
 
     def create_animated_gifs(self, do_fhr_by_range):
         """! Creates the animated GIF files from the .png files created in
@@ -1209,16 +1238,16 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.logger.debug(msg)
         util.mkdir_p(animate_dir)
 
-        for cur_var in self.var_list:
-            # Get the name and level to set the NAME and LEVEL
-            # environment variables that
-            # are needed by the MET series analysis binary.
-            match = re.match(r'(.*)/(.*)', cur_var)
-            name = match.group(1)
-            level = match.group(2)
+        # Get the name and level to set the NAME and LEVEL
+        # environment variables that
+        # are needed by the MET series analysis binary.
+        full_vars_list = feature_util.retrieve_var_name_levels(self.config)
+        for cur_var in full_vars_list:
+            name, level = cur_var
+            self.add_env_var('LEVEL', level)
+            self.add_env_var('NAME', name + '_' + level)
 
-            os.environ['LEVEL'] = level
-            os.environ['NAME'] = name + '_' + level
+            self.print_all_envs()
 
             self.logger.info("Creating animated gifs")
             for cur_stat in self.stat_list:
@@ -1234,27 +1263,15 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  level, '_', cur_stat, '.gif']
                     animate_cmd = ''.join(gif_parts)
                     self.logger.debug("animate cmd: {}".format(animate_cmd))
-                    # TODO:
-                    # Fix animate_cmd so it does not require run_inshell
-                    #  to work.
-                    # It is working as is, ideally we do not require
-                    # run_inshell
-                    # The issue has to do with multiple files in the directory
-                    # when using the wild card. If only one file exists
-                    # then the command will run ok without run_inshell.
-                    # You can repeat the issue
-                    # by removing run_inshell keyword in the call below and
-                    # running examples/series_by_lead_all_fhrs.conf use case.
-                    # no animated gifs are created.
-                    # convert: unable to open image
-                    # .... No such file or directory
-                    #  @ error/blob.c/OpenBlob/2712.
-                    # convert: unable to open file
-                    # convert: no images defined
 
                     (ret, animate_cmd) = self.cmdrunner.run_cmd\
-                        (animate_cmd, env=None, ismetcmd=False,
+                        (animate_cmd, env=self.env, ismetcmd=False,
                          run_inshell=True, log_theoutput=True)
+
+                    if ret != 0:
+                        self.log_error(f"Command returned a non-zero return code: {animate_cmd}")
+                        self.logger.info("Check the logfile for more information on why it failed")
+
                 else:
                     # For series analysis by forecast hour groups, create a
                     # list of the series analysis output for all the forecast
@@ -1280,11 +1297,15 @@ class SeriesByLeadWrapper(CommandBuilder):
 
                     animate_cmd = ''.join(gif_parts)
                     (ret, animate_cmd) = self.cmdrunner.run_cmd \
-                        (animate_cmd, env=None, ismetcmd=False,
+                        (animate_cmd, env=self.env, ismetcmd=False,
                          run_inshell=True, log_theoutput=True)
 
+                    if ret != 0:
+                        self.log_error(f"Command returned a non-zero return code: {animate_cmd}")
+                        self.logger.info("Check the logfile for more information on why it failed")
+
     def apply_series_filters(self, tile_dir, init_times, series_output_dir,
-                             filter_opts, temporary_dir):
+                             filter_opts, staging_dir):
 
         """! Apply filter options, as specified in the
             param/config file.
@@ -1297,7 +1318,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                @param series_output_dir:  The directory where the filter results
                                           will be stored.
                @param filter_opts:  The filter options to apply
-               @param temporary_dir:  The temporary directory where intermediate
+               @param staging_dir:  The temporary directory where intermediate
                                       files are saved.
             Returns:
                 None
@@ -1314,10 +1335,8 @@ class SeriesByLeadWrapper(CommandBuilder):
         cur_function = sys._getframe().f_code.co_name
 
         # Create temporary directory where intermediate files are saved.
-        cur_pid = str(os.getpid())
-        tmp_dir = os.path.join(temporary_dir, cur_pid)
-        self.logger.debug("creating tmp dir: " + tmp_dir)
-        util.mkdir_p(tmp_dir)
+        self.logger.debug("creating tmp dir for filter files: " + staging_dir)
+        util.mkdir_p(staging_dir)
 
         for cur_init in init_times:
             # Call the tc_stat wrapper to build up the command and invoke
@@ -1363,9 +1382,9 @@ class SeriesByLeadWrapper(CommandBuilder):
                     util.mkdir_p(storm_output_dir)
 
                     tmp_file = "filter_" + cur_init + "_" + cur_storm
-                    tmp_filename = os.path.join(tmp_dir, tmp_file)
+                    tmp_filename = os.path.join(staging_dir, tmp_file)
                     storm_match_list = util.grep(cur_storm, filter_filename)
-                    with open(tmp_filename, "a+") as tmp_file:
+                    with open(tmp_filename, "w") as tmp_file:
                         tmp_file.write(header)
                         for storm_match in storm_match_list:
                             tmp_file.write(storm_match)
@@ -1384,8 +1403,10 @@ class SeriesByLeadWrapper(CommandBuilder):
         # series analysis.
         util.prune_empty(series_output_dir, self.logger)
 
-        # Clean up the tmp dir
-        util.rmtree(tmp_dir)
+        # Clean up the tmp dir and create an empty one
+        # in anticipation of another run.
+        filter_regex = 'filter_.*'
+        util.remove_staged_files(staging_dir, filter_regex, self.logger)
 
 if __name__ == "__main__":
-        util.run_stand_alone("series_by_lead_wrapper", "SeriesByLead")
+    util.run_stand_alone(__file__, "SeriesByLead")

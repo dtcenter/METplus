@@ -1,13 +1,14 @@
 #!/usr/bin/env python
 
 import pytest
-from string_template_substitution import StringSub
-from string_template_substitution import StringExtract
-from string_template_substitution import get_tags
-from string_template_substitution import format_one_time_item
-from string_template_substitution import format_hms
 import logging
 import datetime
+
+from metplus.util.config.string_template_substitution import StringSub
+from metplus.util.config.string_template_substitution import StringExtract
+from metplus.util.config.string_template_substitution import get_tags
+from metplus.util.config.string_template_substitution import format_one_time_item
+from metplus.util.config.string_template_substitution import format_hms
 
 def test_cycle_hour():
     cycle_string = 0
@@ -647,3 +648,11 @@ def test_format_one_time_item(format, key ,value, ttype):
 def test_format_hms(format, seconds, value):
     # format should be something like %M or %H%M
     assert(format_hms(format, seconds == value))
+
+def test_underscore_in_time_fmt():
+    valid_string = datetime.datetime.strptime("20170604010203", '%Y%m%d%H%M%S')
+    logger = logging.getLogger("testing")
+    templ = "{valid?fmt=%Y%m%d_%H%M%S}"
+    expected_filename = "20170604_010203"
+    filename = StringSub(logger, templ, valid=valid_string).do_string_sub()
+    assert(filename == expected_filename)

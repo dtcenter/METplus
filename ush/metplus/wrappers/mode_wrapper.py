@@ -13,32 +13,48 @@ Condition codes: 0 for success, 1 for failure
 '''
 
 import os
-import metplus.util.met_util as util
-from metplus.wrappers.compare_gridded_wrapper import CompareGriddedWrapper
+
+import metplus_check_python_version
+from ..util import met_util as util
+from .compare_gridded_wrapper import CompareGriddedWrapper
+from ..util.config.string_template_substitution import StringSub
 
 class MODEWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""
     def __init__(self, config, logger):
+        # only set app variables if not already set by MTD (subclass)
+        if not hasattr(self, 'app_name'):
+            self.app_name = 'mode'
+            self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
+                                         'bin', self.app_name)
         super().__init__(config, logger)
-        self.app_name = 'mode'
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
 
-    def add_merge_config_file(self):
+    def add_merge_config_file(self, time_info):
         """!If merge config file is defined, add it to the command"""
         if self.c_dict['MERGE_CONFIG_FILE'] != '':
-            self.args.append('-config_merge {}'.format(self.c_dict['MERGE_CONFIG_FILE']))
+            merge_config_file = StringSub(self.logger,
+                                          self.c_dict['MERGE_CONFIG_FILE'],
+                                          **time_info).do_string_sub()
+            self.args.append('-config_merge {}'.format(merge_config_file))
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MODE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG_FILE', '')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config', 'MODE_CONFIG_FILE', '')
+        if not c_dict['CONFIG_FILE']:
+            self.log_error('MODE_CONFIG_FILE must be set')
+            self.isOK = False
+
         c_dict['OBS_INPUT_DIR'] = \
           self.config.getdir('OBS_MODE_INPUT_DIR', '')
         c_dict['OBS_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
                              'OBS_MODE_INPUT_TEMPLATE')
+        if not c_dict['OBS_INPUT_TEMPLATE']:
+            self.log_error('OBS_MODE_INPUT_TEMPLATE must be set')
+            self.isOK = False
+
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_MODE_INPUT_DATATYPE', '')
         c_dict['FCST_INPUT_DIR'] = \
@@ -46,9 +62,17 @@ class MODEWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
                              'FCST_MODE_INPUT_TEMPLATE')
+        if not c_dict['FCST_INPUT_TEMPLATE']:
+            self.log_error('OBS_MODE_INPUT_TEMPLATE must be set')
+            self.isOK = False
+
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'FCST_MODE_INPUT_DATATYPE', '')
-        c_dict['OUTPUT_DIR'] = self.config.getdir('MODE_OUTPUT_DIR')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('MODE_OUTPUT_DIR', '')
+        if not c_dict['OUTPUT_DIR']:
+            self.log_error('MODE_OUTPUT_DIR must be set')
+            self.isOK = False
+
         c_dict['ONCE_PER_FIELD'] = True
         c_dict['QUILT'] = self.config.getbool('config', 'MODE_QUILT', False)
         fcst_conv_radius, obs_conv_radius = \
@@ -57,6 +81,8 @@ class MODEWrapper(CompareGriddedWrapper):
                                            'OBS_MODE_CONV_RADIUS')
         c_dict['FCST_CONV_RADIUS'] = fcst_conv_radius
         c_dict['OBS_CONV_RADIUS'] = obs_conv_radius
+        if fcst_conv_radius is None or obs_conv_radius is None:
+            self.isOK = False
 
         fcst_conv_thresh, obs_conv_thresh = self.handle_fcst_and_obs_field('MODE_CONV_THRESH',
                                                                            'FCST_MODE_CONV_THRESH',
@@ -64,6 +90,8 @@ class MODEWrapper(CompareGriddedWrapper):
 
         c_dict['FCST_CONV_THRESH'] = fcst_conv_thresh
         c_dict['OBS_CONV_THRESH'] = obs_conv_thresh
+        if fcst_conv_thresh is None or obs_conv_thresh is None:
+            self.isOK = False
 
         fcst_merge_thresh, obs_merge_thresh = \
                 self.handle_fcst_and_obs_field('MODE_MERGE_THRESH',
@@ -71,6 +99,9 @@ class MODEWrapper(CompareGriddedWrapper):
                                                'OBS_MODE_MERGE_THRESH')
         c_dict['FCST_MERGE_THRESH'] = fcst_merge_thresh
         c_dict['OBS_MERGE_THRESH'] = obs_merge_thresh
+        if fcst_merge_thresh is None or obs_merge_thresh is None:
+            self.isOK = False
+
         fcst_merge_flag, obs_merge_flag = \
                 self.handle_fcst_and_obs_field('MODE_MERGE_FLAG',
                                                'FCST_MODE_MERGE_FLAG',
@@ -78,9 +109,12 @@ class MODEWrapper(CompareGriddedWrapper):
 
         c_dict['FCST_MERGE_FLAG'] = fcst_merge_flag
         c_dict['OBS_MERGE_FLAG'] = obs_merge_flag
+        if fcst_merge_flag is None or obs_merge_flag is None:
+            self.isOK = False
+
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
-        c_dict['MERGE_CONFIG_FILE'] = self.config.getstr('config', 'MODE_MERGE_CONFIG_FILE', '')
+        c_dict['MERGE_CONFIG_FILE'] = self.config.getraw('config', 'MODE_MERGE_CONFIG_FILE', '')
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'mode')
@@ -90,43 +124,35 @@ class MODEWrapper(CompareGriddedWrapper):
                                'MODE_VERIFICATION_MASK_TEMPLATE')
         c_dict['VERIFICATION_MASK'] = ''
 
+        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'MODE_REGRID_TO_GRID', '')
+
         # check that values are valid
         error_message = 'items must start with a comparison operator '+\
                         '(>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)'
         if not util.validate_thresholds(util.getlist(c_dict['FCST_CONV_THRESH'])):
-            self.logger.error('MODE_FCST_CONV_THRESH {}'.format(error_message))
-            exit(1)
+            self.log_error('MODE_FCST_CONV_THRESH {}'.format(error_message))
+            self.isOK = False
         if not util.validate_thresholds(util.getlist(c_dict['OBS_CONV_THRESH'])):
-            self.logger.error('MODE_OBS_CONV_THRESH {}'.format(error_message))
-            exit(1)
+            self.log_error('MODE_OBS_CONV_THRESH {}'.format(error_message))
+            self.isOK = False
         if not util.validate_thresholds(util.getlist(c_dict['FCST_MERGE_THRESH'])):
-            self.logger.error('MODE_FCST_MERGE_THRESH {}'.format(error_message))
-            exit(1)
+            self.log_error('MODE_FCST_MERGE_THRESH {}'.format(error_message))
+            self.isOK = False
         if not util.validate_thresholds(util.getlist(c_dict['OBS_MERGE_THRESH'])):
-            self.logger.error('MODE_OBS_MERGE_THRESH {}'.format(error_message))
-            exit(1)
+            self.log_error('MODE_OBS_MERGE_THRESH {}'.format(error_message))
+            self.isOK = False
 
         return c_dict
 
     def set_environment_variables(self, fcst_field, obs_field, var_info, time_info):
-        print_list = ["MODEL", "FCST_VAR", "OBS_VAR",
-                      "LEVEL", "OBTYPE", "CONFIG_DIR",
-                      "FCST_FIELD", "OBS_FIELD",
-                      "QUILT", "MET_VALID_HHMM",
-                      "FCST_CONV_RADIUS", "FCST_CONV_THRESH",
-                      "OBS_CONV_RADIUS", "OBS_CONV_THRESH",
-                      "FCST_MERGE_THRESH", "FCST_MERGE_FLAG",
-                      "OBS_MERGE_THRESH", "OBS_MERGE_FLAG"]
+        self.config.set('config', 'CURRENT_FCST_NAME', var_info['fcst_name'])
+        self.config.set('config', 'CURRENT_OBS_NAME', var_info['obs_name'])
+        self.config.set('config', 'CURRENT_FCST_LEVEL', var_info['fcst_level'])
+        self.config.set('config', 'CURRENT_OBS_LEVEL', var_info['obs_level'])
 
-        self.add_env_var("MODEL", self.c_dict['MODEL'])
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-        self.add_env_var("FCST_VAR", var_info['fcst_name'])
-        self.add_env_var("OBS_VAR", var_info['obs_name'])
-        self.add_env_var("LEVEL", util.split_level(var_info['fcst_level'])[1])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
-        self.add_env_var("CONFIG_DIR", self.c_dict['CONFIG_DIR'])
-        self.add_env_var("MET_VALID_HHMM", time_info['valid_fmt'][4:8])
 
         quilt = 'TRUE' if self.c_dict['QUILT'] else 'FALSE'
 
@@ -139,22 +165,13 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_MERGE_THRESH", self.c_dict["OBS_MERGE_THRESH"])
         self.add_env_var("FCST_MERGE_FLAG", self.c_dict["FCST_MERGE_FLAG"])
         self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"])
+        self.add_env_var('VERIF_MASK', self.c_dict['VERIFICATION_MASK'])
 
-        # add additional env vars if they are specified
-        if self.c_dict['VERIFICATION_MASK'] != '':
-            self.add_env_var('VERIF_MASK',
-                             self.c_dict['VERIFICATION_MASK'])
-            print_list.append('VERIF_MASK')
+        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
-        # set user environment variables
-        self.set_user_environment(time_info)
+        self.add_common_envs(time_info)
 
-        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_user_env_items()
-        for item in print_list:
-            self.print_env_item(item)
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(print_list)
+        self.print_all_envs()
 
     def run_at_time_one_field(self, time_info, var_info):
         """! Runs mode instances for a given time and forecast lead combination
@@ -191,10 +208,6 @@ class MODEWrapper(CompareGriddedWrapper):
 
         # if probabilistic forecast and no thresholds specified, error and skip
         if self.c_dict['FCST_IS_PROB']:
-#            if len(var_info['fcst_thresh']) == 0:
-#                self.logger.error('Must specify field threshold value to '+\
-#                                  'process probabilistic forecast')
-#                return
 
             # set thresholds for fcst and obs if prob
             fcst_thresh_list = var_info['fcst_thresh']
@@ -217,23 +230,21 @@ class MODEWrapper(CompareGriddedWrapper):
 
         # loop through fields and call MODE
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
-            self.param = self.c_dict['CONFIG_FILE']
-            if self.param == '':
-                self.logger.error('Must set MODE_CONFIG_FILE to run MODE')
-                return
-
+            self.param = StringSub(self.logger,
+                                   self.c_dict['CONFIG_FILE'],
+                                   **time_info).do_string_sub()
             self.create_and_set_output_dir(time_info)
             self.infiles.append(model_path)
             self.infiles.append(obs_path)
-            self.add_merge_config_file()
+            self.add_merge_config_file(time_info)
 
             self.set_environment_variables(fcst_field,obs_field, var_info, time_info)
             cmd = self.get_command()
             if cmd is None:
-                self.logger.error("Could not generate command")
+                self.log_error("Could not generate command")
                 return
             self.build()
             self.clear()
 
 if __name__ == "__main__":
-    util.run_stand_alone("mode_wrapper", "MODE")
+    util.run_stand_alone(__file__, "MODE")

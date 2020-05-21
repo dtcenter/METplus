@@ -4,7 +4,7 @@
   <navindex>
     <tab type="mainpage" visible="yes" title=""/>
     <tab type="pages" visible="no" title="Related Pages" intro="" url="[none]"/>
-    <tab type="usergroup" visible="yes" title="Guides" intro="">
+    <tab type="usergroup" visible="no" title="Guides" intro="">
       <tab type="user" visible="yes" url="@ref install" title="Installing METplus"/>
       <tab type="user" visible="yes" url="@ref confguide" title="Configuring METplus"/>
       <tab type="user" visible="yes" url="@ref run-hwrf" title="Running METplus"/>
@@ -32,7 +32,7 @@
     </tab>
     <tab type="examples" visible="yes" title="" intro=""/>  
 
-    <tab type="usergroup" visible="yes" title="Configuration Files">
+    <tab type="usergroup" visible="no" title="Configuration Files">
       <tab type="user" visible="yes" title="All Files" url="@ref conf-files"/>
       <tab type="user" visible="yes" title="All Options" url="@ref conf-options"/>
     </tab>

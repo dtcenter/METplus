@@ -13,18 +13,18 @@ Condition codes: 0 for success, 1 for failure
 """
 
 import os
-import metplus.util.met_util as util
-import metplus.util.time_util as time_util
-from metplus.wrappers.command_builder import CommandBuilder
-from metplus.util.config.string_template_substitution import StringSub
+
+import metplus_check_python_version
+from ..util import met_util as util
+from ..util import time_util
+from .command_builder import CommandBuilder
+from ..util.config.string_template_substitution import StringSub
 
 class ExampleWrapper(CommandBuilder):
     """!Wrapper can be used as a base to develop a new wrapper"""
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = 'example'
-        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        super().__init__(config, logger)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -73,21 +73,27 @@ class ExampleWrapper(CommandBuilder):
             # recalculate time info items
             time_info = time_util.ti_calculate(time_info)
 
-            # log init, valid, and forecast lead times for current loop iteration
-            self.logger.info('Processing forecast lead {} initialized at {} and valid at {}'
-                             .format(time_info['lead_string'], time_info['init'].strftime('%Y-%m-%d %HZ'),
-                                     time_info['valid'].strftime('%Y-%m-%d %HZ')))
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                if custom_string:
+                    self.logger.info(f"Processing custom string: {custom_string}")
 
-            # perform string substitution to find filename based on template and current run time
-            # pass in logger, then template, then any items to use to fill in template
-            # pass time info with ** in front to expand each dictionary item to a variable
-            #  i.e. time_info['init'] becomes init=init_value
-            filename = StringSub(self.logger,
-                                 input_template,
-                                 **time_info).do_string_sub()
-            self.logger.info('Looking in input directory for file: {}'.format(filename))
+                time_info['custom'] = custom_string
+
+                # log init, valid, and forecast lead times for current loop iteration
+                self.logger.info('Processing forecast lead {} initialized at {} and valid at {}'
+                                 .format(time_info['lead_string'], time_info['init'].strftime('%Y-%m-%d %HZ'),
+                                         time_info['valid'].strftime('%Y-%m-%d %HZ')))
+
+                # perform string substitution to find filename based on template and current run time
+                # pass in logger, then template, then any items to use to fill in template
+                # pass time info with ** in front to expand each dictionary item to a variable
+                #  i.e. time_info['init'] becomes init=init_value
+                filename = StringSub(self.logger,
+                                     input_template,
+                                     **time_info).do_string_sub()
+                self.logger.info('Looking in input directory for file: {}'.format(filename))
 
         return True
 
 if __name__ == "__main__":
-        util.run_stand_alone("example_wrapper", "Example")
+    util.run_stand_alone(__file__, "Example")

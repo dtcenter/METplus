@@ -13,10 +13,12 @@ Condition codes: 0 for success, 1 for failure
 '''
 
 import os
-import metplus.util.met_util as util
-import metplus.util.time_util as time_util
-from metplus.wrappers.command_builder import CommandBuilder
 
+from ..util import met_util as util
+from ..util import time_util
+from .command_builder import CommandBuilder
+
+# pylint:disable=pointless-string-statement
 '''!@namespace ReformatGriddedWrapper
 @brief Common functionality to wrap similar MET applications
 that reformat gridded data
@@ -35,11 +37,11 @@ that reformat gridded data
 
     # this class should not be called directly
     # pylint:disable=unused-argument
-    def run_at_time_once(self, time_info, var_info, to_run):
+    def run_at_time_once(self, time_info, var_list, data_type):
         """!To be implemented by child class"""
-        self.logger.error('ReformatGridded wrapper cannot be called directly.'+\
+        self.log_error('ReformatGridded wrapper cannot be called directly.'+\
                           ' Please use child wrapper')
-        exit(1)
+        return
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. Processing forecast
@@ -60,28 +62,32 @@ that reformat gridded data
         if self.config.getbool('config', 'OBS_'+app_name_caps+'_RUN', False):
             run_list.append("OBS")
 
-        if len(run_list) == 0:
-            self.logger.error(class_name+" specified in process_list, but "+\
+        if not run_list:
+            self.log_error(class_name+" specified in process_list, but "+\
                               "FCST_"+app_name_caps+"_RUN and OBS_"+app_name_caps+"_RUN "+\
                               " are both False. Set one or both to true or "+\
                               "remove "+class_name+" from the process_list")
-            exit()
+            return
 
         for to_run in run_list:
             self.logger.info("Processing {} data".format(to_run))
             for lead in lead_seq:
                 input_dict['lead'] = lead
-                self.config.set('config', 'CURRENT_LEAD_TIME', lead)
-                os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
 
                 time_info = time_util.ti_calculate(input_dict)
 
                 self.logger.info("Processing forecast lead {}".format(time_info['lead_string']))
 
-                var_list = util.parse_var_list(self.config, time_info)
-                if not var_list:
-                    self.run_at_time_once(time_info, None, to_run)
-                    return
+                # loop over custom string list and set custom in the time_info dictionary
+                for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                    if custom_string:
+                        self.logger.info(f"Processing custom string: {custom_string}")
 
-                for var_info in var_list:
-                    self.run_at_time_once(time_info, var_info, to_run)
+                    time_info['custom'] = custom_string
+                    self.c_dict['CUSTOM_STRING'] = custom_string
+
+                    var_list = util.parse_var_list(self.config, time_info, data_type=to_run)
+                    if not var_list:
+                        var_list = None
+
+                    self.run_at_time_once(time_info, var_list, to_run)

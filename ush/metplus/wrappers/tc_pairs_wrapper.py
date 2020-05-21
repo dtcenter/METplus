@@ -21,11 +21,13 @@ import re
 import csv
 import datetime
 import glob
-import metplus.util.time_util as time_util
-import metplus.util.met_util as util
-from metplus.util.config.string_template_substitution import StringSub
-from metplus.util.config.string_template_substitution import get_tags
-from metplus.wrappers.command_builder import CommandBuilder
+
+import metplus_check_python_version
+from ..util import time_util
+from ..util import met_util as util
+from ..util.config.string_template_substitution import StringSub
+from ..util.config.string_template_substitution import get_tags
+from .command_builder import CommandBuilder
 
 '''!@namespace TCPairsWrapper
 @brief Wraps the MET tool tc_pairs to parse ADeck and BDeck ATCF_by_pairs files,
@@ -42,10 +44,10 @@ class TCPairsWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = 'tc_pairs'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
+        super().__init__(config, logger)
         self.adeck = []
         self.bdeck = []
         self.edeck = []
@@ -67,12 +69,31 @@ class TCPairsWrapper(CommandBuilder):
             self.config.getstr('config', 'TC_PAIRS_MISSING_VAL_TO_REPLACE', '-99')
         c_dict['MISSING_VAL'] =\
             self.config.getstr('config', 'TC_PAIRS_MISSING_VAL', '-9999')
-        c_dict['TC_PAIRS_CONFIG_FILE'] = self.config.getstr('config',
-                                                            'TC_PAIRS_CONFIG_FILE')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config',
+                                                   'TC_PAIRS_CONFIG_FILE',
+                                                   '')
+        if not c_dict['CONFIG_FILE']:
+            self.log_error("TC_PAIRS_CONFIG_FILE is required to run TCPairs wrapper")
+            self.isOK = False
 
-        c_dict['INIT_BEG'] = self.config.getraw('config', 'INIT_BEG')
-        c_dict['INIT_END'] = self.config.getraw('config', 'INIT_END')
         c_dict['INIT_TIME_FMT'] = self.config.getstr('config', 'INIT_TIME_FMT')
+        clock_time = datetime.datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
+                                                '%Y%m%d%H%M%S')
+
+        init_beg = self.config.getraw('config', 'INIT_BEG')
+        init_beg_dt = util.get_time_obj(init_beg,
+                                        c_dict['INIT_TIME_FMT'],
+                                        clock_time,
+                                        logger=self.logger)
+        c_dict['INIT_BEG'] = init_beg_dt.strftime('%Y%m%d_%H%M%S')
+
+        init_end = self.config.getraw('config', 'INIT_END')
+        init_end_dt = util.get_time_obj(init_end,
+                                        c_dict['INIT_TIME_FMT'],
+                                        clock_time,
+                                        logger=self.logger)
+        c_dict['INIT_END'] = init_end_dt.strftime('%Y%m%d_%H%M%S')
+
         c_dict['INIT_INCREMENT'] = self.config.getint('config', 'INIT_INCREMENT')
 
         c_dict['INIT_INCLUDE'] = util.getlist(
@@ -155,7 +176,7 @@ class TCPairsWrapper(CommandBuilder):
 
             cmd = self.get_command()
             if cmd is None:
-                self.logger.error("Could not generate command")
+                self.log_error("Could not generate command")
                 return
 
             output_path = self.get_output_path()+'.tcst'
@@ -172,12 +193,25 @@ class TCPairsWrapper(CommandBuilder):
         # use init begin as run time (start of the storm)
         input_dict = {'init' :
                       datetime.datetime.strptime(self.c_dict['INIT_BEG'],
-                                                 self.c_dict['INIT_TIME_FMT'])
+                                                 '%Y%m%d_%H%M%S')
                      }
 
         self.run_at_time(input_dict)
 
     def run_at_time(self, input_dict):
+        """! Create the arguments to run MET tc_pairs
+             Args:
+                 input_dict dictionary containing init or valid time
+             Returns:
+        """
+        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+            if custom_string:
+                self.logger.info(f"Processing custom string: {custom_string}")
+
+            input_dict['custom'] = custom_string
+            self.run_at_time_loop_string(input_dict)
+
+    def run_at_time_loop_string(self, input_dict):
         """! Create the arguments to run MET tc_pairs
              Args:
                  input_dict dictionary containing init or valid time
@@ -192,6 +226,11 @@ class TCPairsWrapper(CommandBuilder):
 
         # set output dir
         self.outdir = self.c_dict['OUTPUT_DIR']
+
+        # string substitute config file in case custom string is used
+        self.c_dict['CONFIG_FILE'] = StringSub(self.logger,
+                                               self.c_dict['CONFIG_FILE'],
+                                               **time_info).do_string_sub()
 
         # get items to filter bdeck files
         # set each to default wildcard character unless specified in conf
@@ -209,13 +248,13 @@ class TCPairsWrapper(CommandBuilder):
 
         if self.c_dict['BASIN']:
             if use_storm_id:
-                self.logger.error('Cannot filter by both BASIN and STORM_ID')
+                self.log_error('Cannot filter by both BASIN and STORM_ID')
                 exit(1)
             basin_list = self.c_dict['BASIN']
 
         if self.c_dict['CYCLONE']:
             if use_storm_id:
-                self.logger.error('Cannot filter by both CYCLONE and STORM_ID')
+                self.log_error('Cannot filter by both CYCLONE and STORM_ID')
                 exit(1)
             cyclone_list = self.c_dict['CYCLONE']
 
@@ -227,7 +266,7 @@ class TCPairsWrapper(CommandBuilder):
                 # pull out info from storm_id and process
                 match = re.match(r'(\w{2})(\d{2})(\d{4})', storm_id)
                 if not match:
-                    self.logger.error('Incorrect STORM_ID format: {}'
+                    self.log_error('Incorrect STORM_ID format: {}'
                                       .format(storm_id))
                     exit(1)
 
@@ -275,8 +314,8 @@ class TCPairsWrapper(CommandBuilder):
 
         # INIT_BEG, INIT_END
         # pull out YYYYMMDD from INIT_BEG/END
-        tmp_init_beg = self.c_dict['INIT_BEG'][0:8]
-        tmp_init_end = self.c_dict['INIT_END'][0:8]
+        tmp_init_beg = self.c_dict['INIT_BEG']
+        tmp_init_end = self.c_dict['INIT_END']
 
         if not tmp_init_beg:
             self.add_env_var('INIT_BEG', "")
@@ -454,7 +493,7 @@ class TCPairsWrapper(CommandBuilder):
         # if no bdeck_files found
         if len(bdeck_files) == 0:
             template = self.c_dict['BDECK_TEMPLATE']
-            self.logger.error(f'No BDECK files found searching for basin {basin} and '
+            self.log_error(f'No BDECK files found searching for basin {basin} and '
                               f'cyclone {cyclone} using template {template}')
             return False
 
@@ -521,7 +560,7 @@ class TCPairsWrapper(CommandBuilder):
                                                   time_info)
 
             if not adeck_list and not edeck_list:
-                self.logger.error('Could not find any corresponding '
+                self.log_error('Could not find any corresponding '
                                   'ADECK or EDECK files')
                 continue
 
@@ -550,7 +589,7 @@ class TCPairsWrapper(CommandBuilder):
             # build command and run tc_pairs
             cmd = self.get_command()
             if cmd is None:
-                self.logger.error("Could not generate command")
+                self.log_error("Could not generate command")
                 return
 
             output_path = self.get_output_path()+'.tcst'
@@ -642,25 +681,25 @@ class TCPairsWrapper(CommandBuilder):
              Build command to run from arguments
         """
         if self.app_path is None:
-            self.logger.error("No app path specified. You must use a subclass")
+            self.log_error("No app path specified. You must use a subclass")
             return None
 
         if not self.adeck and not self.edeck:
-            self.logger.error('Neither ADECK nor EDECK files set')
+            self.log_error('Neither ADECK nor EDECK files set')
             return None
 
         if not self.bdeck:
-            self.logger.error('BDECK file not set')
+            self.log_error('BDECK file not set')
             return None
 
-        config_file = self.c_dict['TC_PAIRS_CONFIG_FILE']
-        if config_file is None:
-            self.logger.error('Config file not set')
+        config_file = self.c_dict['CONFIG_FILE']
+        if not config_file:
+            self.log_error('Config file not set')
             return None
 
         output_path = self.get_output_path()
-        if output_path is '':
-            self.logger.error('Output path not set')
+        if not output_path:
+            self.log_error('Output path not set')
             return None
 
         # create directory containing output file if it doesn't exist
@@ -737,4 +776,4 @@ class TCPairsWrapper(CommandBuilder):
         out_file.close()
 
 if __name__ == "__main__":
-    util.run_stand_alone("tc_pairs_wrapper", "TCPairs")
+    util.run_stand_alone(__file__, "TCPairs")

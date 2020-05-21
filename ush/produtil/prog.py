@@ -38,9 +38,7 @@ directly, except for type checking (ie.: to see if your argument is a
 Runner before passing it to produtil.run.checkrun).."""
 
 import produtil.sigsafety
-import select,io,re,time,fcntl,os,logging,signal
-
-from io import StringIO
+import io,select,io,re,time,fcntl,os,logging,signal
 
 import produtil.mpi_impl
 from produtil.pipeline import launch, manage, PIPE, ERR2OUT

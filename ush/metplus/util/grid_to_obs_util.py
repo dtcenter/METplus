@@ -1,15 +1,15 @@
 #!/usr/bin/env python
 
-import sys
-import re
-import os
-from collections import namedtuple
-import met_util as util
-
 """!@namespace feature_util
  @brief Provides  Utility functions for METplus feature relative use case.
 """
 
+import sys
+import re
+import os
+from collections import namedtuple
+
+from . import met_util as util
 
 def grid2obs_file_info(g2obs_file, subdir_regex, logger):
     """! Extract date information on all prepbufr or point stat input files

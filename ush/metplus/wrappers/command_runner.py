@@ -49,9 +49,10 @@ class CommandRunner(object):
         self.logger = logger
         self.config = config
         self.verbose = verbose
+        self.log_command_to_met_log = False
 
     def run_cmd(self, cmd, env=None, ismetcmd = True, app_name=None, run_inshell=False,
-                log_theoutput=False, **kwargs):
+                log_theoutput=False, copyable_env=None, **kwargs):
         """!The command cmd is a string which is converted to a produtil
         exe Runner object and than run. Output of the command may also
         be redirected to either METplus log, MET log, or TTY.
@@ -86,7 +87,7 @@ class CommandRunner(object):
         if env is None:
             env = os.environ
 
-        self.logger.info("RUNNING: %s" % cmd)
+        self.logger.info("COMMAND: %s" % cmd)
 
         if ismetcmd:
 
@@ -120,12 +121,26 @@ class CommandRunner(object):
             the_exe = shlex.split(cmd)[0]
             the_args = shlex.split(cmd)[1:]
             if log_dest:
-                self.logger.info("app_name is: %s, output sent to: %s" % (app_name, log_dest))
-                #cmd = exe('sh')['-c', cmd].err2out() >> log_dest
-                cmd = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
+                self.logger.debug("app_name is: %s, output sent to: %s" % (app_name, log_dest))
+
+                with open(log_dest, 'a+') as log_file_handle:
+                    # if logging MET command to its own log file, add command that was run to that log
+                    if self.log_command_to_met_log:
+                        # if environment variables were set and available, write them to MET tool log
+                        if copyable_env:
+                            log_file_handle.write("\nCOPYABLE ENVIRONMENT FOR NEXT COMMAND:\n")
+                            log_file_handle.write(f"{copyable_env}\n\n")
+                        else:
+                            log_file_handle.write('\n')
+
+                        log_file_handle.write(f"COMMAND:\n{cmd}\n\n")
+
+                    # write line to designate where MET tool output starts
+                    log_file_handle.write("MET OUTPUT:\n")
+
+                cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
             else:
-                #cmd = exe('sh')['-c', cmd].err2out()
-                cmd = exe(the_exe)[the_args].env(**env).err2out()
+                cmd_exe = exe(the_exe)[the_args].env(**env).err2out()
 
         else:
             # This block is for all the Non-MET commands
@@ -145,18 +160,18 @@ class CommandRunner(object):
 
                 if log_theoutput:
                     log_dest = self.cmdlog_destination()
-                    cmd = exe('sh')['-c', cmd].env(**env).err2out() >> log_dest
+                    cmd_exe = exe('sh')['-c', cmd].env(**env).err2out() >> log_dest
                 else:
-                    cmd = exe('sh')['-c', cmd].env(**env)
+                    cmd_exe = exe('sh')['-c', cmd].env(**env)
 
             else:
                 the_exe = shlex.split(cmd)[0]
                 the_args = shlex.split(cmd)[1:]
                 if log_theoutput:
                     log_dest = self.cmdlog_destination()
-                    cmd = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
+                    cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
                 else:
-                    cmd = exe(the_exe)[the_args].env(**env)
+                    cmd_exe = exe(the_exe)[the_args].env(**env)
 
         ret = 0
         # run app unless DO_NOT_RUN_EXE is set to True
@@ -165,12 +180,15 @@ class CommandRunner(object):
             start_cmd_time = datetime.now()
 
             # run command
-            ret = run(cmd, **kwargs)
-
-            # calculate time to run
-            end_cmd_time = datetime.now()
-            total_cmd_time = end_cmd_time - start_cmd_time
-            self.logger.debug(f'Finished running {the_exe} in {total_cmd_time}')
+            try:
+                ret = run(cmd_exe, **kwargs)
+            except:
+                ret = -1
+            else:
+                # calculate time to run
+                end_cmd_time = datetime.now()
+                total_cmd_time = end_cmd_time - start_cmd_time
+                self.logger.debug(f'Finished running {the_exe} in {total_cmd_time}')
 
         return (ret, cmd)
 
@@ -227,6 +245,8 @@ class CommandRunner(object):
         # metpluslog includes /path/filename.
         metpluslog = self.config.getstr('config', 'LOG_METPLUS', '')
 
+        self.log_command_to_met_log = False
+
         # This block determines where to send the command output, cmdlog_dest.
         # To the METplus log, a MET log, or tty.
         # If no metpluslog, cmlog_dest is None, which should be interpreted as tty.
@@ -237,10 +257,11 @@ class CommandRunner(object):
             if log_met_output_to_metplus or not cmdlog:
                 cmdlog_dest = metpluslog
             else:
+                self.log_command_to_met_log = True
                 log_timestamp = self.config.getstr('config', 'LOG_TIMESTAMP', '')
                 if log_timestamp:
                     cmdlog_dest = os.path.join(self.config.getdir('LOG_DIR'),
-                                            cmdlog + '_' + log_timestamp)
+                                            cmdlog + '.' + log_timestamp)
                 else:
                     cmdlog_dest = os.path.join(self.config.getdir('LOG_DIR'),cmdlog)
 

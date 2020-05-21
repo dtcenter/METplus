@@ -1,0 +1,296 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Ensemble-Stat configuration file.
+//
+// For additional information, see the MET_BASE/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Output model name to be written
+//
+model = "${MODEL}";
+
+//
+// Output description to be written
+// May be set separately in each "obs.field" entry
+//
+desc = "NA";
+
+//
+// Output observation type to be written
+//
+obtype = "${OBTYPE}";
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification grid
+//
+regrid = {
+   to_grid    = ${REGRID_TO_GRID};
+   method     = NEAREST;
+   width      = 1;
+   vld_thresh = 0.5;
+   shape      = SQUARE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// May be set separately in each "field" entry
+//
+censor_thresh = [];
+censor_val    = [];
+cat_thresh    = [];
+nc_var_str    = "";
+
+//
+// Ensemble product fields to be processed
+//
+ens = {
+
+   ${ENS_FILE_TYPE}
+
+   ens_thresh = ${ENS_THRESH};
+   vld_thresh = 1.0;
+
+   field = [ ${ENS_FIELD}  ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Neighborhood ensemble probabilities
+//
+nbrhd_prob = {
+   width      = [ 5 ];
+   shape      = CIRCLE;
+   vld_thresh = 0.0;
+}
+
+//
+// NMEP smoothing methods
+//
+nmep_smooth = {
+   vld_thresh      = 0.0;
+   shape           = CIRCLE;
+   gaussian_dx     = 81.27;
+   gaussian_radius = 120;
+   type = [
+      {
+         method = GAUSSIAN;
+         width  = 1;
+      }
+   ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Forecast and observation fields to be verified
+//
+
+fcst = {
+
+   ${FCST_FILE_TYPE}
+
+   field = [ ${FCST_FIELD}  ];
+}
+
+obs = {
+
+   ${OBS_FILE_TYPE}
+ 
+   field = [ ${OBS_FIELD}   ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation filtering options
+// May be set separately in each "obs.field" entry
+//
+
+message_type = [ "ADPSFC" ];
+sid_exc        = [];
+obs_thresh     = [ NA ];
+obs_quality    = [];
+duplicate_flag = NONE;
+obs_summary    = NONE;
+obs_perc_value = 50;
+skip_const     = FALSE;
+
+//
+// Observation error options
+// Set dist_type to NONE to use the observation error table instead
+// May be set separately in each "obs.field" entry
+//
+obs_error = {
+   flag             = FALSE;
+   dist_type        = NONE;
+   dist_parm        = [];
+   inst_bias_scale  = 1.0;
+   inst_bias_offset = 0.0;
+   min              = NA;      // Valid range of data
+   max              = NA;
+}
+
+//
+// Mapping of message type group name to comma-separated list of values.
+//
+message_type_group_map = [
+   { key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";               },
+   { key = "ANYAIR";  val = "AIRCAR,AIRCFT";                      },
+   { key = "ANYSFC";  val = "ADPSFC,SFCSHP,ADPUPA,PROFLR,MSONET"; },
+   { key = "ONLYSF";  val = "ADPSFC,SFCSHP";                      }
+];
+
+//
+// Ensemble bin sizes
+// May be set separately in each "obs.field" entry
+//
+ens_ssvar_bin_size = 1.0;
+ens_phist_bin_size = 0.05;
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Climatology data
+//
+climo_mean = {
+
+   file_name = [ ${CLIMO_MEAN_FILE} ];
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape      = SQUARE;
+   }
+
+   time_interp_method = DW_MEAN;
+   day_interval       = 31;
+   hour_interval      = 6;
+}
+
+climo_stdev = climo_mean;
+climo_stdev = {
+   file_name = [ ${CLIMO_STDEV_FILE} ];
+}
+
+//
+// May be set separately in each "obs.field" entry
+//
+climo_cdf = {
+   cdf_bins    = 1;
+   center_bins = FALSE;
+   write_bins  = TRUE;
+}
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation time window
+//
+obs_window = {
+   beg = ${OBS_WINDOW_BEGIN};
+   end = ${OBS_WINDOW_END};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification masking regions
+//
+mask = {
+   grid  = [ "FULL" ];
+   poly  = [ "MET_BASE/poly/HMT_masks/huc4_1605_poly.nc",
+             "MET_BASE/poly/HMT_masks/huc4_1803_poly.nc",
+             "MET_BASE/poly/HMT_masks/huc4_1804_poly.nc",
+             "MET_BASE/poly/HMT_masks/huc4_1805_poly.nc",
+             "MET_BASE/poly/HMT_masks/huc4_1806_poly.nc" ];
+   sid   = [];
+   llpnt = [];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Confidence interval settings
+//
+ci_alpha  = [ 0.05 ];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Interpolation methods
+//
+interp = {
+   field      = BOTH;
+   vld_thresh = 1.0;
+   shape  = SQUARE;
+
+   type = [
+      {
+         method = NEAREST;
+         width  = 1;
+      }
+   ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Statistical output types
+//
+output_flag = {
+   ecnt  = BOTH;
+   rhist = BOTH;
+   phist = BOTH;
+   orank = BOTH;
+   ssvar = BOTH;
+   relp  = BOTH;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Ensemble product output types
+//
+ensemble_flag = {
+   latlon    = TRUE;
+   mean      = TRUE;
+   stdev     = TRUE;
+   minus     = TRUE;
+   plus      = TRUE;
+   min       = TRUE;
+   max       = TRUE;
+   range     = TRUE;
+   vld_count = TRUE;
+   frequency = TRUE;
+   nep       = FALSE;
+   nmep      = FALSE;
+   rank      = TRUE;
+   weight    = FALSE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Random number generator
+//
+rng = {
+   type = "mt19937";
+   seed = "1";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+grid_weight_flag = NONE;
+output_prefix    = "${OUTPUT_PREFIX}";
+//version          = "V9.0";
+
+////////////////////////////////////////////////////////////////////////////////

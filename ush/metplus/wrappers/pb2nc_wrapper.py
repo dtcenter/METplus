@@ -1,11 +1,5 @@
 #!/usr/bin/env python
 
-import os
-import re
-import metplus.util.met_util as util
-import metplus.util.time_util as time_util
-from metplus.wrappers.command_builder import CommandBuilder
-
 """
 Program Name: PB2NC_Wrapper.py
 Contact(s): Minna Win, Jim Frimel, George McCabe, Julie Prestopnik
@@ -18,6 +12,14 @@ Output Files: netCDF files
 Condition codes: 0 for success, 1 for failure
 """
 
+import os
+import re
+
+import metplus_check_python_version
+from ..util import met_util as util
+from ..util import time_util
+from ..util.config.string_template_substitution import StringSub
+from .command_builder import CommandBuilder
 
 class PB2NCWrapper(CommandBuilder):
     """! Wrapper to the MET tool pb2nc which converts prepbufr files
@@ -25,10 +27,10 @@ class PB2NCWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
-        super().__init__(config, logger)
         self.app_name = 'pb2nc'
         self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin', self.app_name)
+        super().__init__(config, logger)
 
     def create_c_dict(self):
         """! Create a data structure (dictionary) that contains all the
@@ -58,19 +60,24 @@ class PB2NCWrapper(CommandBuilder):
         # filename templates, exit if not set
         c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates', 'PB2NC_INPUT_TEMPLATE')
         if c_dict['OBS_INPUT_TEMPLATE'] == '':
-            self.logger.error('Must set PB2NC_INPUT_TEMPLATE in config file')
+            self.log_error('Must set PB2NC_INPUT_TEMPLATE in config file')
             exit(1)
 
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates', 'PB2NC_OUTPUT_TEMPLATE')
         if c_dict['OUTPUT_TEMPLATE'] == '':
-            self.logger.error('Must set PB2NC_OUTPUT_TEMPLATE in config file')
+            self.log_error('Must set PB2NC_OUTPUT_TEMPLATE in config file')
             exit(1)
 
         c_dict['OBS_INPUT_DATATYPE'] = self.config.getstr('config', 'PB2NC_INPUT_DATATYPE', '')
 
         # Configuration
-        c_dict['CONFIG_FILE'] = self.config.getstr('config',
-                                                   'PB2NC_CONFIG_FILE')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config',
+                                                   'PB2NC_CONFIG_FILE',
+                                                   '')
+        if c_dict['CONFIG_FILE'] == '':
+            self.log_error('PB2NC_CONFIG_FILE is required')
+            self.isOK = False
+
         c_dict['MESSAGE_TYPE'] = util.getlist(
             self.config.getstr('config', 'PB2NC_MESSAGE_TYPE', '[]'))
 
@@ -84,22 +91,30 @@ class PB2NCWrapper(CommandBuilder):
 
         grid_id = self.config.getstr('config', 'PB2NC_GRID')
         c_dict['GRID'] = self.reformat_grid_id(grid_id)
+        if c_dict['GRID'] is None:
+            self.log_error('PB2NC_GRID value was formatted incorrectly')
+            self.isOK = False
 
         c_dict['POLY'] = self.config.getstr('config', 'PB2NC_POLY')
 
         c_dict['BUFR_VAR_LIST'] = util.getlist(
             self.config.getstr('config', 'PB2NC_OBS_BUFR_VAR_LIST', '[]'))
 
-        c_dict['TIME_SUMMARY_FLAG'] = self.config.getbool('config',
-                                                      'PB2NC_TIME_SUMMARY_FLAG')
-        c_dict['TIME_SUMMARY_BEG'] = self.config.getstr('config',
-                                                    'PB2NC_TIME_SUMMARY_BEG')
-        c_dict['TIME_SUMMARY_END'] = self.config.getstr('config',
-                                                    'PB2NC_TIME_SUMMARY_END')
-        c_dict['TIME_SUMMARY_VAR_NAMES'] = str(util.getlist(
-            self.config.getstr('config', 'PB2NC_TIME_SUMMARY_VAR_NAMES')))
-        c_dict['TIME_SUMMARY_TYPES'] = str(util.getlist(
-            self.config.getstr('config', 'PB2NC_TIME_SUMMARY_TYPES')))
+        c_dict['TIME_SUMMARY_FLAG'] = \
+          'TRUE' if self.config.getbool('config', 'PB2NC_TIME_SUMMARY_FLAG') \
+          else 'FALSE'
+        c_dict['TIME_SUMMARY_BEG'] = \
+          f"\"{self.config.getstr('config', 'PB2NC_TIME_SUMMARY_BEG')}\""
+        c_dict['TIME_SUMMARY_END'] = \
+          f"\"{self.config.getstr('config', 'PB2NC_TIME_SUMMARY_END')}\""
+
+        var_names = str(util.getlist(self.config.getstr('config',
+                                                        'PB2NC_TIME_SUMMARY_VAR_NAMES')))
+        c_dict['TIME_SUMMARY_VAR_NAMES'] = var_names.replace("\'", "\"")
+
+        time_types = str(util.getlist(self.config.getstr('config',
+                                                         'PB2NC_TIME_SUMMARY_TYPES')))
+        c_dict['TIME_SUMMARY_TYPES'] = time_types.replace("\'", "\"")
 
         c_dict['OBS_WINDOW_BEGIN'] = \
           self.config.getseconds('config', 'PB2NC_WINDOW_BEGIN',
@@ -118,6 +133,15 @@ class PB2NCWrapper(CommandBuilder):
           self.config.getseconds('config', 'PB2NC_FILE_WINDOW_END',
                              self.config.getseconds('config',
                                                 'OBS_FILE_WINDOW_END', 0))
+
+        c_dict['VALID_BEGIN_TEMPLATE'] = \
+          self.config.getraw('config', 'PB2NC_VALID_BEGIN', '')
+
+        c_dict['VALID_END_TEMPLATE'] = \
+          self.config.getraw('config', 'PB2NC_VALID_END', '')
+
+        c_dict['VALID_WINDOW_BEGIN'] = ''
+        c_dict['VALID_WINDOW_END'] = ''
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
@@ -147,22 +171,15 @@ class PB2NCWrapper(CommandBuilder):
             return 'G' + number.zfill(3)
 
         # Unexpected format
-        self.logger.error('Grid id in unexpected format of Gn or ' +
+        self.log_error('Grid id in unexpected format of Gn or ' +
                           'Gnn, please check again. Exiting...')
+        return None
 
     def set_environment_variables(self, time_info):
         """!Set environment variables that will be read by the MET config file.
             Reformat as needed. Print list of variables that were set and their values.
             Args:
               @param time_info dictionary containing timing info from current run"""
-        # list of fields to print to log
-        print_list = ["PB2NC_MESSAGE_TYPE", "PB2NC_STATION_ID",
-                      "OBS_WINDOW_BEGIN", "OBS_WINDOW_END",
-                      "PB2NC_GRID", "PB2NC_POLY", "OBS_BUFR_VAR_LIST",
-                      "TIME_SUMMARY_FLAG", "TIME_SUMMARY_BEG",
-                      "TIME_SUMMARY_END", "TIME_SUMMARY_VAR_NAMES",
-                      "TIME_SUMMARY_TYPES" ]
-
         # set environment variables needed for MET application
         self.add_env_var("PB2NC_MESSAGE_TYPE", self.c_dict['MESSAGE_TYPE'])
         self.add_env_var("PB2NC_STATION_ID", self.c_dict['STATION_ID'])
@@ -176,7 +193,7 @@ class PB2NCWrapper(CommandBuilder):
         self.add_env_var("OBS_BUFR_VAR_LIST", bufr_var_list)
 
         self.add_env_var('TIME_SUMMARY_FLAG',
-                         str(self.c_dict['TIME_SUMMARY_FLAG']))
+                         self.c_dict['TIME_SUMMARY_FLAG'])
         self.add_env_var('TIME_SUMMARY_BEG',
                          self.c_dict['TIME_SUMMARY_BEG'])
         self.add_env_var('TIME_SUMMARY_END',
@@ -190,66 +207,45 @@ class PB2NCWrapper(CommandBuilder):
         self.set_user_environment(time_info)
 
         # send environment variables to logger
-        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_user_env_items()
-        for l in print_list:
-            self.print_env_item(l)
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(print_list)
+        self.print_all_envs()
 
     def find_input_files(self, input_dict):
         """!Find prepbufr data to convert. If file(s) are found, return timing information
             dictionary containing offset information of input file. Return None otherwise"""
-        infile = None
 
-        # loop over offset list and find first file that matches
-        for offset in self.c_dict['OFFSETS']:
-            input_dict['offset_hours'] = offset
-            time_info = time_util.ti_calculate(input_dict)
-            infile = self.find_obs(time_info, None, False)
-
-            if infile is not None:
-                if isinstance(infile, list):
-                    self.infiles.extend(infile)
-                else:
-                    self.infiles.append(infile)
-                self.logger.debug('Adding input file {}'.format(infile))
-                break
+        infiles, time_info = self.find_obs_offset(input_dict,
+                                                  None,
+                                                  mandatory=True,
+                                                  return_list=True)
 
         # if file is found, return timing info dict so output template can use offset value
-        if infile is not None:
-            return time_info
+        if infiles is None:
+            return None
 
-        self.logger.error('Could not find input file in {} matching template {} using offsets {}'
-                          .format(self.c_dict['OBS_INPUT_DIR'],
-                                  self.c_dict['OBS_INPUT_TEMPLATE'],
-                                  self.c_dict['OFFSETS']))
+        self.logger.debug(f"Adding input: {' and '.join(infiles)}")
+        self.infiles.extend(infiles)
+        return time_info
 
-    '''
-    def find_and_check_output_file(self, time_info):
-        """!Look for expected output file. If it exists and configured to skip if it does, then return False"""
-        outfile = StringSub(self.logger,
-                            self.c_dict['OUTPUT_TEMPLATE'],
-                            **time_info).do_string_sub()
-        outpath = os.path.join(self.c_dict['OUTPUT_DIR'], outfile)
-        self.set_output_path(outpath)
+    def set_valid_window_variables(self, time_info):
+        begin_template = self.c_dict['VALID_BEGIN_TEMPLATE']
+        end_template = self.c_dict['VALID_END_TEMPLATE']
 
-        if not os.path.exists(outpath) or not self.c_dict['SKIP_IF_OUTPUT_EXISTS']:
-            return True
+        if begin_template:
+            self.c_dict['VALID_WINDOW_BEGIN'] = \
+                StringSub(self.logger,
+                          begin_template,
+                          **time_info).do_string_sub()
 
-        # if the output file exists and we are supposed to skip, don't run pb2nc
-        self.logger.debug(f'Skip writing output file {outpath} because it already '
-                          'exists. Remove file or change '
-                          f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
-                          'to process')
-    '''
+        if end_template:
+            self.c_dict['VALID_WINDOW_END'] = \
+                StringSub(self.logger,
+                          end_template,
+                          **time_info).do_string_sub()
+
+
     def run_at_time(self, input_dict):
         """! Loop over each forecast lead and build pb2nc command """
-        if self.c_dict['GRID'] is None:
-            self.logger.error('PB2NC_GRID value was formatted incorrectly')
-            return
-
-        # loop of forecast leads and process each
+         # loop of forecast leads and process each
         lead_seq = util.get_lead_sequence(self.config, input_dict)
         for lead in lead_seq:
             input_dict['lead'] = lead
@@ -257,12 +253,14 @@ class PB2NCWrapper(CommandBuilder):
             lead_string = time_util.ti_calculate(input_dict)['lead_string']
             self.logger.info("Processing forecast lead {}".format(lead_string))
 
-            # set current lead time config and environment variables
-            self.config.set('config', 'CURRENT_LEAD_TIME', lead)
-            os.environ['METPLUS_CURRENT_LEAD_TIME'] = str(lead)
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                if custom_string:
+                    self.logger.info(f"Processing custom string: {custom_string}")
 
-            # Run for given init/valid time and forecast lead combination
-            self.run_at_time_once(input_dict)
+                input_dict['custom'] = custom_string
+
+                # Run for given init/valid time and forecast lead combination
+                self.run_at_time_once(input_dict)
 
 
     def run_at_time_once(self, input_dict):
@@ -284,10 +282,17 @@ class PB2NCWrapper(CommandBuilder):
         # set environment variables to be passed to MET config file
         self.set_environment_variables(time_info)
 
+        self.set_valid_window_variables(time_info)
+
+        # handle config file substitution
+        self.c_dict['CONFIG_FILE'] = StringSub(self.logger,
+                                self.c_dict['CONFIG_FILE'],
+                                **time_info).do_string_sub()
+
         # build command and run if successful
         cmd = self.get_command()
         if cmd is None:
-            self.logger.error("Could not generate command")
+            self.log_error("Could not generate command")
             return
         self.build()
 
@@ -297,7 +302,7 @@ class PB2NCWrapper(CommandBuilder):
            @return Returns a MET command with arguments that you can run
         """
         if self.app_path is None:
-            self.logger.error('No app path specified. You must use a subclass')
+            self.log_error('No app path specified. You must use a subclass')
             return None
 
         cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
@@ -306,7 +311,7 @@ class PB2NCWrapper(CommandBuilder):
             cmd += a + " "
 
         if len(self.infiles) == 0:
-            self.logger.error("No input filenames specified")
+            self.log_error("No input filenames specified")
             return None
 
         # if multiple input files, add first now, then add rest with
@@ -314,11 +319,11 @@ class PB2NCWrapper(CommandBuilder):
         cmd += self.infiles[0] + " "
 
         if self.outfile == "":
-            self.logger.error("No output filename specified")
+            self.log_error("No output filename specified")
             return None
 
         if self.outdir == "":
-            self.logger.error("No output directory specified")
+            self.log_error("No output directory specified")
             return None
 
         out_path = os.path.join(self.outdir, self.outfile)
@@ -329,17 +334,19 @@ class PB2NCWrapper(CommandBuilder):
 
         cmd += out_path + ' '
 
-        if self.c_dict['CONFIG_FILE'] == '':
-            self.logger.error('PB2NC_CONFIG_FILE is required')
-            return None
-
         cmd += self.c_dict['CONFIG_FILE'] + ' '
 
         if len(self.infiles) > 1:
             for f in self.infiles[1:]:
                 cmd += '-pbfile ' + f + ' '
 
+        if self.c_dict['VALID_WINDOW_BEGIN']:
+            cmd += f"-valid_beg {self.c_dict['VALID_WINDOW_BEGIN']} "
+
+        if self.c_dict['VALID_WINDOW_END']:
+            cmd += f"-valid_end {self.c_dict['VALID_WINDOW_END']} "
+
         return cmd.strip()
 
 if __name__ == "__main__":
-        util.run_stand_alone("pb2nc_wrapper", "PB2NC")
+    util.run_stand_alone(__file__, "PB2NC")

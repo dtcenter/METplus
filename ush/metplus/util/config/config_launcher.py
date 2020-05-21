@@ -18,9 +18,13 @@ import datetime
 import shutil
 from os.path import dirname, realpath
 import inspect
+from configparser import ConfigParser
+from pathlib import Path
 
 from produtil.config import ProdConfig
 import produtil.fileop
+
+from .. import met_util as util
 
 """!Creates the initial METplus directory structure,
 loads information into each job.
@@ -73,10 +77,7 @@ if os.environ.get('METPLUS_PARM_BASE', ''):
 # Based on METPLUS_BASE, Will set METPLUS_USH, or PARM_BASE if not
 # already set in the environment.
 
-# search the stack of files that have been called to find the location of master_metplus
-master_file = [stack_frame.filename for stack_frame in inspect.stack() if 'master_metplus.py' in stack_frame.filename][0]
-
-METPLUS_BASE = dirname(dirname(realpath(master_file)))
+METPLUS_BASE = str(Path(__file__).parents[4])
 USHguess = os.path.join(METPLUS_BASE, 'ush')
 PARMguess = os.path.join(METPLUS_BASE, 'parm')
 if os.path.isdir(USHguess) and os.path.isdir(PARMguess):
@@ -156,8 +157,12 @@ def parse_launch_args(args, usage, filename, logger, baseinputconfs):
             infiles.append(os.path.join(parm, args[iarg]))
         else:
             bad = True
-            logger.error('%s: invalid argument.  Not an config option '
-                         '(a.b=c) nor a conf file.' % (args[iarg],))
+            # if OS separator character (/ or \) if in argument, assume it
+            # is supposed to be a path but the file is not found
+            if os.sep in args[iarg]:
+                logger.error(f"Configuration file not found: {args[iarg]}")
+            else:
+                logger.error(f"Invalid argument: {args[iarg]}")
     if bad:
         sys.exit(2)
 
@@ -209,6 +214,11 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
                 logger.info('Override: %s.%s=%s'
                             % (section, option, repr(value)))
                 conf.set(section, option, value)
+
+    # get OUTPUT_BASE to make sure it is set correctly so the first error
+    # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
+    # only set incorrectly because OUTPUT_BASE is set incorrectly
+    conf.getdir('OUTPUT_BASE')
 
     # All conf files and command line options have been parsed.
     # So lets set and add specific log variables to the conf object
@@ -281,39 +291,9 @@ def load(filename):
     the launch command.
 
     @param filename The metplus*.conf file created by launch()"""
-
     conf = METplusConfig()
     conf.read(filename)
     return conf
-
-def set_conf_file_path(conf_file):
-    return _set_conf_file_path(conf_file)
-
-
-# This is meant to be used with the -c option in METplus
-# for backward compatability, since users using the -c option
-# are not required to add path information and the previous
-# constants object found it since it was pulled in via the import
-# statement and the parm directory was defined in the PYTHONPATH
-def _set_conf_file_path(conf_file):
-    """Do not call this directly.  It is an internal implementation
-    routine. It is only used internally and is called when adding an
-    additional conf using the -c command line option.
-
-    Adds the path information to the conf file if there isn't any.
-    """
-    parm = os.path.realpath(PARM_BASE)
-
-    # Determine if add_conf_file has path information /path/to/file.conf
-    # If not head than there is no path information, only a filename,
-    # so assUme the conf file is in the parm directory, and add that
-    # parm path information
-    head, tail = os.path.split(conf_file)
-    if not head:
-        new_conf_file = os.path.join(parm, conf_file)
-        return new_conf_file
-
-    return conf_file
 
 def _set_logvars(config, logger=None):
     """!Sets and adds the LOG_METPLUS and LOG_TIMESTAMP
@@ -354,7 +334,7 @@ def _set_logvars(config, logger=None):
             log_timestamp_template = '%Y%m%d%H'
         date_t = datetime.datetime.now()
         if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
-            if is_loop_by_init(config):
+            if util.is_loop_by_init(config):
                 date_t = datetime.datetime.strptime(config.getstr('config',
                                                                   'INIT_BEG'),
                                                     config.getstr('config',
@@ -433,6 +413,9 @@ class METplusConfig(ProdConfig):
     def __init__(self, conf=None):
         """!Creates a new METplusConfig
         @param conf The configuration file."""
+        # set interpolation to None so you can supply filename template
+        # that contain % to config.set
+        conf = ConfigParser(strict=False, inline_comment_prefixes=(';',), interpolation=None) if (conf is None) else conf
         super().__init__(conf)
         self._cycle = None
         self._logger = logging.getLogger('metplus')
@@ -519,7 +502,8 @@ class METplusConfig(ProdConfig):
             elif not in_brackets:
                 out_template += character
 
-        return out_template
+        # replace double slash in path to single slash
+        return out_template.replace('//', '/')
 
     def check_default(self, sec, name, default):
         """!helper function for get methods, report error and exit if
@@ -548,14 +532,14 @@ class METplusConfig(ProdConfig):
 
     def getexe(self, exe_name, default=None, morevars=None):
         """!Wraps produtil exe with checks to see if option is set and if
-            exe actually exists"""
+            exe actually exists. Returns None if not found instead of exiting"""
         if not self.has_option('exe', exe_name):
             msg = 'Requested [exe] {} was not set in config file'.format(exe_name)
             if self.logger:
                 self.logger.error(msg)
             else:
                 print('ERROR: {}'.format(msg))
-            exit(1)
+            return None
 
         exe_path = super().getexe(exe_name)
 
@@ -566,13 +550,13 @@ class METplusConfig(ProdConfig):
                 self.logger.error(msg)
             else:
                 print('ERROR: {}'.format(msg))
-            exit(1)
+            return None
 
         # set config item to full path to exe and return full path
         self.set('exe', exe_name, full_exe_path)
         return full_exe_path
 
-    def getdir(self, dir_name, default=None, morevars=None,taskvars=None):
+    def getdir(self, dir_name, default=None, morevars=None,taskvars=None, must_exist=False):
         """!Wraps produtil getdir and reports an error if it is set to /path/to"""
         if not self.has_option('dir', dir_name):
             self.check_default('dir', dir_name, default)
@@ -589,24 +573,28 @@ class METplusConfig(ProdConfig):
                 print('ERROR: {}'.format(msg))
             exit(1)
 
-        return dir_path
+        if must_exist and not os.path.exists(dir_path):
+            self.logger.error(f"Path must exist: {dir_path}")
+            return None
+
+        return dir_path.replace('//', '/')
 
     def getdir_nocheck(self, dir_name, default=None):
-        return super().getdir(dir_name, default=default)
+        return super().getdir(dir_name, default=default).replace('//', '/')
 
     def getstr_nocheck(self, sec, name, default=None):
-        return super().getstr(sec, name, default=default)
+        return super().getstr(sec, name, default=default).replace('//', '/')
 
 
     def getstr(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Wraps produtil getstr to gracefully report if variable is not set
             and no default value is specified"""
         if self.has_option(sec, name):
-            return super().getstr(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getstr(sec, name, default=default, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars).replace('//', '/')
 
         # config item was not found
         self.check_default(sec, name, default)
-        return default
+        return default.replace('//', '/')
 
     def getbool(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Wraps produtil getbool to gracefully report if variable is not set

@@ -15,14 +15,15 @@ Condition codes: 0 for success, 1 for failure
 import logging
 import os
 import copy
-import metplus.util.met_util as util
 import re
 import subprocess
 import datetime
 import itertools
-import metplus.util.config.string_template_substitution as sts
-from metplus.wrappers.command_builder import CommandBuilder
 
+import metplus_check_python_version
+from ..util import met_util as util
+from ..util.config import string_template_substitution as sts
+from .command_builder import CommandBuilder
 
 class StatAnalysisWrapper(CommandBuilder):
     """! Wrapper to the MET tool stat_analysis which is used to filter 
@@ -30,17 +31,17 @@ class StatAnalysisWrapper(CommandBuilder):
          ensemble_stat, and wavelet_stat
     """
     def __init__(self, config, logger):
-        super().__init__(config, logger)
-        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
+        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
                                      'bin/stat_analysis')
         self.app_name = os.path.basename(self.app_path)
+        super().__init__(config, logger)
         
     def set_lookin_dir(self, lookindir):
         self.lookindir = "-lookin "+lookindir+" "
    
     def get_command(self):
         if self.app_path is None:
-            self.logger.error(self.app_name + ": No app path specified. \
+            self.log_error(self.app_name + ": No app path specified. \
                               You must use a subclass")
             return None
 
@@ -49,7 +50,7 @@ class StatAnalysisWrapper(CommandBuilder):
             cmd += a + " "
 
         if self.lookindir == "":
-            self.logger.error(self.app_name+": No lookin directory specified")
+            self.log_error(self.app_name+": No lookin directory specified")
             return None
         
         cmd += self.lookindir
@@ -1005,7 +1006,7 @@ class StatAnalysisWrapper(CommandBuilder):
         model_info_list = []
         all_conf = self.config.keys('config')
         model_indices = []
-        regex = re.compile('MODEL(\d+)$')
+        regex = re.compile(r'MODEL(\d+)$')
         for conf in all_conf:
             result = regex.match(conf)
             if result is not None:
@@ -1017,16 +1018,16 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.config.getstr('config', 'MODEL'+m+'_REFERENCE_NAME',
                                        model_name)
                 )
-                if self.config.has_option('config',
+                if self.config.has_option('dir',
                                           'MODEL'+m
                                           +'_STAT_ANALYSIS_LOOKIN_DIR'):
                     model_dir = (
-                        self.config.getraw('config',
+                        self.config.getraw('dir',
                                            'MODEL'+m
                                            +'_STAT_ANALYSIS_LOOKIN_DIR')
                     )
                 else:
-                    self.logger.error("MODEL"+m+"_STAT_ANALYSIS_LOOKIN_DIR "
+                    self.log_error("MODEL"+m+"_STAT_ANALYSIS_LOOKIN_DIR "
                                       +"was not set.")
                     exit(1)
                 if self.config.has_option('config', 'MODEL'+m+'_OBTYPE'):
@@ -1034,7 +1035,7 @@ class StatAnalysisWrapper(CommandBuilder):
                         self.config.getstr('config', 'MODEL'+m+'_OBTYPE')
                     )
                 else:
-                    self.logger.error("MODEL"+m+"_OBTYPE was not set.")
+                    self.log_error("MODEL"+m+"_OBTYPE was not set.")
                     exit(1)
                 for output_type in [ 'DUMP_ROW', 'OUT_STAT' ]:
                     if (self.config.has_option('filename_templates', 'MODEL'+m
@@ -1093,7 +1094,7 @@ class StatAnalysisWrapper(CommandBuilder):
                             )
                             model_out_stat_filename_type = model_filename_type
             else:
-                self.logger.error("MODEL"+m+" was not set.")
+                self.log_error("MODEL"+m+" was not set.")
                 exit(1)
             mod = {}
             mod['name'] = model_name
@@ -1110,6 +1111,28 @@ class StatAnalysisWrapper(CommandBuilder):
             mod['out_stat_filename_type'] = model_out_stat_filename_type
             model_info_list.append(mod)
         return model_info_list, model_indices
+
+    def get_level_list(self, data_type):
+        """!Read forecast or observation level list from config.
+            Format list items to match the format expected by
+            StatAnalysis by removing parenthesis and any quotes,
+            then adding back single quotes
+            Args:
+              @param data_type type of list to get, FCST or OBS
+              @returns list containing the formatted level list
+        """
+        level_list = []
+
+        level_input = util.getlist(
+            self.config.getstr('config', f'{data_type}_LEVEL_LIST', '')
+        )
+
+        for level in level_input:
+            level = level.strip('(').strip(')')
+            level = f'{util.remove_quotes(level)}'
+            level_list.append(level)
+
+        return level_list
 
     def run_stat_analysis_job(self, date_beg, date_end, date_type):
         """! This runs stat_analysis over a period of valid
@@ -1144,12 +1167,10 @@ class StatAnalysisWrapper(CommandBuilder):
         self.c_dict['OBS_UNITS_LIST'] = util.getlist(
             self.config.getstr('config', 'OBS_UNITS_LIST', '')
         )
-        self.c_dict['FCST_LEVEL_LIST'] = util.getlist(
-            self.config.getstr('config', 'FCST_LEVEL_LIST', '')
-        )
-        self.c_dict['OBS_LEVEL_LIST'] = util.getlist(
-            self.config.getstr('config', 'OBS_LEVEL_LIST', '')
-        )
+
+        self.c_dict['FCST_LEVEL_LIST'] = self.get_level_list('FCST')
+        self.c_dict['OBS_LEVEL_LIST'] = self.get_level_list('OBS')
+
         self.c_dict['FCST_THRESH_LIST'] = util.getlist(
             self.config.getstr('config', 'FCST_THRESH_LIST', '')
         )
@@ -1169,7 +1190,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     model_name_list.append(model_info['name'])
                 formatted_c_dict['MODEL_LIST'] = model_name_list
             else:
-                self.logger.error("No model information was found.")
+                self.log_error("No model information was found.")
                 exit(1)
         for fcst_valid_hour in self.c_dict['FCST_VALID_HOUR_LIST']:
             index = self.c_dict['FCST_VALID_HOUR_LIST'].index(fcst_valid_hour)
@@ -1385,8 +1406,12 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.logger.debug(name+": "+value)
             cmd = self.get_command()
             if cmd is None:
-                self.logger.error("stat_analysis could not generate command")
+                self.log_error("stat_analysis could not generate command")
                 return
+
+            # send environment variables to logger
+            self.print_all_envs()
+
             self.build()
             self.clear()
 
@@ -1410,7 +1435,7 @@ class StatAnalysisWrapper(CommandBuilder):
         for bad_config_variable in bad_config_variable_list:
             if self.config.has_option('config',
                                       bad_config_variable):
-                self.logger.error("Bad config option for running StatAnalysis "
+                self.log_error("Bad config option for running StatAnalysis "
                                   "followed by MakePlots. Please remove "
                                   +bad_config_variable+" and set using FCST/OBS_VARn")
                 exit(1)
@@ -1420,7 +1445,7 @@ class StatAnalysisWrapper(CommandBuilder):
         ]
         for config_list in self.c_dict['GROUP_LIST_ITEMS']:
             if config_list not in loop_group_accepted_options:
-                self.logger.error("Bad config option for running StatAnalysis "
+                self.log_error("Bad config option for running StatAnalysis "
                                   +"followed by MakePlots. Only accepted "
                                   +"values in GROUP_LIST_ITEMS are "
                                   +"FCST_VALID_HOUR_LIST, "
@@ -1431,7 +1456,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 exit(1) 
         for config_list in self.c_dict['LOOP_LIST_ITEMS']:
             if config_list not in loop_group_accepted_options:
-                self.logger.error("Bad config option for running StatAnalysis "
+                self.log_error("Bad config option for running StatAnalysis "
                                   +"followed by MakePlots. Only accepted "
                                   +"values in LOOP_LIST_ITEMS are "
                                   +"FCST_VALID_HOUR_LIST, "
@@ -1447,7 +1472,7 @@ class StatAnalysisWrapper(CommandBuilder):
             ]
         for required_config_variable in required_config_variable_list:
             if len(self.c_dict[required_config_variable]) == 0:
-                self.logger.error(required_config_variable+" has no items. "
+                self.log_error(required_config_variable+" has no items. "
                                   +"This list must have items to run "
                                   +"StatAnalysis followed by MakePlots.")
                 exit(1)
@@ -1465,7 +1490,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     model_name_list.append(model_info['name'])
                 formatted_c_dict['MODEL_LIST'] = model_name_list
             else:
-                self.logger.error("No model information was found.")
+                self.log_error("No model information was found.")
                 exit(1)
         # Add additional variable information to
         # c_dict['VAR_LIST'] and make individual dictionaries
@@ -1830,9 +1855,13 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.logger.debug(name+": "+value)
                 cmd = self.get_command()
                 if cmd is None:
-                    self.logger.error("stat_analysis could not generate "+
+                    self.log_error("stat_analysis could not generate "+
                                       "command")
                     return
+
+                # send environment variables to logger
+                self.print_all_envs()
+
                 self.build()
                 self.clear()
 
@@ -1846,7 +1875,7 @@ class StatAnalysisWrapper(CommandBuilder):
         self.c_dict['INIT_END'] = self.config.getstr('config', 'INIT_END', '')
         date_type = self.c_dict['DATE_TYPE']
         if date_type not in ['VALID', 'INIT']:
-            self.logger.error("DATE_TYPE must be VALID or INIT")
+            self.log_error("DATE_TYPE must be VALID or INIT")
             exit(1)
         if 'MakePlots' in self.c_dict['PROCESS_LIST']:
             self.filter_for_plotting()
@@ -1861,8 +1890,8 @@ class StatAnalysisWrapper(CommandBuilder):
             date = input_dict[loop_by.lower()].strftime('%Y%m%d')
             self.run_stat_analysis_job(date, date, loop_by)
         else:
-            self.logger.error("LOOP_BY must be VALID or INIT")
+            self.log_error("LOOP_BY must be VALID or INIT")
             exit(1)
 
 if __name__ == "__main__":
-    util.run_stand_alone("stat_analysis_wrapper", "StatAnalysis")
+    util.run_stand_alone(__file__, "StatAnalysis")

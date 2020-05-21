@@ -1,0 +1,219 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Point-Stat configuration file.
+//
+// For additional information, see the MET_BASE/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Output model name to be written
+//
+model = "${MODEL}";
+
+//
+// Output description to be written
+// May be set separately in each "obs.field" entry
+//
+desc = "NA";
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification grid
+//
+regrid = {
+   to_grid    = ${REGRID_TO_GRID};
+   method     = BILIN;
+   width      = 2;
+   vld_thresh = 0.5;
+   shape      = SQUARE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// May be set separately in each "field" entry
+//
+censor_thresh = [];
+censor_val    = [];
+cat_thresh    = [ NA ];
+cnt_thresh    = [ NA ];
+cnt_logic     = UNION;
+wind_thresh   = [ NA ];
+wind_logic    = UNION;
+eclv_points   = 0.05;
+rank_corr_flag = FALSE;
+
+//
+// Forecast and observation fields to be verified
+//
+fcst = {
+    field = [ ${FCST_FIELD} ];
+    };
+
+obs = {
+    field = [ ${OBS_FIELD} ];
+    };
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation filtering options
+// May be set separately in each "obs.field" entry
+//
+message_type = ${POINT_STAT_MESSAGE_TYPE};
+sid_exc        = [];
+obs_quality    = [ "1", "2", "3" ];
+duplicate_flag = NONE;
+obs_summary    = NONE;
+obs_perc_value = 50;
+
+//
+// Mapping of message type group name to comma-separated list of values.
+//
+message_type_group_map = [
+   { key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";               },
+   { key = "ANYAIR";  val = "AIRCAR,AIRCFT";                      },
+   { key = "ANYSFC";  val = "ADPSFC,SFCSHP,ADPUPA,PROFLR,MSONET"; },
+   { key = "ONLYSF";  val = "ADPSFC,SFCSHP";                      },
+   { key = "LANDSF";  val = "ADPSFC,MSONET";                      },
+   { key = "WATERSF"; val = "SFCSHP";                             }
+];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Climatology data
+//
+climo_mean = {
+
+   file_name = [ ${CLIMO_MEAN_FILE} ];
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape      = SQUARE;
+   }
+
+   time_interp_method = NEAREST;
+   day_interval       = 31;
+   hour_interval      = 6;
+}
+
+climo_stdev = climo_mean;
+climo_stdev = {
+   file_name = [ ${CLIMO_STDEV_FILE} ];
+}
+
+//
+// May be set separately in each "obs.field" entry
+//
+climo_cdf = {
+   cdf_bins    = 1;
+   center_bins = FALSE;
+   write_bins  = TRUE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation time window
+//
+obs_window = {
+  beg = ${OBS_WINDOW_BEGIN};
+  end = ${OBS_WINDOW_END};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification masking regions
+//
+mask = {
+   grid = ${POINT_STAT_GRID};
+   poly = ${POINT_STAT_POLY};
+   sid     = ${POINT_STAT_STATION_ID};
+   llpnt = [];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Confidence interval settings
+//
+ci_alpha  = [ 0.05 ];
+
+boot = {
+   interval = PCTILE;
+   rep_prop = 1.0;
+   n_rep    = 0;
+   rng      = "mt19937";
+   seed     = "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Interpolation methods
+//
+interp = {
+   vld_thresh = 1.0;
+   shape      = SQUARE;
+
+   type = [
+      {
+         method = BILIN;
+         width  = 2;
+      }
+   ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// HiRA verification method
+//
+hira = {
+   flag       = FALSE;
+   width      = [ 2, 3, 4, 5 ];
+   vld_thresh = 1.0;
+   cov_thresh = [ ==0.25 ];
+   shape      = SQUARE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Statistical output types
+//
+output_flag = {
+   fho    = NONE;
+   ctc    = NONE;
+   cts    = NONE;
+   mctc   = NONE;
+   mcts   = NONE;
+   cnt    = NONE;
+   sl1l2  = STAT;
+   sal1l2 = NONE;
+   vl1l2  = STAT;
+   val1l2 = NONE;
+   vcnt   = NONE;
+   pct    = NONE;
+   pstd   = NONE;
+   pjc    = NONE;
+   prc    = NONE;
+   ecnt   = NONE; // Only for HiRA.
+   eclv   = NONE;
+   mpr    = NONE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+tmp_dir        = "/tmp";
+output_prefix    = "${OUTPUT_PREFIX}";
+//version        = "V9.0";
+
+////////////////////////////////////////////////////////////////////////////////

@@ -5,13 +5,15 @@ import sys
 import re
 import logging
 from collections import namedtuple
-import produtil
 import pytest
 import datetime
-import config_metplus
-from grid_stat_wrapper import GridStatWrapper
-import met_util as util
-import time_util
+
+import produtil
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.grid_stat_wrapper import GridStatWrapper
+from metplus.util import met_util as util
+from metplus.util import time_util
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
@@ -71,83 +73,14 @@ def metplus_config():
 
 # ------------------------ TESTS GO HERE --------------------------
 
-
-# ------------------------
-#  test_find_obs_no_dated
-# ------------------------
-def test_find_obs_no_dated():
-    pcw = grid_stat_wrapper()
-    v = {}
-    v['obs_level'] = "6"
-    task_info = {}
-    task_info['valid'] = datetime.datetime.strptime("201802010000",'%Y%m%d%H%M')
-    task_info['lead'] = 0
-    time_info = time_util.ti_calculate(task_info)
-    
-    pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = -3600
-    pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
-    pcw.c_dict['OBS_INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
-    pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
-    obs_file = pcw.find_obs(time_info, v)
-    assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180201_0045')
-
-
-def test_find_obs_dated():
-    pcw = grid_stat_wrapper()
-    v = {}
-    v['obs_level'] = "6"
-    task_info = {}
-    task_info['valid'] = datetime.datetime.strptime("201802010000", '%Y%m%d%H%M')
-    task_info['lead'] = 0
-    time_info = time_util.ti_calculate(task_info)
-
-    pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = -3600
-    pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
-    pcw.c_dict['OBS_INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
-    pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
-    obs_file = pcw.find_obs(time_info, v)
-    assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180201/20180201_0013')
-
-def test_find_obs_dated_previous_day():
-    pcw = grid_stat_wrapper()
-    v = {}
-    v['obs_level'] = "6"
-    task_info = {}
-    task_info['valid'] = datetime.datetime.strptime("201802010000", '%Y%m%d%H%M')
-    task_info['lead'] = 0
-    time_info = time_util.ti_calculate(task_info)
-
-    pcw.c_dict['OBS_INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
-    pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
-    pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = -3600
-    pcw.c_dict['OBS_FILE_WINDOW_END'] = 0
-    obs_file = pcw.find_obs(time_info, v)
-    assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180131/20180131_2345')
-
-def test_find_obs_dated_next_day():
-    pcw = grid_stat_wrapper()
-    v = {}
-    v['obs_level'] = "6"
-    task_info = {}
-    task_info['valid'] = datetime.datetime.strptime("201802012345", '%Y%m%d%H%M')
-    task_info['lead'] = 0
-    time_info = time_util.ti_calculate(task_info)
-    
-    pcw.c_dict['OBS_INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
-    pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
-    pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = 0
-    pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
-    obs_file = pcw.find_obs(time_info, v)
-    assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180202/20180202_0013')
-
 # conf_dict is produtil config items set before creating grid_stat wrapper instance
 # out_dict is grid_stat wrapper c_dict values set by initialization
 @pytest.mark.parametrize(
     'conf_dict, out_dict', [
         # file window is get from obs window if not set
         ({ 'OBS_WINDOW_BEGIN' : -10,
-            'OBS_WINDOW_END': 10},  {'OBS_FILE_WINDOW_BEGIN' : -10,
-                                     'OBS_FILE_WINDOW_END' : 10}),
+            'OBS_WINDOW_END': 10},  {'OBS_FILE_WINDOW_BEGIN' : 0,
+                                     'OBS_FILE_WINDOW_END' : 0}),
         # obs grid_stat window overrides obs window
         ({ 'OBS_GRID_STAT_WINDOW_BEGIN' : -10,
             'OBS_GRID_STAT_WINDOW_END': 10},  {'OBS_WINDOW_BEGIN' : -10,
@@ -164,7 +97,7 @@ def test_find_obs_dated_next_day():
         ({ 'OBS_GRID_STAT_FILE_WINDOW_BEGIN' : -10,
            'OBS_GRID_STAT_WINDOW_BEGIN' : -20,
             'OBS_GRID_STAT_WINDOW_END': 30},  {'OBS_FILE_WINDOW_BEGIN' : -10,
-                                       'OBS_FILE_WINDOW_END' : 30}),
+                                       'OBS_FILE_WINDOW_END' : 0}),
 
     ]
 )

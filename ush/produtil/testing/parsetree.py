@@ -8,10 +8,9 @@
 # mode, call stack, and other information which the BaseObject
 # subclasses use for evaluation to literals.
 
-import sys, re, collections, os, datetime, logging, math
+import sys, re, io, collections, os, datetime, logging, math
 import produtil.run, produtil.log, produtil.setup
 
-from io import StringIO
 # This module really does use everything public from utilities and
 # tokenize, hence the "import *"
 from produtil.testing.utilities import *
@@ -176,6 +175,12 @@ class BaseObject(object):
         @param con the Context in which this object is being evaluated
         @returns a string containing this object expressed in bash code"""
         raise PTParserError("Cannot express null_value in a bash string.")
+    def oldcmp(self,other):
+        iself=id(self)
+        iother=id(other)
+        if iself<iother: return -1
+        if iself>iother: return 1
+        return 0
     def is_valid_rvalue(self,con): 
         """!Can this value be assigned to a variable?
         @returns True if this BaseObject represents a value that can be
@@ -477,7 +482,7 @@ class Scope(BaseObject):
         parameters (arguments to function call)
         @param update a dict containing the new variable names and values"""
         self.__parameters.update(update)
-        for p in self.__parameters.iterkeys():
+        for p in self.__parameters.keys():
             self.validate_parameter(p)
 
     def _set_constants(self,update):
@@ -485,7 +490,7 @@ class Scope(BaseObject):
         constants in this scope
         @param update a dict containing the new variable names and values"""
         self.__const.update(update)
-        for p in self.__const.iterkeys():
+        for p in self.__const.keys():
             self.validate_parameter(p)
 
     def numeric_context(self,con):
@@ -529,7 +534,7 @@ class Scope(BaseObject):
         @param con the Context in which this object is being evaluated"""
         self.__parameters.update(self.__vars)
         self.__vars=dict()
-        for p in self.__parameters.iterkeys():
+        for p in self.__parameters.keys():
             self.validate_parameter(p)
         return self
 
@@ -890,7 +895,7 @@ class Scope(BaseObject):
         @param scopes sent to resolve(); these scopes will be searched instead
         of defscopes when a variable is not found in this scope.
         @returns the resulting python string"""
-        stream=StringIO()
+        stream=io.StringIO()
         # if string.find('TEST_NAME')>-1:
         #     print 'Expand "%s"'%(elipses(string,max_length=80),)
         # yell('Expand %s in %s\n'%(repr(string),repr(self)))
@@ -1177,7 +1182,7 @@ class AtParse(Builtin):
         """!Generates a block of bash code that will parse the file.
         @param con the Context in which this object is being evaluated
         @returns the resulting block of bash code"""
-        out=StringIO()
+        out=io.StringIO()
         src=self.resolve('src').bash_context(con)
         tgt=self.resolve('tgt').bash_context(con)
         out.write("echo input to atparse from %s:\ncat %s\n"%(src,src))
@@ -1486,7 +1491,7 @@ class Criteria(TypelessObject):
         comparisons or baseline comparisons
         @param con the Context in which this object is being evaluated
         @returns the new bash code block."""
-        out=StringIO()
+        out=io.StringIO()
         if con.run_mode==BASELINE:
             out.write('\n########################################################################\necho BASELINE GENERATION:\n\n')
         else:
@@ -1603,7 +1608,7 @@ class Filters(TypelessObject):
         """!Generates a bash code block that executes all filters in sequence
         @param con the Context in which this object is being evaluated
         @returns the resulting bash code as a string."""
-        out=StringIO()
+        out=io.StringIO()
         out.write('\n########################################################################\necho INPUT FILTERS:\n\n')
         for tgt in self.__tgtlist:
             # out.write('echo Filter for target %s:\n'%(
@@ -1881,7 +1886,7 @@ class SpawnProcess(TypelessObject):
         MPI,nodesize,affinity,max_threads,nodes,max_ppn_tpn,max_ppn,packed=\
             self._make_nodes_ppn(con)
 
-        out=StringIO()
+        out=io.StringIO()
         out.write('# Embedded process execution:\n')
         need_ranks=len(self.__ranks)>1
         have_ranks=False
@@ -2088,7 +2093,7 @@ class EmbedBash(Scope):
         #template=template.string_context(con)
         #expanded=self.expand_string(template,con)
 
-        stream=StringIO()
+        stream=io.StringIO()
         env=dict()
         unset_me=list()
         
@@ -2375,7 +2380,7 @@ class Test(Scope):
         report=self.resolve("COM").bash_context(con)
         report=os.path.join(report,'report.txt')
 
-        out=StringIO()
+        out=io.StringIO()
         out.write("report_start %s Test %s starting at $( date ) '('%s')'\n"%(
                 report,name,descr))
         for step in steps:
@@ -2750,7 +2755,7 @@ class Environ(Scope):
 
         Iterates over the environment, yielding tuples containing the
         environment variable name and its value.  Iteration is in the
-        order returned by os.environ.items()"""
+        order returned by os.environ.iteritems()"""
         for k,v in os.environ.items():
             yield k,String([self],v,False)
     def resolve(self,key,scopes=None):

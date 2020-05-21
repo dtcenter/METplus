@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 
 import os
-import config_metplus
 import datetime
 import sys
 import logging
 import pytest
 import datetime
-from stat_analysis_wrapper import StatAnalysisWrapper
-import met_util as util
+
 import produtil.setup
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.stat_analysis_wrapper import StatAnalysisWrapper
+from metplus.util import met_util as util
 
 #
 # These are tests (not necessarily unit tests) for the
@@ -40,7 +42,7 @@ def cmdopt(request):
 #
 # ------------Pytest fixtures that can be used for all tests ---------------
 #
-@pytest.fixture
+#@pytest.fixture
 def stat_analysis_wrapper():
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -50,10 +52,11 @@ def stat_analysis_wrapper():
     # Default, empty StatAnalysisWrapper with some configuration values set
     # to /path/to:
     config = metplus_config()
+    util.handle_tmp_dir(config)
     return StatAnalysisWrapper(config, config.logger)
 
 
-@pytest.fixture
+#@pytest.fixture
 def metplus_config():
     try:
         if 'JLOGFILE' in os.environ:
@@ -101,7 +104,7 @@ def metplus_config():
 #         # expected.
 #             assert actual_key == key
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-METPLUS_BASE = os.getcwd().split('METplus')[0]+'METplus'
+METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
 def test_set_lists_as_loop_or_group():
     # Independently test that the lists that are set

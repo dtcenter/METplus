@@ -4,8 +4,9 @@ import logging
 import re
 import os
 import pytest
-import met_util as util
-import config_metplus
+
+from metplus.util import met_util as util
+from metplus.util.config import config_metplus
 
 #
 # -----------Mandatory-----------
@@ -42,8 +43,8 @@ def get_test_logger():
 def test_log_level():
     # Verify that the log level is set to what we indicated in the config file.
     fixture_logger = get_test_logger()
-    # Expecting log level = DEBUG as set in the test config file.
-    level = logging.getLevelName('DEBUG')
+    # Expecting log level = INFO as set in the test config file.
+    level = logging.getLevelName('INFO')
     assert fixture_logger.isEnabledFor(level)
 
 

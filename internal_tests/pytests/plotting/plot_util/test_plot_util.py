@@ -1,17 +1,20 @@
 #!/usr/bin/env python
 
 import os
-import config_metplus
 import datetime
 import sys
 import logging
 import pytest
 import datetime
-import met_util as util
-import produtil.setup
 import numpy as np
 import pandas as pd
-@pytest.fixture
+
+import produtil.setup
+
+from metplus.util.config import config_metplus
+from metplus.util import met_util as util
+
+#@pytest.fixture
 def metplus_config():
     try:
         if 'JLOGFILE' in os.environ:
@@ -59,7 +62,7 @@ def metplus_config():
 #         # expected.
 #             assert actual_key == key
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-METPLUS_BASE = os.getcwd().split('METplus')[0]+'METplus'
+METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 sys.path.append(METPLUS_BASE+'/ush/plotting_scripts')
 import plot_util
 logger = logging.getLogger('~/metplus_pytest_plot_util.log')

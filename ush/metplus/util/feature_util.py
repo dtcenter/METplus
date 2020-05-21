@@ -3,10 +3,10 @@ import os
 import sys
 import re
 import datetime
-import metplus.util.met_util as util
-from metplus.wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
-#from regrid_data_plane_wrapper import RegridDataPlaneWrapper
-from metplus.util.config.string_template_substitution import StringSub
+
+from . import met_util as util
+from ..wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
+from .config.string_template_substitution import StringSub
 
 """!@namespace feature_util
  @brief Provides  Utility functions for METplus feature relative use case.
@@ -215,6 +215,9 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             else:
                 # Perform fcst regridding on the records of interest
                 var_level_string = retrieve_var_info(config)
+
+
+
                 # Perform regridding using MET Tool regrid_data_plane
                 fcst_cmd_list = [regrid_data_plane_exe, ' ',
                                  fcst_filename, ' ',
@@ -262,24 +265,17 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
 
 def retrieve_var_info(config):
     """! Retrieve the variable name and level from the
-        EXTRACT_TILES_VAR_FILTER and VAR_LIST.  If the
-        EXTRACT_TILES_VAR_FILTER is empty, then retrieve
-        the variable information from VAR_LIST.  Both are defined
-        in the constants_pdef.py param file.  This will
+        METplus config file. This information will
         be used as part of the command to regrid the grib2 storm track
         files into netCDF.
+
         Args:
             @param config: The reference to the config/param instance.
         Returns:
-            field_level_string (string):
-                                          A string with format -field
-                                          'name="HGT"; level="P500";'
+            field_level_string (string):   A list of strings, each with format:
+                                          -field 'name="HGT"; level="P500";'
                                           for each variable defined in
-                                          VAR_LIST. Otherwise, a string with
-                                          format like:
-                                          :TMP:2 |:HGT: 500|:PWAT:|:PRMSL:
-                                          which will be used to regrid using
-                                          wgrib2.
+                                          VAR_LIST.
     """
 
     # pylint: disable=protected-access
@@ -290,34 +286,54 @@ def retrieve_var_info(config):
     cur_filename = sys._getframe().f_code.co_filename
     cur_function = sys._getframe().f_code.co_name
 
-    var_list = util.getlist(config.getstr('config', 'SERIES_ANALYSIS_VAR_LIST'))
-    extra_var_list = util.getlist(config.getstr('config',
-                                            'EXTRACT_TILES_VAR_LIST'))
     full_list = []
-
-    # Append the extra_var list to the var_list
-    # and remove any duplicates. *NOTE, order
-    # will be lost.
-    full_var_list = var_list + extra_var_list
-    unique_var_list = list(set(full_var_list))
 
     name_str = 'name="'
     level_str = 'level="'
 
-    for cur_var in unique_var_list:
-        match = re.match(r'(.*)/(.*)', cur_var)
-        name = match.group(1)
-        level = match.group(2)
-        level_val = "_" + level
 
-        # Create the field info string that can be used
-        # by the MET Tool regrid_data_plane to perform
-        # regridding.
+    var_list_of_dicts = util.parse_var_list(config)
+    for cur_dict in var_list_of_dicts:
+        level = "_" + cur_dict['fcst_level']
+        name = cur_dict['fcst_name']
         cur_list = [' -field ', "'", name_str, name, '"; ',
-                    level_str, level_val, '";', "'", '\\ ']
+                    level_str, level, '";', "'", '\\ ']
         cur_str = ''.join(cur_list)
         full_list.append(cur_str)
-    field_level_string = ''.join(full_list)
 
+
+    field_level_string = ''.join(full_list)
     return field_level_string
 
+def retrieve_var_name_levels(config):
+    """ Retrieve a list of variable names and levels that
+        were requested in the METplus config file.
+
+    Args:
+       @param config:  The configuration object that contains all
+                       the information contained in the METplus
+                       configuration file.
+
+    Return:
+      @return full_list:  A list containing the
+                          var name and corresponding levels
+
+    """
+
+    # pylint: disable=protected-access
+    # Need to access sys._getframe() to retrieve the current file and function/
+    # method for logging information.
+
+    # For logging
+    cur_filename = sys._getframe().f_code.co_filename
+    cur_function = sys._getframe().f_code.co_name
+
+    full_list = []
+
+    var_list_of_dicts = util.parse_var_list(config)
+    for cur_dict in var_list_of_dicts:
+        level = cur_dict['fcst_level']
+        name = cur_dict['fcst_name']
+        name_level_tuple = name,level
+        full_list.append(name_level_tuple)
+    return full_list

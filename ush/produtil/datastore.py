@@ -84,11 +84,11 @@ class UnknownLocation(DatumException):
 
 ##@var _has_dcolon
 # Regular expression to detect a database ID with a double colon in it.
-_has_dcolon=re.compile('\\A.*::.*\\Z')
+_has_dcolon=re.compile(r'\A.*::.*\Z')
 
 ##@var _has_dstar
 # Regular expression to detect a database ID with a double asterisk in it.
-_has_dstar=re.compile('\\A.*\\*\\*.*\\Z')
+_has_dstar=re.compile(r'\A.*\*\*.*\Z')
 
 ##@var TASK_CATEGORY
 # Special product category used for Tasks.
@@ -247,23 +247,23 @@ class Datastore(object):
         with self.transaction() as t:
             products=t.query('SELECT id,available,location,type FROM products')
             meta=t.query('SELECT id,key,value FROM metadata')
-        print ('TABLE products:')
+        print('TABLE products:')
         taskmap={UNSTARTED:'UNSTARTED',FAILED:'FAILED',RUNNING:'RUNNING',
                  PARTIAL:'PARTIAL',COMPLETED:'COMPLETED'}
         for row in products:
             (what,avail,loc,typ)=row
             if typ=='Task' and avail in taskmap:
-                print ("id=%s available=%s (%s) location=%s type=%s" % \
+                print("id=%s available=%s (%s) location=%s type=%s" % \
                     ( what,avail,taskmap[avail],loc,typ ))
             elif typ=='Product':
-                print ("id=%s available=%s (%s) location=%s type=%s" % \
+                print("id=%s available=%s (%s) location=%s type=%s" % \
                     ( what,avail,repr(bool(avail)),loc,typ ))
             else:
-                print ("id=%s available=%s location=%s type=%s" % \
+                print("id=%s available=%s location=%s type=%s" % \
                     (what,avail,loc,typ))
-        print ('TABLE metadata:')
+        print('TABLE metadata:')
         for row in meta:
-            print ('%s[%s]=%s' % row)
+            print('%s[%s]=%s' % row)
 
 ########################################################################
 
@@ -572,13 +572,38 @@ class Datum(object):
         """!Python code-like description of this Datum."""
         return '%s(%s,%s,%s)' % \
             (self.prodtype,repr(self.dstore),repr(self._prodname),repr(self._category))
-    def __cmp__(self,other):
+    def __lt__(self,other):
         """!Compares two Datums' prodnames and categories.
         @param other the other datum to compare against"""
-        if not isinstance(other,Datum): return NotImplemented
-        c=cmp(self._prodname,other._prodname)
-        c=cmp(self._category,other._category) if (c==0) else c
-        return c
+        if self._prodname < other._prodname:
+            return True
+        if self._category < other._category:
+            return True
+        return False
+    def __gt__(self,other):
+        """!Compares two Datums' prodnames and categories.
+        @param other the other datum to compare against"""
+        if self._prodname > other._prodname:
+            return True
+        if self._category > other._category:
+            return True
+        return False
+    def __eq__(self,other):
+        """!Compares two Datums' prodnames and categories.
+        @param other the other datum to compare against"""
+        return not (self>other or self<other)
+    def __ne__(self,other):
+        """!Compares two Datums' prodnames and categories.
+        @param other the other datum to compare against"""
+        return self>other or self<other
+    def __ge__(self,other):
+        """!Compares two Datums' prodnames and categories.
+        @param other the other datum to compare against"""
+        return not (self<other)
+    def __le__(self,other):
+        """!Compares two Datums' prodnames and categories.
+        @param other the other datum to compare against"""
+        return not (self>other)
     def set_loc_avail(self,loc,avail):
         """!Sets the location and availability of this Datum in a
         single transaction.
@@ -673,6 +698,10 @@ class Datum(object):
             return True
         with self:
             return k in self._getcache()
+    def iteritems(self):
+        """!Alias for items() for backward compatibility"""
+        for k,v in self.items():
+            yield k,v
     def items(self):
         """!Iterates over all metadata (key,value) pairs for this
         Datum, including "available" and "location"."""

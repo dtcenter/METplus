@@ -6,11 +6,13 @@ import re
 import logging
 import datetime
 from collections import namedtuple
-import produtil
 import pytest
-import config_metplus
-from mtd_wrapper import MTDWrapper
-import met_util as util
+
+import produtil
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.mtd_wrapper import MTDWrapper
+from metplus.util import met_util as util
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
@@ -41,8 +43,8 @@ def mtd_wrapper(lead_seq=None):
 
     config = metplus_config()
     config.set('config', 'DO_NOT_RUN_EXE', True)
-    config.set('config', 'FCST_VAR1_NAME', 'APCP')
-    config.set('config', 'FCST_VAR1_LEVELS', 'A06')
+    config.set('config', 'BOTH_VAR1_NAME', 'APCP')
+    config.set('config', 'BOTH_VAR1_LEVELS', 'A06')
     config.set('config', 'LOOP_BY', 'VALID')
     config.set('config', 'MTD_CONV_THRESH', '>=10')
     config.set('config', 'MTD_CONV_RADIUS', '15')

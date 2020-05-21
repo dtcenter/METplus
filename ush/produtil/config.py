@@ -545,9 +545,9 @@ class ProdConfig(object):
         self._time_formatter=ConfTimeFormatter(bool(quoted_literals))
         self._datastore=None
         self._tasknames=set()
-        # Added strict=False and inline_comment_prefixes for Python 3, 
+        # Added strict=False and inline_comment_prefixes for Python 3,
         # so everything works as it did before in Python 2.
-        #self._conf=ConfigParser(strict=False, inline_comment_prefixes=(';',)) if (conf is None) else conf
+        # self._conf=ConfigParser(strict=False, inline_comment_prefixes=(';',)) if (conf is None) else conf
         self._conf=ConfigParser(strict=strict, inline_comment_prefixes=inline_comment_prefixes) if (conf is None) else conf
         self._conf.optionxform=str
 
@@ -671,9 +671,9 @@ class ProdConfig(object):
                     'be an iterable of strings.  It contained an invalid %s %s '
                     'instead.'%(type(arg).__name__,repr(arg)))
             if verbose: logger.info(arg)
-            m=re.match('''(?x)
+            m=re.match(r'''(?x)
               (?P<section>[a-zA-Z][a-zA-Z0-9_]*)
-               \\.(?P<option>[^=]+)
+               \.(?P<option>[^=]+)
                =(?P<value>.*)$''',arg)
             if m:
                 if allow_options:
@@ -1334,8 +1334,8 @@ class ProdConfig(object):
             if default is not None:
                 return bool(default)
             raise
-        if re.match('(?i)\\A(?:T|\\.true\\.|true|yes|on|1)\\Z',s):   return True
-        if re.match('(?i)\\A(?:F|\\.false\\.|false|no|off|0)\\Z',s): return False
+        if re.match(r'(?i)\A(?:T|\.true\.|true|yes|on|1)\Z',s):   return True
+        if re.match(r'(?i)\A(?:F|\.false\.|false|no|off|0)\Z',s): return False
         try:
             return int(s)==0
         except ValueError as e: pass

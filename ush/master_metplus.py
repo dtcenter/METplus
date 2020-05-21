@@ -10,18 +10,19 @@ Parameters: None
 Input Files:
 Output Files:
 Condition codes:
+Developer Note: Please do not use f-strings in this file so that the
+  Python version check can notify the user of the incorrect version.
+  Using Python 3.5 or earlier will output the SyntaxError from the
+  f-string instead of the useful error message.
 """
 
 import os
 import sys
 import importlib
 
-py_version = sys.version.split(' ')[0]
-if py_version < '3.6.3':
-    print("Must be using Python 3.6.3 or higher. You are using {}".format(py_version))
-    exit(1)
+import metplus_check_python_version
 
-import metplus.wrappers
+#import metplus.wrappers
 
 import logging
 import shutil
@@ -29,6 +30,11 @@ from datetime import datetime
 import produtil.setup
 import metplus.util.met_util as util
 import metplus.util.config.config_metplus as config_metplus
+
+# check if env var METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string
+disable_plotting = False
+if 'METPLUS_DISABLE_PLOT_WRAPPERS' in os.environ and os.environ['METPLUS_DISABLE_PLOT_WRAPPERS']:
+    disable_plotting = True
 
 # wrappers are referenced dynamically based on PROCESS_LIST values
 # import of each wrapper is required
@@ -43,20 +49,25 @@ from extract_tiles_wrapper import ExtractTilesWrapper
 from series_by_lead_wrapper import SeriesByLeadWrapper
 from series_by_init_wrapper import SeriesByInitWrapper
 from stat_analysis_wrapper import StatAnalysisWrapper
-from make_plots_wrapper import MakePlotsWrapper
 from mode_wrapper import MODEWrapper
 from mtd_wrapper import MTDWrapper
 from usage_wrapper import UsageWrapper
 from command_builder import CommandBuilder
-from tcmpr_plotter_wrapper import TCMPRPlotterWrapper
-from cyclone_plotter_wrapper import CyclonePlotterWrapper
 from pb2nc_wrapper import PB2NCWrapper
 from point_stat_wrapper import PointStatWrapper
 from tc_stat_wrapper import TCStatWrapper
 from gempak_to_cf_wrapper import GempakToCFWrapper
+from gen_vx_mask_wrapper import GenVxMaskWrapper
 from example_wrapper import ExampleWrapper
-from custom_ingest_wrapper import CustomIngestWrapper
+from py_embed_ingest_wrapper import PyEmbedIngestWrapper
 from ascii2nc_wrapper import ASCII2NCWrapper
+from series_analysis_wrapper import SeriesAnalysisWrapper
+
+# if using plotting wrappers, import them
+if not disable_plotting:
+    from tcmpr_plotter_wrapper import TCMPRPlotterWrapper
+    from cyclone_plotter_wrapper import CyclonePlotterWrapper
+    from make_plots_wrapper import MakePlotsWrapper
 '''
 
 #import metplus_wrappers as mw
@@ -69,140 +80,20 @@ def main():
     """!Main program.
     Master METplus script that invokes the necessary Python scripts
     to perform various activities, such as series analysis."""
-    # Setup Task logger, Until Conf object is created, Task logger is
-    # only logging to tty, not a file.
-    logger = logging.getLogger('master_metplus')
-    logger.info('Starting METplus v%s', util.get_version_number(__file__))
 
-    # Parse arguments, options and return a config instance.
-    config = config_metplus.setup(util.baseinputconfs,
-                                  filename='master_metplus.py')
-
-    # NOW we have a conf object p, we can now get the logger
-    # and set the handler to write to the LOG_METPLUS
-    # TODO: Frimel setting up logger file handler.
-    # Setting up handler i.e util.get_logger should be moved to
-    # the setup wrapper and encapsulated in the config object.
-    # than you would get it this way logger=p.log(). The config
-    # object has-a logger we want.
-    logger = util.get_logger(config)
-
-    version_number = util.get_version_number(__file__)
-    config.set('config', 'METPLUS_VERSION', version_number)
-    logger.info('Running METplus v%s called with command: %s',
-                version_number, ' '.join(sys.argv))
-
-    # check for deprecated config items and warn user to remove/replace them
-    util.check_for_deprecated_config(config, logger)
-
-    util.check_user_environment(config)
-
-    # set staging dir to OUTPUT_BASE/stage if not set
-    if not config.has_option('dir', 'STAGING_DIR'):
-        config.set('dir', 'STAGING_DIR',
-                   os.path.join(config.getdir('OUTPUT_BASE'), "stage"))
-
-    # handle dir to write temporary files
-    util.handle_tmp_dir(config)
-
-    config.env = os.environ.copy()
+    config = util.pre_run_setup(__file__, 'METplus')
 
     # Use config object to get the list of processes to call
-    process_list = util.get_process_list(config.getstr('config', 'PROCESS_LIST'), logger)
+    process_list = util.get_process_list(config)
 
-    # Keep this comment.
-    # When running commands in the process_list, reprocess the
-    # original command line using (item))[sys.argv[1:]].
-    #
-    # You could call each task (ie. run_tc_pairs.py) without any args since
-    # the final METPLUS_CONF file was just created from config_metplus.setup,
-    # and each task, also calls setup, which use an existing final conf
-    # file over command line args.
-    #
-    # both work ...
-    # Note: Using (item))sys.argv[1:], is preferable since
-    # it doesn't depend on the conf file existing.
-    processes = []
-    for item in process_list:
-        try:
-            logger = config.log(item)
-            package_name = 'metplus.wrappers.' + util.camel_to_underscore(item) + '_wrapper'
-#            command_builder = importlib.import_module('.'+item + 'Wrapper',
-#                                                      package_name)
-            command_builder = \
-                getattr(sys.modules[package_name],
-                        item + "Wrapper")(config, logger)
-#                getattr(sys.modules[__name__],
-#                        item + "Wrapper")(config, logger)
-            # if Usage specified in PROCESS_LIST, print usage and exit
-            if item == 'Usage':
-                command_builder.run_all_times()
-                exit(1)
-        except AttributeError:
-            raise NameError("Process %s doesn't exist" % item)
-
-        processes.append(command_builder)
-
-    loop_order = config.getstr('config', 'LOOP_ORDER', '')
-    if loop_order == '':
-        loop_order = config.getstr('config', 'LOOP_METHOD')
-
-    if loop_order == "processes":
-        for process in processes:
-            # referencing using repr(process.app_name) in
-            # log since it may be None,
-            # if not set in the command builder subclass' contsructor,
-            # and no need to generate an exception because of that.
-            produtil.log.postmsg('master_metplus Calling run_all_times '
-                                 'in: %s wrapper.' % repr(process.app_name))
-            process.run_all_times()
-
-    elif loop_order == "times":
-        util.loop_over_times_and_call(config, processes)
-
+    if disable_plotting and util.is_plotter_in_process_list(process_list):
+        config.logger.error("Attempting to run a plotting wrapper while METPLUS_DISABLE_PLOT_WRAPPERS environment "
+                            "variable is set. Unset the variable to run this use case")
+        total_errors = 1
     else:
-        logger.error("Invalid LOOP_METHOD defined. " + \
-              "Options are processes, times")
-        exit()
+        total_errors = util.run_metplus(config, process_list)
 
-    # scrub staging directory if requested
-    if config.getbool('config', 'SCRUB_STAGING_DIR', False) and\
-       os.path.exists(config.getdir('STAGING_DIR')):
-        staging_dir = config.getdir('STAGING_DIR')
-        logger.info("Scrubbing staging dir: %s", staging_dir)
-        shutil.rmtree(staging_dir)
-
-    # rewrite final conf so it contains all of the default values used
-    util.write_final_conf(config, logger)
-
-    # compute time it took to run
-    start_clock_time = datetime.strptime(config.getstr('config', 'CLOCK_TIME'), '%Y%m%d%H%M%S')
-    end_clock_time = datetime.now()
-    total_run_time = end_clock_time - start_clock_time
-    logger.debug("METplus took {} to run.".format(total_run_time))
-
-    # compute total number of errors that occurred and output results
-    total_errors = 0
-    for process in processes:
-        if process.errors != 0:
-            process_name = process.__class__.__name__.replace('Wrapper', '')
-            error_msg = '{} had {} error'.format(process_name, process.errors)
-            if process.errors > 1:
-                error_msg += 's'
-            error_msg += '.'
-            logger.error(error_msg)
-            total_errors += process.errors
-
-    if total_errors == 0:
-        logger.info('METplus has successfully finished running.')
-    else:
-        error_msg = "METplus has finished running but had {} error".format(total_errors)
-        if total_errors > 1:
-            error_msg += 's'
-        error_msg += '.'
-        logger.error(error_msg)
-
-    exit()
+    util.post_run_cleanup(config, 'METplus', total_errors)
 
 if __name__ == "__main__":
     try:

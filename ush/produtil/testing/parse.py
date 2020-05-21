@@ -8,10 +8,9 @@
 # converted to a workflow by produtil.testing.rocoto or
 # produtil.testing.script.
 
-import sys, re, collections, os, datetime, logging, math
+import sys, re, io, collections, os, datetime, logging, math
 import produtil.run, produtil.log, produtil.setup
 
-from io import StringIO
 # This module really does use everything public from utilities,
 # parsetree and tokenize, hence the "import *"
 from produtil.testing.utilities import *
@@ -61,10 +60,27 @@ class RunConPair(object):
         if not isinstance(other,RunConPair):
             return self.runnable==other
         return self.runnable==other.runnable
-    def __cmp__(self,other):
+
+    # Replacements for __cmp__:
+    def __lt__(self,other):
         if not isinstance(other,RunConPair):
-            return cmp(self.runnable,other)
-        return cmp(self.runnable,other.runnable)
+            return self.runnable<other
+        return self.runnable<other.runnable
+    def __gt__(self,other):
+        if not isinstance(other,RunConPair):
+            return self.runnable>other
+        return self.runnable>other.runnable
+    def __ne__(self,other):
+        return not ( self == other )
+    def __ge__(self,other):
+        return self>other or self==other
+    def __le__(self,other):
+        return self<other or self==other
+
+    def oldcmp(self,other):
+        if not isinstance(other,RunConPair):
+            return self.runnable.oldcmp(other)
+        return self.runnable.oldcmp(other.runnable)
 
     ##@property as_tuple
     # A tuple containing the runnable and context
@@ -249,7 +265,7 @@ class Parser(object):
         listed in correct dependency order.
         @returns None"""
         newrunsets=dict()
-        for setname in self.__runsets.iterkeys():
+        for setname in self.__runsets.keys():
             processed=set()
             newset=ListableSet()
             for runcon in self.__runsets[setname]:
@@ -317,7 +333,7 @@ class Parser(object):
         #                 peek.token_value))))
         while True:
             if peek.token_type == ',':
-                tokiter.next()
+                next(tokiter)
                 # yell('%-7s consume ,\n'%('BETWEEN',))
                 return True
             elif peek.token_type in ends:
@@ -325,7 +341,7 @@ class Parser(object):
                 return False
             elif peek.token_type==end_of_line_type:
                 # yell('%-7s saw \n'%('BETWEEN',))
-                tokiter.next()
+                next(tokiter)
                 peek=tokiter.peek()
             else:
                 return False
@@ -335,7 +351,7 @@ class Parser(object):
         @returns None"""
         peek=tokiter.peek()
         while peek.token_type==end_of_line_type:
-            tokiter.next()
+            next(tokiter)
             peek=tokiter.peek()
     def parse_between_assignments(self,tokiter):
         """!Skips over characters between assignments in a scope ,;
@@ -353,7 +369,7 @@ class Parser(object):
         while True:
             seen=True
             if peek.token_type in [ ',', ';' ]:
-                tokiter.next()
+                next(tokiter)
                 # yell('%-7s consume %s\n'%('BETWEEN',peek.token_type))
                 return True
             elif peek.token_type in [ '}', end_of_text_type ]:
@@ -362,7 +378,7 @@ class Parser(object):
             elif peek.token_type==end_of_line_type:
                 # yell('%-7s saw %s\n'%('BETWEEN',repr(peek.token_type)))
                 seen=True
-                tokiter.next()
+                next(tokiter)
                 peek=tokiter.peek()
             else:
                 break
@@ -382,19 +398,19 @@ class Parser(object):
 
         @returns a tuple containing the token with the variable name,
         and the scope that represents the embedded script."""
-        token=tokiter.next()
+        token=next(tokiter)
         if token.token_type != 'varname':
             self.error('embed',token)
         if token.token_value != 'bash':
             self.error('embed',token,'unknown language "%s"'%(
                     token.token_value,))
-        nametoken=tokiter.next()
+        nametoken=next(tokiter)
         if token.token_type != 'varname':
             self.error('embed script name',token)
         scope=EmbedBash(scopes)
-        token=tokiter.next()
+        token=next(tokiter)
 
-        while token.token_type==end_of_line_type: token=tokiter.next()
+        while token.token_type==end_of_line_type: token=next(tokiter)
         if token.token_type=='(':
             self.parse_subscope(tokiter,[scope]+scopes,[')'],
                                 self.parse_between_arguments,
@@ -404,8 +420,8 @@ class Parser(object):
                                 only_scalars=True,
                                 scope_name='embed script parameters')
             scope=scope.as_parameters(self.con(token,scopes))
-            token=tokiter.next()
-        while token.token_type==end_of_line_type: token=tokiter.next()
+            token=next(tokiter)
+        while token.token_type==end_of_line_type: token=next(tokiter)
 
         if token.token_type=='{':
             self.parse_subscope(tokiter,[scope]+scopes,['}'],
@@ -416,8 +432,8 @@ class Parser(object):
                                 allow_use=True,
                                 only_scalars=True,
                                 scope_name='embed script variables')
-            token=tokiter.next()
-        while token.token_type==end_of_line_type: token=tokiter.next()
+            token=next(tokiter)
+        while token.token_type==end_of_line_type: token=next(tokiter)
 
         if token.token_type in [ 'qstring', 'dqstring', 'bracestring' ]:
             scope.settemplate(self.action_string([scope]+scopes,token))
@@ -440,18 +456,18 @@ class Parser(object):
         while peek.token_type=='varname':
             yield peek.token_value
             lvaltoken=peek
-            tokiter.next() # discard varname
+            next(tokiter) # discard varname
             peek=tokiter.peek()
             while peek.token_type==end_of_line_type:
-                tokiter.next()
+                next(tokiter)
                 peek=tokiter.peek()
             if peek.token_type=='==':
                 # this is an "if var==value" condition
-                tokiter.next() # consume ==
+                next(tokiter) # consume ==
                 peek=tokiter.peek()
                 if peek.token_type!='varname':
                     self.error('run setname @ ... var==',peek)
-                rvaltoken=tokiter.next()
+                rvaltoken=next(tokiter)
                 lval=self.action_resolve(lvaltoken,scopes)
                 rval=self.action_resolve(rvaltoken,scopes)
                 yield lval == rval
@@ -459,7 +475,7 @@ class Parser(object):
                 peek=tokiter.peek()
             if peek.token_type!=',':
                 return # reached end of list.
-            tokiter.next() # discard ","
+            next(tokiter) # discard ","
             peek=tokiter.peek()
                 
     def parse_deplist(self,tokiter,scopes,task,ends):
@@ -474,7 +490,7 @@ class Parser(object):
         while not peek.token_type in ends:
             if peek.token_type=='varname':
                 varname=peek
-                tokiter.next()
+                next(tokiter)
                 peek=tokiter.peek()
                 if peek.token_type==end_of_line_type:
                     continue # ignore blank lines
@@ -490,7 +506,7 @@ class Parser(object):
                     return
                 elif peek.token_type == '(':
                     # This is a function call.
-                    tokiter.next()
+                    next(tokiter)
                     subscope=Scope(scopes)
                     self.parse_subscope(tokiter,scopes,[')'],
                                         self.parse_between_arguments,
@@ -514,26 +530,26 @@ class Parser(object):
         @param scopes a list of nested scopes (innermost first) surrounding the list
         @param subscope the Task for whom the operator list is being declared
         @returns None; this is an iterator"""
-        token=tokiter.next()
+        token=next(tokiter)
         strings=[ 'qstring', 'dqstring', 'bracestring' ]
         if token.token_type != '{':
             self.error('operation list',token)
         while True:
             # Get target of operation:
-            token=tokiter.next()
+            token=next(tokiter)
             while token.token_type==end_of_line_type:
-                token=tokiter.next()
+                token=next(tokiter)
  
             if token.token_type=='varname' and token.token_value=='use':
                 peek=tokiter.peek()
                 if peek.token_type!='varname':
                     self.error('operation list use statement',peek)
-                tokiter.next()
+                next(tokiter)
                 subscope.use_from(self.action_resolve(peek,scopes))
                 self.parse_between_assignments(tokiter)
                 peek=tokiter.peek()
                 if peek.token_type=='}':
-                    tokiter.next()
+                    next(tokiter)
                     return subscope
                 continue
             elif token.token_type=='}':
@@ -543,17 +559,17 @@ class Parser(object):
             tgt=self.action_string(scopes,token)
 
             # Get operator:
-            token=tokiter.next()
+            token=next(tokiter)
             while token.token_type==end_of_line_type:
-                token=tokiter.next()
+                token=next(tokiter)
             if token.token_type!='oper':
                 self.error('oper',token)
             op=self.action_operator(scopes,token)
 
             # Get source of operation (input or baseline file)
-            token=tokiter.next()
+            token=next(tokiter)
             while token.token_type==end_of_line_type:
-                token=tokiter.next()
+                token=next(tokiter)
             if token.token_type not in strings:
                 self.error('operator source (input or baseline)',token)
             src=self.action_string(scopes,token)
@@ -566,7 +582,7 @@ class Parser(object):
             self.parse_between_assignments(tokiter)
             peek=tokiter.peek()
             if peek.token_type=='}':
-                tokiter.next()
+                next(tokiter)
                 return subscope
 
 
@@ -584,7 +600,7 @@ class Parser(object):
         @param hash_type The type of hash, such as "task," for error messages.
 
         @returns the resulting Scope"""
-        token=tokiter.next()
+        token=next(tokiter)
         parameters=False
 
         # if token.token_type=='(':
@@ -601,10 +617,10 @@ class Parser(object):
         if allow_deps and token.token_type==':':
             self.parse_deplist(
                 tokiter,[subscope]+scopes,subscope,['{'])
-            token=tokiter.next()
+            token=next(tokiter)
 
         if token.token_type=='{':
-            tokiter.next()
+            next(tokiter)
             self.parse_subscope(tokiter,[subscope]+scopes,['}'],
                                 self.parse_between_assignments,
                                 allow_overwrite=True,
@@ -639,7 +655,7 @@ class Parser(object):
 
         @returns a tuple containing the array of arguments and the
         resulting Scope."""
-        token=tokiter.next()
+        token=next(tokiter)
         args=list()
         opts=list()
         saw_vars=False
@@ -651,17 +667,17 @@ class Parser(object):
                                'must come after all arguments')
                 args.append(token)
                 self.parse_between_arguments(tokiter,ends)
-                token=tokiter.next()
+                token=next(tokiter)
                 continue
             elif token.token_type==end_of_line_type:
-                token=tokiter.next()
+                token=next(tokiter)
                 continue
             elif token.token_type=='varname':
                 name=token.token_value
                 peek=tokiter.peek()
                 if peek.token_type != '=':
                     self.error('spawn process',token)
-                tokiter.next()
+                next(tokiter)
             else:
                 self.error('spawn process',token)
             # we're at the value in varname=value
@@ -670,7 +686,7 @@ class Parser(object):
                 only_scalars=True,use_references=True)
             self.parse_between_arguments(tokiter,ends)
             opts.append([name,rvalue])
-            token=tokiter.next()
+            token=next(tokiter)
         scope=Scope(scopes)
         allscopes=[scope]+scopes
         for k,v in opts:
@@ -706,9 +722,9 @@ class Parser(object):
             individual subprocess spawn elements
         @returns None
         @see parse_spawn_element()"""
-        token=tokiter.next()
+        token=next(tokiter)
         while token.token_type==end_of_line_type: 
-            token=tokiter.next()
+            token=next(tokiter)
         while token.token_type not in ends:
             if token.token_type!='{':
                 self.error('spawned process',token)
@@ -716,7 +732,7 @@ class Parser(object):
                     tokiter,scopes,spawn,['}'])
             spawn.add_rank(args,opts)
             if parse_between: parse_between(tokiter)
-            token=tokiter.next()
+            token=next(tokiter)
 
     def parse_spawn(self,tokiter,scopes,name,spawn):
         """!Parses a subprocess spawning block
@@ -743,7 +759,7 @@ class Parser(object):
         @param spawn the scope in which to store the subprocess
         spawning block information.
         @returns spawn"""
-        token=tokiter.next()
+        token=next(tokiter)
         if token.token_type!='{':
             self.error('spawn block',token)
         while self.parse_spawn_block(tokiter,scopes,name,spawn,['}'],
@@ -768,19 +784,19 @@ class Parser(object):
         @param taskname the name of the autodetect block
         @param task the scope in which to store the information."""
         # Check for the (/ and skip it:
-        token=tokiter.next()
+        token=next(tokiter)
         while token.token_type==end_of_line_type:
-            token=tokiter.next()
+            token=next(tokiter)
         if token.token_type!='(/':
             self.error('autodetect platform list',token)
 
         while True:
             peek=tokiter.peek()
             while peek.token_type==end_of_line_type:
-                tokiter.next()
+                next(tokiter)
                 peek=tokiter.peek()
             if peek.token_type=='/)':
-                tokiter.next()
+                next(tokiter)
                 return
             rvalue=self.parse_rvalue(tokiter,scopes,['/)'],
                                      self.parse_between_arguments,False)
@@ -788,7 +804,7 @@ class Parser(object):
             peek=tokiter.peek()
             self.parse_between_arguments(tokiter)
             if peek.token_type=='/)':
-                tokiter.next()
+                next(tokiter)
                 return
 
     def parse_load(self,tokiter,scope,seen_run):
@@ -812,7 +828,7 @@ class Parser(object):
         @param seen_run True if a "run" statement was seen.
         @returns None
         """
-        filetoken=tokiter.next()
+        filetoken=next(tokiter)
         if filetoken.token_type!='qstring':
             self.error('load',token,"load statements can only include "
                        "'single-quote strings'")
@@ -939,11 +955,11 @@ class Parser(object):
         else:
             search_scopes=scopes[1:]
         while go:
-            token=tokiter.next()
+            token=next(tokiter)
             if token.token_type=='varname':
                 peek=tokiter.peek()
                 if peek.token_type=='=':
-                    tokiter.next()
+                    next(tokiter)
                     define(self.con(token,scopes),token.token_value,
                            self.parse_rvalue(tokiter,search_scopes,ends,
                                              parse_between,
@@ -960,7 +976,7 @@ class Parser(object):
                     continue
                 elif token.token_value=='use' and peek.token_type=='varname' \
                         and allow_use:
-                    tokiter.next() # consume the peeked value
+                    next(tokiter) # consume the peeked value
                     self.action_use(scopes,peek,
                                     only_scalars=only_scalars)
                     if parse_between:  parse_between(tokiter)
@@ -975,7 +991,7 @@ class Parser(object):
                     keep_by_set=True
                     keep_by_comparison=None # Will be True/False if "==" is used
                     if peek.token_type=='@':
-                        tokiter.next() # discard the @
+                        next(tokiter) # discard the @
                         for setname in self.parse_set_list(
                                 tokiter,search_scopes):
                             if setname is False or setname is True:
@@ -1000,7 +1016,7 @@ class Parser(object):
                 elif not only_scalars and token.token_value=='spawn' \
                         and peek.token_type=='varname':
                     taskname=peek.token_value
-                    tokiter.next()
+                    next(tokiter)
                     task=self.parse_spawn(tokiter,scopes,peek.token_value,
                                           SpawnProcess(scopes))
                     define(self.con(peek,scopes),taskname,task)
@@ -1010,7 +1026,7 @@ class Parser(object):
                 elif not only_scalars and token.token_value in [
                     'filters', 'criteria' ] and peek.token_type=='varname':
                     taskname=peek.token_value
-                    tokiter.next()
+                    next(tokiter)
                     if token.token_value=='filters':
                         task=Filters(scopes)
                     elif token.token_value=='criteria':
@@ -1024,7 +1040,7 @@ class Parser(object):
                         and peek.token_type=='varname':
                     taskname=peek.token_value
                     taskcon=self.con(peek,scopes)
-                    tokiter.next() # Skip name token
+                    next(tokiter) # Skip name token
                     task=AutoDetectPlatform()
                     self.parse_autodetect(tokiter,scopes,taskname,task)
                     task=self.action_autodetect(self.con(peek,scopes),
@@ -1038,7 +1054,7 @@ class Parser(object):
                     taskname=peek.token_value
                     # yell('%-7s %-7s %s\n'%(
                     #         'PARSE',token.token_value,taskname))
-                    tokiter.next() # consume the task name
+                    next(tokiter) # consume the task name
                     # yell('%-7s %-7s %s\n'%(
                     #         'INIT',token.token_value,taskname))
                     if token.token_value=='task':
@@ -1073,7 +1089,7 @@ class Parser(object):
                         and token.token_value=='hash' \
                         and peek.token_type=='varname':
                     hashname=peek.token_value
-                    tokiter.next() # consume the hash name
+                    next(tokiter) # consume the hash name
                     define(self.con(peek,scopes),
                            hashname,self.parse_hash_define(
                             tokiter,scopes,Scope(scopes),parse_between))
@@ -1119,7 +1135,7 @@ class Parser(object):
         @param only_scalars If True, only strings and numbers are allowed.
         @returns the resulting rvalue"""
 
-        token=tokiter.next()
+        token=next(tokiter)
         if token.token_type in [ 'qstring', 'dqstring', 'bracestring' ]:
             ret=self.action_string(scopes,token)
             if parse_between: parse_between(tokiter)
@@ -1146,7 +1162,7 @@ class Parser(object):
             peek=tokiter.peek()
             if peek.token_type=='(':
                 # We are at the ( in varname(arguments...
-                tokiter.next() # consume (
+                next(tokiter) # consume (
                 subscope=Scope(scopes)
                 scopesplus=[subscope]+scopes
                 self.parse_subscope(tokiter,scopesplus,[')'],

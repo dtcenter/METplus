@@ -1,0 +1,152 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// PB2NC configuration file.
+//
+// For additional information, see the MET_BASE/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// PrepBufr message type
+//
+message_type =  ${PB2NC_MESSAGE_TYPE} ;
+
+//
+// Mapping of message type group name to comma-separated list of values
+// Derive PRMSL only for SURFACE message types
+//
+message_type_group_map = [
+   { key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";               },
+   { key = "ANYAIR";  val = "AIRCAR,AIRCFT";                      },
+   { key = "ANYSFC";  val = "ADPSFC,SFCSHP,ADPUPA,PROFLR,MSONET"; },
+   { key = "ONLYSF";  val = "ADPSFC,SFCSHP";                      }
+];
+
+//
+// Mapping of input PrepBufr message types to output message types
+//
+message_type_map = [];
+
+//
+// PrepBufr station ID
+//
+station_id = ${PB2NC_STATION_ID};
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Observation time window
+//
+obs_window = {
+  beg = ${OBS_WINDOW_BEGIN};
+  end = ${OBS_WINDOW_END};
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Observation retention regions
+//
+mask = {
+   grid = "${PB2NC_GRID}" ;
+   poly = "${PB2NC_POLY}" ;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Observing location elevation
+//
+elevation_range = {
+   beg =  -1000;
+   end = 100000;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Observation types
+//
+pb_report_type = [120, 220, 221, 122, 222, 223, 224, 131, 133, 233, 153, 156, 157, 180, 280, 181, 182, 281, 282, 183, 284, 187, 287];
+
+in_report_type  = [];
+
+instrument_type = [];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Vertical levels to retain
+//
+level_range = {
+   beg = 1;
+   end = 511;
+}
+
+level_category = [0, 1, 4, 5, 6];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// BUFR variable names to retain or derive.
+// If emtpy, process all available variables.
+//
+obs_bufr_var =  ${OBS_BUFR_VAR_LIST};
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Mapping of BUFR variable name to GRIB name. The default map is defined at
+// obs_prepbufr_map. This replaces/expends the default map.
+//
+obs_bufr_map = [];
+
+// This map is for PREPBUFR. It will be added into obs_bufr_map.
+// Please do not override this map.
+obs_prefbufr_map = [
+   { key = "POB";     val = "PRES";  },
+   { key = "QOB";     val = "SPFH";  },
+   { key = "TOB";     val = "TMP";   },
+   { key = "ZOB";     val = "HGT";   },
+   { key = "UOB";     val = "UGRD";  },
+   { key = "VOB";     val = "VGRD";  },
+   { key = "D_DPT";   val = "DPT";   },
+   { key = "D_WDIR";  val = "WDIR";  },
+   { key = "D_WIND";  val = "WIND";  },
+   { key = "D_RH";    val = "RH";    },
+   { key = "D_MIXR";  val = "MIXR";  },
+   { key = "D_PRMSL"; val = "PRMSL"; },
+   { key = "D_PBL";   val = "PBL";   },
+   { key = "D_CAPE";  val = "CAPE";  }
+];
+
+
+////////////////////////////////////////////////////////////////////////////////
+
+quality_mark_thresh = 3;
+event_stack_flag    = TOP;
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Time periods for the summarization
+//
+time_summary = {
+  flag = ${TIME_SUMMARY_FLAG};
+  beg = ${TIME_SUMMARY_BEG};
+  end = ${TIME_SUMMARY_END};
+  step = 3600;
+  width = 3600;
+  grib_code = [];
+  obs_var   = ${TIME_SUMMARY_VAR_NAMES};
+  type = ${TIME_SUMMARY_TYPES};
+  vld_freq = 0;
+  vld_thresh = 0.0;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+tmp_dir = "/tmp";
+//version = "V9.0";
+
+////////////////////////////////////////////////////////////////////////////////

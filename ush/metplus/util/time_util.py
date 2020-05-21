@@ -69,6 +69,7 @@ def get_relativedelta(value, default_unit='S'):
             return relativedelta(years=time_value)
 
         # unsupported time unit specified, return None
+        return None
 
 def get_seconds_from_string(value, default_unit='S', valid_time=None):
     """!Convert string of time (optionally ending with time letter, i.e. HMSyMD to seconds
@@ -83,6 +84,9 @@ def time_string_to_met_time(time_string, default_unit='S'):
     """!Convert time string (3H, 4M, 7, etc.) to format expected by the MET
         tools ([H]HH[MM[SS]])"""
     total_seconds = get_seconds_from_string(time_string, default_unit)
+    return seconds_to_met_time(total_seconds)
+
+def seconds_to_met_time(total_seconds):
     seconds_time_string = str(total_seconds % 60).zfill(2)
     minutes_time_string = str(total_seconds // 60 % 60).zfill(2)
     hour_time_string = str(total_seconds // 3600).zfill(2)
@@ -187,6 +191,10 @@ def ti_calculate(input_dict):
     if 'now' in input_dict.keys():
         out_dict['now'] = input_dict['now']
         out_dict['today'] = out_dict['now'].strftime('%Y%m%d')
+
+    # if custom is set in input dictionary, set it in the output dictionary
+    if 'custom' in input_dict.keys():
+        out_dict['custom'] = input_dict['custom']
 
     # read in input dictionary items and compute missing items
     # valid inputs: valid, init, lead, offset

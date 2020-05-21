@@ -6,6 +6,8 @@ A Python class that generates plots of extra tropical cyclone forecast data,
  verification plots http://www.emc.ncep.noaa.gov/mmb/gplou/emchurr/glblgen/
 """
 
+import metplus_check_python_version
+
 import os
 import time
 import datetime
@@ -20,11 +22,10 @@ import matplotlib.ticker as mticker
 import cartopy.crs as ccrs
 import cartopy.feature as cfeature
 from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
-import metplus.util.met_util as util
 import produtil.setup
-import metplus.util.config.config_metplus
-from metplus.wrappers.command_builder import CommandBuilder
 
+from ..util import met_util as util
+from .command_builder import CommandBuilder
 
 class CyclonePlotterWrapper(CommandBuilder):
     """! Generate plots of extra tropical storm forecast tracks.
@@ -32,18 +33,17 @@ class CyclonePlotterWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
+        self.app_name = 'cyclone_plotter'
+
         # pylint:disable=redefined-outer-name
         super().__init__(config, logger)
-        self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                     'bin/tc_pairs')
-        self.app_name = os.path.basename(self.app_path)
-        self.input_data = self.config.getdir('CYCLONE_INPUT_DIR')
-        self.output_dir = self.config.getdir('CYCLONE_OUTPUT_DIR')
-        self.init_date = self.config.getstr('config', 'CYCLONE_INIT_DATE')
-        self.init_hr = self.config.getstr('config', 'CYCLONE_INIT_HR')
-        self.model = self.config.getstr('config', 'CYCLONE_MODEL')
-        self.title = self.config.getstr('config', 'CYCLONE_PLOT_TITLE')
-        self.gen_ascii = self.config.getbool('config', 'GENERATE_TRACK_ASCII')
+        self.input_data = self.config.getdir('CYCLONE_PLOTTER_INPUT_DIR')
+        self.output_dir = self.config.getdir('CYCLONE_PLOTTER_OUTPUT_DIR')
+        self.init_date = self.config.getstr('config', 'CYCLONE_PLOTTER_INIT_DATE')
+        self.init_hr = self.config.getstr('config', 'CYCLONE_PLOTTER_INIT_HR')
+        self.model = self.config.getstr('config', 'CYCLONE_PLOTTER_MODEL')
+        self.title = self.config.getstr('config', 'CYCLONE_PLOTTER_PLOT_TITLE')
+        self.gen_ascii = self.config.getbool('config', 'CYCLONE_PLOTTER_GENERATE_TRACK_ASCII')
         # Create a set to keep track of unique storm_ids for each track file.
         self.unique_storm_id = set()
         # Data structure to separate data based on storm id.
@@ -52,8 +52,13 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.columns_of_interest = ['AMODEL', 'STORM_ID', 'BASIN', 'INIT',
                                     'LEAD', 'VALID', 'ALAT', 'ALON', 'BLAT',
                                     'BLON', 'AMSLP', 'BMSLP']
-        self.circle_marker = self.config.getint('config', 'CIRCLE_MARKER_SIZE')
-        self.cross_marker = self.config.getint('config', 'CROSS_MARKER_SIZE')
+        self.circle_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE')
+        self.cross_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CROSS_MARKER_SIZE')
+        if 'DISPLAY' not in self.env:
+            self.log_error("DISPLAY environment variable must be set to run {} ".format(self.app_name)+
+                           "If you are using SSH to log into a machine, make sure window forwarding is enabled."
+                            " You can also try setting DISPLAY to localhost:0.0")
+            self.isOK = False
 
     def run_all_times(self):
         """! Calls the defs needed to create the cyclone plots
@@ -247,7 +252,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                     self.storm_id_dict[cur_unique] = cur_storm_list
 
         else:
-            self.logger.error("{} should be a directory".format(self.input_data))
+            self.log_error("{} should be a directory".format(self.input_data))
             sys.exit(1)
 
     def get_columns_and_indices(self, header):
@@ -381,7 +386,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             # pylint:disable=len-as-condition
             # if len(track_info_list) == 0:
             if not track_info_list:
-                self.logger.error("Empty track list, no data extracted " +
+                self.log_error("Empty track list, no data extracted " +
                                   "from track files, exiting.")
                 sys.exit(1)
 
@@ -515,8 +520,13 @@ class CyclonePlotterWrapper(CommandBuilder):
         if self.gen_ascii:
             ascii_track_file.close()
 
+
         # Plot data onto axes
-        plt.show()
+        # Uncomment the two lines below if you wish to have a pop up 
+        # window of the plot automatically appear, in addition to the creation
+        # of the .png version of the plot.
+        #self.logger.info("Plot is displayed in separate window. Close window to continue METplus execution")
+        #plt.show()
 
 
     @staticmethod
@@ -543,27 +553,5 @@ class CyclonePlotterWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False,
-                                 jobname='CyclonePlotter',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False,
-                                 jobname='CyclonePlotter')
-        produtil.log.postmsg('CyclonePlotter is starting')
-        # pylint:disable=invalid-name
-        p = config_metplus.setup()
-        if 'MET_BASE' not in os.environ:
-            os.environ['MET_BASE'] = self.config.getdir('MET_BASE')
+    util.run_stand_alone(__file__, "CyclonePlotter")
 
-        # Request data extraction and plot generation.
-        # pylint:disable=invalid-name
-        cyclone = CyclonePlotterWrapper(p, None)
-        cyclone.run_all_times()
-        produtil.log.postmsg('CyclonePlotter completed')
-
-    except Exception as e:
-        produtil.log.jlogger.critical('CyclonePlotter failed: %s'
-                                      % (str(e),), exc_info=True)
-        sys.exit(2)

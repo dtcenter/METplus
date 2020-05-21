@@ -72,74 +72,59 @@ class partial_ordering(object):
               #   in the partial ordering
     p(5,10)   # = -1 since cmp(5,10)=-1
     @endcode"""
-    def __init__(self,ordering,unordered=None,backupcmp=None):
+    def __init__(self,ordering,unordered=None,backup_keygen=None):
         """!partial_ordering constructor.
 
         Creates a partial ordering.  The subset that is ordered is
         specified by the ordered iterable "ordered" while the index at
         which to place unordered values is optionally specified by
-        "unordered", which can be anything that can be cmp()'ed to an
-        int.  If "unordered" is missing, then all objects not in
-        "ordered" will be placed at the end of any list.  To place at
-        the beginning of the list, give unordered=0.  To insert
-        between the first and second elements, specify 1, between
-        second and third elements: specify unordered=2, and so on.
-        Specify another tiebreaker "cmp" function with "backupcmp"
-        (default: cmp).
+        "unordered", which can be anything that can be compared to an
+        int via less than and greater than.  If "unordered" is
+        missing, then all objects not in "ordered" will be placed at
+        the end of any list.  To place at the beginning of the list,
+        give unordered=0.  To insert between the first and second
+        elements, specify 1, between second and third elements:
+        specify unordered=2, and so on.  Specify another tiebreaker
+        key generator with "backup_keygen" (default: original value).
+
         @param ordering the ordering of known objects
         @param unordered Optional: where to put other objects
-        @param backupcmp Tiebreaker comparison function."""
 
+        @param unordered_key Optional: the tiebreaker key generator
+        for unordered keys.  Default is the original value.
 
-        # https://python-future.org/compatible_idioms.html#cmp
-        # https://portingguide.readthedocs.io/en/latest/comparisons.html
-        # Replacement for built-in function cmp that was removed in Python 3
-        # Compare the two objects x and y and return an integer according to
-        # the outcome. The return value is negative if x < y, zero if x == y
-        # and strictly positive if x > y.
-        cmp = lambda x, y: (x > y) - (x < y)
-        if backupcmp is None:
-            assert cmp('a', 'b') < 0 and cmp('b', 'a') > 0 and cmp('c', 'c') == 0
-            backupcmp = cmp
-
+        """
         self.order=dict()
-        self.backupcmp=backupcmp
-        if unordered is None:
-            self.unordered=float('inf') # index of the location to
-                                        # store unordered elements
-        else:
-            self.unordered=unordered
+        self.backup_keygen=backup_keygen
+        self.unordered=unordered
         #  self.unordered must NOT cmp() compare to 0 against any
         #  possible index
         i=0
         for obj in ordering:
-            while cmp(i,self.unordered)==0:
+            while not ( i<self.unordered or i>self.unordered ):
                 i+=1
             self.order[obj]=i
             i+=1
+        if self.unordered is None:
+            self.unordered=i
     ##@var order
     # Internal ordering information
     # @protected
 
-    ##@var backupcmp
-    # Backup comparison function for tiebreaking
+    ##@var backup_keygen
+    # Key generator for tiebreaking
     # @protected
 
     ##@var unordered 
     # Unordered element index
     # @protected
 
-    def __call__(self,a,b):
-        """!Determine the ordering of a and b
-        @param a,b the objects to order
-        @returns -1 if b>a, 1 if b<a, 0 if b and a belong in the same index."""
-        ia = self.order[a] if a in self.order else self.unordered
-        ib = self.order[b] if b in self.order else self.unordered
-
-        c=cmp(ia,ib)
-        if c==0:
-            c=self.backupcmp(a,b)
-        return c
+    def __call__(self,a):
+        if a in self.order:
+            return (self.order[a],None)
+        elif self.backup_keygen is not None:
+            return (self.unordered,self.backup_keygen(a))
+        return (self.unordered,a)
 
 ########################################################################
 
@@ -347,7 +332,7 @@ def to_fraction(a,b=None,negok=False):
         result=fractions.Fraction(a.microseconds,1000000)+\
             a.seconds+24*3600*a.days
     elif isinstance(a,str): # Catch the 1+3/7 syntax:
-        m=re.match('\\s*(?P<ipart>[+-]?\\d+)\\s*(?P<num>[+-]\\d+)\\s*/\\s*(?P<den>\\d+)',a)
+        m=re.match(r'\s*(?P<ipart>[+-]?\d+)\s*(?P<num>[+-]\d+)\s*/\s*(?P<den>\d+)',a)
         if(m):
             (i,n,d)=m.groups(['ipart','num','den'])
             result=fractions.Fraction(int(i)*int(d)+int(n),int(d))
@@ -379,7 +364,7 @@ def to_datetime_rel(d,rel):
     elif isinstance(d,datetime.timedelta):
         return rel+d
     elif isinstance(d,str):
-        if(re.match('\\A(?:\\d\\d\\d\\d-\\d\\d-\\d\\d \\d\\d:\\d\\d:\\d\\d|\\d{10}|\\d{12})\\Z',d)):
+        if(re.match(r'\A(?:\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d|\d{10}|\d{12})\Z',d)):
             if   len(d)==10:
                 return datetime.datetime.strptime(d,'%Y%m%d%H')
             elif len(d)==12:
@@ -433,10 +418,10 @@ def to_timedelta(a,b=None,negok=True):
     if isinstance(a,str) and b is None:
         # 03:14 = three hours
         try:
-            m=re.search('''(?ix) \\A \\s* (?P<negative>-)? 0* (?P<hours>\\d+)
-                :0*(?P<minutes>\\d+)
-                  (?: :0*(?P<seconds>\\d+(?:\\.\\d*)?) )?
-                \\s*''', a)
+            m=re.search(r'''(?ix) \A \s* (?P<negative>-)? 0* (?P<hours>\d+)
+                :0*(?P<minutes>\d+)
+                  (?: :0*(?P<seconds>\d+(?:\.\d*)?) )?
+                \s*''', a)
             if m:
                 (hours,minutes,seconds)=(0.,0.,0.)
                 mdict=m.groupdict()
@@ -666,6 +651,10 @@ class TimeContainer(object):
         for i in range(len(self._times)):
             if self._assigned[i]:
                 yield self._times[i]
+    def iteritems(self):
+        """!Alias for items() for backward compatibility"""
+        for k,v in self.items():
+            yield k,v
     def items(self):
         """!Iterates over all known times that have data, returning a
         tuple containing the time and the data at that time."""

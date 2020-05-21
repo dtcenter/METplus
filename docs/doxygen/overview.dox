@@ -1,0 +1,29 @@
+/** \page metplus_scripts_overview METplus System Overview
+
+
+METplus documentation is now under GitHub Pages.
+
+https://ncar.github.io/METplus
+
+This website only contains the METplus wrappers API documentation.
+
+
+\subsection workflow Workflow Layer
+
+<i>Content to be added when integration to Rocoto workflow has been complete.</i>
+
+\section portlay Portability Layer
+
+The Portability Layer is a Python package (see @ref produtil_overview
+"produtil") which implements cross-platform methods of doing common
+tasks.  For example, it implements a way of running MPI, OpenMP and
+serial programs in a cross-platform manner.  It can perform file
+operations with improved logging, interact with the batch system,
+identify limitations of the cluster, deal with restricted data
+classes, manipulate resource limits, and interact with a database
+file.  Currently, METplus uses this for logging, configuration files, and
+running/executing MET and other commands.
+
++ @ref produtil
+
+*/
