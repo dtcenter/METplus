@@ -27,7 +27,7 @@ import calendar
 import argparse
 
 from metplus.util.config import config_launcher
-from metplus.util met_util as util
+from metplus.util import met_util as util
 
 # keep track of use cases that failed to report at the end of execution
 failed_runs = []
