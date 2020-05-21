@@ -88,7 +88,6 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 #   MET_INSTALL_DIR = /path/to/met-X.Y 
 #
 # **NOTE:** All of these items must be found under the [dir] section.
-#
 
 ##############################################################################
 # Expected Output
