@@ -137,6 +137,7 @@ def pre_run_setup(filename, app_name):
 
 def run_metplus(config, process_list):
     total_errors = 0
+
     try:
         processes = []
         for item in process_list:
@@ -1940,6 +1941,12 @@ def get_process_list(config):
         else:
             config.logger.warning(f"PROCESS_LIST item {process} may be invalid.")
             out_process_list.append(process)
+
+    # check if env var METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string
+    disable_plotting = os.environ.get('METPLUS_DISABLE_PLOT_WRAPPERS', False)
+    if disable_plotting and is_plotter_in_process_list(out_process_list):
+        raise TypeError("Attempting to run a plotting wrapper while METPLUS_DISABLE_PLOT_WRAPPERS environment "
+                            "variable is set. Unset the variable to run this use case")
 
     return out_process_list
 
