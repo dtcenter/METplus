@@ -15,8 +15,7 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 # --------
 #
 #  * Forecast dataset: HRRR Surrogate Severe Data
-#  * Observation dataset: Practically Perfect from Local Storm Reports
-#
+#  * Observation dataset: Practically Perfect from Local Storm Reports.
 
 ##############################################################################
 # METplus Components
@@ -35,7 +34,6 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 #
 # | **Valid:** 2020-02-06_12Z
 # | **Forecast lead:** 36
-#
 
 ##############################################################################
 # METplus Configuration
