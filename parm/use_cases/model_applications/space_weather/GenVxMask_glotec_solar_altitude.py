@@ -9,7 +9,35 @@ GenVxMask_fcstGloTEC_solar_altitude.conf
 # Scientific Objective
 # --------------------
 #
-# Creating masking region files to be used by other MET tools. This use case applies a solar altitude mask (solar altitude restriction) to the input grid.
+# Creating masking region files to be used by other MET tools.
+# This use case applies a solar altitude mask (solar altitude restriction) to the
+# input grid, creating a separate masked output file for each time level of the input file.
+
+# Overview
+# --------
+#
+# This use case illustrates the use of the gen_vx_mask tool for the space weather domain.
+# It creates a mask for region where the solar altitude angle is less than 45 degrees
+# (low sun angle or sun below the horizon), only letting data through for the region
+# where the sun is high in the sky (i.e., solar altitude angle greater than 45 degrees).
+#
+# In this use case, the input data is the GloTEC model run assimilated with COSMIC-1 RO data.
+#
+# This use case runs gen_vx_mask for a couple forecast times from a
+# space weather event known as the St. Patrick's Day Storm (Mar 17, 2015).
+#
+# Novel aspects of this use case:
+#   - First example use case to run gen_vx_mask on a space weather model (GloTEC)
+#   - Example of how to run gen_vx_mask on NetCDF input data which do not strictly conform to the
+#     Climate Forecasts (CF) conventions
+#   - Example of constructing a mask based on the solar altitude angle.
+#   - Changing the mask condition to solar alt <= 0 will mask out the night region.
+#   - Changing the mask condition to solar alt > 0 will mask the day region.
+#
+# Background: The solar altitude angle is the angle of the sun relative to the Earth's horizon,
+# and is measured in degrees. The altitude is zero at sunrise and sunset, and can reach a
+# maximum of 90 degrees (directly overhead) at noon at latitudes near the equator.
+# [Source: https://sciencing.com/solar-altitude-23364.html]
 
 ##############################################################################
 # Datasets
@@ -32,7 +60,7 @@ GenVxMask_fcstGloTEC_solar_altitude.conf
 # ------------------------
 #
 # | **Author:** Jonathan L. Vigh (National Center for Atmospheric Research / Research Applications Laboratory / Joint Numerical Testbed)
-# | **Last modified:** 20 April 2020
+# | **Last modified:** 21 May 2020
 #
 
 ##############################################################################
@@ -113,10 +141,11 @@ GenVxMask_fcstGloTEC_solar_altitude.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in met_tool_wrapper/GenVxMask (relative to **OUTPUT_BASE**)
-# and will contain the following file:
+# Output for this use case will be found in model_applications/space_weather/GenVxMask_glotec_solar_altitude (relative to **OUTPUT_BASE**)
+# and will contain the following files:
 #
-# * LAT_LON_mask.nc
+# * GloTEC_TEC_solar_altitude_le_45_masked_2015_03_17_0005.nc
+# * GloTEC_TEC_solar_altitude_le_45_masked_2015_03_17_0015.nc
 
 ##############################################################################
 # Keywords
@@ -128,5 +157,4 @@ GenVxMask_fcstGloTEC_solar_altitude.conf
 #    `NOAASWPCOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_,
 #    `MaskingFeatureUseCase  <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_,
 #
-
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-GenVxMask.png'
