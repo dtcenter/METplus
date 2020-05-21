@@ -27,8 +27,6 @@ import produtil.log
 from .config.string_template_substitution import StringSub
 from .config.string_template_substitution import StringExtract
 from .config.string_template_substitution import get_tags
-#from gempak_to_cf_wrapper import GempakToCFWrapper
-from .. import wrappers
 from . import time_util as time_util
 from .config import config_metplus
 
@@ -1916,8 +1914,15 @@ def getlistint(list_str):
     return list_str
 
 def camel_to_underscore(camel):
+    """! Change camel case notation to underscore notation, i.e. GridStatWrapper to grid_stat_wrapper
+         Multiple capital letters are excluded, i.e. PCPCombineWrapper to pcp_combine_wrapper
+         Numerals are also skipped, i.e. ASCII2NCWrapper to ascii2nc_wrapper
+         Args:
+             @param camel string to convert
+             @returns string in underscore notation
+    """
     s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', camel)
-    return re.sub('([a-z0-9])([A-Z])', r'\1_\2', s1).lower()
+    return re.sub('([a-z])([A-Z])', r'\1_\2', s1).lower()
 
 def get_process_list(config):
     """!Read process list, remove dashes/underscores and change to lower case. Then
@@ -2641,7 +2646,11 @@ def preprocess_file(filename, data_type, config):
             outdir = os.path.dirname(stagefile)
             if not os.path.exists(outdir):
                 os.makedirs(outdir, mode=0o0775)
-            run_g2c = metplus_wrappers.GempakToCFWrapper(config, config.logger)
+
+            # only import GempakToCF if needed
+            from ..wrappers import GempakToCFWrapper
+
+            run_g2c = GempakToCFWrapper(config, config.logger)
             run_g2c.infiles.append(filename)
             run_g2c.set_output_path(stagefile)
             cmd = run_g2c.get_command()
