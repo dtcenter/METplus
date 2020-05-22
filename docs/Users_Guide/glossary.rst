@@ -1236,7 +1236,7 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:* NONE
 
-   POINT_2_GRID_TO_GRID
+   POINT_2_GRID_REGRID_TO_GRID
      Used to set the regrid dictionary item 'to_grid' in the MET Point2Grid config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  Point2Grid
