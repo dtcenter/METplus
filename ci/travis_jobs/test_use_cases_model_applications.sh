@@ -34,6 +34,8 @@ do
     continue
   fi
 
+  echo Processing $i
+
   # get sample data tarball name
   if [ $i == "convection_allowing_models" ]; then
       tarball=$convection_allowing_models_tar
@@ -54,26 +56,37 @@ do
       exit 1
   fi
 
+  echo Downloading $tarball
   curl -L -O https://github.com/NCAR/METplus/releases/download/${tarball}
+
+  echo tar xfzp `basename $tarball`
   tar xfzp `basename $tarball`
+
   test_args=${test_args}" --"${i}
 done
 
 # get met_test data because some cases use this data still
+echo Downloading $met_tool_wrapper_tarball
 curl -L -O $met_tool_wrapper_tarball
 
 # untar all tarballs
+echo tar xfzp `basename $met_tool_wrapper_tarball`
 tar xfzp `basename $met_tool_wrapper_tarball`
 
 # get GempakToCF jar file in case any use cases use GEMPAK data
+echo Downloading $gempak_to_cf_location
 curl -L -O $gempak_to_cf_location
 
+echo Get Docker image: ${DOCKERHUB_TAG}
 docker pull ${DOCKERHUB_TAG}
 docker images
 docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
+
+echo Run tests...
 docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}
 returncode=$?
 
+echo Tests completed.
 # Dump the output directories from running METplus
 #ls -alR ${OWNER_BUILD_DIR}/test-use-case-output
 
