@@ -815,7 +815,7 @@ Configuration
 
 | :term:`POINT_2_GRID_WINDOW_BEGIN`
 | :term:`POINT_2_GRID_WINDOW_END`
-| :term:`POINT_2_GRID_TO_GRID`
+| :term:`POINT_2_GRID_REGRID_TO_GRID`
 | :term:`POINT_2_GRID_INPUT_FIELD`
 | :term:`POINT_2_GRID_LEVEL`
 | :term:`POINT_2_GRID_QC_FLAGS`
