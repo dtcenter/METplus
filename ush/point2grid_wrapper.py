@@ -67,7 +67,7 @@ class Point2GridWrapper(CommandBuilder):
                                                         'OBS_FILE_WINDOW_END', 0))
 
         c_dict['GRID'] = self.config.getstr('config',
-                                            'POINT_2_GRID_TO_GRID',
+                                            'POINT_2_GRID_REGRID_TO_GRID',
                                             '')
 
         # optional arguments
