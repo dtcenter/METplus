@@ -6,7 +6,8 @@ remove_commands="\n"
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 pytest_rel_path="internal_tests/pytests"
 ush_dir=${script_dir%"$pytest_rel_path"}ush
-export PYTHONPATH=$ush_dir:$PYTHONPATH
+metplus_dir=${script_dir%"$pytest_rel_path"}
+export PYTHONPATH=$metplus_dir:$ush_dir:$PYTHONPATH
 
 host=$1
 if [ -z "$host" ]; then

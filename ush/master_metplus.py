@@ -16,14 +16,18 @@ Developer Note: Please do not use f-strings in this file so that the
   f-string instead of the useful error message.
 """
 
-from os import environ
-from sys import exit as sysexit
+import os
+import sys
 
 import produtil.setup
 
+# add metplus directory to path so the wrappers and utilities can be found
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                '..')))
+
 from metplus.util import metplus_check_python_version
 from metplus.util import pre_run_setup, run_metplus, post_run_cleanup
-from metplus.util import get_process_list, is_plotter_in_process_list
+from metplus.util import get_process_list
 
 '''!@namespace master_metplus
 Main script the processes all the tasks in the PROCESS_LIST
@@ -46,7 +50,7 @@ def main():
 if __name__ == "__main__":
     try:
         # If jobname is not defined, in log it is 'NO-NAME'
-        if 'JLOGFILE' in environ:
+        if 'JLOGFILE' in os.environ:
             produtil.setup.setup(send_dbn=False, jobname='run-METplus',
                                  jlogfile=os.environ['JLOGFILE'])
         else:
@@ -56,4 +60,4 @@ if __name__ == "__main__":
     except Exception as exc:
         produtil.log.jlogger.critical(
             'master_metplus  failed: %s' % (str(exc),), exc_info=True)
-        sysexit(2)
+        sys.exit(2)

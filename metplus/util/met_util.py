@@ -942,9 +942,9 @@ def get_lead_sequence(config, input_dict=None):
 
 def get_version_number():
     # read version file and return value
-    # get top level of METplus - parents[3] is 4 directories up from current file
+    # get top level of METplus - parents[2] is 3 directories up from current file
     # which is in ush/metplus/util
-    metplus_base = str(Path(__file__).parents[3])
+    metplus_base = str(Path(__file__).parents[2])
     version_file_path = os.path.join(metplus_base,
                                      'docs',
                                      'version')

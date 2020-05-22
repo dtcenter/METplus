@@ -77,7 +77,7 @@ if os.environ.get('METPLUS_PARM_BASE', ''):
 # Based on METPLUS_BASE, Will set METPLUS_USH, or PARM_BASE if not
 # already set in the environment.
 
-METPLUS_BASE = str(Path(__file__).parents[4])
+METPLUS_BASE = str(Path(__file__).parents[3])
 USHguess = os.path.join(METPLUS_BASE, 'ush')
 PARMguess = os.path.join(METPLUS_BASE, 'parm')
 if os.path.isdir(USHguess) and os.path.isdir(PARMguess):
