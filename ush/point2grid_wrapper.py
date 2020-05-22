@@ -220,17 +220,20 @@ class Point2GridWrapper(CommandBuilder):
             Args:
                 @param time_info time dictionary to use for string substitution"""
 
+        #input_field and input_level go hand in hand. If there is a field there needs to be a level
+        #even if it is blank
+        input_level = ""
         if self.c_dict['INPUT_FIELD']:
             input_field = StringSub(self.logger,
                                     self.c_dict['INPUT_FIELD'],
                                     **time_info).do_string_sub()
             if self.c_dict['INPUT_LEVEL']:
                 input_level = StringSub(self.logger,
-                                    self.c_dict.get('INPUT_LEVEL','Z2'),
+                                    self.c_dict['INPUT_LEVEL'],
                                     **time_info).do_string_sub()
-                self.args.append(f"-field 'name=\"{input_field}\"; level=\"{input_level}\";'")
-            else:
-                self.args.append(f"-field 'name=\"{input_field}\";'")
+                self.logger.info(f"Processing level: {input_level}")
+            #Add either the specified level above or the defauilt blank one
+            self.args.append(f"-field 'name=\"{input_field}\"; level=\"{input_level}\";'")
 
         if self.c_dict['QC_FLAGS']:
             self.args.append("-qc")
