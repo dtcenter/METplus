@@ -1,12 +1,22 @@
+# Test Use Cases in MET Tool Wrapper
+# Author: George McCabe 05/2020
+# Usage: test_use_case_met_tool_wrapper.sh
+# About: Called by the .travis.yml file to run use cases found in parm/use_cases/met_tool_wrapper
+# Note: Sample data tarball values must be updated if a new version is added to a release
+
+met_tool_wrapper_tarball=https://github.com/NCAR/METplus/releases/download/v3.1-beta1/sample_data-met_tool_wrapper-3.1-beta1.tgz
+
+gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
+
 mkdir -p ${OWNER_BUILD_DIR}/test-use-case-output
 mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data
 
 cd ${OWNER_BUILD_DIR}/test.metplus.data
 
-curl -L -O https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-met_test-9.0.tgz
-tar xfzp sample_data-met_test-9.0.tgz
+curl -L -O $met_tool_wrapper_tarball
+tar xfzp `basename sample_data-met_test-9.0.tgz`
 
-curl -L -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
+curl -L -O $gempak_to_cf_location
 
 docker pull ${DOCKERHUB_TAG}
 docker images
