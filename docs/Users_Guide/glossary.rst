@@ -421,7 +421,7 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* None
 
-   POINT_2_PROB_CAT_THRESH
+   POINT_2_GRID_PROB_CAT_THRESH
      Specify the probability threshold for practically perfect forecasts
 
      | *Used by:* Point2Grid
