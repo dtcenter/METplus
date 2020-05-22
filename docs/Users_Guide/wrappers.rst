@@ -785,7 +785,7 @@ Configuration
    | :term:`OBS_PCP_COMBINE_<n>_FIELD_NAME`
 
 Point2Grid
------
+----------
 
 .. _description-13:
 
