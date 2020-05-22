@@ -70,6 +70,7 @@ use_cases['met_tool_wrapper'] = [
 #                use_case_dir + "/met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/PCPCombine/PCPCombine_subtract.conf",
                 use_case_dir + "/met_tool_wrapper/PointStat/PointStat.conf",
+                use_case_dir + "/met_tool_wrapper/Point2Grid/Point2Grid.conf",
                 use_case_dir + "/met_tool_wrapper/PointStat/PointStat_once_per_field.conf",
                 use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf",
                 use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane_multi_field_multi_file.conf",
