@@ -99,6 +99,10 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_PROB_THRESH'] = self.config.getstr('config',
                                                        'OBS_POINT_STAT_PROB_THRESH', '==0.1')
 
+        c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
+                                                       'POINT_STAT_ONCE_PER_FIELD',
+                                                       False)
+
         if c_dict['FCST_INPUT_TEMPLATE'] == '':
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE in config file')
             self.isOK = False
@@ -124,83 +128,6 @@ class PointStatWrapper(CompareGriddedWrapper):
                                       self.c_dict[f'OBS_VALID_{ext}'],
                                       **time_info).do_string_sub()
                 self.args.append(f"-obs_valid_{ext.lower()} {obs_valid}")
-
-
-    def run_at_time_once(self, input_dict):
-         # clear any settings leftover from previous run
-        self.clear()
-
-        time_info = time_util.ti_calculate(input_dict)
-        var_list = util.parse_var_list(self.config, time_info,
-                                       met_tool=self.app_name)
-
-        if not var_list:
-            self.log_error("Field information not set in configuration files. Must set "
-                           "[FCST/OBS]_VAR<n>_[NAME/LEVELS].")
-            return None
-
-        # get verification mask if available
-        self.get_verification_mask(time_info)
-
-        # get model to compare
-        model_path = self.find_model(time_info, var_list[0])
-        if model_path is None:
-            return False
-
-        # get observation to compare
-        obs_path = None
-        # loop over offset list and find first file that matches
-        for offset in self.c_dict['OFFSETS']:
-            input_dict['offset_hours'] = offset
-            time_info = time_util.ti_calculate(input_dict)
-            obs_path = self.find_obs(time_info, var_list[0], False)
-
-            if obs_path is not None:
-                break
-
-        if obs_path is None:
-            in_dir = self.c_dict['OBS_INPUT_DIR']
-            in_template = self.c_dict['OBS_INPUT_TEMPLATE']
-            self.log_error(f"Could not find observation file in {in_dir} using template {in_template} "
-                              f"using offsets {self.c_dict['OFFSETS']}")
-            return False
-
-        # found both fcst and obs
-        self.infiles.append(model_path)
-        if type(obs_path) is list:
-            for obs in obs_path:
-                self.infiles.append(obs)
-        else:
-            self.infiles.append(obs_path)
-
-        # get field information
-        fcst_field_list = []
-        obs_field_list = []
-        for var_info in var_list:
-            next_fcst = self.get_field_info(v_level=var_info['fcst_level'],
-                                            v_thresh=var_info['fcst_thresh'],
-                                            v_name=var_info['fcst_name'],
-                                            v_extra=var_info['fcst_extra'],
-                                            d_type='FCST')
-
-            next_obs = self.get_field_info(v_level=var_info['obs_level'],
-                                           v_thresh=var_info['obs_thresh'],
-                                           v_name=var_info['obs_name'],
-                                           v_extra=var_info['obs_extra'],
-                                           d_type='OBS')
-
-            if next_fcst is None or next_obs is None:
-                return False
-
-            fcst_field_list.extend(next_fcst)
-            obs_field_list.extend(next_obs)
-
-        fcst_field = ','.join(fcst_field_list)
-        obs_field = ','.join(obs_field_list)
-
-        self.add_obs_valid_args(time_info)
-
-        self.process_fields(time_info, fcst_field, obs_field)
 
     def set_environment_variables(self, fcst_field=None, obs_field=None, time_info=None):
         """! Set all the environment variables in the MET config

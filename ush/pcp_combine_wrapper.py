@@ -141,11 +141,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.isOK = False
 
         if not c_dict[d_type+'_INPUT_TEMPLATE'] and c_dict[d_type+'_RUN_METHOD'] != 'SUM':
-            self.log_error("Must set {d_type}_PCP_COMBINE_INPUT_TEMPLATE unless using SUM method")
+            self.log_error(f"Must set {d_type}_PCP_COMBINE_INPUT_TEMPLATE unless using SUM method")
             self.isOK = False
 
         if not c_dict[d_type+'_OUTPUT_TEMPLATE']:
-            self.log_error("Must set {d_type}_PCP_COMBINE_OUTPUT_TEMPLATE")
+            self.log_error(f"Must set {d_type}_PCP_COMBINE_OUTPUT_TEMPLATE")
             self.isOK = False
 
         if run_method == 'DERIVE' or run_method == 'ADD':
