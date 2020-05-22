@@ -13,6 +13,7 @@ Use Cases by MET Tool:
 | `MTD <https://ncar.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_
 | `PB2NC <https://ncar.github.io/METplus/search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_
 | `PCPCombine <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_
+| `Point2Grid <https://ncar.github.io/METplus/search.html?q=Point2GridToolUseCase&check_keywords=yes&area=default>`_
 | `PointStat <https://ncar.github.io/METplus/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
 | `RegridDataPlane <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
 | `SeriesAnalysis <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
