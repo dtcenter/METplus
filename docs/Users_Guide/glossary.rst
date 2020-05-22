@@ -428,7 +428,7 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* None
 
-   POINT_2_PROB_VLD_THRESH
+   POINT_2_GRID_VLD_THRESH
      Specify the required ratio of valid data for regridding
 
      | *Used by:* Point2Grid
