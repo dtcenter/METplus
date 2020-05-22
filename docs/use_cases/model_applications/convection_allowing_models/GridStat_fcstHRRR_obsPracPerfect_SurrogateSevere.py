@@ -112,7 +112,7 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/SS_PP_prob.png'
+# sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-SS_PP_prob.png'
 #
 # .. note:: `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, 
 #  `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_, 
