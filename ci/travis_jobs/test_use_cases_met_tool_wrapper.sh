@@ -14,7 +14,7 @@ mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data
 cd ${OWNER_BUILD_DIR}/test.metplus.data
 
 curl -L -O $met_tool_wrapper_tarball
-tar xfzp sample_data*
+tar xfzp `basename $met_tool_wrapper_tarball`
 
 curl -L -O $gempak_to_cf_location
 

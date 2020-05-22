@@ -55,6 +55,7 @@ do
   fi
 
   curl -L -O https://github.com/NCAR/METplus/releases/download/${tarball}
+  tar xfzp `basename $tarball`
   test_args=${test_args}" --"${i}
 done
 
@@ -62,7 +63,7 @@ done
 curl -L -O $met_tool_wrapper_tarball
 
 # untar all tarballs
-tar xfzp sample_data-*
+tar xfzp `basename $met_tool_wrapper_tarball`
 
 # get GempakToCF jar file in case any use cases use GEMPAK data
 curl -L -O $gempak_to_cf_location
