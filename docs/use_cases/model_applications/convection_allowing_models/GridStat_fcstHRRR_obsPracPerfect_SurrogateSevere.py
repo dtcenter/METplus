@@ -1,8 +1,11 @@
 """
-Grid-Stat: Surrogate Severe and Practically Perfect Evaluation 
-=========================================================================
+Grid-Stat: Surrogate Severe and Practically Perfect Evaluation
+==============================================================
+
 GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
+
 """
+
 ##############################################################################
 # Scientific Objective
 # --------------------
@@ -116,4 +119,3 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 #  `NetCDFFileUseCase <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_, 
 #  `NOAAHWTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,  
 #  `NCAROrgUseCase <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
-© 2020 GitHub, Inc.
