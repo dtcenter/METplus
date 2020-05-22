@@ -16,9 +16,9 @@ import os
 
 from ..util import metplus_check_python_version
 from ..util import met_util as util
-from ..util.config.string_template_substitution import StringSub
+from ..util import StringSub
 from ..util import time_util
-from .command_builder import CommandBuilder
+from . import CommandBuilder
 
 '''!@namespace GempakToCFWrapper
 @brief Wraps the GempakToCF tool to reformat Gempak format to NetCDF Format

@@ -17,8 +17,8 @@ import os
 from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
-from .command_builder import CommandBuilder
-from ..util.config.string_template_substitution import StringSub
+from . import CommandBuilder
+from ..util import StringSub
 
 '''!@namespace GenVxMaskWrapper
 @brief Wraps the GenVxMask tool to reformat ascii format to NetCDF

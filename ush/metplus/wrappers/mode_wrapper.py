@@ -16,8 +16,8 @@ import os
 
 from ..util import metplus_check_python_version
 from ..util import met_util as util
-from .compare_gridded_wrapper import CompareGriddedWrapper
-from ..util.config.string_template_substitution import StringSub
+from . import CompareGriddedWrapper
+from ..util import StringSub
 
 class MODEWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""

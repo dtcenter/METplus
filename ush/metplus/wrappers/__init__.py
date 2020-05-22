@@ -11,11 +11,12 @@ plotting_wrappers = [
     'make_plots_wrapper',
 ]
 
-# import CommandBuilder and parent classes because other wrappers import them
+# import classes that other wrappers import
 parent_classes = {
     'command_builder': 'CommandBuilder',
     'reformat_gridded_wrapper': 'ReformatGriddedWrapper',
     'compare_gridded_wrapper': 'CompareGriddedWrapper',
+    'regrid_data_plane_wrapper': 'RegridDataPlaneWrapper',
 }
 
 for module_name, attribute_name in parent_classes.items():

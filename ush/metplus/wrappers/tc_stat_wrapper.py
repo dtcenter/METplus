@@ -17,12 +17,10 @@ Condition codes: 0 for success, 1 for failure
 import os
 import sys
 
-import produtil.setup
 from produtil.run import ExitStatusException
 
-from ..util import metplus_check_python_version
-from ..util import met_util as util
-from .command_builder import CommandBuilder
+from ..util import metplus_check_python_version, run_stand_alone, getlist, mkdir_p
+from . import CommandBuilder
 
 ## @namespace TCStatWrapper
 #  @brief Wrapper to the MET tool tc_stat, which is used for filtering tropical
@@ -89,24 +87,24 @@ class TCStatWrapper(CommandBuilder):
 
         if self.by_config:
             c_dict['AMODEL'] = \
-                util.getlist(self.config.getstr('config', 'TC_STAT_AMODEL'))
+                getlist(self.config.getstr('config', 'TC_STAT_AMODEL'))
 
             c_dict['BMODEL'] = \
-                util.getlist(self.config.getstr('config', 'TC_STAT_BMODEL'))
+                getlist(self.config.getstr('config', 'TC_STAT_BMODEL'))
 
             c_dict['DESC'] = \
-                util.getlist(self.config.getstr('config', 'TC_STAT_DESC'))
+                getlist(self.config.getstr('config', 'TC_STAT_DESC'))
 
             c_dict['STORM_ID'] = \
-                util.getlist(self.config.getstr('config', 'TC_STAT_STORM_ID'))
+                getlist(self.config.getstr('config', 'TC_STAT_STORM_ID'))
 
-            c_dict['BASIN'] = util.getlist(
+            c_dict['BASIN'] = getlist(
                 self.config.getstr('config', 'TC_STAT_BASIN'))
 
-            c_dict['CYCLONE'] = util.getlist(
+            c_dict['CYCLONE'] = getlist(
                 self.config.getstr('config', 'TC_STAT_CYCLONE'))
 
-            c_dict['STORM_NAME'] = util.getlist(
+            c_dict['STORM_NAME'] = getlist(
                 self.config.getstr('config', 'TC_STAT_STORM_NAME'))
 
             c_dict['INIT_BEG'] = self.config.getstr('config',
@@ -115,13 +113,13 @@ class TCStatWrapper(CommandBuilder):
             c_dict['INIT_END'] = self.config.getstr('config',
                                                           'TC_STAT_INIT_END')
 
-            c_dict['INIT_INCLUDE'] = util.getlist(
+            c_dict['INIT_INCLUDE'] = getlist(
                 self.config.getstr('config', 'TC_STAT_INIT_INCLUDE'))
 
-            c_dict['INIT_EXCLUDE'] = util.getlist(
+            c_dict['INIT_EXCLUDE'] = getlist(
                 self.config.getstr('config', 'TC_STAT_INIT_EXCLUDE'))
 
-            c_dict['INIT_HOUR'] = util.getlist(
+            c_dict['INIT_HOUR'] = getlist(
                 self.config.getstr('config', 'TC_STAT_INIT_HOUR'))
 
             c_dict['VALID_BEG'] = self.config.getstr('config',
@@ -130,58 +128,58 @@ class TCStatWrapper(CommandBuilder):
             c_dict['VALID_END'] = self.config.getstr('config',
                                                            'TC_STAT_INIT_END')
 
-            c_dict['VALID_INCLUDE'] = util.getlist(
+            c_dict['VALID_INCLUDE'] = getlist(
                 self.config.getstr('config', 'TC_STAT_VALID_INCLUDE'))
 
-            c_dict['VALID_EXCLUDE'] = util.getlist(
+            c_dict['VALID_EXCLUDE'] = getlist(
                 self.config.getstr('config', 'TC_STAT_VALID_EXCLUDE'))
 
             c_dict['LEAD_REQ'] = \
-                util.getlist(self.config.getstr('config', 'TC_STAT_LEAD_REQ'))
+                getlist(self.config.getstr('config', 'TC_STAT_LEAD_REQ'))
 
             c_dict['INIT_MASK'] = \
-                util.getlist(self.config.getstr('config', 'TC_STAT_INIT_MASK'))
+                getlist(self.config.getstr('config', 'TC_STAT_INIT_MASK'))
 
             c_dict['VALID_MASK'] = \
-                util.getlist(self.config.getstr('config', 'TC_STAT_VALID_MASK'))
+                getlist(self.config.getstr('config', 'TC_STAT_VALID_MASK'))
 
             c_dict['VALID_HOUR'] = \
-                util.getlist(self.config.getstr('config', 'TC_STAT_VALID_HOUR'))
+                getlist(self.config.getstr('config', 'TC_STAT_VALID_HOUR'))
 
             c_dict['LEAD'] = \
-                util.getlist(self.config.getstr('config', 'TC_STAT_LEAD'))
+                getlist(self.config.getstr('config', 'TC_STAT_LEAD'))
 
             c_dict['TRACK_WATCH_WARN'] = \
-                util.getlist(
+                getlist(
                     self.config.getstr('config', 'TC_STAT_TRACK_WATCH_WARN'))
 
             c_dict['COLUMN_THRESH_NAME'] = \
-                util.getlist(
+                getlist(
                     self.config.getstr('config', 'TC_STAT_COLUMN_THRESH_NAME'))
 
-            c_dict['COLUMN_THRESH_VAL'] = util.getlist(
+            c_dict['COLUMN_THRESH_VAL'] = getlist(
                 self.config.getstr('config', 'TC_STAT_COLUMN_THRESH_VAL'))
 
             c_dict['COLUMN_STR_NAME'] = \
-                util.getlist(
+                getlist(
                     self.config.getstr('config', 'TC_STAT_COLUMN_STR_NAME'))
 
             c_dict['COLUMN_STR_VAL'] = \
-                util.getlist(
+                getlist(
                     self.config.getstr('config', 'TC_STAT_COLUMN_STR_VAL'))
 
-            c_dict['INIT_THRESH_NAME'] = util.getlist(
+            c_dict['INIT_THRESH_NAME'] = getlist(
                 self.config.getstr('config', 'TC_STAT_INIT_THRESH_NAME'))
 
-            c_dict['INIT_THRESH_VAL'] = util.getlist(
+            c_dict['INIT_THRESH_VAL'] = getlist(
                 self.config.getstr('config', 'TC_STAT_INIT_THRESH_VAL'))
 
             c_dict['INIT_STR_NAME'] = \
-                util.getlist(
+                getlist(
                     self.config.getstr('config', 'TC_STAT_INIT_STR_NAME'))
 
             c_dict['INIT_STR_VAL'] = \
-                util.getlist(
+                getlist(
                     self.config.getstr('config', 'TC_STAT_INIT_STR_VAL'))
 
             try:
@@ -275,7 +273,7 @@ class TCStatWrapper(CommandBuilder):
 
         # Don't forget to create the output directory, as MET tc_stat will
         # not do this.
-        util.mkdir_p(self.c_dict['OUTPUT_DIR'])
+        mkdir_p(self.c_dict['OUTPUT_DIR'])
 
         # Since this is different from the other MET tools, we will build
         # the commands rather than use command builder's methods.
@@ -796,13 +794,13 @@ class TCStatWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
-        util.mkdir_p(tc_stat_output_dir)
+        mkdir_p(tc_stat_output_dir)
 
         filter_filename = "filter_" + cur_init + ".tcst"
         filter_name = os.path.join(tc_stat_output_dir, cur_init,
                                    filter_filename)
         filter_path = os.path.join(tc_stat_output_dir, cur_init)
-        util.mkdir_p(filter_path)
+        mkdir_p(filter_path)
 
         # This is for extract_tiles to call without a config file
         tc_cmd_list = [self.tc_exe, " -job filter ",
@@ -833,4 +831,4 @@ class TCStatWrapper(CommandBuilder):
 
 
 if __name__ == "__main__":
-    util.run_stand_alone(__file__, "TCStat")
+    run_stand_alone(__file__, "TCStat")

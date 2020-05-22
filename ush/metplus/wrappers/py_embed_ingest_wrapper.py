@@ -18,9 +18,9 @@ import re
 from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
-from .command_builder import CommandBuilder
-from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
-from ..util.config.string_template_substitution import StringSub
+from . import CommandBuilder
+from . import RegridDataPlaneWrapper
+from ..util import StringSub
 
 VALID_PYTHON_EMBED_TYPES = ['NUMPY', 'XARRAY', 'PANDAS']
 

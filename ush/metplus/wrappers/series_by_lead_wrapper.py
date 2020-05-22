@@ -10,9 +10,9 @@ from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import feature_util
-from .command_builder import CommandBuilder
+from . import CommandBuilder
 from .tc_stat_wrapper import TCStatWrapper
-from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
+from . import RegridDataPlaneWrapper
 
 ## @namespace SeriesByLeadWrapper
 # @brief Performs any optional filtering of input tcst data then performs

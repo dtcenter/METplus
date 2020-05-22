@@ -23,7 +23,7 @@ import itertools
 from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util.config import string_template_substitution as sts
-from .command_builder import CommandBuilder
+from . import CommandBuilder
 
 class StatAnalysisWrapper(CommandBuilder):
     """! Wrapper to the MET tool stat_analysis which is used to filter 

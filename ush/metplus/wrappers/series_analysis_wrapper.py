@@ -18,8 +18,8 @@ from datetime import datetime
 from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
-from .compare_gridded_wrapper import CompareGriddedWrapper
-from ..util.config.string_template_substitution import StringSub
+from . import CompareGriddedWrapper
+from ..util import StringSub
 
 '''!@namespace SeriesAnalysisWrapper
 @brief Wraps the SeriesAnalysis tool to compare a series of gridded files

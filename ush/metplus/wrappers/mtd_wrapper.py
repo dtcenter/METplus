@@ -17,9 +17,9 @@ import os
 from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
-from .mode_wrapper import MODEWrapper
-from .compare_gridded_wrapper import CompareGriddedWrapper
-from ..util.config.string_template_substitution import StringSub
+from ..util import StringSub
+from . import MODEWrapper
+from . import CompareGriddedWrapper
 
 class MTDWrapper(MODEWrapper):
 

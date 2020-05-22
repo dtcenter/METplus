@@ -22,7 +22,7 @@ from ..util import metplus_check_python_version
 from ..util import met_util as util
 from .tc_stat_wrapper import TCStatWrapper
 from ..util import feature_util
-from .command_builder import CommandBuilder
+from . import CommandBuilder
 
 class SeriesByInitWrapper(CommandBuilder):
     """!  Performs series analysis based on init time by first performing any

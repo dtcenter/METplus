@@ -19,7 +19,7 @@ import glob
 
 from ..util import met_util as util
 from . import CompareGriddedWrapper
-from ..util.config.string_template_substitution import StringSub
+from ..util import StringSub
 
 """!@namespace EnsembleStatWrapper
 @brief Wraps the MET tool ensemble_stat to compare ensemble datasets

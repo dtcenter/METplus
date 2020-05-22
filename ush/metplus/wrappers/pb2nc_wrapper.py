@@ -18,8 +18,8 @@ import re
 from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
-from ..util.config.string_template_substitution import StringSub
-from .command_builder import CommandBuilder
+from ..util import StringSub
+from . import CommandBuilder
 
 class PB2NCWrapper(CommandBuilder):
     """! Wrapper to the MET tool pb2nc which converts prepbufr files

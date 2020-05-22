@@ -22,7 +22,7 @@ import itertools
 
 from ..util import metplus_check_python_version
 from ..util import met_util as util
-from .command_builder import CommandBuilder
+from . import CommandBuilder
 
 class MakePlotsWrapper(CommandBuilder):
     """! Wrapper to used to filter make plots from MET data

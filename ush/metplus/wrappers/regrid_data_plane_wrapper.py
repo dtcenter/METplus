@@ -17,8 +17,8 @@ import os
 from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
-from ..util.config.string_template_substitution import StringSub
-from .reformat_gridded_wrapper import ReformatGriddedWrapper
+from ..util import StringSub
+from . import ReformatGriddedWrapper
 
 # pylint:disable=pointless-string-statement
 '''!@namespace RegridDataPlaneWrapper

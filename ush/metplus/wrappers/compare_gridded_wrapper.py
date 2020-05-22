@@ -15,9 +15,8 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import met_util as util
+from ..util import StringSub, ti_calculate
 from . import CommandBuilder
-from ..util import time_util
-from ..util.config.string_template_substitution import StringSub
 
 '''!@namespace CompareGriddedWrapper
 @brief Common functionality to wrap similar MET applications
@@ -166,7 +165,7 @@ that reformat gridded data
             input_dict['lead'] = lead
 
             # set current lead time config and environment variables
-            time_info = time_util.ti_calculate(input_dict)
+            time_info = ti_calculate(input_dict)
 
             self.logger.info("Processing forecast lead {}".format(time_info['lead_string']))
 

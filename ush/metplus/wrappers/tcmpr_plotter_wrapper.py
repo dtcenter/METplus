@@ -27,7 +27,7 @@ from produtil.run import checkrun
 
 from ..util import metplus_check_python_version
 from ..util import met_util as util
-from .command_builder import CommandBuilder
+from . import CommandBuilder
 
 class TCMPRPlotterWrapper(CommandBuilder):
     """! A Python class than encapsulates the plot_tcmpr.R plotting script.

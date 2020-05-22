@@ -6,7 +6,7 @@
 # @endcode#
 
 from ..util import metplus_check_python_version
-from .command_builder import CommandBuilder
+from . import CommandBuilder
 from ..util import met_util
 
 class UsageWrapper(CommandBuilder):

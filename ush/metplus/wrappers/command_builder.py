@@ -19,8 +19,7 @@ from inspect import getframeinfo, stack
 
 from .command_runner import CommandRunner
 from ..util import met_util as util
-from ..util.config import string_template_substitution as sts
-from ..util import time_util as time_util
+from ..util import StringSub, ti_calculate, get_seconds_from_string
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -132,9 +131,9 @@ class CommandBuilder:
         for env_var in self.config.keys('user_env_vars'):
             # perform string substitution on each variable
             raw_env_var_value = self.config.getraw('user_env_vars', env_var)
-            env_var_value = sts.StringSub(self.logger,
-                                          raw_env_var_value,
-                                          **time_info).do_string_sub()
+            env_var_value = StringSub(self.logger,
+                                      raw_env_var_value,
+                                      **time_info).do_string_sub()
             self.add_env_var(env_var, env_var_value)
 
     def add_common_envs(self, time_info=None):
@@ -380,7 +379,7 @@ class CommandBuilder:
 
         for offset in offsets:
             time_info['offset_hours'] = offset
-            time_info = time_util.ti_calculate(time_info)
+            time_info = ti_calculate(time_info)
             obs_path = self.find_obs(time_info,
                                      var_info=var_info,
                                      mandatory=is_mandatory,
@@ -440,7 +439,7 @@ class CommandBuilder:
         level = level.split('-')[0]
 
         # if level is in hours, convert to seconds
-        level = time_util.get_seconds_from_string(level, 'H')
+        level = get_seconds_from_string(level, 'H')
 
         # arguments for find helper functions
         arg_dict = {'level': level,
@@ -478,11 +477,10 @@ class CommandBuilder:
 
         for template in template_list:
             # perform string substitution
-            dsts = sts.StringSub(self.logger,
+            filename = StringSub(self.logger,
                                  template,
                                  level=level,
-                                 **time_info)
-            filename = dsts.do_string_sub()
+                                 **time_info).do_string_sub()
 
             # build full path with data directory and filename
             full_path = os.path.join(data_dir, filename)
@@ -642,9 +640,9 @@ class CommandBuilder:
     def find_and_check_output_file(self, time_info):
         """!Look for expected output file. If it exists and configured to skip if it does,
             then return False"""
-        outfile = sts.StringSub(self.logger,
-                                self.c_dict['OUTPUT_TEMPLATE'],
-                                **time_info).do_string_sub()
+        outfile = StringSub(self.logger,
+                            self.c_dict['OUTPUT_TEMPLATE'],
+                            **time_info).do_string_sub()
         outpath = os.path.join(self.c_dict['OUTPUT_DIR'], outfile)
         self.set_output_path(outpath)
 
@@ -718,9 +716,9 @@ class CommandBuilder:
             self.isOK = False
 
     def get_output_prefix(self, time_info):
-        return sts.StringSub(self.logger,
-                             self.config.getraw('config', f'{self.app_name.upper()}_OUTPUT_PREFIX', ''),
-                             **time_info).do_string_sub()
+        return StringSub(self.logger,
+                         self.config.getraw('config', f'{self.app_name.upper()}_OUTPUT_PREFIX', ''),
+                         **time_info).do_string_sub()
 
     def add_field_info_to_time_info(self, time_info, field_info):
         """!Add name and level values from field info to time info dict to be used in string substitution

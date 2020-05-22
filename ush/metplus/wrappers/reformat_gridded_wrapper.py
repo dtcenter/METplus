@@ -16,7 +16,7 @@ import os
 
 from ..util import met_util as util
 from ..util import time_util
-from .command_builder import CommandBuilder
+from . import CommandBuilder
 
 # pylint:disable=pointless-string-statement
 '''!@namespace ReformatGriddedWrapper

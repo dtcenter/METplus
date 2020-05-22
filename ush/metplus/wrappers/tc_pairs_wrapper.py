@@ -25,9 +25,9 @@ import glob
 from ..util import metplus_check_python_version
 from ..util import time_util
 from ..util import met_util as util
-from ..util.config.string_template_substitution import StringSub
-from ..util.config.string_template_substitution import get_tags
-from .command_builder import CommandBuilder
+from ..util import StringSub
+from ..util import get_tags
+from . import CommandBuilder
 
 '''!@namespace TCPairsWrapper
 @brief Wraps the MET tool tc_pairs to parse ADeck and BDeck ATCF_by_pairs files,

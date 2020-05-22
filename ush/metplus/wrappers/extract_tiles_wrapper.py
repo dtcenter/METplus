@@ -18,7 +18,7 @@ from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import feature_util
 from .tc_stat_wrapper import TCStatWrapper
-from .command_builder import CommandBuilder
+from . import CommandBuilder
 from ..util import time_util
 
 '''!@namespace ExtractTilesWrapper
