@@ -196,7 +196,7 @@ that reformat gridded data
                                        time_info,
                                        met_tool=self.app_name)
 
-        if not var_list and self.c_dict.get('VAR_LIST_OPTIONAL', False):
+        if not var_list and not self.c_dict.get('VAR_LIST_OPTIONAL', False):
             self.log_error('No input fields were specified. You must set '
                            f'[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
             return None
