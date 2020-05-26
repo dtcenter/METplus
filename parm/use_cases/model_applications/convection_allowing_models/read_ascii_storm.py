@@ -88,8 +88,7 @@ if len(sys.argv) == 2:
     except NameError:
         print("Can't find the input file")
 else:
-    print("ERROR: read_ascii_point.py -> Must specify exactly one input file.")
+    print("ERROR: read_ascii_storm.py -> Must specify exactly one input file.")
     sys.exit(1)
 
 ########################################################################
-
