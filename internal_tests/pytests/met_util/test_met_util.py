@@ -734,3 +734,35 @@ def test_fix_list(list_str, expected_fixed_list):
         print(f"ITEM: {expected}")
 
     assert(fixed_list == expected_fixed_list)
+
+@pytest.mark.parametrize(
+    'camel, underscore', [
+        ('ASCII2NCWrapper', 'ascii2nc_wrapper'),
+        ('CyclonePlotterWrapper', 'cyclone_plotter_wrapper'),
+        ('EnsembleStatWrapper', 'ensemble_stat_wrapper'),
+        ('ExampleWrapper', 'example_wrapper'),
+        ('ExtractTilesWrapper', 'extract_tiles_wrapper'),
+        ('GempakToCFWrapper', 'gempak_to_cf_wrapper'),
+        ('GenVxMaskWrapper', 'gen_vx_mask_wrapper'),
+        ('GridStatWrapper', 'grid_stat_wrapper'),
+        ('MakePlotsWrapper', 'make_plots_wrapper'),
+        ('MODEWrapper', 'mode_wrapper'),
+        ('MTDWrapper', 'mtd_wrapper'),
+        ('PB2NCWrapper', 'pb2nc_wrapper'),
+        ('PCPCombineWrapper', 'pcp_combine_wrapper'),
+        ('Point2GridWrapper', 'point2grid_wrapper'),
+        ('PointStatWrapper', 'point_stat_wrapper'),
+        ('PyEmbedWrapper', 'py_embed_wrapper'),
+        ('RegridDataPlaneWrapper', 'regrid_data_plane_wrapper'),
+        ('SeriesAnalysisWrapper', 'series_analysis_wrapper'),
+        ('SeriesByInitWrapper', 'series_by_init_wrapper'),
+        ('SeriesByLeadWrapper', 'series_by_lead_wrapper'),
+        ('StatAnalysisWrapper', 'stat_analysis_wrapper'),
+        ('TCMPRPlotterWrapper', 'tcmpr_plotter_wrapper'),
+        ('TCPairsWrapper', 'tc_pairs_wrapper'),
+        ('TCStatWrapper', 'tc_stat_wrapper'),
+    ]
+)
+
+def test_camel_to_underscore(camel, underscore):
+    assert(util.camel_to_underscore(camel) == underscore)

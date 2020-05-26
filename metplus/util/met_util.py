@@ -1925,8 +1925,8 @@ def camel_to_underscore(camel):
              @param camel string to convert
              @returns string in underscore notation
     """
-    s1 = re.sub('(.)([A-Z][a-z]+)', r'\1_\2', camel)
-    return re.sub('([a-z])([A-Z])', r'\1_\2', s1).lower()
+    s1 = re.sub(r'([^\d])([A-Z][a-z]+)', r'\1_\2', camel)
+    return re.sub(r'([a-z])([A-Z])', r'\1_\2', s1).lower()
 
 def get_process_list(config):
     """!Read process list, remove dashes/underscores and change to lower case. Then
