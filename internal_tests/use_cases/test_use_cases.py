@@ -97,13 +97,16 @@ use_cases['cryosphere'] = [
     use_case_dir + "/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf",
 ]
 
-use_cases['medium_range'] = [
+use_cases['medium_range1'] = [
     use_case_dir + "/model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf",
-    use_case_dir + "/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf",
     use_case_dir + "/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.conf",
     use_case_dir + "/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf",
     use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf",
     use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_Sfc_MultiField.conf",
+]
+
+use_cases['medium_range2'] = [
+    use_case_dir + "/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf",
 ]
 
 use_cases['precipitation'] = [
@@ -224,7 +227,8 @@ def main():
     parser.add_argument('--met_tool_wrapper', action='store_true', required=False)
     parser.add_argument('--convection_allowing_models', action='store_true', required=False)
     parser.add_argument('--cryosphere', action='store_true', required=False)
-    parser.add_argument('--medium_range', action='store_true', required=False)
+    parser.add_argument('--medium_range1', action='store_true', required=False)
+    parser.add_argument('--medium_range2', action='store_true', required=False)
     parser.add_argument('--precipitation', action='store_true', required=False)
     parser.add_argument('--s2s', action='store_true', required=False)
     parser.add_argument('--space_weather', action='store_true', required=False)
