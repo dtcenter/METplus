@@ -96,7 +96,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.fhr_group_labels = []
         all_conf = self.config.keys('config')
         indices = []
-        regex = re.compile("LEAD_SEQ_(\d+)")
+        regex = re.compile(r"LEAD_SEQ_(\d+)")
         for conf in all_conf:
             result = regex.match(conf)
             if result is not None:
@@ -1130,11 +1130,11 @@ class SeriesByLeadWrapper(CommandBuilder):
                     # extension of the postscript file with '.png'.
                     repl_string = ['_', cur_stat, '.ps']
                     repl = ''.join(repl_string)
-                    ps_file = re.sub('(\.nc)$', repl, cur_nc)
+                    ps_file = re.sub(r'(\.nc)$', repl, cur_nc)
 
                     # Now create the PNG filename from the
                     # Postscript filename.
-                    png_file = re.sub('(\.ps)$', '.png', ps_file)
+                    png_file = re.sub(r'(\.ps)$', '.png', ps_file)
 
                     # Extract the forecast hour from the netCDF
                     # filename.
