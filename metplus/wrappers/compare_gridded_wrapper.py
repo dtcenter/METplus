@@ -234,7 +234,6 @@ that reformat gridded data
             return
 
         self.infiles.extend(model_path)
-
         # get observation to compare, return None if not found
         obs_path, time_info = self.find_obs_offset(time_info,
                                                    var_info,
@@ -285,7 +284,6 @@ that reformat gridded data
             return
 
         self.infiles.extend(model_path)
-
         # get observation to from first var compare
         obs_path, time_info = self.find_obs_offset(time_info,
                                                    var_list[0],

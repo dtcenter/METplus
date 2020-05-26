@@ -12,13 +12,13 @@ Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 """
 
-import metplus_check_python_version
-
 import os
-import met_util as util
-import time_util
-from command_builder import CommandBuilder
-from string_template_substitution import StringSub
+
+from ..util import metplus_check_python_version
+from ..util import met_util as util
+from ..util import time_util
+from ..util import StringSub
+from . import CommandBuilder
 
 '''!@namespace Point2GridWrapper
 @brief Wraps the Point2Grid tool to reformat ascii format to NetCDF
