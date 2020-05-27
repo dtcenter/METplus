@@ -2,7 +2,7 @@
 
 import pytest
 from string_template_substitution import do_string_sub
-from string_template_substitution import StringExtract
+from string_template_substitution import parse_template
 from string_template_substitution import get_tags
 from string_template_substitution import format_one_time_item
 from string_template_substitution import format_hms
@@ -39,9 +39,8 @@ def test_gdas_substitution():
 def test_hh_lead():
     template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%HH}h"
     filepath = "1987020103_A03h"
-    se = StringExtract(template,
-                           filepath)
-    out = se.parse_template()
+    out = parse_template(template,
+                         filepath)
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
@@ -49,9 +48,8 @@ def test_hh_lead():
 def test_hhh_lead():
     template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%HHH}h"
     filepath = "1987020103_A003h"
-    se = StringExtract(template,
-                           filepath)
-    out = se.parse_template()
+    out = parse_template(template,
+                         filepath)
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
@@ -59,9 +57,8 @@ def test_hhh_lead():
 def test_2h_lead():
     template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.2H}h"
     filepath = "1987020103_A03h"
-    se = StringExtract(template,
-                           filepath)
-    out = se.parse_template()
+    out = parse_template(template,
+                         filepath)
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
@@ -69,9 +66,8 @@ def test_2h_lead():
 def test_3h_lead():
     template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.3H}h"
     filepath = "1987020103_A003h"
-    se = StringExtract(template,
-                       filepath)
-    out = se.parse_template()
+    out = parse_template(template,
+                         filepath)
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
@@ -79,8 +75,8 @@ def test_3h_lead():
 def test_h_lead_no_pad_1_digit():
     template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
     filepath = "1987020103_A3h"
-    out = StringExtract(template,
-                        filepath).parse_template()
+    out = parse_template(template,
+                         filepath)
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
@@ -88,8 +84,8 @@ def test_h_lead_no_pad_1_digit():
 def test_h_lead_no_pad_2_digit():
     template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
     filepath = "1987020103_A12h"
-    out = StringExtract(template,
-                        filepath).parse_template()
+    out = parse_template(template,
+                         filepath)
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702011500")
 
@@ -97,8 +93,8 @@ def test_h_lead_no_pad_2_digit():
 def test_h_lead_no_pad_3_digit():
     template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
     filepath = "1987020103_A102h"
-    out = StringExtract(template,
-                       filepath).parse_template()
+    out = parse_template(template,
+                         filepath)
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702050900")
 
@@ -293,7 +289,7 @@ def test_multiple_valid_substitution_init_complex():
     assert(filename == expected_filename)
 
 # NOTE: this test has a shift in init time, which may not be supported
-#  StringExtract will currently error out if it finds a shift that is not
+#  parse_template will currently error out if it finds a shift that is not
 #  on valid time
 def test_shift_time():
     init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
@@ -303,7 +299,7 @@ def test_shift_time():
     assert(filename == expected_filename)
 
 # NOTE: this test has a shift in init time, which may not be supported
-#  StringExtract will currently error out if it finds a shift that is not
+#  parse_template will currently error out if it finds a shift that is not
 #  on valid time
 def test_shift_time_negative():
     init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
@@ -313,7 +309,7 @@ def test_shift_time_negative():
     assert(filename == expected_filename)
 
 # NOTE: this test has a shift in lead time, which may not be supported
-#  StringExtract will currently error out if it finds a shift that is not
+#  parse_template will currently error out if it finds a shift that is not
 #  on valid time
 def test_shift_time_lead_negative():
     init_string = datetime.datetime.strptime("2019020700", '%Y%m%d%H')
@@ -327,8 +323,7 @@ def test_shift_time_extract():
     valid_dt = datetime.datetime.strptime("2017060406", '%Y%m%d%H')
     templ = "{valid?fmt=%Y%m%d%H?shift=-21600}"
     filename = "2017060400"
-    se = StringExtract(templ, filename)
-    dt = se.parse_template()['valid']
+    dt = parse_template(templ, filename)['valid']
     assert(dt.strftime('%Y%m%d%H') == valid_dt.strftime('%Y%m%d%H'))
 
 def test_ccpa_template():
@@ -353,23 +348,20 @@ def test_ccpa_template():
 def test_filename_matches_template():
     template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
     filepath = "1987020103_dog_A03h"
-    se = StringExtract(template, filepath)
-    out = se.parse_template()
+    out = parse_template(template, filepath)
     ftime = out['valid'].strftime('%Y%m%d%H%M')
     assert(ftime == "198702010600")
 
 def test_filename_does_not_match_template():
     template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
     filepath = "1987020103_cat_A03h"
-    se = StringExtract(template, filepath)
-    out = se.parse_template()
+    out = parse_template(template, filepath)
     assert(out == None)
 
 def test_filename_does_not_match_template_end():
     template = "{init?fmt=%Y%m%d%H}_dog_A{lead?fmt=%HH}h"
     filepath = "1987020103_dog_A03d"
-    se = StringExtract(template, filepath)
-    out = se.parse_template()
+    out = parse_template(template, filepath)
     assert(out == None)
 
 def test_get_tags():

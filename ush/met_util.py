@@ -21,7 +21,7 @@ from os.path import dirname, realpath
 from dateutil.relativedelta import relativedelta
 
 from string_template_substitution import do_string_sub
-from string_template_substitution import StringExtract
+from string_template_substitution import parse_template
 from string_template_substitution import get_tags
 from gempak_to_cf_wrapper import GempakToCFWrapper
 import time_util
@@ -2573,25 +2573,28 @@ def get_filetype(filepath, logger=None):
 
 
 
-def get_time_from_file(logger, filepath, template):
+def get_time_from_file(filepath, template):
+    """! Extract time information from path using the filename template
+         Args:
+             @param filepath path to examine
+             @param template filename template to use to extract time information
+             @returns time_info dictionary with time information if successful, None if not
+    """
     if os.path.isdir(filepath):
         return None
 
-    se = StringExtract(template, filepath)
-
-    out = se.parse_template()
-    if se:
+    out = parse_template(template, filepath)
+    if out is not None:
         return out
-    else:
-        # check to see if zip extension ends file path, try again without extension
-        for ext in VALID_EXTENSIONS:
-            if filepath.endswith(ext):
-                se = StringExtract(template, filepath[:-len(ext)])
-                out = se.parse_template()
-                if se:
-                    return out
-        return None
 
+    # check to see if zip extension ends file path, try again without extension
+    for ext in VALID_EXTENSIONS:
+        if filepath.endswith(ext):
+            out = parse_template(template, filepath[:-len(ext)])
+            if out is not None:
+                return out
+
+    return None
 
 def preprocess_file(filename, data_type, config):
     """ Decompress gzip, bzip, or zip files or convert Gempak files to NetCDF
