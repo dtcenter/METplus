@@ -2577,7 +2577,7 @@ def get_time_from_file(logger, filepath, template):
     if os.path.isdir(filepath):
         return None
 
-    se = StringExtract(logger, template, filepath)
+    se = StringExtract(template, filepath)
 
     out = se.parse_template()
     if se:
@@ -2586,7 +2586,7 @@ def get_time_from_file(logger, filepath, template):
         # check to see if zip extension ends file path, try again without extension
         for ext in VALID_EXTENSIONS:
             if filepath.endswith(ext):
-                se = StringExtract(logger, template, filepath[:-len(ext)])
+                se = StringExtract(template, filepath[:-len(ext)])
                 out = se.parse_template()
                 if se:
                     return out

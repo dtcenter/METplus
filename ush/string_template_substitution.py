@@ -458,8 +458,7 @@ def do_string_sub(tmpl, **kwargs):
 class StringExtract(object):
     """!Class to pull out timing and other information from a filename based on
         the filename template"""
-    def __init__(self, log, temp, fstr):
-        self.logger = log
+    def __init__(self, temp, fstr):
         self.template = temp
         self.full_str = fstr
 
@@ -573,18 +572,16 @@ class StringExtract(object):
                             msg = 'Cannot apply a shift to template ' +\
                                   'item {} when processing inexact '.format(identifier) +\
                                   'times. Only {} is accepted'.format(VALID_STRING)
-                            self.logger.error(msg)
-                            exit(1)
+                            raise TypeError(msg)
 
                         shift = int(time_util.get_seconds_from_string(items[1], default_unit='S'))
 
                         # if shift has been set before (other than 0) and
                         # this shift differs, report error and exit
                         if valid_shift != 0 and shift != valid_shift:
-                            self.logger.error('Found multiple shifts for valid time' +
-                                              '{} differs from {}'
-                                              .format(shift, valid_shift))
-                            exit(1)
+                            raise TypeError('Found multiple shifts for valid time' +
+                                            '{} differs from {}'
+                                            .format(shift, valid_shift))
 
                         # save valid shift to apply to valid time later
                         valid_shift = shift
