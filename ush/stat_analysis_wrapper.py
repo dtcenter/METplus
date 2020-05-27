@@ -22,7 +22,7 @@ import re
 import subprocess
 import datetime
 import itertools
-import string_template_substitution as sts
+from string_template_substitution import do_string_sub
 from command_builder import CommandBuilder
 
 
@@ -786,10 +786,8 @@ class StatAnalysisWrapper(CommandBuilder):
                             )
         self.logger.debug("Building "+output_type+" filename from "
                           +filename_type+" template: "+filename_template)
-        ss = sts.StringSub(self.logger,
-                           filename_template,
-                           **stringsub_dict)
-        output_filename = ss.do_string_sub()
+        output_filename = do_string_sub(filename_template,
+                                        **stringsub_dict)
         if filename_type == 'default': 
             output_filename = output_filename+'_'+output_type+'.stat'
         return output_filename
@@ -825,10 +823,8 @@ class StatAnalysisWrapper(CommandBuilder):
                                                        lists_to_loop, 
                                                        lists_to_group, 
                                                        config_dict)
-            ss = sts.StringSub(self.logger,
-                               dir_path,
-                               **stringsub_dict)
-            dir_path_filled = ss.do_string_sub()
+            dir_path_filled = do_string_sub(dir_path,
+                                            **stringsub_dict)
         else:
             dir_path_filled = dir_path
         if '*' in dir_path_filled:

@@ -36,14 +36,6 @@ INIT_STRING = "init"
 DA_INIT_STRING = "da_init"
 OFFSET_STRING = "offset"
 
-# These three were added in response to the tropical cyclone use case
-DATE_STRING = "date"
-REGION_STRING = "region"
-CYCLONE_STRING = "cyclone"
-MISC_STRING = "misc"
-
-GLOBAL_LOGGER = None
-
 LENGTH_DICT = {'%Y': 4,
                '%m': 2,
                '%d': 2,
@@ -213,7 +205,87 @@ def add_to_dict(match, match_dict, full_str, new_len):
     # item was added or already existed in match dictionary
     return True
 
-class StringSub(object):
+def get_seconds_from_template(split_item, kwargs):
+    """!Get seconds value from tag that contains a shift or truncate item
+         Args:
+             @param split_item key/value from string sub tag to evalute, i.e. shift=-1H
+             @returns integer number of seconds that correspond to the item, i.e. -3600
+     """
+    shift_split_string = split_item.split(FORMATTING_VALUE_DELIMITER)
+
+    if len(shift_split_string) != 2:
+        return
+
+    valid_time = kwargs.get('valid',
+                            kwargs.get('now',
+                                       None))
+
+    seconds = shift_split_string[1]
+    return int(time_util.get_seconds_from_string(seconds,
+                                                 default_unit='S',
+                                                 valid_time=valid_time))
+
+def round_time_down(obj, truncate_seconds):
+    """!If template value needs to be truncated, round the value down
+        to the given truncate interval"""
+    if truncate_seconds == 0:
+        return obj
+
+    trunc = truncate_seconds
+    seconds = (obj.replace(tzinfo=None) - obj.min).seconds
+    rounding = seconds // trunc * trunc
+    new_obj = obj + datetime.timedelta(0, rounding-seconds,
+                                       -obj.microsecond)
+    return new_obj
+
+def handle_format_delimiter(split_string, idx, shift_seconds, truncate_seconds, kwargs):
+    """!Check for formatting/length request by splitting on
+        FORMATTING_VALUE_DELIMITER
+        split_string[1]
+        Args:
+            @param split_string holds the formatting/length
+              information (e.g. "fmt=%Y%m%d", "len=3")
+            @param idx index in split_string of the format item
+        Returns: Formatted string
+    """
+    format_split_string = \
+        split_string[idx].split(FORMATTING_VALUE_DELIMITER)
+
+    # Check for requested FORMAT_STRING
+    # format_split_string[0] holds the formatting/length
+    # value delimiter (e.g. "fmt", "len")
+    if format_split_string[0] == FORMAT_STRING:
+        obj = kwargs.get(split_string[0], None)
+
+        fmt = format_split_string[idx]
+        # if input is datetime object, format appropriately
+        if isinstance(obj, datetime.datetime):
+            # shift date time if set
+            obj = obj + datetime.timedelta(seconds=shift_seconds)
+
+            # truncate date time if set
+            obj = round_time_down(obj, truncate_seconds)
+
+            return obj.strftime(fmt)
+        # if input is relativedelta
+        elif isinstance(obj, relativedelta):
+            seconds = time_util.ti_get_seconds_from_relativedelta(obj)
+            if seconds is None:
+                raise TypeError('Year and month intervals not yet supported in string substitution')
+
+            return format_hms(fmt, seconds)
+        # if input is integer, format with H, M, and S
+        elif isinstance(obj, int):
+            obj += shift_seconds
+            return format_hms(fmt, obj)
+        # if string, format if possible
+        elif isinstance(obj, str):
+            return '{}'.format(obj)
+        else:
+            raise TypeError('Could not format item {} with format {} in {}'
+                            .format(obj, fmt, split_string))
+
+def do_string_sub(tmpl, **kwargs):
     """
     log - log object
     tmpl_str - template string to populate
@@ -241,106 +313,7 @@ class StringSub(object):
                  four-digit cyclone number (leading zeros)
        misc - any string
 
-    See the description of do_string_sub for further details.
-    """
-
-    def __init__(self, log, tmpl, **kwargs):
-
-        self.logger = log
-        self.tmpl = tmpl
-        self.kwargs = kwargs
-        self.shift_seconds = 0
-        self.truncate_seconds = 0
-
-        if self.kwargs is not None:
-            for key, value in kwargs.items():
-                setattr(self, key, value)
-
-    def get_seconds_from_template(self, split_item):
-        """!Get seconds value from tag that contains a shift or truncate item
-             Args:
-                 @param split_item key/value from string sub tag to evalute, i.e. shift=-1H
-                 @returns integer number of seconds that correspond to the item, i.e. -3600
-         """
-        shift_split_string = split_item.split(FORMATTING_VALUE_DELIMITER)
-
-        if len(shift_split_string) != 2:
-            return
-
-        valid_time = self.kwargs.get('valid',
-                                     self.kwargs.get('now',
-                                                     None))
-
-        seconds = shift_split_string[1]
-        return int(time_util.get_seconds_from_string(seconds,
-                                                     default_unit='S',
-                                                     valid_time=valid_time))
-
-    def round_time_down(self, obj):
-        """!If template value needs to be truncated, round the value down
-            to the given truncate interval"""
-        if self.truncate_seconds == 0:
-            return obj
-
-        trunc = self.truncate_seconds
-        seconds = (obj.replace(tzinfo=None) - obj.min).seconds
-        rounding = seconds // trunc * trunc
-        new_obj = obj + datetime.timedelta(0, rounding-seconds,
-                                           -obj.microsecond)
-        return new_obj
-
-    def handle_format_delimiter(self, split_string, idx):
-        """!Check for formatting/length request by splitting on
-            FORMATTING_VALUE_DELIMITER
-            split_string[1]
-            Args:
-                @param split_string holds the formatting/length
-                  information (e.g. "fmt=%Y%m%d", "len=3")
-                @param idx index in split_string of the format item
-            Returns: Formatted string
-        """
-        format_split_string = \
-            split_string[idx].split(FORMATTING_VALUE_DELIMITER)
-
-        # Check for requested FORMAT_STRING
-        # format_split_string[0] holds the formatting/length
-        # value delimiter (e.g. "fmt", "len")
-        if format_split_string[0] == FORMAT_STRING:
-            obj = self.kwargs.get(split_string[0], None)
-
-            fmt = format_split_string[idx]
-            # if input is datetime object, format appropriately
-            if isinstance(obj, datetime.datetime):
-                # shift date time if set
-                obj = obj + datetime.timedelta(seconds=self.shift_seconds)
-
-                # truncate date time if set
-                obj = self.round_time_down(obj)
-
-                return obj.strftime(fmt)
-            # if input is relativedelta
-            elif isinstance(obj, relativedelta):
-                seconds = time_util.ti_get_seconds_from_relativedelta(obj)
-                if seconds is None:
-                    self.logger.error('Year and month intervals not yet supported in string substitution')
-                    exit(1)
-                return format_hms(fmt, seconds)
-            # if input is integer, format with H, M, and S
-            elif isinstance(obj, int):
-                obj += self.shift_seconds
-                return format_hms(fmt, obj)
-            # if string, format if possible
-            elif isinstance(obj, str):
-                return '{}'.format(obj)
-            else:
-                self.logger.error('Could not format item {} with format {} in {}'
-                                  .format(obj, fmt, split_string))
-                exit(1)
-
-
-    def do_string_sub(self):
-
-        """Populates the specified template with information from the
+    Populates the specified template with information from the
            kwargs dictionary.  The template structure is comprised of
            a fixed string populated with template place-holders inside curly
            braces, for example {tmpl_str}.  The tmpl_str must be present as
@@ -383,98 +356,104 @@ class StringSub(object):
               misc:
                 fmt -a string that represents any other miscellaneous feature
                      of the track data, such as experiment name or some other descriptor
+    """
+    shift_seconds = 0
+    truncate_seconds = 0
 
+#        if kwargs is not None:
+#            for key, value in kwargs.items():
+#                setattr(self, key, value)
 
-        """
+    # The . matches any single character except newline, and the
+    # following + matches 1 or more occurrence of preceding expression.
+    # The ? after the .+ makes it a lazy match so that it stops
+    # after the first "}" instead of continuing to match as many
+    # characters as possible
 
-        # The . matches any single character except newline, and the
-        # following + matches 1 or more occurrence of preceding expression.
-        # The ? after the .+ makes it a lazy match so that it stops
-        # after the first "}" instead of continuing to match as many
-        # characters as possible
+    # findall searches through the string and finds all non-overlapping
+    # matches and returns the group
+    # match_list is a list with the contents being the data between the
+    # curly braces
+    match_list = re.findall(r'\{(.+?)\}', tmpl)
 
-        # findall searches through the string and finds all non-overlapping
-        # matches and returns the group
-        # match_list is a list with the contents being the data between the
-        # curly braces
-        match_list = re.findall(r'\{(.+?)\}', self.tmpl)
+    # finditer gets the start and end indices
+    # Iterate over each match to get the starting and ending indices
+    matches = re.finditer(r'\{(.+?)\}', tmpl)
+    match_start_end_list = []
+    for match in matches:
+        match_start_end_list.append((match.start(), match.end()))
 
-        # finditer gets the start and end indices
-        # Iterate over each match to get the starting and ending indices
-        matches = re.finditer(r'\{(.+?)\}', self.tmpl)
-        match_start_end_list = []
-        for match in matches:
-            match_start_end_list.append((match.start(), match.end()))
+    if len(match_list) == 0:
+        return tmpl
 
-        if len(match_list) == 0:
-            return self.tmpl
+    if len(match_list) != len(match_start_end_list):
+        # Log and exit
+        raise TypeError("match_list and match_start_end_list should " +
+                        "have the same length for template: " +
+                        tmpl)
 
-        if len(match_list) != len(match_start_end_list):
+    # A dictionary that will contain the string to replace (key)
+    # and the string to replace it with (value)
+    replacement_dict = {}
+
+    # Search for the FORMATTING_DELIMITER within the first string
+    for match in match_list:
+
+        string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + \
+                            TEMPLATE_IDENTIFIER_END
+        split_string = match.split(FORMATTING_DELIMITER)
+
+        # valid, init, lead, etc.
+        # print split_string[0]
+        # value e.g. 2016012606, 3
+
+        # split_string[0] holds the key (e.g. "init", "valid", etc)
+        if split_string[0] not in kwargs.keys():
             # Log and exit
-            self.logger.error("match_list and match_start_end_list should " +
-                              "have the same length for template: " +
-                              self.tmpl)
-            exit(1)
+            raise TypeError("The key " + split_string[0] +
+                            " was not passed to do_string_sub " +
+                            " for template: " + tmpl)
 
-        # A dictionary that will contain the string to replace (key)
-        # and the string to replace it with (value)
-        replacement_dict = {}
+        # if shift is set, get that value before handling formatting
+        for split_item in split_string:
+            if split_item.startswith(SHIFT_STRING):
+                shift_seconds = get_seconds_from_template(split_item, kwargs)
 
-        # Search for the FORMATTING_DELIMITER within the first string
-        for match in match_list:
+        # if truncate is set, get that value before handling formatting
+        for split_item in split_string:
+            if split_item.startswith(TRUNCATE_STRING):
+                truncate_seconds = get_seconds_from_template(split_item, kwargs)
 
-            string_to_replace = TEMPLATE_IDENTIFIER_BEGIN + match + \
-                                TEMPLATE_IDENTIFIER_END
-            split_string = match.split(FORMATTING_DELIMITER)
+        # format times appropriately and add to replacement_dict
+        formatted = False
+        for idx, split_item in enumerate(split_string):
+            if split_item.startswith(FORMAT_STRING):
+                replacement_dict[string_to_replace] = \
+                    handle_format_delimiter(split_string,
+                                            idx,
+                                            shift_seconds,
+                                            truncate_seconds,
+                                            kwargs)
+                formatted = True
 
-            # valid, init, lead, etc.
-            # print split_string[0]
-            # value e.g. 2016012606, 3
-
-            # split_string[0] holds the key (e.g. "init", "valid", etc)
-            if split_string[0] not in self.kwargs.keys():
-                # Log and exit
-                self.logger.error("The key " + split_string[0] +
-                                  " was not passed to StringSub " +
-                                  " for template: " + self.tmpl)
-                exit(1)
-
-            # if shift is set, get that value before handling formatting
-            for split_item in split_string:
-                if split_item.startswith(SHIFT_STRING):
-                    self.shift_seconds = self.get_seconds_from_template(split_item)
-
-            # if truncate is set, get that value before handling formatting
-            for split_item in split_string:
-                if split_item.startswith(TRUNCATE_STRING):
-                    self.truncate_seconds = self.get_seconds_from_template(split_item)
-
-            # format times appropriately and add to replacement_dict
-            formatted = False
-            for idx, split_item in enumerate(split_string):
-                if split_item.startswith(FORMAT_STRING):
-                    replacement_dict[string_to_replace] = \
-                        self.handle_format_delimiter(split_string, idx)
-                    formatted = True
-
-            # No formatting or length is requested
-            if not formatted:
-                # Add back the template identifiers to the matched
-                # string to replace and add the key, value pair to the
-                # dictionary
-                value = self.kwargs.get(split_string[0], None)
-                if isinstance(value, int):
-                    value = f"{value}S"
-                replacement_dict[string_to_replace] = value
+        # No formatting or length is requested
+        if not formatted:
+            # Add back the template identifiers to the matched
+            # string to replace and add the key, value pair to the
+            # dictionary
+            value = kwargs.get(split_string[0], None)
+            if isinstance(value, int):
+                value = f"{value}S"
+            replacement_dict[string_to_replace] = value
 
 
-            # reset shift seconds so it doesn't apply to next match
-            self.shift_seconds = 0
-            self.truncate_seconds = 0
+        # reset shift seconds so it doesn't apply to next match
+        shift_seconds = 0
+        truncate_seconds = 0
 
-        # Replace regex with properly formatted information
-        self.tmpl = multiple_replace(replacement_dict, self.tmpl)
-        return self.tmpl
+    # Replace regex with properly formatted information
+    return multiple_replace(replacement_dict, tmpl)
+
 
 class StringExtract(object):
     """!Class to pull out timing and other information from a filename based on
