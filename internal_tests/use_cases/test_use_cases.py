@@ -69,6 +69,7 @@ use_cases['met_tool_wrapper'] = [
 #                use_case_dir + "/met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/PCPCombine/PCPCombine_subtract.conf",
                 use_case_dir + "/met_tool_wrapper/PointStat/PointStat.conf",
+                use_case_dir + "/met_tool_wrapper/Point2Grid/Point2Grid.conf",
                 use_case_dir + "/met_tool_wrapper/PointStat/PointStat_once_per_field.conf",
                 use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf",
                 use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane_multi_field_multi_file.conf",
@@ -85,6 +86,9 @@ use_cases['met_tool_wrapper'] = [
 use_cases['convection_allowing_models'] = [
                 use_case_dir + "/model_applications/convection_allowing_models/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf",
                 use_case_dir + "/model_applications/convection_allowing_models/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf",
+                use_case_dir + "/model_applications/convection_allowing_models/EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.conf",
+                use_case_dir + "/model_applications/convection_allowing_models/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf",
+                use_case_dir + "/model_applications/convection_allowing_models/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereProb.conf",
 ]
 
 

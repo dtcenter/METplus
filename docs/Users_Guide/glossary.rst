@@ -225,6 +225,20 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
+   POINT_2_GRID_GAUSSIAN_DX
+     Gaussian dx value to add to the Point2Grid command line call with -gaussian_dx. Not added to call if unset or set to empty string.
+
+     | *Used by:* Point2Grid
+     | *Family:* config
+     | *Default:* None
+
+   POINT_2_GRID_GAUSSIAN_RADIUS
+     Gaussian radius value to add to the Point2Grid command line call with -gaussian_radius. Not added to call if unset or set to empty string.
+
+     | *Used by:* Point2Grid
+     | *Family:* config
+     | *Default:* None
+
    REGRID_DATA_PLANE_GAUSSIAN_DX
      Gaussian dx value to add to the RegridDataPlane command line call with -gaussian_dx. Not added to call if unset or set to empty string.
 
@@ -376,6 +390,48 @@ METplus Configuration Glossary
      Specify the observation output field name that is created by RegridDataPlane. The name corresponds to :term:`OBS_VAR<n>_NAME`. This is used when using Python Embedding as input to the MET tool, because the :term:`OBS_VAR<n>_NAME` defines the python script to call.
 
      | *Used by:* RegridDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_INPUT_FIELD_NAME
+     Specify the input field name that is read by Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_INPUT_FIELD_LEVEL
+     Specify the input level name that is read by Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_QC_FLAGS
+     Specify the qc flags name that is read by Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_ADP
+     Provides an additional Aerosol Detection Product when GOES 16/17 input and an AOD variable name is used.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_PROB_CAT_THRESH
+     Specify the probability threshold for practically perfect forecasts
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_VLD_THRESH
+     Specify the required ratio of valid data for regridding
+
+     | *Used by:* Point2Grid
      | *Family:* [config]
      | *Default:* None
 
@@ -1177,6 +1233,13 @@ METplus Configuration Glossary
      Used to set the regrid dictionary item 'to_grid' in the MET GridStat config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:* NONE
+
+   POINT_2_GRID_REGRID_TO_GRID
+     Used to set the regrid dictionary item 'to_grid' in the MET Point2Grid config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  Point2Grid
      | *Family:*  [config]
      | *Default:* NONE
 
@@ -4314,6 +4377,13 @@ METplus Configuration Glossary
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
      | *Default:*  None
+
+   POINT_2_GRID_REGRID_METHOD
+     Sets the gridding method used by point2grid.
+
+     | *Used by:*  Point2Grid
+     | *Family:*  [config]
+     | *Default:*
 
    REGRID_DATA_PLANE_METHOD
      Sets the method used by regrid_data_plane. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
