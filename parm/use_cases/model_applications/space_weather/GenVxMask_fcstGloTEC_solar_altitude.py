@@ -63,7 +63,7 @@ GenVxMask_fcstGloTEC_solar_altitude.conf
 # ------------------------
 #
 # | **Author:** Jonathan L. Vigh (National Center for Atmospheric Research / Research Applications Laboratory / Joint Numerical Testbed)
-# | **Last modified:** 21 May 2020
+# | **Last modified:** 26 May 2020
 #
 
 ##############################################################################
