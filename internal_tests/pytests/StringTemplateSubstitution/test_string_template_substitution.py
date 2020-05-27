@@ -25,16 +25,6 @@ def test_offset_hour():
     offset_hour = do_string_sub(templ, offset=offset)
     assert (offset_hour == expected_hour)
 
-
-@pytest.mark.parametrize(
-    'key, value', [
-        ('00', '20180103060000'),
-        ('03', '20180103030000'),
-        ('06', '20180103000000'),
-        ('72', '20171231060000')
-    ]
-)
-
 def test_gdas_substitution():
     # Test that the string template substitution works correctly for GDAS
     # prepbufr files, which do not make use of the cycle hour or the offset
