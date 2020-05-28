@@ -178,28 +178,28 @@ def set_output_dict_from_time_info(time_dict, output_dict, key):
                                              time_dict['H'],
                                              time_dict['M'])
 
-def add_to_dict(match, match_dict, full_str, new_len):
+def add_to_dict(match, match_dict, filepath, new_len):
     """!Add extracted information to match dictionary
         Args:
             @param match key for match dictionary containing tag name and units
-                   i.e. 'init_H' or 'lead_S'
+                   i.e. 'init+H' or 'lead+S'
             @param match_dict dictionary of info extracted from filename
-            @param full_str rest of filename string to be parsed
-            @param new_len length of full_str to extract
+            @param filepath rest of filename string to be parsed
+            @param new_len length of filepath to extract
         Returns: True if info was added to dictionary or it already exists and
                  matched newly parsed info, False if info could not be extracted or
                  if info differed from info already in match dictionary
     """
     # if the time info being extracted is not a number, do not add to dict
-    if not full_str[0:new_len].isdigit():
+    if not filepath[0:new_len].isdigit():
         return False
 
     # if match is not already in match dictionary, add it
     # if it exists and is different than what is attempted to be stored
     #  return False
     if match not in match_dict.keys():
-        match_dict[match] = full_str[0:new_len]
-    elif match_dict[match].zfill(new_len) != full_str[0:new_len]:
+        match_dict[match] = filepath[0:new_len]
+    elif match_dict[match].zfill(new_len) != filepath[0:new_len]:
         return False
 
     # item was added or already existed in match dictionary
@@ -451,12 +451,12 @@ def do_string_sub(tmpl, **kwargs):
     return multiple_replace(replacement_dict, tmpl)
 
 
-def get_fmt_info(fmt, full_str, match_dict, identifier):
+def get_fmt_info(fmt, filepath, match_dict, identifier):
     """!Helper function for parse_template. Reads format information from tag and
         populates dictionary with extracted values.
         Args:
             @param fmt formatting values from template tag, i.e. %Y%m%d
-            @param full_str rest of text from filename that can be parsed
+            @param filepath rest of text from filename that can be parsed
             @param match_dict dictionary of extracted information. Key is made up
                    of the identifier and the format tag, i.e. init_H or valid_M.
                    Value is the extracted information, i.e. 19870201
@@ -477,12 +477,12 @@ def get_fmt_info(fmt, full_str, match_dict, identifier):
                identifier == 'level':
                 # look forward until non-digit is found
                 new_len = 0
-                while full_str[new_len].isdigit():
+                while filepath[new_len].isdigit():
                     new_len += 1
 
             length += new_len
             if not add_to_dict(identifier+'+'+match[1:], match_dict,
-                               full_str, new_len):
+                               filepath, new_len):
                 return -1
         # if match starts with key, find new length, i.e. %Y: or %HH
         elif match[0:2] in LENGTH_DICT.keys():
@@ -497,7 +497,7 @@ def get_fmt_info(fmt, full_str, match_dict, identifier):
                     new_len = LENGTH_DICT[match_begin]
                     length += new_len
                 if not add_to_dict(identifier+'+'+match_char, match_dict,
-                                   full_str, new_len):
+                                   filepath, new_len):
                     return -1
 
                 if len(match_len.group(2)) > 0:
@@ -510,21 +510,46 @@ def get_fmt_info(fmt, full_str, match_dict, identifier):
                 new_len = int(match_len.group(1))
                 length += new_len
                 if not add_to_dict(identifier+'+'+match_len.group(2)[0],
-                                   match_dict, full_str, new_len):
+                                   match_dict, filepath, new_len):
                     return -1
             else:
                 return -1
 
-        full_str = full_str[new_len+extra_len:]
+        filepath = filepath[new_len+extra_len:]
 
     return length
 
-def parse_template(template, full_str):
+def parse_template(template, filepath):
     """!Extract time information from path using the filename template
          Args:
              @param template filename template to use to extract time information
-             @param full_str path to examine
+             @param filepath path to examine
              @returns time_info dictionary with time information if successful, None if not"""
+
+    match_dict, valid_shift = populate_match_dict(template, filepath)
+    if match_dict is None:
+        return None
+
+    # combine common items and get datetime
+    output_dict = populate_output_dict(match_dict, valid_shift)
+
+    # fill in the rest of the time info dictionary items with ti_calculate
+    time_info = time_util.ti_calculate(output_dict)
+
+    return time_info
+
+def populate_match_dict(template, filepath):
+    """! Use template to extract time information from filepath, add each value to a dictionary.
+         Populates a dictionary with keys that contain tag name + time type, i.e. init+Y, valid+M, or lead+S,
+         with string values containing the number extracted from the filepath. Also determines the shift amount
+         for valid time if it was found, i.e. {valid?fmt=%Y%m%d?shift=-30}. Valid shift will be 0 if no shift.
+         Note: valid time values will not have the shift applied.
+         Args:
+             @param template filename template to use to find time information
+             @param filepath path to examine
+             @returns tuple of match dictionary and valid shift value if success, i.e. ({'init+Y': '2019'}, -30)
+              Returns (None, None) if could not extract time info
+    """
     template_len = len(template)
     i = 0
     str_i = 0
@@ -541,7 +566,7 @@ def parse_template(template, full_str):
             #  are the same, return None if they differ
             #  reset both variables if they are the same
             if between_template != between_filename:
-                return None
+                return None, None
             else:
                 between_template = ''
                 between_filename = ''
@@ -554,10 +579,10 @@ def parse_template(template, full_str):
                 items = section.split('=')
                 if items[0] == 'fmt':
                     fmt = items[1]
-                    fmt_len = get_fmt_info(fmt, full_str[str_i:],
+                    fmt_len = get_fmt_info(fmt, filepath[str_i:],
                                            match_dict, identifier)
                     if fmt_len == -1:
-                        return None
+                        return None, None
                     # extract string that corresponds to format
                 if items[0] == SHIFT_STRING:
                     # don't allow shift on any identifier except valid
@@ -587,25 +612,41 @@ def parse_template(template, full_str):
             # the template, do not return a time if it does not match
 
             # if next index exceeds length of the file string, return
-            if str_i >= len(full_str):
-                return None
+            if str_i >= len(filepath):
+                return None, None
 
             between_template += template[i]
-            between_filename += full_str[str_i]
+            between_filename += filepath[str_i]
 
-            # increment indices for template and full_str
+            # increment indices for template and filepath
             i += 1
             str_i += 1
 
     # check again if between text matches at the end of the loop to
     # ensure that no text after the last template differs
     if between_template != between_filename:
-        return None
+        return None, None
 
-    # combine common items and get datetime
+    return match_dict, valid_shift
+
+def populate_output_dict(match_dict, valid_shift):
     output_dict = {}
 
-    valid = {
+    for time_type in [VALID_STRING, INIT_STRING, DA_INIT_STRING]:
+        if time_type == VALID_STRING:
+            time_shift = valid_shift
+        else:
+            time_shift = 0
+
+        add_date_matches_to_output_dict(match_dict, output_dict, time_type, time_shift)
+
+    add_lead_matches_to_output_dict(match_dict, output_dict)
+    add_offset_matches_to_output_dict(match_dict, output_dict)
+
+    return output_dict
+
+def add_date_matches_to_output_dict(match_dict, output_dict, time_type, valid_shift=0):
+    time_values = {
         'Y': -1,
         'y': -1,
         'm': -1,
@@ -615,54 +656,23 @@ def parse_template(template, full_str):
         'M': 0,
         'b': -1,
     }
-    init = {
-        'Y': -1,
-        'y': -1,
-        'm': -1,
-        'd': -1,
-        'j': -1,
-        'H': 0,
-        'M': 0,
-        'b': -1,
-    }
-    da_init = {
-        'Y': -1,
-        'y': -1,
-        'm': -1,
-        'd': -1,
-        'j': -1,
-        'H': 0,
-        'M': 0,
-        'b': -1,
-    }
+
+    for key, value in match_dict.items():
+        if key.startswith(time_type):
+            time_values[key.split('+')[1]] = int(value)
+
+    set_output_dict_from_time_info(time_values, output_dict, time_type)
+
+    # shift valid time if applicable
+    if valid_shift:
+        output_dict[time_type] -= datetime.timedelta(seconds=valid_shift)
+
+def add_lead_matches_to_output_dict(match_dict, output_dict):
     lead = {
         'H': 0,
         'M': 0,
         'S': 0,
     }
-    offset = 0
-
-    for key, value in match_dict.items():
-        if key.startswith(VALID_STRING):
-            valid[key.split('+')[1]] = int(value)
-
-    set_output_dict_from_time_info(valid, output_dict, 'valid')
-
-    # shift valid time if applicable
-    if valid_shift != 0:
-        output_dict['valid'] -= datetime.timedelta(seconds=valid_shift)
-
-    for key, value in match_dict.items():
-        if key.startswith(INIT_STRING):
-            init[key.split('+')[1]] = int(value)
-
-    set_output_dict_from_time_info(init, output_dict, 'init')
-
-    for key, value in match_dict.items():
-        if key.startswith(DA_INIT_STRING):
-            da_init[key.split('+')[1]] = int(value)
-
-    set_output_dict_from_time_info(da_init, output_dict, 'da_init')
 
     for key, value in match_dict.items():
         if key.startswith(LEAD_STRING):
@@ -671,11 +681,11 @@ def parse_template(template, full_str):
     lead_seconds = lead['H'] * 3600 + lead['M'] * 60 + lead['S']
     output_dict['lead'] = lead_seconds
 
+def add_offset_matches_to_output_dict(match_dict, output_dict):
+    offset = 0
+
     for key, value in match_dict.items():
         if key.startswith(OFFSET_STRING):
             offset = int(value)
 
     output_dict['offset_hours'] = offset
-
-    time_info = time_util.ti_calculate(output_dict)
-    return time_info

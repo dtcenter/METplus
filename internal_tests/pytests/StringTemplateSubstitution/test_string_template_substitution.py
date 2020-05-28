@@ -1,13 +1,16 @@
 #!/usr/bin/env python
 
 import pytest
+import logging
+import datetime
+
 from string_template_substitution import do_string_sub
 from string_template_substitution import parse_template
 from string_template_substitution import get_tags
 from string_template_substitution import format_one_time_item
 from string_template_substitution import format_hms
-import logging
-import datetime
+from string_template_substitution import add_to_dict
+from string_template_substitution import populate_match_dict
 
 def test_cycle_hour():
     cycle_string = 0
@@ -452,3 +455,104 @@ def test_underscore_in_time_fmt():
     expected_filename = "20170604_010203"
     filename = do_string_sub(templ, valid=valid_string)
     assert(filename == expected_filename)
+
+@pytest.mark.parametrize(
+    'match, match_dict, full_str, new_len, expected_result', [
+        ('init+Y', {}, '2019.02.01.12.and.some.more.stuff', 4, True),
+        ('init+Y', {'init+Y': '2019'}, '2019.02.01.12.and.some.more.stuff', 4, True),
+        ('init+Y', {'init+Y': '2020'}, '2019.02.01.12.and.some.more.stuff', 4, False),
+        ('init+Y', {}, '20blah19.02.01.12.and.some.more.stuff', 4, False),
+        ('valid+H', {}, '02.01.12.and.some.more.stuff', 2, True),
+        ('valid+H', {'valid+H': '2'}, '02.01.12.and.some.more.stuff', 2, True),
+        ('valid+H', {'valid+H': '03'}, '02.01.12.and.some.more.stuff', 4, False),
+        ('valid+H', {}, 'blah.01.12.and.some.more.stuff', 2, False),
+        ('valid+H', {'init+Y': '2019', 'valid+H': '2'}, '02.01.12.and.some.more.stuff', 2, True),
+    ]
+)
+def test_add_to_dict(match, match_dict, full_str, new_len, expected_result):
+    assert(add_to_dict(match, match_dict, full_str, new_len) == expected_result)
+
+@pytest.mark.parametrize(
+    'template, filepath, expected_match_dict, expected_valid_shift', [
+        # test valid time extraction
+        ('file.{valid?fmt=%Y%m%d%H}.out',
+         'file.2019020112.out',
+         {'valid+Y': '2019',
+          'valid+m': '02',
+          'valid+d': '01',
+          'valid+H': '12',},
+          0),
+        # test init and lead time extraction
+        ('file.{init?fmt=%Y%m%d%H}.f{lead?fmt=%H}.out',
+         'file.2019020112.f03.out',
+         {'init+Y': '2019',
+          'init+m': '02',
+          'init+d': '01',
+          'init+H': '12',
+          'lead+H': '03'},
+         0),
+        # test init and lead time extraction with 3 digit lead
+        ('file.{init?fmt=%Y%m%d%H}.f{lead?fmt=%3H}.out',
+         'file.2019020112.f003.out',
+         {'init+Y': '2019',
+          'init+m': '02',
+          'init+d': '01',
+          'init+H': '12',
+          'lead+H': '003'},
+         0),
+        # test shift is extracted from valid correctly
+        ('file.{valid?fmt=%Y%m%d%H?shift=-30}.out',
+         'file.2019020112.out',
+         {'valid+Y': '2019',
+          'valid+m': '02',
+          'valid+d': '01',
+          'valid+H': '12', },
+         -30),
+        # test TypeError occurs if shift applied to something other than valid
+        ('file.{init?fmt=%Y%m%d%H?shift=-30}.f{lead?fmt=%H}.out',
+         'file.2019020112.f03.out',
+         None,
+         None),
+        # TODO: test TypeError if valid time has 2 different shift values
+        ('file.{valid?fmt=%Y%m%d%H?shift=-30}.{valid?fmt=%Y?shift=60}.out',
+         'file.2019020112.2019.out',
+         None,
+         None),
+    ]
+)
+def test_populate_match_dict(template, filepath, expected_match_dict, expected_valid_shift):
+    try:
+        match_dict, valid_shift = populate_match_dict(template, filepath)
+
+        # if expecting match_dict to be None, assert that actual is also None
+        if expected_match_dict is None:
+            assert(match_dict is None)
+        elif match_dict is None:
+            # if expected is not None, fail if actual is None
+            assert(False)
+
+        num_keys = len(match_dict.keys())
+        expected_num_keys = len(expected_match_dict.keys())
+        if num_keys != expected_num_keys:
+            print(f"Number of match_dict keys do not match. Actual: {num_keys}, Expected: {expected_num_keys}")
+            print(f"Found: {match_dict}")
+            print(f"Expected: {expected_match_dict}")
+            assert(False)
+
+        for key, value in match_dict.items():
+            if key not in expected_match_dict:
+                print(f"Key {key} not found in expected match_dict: {expected_match_dict}")
+                assert(False)
+
+            if value != expected_match_dict[key]:
+                print(f"Match dict value from {key} does not match expected value")
+                assert(False)
+
+        if valid_shift != expected_valid_shift:
+            print(f"Incorrect valid shift. Actual {valid_shift}, Expected: {expected_valid_shift}")
+            assert(False)
+
+        assert(True)
+
+    except TypeError:
+        assert(expected_match_dict is None and expected_valid_shift is None)
