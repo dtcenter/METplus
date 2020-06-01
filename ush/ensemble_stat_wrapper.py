@@ -48,10 +48,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_ENSEMBLE_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
-        c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
-                                                       'ENSEMBLE_STAT_ONCE_PER_FIELD',
-                                                       False)
-
         c_dict['ENS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'ENS_ENSEMBLE_STAT_INPUT_DATATYPE', '')
 
@@ -157,16 +153,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['ENS_FILE_TYPE'] = ''
         c_dict['FCST_FILE_TYPE'] = ''
         c_dict['OBS_FILE_TYPE'] = ''
+        c_dict['VAR_LIST_OPTIONAL'] = True
 
         return c_dict
-
-    # var_info not used but needed to match signature of parent class call
-    # pylint:disable=unused-argument
-    def run_at_time_one_field(self, time_info, var_info):
-        self.log_error("run_at_time_one_field not implemented yet for {}"
-                       .format(self.app_name))
-        exit()
-
 
     def run_at_time_all_fields(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination
