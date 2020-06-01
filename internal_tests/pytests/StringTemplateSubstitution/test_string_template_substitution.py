@@ -11,6 +11,7 @@ from string_template_substitution import format_one_time_item
 from string_template_substitution import format_hms
 from string_template_substitution import add_to_dict
 from string_template_substitution import populate_match_dict
+from string_template_substitution import get_fmt_info
 
 def test_cycle_hour():
     cycle_string = 0
@@ -530,6 +531,7 @@ def test_populate_match_dict(template, filepath, expected_match_dict, expected_v
         elif match_dict is None:
             # if expected is not None, fail if actual is None
             assert(False)
+            return
 
         num_keys = len(match_dict.keys())
         expected_num_keys = len(expected_match_dict.keys())
@@ -556,3 +558,26 @@ def test_populate_match_dict(template, filepath, expected_match_dict, expected_v
 
     except TypeError:
         assert(expected_match_dict is None and expected_valid_shift is None)
+@pytest.mark.parametrize(
+    'fmt, filepath, identifier, expected_fmt_len, expected_match_dict', [
+        # test valid time extraction
+        ('%Y%m%d',
+         '20200201.more',
+         'valid',
+         8,
+         {'valid+Y': '2020', 'valid+m': '02', 'valid+d': '01',},),
+    ]
+)
+def test_get_fmt_info(fmt, filepath, identifier, expected_fmt_len, expected_match_dict):
+    match_dict = {}
+    fmt_len = get_fmt_info(fmt, filepath, match_dict, identifier)
+    if fmt_len != expected_fmt_len:
+        print(f"FMT length: {fmt_len}, match_dict: {match_dict}")
+        assert(False)
+
+    if match_dict != expected_match_dict:
+        print(f"Match Dictionary: {match_dict}")
+        print(f"Expected Dictionary: {expected_match_dict}")
+        assert(False)
+
+    assert(True)
