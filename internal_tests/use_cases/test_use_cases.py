@@ -76,6 +76,7 @@ use_cases['met_tool_wrapper'] = [
                 use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane_multi_field_one_file.conf",
                 use_case_dir + "/met_tool_wrapper/RegridDataPlane/RegridDataPlane_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/StatAnalysis/StatAnalysis.conf",
+                use_case_dir + "/met_tool_wrapper/StatAnalysis/StatAnalysis_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis.conf",
                 use_case_dir + "/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_extra_tropical.conf",
