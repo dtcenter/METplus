@@ -151,27 +151,27 @@ matrix:
       python: 3.7
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_met_tool_wrapper.sh
-    - name: "Use Case Tests - precipitation"
-      python: 3.7
-      script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh precipitation
-    - name: "Use Case Tests - convection_allowing_models"
-      python: 3.7
-      script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh convection_allowing_models
     - name: "Use Case Tests - medium_range"
       python: 3.7
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range
-    - name: "Use Case Tests - s2s, space_weather, tc_and_extra_tc"
-      python: 3.7
-      script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh s2s space_weather tc_and_extra_tc
     - name: "Use Case Tests - cryosphere"
       python: 3.7
       script:
         # add travis_wait before command because a case takes longer than 10 minutes to return
         - travis_wait 30 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh cryosphere
+    - name: "Use Case Tests - convection_allowing_models"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh convection_allowing_models
+    - name: "Use Case Tests - precipitation"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh precipitation
+    - name: "Use Case Tests - s2s, space_weather, tc_and_extra_tc"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh s2s space_weather tc_and_extra_tc
 
   # stage 1 fails due to doc8 has errors.
   # This allows stage 1 to fail so the build can continue.
