@@ -89,6 +89,7 @@ use_cases['convection_allowing_models'] = [
                 use_case_dir + "/model_applications/convection_allowing_models/EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.conf",
                 use_case_dir + "/model_applications/convection_allowing_models/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf",
                 use_case_dir + "/model_applications/convection_allowing_models/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereProb.conf",
+                use_case_dir + "/model_applications/convection_allowing_models/Point2Grid_ObsOnly_obsLSR_PracticallyPerfect.conf",
 ]
 
 
