@@ -14,7 +14,7 @@ from metplus.util.config import config_metplus
 from metplus.wrappers.pb2nc_wrapper import PB2NCWrapper
 from metplus.util import met_util as util
 from metplus.util import time_util
-from metplus.util.config.string_template_substitution import StringSub
+from metplus.util import do_string_sub
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
@@ -194,9 +194,8 @@ def test_find_input_files(offsets, offset_to_find):
         input_dict['offset'] = int(offset * 3600)
         time_info = time_util.ti_calculate(input_dict)
 
-        create_file = StringSub(pb.logger,
-                                pb.c_dict['OBS_INPUT_TEMPLATE'],
-                                **time_info).do_string_sub()
+        create_file = do_string_sub(pb.c_dict['OBS_INPUT_TEMPLATE'],
+                                    **time_info)
         create_fullpath = os.path.join(fake_input_dir, create_file)
         open(create_fullpath, 'a').close()
 

@@ -16,7 +16,7 @@ import os
 
 from ..util import metplus_check_python_version
 from ..util import met_util as util
-from ..util import StringSub
+from ..util import do_string_sub
 from ..util import time_util
 from . import CommandBuilder
 
@@ -94,15 +94,13 @@ class GempakToCFWrapper(CommandBuilder):
         output_template = self.config.getraw('filename_templates',
                                              'GEMPAKTOCF_OUTPUT_TEMPLATE')
 
-        infile = StringSub(self.logger,
-                           input_template,
-                           valid=valid_time).do_string_sub()
+        infile = do_string_sub(input_template,
+                               valid=valid_time)
         infile = os.path.join(input_dir, infile)
         self.infiles.append(infile)
 
-        outfile = StringSub(self.logger,
-                            output_template,
-                            valid=valid_time).do_string_sub()
+        outfile = do_string_sub(output_template,
+                                valid=valid_time)
         outfile = os.path.join(output_dir, outfile)
 
         if os.path.exists(outfile) and \

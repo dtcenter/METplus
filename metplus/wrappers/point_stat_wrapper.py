@@ -17,7 +17,7 @@ import os
 from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
-from ..util import StringSub
+from ..util import do_string_sub
 from . import CompareGriddedWrapper
 
 class PointStatWrapper(CompareGriddedWrapper):
@@ -122,9 +122,8 @@ class PointStatWrapper(CompareGriddedWrapper):
     def add_obs_valid_args(self, time_info):
         for ext in ['BEG', 'END']:
             if self.c_dict[f'OBS_VALID_{ext}']:
-                obs_valid = StringSub(self.logger,
-                                      self.c_dict[f'OBS_VALID_{ext}'],
-                                      **time_info).do_string_sub()
+                obs_valid = do_string_sub(self.c_dict[f'OBS_VALID_{ext}'],
+                                          **time_info)
                 self.args.append(f"-obs_valid_{ext.lower()} {obs_valid}")
 
     def set_environment_variables(self, fcst_field=None, obs_field=None, time_info=None):

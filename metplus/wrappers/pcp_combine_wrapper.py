@@ -18,7 +18,7 @@ import datetime
 from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
-from ..util.config import string_template_substitution as sts
+from ..util import do_string_sub
 from . import ReformatGriddedWrapper
 
 '''!@namespace PCPCombineWrapper
@@ -232,11 +232,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             input_dict['lead_seconds'] = forecast_lead
             time_info = time_util.ti_calculate(input_dict)
             time_info['custom'] = self.c_dict['CUSTOM_STRING']
-            fSts = sts.StringSub(self.logger,
-                                 template,
+            fSts = do_string_sub(template,
                                  **time_info)
             search_file = os.path.join(self.input_dir,
-                                       fSts.do_string_sub())
+                                       fSts)
 
             self.logger.debug(f"Looking for {search_file}")
 
@@ -267,12 +266,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         for i in range(0, times_per_file+1):
             search_time = time_info['valid'] - datetime.timedelta(hours=(i * data_interval))
             # check if file exists
-            dSts = sts.StringSub(self.logger,
-                                 file_template,
+            dSts = do_string_sub(file_template,
                                  valid=search_time,
                                  custom=self.c_dict['CUSTOM_STRING'])
             search_file = os.path.join(self.input_dir,
-                                       dSts.do_string_sub())
+                                       dSts)
             search_file = util.preprocess_file(search_file,
                                             self.c_dict[data_src+\
                                               '_INPUT_DATATYPE'],
@@ -306,7 +304,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if fname is None:
             addon = time_util.time_string_to_met_time(accum, default_unit='S')
         else:
-            fname = sts.StringSub(self.logger, fname, **search_time_info).do_string_sub()
+            fname = do_string_sub(fname, **search_time_info)
             addon = "'name=\"" + fname + "\";"
 
             # if name is a python script, don't set level
@@ -326,10 +324,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             return search_accum
 
         # perform string substitution on name in case it uses filename templates
-        field_name = sts.StringSub(self.logger,
-                                   field_name,
+        field_name = do_string_sub(field_name,
                                    valid=search_time,
-                                   custom=self.c_dict['CUSTOM_STRING']).do_string_sub()
+                                   custom=self.c_dict['CUSTOM_STRING'])
         addon = "'name=\"" + field_name + "\";"
 
         if not util.is_python_script(field_name) and field_level is not None:
@@ -339,9 +336,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             search_time_info = {'valid': search_time,
                                 'custom': self.c_dict['CUSTOM_STRING']}
 
-            field_extra = sts.StringSub(self.logger,
-                                        field_extra,
-                                        **search_time_info).do_string_sub()
+            field_extra = do_string_sub(field_extra,
+                                        **search_time_info)
 
             field_extra = field_extra.replace('"', '\"')
             addon += f" {field_extra}"
@@ -370,10 +366,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         time_info = time_util.ti_calculate(input_dict)
         time_info['custom'] = self.c_dict['CUSTOM_STRING']
-        input_file = sts.StringSub(self.logger,
-                                   in_template,
+        input_file = do_string_sub(in_template,
                                    level=int(search_accum),
-                                   **time_info).do_string_sub()
+                                   **time_info)
         input_path = os.path.join(self.input_dir, input_file)
 
         return util.preprocess_file(input_path,
@@ -385,9 +380,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         search_time_dict = {'valid': search_time, 'lead_seconds': lead}
         search_time_info = time_util.ti_calculate(search_time_dict)
         search_time_info['custom'] = self.c_dict['CUSTOM_STRING']
-        amount = sts.StringSub(self.logger,
-                               accum_dict['template'],
-                               **search_time_info).do_string_sub()
+        amount = do_string_sub(accum_dict['template'],
+                               **search_time_info)
         amount = time_util.get_seconds_from_string(amount, default_unit='S', valid_time=search_time)
 
         # if bucket interval is provided, adjust the accumulation amount
@@ -690,20 +684,17 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                           f"from {time_util.ti_get_lead_string(lead, False)}.")
 
         # set output file information
-        outSts = sts.StringSub(self.logger,
-                               out_template,
-                               level=accum,
-                               **time_info)
-        out_file = outSts.do_string_sub()
+        out_file = do_string_sub(out_template,
+                                 level=accum,
+                                 **time_info)
         self.outfile = out_file
         self.outdir = out_dir
 
         # get first file
-        pcpSts1 = sts.StringSub(self.logger,
-                                in_template,
+        pcpSts1 = do_string_sub(in_template,
                                 level=accum,
                                 **time_info)
-        file1_expected = os.path.join(in_dir, pcpSts1.do_string_sub())
+        file1_expected = os.path.join(in_dir, pcpSts1)
         file1 = util.preprocess_file(file1_expected,
                                      self.c_dict[data_src+'_INPUT_DATATYPE'],
                                      self.config)
@@ -730,11 +721,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if hasattr(time_info, 'custom'):
             time_info2['custom'] = time_info['custom']
 
-        pcpSts2 = sts.StringSub(self.logger,
-                                in_template,
+        pcpSts2 = do_string_sub(in_template,
                                 level=accum,
                                 **time_info2)
-        file2_expected = os.path.join(in_dir, pcpSts2.do_string_sub())
+        file2_expected = os.path.join(in_dir, pcpSts2)
         file2 = util.preprocess_file(file2_expected,
                                      self.c_dict[data_src+'_INPUT_DATATYPE'],
                                      self.config)
@@ -744,9 +734,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             return None
 
         if self.c_dict[data_src+'_INPUT_DATATYPE'] != 'GRIB':
-            field_name_1 = sts.StringSub(self.logger, field_name, **time_info).do_string_sub()
+            field_name_1 = do_string_sub(field_name, **time_info)
             lead = "'name=\"" + field_name_1 + "\";'"
-            field_name_2 = sts.StringSub(self.logger, field_name, **time_info2).do_string_sub()
+            field_name_2 = do_string_sub(field_name, **time_info2)
             lead2 = "'name=\"" + field_name_2 + "\";'"
             # TODO: need to add level if NetCDF input - how to specify levels for each
         else:
@@ -800,9 +790,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.field_level = self.c_dict[f'{data_src}_LEVELS'][0]
 
         if self.c_dict[f'{data_src}_OPTIONS']:
-            self.field_extra = sts.StringSub(self.logger,
-                                             self.c_dict[f'{data_src}_OPTIONS'][0],
-                                             **time_info).do_string_sub()
+            self.field_extra = do_string_sub(self.c_dict[f'{data_src}_OPTIONS'][0],
+                                             **time_info)
 
         init_time = time_info['init'].strftime('%Y%m%d_%H%M%S')
         valid_time = time_info['valid'].strftime('%Y%m%d_%H%M%S')
@@ -828,10 +817,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.pcp_regex = in_regex
         self.outdir = out_dir
 
-        pcpSts = sts.StringSub(self.logger,
-                                out_template,
-                                **time_info)
-        pcp_out = pcpSts.do_string_sub()
+        pcp_out = do_string_sub(out_template,
+                               **time_info)
         self.outfile = pcp_out
 
         return self.get_command()
@@ -882,10 +869,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         self.outdir = out_dir
         time_info['level'] = int(accum_seconds)
-        pcpSts = sts.StringSub(self.logger,
-                               out_template,
-                               **time_info)
-        pcp_out = pcpSts.do_string_sub()
+        pcp_out = do_string_sub(out_template,
+                                **time_info)
         self.outfile = pcp_out
         self.args.append("-name " + field_name + "_" + accum_string)
         return self.get_command()
@@ -911,9 +896,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.output_name = ','.join(self.output_name)
 
         if self.c_dict[f"{data_src}_OPTIONS"]:
-            self.field_extra = sts.StringSub(self.logger,
-                                             self.c_dict[f'{data_src}_OPTIONS'][0],
-                                             **time_info).do_string_sub()
+            self.field_extra = do_string_sub(self.c_dict[f'{data_src}_OPTIONS'][0],
+                                             **time_info)
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
@@ -942,10 +926,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # set output
         self.outdir = out_dir
         time_info['level'] = lookback_seconds
-        psts = sts.StringSub(self.logger,
-                             out_template,
+        pcp_out = do_string_sub(out_template,
                              **time_info)
-        pcp_out = psts.do_string_sub()
         self.outfile = pcp_out
 
         # set STAT_LIST for data type (FCST/OBS)
@@ -961,7 +943,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
           @rtype string
           @return path to output file"""
         command_template = self.config.getraw('config', data_src + '_PCP_COMBINE_COMMAND')
-        self.user_command = sts.StringSub(self.logger, command_template, **time_info).do_string_sub()
+        self.user_command = do_string_sub(command_template, **time_info)
 
         # get output accumulation in case output template uses level
         accum_string = '0'
@@ -976,9 +958,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # add output path to user defined command
         self.outdir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
 
-        self.outfile = sts.StringSub(self.logger,
-                                     out_template,
-                                     **time_info).do_string_sub()
+        self.outfile = do_string_sub(out_template,
+                                     **time_info)
 
         out_path = self.get_output_path()
 

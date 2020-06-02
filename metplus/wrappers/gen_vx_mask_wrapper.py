@@ -18,7 +18,7 @@ from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
-from ..util import StringSub
+from ..util import do_string_sub
 
 '''!@namespace GenVxMaskWrapper
 @brief Wraps the GenVxMask tool to reformat ascii format to NetCDF
@@ -189,9 +189,8 @@ class GenVxMaskWrapper(CommandBuilder):
 
             # set mask input template and command line arguments
             self.c_dict['MASK_INPUT_TEMPLATE'] = mask_template
-            self.args = StringSub(self.logger,
-                                  cmd_args,
-                                  **time_info).do_string_sub()
+            self.args = do_string_sub(cmd_args,
+                                      **time_info)
 
             if not self.find_input_files(time_info, temp_file):
                 return

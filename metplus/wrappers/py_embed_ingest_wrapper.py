@@ -20,7 +20,7 @@ from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
 from . import RegridDataPlaneWrapper
-from ..util import StringSub
+from ..util import do_string_sub
 
 VALID_PYTHON_EMBED_TYPES = ['NUMPY', 'XARRAY', 'PANDAS']
 
@@ -116,19 +116,16 @@ class PyEmbedIngestWrapper(CommandBuilder):
             index = ingester['index']
 
             # get grid information to project output data
-            output_grid = StringSub(self.logger,
-                                    ingester['output_grid'],
-                                    **time_info).do_string_sub()
+            output_grid = do_string_sub(ingester['output_grid'],
+                                        **time_info)
 
             # get call to python script
-            script = StringSub(self.logger,
-                               ingester['script'],
-                               **time_info).do_string_sub()
+            script = do_string_sub(ingester['script'],
+                                   **time_info)
 
             # get output file path
-            output_file = StringSub(self.logger,
-                                    ingester['output_template'],
-                                    **time_info).do_string_sub()
+            output_file = do_string_sub(ingester['output_template'],
+                                        **time_info)
             output_path = os.path.join(ingester['output_dir'], output_file)
 
             rdp.clear()

@@ -19,7 +19,7 @@ import glob
 
 from ..util import met_util as util
 from . import CompareGriddedWrapper
-from ..util import StringSub
+from ..util import do_string_sub
 
 """!@namespace EnsembleStatWrapper
 @brief Wraps the MET tool ensemble_stat to compare ensemble datasets
@@ -268,10 +268,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # get all files that exist
         for ens_member_template in self.c_dict['FCST_INPUT_TEMPLATE']:
-            model_ss = StringSub(self.logger,
-                                 ens_member_template,
-                                 **time_info)
-            member_file = model_ss.do_string_sub()
+            member_file = do_string_sub(ens_member_template,
+                                        **time_info)
             expected_path = os.path.join(model_dir, member_file)
 
             # if wildcard expression, get all files that match
@@ -371,9 +369,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 @param obs_field field information formatted for MET config file
         """
         # set config file since command is reset after each run
-        self.param = StringSub(self.logger,
-                               self.c_dict['CONFIG_FILE'],
-                               **time_info).do_string_sub()
+        self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
+                                   **time_info)
 
         # set up output dir with time info
         self.create_and_set_output_dir(time_info)

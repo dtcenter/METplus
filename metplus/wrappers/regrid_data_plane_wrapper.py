@@ -17,7 +17,7 @@ import os
 from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
-from ..util import StringSub
+from ..util import do_string_sub
 from . import ReformatGriddedWrapper
 
 # pylint:disable=pointless-string-statement
@@ -193,17 +193,14 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                    f'{data_type}_{app}_VAR{index}_FIELD_NAME',
                                    '')
 
-        # run through StringSub in case the field name contains a template
-        input_field_name = StringSub(self.logger,
-                                     input_field_name,
-                                     **time_info).do_string_sub()
-        input_field_level = StringSub(self.logger,
-                                      input_field_level,
-                                      **time_info).do_string_sub()
+        # run through do_string_sub in case the field name contains a template
+        input_field_name = do_string_sub(input_field_name,
+                                         **time_info)
+        input_field_level = do_string_sub(input_field_level,
+                                          **time_info)
 
-        output_field_name = StringSub(self.logger,
-                                      output_field_name,
-                                      **time_info).do_string_sub()
+        output_field_name = do_string_sub(output_field_name,
+                                          **time_info)
 
         return input_field_name, input_field_level, output_field_name
 
@@ -422,9 +419,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
         self.infiles.append(input_path)
 
-        verif_grid = StringSub(self.logger,
-                               self.c_dict['VERIFICATION_GRID'],
-                               **time_info).do_string_sub()
+        verif_grid = do_string_sub(self.c_dict['VERIFICATION_GRID'],
+                                   **time_info)
 
         # put quotes around verification grid in case it is a grid description
         self.infiles.append(f'"{verif_grid}"')

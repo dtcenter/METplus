@@ -17,7 +17,7 @@ import os
 from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
-from ..util import StringSub
+from ..util import do_string_sub
 from . import MODEWrapper
 from . import CompareGriddedWrapper
 
@@ -341,9 +341,8 @@ class MTDWrapper(MODEWrapper):
 
         # loop through fields and call MTD
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
-            self.param  = StringSub(self.logger,
-                                    self.c_dict['CONFIG_FILE'],
-                                    **time_info).do_string_sub()
+            self.param  = do_string_sub(self.c_dict['CONFIG_FILE'],
+                                        **time_info)
             self.create_and_set_output_dir(time_info)
 
             self.set_environment_variables(fcst_field, obs_field, var_info, time_info)
