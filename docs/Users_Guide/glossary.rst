@@ -393,14 +393,29 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* None
 
-   POINT_2_GRID_INPUT_FIELD_NAME
+   POINT_2_GRID_WINDOW_BEGIN
+     Specify the beginning of the time window to use for a date stamp window to grab observations 
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_WINDOW_END
+     Specify the end of the time window to use for a date stamp window to grab observations 
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+
+   POINT_2_GRID_INPUT_FIELD
      Specify the input field name that is read by Point2Grid.
 
      | *Used by:* Point2Grid
      | *Family:* [config]
      | *Default:* None
 
-   POINT_2_GRID_INPUT_FIELD_LEVEL
+   POINT_2_GRID_LEVEL
      Specify the input level name that is read by Point2Grid.
 
      | *Used by:* Point2Grid
@@ -853,6 +868,27 @@ METplus Configuration Glossary
 
    CLIMO_POINT_STAT_INPUT_DIR
      .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_INPUT_DIR`.
+
+   POINT_2_GRID_INPUT_TEMPLATE
+     Filename template for the point file used by Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [filename_template]
+     | *Default:* None
+
+   POINT_2_GRID_OUTPUT_TEMPLATE
+     Filename template for the output of  Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [filename_template]
+     | *Default:* None
+
+   POINT_2_GRID_INPUT_DIR
+     Directory containing the file containing point data used by point2grid. This variable is optional because you can specify the full path to a point file using :term:`POINT_2_GRID_INPUT_TEMPLATE`.
+
+     | *Used by:* Point2Grid
+     | *Family:* [dir]
+     | *Default:* None
 
    POINT_STAT_CLIMO_MEAN_INPUT_DIR
      Directory containing the climatology mean file used by PointStat. This variable is optional because you can specify the full path to a climatology file using :term:`POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE`.
@@ -4282,6 +4318,13 @@ METplus Configuration Glossary
 
      | *Used by:*  PointStat
      | *Family:*  [config]
+     | *Default:*  Varies
+
+   POINT_2_GRID_OUTPUT_DIR
+     Specify the directory where output files from the MET point2grid tool are written.
+
+     | *Used by:*  Point2Grid
+     | *Family:*  [dir]
      | *Default:*  Varies
 
    POINT_STAT_OUTPUT_DIR
