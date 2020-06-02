@@ -21,7 +21,6 @@ import os
 import re
 import subprocess
 
-import produtil.setup
 from produtil.run import exe
 from produtil.run import checkrun
 

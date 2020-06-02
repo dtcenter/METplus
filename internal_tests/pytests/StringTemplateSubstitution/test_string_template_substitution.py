@@ -4,11 +4,11 @@ import pytest
 import logging
 import datetime
 
-from metplus.util.config.string_template_substitution import StringSub
-from metplus.util.config.string_template_substitution import StringExtract
-from metplus.util.config.string_template_substitution import get_tags
-from metplus.util.config.string_template_substitution import format_one_time_item
-from metplus.util.config.string_template_substitution import format_hms
+from metplus.util import StringSub
+from metplus.util import StringExtract
+from metplus.util import get_tags
+from metplus.util import format_one_time_item
+from metplus.util import format_hms
 
 def test_cycle_hour():
     cycle_string = 0
