@@ -6,7 +6,7 @@ import os
 import re
 import met_util as util
 import time_util
-from string_template_substitution import StringSub
+from string_template_substitution import do_string_sub
 from command_builder import CommandBuilder
 
 """
@@ -233,15 +233,13 @@ class PB2NCWrapper(CommandBuilder):
 
         if begin_template:
             self.c_dict['VALID_WINDOW_BEGIN'] = \
-                StringSub(self.logger,
-                          begin_template,
-                          **time_info).do_string_sub()
+                do_string_sub(begin_template,
+                              **time_info)
 
         if end_template:
             self.c_dict['VALID_WINDOW_END'] = \
-                StringSub(self.logger,
-                          end_template,
-                          **time_info).do_string_sub()
+                do_string_sub(end_template,
+                              **time_info)
 
 
     def run_at_time(self, input_dict):
@@ -286,9 +284,8 @@ class PB2NCWrapper(CommandBuilder):
         self.set_valid_window_variables(time_info)
 
         # handle config file substitution
-        self.c_dict['CONFIG_FILE'] = StringSub(self.logger,
-                                self.c_dict['CONFIG_FILE'],
-                                **time_info).do_string_sub()
+        self.c_dict['CONFIG_FILE'] = do_string_sub(self.c_dict['CONFIG_FILE'],
+                                                   **time_info)
 
         # build command and run if successful
         cmd = self.get_command()

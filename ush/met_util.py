@@ -20,8 +20,8 @@ from csv import reader
 from os.path import dirname, realpath
 from dateutil.relativedelta import relativedelta
 
-from string_template_substitution import StringSub
-from string_template_substitution import StringExtract
+from string_template_substitution import do_string_sub
+from string_template_substitution import parse_template
 from string_template_substitution import get_tags
 from gempak_to_cf_wrapper import GempakToCFWrapper
 import time_util
@@ -589,7 +589,7 @@ def check_for_deprecated_met_config(config):
             if not met_config:
                 continue
 
-            met_config_file = StringSub(config.logger, met_config, custom=custom_string).do_string_sub()
+            met_config_file = do_string_sub(met_config, custom=custom_string)
 
             if not check_for_deprecated_met_config_file(config, met_config_file, sed_cmds, met_tool):
                 all_good = False
@@ -773,9 +773,9 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
             @param logger log object to write error messages - None if not provided
             @returns datetime object if successful, None if not
     """
-    time_str = StringSub(logger, time_from_conf,
-                         now=clock_time,
-                         today=clock_time.strftime('%Y%m%d')).do_string_sub()
+    time_str = do_string_sub(time_from_conf,
+                             now=clock_time,
+                             today=clock_time.strftime('%Y%m%d'))
     try:
         time_t = datetime.datetime.strptime(time_str, fmt)
     except ValueError:
@@ -2228,9 +2228,8 @@ def get_var_items(config, data_type, index, time_info, met_tool=None):
     else:
         return '', '', '', ''
 
-    name = StringSub(config.logger,
-                     config.getraw('config', search_name),
-                     **time_info).do_string_sub()
+    name = do_string_sub(config.getraw('config', search_name),
+                         **time_info)
 
     # get levels if available
     levels = []
@@ -2241,7 +2240,8 @@ def get_var_items(config, data_type, index, time_info, met_tool=None):
 
     levels = []
     for level in getlist(config.getraw('config', search_levels, '')):
-        subbed_level = StringSub(config.logger, level, **time_info).do_string_sub()
+        subbed_level = do_string_sub(level,
+                                     **time_info)
         levels.append(subbed_level)
 
     # if no levels are found, add an empty string
@@ -2273,9 +2273,8 @@ def get_var_items(config, data_type, index, time_info, met_tool=None):
         search_extra = None
 
     if search_extra:
-        extra = StringSub(config.logger,
-                          config.getraw('config', search_extra),
-                          **time_info).do_string_sub()
+        extra = do_string_sub(config.getraw('config', search_extra),
+                              **time_info)
 
         # split up each item by semicolon, then add a semicolon to the end of each item
         # to avoid errors where the user forgot to add a semicolon at the end
@@ -2574,25 +2573,28 @@ def get_filetype(filepath, logger=None):
 
 
 
-def get_time_from_file(logger, filepath, template):
+def get_time_from_file(filepath, template):
+    """! Extract time information from path using the filename template
+         Args:
+             @param filepath path to examine
+             @param template filename template to use to extract time information
+             @returns time_info dictionary with time information if successful, None if not
+    """
     if os.path.isdir(filepath):
         return None
 
-    se = StringExtract(logger, template, filepath)
-
-    out = se.parse_template()
-    if se:
+    out = parse_template(template, filepath)
+    if out is not None:
         return out
-    else:
-        # check to see if zip extension ends file path, try again without extension
-        for ext in VALID_EXTENSIONS:
-            if filepath.endswith(ext):
-                se = StringExtract(logger, template, filepath[:-len(ext)])
-                out = se.parse_template()
-                if se:
-                    return out
-        return None
 
+    # check to see if zip extension ends file path, try again without extension
+    for ext in VALID_EXTENSIONS:
+        if filepath.endswith(ext):
+            out = parse_template(template, filepath[:-len(ext)])
+            if out is not None:
+                return out
+
+    return None
 
 def preprocess_file(filename, data_type, config):
     """ Decompress gzip, bzip, or zip files or convert Gempak files to NetCDF
@@ -2730,10 +2732,8 @@ def run_stand_alone(filename, app_name):
 def template_to_regex(template, time_info, logger):
     in_template = re.sub(r'\.', '\\.', template)
     in_template = re.sub(r'{lead.*?}', '.*', in_template)
-    sts = StringSub(logger,
-                    in_template,
-                    **time_info)
-    return sts.do_string_sub()
+    return do_string_sub(in_template,
+                         **time_info)
 
 def is_python_script(name):
     all_items = name.split(' ')

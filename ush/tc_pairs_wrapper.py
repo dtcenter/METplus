@@ -25,7 +25,7 @@ import datetime
 import glob
 import time_util
 import met_util as util
-from string_template_substitution import StringSub
+from string_template_substitution import do_string_sub
 from string_template_substitution import get_tags
 from command_builder import CommandBuilder
 
@@ -228,9 +228,8 @@ class TCPairsWrapper(CommandBuilder):
         self.outdir = self.c_dict['OUTPUT_DIR']
 
         # string substitute config file in case custom string is used
-        self.c_dict['CONFIG_FILE'] = StringSub(self.logger,
-                                               self.c_dict['CONFIG_FILE'],
-                                               **time_info).do_string_sub()
+        self.c_dict['CONFIG_FILE'] = do_string_sub(self.c_dict['CONFIG_FILE'],
+                                                   **time_info)
 
         # get items to filter bdeck files
         # set each to default wildcard character unless specified in conf
@@ -478,13 +477,12 @@ class TCPairsWrapper(CommandBuilder):
             basin_regex = "([a-zA-Z]{2})"
 
         # get search expression for bdeck files to pass to glob
-        string_sub = StringSub(self.logger,
-                               self.c_dict['BDECK_TEMPLATE'],
-                               basin=basin,
-                               cyclone=cyclone,
-                               **time_info)
+        string_sub = do_string_sub(self.c_dict['BDECK_TEMPLATE'],
+                                   basin=basin,
+                                   cyclone=cyclone,
+                                   **time_info)
         bdeck_glob = os.path.join(self.c_dict['BDECK_DIR'],
-                                  string_sub.do_string_sub())
+                                  string_sub)
         self.logger.debug('Looking for BDECK: {}'.format(bdeck_glob))
 
         # get all files that match expression
@@ -512,13 +510,12 @@ class TCPairsWrapper(CommandBuilder):
             matches = []
             if '*' in bdeck_glob or '?' in bdeck_glob:
                 # get regex expression to pull out basin and cyclone
-                string_sub = StringSub(self.logger,
-                                       self.c_dict['BDECK_TEMPLATE'],
-                                       basin=basin_regex,
-                                       cyclone=cyclone_regex,
-                                       **time_info)
+                string_sub = do_string_sub(self.c_dict['BDECK_TEMPLATE'],
+                                           basin=basin_regex,
+                                           cyclone=cyclone_regex,
+                                           **time_info)
                 bdeck_regex = os.path.join(self.c_dict['BDECK_DIR'],
-                                           string_sub.do_string_sub())
+                                           string_sub)
 
                 # capture wildcard values in template
                 bdeck_regex = bdeck_regex.replace('*', '(.*)')
@@ -576,12 +573,10 @@ class TCPairsWrapper(CommandBuilder):
 
             if self.c_dict['OUTPUT_TEMPLATE']:
                 # get output filename from template
-                string_sub = StringSub(self.logger,
-                                       self.c_dict['OUTPUT_TEMPLATE'],
-                                       basin=current_basin,
-                                       cyclone=current_cyclone,
-                                       **time_info)
-                output_file = string_sub.do_string_sub()
+                output_file = do_string_sub(self.c_dict['OUTPUT_TEMPLATE'],
+                                            basin=current_basin,
+                                            cyclone=current_cyclone,
+                                            **time_info)
             else:
                 output_file = 'tc_pairs'
             self.outfile = output_file
@@ -613,14 +608,13 @@ class TCPairsWrapper(CommandBuilder):
         deck_list = []
         template = self.c_dict[deck+'DECK_TEMPLATE']
         # get matching adeck wildcard expression for first model
-        string_sub = StringSub(self.logger,
-                               template,
-                               basin=basin,
-                               cyclone=cyclone,
-                               model=model_list[0],
-                               **time_info)
+        string_sub = do_string_sub(template,
+                                   basin=basin,
+                                   cyclone=cyclone,
+                                   model=model_list[0],
+                                   **time_info)
         deck_expr = os.path.join(self.c_dict[deck+'DECK_DIR'],
-                                 string_sub.do_string_sub())
+                                 string_sub)
 
         # add adeck files if they exist
         for model in model_list:

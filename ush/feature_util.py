@@ -5,7 +5,7 @@ import re
 import datetime
 import met_util as util
 from regrid_data_plane_wrapper import RegridDataPlaneWrapper
-from string_template_substitution import StringSub
+from string_template_substitution import do_string_sub
 
 """!@namespace feature_util
  @brief Provides  Utility functions for METplus feature relative use case.
@@ -136,19 +136,17 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             # wgrib2 used to regrid.
             # Create the filename for the regridded file, which is a
             # grib2 file.
-            fcst_sts = \
-                StringSub(logger, config.getraw('filename_templates',
+            fcst_file = \
+                do_string_sub(config.getraw('filename_templates',
                                             'FCST_EXTRACT_TILES_INPUT_TEMPLATE'),
-                          init=init_dt, lead=lead_seconds)
+                              init=init_dt, lead=lead_seconds)
 
-            anly_sts = \
-                StringSub(logger, config.getraw('filename_templates',
+            anly_file = \
+                do_string_sub(config.getraw('filename_templates',
                                             'OBS_EXTRACT_TILES_INPUT_TEMPLATE'),
-                          valid=valid_dt, lead=lead_seconds)
+                              valid=valid_dt, lead=lead_seconds)
 
-            fcst_file = fcst_sts.do_string_sub()
             fcst_filename = os.path.join(fcst_dir, fcst_file)
-            anly_file = anly_sts.do_string_sub()
             anly_filename = os.path.join(anly_dir, anly_file)
 
             # Check if the forecast input file exists. If it doesn't

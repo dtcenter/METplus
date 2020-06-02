@@ -20,7 +20,7 @@ from inspect import getframeinfo, stack
 from command_runner import CommandRunner
 import met_util as util
 import time_util
-import string_template_substitution as sts
+from string_template_substitution import do_string_sub
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -132,9 +132,8 @@ class CommandBuilder:
         for env_var in self.config.keys('user_env_vars'):
             # perform string substitution on each variable
             raw_env_var_value = self.config.getraw('user_env_vars', env_var)
-            env_var_value = sts.StringSub(self.logger,
-                                          raw_env_var_value,
-                                          **time_info).do_string_sub()
+            env_var_value = do_string_sub(raw_env_var_value,
+                                          **time_info)
             self.add_env_var(env_var, env_var_value)
 
     def add_common_envs(self, time_info=None):
@@ -478,11 +477,9 @@ class CommandBuilder:
 
         for template in template_list:
             # perform string substitution
-            dsts = sts.StringSub(self.logger,
-                                 template,
-                                 level=level,
-                                 **time_info)
-            filename = dsts.do_string_sub()
+            filename = do_string_sub(template,
+                                     level=level,
+                                     **time_info)
 
             # build full path with data directory and filename
             full_path = os.path.join(data_dir, filename)
@@ -574,30 +571,32 @@ class CommandBuilder:
                 # remove input data directory to get relative path
                 rel_path = fullpath.replace(f'{data_dir}/', "")
                 # extract time information from relative path using template
-                file_time_info = util.get_time_from_file(self.logger, rel_path, template)
-                if file_time_info is not None:
-                    # get valid time and check if it is within the time range
-                    file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
-                    # skip if could not extract valid time
-                    if file_valid_time == '':
-                        continue
-                    file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
-                    file_valid_seconds = int(file_valid_dt.strftime("%s"))
-                    # skip if outside time range
-                    if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
-                        continue
+                file_time_info = util.get_time_from_file(rel_path, template)
+                if file_time_info is None:
+                    continue
 
-                    # if only 1 file is allowed, check if file is
-                    # closer to desired valid time than previous match
-                    if not self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
-                        diff = abs(valid_seconds - file_valid_seconds)
-                        if diff < closest_time:
-                            closest_time = diff
-                            del closest_files[:]
-                            closest_files.append(fullpath)
-                    # if multiple files are allowed, get all files within range
-                    else:
+                # get valid time and check if it is within the time range
+                file_valid_time = file_time_info['valid'].strftime("%Y%m%d%H%M%S")
+                # skip if could not extract valid time
+                if not file_valid_time:
+                    continue
+                file_valid_dt = datetime.strptime(file_valid_time, "%Y%m%d%H%M%S")
+                file_valid_seconds = int(file_valid_dt.strftime("%s"))
+                # skip if outside time range
+                if file_valid_seconds < lower_limit or file_valid_seconds > upper_limit:
+                    continue
+
+                # if only 1 file is allowed, check if file is
+                # closer to desired valid time than previous match
+                if not self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
+                    diff = abs(valid_seconds - file_valid_seconds)
+                    if diff < closest_time:
+                        closest_time = diff
+                        del closest_files[:]
                         closest_files.append(fullpath)
+                # if multiple files are allowed, get all files within range
+                else:
+                    closest_files.append(fullpath)
 
         if not closest_files:
             msg = f"Could not find {data_type}INPUT files under {data_dir} within range " +\
@@ -642,9 +641,8 @@ class CommandBuilder:
     def find_and_check_output_file(self, time_info):
         """!Look for expected output file. If it exists and configured to skip if it does,
             then return False"""
-        outfile = sts.StringSub(self.logger,
-                                self.c_dict['OUTPUT_TEMPLATE'],
-                                **time_info).do_string_sub()
+        outfile = do_string_sub(self.c_dict['OUTPUT_TEMPLATE'],
+                                **time_info)
         outpath = os.path.join(self.c_dict['OUTPUT_DIR'], outfile)
         self.set_output_path(outpath)
 
@@ -718,9 +716,8 @@ class CommandBuilder:
             self.isOK = False
 
     def get_output_prefix(self, time_info):
-        return sts.StringSub(self.logger,
-                             self.config.getraw('config', f'{self.app_name.upper()}_OUTPUT_PREFIX', ''),
-                             **time_info).do_string_sub()
+        return do_string_sub(self.config.getraw('config', f'{self.app_name.upper()}_OUTPUT_PREFIX', ''),
+                             **time_info)
 
     def add_field_info_to_time_info(self, time_info, field_info):
         """!Add name and level values from field info to time info dict to be used in string substitution

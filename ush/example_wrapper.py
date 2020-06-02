@@ -18,7 +18,7 @@ import os
 import met_util as util
 import time_util
 from command_builder import CommandBuilder
-from string_template_substitution import StringSub
+from string_template_substitution import do_string_sub
 
 class ExampleWrapper(CommandBuilder):
     """!Wrapper can be used as a base to develop a new wrapper"""
@@ -88,9 +88,8 @@ class ExampleWrapper(CommandBuilder):
                 # pass in logger, then template, then any items to use to fill in template
                 # pass time info with ** in front to expand each dictionary item to a variable
                 #  i.e. time_info['init'] becomes init=init_value
-                filename = StringSub(self.logger,
-                                     input_template,
-                                     **time_info).do_string_sub()
+                filename = do_string_sub(input_template,
+                                         **time_info)
                 self.logger.info('Looking in input directory for file: {}'.format(filename))
 
         return True

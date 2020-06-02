@@ -122,6 +122,7 @@ use_cases['s2s'] = [
 
 use_cases['space_weather'] = [
     use_case_dir + "/model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf",
+    use_case_dir + "/model_applications/space_weather/GenVxMask_fcstGloTEC_FcstOnly_solar_altitude.conf",
 ]
 
 use_cases['tc_and_extra_tc'] = [
