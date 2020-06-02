@@ -17,7 +17,7 @@ import metplus_check_python_version
 import os
 import met_util as util
 from compare_gridded_wrapper import CompareGriddedWrapper
-from string_template_substitution import StringSub
+from string_template_substitution import do_string_sub
 
 class MODEWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""
@@ -32,9 +32,8 @@ class MODEWrapper(CompareGriddedWrapper):
     def add_merge_config_file(self, time_info):
         """!If merge config file is defined, add it to the command"""
         if self.c_dict['MERGE_CONFIG_FILE'] != '':
-            merge_config_file = StringSub(self.logger,
-                                          self.c_dict['MERGE_CONFIG_FILE'],
-                                          **time_info).do_string_sub()
+            merge_config_file = do_string_sub(self.c_dict['MERGE_CONFIG_FILE'],
+                                              **time_info)
             self.args.append('-config_merge {}'.format(merge_config_file))
 
     def create_c_dict(self):
@@ -230,9 +229,8 @@ class MODEWrapper(CompareGriddedWrapper):
 
         # loop through fields and call MODE
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
-            self.param = StringSub(self.logger,
-                                   self.c_dict['CONFIG_FILE'],
-                                   **time_info).do_string_sub()
+            self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
+                                       **time_info)
             self.create_and_set_output_dir(time_info)
             self.infiles.append(model_path)
             self.infiles.append(obs_path)

@@ -21,7 +21,7 @@ import met_util as util
 import time_util
 #from command_builder import CommandBuilder
 from compare_gridded_wrapper import CompareGriddedWrapper
-from string_template_substitution import StringSub
+from string_template_substitution import do_string_sub
 
 '''!@namespace SeriesAnalysisWrapper
 @brief Wraps the SeriesAnalysis tool to compare a series of gridded files
@@ -300,10 +300,9 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         if self.c_dict['PAIRED']:
             self.args.append(" -paired")
 
-        # add config file - passing through StringSub to get custom string if set
-        config_file = StringSub(self.logger,
-                                self.c_dict['CONFIG_FILE'],
-                                **time_info).do_string_sub()
+        # add config file - passing through do_string_sub to get custom string if set
+        config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
+                                    **time_info)
         self.args.append(f" -config {config_file}")
 
     def get_formatted_fields(self, var_info):

@@ -16,7 +16,7 @@ import metplus_check_python_version
 
 import os
 import met_util as util
-import string_template_substitution as sts
+from string_template_substitution import do_string_sub
 import time_util
 from command_builder import CommandBuilder
 
@@ -94,16 +94,14 @@ class GempakToCFWrapper(CommandBuilder):
         output_template = self.config.getraw('filename_templates',
                                              'GEMPAKTOCF_OUTPUT_TEMPLATE')
 
-        gsts = sts.StringSub(self.logger,
-                             input_template,
+        gsts = do_string_sub(input_template,
                              valid=valid_time)
-        infile = os.path.join(input_dir, gsts.do_string_sub())
+        infile = os.path.join(input_dir, gsts)
         self.infiles.append(infile)
 
-        gsts = sts.StringSub(self.logger,
-                             output_template,
+        gsts = do_string_sub(output_template,
                              valid=valid_time)
-        outfile = os.path.join(output_dir, gsts.do_string_sub())
+        outfile = os.path.join(output_dir, gsts)
 
         if os.path.exists(outfile) and \
                         self.config.getbool('config', 'GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS', False) is True:

@@ -18,7 +18,7 @@ import os
 import met_util as util
 import time_util
 from command_builder import CommandBuilder
-from string_template_substitution import StringSub
+from string_template_substitution import do_string_sub
 
 '''!@namespace Point2GridWrapper
 @brief Wraps the Point2Grid tool to reformat ascii format to NetCDF
@@ -224,13 +224,11 @@ class Point2GridWrapper(CommandBuilder):
         #even if it is blank
         input_level = ""
         if self.c_dict['INPUT_FIELD']:
-            input_field = StringSub(self.logger,
-                                    self.c_dict['INPUT_FIELD'],
-                                    **time_info).do_string_sub()
+            input_field = do_string_sub(self.c_dict['INPUT_FIELD'],
+                                        **time_info)
             if self.c_dict['INPUT_LEVEL']:
-                input_level = StringSub(self.logger,
-                                    self.c_dict['INPUT_LEVEL'],
-                                    **time_info).do_string_sub()
+                input_level = do_string_sub(self.c_dict['INPUT_LEVEL'],
+                                            **time_info)
                 self.logger.info(f"Processing level: {input_level}")
             #Add either the specified level above or the defauilt blank one
             self.args.append(f"-field 'name=\"{input_field}\"; level=\"{input_level}\";'")

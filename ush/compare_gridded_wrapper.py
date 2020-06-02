@@ -16,7 +16,7 @@ import os
 import met_util as util
 from command_builder import CommandBuilder
 import time_util
-from string_template_substitution import StringSub
+from string_template_substitution import do_string_sub
 
 '''!@namespace CompareGriddedWrapper
 @brief Common functionality to wrap similar MET applications
@@ -143,9 +143,8 @@ that reformat gridded data
             return
 
         template = self.c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE']
-        climo_file = StringSub(self.logger,
-                               template,
-                               **time_info).do_string_sub()
+        climo_file = do_string_sub(template,
+                                   **time_info)
         climo_path = os.path.join(self.c_dict[f'CLIMO_{climo_item}_INPUT_DIR'], climo_file)
         self.logger.debug(f"Looking for climatology {climo_item.lower()} file {climo_path}")
         self.c_dict[f'CLIMO_{climo_item}_FILE'] = util.preprocess_file(climo_path,
@@ -459,9 +458,8 @@ that reformat gridded data
                 only used for ensemble_stat
         """
         # set config file since command is reset after each run
-        self.param = StringSub(self.logger,
-                               self.c_dict['CONFIG_FILE'],
-                               **time_info).do_string_sub()
+        self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
+                                   **time_info)
 
         # set up output dir with time info
         self.create_and_set_output_dir(time_info)
@@ -496,10 +494,8 @@ that reformat gridded data
             template = self.config.getraw('filename_templates',
                                           out_template_name)
             # perform string substitution to get full path
-            string_sub = StringSub(self.logger,
-                                   template,
-                                   **time_info)
-            extra_path = string_sub.do_string_sub()
+            extra_path = do_string_sub(template,
+                                       **time_info)
             out_dir = os.path.join(out_dir, extra_path)
 
         # create full output dir if it doesn't already exist
@@ -515,10 +511,8 @@ that reformat gridded data
         self.c_dict['VERIFICATION_MASK'] = '\"\"'
         if self.c_dict['VERIFICATION_MASK_TEMPLATE'] != '':
             template = self.c_dict['VERIFICATION_MASK_TEMPLATE']
-            string_sub = StringSub(self.logger,
-                                   template,
-                                   **time_info)
-            filenames = string_sub.do_string_sub()
+            filenames = do_string_sub(template,
+                                      **time_info)
             mask_list_string = self.format_list_string(filenames)
             self.c_dict['VERIFICATION_MASK'] = mask_list_string
 
