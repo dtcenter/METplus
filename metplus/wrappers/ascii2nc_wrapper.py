@@ -18,7 +18,7 @@ import os
 from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
-from ..util.config.string_template_substitution import StringSub
+from ..util import StringSub
 
 '''!@namespace ASCII2NCWrapper
 @brief Wraps the ASCII2NC tool to reformat ascii format to NetCDF
