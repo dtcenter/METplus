@@ -804,7 +804,7 @@ Configuration
 [dir]
 
 | :term:`POINT_2_GRID_INPUT_DIR`
-| :term:`POINT_2_GRID_OUPUT_DIR`
+| :term:`POINT_2_GRID_OUTPUT_DIR`
 
 [filename_templates]
 
@@ -817,7 +817,7 @@ Configuration
 | :term:`POINT_2_GRID_WINDOW_END`
 | :term:`POINT_2_GRID_REGRID_TO_GRID`
 | :term:`POINT_2_GRID_INPUT_FIELD`
-| :term:`POINT_2_GRID_LEVEL`
+| :term:`POINT_2_GRID_INPUT_LEVEL`
 | :term:`POINT_2_GRID_QC_FLAGS`
 | :term:`POINT_2_GRID_ADP`
 | :term:`POINT_2_GRID_REGRID_METHOD`

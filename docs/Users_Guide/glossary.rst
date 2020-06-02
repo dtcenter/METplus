@@ -229,14 +229,14 @@ METplus Configuration Glossary
      Gaussian dx value to add to the Point2Grid command line call with -gaussian_dx. Not added to call if unset or set to empty string.
 
      | *Used by:* Point2Grid
-     | *Family:* config
+     | *Family:* [config]
      | *Default:* None
 
    POINT_2_GRID_GAUSSIAN_RADIUS
      Gaussian radius value to add to the Point2Grid command line call with -gaussian_radius. Not added to call if unset or set to empty string.
 
      | *Used by:* Point2Grid
-     | *Family:* config
+     | *Family:* [config]
      | *Default:* None
 
    REGRID_DATA_PLANE_GAUSSIAN_DX
@@ -415,7 +415,7 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* None
 
-   POINT_2_GRID_LEVEL
+   POINT_2_GRID_INPUT_LEVEL
      Specify the input level name that is read by Point2Grid.
 
      | *Used by:* Point2Grid
