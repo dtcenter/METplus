@@ -19,11 +19,11 @@ Developer Note: Please do not use f-strings in this file so that the
 import os
 import sys
 
-import produtil.setup
-
 # add metplus directory to path so the wrappers and utilities can be found
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 '..')))
+
+import produtil.setup
 
 from metplus.util import metplus_check_python_version
 from metplus.util import pre_run_setup, run_metplus, post_run_cleanup
