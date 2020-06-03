@@ -5,14 +5,16 @@ import sys
 import re
 import logging
 from collections import namedtuple
-import produtil
 import pytest
-import config_metplus
-from pb2nc_wrapper import PB2NCWrapper
-import met_util as util
-import time_util
 import datetime
-from string_template_substitution import do_string_sub
+
+import produtil
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.pb2nc_wrapper import PB2NCWrapper
+from metplus.util import met_util as util
+from metplus.util import time_util
+from metplus.util import do_string_sub
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #

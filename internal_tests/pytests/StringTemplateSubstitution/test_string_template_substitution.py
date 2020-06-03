@@ -4,14 +4,9 @@ import pytest
 import logging
 import datetime
 
-from string_template_substitution import do_string_sub
-from string_template_substitution import parse_template
-from string_template_substitution import get_tags
-from string_template_substitution import format_one_time_item
-from string_template_substitution import format_hms
-from string_template_substitution import add_to_dict
-from string_template_substitution import populate_match_dict
-from string_template_substitution import get_fmt_info
+from metplus.util import do_string_sub, parse_template
+from metplus.util import get_tags,format_one_time_item, format_hms
+from metplus.util import add_to_dict, populate_match_dict, get_fmt_info
 
 def test_cycle_hour():
     cycle_string = 0
