@@ -151,10 +151,6 @@ matrix:
       python: 3.7
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_met_tool_wrapper.sh
-    - name: "Use Case Tests - medium_range"
-      python: 3.7
-      script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range
     - name: "Use Case Tests - cryosphere"
       python: 3.7
       script:
