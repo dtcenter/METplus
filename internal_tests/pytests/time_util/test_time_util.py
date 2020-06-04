@@ -5,7 +5,7 @@ import pytest
 import datetime
 from dateutil.relativedelta import relativedelta
 
-import time_util
+from metplus.util import time_util
 
 @pytest.mark.parametrize(
     'relative_delta, seconds, time_string', [

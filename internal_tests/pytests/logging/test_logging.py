@@ -4,8 +4,9 @@ import logging
 import re
 import os
 import pytest
-import met_util as util
-import config_metplus
+
+from metplus.util import met_util as util
+from metplus.util.config import config_metplus
 
 #
 # -----------Mandatory-----------

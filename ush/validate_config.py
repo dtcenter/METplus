@@ -18,16 +18,15 @@ Condition codes:
 import subprocess
 import shlex
 
-import config_metplus
-import met_util as util
+from metplus.util import config_metplus, baseinputconfs, validate_configuration_variables
 
 def main():
     # Parse arguments, options and return a config instance.
-    config = config_metplus.setup(util.baseinputconfs,
+    config = config_metplus.setup(baseinputconfs,
                                   filename='validate_configs.py')
 
     # validate configuration variables
-    deprecatedIsOK, fieldIsOK, inoutbaseIsOk, metIsOK, sed_cmds = util.validate_configuration_variables(config)
+    deprecatedIsOK, fieldIsOK, inoutbaseIsOk, metIsOK, sed_cmds = validate_configuration_variables(config)
 
     if metIsOK:
         print("No MET config files are using deprecated environment variables")

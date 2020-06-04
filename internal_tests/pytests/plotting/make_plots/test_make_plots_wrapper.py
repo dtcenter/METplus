@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 
 import os
-import config_metplus
 import datetime
 import sys
 import logging
 import pytest
 import datetime
-from make_plots_wrapper import MakePlotsWrapper
-import met_util as util
+
 import produtil.setup
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.make_plots_wrapper import MakePlotsWrapper
+from metplus.util import met_util as util
 
 #
 # These are tests (not necessarily unit tests) for the
@@ -142,7 +144,7 @@ def test_create_c_dict():
                                        +'/plotting/stat_analysis')
     assert(c_dict['OUTPUT_BASE_DIR'] == mp.config.getdir('OUTPUT_BASE')
                                        +'/plotting/make_plots') 
-    assert(c_dict['SCRIPTS_BASE_DIR'] == METPLUS_BASE+'/ush/plotting_scripts')
+    assert(os.path.realpath(c_dict['SCRIPTS_BASE_DIR']) == METPLUS_BASE+'/ush/plotting_scripts')
     assert(c_dict['DATE_TYPE'] == 'VALID')
     assert(c_dict['VALID_BEG'] == '20190101')
     assert(c_dict['VALID_END'] == '20190101')

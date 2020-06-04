@@ -143,7 +143,6 @@ Configuration
 [config]
 
 | :term:`LOG_ENSEMBLE_STAT_VERBOSITY`
-| :term:`ENSEMBLE_STAT_ONCE_PER_FIELD`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_DATATYPE` 
 | :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE` 
 | :term:`OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE` 
@@ -785,10 +784,52 @@ Configuration
    | :term:`FCST_PCP_COMBINE_<n>_FIELD_NAME`
    | :term:`OBS_PCP_COMBINE_<n>_FIELD_NAME`
 
+Point2Grid
+----------
+
+.. _description-13:
+
+Description
+~~~~~~~~~~~
+
+The Point2Grid wrapper is a Python script that encapsulates the MET
+point2grid tool. It provides the infrastructure to read in point observations
+and place them on a grid
+
+.. _configuration-13:
+
+Configuration
+~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`POINT_2_GRID_INPUT_DIR`
+| :term:`POINT_2_GRID_OUTPUT_DIR`
+
+[filename_templates]
+
+| :term:`POINT_2_GRID_INPUT_TEMPLATE`
+| :term:`POINT_2_GRID_OUTPUT_TEMPLATE`
+
+[config]
+
+| :term:`POINT_2_GRID_WINDOW_BEGIN`
+| :term:`POINT_2_GRID_WINDOW_END`
+| :term:`POINT_2_GRID_REGRID_TO_GRID`
+| :term:`POINT_2_GRID_INPUT_FIELD`
+| :term:`POINT_2_GRID_INPUT_LEVEL`
+| :term:`POINT_2_GRID_QC_FLAGS`
+| :term:`POINT_2_GRID_ADP`
+| :term:`POINT_2_GRID_REGRID_METHOD`
+| :term:`POINT_2_GRID_GAUSSIAN_DX`
+| :term:`POINT_2_GRID_GAUSSIAN_RADIUS`
+| :term:`POINT_2_GRID_PROB_CAT_THRESH`
+| :term:`POINT_2_GRID_VLD_THRESH`
+
 PointStat
 ---------
 
-.. _description-13:
+.. _description-14:
 
 Description
 ~~~~~~~~~~~
@@ -798,23 +839,23 @@ point_stat tool. It provides the infrastructure to read in gridded model
 data and netCDF point observation data to perform grid-to-point
 (grid-to-obs) verification.
 
-.. _configuration-13:
+.. _configuration-14:
 
 Configuration
 ~~~~~~~~~~~~~
 
 [dir]
 
-| :term:`FCST_POINT_STAT_INPUT_DIR` 
-| :term:`OBS_POINT_STAT_INPUT_DIR` 
-| :term:`POINT_STAT_OUTPUT_DIR` 
+| :term:`FCST_POINT_STAT_INPUT_DIR`
+| :term:`OBS_POINT_STAT_INPUT_DIR`
+| :term:`POINT_STAT_OUTPUT_DIR`
 | :term:`POINT_STAT_CLIMO_MEAN_INPUT_DIR`
 | :term:`POINT_STAT_CLIMO_STDEV_INPUT_DIR`
 
 [filename_templates]
 
-| :term:`FCST_POINT_STAT_INPUT_TEMPLATE` 
-| :term:`OBS_POINT_STAT_INPUT_TEMPLATE` 
+| :term:`FCST_POINT_STAT_INPUT_TEMPLATE`
+| :term:`OBS_POINT_STAT_INPUT_TEMPLATE`
 | :term:`POINT_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
 | :term:`POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
@@ -875,14 +916,14 @@ Configuration
 PyEmbedIngest
 -------------
 
-.. _description-14:
+.. _description-15:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the PyEmbedIngest wrapper that runs RegridDataPlane to convert data using python embedding scripts into NetCDF so it can be read by the MET tools.
 
-.. _configuration-14:
+.. _configuration-15:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -914,14 +955,14 @@ Configuration
 RegridDataPlane
 ---------------
 
-.. _description-15:
+.. _description-16:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool regrid_data_plane which can be used to change projections of a grid with user configurable interpolation choices.  It can also be used to convert GRIB1 and GRIB2 files into netcdf files if desired.
 
-.. _configuration-15:
+.. _configuration-16:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -968,14 +1009,14 @@ Configuration
 SeriesAnalysis
 ----------------
 
-.. _description-16:
+.. _description-17:
 
 Description
 ~~~~~~~~~~~
 
 The SeriesAnalysis wrapper is used to find files and build a command that calls the MET tool SeriesAnalysis.
 
-.. _configuration-16:
+.. _configuration-17:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1009,7 +1050,7 @@ Configuration
 SeriesByInit
 ------------
 
-.. _description-17:
+.. _description-18:
 
 Description
 ~~~~~~~~~~~
@@ -1017,7 +1058,7 @@ Description
 The SeriesByInit wrapper provides the infrastructure needed to demonstrates the use  of the series analysis tool using tropical cyclone data, based on initialization times. The SeriesByInit_wrapper creates numerous plots that represent the
 field, level, and statistic for each initialization time.
 
-.. _configuration-17:
+.. _configuration-18:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1063,7 +1104,7 @@ Configuration
 SeriesByLead
 ------------
 
-.. _description-18:
+.. _description-19:
 
 Description
 ~~~~~~~~~~~
@@ -1077,7 +1118,7 @@ forecast hour groupings. Performing a series analysis by valid time with
 forecast hour groupings can be useful when analyzing storm tracks based
 on time 'bins' such as by days (eg. day 1, day 2, day 3, etc.).
 
-.. _configuration-18:
+.. _configuration-19:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1131,7 +1172,7 @@ would set the following:
 StatAnalysis
 ------------
 
-.. _description-19:
+.. _description-20:
 
 Description
 ~~~~~~~~~~~
@@ -1145,7 +1186,7 @@ lines over a span of dates, to use this method set LOOP_ORDER =
 processes. To run StatAnalysis wrapper, include StatAnalysis in
 PROCESS_LIST.
 
-.. _configuration-19:
+.. _configuration-20:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1284,7 +1325,7 @@ file for running with LOOP_ORDER = processes:
 TCMPRPlotter
 -------------
 
-.. _description-20:
+.. _description-21:
 
 Description
 ~~~~~~~~~~~
@@ -1295,7 +1336,7 @@ statistics for the output from the MET-TC tools. This script, and other
 R scripts are included in the MET installation. Please refer to section
 21.2.3 of the MET User's Guide for usage information.
 
-.. _configuration-20:
+.. _configuration-21:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1370,7 +1411,7 @@ set to 'yes', then set the flag
 TCPairs
 -------
 
-.. _description-21:
+.. _description-22:
 
 Description
 ~~~~~~~~~~~
@@ -1382,7 +1423,7 @@ provided in the METplus tutorial), or ATCF formatted track data. If data
 is in an extra tropical cyclone (non-ATCF) format, the data is
 reformatted into an ATCF format that is recognized by MET.
 
-.. _configuration-21:
+.. _configuration-22:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1445,7 +1486,7 @@ Configuration
 TCRMW
 ------
 
-.. _description-22:
+.. _description-23:
 
 Description
 ~~~~~~~~~~~

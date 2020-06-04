@@ -225,6 +225,20 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
+   POINT_2_GRID_GAUSSIAN_DX
+     Gaussian dx value to add to the Point2Grid command line call with -gaussian_dx. Not added to call if unset or set to empty string.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_GAUSSIAN_RADIUS
+     Gaussian radius value to add to the Point2Grid command line call with -gaussian_radius. Not added to call if unset or set to empty string.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
    REGRID_DATA_PLANE_GAUSSIAN_DX
      Gaussian dx value to add to the RegridDataPlane command line call with -gaussian_dx. Not added to call if unset or set to empty string.
 
@@ -376,6 +390,63 @@ METplus Configuration Glossary
      Specify the observation output field name that is created by RegridDataPlane. The name corresponds to :term:`OBS_VAR<n>_NAME`. This is used when using Python Embedding as input to the MET tool, because the :term:`OBS_VAR<n>_NAME` defines the python script to call.
 
      | *Used by:* RegridDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_WINDOW_BEGIN
+     Specify the beginning of the time window to use for a date stamp window to grab observations 
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_WINDOW_END
+     Specify the end of the time window to use for a date stamp window to grab observations 
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+
+   POINT_2_GRID_INPUT_FIELD
+     Specify the input field name that is read by Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_INPUT_LEVEL
+     Specify the input level name that is read by Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_QC_FLAGS
+     Specify the qc flags name that is read by Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_ADP
+     Provides an additional Aerosol Detection Product when GOES 16/17 input and an AOD variable name is used.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_PROB_CAT_THRESH
+     Specify the probability threshold for practically perfect forecasts
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_VLD_THRESH
+     Specify the required ratio of valid data for regridding
+
+     | *Used by:* Point2Grid
      | *Family:* [config]
      | *Default:* None
 
@@ -812,6 +883,27 @@ METplus Configuration Glossary
    CLIMO_POINT_STAT_INPUT_DIR
      .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_INPUT_DIR`.
 
+   POINT_2_GRID_INPUT_TEMPLATE
+     Filename template for the point file used by Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [filename_template]
+     | *Default:* None
+
+   POINT_2_GRID_OUTPUT_TEMPLATE
+     Filename template for the output of  Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [filename_template]
+     | *Default:* None
+
+   POINT_2_GRID_INPUT_DIR
+     Directory containing the file containing point data used by point2grid. This variable is optional because you can specify the full path to a point file using :term:`POINT_2_GRID_INPUT_TEMPLATE`.
+
+     | *Used by:* Point2Grid
+     | *Family:* [dir]
+     | *Default:* None
+
    POINT_STAT_CLIMO_MEAN_INPUT_DIR
      Directory containing the climatology mean file used by PointStat. This variable is optional because you can specify the full path to a climatology file using :term:`POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE`.
 
@@ -1194,6 +1286,13 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:* NONE
 
+   POINT_2_GRID_REGRID_TO_GRID
+     Used to set the regrid dictionary item 'to_grid' in the MET Point2Grid config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  Point2Grid
+     | *Family:*  [config]
+     | *Default:* NONE
+
    POINT_STAT_REGRID_TO_GRID
      Used to set the regrid dictionary item 'to_grid' in the MET PointStat config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
 
@@ -1248,13 +1347,6 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:*
-
-   ENSEMBLE_STAT_ONCE_PER_FIELD
-     If True, run ensemble_stat separately for each field name/level combination specified in the configuration file. See  :ref:`Field_Info` for more information on how fields are specified. If False, run ensemble_stat once with all of the fields specified.
-
-     | *Used by:*  EnsembleStat
-     | *Family:*  [config]
-     | *Default:*  False
 
    ENSEMBLE_STAT_OUTPUT_DIR
      Specify the output directory where files from the MET ensemble_stat tool are written.
@@ -4242,6 +4334,13 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
+   POINT_2_GRID_OUTPUT_DIR
+     Specify the directory where output files from the MET point2grid tool are written.
+
+     | *Used by:*  Point2Grid
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
    POINT_STAT_OUTPUT_DIR
      Specify the directory where output files from the MET point_stat tool are written.
 
@@ -4335,6 +4434,13 @@ METplus Configuration Glossary
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
      | *Default:*  None
+
+   POINT_2_GRID_REGRID_METHOD
+     Sets the gridding method used by point2grid.
+
+     | *Used by:*  Point2Grid
+     | *Family:*  [config]
+     | *Default:*
 
    REGRID_DATA_PLANE_METHOD
      Sets the method used by regrid_data_plane. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.

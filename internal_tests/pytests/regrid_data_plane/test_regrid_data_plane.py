@@ -5,13 +5,15 @@ import sys
 import re
 import logging
 from collections import namedtuple
-import produtil
 import pytest
 import datetime
-import config_metplus
-from regrid_data_plane_wrapper import RegridDataPlaneWrapper
-import met_util as util
-import time_util
+
+import produtil
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
+from metplus.util import met_util as util
+from metplus.util import time_util
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #

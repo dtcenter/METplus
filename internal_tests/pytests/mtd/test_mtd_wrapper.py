@@ -6,11 +6,13 @@ import re
 import logging
 import datetime
 from collections import namedtuple
-import produtil
 import pytest
-import config_metplus
-from mtd_wrapper import MTDWrapper
-import met_util as util
+
+import produtil
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.mtd_wrapper import MTDWrapper
+from metplus.util import met_util as util
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #

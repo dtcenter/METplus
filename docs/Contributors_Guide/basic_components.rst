@@ -122,9 +122,9 @@ uses c_dict dictionary items [FCST/OBS]_FILE_WINDOW_[BEGIN/END], [FCST/OBS]_INPU
 If [FCST/OBS]_FILE_WINDOW_[BEGIN/END] are non-zero, these functions will list all files under [FCST/OBS]_INPUT_DIR and use [FCST/OBS]_INPUT_TEMPLATE to extract out time information from each file to determine which files within the file window range should be used. Some tools allow multiple files to be selected. If a tool does not allow multiple files, the file closest to the valid time is returned. If multiple files are the same distance from the valid time, the first file that was found is used.
 If a wrapper can read in multiple files, the c_dict item 'ALLOW_MULTIPLE_FILES' should be set to True.
 
-StringSub class
----------------
-StringSub is found in ush/string_template_substitution.py and is the critical function for substituting the placeholder
+do_string_sub function
+----------------------
+do_string_sub is found in ush/string_template_substitution.py and is the critical function for substituting the placeholder
 values in templates with the actual values needed for running a particular wrapper
 
 tc_pairs_wrapper has a good example
@@ -132,13 +132,12 @@ tc_pairs_wrapper has a good example
 .. code-block:: python
 
     # get search expression for bdeck files to pass to glob
-        string_sub = StringSub(self.logger,
-                               self.c_dict['BDECK_TEMPLATE'],
-                               basin=basin,
-                               cyclone=cyclone,
-                               **time_info)
+        bdeck_file = do_string_sub(self.c_dict['BDECK_TEMPLATE'],
+                                   basin=basin,
+                                   cyclone=cyclone,
+                                   **time_info)
         bdeck_glob = os.path.join(self.c_dict['BDECK_DIR'],
-                                  string_sub.do_string_sub())
+                                  bdeck_file)
 
 time_info is a dictionary of current run time information that can be substituted into the template. See the 'Time Utilities' section for more information.
 
