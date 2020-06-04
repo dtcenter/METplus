@@ -618,7 +618,8 @@ def calculate_stat(logger, model_data, stat):
     """
     model_data_columns = model_data.columns.values.tolist()
     if model_data_columns == [ 'TOTAL' ]:
-        logger.warning("Empty model_data dataframe")
+        logger.error("Empty model_data dataframe")
+        exit(1)
         stat_values = model_data.loc[:]['TOTAL']
     else:
         if all(elem in model_data_columns for elem in
