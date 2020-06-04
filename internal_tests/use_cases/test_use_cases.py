@@ -22,11 +22,12 @@ import shutil
 import subprocess
 import filecmp
 import logging
-import config_launcher
 import time
 import calendar
 import argparse
-import met_util as util
+
+from metplus.util.config import config_launcher
+from metplus.util import met_util as util
 
 # keep track of use cases that failed to report at the end of execution
 failed_runs = []
@@ -90,6 +91,7 @@ use_cases['convection_allowing_models'] = [
                 use_case_dir + "/model_applications/convection_allowing_models/EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.conf",
                 use_case_dir + "/model_applications/convection_allowing_models/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf",
                 use_case_dir + "/model_applications/convection_allowing_models/GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereProb.conf",
+                use_case_dir + "/model_applications/convection_allowing_models/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf",
 ]
 
 
@@ -97,13 +99,16 @@ use_cases['cryosphere'] = [
     use_case_dir + "/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf",
 ]
 
-use_cases['medium_range'] = [
+use_cases['medium_range1'] = [
     use_case_dir + "/model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf",
-    use_case_dir + "/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf",
     use_case_dir + "/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.conf",
     use_case_dir + "/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf",
     use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf",
     use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_Sfc_MultiField.conf",
+]
+
+use_cases['medium_range2'] = [
+    use_case_dir + "/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf",
 ]
 
 use_cases['precipitation'] = [
@@ -225,7 +230,8 @@ def main():
     parser.add_argument('--met_tool_wrapper', action='store_true', required=False)
     parser.add_argument('--convection_allowing_models', action='store_true', required=False)
     parser.add_argument('--cryosphere', action='store_true', required=False)
-    parser.add_argument('--medium_range', action='store_true', required=False)
+    parser.add_argument('--medium_range1', action='store_true', required=False)
+    parser.add_argument('--medium_range2', action='store_true', required=False)
     parser.add_argument('--precipitation', action='store_true', required=False)
     parser.add_argument('--s2s', action='store_true', required=False)
     parser.add_argument('--space_weather', action='store_true', required=False)

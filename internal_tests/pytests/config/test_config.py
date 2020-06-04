@@ -3,12 +3,14 @@
 import sys
 import pytest
 import datetime
-from config_launcher import METplusConfig
-import met_util as util
-from command_builder import CommandBuilder
-import produtil
 import os
-import config_metplus
+
+import produtil
+
+from metplus.util.config.config_launcher import METplusConfig
+from metplus.util import met_util as util
+from metplus.wrappers.command_builder import CommandBuilder
+from metplus.util.config import config_metplus
 
 #@pytest.fixture
 def metplus_config():

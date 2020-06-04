@@ -41,7 +41,7 @@ do
       tarball=$convection_allowing_models_tar
   elif [ $i == "cryosphere" ]; then
       tarball=$cryosphere_tar
-  elif [ $i == "medium_range" ]; then
+  elif [ ${i:0: -1} == "medium_range" ]; then
       tarball=$medium_range_tar
   elif [ $i == "precipitation" ]; then
       tarball=$precipitation_tar

@@ -164,6 +164,14 @@ matrix:
       python: 3.7
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh convection_allowing_models
+    - name: "Use Case Tests - medium_range1"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range1
+    - name: "Use Case Tests - medium_range2"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range2
     - name: "Use Case Tests - precipitation"
       python: 3.7
       script:

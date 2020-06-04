@@ -793,7 +793,7 @@ Description
 ~~~~~~~~~~~
 
 The Point2Grid wrapper is a Python script that encapsulates the MET
-poin2grid tool. It provides the infrastructure to read in point observations
+point2grid tool. It provides the infrastructure to read in point observations
 and place them on a grid
 
 .. _configuration-13:
@@ -804,7 +804,7 @@ Configuration
 [dir]
 
 | :term:`POINT_2_GRID_INPUT_DIR`
-| :term:`POINT_2_GRID_OUPUT_DIR`
+| :term:`POINT_2_GRID_OUTPUT_DIR`
 
 [filename_templates]
 
@@ -817,7 +817,7 @@ Configuration
 | :term:`POINT_2_GRID_WINDOW_END`
 | :term:`POINT_2_GRID_REGRID_TO_GRID`
 | :term:`POINT_2_GRID_INPUT_FIELD`
-| :term:`POINT_2_GRID_LEVEL`
+| :term:`POINT_2_GRID_INPUT_LEVEL`
 | :term:`POINT_2_GRID_QC_FLAGS`
 | :term:`POINT_2_GRID_ADP`
 | :term:`POINT_2_GRID_REGRID_METHOD`
@@ -1050,7 +1050,7 @@ Configuration
 SeriesByInit
 ------------
 
-.. _description-17:
+.. _description-18:
 
 Description
 ~~~~~~~~~~~
@@ -1058,7 +1058,7 @@ Description
 The SeriesByInit wrapper provides the infrastructure needed to demonstrates the use  of the series analysis tool using tropical cyclone data, based on initialization times. The SeriesByInit_wrapper creates numerous plots that represent the
 field, level, and statistic for each initialization time.
 
-.. _configuration-17:
+.. _configuration-18:
 
 Configuration
 ~~~~~~~~~~~~~

@@ -3,8 +3,8 @@
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
 ush_dir=$script_dir"/../../ush"
-
-export PYTHONPATH=$ush_dir:$PYTHONPATH
+metplus_top_dir=$script_dir"/../.."
+export PYTHONPATH=$metplus_top_dir:$ush_dir:$PYTHONPATH
 
 host=$1
 if [ -z "$host" ]; then
