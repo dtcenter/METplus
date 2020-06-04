@@ -145,15 +145,11 @@ class StatAnalysisWrapper(CommandBuilder):
                  list_as_str    - string created from list_of_values
                                   with the values separated by commas 
         """
-        list_as_str=''
-        if len(list_of_values) > 0:
-            for lt in range(len(list_of_values)):
-                if lt == len(list_of_values)-1:
-                    list_as_str = list_as_str+'"'+str(list_of_values[lt]+'"')
-                else:
-                    list_as_str = list_as_str+'"'+str(list_of_values[lt]+'", ')
-        return list_as_str
-    
+        if not list_of_values:
+            return ''
+
+        return '"'+'", "'.join(list_of_values)+'"'
+
     def set_lists_loop_or_group(self, config_lists_to_group_items,
                                 config_lists_to_loop_items, config_dict):
         """! Determine whether the lists from the METplus config file
