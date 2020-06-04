@@ -12,13 +12,13 @@ Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 """
 
-import metplus_check_python_version
-
 import os
-import met_util as util
-import time_util
-from command_builder import CommandBuilder
-from string_template_substitution import StringSub
+
+from ..util import metplus_check_python_version
+from ..util import met_util as util
+from ..util import time_util
+from . import CommandBuilder
+from ..util import do_string_sub
 
 '''!@namespace TCRMWWrapper
 @brief Wraps the TC-RMW tool
@@ -357,11 +357,10 @@ class TCRMWWrapper(CommandBuilder):
 
     def set_command_line_arguments(self, time_info):
 
-        # add config file - passing through StringSub to get custom string if set
+        # add config file - passing through do_string_sub to get custom string if set
         if self.c_dict['CONFIG_FILE']:
-            config_file = StringSub(self.logger,
-                                    self.c_dict['CONFIG_FILE'],
-                                    **time_info).do_string_sub()
+            config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
+                                        **time_info)
             self.args.append(f"-config {config_file}")
 
 if __name__ == "__main__":
