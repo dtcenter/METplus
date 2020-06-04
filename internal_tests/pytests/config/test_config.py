@@ -5,6 +5,7 @@ import pytest
 import datetime
 import os
 from configparser import NoOptionError
+from shutil import which
 
 import produtil
 
@@ -168,7 +169,7 @@ def test_getbool(input_value, default, result):
         (None, None),
         ('/some/fake/path', None),
         ('/bin/sh', '/bin/sh'),
-        ('sh', '/bin/sh'),
+        ('sh', which('sh')),
     ]
 )
 def test_getexe(input_value, result):
