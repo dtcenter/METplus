@@ -117,6 +117,7 @@ class CommandBuilder:
         caller = getframeinfo(stack()[1][0])
         self.logger.error(f"({os.path.basename(caller.filename)}:{caller.lineno}) {error_string}")
         self.errors += 1
+        self.isOK = False
 
     def set_user_environment(self, time_info=None):
         """!Set environment variables defined in [user_env_vars] section of config
