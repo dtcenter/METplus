@@ -107,16 +107,6 @@ def metplus_config():
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
-def test_set_lookin_dir():
-    # Independently test that the -lookin part of the
-    # stat_analysis command is being set up
-    # correctly
-    st = stat_analysis_wrapper()
-    # Test 1
-    expected_lookin_dir_cmd = '-lookin /path/to/lookin_dir '
-    st.set_lookin_dir('/path/to/lookin_dir')
-    assert(expected_lookin_dir_cmd == st.lookindir)
-
 def test_get_command():
     # Independently test that the stat_analysis command
     # is being put together correctly with
@@ -129,9 +119,8 @@ def test_get_command():
         +'/bin/stat_analysis '
         +'-lookin /path/to/lookin_dir '
         +'-config /path/to/STATAnalysisConfig'
-        +' '
     )
-    st.set_lookin_dir('/path/to/lookin_dir')
+    st.lookindir = '/path/to/lookin_dir'
     st.param = '/path/to/STATAnalysisConfig'
     test_command = st.get_command()
     assert(expected_command == test_command)

@@ -35,28 +35,22 @@ class StatAnalysisWrapper(CommandBuilder):
                                      'bin/stat_analysis')
         self.app_name = os.path.basename(self.app_path)
         super().__init__(config, logger)
-        
-    def set_lookin_dir(self, lookindir):
-        self.lookindir = "-lookin "+lookindir+" "
-   
+
     def get_command(self):
-        if self.app_path is None:
-            self.log_error(self.app_name + ": No app path specified. \
-                              You must use a subclass")
-            return None
 
-        cmd = self.app_path + " "
-        for a in self.args:
-            cmd += a + " "
+        cmd = self.app_path
+        if self.args:
+            cmd += ' ' + ' '.join(self.args)
 
-        if self.lookindir == "":
-            self.log_error(self.app_name+": No lookin directory specified")
+        if not self.lookindir:
+            self.log_error("No lookin directory specified")
             return None
         
-        cmd += self.lookindir
+        cmd += ' -lookin ' + self.lookindir
          
-        if self.param != "":
-            cmd += "-config " + self.param + " "
+        if self.param:
+            cmd += " -config " + self.param
+
         return cmd
      
     def create_c_dict(self):
@@ -72,16 +66,22 @@ class StatAnalysisWrapper(CommandBuilder):
         """
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = (
-            self.config.getstr('config','LOG_STAT_ANALYSIS_VERBOSITY',
+            self.config.getstr('config', 'LOG_STAT_ANALYSIS_VERBOSITY',
                                c_dict['VERBOSITY'])
         )
         c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
         c_dict['PROCESS_LIST'] = self.config.getstr('config', 'PROCESS_LIST')
         c_dict['CONFIG_FILE'] = self.config.getstr('config', 
-                                                   'STAT_ANALYSIS_CONFIG_FILE')
-        c_dict['OUTPUT_BASE_DIR'] = (
-            self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR')
-        )
+                                                   'STAT_ANALYSIS_CONFIG_FILE',
+                                                   '')
+        if not c_dict['CONFIG_FILE']:
+            self.log_error("Must set STAT_ANALYSIS_CONFIG_FILE")
+
+        c_dict['OUTPUT_BASE_DIR'] = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR',
+                                                       '')
+        if not c_dict['OUTPUT_BASE_DIR']:
+            self.log_error("Must set STAT_ANALYSIS_OUTPUT_DIR")
+
         c_dict['GROUP_LIST_ITEMS'] = util.getlist(
             self.config.getstr('config', 'GROUP_LIST_ITEMS')
         )
@@ -150,34 +150,24 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return '"'+'", "'.join(list_of_values)+'"'
 
-    def set_lists_loop_or_group(self, config_lists_to_group_items,
-                                config_lists_to_loop_items, config_dict):
+    def set_lists_loop_or_group(self, group_items, loop_items, config_dict):
         """! Determine whether the lists from the METplus config file
              should treat the items in that list as a group or items 
              to be looped over based on user settings, the values
              in the list, and process being run.
              
              Args:
-                 config_lists_to_group_items - list of the METplus 
-                                               config list names
-                                               to group the list's 
-                                               items set by user
-                 config_lists_to_loop_items  - list of the METplus 
-                                               config list names
-                                               to loop over the 
-                                               list's items set by 
-                                               user
-                 config_dict                 - dictionary containing
-                                               the configuration 
-                                               information
+                 @param group_items list of the METplus config list
+                  names to group the list's items set by user
+                 @param loop_items list of the METplus config list
+                  names to loop over the list's items set by user
+                 @param config_dict dictionary containing the
+                  configuration information
              
-             Returns: 
-                 lists_to_group_items        - list of all the list names 
-                                               whose items are being 
-                                               grouped together
-                 lists_to_loop_items         - list of all the list names 
-                                               whose items are being
-                                               looped over 
+             @returns tuple containing lists_to_group_items ( list of
+              all the list names whose items are being grouped
+              together) and lists_to_loop_items (list of all
+              the list names whose items are being looped over)
         """
         expected_config_lists = [
              'MODEL_LIST', 'DESC_LIST',
@@ -192,6 +182,71 @@ class StatAnalysisWrapper(CommandBuilder):
              'OBS_THRESH_LIST', 'COV_THRESH_LIST',
              'ALPHA_LIST', 'LINE_TYPE_LIST'
         ]
+
+        # get list of config variables not found in either GROUP_LIST_ITEMS or LOOP_LIST_ITEMS
+        missing_config_list = [conf for conf in expected_config_lists if conf not in group_items]
+        missing_config_list = [conf for conf in missing_config_list if conf not in loop_items]
+        found_config_list = [conf for conf in expected_config_lists if conf not in missing_config_list]
+
+        # loop through lists not found in either loop or group lists
+        for missing_config in missing_config_list:
+
+            # if running MakePlots
+            if (self.c_dict['LOOP_ORDER'] == 'processes' and
+                    'MakePlots' in self.c_dict['PROCESS_LIST']):
+
+                # if LINE_TYPE_LIST is missing, add it to group list
+                if missing_config == 'LINE_TYPE_LIST':
+                    group_items.append(missing_config)
+
+                # else if list in config_dict is empty, warn and add to group list
+                elif not config_dict[missing_config]:
+                    self.logger.warning(missing_config + " is empty, "
+                                        + "will be treated as group.")
+                    group_items.append(missing_config)
+
+                # otherwise add to loop list
+                else:
+                    loop_items.append(missing_config)
+
+            # if not running MakePlots, just add missing list to group list
+            else:
+                group_items.append(missing_config)
+
+        # loop through lists found in either loop or group lists originally
+        for found_config in found_config_list:
+            # if list is empty, warn and move from loop list to group list
+            if not config_dict[found_config]:
+                self.logger.warning(found_config + " is empty, "
+                                    + "will be treated as group.")
+                group_items.append(found_config)
+                loop_items.remove(found_config)
+
+        self.logger.debug("Items in these lists will be grouped together: "
+                          + ', '.join(group_items))
+        self.logger.debug("Items in these lists will be looped over: "
+                          + ', '.join(loop_items))
+        return group_items, loop_items
+
+    """
+        for config_list in expected_config_lists:
+            if (not config_list in config_lists_to_group_items
+                    and not config_list in config_lists_to_loop_items):
+                if config_list == 'LINE_TYPE_LIST':
+                    lists_to_group_items.append(config_list)
+                elif config_dict[config_list] == []:
+                    self.logger.warning(config_list + " is empty, "
+                                        + "will be treated as group.")
+                    lists_to_group_items.append(config_list)
+                else:
+                    lists_to_loop_items.append(config_list)
+            elif (config_list in config_lists_to_loop_items
+                  and config_dict[config_list] == []):
+                self.logger.warning(config_list + " is empty, "
+                                    + "will be treated as group.")
+                lists_to_group_items.append(config_list)
+                lists_to_loop_items.remove(config_list)
+
         if (self.c_dict['LOOP_ORDER'] == 'processes' 
                 and 'MakePlots' in self.c_dict['PROCESS_LIST']):
             lists_to_group_items = config_lists_to_group_items
@@ -226,11 +281,13 @@ class StatAnalysisWrapper(CommandBuilder):
                                         +"will be treated as group.")
                     lists_to_group_items.append(config_list)
                     lists_to_loop_items.remove(config_list)
-        self.logger.debug("Items in these lists will be grouped together: "
-                          +', '.join(lists_to_group_items))
-        self.logger.debug("Items in these lists will be looped over: "
-                          +', '.join(lists_to_loop_items))
-        return lists_to_group_items, lists_to_loop_items
+
+    self.logger.debug("Items in these lists will be grouped together: "
+                      + ', '.join(lists_to_group_items))
+    self.logger.debug("Items in these lists will be looped over: "
+                      + ', '.join(lists_to_loop_items))
+    return lists_to_group_items, lists_to_loop_items
+    """
 
     def format_thresh(self, thresh):
         """! Format thresholds for file naming 
@@ -1349,7 +1406,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     else:
                         out_stat_filename_type = 'user'
             runtime_settings_dict['-lookin'] = lookin_dir
-            self.set_lookin_dir(runtime_settings_dict['-lookin'])
+            self.lookindir = runtime_settings_dict['-lookin']
             if '-dump_row' in self.c_dict['JOB_ARGS']:
                 dump_row_filename = (
                     self.get_output_filename('dump_row', 
@@ -1811,7 +1868,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                                  lists_to_group_items,
                                                  runtime_settings_dict)
                 runtime_settings_dict['-lookin'] = lookin_dir
-                self.set_lookin_dir(runtime_settings_dict['-lookin'])
+                self.lookindir = runtime_settings_dict['-lookin']
                 dump_row_filename_template = (
                     model_info['dump_row_filename_template']
                 )

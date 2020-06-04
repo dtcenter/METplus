@@ -1174,7 +1174,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                              cur_nc, ' ', ps_file, ' ',
                                              "'", 'name = ', '"',
                                              'series_cnt_', cur_stat, '";',
-                                             'level=', '"(\*,\*)"; ',
+                                             'level=', r'"(\*,\*)"; ',
                                              ' ', map_data,
                                              "'", ' -title ', '"GFS ',
                                              str(fhr),
