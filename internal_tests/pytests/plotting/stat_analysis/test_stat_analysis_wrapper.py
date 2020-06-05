@@ -6,6 +6,7 @@ import sys
 import logging
 import pytest
 import datetime
+import glob
 
 import produtil.setup
 
@@ -238,14 +239,14 @@ def test_parse_model_info():
     expected_name1 = 'MODEL_TEST1'
     expected_reference_name1 = 'MODEL_TEST1'
     expected_obtype1 = 'MODEL_TEST1_ANL'
-    expected_dump_row_filename_template1 = 'MODEL_TEST1_{obtype?fmt=%s}_'
+    expected_dump_row_filename_template1 = '{model?fmt=%s}_{obtype?fmt=%s}_'
     expected_dump_row_filename_type1 = 'default'
     expected_out_stat_filename_template1 = 'NA'
     expected_out_stat_filename_type1 = 'NA'
-    expected_name2 = 'MODEL_TEST2'
+    expected_name2 = 'TEST2_MODEL'
     expected_reference_name2 = 'TEST2_MODEL'
     expected_obtype2 = 'ANLYS2'
-    expected_dump_row_filename_template2 = 'TEST2_MODEL_{obtype?fmt=%s}_'
+    expected_dump_row_filename_template2 = '{model?fmt=%s}_{obtype?fmt=%s}_'
     expected_dump_row_filename_type2 = 'default'
     expected_out_stat_filename_template2 = 'NA'
     expected_out_stat_filename_type2 = 'NA'
@@ -280,6 +281,13 @@ def test_parse_model_info():
 def test_filter_for_plotting():
     # Test running of stat_analysis
     st = stat_analysis_wrapper()
+
+    # clear output directory for next run
+    output_dir = st.config.getdir('OUTPUT_BASE') + '/plotting/stat_analysis'
+    output_files = glob.glob(os.path.join(output_dir, '*'))
+    for output_file in output_files:
+        os.remove(output_file)
+
     # Test 1
     expected_filename1 = (
         st.config.getdir('OUTPUT_BASE')+'/plotting/stat_analysis'

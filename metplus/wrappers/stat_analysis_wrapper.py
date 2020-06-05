@@ -131,6 +131,11 @@ class StatAnalysisWrapper(CommandBuilder):
         c_dict['LINE_TYPE_LIST'] = util.getlist(
             self.config.getstr('config', 'LINE_TYPE_LIST', '')
         )
+
+        self.runMakePlots = 'MakePlots' in c_dict['PROCESS_LIST']
+
+        c_dict['MODEL_INFO_LIST'], c_dict['MODEL_INDICES'] = self.parse_model_info()
+
         return c_dict
 
     def list_to_str(self, list_of_values):
@@ -1053,98 +1058,67 @@ class StatAnalysisWrapper(CommandBuilder):
                               model information
         """
         model_info_list = []
-        all_conf = self.config.keys('config')
-        model_indices = []
-        regex = re.compile(r'MODEL(\d+)$')
-        for conf in all_conf:
-            result = regex.match(conf)
-            if result is not None:
-                model_indices.append(result.group(1))
+        model_indices = list(
+            util.find_indices_in_config_section(r'MODEL(\d+)$',
+                                                self.config,
+                                                'config',
+                                                noID=True).keys()
+        )
         for m in model_indices:
-            if self.config.has_option('config', 'MODEL'+m):
-                model_name = self.config.getstr('config', 'MODEL'+m)
-                model_reference_name = (
-                    self.config.getstr('config', 'MODEL'+m+'_REFERENCE_NAME',
-                                       model_name)
+            model_name = self.config.getstr('config', f'MODEL{m}')
+            model_reference_name = self.config.getstr('config',
+                                                      f'MODEL{m}_REFERENCE_NAME',
+                                                      model_name)
+            model_dir = self.config.getraw('dir',
+                                           f'MODEL{m}_STAT_ANALYSIS_LOOKIN_DIR')
+            if not model_dir:
+                self.log_error(f"MODEL{m}_STAT_ANALYSIS_LOOKIN_DIR must be set "
+                               f"if MODEL{m} is set.")
+                return None, None
+
+            model_obtype = self.config.getstr('config', f'MODEL{m}_OBTYPE', '')
+            if not model_obtype:
+                self.log_error(f"MODEL{m}_OBTYPE must be set "
+                               f"if MODEL{m} is set.")
+                return None, None
+
+            for output_type in [ 'DUMP_ROW', 'OUT_STAT' ]:
+                # if MODEL<n>_STAT_ANALYSIS_<output_type>_TEMPLATE is set, use that
+                model_filename_template = (
+                    self.config.getraw('filename_templates',
+                                       'MODEL'+m+'_STAT_ANALYSIS_'
+                                       +output_type+'_TEMPLATE')
                 )
-                if self.config.has_option('dir',
-                                          'MODEL'+m
-                                          +'_STAT_ANALYSIS_LOOKIN_DIR'):
-                    model_dir = (
-                        self.config.getraw('dir',
-                                           'MODEL'+m
-                                           +'_STAT_ANALYSIS_LOOKIN_DIR')
+
+                # if not set, use STAT_ANALYSIS_<output_type>_TEMPLATE
+                if not model_filename_template:
+                    model_filename_template = (
+                        self.config.getraw('filename_templates',
+                                           'STAT_ANALYSIS_'
+                                           + output_type + '_TEMPLATE')
                     )
+
+                if not model_filename_template:
+                     model_filename_template = '{model?fmt=%s}_{obtype?fmt=%s}_'
+                     model_filename_type = 'default'
                 else:
-                    self.log_error("MODEL"+m+"_STAT_ANALYSIS_LOOKIN_DIR "
-                                      +"was not set.")
-                    exit(1)
-                if self.config.has_option('config', 'MODEL'+m+'_OBTYPE'):
-                    model_obtype = (
-                        self.config.getstr('config', 'MODEL'+m+'_OBTYPE')
-                    )
-                else:
-                    self.log_error("MODEL"+m+"_OBTYPE was not set.")
-                    exit(1)
-                for output_type in [ 'DUMP_ROW', 'OUT_STAT' ]:
-                    if (self.config.has_option('filename_templates', 'MODEL'+m
-                                               +'_STAT_ANALYSIS_'+output_type
-                                               +'_TEMPLATE')):
-                        model_filename_template = (
-                            self.config.getraw('filename_templates', 
-                                               'MODEL'+m+'_STAT_ANALYSIS_'
-                                               +output_type+'_TEMPLATE')
-                        )
-                        if model_filename_template == '':
-                            model_filename_template = (
-                                '{model?fmt=%s}_{obtype?fmt=%s}_'
-                            )
-                            model_filename_type = 'default'
-                        else:
-                            model_filename_type = 'user'
+                     model_filename_type = 'user'
+
+                if output_type == 'DUMP_ROW':
+                     model_dump_row_filename_template = (
+                         model_filename_template
+                     )
+                     model_dump_row_filename_type = model_filename_type
+                elif output_type == 'OUT_STAT':
+                    if self.runMakePlots:
+                        model_out_stat_filename_template = 'NA'
+                        model_out_stat_filename_type = 'NA'
                     else:
-                        if (self.config.has_option('filename_templates',
-                                                   'STAT_ANALYSIS_'
-                                                   +output_type+'_TEMPLATE')):
-                            model_filename_template = (
-                                self.config.getraw('filename_templates',
-                                                   'STAT_ANALYSIS_'
-                                                   +output_type+'_TEMPLATE')
-                            )
-                            if model_filename_template == '':
-                                model_filename_template = (
-                                    '{model?fmt=%s}_{obtype?fmt=%s}_'
-                                )
-                                model_filename_type = 'default'
-                            else:
-                                model_filename_type = 'user'
-                        else:
-                            if 'MakePlots' in self.c_dict['PROCESS_LIST']:
-                                model_filename_template = (
-                                    model_reference_name+'_{obtype?fmt=%s}_'
-                                )
-                            else:
-                                model_filename_template = (
-                                    '{model?fmt=%s}_{obtype?fmt=%s}_'
-                                )
-                            model_filename_type = 'default'
-                    if output_type == 'DUMP_ROW':
-                         model_dump_row_filename_template = (
-                             model_filename_template
-                         )
-                         model_dump_row_filename_type = model_filename_type
-                    elif output_type == 'OUT_STAT':
-                        if 'MakePlots' in self.c_dict['PROCESS_LIST']:
-                            model_out_stat_filename_template = 'NA'
-                            model_out_stat_filename_type = 'NA'
-                        else:
-                            model_out_stat_filename_template = (
-                                model_filename_template
-                            )
-                            model_out_stat_filename_type = model_filename_type
-            else:
-                self.log_error("MODEL"+m+" was not set.")
-                exit(1)
+                        model_out_stat_filename_template = (
+                            model_filename_template
+                        )
+                        model_out_stat_filename_type = model_filename_type
+
             mod = {}
             mod['name'] = model_name
             mod['reference_name'] = model_reference_name
@@ -1154,11 +1128,12 @@ class StatAnalysisWrapper(CommandBuilder):
                 model_dump_row_filename_template
             )
             mod['dump_row_filename_type'] = model_dump_row_filename_type
-            mod['out_stat_filename_template'] = ( 
+            mod['out_stat_filename_template'] = (
                 model_out_stat_filename_template
             )
             mod['out_stat_filename_type'] = model_out_stat_filename_type
             model_info_list.append(mod)
+
         return model_info_list, model_indices
 
     def get_level_list(self, data_type):
@@ -1229,7 +1204,8 @@ class StatAnalysisWrapper(CommandBuilder):
         # Do some preprocessing, formatting, and gathering
         # of config information.
         formatted_c_dict = copy.deepcopy(self.c_dict)
-        model_info_list, model_indices = self.parse_model_info()
+        model_info_list = self.c_dict['MODEL_INFO_LIST']
+        model_indices = self.c_dict['MODEL_INDICES']
         if self.c_dict['MODEL_LIST'] == []:
             if model_indices > 0:
                 self.logger.warning("MODEL_LIST was left blank, "
@@ -1529,7 +1505,8 @@ class StatAnalysisWrapper(CommandBuilder):
         # of config information.
         date_type = self.c_dict['DATE_TYPE']
         formatted_c_dict = copy.deepcopy(self.c_dict)
-        model_info_list, model_indices = self.parse_model_info()
+        model_info_list = self.c_dict['MODEL_INFO_LIST']
+        model_indices = self.c_dict['MODEL_INDICES']
         if self.c_dict['MODEL_LIST'] == []:
             if model_indices > 0:
                 self.logger.warning("MODEL_LIST was left blank, "
