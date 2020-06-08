@@ -108,21 +108,71 @@ class TCRMWWrapper(CommandBuilder):
         elif conf_value != util.MISSING_DATA_VALUE:
             c_dict['RMW_SCALE'] = f"rmw_scale = {str(conf_value)};"
 
+        conf_value = self.config.getstr('config', 'TC_RMW_STORM_ID', '')
+        if conf_value:
+            c_dict['STORM_ID'] = f"storm_id = {conf_value};"
+
         conf_value = self.config.getstr('config', 'TC_RMW_BASIN', '')
         if conf_value:
             c_dict['BASIN'] = f"basin = {conf_value};"
+
+        conf_value = self.config.getstr('config', 'TC_RMW_CYCLONE', '')
+        if conf_value:
+            c_dict['CYCLONE'] = f"cyclone = {conf_value};"
 
         conf_value = self.config.getstr('config', 'TC_RMW_STORM_NAME', '')
         if conf_value:
             c_dict['STORM_NAME'] = f"storm_name = {conf_value};"
 
-        conf_value = self.config.getstr('config', 'TC_RMW_STORM_ID', '')
+        conf_value = c_dict['INIT_INCLUDE'] = self.config.getstr('config',
+                                                                 'TC_RMW_INIT_INCLUDE',
+                                                                 '')
         if conf_value:
-            c_dict['STORM_ID'] = f"storm_id = {conf_value};"
+            c_dict['INIT_INCLUDE'] = f"init_inc = {conf_value};"
 
-        conf_value = self.config.getstr('config', 'TC_RMW_CYCLONE', '')
+        conf_value = self.config.getstr('config',
+                                        'TC_RMW_VALID_BEG',
+                                        self.config.getstr('config',
+                                                           'VALID_BEG',
+                                                           ''))
         if conf_value:
-            c_dict['CYCLONE'] = f"cyclone = {conf_value};"
+            c_dict['VALID_BEG'] = f"valid_beg = {conf_value};"
+
+        conf_value = self.config.getstr('config',
+                                        'TC_RMW_VALID_END',
+                                        self.config.getstr('config',
+                                                           'VALID_END',
+                                                           ''))
+        if conf_value:
+            c_dict['VALID_END'] = f"valid_end = {conf_value};"
+
+        conf_value = util.getlist(self.config.getstr('config',
+                                                     'TC_RMW_VALID_INCLUDE_LIST',
+                                                     ''))
+        if conf_value:
+            conf_list = str(conf_value).replace("'", '"')
+            c_dict['VALID_INCLUDE_LIST'] = f"valid_inc = {conf_list};"
+
+        conf_value = util.getlist(self.config.getstr('config',
+                                                     'TC_STAT_VALID_EXCLUDE_LIST',
+                                                     ''))
+        if conf_value:
+            conf_list = str(conf_value).replace("'", '"')
+            c_dict['VALID_EXCLUDE_LIST'] = f"valid_exc = {conf_list};"
+
+        conf_value = util.getlist(self.config.getstr('config',
+                                                     'TC_STAT_VALID_HOUR_LIST',
+                                                     ''))
+        if conf_value:
+            conf_list = str(conf_value).replace("'", '"')
+            c_dict['VALID_HOUR_LIST'] = f"valid_hour = {conf_list};"
+
+        conf_value = util.getlist(self.config.getstr('config',
+                                                     'TC_STAT_LEAD_LIST',
+                                                     ''))
+        if conf_value:
+            conf_list = str(conf_value).replace("'", '"')
+            c_dict['LEAD_LIST'] = f"lead = {conf_list};"
 
         return c_dict
 
@@ -167,20 +217,38 @@ class TCRMWWrapper(CommandBuilder):
         self.add_env_var('RMW_SCALE',
                          self.c_dict.get('RMW_SCALE', ''))
 
-        self.add_env_var('BASIN',
-                         self.c_dict.get('BASIN', ''))
-
-        self.add_env_var('STORM_NAME',
-                         self.c_dict.get('STORM_NAME', ''))
-
         self.add_env_var('STORM_ID',
                          self.c_dict.get('STORM_ID', ''))
+
+        self.add_env_var('BASIN',
+                         self.c_dict.get('BASIN', ''))
 
         self.add_env_var('CYCLONE',
                          self.c_dict.get('CYCLONE', ''))
 
-        self.add_env_var('INIT_TIME',
-                         time_info['init_fmt'])
+        self.add_env_var('STORM_NAME',
+                         self.c_dict.get('STORM_NAME', ''))
+
+        self.add_env_var('INIT_INCLUDE',
+                         f"init_inc = \"{time_info['init_fmt']}\"")
+
+        self.add_env_var('VALID_BEG',
+                         self.c_dict.get('VALID_BEG', ''))
+
+        self.add_env_var('VALID_END',
+                         self.c_dict.get('VALID_END', ''))
+
+        self.add_env_var('VALID_INCLUDE_LIST',
+                         self.c_dict.get('VALID_INCLUDE_LIST', ''))
+
+        self.add_env_var('VALID_EXCLUDE_LIST',
+                         self.c_dict.get('VALID_EXCLUDE_LIST', ''))
+
+        self.add_env_var('VALID_HOUR_LIST',
+                         self.c_dict.get('VALID_HOUR_LIST', ''))
+
+        self.add_env_var('LEAD_LIST',
+                         self.c_dict.get('LEAD_LIST', ''))
 
         super().set_environment_variables(time_info)
 
@@ -197,7 +265,7 @@ class TCRMWWrapper(CommandBuilder):
             return
 
         # add adeck
-        cmd += ' -adeck ' + self.c_dict['ADECK_FILE']
+        cmd += ' -deck ' + self.c_dict['ADECK_FILE']
 
         # add input files
         cmd += ' -data'
