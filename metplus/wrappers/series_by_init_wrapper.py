@@ -32,8 +32,8 @@ class SeriesByInitWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin/series_analysis')
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
+                                     'series_analysis')
         self.app_name = os.path.basename(self.app_path)
         super().__init__(config, logger)
         # Retrieve any necessary values (dirs, executables)
@@ -668,8 +668,8 @@ class SeriesByInitWrapper(CommandBuilder):
            Returns:
         """
         background_map = self.config.getbool('config', 'SERIES_ANALYSIS_BACKGROUND_MAP')
-        plot_data_plane_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                           'bin/plot_data_plane')
+        plot_data_plane_exe = os.path.join(self.config.getdir('MET_BIN_DIR'),
+                                           'plot_data_plane')
 
         full_vars_list = feature_util.retrieve_var_name_levels(self.config)
         for cur_var in full_vars_list:

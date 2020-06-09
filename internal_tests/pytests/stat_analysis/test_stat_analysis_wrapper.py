@@ -125,8 +125,8 @@ def test_get_command():
     st = stat_analysis_wrapper()
     # Test 1
     expected_command = (
-        st.config.getdir('MET_INSTALL_DIR')
-        +'/bin/stat_analysis '
+        st.config.getdir('MET_BIN_DIR')
+        +'/stat_analysis '
         +'-lookin /path/to/lookin_dir '
         +'-config /path/to/STATAnalysisConfig'
         +' '

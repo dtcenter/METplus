@@ -81,7 +81,7 @@ class TCStatWrapper(CommandBuilder):
                 'directory not found in config file. Exiting.')
             sys.exit(1)
         c_dict['APP_PATH'] = os.path.join(
-            self.config.getdir('MET_INSTALL_DIR'), 'bin/tc_stat')
+            self.config.getdir('MET_BIN_DIR'), 'tc_stat')
 
         c_dict['APP_NAME'] = os.path.basename(c_dict['APP_PATH'])
 

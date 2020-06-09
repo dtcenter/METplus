@@ -31,8 +31,8 @@ class StatAnalysisWrapper(CommandBuilder):
          ensemble_stat, and wavelet_stat
     """
     def __init__(self, config, logger):
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin/stat_analysis')
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
+                                     'stat_analysis')
         self.app_name = os.path.basename(self.app_path)
         super().__init__(config, logger)
         
