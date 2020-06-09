@@ -50,12 +50,14 @@ git:
 #   develop
 #   feature_ branches
 #   master_ branches
+#   bugfix_ branches
 # 
 branches:
   only:
   - develop
   - /^feature_.*/
   - /^master_.*/
+  - /^bugfix_.*/  
 
 cache:
   - pip
