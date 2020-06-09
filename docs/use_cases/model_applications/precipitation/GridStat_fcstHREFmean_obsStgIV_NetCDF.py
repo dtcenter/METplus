@@ -24,7 +24,6 @@ _obsStgIV_Netcdf.conf
 # 
 #  * Forecast dataset: HREF mean forecasts in NetCDF
 #  * Observation dataset: Stage IV GRIB 6 hour precipitation accumulation
-#  * Sources of data (links, contacts, etc...)
 #
 
 ##############################################################################
@@ -121,6 +120,8 @@ _obsStgIV_Netcdf.conf
 # Output for this use case will be found in model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_NetCDF/GridStat/201705091200 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
+# * grid_stat_000000L_20170510_060000V_pairs.nc
+# * grid_stat_000000L_20170510_060000V.stat
 #
 
 ##############################################################################
