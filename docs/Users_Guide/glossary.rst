@@ -2967,12 +2967,12 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    MET_BIN_DIR
-        The directory of the MET executables. Used to get the full path of the MET executable when calling from METplus Wrappers.
+     The directory of the MET executables. Used to get the full path of the MET executable when calling from METplus Wrappers.
 
      | *Used by:*  All
      | *Family:*  [dir]
-     | *Default:* {MET_INSTALL_DIR}/bin
-   
+     | *Default:*  Varies
+
    MISSING_VAL
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_MISSING_VAL`.
 
