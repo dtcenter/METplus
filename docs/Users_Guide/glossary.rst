@@ -2960,12 +2960,19 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    MET_INSTALL_DIR
-     The base directory of the MET install. To be defined when using MET version 6.1 and beyond. Used to get the full path of the MET executable when calling from METplus Wrappers.
+     The base directory of the MET install. To be defined when using MET version 6.1 and beyond. Used to get the full path of the MET executable and the share directory when calling from METplus Wrappers.
 
      | *Used by:*  All
      | *Family:*  [dir]
      | *Default:*  Varies
 
+   MET_BIN_DIR
+        The directory of the MET executables. Used to get the full path of the MET executable when calling from METplus Wrappers.
+
+     | *Used by:*  All
+     | *Family:*  [dir]
+     | *Default:* {MET_INSTALL_DIR}/bin
+   
    MISSING_VAL
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_MISSING_VAL`.
 

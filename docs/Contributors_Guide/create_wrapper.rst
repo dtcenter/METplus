@@ -14,7 +14,7 @@ How to Create Your Own Wrapper
 
     def __init__(self, config, logger):
         super(NewToolWrapper, self).__init__(config, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'), 'bin/new_tool')
+        self.app_path = os.path.join(self.p.getdir('MET_BIN_DIR'), 'new_tool')
         self.app_name = os.path.basename(self.app_path)
 
 **NOTE**: 'bin/new_tool' is the path to the MET tool being wrapped
