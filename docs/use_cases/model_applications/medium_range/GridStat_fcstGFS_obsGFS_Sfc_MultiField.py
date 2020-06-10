@@ -121,7 +121,7 @@ _Sfc_MultiField.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in uswrp/met_out/{MODEL}/sfc (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in met_out/{MODEL}/sfc (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * 00Z/GFS/GFS_20170613.stat
