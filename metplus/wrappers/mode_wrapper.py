@@ -25,8 +25,8 @@ class MODEWrapper(CompareGriddedWrapper):
         # only set app variables if not already set by MTD (subclass)
         if not hasattr(self, 'app_name'):
             self.app_name = 'mode'
-            self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
-                                            self.app_name)
+            self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                         self.app_name)
         super().__init__(config, logger)
 
     def add_merge_config_file(self, time_info):

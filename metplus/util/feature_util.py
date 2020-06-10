@@ -63,7 +63,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
 
     # Get variables, etc. from param/config file.
     model_data_dir = config.getdir('EXTRACT_TILES_GRID_INPUT_DIR')
-    met_bin_dir = config.getdir('MET_BIN_DIR')
+    met_bin_dir = config.getdir('MET_BIN_DIR', '')
     regrid_data_plane_exe = os.path.join(met_bin_dir,
                                          'regrid_data_plane')
 

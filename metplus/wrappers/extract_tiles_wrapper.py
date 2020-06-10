@@ -44,7 +44,7 @@ class ExtractTilesWrapper(CommandBuilder):
     def __init__(self, config, logger):
         self.app_name = 'extract_tiles'
         super().__init__(config, logger)
-        met_bin_dir = self.config.getdir('MET_BIN_DIR')
+        met_bin_dir = self.config.getdir('MET_BIN_DIR', '')
         self.tc_pairs_dir = self.config.getdir('EXTRACT_TILES_PAIRS_INPUT_DIR')
         self.overwrite_flag = self.config.getbool('config',
                                               'EXTRACT_TILES_OVERWRITE_TRACK')
