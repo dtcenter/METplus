@@ -48,9 +48,9 @@ class TCRMWWrapper(CommandBuilder):
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                        'TC_RMW_OUTPUT_TEMPLATE')
 
-        c_dict['ADECK_INPUT_DIR'] = self.config.getdir('TC_RMW_ADECK_INPUT_DIR', '')
-        c_dict['ADECK_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                            'TC_RMW_ADECK_TEMPLATE')
+        c_dict['DECK_INPUT_DIR'] = self.config.getdir('TC_RMW_DECK_INPUT_DIR', '')
+        c_dict['DECK_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
+                                                            'TC_RMW_DECK_TEMPLATE')
 
         data_type = self.config.getstr('config', 'TC_RMW_INPUT_DATATYPE', '')
         if data_type:
@@ -154,25 +154,18 @@ class TCRMWWrapper(CommandBuilder):
             c_dict['VALID_INCLUDE_LIST'] = f"valid_inc = {conf_list};"
 
         conf_value = util.getlist(self.config.getstr('config',
-                                                     'TC_STAT_VALID_EXCLUDE_LIST',
+                                                     'TC_RMW_VALID_EXCLUDE_LIST',
                                                      ''))
         if conf_value:
             conf_list = str(conf_value).replace("'", '"')
             c_dict['VALID_EXCLUDE_LIST'] = f"valid_exc = {conf_list};"
 
         conf_value = util.getlist(self.config.getstr('config',
-                                                     'TC_STAT_VALID_HOUR_LIST',
+                                                     'TC_RMW_VALID_HOUR_LIST',
                                                      ''))
         if conf_value:
             conf_list = str(conf_value).replace("'", '"')
             c_dict['VALID_HOUR_LIST'] = f"valid_hour = {conf_list};"
-
-        conf_value = util.getlist(self.config.getstr('config',
-                                                     'TC_STAT_LEAD_LIST',
-                                                     ''))
-        if conf_value:
-            conf_list = str(conf_value).replace("'", '"')
-            c_dict['LEAD_LIST'] = f"lead = {conf_list};"
 
         return c_dict
 
@@ -264,8 +257,8 @@ class TCRMWWrapper(CommandBuilder):
             self.log_error("No output file specified")
             return
 
-        # add adeck
-        cmd += ' -deck ' + self.c_dict['ADECK_FILE']
+        # add deck
+        cmd += ' -deck ' + self.c_dict['DECK_FILE']
 
         # add input files
         cmd += ' -data'
@@ -373,7 +366,7 @@ class TCRMWWrapper(CommandBuilder):
         return True
 
     def find_input_files(self, time_info):
-        """!Get ADECK file and list of input data files and set c_dict items.
+        """!Get DECK file and list of input data files and set c_dict items.
             Args:
                 @param time_info time dictionary to use for string substitution
                 @returns Input file list if all files were found, None if not.
@@ -385,14 +378,12 @@ class TCRMWWrapper(CommandBuilder):
         # use_file_list = True
         use_file_list = False
 
-        self.c_dict['ADECK_FILE'] = ''
-
-        # get adeck file
-        adeck_file = self.find_data(time_info, data_type='ADECK')
-        if not adeck_file:
+        # get deck file
+        deck_file = self.find_data(time_info, data_type='DECK')
+        if not deck_file:
             return None
 
-        self.c_dict['ADECK_FILE'] = adeck_file
+        self.c_dict['DECK_FILE'] = deck_file
 
         all_input_files = []
 
@@ -420,6 +411,13 @@ class TCRMWWrapper(CommandBuilder):
             self.infiles.append(list_file)
         else:
             self.infiles.extend(all_input_files)
+
+        # set LEAD_LIST to list of forecast leads used
+        lead_list = []
+        for lead in lead_seq:
+            lead_list.append(f'"{str(lead).zfill(2)}"')
+
+        self.c_dict['LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
 
         return self.infiles
 
