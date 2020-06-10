@@ -31,23 +31,40 @@ class StatAnalysisWrapper(CommandBuilder):
          ensemble_stat, and wavelet_stat
     """
 
+    field_lists = ['FCST_VAR_LIST',
+                   'OBS_VAR_LIST',
+                   'FCST_UNITS_LIST',
+                   'OBS_UNITS_LIST',
+                   'FCST_THRESH_LIST',
+                   'OBS_THRESH_LIST',
+                   'FCST_LEVEL_LIST',
+                   'OBS_LEVEL_LIST',
+                   ]
+
+    format_lists = ['FCST_VALID_HOUR_LIST',
+                    'FCST_INIT_HOUR_LIST',
+                    'OBS_VALID_HOUR_LIST',
+                    'OBS_INIT_HOUR_LIST',
+                    'FCST_LEAD_LIST',
+                    'OBS_LEAD_LIST',
+                    ]
+
+    expected_config_lists = ['MODEL_LIST',
+                             'DESC_LIST',
+                             'VX_MASK_LIST',
+                             'INTERP_MTHD_LIST',
+                             'INTERP_PNTS_LIST',
+                             'COV_THRESH_LIST',
+                             'ALPHA_LIST',
+                             'LINE_TYPE_LIST',
+                             ] + format_lists + field_lists
+
+    list_categories = ['GROUP_LIST_ITEMS', 'LOOP_LIST_ITEMS']
+
+    # what is the used for? these are not formatted later
     format_later_list = [
         'MODEL_LIST', 'FCST_VALID_HOUR_LIST', 'OBS_VALID_HOUR_LIST',
         'FCST_INIT_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
-    ]
-
-    expected_config_lists = [
-        'MODEL_LIST', 'DESC_LIST',
-        'FCST_LEAD_LIST', 'OBS_LEAD_LIST',
-        'FCST_VALID_HOUR_LIST', 'FCST_INIT_HOUR_LIST',
-        'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST',
-        'FCST_VAR_LIST', 'OBS_VAR_LIST',
-        'FCST_UNITS_LIST', 'OBS_UNITS_LIST',
-        'FCST_LEVEL_LIST', 'OBS_LEVEL_LIST',
-        'VX_MASK_LIST', 'INTERP_MTHD_LIST',
-        'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
-        'OBS_THRESH_LIST', 'COV_THRESH_LIST',
-        'ALPHA_LIST', 'LINE_TYPE_LIST'
     ]
 
     def __init__(self, config, logger):
@@ -106,92 +123,53 @@ class StatAnalysisWrapper(CommandBuilder):
         if not c_dict['OUTPUT_BASE_DIR']:
             self.log_error("Must set STAT_ANALYSIS_OUTPUT_DIR")
 
-        c_dict['DATE_TYPE'] = self.config.getstr('config', 'DATE_TYPE', '')
+        c_dict['DATE_TYPE'] = self.config.getstr('config',
+                                                 'DATE_TYPE',
+                                                 self.config.getstr('config',
+                                                                    'LOOP_BY',
+                                                                    ''))
         if not c_dict['DATE_TYPE']:
-            c_dict['DATE_TYPE'] = self.config.getstr('config', 'LOOP_BY', '')
-            if not c_dict['DATE_TYPE']:
-                self.log_error("DATE_TYPE or LOOP_BY must be set to run "
-                               "StatAnalysis wrapper")
+            self.log_error("DATE_TYPE or LOOP_BY must be set to run "
+                           "StatAnalysis wrapper")
 
         if c_dict['DATE_TYPE'] not in ['VALID', 'INIT']:
             self.log_error("DATE_TYPE must be VALID or INIT")
 
-        c_dict['VALID_BEG'] = self.config.getstr('config', 'VALID_BEG', '')
-        c_dict['VALID_END'] = self.config.getstr('config', 'VALID_END', '')
-        c_dict['INIT_BEG'] = self.config.getstr('config', 'INIT_BEG', '')
-        c_dict['INIT_END'] = self.config.getstr('config', 'INIT_END', '')
+        for time_conf in ['VALID_BEG', 'VALID_END', 'INIT_BEG', 'INIT_END']:
+            c_dict[time_conf] = self.config.getstr('config', time_conf, '')
 
-        c_dict['JOB_NAME'] = self.config.getstr('config',
-                                                'STAT_ANALYSIS_JOB_NAME',
-                                                '')
-        c_dict['JOB_ARGS'] = self.config.getstr('config',
-                                                'STAT_ANALYSIS_JOB_ARGS',
-                                                '')
+        for job_confs in ['JOB_NAME', 'JOB_ARGS']:
+            c_dict[job_confs] = self.config.getstr('config',
+                                                   f'STAT_ANALYSIS_{job_confs}',
+                                                   '')
+            if not c_dict[job_confs]:
+                self.log_error(f"Must set STAT_ANALYSIS_{job_confs} to run StatAnalysis")
 
-        if not c_dict['JOB_NAME']:
-            self.log_error("Must set STAT_ANALYSIS_JOB_NAME to run StatAnalysis")
-
-        if not c_dict['JOB_ARGS']:
-            self.log_error("Must set STAT_ANALYSIS_JOB_ARGS to run StatAnalysis")
-
-        c_dict['GROUP_LIST_ITEMS'] = util.getlist(
-            self.config.getstr('config', 'GROUP_LIST_ITEMS', '')
-        )
-        if not c_dict['GROUP_LIST_ITEMS']:
-            self.log_error("Must set GROUP_LIST_ITEMS to run StatAnalysis")
-
-        c_dict['LOOP_LIST_ITEMS'] = util.getlist(
-            self.config.getstr('config', 'LOOP_LIST_ITEMS', '')
-        )
-        if not c_dict['LOOP_LIST_ITEMS']:
-            self.log_error("Must set LOOP_LIST_ITEMS to run StatAnalysis")
-
-        c_dict['MODEL_LIST'] = util.getlist(
-            self.config.getstr('config', 'MODEL_LIST', '')
-        )
-        c_dict['DESC_LIST'] = util.getlist(
-            self.config.getstr('config', 'DESC_LIST', '')
-        )
-
-        hour_lists = ['FCST_VALID_HOUR_LIST',
-                      'FCST_INIT_HOUR_LIST',
-                      'OBS_VALID_HOUR_LIST',
-                      'OBS_INIT_HOUR_LIST',
-                      'FCST_LEAD_LIST',
-                      'OBS_LEAD_LIST',
-        ]
-        for hour_list in hour_lists:
-            c_dict[hour_list] = util.getlist(
-                self.config.getstr('config', hour_list, '')
+        # read in all lists except field lists, which will be read in afterwards and checked
+        all_lists_to_read = self.expected_config_lists + self.list_categories
+        non_field_lists = [conf_list for
+                           conf_list in all_lists_to_read
+                           if conf_list not in self.field_lists]
+        for conf_list in non_field_lists:
+            c_dict[conf_list] = util.getlist(
+                self.config.getstr('config', conf_list, '')
             )
-#            if hour_list not in self.format_later_list:
-            c_dict[hour_list] = [value.ljust(6, '0') for value in c_dict[hour_list]]
 
-        c_dict['VX_MASK_LIST'] = util.getlist(
-            self.config.getstr('config', 'VX_MASK_LIST', '')
-        )
-        c_dict['INTERP_MTHD_LIST'] = util.getlist(
-            self.config.getstr('config', 'INTERP_MTHD_LIST', '')
-        )
-        c_dict['INTERP_PNTS_LIST'] = util.getlist(
-            self.config.getstr('config', 'INTERP_PNTS_LIST', '')
-        )
-        c_dict['COV_THRESH_LIST'] = util.getlist(
-            self.config.getstr('config', 'COV_THRESH_LIST', '')
-        )
-        c_dict['ALPHA_LIST'] = util.getlist(
-            self.config.getstr('config', 'ALPHA_LIST', '')
-        )
-        c_dict['LINE_TYPE_LIST'] = util.getlist(
-            self.config.getstr('config', 'LINE_TYPE_LIST', '')
-        )
+            if conf_list in self.format_lists:
+                c_dict[conf_list] = (
+                    [value.ljust(6, '0') for value in c_dict[conf_list]]
+                )
+
+            if conf_list in self.list_categories:
+                if not c_dict[conf_list]:
+                    self.log_error(f"Must set {conf_list} to run StatAnalysis")
+
+        # read all field lists and check if they are all empty
+        all_field_lists_empty = self.read_field_lists_from_config(c_dict)
 
         self.runMakePlots = 'MakePlots' in c_dict['PROCESS_LIST']
-
         if self.runMakePlots:
             self.check_MakePlots_config(c_dict)
-
-        all_field_lists_empty = self.read_field_lists_from_config(c_dict)
 
         c_dict['VAR_LIST'] = util.parse_var_list(self.config)
 
@@ -236,29 +214,22 @@ class StatAnalysisWrapper(CommandBuilder):
         """! Get field list configuration variables and add to dictionary
              @param field_dict dictionary to hold output values
              @returns True if all lists are empty or False if any have a value"""
-        data_types = ['FCST', 'OBS']
-        field_lists = ['VAR_LIST',
-                       'UNITS_LIST',
-                       'THRESH_LIST',
-                       'LEVEL_LIST',
-                       ]
         all_empty = True
-        for data_type in data_types:
-            for field_list in field_lists:
-                if 'LEVEL_LIST' in field_list:
-                    field_dict[f'{data_type}_LEVEL_LIST'] = (
-                        self.get_level_list(data_type)
-                    )
-                else:
-                    field_dict[f'{data_type}_{field_list}'] = util.getlist(
-                        self.config.getstr('config',
-                                           f'{data_type}_{field_list}',
-                                           '')
-                    )
+        for field_list in self.field_lists:
+            if 'LEVEL_LIST' in field_list:
+                field_dict[field_list] = (
+                    self.get_level_list(field_list.split('_')[0])
+                )
+            else:
+                field_dict[field_list] = util.getlist(
+                    self.config.getstr('config',
+                                       field_list,
+                                       '')
+                )
 
-                # keep track if any list is not empty
-                if field_dict[f'{data_type}_{field_list}']:
-                    all_empty = False
+            # keep track if any list is not empty
+            if field_dict[field_list]:
+                all_empty = False
 
         return all_empty
 
@@ -1485,8 +1456,7 @@ class StatAnalysisWrapper(CommandBuilder):
              @param c_dict dictionary to add values to
         """
         # add group and loop lists
-        list_categories = ['GROUP_LIST_ITEMS', 'LOOP_LIST_ITEMS']
-        for list_category in list_categories:
+        for list_category in self.list_categories:
             list_items = self.c_dict[list_category]
             if list_category not in c_dict:
                 c_dict[list_category] = list_items
