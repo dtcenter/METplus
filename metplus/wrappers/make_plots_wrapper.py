@@ -27,6 +27,21 @@ from . import CommandBuilder
 class MakePlotsWrapper(CommandBuilder):
     """! Wrapper to used to filter make plots from MET data
     """
+    accepted_verif_lists = {'grid2grid': ['pres',
+                                               'anom',
+                                               'sfc',
+                                               ],
+                                 'grid2obs': ['upper_air',
+                                              'conus_sfc',
+                                              ],
+                                 'precip': ['pres',
+                                            'anom',
+                                            'sfc',
+                                            'upper_air',
+                                            'conus_sfc',
+                                            ]
+    }
+
     def __init__(self, config, logger):
         self.app_path = 'python'
         self.app_name = 'make_plots'
@@ -126,8 +141,32 @@ class MakePlotsWrapper(CommandBuilder):
         )
         c_dict['VERIF_CASE'] = self.config.getstr('config',
                                                   'MAKE_PLOTS_VERIF_CASE', '')
+
+        if c_dict['VERIF_CASE'] not in self.accepted_verif_lists:
+            self.log_error(self.c_dict['VERIF_CASE'] + " is not an"
+                           + "an accepted MAKE_PLOTS_VERIF_CASE "
+                           + "option. Options are "
+                           + ', '.join(self.accepted_verif_lists.keys()))
+
         c_dict['VERIF_TYPE'] = self.config.getstr('config',
                                                   'MAKE_PLOTS_VERIF_TYPE', '')
+        if c_dict['VERIF_TYPE'] not in (
+                self.accepted_verif_lists.get(c_dict['VERIF_CASE'], [])
+        ):
+            accepted_types = accepted_verif_lists.get(c_dict['VERIF_CASE'])
+            self.log_error(f"{c_dict['VERIF_TYPE']} is not "
+                           "an accepted MAKE_PLOTS_VERIF_TYPE "
+                           "option for MAKE_PLOTS_VERIF_CASE "
+                           f"= {c_dict['VERIF_CASE']}. Options "
+                           f"are {', '.join(accepted_types)}")
+
+        if not c_dict['USER_SCRIPT_LIST'] and not(c_dict['VERIF_CASE'] or
+                                                  c_dict['VERIF_TYPE']):
+            self.log_error("Please defined either "
+                           "MAKE_PLOTS_VERIF_CASE and "
+                           "MAKE_PLOTS_VERIF_TYPE, or "
+                           "MAKE_PLOTS_USER_SCRIPT_LIST")
+
         c_dict['STATS_LIST'] = util.getlist(
             self.config.getstr('config', 'MAKE_PLOTS_STATS_LIST', '')
         )
@@ -895,7 +934,7 @@ class MakePlotsWrapper(CommandBuilder):
             # Fill setup dictionary for MET config variable name
             # and its value as a list for loop lists. Some items
             # in lists need to be formatted now, others done later.
-            ##format_later_list = [
+            ##gitd = [
             ##    'MODEL_LIST', 'FCST_VALID_HOUR_LIST', 'OBS_VALID_HOUR_LIST',
             ##    'FCST_INIT_HOUR_LIST','OBS_INIT_HOUR_LIST'
             ##]
@@ -954,46 +993,14 @@ class MakePlotsWrapper(CommandBuilder):
         if self.c_dict['USER_SCRIPT_LIST']:
             self.logger.info("Running plots for user specified list of "
                              +"scripts.")
-            run_make_plots = True
         elif (self.c_dict['VERIF_CASE'] and self.c_dict['VERIF_TYPE']):
             self.logger.info("Running plots for VERIF_CASE = "
                              +self.c_dict['VERIF_CASE']+", "
                              +"VERIF_TYPE = "
                              +self.c_dict['VERIF_TYPE'])
-            accepted_verif_case_list = ['grid2grid', 'grid2obs', 'precip']
-            if self.c_dict['VERIF_CASE'] not in accepted_verif_case_list:
-                run_make_plots = False
-                self.log_error(self.c_dict['VERIF_CASE']+" is not an"
-                                  +"an accepted MAKE_PLOTS_VERIF_CASE "
-                                  +"option. Options are "
-                                  +', '.join(accepted_verif_case_list))
-            else:
-                if self.c_dict['VERIF_CASE'] == 'grid2grid':
-                    accepted_verif_type_list = ['pres', 'anom', 'sfc']
-                elif self.c_dict['VERIF_CASE'] == 'grid2obs':
-                    accepted_verif_type_list = ['upper_air', 'conus_sfc']
-                elif self.c_dict['VERIF_CASE'] == 'precip':
-                    accepted_verif_type_list = [self.c_dict['VERIF_TYPE']]
-                if self.c_dict['VERIF_TYPE'] in accepted_verif_type_list:
-                    run_make_plots = True
-                else:
-                    run_make_plots = False
-                    self.log_error(self.c_dict['VERIF_TYPE']+" is not "
-                                      +"an accepted MAKE_PLOTS_VERIF_TYPE "
-                                      +"option for MAKE_PLOTS_VERIF_CASE "
-                                      +"= "+self.c_dict['VERIF_CASE']+". "
-                                      "Options are "
-                                      +', '.join(accepted_verif_type_list))
-        else:
-            run_make_plots = False
-            self.log_error("Please defined either "
-                           "MAKE_PLOTS_VERIF_CASE and "
-                           "MAKE_PLOTS_VERIF_TYPE, or "
-                           "MAKE_PLOTS_USER_SCRIPT_LIST")
 
-        if run_make_plots:
-            self.create_plots(self.c_dict['VERIF_CASE'],
-                              self.c_dict['VERIF_TYPE'])
+        self.create_plots(self.c_dict['VERIF_CASE'],
+                          self.c_dict['VERIF_TYPE'])
 
 if __name__ == "__main__":
     util.run_stand_alone(__file__, "MakePlots")
