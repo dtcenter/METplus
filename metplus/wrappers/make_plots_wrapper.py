@@ -551,55 +551,6 @@ class MakePlotsWrapper(CommandBuilder):
                
              Returns:
         """
-        # Do checks for bad configuration file options.
-        bad_config_variable_list = [
-            'FCST_VAR_LIST', 'FCST_LEVEL_LIST',
-            'FCST_THRESH_LIST', 'FCST_UNITS_LIST',
-            'OBS_VAR_LIST', 'OBS_LEVEL_LIST',
-            'OBS_THRESH_LIST', 'OBS_UNITS_LIST'
-        ]
-        for bad_config_variable in bad_config_variable_list:
-            if self.config.has_option('config',
-                                      bad_config_variable):
-                self.log_error("Bad config option for running MakePlots. "
-                                  "Please remove "+bad_config_variable+" "
-                                  +"and set using FCST/OBS_VARn")
-                exit(1)
-        loop_group_accepted_options = [
-            'FCST_VALID_HOUR_LIST', 'FCST_INIT_HOUR_LIST',
-            'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
-        ]
-        for config_list in self.c_dict['GROUP_LIST_ITEMS']:
-            if config_list not in loop_group_accepted_options:
-                self.log_error("Bad config option for running MakePlots. "
-                                  +"Only accepted values in GROUP_LIST_ITEMS "
-                                  +"are FCST_VALID_HOUR_LIST, "
-                                  +"FCST_INIT_HOUR_LIST, "
-                                  +"OBS_VALID_HOUR_LIST, "
-                                  +"OBS_INIT_HOUR_LIST. "
-                                  +"Found "+config_list)
-                exit(1)
-        for config_list in self.c_dict['LOOP_LIST_ITEMS']:
-            if config_list not in loop_group_accepted_options:
-                self.log_error("Bad config option for running MakePlots. "
-                                  +"Only accepted values in LOOP_LIST_ITEMS "
-                                  +"are FCST_VALID_HOUR_LIST, "
-                                  +"FCST_INIT_HOUR_LIST, "
-                                  +"OBS_VALID_HOUR_LIST, "
-                                  +"OBS_INIT_HOUR_LIST. "
-                                  +"Found "+config_list)
-                exit(1)
-        # Do checks for required configuration file options that are
-        # defined by user.
-        required_config_variable_list = [
-            'VX_MASK_LIST', 'FCST_LEAD_LIST', 'LINE_TYPE_LIST'
-            ]
-        for required_config_variable in required_config_variable_list:
-            if len(self.c_dict[required_config_variable]) == 0:
-                self.log_error(required_config_variable+" has no items. "
-                                  +"This list must have items to run "
-                                  +"MakePlots.")
-                exit(1)
         # Do some preprocessing, formatting, and gathering
         # of config information.
         date_type = self.c_dict['DATE_TYPE']
@@ -949,8 +900,6 @@ class MakePlotsWrapper(CommandBuilder):
             ##    'FCST_INIT_HOUR_LIST','OBS_INIT_HOUR_LIST'
             ##]
             for list_to_loop_items in lists_to_loop_items:
-                runtime_setup_dict_name = list_to_loop_items.replace('_LIST', 
-                                                                     '')
                 #if list_to_loop_items not in format_later_list:
                 for item in \
                         var_info_formatted_c_dict[list_to_loop_items]:
