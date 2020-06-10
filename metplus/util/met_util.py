@@ -74,6 +74,14 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'usage': 'Usage',
                          }
 
+valid_comparisons = {">": "gt",
+                     ">=": "ge",
+                     "==": "eq",
+                     "!=": "ne",
+                     "<": "lt",
+                     "<=": "le",
+                     }
+
 # missing data value used to check if integer values are not set
 # we often check for None if a variable is not set, but 0 and None
 # have the same result in a test. 0 may be a valid integer value
@@ -1998,14 +2006,14 @@ def get_threshold_via_regex(thresh_string):
             regex match object with comparison operator in group 1 and
             number in group 2 if valid
     """
-    valid_comparisons = {">", ">=", "==", "!=", "<", "<=", "gt", "ge", "eq", "ne", "lt", "le"}
+
     comparison_number_list = []
     # split thresh string by || or &&
     thresh_split = re.split(r'\|\||&&', thresh_string)
     # check each threshold for validity
     for thresh in thresh_split:
         found_match = False
-        for comp in valid_comparisons:
+        for comp in list(valid_comparisons.keys())+list(valid_comparisons.values()):
             # if valid, add to list of tuples
             match = re.match(r'^('+comp+r')([+-]?\d*\.?\d*)$', thresh)
             if match:
@@ -2021,6 +2029,19 @@ def get_threshold_via_regex(thresh_string):
         return None
 
     return comparison_number_list
+
+def comparison_to_numeric_comparison(comparison):
+    """! Convert comparison operator to the numeric version if it is not already
+         @args comparison comparison operator to convert, i.e. gt or <=
+         @returns numeric comparison operator, i.e. gt or le, or None if invalid
+    """
+    if comparison in valid_comparisons.values():
+        return comparison
+
+    if comparison in valid_comparisons:
+        return valid_comparisons[comparison]
+
+    return None
 
 def validate_thresholds(thresh_list):
     """ Checks list of thresholds to ensure all of them have the correct format

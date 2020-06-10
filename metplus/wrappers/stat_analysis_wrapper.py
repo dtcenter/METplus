@@ -115,35 +115,23 @@ class StatAnalysisWrapper(CommandBuilder):
         c_dict['CONFIG_FILE'] = self.config.getstr('config', 
                                                    'STAT_ANALYSIS_CONFIG_FILE',
                                                    '')
-        if not c_dict['CONFIG_FILE']:
-            self.log_error("Must set STAT_ANALYSIS_CONFIG_FILE")
 
         c_dict['OUTPUT_BASE_DIR'] = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR',
                                                        '')
-        if not c_dict['OUTPUT_BASE_DIR']:
-            self.log_error("Must set STAT_ANALYSIS_OUTPUT_DIR")
 
         c_dict['DATE_TYPE'] = self.config.getstr('config',
                                                  'DATE_TYPE',
                                                  self.config.getstr('config',
                                                                     'LOOP_BY',
                                                                     ''))
-        if not c_dict['DATE_TYPE']:
-            self.log_error("DATE_TYPE or LOOP_BY must be set to run "
-                           "StatAnalysis wrapper")
-
-        if c_dict['DATE_TYPE'] not in ['VALID', 'INIT']:
-            self.log_error("DATE_TYPE must be VALID or INIT")
 
         for time_conf in ['VALID_BEG', 'VALID_END', 'INIT_BEG', 'INIT_END']:
             c_dict[time_conf] = self.config.getstr('config', time_conf, '')
 
-        for job_confs in ['JOB_NAME', 'JOB_ARGS']:
-            c_dict[job_confs] = self.config.getstr('config',
-                                                   f'STAT_ANALYSIS_{job_confs}',
+        for job_conf in ['JOB_NAME', 'JOB_ARGS']:
+            c_dict[job_conf] = self.config.getstr('config',
+                                                   f'STAT_ANALYSIS_{job_conf}',
                                                    '')
-            if not c_dict[job_confs]:
-                self.log_error(f"Must set STAT_ANALYSIS_{job_confs} to run StatAnalysis")
 
         # read in all lists except field lists, which will be read in afterwards and checked
         all_lists_to_read = self.expected_config_lists + self.list_categories
@@ -160,12 +148,8 @@ class StatAnalysisWrapper(CommandBuilder):
                     [value.ljust(6, '0') for value in c_dict[conf_list]]
                 )
 
-            if conf_list in self.list_categories:
-                if not c_dict[conf_list]:
-                    self.log_error(f"Must set {conf_list} to run StatAnalysis")
-
         # read all field lists and check if they are all empty
-        all_field_lists_empty = self.read_field_lists_from_config(c_dict)
+        c_dict['all_field_lists_empty'] = self.read_field_lists_from_config(c_dict)
 
         self.runMakePlots = 'MakePlots' in c_dict['PROCESS_LIST']
         if self.runMakePlots:
@@ -173,35 +157,59 @@ class StatAnalysisWrapper(CommandBuilder):
 
         c_dict['VAR_LIST'] = util.parse_var_list(self.config)
 
+        c_dict['MODEL_INFO_LIST'] = self.parse_model_info()
+        if not c_dict['MODEL_LIST'] and c_dict['MODEL_INFO_LIST']:
+                self.logger.warning("MODEL_LIST was left blank, "
+                                    + "creating with MODELn information.")
+                for model_info in c_dict['MODEL_INFO_LIST']:
+                    c_dict['MODEL_LIST'].append(model_info['name'])
+
+        c_dict['GROUP_LIST_ITEMS'], c_dict['LOOP_LIST_ITEMS'] = (
+            self.set_lists_loop_or_group(c_dict)
+        )
+
+        return self.c_dict_error_check(c_dict)
+
+    def c_dict_error_check(self, c_dict):
+
+        if not c_dict['CONFIG_FILE']:
+            self.log_error("Must set STAT_ANALYSIS_CONFIG_FILE")
+
+        if not c_dict['OUTPUT_BASE_DIR']:
+            self.log_error("Must set STAT_ANALYSIS_OUTPUT_DIR")
+
+        for job_conf in ['JOB_NAME', 'JOB_ARGS']:
+            if not c_dict[job_conf]:
+                self.log_error(f"Must set STAT_ANALYSIS_{job_conf} to run StatAnalysis")
+
+        for conf_list in self.list_categories:
+            if not c_dict[conf_list]:
+                self.log_error(f"Must set {conf_list} to run StatAnalysis")
+
+        if not c_dict['DATE_TYPE']:
+            self.log_error("DATE_TYPE or LOOP_BY must be set to run "
+                           "StatAnalysis wrapper")
+
+        if c_dict['DATE_TYPE'] not in ['VALID', 'INIT']:
+            self.log_error("DATE_TYPE must be VALID or INIT")
+
         # if var list is set and field lists are not all empty, error
-        if c_dict['VAR_LIST'] and not all_field_lists_empty:
+        if c_dict['VAR_LIST'] and not c_dict['all_field_lists_empty']:
             self.log_error("Field information defined in both "
                            "[FCST/OBS]_VAR_LIST and "
                            "[FCST/OBS]_VAR<n>_[NAME/LEVELS]. Use "
                            "one or the other formats to run")
 
         # if no var list is found, other lists must be set to run MakePlots
-        elif not c_dict['VAR_LIST'] and all_field_lists_empty and self.runMakePlots:
-                self.log_error("No field information found. Must define fields to "
-                               "process with either [FCST/OBS]_VAR_LIST or "
-                               "[FCST/OBS]_VAR<n>_[NAME/LEVELS]")
-
-        c_dict['MODEL_INFO_LIST'] = self.parse_model_info()
+        elif not c_dict['VAR_LIST'] and c_dict['all_field_lists_empty'] and self.runMakePlots:
+            self.log_error("No field information found. Must define fields to "
+                           "process with either [FCST/OBS]_VAR_LIST or "
+                           "[FCST/OBS]_VAR<n>_[NAME/LEVELS]")
 
         # if MODEL_LIST was not set in config, populate it from the model info list
         # if model info list is also not set, report and error
-        if not c_dict['MODEL_LIST']:
-            if c_dict['MODEL_INFO_LIST']:
-                self.logger.warning("MODEL_LIST was left blank, "
-                                    + "creating with MODELn information.")
-                for model_info in c_dict['MODEL_INFO_LIST']:
-                    c_dict['MODEL_LIST'].append(model_info['name'])
-            else:
-                self.log_error("No model information was found.")
-
-        c_dict['GROUP_LIST_ITEMS'], c_dict['LOOP_LIST_ITEMS'] = (
-            self.set_lists_loop_or_group(c_dict)
-        )
+        if not c_dict['MODEL_LIST'] and not c_dict['MODEL_INFO_LIST']:
+            self.log_error("No model information was found.")
 
         # if running MakePlots and model list in group list, error and exit
         if self.runMakePlots and 'MODEL_LIST' in c_dict['GROUP_LIST_ITEMS']:
@@ -243,11 +251,10 @@ class StatAnalysisWrapper(CommandBuilder):
             'OBS_THRESH_LIST', 'OBS_UNITS_LIST'
         ]
         for bad_config_variable in bad_config_variable_list:
-            if self.config.has_option('config',
-                                      bad_config_variable):
+            if c_dict[bad_config_variable]:
                 self.log_error("Bad config option for running StatAnalysis "
-                                  "followed by MakePlots. Please remove "
-                                  +bad_config_variable+" and set using FCST/OBS_VARn")
+                               "followed by MakePlots. Please remove "
+                               +bad_config_variable+" and set using FCST/OBS_VARn")
 
         loop_group_accepted_options = [
             'FCST_VALID_HOUR_LIST', 'FCST_INIT_HOUR_LIST',
@@ -377,50 +384,6 @@ class StatAnalysisWrapper(CommandBuilder):
         self.logger.debug("Items in these lists will be looped over: "
                           + ', '.join(loop_items))
         return group_items, loop_items
-
-    def format_thresh(self, thresh):
-        """! Format thresholds for file naming 
-           
-             Args:
-                 thresh         - string of the treshold(s)
-           
-             Return:
-                 thresh_symbol  - string of the threshold(s)
-                                  with symbols
-                 thresh_letters - string of the threshold(s) 
-                                  with letters 
-        """
-        thresh_list = thresh.split(' ')
-        thresh_symbol = ''
-        thresh_letter = ''
-        for thresh in thresh_list:
-            if not thresh:
-                continue
-            thresh_value = thresh
-            for opt in ['>=', '>', '==','!=','<=', '<',
-                        'ge', 'gt', 'eq', 'ne', 'le', 'lt']:
-                if opt in thresh_value:
-                    thresh_opt = opt
-                    thresh_value = thresh_value.replace(opt, '')
-            if thresh_opt in ['>', 'gt']:
-                thresh_symbol+='>'+thresh_value
-                thresh_letter+='gt'+thresh_value
-            elif thresh_opt in ['>=', 'ge']:
-                thresh_symbol+='>='+thresh_value
-                thresh_letter+='ge'+thresh_value
-            elif thresh_opt in ['<', 'lt']:
-                thresh_symbol+='<'+thresh_value
-                thresh_letter+='lt'+thresh_value
-            elif thresh_opt in ['<=', 'le']:
-                thresh_symbol+='<='+thresh_value
-                thresh_letter+='le'+thresh_value
-            elif thresh_opt in ['==', 'eq']:
-                thresh_symbol+='=='+thresh_value
-                thresh_letter+='eq'+thresh_value
-            elif thresh_opt in ['!=', 'ne']:
-                thresh_symbol+='!='+thresh_value
-                thresh_letter+='ne'+thresh_value
-        return thresh_symbol, thresh_letter
 
     def build_stringsub_dict(self, date_beg, date_end, date_type,
                              lists_to_loop, lists_to_group, config_dict):
@@ -582,10 +545,11 @@ class StatAnalysisWrapper(CommandBuilder):
                 config_dict[list_name].replace('"', '').replace(' ', '')
             )
             if 'THRESH' in list_name:
-                thresh_symbol, thresh_letter = self.format_thresh(
-                    list_name_value
+                stringsub_dict[list_name.lower()] = (
+                    util.comparison_to_numeric_comparison(
+                        list_name_value
+                    )
                 )
-                stringsub_dict[list_name.lower()] = thresh_letter
             elif list_name == 'MODEL':
                 stringsub_dict[list_name.lower()] = list_name_value
                 stringsub_dict['obtype'] = (
@@ -685,7 +649,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 .replace(',', '_')
             )
             if 'THRESH' in list_name:
-                thresh_symbol, thresh_letter = self.format_thresh(
+                thresh_letter = util.comparison_to_numeric_comparison(
                     config_dict[list_name]
                 )
                 stringsub_dict[list_name.lower()] = (
