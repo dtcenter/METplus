@@ -3228,14 +3228,14 @@ METplus Configuration Glossary
    MTD_OBS_CONV_RADIUS
      Comma separated list of convolution radius values used by mode-TD for observation files.
 
-     | *Used by:*
+     | *Used by:* MTD
      | *Family:*  [config]
      | *Default:*  5
 
    MTD_OBS_CONV_THRESH
      Comma separated list of convolution threshold values used by mode-TD for observation files.
 
-     | *Used by:*
+     | *Used by:* MTD
      | *Family:*  [config]
      | *Default:*  >0.5
 
