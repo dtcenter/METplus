@@ -1501,12 +1501,12 @@ METplus Configuration
 [dir]
 
 | :term:`TC_RMW_INPUT_DIR`
-| :term:`TC_RMW_ADECK_INPUT_DIR`
+| :term:`TC_RMW_DECK_INPUT_DIR`
 | :term:`TC_RMW_OUTPUT_DIR`
 
 [filename_templates]
 
-| :term:`TC_RMW_ADECK_TEMPLATE`
+| :term:`TC_RMW_DECK_TEMPLATE`
 | :term:`TC_RMW_INPUT_TEMPLATE`
 | :term:`TC_PAIRS_OUTPUT_TEMPLATE`
 
@@ -1528,11 +1528,147 @@ METplus Configuration
 | :term:`TC_RMW_BASIN`
 | :term:`TC_RMW_CYCLONE`
 | :term:`TC_RMW_STORM_NAME`
+| :term:`TC_RMW_INIT_INCLUDE`
+| :term:`TC_RMW_VALID_BEG`
+| :term:`TC_RMW_VALID_END`
+| :term:`TC_RMW_VALID_INCLUDE_LIST`
+| :term:`TC_RMW_VALID_EXCLUDE_LIST`
+| :term:`TC_RMW_VALID_HOUR_LIST`
+
 
 MET Configuration
 ~~~~~~~~~~~~~~~~~
 
+This is the MET configuration file used for this wrapper. Below the file contents are descriptions of each environment variable referenced in this file and how the METplus configuration variables relate to them.
+
+.. literalinclude:: ../../../parm/met_config/TCRMWConfig_wrapped
+
 The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
+
+**${STORM_ID}** - Corresponds to TC_RMW_STORM_ID in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_STORM_ID = al062018
+
+Resulting value::
+
+    storm_id = "al062018";
+
+**${BASIN}** - Corresponds to TC_RMW_BASIN in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_BASIN = AL
+
+Resulting value::
+
+    basin = "AL";
+
+**${CYCLONE}** - Corresponds to TC_RMW_CYCLONE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_CYCLONE = 06
+
+Resulting value::
+
+   cyclone = "06";
+
+**${STORM_NAME}** - Corresponds to TC_RMW_STORM_NAME in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_STORM_NAME = al062018
+
+Resulting value::
+
+    storm_name = "al062018";
+
+**${INIT_INCLUDE}** - Corresponds to TC_RMW_INIT_INCLUDE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_INIT_INCLUDE = 20101231_06
+
+Resulting value::
+
+    init_inc = "20101231_06";
+
+Resulting value::
+
+    init_exc = "20101231_00";
+
+**${VALID_BEG}** - Corresponds to TC_RMW_VALID_BEG in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_VALID_BEG = 20100101
+
+Resulting value::
+
+    valid_beg = "20100101";
+
+**${VALID_END}** - Corresponds to TC_RMW_VALID_END in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_VALID_END = 20101231_12
+
+Resulting value::
+
+    valid_end = "20101231_12";
+
+**${VALID_INCLUDE_LIST}** - Corresponds to TC_RMW_VALID_INCLUDE_LIST in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_VALID_INCLUDE_LIST = 20101231_06, 20101231_12
+
+Resulting value::
+
+    valid_inc = [ "20101231_06", "20101231_12" ];
+
+**${VALID_EXCLUDE_LIST}** - Corresponds to TC_RMW_VALID_EXCLUDE_LIST in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_VALID_EXCLUDE_LIST = 20101231_00, 20101231_03
+
+Resulting value::
+
+    valid_exc = [ "20101231_00", "20101231_03" ];
+
+**${VALID_HOUR_LIST}** - Corresponds to TC_RMW_VALID_HOUR_LIST in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_VALID_HOUR_LIST = 12, 15
+
+Resulting value::
+
+    valid_hour = [ "12", "15" ];
+
+**${LEAD_LIST}** - Corresponds to LEAD_SEQ in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    LEAD_SEQ = 6, 12, 18, 24
+
+Resulting value::
+
+    lead = ["06", "12", "18", "24"];
 
 **${DATA_FIELD}** - Formatted input field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
 

@@ -110,25 +110,25 @@ class TCRMWWrapper(CommandBuilder):
 
         conf_value = self.config.getstr('config', 'TC_RMW_STORM_ID', '')
         if conf_value:
-            c_dict['STORM_ID'] = f"storm_id = {conf_value};"
+            c_dict['STORM_ID'] = f'storm_id = "{conf_value}";'
 
         conf_value = self.config.getstr('config', 'TC_RMW_BASIN', '')
         if conf_value:
-            c_dict['BASIN'] = f"basin = {conf_value};"
+            c_dict['BASIN'] = f'basin = "{conf_value}";'
 
         conf_value = self.config.getstr('config', 'TC_RMW_CYCLONE', '')
         if conf_value:
-            c_dict['CYCLONE'] = f"cyclone = {conf_value};"
+            c_dict['CYCLONE'] = f'cyclone = "{conf_value}";'
 
         conf_value = self.config.getstr('config', 'TC_RMW_STORM_NAME', '')
         if conf_value:
-            c_dict['STORM_NAME'] = f"storm_name = {conf_value};"
+            c_dict['STORM_NAME'] = f'storm_name = "{conf_value}";'
 
         conf_value = c_dict['INIT_INCLUDE'] = self.config.getstr('config',
                                                                  'TC_RMW_INIT_INCLUDE',
                                                                  '')
         if conf_value:
-            c_dict['INIT_INCLUDE'] = f"init_inc = {conf_value};"
+            c_dict['INIT_INCLUDE'] = f'init_inc = "{conf_value}";'
 
         conf_value = self.config.getstr('config',
                                         'TC_RMW_VALID_BEG',
@@ -136,7 +136,7 @@ class TCRMWWrapper(CommandBuilder):
                                                            'VALID_BEG',
                                                            ''))
         if conf_value:
-            c_dict['VALID_BEG'] = f"valid_beg = {conf_value};"
+            c_dict['VALID_BEG'] = f'valid_beg = "{conf_value}";'
 
         conf_value = self.config.getstr('config',
                                         'TC_RMW_VALID_END',
@@ -144,7 +144,7 @@ class TCRMWWrapper(CommandBuilder):
                                                            'VALID_END',
                                                            ''))
         if conf_value:
-            c_dict['VALID_END'] = f"valid_end = {conf_value};"
+            c_dict['VALID_END'] = f'valid_end = "{conf_value}";'
 
         conf_value = util.getlist(self.config.getstr('config',
                                                      'TC_RMW_VALID_INCLUDE_LIST',
@@ -232,16 +232,16 @@ class TCRMWWrapper(CommandBuilder):
                          self.c_dict.get('VALID_END', ''))
 
         self.add_env_var('VALID_INCLUDE_LIST',
-                         self.c_dict.get('VALID_INCLUDE_LIST', ''))
+                         self.c_dict.get('VALID_INCLUDE_LIST', '[]'))
 
         self.add_env_var('VALID_EXCLUDE_LIST',
-                         self.c_dict.get('VALID_EXCLUDE_LIST', ''))
+                         self.c_dict.get('VALID_EXCLUDE_LIST', '[]'))
 
         self.add_env_var('VALID_HOUR_LIST',
-                         self.c_dict.get('VALID_HOUR_LIST', ''))
+                         self.c_dict.get('VALID_HOUR_LIST', '[]'))
 
         self.add_env_var('LEAD_LIST',
-                         self.c_dict.get('LEAD_LIST', ''))
+                         self.c_dict.get('LEAD_LIST', '[]'))
 
         super().set_environment_variables(time_info)
 

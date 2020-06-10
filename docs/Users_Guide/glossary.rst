@@ -5798,15 +5798,15 @@ METplus Configuration Glossary
      | *Family:* [filename_templates]
      | *Default:* None
 
-   TC_RMW_ADECK_INPUT_DIR
-     Directory containing ADECK input data to TCRMW. This variable is optional because you can specify the full path to the input files using :term:`TC_RMW_ADECK_TEMPLATE`.
+   TC_RMW_DECK_INPUT_DIR
+     Directory containing ADECK input data to TCRMW. This variable is optional because you can specify the full path to the input files using :term:`TC_RMW_DECK_TEMPLATE`.
 
      | *Used by:* TCRMW
      | *Family:* [dir]
      | *Default:* None
 
-   TC_RMW_ADECK_TEMPLATE
-     Filename template of the ADECK input data used by TCRMW. See also :term:`TC_RMW_ADECK_INPUT_DIR`.
+   TC_RMW_DECK_TEMPLATE
+     Filename template of the ADECK input data used by TCRMW. See also :term:`TC_RMW_DECK_INPUT_DIR`.
 
      | *Used by:* TCRMW
      | *Family:* [filename_templates]
@@ -5825,3 +5825,46 @@ METplus Configuration Glossary
      | *Used by:* TCRMW
      | *Family:* [filename_templates]
      | *Default:* None
+
+   TC_RMW_INIT_INCLUDE
+     Value to set for init_include in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_BEG
+     Value to set for valid_beg in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_END
+     Value to set for valid_end in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_INCLUDE_LIST
+     List of values to set for valid_inc in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_EXCLUDE_LIST
+     List of values to set for valid_exc in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_HOUR_LIST
+     List of values to set for valid_hour in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies

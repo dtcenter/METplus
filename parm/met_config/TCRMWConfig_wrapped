@@ -20,7 +20,7 @@
 // ${VALID_INCLUDE_LIST} sets "valid_inc = [<user setting>];"
 // ${VALID_EXCLUDE_LIST} sets "valid_exc = [<user setting>];"
 // ${VALID_HOUR_LIST} sets "valid_hour = [<user setting>];"
-// ${LEAD_LIST} sets "lead = <user setting>;"
+// ${LEAD_LIST} sets "lead = [<user setting>];"
 
 ${STORM_ID}
 ${BASIN}
