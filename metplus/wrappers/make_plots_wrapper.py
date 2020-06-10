@@ -1002,52 +1002,49 @@ class MakePlotsWrapper(CommandBuilder):
                                        self.c_dict['USER_SCRIPT_LIST'])
                 
     def run_all_times(self):
-        if self.c_dict['USER_SCRIPT_LIST'] != []:
+        if self.c_dict['USER_SCRIPT_LIST']:
             self.logger.info("Running plots for user specified list of "
                              +"scripts.")
             run_make_plots = True
-        else:
-            if (self.c_dict['VERIF_CASE'] != ''
-                    and self.c_dict['VERIF_TYPE'] != ''):
-                self.logger.info("Running plots for VERIF_CASE = "
-                                 +self.c_dict['VERIF_CASE']+", "
-                                 +"VERIF_TYPE = "
-                                 +self.c_dict['VERIF_TYPE'])
-                accepted_verif_case_list = ['grid2grid', 'grid2obs', 'precip']
-                if self.c_dict['VERIF_CASE'] not in accepted_verif_case_list:
-                    run_make_plots = False
-                    self.log_error(self.c_dict['VERIF_CASE']+" is not an"
-                                      +"an accepted MAKE_PLOTS_VERIF_CASE "
-                                      +"option. Options are "
-                                      +', '.join(accepted_verif_case_list))
-                else:
-                    if self.c_dict['VERIF_CASE'] == 'grid2grid':
-                        accepted_verif_type_list = ['pres', 'anom', 'sfc']
-                    elif self.c_dict['VERIF_CASE'] == 'grid2obs':
-                        accepted_verif_type_list = ['upper_air', 'conus_sfc']
-                    elif self.c_dict['VERIF_CASE'] == 'precip':
-                        accepted_verif_type_list = [self.c_dict['VERIF_TYPE']]
-                    if self.c_dict['VERIF_TYPE'] in accepted_verif_type_list:
-                        run_make_plots = True
-                    else:
-                        run_make_plots = False
-                        self.log_error(self.c_dict['VERIF_TYPE']+" is not "
-                                          +"an accepted MAKE_PLOTS_VERIF_TYPE "
-                                          +"option for MAKE_PLOTS_VERIF_CASE "
-                                          +"= "+self.c_dict['VERIF_CASE']+". "
-                                          "Options are "
-                                          +', '.join(accepted_verif_type_list))
-            else:
+        elif (self.c_dict['VERIF_CASE'] and self.c_dict['VERIF_TYPE']):
+            self.logger.info("Running plots for VERIF_CASE = "
+                             +self.c_dict['VERIF_CASE']+", "
+                             +"VERIF_TYPE = "
+                             +self.c_dict['VERIF_TYPE'])
+            accepted_verif_case_list = ['grid2grid', 'grid2obs', 'precip']
+            if self.c_dict['VERIF_CASE'] not in accepted_verif_case_list:
                 run_make_plots = False
-                self.log_error("Please defined either "
-                                  +"MAKE_PLOTS_VERIF_CASE and "
-                                  +"MAKE_PLOTS_VERIF_TYPE, or "
-                                  +"MAKE_PLOTS_USER_SCRIPT_LIST")
+                self.log_error(self.c_dict['VERIF_CASE']+" is not an"
+                                  +"an accepted MAKE_PLOTS_VERIF_CASE "
+                                  +"option. Options are "
+                                  +', '.join(accepted_verif_case_list))
+            else:
+                if self.c_dict['VERIF_CASE'] == 'grid2grid':
+                    accepted_verif_type_list = ['pres', 'anom', 'sfc']
+                elif self.c_dict['VERIF_CASE'] == 'grid2obs':
+                    accepted_verif_type_list = ['upper_air', 'conus_sfc']
+                elif self.c_dict['VERIF_CASE'] == 'precip':
+                    accepted_verif_type_list = [self.c_dict['VERIF_TYPE']]
+                if self.c_dict['VERIF_TYPE'] in accepted_verif_type_list:
+                    run_make_plots = True
+                else:
+                    run_make_plots = False
+                    self.log_error(self.c_dict['VERIF_TYPE']+" is not "
+                                      +"an accepted MAKE_PLOTS_VERIF_TYPE "
+                                      +"option for MAKE_PLOTS_VERIF_CASE "
+                                      +"= "+self.c_dict['VERIF_CASE']+". "
+                                      "Options are "
+                                      +', '.join(accepted_verif_type_list))
+        else:
+            run_make_plots = False
+            self.log_error("Please defined either "
+                           "MAKE_PLOTS_VERIF_CASE and "
+                           "MAKE_PLOTS_VERIF_TYPE, or "
+                           "MAKE_PLOTS_USER_SCRIPT_LIST")
+
         if run_make_plots:
             self.create_plots(self.c_dict['VERIF_CASE'],
                               self.c_dict['VERIF_TYPE'])
-        else:
-            exit(1)
 
 if __name__ == "__main__":
     util.run_stand_alone(__file__, "MakePlots")

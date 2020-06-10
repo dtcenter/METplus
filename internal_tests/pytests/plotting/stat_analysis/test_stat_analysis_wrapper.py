@@ -115,56 +115,55 @@ def test_set_lists_as_loop_or_group():
     # and those not set are set to GROUP_LIST_ITEMS
     st = stat_analysis_wrapper()
     # Test 1
-    expected_lists_to_group_items = [ 'FCST_INIT_HOUR_LIST', 
-                                      'FCST_UNITS_LIST', 'OBS_UNITS_LIST',
-                                      'FCST_THRESH_LIST', 'OBS_THRESH_LIST',
-                                      'DESC_LIST', 'OBS_LEAD_LIST',
-                                      'OBS_VALID_HOUR_LIST',
-                                      'OBS_INIT_HOUR_LIST',
-                                      'INTERP_MTHD_LIST', 'INTERP_PNTS_LIST',
-                                      'COV_THRESH_LIST', 'ALPHA_LIST',
-                                      'LINE_TYPE_LIST' ]
-    expected_lists_to_loop_items = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST',
-                                     'FCST_VAR_LIST', 'OBS_VAR_LIST',
-                                     'FCST_LEVEL_LIST', 'OBS_LEVEL_LIST',
-                                     'FCST_LEAD_LIST', 'VX_MASK_LIST' ]
+    expected_lists_to_group_items = ['FCST_INIT_HOUR_LIST',
+                                     'FCST_UNITS_LIST', 'OBS_UNITS_LIST',
+                                     'FCST_THRESH_LIST', 'OBS_THRESH_LIST',
+                                     'DESC_LIST', 'OBS_LEAD_LIST',
+                                     'OBS_VALID_HOUR_LIST',
+                                     'OBS_INIT_HOUR_LIST',
+                                     'INTERP_MTHD_LIST', 'INTERP_PNTS_LIST',
+                                     'COV_THRESH_LIST', 'ALPHA_LIST',
+                                     'LINE_TYPE_LIST']
+    expected_lists_to_loop_items = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST',
+                                    'FCST_VAR_LIST', 'OBS_VAR_LIST',
+                                    'FCST_LEVEL_LIST', 'OBS_LEVEL_LIST',
+                                    'FCST_LEAD_LIST', 'VX_MASK_LIST']
+
     config_dict = {}
     config_dict['LOOP_ORDER'] = 'processes'
     config_dict['PROCESS_LIST'] = 'StatAnalysis, MakePlots'
     config_dict['OUTPUT_BASE_DIR'] = 'OUTPUT_BASE/stat_analysis'
-    config_dict['GROUP_LIST_ITEMS'] = [ 'FCST_INIT_HOUR_LIST' ]
-    config_dict['LOOP_LIST_ITEMS'] = [ 'FCST_VALID_HOUR_LIST' ]
-    config_dict['FCST_VAR_LIST'] = [ 'HGT' ]
-    config_dict['OBS_VAR_LIST'] = [ 'HGT' ]
-    config_dict['FCST_LEVEL_LIST'] = [ 'P1000', 'P500' ]
-    config_dict['OBS_LEVEL_LIST'] = [ 'P1000', 'P500' ]
+    config_dict['GROUP_LIST_ITEMS'] = ['FCST_INIT_HOUR_LIST']
+    config_dict['LOOP_LIST_ITEMS'] = ['FCST_VALID_HOUR_LIST']
+    config_dict['FCST_VAR_LIST'] = ['HGT']
+    config_dict['OBS_VAR_LIST'] = ['HGT']
+    config_dict['FCST_LEVEL_LIST'] = ['P1000', 'P500']
+    config_dict['OBS_LEVEL_LIST'] = ['P1000', 'P500']
     config_dict['FCST_UNITS_LIST'] = []
     config_dict['OBS_UNITS_LIST'] = []
     config_dict['FCST_THRESH_LIST'] = []
     config_dict['OBS_THRESH_LIST'] = []
-    config_dict['MODEL_LIST'] = [ 'MODEL_TEST1', 'MODEL_TEST2' ]
+    config_dict['MODEL_LIST'] = ['MODEL_TEST1', 'MODEL_TEST2']
     config_dict['DESC_LIST'] = []
-    config_dict['FCST_LEAD_LIST'] = [ '24', '48' ]
+    config_dict['FCST_LEAD_LIST'] = ['24', '48']
     config_dict['OBS_LEAD_LIST'] = []
-    config_dict['FCST_VALID_HOUR_LIST'] = [ '00', '06', '12', '18' ]
-    config_dict['FCST_INIT_HOUR_LIST'] = [ '00', '06', '12', '18' ]
+    config_dict['FCST_VALID_HOUR_LIST'] = ['00', '06', '12', '18']
+    config_dict['FCST_INIT_HOUR_LIST'] = ['00', '06', '12', '18']
     config_dict['OBS_VALID_HOUR_LIST'] = []
     config_dict['OBS_INIT_HOUR_LIST'] = []
-    config_dict['VX_MASK_LIST'] = [ 'NHX' ]
+    config_dict['VX_MASK_LIST'] = ['NHX']
     config_dict['INTERP_MTHD_LIST'] = []
     config_dict['INTERP_PNTS_LIST'] = []
     config_dict['COV_THRESH_LIST'] = []
     config_dict['ALPHA_LIST'] = []
-    config_dict['LINE_TYPE_LIST'] = [ 'SL1L2', 'VL1L2' ]
+    config_dict['LINE_TYPE_LIST'] = ['SL1L2', 'VL1L2']
  
     test_lists_to_group_items, test_lists_to_loop_items = (
-    st.set_lists_loop_or_group([ 'FCST_INIT_HOUR_LIST' ],
-                               [ 'FCST_VALID_HOUR_LIST' ],
-                              config_dict)
+    st.set_lists_loop_or_group(config_dict)
     )
-    assert(all(elem in expected_lists_to_group_items 
+    assert(all(elem in expected_lists_to_group_items
                for elem in test_lists_to_group_items))
-    assert(all(elem in expected_lists_to_loop_items 
+    assert(all(elem in expected_lists_to_loop_items
                for elem in test_lists_to_loop_items))
 
 def test_get_output_filename():
@@ -250,7 +249,7 @@ def test_parse_model_info():
     expected_dump_row_filename_type2 = 'default'
     expected_out_stat_filename_template2 = 'NA'
     expected_out_stat_filename_type2 = 'NA'
-    test_model_info_list, test_model_indices = st.parse_model_info()
+    test_model_info_list = st.parse_model_info()
     assert(test_model_info_list[0]['name'] == expected_name1)
     assert(test_model_info_list[0]['reference_name'] == 
            expected_reference_name1)
@@ -263,7 +262,6 @@ def test_parse_model_info():
            expected_out_stat_filename_template1)
     assert(test_model_info_list[0]['out_stat_filename_type'] == 
            expected_out_stat_filename_type1)
-    assert(test_model_indices[0] == '1')
     assert(test_model_info_list[1]['name'] == expected_name2)
     assert(test_model_info_list[1]['reference_name'] == 
            expected_reference_name2)
@@ -276,7 +274,6 @@ def test_parse_model_info():
            expected_out_stat_filename_template2)
     assert(test_model_info_list[1]['out_stat_filename_type'] ==
            expected_out_stat_filename_type2)
-    assert(test_model_indices[1] == '2')
 
 def test_filter_for_plotting():
     # Test running of stat_analysis
@@ -502,7 +499,7 @@ def test_filter_for_plotting():
     st.c_dict['VALID_END'] = '20190101'
     st.c_dict['INIT_BEG'] = ''
     st.c_dict['INIT_END'] = ''
-    st.filter_for_plotting()
+    st.run_stat_analysis_job(st.c_dict['VALID_BEG'], st.c_dict['VALID_END'], st.c_dict['DATE_TYPE'])
     ntest_files = len(
         os.listdir(st.config.getdir('OUTPUT_BASE')
                                     +'/plotting/stat_analysis')

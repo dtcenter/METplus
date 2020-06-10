@@ -121,7 +121,7 @@ def test_get_command():
         +'-config /path/to/STATAnalysisConfig'
     )
     st.lookindir = '/path/to/lookin_dir'
-    st.param = '/path/to/STATAnalysisConfig'
+    st.c_dict['CONFIG_FILE'] = '/path/to/STATAnalysisConfig'
     test_command = st.get_command()
     assert(expected_command == test_command)
 
@@ -138,16 +138,16 @@ def test_create_c_dict():
                                                        +'config/STATAnalysisConfig'))
     assert(c_dict['OUTPUT_BASE_DIR'] == (st.config.getdir('OUTPUT_BASE')
                                          +'/stat_analysis'))
-    assert(c_dict['GROUP_LIST_ITEMS'] == [ 'FCST_INIT_HOUR_LIST' ])
-    assert(c_dict['LOOP_LIST_ITEMS'] == [ 'FCST_VALID_HOUR_LIST',
-                                          'MODEL_LIST'])
+    assert('FCST_INIT_HOUR_LIST' in c_dict['GROUP_LIST_ITEMS'])
+    assert('FCST_VALID_HOUR_LIST' in c_dict['LOOP_LIST_ITEMS'] and
+           'MODEL_LIST' in c_dict['LOOP_LIST_ITEMS'])
     assert(c_dict['VAR_LIST'] == [])
-    assert(c_dict['MODEL_LIST'] == [ 'MODEL_TEST' ])
+    assert(c_dict['MODEL_LIST'] == ['MODEL_TEST'])
     assert(c_dict['DESC_LIST'] == [])
     assert(c_dict['FCST_LEAD_LIST'] == [])
     assert(c_dict['OBS_LEAD_LIST'] == [])
-    assert(c_dict['FCST_VALID_HOUR_LIST'] == [ '00' ])
-    assert(c_dict['FCST_INIT_HOUR_LIST'] == [ '00', '06', '12', '18'])
+    assert(c_dict['FCST_VALID_HOUR_LIST'] == ['000000'])
+    assert(c_dict['FCST_INIT_HOUR_LIST'] == ['000000', '060000', '120000', '180000'])
     assert(c_dict['OBS_VALID_HOUR_LIST'] == [])
     assert(c_dict['OBS_INIT_HOUR_LIST'] == [])
     assert(c_dict['VX_MASK_LIST'] == [])
@@ -223,9 +223,7 @@ def test_set_lists_as_loop_or_group():
     config_dict['ALPHA_LIST'] = []
     config_dict['LINE_TYPE_LIST'] = []
     test_lists_to_group_items, test_lists_to_loop_items = (
-        st.set_lists_loop_or_group([ 'FCST_INIT_HOUR_LIST' ], 
-                                   [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST' ],
-                                   config_dict)
+        st.set_lists_loop_or_group(config_dict)
     )
     
     assert(all(elem in expected_lists_to_group_items 
@@ -772,7 +770,7 @@ def test_parse_model_info():
     expected_dump_row_filename_type = 'user'
     expected_out_stat_filename_template = '{model?fmt=%s}_{obtype?fmt=%s}_'
     expected_out_stat_filename_type = 'default'
-    test_model_info_list, test_model_indices = st.parse_model_info()
+    test_model_info_list = st.parse_model_info()
     assert(test_model_info_list[0]['name'] == expected_name)
     assert(test_model_info_list[0]['reference_name'] == 
            expected_reference_name)
@@ -785,7 +783,6 @@ def test_parse_model_info():
            expected_out_stat_filename_template)
     assert(test_model_info_list[0]['out_stat_filename_type'] == 
            expected_out_stat_filename_type)
-    assert(test_model_indices[0] == '1')
 
 def test_run_stat_analysis_job():
     # Test running of stat_analysis
