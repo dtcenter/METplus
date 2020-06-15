@@ -1511,6 +1511,9 @@ class StatAnalysisWrapper(CommandBuilder):
             reference_list.append(model_info['reference_name'])
             obtype_list.append(model_info['obtype'])
             dump_row_filename_list.append(model_info['dump_row_filename_template'])
+            # set MODEL and OBTYPE to single item to find lookin dir
+            runtime_settings_dict['MODEL'] = '"'+model_info['name']+'"'
+            runtime_settings_dict['OBTYPE'] = '"'+model_info['obtype']+'"'
             lookin_dirs.append(self.get_lookin_dir(model_info['dir'],
                                                    date_beg,
                                                    date_end,
