@@ -128,8 +128,6 @@ that reformat gridded data
                 self.config.getraw('filename_templates',
                                    f'{met_tool}_CLIMO_{climo_item}_INPUT_TEMPLATE',
                                    '')
-            if not c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE']:
-                self.log_error("f'{met_tool}_CLIMO_{climo_item}_INPUT_TEMPLATE' needed to run")
 
     def handle_climo(self, time_info):
         """!Substitute time information into all climatology template values"""
