@@ -106,12 +106,19 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
           self.config.getraw('filename_templates',
                              'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE')
 
+       if not c_dict['OBS_POINT_INPUT_TEMPLATE']:
+            self.log_error("OBS_POINT_INPUT_TEMPLATE requrired to run")
+
+
         c_dict['OBS_GRID_INPUT_DIR'] = \
           self.config.getdir('OBS_ENSEMBLE_STAT_GRID_INPUT_DIR', '')
 
         c_dict['OBS_GRID_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
                              'OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE')
+
+        if not c_dict['OBS_GRID_INPUT_TEMPLATE']:
+            self.log_error("OBS_GRID_INPUT_TEMPLATE requrired to run")
 
         # The ensemble forecast files input directory and filename templates
         c_dict['FCST_INPUT_DIR'] = \

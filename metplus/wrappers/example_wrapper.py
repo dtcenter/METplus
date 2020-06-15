@@ -31,6 +31,9 @@ class ExampleWrapper(CommandBuilder):
                                                       'EXAMPLE_INPUT_TEMPLATE', '')
         c_dict['INPUT_DIR'] = self.config.getdir('EXAMPLE_INPUT_DIR', '')
 
+        if not c_dict['INPUT_TEMPLATE']:
+            self.log_error("INPUT_TEMPLATE is required to run")
+
         if c_dict['INPUT_TEMPLATE'] == '':
             self.logger.info('[filename_templates] EXAMPLE_INPUT_TEMPLATE was not set. '
                              'You should set this variable to see how the runtime is '
