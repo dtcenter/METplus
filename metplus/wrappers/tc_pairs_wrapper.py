@@ -130,7 +130,7 @@ class TCPairsWrapper(CommandBuilder):
         c_dict['BDECK_TEMPLATE'] = self.config.getraw('filename_templates',
                                                       'TC_PAIRS_BDECK_TEMPLATE')
         if not c_dict['BDECK_TEMPLATE']:
-            self.log_error("BDECK_TEMPLATE required to run")
+            self.log_error("TC_PAIRS_BDECK_TEMPLATE required to run")
         c_dict['EDECK_TEMPLATE'] = self.config.getraw('filename_templates',
                                                       'TC_PAIRS_EDECK_TEMPLATE',
                                                       '')
