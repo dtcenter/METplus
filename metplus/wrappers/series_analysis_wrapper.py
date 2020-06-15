@@ -76,8 +76,6 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
               self.config.getraw('filename_templates',
                                  f'{data_type}_SERIES_ANALYSIS_INPUT_TEMPLATE',
                                  '')
-            if not c_dict[f'{data_type}_INPUT_TEMPLATE']:
-                self.log_error(f"{data_type}_SERIES_ANALYSIS_INPUT_TEMPLATE required to run")
 
             c_dict[f'{data_type}_INPUT_DATATYPE'] = \
               self.config.getstr('config', f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE', '')
