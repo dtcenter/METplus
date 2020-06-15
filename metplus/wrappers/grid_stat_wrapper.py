@@ -56,7 +56,7 @@ class GridStatWrapper(CompareGriddedWrapper):
                              'FCST_GRID_STAT_INPUT_TEMPLATE')
 
         if not c_dict['FCST_INPUT_TEMPLATE']:
-            self.log_error("FCST_INPUT_TEMPLATE required to run")
+            self.log_error("FCST_GRID_STAT_INPUT_TEMPLATE required to run")
 
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
