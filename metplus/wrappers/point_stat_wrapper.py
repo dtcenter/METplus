@@ -48,11 +48,15 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.config.getraw('filename_templates',
                                'FCST_POINT_STAT_INPUT_TEMPLATE',
                                '')
+        if not c_dict['FCST_INPUT_TEMPLATE']:
+            self.log_error("FCST_POINT_STAT_INPUT_TEMPLATE required to run")
 
         c_dict['OBS_INPUT_TEMPLATE'] = \
             self.config.getraw('filename_templates',
                                'OBS_POINT_STAT_INPUT_TEMPLATE',
                                '')
+        if not c_dict['OBS_INPUT_TEMPLATE']:
+            self.log_error("OBS_POINT_STAT_INPUT_TEMPLATE required to run")
 
         c_dict['FCST_INPUT_DATATYPE'] = \
             self.config.getstr('config', 'FCST_POINT_STAT_INPUT_DATATYPE', '')
@@ -60,16 +64,8 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.config.getstr('config', 'OBS_POINT_STAT_INPUT_DATATYPE', '')
 
         c_dict['FCST_INPUT_DIR'] = self.config.getdir('FCST_POINT_STAT_INPUT_DIR','')
-        c_dict['FCST_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                           'FCST_INPUT_TEMPLATE')
-        if not c_dict['FCST_INPUT_TEMPLATE']:
-            self.log_error("FCST_INPUT_TEMPLATE required to run")
 
         c_dict['OBS_INPUT_DIR'] = self.config.getdir('OBS_POINT_STAT_INPUT_DIR','')
-        c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                           'OBS_INPUT_TEMPLATE')
-        if not c_dict['OBS_INPUT_TEMPLATE']:
-            self.log_error("OBS_INPUT_TEMPLATE required to run")
 
         c_dict['OUTPUT_DIR'] = \
             self.config.getdir('POINT_STAT_OUTPUT_DIR', '')
