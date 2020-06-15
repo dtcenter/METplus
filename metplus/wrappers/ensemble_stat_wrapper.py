@@ -107,7 +107,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                              'OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE')
 
         if not c_dict['OBS_POINT_INPUT_TEMPLATE']:
-            self.log_error("OBS_POINT_INPUT_TEMPLATE requrired to run")
+            self.log_error("OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE requrired to run")
 
 
         c_dict['OBS_GRID_INPUT_DIR'] = \
