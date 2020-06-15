@@ -50,7 +50,7 @@ class Point2GridWrapper(CommandBuilder):
                                                           'POINT_2_GRID_INPUT_TEMPLATE')
 
         if not c_dict['OBS_INPUT_TEMPLATE']:
-            self.log_error("OBS_INPUTE_TEMPLATE required to run")
+            self.log_error("POINT_2_GRID_INPUT_TEMPLATE required to run")
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('POINT_2_GRID_OUTPUT_DIR',
                                                   '')
