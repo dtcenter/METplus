@@ -44,7 +44,7 @@ class GridStatWrapper(CompareGriddedWrapper):
           self.config.getraw('filename_templates',
                              'OBS_GRID_STAT_INPUT_TEMPLATE')
         if not c_dict['OBS_INPUT_TEMPLATE']:
-            self.log_error("OBS_INPUT_TEMPLATE required to run")
+            self.log_error("OBS_GRID_STAT_INPUT_TEMPLATE required to run")
 
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_GRID_STAT_INPUT_DATATYPE', '')
