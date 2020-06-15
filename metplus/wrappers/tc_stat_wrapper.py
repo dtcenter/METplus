@@ -231,7 +231,7 @@ class TCStatWrapper(CommandBuilder):
 
         c_dict['INPUT_DIR'] = self.config.getdir('TC_STAT_INPUT_DIR','')
 
-        if c_dict['INPUT_DIR'] == '':
+        if not c_dict['INPUT_DIR']:
             self.log_error["TC_STAT_INPUT_DIR can not be empty"]
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('TC_STAT_OUTPUT_DIR')
