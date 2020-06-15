@@ -229,6 +229,7 @@ def test_get_output_filename():
     assert(expected_output_filename == test_output_filename)
 
 def test_parse_model_info():
+    pytest.skip("This function will be removed from MakePlots")
     # Independently test the creation of 
     # the model information dictionary
     # and the reading from the config file

@@ -74,12 +74,12 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'usage': 'Usage',
                          }
 
-valid_comparisons = {">": "gt",
-                     ">=": "ge",
+valid_comparisons = {">=": "ge",
+                     ">": "gt",
                      "==": "eq",
                      "!=": "ne",
-                     "<": "lt",
                      "<=": "le",
+                     "<": "lt",
                      }
 
 # missing data value used to check if integer values are not set
@@ -163,7 +163,7 @@ def run_metplus(config, process_list):
                     command_builder.run_all_times()
                     return 0
             except AttributeError:
-                raise NameError("Process %s doesn't exist" % item)
+                raise NameError("There was a problem loading %s wrapper." % item)
 
             processes.append(command_builder)
 
@@ -2030,16 +2030,15 @@ def get_threshold_via_regex(thresh_string):
 
     return comparison_number_list
 
-def comparison_to_numeric_comparison(comparison):
-    """! Convert comparison operator to the numeric version if it is not already
-         @args comparison comparison operator to convert, i.e. gt or <=
-         @returns numeric comparison operator, i.e. gt or le, or None if invalid
+def comparison_to_letter_format(expression):
+    """! Convert comparison operator to the letter version if it is not already
+         @args expression string starting with comparison operator to
+          convert, i.e. gt3 or <=5.4
+         @returns letter comparison operator, i.e. gt3 or le5.4 or None if invalid
     """
-    if comparison in valid_comparisons.values():
-        return comparison
-
-    if comparison in valid_comparisons:
-        return valid_comparisons[comparison]
+    for symbol_comp, letter_comp in valid_comparisons.items():
+        if letter_comp in expression or symbol_comp in expression:
+            return expression.replace(symbol_comp, letter_comp)
 
     return None
 

@@ -27,37 +27,53 @@ from . import CommandBuilder
 class MakePlotsWrapper(CommandBuilder):
     """! Wrapper to used to filter make plots from MET data
     """
-    accepted_verif_lists = {'grid2grid': ['pres',
-                                               'anom',
-                                               'sfc',
-                                               ],
-                                 'grid2obs': ['upper_air',
-                                              'conus_sfc',
-                                              ],
-                                 'precip': ['pres',
-                                            'anom',
-                                            'sfc',
-                                            'upper_air',
-                                            'conus_sfc',
-                                            ]
+    accepted_verif_lists = {
+        'grid2grid': {
+            'pres': ['plot_time_series.py',
+                     'plot_lead_average.py',
+                     'plot_date_by_level.py',
+                     'plot_lead_by_level.py'],
+            'anom': ['plot_time_series.py',
+                     'plot_lead_average.py',
+                     'plot_lead_by_date.py'],
+            'sfc': ['plot_time_series.py',
+                    'plot_lead_average.py'],
+        },
+        'grid2obs': {
+            'upper_air': ['plot_time_series.py',
+                          'plot_lead_average.py',
+                          'plot_stat_by_level.py',
+                          'plot_lead_by_level.py'],
+            'conus_sfc': ['plot_time_series.py',
+                          'plot_lead_average.py'],
+        },
+        # precip uses the same scripts for any verif case, so this value
+        # is a list instead of a dictionary
+        'precip': ['plot_time_series.py',
+                   'plot_lead_average.py',
+                   'plot_threshold_average.py',
+                   'plot_threshold_by_lead.py'],
     }
+
+    add_from_c_dict_list = [
+        'VERIF_CASE', 'VERIF_TYPE', 'INPUT_BASE_DIR', 'OUTPUT_BASE_DIR',
+        'SCRIPTS_BASE_DIR', 'DATE_TYPE', 'VALID_BEG', 'VALID_END',
+        'INIT_BEG', 'INIT_END', 'AVERAGE_METHOD', 'CI_METHOD',
+        'VERIF_GRID', 'EVENT_EQUALIZATION', 'LOG_METPLUS', 'LOG_LEVEL'
+    ]
 
     def __init__(self, config, logger):
         self.app_path = 'python'
         self.app_name = 'make_plots'
         super().__init__(config, logger)
-        
-    def set_plotting_script(self, plotting_script_path):
-        self.plotting_script = plotting_script_path
 
     def get_command(self):
 
-        cmd = self.app_path + " "
-        
-        if self.plotting_script == "":
+        if not self.plotting_script:
             self.log_error("No plotting script specified")
             return None
-        cmd += self.plotting_script
+
+        cmd = f"{self.app_path} {self.plotting_script}"
 
         return cmd
 
@@ -74,7 +90,7 @@ class MakePlotsWrapper(CommandBuilder):
         """
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = (
-            self.config.getstr('config','LOG_MAKE_PLOTS_VERBOSITY',
+            self.config.getstr('config', 'LOG_MAKE_PLOTS_VERBOSITY',
                                c_dict['VERBOSITY'])
         )
         c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
@@ -150,10 +166,13 @@ class MakePlotsWrapper(CommandBuilder):
 
         c_dict['VERIF_TYPE'] = self.config.getstr('config',
                                                   'MAKE_PLOTS_VERIF_TYPE', '')
-        if c_dict['VERIF_TYPE'] not in (
+
+        # if not precip case, check that verif type is an accepted verif type
+        if c_dict['VERIF_CASE'] != 'precip' and c_dict['VERIF_TYPE'] not in (
                 self.accepted_verif_lists.get(c_dict['VERIF_CASE'], [])
         ):
-            accepted_types = accepted_verif_lists.get(c_dict['VERIF_CASE'])
+            print(f"VERIF CASE: {c_dict['VERIF_CASE']}")
+            accepted_types = self.accepted_verif_lists.get(c_dict['VERIF_CASE']).keys()
             self.log_error(f"{c_dict['VERIF_TYPE']} is not "
                            "an accepted MAKE_PLOTS_VERIF_TYPE "
                            "option for MAKE_PLOTS_VERIF_CASE "
@@ -324,261 +343,82 @@ class MakePlotsWrapper(CommandBuilder):
             model_info_list.append(mod)
         return model_info_list, model_indices
 
-    def create_plots_grid2grid_pres(self, runtime_settings_dict_list):
-        """! Create plots for the grid-to-grid verification for
-             variables on pressure levels using partial sums. 
-             Runs plotting scripts: 
-                 plot_time_series.py,
-                 plot_lead_average.py, 
-                 plot_date_by_level.py,
-                 plot_lead_by_level.py
-             
-             Args:
-                 runtime_settings_dict_list - list of dictionaries
-                                              containing the relevant
-                                              information for running
-                                              plotting scripts
- 
-             Returns:          
-        """
-        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py',
-                          'plot_date_by_level.py', 'plot_lead_by_level.py']
+    def setup_output_base(self):
+        # Set up output base
+        output_base_dir = self.c_dict['OUTPUT_BASE_DIR']
+        output_base_data_dir = os.path.join(output_base_dir, 'data')
+        output_base_images_dir = os.path.join(output_base_dir, 'images')
+        if not os.path.exists(output_base_dir):
+            util.mkdir_p(output_base_dir)
+            util.mkdir_p(output_base_data_dir)
+            util.mkdir_p(output_base_images_dir)
+        else:
+            if os.path.exists(output_base_data_dir):
+                if len(output_base_data_dir) > 0:
+                    for rmfile in os.listdir(output_base_data_dir):
+                        os.remove(os.path.join(output_base_data_dir,rmfile))
+
+    def get_met_version(self):
+        p = subprocess.Popen(["stat_analysis", "--version"],
+                             stdout=subprocess.PIPE)
+        out, err = p.communicate()
+        out = out.decode(encoding='utf-8', errors='strict')
+        for line in out.split('\n'):
+            if 'MET Version:' in line:
+                met_verison_line = line
+        met_version_str = (
+            met_verison_line.partition('MET Version:')[2].split('V')[1]
+        )
+        if len(met_version_str) == 3:
+            met_version = float(met_version_str)
+        else:
+            met_version = float(met_version_str.rpartition('.')[0])
+
+        return met_version
+
+    def create_plots_new(self, runtime_settings_dict_list):
+
+        self.setup_output_base()
+
+        # Get MET version used to run stat_analysis
+        met_version = str(self.get_met_version())
+
+        if self.c_dict['USER_SCRIPT_LIST']:
+            scripts_to_run = self.c_dict['USER_SCRIPT_LIST']
+        elif self.c_dict['VERIF_TYPE'] == 'precip':
+            scripts_to_run = self.accepted_verif_lists.get(self.c_dict['VERIF_CASE'])
+        else:
+            scripts_to_run = self.accepted_verif_lists.get(self.c_dict['VERIF_CASE'])\
+                .get(self.c_dict['VERIF_TYPE'])
+
         # Loop over run settings.
         for runtime_settings_dict in runtime_settings_dict_list:
+            # set environment variables
             for name, value in runtime_settings_dict.items():
                 self.add_env_var(name, value)
-                self.logger.debug(name+": "+value)
+
+            # TODO: check if value already is set in runtime settings?
+            for key in self.add_from_c_dict_list:
+                self.add_env_var(key, self.c_dict[key])
+
+            self.add_env_var('MET_VERSION', met_version)
+
+            # obtype env var is named differently in StatAnalysis wrapper
+            self.add_env_var('MODEL_OBTYPE', runtime_settings_dict['OBTYPE'])
+
+            # send environment variables to logger
+            self.print_all_envs()
+
             for script in scripts_to_run:
-                self.set_plotting_script(
-                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
-                    script)
+                self.plotting_script = (
+                    os.path.join(self.c_dict['SCRIPTS_BASE_DIR'],
+                                 script)
                 )
-                cmd = self.get_command()
-                if cmd is None:
-                    self.log_error(
-                        "make_plot could not generate command"
-                    )
-                    return
-                self.build()
+
+                self.build_and_run_command()
                 self.clear()
 
-    def create_plots_grid2grid_anom(self, runtime_settings_dict_list):
-        """! Create plots for the grid-to-grid verification for
-             variables on pressure levels using anomalous partial sums.
-             Runs plotting scripts: 
-                 plot_time_series.py,
-                 plot_lead_average.py, 
-                 plot_lead_by_date.py
-             
-             Args:
-                 runtime_settings_dict_list - list of dictionaries
-                                              containing the relevant
-                                              information for running
-                                              plotting scripts
- 
-             Returns:          
-        """
-        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py',
-                          'plot_lead_by_date.py']
-        # Loop over run settings.
-        for runtime_settings_dict in runtime_settings_dict_list:
-            for name, value in runtime_settings_dict.items():
-                self.add_env_var(name, value)
-                self.logger.debug(name+": "+value)
-            for script in scripts_to_run:
-                self.set_plotting_script(
-                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
-                    script)
-                )
-                cmd = self.get_command()
-                if cmd is None:
-                    self.log_error(
-                        "make_plot could not generate command"
-                    )
-                    return
-                self.build()
-                self.clear()
-
-    def create_plots_grid2grid_sfc(self, runtime_settings_dict_list):
-        """! Create plots for the grid-to-grid verification for
-             variables on a single level using partial sums.
-             Runs plotting scripts: 
-                 plot_time_series.py,
-                 plot_lead_average.py 
-             
-             Args:
-                 runtime_settings_dict_list - list of dictionaries
-                                              containing the relevant
-                                              information for running
-                                              plotting scripts
- 
-             Returns:          
-        """
-        # Loop over run settings.
-        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py']
-        for runtime_settings_dict in runtime_settings_dict_list:
-            for name, value in runtime_settings_dict.items():
-                self.add_env_var(name, value)
-                self.logger.debug(name+": "+value)
-            for script in scripts_to_run:
-                self.set_plotting_script(
-                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
-                    script)
-                )
-                cmd = self.get_command()
-                if cmd is None:
-                    self.log_error(
-                        "make_plot could not generate command"
-                    )
-                    return
-                self.build()
-                self.clear()
-
-    def create_plots_grid2obs_upper_air(self, runtime_settings_dict_list):
-        """! Create plots for the grid-to-obs verification for
-             variables on a pressure levels using partial sums.
-             Runs plotting scripts: 
-                 plot_time_series.py,
-                 plot_lead_average.py,
-                 plot_stat_by_level.py,
-                 plot_lead_by_level.py
-             
-             Args:
-                 runtime_settings_dict_list - list of dictionaries
-                                              containing the relevant
-                                              information for running
-                                              plotting scripts
- 
-             Returns:          
-        """
-        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py',
-                          'plot_stat_by_level.py', 'plot_lead_by_level.py']
-        # Loop over run settings.
-        for runtime_settings_dict in runtime_settings_dict_list:
-            for name, value in runtime_settings_dict.items():
-                self.add_env_var(name, value)
-                self.logger.debug(name+": "+value)
-            for script in scripts_to_run:
-                self.set_plotting_script(
-                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
-                    script)
-                )
-                cmd = self.get_command()
-                if cmd is None:
-                    self.log_error(
-                        "make_plot could not generate command"
-                    )
-                    return
-                self.build()
-                self.clear()
-
-    def create_plots_grid2obs_conus_sfc(self, runtime_settings_dict_list):
-        """! Create plots for the grid-to-obs verification for
-             variables on a single level using partial sums.
-             Runs plotting scripts: 
-                 plot_time_series.py,
-                 plot_lead_average.py
-             
-             Args:
-                 runtime_settings_dict_list - list of dictionaries
-                                              containing the relevant
-                                              information for running
-                                              plotting scripts
- 
-             Returns:          
-        """
-        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py']
-        # Loop over run settings.
-        for runtime_settings_dict in runtime_settings_dict_list:
-            for name, value in runtime_settings_dict.items():
-                self.add_env_var(name, value)
-                self.logger.debug(name+": "+value)
-            for script in scripts_to_run:
-                self.set_plotting_script(
-                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
-                    script)
-                )
-                cmd = self.get_command()
-                if cmd is None:
-                    self.log_error(
-                        "make_plot could not generate command"
-                    )
-                    return
-                self.build()
-                self.clear()
-
-    def create_plots_precip(self, runtime_settings_dict_list):
-        """! Create plots for the precipitation verification
-             using contingency table counts.
-             Runs plotting scripts: 
-                 plot_time_series.py,
-                 plot_lead_average.py,
-                 plot_threshold_average.py,
-                 plot_threshold_by_lead.py
-             
-             Args:
-                 runtime_settings_dict_list - list of dictionaries
-                                              containing the relevant
-                                              information for running
-                                              plotting scripts
- 
-             Returns:          
-        """
-        scripts_to_run = ['plot_time_series.py', 'plot_lead_average.py',
-                          'plot_threshold_average.py', 
-                          'plot_threshold_by_lead.py']
-        # Loop over run settings.
-        for runtime_settings_dict in runtime_settings_dict_list:
-            for name, value in runtime_settings_dict.items():
-                self.add_env_var(name, value)
-                self.logger.debug(name+": "+value)
-            for script in scripts_to_run:
-                self.set_plotting_script(
-                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
-                    script)
-                )
-                cmd = self.get_command()
-                if cmd is None:
-                    self.log_error(
-                        "make_plot could not generate command"
-                    )
-                    return
-                self.build()
-                self.clear()
-
-    def create_plots_user(self, runtime_settings_dict_list, scripts_to_run):
-        """! Create plots from user specified list
-             
-             Args:
-                 runtime_settings_dict_list - list of dictionaries
-                                              containing the relevant
-                                              information for running
-                                              plotting scripts
-                 scripts_to_run             - list of script names to
-                                              run
- 
-             Returns:          
-        """
-        # Loop over run settings.
-        for runtime_settings_dict in runtime_settings_dict_list:
-            for name, value in runtime_settings_dict.items():
-                self.add_env_var(name, value)
-                self.logger.debug(name+": "+value)
-            for script in scripts_to_run:
-                self.set_plotting_script(
-                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
-                    script)
-                )
-                cmd = self.get_command()
-                if cmd is None:
-                    self.log_error(
-                        "make_plot could not generate command"
-                    )
-                    return
-                self.build()
-                self.clear()
-
-    def create_plots(self, verif_case, verif_type):
+    def create_plots(self):
         """! Set up variables and general looping for creating
               verification plots
             
@@ -590,9 +430,9 @@ class MakePlotsWrapper(CommandBuilder):
                
              Returns:
         """
+        return
         # Do some preprocessing, formatting, and gathering
         # of config information.
-        date_type = self.c_dict['DATE_TYPE']
         formatted_c_dict = copy.deepcopy(self.c_dict)
         model_info_list, model_indices = self.parse_model_info()
         if self.c_dict['MODEL_LIST'] == []:
@@ -611,37 +451,17 @@ class MakePlotsWrapper(CommandBuilder):
         for model_info in model_info_list:
             model_obtype_list.append(model_info['obtype'])
             model_reference_name_list.append(model_info['reference_name'])
+
+        # don't allow more than 8 models
         if len(formatted_c_dict['MODEL_LIST']) > 8:
             self.log_error("Number of models for plotting limited to 8.")
             exit(1)
-        # Set up output base
-        output_base_dir = self.c_dict['OUTPUT_BASE_DIR']
-        output_base_data_dir = os.path.join(output_base_dir, 'data')
-        output_base_images_dir = os.path.join(output_base_dir, 'images')
-        if not os.path.exists(output_base_dir):
-            util.mkdir_p(output_base_dir)
-            util.mkdir_p(output_base_data_dir)
-            util.mkdir_p(output_base_images_dir)
-        else:
-            if os.path.exists(output_base_data_dir):
-                if len(output_base_data_dir) > 0:
-                    for rmfile in os.listdir(output_base_data_dir):
-                        os.remove(os.path.join(output_base_data_dir,rmfile))
+
+        self.setup_output_base()
+
         # Get MET version used to run stat_analysis
-        p = subprocess.Popen(["stat_analysis", "--version"],
-                             stdout=subprocess.PIPE)
-        out, err = p.communicate()
-        out = out.decode(encoding='utf-8', errors='strict')
-        for line in out.split('\n'):
-            if 'MET Version:' in line:
-                met_verison_line = line
-        met_version_str = (
-            met_verison_line.partition('MET Version:')[2].split('V')[1]
-        )
-        if len(met_version_str) == 3:
-            met_version = float(met_version_str)
-        else:
-            met_version = float(met_version_str.rpartition('.')[0])
+        met_version = self.get_met_version()
+
         # Add additional variable information to
         # c_dict['VAR_LIST'] and make individual dictionaries
         # for each threshold
@@ -964,43 +784,46 @@ class MakePlotsWrapper(CommandBuilder):
                 itertools.product(*(runtime_setup_dict[name] for name in
                 runtime_setup_dict_names))]
             )
-            if (self.c_dict['VERIF_CASE'] == 'grid2grid' 
-                    and self.c_dict['VERIF_TYPE'] in 'pres'):
-                self.create_plots_grid2grid_pres(runtime_settings_dict_list)
-            elif (self.c_dict['VERIF_CASE'] == 'grid2grid' 
-                    and self.c_dict['VERIF_TYPE'] in 'anom'):
-                self.create_plots_grid2grid_anom(runtime_settings_dict_list)
-            elif (self.c_dict['VERIF_CASE'] == 'grid2grid'
-                    and self.c_dict['VERIF_TYPE'] in 'sfc'):
-                self.create_plots_grid2grid_sfc(runtime_settings_dict_list)
-            elif (self.c_dict['VERIF_CASE'] == 'grid2obs'
-                    and self.c_dict['VERIF_TYPE'] in 'upper_air'):
-                self.create_plots_grid2obs_upper_air(
-                    runtime_settings_dict_list
+
+        if self.c_dict['USER_SCRIPT_LIST']:
+            scripts_to_run = self.c_dict['USER_SCRIPT_LIST']
+        elif self.c_dict['VERIF_TYPE'] == 'precip':
+            scripts_to_run = self.accepted_verif_lists.get(self.c_dict['VERIF_CASE'])
+        else:
+            scripts_to_run = self.accepted_verif_lists.get(self.c_dict['VERIF_CASE'])\
+                .get(self.c_dict['VERIF_TYPE'])
+
+        # Loop over run settings.
+        for runtime_settings_dict in runtime_settings_dict_list:
+            # set environment variables
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
+
+            # send environment variables to logger
+            self.print_all_envs()
+
+            for script in scripts_to_run:
+                self.plotting_script = (
+                    os.path.join(runtime_settings_dict['SCRIPTS_BASE_DIR'],
+                    script)
                 )
-            elif (self.c_dict['VERIF_CASE'] == 'grid2obs'
-                    and self.c_dict['VERIF_TYPE'] in 'conus_sfc'):
-                self.create_plots_grid2obs_conus_sfc(
-                    runtime_settings_dict_list
-                )
-            elif (self.c_dict['VERIF_CASE'] == 'precip'):
-                self.create_plots_precip(runtime_settings_dict_list)
-            else:
-                self.create_plots_user(runtime_settings_dict_list,
-                                       self.c_dict['USER_SCRIPT_LIST'])
+
+                self.build_and_run_command()
+                self.clear()
+
                 
     def run_all_times(self):
         if self.c_dict['USER_SCRIPT_LIST']:
             self.logger.info("Running plots for user specified list of "
-                             +"scripts.")
+                             "scripts.")
+
         elif (self.c_dict['VERIF_CASE'] and self.c_dict['VERIF_TYPE']):
             self.logger.info("Running plots for VERIF_CASE = "
                              +self.c_dict['VERIF_CASE']+", "
                              +"VERIF_TYPE = "
                              +self.c_dict['VERIF_TYPE'])
 
-        self.create_plots(self.c_dict['VERIF_CASE'],
-                          self.c_dict['VERIF_TYPE'])
+        self.create_plots()
 
 if __name__ == "__main__":
     util.run_stand_alone(__file__, "MakePlots")

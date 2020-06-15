@@ -85,7 +85,7 @@ function run_pytest_and_check() {
 #run_pytest_and_check check_metplus_python_version
 #run_pytest_and_check grid_stat
 #run_pytest_and_check logging
-#run_pytest_and_check met_util
+run_pytest_and_check met_util
 #run_pytest_and_check mtd
 #run_pytest_and_check pcp_combine -c ./test1.conf
 run_pytest_and_check stat_analysis -c ./test_stat_analysis.conf

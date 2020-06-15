@@ -13,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import numpy as np
-import plot_util as plot_util
 import pandas as pd
 import itertools
 import warnings
@@ -25,6 +24,9 @@ import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as md
+
+import plot_util as plot_util
+from plot_util import get_ci_file, get_lead_avg_file
 
 # Read environment variables set in make_plots_wrapper.py
 verif_case = os.environ['VERIF_CASE']
@@ -62,6 +64,7 @@ stats_list = os.environ['STATS'].split(', ')
 model_list = os.environ['MODEL'].split(', ')
 model_obtype_list = os.environ['MODEL_OBTYPE'].split(', ')
 model_reference_name_list = os.environ['MODEL_REFERENCE_NAME'].split(', ')
+dump_row_filename_template_list = os.environ['DUMP_ROW_FILENAME'].split(', ')
 average_method = os.environ['AVERAGE_METHOD']
 ci_method = os.environ['CI_METHOD']
 verif_grid = os.environ['VERIF_GRID']
@@ -102,7 +105,10 @@ output_data_dir = os.path.join(output_base_dir, 'data')
 output_imgs_dir = os.path.join(output_base_dir, 'imgs')
 # Model info
 model_info_list = list(
-    zip(model_list, model_reference_name_list, model_obtype_list)
+    zip(model_list,
+        model_reference_name_list,
+        model_obtype_list,
+        dump_row_filename_template_list)
 )
 nmodels = len(model_info_list)
 # Plot info
@@ -387,12 +393,13 @@ for plot_info in plot_info_list:
             [[model_plot_name], expected_stat_file_dates],
             names=['model_plot_name', 'dates']
         )
-        model_stat_filename = (
-            model_plot_name+'_'+model_obtype+'_'
-            +base_name
-            +'_dump_row.stat'
-        )
-        model_stat_file = os.path.join(input_base_dir, model_stat_filename)
+#        model_stat_filename = (
+#            model_plot_name+'_'+model_obtype+'_'
+#            +base_name
+#            +'_dump_row.stat'
+#        )
+#        model_stat_file = os.path.join(input_base_dir, model_stat_filename)
+        model_stat_file = model_info[3]
         if os.path.exists(model_stat_file):
             nrow = sum(1 for line in open(model_stat_file))
             if nrow == 0:
@@ -510,16 +517,31 @@ for plot_info in plot_info_list:
             model_plot_name = model_info[1]
             model_obtype = model_info[2]
             model_stat_values_array = stat_values_array[:,model_idx,:]
-            # Write model forecast lead average to file, using
-            # model's .stat file name to create similar naming
-            lead_avg_filename = (
-                stat+'_'
-                +model_plot_name+'_'+model_obtype+'_'
-                +base_name
-                +'.txt'
-            ).replace('fcst_lead'+fcst_lead, 'fcst_lead_avgs')
-            lead_avg_file = os.path.join(output_base_dir, 'data',
-                                          lead_avg_filename)
+
+#            lead_avg_filename = stat + '_' + os.path.basename(model_info[3])
+
+            # if fcst_leadX is in filename, replace it with fcst_lead_avgs
+            # and add .txt to end of filename
+#            if 'fcst_lead' + fcst_lead in model_info[3]:
+#                lead_avg_filename.replace('fcst_lead' + fcst_lead, 'fcst_lead_avgs')
+#                lead_avg_filename += '.txt'
+
+            # if not, remove mention of forecast lead and
+            # add fcst_lead_avgs.txt to end of filename
+#            else:
+#                lead_avg_filename.replace('fcst_lead' + fcst_lead, '')
+#                lead_avg_filename += '_fcst_lead_avgs.txt'
+
+#            lead_avg_file = os.path.join(output_base_dir, 'data',
+#                                         lead_avg_filename)
+
+
+            # Write model forecast lead average to file
+            lead_avg_file = get_lead_avg_file(stat,
+                                              model_info[3],
+                                              fcst_lead,
+                                              output_base_dir)
+
             logger.debug("Writing model "+str(model_num)+" "+model_name+" "
                          +"with name on plot "+model_plot_name+" lead "
                          +fcst_lead+" average to file: "+lead_avg_file)
@@ -545,14 +567,37 @@ for plot_info in plot_info_list:
             # Write confidence intervals to file, if requested,
             # using similar naming to model forecast lead average
             if ci_method != 'NONE':
-                CI_filename = (
-                    stat+'_'
-                    +model_plot_name+'_'+model_obtype+'_'
-                    +base_name
-                    +'_CI_'+ci_method+'.txt'
-                ).replace('fcst_lead'+fcst_lead, 'fcst_lead_avgs')
-                CI_file = os.path.join(output_base_dir, 'data',
-                                       CI_filename)
+#                CI_filename = (
+#                    stat+'_'
+#                    +model_plot_name+'_'+model_obtype+'_'
+#                    +base_name
+#                    +'_CI_'+ci_method+'.txt'
+#                ).replace('fcst_lead'+fcst_lead, 'fcst_lead_avgs')
+#                CI_filename = stat + '_' + os.path.basename(model_info[3])
+                # if fcst_leadX is in filename, replace it with fcst_lead_avgs
+                # and add .txt to end of filename
+#                if 'fcst_lead' + fcst_lead in model_info[3]:
+#                    CI_filename.replace('fcst_lead' + fcst_lead, 'fcst_lead_avgs')
+#                    CI_filename += '.txt'
+
+                 # if not, remove mention of forecast lead and
+                 # add fcst_lead_avgs.txt to end of filename
+#                 else:
+#                     CI_filename.replace('fcst_lead' + fcst_lead, '')
+#                     CI_filename += '_fcst_lead_avgs'
+
+#                CI_filename += '_CI_' + ci_method + '.txt'
+
+#                CI_file = os.path.join(output_base_dir, 'data',
+#                                       CI_filename)
+
+                CI_file = get_ci_file(stat,
+                                      model_info[3],
+                                      fcst_lead,
+                                      output_base_dir,
+                                      ci_method)
+
+
                 if (stat == 'fbar_obar' or stat == 'orate_frate'
                         or stat == 'baser_frate'):
                     logger.debug("Writing "+ci_method+" confidence intervals "

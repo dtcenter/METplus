@@ -13,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import numpy as np
-import plot_util as plot_util
 import pandas as pd
 import itertools
 import warnings
@@ -25,6 +24,8 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as md
 import matplotlib.gridspec as gridspec
+
+import plot_util as plot_util
 
 # Read environment variables set in make_plots_wrapper.py
 verif_case = os.environ['VERIF_CASE']
@@ -62,6 +63,7 @@ stats_list = os.environ['STATS'].split(', ')
 model_list = os.environ['MODEL'].split(', ')
 model_obtype_list = os.environ['MODEL_OBTYPE'].split(', ')
 model_reference_name_list = os.environ['MODEL_REFERENCE_NAME'].split(', ')
+dump_row_filename_template_list = os.environ['DUMP_ROW_FILENAME'].split(', ')
 average_method = os.environ['AVERAGE_METHOD']
 ci_method = os.environ['CI_METHOD']
 verif_grid = os.environ['VERIF_GRID']
@@ -101,7 +103,10 @@ output_data_dir = os.path.join(output_base_dir, 'data')
 output_imgs_dir = os.path.join(output_base_dir, 'imgs')
 # Model info
 model_info_list = list(
-    zip(model_list, model_reference_name_list, model_obtype_list)
+    zip(model_list,
+        model_reference_name_list,
+        model_obtype_list,
+        dump_row_filename_template_list)
 )
 nmodels = len(model_info_list)
 # Plot info
@@ -355,13 +360,14 @@ for plot_info in plot_info_list:
                 [[model_plot_name], [fcst_lead], expected_stat_file_dates],
                 names=['model_plot_name', 'leads', 'dates']
             )
-            model_stat_filename = (
-                model_plot_name+'_'+model_obtype+'_'
-                +base_name.replace('FCSTLEADHOLDER', fcst_lead)
-                +'_dump_row.stat'
-            )
-            model_stat_file = os.path.join(input_base_dir,
-                                           model_stat_filename)
+#            model_stat_filename = (
+#                model_plot_name+'_'+model_obtype+'_'
+#                +base_name.replace('FCSTLEADHOLDER', fcst_lead)
+#                +'_dump_row.stat'
+#            )
+#            model_stat_file = os.path.join(input_base_dir,
+#                                           model_stat_filename)
+            model_stat_file = model_info[3]
             if os.path.exists(model_stat_file):
                 nrow = sum(1 for line in open(model_stat_file))
                 if nrow == 0:

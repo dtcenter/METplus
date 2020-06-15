@@ -12,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import numpy as np
-import plot_util as plot_util
 import pandas as pd
 import itertools
 import warnings
@@ -24,6 +23,9 @@ matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as md
 import matplotlib.gridspec as gridspec
+
+import plot_util as plot_util
+from plot_util import get_lead_avg_file
 
 # Read environment variables set in make_plots_wrapper.py
 verif_case = os.environ['VERIF_CASE']
@@ -61,6 +63,7 @@ stats_list = os.environ['STATS'].split(', ')
 model_list = os.environ['MODEL'].split(', ')
 model_obtype_list = os.environ['MODEL_OBTYPE'].split(', ')
 model_reference_name_list = os.environ['MODEL_REFERENCE_NAME'].split(', ')
+dump_row_filename_template_list = os.environ['DUMP_ROW_FILENAME'].split(', ')
 average_method = os.environ['AVERAGE_METHOD']
 ci_method = os.environ['CI_METHOD']
 verif_grid = os.environ['VERIF_GRID']
@@ -100,7 +103,10 @@ output_data_dir = os.path.join(output_base_dir, 'data')
 output_imgs_dir = os.path.join(output_base_dir, 'imgs')
 # Model info
 model_info_list = list(
-    zip(model_list, model_reference_name_list, model_obtype_list)
+    zip(model_list,
+        model_reference_name_list,
+        model_obtype_list,
+        dump_row_filename_template_list)
 )
 nmodels = len(model_info_list)
 # Plot info
@@ -345,15 +351,20 @@ for plot_info in plot_info_list:
             for vl in range(len(fcst_var_levels)):
                 fcst_var_level = fcst_var_levels[vl]
                 obs_var_level = obs_var_levels[vl]
-                lead_avg_filename = (
-                    stat+'_'
-                    +model_plot_name+'_'+model_obtype+'_'
-                    +base_name.replace('FCSTLEVELHOLDER', fcst_var_level) \
-                    .replace('OBSLEVELHOLDER', obs_var_level)
-                    +'.txt'
-                )
-                lead_avg_file = os.path.join(output_base_dir, 'data',
-                                             lead_avg_filename)
+#                lead_avg_filename = (
+#                    stat+'_'
+#                    +model_plot_name+'_'+model_obtype+'_'
+#                    +base_name.replace('FCSTLEVELHOLDER', fcst_var_level) \
+#                    .replace('OBSLEVELHOLDER', obs_var_level)
+#                    +'.txt'
+#                )
+#                lead_avg_file = os.path.join(output_base_dir, 'data',
+#                                             lead_avg_filename)
+                lead_avg_file = get_lead_avg_file(stat,
+                                                  model_info[3],
+                                                  'fcst_lead_avgs',
+                                                  output_base_dir)
+
                 if os.path.exists(lead_avg_file):
                     nrow = sum(1 for line in open(lead_avg_file))
                     if nrow == 0:

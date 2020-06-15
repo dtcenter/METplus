@@ -12,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import numpy as np
-import plot_util as plot_util
 import pandas as pd
 import itertools
 import warnings
@@ -23,6 +22,9 @@ import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as md
+
+import plot_util as plot_util
+from plot_util import get_ci_file, get_lead_avg_file
 
 # Read environment variables set in make_plots_wrapper.py
 verif_case = os.environ['VERIF_CASE']
@@ -60,6 +62,7 @@ stats_list = os.environ['STATS'].split(', ')
 model_list = os.environ['MODEL'].split(', ')
 model_obtype_list = os.environ['MODEL_OBTYPE'].split(', ')
 model_reference_name_list = os.environ['MODEL_REFERENCE_NAME'].split(', ')
+dump_row_filename_template_list = os.environ['DUMP_ROW_FILENAME'].split(', ')
 average_method = os.environ['AVERAGE_METHOD']
 ci_method = os.environ['CI_METHOD']
 verif_grid = os.environ['VERIF_GRID']
@@ -100,7 +103,10 @@ output_data_dir = os.path.join(output_base_dir, 'data')
 output_imgs_dir = os.path.join(output_base_dir, 'imgs')
 # Model info
 model_info_list = list(
-    zip(model_list, model_reference_name_list, model_obtype_list)
+    zip(model_list,
+        model_reference_name_list,
+        model_obtype_list,
+        dump_row_filename_template_list)
 )
 nmodels = len(model_info_list)
 # Plot info
@@ -349,17 +355,22 @@ for plot_info in plot_info_list:
             for vt in range(len(fcst_var_threshs_format)):
                 fcst_var_thresh_format = fcst_var_threshs_format[vt]
                 obs_var_thresh_format = obs_var_threshs_format[vt]
-                lead_avg_filename = (
-                    stat+'_'
-                    +model_plot_name+'_'+model_obtype+'_'
-                    +base_name.replace('FCSTTHRESHHOLDER', 
-                                       str(fcst_var_thresh_format)) \
-                    .replace('OBSTHRESHHOLDER', 
-                             str(obs_var_thresh_format)) \
-                    +'.txt'
-                )
-                lead_avg_file = os.path.join(output_base_dir, 'data',
-                                             lead_avg_filename)
+#                lead_avg_filename = (
+#                    stat+'_'
+#                    +model_plot_name+'_'+model_obtype+'_'
+#                    +base_name.replace('FCSTTHRESHHOLDER',
+#                                       str(fcst_var_thresh_format)) \
+#                    .replace('OBSTHRESHHOLDER',
+#                             str(obs_var_thresh_format)) \
+#                    +'.txt'
+#                )
+#                lead_avg_file = os.path.join(output_base_dir, 'data',
+#                                             lead_avg_filename)
+                lead_avg_file = get_lead_avg_file(stat,
+                                                  model_info[3],
+                                                  'fcst_lead_avgs',
+                                                  output_base_dir)
+
                 if os.path.exists(lead_avg_file):
                     nrow = sum(1 for line in open(lead_avg_file))
                     if nrow == 0:
@@ -409,16 +420,22 @@ for plot_info in plot_info_list:
                     logger.warning("Model "+str(model_num)+" "+model_name+" "
                                    +"with plot name "+model_plot_name+" "
                                    +"file: "+lead_avg_file+" does not exist")
-                CI_filename = (
-                    stat+'_'
-                    +model_plot_name+'_'+model_obtype+'_'
-                    +base_name.replace('FCSTTHRESHHOLDER',
-                                       str(fcst_var_thresh_format)) \
-                    .replace('OBSTHRESHHOLDER',
-                             str(obs_var_thresh_format)) \
-                    +'_CI_'+ci_method+'.txt'
-                )
-                CI_file = os.path.join(output_base_dir, 'data', CI_filename)
+#                CI_filename = (
+#                    stat+'_'
+#                    +model_plot_name+'_'+model_obtype+'_'
+#                    +base_name.replace('FCSTTHRESHHOLDER',
+#                                       str(fcst_var_thresh_format)) \
+#                    .replace('OBSTHRESHHOLDER',
+#                             str(obs_var_thresh_format)) \
+#                    +'_CI_'+ci_method+'.txt'
+#                )
+#                CI_file = os.path.join(output_base_dir, 'data', CI_filename)
+                CI_file = get_ci_file(stat,
+                                      model_info[3],
+                                      'fcst_lead_avgs',
+                                      output_base_dir,
+                                      ci_method)
+
                 if ci_method != 'NONE':
                     if (stat == 'fbar_obar' or stat == 'orate_frate'
                             or stat == 'baser_frate'):

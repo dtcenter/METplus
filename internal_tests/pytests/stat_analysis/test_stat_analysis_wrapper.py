@@ -231,42 +231,24 @@ def test_set_lists_as_loop_or_group():
     assert(all(elem in expected_lists_to_loop_items 
                for elem in test_lists_to_loop_items))
 
-def test_format_thresh():
+@pytest.mark.parametrize(
+    'expression, expected_result', [
+        ('>1', 'gt1'),
+        ('>=0.2', 'ge0.2'),
+        ('<30', 'lt30'),
+        ('<=0.04', 'le0.04'),
+        ('==5', 'eq5'),
+        ('!=0.06', 'ne0.06'),
+        ('>0.05, gt0.05, >=1, ge1, <5, lt5, <=10, le10, ==15, eq15, !=20, ne20',
+           'gt0.05,gt0.05,ge1,ge1,lt5,lt5,le10,le10,eq15,eq15,ne20,ne20')
+    ]
+)
+def test_format_thresh(expression, expected_result):
     # Idependently test the creation of 
     # string values for defining thresholds
     st = stat_analysis_wrapper()
-    # Test 1
-    thresh_symbol, thresh_letter = st.format_thresh('>1')
-    assert(thresh_symbol == '>1')
-    assert(thresh_letter == 'gt1')
-    # Test 2
-    thresh_symbol, thresh_letter = st.format_thresh('>=0.2')
-    assert(thresh_symbol == '>=0.2')
-    assert(thresh_letter == 'ge0.2')
-    # Test 3
-    thresh_symbol, thresh_letter = st.format_thresh('<30')
-    assert(thresh_symbol == '<30')
-    assert(thresh_letter == 'lt30')
-    # Test 4
-    thresh_symbol, thresh_letter = st.format_thresh('<=0.04')
-    assert(thresh_symbol == '<=0.04')
-    assert(thresh_letter == 'le0.04')
-    # Test 5
-    thresh_symbol, thresh_letter = st.format_thresh('==5')
-    assert(thresh_symbol == '==5')
-    assert(thresh_letter == 'eq5')
-    # Test 6
-    thresh_symbol, thresh_letter = st.format_thresh('!=0.06')
-    assert(thresh_symbol == '!=0.06')
-    assert(thresh_letter == 'ne0.06')
-    # Test 7
-    thresh_symbol, thresh_letter = st.format_thresh(
-        '>0.05, gt0.05, >=1, ge1, <5, lt5, <=10, le10, ==15, eq15, !=20, ne20'
-    )
-    assert(thresh_symbol ==
-        '>0.05,>0.05,>=1,>=1,<5,<5,<=10,<=10,==15,==15,!=20,!=20')
-    assert(thresh_letter ==
-        'gt0.05,gt0.05,ge1,ge1,lt5,lt5,le10,le10,eq15,eq15,ne20,ne20')
+
+    assert(st.format_thresh(expression) == expected_result)
 
 def test_build_stringsub_dict():
     # Independently test the building of 
