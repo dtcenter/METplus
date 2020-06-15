@@ -118,7 +118,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                              'OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE')
 
         if not c_dict['OBS_GRID_INPUT_TEMPLATE']:
-            self.log_error("OBS_GRID_INPUT_TEMPLATE requrired to run")
+            self.log_error("OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE requrired to run")
 
         # The ensemble forecast files input directory and filename templates
         c_dict['FCST_INPUT_DIR'] = \
