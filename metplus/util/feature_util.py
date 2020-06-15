@@ -63,9 +63,9 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
 
     # Get variables, etc. from param/config file.
     model_data_dir = config.getdir('EXTRACT_TILES_GRID_INPUT_DIR')
-    met_install_dir = config.getdir('MET_INSTALL_DIR')
-    regrid_data_plane_exe = os.path.join(met_install_dir,
-                                         'bin/regrid_data_plane')
+    met_bin_dir = config.getdir('MET_BIN_DIR', '')
+    regrid_data_plane_exe = os.path.join(met_bin_dir,
+                                         'regrid_data_plane')
 
     overwrite_flag = config.getbool('config', 'EXTRACT_TILES_OVERWRITE_TRACK')
 

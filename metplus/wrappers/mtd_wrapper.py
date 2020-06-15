@@ -25,8 +25,8 @@ class MTDWrapper(MODEWrapper):
 
     def __init__(self, config, logger):
         self.app_name = 'mtd'
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
         self.fcst_file = None
         self.obs_file = None
