@@ -135,7 +135,7 @@ class TCPairsWrapper(CommandBuilder):
                                                       'TC_PAIRS_EDECK_TEMPLATE',
                                                       '')
         if not c_dict['EDECK_TEMPLATE']:
-            self.log_error("EDECK_TEMPLATE required to run")
+            self.log_error("TC_PAIRS_EDECK_TEMPLATE required to run")
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                        'TC_PAIRS_OUTPUT_TEMPLATE')
         c_dict['SKIP_REFORMAT'] = self.config.getbool('config',
