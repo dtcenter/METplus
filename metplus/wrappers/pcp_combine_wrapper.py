@@ -96,7 +96,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                               d_type+'_PCP_COMBINE_INPUT_TEMPLATE', '')
         if not c_dict[d_type+'_INPUT_TEMPLATE']:
-            self.log_error(d_type+"_INPUT_TEMPLATE required to run")
+            self.log_error(d_type + "_PCP_COMBINE_INPUT_TEMPLATE required to run")
         c_dict[d_type+'_OUTPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_OUTPUT_DIR', '')
         c_dict[d_type+'_OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_OUTPUT_TEMPLATE')
