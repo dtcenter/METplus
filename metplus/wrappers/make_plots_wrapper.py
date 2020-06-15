@@ -406,6 +406,9 @@ class MakePlotsWrapper(CommandBuilder):
             # obtype env var is named differently in StatAnalysis wrapper
             self.add_env_var('MODEL_OBTYPE', runtime_settings_dict['OBTYPE'])
 
+            self.add_env_var('STATS',
+                             self.list_to_str(self.c_dict['STATS_LIST']))
+
             # send environment variables to logger
             self.print_all_envs()
 
