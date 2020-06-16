@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: point_stat_wrapper.py
 Contact(s): Minna Win, Jim Frimel, George McCabe, Julie Prestopnik
@@ -180,6 +178,3 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_common_envs(time_info)
 
         self.print_all_envs()
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "PointStat")

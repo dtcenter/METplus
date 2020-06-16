@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """!@namespace ExtraTropicalCyclonePlotter
 A Python class that generates plots of extra tropical cyclone forecast data,
  replicating the NCEP tropical and extra tropical cyclone tracks and
@@ -550,8 +548,3 @@ class CyclonePlotterWrapper(CommandBuilder):
             adj_lon = lon
 
         return adj_lon
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "CyclonePlotter")
-

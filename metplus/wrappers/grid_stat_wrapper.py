@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: grid_stat_wrapper.py
 Contact(s): George McCabe
@@ -121,7 +119,3 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         # send environment variables to logger
         self.print_all_envs()
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "GridStat")

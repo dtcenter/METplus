@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import re
 import os
 import sys
@@ -1407,6 +1405,3 @@ class SeriesByLeadWrapper(CommandBuilder):
         # in anticipation of another run.
         filter_regex = 'filter_.*'
         util.remove_staged_files(staging_dir, filter_regex, self.logger)
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "SeriesByLead")

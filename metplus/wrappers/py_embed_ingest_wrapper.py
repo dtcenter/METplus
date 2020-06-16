@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: py_embed_ingest_wrapper.py
 Contact(s): George McCabe
@@ -142,6 +140,3 @@ class PyEmbedIngestWrapper(CommandBuilder):
             # run command and add to errors if it failed
             if not rdp.build():
                 self.errors += 1
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "PyEmbedIngest")

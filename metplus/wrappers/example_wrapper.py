@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: example_wrapper.py
 Contact(s): George McCabe
@@ -91,6 +89,3 @@ class ExampleWrapper(CommandBuilder):
                 self.logger.info('Looking in input directory for file: {}'.format(filename))
 
         return True
-
-if __name__ == "__main__":
-    run_stand_alone(__file__, "Example")

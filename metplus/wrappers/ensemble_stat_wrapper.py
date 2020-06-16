@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: ensemble_stat_wrapper.py
 Contact(s): metplus-dev
@@ -432,7 +430,3 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         cmd += '-outdir {}'.format(self.outdir)
         return cmd
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "EnsembleStat")

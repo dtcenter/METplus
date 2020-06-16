@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # @namespace UsageWrapper
 # @brief Provides a default process for master_metplus.py.  Indicates what
 # processes are currently available.

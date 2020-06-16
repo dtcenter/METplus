@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: mtd_wrapper.py
 Contact(s): George McCabe
@@ -465,7 +463,3 @@ class MTDWrapper(MODEWrapper):
             cmd += '-outdir {}'.format(self.outdir)
 
         return cmd
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "MTD")

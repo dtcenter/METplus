@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: gempak_to_cf.py
 Contact(s): Julie Prestopnik
@@ -122,6 +120,3 @@ class GempakToCFWrapper(CommandBuilder):
             return
 
         self.build()
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "GempakToCF")

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 ##@namespace TCMPRPlotterWrapper
 # A Python class than encapsulates the plot_tcmpr.R plotting script.
 #
@@ -393,7 +391,3 @@ class TCMPRPlotterWrapper(CommandBuilder):
         self.logger.info("RUNNING: " + cmd)
         process = subprocess.Popen(cmd, env=self.env, shell=True)
         process.wait()
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "TCMPRPlotter")

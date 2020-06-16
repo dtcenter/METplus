@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: mode_wrapper.py
 Contact(s): George McCabe
@@ -243,6 +241,3 @@ class MODEWrapper(CompareGriddedWrapper):
                 return
             self.build()
             self.clear()
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "MODE")

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: gen_vx_mask_wrapper.py
 Contact(s): George McCabe
@@ -250,6 +248,3 @@ class GenVxMaskWrapper(CommandBuilder):
         self.infiles.append(mask_file)
 
         return True
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "GenVxMask")

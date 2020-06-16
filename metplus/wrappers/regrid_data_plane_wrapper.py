@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: regrid_data_plane.py
 Contact(s): George McCabe
@@ -476,6 +474,3 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             self.args.append(f"-field 'name=\"{name}\"; level=\"{input_level}\";'")
 
         return name
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "RegridDataPlane")

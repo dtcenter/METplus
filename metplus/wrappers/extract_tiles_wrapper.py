@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: extract_tiles_wrapper.py
 Contact(s): Julie Prestopnik, Minna Win, George McCabe, Jim Frimel
@@ -237,6 +235,3 @@ class ExtractTilesWrapper(CommandBuilder):
             processed_file = True
 
         return processed_file
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "ExtractTiles")

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: time_util.py
 Contact(s): George McCabe

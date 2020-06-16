@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''! @namespace SeriesByInitWrapper
 @brief Performs any optional filtering of input tcst data then performs
 regridding via the MET tool regrid_data_plane, then builds up
@@ -888,6 +886,3 @@ class SeriesByInitWrapper(CommandBuilder):
             #  so they don't cause any problems with further processing
             # steps.
             util.prune_empty(fcst_anly_ascii_dir, self.logger)
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "SeriesByInit")

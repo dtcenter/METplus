@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: point2grid_wrapper.py
 Contact(s): Hank Fisher 
@@ -256,7 +254,3 @@ class Point2GridWrapper(CommandBuilder):
 
         if self. c_dict['VLD_THRESH']:
             self.args.append(f"-vld_thresh {self.c_dict['VLD_THRESH']}")
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "Point2Grid")

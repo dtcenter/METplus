@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: pcp_combine_wrapper.py
 Contact(s): George McCabe
@@ -1010,6 +1008,3 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                     'extra': extra})
 
         self.c_dict['ACCUM_DICT_LIST'] = accum_dict_list
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "PCPCombine")
