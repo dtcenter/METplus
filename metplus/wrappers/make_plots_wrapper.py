@@ -399,7 +399,8 @@ class MakePlotsWrapper(CommandBuilder):
 
             # TODO: check if value already is set in runtime settings?
             for key in self.add_from_c_dict_list:
-                self.add_env_var(key, self.c_dict[key])
+                if key not in runtime_settings_dict:
+                    self.add_env_var(key, self.c_dict[key])
 
             self.add_env_var('MET_VERSION', met_version)
 
