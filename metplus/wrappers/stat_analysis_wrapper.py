@@ -62,6 +62,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
     force_group_for_make_plots_lists = ['MODEL_LIST',
                                         'FCST_LEAD_LIST',
+                                        'OBS_LEAD_LIST',
                                         'FCST_LEVEL_LIST',
                                         'OBS_LEVEL_LIST',
                                         'FCST_THRESH_LIST',
@@ -1337,12 +1338,20 @@ class StatAnalysisWrapper(CommandBuilder):
         # Loop over run settings.
         formatted_runtime_settings_dict_list = []
         for runtime_settings_dict in runtime_settings_dict_list:
+            if forMakePlots:
+                loop_lists = c_dict['LOOP_LIST_ITEMS_MAKE_PLOTS']
+                group_lists = c_dict['GROUP_LIST_ITEMS_MAKE_PLOTS']
+            else:
+                loop_lists = c_dict['LOOP_LIST_ITEMS']
+                group_lists = c_dict['GROUP_LIST_ITEMS']
             # Set up stat_analysis -lookin argument, model and obs information
             # and stat_analysis job.
             model_info = self.get_model_obtype_and_lookindir(runtime_settings_dict,
                                                              date_beg,
                                                              date_end,
                                                              date_type,
+                                                             loop_lists,
+                                                             group_lists,
                                                              )
             if model_info is None:
                 return None
@@ -1352,6 +1361,8 @@ class StatAnalysisWrapper(CommandBuilder):
                                                              date_beg,
                                                              date_end,
                                                              date_type,
+                                                             loop_lists,
+                                                             group_lists,
                                                              )
 
             # Set up forecast and observation valid
@@ -1393,7 +1404,8 @@ class StatAnalysisWrapper(CommandBuilder):
 
         for loop_list in loop_lists:
             # if not a threshold list, add quotes around each value in list
-            if loop_list not in self.format_later_list and 'THRESH' not in loop_list:
+#            if loop_list not in self.format_later_list and 'THRESH' not in loop_list:
+            if 'THRESH' not in loop_list:
                 c_dict[loop_list] = [f'"{value}"' for value in c_dict[loop_list]]
 
             runtime_setup_dict_name = loop_list.replace('_LIST', '')
@@ -1541,7 +1553,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 if list_item not in c_dict:
                     c_dict[list_item] = self.c_dict[list_item]
 
-    def get_model_obtype_and_lookindir(self, runtime_settings_dict, date_beg, date_end, date_type):
+    def get_model_obtype_and_lookindir(self, runtime_settings_dict, date_beg, date_end, date_type, loop_lists, group_lists):
         """! Reads through model info dictionaries for given run. Sets lookindir command line
              argument. Sets MODEL and OBTYPE values in runtime setting dictionary.
              @param runtime_settings_dict dictionary containing all settings used in next run
@@ -1573,8 +1585,8 @@ class StatAnalysisWrapper(CommandBuilder):
                                                    date_beg,
                                                    date_end,
                                                    date_type,
-                                                   self.c_dict['LOOP_LIST_ITEMS'],
-                                                   self.c_dict['GROUP_LIST_ITEMS'],
+                                                   loop_lists,
+                                                   group_lists,
                                                    runtime_settings_dict,
                                                    )
                                )
@@ -1594,7 +1606,7 @@ class StatAnalysisWrapper(CommandBuilder):
         # return last model info dict used
         return model_info
 
-    def get_job_info(self, model_info, runtime_settings_dict, date_beg, date_end, date_type):
+    def get_job_info(self, model_info, runtime_settings_dict, date_beg, date_end, date_type, loop_lists, group_lists):
         """! Get job information and concatenate values into a string
              @params model_info model information to use to determine output file paths
              @params runtime_settings_dict dictionary containing all settings used in next run
@@ -1612,8 +1624,8 @@ class StatAnalysisWrapper(CommandBuilder):
                                             date_beg,
                                             date_end,
                                             date_type,
-                                            self.c_dict['LOOP_LIST_ITEMS'],
-                                            self.c_dict['GROUP_LIST_ITEMS'],
+                                            loop_lists,
+                                            group_lists,
                                             runtime_settings_dict,
                                             )
 
