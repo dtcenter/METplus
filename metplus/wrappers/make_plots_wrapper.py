@@ -395,20 +395,19 @@ class MakePlotsWrapper(CommandBuilder):
         for runtime_settings_dict in runtime_settings_dict_list:
             # set environment variables
             for name, value in runtime_settings_dict.items():
-                self.add_env_var(name, value)
+                self.add_env_var(name, value.replace('"', ''))
 
-            # TODO: check if value already is set in runtime settings?
             for key in self.add_from_c_dict_list:
                 if key not in runtime_settings_dict:
-                    self.add_env_var(key, self.c_dict[key])
+                    self.add_env_var(key, self.c_dict[key].replace('"', ''))
 
             self.add_env_var('MET_VERSION', met_version)
 
             # obtype env var is named differently in StatAnalysis wrapper
-            self.add_env_var('MODEL_OBTYPE', runtime_settings_dict['OBTYPE'])
+            self.add_env_var('MODEL_OBTYPE', runtime_settings_dict['OBTYPE'].replace('"', ''))
 
             self.add_env_var('STATS',
-                             self.list_to_str(self.c_dict['STATS_LIST']))
+                             ', '.join(self.c_dict['STATS_LIST']).replace('"', ''))
 
             # send environment variables to logger
             self.print_all_envs()

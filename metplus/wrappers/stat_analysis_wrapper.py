@@ -60,6 +60,16 @@ class StatAnalysisWrapper(CommandBuilder):
                              'LINE_TYPE_LIST',
                              ] + format_lists + field_lists
 
+    force_group_for_make_plots_lists = ['MODEL_LIST',
+                                        'FCST_LEAD_LIST',
+                                        'FCST_LEVEL_LIST',
+                                        'OBS_LEVEL_LIST',
+                                        'FCST_THRESH_LIST',
+                                        'OBS_THRESH_LIST',
+                                        'FCST_UNITS_LIST',
+                                        'OBS_UNITS_LIST',
+                                       ]
+
     list_categories = ['GROUP_LIST_ITEMS', 'LOOP_LIST_ITEMS']
 
     # what is the used for? these are not formatted later
@@ -170,9 +180,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 for model_info in c_dict['MODEL_INFO_LIST']:
                     c_dict['MODEL_LIST'].append(model_info['name'])
 
-        c_dict['GROUP_LIST_ITEMS'], c_dict['LOOP_LIST_ITEMS'] = (
-            self.set_lists_loop_or_group(c_dict)
-        )
+        self.set_lists_loop_or_group(c_dict)
 
         return self.c_dict_error_check(c_dict)
 
@@ -329,7 +337,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return ', '.join(list_of_values)
 
-    def set_lists_loop_or_group(self, config_dict):
+    def set_lists_loop_or_group(self, c_dict):
         """! Determine whether the lists from the METplus config file
              should treat the items in that list as a group or items 
              to be looped over based on user settings, the values
@@ -348,52 +356,58 @@ class StatAnalysisWrapper(CommandBuilder):
               together) and lists_to_loop_items (list of all
               the list names whose items are being looped over)
         """
-        group_items = config_dict['GROUP_LIST_ITEMS']
-        loop_items = config_dict['LOOP_LIST_ITEMS']
-
         # get list of config variables not found in either GROUP_LIST_ITEMS or LOOP_LIST_ITEMS
-        missing_config_list = [conf for conf in self.expected_config_lists if conf not in group_items]
-        missing_config_list = [conf for conf in missing_config_list if conf not in loop_items]
+        missing_config_list = [conf for conf in self.expected_config_lists if conf not in c_dict['GROUP_LIST_ITEMS']]
+        missing_config_list = [conf for conf in missing_config_list if conf not in c_dict['LOOP_LIST_ITEMS']]
         found_config_list = [conf for conf in self.expected_config_lists if conf not in missing_config_list]
 
         # loop through lists not found in either loop or group lists
         for missing_config in missing_config_list:
 
             # if running MakePlots
-            if (config_dict['LOOP_ORDER'] == 'processes' and self.runMakePlots):
+            if (c_dict['LOOP_ORDER'] == 'processes' and self.runMakePlots):
 
                 # if LINE_TYPE_LIST is missing, add it to group list
                 if missing_config == 'LINE_TYPE_LIST':
-                    group_items.append(missing_config)
+                    c_dict['GROUP_LIST_ITEMS'].append(missing_config)
 
                 # else if list in config_dict is empty, warn and add to group list
-                elif not config_dict[missing_config]:
+                elif not c_dict[missing_config]:
                     self.logger.warning(missing_config + " is empty, "
                                         + "will be treated as group.")
-                    group_items.append(missing_config)
+                    c_dict['GROUP_LIST_ITEMS'].append(missing_config)
 
                 # otherwise add to loop list
                 else:
-                    loop_items.append(missing_config)
+                    c_dict['LOOP_LIST_ITEMS'].append(missing_config)
 
             # if not running MakePlots, just add missing list to group list
             else:
-                group_items.append(missing_config)
+                c_dict['GROUP_LIST_ITEMS'].append(missing_config)
 
         # loop through lists found in either loop or group lists originally
         for found_config in found_config_list:
             # if list is empty, warn and move from loop list to group list
-            if not config_dict[found_config]:
+            if not c_dict[found_config]:
                 self.logger.warning(found_config + " is empty, "
                                     + "will be treated as group.")
-                group_items.append(found_config)
-                loop_items.remove(found_config)
+                c_dict['GROUP_LIST_ITEMS'].append(found_config)
+                c_dict['LOOP_LIST_ITEMS'].remove(found_config)
 
         self.logger.debug("Items in these lists will be grouped together: "
-                          + ', '.join(group_items))
+                          + ', '.join(c_dict['GROUP_LIST_ITEMS']))
         self.logger.debug("Items in these lists will be looped over: "
-                          + ', '.join(loop_items))
-        return group_items, loop_items
+                          + ', '.join(c_dict['LOOP_LIST_ITEMS']))
+
+        # if running MakePlots, create new group and loop lists based on
+        # the criteria for running that wrapper
+        if self.runMakePlots:
+            c_dict['GROUP_LIST_ITEMS_MAKE_PLOTS'] = copy.deepcopy(c_dict['GROUP_LIST_ITEMS'])
+            c_dict['LOOP_LIST_ITEMS_MAKE_PLOTS'] = copy.deepcopy(c_dict['LOOP_LIST_ITEMS'])
+            for force_group_list in self.force_group_for_make_plots_lists:
+                if force_group_list in c_dict['LOOP_LIST_ITEMS_MAKE_PLOTS']:
+                    c_dict['LOOP_LIST_ITEMS_MAKE_PLOTS'].remove(force_group_list)
+                    c_dict['GROUP_LIST_ITEMS_MAKE_PLOTS'].append(force_group_list)
 
     def format_thresh(self, thresh):
         """! Format thresholds for file naming
@@ -1306,24 +1320,30 @@ class StatAnalysisWrapper(CommandBuilder):
         job = job.replace(f'[{job_type}_filename]', output_file)
 
         # add output file path to runtime_settings_dict
-        runtime_settings_dict[f'{job_type}_filepath'] = output_file
+        runtime_settings_dict[f'{job_type.upper()}_FILENAME'] = output_file
 
         return job
 
-    def get_runtime_settings_dict_list(self):
+    def get_runtime_settings_dict_list(self, forMakePlots=False):
         runtime_settings_dict_list = []
         c_dict_list = self.get_c_dict_list()
         for c_dict in c_dict_list:
-            runtime_settings_dict_list.extend(self.get_runtime_settings(c_dict))
+            runtime_settings = self.get_runtime_settings(c_dict,
+                                                         forMakePlots)
+            runtime_settings_dict_list.extend(runtime_settings)
 
         return runtime_settings_dict_list
 
-    def get_runtime_settings(self, c_dict):
+    def get_runtime_settings(self, c_dict, forMakePlots=False):
 
         # Parse whether all expected METplus config _LIST variables
         # to be treated as a loop or group.
         group_lists = c_dict['GROUP_LIST_ITEMS']
         loop_lists = c_dict['LOOP_LIST_ITEMS']
+
+        if forMakePlots:
+            group_lists = c_dict['GROUP_LIST_ITEMS_MAKE_PLOTS']
+            loop_lists = c_dict['LOOP_LIST_ITEMS_MAKE_PLOTS']
 
         runtime_setup_dict = {}
         # Fill setup dictionary for MET config variable name
@@ -1535,7 +1555,7 @@ class StatAnalysisWrapper(CommandBuilder):
         runtime_settings_dict['MODEL'] = self.list_to_str(model_list)
         runtime_settings_dict['MODEL_REFERENCE_NAME'] = self.list_to_str(reference_list)
         runtime_settings_dict['OBTYPE'] = self.list_to_str(obtype_list)
-        runtime_settings_dict['DUMP_ROW_FILENAME'] = self.list_to_str(dump_row_filename_list)
+#        runtime_settings_dict['DUMP_ROW_FILENAME_TEMPLATE'] = self.list_to_str(dump_row_filename_list)
 
         # return last model info dict used
         return model_info
@@ -1622,8 +1642,11 @@ class StatAnalysisWrapper(CommandBuilder):
 
             self.clear()
 
-        # if running MakePlots, pass in runtime_settings_dict_list and call
+        # if running MakePlots, get its runtime_settings_dict_list and call
         if self.runMakePlots:
+            runtime_settings_dict_list = (
+                self.get_runtime_settings_dict_list(forMakePlots=True)
+            )
             self.MakePlotsWrapper.create_plots_new(runtime_settings_dict_list)
 
     def run_all_times(self):
