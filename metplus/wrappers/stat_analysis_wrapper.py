@@ -1655,6 +1655,9 @@ class StatAnalysisWrapper(CommandBuilder):
                 return False
 
             self.MakePlotsWrapper.create_plots_new(runtime_settings_dict_list)
+            if self.MakePlotsWrapper.errors:
+                self.log_error("MakePlots produced "
+                               f"{self.MakePlotsWrapper.errors} errors.")
 
         return True
 
