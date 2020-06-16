@@ -222,9 +222,7 @@ def test_set_lists_as_loop_or_group():
     config_dict['COV_THRESH_LIST'] = []
     config_dict['ALPHA_LIST'] = []
     config_dict['LINE_TYPE_LIST'] = []
-    test_lists_to_group_items, test_lists_to_loop_items = (
-        st.set_lists_loop_or_group(config_dict)
-    )
+    st.set_lists_loop_or_group(config_dict)
     
     assert(all(elem in expected_lists_to_group_items 
                for elem in test_lists_to_group_items))
@@ -766,7 +764,7 @@ def test_parse_model_info():
     assert(test_model_info_list[0]['out_stat_filename_type'] == 
            expected_out_stat_filename_type)
 
-def test_run_stat_analysis_job():
+def test_run_stat_analysis():
     # Test running of stat_analysis
     st = stat_analysis_wrapper()
     # Test 1
@@ -777,7 +775,7 @@ def test_run_stat_analysis_job():
     date_beg = '20190101'
     date_end = '20190101'
     date_type = 'VALID'
-    st.run_stat_analysis_job(date_beg, date_end, date_type)
+    st.run_stat_analysis(date_beg, date_end, date_type)
     assert(os.path.exists(expected_filename))
     assert(os.path.getsize(expected_filename)
            == os.path.getsize(comparison_filename))

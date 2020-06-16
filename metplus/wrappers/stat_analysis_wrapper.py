@@ -62,6 +62,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
     force_group_for_make_plots_lists = ['MODEL_LIST',
                                         'FCST_LEAD_LIST',
+                                        'OBS_LEAD_LIST',
                                         'FCST_LEVEL_LIST',
                                         'OBS_LEVEL_LIST',
                                         'FCST_THRESH_LIST',
@@ -1288,16 +1289,16 @@ class StatAnalysisWrapper(CommandBuilder):
 
         # if there are more than one model being processed, use
         # the generic (not model specific) filename template
-        if nmodels > 1:
-            filename_template = (
-                self.config.getraw('filename_templates',
-                                   f'STAT_ANALYSIS_{job_type.upper()}_TEMPLATE',
-                                   '')
-            )
-            if not filename_template:
-                filename_type = 'default'
-            else:
-                filename_type = 'user'
+#        if nmodels > 1:
+#            filename_template = (
+#                self.config.getraw('filename_templates',
+#                                   f'STAT_ANALYSIS_{job_type.upper()}_TEMPLATE',
+#                                   '')
+#            )
+#            if not filename_template:
+#                filename_type = 'default'
+#            else:
+#                filename_type = 'user'
 
         filename = (
             self.get_output_filename(job_type,
