@@ -34,10 +34,10 @@ TCStat.conf
 # METplus Workflow
 # ----------------
 #
-# TCStat is the only tool called in this example. It processes the following
+# TCStat is the only tool called in this example. It processes the following TCST
 # run times:
 #
-# | *TCST:** 2015030100
+# | **TCST:** 2015030100
 
 ##############################################################################
 # METplus Configuration
@@ -60,9 +60,6 @@ TCStat.conf
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/TCStatConfig_wrapped
 #
-# Note the following variables are referenced in the MET configuration file.
-#
-# * **ASPEED**
 #
 
 ##############################################################################
@@ -104,10 +101,10 @@ TCStat.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in tc_paris/201503 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in tc_stat/201503 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# OUTPUT_BASE/tc_stat/tc_stat_summary.tcst
+# * tc_stat_summary.tcst
 
 ##############################################################################
 # Keywords

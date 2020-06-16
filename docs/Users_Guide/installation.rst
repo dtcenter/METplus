@@ -97,16 +97,10 @@ accompanies the use cases:
 
 
    -  Model Applications:
-         -  Convection allowing models: *sample_data-convection_allowing_models-3.0.tgz*
-
-         -  Medium Range: *sample_data-medium_range-3.0.tgz*
-
-         -  Precipitation: *sample_data-precipitation-3.0.tgz*
-
-         -  TC and Extra TC: *sample_data-tc_and_extra_tc-3.0.tgz*
+         -  Visit https://github.com/NCAR/METplus/releases for a complete list of the latest Model Application .tgz files
 
    -  MET Tool Wrapper:
-         -  For single MET tool/METplus wrapper use cases and MET tests: *sample_data-met_test-9.0.tgz*
+         -  Visit https://github.com/NCAR/METplus/release for the latest single MET tool/METplus wrapper use case file
 
 
 
@@ -151,9 +145,6 @@ METplus Wrappers.
 
 The sorc/ directory contains Doxygen executables to generate
 documentation for developers.
-
-The src/ directory contains the source code for each of the wrappers in
-METplus Wrappers.
 
 The ush/ directory contains the Python wrappers to the MET tools.
 
@@ -206,17 +197,17 @@ shell):
     # Optional JLOGFILE
     setenv JLOGFILE ~/jlog_out
 
-.bashrc:
-~~~~~~~~
+.bashrc/.kshrc:
+~~~~~~~~~~~~~~~
 
--  Open your .bashrc file and do the following:
+-  Open your .bashrc/.kshrc file and do the following:
 
 -  To your PATH, add : *<full-path-to-METplus*>/ush
 
 -  Optional: add a JLOGFILE environment variable and set it to the
    directory where you want the logs to reside
 
--  Close your .bashrc file and run ``source ~/.bashrc``
+-  Close your .bashrc file and run ``source ~/.bashrc``, or ``source ~/.kshrc`` if using ksh
 
 -  For example:
 
@@ -503,7 +494,7 @@ Copy and paste the following into an empty text file and name it 'my_user_config
   MET_INSTALL_DIR = /usr/local/met-9.0
 
   # Set INPUT_BASE to the directory containing sample input data if running use cases in the repository
-  # Otherwise et INPUT_BASE to any path that does not contain /path/to.
+  # Otherwise set INPUT_BASE to any path that does not contain /path/to.
   INPUT_BASE = /tmp/input
 
   # Set OUTPUT_BASE to a directory where you have permission to write output files

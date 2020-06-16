@@ -23,7 +23,6 @@ _RevisionSeries_GRIB.conf
 # --------
 #
 #  * Forecast dataset: HRRR-TLE forecasts in GRIB2
-#  * Sources of data (links, contacts, etc...)
 #
 
 ##############################################################################

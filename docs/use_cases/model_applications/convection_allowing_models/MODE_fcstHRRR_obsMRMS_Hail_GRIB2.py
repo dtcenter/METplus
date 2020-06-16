@@ -110,7 +110,7 @@ _Hail_GRIB2.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/convection_allowing_models/MODE_fcstHRRRE_obsMRMS_Hail_GRIB2/20190529 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in hailtest (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # mode_260000L_20190529_020000V_010000A_cts.txt
