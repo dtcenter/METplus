@@ -165,13 +165,4 @@ The forecast lead is also set if provided ('lead'). This dictionary is passed in
 Items that will be parsed from the input dictionary are: now, init, valid, lead, lead_seconds, lead_minutes, lead_hours, offset, offset_hours, da_init
 
 pcp_combine uses a variety of time_util functions like ti_calculate and ti_get_lead_string
- 
-main function
--------------
 
-Each wrapper should call met_util's run_stand_alone so that the wrapper will run if called directly instead of calling master_metplus.py::
-
-    import met_util as util
-    ...
-    if __name__ == "__main__":
-        util.run_stand_alone(__file__, "Example")

@@ -18,7 +18,6 @@ import subprocess
 import datetime
 import itertools
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from . import CommandBuilder
 

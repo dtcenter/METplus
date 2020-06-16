@@ -3,7 +3,6 @@
 # processes are currently available.
 # @endcode#
 
-from ..util import metplus_check_python_version
 from . import CommandBuilder
 from ..util import met_util
 

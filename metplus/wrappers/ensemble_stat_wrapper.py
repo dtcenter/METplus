@@ -10,8 +10,6 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 '''
 
-from ..util import metplus_check_python_version
-
 import os
 import glob
 

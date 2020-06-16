@@ -4,7 +4,6 @@ import sys
 import errno
 import glob
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import feature_util

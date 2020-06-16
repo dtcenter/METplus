@@ -22,7 +22,6 @@ import subprocess
 from produtil.run import exe
 from produtil.run import checkrun
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from . import CommandBuilder
 

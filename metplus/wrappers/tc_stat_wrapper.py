@@ -17,7 +17,7 @@ import sys
 
 from produtil.run import ExitStatusException
 
-from ..util import metplus_check_python_version, run_stand_alone, getlist, mkdir_p
+from ..util import getlist, mkdir_p
 from . import CommandBuilder
 
 ## @namespace TCStatWrapper

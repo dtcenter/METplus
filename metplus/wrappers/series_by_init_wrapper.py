@@ -16,7 +16,6 @@ import os
 import re
 import sys
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from .tc_stat_wrapper import TCStatWrapper
 from ..util import feature_util
