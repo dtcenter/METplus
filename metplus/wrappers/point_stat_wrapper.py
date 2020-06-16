@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: point_stat_wrapper.py
 Contact(s): Minna Win, Jim Frimel, George McCabe, Julie Prestopnik
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -180,6 +177,3 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_common_envs(time_info)
 
         self.print_all_envs()
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "PointStat")

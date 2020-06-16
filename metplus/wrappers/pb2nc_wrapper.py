@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: PB2NC_Wrapper.py
 Contact(s): Minna Win, Jim Frimel, George McCabe, Julie Prestopnik
@@ -15,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 import re
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -344,6 +341,3 @@ class PB2NCWrapper(CommandBuilder):
             cmd += f"-valid_end {self.c_dict['VALID_WINDOW_END']} "
 
         return cmd.strip()
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "PB2NC")

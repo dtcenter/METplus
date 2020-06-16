@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 
 Program Name: string_template_substitution.py

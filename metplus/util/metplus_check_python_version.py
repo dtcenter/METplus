@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 # Check that user's version of python is at equal or higher than the
 # currently supported version
 

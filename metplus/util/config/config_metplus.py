@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: config_metplus.py
 Contact(s): George McCabe, Julie Prestopnik, Jim Frimel, Minna Win

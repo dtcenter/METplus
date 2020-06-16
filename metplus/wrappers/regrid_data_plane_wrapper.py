@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: regrid_data_plane.py
 Contact(s): George McCabe
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -476,6 +473,3 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             self.args.append(f"-field 'name=\"{name}\"; level=\"{input_level}\";'")
 
         return name
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "RegridDataPlane")

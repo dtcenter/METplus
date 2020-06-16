@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: tc_pairs_wrapper.py
 Contact(s): Julie Prestopnik, Minna Win, Jim Frimel, George McCabe
@@ -22,7 +20,6 @@ import csv
 import datetime
 import glob
 
-from ..util import metplus_check_python_version
 from ..util import time_util
 from ..util import met_util as util
 from ..util import do_string_sub
@@ -771,6 +768,3 @@ class TCPairsWrapper(CommandBuilder):
 
         csvfile.close()
         out_file.close()
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "TCPairs")

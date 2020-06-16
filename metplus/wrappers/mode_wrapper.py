@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: mode_wrapper.py
 Contact(s): George McCabe
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from . import CompareGriddedWrapper
 from ..util import do_string_sub
@@ -243,6 +240,3 @@ class MODEWrapper(CompareGriddedWrapper):
                 return
             self.build()
             self.clear()
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "MODE")

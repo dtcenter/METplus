@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: point2grid_wrapper.py
 Contact(s): Hank Fisher 
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -256,7 +253,3 @@ class Point2GridWrapper(CommandBuilder):
 
         if self. c_dict['VLD_THRESH']:
             self.args.append(f"-vld_thresh {self.c_dict['VLD_THRESH']}")
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "Point2Grid")

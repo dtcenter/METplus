@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: ensemble_stat_wrapper.py
 Contact(s): metplus-dev
@@ -11,8 +9,6 @@ Input Files:
 Output Files:
 Condition codes: 0 for success, 1 for failure
 '''
-
-from ..util import metplus_check_python_version
 
 import os
 import glob
@@ -432,7 +428,3 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         cmd += '-outdir {}'.format(self.outdir)
         return cmd
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "EnsembleStat")

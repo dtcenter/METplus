@@ -1,12 +1,9 @@
-#!/usr/bin/env python
-
 import re
 import os
 import sys
 import errno
 import glob
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import feature_util
@@ -1407,6 +1404,3 @@ class SeriesByLeadWrapper(CommandBuilder):
         # in anticipation of another run.
         filter_regex = 'filter_.*'
         util.remove_staged_files(staging_dir, filter_regex, self.logger)
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "SeriesByLead")

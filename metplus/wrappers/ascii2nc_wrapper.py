@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: ascii2nc_wrapper.py
 Contact(s): George McCabe
@@ -11,8 +9,6 @@ Input Files: ascii files
 Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 """
-
-from ..util import metplus_check_python_version
 
 import os
 
@@ -262,7 +258,3 @@ class ASCII2NCWrapper(CommandBuilder):
         # add mask SID if set
         if self.c_dict['MASK_SID']:
             self.args.append(" -mask_sid {}".format(self.c_dict['MASK_SID']))
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "ASCII2NC")

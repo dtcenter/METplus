@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: make_plots_wrapper.py
 Contact(s): Mallory Row
@@ -20,7 +18,6 @@ import subprocess
 import datetime
 import itertools
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from . import CommandBuilder
 
@@ -1048,6 +1045,3 @@ class MakePlotsWrapper(CommandBuilder):
                               self.c_dict['VERIF_TYPE'])
         else:
             exit(1)
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "MakePlots")

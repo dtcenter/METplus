@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: series_analysis_wrapper.py
 Contact(s): George McCabe
@@ -15,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 from datetime import datetime
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from . import CompareGriddedWrapper
@@ -325,7 +322,3 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         obs_fields = ','.join(obs_field_list)
 
         return fcst_fields, obs_fields
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "SeriesAnalysis")

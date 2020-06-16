@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: pcp_combine_wrapper.py
 Contact(s): George McCabe
@@ -15,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 import datetime
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -1010,6 +1007,3 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                     'extra': extra})
 
         self.c_dict['ACCUM_DICT_LIST'] = accum_dict_list
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "PCPCombine")

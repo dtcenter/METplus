@@ -482,6 +482,10 @@ master_metplus.py from any directory followed by a list of configuration
 files (file path relative to the
 *<path_to_METplus_install_dir>*/parm directory).
 
+.. note::
+   The executable named 'python3' that contains the packages required to run the
+   METplus wrappers must be found first in the path.
+
 **Example 1: Using a "default" configuration:**
 Copy and paste the following into an empty text file and name it 'my_user_config.conf':
 

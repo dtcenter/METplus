@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: gen_vx_mask_wrapper.py
 Contact(s): George McCabe
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
@@ -250,6 +247,3 @@ class GenVxMaskWrapper(CommandBuilder):
         self.infiles.append(mask_file)
 
         return True
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "GenVxMask")

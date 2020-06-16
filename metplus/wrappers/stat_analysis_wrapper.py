@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: stat_analysis_wrapper.py
 Contact(s): Mallory Row
@@ -20,7 +18,6 @@ import subprocess
 import datetime
 import itertools
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import do_string_sub
 from . import CommandBuilder
@@ -1888,6 +1885,3 @@ class StatAnalysisWrapper(CommandBuilder):
         else:
             self.log_error("LOOP_BY must be VALID or INIT")
             exit(1)
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "StatAnalysis")

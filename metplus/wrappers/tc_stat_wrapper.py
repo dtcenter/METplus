@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """!
 Program Name: TCStatWrapper.py
 Contact(s):  Minna Win, Jim Frimel, George McCabe, Julie Prestopnik
@@ -19,7 +17,7 @@ import sys
 
 from produtil.run import ExitStatusException
 
-from ..util import metplus_check_python_version, run_stand_alone, getlist, mkdir_p
+from ..util import getlist, mkdir_p
 from . import CommandBuilder
 
 ## @namespace TCStatWrapper
@@ -831,7 +829,3 @@ class TCStatWrapper(CommandBuilder):
                     '%s: non-zero exit status' % (repr(cmd),), ret)
         except ExitStatusException as ese:
             self.log_error(ese)
-
-
-if __name__ == "__main__":
-    run_stand_alone(__file__, "TCStat")

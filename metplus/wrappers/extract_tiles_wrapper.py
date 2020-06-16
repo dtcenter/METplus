@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: extract_tiles_wrapper.py
 Contact(s): Julie Prestopnik, Minna Win, George McCabe, Jim Frimel
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 import sys
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import feature_util
 from .tc_stat_wrapper import TCStatWrapper
@@ -237,6 +234,3 @@ class ExtractTilesWrapper(CommandBuilder):
             processed_file = True
 
         return processed_file
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "ExtractTiles")

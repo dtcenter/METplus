@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: example_wrapper.py
 Contact(s): George McCabe
@@ -14,8 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
-from ..util import run_stand_alone, do_string_sub, ti_calculate, get_lead_sequence
+from ..util import do_string_sub, ti_calculate, get_lead_sequence
 from . import CommandBuilder
 
 class ExampleWrapper(CommandBuilder):
@@ -91,6 +88,3 @@ class ExampleWrapper(CommandBuilder):
                 self.logger.info('Looking in input directory for file: {}'.format(filename))
 
         return True
-
-if __name__ == "__main__":
-    run_stand_alone(__file__, "Example")
