@@ -76,6 +76,7 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
               self.config.getraw('filename_templates',
                                  f'{data_type}_SERIES_ANALYSIS_INPUT_TEMPLATE',
                                  '')
+
             c_dict[f'{data_type}_INPUT_DATATYPE'] = \
               self.config.getstr('config', f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE', '')
 

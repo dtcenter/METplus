@@ -124,7 +124,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                           'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE'))
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE")
-            self.isOK = False
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
         if not c_dict['OUTPUT_DIR']:

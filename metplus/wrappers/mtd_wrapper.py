@@ -55,6 +55,7 @@ class MTDWrapper(MODEWrapper):
             c_dict['FCST_INPUT_TEMPLATE'] = \
               self.config.getraw('filename_templates',
                                  'FCST_MTD_INPUT_TEMPLATE')
+
             c_dict['FCST_INPUT_DATATYPE'] = \
                 self.config.getstr('config', 'FCST_MTD_INPUT_DATATYPE', '')
 
@@ -87,6 +88,7 @@ class MTDWrapper(MODEWrapper):
             c_dict['OBS_INPUT_TEMPLATE'] = \
               self.config.getraw('filename_templates',
                                    'OBS_MTD_INPUT_TEMPLATE')
+
             c_dict['OBS_INPUT_DATATYPE'] = \
                 self.config.getstr('config', 'OBS_MTD_INPUT_DATATYPE', '')
 

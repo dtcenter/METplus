@@ -39,18 +39,25 @@ class GridStatWrapper(CompareGriddedWrapper):
                                                  c_dict['VERBOSITY'])
         c_dict['CONFIG_FILE'] = self.config.getraw('config', 'GRID_STAT_CONFIG_FILE', '')
         c_dict['OBS_INPUT_DIR'] = \
-          self.config.getdir('OBS_GRID_STAT_INPUT_DIR', self.config.getdir('OUTPUT_BASE'))
+          self.config.getdir('OBS_GRID_STAT_INPUT_DIR', '')
         c_dict['OBS_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
                              'OBS_GRID_STAT_INPUT_TEMPLATE')
+        if not c_dict['OBS_INPUT_TEMPLATE']:
+            self.log_error("OBS_GRID_STAT_INPUT_TEMPLATE required to run")
+
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_GRID_STAT_INPUT_DATATYPE', '')
 
         c_dict['FCST_INPUT_DIR'] = \
-          self.config.getdir('FCST_GRID_STAT_INPUT_DIR', self.config.getdir('OUTPUT_BASE'))
+          self.config.getdir('FCST_GRID_STAT_INPUT_DIR', '')
         c_dict['FCST_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
                              'FCST_GRID_STAT_INPUT_TEMPLATE')
+
+        if not c_dict['FCST_INPUT_TEMPLATE']:
+            self.log_error("FCST_GRID_STAT_INPUT_TEMPLATE required to run")
+
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
 
