@@ -59,7 +59,7 @@ class GridDiagWrapper(CommandBuilder):
         if conf_value:
             c_dict['REGRID_METHOD'] = f"method = {conf_value};"
 
-        conf_value = self.config.getint('config', 'GRID_DIAG_REGRID_WIDTH')
+        conf_value = self.config.getint('config', 'GRID_DIAG_REGRID_WIDTH', '')
         if conf_value is None:
             self.isOK = False
         elif conf_value != util.MISSING_DATA_VALUE:
@@ -87,7 +87,7 @@ class GridDiagWrapper(CommandBuilder):
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
-                               'GRID_STAT_VERIFICATION_MASK_TEMPLATE')
+                               'GRID_DIAG_VERIFICATION_MASK_TEMPLATE')
 
         return c_dict
 

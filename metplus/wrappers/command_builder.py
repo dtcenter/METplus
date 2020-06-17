@@ -150,7 +150,7 @@ class CommandBuilder:
 
         to_grid = self.c_dict.get('REGRID_TO_GRID')
         self.add_env_var('REGRID_TO_GRID',
-                         self.get_regrid_to_grid(to_grid))
+                         self.format_regrid_to_grid(to_grid))
 
         # set user environment variables
         self.set_user_environment(time_info)
@@ -664,11 +664,11 @@ class CommandBuilder:
         if not os.path.exists(parent_dir):
             os.makedirs(parent_dir)
 
-        if not os.path.exists(outpath) or not self.c_dict['SKIP_IF_OUTPUT_EXISTS']:
+        if not os.path.exists(output_path) or not self.c_dict['SKIP_IF_OUTPUT_EXISTS']:
             return True
 
         # if the output file exists and we are supposed to skip, don't run tool
-        self.logger.debug(f'Skip writing output file {outpath} because it already '
+        self.logger.debug(f'Skip writing output file {output_path} because it already '
                           'exists. Remove file or change '
                           f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
                           'to process')
