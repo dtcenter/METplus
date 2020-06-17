@@ -26,11 +26,12 @@ Use Case Content
 ----------------
 In the category sub-directory, each use case should have the following:
 
-* A METplus configuration file named \<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_\<DESCRIPTOR\>.conf where
+* A METplus configuration file named \<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_cilmo\<CLIMO\>\<DESCRIPTOR\>.conf where
     * **<MET-TOOL>** is the MET tool that performs the final analysis, i.e. GridStat or SeriesAnalysis
     * **<FCST>** is the name of the forecast input data source
     * **<OBS>** is the name of the observation input data source
-    * **<DESCRIPTION>** is an optional description
+    * **<CLIMO>** is the optional climotology input data source
+    * **<DESCRIPTION>** is an optional description that can include field category, number of fields, statistical types, and file formats
 * A Python Sphinx Documentation (.py) file with the same name as the METplus configuration file
 * 0 or more MET configuration files named <MET-TOOL>Config
 
