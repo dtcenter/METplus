@@ -79,7 +79,6 @@ class GridStatWrapper(CompareGriddedWrapper):
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
                                'GRID_STAT_VERIFICATION_MASK_TEMPLATE')
-        c_dict['VERIFICATION_MASK'] = ''
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'grid_stat')
@@ -110,7 +109,7 @@ class GridStatWrapper(CompareGriddedWrapper):
                          self.c_dict['NEIGHBORHOOD_SHAPE'])
 
         self.add_env_var('VERIF_MASK',
-                         self.c_dict['VERIFICATION_MASK'])
+                         self.c_dict.get('VERIFICATION_MASK', ''))
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 

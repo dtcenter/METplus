@@ -93,7 +93,6 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.config.getraw('filename_templates',
                                'POINT_STAT_VERIFICATION_MASK_TEMPLATE',
                                '')
-        c_dict['VERIFICATION_MASK'] = ''
 
         c_dict['FCST_PROB_THRESH'] = self.config.getstr('config',
                                                         'FCST_POINT_STAT_PROB_THRESH', '==0.1')
@@ -167,7 +166,7 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         # add additional env vars if they are specified
         self.add_env_var('VERIF_MASK',
-                         self.c_dict['VERIFICATION_MASK'])
+                         self.c_dict.get('VERIFICATION_MASK', ''))
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
