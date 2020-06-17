@@ -232,16 +232,16 @@ class TCRMWWrapper(CommandBuilder):
                          self.c_dict.get('VALID_END', ''))
 
         self.add_env_var('VALID_INCLUDE_LIST',
-                         self.c_dict.get('VALID_INCLUDE_LIST', '[]'))
+                         self.c_dict.get('VALID_INCLUDE_LIST', ''))
 
         self.add_env_var('VALID_EXCLUDE_LIST',
-                         self.c_dict.get('VALID_EXCLUDE_LIST', '[]'))
+                         self.c_dict.get('VALID_EXCLUDE_LIST', ''))
 
         self.add_env_var('VALID_HOUR_LIST',
-                         self.c_dict.get('VALID_HOUR_LIST', '[]'))
+                         self.c_dict.get('VALID_HOUR_LIST', ''))
 
         self.add_env_var('LEAD_LIST',
-                         self.c_dict.get('LEAD_LIST', '[]'))
+                         self.c_dict.get('LEAD_LIST', ''))
 
         super().set_environment_variables(time_info)
 
@@ -258,7 +258,7 @@ class TCRMWWrapper(CommandBuilder):
             return
 
         # add deck
-        cmd += ' -deck ' + self.c_dict['DECK_FILE']
+        cmd += ' -adeck ' + self.c_dict['DECK_FILE']
 
         # add input files
         cmd += ' -data'
