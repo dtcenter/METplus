@@ -67,6 +67,7 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'seriesbylead': 'SeriesByLead',
                          'statanalysis': 'StatAnalysis',
                          'tcpairs': 'TCPairs',
+                         'tcrmw': 'TCRMW',
                          'tcstat': 'TCStat',
                          'tcmprplotter': 'TCMPRPlotter',
                          'usage': 'Usage',
@@ -75,8 +76,7 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
 # missing data value used to check if integer values are not set
 # we often check for None if a variable is not set, but 0 and None
 # have the same result in a test. 0 may be a valid integer value
-MISSING_DATA_VALUE_INT = -9999
-MISSING_DATA_VALUE_FLOAT = -9999.0
+MISSING_DATA_VALUE = -9999
 
 def pre_run_setup(filename, app_name):
     filebasename = os.path.basename(filename)
@@ -108,11 +108,11 @@ def pre_run_setup(filename, app_name):
             config.logger.error(f"Find/Replace commands have been generated in {sed_file}")
 
         logger.error("Correct configuration variables and rerun. Exiting.")
-        exit(1)
+        sys.exit(1)
 
     if not config.getdir('MET_INSTALL_DIR', must_exist=True):
         logger.error('MET_INSTALL_DIR must be set correctly to run METplus')
-        exit(1)
+        sys.exit(1)
 
     # set staging dir to OUTPUT_BASE/stage if not set
     if not config.has_option('dir', 'STAGING_DIR'):
@@ -864,7 +864,16 @@ def loop_over_times_and_call(config, processes):
 
 def get_lead_sequence(config, input_dict=None):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
-        Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects"""
+        Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects
+        Args:
+            @param config METplusConfig object to query config variable values
+            @param input_dict time dictionary needed to handle using INIT_SEQ. Must contain
+               valid key if processing INIT_SEQ
+            @returns list of relativedelta objects or a list containing 0 if none are found
+    """
+
+    out_leads = []
+
     if config.has_option('config', 'LEAD_SEQ'):
         # return list of forecast leads
         lead_strings = getlist(config.getstr('config', 'LEAD_SEQ'))
@@ -883,7 +892,6 @@ def get_lead_sequence(config, input_dict=None):
         # to compare them to each forecast lead
         # this is an approximation because relative time offsets depend on
         # each runtime
-        out_leads = []
         lead_min_str = config.getstr('config', 'LEAD_SEQ_MIN', '0')
         lead_max_str = config.getstr('config', 'LEAD_SEQ_MAX', '4000Y')
         lead_min_relative = time_util.get_relativedelta(lead_min_str, 'H')
@@ -896,10 +904,8 @@ def get_lead_sequence(config, input_dict=None):
             if lead_approx >= lead_min_approx and lead_approx <= lead_max_approx:
                 out_leads.append(lead)
 
-        return out_leads
-
     # use INIT_SEQ to build lead list based on the valid time
-    if config.has_option('config', 'INIT_SEQ'):
+    elif config.has_option('config', 'INIT_SEQ'):
         # if input dictionary not passed in, cannot compute lead sequence
         #  from it, so exit
         if input_dict is None:
@@ -936,10 +942,12 @@ def get_lead_sequence(config, input_dict=None):
                     lead_seq.append(relativedelta(hours=current_lead))
                 current_lead += 24
 
-        return sorted(lead_seq, key=lambda rd: time_util.ti_get_seconds_from_relativedelta(rd, input_dict['valid']))
-    else:
+        out_leads = sorted(lead_seq, key=lambda rd: time_util.ti_get_seconds_from_relativedelta(rd, input_dict['valid']))
+
+    if not out_leads:
         return [0]
 
+    return out_leads
 
 def get_version_number():
     # read version file and return value

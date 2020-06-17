@@ -200,11 +200,7 @@ class PB2NCWrapper(CommandBuilder):
         self.add_env_var('TIME_SUMMARY_TYPES',
                          self.c_dict['TIME_SUMMARY_TYPES'])
 
-        # set user environment variables
-        self.set_user_environment(time_info)
-
-        # send environment variables to logger
-        self.print_all_envs()
+        super().set_environment_variables(time_info)
 
     def find_input_files(self, input_dict):
         """!Find prepbufr data to convert. If file(s) are found, return timing information

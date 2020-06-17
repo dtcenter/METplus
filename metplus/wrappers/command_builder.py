@@ -95,14 +95,11 @@ class CommandBuilder:
         # add MET_TMP_DIR back to env_list
         self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
 
-    def set_environment_variables(self, time_info):
+    def set_environment_variables(self, time_info=None):
         """!Set environment variables that will be read set when running this tool.
             This tool does not have a config file, but environment variables may still
             need to be set, such as MET_TMP_DIR and MET_PYTHON_EXE.
             Reformat as needed. Print list of variables that were set and their values.
-            This function could be moved up to CommandBuilder so all wrappers have access to it.
-            Wrappers could override it to set wrapper-specific values, then call the CommandBuilder
-            version to handle user configs and printing
             Args:
               @param time_info dictionary containing timing info from current run"""
         # set user environment variables
@@ -151,9 +148,6 @@ class CommandBuilder:
         to_grid = self.c_dict.get('REGRID_TO_GRID')
         self.add_env_var('REGRID_TO_GRID',
                          self.format_regrid_to_grid(to_grid))
-
-        # set user environment variables
-        self.set_user_environment(time_info)
 
     def print_all_envs(self):
         # send environment variables to logger
@@ -239,7 +233,7 @@ class CommandBuilder:
         """!Sets an environment variable so that the MET application
         can reference it in the parameter file or the application itself
         """
-        self.env[key] = name
+        self.env[key] = str(name)
         self.env_list.add(key)
 
     def print_env(self):
@@ -530,6 +524,7 @@ class CommandBuilder:
 
                 return None
 
+            self.logger.debug(f"Found file: {processed_path}")
             found_file_list.append(processed_path)
 
         # if only one item found and return_list is False, return single item
@@ -550,8 +545,8 @@ class CommandBuilder:
         closest_time = 9999999
 
         # get range of times that will be considered
-        valid_range_lower = self.c_dict[data_type + 'FILE_WINDOW_BEGIN']
-        valid_range_upper = self.c_dict[data_type + 'FILE_WINDOW_END']
+        valid_range_lower = self.c_dict.get(data_type + 'FILE_WINDOW_BEGIN', 0)
+        valid_range_upper = self.c_dict.get(data_type + 'FILE_WINDOW_END', 0)
         lower_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_lower),
                                             "%Y%m%d%H%M%S").strftime("%s"))
         upper_limit = int(datetime.strptime(util.shift_time_seconds(valid_time, valid_range_upper),
@@ -637,6 +632,7 @@ class CommandBuilder:
         self.logger.debug(f"Writing list of filenames to {list_path}")
         with open(list_path, 'w') as file_handle:
             for f_path in file_list:
+                self.logger.debug(f"Adding file to list: {f_path}")
                 file_handle.write(f_path + '\n')
         return list_path
 
@@ -800,41 +796,128 @@ class CommandBuilder:
         self.c_dict[f'{input_type}_FILE_TYPE'] = f"file_type = {data_type};"
         return file_ext
 
-    def get_optional_number_from_config(self, section, name, typeobj, default=None):
-        """!Helper function to read optional configuration variable that should be an integer. If the variable is set
-            in the config and it is not an integer, log an error and set self.isOK to False
-            Args:
-                @param section configuration file section of variable, i.e. [config] or [dir]
-                @param name configuration variable name
-                @param typeobj type of number to read, i.e. int or float
-                @param default default value to use if config variable is not set, default value is -999
-                @returns Empty string if configuration variable is not set, integer value if value is an integer or default if unset
+    def get_field_info(self, d_type, v_name, v_level='', v_thresh=[], v_extra=''):
+        """! Format field information into format expected by MET config file
+              Args:
+                @param v_level level of data to extract
+                @param v_thresh threshold value to use in comparison
+                @param v_name name of field to process
+                @param v_extra additional field information to add if available
+                @param d_type type of data to find i.e. FCST or OBS
+                @rtype string
+                @return Returns formatted field information
         """
-        value = self.config.getstr(section,
-                                   name,
-                                   '')
-        try:
-            if value:
-                return typeobj(value)
+        # separate character from beginning of numeric level value if applicable
+        _, level = util.split_level(v_level)
 
-            # if a default value was specified, return that
-            if default:
-                return default
+        # list to hold field information
+        fields = []
 
-            # if no default was set, return missing data value for int or float
-            if typeobj == int:
-                return util.MISSING_DATA_VALUE_INT
+        # get cat thresholds if available
+        cat_thresh = ""
+        threshs = [None]
+        if len(v_thresh) != 0:
+            threshs = v_thresh
+            cat_thresh = "cat_thresh=[ " + ','.join(threshs) + " ];"
 
-            if typeobj == float:
-                return util.MISSING_DATA_VALUE_FLOAT
+        # if neither input is probabilistic, add all cat thresholds to same field info item
+        if not self.c_dict.get('FCST_IS_PROB', False) and not self.c_dict.get('OBS_IS_PROB', False):
 
-            # if neither int or float was specified, return None
-            return None
+            # if pcp_combine was run, use name_level, (*,*) format
+            # if not, use user defined name/level combination
+            if d_type != 'ENS' and self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
+                field = "{ name=\"" + v_name + "_" + level + \
+                        "\"; level=\"(*,*)\";"
+            else:
+                field = "{ name=\"" + v_name + "\";"
 
-        except ValueError:
-            self.log_error(f"[{section}] {name} (value: {value}) must be an {typeobj.__class__.__name__}")
-            self.isOK = False
-            return None
+                # add level if it is set
+                if v_level:
+                    field += " level=\"" +  v_level + "\";"
+
+            # add threshold if it is set
+            if cat_thresh:
+                field += ' ' + cat_thresh
+
+            # add extra info if it is set
+            if v_extra:
+                field += ' ' + v_extra
+
+            field += ' }'
+            fields.append(field)
+
+        # if either input is probabilistic, create separate item for each threshold
+        else:
+
+            # if input currently being processed if probabilistic, format accordingly
+            if self.c_dict.get(d_type + '_IS_PROB', False):
+                # if probabilistic data for either fcst or obs, thresholds are required
+                # to be specified or no field items will be created. Create a field dict
+                # item for each threshold value
+                for thresh in threshs:
+                    # if utilizing python embedding for prob input, just set the
+                    # field name to the call to the script
+                    if util.is_python_script(v_name):
+                        field = "{ name=\"" + v_name + "\"; prob=TRUE;"
+                    elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF' or \
+                      not self.c_dict[d_type + '_PROB_IN_GRIB_PDS']:
+                        field = "{ name=\"" + v_name + "\";"
+                        if v_level:
+                            field += " level=\"" +  v_level + "\";"
+                        field += " prob=TRUE;"
+                    else:
+                        # a threshold value is required for GRIB prob DICT data
+                        if thresh is None:
+                            self.log_error('No threshold was specified for probabilistic '
+                                              'forecast GRIB data')
+                            return None
+
+                        thresh_str = ""
+                        thresh_tuple_list = util.get_threshold_via_regex(thresh)
+                        for comparison, number in thresh_tuple_list:
+                            if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
+                                thresh_str += "thresh_lo=" + str(number) + "; "
+                            if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
+                                thresh_str += "thresh_hi=" + str(number) + "; "
+
+                        field = "{ name=\"PROB\"; level=\"" + v_level + \
+                                "\"; prob={ name=\"" + v_name + \
+                                "\"; " + thresh_str + "}"
+
+                    # add probabilistic cat thresh if different from default ==0.1
+                    prob_cat_thresh = self.c_dict[d_type + '_PROB_THRESH']
+                    if prob_cat_thresh is not None:
+                        field += " cat_thresh=[" + prob_cat_thresh + "];"
+
+                    if v_extra:
+                        field += ' ' + v_extra
+
+                    field += ' }'
+                    fields.append(field)
+            else:
+                # if input being processed is not probabilistic but the other input is
+                for thresh in threshs:
+                    # if pcp_combine was run, use name_level, (*,*) format
+                    # if not, use user defined name/level combination
+                    if self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
+                        field = "{ name=\"" + v_name + "_" + level + \
+                                "\"; level=\"(*,*)\";"
+                    else:
+                        field = "{ name=\"" + v_name + "\";"
+                        if v_level:
+                            field += " level=\"" + v_level + "\";"
+
+                    if thresh is not None:
+                        field += " cat_thresh=[ " + str(thresh) + " ];"
+
+                    if v_extra:
+                        field += ' ' + v_extra
+
+                    field += ' }'
+                    fields.append(field)
+
+        # return list of field dictionary items
+        return fields
 
     def get_verification_mask(self, time_info):
         """!If verification mask template is set in the config file,
