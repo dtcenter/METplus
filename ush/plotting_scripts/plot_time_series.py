@@ -556,7 +556,7 @@ for plot_info in plot_info_list:
 
             # Write model forecast lead average to file
             lead_avg_file = get_lead_avg_file(stat,
-                                              model_info[3],
+                                              model_stat_file,
                                               fcst_lead,
                                               output_base_dir)
 
@@ -610,7 +610,7 @@ for plot_info in plot_info_list:
 #                                       CI_filename)
 
                 CI_file = get_ci_file(stat,
-                                      model_info[3],
+                                      model_stat_file,
                                       fcst_lead,
                                       output_base_dir,
                                       ci_method)
