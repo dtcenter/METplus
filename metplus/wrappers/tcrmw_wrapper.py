@@ -258,7 +258,7 @@ class TCRMWWrapper(CommandBuilder):
             return
 
         # add deck
-        cmd += ' -deck ' + self.c_dict['DECK_FILE']
+        cmd += ' -adeck ' + self.c_dict['DECK_FILE']
 
         # add input files
         cmd += ' -data'
