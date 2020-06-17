@@ -133,11 +133,8 @@ class CommandBuilder:
                                           **time_info)
             self.add_env_var(env_var, env_var_value)
 
-    def add_common_envs(self, time_info=None):
-        # Set the environment variables
-        self.add_env_var('MODEL', str(self.c_dict['MODEL']))
-
-        to_grid = self.c_dict['REGRID_TO_GRID'].strip('"')
+    def format_regrid_to_grid(self, to_grid):
+        to_grid = to_grid.strip('"')
         if not to_grid:
             to_grid = 'NONE'
 
@@ -145,7 +142,15 @@ class CommandBuilder:
         if to_grid not in ['NONE', 'FCST', 'OBS']:
             to_grid = f'"{to_grid}"'
 
-        self.add_env_var('REGRID_TO_GRID', to_grid)
+        return to_grid
+
+    def add_common_envs(self, time_info=None):
+        # Set the environment variables
+        self.add_env_var('MODEL', str(self.c_dict['MODEL']))
+
+        to_grid = self.c_dict.get('REGRID_TO_GRID')
+        self.add_env_var('REGRID_TO_GRID',
+                         self.get_regrid_to_grid(to_grid))
 
         # set user environment variables
         self.set_user_environment(time_info)
@@ -636,12 +641,28 @@ class CommandBuilder:
         return list_path
 
     def find_and_check_output_file(self, time_info):
-        """!Look for expected output file. If it exists and configured to skip if it does,
-            then return False"""
-        outfile = do_string_sub(self.c_dict['OUTPUT_TEMPLATE'],
-                                **time_info)
-        outpath = os.path.join(self.c_dict['OUTPUT_DIR'], outfile)
-        self.set_output_path(outpath)
+        """!Build full path for expected output file and check if it exists.
+            If output file doesn't exist or it does exists and we are not skipping it
+            then return True to run the tool. Otherwise return False to not run the tool
+            Args:
+                @param time_info time dictionary to use to fill out output file template
+                @returns True if the app should be run or False if it should not
+        """
+        output_path_template = os.path.join(self.c_dict['OUTPUT_DIR'],
+                                            self.c_dict['OUTPUT_TEMPLATE'])
+        output_path = do_string_sub(output_path_template,
+                                    **time_info)
+        self.set_output_path(output_path)
+
+        # get directory that the output file will exist
+        parent_dir = os.path.dirname(output_path)
+        if not parent_dir:
+            self.log_error('Must specify path to output file')
+            return False
+
+        # create full output dir if it doesn't already exist
+        if not os.path.exists(parent_dir):
+            os.makedirs(parent_dir)
 
         if not os.path.exists(outpath) or not self.c_dict['SKIP_IF_OUTPUT_EXISTS']:
             return True
@@ -814,6 +835,18 @@ class CommandBuilder:
             self.log_error(f"[{section}] {name} (value: {value}) must be an {typeobj.__class__.__name__}")
             self.isOK = False
             return None
+
+    def get_verification_mask(self, time_info):
+        """!If verification mask template is set in the config file,
+            use it to find the verification mask filename"""
+        template = self.c_dict.get('VERIFICATION_MASK_TEMPLATE')
+        if not template:
+            return
+
+        filenames = do_string_sub(template,
+                                  **time_info)
+        mask_list_string = self.format_list_string(filenames)
+        self.c_dict['VERIFICATION_MASK'] = mask_list_string
 
     def get_command(self):
         """! Builds the command to run the MET application

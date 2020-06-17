@@ -75,8 +75,6 @@ that reformat gridded data
         c_dict['ALLOW_MULTIPLE_FILES'] = False
         c_dict['NEIGHBORHOOD_WIDTH'] = ''
         c_dict['NEIGHBORHOOD_SHAPE'] = ''
-        c_dict['VERIFICATION_MASK_TEMPLATE'] = ''
-        c_dict['VERIFICATION_MASK'] = ''
 
         # initialize climatology items
         for climo_item in self.climo_types:
@@ -500,17 +498,6 @@ that reformat gridded data
 
         # set output dir for wrapper
         self.outdir = out_dir
-
-    def get_verification_mask(self, time_info):
-        """!If verification mask template is set in the config file,
-            use it to find the verification mask filename"""
-        self.c_dict['VERIFICATION_MASK'] = '\"\"'
-        if self.c_dict['VERIFICATION_MASK_TEMPLATE'] != '':
-            template = self.c_dict['VERIFICATION_MASK_TEMPLATE']
-            filenames = do_string_sub(template,
-                                      **time_info)
-            mask_list_string = self.format_list_string(filenames)
-            self.c_dict['VERIFICATION_MASK'] = mask_list_string
 
     def get_command(self):
         """! Builds the command to run the MET application
