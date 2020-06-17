@@ -494,6 +494,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
             list_name = group_list.replace('_LIST', '')
             stringsub_dict_keys.append(list_name.lower())
+
         special_keys = [
             'fcst_valid_hour_beg', 'fcst_valid_hour_end',
             'fcst_init_hour_beg', 'fcst_init_hour_end',
@@ -739,6 +740,7 @@ class StatAnalysisWrapper(CommandBuilder):
                     )
             else:
                 stringsub_dict[list_name.lower()] = list_name_value
+
         # Set group information
         for group_list in lists_to_group:
             list_name = group_list.replace('_LIST', '')
@@ -849,8 +851,13 @@ class StatAnalysisWrapper(CommandBuilder):
                                 stringsub_dict['init_hour'] = (
                                     stringsub_dict['init_hour_end']
                                 )
-            else:
+            elif not (self.forMakePlots and
+                      group_list in self.force_group_for_make_plots_lists):
+                # if setting up MakePlots, skip adding forced
+                # group lists so they will remain templates
+                # to be filled in by the plotting scripts
                 stringsub_dict[list_name.lower()] = list_name_value
+
         nkeys_end = len(stringsub_dict_keys)
         # Some lines for debugging if needed in future
         #self.logger.info(nkeys_start)
