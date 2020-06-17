@@ -298,7 +298,7 @@ def handle_format_delimiter(split_string, idx, shift_seconds, truncate_seconds, 
 
     return None
 
-def do_string_sub(tmpl, **kwargs):
+def do_string_sub(tmpl, skip_missing_tags=False, **kwargs):
     """
     log - log object
     tmpl_str - template string to populate
@@ -399,9 +399,9 @@ def do_string_sub(tmpl, **kwargs):
                         "have the same length for template: " +
                         tmpl)
 
-    return find_and_replace_tags_in_template(match_list, tmpl, kwargs)
+    return find_and_replace_tags_in_template(match_list, tmpl, kwargs, skip_missing_tags)
 
-def find_and_replace_tags_in_template(match_list, tmpl, kwargs):
+def find_and_replace_tags_in_template(match_list, tmpl, kwargs, skip_missing_tags=False):
     """! Loop through tags from template and replace them with the correct time values
          @param match_list list of tags to process
          @param template filename template to substitute values into
@@ -411,8 +411,6 @@ def find_and_replace_tags_in_template(match_list, tmpl, kwargs):
     # A dictionary that will contain the string to replace (key)
     # and the string to replace it with (value)
     replacement_dict = {}
-    shift_seconds = 0
-    truncate_seconds = 0
 
     # Search for the FORMATTING_DELIMITER within the first string
     for match in match_list:
@@ -427,7 +425,11 @@ def find_and_replace_tags_in_template(match_list, tmpl, kwargs):
 
         # split_string[0] holds the key (e.g. "init", "valid", etc)
         if split_string[0] not in kwargs.keys():
-            # Log and exit
+            # if skip_missing_tags is True, leave template tag if key was not found
+            if skip_missing_tags:
+                continue
+
+            # otherwise log and exit
             raise TypeError("The key " + split_string[0] +
                             " was not passed to do_string_sub " +
                             " for template: " + tmpl)

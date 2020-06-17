@@ -158,9 +158,11 @@ def test_set_lists_as_loop_or_group():
     config_dict['ALPHA_LIST'] = []
     config_dict['LINE_TYPE_LIST'] = ['SL1L2', 'VL1L2']
  
-    test_lists_to_group_items, test_lists_to_loop_items = (
-    st.set_lists_loop_or_group(config_dict)
-    )
+    config_dict = st.set_lists_loop_or_group(config_dict)
+
+    test_lists_to_loop_items = config_dict['LOOP_LIST_ITEMS']
+    test_lists_to_group_items = config_dict['GROUP_LIST_ITEMS']
+
     assert(all(elem in expected_lists_to_group_items
                for elem in test_lists_to_group_items))
     assert(all(elem in expected_lists_to_loop_items
@@ -197,9 +199,10 @@ def test_get_output_filename():
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['ALPHA'] = ''
     config_dict['OBS_LEVEL'] = '"P1000"'
-    date_beg = '20190101'
-    date_end = '20190101'
-    date_type = 'VALID'
+    st.c_dict['DATE_BEG'] = '20190101'
+    st.c_dict['DATE_END'] = '20190101'
+    st.c_dict['DATE_TYPE'] = 'VALID'
+
     # Test 1
     lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'FCST_UNITS_LIST',
                        'OBS_UNITS_LIST', 'FCST_THRESH_LIST', 
@@ -217,12 +220,21 @@ def test_get_output_filename():
         +'_dump_row.stat'
     )
     output_type = 'dump_row'
-    filename_template = '{model?fmt=%s}_{obtype?fmt=%s}_'
-    filename_type = 'default'
+    filename_template = (
+        '{model?fmt=%s}_{obtype?fmt=%s}_valid{valid_beg?fmt=%Y%m%d}'
+        'to{valid_end?fmt=%Y%m%d}_valid{valid_hour_beg?fmt=%H%M}to'
+        '{valid_hour_end?fmt=%H%M}Z_init{init_hour_beg?fmt=%H%M}to'
+        '{init_hour_end?fmt=%H%M}Z_fcst_lead{fcst_lead?fmt=%s}_'
+        'fcst{fcst_var?fmt=%s}{fcst_level?fmt=%s}{fcst_thresh?fmt=%s}'
+        '{interp_mthd?fmt=%s}_obs{obs_var?fmt=%s}{obs_level?fmt=%s}'
+        '{obs_thresh?fmt=%s}{interp_mthd?fmt=%s}_vxmask{vx_mask?fmt=%s}'
+        '_dump_row.stat'
+
+    )
+    filename_type = 'user'
     test_output_filename = st.get_output_filename(output_type,
                                                   filename_template,
-                                                  filename_type, date_beg,
-                                                  date_end, date_type,
+                                                  filename_type,
                                                   lists_to_loop,
                                                   lists_to_group,
                                                   config_dict)
@@ -239,15 +251,24 @@ def test_parse_model_info():
     expected_name1 = 'MODEL_TEST1'
     expected_reference_name1 = 'MODEL_TEST1'
     expected_obtype1 = 'MODEL_TEST1_ANL'
-    expected_dump_row_filename_template1 = '{model?fmt=%s}_{obtype?fmt=%s}_'
-    expected_dump_row_filename_type1 = 'default'
+    expected_dump_row_filename_template1 = (
+        '{model?fmt=%s}_{obtype?fmt=%s}_valid{valid_beg?fmt=%Y%m%d}'
+        'to{valid_end?fmt=%Y%m%d}_valid{valid_hour_beg?fmt=%H%M}to'
+        '{valid_hour_end?fmt=%H%M}Z_init{init_hour_beg?fmt=%H%M}to'
+        '{init_hour_end?fmt=%H%M}Z_fcst_lead{fcst_lead?fmt=%s}_'
+        'fcst{fcst_var?fmt=%s}{fcst_level?fmt=%s}{fcst_thresh?fmt=%s}'
+        '{interp_mthd?fmt=%s}_obs{obs_var?fmt=%s}{obs_level?fmt=%s}'
+        '{obs_thresh?fmt=%s}{interp_mthd?fmt=%s}_vxmask{vx_mask?fmt=%s}'
+        '_dump_row.stat'
+    )
+    expected_dump_row_filename_type1 = 'user'
     expected_out_stat_filename_template1 = 'NA'
     expected_out_stat_filename_type1 = 'NA'
     expected_name2 = 'TEST2_MODEL'
     expected_reference_name2 = 'TEST2_MODEL'
     expected_obtype2 = 'ANLYS2'
-    expected_dump_row_filename_template2 = '{model?fmt=%s}_{obtype?fmt=%s}_'
-    expected_dump_row_filename_type2 = 'default'
+    expected_dump_row_filename_template2 = expected_dump_row_filename_template1
+    expected_dump_row_filename_type2 = 'user'
     expected_out_stat_filename_template2 = 'NA'
     expected_out_stat_filename_type2 = 'NA'
     test_model_info_list = st.parse_model_info()
@@ -500,7 +521,10 @@ def test_filter_for_plotting():
     st.c_dict['VALID_END'] = '20190101'
     st.c_dict['INIT_BEG'] = ''
     st.c_dict['INIT_END'] = ''
-    st.run_stat_analysis_job(st.c_dict['VALID_BEG'], st.c_dict['VALID_END'], st.c_dict['DATE_TYPE'])
+    st.c_dict['DATE_BEG'] = st.c_dict['VALID_BEG']
+    st.c_dict['DATE_END'] = st.c_dict['VALID_END']
+
+    st.run_stat_analysis()
     ntest_files = len(
         os.listdir(st.config.getdir('OUTPUT_BASE')
                                     +'/plotting/stat_analysis')

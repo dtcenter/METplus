@@ -18,6 +18,7 @@ import warnings
 import logging
 import datetime
 import re
+import sys
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
@@ -25,6 +26,12 @@ import matplotlib.dates as md
 
 import plot_util as plot_util
 from plot_util import get_ci_file, get_lead_avg_file
+
+# add metplus directory to path so the wrappers and utilities can be found
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                '..',
+                                                '..')))
+from metplus.util import do_string_sub
 
 # Read environment variables set in make_plots_wrapper.py
 verif_case = os.environ['VERIF_CASE']
@@ -99,6 +106,13 @@ formatter = logging.Formatter(
 file_handler = logging.FileHandler(log_metplus, mode='a')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
+
+
+if len(fcst_lead_list) < 2:
+    logger.warning("Must provide more than one forecast lead to "
+                   "plot lead average")
+    sys.exit(0)
+
 output_data_dir = os.path.join(output_base_dir, 'data')
 output_imgs_dir = os.path.join(output_base_dir, 'imgs')
 # Model info
@@ -361,8 +375,21 @@ for plot_info in plot_info_list:
 #            )
 #            lead_avg_file = os.path.join(output_base_dir, 'data',
 #                                         lead_avg_filename)
+            model_stat_template = model_info[3]
+            string_sub_dict = {
+                'model': model_name,
+                'model_reference': model_plot_name,
+                'obtype': model_obtype,
+                'fcst_lead': fcst_lead,
+                'fcst_level': fcst_var_level,
+                'obs_level': obs_var_level,
+                'fcst_thresh': fcst_var_thresh,
+                'obs_thresh': obs_var_thresh,
+            }
+            model_stat_file = do_string_sub(model_stat_template,
+                                            **string_sub_dict)
             lead_avg_file = get_lead_avg_file(stat,
-                                              model_info[3],
+                                              model_stat_file,
                                               'fcst_lead_avgs',
                                               output_base_dir)
             if os.path.exists(lead_avg_file):
@@ -426,7 +453,7 @@ for plot_info in plot_info_list:
 #            )
 #            CI_file = os.path.join(output_base_dir, 'data', CI_filename)
             CI_file = get_ci_file(stat,
-                                  model_info[3],
+                                  model_stat_file,
                                   'fcst_lead_avgs',
                                   output_base_dir,
                                   ci_method)

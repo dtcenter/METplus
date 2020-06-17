@@ -155,9 +155,12 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.config.getstr('config', conf_list, '')
             )
 
+            # if list in format lists, zero pad value to be at least 2
+            # digits, then add 4 zeros
             if conf_list in self.format_lists:
                 c_dict[conf_list] = (
-                    [value.ljust(6, '0') for value in c_dict[conf_list]]
+                    [value.zfill(2).ljust(4 + len(value.zfill(2)), '0')
+                     for value in c_dict[conf_list]]
                 )
 
         # read all field lists and check if they are all empty
@@ -235,8 +238,31 @@ class StatAnalysisWrapper(CommandBuilder):
             if len(c_dict['MODEL_LIST']) > 8:
                 self.log_error("Number of models for plotting limited to 8.")
 
-        return c_dict
+#        self.check_dump_row_templates_for_plotting()
 
+        # set forMakePlots to False to begin. When gathering settings to
+        # send to MakePlots wrapper, this will be set to True
+        self.forMakePlots = False
+
+        return c_dict
+    '''
+    def check_dump_row_templates_for_plotting(self):
+        # get list of model info for models in MODEL_LIST
+        model_info_list = [model for
+                           model in c_dict['MODEL_INFO_LIST']
+                           if model['name'] in c_dict['MODEL_LIST']]
+
+        if len(model_info_list) < 2:
+            return
+
+        first_model, *model_info_list = model_info_list
+        # only one
+        if not model_info_list:
+
+        for model_info in model_info_list:
+
+        'dump_row_filename_template'
+    '''
     def read_field_lists_from_config(self, field_dict):
         """! Get field list configuration variables and add to dictionary
              @param field_dict dictionary to hold output values
@@ -433,18 +459,11 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return ','.join(formatted_thresh_list)
 
-    def build_stringsub_dict(self, date_beg, date_end, date_type,
-                             lists_to_loop, lists_to_group, config_dict):
+    def build_stringsub_dict(self, lists_to_loop, lists_to_group, config_dict):
         """! Build a dictionary with list names, dates, and commonly
              used identifiers to pass to string_template_substitution.
             
              Args:
-                 date_beg       - string of the beginning date in
-                                  YYYYMMDD form
-                 date_end       - string of the end date in YYYYMMDD
-                                  form
-                 date_type      - string of the date type, either
-                                  VALID or INIT
                  lists_to_loop  - list of all the list names whose items
                                   are being grouped together
                  lists_to group - list of all the list names whose items
@@ -457,11 +476,22 @@ class StatAnalysisWrapper(CommandBuilder):
                                   information to pass to the 
                                   string_template_substitution
         """
+        date_beg = self.c_dict['DATE_BEG']
+        date_end = self.c_dict['DATE_END']
+        date_type = self.c_dict['DATE_TYPE']
+
         stringsub_dict_keys = []
         for loop_list in lists_to_loop:
             list_name = loop_list.replace('_LIST', '')
             stringsub_dict_keys.append(list_name.lower())
         for group_list in lists_to_group:
+            # if setting up MakePlots, skip adding forced
+            # group lists so they will remain templates
+            # to be filled in by the plotting scripts
+            if (self.forMakePlots and
+                    group_list in self.force_group_for_make_plots_lists):
+                continue
+
             list_name = group_list.replace('_LIST', '')
             stringsub_dict_keys.append(list_name.lower())
         special_keys = [
@@ -830,7 +860,7 @@ class StatAnalysisWrapper(CommandBuilder):
         return stringsub_dict
 
     def get_output_filename(self, output_type, filename_template,
-                            filename_type, date_beg, date_end, date_type,
+                            filename_type,
                             lists_to_loop, lists_to_group, config_dict):
         """! Create a file name for stat_analysis output.
              
@@ -843,12 +873,6 @@ class StatAnalysisWrapper(CommandBuilder):
                  filename_type     - string of the source of the
                                      template being used, either 
                                      default or user
-                 date_beg          - string of the beginning date in
-                                     YYYYMMDD form
-                 date_end          - string of the end date in YYYYMMDD
-                                     form
-                 date_type         - string of the date type, either
-                                     VALID or INIT
                  lists_to_loop     - list of all the list names whose
                                      items are being grouped together
                  lists_to group    - list of all the list names whose
@@ -860,8 +884,11 @@ class StatAnalysisWrapper(CommandBuilder):
                  output_filename   - string of the filled file name
                                      template
         """
-        stringsub_dict = self.build_stringsub_dict(date_beg, date_end,
-                                                   date_type, lists_to_loop,
+        date_beg = self.c_dict['DATE_BEG']
+        date_end = self.c_dict['DATE_END']
+        date_type = self.c_dict['DATE_TYPE']
+
+        stringsub_dict = self.build_stringsub_dict(lists_to_loop,
                                                    lists_to_group, config_dict)
 
         if filename_type == 'default':
@@ -963,23 +990,17 @@ class StatAnalysisWrapper(CommandBuilder):
                           +filename_type+" template: "+filename_template)
 
         output_filename = do_string_sub(filename_template,
-                                        **stringsub_dict)
+                                        **stringsub_dict,
+                                        skip_missing_tags=self.forMakePlots)
         return output_filename
 
-    def get_lookin_dir(self, dir_path, date_beg, date_end, date_type,
-                       lists_to_loop, lists_to_group, config_dict):
+    def get_lookin_dir(self, dir_path, lists_to_loop, lists_to_group, config_dict):
         """!Fill in necessary information to get the path to
             the lookin directory to pass to stat_analysis.
              
              Args:
                  dir_path          - string of the user provided
                                      directory path
-                 date_beg          - string of the beginning date in
-                                     YYYYMMDD form
-                 date_end          - string of the end date in YYYYMMDD
-                                     form
-                 date_type         - string of the date type, either
-                                     VALID or INIT
                  lists_to_loop     - list of all the list names whose
                                      items are being grouped together
                  lists_to group    - list of all the list names whose
@@ -992,9 +1013,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                      from dir_path
         """
         if '?fmt=' in dir_path:
-            stringsub_dict = self.build_stringsub_dict(date_beg, date_end, 
-                                                       date_type, 
-                                                       lists_to_loop, 
+            stringsub_dict = self.build_stringsub_dict(lists_to_loop,
                                                        lists_to_group, 
                                                        config_dict)
             dir_path_filled = do_string_sub(dir_path,
@@ -1014,18 +1033,11 @@ class StatAnalysisWrapper(CommandBuilder):
         lookin_dir = dir_path_filled_all
         return lookin_dir
 
-    def format_valid_init(self, date_beg, date_end, date_type,
-                          config_dict):
+    def format_valid_init(self, config_dict):
         """! Format the valid and initialization dates and
              hours for the MET stat_analysis config file.
 
              Args:
-                 date_beg    - string of the beginning date in
-                               YYYYMMDD form
-                 date_end    - string of the end date in YYYYMMDD
-                               form
-                 date_type   - string of the date type, either
-                               VALID or INIT
                  config_dict - dictionary containing the
                                configuration information
 
@@ -1035,6 +1047,10 @@ class StatAnalysisWrapper(CommandBuilder):
                                for valid and initialization dates
                                and hours 
         """
+        date_beg = self.c_dict['DATE_BEG']
+        date_end = self.c_dict['DATE_END']
+        date_type = self.c_dict['DATE_TYPE']
+
         fcst_valid_hour_list = config_dict['FCST_VALID_HOUR'].split(', ')
         fcst_init_hour_list = config_dict['FCST_INIT_HOUR'].split(', ')
         obs_valid_hour_list = config_dict['OBS_VALID_HOUR'].split(', ')
@@ -1276,7 +1292,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return level_list
 
-    def process_job_args(self, job_type, job, model_info, date_beg, date_end, date_type,
+    def process_job_args(self, job_type, job, model_info,
                          lists_to_loop_items, lists_to_group_items, runtime_settings_dict):
         nmodels = len(runtime_settings_dict['MODEL'].split(','))
 
@@ -1304,9 +1320,6 @@ class StatAnalysisWrapper(CommandBuilder):
             self.get_output_filename(job_type,
                                      filename_template,
                                      filename_type,
-                                     date_beg,
-                                     date_end,
-                                     date_type,
                                      lists_to_loop_items,
                                      lists_to_group_items,
                                      runtime_settings_dict)
@@ -1327,29 +1340,26 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return job
 
-    def get_runtime_settings_dict_list(self, date_beg, date_end, date_type, forMakePlots=False):
+    def get_runtime_settings_dict_list(self):
         runtime_settings_dict_list = []
         c_dict_list = self.get_c_dict_list()
         for c_dict in c_dict_list:
-            runtime_settings = self.get_runtime_settings(c_dict,
-                                                         forMakePlots)
+            runtime_settings = self.get_runtime_settings(c_dict)
             runtime_settings_dict_list.extend(runtime_settings)
 
         # Loop over run settings.
         formatted_runtime_settings_dict_list = []
         for runtime_settings_dict in runtime_settings_dict_list:
-            if forMakePlots:
+            if self.forMakePlots:
                 loop_lists = c_dict['LOOP_LIST_ITEMS_MAKE_PLOTS']
                 group_lists = c_dict['GROUP_LIST_ITEMS_MAKE_PLOTS']
             else:
                 loop_lists = c_dict['LOOP_LIST_ITEMS']
                 group_lists = c_dict['GROUP_LIST_ITEMS']
+
             # Set up stat_analysis -lookin argument, model and obs information
             # and stat_analysis job.
             model_info = self.get_model_obtype_and_lookindir(runtime_settings_dict,
-                                                             date_beg,
-                                                             date_end,
-                                                             date_type,
                                                              loop_lists,
                                                              group_lists,
                                                              )
@@ -1358,9 +1368,6 @@ class StatAnalysisWrapper(CommandBuilder):
 
             runtime_settings_dict['JOB'] = self.get_job_info(model_info,
                                                              runtime_settings_dict,
-                                                             date_beg,
-                                                             date_end,
-                                                             date_type,
                                                              loop_lists,
                                                              group_lists,
                                                              )
@@ -1368,21 +1375,20 @@ class StatAnalysisWrapper(CommandBuilder):
             # Set up forecast and observation valid
             # and initialization time information.
             runtime_settings_dict = (
-                self.format_valid_init(date_beg, date_end, date_type,
-                                       runtime_settings_dict)
+                self.format_valid_init(runtime_settings_dict)
             )
             formatted_runtime_settings_dict_list.append(runtime_settings_dict)
 
         return formatted_runtime_settings_dict_list
 
-    def get_runtime_settings(self, c_dict, forMakePlots=False):
+    def get_runtime_settings(self, c_dict):
 
         # Parse whether all expected METplus config _LIST variables
         # to be treated as a loop or group.
         group_lists = c_dict['GROUP_LIST_ITEMS']
         loop_lists = c_dict['LOOP_LIST_ITEMS']
 
-        if forMakePlots:
+        if self.forMakePlots:
             group_lists = c_dict['GROUP_LIST_ITEMS_MAKE_PLOTS']
             loop_lists = c_dict['LOOP_LIST_ITEMS_MAKE_PLOTS']
 
@@ -1393,10 +1399,20 @@ class StatAnalysisWrapper(CommandBuilder):
             runtime_setup_dict_name = group_list.replace('_LIST', '')
             add_quotes = False if 'THRESH' in group_list else True
 
+            # if preparing for MakePlots, change
+            # commas to _ and * to ALL in list items
+            if self.forMakePlots:
+                formatted_list = []
+                for format_list in c_dict[group_list]:
+                    formatted_list.append(format_list.replace(',', '_')
+                                          .replace('*', 'ALL'))
+            else:
+                formatted_list = c_dict[group_list]
             runtime_setup_dict[runtime_setup_dict_name] = (
-                [self.list_to_str(c_dict[group_list],
+                [self.list_to_str(formatted_list,
                                   add_quotes=add_quotes)]
             )
+#            self.log_error(f"JUST ADDED {runtime_setup_dict_name}: {runtime_setup_dict[runtime_setup_dict_name]}")
 
         # Fill setup dictionary for MET config variable name
         # and its value as a list for loop lists. Some items
@@ -1553,13 +1569,10 @@ class StatAnalysisWrapper(CommandBuilder):
                 if list_item not in c_dict:
                     c_dict[list_item] = self.c_dict[list_item]
 
-    def get_model_obtype_and_lookindir(self, runtime_settings_dict, date_beg, date_end, date_type, loop_lists, group_lists):
+    def get_model_obtype_and_lookindir(self, runtime_settings_dict, loop_lists, group_lists):
         """! Reads through model info dictionaries for given run. Sets lookindir command line
              argument. Sets MODEL and OBTYPE values in runtime setting dictionary.
              @param runtime_settings_dict dictionary containing all settings used in next run
-             @param date_beg start date to process
-             @param date_end end date to process
-             @param date_type either VALID or INIT
              @returns last model info dictionary is successful, None if not.
         """
         lookin_dirs = []
@@ -1581,15 +1594,14 @@ class StatAnalysisWrapper(CommandBuilder):
             # set MODEL and OBTYPE to single item to find lookin dir
             runtime_settings_dict['MODEL'] = '"'+model_info['name']+'"'
             runtime_settings_dict['OBTYPE'] = '"'+model_info['obtype']+'"'
-            lookin_dirs.append(self.get_lookin_dir(model_info['dir'],
-                                                   date_beg,
-                                                   date_end,
-                                                   date_type,
-                                                   loop_lists,
-                                                   group_lists,
-                                                   runtime_settings_dict,
-                                                   )
-                               )
+            # don't get lookin dir if getting settings for MakePlots
+            if not self.forMakePlots:
+                lookin_dirs.append(self.get_lookin_dir(model_info['dir'],
+                                                       loop_lists,
+                                                       group_lists,
+                                                       runtime_settings_dict,
+                                                       )
+                                   )
 
         # set lookin dir command line argument
         self.lookindir = ' '.join(lookin_dirs)
@@ -1606,13 +1618,10 @@ class StatAnalysisWrapper(CommandBuilder):
         # return last model info dict used
         return model_info
 
-    def get_job_info(self, model_info, runtime_settings_dict, date_beg, date_end, date_type, loop_lists, group_lists):
+    def get_job_info(self, model_info, runtime_settings_dict, loop_lists, group_lists):
         """! Get job information and concatenate values into a string
              @params model_info model information to use to determine output file paths
              @params runtime_settings_dict dictionary containing all settings used in next run
-             @param date_beg start date to process
-             @param date_end end date to process
-             @param date_type either VALID or INIT
              @returns string containing job information to pass to StatAnalysis config file
         """
         job = '-job ' + self.c_dict['JOB_NAME'] + ' ' + self.c_dict['JOB_ARGS']
@@ -1621,9 +1630,6 @@ class StatAnalysisWrapper(CommandBuilder):
                 job = self.process_job_args(job_type,
                                             job,
                                             model_info,
-                                            date_beg,
-                                            date_end,
-                                            date_type,
                                             loop_lists,
                                             group_lists,
                                             runtime_settings_dict,
@@ -1631,25 +1637,14 @@ class StatAnalysisWrapper(CommandBuilder):
 
         return job
 
-    def run_stat_analysis(self, date_beg, date_end, date_type):
+    def run_stat_analysis(self):
         """! This runs stat_analysis over a period of valid
              or initialization dates for a job defined by
              the user.
-
-             Args:
-                 date_beg    - string of the beginning date in
-                               YYYYMMDD form
-                 date_end    - string of the end date in YYYYMMDD
-                               form
-                 date_type   - string of the date type, either
-                               VALID or INIT
-
-             Returns:
-
         """
-        runtime_settings_dict_list = self.get_runtime_settings_dict_list(date_beg,
-                                                                         date_end,
-                                                                         date_type)
+        self.forMakePlots = False
+
+        runtime_settings_dict_list = self.get_runtime_settings_dict_list()
         if not runtime_settings_dict_list:
             return False
 
@@ -1657,11 +1652,10 @@ class StatAnalysisWrapper(CommandBuilder):
 
         # if running MakePlots, get its runtime_settings_dict_list and call
         if self.runMakePlots:
+            self.logger.debug("Preparing settings to pass to MakePlots wrapper")
+            self.forMakePlots = True
             runtime_settings_dict_list = (
-                self.get_runtime_settings_dict_list(date_beg,
-                                                    date_end,
-                                                    date_type,
-                                                    forMakePlots=True)
+                self.get_runtime_settings_dict_list()
             )
             if not runtime_settings_dict_list:
                 return False
@@ -1696,9 +1690,9 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def run_all_times(self):
         date_type = self.c_dict['DATE_TYPE']
-        date_beg = self.c_dict[date_type+'_BEG']
-        date_end = self.c_dict[date_type+'_END']
-        self.run_stat_analysis(date_beg, date_end, date_type)
+        self.c_dict['DATE_BEG'] = self.c_dict[date_type+'_BEG']
+        self.c_dict['DATE_END'] = self.c_dict[date_type+'_END']
+        self.run_stat_analysis()
 
     def run_at_time(self, input_dict):
         loop_by_init = util.is_loop_by_init(self.config)
@@ -1707,8 +1701,12 @@ class StatAnalysisWrapper(CommandBuilder):
         else:
             loop_by = 'VALID'
 
+        self.c_dict['DATE_TYPE'] = loop_by
+
         run_date = input_dict[loop_by.lower()].strftime('%Y%m%d')
-        self.run_stat_analysis(run_date, run_date, loop_by)
+        self.c_dict['DATE_BEG'] = run_date
+        self.c_dict['DATE_END'] = run_date
+        self.run_stat_analysis()
 
 if __name__ == "__main__":
     util.run_stand_alone(__file__, "StatAnalysis")
