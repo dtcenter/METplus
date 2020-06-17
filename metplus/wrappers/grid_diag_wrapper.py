@@ -125,8 +125,12 @@ class GridDiagWrapper(CommandBuilder):
         self.add_env_var('MODEL',
                          self.c_dict.get('MODEL', ''))
 
+        verif_mask = self.c_dict.get('VERIFICATION_MASK', '')
+        if verif_mask:
+            verif_mask = 'poly = "{verif_mask}";'
+
         self.add_env_var('VERIF_MASK',
-                         self.c_dict.get('VERIFICATION_MASK', ''))
+                         verif_mask)
 
         super().set_environment_variables(time_info)
 
