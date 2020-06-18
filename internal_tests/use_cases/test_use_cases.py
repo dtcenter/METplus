@@ -82,7 +82,7 @@ use_cases['met_tool_wrapper'] = [
                 use_case_dir + "/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_extra_tropical.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_tropical.conf",
-                use_case_dir + "/met_tool_wrapper/TCRMW/TCRMW.conf",
+#                use_case_dir + "/met_tool_wrapper/TCRMW/TCRMW.conf",
                 use_case_dir + "/met_tool_wrapper/TCStat/TCStat.conf",
 ]
 
@@ -132,8 +132,8 @@ use_cases['space_weather'] = [
 ]
 
 use_cases['tc_and_extra_tc'] = [
-    use_case_dir + "/model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf",
-    use_case_dir + "/model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_matthew.conf",
+#    use_case_dir + "/model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf",
+#    use_case_dir + "/model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_matthew.conf",
 ]
 
 # if METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string, add plotting use cases
