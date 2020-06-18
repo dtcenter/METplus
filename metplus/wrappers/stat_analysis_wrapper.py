@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: stat_analysis_wrapper.py
 Contact(s): Mallory Row
@@ -20,7 +18,6 @@ import subprocess
 import datetime
 import itertools
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import do_string_sub
 from . import CommandBuilder
@@ -31,8 +28,8 @@ class StatAnalysisWrapper(CommandBuilder):
          ensemble_stat, and wavelet_stat
     """
     def __init__(self, config, logger):
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin/stat_analysis')
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     'stat_analysis')
         self.app_name = os.path.basename(self.app_path)
         super().__init__(config, logger)
         
@@ -1888,6 +1885,3 @@ class StatAnalysisWrapper(CommandBuilder):
         else:
             self.log_error("LOOP_BY must be VALID or INIT")
             exit(1)
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "StatAnalysis")

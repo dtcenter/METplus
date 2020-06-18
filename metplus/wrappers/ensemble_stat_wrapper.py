@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: ensemble_stat_wrapper.py
 Contact(s): metplus-dev
@@ -11,8 +9,6 @@ Input Files:
 Output Files:
 Condition codes: 0 for success, 1 for failure
 '''
-
-from ..util import metplus_check_python_version
 
 import os
 import glob
@@ -31,8 +27,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
     """
     def __init__(self, config, logger):
         self.app_name = 'ensemble_stat'
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
 
     def create_c_dict(self):
@@ -124,7 +120,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                           'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE'))
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE")
-            self.isOK = False
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
         if not c_dict['OUTPUT_DIR']:
@@ -430,7 +425,3 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         cmd += '-outdir {}'.format(self.outdir)
         return cmd
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "EnsembleStat")

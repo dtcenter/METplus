@@ -61,12 +61,10 @@ CyclonePlotter.conf
 #
 # This use case can be run as follows:
 #
-# 1) Passing in CyclonePlotter.conf then a user-specific system configuration file and user-specific data
-#    configuration file::
+# 1) Passing in CyclonePlotter.conf then a user-specific system configuration file::
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf \
-#                          -c /path/to/user_system.conf \
-#                          -c /path/to/user_data.conf
+#                          -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in CyclonePlotter.conf::
 #
@@ -97,7 +95,7 @@ CyclonePlotter.conf
 #    INFO: METplus has successfully finished running.
 #
 # Additionally, two output files are created.  Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# TCPairs output for this use case will be found in tc_pairs/201503 (relative to **OUTPUT_BASE**)
+# TCPairs output for this use case will be found in cyclone/201503 (relative to **OUTPUT_BASE**)
 # and will contain files with the following format:
 #
 # * 20150301.txt

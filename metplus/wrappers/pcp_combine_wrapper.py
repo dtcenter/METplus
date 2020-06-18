@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: pcp_combine_wrapper.py
 Contact(s): George McCabe
@@ -15,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 import datetime
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -39,8 +36,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
     def __init__(self, config, logger):
         self.app_name = 'pcp_combine'
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
         self.inaddons = []
         self.method = ""
@@ -95,6 +92,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
         c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                               d_type+'_PCP_COMBINE_INPUT_TEMPLATE', '')
+        if not c_dict[d_type+'_INPUT_TEMPLATE']:
+            self.log_error(d_type + "_PCP_COMBINE_INPUT_TEMPLATE required to run")
         c_dict[d_type+'_OUTPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_OUTPUT_DIR', '')
         c_dict[d_type+'_OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_OUTPUT_TEMPLATE')
@@ -1008,6 +1007,3 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                     'extra': extra})
 
         self.c_dict['ACCUM_DICT_LIST'] = accum_dict_list
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "PCPCombine")

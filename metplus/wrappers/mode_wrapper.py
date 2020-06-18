@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: mode_wrapper.py
 Contact(s): George McCabe
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from . import CompareGriddedWrapper
 from ..util import do_string_sub
@@ -25,8 +22,8 @@ class MODEWrapper(CompareGriddedWrapper):
         # only set app variables if not already set by MTD (subclass)
         if not hasattr(self, 'app_name'):
             self.app_name = 'mode'
-            self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                         'bin', self.app_name)
+            self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                         self.app_name)
         super().__init__(config, logger)
 
     def add_merge_config_file(self, time_info):
@@ -241,6 +238,3 @@ class MODEWrapper(CompareGriddedWrapper):
                 return
             self.build()
             self.clear()
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "MODE")

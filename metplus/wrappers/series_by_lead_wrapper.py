@@ -1,12 +1,9 @@
-#!/usr/bin/env python
-
 import re
 import os
 import sys
 import errno
 import glob
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import feature_util
@@ -45,8 +42,8 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.fhr_group_labels = []
         self.stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST'))
         self.plot_data_plane_exe = os.path.join(
-            self.config.getdir('MET_INSTALL_DIR'),
-            'bin/plot_data_plane')
+            self.config.getdir('MET_BIN_DIR', ''),
+            'plot_data_plane')
 
         self.convert_exe = self.config.getexe('CONVERT')
         self.ncap2_exe = self.config.getexe('NCAP2')
@@ -55,9 +52,9 @@ class SeriesByLeadWrapper(CommandBuilder):
         if not self.convert_exe or not self.ncap2_exe or not self.ncdump_exe or not self.rm_exe:
             self.isOK = False
 
-        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
-        self.series_analysis_exe = os.path.join(met_install_dir,
-                                                'bin/series_analysis')
+        met_bin_dir = self.config.getdir('MET_BIN_DIR', '')
+        self.series_analysis_exe = os.path.join(met_bin_dir,
+                                                'series_analysis')
         self.input_dir = self.config.getdir('SERIES_ANALYSIS_INPUT_DIR')
         self.series_lead_filtered_out_dir = \
             self.config.getdir('SERIES_ANALYSIS_FILTERED_OUTPUT_DIR')
@@ -1405,6 +1402,3 @@ class SeriesByLeadWrapper(CommandBuilder):
         # in anticipation of another run.
         filter_regex = 'filter_.*'
         util.remove_staged_files(staging_dir, filter_regex, self.logger)
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "SeriesByLead")

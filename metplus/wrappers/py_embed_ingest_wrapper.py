@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: py_embed_ingest_wrapper.py
 Contact(s): George McCabe
@@ -15,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 import re
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
@@ -142,6 +139,3 @@ class PyEmbedIngestWrapper(CommandBuilder):
             # run command and add to errors if it failed
             if not rdp.build():
                 self.errors += 1
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "PyEmbedIngest")

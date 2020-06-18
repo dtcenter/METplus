@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: CommandBuilder.py
 Contact(s): George McCabe

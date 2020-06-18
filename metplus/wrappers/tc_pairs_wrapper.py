@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: tc_pairs_wrapper.py
 Contact(s): Julie Prestopnik, Minna Win, Jim Frimel, George McCabe
@@ -22,7 +20,6 @@ import csv
 import datetime
 import glob
 
-from ..util import metplus_check_python_version
 from ..util import time_util
 from ..util import met_util as util
 from ..util import do_string_sub
@@ -45,8 +42,8 @@ class TCPairsWrapper(CommandBuilder):
 
     def __init__(self, config, logger):
         self.app_name = 'tc_pairs'
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
         self.adeck = []
         self.bdeck = []
@@ -125,11 +122,14 @@ class TCPairsWrapper(CommandBuilder):
         c_dict['ADECK_TEMPLATE'] = self.config.getraw('filename_templates',
                                                       'TC_PAIRS_ADECK_TEMPLATE',
                                                       '')
+
         c_dict['BDECK_TEMPLATE'] = self.config.getraw('filename_templates',
                                                       'TC_PAIRS_BDECK_TEMPLATE')
+
         c_dict['EDECK_TEMPLATE'] = self.config.getraw('filename_templates',
                                                       'TC_PAIRS_EDECK_TEMPLATE',
                                                       '')
+
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                        'TC_PAIRS_OUTPUT_TEMPLATE')
         c_dict['SKIP_REFORMAT'] = self.config.getbool('config',
@@ -759,6 +759,3 @@ class TCPairsWrapper(CommandBuilder):
 
         csvfile.close()
         out_file.close()
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "TCPairs")

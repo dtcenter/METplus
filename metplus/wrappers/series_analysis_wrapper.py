@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: series_analysis_wrapper.py
 Contact(s): George McCabe
@@ -15,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 from datetime import datetime
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from . import CompareGriddedWrapper
@@ -29,8 +26,8 @@ from ..util import do_string_sub
 class SeriesAnalysisWrapper(CompareGriddedWrapper):
     def __init__(self, config, logger):
         self.app_name = "series_analysis"
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
 
     def create_c_dict(self):
@@ -76,6 +73,7 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
               self.config.getraw('filename_templates',
                                  f'{data_type}_SERIES_ANALYSIS_INPUT_TEMPLATE',
                                  '')
+
             c_dict[f'{data_type}_INPUT_DATATYPE'] = \
               self.config.getstr('config', f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE', '')
 
@@ -320,7 +318,3 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         obs_fields = ','.join(obs_field_list)
 
         return fcst_fields, obs_fields
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "SeriesAnalysis")

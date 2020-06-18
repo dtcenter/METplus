@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: point2grid_wrapper.py
 Contact(s): Hank Fisher 
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -30,8 +27,8 @@ class Point2GridWrapper(CommandBuilder):
 
     def __init__(self, config, logger):
         self.app_name = "point2grid"
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
 
     def create_c_dict(self):
@@ -48,6 +45,9 @@ class Point2GridWrapper(CommandBuilder):
 
         c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                           'POINT_2_GRID_INPUT_TEMPLATE')
+
+        if not c_dict['OBS_INPUT_TEMPLATE']:
+            self.log_error("POINT_2_GRID_INPUT_TEMPLATE required to run")
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('POINT_2_GRID_OUTPUT_DIR',
                                                   '')
@@ -253,7 +253,3 @@ class Point2GridWrapper(CommandBuilder):
 
         if self. c_dict['VLD_THRESH']:
             self.args.append(f"-vld_thresh {self.c_dict['VLD_THRESH']}")
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "Point2Grid")
