@@ -59,7 +59,7 @@ class GridDiagWrapper(CommandBuilder):
         if conf_value:
             c_dict['REGRID_METHOD'] = f"method = {conf_value};"
 
-        conf_value = self.config.getint('config', 'GRID_DIAG_REGRID_WIDTH', '')
+        conf_value = self.config.getint('config', 'GRID_DIAG_REGRID_WIDTH')
         if conf_value is None:
             self.isOK = False
         elif conf_value != util.MISSING_DATA_VALUE:
@@ -127,7 +127,7 @@ class GridDiagWrapper(CommandBuilder):
 
         verif_mask = self.c_dict.get('VERIFICATION_MASK', '')
         if verif_mask:
-            verif_mask = 'poly = "{verif_mask}";'
+            verif_mask = f'poly = {verif_mask};'
 
         self.add_env_var('VERIF_MASK',
                          verif_mask)
@@ -216,6 +216,7 @@ class GridDiagWrapper(CommandBuilder):
             field_list = self.get_field_info(d_type='FCST',
                                              v_name=field['fcst_name'],
                                              v_level=field['fcst_level'],
+                                             v_extra=field['fcst_extra'],
                                              )
             if field_list is None:
                 return False
@@ -259,7 +260,7 @@ class GridDiagWrapper(CommandBuilder):
 
         if use_file_list:
             # create an ascii file with a list of the input files
-            list_file = self.write_list_file(f"grid_diag_data_files_{time_info['valid_time_fmt']}.txt",
+            list_file = self.write_list_file(f"grid_diag_data_files_{time_info['valid_fmt']}.txt",
                                              all_input_files)
             self.infiles.append(list_file)
         else:

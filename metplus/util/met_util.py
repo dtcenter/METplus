@@ -2458,7 +2458,6 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
         if 'ens_extra' in v.keys():
             config.logger.debug(" ens_extra:"+v['ens_extra'])
     '''
-
     return sorted(var_list, key=lambda x: x['index'])
 
 def split_level(level):
