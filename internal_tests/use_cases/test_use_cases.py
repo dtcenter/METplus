@@ -132,7 +132,6 @@ use_cases['space_weather'] = [
 
 use_cases['tc_and_extra_tc'] = [
     use_case_dir + "/model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf",
-    use_case_dir + "/model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_matthew.conf",
 ]
 
 # if METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string, add plotting use cases
