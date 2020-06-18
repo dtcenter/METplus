@@ -108,7 +108,7 @@ file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
 
 
-if len(fcst_lead_list) < 2:
+if len(fcst_lead_list[0]) < 2:
     logger.warning("Must provide more than one forecast lead to "
                    "plot lead average")
     sys.exit(0)
@@ -388,9 +388,10 @@ for plot_info in plot_info_list:
             }
             model_stat_file = do_string_sub(model_stat_template,
                                             **string_sub_dict)
+            logger.debug(f"FCST LEAD IS {fcst_lead}")
             lead_avg_file = get_lead_avg_file(stat,
                                               model_stat_file,
-                                              'fcst_lead_avgs',
+                                              fcst_lead,
                                               output_base_dir)
             if os.path.exists(lead_avg_file):
                 nrow = sum(1 for line in open(lead_avg_file))

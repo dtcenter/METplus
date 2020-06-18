@@ -390,7 +390,7 @@ for plot_info in plot_info_list:
                                                 **string_sub_dict)
                 lead_avg_file = get_lead_avg_file(stat,
                                                   model_stat_file,
-                                                  'fcst_lead_avgs',
+                                                  fcst_lead,
                                                   output_base_dir)
 
                 if os.path.exists(lead_avg_file):
