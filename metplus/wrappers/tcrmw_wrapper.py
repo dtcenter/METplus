@@ -58,6 +58,10 @@ class TCRMWWrapper(CommandBuilder):
 
         # values used in configuration file
 
+        conf_value = self.config.getstr('config', 'MODEL', '')
+        if conf_value:
+            c_dict['MODEL'] = f'model = "{util.remove_quotes(conf_value)}";'
+
         conf_value = self.config.getstr('config', 'TC_RMW_REGRID_METHOD', '')
         if conf_value:
             c_dict['REGRID_METHOD'] = f"method = {conf_value};"
@@ -120,10 +124,6 @@ class TCRMWWrapper(CommandBuilder):
         if conf_value:
             c_dict['CYCLONE'] = f'cyclone = "{conf_value}";'
 
-        conf_value = self.config.getstr('config', 'TC_RMW_STORM_NAME', '')
-        if conf_value:
-            c_dict['STORM_NAME'] = f'storm_name = "{conf_value}";'
-
         conf_value = self.config.getstr('config',
                                         'TC_RMW_INIT_INCLUDE',
                                         '')
@@ -181,6 +181,9 @@ class TCRMWWrapper(CommandBuilder):
         self.add_env_var('DATA_FIELD',
                          self.c_dict.get('DATA_FIELD', ''))
 
+        self.add_env_var('MODEL',
+                         self.c_dict.get('MODEL', ''))
+
         regrid_dict_string = ''
         # if any regrid items are set, create the regrid dictionary and add them
         if (self.c_dict.get('REGRID_METHOD', '') or self.c_dict.get('REGRID_WIDTH', '') or
@@ -219,11 +222,8 @@ class TCRMWWrapper(CommandBuilder):
         self.add_env_var('CYCLONE',
                          self.c_dict.get('CYCLONE', ''))
 
-        self.add_env_var('STORM_NAME',
-                         self.c_dict.get('STORM_NAME', ''))
-
         self.add_env_var('INIT_INCLUDE',
-                         f"init_inc = \"{time_info['init_fmt']}\"")
+                         self.c_dict.get('INIT_INC', ''))
 
         self.add_env_var('VALID_BEG',
                          self.c_dict.get('VALID_BEG', ''))
@@ -413,11 +413,16 @@ class TCRMWWrapper(CommandBuilder):
             self.infiles.extend(all_input_files)
 
         # set LEAD_LIST to list of forecast leads used
-        lead_list = []
-        for lead in lead_seq:
-            lead_list.append(f'"{str(lead).zfill(2)}"')
+        if lead_seq != [0]:
+            lead_list = []
+            for lead in lead_seq:
+                lead_hours = (
+                    time_util.ti_get_seconds_from_relativedelta(lead,
+                                                                valid_time=time_info['valid'])
+                    ) // 3600
+                lead_list.append(f'"{str(lead_hours).zfill(2)}"')
 
-        self.c_dict['LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
+            self.c_dict['LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
 
         return self.infiles
 
