@@ -1669,7 +1669,7 @@ class StatAnalysisWrapper(CommandBuilder):
         if not runtime_settings_dict_list:
             return False
 
-#        self.run_stat_analysis_job(runtime_settings_dict_list)
+        self.run_stat_analysis_job(runtime_settings_dict_list)
 
         # if running MakePlots, get its runtime_settings_dict_list and call
         if self.runMakePlots:
