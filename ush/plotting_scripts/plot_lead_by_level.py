@@ -396,10 +396,11 @@ for plot_info in plot_info_list:
                 if os.path.exists(lead_avg_file):
                     nrow = sum(1 for line in open(lead_avg_file))
                     if nrow == 0:
-                        logger.warning("Model "+str(model_num)+" "
-                                       +model_name+" with plot name "
-                                       +model_plot_name+" file: "
-                                       +lead_avg_file+" empty")
+                        logger.error("Model "+str(model_num)+" "
+                                     +model_name+" with plot name "
+                                     +model_plot_name+" file: "
+                                     +lead_avg_file+" empty")
+                        sys.exit(1)
                     else:
                         logger.debug("Model "+str(model_num)+" "
                                      +model_name+" with plot name "
@@ -445,10 +446,12 @@ for plot_info in plot_info_list:
                                               [model_fcst_lead_idx])
                                     )                    
                 else:
-                    logger.warning("Model "+str(model_num)+" "
-                                   +model_name+" with plot name "
-                                   +model_plot_name+" file: "
-                                   +lead_avg_file+" does not exist")
+                    logger.error("Model "+str(model_num)+" "
+                                 +model_name+" with plot name "
+                                 +model_plot_name+" file: "
+                                 +lead_avg_file+" does not exist")
+                    sys.exit(1)
+
             if model_num == 1:
                 if (stat == 'fbar_obar' or stat == 'orate_frate'
                         or stat == 'baser_frate'):
