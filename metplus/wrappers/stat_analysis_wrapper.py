@@ -1508,7 +1508,7 @@ class StatAnalysisWrapper(CommandBuilder):
             for fcst_thresh, obs_thresh in zip(fcst_thresholds, obs_thresholds):
                 for pair in fourier_wave_num_pairs:
                     c_dict = {}
-#                    c_dict['index'] = var_info['index']
+                    c_dict['index'] = var_info['index']
                     c_dict['FCST_VAR_LIST'] = [
                         var_info['fcst_name']
                     ]
@@ -1554,6 +1554,20 @@ class StatAnalysisWrapper(CommandBuilder):
                     self.add_other_lists_to_c_dict(c_dict)
 
                     c_dict_list.append(c_dict)
+
+        # if preparing for MakePlots, combine levels for each name
+        if self.forMakePlots:
+            output_c_dict_list = []
+            for c_dict in c_dict_list:
+                if c_dict['index'] not in [conf['index'] for conf in output_c_dict_list]:
+                    output_c_dict_list.append(c_dict)
+                else:
+                    for output_dict in output_c_dict_list:
+                        if c_dict['index'] == output_dict['index']:
+                            output_dict['FCST_LEVEL_LIST'].extend(c_dict['FCST_LEVEL_LIST'])
+                            output_dict['OBS_LEVEL_LIST'].extend(c_dict['OBS_LEVEL_LIST'])
+
+            return output_c_dict_list
 
         return c_dict_list
 
@@ -1611,7 +1625,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                    )
 
         # set lookin dir command line argument
-        self.lookindir = ' '.join(lookin_dirs)
+        runtime_settings_dict['LOOKIN_DIR'] = ' '.join(lookin_dirs)
 
         if not model_list or not obtype_list:
             self.log_error("Could not find model or obtype to process")
@@ -1655,7 +1669,7 @@ class StatAnalysisWrapper(CommandBuilder):
         if not runtime_settings_dict_list:
             return False
 
-        self.run_stat_analysis_job(runtime_settings_dict_list)
+#        self.run_stat_analysis_job(runtime_settings_dict_list)
 
         # if running MakePlots, get its runtime_settings_dict_list and call
         if self.runMakePlots:
@@ -1690,6 +1704,10 @@ class StatAnalysisWrapper(CommandBuilder):
 
             # send environment variables to logger
             self.print_all_envs()
+
+            # set lookin dir
+            self.logger.debug(f"Setting -lookindir to {runtime_settings_dict['LOOKIN_DIR']}")
+            self.lookindir = runtime_settings_dict['LOOKIN_DIR']
 
             self.build_and_run_command()
 
