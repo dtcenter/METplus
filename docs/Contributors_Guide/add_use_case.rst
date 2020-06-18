@@ -51,4 +51,3 @@ Use Case Rules
 * All data written by METplus should be referenced relative to {OUTPUT_BASE}.
 * The Sphinx documentation file should be as complete as possible, listing as much relevant information about the use case as possible. Keyword tags should be used so that users can locate other use cases that exhibit common functionality/data sources/tools/etc. If a new keyword is used, it should be added to the Quick Search Guide (docs/Users_Guide/quicksearch.rst).
 * The use case should be run by someone other than the author to ensure that it runs smoothly outside of the development environment set up by the author.
-
