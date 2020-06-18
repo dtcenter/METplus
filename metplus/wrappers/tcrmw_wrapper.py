@@ -124,9 +124,9 @@ class TCRMWWrapper(CommandBuilder):
         if conf_value:
             c_dict['STORM_NAME'] = f'storm_name = "{conf_value}";'
 
-        conf_value = c_dict['INIT_INCLUDE'] = self.config.getstr('config',
-                                                                 'TC_RMW_INIT_INCLUDE',
-                                                                 '')
+        conf_value = self.config.getstr('config',
+                                        'TC_RMW_INIT_INCLUDE',
+                                        '')
         if conf_value:
             c_dict['INIT_INCLUDE'] = f'init_inc = "{conf_value}";'
 
