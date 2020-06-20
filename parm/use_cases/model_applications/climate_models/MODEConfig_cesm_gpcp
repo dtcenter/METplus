@@ -31,6 +31,7 @@ regrid = {
    method     = NEAREST;
    width      = 1;
    vld_thresh = 0.5;
+   shape      = SQUARE;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -64,12 +65,9 @@ fcst = {
    merge_flag        = ${FCST_MERGE_FLAG};
 }
 
-obs = fcst;
-
 obs = {
    field = ${OBS_FIELD};
 
-   file_type          = NETCDF_NCCF;
    censor_thresh      = [];
    censor_val         = [];
    conv_radius        = [${OBS_CONV_RADIUS}];
@@ -106,7 +104,6 @@ max_centroid_dist = 800.0/grid_res;
 mask = {
    grid      = "";
    grid_flag = NONE; // Apply to NONE, FCST, OBS, or BOTH
-   //poly      = "/glade/scratch/kalb/METplus/model_applications/climate_models/CESM/asia_monsoon_cesm_mask.nc";
    poly      = ${VERIF_MASK};
    poly_flag = BOTH; // Apply to NONE, FCST, OBS, or BOTH
 }
