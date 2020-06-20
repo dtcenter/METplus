@@ -30,8 +30,8 @@ GridStat_fcstCESM_obsGFS_ConusTemp.conf
 # METplus Workflow
 # ----------------
 #
-# The grid_stat tool is run for each time. This example loops by valid time.  It
-# processes 4 valid times, listed below.
+# The grid_stat tool is run for each time. This example loops by initialization
+#  time.  It processes 4 valid times, listed below.
 #
 # | **Valid:** 2014-08-01_06Z
 # | **Forecast lead:** 06
@@ -123,6 +123,6 @@ GridStat_fcstCESM_obsGFS_ConusTemp.conf
 # sphinx_gallery_thumbnail_path = '_static/climate_models-CESM_temp.png'
 #
 # .. note:: `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, 
-#  `ClimateModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_, 
+#  `ClimateModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ClimateModelsAppUseCase&check_keywords=yes&area=default>`_, 
 #  `NetCDFFileUseCase <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_, 
 #  `NCAROrgUseCase <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
