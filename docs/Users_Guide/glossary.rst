@@ -564,6 +564,13 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* None
 
+   LOG_TC_RMW_VERBOSITY
+     Overrides the log verbosity for TCRMW  only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
+
+     | *Used by:* TCRMW
+     | *Family:* [config]
+     | *Default:* None
+
    LOG_TC_STAT_VERBOSITY
      Overrides the log verbosity for TcStat only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
 
@@ -668,6 +675,13 @@ METplus Configuration Glossary
      Path to optional configuration file read by TCStat.
 
      | *Used by:* TCStat
+     | *Family:* [config]
+     | *Default:* None
+
+   TC_RMW_CONFIG_FILE
+     Path to optional configuration file read by TCRMW.
+
+     | *Used by:* TCRMW
      | *Family:* [config]
      | *Default:* None
 
@@ -5677,3 +5691,186 @@ METplus Configuration Glossary
      | *Used by:* GenVxMask
      | *Family:* [config]
      | *Default:* None
+
+   TC_RMW_BASIN
+     Specify the value for 'basin' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_CYCLONE
+     Specify the value for 'cyclone' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_STORM_ID
+     Specify the value for 'storm_id' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_STORM_NAME
+     Specify the value for 'storm_name' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_SCALE
+     Specify the value for 'rmw_scale' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_REGRID_METHOD
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_REGRID_WIDTH
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_REGRID_VLD_THRESH
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_REGRID_SHAPE
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_N_AZIMUTH
+     Specify the value for 'n_azimuth' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_N_RANGE
+     Specify the value for 'n_range' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_MAX_RANGE_KM
+     Specify the value for 'max_range_km' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_DELTA_RANGE_KM
+     Specify the value for 'delta_range_km' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_INPUT_DATATYPE
+     Specify the data type of the input directory for input files used with the MET TCRMW tool. Used to set the 'file_type' value of the data dictionary in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_INPUT_DIR
+     Directory containing input data to TCRMW. This variable is optional because you can specify the full path to the input files using :term:`TC_RMW_INPUT_TEMPLATE`.
+
+     | *Used by:* TCRMW
+     | *Family:* [dir]
+     | *Default:* None
+
+   TC_RMW_INPUT_TEMPLATE
+     Filename template of the input data used by TCRMW. See also :term:`TC_RMW_INPUT_DIR`.
+
+     | *Used by:* TCRMW
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   TC_RMW_DECK_INPUT_DIR
+     Directory containing ADECK input data to TCRMW. This variable is optional because you can specify the full path to the input files using :term:`TC_RMW_DECK_TEMPLATE`.
+
+     | *Used by:* TCRMW
+     | *Family:* [dir]
+     | *Default:* None
+
+   TC_RMW_DECK_TEMPLATE
+     Filename template of the ADECK input data used by TCRMW. See also :term:`TC_RMW_DECK_INPUT_DIR`.
+
+     | *Used by:* TCRMW
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   TC_RMW_OUTPUT_DIR
+     Directory to write output data from TCRMW. This variable is optional because you can specify the full path to the output file using :term:`TC_RMW_OUTPUT_TEMPLATE`.
+
+     | *Used by:* TCRMW
+     | *Family:* [dir]
+     | *Default:* None
+
+   TC_RMW_OUTPUT_TEMPLATE
+     Filename template of write the output data generated by TCRMW. See also :term:`TC_RMW_OUTPUT_DIR`.
+
+     | *Used by:* TCRMW
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   TC_RMW_INIT_INCLUDE
+     Value to set for init_include in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_BEG
+     Value to set for valid_beg in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_END
+     Value to set for valid_end in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_INCLUDE_LIST
+     List of values to set for valid_inc in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_EXCLUDE_LIST
+     List of values to set for valid_exc in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_HOUR_LIST
+     List of values to set for valid_hour in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies

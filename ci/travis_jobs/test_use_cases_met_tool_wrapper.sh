@@ -4,7 +4,7 @@
 # About: Called by the .travis.yml file to run use cases found in parm/use_cases/met_tool_wrapper
 # Note: Sample data tarball values must be updated if a new version is added to a release
 
-met_tool_wrapper_tarball=https://github.com/NCAR/METplus/releases/download/v3.1-beta1/sample_data-met_tool_wrapper-3.1-beta1.1.tgz
+met_tool_wrapper_tarball=https://github.com/NCAR/METplus/releases/download/v3.1-beta1/sample_data-met_tool_wrapper-3.1-beta1.2.tgz
 
 gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
 

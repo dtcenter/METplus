@@ -139,9 +139,6 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         self.add_env_var("FCST_FILE_TYPE", self.c_dict['FCST_FILE_TYPE'])
         self.add_env_var("OBS_FILE_TYPE", self.c_dict['OBS_FILE_TYPE'])
 
-        # set environment variables needed for MET application
-        self.add_common_envs(time_info)
-
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("STAT_LIST", self.c_dict['STAT_LIST'])
         self.add_env_var("FCST_FIELD", fcst_field)
@@ -150,8 +147,7 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         # set climatology environment variables
         self.set_climo_env_vars()
 
-        # send environment variables to logger
-        self.print_all_envs()
+        super().set_environment_variables(time_info)
 
     def get_command(self):
         cmd = self.app_path

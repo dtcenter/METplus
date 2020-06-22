@@ -174,6 +174,6 @@ class PointStatWrapper(CompareGriddedWrapper):
         # set climatology environment variables
         self.set_climo_env_vars()
 
-        self.add_common_envs(time_info)
+        self.add_common_envs()
 
-        self.print_all_envs()
+        super().set_environment_variables(time_info)

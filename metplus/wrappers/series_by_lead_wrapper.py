@@ -408,8 +408,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 series_analysis_cmd = ''.join(series_analysis_cmd_parts)
 
                 self.add_common_envs()
-
-                self.print_all_envs()
+                super().set_environment_variables()
 
                 # Since this wrapper is not using the CommandBuilder
                 # to build the cmd, we need to add the met verbosity
@@ -560,8 +559,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 series_analysis_cmd = ''.join(series_analysis_cmd_parts)
 
                 self.add_common_envs()
-
-                self.print_all_envs()
+                super().set_environment_variables()
 
                 # Since this wrapper is not using the CommandBuilder
                 # to build the cmd, we need to add the met verbosity
