@@ -565,7 +565,7 @@ class CommandBuilder:
                 # remove input data directory to get relative path
                 rel_path = fullpath.replace(f'{data_dir}/', "")
                 # extract time information from relative path using template
-                file_time_info = util.get_time_from_file(rel_path, template)
+                file_time_info = util.get_time_from_file(rel_path, template, self.logger)
                 if file_time_info is None:
                     continue
 

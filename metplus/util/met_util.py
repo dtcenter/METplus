@@ -2601,7 +2601,7 @@ def get_filetype(filepath, logger=None):
 
 
 
-def get_time_from_file(filepath, template):
+def get_time_from_file(filepath, template, logger=None):
     """! Extract time information from path using the filename template
          Args:
              @param filepath path to examine
@@ -2611,14 +2611,14 @@ def get_time_from_file(filepath, template):
     if os.path.isdir(filepath):
         return None
 
-    out = parse_template(template, filepath)
+    out = parse_template(template, filepath, logger)
     if out is not None:
         return out
 
     # check to see if zip extension ends file path, try again without extension
     for ext in VALID_EXTENSIONS:
         if filepath.endswith(ext):
-            out = parse_template(template, filepath[:-len(ext)])
+            out = parse_template(template, filepath[:-len(ext)], logger)
             if out is not None:
                 return out
 
