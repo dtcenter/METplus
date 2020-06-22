@@ -84,6 +84,10 @@ that reformat gridded data
             c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE'] = ''
             c_dict[f'CLIMO_{climo_item}_FILE'] = None
 
+        c_dict['USE_EXPLICIT_NAME_AND_LEVEL'] = self.config.getbool('config',
+                                                                    'USE_EXPLICIT_NAME_AND_LEVEL',
+                                                                    False)
+
         return c_dict
 
     def check_probabilistic_settings(self):
@@ -345,7 +349,9 @@ that reformat gridded data
 
             # if pcp_combine was run, use name_level, (*,*) format
             # if not, use user defined name/level combination
-            if d_type != 'ENS' and self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
+            if (not self.c_dict.get('USE_EXPLICIT_NAME_AND_LEVEL', False) and
+                    d_type != 'ENS' and
+                    self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False)):
                 field = "{ name=\"" + v_name + "_" + level + \
                         "\"; level=\"(*,*)\";"
             else:
