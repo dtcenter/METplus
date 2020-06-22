@@ -385,7 +385,7 @@ class MakePlotsWrapper(CommandBuilder):
 
         if self.c_dict['USER_SCRIPT_LIST']:
             scripts_to_run = self.c_dict['USER_SCRIPT_LIST']
-        elif self.c_dict['VERIF_TYPE'] == 'precip':
+        elif self.c_dict['VERIF_CASE'] == 'precip':
             scripts_to_run = self.accepted_verif_lists.get(self.c_dict['VERIF_CASE'])
         else:
             scripts_to_run = self.accepted_verif_lists.get(self.c_dict['VERIF_CASE'])\
@@ -790,7 +790,7 @@ class MakePlotsWrapper(CommandBuilder):
 
         if self.c_dict['USER_SCRIPT_LIST']:
             scripts_to_run = self.c_dict['USER_SCRIPT_LIST']
-        elif self.c_dict['VERIF_TYPE'] == 'precip':
+        elif self.c_dict['VERIF_CASE'] == 'precip':
             scripts_to_run = self.accepted_verif_lists.get(self.c_dict['VERIF_CASE'])
         else:
             scripts_to_run = self.accepted_verif_lists.get(self.c_dict['VERIF_CASE'])\
