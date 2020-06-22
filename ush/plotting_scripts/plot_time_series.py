@@ -71,7 +71,7 @@ stats_list = os.environ['STATS'].split(', ')
 model_list = os.environ['MODEL'].split(', ')
 model_obtype_list = os.environ['MODEL_OBTYPE'].split(', ')
 model_reference_name_list = os.environ['MODEL_REFERENCE_NAME'].split(', ')
-dump_row_filename_template_list = os.environ['DUMP_ROW_FILENAME'].split(', ')
+dump_row_filename_template = os.environ['DUMP_ROW_FILENAME']
 average_method = os.environ['AVERAGE_METHOD']
 ci_method = os.environ['CI_METHOD']
 verif_grid = os.environ['VERIF_GRID']
@@ -115,7 +115,7 @@ model_info_list = list(
     zip(model_list,
         model_reference_name_list,
         model_obtype_list,
-        dump_row_filename_template_list)
+    )
 )
 nmodels = len(model_info_list)
 # Plot info
@@ -406,7 +406,7 @@ for plot_info in plot_info_list:
 #            +'_dump_row.stat'
 #        )
 #        model_stat_file = os.path.join(input_base_dir, model_stat_filename)
-        model_stat_template = model_info[3]
+        model_stat_template = dump_row_filename_template
         string_sub_dict = {
             'model': model_name,
             'model_reference': model_plot_name,
@@ -555,6 +555,18 @@ for plot_info in plot_info_list:
 
 
             # Write model forecast lead average to file
+            model_stat_template = dump_row_filename_template
+            string_sub_dict = {
+                'model': model_name,
+                'model_reference': model_plot_name,
+                'obtype': model_obtype,
+                'fcst_lead': fcst_lead,
+                'fcst_level': fcst_var_level,
+                'obs_level': obs_var_level,
+                'fcst_thresh': fcst_var_thresh,
+            }
+            model_stat_file = do_string_sub(model_stat_template,
+                                            **string_sub_dict)
             lead_avg_file = get_lead_avg_file(stat,
                                               model_stat_file,
                                               fcst_lead,

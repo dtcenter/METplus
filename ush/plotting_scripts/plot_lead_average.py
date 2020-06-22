@@ -69,7 +69,7 @@ stats_list = os.environ['STATS'].split(', ')
 model_list = os.environ['MODEL'].split(', ')
 model_obtype_list = os.environ['MODEL_OBTYPE'].split(', ')
 model_reference_name_list = os.environ['MODEL_REFERENCE_NAME'].split(', ')
-dump_row_filename_template_list = os.environ['DUMP_ROW_FILENAME'].split(', ')
+dump_row_filename_template = os.environ['DUMP_ROW_FILENAME']
 average_method = os.environ['AVERAGE_METHOD']
 ci_method = os.environ['CI_METHOD']
 verif_grid = os.environ['VERIF_GRID']
@@ -120,7 +120,7 @@ model_info_list = list(
     zip(model_list,
         model_reference_name_list,
         model_obtype_list,
-        dump_row_filename_template_list)
+    )
 )
 nmodels = len(model_info_list)
 # Plot info
@@ -375,7 +375,7 @@ for plot_info in plot_info_list:
 #            )
 #            lead_avg_file = os.path.join(output_base_dir, 'data',
 #                                         lead_avg_filename)
-            model_stat_template = model_info[3]
+            model_stat_template = dump_row_filename_template
             string_sub_dict = {
                 'model': model_name,
                 'model_reference': model_plot_name,
