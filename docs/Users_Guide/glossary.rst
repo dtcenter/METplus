@@ -2995,7 +2995,7 @@ METplus Configuration Glossary
    MODEL
      Specify the model name. This is the model name listed in the MET .stat files.
 
-     | *Used by:*  EnsembleStat, GridStat, PointStat, PcpCombine, TcPairs
+     | *Used by:*  EnsembleStat, GridStat, PointStat, PCPCombine, TCPairs, GridDiag, TCRMW
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -5872,5 +5872,102 @@ METplus Configuration Glossary
      List of values to set for valid_hour in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
 
      | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   GRID_DIAG_INPUT_DIR
+     Input directory for files to use with the MET tool grid_diag.
+
+     | *Used by:*  GridDiag
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
+   GRID_DIAG_INPUT_TEMPLATE
+     Template used to specify input filenames for the MET tool grid_diag.
+
+     | *Used by:*  GridDiag
+     | *Family:*  [filename_templates]
+     | *Default:*  Varies
+   GRID_DIAG_OUTPUT_DIR
+     Output directory for write files with the MET tool grid_diag.
+
+     | *Used by:*  GridDiag
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
+   GRID_DIAG_OUTPUT_TEMPLATE
+     Template used to specify output filenames created by MET tool grid_diag.
+
+     | *Used by:*  GridDiag
+     | *Family:*  [filename_templates]
+     | *Default:*  Varies
+
+   GRID_DIAG_VERIFICATION_MASK_TEMPLATE
+     Template used to specify the verification mask filename for the MET tool grid_diag. Supports a list of filenames.
+
+     | *Used by:*  GridDiag
+     | *Family:*  [filename_templates]
+     | *Default:*  Varies
+
+   LOG_GRID_DIAG_VERBOSITY
+     Overrides the log verbosity for GridDiag only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
+
+     | *Used by:* GridDiag
+     | *Family:* [config]
+     | *Default:* None
+
+   GRID_DIAG_CONFIG_FILE
+     Specify the absolute path to the configuration file used by the MET grid_stat tool.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:* Varies
+
+   GRID_DIAG_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* GridDiag
+     | *Family:* config
+     | *Default:* None
+
+   FCST_GRID_DIAG_INPUT_DATATYPE
+     Specify the data type of the input directory for files used with the MET grid_diag tool.
+
+     | *Used by:*  GridDiag
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   GRID_DIAG_REGRID_METHOD
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for grid_diag.
+
+     | *Used by:*  GridDiag
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   GRID_DIAG_REGRID_WIDTH
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for grid_diag.
+
+     | *Used by:*  GridDiag
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   GRID_DIAG_REGRID_VLD_THRESH
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for grid_diag.
+
+     | *Used by:*  GridDiag
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   GRID_DIAG_REGRID_SHAPE
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for grid_diag.
+
+     | *Used by:*  GridDiag
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   GRID_DIAG_REGRID_TO_GRID
+     Specify the value for 'to_grid' in the regrid dictionary in MET configuration file for grid_diag.
+
+     | *Used by:*  GridDiag
      | *Family:*  [config]
      | *Default:*  Varies

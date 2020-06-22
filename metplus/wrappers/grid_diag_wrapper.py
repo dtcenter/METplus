@@ -112,11 +112,11 @@ class GridDiagWrapper(CommandBuilder):
                 self.c_dict.get('REGRID_TO_GRID', '')
         ):
             regrid_dict_string = 'regrid = {'
+            regrid_dict_string += f"{self.c_dict.get('REGRID_TO_GRID', '')}"
             regrid_dict_string += f"{self.c_dict.get('REGRID_METHOD', '')}"
             regrid_dict_string += f"{self.c_dict.get('REGRID_WIDTH', '')}"
             regrid_dict_string += f"{self.c_dict.get('REGRID_VLD_THRESH', '')}"
             regrid_dict_string += f"{self.c_dict.get('REGRID_SHAPE', '')}"
-            regrid_dict_string += f"{self.c_dict.get('REGRID_TO_GRID', '')}"
             regrid_dict_string += '}'
 
         self.add_env_var('REGRID_DICT',
