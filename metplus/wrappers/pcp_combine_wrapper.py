@@ -626,8 +626,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # if output file exists and we want to skip it, warn and continue
         outfile = self.get_output_path()
-        if not self.method == "USER_DEFINED" and os.path.exists(outfile) and \
-          self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
+        if os.path.exists(outfile) and self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
             self.logger.debug('Skip writing output file {} because it already '
                               'exists. Remove file or change '
                               'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS to True to process'
