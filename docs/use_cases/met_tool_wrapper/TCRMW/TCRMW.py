@@ -9,7 +9,7 @@ met_tool_wrapper/TCRMW/TCRMW.conf
 # Scientific Objective
 # --------------------
 #
-# TODO
+# The TC-RMW tool regrids tropical cyclone model data onto a moving range-azimuth grid centered on points along the storm track.
 
 ##############################################################################
 # Datasets

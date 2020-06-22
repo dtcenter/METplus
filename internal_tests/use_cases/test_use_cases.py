@@ -82,7 +82,7 @@ use_cases['met_tool_wrapper'] = [
                 use_case_dir + "/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_extra_tropical.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_tropical.conf",
-#                use_case_dir + "/met_tool_wrapper/TCRMW/TCRMW.conf",
+                use_case_dir + "/met_tool_wrapper/TCRMW/TCRMW.conf",
                 use_case_dir + "/met_tool_wrapper/TCStat/TCStat.conf",
 ]
 

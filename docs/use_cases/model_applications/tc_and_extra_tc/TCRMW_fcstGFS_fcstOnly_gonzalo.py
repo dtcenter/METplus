@@ -9,7 +9,7 @@ model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf
 # Scientific Objective
 # --------------------
 #
-# TODO
+# The TC-RMW tool regrids tropical cyclone model data onto a moving range-azimuth grid centered on points along the storm track.
 
 ##############################################################################
 # Datasets

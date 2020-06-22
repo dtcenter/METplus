@@ -1493,7 +1493,7 @@ Description
 
 Used to configure the MET tool TC-RMW.
 
-.. _configuration-22:
+.. _configuration-23:
 
 METplus Configuration
 ~~~~~~~~~~~~~~~~~~~~~
@@ -1534,7 +1534,8 @@ METplus Configuration
 | :term:`TC_RMW_VALID_INCLUDE_LIST`
 | :term:`TC_RMW_VALID_EXCLUDE_LIST`
 | :term:`TC_RMW_VALID_HOUR_LIST`
-
+| :term:`MODEL`
+| :term:`LEAD_SEQ`
 
 MET Configuration
 ~~~~~~~~~~~~~~~~~
@@ -1544,6 +1545,17 @@ This is the MET configuration file used for this wrapper. Below the file content
 .. literalinclude:: ../../../parm/met_config/TCRMWConfig_wrapped
 
 The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
+
+**${MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    MODEL = GFS
+
+Resulting value::
+
+    model = "GFS";
 
 **${STORM_ID}** - Corresponds to TC_RMW_STORM_ID in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
 
