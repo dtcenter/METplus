@@ -376,7 +376,7 @@ MET Configuration
 
 This is the MET configuration file used for this wrapper. Below the file contents are descriptions of each environment variable referenced in this file and how the METplus configuration variables relate to them.
 
-.. literalinclude:: ../../../parm/met_config/GridDiagConfig_wrapped
+.. literalinclude:: ../../parm/met_config/GridDiagConfig_wrapped
 
 The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
 
@@ -1617,14 +1617,14 @@ Configuration
 TCRMW
 ------
 
-.. _description-23:
+.. _description-23a:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool TC-RMW.
 
-.. _configuration-23:
+.. _configuration-23a:
 
 METplus Configuration
 ~~~~~~~~~~~~~~~~~~~~~
@@ -1673,7 +1673,7 @@ MET Configuration
 
 This is the MET configuration file used for this wrapper. Below the file contents are descriptions of each environment variable referenced in this file and how the METplus configuration variables relate to them.
 
-.. literalinclude:: ../../../parm/met_config/TCRMWConfig_wrapped
+.. literalinclude:: ../../parm/met_config/TCRMWConfig_wrapped
 
 The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
 

@@ -5888,6 +5888,7 @@ METplus Configuration Glossary
      | *Used by:*  GridDiag
      | *Family:*  [filename_templates]
      | *Default:*  Varies
+
    GRID_DIAG_OUTPUT_DIR
      Output directory for write files with the MET tool grid_diag.
 
@@ -5930,7 +5931,7 @@ METplus Configuration Glossary
      | *Family:* config
      | *Default:* None
 
-   FCST_GRID_DIAG_INPUT_DATATYPE
+   GRID_DIAG_INPUT_DATATYPE
      Specify the data type of the input directory for files used with the MET grid_diag tool.
 
      | *Used by:*  GridDiag
