@@ -10,6 +10,11 @@ How to Create Your Own Wrapper
 
     class NewToolWrapper(CommandBuilder)
 
+* The new wrapper should reflect the name of the MET application without underscores because of the way the application gets called from the wrapper:: 
+
+    Point2GridWrapper =  correct
+    Point_2_Grid_Wrapper = incorrect
+
 * Modify the init function to initialize NewExample from its base class (CommandBuilder), and to set the name and path to the MET application you are wrapping::
 
     def __init__(self, config, logger):
