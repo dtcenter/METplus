@@ -384,8 +384,9 @@ class CommandBuilder:
         # if no files are found return None
         # if offsets are specified, log error with list offsets used
         log_message = "Could not find observation file"
-        if offsets == [0]:
-            log_message = f"{log_message} using offsets {','.join(str(offsets))}"
+        if offsets != [0]:
+            log_message = (f"{log_message} using offsets "
+                           f"{','.join([str(offset) for offset in offsets])}")
 
         # if mandatory, report error, otherwise report warning
         if mandatory:
@@ -565,7 +566,7 @@ class CommandBuilder:
                 # remove input data directory to get relative path
                 rel_path = fullpath.replace(f'{data_dir}/', "")
                 # extract time information from relative path using template
-                file_time_info = util.get_time_from_file(rel_path, template)
+                file_time_info = util.get_time_from_file(rel_path, template, self.logger)
                 if file_time_info is None:
                     continue
 
