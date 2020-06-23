@@ -455,7 +455,7 @@ for plot_info in plot_info_list:
 #            CI_file = os.path.join(output_base_dir, 'data', CI_filename)
             CI_file = get_ci_file(stat,
                                   model_stat_file,
-                                  'fcst_lead_avgs',
+                                  fcst_lead,
                                   output_base_dir,
                                   ci_method)
 

@@ -452,7 +452,7 @@ for plot_info in plot_info_list:
 #                CI_file = os.path.join(output_base_dir, 'data', CI_filename)
                 CI_file = get_ci_file(stat,
                                       model_stat_file,
-                                      'fcst_lead_avgs',
+                                      fcst_lead,
                                       output_base_dir,
                                       ci_method)
 
@@ -498,7 +498,7 @@ for plot_info in plot_info_list:
                             logger.warning("Model "+str(model_num)+" "
                                            +model_name+" with plot name "
                                            +model_plot_name+" file: "
-                                           +lead_CI_file+" does not exist")
+                                           +CI_file+" does not exist")
                     else:
                         if model_num == 1:
                             diff_from_avg_data = model_avg_data[0,:]
@@ -545,7 +545,7 @@ for plot_info in plot_info_list:
                                 logger.warning("Model "+str(model_num)+" "
                                                +model_name+" with plot name "
                                                +model_plot_name+" file: "
-                                               +lead_CI_file+" does not exist")
+                                               +CI_file+" does not exist")
             if model_num == 1:
                 fig, (ax1, ax2) = plt.subplots(2,1,figsize=(10,12),
                                                sharex=True)
