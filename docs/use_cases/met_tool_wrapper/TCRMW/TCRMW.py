@@ -61,7 +61,6 @@ met_tool_wrapper/TCRMW/TCRMW.conf
 # .. literalinclude:: ../../../../parm/met_config/TCRMWConfig_wrapped
 #
 # See the :ref:`TCRMW MET Configuration<tc-rmw-met-conf>` section of the User's Guide for more information on the environment variables set in this file.
-# Note the following variables are referenced in the MET configuration file.
 #
 
 ##############################################################################
