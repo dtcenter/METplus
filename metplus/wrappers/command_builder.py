@@ -385,7 +385,8 @@ class CommandBuilder:
         # if offsets are specified, log error with list offsets used
         log_message = "Could not find observation file"
         if offsets != [0]:
-            log_message = f"{log_message} using offsets {','.join(str(offsets))}"
+            log_message = f"{log_message} using offsets "
+                          f"{','.join([str(offset) for offset in offsets])}"
 
         # if mandatory, report error, otherwise report warning
         if mandatory:
