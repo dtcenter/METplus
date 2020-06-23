@@ -1,7 +1,7 @@
 How to Create Your Own Wrapper
 ==============================
 
-* Create the new wrapper in the METplus/ush directory and name it to reflect the wrapper's function,
+* Create the new wrapper in the METplus/metplus/wrappers directory and name it to reflect the wrapper's function,
   e.g.: new_tool_wrapper.py
   You can copy example_wrapper.py or ascii2nc_wrapper.py to start.
 
