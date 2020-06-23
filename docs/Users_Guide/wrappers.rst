@@ -1617,14 +1617,14 @@ Configuration
 TCRMW
 ------
 
-.. _description-23a:
+.. _tc_rmw_description:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool TC-RMW.
 
-.. _configuration-23a:
+.. _tc_rmw_metplus_conf:
 
 METplus Configuration
 ~~~~~~~~~~~~~~~~~~~~~
@@ -1667,6 +1667,8 @@ METplus Configuration
 | :term:`TC_RMW_VALID_HOUR_LIST`
 | :term:`MODEL`
 | :term:`LEAD_SEQ`
+
+.. _tc-rmw-met-conf:
 
 MET Configuration
 ~~~~~~~~~~~~~~~~~
