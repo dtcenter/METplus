@@ -415,6 +415,7 @@ for plot_info in plot_info_list:
             'fcst_level': fcst_var_level,
             'obs_level': obs_var_level,
             'fcst_thresh': fcst_var_thresh,
+            'obs_thresh': obs_var_thresh,
         }
         model_stat_file = do_string_sub(model_stat_template,
                                         **string_sub_dict)
@@ -564,6 +565,7 @@ for plot_info in plot_info_list:
                 'fcst_level': fcst_var_level,
                 'obs_level': obs_var_level,
                 'fcst_thresh': fcst_var_thresh,
+                'obs_thresh': obs_var_thresh,
             }
             model_stat_file = do_string_sub(model_stat_template,
                                             **string_sub_dict)

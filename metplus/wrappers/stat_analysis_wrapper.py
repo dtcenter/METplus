@@ -749,9 +749,14 @@ class StatAnalysisWrapper(CommandBuilder):
                 .replace(',', '_').replace('*', 'ALL')
             )
             if 'THRESH' in list_name:
+                if (self.forMakePlots and
+                        group_list in self.force_group_for_make_plots_lists):
+                    continue
+
                 thresh_letter = self.format_thresh(
                     config_dict[list_name]
                 )
+
                 stringsub_dict[list_name.lower()] = (
                     thresh_letter.replace(',', '_').replace('*', 'ALL')
                 )
@@ -1555,7 +1560,7 @@ class StatAnalysisWrapper(CommandBuilder):
 
                     c_dict_list.append(c_dict)
 
-        # if preparing for MakePlots, combine levels for each name
+        # if preparing for MakePlots, combine levels and thresholds for each name
         if self.forMakePlots:
             output_c_dict_list = []
             for c_dict in c_dict_list:
@@ -1564,8 +1569,23 @@ class StatAnalysisWrapper(CommandBuilder):
                 else:
                     for output_dict in output_c_dict_list:
                         if c_dict['index'] == output_dict['index']:
-                            output_dict['FCST_LEVEL_LIST'].extend(c_dict['FCST_LEVEL_LIST'])
-                            output_dict['OBS_LEVEL_LIST'].extend(c_dict['OBS_LEVEL_LIST'])
+
+                            for level in c_dict['FCST_LEVEL_LIST']:
+                                if level not in output_dict['FCST_LEVEL_LIST']:
+                                    output_dict['FCST_LEVEL_LIST'].append(level)
+
+                            for level in c_dict['OBS_LEVEL_LIST']:
+                                if level not in output_dict['OBS_LEVEL_LIST']:
+                                    output_dict['OBS_LEVEL_LIST'].append(level)
+
+                            for thresh in c_dict['FCST_THRESH_LIST']:
+                                if thresh not in output_dict['FCST_THRESH_LIST']:
+                                    output_dict['FCST_THRESH_LIST'].append(thresh)
+
+                            for thresh in c_dict['OBS_THRESH_LIST']:
+                                if thresh not in output_dict['OBS_THRESH_LIST']:
+                                    output_dict['OBS_THRESH_LIST'].append(thresh)
+
 
             return output_c_dict_list
 
