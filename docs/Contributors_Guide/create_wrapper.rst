@@ -131,7 +131,11 @@ Some wrappers require multiple entries to cover all of the bases. For example, u
 
 * Add a section to the Python Wrappers page of the documentation with information about the new tool including a list of all METplus configuration variables that can be used.
 
-* Add an entry for each METplus configuration variable added to the wrapper to the METplus Configuration Glossary.
+* Add an entry for each METplus configuration variable added to the wrapper to the METplus Configuration Glossary. Each configuration variable should be the MET tool name in all caps i.e. GRID_STAT followed by the variable name. MET tool names generally have underscores between words unless there is a number in the name. Examples below::
+    
+    GRID_STAT_PROB_THRESH
+    REGRID_DATA_PLANE_METHOD
+    POINT2GRID_QC_FLAGS
 
 * Create a directory named after the new wrapper to hold the use case configuration files in the met_tool_wrapper directory that users can run to try out the new wrapper. In the corresponding directory under docs/use_cases, be sure to include a .py file that contains the documentation for that use case and a README file to create a header for the documentation page.
 
