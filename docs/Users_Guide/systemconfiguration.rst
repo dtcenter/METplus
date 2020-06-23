@@ -223,6 +223,71 @@ Examples::
 Units of months (m) and years (Y) do not have set intervals because the length of a month or year is relative to the relative date/time.
 Therefore these intervals are calculated based on the current run time and cannot be expressed in seconds unless the run time value is available.
 
+Skipping Times
+^^^^^^^^^^^^^^
+
+New in 3.1 is the ability to skip certain valid times. The configuration variable :term:`SKIP_TIMES` can be used to
+provide a list of time formats each with a list of times to not process. The format and time list are separated by
+a colon. Any numeric python strftime formatting directive can be used as the time format (see
+https://strftime.org). Each item in the list must be surrounded by quotation marks. Here are a few examples.
+
+Example 1::
+
+    [config]
+    SKIP_TIMES = "%m:3"
+
+This will skip the 3rd month, March.
+
+Example 2::
+
+    [config]
+    SKIP_TIMES = "%d:30,31"
+
+This will skip every 30th and 31st day.
+
+Example 3::
+
+    [config]
+    SKIP_TIMES = "%d:30,31", "%m:3"
+
+This will skip every 30th and 31st day **and** every 3rd month.
+
+
+You can use **begin_end_incr(b,e,i)** syntax to define a range of times to skip. b = begin value, e = end value,
+i = increment between each value
+
+Example 4::
+
+    [config]
+    SKIP_TIMES = "%H:begin_end_incr(0,22,2)"
+
+This will skip every even hour (starting from 0, ending on 22, by 2). This is equivalent to::
+
+    [config]
+    SKIP_TIMES = "%H:0,2,4,6,8,10,12,14,16,18,20,22"
+
+You can also specify multiple strftime directives in a single time format.
+
+Example 5::
+
+    [config]
+    SKIP_TIMES = "%Y%m%d:19991231, 20141031"
+
+This will skip the dates Dec. 31, 1999 and Oct. 31, 2014.
+
+If you only want to skip certain times for a single wrapper, you can use a wrapper-specific variable.
+Using a wrapper-specific variable will ignore the generic SKIP_TIMES values.
+
+Example 6::
+
+    [config]
+    GRID_STAT_SKIP_TIMES = "%m:3,4,5,6,7,8,9,10,11"
+    SKIP_TIMES = "%d:31"
+
+This will skip the months March through November for GridStat wrapper only. All other wrappers in the
+:term:`PROCESS_LIST` will skip the 31st day of each month. Note that the SKIP_TIMES values are not applied
+to GridStat in this case.
+
 Realtime Looping
 ^^^^^^^^^^^^^^^^
 
