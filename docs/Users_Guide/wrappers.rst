@@ -1486,14 +1486,14 @@ Configuration
 TCRMW
 ------
 
-.. _description-23:
+.. _tc_rmw_description:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool TC-RMW.
 
-.. _configuration-23:
+.. _tc_rmw_metplus_conf:
 
 METplus Configuration
 ~~~~~~~~~~~~~~~~~~~~~
@@ -1537,12 +1537,14 @@ METplus Configuration
 | :term:`MODEL`
 | :term:`LEAD_SEQ`
 
+.. _tc-rmw-met-conf:
+
 MET Configuration
 ~~~~~~~~~~~~~~~~~
 
 This is the MET configuration file used for this wrapper. Below the file contents are descriptions of each environment variable referenced in this file and how the METplus configuration variables relate to them.
 
-.. literalinclude:: ../../../parm/met_config/TCRMWConfig_wrapped
+.. literalinclude:: ../../parm/met_config/TCRMWConfig_wrapped
 
 The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
 
