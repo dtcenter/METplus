@@ -384,7 +384,7 @@ class CommandBuilder:
         # if no files are found return None
         # if offsets are specified, log error with list offsets used
         log_message = "Could not find observation file"
-        if offsets == [0]:
+        if offsets != [0]:
             log_message = f"{log_message} using offsets {','.join(str(offsets))}"
 
         # if mandatory, report error, otherwise report warning
