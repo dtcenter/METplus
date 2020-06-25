@@ -65,8 +65,11 @@ class PyEmbedIngestWrapper(CommandBuilder):
                 self.log_error(f'Must set PY_EMBED_INGEST_{index}_OUTPUT_GRID')
                 self.isOK = False
 
+            output_field_name = self.config.getraw('config', 'PY_EMBED_INGEST_{}_OUTPUT_FIELD_NAME'.format(index), '')
+
             ingester_dict = {'output_dir': output_dir,
                              'output_template': output_template,
+                             'output_field_name': output_field_name,
                              'script': ingest_script,
                              'input_type': input_type,
                              'output_grid': output_grid,
@@ -128,6 +131,8 @@ class PyEmbedIngestWrapper(CommandBuilder):
             rdp.clear()
             rdp.infiles.append(f"PYTHON_{ingester['input_type']}")
             rdp.infiles.append(f'-field \'name="{script}\";\'')
+            if ingester['output_field_name']:
+                rdp.infiles.append(f"-name {ingester['output_field_name']}")
             rdp.infiles.append(output_grid)
             rdp.outfile = output_path
             cmd = rdp.get_command()
