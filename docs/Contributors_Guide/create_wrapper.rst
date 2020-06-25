@@ -14,10 +14,10 @@ How to Create Your Own Wrapper
 
     def __init__(self, p, logger):
         super(NewToolWrapper, self).__init__(config, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'), 'bin/new_tool')
+        self.app_path = os.path.join(self.p.getdir('MET_BIN_DIR', ''), 'new_tool')
         self.app_name = os.path.basename(self.app_path)
 
-**NOTE**: 'bin/new_tool' is the path to the MET tool being wrapped
+**NOTE**: 'new_tool' is the name of the MET tool being wrapped
 
 * Override the run_at_time_once method if you are looping over forecast leads (LEAD_SEQ in the METplus config file) for each initialization time.  Otherwise, override the run_at_time method.  This is where the logic for building the MET command resides.  Utilize the methods your wrapper inherits from the CommandBuilder parent/base class to set information such as input file, output file, param file, etc.  Refer to the command_builder.py code in the METplus/ush directory for more information. You can also override some of the methods in command_builder.py or implement your own methods that are specific to your wrapper::
 
