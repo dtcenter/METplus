@@ -23,8 +23,6 @@ from tc_pairs_wrapper import TCPairsWrapper
 import produtil
 import config_metplus
 import met_util as util
-from string_template_substitution import StringSub
-
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #

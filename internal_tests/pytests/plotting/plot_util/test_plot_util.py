@@ -1,16 +1,18 @@
 #!/usr/bin/env python
 
 import os
-import config_metplus
 import datetime
 import sys
 import logging
 import pytest
 import datetime
-import met_util as util
-import produtil.setup
 import numpy as np
 import pandas as pd
+
+import produtil.setup
+
+from metplus.util.config import config_metplus
+from metplus.util import met_util as util
 
 #@pytest.fixture
 def metplus_config():

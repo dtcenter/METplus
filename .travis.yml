@@ -1,0 +1,236 @@
+# After changing this file, check it on:
+#   http://lint.travis-ci.org/
+
+# Help: https://config.travis-ci.com/
+
+# ASSUMPTIONS USED IN THIS TRAVIS CONFIGURATION
+# Literal assumptions:
+# If these assumptions are not true, than build will break.
+#  Docker Hub organization repository: dtcenter/metplus:develop
+#  Docker Hub user repository: user_name is the same as 
+#  the Travis Ci account owner_name 
+#  and uses a tag named test.
+#     <user_name>/metplus:test
+#
+# Configuration assumptions
+# These are configurable
+#  DOCKERHUB_USE_DEFAULT
+#  branches to build: develop
+#
+ 
+language: python
+sudo: required  # I don't think this is necessary .. .keep for now ..
+dist: xenial #Ubuntu Xenial 16.04
+os: linux
+
+# Travis docs indicate, need define the docker service, was able 
+# to run docker without this ... basically it runs this command
+# to start the service: sudo systemctl start docker
+# But note, the docker service is started and running anyway.
+# How do you know, If you comment out and run this command to show
+# the state of all services, is shows that docker is running.
+# systemctl list-units --type=service
+services:
+  - docker
+
+# Note: even though defining python versions with the 
+# python key which expands jobs...
+# We are not running METplus in these versions since
+# METplus is running in the docker container space
+# NOT on the travis vm space.
+python:
+  - 3.7
+  - 3.6
+
+git:
+  depth: 25
+
+# This defines what is allowed to build.
+# Build only the safelist
+#   develop
+#   feature_ branches
+#   master_ branches
+#   bugfix_ branches
+# 
+branches:
+  only:
+  - develop
+  - /^feature_.*/
+  - /^master_.*/
+  - /^bugfix_.*/  
+
+cache:
+  - pip
+#  - directories:
+#    - $HOME/local
+
+# HOME=/home/travis
+# TRAVIS_BUILD_DIR=/home/travis/build/owner_name/repo_name
+# TRAVIS_REPO_SLUG=owner_name/repo_name
+# OWNER_BUILD_DIR=/home/travis/build/owner_name
+env:
+  global:
+    - REPO_NAME=METplus
+    - REPO_NAME_lc=metplus
+
+    - GH_PAGES_DIR=${HOME}/gh-pages
+    - EXTRA_PACKAGES="pytest matplotlib numpy"
+    - EXTRA_INSTALLS=test
+    - OWNER_BUILD_DIR=`dirname ${TRAVIS_BUILD_DIR}`
+
+    - GITHUB_REPO_ORG=NCAR
+    - DOCKERHUB_DEFAULT_REPO=dtcenter/metplus
+    - DOCKERHUB_DEFAULT_TAGNAME=develop
+    # The DOCKERHUB_USER_REPO setting ASSUMES your owner_name 
+    # in travis ci IS THE SAME as your docker hub user_name,
+    # since it is setting it  based on the travis repo slug.
+    - DOCKERHUB_USER_REPO="`dirname ${TRAVIS_REPO_SLUG}`/metplus"
+    - DOCKERHUB_USER_TAGNAME=test
+    # set to true to use default settings
+    # if set to false, to use DOCKER_USER_* settings, your dockerhub container.
+    - DOCKERHUB_USE_DEFAULT=true
+
+  matrix:
+    - TASK=docs
+
+# Stage 1 runs 2 jobs  x.1, x.2 
+# based on the python: keyword setting 3.7,3.6 above.
+stage: "Stage 1"
+#name: "Unit Tests"
+# ${TRAVIS_BUILD_DIR} = /home/travis/build/<user ie. NCAR>/METplus
+script: 
+  - pwd 
+  - ls -l
+  - echo ${TRAVIS_BUILD_DIR}
+  #- export TASK=${TASK}
+    # WARNING: can't have comments in if block below.
+    # doc8 is an opinionated style checker
+    # doc8 METplus returns errors in the rst. We want the build
+    # to continue so either, add true; in the if conditional or
+    # use allow_failures, keyword.
+  - if [[ ${TASK} == "docs" ]]; then
+      doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/;
+      true;
+    fi;
+
+matrix:
+  include:
+    # Example Note adding python: "3.7-dev", before stage: Stage 2 keyword 
+    # adds another job to Stage 1, and runs the script: in Stage 1.
+    # Unless it is python: "3.7" than it is ignored since 3.7 already
+    # defined for Stage 1.
+    #- python: "3.7-dev"
+    - stage: "Stage 2"
+      name: "Environment test"
+      script: 
+        - date
+        - printenv;
+        - echo "===================================";
+          printenv | grep -i travis;
+        - echo "===================================";
+          printenv | grep -i ncar;
+          echo "==== who am I";
+          whoami;
+    - stage: "Stage 3"
+      name: "Pytest Unit Tests"
+      python: 3.6 
+      script:
+        - echo ${TASK}
+        - echo ${HOME}
+        - ls -al ${HOME}
+        # These commands should all be in a script in METplus repo.
+        # ie.
+        # - ${TRAVIS_BUILD_DIR}/ci/travis_unit_tests.sh
+        #
+        - mkdir -p ${OWNER_BUILD_DIR}/pytmp.docker;
+        - docker pull ${DOCKERHUB_TAG}
+        - docker images
+        - docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
+        - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/pytests/run_pytests.sh docker
+        # Dump the output directories from running METplus
+        - ls -alR ${OWNER_BUILD_DIR}/pytmp.docker
+    - name: "Use Case Tests - met_tool_wrapper"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_met_tool_wrapper.sh
+    - name: "Use Case Tests - cryosphere"
+      python: 3.7
+      script:
+        # add travis_wait before command because a case takes longer than 10 minutes to return
+        - travis_wait 30 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh cryosphere
+    - name: "Use Case Tests - convection_allowing_models"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh convection_allowing_models
+    - name: "Use Case Tests - medium_range1"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range1
+    - name: "Use Case Tests - medium_range2"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range2
+    - name: "Use Case Tests - precipitation"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh precipitation
+    - name: "Use Case Tests - s2s, space_weather, tc_and_extra_tc"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh s2s space_weather tc_and_extra_tc
+
+  # stage 1 fails due to doc8 has errors.
+  # This allows stage 1 to fail so the build can continue.
+  # Must align with matrix include keys
+  #allow_failures:
+    # This will only work if it matches matrix: docs
+    # if matrix: "docs" is quoted than TASK="docs" must
+    # be quoted
+    # I really only wanted to allow stage 1 to fail.
+    # Since TASK is defined in all jobs this allows
+    # all jobs to fail, so I will comment out for now.
+    #- env: TASK=docs
+
+#  allow_failures:
+#    - python: "3.7"
+#    - python: "3.6"
+#    - python: "3.7-dev"
+#    - python: nightly
+
+# execute all of the commands which need to be executed 
+# before installing dependencies
+before_install:
+  # We hard-code the sphinx_rtd_theme to lock in our build with patch for
+  # version chooser
+  - pip install --upgrade pip;
+  #- pip install --upgrade setuptools;
+  - if [[ $TASK == "docs" ]]; then
+      export EXTRA_INSTALLS="doc,examples";
+      export EXTRA_PACKAGES="$EXTRA_PACKAGES sphinx_rtd_theme doc8";
+    fi;
+  - pip list
+  - pip install $EXTRA_PACKAGES
+
+# install all of the dependencies you need here
+install:  # The 'install:' key, ie. travis.yml 'keys'
+
+  #- pip install ".[$EXTRA_INSTALLS]"
+  - pip list
+
+# execute all of the commands which 
+# should make the build pass or fail
+before script:
+
+  # This block defines which docker image to pull and use in all
+  # the jobs for the build.
+  - if [[ ${DOCKERHUB_USE_DEFAULT} == true ]]; then
+      export DOCKERHUB_TAG=${DOCKERHUB_DEFAULT_REPO}:${DOCKERHUB_DEFAULT_TAGNAME};
+    else
+      export DOCKERHUB_TAG=${DOCKERHUB_USER_REPO}:${DOCKERHUB_USER_TAGNAME};
+    fi;
+  - echo ${DOCKERHUB_TAG};
+    echo ${GITHUB_REPO_ORG};
+    echo ${TRAVIS_REPO_SLUG};
+    echo ${TRAVIS_BUILD_DIR};
+    echo ${OWNER_BUILD_DIR};
+

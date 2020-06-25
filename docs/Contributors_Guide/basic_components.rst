@@ -6,15 +6,15 @@ CommandBuilder
 
 CommandBuilder is the parent class of all METplus wrappers. Every wrapper is a subclass of CommandBuilder or another subclass of CommandBuilder. For example, GridStatWrapper, PointStatWrapper, EnsembleStatWrapper, and MODEWrapper are all a subclass of CompareGriddedWrapper. CompareGriddedWrapper is a subclass of CommandBuilder. CommandBuilder contains instance variables that are common to every wrapper, such as config (METplusConfig object), errors (a counter of the number of errors that have occurred in the wrapper), and c_dict (a dictionary containing common information). CommandBuilder also contains use class functions that can be called within each wrapper, such as create_c_dict, clear, and find_data. More information regarding these variables and functions can be found in the Doxygen documentation (link?).
 
-Each wrapper contains an initialization function (__init__) that sets up the wrapper. Every wrapper's initialization function should at very least call the parent's initialization function (using super() function). Many wrapper also set the app_name and app_path instance variables in the initialization function. app_name is the name of the MET executable that pertains to the wrapper and app_path is the full path of the MET executable (relative to MET_INSTALL_DIR/bin) that is called when the MET tool is run::
+Each wrapper contains an initialization function (__init__) that sets up the wrapper. Every wrapper's initialization function should at very least call the parent's initialization function (using super() function). Many wrapper also set the app_name and app_path instance variables in the initialization function. app_name is the name of the MET executable that pertains to the wrapper and app_path is the full path of the MET executable (relative to MET_BIN_DIR) that is called when the MET tool is run::
 
     class ExampleWrapper(CommandBuilder):
         """!Wrapper can be used as a base to develop a new wrapper"""
         def __init__(self, config, logger):
 	    super().__init__(config, logger)
 	    self.app_name = 'example'
-	    self.app_path = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-	                                                    'bin', self.app_name)
+	    self.app_path = os.path.join(self.config.getdir('MET_BIN_DIR'),
+	                                                    self.app_name)
 
 The above code block is an excerpt from the ExampleWrapper, found in ush/example_wrapper.py. The class name should always be the item that is passed into the METplus configuration variable list PROCESS_LIST with 'Wrapper' at the end. The text 'CommandBuilder' in parenthesis makes ExampleWrapper a subclass of CommandBuilder. In the __init__ function, the line starting with 'super()' calls the parent class __init__ function.
 
@@ -122,9 +122,9 @@ uses c_dict dictionary items [FCST/OBS]_FILE_WINDOW_[BEGIN/END], [FCST/OBS]_INPU
 If [FCST/OBS]_FILE_WINDOW_[BEGIN/END] are non-zero, these functions will list all files under [FCST/OBS]_INPUT_DIR and use [FCST/OBS]_INPUT_TEMPLATE to extract out time information from each file to determine which files within the file window range should be used. Some tools allow multiple files to be selected. If a tool does not allow multiple files, the file closest to the valid time is returned. If multiple files are the same distance from the valid time, the first file that was found is used.
 If a wrapper can read in multiple files, the c_dict item 'ALLOW_MULTIPLE_FILES' should be set to True.
 
-StringSub class
----------------
-StringSub is found in ush/string_template_substitution.py and is the critical function for substituting the placeholder
+do_string_sub function
+----------------------
+do_string_sub is found in ush/string_template_substitution.py and is the critical function for substituting the placeholder
 values in templates with the actual values needed for running a particular wrapper
 
 tc_pairs_wrapper has a good example
@@ -132,13 +132,12 @@ tc_pairs_wrapper has a good example
 .. code-block:: python
 
     # get search expression for bdeck files to pass to glob
-        string_sub = StringSub(self.logger,
-                               self.c_dict['BDECK_TEMPLATE'],
-                               basin=basin,
-                               cyclone=cyclone,
-                               **time_info)
+        bdeck_file = do_string_sub(self.c_dict['BDECK_TEMPLATE'],
+                                   basin=basin,
+                                   cyclone=cyclone,
+                                   **time_info)
         bdeck_glob = os.path.join(self.c_dict['BDECK_DIR'],
-                                  string_sub.do_string_sub())
+                                  bdeck_file)
 
 time_info is a dictionary of current run time information that can be substituted into the template. See the 'Time Utilities' section for more information.
 
@@ -166,13 +165,4 @@ The forecast lead is also set if provided ('lead'). This dictionary is passed in
 Items that will be parsed from the input dictionary are: now, init, valid, lead, lead_seconds, lead_minutes, lead_hours, offset, offset_hours, da_init
 
 pcp_combine uses a variety of time_util functions like ti_calculate and ti_get_lead_string
- 
-main function
--------------
 
-Each wrapper should call met_util's run_stand_alone so that the wrapper will run if called directly instead of calling master_metplus.py::
-
-    import met_util as util
-    ...
-    if __name__ == "__main__":
-        util.run_stand_alone(__file__, "Example")

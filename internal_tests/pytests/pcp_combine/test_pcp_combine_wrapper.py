@@ -6,12 +6,14 @@ import re
 import logging
 import datetime
 from collections import namedtuple
-import produtil
 import pytest
-import config_metplus
-from pcp_combine_wrapper import PCPCombineWrapper
-import time_util
-import met_util as util
+
+import produtil
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.pcp_combine_wrapper import PCPCombineWrapper
+from metplus.util import time_util
+from metplus.util import met_util as util
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
