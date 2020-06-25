@@ -133,7 +133,7 @@ def test_create_c_dict():
     # Test 1
     c_dict = st.create_c_dict()
     assert(c_dict['LOOP_ORDER'] == 'times')
-    assert(c_dict['PROCESS_LIST'] == 'StatAnalysis')
+    assert(c_dict['PROCESS_LIST'] == ['StatAnalysis'])
     assert(os.path.realpath(c_dict['CONFIG_FILE']) == (METPLUS_BASE+'/internal_tests/'
                                                        +'config/STATAnalysisConfig'))
     assert(c_dict['OUTPUT_BASE_DIR'] == (st.config.getdir('OUTPUT_BASE')

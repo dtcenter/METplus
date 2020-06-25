@@ -120,7 +120,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                c_dict['VERBOSITY'])
         )
         c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
-        c_dict['PROCESS_LIST'] = self.config.getstr('config', 'PROCESS_LIST')
+        c_dict['PROCESS_LIST'] = util.get_process_list(self.config)
         c_dict['CONFIG_FILE'] = self.config.getstr('config', 
                                                    'STAT_ANALYSIS_CONFIG_FILE',
                                                    '')
@@ -163,7 +163,10 @@ class StatAnalysisWrapper(CommandBuilder):
         # read all field lists and check if they are all empty
         c_dict['all_field_lists_empty'] = self.read_field_lists_from_config(c_dict)
 
-        self.runMakePlots = 'MakePlots' in c_dict['PROCESS_LIST']
+        # check if MakePlots is in process list and set boolean
+        # MakePlots is removed from the list in met_util.get_process_list, so
+        # need to read the conf value again
+        self.runMakePlots = 'MakePlots' in self.config.getstr('config', 'PROCESS_LIST')
         if self.runMakePlots:
             self.check_MakePlots_config(c_dict)
 
@@ -901,8 +904,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                                    lists_to_group, config_dict)
 
         if filename_type == 'default':
-            if ('MakePlots' in self.c_dict['PROCESS_LIST'] 
-                        and output_type == 'dump_row'):
+            if (self.runMakePlots and output_type == 'dump_row'):
                 filename_template_prefix = ( 
                     filename_template+date_type.lower()
                     +'{'+date_type.lower()+'_beg?fmt=%Y%m%d}'
@@ -1252,7 +1254,7 @@ class StatAnalysisWrapper(CommandBuilder):
                      )
                      model_dump_row_filename_type = model_filename_type
                 elif output_type == 'OUT_STAT':
-                    # if MakePlots is in the PROCESS_LIST
+                    # if MakePlots is run
                     if self.runMakePlots:
                         model_out_stat_filename_template = 'NA'
                         model_out_stat_filename_type = 'NA'
@@ -1698,7 +1700,7 @@ class StatAnalysisWrapper(CommandBuilder):
             if not runtime_settings_dict_list:
                 return False
 
-            self.MakePlotsWrapper.create_plots_new(runtime_settings_dict_list)
+            self.MakePlotsWrapper.create_plots(runtime_settings_dict_list)
             if self.MakePlotsWrapper.errors:
                 self.log_error("MakePlots produced "
                                f"{self.MakePlotsWrapper.errors} errors.")

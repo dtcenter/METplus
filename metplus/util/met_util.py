@@ -1965,6 +1965,10 @@ def get_process_list(config):
         raise TypeError("Attempting to run a plotting wrapper while METPLUS_DISABLE_PLOT_WRAPPERS environment "
                             "variable is set. Unset the variable to run this use case")
 
+    # if MakePlots is in process list, remove it because it will be called directly from StatAnalysis
+    if 'MakePlots' in out_process_list:
+        out_process_list.remove('MakePlots')
+
     return out_process_list
 
 # minutes

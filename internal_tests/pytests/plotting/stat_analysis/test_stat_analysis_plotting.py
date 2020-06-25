@@ -107,11 +107,12 @@ def metplus_config():
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
+
 def test_set_lists_as_loop_or_group():
     # Independently test that the lists that are set
-    # in the config file are being set 
-    # accordingly based on their place 
-    # in GROUP_LIST_ITEMS and LOOP_LIST_ITEMS 
+    # in the config file are being set
+    # accordingly based on their place
+    # in GROUP_LIST_ITEMS and LOOP_LIST_ITEMS
     # and those not set are set to GROUP_LIST_ITEMS
     st = stat_analysis_wrapper()
     # Test 1
@@ -157,20 +158,21 @@ def test_set_lists_as_loop_or_group():
     config_dict['COV_THRESH_LIST'] = []
     config_dict['ALPHA_LIST'] = []
     config_dict['LINE_TYPE_LIST'] = ['SL1L2', 'VL1L2']
- 
+
     config_dict = st.set_lists_loop_or_group(config_dict)
 
     test_lists_to_loop_items = config_dict['LOOP_LIST_ITEMS']
     test_lists_to_group_items = config_dict['GROUP_LIST_ITEMS']
 
-    assert(all(elem in expected_lists_to_group_items
-               for elem in test_lists_to_group_items))
-    assert(all(elem in expected_lists_to_loop_items
-               for elem in test_lists_to_loop_items))
+    assert (all(elem in expected_lists_to_group_items
+                for elem in test_lists_to_group_items))
+    assert (all(elem in expected_lists_to_loop_items
+                for elem in test_lists_to_loop_items))
+
 
 def test_get_output_filename():
     # Independently test the building of
-    # the output file name 
+    # the output file name
     # using string template substitution#
     # and test the values is
     # as expected
@@ -195,7 +197,7 @@ def test_get_output_filename():
     config_dict['DESC'] = ''
     config_dict['OBS_LEAD'] = ''
     config_dict['OBS_THRESH'] = ''
-    config_dict['OBTYPE'] =  '"MODEL_TEST_ANL"'
+    config_dict['OBTYPE'] = '"MODEL_TEST_ANL"'
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['ALPHA'] = ''
     config_dict['OBS_LEVEL'] = '"P1000"'
@@ -204,20 +206,20 @@ def test_get_output_filename():
     st.c_dict['DATE_TYPE'] = 'VALID'
 
     # Test 1
-    lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'FCST_UNITS_LIST',
-                       'OBS_UNITS_LIST', 'FCST_THRESH_LIST', 
-                       'OBS_THRESH_LIST','DESC_LIST', 'OBS_LEAD_LIST',
-                       'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST',
-                       'INTERP_MTHD_LIST', 'INTERP_PNTS_LIST',
-                       'COV_THRESH_LIST', 'ALPHA_LIST','LINE_TYPE_LIST' ]
-    lists_to_loop = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST',
-                      'FCST_VAR_LIST', 'OBS_VAR_LIST',
-                      'FCST_LEVEL_LIST', 'OBS_LEVEL_LIST',
-                      'FCST_LEAD_LIST', 'VX_MASK_LIST' ]
+    lists_to_group = ['FCST_INIT_HOUR_LIST', 'FCST_UNITS_LIST',
+                      'OBS_UNITS_LIST', 'FCST_THRESH_LIST',
+                      'OBS_THRESH_LIST', 'DESC_LIST', 'OBS_LEAD_LIST',
+                      'OBS_VALID_HOUR_LIST', 'OBS_INIT_HOUR_LIST',
+                      'INTERP_MTHD_LIST', 'INTERP_PNTS_LIST',
+                      'COV_THRESH_LIST', 'ALPHA_LIST', 'LINE_TYPE_LIST']
+    lists_to_loop = ['FCST_VALID_HOUR_LIST', 'MODEL_LIST',
+                     'FCST_VAR_LIST', 'OBS_VAR_LIST',
+                     'FCST_LEVEL_LIST', 'OBS_LEVEL_LIST',
+                     'FCST_LEAD_LIST', 'VX_MASK_LIST']
     expected_output_filename = (
-        'MODEL_TEST_MODEL_TEST_ANL_valid20190101to20190101_valid0000to0000Z'
-        +'_init0000to1800Z_fcst_lead240000_fcstHGTP1000_obsHGTP1000_vxmaskNHX'
-        +'_dump_row.stat'
+            'MODEL_TEST_MODEL_TEST_ANL_valid20190101to20190101_valid0000to0000Z'
+            + '_init0000to1800Z_fcst_lead240000_fcstHGTP1000_obsHGTP1000_vxmaskNHX'
+            + '_dump_row.stat'
     )
     output_type = 'dump_row'
     filename_template = (
@@ -238,11 +240,12 @@ def test_get_output_filename():
                                                   lists_to_loop,
                                                   lists_to_group,
                                                   config_dict)
-    assert(expected_output_filename == test_output_filename)
+    assert (expected_output_filename == test_output_filename)
+
 
 def test_parse_model_info():
     pytest.skip("This function will be removed from MakePlots")
-    # Independently test the creation of 
+    # Independently test the creation of
     # the model information dictionary
     # and the reading from the config file
     # are as expected
@@ -272,30 +275,30 @@ def test_parse_model_info():
     expected_out_stat_filename_template2 = 'NA'
     expected_out_stat_filename_type2 = 'NA'
     test_model_info_list = st.parse_model_info()
-    assert(test_model_info_list[0]['name'] == expected_name1)
-    assert(test_model_info_list[0]['reference_name'] == 
-           expected_reference_name1)
-    assert(test_model_info_list[0]['obtype'] == expected_obtype1)
-    assert(test_model_info_list[0]['dump_row_filename_template'] == 
-           expected_dump_row_filename_template1)
-    assert(test_model_info_list[0]['dump_row_filename_type'] == 
-           expected_dump_row_filename_type1)
-    assert(test_model_info_list[0]['out_stat_filename_template'] == 
-           expected_out_stat_filename_template1)
-    assert(test_model_info_list[0]['out_stat_filename_type'] == 
-           expected_out_stat_filename_type1)
-    assert(test_model_info_list[1]['name'] == expected_name2)
-    assert(test_model_info_list[1]['reference_name'] == 
-           expected_reference_name2)
-    assert(test_model_info_list[1]['obtype'] == expected_obtype2)
-    assert(test_model_info_list[1]['dump_row_filename_template'] ==
-           expected_dump_row_filename_template2)
-    assert(test_model_info_list[1]['dump_row_filename_type'] ==
-           expected_dump_row_filename_type2)
-    assert(test_model_info_list[1]['out_stat_filename_template'] ==
-           expected_out_stat_filename_template2)
-    assert(test_model_info_list[1]['out_stat_filename_type'] ==
-           expected_out_stat_filename_type2)
+    assert (test_model_info_list[0]['name'] == expected_name1)
+    assert (test_model_info_list[0]['reference_name'] ==
+            expected_reference_name1)
+    assert (test_model_info_list[0]['obtype'] == expected_obtype1)
+    assert (test_model_info_list[0]['dump_row_filename_template'] ==
+            expected_dump_row_filename_template1)
+    assert (test_model_info_list[0]['dump_row_filename_type'] ==
+            expected_dump_row_filename_type1)
+    assert (test_model_info_list[0]['out_stat_filename_template'] ==
+            expected_out_stat_filename_template1)
+    assert (test_model_info_list[0]['out_stat_filename_type'] ==
+            expected_out_stat_filename_type1)
+    assert (test_model_info_list[1]['name'] == expected_name2)
+    assert (test_model_info_list[1]['reference_name'] ==
+            expected_reference_name2)
+    assert (test_model_info_list[1]['obtype'] == expected_obtype2)
+    assert (test_model_info_list[1]['dump_row_filename_template'] ==
+            expected_dump_row_filename_template2)
+    assert (test_model_info_list[1]['dump_row_filename_type'] ==
+            expected_dump_row_filename_type2)
+    assert (test_model_info_list[1]['out_stat_filename_template'] ==
+            expected_out_stat_filename_template2)
+    assert (test_model_info_list[1]['out_stat_filename_type'] ==
+            expected_out_stat_filename_type2)
 
 def test_filter_for_plotting():
     # Test running of stat_analysis
