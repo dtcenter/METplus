@@ -97,12 +97,10 @@ for token in os.path.basename(input_file).replace('-', '_').split('_'):
 print("Data Shape: " + repr(met_data.shape))
 print("Data Type:  " + repr(met_data.dtype))
 
-print(hh)
-
 valid  = ymd  + dt.timedelta(hours=hh)
 init = ymd
 lead, rem = divmod((valid-init).total_seconds(), 3600)
-print(valid.strftime("%Y%m%d_%H%M%S"))
+
 attrs = {
    'valid': valid.strftime("%Y%m%d_%H%M%S"),
    'init':  init.strftime("%Y%m%d_%H%M%S"),
