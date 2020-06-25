@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 
 Program Name: string_template_substitution.py
@@ -479,6 +477,14 @@ def parse_template(template, filepath, logger=None):
     # combine common items and get datetime
     output_dict = populate_output_dict(match_dict, valid_shift)
 
+    if not output_dict:
+        if logger:
+            logger.debug(f"Could not extract enough time information from {filepath}")
+        else:
+            print(f"DEBUG: Could not extract enough time information from {filepath}")
+
+        return None
+
     # fill in the rest of the time info dictionary items with ti_calculate
     time_info = time_util.ti_calculate(output_dict)
 
@@ -578,16 +584,18 @@ def check_pre_text(filepath, pre_text, logger=None):
 
     # if length of extra text is longer than remaining text in file path
     if len(pre_text) > len(filepath):
-        if logger:
-            logger.debug("Length of pre text is longer than "
-                         "remaining text in file path")
+        # too much logging output comes from this - if verbose is added, this is a good candidate
+#        if logger:
+#            logger.debug("Length of pre text is longer than "
+#                         "remaining text in file path")
         return None
 
     # if there is text before any tags, check that the text in the template matches the file path
     if pre_text:
         if pre_text != filepath[0:len(pre_text)]:
-            if logger:
-                logger.debug("Text at beginning of filepath does not match template")
+            # too much logging output comes from this - if verbose is added, this is a good candidate
+#            if logger:
+#                logger.debug("Text at beginning of filepath does not match template")
             return None
 
         # strip off pre text from file path
@@ -608,8 +616,9 @@ def check_post_text(filepath, post_text, logger=None):
     # do the same for text at the end of all tags
     if post_text:
         if post_text != filepath[-len(post_text):]:
-            if logger:
-                logger.debug("Text at end of filepath does not match template")
+            # too much logging output comes from this - if verbose is added, this is a good candidate
+#            if logger:
+#                logger.debug("Text at end of filepath does not match template")
             return None
 
         # strip off post text from file path
@@ -761,7 +770,15 @@ def populate_output_dict(match_dict, valid_shift):
     add_lead_matches_to_output_dict(match_dict, output_dict)
     add_offset_matches_to_output_dict(match_dict, output_dict)
 
-    return output_dict
+    extracted_time_info = False
+    for time_type in [VALID_STRING, INIT_STRING, DA_INIT_STRING]:
+        if time_type in output_dict:
+            extracted_time_info = True
+
+    if extracted_time_info:
+        return output_dict
+
+    return None
 
 def add_date_matches_to_output_dict(match_dict, output_dict, time_type, valid_shift=0):
     """! Look for time values in match dictionary add combine the values to add to the

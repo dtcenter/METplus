@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: point_stat_wrapper.py
 Contact(s): Minna Win, Jim Frimel, George McCabe, Julie Prestopnik
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -25,8 +22,8 @@ class PointStatWrapper(CompareGriddedWrapper):
 
     def __init__(self, config, logger):
         self.app_name = 'point_stat'
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
 
     def create_c_dict(self):
@@ -48,19 +45,25 @@ class PointStatWrapper(CompareGriddedWrapper):
             self.config.getraw('filename_templates',
                                'FCST_POINT_STAT_INPUT_TEMPLATE',
                                '')
+        if not c_dict['FCST_INPUT_TEMPLATE']:
+            self.log_error("FCST_POINT_STAT_INPUT_TEMPLATE required to run")
 
         c_dict['OBS_INPUT_TEMPLATE'] = \
             self.config.getraw('filename_templates',
                                'OBS_POINT_STAT_INPUT_TEMPLATE',
                                '')
+        if not c_dict['OBS_INPUT_TEMPLATE']:
+            self.log_error("OBS_POINT_STAT_INPUT_TEMPLATE required to run")
 
         c_dict['FCST_INPUT_DATATYPE'] = \
             self.config.getstr('config', 'FCST_POINT_STAT_INPUT_DATATYPE', '')
         c_dict['OBS_INPUT_DATATYPE'] = \
             self.config.getstr('config', 'OBS_POINT_STAT_INPUT_DATATYPE', '')
 
-        c_dict['FCST_INPUT_DIR'] = self.config.getdir('FCST_POINT_STAT_INPUT_DIR')
-        c_dict['OBS_INPUT_DIR'] = self.config.getdir('OBS_POINT_STAT_INPUT_DIR')
+        c_dict['FCST_INPUT_DIR'] = self.config.getdir('FCST_POINT_STAT_INPUT_DIR','')
+
+        c_dict['OBS_INPUT_DIR'] = self.config.getdir('OBS_POINT_STAT_INPUT_DIR','')
+
         c_dict['OUTPUT_DIR'] = \
             self.config.getdir('POINT_STAT_OUTPUT_DIR', '')
 
@@ -171,9 +174,6 @@ class PointStatWrapper(CompareGriddedWrapper):
         # set climatology environment variables
         self.set_climo_env_vars()
 
-        self.add_common_envs(time_info)
+        self.add_common_envs()
 
-        self.print_all_envs()
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "PointStat")
+        super().set_environment_variables(time_info)

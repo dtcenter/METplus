@@ -1,11 +1,8 @@
-#!/usr/bin/env python
-
 # @namespace UsageWrapper
 # @brief Provides a default process for master_metplus.py.  Indicates what
 # processes are currently available.
 # @endcode#
 
-from ..util import metplus_check_python_version
 from . import CommandBuilder
 from ..util import met_util
 

@@ -17,7 +17,7 @@ _SeriesByLead.conf
 # with cyclonic physical features (moisture flux, stability, strength of upper-level
 # PV anomaly and jet, etc.) can be related directly to the model forecasts and provide
 # improvement guidance by accurately depicting interactions with significant weather
-# eatures around and within the cyclone. This is in contrast to the traditional
+# features around and within the cyclone. This is in contrast to the traditional
 # method of regional averaging cyclone observations in a fixed grid, which
 # "smooths out" system features and limits the meaningful metrics that can be gathered.
 # Specifically, this use case creates bins of forecast lead times as specified by the
@@ -33,7 +33,6 @@ _SeriesByLead.conf
 #  * Series-Analysis Forecast dataset: GFS
 #  * TC-Pairs/TC-Stat Observation  dataset: BDeck modified-ATCF tropical cyclone data
 #  * Series-Analysis Observation dataset: GFS Analysis
-#  * Sources of data (links, contacts, etc...)
 #
 
 ##############################################################################
@@ -68,14 +67,7 @@ _SeriesByLead.conf
 # Run times:
 #
 # | **Init:** 20141214_0Z
-# | **Forecast lead:** 6
-#
-# | **Init:** 20141214_0Z
-# | **Forecast lead:** 12
-#
-# | **Init:** 20141214_0Z
-# | **Forecast lead:** 18
-#
+# | **Forecast lead:** 6, 12, 18, 24, 30, 36, 42
 #
 
 ##############################################################################
@@ -183,9 +175,10 @@ _SeriesByLead.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in the following directories (relative to **OUTPUT_BASE**):
+# Output for this use case will be found in series_analysis_lead, relative to the **OUTPUT_BASE**, and in the following directories (relative to **OUTPUT_BASE**):
 #
 # * Day1
+# * Day2
 # * series_animate
 #
 # The *Day1* subdirectory will contain files that have the following format:
@@ -212,11 +205,7 @@ _SeriesByLead.conf
 #
 #    **stat** is the statistic of interest, as specified in the METplus series_by_lead_all_fhrs config file.
 #
-#   **NOTE**:
-#    There is only a Day1 subdirectory, and the expected Day2 and Day3 subdirectories are absent, even though
-#    these are requested in the METplus series_by_lead_by_fhr_grouping.conf file. This is because we have
-#    been provided with only data for 20141214_00 to 20141214_18, which constitutes only one days' worth of
-#    results.
+# The *Day2* subdirectory will contain files that have the same formatting as *Day1*, but for those forecast hours within 24 to 42 hours.
 #
 # | The series_animate directory contains the animations of the series analysis in .gif format for all variable, level, and statistics combinations:
 #

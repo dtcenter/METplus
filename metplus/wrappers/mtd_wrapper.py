@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: mtd_wrapper.py
 Contact(s): George McCabe
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -25,8 +22,8 @@ class MTDWrapper(MODEWrapper):
 
     def __init__(self, config, logger):
         self.app_name = 'mtd'
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
         self.fcst_file = None
         self.obs_file = None
@@ -55,6 +52,7 @@ class MTDWrapper(MODEWrapper):
             c_dict['FCST_INPUT_TEMPLATE'] = \
               self.config.getraw('filename_templates',
                                  'FCST_MTD_INPUT_TEMPLATE')
+
             c_dict['FCST_INPUT_DATATYPE'] = \
                 self.config.getstr('config', 'FCST_MTD_INPUT_DATATYPE', '')
 
@@ -87,6 +85,7 @@ class MTDWrapper(MODEWrapper):
             c_dict['OBS_INPUT_TEMPLATE'] = \
               self.config.getraw('filename_templates',
                                    'OBS_MTD_INPUT_TEMPLATE')
+
             c_dict['OBS_INPUT_DATATYPE'] = \
                 self.config.getstr('config', 'OBS_MTD_INPUT_DATATYPE', '')
 
@@ -421,9 +420,7 @@ class MTDWrapper(MODEWrapper):
         self.add_env_var("FCST_FILE_TYPE", self.c_dict['FCST_FILE_TYPE'])
         self.add_env_var("OBS_FILE_TYPE", self.c_dict['OBS_FILE_TYPE'])
 
-        self.add_common_envs(time_info)
-
-        self.print_all_envs()
+        CompareGriddedWrapper.set_environment_variables(self, time_info)
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -463,7 +460,3 @@ class MTDWrapper(MODEWrapper):
             cmd += '-outdir {}'.format(self.outdir)
 
         return cmd
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "MTD")

@@ -564,6 +564,13 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* None
 
+   LOG_TC_RMW_VERBOSITY
+     Overrides the log verbosity for TCRMW  only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
+
+     | *Used by:* TCRMW
+     | *Family:* [config]
+     | *Default:* None
+
    LOG_TC_STAT_VERBOSITY
      Overrides the log verbosity for TcStat only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
 
@@ -668,6 +675,13 @@ METplus Configuration Glossary
      Path to optional configuration file read by TCStat.
 
      | *Used by:* TCStat
+     | *Family:* [config]
+     | *Default:* None
+
+   TC_RMW_CONFIG_FILE
+     Path to optional configuration file read by TCRMW.
+
+     | *Used by:* TCRMW
      | *Family:* [config]
      | *Default:* None
 
@@ -1099,7 +1113,7 @@ METplus Configuration Glossary
      | *Default:*  51
 
    CUT
-     Path to the Linuxcut executable.
+     Path to the Linux cut executable.
 
      | *Used by:*  PB2NC, PointStat
      | *Family:*  [exe]
@@ -1196,7 +1210,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_DLAND_FILE`.
 
    EXTRACT_TILES_DLAT
-     The value that defines the resolution of the data (in decimal degrees).
+     The latitude value, in degrees. Set to the value that defines the resolution of the data (in decimal degrees).
 
      | *Used by:*  ExtractTiles, SeriesByLead
      | *Family:*  [config]
@@ -1580,7 +1594,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_IS_DAILY_FILE` instead.
 
    FCST_IS_PROB
-     Specify whether the forecast data are probabilistic or not.Acceptable values: true/false
+     Specify whether the forecast data are probabilistic or not. Acceptable values: true/false
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PointStat
      | *Family:*  [config]
@@ -2397,14 +2411,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    FHR_GROUP_BEG
-     Define which forecast lead time should be first in a group of forecast leads to use in the analysis. Use in combination with :term:`FHR_GROUP_END` and :term:`FHR_INC`.Example:FHR_GROUP_BEG = 24FHR_GROUP_END = 42FHR_INC = 6List of forecast leads processed: [24, 30, 36, 42]
+     Define which forecast lead time should be first in a group of forecast leads to use in the analysis. Use in combination with :term:`FHR_GROUP_END` and :term:`FHR_INC`. Example: FHR_GROUP_BEG = 24FHR_GROUP_END = 42FHR_INC = 6 List of forecast leads processed: [24, 30, 36, 42]
 
      | *Used by:*  SeriesByLead
      | *Family:*  [config]
      | *Default:*  Varies
 
    FHR_GROUP_END
-     Define which forecast lead time should be the last in a group of forecast leads to use in the analysis. Use in combination with :term:`FHR_GROUP_BEG` and :term:`FHR_INC`.Example:FHR_GROUP_BEG = 24FHR_GROUP_END = 42FHR_INC = 6List of forecast leads processed: [24, 30, 36, 42]
+     Define which forecast lead time should be the last in a group of forecast leads to use in the analysis. Use in combination with :term:`FHR_GROUP_BEG` and :term:`FHR_INC`. Example: FHR_GROUP_BEG = 24FHR_GROUP_END = 42FHR_INC = 6 List of forecast leads processed: [24, 30, 36, 42]
 
      | *Used by:*  SeriesByLead
      | *Family:*  [config]
@@ -2852,15 +2866,15 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    LOG_LEVEL
-     Specify the level of logging.Everything above this level is sent to standard output. To quiet the output to a comfortable level, set this to "ERROR"
+     Specify the level of logging. Everything above this level is sent to standard output. To quiet the output to a comfortable level, set this to "ERROR"
 
      Options (ordered MOST verbose to LEAST verbose):
-     NOTSET
-     DEBUG
-     INFO
-     WARNING
-     ERROR
-     CRITICAL
+     | NOTSET
+     | DEBUG
+     | INFO
+     | WARNING
+     | ERROR
+     | CRITICAL
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -2960,11 +2974,17 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    MET_INSTALL_DIR
-     The base directory of the MET install. To be defined when using MET version 6.1 and beyond. Used to get the full path of the MET executable when calling from METplus Wrappers.
+     The base directory of the MET install. To be defined when using MET version 6.1 and beyond. Used to get the full path of the MET executable and the share directory when calling from METplus Wrappers.
 
      | *Used by:*  All
      | *Family:*  [dir]
      | *Default:*  Varies
+
+   MET_BIN_DIR
+     The directory of the MET executables. Used to get the full path of the MET executable when calling from METplus Wrappers. When using the --bindir option in configuring MET, set MET_BIN_DIR to the same location.  MET_BIN_DIR will be set to {MET_INSTALL_DIR}/bin. Users can unset MET_BIN_DIR or set it to an empty string if the MET tools are found in the user's path, e.g. when using module loads.
+     | *Used by:*  All
+     | *Family:*  [dir]
+     | *Default:*  None
 
    MISSING_VAL
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_MISSING_VAL`.
@@ -3228,14 +3248,14 @@ METplus Configuration Glossary
    MTD_OBS_CONV_RADIUS
      Comma separated list of convolution radius values used by mode-TD for observation files.
 
-     | *Used by:*
+     | *Used by:* MTD
      | *Family:*  [config]
      | *Default:*  5
 
    MTD_OBS_CONV_THRESH
      Comma separated list of convolution threshold values used by mode-TD for observation files.
 
-     | *Used by:*
+     | *Used by:* MTD
      | *Family:*  [config]
      | *Default:*  >0.5
 
@@ -5671,3 +5691,186 @@ METplus Configuration Glossary
      | *Used by:* GenVxMask
      | *Family:* [config]
      | *Default:* None
+
+   TC_RMW_BASIN
+     Specify the value for 'basin' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_CYCLONE
+     Specify the value for 'cyclone' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_STORM_ID
+     Specify the value for 'storm_id' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_STORM_NAME
+     Specify the value for 'storm_name' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_SCALE
+     Specify the value for 'rmw_scale' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_REGRID_METHOD
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_REGRID_WIDTH
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_REGRID_VLD_THRESH
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_REGRID_SHAPE
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_N_AZIMUTH
+     Specify the value for 'n_azimuth' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_N_RANGE
+     Specify the value for 'n_range' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_MAX_RANGE_KM
+     Specify the value for 'max_range_km' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_DELTA_RANGE_KM
+     Specify the value for 'delta_range_km' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_INPUT_DATATYPE
+     Specify the data type of the input directory for input files used with the MET TCRMW tool. Used to set the 'file_type' value of the data dictionary in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_INPUT_DIR
+     Directory containing input data to TCRMW. This variable is optional because you can specify the full path to the input files using :term:`TC_RMW_INPUT_TEMPLATE`.
+
+     | *Used by:* TCRMW
+     | *Family:* [dir]
+     | *Default:* None
+
+   TC_RMW_INPUT_TEMPLATE
+     Filename template of the input data used by TCRMW. See also :term:`TC_RMW_INPUT_DIR`.
+
+     | *Used by:* TCRMW
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   TC_RMW_DECK_INPUT_DIR
+     Directory containing ADECK input data to TCRMW. This variable is optional because you can specify the full path to the input files using :term:`TC_RMW_DECK_TEMPLATE`.
+
+     | *Used by:* TCRMW
+     | *Family:* [dir]
+     | *Default:* None
+
+   TC_RMW_DECK_TEMPLATE
+     Filename template of the ADECK input data used by TCRMW. See also :term:`TC_RMW_DECK_INPUT_DIR`.
+
+     | *Used by:* TCRMW
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   TC_RMW_OUTPUT_DIR
+     Directory to write output data from TCRMW. This variable is optional because you can specify the full path to the output file using :term:`TC_RMW_OUTPUT_TEMPLATE`.
+
+     | *Used by:* TCRMW
+     | *Family:* [dir]
+     | *Default:* None
+
+   TC_RMW_OUTPUT_TEMPLATE
+     Filename template of write the output data generated by TCRMW. See also :term:`TC_RMW_OUTPUT_DIR`.
+
+     | *Used by:* TCRMW
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   TC_RMW_INIT_INCLUDE
+     Value to set for init_include in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_BEG
+     Value to set for valid_beg in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_END
+     Value to set for valid_end in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_INCLUDE_LIST
+     List of values to set for valid_inc in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_EXCLUDE_LIST
+     List of values to set for valid_exc in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_HOUR_LIST
+     List of values to set for valid_hour in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies

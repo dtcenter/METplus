@@ -14,10 +14,11 @@ How to Create Your Own Wrapper
 
     def __init__(self, config, logger):
         super(NewToolWrapper, self).__init__(config, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'), 'bin/new_tool')
+        self.app_path = os.path.join(self.p.getdir('MET_BIN_DIR', ''),
+                                     'new_tool')
         self.app_name = os.path.basename(self.app_path)
 
-**NOTE**: 'bin/new_tool' is the path to the MET tool being wrapped
+**NOTE**: 'new_tool' is the name of the MET tool being wrapped
 
 * Override the run_at_time method if the wrapper will be called once for each run time specified in the configuration file. If the wrapper will loop over each forecast lead (LEAD_SEQ in the METplus config file) and process once for each, then override run_at_time with the following method and put the logic to build the MET command for each run in a run_at_time_once method::
 
@@ -136,3 +137,14 @@ Your use case/example configuration file is located in a directory structure lik
     METplus/docs/use_cases/met_tool_wrapper/NewTool/README.md
 
 Note the documentation file is in METplus/docs while the use case conf file is in METplus/parm
+
+Documentation
+-------------
+
+* Add a section for the new wrapper in the 'Python Wrappers' section of the User's Guide. This includes a list of all configuration variables specific to this wrapper.
+
+* Add all new configuration variables to the 'METplus Configuration Glossary' section of the User's Guide
+
+* Add any relevant new keywords to the 'METplus Quick Search for Use Cases' section of the User's Guide.
+
+* Create Sphinx documentation files for each new use case (under docs/use_cases). There should be at least one use case in the docs/use_cases/met_tool_wrapper subdirectory for the new wrapper (more if it can be configured in diffferent ways that should be shown in an example). Be sure to add a README.rst file for the header.

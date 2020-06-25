@@ -71,7 +71,6 @@ Using this format, the valid time range values specified must be defined as YYYY
 This is the first valid time that will be processed. The format of this variable is controlled by :term:`VALID_TIME_FMT`. For example, if VALID_TIME_FMT=%Y%m%d, then VALID_BEG must be set to a valid time matching YYYYMMDD, such as 20190201.
 
 :term:`VALID_END`:
-
 This is the last valid time that can be processed. The format of this variable is controlled by :term:`VALID_TIME_FMT`. For example, if VALID_TIME_FMT=%Y%m%d, then VALID_END must be set to a valid time matching YYYYMMDD, such as 20190202.
 
 .. note::
@@ -150,7 +149,7 @@ If :term:`LOOP_BY` = VALID and the current run time is 2019-02-01 at 00Z, then t
 | 2. Initialized on 2019-01-31 at 18Z / valid on 2019-02-01 at 00Z
 | 3. Initialized on 2019-01-31 at 15Z / valid on 2019-02-01 at 00Z
 
-If :term:`LOOP_BY` = INIT and the current run time is 20190-20-1 at 00Z, then three times will be processed:
+If :term:`LOOP_BY` = INIT and the current run time is 2019-02-01 at 00Z, then three times will be processed:
 
 | 1. Initialized on 2019-02-01 at 00Z / valid on 2019-02-01 at 03Z
 | 2. Initialized on 2019-02-01 at 00Z / valid on 2019-02-01 at 06Z
@@ -192,7 +191,7 @@ If METplus Wrappers is configured to loop by valid time (:term:`LOOP_BY` = VALID
 
 At valid time 2019-02-01 00Z, this initialization sequence will build a forecast lead list of 0, 6, 12, 18, 24, 30, etc. and at valid time 2019-02-01 01Z, this initialization sequence will build a forecast lead list of 1, 7, 13, 19, 25, 31, etc.
 
-You can also restrict the forecast leads that will be used by setting :term:`LEAD_SEQ_MIN` and :term:`LEAD_SEQ_MAX`. For example, if you want to only process forecast leads between 12 and 24 you can set::
+If you utilize :term:`LEAD_SEQ`, you should restrict the forecast leads that will be used by setting :term:`LEAD_SEQ_MIN` and :term:`LEAD_SEQ_MAX`. For example, if you want to only process forecast leads between 12 and 24 you can set::
 
   [config]
   LEAD_SEQ_MIN = 12
@@ -490,7 +489,7 @@ The field information specified using the \*_NAME/\*_LEVELS variables will be fo
 
 and then comparing TMP (P500 and P750) in the forecast data and TEMP ((1,*,*)) in the observation data will generate the following in the MET config file::
 
-  fcst = {field = [ {name="TMP"; level="P500";} ];}
+  fcst = {field = [ {name="TMP"; level="P750";} ];}
   obs = {field = [{name="TEMP"; level="(1,*,*)";} ];}
 
 Note that some MET applications allow multiple fields to be specified for a single run. If the MET tool allows it and METplus Wrappers is configured accordingly, these two comparisons would be configured in a single run.
@@ -505,7 +504,7 @@ Set this to a comma-separated list of threshold values to use in the comparison.
   FCST_VAR1_LEVELS = P500
   FCST_VAR1_THRESH = le0.5, gt0.4, gt0.5, gt0.8
 
-will add the folloing information to the MET config file::
+will add the following information to the MET config file::
 
    fcst = {field = [ {name="TMP"; level="P500"; cat_thresh=[ le0.5, gt0.4, gt0.5, gt0.8];} ];}
 
@@ -563,6 +562,8 @@ Example 2::
 In this example, GridStat will process HGT at pressure levels 500 and 750 and TMP at pressure levels 500 and 750, while EnsembleStat will only process HGT at pressure level 500. To configure EnsembleStat to also process TMP, the user will have to define it explicitly with FCST_ENSEMBLE_STAT_VAR2_NAME.
 
 This functionality applies to GridStat, EnsembleStat, PointStat, MODE, and MTD wrappers only.
+
+For more information on GRIB_lvl_typ and other file-specific commands, review the MET User's Guide, Chapter 3.
 
 .. _Directory_and_Filename_Template_Info:
 
@@ -664,7 +665,7 @@ The following behavior can be expected for each file:
   2. The second file matches the template, the file time is within the window, and the time difference is less than the closest file so the filename and time difference relative to the valid time (3600 seconds, or 1 hour) is saved.
   3. The third file does not match the template and is ignored.
   4. The fourth file matches the template and is within the time range, but it is the same distance away from the valid time as the closest file. GridStat only allows one file to be processed so it is ignored (PB2NC is currently the only METplus Wrapper that allows multiple files to be processed).
-  5. The fifth file matches the template but it is valid outside of the -2 to +2 hour window range and is ignored.
+  5. The fifth file matches the template but it is a further distance away from the closest file (7200 seconds versus 3600 seconds) so it is ignored.
 
 Therefore, METplus Wrappers will use /my/grid_stat/input/obs/20190131/pre.20190131_23.ext as the input to grid_stat in this example.
 
@@ -702,9 +703,9 @@ Config Quick Start Example
 
            -set MET_INSTALL_DIR = <path/to/your/MET>
 
-             where *<path/to/your/MET>* is the full path to your MET installation:
+           where *<path/to/your/MET>* is the full path to your MET installation:
 
-               e.g. /d1/projects/MET/met-9.0
+            e.g. /d1/projects/MET/met-9.0
 
 
 
@@ -736,19 +737,19 @@ Config Quick Start Example
     d. Click on the *sample_data-medium_range-x.y.tgz* link associated with that release, where x.y refers to the release number.
     e. Save it to the directory you created above, hereafter referred to as INPUT_DATA_DIRECTORY
     f. cd to your $INPUT_DATA_DIRECTORY and uncompress the tarball: *tar xvfz sample_data-medium_range-x.y.tgz* where x.y is replaced with the current release number.
-    g. when you perform a listing of the sample_data directory, the INPUT_DATA_DIRECTORY/METplus_Data/model_applications/medium_range contains the data you will need for this use case
+    g. when you perform a listing of the sample_data directory, the INPUT_DATA_DIRECTORY/model_applications/medium_range contains the data you will need for this use case
   
   3. Set up the configuration file:
     
     a. Your METplus Wrappers install directory will hereafter be referred to as METplus_INSTALL
-    b. Verify that all the *</path/to>* values are replaced with valid paths in the METplus_INSTALL/parm/metplus_config/metplus_data.conf and METplus_INSTALL/parm/metplus_conf/metplus_system.conf files
+    b. Verify that all the *</path/to>* values are replaced with valid paths in the METplus_INSTALL/parm/metplus_config/metplus_data.conf and METplus_INSTALL/parm/metplus_config/metplus_system.conf files
     c. One configuration file is used in this use case, Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data, and using TcPairs which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone tracks to generate matched pairs and error statistics). The TCMPRPlotter is then used (wraps the MET tool plot_tcmpr.R) to generate a mean and median plots for these matched pairs
     d. In your editor, open the METplus_INSTALL/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf file and perform the following:
       
       1. Under the [dir] section, add the following:
         
         a. OUTPUT_BASE to where you wish to save the output:  e.g. OUTPUT_BASE = path-to-your/output_dir
-        b. INPUT_BASE = INPUT_DATA_DIRECTORY/METplus_Data
+        b. INPUT_BASE = INPUT_DATA_DIRECTORY/model_applications
         c. MET_INSTALL_DIR = path-to-your/MET-install where path-to-your/MET-install is the full path where your MET installation resides
         d. Verify that PROCESS_LIST, under the [conf] header/section is set to TcPairs, TCMPRPlotter. This instructs METplus Wrappers to run the TcPairs wrapper first (TC-Pairs) followed by the TCMPR plotter wrapper (plot_TCMPR.R).
 
@@ -760,7 +761,7 @@ Config Quick Start Example
     a. Make sure you have set the following environment in your .cshrc (C Shell) or .bashrc (Bash):
       
       1. csh: setenv RSCRIPTS_BASE $MET_BASE/scripts/Rscripts
-      2. bash: export RSCRIPTS_BASE $MET_BASE/scripts/Rscripts
+      2. bash: export RSCRIPTS_BASE=$MET_BASE/scripts/Rscripts
       3. Refer to section 2.7 'Set up your environment' in the :ref:`install` chapter for the full instructions on setting up the rest of your environment
       4. On your command line, run::
          

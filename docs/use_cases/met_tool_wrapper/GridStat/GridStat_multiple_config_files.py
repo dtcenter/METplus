@@ -107,7 +107,7 @@ _config_files.conf
 #        -c dir.GRID_STAT_OUTPUT_DIR={OUTPUT_BASE}/met_tool_wrapper/GridStat/GridStat_multiple_config
 #        -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, passing in GridStat.conf, GridStat_foreacst.conf, GridStat_observation.conf, and an explicit override of the output directory::
+# 2) Modifying the configurations in parm/metplus_config, passing in GridStat.conf, GridStat_forecast.conf, GridStat_observation.conf, and an explicit override of the output directory::
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 #        -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf
@@ -142,12 +142,12 @@ _config_files.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in grid_stat/2005080700 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in met_tool_wrapper/GridStat/GridStat_multiple_config//2005080700 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * grid_stat_QPF_APCP_vs_QPE_APCP_03_120000L_20050807_120000V_eclv.txt
-# * grid_stat_QPF_APCP_vs_QPE_APCP_03_120000L_20050807_120000V_grad.txt
-# * grid_stat_QPF_APCP_vs_QPE_APCP_03_120000L_20050807_120000V.stat
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_120000L_20050807_120000V_eclv.txt
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_120000L_20050807_120000V_grad.txt
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_120000L_20050807_120000V.stat
 
 ##############################################################################
 # Keywords

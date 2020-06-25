@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: extract_tiles_wrapper.py
 Contact(s): Julie Prestopnik, Minna Win, George McCabe, Jim Frimel
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 import sys
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import feature_util
 from .tc_stat_wrapper import TCStatWrapper
@@ -44,14 +41,14 @@ class ExtractTilesWrapper(CommandBuilder):
     def __init__(self, config, logger):
         self.app_name = 'extract_tiles'
         super().__init__(config, logger)
-        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
+        met_bin_dir = self.config.getdir('MET_BIN_DIR', '')
         self.tc_pairs_dir = self.config.getdir('EXTRACT_TILES_PAIRS_INPUT_DIR')
         self.overwrite_flag = self.config.getbool('config',
                                               'EXTRACT_TILES_OVERWRITE_TRACK')
         self.addl_filter_opts = \
             self.config.getstr('config', 'EXTRACT_TILES_FILTER_OPTS')
         self.filtered_out_dir = self.config.getdir('EXTRACT_TILES_OUTPUT_DIR')
-        self.tc_stat_exe = os.path.join(met_install_dir, 'bin/tc_stat')
+        self.tc_stat_exe = os.path.join(met_bin_dir, 'tc_stat')
 
     def run_at_time(self, input_dict):
         """!Loops over loop strings and calls run_at_time_loop_string() to process data
@@ -237,6 +234,3 @@ class ExtractTilesWrapper(CommandBuilder):
             processed_file = True
 
         return processed_file
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "ExtractTiles")

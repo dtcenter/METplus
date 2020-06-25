@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: tc_pairs_wrapper.py
 Contact(s): Julie Prestopnik, Minna Win, Jim Frimel, George McCabe
@@ -22,7 +20,6 @@ import csv
 import datetime
 import glob
 
-from ..util import metplus_check_python_version
 from ..util import time_util
 from ..util import met_util as util
 from ..util import do_string_sub
@@ -45,8 +42,8 @@ class TCPairsWrapper(CommandBuilder):
 
     def __init__(self, config, logger):
         self.app_name = 'tc_pairs'
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
         self.adeck = []
         self.bdeck = []
@@ -125,11 +122,14 @@ class TCPairsWrapper(CommandBuilder):
         c_dict['ADECK_TEMPLATE'] = self.config.getraw('filename_templates',
                                                       'TC_PAIRS_ADECK_TEMPLATE',
                                                       '')
+
         c_dict['BDECK_TEMPLATE'] = self.config.getraw('filename_templates',
                                                       'TC_PAIRS_BDECK_TEMPLATE')
+
         c_dict['EDECK_TEMPLATE'] = self.config.getraw('filename_templates',
                                                       'TC_PAIRS_EDECK_TEMPLATE',
                                                       '')
+
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                        'TC_PAIRS_OUTPUT_TEMPLATE')
         c_dict['SKIP_REFORMAT'] = self.config.getbool('config',
@@ -442,16 +442,7 @@ class TCPairsWrapper(CommandBuilder):
         tmp_dland_file = self.c_dict['DLAND_FILE']
         self.add_env_var('DLAND_FILE', str(tmp_dland_file))
 
-        # set user environment variables
-        self.set_user_environment(time_info)
-
-        # send environment variables to logger
-        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_user_env_items()
-        for item in print_list:
-            self.print_env_item(item)
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy(print_list)
+        super().set_environment_variables(time_info)
 
     def process_data(self, basin, cyclone, model_list, time_info):
         """!Find requested files and run tc_pairs
@@ -768,6 +759,3 @@ class TCPairsWrapper(CommandBuilder):
 
         csvfile.close()
         out_file.close()
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "TCPairs")

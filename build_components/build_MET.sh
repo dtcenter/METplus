@@ -3,17 +3,24 @@
 ### Externals.cfg specifies what to checkout and where to put it
 ../manage_externals/checkout_externals
 
-## Grab the compile script
-wget https://dtcenter.org/sites/default/files/community-code/met/compile_scripts/compile_MET_all.sh.tgz
-tar -xzvf compile_MET_all.sh.tgz
-
 ## Grab the external library tar file
-wget https://dtcenter.org/sites/default/files/community-code/met/compile_scripts/tar_files.tgz
+## Use wget if available, curl if not
+if hash wget 2>/dev/null; then
+        wget https://dtcenter.org/sites/default/files/community-code/met/compile_scripts/tar_files.tgz
+    else
+        curl https://dtcenter.org/sites/default/files/community-code/met/compile_scripts/tar_files.tgz -o tar_files.tgz
+    fi
 
-## Stuff the contents into tar_files directory
+## Extract the build script
+tar -xzvf compile_MET_all.sh.tgz
+## Copy the current MET build all script and sample configurations from the cloned git repo
+cp ../MET/scripts/installation/compile_MET_all.sh . 
+cp -r ../MET/scripts/installation/config .
+
+## Extract the supporting library contents into tar_files directory
 tar -xzvf tar_files.tgz
 
-## link the git hub source code directory to the current directory - serious hack for now
+## link the git hub source code directory to the current directory
 ln -s ../MET/met met
 
 ## Create a tarball which is what the compile script wants right now - hopefully change this later
@@ -24,5 +31,6 @@ source env_vars.bash
 cd met
 ./bootstrap
 cd ../
-bash compile_MET_all.sh
+
+bash compile_MET_all.sh config/install_met_env.generic
 

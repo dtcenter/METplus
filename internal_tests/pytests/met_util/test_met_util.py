@@ -77,7 +77,6 @@ def test_remove_quotes(before, after):
         ({'gt4&&lt5&&ne4.5'}, True),
     ]
 )
-
 def test_threshold(key, value):
     assert(util.validate_thresholds(key) == value)
 
@@ -169,6 +168,11 @@ def test_getlist_has_commas():
     l = 'gt2.7, >3.6, eq42, "has,commas,in,it"'
     test_list = util.getlist(l)
     assert(test_list == ['gt2.7', '>3.6', 'eq42', 'has,commas,in,it'])
+
+def test_getlist_empty():
+    l = ''
+    test_list = util.getlist(l)
+    assert(test_list == [])
 
 # field info only defined in the FCST_* variables
 @pytest.mark.parametrize(

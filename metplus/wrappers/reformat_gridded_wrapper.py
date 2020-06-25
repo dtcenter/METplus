@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: reformat_gridded_wrapper.py
 Contact(s): George McCabe

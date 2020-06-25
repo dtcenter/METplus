@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''! @namespace SeriesByInitWrapper
 @brief Performs any optional filtering of input tcst data then performs
 regridding via the MET tool regrid_data_plane, then builds up
@@ -18,7 +16,6 @@ import os
 import re
 import sys
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from .tc_stat_wrapper import TCStatWrapper
 from ..util import feature_util
@@ -32,8 +29,8 @@ class SeriesByInitWrapper(CommandBuilder):
     """
 
     def __init__(self, config, logger):
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin/series_analysis')
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     'series_analysis')
         self.app_name = os.path.basename(self.app_path)
         super().__init__(config, logger)
         # Retrieve any necessary values (dirs, executables)
@@ -535,6 +532,7 @@ class SeriesByInitWrapper(CommandBuilder):
                                                  cur_init)
                         self.create_out_arg(cur_storm, cur_init, name, level)
                         self.add_common_envs()
+                        super().set_environment_variables()
                         self.build()
                         self.clear()
 
@@ -668,8 +666,8 @@ class SeriesByInitWrapper(CommandBuilder):
            Returns:
         """
         background_map = self.config.getbool('config', 'SERIES_ANALYSIS_BACKGROUND_MAP')
-        plot_data_plane_exe = os.path.join(self.config.getdir('MET_INSTALL_DIR'),
-                                           'bin/plot_data_plane')
+        plot_data_plane_exe = os.path.join(self.config.getdir('MET_BIN_DIR', ''),
+                                           'plot_data_plane')
 
         full_vars_list = feature_util.retrieve_var_name_levels(self.config)
         for cur_var in full_vars_list:
@@ -888,6 +886,3 @@ class SeriesByInitWrapper(CommandBuilder):
             #  so they don't cause any problems with further processing
             # steps.
             util.prune_empty(fcst_anly_ascii_dir, self.logger)
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "SeriesByInit")
