@@ -28,8 +28,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
     '''
     def __init__(self, config, logger):
         self.app_name = 'regrid_data_plane'
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
 
     def create_c_dict(self):

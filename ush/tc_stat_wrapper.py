@@ -76,15 +76,15 @@ class TCStatWrapper(CommandBuilder):
         cur_filename = sys._getframe().f_code.co_filename
         cur_function = sys._getframe().f_code.co_name
 
-        # Check for the MET_INSTALL_DIR, if it is missing, then
+        # Check for the MET_BIN_DIR, if it is missing, then
         # we cannot invoke the MET tool.
-        if not self.config.getdir('MET_INSTALL_DIR'):
+        if not self.config.getdir('MET_BIN_DIR', ''):
             self.log_error(
-                cur_filename + '|' + cur_function + ': MET install ' +
+                cur_filename + '|' + cur_function + ': MET bin ' +
                 'directory not found in config file. Exiting.')
             sys.exit(1)
         c_dict['APP_PATH'] = os.path.join(
-            self.config.getdir('MET_INSTALL_DIR'), 'bin/tc_stat')
+            self.config.getdir('MET_BIN_DIR', ''), 'tc_stat')
 
         c_dict['APP_NAME'] = os.path.basename(c_dict['APP_PATH'])
 
@@ -230,7 +230,7 @@ class TCStatWrapper(CommandBuilder):
 
         c_dict['METPLUS_BASE'] = self.config.getdir('METPLUS_BASE')
 
-        c_dict['MET_INSTALL_DIR'] = self.config.getdir('MET_INSTALL_DIR')
+        c_dict['MET_BIN_DIR'] = self.config.getdir('MET_BIN_DIR', '')
 
         c_dict['INPUT_DIR'] = self.config.getdir('TC_STAT_INPUT_DIR')
 
