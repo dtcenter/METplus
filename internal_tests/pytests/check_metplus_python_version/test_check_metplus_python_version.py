@@ -1,7 +1,8 @@
 #!/usr/bin/env python
 
 import pytest
-import metplus_check_python_version as check_mp_py
+
+from metplus.util import metplus_check_python_version as check_mp_py
 
 # test that:
 #  the same version of python passes

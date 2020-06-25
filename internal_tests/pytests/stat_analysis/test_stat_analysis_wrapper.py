@@ -1,15 +1,18 @@
 #!/usr/bin/env python
 
 import os
-import config_metplus
 import datetime
 import sys
 import logging
 import pytest
 import datetime
-from stat_analysis_wrapper import StatAnalysisWrapper
-import met_util as util
+
 import produtil.setup
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.stat_analysis_wrapper import StatAnalysisWrapper
+from metplus.util import met_util as util
+
 
 #
 # These are tests (not necessarily unit tests) for the
@@ -122,8 +125,8 @@ def test_get_command():
     st = stat_analysis_wrapper()
     # Test 1
     expected_command = (
-        st.config.getdir('MET_INSTALL_DIR')
-        +'/bin/stat_analysis '
+        st.config.getdir('MET_BIN_DIR', '')
+        +'/stat_analysis '
         +'-lookin /path/to/lookin_dir '
         +'-config /path/to/STATAnalysisConfig'
         +' '
@@ -142,8 +145,8 @@ def test_create_c_dict():
     c_dict = st.create_c_dict()
     assert(c_dict['LOOP_ORDER'] == 'times')
     assert(c_dict['PROCESS_LIST'] == 'StatAnalysis')
-    assert(c_dict['CONFIG_FILE'] == (METPLUS_BASE+'/internal_tests/'
-                                     +'config/STATAnalysisConfig'))
+    assert(os.path.realpath(c_dict['CONFIG_FILE']) == (METPLUS_BASE+'/internal_tests/'
+                                                       +'config/STATAnalysisConfig'))
     assert(c_dict['OUTPUT_BASE_DIR'] == (st.config.getdir('OUTPUT_BASE')
                                          +'/stat_analysis'))
     assert(c_dict['GROUP_LIST_ITEMS'] == [ 'FCST_INIT_HOUR_LIST' ])

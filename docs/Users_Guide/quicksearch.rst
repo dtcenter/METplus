@@ -13,12 +13,14 @@ Use Cases by MET Tool:
 | `MTD <https://ncar.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_
 | `PB2NC <https://ncar.github.io/METplus/search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_
 | `PCPCombine <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_
+| `Point2Grid <https://ncar.github.io/METplus/search.html?q=Point2GridToolUseCase&check_keywords=yes&area=default>`_
 | `PointStat <https://ncar.github.io/METplus/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
 | `RegridDataPlane <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
 | `SeriesAnalysis <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
 | `StatAnalysis <https://ncar.github.io/METplus/search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
 | `TCMPRPlotter <https://ncar.github.io/METplus/search.html?q=TCMPRPlotterUseCase&check_keywords=yes&area=default>`_
 | `TCPairs <https://ncar.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_
+| `TCRMW <https://ncar.github.io/METplus/search.html?q=TCRMWToolUseCase&check_keywords=yes&area=default>`_
 | `TCStat <https://ncar.github.io/METplus/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_
 
 
@@ -55,6 +57,7 @@ Use Cases by METplus Feature:
 | `Feature Relative  <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_
 | `GempakToCF <https://ncar.github.io/METplus/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_
 | `Looping by Month or Year  <https://ncar.github.io/METplus/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
+| `List Expansion (using begin_end_incr syntax)  <https://ncar.github.io/METplus/search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
 | `Masking for Regions of Interest <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
 | `MET_PYTHON_EXE Environment Variable  <https://ncar.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
 | `Multiple Conf File Use <https://ncar.github.io/METplus/search.html?q=MultiConfUseCase&check_keywords=yes&area=default>`_

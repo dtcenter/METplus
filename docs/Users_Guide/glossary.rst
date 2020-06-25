@@ -225,6 +225,20 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
+   POINT_2_GRID_GAUSSIAN_DX
+     Gaussian dx value to add to the Point2Grid command line call with -gaussian_dx. Not added to call if unset or set to empty string.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_GAUSSIAN_RADIUS
+     Gaussian radius value to add to the Point2Grid command line call with -gaussian_radius. Not added to call if unset or set to empty string.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
    REGRID_DATA_PLANE_GAUSSIAN_DX
      Gaussian dx value to add to the RegridDataPlane command line call with -gaussian_dx. Not added to call if unset or set to empty string.
 
@@ -379,6 +393,63 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* None
 
+   POINT_2_GRID_WINDOW_BEGIN
+     Specify the beginning of the time window to use for a date stamp window to grab observations 
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_WINDOW_END
+     Specify the end of the time window to use for a date stamp window to grab observations 
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+
+   POINT_2_GRID_INPUT_FIELD
+     Specify the input field name that is read by Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_INPUT_LEVEL
+     Specify the input level name that is read by Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_QC_FLAGS
+     Specify the qc flags name that is read by Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_ADP
+     Provides an additional Aerosol Detection Product when GOES 16/17 input and an AOD variable name is used.
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_PROB_CAT_THRESH
+     Specify the probability threshold for practically perfect forecasts
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
+   POINT_2_GRID_VLD_THRESH
+     Specify the required ratio of valid data for regridding
+
+     | *Used by:* Point2Grid
+     | *Family:* [config]
+     | *Default:* None
+
    FCST_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME
      Specify the (optional) forecast input field name that is read by RegridDataPlane. The name corresponds to :term:`FCST_VAR<n>_NAME`. This is used when using Python Embedding as input to the MET tool, because the :term:`FCST_VAR<n>_NAME` defines the python script to call.
 
@@ -493,6 +564,13 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* None
 
+   LOG_TC_RMW_VERBOSITY
+     Overrides the log verbosity for TCRMW  only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
+
+     | *Used by:* TCRMW
+     | *Family:* [config]
+     | *Default:* None
+
    LOG_TC_STAT_VERBOSITY
      Overrides the log verbosity for TcStat only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
 
@@ -585,10 +663,25 @@ METplus Configuration Glossary
      | *Family:* [config]
      | *Default:* None
 
+   ASCII2NC_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run ASCII2NC if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  ASCII2NC
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+		       
    TC_STAT_CONFIG_FILE
      Path to optional configuration file read by TCStat.
 
      | *Used by:* TCStat
+     | *Family:* [config]
+     | *Default:* None
+
+   TC_RMW_CONFIG_FILE
+     Path to optional configuration file read by TCRMW.
+
+     | *Used by:* TCRMW
      | *Family:* [config]
      | *Default:* None
 
@@ -789,6 +882,27 @@ METplus Configuration Glossary
 
    CLIMO_POINT_STAT_INPUT_DIR
      .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_INPUT_DIR`.
+
+   POINT_2_GRID_INPUT_TEMPLATE
+     Filename template for the point file used by Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [filename_template]
+     | *Default:* None
+
+   POINT_2_GRID_OUTPUT_TEMPLATE
+     Filename template for the output of  Point2Grid.
+
+     | *Used by:* Point2Grid
+     | *Family:* [filename_template]
+     | *Default:* None
+
+   POINT_2_GRID_INPUT_DIR
+     Directory containing the file containing point data used by point2grid. This variable is optional because you can specify the full path to a point file using :term:`POINT_2_GRID_INPUT_TEMPLATE`.
+
+     | *Used by:* Point2Grid
+     | *Family:* [dir]
+     | *Default:* None
 
    POINT_STAT_CLIMO_MEAN_INPUT_DIR
      Directory containing the climatology mean file used by PointStat. This variable is optional because you can specify the full path to a climatology file using :term:`POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE`.
@@ -999,7 +1113,7 @@ METplus Configuration Glossary
      | *Default:*  51
 
    CUT
-     Path to the Linuxcut executable.
+     Path to the Linux cut executable.
 
      | *Used by:*  PB2NC, PointStat
      | *Family:*  [exe]
@@ -1096,7 +1210,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_DLAND_FILE`.
 
    EXTRACT_TILES_DLAT
-     The value that defines the resolution of the data (in decimal degrees).
+     The latitude value, in degrees. Set to the value that defines the resolution of the data (in decimal degrees).
 
      | *Used by:*  ExtractTiles, SeriesByLead
      | *Family:*  [config]
@@ -1172,6 +1286,13 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:* NONE
 
+   POINT_2_GRID_REGRID_TO_GRID
+     Used to set the regrid dictionary item 'to_grid' in the MET Point2Grid config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  Point2Grid
+     | *Family:*  [config]
+     | *Default:* NONE
+
    POINT_STAT_REGRID_TO_GRID
      Used to set the regrid dictionary item 'to_grid' in the MET PointStat config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
 
@@ -1226,13 +1347,6 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:*
-
-   ENSEMBLE_STAT_ONCE_PER_FIELD
-     If True, run ensemble_stat separately for each field name/level combination specified in the configuration file. See  :ref:`Field_Info` for more information on how fields are specified. If False, run ensemble_stat once with all of the fields specified.
-
-     | *Used by:*  EnsembleStat
-     | *Family:*  [config]
-     | *Default:*  False
 
    ENSEMBLE_STAT_OUTPUT_DIR
      Specify the output directory where files from the MET ensemble_stat tool are written.
@@ -1480,7 +1594,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_IS_DAILY_FILE` instead.
 
    FCST_IS_PROB
-     Specify whether the forecast data are probabilistic or not.Acceptable values: true/false
+     Specify whether the forecast data are probabilistic or not. Acceptable values: true/false
 
      | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PointStat
      | *Family:*  [config]
@@ -2297,14 +2411,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    FHR_GROUP_BEG
-     Define which forecast lead time should be first in a group of forecast leads to use in the analysis. Use in combination with :term:`FHR_GROUP_END` and :term:`FHR_INC`.Example:FHR_GROUP_BEG = 24FHR_GROUP_END = 42FHR_INC = 6List of forecast leads processed: [24, 30, 36, 42]
+     Define which forecast lead time should be first in a group of forecast leads to use in the analysis. Use in combination with :term:`FHR_GROUP_END` and :term:`FHR_INC`. Example: FHR_GROUP_BEG = 24FHR_GROUP_END = 42FHR_INC = 6 List of forecast leads processed: [24, 30, 36, 42]
 
      | *Used by:*  SeriesByLead
      | *Family:*  [config]
      | *Default:*  Varies
 
    FHR_GROUP_END
-     Define which forecast lead time should be the last in a group of forecast leads to use in the analysis. Use in combination with :term:`FHR_GROUP_BEG` and :term:`FHR_INC`.Example:FHR_GROUP_BEG = 24FHR_GROUP_END = 42FHR_INC = 6List of forecast leads processed: [24, 30, 36, 42]
+     Define which forecast lead time should be the last in a group of forecast leads to use in the analysis. Use in combination with :term:`FHR_GROUP_BEG` and :term:`FHR_INC`. Example: FHR_GROUP_BEG = 24FHR_GROUP_END = 42FHR_INC = 6 List of forecast leads processed: [24, 30, 36, 42]
 
      | *Used by:*  SeriesByLead
      | *Family:*  [config]
@@ -2752,15 +2866,15 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    LOG_LEVEL
-     Specify the level of logging.Everything above this level is sent to standard output. To quiet the output to a comfortable level, set this to "ERROR"
+     Specify the level of logging. Everything above this level is sent to standard output. To quiet the output to a comfortable level, set this to "ERROR"
 
      Options (ordered MOST verbose to LEAST verbose):
-     NOTSET
-     DEBUG
-     INFO
-     WARNING
-     ERROR
-     CRITICAL
+     | NOTSET
+     | DEBUG
+     | INFO
+     | WARNING
+     | ERROR
+     | CRITICAL
 
      | *Used by:*  All
      | *Family:*  [config]
@@ -2860,11 +2974,17 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    MET_INSTALL_DIR
-     The base directory of the MET install. To be defined when using MET version 6.1 and beyond. Used to get the full path of the MET executable when calling from METplus Wrappers.
+     The base directory of the MET install. To be defined when using MET version 6.1 and beyond. Used to get the full path of the MET executable and the share directory when calling from METplus Wrappers.
 
      | *Used by:*  All
      | *Family:*  [dir]
      | *Default:*  Varies
+
+   MET_BIN_DIR
+     The directory of the MET executables. Used to get the full path of the MET executable when calling from METplus Wrappers. When using the --bindir option in configuring MET, set MET_BIN_DIR to the same location.  MET_BIN_DIR will be set to {MET_INSTALL_DIR}/bin. Users can unset MET_BIN_DIR or set it to an empty string if the MET tools are found in the user's path, e.g. when using module loads.
+     | *Used by:*  All
+     | *Family:*  [dir]
+     | *Default:*  None
 
    MISSING_VAL
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_MISSING_VAL`.
@@ -3128,14 +3248,14 @@ METplus Configuration Glossary
    MTD_OBS_CONV_RADIUS
      Comma separated list of convolution radius values used by mode-TD for observation files.
 
-     | *Used by:*
+     | *Used by:* MTD
      | *Family:*  [config]
      | *Default:*  5
 
    MTD_OBS_CONV_THRESH
      Comma separated list of convolution threshold values used by mode-TD for observation files.
 
-     | *Used by:*
+     | *Used by:* MTD
      | *Family:*  [config]
      | *Default:*  >0.5
 
@@ -4220,6 +4340,13 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
+   POINT_2_GRID_OUTPUT_DIR
+     Specify the directory where output files from the MET point2grid tool are written.
+
+     | *Used by:*  Point2Grid
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
    POINT_STAT_OUTPUT_DIR
      Specify the directory where output files from the MET point_stat tool are written.
 
@@ -4313,6 +4440,13 @@ METplus Configuration Glossary
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
      | *Default:*  None
+
+   POINT_2_GRID_REGRID_METHOD
+     Sets the gridding method used by point2grid.
+
+     | *Used by:*  Point2Grid
+     | *Family:*  [config]
+     | *Default:*
 
    REGRID_DATA_PLANE_METHOD
      Sets the method used by regrid_data_plane. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
@@ -5557,3 +5691,186 @@ METplus Configuration Glossary
      | *Used by:* GenVxMask
      | *Family:* [config]
      | *Default:* None
+
+   TC_RMW_BASIN
+     Specify the value for 'basin' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_CYCLONE
+     Specify the value for 'cyclone' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_STORM_ID
+     Specify the value for 'storm_id' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_STORM_NAME
+     Specify the value for 'storm_name' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_SCALE
+     Specify the value for 'rmw_scale' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_REGRID_METHOD
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_REGRID_WIDTH
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_REGRID_VLD_THRESH
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_REGRID_SHAPE
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_N_AZIMUTH
+     Specify the value for 'n_azimuth' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_N_RANGE
+     Specify the value for 'n_range' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_MAX_RANGE_KM
+     Specify the value for 'max_range_km' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_DELTA_RANGE_KM
+     Specify the value for 'delta_range_km' in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_INPUT_DATATYPE
+     Specify the data type of the input directory for input files used with the MET TCRMW tool. Used to set the 'file_type' value of the data dictionary in the MET configuration file for TCRMW.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_INPUT_DIR
+     Directory containing input data to TCRMW. This variable is optional because you can specify the full path to the input files using :term:`TC_RMW_INPUT_TEMPLATE`.
+
+     | *Used by:* TCRMW
+     | *Family:* [dir]
+     | *Default:* None
+
+   TC_RMW_INPUT_TEMPLATE
+     Filename template of the input data used by TCRMW. See also :term:`TC_RMW_INPUT_DIR`.
+
+     | *Used by:* TCRMW
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   TC_RMW_DECK_INPUT_DIR
+     Directory containing ADECK input data to TCRMW. This variable is optional because you can specify the full path to the input files using :term:`TC_RMW_DECK_TEMPLATE`.
+
+     | *Used by:* TCRMW
+     | *Family:* [dir]
+     | *Default:* None
+
+   TC_RMW_DECK_TEMPLATE
+     Filename template of the ADECK input data used by TCRMW. See also :term:`TC_RMW_DECK_INPUT_DIR`.
+
+     | *Used by:* TCRMW
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   TC_RMW_OUTPUT_DIR
+     Directory to write output data from TCRMW. This variable is optional because you can specify the full path to the output file using :term:`TC_RMW_OUTPUT_TEMPLATE`.
+
+     | *Used by:* TCRMW
+     | *Family:* [dir]
+     | *Default:* None
+
+   TC_RMW_OUTPUT_TEMPLATE
+     Filename template of write the output data generated by TCRMW. See also :term:`TC_RMW_OUTPUT_DIR`.
+
+     | *Used by:* TCRMW
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   TC_RMW_INIT_INCLUDE
+     Value to set for init_include in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_BEG
+     Value to set for valid_beg in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_END
+     Value to set for valid_end in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_INCLUDE_LIST
+     List of values to set for valid_inc in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_EXCLUDE_LIST
+     List of values to set for valid_exc in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_VALID_HOUR_LIST
+     List of values to set for valid_hour in the MET configuration file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ section regarding Regrid-Data-Plane for more information.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  Varies

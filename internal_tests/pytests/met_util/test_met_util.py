@@ -3,14 +3,17 @@
 import sys
 import pytest
 import datetime
-import met_util as util
-import time_util
-import produtil
 import os
 import subprocess
 import shutil
 from dateutil.relativedelta import relativedelta
-import config_metplus
+from csv import reader
+
+import produtil
+
+from metplus.util import met_util as util
+from metplus.util import time_util
+from metplus.util.config import config_metplus
 
 #@pytest.fixture
 def metplus_config():
@@ -74,7 +77,6 @@ def test_remove_quotes(before, after):
         ({'gt4&&lt5&&ne4.5'}, True),
     ]
 )
-
 def test_threshold(key, value):
     assert(util.validate_thresholds(key) == value)
 
@@ -166,6 +168,11 @@ def test_getlist_has_commas():
     l = 'gt2.7, >3.6, eq42, "has,commas,in,it"'
     test_list = util.getlist(l)
     assert(test_list == ['gt2.7', '>3.6', 'eq42', 'has,commas,in,it'])
+
+def test_getlist_empty():
+    l = ''
+    test_list = util.getlist(l)
+    assert(test_list == [])
 
 # field info only defined in the FCST_* variables
 @pytest.mark.parametrize(
@@ -445,29 +452,63 @@ def test_get_lead_sequence_lead_list(key, value):
     lead_seq = value
     assert(hour_seq == lead_seq)
 
-
-
 @pytest.mark.parametrize(
-    'key, value', [
-        ('begin_end_incr(3,12,3)',  [ '3', '6', '9', '12']),
-        ('1,2,3,4',  [ '1', '2', '3', '4']),
-        (' 1,2,3,4',  [ '1', '2', '3', '4']),
-        ('1,2,3,4 ',  [ '1', '2', '3', '4']),
-        (' 1,2,3,4 ',  [ '1', '2', '3', '4']),
-        ('1, 2,3,4',  [ '1', '2', '3', '4']),
-        ('1,2, 3, 4',  [ '1', '2', '3', '4']),
-        ('begin_end_incr( 3,12 , 3)',  [ '3', '6', '9', '12']),
-        ('begin_end_incr(0,10,2)',  [ '0', '2', '4', '6', '8', '10']),
-        ('begin_end_incr(10,0,-2)',  [ '10', '8', '6', '4', '2', '0']),
-        ('begin_end_incr(2,2,20)',  [ '2' ]),
-        ('begin_end_incr(0,2,1), begin_end_incr(3,9,3)', ['0','1','2','3','6','9']),
-        ('mem_begin_end_incr(0,2,1), mem_begin_end_incr(3,9,3)', ['mem_0','mem_1','mem_2','mem_3','mem_6','mem_9']),
+    'list_string, output_list', [
+        ('begin_end_incr(3,12,3)',
+         ['3', '6', '9', '12']),
+
+        ('1,2,3,4',
+         ['1', '2', '3', '4']),
+
+        (' 1,2,3,4',
+         ['1', '2', '3', '4']),
+
+        ('1,2,3,4 ',
+         ['1', '2', '3', '4']),
+
+        (' 1,2,3,4 ',
+         ['1', '2', '3', '4']),
+
+        ('1, 2,3,4',
+         ['1', '2', '3', '4']),
+
+        ('1,2, 3, 4',
+         ['1', '2', '3', '4']),
+
+        ('begin_end_incr( 3,12 , 3)',
+         ['3', '6', '9', '12']),
+
+        ('begin_end_incr(0,10,2)',
+         ['0', '2', '4', '6', '8', '10']),
+
+        ('begin_end_incr(10,0,-2)',
+         ['10', '8', '6', '4', '2', '0']),
+
+        ('begin_end_incr(2,2,20)',
+         ['2']),
+
+        ('begin_end_incr(0,2,1), begin_end_incr(3,9,3)',
+         ['0','1','2','3','6','9']),
+
+        ('mem_begin_end_incr(0,2,1), mem_begin_end_incr(3,9,3)',
+         ['mem_0','mem_1','mem_2','mem_3','mem_6','mem_9']),
+
+        ('mem_begin_end_incr(0,2,1,3), mem_begin_end_incr(3,12,3,3)',
+         ['mem_000', 'mem_001', 'mem_002', 'mem_003', 'mem_006', 'mem_009', 'mem_012']),
+
         ('begin_end_incr(0,10,2)H, 12',  [ '0H', '2H', '4H', '6H', '8H', '10H', '12']),
+
         ('begin_end_incr(0,10800,3600)S, 4H',  [ '0S', '3600S', '7200S', '10800S', '4H']),
+
+        ('data.{init?fmt=%Y%m%d%H?shift=begin_end_incr(0, 3, 3)H}.ext',
+         ['data.{init?fmt=%Y%m%d%H?shift=0H}.ext',
+          'data.{init?fmt=%Y%m%d%H?shift=3H}.ext',
+          ]),
+
     ]
 )
-def test_getlist_begin_end_incr(key, value):
-    assert(util.getlist(key) == value)
+def test_getlist_begin_end_incr(list_string, output_list):
+    assert(util.getlist(list_string) == output_list)
 
 # @pytest.mark.parametrize(
 #     'key, value', [
@@ -646,3 +687,102 @@ def test_get_process_list(input_list, expected_list):
     conf.set('config', 'PROCESS_LIST', input_list)
     output_list = util.get_process_list(conf)
     assert(output_list == expected_list)
+
+@pytest.mark.parametrize(
+    'time_from_conf, fmt, is_datetime', [
+        ('', '%Y', False),
+        ('a', '%Y', False),
+        ('1987', '%Y', True),
+        ('1987', '%Y%m', False),
+        ('198702', '%Y%m', True),
+        ('198702', '%Y%m%d', False),
+        ('19870201', '%Y%m%d', True),
+        ('19870201', '%Y%m%d%H', False),
+        ('{now?fmt=%Y%m%d}', '%Y%m%d', True),
+        ('{now?fmt=%Y%m%d}', '%Y%m%d%H', True),
+        ('{now?fmt=%Y%m%d}00', '%Y%m%d%H', True),
+        ('{today}', '%Y%m%d', True),
+        ('{today}', '%Y%m%d%H', True),
+    ]
+)
+def test_get_time_obj(time_from_conf, fmt, is_datetime):
+    clock_time = datetime.datetime(2019, 12, 31, 15, 30)
+
+    time_obj = util.get_time_obj(time_from_conf, fmt, clock_time)
+
+    assert(isinstance(time_obj, datetime.datetime) == is_datetime)
+
+@pytest.mark.parametrize(
+     'list_str, expected_fixed_list', [
+         ('some,items,here', ['some',
+                              'items',
+                              'here']),
+         ('(*,*)', ['(*,*)']),
+        ("-type solar_alt -thresh 'ge45' -name solar_altitude_ge_45_mask -input_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;' -mask_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;\'",
+        ["-type solar_alt -thresh 'ge45' -name solar_altitude_ge_45_mask -input_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;' -mask_field 'name=\"TEC\"; level=\"(0,*,*)\"; file_type=NETCDF_NCCF;\'"]),
+        ("(*,*),'level=\"(0,*,*)\"' -censor_thresh [lt12.3,gt8.8],other", ['(*,*)',
+                                                                           "'level=\"(0,*,*)\"' -censor_thresh [lt12.3,gt8.8]",
+                                                                           'other']),
+     ]
+)
+def test_fix_list(list_str, expected_fixed_list):
+    item_list = list(reader([list_str]))[0]
+    fixed_list = util.fix_list(item_list)
+    print("FIXED LIST:")
+    for fixed in fixed_list:
+        print(f"ITEM: {fixed}")
+
+    print("EXPECTED LIST")
+    for expected in expected_fixed_list:
+        print(f"ITEM: {expected}")
+
+    assert(fixed_list == expected_fixed_list)
+
+@pytest.mark.parametrize(
+    'camel, underscore', [
+        ('ASCII2NCWrapper', 'ascii2nc_wrapper'),
+        ('CyclonePlotterWrapper', 'cyclone_plotter_wrapper'),
+        ('EnsembleStatWrapper', 'ensemble_stat_wrapper'),
+        ('ExampleWrapper', 'example_wrapper'),
+        ('ExtractTilesWrapper', 'extract_tiles_wrapper'),
+        ('GempakToCFWrapper', 'gempak_to_cf_wrapper'),
+        ('GenVxMaskWrapper', 'gen_vx_mask_wrapper'),
+        ('GridStatWrapper', 'grid_stat_wrapper'),
+        ('MakePlotsWrapper', 'make_plots_wrapper'),
+        ('MODEWrapper', 'mode_wrapper'),
+        ('MTDWrapper', 'mtd_wrapper'),
+        ('PB2NCWrapper', 'pb2nc_wrapper'),
+        ('PCPCombineWrapper', 'pcp_combine_wrapper'),
+        ('Point2GridWrapper', 'point2grid_wrapper'),
+        ('PointStatWrapper', 'point_stat_wrapper'),
+        ('PyEmbedWrapper', 'py_embed_wrapper'),
+        ('RegridDataPlaneWrapper', 'regrid_data_plane_wrapper'),
+        ('SeriesAnalysisWrapper', 'series_analysis_wrapper'),
+        ('SeriesByInitWrapper', 'series_by_init_wrapper'),
+        ('SeriesByLeadWrapper', 'series_by_lead_wrapper'),
+        ('StatAnalysisWrapper', 'stat_analysis_wrapper'),
+        ('TCMPRPlotterWrapper', 'tcmpr_plotter_wrapper'),
+        ('TCPairsWrapper', 'tc_pairs_wrapper'),
+        ('TCStatWrapper', 'tc_stat_wrapper'),
+    ]
+)
+def test_camel_to_underscore(camel, underscore):
+    assert(util.camel_to_underscore(camel) == underscore)
+
+@pytest.mark.parametrize(
+    'filepath, template, expected_result', [
+        (os.getcwd(), 'file.{valid?fmt=%Y%m%d%H}.ext', None),
+        ('file.2019020104.ext', 'file.{valid?fmt=%Y%m%d%H}.ext', datetime.datetime(2019, 2, 1, 4)),
+        ('filename.2019020104.ext', 'file.{valid?fmt=%Y%m%d%H}.ext', None),
+        ('file.2019020104.ext.gz', 'file.{valid?fmt=%Y%m%d%H}.ext', datetime.datetime(2019, 2, 1, 4)),
+        ('filename.2019020104.ext.gz', 'file.{valid?fmt=%Y%m%d%H}.ext', None),
+    ]
+)
+def test_get_time_from_file(filepath, template, expected_result):
+    result = util.get_time_from_file(filepath, template)
+
+    if result is None:
+        assert(expected_result is None)
+    else:
+        assert(result['valid'] == expected_result)
+
