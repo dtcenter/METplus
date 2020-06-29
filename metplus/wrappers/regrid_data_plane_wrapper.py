@@ -145,10 +145,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         c_dict['GAUSSIAN_RADIUS'] = \
          self.config.getstr('config', 'REGRID_DATA_PLANE_GAUSSIAN_RADIUS', '')
 
-        c_dict['USE_EXPLICIT_NAME_AND_LEVEL'] = self.config.getbool('config',
-                                                                    'USE_EXPLICIT_NAME_AND_LEVEL',
-                                                                    False)
-
         # only check if VERIFICATION_GRID is set if running the tool from the process list
         # RegridDataPlane can be called from other tools like CustomIngest, which sets the
         # verification grid itself

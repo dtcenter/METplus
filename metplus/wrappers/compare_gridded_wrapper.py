@@ -84,10 +84,6 @@ that reformat gridded data
             c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE'] = ''
             c_dict[f'CLIMO_{climo_item}_FILE'] = None
 
-        c_dict['USE_EXPLICIT_NAME_AND_LEVEL'] = self.config.getbool('config',
-                                                                    'USE_EXPLICIT_NAME_AND_LEVEL',
-                                                                    False)
-
         return c_dict
 
     def set_environment_variables(self, time_info):
