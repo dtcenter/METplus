@@ -414,8 +414,8 @@ class StatAnalysisWrapper(CommandBuilder):
 
         # loop through lists found in either loop or group lists originally
         for found_config in found_config_list:
-            # if list is empty, warn and move from loop list to group list
-            if not c_dict[found_config]:
+            # if list is empty and in loop list, warn and move to group list
+            if not c_dict[found_config] and found_config in c_dict['LOOP_LIST_ITEMS']:
                 self.logger.warning(found_config + " is empty, "
                                     + "will be treated as group.")
                 c_dict['GROUP_LIST_ITEMS'].append(found_config)
@@ -987,7 +987,7 @@ class StatAnalysisWrapper(CommandBuilder):
                             filename_template = (
                                 filename_template+'_'
                                 +list_name.replace('_', '').lower()
-                                +config_dict[list_name]+'Z'
+                                +config_dict[list_name].replace('"', '')+'Z'
                             )
                         else:
                             filename_template = (
