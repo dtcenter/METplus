@@ -798,6 +798,8 @@ def test_get_time_from_file(filepath, template, expected_result):
 )
 def test_comparison_to_letter_format(expression, expected_result):
     assert(util.comparison_to_letter_format(expression) == expected_result)
+
+@pytest.mark.parametrize(
     'conf_items, met_tool, expected_result', [
         ({'CUSTOM_LOOP_LIST': "one, two, three"}, '', ['one', 'two', 'three']),
         ({'CUSTOM_LOOP_LIST': "one, two, three",
