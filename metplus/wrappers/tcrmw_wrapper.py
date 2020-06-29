@@ -300,6 +300,10 @@ class TCRMWWrapper(CommandBuilder):
 
             time_info = time_util.ti_calculate(input_dict)
 
+            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                self.logger.debug('Skipping run time')
+                continue
+
             self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
