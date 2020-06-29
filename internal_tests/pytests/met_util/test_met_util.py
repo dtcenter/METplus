@@ -798,6 +798,27 @@ def test_get_time_from_file(filepath, template, expected_result):
 )
 def test_comparison_to_letter_format(expression, expected_result):
     assert(util.comparison_to_letter_format(expression) == expected_result)
+    'conf_items, met_tool, expected_result', [
+        ({'CUSTOM_LOOP_LIST': "one, two, three"}, '', ['one', 'two', 'three']),
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'GRID_STAT_CUSTOM_LOOP_LIST': "four, five",}, 'grid_stat', ['four', 'five']),
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'GRID_STAT_CUSTOM_LOOP_LIST': "four, five",}, 'point_stat', ['one', 'two', 'three']),
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'ASCII2NC_CUSTOM_LOOP_LIST': "four, five",}, 'ascii2nc', ['four', 'five']),
+        # fails to read custom loop list for point2grid because there are underscores in name
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'POINT_2_GRID_CUSTOM_LOOP_LIST': "four, five",}, 'point2grid', ['one', 'two', 'three']),
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'POINT2GRID_CUSTOM_LOOP_LIST': "four, five",}, 'point2grid', ['four', 'five']),
+    ]
+)
+def test_get_custom_string_list(conf_items, met_tool, expected_result):
+    config = metplus_config()
+    for conf_key, conf_value in conf_items.items():
+        config.set('config', conf_key, conf_value)
+
+    assert(util.get_custom_string_list(config, met_tool) == expected_result)
 
 @pytest.mark.parametrize(
     'skip_times_conf, expected_dict', [

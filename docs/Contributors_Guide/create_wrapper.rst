@@ -1,7 +1,7 @@
 How to Create Your Own Wrapper
 ==============================
 
-* Create the new wrapper in the METplus/ush directory and name it to reflect the wrapper's function,
+* Create the new wrapper in the METplus/metplus/wrappers directory and name it to reflect the wrapper's function,
   e.g.: new_tool_wrapper.py
   You can copy example_wrapper.py or ascii2nc_wrapper.py to start.
 
@@ -9,6 +9,11 @@ How to Create Your Own Wrapper
 * Open the file for editing and change the name of the class to reflect the wrapper's function (in camel case). If the new tool falls under one of the existing tool categories, currently CompareGridded (which applies to non-gridded comparisons as well, should be renamed) and ReformatGridded, then you can make the tool a subclass of one of those classes. If not, then use CommandBuilder. Following the example above, you would rename your class::
 
     class NewToolWrapper(CommandBuilder)
+
+* The new wrapper should reflect the name of the MET application without underscores because of the way the application gets called from the wrapper:: 
+
+    Point2GridWrapper =  correct
+    Point_2_Grid_Wrapper = incorrect
 
 * Modify the init function to initialize NewExample from its base class (CommandBuilder), and to set the name and path to the MET application you are wrapping::
 
@@ -126,7 +131,11 @@ Some wrappers require multiple entries to cover all of the bases. For example, u
 
 * Add a section to the Python Wrappers page of the documentation with information about the new tool including a list of all METplus configuration variables that can be used.
 
-* Add an entry for each METplus configuration variable added to the wrapper to the METplus Configuration Glossary.
+* Add an entry for each METplus configuration variable added to the wrapper to the METplus Configuration Glossary. Each configuration variable should be the MET tool name in all caps i.e. GRID_STAT followed by the variable name. MET tool names generally have underscores between words unless there is a number in the name. Examples below::
+    
+    GRID_STAT_PROB_THRESH
+    REGRID_DATA_PLANE_METHOD
+    POINT2GRID_QC_FLAGS
 
 * Create a directory named after the new wrapper to hold the use case configuration files in the met_tool_wrapper directory that users can run to try out the new wrapper. In the corresponding directory under docs/use_cases, be sure to include a .py file that contains the documentation for that use case and a README file to create a header for the documentation page.
 
