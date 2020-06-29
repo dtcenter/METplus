@@ -220,6 +220,10 @@ class TCPairsWrapper(CommandBuilder):
         # fill in time info dictionary
         time_info = time_util.ti_calculate(input_dict)
 
+        if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+            self.logger.debug('Skipping run time')
+            return
+
         # Set up the environment variable to be used in the TCPairs Config
         # file (TC_PAIRS_CONFIG_FILE)
         self.set_environment_variables(time_info)
