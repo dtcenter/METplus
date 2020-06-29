@@ -351,10 +351,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # set climatology environment variables
         self.set_climo_env_vars()
 
-        self.add_common_envs(time_info)
-
-        # send environment variables to logger
-        self.print_all_envs()
+        super().set_environment_variables(time_info)
 
     def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
         """! Set and print environment variables, then build/run MET command

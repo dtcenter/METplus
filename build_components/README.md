@@ -9,4 +9,6 @@ Compents are cloned from a github repository using manage_externals and are spec
 
 MET external libraries are grabbed from dtcenter.org.
 
-All of this is controlled via the build_MET.sh file
+The compile_MET_all.sh script is used to built MET and is found in the MET git repository
+
+The build_MET.sh file collects all the neccesary build components and kicks off the script above

@@ -200,11 +200,7 @@ class PB2NCWrapper(CommandBuilder):
         self.add_env_var('TIME_SUMMARY_TYPES',
                          self.c_dict['TIME_SUMMARY_TYPES'])
 
-        # set user environment variables
-        self.set_user_environment(time_info)
-
-        # send environment variables to logger
-        self.print_all_envs()
+        super().set_environment_variables(time_info)
 
     def find_input_files(self, input_dict):
         """!Find prepbufr data to convert. If file(s) are found, return timing information
@@ -268,6 +264,10 @@ class PB2NCWrapper(CommandBuilder):
 
         # if no files were found, don't run pb2nc
         if time_info is None:
+            return
+
+        if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+            self.logger.debug('Skipping run time')
             return
 
         # look for output file path and skip running pb2nc if necessary

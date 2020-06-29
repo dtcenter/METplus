@@ -532,6 +532,7 @@ class SeriesByInitWrapper(CommandBuilder):
                                                  cur_init)
                         self.create_out_arg(cur_storm, cur_init, name, level)
                         self.add_common_envs()
+                        super().set_environment_variables()
                         self.build()
                         self.clear()
 

@@ -67,6 +67,7 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'seriesbylead': 'SeriesByLead',
                          'statanalysis': 'StatAnalysis',
                          'tcpairs': 'TCPairs',
+                         'tcrmw': 'TCRMW',
                          'tcstat': 'TCStat',
                          'tcmprplotter': 'TCMPRPlotter',
                          'usage': 'Usage',
@@ -75,8 +76,7 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
 # missing data value used to check if integer values are not set
 # we often check for None if a variable is not set, but 0 and None
 # have the same result in a test. 0 may be a valid integer value
-MISSING_DATA_VALUE_INT = -9999
-MISSING_DATA_VALUE_FLOAT = -9999.0
+MISSING_DATA_VALUE = -9999
 
 def pre_run_setup(filename, app_name):
     filebasename = os.path.basename(filename)
@@ -108,11 +108,11 @@ def pre_run_setup(filename, app_name):
             config.logger.error(f"Find/Replace commands have been generated in {sed_file}")
 
         logger.error("Correct configuration variables and rerun. Exiting.")
-        exit(1)
+        sys.exit(1)
 
     if not config.getdir('MET_INSTALL_DIR', must_exist=True):
         logger.error('MET_INSTALL_DIR must be set correctly to run METplus')
-        exit(1)
+        sys.exit(1)
 
     # set staging dir to OUTPUT_BASE/stage if not set
     if not config.has_option('dir', 'STAGING_DIR'):
@@ -719,14 +719,77 @@ def handle_tmp_dir(config):
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
 
-def skip_time(time_info, config):
-    """!Used to check current run time against list of times to skip."""
-    # never skip until this is implemented correctly
+def get_skip_times(config, wrapper_name=None):
+    """! Read SKIP_TIMES config variable and populate dictionary of times that should be skipped.
+         SKIP_TIMES should be in the format: "%m:begin_end_incr(3,11,1)", "%d:30,31", "%Y%m%d:20201031"
+         where each item inside quotes is a datetime format, colon, then a list of times in that format
+         to skip.
+         Args:
+             @param config configuration object to pull SKIP_TIMES
+             @param wrapper_name name of wrapper if supporting
+               skipping times only for certain wrappers, i.e. grid_stat
+             @returns dictionary containing times to skip
+    """
+    skip_times_dict = {}
+    skip_times_string = None
+
+    # if wrapper name is set, look for wrapper-specific _SKIP_TIMES variable
+    if wrapper_name:
+        skip_times_string = config.getstr('config',
+                                          f'{wrapper_name.upper()}_SKIP_TIMES', '')
+
+    # if skip times string has not been found, check for generic SKIP_TIMES
+    if not skip_times_string:
+        skip_times_string = config.getstr('config', 'SKIP_TIMES', '')
+
+        # if no generic SKIP_TIMES, return empty dictionary
+        if not skip_times_string:
+            return {}
+
+    # get list of skip items, but don't expand begin_end_incr yet
+    skip_list = getlist(skip_times_string, expand_begin_end_incr=False)
+
+    for skip_item in skip_list:
+        try:
+            time_format, skip_times = skip_item.split(':')
+
+            # get list of skip times for the time format, expanding begin_end_incr
+            skip_times_list = getlist(skip_times)
+
+            # if time format is already in skip times dictionary, extend list
+            if time_format in skip_times_dict:
+                skip_times_dict[time_format].extend(skip_times_list)
+            else:
+                skip_times_dict[time_format] = skip_times_list
+
+        except ValueError:
+            config.logger.error(f"SKIP_TIMES item does not match format: {skip_item}")
+            return None
+
+    return skip_times_dict
+
+def skip_time(time_info, skip_times):
+    """!Used to check the valid time of the current run time against list of times to skip.
+        Args:
+            @param time_info dictionary with time information to check
+            @param skip_times dictionary of times to skip, i.e. {'%d': [31]} means skip 31st day
+            @returns True if run time should be skipped, False if not
+    """
+    for time_format, skip_time_list in skip_times.items():
+        # extract time information from valid time based on skip time format
+        run_time_value = time_info.get('valid')
+        if not run_time_value:
+            return False
+
+        run_time_value = run_time_value.strftime(time_format)
+
+        # loop over times to skip for this format and check if it matches
+        for skip_time in skip_time_list:
+            if int(run_time_value) == int(skip_time):
+                return True
+
+    # if skip time never matches, return False
     return False
-
-    # get list of times to skip
-
-    # check skip times against current time_info object and skip if it matches
 
 def write_final_conf(conf, logger):
     """!write final conf file including default values that were set during run"""
@@ -864,7 +927,16 @@ def loop_over_times_and_call(config, processes):
 
 def get_lead_sequence(config, input_dict=None):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
-        Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects"""
+        Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects
+        Args:
+            @param config METplusConfig object to query config variable values
+            @param input_dict time dictionary needed to handle using INIT_SEQ. Must contain
+               valid key if processing INIT_SEQ
+            @returns list of relativedelta objects or a list containing 0 if none are found
+    """
+
+    out_leads = []
+
     if config.has_option('config', 'LEAD_SEQ'):
         # return list of forecast leads
         lead_strings = getlist(config.getstr('config', 'LEAD_SEQ'))
@@ -883,7 +955,6 @@ def get_lead_sequence(config, input_dict=None):
         # to compare them to each forecast lead
         # this is an approximation because relative time offsets depend on
         # each runtime
-        out_leads = []
         lead_min_str = config.getstr('config', 'LEAD_SEQ_MIN', '0')
         lead_max_str = config.getstr('config', 'LEAD_SEQ_MAX', '4000Y')
         lead_min_relative = time_util.get_relativedelta(lead_min_str, 'H')
@@ -896,10 +967,8 @@ def get_lead_sequence(config, input_dict=None):
             if lead_approx >= lead_min_approx and lead_approx <= lead_max_approx:
                 out_leads.append(lead)
 
-        return out_leads
-
     # use INIT_SEQ to build lead list based on the valid time
-    if config.has_option('config', 'INIT_SEQ'):
+    elif config.has_option('config', 'INIT_SEQ'):
         # if input dictionary not passed in, cannot compute lead sequence
         #  from it, so exit
         if input_dict is None:
@@ -936,10 +1005,12 @@ def get_lead_sequence(config, input_dict=None):
                     lead_seq.append(relativedelta(hours=current_lead))
                 current_lead += 24
 
-        return sorted(lead_seq, key=lambda rd: time_util.ti_get_seconds_from_relativedelta(rd, input_dict['valid']))
-    else:
+        out_leads = sorted(lead_seq, key=lambda rd: time_util.ti_get_seconds_from_relativedelta(rd, input_dict['valid']))
+
+    if not out_leads:
         return [0]
 
+    return out_leads
 
 def get_version_number():
     # read version file and return value
@@ -1864,7 +1935,7 @@ def fix_list_helper(item_list, type):
 
     return fixed_list
 
-def getlist(list_str):
+def getlist(list_str, expand_begin_end_incr=True):
     """! Returns a list of string elements from a comma
          separated string of values.
          This function MUST also return an empty list [] if s is '' empty.
@@ -1885,7 +1956,9 @@ def getlist(list_str):
     # remove space around commas
     list_str = re.sub(r'\s*,\s*', ',', list_str)
 
-    list_str = handle_begin_end_incr(list_str)
+    # option to not evaluate begin_end_incr
+    if expand_begin_end_incr:
+        list_str = handle_begin_end_incr(list_str)
 
     # use csv reader to divide comma list while preserving strings with comma
     # convert the csv reader to a list and get first item (which is the whole list)
@@ -2593,7 +2666,7 @@ def get_filetype(filepath, logger=None):
 
 
 
-def get_time_from_file(filepath, template):
+def get_time_from_file(filepath, template, logger=None):
     """! Extract time information from path using the filename template
          Args:
              @param filepath path to examine
@@ -2603,14 +2676,14 @@ def get_time_from_file(filepath, template):
     if os.path.isdir(filepath):
         return None
 
-    out = parse_template(template, filepath)
+    out = parse_template(template, filepath, logger)
     if out is not None:
         return out
 
     # check to see if zip extension ends file path, try again without extension
     for ext in VALID_EXTENSIONS:
         if filepath.endswith(ext):
-            out = parse_template(template, filepath[:-len(ext)])
+            out = parse_template(template, filepath[:-len(ext)], logger)
             if out is not None:
                 return out
 
