@@ -78,6 +78,9 @@ class CommandBuilder:
         c_dict['CUSTOM_LOOP_LIST'] = util.get_custom_string_list(self.config,
                                                                  app_name)
 
+        c_dict['SKIP_TIMES'] = util.get_skip_times(self.config,
+                                                   app_name)
+
 
         return c_dict
 
