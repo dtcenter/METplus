@@ -719,14 +719,77 @@ def handle_tmp_dir(config):
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
 
-def skip_time(time_info, config):
-    """!Used to check current run time against list of times to skip."""
-    # never skip until this is implemented correctly
+def get_skip_times(config, wrapper_name=None):
+    """! Read SKIP_TIMES config variable and populate dictionary of times that should be skipped.
+         SKIP_TIMES should be in the format: "%m:begin_end_incr(3,11,1)", "%d:30,31", "%Y%m%d:20201031"
+         where each item inside quotes is a datetime format, colon, then a list of times in that format
+         to skip.
+         Args:
+             @param config configuration object to pull SKIP_TIMES
+             @param wrapper_name name of wrapper if supporting
+               skipping times only for certain wrappers, i.e. grid_stat
+             @returns dictionary containing times to skip
+    """
+    skip_times_dict = {}
+    skip_times_string = None
+
+    # if wrapper name is set, look for wrapper-specific _SKIP_TIMES variable
+    if wrapper_name:
+        skip_times_string = config.getstr('config',
+                                          f'{wrapper_name.upper()}_SKIP_TIMES', '')
+
+    # if skip times string has not been found, check for generic SKIP_TIMES
+    if not skip_times_string:
+        skip_times_string = config.getstr('config', 'SKIP_TIMES', '')
+
+        # if no generic SKIP_TIMES, return empty dictionary
+        if not skip_times_string:
+            return {}
+
+    # get list of skip items, but don't expand begin_end_incr yet
+    skip_list = getlist(skip_times_string, expand_begin_end_incr=False)
+
+    for skip_item in skip_list:
+        try:
+            time_format, skip_times = skip_item.split(':')
+
+            # get list of skip times for the time format, expanding begin_end_incr
+            skip_times_list = getlist(skip_times)
+
+            # if time format is already in skip times dictionary, extend list
+            if time_format in skip_times_dict:
+                skip_times_dict[time_format].extend(skip_times_list)
+            else:
+                skip_times_dict[time_format] = skip_times_list
+
+        except ValueError:
+            config.logger.error(f"SKIP_TIMES item does not match format: {skip_item}")
+            return None
+
+    return skip_times_dict
+
+def skip_time(time_info, skip_times):
+    """!Used to check the valid time of the current run time against list of times to skip.
+        Args:
+            @param time_info dictionary with time information to check
+            @param skip_times dictionary of times to skip, i.e. {'%d': [31]} means skip 31st day
+            @returns True if run time should be skipped, False if not
+    """
+    for time_format, skip_time_list in skip_times.items():
+        # extract time information from valid time based on skip time format
+        run_time_value = time_info.get('valid')
+        if not run_time_value:
+            return False
+
+        run_time_value = run_time_value.strftime(time_format)
+
+        # loop over times to skip for this format and check if it matches
+        for skip_time in skip_time_list:
+            if int(run_time_value) == int(skip_time):
+                return True
+
+    # if skip time never matches, return False
     return False
-
-    # get list of times to skip
-
-    # check skip times against current time_info object and skip if it matches
 
 def write_final_conf(conf, logger):
     """!write final conf file including default values that were set during run"""
@@ -1872,7 +1935,7 @@ def fix_list_helper(item_list, type):
 
     return fixed_list
 
-def getlist(list_str):
+def getlist(list_str, expand_begin_end_incr=True):
     """! Returns a list of string elements from a comma
          separated string of values.
          This function MUST also return an empty list [] if s is '' empty.
@@ -1893,7 +1956,9 @@ def getlist(list_str):
     # remove space around commas
     list_str = re.sub(r'\s*,\s*', ',', list_str)
 
-    list_str = handle_begin_end_incr(list_str)
+    # option to not evaluate begin_end_incr
+    if expand_begin_end_incr:
+        list_str = handle_begin_end_incr(list_str)
 
     # use csv reader to divide comma list while preserving strings with comma
     # convert the csv reader to a list and get first item (which is the whole list)
@@ -2601,7 +2666,7 @@ def get_filetype(filepath, logger=None):
 
 
 
-def get_time_from_file(filepath, template):
+def get_time_from_file(filepath, template, logger=None):
     """! Extract time information from path using the filename template
          Args:
              @param filepath path to examine
@@ -2611,14 +2676,14 @@ def get_time_from_file(filepath, template):
     if os.path.isdir(filepath):
         return None
 
-    out = parse_template(template, filepath)
+    out = parse_template(template, filepath, logger)
     if out is not None:
         return out
 
     # check to see if zip extension ends file path, try again without extension
     for ext in VALID_EXTENSIONS:
         if filepath.endswith(ext):
-            out = parse_template(template, filepath[:-len(ext)])
+            out = parse_template(template, filepath[:-len(ext)], logger)
             if out is not None:
                 return out
 

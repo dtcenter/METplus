@@ -5874,3 +5874,36 @@ METplus Configuration Glossary
      | *Used by:*  TCRMW
      | *Family:*  [config]
      | *Default:*  Varies
+
+   SKIP_TIMES
+     List of valid times to skip processing. Each value be surrounded by quotation marks and must contain a datetime format followed by a list of matching times to skip. Multiple items can be defined separated by commas. begin_end_incr syntax can be used to define a list as well.
+
+     Examples:
+
+     Value:
+     SKIP_TIMES = "%m:11,12"
+
+     Result:
+     Skip the 11th and 12th month
+
+     Value:
+     SKIP_TIMES = "%m:11", "%d:31"
+
+     Result:
+     Skip if 11th month or 31st day.
+
+     Value:
+     SKIP_TIMES = "%Y%m%d:20201031"
+
+     Result:
+     Skip October 31, 2020
+
+     Value:
+     SKIP_TIMES = "%H:begin_end_incr(0,22, 2)"
+
+     Result:
+     Skip even hours: 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22
+
+     | *Used by:*  GridStat, SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  Varies

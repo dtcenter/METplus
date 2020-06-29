@@ -145,6 +145,11 @@ class GenVxMaskWrapper(CommandBuilder):
             input_dict['lead'] = lead
 
             time_info = time_util.ti_calculate(input_dict)
+
+            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                self.logger.debug('Skipping run time')
+                continue
+
             for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
                 if custom_string:
                     self.logger.info(f"Processing custom string: {custom_string}")
