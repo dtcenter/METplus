@@ -810,7 +810,9 @@ class CommandBuilder:
 
             # if pcp_combine was run, use name_level, (*,*) format
             # if not, use user defined name/level combination
-            if d_type != 'ENS' and self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
+            if (not self.c_dict.get('USE_EXPLICIT_NAME_AND_LEVEL', False) and
+                                    d_type != 'ENS' and
+                                    self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False)):
                 field = "{ name=\"" + v_name + "_" + level + \
                         "\"; level=\"(*,*)\";"
             else:
