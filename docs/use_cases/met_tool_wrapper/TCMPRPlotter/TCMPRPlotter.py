@@ -2,7 +2,7 @@
 TCMPRPlotter: Basic Use Case
 =======================================================
 
-TCMPRPlotter.conf
+met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf
 
 """
 ##############################################################################

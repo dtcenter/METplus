@@ -2,7 +2,7 @@
 Cyclone Plotter: From TC-Pairs Output 
 ===========================================================================
 
-Plotter_fcstGFS
+model_applications/tc_and_extra_tc/Plotter_fcstGFS
 _obsGFS_ExtraTC.conf
 """
 ##############################################################################

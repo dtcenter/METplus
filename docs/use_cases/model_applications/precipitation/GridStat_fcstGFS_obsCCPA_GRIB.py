@@ -2,7 +2,7 @@
 Grid-Stat: 24-hour QPF Use Case
 ================================================
 
-GridStat_fcstGFS
+model_applications/precipitation/GridStat_fcstGFS
 _obsCCPA_Grib.conf
 
 """

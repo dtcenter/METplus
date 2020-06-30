@@ -2,7 +2,10 @@
 Grid-Stat: Surrogate Severe and Practically Perfect Probabilistic Evaluation 
 ============================================================================
 
-GridStat_fcstHRRR_obsPracPerfect_SurrogateSevereProb.conf
+model_applications/
+convection_allowing_models/
+GridStat_fcstHRRR_obsPracPerfect
+_SurrogateSevereProb.conf
 
 """
 

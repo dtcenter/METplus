@@ -2,7 +2,7 @@
 Grid-Stat: 6hr QPF in NetCDF format
 ==============================================================================
 
-GridStat_fcstHREFmean
+model_applications/precipitation/GridStat_fcstHREFmean
 _obsStgIV_Netcdf.conf
 
 """

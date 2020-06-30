@@ -2,8 +2,8 @@
 GridStat: Multiple Config Files Use Case
 ========================================
 
-GridStat_multiple
-_config_files.conf
+met_tool_wrapper/GridStat/GridStat_multiple_config
+_files.conf
 
 """
 ##############################################################################

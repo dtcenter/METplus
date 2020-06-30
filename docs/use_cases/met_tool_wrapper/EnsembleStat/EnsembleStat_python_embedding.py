@@ -2,7 +2,7 @@
 EnsembleStat: Using Python Embedding
 =============================================================================
 
-EnsembleStat_python
+met_tool_wrapper/EnsembleStat/EnsembleStat_python
 _embedding.conf
 
 """

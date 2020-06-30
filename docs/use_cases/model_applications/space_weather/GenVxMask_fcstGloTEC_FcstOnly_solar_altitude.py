@@ -2,7 +2,8 @@
 GenVxMask: Solar Altitude
 =========================
 
-GenVxMask_fcstGloTEC_solar_altitude.conf
+model_applications/space_weather/GenVxMask_fcstGloTEC_solar
+_altitude.conf
 
 """
 ##############################################################################

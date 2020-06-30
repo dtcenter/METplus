@@ -2,7 +2,7 @@
 Point-Stat: Standard Verification for CONUS Surface 
 ==============================================================================
 
-PointStat_fcstGFS_obsNAM_Sfc
+model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc
 _MultiField_PrepBufr.conf
 
 """

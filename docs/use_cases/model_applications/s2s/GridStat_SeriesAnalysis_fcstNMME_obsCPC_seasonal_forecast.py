@@ -2,7 +2,7 @@
 Grid-Stat and Series-Analysis: BMKG APIK Seasonal Forecast 
 =============================================================================
 
-GridStat_SeriesAnalysis
+model_applications/s2s/GridStat_SeriesAnalysis
 _fcstNMME_obsCPC
 _seasonal_forecast.conf
 

@@ -2,7 +2,7 @@
 CyclonePlotter: Basic Use Case
 ============================================================================
 
-CyclonePlotter.conf
+met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf
 
 """
 

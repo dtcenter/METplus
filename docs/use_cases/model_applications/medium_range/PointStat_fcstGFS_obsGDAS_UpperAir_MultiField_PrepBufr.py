@@ -2,7 +2,7 @@
 Point-Stat: Standard Verification of Global Upper Air  
 =============================================================================
 
-PointStat_fcstGFS_obsGDAS
+model_applications/medium_range/PointStat_fcstGFS_obsGDAS
 _UpperAir_MultiField
 _PrepBufr.conf
 

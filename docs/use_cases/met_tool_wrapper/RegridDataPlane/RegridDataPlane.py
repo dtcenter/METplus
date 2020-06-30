@@ -2,7 +2,7 @@
 RegridDataPlane: Basic Use Case
 =============================================================================
 
-RegridDataPlane.conf
+met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
 
 """
 ##############################################################################
