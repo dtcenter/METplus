@@ -12,17 +12,26 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import numpy as np
-import plot_util as plot_util
 import pandas as pd
 import itertools
 import warnings
 import logging
 import datetime
 import re
+import sys
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as md
+
+import plot_util as plot_util
+from plot_util import get_ci_file, get_lead_avg_file
+
+# add metplus directory to path so the wrappers and utilities can be found
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                '..',
+                                                '..')))
+from metplus.util import do_string_sub
 
 # Read environment variables set in make_plots_wrapper.py
 verif_case = os.environ['VERIF_CASE']
@@ -60,6 +69,7 @@ stats_list = os.environ['STATS'].split(', ')
 model_list = os.environ['MODEL'].split(', ')
 model_obtype_list = os.environ['MODEL_OBTYPE'].split(', ')
 model_reference_name_list = os.environ['MODEL_REFERENCE_NAME'].split(', ')
+dump_row_filename_template = os.environ['DUMP_ROW_FILENAME']
 average_method = os.environ['AVERAGE_METHOD']
 ci_method = os.environ['CI_METHOD']
 verif_grid = os.environ['VERIF_GRID']
@@ -96,11 +106,21 @@ formatter = logging.Formatter(
 file_handler = logging.FileHandler(log_metplus, mode='a')
 file_handler.setFormatter(formatter)
 logger.addHandler(file_handler)
+
+
+if len(fcst_lead_list[0]) < 2:
+    logger.warning("Must provide more than one forecast lead to "
+                   "plot lead average")
+    sys.exit(0)
+
 output_data_dir = os.path.join(output_base_dir, 'data')
 output_imgs_dir = os.path.join(output_base_dir, 'imgs')
 # Model info
 model_info_list = list(
-    zip(model_list, model_reference_name_list, model_obtype_list)
+    zip(model_list,
+        model_reference_name_list,
+        model_obtype_list,
+    )
 )
 nmodels = len(model_info_list)
 # Plot info
@@ -347,14 +367,32 @@ for plot_info in plot_info_list:
                 [len(avg_cols_to_array), len(fcst_leads)]
             )
             model_avg_data.fill(np.nan)
-            lead_avg_filename = (
-                stat+'_'
-                +model_plot_name+'_'+model_obtype+'_'
-                +base_name
-                +'.txt'
-            )
-            lead_avg_file = os.path.join(output_base_dir, 'data',
-                                         lead_avg_filename)
+#            lead_avg_filename = (
+#                stat+'_'
+#                +model_plot_name+'_'+model_obtype+'_'
+#                +base_name
+#                +'.txt'
+#            )
+#            lead_avg_file = os.path.join(output_base_dir, 'data',
+#                                         lead_avg_filename)
+            model_stat_template = dump_row_filename_template
+            string_sub_dict = {
+                'model': model_name,
+                'model_reference': model_plot_name,
+                'obtype': model_obtype,
+                'fcst_lead': fcst_lead,
+                'fcst_level': fcst_var_level,
+                'obs_level': obs_var_level,
+                'fcst_thresh': fcst_var_thresh,
+                'obs_thresh': obs_var_thresh,
+            }
+            model_stat_file = do_string_sub(model_stat_template,
+                                            **string_sub_dict)
+            logger.debug(f"FCST LEAD IS {fcst_lead}")
+            lead_avg_file = get_lead_avg_file(stat,
+                                              model_stat_file,
+                                              fcst_lead,
+                                              output_base_dir)
             if os.path.exists(lead_avg_file):
                 nrow = sum(1 for line in open(lead_avg_file))
                 if nrow == 0:
@@ -408,13 +446,19 @@ for plot_info in plot_info_list:
                                +model_name+" with plot name "
                                +model_plot_name+" file: "
                                +lead_avg_file+" does not exist")
-            CI_filename = (
-                stat+'_'
-                +model_plot_name+'_'+model_obtype+'_'
-                +base_name
-                +'_CI_'+ci_method+'.txt'
-            )
-            CI_file = os.path.join(output_base_dir, 'data', CI_filename)
+#            CI_filename = (
+#                stat+'_'
+#                +model_plot_name+'_'+model_obtype+'_'
+#                +base_name
+#                +'_CI_'+ci_method+'.txt'
+#            )
+#            CI_file = os.path.join(output_base_dir, 'data', CI_filename)
+            CI_file = get_ci_file(stat,
+                                  model_stat_file,
+                                  fcst_lead,
+                                  output_base_dir,
+                                  ci_method)
+
             model_CI_data = np.empty(len(fcst_leads))
             model_CI_data.fill(np.nan)
             if ci_method != 'NONE':

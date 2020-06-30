@@ -107,16 +107,6 @@ def metplus_config():
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
-def test_set_lookin_dir():
-    # Independently test that the -lookin part of the
-    # stat_analysis command is being set up
-    # correctly
-    st = stat_analysis_wrapper()
-    # Test 1
-    expected_lookin_dir_cmd = '-lookin /path/to/lookin_dir '
-    st.set_lookin_dir('/path/to/lookin_dir')
-    assert(expected_lookin_dir_cmd == st.lookindir)
-
 def test_get_command():
     # Independently test that the stat_analysis command
     # is being put together correctly with
@@ -129,10 +119,9 @@ def test_get_command():
         +'/stat_analysis '
         +'-lookin /path/to/lookin_dir '
         +'-config /path/to/STATAnalysisConfig'
-        +' '
     )
-    st.set_lookin_dir('/path/to/lookin_dir')
-    st.param = '/path/to/STATAnalysisConfig'
+    st.lookindir = '/path/to/lookin_dir'
+    st.c_dict['CONFIG_FILE'] = '/path/to/STATAnalysisConfig'
     test_command = st.get_command()
     assert(expected_command == test_command)
 
@@ -144,21 +133,21 @@ def test_create_c_dict():
     # Test 1
     c_dict = st.create_c_dict()
     assert(c_dict['LOOP_ORDER'] == 'times')
-    assert(c_dict['PROCESS_LIST'] == 'StatAnalysis')
+    assert(c_dict['PROCESS_LIST'] == ['StatAnalysis'])
     assert(os.path.realpath(c_dict['CONFIG_FILE']) == (METPLUS_BASE+'/internal_tests/'
                                                        +'config/STATAnalysisConfig'))
     assert(c_dict['OUTPUT_BASE_DIR'] == (st.config.getdir('OUTPUT_BASE')
                                          +'/stat_analysis'))
-    assert(c_dict['GROUP_LIST_ITEMS'] == [ 'FCST_INIT_HOUR_LIST' ])
-    assert(c_dict['LOOP_LIST_ITEMS'] == [ 'FCST_VALID_HOUR_LIST',
-                                          'MODEL_LIST'])
+    assert('FCST_INIT_HOUR_LIST' in c_dict['GROUP_LIST_ITEMS'])
+    assert('FCST_VALID_HOUR_LIST' in c_dict['LOOP_LIST_ITEMS'] and
+           'MODEL_LIST' in c_dict['LOOP_LIST_ITEMS'])
     assert(c_dict['VAR_LIST'] == [])
-    assert(c_dict['MODEL_LIST'] == [ 'MODEL_TEST' ])
+    assert(c_dict['MODEL_LIST'] == ['MODEL_TEST'])
     assert(c_dict['DESC_LIST'] == [])
     assert(c_dict['FCST_LEAD_LIST'] == [])
     assert(c_dict['OBS_LEAD_LIST'] == [])
-    assert(c_dict['FCST_VALID_HOUR_LIST'] == [ '00' ])
-    assert(c_dict['FCST_INIT_HOUR_LIST'] == [ '00', '06', '12', '18'])
+    assert(c_dict['FCST_VALID_HOUR_LIST'] == ['000000'])
+    assert(c_dict['FCST_INIT_HOUR_LIST'] == ['000000', '060000', '120000', '180000'])
     assert(c_dict['OBS_VALID_HOUR_LIST'] == [])
     assert(c_dict['OBS_INIT_HOUR_LIST'] == [])
     assert(c_dict['VX_MASK_LIST'] == [])
@@ -233,53 +222,33 @@ def test_set_lists_as_loop_or_group():
     config_dict['COV_THRESH_LIST'] = []
     config_dict['ALPHA_LIST'] = []
     config_dict['LINE_TYPE_LIST'] = []
-    test_lists_to_group_items, test_lists_to_loop_items = (
-        st.set_lists_loop_or_group([ 'FCST_INIT_HOUR_LIST' ], 
-                                   [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST' ],
-                                   config_dict)
-    )
-    
-    assert(all(elem in expected_lists_to_group_items 
+    config_dict = st.set_lists_loop_or_group(config_dict)
+    test_lists_to_loop_items = config_dict['LOOP_LIST_ITEMS']
+    test_lists_to_group_items = config_dict['GROUP_LIST_ITEMS']
+
+    assert(all(elem in expected_lists_to_group_items
                for elem in test_lists_to_group_items))
     assert(all(elem in expected_lists_to_loop_items 
                for elem in test_lists_to_loop_items))
 
-def test_format_thresh():
+@pytest.mark.parametrize(
+    'expression, expected_result', [
+        ('>1', 'gt1'),
+        ('>=0.2', 'ge0.2'),
+        ('<30', 'lt30'),
+        ('<=0.04', 'le0.04'),
+        ('==5', 'eq5'),
+        ('!=0.06', 'ne0.06'),
+        ('>0.05, gt0.05, >=1, ge1, <5, lt5, <=10, le10, ==15, eq15, !=20, ne20',
+           'gt0.05,gt0.05,ge1,ge1,lt5,lt5,le10,le10,eq15,eq15,ne20,ne20')
+    ]
+)
+def test_format_thresh(expression, expected_result):
     # Idependently test the creation of 
     # string values for defining thresholds
     st = stat_analysis_wrapper()
-    # Test 1
-    thresh_symbol, thresh_letter = st.format_thresh('>1')
-    assert(thresh_symbol == '>1')
-    assert(thresh_letter == 'gt1')
-    # Test 2
-    thresh_symbol, thresh_letter = st.format_thresh('>=0.2')
-    assert(thresh_symbol == '>=0.2')
-    assert(thresh_letter == 'ge0.2')
-    # Test 3
-    thresh_symbol, thresh_letter = st.format_thresh('<30')
-    assert(thresh_symbol == '<30')
-    assert(thresh_letter == 'lt30')
-    # Test 4
-    thresh_symbol, thresh_letter = st.format_thresh('<=0.04')
-    assert(thresh_symbol == '<=0.04')
-    assert(thresh_letter == 'le0.04')
-    # Test 5
-    thresh_symbol, thresh_letter = st.format_thresh('==5')
-    assert(thresh_symbol == '==5')
-    assert(thresh_letter == 'eq5')
-    # Test 6
-    thresh_symbol, thresh_letter = st.format_thresh('!=0.06')
-    assert(thresh_symbol == '!=0.06')
-    assert(thresh_letter == 'ne0.06')
-    # Test 7
-    thresh_symbol, thresh_letter = st.format_thresh(
-        '>0.05, gt0.05, >=1, ge1, <5, lt5, <=10, le10, ==15, eq15, !=20, ne20'
-    )
-    assert(thresh_symbol ==
-        '>0.05,>0.05,>=1,>=1,<5,<5,<=10,<=10,==15,==15,!=20,!=20')
-    assert(thresh_letter ==
-        'gt0.05,gt0.05,ge1,ge1,lt5,lt5,le10,le10,eq15,eq15,ne20,ne20')
+
+    assert(st.format_thresh(expression) == expected_result)
 
 def test_build_stringsub_dict():
     # Independently test the building of 
@@ -312,9 +281,9 @@ def test_build_stringsub_dict():
     config_dict['ALPHA'] = ''
     config_dict['OBS_LEVEL'] = ''
     # Test 1
-    date_beg = '20190101'
-    date_end = '20190105'
-    date_type = 'VALID'
+    st.c_dict['DATE_BEG'] = '20190101'
+    st.c_dict['DATE_END'] = '20190105'
+    st.c_dict['DATE_TYPE'] = 'VALID'
     lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST',
                        'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
                        'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
@@ -324,8 +293,7 @@ def test_build_stringsub_dict():
                        'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
                        'LINE_TYPE_LIST' ]
     lists_to_loop = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST' ] 
-    test_stringsub_dict = st.build_stringsub_dict(date_beg, date_end,
-                                                  date_type, lists_to_loop,
+    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
                                                   lists_to_group, config_dict)
     assert(test_stringsub_dict['valid_beg'] == 
            datetime.datetime(2019, 1, 1, 0, 0, 0))
@@ -366,9 +334,9 @@ def test_build_stringsub_dict():
     assert(test_stringsub_dict['desc'] == '')
     # Test 2
     config_dict['FCST_LEAD'] = '240000'
-    date_beg = '20190101'
-    date_end = '20190101'
-    date_type = 'VALID'
+    st.c_dict['DATE_BEG'] = '20190101'
+    st.c_dict['DATE_END'] = '20190101'
+    st.c_dict['DATE_TYPE'] = 'VALID'
     lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST',
                        'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
                        'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
@@ -378,8 +346,7 @@ def test_build_stringsub_dict():
                        'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
                        'LINE_TYPE_LIST' ]
     lists_to_loop = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST' ]
-    test_stringsub_dict = st.build_stringsub_dict(date_beg, date_end,
-                                                  date_type, lists_to_loop,
+    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
                                                   lists_to_group, config_dict)
     assert(test_stringsub_dict['valid'] == 
            datetime.datetime(2019, 1, 1, 0, 0, 0))
@@ -397,9 +364,9 @@ def test_build_stringsub_dict():
     assert(test_stringsub_dict['lead'] == '240000')
     # Test 3
     config_dict['FCST_LEAD'] = '1200000'
-    date_beg = '20190101'
-    date_end = '20190101'
-    date_type = 'VALID'
+    st.c_dict['DATE_BEG'] = '20190101'
+    st.c_dict['DATE_END'] = '20190101'
+    st.c_dict['DATE_TYPE'] = 'VALID'
     lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST',
                        'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
                        'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
@@ -409,8 +376,7 @@ def test_build_stringsub_dict():
                        'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
                        'LINE_TYPE_LIST' ]
     lists_to_loop = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST', 'FCST_LEAD_LIST' ]
-    test_stringsub_dict = st.build_stringsub_dict(date_beg, date_end,
-                                                  date_type, lists_to_loop,
+    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
                                                   lists_to_group, config_dict)
     assert(test_stringsub_dict['valid'] ==
            datetime.datetime(2019, 1, 1, 0, 0, 0))
@@ -427,11 +393,10 @@ def test_build_stringsub_dict():
     assert(test_stringsub_dict['lead_sec'] == '00')
     assert(test_stringsub_dict['lead'] == '1200000')
     # Test 4
-    date_beg = '20190101'
-    date_end = '20190105'
-    date_type = 'INIT'
-    test_stringsub_dict = st.build_stringsub_dict(date_beg, date_end,
-                                                  date_type,lists_to_loop,
+    st.c_dict['DATE_BEG'] = '20190101'
+    st.c_dict['DATE_END'] = '20190105'
+    st.c_dict['DATE_TYPE'] = 'INIT'
+    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
                                                   lists_to_group, config_dict)
     assert(test_stringsub_dict['fcst_init_hour_beg'] == 
            datetime.datetime(1900, 1, 1, 0, 0, 0))
@@ -452,9 +417,9 @@ def test_build_stringsub_dict():
     # Test 5
     config_dict['FCST_INIT_HOUR'] = ''
     config_dict['FCST_LEAD'] = ''
-    date_beg = '20190101'
-    date_end = '20190101'
-    date_type = 'INIT'
+    st.c_dict['DATE_BEG'] = '20190101'
+    st.c_dict['DATE_END'] = '20190101'
+    st.c_dict['DATE_TYPE'] = 'INIT'
     lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST',
                        'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
                        'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
@@ -464,8 +429,7 @@ def test_build_stringsub_dict():
                        'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
                        'LINE_TYPE_LIST' ]
     lists_to_loop = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST' ]
-    test_stringsub_dict = st.build_stringsub_dict(date_beg, date_end,
-                                                  date_type, lists_to_loop,
+    test_stringsub_dict = st.build_stringsub_dict(lists_to_loop,
                                                   lists_to_group, config_dict)
     assert(test_stringsub_dict['init_beg'] == 
            datetime.datetime(2019, 1, 1, 0, 0 ,0))
@@ -519,9 +483,9 @@ def test_get_output_filename():
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['ALPHA'] = ''
     config_dict['OBS_LEVEL'] = ''
-    date_beg = '20190101'
-    date_end = '20190101'
-    date_type = 'VALID'
+    st.c_dict['DATE_BEG'] = '20190101'
+    st.c_dict['DATE_END'] = '20190101'
+    st.c_dict['DATE_TYPE'] = 'VALID'
     lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST',
                        'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
                        'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
@@ -535,14 +499,12 @@ def test_get_output_filename():
     expected_output_filename = '00Z/MODEL_TEST/MODEL_TEST_20190101.stat'
     output_type = 'dump_row'
     filename_template = (
-        '{valid_hour?fmt=%H}Z/{model?fmt=%s}'
-        +'/{model?fmt=%s}_{valid?fmt=%Y%m%d}.stat'
+        '{fcst_valid_hour?fmt=%H}Z/{model?fmt=%s}/{model?fmt=%s}_{valid?fmt=%Y%m%d}.stat'
     )
     filename_type = 'user'
     test_output_filename = st.get_output_filename(output_type,
                                                   filename_template,
-                                                  filename_type, date_beg,
-                                                  date_end, date_type,
+                                                  filename_type,
                                                   lists_to_loop,
                                                   lists_to_group,
                                                   config_dict)
@@ -555,13 +517,14 @@ def test_get_output_filename():
     )
     output_type = 'dump_row'
     filename_template = (
-        '{model?fmt=%s}_{obtype?fmt=%s}_'
+        '{model?fmt=%s}_{obtype?fmt=%s}'
+        +'_valid{valid?fmt=%Y%m%d}_'
+        +'fcstvalidhour000000Z_dump_row.stat'
     )
-    filename_type = 'default'
+    filename_type = 'user'
     test_output_filename = st.get_output_filename(output_type,
                                                   filename_template,
-                                                  filename_type, date_beg,
-                                                  date_end, date_type,
+                                                  filename_type,
                                                   lists_to_loop,
                                                   lists_to_group,
                                                   config_dict)
@@ -581,27 +544,25 @@ def test_get_output_filename():
     filename_type = 'user'
     test_output_filename = st.get_output_filename(output_type,
                                                   filename_template,
-                                                  filename_type, date_beg,
-                                                  date_end, date_type,
+                                                  filename_type,
                                                   lists_to_loop,
                                                   lists_to_group,
                                                   config_dict)
     assert(expected_output_filename == test_output_filename)
     # Test 4
     expected_output_filename = (
-        'MODEL_TEST_MODEL_TEST_ANL_'
+        'MODEL_TEST_MODEL_TEST_ANL'
         +'valid20190101_fcstvalidhour000000Z'
         +'_out_stat.stat'
     )
     output_type = 'out_stat'
     filename_template = (
-        '{model?fmt=%s}_{obtype?fmt=%s}_'
+        '{model?fmt=%s}_{obtype?fmt=%s}'
     )
     filename_type = 'default'
     test_output_filename = st.get_output_filename(output_type,
                                                   filename_template,
-                                                  filename_type, date_beg,
-                                                  date_end, date_type,
+                                                  filename_type,
                                                   lists_to_loop,
                                                   lists_to_group,
                                                   config_dict)
@@ -639,9 +600,10 @@ def test_get_lookin_dir():
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['ALPHA'] = ''
     config_dict['OBS_LEVEL'] = ''
-    date_beg = '20180201'
-    date_end = '20180201'
-    date_type = 'VALID'
+    st.c_dict['DATE_BEG'] = '20180201'
+    st.c_dict['DATE_END'] = '20180201'
+    st.c_dict['DATE_TYPE'] = 'VALID'
+
     lists_to_group = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST', 'FCST_LEAD_LIST',
                        'OBS_LEAD_LIST', 'OBS_VALID_HOUR_LIST',
                        'OBS_INIT_HOUR_LIST', 'FCST_VAR_LIST', 'OBS_VAR_LIST',
@@ -654,15 +616,13 @@ def test_get_lookin_dir():
     # Test 1
     expected_lookin_dir = '../../data/fake/20180201'
     dir_path = '../../data/fake/*'
-    test_lookin_dir = st.get_lookin_dir(dir_path, date_beg, date_end,
-                                        date_type, lists_to_loop,
+    test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
                                         lists_to_group, config_dict)
     assert(expected_lookin_dir == test_lookin_dir)
     # Test 2
     expected_lookin_dir = '../../data/fake/20180201'
     dir_path = '../../data/fake/{valid?fmt=%Y%m%d}'
-    test_lookin_dir = st.get_lookin_dir(dir_path, date_beg, date_end,
-                                        date_type, lists_to_loop,
+    test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
                                         lists_to_group, config_dict)
     assert(expected_lookin_dir == test_lookin_dir)
 
@@ -674,16 +634,16 @@ def test_format_valid_init():
     # correctly
     st = stat_analysis_wrapper()
     # Test 1
-    date_beg = '20190101'
-    date_end = '20190105'
-    date_type = 'VALID'
+    st.c_dict['DATE_BEG'] = '20190101'
+    st.c_dict['DATE_END'] = '20190105'
+    st.c_dict['DATE_TYPE'] = 'VALID'
+
     config_dict = {}
     config_dict['FCST_VALID_HOUR'] = '000000'
     config_dict['FCST_INIT_HOUR'] = '"000000", "120000"'
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['OBS_INIT_HOUR'] = ''
-    config_dict = st.format_valid_init(date_beg, date_end,
-                                    date_type, config_dict)
+    config_dict = st.format_valid_init(config_dict)
     assert(config_dict['FCST_VALID_BEG'] == '20190101_000000')
     assert(config_dict['FCST_VALID_END'] == '20190105_000000')
     assert(config_dict['FCST_VALID_HOUR'] == '"000000"')
@@ -697,16 +657,16 @@ def test_format_valid_init():
     assert(config_dict['OBS_INIT_END'] == '')
     assert(config_dict['OBS_INIT_HOUR'] == '')
     # Test 2
-    date_beg = '20190101'
-    date_end = '20190105'
-    date_type = 'VALID'
+    st.c_dict['DATE_BEG'] = '20190101'
+    st.c_dict['DATE_END'] = '20190105'
+    st.c_dict['DATE_TYPE'] = 'VALID'
+
     config_dict = {}
     config_dict['FCST_VALID_HOUR'] = '"000000", "120000"'
     config_dict['FCST_INIT_HOUR'] = '"000000", "120000"'
     config_dict['OBS_VALID_HOUR'] = ''
     config_dict['OBS_INIT_HOUR'] = ''
-    config_dict = st.format_valid_init(date_beg, date_end, 
-                                    date_type, config_dict)
+    config_dict = st.format_valid_init(config_dict)
     assert(config_dict['FCST_VALID_BEG'] == '20190101_000000')
     assert(config_dict['FCST_VALID_END'] == '20190105_120000')
     assert(config_dict['FCST_VALID_HOUR'] == '"000000", "120000"')
@@ -720,16 +680,16 @@ def test_format_valid_init():
     assert(config_dict['OBS_INIT_END'] == '')
     assert(config_dict['OBS_INIT_HOUR'] == '')
     # Test 3
-    date_beg = '20190101'
-    date_end = '20190101'
-    date_type = 'VALID'
+    st.c_dict['DATE_BEG'] = '20190101'
+    st.c_dict['DATE_END'] = '20190101'
+    st.c_dict['DATE_TYPE'] = 'VALID'
+
     config_dict = {}
     config_dict['FCST_VALID_HOUR'] = ''
     config_dict['FCST_INIT_HOUR'] = ''
     config_dict['OBS_VALID_HOUR'] = '000000'
     config_dict['OBS_INIT_HOUR'] = '"000000", "120000"'
-    config_dict = st.format_valid_init(date_beg, date_end,
-                                    date_type, config_dict)
+    config_dict = st.format_valid_init(config_dict)
     assert(config_dict['FCST_VALID_BEG'] == '')
     assert(config_dict['FCST_VALID_END'] == '')
     assert(config_dict['FCST_VALID_HOUR'] == '')
@@ -743,16 +703,16 @@ def test_format_valid_init():
     assert(config_dict['OBS_INIT_END'] == '')
     assert(config_dict['OBS_INIT_HOUR'] == '"000000", "120000"')
     # Test 3
-    date_beg = '20190101'
-    date_end = '20190101'
-    date_type = 'INIT'
+    st.c_dict['DATE_BEG'] = '20190101'
+    st.c_dict['DATE_END'] = '20190101'
+    st.c_dict['DATE_TYPE'] = 'INIT'
+
     config_dict = {}
     config_dict['FCST_VALID_HOUR'] = ''
     config_dict['FCST_INIT_HOUR'] = ''
     config_dict['OBS_VALID_HOUR'] = '000000'
     config_dict['OBS_INIT_HOUR'] = '"000000", "120000"'
-    config_dict = st.format_valid_init(date_beg, date_end,
-                                    date_type, config_dict)
+    config_dict = st.format_valid_init(config_dict)
     assert(config_dict['FCST_VALID_BEG'] == '')
     assert(config_dict['FCST_VALID_END'] == '')
     assert(config_dict['FCST_VALID_HOUR'] == '')
@@ -781,9 +741,15 @@ def test_parse_model_info():
         +'MODEL_TEST_{valid?fmt=%Y%m%d}.stat'
     )
     expected_dump_row_filename_type = 'user'
-    expected_out_stat_filename_template = '{model?fmt=%s}_{obtype?fmt=%s}_'
-    expected_out_stat_filename_type = 'default'
-    test_model_info_list, test_model_indices = st.parse_model_info()
+    expected_out_stat_filename_template = (
+        '{model?fmt=%s}_'
+        '{obtype?fmt=%s}_valid'
+        '{valid?fmt=%Y%m%d}{valid_hour?fmt=%H}_init'
+        '{fcst_init_hour?fmt=%s}.stat'
+    )
+
+    expected_out_stat_filename_type = 'user'
+    test_model_info_list = st.parse_model_info()
     assert(test_model_info_list[0]['name'] == expected_name)
     assert(test_model_info_list[0]['reference_name'] == 
            expected_reference_name)
@@ -796,9 +762,8 @@ def test_parse_model_info():
            expected_out_stat_filename_template)
     assert(test_model_info_list[0]['out_stat_filename_type'] == 
            expected_out_stat_filename_type)
-    assert(test_model_indices[0] == '1')
 
-def test_run_stat_analysis_job():
+def test_run_stat_analysis():
     # Test running of stat_analysis
     st = stat_analysis_wrapper()
     # Test 1
@@ -806,10 +771,10 @@ def test_run_stat_analysis_job():
                          +'/00Z/MODEL_TEST/MODEL_TEST_20190101.stat')
     comparison_filename = (METPLUS_BASE+'/internal_tests/data/stat_data/'
                            +'test_20190101.stat') 
-    date_beg = '20190101'
-    date_end = '20190101'
-    date_type = 'VALID'
-    st.run_stat_analysis_job(date_beg, date_end, date_type)
+    st.c_dict['DATE_BEG'] = '20190101'
+    st.c_dict['DATE_END'] = '20190101'
+    st.c_dict['DATE_TYPE'] = 'VALID'
+    st.run_stat_analysis()
     assert(os.path.exists(expected_filename))
     assert(os.path.getsize(expected_filename)
            == os.path.getsize(comparison_filename))

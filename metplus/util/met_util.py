@@ -73,6 +73,14 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'usage': 'Usage',
                          }
 
+valid_comparisons = {">=": "ge",
+                     ">": "gt",
+                     "==": "eq",
+                     "!=": "ne",
+                     "<=": "le",
+                     "<": "lt",
+                     }
+
 # missing data value used to check if integer values are not set
 # we often check for None if a variable is not set, but 0 and None
 # have the same result in a test. 0 may be a valid integer value
@@ -153,7 +161,7 @@ def run_metplus(config, process_list):
                     command_builder.run_all_times()
                     return 0
             except AttributeError:
-                raise NameError("Process %s doesn't exist" % item)
+                raise NameError("There was a problem loading %s wrapper." % item)
 
             processes.append(command_builder)
 
@@ -2022,6 +2030,10 @@ def get_process_list(config):
         raise TypeError("Attempting to run a plotting wrapper while METPLUS_DISABLE_PLOT_WRAPPERS environment "
                             "variable is set. Unset the variable to run this use case")
 
+    # if MakePlots is in process list, remove it because it will be called directly from StatAnalysis
+    if 'MakePlots' in out_process_list:
+        out_process_list.remove('MakePlots')
+
     return out_process_list
 
 # minutes
@@ -2069,14 +2081,14 @@ def get_threshold_via_regex(thresh_string):
             regex match object with comparison operator in group 1 and
             number in group 2 if valid
     """
-    valid_comparisons = {">", ">=", "==", "!=", "<", "<=", "gt", "ge", "eq", "ne", "lt", "le"}
+
     comparison_number_list = []
     # split thresh string by || or &&
     thresh_split = re.split(r'\|\||&&', thresh_string)
     # check each threshold for validity
     for thresh in thresh_split:
         found_match = False
-        for comp in valid_comparisons:
+        for comp in list(valid_comparisons.keys())+list(valid_comparisons.values()):
             # if valid, add to list of tuples
             match = re.match(r'^('+comp+r')([+-]?\d*\.?\d*)$', thresh)
             if match:
@@ -2092,6 +2104,18 @@ def get_threshold_via_regex(thresh_string):
         return None
 
     return comparison_number_list
+
+def comparison_to_letter_format(expression):
+    """! Convert comparison operator to the letter version if it is not already
+         @args expression string starting with comparison operator to
+          convert, i.e. gt3 or <=5.4
+         @returns letter comparison operator, i.e. gt3 or le5.4 or None if invalid
+    """
+    for symbol_comp, letter_comp in valid_comparisons.items():
+        if letter_comp in expression or symbol_comp in expression:
+            return expression.replace(symbol_comp, letter_comp)
+
+    return None
 
 def validate_thresholds(thresh_list):
     """ Checks list of thresholds to ensure all of them have the correct format

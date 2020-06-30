@@ -5,12 +5,15 @@ import sys
 import re
 import logging
 from collections import namedtuple
-import produtil
 import pytest
 import datetime
-import config_metplus
-import feature_util
-import met_util as util
+
+import produtil
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.pb2nc_wrapper import PB2NCWrapper
+from metplus.util import met_util as util
+from metplus.util import feature_util
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #

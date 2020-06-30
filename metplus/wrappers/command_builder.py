@@ -120,6 +120,7 @@ class CommandBuilder:
         caller = getframeinfo(stack()[1][0])
         self.logger.error(f"({os.path.basename(caller.filename)}:{caller.lineno}) {error_string}")
         self.errors += 1
+        self.isOK = False
 
     def set_user_environment(self, time_info=None):
         """!Set environment variables defined in [user_env_vars] section of config
@@ -982,7 +983,8 @@ class CommandBuilder:
                                               copyable_env=self.get_env_copy())
         if ret != 0:
             self.log_error(f"MET command returned a non-zero return code: {cmd}")
-            self.logger.info("Check the logfile for more information on why it failed")
+            self.logger.info("Check the logfile for more information on why it failed: "
+                             f"{self.config.getstr('config', 'LOG_METPLUS')}")
             return False
 
         return True
