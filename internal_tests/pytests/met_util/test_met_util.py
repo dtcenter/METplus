@@ -786,3 +786,13 @@ def test_get_time_from_file(filepath, template, expected_result):
     else:
         assert(result['valid'] == expected_result)
 
+@pytest.mark.parametrize(
+    'value, expected_result', [
+        (3.3, 3.5),
+        (3.1, 3.0),
+        (-3.2, -3.0),
+        (-3.8, -4.0),
+    ]
+)
+def test_round_0p5(value, expected_result):
+    assert(util.round_0p5(value) == expected_result)
