@@ -61,7 +61,8 @@ do
   curl -L -O https://github.com/NCAR/METplus/releases/download/${tarball}
 
   echo file basename $tarball
-  echo `file basename $tarball`
+  tarball_basename=`basename $tarball`
+  echo `file $tarball_basename`
 
   echo tar xfzp `basename $tarball`
   tar xfzp `basename $tarball`
