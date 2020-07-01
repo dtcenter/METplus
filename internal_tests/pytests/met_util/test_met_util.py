@@ -3,15 +3,17 @@
 import sys
 import pytest
 import datetime
-import met_util as util
-import time_util
-import produtil
 import os
 import subprocess
 import shutil
 from dateutil.relativedelta import relativedelta
 from csv import reader
-import config_metplus
+
+import produtil
+
+from metplus.util import met_util as util
+from metplus.util import time_util
+from metplus.util.config import config_metplus
 
 #@pytest.fixture
 def metplus_config():
@@ -75,7 +77,6 @@ def test_remove_quotes(before, after):
         ({'gt4&&lt5&&ne4.5'}, True),
     ]
 )
-
 def test_threshold(key, value):
     assert(util.validate_thresholds(key) == value)
 
@@ -167,6 +168,11 @@ def test_getlist_has_commas():
     l = 'gt2.7, >3.6, eq42, "has,commas,in,it"'
     test_list = util.getlist(l)
     assert(test_list == ['gt2.7', '>3.6', 'eq42', 'has,commas,in,it'])
+
+def test_getlist_empty():
+    l = ''
+    test_list = util.getlist(l)
+    assert(test_list == [])
 
 # field info only defined in the FCST_* variables
 @pytest.mark.parametrize(
@@ -699,7 +705,6 @@ def test_get_process_list(input_list, expected_list):
         ('{today}', '%Y%m%d%H', True),
     ]
 )
-
 def test_get_time_obj(time_from_conf, fmt, is_datetime):
     clock_time = datetime.datetime(2019, 12, 31, 15, 30)
 
@@ -732,3 +737,178 @@ def test_fix_list(list_str, expected_fixed_list):
         print(f"ITEM: {expected}")
 
     assert(fixed_list == expected_fixed_list)
+
+@pytest.mark.parametrize(
+    'camel, underscore', [
+        ('ASCII2NCWrapper', 'ascii2nc_wrapper'),
+        ('CyclonePlotterWrapper', 'cyclone_plotter_wrapper'),
+        ('EnsembleStatWrapper', 'ensemble_stat_wrapper'),
+        ('ExampleWrapper', 'example_wrapper'),
+        ('ExtractTilesWrapper', 'extract_tiles_wrapper'),
+        ('GempakToCFWrapper', 'gempak_to_cf_wrapper'),
+        ('GenVxMaskWrapper', 'gen_vx_mask_wrapper'),
+        ('GridStatWrapper', 'grid_stat_wrapper'),
+        ('MakePlotsWrapper', 'make_plots_wrapper'),
+        ('MODEWrapper', 'mode_wrapper'),
+        ('MTDWrapper', 'mtd_wrapper'),
+        ('PB2NCWrapper', 'pb2nc_wrapper'),
+        ('PCPCombineWrapper', 'pcp_combine_wrapper'),
+        ('Point2GridWrapper', 'point2grid_wrapper'),
+        ('PointStatWrapper', 'point_stat_wrapper'),
+        ('PyEmbedWrapper', 'py_embed_wrapper'),
+        ('RegridDataPlaneWrapper', 'regrid_data_plane_wrapper'),
+        ('SeriesAnalysisWrapper', 'series_analysis_wrapper'),
+        ('SeriesByInitWrapper', 'series_by_init_wrapper'),
+        ('SeriesByLeadWrapper', 'series_by_lead_wrapper'),
+        ('StatAnalysisWrapper', 'stat_analysis_wrapper'),
+        ('TCMPRPlotterWrapper', 'tcmpr_plotter_wrapper'),
+        ('TCPairsWrapper', 'tc_pairs_wrapper'),
+        ('TCStatWrapper', 'tc_stat_wrapper'),
+    ]
+)
+def test_camel_to_underscore(camel, underscore):
+    assert(util.camel_to_underscore(camel) == underscore)
+
+@pytest.mark.parametrize(
+    'filepath, template, expected_result', [
+        (os.getcwd(), 'file.{valid?fmt=%Y%m%d%H}.ext', None),
+        ('file.2019020104.ext', 'file.{valid?fmt=%Y%m%d%H}.ext', datetime.datetime(2019, 2, 1, 4)),
+        ('filename.2019020104.ext', 'file.{valid?fmt=%Y%m%d%H}.ext', None),
+        ('file.2019020104.ext.gz', 'file.{valid?fmt=%Y%m%d%H}.ext', datetime.datetime(2019, 2, 1, 4)),
+        ('filename.2019020104.ext.gz', 'file.{valid?fmt=%Y%m%d%H}.ext', None),
+    ]
+)
+def test_get_time_from_file(filepath, template, expected_result):
+    result = util.get_time_from_file(filepath, template)
+
+    if result is None:
+        assert(expected_result is None)
+    else:
+        assert(result['valid'] == expected_result)
+
+@pytest.mark.parametrize(
+    'expression, expected_result', [
+        ('gt3', 'gt3'),
+        ('>3', 'gt3'),
+        ('le3.5', 'le3.5'),
+        ('<=3.5', 'le3.5'),
+        ('==4', 'eq4'),
+        ('!=3.5', 'ne3.5'),
+    ]
+)
+def test_comparison_to_letter_format(expression, expected_result):
+    assert(util.comparison_to_letter_format(expression) == expected_result)
+
+@pytest.mark.parametrize(
+    'conf_items, met_tool, expected_result', [
+        ({'CUSTOM_LOOP_LIST': "one, two, three"}, '', ['one', 'two', 'three']),
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'GRID_STAT_CUSTOM_LOOP_LIST': "four, five",}, 'grid_stat', ['four', 'five']),
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'GRID_STAT_CUSTOM_LOOP_LIST': "four, five",}, 'point_stat', ['one', 'two', 'three']),
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'ASCII2NC_CUSTOM_LOOP_LIST': "four, five",}, 'ascii2nc', ['four', 'five']),
+        # fails to read custom loop list for point2grid because there are underscores in name
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'POINT_2_GRID_CUSTOM_LOOP_LIST': "four, five",}, 'point2grid', ['one', 'two', 'three']),
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'POINT2GRID_CUSTOM_LOOP_LIST': "four, five",}, 'point2grid', ['four', 'five']),
+    ]
+)
+def test_get_custom_string_list(conf_items, met_tool, expected_result):
+    config = metplus_config()
+    for conf_key, conf_value in conf_items.items():
+        config.set('config', conf_key, conf_value)
+
+    assert(util.get_custom_string_list(config, met_tool) == expected_result)
+
+@pytest.mark.parametrize(
+    'skip_times_conf, expected_dict', [
+        ('"%d:30,31"', {'%d': ['30','31']}),
+        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
+                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
+        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}),
+    ]
+)
+def test_get_skip_times(skip_times_conf, expected_dict):
+    conf = metplus_config()
+    conf.set('config', 'SKIP_TIMES', skip_times_conf)
+
+    assert(util.get_skip_times(conf) == expected_dict)
+
+@pytest.mark.parametrize(
+    'skip_times_conf, expected_dict', [
+        ('"%d:30,31"', {'%d': ['30','31']}),
+        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
+                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
+        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}),
+    ]
+)
+def test_get_skip_times_wrapper(skip_times_conf, expected_dict):
+    conf = metplus_config()
+
+    # set wrapper specific skip times, then ensure it is found
+    conf.set('config', 'GRID_STAT_SKIP_TIMES', skip_times_conf)
+
+    assert(util.get_skip_times(conf, 'grid_stat') == expected_dict)
+
+@pytest.mark.parametrize(
+    'skip_times_conf, expected_dict', [
+        ('"%d:30,31"', {'%d': ['30','31']}),
+        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
+                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
+        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}),
+    ]
+)
+def test_get_skip_times_wrapper_not_used(skip_times_conf, expected_dict):
+    conf = metplus_config()
+
+    # set generic SKIP_TIMES, then request grid_stat to ensure it uses generic
+    conf.set('config', 'SKIP_TIMES', skip_times_conf)
+
+    assert(util.get_skip_times(conf, 'grid_stat') == expected_dict)
+
+@pytest.mark.parametrize(
+    'run_time, skip_times, expected_result', [
+        (datetime.datetime(2019, 12, 30), {'%d': ['30', '31']}, True),
+        (datetime.datetime(2019, 12, 30), {'%d': ['29', '31']}, False),
+        (datetime.datetime(2019, 2, 27), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, False),
+        (datetime.datetime(2019, 3, 30), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
+        (datetime.datetime(2019, 3, 30), {'%d': ['30', '31'],
+                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
+        (datetime.datetime(2019, 3, 29), {'%d': ['30', '31'],
+                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
+        (datetime.datetime(2019, 1, 29), {'%d': ['30', '31'],
+                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, False),
+        (datetime.datetime(2020, 10, 31), {'%Y%m%d': ['20201031']}, True),
+        (datetime.datetime(2020, 3, 31), {'%Y%m%d': ['20201031']}, False),
+        (datetime.datetime(2020, 10, 30), {'%Y%m%d': ['20201031']}, False),
+        (datetime.datetime(2019, 10, 31), {'%Y%m%d': ['20201031']}, False),
+        (datetime.datetime(2020, 10, 31), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, True),
+        (datetime.datetime(2019, 10, 31), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, True),
+        (datetime.datetime(2019, 1, 13), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, True),
+        (datetime.datetime(2018, 10, 31), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, False),
+        (datetime.datetime(2019, 12, 30, 12), {'%H': ['12', '18']}, True),
+        (datetime.datetime(2019, 12, 30, 13), {'%H': ['12', '18']}, False),
+    ]
+)
+def test_get_skip_time(run_time, skip_times, expected_result):
+    time_info = time_util.ti_calculate({'valid': run_time})
+    assert(util.skip_time(time_info, skip_times) == expected_result)
+
+def test_get_skip_time_no_valid():
+    input_dict ={'init': datetime.datetime(2019, 1, 29)}
+    assert(util.skip_time(input_dict, {'%Y': ['2019']}) == False)

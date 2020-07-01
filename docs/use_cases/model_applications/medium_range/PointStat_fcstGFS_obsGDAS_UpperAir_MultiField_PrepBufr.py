@@ -2,7 +2,7 @@
 Point-Stat: Standard Verification of Global Upper Air  
 =============================================================================
 
-PointStat_fcstGFS_obsGDAS
+model_applications/medium_range/PointStat_fcstGFS_obsGDAS
 _UpperAir_MultiField
 _PrepBufr.conf
 
@@ -13,7 +13,7 @@ _PrepBufr.conf
 #
 # To provide useful statistical information on the relationship between observation
 # data in point format to a gridded forecast. These values can be used to assess  
-# the skill of the prediction.  Statistics are stored as partial sumes to save
+# the skill of the prediction.  Statistics are stored as partial sums to save
 # space and Stat-Analysis must be used to compute the Continuous Statistics.
 
 

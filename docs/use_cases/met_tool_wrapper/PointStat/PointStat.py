@@ -2,22 +2,22 @@
 PointStat: Basic Use Case
 =============================================================================
 
-PointStat.conf
+met_tool_wrapper/PointStat/PointStat.conf
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Compare 3 hour forecast precipitation accumulations to observations
-# of 3 hour precipitation accumulation. Generate statistics of the results.
+# Compare hourly forecasts for temperature, u-, and v-wind components to observations
+# in a 3-hour observation window. Generate statistics of the results.
 
 ##############################################################################
 # Datasets
 # --------
 #
 # | **Forecast:** NAM temperature, u-wind component, and v-wind component
-# | **Observation:** prepBURF data that has been converted to NetCDF format via PB2NC
+# | **Observation:** prepBUFR data that has been converted to NetCDF format via PB2NC
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.

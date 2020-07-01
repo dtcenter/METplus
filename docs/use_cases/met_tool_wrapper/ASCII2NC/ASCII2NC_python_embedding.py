@@ -2,7 +2,7 @@
 ASCII2NC: Using Python Embedding
 =============================================================================
 
-ASCII2NC_python
+met_tool_wrapper/ASCII2NC/ASCII2NC_python
 _embedding.conf
 
 """

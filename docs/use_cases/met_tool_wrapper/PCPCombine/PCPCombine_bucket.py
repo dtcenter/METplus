@@ -2,7 +2,7 @@
 PCPCombine: Bucket Interval Use Case
 ==============================================================================
 
-PCPCombine_bucket.conf
+met_tool_wrapper/PCPCombine/PCPCombine_bucket.conf
 
 """
 ##############################################################################

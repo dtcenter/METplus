@@ -13,18 +13,26 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import numpy as np
-import plot_util as plot_util
 import pandas as pd
 import itertools
 import warnings
 import logging
 import datetime
 import re
+import sys
 import matplotlib
 matplotlib.use('agg')
 import matplotlib.pyplot as plt
 import matplotlib.dates as md
 import matplotlib.gridspec as gridspec
+
+import plot_util as plot_util
+
+# add metplus directory to path so the wrappers and utilities can be found
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                '..',
+                                                '..')))
+from metplus.util import do_string_sub
 
 # Read environment variables set in make_plots_wrapper.py
 verif_case = os.environ['VERIF_CASE']
@@ -62,6 +70,7 @@ stats_list = os.environ['STATS'].split(', ')
 model_list = os.environ['MODEL'].split(', ')
 model_obtype_list = os.environ['MODEL_OBTYPE'].split(', ')
 model_reference_name_list = os.environ['MODEL_REFERENCE_NAME'].split(', ')
+dump_row_filename_template = os.environ['DUMP_ROW_FILENAME']
 average_method = os.environ['AVERAGE_METHOD']
 ci_method = os.environ['CI_METHOD']
 verif_grid = os.environ['VERIF_GRID']
@@ -101,7 +110,10 @@ output_data_dir = os.path.join(output_base_dir, 'data')
 output_imgs_dir = os.path.join(output_base_dir, 'imgs')
 # Model info
 model_info_list = list(
-    zip(model_list, model_reference_name_list, model_obtype_list)
+    zip(model_list,
+        model_reference_name_list,
+        model_obtype_list,
+    )
 )
 nmodels = len(model_info_list)
 # Plot info
@@ -355,13 +367,27 @@ for plot_info in plot_info_list:
                 [[model_plot_name], [fcst_lead], expected_stat_file_dates],
                 names=['model_plot_name', 'leads', 'dates']
             )
-            model_stat_filename = (
-                model_plot_name+'_'+model_obtype+'_'
-                +base_name.replace('FCSTLEADHOLDER', fcst_lead)
-                +'_dump_row.stat'
-            )
-            model_stat_file = os.path.join(input_base_dir,
-                                           model_stat_filename)
+#            model_stat_filename = (
+#                model_plot_name+'_'+model_obtype+'_'
+#                +base_name.replace('FCSTLEADHOLDER', fcst_lead)
+#                +'_dump_row.stat'
+#            )
+#            model_stat_file = os.path.join(input_base_dir,
+#                                           model_stat_filename)
+            model_stat_template = dump_row_filename_template
+            string_sub_dict = {
+                'model': model_name,
+                'model_reference': model_plot_name,
+                'obtype': model_obtype,
+                'fcst_lead': fcst_lead,
+                'obs_lead': obs_lead,
+                'fcst_level': fcst_var_level,
+                'obs_level': obs_var_level,
+                'fcst_thresh': fcst_var_thresh,
+                'obs_thresh': obs_var_thresh,
+            }
+            model_stat_file = do_string_sub(model_stat_template,
+                                            **string_sub_dict)
             if os.path.exists(model_stat_file):
                 nrow = sum(1 for line in open(model_stat_file))
                 if nrow == 0:

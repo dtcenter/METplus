@@ -1,7 +1,7 @@
 How to Create Your Own Wrapper
 ==============================
 
-* Create the new wrapper in the METplus/ush directory and name it to reflect the wrapper's function,
+* Create the new wrapper in the METplus/metplus/wrappers directory and name it to reflect the wrapper's function,
   e.g.: new_tool_wrapper.py
   You can copy example_wrapper.py or ascii2nc_wrapper.py to start.
 
@@ -10,14 +10,20 @@ How to Create Your Own Wrapper
 
     class NewToolWrapper(CommandBuilder)
 
+* The new wrapper should reflect the name of the MET application without underscores because of the way the application gets called from the wrapper:: 
+
+    Point2GridWrapper =  correct
+    Point_2_Grid_Wrapper = incorrect
+
 * Modify the init function to initialize NewExample from its base class (CommandBuilder), and to set the name and path to the MET application you are wrapping::
 
     def __init__(self, config, logger):
         super(NewToolWrapper, self).__init__(config, logger)
-        self.app_path = os.path.join(self.p.getdir('MET_INSTALL_DIR'), 'bin/new_tool')
+        self.app_path = os.path.join(self.p.getdir('MET_BIN_DIR', ''),
+                                     'new_tool')
         self.app_name = os.path.basename(self.app_path)
 
-**NOTE**: 'bin/new_tool' is the path to the MET tool being wrapped
+**NOTE**: 'new_tool' is the name of the MET tool being wrapped
 
 * Override the run_at_time method if the wrapper will be called once for each run time specified in the configuration file. If the wrapper will loop over each forecast lead (LEAD_SEQ in the METplus config file) and process once for each, then override run_at_time with the following method and put the logic to build the MET command for each run in a run_at_time_once method::
 
@@ -70,11 +76,11 @@ If the wrapper will not loop and process for each forecast lead, put the logic t
 
 * It is recommended to divide up the logic into components, as illustrated above, the make the code more readable and easier to test.
 
-* The function self.set_environment_variables should be called by all wrappers even if the MET tool does not have a config file. This is done to set environment variables that MET expects to be set when running, such as MET_TMP_DIR and MET_PYTHON_EXE.
+* The function self.set_environment_variables should be called by all wrappers even if the MET tool does not have a config file. This is done to set environment variables that MET expects to be set when running, such as MET_TMP_DIR and MET_PYTHON_EXE. If no environment variables need to be set specific to the wrapper, you do not need to write your own implementation of the function in the wrapper. You can call the implementation of the function from CommandBuilder, which sets the environment variables defined in the [user_env_vars] section of the configuration file and outputs DEBUG logs for each environment variable that has been set in the wrapper. MET_TMP_DIR is automatically set for each wrapper.
 
 * Once you have provided all the necessary information to create the MET command, call self.build_and_run_command(). This calls self.get_command() to assemble the command and verify that the command your wrapper generated contains all of the required arguments.  You may need to override get_command() in your wrapper if your MET application is different from the example.  For instance, some MET tools require flags such as -f to precede the input filename.  You can override get_command in the wrapper to prepend the required flag to the filename in your constructed MET command.
 
-* Call self.clear() at the beginning of each loop iteration to prevent inadvertently reusing/re-running commands that were previously created.
+* Call self.clear() at the beginning of each loop iteration that tries to build/run a MET command to prevent inadvertently reusing/re-running commands that were previously created.
 
 * Update the METplus/ush/master_metplus.py file to recognize your wrapper by adding an import statement::
 
@@ -125,10 +131,29 @@ Some wrappers require multiple entries to cover all of the bases. For example, u
 
 * Add a section to the Python Wrappers page of the documentation with information about the new tool including a list of all METplus configuration variables that can be used.
 
-* Add an entry for each METplus configuration variable added to the wrapper to the METplus Configuration Glossary.
+* Add an entry for each METplus configuration variable added to the wrapper to the METplus Configuration Glossary. Each configuration variable should be the MET tool name in all caps i.e. GRID_STAT followed by the variable name. MET tool names generally have underscores between words unless there is a number in the name. Examples below::
+    
+    GRID_STAT_PROB_THRESH
+    REGRID_DATA_PLANE_METHOD
+    POINT2GRID_QC_FLAGS
 
-* Create a directory named after the new wrapper to hold the use case configuration files in the met_tool_wrapper directory that users can run to try out the new wrapper. Be sure to include a corresponding .py file that contains the documentation for that use case and a README file to create a header for the documentation page.
+* Create a directory named after the new wrapper to hold the use case configuration files in the met_tool_wrapper directory that users can run to try out the new wrapper. In the corresponding directory under docs/use_cases, be sure to include a .py file that contains the documentation for that use case and a README file to create a header for the documentation page.
 
 Your use case/example configuration file is located in a directory structure like the following::
 
     METplus/parm/use_cases/met_tool_wrapper/NewTool/NewTool.conf
+    METplus/docs/use_cases/met_tool_wrapper/NewTool/NewTool.py
+    METplus/docs/use_cases/met_tool_wrapper/NewTool/README.md
+
+Note the documentation file is in METplus/docs while the use case conf file is in METplus/parm
+
+Documentation
+-------------
+
+* Add a section for the new wrapper in the 'Python Wrappers' section of the User's Guide. This includes a list of all configuration variables specific to this wrapper.
+
+* Add all new configuration variables to the 'METplus Configuration Glossary' section of the User's Guide
+
+* Add any relevant new keywords to the 'METplus Quick Search for Use Cases' section of the User's Guide.
+
+* Create Sphinx documentation files for each new use case (under docs/use_cases). There should be at least one use case in the docs/use_cases/met_tool_wrapper subdirectory for the new wrapper (more if it can be configured in diffferent ways that should be shown in an example). Be sure to add a README.rst file for the header.

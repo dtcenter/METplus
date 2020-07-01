@@ -2,7 +2,8 @@
 RegridDataPlane: Run once per field
 =============================================================================
 
-met_tool_wrapper/RegridDataPlane/RegridDataPlane_multi_field_multi_file.conf
+met_tool_wrapper/RegridDataPlane/RegridDataPlane_multi_field
+_multi_file.conf
 
 """
 ##############################################################################

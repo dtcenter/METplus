@@ -2,7 +2,7 @@
 Grid-Stat: Compute Anomaly Correlation using Climatology  
 ============================================================================
 
-GridStat_fcstGFS_obsGFS
+model_applications/medium_range/GridStat_fcstGFS_obsGFS
 _climoNCEP_MultiField.conf
 
 """
@@ -88,7 +88,6 @@ _climoNCEP_MultiField.conf
 # * **${NEIGHBORHOOD_SHAPE}** - Shape of the neighborhood method applied. Corresponds to GRID_STAT_NEIGHBORHOOD_SHAPE in the METplus configuration file. Default value is 1 if not set.
 # * **${NEIGHBORHOOD_WIDTH}** - Width of the neighborhood method applied. Corresponds to GRID_STAT_NEIGHBORHOOD_WIDTH in the METplus configuration file. Default value is SQUARE if not set.
 #
-# TODO: Add StatAnalysis environment variables
 
 ##############################################################################
 # Running METplus

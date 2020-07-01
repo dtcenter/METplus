@@ -2,7 +2,7 @@
 MTD using Python Embedding
 ==========================
 
-MTD_python_embedding.conf
+met_tool_wrapper/MTD/MTD_python_embedding.conf
 
 """
 ##############################################################################

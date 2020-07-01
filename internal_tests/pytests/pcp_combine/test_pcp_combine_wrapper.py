@@ -6,12 +6,14 @@ import re
 import logging
 import datetime
 from collections import namedtuple
-import produtil
 import pytest
-import config_metplus
-from pcp_combine_wrapper import PCPCombineWrapper
-import time_util
-import met_util as util
+
+import produtil
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.pcp_combine_wrapper import PCPCombineWrapper
+from metplus.util import time_util
+from metplus.util import met_util as util
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
@@ -220,7 +222,7 @@ def test_setup_add_method():
     var_info['fcst_level'] = "A06"
     var_info['obs_level'] = "A06"
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    output_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
+    output_dir = pcw.config.getdir('OUTPUT_BASE')+"/internal_tests/data/fakeout"
     pcw.setup_add_method(time_info, var_info, rl)
     
     in_files = pcw.infiles
@@ -254,7 +256,7 @@ def test_setup_sum_method():
     var_info['fcst_level'] = "A06"
     var_info['obs_level'] = "A06"
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    output_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
+    output_dir = pcw.config.getdir('OUTPUT_BASE')+"/internal_tests/data/fakeout"
     pcw.setup_sum_method(time_info, var_info, rl)
     
     in_files = pcw.infiles

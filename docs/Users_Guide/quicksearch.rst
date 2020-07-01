@@ -9,16 +9,19 @@ Use Cases by MET Tool:
 | `EnsembleStat <https://ncar.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_
 | `GenVxMask <https://ncar.github.io/METplus/search.html?q=GenVxMaskToolUseCase&check_keywords=yes&area=default>`_
 | `GridStat <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
+| `GridDiag <https://ncar.github.io/METplus/search.html?q=GridDiagToolUseCase&check_keywords=yes&area=default>`_
 | `MODE <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
 | `MTD <https://ncar.github.io/METplus/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_
 | `PB2NC <https://ncar.github.io/METplus/search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_
 | `PCPCombine <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_
+| `Point2Grid <https://ncar.github.io/METplus/search.html?q=Point2GridToolUseCase&check_keywords=yes&area=default>`_
 | `PointStat <https://ncar.github.io/METplus/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
 | `RegridDataPlane <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
 | `SeriesAnalysis <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
 | `StatAnalysis <https://ncar.github.io/METplus/search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
 | `TCMPRPlotter <https://ncar.github.io/METplus/search.html?q=TCMPRPlotterUseCase&check_keywords=yes&area=default>`_
 | `TCPairs <https://ncar.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_
+| `TCRMW <https://ncar.github.io/METplus/search.html?q=TCRMWToolUseCase&check_keywords=yes&area=default>`_
 | `TCStat <https://ncar.github.io/METplus/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_
 
 

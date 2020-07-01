@@ -5,13 +5,15 @@ import sys
 import re
 import logging
 from collections import namedtuple
-import produtil
 import pytest
 import datetime
-import config_metplus
-from compare_gridded_wrapper import CompareGriddedWrapper
-import met_util as util
-import time_util
+
+import produtil
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.compare_gridded_wrapper import CompareGriddedWrapper
+from metplus.util import met_util as util
+from metplus.util import time_util
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #

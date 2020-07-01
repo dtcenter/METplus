@@ -2,8 +2,10 @@
 Ensemble-Stat: Ensemble Statistics using Obs Uncertainty 
 =============================================================================
 
-EnsembleStat_fcstHRRRE
-_obsHRRRE_Sfc_MultiField.conf
+model_applications/
+convection_allowing_model/
+EnsembleStat_fcstHRRRE_obsHRRRE_Sfc
+_Sfc_MultiField.conf
 
 """
 ##############################################################################
@@ -22,8 +24,7 @@ _obsHRRRE_Sfc_MultiField.conf
 # Relevant information about the datasets that would be beneficial include:
 # 
 #  * Forecast dataset: HRRRE data
-#  * Observation dataset: HRRRE
-#  * Sources of data (links, contacts, etc...)
+#  * Observation dataset: HRRRE data
 #
 
 ##############################################################################
@@ -121,7 +122,7 @@ _obsHRRRE_Sfc_MultiField.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/convection_allowing_models/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField/201807091200 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/convection_allowing_models/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField/EnsembleStat/201807091200 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * ensemble_stat_HRRRE_F000_ADPSFC_20180709_120000V_ecnt.txt

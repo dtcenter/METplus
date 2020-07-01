@@ -2,7 +2,7 @@
 GridStat: Basic Use Case
 =========================
 
-GridStat.conf
+met_tool_wrapper/GridStat/GridStat.conf
 
 """
 ##############################################################################
@@ -115,12 +115,12 @@ GridStat.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in grid_stat/2005080700 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in met_tool_wrapper/GridStat/GridStat/2005080700 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * grid_stat_QPF_APCP_vs_QPE_APCP_03_120000L_20050807_120000V_eclv.txt
-# * grid_stat_QPF_APCP_vs_QPE_APCP_03_120000L_20050807_120000V_grad.txt
-# * grid_stat_QPF_APCP_vs_QPE_APCP_03_120000L_20050807_120000V.stat
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_120000L_20050807_120000V_eclv.txt
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_120000L_20050807_120000V_grad.txt
+# * grid_stat_WRF_APCP_vs_MC_PCP_APCP_03_120000L_20050807_120000V.stat
 
 ##############################################################################
 # Keywords

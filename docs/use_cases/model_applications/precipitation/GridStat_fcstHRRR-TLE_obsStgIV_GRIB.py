@@ -2,7 +2,7 @@
 Grid-Stat: 6hr PQPF Probability Verification
 ==========================================================================
 
-GridStat_fcstHRRR
+model_applications/precipitation/GridStat_fcstHRRR
 _obsStgIV_GRIB.conf
 
 """
@@ -33,7 +33,6 @@ _obsStgIV_GRIB.conf
 # 
 #  * Forecast dataset: HRRR-TLE probabilistic forecasts in GRIB2
 #  * Observation dataset: Stage IV GRIB 1 and 6 hour precipitation accumulation
-#  * Sources of data (links, contacts, etc...)
 #
 
 ##############################################################################

@@ -2,7 +2,7 @@
 EnsembleStat: Basic Use Case
 =============================
 
-EnsembleStat.conf
+met_tool_wrapper/EnsembleStat/EnsembleStat.conf
 
 """
 

@@ -1,15 +1,17 @@
 #!/usr/bin/env python
 
 import os
-import config_metplus
 import datetime
 import sys
 import logging
 import pytest
 import datetime
-from make_plots_wrapper import MakePlotsWrapper
-import met_util as util
+
 import produtil.setup
+
+from metplus.util.config import config_metplus
+from metplus.wrappers.make_plots_wrapper import MakePlotsWrapper
+from metplus.util import met_util as util
 
 #
 # These are tests (not necessarily unit tests) for the
@@ -103,16 +105,6 @@ def metplus_config():
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
-def test_set_plotting_script():
-    # Independently test that plotting script
-    # of the make_plots python command is 
-    # being set up correctly
-    mp = make_plots_wrapper()
-    # Test 1
-    test_plotting_script = 'plot_fake_script_name.py'
-    mp.set_plotting_script('plot_fake_script_name.py')
-    assert(test_plotting_script == mp.plotting_script)
-
 def test_get_command():
     # Independently test that the make_plots python
     # command is being put together correctly with
@@ -123,7 +115,7 @@ def test_get_command():
     expected_command = (
         'python plot_fake_script_name.py'
     )
-    mp.set_plotting_script('plot_fake_script_name.py')
+    mp.plotting_script = 'plot_fake_script_name.py'
     test_command = mp.get_command()
     assert(expected_command == test_command)
 
@@ -142,7 +134,7 @@ def test_create_c_dict():
                                        +'/plotting/stat_analysis')
     assert(c_dict['OUTPUT_BASE_DIR'] == mp.config.getdir('OUTPUT_BASE')
                                        +'/plotting/make_plots') 
-    assert(c_dict['SCRIPTS_BASE_DIR'] == METPLUS_BASE+'/ush/plotting_scripts')
+    assert(os.path.realpath(c_dict['SCRIPTS_BASE_DIR']) == METPLUS_BASE+'/ush/plotting_scripts')
     assert(c_dict['DATE_TYPE'] == 'VALID')
     assert(c_dict['VALID_BEG'] == '20190101')
     assert(c_dict['VALID_END'] == '20190101')
@@ -187,102 +179,3 @@ def test_create_c_dict():
                                     +'/logs/master_metplus.log.'
                                     +mp.config.getstr('config',
                                                       'LOG_TIMESTAMP'))
-    assert(c_dict['LOG_LEVEL'] == 'INFO')
-
-def test_list_to_str():
-    # Independently test that a list of strings
-    # are being converted to a one
-    # string list correctly
-    mp = make_plots_wrapper()
-    # Test 1
-    expected_list = 'a, b, c'
-    test_list = mp.list_to_str([ 'a', 'b', 'c' ])
-    assert(expected_list == test_list)
-    # Test 2
-    expected_list = '0, 1, 2'
-    test_list = mp.list_to_str([ '0', '1', '2' ])
-    assert(expected_list == test_list)
-
-def test_set_lists_as_loop_or_group():
-    # Independently test that the lists that are set
-    # in the config file are being set 
-    # accordingly based on their place 
-    # in GROUP_LIST_ITEMS and LOOP_LIST_ITEMS 
-    # and those not set are set to GROUP_LIST_ITEMS
-    mp = make_plots_wrapper()
-    # Test 1
-    expected_lists_to_group_items = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST',
-                                      'FCST_LEAD_LIST', 'OBS_LEAD_LIST',
-                                      'OBS_VALID_HOUR_LIST', 'MODEL_LIST',
-                                      'OBS_INIT_HOUR_LIST', 'FCST_UNITS_LIST',
-                                      'OBS_UNITS_LIST', 'FCST_LEVEL_LIST',
-                                      'OBS_LEVEL_LIST', 'INTERP_MTHD_LIST',
-                                      'INTERP_PNTS_LIST', 'FCST_THRESH_LIST',
-                                      'OBS_THRESH_LIST', 'COV_THRESH_LIST',
-                                      'ALPHA_LIST', 'LINE_TYPE_LIST',
-                                      'STATS_LIST' ]
-    expected_lists_to_loop_items = [ 'FCST_VALID_HOUR_LIST', 'VX_MASK_LIST',
-                                     'FCST_VAR_LIST', 'OBS_VAR_LIST' ]
-    config_dict = {}
-    config_dict['LOOP_ORDER'] = 'processes'
-    config_dict['PROCESS_LIST'] = 'StatAnalysis, MakePlots'
-    config_dict['OUTPUT_BASE_DIR'] = 'OUTPUT_BASE/stat_analysis'
-    config_dict['GROUP_LIST_ITEMS'] = [ 'FCST_INIT_HOUR_LIST' ]
-    config_dict['LOOP_LIST_ITEMS'] = [ 'FCST_VALID_HOUR_LIST' ]
-    config_dict['FCST_VAR_LIST'] = [ 'HGT' ]
-    config_dict['OBS_VAR_LIST'] = [ 'HGT' ]
-    config_dict['FCST_LEVEL_LIST'] = [ 'P1000', 'P500' ]
-    config_dict['OBS_LEVEL_LIST'] = [ 'P1000', 'P500' ]
-    config_dict['FCST_UNITS_LIST'] = []
-    config_dict['OBS_UNITS_LIST'] = []
-    config_dict['FCST_THRESH_LIST'] = []
-    config_dict['OBS_THRESH_LIST'] = []
-    config_dict['MODEL_LIST'] = [ 'MODEL_TEST1', 'MODEL_TEST2' ]
-    config_dict['DESC_LIST'] = []
-    config_dict['FCST_LEAD_LIST'] = [ '24', '48' ]
-    config_dict['OBS_LEAD_LIST'] = []
-    config_dict['FCST_VALID_HOUR_LIST'] = [ '00', '06', '12', '18' ]
-    config_dict['FCST_INIT_HOUR_LIST'] = [ '00', '06', '12', '18' ]
-    config_dict['OBS_VALID_HOUR_LIST'] = []
-    config_dict['OBS_INIT_HOUR_LIST'] = []
-    config_dict['VX_MASK_LIST'] = [ 'NHX' ]
-    config_dict['INTERP_MTHD_LIST'] = []
-    config_dict['INTERP_PNTS_LIST'] = []
-    config_dict['COV_THRESH_LIST'] = []
-    config_dict['ALPHA_LIST'] = []
-    config_dict['LINE_TYPE_LIST'] = [ 'SL1L2', 'VL1L2' ]
-    config_dict['STATS_LIST'] = [ 'bias', 'rmse', 'msess', 'rsd',
-                                   'rmse_md', 'rmse_pv', 'pcor' ]
-    test_lists_to_group_items, test_lists_to_loop_items = (
-        mp.set_lists_loop_or_group([ 'FCST_INIT_HOUR_LIST' ],
-                                   [ 'FCST_VALID_HOUR_LIST' ],
-                                   config_dict)
-    )
-    assert(all(elem in expected_lists_to_group_items
-               for elem in test_lists_to_group_items))
-    assert(all(elem in expected_lists_to_loop_items
-               for elem in test_lists_to_loop_items))
-
-def test_parse_model_info():
-    # Independently test the creation of 
-    # the model information dictionary
-    # and the reading from the config file
-    # are as expected
-    mp = make_plots_wrapper()
-    # Test 1
-    expected_name1 = 'MODEL_TEST1'
-    expected_reference_name1 = 'MODEL_TEST1'
-    expected_obtype1 = 'MODEL_TEST1_ANL'
-    expected_name2 = 'MODEL_TEST2'
-    expected_reference_name2 = 'TEST2_MODEL'
-    expected_obtype2 = 'ANLYS2'
-    test_model_info_list, test_model_indices = mp.parse_model_info()
-    assert(test_model_info_list[0]['name'] == expected_name1)
-    assert(test_model_info_list[0]['reference_name'] ==
-           expected_reference_name1)
-    assert(test_model_info_list[0]['obtype'] == expected_obtype1)
-    assert(test_model_info_list[1]['name'] == expected_name2)
-    assert(test_model_info_list[1]['reference_name'] ==
-           expected_reference_name2)
-    assert(test_model_info_list[1]['obtype'] == expected_obtype2)
-

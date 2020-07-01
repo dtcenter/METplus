@@ -6,7 +6,8 @@ remove_commands="\n"
 script_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 pytest_rel_path="internal_tests/pytests"
 ush_dir=${script_dir%"$pytest_rel_path"}ush
-export PYTHONPATH=$ush_dir:$PYTHONPATH
+metplus_dir=${script_dir%"$pytest_rel_path"}
+export PYTHONPATH=$metplus_dir:$ush_dir:$PYTHONPATH
 
 host=$1
 if [ -z "$host" ]; then
@@ -91,8 +92,9 @@ run_pytest_and_check stat_analysis -c ./test_stat_analysis.conf
 run_pytest_and_check StringTemplateSubstitution
 run_pytest_and_check compare_gridded
 run_pytest_and_check regrid_data_plane
+run_pytest_and_check point2grid 
 run_pytest_and_check time_util
-#run_pytest_and_check series_lead
+run_pytest_and_check series_lead
 run_pytest_and_check pb2nc -c ./conf1
 
 #cd $script_dir/extract_tiles

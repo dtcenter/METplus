@@ -2,7 +2,7 @@
 TCPairs: Basic Use Case for Tropical Cyclones
 ==========================================================================
 
-TCPairs_tropical.conf
+met_tool_wrapper/TCPairs/TCPairs_tropical.conf
 
 """
 ###########################################
@@ -84,13 +84,16 @@ TCPairs_tropical.conf
 # Running METplus
 # ---------------
 #
-# It is recommended to run this use case by:
+# This use case can be run two ways:
 #
-# Passing in TCPairs_tropical.conf then a user-specific system configuration file::
+# 1) Passing in TCPairs_tropical.conf then a user-specific system configuration file::
 #
-#   master_metplus.py -c /path/to/TCPairs_tropical.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/TCPairs_tropical.conf -c /path/to/user_system.conf
 #
-# The following METplus configuration variables must be set correctly to run this example.:
+# 2) Modifying the configurations in parm/metplus_config, then passing in TCPairs_tropical.conf::
+#        master_metplus.py -c /path/to/TCPairs_tropical.conf
+#
+# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following METplus configuration variables must be set correctly to run this example.:
 #
 # * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs).
 # * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
@@ -115,7 +118,7 @@ TCPairs_tropical.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in **TC_PAIRS_OUTPUT_DIR**.
+# Output for this use case will be found in tc_pairs
 # and will contain the following files:
 #
 # * tc_pairs_al2018083006.dat.tcst

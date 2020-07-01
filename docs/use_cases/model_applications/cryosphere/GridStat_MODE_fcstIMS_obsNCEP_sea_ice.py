@@ -2,7 +2,7 @@
 Grid-Stat and MODE: Sea Ice Validation   
 ====================================================================================================
 
-GridStat_MODE_fcstIMS
+model_applications/cryosphere/GridStat_MODE_fcstIMS
 _obsNCEP_sea_ice.conf
 
 """
@@ -31,7 +31,7 @@ _obsNCEP_sea_ice.conf
 #      - Projection: 4-km Polar Stereographic
 #
 #  * Observation dataset: NCEP Sea Ice Concentration
-#      - Variable of interest: ICEC; ICEC is the sea ice concentration with values from 0.0 - 1.0. Values >1.0 && <=1.28 indicate flagged data to be included and should be set to ==1.0 when running MET. Values <1.28 should be ignored as that indicates an invalid observation.
+#      - Variable of interest: ICEC; ICEC is the sea ice concentration with values from 0.0 - 1.0. Values >1.0 && <=1.28 indicate flagged data to be included and should be set to ==1.0 when running MET. Values >1.28 should be ignored as that indicates an invalid observation.
 #      - Level: Z0 (surface)
 #      - Dates: 20190201 - 20190228
 #      - Valid time: 00 UTC
@@ -97,9 +97,30 @@ _obsNCEP_sea_ice.conf
 # Running METplus
 # ---------------
 #
-# The command to run this use case is::
+# This use case can be run two ways:
+#
+# 1) Passing in GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf then a user-specific system configuration file::
 #       
-#  master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf -c /path/to/user_system.conf
+#
+# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf::
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
+#
+# The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
+#
+# * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs).
+# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
+# * **MET_INSTALL_DIR** - PAth to location where MET is installed locally
+#
+# Example User Configuration File::
+#
+#   [dir]
+#   INPUT_BASE = /path/to/sample/input/data
+#   OUTPUT_BASE = /path/to/output/dir
+#   MET_INSTALL_DIR = /path/to/met-X.Y
+#
+# **NOTE** All of these items must be found under the [dir] section.
+#
 
 ####################################################################################################
 # Expected Output
@@ -107,12 +128,14 @@ _obsNCEP_sea_ice.conf
 #
 # A successful run of this use case will output the following to the screen and logfile::
 #  
-#    INFO: METplus has successfully finished runing.
+#    INFO: METplus has successfully finished running.
 #
 # A successful run will have the following output files in the location defined by {OUTPUT_BASE}, which
 # is located in the metplus_system.conf configuration file located in /path/to/METplus/parm/metplus_config.
-# This list of files should be found for every time run through METplus. Using the output for 20190201 as
-# an example.
+# This list of files should be found for every time run through METplus. 
+# GridStat output will be in model_applications/cryosphere/sea_ice/GridStat relative to the {OUTPUT_BASE}.
+# MODE output will be in model_applications/cryosphere/sea_ice/MODE relative to the {OUTPUT_BASE}.
+# Using the output for 20190201 as an example:
 #
 # **GridStat output**:
 #
