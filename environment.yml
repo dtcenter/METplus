@@ -15,15 +15,16 @@ dependencies:
   - blas=1.0=openblas
   - bokeh=1.3.4=py36_0
   - bzip2=1.0.8=h7b6447c_0
-  - ca-certificates=2020.6.24=0
+  - ca-certificates=2020.6.20=hecda079_0
   - cairo=1.16.0=h18b612c_1001
   - cartopy=0.17.0=py36h4331854_1006
-  - certifi=2020.6.20=py36_0
+  - certifi=2020.6.20=py36h9f0ad1d_0
   - cffi=1.12.3=py36h8022711_0
   - cftime=1.0.3.4=py36hdd07704_1001
   - chardet=3.0.4=py36_1003
   - click=7.0=py36_0
   - cloudpickle=1.2.2=py_0
+  - coverage=5.1=py36h8c4c3a4_0
   - cryptography=2.5=py36hb7f436b_1
   - curl=7.61.0=h84994c4_0
   - cycler=0.10.0=py_1
@@ -88,6 +89,7 @@ dependencies:
   - lz4-c=1.8.3=he1b5a44_1001
   - markupsafe=1.1.1=py36h7b6447c_0
   - matplotlib=2.2.2=py36hb69df0a_2
+  - matplotlib-base=3.1.3=py36hef1b27d_0
   - mccabe=0.6.1=py36_1
   - metpy=0.11.0=py36_0
   - more-itertools=7.2.0=py36_0
@@ -99,7 +101,7 @@ dependencies:
   - numpy-base=1.17.2=py36h2f8d375_0
   - olefile=0.46=py_0
   - openblas=0.3.7=h6e990d7_1
-  - openssl=1.0.2u=h7b6447c_0
+  - openssl=1.0.2u=h516909a_0
   - owslib=0.18.0=py_0
   - packaging=19.2=py_0
   - pandas=0.25.1=py36he6710b0_0
@@ -132,10 +134,12 @@ dependencies:
   - pyshp=2.1.0=py_0
   - pysocks=1.7.1=py36_0
   - pytest=5.2.0=py36_0
+  - pytest-cov=2.10.0=pyh9f0ad1d_0
   - pytest-mpl=0.10=py_0
   - pytest-regtest=1.4.2=py_0
   - python=3.6.3=h6c0c0dc_5
   - python-dateutil=2.8.0=py_0
+  - python_abi=3.6=1_cp36m
   - pytz=2019.2=py_0
   - pyyaml=5.1.2=py36h7b6447c_0
   - qt=5.6.2=hce4f676_1013
@@ -150,6 +154,7 @@ dependencies:
   - snowballstemmer=1.9.1=py_0
   - sortedcontainers=2.1.0=py36_0
   - sphinx=2.2.0=py_0
+  - sphinx-gallery=0.7.0=py_0
   - sphinx_rtd_theme=0.4.3=py_0
   - sphinxcontrib-applehelp=1.0.1=py_0
   - sphinxcontrib-devhelp=1.0.1=py_0
@@ -187,9 +192,5 @@ dependencies:
   - zipp=0.6.0=py_0
   - zlib=1.2.11=h7b6447c_3
   - zstd=1.4.0=h3b9ef0a_0
-  - pip:
-    - coverage==5.1
-    - pytest-cov==2.9.0
-    - sphinx-gallery==0.7.0
 prefix: /home/met_test/.conda/envs/metplus_env
 
