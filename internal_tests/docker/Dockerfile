@@ -62,4 +62,5 @@ RUN yum -y update \
  && yum -y install java-1.8.0-openjdk \
  && python3 -m pip install pytest
 
-
+RUN git clone -b master_v3.0 https://github.com/NCAR/METplus \
+&& sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' METplus/parm/metplus_config/metplus_system.conf
