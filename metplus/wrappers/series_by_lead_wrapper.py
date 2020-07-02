@@ -330,6 +330,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                 for cur_anly in cur_anly_tiles_list:
                     anly_tiles_list.append(cur_anly)
 
+            fcst_tiles_list = sorted(fcst_tiles_list)
+            anly_tiles_list = sorted(anly_tiles_list)
             # Create the FCST and ANLY ASCII files that are the args
             # to the -fcst and -obs portion of the series_analysis
             # command.
@@ -391,7 +393,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 # Set the NAME environment to <name>_<level> format if
                 # regridding method is to be done with the MET tool
                 # regrid_data_plane.
-                self.add_env_var('NAME', name + '_' + level)
+                self.add_env_var('NAME', name)
                 out_param_parts = ['-out ', out_dir, '/series_F',
                                     cur_beg_str, '_to_F', cur_end_str,
                                     '_', name, '_', level, '.nc']
@@ -467,8 +469,10 @@ class SeriesByLeadWrapper(CommandBuilder):
             fcst_tiles_list = self.get_anly_or_fcst_files(tile_dir, "FCST",
                                                           self.fcst_tile_regex,
                                                           cur_fhr)
+            fcst_tiles_list = sorted(fcst_tiles_list)
             fcst_tiles = self.retrieve_fhr_tiles(fcst_tiles_list,
                                                  self.fcst_tile_regex)
+
 
             # Location of FCST_FILES_Fhhh
             ascii_fcst_file_parts = [out_dir, '/FCST_FILES_F', cur_fhr]
@@ -495,9 +499,9 @@ class SeriesByLeadWrapper(CommandBuilder):
             anly_tiles_list = self.get_anly_or_fcst_files(tile_dir, "ANLY",
                                                           self.anly_tile_regex,
                                                           cur_fhr)
+            anly_tiles_list = sorted(anly_tiles_list)
             anly_tiles = self.retrieve_fhr_tiles(anly_tiles_list,
                                                  self.anly_tile_regex)
-
             # Location of ANLY_FILES_Fhhh files
             # filtering.
             ascii_anly_file_parts = [out_dir, '/ANLY_FILES_F', cur_fhr]
@@ -543,7 +547,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 self.add_env_var('LEVEL', level)
 
                 # Set NAME to name_level
-                self.add_env_var('NAME', name + '_' + level)
+                self.add_env_var('NAME', name)
                 out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr,
                                    '_', name, '_', level, '.nc']
                 out_param = ''.join(out_param_parts)
@@ -1086,7 +1090,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         for cur_var in full_vars_list:
             name, level = cur_var
             self.add_env_var('LEVEL', level)
-            self.add_env_var('NAME', name + '_' + level)
+            self.add_env_var('NAME', name)
 
             # Retrieve only those netCDF files that correspond to
             # the current variable.
@@ -1240,7 +1244,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         for cur_var in full_vars_list:
             name, level = cur_var
             self.add_env_var('LEVEL', level)
-            self.add_env_var('NAME', name + '_' + level)
+            self.add_env_var('NAME', name)
 
             self.print_all_envs()
 
