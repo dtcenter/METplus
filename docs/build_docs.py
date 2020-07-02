@@ -33,11 +33,11 @@ def main():
     # docs directory
     docs_dir = os.getcwd()
 
-    # User's Guide HTML output
+    # User's Guide use case HTML output
     users_guide_dir = os.path.join(docs_dir,
                                    '_build',
                                    'html',
-                                   'Users_Guide')
+                                   'generated')
 
     # directory where doxygen Makefile exists
     doxygen_dir = os.path.join(docs_dir,
