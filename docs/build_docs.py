@@ -16,6 +16,7 @@ Condition codes:
 import os
 import sys
 import shlex
+import shutil
 import subprocess
 import re
 
@@ -38,8 +39,10 @@ def main():
                                    'html',
                                    'Users_Guide')
 
-    # sorc directory where doxygen Makefile exists
-    sorc_dir = docs_dir.replace('docs', 'sorc')
+    # directory where doxygen Makefile exists
+    doxygen_dir = os.path.join(docs_dir,
+                               'doxygen',
+                               'run')
 
     # run make to generate the documentation files
     command = "make clean html"
@@ -53,13 +56,31 @@ def main():
 
     # build the doxygen documentation
     command = "make clean all"
-    print(f"Running {command} under {sorc_dir}")
+    print(f"Running {command} under {doxygen_dir}")
 
-    command_out = subprocess.run(shlex.split(command), cwd=sorc_dir)
+    command_out = subprocess.run(shlex.split(command), cwd=doxygen_dir)
     if command_out.returncode != 0:
         print("Could not build doxygen documentation by running "
-              f"{command} in {sorc_dir}")
+              f"{command} in {doxygen_dir}")
         sys.exit(1)
+
+    # copy doxygen documentation into _build/html/doxygen
+    doxygen_generated = os.path.join(docs_dir,
+                                     'generated',
+                                     'doxygen',
+                                     'html')
+    doxygen_output = os.path.join(docs_dir,
+                                  '_build',
+                                  'html',
+                                  'doxygen')
+
+    # make doxygen output dir if it does not exist
+    if os.path.exists(doxygen_output):
+        print(f"Removing {doxygen_output}")
+        os.rmtree(doxygen_output)
+
+    print(f"Copying doxygen files from {doxygen_generated} to {doxygen_output}")
+    shutil.copytree(doxygen_generated, doxygen_output)
 
     # remove download buttons
     print(f"Removing download buttons from files under {users_guide_dir}")
