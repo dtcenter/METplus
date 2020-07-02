@@ -21,7 +21,7 @@ RUN if [ -z ${SOURCE_BRANCH+x} ]; then \
       echo "Build Argument SOURCE_BRANCH=${SOURCE_BRANCH}"; \
     fi
 
-
+ARG MET_BRANCH
 #
 # MET_BRANCH is not defined when built via Docker Hub.
 #
@@ -66,6 +66,9 @@ RUN yum -y update \
  && yum -y install nco.x86_64 \
  && yum -y install java-1.8.0-openjdk \
  && python3 -m pip install pytest
+
+
+ARG SOURCE_BRANCH
 
 # if SOURCE_BRANCH is not develop, clone the repository using the branch
 # also replace MET_INSTALL_DIR value in default conf with correct location
