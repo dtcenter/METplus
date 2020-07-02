@@ -12,7 +12,7 @@
 //
 // Models
 //
-model = [];
+model = ${MODEL};
 
 //
 // Description
@@ -22,22 +22,22 @@ desc = "NA";
 //
 // Storm identifiers
 //
-storm_id = [];
+storm_id = ${STORM_ID};
 
 //
 // Basins
 //
-basin = [];
+basin = ${BASIN};
 
 //
 // Cyclone numbers
 //
-cyclone = [];
+cyclone = ${CYCLONE};
 
 //
 // Storm names
 //
-storm_name = [];
+storm_name = ${STORM_NAME};
 
 //
 // Model initialization time windows to include or exclude
