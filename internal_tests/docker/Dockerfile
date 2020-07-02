@@ -3,6 +3,7 @@ ARG MET_BRANCH
 FROM dtcenter/met:${MET_BRANCH:-develop}
 MAINTAINER George McCabe <mccabe@ucar.edu>
 
+RUN echo ${MET_BRANCH}
 # 
 # This Dockerfile extends the MET image file to run METplus
 #
