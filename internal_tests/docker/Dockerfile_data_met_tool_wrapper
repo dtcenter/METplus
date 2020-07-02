@@ -1,0 +1,13 @@
+MAINTAINER George McCabe <mccabe@ucar.edu>
+
+ENV CASE_DIR /data
+RUN mkdir -p ${CASE_DIR} \
+ && chown -R metplususer:metplususers ${CASE_DIR}
+ USER metplususer
+ #
+ RUN curl -SL https://github.com/NCAR/METplus/releases/download/v3.1-beta1/sample_data-met_tool_wrapper-3.1-beta1.2.tgz | tar -xzC ${CASE_DIR} \
+  && chmod 6775 ${CASE_DIR}
+  #
+  VOLUME $CASE_DIR
+  USER root
+  CMD ["true"]
