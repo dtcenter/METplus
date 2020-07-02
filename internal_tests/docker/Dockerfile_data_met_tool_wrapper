@@ -1,3 +1,4 @@
+FROM scratch
 MAINTAINER George McCabe <mccabe@ucar.edu>
 
 ENV CASE_DIR /data
