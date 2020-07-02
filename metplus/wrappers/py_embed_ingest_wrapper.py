@@ -103,7 +103,7 @@ class PyEmbedIngestWrapper(CommandBuilder):
 
                 time_info['custom'] = custom_string
 
-                if self.run_at_time_lead(time_info) is None:
+                if not self.run_at_time_lead(time_info):
                     return False
 
         return True
@@ -138,9 +138,12 @@ class PyEmbedIngestWrapper(CommandBuilder):
             cmd = rdp.get_command()
             if cmd is None:
                 self.log_error("Could not generate command")
-                return
+                return False
+
             self.logger.info(f'Running PyEmbed Ingester {index}')
 
             # run command and add to errors if it failed
             if not rdp.build():
                 self.errors += 1
+
+        return True
