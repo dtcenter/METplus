@@ -25,7 +25,6 @@ RUN if [ -z ${SOURCE_BRANCH+x} ]; then \
 #
 RUN if [ -z ${MET_BRANCH+x} ]; then \
       echo "WARNING: MET_BRANCH undefined! Using default (develop) or rebuild with \"--build-arg MET_BRANCH={branch name}\""; \
-      exit 1; \
     else \
       echo "Build Argument MET_BRANCH=${MET_BRANCH}"; \
     fi
