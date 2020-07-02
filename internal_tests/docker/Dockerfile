@@ -3,6 +3,7 @@ ARG MET_BRANCH
 FROM dtcenter/met:${MET_BRANCH:-develop}
 MAINTAINER George McCabe <mccabe@ucar.edu>
 
+ARG MET_BRANCH
 RUN echo ${MET_BRANCH}
 # 
 # This Dockerfile extends the MET image file to run METplus
@@ -69,9 +70,9 @@ RUN yum -y update \
 # if SOURCE_BRANCH is not develop, clone the repository using the branch
 # also replace MET_INSTALL_DIR value in default conf with correct location
 RUN if [ ${SOURCE_BRANCH} != "develop" ]; then \
-      echo "Cloning METplus repository with -b ${SOURCE_BRANCH}" \
-      git clone https://github.com/NCAR/METplus \
-      cd METplus \
-      git checkout ${SOURCE_BRANCH} \
-      sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf \
+      echo "Cloning METplus repository with -b ${SOURCE_BRANCH}"; \
+      git clone https://github.com/NCAR/METplus; \
+      cd METplus; \
+      git checkout ${SOURCE_BRANCH}; \
+      sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
     fi
