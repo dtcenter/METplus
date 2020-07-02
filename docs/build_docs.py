@@ -3,8 +3,13 @@
 """
 Program Name: build_docs.py
 Contact(s): George McCabe
-Abstract: Generate Sphinx Gallery documentation, Doxygen documentation, and
-  remove unwanted text from the HTML output
+Abstract: This script does the following:
+  - Generates Sphinx Gallery documentation
+  - Generates Doxygen documentation
+  - Removes unwanted text from the HTML output
+  - Copies doxygen files to _build/html for easy deployment
+  - Creates symbolic links under Users_Guide to directories
+    under 'generated' to preserve old URL paths
 History Log:  Initial version
 Usage:
 Parameters: None
