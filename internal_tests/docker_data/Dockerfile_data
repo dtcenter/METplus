@@ -1,0 +1,18 @@
+FROM centos:7
+MAINTAINER George McCabe <mccabe@ucar.edu>
+
+ENV CASE_DIR /data/input/METplus_Data
+RUN mkdir -p ${CASE_DIR}
+
+RUN curl -SL https://github.com/NCAR/METplus/releases/download/v3.1-beta1/sample_data-convection_allowing_models-3.1-beta1.tgz | tar -xzC ${CASE_DIR}
+RUN curl -SL https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-cryosphere-3.0.tgz | tar -xzC ${CASE_DIR}
+RUN curl -SL https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-medium_range-3.0.tgz | tar -xzC ${CASE_DIR}
+RUN curl -SL https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-precipitation-3.0.tgz | tar -xzC ${CASE_DIR}
+RUN curl -SL https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-s2s-3.0.tgz | tar -xzC ${CASE_DIR}
+RUN curl -SL https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-space_weather-3.0.tgz | tar -xzC ${CASE_DIR}
+RUN curl -SL https://github.com/NCAR/METplus/releases/download/v3.1-beta1/sample_data-tc_and_extra_tc-3.1-beta1.1.tgz | tar -xzC ${CASE_DIR}
+RUN curl -SL https://github.com/NCAR/METplus/releases/download/v3.1-beta1/sample_data-met_tool_wrapper-3.1-beta1.2.tgz | tar -xzC ${CASE_DIR}
+
+VOLUME $CASE_DIR
+USER root
+CMD ["true"]

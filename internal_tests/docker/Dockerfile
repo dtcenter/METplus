@@ -1,33 +1,40 @@
-FROM dtcenter/met:develop
-MAINTAINER Jim Frimel <james.t.frimel@noaa.gov>
+ARG MET_BRANCH
+
+FROM dtcenter/met:${MET_BRANCH:-develop}
+MAINTAINER George McCabe <mccabe@ucar.edu>
 
 # 
 # This Dockerfile extends the MET image file to run METplus
 #
-ENV MY_CUSTOM_VAR 2020marMETplus
+
+ARG SOURCE_BRANCH
+
+#
+# SOURCE_BRANCH is not defined when built via Docker Hub.
+#
+RUN if [ -z ${SOURCE_BRANCH+x} ]; then \
+      echo "ERROR: SOURCE_BRANCH undefined! Rebuild with \"--build-arg SOURCE_BRANCH={branch name}\""; \
+      exit 1; \
+    else \
+      echo "Build Argument SOURCE_BRANCH=${SOURCE_BRANCH}"; \
+    fi
+
+
+#
+# MET_BRANCH is not defined when built via Docker Hub.
+#
+RUN if [ -z ${MET_BRANCH+x} ]; then \
+      echo "WARNING: MET_BRANCH undefined! Using default (develop) or rebuild with \"--build-arg MET_BRANCH={branch name}\""; \
+      exit 1; \
+    else \
+      echo "Build Argument MET_BRANCH=${MET_BRANCH}"; \
+    fi
+
 
 #
 # Set working directory
 #
 #WORKDIR /met
-
-# 
-# Setup the Environment so python executes python3 command 
-# 
-# Brute force change system link. Not recommended, but works.
-# RUN rm -f /usr/bin/python \
-# && ln -s python3 /usr/bin/python
-#
-# Aliases, work in interactive shell but NOT in with 
-# env command in python modules.
-# /usr/bin/env python since aliases not inherited.
-#RUN echo alias python=python3 >> /etc/bashrc \
-# && echo alias python python3 >> /etc/csh.cshrc 
-
-# Create your own link from python -> python3 
-# This works without setting the system PATH env var
-# since /usr/local/bin is before /usr/bin in the search path.
-RUN ln -s /usr/bin/python3 /usr/local/bin/python
 
 #
 # Environment for interactive bash and csh container shells
@@ -36,8 +43,8 @@ RUN ln -s /usr/bin/python3 /usr/local/bin/python
 # ie. -v /Users/Frimel/projects:/metplus  where /Users/Frimel/projects/METplus/ush
 RUN echo export PATH=$PATH:/metplus/METplus/ush >> /etc/bashrc \
  && echo setenv PATH $PATH:/metplus/METplus/ush >> /etc/csh.cshrc \
- && echo export PYTHONPATH=/metplus/METplus/ush >> /etc/bashrc \
- && echo setenv PYTHONPATH /metplus/METplus/ush >> /etc/csh.cshrc
+ && echo export PYTHONPATH=/metplus/METplus >> /etc/bashrc \
+ && echo setenv PYTHONPATH /metplus/METplus >> /etc/csh.cshrc
 
 
 
@@ -46,10 +53,6 @@ RUN echo export PATH=$PATH:/metplus/METplus/ush >> /etc/bashrc \
 # && echo export METPLUS_DISABLE_PLOT_WRAPPERS=yes >> /etc/bashrc \
 # && echo setenv METPLUS_DISABLE_PLOT_WRAPPERS yes >> /etc/csh.cshrc
 ENV METPLUS_DISABLE_PLOT_WRAPPERS yes
-#ENV PYTHONPATH /metplus/METplus/ush
-
-#PATH=$PATH:/new/path/bin
-#ENV PATH "$PATH:/metplus/METplus/ush"
 
 #
 # Install required packages: Pandas, Cartopy*
@@ -63,4 +66,12 @@ RUN yum -y update \
  && yum -y install java-1.8.0-openjdk \
  && python3 -m pip install pytest
 
-
+# if SOURCE_BRANCH is not develop, clone the repository using the branch
+# also replace MET_INSTALL_DIR value in default conf with correct location
+RUN if [ ${SOURCE_BRANCH} != "develop" ]; then \
+      echo "Cloning METplus repository with -b ${SOURCE_BRANCH}" \
+      git clone https://github.com/NCAR/METplus \
+      cd METplus \
+      git checkout ${SOURCE_BRANCH} \
+      sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf \
+    fi
