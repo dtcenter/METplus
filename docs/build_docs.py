@@ -19,8 +19,29 @@ import shlex
 import shutil
 import subprocess
 import re
+import importlib
+
+def run_command(command, dir_to_run=None):
+    log_text = f"Running {command}"
+    if dir_to_run:
+        log_text += f" under {dir_to_run}"
+
+    command_out = subprocess.run(shlex.split(command),
+                                 cwd=dir_to_run)
+    if command_out.returncode != 0:
+        error_text = f"Could not create symbolic links by running {command}"
+        if dir_to_run:
+            error_text += f"in {dir_to_run}"
+        print(error_text)
+        sys.exit(1)
 
 def main():
+
+    # check if sphinx_gallery module is available and error/exit if not
+    sphinx_gallery_spec = importlib.util.find_spec("sphinx_gallery")
+    if sphinx_gallery_spec is None:
+        print("ERROR: Must have sphinx_gallery Python module installed to build documentation")
+        sys.exit(1)
 
     # regex expressions to remove from HTML output
     regex_compiles = [re.compile('<p><a class=\"reference download internal\".*?</p>'),
@@ -33,11 +54,17 @@ def main():
     # docs directory
     docs_dir = os.getcwd()
 
+    # generated use case HTML output
+    generated_dir = os.path.join(docs_dir,
+                                 '_build',
+                                 'html',
+                                 'generated')
+
     # User's Guide use case HTML output
     users_guide_dir = os.path.join(docs_dir,
                                    '_build',
                                    'html',
-                                   'generated')
+                                   'Users_Guide')
 
     # directory where doxygen Makefile exists
     doxygen_dir = os.path.join(docs_dir,
@@ -45,24 +72,12 @@ def main():
                                'run')
 
     # run make to generate the documentation files
-    command = "make clean html"
-    print(f"Running {command} under {docs_dir}")
-
-    command_out = subprocess.run(shlex.split(command), cwd=docs_dir)
-    if command_out.returncode != 0:
-        print("Could not build documentation by running "
-              f"{command} in {docs_dir}")
-        sys.exit(1)
+    run_command("make clean html",
+                docs_dir)
 
     # build the doxygen documentation
-    command = "make clean all"
-    print(f"Running {command} under {doxygen_dir}")
-
-    command_out = subprocess.run(shlex.split(command), cwd=doxygen_dir)
-    if command_out.returncode != 0:
-        print("Could not build doxygen documentation by running "
-              f"{command} in {doxygen_dir}")
-        sys.exit(1)
+    run_command("make clean all",
+                doxygen_dir)
 
     # copy doxygen documentation into _build/html/doxygen
     doxygen_generated = os.path.join(docs_dir,
@@ -83,9 +98,9 @@ def main():
     shutil.copytree(doxygen_generated, doxygen_output)
 
     # remove download buttons
-    print(f"Removing download buttons from files under {users_guide_dir}")
+    print(f"Removing download buttons from files under {generated_dir}")
 
-    for dirpath, _, all_files in os.walk(users_guide_dir):
+    for dirpath, _, all_files in os.walk(generated_dir):
         for filename in sorted(all_files):
             doc_file = os.path.join(dirpath, filename)
 
@@ -100,7 +115,11 @@ def main():
                 file_handle.write(text)
                 file_handle.truncate()
 
-    print("Completed")
+    # create symbolic links under Users_Guide directory to point to dirs under generated
+    run_command("ln -s ../generated/met_tool_wrapper",
+                users_guide_dir)
+
+    print("Documentation build completed")
 
 if __name__ == "__main__":
     main()
