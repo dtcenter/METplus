@@ -9,9 +9,6 @@ MAINTAINER George McCabe <mccabe@ucar.edu>
 
 ARG SOURCE_BRANCH
 
-#
-# SOURCE_BRANCH is not defined when built via Docker Hub.
-#
 RUN if [ -z ${SOURCE_BRANCH+x} ]; then \
       echo "ERROR: SOURCE_BRANCH undefined! Rebuild with \"--build-arg SOURCE_BRANCH={branch name}\""; \
       exit 1; \
@@ -20,9 +17,7 @@ RUN if [ -z ${SOURCE_BRANCH+x} ]; then \
     fi
 
 ARG MET_BRANCH
-#
-# MET_BRANCH is not defined when built via Docker Hub.
-#
+
 RUN if [ -z ${MET_BRANCH+x} ]; then \
       echo "ERROR: MET_BRANCH undefined! Using default (develop) or rebuild with \"--build-arg MET_BRANCH={branch name}\""; \
       exit 1; \
