@@ -28,7 +28,7 @@ RUN if [ -z ${MET_BRANCH+x} ]; then \
 #
 # Set working directory
 #
-#WORKDIR /met
+WORKDIR /metplus
 
 # 
 # Setup the Environment so python executes python3 command 
@@ -84,9 +84,10 @@ ARG SOURCE_BRANCH
 # if SOURCE_BRANCH is not develop, clone the repository using the branch
 # also replace MET_INSTALL_DIR value in default conf with correct location
 RUN if [ ${SOURCE_BRANCH} != "develop" ]; then \
-      echo "Cloning METplus repository with -b ${SOURCE_BRANCH}"; \
+      echo "Cloning METplus repository using branch: ${SOURCE_BRANCH}"; \
       git clone https://github.com/NCAR/METplus; \
       cd METplus; \
       git checkout ${SOURCE_BRANCH}; \
       sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
+      sed -i 's|OUTPUT_BASE = /path/to|OUTPUT_BASE = /data/output|g' parm/metplus_config/metplus_system.conf; \
    fi
