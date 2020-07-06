@@ -135,6 +135,9 @@ class PyEmbedIngestWrapper(CommandBuilder):
                 rdp.infiles.append(f"-name {ingester['output_field_name']}")
             rdp.infiles.append(output_grid)
             rdp.outfile = output_path
+
+            self.set_environment_variables(time_info)
+
             cmd = rdp.get_command()
             if cmd is None:
                 self.log_error("Could not generate command")
