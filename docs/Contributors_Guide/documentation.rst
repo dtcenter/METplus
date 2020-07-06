@@ -23,7 +23,7 @@ Documentation
 | The following Sphinx modules are required to generate the necessary
 | documentation:
 |     * sphinx-2.2.0
-|     * sphinx-gallery-0.40
+|     * sphinx-gallery-0.7
 |     * sphinx_rtd_theme-0.4.3
 |
 | You can see which versions are used by the current METplus release
