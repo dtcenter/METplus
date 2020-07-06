@@ -89,4 +89,5 @@ RUN if [ ${SOURCE_BRANCH} != "develop" ]; then \
       cd METplus; \
       git checkout ${SOURCE_BRANCH}; \
       sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
+      sed -i 's|OUTPUT_BASE = /path/to|OUTPUT_BASE = /data/output|g' parm/metplus_config/metplus_system.conf; \
    fi
