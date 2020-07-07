@@ -11,11 +11,11 @@ all: doc
 
 .PHONY: clean doc clean_doc dist_clean_doc
 doc:
-	cd doc ; ./clean && ./configure && ./compile
+	./clean && ./configure && ./compile
 clean_doc:
-	cd doc ; ./clean
+	./clean
 dist_clean_doc:
-	cd doc ; ./clean -a
+	./clean -a
 clean: clean_doc
 
 .PHONY: dist_clean
