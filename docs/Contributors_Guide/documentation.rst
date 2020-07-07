@@ -23,7 +23,7 @@ Documentation
 | The following Sphinx modules are required to generate the necessary
 | documentation:
 |     * sphinx-2.2.0
-|     * sphinx-gallery-0.40
+|     * sphinx-gallery-0.7
 |     * sphinx_rtd_theme-0.4.3
 |
 | You can see which versions are used by the current METplus release
@@ -140,14 +140,14 @@ Documentation
 | From the command line, change to the METplus/docs directory and
 | enter the following:
 |
-|    *make clean*
+|    *./build_docs.py*
 |
-|    *make html*
-|
-| The first command cleans up any previously created documentation and the
-| second command creates new documentation based on the current
-| .py and .rst files in the METplus/docs and METplus/parm
-| directories.
+| This script does the following::
+|    * Builds the Sphinx documentation
+|    * Builds the doxygen documentation
+|    * Removes unwanted text from use case documentation
+|    * Copies doxygen files into _build/html for easy deployment
+|    * Creates symbolic links under Users_Guide to the directories under 'generated' to preserve old URL paths
 |
 | The html files that are created can be found in the METplus/docs/_build/html
 | directory.  You can point your web browser to this directory by entering
