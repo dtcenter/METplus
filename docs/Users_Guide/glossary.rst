@@ -134,6 +134,13 @@ METplus Configuration Glossary
      | *Family:* config
      | *Default:* None
 
+   POINT2GRID_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* Point2Grid
+     | *Family:* config
+     | *Default:* None
+
    GROUP_LIST_ITEMS
      Names of the lists in the METplus .conf file to treat the items in those lists as a group.
 
