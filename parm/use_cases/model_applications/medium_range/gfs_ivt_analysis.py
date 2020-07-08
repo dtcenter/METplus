@@ -116,8 +116,10 @@ attrs = {
    'grid': {
        'name': 'Global 0.5 Degree',
        'type' :   'LatLon',
-       'lat_ll' :    -90.0,
-       'lon_ll' :   -180.0,
+       #'lat_ll' :    -90.0,
+       'lat_ll' : -90.0,
+       #'lon_ll' :   -180.0,
+       'lon_ll' : 0.0,
        'delta_lat' :   0.5,
        'delta_lon' :   0.5,
        'Nlat' :      361,
