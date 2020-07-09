@@ -27,6 +27,7 @@ from .config.string_template_substitution import parse_template
 from .config.string_template_substitution import get_tags
 from . import time_util as time_util
 from .config import config_metplus
+from . import metplus_check
 
 """!@namespace met_util
  @brief Provides  Utility functions for METplus.
@@ -2024,17 +2025,28 @@ def get_process_list(config):
             config.logger.warning(f"PROCESS_LIST item {process} may be invalid.")
             out_process_list.append(process)
 
-    # check if env var METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string
-    disable_plotting = os.environ.get('METPLUS_DISABLE_PLOT_WRAPPERS', False)
-    if disable_plotting and is_plotter_in_process_list(out_process_list):
+    # check if there is a plot wrapper listed in the process list and throw error if plotting is not enabled
+    if not check_plotter_in_process_list(out_process_list, os.environ):
         raise TypeError("Attempting to run a plotting wrapper while METPLUS_DISABLE_PLOT_WRAPPERS environment "
-                            "variable is set. Unset the variable to run this use case")
+                        "variable is set. Unset the variable to run this use case")
 
     # if MakePlots is in process list, remove it because it will be called directly from StatAnalysis
     if 'MakePlots' in out_process_list:
         out_process_list.remove('MakePlots')
 
     return out_process_list
+
+def check_plotter_in_process_list(out_process_list, environ):
+    """! If plot wrappers are not enabled and there is a plot wrapper in the process list, do not run
+         Args:
+             @param out_process_list list of processes to examine
+             @param environ dictionary containing environment to check if plot wrappers are enabled or not
+             @returns False if plot wrappers are not enabled but they are in the process list, True otherwise
+    """
+    if not metplus_check.plot_wrappers_are_enabled(environ) and is_plotter_in_process_list(out_process_list):
+        return False
+
+    return True
 
 # minutes
 def shift_time(time_str, shift):
