@@ -2,7 +2,8 @@
 TCRMW: Hurricane Gonzalo
 ========================
 
-model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf
+model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly
+_gonzolo.conf
 
 """
 ##############################################################################

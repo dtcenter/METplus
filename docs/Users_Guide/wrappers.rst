@@ -331,6 +331,137 @@ Configuration
 | :term:`GEN_VX_MASK_FILE_WINDOW_BEGIN`
 | :term:`GEN_VX_MASK_FILE_WINDOW_END`
 
+GridDiag
+--------
+
+.. _description-7a:
+
+Description
+~~~~~~~~~~~
+
+Used to configure the MET tool grid_diag.
+
+.. _configuration-7a:
+
+METplus Configuration
+~~~~~~~~~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`GRID_DIAG_INPUT_DIR`
+| :term:`GRID_DIAG_OUTPUT_DIR`
+
+[filename_templates]
+
+| :term:`GRID_DIAG_INPUT_TEMPLATE`
+| :term:`GRID_DIAG_OUTPUT_TEMPLATE`
+| :term:`GRID_DIAG_VERIFICATION_MASK_TEMPLATE` (optional)
+
+
+[config]
+
+| :term:`LOG_GRID_DIAG_VERBOSITY`
+| :term:`GRID_DIAG_CONFIG_FILE`
+| :term:`GRID_DIAG_CUSTOM_LOOP_LIST`
+| :term:`GRID_DIAG_INPUT_DATATYPE`
+| :term:`GRID_DIAG_REGRID_METHOD`
+| :term:`GRID_DIAG_REGRID_WIDTH`
+| :term:`GRID_DIAG_REGRID_VLD_THRESH`
+| :term:`GRID_DIAG_REGRID_SHAPE`
+| :term:`GRID_DIAG_REGRID_TO_GRID`
+| :term:`MODEL`
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+This is the MET configuration file used for this wrapper. Below the file contents are descriptions of each environment variable referenced in this file and how the METplus configuration variables relate to them.
+
+.. literalinclude:: ../../parm/met_config/GridDiagConfig_wrapped
+
+The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
+
+**${MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    MODEL = GFS
+
+Resulting value::
+
+    model = "GFS";
+
+**${DATA_FIELD}** - Formatted input field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+
+METplus Configuration::
+
+    [config]
+    BOTH_VAR1_NAME = APCP
+    BOTH_VAR1_LEVELS = L0
+    BOTH_VAR1_OPTIONS = n_bins = 55; range  = [0, 55];
+
+    BOTH_VAR2_NAME = PWAT
+    BOTH_VAR2_LEVELS =  L0
+    BOTH_VAR2_OPTIONS = n_bins = 35; range  = [35, 70];
+
+Resulting value::
+
+    { name="APCP"; level="L0"; n_bins = 55; range  = [0, 55]; },{ name="PWAT"; level="L0"; n_bins = 35; range  = [35, 70];}
+
+**${DATA_FILE_TYPE}** - Type of input data set only if necessary to allow MET to read the data. Generated from GRID_DIAG_INPUT_DATATYPE in the METplus configuration file.
+
+METplus Configuration::
+
+    [config]
+    GRID_DIAG_INPUT_DATATYPE = GRIB2
+
+Resulting value::
+
+    file_type = GRIB2;
+
+**${REGRID_DICT}** - Corresponds to GRID_DIAG_REGRID_METHOD, GRID_DIAG_REGRID_WIDTH, GRID_DIAG_REGRID_VLD_THRESH, GRID_DIAG_REGRID_SHAPE, and GRID_DIAG_REGRID_TO_GRID in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET GridDiag configuration file will be used.
+
+METplus Configuration 1::
+
+    [config]
+    GRID_DIAG_REGRID_SHAPE = SQUARE
+
+Resulting value 1::
+
+    regrid = {shape = SQUARE;}
+
+METplus Configuration 2::
+
+    [config]
+    GRID_DIAG_REGRID_WIDTH = 2
+    GRID_DIAG_REGRID_SHAPE = SQUARE
+
+Resulting value 2::
+
+    regrid = {width = 2; shape = SQUARE;}
+
+METplus Configuration 3::
+
+    [config]
+    GRID_DIAG_REGRID_WIDTH = 2
+    GRID_DIAG_REGRID_SHAPE = SQUARE
+    GRID_DIAG_REGRID_TO_GRID = NONE
+
+Resulting value 2::
+
+    regrid = {to_grid = NONE; width = 2; shape = SQUARE;}
+
+**${VERIF_MASK}** - Path to verification mask file. Generated from GRID_DIAG_VERIFICATION_MASK_TEMPLATE in the METplus configuration file. Filename template syntax can be used in here to find a file based on run time, i.e. file.{valid?fmt=%Y%m%d%H}.ext
+
+METplus Configuration::
+
+    [filename_templates]
+    GRID_DIAG_VERIFICATION_MASK_TEMPLATE = MET_BASE/poly/SAO.poly
+
+Resulting value::
+
+    poly = "MET_BASE/poly/SAO.poly";
+
 GridStat
 --------
 
@@ -803,28 +934,29 @@ Configuration
 
 [dir]
 
-| :term:`POINT_2_GRID_INPUT_DIR`
-| :term:`POINT_2_GRID_OUTPUT_DIR`
+| :term:`POINT2GRID_INPUT_DIR`
+| :term:`POINT2GRID_OUTPUT_DIR`
 
 [filename_templates]
 
-| :term:`POINT_2_GRID_INPUT_TEMPLATE`
-| :term:`POINT_2_GRID_OUTPUT_TEMPLATE`
+| :term:`POINT2GRID_INPUT_TEMPLATE`
+| :term:`POINT2GRID_OUTPUT_TEMPLATE`
 
 [config]
 
-| :term:`POINT_2_GRID_WINDOW_BEGIN`
-| :term:`POINT_2_GRID_WINDOW_END`
-| :term:`POINT_2_GRID_REGRID_TO_GRID`
-| :term:`POINT_2_GRID_INPUT_FIELD`
-| :term:`POINT_2_GRID_INPUT_LEVEL`
-| :term:`POINT_2_GRID_QC_FLAGS`
-| :term:`POINT_2_GRID_ADP`
-| :term:`POINT_2_GRID_REGRID_METHOD`
-| :term:`POINT_2_GRID_GAUSSIAN_DX`
-| :term:`POINT_2_GRID_GAUSSIAN_RADIUS`
-| :term:`POINT_2_GRID_PROB_CAT_THRESH`
-| :term:`POINT_2_GRID_VLD_THRESH`
+| :term:`POINT2GRID_WINDOW_BEGIN`
+| :term:`POINT2GRID_WINDOW_END`
+| :term:`POINT2GRID_REGRID_TO_GRID`
+| :term:`POINT2GRID_INPUT_FIELD`
+| :term:`POINT2GRID_INPUT_LEVEL`
+| :term:`POINT2GRID_QC_FLAGS`
+| :term:`POINT2GRID_ADP`
+| :term:`POINT2GRID_REGRID_METHOD`
+| :term:`POINT2GRID_GAUSSIAN_DX`
+| :term:`POINT2GRID_GAUSSIAN_RADIUS`
+| :term:`POINT2GRID_PROB_CAT_THRESH`
+| :term:`POINT2GRID_VLD_THRESH`
+| :term:`POINT2GRID_CUSTOM_LOOP_LIST`
 
 PointStat
 ---------

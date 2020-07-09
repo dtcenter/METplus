@@ -1,21 +1,21 @@
 """
-RegridDataPlane: Basic Use Case
-=============================================================================
+GridDiag: Basic Use Case
+=========================
 
-met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
+met_tool_wrapper/GridDiag/GridDiag.conf
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Simply regridding data to match a desired grid domain for comparisons.
+# The Grid-Diag tool creates histograms (probability distributions when normalized) for an arbitrary collection of data fields and levels.
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Observations:** Stage 2 NetCDF 1-hour Precipitation Accumulation
+# | **Data:** GFS FV3
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
@@ -24,22 +24,19 @@ met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus RegridDataPlane wrapper to generate a command to run the MET tool RegridDataPlane if all required files are found.
+# This use case utilizes the METplus GridDiag wrapper to search for
+# files that are valid at a given run time and generate a command to run
+# the MET tool grid_diag if all required files are found.
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# RegridDataPlane is the only tool called in this example. It processes the following
-# run time:
+# GridDiag is the only tool called in this example. It processes the following
+# run times:
 #
-# | **Init:** 2005-08-07_0Z
-# | **Forecast lead:** 3 hour
-#
-# This use case regrids data to another domain specified with REGRID_DATA_PLANE_VERIF_GRID. This is done so that
-# forecast and observation comparisons are done on the same grid. Many MET comparison tools have regridding capabilities
-# built in. However, if the same file is read for comparisons multiple times, it is redundant to regrid that file each time.
-# Running RegridDataPlane allows you to regrid once and use the output in many comparisons/evaluations.
+# | **Init:** 2016-09-29_0Z
+# | **Forecast leads:** 141, 144, and 147 hours
 
 ##############################################################################
 # METplus Configuration
@@ -47,16 +44,21 @@ met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
 ##############################################################################
 # MET Configuration
 # ---------------------
 #
-# None. RegridDataPlane does not use configuration files.
+# METplus sets environment variables based on the values in the METplus configuration file.
+# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
+#
+# .. highlight:: bash
+# .. literalinclude:: ../../../../parm/met_config/GridDiagConfig_wrapped
+#
 #
 
 ##############################################################################
@@ -65,13 +67,13 @@ met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
 #
 # This use case can be run two ways:
 #
-# 1) Passing in RegridDataPlane.conf then a user-specific system configuration file::
+# 1) Passing in GridDiag.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridDiag/GridDiag.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in RegridDataPlane.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in GridDiag.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridDiag/GridDiag.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -98,16 +100,15 @@ met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in regrid_data_plane (relative to **OUTPUT_BASE**)
-# and will contain the following file:
+# Output for this use case will be found in met_tool_wrapper/GridDiag (relative to **OUTPUT_BASE**)
+# and will contain the following files:
 #
-# * ST2ml2005080703.Grb_G212
+# * grid_diag_out.nc
 
 ##############################################################################
 # Keywords
 # --------
 #
-# .. note::
-#  `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
+# .. note:: `GridDiagToolUseCase <https://ncar.github.io/METplus/search.html?q=GridDiagToolUseCase&check_keywords=yes&area=default>`_
 #
-# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-RegridDataPlane.png'
+# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-GridDiag.png'

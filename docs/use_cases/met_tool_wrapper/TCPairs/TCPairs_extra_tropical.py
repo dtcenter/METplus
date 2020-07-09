@@ -2,8 +2,7 @@
 TCPairs: Basic Use Case for Extra Tropical Cyclones
 ========================================================================
 
-TCPairs_extra
-_tropical.conf
+met_tool_wrapper/TCPairs/TCPairs_extra_tropical.conf
 
 """
 ###########################################

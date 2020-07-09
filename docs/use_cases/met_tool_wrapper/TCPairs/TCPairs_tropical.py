@@ -2,7 +2,7 @@
 TCPairs: Basic Use Case for Tropical Cyclones
 ==========================================================================
 
-TCPairs_tropical.conf
+met_tool_wrapper/TCPairs/TCPairs_tropical.conf
 
 """
 ###########################################

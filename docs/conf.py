@@ -72,11 +72,11 @@ html_logo = os.path.join('_static','METplus_logo.png')
 sphinx_gallery_conf = {
       'examples_dirs': ['use_cases/met_tool_wrapper',
                         'use_cases/model_applications'],
-      'gallery_dirs': ['Users_Guide/met_tool_wrapper',
-                       'Users_Guide/model_applications'],
+      'gallery_dirs': ['generated/met_tool_wrapper',
+                       'generated/model_applications'],
       'default_thumb_file': '_static/METplus_logo.png',
       'log_level': {'backreference_missing': 'warning'},
-      'backreferences_dir': 'gen_modules/backreferences',
+      'backreferences_dir': 'generated/gen_modules/backreferences',
       'remove_config_comments': True,
 }
 

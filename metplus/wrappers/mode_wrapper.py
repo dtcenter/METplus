@@ -118,7 +118,6 @@ class MODEWrapper(CompareGriddedWrapper):
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
                                'MODE_VERIFICATION_MASK_TEMPLATE')
-        c_dict['VERIFICATION_MASK'] = ''
 
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'MODE_REGRID_TO_GRID', '')
 
@@ -161,7 +160,8 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_MERGE_THRESH", self.c_dict["OBS_MERGE_THRESH"])
         self.add_env_var("FCST_MERGE_FLAG", self.c_dict["FCST_MERGE_FLAG"])
         self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"])
-        self.add_env_var('VERIF_MASK', self.c_dict['VERIFICATION_MASK'])
+        self.add_env_var('VERIF_MASK', self.c_dict.get('VERIFICATION_MASK',
+                                                       '""'))
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 

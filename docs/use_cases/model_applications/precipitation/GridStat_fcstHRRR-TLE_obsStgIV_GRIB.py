@@ -2,7 +2,7 @@
 Grid-Stat: 6hr PQPF Probability Verification
 ==========================================================================
 
-GridStat_fcstHRRR
+model_applications/precipitation/GridStat_fcstHRRR
 _obsStgIV_GRIB.conf
 
 """

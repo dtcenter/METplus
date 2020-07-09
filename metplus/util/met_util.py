@@ -73,6 +73,14 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'usage': 'Usage',
                          }
 
+valid_comparisons = {">=": "ge",
+                     ">": "gt",
+                     "==": "eq",
+                     "!=": "ne",
+                     "<=": "le",
+                     "<": "lt",
+                     }
+
 # missing data value used to check if integer values are not set
 # we often check for None if a variable is not set, but 0 and None
 # have the same result in a test. 0 may be a valid integer value
@@ -153,7 +161,7 @@ def run_metplus(config, process_list):
                     command_builder.run_all_times()
                     return 0
             except AttributeError:
-                raise NameError("Process %s doesn't exist" % item)
+                raise NameError("There was a problem loading %s wrapper." % item)
 
             processes.append(command_builder)
 
@@ -719,14 +727,77 @@ def handle_tmp_dir(config):
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
 
-def skip_time(time_info, config):
-    """!Used to check current run time against list of times to skip."""
-    # never skip until this is implemented correctly
+def get_skip_times(config, wrapper_name=None):
+    """! Read SKIP_TIMES config variable and populate dictionary of times that should be skipped.
+         SKIP_TIMES should be in the format: "%m:begin_end_incr(3,11,1)", "%d:30,31", "%Y%m%d:20201031"
+         where each item inside quotes is a datetime format, colon, then a list of times in that format
+         to skip.
+         Args:
+             @param config configuration object to pull SKIP_TIMES
+             @param wrapper_name name of wrapper if supporting
+               skipping times only for certain wrappers, i.e. grid_stat
+             @returns dictionary containing times to skip
+    """
+    skip_times_dict = {}
+    skip_times_string = None
+
+    # if wrapper name is set, look for wrapper-specific _SKIP_TIMES variable
+    if wrapper_name:
+        skip_times_string = config.getstr('config',
+                                          f'{wrapper_name.upper()}_SKIP_TIMES', '')
+
+    # if skip times string has not been found, check for generic SKIP_TIMES
+    if not skip_times_string:
+        skip_times_string = config.getstr('config', 'SKIP_TIMES', '')
+
+        # if no generic SKIP_TIMES, return empty dictionary
+        if not skip_times_string:
+            return {}
+
+    # get list of skip items, but don't expand begin_end_incr yet
+    skip_list = getlist(skip_times_string, expand_begin_end_incr=False)
+
+    for skip_item in skip_list:
+        try:
+            time_format, skip_times = skip_item.split(':')
+
+            # get list of skip times for the time format, expanding begin_end_incr
+            skip_times_list = getlist(skip_times)
+
+            # if time format is already in skip times dictionary, extend list
+            if time_format in skip_times_dict:
+                skip_times_dict[time_format].extend(skip_times_list)
+            else:
+                skip_times_dict[time_format] = skip_times_list
+
+        except ValueError:
+            config.logger.error(f"SKIP_TIMES item does not match format: {skip_item}")
+            return None
+
+    return skip_times_dict
+
+def skip_time(time_info, skip_times):
+    """!Used to check the valid time of the current run time against list of times to skip.
+        Args:
+            @param time_info dictionary with time information to check
+            @param skip_times dictionary of times to skip, i.e. {'%d': [31]} means skip 31st day
+            @returns True if run time should be skipped, False if not
+    """
+    for time_format, skip_time_list in skip_times.items():
+        # extract time information from valid time based on skip time format
+        run_time_value = time_info.get('valid')
+        if not run_time_value:
+            return False
+
+        run_time_value = run_time_value.strftime(time_format)
+
+        # loop over times to skip for this format and check if it matches
+        for skip_time in skip_time_list:
+            if int(run_time_value) == int(skip_time):
+                return True
+
+    # if skip time never matches, return False
     return False
-
-    # get list of times to skip
-
-    # check skip times against current time_info object and skip if it matches
 
 def write_final_conf(conf, logger):
     """!write final conf file including default values that were set during run"""
@@ -1868,7 +1939,7 @@ def fix_list_helper(item_list, type):
 
     return fixed_list
 
-def getlist(list_str):
+def getlist(list_str, expand_begin_end_incr=True):
     """! Returns a list of string elements from a comma
          separated string of values.
          This function MUST also return an empty list [] if s is '' empty.
@@ -1889,7 +1960,9 @@ def getlist(list_str):
     # remove space around commas
     list_str = re.sub(r'\s*,\s*', ',', list_str)
 
-    list_str = handle_begin_end_incr(list_str)
+    # option to not evaluate begin_end_incr
+    if expand_begin_end_incr:
+        list_str = handle_begin_end_incr(list_str)
 
     # use csv reader to divide comma list while preserving strings with comma
     # convert the csv reader to a list and get first item (which is the whole list)
@@ -1953,6 +2026,10 @@ def get_process_list(config):
         raise TypeError("Attempting to run a plotting wrapper while METPLUS_DISABLE_PLOT_WRAPPERS environment "
                             "variable is set. Unset the variable to run this use case")
 
+    # if MakePlots is in process list, remove it because it will be called directly from StatAnalysis
+    if 'MakePlots' in out_process_list:
+        out_process_list.remove('MakePlots')
+
     return out_process_list
 
 # minutes
@@ -2000,14 +2077,14 @@ def get_threshold_via_regex(thresh_string):
             regex match object with comparison operator in group 1 and
             number in group 2 if valid
     """
-    valid_comparisons = {">", ">=", "==", "!=", "<", "<=", "gt", "ge", "eq", "ne", "lt", "le"}
+
     comparison_number_list = []
     # split thresh string by || or &&
     thresh_split = re.split(r'\|\||&&', thresh_string)
     # check each threshold for validity
     for thresh in thresh_split:
         found_match = False
-        for comp in valid_comparisons:
+        for comp in list(valid_comparisons.keys())+list(valid_comparisons.values()):
             # if valid, add to list of tuples
             match = re.match(r'^('+comp+r')([+-]?\d*\.?\d*)$', thresh)
             if match:
@@ -2023,6 +2100,18 @@ def get_threshold_via_regex(thresh_string):
         return None
 
     return comparison_number_list
+
+def comparison_to_letter_format(expression):
+    """! Convert comparison operator to the letter version if it is not already
+         @args expression string starting with comparison operator to
+          convert, i.e. gt3 or <=5.4
+         @returns letter comparison operator, i.e. gt3 or le5.4 or None if invalid
+    """
+    for symbol_comp, letter_comp in valid_comparisons.items():
+        if letter_comp in expression or symbol_comp in expression:
+            return expression.replace(symbol_comp, letter_comp)
+
+    return None
 
 def validate_thresholds(thresh_list):
     """ Checks list of thresholds to ensure all of them have the correct format
@@ -2454,7 +2543,6 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
         if 'ens_extra' in v.keys():
             config.logger.debug(" ens_extra:"+v['ens_extra'])
     '''
-
     return sorted(var_list, key=lambda x: x['index'])
 
 def split_level(level):

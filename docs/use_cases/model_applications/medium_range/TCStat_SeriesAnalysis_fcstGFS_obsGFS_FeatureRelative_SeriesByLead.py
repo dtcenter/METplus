@@ -2,7 +2,7 @@
 Multi_Tool: Feature Relative by Lead (with lead groupings) 
 ==================================================================================================
 
-TCStat_SeriesAnalysis_fcstGFS
+model_applicaitons/medium_range/TCStat_SeriesAnalysis_fcstGFS
 _obsGFS_FeatureRelative
 _SeriesByLead.conf
 

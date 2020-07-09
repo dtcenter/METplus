@@ -2,7 +2,7 @@
 GridStat: Basic Use Case
 =========================
 
-GridStat.conf
+met_tool_wrapper/GridStat/GridStat.conf
 
 """
 ##############################################################################

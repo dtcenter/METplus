@@ -128,6 +128,11 @@ class MTDWrapper(MODEWrapper):
               Args:
                 @param input_dict dictionary containing timing information
         """
+
+        if util.skip_time(input_dict, self.c_dict.get('SKIP_TIMES', {})):
+            self.logger.debug('Skipping run time')
+            return
+
         for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
             if custom_string:
                 self.logger.info(f"Processing custom string: {custom_string}")

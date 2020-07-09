@@ -2,7 +2,7 @@
 Grid-Stat: 6hr QPF in GEMPAK format
 ===============================================================================
 
-GridStat_fcstHREFmean
+model_applications/precipitation/GridStat_fcstHREFmean
 _obsStgIV_Gempak.conf
 
 """

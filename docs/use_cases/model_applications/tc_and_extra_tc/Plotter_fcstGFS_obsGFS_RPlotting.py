@@ -2,8 +2,9 @@
 Track and Intensity Plotter: Generate mean, median and box plots 
 ======================================================================================
 
-Plotter_fcstGFS
+model_applications/tc_and_extra_tc/Plotter_fcstGFS
 _obsGFS_RPlotting.conf
+
 """
 ##############################################################################
 # Scientific Objective

@@ -2,8 +2,10 @@
 Ensemble-Stat: Ensemble Statistics using Obs Uncertainty 
 =============================================================================
 
-EnsembleStat_fcstHRRRE
-_obsHRRRE_Sfc_MultiField.conf
+model_applications/
+convection_allowing_model/
+EnsembleStat_fcstHRRRE_obsHRRRE_Sfc
+_Sfc_MultiField.conf
 
 """
 ##############################################################################

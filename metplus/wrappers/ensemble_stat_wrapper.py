@@ -268,7 +268,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             expected_path = os.path.join(model_dir, member_file)
 
             # if wildcard expression, get all files that match
-            if '?' in expected_path:
+            if '?' in expected_path or '*' in expected_path:
                 wildcard_files = sorted(glob.glob(expected_path))
                 self.logger.debug('Ensemble members file pattern: {}'
                                   .format(expected_path))
