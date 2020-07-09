@@ -2,7 +2,7 @@
 MTD: 6hr QPF Use Case
 ==================================
 
-MTD_fcstHRRR-TLE
+model_applications/precipitation/MTD_fcstHRRR-TLE
 _obsMRMS.conf
 
 """

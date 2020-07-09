@@ -266,6 +266,10 @@ class PB2NCWrapper(CommandBuilder):
         if time_info is None:
             return
 
+        if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+            self.logger.debug('Skipping run time')
+            return
+
         # look for output file path and skip running pb2nc if necessary
         if not self.find_and_check_output_file(time_info):
             return

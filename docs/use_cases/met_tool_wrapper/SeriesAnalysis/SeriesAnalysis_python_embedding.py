@@ -2,7 +2,7 @@
 SeriesAnalysis: Using Python Embedding
 ============================================================================
 
-SeriesAnalysis_python
+met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_python
 _embedding.conf
 
 """

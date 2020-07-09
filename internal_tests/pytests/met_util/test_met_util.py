@@ -796,3 +796,131 @@ def test_get_time_from_file(filepath, template, expected_result):
 )
 def test_round_0p5(value, expected_result):
     assert(util.round_0p5(value) == expected_result)
+
+@pytest.mark.parametrize(
+    'expression, expected_result', [
+        ('gt3', 'gt3'),
+        ('>3', 'gt3'),
+        ('le3.5', 'le3.5'),
+        ('<=3.5', 'le3.5'),
+        ('==4', 'eq4'),
+        ('!=3.5', 'ne3.5'),
+    ]
+)
+def test_comparison_to_letter_format(expression, expected_result):
+    assert(util.comparison_to_letter_format(expression) == expected_result)
+
+@pytest.mark.parametrize(
+    'conf_items, met_tool, expected_result', [
+        ({'CUSTOM_LOOP_LIST': "one, two, three"}, '', ['one', 'two', 'three']),
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'GRID_STAT_CUSTOM_LOOP_LIST': "four, five",}, 'grid_stat', ['four', 'five']),
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'GRID_STAT_CUSTOM_LOOP_LIST': "four, five",}, 'point_stat', ['one', 'two', 'three']),
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'ASCII2NC_CUSTOM_LOOP_LIST': "four, five",}, 'ascii2nc', ['four', 'five']),
+        # fails to read custom loop list for point2grid because there are underscores in name
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'POINT_2_GRID_CUSTOM_LOOP_LIST': "four, five",}, 'point2grid', ['one', 'two', 'three']),
+        ({'CUSTOM_LOOP_LIST': "one, two, three",
+          'POINT2GRID_CUSTOM_LOOP_LIST': "four, five",}, 'point2grid', ['four', 'five']),
+    ]
+)
+def test_get_custom_string_list(conf_items, met_tool, expected_result):
+    config = metplus_config()
+    for conf_key, conf_value in conf_items.items():
+        config.set('config', conf_key, conf_value)
+
+    assert(util.get_custom_string_list(config, met_tool) == expected_result)
+
+@pytest.mark.parametrize(
+    'skip_times_conf, expected_dict', [
+        ('"%d:30,31"', {'%d': ['30','31']}),
+        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
+                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
+        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}),
+    ]
+)
+def test_get_skip_times(skip_times_conf, expected_dict):
+    conf = metplus_config()
+    conf.set('config', 'SKIP_TIMES', skip_times_conf)
+
+    assert(util.get_skip_times(conf) == expected_dict)
+
+@pytest.mark.parametrize(
+    'skip_times_conf, expected_dict', [
+        ('"%d:30,31"', {'%d': ['30','31']}),
+        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
+                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
+        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}),
+    ]
+)
+def test_get_skip_times_wrapper(skip_times_conf, expected_dict):
+    conf = metplus_config()
+
+    # set wrapper specific skip times, then ensure it is found
+    conf.set('config', 'GRID_STAT_SKIP_TIMES', skip_times_conf)
+
+    assert(util.get_skip_times(conf, 'grid_stat') == expected_dict)
+
+@pytest.mark.parametrize(
+    'skip_times_conf, expected_dict', [
+        ('"%d:30,31"', {'%d': ['30','31']}),
+        ('"%m:begin_end_incr(3,11,1)"', {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%d:30,31", "%m:begin_end_incr(3,11,1)"', {'%d': ['30','31'],
+                                                     '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}),
+        ('"%Y%m%d:20201031"', {'%Y%m%d': ['20201031']}),
+        ('"%Y%m%d:20201031", "%Y:2019"', {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}),
+    ]
+)
+def test_get_skip_times_wrapper_not_used(skip_times_conf, expected_dict):
+    conf = metplus_config()
+
+    # set generic SKIP_TIMES, then request grid_stat to ensure it uses generic
+    conf.set('config', 'SKIP_TIMES', skip_times_conf)
+
+    assert(util.get_skip_times(conf, 'grid_stat') == expected_dict)
+
+@pytest.mark.parametrize(
+    'run_time, skip_times, expected_result', [
+        (datetime.datetime(2019, 12, 30), {'%d': ['30', '31']}, True),
+        (datetime.datetime(2019, 12, 30), {'%d': ['29', '31']}, False),
+        (datetime.datetime(2019, 2, 27), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, False),
+        (datetime.datetime(2019, 3, 30), {'%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
+        (datetime.datetime(2019, 3, 30), {'%d': ['30', '31'],
+                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
+        (datetime.datetime(2019, 3, 29), {'%d': ['30', '31'],
+                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, True),
+        (datetime.datetime(2019, 1, 29), {'%d': ['30', '31'],
+                                          '%m': ['3', '4', '5', '6', '7', '8', '9', '10', '11']}, False),
+        (datetime.datetime(2020, 10, 31), {'%Y%m%d': ['20201031']}, True),
+        (datetime.datetime(2020, 3, 31), {'%Y%m%d': ['20201031']}, False),
+        (datetime.datetime(2020, 10, 30), {'%Y%m%d': ['20201031']}, False),
+        (datetime.datetime(2019, 10, 31), {'%Y%m%d': ['20201031']}, False),
+        (datetime.datetime(2020, 10, 31), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, True),
+        (datetime.datetime(2019, 10, 31), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, True),
+        (datetime.datetime(2019, 1, 13), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, True),
+        (datetime.datetime(2018, 10, 31), {'%Y%m%d': ['20201031'],
+                                          '%Y': ['2019']}, False),
+        (datetime.datetime(2019, 12, 30, 12), {'%H': ['12', '18']}, True),
+        (datetime.datetime(2019, 12, 30, 13), {'%H': ['12', '18']}, False),
+    ]
+)
+def test_get_skip_time(run_time, skip_times, expected_result):
+    time_info = time_util.ti_calculate({'valid': run_time})
+    assert(util.skip_time(time_info, skip_times) == expected_result)
+
+def test_get_skip_time_no_valid():
+    input_dict ={'init': datetime.datetime(2019, 1, 29)}
+    assert(util.skip_time(input_dict, {'%Y': ['2019']}) == False)
+

@@ -2,8 +2,9 @@
 MODE: Hail Verification  
 =========================================================================
 
-MODE_fcstHRRR_obsMRMS
-_Hail_GRIB2.conf
+model_applications/
+convection_allowing_model/
+MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 
 """
 ##############################################################################

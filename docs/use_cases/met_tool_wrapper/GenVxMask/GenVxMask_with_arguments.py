@@ -2,7 +2,7 @@
 GenVxMask: Using Arguments
 ==========================
 
-GenVxMask_with_arguments.conf
+met_tool_wrapper/GenVxMask/GenVxMask_with_arguments.conf
 
 """
 ##############################################################################

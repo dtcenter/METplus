@@ -2,7 +2,7 @@
 Grid-Stat: Compute Anomaly Correlation using Climatology  
 ============================================================================
 
-GridStat_fcstGFS_obsGFS
+model_applications/medium_range/GridStat_fcstGFS_obsGFS
 _climoNCEP_MultiField.conf
 
 """

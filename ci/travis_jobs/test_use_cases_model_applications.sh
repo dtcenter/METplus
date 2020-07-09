@@ -57,7 +57,12 @@ do
   fi
 
   echo Downloading $tarball
+  echo curl -L -O https://github.com/NCAR/METplus/releases/download/${tarball}
   curl -L -O https://github.com/NCAR/METplus/releases/download/${tarball}
+
+  echo file basename $tarball
+  tarball_basename=`basename $tarball`
+  echo `file $tarball_basename`
 
   echo tar xfzp `basename $tarball`
   tar xfzp `basename $tarball`
@@ -67,6 +72,7 @@ done
 
 # get met_test data because some cases use this data still
 echo Downloading $met_tool_wrapper_tarball
+echo curl -L -O $met_tool_wrapper_tarball
 curl -L -O $met_tool_wrapper_tarball
 
 # untar all tarballs
@@ -75,6 +81,7 @@ tar xfzp `basename $met_tool_wrapper_tarball`
 
 # get GempakToCF jar file in case any use cases use GEMPAK data
 echo Downloading $gempak_to_cf_location
+echo curl -L -O $gempak_to_cf_location
 curl -L -O $gempak_to_cf_location
 
 echo Get Docker image: ${DOCKERHUB_TAG}

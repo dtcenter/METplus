@@ -2,7 +2,7 @@
 Multi_Tool: Feature Relative by Init 
 ===================================================================================
 
-TCStat_SeriesAnalysis_fcstGFS
+model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS
 _obsGFS_FeatureRelative
 _SeriesByInit.conf
 

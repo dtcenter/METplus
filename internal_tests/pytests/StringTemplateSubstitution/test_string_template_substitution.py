@@ -576,3 +576,11 @@ def test_get_fmt_info(fmt, filepath, identifier, expected_fmt_len, expected_matc
         assert(False)
 
     assert(True)
+
+def test_do_string_sub_skip_missing_tags():
+    init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
+    lead_string = int("6") * 3600
+    templ = "{init?fmt=%Y%m%d%H}_{missing_tag?fmt=%H}_f{lead?fmt=%2H}"
+    expected_filename = "2017060400_{missing_tag?fmt=%H}_f06"
+    filename = do_string_sub(templ, init=init_string, lead=lead_string, skip_missing_tags=True)
+    assert(filename == expected_filename)

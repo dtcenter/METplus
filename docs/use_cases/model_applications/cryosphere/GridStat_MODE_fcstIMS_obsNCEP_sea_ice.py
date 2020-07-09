@@ -2,7 +2,7 @@
 Grid-Stat and MODE: Sea Ice Validation   
 ====================================================================================================
 
-GridStat_MODE_fcstIMS
+model_applications/cryosphere/GridStat_MODE_fcstIMS
 _obsNCEP_sea_ice.conf
 
 """

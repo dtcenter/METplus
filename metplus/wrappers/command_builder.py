@@ -78,6 +78,14 @@ class CommandBuilder:
         c_dict['CUSTOM_LOOP_LIST'] = util.get_custom_string_list(self.config,
                                                                  app_name)
 
+        c_dict['SKIP_TIMES'] = util.get_skip_times(self.config,
+                                                   app_name)
+
+        c_dict['USE_EXPLICIT_NAME_AND_LEVEL'] = (
+            self.config.getbool('config',
+                                'USE_EXPLICIT_NAME_AND_LEVEL',
+                                False)
+            )
 
         return c_dict
 
@@ -112,6 +120,7 @@ class CommandBuilder:
         caller = getframeinfo(stack()[1][0])
         self.logger.error(f"({os.path.basename(caller.filename)}:{caller.lineno}) {error_string}")
         self.errors += 1
+        self.isOK = False
 
     def set_user_environment(self, time_info=None):
         """!Set environment variables defined in [user_env_vars] section of config
@@ -130,13 +139,8 @@ class CommandBuilder:
                                           **time_info)
             self.add_env_var(env_var, env_var_value)
 
-    def add_common_envs(self):
-        """!Set the environment variables that are common to many wrappers.
-        This currently includes model (MODEL) and regrid.to_grid (REGRID_TO_GRID).
-        """
-        self.add_env_var('MODEL', str(self.c_dict['MODEL']))
-
-        to_grid = self.c_dict['REGRID_TO_GRID'].strip('"')
+    def format_regrid_to_grid(self, to_grid):
+        to_grid = to_grid.strip('"')
         if not to_grid:
             to_grid = 'NONE'
 
@@ -144,7 +148,15 @@ class CommandBuilder:
         if to_grid not in ['NONE', 'FCST', 'OBS']:
             to_grid = f'"{to_grid}"'
 
-        self.add_env_var('REGRID_TO_GRID', to_grid)
+        return to_grid
+
+    def add_common_envs(self, time_info=None):
+        # Set the environment variables
+        self.add_env_var('MODEL', str(self.c_dict['MODEL']))
+
+        to_grid = self.c_dict.get('REGRID_TO_GRID')
+        self.add_env_var('REGRID_TO_GRID',
+                         self.format_regrid_to_grid(to_grid))
 
     def print_all_envs(self):
         # send environment variables to logger
@@ -635,18 +647,34 @@ class CommandBuilder:
         return list_path
 
     def find_and_check_output_file(self, time_info):
-        """!Look for expected output file. If it exists and configured to skip if it does,
-            then return False"""
-        outfile = do_string_sub(self.c_dict['OUTPUT_TEMPLATE'],
-                                **time_info)
-        outpath = os.path.join(self.c_dict['OUTPUT_DIR'], outfile)
-        self.set_output_path(outpath)
+        """!Build full path for expected output file and check if it exists.
+            If output file doesn't exist or it does exists and we are not skipping it
+            then return True to run the tool. Otherwise return False to not run the tool
+            Args:
+                @param time_info time dictionary to use to fill out output file template
+                @returns True if the app should be run or False if it should not
+        """
+        output_path_template = os.path.join(self.c_dict['OUTPUT_DIR'],
+                                            self.c_dict['OUTPUT_TEMPLATE'])
+        output_path = do_string_sub(output_path_template,
+                                    **time_info)
+        self.set_output_path(output_path)
 
-        if not os.path.exists(outpath) or not self.c_dict['SKIP_IF_OUTPUT_EXISTS']:
+        # get directory that the output file will exist
+        parent_dir = os.path.dirname(output_path)
+        if not parent_dir:
+            self.log_error('Must specify path to output file')
+            return False
+
+        # create full output dir if it doesn't already exist
+        if not os.path.exists(parent_dir):
+            os.makedirs(parent_dir)
+
+        if not os.path.exists(output_path) or not self.c_dict['SKIP_IF_OUTPUT_EXISTS']:
             return True
 
         # if the output file exists and we are supposed to skip, don't run tool
-        self.logger.debug(f'Skip writing output file {outpath} because it already '
+        self.logger.debug(f'Skip writing output file {output_path} because it already '
                           'exists. Remove file or change '
                           f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
                           'to process')
@@ -807,7 +835,9 @@ class CommandBuilder:
 
             # if pcp_combine was run, use name_level, (*,*) format
             # if not, use user defined name/level combination
-            if d_type != 'ENS' and self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
+            if (not self.c_dict.get('USE_EXPLICIT_NAME_AND_LEVEL', False) and
+                                    d_type != 'ENS' and
+                                    self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False)):
                 field = "{ name=\"" + v_name + "_" + level + \
                         "\"; level=\"(*,*)\";"
             else:
@@ -901,6 +931,18 @@ class CommandBuilder:
         # return list of field dictionary items
         return fields
 
+    def get_verification_mask(self, time_info):
+        """!If verification mask template is set in the config file,
+            use it to find the verification mask filename"""
+        template = self.c_dict.get('VERIFICATION_MASK_TEMPLATE')
+        if not template:
+            return
+
+        filenames = do_string_sub(template,
+                                  **time_info)
+        mask_list_string = self.format_list_string(filenames)
+        self.c_dict['VERIFICATION_MASK'] = mask_list_string
+
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string
@@ -972,7 +1014,8 @@ class CommandBuilder:
                                               copyable_env=self.get_env_copy())
         if ret != 0:
             self.log_error(f"MET command returned a non-zero return code: {cmd}")
-            self.logger.info("Check the logfile for more information on why it failed")
+            self.logger.info("Check the logfile for more information on why it failed: "
+                             f"{self.config.getstr('config', 'LOG_METPLUS')}")
             return False
 
         return True

@@ -2,7 +2,7 @@
 Example: Introductory Use Case
 ==================================
 
-Example.conf
+met_tool_wrapper/Example/Example.conf
 
 """
 ##############################################################################

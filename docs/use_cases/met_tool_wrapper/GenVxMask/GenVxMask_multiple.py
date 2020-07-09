@@ -2,7 +2,7 @@
 GenVxMask: Multiple Masks
 =========================
 
-GenVxMask_multiple.conf
+met_tool_wrapper/GenVxMask/GenVxMask_multiple.conf
 
 """
 ##############################################################################

@@ -2,7 +2,7 @@
 Ensemble-Stat: Basic Post-Processing only  
 ================================================================
 
-EnsembleStat_fcstHRRRE
+model_application/precipitation/EnsembleStat_fcstHRRRE
 _FcstOnly_NetCDF.conf
 
 """

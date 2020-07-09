@@ -626,8 +626,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # if output file exists and we want to skip it, warn and continue
         outfile = self.get_output_path()
-        if not self.method == "USER_DEFINED" and os.path.exists(outfile) and \
-          self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
+        if os.path.exists(outfile) and self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
             self.logger.debug('Skip writing output file {} because it already '
                               'exists. Remove file or change '
                               'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS to True to process'
@@ -834,16 +833,16 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # if [FCST/OBS]_OUTPUT_[NAME/ACCUM] are set, use them instead of
         # [FCST/OBS]_VAR<n>_[NAME/LEVELS]
-        if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
-            field_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
-        else:
-            field_name = var_info[f"{data_src.lower()}_name"]
-
         if self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
             accum_string = self.c_dict[f"{data_src}_OUTPUT_ACCUM"]
         else:
             level = var_info[f'{data_src.lower()}_level']
             _, accum_string = util.split_level(level)
+
+        if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
+            field_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
+        else:
+            field_name = var_info[f"{data_src.lower()}_name"] + '_' + accum_string
 
         # get number of seconds relative to valid time
         accum_seconds = time_util.get_seconds_from_string(accum_string,
@@ -871,7 +870,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         pcp_out = do_string_sub(out_template,
                                 **time_info)
         self.outfile = pcp_out
-        self.args.append("-name " + field_name + "_" + accum_string)
+        self.args.append("-name " + field_name)
         return self.get_command()
 
     def setup_derive_method(self, time_info, var_info, data_src):

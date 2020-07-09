@@ -2,7 +2,7 @@
 MTD: Build Revision Series to Evaluate Forecast Consistency 
 ===========================================================================
 
-MTD_fcstHRRR-TLE_FcstOnly
+model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly
 _RevisionSeries_GRIB.conf
 
 """

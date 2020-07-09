@@ -2,7 +2,7 @@
 Grid-Stat: Standard Verification of Surface Fields
 ================================================================================
 
-GridStat_fcstGFS_obsGFS
+model_applications/medium_range/GridStat_fcstGFS_obsGFS
 _Sfc_MultiField.conf
 
 """

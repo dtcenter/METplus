@@ -1,7 +1,9 @@
 """
-ASCII2NC, Point2Grid, RegridDataPlane: Use storm reports on a grid as a mask to calculate practically perfect probabilities
-===========================================================================================================================
+Point2Grid: Calculate Practically Perfect Probabilities
+============================================================
 
+model_applications/
+convection_allowing_models/
 Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 
 """

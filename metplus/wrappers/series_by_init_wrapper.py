@@ -604,7 +604,6 @@ class SeriesByInitWrapper(CommandBuilder):
         self.add_env_var('NAME', name)
         self.add_env_var('LEVEL', level)
 
-        # Set the NAME to name_level
         series_anly_output_parts = [self.outdir, '/',
                                     'series_', name, '_',
                                     level, '.nc']
