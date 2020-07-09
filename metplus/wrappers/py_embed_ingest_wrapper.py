@@ -65,8 +65,11 @@ class PyEmbedIngestWrapper(CommandBuilder):
                 self.log_error(f'Must set PY_EMBED_INGEST_{index}_OUTPUT_GRID')
                 self.isOK = False
 
+            output_field_name = self.config.getraw('config', 'PY_EMBED_INGEST_{}_OUTPUT_FIELD_NAME'.format(index), '')
+
             ingester_dict = {'output_dir': output_dir,
                              'output_template': output_template,
+                             'output_field_name': output_field_name,
                              'script': ingest_script,
                              'input_type': input_type,
                              'output_grid': output_grid,
@@ -100,7 +103,7 @@ class PyEmbedIngestWrapper(CommandBuilder):
 
                 time_info['custom'] = custom_string
 
-                if self.run_at_time_lead(time_info) is None:
+                if not self.run_at_time_lead(time_info):
                     return False
 
         return True
@@ -128,14 +131,22 @@ class PyEmbedIngestWrapper(CommandBuilder):
             rdp.clear()
             rdp.infiles.append(f"PYTHON_{ingester['input_type']}")
             rdp.infiles.append(f'-field \'name="{script}\";\'')
+            if ingester['output_field_name']:
+                rdp.infiles.append(f"-name {ingester['output_field_name']}")
             rdp.infiles.append(output_grid)
             rdp.outfile = output_path
+
+            self.set_environment_variables(time_info)
+
             cmd = rdp.get_command()
             if cmd is None:
                 self.log_error("Could not generate command")
-                return
+                return False
+
             self.logger.info(f'Running PyEmbed Ingester {index}')
 
             # run command and add to errors if it failed
             if not rdp.build():
                 self.errors += 1
+
+        return True
