@@ -64,7 +64,7 @@ def ivt(input_file):
         es = 610.78*np.exp((17.67*(temp-273.15)/(temp-29.65))) # Calculate saturation vapor pressure
         e = es*(np.array(q)/100) # Calculate vapor pressure 
         w = 0.622*es/(levs[:,None,None]*100) # Calculate water vapor
-        q = w/(w+1) # Calculate relative humidity
+        q = w/(w+1) # Calculate specific humidity
     q = np.array(q)
     
     uv = np.sqrt(u**2+v**2) # Calculate wind
@@ -100,7 +100,6 @@ print("Data Type:  " + repr(met_data.dtype))
 # GFS Analysis
 valid  = ymd  + dt.timedelta(hours=hh)
 init = valid
-#lead, rem = divmod((valid-init).total_seconds(), 3600)
 
 attrs = {
    'valid': valid.strftime("%Y%m%d_%H%M%S"),
@@ -116,9 +115,7 @@ attrs = {
    'grid': {
        'name': 'Global 0.5 Degree',
        'type' :   'LatLon',
-       #'lat_ll' :    -90.0,
        'lat_ll' : -90.0,
-       #'lon_ll' :   -180.0,
        'lon_ll' : 0.0,
        'delta_lat' :   0.5,
        'delta_lon' :   0.5,
