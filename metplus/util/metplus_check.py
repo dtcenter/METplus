@@ -5,6 +5,7 @@
 
 import sys
 import os
+import re
 
 SUPPORTED_PY_VERSION = '3.6.3'
 
@@ -51,6 +52,22 @@ def metplus_check_environment_variables(environ):
 
     return True
 
+def evaluates_to_true(value):
+    """!Check if the value matches an expression that should be interpretted as False
+        Without this, environment variables that are set are interpretted as True no
+        matter what value they hold. This checks against common expressions like
+        false, no, off, and 0. This was leveraged from the get_bool logic in
+        produtil config. If the value does not match the False expressions, it is
+        considered to be True no matter what the value contains, i.e. mud
+        Args:
+            @param value value to check
+            @returns False if value matches a supported False expression, True otherwise
+    """
+    if re.match(r'(?i)\A(?:F|\.false\.|false|no|off|0)\Z', value):
+        return False
+
+    return True
+
 def plot_wrappers_are_enabled(environ):
     """! Check METPLUS_[DISABLE/ENABLE]_PLOT_WRAPPERS. If both are set it should error
          and exit. Otherwise it should warn if DISABLE if used beacuse ENABLE should be
@@ -69,15 +86,16 @@ def plot_wrappers_are_enabled(environ):
                   "METPLUS_ENABLE_PLOT_WRAPPERS to enable plot wrappers.")
             return None
         else:
-            return True
+            return evaluates_to_true(environ.get('METPLUS_ENABLE_PLOT_WRAPPERS'))
     # if enable is not set but disable is, warn that disable is deprecated
     # but still do not run plot wrappers
     elif environ.get('METPLUS_DISABLE_PLOT_WRAPPERS'):
         print("WARNING: METPLUS_DISABLE_PLOT_WRAPPERS is deprecated and will not "
               "be supported in later versions. Please unset this variable and "
               "instead set METPLUS_ENABLE_PLOT_WRAPPERS to enable plot wrappers")
+        return not evaluates_to_true(environ.get('METPLUS_DISABLE_PLOT_WRAPPERS'))
 
-    # default behavior is do not run plot wrappers
+    # default behavior is do not enable plot wrappers
     return False
 
 # get user's python version and check that it is equal or

@@ -49,3 +49,31 @@ def test_metplus_check_environment_variables(env_vars, expected_result):
 )
 def test_plot_wrappers_are_enabled(env_vars, expected_result):
     assert(metplus_check.plot_wrappers_are_enabled(env_vars) == expected_result)
+
+@pytest.mark.parametrize(
+    'value, expected_result', [
+        ('true', True),
+        ('True', True),
+        ('TRUE', True),
+        ('yes', True),
+        ('YES', True),
+        ('on', True),
+        ('ON', True),
+        ('1', True),
+        ('T', True),
+        ('t', True),
+        ('pizza', True),
+        ('False', False),
+        ('false', False),
+        ('FALSE', False),
+        ('no', False),
+        ('NO', False),
+        ('off', False),
+        ('OFF', False),
+        ('0', False),
+        ('F', False),
+        ('f', False),
+    ]
+)
+def test_evaluates_to_true(value, expected_result):
+    assert(metplus_check.evaluates_to_true(value) == expected_result)
