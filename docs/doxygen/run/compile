@@ -13,11 +13,11 @@ fi
 # Doxyfile.in INPUT setting. Why? If you have many many conf files, 
 # like hwrf, defining here lets you specifiy which conf files you 
 # want documented.
-../../ush/confdoc.py \
-    ../../parm/metplus_config/metplus_system.conf \
-    ../../parm/metplus_config/metplus_runtime.conf \
-    ../../parm/metplus_config/metplus_data.conf \
-    > ../../docs/doxygen/config-files.dox
+../confdoc.py \
+    ../../../parm/metplus_config/metplus_system.conf \
+    ../../../parm/metplus_config/metplus_runtime.conf \
+    ../../../parm/metplus_config/metplus_data.conf \
+    > ../../generated/doxygen/config-files.dox
 
 cat Doxyfile.in | sed 's,--PROJECT_NUMBER--,'$version',g' > Doxyfile
 
