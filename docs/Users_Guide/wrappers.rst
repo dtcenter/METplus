@@ -234,6 +234,13 @@ the dimensions and density of the tiles comprising the subregion:
 | :term:`EXTRACT_TILES_OUTPUT_DIR`
 | :term:`EXTRACT_TILES_PAIRS_INPUT_DIR`
 
+[filename_templates]
+
+| :term:`FCST_EXTRACT_TILES_INPUT_TEMPLATE`
+| :term:`OBS_EXTRACT_TILES_INPUT_TEMPLATE`
+| :term:`FCST_EXTRACT_TILES_OUTPUT_TEMPLATE`
+| :term:`OBS_EXTRACT_TILES_OUTPUT_TEMPLATE`
+
 [config]
 
 | :term:`EXTRACT_TILES_LON_ADJ`
@@ -942,6 +949,7 @@ Configuration
 | :term:`PY_EMBED_INGEST_<n>_TYPE`
 | :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`
 | :term:`PY_EMBED_INGEST_CUSTOM_LOOP_LIST`
+| :term:`PY_EMBED_INGEST_<n>_OUTPUT_FIELD_NAME`
 
 .. warning:: **DEPRECATED:**
 
