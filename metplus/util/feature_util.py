@@ -83,6 +83,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             header.index('ALAT'), header.index('ALON')
         header_colnum_blat, header_colnum_blon = \
             header.index('BLAT'), header.index('BLON')
+        header_colnum_amodel = header.index('AMODEL')
         for line in tf:
             col = line.split()
             init, lead, valid, alat, alon, blat, blon = \
@@ -90,6 +91,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
                 col[header_colnum_valid], col[header_colnum_alat], \
                 col[header_colnum_alon], col[header_colnum_blat], \
                 col[header_colnum_blon]
+            amodel = col[header_colnum_amodel]
 
             # integer division for both Python 2 and 3
             lead_time = int(lead)
@@ -191,14 +193,33 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             tile_dir = os.path.join(out_dir, cur_init, cur_storm)
             fcst_hr_str = str(fcst_hr).zfill(3)
 
-            fcst_regridded_filename = \
-                config.getstr('regex_pattern', 'FCST_EXTRACT_TILES_PREFIX') + \
-                fcst_hr_str + "_" + fcst_anly_base
+            fcst_output_template = config.getraw('filename_templates',
+                                                 'FCST_EXTRACT_TILES_OUTPUT_TEMPLATE')
+            if fcst_output_template:
+                fcst_regridded_filename = \
+                    do_string_sub(fcst_output_template,
+                                  init=init_dt, lead=lead_seconds, amodel=amodel)
+            else:
+                fcst_regridded_filename = (
+                    config.getstr('regex_pattern',
+                                  'FCST_EXTRACT_TILES_PREFIX') +
+                    fcst_hr_str + "_" + fcst_anly_base)
+
+            obs_output_template = config.getraw('filename_templates',
+                                                 'OBS_EXTRACT_TILES_OUTPUT_TEMPLATE')
+            if obs_output_template:
+                anly_regridded_filename = \
+                    do_string_sub(obs_output_template,
+                                  valid=valid_dt, lead=lead_seconds, amodel=amodel)
+            else:
+                anly_regridded_filename = (
+                    config.getstr('regex_pattern',
+                                  'OBS_EXTRACT_TILES_PREFIX') +
+                    fcst_hr_str + "_" + fcst_anly_base)
+
+
             fcst_regridded_file = os.path.join(tile_dir,
                                                fcst_regridded_filename)
-            anly_regridded_filename = \
-                config.getstr('regex_pattern', 'OBS_EXTRACT_TILES_PREFIX') + \
-                fcst_hr_str + "_" + fcst_anly_base
             anly_regridded_file = os.path.join(tile_dir,
                                                anly_regridded_filename)
 
@@ -214,6 +235,8 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
                 var_level_string = retrieve_var_info(config)
 
 
+                name_list = [item[0] for item in retrieve_var_name_levels(config)]
+                names = ','.join(name_list)
 
                 # Perform regridding using MET Tool regrid_data_plane
                 fcst_cmd_list = [regrid_data_plane_exe, ' ',
@@ -221,6 +244,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
                                  fcst_grid_spec, ' ',
                                  fcst_regridded_file, ' ',
                                  var_level_string,
+                                 ' -name ', names,
                                  ' -method NEAREST ']
                 regrid_cmd_fcst = ''.join(fcst_cmd_list)
 
@@ -239,11 +263,15 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             else:
                 # Perform anly regridding on the records of interest
                 var_level_string = retrieve_var_info(config)
+                name_list = [item[0] for item in retrieve_var_name_levels(config)]
+                names = ','.join(name_list)
+
                 anly_cmd_list = [regrid_data_plane_exe, ' ',
                                  anly_filename, ' ',
                                  anly_grid_spec, ' ',
                                  anly_regridded_file, ' ',
                                  var_level_string, ' ',
+                                 ' -name ', names,
                                  ' -method NEAREST ']
                 regrid_cmd_anly = ''.join(anly_cmd_list)
 
@@ -291,7 +319,7 @@ def retrieve_var_info(config):
 
     var_list_of_dicts = util.parse_var_list(config)
     for cur_dict in var_list_of_dicts:
-        level = "_" + cur_dict['fcst_level']
+        level = cur_dict['fcst_level']
         name = cur_dict['fcst_name']
         cur_list = [' -field ', "'", name_str, name, '"; ',
                     level_str, level, '";', "'", '\\ ']

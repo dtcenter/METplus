@@ -1048,11 +1048,7 @@ def round_0p5(val):
                             a result of rounding the input value, val.
     """
 
-    val2 = val * 2
-    rval = round_to_int(val2)
-    pt_five = round(rval, 0) / 2
-    return pt_five
-
+    return round(val * 2) / 2
 
 def round_to_int(val):
     """! Round to integer value
@@ -1581,7 +1577,7 @@ def create_grid_specification_string(lat, lon, logger, config):
     lon0 = str(round_0p5(adj_lon))
     lat0 = str(round_0p5(adj_lat))
 
-    msg = ("nlat:" + nlat + " nlon: " + nlon +\
+    msg = ("lat:" + lat + " lon: " + lon +\
            " lat0:" + lat0 + " lon0: " + lon0)
     logger.debug(msg)
 

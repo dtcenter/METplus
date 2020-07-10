@@ -805,6 +805,17 @@ def test_get_time_from_file(filepath, template, expected_result):
         assert(result['valid'] == expected_result)
 
 @pytest.mark.parametrize(
+    'value, expected_result', [
+        (3.3, 3.5),
+        (3.1, 3.0),
+        (-3.2, -3.0),
+        (-3.8, -4.0),
+    ]
+)
+def test_round_0p5(value, expected_result):
+    assert(util.round_0p5(value) == expected_result)
+
+@pytest.mark.parametrize(
     'expression, expected_result', [
         ('gt3', 'gt3'),
         ('>3', 'gt3'),
@@ -930,3 +941,4 @@ def test_get_skip_time(run_time, skip_times, expected_result):
 def test_get_skip_time_no_valid():
     input_dict ={'init': datetime.datetime(2019, 1, 29)}
     assert(util.skip_time(input_dict, {'%Y': ['2019']}) == False)
+
