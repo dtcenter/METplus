@@ -2029,7 +2029,7 @@ def get_process_list(config):
     if not check_plotter_in_process_list(out_process_list, os.environ):
         error_message = ("Attempting to run a plotting wrapper that is not enabled. Please set "
                          "METPLUS_ENABLE_PLOT_WRAPPERS environment variable to run this use case")
-        config.logger.error(error_message)
+        config.logger.fatal(error_message)
         raise TypeError(error_message)
 
     # if MakePlots is in process list, remove it because it will be called directly from StatAnalysis
