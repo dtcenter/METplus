@@ -37,10 +37,10 @@ def test_metplus_check_environment_variables(env_vars, expected_result):
     assert(metplus_check.metplus_check_environment_variables(env_vars) == expected_result)
 
 # checking METPLUS_DISABLE_PLOT_WRAPPERS and METPLUS_ENABLE_PLOT_WRAPPERS to determine
-# if plot wrappers are enabled. Default is False (don't run). Both cannot be set
+# if plot wrappers are enabled. Default is True (run). Both cannot be set
 @pytest.mark.parametrize(
     'env_vars, expected_result', [
-        ({}, False), # neither set
+        ({}, True), # neither set
         ({'METPLUS_DISABLE_PLOT_WRAPPERS': 'yes'}, False), #disable set
         ({'METPLUS_ENABLE_PLOT_WRAPPERS': 'yes'}, True), #enable set
         ({'METPLUS_ENABLE_PLOT_WRAPPERS': 'yes',

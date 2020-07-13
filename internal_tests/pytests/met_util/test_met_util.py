@@ -692,7 +692,7 @@ def test_get_process_list(input_list, expected_list):
     'input_list, environ, expected_result', [
         (['Point2Grid'], {}, True), # no plotters, not disabled
         (['Point2Grid'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'yes'}, True), # no plotters, disabled
-        (['TCMPRPlotter'], {}, False), # plotter, not enabled
+        (['TCMPRPlotter'], {}, True), # plotter, not enabled
         (['TCMPRPlotter'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'yes'}, False), # plotters, disabled
         (['TCMPRPlotter'], {'METPLUS_ENABLE_PLOT_WRAPPERS': 'yes'}, True), # no plotters, enabled
         # test that env var value is interpreted to be True or False instead of
