@@ -20,6 +20,7 @@ import itertools
 
 from ..util import met_util as util
 from . import CommandBuilder
+from ush.plotting_scripts import plot_util
 
 class MakePlotsWrapper(CommandBuilder):
     """! Wrapper to used to filter make plots from MET data
@@ -279,7 +280,7 @@ class MakePlotsWrapper(CommandBuilder):
                              ', '.join(self.c_dict['STATS_LIST']).replace('"', ''))
 
             # send environment variables to logger
-            self.print_all_envs()
+            self.set_environment_variables()
 
             for script in scripts_to_run:
                 self.plotting_script = (
