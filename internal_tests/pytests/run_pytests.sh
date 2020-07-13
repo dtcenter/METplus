@@ -103,13 +103,13 @@ run_pytest_and_check pb2nc -c ./conf1
 
 #run_pytest_and_check series_init -c ./series_init_test.conf -c ./custom.conf
 
-if [ ! -z "$METPLUS_ENABLE_PLOT_WRAPPERS" ]; then
+if [ -z "$METPLUS_DISABLE_PLOT_WRAPPERS" ]; then
     echo Running plot wrapper tests
     run_pytest_and_check plotting/stat_analysis -c ./test_stat_analysis.conf
     run_pytest_and_check plotting/make_plots -c ./test_make_plots.conf
     run_pytest_and_check plotting/plot_util
 else
-    echo WARNING: Skipping plotting tests. Set METPLUS_ENABLE_PLOT_WRAPPERS to run them.
+    echo WARNING: Skipping plotting tests. Unset METPLUS_DISABLE_PLOT_WRAPPERS to run them.
 fi
 
 if [ $all_good == 0 ]; then
