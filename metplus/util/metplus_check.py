@@ -90,13 +90,10 @@ def plot_wrappers_are_enabled(environ):
     # if enable is not set but disable is, warn that disable is deprecated
     # but still do not run plot wrappers
     elif environ.get('METPLUS_DISABLE_PLOT_WRAPPERS'):
-        print("WARNING: METPLUS_DISABLE_PLOT_WRAPPERS is deprecated and will not "
-              "be supported in later versions. Please unset this variable and "
-              "instead set METPLUS_ENABLE_PLOT_WRAPPERS to enable plot wrappers")
         return not evaluates_to_true(environ.get('METPLUS_DISABLE_PLOT_WRAPPERS'))
 
     # default behavior is do not enable plot wrappers
-    return False
+    return True
 
 # get user's python version and check that it is equal or
 # higher than the supported version
