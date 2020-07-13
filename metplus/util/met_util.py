@@ -18,6 +18,7 @@ from csv import reader
 from os.path import dirname, realpath
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
+from importlib import import_module
 
 import produtil.setup
 import produtil.log
@@ -103,6 +104,8 @@ def pre_run_setup(filename, app_name):
     logger.info(f'Running {app_name} v%s called with command: %s',
                 version_number, ' '.join(sys.argv))
 
+    logger.info(f"Log file: {config.getstr('config', 'LOG_METPLUS')}")
+
     # validate configuration variables
     isOK_A, isOK_B, isOK_C, isOK_D, all_sed_cmds = validate_configuration_variables(config)
     if not (isOK_A and isOK_B and isOK_C and isOK_D):
@@ -154,7 +157,8 @@ def run_metplus(config, process_list):
             try:
                 logger = config.log(item)
                 package_name = 'metplus.wrappers.' + camel_to_underscore(item) + '_wrapper'
-                command_builder = getattr(sys.modules[package_name],
+                module = import_module(package_name)
+                command_builder = getattr(module,
                                           item + "Wrapper")(config, logger)
 
                 # if Usage specified in PROCESS_LIST, print usage and exit
@@ -2023,8 +2027,10 @@ def get_process_list(config):
 
     # check if there is a plot wrapper listed in the process list and throw error if plotting is not enabled
     if not check_plotter_in_process_list(out_process_list, os.environ):
-        raise TypeError("Attempting to run a plotting wrapper while METPLUS_DISABLE_PLOT_WRAPPERS environment "
-                        "variable is set. Unset the variable to run this use case")
+        error_message = ("Attempting to run a plotting wrapper that is not enabled. Please set "
+                         "METPLUS_ENABLE_PLOT_WRAPPERS environment variable to run this use case")
+        config.logger.error(error_message)
+        raise TypeError(error_message)
 
     # if MakePlots is in process list, remove it because it will be called directly from StatAnalysis
     if 'MakePlots' in out_process_list:
