@@ -633,11 +633,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                               .format(outfile))
             return True
 
-        # set user environment variables if needed
-        self.set_user_environment()
-
-        # send environment variables to logger
-        self.print_all_envs()
+        # set user environment variables if needed and print all envs
+        self.set_environment_variables(time_info)
 
         return self.build()
 
