@@ -18,6 +18,7 @@ import sys
 import os
 import re
 import subprocess
+import shutil
 
 from produtil.run import exe
 from produtil.run import checkrun
@@ -51,6 +52,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # All these instance attributes are needed to support the
         # plot_tcmpr.R functionality.
         super().__init__(config, logger)
+
+        # check if R is available, do not attempt to run if it is not
+        if shutil.which('R') is None:
+            self.log_error('R is not in the path. It is required to run TCMPRPlotter')
 
         self._init_tcmpr_script()
 
