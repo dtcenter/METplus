@@ -21,7 +21,6 @@ import itertools
 from ..util import met_util as util
 from ..util import do_string_sub
 from . import CommandBuilder
-from .make_plots_wrapper import MakePlotsWrapper
 
 class StatAnalysisWrapper(CommandBuilder):
     """! Wrapper to the MET tool stat_analysis which is used to filter 
@@ -168,6 +167,8 @@ class StatAnalysisWrapper(CommandBuilder):
         # need to read the conf value again
         self.runMakePlots = 'MakePlots' in self.config.getstr('config', 'PROCESS_LIST')
         if self.runMakePlots:
+            # only import MakePlots wrappers if it will be used
+            from .make_plots_wrapper import MakePlotsWrapper
             self.check_MakePlots_config(c_dict)
 
             # create MakePlots wrapper instance
@@ -1722,7 +1723,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.add_env_var(name, value)
 
             # send environment variables to logger
-            self.print_all_envs()
+            self.set_environment_variables()
 
             # set lookin dir
             self.logger.debug(f"Setting -lookindir to {runtime_settings_dict['LOOKIN_DIR']}")

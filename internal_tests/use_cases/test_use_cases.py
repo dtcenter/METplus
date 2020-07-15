@@ -28,6 +28,7 @@ import argparse
 
 from metplus.util.config import config_launcher
 from metplus.util import met_util as util
+from metplus.util.metplus_check import plot_wrappers_are_enabled
 
 # keep track of use cases that failed to report at the end of execution
 failed_runs = []
@@ -135,8 +136,8 @@ use_cases['tc_and_extra_tc'] = [
     use_case_dir + "/model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf",
 ]
 
-# if METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string, add plotting use cases
-if 'METPLUS_DISABLE_PLOT_WRAPPERS' not in os.environ or not os.environ['METPLUS_DISABLE_PLOT_WRAPPERS']:
+# if plot wrappers are enabled, add those use cases to the test lists
+if plot_wrappers_are_enabled(os.environ):
     use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf")
     use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf")
     use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf")
