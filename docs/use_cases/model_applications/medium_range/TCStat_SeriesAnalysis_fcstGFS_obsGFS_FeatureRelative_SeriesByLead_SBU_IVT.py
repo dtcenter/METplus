@@ -34,29 +34,30 @@ to the Multi_Tools: Feature Relative by Lead use case.
 # hurricane Dorian. It is based on the user provided python script that calculates the diagnostic 
 # integrated vaport transport (IVT). 
 # 
-#  * Variables required to calculate IVT:
+#  - Variables required to calculate IVT:
 #    Levels required: all pressure levels <= 100mb
-#       1. Temperature
-#       2. v- component of wind
-#       3. u- component of wind
-#       4. Geopotential height
-#       5. Specific humidity OR Relative Humidity
-#  * Forecast dataset: GFS Grid 4 Forecast
+#    #. Temperature
+#    #. v- component of wind
+#    #. u- component of wind
+#    #. Geopotential height
+#    #. Specific humidity OR Relative Humidity
+#  - Forecast dataset: GFS Grid 4 Forecast
 #    GFS Forecast data can be found at the following website: https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs
-#       - Initialization date: 20190830
-#       - Initialization hours: 00, 06, 12, 18 UTC
-#       - Lead times: 90, 96, 102, 108, 114 
-#       - Format: Grib2
-#       - Resolution: 0.5 degree
-#   * Observation dataset: GFS Grid 4 Analysis
-#       GFS Analysis data can be found at the following website: https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs
-#       - Valid date/time range: 20190902_18 - 20190904_12 every 6 hours
-#       - Format: Grib2
-#       - Resolution: 0.5 degree
-#   * Hurricane Track Data
-#     Hurricane track data can be found at the following website: http://hurricanes.ral.ucar.edu/repository/data/
-#     - ADeck Track File: aal052019.dat
-#     - BDeck Track File: bal052019.dat
+#    - Initialization date: 20190830
+#    - Initialization hours: 00, 06, 12, 18 UTC
+#    - Lead times: 90, 96, 102, 108, 114
+#    - Format: Grib2
+#    - Resolution: 0.5 degree
+#  - Observation dataset: GFS Grid 4 Analysis
+#    GFS Analysis data can be found at the following website: https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs
+#    - Valid date/time range: 20190902_18 - 20190904_12 every 6 hours
+#    - Format: Grib2
+#    - Resolution: 0.5 degree
+#  - Hurricane Track Data
+#    Hurricane track data can be found at the following website: http://hurricanes.ral.ucar.edu/repository/data/
+#    - ADeck Track File: aal052019.dat
+#    - BDeck Track File: bal052019.dat
+#
 
 ##############################################################################
 # METplus Components
@@ -82,11 +83,12 @@ to the Multi_Tools: Feature Relative by Lead use case.
 # next tool. The tool order is as follows:
 # 
 # PyEmbedIngest, TcPairs, ExtractTiles, SeriesByLead
-
+#
 # This example loops by forecast/lead time (with begin, end, and increment as specified in the METplus
 # TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_SBU_IVT.conf file). 
 #
 # 4 initialization times will be run over 5 lead times:
+#
 # | **Init:** 20190830_00Z
 # | **Forecast lead:** 90, 96, 102, 108, 114
 #
@@ -143,11 +145,14 @@ to the Multi_Tools: Feature Relative by Lead use case.
 # 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_SBU_IVT.conf, 
 # then a user-specific system configuration file::
 #
-# master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf -c /path/to/user_system.conf
+#        master_metplus.py \
+#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf \
+#        -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_SBU_IVT.conf::
 #
-# master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
+#        master_metplus.py \
+#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -160,28 +165,6 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #  If the executable is not in the path, specify the full path to the executable here (i.e. RM = /bin/rm)  
 #  The following executables are required for performing series analysis use cases:
 #
-#  If the executables are in the path:
-#
-# * **RM = rm**
-# * **CUT = cut**
-# * **TR = tr**
-# * **NCAP2 = ncap2**
-# * **CONVERT = convert**
-# * **NCDUMP = ncdump**
-#
-# **NOTE:** All of these executable items must be located under the [exe] section.
-#
-#
-# If the executables are not in the path, they need to be defined:
-#
-# * **RM = /path/to/rm**
-# * **CUT = /path/to/cut**
-# * **TR = /path/to/tr**
-# * **NCAP2 = /path/to/ncap2**
-# * **CONVERT = /path/to/convert**
-# * **NCDUMP= /path/to/ncdump**
-#
-# **NOTE:** All of these executable items must be located under the [exe] section.
 # Example User Configuration File::
 #
 #   [dir]
@@ -196,8 +179,6 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #   NCAP2 = /path/to/ncap2
 #   CONVERT = /path/to/convert
 #   NCDUMP = /path/to/ncdump
-#
-# **NOTE:** The INPUT_BASE, OUTPUT_BASE, and MET_INSTALL_DIR must be located under the [dir] section, while the RM, CUT, TR, NCAP2, CONVERT, and NCDUMP must be located under the [exe] section.
 #
 
 ##############################################################################
