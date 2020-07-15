@@ -4,7 +4,6 @@ import re
 import datetime
 
 from . import met_util as util
-from ..wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from .config.string_template_substitution import do_string_sub
 
 """!@namespace feature_util
@@ -53,6 +52,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
     # It is being used to call the run_cmd method, which runs the cmd
     # and redirects logging based on the conf settings.
     # Instantiate a RegridDataPlaneWrapper
+    from ..wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
     logger = config.logger
     rdp = RegridDataPlaneWrapper(config, logger)
 

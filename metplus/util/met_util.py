@@ -18,6 +18,7 @@ from csv import reader
 from os.path import dirname, realpath
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
+from importlib import import_module
 
 import produtil.setup
 import produtil.log
@@ -27,6 +28,7 @@ from .config.string_template_substitution import parse_template
 from .config.string_template_substitution import get_tags
 from . import time_util as time_util
 from .config import config_metplus
+from . import metplus_check
 
 """!@namespace met_util
  @brief Provides  Utility functions for METplus.
@@ -102,6 +104,8 @@ def pre_run_setup(filename, app_name):
     logger.info(f'Running {app_name} v%s called with command: %s',
                 version_number, ' '.join(sys.argv))
 
+    logger.info(f"Log file: {config.getstr('config', 'LOG_METPLUS')}")
+
     # validate configuration variables
     isOK_A, isOK_B, isOK_C, isOK_D, all_sed_cmds = validate_configuration_variables(config)
     if not (isOK_A and isOK_B and isOK_C and isOK_D):
@@ -153,7 +157,8 @@ def run_metplus(config, process_list):
             try:
                 logger = config.log(item)
                 package_name = 'metplus.wrappers.' + camel_to_underscore(item) + '_wrapper'
-                command_builder = getattr(sys.modules[package_name],
+                module = import_module(package_name)
+                command_builder = getattr(module,
                                           item + "Wrapper")(config, logger)
 
                 # if Usage specified in PROCESS_LIST, print usage and exit
@@ -2020,17 +2025,23 @@ def get_process_list(config):
             config.logger.warning(f"PROCESS_LIST item {process} may be invalid.")
             out_process_list.append(process)
 
-    # check if env var METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string
-    disable_plotting = os.environ.get('METPLUS_DISABLE_PLOT_WRAPPERS', False)
-    if disable_plotting and is_plotter_in_process_list(out_process_list):
-        raise TypeError("Attempting to run a plotting wrapper while METPLUS_DISABLE_PLOT_WRAPPERS environment "
-                            "variable is set. Unset the variable to run this use case")
-
     # if MakePlots is in process list, remove it because it will be called directly from StatAnalysis
     if 'MakePlots' in out_process_list:
         out_process_list.remove('MakePlots')
 
     return out_process_list
+
+def check_plotter_in_process_list(out_process_list, environ):
+    """! If plot wrappers are not enabled and there is a plot wrapper in the process list, do not run
+         Args:
+             @param out_process_list list of processes to examine
+             @param environ dictionary containing environment to check if plot wrappers are enabled or not
+             @returns False if plot wrappers are not enabled but they are in the process list, True otherwise
+    """
+    if not metplus_check.plot_wrappers_are_enabled(environ) and is_plotter_in_process_list(out_process_list):
+        return False
+
+    return True
 
 # minutes
 def shift_time(time_str, shift):

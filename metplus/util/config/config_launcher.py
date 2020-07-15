@@ -605,6 +605,13 @@ class METplusConfig(ProdConfig):
             self.check_default(sec, name, default)
             return default
         except ValueError:
+            # check if it was an empty string and return default or False if so
+            if not super().getstr(sec, name):
+                if default:
+                    return default
+
+                return False
+
             # if value is not correct type, log error and return None
             self.logger.error(f"[{sec}] {name} must be an boolean.")
             return None

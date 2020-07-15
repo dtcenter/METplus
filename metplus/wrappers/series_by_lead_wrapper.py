@@ -1167,7 +1167,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     else:
                         map_data = "map_data={source=[];}  "
 
-                    self.print_all_envs()
+                    super().set_environment_variables()
 
                     plot_data_plane_parts = [self.plot_data_plane_exe, ' ',
                                              cur_nc, ' ', ps_file, ' ',
@@ -1246,7 +1246,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             self.add_env_var('LEVEL', level)
             self.add_env_var('NAME', name)
 
-            self.print_all_envs()
+            super().set_environment_variables()
 
             self.logger.info("Creating animated gifs")
             for cur_stat in self.stat_list:

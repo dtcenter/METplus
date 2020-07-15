@@ -182,7 +182,7 @@ class TCStatWrapper(CommandBuilder):
 
             try:
                 c_dict['WATER_ONLY'] = \
-                    self.config.getbool('config', 'TC_STAT_WATER_ONLY')
+                    self.config.getbool('config', 'TC_STAT_WATER_ONLY', False)
             except ValueError:
                 # WATER_ONLY not defined in any configuration files,
                 # set to False and proceed.
@@ -194,7 +194,7 @@ class TCStatWrapper(CommandBuilder):
 
             try:
                 c_dict['LANDFALL'] = \
-                    self.config.getbool('config', 'TC_STAT_LANDFALL')
+                    self.config.getbool('config', 'TC_STAT_LANDFALL', False)
             except ValueError:
                 # Not set by user in MET tc_stat config file or METplus config
                 # file.  Set to False and continue ingesting config file values.
