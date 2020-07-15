@@ -1,6 +1,10 @@
 METplus Wrappers Documentation
 ==============================
 
+The files in this directory are used to build the documentation. It can be access here:
+
+https://ncar.github.io/METplus
+
 To build the documentation:
 ---------------------------
 * Ensure you are using a Python environment that has sphinx-gallery v0.6.0 or higher
