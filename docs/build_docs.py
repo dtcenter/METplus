@@ -124,6 +124,9 @@ def main():
     run_command("ln -s ../generated/met_tool_wrapper",
                 users_guide_dir)
 
+    run_command("ln -s ../generated/model_applications",
+                users_guide_dir)
+
     print("Documentation build completed")
 
 if __name__ == "__main__":
