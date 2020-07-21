@@ -92,7 +92,7 @@ def plot_wrappers_are_enabled(environ):
     elif environ.get('METPLUS_DISABLE_PLOT_WRAPPERS'):
         return not evaluates_to_true(environ.get('METPLUS_DISABLE_PLOT_WRAPPERS'))
 
-    # default behavior is do not enable plot wrappers
+    # default behavior is to enable plot wrappers
     return True
 
 # get user's python version and check that it is equal or
