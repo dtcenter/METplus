@@ -238,6 +238,7 @@ def main():
     parser.add_argument('--s2s', action='store_true', required=False)
     parser.add_argument('--space_weather', action='store_true', required=False)
     parser.add_argument('--tc_and_extra_tc', action='store_true', required=False)
+    parser.add_argument('--all', action='store_true', required=False)
 
     args = parser.parse_args()
 
@@ -248,10 +249,18 @@ def main():
     use_cases_to_run.extend(force_use_cases_to_run)
 
     # add use case categories if they were provided on the command line
-    for key in args.__dict__:
-        if args.__dict__[key] and key in use_cases.keys():
+
+    # if 'all' was specified, add all use cases
+    if args.__dict__.get('all'):
+        print(f"Adding all use cases")
+        for key, value in use_cases.items():
             print(f"Adding {key} use cases")
-            use_cases_to_run.extend(use_cases[key])
+            use_cases_to_run.extend(value)
+    else:
+        for key in args.__dict__:
+            if args.__dict__[key] and key in use_cases.keys():
+                print(f"Adding {key} use cases")
+                use_cases_to_run.extend(use_cases[key])
 
     # exit if use case list is empty
     if not use_cases_to_run:
