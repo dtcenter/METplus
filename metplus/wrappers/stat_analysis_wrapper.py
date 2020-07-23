@@ -1035,6 +1035,7 @@ class StatAnalysisWrapper(CommandBuilder):
         if '*' in dir_path_filled:
             self.logger.debug(f"Expanding wildcard path: {dir_path_filled}")
             dir_path_filled_all = ' '.join(sorted(glob.glob(dir_path_filled)))
+            self.logger.warning(f"Wildcard expansion found no matches")
         else:
             dir_path_filled_all = dir_path_filled
         lookin_dir = dir_path_filled_all
