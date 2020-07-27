@@ -1,5 +1,5 @@
 """
-Grid-Stat: CESM and GPCP Precipitation MODE Object Based Evaluation 
+MODE: CESM and GPCP Precipitation MODE Object Based Evaluation
 ============================================================================
 MODE_fcstCESM_obsGPCP_precip.conf
 """
@@ -52,10 +52,10 @@ MODE_fcstCESM_obsGPCP_precip.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/climate_models/MODE_fcstCESM_obsGPCP_precip.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/climate_models/MODE_fcstHRRR_obsCESM_obsGPCP_precip.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/climate_models/MODE_fcstCESM_obsGPCP_precip.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/climate_models/MODE_fcstHRRR_obsCESM_obsGPCP_precip.conf
 
 ##############################################################################
 # MET Configuration
@@ -77,13 +77,13 @@ MODE_fcstCESM_obsGPCP_precip.conf
 #
 # This use case can be run two ways:
 #
-# 1) Passing in GridStat_fcstCESM_obsGFS_ConusTemp.conf then a user-specific system configuration file::
+# 1) Passing in MODE_fcstHRRR_obsCESM_obsGPCP_precip.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate_models/MODE_fcstCESM_obsGPCP_precip.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate_models/MODE_fcstHRRR_obsCESM_obsGPCP_precip.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstCESM_obsGFS_ConusTemp.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in MODE_fcstHRRR_obsCESM_obsGPCP_precip.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate_models/MODE_fcstCESM_obsGPCP_precip.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate_models/MODE_fcstHRRR_obsCESM_obsGPCP_precip.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -109,7 +109,7 @@ MODE_fcstCESM_obsGPCP_precip.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/climate_models/CESM_MODEt (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/climate_models/CESM_MODE (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T1_cts.txt
@@ -149,7 +149,7 @@ MODE_fcstCESM_obsGPCP_precip.conf
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/climate_model-MODE_fcstCESM_obsGPCP_precip.png'
+# sphinx_gallery_thumbnail_path = '_static/climate_models-MODE_fcstHRRR_obsCESM_obsGPCP_precip.png'
 #
 # .. note:: `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_, 
 #  `ClimateModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ClimateModelsAppUseCase&check_keywords=yes&area=default>`_, 
