@@ -1,7 +1,7 @@
 """
 MODE: CESM and GPCP Precipitation MODE Object Based Evaluation
 ============================================================================
-MODE_fcstCESM_obsGPCP_ConusPrecip.conf
+MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 """
 
 ##############################################################################
@@ -52,10 +52,10 @@ MODE_fcstCESM_obsGPCP_ConusPrecip.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/climate/MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/climate/MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 
 ##############################################################################
 # MET Configuration
@@ -77,13 +77,13 @@ MODE_fcstCESM_obsGPCP_ConusPrecip.conf
 #
 # This use case can be run two ways:
 #
-# 1) Passing in MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.conf then a user-specific system configuration file::
+# 1) Passing in MODE_fcstCESM_obsGPCP_ConusPrecip.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate/MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in MODE_fcstHRRR_obsCESM_obsGPCP_precip.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate/MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -149,7 +149,7 @@ MODE_fcstCESM_obsGPCP_ConusPrecip.conf
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/climate-MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.png'
+# sphinx_gallery_thumbnail_path = '_static/climate-MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.png'
 #
 # .. note:: `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_, 
 #  `ClimateAppUseCase <https://ncar.github.io/METplus/search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_, 
