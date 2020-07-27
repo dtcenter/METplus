@@ -27,7 +27,6 @@ Use Cases by MET Tool:
 
 Use Cases by Application:
 -------------------------
-| `Climate Models <https://ncar.github.io/METplus/search.html?q=ClimateModelsAppUseCase&check_keywords=yes&area=default>`_
 | `Convection Allowing Models <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_
 | `Ensemble  <https://ncar.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
 | `Marine and Cryosphere <https://ncar.github.io/METplus/search.html?q=MarineAndCryoAppUseCase&check_keywords=yes&area=default>`_
