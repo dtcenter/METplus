@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Program Name: master_metplus.py
@@ -21,11 +21,11 @@ import sys
 
 # add metplus directory to path so the wrappers and utilities can be found
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                '..')))
+                                                os.pardir)))
 
 import produtil.setup
 
-from metplus.util import metplus_check_python_version
+from metplus.util import metplus_check
 from metplus.util import pre_run_setup, run_metplus, post_run_cleanup
 from metplus.util import get_process_list
 

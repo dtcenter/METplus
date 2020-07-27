@@ -2,7 +2,7 @@
 Multi_Tool: Feature Relative by Init 
 ===================================================================================
 
-TCStat_SeriesAnalysis_fcstGFS
+model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS
 _obsGFS_FeatureRelative
 _SeriesByInit.conf
 
@@ -31,7 +31,6 @@ _SeriesByInit.conf
 #  * Series-Analysis Forecast dataset: GFS
 #  * TC-Pairs/TC-Stat Observation dataset: BDeck modified-ATCF tropical cyclone data
 #  * Series-Analysis Observation dataset: GFS Analysis
-#  * Sources of data (links, contacts, etc...)
 #
 
 ##############################################################################
@@ -79,7 +78,7 @@ _SeriesByInit.conf
 # | **Forecast lead:** 36
 #
 # | **Init:** 20141214_0Z
-# | **Forecast lead:** 40
+# | **Forecast lead:** 42
 #
 
 ##############################################################################

@@ -1,12 +1,9 @@
-#!/usr/bin/env python
-
 import re
 import os
 import sys
 import errno
 import glob
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import feature_util
@@ -45,8 +42,8 @@ class SeriesByLeadWrapper(CommandBuilder):
         self.fhr_group_labels = []
         self.stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST'))
         self.plot_data_plane_exe = os.path.join(
-            self.config.getdir('MET_INSTALL_DIR'),
-            'bin/plot_data_plane')
+            self.config.getdir('MET_BIN_DIR', ''),
+            'plot_data_plane')
 
         self.convert_exe = self.config.getexe('CONVERT')
         self.ncap2_exe = self.config.getexe('NCAP2')
@@ -55,9 +52,9 @@ class SeriesByLeadWrapper(CommandBuilder):
         if not self.convert_exe or not self.ncap2_exe or not self.ncdump_exe or not self.rm_exe:
             self.isOK = False
 
-        met_install_dir = self.config.getdir('MET_INSTALL_DIR')
-        self.series_analysis_exe = os.path.join(met_install_dir,
-                                                'bin/series_analysis')
+        met_bin_dir = self.config.getdir('MET_BIN_DIR', '')
+        self.series_analysis_exe = os.path.join(met_bin_dir,
+                                                'series_analysis')
         self.input_dir = self.config.getdir('SERIES_ANALYSIS_INPUT_DIR')
         self.series_lead_filtered_out_dir = \
             self.config.getdir('SERIES_ANALYSIS_FILTERED_OUTPUT_DIR')
@@ -333,6 +330,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                 for cur_anly in cur_anly_tiles_list:
                     anly_tiles_list.append(cur_anly)
 
+            fcst_tiles_list = sorted(fcst_tiles_list)
+            anly_tiles_list = sorted(anly_tiles_list)
             # Create the FCST and ANLY ASCII files that are the args
             # to the -fcst and -obs portion of the series_analysis
             # command.
@@ -394,7 +393,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 # Set the NAME environment to <name>_<level> format if
                 # regridding method is to be done with the MET tool
                 # regrid_data_plane.
-                self.add_env_var('NAME', name + '_' + level)
+                self.add_env_var('NAME', name)
                 out_param_parts = ['-out ', out_dir, '/series_F',
                                     cur_beg_str, '_to_F', cur_end_str,
                                     '_', name, '_', level, '.nc']
@@ -411,8 +410,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 series_analysis_cmd = ''.join(series_analysis_cmd_parts)
 
                 self.add_common_envs()
-
-                self.print_all_envs()
+                super().set_environment_variables()
 
                 # Since this wrapper is not using the CommandBuilder
                 # to build the cmd, we need to add the met verbosity
@@ -471,8 +469,10 @@ class SeriesByLeadWrapper(CommandBuilder):
             fcst_tiles_list = self.get_anly_or_fcst_files(tile_dir, "FCST",
                                                           self.fcst_tile_regex,
                                                           cur_fhr)
+            fcst_tiles_list = sorted(fcst_tiles_list)
             fcst_tiles = self.retrieve_fhr_tiles(fcst_tiles_list,
                                                  self.fcst_tile_regex)
+
 
             # Location of FCST_FILES_Fhhh
             ascii_fcst_file_parts = [out_dir, '/FCST_FILES_F', cur_fhr]
@@ -499,9 +499,9 @@ class SeriesByLeadWrapper(CommandBuilder):
             anly_tiles_list = self.get_anly_or_fcst_files(tile_dir, "ANLY",
                                                           self.anly_tile_regex,
                                                           cur_fhr)
+            anly_tiles_list = sorted(anly_tiles_list)
             anly_tiles = self.retrieve_fhr_tiles(anly_tiles_list,
                                                  self.anly_tile_regex)
-
             # Location of ANLY_FILES_Fhhh files
             # filtering.
             ascii_anly_file_parts = [out_dir, '/ANLY_FILES_F', cur_fhr]
@@ -547,7 +547,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 self.add_env_var('LEVEL', level)
 
                 # Set NAME to name_level
-                self.add_env_var('NAME', name + '_' + level)
+                self.add_env_var('NAME', name)
                 out_param_parts = ['-out ', out_dir, '/series_F', cur_fhr,
                                    '_', name, '_', level, '.nc']
                 out_param = ''.join(out_param_parts)
@@ -563,8 +563,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 series_analysis_cmd = ''.join(series_analysis_cmd_parts)
 
                 self.add_common_envs()
-
-                self.print_all_envs()
+                super().set_environment_variables()
 
                 # Since this wrapper is not using the CommandBuilder
                 # to build the cmd, we need to add the met verbosity
@@ -1091,7 +1090,7 @@ class SeriesByLeadWrapper(CommandBuilder):
         for cur_var in full_vars_list:
             name, level = cur_var
             self.add_env_var('LEVEL', level)
-            self.add_env_var('NAME', name + '_' + level)
+            self.add_env_var('NAME', name)
 
             # Retrieve only those netCDF files that correspond to
             # the current variable.
@@ -1168,13 +1167,13 @@ class SeriesByLeadWrapper(CommandBuilder):
                     else:
                         map_data = "map_data={source=[];}  "
 
-                    self.print_all_envs()
+                    super().set_environment_variables()
 
                     plot_data_plane_parts = [self.plot_data_plane_exe, ' ',
                                              cur_nc, ' ', ps_file, ' ',
                                              "'", 'name = ', '"',
                                              'series_cnt_', cur_stat, '";',
-                                             'level=', '"(\*,\*)"; ',
+                                             'level=', r'"(\*,\*)"; ',
                                              ' ', map_data,
                                              "'", ' -title ', '"GFS ',
                                              str(fhr),
@@ -1245,9 +1244,9 @@ class SeriesByLeadWrapper(CommandBuilder):
         for cur_var in full_vars_list:
             name, level = cur_var
             self.add_env_var('LEVEL', level)
-            self.add_env_var('NAME', name + '_' + level)
+            self.add_env_var('NAME', name)
 
-            self.print_all_envs()
+            super().set_environment_variables()
 
             self.logger.info("Creating animated gifs")
             for cur_stat in self.stat_list:
@@ -1407,6 +1406,3 @@ class SeriesByLeadWrapper(CommandBuilder):
         # in anticipation of another run.
         filter_regex = 'filter_.*'
         util.remove_staged_files(staging_dir, filter_regex, self.logger)
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "SeriesByLead")

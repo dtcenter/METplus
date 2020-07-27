@@ -2,8 +2,7 @@
 PCPCombine: Custom String Looping Use Case
 ============================================================================
 
-PCPCombine_loop
-_custom.conf
+met_tool_wrapper/PCPCombine/PCPCombine_loop_custom.conf
 
 """
 ##############################################################################

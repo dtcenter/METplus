@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: PB2NC_Wrapper.py
 Contact(s): Minna Win, Jim Frimel, George McCabe, Julie Prestopnik
@@ -15,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 import re
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -28,8 +25,8 @@ class PB2NCWrapper(CommandBuilder):
 
     def __init__(self, config, logger):
         self.app_name = 'pb2nc'
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
 
     def create_c_dict(self):
@@ -203,11 +200,7 @@ class PB2NCWrapper(CommandBuilder):
         self.add_env_var('TIME_SUMMARY_TYPES',
                          self.c_dict['TIME_SUMMARY_TYPES'])
 
-        # set user environment variables
-        self.set_user_environment(time_info)
-
-        # send environment variables to logger
-        self.print_all_envs()
+        super().set_environment_variables(time_info)
 
     def find_input_files(self, input_dict):
         """!Find prepbufr data to convert. If file(s) are found, return timing information
@@ -271,6 +264,10 @@ class PB2NCWrapper(CommandBuilder):
 
         # if no files were found, don't run pb2nc
         if time_info is None:
+            return
+
+        if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+            self.logger.debug('Skipping run time')
             return
 
         # look for output file path and skip running pb2nc if necessary
@@ -344,6 +341,3 @@ class PB2NCWrapper(CommandBuilder):
             cmd += f"-valid_end {self.c_dict['VALID_WINDOW_END']} "
 
         return cmd.strip()
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "PB2NC")

@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """
 Program Name: test_use_cases.py
@@ -28,6 +28,7 @@ import argparse
 
 from metplus.util.config import config_launcher
 from metplus.util import met_util as util
+from metplus.util.metplus_check import plot_wrappers_are_enabled
 
 # keep track of use cases that failed to report at the end of execution
 failed_runs = []
@@ -82,6 +83,7 @@ use_cases['met_tool_wrapper'] = [
                 use_case_dir + "/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_extra_tropical.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_tropical.conf",
+                use_case_dir + "/met_tool_wrapper/TCRMW/TCRMW.conf",
                 use_case_dir + "/met_tool_wrapper/TCStat/TCStat.conf",
 ]
 
@@ -131,11 +133,11 @@ use_cases['space_weather'] = [
 ]
 
 use_cases['tc_and_extra_tc'] = [
-
+    use_case_dir + "/model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf",
 ]
 
-# if METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string, add plotting use cases
-if 'METPLUS_DISABLE_PLOT_WRAPPERS' not in os.environ or not os.environ['METPLUS_DISABLE_PLOT_WRAPPERS']:
+# if plot wrappers are enabled, add those use cases to the test lists
+if plot_wrappers_are_enabled(os.environ):
     use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf")
     use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf")
     use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf")
@@ -236,6 +238,7 @@ def main():
     parser.add_argument('--s2s', action='store_true', required=False)
     parser.add_argument('--space_weather', action='store_true', required=False)
     parser.add_argument('--tc_and_extra_tc', action='store_true', required=False)
+    parser.add_argument('--all', action='store_true', required=False)
 
     args = parser.parse_args()
 
@@ -246,10 +249,18 @@ def main():
     use_cases_to_run.extend(force_use_cases_to_run)
 
     # add use case categories if they were provided on the command line
-    for key in args.__dict__:
-        if args.__dict__[key] and key in use_cases.keys():
+
+    # if 'all' was specified, add all use cases
+    if args.__dict__.get('all'):
+        print(f"Adding all use cases")
+        for key, value in use_cases.items():
             print(f"Adding {key} use cases")
-            use_cases_to_run.extend(use_cases[key])
+            use_cases_to_run.extend(value)
+    else:
+        for key in args.__dict__:
+            if args.__dict__[key] and key in use_cases.keys():
+                print(f"Adding {key} use cases")
+                use_cases_to_run.extend(use_cases[key])
 
     # exit if use case list is empty
     if not use_cases_to_run:

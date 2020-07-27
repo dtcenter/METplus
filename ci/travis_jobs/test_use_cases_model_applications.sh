@@ -11,13 +11,13 @@
 
 convection_allowing_models_tar=v3.1-beta1/sample_data-convection_allowing_models-3.1-beta1.tgz
 cryosphere_tar=v3.0/sample_data-cryosphere-3.0.tgz
-medium_range_tar=v3.0/sample_data-medium_range-3.0.tgz
+medium_range_tar=v3.1-beta2/sample_data-medium_range-3.1-beta2.1.tgz
 precipitation_tar=v3.0/sample_data-precipitation-3.0.tgz
 s2s_tar=v3.0/sample_data-s2s-3.0.tgz
 space_weather_tar=v3.0/sample_data-space_weather-3.0.tgz
-tc_and_extra_tc_tar=v3.1-beta1/sample_data-tc_and_extra_tc-3.1-beta1.tgz
+tc_and_extra_tc_tar=v3.1-beta1/sample_data-tc_and_extra_tc-3.1-beta1.1.tgz
 
-met_tool_wrapper_tarball=https://github.com/NCAR/METplus/releases/download/v3.1-beta1/sample_data-met_tool_wrapper-3.1-beta1.1.tgz
+met_tool_wrapper_tarball=https://github.com/NCAR/METplus/releases/download/v3.1-beta1/sample_data-met_tool_wrapper-3.1-beta1.2.tgz
 
 gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
 
@@ -57,7 +57,12 @@ do
   fi
 
   echo Downloading $tarball
+  echo curl -L -O https://github.com/NCAR/METplus/releases/download/${tarball}
   curl -L -O https://github.com/NCAR/METplus/releases/download/${tarball}
+
+  echo file basename $tarball
+  tarball_basename=`basename $tarball`
+  echo `file $tarball_basename`
 
   echo tar xfzp `basename $tarball`
   tar xfzp `basename $tarball`
@@ -67,6 +72,7 @@ done
 
 # get met_test data because some cases use this data still
 echo Downloading $met_tool_wrapper_tarball
+echo curl -L -O $met_tool_wrapper_tarball
 curl -L -O $met_tool_wrapper_tarball
 
 # untar all tarballs
@@ -75,6 +81,7 @@ tar xfzp `basename $met_tool_wrapper_tarball`
 
 # get GempakToCF jar file in case any use cases use GEMPAK data
 echo Downloading $gempak_to_cf_location
+echo curl -L -O $gempak_to_cf_location
 curl -L -O $gempak_to_cf_location
 
 echo Get Docker image: ${DOCKERHUB_TAG}

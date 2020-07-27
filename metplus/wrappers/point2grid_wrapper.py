@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: point2grid_wrapper.py
 Contact(s): Hank Fisher 
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -30,80 +27,83 @@ class Point2GridWrapper(CommandBuilder):
 
     def __init__(self, config, logger):
         self.app_name = "point2grid"
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config',
-                                                 'LOG_POINT_2_GRID_VERBOSITY',
+                                                 'LOG_POINT2GRID_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
         # input and output files
-        c_dict['OBS_INPUT_DIR'] = self.config.getdir('POINT_2_GRID_INPUT_DIR',
+        c_dict['OBS_INPUT_DIR'] = self.config.getdir('POINT2GRID_INPUT_DIR',
                                                      '')
 
         c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                          'POINT_2_GRID_INPUT_TEMPLATE')
+                                                          'POINT2GRID_INPUT_TEMPLATE')
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('POINT_2_GRID_OUTPUT_DIR',
+        if not c_dict['OBS_INPUT_TEMPLATE']:
+            self.log_error("POINT2GRID_INPUT_TEMPLATE required to run")
+
+        c_dict['OUTPUT_DIR'] = self.config.getdir('POINT2GRID_OUTPUT_DIR',
                                                   '')
 
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                       'POINT_2_GRID_OUTPUT_TEMPLATE')
+                                                       'POINT2GRID_OUTPUT_TEMPLATE')
 
-        # handle window variables [POINT_2_GRID_]FILE_WINDOW_[BEGIN/END]
+        # handle window variables [POINT2GRID_]FILE_WINDOW_[BEGIN/END]
         c_dict['OBS_FILE_WINDOW_BEGIN'] = \
-          self.config.getseconds('config', 'POINT_2_GRID_FILE_WINDOW_BEGIN',
+          self.config.getseconds('config', 'POINT2GRID_FILE_WINDOW_BEGIN',
                                  self.config.getseconds('config',
                                                         'OBS_FILE_WINDOW_BEGIN', 0))
 
         c_dict['OBS_FILE_WINDOW_END'] = \
-          self.config.getseconds('config', 'POINT_2_GRID_FILE_WINDOW_END',
+          self.config.getseconds('config', 'POINT2GRID_FILE_WINDOW_END',
                                  self.config.getseconds('config',
                                                         'OBS_FILE_WINDOW_END', 0))
 
         c_dict['GRID'] = self.config.getstr('config',
-                                            'POINT_2_GRID_REGRID_TO_GRID',
+                                            'POINT2GRID_REGRID_TO_GRID',
                                             '')
 
         # optional arguments
         c_dict['INPUT_FIELD'] = self.config.getraw('config',
-                                                   'POINT_2_GRID_INPUT_FIELD',
+                                                   'POINT2GRID_INPUT_FIELD',
                                                    '')
 
         c_dict['INPUT_LEVEL'] = self.config.getraw('config',
-                                                   'POINT_2_GRID_INPUT_LEVEL',
+                                                   'POINT2GRID_INPUT_LEVEL',
                                                    '')
 
         c_dict['QC_FLAGS'] = self.config.getbool('config',
-                                                        'POINT_2_GRID_QC_FLAGS',
+                                                        'POINT2GRID_QC_FLAGS',
                                                         '')
         c_dict['ADP'] = self.config.getstr('config',
-                                                        'POINT_2_GRID_ADP',
+                                                        'POINT2GRID_ADP',
                                                         '')
 
         c_dict['REGRID_METHOD'] = self.config.getstr('config',
-                                                   'POINT_2_GRID_REGRID_METHOD',
+                                                   'POINT2GRID_REGRID_METHOD',
                                                    '')
 
         c_dict['GAUSSIAN_DX'] = self.config.getstr('config',
-                                                          'POINT_2_GRID_GAUSSIAN_DX',
+                                                          'POINT2GRID_GAUSSIAN_DX',
                                                           '')
 
         c_dict['GAUSSIAN_RADIUS'] = self.config.getstr('config',
-                                                     'POINT_2_GRID_GAUSSIAN_RADIUS',
+                                                     'POINT2GRID_GAUSSIAN_RADIUS',
                                                      '')
 
         c_dict['PROB_CAT_THRESH'] = self.config.getstr('config',
-                                              'POINT_2_GRID_PROB_CAT_THRESH',
+                                              'POINT2GRID_PROB_CAT_THRESH',
                                               '')
 
         c_dict['VLD_THRESH'] = self.config.getstr('config',
-                                              'POINT_2_GRID_VLD_THRESH',
+                                              'POINT2GRID_VLD_THRESH',
                                               '')
 
         return c_dict
@@ -253,7 +253,3 @@ class Point2GridWrapper(CommandBuilder):
 
         if self. c_dict['VLD_THRESH']:
             self.args.append(f"-vld_thresh {self.c_dict['VLD_THRESH']}")
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "Point2Grid")

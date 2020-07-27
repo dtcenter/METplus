@@ -2,7 +2,7 @@
 MTD: Build Revision Series to Evaluate Forecast Consistency 
 ===========================================================================
 
-MTD_fcstHRRR-TLE_FcstOnly
+model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly
 _RevisionSeries_GRIB.conf
 
 """
@@ -23,7 +23,6 @@ _RevisionSeries_GRIB.conf
 # --------
 #
 #  * Forecast dataset: HRRR-TLE forecasts in GRIB2
-#  * Sources of data (links, contacts, etc...)
 #
 
 ##############################################################################

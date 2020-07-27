@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: pcp_combine_wrapper.py
 Contact(s): George McCabe
@@ -15,7 +13,6 @@ Condition codes: 0 for success, 1 for failure
 import os
 import datetime
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -39,8 +36,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
     def __init__(self, config, logger):
         self.app_name = 'pcp_combine'
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
         self.inaddons = []
         self.method = ""
@@ -95,6 +92,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
         c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                               d_type+'_PCP_COMBINE_INPUT_TEMPLATE', '')
+        if not c_dict[d_type+'_INPUT_TEMPLATE']:
+            self.log_error(d_type + "_PCP_COMBINE_INPUT_TEMPLATE required to run")
         c_dict[d_type+'_OUTPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_OUTPUT_DIR', '')
         c_dict[d_type+'_OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_OUTPUT_TEMPLATE')
@@ -627,19 +626,15 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # if output file exists and we want to skip it, warn and continue
         outfile = self.get_output_path()
-        if not self.method == "USER_DEFINED" and os.path.exists(outfile) and \
-          self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
+        if os.path.exists(outfile) and self.c_dict['SKIP_IF_OUTPUT_EXISTS'] is True:
             self.logger.debug('Skip writing output file {} because it already '
                               'exists. Remove file or change '
                               'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS to True to process'
                               .format(outfile))
             return True
 
-        # set user environment variables if needed
-        self.set_user_environment()
-
-        # send environment variables to logger
-        self.print_all_envs()
+        # set user environment variables if needed and print all envs
+        self.set_environment_variables(time_info)
 
         return self.build()
 
@@ -835,16 +830,16 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # if [FCST/OBS]_OUTPUT_[NAME/ACCUM] are set, use them instead of
         # [FCST/OBS]_VAR<n>_[NAME/LEVELS]
-        if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
-            field_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
-        else:
-            field_name = var_info[f"{data_src.lower()}_name"]
-
         if self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
             accum_string = self.c_dict[f"{data_src}_OUTPUT_ACCUM"]
         else:
             level = var_info[f'{data_src.lower()}_level']
             _, accum_string = util.split_level(level)
+
+        if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
+            field_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
+        else:
+            field_name = var_info[f"{data_src.lower()}_name"] + '_' + accum_string
 
         # get number of seconds relative to valid time
         accum_seconds = time_util.get_seconds_from_string(accum_string,
@@ -872,7 +867,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         pcp_out = do_string_sub(out_template,
                                 **time_info)
         self.outfile = pcp_out
-        self.args.append("-name " + field_name + "_" + accum_string)
+        self.args.append("-name " + field_name)
         return self.get_command()
 
     def setup_derive_method(self, time_info, var_info, data_src):
@@ -1008,6 +1003,3 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                     'extra': extra})
 
         self.c_dict['ACCUM_DICT_LIST'] = accum_dict_list
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "PCPCombine")

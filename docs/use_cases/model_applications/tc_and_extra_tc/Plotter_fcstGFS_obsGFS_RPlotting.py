@@ -2,8 +2,9 @@
 Track and Intensity Plotter: Generate mean, median and box plots 
 ======================================================================================
 
-Plotter_fcstGFS
+model_applications/tc_and_extra_tc/Plotter_fcstGFS
 _obsGFS_RPlotting.conf
+
 """
 ##############################################################################
 # Scientific Objective
@@ -84,6 +85,9 @@ _obsGFS_RPlotting.conf
 # Running METplus
 # ---------------
 #
+# **NOTE** - In order for this example to run successfully, ensure that your output folder ({OUTPUT_BASE}/tc_pairs/201412) is
+# empty. If there are any files in this directory, the program will fail out and not produce the output for {OUTPUT_BASE}/tcmpr_plots.
+#
 # This use case can be run two ways:
 #
 # 1) Passing in Plotter_fcstGFS_obsGFS_RPlotting.conf then a user-specific system configuration file::
@@ -127,7 +131,7 @@ _obsGFS_RPlotting.conf
 # where *nnnn* is a zero-padded 4-digit number
 #
 #
-# Plots (in .png format) will be found in tcmp_plots (relative to **OUTPUT_BASE**):
+# Plots (in .png format) will be found in tcmpr_plots (relative to **OUTPUT_BASE**):
 # * AMAX_WIND-BMAX_WIND_boxplot.png
 # * AMAX_WIND-BMAX_WIND_boxplot.png
 # * AMAX_WIND-BMAX_WIND_boxplot.png

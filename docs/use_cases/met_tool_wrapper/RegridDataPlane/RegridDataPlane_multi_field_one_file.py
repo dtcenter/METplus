@@ -2,7 +2,8 @@
 RegridDataPlane: Process all fields
 =============================================================================
 
-met_tool_wrapper/RegridDataPlane/RegridDataPlane_multi_field_one_file.conf
+met_tool_wrapper/RegridDataPlane/RegridDataPlane_multi_field_one
+_file.conf
 
 """
 ##############################################################################

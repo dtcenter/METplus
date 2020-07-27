@@ -222,7 +222,7 @@ def test_setup_add_method():
     var_info['fcst_level'] = "A06"
     var_info['obs_level'] = "A06"
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    output_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
+    output_dir = pcw.config.getdir('OUTPUT_BASE')+"/internal_tests/data/fakeout"
     pcw.setup_add_method(time_info, var_info, rl)
     
     in_files = pcw.infiles
@@ -256,7 +256,7 @@ def test_setup_sum_method():
     var_info['fcst_level'] = "A06"
     var_info['obs_level'] = "A06"
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    output_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fakeout"
+    output_dir = pcw.config.getdir('OUTPUT_BASE')+"/internal_tests/data/fakeout"
     pcw.setup_sum_method(time_info, var_info, rl)
     
     in_files = pcw.infiles

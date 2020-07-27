@@ -2,7 +2,7 @@
 PyEmbedIngest: Basic Use Case
 ============================================================================
 
-PyEmbedIngest.conf
+met_tool_wrapper/PyEmbedIngest/PyEmbedIngest.conf
 
 """
 ##############################################################################

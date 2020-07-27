@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 import logging
 import os
 import shutil
@@ -20,6 +18,7 @@ from csv import reader
 from os.path import dirname, realpath
 from dateutil.relativedelta import relativedelta
 from pathlib import Path
+from importlib import import_module
 
 import produtil.setup
 import produtil.log
@@ -29,6 +28,7 @@ from .config.string_template_substitution import parse_template
 from .config.string_template_substitution import get_tags
 from . import time_util as time_util
 from .config import config_metplus
+from . import metplus_check
 
 """!@namespace met_util
  @brief Provides  Utility functions for METplus.
@@ -69,16 +69,24 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'seriesbylead': 'SeriesByLead',
                          'statanalysis': 'StatAnalysis',
                          'tcpairs': 'TCPairs',
+                         'tcrmw': 'TCRMW',
                          'tcstat': 'TCStat',
                          'tcmprplotter': 'TCMPRPlotter',
                          'usage': 'Usage',
                          }
 
+valid_comparisons = {">=": "ge",
+                     ">": "gt",
+                     "==": "eq",
+                     "!=": "ne",
+                     "<=": "le",
+                     "<": "lt",
+                     }
+
 # missing data value used to check if integer values are not set
 # we often check for None if a variable is not set, but 0 and None
 # have the same result in a test. 0 may be a valid integer value
-MISSING_DATA_VALUE_INT = -9999
-MISSING_DATA_VALUE_FLOAT = -9999.0
+MISSING_DATA_VALUE = -9999
 
 def pre_run_setup(filename, app_name):
     filebasename = os.path.basename(filename)
@@ -96,6 +104,8 @@ def pre_run_setup(filename, app_name):
     logger.info(f'Running {app_name} v%s called with command: %s',
                 version_number, ' '.join(sys.argv))
 
+    logger.info(f"Log file: {config.getstr('config', 'LOG_METPLUS')}")
+
     # validate configuration variables
     isOK_A, isOK_B, isOK_C, isOK_D, all_sed_cmds = validate_configuration_variables(config)
     if not (isOK_A and isOK_B and isOK_C and isOK_D):
@@ -110,11 +120,11 @@ def pre_run_setup(filename, app_name):
             config.logger.error(f"Find/Replace commands have been generated in {sed_file}")
 
         logger.error("Correct configuration variables and rerun. Exiting.")
-        exit(1)
+        sys.exit(1)
 
     if not config.getdir('MET_INSTALL_DIR', must_exist=True):
         logger.error('MET_INSTALL_DIR must be set correctly to run METplus')
-        exit(1)
+        sys.exit(1)
 
     # set staging dir to OUTPUT_BASE/stage if not set
     if not config.has_option('dir', 'STAGING_DIR'):
@@ -147,7 +157,8 @@ def run_metplus(config, process_list):
             try:
                 logger = config.log(item)
                 package_name = 'metplus.wrappers.' + camel_to_underscore(item) + '_wrapper'
-                command_builder = getattr(sys.modules[package_name],
+                module = import_module(package_name)
+                command_builder = getattr(module,
                                           item + "Wrapper")(config, logger)
 
                 # if Usage specified in PROCESS_LIST, print usage and exit
@@ -155,7 +166,7 @@ def run_metplus(config, process_list):
                     command_builder.run_all_times()
                     return 0
             except AttributeError:
-                raise NameError("Process %s doesn't exist" % item)
+                raise NameError("There was a problem loading %s wrapper." % item)
 
             processes.append(command_builder)
 
@@ -721,14 +732,77 @@ def handle_tmp_dir(config):
     if not os.path.exists(tmp_dir):
         os.makedirs(tmp_dir)
 
-def skip_time(time_info, config):
-    """!Used to check current run time against list of times to skip."""
-    # never skip until this is implemented correctly
+def get_skip_times(config, wrapper_name=None):
+    """! Read SKIP_TIMES config variable and populate dictionary of times that should be skipped.
+         SKIP_TIMES should be in the format: "%m:begin_end_incr(3,11,1)", "%d:30,31", "%Y%m%d:20201031"
+         where each item inside quotes is a datetime format, colon, then a list of times in that format
+         to skip.
+         Args:
+             @param config configuration object to pull SKIP_TIMES
+             @param wrapper_name name of wrapper if supporting
+               skipping times only for certain wrappers, i.e. grid_stat
+             @returns dictionary containing times to skip
+    """
+    skip_times_dict = {}
+    skip_times_string = None
+
+    # if wrapper name is set, look for wrapper-specific _SKIP_TIMES variable
+    if wrapper_name:
+        skip_times_string = config.getstr('config',
+                                          f'{wrapper_name.upper()}_SKIP_TIMES', '')
+
+    # if skip times string has not been found, check for generic SKIP_TIMES
+    if not skip_times_string:
+        skip_times_string = config.getstr('config', 'SKIP_TIMES', '')
+
+        # if no generic SKIP_TIMES, return empty dictionary
+        if not skip_times_string:
+            return {}
+
+    # get list of skip items, but don't expand begin_end_incr yet
+    skip_list = getlist(skip_times_string, expand_begin_end_incr=False)
+
+    for skip_item in skip_list:
+        try:
+            time_format, skip_times = skip_item.split(':')
+
+            # get list of skip times for the time format, expanding begin_end_incr
+            skip_times_list = getlist(skip_times)
+
+            # if time format is already in skip times dictionary, extend list
+            if time_format in skip_times_dict:
+                skip_times_dict[time_format].extend(skip_times_list)
+            else:
+                skip_times_dict[time_format] = skip_times_list
+
+        except ValueError:
+            config.logger.error(f"SKIP_TIMES item does not match format: {skip_item}")
+            return None
+
+    return skip_times_dict
+
+def skip_time(time_info, skip_times):
+    """!Used to check the valid time of the current run time against list of times to skip.
+        Args:
+            @param time_info dictionary with time information to check
+            @param skip_times dictionary of times to skip, i.e. {'%d': [31]} means skip 31st day
+            @returns True if run time should be skipped, False if not
+    """
+    for time_format, skip_time_list in skip_times.items():
+        # extract time information from valid time based on skip time format
+        run_time_value = time_info.get('valid')
+        if not run_time_value:
+            return False
+
+        run_time_value = run_time_value.strftime(time_format)
+
+        # loop over times to skip for this format and check if it matches
+        for skip_time in skip_time_list:
+            if int(run_time_value) == int(skip_time):
+                return True
+
+    # if skip time never matches, return False
     return False
-
-    # get list of times to skip
-
-    # check skip times against current time_info object and skip if it matches
 
 def write_final_conf(conf, logger):
     """!write final conf file including default values that were set during run"""
@@ -866,7 +940,16 @@ def loop_over_times_and_call(config, processes):
 
 def get_lead_sequence(config, input_dict=None):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
-        Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects"""
+        Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects
+        Args:
+            @param config METplusConfig object to query config variable values
+            @param input_dict time dictionary needed to handle using INIT_SEQ. Must contain
+               valid key if processing INIT_SEQ
+            @returns list of relativedelta objects or a list containing 0 if none are found
+    """
+
+    out_leads = []
+
     if config.has_option('config', 'LEAD_SEQ'):
         # return list of forecast leads
         lead_strings = getlist(config.getstr('config', 'LEAD_SEQ'))
@@ -885,7 +968,6 @@ def get_lead_sequence(config, input_dict=None):
         # to compare them to each forecast lead
         # this is an approximation because relative time offsets depend on
         # each runtime
-        out_leads = []
         lead_min_str = config.getstr('config', 'LEAD_SEQ_MIN', '0')
         lead_max_str = config.getstr('config', 'LEAD_SEQ_MAX', '4000Y')
         lead_min_relative = time_util.get_relativedelta(lead_min_str, 'H')
@@ -898,10 +980,8 @@ def get_lead_sequence(config, input_dict=None):
             if lead_approx >= lead_min_approx and lead_approx <= lead_max_approx:
                 out_leads.append(lead)
 
-        return out_leads
-
     # use INIT_SEQ to build lead list based on the valid time
-    if config.has_option('config', 'INIT_SEQ'):
+    elif config.has_option('config', 'INIT_SEQ'):
         # if input dictionary not passed in, cannot compute lead sequence
         #  from it, so exit
         if input_dict is None:
@@ -938,10 +1018,12 @@ def get_lead_sequence(config, input_dict=None):
                     lead_seq.append(relativedelta(hours=current_lead))
                 current_lead += 24
 
-        return sorted(lead_seq, key=lambda rd: time_util.ti_get_seconds_from_relativedelta(rd, input_dict['valid']))
-    else:
+        out_leads = sorted(lead_seq, key=lambda rd: time_util.ti_get_seconds_from_relativedelta(rd, input_dict['valid']))
+
+    if not out_leads:
         return [0]
 
+    return out_leads
 
 def get_version_number():
     # read version file and return value
@@ -970,11 +1052,7 @@ def round_0p5(val):
                             a result of rounding the input value, val.
     """
 
-    val2 = val * 2
-    rval = round_to_int(val2)
-    pt_five = round(rval, 0) / 2
-    return pt_five
-
+    return round(val * 2) / 2
 
 def round_to_int(val):
     """! Round to integer value
@@ -1503,7 +1581,7 @@ def create_grid_specification_string(lat, lon, logger, config):
     lon0 = str(round_0p5(adj_lon))
     lat0 = str(round_0p5(adj_lat))
 
-    msg = ("nlat:" + nlat + " nlon: " + nlon +\
+    msg = ("lat:" + lat + " lon: " + lon +\
            " lat0:" + lat0 + " lon0: " + lon0)
     logger.debug(msg)
 
@@ -1866,7 +1944,7 @@ def fix_list_helper(item_list, type):
 
     return fixed_list
 
-def getlist(list_str):
+def getlist(list_str, expand_begin_end_incr=True):
     """! Returns a list of string elements from a comma
          separated string of values.
          This function MUST also return an empty list [] if s is '' empty.
@@ -1887,7 +1965,9 @@ def getlist(list_str):
     # remove space around commas
     list_str = re.sub(r'\s*,\s*', ',', list_str)
 
-    list_str = handle_begin_end_incr(list_str)
+    # option to not evaluate begin_end_incr
+    if expand_begin_end_incr:
+        list_str = handle_begin_end_incr(list_str)
 
     # use csv reader to divide comma list while preserving strings with comma
     # convert the csv reader to a list and get first item (which is the whole list)
@@ -1945,13 +2025,23 @@ def get_process_list(config):
             config.logger.warning(f"PROCESS_LIST item {process} may be invalid.")
             out_process_list.append(process)
 
-    # check if env var METPLUS_DISABLE_PLOT_WRAPPERS is not set or set to empty string
-    disable_plotting = os.environ.get('METPLUS_DISABLE_PLOT_WRAPPERS', False)
-    if disable_plotting and is_plotter_in_process_list(out_process_list):
-        raise TypeError("Attempting to run a plotting wrapper while METPLUS_DISABLE_PLOT_WRAPPERS environment "
-                            "variable is set. Unset the variable to run this use case")
+    # if MakePlots is in process list, remove it because it will be called directly from StatAnalysis
+    if 'MakePlots' in out_process_list:
+        out_process_list.remove('MakePlots')
 
     return out_process_list
+
+def check_plotter_in_process_list(out_process_list, environ):
+    """! If plot wrappers are not enabled and there is a plot wrapper in the process list, do not run
+         Args:
+             @param out_process_list list of processes to examine
+             @param environ dictionary containing environment to check if plot wrappers are enabled or not
+             @returns False if plot wrappers are not enabled but they are in the process list, True otherwise
+    """
+    if not metplus_check.plot_wrappers_are_enabled(environ) and is_plotter_in_process_list(out_process_list):
+        return False
+
+    return True
 
 # minutes
 def shift_time(time_str, shift):
@@ -1998,14 +2088,14 @@ def get_threshold_via_regex(thresh_string):
             regex match object with comparison operator in group 1 and
             number in group 2 if valid
     """
-    valid_comparisons = {">", ">=", "==", "!=", "<", "<=", "gt", "ge", "eq", "ne", "lt", "le"}
+
     comparison_number_list = []
     # split thresh string by || or &&
     thresh_split = re.split(r'\|\||&&', thresh_string)
     # check each threshold for validity
     for thresh in thresh_split:
         found_match = False
-        for comp in valid_comparisons:
+        for comp in list(valid_comparisons.keys())+list(valid_comparisons.values()):
             # if valid, add to list of tuples
             match = re.match(r'^('+comp+r')([+-]?\d*\.?\d*)$', thresh)
             if match:
@@ -2021,6 +2111,18 @@ def get_threshold_via_regex(thresh_string):
         return None
 
     return comparison_number_list
+
+def comparison_to_letter_format(expression):
+    """! Convert comparison operator to the letter version if it is not already
+         @args expression string starting with comparison operator to
+          convert, i.e. gt3 or <=5.4
+         @returns letter comparison operator, i.e. gt3 or le5.4 or None if invalid
+    """
+    for symbol_comp, letter_comp in valid_comparisons.items():
+        if letter_comp in expression or symbol_comp in expression:
+            return expression.replace(symbol_comp, letter_comp)
+
+    return None
 
 def validate_thresholds(thresh_list):
     """ Checks list of thresholds to ensure all of them have the correct format
@@ -2452,7 +2554,6 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
         if 'ens_extra' in v.keys():
             config.logger.debug(" ens_extra:"+v['ens_extra'])
     '''
-
     return sorted(var_list, key=lambda x: x['index'])
 
 def split_level(level):
@@ -2595,7 +2696,7 @@ def get_filetype(filepath, logger=None):
 
 
 
-def get_time_from_file(filepath, template):
+def get_time_from_file(filepath, template, logger=None):
     """! Extract time information from path using the filename template
          Args:
              @param filepath path to examine
@@ -2605,14 +2706,14 @@ def get_time_from_file(filepath, template):
     if os.path.isdir(filepath):
         return None
 
-    out = parse_template(template, filepath)
+    out = parse_template(template, filepath, logger)
     if out is not None:
         return out
 
     # check to see if zip extension ends file path, try again without extension
     for ext in VALID_EXTENSIONS:
         if filepath.endswith(ext):
-            out = parse_template(template, filepath[:-len(ext)])
+            out = parse_template(template, filepath[:-len(ext)], logger)
             if out is not None:
                 return out
 

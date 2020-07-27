@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: reformat_gridded_wrapper.py
 Contact(s): George McCabe
@@ -77,6 +75,11 @@ that reformat gridded data
                 time_info = time_util.ti_calculate(input_dict)
 
                 self.logger.info("Processing forecast lead {}".format(time_info['lead_string']))
+
+
+                if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                    self.logger.debug('Skipping run time')
+                    continue
 
                 # loop over custom string list and set custom in the time_info dictionary
                 for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:

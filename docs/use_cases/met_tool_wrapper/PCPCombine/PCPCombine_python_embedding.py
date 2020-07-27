@@ -2,8 +2,7 @@
 PCPCombine: Python Embedding Use Case
 ============================================================================
 
-PCPCombine_python
-_embedding.conf
+met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf
 
 """
 ##############################################################################

@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: gen_vx_mask_wrapper.py
 Contact(s): George McCabe
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from . import CommandBuilder
@@ -30,8 +27,8 @@ class GenVxMaskWrapper(CommandBuilder):
 
     def __init__(self, config, logger):
         self.app_name = "gen_vx_mask"
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
 
     def create_c_dict(self):
@@ -98,22 +95,6 @@ class GenVxMaskWrapper(CommandBuilder):
 
         return c_dict
 
-    def set_environment_variables(self, time_info):
-        """!Set environment variables that will be read set when running this tool.
-            This tool does not have a config file, but environment variables may still
-            need to be set, such as MET_TMP_DIR and MET_PYTHON_EXE.
-            Reformat as needed. Print list of variables that were set and their values.
-            This function could be moved up to CommandBuilder so all wrappers have access to it.
-            Wrappers could override it to set wrapper-specific values, then call the CommandBuilder
-            version to handle user configs and printing
-            Args:
-              @param time_info dictionary containing timing info from current run"""
-        # set user environment variables
-        self.set_user_environment(time_info)
-
-        # send environment variables to logger
-        self.print_all_envs()
-
     def get_command(self):
         cmd = self.app_path
 
@@ -164,6 +145,11 @@ class GenVxMaskWrapper(CommandBuilder):
             input_dict['lead'] = lead
 
             time_info = time_util.ti_calculate(input_dict)
+
+            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                self.logger.debug('Skipping run time')
+                continue
+
             for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
                 if custom_string:
                     self.logger.info(f"Processing custom string: {custom_string}")
@@ -179,7 +165,8 @@ class GenVxMaskWrapper(CommandBuilder):
                 @param time_info time dictionary for current runtime
                 @returns None
         """
-        # set environment variables if using config file
+        # set environment variables
+        # there is no config file, so using CommandBuilder implementation
         self.set_environment_variables(time_info)
 
         # loop over mask templates and command line args,
@@ -250,6 +237,3 @@ class GenVxMaskWrapper(CommandBuilder):
         self.infiles.append(mask_file)
 
         return True
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "GenVxMask")

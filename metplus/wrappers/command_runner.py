@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 File Name: command_runner.py
 Contact(s): Jim Frimel
@@ -308,5 +306,3 @@ class CommandRunner(object):
                                   'command unchanged, using: %s .' % repr(cmd))
 
         return cmd
-
-# TODO: Need to add methods for various runner types exe, mpirun for POE etc

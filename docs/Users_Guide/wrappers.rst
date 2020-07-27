@@ -234,6 +234,13 @@ the dimensions and density of the tiles comprising the subregion:
 | :term:`EXTRACT_TILES_OUTPUT_DIR`
 | :term:`EXTRACT_TILES_PAIRS_INPUT_DIR`
 
+[filename_templates]
+
+| :term:`FCST_EXTRACT_TILES_INPUT_TEMPLATE`
+| :term:`OBS_EXTRACT_TILES_INPUT_TEMPLATE`
+| :term:`FCST_EXTRACT_TILES_OUTPUT_TEMPLATE`
+| :term:`OBS_EXTRACT_TILES_OUTPUT_TEMPLATE`
+
 [config]
 
 | :term:`EXTRACT_TILES_LON_ADJ`
@@ -330,6 +337,137 @@ Configuration
 | :term:`GEN_VX_MASK_CUSTOM_LOOP_LIST`
 | :term:`GEN_VX_MASK_FILE_WINDOW_BEGIN`
 | :term:`GEN_VX_MASK_FILE_WINDOW_END`
+
+GridDiag
+--------
+
+.. _description-7a:
+
+Description
+~~~~~~~~~~~
+
+Used to configure the MET tool grid_diag.
+
+.. _configuration-7a:
+
+METplus Configuration
+~~~~~~~~~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`GRID_DIAG_INPUT_DIR`
+| :term:`GRID_DIAG_OUTPUT_DIR`
+
+[filename_templates]
+
+| :term:`GRID_DIAG_INPUT_TEMPLATE`
+| :term:`GRID_DIAG_OUTPUT_TEMPLATE`
+| :term:`GRID_DIAG_VERIFICATION_MASK_TEMPLATE` (optional)
+
+
+[config]
+
+| :term:`LOG_GRID_DIAG_VERBOSITY`
+| :term:`GRID_DIAG_CONFIG_FILE`
+| :term:`GRID_DIAG_CUSTOM_LOOP_LIST`
+| :term:`GRID_DIAG_INPUT_DATATYPE`
+| :term:`GRID_DIAG_REGRID_METHOD`
+| :term:`GRID_DIAG_REGRID_WIDTH`
+| :term:`GRID_DIAG_REGRID_VLD_THRESH`
+| :term:`GRID_DIAG_REGRID_SHAPE`
+| :term:`GRID_DIAG_REGRID_TO_GRID`
+| :term:`MODEL`
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+This is the MET configuration file used for this wrapper. Below the file contents are descriptions of each environment variable referenced in this file and how the METplus configuration variables relate to them.
+
+.. literalinclude:: ../../parm/met_config/GridDiagConfig_wrapped
+
+The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
+
+**${MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    MODEL = GFS
+
+Resulting value::
+
+    model = "GFS";
+
+**${DATA_FIELD}** - Formatted input field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+
+METplus Configuration::
+
+    [config]
+    BOTH_VAR1_NAME = APCP
+    BOTH_VAR1_LEVELS = L0
+    BOTH_VAR1_OPTIONS = n_bins = 55; range  = [0, 55];
+
+    BOTH_VAR2_NAME = PWAT
+    BOTH_VAR2_LEVELS =  L0
+    BOTH_VAR2_OPTIONS = n_bins = 35; range  = [35, 70];
+
+Resulting value::
+
+    { name="APCP"; level="L0"; n_bins = 55; range  = [0, 55]; },{ name="PWAT"; level="L0"; n_bins = 35; range  = [35, 70];}
+
+**${DATA_FILE_TYPE}** - Type of input data set only if necessary to allow MET to read the data. Generated from GRID_DIAG_INPUT_DATATYPE in the METplus configuration file.
+
+METplus Configuration::
+
+    [config]
+    GRID_DIAG_INPUT_DATATYPE = GRIB2
+
+Resulting value::
+
+    file_type = GRIB2;
+
+**${REGRID_DICT}** - Corresponds to GRID_DIAG_REGRID_METHOD, GRID_DIAG_REGRID_WIDTH, GRID_DIAG_REGRID_VLD_THRESH, GRID_DIAG_REGRID_SHAPE, and GRID_DIAG_REGRID_TO_GRID in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET GridDiag configuration file will be used.
+
+METplus Configuration 1::
+
+    [config]
+    GRID_DIAG_REGRID_SHAPE = SQUARE
+
+Resulting value 1::
+
+    regrid = {shape = SQUARE;}
+
+METplus Configuration 2::
+
+    [config]
+    GRID_DIAG_REGRID_WIDTH = 2
+    GRID_DIAG_REGRID_SHAPE = SQUARE
+
+Resulting value 2::
+
+    regrid = {width = 2; shape = SQUARE;}
+
+METplus Configuration 3::
+
+    [config]
+    GRID_DIAG_REGRID_WIDTH = 2
+    GRID_DIAG_REGRID_SHAPE = SQUARE
+    GRID_DIAG_REGRID_TO_GRID = NONE
+
+Resulting value 2::
+
+    regrid = {to_grid = NONE; width = 2; shape = SQUARE;}
+
+**${VERIF_MASK}** - Path to verification mask file. Generated from GRID_DIAG_VERIFICATION_MASK_TEMPLATE in the METplus configuration file. Filename template syntax can be used in here to find a file based on run time, i.e. file.{valid?fmt=%Y%m%d%H}.ext
+
+METplus Configuration::
+
+    [filename_templates]
+    GRID_DIAG_VERIFICATION_MASK_TEMPLATE = MET_BASE/poly/SAO.poly
+
+Resulting value::
+
+    poly = "MET_BASE/poly/SAO.poly";
 
 GridStat
 --------
@@ -803,28 +941,29 @@ Configuration
 
 [dir]
 
-| :term:`POINT_2_GRID_INPUT_DIR`
-| :term:`POINT_2_GRID_OUTPUT_DIR`
+| :term:`POINT2GRID_INPUT_DIR`
+| :term:`POINT2GRID_OUTPUT_DIR`
 
 [filename_templates]
 
-| :term:`POINT_2_GRID_INPUT_TEMPLATE`
-| :term:`POINT_2_GRID_OUTPUT_TEMPLATE`
+| :term:`POINT2GRID_INPUT_TEMPLATE`
+| :term:`POINT2GRID_OUTPUT_TEMPLATE`
 
 [config]
 
-| :term:`POINT_2_GRID_WINDOW_BEGIN`
-| :term:`POINT_2_GRID_WINDOW_END`
-| :term:`POINT_2_GRID_REGRID_TO_GRID`
-| :term:`POINT_2_GRID_INPUT_FIELD`
-| :term:`POINT_2_GRID_INPUT_LEVEL`
-| :term:`POINT_2_GRID_QC_FLAGS`
-| :term:`POINT_2_GRID_ADP`
-| :term:`POINT_2_GRID_REGRID_METHOD`
-| :term:`POINT_2_GRID_GAUSSIAN_DX`
-| :term:`POINT_2_GRID_GAUSSIAN_RADIUS`
-| :term:`POINT_2_GRID_PROB_CAT_THRESH`
-| :term:`POINT_2_GRID_VLD_THRESH`
+| :term:`POINT2GRID_WINDOW_BEGIN`
+| :term:`POINT2GRID_WINDOW_END`
+| :term:`POINT2GRID_REGRID_TO_GRID`
+| :term:`POINT2GRID_INPUT_FIELD`
+| :term:`POINT2GRID_INPUT_LEVEL`
+| :term:`POINT2GRID_QC_FLAGS`
+| :term:`POINT2GRID_ADP`
+| :term:`POINT2GRID_REGRID_METHOD`
+| :term:`POINT2GRID_GAUSSIAN_DX`
+| :term:`POINT2GRID_GAUSSIAN_RADIUS`
+| :term:`POINT2GRID_PROB_CAT_THRESH`
+| :term:`POINT2GRID_VLD_THRESH`
+| :term:`POINT2GRID_CUSTOM_LOOP_LIST`
 
 PointStat
 ---------
@@ -942,6 +1081,7 @@ Configuration
 | :term:`PY_EMBED_INGEST_<n>_TYPE`
 | :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`
 | :term:`PY_EMBED_INGEST_CUSTOM_LOOP_LIST`
+| :term:`PY_EMBED_INGEST_<n>_OUTPUT_FIELD_NAME`
 
 .. warning:: **DEPRECATED:**
 
@@ -1408,7 +1548,7 @@ set to 'yes', then set the flag
    | :term:`PLOT_CONFIG_OPTS`
    | :term:`SAVE_DATA`
 
-TcPairs
+TCPairs
 -------
 
 .. _description-22:
@@ -1416,7 +1556,7 @@ TcPairs
 Description
 ~~~~~~~~~~~
 
-The TcPairs wrapper encapsulates the behavior of the MET tc_pairs tool.
+The TCPairs wrapper encapsulates the behavior of the MET tc_pairs tool.
 The wrapper accepts Adeck and Bdeck (Best track) cyclone track data in
 extra tropical cyclone format (such as the data used by sample data
 provided in the METplus tutorial), or ATCF formatted track data. If data
@@ -1483,7 +1623,310 @@ Configuration
    | :term:`MISSING_VAL_TO_REPLACE`
    | :term:`MISSING_VAL`
 
-TcStat
+TCRMW
+------
+
+.. _tc_rmw_description:
+
+Description
+~~~~~~~~~~~
+
+Used to configure the MET tool TC-RMW.
+
+.. _tc_rmw_metplus_conf:
+
+METplus Configuration
+~~~~~~~~~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`TC_RMW_INPUT_DIR`
+| :term:`TC_RMW_DECK_INPUT_DIR`
+| :term:`TC_RMW_OUTPUT_DIR`
+
+[filename_templates]
+
+| :term:`TC_RMW_DECK_TEMPLATE`
+| :term:`TC_RMW_INPUT_TEMPLATE`
+| :term:`TC_PAIRS_OUTPUT_TEMPLATE`
+
+[config]
+
+| :term:`LOG_TC_RMW_VERBOSITY`
+| :term:`TC_RMW_CONFIG_FILE`
+| :term:`TC_RMW_INPUT_DATATYPE`
+| :term:`TC_RMW_REGRID_METHOD`
+| :term:`TC_RMW_REGRID_WIDTH`
+| :term:`TC_RMW_REGRID_VLD_THRESH`
+| :term:`TC_RMW_REGRID_SHAPE`
+| :term:`TC_RMW_N_RANGE`
+| :term:`TC_RMW_N_AZIMUTH`
+| :term:`TC_RMW_MAX_RANGE_KM`
+| :term:`TC_RMW_DELTA_RANGE_KM`
+| :term:`TC_RMW_SCALE`
+| :term:`TC_RMW_STORM_ID`
+| :term:`TC_RMW_BASIN`
+| :term:`TC_RMW_CYCLONE`
+| :term:`TC_RMW_STORM_NAME`
+| :term:`TC_RMW_INIT_INCLUDE`
+| :term:`TC_RMW_VALID_BEG`
+| :term:`TC_RMW_VALID_END`
+| :term:`TC_RMW_VALID_INCLUDE_LIST`
+| :term:`TC_RMW_VALID_EXCLUDE_LIST`
+| :term:`TC_RMW_VALID_HOUR_LIST`
+| :term:`MODEL`
+| :term:`LEAD_SEQ`
+
+.. _tc-rmw-met-conf:
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+This is the MET configuration file used for this wrapper. Below the file contents are descriptions of each environment variable referenced in this file and how the METplus configuration variables relate to them.
+
+.. literalinclude:: ../../parm/met_config/TCRMWConfig_wrapped
+
+The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
+
+**${MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    MODEL = GFS
+
+Resulting value::
+
+    model = "GFS";
+
+**${STORM_ID}** - Corresponds to TC_RMW_STORM_ID in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_STORM_ID = al062018
+
+Resulting value::
+
+    storm_id = "al062018";
+
+**${BASIN}** - Corresponds to TC_RMW_BASIN in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_BASIN = AL
+
+Resulting value::
+
+    basin = "AL";
+
+**${CYCLONE}** - Corresponds to TC_RMW_CYCLONE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_CYCLONE = 06
+
+Resulting value::
+
+   cyclone = "06";
+
+**${STORM_NAME}** - Corresponds to TC_RMW_STORM_NAME in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_STORM_NAME = al062018
+
+Resulting value::
+
+    storm_name = "al062018";
+
+**${INIT_INCLUDE}** - Corresponds to TC_RMW_INIT_INCLUDE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_INIT_INCLUDE = 20101231_06
+
+Resulting value::
+
+    init_inc = "20101231_06";
+
+Resulting value::
+
+    init_exc = "20101231_00";
+
+**${VALID_BEG}** - Corresponds to TC_RMW_VALID_BEG in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_VALID_BEG = 20100101
+
+Resulting value::
+
+    valid_beg = "20100101";
+
+**${VALID_END}** - Corresponds to TC_RMW_VALID_END in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_VALID_END = 20101231_12
+
+Resulting value::
+
+    valid_end = "20101231_12";
+
+**${VALID_INCLUDE_LIST}** - Corresponds to TC_RMW_VALID_INCLUDE_LIST in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_VALID_INCLUDE_LIST = 20101231_06, 20101231_12
+
+Resulting value::
+
+    valid_inc = [ "20101231_06", "20101231_12" ];
+
+**${VALID_EXCLUDE_LIST}** - Corresponds to TC_RMW_VALID_EXCLUDE_LIST in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_VALID_EXCLUDE_LIST = 20101231_00, 20101231_03
+
+Resulting value::
+
+    valid_exc = [ "20101231_00", "20101231_03" ];
+
+**${VALID_HOUR_LIST}** - Corresponds to TC_RMW_VALID_HOUR_LIST in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_VALID_HOUR_LIST = 12, 15
+
+Resulting value::
+
+    valid_hour = [ "12", "15" ];
+
+**${LEAD_LIST}** - Corresponds to LEAD_SEQ in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    LEAD_SEQ = 6, 12, 18, 24
+
+Resulting value::
+
+    lead = ["06", "12", "18", "24"];
+
+**${DATA_FIELD}** - Formatted input field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+
+METplus Configuration::
+
+    [config]
+    BOTH_VAR1_NAME = PRMSL
+    BOTH_VAR1_LEVELS = L0
+    BOTH_VAR2_NAME = TMP
+    BOTH_VAR2_LEVELS = P1000, P750
+
+Resulting value::
+
+    { name="PRMSL"; level="L0"; },{ name="TMP"; level="P1000"; },{ name="TMP"; level="P750"; }
+
+**${DATA_FILE_TYPE}** - Type of input data set only if necessary to allow MET to read the data. Generated from TC_RMW_INPUT_DATATYPE in the METplus configuration file.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_INPUT_DATATYPE = GRIB2
+
+Resulting value::
+
+    file_type = GRIB2;
+
+**${N_RANGE}** - Corresponds to TC_RMW_N_RANGE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_N_RANGE = 100
+
+Resulting value::
+
+    n_range = 100;
+
+**${N_AZIMUTH}** - Corresponds to TC_RMW_N_AZIMUTH in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_N_AZIMUTH = 180
+
+Resulting value::
+
+    n_azimuth = 180;
+
+**${MAX_RANGE_KM}** - Corresponds to TC_RMW_MAX_RANGE_KM in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_MAX_RANGE_KM = 1000.0
+
+Resulting value::
+
+    max_range_km = 1000.0;
+
+**${DELTA_RANGE_KM}** - Corresponds to TC_RMW_DELTA_RANGE_KM in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_DELTA_RANGE_KM = 10.0
+
+Resulting value::
+
+    delta_range_km = 10.0;
+
+**${RMW_SCALE}** - Corresponds to TC_RMW_SCALE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    TC_RMW_SCALE = 0.2
+
+Resulting value::
+
+    rmw_scale = 0.2;
+
+**${REGRID_DICT}** - Corresponds to TC_RMW_REGRID_METHOD, TC_RMW_REGRID_WIDTH, TC_RMW_REGRID_VLD_THRESH, and TC_RMW_REGRID_SHAPE in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET TCRMW configuration file will be used.
+
+METplus Configuration 1::
+
+    [config]
+    TC_RMW_REGRID_SHAPE = SQUARE
+
+Resulting value 1::
+
+    regrid = {shape = SQUARE;}
+
+METplus Configuration 2::
+
+    [config]
+    TC_RMW_REGRID_WIDTH = 2
+    TC_RMW_REGRID_SHAPE = SQUARE
+
+Resulting value 2::
+
+    regrid = {width = 2; shape = SQUARE;}
+
+
+TCStat
 ------
 
 .. _description-23:

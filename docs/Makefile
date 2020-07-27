@@ -14,7 +14,7 @@ help:
 
 # Sphinx doesn't know to clean out the debris from sphinx-gallery
 clean:
-	rm -rf $(BUILDDIR)/* $(SOURCEDIR)/Users_Guide/template $(SOURCEDIR)/Users_Guide/met_tool_wrapper $(SOURCEDIR)/Users_Guide/model_applications
+	rm -rf $(BUILDDIR)/* $(SOURCEDIR)/generated/met_tool_wrapper $(SOURCEDIR)/generated/model_applications
 
 .PHONY: help Makefile
 

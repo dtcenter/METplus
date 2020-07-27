@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: regrid_data_plane.py
 Contact(s): George McCabe
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
@@ -30,8 +27,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
     '''
     def __init__(self, config, logger):
         self.app_name = 'regrid_data_plane'
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
 
     def create_c_dict(self):
@@ -465,7 +462,8 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if util.is_python_script(field_name):
             self.args.append(f"-field 'name=\"{field_name}\";'")
             name = field_name
-        elif self.config.getbool('config', data_type + '_PCP_COMBINE_RUN', False):
+        elif (not self.c_dict.get('USE_EXPLICIT_NAME_AND_LEVEL', False) and
+              self.config.getbool('config', data_type + '_PCP_COMBINE_RUN', False)):
             if len(str(level)) > 0:
                 name = "{:s}_{:s}".format(field_name, str(level))
             else:
@@ -476,6 +474,3 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             self.args.append(f"-field 'name=\"{name}\"; level=\"{input_level}\";'")
 
         return name
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "RegridDataPlane")

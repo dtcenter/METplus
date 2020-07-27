@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 ##@namespace TCMPRPlotterWrapper
 # A Python class than encapsulates the plot_tcmpr.R plotting script.
 #
@@ -20,11 +18,11 @@ import sys
 import os
 import re
 import subprocess
+import shutil
 
 from produtil.run import exe
 from produtil.run import checkrun
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from . import CommandBuilder
 
@@ -54,6 +52,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # All these instance attributes are needed to support the
         # plot_tcmpr.R functionality.
         super().__init__(config, logger)
+
+        # check if R is available, do not attempt to run if it is not
+        if shutil.which('R') is None:
+            self.log_error('R is not in the path. It is required to run TCMPRPlotter')
 
         self._init_tcmpr_script()
 
@@ -122,11 +124,6 @@ class TCMPRPlotterWrapper(CommandBuilder):
                 self.log_error('NO tcmpr_plot.R script could be found, '
                                   'Check your MET_INSTALL_DIR path in your METplus conf file.')
                 sys.exit(1)
-
-        if 'MET_BASE' not in os.environ:
-            met_base = os.path.join(self.config.getdir('MET_INSTALL_DIR'), 'share', 'met')
-            self.logger.debug("Setting environment variable MET_BASE to {}".format(met_base))
-            os.environ['MET_BASE'] = met_base
 
         met_tcmpr_script =\
         os.path.join(self.config.getdir('MET_INSTALL_DIR'), 'share/met/Rscripts/plot_tcmpr.R')
@@ -393,7 +390,3 @@ class TCMPRPlotterWrapper(CommandBuilder):
         self.logger.info("RUNNING: " + cmd)
         process = subprocess.Popen(cmd, env=self.env, shell=True)
         process.wait()
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "TCMPRPlotter")

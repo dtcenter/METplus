@@ -32,17 +32,23 @@ Pre-requisites
 
 The following software is required to run METplus Wrappers:
 
--  Python 3.6.3 or higher (If running plot wrappers, cartopy and pandas packages are required. If not, dateutil package is required) 
+-  Python 3.6.3 or higher
 
--  R version 3.2.5  [1]_
-
--  nco (netCDF operators)
+-  dateutil Python package
 
 -  MET version 9.0 or above
 
--  Basic familiarity with MET
+If running plot wrappers, cartopy and pandas packages are required
 
--  GitHub account (if you plan on contributing code to METplus Wrappers)
+Some of the wrappers have additional dependencies to run.
+
+-  TCMPRPlotter wrapper requires R version 3.2.5
+
+-  SeriesByLead wrapper requires the nco (netCDF operators)
+
+-  MakePlots wrapper requires cartopy and pandas Python packages
+
+-  CyclonePlotter wrapper requires cartopy and matplotlib Python packages
 
 .. _getcode:
 
@@ -97,16 +103,10 @@ accompanies the use cases:
 
 
    -  Model Applications:
-         -  Convection allowing models: *sample_data-convection_allowing_models-3.0.tgz*
-
-         -  Medium Range: *sample_data-medium_range-3.0.tgz*
-
-         -  Precipitation: *sample_data-precipitation-3.0.tgz*
-
-         -  TC and Extra TC: *sample_data-tc_and_extra_tc-3.0.tgz*
+         -  Visit https://github.com/NCAR/METplus/releases for a complete list of the latest Model Application .tgz files
 
    -  MET Tool Wrapper:
-         -  For single MET tool/METplus wrapper use cases and MET tests: *sample_data-met_test-9.0.tgz*
+         -  Visit https://github.com/NCAR/METplus/release for the latest single MET tool/METplus wrapper use case file
 
 
 
@@ -151,9 +151,6 @@ METplus Wrappers.
 
 The sorc/ directory contains Doxygen executables to generate
 documentation for developers.
-
-The src/ directory contains the source code for each of the wrappers in
-METplus Wrappers.
 
 The ush/ directory contains the Python wrappers to the MET tools.
 
@@ -206,17 +203,17 @@ shell):
     # Optional JLOGFILE
     setenv JLOGFILE ~/jlog_out
 
-.bashrc:
-~~~~~~~~
+.bashrc/.kshrc:
+~~~~~~~~~~~~~~~
 
--  Open your .bashrc file and do the following:
+-  Open your .bashrc/.kshrc file and do the following:
 
 -  To your PATH, add : *<full-path-to-METplus*>/ush
 
 -  Optional: add a JLOGFILE environment variable and set it to the
    directory where you want the logs to reside
 
--  Close your .bashrc file and run ``source ~/.bashrc``
+-  Close your .bashrc file and run ``source ~/.bashrc``, or ``source ~/.kshrc`` if using ksh
 
 -  For example:
 
@@ -491,6 +488,10 @@ master_metplus.py from any directory followed by a list of configuration
 files (file path relative to the
 *<path_to_METplus_install_dir>*/parm directory).
 
+.. note::
+   The executable named 'python3' that contains the packages required to run the
+   METplus wrappers must be found first in the path.
+
 **Example 1: Using a "default" configuration:**
 Copy and paste the following into an empty text file and name it 'my_user_config.conf':
 
@@ -503,7 +504,7 @@ Copy and paste the following into an empty text file and name it 'my_user_config
   MET_INSTALL_DIR = /usr/local/met-9.0
 
   # Set INPUT_BASE to the directory containing sample input data if running use cases in the repository
-  # Otherwise et INPUT_BASE to any path that does not contain /path/to.
+  # Otherwise set INPUT_BASE to any path that does not contain /path/to.
   INPUT_BASE = /tmp/input
 
   # Set OUTPUT_BASE to a directory where you have permission to write output files
@@ -579,8 +580,3 @@ Separating configurations into multiple files can be useful if you want to compa
   master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
   -c /home/user/METplus_user_config/GridStat_myforecast.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf
-
-.. [1]
-   R version 3.2.5 is required when the TCMPRPlotter wraps the
-   plot_tcmpr.R script. Please refer to Chapter 21 Plotting and Graphics
-   Support for more information about plot_tcmpr.R.

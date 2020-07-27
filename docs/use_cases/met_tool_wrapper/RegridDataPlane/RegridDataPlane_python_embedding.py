@@ -2,7 +2,7 @@
 RegridDataPlane: Using Python Embedding
 =============================================================================
 
-RegridDataPlane_python
+met_tool_wrapper/RegridDataPlane/RegridDataPlane_python
 _embedding.conf
 
 """

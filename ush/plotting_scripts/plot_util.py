@@ -2,6 +2,7 @@ import numpy as np
 import datetime as datetime
 import time
 import pandas as pd
+import os
 
 """!@namespace plot_util
  @brief Provides utility functions for METplus plotting use case.
@@ -618,7 +619,8 @@ def calculate_stat(logger, model_data, stat):
     """
     model_data_columns = model_data.columns.values.tolist()
     if model_data_columns == [ 'TOTAL' ]:
-        logger.warning("Empty model_data dataframe")
+        logger.error("Empty model_data dataframe")
+        exit(1)
         stat_values = model_data.loc[:]['TOTAL']
     else:
         if all(elem in model_data_columns for elem in
@@ -1082,3 +1084,44 @@ def calculate_stat(logger, model_data, stat):
                 )
             )
     return stat_values, stat_values_array, stat_plot_name
+
+def get_lead_avg_file(stat, input_filename, fcst_lead, output_base_dir):
+    lead_avg_filename = stat + '_' + os.path.basename(input_filename)
+
+    # if fcst_leadX is in filename, replace it with fcst_lead_avgs
+    # and add .txt to end of filename
+    if f'fcst_lead{fcst_lead}' in lead_avg_filename:
+        lead_avg_filename = lead_avg_filename.replace(f'fcst_lead{fcst_lead}', 'fcst_lead_avgs')
+        lead_avg_filename += '.txt'
+
+    # if not, remove mention of forecast lead and
+    # add fcst_lead_avgs.txt to end of filename
+    elif 'fcst_lead_avgs' not in input_filename:
+        lead_avg_filename = lead_avg_filename.replace(f'fcst_lead{fcst_lead}', '')
+        lead_avg_filename += '_fcst_lead_avgs.txt'
+
+    lead_avg_file = os.path.join(output_base_dir, 'data',
+                                 lead_avg_filename)
+    return lead_avg_file
+
+def get_ci_file(stat, input_filename, fcst_lead, output_base_dir, ci_method):
+    CI_filename = stat + '_' + os.path.basename(input_filename)
+    # if fcst_leadX is in filename, replace it with fcst_lead_avgs
+    # and add .txt to end of filename
+    if f'fcst_lead{fcst_lead}' in CI_filename:
+        CI_filename = CI_filename.replace(f'fcst_lead{fcst_lead}',
+                                          'fcst_lead_avgs')
+
+    # if not and fcst_lead_avgs isn't already in filename,
+    # remove mention of forecast lead and
+    # add fcst_lead_avgs.txt to end of filename
+    elif 'fcst_lead_avgs' not in CI_filename:
+        CI_filename = CI_filename.replace(f'fcst_lead{fcst_lead}',
+                                          '')
+        CI_filename += '_fcst_lead_avgs'
+
+    CI_filename += '_CI_' + ci_method + '.txt'
+
+    CI_file = os.path.join(output_base_dir, 'data',
+                           CI_filename)
+    return CI_file

@@ -2,7 +2,7 @@
 Grid-Stat: 24-hour QPF Use Case
 ================================================
 
-GridStat_fcstGFS
+model_applications/precipitation/GridStat_fcstGFS
 _obsCCPA_Grib.conf
 
 """
@@ -115,7 +115,7 @@ _obsCCPA_Grib.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/precipitation/GridStat_fcstGFS_obsCCPA_GRIB/grid_stat/20170613 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/precipitation/GridStat_fcstGFS_obsCCPA_GRIB/uswrp/met_out/{MODEL}/precip (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * grid_stat_GFS_APCP_vs_ANLYS_APCP_A24_240000L_20170613_000000V.stat

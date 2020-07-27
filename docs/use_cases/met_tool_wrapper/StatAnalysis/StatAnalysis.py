@@ -2,7 +2,7 @@
 StatAnalysis: Basic Use Case
 ===========================================================================
 
-StatAnalysis.conf
+met_tool_wrapper/StatAnalysis/StatAnalysis.conf
 
 """
 

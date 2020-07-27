@@ -2,7 +2,7 @@
 PCPCombine: User-defined Command Use Case
 =============================================================================
 
-PCPCombine_user_defined.conf
+met_tool_wrapper/PCPCombine/PCPCombine_user_defined.conf
 
 """
 ##############################################################################

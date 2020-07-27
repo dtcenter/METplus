@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 '''
 Program Name: grid_stat_wrapper.py
 Contact(s): George McCabe
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from . import CompareGriddedWrapper
 
@@ -29,8 +26,8 @@ class GridStatWrapper(CompareGriddedWrapper):
     '''
     def __init__(self, config, logger):
         self.app_name = 'grid_stat'
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
 
     def create_c_dict(self):
@@ -39,18 +36,25 @@ class GridStatWrapper(CompareGriddedWrapper):
                                                  c_dict['VERBOSITY'])
         c_dict['CONFIG_FILE'] = self.config.getraw('config', 'GRID_STAT_CONFIG_FILE', '')
         c_dict['OBS_INPUT_DIR'] = \
-          self.config.getdir('OBS_GRID_STAT_INPUT_DIR', self.config.getdir('OUTPUT_BASE'))
+          self.config.getdir('OBS_GRID_STAT_INPUT_DIR', '')
         c_dict['OBS_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
                              'OBS_GRID_STAT_INPUT_TEMPLATE')
+        if not c_dict['OBS_INPUT_TEMPLATE']:
+            self.log_error("OBS_GRID_STAT_INPUT_TEMPLATE required to run")
+
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_GRID_STAT_INPUT_DATATYPE', '')
 
         c_dict['FCST_INPUT_DIR'] = \
-          self.config.getdir('FCST_GRID_STAT_INPUT_DIR', self.config.getdir('OUTPUT_BASE'))
+          self.config.getdir('FCST_GRID_STAT_INPUT_DIR', '')
         c_dict['FCST_INPUT_TEMPLATE'] = \
           self.config.getraw('filename_templates',
                              'FCST_GRID_STAT_INPUT_TEMPLATE')
+
+        if not c_dict['FCST_INPUT_TEMPLATE']:
+            self.log_error("FCST_GRID_STAT_INPUT_TEMPLATE required to run")
+
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
 
@@ -75,7 +79,6 @@ class GridStatWrapper(CompareGriddedWrapper):
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
                                'GRID_STAT_VERIFICATION_MASK_TEMPLATE')
-        c_dict['VERIFICATION_MASK'] = ''
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'grid_stat')
@@ -106,15 +109,10 @@ class GridStatWrapper(CompareGriddedWrapper):
                          self.c_dict['NEIGHBORHOOD_SHAPE'])
 
         self.add_env_var('VERIF_MASK',
-                         self.c_dict['VERIFICATION_MASK'])
+                         self.c_dict.get('VERIFICATION_MASK', ''))
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
-        self.add_common_envs(time_info)
+        self.add_common_envs()
 
-        # send environment variables to logger
-        self.print_all_envs()
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "GridStat")
+        super().set_environment_variables(time_info)

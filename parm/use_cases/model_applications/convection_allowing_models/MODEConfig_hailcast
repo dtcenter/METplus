@@ -65,8 +65,6 @@ fcst = {
    convert(x)         = x / 0.0254;
 }
 
-obs = fcst;
-
 obs = {
    field = ${OBS_FIELD};
 

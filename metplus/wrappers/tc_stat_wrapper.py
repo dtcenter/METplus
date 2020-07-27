@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """!
 Program Name: TCStatWrapper.py
 Contact(s):  Minna Win, Jim Frimel, George McCabe, Julie Prestopnik
@@ -19,7 +17,7 @@ import sys
 
 from produtil.run import ExitStatusException
 
-from ..util import metplus_check_python_version, run_stand_alone, getlist, mkdir_p
+from ..util import getlist, mkdir_p
 from . import CommandBuilder
 
 ## @namespace TCStatWrapper
@@ -81,7 +79,7 @@ class TCStatWrapper(CommandBuilder):
                 'directory not found in config file. Exiting.')
             sys.exit(1)
         c_dict['APP_PATH'] = os.path.join(
-            self.config.getdir('MET_INSTALL_DIR'), 'bin/tc_stat')
+            self.config.getdir('MET_BIN_DIR', ''), 'tc_stat')
 
         c_dict['APP_NAME'] = os.path.basename(c_dict['APP_PATH'])
 
@@ -184,7 +182,7 @@ class TCStatWrapper(CommandBuilder):
 
             try:
                 c_dict['WATER_ONLY'] = \
-                    self.config.getbool('config', 'TC_STAT_WATER_ONLY')
+                    self.config.getbool('config', 'TC_STAT_WATER_ONLY', False)
             except ValueError:
                 # WATER_ONLY not defined in any configuration files,
                 # set to False and proceed.
@@ -196,7 +194,7 @@ class TCStatWrapper(CommandBuilder):
 
             try:
                 c_dict['LANDFALL'] = \
-                    self.config.getbool('config', 'TC_STAT_LANDFALL')
+                    self.config.getbool('config', 'TC_STAT_LANDFALL', False)
             except ValueError:
                 # Not set by user in MET tc_stat config file or METplus config
                 # file.  Set to False and continue ingesting config file values.
@@ -229,7 +227,10 @@ class TCStatWrapper(CommandBuilder):
 
         c_dict['MET_INSTALL_DIR'] = self.config.getdir('MET_INSTALL_DIR')
 
-        c_dict['INPUT_DIR'] = self.config.getdir('TC_STAT_INPUT_DIR')
+        c_dict['INPUT_DIR'] = self.config.getdir('TC_STAT_INPUT_DIR','')
+
+        if not c_dict['INPUT_DIR']:
+            self.log_error["TC_STAT_INPUT_DIR can not be empty"]
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('TC_STAT_OUTPUT_DIR')
 
@@ -828,7 +829,3 @@ class TCStatWrapper(CommandBuilder):
                     '%s: non-zero exit status' % (repr(cmd),), ret)
         except ExitStatusException as ese:
             self.log_error(ese)
-
-
-if __name__ == "__main__":
-    run_stand_alone(__file__, "TCStat")

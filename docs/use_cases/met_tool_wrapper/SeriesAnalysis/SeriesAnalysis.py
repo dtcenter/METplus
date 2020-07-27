@@ -2,7 +2,7 @@
 SeriesAnalysis: Basic Use Case
 =============================================================================
 
-SeriesAnalysis.conf
+met_tool_wrapper/SeriesAnalysis/SeriesAnalysis.conf
 
 """
 ##############################################################################

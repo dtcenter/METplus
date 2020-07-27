@@ -2,7 +2,7 @@
 TCMPRPlotter: Basic Use Case
 =======================================================
 
-TCMPRPlotter.conf
+met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf
 
 """
 ##############################################################################
@@ -93,7 +93,7 @@ TCMPRPlotter.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in grid_stat/2005080700 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in tcmpr_plots/2005080700 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * AMAX_WIND-BMAX_WIND_mean.png

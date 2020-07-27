@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: gempak_to_cf.py
 Contact(s): Julie Prestopnik
@@ -14,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 
-from ..util import metplus_check_python_version
 from ..util import met_util as util
 from ..util import do_string_sub
 from ..util import time_util
@@ -79,6 +76,11 @@ class GempakToCFWrapper(CommandBuilder):
                 input_dict['custom'] = custom_string
 
                 time_info = time_util.ti_calculate(input_dict)
+
+                if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                    self.logger.debug('Skipping run time')
+                    continue
+
                 self.run_at_time_once(time_info)
 
     def run_at_time_once(self, time_info):
@@ -122,6 +124,3 @@ class GempakToCFWrapper(CommandBuilder):
             return
 
         self.build()
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "GempakToCF")

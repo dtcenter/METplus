@@ -7,12 +7,13 @@ attrs==19.1.0
 Babel==2.7.0
 bokeh==1.3.4
 Cartopy==0.17.0
-certifi==2019.9.11
+certifi==2020.6.20
 cffi==1.12.3
 cftime==1.0.3.4
 chardet==3.0.4
 Click==7.0
 cloudpickle==1.2.2
+coverage==5.1
 cryptography==2.5
 cycler==0.10.0
 cytoolz==0.10.0
@@ -33,7 +34,7 @@ lazy-object-proxy==1.4.2
 locket==0.2.0
 lxml==4.4.1
 MarkupSafe==1.1.1
-matplotlib==2.2.2
+matplotlib==3.1.3
 mccabe==0.6.1
 MetPy==0.11.0
 more-itertools==7.2.0
@@ -67,6 +68,7 @@ pyproj==2.3.1
 pyshp==2.1.0
 PySocks==1.7.1
 pytest==5.2.0
+pytest-cov==2.10.0
 pytest-mpl==0.10
 pytest-regtest==1.4.2
 python-dateutil==2.8.0
@@ -80,7 +82,7 @@ six==1.12.0
 snowballstemmer==1.9.1
 sortedcontainers==2.1.0
 Sphinx==2.2.0
-sphinx-gallery==0.4.0
+sphinx-gallery==0.7.0
 sphinx-rtd-theme==0.4.3
 sphinxcontrib-applehelp==1.0.1
 sphinxcontrib-devhelp==1.0.1

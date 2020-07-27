@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """
 Program Name: ascii2nc_wrapper.py
 Contact(s): George McCabe
@@ -11,8 +9,6 @@ Input Files: ascii files
 Output Files: nc files
 Condition codes: 0 for success, 1 for failure
 """
-
-from ..util import metplus_check_python_version
 
 import os
 
@@ -30,8 +26,8 @@ from ..util import do_string_sub
 class ASCII2NCWrapper(CommandBuilder):
     def __init__(self, config, logger):
         self.app_name = "ascii2nc"
-        self.app_path = os.path.join(config.getdir('MET_INSTALL_DIR'),
-                                     'bin', self.app_name)
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config, logger)
 
     def create_c_dict(self):
@@ -48,6 +44,8 @@ class ASCII2NCWrapper(CommandBuilder):
         c_dict['OBS_INPUT_DIR'] = self.config.getdir('ASCII2NC_INPUT_DIR', '')
         c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                           'ASCII2NC_INPUT_TEMPLATE')
+        if not c_dict['OBS_INPUT_TEMPLATE']:
+            self.log_error("ASCII2NC_INPUT_TEMPLATE required to run")
         c_dict['OUTPUT_DIR'] = self.config.getdir('ASCII2NC_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                        'ASCII2NC_OUTPUT_TEMPLATE')
@@ -132,10 +130,7 @@ class ASCII2NCWrapper(CommandBuilder):
                          self.c_dict['TIME_SUMMARY_VALID_THRESH'])
 
         # set user environment variables
-        self.set_user_environment(time_info)
-
-        # send environment variables to logger
-        self.print_all_envs()
+        super().set_environment_variables(time_info)
 
     def get_command(self):
         cmd = self.app_path
@@ -186,6 +181,11 @@ class ASCII2NCWrapper(CommandBuilder):
             input_dict['lead'] = lead
 
             time_info = time_util.ti_calculate(input_dict)
+
+            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                self.logger.debug('Skipping run time')
+                continue
+
             for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
                 if custom_string:
                     self.logger.info(f"Processing custom string: {custom_string}")
@@ -260,7 +260,3 @@ class ASCII2NCWrapper(CommandBuilder):
         # add mask SID if set
         if self.c_dict['MASK_SID']:
             self.args.append(" -mask_sid {}".format(self.c_dict['MASK_SID']))
-
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "ASCII2NC")

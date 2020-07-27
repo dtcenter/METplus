@@ -2,7 +2,7 @@
 MTD: 6hr QPF Use Case
 ==================================
 
-MTD_fcstHRRR-TLE
+model_applications/precipitation/MTD_fcstHRRR-TLE
 _obsMRMS.conf
 
 """
@@ -22,7 +22,6 @@ _obsMRMS.conf
 #
 #  * Forecast dataset: HRRR-TLE forecasts in GRIB2
 #  * Observation dataset: Multi Radar Multi Sensor (MRMS)
-#  * Sources of data (links, contacts, etc...)
 #
 
 ##############################################################################
@@ -117,6 +116,9 @@ _obsMRMS.conf
 # Output for this use case will be found in model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
+# * mtd_20170510_040000V_2d.txt
+# * mtd_20170510_040000V_3d_single_simple.txt
+# * mtd_20170510_040000V_obj.nc
 #
 
 ##############################################################################

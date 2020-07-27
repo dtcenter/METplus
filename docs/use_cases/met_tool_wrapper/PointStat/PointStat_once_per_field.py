@@ -2,7 +2,7 @@
 PointStat: Once Per Field
 =============================================================================
 
-PointStat_once_per_field.conf
+met_tool_wrapper/PointStat/PointStat_once_per_field.conf
 
 """
 ##############################################################################

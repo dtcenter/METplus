@@ -2,7 +2,7 @@
 PCPCombine: DERIVE Use Case
 =============================================================================
 
-PCPCombine_derive.conf
+met_tool_wrapper/PCPCombine/PCPCombine_derive.conf
 
 """
 ##############################################################################

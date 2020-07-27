@@ -2,7 +2,7 @@
 GenVxMask: Basic Use Case
 =========================
 
-GenVxMask.conf
+met_tool_wrapper/GenVxMask/GenVxMask.conf
 
 """
 ##############################################################################
