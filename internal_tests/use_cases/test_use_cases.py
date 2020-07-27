@@ -87,6 +87,11 @@ use_cases['met_tool_wrapper'] = [
                 use_case_dir + "/met_tool_wrapper/TCStat/TCStat.conf",
 ]
 
+use_cases['climate'] = [
+    use_case_dir + "/model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf",
+    use_case_dir + "/model_applications/climate/MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.conf",
+]
+
 use_cases['convection_allowing_models'] = [
                 use_case_dir + "/model_applications/convection_allowing_models/EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf",
                 use_case_dir + "/model_applications/convection_allowing_models/MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf",
@@ -230,6 +235,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('host_id', action='store')
     parser.add_argument('--met_tool_wrapper', action='store_true', required=False)
+    parser.add_argument('--climate', action='store_true', required=False)
     parser.add_argument('--convection_allowing_models', action='store_true', required=False)
     parser.add_argument('--cryosphere', action='store_true', required=False)
     parser.add_argument('--medium_range1', action='store_true', required=False)
