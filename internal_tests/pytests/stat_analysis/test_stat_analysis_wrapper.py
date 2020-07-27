@@ -625,6 +625,12 @@ def test_get_lookin_dir():
     test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
                                         lists_to_group, config_dict)
     assert(expected_lookin_dir == test_lookin_dir)
+    # Test 3 - no matches for lookin dir wildcard
+    expected_lookin_dir = ''
+    dir_path = '../../data/fake/*nothingmatches*'
+    test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
+                                        lists_to_group, config_dict)
+    assert(expected_lookin_dir == test_lookin_dir)
 
 def test_format_valid_init():
     # Independently test the formatting 
