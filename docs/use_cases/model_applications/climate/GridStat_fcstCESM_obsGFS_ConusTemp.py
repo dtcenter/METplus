@@ -51,10 +51,10 @@ GridStat_fcstCESM_obsGFS_ConusTemp.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/climate_models/GridStat_fcstCESM_obsGFS_ConusTemp.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/climate_models/GridStat_fcstCESM_obsGFS_ConusTemp.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
 
 ##############################################################################
 # MET Configuration
@@ -64,7 +64,7 @@ GridStat_fcstCESM_obsGFS_ConusTemp.conf
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/climate_models/GridStatConfig_cesm
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/climate/GridStatConfig_cesm
 #
 # See the following files for more information about the environment variables set in this configuration file.
 #
@@ -78,11 +78,11 @@ GridStat_fcstCESM_obsGFS_ConusTemp.conf
 #
 # 1) Passing in GridStat_fcstCESM_obsGFS_ConusTemp.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate_models/GridStat_fcstCESM_obsGFS_ConusTemp.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstCESM_obsGFS_ConusTemp.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate_models/GridStat_fcstCESM_obsGFS_ConusTemp.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -108,7 +108,7 @@ GridStat_fcstCESM_obsGFS_ConusTemp.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/climate_models/CESM_GridStat/grid_stat (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/climate/CESM_GridStat/grid_stat (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # grid_stat_CESM_TMP_vs_GFS_ANALYS_060000L_20140801_060000V.stat
@@ -120,9 +120,9 @@ GridStat_fcstCESM_obsGFS_ConusTemp.conf
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/climate_models-GridStat_fcstCESM_obsGFS_ConusTemp.png'
+# sphinx_gallery_thumbnail_path = '_static/climate-GridStat_fcstCESM_obsGFS_ConusTemp.png'
 #
 # .. note:: `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, 
-#  `ClimateModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ClimateModelsAppUseCase&check_keywords=yes&area=default>`_, 
+#  `ClimateAppUseCase <https://ncar.github.io/METplus/search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_, 
 #  `NetCDFFileUseCase <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_, 
 #  `NCAROrgUseCase <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_

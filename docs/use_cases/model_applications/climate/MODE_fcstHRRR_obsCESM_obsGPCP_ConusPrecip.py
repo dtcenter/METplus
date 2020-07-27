@@ -1,7 +1,7 @@
 """
 MODE: CESM and GPCP Precipitation MODE Object Based Evaluation
 ============================================================================
-MODE_fcstCESM_obsGPCP_precip.conf
+MODE_fcstCESM_obsGPCP_ConusPrecip.conf
 """
 
 ##############################################################################
@@ -52,10 +52,10 @@ MODE_fcstCESM_obsGPCP_precip.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/climate_models/MODE_fcstHRRR_obsCESM_obsGPCP_precip.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/climate/MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/climate_models/MODE_fcstHRRR_obsCESM_obsGPCP_precip.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/climate/MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.conf
 
 ##############################################################################
 # MET Configuration
@@ -65,7 +65,7 @@ MODE_fcstCESM_obsGPCP_precip.conf
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/climate_models/MODEConfig_cesm_gpcp
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/climate/MODEConfig_cesm_gpcp
 #
 # See the following files for more information about the environment variables set in this configuration file.
 #
@@ -77,13 +77,13 @@ MODE_fcstCESM_obsGPCP_precip.conf
 #
 # This use case can be run two ways:
 #
-# 1) Passing in MODE_fcstHRRR_obsCESM_obsGPCP_precip.conf then a user-specific system configuration file::
+# 1) Passing in MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate_models/MODE_fcstHRRR_obsCESM_obsGPCP_precip.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate/MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in MODE_fcstHRRR_obsCESM_obsGPCP_precip.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate_models/MODE_fcstHRRR_obsCESM_obsGPCP_precip.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/climate/MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -109,7 +109,7 @@ MODE_fcstCESM_obsGPCP_precip.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/climate_models/CESM_MODE (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/climate/CESM_MODE (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # 2014_06_01_000000/mode_000000L_20140602_000000V_000000A_R1_T1_cts.txt
@@ -149,9 +149,9 @@ MODE_fcstCESM_obsGPCP_precip.conf
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/climate_models-MODE_fcstHRRR_obsCESM_obsGPCP_precip.png'
+# sphinx_gallery_thumbnail_path = '_static/climate-MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.png'
 #
 # .. note:: `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_, 
-#  `ClimateModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ClimateModelsAppUseCase&check_keywords=yes&area=default>`_, 
+#  `ClimateAppUseCase <https://ncar.github.io/METplus/search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_, 
 #  `NetCDFFileUseCase <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_, 
 #  `NCAROrgUseCase <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
