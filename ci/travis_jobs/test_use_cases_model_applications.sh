@@ -9,6 +9,7 @@
 #   name ending with _var) and add a new block to the if/elif/else statement to pick the
 #   correct use case tarball.
 
+climate_tar=v3.1/sample_data-climate-3.1.tgz
 convection_allowing_models_tar=v3.1-beta1/sample_data-convection_allowing_models-3.1-beta1.tgz
 cryosphere_tar=v3.0/sample_data-cryosphere-3.0.tgz
 medium_range_tar=v3.1-beta2/sample_data-medium_range-3.1-beta2.1.tgz
@@ -39,6 +40,8 @@ do
   # get sample data tarball name
   if [ $i == "convection_allowing_models" ]; then
       tarball=$convection_allowing_models_tar
+  elif [ $i == "climate" ]; then
+      tarball=$climate_tar
   elif [ $i == "cryosphere" ]; then
       tarball=$cryosphere_tar
   elif [ ${i:0: -1} == "medium_range" ]; then
