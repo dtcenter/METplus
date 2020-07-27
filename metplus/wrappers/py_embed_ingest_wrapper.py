@@ -44,7 +44,6 @@ class PyEmbedIngestWrapper(CommandBuilder):
                 indices.append(result.group(1))
 
         for index in indices:
-            ingest_script = self.config.getraw('config', 'PY_EMBED_INGEST_{}_SCRIPT'.format(index))
             input_type = self.config.getstr('config', 'PY_EMBED_INGEST_{}_TYPE'.format(index))
             input_type = input_type.upper()
             if input_type not in VALID_PYTHON_EMBED_TYPES:
@@ -65,6 +64,25 @@ class PyEmbedIngestWrapper(CommandBuilder):
                 self.log_error(f'Must set PY_EMBED_INGEST_{index}_OUTPUT_GRID')
                 self.isOK = False
 
+
+            # TODO: handle multiple scripts if they are defined
+            ingest_script_search_text = f'PY_EMBED_INGEST_{index}_SCRIPT'
+            regex = re.compile(ingest_script_search_text + r"(.*)")
+            ingest_script_addons = []
+            for conf in all_conf:
+                result = regex.match(conf)
+                if result is not None:
+                    ingest_script_addons.append(result.group(1))
+
+            # error if none are found
+            # for each addon, get raw value for ingest_script and output field name
+            # add to list of ingest_scripts and output_field_names
+
+            # if output_field_names is not empty and the two lists are different sizes, error
+
+            # pass lists into dictionary instead of single value
+
+            ingest_script = self.config.getraw('config', 'PY_EMBED_INGEST_{}_SCRIPT'.format(index))
             output_field_name = self.config.getraw('config', 'PY_EMBED_INGEST_{}_OUTPUT_FIELD_NAME'.format(index), '')
 
             ingester_dict = {'output_dir': output_dir,
@@ -119,6 +137,7 @@ class PyEmbedIngestWrapper(CommandBuilder):
             output_grid = do_string_sub(ingester['output_grid'],
                                         **time_info)
 
+            # TODO: loop over scripts and output_field_names and add each
             # get call to python script
             script = do_string_sub(ingester['script'],
                                    **time_info)
