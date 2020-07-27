@@ -149,7 +149,7 @@ MODE_fcstCESM_obsGPCP_precip.conf
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/climate_models-CESM_precip.png'
+# sphinx_gallery_thumbnail_path = '_static/climate_model-MODE_fcstCESM_obsGPCP_precip.png'
 #
 # .. note:: `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_, 
 #  `ClimateModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ClimateModelsAppUseCase&check_keywords=yes&area=default>`_, 

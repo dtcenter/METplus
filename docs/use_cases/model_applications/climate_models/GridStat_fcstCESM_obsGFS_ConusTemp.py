@@ -120,7 +120,7 @@ GridStat_fcstCESM_obsGFS_ConusTemp.conf
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/climate_models-CESM_temp.png'
+# sphinx_gallery_thumbnail_path = '_static/climate_models-GridStat_fcstCESM_obsGFS_ConusTemp.png'
 #
 # .. note:: `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, 
 #  `ClimateModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ClimateModelsAppUseCase&check_keywords=yes&area=default>`_, 
