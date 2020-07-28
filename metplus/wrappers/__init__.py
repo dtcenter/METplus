@@ -3,6 +3,7 @@ from inspect import isclass
 from pkgutil import iter_modules
 from pathlib import Path
 from importlib import import_module
+from ..util.metplus_check import plot_wrappers_are_enabled
 
 # these wrappers should not be imported if plotting is disabled
 plotting_wrappers = [
@@ -28,8 +29,8 @@ for module_name, attribute_name in parent_classes.items():
 package_dir = Path(__file__).resolve().parent
 for (_, module_name, _) in iter_modules([package_dir]):
 
-    # skip plotting wrappers if disabled
-    if environ.get('METPLUS_DISABLE_PLOT_WRAPPERS', False) and module_name in plotting_wrappers:
+    # skip import of plot wrappers if they are not enabled
+    if not plot_wrappers_are_enabled(environ) and module_name in plotting_wrappers:
         continue
 
     # import the module and iterate through its attributes

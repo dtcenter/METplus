@@ -6,11 +6,19 @@ set -xue
 if [[ "$*" =~ -a ]] ; then
     rm -f doxygenloc
 fi
-rm -f doxylog Doxyfile ../../docs/doxygen/config-files.dox
+
+output_dir=../../generated/doxygen
+if [ ! -d $output_dir ]; then
+    mkdir -p ../../generated/doxygen
+    exit 0
+fi
+
+rm -f doxylog Doxyfile $output_dir/config-files.dox
 rm -f *~ \#*\#
 
 # Clean target directory:
-cd ../../docs/doxygen/
+cd $output_dir
+
 rm -f *tmp *~ \#*\#
 
 if [[ "$*" =~ -a ]] ; then

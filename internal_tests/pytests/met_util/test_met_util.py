@@ -689,6 +689,24 @@ def test_get_process_list(input_list, expected_list):
     assert(output_list == expected_list)
 
 @pytest.mark.parametrize(
+    'input_list, environ, expected_result', [
+        (['Point2Grid'], {}, True), # no plotters, not disabled
+        (['Point2Grid'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'yes'}, True), # no plotters, disabled
+        (['TCMPRPlotter'], {}, True), # plotter, not enabled
+        (['TCMPRPlotter'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'yes'}, False), # plotters, disabled
+        (['TCMPRPlotter'], {'METPLUS_ENABLE_PLOT_WRAPPERS': 'yes'}, True), # no plotters, enabled
+        # test that env var value is interpreted to be True or False instead of
+        # just checking if it is set to any value or not set
+        (['Point2Grid'], {'METPLUS_ENABLE_PLOT_WRAPPERS': 'no'}, True), # no plotters, disabled
+        (['Point2Grid'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'no'}, True), # no plotters, disabled
+        (['TCMPRPlotter'], {'METPLUS_ENABLE_PLOT_WRAPPERS': 'no'}, False), # no plotters, enabled no
+        (['TCMPRPlotter'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'no'}, True), # no plotters, disabled no
+    ]
+)
+def test_check_plotter_in_process_list(input_list, environ, expected_result):
+    assert(util.check_plotter_in_process_list(input_list, environ) == expected_result)
+
+@pytest.mark.parametrize(
     'time_from_conf, fmt, is_datetime', [
         ('', '%Y', False),
         ('a', '%Y', False),
@@ -785,6 +803,17 @@ def test_get_time_from_file(filepath, template, expected_result):
         assert(expected_result is None)
     else:
         assert(result['valid'] == expected_result)
+
+@pytest.mark.parametrize(
+    'value, expected_result', [
+        (3.3, 3.5),
+        (3.1, 3.0),
+        (-3.2, -3.0),
+        (-3.8, -4.0),
+    ]
+)
+def test_round_0p5(value, expected_result):
+    assert(util.round_0p5(value) == expected_result)
 
 @pytest.mark.parametrize(
     'expression, expected_result', [
@@ -912,3 +941,4 @@ def test_get_skip_time(run_time, skip_times, expected_result):
 def test_get_skip_time_no_valid():
     input_dict ={'init': datetime.datetime(2019, 1, 29)}
     assert(util.skip_time(input_dict, {'%Y': ['2019']}) == False)
+

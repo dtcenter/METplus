@@ -14,14 +14,13 @@ import logging
 import os
 import copy
 import re
-import subprocess
+import glob
 import datetime
 import itertools
 
 from ..util import met_util as util
 from ..util import do_string_sub
 from . import CommandBuilder
-from .make_plots_wrapper import MakePlotsWrapper
 
 class StatAnalysisWrapper(CommandBuilder):
     """! Wrapper to the MET tool stat_analysis which is used to filter 
@@ -168,6 +167,8 @@ class StatAnalysisWrapper(CommandBuilder):
         # need to read the conf value again
         self.runMakePlots = 'MakePlots' in self.config.getstr('config', 'PROCESS_LIST')
         if self.runMakePlots:
+            # only import MakePlots wrappers if it will be used
+            from .make_plots_wrapper import MakePlotsWrapper
             self.check_MakePlots_config(c_dict)
 
             # create MakePlots wrapper instance
@@ -1032,13 +1033,9 @@ class StatAnalysisWrapper(CommandBuilder):
         else:
             dir_path_filled = dir_path
         if '*' in dir_path_filled:
-            dir_path_filled_all = str(
-                subprocess.check_output('ls -d '+dir_path_filled, shell=True)
-            )
-            dir_path_filled_all = (
-                dir_path_filled_all[1:].replace("'","").replace('\\n', ' ')
-            )
-            dir_path_filled_all = dir_path_filled_all[:-1]
+            self.logger.debug(f"Expanding wildcard path: {dir_path_filled}")
+            dir_path_filled_all = ' '.join(sorted(glob.glob(dir_path_filled)))
+            self.logger.warning(f"Wildcard expansion found no matches")
         else:
             dir_path_filled_all = dir_path_filled
         lookin_dir = dir_path_filled_all
@@ -1646,6 +1643,11 @@ class StatAnalysisWrapper(CommandBuilder):
         # set lookin dir command line argument
         runtime_settings_dict['LOOKIN_DIR'] = ' '.join(lookin_dirs)
 
+        # error and return None if lookin dir is empty
+        if not runtime_settings_dict['LOOKIN_DIR']:
+            self.log_error("No value found for lookin dir")
+            return None
+
         if not model_list or not obtype_list:
             self.log_error("Could not find model or obtype to process")
             return None
@@ -1722,7 +1724,7 @@ class StatAnalysisWrapper(CommandBuilder):
                 self.add_env_var(name, value)
 
             # send environment variables to logger
-            self.print_all_envs()
+            self.set_environment_variables()
 
             # set lookin dir
             self.logger.debug(f"Setting -lookindir to {runtime_settings_dict['LOOKIN_DIR']}")

@@ -32,17 +32,23 @@ Pre-requisites
 
 The following software is required to run METplus Wrappers:
 
--  Python 3.6.3 or higher (If running plot wrappers, cartopy and pandas packages are required. If not, dateutil package is required) 
+-  Python 3.6.3 or higher
 
--  R version 3.2.5  [1]_
-
--  nco (netCDF operators)
+-  dateutil Python package
 
 -  MET version 9.0 or above
 
--  Basic familiarity with MET
+If running plot wrappers, cartopy and pandas packages are required
 
--  GitHub account (if you plan on contributing code to METplus Wrappers)
+Some of the wrappers have additional dependencies to run.
+
+-  TCMPRPlotter wrapper requires R version 3.2.5
+
+-  SeriesByLead wrapper requires the nco (netCDF operators)
+
+-  MakePlots wrapper requires cartopy and pandas Python packages
+
+-  CyclonePlotter wrapper requires cartopy and matplotlib Python packages
 
 .. _getcode:
 
@@ -574,8 +580,3 @@ Separating configurations into multiple files can be useful if you want to compa
   master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
   -c /home/user/METplus_user_config/GridStat_myforecast.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf
-
-.. [1]
-   R version 3.2.5 is required when the TCMPRPlotter wraps the
-   plot_tcmpr.R script. Please refer to Chapter 21 Plotting and Graphics
-   Support for more information about plot_tcmpr.R.

@@ -11,7 +11,7 @@
 
 convection_allowing_models_tar=v3.1-beta1/sample_data-convection_allowing_models-3.1-beta1.tgz
 cryosphere_tar=v3.0/sample_data-cryosphere-3.0.tgz
-medium_range_tar=v3.0/sample_data-medium_range-3.0.tgz
+medium_range_tar=v3.1-beta2/sample_data-medium_range-3.1-beta2.1.tgz
 precipitation_tar=v3.0/sample_data-precipitation-3.0.tgz
 s2s_tar=v3.0/sample_data-s2s-3.0.tgz
 space_weather_tar=v3.0/sample_data-space_weather-3.0.tgz

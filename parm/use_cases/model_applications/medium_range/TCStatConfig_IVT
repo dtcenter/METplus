@@ -1,0 +1,195 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Default TCStat configuration file
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// The parameters listed below are used to filter the TC-STAT data down to the
+// desired subset of lines over which statistics are to be computed.  Only
+// those lines which meet ALL of the criteria specified will be retained.
+//
+// The settings that are common to all jobs may be specified once at the top
+// level.  If no selection is listed for a parameter, that parameter will not
+// be used for filtering.  If multiple selections are listed for a parameter,
+// the analyses will be performed on their union.
+//
+
+//
+// Stratify by the AMODEL or BMODEL columns.
+//
+amodel = ${AMODEL};
+bmodel = ${BMODEL};
+
+//
+// Stratify by the DESC column.
+//
+desc = ${DESC};
+
+//
+// Stratify by the STORM_ID column.
+//
+storm_id = ${STORM_ID};
+
+//
+// Stratify by the BASIN column.
+// May add using the "-basin" job command option.
+//
+basin = ${BASIN};
+
+//
+// Stratify by the CYCLONE column.
+// May add using the "-cyclone" job command option.
+//
+cyclone = ${CYCLONE};
+
+//
+// Stratify by the STORM_NAME column.
+// May add using the "-storm_name" job command option.
+//
+storm_name = ${STORM_NAME};
+
+//
+// Stratify by the INIT times.
+// Model initialization time windows to include or exclude
+// May modify using the "-init_beg", "-init_end", "-init_inc",
+// and "-init_exc" job command options.
+//
+init_beg = "${INIT_BEG}";
+init_end = "${INIT_END}";
+init_inc = ${INIT_INCLUDE};
+init_exc = ${INIT_EXCLUDE};
+
+//
+// Stratify by the VALID times.
+//
+valid_beg = "${VALID_BEG}";
+valid_end = "${VALID_END}";
+valid_inc = ${VALID_INCLUDE};
+valid_exc = ${VALID_EXCLUDE};
+
+//
+// Stratify by the initialization and valid hours and lead time.
+//
+init_hour = ${INIT_HOUR};
+valid_hour = ${VALID_HOUR};
+lead = ${LEAD};
+
+//
+// Select tracks which contain all required lead times.
+//
+lead_req = ${LEAD_REQ};
+
+//
+// Stratify by the INIT_MASK and VALID_MASK columns.
+//
+init_mask = ${INIT_MASK};
+valid_mask = ${VALID_MASK};
+
+//
+// Stratify by the LINE_TYPE column.
+//
+line_type = [];
+
+//
+// Stratify by checking the watch/warning status for each track point
+// common to both the ADECK and BDECK tracks.  If the watch/warning status
+// of any of the track points appears in the list, retain the entire track.
+//
+track_watch_warn = ${TRACK_WATCH_WARN};
+
+//
+// Stratify by applying thresholds to numeric data columns.
+//
+column_thresh_name = ${COLUMN_THRESH_NAME};
+column_thresh_val = ${COLUMN_THRESH_VAL};
+
+//
+// Stratify by performing string matching on non-numeric data columns.
+//
+column_str_name = ${COLUMN_STR_NAME};
+column_str_val = ${COLUMN_STR_VAL};
+
+//
+// Similar to the column_thresh options above
+//
+init_thresh_name = ${INIT_THRESH_NAME};
+init_thresh_val = ${INIT_THRESH_VAL};
+
+//
+// Similar to the column_str options above
+//
+init_str_name = ${INIT_STR_NAME};
+init_str_val = ${INIT_STR_VAL};
+
+//
+// Stratify by the ADECK and BDECK distances to land.
+//
+water_only = ${WATER_ONLY};
+
+//
+// Specify whether only those track points for which rapid intensification
+// or weakening of the maximum wind speed occurred in the previous time
+// step should be retained.
+//
+rirw = {
+   track  = NONE;
+   adeck = {
+      time   = "24";
+      exact  = TRUE;
+      thresh = >=30.0;
+   }
+   bdeck = adeck;
+}
+
+//
+// Specify whether only those track points occurring near landfall should be
+// retained, and define the landfall retention window in HH[MMSS] format
+// around the landfall time.
+//
+landfall = ${LANDFALL};
+landfall_beg = "${LANDFALL_BEG}";
+landfall_end = "${LANDFALL_END}";
+
+
+//
+// Specify whether only those track points common to both the ADECK and BDECK
+// tracks should be retained.  May modify using the "-match_points" job command
+// option.
+//
+match_points = ${MATCH_POINTS};
+
+//
+// Specify whether only those cases common to all models in the dataset should
+// be retained.
+//
+event_equal = FALSE;
+
+//
+// Specify lead times that must be present for a track to be included in the
+// event equalization logic.
+//
+event_equal_lead = [];
+
+//
+// Apply polyline masking logic to the location of the ADECK track at the
+// initialization time.
+//
+out_init_mask = "";
+
+//
+// Apply polyline masking logic to the location of the ADECK track at the
+// valid time.
+//
+out_valid_mask = "";
+
+//
+// Array of TCStat analysis jobs to be performed on the filtered data
+//
+jobs = ${JOBS};
+
+//
+// Indicate a version number for the contents of this configuration file.
+// The value should generally not be modified.
+//
+//version = "V9.0";
