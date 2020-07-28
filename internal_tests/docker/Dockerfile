@@ -1,4 +1,4 @@
-FROM dtcenter/met:develop
+FROM dtcenter/met:9.1
 MAINTAINER Jim Frimel <james.t.frimel@noaa.gov>
 
 # 
