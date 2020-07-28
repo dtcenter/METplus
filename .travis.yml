@@ -143,7 +143,7 @@ matrix:
         # - ${TRAVIS_BUILD_DIR}/ci/travis_unit_tests.sh
         #
         - mkdir -p ${OWNER_BUILD_DIR}/pytmp.docker;
-	- echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
+        - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
         - docker pull ${DOCKERHUB_TAG}
         - docker images
         - docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'which master_metplus.py;ls -al /metplus;python3 -V'
