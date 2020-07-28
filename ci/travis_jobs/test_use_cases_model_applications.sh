@@ -9,15 +9,15 @@
 #   name ending with _var) and add a new block to the if/elif/else statement to pick the
 #   correct use case tarball.
 
-convection_allowing_models_tar=v3.1-beta1/sample_data-convection_allowing_models-3.1-beta1.tgz
+convection_allowing_models_tar=v3.1/sample_data-convection_allowing_models-3.1.tgz
 cryosphere_tar=v3.0/sample_data-cryosphere-3.0.tgz
-medium_range_tar=v3.1-beta2/sample_data-medium_range-3.1-beta2.1.tgz
+medium_range_tar=v3.1/sample_data-medium_range-3.1.tgz
 precipitation_tar=v3.0/sample_data-precipitation-3.0.tgz
 s2s_tar=v3.0/sample_data-s2s-3.0.tgz
 space_weather_tar=v3.0/sample_data-space_weather-3.0.tgz
-tc_and_extra_tc_tar=v3.1-beta1/sample_data-tc_and_extra_tc-3.1-beta1.1.tgz
+tc_and_extra_tc_tar=v3.1/sample_data-tc_and_extra_tc-3.1.tgz
 
-met_tool_wrapper_tarball=https://github.com/NCAR/METplus/releases/download/v3.1-beta1/sample_data-met_tool_wrapper-3.1-beta1.2.tgz
+met_tool_wrapper_tarball=https://github.com/NCAR/METplus/releases/download/v3.1/sample_data-met_tool_wrapper-3.1.tgz
 
 gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
 
