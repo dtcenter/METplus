@@ -4,7 +4,7 @@ MAINTAINER George McCabe <mccabe@ucar.edu>
 ENV CASE_DIR /data/input/METplus_Data
 RUN mkdir -p ${CASE_DIR}
 
-RUN curl -SL https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-medium_range-3.0.tgz | tar -xzC ${CASE_DIR} \
+RUN curl -SL https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-medium_range-3.0.tgz | tar -xzC ${CASE_DIR}
 
 VOLUME $CASE_DIR
 USER root
