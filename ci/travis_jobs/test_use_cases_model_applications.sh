@@ -85,7 +85,7 @@ echo curl -L -O $gempak_to_cf_location
 curl -L -O $gempak_to_cf_location
 
 echo Get Docker image: ${DOCKERHUB_TAG}
-docker build ${DOCKERHUB_TAG}
+docker pull ${DOCKERHUB_TAG}
 docker images
 docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
 
