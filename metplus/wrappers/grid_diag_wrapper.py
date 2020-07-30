@@ -235,7 +235,7 @@ class GridDiagWrapper(CommandBuilder):
         return True
 
     def find_input_files(self, time_info):
-        """! Loop over list if input templates and find files for each
+        """! Loop over list of input templates and find files for each
             Args:
                 @param time_info time dictionary to use for string substitution
                 @returns Input file list if all files were found, None if not.
@@ -288,4 +288,3 @@ class GridDiagWrapper(CommandBuilder):
         config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
                                     **time_info)
         self.args.append(f"-config {config_file}")
-
