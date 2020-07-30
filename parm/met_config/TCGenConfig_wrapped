@@ -1,0 +1,186 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// TC-Gen configuration file.
+//
+// For additional information, see the MET_BASE/config/README_TC file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// ATCF file format reference:
+//   http://www.nrlmry.navy.mil/atcf_web/docs/database/new/abrdeck.html
+//
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Genesis event definition criteria.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Model initialization frequency in hours, starting at 0.
+//
+init_freq = 6;
+
+//
+// Lead times in hours to be searched for genesis events.
+//
+lead_window = {
+   beg = 24;
+   end = 120;
+}
+
+//
+// Minimum track duration for genesis event in hours.
+//
+min_duration = 12;
+
+//
+// Forecast genesis event criteria.  Defined as tracks reaching the specified
+// intensity category, maximum wind speed threshold, and minimum sea-level
+// pressure threshold.  The forecast genesis time is the valid time of the first
+// track point where all of these criteria are met.
+//
+fcst_genesis = {
+   vmax_thresh = NA;
+   mslp_thresh = NA;
+}
+
+//
+// BEST track genesis event criteria.  Defined as tracks reaching the specified
+// intensity category, maximum wind speed threshold, and minimum sea-level
+// pressure threshold.  The BEST track genesis time is the valid time of the
+// first track point where all of these criteria are met.
+//
+best_genesis = {
+   technique   = "BEST";
+   category    = [ "TD", "TS" ];
+   vmax_thresh = NA;
+   mslp_thresh = NA;
+}
+
+//
+// Operational track genesis event criteria.  Defined as tracks reaching the
+// specified intensity category, maximum wind speed threshold, and minimum
+// sea-level pressure threshold.  The operational track genesis time is valid
+// time of the first track point where all of these criteria are met.
+//
+oper_genesis = {
+   technique   = "CARQ";
+   category    = [ "DB", "LO", "WV" ];
+   vmax_thresh = NA;
+   mslp_thresh = NA;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Track filtering options which may be specified separately in each filter
+// array entry.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Filter is an array of dictionaries containing the track filtering options
+// listed below.  If empty, a single filter is defined using the top-level
+// settings.
+//
+filter = [];
+
+//
+// Description written to output DESC column
+//
+desc = "NA";
+
+//
+// Forecast ATCF ID's
+// If empty, all ATCF ID's found will be processed.
+// Statistics will be generated separately for each ATCF ID.
+//
+model = [];
+
+//
+// BEST and operational track storm identifiers
+//
+storm_id = [];
+
+//
+// BEST and operational track storm names
+//
+storm_name = [];
+
+//
+// Forecast and operational initialization time window
+//
+init_beg = "";
+init_end = "";
+
+//
+// Forecast, BEST, and operational valid time window
+//
+valid_beg = "";
+valid_end = "";
+
+//
+// Forecast and operational initialization hours
+//
+init_hour = [];
+
+//
+// Forecast and operational lead times in hours
+//
+lead = [];
+
+//
+// Spatial masking region (path to gridded data file or polyline file)
+//
+vx_mask = "";
+
+//
+// Distance to land threshold
+//
+dland_thresh = NA;
+
+//
+// Genesis matching time window, in hours relative to the forecast genesis time
+//
+genesis_window = {
+   beg = -24;
+   end =  24;
+}
+
+//
+// Genesis matching search radius in km.
+//
+genesis_radius = 300;
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Global settings.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Confidence interval alpha value
+//
+ci_alpha = 0.05;
+
+//
+// Statistical output types
+//
+output_flag = {
+   fho    = NONE;
+   ctc    = BOTH; 
+   cts    = BOTH;
+}
+
+//
+// Specify the NetCDF output of the gen_dland tool containing a gridded
+// representation of the minimum distance to land.
+//
+dland_file = "MET_BASE/tc_data/dland_global_tenth_degree.nc";
+
+//
+// Indicate a version number for the contents of this configuration file.
+// The value should generally not be modified.
+//
+version = "V9.1";

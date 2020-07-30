@@ -271,7 +271,6 @@ def handle_format_delimiter(split_string, idx, shift_seconds, truncate_seconds, 
 
             # truncate date time if set
             obj = round_time_down(obj, truncate_seconds)
-
             return obj.strftime(fmt)
 
         # if input is relativedelta
@@ -409,7 +408,6 @@ def find_and_replace_tags_in_template(match_list, tmpl, kwargs, skip_missing_tag
     # A dictionary that will contain the string to replace (key)
     # and the string to replace it with (value)
     replacement_dict = {}
-
     # Search for the FORMATTING_DELIMITER within the first string
     for match in match_list:
 
