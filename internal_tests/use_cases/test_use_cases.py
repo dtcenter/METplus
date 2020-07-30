@@ -56,6 +56,7 @@ use_cases['met_tool_wrapper'] = [
                 use_case_dir + "/met_tool_wrapper/GenVxMask/GenVxMask.conf",
                 use_case_dir + "/met_tool_wrapper/GenVxMask/GenVxMask_multiple.conf",
                 use_case_dir + "/met_tool_wrapper/GenVxMask/GenVxMask_with_arguments.conf",
+                use_case_dir + "/met_tool_wrapper/GridDiag/GridDiag.conf",
                 use_case_dir + "/met_tool_wrapper/GridStat/GridStat.conf",
                 use_case_dir + "/met_tool_wrapper/GridStat/GridStat.conf," + use_case_dir + "/met_tool_wrapper/GridStat/GridStat_forecast.conf,dir.GRID_STAT_OUTPUT_DIR={OUTPUT_BASE}/met_tool_wrapper/GridStat/GridStat_multiple_config," + use_case_dir + "/met_tool_wrapper/GridStat/GridStat_observation.conf",
                 use_case_dir + "/met_tool_wrapper/MODE/MODE.conf",
