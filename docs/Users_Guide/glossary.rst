@@ -5921,7 +5921,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    GRID_DIAG_INPUT_TEMPLATE
-     Template used to specify input filenames for the MET tool grid_diag.
+     Template used to specify input filenames for the MET tool grid_diag. This can be a comma-separated list. If there are more than one template, the number of fields specified must match the number of templates.
 
      | *Used by:*  GridDiag
      | *Family:*  [filename_templates]
