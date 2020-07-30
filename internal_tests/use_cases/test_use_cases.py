@@ -89,7 +89,7 @@ use_cases['met_tool_wrapper'] = [
 
 use_cases['climate'] = [
     use_case_dir + "/model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf",
-    use_case_dir + "/model_applications/climate/MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.conf",
+    use_case_dir + "/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf",
 ]
 
 use_cases['convection_allowing_models'] = [
