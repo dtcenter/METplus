@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import sys
@@ -102,6 +102,10 @@ def test_mtd_by_init_all_found():
         obs_list = f.readlines()
     obs_list = [x.strip() for x in obs_list]
 
+    # remove file_list line from lists
+    fcst_list = fcst_list[1:]
+    obs_list = obs_list[1:]
+
     assert(fcst_list[0] == os.path.join(fcst_dir,'20170510', '20170510_i03_f001_HRRRTLE_PHPT.grb2') and
            fcst_list[1] == os.path.join(fcst_dir,'20170510', '20170510_i03_f002_HRRRTLE_PHPT.grb2') and
            fcst_list[2] == os.path.join(fcst_dir,'20170510', '20170510_i03_f003_HRRRTLE_PHPT.grb2') and
@@ -129,6 +133,10 @@ def test_mtd_by_valid_all_found():
     with open(obs_list_file) as f:
         obs_list = f.readlines()
     obs_list = [x.strip() for x in obs_list]
+
+    # remove file_list line from lists
+    fcst_list = fcst_list[1:]
+    obs_list = obs_list[1:]
 
     assert(fcst_list[0] == os.path.join(fcst_dir,'20170510', '20170510_i02_f001_HRRRTLE_PHPT.grb2') and
            fcst_list[1] == os.path.join(fcst_dir,'20170510', '20170510_i01_f002_HRRRTLE_PHPT.grb2') and
@@ -158,6 +166,10 @@ def test_mtd_by_init_miss_fcst():
         obs_list = f.readlines()
     obs_list = [x.strip() for x in obs_list]
 
+    # remove file_list line from lists
+    fcst_list = fcst_list[1:]
+    obs_list = obs_list[1:]
+
     assert(fcst_list[0] == os.path.join(fcst_dir,'20170510', '20170510_i03_f003_HRRRTLE_PHPT.grb2') and
            fcst_list[1] == os.path.join(fcst_dir,'20170510', '20170510_i03_f006_HRRRTLE_PHPT.grb2') and
            fcst_list[2] == os.path.join(fcst_dir,'20170510', '20170510_i03_f012_HRRRTLE_PHPT.grb2') and
@@ -186,6 +198,10 @@ def test_mtd_by_init_miss_both():
         obs_list = f.readlines()
     obs_list = [x.strip() for x in obs_list]
 
+    # remove file_list line from lists
+    fcst_list = fcst_list[1:]
+    obs_list = obs_list[1:]
+
     assert(fcst_list[0] == os.path.join(fcst_dir,'20170510', '20170510_i03_f006_HRRRTLE_PHPT.grb2') and
            fcst_list[1] == os.path.join(fcst_dir,'20170510', '20170510_i03_f012_HRRRTLE_PHPT.grb2') and
            obs_list[0] == os.path.join(obs_dir,'20170510', 'qpe_2017051009_A06.nc') and
@@ -207,6 +223,9 @@ def test_mtd_single():
     with open(single_list_file) as f:
         single_list = f.readlines()
     single_list = [x.strip() for x in single_list]
+
+    # remove file_list line from lists
+    single_list = single_list[1:]
 
     assert(single_list[0] == os.path.join(fcst_dir,'20170510', '20170510_i03_f001_HRRRTLE_PHPT.grb2') and
            single_list[1] == os.path.join(fcst_dir,'20170510', '20170510_i03_f002_HRRRTLE_PHPT.grb2') and
