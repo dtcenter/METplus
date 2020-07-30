@@ -42,8 +42,9 @@ class GridDiagWrapper(CommandBuilder):
             self.log_error('GRID_DIAG_CONFIG_FILE required to run.')
 
         c_dict['INPUT_DIR'] = self.config.getdir('GRID_DIAG_INPUT_DIR', '')
-        c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                      'GRID_DIAG_INPUT_TEMPLATE')
+        c_dict['INPUT_TEMPLATES'] = util.getlist(
+            self.config.getraw('filename_templates',
+                               'GRID_DIAG_INPUT_TEMPLATE'))
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_DIAG_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
@@ -137,8 +138,12 @@ class GridDiagWrapper(CommandBuilder):
     def get_command(self):
         cmd = self.app_path
 
-        # add input files and other arguments
-        cmd += f" -data {' '.join(self.infiles)} {' '.join(self.args)}"
+        # add input files
+        for infile in self.infiles:
+            cmd += f" -data {infile}"
+
+        # add other arguments
+        cmd += f" {' '.join(self.args)}"
 
         # add output path
         out_path = self.get_output_path()
@@ -170,6 +175,8 @@ class GridDiagWrapper(CommandBuilder):
              Args:
                 @param time_info dictionary containing timing information
         """
+        self.clear()
+
         # get input files
         if not self.find_input_files(time_info):
             return
@@ -228,22 +235,34 @@ class GridDiagWrapper(CommandBuilder):
         return True
 
     def find_input_files(self, time_info):
-        """!Get DECK file and list of input data files and set c_dict items.
+        """! Loop over list if input templates and find files for each
             Args:
                 @param time_info time dictionary to use for string substitution
                 @returns Input file list if all files were found, None if not.
         """
+        self.infiles = []
+        for idx, input_template in enumerate(self.c_dict['INPUT_TEMPLATES']):
+            self.c_dict['INPUT_TEMPLATE'] = input_template
+            list_file = self.find_input_file_list(time_info, idx)
 
-        # create an ascii file containing the list of input files, then
-        # pass that file to the app - this can be removed once we verify
-        # that file lists are supported in the tool
-        use_file_list = True
+            if list_file is None:
+                return None
 
+            self.infiles.append(list_file)
+
+        return self.infiles
+
+    def find_input_file_list(self, time_info, idx):
+        """!Get DECK file and list of input data files and set c_dict items.
+            Args:
+                @param time_info time dictionary to use for string substitution
+                @param idx index to use for file list names
+                @returns Input file list if all files were found, None if not.
+        """
         all_input_files = []
 
         lead_seq = util.get_lead_sequence(self.config, time_info)
         for lead in lead_seq:
-            self.clear()
             time_info['lead'] = lead
 
             time_info = time_util.ti_calculate(time_info)
@@ -258,15 +277,10 @@ class GridDiagWrapper(CommandBuilder):
         if not all_input_files:
             return None
 
-        if use_file_list:
-            # create an ascii file with a list of the input files
-            list_file = self.write_list_file(f"grid_diag_data_files_{time_info['valid_fmt']}.txt",
-                                             all_input_files)
-            self.infiles.append(list_file)
-        else:
-            self.infiles.extend(all_input_files)
-
-        return self.infiles
+        # create an ascii file with a list of the input files
+        list_file = self.write_list_file(f"grid_diag_data_files_idx{idx}_{time_info['valid_fmt']}.txt",
+                                         all_input_files)
+        return list_file
 
     def set_command_line_arguments(self, time_info):
 
