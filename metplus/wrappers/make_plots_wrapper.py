@@ -222,7 +222,9 @@ class MakePlotsWrapper(CommandBuilder):
                         os.remove(os.path.join(output_base_data_dir,rmfile))
 
     def get_met_version(self):
-        p = subprocess.Popen(["stat_analysis", "--version"],
+        stat_analysis_exe = os.path.join(self.config.getdir('MET_BIN_DIR'),
+                                         'stat_analysis')
+        p = subprocess.Popen([stat_analysis_exe, "--version"],
                              stdout=subprocess.PIPE)
         out, err = p.communicate()
         out = out.decode(encoding='utf-8', errors='strict')
