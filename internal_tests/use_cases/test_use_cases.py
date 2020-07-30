@@ -89,7 +89,7 @@ use_cases['met_tool_wrapper'] = [
 
 use_cases['climate'] = [
     use_case_dir + "/model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf",
-    use_case_dir + "/model_applications/climate/MODE_fcstHRRR_obsCESM_obsGPCP_ConusPrecip.conf",
+    use_case_dir + "/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf",
 ]
 
 use_cases['convection_allowing_models'] = [
@@ -110,6 +110,7 @@ use_cases['medium_range1'] = [
     use_case_dir + "/model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf",
     use_case_dir + "/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.conf",
     use_case_dir + "/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf",
+#    use_case_dir + "/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf",
     use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf",
     use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_Sfc_MultiField.conf",
 ]
