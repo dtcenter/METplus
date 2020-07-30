@@ -81,9 +81,9 @@ class GridDiagWrapper(CommandBuilder):
                 f"to_grid = {self.format_regrid_to_grid(conf_value)};"
             )
 
-        conf_value = self.config.getstr('config', 'MODEL', '')
+        conf_value = self.config.getstr('config', 'GRID_DIAG_DESCRIPTION', '')
         if conf_value:
-            c_dict['MODEL'] = f'model = "{util.remove_quotes(conf_value)}";'
+            c_dict['DESC'] = f'desc = "{util.remove_quotes(conf_value)}";'
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
@@ -122,8 +122,8 @@ class GridDiagWrapper(CommandBuilder):
         self.add_env_var('REGRID_DICT',
                          regrid_dict_string)
 
-        self.add_env_var('MODEL',
-                         self.c_dict.get('MODEL', ''))
+        self.add_env_var('DESC',
+                         self.c_dict.get('DESC', ''))
 
         verif_mask = self.c_dict.get('VERIFICATION_MASK', '')
         if verif_mask:

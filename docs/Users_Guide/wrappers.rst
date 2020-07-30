@@ -376,7 +376,7 @@ METplus Configuration
 | :term:`GRID_DIAG_REGRID_VLD_THRESH`
 | :term:`GRID_DIAG_REGRID_SHAPE`
 | :term:`GRID_DIAG_REGRID_TO_GRID`
-| :term:`MODEL`
+| :term:`GRID_DIAG_DESCRIPTION`
 
 MET Configuration
 ~~~~~~~~~~~~~~~~~

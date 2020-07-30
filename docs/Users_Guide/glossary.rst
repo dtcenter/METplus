@@ -5906,6 +5906,13 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
+   GRID_DIAG_DESCRIPTION
+     Specify the value for 'desc' in the MET configuration file for grid_diag.
+
+     | *Used by:*  GridDiag
+     | *Family:*  [config]
+     | *Default:*  Varies
+
    GRID_DIAG_INPUT_DIR
      Input directory for files to use with the MET tool grid_diag.
 
