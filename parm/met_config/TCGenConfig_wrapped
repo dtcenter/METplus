@@ -96,17 +96,17 @@ desc = "NA";
 // If empty, all ATCF ID's found will be processed.
 // Statistics will be generated separately for each ATCF ID.
 //
-model = [];
+${MODEL}
 
 //
 // BEST and operational track storm identifiers
 //
-storm_id = [];
+${STORM_ID}
 
 //
 // BEST and operational track storm names
 //
-storm_name = [];
+${STORM_NAME}
 
 //
 // Forecast and operational initialization time window

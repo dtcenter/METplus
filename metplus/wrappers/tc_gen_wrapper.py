@@ -13,6 +13,7 @@ Condition codes: 0 for success, 1 for failure
 """
 
 import os
+import datetime
 
 from ..util import met_util as util
 from ..util import time_util
@@ -54,25 +55,36 @@ class TCGenWrapper(CommandBuilder):
 
         # values used in configuration file
 
-        conf_value = self.config.getstr('config', 'TC_GEN_STORM_ID', '')
+        conf_value = util.getlist(self.config.getstr('config', 'MODEL', ''))
         if conf_value:
-            c_dict['STORM_ID'] = f'storm_id = "{conf_value}";'
+            conf_value = str(conf_value).replace("'", '"')
+            c_dict['MODEL'] = f"model = {conf_value};"
 
-        conf_value = self.config.getstr('config',
-                                        'TC_GEN_VALID_BEG',
-                                        self.config.getstr('config',
-                                                           'VALID_BEG',
-                                                           ''))
+        conf_value = util.getlist(self.config.getstr('config', 'TC_GEN_STORM_ID', ''))
         if conf_value:
-            c_dict['VALID_BEG'] = f'valid_beg = "{conf_value}";'
+            conf_value = str(conf_value).replace("'", '"')
+            c_dict['STORM_ID'] = f'storm_id = {conf_value};'
 
-        conf_value = self.config.getstr('config',
-                                        'TC_GEN_VALID_END',
-                                        self.config.getstr('config',
-                                                           'VALID_END',
-                                                           ''))
+        conf_value = util.getlist(self.config.getstr('config', 'TC_GEN_STORM_NAME', ''))
         if conf_value:
-            c_dict['VALID_END'] = f'valid_end = "{conf_value}";'
+            conf_value = str(conf_value).replace("'", '"')
+            c_dict['STORM_NAME'] = f"storm_name = {conf_value};"
+
+        clock_time = datetime.datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
+                                                '%Y%m%d%H%M%S')
+
+        # set INIT_BEG, INIT_END, VALID_BEG, and VALID_END
+        for time_type in ['INIT', 'VALID']:
+            time_format = self.config.getraw('config', f'{time_type}_TIME_FMT', '')
+            for time_bound in ['BEG', "END"]:
+                time_value = self.get_time_value(time_type,
+                                                 time_bound,
+                                                 time_format,
+                                                 clock_time)
+                if time_value:
+                    time_key = f'{time_type}_{time_bound}'
+                    time_value = f"{time_key.lower()} = {time_value};"
+                    c_dict[time_key] = time_value
 
         conf_value = util.getlist(self.config.getstr('config',
                                                      'TC_GEN_INIT_HOUR_LIST',
@@ -82,6 +94,34 @@ class TCGenWrapper(CommandBuilder):
             c_dict['INIT_HOUR_LIST'] = f"init_hour = {conf_list};"
 
         return c_dict
+
+    def get_time_value(self, time_type, time_bound, time_format, clock_time):
+        """! Get time value from config. Use TC_GEN_{time_type}_{time_bound} if it is set.
+             If not, use {time_type}_{time_bound}. If {time_type}_TIME_FMT is set, use that
+             value to format the time value into the format that the MET tools expect
+             (YYYYMMDD_HHMMSS). If not, just return the value provided in the config file
+            Args:
+              @param time_type INIT or VALID
+              @param time_bound BEG or END
+              @param time_format [INIT/VALID]_TIME_FMT value or empty string if not set
+              @param clock_time time that METplus was started in YYYYMMDDHHMMSS format
+              @returns time value to pass to the MET configuration file or empty string
+        """
+        conf_value = self.config.getraw('config',
+                                        f'TC_GEN_{time_type}_{time_bound}',
+                                        self.config.getraw('config',
+                                                           f'{time_type}_{time_bound}',
+                                                           ''))
+        # if time value or {time_type}_TIME_FMT are not set, return the value
+        if not conf_value or not time_format:
+            return conf_value
+
+        # if time format is set, format the time value
+        conf_value_dt = util.get_time_obj(conf_value,
+                                          time_format,
+                                          clock_time,
+                                          logger=self.logger)
+        return conf_value_dt.strftime('%Y%m%d_%H%M%S')
 
     def set_environment_variables(self, time_info):
         """!Set environment variables that will be read by the MET config file.
@@ -95,11 +135,14 @@ class TCGenWrapper(CommandBuilder):
         self.add_env_var('STORM_ID',
                          self.c_dict.get('STORM_ID', ''))
 
-        self.add_env_var('VALID_BEG',
-                         self.c_dict.get('VALID_BEG', ''))
+        self.add_env_var('STORM_NAME',
+                         self.c_dict.get('STORM_NAME', ''))
 
-        self.add_env_var('VALID_END',
-                         self.c_dict.get('VALID_END', ''))
+        for time_type in ['INIT', 'VALID']:
+            for time_bound in ['BEG', "END"]:
+                time_key = f'{time_type}_{time_bound}'
+                self.add_env_var(time_key,
+                                 self.c_dict.get(time_key, ''))
 
         self.add_env_var('INIT_HOUR_LIST',
                          self.c_dict.get('INIT_HOUR_LIST', ''))
