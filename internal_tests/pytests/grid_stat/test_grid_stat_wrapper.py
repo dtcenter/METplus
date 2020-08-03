@@ -43,7 +43,7 @@ def grid_stat_wrapper():
          to over-ride these /path/to values."""
 
     config = metplus_config()
-    return GridStatWrapper(config, config.logger)
+    return GridStatWrapper(config)
 
 #@pytest.fixture
 def metplus_config():
@@ -62,7 +62,7 @@ def metplus_config():
 
         # Read in the configuration object CONFIG
         config = config_metplus.setup(util.baseinputconfs)
-        logger = util.get_logger(config)
+        util.get_logger(config)
         return config
 
     except Exception as e:
@@ -109,7 +109,7 @@ def test_window_variables_(conf_dict, out_dict):
     for key, value in conf_dict.items():
         conf.set('config', key, value)
     
-    gsw = GridStatWrapper(conf, logger)
+    gsw = GridStatWrapper(conf)
 
     good = True
     for key, value in out_dict.items():

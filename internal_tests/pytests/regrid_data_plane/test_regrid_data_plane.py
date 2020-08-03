@@ -44,7 +44,7 @@ def rdp_wrapper():
 
     config = metplus_config()
     config.set('config', 'DO_NOT_RUN_EXE', True)
-    return RegridDataPlaneWrapper(config, config.logger)
+    return RegridDataPlaneWrapper(config)
 
 #@pytest.fixture
 def metplus_config():
@@ -160,7 +160,7 @@ def test_get_field_info_list(conf_dict, expected_field_info_list):
 
     var_list = util.parse_var_list(config, time_info, data_type=data_type)
 
-    rdp = RegridDataPlaneWrapper(config, logger)
+    rdp = RegridDataPlaneWrapper(config)
 
     field_info_list = rdp.get_field_info_list(var_list, data_type, time_info)
     print(f"FIELD INFO LIST: {field_info_list}")
@@ -226,7 +226,7 @@ def test_set_field_command_line_arguments(field_info, run_pcp, expected_arg):
     if run_pcp:
         config.set('config', f"{data_type}_PCP_COMBINE_RUN", True)
 
-    rdp = RegridDataPlaneWrapper(config, config.logger)
+    rdp = RegridDataPlaneWrapper(config)
 
     rdp.set_field_command_line_arguments(field_info, data_type)
     assert(rdp.args[0] == expected_arg)
@@ -257,7 +257,7 @@ def test_get_output_name(field_info, input_name, expected_name):
     data_type = 'FCST'
 
     config = metplus_config()
-    rdp = RegridDataPlaneWrapper(config, config.logger)
+    rdp = RegridDataPlaneWrapper(config)
 
     assert(rdp.get_output_name(field_info, data_type, input_name) == expected_name)
 

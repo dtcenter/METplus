@@ -75,11 +75,11 @@ class StatAnalysisWrapper(CommandBuilder):
         'FCST_INIT_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
     ]
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      'stat_analysis')
         self.app_name = os.path.basename(self.app_path)
-        super().__init__(config, logger)
+        super().__init__(config)
 
     def get_command(self):
 
@@ -172,7 +172,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.check_MakePlots_config(c_dict)
 
             # create MakePlots wrapper instance
-            self.MakePlotsWrapper = MakePlotsWrapper(self.config, self.logger)
+            self.MakePlotsWrapper = MakePlotsWrapper(self.config)
             if not self.MakePlotsWrapper.isOK:
                 self.log_error("MakePlotsWrapper was not initialized correctly.")
 

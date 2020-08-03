@@ -25,11 +25,11 @@ from ..util import do_string_sub
 
 class GenVxMaskWrapper(CommandBuilder):
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = "gen_vx_mask"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()

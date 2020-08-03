@@ -54,7 +54,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
     # Instantiate a RegridDataPlaneWrapper
     from ..wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
     logger = config.logger
-    rdp = RegridDataPlaneWrapper(config, logger)
+    rdp = RegridDataPlaneWrapper(config)
 
     # For logging
     cur_filename = sys._getframe().f_code.co_filename

@@ -20,11 +20,11 @@ from . import CompareGriddedWrapper
 class PointStatWrapper(CompareGriddedWrapper):
     """! Wrapper to the MET tool, Point-Stat."""
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = 'point_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config)
 
     def create_c_dict(self):
         """! Create a dictionary that holds all the values set in the

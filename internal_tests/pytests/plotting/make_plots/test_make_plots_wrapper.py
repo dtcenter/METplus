@@ -52,7 +52,7 @@ def make_plots_wrapper():
     # Default, empty MakePlotsWrapper with some configuration values set
     # to /path/to:
     config = metplus_config()
-    return MakePlotsWrapper(config, config.logger)
+    return MakePlotsWrapper(config)
 
 
 #@pytest.fixture
@@ -67,7 +67,7 @@ def metplus_config():
 
         # Read in the configuration object CONFIG
         config = config_metplus.setup(util.baseinputconfs)
-        logger = util.get_logger(config)
+        util.get_logger(config)
         return config
 
     except Exception as e:

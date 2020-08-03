@@ -54,7 +54,7 @@ def stat_analysis_wrapper():
     # to /path/to:
     config = metplus_config()
     util.handle_tmp_dir(config)
-    return StatAnalysisWrapper(config, config.logger)
+    return StatAnalysisWrapper(config)
 
 
 #@pytest.fixture
@@ -69,7 +69,7 @@ def metplus_config():
 
         # Read in the configuration object CONFIG
         config = config_metplus.setup(util.baseinputconfs)
-        logger = util.get_logger(config)
+        util.get_logger(config)
         return config
 
     except Exception as e:

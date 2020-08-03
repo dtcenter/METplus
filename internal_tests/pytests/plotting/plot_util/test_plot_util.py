@@ -26,7 +26,7 @@ def metplus_config():
 
         # Read in the configuration object CONFIG
         config = config_metplus.setup(util.baseinputconfs)
-        logger = util.get_logger(config)
+        util.get_logger(config)
         return config
 
     except Exception as e:

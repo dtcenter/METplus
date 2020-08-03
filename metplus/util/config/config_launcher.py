@@ -192,15 +192,15 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
             raise TypeError('First input to metplus.config.for_initial_job '
                             'must be a list of strings.')
 
-    conf = METplusConfig()
-    logger = conf.log()
+    config = METplusConfig()
+    logger = config.log()
 
     # set config variable for current time
-    conf.set('config', 'CLOCK_TIME', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+    config.set('config', 'CLOCK_TIME', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
 
     # Read in and parse all the conf files.
     for filename in file_list:
-        conf.read(filename)
+        config.read(filename)
         logger.info("%s: Parsed this file" % (filename,))
 
     # Overriding or passing in specific conf items on the command line
@@ -208,26 +208,26 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # If spaces, seems like you need double quotes on command line.
     if moreopt:
         for section, options in moreopt.items():
-            if not conf.has_section(section):
-                conf.add_section(section)
+            if not config.has_section(section):
+                config.add_section(section)
             for option, value in options.items():
                 logger.info('Override: %s.%s=%s'
                             % (section, option, repr(value)))
-                conf.set(section, option, value)
+                config.set(section, option, value)
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
     # only set incorrectly because OUTPUT_BASE is set incorrectly
-    conf.getdir('OUTPUT_BASE')
+    config.getdir('OUTPUT_BASE')
 
     # All conf files and command line options have been parsed.
     # So lets set and add specific log variables to the conf object
     # based on the conf log template values.
-    _set_logvars(conf)
+    _set_logvars(config)
 
     # Determine if final METPLUS_CONF file already exists on disk.
     # If it does, use it instead.
-    confloc = conf.getloc('METPLUS_CONF')
+    confloc = config.getloc('METPLUS_CONF')
 
     # Place holder for when workflow is developed in METplus.
     # rocoto does not initialize the dirs, it returns here.
@@ -237,7 +237,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     #    return conf
 
     # Initialize the output directories
-    produtil.fileop.makedirs(conf.getdir('OUTPUT_BASE', logger), logger=logger)
+    produtil.fileop.makedirs(config.getdir('OUTPUT_BASE', logger), logger=logger)
     # A user my set the confloc METPLUS_CONF location in a subdir of OUTPUT_BASE
     # or even in another parent directory altogether, so make thedirectory
     # so the metplus_final.conf file can be written.
@@ -247,15 +247,15 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # set METPLUS_BASE conf to location of scripts used by METplus
     # warn if user has set METPLUS_BASE to something different
     # in their conf file
-    user_metplus_base = conf.getdir('METPLUS_BASE', METPLUS_BASE)
+    user_metplus_base = config.getdir('METPLUS_BASE', METPLUS_BASE)
     if realpath(user_metplus_base) != realpath(METPLUS_BASE):
         logger.warning('METPLUS_BASE from the conf files has no effect.'+\
                        ' Overriding to '+METPLUS_BASE)
 
-    conf.set('dir', 'METPLUS_BASE', METPLUS_BASE)
+    config.set('dir', 'METPLUS_BASE', METPLUS_BASE)
 
     # do the same for PARM_BASE
-    user_parm_base = conf.getdir('PARM_BASE', PARM_BASE)
+    user_parm_base = config.getdir('PARM_BASE', PARM_BASE)
     if realpath(user_parm_base) != realpath(PARM_BASE):
         logger.error('PARM_BASE from the config ({}) '.format(user_parm_base) +\
                      'differs from METplus parm base ({}). '.format(PARM_BASE))
@@ -264,23 +264,23 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
                      'the METplus wrappers look for config files.')
         exit(1)
 
-    conf.set('dir', 'PARM_BASE', PARM_BASE)
+    config.set('dir', 'PARM_BASE', PARM_BASE)
 
     # print config items that are set automatically
     for var in ('METPLUS_BASE', 'PARM_BASE'):
-        expand = conf.getdir(var)
+        expand = config.getdir(var)
         logger.info('Setting [dir] %s to %s' % (var, expand))
 
     # Place holder for when workflow is developed in METplus.
     # if prelaunch is not None:
-    #    prelaunch(conf,logger,cycle)
+    #    prelaunch(config,logger,cycle)
 
     # writes the METPLUS_CONF used by all tasks.
     logger.info('METPLUS_CONF: %s written here.' % (confloc,))
     with open(confloc, 'wt') as f:
-        conf.write(f)
+        config.write(f)
 
-    return conf
+    return config
 
 def load(filename):
     """!Loads the METplusConfig created by the launch() function.
@@ -291,9 +291,9 @@ def load(filename):
     the launch command.
 
     @param filename The metplus*.conf file created by launch()"""
-    conf = METplusConfig()
-    conf.read(filename)
-    return conf
+    config = METplusConfig()
+    config.read(filename)
+    return config
 
 def _set_logvars(config, logger=None):
     """!Sets and adds the LOG_METPLUS and LOG_TIMESTAMP

@@ -51,7 +51,7 @@ def mtd_wrapper(lead_seq=None):
     if lead_seq:
         config.set('config', 'LEAD_SEQ', lead_seq)
 
-    return MTDWrapper(config, config.logger)
+    return MTDWrapper(config)
 
 
 #@pytest.fixture
@@ -71,7 +71,7 @@ def metplus_config():
 
         # Read in the configuration object CONFIG
         config = config_metplus.setup(util.baseinputconfs)
-        logger = util.get_logger(config)
+        util.get_logger(config)
         return config
 
     except Exception as e:

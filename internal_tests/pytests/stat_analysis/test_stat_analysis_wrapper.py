@@ -54,7 +54,7 @@ def stat_analysis_wrapper():
     # to /path/to:
     config = metplus_config()
     util.handle_tmp_dir(config)
-    return StatAnalysisWrapper(config, config.logger)
+    return StatAnalysisWrapper(config)
 
 
 #@pytest.fixture
@@ -69,7 +69,7 @@ def metplus_config():
 
         # Read in the configuration object CONFIG
         config = config_metplus.setup(util.baseinputconfs)
-        logger = util.get_logger(config)
+        util.get_logger(config)
         return config
 
     except Exception as e:
@@ -801,6 +801,6 @@ def test_get_level_list(data_type, config_list, expected_list):
     config = metplus_config()
     config.set('config', f'{data_type}_LEVEL_LIST', config_list)
 
-    saw = StatAnalysisWrapper(config, config.logger)
+    saw = StatAnalysisWrapper(config)
 
     assert(saw.get_level_list(data_type) == expected_list)

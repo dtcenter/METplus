@@ -43,7 +43,7 @@ def compare_gridded_wrapper():
          to over-ride these /path/to values."""
 
     config = metplus_config()
-    return CompareGriddedWrapper(config, config.logger)
+    return CompareGriddedWrapper(config)
 
 #@pytest.fixture
 def metplus_config():
@@ -62,7 +62,7 @@ def metplus_config():
 
         # Read in the configuration object CONFIG
         config = config_metplus.setup(util.baseinputconfs)
-        logger = util.get_logger(config)
+        util.get_logger(config)
         return config
 
     except Exception as e:

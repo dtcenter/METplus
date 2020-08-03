@@ -18,13 +18,13 @@ from ..util import do_string_sub
 
 class MODEWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""
-    def __init__(self, config, logger):
+    def __init__(self, config):
         # only set app variables if not already set by MTD (subclass)
         if not hasattr(self, 'app_name'):
             self.app_name = 'mode'
             self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                          self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config)
 
     def add_merge_config_file(self, time_info):
         """!If merge config file is defined, add it to the command"""

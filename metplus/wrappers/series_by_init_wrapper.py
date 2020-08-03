@@ -28,11 +28,11 @@ class SeriesByInitWrapper(CommandBuilder):
           series_analysis is done
     """
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      'series_analysis')
         self.app_name = os.path.basename(self.app_path)
-        super().__init__(config, logger)
+        super().__init__(config)
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
         self.stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST'))
@@ -243,7 +243,7 @@ class SeriesByInitWrapper(CommandBuilder):
             filter_filename = os.path.join(series_output_dir,
                                            cur_init, filter_file)
 
-            tcs = TCStatWrapper(self.config, self.logger)
+            tcs = TCStatWrapper(self.config)
             tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
                               filter_opts)
 

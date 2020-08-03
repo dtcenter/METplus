@@ -38,9 +38,9 @@ class ExtractTilesWrapper(CommandBuilder):
     # Much of the data in the class are used to perform tasks, rather than
     # having methods operating on them.
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = 'extract_tiles'
-        super().__init__(config, logger)
+        super().__init__(config)
         met_bin_dir = self.config.getdir('MET_BIN_DIR', '')
         self.tc_pairs_dir = self.config.getdir('EXTRACT_TILES_PAIRS_INPUT_DIR')
         self.overwrite_flag = self.config.getbool('config',
@@ -174,7 +174,7 @@ class ExtractTilesWrapper(CommandBuilder):
         tiles_list = util.get_files(self.tc_pairs_dir, ".*tcst", self.logger)
         tiles_list_str = ' '.join(tiles_list)
 
-        tcs = TCStatWrapper(self.config, self.logger)
+        tcs = TCStatWrapper(self.config)
         tcs.build_tc_stat(self.filtered_out_dir, cur_init,
                           tiles_list_str, self.addl_filter_opts)
 

@@ -28,11 +28,11 @@ class CyclonePlotterWrapper(CommandBuilder):
         Reads input from ATCF files generated from MET TC-Pairs
     """
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = 'cyclone_plotter'
 
         # pylint:disable=redefined-outer-name
-        super().__init__(config, logger)
+        super().__init__(config)
         self.input_data = self.config.getdir('CYCLONE_PLOTTER_INPUT_DIR')
         self.output_dir = self.config.getdir('CYCLONE_PLOTTER_OUTPUT_DIR')
         self.init_date = self.config.getstr('config', 'CYCLONE_PLOTTER_INIT_DATE')

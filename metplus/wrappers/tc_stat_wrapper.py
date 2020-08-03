@@ -35,7 +35,7 @@ class TCStatWrapper(CommandBuilder):
          cyclone pair data.
     """
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = 'tc_stat'
 
         # Check whether we are running MET tc_stat from the command line
@@ -43,7 +43,7 @@ class TCStatWrapper(CommandBuilder):
         run_method = config.getstr('config', 'TC_STAT_RUN_VIA')
         self.by_config = bool(run_method == 'CONFIG')
 
-        super().__init__(config, logger)
+        super().__init__(config)
         self.tc_exe = self.c_dict['APP_PATH']
         self.logger.info("Initialized TCStatWrapper")
 

@@ -34,11 +34,11 @@ class CommandBuilder:
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.isOK = True
         self.errors = 0
-        self.logger = logger
         self.config = config
+        self.logger = config.logger
         self.env_list = set()
         self.debug = False
         self.args = []

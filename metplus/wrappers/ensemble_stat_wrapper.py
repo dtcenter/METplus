@@ -25,11 +25,11 @@ from ..util import do_string_sub
 class EnsembleStatWrapper(CompareGriddedWrapper):
     """!Wraps the MET tool ensemble_stat to compare ensemble datasets
     """
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = 'ensemble_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config)
 
     def create_c_dict(self):
         """!Create a dictionary containing the values set in the config file

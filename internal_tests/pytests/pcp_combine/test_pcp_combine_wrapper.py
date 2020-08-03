@@ -50,7 +50,7 @@ def pcp_combine_wrapper(d_type):
     elif d_type == "OBS":
         conf.set('config', 'OBS_PCP_COMBINE_RUN', True)
 #    logger = logging.getLogger("dummy")
-    return PCPCombineWrapper(conf, conf.logger)
+    return PCPCombineWrapper(conf)
 
 
 #@pytest.fixture
@@ -70,7 +70,7 @@ def metplus_config():
 
         # Read in the configuration object CONFIG
         conf = config_metplus.setup(util.baseinputconfs)
-        logger = util.get_logger(conf)
+        util.get_logger(conf)
         return conf
 
     except Exception as e:

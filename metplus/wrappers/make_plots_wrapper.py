@@ -60,10 +60,10 @@ class MakePlotsWrapper(CommandBuilder):
         'VERIF_GRID', 'EVENT_EQUALIZATION', 'LOG_METPLUS', 'LOG_LEVEL'
     ]
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_path = 'python'
         self.app_name = 'make_plots'
-        super().__init__(config, logger)
+        super().__init__(config)
 
     def get_command(self):
 

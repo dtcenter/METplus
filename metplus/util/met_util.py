@@ -161,7 +161,7 @@ def run_metplus(config, process_list):
                 package_name = 'metplus.wrappers.' + camel_to_underscore(item) + '_wrapper'
                 module = import_module(package_name)
                 command_builder = getattr(module,
-                                          item + "Wrapper")(config, logger)
+                                          item + "Wrapper")(config)
 
                 # if Usage specified in PROCESS_LIST, print usage and exit
                 if item == 'Usage':
@@ -246,12 +246,12 @@ def post_run_cleanup(config, app_name, total_errors):
         logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
         sys.exit(1)
 
-def check_for_deprecated_config(conf):
+def check_for_deprecated_config(config):
     """!Checks user configuration files and reports errors or warnings if any deprecated variable
         is found. If an alternate variable name can be suggested, add it to the 'alt' section
         If the alternate cannot be literally substituted for the old name, set copy to False
        Args:
-          @conf : METplusConfig object to evaluate
+          @config : METplusConfig object to evaluate
        Returns:
           A tuple containing a boolean if the configuration is suitable to run or not and
           if it is not correct, the 2nd item is a list of sed commands that can be run to help
@@ -484,7 +484,7 @@ def check_for_deprecated_config(conf):
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
 
-    logger = conf.logger
+    logger = config.logger
 
     # create list of errors and warnings to report for deprecated configs
     e_list = []
@@ -498,7 +498,7 @@ def check_for_deprecated_config(conf):
             if '<n>' in old:
                 old_regex = old.replace('<n>', r'(\d+)')
                 indicies = find_indices_in_config_section(old_regex,
-                                                          conf,
+                                                          config,
                                                           'config',
                                                           noID=True).keys()
                 for index in indicies:
@@ -509,19 +509,19 @@ def check_for_deprecated_config(conf):
                         alt_with_index = ''
 
                     handle_deprecated(old_with_index, alt_with_index, depr_info,
-                                      conf, all_sed_cmds, w_list, e_list)
+                                      config, all_sed_cmds, w_list, e_list)
             else:
                 handle_deprecated(old, depr_info['alt'], depr_info,
-                                  conf, all_sed_cmds, w_list, e_list)
+                                  config, all_sed_cmds, w_list, e_list)
 
 
     # check all templates and error if any deprecated tags are used
     # value of dict is replacement tag, set to None if no replacement exists
     # deprecated tags: region (replace with basin)
     deprecated_tags = {'region' : 'basin'}
-    template_vars = conf.keys('filename_templates')
+    template_vars = config.keys('filename_templates')
     for temp_var in template_vars:
-        template = conf.getraw('filename_templates', temp_var)
+        template = config.getraw('filename_templates', temp_var)
         tags = get_tags(template)
 
         for depr_tag, replace_tag in deprecated_tags.items():
@@ -548,11 +548,11 @@ def check_for_deprecated_config(conf):
 
     return True, []
 
-def handle_deprecated(old, alt, depr_info, conf, all_sed_cmds, w_list, e_list):
+def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, w_list, e_list):
     sec = depr_info['sec']
-    config_files = conf.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+    config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
     # if deprecated config item is found
-    if conf.has_option(sec, old):
+    if config.has_option(sec, old):
         # if it is not required to remove, add to warning list
         if 'req' in depr_info.keys() and depr_info['req'] is False:
             msg = '[{}] {} is deprecated and will be '.format(sec, old) + \
@@ -806,15 +806,15 @@ def skip_time(time_info, skip_times):
     # if skip time never matches, return False
     return False
 
-def write_final_conf(conf, logger):
+def write_final_conf(config, logger):
     """!write final conf file including default values that were set during run"""
-    confloc = conf.getloc('METPLUS_CONF')
+    confloc = config.getloc('METPLUS_CONF')
     logger.info('%s: write metplus.conf here' % (confloc,))
     with open(confloc, 'wt') as conf_file:
-        conf.write(conf_file)
+        config.write(conf_file)
 
     # write out os environment to file for debugging
-    env_file = os.path.join(conf.getdir('LOG_DIR'), '.metplus_user_env')
+    env_file = os.path.join(config.getdir('LOG_DIR'), '.metplus_user_env')
     with open(env_file, 'w') as env_file:
         for key, value in os.environ.items():
             env_file.write('{}={}\n'.format(key, value))
@@ -2765,7 +2765,7 @@ def preprocess_file(filename, data_type, config):
             # only import GempakToCF if needed
             from ..wrappers import GempakToCFWrapper
 
-            run_g2c = GempakToCFWrapper(config, config.logger)
+            run_g2c = GempakToCFWrapper(config)
             run_g2c.infiles.append(filename)
             run_g2c.set_output_path(stagefile)
             cmd = run_g2c.get_command()
@@ -2846,7 +2846,7 @@ def run_stand_alone(filename, app_name):
 
         module = __import__(module_name)
         wrapper_class = getattr(module, app_name + "Wrapper")
-        wrapper = wrapper_class(config, config.logger)
+        wrapper = wrapper_class(config)
 
         process_list = [app_name]
         total_errors = run_metplus(config, process_list)

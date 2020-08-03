@@ -25,11 +25,11 @@ from . import ReformatGriddedWrapper
 class RegridDataPlaneWrapper(ReformatGriddedWrapper):
     '''!Wraps the MET tool regrid_data_plane to reformat gridded datasets
     '''
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = 'regrid_data_plane'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()

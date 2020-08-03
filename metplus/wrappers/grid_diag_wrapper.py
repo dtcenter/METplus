@@ -26,11 +26,11 @@ from ..util import do_string_sub
 
 
 class GridDiagWrapper(CommandBuilder):
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = "grid_diag"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()

@@ -44,7 +44,7 @@ def pb2nc_wrapper():
     # PB2NCWrapper with configuration values determined by what is set in
     # the pb2nc_test.conf file.
     config = metplus_config()
-    return PB2NCWrapper(config, config.logger)
+    return PB2NCWrapper(config)
 
 def metplus_config():
     """! Create a METplus configuration object that can be
@@ -62,7 +62,7 @@ def metplus_config():
 
         # Read in the configuration object CONFIG
         config = config_metplus.setup(util.baseinputconfs)
-        logger = util.get_logger(config)
+        util.get_logger(config)
         return config
 
     except Exception as e:
