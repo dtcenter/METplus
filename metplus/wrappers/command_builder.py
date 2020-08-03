@@ -10,6 +10,7 @@ Output Files: N/A
 """
 
 import os
+import sys
 import glob
 from datetime import datetime
 from abc import ABCMeta
@@ -408,7 +409,7 @@ class CommandBuilder:
 
         return None, None
 
-    def find_data(self, time_info, var_info=None, data_type='', mandatory=True, return_list=False):
+    def find_data(self, time_info, var_info=None, data_type='', mandatory=True, return_list=False, allow_dir=False):
         """! Finds the data file to compare
               Args:
                 @param time_info dictionary containing timing information
@@ -458,12 +459,12 @@ class CommandBuilder:
         if self.c_dict.get(data_type_fmt + 'FILE_WINDOW_BEGIN', 0) == 0 and \
                 self.c_dict.get(data_type_fmt + 'FILE_WINDOW_END', 0) == 0:
 
-            return self.find_exact_file(**arg_dict)
+            return self.find_exact_file(**arg_dict, allow_dir=allow_dir)
 
         # if looking for a file within a time window:
         return self.find_file_in_window(**arg_dict)
 
-    def find_exact_file(self, level, data_type, time_info, mandatory=True, return_list=False):
+    def find_exact_file(self, level, data_type, time_info, mandatory=True, return_list=False, allow_dir=False):
         input_template = self.c_dict[f'{data_type}INPUT_TEMPLATE']
         data_dir = self.c_dict.get(f'{data_type}INPUT_DIR', '')
 
@@ -522,7 +523,8 @@ class CommandBuilder:
             input_data_type = self.c_dict.get(data_type + 'INPUT_DATATYPE', '')
             processed_path = util.preprocess_file(file_path,
                                                   input_data_type,
-                                                  self.config)
+                                                  self.config,
+                                                  allow_dir=allow_dir)
 
             # report error if file path could not be found
             if not processed_path:
@@ -534,7 +536,10 @@ class CommandBuilder:
 
                 return None
 
-            self.logger.debug(f"Found file: {processed_path}")
+            if os.path.isdir(processed_path):
+                self.logger.debug(f"Found directory: {processed_path}")
+            else:
+                self.logger.debug(f"Found file: {processed_path}")
             found_file_list.append(processed_path)
 
         # if only one item found and return_list is False, return single item
@@ -1028,9 +1033,27 @@ class CommandBuilder:
             LOOP_ORDER = times and the run_at_time method is not implemented"""
         self.log_error('run_at_time not implemented for {} wrapper. '
                           'Cannot run with LOOP_ORDER = times'.format(self.app_name))
-        exit(1)
+        sys.exit(1)
 
     def run_all_times(self):
         """!Loop over time range specified in conf file and
         call METplus wrapper for each time"""
         util.loop_over_times_and_call(self.config, self)
+
+    def set_time_dict_for_single_runtime(self, c_dict):
+        # get clock time from start of execution for input time dictionary
+        clock_time_obj = datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
+                                           '%Y%m%d%H%M%S')
+
+        # get start run time and set INPUT_TIME_DICT
+        c_dict['INPUT_TIME_DICT'] = {'now': clock_time_obj}
+        start_time, _, _ = util.get_start_end_interval_times(self.config) or (None, None, None)
+        if start_time:
+            # set init or valid based on LOOP_BY
+            if util.is_loop_by_init(self.config):
+                c_dict['INPUT_TIME_DICT']['init'] = start_time
+            else:
+                c_dict['INPUT_TIME_DICT']['valid'] = start_time
+        else:
+            self.config.logger.error("Could not get [INIT/VALID] time information from configuration file")
+            self.isOK = False

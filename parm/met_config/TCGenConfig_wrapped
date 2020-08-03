@@ -111,14 +111,16 @@ ${STORM_NAME}
 //
 // Forecast and operational initialization time window
 //
-init_beg = "";
-init_end = "";
+
+${INIT_BEG}
+${INIT_END}
 
 //
 // Forecast, BEST, and operational valid time window
 //
-valid_beg = "";
-valid_end = "";
+
+${VALID_BEG}
+${VALID_END}
 
 //
 // Forecast and operational initialization hours
@@ -128,7 +130,7 @@ init_hour = [];
 //
 // Forecast and operational lead times in hours
 //
-lead = [];
+${LEAD_LIST}
 
 //
 // Spatial masking region (path to gridded data file or polyline file)

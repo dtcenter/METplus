@@ -83,7 +83,7 @@ class TCGenWrapper(CommandBuilder):
                                                  clock_time)
                 if time_value:
                     time_key = f'{time_type}_{time_bound}'
-                    time_value = f"{time_key.lower()} = {time_value};"
+                    time_value = f'{time_key.lower()} = "{time_value}";'
                     c_dict[time_key] = time_value
 
         conf_value = util.getlist(self.config.getstr('config',
@@ -92,6 +92,13 @@ class TCGenWrapper(CommandBuilder):
         if conf_value:
             conf_list = str(conf_value).replace("'", '"')
             c_dict['INIT_HOUR_LIST'] = f"init_hour = {conf_list};"
+
+        conf_value = self.config.getstr('config', 'TC_GEN_DLAND_FILE', '')
+        if conf_value:
+            c_dict['DLAND_FILE'] = f'dland_file = "{util.remove_quotes(conf_value)}";'
+
+        # get INPUT_TIME_DICT values since wrapper only runs once (doesn't look over time)
+        self.set_time_dict_for_single_runtime(c_dict)
 
         return c_dict
 
@@ -114,7 +121,7 @@ class TCGenWrapper(CommandBuilder):
                                                            ''))
         # if time value or {time_type}_TIME_FMT are not set, return the value
         if not conf_value or not time_format:
-            return conf_value
+            return util.remove_quotes(conf_value)
 
         # if time format is set, format the time value
         conf_value_dt = util.get_time_obj(conf_value,
@@ -156,10 +163,12 @@ class TCGenWrapper(CommandBuilder):
         cmd = self.app_path
 
         # add genesis
-        cmd += ' -genesis ' + self.c_dict['GENESIS']
+        for genesis_file in self.c_dict['GENESIS_FILES']:
+            cmd += ' -genesis ' + genesis_file
 
         # add track
-        cmd += ' -track ' + self.c_dict['TRACK']
+        for track_file in self.c_dict['TRACK_FILES']:
+            cmd += ' -track ' + track_file
 
         # add arguments
         cmd += ' ' + ' '.join(self.args)
@@ -181,11 +190,19 @@ class TCGenWrapper(CommandBuilder):
         cmd += f" -v {self.c_dict['VERBOSITY']}"
         return cmd
 
-    def run_at_time(self, input_dict):
+    def run_all_times(self):
         """! Runs the MET application for a given run time. This function
               loops over the list of forecast leads and runs the application for
               each.
               Args:
+                @param input_dict dictionary containing timing information
+        """
+        # run using input time dictionary
+        self.run_at_time(self.c_dict['INPUT_TIME_DICT'])
+
+    def run_at_time(self, input_dict):
+        """! Process runtime and try to build command to run ascii2nc
+             Args:
                 @param input_dict dictionary containing timing information
         """
         for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
@@ -193,7 +210,6 @@ class TCGenWrapper(CommandBuilder):
                 self.logger.info(f"Processing custom string: {custom_string}")
 
             input_dict['custom'] = custom_string
-
             time_info = time_util.ti_calculate(input_dict)
 
             if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
@@ -225,32 +241,32 @@ class TCGenWrapper(CommandBuilder):
         self.build_and_run_command()
 
     def find_input_files(self, time_info):
-        """!Get DECK file and list of input data files and set c_dict items.
+        """!Get track and genesis files and set c_dict items. Also format forecast
+            lead sequence to be read by the MET configuration file and set c_dict.
             Args:
                 @param time_info time dictionary to use for string substitution
-                @returns Input file list if all files were found, None if not.
+                @returns True if all inputs were found, False if not.
         """
-        # get track file or directory
-        track_template = os.path.join(self.c_dict['TRACK_INPUT_DIR'],
-                                      self.c_dict['TRACK_INPUT_TEMPLATE'])
-        track_file = do_string_sub(track_template,
-                                   **time_info)
-#        track_file = do_string_sub(self.c_dict['TRACK_INPUT_TEMPLATE'],
-#                                   time_info)
-#        track_file = os.path.join(self.c_dict['TRACK_INPUT_DIR'],
-#                                  track_file)
+        # get track file(s) or directory
+        track_files = self.find_data(time_info,
+                                     data_type='TRACK',
+                                     return_list=True,
+                                     allow_dir=True)
+        if not track_files:
+            return False
 
-        self.c_dict['TRACK'] = track_file
-        self.logger.debug(f"Found track: {track_file}")
+        self.c_dict['TRACK_FILES'] = track_files
 
-        # get genesis file or directory
-        genesis_template = os.path.join(self.c_dict['GENESIS_INPUT_DIR'],
-                                        self.c_dict['GENESIS_INPUT_TEMPLATE'])
-        genesis_file = do_string_sub(genesis_template,
-                                     **time_info)
+        # get genesis file(s) or directory
+        genesis_files = self.find_data(time_info,
+                                       data_type='GENESIS',
+                                       return_list=True,
+                                       allow_dir=True)
 
-        self.c_dict['GENESIS'] = genesis_file
-        self.logger.debug(f"Found genesis: {genesis_file}")
+        if not genesis_files:
+            return False
+
+        self.c_dict['GENESIS_FILES'] = genesis_files
 
         # set LEAD_LIST to list of forecast leads used
         lead_seq = util.get_lead_sequence(self.config, time_info)

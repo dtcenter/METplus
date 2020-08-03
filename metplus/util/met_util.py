@@ -2720,7 +2720,7 @@ def get_time_from_file(filepath, template, logger=None):
 
     return None
 
-def preprocess_file(filename, data_type, config):
+def preprocess_file(filename, data_type, config, allow_dir=False):
     """ Decompress gzip, bzip, or zip files or convert Gempak files to NetCDF
         Args:
             @param filename: Path to file without zip extensions
@@ -2728,8 +2728,11 @@ def preprocess_file(filename, data_type, config):
         Returns:
             Path to staged unzipped file or original file if already unzipped
     """
-    if filename is None or filename == "":
+    if not filename:
         return None
+
+    if allow_dir and os.path.isdir(filename):
+        return filename
 
     # if using python embedding for input, return the keyword
     if os.path.basename(filename) in PYTHON_EMBEDDING_TYPES:
