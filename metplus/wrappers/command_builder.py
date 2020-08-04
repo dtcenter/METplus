@@ -1057,3 +1057,129 @@ class CommandBuilder:
         else:
             self.config.logger.error("Could not get [INIT/VALID] time information from configuration file")
             self.isOK = False
+
+    def create_met_config_dictionary_string(self, dict_name, item_list):
+        """! Build string containing dictionary from a MET configuration file
+             with any items that were set in the user's METplus configuration. Any variables
+             that were not set will not be included in the dictionary string.
+             Args:
+                 @param dict_name name of dictionary to create in all caps. This corresponds
+                  to the name of the METplus configuration variable and c_dict value. The
+                  lower-case name also matches the name of the MET dictionary item, i.e.
+                  FCST_GENESIS corresponds to METpluc configuration variables
+                  TC_GEN_FCST_GENESIS_VMAX_THRESH and TC_GEN_FCST_GENESIS_MSLP_THRESH and
+                  c_dict keys FCST_GENESIS_VMAX_THRESH and FCST_GENESIS_MSLP_THRESH and
+                  MET configuration dictionary fcst_genesis = {}.
+                 @param item_list list of MET dictionary items that can be set, i.e.
+                  [VMAX_THRESH, MSLP_THRESH], which corresponds to vmax_thresh and
+                  mslp_thresh in the MET configuration dictionary specified with dict_name.
+                 @returns string of formatted MET dictionary or empty string if no relevant
+                  variables were set
+        """
+        # check if any of the items are set in c_dict
+        create_dict = [item for item in item_list if self.c_dict.get(f'{dict_name}_{item}')]
+
+        # if any dict items are set, create the dictionary string and add them
+        if not create_dict:
+            return ''
+
+        dict_string = dict_name.lower() + ' = {'
+        for item in item_list:
+            dict_string += self.c_dict.get(f'{dict_name}_{item}', '')
+
+        dict_string += '}'
+        return dict_string
+
+    def set_c_dict_list(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+        """! Get list from METplus configuration file and format it to be passed
+              into a MET configuration file. Set c_dict item with formatted string.
+             Args:
+                 @param c_dict configuration dictionary to set
+                 @param mp_config_name METplus configuration variable name. Assumed to be
+                  in the [config] section. Value can be a comma-separated list of items.
+                 @param met_config_name name of MET configuration variable to set. Also used
+                  to determine the key in c_dict to set (upper-case)
+                 @param c_dict_key optional argument to specify c_dict key to store result. If
+                  set to None (default) then use upper-case of met_config_name
+        """
+        conf_value = util.getlist(self.config.getstr('config', mp_config_name, ''))
+        if conf_value:
+            conf_value = str(conf_value).replace("'", '"')
+
+            if not c_dict_key:
+                c_key = met_config_name.upper()
+            else:
+                c_key = c_dict_key
+
+            c_dict[c_key] = f'{met_config_name} = {conf_value};'
+
+    def set_c_dict_string(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+        """! Get string from METplus configuration file and format it to be passed
+              into a MET configuration file. Set c_dict item with formatted string.
+             Args:
+                 @param c_dict configuration dictionary to set
+                 @param mp_config_name METplus configuration variable name. Assumed to be
+                  in the [config] section. Value can be a comma-separated list of items.
+                 @param met_config_name name of MET configuration variable to set. Also used
+                  to determine the key in c_dict to set (upper-case)
+                 @param c_dict_key optional argument to specify c_dict key to store result. If
+                  set to None (default) then use upper-case of met_config_name
+        """
+        conf_value = self.config.getstr('config', mp_config_name, '')
+        if conf_value:
+
+            if not c_dict_key:
+                c_key = met_config_name.upper()
+            else:
+                c_key = c_dict_key
+
+            c_dict[c_key] = f'{met_config_name} = "{util.remove_quotes(conf_value)}";'
+
+    def set_c_dict_number(self, c_dict, num_type, mp_config_name, met_config_name, c_dict_key=None):
+        """! Get integer from METplus configuration file and format it to be passed
+              into a MET configuration file. Set c_dict item with formatted string.
+             Args:
+                 @param c_dict configuration dictionary to set
+                 @param num_type type of number to get from config. If set to 'int', call
+                   getint function. If not, call getfloat function.
+                 @param mp_config_name METplus configuration variable name. Assumed to be
+                  in the [config] section. Value can be a comma-separated list of items.
+                 @param met_config_name name of MET configuration variable to set. Also used
+                  to determine the key in c_dict to set (upper-case) if c_dict_key is None
+                 @param c_dict_key optional argument to specify c_dict key to store result. If
+                  set to None (default) then use upper-case of met_config_name
+        """
+        if num_type == 'int':
+            conf_value = self.config.getint('config', mp_config_name)
+        else:
+            conf_value = self.config.getfloat('config', mp_config_name)
+
+        if conf_value is None:
+            self.isOK = False
+        elif conf_value != util.MISSING_DATA_VALUE:
+            if not c_dict_key:
+                c_key = met_config_name.upper()
+            else:
+                c_key = c_dict_key
+
+            c_dict[c_key] = f"{met_config_name} = {str(conf_value)};"
+
+    def set_c_dict_int(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+        self.set_c_dict_number(c_dict, 'int', mp_config_name, met_config_name, c_dict_key=c_dict_key)
+
+    def set_c_dict_float(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+        self.set_c_dict_number(c_dict, 'float', mp_config_name, met_config_name, c_dict_key=c_dict_key)
+
+    def set_c_dict_thresh(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+        conf_value = self.config.getstr('config', mp_config_name, '')
+        if conf_value and conf_value != 'NA':
+            if util.get_threshold_via_regex(conf_value) is None:
+                self.log_error(f"Incorrectly formatted threshold: {mp_config_name}")
+                return
+
+            if not c_dict_key:
+                c_key = met_config_name.upper()
+            else:
+                c_key = c_dict_key
+
+            c_dict[c_key] = f"{met_config_name} = {str(conf_value)};"
