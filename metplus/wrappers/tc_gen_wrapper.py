@@ -251,13 +251,9 @@ class TCGenWrapper(CommandBuilder):
 
         # add genesis
         cmd += ' -genesis ' + self.c_dict['GENESIS_FILE']
-#        for genesis_file in self.c_dict['GENESIS_FILES']:
-#            cmd += ' -genesis ' + genesis_file
 
         # add track
         cmd += ' -track ' + self.c_dict['TRACK_FILE']
-#        for track_file in self.c_dict['TRACK_FILES']:
-#            cmd += ' -track ' + track_file
 
         # add arguments
         cmd += ' ' + ' '.join(self.args)
@@ -347,8 +343,6 @@ class TCGenWrapper(CommandBuilder):
         list_filename = time_info['init_fmt'] + '_tc_gen_track.txt'
         self.c_dict['TRACK_FILE'] = self.write_list_file(list_filename, track_files)
 
-        self.c_dict['TRACK_FILES'] = track_files
-
         # get genesis file(s) or directory
         genesis_files = self.find_data(time_info,
                                        data_type='GENESIS',
@@ -360,8 +354,6 @@ class TCGenWrapper(CommandBuilder):
 
         list_filename = time_info['init_fmt'] + '_tc_gen_genesis.txt'
         self.c_dict['GENESIS_FILE'] = self.write_list_file(list_filename, genesis_files)
-
-        self.c_dict['GENESIS_FILES'] = genesis_files
 
         # set LEAD_LIST to list of forecast leads used
         lead_seq = util.get_lead_sequence(self.config, time_info)
