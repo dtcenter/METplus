@@ -250,12 +250,14 @@ class TCGenWrapper(CommandBuilder):
         cmd = self.app_path
 
         # add genesis
-        for genesis_file in self.c_dict['GENESIS_FILES']:
-            cmd += ' -genesis ' + genesis_file
+        cmd += ' -genesis ' + self.c_dict['GENESIS_FILE']
+#        for genesis_file in self.c_dict['GENESIS_FILES']:
+#            cmd += ' -genesis ' + genesis_file
 
         # add track
-        for track_file in self.c_dict['TRACK_FILES']:
-            cmd += ' -track ' + track_file
+        cmd += ' -track ' + self.c_dict['TRACK_FILE']
+#        for track_file in self.c_dict['TRACK_FILES']:
+#            cmd += ' -track ' + track_file
 
         # add arguments
         cmd += ' ' + ' '.join(self.args)
@@ -342,6 +344,9 @@ class TCGenWrapper(CommandBuilder):
         if not track_files:
             return False
 
+        list_filename = time_info['init_fmt'] + '_tc_gen_track.txt'
+        self.c_dict['TRACK_FILE'] = self.write_list_file(list_filename, track_files)
+
         self.c_dict['TRACK_FILES'] = track_files
 
         # get genesis file(s) or directory
@@ -352,6 +357,9 @@ class TCGenWrapper(CommandBuilder):
 
         if not genesis_files:
             return False
+
+        list_filename = time_info['init_fmt'] + '_tc_gen_genesis.txt'
+        self.c_dict['GENESIS_FILE'] = self.write_list_file(list_filename, genesis_files)
 
         self.c_dict['GENESIS_FILES'] = genesis_files
 
