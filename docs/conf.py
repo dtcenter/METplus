@@ -24,7 +24,10 @@ copyright = '2019, NCAR'
 author = 'NCAR'
 
 # The full version, including alpha/beta/rc tags
-release = '3.0'
+release = '3.1'
+
+# the stable version, displayed on front page of PDF
+version = '3.1'
 
 
 # -- General configuration ---------------------------------------------------
@@ -32,7 +35,33 @@ release = '3.0'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['sphinx.ext.autodoc','sphinx.ext.intersphinx','sphinx_gallery.gen_gallery']
+extensions = ['sphinx.ext.autodoc',
+              'sphinx.ext.intersphinx',
+              'sphinx_gallery.gen_gallery',
+             ]
+
+# To enable PDF generation, set METPLUS_DOC_PDF environment variable
+#  sphinx 2.4.2+ and rst2pdf packages are required
+if os.environ.get('METPLUS_DOC_PDF'):
+    extensions.append('rst2pdf.pdfbuilder')
+
+# used for generating PDF
+pdf_documents = [('index', 'METplus_Users_Guide', 'METplus User\'s Guide', ('George McCabe\\'
+                                                                            'Dan Adriaansen\\'
+                                                                            'Minna Win-Gildenmeister\\'
+                                                                            'Julie Prestopnik\\'
+                                                                            'Jim Frimel\\'
+                                                                            'John Opatz\\'
+                                                                            'John Halley Gotway\\'
+                                                                            'Tara Jensen\\'
+                                                                            'Jonathan Vigh\\'
+                                                                            'Mallory Row\\'
+                                                                            'Christana Kalb\\'
+                                                                            'Hank Fisher\\'
+                                                                            'Lisa Goodrich\\'
+                                                                            'Lindsay Blank\\'
+                                                                            'Todd Arbetter\\'
+                                                                            )),]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
