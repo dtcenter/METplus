@@ -73,7 +73,7 @@ ${FILTER}
 //
 // Description written to output DESC column
 //
-desc = "NA";
+//desc = "NA";
 
 //
 // Forecast ATCF ID's
@@ -124,7 +124,7 @@ ${VX_MASK}
 //
 // Distance to land threshold
 //
-dland_thresh = NA;
+//dland_thresh = NA;
 
 //
 // Genesis matching time window, in hours relative to the forecast genesis time
@@ -145,16 +145,16 @@ ${GENESIS_RADIUS}
 //
 // Confidence interval alpha value
 //
-ci_alpha = 0.05;
+//ci_alpha = 0.05;
 
 //
 // Statistical output types
 //
-output_flag = {
-   fho    = NONE;
-   ctc    = BOTH; 
-   cts    = BOTH;
-}
+//output_flag = {
+//   fho    = NONE;
+//   ctc    = BOTH;
+//   cts    = BOTH;
+//}
 
 //
 // Specify the NetCDF output of the gen_dland tool containing a gridded
