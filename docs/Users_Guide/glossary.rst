@@ -6115,7 +6115,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_GEN_LEAD_WINDOW_END
-     Specify the value of lead_window {begin} in the MET configuration file.
+     Specify the value of lead_window {end} in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
@@ -6201,7 +6201,6 @@ METplus Configuration Glossary
    TC_GEN_FILTER_<n>
      Specify the values of filter in the MET configuration file where <n> is any integer.
      Any quotation marks that are found inside another set of quotation marks must be preceded with a backslash
-     i.e. vx_mask = "MET_BASE/tc_data/basin_global_tenth_degree.nc { name=\"basin\"; level=\"(*,*)\"; }
 
      | *Used by:*  TCGen
      | *Family:*  [config]
