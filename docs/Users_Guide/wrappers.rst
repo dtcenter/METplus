@@ -1462,6 +1462,64 @@ file for running with LOOP_ORDER = processes:
    | :term:`REGION_LIST`
    | :term:`LEAD_LIST`
 
+TCGen
+-------
+
+Description
+~~~~~~~~~~~
+
+The TCGen wrapper encapsulates the behavior of the MET tc_gen tool.
+The wrapper accepts track (Adeck or Bdeck) data and Genesis data.
+
+Configuration
+~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`TC_GEN_TRACK_INPUT_DIR`
+| :term:`TC_GEN_GENESIS_INPUT_DIR`
+| :term:`TC_GEN_OUTPUT_DIR`
+
+[filename_templates]
+
+| :term:`TC_GEN_TRACK_INPUT_TEMPLATE`
+| :term:`TC_GEN_GENESIS_INPUT_TEMPLATE`
+| :term:`TC_GEN_OUTPUT_TEMPLATE`
+
+[config]
+
+| :term:`LOG_TC_GEN_VERBOSITY`
+| :term:`TC_GEN_CONFIG_FILE`
+| :term:`TC_GEN_INIT_FREQUENCY`
+| :term:`TC_GEN_LEAD_WINDOW_BEGIN`
+| :term:`TC_GEN_LEAD_WINDOW_END`
+| :term:`TC_GEN_MIN_DURATION`
+
+| :term:`TC_GEN_FCST_GENESIS_VMAX_THRESH`
+| :term:`TC_GEN_FCST_GENESIS_MSLP_THRESH`
+| :term:`TC_GEN_BEST_GENESIS_TECHNIQUE`
+| :term:`TC_GEN_BEST_GENESIS_CATEGORY`
+| :term:`TC_GEN_BEST_GENESIS_VMAX_THRESH`
+| :term:`TC_GEN_BEST_GENESIS_MSLP_THRESH`
+| :term:`TC_GEN_OPER_GENESIS_TECHNIQUE`
+| :term:`TC_GEN_OPER_GENESIS_CATEGORY`
+| :term:`TC_GEN_OPER_GENESIS_VMAX_THRESH`
+| :term:`TC_GEN_OPER_GENESIS_MSLP_THRESH`
+| :term:`TC_GEN_FILTER_\<n\>`
+| :term:`MODEL`
+| :term:`TC_GEN_STORM_ID`
+| :term:`TC_GEN_STORM_NAME`
+| :term:`TC_GEN_INIT_BEG`
+| :term:`TC_GEN_INIT_END`
+| :term:`TC_GEN_VALID_BEG`
+| :term:`TC_GEN_VALID_END`
+| :term:`TC_GEN_INIT_HOUR_LIST`
+| :term:`TC_GEN_VX_MASK`
+| :term:`TC_GEN_GENESIS_WINDOW_BEGIN`
+| :term:`TC_GEN_GENESIS_WINDOW_END`
+| :term:`TC_GEN_GENESIS_RADIUS`
+| :term:`TC_GEN_DLAND_FILE`
+
 TCMPRPlotter
 -------------
 
