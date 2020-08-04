@@ -14,6 +14,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import datetime
+import re
 
 from ..util import met_util as util
 from ..util import time_util
@@ -35,40 +36,74 @@ class TCGenWrapper(CommandBuilder):
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
-        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_TC_GEN_VERBOSITY',
+
+        app_name_upper = self.app_name.upper()
+        c_dict['VERBOSITY'] = self.config.getstr('config', f'LOG_{app_name_upper}_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['CONFIG_FILE'] = self.config.getraw('config', 'TC_GEN_CONFIG_FILE', '')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config', f'{app_name_upper}_CONFIG_FILE', '')
 
-        c_dict['GENESIS_INPUT_DIR'] = self.config.getdir('TC_GEN_GENESIS_INPUT_DIR', '')
+        c_dict['GENESIS_INPUT_DIR'] = self.config.getdir(f'{app_name_upper}_GENESIS_INPUT_DIR', '')
         c_dict['GENESIS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                              'TC_GEN_GENESIS_INPUT_TEMPLATE')
+                                                              f'{app_name_upper}_GENESIS_INPUT_TEMPLATE')
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_GEN_OUTPUT_DIR', '')
+        c_dict['OUTPUT_DIR'] = self.config.getdir(f'{app_name_upper}_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                       'TC_GEN_OUTPUT_TEMPLATE')
+                                                       f'{app_name_upper}_OUTPUT_TEMPLATE')
 
-        c_dict['TRACK_INPUT_DIR'] = self.config.getdir('TC_GEN_TRACK_INPUT_DIR', '')
+        c_dict['TRACK_INPUT_DIR'] = self.config.getdir(f'{app_name_upper}_TRACK_INPUT_DIR', '')
         c_dict['TRACK_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                            'TC_GEN_TRACK_INPUT_TEMPLATE')
+                                                            f'{app_name_upper}_TRACK_INPUT_TEMPLATE')
 
 
         # values used in configuration file
+        self.set_c_dict_int(c_dict, f'{app_name_upper}_INIT_FREQUENCY', 'init_freq')
 
-        conf_value = util.getlist(self.config.getstr('config', 'MODEL', ''))
-        if conf_value:
-            conf_value = str(conf_value).replace("'", '"')
-            c_dict['MODEL'] = f"model = {conf_value};"
+        self.set_c_dict_int(c_dict, f'{app_name_upper}_LEAD_WINDOW_BEGIN', 'beg', 'LEAD_WINDOW_BEG')
+        self.set_c_dict_int(c_dict, f'{app_name_upper}_LEAD_WINDOW_END', 'end', 'LEAD_WINDOW_END')
 
-        conf_value = util.getlist(self.config.getstr('config', 'TC_GEN_STORM_ID', ''))
-        if conf_value:
-            conf_value = str(conf_value).replace("'", '"')
-            c_dict['STORM_ID'] = f'storm_id = {conf_value};'
+        self.set_c_dict_int(c_dict, f'{app_name_upper}_MIN_DURATION', 'min_duration')
 
-        conf_value = util.getlist(self.config.getstr('config', 'TC_GEN_STORM_NAME', ''))
-        if conf_value:
-            conf_value = str(conf_value).replace("'", '"')
-            c_dict['STORM_NAME'] = f"storm_name = {conf_value};"
+        conf_value = self.config.getstr('config', f'{app_name_upper}_FCST_GENESIS_VMAX_THRESH', '')
+        if conf_value and conf_value != 'NA':
+            if util.get_threshold_via_regex(conf_value) is None:
+                self.log_error(f"Incorrectly formatted threshold: {app_name_upper}_FCST_GENESIS_VMAX_THRESH")
+
+        # set values for dictionaries
+        for dict_name in ['FCST_GENESIS', 'BEST_GENESIS', 'OPER_GENESIS']:
+            # set threshold values
+            for thresh_name in ['VMAX_THRESH', 'MSLP_THRESH']:
+                self.set_c_dict_thresh(c_dict,
+                                       f'{app_name_upper}_{dict_name}_{thresh_name}',
+                                       thresh_name.lower(),
+                                       f'{dict_name}_{thresh_name}')
+
+            if dict_name == 'FCST_GENESIS':
+                continue
+
+            # get technique and category
+            self.set_c_dict_string(c_dict,
+                                   f'{app_name_upper}_{dict_name}_TECHNIQUE',
+                                   'technique',
+                                   f'{dict_name}_TECHNIQUE')
+
+            self.set_c_dict_list(c_dict,
+                                 f'{app_name_upper}_{dict_name}_CATEGORY',
+                                 'category',
+                                 f'{dict_name}_CATEGORY')
+
+        # get filter values
+        filters = self.get_filter_values()
+        if filters:
+            filter_string = 'filter = [{'
+            filter_string += '}, {'.join(filters)
+            filter_string += '}];'
+            c_dict['FILTER'] = filter_string
+
+        self.set_c_dict_list(c_dict, 'MODEL', 'model')
+        self.set_c_dict_list(c_dict, f'{app_name_upper}_STORM_ID', 'storm_id')
+        self.set_c_dict_list(c_dict, f'{app_name_upper}_STORM_NAME', 'storm_name')
+        self.set_c_dict_list(c_dict, f'{app_name_upper}_INIT_HOUR_LIST', 'init_hour')
 
         clock_time = datetime.datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
                                                 '%Y%m%d%H%M%S')
@@ -86,24 +121,53 @@ class TCGenWrapper(CommandBuilder):
                     time_value = f'{time_key.lower()} = "{time_value}";'
                     c_dict[time_key] = time_value
 
-        conf_value = util.getlist(self.config.getstr('config',
-                                                     'TC_GEN_INIT_HOUR_LIST',
-                                                     ''))
-        if conf_value:
-            conf_list = str(conf_value).replace("'", '"')
-            c_dict['INIT_HOUR_LIST'] = f"init_hour = {conf_list};"
+        self.set_c_dict_int(c_dict,
+                            f'{app_name_upper}_GENESIS_WINDOW_BEGIN',
+                            'beg',
+                            'GENESIS_WINDOW_BEG')
+        self.set_c_dict_int(c_dict,
+                            f'{app_name_upper}_GENESIS_WINDOW_END',
+                            'end',
+                            'GENESIS_WINDOW_END')
 
-        conf_value = self.config.getstr('config', 'TC_GEN_DLAND_FILE', '')
-        if conf_value:
-            c_dict['DLAND_FILE'] = f'dland_file = "{util.remove_quotes(conf_value)}";'
+        self.set_c_dict_int(c_dict,
+                            f'{app_name_upper}_GENESIS_RADIUS',
+                            'genesis_radius')
+
+        self.set_c_dict_string(c_dict,
+                               f'{app_name_upper}_VX_MASK',
+                               'vx_mask')
+
+        self.set_c_dict_string(c_dict,
+                               f'{app_name_upper}_DLAND_FILE',
+                               'dland_file')
 
         # get INPUT_TIME_DICT values since wrapper only runs once (doesn't look over time)
         self.set_time_dict_for_single_runtime(c_dict)
 
         return c_dict
 
+    def get_filter_values(self):
+        """! find all TC_GEN_FILTER_<n> values in the config files
+        """
+        filters = []
+
+        all_config = self.config.keys('config')
+        indices = []
+        regex = re.compile(r"TC_GEN_FILTER_(\d+)")
+        for config in all_config:
+            result = regex.match(config)
+            if result is not None:
+                indices.append(result.group(1))
+
+        for index in indices:
+            filter = self.config.getraw('config', f'TC_GEN_FILTER_{index}')
+            filters.append(filter)
+
+        return filters
+
     def get_time_value(self, time_type, time_bound, time_format, clock_time):
-        """! Get time value from config. Use TC_GEN_{time_type}_{time_bound} if it is set.
+        """! Get time value from config. Use {app_name}_{time_type}_{time_bound} if it is set.
              If not, use {time_type}_{time_bound}. If {time_type}_TIME_FMT is set, use that
              value to format the time value into the format that the MET tools expect
              (YYYYMMDD_HHMMSS). If not, just return the value provided in the config file
@@ -115,10 +179,8 @@ class TCGenWrapper(CommandBuilder):
               @returns time value to pass to the MET configuration file or empty string
         """
         conf_value = self.config.getraw('config',
-                                        f'TC_GEN_{time_type}_{time_bound}',
-                                        self.config.getraw('config',
-                                                           f'{time_type}_{time_bound}',
-                                                           ''))
+                                        f'{self.app_name.upper()}_{time_type}_{time_bound}',
+                                        '')
         # if time value or {time_type}_TIME_FMT are not set, return the value
         if not conf_value or not time_format:
             return util.remove_quotes(conf_value)
@@ -136,26 +198,50 @@ class TCGenWrapper(CommandBuilder):
             Args:
               @param time_info dictionary containing timing info from current run"""
 
-        self.add_env_var('MODEL',
-                         self.c_dict.get('MODEL', ''))
+        # set environment variables for dictionary items
+        for dict_name, item_list in {'LEAD_WINDOW': ['BEG',
+                                                     'END',
+                                                    ],
+                                    'FCST_GENESIS': ['VMAX_THRESH',
+                                                     'MSLP_THRESH',
+                                                    ],
+                                     'BEST_GENESIS': ['TECHNIQUE',
+                                                      'CATEGORY',
+                                                      'VMAX_THRESH',
+                                                      'MSLP_THRESH',
+                                                     ],
+                                     'OPER_GENESIS': ['TECHNIQUE',
+                                                      'CATEGORY',
+                                                      'VMAX_THRESH',
+                                                      'MSLP_THRESH',
+                                                     ],
+                                     'GENESIS_WINDOW': ['BEG',
+                                                        'END',
+                                                       ],
+                                     }.items():
+            dict_string = self.create_met_config_dictionary_string(dict_name,
+                                                                   item_list)
+            self.add_env_var(f'{dict_name}_DICT',
+                             dict_string)
 
-        self.add_env_var('STORM_ID',
-                         self.c_dict.get('STORM_ID', ''))
 
-        self.add_env_var('STORM_NAME',
-                         self.c_dict.get('STORM_NAME', ''))
-
-        for time_type in ['INIT', 'VALID']:
-            for time_bound in ['BEG', "END"]:
-                time_key = f'{time_type}_{time_bound}'
-                self.add_env_var(time_key,
-                                 self.c_dict.get(time_key, ''))
-
-        self.add_env_var('INIT_HOUR_LIST',
-                         self.c_dict.get('INIT_HOUR_LIST', ''))
-
-        self.add_env_var('LEAD_LIST',
-                         self.c_dict.get('LEAD_LIST', ''))
+        for env_var in ['FILTER',
+                        'INIT_FREQ',
+                        'MIN_DURATION',
+                        'MODEL',
+                        'STORM_ID',
+                        'INIT_BEG',
+                        'INIT_END',
+                        'VALID_BEG',
+                        'VALID_END',
+                        'INIT_HOUR',
+                        'LEAD_LIST',
+                        'VX_MASK',
+                        'GENESIS_RADIUS',
+                        'DLAND_FILE'
+                        ]:
+            self.add_env_var(env_var,
+                             self.c_dict.get(env_var, ''))
 
         super().set_environment_variables(time_info)
 
