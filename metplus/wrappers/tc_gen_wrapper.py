@@ -230,6 +230,7 @@ class TCGenWrapper(CommandBuilder):
                         'MIN_DURATION',
                         'MODEL',
                         'STORM_ID',
+                        'STORM_NAME',
                         'INIT_BEG',
                         'INIT_END',
                         'VALID_BEG',
