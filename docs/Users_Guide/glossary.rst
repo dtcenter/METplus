@@ -120,6 +120,13 @@ METplus Configuration Glossary
      | *Family:* config
      | *Default:* None
 
+   TC_GEN_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* TCGen
+     | *Family:* config
+     | *Default:* None
+
    TC_PAIRS_CUSTOM_LOOP_LIST
     Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
 
@@ -6094,77 +6101,107 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_GEN_INIT_FREQUENCY
-     Provide
+     Specify the value of init_freq in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_LEAD_WINDOW_BEGIN
-     Provide
+     Specify the value of lead_window {begin} in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_LEAD_WINDOW_END
-     Provide
+     Specify the value of lead_window {begin} in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_MIN_DURATION
-     Provide
+     Specify the value of min_duration in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_FCST_GENESIS_VMAX_THRESH
-     Provide
+     Specify the value of fcst_genesis {vmax_thresh} in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_FCST_GENESIS_MSLP_THRESH
-     Provide
+     Specify the value of fcst_genesis {mslp_thresh} in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_BEST_GENESIS_TECHNIQUE
-     Provide
+     Specify the value of best_genesis {technique} in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_BEST_GENESIS_CATEGORY
-     Provide
+     Specify the value of best_genesis {category} in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_BEST_GENESIS_VMAX_THRESH
-     Provide
+     Specify the value of best_genesis {vmax_thresh} in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_BEST_GENESIS_MSLP_THRESH
-     Provide
+     Specify the value of best_genesis {mslp_thresh} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_OPER_GENESIS_TECHNIQUE
+     Specify the value of oper_genesis {technique} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_OPER_GENESIS_CATEGORY
+     Specify the value of oper_genesis {category} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_OPER_GENESIS_VMAX_THRESH
+     Specify the value of oper_genesis {vmax_thresh} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_OPER_GENESIS_MSLP_THRESH
+     Specify the value of oper_genesis {mslp_thresh} in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_FILTER_<n>
-     Provide
+     Specify the values of filter in the MET configuration file where <n> is any integer.
+     Any quotation marks that are found inside another set of quotation marks must be preceded with a backslash
+     i.e. vx_mask = "MET_BASE/tc_data/basin_global_tenth_degree.nc { name=\"basin\"; level=\"(*,*)\"; }
 
      | *Used by:*  TCGen
      | *Family:*  [config]
@@ -6220,35 +6257,35 @@ METplus Configuration Glossary
      | *Default:*  None
 
    TC_GEN_VX_MASK
-     Specify the vx_mask value to set in the tc_gen MET configuration file.
+     Specify the vx_mask value to set in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_GENESIS_WINDOW_BEGIN
-     Passed to the TCGen MET config file to determine the range of data within a file that should be used for processing. Units are seconds. If the variable is not set, TCGen will use :term:`OBS_WINDOW_BEGIN`.
+     Specify the value for genesis_window {begin} in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_GENESIS_WINDOW_END
-     Passed to the TCGen MET config file to determine the range of data within a file that should be used for processing. Units are seconds. If the variable is not set, TCGen will use :term:`OBS_WINDOW_BEGIN`.
+     Specify the value of genesis_window {end} in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_GENESIS_RADIUS
-     Provide
+     Specify the value of genesis_radius in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_GEN_DLAND_FILE
-     Provide
+     Specify the value of dland_file in the MET configuration file.
 
      | *Used by:*  TCGen
      | *Family:*  [config]

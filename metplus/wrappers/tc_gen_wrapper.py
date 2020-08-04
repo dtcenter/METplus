@@ -105,17 +105,14 @@ class TCGenWrapper(CommandBuilder):
         self.set_c_dict_list(c_dict, f'{app_name_upper}_STORM_NAME', 'storm_name')
         self.set_c_dict_list(c_dict, f'{app_name_upper}_INIT_HOUR_LIST', 'init_hour')
 
-        clock_time = datetime.datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
-                                                '%Y%m%d%H%M%S')
-
         # set INIT_BEG, INIT_END, VALID_BEG, and VALID_END
         for time_type in ['INIT', 'VALID']:
-            time_format = self.config.getraw('config', f'{time_type}_TIME_FMT', '')
             for time_bound in ['BEG', "END"]:
-                time_value = self.get_time_value(time_type,
-                                                 time_bound,
-                                                 time_format,
-                                                 clock_time)
+                conf_value = self.config.getraw('config',
+                                                f'{self.app_name.upper()}_{time_type}_{time_bound}',
+                                                '')
+                time_value = util.remove_quotes(conf_value)
+
                 if time_value:
                     time_key = f'{time_type}_{time_bound}'
                     time_value = f'{time_key.lower()} = "{time_value}";'
@@ -165,32 +162,6 @@ class TCGenWrapper(CommandBuilder):
             filters.append(filter)
 
         return filters
-
-    def get_time_value(self, time_type, time_bound, time_format, clock_time):
-        """! Get time value from config. Use {app_name}_{time_type}_{time_bound} if it is set.
-             If not, use {time_type}_{time_bound}. If {time_type}_TIME_FMT is set, use that
-             value to format the time value into the format that the MET tools expect
-             (YYYYMMDD_HHMMSS). If not, just return the value provided in the config file
-            Args:
-              @param time_type INIT or VALID
-              @param time_bound BEG or END
-              @param time_format [INIT/VALID]_TIME_FMT value or empty string if not set
-              @param clock_time time that METplus was started in YYYYMMDDHHMMSS format
-              @returns time value to pass to the MET configuration file or empty string
-        """
-        conf_value = self.config.getraw('config',
-                                        f'{self.app_name.upper()}_{time_type}_{time_bound}',
-                                        '')
-        # if time value or {time_type}_TIME_FMT are not set, return the value
-        if not conf_value or not time_format:
-            return util.remove_quotes(conf_value)
-
-        # if time format is set, format the time value
-        conf_value_dt = util.get_time_obj(conf_value,
-                                          time_format,
-                                          clock_time,
-                                          logger=self.logger)
-        return conf_value_dt.strftime('%Y%m%d_%H%M%S')
 
     def set_environment_variables(self, time_info):
         """!Set environment variables that will be read by the MET config file.

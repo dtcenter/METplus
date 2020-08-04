@@ -1489,6 +1489,7 @@ Configuration
 [config]
 
 | :term:`LOG_TC_GEN_VERBOSITY`
+| :term:`TC_GEN_CUSTOM_LOOP_LIST`
 | :term:`TC_GEN_CONFIG_FILE`
 | :term:`TC_GEN_INIT_FREQUENCY`
 | :term:`TC_GEN_LEAD_WINDOW_BEGIN`
