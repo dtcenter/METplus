@@ -1,8 +1,10 @@
-name: metplus_base
+name: metplus_3.0_base
 channels:
   - defaults
 dependencies:
   - python=3.6.3
   - python-dateutil
-prefix: /home/met_test/.conda/envs/metplus_base
+  - cartopy
+  - pandas
+prefix: /home/met_test/.conda/envs/metplus_3.0_base
 
