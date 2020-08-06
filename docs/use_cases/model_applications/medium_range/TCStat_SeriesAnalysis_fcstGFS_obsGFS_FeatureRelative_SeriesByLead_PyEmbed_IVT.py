@@ -65,7 +65,7 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #
 # This use case first runs PyEmbedIngest to run the user provided python scripts to calculate the
 # desired diagnostic (in this example, IVT). PyEmbedIngest runs the RegridDataPlane tool to write 
-# IVT to a MET readable netCDF file. Then TcPairs and ExtractTiles are run to generate matched
+# IVT to a MET readable netCDF file. Then TCPairs and ExtractTiles are run to generate matched
 # tropical cyclone data and regrid them into appropriately-sized tiles along a storm track. 
 # The MET tc-stat tool is used to filter the track data and the MET regrid-dataplane tool is used to 
 # regrid the data (GRIB1 or GRIB2 into netCDF). Next, a series analysis by lead time is performed on 
@@ -82,7 +82,7 @@ to the Multi_Tools: Feature Relative by Lead use case.
 # This use case loops by process which means that each tool is run for all times before moving to the
 # next tool. The tool order is as follows:
 # 
-# PyEmbedIngest, TcPairs, ExtractTiles, SeriesByLead
+# PyEmbedIngest, TCPairs, ExtractTiles, SeriesByLead
 #
 # This example loops by forecast/lead time (with begin, end, and increment as specified in the METplus TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf file). 
 #

@@ -34,7 +34,7 @@ _obsGFS_RPlotting.conf
 # METplus Components
 # ------------------
 #
-# This use case first runs TcPairs and then generates the requested
+# This use case first runs TCPairs and then generates the requested
 # plot types for statistics of interest. The TCMPRPlotterConfig_customize configuration
 # file is used by the plot_tcmpr.R script to select things such as the size of
 # the plot window that appears on your screen, etc.
@@ -45,9 +45,9 @@ _obsGFS_RPlotting.conf
 #
 # The following tools are used for each run time:
 #
-# TcPairs > plot_tcmpr.R
+# TCPairs > plot_tcmpr.R
 #
-# To generate TcPairs output, this example loops by initialization time for every 6 hour period that is available
+# To generate TCPairs output, this example loops by initialization time for every 6 hour period that is available
 # in the data set for 20141214. The output is then used to generate the mean, median, and box plot for the following:
 # the difference between the MSLP of the Adeck and Bdeck tracks (AMSLP-BMSLP), the difference between the max wind of the Adeck and
 # Bdeck tracks (AMAX_WIND-BMSLP), and the track err (TK_ERR).

@@ -25,7 +25,7 @@ _obsGFS_ExtraTC.conf
 # METplus Components
 # ------------------
 #
-# This use case first runs TcPairs and then generates the storm track plot
+# This use case first runs TCPairs and then generates the storm track plot
 # for all storm tracks found in the .tcst output file created by the MET TC-Pairs tool.
 #
 
@@ -35,9 +35,9 @@ _obsGFS_ExtraTC.conf
 #
 # The following tools are used for each run time:
 #
-# TcPairs
+# TCPairs
 #
-# To generate TcPairs output, this example loops by initialization time for every 6 hour period that is available
+# To generate TCPairs output, this example loops by initialization time for every 6 hour period that is available
 # in the data set for 20150301. The output is then used to generate the plot of all cyclone tracks.
 #
 
