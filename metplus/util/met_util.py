@@ -2099,9 +2099,24 @@ def get_threshold_via_regex(thresh_string):
         found_match = False
         for comp in list(valid_comparisons.keys())+list(valid_comparisons.values()):
             # if valid, add to list of tuples
-            match = re.match(r'^('+comp+r')([+-]?\d*\.?\d*)$', thresh)
+            # must be one of the valid comparison operators followed by
+            # at least 1 digit or NA
+            if thresh == 'NA':
+                comparison_number_list.append((thresh, ''))
+                found_match = True
+                break
+
+            match = re.match(r'^('+comp+r')(.*\d.*)$', thresh)
             if match:
-                comparison_number_list.append((match.group(1), float(match.group(2))))
+                comparison = match.group(1)
+                number = match.group(2)
+                # try to convert to float if it can, but allow string
+                try:
+                    number = float(number)
+                except ValueError:
+                    pass
+
+                comparison_number_list.append((comparison, number))
                 found_match = True
                 break
 

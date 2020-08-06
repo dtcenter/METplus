@@ -67,14 +67,21 @@ def test_remove_quotes(before, after):
         ({"<2.3", "<1."}, True),
         ({"<=2.3", "<=1.1"}, True),
         ({"gta"}, False),
+        ({"gt"}, False),
         ({">=a"}, False),
         ({"2.3"}, False),
         ({"<=2.3", "2.4", "gt2.7"}, False),
         ({"<=2.3||>=4.2", "gt2.3&&lt4.2"}, True),
-        ({"gt2.3&&lt4.2a"}, False),
-        ({"gt2sd.3&&lt4.2"}, False),
-        ({"gt2.3&a&lt4.2"}, False),
+        ({"gt2.3&&lt4.2a"}, True),
+        ({"gt2sd.3&&lt4.2"}, True),
+        ({"gt2.3&a&lt4.2"}, True), # invalid but is accepted
         ({'gt4&&lt5&&ne4.5'}, True),
+        ({"<2.3", "ge5", ">SPF90"}, True),
+        (["NA"], True),
+        (["<USP90(2.5)"], True),
+        ([""], False),
+        ([">SFP70", ">SFP80", ">SFP90", ">SFP95"], True),
+        ([">SFP70", ">SFP80", ">SFP90", ">SFP95"], True),
     ]
 )
 def test_threshold(key, value):
@@ -107,7 +114,12 @@ def test_threshold(key, value):
         ("eq.5", [('eq', 0.5)]),
         ("eq5.", [('eq', 5)]),
         ("eq5.||ne0.0", [('eq', 5), ('ne', 0.0)]),
-
+        (">SFP90", [('>', 'SFP90')]),
+        ("SFP90", None),
+        ("gtSFP90", [('gt', 'SFP90')]),
+        ("goSFP90", None),
+        ("NA", [('NA', '')]),
+        ("<USP90(2.5)", [('<', 'USP90(2.5)')]),
     ]
 )
 def test_get_threshold_via_regex(key, value):
