@@ -80,6 +80,8 @@ def test_remove_quotes(before, after):
         (["NA"], True),
         (["<USP90(2.5)"], True),
         ([""], False),
+        ([">SFP70", ">SFP80", ">SFP90", ">SFP95"], True),
+        ([">SFP70", ">SFP80", ">SFP90", ">SFP95"], True),
     ]
 )
 def test_threshold(key, value):
