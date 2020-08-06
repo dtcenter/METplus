@@ -37,7 +37,7 @@ _SeriesByInit.conf
 # METplus Components
 # ------------------
 #
-# This use case first runs TcPairs and ExtractTiles to generate matched
+# This use case first runs TCPairs and ExtractTiles to generate matched
 # tropical cyclone data and regrid them into appropriately-sized tiles
 # along a storm track. The MET tc-stat tool is used to filter the
 # track data, and the MET regrid-dataplane tool is used to regrid the
@@ -51,7 +51,7 @@ _SeriesByInit.conf
 # ----------------
 #
 # The following tools are used for each run time:
-# TcPairs > RegridDataPlane, TCStat > SeriesAnalysis
+# TCPairs > RegridDataPlane, TCStat > SeriesAnalysis
 #
 # This example loops by initialization time. For each initialization time
 # it will process forecast leads 6, 12, 18, 24, 30, 36, and 40. There is only one

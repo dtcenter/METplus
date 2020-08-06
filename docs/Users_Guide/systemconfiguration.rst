@@ -740,14 +740,14 @@ Wrapper Specific Windows
 A user may need to specify a different window on a wrapper-by-wrapper basis. If this is the case, you can override the file window values for each wrapper. Consider the following configuration::
 
   [config]
-  PROCESS_LIST = PcpCombine, GridStat, EnsembleStat
+  PROCESS_LIST = PCPCombine, GridStat, EnsembleStat
   OBS_FILE_WINDOW_BEGIN = 0
   OBS_FILE_WINDOW_END = 0
   OBS_GRID_STAT_FILE_WINDOW_BEGIN = -1800
   OBS_GRID_STAT_FILE_WINDOW_END = 1800
   OBS_ENSEMBLE_STAT_FILE_WINDOW_END = 3600
 
-Using the above configuration, PcpCombine will use +/- 0 hours and require exact file times. GridStat will use -1800/+1800 for observation data and EnsembleStat will use -0/+3600 for observation data. :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN` was not set, so the EnsembleStat wrapper will use :term:`OBS_FILE_WINDOW_BEGIN`.
+Using the above configuration, PCPCombine will use +/- 0 hours and require exact file times. GridStat will use -1800/+1800 for observation data and EnsembleStat will use -0/+3600 for observation data. :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN` was not set, so the EnsembleStat wrapper will use :term:`OBS_FILE_WINDOW_BEGIN`.
 
 Config Quick Start Example
 --------------------------
@@ -808,7 +808,7 @@ Config Quick Start Example
     
     a. Your METplus Wrappers install directory will hereafter be referred to as METplus_INSTALL
     b. Verify that all the *</path/to>* values are replaced with valid paths in the METplus_INSTALL/parm/metplus_config/metplus_data.conf and METplus_INSTALL/parm/metplus_config/metplus_system.conf files
-    c. One configuration file is used in this use case, Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data, and using TcPairs which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone tracks to generate matched pairs and error statistics). The TCMPRPlotter is then used (wraps the MET tool plot_tcmpr.R) to generate a mean and median plots for these matched pairs
+    c. One configuration file is used in this use case, Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data, and using TCPairs which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone tracks to generate matched pairs and error statistics). The TCMPRPlotter is then used (wraps the MET tool plot_tcmpr.R) to generate a mean and median plots for these matched pairs
     d. In your editor, open the METplus_INSTALL/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf file and perform the following:
       
       1. Under the [dir] section, add the following:
@@ -816,7 +816,7 @@ Config Quick Start Example
         a. OUTPUT_BASE to where you wish to save the output:  e.g. OUTPUT_BASE = path-to-your/output_dir
         b. INPUT_BASE = INPUT_DATA_DIRECTORY/model_applications
         c. MET_INSTALL_DIR = path-to-your/MET-install where path-to-your/MET-install is the full path where your MET installation resides
-        d. Verify that PROCESS_LIST, under the [conf] header/section is set to TcPairs, TCMPRPlotter. This instructs METplus Wrappers to run the TcPairs wrapper first (TC-Pairs) followed by the TCMPR plotter wrapper (plot_TCMPR.R).
+        d. Verify that PROCESS_LIST, under the [conf] header/section is set to TCPairs, TCMPRPlotter. This instructs METplus Wrappers to run the TCPairs wrapper first (TC-Pairs) followed by the TCMPR plotter wrapper (plot_TCMPR.R).
 
       2. Save your changes and exit your editor
     
