@@ -1,7 +1,9 @@
 """
-Grid-Stat: CESM and GFS Analysis Temperature Continuous Evaluation 
+Grid-Stat: CESM and GFS Analysis CONUS Temp 
 ============================================================================
-GridStat_fcstCESM_obsGFS_ConusTemp.conf
+model_applications/climate/
+GridStat_fcstCESM_obsGFS
+_ConusTemp.conf
 """
 
 ##############################################################################
@@ -9,7 +11,9 @@ GridStat_fcstCESM_obsGFS_ConusTemp.conf
 # --------------------
 #
 # To evaluate the CESM model temperature against the GFS analysis across the
-# the Continental United States to obtain categorical output statistics. 
+# the Continental United States to obtain categorical output statistics. This 
+# was developed as part of the NCAR System for Integrated Modeling of the 
+# Atmosphere (SIMA) project. 
 
 ##############################################################################
 # Datasets

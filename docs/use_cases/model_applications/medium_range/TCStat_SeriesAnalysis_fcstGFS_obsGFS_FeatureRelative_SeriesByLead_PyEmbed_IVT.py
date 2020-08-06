@@ -1,6 +1,15 @@
 """
-Multi_Tool: Feature Relative by Lead using User Diagnostics
-===========================================================
+Multi_Tool: Feature Relative by Lead using User-Defined Fields 
+========================================================================
+
+model_applications/medium_range/
+TCStat_SeriesAnalysis_fcstGFS
+_obsGFS_FeatureRelative
+_SeriesByLead_PyEmbed_IVT.conf
+
+"""
+
+========================================================================
 This use case calls multiple tools to produce diagnostic plots of systematic erros relative to a 
 feature (e.g. hurricane, MCS, etc...). This use case calls a user provided python script that 
 calculates a diagnostic of interest (e.g. integrated vapor transport, potential vorticity, etc...). 
