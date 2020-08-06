@@ -2829,7 +2829,7 @@ def run_stand_alone(filename, app_name):
             @param filename: Path to wrapper file with underscores, i.e.
             /path/to/pcp_combine_wrapper.py
             @param app_name: Name of wrapper with camel case, i.e.
-            PcpCombine
+            PCPCombine
         Returns:
             None
     """

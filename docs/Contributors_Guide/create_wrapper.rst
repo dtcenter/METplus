@@ -125,7 +125,7 @@ If the wrapper will not loop and process for each forecast lead, put the logic t
                          'usage': 'Usage',
                          }
 
-The name of a tool can be formatted in different ways depending on the context. For example, the MET tool PCPCombine is written as Pcp-Combine in the MET documentation, the actual application that is run is called pcp_combine, and the wrapper was previously named PcpCombine (different capitalization) in earlier versions of METplus. To make things easier for the user, METplus reads in the values listed in PROCESS_LIST, removes all underscores, dashes, and capital letters, then uses the entries in this dictionary to determine the actual wrapper name.
+The name of a tool can be formatted in different ways depending on the context. For example, the MET tool PCPCombine is written as Pcp-Combine in the MET documentation, the actual application that is run is called pcp_combine, and the wrapper was previously named PCPCombine (different capitalization) in earlier versions of METplus. To make things easier for the user, METplus reads in the values listed in PROCESS_LIST, removes all underscores, dashes, and capital letters, then uses the entries in this dictionary to determine the actual wrapper name.
 
 Some wrappers require multiple entries to cover all of the bases. For example, users may attempt to spell out MODE Time Domain instead of using MTD or accidentally write PointToGrid instead of Point2Grid. Additional entries will not hurt anything as long as they do not cause any conflicts.
 
