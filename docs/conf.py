@@ -20,14 +20,16 @@ print(sys.path)
 # -- Project information -----------------------------------------------------
 
 project = 'METplus'
-copyright = '2019, NCAR'
+copyright = '2020, NCAR'
 author = 'NCAR'
-
-# The full version, including alpha/beta/rc tags
-release = '3.1'
 
 # the stable version, displayed on front page of PDF
 version = '3.1'
+
+# The full version, including alpha/beta/rc tags
+release = f'{version}'
+
+
 
 
 # -- General configuration ---------------------------------------------------
@@ -46,22 +48,25 @@ if os.environ.get('METPLUS_DOC_PDF'):
     extensions.append('rst2pdf.pdfbuilder')
 
 # used for generating PDF
-pdf_documents = [('index', 'METplus_Users_Guide', 'METplus User\'s Guide', ('George McCabe\\'
-                                                                            'Dan Adriaansen\\'
-                                                                            'Minna Win-Gildenmeister\\'
-                                                                            'Julie Prestopnik\\'
-                                                                            'Jim Frimel\\'
-                                                                            'John Opatz\\'
-                                                                            'John Halley Gotway\\'
-                                                                            'Tara Jensen\\'
-                                                                            'Jonathan Vigh\\'
-                                                                            'Mallory Row\\'
-                                                                            'Christana Kalb\\'
-                                                                            'Hank Fisher\\'
-                                                                            'Lisa Goodrich\\'
-                                                                            'Lindsay Blank\\'
-                                                                            'Todd Arbetter\\'
-                                                                            )),]
+pdf_documents = [('index',
+                  f'METplus_Users_Guide_v{version}',
+                  'METplus User\'s Guide',
+                  ('George McCabe\\'
+                   'Dan Adriaansen\\'
+                   'Minna Win-Gildenmeister\\'
+                   'Julie Prestopnik\\'
+                   'Jim Frimel\\'
+                   'John Opatz\\'
+                   'John Halley Gotway\\'
+                   'Tara Jensen\\'
+                   'Jonathan Vigh\\'
+                   'Mallory Row\\'
+                   'Christana Kalb\\'
+                   'Hank Fisher\\'
+                   'Lisa Goodrich\\'
+                   'Lindsay Blank\\'
+                   'Todd Arbetter\\'
+                   )),]
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
