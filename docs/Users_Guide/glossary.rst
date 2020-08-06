@@ -3035,7 +3035,7 @@ METplus Configuration Glossary
 
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
-     | *Default:*  MODEls listed as MODEL<n>
+     | *Default:*  Models listed as MODEL<n>
  
    MODEL<n>_NAME
         .. warning:: **DEPRECATED:** Please use :term:`MODEL\<n\>`.
