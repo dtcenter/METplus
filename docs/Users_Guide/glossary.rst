@@ -198,7 +198,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    CYCLONE_PLOTTER_MODEL
-     MODEl used in CyclonePlotter.
+     Model used in CyclonePlotter.
 
      | *Used by:* CyclonePlotter
      | *Family:* config
