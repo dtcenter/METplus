@@ -1,3 +1,3 @@
 #!/bin/bash
 
-docker build -t $IMAGE_NAME --build-arg SOURCE_BRANCH=$SOURCE_BRANCH --build-arg MET_BRANCH=9.1_beta3 .
+docker build -t $IMAGE_NAME --build-arg SOURCE_BRANCH=$SOURCE_BRANCH --build-arg MET_BRANCH=develop .
