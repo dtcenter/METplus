@@ -83,6 +83,8 @@ METplus Wrappers configuration files. Some Python wrappers do not
 correspond to a particular MET tool, but wrap utilities to extend
 METplus functionality.
 
+.. include:: release-notes.rst
+
 Future development plans
 ------------------------
 

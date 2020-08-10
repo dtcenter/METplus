@@ -11,6 +11,7 @@
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
 import os
+from datetime import datetime
 import sys
 sys.path.insert(0, os.path.abspath('../ush'))
 sys.path.append(os.path.abspath("./_ext"))
@@ -20,8 +21,8 @@ print(sys.path)
 # -- Project information -----------------------------------------------------
 
 project = 'METplus'
-copyright = '2020, NCAR'
-author = 'NCAR'
+
+author = 'UCAR/NCAR, NOAA, and CSU/CIRA'
 
 # the stable version, displayed on front page of PDF
 version = '3.1'
@@ -29,8 +30,13 @@ version = '3.1'
 # The full version, including alpha/beta/rc tags
 release = f'{version}'
 
+release_year = '2020'
 
+release_date = f'{release_year}0810'
 
+copyright = f'{release_year}, {author}'
+
+release_monthyear = datetime.strptime(release_date, '%Y%m%d').strftime('%B %Y')
 
 # -- General configuration ---------------------------------------------------
 
@@ -116,3 +122,14 @@ sphinx_gallery_conf = {
 
 # -- Intersphinx control ---------------------------------------------------------------
 intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
+
+rst_epilog = """
+.. |copyright| replace:: {copyrightstr}
+.. |release_date| replace:: {release_datestr}
+.. |release_year| replace:: {release_yearstr}
+.. |release_monthyear| replace:: {release_monthyearstr}
+""".format(copyrightstr=copyright,
+           release_datestr=release_date,
+           release_yearstr=release_year,
+           release_monthyearstr=release_monthyear,
+           )
