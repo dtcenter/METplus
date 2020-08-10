@@ -19,7 +19,7 @@ Forecast System.
 
 It is important to note here that METplus Wrappers is an evolving
 software package. The first release of METplus Wrappers have occurred
-in 2017. This documentation describes the |release| release in August 2020.
+in 2017. This documentation describes the |release| release in |release_monthyear|.
 Intermediate releases may include bug fixes. METplus Wrappers is also be
 able to accept new modules contributed by the community. While we are
 setting up our community contribution protocol, please send email 
@@ -54,7 +54,7 @@ The citation for this User's Guide should be:
 
 Adriaansen, D., M. Win-Gildenmeister, G. McCabe, J. Prestopnik, J. Frimel, J. Opatz, 
 J. Halley Gotway, T. Jensen, J. Vigh, M. Row, C. Kalb, H. Fisher, L. Goodrich,
-L. Blank, and T. Arbetter, 2020: The METplus Version |version| User's Guide.
+L. Blank, and T. Arbetter, |release_year|: The METplus Version |version| User's Guide.
 Developmental Testbed Center.  Available at: https://github.com/NCAR/METplus/releases.
 
 **Acknowledgments**
