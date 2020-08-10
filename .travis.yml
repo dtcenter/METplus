@@ -84,7 +84,7 @@ env:
     # The DOCKERHUB_USER_REPO setting ASSUMES your owner_name 
     # in travis ci IS THE SAME as your docker hub user_name,
     # since it is setting it  based on the travis repo slug.
-    - DOCKERHUB_USER_REPO="`dirname ${TRAVIS_REPO_SLUG}`/metplus"
+    - DOCKERHUB_USER_REPO=dtcenter/metplus
     - DOCKERHUB_USER_TAGNAME=3.1
     # set to true to use default settings
     # if set to false, to use DOCKER_USER_* settings, your dockerhub container.
