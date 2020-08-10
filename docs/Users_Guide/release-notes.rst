@@ -1,9 +1,16 @@
+METplus Release Notes
+_____________________
+
+When applicable, release notes are followed by the GitHub issue number which
+describes the bugfix, enhancement, or new feature:
+https://github.com/NCAR/METplus/issues
+
 **New for METplus Wrappers v3.1**
 
 Bugfixes:
 
 * Running EnsembleStat then GridStat fails when PCPCombine is also run ([#509](https://github.com/NCAR/METplus/issues/509))
-* All changes included in 3.0.1 and 3.0.2 bugfix releases:
+* All changes included in 3.0.1 and 3.0.2 bugfix releases
     * https://github.com/NCAR/METplus/milestone/11?closed=1
     * https://github.com/NCAR/METplus/milestone/13?closed=1
 
