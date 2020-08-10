@@ -20,8 +20,7 @@ print(sys.path)
 # -- Project information -----------------------------------------------------
 
 project = 'METplus'
-copyright = '2020, NCAR'
-author = 'NCAR'
+author = 'UCAR/NCAR, NOAA, and CSU/CIRA'
 
 # the stable version, displayed on front page of PDF
 version = '3.1'
@@ -29,8 +28,11 @@ version = '3.1'
 # The full version, including alpha/beta/rc tags
 release = f'{version}'
 
+release_year = '2020'
 
+release_date = f'{release_year}0810'
 
+copyright = f'{release_year}, {author}'
 
 # -- General configuration ---------------------------------------------------
 
