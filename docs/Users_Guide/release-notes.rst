@@ -5,6 +5,8 @@ When applicable, release notes are followed by the GitHub issue number which
 describes the bugfix, enhancement, or new feature:
 https://github.com/NCAR/METplus/issues
 
+.. _release-notes-v3.1:
+
 **New for METplus Wrappers v3.1**
 
 Bugfixes:
@@ -53,6 +55,7 @@ Internal:
 * Update Tutorial Chapter 4 for MET 9.0, METplus 3.0 (`#428 <https://github.com/NCAR/METplus/issues/428>`_))
 * Reorganize sphinx documentation files (`#418 <https://github.com/NCAR/METplus/issues/418>`_))
 
+.. _release-notes-v3.0:
 
 **New for METplus Wrappers v3.0**
 
