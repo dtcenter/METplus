@@ -2,8 +2,10 @@
 Grid-Stat: Surrogate Severe and Practically Perfect Evaluation
 ==============================================================
 
-model_applications/convection_allowing_model/
-GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
+model_applications/
+convection_allowing_model/
+GridStat_fcstHRRR_obsPracPerfect
+_SurrogateSevere.conf
 
 """
 
@@ -25,9 +27,9 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 # METplus Components
 # ------------------
 #
-# This use case runs grid_stat to create categorical statistics on 
-# surrogate severe from the HRRR model and Practially Perfect observations 
-# computed from local storm reports.  
+# This use case runs grid_stat to create categorical statistics for 
+# Surrogate Severe derived from the HRRR model and Practially Perfect
+# Analysis derived from local storm reports.  
 
 ##############################################################################
 # METplus Workflow
@@ -120,3 +122,4 @@ GridStat_fcstHRRR_obsPracPerfect_SurrogateSevere.conf
 #  `NetCDFFileUseCase <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_, 
 #  `NOAAHWTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,  
 #  `NCAROrgUseCase <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
+#  `NOAAHMTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_,  

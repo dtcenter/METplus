@@ -530,9 +530,9 @@ METplus Configuration Glossary
      | *Default:* None
 
    LOG_MODE_VERBOSITY
-     Overrides the log verbosity for Mode only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
+     Overrides the log verbosity for MODE only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
 
-     | *Used by:* Mode
+     | *Used by:* MODE
      | *Family:* [config]
      | *Default:* None
 
@@ -551,9 +551,9 @@ METplus Configuration Glossary
      | *Default:* None
 
    LOG_PCP_COMBINE_VERBOSITY
-     Overrides the log verbosity for PcpCombine only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
+     Overrides the log verbosity for PCPCombine only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
 
-     | *Used by:* PcpCombine
+     | *Used by:* PCPCombine
      | *Family:* [config]
      | *Default:* None
 
@@ -572,9 +572,9 @@ METplus Configuration Glossary
      | *Default:* None
 
    LOG_TC_PAIRS_VERBOSITY
-     Overrides the log verbosity for TcPairs only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
+     Overrides the log verbosity for TCPairs only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
 
-     | *Used by:* TcPairs
+     | *Used by:* TCPairs
      | *Family:* [config]
      | *Default:* None
 
@@ -586,9 +586,9 @@ METplus Configuration Glossary
      | *Default:* None
 
    LOG_TC_STAT_VERBOSITY
-     Overrides the log verbosity for TcStat only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
+     Overrides the log verbosity for TCStat only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
 
-     | *Used by:* TcStat
+     | *Used by:* TCStat
      | *Family:* [config]
      | *Default:* None
 
@@ -607,16 +607,16 @@ METplus Configuration Glossary
      | *Default:* %m/%d %H:%M:%S
 
    FCST_PCP_COMBINE_COMMAND
-     Used only when :term:`FCST_PCP_COMBINE_METHOD` = USER_DEFINED. Custom command to run PcpCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_COMMAND`.
+     Used only when :term:`FCST_PCP_COMBINE_METHOD` = USER_DEFINED. Custom command to run PCPCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_COMMAND`.
 
-     | *Used by:* PcpCombine
+     | *Used by:* PCPCombine
      | *Family:* [config]
      | *Default:* None
 
    OBS_PCP_COMBINE_COMMAND
-     Used only when :term:`OBS_PCP_COMBINE_METHOD` = USER_DEFINED. Custom command to run PcpCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for forecast data called :term:`FCST_PCP_COMBINE_COMMAND`.
+     Used only when :term:`OBS_PCP_COMBINE_METHOD` = USER_DEFINED. Custom command to run PCPCombine with a complex call that doesn't fit common use cases. Value can include filename template syntax, i.e. {valid?fmt=%Y%m%d}, that will be substituted based on the current runtime. The name of the application and verbosity flag does not need to be included. For example, if set to '-derive min,max /some/file' the command run will be pcp_combine -v 2 -derive min,max /some/file. A corresponding variable exists for forecast data called :term:`FCST_PCP_COMBINE_COMMAND`.
 
-     | *Used by:* PcpCombine
+     | *Used by:* PCPCombine
      | *Family:* [config]
      | *Default:* None
 
@@ -1092,7 +1092,7 @@ METplus Configuration Glossary
    CONFIG_DIR
      Directory containing config files relevant to MET tools.
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, StatAnalysis
+     | *Used by:*  EnsembleStat, GridStat, MODE, StatAnalysis
      | *Family:*  [dir]
      | *Default:*  Varies
 
@@ -1531,14 +1531,14 @@ METplus Configuration Glossary
    FCST_FILE_WINDOW_BEGIN
      See :term:`OBS_FILE_WINDOW_BEGIN`
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_FILE_WINDOW_END
      See :term:`OBS_FILE_WINDOW_END`
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -1620,14 +1620,14 @@ METplus Configuration Glossary
    FCST_IS_PROB
      Specify whether the forecast data are probabilistic or not. Acceptable values: true/false
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
      | *Family:*  [config]
      | *Default:*  False
 
    FCST_PROB_IN_GRIB_PDS
      Specify whether the probabilistic forecast data is stored in the GRIB Product Definition Section or not.Acceptable values: true/false. Only used when FCST_IS_PROB is True. This does not need to be set if the FCST_<APP_NAME>_INPUT_DATATYPE is set to NetCDF.
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
      | *Family:*  [config]
      | *Default:*
 
@@ -1643,63 +1643,63 @@ METplus Configuration Glossary
    FCST_MODE_CONV_RADIUS
      Comma separated list of convolution radius values used by mode for forecast fields. A corresponding variable exists for observation data called :term:`OBS_MODE_CONV_RADIUS`.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*
 
    FCST_MODE_CONV_THRESH
      Comma separated list of convolution threshold values used by mode for forecast fields. A corresponding variable exists for observation data called :term:`OBS_MODE_CONV_THRESH`.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*
 
    FCST_MODE_FILE_WINDOW_BEGIN
      See :term:`OBS_MODE_FILE_WINDOW_BEGIN`
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:* :term:`FCST_FILE_WINDOW_BEGIN`
 
    FCST_MODE_FILE_WINDOW_END
      See :term:`OBS_MODE_FILE_WINDOW_END`
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:* :term:`FCST_FILE_WINDOW_END`
 
    FCST_MODE_MERGE_FLAG
      Sets the merge_flag value in the mode config file for forecast fields. Valid values are NONE, THRESH, ENGINE, and BOTH. A corresponding variable exists for observation data called :term:`OBS_MODE_MERGE_FLAG`.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*
 
    FCST_MODE_MERGE_THRESH
      Comma separated list of merge threshold values used by mode for forecast fields. A corresponding variable exists for observation data called :term:`OBS_MODE_MERGE_THRESH`.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*
 
    FCST_MODE_INPUT_DATATYPE
      Specify the data type of the input directory for forecast files used with the MET mode tool. Currently valid options are NETCDF, GRIB, and GEMPAK. If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF. A corresponding variable exists for observation data called :term:`OBS_MODE_INPUT_DATATYPE`.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_MODE_INPUT_DIR
      Input directory for forecast files to use with the MET tool mode. A corresponding variable exists for observation data called :term:`OBS_MODE_INPUT_DIR`.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [dir]
      | *Default:*  Varies
 
    FCST_MODE_INPUT_TEMPLATE
      Template used to specify forecast input filenames for the MET tool mode. A corresponding variable exists for observation data called :term:`OBS_MODE_INPUT_TEMPLATE`. To utilize Python Embedding as input to the MET tools, set this value to PYTHON_NUMPY or PYTHON_XARRAY.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
@@ -1771,28 +1771,28 @@ METplus Configuration Glossary
    FCST_PCP_COMBINE_DATA_INTERVAL
      Specify the accumulation interval of the forecast dataset used by the MET pcp_combine tool when processing daily input files. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_DATA_INTERVAL`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_DERIVE_LOOKBACK
      Specify how far to look back in time in hours to find files for running the MET pcp_combine tool in derive mode. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_DERIVE_LOOKBACK`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:* Varies
 
    FCST_PCP_COMBINE_INPUT_DATATYPE
      Specify the data type of the input directory for forecast files used with the MET pcp_combine tool. Currently valid options are NETCDF, GRIB, and GEMPAK. Required by pcp_combine if :term:`FCST_PCP_COMBINE_RUN` is True. Replaces deprecated variable :term:`FCST_NATIVE_DATA_TYPE`. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_DATATYPE`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_INPUT_DIR
      Specify the input directory for forecast files used with the MET pcp_combine tool. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_DIR`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [dir]
      | *Default:*  Varies
 
@@ -1802,21 +1802,21 @@ METplus Configuration Glossary
    FCST_PCP_COMBINE_INPUT_TEMPLATE
      Template used to specify input filenames for forecast files used by the MET pcp_combine tool. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_INPUT_TEMPLATE`. To utilize Python Embedding as input to the MET tools, set this value to PYTHON_NUMPY or PYTHON_XARRAY.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_IS_DAILY_FILE
      Specify whether the forecast file is a daily file or not. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_IS_DAILY_FILE`.Acceptable values: true/false
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  False
 
    FCST_PCP_COMBINE_METHOD
      Specify the method to be used with the MET pcp_combine tool processing forecast data.Valid options are ADD, SUM, SUBTRACT, DERIVE, and USER_DEFINED. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_METHOD`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:* None
 
@@ -1835,49 +1835,49 @@ METplus Configuration Glossary
    FCST_PCP_COMBINE_MIN_FORECAST
      Specify the minimum forecast lead time to use when finding the lowest forecast lead to use in pcp_combine. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_MIN_FORECAST`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_MAX_FORECAST
      Specify the maximum forecast lead time to use when finding the lowest forecast lead to use in pcp_combine. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_MAX_FORECAST`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_OUTPUT_DIR
      Specify the output directory for forecast files generated by the MET pcp_combine tool. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_OUTPUT_DIR`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [dir]
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_OUTPUT_TEMPLATE
      Template used to specify output filenames for forecast files generated by the MET pcp_combine tool. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_OUTPUT_TEMPLATE`. To utilize Python Embedding as input to the MET tools, set this value to PYTHON_NUMPY or PYTHON_XARRAY.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_RUN
      Specify whether to run the MET pcp_combine tool on forecast data or not. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_RUN`.Acceptable values: true/false
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_STAT_LIST
      List of statistics to process when using the MET pcp_combine tool on forecast data in derive mode. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_STAT_LIST`.Acceptable values: sum, min, max, range, mean, stdev, vld_count
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_PCP_COMBINE_TIMES_PER_FILE
      Specify the number of accumulation intervals of the forecast dataset used by the MET pcp_combine tool when processing daily input files. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_TIMES_PER_FILE`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*
 
@@ -2049,7 +2049,7 @@ METplus Configuration Glossary
 
      See :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -2065,7 +2065,7 @@ METplus Configuration Glossary
 
      This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -2079,7 +2079,7 @@ METplus Configuration Glossary
 
      See :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -2094,35 +2094,35 @@ METplus Configuration Glossary
 
      See :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    BOTH_VAR<n>_LEVELS
      Define the levels for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See :term:`FCST_VAR<n>_LEVELS`, :term:`OBS_VAR<n>_LEVELS`, or :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    BOTH_VAR<n>_NAME
      Define the name for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See :term:`FCST_VAR<n>_NAME`, :term:`OBS_VAR<n>_NAME`, or :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    BOTH_VAR<n>_OPTIONS
      Define the extra options for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See :term:`FCST_VAR<n>_OPTIONS`, :term:`OBS_VAR<n>_OPTIONS`, or :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    BOTH_VAR<n>_THRESH
      Define the threshold list for the <n>th forecast and observation variables to be used in the analysis where <n> is an integer >= 1. See :term:`FCST_VAR<n>_THRESH`, :term:`OBS_VAR<n>_THRESH`, or :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -2409,14 +2409,14 @@ METplus Configuration Glossary
    FCST_WINDOW_BEGIN
      See :term:`OBS_WINDOW_BEGIN`
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    FCST_WINDOW_END
      See :term:`OBS_WINDOW_END`
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -2698,7 +2698,7 @@ METplus Configuration Glossary
    INIT_EXCLUDE
      Specify which, if any, forecast initializations to exclude from the analysis.
 
-     | *Used by:*  TcPairs, TcStat
+     | *Used by:*  TCPairs, TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -2731,7 +2731,7 @@ METplus Configuration Glossary
    INIT_INCLUDE
      Specify which forecast initializations to include in the analysis.
 
-     | *Used by:*  TcPairs, TcStat
+     | *Used by:*  TCPairs, TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -2745,7 +2745,7 @@ METplus Configuration Glossary
    INIT_SEQ
      Specify a list of initialization hours that are used to build a sequence of forecast lead times to include in the analysis. Used only when looping by valid time (LOOP_BY = VALID). Comma separated list format, e.g.:0, 6, 12 See :ref:`looping_over_forecast_leads` for more information.
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PcpCombine, PointStat, RegridDataPlane, SeriesByLead
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PCPCombine, PointStat, RegridDataPlane, SeriesByLead
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -2817,7 +2817,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_LEAD` instead.
 
    TCMPR_PLOTTER_LEAD
-     For CyclonePlotter, this refers to the column of interest in the input ASCII cyclone file.In the TCMPRPlotter, this corresponds to the optional -lead argument in the plot_TCMPR.R script (which is wrapped by TCMPRPlotter). This argument is set to a comma-separted list of lead times (h) to be plotted.In TcStat, this corresponds to the name of the column of interest in the input ASCII data file.
+     For CyclonePlotter, this refers to the column of interest in the input ASCII cyclone file.In the TCMPRPlotter, this corresponds to the optional -lead argument in the plot_TCMPR.R script (which is wrapped by TCMPRPlotter). This argument is set to a comma-separted list of lead times (h) to be plotted.In TCStat, this corresponds to the name of the column of interest in the input ASCII data file.
 
      | *Used by:*  TCMPRPlotter
      | *Family:*  [config]
@@ -2843,21 +2843,21 @@ METplus Configuration Glossary
    LEAD_SEQ
      Specify the sequence of forecast lead times to include in the analysis. Comma separated list format, e.g.:0, 6, 12. See :ref:`looping_over_forecast_leads` for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PcpCombine, PointStat, RegridDataPlane, SeriesByLead
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PCPCombine, PointStat, RegridDataPlane, SeriesByLead
      | *Family:*  [config]
      | *Default:*  Varies
 
    LEAD_SEQ_MIN
      Minimum forecast lead to be processed. Used primarily with INIT_SEQ but also affects LEAD_SEQ. See :ref:`looping_over_forecast_leads` for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PcpCombine, PointStat, RegridDataPlane, SeriesByLead
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PCPCombine, PointStat, RegridDataPlane, SeriesByLead
      | *Family:*  [config]
      | *Default:*  Varies
 
    LEAD_SEQ_MAX
      Maximum forecast lead to be processed. Used primarily with :term:`INIT_SEQ` but also affects :term:`LEAD_SEQ`. See :ref:`looping_over_forecast_leads` for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PcpCombine, PointStat, RegridDataPlane, SeriesByLead
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PCPCombine, PointStat, RegridDataPlane, SeriesByLead
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -2997,7 +2997,7 @@ METplus Configuration Glossary
    MET_BASE
      The base directory where your MET installation resides.
 
-     | *Used by:*  CyclonePlotter, ExtractTiles, PB2NC, PointStat, SeriesByInit, SeriesByLead, TCMPRPlotter, TcPairs
+     | *Used by:*  CyclonePlotter, ExtractTiles, PB2NC, PointStat, SeriesByInit, SeriesByLead, TCMPRPlotter, TCPairs
      | *Family:*  [dir]
      | *Default:*
 
@@ -3111,70 +3111,70 @@ METplus Configuration Glossary
    MODE_CONFIG_FILE
      Path to mode configuration file.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*  Varies
 
    MODE_CONV_RADIUS
      Comma separated list of convolution radius values used by mode for both forecast and observation fields. Has the same behavior as setting :term:`FCST_MODE_CONV_RADIUS` and :term:`OBS_MODE_CONV_RADIUS` to the same value.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*
 
    MODE_CONV_THRESH
      Comma separated list of convolution threshold values used by mode for both forecast and observation fields. Has the same behavior as setting :term:`FCST_MODE_CONV_THRESH` and :term:`OBS_MODE_CONV_THRESH` to the same value.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*
 
    MODE_FCST_CONV_RADIUS
      Comma separated list of convolution radius values used by mode for forecast fields.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:* 5
 
    MODE_FCST_CONV_THRESH
      Comma separated list of convolution threshold values used by mode for forecast fields.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:* 5
 
    MODE_FCST_MERGE_FLAG
      Sets the merge_flag value in the mode config file for forecast fields. Valid values are NONE, THRESH, ENGINE, and BOTH.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:* THRESH
 
    MODE_FCST_MERGE_THRESH
      Comma separated list of merge threshold values used by mode for forecast fields.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*  >0.45
 
    MODE_MERGE_CONFIG_FILE
      Path to mode merge config file.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*  Varies
 
    MODE_MERGE_FLAG
      Sets the merge_flag value in the mode config file for both forecast and observation fields. Has the same behavior as setting :term:`MODE_FCST_MERGE_FLAG` and :term:`MODE_OBS_MERGE_FLAG` to the same value. Valid values are NONE, THRESH, ENGINE, and BOTH.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:* THRESH
 
    MODE_MERGE_THRESH
      Comma separated list of merge threshold values used by mode for forecast and observation fields. Has the same behavior as setting :term:`MODE_FCST_MERGE_THRESH` and :term:`MODE_OBS_MERGE_THRESH` to the same value.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*  >0.45
 
@@ -3196,28 +3196,28 @@ METplus Configuration Glossary
    MODE_OUTPUT_DIR
      Output directory to write mode files.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [dir]
      | *Default:*  Varies
 
    MODE_OUTPUT_TEMPLATE
      Sets the subdirectories below :term:`MODE_OUTPUT_DIR` using a template to allow run time information. If LOOP_BY = VALID, default value is valid time YYYYMMDDHHMM/mode. If LOOP_BY = INIT, default value is init time YYYYMMDDHHMM/mode.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    MODE_VERIFICATION_MASK_TEMPLATE
      Template used to specify the verification mask filename for the MET tool mode. Now supports a list of filenames.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    MODE_QUILT
      True/False. If True, run all permutations of radius and threshold.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*  False
 
@@ -3253,14 +3253,14 @@ METplus Configuration Glossary
      | *Default:*  5
 
    MTD_MIN_VOLUME
-     Sets min_volume in the MET Mode-TD config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+     Sets min_volume in the MET MODE-TD config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
 
      | *Used by:* MTD
      | *Family:*  [config]
      | *Default:*
 
    MTD_SINGLE_RUN
-     Set to True to only process one data set (forecast or observation) in Mode-TD. If True, must set :term:`MTD_SINGLE_RUN_SRC` to either 'FCST' or 'OBS'.
+     Set to True to only process one data set (forecast or observation) in MODE-TD. If True, must set :term:`MTD_SINGLE_RUN_SRC` to either 'FCST' or 'OBS'.
 
      | *Used by:* MTD
      | *Family:*  [config]
@@ -3452,14 +3452,14 @@ METplus Configuration Glossary
    OBS_FILE_WINDOW_BEGIN
      Used to control the lower bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_FILE_WINDOW_BEGIN` is set, the GridStat wrapper will use that value. If :term:`PB2NC_FILE_WINDOW_BEGIN` is not set, then the PB2NC wrapper will use :term:`OBS_FILE_WINDOW_BEGIN`.A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_BEGIN`.
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_FILE_WINDOW_END
      Used to control the upper bound of the window around the valid time to determine if a file should be used for processing. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds.This value will be used for all wrappers that look for an observation file unless it is overridden by a wrapper specific configuration variable. For example, if :term:`OBS_GRID_STAT_WINDOW_END` is set, the GridStat wrapper will use that value. If :term:`PB2NC_WINDOW_END` is not set, then the PB2NC wrapper will use :term:`OBS_WINDOW_END`. A corresponding variable exists for forecast data called :term:`FCST_FILE_WINDOW_END`.
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PB2NC, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -3559,14 +3559,14 @@ METplus Configuration Glossary
    OBS_IS_PROB
      Used when setting OBS_* variables to process forecast data for comparisons with mtd. Specify whether the observation data are probabilistic or not. See :term:`FCST_IS_PROB` .Acceptable values: true/false
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
      | *Family:*  [config]
      | *Default:*  False
 
    OBS_PROB_IN_GRIB_PDS
      Specify whether the probabilistic observation data is stored in the GRIB Product Definition Section or not.Acceptable values: true/false. Only used when :term:`OBS_IS_PROB` is True. This does not need to be set if the OBS_<APP_NAME>_INPUT_DATATYPE is set to NetCDF.
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
      | *Family:*  [config]
      | *Default:*
 
@@ -3576,62 +3576,62 @@ METplus Configuration Glossary
    OBS_MODE_CONV_RADIUS
      See :term:`FCST_MODE_CONV_RADIUS`
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*
 
    OBS_MODE_CONV_THRESH
      See :term:`FCST_MODE_CONV_THRESH`
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*
 
    OBS_MODE_FILE_WINDOW_BEGIN
-     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by Mode. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_MODE_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by MODE. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_MODE_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:* :term:`OBS_FILE_WINDOW_BEGIN`
 
    OBS_MODE_FILE_WINDOW_END
-     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by Mode. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_MODE_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
+     Used to control the upper bound of the window around the valid time to determine if a file should be used for processing by MODE. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_MODE_FILE_WINDOW_END` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_END` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config] | *Default:* :term:`OBS_FILE_WINDOW_END`
 
    OBS_MODE_MERGE_FLAG
      See :term:`FCST_MODE_MERGE_FLAG`.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*
 
    OBS_MODE_MERGE_THRESH
      See :term:`FCST_MODE_MERGE_THRESH`.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*
 
    OBS_MODE_INPUT_DATATYPE
      See :term:`FCST_MODE_INPUT_DATATYPE`.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_MODE_INPUT_DIR
      See :term:`FCST_MODE_INPUT_DIR`.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [dir]
      | *Default:*  Varies
 
    OBS_MODE_INPUT_TEMPLATE
      See :term:`FCST_MODE_INPUT_TEMPLATE`.
 
-     | *Used by:*  Mode
+     | *Used by:*  MODE
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
@@ -3699,112 +3699,112 @@ METplus Configuration Glossary
    OBS_PCP_COMBINE_<n>_FIELD_NAME
      See :term:`FCST_PCP_COMBINE_<n>_FIELD_NAME`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_DATA_INTERVAL
      See :term:`FCST_PCP_COMBINE_DATA_INTERVAL`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_DERIVE_LOOKBACK
      See :term:`FCST_PCP_COMBINE_DERIVE_LOOKBACK`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:* Varies
 
    OBS_PCP_COMBINE_INPUT_DATATYPE
      See :term:`FCST_PCP_COMBINE_INPUT_DATATYPE`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_INPUT_DIR
      See :term:`FCST_PCP_COMBINE_INPUT_DIR`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [dir]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_INPUT_LEVEL
      See :term:`FCST_PCP_COMBINE_INPUT_LEVEL`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_INPUT_TEMPLATE
      See :term:`FCST_PCP_COMBINE_INPUT_TEMPLATE`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_IS_DAILY_FILE
      See :term:`FCST_PCP_COMBINE_IS_DAILY_FILE`. Acceptable values: true/false
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  False
 
    OBS_PCP_COMBINE_METHOD
      See :term:`FCST_PCP_COMBINE_METHOD`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:* None
 
    OBS_PCP_COMBINE_MIN_FORECAST
      See :term:`FCST_PCP_COMBINE_MIN_FORECAST`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_MAX_FORECAST
      See :term:`FCST_PCP_COMBINE_MAX_FORECAST`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_OUTPUT_DIR
      See :term:`FCST_PCP_COMBINE_OUTPUT_DIR`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [dir]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_OUTPUT_TEMPLATE
      See :term:`FCST_PCP_COMBINE_OUTPUT_TEMPLATE`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_RUN
      See :term:`FCST_PCP_COMBINE_RUN`. Acceptable values: true/false
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_STAT_LIST
      See :term:`FCST_PCP_COMBINE_STAT_LIST`. Acceptable values: sum, min, max, range, mean, stdev, vld_count
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
    OBS_PCP_COMBINE_TIMES_PER_FILE
      See :term:`FCST_PCP_COMBINE_TIMES_PER_FILE`.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*
 
@@ -4044,7 +4044,7 @@ METplus Configuration Glossary
 
      See :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -4058,7 +4058,7 @@ METplus Configuration Glossary
 
      This value can be set to a call to a python script with arguments to supply data to the MET tools via Python Embedding. Filename template syntax can be used here to specify time information of an input file, i.e. {valid?fmt=%Y%m%d%H}. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information about Python Embedding in the MET tools.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -4070,7 +4070,7 @@ METplus Configuration Glossary
      | ...
      | OBS_VAR<n>_OPTIONS
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -4086,7 +4086,7 @@ METplus Configuration Glossary
 
      See :ref:`Field_Info` for more information.
 
-     | *Used by:*  GridStat, EnsembleStat, PointStat, Mode, MTD, PcpCombine
+     | *Used by:*  GridStat, EnsembleStat, PointStat, MODE, MTD, PCPCombine
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -4110,7 +4110,7 @@ METplus Configuration Glossary
    OBTYPE
      Provide a string to represent the type of observation data used in the analysis. This is the observation time listed in the MET .stat files and is used in setting output filename.
 
-     | *Used by:*  EnsembleStat, GridStat, Mode, MTD, PointStat
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PointStat
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -4303,7 +4303,7 @@ METplus Configuration Glossary
    PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS
      If True, do not run pcp_combine if output file already exists. Set to False to overwrite files.
 
-     | *Used by:*  PcpCombine
+     | *Used by:*  PCPCombine
      | *Family:*  [config]
      | *Default:*  False
 
@@ -4836,7 +4836,7 @@ METplus Configuration Glossary
    TC_PAIRS_ADECK_INPUT_DIR
      Directory that contains the ADECK files.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:* [dir]
      | *Default:*  Varies
 
@@ -4852,63 +4852,63 @@ METplus Configuration Glossary
    TC_PAIRS_ADECK_INPUT_TEMPLATE
      Template of the file names of ADECK data.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:* [filename_templates]
      | *Default:*  Varies
 
    TC_PAIRS_BASIN
      Control what basins are desired for tropical cyclone analysis. Per the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ acceptable basin ID's are:WP = Western Northern PacificIO = Northern Indian OceanSH = Southern HemisphereCP = Central Northern PacificEP = Eastern Northern PacificAL = Northern AtlanticSL = Southern Atlantic
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:* [config]
      | *Default:*  Varies
 
    TC_PAIRS_BDECK_INPUT_DIR
      Directory that contains the BDECK files.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:* [dir]
      | *Default:*  Varies
 
    TC_PAIRS_BDECK_INPUT_TEMPLATE
      Template of the file names of BDECK data.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:* [filename_templates]
      | *Default:*  Varies
 
    TC_PAIRS_CONFIG_FILE
      Provide the absolute path to the configuration file for the MET tc_pairs tool.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_PAIRS_CYCLONE
      Specify which cyclone numbers to include in the tropical cyclone analysis. Per the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_, this can be any number 01-99 (HH format). Use a space or comma separated list, or leave unset if all cyclones are desired.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_PAIRS_DLAND_FILE
      The file generated by the MET tool tc_dland, containing the gridded representation of the minimum distance to land. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information about the tc_dland tool.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:* Varies
 
    TC_PAIRS_EDECK_INPUT_DIR
      Directory that contains the EDECK files.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:* [dir]
      | *Default:*  Varies
 
    TC_PAIRS_EDECK_INPUT_TEMPLATE
      Template of the file names of EDECK data.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:* [filename_templates]
      | *Default:*  Varies
 
@@ -4924,231 +4924,231 @@ METplus Configuration Glossary
    TC_PAIRS_MISSING_VAL
      Specify the missing value code.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_PAIRS_MISSING_VAL_TO_REPLACE
      Specify the missing value code to replace.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_PAIRS_OUTPUT_DIR
      Specify the directory where the MET tc_pairs tool will write files.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [dir]
      | *Default:*  Varies
 
    TC_PAIRS_OUTPUT_TEMPLATE
      Template of the output file names created by tc_pairs.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:* [filename_templates]
      | *Default:*  Varies
 
    TC_PAIRS_READ_ALL_FILES
      Specify whether to pass the value specified in :term:`TC_PAIRS_ADECK_INPUT_DIR`, :term:`TC_PAIRS_BDECK_INPUT_DIR` and  :term:`TC_PAIRS_EDECK_INPUT_DIR`  to the MET tc_pairs utility or have the wrapper search for valid files in that directory based on the value of :term:`TC_PAIRS_ADECK_TEMPLATE`, :term:`TC_PAIRS_BDECK_TEMPLATE` and  :term:`TC_PAIRS_EDECK_TEMPLATE` and pass them individually to tc_pairs. Set to false or no to have the wrapper find valid files. This can speed up execution time of tc_pairs.Acceptable values: yes/no
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  no
 
    TC_PAIRS_REFORMAT_DECK
      Set to true or yes if using cyclone data that needs to be reformatted to match the ATCF (Automated Tropical Cyclone Forecasting) format. If set to true or yes, you will need to set :term:`TC_PAIRS_REFORMAT_TYPE` to specify which type of reformatting to perform.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_PAIRS_REFORMAT_DIR
      Specify the directory to write reformatted track data to be read by tc_pairs. Used only if :term:`TC_PAIRS_REFORMAT_DECK` is true or yes.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [dir]
      | *Default:* {OUTPUT_BASE}/track_data_atcf
 
    TC_PAIRS_REFORMAT_TYPE
      Specify which type of reformatting to perform on cyclone data. Currently only SBU extra tropical cyclone reformatting is available. Only used if :term:`TC_PAIRS_REFORMAT_DECK` is true or yes.Acceptable values: SBU
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_PAIRS_SKIP_IF_REFORMAT_EXISTS
      Specify whether to overwrite the reformatted cyclone data or not. If set to true or yes and the reformatted file already exists for a given run, the reformatting code will not be run. Used only when :term:`TC_PAIRS_REFORMAT_DECK` is set to true or yes.Acceptable values: yes/no
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  no
 
    TC_PAIRS_SKIP_IF_OUTPUT_EXISTS
      Specify whether to overwrite the output from the MET tc_pairs tool or not. If set to true or yes and the output file already exists for a given run, tc_pairs will not be run.Acceptable values: yes/no
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  no
 
    TC_PAIRS_STORM_ID
      The identifier of the storm(s) of interest.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_PAIRS_STORM_NAME
      The name(s) of the storm of interest.
 
-     | *Used by:*  TcPairs
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_AMODEL
      Specify the AMODEL for the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_BASIN
      Specify the BASIN for the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_BMODEL
      Specify the BMODEL for the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_CMD_LINE_JOB
      Specify expression(s) that will be passed to the MET tc_stat tool via the command line. Only specify if TC_STAT_RUN_VIA=CLI. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ chapter for tc-stat for the details on performing job summaries and job filters.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_COLUMN_STR_NAME
      Specify the string names of the columns for stratification with the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_COLUMN_STR_VAL
      Specify the values for the columns set via the :term:`TC_STAT_COLUMN_STR_NAME` option for use with the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_COLUMN_THRESH_NAME
      Specify the string names of the columns for stratification by threshold with the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_COLUMN_THRESH_VAL
      Specify the values used for thresholding the columns specified in the :term:`TC_STAT_COLUMN_THRESH_NAME` option for use with the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INIT_THRESH_NAME
      Specify the string names of the columns for stratification by threshold with the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INIT_THRESH_VAL
      Specify the values used for thresholding the columns specified in the :term:`TC_STAT_INIT_THRESH_NAME` option for use with the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_CYCLONE
      Specify the cyclone of interest for use with the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_DESC
      Specify the DESC option for use with the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INIT_BEG
      Specify the beginning initialization time for stratification when using the MET tc_stat tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INIT_END
      Specify the ending initialization time for stratification when using the MET tc_stat tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INIT_EXCLUDE
      Specify the initialization times to exclude when using the MET tc_stat tool, via a comma separated list e.g.:20141220_18, 20141221_00Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INIT_HOUR
      The beginning hour (HH) of the initialization time of interest.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INIT_INCLUDE
      Specify the initialization times to include when using the MET tc_stat tool, via a comma separated list e.g.:20141220_00, 20141220_06, 20141220_12Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INIT_MASK
      This corresponds to the INIT_MASK keyword in the MET tc_stat config file. For more information, please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ .
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INIT_STR_NAME
      This corresponds to the INIT_STR_NAME keyword in the MET tc_stat config file. Please refer to  the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more details.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INIT_STR_VAL
      This corresponds to the INIT_STR_VAL keyword in the MET tc_stat config file. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_INPUT_DIR
      Specify the input directory where the MET tc_stat tool will look for files.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [dir]
      | *Default:*  Varies
 
@@ -5162,133 +5162,133 @@ METplus Configuration Glossary
    TC_STAT_JOBS_LIST
      Specify expressions for the MET tc_stat tool to execute.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_LANDFALL
      Specify whether only those points occurring near landfall should be retained when using the MET tc_stat tool. Acceptable values: True/False
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  False
 
    TC_STAT_LANDFALL_BEG
      Specify the beginning of the landfall window for use with the MET tc_stat tool. Acceptable formats: HH, HHmmss
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  -24
 
    TC_STAT_LANDFALL_END
      Specify the end of the landfall window for use with the MET tc_stat tool. Acceptable formats: HH, HHmmss
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_LEAD
      Specify the lead times to stratify by when using the MET tc_stat tool. Acceptable formats: HH, HHmmss
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_LEAD_REQ
      Specify the LEAD_REQ when using the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_MATCH_POINTS
      Specify whether only those points common to both the ADECK and BDECK tracks should be written out or not when using the MET tc_stat tool. Acceptable values: True/False
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  false
 
    TC_STAT_OUTPUT_DIR
      Specify the output directory where the MET tc_stat tool will write files.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [dir]
      | *Default:*  Varies
 
    TC_STAT_RUN_VIA
      Specify the method for running the MET tc_stat tool. Acceptable values: CONFIG. If left blank (unset), tc_stat will run via the command line.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:* CONFIG
 
    TC_STAT_STORM_ID
      Set the STORM_ID(s) of interest with the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_STORM_NAME
      Set the environment variable STORM_NAME for use with the MET tc_stat tool.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_TRACK_WATCH_WARN
      Specify which watches and warnings to stratify over when using the MET tc_stat tool. Acceptable values: HUWARN, HUWATCH, TSWARN, TSWATCH, ALLIf left blank (unset), no stratification will be done.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_VALID_BEG
      Specify a comma separated list of beginning valid times to stratify with when using the MET tc_stat tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_VALID_END
      Specify a comma separated list of ending valid times to stratify with when using the MET tc_stat tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_VALID_EXCLUDE
      Specify a comma separated list of valid times to exclude from the stratification with when using the MET tc_stat tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_VALID_HOUR
      This corresponds to the VALID_HOUR keyword in the MET tc_stat config file. For more information, please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_VALID_INCLUDE
      Specify a comma separated list of valid times to include in the stratification with when using the MET tc_stat tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_VALID_MASK
      This corresponds to the VALID_MASK in the MET tc_stat config file. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
    TC_STAT_WATER_ONLY
      Specify whether to exclude points where the distance to land is <= 0. If set to TRUE, once land is encountered the remainder of the forecast track is not used for the verification, even if the track moves back over water.Acceptable values: true/false
 
-     | *Used by:*  TcStat
+     | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -5320,7 +5320,7 @@ METplus Configuration Glossary
    TMP_DIR
      Specify the path to a temporary directory where the user has write permissions.
 
-     | *Used by:*  ExtractTiles, PB2NC, PointStat, SeriesByInit, SeriesByLead, TcStat
+     | *Used by:*  ExtractTiles, PB2NC, PointStat, SeriesByInit, SeriesByLead, TCStat
      | *Family:*  [dir]
      | *Default:*  Varies
 

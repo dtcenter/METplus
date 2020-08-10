@@ -899,6 +899,10 @@ class CommandBuilder:
                         thresh_str = ""
                         thresh_tuple_list = util.get_threshold_via_regex(thresh)
                         for comparison, number in thresh_tuple_list:
+                            # skip adding thresh_lo or thresh_hi if comparison is NA
+                            if comparison == 'NA':
+                                continue
+
                             if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
                                 thresh_str += "thresh_lo=" + str(number) + "; "
                             if comparison in ["lt", "le", "<", "<=", "==", "eq"]:

@@ -2,7 +2,8 @@
 Multi_Tool: Feature Relative by Lead (with lead groupings) 
 ==================================================================================================
 
-model_applicaitons/medium_range/TCStat_SeriesAnalysis_fcstGFS
+model_applicaitons/medium_range/
+TCStat_SeriesAnalysis_fcstGFS
 _obsGFS_FeatureRelative
 _SeriesByLead.conf
 
@@ -39,7 +40,7 @@ _SeriesByLead.conf
 # METplus Components
 # ------------------
 #
-# This use case first runs TcPairs and ExtractTiles wrappers to generate matched
+# This use case first runs TCPairs and ExtractTiles wrappers to generate matched
 # tropical cyclone data and regrid them into appropriately-sized tiles
 # along a storm track. The MET tc-stat tool is used to filter the
 # track data, and the MET regrid-dataplane tool is used to regrid the
@@ -56,7 +57,7 @@ _SeriesByLead.conf
 #
 # The following tools are used for each run time:
 #
-# TcPairs > RegridDataPlane, TCStat > SeriesAnalysis
+# TCPairs > RegridDataPlane, TCStat > SeriesAnalysis
 #
 # This example loops by forecast/lead time (with begin, end, and increment as specified in the METplus
 # TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf file).

@@ -10,14 +10,18 @@ import datetime
 import re
 import sys
 import collections
-# pylint:disable=import-error
-# numpy, matplotlib and mpl_toolkits are not part of the standard Python
-# library
-import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
-import cartopy.crs as ccrs
-import cartopy.feature as cfeature
-from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+
+# handle if module can't be loaded to run wrapper
+wrapper_cannot_run = False
+try:
+    import matplotlib.pyplot as plt
+    import matplotlib.ticker as mticker
+    import cartopy.crs as ccrs
+    import cartopy.feature as cfeature
+    from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+except ModuleNotFoundError as err_msg:
+    wrapper_cannot_run = True
+
 import produtil.setup
 
 from ..util import met_util as util
@@ -33,6 +37,12 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         # pylint:disable=redefined-outer-name
         super().__init__(config, logger)
+
+        if wrapper_cannot_run:
+            self.log_error("Cannot run CyclonePlotter wrapper due to import errors. "
+                           "matplotlib and cartopy are required to run.")
+            return
+
         self.input_data = self.config.getdir('CYCLONE_PLOTTER_INPUT_DIR')
         self.output_dir = self.config.getdir('CYCLONE_PLOTTER_OUTPUT_DIR')
         self.init_date = self.config.getstr('config', 'CYCLONE_PLOTTER_INIT_DATE')

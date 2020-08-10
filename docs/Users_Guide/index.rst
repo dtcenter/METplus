@@ -89,16 +89,16 @@ Internal:
 
 * Moved to using Python 3.6.3
 * User environment variables ([user_env_vars]) and [FCST/OBS]_VAR<n>_[NAME/LEVEL/OPTIONS] now support filename template syntax, i.e. {valid?fmt=%Y%m%d%H}
-* Added support for python embedding to supply gridded input data to MET tools (PcpCombine, GridStat, PointStat (gridded data only), RegridDataPlane...
-* PcpCombine now supports custom user-defined commands to build atypical use case calls
+* Added support for python embedding to supply gridded input data to MET tools (PCPCombine, GridStat, PointStat (gridded data only), RegridDataPlane...
+* PCPCombine now supports custom user-defined commands to build atypical use case calls
 * Improved logging to help debugging by listing expected file path
 * PyEmbedIngester wrapper added to allow python embedding for multiple data sources
 * Added support for month and year intervals for [INIT/VALID]_INCREMENT and LEAD_SEQ
 * Addition of contributor/developer guide as part of documentation
 * Documentation moved online using GitHub Pages and completely renamed, PDF option TBD.
-* Bugfix: PcpCombine subtract mode will call add method with 1 file if processing accumulation data and the lead time is equal to the desired accumulation
-* Bugfix: PcpCombine add mode forecast GRIB input
-* Bugfix: PcpCombine sum mode no longer fails when input level is not explicitly specified
+* Bugfix: PCPCombine subtract mode will call add method with 1 file if processing accumulation data and the lead time is equal to the desired accumulation
+* Bugfix: PCPCombine add mode forecast GRIB input
+* Bugfix: PCPCombine sum mode no longer fails when input level is not explicitly specified
 
 
 **Model Evaluation Tools Plus (METplus)  TERMS OF USE - IMPORTANT!**
