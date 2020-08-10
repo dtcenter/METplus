@@ -20,6 +20,7 @@ print(sys.path)
 # -- Project information -----------------------------------------------------
 
 project = 'METplus'
+
 author = 'UCAR/NCAR, NOAA, and CSU/CIRA'
 
 # the stable version, displayed on front page of PDF
@@ -118,3 +119,11 @@ sphinx_gallery_conf = {
 
 # -- Intersphinx control ---------------------------------------------------------------
 intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
+
+rst_epilog = """
+.. |copyright| replace:: {copyrightstr}
+.. |release_date| replace:: {release_datestr}
+.. |release_year| replace:: {release_yearstr}
+""".format(copyrightstr=copyright,
+           release_datestr=release_date,
+           release_yearstr=release_year)

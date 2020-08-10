@@ -36,7 +36,7 @@ Lisa Goodrich, Lindsay Blank, and Todd Arbetter.
 
 **Model Evaluation Tools Plus (METplus)  TERMS OF USE - IMPORTANT!**
 
-2020, UCAR/NCAR, NOAA, and CSU/CIRA
+|copyright|
 Licensed under the Apache License, Version 2.0 (the "License");
 You may not use this file except in compliance with the License.
 You may obtain a copy of the License at
