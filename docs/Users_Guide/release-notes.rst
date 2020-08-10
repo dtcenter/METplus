@@ -11,7 +11,7 @@ https://github.com/NCAR/METplus/issues
 
 Bugfixes:
 
-* Running EnsembleStat then GridStat fails when PCPCombine is also run (`#509 <https://github.com/NCAR/METplus/issues/509>`_))
+* Running EnsembleStat then GridStat fails when PCPCombine is also run (`#509 <https://github.com/NCAR/METplus/issues/509>`_)
 * All changes included in `3.0.1 <https://github.com/NCAR/METplus/milestone/11?closed=1>`_ and `3.0.2 <https://github.com/NCAR/METplus/milestone/13?closed=1>`_ bugfix releases
 
 New Wrappers:
