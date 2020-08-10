@@ -1,6 +1,4 @@
-﻿.. _overview:
-
-Overview
+﻿Overview
 ========
 
 Purpose and organization of the User's Guide
@@ -84,8 +82,6 @@ wrappers to the MET tools, MET configuration files and a hierarchy of
 METplus Wrappers configuration files. Some Python wrappers do not
 correspond to a particular MET tool, but wrap utilities to extend
 METplus functionality.
-
-.. _release-notes:
 
 .. include:: release-notes.rst
 
