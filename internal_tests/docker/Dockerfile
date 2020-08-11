@@ -72,6 +72,6 @@ RUN if [ ${CLONE_FROM_TRAVIS} == false ]; then \
       git clone --branch ${SOURCE_BRANCH} https://github.com/NCAR/METplus NCAR/METplus; \
       cd NCAR/METplus; \
       sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
-    else
-      echo "Running from Travis, so let Travis clone repository"
+    else \
+      echo "Running from Travis, so let Travis clone repository"; \
     fi
