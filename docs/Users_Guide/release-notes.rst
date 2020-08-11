@@ -37,7 +37,7 @@ Enhancements:
 * Change the shebang lines from "#!/usr/bin/env python" to "#!/usr/bin/env python3" (`#503 <https://github.com/NCAR/METplus/issues/503>`_)
 * Add variable MET_BIN_DIR to replace {MET_INSTALL_DIR}/bin in the code (`#502 <https://github.com/NCAR/METplus/issues/502>`_)
 * File window functionality gives useful message if not enough information provided in filename template (`#517 <https://github.com/NCAR/METplus/issues/517>`_)
-* Enable METplus to only process certain months of a year (`#512 <https://github.com/NCAR/METplus/issues/512>`_))
+* Enable METplus to only process certain months of a year (`#512 <https://github.com/NCAR/METplus/issues/512>`_)
 * Enhance StatAnalysis/MakePlots to support use defined templates in plotting scripts (`#500 <https://github.com/NCAR/METplus/issues/500>`_)
 * Create Docker image for METplus release (`#498 <https://github.com/NCAR/METplus/issues/498>`_)
 * StatAnalysis wrapper no longer silently fails when no field information is provided (`#422 <https://github.com/NCAR/METplus/issues/422>`_)
