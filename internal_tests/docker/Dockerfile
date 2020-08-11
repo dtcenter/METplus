@@ -73,5 +73,5 @@ RUN if [ ${USER_GIT_CLONE:-false} == false ]; then \
       cd METplus; \
       sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
     else \
-      echo "Running from Travis, so let Travis clone repository"; \
+      echo "Running from user's local METplus repository, so don't clone through Docker"; \
     fi
