@@ -3,7 +3,7 @@
 export CLONE_FROM_TRAVIS=true
 
 echo Get Docker image: ${DOCKERHUB_TAG}
-docker build -t ${DOCKERHUB_TAG} --build-arg CLONE_FROM_TRAVIS internal_tests/docker
+docker build -t ${DOCKERHUB_TAG} --build-arg SOURCE_BRANCH=${DOCKERHUB_DEFAULT_TAGNAME} --build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} --build-arg CLONE_FROM_TRAVIS internal_tests/docker
 docker images
 docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python3 -V'
 
