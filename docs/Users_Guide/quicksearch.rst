@@ -20,6 +20,7 @@ Use Cases by MET Tool:
 | `SeriesAnalysis <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
 | `StatAnalysis <https://ncar.github.io/METplus/search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
 | `TCMPRPlotter <https://ncar.github.io/METplus/search.html?q=TCMPRPlotterUseCase&check_keywords=yes&area=default>`_
+| `TCGen <https://ncar.github.io/METplus/search.html?q=TCGenToolUseCase&check_keywords=yes&area=default>`_
 | `TCPairs <https://ncar.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_
 | `TCRMW <https://ncar.github.io/METplus/search.html?q=TCRMWToolUseCase&check_keywords=yes&area=default>`_
 | `TCStat <https://ncar.github.io/METplus/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_

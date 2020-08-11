@@ -120,6 +120,13 @@ METplus Configuration Glossary
      | *Family:* config
      | *Default:* None
 
+   TC_GEN_CUSTOM_LOOP_LIST
+    Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
+
+     | *Used by:* TCGen
+     | *Family:* config
+     | *Default:* None
+
    TC_PAIRS_CUSTOM_LOOP_LIST
     Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
 
@@ -6041,5 +6048,251 @@ METplus Configuration Glossary
      Skip even hours: 0, 2, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22
 
      | *Used by:*  GridStat, SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_TRACK_INPUT_DIR
+     Directory containing the track data used by TCGen. This variable is optional because you can specify the full path to track data using :term:`TC_GEN_TRACK_INPUT_TEMPLATE`.
+
+     | *Used by:* TCGen
+     | *Family:* [dir]
+     | *Default:* None
+
+   TC_GEN_GENESIS_INPUT_DIR
+     Directory containing the genesis data used by TCGen. This variable is optional because you can specify the full path to genesis data using :term:`TC_GEN_GENESIS_INPUT_TEMPLATE`.
+
+     | *Used by:* TCGen
+     | *Family:* [dir]
+     | *Default:* None
+
+   TC_GEN_TRACK_INPUT_TEMPLATE
+     Filename template of the track data used by TCGen. See also :term:`TC_GEN_TRACK_INPUT_DIR`.
+
+     | *Used by:* TCGen
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   TC_GEN_GENESIS_INPUT_TEMPLATE
+     Filename template of the genesis data used by TCGen. See also :term:`TC_GEN_GENESIS_INPUT_DIR`.
+
+     | *Used by:* TCGen
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   TC_GEN_OUTPUT_DIR
+     Specify the output directory where files from the MET TCGen tool are written.
+
+     | *Used by:*  TCGen
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
+   TC_GEN_OUTPUT_TEMPLATE
+     Sets the subdirectories below :term:`TC_GEN_OUTPUT_DIR` using a template to allow run time information.
+
+     | *Used by:*  TCGen
+     | *Family:*  [filename_templates]
+     | *Default:*  Varies
+
+   LOG_TC_GEN_VERBOSITY
+     Overrides the log verbosity for TCGen only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
+
+     | *Used by:* TCGen
+     | *Family:* [config]
+     | *Default:* None
+
+   TC_GEN_CONFIG_FILE
+     Provide the absolute path to the configuration file for the MET TCGen tool.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_INIT_FREQUENCY
+     Specify the value of init_freq in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_LEAD_WINDOW_BEGIN
+     Specify the value of lead_window {begin} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_LEAD_WINDOW_END
+     Specify the value of lead_window {end} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_MIN_DURATION
+     Specify the value of min_duration in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_FCST_GENESIS_VMAX_THRESH
+     Specify the value of fcst_genesis {vmax_thresh} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_FCST_GENESIS_MSLP_THRESH
+     Specify the value of fcst_genesis {mslp_thresh} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_BEST_GENESIS_TECHNIQUE
+     Specify the value of best_genesis {technique} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_BEST_GENESIS_CATEGORY
+     Specify the value of best_genesis {category} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_BEST_GENESIS_VMAX_THRESH
+     Specify the value of best_genesis {vmax_thresh} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_BEST_GENESIS_MSLP_THRESH
+     Specify the value of best_genesis {mslp_thresh} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_OPER_GENESIS_TECHNIQUE
+     Specify the value of oper_genesis {technique} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_OPER_GENESIS_CATEGORY
+     Specify the value of oper_genesis {category} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_OPER_GENESIS_VMAX_THRESH
+     Specify the value of oper_genesis {vmax_thresh} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_OPER_GENESIS_MSLP_THRESH
+     Specify the value of oper_genesis {mslp_thresh} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_FILTER_<n>
+     Specify the values of filter in the MET configuration file where <n> is any integer.
+     Any quotation marks that are found inside another set of quotation marks must be preceded with a backslash
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_STORM_ID
+     The identifier of the storm(s) of interest.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_STORM_NAME
+     The name(s) of the storm of interest.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_INIT_BEG
+     Specify the beginning initialization time for stratification when using the MET TCGen tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_INIT_END
+     Specify the ending initialization time for stratification when using the MET TCGen tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_VALID_BEG
+     Specify the beginning valid time for stratification when using the MET TCGen tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_VALID_END
+     Specify the ending valid time for stratification when using the MET TCGen tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_INIT_HOUR_LIST
+     Specify a list of hours for initialization times for use in the analysis.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  None
+
+   TC_GEN_VX_MASK
+     Specify the vx_mask value to set in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_GENESIS_WINDOW_BEGIN
+     Specify the value for genesis_window {begin} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_GENESIS_WINDOW_END
+     Specify the value of genesis_window {end} in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_GENESIS_RADIUS
+     Specify the value of genesis_radius in the MET configuration file.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_DLAND_FILE
+     Specify the value of dland_file in the MET configuration file.
+
+     | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
