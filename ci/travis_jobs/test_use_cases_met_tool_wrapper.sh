@@ -22,8 +22,6 @@ tar xfzp `basename $met_tool_wrapper_tarball`
 echo Downloading $gempak_to_cf_location
 curl -L -O $gempak_to_cf_location
 
-./docker_setup.sh
-
 echo Running tests...
 docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper
 returncode=$?

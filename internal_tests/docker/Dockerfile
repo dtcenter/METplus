@@ -63,11 +63,11 @@ RUN yum -y update \
 
 
 ARG SOURCE_BRANCH
-ARG CLONE_FROM_TRAVIS
+ARG USER_GIT_CLONE
 
-# if SOURCE_BRANCH is not develop, clone the repository using the branch
+# if user has not cloned from Git, clone the repository using the branch
 # also replace MET_INSTALL_DIR value in default conf with correct location
-RUN if [ ${CLONE_FROM_TRAVIS:-false} == false ]; then \
+RUN if [ ${USER_GIT_CLONE:-false} == false ]; then \
       echo "Cloning METplus repository using branch: ${SOURCE_BRANCH}"; \
       git clone --branch ${SOURCE_BRANCH} https://github.com/NCAR/METplus; \
       cd METplus; \

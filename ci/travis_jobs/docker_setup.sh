@@ -1,9 +1,12 @@
-# set clone from travis env var to tell docker not to clone repository
+# set user git clone env var to tell docker not to clone repository
 # because travis is handling that step
-export CLONE_FROM_TRAVIS=true
+export USER_GIT_CLONE=true
 
 echo Get Docker image: ${DOCKERHUB_TAG}
-docker build -t ${DOCKERHUB_TAG} --build-arg SOURCE_BRANCH=${DOCKERHUB_DEFAULT_TAGNAME} --build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} --build-arg CLONE_FROM_TRAVIS internal_tests/docker
+
+# Note: adding --build-arg <arg-name> without any value tells docker to
+#  use value from local environment (export USER_GIT_CLONE)
+docker build -t ${DOCKERHUB_TAG} --build-arg SOURCE_BRANCH=${DOCKERHUB_DEFAULT_TAGNAME} --build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} --build-arg USER_GIT_CLONE internal_tests/docker
 docker images
-docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python3 -V'
+docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'which master_metplus.py;ls -al /metplus;python3 -V'
 

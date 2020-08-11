@@ -70,7 +70,7 @@ cache:
 # OWNER_BUILD_DIR=/home/travis/build/owner_name
 env:
   global:
-    - CLONE_FROM_TRAVIS=true
+    - USER_GIT_CLONE=true
     - REPO_NAME=METplus
     - REPO_NAME_lc=metplus
 
@@ -146,44 +146,53 @@ matrix:
         #
         - mkdir -p ${OWNER_BUILD_DIR}/pytmp.docker;
         - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
-        - docker build -t ${DOCKERHUB_TAG} --build-arg SOURCE_BRANCH=${DOCKERHUB_DEFAULT_TAGNAME} --build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} --build-arg CLONE_FROM_TRAVIS internal_tests/docker
-        - docker images
-        - docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'which master_metplus.py;ls -al /metplus;python3 -V'
+	- ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
+#        - docker build -t ${DOCKERHUB_TAG} --build-arg SOURCE_BRANCH=${DOCKERHUB_DEFAULT_TAGNAME} --build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} --build-arg USER_GIT_CLONE internal_tests/docker
+#        - docker images
+#        - docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'which master_metplus.py;ls -al /metplus;python3 -V'
         - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/pytests/run_pytests.sh docker
         # Dump the output directories from running METplus
         - ls -alR ${OWNER_BUILD_DIR}/pytmp.docker
     - name: "Use Case Tests - met_tool_wrapper"
       python: 3.7
       script:
+        - {TRAVIS_BUILD_DIR}/docker_setup.sh
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_met_tool_wrapper.sh
     - name: "Use Case Tests - cryosphere"
       python: 3.7
       script:
         # add travis_wait before command because a case takes longer than 10 minutes to return
+        - {TRAVIS_BUILD_DIR}/docker_setup.sh
         - travis_wait 30 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh cryosphere
     - name: "Use Case Tests - convection_allowing_models"
       python: 3.7
       script:
+        - {TRAVIS_BUILD_DIR}/docker_setup.sh
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh convection_allowing_models
     - name: "Use Case Tests - climate"
       python: 3.7
       script:
+        - {TRAVIS_BUILD_DIR}/docker_setup.sh
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh climate
     - name: "Use Case Tests - medium_range1"
       python: 3.7
       script:
+        - {TRAVIS_BUILD_DIR}/docker_setup.sh
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range1
     - name: "Use Case Tests - medium_range2"
       python: 3.7
       script:
+        - {TRAVIS_BUILD_DIR}/docker_setup.sh
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range2
     - name: "Use Case Tests - precipitation"
       python: 3.7
       script:
+        - {TRAVIS_BUILD_DIR}/docker_setup.sh
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh precipitation
     - name: "Use Case Tests - s2s, space_weather, tc_and_extra_tc"
       python: 3.7
       script:
+        - {TRAVIS_BUILD_DIR}/docker_setup.sh
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh s2s space_weather tc_and_extra_tc
 
   # stage 1 fails due to doc8 has errors.
