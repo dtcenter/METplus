@@ -70,7 +70,7 @@ cache:
 # OWNER_BUILD_DIR=/home/travis/build/owner_name
 env:
   global:
-    - USER_GIT_CLONE=true
+    - DO_GIT_CLONE=false
     - REPO_NAME=METplus
     - REPO_NAME_lc=metplus
 
