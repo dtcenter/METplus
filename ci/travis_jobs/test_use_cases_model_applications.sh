@@ -87,14 +87,7 @@ echo Downloading $gempak_to_cf_location
 echo curl -L -O $gempak_to_cf_location
 curl -L -O $gempak_to_cf_location
 
-# set clone from travis env var to tell docker not to clone repository
-# because travis is handling that step
-#export CLONE_FROM_TRAVIS=true
-
-#echo Get Docker image: ${DOCKERHUB_TAG}
-#docker build -t ${DOCKERHUB_TAG} --build-arg CLONE_FROM_TRAVIS internal_tests/docker
-#docker images
-#docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python3 -V'
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 
 echo Run tests...
 docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}
