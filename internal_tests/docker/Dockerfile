@@ -68,7 +68,7 @@ ARG CLONE_FROM_TRAVIS
 # if SOURCE_BRANCH is not develop, clone the repository using the branch
 # also replace MET_INSTALL_DIR value in default conf with correct location
 RUN if [ ${CLONE_FROM_TRAVIS:-false} == false ]; then \
-      echo "Cloning METplus repository and checkout branch: ${SOURCE_BRANCH}"; \
+      echo "Cloning METplus repository using branch: ${SOURCE_BRANCH}"; \
       git clone --branch ${SOURCE_BRANCH} https://github.com/NCAR/METplus NCAR/METplus; \
       cd NCAR/METplus; \
       sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
