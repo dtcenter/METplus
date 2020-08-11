@@ -29,7 +29,7 @@ RUN if [ -z ${MET_BRANCH+x} ]; then \
 #
 # Set working directory
 #
-#WORKDIR /met
+WORKDIR /metplus
 
 #
 # Environment for interactive bash and csh container shells
@@ -63,13 +63,15 @@ RUN yum -y update \
 
 
 ARG SOURCE_BRANCH
+ARG CLONE_FROM_TRAVIS
 
 # if SOURCE_BRANCH is not develop, clone the repository using the branch
 # also replace MET_INSTALL_DIR value in default conf with correct location
-RUN if [ ${SOURCE_BRANCH} != "develop" ]; then \
-      echo "Cloning METplus repository with -b ${SOURCE_BRANCH}"; \
-      git clone https://github.com/NCAR/METplus; \
-      cd METplus; \
-      git checkout ${SOURCE_BRANCH}; \
+RUN if [ ${CLONE_FROM_TRAVIS} == false ]; then \
+      echo "Cloning METplus repository and checkout branch: ${SOURCE_BRANCH}"; \
+      git clone --branch ${SOURCE_BRANCH} https://github.com/NCAR/METplus NCAR/METplus; \
+      cd NCAR/METplus; \
       sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
+    else
+      echo "Running from Travis, so let Travis clone repository"
     fi
