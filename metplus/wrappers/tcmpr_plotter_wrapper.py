@@ -54,8 +54,8 @@ class TCMPRPlotterWrapper(CommandBuilder):
         super().__init__(config, logger)
 
         # check if R is available, do not attempt to run if it is not
-        if shutil.which('R') is None:
-            self.log_error('R is not in the path. It is required to run TCMPRPlotter')
+        if shutil.which('Rscript') is None:
+            self.log_error('Rscript is not in the path. It is required to run TCMPRPlotter')
 
         self._init_tcmpr_script()
 
