@@ -15,6 +15,7 @@ import logging
 
 import produtil.setup
 import getopt
+import argparse
 
 from . import config_launcher
 
@@ -32,10 +33,10 @@ Each task that calls this MUST have run produtil.setup
 __all__ = ['usage', 'setup']
 
 ##@var logger
-def usage(filename=None, logger=None):
+def usage(filename=None):
     """! How to call this function.
     @param filename the filename of the calling module.
-    @param logger a logging.logger for log messages"""
+    """
 
     if filename:
         filename = os.path.basename(filename)
@@ -64,9 +65,7 @@ def setup(baseinputconfs, filename=None, logger=None):
 
     # Used for logging and usage statment
     if filename is None:
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-        filename = cur_filename
+        filename = sys._getframe().f_code.co_filename
 
     # Setup Task logger, Until a Conf object is created, Task logger is
     # only logging to tty, not a file.
@@ -75,58 +74,45 @@ def setup(baseinputconfs, filename=None, logger=None):
 
     logger.info('Starting METplus configuration setup.')
 
-    # Currently METplus command line options are for additional conf file.
-    # Note options are NOT arguments. ie. -c opt arg arg arg
-    # command line options. -c <conf_file_X>.
-    # We will handle them the way produtil handles conf files
-    # which are ultimately passed as arguments.
+    # read command line arguments
 
-    # if option is followed by : or = indicates option requires an argument
-    short_opts = "c:h"
-    # Note: r: runtime= option is not being used. remove it ?
-    long_opts = ["config=",
-                 "help"]
+    # if not arguments were provided, print usage and exit
+    if len(sys.argv) < 2:
+        usage(filename)
 
-    # All command line input, get options and arguments
-    try:
-        opts, args = getopt.gnu_getopt(sys.argv[1:], short_opts, long_opts)
-    except getopt.GetoptError as err:
-        logger.critical('Invalid arguments to %s.  Exiting.'%(filename))
-        print(str(err))
-        usage(filename, logger)
-        exit(1)
+    # print usage statement and exit if help arg is found
+    help_args = ('-h', '--help', '-help')
+    for help_arg in help_args:
+        if help_arg in sys.argv:
+            print("USAGE")
+            sys.exit(0)
 
-    if opts == []:
-        usage(filename, logger)
+    # pull out command line arguments
+    args = []
+    for arg in sys.argv[1:]:
+        if arg.startswith('-'):
+            # ignore -c and --config since they are now optional
+            if arg == '-c' or arg == '--config' or arg == '-config':
+                continue
 
-    opts_conf_files = list()
-    opts_conf_file = None
-    for k, v in opts:
-        if k in ('-c', '--config'):
-            opts_conf_files.extend(v.split(","))
-        elif k in ('-h', '--help'):
-            if logger:
-                logger.info('Help, printing Usage statement')
-            usage(filename=filename)
-        else:
-            assert False, "UNHANDLED OPTION"
+            # error/exit if an argument that is not supported was used
+            logger.critical('Invalid argument: %s.' % arg)
+            usage(filename)
 
-    opts_conf_list = list()
-    for opts_conf_file in opts_conf_files:
-        opts_conf_list.append(opts_conf_file)
-    # append args to opts conf_list, to maintain the same conf
-    # file order from command line, when confs may be space seperated.
-    # ie. -c conf1 -c conf2 conf3 would become
-    # args=[conf3] and opts=[conf1, conf2]
-    # opts_conf_list = [conf1, conf2, conf3]
-    opts_conf_list.extend(args)
-    args = opts_conf_list
+        # split up comma separated lists into individual items
+        # and add each to list of arguments
+        # NOTE: to support lists in a config variable override,
+        # this logic will have to be enhanced
+        # i.e. config.PROCESS_LIST=PCPCombine,GridStat
+        args.extend(arg.split(','))
+
+    # if no valid args were found, print usage and exit
+    if not args:
+        usage(filename)
 
     # parm, is path to parm directory
     # infiles, list of input conf files to be read and processed
     # moreopt, dictionary of conf file settings, passed in from command line.
-    if not args:
-        args = None
     (parm, infiles, moreopt) = \
         config_launcher.parse_launch_args(args,
                                           usage,
@@ -142,7 +128,7 @@ def setup(baseinputconfs, filename=None, logger=None):
     #conf.sanity_check()
 
     # save list of user configuration files in a variable
-    conf.set('config', 'METPLUS_CONFIG_FILES', ','.join(opts_conf_list))
+    conf.set('config', 'METPLUS_CONFIG_FILES', ','.join(args))
 
     logger.info('Completed METplus configuration setup.')
 
