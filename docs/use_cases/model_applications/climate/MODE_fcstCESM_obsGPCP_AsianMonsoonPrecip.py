@@ -1,7 +1,9 @@
 """
-MODE: CESM and GPCP Precipitation MODE Object Based Evaluation
+MODE: CESM and GPCP Asian Monsoon Precipitation 
 ============================================================================
-MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
+model_applications/climate/\
+MODE_fcstCESM_obsGPCP_\
+AsianMonsoonPrecip.conf
 """
 
 ##############################################################################
@@ -10,7 +12,8 @@ MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 #
 # To evaluate the CESM model daily precipitation against the GPCP daily 
 # precipitation over the Indian Monsoon region to obtain object based
-# output statistics. 
+# output statistics. This was developed as part of the NCAR System for
+# Integrated Modeling of the Atmosphere (SIMA) project. 
 
 ##############################################################################
 # Datasets

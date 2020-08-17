@@ -139,6 +139,8 @@ Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #   `NCAROrgUseCase <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_,
 #   `ProbabilityGenerationUseCase <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationUseCase&check_keywords=yes&area=default>`_,
 #   `MaskingFeatureUseCase <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_ 
+#   `HMTOrgUseCase <https://ncar.github.io/METplus/search.html?q=HMTOrgUseCase&check_keywords=yes&area=default>`_ 
+#   `HWTOrgUseCase <https://ncar.github.io/METplus/search.html?q=HWTOrgUseCase&check_keywords=yes&area=default>`_ 
 #
 
 # sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.png'

@@ -1,0 +1,169 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// TC-Gen configuration file.
+//
+// For additional information, see the MET_BASE/config/README_TC file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// ATCF file format reference:
+//   http://www.nrlmry.navy.mil/atcf_web/docs/database/new/abrdeck.html
+//
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Genesis event definition criteria.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Model initialization frequency in hours, starting at 0.
+//
+${INIT_FREQ}
+
+//
+// Lead times in hours to be searched for genesis events.
+//
+${LEAD_WINDOW_DICT}
+
+//
+// Minimum track duration for genesis event in hours.
+//
+${MIN_DURATION}
+
+//
+// Forecast genesis event criteria.  Defined as tracks reaching the specified
+// intensity category, maximum wind speed threshold, and minimum sea-level
+// pressure threshold.  The forecast genesis time is the valid time of the first
+// track point where all of these criteria are met.
+//
+${FCST_GENESIS_DICT}
+
+//
+// BEST track genesis event criteria.  Defined as tracks reaching the specified
+// intensity category, maximum wind speed threshold, and minimum sea-level
+// pressure threshold.  The BEST track genesis time is the valid time of the
+// first track point where all of these criteria are met.
+//
+${BEST_GENESIS_DICT}
+
+//
+// Operational track genesis event criteria.  Defined as tracks reaching the
+// specified intensity category, maximum wind speed threshold, and minimum
+// sea-level pressure threshold.  The operational track genesis time is valid
+// time of the first track point where all of these criteria are met.
+//
+${OPER_GENESIS_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Track filtering options which may be specified separately in each filter
+// array entry.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Filter is an array of dictionaries containing the track filtering options
+// listed below.  If empty, a single filter is defined using the top-level
+// settings.
+//
+${FILTER}
+
+//
+// Description written to output DESC column
+//
+//desc = "NA";
+
+//
+// Forecast ATCF ID's
+// If empty, all ATCF ID's found will be processed.
+// Statistics will be generated separately for each ATCF ID.
+//
+${MODEL}
+
+//
+// BEST and operational track storm identifiers
+//
+${STORM_ID}
+
+//
+// BEST and operational track storm names
+//
+${STORM_NAME}
+
+//
+// Forecast and operational initialization time window
+//
+
+${INIT_BEG}
+${INIT_END}
+
+//
+// Forecast, BEST, and operational valid time window
+//
+
+${VALID_BEG}
+${VALID_END}
+
+//
+// Forecast and operational initialization hours
+//
+${INIT_HOUR}
+
+//
+// Forecast and operational lead times in hours
+//
+${LEAD_LIST}
+
+//
+// Spatial masking region (path to gridded data file or polyline file)
+//
+${VX_MASK}
+
+//
+// Distance to land threshold
+//
+//dland_thresh = NA;
+
+//
+// Genesis matching time window, in hours relative to the forecast genesis time
+//
+${GENESIS_WINDOW_DICT}
+
+//
+// Genesis matching search radius in km.
+//
+${GENESIS_RADIUS}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Global settings.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Confidence interval alpha value
+//
+//ci_alpha = 0.05;
+
+//
+// Statistical output types
+//
+//output_flag = {
+//   fho    = NONE;
+//   ctc    = BOTH;
+//   cts    = BOTH;
+//}
+
+//
+// Specify the NetCDF output of the gen_dland tool containing a gridded
+// representation of the minimum distance to land.
+//
+${DLAND_FILE}
+
+//
+// Indicate a version number for the contents of this configuration file.
+// The value should generally not be modified.
+//
+//version = "V9.1";

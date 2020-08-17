@@ -70,6 +70,7 @@ cache:
 # OWNER_BUILD_DIR=/home/travis/build/owner_name
 env:
   global:
+    - DO_GIT_CLONE=false
     - REPO_NAME=METplus
     - REPO_NAME_lc=metplus
 
@@ -81,11 +82,12 @@ env:
     - GITHUB_REPO_ORG=NCAR
     - DOCKERHUB_DEFAULT_REPO=dtcenter/metplus
     - DOCKERHUB_DEFAULT_TAGNAME=develop
+    - DOCKERHUB_MET_TAGNAME=develop
     # The DOCKERHUB_USER_REPO setting ASSUMES your owner_name 
     # in travis ci IS THE SAME as your docker hub user_name,
     # since it is setting it  based on the travis repo slug.
-    - DOCKERHUB_USER_REPO="`dirname ${TRAVIS_REPO_SLUG}`/metplus"
-    - DOCKERHUB_USER_TAGNAME=test
+    - DOCKERHUB_USER_REPO="`dirname ${TRAVIS_REPO_SLUG}| awk '{print tolower($0)}'`/metplus"
+    - DOCKERHUB_USER_TAGNAME=develop
     # set to true to use default settings
     # if set to false, to use DOCKER_USER_* settings, your dockerhub container.
     - DOCKERHUB_USE_DEFAULT=true
@@ -144,9 +146,7 @@ matrix:
         #
         - mkdir -p ${OWNER_BUILD_DIR}/pytmp.docker;
         - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
-        - docker pull ${DOCKERHUB_TAG}
-        - docker images
-        - docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'which master_metplus.py;ls -al /metplus;python3 -V'
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
         - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/pytests/run_pytests.sh docker
         # Dump the output directories from running METplus
         - ls -alR ${OWNER_BUILD_DIR}/pytmp.docker
@@ -224,7 +224,7 @@ install:  # The 'install:' key, ie. travis.yml 'keys'
 
 # execute all of the commands which 
 # should make the build pass or fail
-before script:
+before_script:
 
   # This block defines which docker image to pull and use in all
   # the jobs for the build.
