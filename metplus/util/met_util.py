@@ -23,11 +23,10 @@ from importlib import import_module
 import produtil.setup
 import produtil.log
 
-from .config.string_template_substitution import do_string_sub
-from .config.string_template_substitution import parse_template
-from .config.string_template_substitution import get_tags
+from .string_template_substitution import do_string_sub
+from .string_template_substitution import parse_template
+from .string_template_substitution import get_tags
 from . import time_util as time_util
-from .config import config_metplus
 from . import metplus_check
 
 """!@namespace met_util
@@ -86,6 +85,7 @@ valid_comparisons = {">=": "ge",
 MISSING_DATA_VALUE = -9999
 
 def pre_run_setup(config_inputs):
+    from . import config_metplus
     version_number = get_version_number()
     print(f'Starting METplus v{version_number}')
 
@@ -1246,7 +1246,7 @@ def get_logger(config, sublog=None):
        Returns:
            logger: the logger
     """
-
+    from . import config_metplus
     # Retrieve all logging related parameters from the param file
     log_dir = config.getdir('LOG_DIR')
     log_level = config.getstr('config', 'LOG_LEVEL')

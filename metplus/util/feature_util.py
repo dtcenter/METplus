@@ -4,7 +4,7 @@ import re
 import datetime
 
 from . import met_util as util
-from .config.string_template_substitution import do_string_sub
+from .string_template_substitution import do_string_sub
 
 """!@namespace feature_util
  @brief Provides  Utility functions for METplus feature relative use case.

@@ -24,7 +24,7 @@ from pathlib import Path
 from produtil.config import ProdConfig
 import produtil.fileop
 
-from .. import met_util as util
+from . import met_util as util
 
 """!Creates the initial METplus directory structure,
 loads information into each job.
@@ -82,7 +82,7 @@ if os.environ.get('METPLUS_PARM_BASE', ''):
 # Based on METPLUS_BASE, Will set METPLUS_USH, or PARM_BASE if not
 # already set in the environment.
 
-METPLUS_BASE = str(Path(__file__).parents[3])
+METPLUS_BASE = str(Path(__file__).parents[2])
 USHguess = os.path.join(METPLUS_BASE, 'ush')
 PARMguess = os.path.join(METPLUS_BASE, 'parm')
 if os.path.isdir(USHguess) and os.path.isdir(PARMguess):
