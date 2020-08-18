@@ -13,7 +13,6 @@ import produtil
 
 from metplus.util import met_util as util
 from metplus.util import time_util
-from metplus.util.config import config_metplus
 
 @pytest.mark.parametrize(
     'before, after', [

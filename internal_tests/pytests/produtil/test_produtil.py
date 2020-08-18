@@ -8,7 +8,6 @@ import logging
 import pytest
 from shutil import which
 
-from metplus.util.config import config_metplus
 from metplus.util import met_util as util
 
 #

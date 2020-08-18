@@ -10,7 +10,6 @@ import datetime
 
 import produtil
 
-from metplus.util.config import config_metplus
 from metplus.wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from metplus.util import met_util as util
 from metplus.util import time_util

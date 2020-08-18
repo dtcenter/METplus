@@ -10,7 +10,6 @@ import datetime
 
 import produtil
 
-from metplus.util.config import config_metplus
 from metplus.wrappers.compare_gridded_wrapper import CompareGriddedWrapper
 from metplus.util import met_util as util
 from metplus.util import time_util

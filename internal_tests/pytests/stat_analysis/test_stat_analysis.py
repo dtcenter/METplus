@@ -9,7 +9,6 @@ import datetime
 
 import produtil.setup
 
-from metplus.util.config import config_metplus
 from metplus.wrappers.stat_analysis_wrapper import StatAnalysisWrapper
 from metplus.util import met_util as util
 

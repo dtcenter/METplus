@@ -10,7 +10,6 @@ import pytest
 
 import produtil
 
-from metplus.util.config import config_metplus
 from metplus.wrappers.pcp_combine_wrapper import PCPCombineWrapper
 from metplus.util import time_util
 from metplus.util import met_util as util

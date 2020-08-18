@@ -10,7 +10,6 @@ import pytest
 
 import produtil
 
-from metplus.util.config import config_metplus
 from metplus.wrappers.mtd_wrapper import MTDWrapper
 from metplus.util import met_util as util
 

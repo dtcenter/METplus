@@ -11,30 +11,6 @@ import pandas as pd
 
 import produtil.setup
 
-from metplus.util.config import config_metplus
-from metplus.util import met_util as util
-
-#@pytest.fixture
-def metplus_config():
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='plot_util ',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='plot_util ')
-        produtil.log.postmsg('plot_util  is starting')
-
-        # Read in the configuration object CONFIG
-        config = config_metplus.setup(util.baseinputconfs)
-        util.get_logger(config)
-        return config
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'plot_util failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
-
-
 # ------------------TESTS GO BELOW ---------------------------
 #
 

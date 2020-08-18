@@ -10,7 +10,6 @@ import datetime
 
 import produtil
 
-from metplus.util.config import config_metplus
 from metplus.wrappers.pb2nc_wrapper import PB2NCWrapper
 from metplus.util import met_util as util
 from metplus.util import time_util
