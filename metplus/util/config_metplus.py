@@ -96,17 +96,17 @@ if METPLUS_USH not in sys.path:
     sys.path.append(METPLUS_USH)
 
 # default METplus configuration files that are sourced first
-baseinputconfs = ['metplus_config/metplus_system.conf',
-                  'metplus_config/metplus_data.conf',
-                  'metplus_config/metplus_runtime.conf',
-                  'metplus_config/metplus_logging.conf']
+base_confs = ['metplus_config/metplus_system.conf',
+              'metplus_config/metplus_data.conf',
+              'metplus_config/metplus_runtime.conf',
+              'metplus_config/metplus_logging.conf']
 METPLUS_BASE_CONFS = []
 parm = os.path.realpath(PARM_BASE)
-for baseinputconf in baseinputconfs:
+for base_conf in base_confs:
     METPLUS_BASE_CONFS.append(os.path.join(parm,
-                                           baseinputconf))
+                                           base_conf))
 
-def setup(config_inputs, logger=None):
+def setup(config_inputs, logger=None, base_confs=METPLUS_BASE_CONFS):
     """!The METplus setup function.
         @param config_inputs list of configuration files or configuration
         variable overrides. Reads all configuration inputs and returns
@@ -126,7 +126,7 @@ def setup(config_inputs, logger=None):
     (parm, infiles, moreopt) = \
         parse_launch_args(config_inputs,
                           logger,
-                          baseinputconfs=METPLUS_BASE_CONFS)
+                          base_confs=base_confs)
 
     # Currently metplus is not handling cycle.
     # Therefore can not use conf.timestrinterp and
@@ -149,7 +149,7 @@ def setup(config_inputs, logger=None):
 # along with, -c some.conf and any other conf files...
 # These are than used by def launch to create a single metplus final conf file
 # that would be used by all tasks.
-def parse_launch_args(args, logger, baseinputconfs=METPLUS_BASE_CONFS):
+def parse_launch_args(args, logger, base_confs=METPLUS_BASE_CONFS):
     """!Parsed arguments to scripts that launch the METplus system.
 
     This is the argument parser for the config_metplus.py
@@ -176,8 +176,8 @@ def parse_launch_args(args, logger, baseinputconfs=METPLUS_BASE_CONFS):
     #          os.path.join(parm, 'metplus.override.conf')
     #         ]
     infiles = list()
-    for baseinputconf in baseinputconfs:
-        infiles.append(baseinputconf)
+    for base_conf in base_confs:
+        infiles.append(base_conf)
 
     moreopt = collections.defaultdict(dict)
 
