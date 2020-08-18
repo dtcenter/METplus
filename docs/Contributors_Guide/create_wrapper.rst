@@ -17,8 +17,8 @@ How to Create Your Own Wrapper
 
 * Modify the init function to initialize NewExample from its base class (CommandBuilder), and to set the name and path to the MET application you are wrapping::
 
-    def __init__(self, config, logger):
-        super(NewToolWrapper, self).__init__(config, logger)
+    def __init__(self, config):
+        super(NewToolWrapper, self).__init__(config)
         self.app_path = os.path.join(self.p.getdir('MET_BIN_DIR', ''),
                                      'new_tool')
         self.app_name = os.path.basename(self.app_path)
