@@ -451,6 +451,8 @@ def get_logger(config, sublog=None):
        Returns:
            logger: the logger
     """
+    _set_logvars(config)
+
     # Retrieve all logging related parameters from the param file
     log_dir = config.getdir('LOG_DIR')
     log_level = config.getstr('config', 'LOG_LEVEL')
@@ -482,12 +484,6 @@ def get_logger(config, sublog=None):
         logger.setLevel(int_log_level)
     except ValueError:
         logger.setLevel(logging.getLevelName(log_level))
-
-    # Make sure the LOG_METPLUS is defined. In this function,
-    # LOG_METPLUS should already be defined in the config object,
-    # even if it is empty, LOG_METPLUS =.
-    if not config.has_option('config', 'LOG_METPLUS'):
-        _set_logvars(config)
 
     metpluslog = config.getstr('config', 'LOG_METPLUS', '')
 
