@@ -38,7 +38,8 @@ def main():
     Master METplus script that invokes the necessary Python scripts
     to perform various activities, such as series analysis."""
 
-    config = pre_run_setup(__file__, 'METplus')
+    config_inputs = get_config_inputs_from_command_line()
+    config = pre_run_setup(config_inputs)
 
     # Use config object to get the list of processes to call
     process_list = get_process_list(config)
@@ -46,6 +47,67 @@ def main():
     total_errors = run_metplus(config, process_list)
 
     post_run_cleanup(config, 'METplus', total_errors)
+
+def usage():
+    """! How to call this script.
+    """
+
+    filename = os.path.basename(__file__)
+
+    print ('''
+Usage: %s arg1 arg2 arg3
+    -h|--help               Display this usage statement
+
+Arguments:
+/path/to/parmfile.conf -- Specify custom configuration file to use
+section.option=value -- override conf options on the command line
+
+'''%(filename))
+    sys.exit(2)
+
+def get_config_inputs_from_command_line():
+    """! Read command line arguments. Pull out configuration
+         files and configuration variable overrides. Display
+         usage statement if invalid configuration or if help
+         statement is requested, i.e. -h. Report error if
+         invalid flag was provided, i.e. -a.
+         @returns list of config inputs
+    """
+    # if not arguments were provided, print usage and exit
+    if len(sys.argv) < 2:
+        usage()
+
+    # print usage statement and exit if help arg is found
+    help_args = ('-h', '--help', '-help')
+    for help_arg in help_args:
+        if help_arg in sys.argv:
+            usage()
+            sys.exit(0)
+
+    # pull out command line arguments
+    config_inputs = []
+    for arg in sys.argv[1:]:
+        if arg.startswith('-'):
+            # ignore -c and --config since they are now optional
+            if arg == '-c' or arg == '--config' or arg == '-config':
+                continue
+
+            # error/exit if an argument that is not supported was used
+            logger.critical('Invalid argument: %s.' % arg)
+            usage()
+
+        # split up comma separated lists into individual items
+        # and add each to list of arguments
+        # NOTE: to support lists in a config variable override,
+        # this logic will have to be enhanced
+        # i.e. config.PROCESS_LIST=PCPCombine,GridStat
+        config_inputs.extend(arg.split(','))
+
+    # if no valid config_inputs were found, print usage and exit
+    if not config_inputs:
+        usage()
+
+    return config_inputs
 
 if __name__ == "__main__":
     try:

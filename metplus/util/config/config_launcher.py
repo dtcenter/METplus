@@ -98,7 +98,7 @@ if METPLUS_USH not in sys.path:
 # along with, -c some.conf and any other conf files...
 # These are than used by def launch to create a single metplus final conf file
 # that would be used by all tasks.
-def parse_launch_args(args, usage, filename, logger, baseinputconfs):
+def parse_launch_args(args, logger, baseinputconfs):
     """!Parsed arguments to scripts that launch the METplus system.
 
     This is the argument parser for the config_metplus.py
@@ -115,13 +115,7 @@ def parse_launch_args(args, usage, filename, logger, baseinputconfs):
     * metplus.conf
 
     @param args the script arguments, after script-specific ones are removed
-    @param usage a function called to provide a usage message
-    @param filename the module from which this was called
     @param logger a logging.Logger for log messages"""
-
-    # stub
-    # if test for something fails:
-    #    usage(filename,logger)
 
     parm = os.path.realpath(PARM_BASE)
 

@@ -30,42 +30,19 @@ Each task that calls this MUST have run produtil.setup
 
 ##@var __all__
 # All symbols exported by "from config_metplus import *"
-__all__ = ['usage', 'setup']
+__all__ = ['setup']
 
-##@var logger
-def usage(filename=None):
-    """! How to call this function.
-    @param filename the filename of the calling module.
-    """
+baseinputconfs = ['metplus_config/metplus_system.conf',
+                    'metplus_config/metplus_data.conf',
+                    'metplus_config/metplus_runtime.conf',
+                    'metplus_config/metplus_logging.conf']
 
-    if filename:
-        filename = os.path.basename(filename)
-
-    # Note: runtime option is not being used. remove it ?
-    # -r|--runtime <arg0>     Specify initialization time to process
-    print ('''
-Usage: %s [ -c /path/to/additional/file.conf]...[] [options]
-    -c|--config <arg0>      Specify custom configuration file to use
-    -h|--help               Display this usage statement
-
-Optional arguments: [options]
-section.option=value -- override conf options on the command line
-/path/to/parmfile.conf -- additional conf files to parse
-
-'''%(filename))
-    sys.exit(2)
-
-def setup(baseinputconfs, filename=None, logger=None):
+def setup(config_inputs, logger=None):
     """!The METplus setup function.
-    @param filename the filename of the calling module.
-    @param logger a logging.logger for log messages
-
-    The setup function that process command line options
-    and arguements and returns a configuration object."""
-
-    # Used for logging and usage statment
-    if filename is None:
-        filename = sys._getframe().f_code.co_filename
+        @param config_inputs list of configuration files or configuration
+        variable overrides. Reads all configuration inputs and returns
+        a configuration object.
+    """
 
     # Setup Task logger, Until a Conf object is created, Task logger is
     # only logging to tty, not a file.
@@ -74,49 +51,11 @@ def setup(baseinputconfs, filename=None, logger=None):
 
     logger.info('Starting METplus configuration setup.')
 
-    # read command line arguments
-
-    # if not arguments were provided, print usage and exit
-    if len(sys.argv) < 2:
-        usage(filename)
-
-    # print usage statement and exit if help arg is found
-    help_args = ('-h', '--help', '-help')
-    for help_arg in help_args:
-        if help_arg in sys.argv:
-            print("USAGE")
-            sys.exit(0)
-
-    # pull out command line arguments
-    args = []
-    for arg in sys.argv[1:]:
-        if arg.startswith('-'):
-            # ignore -c and --config since they are now optional
-            if arg == '-c' or arg == '--config' or arg == '-config':
-                continue
-
-            # error/exit if an argument that is not supported was used
-            logger.critical('Invalid argument: %s.' % arg)
-            usage(filename)
-
-        # split up comma separated lists into individual items
-        # and add each to list of arguments
-        # NOTE: to support lists in a config variable override,
-        # this logic will have to be enhanced
-        # i.e. config.PROCESS_LIST=PCPCombine,GridStat
-        args.extend(arg.split(','))
-
-    # if no valid args were found, print usage and exit
-    if not args:
-        usage(filename)
-
     # parm, is path to parm directory
     # infiles, list of input conf files to be read and processed
     # moreopt, dictionary of conf file settings, passed in from command line.
     (parm, infiles, moreopt) = \
-        config_launcher.parse_launch_args(args,
-                                          usage,
-                                          filename,
+        config_launcher.parse_launch_args(config_inputs,
                                           logger,
                                           baseinputconfs)
 
@@ -128,7 +67,7 @@ def setup(baseinputconfs, filename=None, logger=None):
     #conf.sanity_check()
 
     # save list of user configuration files in a variable
-    conf.set('config', 'METPLUS_CONFIG_FILES', ','.join(args))
+    conf.set('config', 'METPLUS_CONFIG_FILES', ','.join(config_inputs))
 
     logger.info('Completed METplus configuration setup.')
 

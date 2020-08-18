@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """tc_rmw
 Program Name: tc_rmw_wrapper.py
 Contact(s): George McCabe
@@ -436,6 +434,3 @@ class TCRMWWrapper(CommandBuilder):
             config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
                                         **time_info)
             self.args.append(f"-config {config_file}")
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "TCRMW")

@@ -37,11 +37,6 @@ from . import metplus_check
 # list of compression extensions that are handled by METplus
 VALID_EXTENSIONS = ['.gz', '.bz2', '.zip']
 
-baseinputconfs = ['metplus_config/metplus_system.conf',
-                  'metplus_config/metplus_data.conf',
-                  'metplus_config/metplus_runtime.conf',
-                  'metplus_config/metplus_logging.conf']
-
 PYTHON_EMBEDDING_TYPES = ['PYTHON_NUMPY', 'PYTHON_XARRAY', 'PYTHON_PANDAS']
 
 LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
@@ -90,20 +85,17 @@ valid_comparisons = {">=": "ge",
 # have the same result in a test. 0 may be a valid integer value
 MISSING_DATA_VALUE = -9999
 
-def pre_run_setup(filename, app_name):
-    filebasename = os.path.basename(filename)
-    logger = logging.getLogger(app_name)
+def pre_run_setup(config_inputs):
     version_number = get_version_number()
-    logger.info(f'Starting {app_name} v{version_number}')
+    print(f'Starting METplus v{version_number}')
 
-    # Parse arguments, options and return a config instance.
-    config = config_metplus.setup(baseinputconfs,
-                                  filename=filebasename)
+    # Read config inputs and return a config instance
+    config = config_metplus.setup(config_inputs)
 
     logger = get_logger(config)
 
     config.set('config', 'METPLUS_VERSION', version_number)
-    logger.info(f'Running {app_name} v%s called with command: %s',
+    logger.info('Running METplus v%s called with command: %s',
                 version_number, ' '.join(sys.argv))
 
     logger.info(f"Log file: {config.getstr('config', 'LOG_METPLUS')}")
@@ -2839,42 +2831,6 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
                 return outpath
 
     return None
-
-def run_stand_alone(filename, app_name):
-    """ Used to allow MET tool wrappers to be run without using
-    master_metplus.py
-        Args:
-            @param filename: Path to wrapper file with underscores, i.e.
-            /path/to/pcp_combine_wrapper.py
-            @param app_name: Name of wrapper with camel case, i.e.
-            PCPCombine
-        Returns:
-            None
-    """
-    module_name = os.path.splitext(os.path.basename(filename))[0]
-    try:
-        # If jobname is not defined, in log it is 'NO-NAME'
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='run-METplus',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='run-METplus')
-
-        config = pre_run_setup(filename, app_name)
-
-        module = __import__(module_name)
-        wrapper_class = getattr(module, app_name + "Wrapper")
-        wrapper = wrapper_class(config)
-
-        process_list = [app_name]
-        total_errors = run_metplus(config, process_list)
-
-        post_run_cleanup(config, app_name, total_errors)
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            app_name + '  failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
 
 def template_to_regex(template, time_info, logger):
     in_template = re.sub(r'\.', '\\.', template)

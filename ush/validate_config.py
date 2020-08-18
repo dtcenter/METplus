@@ -24,12 +24,14 @@ import os
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir)))
 
-from metplus.util import config_metplus, baseinputconfs, validate_configuration_variables
+from metplus.util import config_metplus, validate_configuration_variables
+from master_metplus import get_config_inputs_from_command_line
 
 def main():
+    config_inputs = get_config_inputs_from_command_line()
+
     # Parse arguments, options and return a config instance.
-    config = config_metplus.setup(baseinputconfs,
-                                  filename='validate_configs.py')
+    config = config_metplus.setup(config_inputs)
 
     # validate configuration variables
     deprecatedIsOK, fieldIsOK, inoutbaseIsOk, metIsOK, sed_cmds = validate_configuration_variables(config)
@@ -40,7 +42,7 @@ def main():
     # if everything is valid, report success and exit
     if deprecatedIsOK and fieldIsOK and inoutbaseIsOk and metIsOK:
         print("SUCCESS: Configuration passed all of the validation tests.")
-        exit(0)
+        sys.exit(0)
 
     # if sed commands can be run, output lines that will be changed and ask
     # user if they want to run the sed command
