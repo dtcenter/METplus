@@ -1071,25 +1071,13 @@ def mkdir_p(path):
            None: Creates the full directory path if it doesn't exist,
                  does nothing otherwise.
     """
-
     try:
-        # ***Note***:
-        # For Python 3.2 and beyond, os.makedirs has a third optional argument,
-        # exist_ok, that when set to True will enable the mkdir -p
-        # functionality.
-        # The mkdir -p functionality holds unless the mode is provided and the
-        # existing directory has different permissions from the intended ones.
-        # In this situation the OSError exception is raised.
+        Path(path).mkdir(parents=True, exist_ok=True)
+        return True
+    except TypeError as e:
+        print(e)
 
-        # default mode is octal 0777
-        os.makedirs(path, mode=0o0775)
-    except OSError as exc:
-        # Ignore the error that gets created if the path already exists
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
-
+    return False
 
 def _rmtree_onerr(function, path, exc_info, logger=None):
     """!Internal function used to log errors.

@@ -263,7 +263,8 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
     # only set incorrectly because OUTPUT_BASE is set incorrectly
-    config.getdir('OUTPUT_BASE')
+    # Initialize the output directories
+    util.mkdir_p(config.getdir('OUTPUT_BASE'))
 
     # All conf files and command line options have been parsed.
     # So lets set and add specific log variables to the conf object
@@ -274,20 +275,11 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # If it does, use it instead.
     confloc = config.getloc('METPLUS_CONF')
 
-    # Place holder for when workflow is developed in METplus.
-    # rocoto does not initialize the dirs, it returns here.
-    # if not init_dirs:
-    #    if prelaunch is not None:
-    #        prelaunch(conf,logger,cycle)
-    #    return conf
-
-    # Initialize the output directories
-    produtil.fileop.makedirs(config.getdir('OUTPUT_BASE', logger), logger=logger)
     # A user my set the confloc METPLUS_CONF location in a subdir of OUTPUT_BASE
     # or even in another parent directory altogether, so make thedirectory
     # so the metplus_final.conf file can be written.
     if not os.path.exists(realpath(dirname(confloc))):
-        produtil.fileop.makedirs(realpath(dirname(confloc)), logger=logger)
+        util.mkdir_p(realpath(dirname(confloc)))
 
     # set METPLUS_BASE conf to location of scripts used by METplus
     # warn if user has set METPLUS_BASE to something different
@@ -463,10 +455,6 @@ def get_logger(config, sublog=None):
     log_dir = config.getdir('LOG_DIR')
     log_level = config.getstr('config', 'LOG_LEVEL')
 
-    # TODO review, use builtin produtil.fileop vs. mkdir_p ?
-    # import produtil.fileop
-    # produtil.fileop.makedirs(log_dir,logger=None)
-
     # Check if the directory path for the log file exists, if
     # not create it.
     if not os.path.exists(log_dir):
@@ -515,7 +503,7 @@ def get_logger(config, sublog=None):
         # set up the filehandler and the formatter, etc.
         # The default matches the oformat log.py formatter of produtil
         # So terminal output will now match log files.
-        formatter = config_metplus.METplusLogFormatter(config)
+        formatter = METplusLogFormatter(config)
         file_handler = logging.FileHandler(metpluslog, mode='a')
         file_handler.setFormatter(formatter)
         logger.addHandler(file_handler)
