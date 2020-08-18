@@ -26,7 +26,7 @@ import time
 import calendar
 import argparse
 
-from metplus.util.config import config_metplus
+from metplus.util import config_metplus
 from metplus.util.metplus_check import plot_wrappers_are_enabled
 
 # keep track of use cases that failed to report at the end of execution
