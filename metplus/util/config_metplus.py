@@ -470,7 +470,7 @@ def get_logger(config, sublog=None):
     # Check if the directory path for the log file exists, if
     # not create it.
     if not os.path.exists(log_dir):
-        mkdir_p(log_dir)
+        util.mkdir_p(log_dir)
 
     if sublog is not None:
         logger = config.log(sublog)
@@ -510,7 +510,7 @@ def get_logger(config, sublog=None):
         # So lets check and make more directory if needed.
         dir_name = os.path.dirname(metpluslog)
         if not os.path.exists(dir_name):
-            mkdir_p(dir_name)
+            util.mkdir_p(dir_name)
 
         # set up the filehandler and the formatter, etc.
         # The default matches the oformat log.py formatter of produtil
