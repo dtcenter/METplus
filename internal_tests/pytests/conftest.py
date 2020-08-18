@@ -1,7 +1,7 @@
 import os
 import pytest
 
-from metplus.util.config import config_metplus
+from metplus.util import config_metplus
 from metplus.util import get_logger
 
 @pytest.fixture(scope='function')
