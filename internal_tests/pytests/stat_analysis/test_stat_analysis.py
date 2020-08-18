@@ -53,7 +53,7 @@ def stat_analysis_wrapper(metplus_config):
     # Default, empty StatAnalysisWrapper with some configuration values set
     # to /path/to:
     extra_configs = []
-    extra_configs.append(os.path.join(os.path.dirname(__file__), 'test_stat_analysis.conf'))
+    extra_configs.append(os.path.join(os.path.dirname(__file__), 'test.conf'))
     config = metplus_config(extra_configs)
     util.handle_tmp_dir(config)
     return StatAnalysisWrapper(config)
