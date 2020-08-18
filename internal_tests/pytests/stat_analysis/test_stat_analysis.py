@@ -593,21 +593,32 @@ def test_get_lookin_dir(metplus_config):
                        'OBS_THRESH_LIST', 'COV_THRESH_LIST', 'ALPHA_LIST',
                        'LINE_TYPE_LIST' ]
     lists_to_loop = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST' ]
+    stat_analysis_pytest_dir = os.path.dirname(__file__)
     # Test 1
-    expected_lookin_dir = '../../data/fake/20180201'
-    dir_path = '../../data/fake/*'
+    expected_lookin_dir = os.path.join(stat_analysis_pytest_dir,
+                                       '../../data/fake/20180201')
+    dir_path = os.path.join(stat_analysis_pytest_dir,
+                            '../../data/fake/*')
+
     test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
                                         lists_to_group, config_dict)
     assert(expected_lookin_dir == test_lookin_dir)
+
     # Test 2
-    expected_lookin_dir = '../../data/fake/20180201'
-    dir_path = '../../data/fake/{valid?fmt=%Y%m%d}'
+    expected_lookin_dir = os.path.join(stat_analysis_pytest_dir,
+                                       '../../data/fake/20180201')
+    dir_path = os.path.join(stat_analysis_pytest_dir,
+                            '../../data/fake/{valid?fmt=%Y%m%d}')
+
     test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
                                         lists_to_group, config_dict)
     assert(expected_lookin_dir == test_lookin_dir)
+
     # Test 3 - no matches for lookin dir wildcard
     expected_lookin_dir = ''
-    dir_path = '../../data/fake/*nothingmatches*'
+    dir_path = os.path.join(stat_analysis_pytest_dir,
+                            '../../data/fake/*nothingmatches*')
+
     test_lookin_dir = st.get_lookin_dir(dir_path, lists_to_loop,
                                         lists_to_group, config_dict)
     assert(expected_lookin_dir == test_lookin_dir)
