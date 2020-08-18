@@ -9,7 +9,7 @@ from shutil import which
 
 import produtil
 
-from metplus.util.config.config_launcher import METplusConfig
+from metplus.util.config.config_metplus import METplusConfig
 from metplus.util import met_util as util
 from metplus.wrappers.command_builder import CommandBuilder
 from metplus.util.config import config_metplus
