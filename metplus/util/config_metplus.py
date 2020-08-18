@@ -268,7 +268,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # All conf files and command line options have been parsed.
     # So lets set and add specific log variables to the conf object
     # based on the conf log template values.
-    _set_logvars(config)
+    get_logger(config)
 
     # Determine if final METPLUS_CONF file already exists on disk.
     # If it does, use it instead.
@@ -447,6 +447,82 @@ def _set_logvars(config, logger=None):
         logger.info('Adding: config.LOG_METPLUS=%s' % repr(metpluslog))
     # expand LOG_METPLUS to ensure it is available
     config.set('config', 'LOG_METPLUS', metpluslog)
+
+def get_logger(config, sublog=None):
+    """!This function will return a logger with a formatted file handler
+    for writing to the LOG_METPLUS and it sets the LOG_LEVEL. If LOG_METPLUS is
+    not defined, a logger is still returned without adding a file handler,
+    but still setting the LOG_LEVEL.
+       Args:
+           @param config:   the config instance
+           @param sublog the logging subdomain, or None
+       Returns:
+           logger: the logger
+    """
+    # Retrieve all logging related parameters from the param file
+    log_dir = config.getdir('LOG_DIR')
+    log_level = config.getstr('config', 'LOG_LEVEL')
+
+    # TODO review, use builtin produtil.fileop vs. mkdir_p ?
+    # import produtil.fileop
+    # produtil.fileop.makedirs(log_dir,logger=None)
+
+    # Check if the directory path for the log file exists, if
+    # not create it.
+    if not os.path.exists(log_dir):
+        mkdir_p(log_dir)
+
+    if sublog is not None:
+        logger = config.log(sublog)
+    else:
+        logger = config.log()
+
+    # Setting of the logger level from the config instance.
+    # Check for log_level by Integer or LevelName.
+    # Try to convert the string log_level to an integer and use that, if
+    # it can't convert then we assume it is a valid LevelName, which
+    # is what is should be anyway,  ie. DEBUG.
+    # Note:
+    # Earlier versions of python2 require setLevel(<int>), argument
+    # to be an int. Passing in the LevelName, 'DEBUG' will disable
+    # logging output. Later versions of python2 will accept 'DEBUG',
+    # not sure which version that changed with, but the logic below
+    # should work for all version. I know python 2.6.6 must be an int,
+    # and python 2.7.5 accepts the LevelName.
+    try:
+        int_log_level = int(log_level)
+        logger.setLevel(int_log_level)
+    except ValueError:
+        logger.setLevel(logging.getLevelName(log_level))
+
+    # Make sure the LOG_METPLUS is defined. In this function,
+    # LOG_METPLUS should already be defined in the config object,
+    # even if it is empty, LOG_METPLUS =.
+    if not config.has_option('config', 'LOG_METPLUS'):
+        _set_logvars(config)
+
+    metpluslog = config.getstr('config', 'LOG_METPLUS', '')
+
+    if metpluslog:
+        # It is possible that more path, other than just LOG_DIR, was added
+        # to the metpluslog, by either a user defining more path in
+        # LOG_METPLUS or LOG_FILENAME_TEMPLATE definitions in their conf file.
+        # So lets check and make more directory if needed.
+        dir_name = os.path.dirname(metpluslog)
+        if not os.path.exists(dir_name):
+            mkdir_p(dir_name)
+
+        # set up the filehandler and the formatter, etc.
+        # The default matches the oformat log.py formatter of produtil
+        # So terminal output will now match log files.
+        formatter = config_metplus.METplusLogFormatter(config)
+        file_handler = logging.FileHandler(metpluslog, mode='a')
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+
+    # set add the logger to the config
+    config.logger = logger
+    return logger
 
 class METplusConfig(ProdConfig):
     """!A replacement for the produtil.config.ProdConfig used throughout

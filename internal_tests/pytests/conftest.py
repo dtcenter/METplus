@@ -2,7 +2,6 @@ import os
 import pytest
 
 from metplus.util import config_metplus
-from metplus.util import get_logger
 
 @pytest.fixture(scope='function')
 def metplus_config():
@@ -20,7 +19,6 @@ def metplus_config():
             args.extend(extra_configs)
 
         config = config_metplus.setup(args)
-        get_logger(config)
         return config
 
     return read_configs

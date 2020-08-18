@@ -5,8 +5,6 @@ import re
 import os
 import pytest
 
-from metplus.util import met_util as util
-
 #
 # -----------Mandatory-----------
 #  configuration and fixture to support METplus configuration files beyond
@@ -26,7 +24,7 @@ def cmdopt(request):
 def test_log_level(metplus_config):
     # Verify that the log level is set to what we indicated in the config file.
     config = metplus_config()
-    fixture_logger = util.get_logger(config)
+    fixture_logger = config.logger
     # Expecting log level = INFO as set in the test config file.
     level = logging.getLevelName('INFO')
     assert fixture_logger.isEnabledFor(level)
