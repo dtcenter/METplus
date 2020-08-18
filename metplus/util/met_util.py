@@ -1071,13 +1071,7 @@ def mkdir_p(path):
            None: Creates the full directory path if it doesn't exist,
                  does nothing otherwise.
     """
-    try:
-        Path(path).mkdir(parents=True, exist_ok=True)
-        return True
-    except TypeError as e:
-        print(e)
-
-    return False
+    Path(path).mkdir(parents=True, exist_ok=True)
 
 def _rmtree_onerr(function, path, exc_info, logger=None):
     """!Internal function used to log errors.
