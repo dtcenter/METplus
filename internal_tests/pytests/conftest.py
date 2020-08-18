@@ -1,5 +1,11 @@
+import sys
 import os
 import pytest
+from pathlib import Path
+
+# add metplus directory to path so the wrappers and utilities can be found
+metplus_dir = str(Path(__file__).parents[2])
+sys.path.insert(0, os.path.abspath(metplus_dir))
 
 from metplus.util import config_metplus
 
