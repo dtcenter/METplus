@@ -6,6 +6,7 @@ import produtil.setup
 import sys
 import logging
 import pytest
+from shutil import which
 
 from metplus.util.config import config_metplus
 from metplus.util import met_util as util
@@ -131,7 +132,7 @@ def test_new_lines_in_conf(metplus_config):
 def test_get_exe_ok(metplus_config):
     """! Test that executables are correctly retrieved."""
     conf_obj = get_config_obj(metplus_config)
-    expected_exe = '/usr/local/bin/wgrib2'
+    expected_exe = which('wgrib2')
     executable = conf_obj.getexe('WGRIB2')
     assert executable == expected_exe
 
