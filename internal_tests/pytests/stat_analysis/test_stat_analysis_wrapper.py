@@ -44,7 +44,7 @@ def cmdopt(request):
 # ------------Pytest fixtures that can be used for all tests ---------------
 #
 #@pytest.fixture
-def stat_analysis_wrapper():
+def stat_analysis_wrapper(metplus_config):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -52,31 +52,11 @@ def stat_analysis_wrapper():
 
     # Default, empty StatAnalysisWrapper with some configuration values set
     # to /path/to:
-    config = metplus_config()
+    extra_configs = []
+    extra_configs.append(os.path.join(os.path.dirname(__file__), 'test_stat_analysis.conf'))
+    config = metplus_config(extra_configs)
     util.handle_tmp_dir(config)
     return StatAnalysisWrapper(config)
-
-
-#@pytest.fixture
-def metplus_config():
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='StatAnalysisWrapper ',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='StatAnalysisWrapper ')
-        produtil.log.postmsg('stat_analysis_wrapper  is starting')
-
-        # Read in the configuration object CONFIG
-        config = config_metplus.setup(util.baseinputconfs)
-        util.get_logger(config)
-        return config
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'stat_analysis_wrapper failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
-
 
 # ------------------TESTS GO BELOW ---------------------------
 #
@@ -107,12 +87,12 @@ def metplus_config():
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
-def test_get_command():
+def test_get_command(metplus_config):
     # Independently test that the stat_analysis command
     # is being put together correctly with
     # the full path to stat_analysis, the 
     # lookin dir, and config file
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
     # Test 1
     expected_command = (
         st.config.getdir('MET_BIN_DIR', '')
@@ -125,11 +105,11 @@ def test_get_command():
     test_command = st.get_command()
     assert(expected_command == test_command)
 
-def test_create_c_dict():
+def test_create_c_dict(metplus_config):
     # Independently test that c_dict is being created
     # and that the wrapper and config reader 
     # is setting the values as expected
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
     # Test 1
     c_dict = st.create_c_dict()
     assert(c_dict['LOOP_ORDER'] == 'times')
@@ -157,11 +137,11 @@ def test_create_c_dict():
     assert(c_dict['ALPHA_LIST'] == [])
     assert(c_dict['LINE_TYPE_LIST'] == [])
 
-def test_list_to_str():
+def test_list_to_str(metplus_config):
     # Independently test that a list of strings
     # are being converted to a one
     # string list correctly
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
     # Test 1
     expected_list = '"a", "b", "c"'
     test_list = st.list_to_str([ 'a', 'b', 'c' ])
@@ -171,13 +151,13 @@ def test_list_to_str():
     test_list = st.list_to_str([ '0', '1', '2' ])
     assert(expected_list == test_list)
 
-def test_set_lists_as_loop_or_group():
+def test_set_lists_as_loop_or_group(metplus_config):
     # Independently test that the lists that are set
     # in the config file are being set 
     # accordingly based on their place 
     # in GROUP_LIST_ITEMS and LOOP_LIST_ITEMS 
     # and those not set are set to GROUP_LIST_ITEMS
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
     # Test 1
     expected_lists_to_group_items = [ 'FCST_INIT_HOUR_LIST', 'DESC_LIST',
                                       'FCST_LEAD_LIST', 'OBS_LEAD_LIST',
@@ -243,19 +223,19 @@ def test_set_lists_as_loop_or_group():
            'gt0.05,gt0.05,ge1,ge1,lt5,lt5,le10,le10,eq15,eq15,ne20,ne20')
     ]
 )
-def test_format_thresh(expression, expected_result):
+def test_format_thresh(metplus_config, expression, expected_result):
     # Idependently test the creation of 
     # string values for defining thresholds
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
 
     assert(st.format_thresh(expression) == expected_result)
 
-def test_build_stringsub_dict():
+def test_build_stringsub_dict(metplus_config):
     # Independently test the building of 
     # the dictionary used in the stringtemplate
     # substitution and the values are being set
     # as expected
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
     config_dict = {}
     config_dict['FCST_VALID_HOUR'] = '000000'
     config_dict['FCST_VAR'] = ''
@@ -452,13 +432,13 @@ def test_build_stringsub_dict():
     assert(test_stringsub_dict['obs_init_hour_end'] == 
            datetime.datetime(1900, 1, 1, 23, 59 ,59))
  
-def test_get_output_filename():
+def test_get_output_filename(metplus_config):
     # Independently test the building of
     # the output file name 
     # using string template substitution
     # and test the values is
     # as expected
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
     config_dict = {}
     config_dict['FCST_VALID_HOUR'] = '000000'
     config_dict['FCST_VAR'] = ''
@@ -568,14 +548,14 @@ def test_get_output_filename():
                                                   config_dict)
     assert(expected_output_filename == test_output_filename)
 
-def test_get_lookin_dir():
+def test_get_lookin_dir(metplus_config):
     # Independently test the building of
     # the lookin directory
     # using string template substitution
     # and wildcard filling
     # and test the value is
     # as expected
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
     config_dict = {}
     config_dict['FCST_VALID_HOUR'] = '000000'
     config_dict['FCST_VAR'] = ''
@@ -632,13 +612,13 @@ def test_get_lookin_dir():
                                         lists_to_group, config_dict)
     assert(expected_lookin_dir == test_lookin_dir)
 
-def test_format_valid_init():
+def test_format_valid_init(metplus_config):
     # Independently test the formatting 
     # of the valid and initialization date and hours
     # from the METplus config file for the MET
     # config file and that they are formatted
     # correctly
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
     # Test 1
     st.c_dict['DATE_BEG'] = '20190101'
     st.c_dict['DATE_END'] = '20190105'
@@ -732,12 +712,12 @@ def test_format_valid_init():
     assert(config_dict['OBS_INIT_END'] == '20190101_120000')
     assert(config_dict['OBS_INIT_HOUR'] == '"000000", "120000"')
 
-def test_parse_model_info():
+def test_parse_model_info(metplus_config):
     # Independently test the creation of 
     # the model information dictionary
     # and the reading from the config file
     # are as expected
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
     # Test 1
     expected_name = 'MODEL_TEST'
     expected_reference_name = 'MODELTEST'
@@ -769,9 +749,9 @@ def test_parse_model_info():
     assert(test_model_info_list[0]['out_stat_filename_type'] == 
            expected_out_stat_filename_type)
 
-def test_run_stat_analysis():
+def test_run_stat_analysis(metplus_config):
     # Test running of stat_analysis
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
     # Test 1
     expected_filename = (st.config.getdir('OUTPUT_BASE')+'/stat_analysis'
                          +'/00Z/MODEL_TEST/MODEL_TEST_20190101.stat')
@@ -797,7 +777,7 @@ def test_run_stat_analysis():
       ('OBS', '\"(0,*,*)\", \"(1,*,*)\"', ["0,*,*", "1,*,*"]),
     ]
 )
-def test_get_level_list(data_type, config_list, expected_list):
+def test_get_level_list(metplus_config, data_type, config_list, expected_list):
     config = metplus_config()
     config.set('config', f'{data_type}_LEVEL_LIST', config_list)
 

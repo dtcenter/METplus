@@ -36,7 +36,7 @@ from metplus.util import time_util
 
 # -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
 #@pytest.fixture
-def p2g_wrapper():
+def p2g_wrapper(metplus_config):
     """! Returns a default Point2Grid with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -46,24 +46,12 @@ def p2g_wrapper():
     config.set('config', 'DO_NOT_RUN_EXE', True)
     return Point2GridWrapper(config)
 
-#@pytest.fixture
-def metplus_config():
-    """! Create a METplus configuration object that can be
-    manipulated/modified to
-         reflect different paths, directories, values, etc. for individual
-         tests.
-    """
-    config = config_metplus.setup(util.baseinputconfs)
-    util.get_logger(config)
-    return config
-
-
 # ------------------------ TESTS GO HERE --------------------------
 
 
-def test_set_command_line_arguments():
+def test_set_command_line_arguments(metplus_config):
     test_passed = True
-    wrap = p2g_wrapper()
+    wrap = p2g_wrapper(metplus_config)
 
     input_dict = {'valid': datetime.datetime.strptime("202003050000", '%Y%m%d%H%M'),
                   'lead': 0}

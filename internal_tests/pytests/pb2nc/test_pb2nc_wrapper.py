@@ -35,7 +35,7 @@ def cmdopt(request):
 
 
 # -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
-def pb2nc_wrapper():
+def pb2nc_wrapper(metplus_config):
     """! Returns a default PB2NCWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -43,33 +43,10 @@ def pb2nc_wrapper():
 
     # PB2NCWrapper with configuration values determined by what is set in
     # the pb2nc_test.conf file.
-    config = metplus_config()
+    extra_configs = []
+    extra_configs.append(os.path.join(os.path.dirname(__file__), 'conf1'))
+    config = metplus_config(extra_configs)
     return PB2NCWrapper(config)
-
-def metplus_config():
-    """! Create a METplus configuration object that can be
-    manipulated/modified to
-         reflect different paths, directories, values, etc. for individual
-         tests.
-    """
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='PB2NCWrapper ',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='PB2NCWrapper ')
-        produtil.log.postmsg('pb2nc_wrapper  is starting')
-
-        # Read in the configuration object CONFIG
-        config = config_metplus.setup(util.baseinputconfs)
-        util.get_logger(config)
-        return config
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'pb2nc_wrapper failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
-
 
 # ------------------------ TESTS GO HERE --------------------------
 
@@ -88,9 +65,9 @@ def metplus_config():
             ('G', None),
         ]
 )
-def test_reformat_grid_id(key, value):
+def test_reformat_grid_id(metplus_config, key, value):
     # Verify that reformatting of the grid id is correct
-    pb = pb2nc_wrapper()
+    pb = pb2nc_wrapper(metplus_config)
     reformatted = pb.reformat_grid_id(key)
     assert value == reformatted
 
@@ -108,8 +85,8 @@ def test_reformat_grid_id(key, value):
             (False, False, True),
         ]
 )
-def test_find_and_check_output_file_skip(exists, skip, run):
-    pb = pb2nc_wrapper()
+def test_find_and_check_output_file_skip(metplus_config, exists, skip, run):
+    pb = pb2nc_wrapper(metplus_config)
     exist_file = 'wackyfilenametocreate'
     non_exist_file = 'wackyfilethatdoesntexist'
 
@@ -146,8 +123,8 @@ def test_find_and_check_output_file_skip(exists, skip, run):
             ['file1', 'file2', 'file3'],
         ]
 )
-def test_get_command(infiles):
-    pb = pb2nc_wrapper()
+def test_get_command(metplus_config, infiles):
+    pb = pb2nc_wrapper(metplus_config)
     pb.outfile = 'outfilename.txt'
     pb.outdir = pb.config.getdir('OUTPUT_BASE')
     outpath = os.path.join(pb.outdir, pb.outfile)
@@ -178,8 +155,8 @@ def test_get_command(infiles):
             ([2, 4, 6], None),
         ]
 )
-def test_find_input_files(offsets, offset_to_find):
-    pb = pb2nc_wrapper()
+def test_find_input_files(metplus_config, offsets, offset_to_find):
+    pb = pb2nc_wrapper(metplus_config)
     # for valid 20190201_12, offsets 3 and 5, create files to find
     # in the fake input directory based on input template
     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 12) }

@@ -15,31 +15,6 @@ from metplus.util import met_util as util
 from metplus.util import time_util
 from metplus.util.config import config_metplus
 
-#@pytest.fixture
-def metplus_config():
-    """! Create a METplus configuration object that can be
-    manipulated/modified to
-         reflect different paths, directories, values, etc. for individual
-         tests.
-    """
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='test ',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='test ')
-        produtil.log.postmsg('met_util test is starting')
-
-        # Read in the configuration object CONFIG
-        config = config_metplus.setup(util.baseinputconfs)
-        logger = util.get_logger(config)
-        return config
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'met_util test failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
-
 @pytest.mark.parametrize(
     'before, after', [
         ('string', 'string'),
@@ -125,7 +100,7 @@ def test_threshold(key, value):
 def test_get_threshold_via_regex(key, value):
     assert(util.get_threshold_via_regex(key) == value)
 
-def test_preprocess_file_gz():
+def test_preprocess_file_gz(metplus_config):
     conf = metplus_config()
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile.txt.gz"
@@ -133,7 +108,7 @@ def test_preprocess_file_gz():
     outpath = util.preprocess_file(filepath, None, conf)
     assert(stagepath == outpath and os.path.exists(outpath))
 
-def test_preprocess_file_bz2():
+def test_preprocess_file_bz2(metplus_config):
     conf = metplus_config()
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile2.txt.bz2"
@@ -141,7 +116,7 @@ def test_preprocess_file_bz2():
     outpath = util.preprocess_file(filepath, None, conf)
     assert(stagepath == outpath and os.path.exists(outpath))
 
-def test_preprocess_file_zip():
+def test_preprocess_file_zip(metplus_config):
     conf = metplus_config()
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile3.txt.zip"
@@ -149,14 +124,14 @@ def test_preprocess_file_zip():
     outpath = util.preprocess_file(filepath, None, conf)
     assert(stagepath == outpath and os.path.exists(outpath))
 
-def test_preprocess_file_unzipped():
+def test_preprocess_file_unzipped(metplus_config):
     conf = metplus_config()
     stage_dir = conf.getdir('STAGING_DIR', os.path.join(conf.getdir('OUTPUT_BASE'),"stage"))
     filepath = conf.getdir('METPLUS_BASE')+"/internal_tests/data/zip/testfile4.txt"
     outpath = util.preprocess_file(filepath, None, conf)
     assert(filepath == outpath and os.path.exists(outpath))
 
-def test_preprocess_file_none():
+def test_preprocess_file_none(metplus_config):
     conf = metplus_config()
     outpath = util.preprocess_file(None, None, conf)
     assert(outpath is None)
@@ -194,7 +169,7 @@ def test_getlist_empty():
         ('OBS', False),
     ]
 )
-def test_parse_var_list_fcst_only(data_type, list_created):
+def test_parse_var_list_fcst_only(metplus_config, data_type, list_created):
     conf = metplus_config()
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "LEVELS11, LEVELS12")
@@ -229,7 +204,7 @@ def test_parse_var_list_fcst_only(data_type, list_created):
         ('FCST', False),
     ]
 )
-def test_parse_var_list_obs(data_type, list_created):
+def test_parse_var_list_obs(metplus_config, data_type, list_created):
     conf = metplus_config()
     conf.set('config', 'OBS_VAR1_NAME', "NAME1")
     conf.set('config', 'OBS_VAR1_LEVELS', "LEVELS11, LEVELS12")
@@ -265,7 +240,7 @@ def test_parse_var_list_obs(data_type, list_created):
         ('OBS', 'obs'),
     ]
 )
-def test_parse_var_list_both(data_type, list_created):
+def test_parse_var_list_both(metplus_config, data_type, list_created):
     conf = metplus_config()
     conf.set('config', 'BOTH_VAR1_NAME', "NAME1")
     conf.set('config', 'BOTH_VAR1_LEVELS', "LEVELS11, LEVELS12")
@@ -290,7 +265,7 @@ def test_parse_var_list_both(data_type, list_created):
            assert(False)
 
 # field info defined in both FCST_* and OBS_* variables
-def test_parse_var_list_fcst_and_obs():
+def test_parse_var_list_fcst_and_obs(metplus_config):
     conf = metplus_config()
     conf.set('config', 'FCST_VAR1_NAME', "FNAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "FLEVELS11, FLEVELS12")
@@ -325,7 +300,7 @@ def test_parse_var_list_fcst_and_obs():
            var_list[3]['obs_level'] == "OLEVELS22")
 
 # VAR1 defined by FCST, VAR2 defined by OBS
-def test_parse_var_list_fcst_and_obs_alternate():
+def test_parse_var_list_fcst_and_obs_alternate(metplus_config):
     conf = metplus_config()
     conf.set('config', 'FCST_VAR1_NAME', "FNAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "FLEVELS11, FLEVELS12")
@@ -343,7 +318,7 @@ def test_parse_var_list_fcst_and_obs_alternate():
         ('OBS', 4, ('ONAME1:OLEVELS11','ONAME1:OLEVELS12','ONAME3:OLEVELS31','ONAME3:OLEVELS32')),
     ]
 )
-def test_parse_var_list_fcst_and_obs_and_both(data_type, list_len, name_levels):
+def test_parse_var_list_fcst_and_obs_and_both(metplus_config, data_type, list_len, name_levels):
     conf = metplus_config()
     conf.set('config', 'OBS_VAR1_NAME', "ONAME1")
     conf.set('config', 'OBS_VAR1_LEVELS', "OLEVELS11, OLEVELS12")
@@ -391,7 +366,7 @@ def test_parse_var_list_fcst_and_obs_and_both(data_type, list_len, name_levels):
         ('OBS', 0),
     ]
 )
-def test_parse_var_list_fcst_only_options(data_type, list_len):
+def test_parse_var_list_fcst_only_options(metplus_config, data_type, list_len):
     conf = metplus_config()
     conf.set('config', 'FCST_VAR1_NAME', "NAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "LEVELS11, LEVELS12")
@@ -413,7 +388,7 @@ def test_parse_var_list_fcst_only_options(data_type, list_len):
         ('ENSEMBLE_STAT', {}),
     ]
 )
-def test_find_var_indices_wrapper_specific(met_tool, indices):
+def test_find_var_indices_wrapper_specific(metplus_config, met_tool, indices):
     conf = metplus_config()
     data_type = 'FCST'
     conf.set('config', f'{data_type}_VAR1_NAME', "NAME1")
@@ -426,7 +401,7 @@ def test_find_var_indices_wrapper_specific(met_tool, indices):
 
 
 
-def test_get_lead_sequence_lead():
+def test_get_lead_sequence_lead(metplus_config):
     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 13) }
     conf = metplus_config()
     conf.set('config', 'LEAD_SEQ', "3,6,9,12")
@@ -452,7 +427,7 @@ def test_get_lead_sequence_lead():
         ('begin_end_incr(0,10800,3600)S, 4H',  [ 0, 1, 2, 3, 4]),
     ]
 )
-def test_get_lead_sequence_lead_list(key, value):
+def test_get_lead_sequence_lead_list(metplus_config, key, value):
     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 13) }
     conf = metplus_config()
     conf.set('config', 'LEAD_SEQ', key)
@@ -584,7 +559,7 @@ def test_getlist_begin_end_incr(list_string, output_list):
     ]
 )
 
-def test_is_var_item_valid(item_list, is_valid):
+def test_is_var_item_valid(metplus_config, item_list, is_valid):
     conf = metplus_config()
     assert(util.is_var_item_valid(item_list, '1', 'NAME', conf)[0] == is_valid)
 
@@ -643,7 +618,7 @@ def test_is_plotter_in_process_list(process_list, has_plotter):
 # test that if wrapper specific field info is specified, it only gets
 # values from that list. All generic values should be read if no
 # wrapper specific field info variables are specified
-def test_parse_var_list_wrapper_specific():
+def test_parse_var_list_wrapper_specific(metplus_config):
     conf = metplus_config()
     conf.set('config', 'FCST_VAR1_NAME', "ENAME1")
     conf.set('config', 'FCST_VAR1_LEVELS', "ELEVELS11, ELEVELS12")
@@ -694,7 +669,7 @@ def test_parse_var_list_wrapper_specific():
 
     ]
 )
-def test_get_process_list(input_list, expected_list):
+def test_get_process_list(metplus_config, input_list, expected_list):
     conf = metplus_config()
     conf.set('config', 'PROCESS_LIST', input_list)
     output_list = util.get_process_list(conf)
@@ -856,7 +831,7 @@ def test_comparison_to_letter_format(expression, expected_result):
           'POINT2GRID_CUSTOM_LOOP_LIST': "four, five",}, 'point2grid', ['four', 'five']),
     ]
 )
-def test_get_custom_string_list(conf_items, met_tool, expected_result):
+def test_get_custom_string_list(metplus_config, conf_items, met_tool, expected_result):
     config = metplus_config()
     for conf_key, conf_value in conf_items.items():
         config.set('config', conf_key, conf_value)
@@ -874,7 +849,7 @@ def test_get_custom_string_list(conf_items, met_tool, expected_result):
                                           '%Y': ['2019']}),
     ]
 )
-def test_get_skip_times(skip_times_conf, expected_dict):
+def test_get_skip_times(metplus_config, skip_times_conf, expected_dict):
     conf = metplus_config()
     conf.set('config', 'SKIP_TIMES', skip_times_conf)
 
@@ -891,7 +866,7 @@ def test_get_skip_times(skip_times_conf, expected_dict):
                                           '%Y': ['2019']}),
     ]
 )
-def test_get_skip_times_wrapper(skip_times_conf, expected_dict):
+def test_get_skip_times_wrapper(metplus_config, skip_times_conf, expected_dict):
     conf = metplus_config()
 
     # set wrapper specific skip times, then ensure it is found
@@ -910,7 +885,7 @@ def test_get_skip_times_wrapper(skip_times_conf, expected_dict):
                                           '%Y': ['2019']}),
     ]
 )
-def test_get_skip_times_wrapper_not_used(skip_times_conf, expected_dict):
+def test_get_skip_times_wrapper_not_used(metplus_config, skip_times_conf, expected_dict):
     conf = metplus_config()
 
     # set generic SKIP_TIMES, then request grid_stat to ensure it uses generic

@@ -44,7 +44,7 @@ def cmdopt(request):
 # ------------Pytest fixtures that can be used for all tests ---------------
 #
 #@pytest.fixture
-def stat_analysis_wrapper():
+def stat_analysis_wrapper(metplus_config):
     """! Returns a default StatAnalysisWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -52,31 +52,11 @@ def stat_analysis_wrapper():
 
     # Default, empty StatAnalysisWrapper with some configuration values set
     # to /path/to:
-    config = metplus_config()
+    extra_configs = []
+    extra_configs.append(os.path.join(os.path.dirname(__file__), 'test_stat_analysis.conf'))
+    config = metplus_config(extra_configs)
     util.handle_tmp_dir(config)
     return StatAnalysisWrapper(config)
-
-
-#@pytest.fixture
-def metplus_config():
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='StatAnalysisWrapper ',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='StatAnalysisWrapper ')
-        produtil.log.postmsg('stat_analysis_wrapper  is starting')
-
-        # Read in the configuration object CONFIG
-        config = config_metplus.setup(util.baseinputconfs)
-        util.get_logger(config)
-        return config
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'stat_analysis_wrapper failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
-
 
 # ------------------TESTS GO BELOW ---------------------------
 #
@@ -108,13 +88,13 @@ def metplus_config():
 METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
 
-def test_set_lists_as_loop_or_group():
+def test_set_lists_as_loop_or_group(metplus_config):
     # Independently test that the lists that are set
     # in the config file are being set
     # accordingly based on their place
     # in GROUP_LIST_ITEMS and LOOP_LIST_ITEMS
     # and those not set are set to GROUP_LIST_ITEMS
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
     # Test 1
     expected_lists_to_group_items = ['FCST_INIT_HOUR_LIST',
                                      'FCST_UNITS_LIST', 'OBS_UNITS_LIST',
@@ -170,13 +150,13 @@ def test_set_lists_as_loop_or_group():
                 for elem in test_lists_to_loop_items))
 
 
-def test_get_output_filename():
+def test_get_output_filename(metplus_config):
     # Independently test the building of
     # the output file name
     # using string template substitution#
     # and test the values is
     # as expected
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
     config_dict = {}
     config_dict['FCST_VALID_HOUR'] = '000000'
     config_dict['FCST_VAR'] = '"HGT"'
@@ -243,13 +223,13 @@ def test_get_output_filename():
     assert (expected_output_filename == test_output_filename)
 
 
-def test_parse_model_info():
+def test_parse_model_info(metplus_config):
     pytest.skip("This function will be removed from MakePlots")
     # Independently test the creation of
     # the model information dictionary
     # and the reading from the config file
     # are as expected
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
     # Test 1
     expected_name1 = 'MODEL_TEST1'
     expected_reference_name1 = 'MODEL_TEST1'
@@ -300,9 +280,9 @@ def test_parse_model_info():
     assert (test_model_info_list[1]['out_stat_filename_type'] ==
             expected_out_stat_filename_type2)
 
-def test_filter_for_plotting():
+def test_filter_for_plotting(metplus_config):
     # Test running of stat_analysis
-    st = stat_analysis_wrapper()
+    st = stat_analysis_wrapper(metplus_config)
 
     # clear output directory for next run
     output_dir = st.config.getdir('OUTPUT_BASE') + '/plotting/stat_analysis'

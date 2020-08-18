@@ -14,17 +14,6 @@ from metplus.util import met_util as util
 from metplus.wrappers.command_builder import CommandBuilder
 from metplus.util.config import config_metplus
 
-#@pytest.fixture
-def metplus_config():
-    """! Create a METplus configuration object that can be
-    manipulated/modified to
-         reflect different paths, directories, values, etc. for individual
-         tests.
-    """
-    # Read in the configuration object CONFIG
-    config = config_metplus.setup(util.baseinputconfs)
-    return config
-
 @pytest.mark.parametrize(
     'input_value, result', [
         (3600, 3600),
@@ -42,7 +31,7 @@ def metplus_config():
         (None, None),
     ]
 )
-def test_getseconds(input_value, result):
+def test_getseconds(metplus_config, input_value, result):
     conf = metplus_config()
     if input_value is not None:
         conf.set('config', 'TEST_SECONDS', input_value)
@@ -69,7 +58,7 @@ def test_getseconds(input_value, result):
         (None, '1', '1'),
     ]
 )
-def test_getstr(input_value, default, result):
+def test_getstr(metplus_config, input_value, default, result):
     conf = metplus_config()
     if input_value is not None:
         conf.set('config', 'TEST_GETSTR', input_value)
@@ -92,7 +81,7 @@ def test_getstr(input_value, default, result):
 
     ]
 )
-def test_getdir(input_value, default, result):
+def test_getdir(metplus_config, input_value, default, result):
     conf = metplus_config()
     if input_value is not None:
         conf.set('dir', 'TEST_GETDIR', input_value)
@@ -118,7 +107,7 @@ def test_getdir(input_value, default, result):
         ('{valid?fmt=%Y%m%d}_{NOT_REAL_VAR}', None, '{valid?fmt=%Y%m%d}_{NOT_REAL_VAR}'),
     ]
 )
-def test_getraw(input_value, default, result):
+def test_getraw(metplus_config, input_value, default, result):
     conf = metplus_config()
     conf.set('config', 'TEST_EXTRA', 'extra')
     conf.set('config', 'TEST_EXTRA2', '{TEST_EXTRA}_extra')
@@ -151,7 +140,7 @@ def test_getraw(input_value, default, result):
         (None, None, None),
     ]
 )
-def test_getbool(input_value, default, result):
+def test_getbool(metplus_config, input_value, default, result):
     conf = metplus_config()
     if input_value is not None:
         conf.set('config', 'TEST_GETBOOL', input_value)
@@ -172,7 +161,7 @@ def test_getbool(input_value, default, result):
         ('sh', which('sh')),
     ]
 )
-def test_getexe(input_value, result):
+def test_getexe(metplus_config, input_value, result):
     conf = metplus_config()
     if input_value is not None:
         conf.set('exe', 'TEST_GETEXE', input_value)
@@ -194,7 +183,7 @@ def test_getexe(input_value, result):
         ('', 2.2, util.MISSING_DATA_VALUE),
     ]
 )
-def test_getfloat(input_value, default, result):
+def test_getfloat(metplus_config, input_value, default, result):
     conf = metplus_config()
     if input_value is not None:
         conf.set('config', 'TEST_GETFLOAT', input_value)
@@ -223,7 +212,7 @@ def test_getfloat(input_value, default, result):
         ('', 2.2, util.MISSING_DATA_VALUE),
     ]
 )
-def test_getint(input_value, default, result):
+def test_getint(metplus_config, input_value, default, result):
     conf = metplus_config()
     if input_value is not None:
         conf.set('config', 'TEST_GETINT', input_value)
@@ -233,3 +222,4 @@ def test_getint(input_value, default, result):
     except ValueError:
         if result is None:
             assert(True)
+

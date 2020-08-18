@@ -5,13 +5,13 @@ import sys
 import re
 import logging
 from collections import namedtuple
-import produtil
 import pytest
 import datetime
-import config_metplus
-from gen_vx_mask_wrapper import GenVxMaskWrapper
-import met_util as util
-import time_util
+
+import produtil
+
+from metplus.wrappers.gen_vx_mask_wrapper import GenVxMaskWrapper
+from metplus.util import time_util
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
@@ -34,7 +34,7 @@ import time_util
 
 # -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
 #@pytest.fixture
-def gen_vx_mask_wrapper():
+def gen_vx_mask_wrapper(metplus_config):
     """! Returns a default GenVxMaskWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -42,33 +42,7 @@ def gen_vx_mask_wrapper():
 
     config = metplus_config()
     config.set('config', 'DO_NOT_RUN_EXE', True)
-    return GenVxMaskWrapper(config, config.logger)
-
-#@pytest.fixture
-def metplus_config():
-    """! Create a METplus configuration object that can be
-    manipulated/modified to
-         reflect different paths, directories, values, etc. for individual
-         tests.
-    """
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='GenVxMaskWrapper',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='GenVxMaskWrapper')
-        produtil.log.postmsg('gen_vx_mask_wrapper  is starting')
-
-        # Read in the configuration object CONFIG
-        config = config_metplus.setup(util.baseinputconfs)
-        logger = util.get_logger(config)
-        return config
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'gen_vx_mask_wrapper failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
-
+    return GenVxMaskWrapper(config)
 
 # ------------------------ TESTS GO HERE --------------------------
 
@@ -76,12 +50,12 @@ def metplus_config():
 # ------------------------
 #  test_
 # ------------------------
-def test_run_gen_vx_mask_once():
+def test_run_gen_vx_mask_once(metplus_config):
     input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),
                   'lead': 0}
     time_info = time_util.ti_calculate(input_dict)
 
-    wrap = gen_vx_mask_wrapper()
+    wrap = gen_vx_mask_wrapper(metplus_config)
     wrap.c_dict['INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ZENITH'
     wrap.c_dict['MASK_INPUT_TEMPLATES'] = ['LAT']
     wrap.c_dict['OUTPUT_DIR'] = os.path.join(wrap.config.getdir('OUTPUT_BASE'),
@@ -100,12 +74,12 @@ def test_run_gen_vx_mask_once():
         print("EXPECTED:{expected_cmd}")
         assert(cmd == expected_cmd)
 
-def test_run_gen_vx_mask_twice():
+def test_run_gen_vx_mask_twice(metplus_config):
     input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),
                   'lead': 0}
     time_info = time_util.ti_calculate(input_dict)
 
-    wrap = gen_vx_mask_wrapper()
+    wrap = gen_vx_mask_wrapper(metplus_config)
     wrap.c_dict['INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ZENITH'
     wrap.c_dict['MASK_INPUT_TEMPLATES'] = ['LAT', 'LON']
     wrap.c_dict['OUTPUT_DIR'] = os.path.join(wrap.config.getdir('OUTPUT_BASE'),

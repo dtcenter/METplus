@@ -36,7 +36,7 @@ from metplus.util import time_util
 
 # -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
 #@pytest.fixture
-def compare_gridded_wrapper():
+def compare_gridded_wrapper(metplus_config):
     """! Returns a default GridStatWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -44,32 +44,6 @@ def compare_gridded_wrapper():
 
     config = metplus_config()
     return CompareGriddedWrapper(config)
-
-#@pytest.fixture
-def metplus_config():
-    """! Create a METplus configuration object that can be
-    manipulated/modified to
-         reflect different paths, directories, values, etc. for individual
-         tests.
-    """
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='GridStatWrapper',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='GridStatWrapper')
-        produtil.log.postmsg('grid_stat_wrapper  is starting')
-
-        # Read in the configuration object CONFIG
-        config = config_metplus.setup(util.baseinputconfs)
-        util.get_logger(config)
-        return config
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'grid_stat_wrapper failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
-
 
 # ------------------------ TESTS GO HERE --------------------------
 
@@ -123,8 +97,8 @@ def metplus_config():
     ]
 )
 
-def test_get_field_info_no_prob(key, value):
-    w = compare_gridded_wrapper()
+def test_get_field_info_no_prob(metplus_config, key, value):
+    w = compare_gridded_wrapper(metplus_config)
     w.c_dict['FCST_IS_PROB'] = False
     w.c_dict['OBS_IS_PROB'] = False
 
@@ -169,8 +143,8 @@ def test_get_field_info_no_prob(key, value):
 
          ]
 )
-def test_get_field_info_fcst_prob_grib_pds(key, value):
-    w = compare_gridded_wrapper()
+def test_get_field_info_fcst_prob_grib_pds(metplus_config, key, value):
+    w = compare_gridded_wrapper(metplus_config)
     w.c_dict['FCST_IS_PROB'] = True
     w.c_dict['OBS_IS_PROB'] = False
     w.c_dict['FCST_INPUT_DATATYPE'] = 'GRIB'
@@ -218,8 +192,8 @@ def test_get_field_info_fcst_prob_grib_pds(key, value):
 
          ]
 )
-def test_get_field_info_fcst_prob_grib_non_pds(key, value):
-    w = compare_gridded_wrapper()
+def test_get_field_info_fcst_prob_grib_non_pds(metplus_config, key, value):
+    w = compare_gridded_wrapper(metplus_config)
     w.c_dict['FCST_IS_PROB'] = True
     w.c_dict['OBS_IS_PROB'] = False
     w.c_dict['FCST_INPUT_DATATYPE'] = 'GRIB'
@@ -254,8 +228,8 @@ def test_get_field_info_fcst_prob_grib_non_pds(key, value):
          ['{ name=\"NAME\"; level=\"L0\"; cat_thresh=[ gt3 ]; }']),
          ]
 )
-def test_get_field_info_fcst_prob_netcdf(key, value):
-    w = compare_gridded_wrapper()
+def test_get_field_info_fcst_prob_netcdf(metplus_config, key, value):
+    w = compare_gridded_wrapper(metplus_config)
     w.c_dict['FCST_IS_PROB'] = True
     w.c_dict['OBS_IS_PROB'] = False
     w.c_dict['FCST_INPUT_DATATYPE'] = 'NETCDF'
@@ -281,8 +255,8 @@ def test_get_field_info_fcst_prob_netcdf(key, value):
         ([1, None, 3, 4, 1, 4 ]),
          ]
 )
-def test_handle_window_once(win, app_win, file_win, app_file_win, win_value, file_win_value):
-    cgw = compare_gridded_wrapper()
+def test_handle_window_once(metplus_config, win, app_win, file_win, app_file_win, win_value, file_win_value):
+    cgw = compare_gridded_wrapper(metplus_config)
     config = cgw.config
 
     if win is not None:
