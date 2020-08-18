@@ -27,7 +27,7 @@ import calendar
 import argparse
 
 from metplus.util.config import config_launcher
-from metplus.util import met_util as util
+from metplus.util.config.config_metplus import baseinputconfs
 from metplus.util.metplus_check import plot_wrappers_are_enabled
 
 # keep track of use cases that failed to report at the end of execution
@@ -165,9 +165,8 @@ def get_params(param):
 
     # read confs
     (parm, infiles, moreopt) = config_launcher.parse_launch_args(params,
-                                                                 None, None,
                                                                  logger,
-                                                                 util.baseinputconfs)
+                                                                 baseinputconfs)
     p = config_launcher.launch(infiles, moreopt)
 
     return params, p
