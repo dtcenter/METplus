@@ -37,12 +37,12 @@ command = shlex.split(f"env -i bash -c 'export USER={current_user} && source {mi
 proc = subprocess.Popen(command, stdout=subprocess.PIPE)
 
 for line in proc.stdout:
-    line = line.decode(encoding='utf-8', errors='strict')
+    line = line.decode(encoding='utf-8', errors='strict').strip()
     key, value = line.split('=')
     os.environ[key] = value
 
 proc.communicate()
-
+sys.exit(0)
 @pytest.fixture(scope='function')
 def metplus_config():
     """! Create a METplus configuration object that can be
