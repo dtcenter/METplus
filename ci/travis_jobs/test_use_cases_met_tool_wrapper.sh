@@ -34,11 +34,16 @@ echo Running tests...
 returncode=0
 echo 'Calling docker_run_metplus, returncode=' $returncode 
 
-returncode=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper" $returncode`
+#returncode=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper" $returncode`
+
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper" $returncode
+returncode=$?
+
 
 echo 'Intermediate return code=' $returncode 
 
-returncode=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip install h5py; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/PCPCombine_python_embedding.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode`
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip install h5py; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/PCPCombine_python_embedding.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode
+returncode=$?
 
 echo 'Final return code=' $returncode 
 
