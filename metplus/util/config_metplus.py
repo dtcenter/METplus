@@ -33,13 +33,12 @@ This module is used to create the initial METplus conf file in the
 first METplus job via the metplus.config_metplus.launch().
 The metplus.config_metplus.load() then reloads that configuration.
 The launch() function does more than just create the conf file though.
-It creates several initial files and  directories and runs a sanity check
-on the whole setup.
+It creates several initial files and  directories
 
 The METplusConfig class is used in place of a produtil.config.ProdConfig
 throughout the METplus system.  It can be used as a drop-in replacement
 for a produtil.config.ProdConfig, but has additional features needed to
-support sanity checks, and initial creation of the METplus system.
+support initial creation of the METplus system.
 """
 
 '''!@var __all__
@@ -132,8 +131,7 @@ def setup(config_inputs, logger=None, base_confs=METPLUS_BASE_CONFS):
     # Therefore can not use conf.timestrinterp and
     # some conf file settings ie. {[a|f]YMDH} time settings.
     cycle = None
-    config = launch(infiles, moreopt, cycle=cycle)
-    #config.sanity_check()
+    config = launch(infiles, moreopt)
 
     # save list of user configuration files in a variable
     config.set('config', 'METPLUS_CONFIG_FILES', ','.join(config_inputs))
@@ -230,8 +228,7 @@ def parse_launch_args(args, logger, base_confs=METPLUS_BASE_CONFS):
 # so each task needs to be able to initialize the conf files.
 # conf files are processed in the order they exist in the file_list
 # so each succesive element overwrites the previous.
-def launch(file_list, moreopt, cycle=None, init_dirs=True,
-           prelaunch=None):
+def launch(file_list, moreopt):
     for filename in file_list:
         if not isinstance(filename, str):
             raise TypeError('First input to metplus.config.for_initial_job '
@@ -515,6 +512,13 @@ class METplusConfig(ProdConfig):
     class is the underlying implementation of most of the
     functionality described in launch() and load()"""
 
+    OLD_SECTIONS = ['config',
+                    'dir',
+                    'exe',
+                    'filename_templates',
+                    'regex_pattern',
+                    ]
+
     def __init__(self, conf=None):
         """!Creates a new METplusConfig
         @param conf The configuration file."""
@@ -543,14 +547,6 @@ class METplusConfig(ProdConfig):
             with self:
                 return logging.getLogger('metplus.'+sublog)
         return self._logger
-
-    def sanity_check(self):
-        """!Runs nearly all sanity checks.
-
-        Runs simple sanity checks on the METplus installation directory
-        and configuration to make sure everything looks okay.  May
-        throw a wide variety of exceptions if sanity checks fail."""
-        logger = self.log('sanity.checker')
 
     # override get methods to perform additional error checking
     def getraw(self, sec, opt, default='', count=0):
