@@ -800,7 +800,7 @@ def skip_time(time_info, skip_times):
 
 def write_final_conf(config, logger):
     """!write final conf file including default values that were set during run"""
-    confloc = config.getloc('METPLUS_CONF')
+    confloc = config.getstr('config', 'METPLUS_CONF')
     logger.info('%s: write metplus.conf here' % (confloc,))
     with open(confloc, 'wt') as conf_file:
         config.write(conf_file)

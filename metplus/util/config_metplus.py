@@ -134,6 +134,8 @@ def setup(config_inputs, logger=None, base_confs=METPLUS_BASE_CONFS):
 
     logger.info('Completed METplus configuration setup.')
 
+    config.move_all_to_config_section()
+
     return config
 
 # def parse_launch_args(args,usage,logger,PARM_BASE=None):
@@ -266,7 +268,7 @@ def launch(file_list, moreopt):
 
     # Determine if final METPLUS_CONF file already exists on disk.
     # If it does, use it instead.
-    confloc = config.getloc('METPLUS_CONF')
+    confloc = config.getstr('config', 'METPLUS_CONF')
 
     # A user my set the confloc METPLUS_CONF location in a subdir of OUTPUT_BASE
     # or even in another parent directory altogether, so make thedirectory
@@ -508,8 +510,7 @@ class METplusConfig(ProdConfig):
     class is the underlying implementation of most of the
     functionality described in launch() and load()"""
 
-    OLD_SECTIONS = ['config',
-                    'dir',
+    OLD_SECTIONS = ['dir',
                     'exe',
                     'filename_templates',
                     'regex_pattern',
@@ -543,6 +544,41 @@ class METplusConfig(ProdConfig):
             with self:
                 return logging.getLogger('metplus.'+sublog)
         return self._logger
+
+    def move_all_to_config_section(self):
+        """! Move all configuration variables that are found in the
+             previously supported sections into the config section.
+        """
+        for section in self.OLD_SECTIONS:
+            all_configs = self.config.items(section)
+            for key, value in all_configs:
+                self.config.set('config', key, value)
+
+            self.config._conf.remove_section(section)
+
+
+    def find_section(self, sec, opt):
+        """! Search through list of previously supported config sections
+              to find variable requested. This allows the removal of these
+              sections to consider all of the variables members of the
+              [config] section.
+              Args:
+                  @param sec section requested - look in this section first
+                  @param opt configuration variable to find
+                  @returns section heading name or None if not found
+        """
+        # first check the section requested
+        if self.has_option(sec, opt):
+            return sec
+
+        # loop through previously supported sections to find variable opt
+        # return section name if found
+        for section in self.OLD_SECTIONS:
+            if self.has_option(section, opt):
+                return section
+
+        # return None if variable is not found
+        return None
 
     # override get methods to perform additional error checking
     def getraw(self, sec, opt, default='', count=0):
@@ -624,7 +660,7 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil exe with checks to see if option is set and if
             exe actually exists. Returns None if not found instead of exiting"""
         try:
-            exe_path = super().getexe(exe_name)
+            exe_path = super().getstr(sec, exe_name)
         except NoOptionError as e:
             if self.logger:
                 self.logger.error(e)
@@ -643,7 +679,7 @@ class METplusConfig(ProdConfig):
             return None
 
         # set config item to full path to exe and return full path
-        self.set('exe', exe_name, full_exe_path)
+        self.set(sec, exe_name, full_exe_path)
         return full_exe_path
 
     def getdir(self, dir_name, default=None, morevars=None,taskvars=None, must_exist=False):
