@@ -33,9 +33,9 @@ class SeriesByLeadWrapper(CommandBuilder):
          file.
     """
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = 'series_analysis'
-        super().__init__(config, logger)
+        super().__init__(config)
         # Retrieve any necessary values from the parm file(s)
         self.do_fhr_by_group = self.config.getbool('config',
                                                    'SERIES_ANALYSIS_GROUP_FCSTS')
@@ -1344,7 +1344,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             filter_filename = os.path.join(series_output_dir,
                                            cur_init, filter_file)
 
-            tcs = TCStatWrapper(self.config, self.logger)
+            tcs = TCStatWrapper(self.config)
             tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
                               filter_opts)
 

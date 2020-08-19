@@ -26,8 +26,7 @@ import time
 import calendar
 import argparse
 
-from metplus.util.config import config_launcher
-from metplus.util import met_util as util
+from metplus.util import config_metplus
 from metplus.util.metplus_check import plot_wrappers_are_enabled
 
 # keep track of use cases that failed to report at the end of execution
@@ -161,22 +160,21 @@ def get_param_list(param):
 def get_params(param):
     params = get_param_list(param)
 
-    logger = logging.getLogger('master_metplus')    
-
     # read confs
-    (parm, infiles, moreopt) = config_launcher.parse_launch_args(params,
-                                                                 None, None,
-                                                                 logger,
-                                                                 util.baseinputconfs)
-    p = config_launcher.launch(infiles, moreopt)
+    config = config_metplus.setup(params)
 
-    return params, p
+    return params, config
 
 def run_test_use_case(param, test_metplus_base):
     global failed_runs
 
-    params, p = get_params(param)
-    out_dir = os.path.join(p.getdir('OUTPUT_BASE'), os.path.basename(params[-2]))
+    params, config = get_params(param)
+
+    # get list of actual param files (ignoring config value overrides)
+    # to the 2nd last file to use as the output directory
+    # last param file is always the system.conf file
+    param_files = [param for param in params if os.path.exists(param)]
+    out_dir = os.path.join(config.getdir('OUTPUT_BASE'), os.path.basename(param_files[-2]))
 
     cmd = os.path.join(test_metplus_base, "ush", "master_metplus.py")
     for parm in params:
@@ -248,8 +246,26 @@ def main():
     parser.add_argument('--space_weather', action='store_true', required=False)
     parser.add_argument('--tc_and_extra_tc', action='store_true', required=False)
     parser.add_argument('--all', action='store_true', required=False)
+    parser.add_argument('--config', action='append', required=False)
 
     args = parser.parse_args()
+
+    if args.config:
+        for use_case in args.config:
+            config_args = use_case.split(',')
+            config_list = []
+            for config_arg in config_args:
+                # if relative path, must be relative to parm/use_cases
+                if not os.path.isabs(config_arg):
+                    # check that the full path exists before adding
+                    # use_case_dir in case item is a config value override
+                    check_config_exists = os.path.join(use_case_dir, config_arg)
+                    if os.path.exists(check_config_exists):
+                        config_arg = check_config_exists
+
+                config_list.append(config_arg)
+
+            force_use_cases_to_run.append(','.join(config_list))
 
     # compile list of use cases to run
     use_cases_to_run = []

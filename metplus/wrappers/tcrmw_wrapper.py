@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """tc_rmw
 Program Name: tc_rmw_wrapper.py
 Contact(s): George McCabe
@@ -26,11 +24,11 @@ from ..util import do_string_sub
 
 
 class TCRMWWrapper(CommandBuilder):
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = "tc_rmw"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -436,6 +434,3 @@ class TCRMWWrapper(CommandBuilder):
             config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
                                         **time_info)
             self.args.append(f"-config {config_file}")
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "TCRMW")
