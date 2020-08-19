@@ -121,8 +121,8 @@ def pre_run_setup(config_inputs):
         sys.exit(1)
 
     # set staging dir to OUTPUT_BASE/stage if not set
-    if not config.has_option('dir', 'STAGING_DIR'):
-        config.set('dir', 'STAGING_DIR',
+    if not config.has_option('config', 'STAGING_DIR'):
+        config.set('config', 'STAGING_DIR',
                    os.path.join(config.getdir('OUTPUT_BASE'), "stage"))
 
     # get USER_SHELL config variable so the default value doesn't get logged
@@ -511,7 +511,8 @@ def check_for_deprecated_config(config):
     # value of dict is replacement tag, set to None if no replacement exists
     # deprecated tags: region (replace with basin)
     deprecated_tags = {'region' : 'basin'}
-    template_vars = config.keys('filename_templates')
+    template_vars = config.keys('config')
+    template_vars = [tvar for tvar in template_vars if tvar.endswith('_TEMPLATE')]
     for temp_var in template_vars:
         template = config.getraw('filename_templates', temp_var)
         tags = get_tags(template)
@@ -711,7 +712,7 @@ def handle_tmp_dir(config):
     # if env MET_TMP_DIR is set
     if met_tmp_dir:
         # override config TMP_DIR to env MET_TMP_DIR value
-        config.set('dir', 'TMP_DIR', met_tmp_dir)
+        config.set('config', 'TMP_DIR', met_tmp_dir)
 
         # if config TMP_DIR differed from env MET_TMP_DIR, warn
         if conf_tmp_dir != met_tmp_dir:

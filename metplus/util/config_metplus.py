@@ -510,6 +510,7 @@ class METplusConfig(ProdConfig):
     class is the underlying implementation of most of the
     functionality described in launch() and load()"""
 
+    # items that are found in these sections will be moved into the [config] section
     OLD_SECTIONS = ['dir',
                     'exe',
                     'filename_templates',
@@ -550,11 +551,16 @@ class METplusConfig(ProdConfig):
              previously supported sections into the config section.
         """
         for section in self.OLD_SECTIONS:
-            all_configs = self.config.items(section)
-            for key, value in all_configs:
-                self.config.set('config', key, value)
+            if not self.has_section(section):
+                continue
 
-            self.config._conf.remove_section(section)
+            all_configs = self.keys(section)
+            for key in all_configs:
+                self.set('config',
+                         key,
+                         super().getraw(section, key))
+
+            self._conf.remove_section(section)
 
 
     def find_section(self, sec, opt):
@@ -598,6 +604,11 @@ class METplusConfig(ProdConfig):
         if count >= 10:
             return ''
 
+        # if requested section is in the list of sections that are no longer used
+        # look in the [config] section for the variable
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         in_template = super().getraw(sec, opt, default)
         out_template = ""
         in_brackets = False
@@ -612,10 +623,6 @@ class METplusConfig(ProdConfig):
                     var = self.getraw(sec, var_name, default, count)
                 elif self.has_option('config', var_name):
                     var = self.getraw('config', var_name, default, count)
-                elif self.has_option('dir', var_name):
-                    var = self.getraw('dir', var_name, default, count)
-                elif self.has_option('filename_templates', var_name):
-                    var = self.getraw('filename_templates', var_name, default, count)
                 elif var_name[0:3] == "ENV":
                     var = os.environ.get(var_name[4:-1])
 
@@ -660,7 +667,7 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil exe with checks to see if option is set and if
             exe actually exists. Returns None if not found instead of exiting"""
         try:
-            exe_path = super().getstr(sec, exe_name)
+            exe_path = super().getstr('config', exe_name)
         except NoOptionError as e:
             if self.logger:
                 self.logger.error(e)
@@ -679,19 +686,20 @@ class METplusConfig(ProdConfig):
             return None
 
         # set config item to full path to exe and return full path
-        self.set(sec, exe_name, full_exe_path)
+        self.set('config', exe_name, full_exe_path)
         return full_exe_path
 
     def getdir(self, dir_name, default=None, morevars=None,taskvars=None, must_exist=False):
         """!Wraps produtil getdir and reports an error if it is set to /path/to"""
         try:
-            dir_path = super().getdir(dir_name, default=None)
+            dir_path = super().getstr('config', dir_name, default=None,
+                                      morevars=morevars, taskvars=taskvars)
         except NoOptionError:
-            self.check_default('dir', dir_name, default)
+            self.check_default('config', dir_name, default)
             dir_path = default
 
         if '/path/to' in dir_path:
-            raise ValueError("[dir] " + dir_name + " cannot be set to or contain '/path/to'")
+            raise ValueError("[config] " + dir_name + " cannot be set to or contain '/path/to'")
 
         if must_exist and not os.path.exists(dir_path):
             self.logger.error(f"Path must exist: {dir_path}")
@@ -700,11 +708,15 @@ class METplusConfig(ProdConfig):
         return dir_path.replace('//', '/')
 
     def getdir_nocheck(self, dir_name, default=None):
-        return super().getdir(dir_name, default=default).replace('//', '/')
+        return super().getstr('config', dir_name, default=default).replace('//', '/')
 
     def getstr_nocheck(self, sec, name, default=None):
-        return super().getstr(sec, name, default=default).replace('//', '/')
+        # if requested section is in the list of sections that are no longer used
+        # look in the [config] section for the variable
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
 
+        return super().getstr(sec, name, default=default).replace('//', '/')
 
     def getstr(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Wraps produtil getstr. Config variable is checked with a default value of None
@@ -715,8 +727,12 @@ class METplusConfig(ProdConfig):
             Replace double forward slash with single to prevent error that occurs if that
             is found inside a MET config file (because it considers // the start of a comment
         """
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
-            return super().getstr(sec, name, default=None, badtypeok=badtypeok, morevars=morevars,
+            return super().getstr(sec, name, default=None,
+                                  badtypeok=badtypeok, morevars=morevars,
                                   taskvars=taskvars).replace('//', '/')
         except NoOptionError:
             # if config variable is not set
@@ -731,8 +747,12 @@ class METplusConfig(ProdConfig):
              If no default was specified in the call, the NoOptionError is raised again.
              @returns None if value is not a boolean (or yes/no), value if set, default if not set
          """
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
-            return super().getbool(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getbool(sec, name, default=None,
+                                   badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
         except NoOptionError:
             # config item was not set
             self.check_default(sec, name, default)
@@ -753,9 +773,13 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil getint to gracefully report if variable is not set
             and no default value is specified
             @returns Value if set, default of missing value if not set, None if value is an incorrect type"""
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
             # call ProdConfig function with no default set so we can log and set the default
-            return super().getint(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getint(sec, name, default=None,
+                                  badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
 
         # if config variable is not set
         except NoOptionError:
@@ -779,9 +803,13 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil getint to gracefully report if variable is not set
             and no default value is specified
             @returns Value if set, default of missing value if not set, None if value is an incorrect type"""
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
             # call ProdConfig function with no default set so we can log and set the default
-            return super().getfloat(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getfloat(sec, name, default=None,
+                                    badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
 
         # if config variable is not set
         except NoOptionError:
@@ -803,10 +831,14 @@ class METplusConfig(ProdConfig):
 
     def getseconds(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Converts time values ending in H, M, or S to seconds"""
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
             # convert value to seconds
             # Valid options match format 3600, 3600S, 60M, or 1H
-            value = super().getstr(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            value = super().getstr(sec, name, default=None,
+                                   badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
             regex_and_multiplier = {r'(-*)(\d+)S': 1,
                                     r'(-*)(\d+)M': 60,
                                     r'(-*)(\d+)H': 3600,
