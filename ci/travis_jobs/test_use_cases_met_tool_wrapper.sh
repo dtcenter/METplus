@@ -25,12 +25,19 @@ curl -L -O $gempak_to_cf_location
 echo Getting Docker image
 docker pull ${DOCKERHUB_TAG}
 docker images
-docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
+#docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
 
 echo Running tests...
-docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper
-returncode=$?
+#docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper
+#returncode=$?
 
+returncode=0
+
+returncode=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper" $returncode`
+
+returncode=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip install h5py; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/PCPCombine_python_embedding.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode`
+
+exit $returncode
 echo Tests completed.
 
 # Dump the output directories from running METplus
