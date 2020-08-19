@@ -2755,7 +2755,7 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
         return os.path.basename(filename)
 
     if data_type is not None and 'PYTHON' in data_type:
-        return os.path.basename(filename)
+        return filename
 
     stage_dir = config.getdir('STAGING_DIR')
 
