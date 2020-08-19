@@ -2751,8 +2751,11 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
         return filename
 
     # if using python embedding for input, return the keyword
-    if os.path.basename(filename) in PYTHON_EMBEDDING_TYPES or 'PYTHON' in data_type:
-            return os.path.basename(filename)
+    if os.path.basename(filename) in PYTHON_EMBEDDING_TYPES:
+        return os.path.basename(filename)
+
+    if data_type is not None and 'PYTHON' in data_type:
+        return os.path.basename(filename)
 
     stage_dir = config.getdir('STAGING_DIR')
 
