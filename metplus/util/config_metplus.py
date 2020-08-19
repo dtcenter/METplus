@@ -127,10 +127,6 @@ def setup(config_inputs, logger=None, base_confs=METPLUS_BASE_CONFS):
                           logger,
                           base_confs=base_confs)
 
-    # Currently metplus is not handling cycle.
-    # Therefore can not use conf.timestrinterp and
-    # some conf file settings ie. {[a|f]YMDH} time settings.
-    cycle = None
     config = launch(infiles, moreopt)
 
     # save list of user configuration files in a variable
