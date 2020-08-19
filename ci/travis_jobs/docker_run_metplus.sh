@@ -5,10 +5,10 @@ ret=`docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -
 echo "docker run $1" $1
 echo "docker run $ret" $ret
 
-#if [ $ret != 0 ]; then
-#  exit $ret
-#else
-#  exit $2
-#fi
+if [ $ret != 0 ]; then
+  exit $ret
+else
+  exit $2
+fi
 
 exit 999
