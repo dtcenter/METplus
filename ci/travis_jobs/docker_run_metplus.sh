@@ -11,4 +11,4 @@ echo "docker run $ret" $ret
 #  exit $2
 #fi
 
-exit $ret
+exit
