@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo 'In docker_run_metplus.sh...'
-echo 'In docker_run_metplus.sh, DOCKERHUB_TAG =' ${DOCKERHUB_TAG}
+#echo 'In docker_run_metplus.sh...'
+#echo 'In docker_run_metplus.sh, DOCKERHUB_TAG =' ${DOCKERHUB_TAG}
 
 ret=`docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c "$1"`
 
