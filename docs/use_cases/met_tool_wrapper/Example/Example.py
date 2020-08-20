@@ -203,4 +203,4 @@ met_tool_wrapper/Example/Example.conf
 # Keywords
 # --------
 #
-# .. note:: `ExampleToolUseCase <https://ncar.github.io/METplus/search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_
+# .. note:: `ExampleToolUseCase <https://dtcenter.github.io/METplus/search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_

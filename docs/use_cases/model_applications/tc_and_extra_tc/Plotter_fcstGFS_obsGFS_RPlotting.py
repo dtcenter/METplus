@@ -150,11 +150,11 @@ _obsGFS_RPlotting.conf
 #
 #
 # .. note::
-#  `TCPairsToolUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_,
-#  `TCandExtraTCAppUseCase <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_,
-#  `FeatureRelativeUseCase  <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_,
-#  `MediumRangeAppUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,
-#  `SBUOrgUseCase <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_,
-#  `DTCOrgUseCase <https://ncar.github.io/METplus/search.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_
+#  `TCPairsToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_,
+#  `TCandExtraTCAppUseCase <https://dtcenter.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_,
+#  `FeatureRelativeUseCase  <https://dtcenter.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_,
+#  `MediumRangeAppUseCase <https://dtcenter.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,
+#  `SBUOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_,
+#  `DTCOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_
 
 # sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-Plotter_fcstGFS_obsGFS_RPlotting.png'
