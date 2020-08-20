@@ -514,12 +514,18 @@ def replace_config_from_section(config, section):
 
         return None
 
-    new_config = copy.deepcopy(config)
-    all_configs = self.keys(section)
+    new_config = METplusConfig()
+    all_configs = config.keys('config')
     for key in all_configs:
         new_config.set('config',
                        key,
-                       config.super().getraw(section, key))
+                       config.getraw('config', key))
+
+    all_configs = config.keys(section)
+    for key in all_configs:
+        new_config.set('config',
+                       key,
+                       config.getraw(section, key))
 
     return new_config
 
