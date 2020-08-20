@@ -44,6 +44,8 @@ class TCGenWrapper(CommandBuilder):
         c_dict['GENESIS_INPUT_DIR'] = self.config.getdir(f'{app_name_upper}_GENESIS_INPUT_DIR', '')
         c_dict['GENESIS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                               f'{app_name_upper}_GENESIS_INPUT_TEMPLATE')
+        if not c_dict['GENESIS_INPUT_TEMPLATE']:
+            self.log_error(f'{app_name_upper}_GENESIS_INPUT_TEMPLATE must be set to run TCGen')
 
         c_dict['OUTPUT_DIR'] = self.config.getdir(f'{app_name_upper}_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
@@ -52,7 +54,8 @@ class TCGenWrapper(CommandBuilder):
         c_dict['TRACK_INPUT_DIR'] = self.config.getdir(f'{app_name_upper}_TRACK_INPUT_DIR', '')
         c_dict['TRACK_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                             f'{app_name_upper}_TRACK_INPUT_TEMPLATE')
-
+        if not c_dict['TRACK_INPUT_TEMPLATE']:
+            self.log_error(f'{app_name_upper}_TRACK_INPUT_TEMPLATE must be set to run TCGen')
 
         # values used in configuration file
         self.set_c_dict_int(c_dict, f'{app_name_upper}_INIT_FREQUENCY', 'init_freq')
@@ -278,7 +281,7 @@ class TCGenWrapper(CommandBuilder):
                 @param time_info dictionary containing timing information
         """
         # get input files
-        if self.find_input_files(time_info) is None:
+        if not self.find_input_files(time_info):
             return
 
         # get output path
