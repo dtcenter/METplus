@@ -20,6 +20,7 @@ from os.path import dirname, realpath
 import inspect
 from configparser import ConfigParser, NoOptionError
 from pathlib import Path
+import copy
 
 from produtil.config import ProdConfig
 import produtil.fileop
@@ -502,6 +503,25 @@ def get_logger(config, sublog=None):
     # set add the logger to the config
     config.logger = logger
     return logger
+
+def replace_config_from_section(config, section):
+    if not config.has_section(section):
+        error_message = f'Section {section} does not exist.'
+        if config.logger:
+            config.logger.error(error_message)
+        else:
+            print(f"ERROR: {error_message}")
+
+        return None
+
+    new_config = copy.deepcopy(config)
+    all_configs = self.keys(section)
+    for key in all_configs:
+        new_config.set('config',
+                       key,
+                       config.super().getraw(section, key))
+
+    return new_config
 
 class METplusConfig(ProdConfig):
     """!A replacement for the produtil.config.ProdConfig used throughout
