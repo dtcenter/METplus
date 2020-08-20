@@ -19,7 +19,7 @@ met_tool_wrapper/PointStat/PointStat.conf
 # | **Forecast:** NAM temperature, u-wind component, and v-wind component
 # | **Observation:** prepBUFR data that has been converted to NetCDF format via PB2NC
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** Unknown
@@ -129,6 +129,6 @@ met_tool_wrapper/PointStat/PointStat.conf
 # --------
 #
 # .. note::
-#  `PointStatToolUseCase <https://ncar.github.io/METplus/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
+#  `PointStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-PointStat.png'

@@ -18,7 +18,7 @@ s2s_tar=v3.0/sample_data-s2s-3.0.tgz
 space_weather_tar=v3.0/sample_data-space_weather-3.0.tgz
 tc_and_extra_tc_tar=v3.1/sample_data-tc_and_extra_tc-3.1.tgz
 
-met_tool_wrapper_tarball=https://github.com/NCAR/METplus/releases/download/v3.1/sample_data-met_tool_wrapper-3.1.tgz
+met_tool_wrapper_tarball=https://github.com/dtcenter/METplus/releases/download/v3.1/sample_data-met_tool_wrapper-3.1.tgz
 
 gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
 
@@ -60,8 +60,8 @@ do
   fi
 
   echo Downloading $tarball
-  echo curl -L -O https://github.com/NCAR/METplus/releases/download/${tarball}
-  curl -L -O https://github.com/NCAR/METplus/releases/download/${tarball}
+  echo curl -L -O https://github.com/dtcenter/METplus/releases/download/${tarball}
+  curl -L -O https://github.com/dtcenter/METplus/releases/download/${tarball}
 
   echo file basename $tarball
   tarball_basename=`basename $tarball`

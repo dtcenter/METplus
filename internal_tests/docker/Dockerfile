@@ -69,7 +69,7 @@ ARG DO_GIT_CLONE
 # also replace MET_INSTALL_DIR value in default conf with correct location
 RUN if [ ${DO_GIT_CLONE:-true} == true ]; then \
       echo "Cloning METplus repository using branch: ${SOURCE_BRANCH}"; \
-      git clone --branch ${SOURCE_BRANCH} https://github.com/NCAR/METplus; \
+      git clone --branch ${SOURCE_BRANCH} https://github.com/dtcenter/METplus; \
       cd METplus; \
       sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
     else \
