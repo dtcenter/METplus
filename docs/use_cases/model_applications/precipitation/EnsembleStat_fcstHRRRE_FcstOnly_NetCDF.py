@@ -152,13 +152,13 @@ _FcstOnly_NetCDF.conf
 # --------
 #
 # .. note::
-#    `EnsembleStatToolUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_,
-#    `NOAAHWTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,
-#    `PrecipitationAppUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_,
-#    `NetCDFFileUseCase  <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_,
-#    `EnsembleAppUseCase <https://ncar.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_,
-#    `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_,
-#    `ProbabilityGenerationAppUseCase <https://ncar.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_,
-#    `ListExpansionFeatureUseCase <https://ncar.github.io/METplus/search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
+#    `EnsembleStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_,
+#    `NOAAHWTOrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,
+#    `PrecipitationAppUseCase <https://dtcenter.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_,
+#    `NetCDFFileUseCase  <https://dtcenter.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_,
+#    `EnsembleAppUseCase <https://dtcenter.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_,
+#    `ConvectionAllowingModelsAppUseCase <https://dtcenter.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_,
+#    `ProbabilityGenerationAppUseCase <https://dtcenter.github.io/METplus/search.html?q=ProbabilityGenerationAppUseCase&check_keywords=yes&area=default>`_,
+#    `ListExpansionFeatureUseCase <https://dtcenter.github.io/METplus/search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
 
 # sphinx_gallery_thumbnail_path = '_static/precipitation-EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.png'

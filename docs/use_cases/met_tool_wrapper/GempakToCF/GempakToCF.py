@@ -18,7 +18,7 @@ met_tool_wrapper/GempakToCF/GempakToCF.conf
 #
 # | **Observations:** MRMS QPE
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** Unknown
@@ -125,9 +125,9 @@ met_tool_wrapper/GempakToCF/GempakToCF.conf
 # --------
 #
 # .. note::
-#  `GempakToCFToolUseCase <https://ncar.github.io/METplus/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_,
-#  `GEMPAKFileUseCase <https://ncar.github.io/METplus/search.html?q=GEMPAKFileUseCase&check_keywords=yes&area=default>`_,
-#  `NOAAHMTOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_,
-#  `NOAAWPCOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_
+#  `GempakToCFToolUseCase <https://dtcenter.github.io/METplus/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_,
+#  `GEMPAKFileUseCase <https://dtcenter.github.io/METplus/search.html?q=GEMPAKFileUseCase&check_keywords=yes&area=default>`_,
+#  `NOAAHMTOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_,
+#  `NOAAWPCOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-GempakToCF.png'

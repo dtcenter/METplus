@@ -52,7 +52,7 @@ _altitude.conf
 # | **Masks:** Solar altitude 
 #
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. 
-# | Click here to download: https://github.com/NCAR/METplus/releases/download/v3.0/sample_data-space_weather-3.0.tgz
+# | Click here to download: https://github.com/dtcenter/METplus/releases/download/v3.0/sample_data-space_weather-3.0.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data source:** NOAA Space Weather Prediction Center (SWPC)
@@ -156,9 +156,9 @@ _altitude.conf
 # --------
 #
 # .. note::
-#    `GenVxMaskToolUseCase <https://ncar.github.io/METplus/search.html?q=GenVxMaskToolUseCase&check_keywords=yes&area=default>`_,
-#    `SpaceWeatherAppUseCase <https://ncar.github.io/METplus/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_,
-#    `NOAASWPCOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_,
-#    `MaskingFeatureUseCase  <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_,
+#    `GenVxMaskToolUseCase <https://dtcenter.github.io/METplus/search.html?q=GenVxMaskToolUseCase&check_keywords=yes&area=default>`_,
+#    `SpaceWeatherAppUseCase <https://dtcenter.github.io/METplus/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_,
+#    `NOAASWPCOrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_,
+#    `MaskingFeatureUseCase  <https://dtcenter.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_,
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-GenVxMask.png'

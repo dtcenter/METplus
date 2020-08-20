@@ -55,7 +55,7 @@ The citation for this User's Guide should be:
 Adriaansen, D., M. Win-Gildenmeister, G. McCabe, J. Prestopnik, J. Frimel, J. Opatz, 
 J. Halley Gotway, T. Jensen, J. Vigh, M. Row, C. Kalb, H. Fisher, L. Goodrich,
 L. Blank, and T. Arbetter, |release_year|: The METplus Version |version| User's Guide.
-Developmental Testbed Center.  Available at: https://github.com/NCAR/METplus/releases.
+Developmental Testbed Center.  Available at: https://github.com/dtcenter/METplus/releases.
 
 **Acknowledgments**
 

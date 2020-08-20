@@ -17,7 +17,7 @@ met_tool_wrapper/PyEmbedIngest/PyEmbedIngest.conf
 #
 # | **Inputs:** Canned ASCII data to test functionality
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 
@@ -103,7 +103,7 @@ met_tool_wrapper/PyEmbedIngest/PyEmbedIngest.conf
 # --------
 #
 # .. note::
-#   `PyEmbedIngestToolUseCase <https://ncar.github.io/METplus/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_,
-#   `PythonEmbeddingFileUseCase <https://ncar.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_,
-#   `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
+#   `PyEmbedIngestToolUseCase <https://dtcenter.github.io/METplus/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_,
+#   `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_,
+#   `RegridDataPlaneToolUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
 #

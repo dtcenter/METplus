@@ -149,17 +149,17 @@ _obsStgIV_GRIB.conf
 # --------
 #
 # .. note::
-#  `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
-#  `PrecipitationAppUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_,
-#  `PCPCombineToolUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_,
-#  `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_,
-#  `GRIBFileUseCase <https://ncar.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_,
-#  `GRIB2FileUseCase <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_,
-#  `NetCDFFileUseCase <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_,
-#  `NOAAWPCOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_,
-#  `NOAAHMTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_,
-#  `NOAAHWTOrgUseCase  <https://ncar.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,
-#  `ConvectionAllowingModelsAppUseCase <https://ncar.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_,
-#  `ProbabilityVerificationUseCase  <https://ncar.github.io/METplus/search.html?q=ProbabilityVerificationUseCase&check_keywords=yes&area=default>`_
+#  `GridStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
+#  `PrecipitationAppUseCase <https://dtcenter.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_,
+#  `PCPCombineToolUseCase <https://dtcenter.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_,
+#  `RegridDataPlaneToolUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_,
+#  `GRIBFileUseCase <https://dtcenter.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_,
+#  `GRIB2FileUseCase <https://dtcenter.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_,
+#  `NetCDFFileUseCase <https://dtcenter.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_,
+#  `NOAAWPCOrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_,
+#  `NOAAHMTOrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_,
+#  `NOAAHWTOrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,
+#  `ConvectionAllowingModelsAppUseCase <https://dtcenter.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_,
+#  `ProbabilityVerificationUseCase  <https://dtcenter.github.io/METplus/search.html?q=ProbabilityVerificationUseCase&check_keywords=yes&area=default>`_
 
 # sphinx_gallery_thumbnail_path = '_static/precipitation-GridStat_fcstHRRR-TLE_obsStgIV_GRIB.png'
