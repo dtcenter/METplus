@@ -27,7 +27,7 @@ met_tool_wrapper/StatAnalysis/StatAnalysis.conf
 # |         grid_stat_APCP_24_240000L_20050808_000000V.stat
 # |         grid_stat_POP_12_1080000L_20050808_000000V.stat
 #
-# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 # | **Data Source:** WRF
 
@@ -154,6 +154,6 @@ met_tool_wrapper/StatAnalysis/StatAnalysis.conf
 # --------
 #
 # .. note::
-#  `StatAnalysisToolUseCase <https://ncar.github.io/METplus/search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
+#  `StatAnalysisToolUseCase <https://dtcenter.github.io/METplus/search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-StatAnalysis.png'

@@ -71,7 +71,7 @@ accompanies the use cases:
    Wrappers code) create a directory where you want the code to reside
 
 -  Open the browser of your choice and navigate to
-   https://github.com/NCAR/METplus. You will see something like the
+   https://github.com/dtcenter/METplus. You will see something like the
    following:
 
 .. image:: ../_static/metplus_repo.png
@@ -103,10 +103,10 @@ accompanies the use cases:
 
 
    -  Model Applications:
-         -  Visit https://github.com/NCAR/METplus/releases for a complete list of the latest Model Application .tgz files
+         -  Visit https://github.com/dtcenter/METplus/releases for a complete list of the latest Model Application .tgz files
 
    -  MET Tool Wrapper:
-         -  Visit https://github.com/NCAR/METplus/release for the latest single MET tool/METplus wrapper use case file
+         -  Visit https://github.com/dtcenter/METplus/release for the latest single MET tool/METplus wrapper use case file
 
 
 
@@ -114,7 +114,7 @@ METplus Wrappers directory structure
 ------------------------------------
 
 Once you have cloned the METplus Wrappers from the GitHub repository at
-https://github.com/NCAR/METplus to a location on your host, change
+https://github.com/dtcenter/METplus to a location on your host, change
 directories to the METplus Wrappers directory. You should have the
 following directory structure::
 

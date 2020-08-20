@@ -105,5 +105,5 @@ met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf
 # Keywords
 # --------
 #
-# .. note:: `CyclonePlotterUseCase <https://ncar.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
+# .. note:: `CyclonePlotterUseCase <https://dtcenter.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
 
