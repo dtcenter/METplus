@@ -120,18 +120,23 @@ def setup(config_inputs, logger=None, base_confs=METPLUS_BASE_CONFS):
 
     logger.info('Starting METplus configuration setup.')
 
+    if isinstance(config_inputs, str):
+        config_list = [config_inputs]
+    else:
+        config_list = config_inputs
+
     # parm, is path to parm directory
     # infiles, list of input conf files to be read and processed
     # moreopt, dictionary of conf file settings, passed in from command line.
     (parm, infiles, moreopt) = \
-        parse_launch_args(config_inputs,
+        parse_launch_args(config_list,
                           logger,
                           base_confs=base_confs)
 
     config = launch(infiles, moreopt)
 
     # save list of user configuration files in a variable
-    config.set('config', 'METPLUS_CONFIG_FILES', ','.join(config_inputs))
+    config.set('config', 'METPLUS_CONFIG_FILES', ','.join(config_list))
 
     logger.info('Completed METplus configuration setup.')
 
