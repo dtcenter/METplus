@@ -17,11 +17,16 @@ mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data
 
 cd ${OWNER_BUILD_DIR}/test.metplus.data
 
+#tea changed this to look more like test_use_cases_model_applications.sh
 echo Downloading $met_tool_wrapper_tarball
-curl -L -O $met_tool_wrapper_tarball
+echo curl -L -O https://github.com/NCAR/METplus/releases/download/${met_tool_wrapper_tarball}
+curl -L -O https://github.com/NCAR/METplus/releases/download/${met_tool_wrapper_tarball}
+
+echo file basename $met_tool_wrapper_tarball
+tarball_basename=`basename $met_tool_wrapper_tarball`
+echo `file $tarball_basename`
 
 echo tar xfzp `basename $met_tool_wrapper_tarball`
-echo "met_tool_wrapper_tarball =" `basename $met_tool_wrapper_tarball`
 tar xfzp `basename $met_tool_wrapper_tarball`
 
 echo Downloading $gempak_to_cf_location
