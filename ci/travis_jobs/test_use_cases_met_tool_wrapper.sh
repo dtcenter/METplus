@@ -19,8 +19,8 @@ cd ${OWNER_BUILD_DIR}/test.metplus.data
 
 #tea changed this to look more like test_use_cases_model_applications.sh
 echo Downloading $met_tool_wrapper_tarball
-echo curl -L -O https://github.com/DTCenter/METplus/releases/download/${met_tool_wrapper_tarball}
-curl -L -O https://github.com/DTCenter/METplus/releases/download/${met_tool_wrapper_tarball}
+echo curl -L -O ${met_tool_wrapper_tarball}
+curl -L -O ${met_tool_wrapper_tarball}
 
 echo file basename $met_tool_wrapper_tarball
 tarball_basename=`basename $met_tool_wrapper_tarball`
