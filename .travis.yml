@@ -78,7 +78,9 @@ env:
     - EXTRA_INSTALLS=test
     - OWNER_BUILD_DIR=`dirname ${TRAVIS_BUILD_DIR}`
 
-    - GITHUB_REPO_ORG=NCAR
+#tea changed from NCAR to DTCenter
+#   - GITHUB_REPO_ORG=NCAR
+    - GITHUB_REPO_ORG=DTCenter
     - DOCKERHUB_DEFAULT_REPO=dtcenter/metplus
     - DOCKERHUB_DEFAULT_TAGNAME=develop
     # The DOCKERHUB_USER_REPO setting ASSUMES your owner_name 
