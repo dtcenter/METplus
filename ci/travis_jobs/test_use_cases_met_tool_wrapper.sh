@@ -21,11 +21,8 @@ echo Downloading $met_tool_wrapper_tarball
 curl -L -O $met_tool_wrapper_tarball
 
 echo tar xfzp `basename $met_tool_wrapper_tarball`
-metfile = `basename $met_tool_wrapper_tarball`
-met_tool_wrapper_tarball_file=$metfile
-echo met_tool_wrapper_tarball_file = $met_tool_wrapper_tarball_file
-#tar -xzpf `basename $met_tool_wrapper_tarball`
-tar -xzpf $met_tool_wrapper_tarball_file
+echo met_tool_wrapper_tarball = $met_tool_wrapper_tarball
+tar -xzpf `basename $met_tool_wrapper_tarball`
 
 echo Downloading $gempak_to_cf_location
 curl -L -O $gempak_to_cf_location
