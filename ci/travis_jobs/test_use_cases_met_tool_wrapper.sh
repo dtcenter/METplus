@@ -21,6 +21,8 @@ echo Downloading $met_tool_wrapper_tarball
 curl -L -O $met_tool_wrapper_tarball
 
 echo tar xfzp `basename $met_tool_wrapper_tarball`
+met_tool_wrapper_tarball = `basename ${met_tool_wrapper_tarball}'
+echo met_tool_wrapper_tarball = $met_tool_wrapper_tarball
 tar -xzpf `basename $met_tool_wrapper_tarball`
 
 echo Downloading $gempak_to_cf_location
@@ -29,7 +31,7 @@ curl -L -O $gempak_to_cf_location
 echo Getting Docker image
 docker pull ${DOCKERHUB_TAG}
 docker images
-#docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
+docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
 
 echo Running tests...
 
