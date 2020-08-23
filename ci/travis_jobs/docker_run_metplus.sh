@@ -16,4 +16,4 @@ else
   exit $2
 fi
 
-exit 99
+exit 999
