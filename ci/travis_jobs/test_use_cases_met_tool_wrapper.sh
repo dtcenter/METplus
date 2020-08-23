@@ -21,8 +21,9 @@ echo Downloading $met_tool_wrapper_tarball
 curl -L -O $met_tool_wrapper_tarball
 
 echo tar xfzp `basename $met_tool_wrapper_tarball`
-met_tool_wrapper_tarball_file = `basename $met_tool_wrapper_tarball`
-echo met_tool_wrapper_tarball = $met_tool_wrapper_tarball_file
+metfile = `basename $met_tool_wrapper_tarball`
+met_tool_wrapper_tarball_file=$metfile
+echo met_tool_wrapper_tarball_file = $met_tool_wrapper_tarball_file
 #tar -xzpf `basename $met_tool_wrapper_tarball`
 tar -xzpf $met_tool_wrapper_tarball_file
 
