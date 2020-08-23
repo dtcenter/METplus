@@ -28,27 +28,22 @@ docker images
 #docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
 
 echo Running tests...
-#docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper
-#returncode=$?
 
 returncode=0
 echo 'Calling docker_run_metplus, returncode=' $returncode 
 
-#returncode=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper" $returncode`
-
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper" $returncode
 returncode=$?
 
-
 echo 'Intermediate return code=' $returncode 
 
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip install h5py; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/PCPCombine_python_embedding.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode
-returncode=$?
+#${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip install h5py; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/PCPCombine_python_embedding.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode
+#returncode=$?
 
 echo '2nd Intermediate return code=' $returncode 
 
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip install h5py; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/GridStat/GridStat.conf" $returncode
-returncode=$?
+#${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip install h5py; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/GridStat/GridStat.conf" $returncode
+#returncode=$?
 
 echo 'Final return code=' $returncode 
 
