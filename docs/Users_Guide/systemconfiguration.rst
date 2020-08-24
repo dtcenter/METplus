@@ -217,7 +217,7 @@ Examples::
     60M : 60 minutes or 3600 seconds
     1H : 1 hour or 3600 seconds
     1m : 1 month (relative)
-    1D : 1 day or 24 hours or 86400 seconds
+    1d : 1 day or 24 hours or 86400 seconds
     1Y : 1 year (relative)
 
 Units of months (m) and years (Y) do not have set intervals because the length of a month or year is relative to the relative date/time.
