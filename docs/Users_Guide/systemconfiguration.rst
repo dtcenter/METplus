@@ -796,7 +796,7 @@ Config Quick Start Example
   1. Create a directory where you wish to store the sample data. Sample datasets are specific to each use case and are required in order to be able to run the use case.
   2. Retrieve the sample data from the GitHub repository:
     
-    a. In your browser, navigate to https://www.github.com/NCAR/METplus/releases
+    a. In your browser, navigate to https://www.github.com/dtcenter/METplus/releases
     b. Locate the latest release
     c. Expand the 'Assets' menu by clicking on the black triangle to the left of the word 'Assets'
     d. Click on the *sample_data-medium_range-x.y.tgz* link associated with that release, where x.y refers to the release number.
