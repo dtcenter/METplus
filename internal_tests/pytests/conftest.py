@@ -42,7 +42,7 @@ for line in proc.stdout:
     os.environ[key] = value
 
 proc.communicate()
-sys.exit(0)
+
 @pytest.fixture(scope='function')
 def metplus_config():
     """! Create a METplus configuration object that can be
