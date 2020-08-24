@@ -60,13 +60,8 @@ do
   fi
 
   echo Downloading $tarball
-<<<<<<< HEAD
-  echo curl -L -O https://github.com/DTCenter/METplus/releases/download/${tarball}
-  curl -L -O https://github.com/DTCenter/METplus/releases/download/${tarball}
-=======
   echo curl -L -O https://github.com/dtcenter/METplus/releases/download/${tarball}
   curl -L -O https://github.com/dtcenter/METplus/releases/download/${tarball}
->>>>>>> upstream/develop
 
   echo file basename $tarball
   tarball_basename=`basename $tarball`
@@ -92,14 +87,7 @@ echo Downloading $gempak_to_cf_location
 echo curl -L -O $gempak_to_cf_location
 curl -L -O $gempak_to_cf_location
 
-<<<<<<< HEAD
-echo Get Docker image: ${DOCKERHUB_TAG}
-docker pull ${DOCKERHUB_TAG}
-docker images
-docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus -v ${OWNER_BUILD_DIR}/test.metplus.data:/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/output ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
-=======
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
->>>>>>> upstream/develop
 
 echo Run tests...
 docker run --rm -v ${OWNER_BUILD_DIR}:/metplus -v${OWNER_BUILD_DIR}/test.metplus.data:/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/output ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}
