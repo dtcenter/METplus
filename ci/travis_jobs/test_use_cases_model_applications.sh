@@ -14,8 +14,8 @@ convection_allowing_models_tar=v3.1/sample_data-convection_allowing_models-3.1.t
 cryosphere_tar=v3.0/sample_data-cryosphere-3.0.tgz
 medium_range_tar=v3.1/sample_data-medium_range-3.1.tgz
 precipitation_tar=v3.0/sample_data-precipitation-3.0.tgz
-s2s_tar=v3.0/sample_data-s2s-3.0.tgz
-space_weather_tar=v3.1/sample_data-space_weather-3.1.tgz
+s2s_tar=v3.1/sample_data-s2s-3.1.tgz
+space_weather_tar=v3.0/sample_data-space_weather-3.0.tgz
 tc_and_extra_tc_tar=v3.1/sample_data-tc_and_extra_tc-3.1.tgz
 
 met_tool_wrapper_tarball=https://github.com/dtcenter/METplus/releases/download/v3.1/sample_data-met_tool_wrapper-3.1.tgz
