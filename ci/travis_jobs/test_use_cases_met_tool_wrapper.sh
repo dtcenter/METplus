@@ -35,7 +35,7 @@ curl -L -O $gempak_to_cf_location
 echo Getting Docker image
 docker pull ${DOCKERHUB_TAG}/test
 docker images
-docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus -v ${OWNER_BUILD_DIR}/test.metplus.data:/metplus/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/metplus/output {DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
+docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus -v ${OWNER_BUILD_DIR}/test.metplus.data:/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/output {DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
 
 echo Running tests...
 

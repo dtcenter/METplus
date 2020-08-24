@@ -90,10 +90,10 @@ curl -L -O $gempak_to_cf_location
 echo Get Docker image: ${DOCKERHUB_TAG}
 docker pull ${DOCKERHUB_TAG}
 docker images
-docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus -v ${OWNER_BUILD_DIR}/test.metplus.data:/metplus/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/metplus/output ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
+docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus -v ${OWNER_BUILD_DIR}/test.metplus.data:/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/output ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
 
 echo Run tests...
-docker run --rm -v ${OWNER_BUILD_DIR}:/metplus -v${OWNER_BUILD_DIR}/test.metplus.data:/metplus/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/metplus/output ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}
+docker run --rm -v ${OWNER_BUILD_DIR}:/metplus -v${OWNER_BUILD_DIR}/test.metplus.data:/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/output ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}
 returncode=$?
 
 echo Tests completed.
