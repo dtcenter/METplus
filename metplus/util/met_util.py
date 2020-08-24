@@ -23,11 +23,10 @@ from importlib import import_module
 import produtil.setup
 import produtil.log
 
-from .config.string_template_substitution import do_string_sub
-from .config.string_template_substitution import parse_template
-from .config.string_template_substitution import get_tags
+from .string_template_substitution import do_string_sub
+from .string_template_substitution import parse_template
+from .string_template_substitution import get_tags
 from . import time_util as time_util
-from .config import config_metplus
 from . import metplus_check
 
 """!@namespace met_util
@@ -36,11 +35,6 @@ from . import metplus_check
 
 # list of compression extensions that are handled by METplus
 VALID_EXTENSIONS = ['.gz', '.bz2', '.zip']
-
-baseinputconfs = ['metplus_config/metplus_system.conf',
-                  'metplus_config/metplus_data.conf',
-                  'metplus_config/metplus_runtime.conf',
-                  'metplus_config/metplus_logging.conf']
 
 PYTHON_EMBEDDING_TYPES = ['PYTHON_NUMPY', 'PYTHON_XARRAY', 'PYTHON_PANDAS']
 
@@ -90,20 +84,18 @@ valid_comparisons = {">=": "ge",
 # have the same result in a test. 0 may be a valid integer value
 MISSING_DATA_VALUE = -9999
 
-def pre_run_setup(filename, app_name):
-    filebasename = os.path.basename(filename)
-    logger = logging.getLogger(app_name)
+def pre_run_setup(config_inputs):
+    from . import config_metplus
     version_number = get_version_number()
-    logger.info(f'Starting {app_name} v{version_number}')
+    print(f'Starting METplus v{version_number}')
 
-    # Parse arguments, options and return a config instance.
-    config = config_metplus.setup(baseinputconfs,
-                                  filename=filebasename)
+    # Read config inputs and return a config instance
+    config = config_metplus.setup(config_inputs)
 
-    logger = get_logger(config)
+    logger = config.logger
 
     config.set('config', 'METPLUS_VERSION', version_number)
-    logger.info(f'Running {app_name} v%s called with command: %s',
+    logger.info('Running METplus v%s called with command: %s',
                 version_number, ' '.join(sys.argv))
 
     logger.info(f"Log file: {config.getstr('config', 'LOG_METPLUS')}")
@@ -161,7 +153,7 @@ def run_metplus(config, process_list):
                 package_name = 'metplus.wrappers.' + camel_to_underscore(item) + '_wrapper'
                 module = import_module(package_name)
                 command_builder = getattr(module,
-                                          item + "Wrapper")(config, logger)
+                                          item + "Wrapper")(config)
 
                 # if Usage specified in PROCESS_LIST, print usage and exit
                 if item == 'Usage':
@@ -246,12 +238,12 @@ def post_run_cleanup(config, app_name, total_errors):
         logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
         sys.exit(1)
 
-def check_for_deprecated_config(conf):
+def check_for_deprecated_config(config):
     """!Checks user configuration files and reports errors or warnings if any deprecated variable
         is found. If an alternate variable name can be suggested, add it to the 'alt' section
         If the alternate cannot be literally substituted for the old name, set copy to False
        Args:
-          @conf : METplusConfig object to evaluate
+          @config : METplusConfig object to evaluate
        Returns:
           A tuple containing a boolean if the configuration is suitable to run or not and
           if it is not correct, the 2nd item is a list of sed commands that can be run to help
@@ -484,7 +476,7 @@ def check_for_deprecated_config(conf):
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
 
-    logger = conf.logger
+    logger = config.logger
 
     # create list of errors and warnings to report for deprecated configs
     e_list = []
@@ -498,7 +490,7 @@ def check_for_deprecated_config(conf):
             if '<n>' in old:
                 old_regex = old.replace('<n>', r'(\d+)')
                 indicies = find_indices_in_config_section(old_regex,
-                                                          conf,
+                                                          config,
                                                           'config',
                                                           noID=True).keys()
                 for index in indicies:
@@ -509,19 +501,19 @@ def check_for_deprecated_config(conf):
                         alt_with_index = ''
 
                     handle_deprecated(old_with_index, alt_with_index, depr_info,
-                                      conf, all_sed_cmds, w_list, e_list)
+                                      config, all_sed_cmds, w_list, e_list)
             else:
                 handle_deprecated(old, depr_info['alt'], depr_info,
-                                  conf, all_sed_cmds, w_list, e_list)
+                                  config, all_sed_cmds, w_list, e_list)
 
 
     # check all templates and error if any deprecated tags are used
     # value of dict is replacement tag, set to None if no replacement exists
     # deprecated tags: region (replace with basin)
     deprecated_tags = {'region' : 'basin'}
-    template_vars = conf.keys('filename_templates')
+    template_vars = config.keys('filename_templates')
     for temp_var in template_vars:
-        template = conf.getraw('filename_templates', temp_var)
+        template = config.getraw('filename_templates', temp_var)
         tags = get_tags(template)
 
         for depr_tag, replace_tag in deprecated_tags.items():
@@ -548,11 +540,11 @@ def check_for_deprecated_config(conf):
 
     return True, []
 
-def handle_deprecated(old, alt, depr_info, conf, all_sed_cmds, w_list, e_list):
+def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, w_list, e_list):
     sec = depr_info['sec']
-    config_files = conf.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+    config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
     # if deprecated config item is found
-    if conf.has_option(sec, old):
+    if config.has_option(sec, old):
         # if it is not required to remove, add to warning list
         if 'req' in depr_info.keys() and depr_info['req'] is False:
             msg = '[{}] {} is deprecated and will be '.format(sec, old) + \
@@ -806,15 +798,15 @@ def skip_time(time_info, skip_times):
     # if skip time never matches, return False
     return False
 
-def write_final_conf(conf, logger):
+def write_final_conf(config, logger):
     """!write final conf file including default values that were set during run"""
-    confloc = conf.getloc('METPLUS_CONF')
+    confloc = config.getloc('METPLUS_CONF')
     logger.info('%s: write metplus.conf here' % (confloc,))
     with open(confloc, 'wt') as conf_file:
-        conf.write(conf_file)
+        config.write(conf_file)
 
     # write out os environment to file for debugging
-    env_file = os.path.join(conf.getdir('LOG_DIR'), '.metplus_user_env')
+    env_file = os.path.join(config.getdir('LOG_DIR'), '.metplus_user_env')
     with open(env_file, 'w') as env_file:
         for key, value in os.environ.items():
             env_file.write('{}={}\n'.format(key, value))
@@ -1079,25 +1071,7 @@ def mkdir_p(path):
            None: Creates the full directory path if it doesn't exist,
                  does nothing otherwise.
     """
-
-    try:
-        # ***Note***:
-        # For Python 3.2 and beyond, os.makedirs has a third optional argument,
-        # exist_ok, that when set to True will enable the mkdir -p
-        # functionality.
-        # The mkdir -p functionality holds unless the mode is provided and the
-        # existing directory has different permissions from the intended ones.
-        # In this situation the OSError exception is raised.
-
-        # default mode is octal 0777
-        os.makedirs(path, mode=0o0775)
-    except OSError as exc:
-        # Ignore the error that gets created if the path already exists
-        if exc.errno == errno.EEXIST and os.path.isdir(path):
-            pass
-        else:
-            raise
-
+    Path(path).mkdir(parents=True, exist_ok=True)
 
 def _rmtree_onerr(function, path, exc_info, logger=None):
     """!Internal function used to log errors.
@@ -1130,194 +1104,6 @@ def rmtree(tree, logger=None):
     if logger:
         logger.info('%s: rmtree' % (tree,))
     shutil.rmtree(tree, ignore_errors=False)
-
-
-def set_logvars(config, logger=None):
-    """!Sets and adds the LOG_METPLUS and LOG_TIMESTAMP
-       to the config object. If LOG_METPLUS was already defined by the
-       user in their conf file. It expands and rewrites it in the conf
-       object and the final file.
-       conf file.
-       Args:
-           @param config:   the config instance
-           @param logger: the logger, optional
-    """
-
-    if logger is None:
-        logger = config.log()
-
-    # LOG_TIMESTAMP_TEMPLATE is not required in the conf file,
-    # so lets first test for that.
-    log_timestamp_template = config.getstr('config', 'LOG_TIMESTAMP_TEMPLATE', '')
-    if log_timestamp_template:
-        # Note: strftime appears to handle if log_timestamp_template
-        # is a string ie. 'blah' and not a valid set of % directives %Y%m%d,
-        # it does return the string 'blah', instead of crashing.
-        # However, I'm still going to test for a valid % directive and
-        # set a default. It probably is ok to remove the if not block pattern
-        # test, and not set a default, especially if causing some unintended
-        # consequences or the pattern is not capturing a valid directive.
-        # The reality is, the user is expected to have entered a correct
-        # directive in the conf file.
-        # This pattern is meant to test for a repeating set of
-        # case insensitive %(AnyAlphabeticCharacter), ie. %Y%m ...
-        # The basic pattern is (%+[a-z])+ , %+ allows for 1 or more
-        # % characters, ie. %%Y, %% is a valid directive.
-        # (?i) case insensitive, \A begin string \Z end of string
-        if not re.match(r'(?i)\A(?:(%+[a-z])+)\Z', log_timestamp_template):
-            logger.warning('Your LOG_TIMESTAMP_TEMPLATE is not '
-                           'a valid strftime directive: %s' % repr(log_timestamp_template))
-            logger.info('Using the following default: %Y%m%d%H')
-            log_timestamp_template = '%Y%m%d%H'
-        date_t = datetime.datetime.now()
-        if config.getbool('config', 'LOG_TIMESTAMP_USE_DATATIME', False):
-            if is_loop_by_init(config):
-                date_t = datetime.datetime.strptime(config.getstr('config',
-                                                                  'INIT_BEG'),
-                                                    config.getstr('config',
-                                                                  'INIT_TIME_FMT'))
-            else:
-                date_t = datetime.datetime.strptime(config.getstr('config',
-                                                                  'VALID_BEG'),
-                                                    config.getstr('config',
-                                                                  'VALID_TIME_FMT'))
-        log_filenametimestamp = date_t.strftime(log_timestamp_template)
-    else:
-        log_filenametimestamp = ''
-
-    log_dir = config.getdir('LOG_DIR')
-
-    # NOTE: LOG_METPLUS or metpluslog is meant to include the absolute path
-    #       and the metpluslog_filename,
-    # so metpluslog = /path/to/metpluslog_filename
-
-    # if LOG_METPLUS =  unset in the conf file, means NO logging.
-    # Also, assUmes the user has included the intended path in LOG_METPLUS.
-    user_defined_log_file = None
-    if config.has_option('config', 'LOG_METPLUS'):
-        user_defined_log_file = True
-        # strinterp will set metpluslog to '' if LOG_METPLUS =  is unset.
-        metpluslog = config.strinterp('config', '{LOG_METPLUS}',
-                                      LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp)
-
-        # test if there is any path information, if there is, assUme it is as intended,
-        # if there is not, than add log_dir.
-        if metpluslog:
-            if os.path.basename(metpluslog) == metpluslog:
-                metpluslog = os.path.join(log_dir, metpluslog)
-    else:
-        # No LOG_METPLUS in conf file, so let the code try to set it,
-        # if the user defined the variable LOG_FILENAME_TEMPLATE.
-        # LOG_FILENAME_TEMPLATE is an 'unpublished' variable - no one knows
-        # about it unless you are reading this. Why does this exist ?
-        # It was from my first cycle implementation. I did not want to pull
-        # it out, in case the group wanted a stand alone metplus log filename
-        # template variable.
-
-        # If metpluslog_filename includes a path, python joins it intelligently.
-        # Set the metplus log filename.
-        # strinterp will set metpluslog_filename to '' if LOG_FILENAME_TEMPLATE =
-        if config.has_option('config', 'LOG_FILENAME_TEMPLATE'):
-            metpluslog_filename = config.strinterp('config', '{LOG_FILENAME_TEMPLATE}',
-                                                   LOG_TIMESTAMP_TEMPLATE=log_filenametimestamp)
-        else:
-            metpluslog_filename = ''
-        if metpluslog_filename:
-            metpluslog = os.path.join(log_dir, metpluslog_filename)
-        else:
-            metpluslog = ''
-
-
-
-    # Adding LOG_TIMESTAMP to the final configuration file.
-    logger.info('Adding: config.LOG_TIMESTAMP=%s' % repr(log_filenametimestamp))
-    config.set('config', 'LOG_TIMESTAMP', log_filenametimestamp)
-
-    # Setting LOG_METPLUS in the configuration object
-    # At this point LOG_METPLUS will have a value or '' the empty string.
-    if user_defined_log_file:
-        logger.info('Replace [config] LOG_METPLUS with %s' % repr(metpluslog))
-    else:
-        logger.info('Adding: config.LOG_METPLUS=%s' % repr(metpluslog))
-    # expand LOG_METPLUS to ensure it is available
-    config.set('config', 'LOG_METPLUS', metpluslog)
-
-
-def get_logger(config, sublog=None):
-    """!This function will return a logger with a formatted file handler
-    for writing to the LOG_METPLUS and it sets the LOG_LEVEL. If LOG_METPLUS is
-    not defined, a logger is still returned without adding a file handler,
-    but still setting the LOG_LEVEL.
-       Args:
-           @param config:   the config instance
-           @param sublog the logging subdomain, or None
-       Returns:
-           logger: the logger
-    """
-
-    # Retrieve all logging related parameters from the param file
-    log_dir = config.getdir('LOG_DIR')
-    log_level = config.getstr('config', 'LOG_LEVEL')
-
-    # TODO review, use builtin produtil.fileop vs. mkdir_p ?
-    # import produtil.fileop
-    # produtil.fileop.makedirs(log_dir,logger=None)
-
-    # Check if the directory path for the log file exists, if
-    # not create it.
-    if not os.path.exists(log_dir):
-        mkdir_p(log_dir)
-
-    if sublog is not None:
-        logger = config.log(sublog)
-    else:
-        logger = config.log()
-
-    # Setting of the logger level from the config instance.
-    # Check for log_level by Integer or LevelName.
-    # Try to convert the string log_level to an integer and use that, if
-    # it can't convert then we assume it is a valid LevelName, which
-    # is what is should be anyway,  ie. DEBUG.
-    # Note:
-    # Earlier versions of python2 require setLevel(<int>), argument
-    # to be an int. Passing in the LevelName, 'DEBUG' will disable
-    # logging output. Later versions of python2 will accept 'DEBUG',
-    # not sure which version that changed with, but the logic below
-    # should work for all version. I know python 2.6.6 must be an int,
-    # and python 2.7.5 accepts the LevelName.
-    try:
-        int_log_level = int(log_level)
-        logger.setLevel(int_log_level)
-    except ValueError:
-        logger.setLevel(logging.getLevelName(log_level))
-
-    # Make sure the LOG_METPLUS is defined. In this function,
-    # LOG_METPLUS should already be defined in the config object,
-    # even if it is empty, LOG_METPLUS =.
-    if not config.has_option('config', 'LOG_METPLUS'):
-        set_logvars(config)
-    metpluslog = config.getstr('config', 'LOG_METPLUS', '')
-
-    if metpluslog:
-        # It is possible that more path, other than just LOG_DIR, was added
-        # to the metpluslog, by either a user defining more path in
-        # LOG_METPLUS or LOG_FILENAME_TEMPLATE definitions in their conf file.
-        # So lets check and make more directory if needed.
-        dir_name = os.path.dirname(metpluslog)
-        if not os.path.exists(dir_name):
-            mkdir_p(dir_name)
-
-        # set up the filehandler and the formatter, etc.
-        # The default matches the oformat log.py formatter of produtil
-        # So terminal output will now match log files.
-        formatter = config_metplus.METplusLogFormatter(config)
-        file_handler = logging.FileHandler(metpluslog, mode='a')
-        file_handler.setFormatter(formatter)
-        logger.addHandler(file_handler)
-
-    # set add the logger to the config
-    config.logger = logger
-    return logger
 
 def file_exists(filename):
     """! Determines if a file exists
@@ -2099,9 +1885,24 @@ def get_threshold_via_regex(thresh_string):
         found_match = False
         for comp in list(valid_comparisons.keys())+list(valid_comparisons.values()):
             # if valid, add to list of tuples
-            match = re.match(r'^('+comp+r')([+-]?\d*\.?\d*)$', thresh)
+            # must be one of the valid comparison operators followed by
+            # at least 1 digit or NA
+            if thresh == 'NA':
+                comparison_number_list.append((thresh, ''))
+                found_match = True
+                break
+
+            match = re.match(r'^('+comp+r')(.*\d.*)$', thresh)
             if match:
-                comparison_number_list.append((match.group(1), float(match.group(2))))
+                comparison = match.group(1)
+                number = match.group(2)
+                # try to convert to float if it can, but allow string
+                try:
+                    number = float(number)
+                except ValueError:
+                    pass
+
+                comparison_number_list.append((comparison, number))
                 found_match = True
                 break
 
@@ -2721,7 +2522,7 @@ def get_time_from_file(filepath, template, logger=None):
 
     return None
 
-def preprocess_file(filename, data_type, config):
+def preprocess_file(filename, data_type, config, allow_dir=False):
     """ Decompress gzip, bzip, or zip files or convert Gempak files to NetCDF
         Args:
             @param filename: Path to file without zip extensions
@@ -2729,8 +2530,11 @@ def preprocess_file(filename, data_type, config):
         Returns:
             Path to staged unzipped file or original file if already unzipped
     """
-    if filename is None or filename == "":
+    if not filename:
         return None
+
+    if allow_dir and os.path.isdir(filename):
+        return filename
 
     # if using python embedding for input, return the keyword
     if os.path.basename(filename) in PYTHON_EMBEDDING_TYPES:
@@ -2765,7 +2569,7 @@ def preprocess_file(filename, data_type, config):
             # only import GempakToCF if needed
             from ..wrappers import GempakToCFWrapper
 
-            run_g2c = GempakToCFWrapper(config, config.logger)
+            run_g2c = GempakToCFWrapper(config)
             run_g2c.infiles.append(filename)
             run_g2c.set_output_path(stagefile)
             cmd = run_g2c.get_command()
@@ -2821,42 +2625,6 @@ def preprocess_file(filename, data_type, config):
                 return outpath
 
     return None
-
-def run_stand_alone(filename, app_name):
-    """ Used to allow MET tool wrappers to be run without using
-    master_metplus.py
-        Args:
-            @param filename: Path to wrapper file with underscores, i.e.
-            /path/to/pcp_combine_wrapper.py
-            @param app_name: Name of wrapper with camel case, i.e.
-            PcpCombine
-        Returns:
-            None
-    """
-    module_name = os.path.splitext(os.path.basename(filename))[0]
-    try:
-        # If jobname is not defined, in log it is 'NO-NAME'
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='run-METplus',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='run-METplus')
-
-        config = pre_run_setup(filename, app_name)
-
-        module = __import__(module_name)
-        wrapper_class = getattr(module, app_name + "Wrapper")
-        wrapper = wrapper_class(config, config.logger)
-
-        process_list = [app_name]
-        total_errors = run_metplus(config, process_list)
-
-        post_run_cleanup(config, app_name, total_errors)
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            app_name + '  failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
 
 def template_to_regex(template, time_info, logger):
     in_template = re.sub(r'\.', '\\.', template)

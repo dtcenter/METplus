@@ -16,7 +16,7 @@ import re
 import datetime
 from dateutil.relativedelta import relativedelta
 
-from .. import time_util
+from . import time_util
 
 TEMPLATE_IDENTIFIER_BEGIN = "{"
 TEMPLATE_IDENTIFIER_END = "}"

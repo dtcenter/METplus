@@ -34,11 +34,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     # valid values for [FCST/OBS]_PCP_COMBINE_METHOD
     valid_run_methods = ['ADD', 'SUM', 'SUBTRACT', 'DERIVE', 'USER_DEFINED']
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = 'pcp_combine'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config)
         self.inaddons = []
         self.method = ""
         self.pcp_dir = ""

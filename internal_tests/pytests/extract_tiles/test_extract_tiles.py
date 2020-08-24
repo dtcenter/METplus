@@ -18,11 +18,12 @@ import datetime
 import logging
 import re
 import pytest
-from extract_tiles_wrapper import ExtractTilesWrapper
-from tc_pairs_wrapper import TCPairsWrapper
+
 import produtil
-import config_metplus
-import met_util as util
+
+from metplus.wrappers.extract_tiles_wrapper import ExtractTilesWrapper
+from metplus.wrappers.tc_pairs_wrapper import TCPairsWrapper
+from metplus.util import met_util as util
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
@@ -44,7 +45,7 @@ def pytest_addoption(parser):
 
 
 # -----------------FIXTURES THAT CAN BE USED BY ALL TESTS--------------
-def tc_pairs_wrapper():
+def tc_pairs_wrapper(metplus_config):
     """! Return a default TCPairsWrapper with /path/to entries
          in the metplus_system.conf and metplus_runtime.conf
          config files.  This is necessary for creating the
@@ -52,12 +53,11 @@ def tc_pairs_wrapper():
 
     """
     conf = metplus_config()
-    logger = logging.getLogger("dummy1")
     conf.set('config', 'LOOP_ORDER', 'processes')
-    tcpw = TCPairsWrapper(conf, logger)
+    tcpw = TCPairsWrapper(conf)
     tcpw.run_all_times()
 
-def extract_tiles_wrapper():
+def extract_tiles_wrapper(metplus_config):
     """! Returns a default ExtractTilesWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -69,33 +69,8 @@ def extract_tiles_wrapper():
     logger = logging.getLogger("dummy2")
 
     conf.set('config', 'LOOP_ORDER', 'processes')
-    etw =  ExtractTilesWrapper(conf, logger)
+    etw = ExtractTilesWrapper(conf)
     return etw
-
-
-def metplus_config():
-    """! Create a METplus configuration object that can be
-    manipulated/modified to
-         reflect different paths, directories, values, etc. for individual
-         tests.
-    """
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='ExtractTilesWrapper ',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='ExtractTilesWrapper ')
-        produtil.log.postmsg('extract_tiles_wrapper  is starting')
-
-        # Read in the configuration object CONFIG
-        config = config_metplus.setup(util.baseinputconfs)
-        return config
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'extract tiles wrapper failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
-
 
 def create_input_dict(etw):
     """Create the input time dictionary that is needed by run_at_time()
@@ -123,7 +98,7 @@ def create_input_dict(etw):
 
 
 # ------------------------ TESTS GO HERE --------------------------
-def test_correct_basin():
+def test_correct_basin(metplus_config):
     """
        Verify that only the ML basin
        paired results were returned by the
@@ -137,6 +112,7 @@ def test_correct_basin():
        indicates that the output is
        for the ML basin.
     """
+    pytest.skip('Test uses old paths - wrapper needs refactor')
     expected_ml_subdirs = ['ML1200942014', 'ML1200972014', 'ML1200992014',
                            'ML1201002014', 'ML1201032014', 'ML1201042014',
                            'ML1201052014', 'ML1201062014', 'ML1201072014',
@@ -144,7 +120,7 @@ def test_correct_basin():
 
     expected_num_ml_subdirs = len(expected_ml_subdirs)
     expected_num_nc_files = int(186)
-    etw = extract_tiles_wrapper()
+    etw = extract_tiles_wrapper(metplus_config)
     input_dict = create_input_dict(etw)
     etw.run_at_time(input_dict)
     config = etw.config

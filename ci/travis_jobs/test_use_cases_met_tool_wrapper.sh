@@ -4,7 +4,7 @@
 # About: Called by the .travis.yml file to run use cases found in parm/use_cases/met_tool_wrapper
 # Note: Sample data tarball values must be updated if a new version is added to a release
 
-met_tool_wrapper_tarball=https://github.com/DTCenter/METplus/releases/download/v3.1/sample_data-met_tool_wrapper-3.1.tgz
+met_tool_wrapper_tarball=https://github.com/dtcenter/METplus/releases/download/v3.1/sample_data-met_tool_wrapper-3.1.tgz
 
 gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
 
@@ -32,10 +32,7 @@ tar xfzp `basename $met_tool_wrapper_tarball`
 echo Downloading $gempak_to_cf_location
 curl -L -O $gempak_to_cf_location
 
-echo Getting Docker image
-docker pull ${DOCKERHUB_TAG}/test
-docker images
-docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus -v ${OWNER_BUILD_DIR}/test.metplus.data:/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/output {DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 
 echo Running tests...
 

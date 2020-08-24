@@ -3,7 +3,7 @@
 export METPLUS_TEST_METPLUS_BASE=
 
 # version of METplus to test
-export METPLUS_TEST_MET_INSTALL_DIR=/gpfs/dell2/emc/verification/noscrub/$USER/met/9.0_beta4
+export METPLUS_TEST_MET_INSTALL_DIR=/gpfs/dell2/emc/verification/noscrub/$USER/met/9.1
 
 # location to write output from test run
 export METPLUS_TEST_OUTPUT_BASE=/gpfs/dell2/emc/verification/noscrub/$USER/metplus_test/test-use-case-b

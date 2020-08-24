@@ -1,7 +1,9 @@
 """
-MODE: CESM and GPCP Precipitation MODE Object Based Evaluation
+MODE: CESM and GPCP Asian Monsoon Precipitation 
 ============================================================================
-MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
+model_applications/climate/\
+MODE_fcstCESM_obsGPCP_\
+AsianMonsoonPrecip.conf
 """
 
 ##############################################################################
@@ -10,7 +12,8 @@ MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 #
 # To evaluate the CESM model daily precipitation against the GPCP daily 
 # precipitation over the Indian Monsoon region to obtain object based
-# output statistics. 
+# output statistics. This was developed as part of the NCAR System for
+# Integrated Modeling of the Atmosphere (SIMA) project. 
 
 ##############################################################################
 # Datasets
@@ -151,7 +154,7 @@ MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf
 #
 # sphinx_gallery_thumbnail_path = '_static/climate-MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.png'
 #
-# .. note:: `MODEToolUseCase <https://ncar.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_, 
-#  `ClimateAppUseCase <https://ncar.github.io/METplus/search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_, 
-#  `NetCDFFileUseCase <https://ncar.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_, 
-#  `NCAROrgUseCase <https://ncar.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
+# .. note:: `MODEToolUseCase <https://dtcenter.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_, 
+#  `ClimateAppUseCase <https://dtcenter.github.io/METplus/search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_, 
+#  `NetCDFFileUseCase <https://dtcenter.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_, 
+#  `NCAROrgUseCase <https://dtcenter.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
