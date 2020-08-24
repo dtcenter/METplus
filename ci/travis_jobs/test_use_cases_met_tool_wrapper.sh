@@ -65,4 +65,4 @@ echo Tests completed.
 # Dump and see how much space is left on Travis disk.
 df -h
 
-exit $returncod-
+exit $returncode
