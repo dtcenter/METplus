@@ -6,7 +6,7 @@
 
 echo  In docker_run_metplus.sh, RUNNING: $1
 #docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c "$1"
-docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus -v ${OWNER_BUILD_DIR}/test.metplus.data:/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/output ${DOCKERHUB_TAG} /bin/bash -c "$1"
+docker run --rm -v ${OWNER_BUILD_DIR}:/metplus -v ${OWNER_BUILD_DIR}/test.metplus.data:/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/output ${DOCKERHUB_TAG} /bin/bash -c "$1"
 ret=$?
 
 #check return codes
