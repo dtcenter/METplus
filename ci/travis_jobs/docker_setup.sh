@@ -2,7 +2,7 @@
 # clone repository because travis is handling that step
 export DO_GIT_CLONE=false
 
-echo creating i/o directories
+echo "creating i/o directories"
 mkdir -p ${OWNER_BUILD_DIR}/test-use-case-output
 mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data
 
