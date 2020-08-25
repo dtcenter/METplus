@@ -22,8 +22,8 @@ met_tool_wrapper_tarball=https://github.com/dtcenter/METplus/releases/download/v
 
 gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
 
-mkdir -p ${OWNER_BUILD_DIR}/test-use-case-output
-mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data
+#mkdir -p ${OWNER_BUILD_DIR}/test-use-case-output
+#mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data
 
 cd ${OWNER_BUILD_DIR}/test.metplus.data
 

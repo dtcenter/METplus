@@ -2,6 +2,10 @@
 # clone repository because travis is handling that step
 export DO_GIT_CLONE=false
 
+echo creating i/o directories
+mkdir -p ${OWNER_BUILD_DIR}/test-use-case-output
+mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data
+
 echo Get Docker image: ${DOCKERHUB_TAG}
 
 # Note: adding --build-arg <arg-name> without any value tells docker to

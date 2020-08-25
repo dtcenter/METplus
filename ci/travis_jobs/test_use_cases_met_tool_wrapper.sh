@@ -10,10 +10,10 @@ gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/me
 
 echo 'Owner Build Dir:' ${OWNER_BUILD_DIR}
 echo 'pwd:' `pwd`
-echo "mkdir -p {OWNER_BUILD_DIR}/test-use-case-output"
-mkdir -p ${OWNER_BUILD_DIR}/test-use-case-output
-echo "mkdir -p {OWNER_BUILD_DIR}/test.metplus.data"
-mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data
+#echo "mkdir -p {OWNER_BUILD_DIR}/test-use-case-output"
+#mkdir -p ${OWNER_BUILD_DIR}/test-use-case-output
+#echo "mkdir -p {OWNER_BUILD_DIR}/test.metplus.data"
+#mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data
 
 cd ${OWNER_BUILD_DIR}/test.metplus.data
 
