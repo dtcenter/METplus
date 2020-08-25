@@ -34,7 +34,7 @@ _obsGFS_RPlotting.conf
 # METplus Components
 # ------------------
 #
-# This use case first runs TcPairs and then generates the requested
+# This use case first runs TCPairs and then generates the requested
 # plot types for statistics of interest. The TCMPRPlotterConfig_customize configuration
 # file is used by the plot_tcmpr.R script to select things such as the size of
 # the plot window that appears on your screen, etc.
@@ -45,9 +45,9 @@ _obsGFS_RPlotting.conf
 #
 # The following tools are used for each run time:
 #
-# TcPairs > plot_tcmpr.R
+# TCPairs > plot_tcmpr.R
 #
-# To generate TcPairs output, this example loops by initialization time for every 6 hour period that is available
+# To generate TCPairs output, this example loops by initialization time for every 6 hour period that is available
 # in the data set for 20141214. The output is then used to generate the mean, median, and box plot for the following:
 # the difference between the MSLP of the Adeck and Bdeck tracks (AMSLP-BMSLP), the difference between the max wind of the Adeck and
 # Bdeck tracks (AMAX_WIND-BMSLP), and the track err (TK_ERR).
@@ -150,11 +150,11 @@ _obsGFS_RPlotting.conf
 #
 #
 # .. note::
-#  `TCPairsToolUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_,
-#  `TCandExtraTCAppUseCase <https://ncar.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_,
-#  `FeatureRelativeUseCase  <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_,
-#  `MediumRangeAppUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,
-#  `SBUOrgUseCase <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_,
-#  `DTCOrgUseCase <https://ncar.github.io/METplus/search.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_
+#  `TCPairsToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCPairsUseCase&check_keywords=yes&area=default>`_,
+#  `TCandExtraTCAppUseCase <https://dtcenter.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_,
+#  `FeatureRelativeUseCase  <https://dtcenter.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_,
+#  `MediumRangeAppUseCase <https://dtcenter.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,
+#  `SBUOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_,
+#  `DTCOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_
 
 # sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-Plotter_fcstGFS_obsGFS_RPlotting.png'

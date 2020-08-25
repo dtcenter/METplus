@@ -4,8 +4,7 @@ import os
 import sys
 import pytest
 import produtil
-import config_metplus
-from tc_stat_wrapper import TcStatWrapper
+from metplus.wrappers.tc_stat_wrapper import TCStatWrapper
 
 
 #
@@ -30,8 +29,8 @@ def cmdopt(request):
 #
 # ------------Pytest fixtures that can be used for all tests ---------------
 #
-@pytest.fixture
-def tc_stat_wrapper():
+#@pytest.fixture
+def tc_stat_wrapper(metplus_config):
     """! Returns a default TCStatWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -39,43 +38,23 @@ def tc_stat_wrapper():
 
     # Default, empty TcStatWrapper with some configuration values set
     # to /path/to:
-    conf = metplus_config()
-    return TcStatWrapper(conf, None)
+    extra_configs = []
+    extra_configs.append(os.path.join(os.path.dirname(__file__), 'tc_stat_cli.conf'))
+    config = metplus_config(extra_configs)
+    return TCStatWrapper(config)
 
-
-
-@pytest.fixture
-def metplus_config():
-    """! Generate the METplus config object"""
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='TcStatWrapper ',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='TcStatWrapper ')
-        produtil.log.postmsg('tc_stat_wrapper  is starting')
-
-        # Read in the configuration object CONFIG
-        config = config_metplus.setup()
-        return config
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'tc_stat_wrapper failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
-
-
-def test_run_via_command_line():
+def test_run_via_command_line(metplus_config):
     """! Test that running via command line produces the expected results for
          a specific time window for the SBU GFS data.
     """
-    tcsw = tc_stat_wrapper()
+    pytest.skip()
+    tcsw = tc_stat_wrapper(metplus_config)
     tcsw.by_config = False
-    tcsw.tc_stat_dict['INIT_BEG'] = '20170822'
-    tcsw.tc_stat_dict['INIT_END'] = '20180508'
-    output_base = tcsw.tc_stat_dict['OUTPUT_BASE']
+    tcsw.c_dict['INIT_BEG'] = '20170822'
+    tcsw.c_dict['INIT_END'] = '20180508'
+    output_base = tcsw.c_dict['OUTPUT_BASE']
 
-    tcsw.tc_stat_dict['CMD_LINE_JOB'] = '-job filter -dump_row ' + \
+    tcsw.c_dict['CMD_LINE_JOB'] = '-job filter -dump_row ' + \
                                         output_base + \
                                         '/tc_stat_filter.out' + \
                                         ' -basin AL -init_hour 00'

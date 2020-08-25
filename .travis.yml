@@ -70,6 +70,7 @@ cache:
 # OWNER_BUILD_DIR=/home/travis/build/owner_name
 env:
   global:
+    - DO_GIT_CLONE=false
     - REPO_NAME=METplus
     - REPO_NAME_lc=metplus
 
@@ -81,11 +82,12 @@ env:
     - GITHUB_REPO_ORG=NCAR
     - DOCKERHUB_DEFAULT_REPO=dtcenter/metplus
     - DOCKERHUB_DEFAULT_TAGNAME=develop
+    - DOCKERHUB_MET_TAGNAME=develop
     # The DOCKERHUB_USER_REPO setting ASSUMES your owner_name 
     # in travis ci IS THE SAME as your docker hub user_name,
     # since it is setting it  based on the travis repo slug.
-    - DOCKERHUB_USER_REPO="`dirname ${TRAVIS_REPO_SLUG}`/metplus"
-    - DOCKERHUB_USER_TAGNAME=test
+    - DOCKERHUB_USER_REPO="`dirname ${TRAVIS_REPO_SLUG}| awk '{print tolower($0)}'`/metplus"
+    - DOCKERHUB_USER_TAGNAME=develop
     # set to true to use default settings
     # if set to false, to use DOCKER_USER_* settings, your dockerhub container.
     - DOCKERHUB_USE_DEFAULT=true
@@ -143,10 +145,9 @@ matrix:
         # - ${TRAVIS_BUILD_DIR}/ci/travis_unit_tests.sh
         #
         - mkdir -p ${OWNER_BUILD_DIR}/pytmp.docker;
-        - docker pull ${DOCKERHUB_TAG}
-        - docker images
-        - docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
-        - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/pytests/run_pytests.sh docker
+        - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
+        - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c "pip3 install pytest-cov; export METPLUS_PYTEST_HOST=docker; cd /metplus/METplus/internal_tests/pytests; pytest --cov=../../metplus"
         # Dump the output directories from running METplus
         - ls -alR ${OWNER_BUILD_DIR}/pytmp.docker
     - name: "Use Case Tests - met_tool_wrapper"
@@ -162,6 +163,10 @@ matrix:
       python: 3.7
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh convection_allowing_models
+    - name: "Use Case Tests - climate"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh climate
     - name: "Use Case Tests - medium_range1"
       python: 3.7
       script:
@@ -219,7 +224,7 @@ install:  # The 'install:' key, ie. travis.yml 'keys'
 
 # execute all of the commands which 
 # should make the build pass or fail
-before script:
+before_script:
 
   # This block defines which docker image to pull and use in all
   # the jobs for the build.

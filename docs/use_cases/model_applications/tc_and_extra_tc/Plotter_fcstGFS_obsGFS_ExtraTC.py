@@ -25,7 +25,7 @@ _obsGFS_ExtraTC.conf
 # METplus Components
 # ------------------
 #
-# This use case first runs TcPairs and then generates the storm track plot
+# This use case first runs TCPairs and then generates the storm track plot
 # for all storm tracks found in the .tcst output file created by the MET TC-Pairs tool.
 #
 
@@ -35,9 +35,9 @@ _obsGFS_ExtraTC.conf
 #
 # The following tools are used for each run time:
 #
-# TcPairs
+# TCPairs
 #
-# To generate TcPairs output, this example loops by initialization time for every 6 hour period that is available
+# To generate TCPairs output, this example loops by initialization time for every 6 hour period that is available
 # in the data set for 20150301. The output is then used to generate the plot of all cyclone tracks.
 #
 
@@ -132,4 +132,4 @@ _obsGFS_ExtraTC.conf
 #
 # sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-Plotter_fcstGFS_obsGFS_ExtraTC.png'
 #
-# .. note:: `TCPairsToolUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_, `CyclonePlotterUseCase <https://ncar.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_, `FeatureRelativeUseCase  <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_, `MediumRangeAppUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_, `NOAAEMCOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_, `SBUOrgUseCase <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_, `DTCOrgUseCase <https://ncar.github.io/METplus/search.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_
+# .. note:: `TCPairsToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_, `CyclonePlotterUseCase <https://dtcenter.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_, `FeatureRelativeUseCase  <https://dtcenter.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_, `MediumRangeAppUseCase <https://dtcenter.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_, `NOAAEMCOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_, `SBUOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_, `DTCOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_

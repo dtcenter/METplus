@@ -14,7 +14,7 @@ import logging
 import os
 import copy
 import re
-import subprocess
+import glob
 import datetime
 import itertools
 
@@ -75,11 +75,11 @@ class StatAnalysisWrapper(CommandBuilder):
         'FCST_INIT_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
     ]
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      'stat_analysis')
         self.app_name = os.path.basename(self.app_path)
-        super().__init__(config, logger)
+        super().__init__(config)
 
     def get_command(self):
 
@@ -168,13 +168,16 @@ class StatAnalysisWrapper(CommandBuilder):
         self.runMakePlots = 'MakePlots' in self.config.getstr('config', 'PROCESS_LIST')
         if self.runMakePlots:
             # only import MakePlots wrappers if it will be used
-            from .make_plots_wrapper import MakePlotsWrapper
-            self.check_MakePlots_config(c_dict)
+            from .make_plots_wrapper import MakePlotsWrapper, wrapper_cannot_run
+            if wrapper_cannot_run:
+                self.log_error("Cannot import MakePlots wrapper! Requires pandas and numpy")
+            else:
+                self.check_MakePlots_config(c_dict)
 
-            # create MakePlots wrapper instance
-            self.MakePlotsWrapper = MakePlotsWrapper(self.config, self.logger)
-            if not self.MakePlotsWrapper.isOK:
-                self.log_error("MakePlotsWrapper was not initialized correctly.")
+                # create MakePlots wrapper instance
+                self.MakePlotsWrapper = MakePlotsWrapper(self.config)
+                if not self.MakePlotsWrapper.isOK:
+                    self.log_error("MakePlotsWrapper was not initialized correctly.")
 
         c_dict['VAR_LIST'] = util.parse_var_list(self.config)
 
@@ -1033,13 +1036,9 @@ class StatAnalysisWrapper(CommandBuilder):
         else:
             dir_path_filled = dir_path
         if '*' in dir_path_filled:
-            dir_path_filled_all = str(
-                subprocess.check_output('ls -d '+dir_path_filled, shell=True)
-            )
-            dir_path_filled_all = (
-                dir_path_filled_all[1:].replace("'","").replace('\\n', ' ')
-            )
-            dir_path_filled_all = dir_path_filled_all[:-1]
+            self.logger.debug(f"Expanding wildcard path: {dir_path_filled}")
+            dir_path_filled_all = ' '.join(sorted(glob.glob(dir_path_filled)))
+            self.logger.warning(f"Wildcard expansion found no matches")
         else:
             dir_path_filled_all = dir_path_filled
         lookin_dir = dir_path_filled_all
@@ -1646,6 +1645,11 @@ class StatAnalysisWrapper(CommandBuilder):
 
         # set lookin dir command line argument
         runtime_settings_dict['LOOKIN_DIR'] = ' '.join(lookin_dirs)
+
+        # error and return None if lookin dir is empty
+        if not runtime_settings_dict['LOOKIN_DIR']:
+            self.log_error("No value found for lookin dir")
+            return None
 
         if not model_list or not obtype_list:
             self.log_error("Could not find model or obtype to process")

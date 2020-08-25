@@ -11,10 +11,9 @@ class UsageWrapper(CommandBuilder):
          the PROCESS_LIST of the parm/metplus_config/metplus_runtime.conf
          and no lower level config files are included.
     """
-    def __init__(self, p, logger):
+    def __init__(self, config):
         self.app_name = 'Usage'
-        super().__init__(p, logger)
-        self.logger = logger
+        super().__init__(config)
         # get unique list of processes from met_util
         self.available_processes = list(set(val for val in met_util.LOWER_TO_WRAPPER_NAME.values()))
         self.available_processes.sort()
