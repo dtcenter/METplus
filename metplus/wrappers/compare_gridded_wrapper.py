@@ -366,9 +366,9 @@ that reformat gridded data
         # use output template if it is set
         # if output template is not set, do not add any extra directories to path
         out_template_name = '{}_OUTPUT_TEMPLATE'.format(self.app_name.upper())
-        if self.config.has_option('filename_templates',
+        if self.config.has_option('config',
                                   out_template_name):
-            template = self.config.getraw('filename_templates',
+            template = self.config.getraw('config',
                                           out_template_name)
             # perform string substitution to get full path
             extra_path = do_string_sub(template,
