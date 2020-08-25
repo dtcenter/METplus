@@ -3,7 +3,8 @@
 export METPLUS_TEST_METPLUS_BASE=
 
 # version of METplus to test
-export METPLUS_TEST_MET_INSTALL_DIR=/d3/projects/MET/MET_releases/met-9.0
+#export METPLUS_TEST_MET_INSTALL_DIR=/d3/projects/MET/MET_releases/met-9.0
+export METPLUS_TEST_MET_INSTALL_DIR=/usr/local/met-9.1
 
 # location to write output from test run
 export METPLUS_TEST_OUTPUT_BASE=/d3/personal/$USER/test-use-case-b

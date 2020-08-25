@@ -35,11 +35,11 @@ class CommandBuilder:
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.isOK = True
         self.errors = 0
-        self.logger = logger
         self.config = config
+        self.logger = config.logger
         self.env_list = set()
         self.debug = False
         self.args = []
@@ -471,8 +471,12 @@ class CommandBuilder:
         return self.find_file_in_window(**arg_dict)
 
     def find_exact_file(self, level, data_type, time_info, mandatory=True, return_list=False, allow_dir=False):
-        input_template = self.c_dict[f'{data_type}INPUT_TEMPLATE']
+        input_template = self.c_dict.get(f'{data_type}INPUT_TEMPLATE', '')
         data_dir = self.c_dict.get(f'{data_type}INPUT_DIR', '')
+
+        if not input_template:
+            self.log_error(f"Could not find any {data_type}INPUT files because no template was specified")
+            return None
 
         check_file_list = []
         found_file_list = []
@@ -522,6 +526,16 @@ class CommandBuilder:
         # an error if only 1 file is allowed.
         if not self.c_dict.get('ALLOW_MULTIPLE_FILES', False) and len(check_file_list) > 1:
             self.log_error("Multiple files found when wrapper does not support multiple files.")
+            return None
+
+        # return None if no files were found
+        if not check_file_list:
+            msg = f"Could not find any {data_type}INPUT files"
+            if mandatory:
+                self.log_error(msg)
+            else:
+                self.logger.warning(msg)
+
             return None
 
         for file_path in check_file_list:

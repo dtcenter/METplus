@@ -24,10 +24,10 @@ from . import CommandBuilder
 
 
 class GempakToCFWrapper(CommandBuilder):
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = "GempakToCF"
         self.app_path = config.getstr('exe', 'GEMPAKTOCF_JAR', '')
-        super().__init__(config, logger)
+        super().__init__(config)
 
     def create_c_dict(self):
         """!Create dictionary from config items to be used in the wrapper

@@ -147,7 +147,7 @@ matrix:
         - mkdir -p ${OWNER_BUILD_DIR}/pytmp.docker;
         - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
-        - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/pytests/run_pytests.sh docker
+        - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c "pip3 install pytest-cov; export METPLUS_PYTEST_HOST=docker; cd /metplus/METplus/internal_tests/pytests; pytest --cov=../../metplus"
         # Dump the output directories from running METplus
         - ls -alR ${OWNER_BUILD_DIR}/pytmp.docker
     - name: "Use Case Tests - met_tool_wrapper"

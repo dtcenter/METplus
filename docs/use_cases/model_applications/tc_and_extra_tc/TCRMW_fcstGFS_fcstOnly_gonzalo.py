@@ -19,7 +19,7 @@ _gonzolo.conf
 # | **Forecast:** GFS GRIB2
 # | **Track:** A Deck
 #
-# | **Location:** All of the input data required for this use case can be found in the tc_and_extra_tc sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/NCAR/METplus/releases
+# | **Location:** All of the input data required for this use case can be found in the tc_and_extra_tc sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 
 ##############################################################################
@@ -114,7 +114,7 @@ _gonzolo.conf
 # --------
 #
 # .. note::
-#   `TCRMWToolUseCase <https://ncar.github.io/METplus/search.html?q=TCRMWToolUseCase&check_keywords=yes&area=default>`_
-#   `GRIB2FileUseCase  <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_
+#   `TCRMWToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCRMWToolUseCase&check_keywords=yes&area=default>`_
+#   `GRIB2FileUseCase  <https://dtcenter.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_
 #
 

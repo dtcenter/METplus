@@ -8,10 +8,8 @@ from collections import namedtuple
 import produtil
 import pytest
 import datetime
-import config_metplus
-from command_builder import CommandBuilder
-import met_util as util
-import time_util
+from metplus.wrappers.command_builder import CommandBuilder
+from metplus.util import time_util
 
 # --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
 #
@@ -32,20 +30,6 @@ import time_util
 #    return request.config.getoption("-c")
 
 
-# -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
-#@pytest.fixture
-def metplus_config():
-    """! Create a METplus configuration object that can be
-    manipulated/modified to
-         reflect different paths, directories, values, etc. for individual
-         tests.
-    """
-    # Read in the configuration object CONFIG
-    config = config_metplus.setup(util.baseinputconfs)
-    util.get_logger(config)
-    return config
-
-
 # ------------------------ TESTS GO HERE --------------------------
 
 
@@ -60,10 +44,10 @@ def metplus_config():
         ("MASK_"),
         ]
 )
-def test_find_data_no_dated(data_type):
+def test_find_data_no_dated(metplus_config, data_type):
     config = metplus_config()
     
-    pcw = CommandBuilder(config, config.logger)
+    pcw = CommandBuilder(config)
     v = {}
     v['fcst_level'] = "6"
     v['obs_level'] = "6"
@@ -90,10 +74,10 @@ def test_find_data_no_dated(data_type):
         ("MASK_"),
         ]
 )
-def test_find_data_not_a_path(data_type):
+def test_find_data_not_a_path(metplus_config, data_type):
     config = metplus_config()
     
-    pcw = CommandBuilder(config, config.logger)
+    pcw = CommandBuilder(config)
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("201802010000",'%Y%m%d%H%M')
     task_info['lead'] = 0
@@ -106,10 +90,10 @@ def test_find_data_not_a_path(data_type):
     obs_file = pcw.find_data(time_info, var_info=None, data_type=data_type)
     assert(obs_file == 'G003')
 
-def test_find_obs_no_dated():
+def test_find_obs_no_dated(metplus_config):
     config = metplus_config()
 
-    pcw = CommandBuilder(config, config.logger)
+    pcw = CommandBuilder(config)
     v = {}
     v['obs_level'] = "6"
     task_info = {}
@@ -124,10 +108,10 @@ def test_find_obs_no_dated():
     obs_file = pcw.find_obs(time_info, v)
     assert (obs_file == pcw.c_dict['OBS_INPUT_DIR'] + '/20180201_0045')
 
-def test_find_obs_dated():
+def test_find_obs_dated(metplus_config):
     config = metplus_config()
     
-    pcw = CommandBuilder(config, config.logger)
+    pcw = CommandBuilder(config)
     v = {}
     v['obs_level'] = "6"
     task_info = {}
@@ -152,10 +136,10 @@ def test_find_obs_dated():
         ([], None, None),
         ]
 )
-def test_find_obs_offset(offsets, expected_file, offset_seconds):
+def test_find_obs_offset(metplus_config, offsets, expected_file, offset_seconds):
     config = metplus_config()
 
-    pcw = CommandBuilder(config, config.logger)
+    pcw = CommandBuilder(config)
     v = {}
     v['obs_level'] = "6"
     task_info = {}
@@ -176,10 +160,10 @@ def test_find_obs_offset(offsets, expected_file, offset_seconds):
     else:
         assert (os.path.basename(obs_file) == expected_file and time_info['offset'] == offset_seconds)
 
-def test_find_obs_dated_previous_day():
+def test_find_obs_dated_previous_day(metplus_config):
     config = metplus_config()
     
-    pcw = CommandBuilder(config, config.logger)
+    pcw = CommandBuilder(config)
     v = {}
     v['obs_level'] = "6"
     task_info = {}
@@ -194,10 +178,10 @@ def test_find_obs_dated_previous_day():
     obs_file = pcw.find_obs(time_info, v)
     assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180131/20180131_2345')
 
-def test_find_obs_dated_next_day():
+def test_find_obs_dated_next_day(metplus_config):
     config = metplus_config()
     
-    pcw = CommandBuilder(config, config.logger)
+    pcw = CommandBuilder(config)
     v = {}
     v['obs_level'] = "6"
     task_info = {}

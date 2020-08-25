@@ -32,11 +32,11 @@ class CyclonePlotterWrapper(CommandBuilder):
         Reads input from ATCF files generated from MET TC-Pairs
     """
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = 'cyclone_plotter'
 
         # pylint:disable=redefined-outer-name
-        super().__init__(config, logger)
+        super().__init__(config)
 
         if wrapper_cannot_run:
             self.log_error("Cannot run CyclonePlotter wrapper due to import errors. "

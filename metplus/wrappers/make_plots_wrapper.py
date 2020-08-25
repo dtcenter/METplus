@@ -67,10 +67,10 @@ class MakePlotsWrapper(CommandBuilder):
         'VERIF_GRID', 'EVENT_EQUALIZATION', 'LOG_METPLUS', 'LOG_LEVEL'
     ]
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_path = 'python'
         self.app_name = 'make_plots'
-        super().__init__(config, logger)
+        super().__init__(config)
 
         if wrapper_cannot_run:
             self.log_error("Cannot run CyclonePlotter wrapper due to import errors. "

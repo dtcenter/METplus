@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """tc_gen
 Program Name: tc_gen_wrapper.py
 Contact(s): George McCabe
@@ -28,11 +26,11 @@ from ..util import do_string_sub
 
 
 class TCGenWrapper(CommandBuilder):
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_name = "tc_gen"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -46,6 +44,8 @@ class TCGenWrapper(CommandBuilder):
         c_dict['GENESIS_INPUT_DIR'] = self.config.getdir(f'{app_name_upper}_GENESIS_INPUT_DIR', '')
         c_dict['GENESIS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                               f'{app_name_upper}_GENESIS_INPUT_TEMPLATE')
+        if not c_dict['GENESIS_INPUT_TEMPLATE']:
+            self.log_error(f'{app_name_upper}_GENESIS_INPUT_TEMPLATE must be set to run TCGen')
 
         c_dict['OUTPUT_DIR'] = self.config.getdir(f'{app_name_upper}_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
@@ -54,7 +54,8 @@ class TCGenWrapper(CommandBuilder):
         c_dict['TRACK_INPUT_DIR'] = self.config.getdir(f'{app_name_upper}_TRACK_INPUT_DIR', '')
         c_dict['TRACK_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                             f'{app_name_upper}_TRACK_INPUT_TEMPLATE')
-
+        if not c_dict['TRACK_INPUT_TEMPLATE']:
+            self.log_error(f'{app_name_upper}_TRACK_INPUT_TEMPLATE must be set to run TCGen')
 
         # values used in configuration file
         self.set_c_dict_int(c_dict, f'{app_name_upper}_INIT_FREQUENCY', 'init_freq')
@@ -280,7 +281,7 @@ class TCGenWrapper(CommandBuilder):
                 @param time_info dictionary containing timing information
         """
         # get input files
-        if self.find_input_files(time_info) is None:
+        if not self.find_input_files(time_info):
             return
 
         # get output path
@@ -347,6 +348,3 @@ class TCGenWrapper(CommandBuilder):
         config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
                                     **time_info)
         self.args.append(f"-config {config_file}")
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "TCRMW")
