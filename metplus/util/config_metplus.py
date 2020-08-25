@@ -20,6 +20,7 @@ from os.path import dirname, realpath
 import inspect
 from configparser import ConfigParser, NoOptionError
 from pathlib import Path
+import copy
 
 from produtil.config import ProdConfig
 import produtil.fileop
@@ -33,13 +34,12 @@ This module is used to create the initial METplus conf file in the
 first METplus job via the metplus.config_metplus.launch().
 The metplus.config_metplus.load() then reloads that configuration.
 The launch() function does more than just create the conf file though.
-It creates several initial files and  directories and runs a sanity check
-on the whole setup.
+It creates several initial files and  directories
 
 The METplusConfig class is used in place of a produtil.config.ProdConfig
 throughout the METplus system.  It can be used as a drop-in replacement
 for a produtil.config.ProdConfig, but has additional features needed to
-support sanity checks, and initial creation of the METplus system.
+support initial creation of the METplus system.
 """
 
 '''!@var __all__
@@ -120,25 +120,27 @@ def setup(config_inputs, logger=None, base_confs=METPLUS_BASE_CONFS):
 
     logger.info('Starting METplus configuration setup.')
 
+    if isinstance(config_inputs, str):
+        config_list = [config_inputs]
+    else:
+        config_list = config_inputs
+
     # parm, is path to parm directory
     # infiles, list of input conf files to be read and processed
     # moreopt, dictionary of conf file settings, passed in from command line.
     (parm, infiles, moreopt) = \
-        parse_launch_args(config_inputs,
+        parse_launch_args(config_list,
                           logger,
                           base_confs=base_confs)
 
-    # Currently metplus is not handling cycle.
-    # Therefore can not use conf.timestrinterp and
-    # some conf file settings ie. {[a|f]YMDH} time settings.
-    cycle = None
-    config = launch(infiles, moreopt, cycle=cycle)
-    #config.sanity_check()
+    config = launch(infiles, moreopt)
 
     # save list of user configuration files in a variable
-    config.set('config', 'METPLUS_CONFIG_FILES', ','.join(config_inputs))
+    config.set('config', 'METPLUS_CONFIG_FILES', ','.join(config_list))
 
     logger.info('Completed METplus configuration setup.')
+
+    config.move_all_to_config_section()
 
     return config
 
@@ -230,8 +232,7 @@ def parse_launch_args(args, logger, base_confs=METPLUS_BASE_CONFS):
 # so each task needs to be able to initialize the conf files.
 # conf files are processed in the order they exist in the file_list
 # so each succesive element overwrites the previous.
-def launch(file_list, moreopt, cycle=None, init_dirs=True,
-           prelaunch=None):
+def launch(file_list, moreopt):
     for filename in file_list:
         if not isinstance(filename, str):
             raise TypeError('First input to metplus.config.for_initial_job '
@@ -273,7 +274,7 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
 
     # Determine if final METPLUS_CONF file already exists on disk.
     # If it does, use it instead.
-    confloc = config.getloc('METPLUS_CONF')
+    confloc = config.getstr('config', 'METPLUS_CONF')
 
     # A user my set the confloc METPLUS_CONF location in a subdir of OUTPUT_BASE
     # or even in another parent directory altogether, so make thedirectory
@@ -508,12 +509,44 @@ def get_logger(config, sublog=None):
     config.logger = logger
     return logger
 
+def replace_config_from_section(config, section):
+    if not config.has_section(section):
+        error_message = f'Section {section} does not exist.'
+        if config.logger:
+            config.logger.error(error_message)
+        else:
+            print(f"ERROR: {error_message}")
+
+        return None
+
+    new_config = METplusConfig()
+    all_configs = config.keys('config')
+    for key in all_configs:
+        new_config.set('config',
+                       key,
+                       config.getraw('config', key))
+
+    all_configs = config.keys(section)
+    for key in all_configs:
+        new_config.set('config',
+                       key,
+                       config.getraw(section, key))
+
+    return new_config
+
 class METplusConfig(ProdConfig):
     """!A replacement for the produtil.config.ProdConfig used throughout
     the METplus system.  You should never need to instantiate one of
     these --- the launch() and load() functions do that for you.  This
     class is the underlying implementation of most of the
     functionality described in launch() and load()"""
+
+    # items that are found in these sections will be moved into the [config] section
+    OLD_SECTIONS = ['dir',
+                    'exe',
+                    'filename_templates',
+                    'regex_pattern',
+                    ]
 
     def __init__(self, conf=None):
         """!Creates a new METplusConfig
@@ -544,13 +577,45 @@ class METplusConfig(ProdConfig):
                 return logging.getLogger('metplus.'+sublog)
         return self._logger
 
-    def sanity_check(self):
-        """!Runs nearly all sanity checks.
+    def move_all_to_config_section(self):
+        """! Move all configuration variables that are found in the
+             previously supported sections into the config section.
+        """
+        for section in self.OLD_SECTIONS:
+            if not self.has_section(section):
+                continue
 
-        Runs simple sanity checks on the METplus installation directory
-        and configuration to make sure everything looks okay.  May
-        throw a wide variety of exceptions if sanity checks fail."""
-        logger = self.log('sanity.checker')
+            all_configs = self.keys(section)
+            for key in all_configs:
+                self.set('config',
+                         key,
+                         super().getraw(section, key))
+
+            self._conf.remove_section(section)
+
+
+    def find_section(self, sec, opt):
+        """! Search through list of previously supported config sections
+              to find variable requested. This allows the removal of these
+              sections to consider all of the variables members of the
+              [config] section.
+              Args:
+                  @param sec section requested - look in this section first
+                  @param opt configuration variable to find
+                  @returns section heading name or None if not found
+        """
+        # first check the section requested
+        if self.has_option(sec, opt):
+            return sec
+
+        # loop through previously supported sections to find variable opt
+        # return section name if found
+        for section in self.OLD_SECTIONS:
+            if self.has_option(section, opt):
+                return section
+
+        # return None if variable is not found
+        return None
 
     # override get methods to perform additional error checking
     def getraw(self, sec, opt, default='', count=0):
@@ -570,6 +635,11 @@ class METplusConfig(ProdConfig):
         if count >= 10:
             return ''
 
+        # if requested section is in the list of sections that are no longer used
+        # look in the [config] section for the variable
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         in_template = super().getraw(sec, opt, default)
         out_template = ""
         in_brackets = False
@@ -584,10 +654,6 @@ class METplusConfig(ProdConfig):
                     var = self.getraw(sec, var_name, default, count)
                 elif self.has_option('config', var_name):
                     var = self.getraw('config', var_name, default, count)
-                elif self.has_option('dir', var_name):
-                    var = self.getraw('dir', var_name, default, count)
-                elif self.has_option('filename_templates', var_name):
-                    var = self.getraw('filename_templates', var_name, default, count)
                 elif var_name[0:3] == "ENV":
                     var = os.environ.get(var_name[4:-1])
 
@@ -632,7 +698,7 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil exe with checks to see if option is set and if
             exe actually exists. Returns None if not found instead of exiting"""
         try:
-            exe_path = super().getexe(exe_name)
+            exe_path = super().getstr('config', exe_name)
         except NoOptionError as e:
             if self.logger:
                 self.logger.error(e)
@@ -651,19 +717,20 @@ class METplusConfig(ProdConfig):
             return None
 
         # set config item to full path to exe and return full path
-        self.set('exe', exe_name, full_exe_path)
+        self.set('config', exe_name, full_exe_path)
         return full_exe_path
 
     def getdir(self, dir_name, default=None, morevars=None,taskvars=None, must_exist=False):
         """!Wraps produtil getdir and reports an error if it is set to /path/to"""
         try:
-            dir_path = super().getdir(dir_name, default=None)
+            dir_path = super().getstr('config', dir_name, default=None,
+                                      morevars=morevars, taskvars=taskvars)
         except NoOptionError:
-            self.check_default('dir', dir_name, default)
+            self.check_default('config', dir_name, default)
             dir_path = default
 
         if '/path/to' in dir_path:
-            raise ValueError("[dir] " + dir_name + " cannot be set to or contain '/path/to'")
+            raise ValueError("[config] " + dir_name + " cannot be set to or contain '/path/to'")
 
         if must_exist and not os.path.exists(dir_path):
             self.logger.error(f"Path must exist: {dir_path}")
@@ -672,11 +739,15 @@ class METplusConfig(ProdConfig):
         return dir_path.replace('//', '/')
 
     def getdir_nocheck(self, dir_name, default=None):
-        return super().getdir(dir_name, default=default).replace('//', '/')
+        return super().getstr('config', dir_name, default=default).replace('//', '/')
 
     def getstr_nocheck(self, sec, name, default=None):
-        return super().getstr(sec, name, default=default).replace('//', '/')
+        # if requested section is in the list of sections that are no longer used
+        # look in the [config] section for the variable
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
 
+        return super().getstr(sec, name, default=default).replace('//', '/')
 
     def getstr(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Wraps produtil getstr. Config variable is checked with a default value of None
@@ -687,8 +758,12 @@ class METplusConfig(ProdConfig):
             Replace double forward slash with single to prevent error that occurs if that
             is found inside a MET config file (because it considers // the start of a comment
         """
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
-            return super().getstr(sec, name, default=None, badtypeok=badtypeok, morevars=morevars,
+            return super().getstr(sec, name, default=None,
+                                  badtypeok=badtypeok, morevars=morevars,
                                   taskvars=taskvars).replace('//', '/')
         except NoOptionError:
             # if config variable is not set
@@ -703,8 +778,12 @@ class METplusConfig(ProdConfig):
              If no default was specified in the call, the NoOptionError is raised again.
              @returns None if value is not a boolean (or yes/no), value if set, default if not set
          """
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
-            return super().getbool(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getbool(sec, name, default=None,
+                                   badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
         except NoOptionError:
             # config item was not set
             self.check_default(sec, name, default)
@@ -725,9 +804,13 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil getint to gracefully report if variable is not set
             and no default value is specified
             @returns Value if set, default of missing value if not set, None if value is an incorrect type"""
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
             # call ProdConfig function with no default set so we can log and set the default
-            return super().getint(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getint(sec, name, default=None,
+                                  badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
 
         # if config variable is not set
         except NoOptionError:
@@ -751,9 +834,13 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil getint to gracefully report if variable is not set
             and no default value is specified
             @returns Value if set, default of missing value if not set, None if value is an incorrect type"""
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
             # call ProdConfig function with no default set so we can log and set the default
-            return super().getfloat(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getfloat(sec, name, default=None,
+                                    badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
 
         # if config variable is not set
         except NoOptionError:
@@ -775,10 +862,14 @@ class METplusConfig(ProdConfig):
 
     def getseconds(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Converts time values ending in H, M, or S to seconds"""
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
             # convert value to seconds
             # Valid options match format 3600, 3600S, 60M, or 1H
-            value = super().getstr(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            value = super().getstr(sec, name, default=None,
+                                   badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
             regex_and_multiplier = {r'(-*)(\d+)S': 1,
                                     r'(-*)(\d+)M': 60,
                                     r'(-*)(\d+)H': 3600,

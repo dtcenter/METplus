@@ -81,7 +81,7 @@ def test_getstr(metplus_config, input_value, default, result):
 def test_getdir(metplus_config, input_value, default, result):
     conf = metplus_config()
     if input_value is not None:
-        conf.set('dir', 'TEST_GETDIR', input_value)
+        conf.set('config', 'TEST_GETDIR', input_value)
 
     # catch NoOptionError exception and pass test if default is None
     try:
@@ -161,7 +161,7 @@ def test_getbool(metplus_config, input_value, default, result):
 def test_getexe(metplus_config, input_value, result):
     conf = metplus_config()
     if input_value is not None:
-        conf.set('exe', 'TEST_GETEXE', input_value)
+        conf.set('config', 'TEST_GETEXE', input_value)
 
     assert(result == conf.getexe('TEST_GETEXE'))
 
