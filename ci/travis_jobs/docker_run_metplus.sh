@@ -3,9 +3,8 @@
 #clean up, delete this
 #echo 'In docker_run_metplus.sh, DOCKERHUB_TAG =', ${DOCKERHUB_TAG}
 
-
 echo  In docker_run_metplus.sh, RUNNING: $1
-docker run --rm -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} ${DOCKERHUB_TAG} /bin/bash -c "$1"
+docker run --rm --user $UID:$GID -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} ${DOCKERHUB_TAG} /bin/bash -c "$1"
 #docker run --rm -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} -v ${OWNER_BUILD_DIR}/test.metplus.data:/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/output ${DOCKERHUB_TAG} /bin/bash -c "$1"
 ret=$?
 
