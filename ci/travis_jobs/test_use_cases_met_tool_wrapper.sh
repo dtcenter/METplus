@@ -22,8 +22,6 @@ mkdir -p ${TRAVIS_OUTPUT_BASE}
 echo mkdir -p ${TRAVIS_INPUT_BASE}
 mkdir -p ${TRAVIS_INPUT_BASE}
 
-echo UID: $UID, GID: $GID
-
 cd ${OWNER_BUILD_DIR}/test.metplus.data
 
 #tea changed this to look more like test_use_cases_model_applications.sh
@@ -65,7 +63,7 @@ rm -rf ${TRAVIS_OUTPUT_BASE}/logs
 mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
 
 ### put cyclone plotter with cartopy and matplotlib
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_cartopy.sh;pip3 install matplotlib; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf" $returncode
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_cartopy.sh; pip3 install matplotlib; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf" $returncode
 returncode=$?
 
 echo 'Final return code=' $returncode 
