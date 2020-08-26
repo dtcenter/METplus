@@ -9,15 +9,18 @@ met_tool_wrapper_tarball=https://github.com/dtcenter/METplus/releases/download/v
 gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
 
 source ${OWNER_BUILD_DIR}/METplus/internal_tests/use_cases/metplus_test_env.docker.sh
+export TRAVIS_OUTPUT_BASE=${TRAVIS_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
+export TRAVIS_INPUT_BASE=${TRAVIS_INPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
+export TRAVIS_OUTPUT_PREV_BASE=${TRAVIS_PREV_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
 
 echo 'Owner Build Dir:' ${OWNER_BUILD_DIR}
 echo 'pwd:' `pwd`
-echo mkdir -p {METPLUS_TEST_PREV_OUTPUT_BASE}
-mkdir -p ${METPLUS_TEST_PREV_OUTPUT_BASE}
-echo mkdir -p {METPLUS_TEST_OUTPUT_BASE}
-mkdir -p ${METPLUS_TEST_OUTPUT_BASE}
-echo mkdir -p {METPLUS_TEST_INPUT_BASE}
-mkdir -p ${METPLUS_TEST_INPUT_BASE}
+echo mkdir -p {TRAVIS_OUTPUT_PREV_BASE}
+mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
+echo mkdir -p {TRAVIS_OUTPUT_BASE}
+mkdir -p ${TRAVIS_OUTPUT_BASE}
+echo mkdir -p {TRAVIS_INPUT_BASE}
+mkdir -p ${TRAVIS_INPUT_BASE}
 
 cd ${OWNER_BUILD_DIR}/test.metplus.data
 
@@ -43,37 +46,37 @@ echo Running tests...
 returncode=0
 echo 'Calling docker_run_metplus, returncode=' $returncode 
 
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper" $returncode
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper" $returncode
 returncode=$?
 
 echo 'Intermediate return code=' $returncode 
 
-mv ${METPLUS_TEST_OUTPUT_BASE}/* ${METPLUS_TEST_PREV_OUTPUT_BASE}/
+mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
 
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip3 install h5py; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip3 install h5py; ${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode
 returncode=$?
 
 echo '2nd Intermediate return code=' $returncode 
 
-mv ${METPLUS_TEST_OUTPUT_BASE}/* ${METPLUS_TEST_PREV_OUTPUT_BASE}/
+mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
 
 ### put cyclone plotter with cartopy and matplotlib
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/ci/travis_jobs/get_cartopy.sh;pip3 install matplotlib; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf" $returncode
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_cartopy.sh;pip3 install matplotlib; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf" $returncode
 returncode=$?
 
 echo 'Final return code=' $returncode 
 
-mv ${METPLUS_TEST_OUTPUT_BASE}/* ${METPLUS_TEST_PREV_OUTPUT_BASE}/
+mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
 
 echo Tests completed.
 
 # Dump the output directories from running METplus
-echo listing METPLUS_TEST_OUTPUT_BASE
-ls -alR ${METPLUS_TEST_OUTPUT_BASE}
+echo listing TRAVIS_OUTPUT_BASE
+ls -alR ${TRAVIS_OUTPUT_BASE}
 
 echo
-echo listing METPLUS_TEST_PREV_OUTPUT_BASE
-ls -alR ${METPLUS_TEST_PREV_OUTPUT_BASE}
+echo listing TRAVIS_PREV_OUTPUT_BASE
+ls -alR ${TRAVIS_PREV_OUTPUT_BASE}
 
 # Dump and see how much space is left on Travis disk.
 df -h
