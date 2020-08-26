@@ -1,11 +1,10 @@
 #!/bin/bash
 
-#clean up, delete this
-#echo 'In docker_run_metplus.sh, DOCKERHUB_TAG =', ${DOCKERHUB_TAG}
+# set umask to 002 so that the travis user has (group) permission
+# to move files that are created by docker
 
 echo  In docker_run_metplus.sh, RUNNING: $1
-docker run --rm --user root:$UID -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} ${DOCKERHUB_TAG} /bin/bash -c "$1"
-#docker run --rm -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} -v ${OWNER_BUILD_DIR}/test.metplus.data:/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/output ${DOCKERHUB_TAG} /bin/bash -c "$1"
+docker run --rm --user root:$UID -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} ${DOCKERHUB_TAG} /bin/bash -c "umask 002; $1"
 ret=$?
 
 #check return codes
@@ -14,8 +13,6 @@ echo "In docker_run_metplus.sh new return code: $ret
 
 if [ $ret != 0 ]; then
   exit $ret
-else
-  exit $2
 fi
 
-exit 999
+exit $2
