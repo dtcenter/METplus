@@ -11,9 +11,9 @@ cd proj-4.9.1
 ./configure
 make
 make install
-yum -y install geos
-yum -y install geos-devel
-pip3 install --upgrade cython numpy pyshp six
-pip3 install shapely --no-binary shapely
-pip3 install cartopy
+sudo yum -y install geos
+sudo yum -y install geos-devel
+sudo pip3 install --upgrade cython numpy pyshp six
+sudo pip3 install shapely --no-binary shapely
+sudo pip3 install cartopy
 
