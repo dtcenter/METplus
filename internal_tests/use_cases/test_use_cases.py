@@ -249,6 +249,24 @@ def main():
     parser.add_argument('--config', action='append', required=False)
 
     args = parser.parse_args()
+    print(args.config)
+
+    if args.config:
+        for use_case in args.config:
+            config_args = use_case.split(',')
+            config_list = []
+            for config_arg in config_args:
+                # if relative path, must be relative to parm/use_cases
+                if not os.path.isabs(config_arg):
+                    # check that the full path exists before adding
+                    # use_case_dir in case item is a config value override
+                    check_config_exists = os.path.join(use_case_dir, config_arg)
+                    if os.path.exists(check_config_exists):
+                        config_arg = check_config_exists
+
+                config_list.append(config_arg)
+
+            force_use_cases_to_run.append(','.join(config_list))
 
     if args.config:
         for use_case in args.config:

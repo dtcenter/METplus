@@ -95,7 +95,7 @@ returncode=$?
 
 echo Tests completed.
 # Dump the output directories from running METplus
-#ls -alR ${OWNER_BUILD_DIR}/test-use-case-output
+ls -alR ${OWNER_BUILD_DIR}/test-use-case-output
 
 # Dump and see how much space is left on Travis disk.
 df -h

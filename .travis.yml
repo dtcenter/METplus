@@ -19,7 +19,6 @@
 #
  
 language: python
-sudo: required  # I don't think this is necessary .. .keep for now ..
 dist: xenial #Ubuntu Xenial 16.04
 os: linux
 
@@ -78,8 +77,9 @@ env:
     - EXTRA_PACKAGES="pytest matplotlib numpy"
     - EXTRA_INSTALLS=test
     - OWNER_BUILD_DIR=`dirname ${TRAVIS_BUILD_DIR}`
+    - DOCKER_WORK_DIR=/metplus
 
-    - GITHUB_REPO_ORG=NCAR
+    - GITHUB_REPO_ORG=DTCenter
     - DOCKERHUB_DEFAULT_REPO=dtcenter/metplus
     - DOCKERHUB_DEFAULT_TAGNAME=develop
     - DOCKERHUB_MET_TAGNAME=develop
