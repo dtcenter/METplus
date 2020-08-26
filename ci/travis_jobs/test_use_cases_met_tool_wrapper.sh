@@ -22,6 +22,8 @@ mkdir -p ${TRAVIS_OUTPUT_BASE}
 echo mkdir -p ${TRAVIS_INPUT_BASE}
 mkdir -p ${TRAVIS_INPUT_BASE}
 
+echo UID: $UID, GID: $GID
+
 cd ${OWNER_BUILD_DIR}/test.metplus.data
 
 #tea changed this to look more like test_use_cases_model_applications.sh
