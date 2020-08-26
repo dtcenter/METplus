@@ -90,7 +90,6 @@ curl -L -O $gempak_to_cf_location
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 
 echo Run tests...
-#docker run --rm -v ${OWNER_BUILD_DIR}:/metplus -v ${OWNER_BUILD_DIR}/test.metplus.data:/input -v ${OWNER_BUILD_DIR}/test-use-case-output:/output ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}
 docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}
 returncode=$?
 
