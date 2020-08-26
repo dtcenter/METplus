@@ -12,11 +12,11 @@ source /metplus/METplus/internal_tests/use_cases/metplus_test_env.docker.sh
 
 echo 'Owner Build Dir:' ${OWNER_BUILD_DIR}
 echo 'pwd:' `pwd`
-echo "mkdir -p {METPLUS_TEST_PREV_OUTPUT_BASE}
+echo mkdir -p {METPLUS_TEST_PREV_OUTPUT_BASE}
 mkdir -p ${METPLUS_TEST_PREV_OUTPUT_BASE}
-echo "mkdir -p {METPLUS_TEST_OUTPUT_BASE}
+echo mkdir -p {METPLUS_TEST_OUTPUT_BASE}
 mkdir -p ${METPLUS_TEST_OUTPUT_BASE}
-echo "mkdir -p {METPLUS_TEST_INPUT_BASE}
+echo mkdir -p {METPLUS_TEST_INPUT_BASE}
 mkdir -p ${METPLUS_TEST_INPUT_BASE}
 
 cd ${OWNER_BUILD_DIR}/test.metplus.data
