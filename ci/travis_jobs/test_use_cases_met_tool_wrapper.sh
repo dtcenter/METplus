@@ -8,7 +8,7 @@ met_tool_wrapper_tarball=https://github.com/dtcenter/METplus/releases/download/v
 
 gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
 
-source /metplus/METplus/internal_tests/use_cases/metplus_test_env.docker.sh
+source ${OWNER_BUILD_DIR}/METplus/internal_tests/use_cases/metplus_test_env.docker.sh
 
 echo 'Owner Build Dir:' ${OWNER_BUILD_DIR}
 echo 'pwd:' `pwd`
