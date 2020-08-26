@@ -53,6 +53,7 @@ returncode=$?
 
 echo 'Intermediate return code=' $returncode 
 
+rm -rf ${TRAVIS_OUTPUT_BASE}/logs
 mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
 
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip3 install h5py; ${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode
@@ -60,6 +61,7 @@ returncode=$?
 
 echo '2nd Intermediate return code=' $returncode 
 
+rm -rf ${TRAVIS_OUTPUT_BASE}/logs
 mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
 
 ### put cyclone plotter with cartopy and matplotlib
@@ -68,6 +70,7 @@ returncode=$?
 
 echo 'Final return code=' $returncode 
 
+rm -rf ${TRAVIS_OUTPUT_BASE}/logs
 mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
 
 echo Tests completed.
