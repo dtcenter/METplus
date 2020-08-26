@@ -1,3 +1,7 @@
+# set umask to 002 so that the travis user has (group) permission
+# to move files that are created by docker
+umask 002
+
 # set DO_GIT_CLONE env var to false to tell docker not to
 # clone repository because travis is handling that step
 export DO_GIT_CLONE=false
