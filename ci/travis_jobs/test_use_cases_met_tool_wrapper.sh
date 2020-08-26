@@ -9,13 +9,13 @@ met_tool_wrapper_tarball=https://github.com/dtcenter/METplus/releases/download/v
 gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
 
 source ${OWNER_BUILD_DIR}/METplus/internal_tests/use_cases/metplus_test_env.docker.sh
-export TRAVIS_OUTPUT_BASE=${TRAVIS_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
-export TRAVIS_INPUT_BASE=${TRAVIS_INPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
-export TRAVIS_OUTPUT_PREV_BASE=${TRAVIS_PREV_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
+export TRAVIS_OUTPUT_BASE=${METPLUS_TEST_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
+export TRAVIS_INPUT_BASE=${METPLUS_TEST_INPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
+export TRAVIS_PREV_OUTPUT_BASE=${METPLUS_TEST_PREV_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
 
 echo 'Owner Build Dir:' ${OWNER_BUILD_DIR}
 echo 'pwd:' `pwd`
-echo mkdir -p {TRAVIS_OUTPUT_PREV_BASE}
+echo mkdir -p {TRAVIS_PREV_OUTPUT_BASE}
 mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
 echo mkdir -p {TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
