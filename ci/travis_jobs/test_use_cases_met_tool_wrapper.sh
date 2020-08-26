@@ -15,11 +15,11 @@ export TRAVIS_PREV_OUTPUT_BASE=${METPLUS_TEST_PREV_OUTPUT_BASE/$DOCKER_WORK_DIR/
 
 echo 'Owner Build Dir:' ${OWNER_BUILD_DIR}
 echo 'pwd:' `pwd`
-echo mkdir -p {TRAVIS_PREV_OUTPUT_BASE}
+echo mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
 mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
-echo mkdir -p {TRAVIS_OUTPUT_BASE}
+echo mkdir -p ${TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
-echo mkdir -p {TRAVIS_INPUT_BASE}
+echo mkdir -p ${TRAVIS_INPUT_BASE}
 mkdir -p ${TRAVIS_INPUT_BASE}
 
 cd ${OWNER_BUILD_DIR}/test.metplus.data
