@@ -25,7 +25,7 @@ from . import CommandBuilder
 wrapper_cannot_run = False
 try:
     from ush.plotting_scripts import plot_util
-except ModuleNotFoundError as err_msg:
+except:
     wrapper_cannot_run = True
 
 

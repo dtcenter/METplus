@@ -19,7 +19,7 @@ try:
     import cartopy.crs as ccrs
     import cartopy.feature as cfeature
     from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
-except ModuleNotFoundError as err_msg:
+except:
     wrapper_cannot_run = True
 
 import produtil.setup
