@@ -9,6 +9,11 @@
 #   name ending with _var) and add a new block to the if/elif/else statement to pick the
 #   correct use case tarball.
 
+source ${OWNER_BUILD_DIR}/METplus/internal_tests/use_cases/metplus_test_env.docker.sh
+export TRAVIS_OUTPUT_BASE=${METPLUS_TEST_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
+export TRAVIS_INPUT_BASE=${METPLUS_TEST_INPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
+export TRAVIS_PREV_OUTPUT_BASE=${METPLUS_TEST_PREV_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
+
 climate_tar=v3.1/sample_data-climate-3.1.tgz
 convection_allowing_models_tar=v3.1/sample_data-convection_allowing_models-3.1.tgz
 cryosphere_tar=v3.0/sample_data-cryosphere-3.0.tgz
@@ -93,6 +98,11 @@ echo Run tests...
 
 if [ $i == "medium_range3" ]; then
 
+  echo medium_range3
+  echo TRAVIS_BUILD_DIR ${TRAVIS_BUILD_DIR}
+  echo DOCKER_WORK_DIR ${DOCKER_WORK_DIR}
+  echo calling docker_run_metplus
+  
 # use docker_run_metplus.sh
   ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_pygrib.sh; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode
 returncode=$?
