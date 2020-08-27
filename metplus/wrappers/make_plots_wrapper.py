@@ -23,11 +23,12 @@ from . import CommandBuilder
 
 # handle if module can't be loaded to run wrapper
 wrapper_cannot_run = False
+exception_err = ''
 try:
     from ush.plotting_scripts import plot_util
-except ModuleNotFoundError as err_msg:
+except Exception as err_msg:
     wrapper_cannot_run = True
-
+    exception_err = err_msg
 
 class MakePlotsWrapper(CommandBuilder):
     """! Wrapper to used to filter make plots from MET data
@@ -73,8 +74,7 @@ class MakePlotsWrapper(CommandBuilder):
         super().__init__(config)
 
         if wrapper_cannot_run:
-            self.log_error("Cannot run CyclonePlotter wrapper due to import errors. "
-                           "matplotlib and cartopy are required to run.")
+            self.log_error(f"There was a problem importing modules: {exception_err}\n")
             return
 
     def get_command(self):
