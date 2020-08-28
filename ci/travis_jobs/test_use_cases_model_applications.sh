@@ -25,6 +25,7 @@ mkdir -p ${TRAVIS_INPUT_BASE}
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 
 echo Run tests...
+returncode=0
 test_args=''
 for i in "$@"
 do
@@ -48,9 +49,10 @@ do
 
 done
 
-docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}
-returncode=$?
-
+if [ "$test_args" != "" ]; then
+  docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}
+  returncode=$?
+fi
 
 echo Tests completed.
 # Dump the output directories from running METplus
