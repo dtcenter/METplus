@@ -19,8 +19,6 @@ echo mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
 mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
 echo mkdir -p ${TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
-echo mkdir -p ${TRAVIS_INPUT_BASE}
-mkdir -p ${TRAVIS_INPUT_BASE}
 
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 
