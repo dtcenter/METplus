@@ -6,6 +6,7 @@ for ASSET in $(cat metplus_sample_data); do
   IMGNAME="dtcenter/metplus-data:${METPLUS_VERSION}-`echo ${ASSET} | cut -d':' -f1`"
   VERSION=`echo ${ASSET} | cut -d':' -f2`
   TARFILE=`echo ${ASSET} | cut -d':' -f3`
+  MOUNTPT=`echo ${ASSET} | cut -d':' -f4`
 
   echo
   echo "Building image ... ${IMGNAME}" 
@@ -13,5 +14,7 @@ for ASSET in $(cat metplus_sample_data); do
 
   docker build -t ${IMGNAME} . \
     --build-arg VERSION=${VERSION} \
-    --build-arg TARFILE=${TARFILE}
+    --build-arg TARFILE=${TARFILE} \
+    --build-arg MOUNTPT=${MOUNTPT}
+
 done
