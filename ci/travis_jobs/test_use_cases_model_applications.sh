@@ -21,6 +21,9 @@ mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
 echo mkdir -p ${TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
 echo mkdir -p ${TRAVIS_INPUT_BASE}
+mkdir -p ${TRAVIS_INPUT_BASE}
+
+cd ${OWNER_BUILD_DIR}/test.metplus.data
 
 climate_tar=v3.1/sample_data-climate-3.1.tgz
 convection_allowing_models_tar=v3.1/sample_data-convection_allowing_models-3.1.tgz
@@ -34,11 +37,6 @@ tc_and_extra_tc_tar=v3.1/sample_data-tc_and_extra_tc-3.1.tgz
 met_tool_wrapper_tarball=https://github.com/dtcenter/METplus/releases/download/v3.1/sample_data-met_tool_wrapper-3.1.tgz
 
 gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
-
-#mkdir -p ${OWNER_BUILD_DIR}/test-use-case-output
-#mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data
-
-cd ${OWNER_BUILD_DIR}/test.metplus.data
 
 # get sample data for all use case categories provided and add arguments to call to test script
 test_args=''
