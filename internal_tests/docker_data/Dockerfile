@@ -2,15 +2,8 @@ FROM centos:7
 MAINTAINER George McCabe <mccabe@ucar.edu>
 
 # Required arguments
-ARG VERSION
 ARG TARFILE
 ARG MOUNTPT
-
-# Check that VERSION is defined.
-RUN if [ "x${VERSION}" == "x" ]; then \
-      echo "ERROR: VERSION undefined! Rebuild with \"--build-arg VERSION={METplus Version} (e.g. v3.1)\""; \
-      exit 1; \
-    fi
 
 # Check that TARFILE is defined.
 RUN if [ "x${TARFILE}" == "x" ]; then \
