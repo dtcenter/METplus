@@ -9,22 +9,18 @@
 #   name ending with _var) and add a new block to the if/elif/else statement to pick the
 #   correct use case tarball.
 
-export DOCKERHUB_TAG="dtcenter/metplus:develop"
-export OWNER_BUILD_DIR="/Users/arbetter/MET-Docker/metplus"
-export TRAVIS_BUILD_DIR="/Users/arbetter/MET-Docker/metplus/METplus"
-export DOCKER_WORK_DIR="/metplus"
-
-echo 'Owner Build Dir:' ${OWNER_BUILD_DIR}
-echo 'pwd:' `pwd`
-echo "mkdir -p {OWNER_BUILD_DIR}/test-use-case-output"
-mkdir -p ${OWNER_BUILD_DIR}/test-use-case-output
-echo "mkdir -p {OWNER_BUILD_DIR}/test.metplus.data"
-mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data
-
 source ${OWNER_BUILD_DIR}/METplus/internal_tests/use_cases/metplus_test_env.docker.sh
 export TRAVIS_OUTPUT_BASE=${METPLUS_TEST_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
 export TRAVIS_INPUT_BASE=${METPLUS_TEST_INPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
 export TRAVIS_PREV_OUTPUT_BASE=${METPLUS_TEST_PREV_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
+
+echo 'Owner Build Dir:' ${OWNER_BUILD_DIR}
+echo 'pwd:' `pwd`
+echo mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
+mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
+echo mkdir -p ${TRAVIS_OUTPUT_BASE}
+mkdir -p ${TRAVIS_OUTPUT_BASE}
+echo mkdir -p ${TRAVIS_INPUT_BASE}
 
 climate_tar=v3.1/sample_data-climate-3.1.tgz
 convection_allowing_models_tar=v3.1/sample_data-convection_allowing_models-3.1.tgz
