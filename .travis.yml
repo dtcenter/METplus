@@ -175,6 +175,11 @@ matrix:
       python: 3.7
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range2
+# medium_range3 is TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
+    - name: "Use Case Tests - medium_range3"
+      python: 3.7
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range3
     - name: "Use Case Tests - precipitation"
       python: 3.7
       script:
