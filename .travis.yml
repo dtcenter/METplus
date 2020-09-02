@@ -77,7 +77,7 @@ env:
     - EXTRA_PACKAGES="pytest matplotlib numpy"
     - EXTRA_INSTALLS=test
     - OWNER_BUILD_DIR=`dirname ${TRAVIS_BUILD_DIR}`
-    - DOCKER_WORK_DIR=/metplus
+    - DOCKER_WORK_DIR=/root
 
     - GITHUB_REPO_ORG=DTCenter
     - DOCKERHUB_DEFAULT_REPO=dtcenter/metplus
@@ -147,7 +147,7 @@ matrix:
         - mkdir -p ${OWNER_BUILD_DIR}/pytmp.docker;
         - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
-        - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c "pip3 install pytest-cov; export METPLUS_PYTEST_HOST=docker; cd /metplus/METplus/internal_tests/pytests; pytest --cov=../../metplus"
+        - docker run --rm -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} ${DOCKERHUB_TAG} /bin/bash -c "pip3 install pytest-cov; export METPLUS_PYTEST_HOST=docker; cd ${DOCKER_WORK_DIR}/METplus/internal_tests/pytests; pytest --cov=../../metplus"
         # Dump the output directories from running METplus
         - ls -alR ${OWNER_BUILD_DIR}/pytmp.docker
     - name: "Use Case Tests - met_tool_wrapper"
