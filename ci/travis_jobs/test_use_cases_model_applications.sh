@@ -24,6 +24,7 @@ ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 
 echo Run tests...
 returncode=0
+
 test_args=''
 for i in "$@"
 do
@@ -39,8 +40,13 @@ do
     echo calling docker_run_metplus
   
   # use docker_run_metplus.sh
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_pygrib.sh; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode
+# use docker_run_metplus.sh
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_pygrib.sh; pip3 install metpy; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode
     returncode=$?
+
+    # remove logs dir and move data to previous output base so next run will not prompt
+    rm -rf ${TRAVIS_OUTPUT_BASE}/logs
+    mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
   else
     test_args=${test_args}" --"${i}      
   fi
@@ -48,13 +54,24 @@ do
 done
 
 if [ "$test_args" != "" ]; then
-  docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}
-  returncode=$?
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}" $returncode
+    returncode=$?
+
+  # remove logs dir and move data to previous output base so next run will not prompt
+  rm -rf ${TRAVIS_OUTPUT_BASE}/logs
+  mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
 fi
 
 echo Tests completed.
+
 # Dump the output directories from running METplus
-ls -alR ${OWNER_BUILD_DIR}/test-use-case-output
+echo listing TRAVIS_OUTPUT_BASE
+ls -alR ${TRAVIS_OUTPUT_BASE}
+
+echo
+echo listing TRAVIS_PREV_OUTPUT_BASE
+ls -alR ${TRAVIS_PREV_OUTPUT_BASE}
+
 
 # Dump and see how much space is left on Travis disk.
 df -h
