@@ -49,7 +49,7 @@ RUN echo export PATH=$PATH:${DOCKER_WORK_DIR}/METplus/ush >> /etc/bashrc \
 # && echo export METPLUS_DISABLE_PLOT_WRAPPERS=yes >> /etc/bashrc \
 # && echo setenv METPLUS_DISABLE_PLOT_WRAPPERS yes >> /etc/csh.cshrc
 ENV METPLUS_DISABLE_PLOT_WRAPPERS yes
-ENV DOCKER_WORK_DIR /root
+
 #
 # Install required packages: Pandas, Cartopy*
 #  - *dateutil, pytest
