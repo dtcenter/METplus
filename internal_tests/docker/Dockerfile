@@ -29,17 +29,21 @@ RUN if [ -z ${MET_BRANCH+x} ]; then \
 #
 # Set working directory
 #
-WORKDIR /metplus
+#WORKDIR /metplus
+
+ENV DOCKER_WORK_DIR /root
+
+RUN echo $DOCKER_WORK_DIR
 
 #
 # Environment for interactive bash and csh container shells
 #
 # container:/metplus is mounted to the host:/path/to/parent_of_METplus_dir
 # ie. -v /Users/Frimel/projects:/metplus  where /Users/Frimel/projects/METplus/ush
-RUN echo export PATH=$PATH:/metplus/METplus/ush >> /etc/bashrc \
- && echo setenv PATH $PATH:/metplus/METplus/ush >> /etc/csh.cshrc \
- && echo export PYTHONPATH=/metplus/METplus >> /etc/bashrc \
- && echo setenv PYTHONPATH /metplus/METplus >> /etc/csh.cshrc
+RUN echo export PATH=$PATH:/root/METplus/ush >> /etc/bashrc \
+ && echo setenv PATH $PATH:/root/METplus/ush >> /etc/csh.cshrc \
+ && echo export PYTHONPATH=/root/METplus >> /etc/bashrc \
+ && echo setenv PYTHONPATH /root/METplus >> /etc/csh.cshrc
 
 
 
