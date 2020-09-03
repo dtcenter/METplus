@@ -236,6 +236,7 @@ def post_run_cleanup(config, app_name, total_errors):
     logger.debug(f"{app_name} took {total_run_time} to run.")
 
     if total_errors == 0:
+        logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
         logger.info(f'{app_name} has successfully finished running.')
     else:
         error_msg = f"{app_name} has finished running but had {total_errors} error"
