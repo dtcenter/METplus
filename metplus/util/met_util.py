@@ -227,7 +227,9 @@ def post_run_cleanup(config, app_name, total_errors):
     total_run_time = end_clock_time - start_clock_time
     logger.debug(f"{app_name} took {total_run_time} to run.")
 
+    log_message = f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}"
     if total_errors == 0:
+        logger.info(log_message)
         logger.info(f'{app_name} has successfully finished running.')
     else:
         error_msg = f"{app_name} has finished running but had {total_errors} error"
@@ -235,7 +237,7 @@ def post_run_cleanup(config, app_name, total_errors):
             error_msg += 's'
         error_msg += '.'
         logger.error(error_msg)
-        logger.info(f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}")
+        logger.info(log_message)
         sys.exit(1)
 
 def check_for_deprecated_config(config):
