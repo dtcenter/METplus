@@ -45,7 +45,7 @@ GitHub Workflow
 |
 | 1. Create a GitHub Issue that reflects what needs to be done
 |
-|    * Go to https://github.com/NCAR/METplus  and click on the **Issues** link, to the right of the **Code** tab
+|    * Go to https://github.com/dtcenter/METplus  and click on the **Issues** link, to the right of the **Code** tab
 |
 |      * Click on the green **New issue** button
 |
@@ -55,7 +55,7 @@ GitHub Workflow
 |
 | 2.  Fork the NCAR/METplus repository
 |     Retrieve a copy of the source code by forking the NCAR/METplus repository into your own GitHub repository. Click
-|     on the 'Fork' button in the upper right hand side of the web page at https://github.com/NCAR/METplus.
+|     on the 'Fork' button in the upper right hand side of the web page at https://github.com/dtcenter/METplus.
 |     Click on the appropriate GitHub account when presented with the pop-up window with the question
 |          'Where should we fork METplus?'
 |
@@ -72,7 +72,7 @@ GitHub Workflow
 |
 | 4. Add a remote named origin to the clone of your local Git repository.  Thie is how you will push changes to the
 |    repository you forked in step 1:
-|        *git remote add upstream https://github.com/NCAR/METplus*
+|        *git remote add upstream https://github.com/dtcenter/METplus*
 |
 |    To verify that the upstream and origin are correct, at the command line enter:
 |        *git remote -v*
@@ -81,8 +81,8 @@ GitHub Workflow
 |
 |         origin	https://github.com/<github-username>/METplus (fetch)
 |         origin	https://github.com/<github-username>/METplus (push)
-|         upstream	https://github.com/NCAR/METplus (fetch)
-|         upstream	https://github.com/NCAR/METplus (push)
+|         upstream	https://github.com/dtcenter/METplus (fetch)
+|         upstream	https://github.com/dtcenter/METplus (push)
 |
 |         where <github-username> is your GitHub user account name
 |
@@ -140,7 +140,7 @@ GitHub Workflow
 |            *git push origin develop*
 |
 |            The first command pulls changes from the original repository.
-|            i.e. the https://github.com/NCAR/METplus
+|            i.e. the https://github.com/dtcenter/METplus
 |            repository that you see when you perform *git remote -v* and that you set to upstream in
 |            step #4 above.  The second command pushes those changes to your forked repository.
 |
@@ -173,7 +173,7 @@ GitHub Workflow
 | 8.  Open a pull request using your browser
 |
 |     To request to have your changes be incorporated into the remote repository
-|     (i.e. https://github.com/NCAR/METplus repository).
+|     (i.e. https://github.com/dtcenter/METplus repository).
 |
 |     The METplus maintainers will need to approve the request and then merge your files into the main
 |     repository's develop branch.  The develop branch will then be used to create a release candidate.
@@ -210,7 +210,7 @@ GitHub Workflow
 | 9.  Clean up after a successful merged pull request
 |
 |     After the METplus maintainers have accepted your changes and have merged them into the main repository, update
-|     your local clone by pulling changes from the original repository's (i.e. the https://github.com/NCAR/METplus repository)
+|     your local clone by pulling changes from the original repository's (i.e. the https://github.com/dtcenter/METplus repository)
 |     develop branch:
 |
 |     Checkout your develop branch:

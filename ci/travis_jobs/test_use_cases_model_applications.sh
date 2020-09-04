@@ -9,93 +9,69 @@
 #   name ending with _var) and add a new block to the if/elif/else statement to pick the
 #   correct use case tarball.
 
-convection_allowing_models_tar=v3.1-beta1/sample_data-convection_allowing_models-3.1-beta1.tgz
-cryosphere_tar=v3.0/sample_data-cryosphere-3.0.tgz
-medium_range_tar=v3.1-beta2/sample_data-medium_range-3.1-beta2.1.tgz
-precipitation_tar=v3.0/sample_data-precipitation-3.0.tgz
-s2s_tar=v3.0/sample_data-s2s-3.0.tgz
-space_weather_tar=v3.0/sample_data-space_weather-3.0.tgz
-tc_and_extra_tc_tar=v3.1-beta1/sample_data-tc_and_extra_tc-3.1-beta1.1.tgz
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/download_sample_data.sh $@
 
-met_tool_wrapper_tarball=https://github.com/NCAR/METplus/releases/download/v3.1-beta1/sample_data-met_tool_wrapper-3.1-beta1.2.tgz
+source ${OWNER_BUILD_DIR}/METplus/internal_tests/use_cases/metplus_test_env.docker.sh
+export TRAVIS_OUTPUT_BASE=${METPLUS_TEST_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
+export TRAVIS_PREV_OUTPUT_BASE=${METPLUS_TEST_PREV_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
 
-gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
+echo mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
+mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
+echo mkdir -p ${TRAVIS_OUTPUT_BASE}
+mkdir -p ${TRAVIS_OUTPUT_BASE}
 
-mkdir -p ${OWNER_BUILD_DIR}/test-use-case-output
-mkdir -p ${OWNER_BUILD_DIR}/test.metplus.data
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 
-cd ${OWNER_BUILD_DIR}/test.metplus.data
+echo Run tests...
+returncode=0
 
-# get sample data for all use case categories provided and add arguments to call to test script
 test_args=''
 for i in "$@"
 do
   if [ -z "$i" ]; then
     continue
   fi
+  if [ $i == "medium_range3" ]; then
+      
 
-  echo Processing $i
+    echo medium_range3
+    echo TRAVIS_BUILD_DIR ${TRAVIS_BUILD_DIR}
+    echo DOCKER_WORK_DIR ${DOCKER_WORK_DIR}
+    echo calling docker_run_metplus
+  
+  # use docker_run_metplus.sh
+# use docker_run_metplus.sh
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_pygrib.sh; pip3 install metpy; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode
+    returncode=$?
 
-  # get sample data tarball name
-  if [ $i == "convection_allowing_models" ]; then
-      tarball=$convection_allowing_models_tar
-  elif [ $i == "cryosphere" ]; then
-      tarball=$cryosphere_tar
-  elif [ ${i:0: -1} == "medium_range" ]; then
-      tarball=$medium_range_tar
-  elif [ $i == "precipitation" ]; then
-      tarball=$precipitation_tar
-  elif [ $i == "s2s" ]; then
-      tarball=$s2s_tar
-  elif [ $i == "space_weather" ]; then
-      tarball=$space_weather_tar
-  elif [ $i == "tc_and_extra_tc" ]; then
-      tarball=$tc_and_extra_tc_tar
+    # remove logs dir and move data to previous output base so next run will not prompt
+    rm -rf ${TRAVIS_OUTPUT_BASE}/logs
+    mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
   else
-      echo Invalid model_applications directory specified: $i
-      exit 1
+    test_args=${test_args}" --"${i}      
   fi
 
-  echo Downloading $tarball
-  echo curl -L -O https://github.com/NCAR/METplus/releases/download/${tarball}
-  curl -L -O https://github.com/NCAR/METplus/releases/download/${tarball}
-
-  echo file basename $tarball
-  tarball_basename=`basename $tarball`
-  echo `file $tarball_basename`
-
-  echo tar xfzp `basename $tarball`
-  tar xfzp `basename $tarball`
-
-  test_args=${test_args}" --"${i}
 done
 
-# get met_test data because some cases use this data still
-echo Downloading $met_tool_wrapper_tarball
-echo curl -L -O $met_tool_wrapper_tarball
-curl -L -O $met_tool_wrapper_tarball
+if [ "$test_args" != "" ]; then
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}" $returncode
+    returncode=$?
 
-# untar all tarballs
-echo tar xfzp `basename $met_tool_wrapper_tarball`
-tar xfzp `basename $met_tool_wrapper_tarball`
-
-# get GempakToCF jar file in case any use cases use GEMPAK data
-echo Downloading $gempak_to_cf_location
-echo curl -L -O $gempak_to_cf_location
-curl -L -O $gempak_to_cf_location
-
-echo Get Docker image: ${DOCKERHUB_TAG}
-docker pull ${DOCKERHUB_TAG}
-docker images
-docker run --rm -e "PATH=/metplus/METplus/ush:$PATH" -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c 'echo $MY_CUSTOM_VAR;which master_metplus.py;ls -al /metplus;python -V'
-
-echo Run tests...
-docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}
-returncode=$?
+  # remove logs dir and move data to previous output base so next run will not prompt
+  rm -rf ${TRAVIS_OUTPUT_BASE}/logs
+  mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
+fi
 
 echo Tests completed.
+
 # Dump the output directories from running METplus
-#ls -alR ${OWNER_BUILD_DIR}/test-use-case-output
+echo listing TRAVIS_OUTPUT_BASE
+ls -alR ${TRAVIS_OUTPUT_BASE}
+
+echo
+echo listing TRAVIS_PREV_OUTPUT_BASE
+ls -alR ${TRAVIS_PREV_OUTPUT_BASE}
+
 
 # Dump and see how much space is left on Travis disk.
 df -h

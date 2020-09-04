@@ -1,9 +1,9 @@
 """
-Program Name: config_launcher.py
-Contact(s): Jim Frimel
+Program Name: config_metplus.py
+Contact(s): George McCabe, Julie Prestopnik, Jim Frimel, Minna Win
 Abstract:
 History Log:  Initial version
-Usage:
+Usage: Used to read the configuration files to setup the METplus wrappers
 Parameters: None
 Input Files: N/A
 Output Files: N/A
@@ -20,33 +20,38 @@ from os.path import dirname, realpath
 import inspect
 from configparser import ConfigParser, NoOptionError
 from pathlib import Path
+import copy
 
 from produtil.config import ProdConfig
 import produtil.fileop
 
-from .. import met_util as util
+from . import met_util as util
 
 """!Creates the initial METplus directory structure,
 loads information into each job.
 
 This module is used to create the initial METplus conf file in the
-first METplus job via the metplus.config_launcher.launch().
-The metplus.config_launcher.load() then reloads that configuration.
+first METplus job via the metplus.config_metplus.launch().
+The metplus.config_metplus.load() then reloads that configuration.
 The launch() function does more than just create the conf file though.
-It creates several initial files and  directories and runs a sanity check
-on the whole setup.
+It creates several initial files and  directories
 
 The METplusConfig class is used in place of a produtil.config.ProdConfig
 throughout the METplus system.  It can be used as a drop-in replacement
 for a produtil.config.ProdConfig, but has additional features needed to
-support sanity checks, and initial creation of the METplus system.
+support initial creation of the METplus system.
 """
 
 '''!@var __all__
-All symbols exported by "from metplus.launcher import *"
+All symbols exported by "from metplus.util.config.config_metplus import *"
 '''
-__all__ = ['load', 'launch', 'parse_launch_args',
-           'METplusConfig']
+__all__ = ['load',
+           'launch',
+           'parse_launch_args',
+           'setup',
+           'METplusConfig',
+           'METplusLogFormatter',
+           ]
 
 # Note: This is just a developer reference comment, in case we continue
 # extending the metplus capabilities, by following hwrf patterns.
@@ -77,7 +82,7 @@ if os.environ.get('METPLUS_PARM_BASE', ''):
 # Based on METPLUS_BASE, Will set METPLUS_USH, or PARM_BASE if not
 # already set in the environment.
 
-METPLUS_BASE = str(Path(__file__).parents[3])
+METPLUS_BASE = str(Path(__file__).parents[2])
 USHguess = os.path.join(METPLUS_BASE, 'ush')
 PARMguess = os.path.join(METPLUS_BASE, 'parm')
 if os.path.isdir(USHguess) and os.path.isdir(PARMguess):
@@ -90,6 +95,54 @@ if os.path.isdir(USHguess) and os.path.isdir(PARMguess):
 if METPLUS_USH not in sys.path:
     sys.path.append(METPLUS_USH)
 
+# default METplus configuration files that are sourced first
+base_confs = ['metplus_config/metplus_system.conf',
+              'metplus_config/metplus_data.conf',
+              'metplus_config/metplus_runtime.conf',
+              'metplus_config/metplus_logging.conf']
+METPLUS_BASE_CONFS = []
+parm = os.path.realpath(PARM_BASE)
+for base_conf in base_confs:
+    METPLUS_BASE_CONFS.append(os.path.join(parm,
+                                           base_conf))
+
+def setup(config_inputs, logger=None, base_confs=METPLUS_BASE_CONFS):
+    """!The METplus setup function.
+        @param config_inputs list of configuration files or configuration
+        variable overrides. Reads all configuration inputs and returns
+        a configuration object.
+    """
+
+    # Setup Task logger, Until a Conf object is created, Task logger is
+    # only logging to tty, not a file.
+    if logger is None:
+        logger = logging.getLogger('metplus')
+
+    logger.info('Starting METplus configuration setup.')
+
+    if isinstance(config_inputs, str):
+        config_list = [config_inputs]
+    else:
+        config_list = config_inputs
+
+    # parm, is path to parm directory
+    # infiles, list of input conf files to be read and processed
+    # moreopt, dictionary of conf file settings, passed in from command line.
+    (parm, infiles, moreopt) = \
+        parse_launch_args(config_list,
+                          logger,
+                          base_confs=base_confs)
+
+    config = launch(infiles, moreopt)
+
+    # save list of user configuration files in a variable
+    config.set('config', 'METPLUS_CONFIG_FILES', ','.join(config_list))
+
+    logger.info('Completed METplus configuration setup.')
+
+    config.move_all_to_config_section()
+
+    return config
 
 # def parse_launch_args(args,usage,logger,PARM_BASE=None):
 # This is intended to be use to gather all the conf files on the
@@ -98,7 +151,7 @@ if METPLUS_USH not in sys.path:
 # along with, -c some.conf and any other conf files...
 # These are than used by def launch to create a single metplus final conf file
 # that would be used by all tasks.
-def parse_launch_args(args, usage, filename, logger, baseinputconfs):
+def parse_launch_args(args, logger, base_confs=METPLUS_BASE_CONFS):
     """!Parsed arguments to scripts that launch the METplus system.
 
     This is the argument parser for the config_metplus.py
@@ -115,13 +168,7 @@ def parse_launch_args(args, usage, filename, logger, baseinputconfs):
     * metplus.conf
 
     @param args the script arguments, after script-specific ones are removed
-    @param usage a function called to provide a usage message
-    @param filename the module from which this was called
     @param logger a logging.Logger for log messages"""
-
-    # stub
-    # if test for something fails:
-    #    usage(filename,logger)
 
     parm = os.path.realpath(PARM_BASE)
 
@@ -131,8 +178,8 @@ def parse_launch_args(args, usage, filename, logger, baseinputconfs):
     #          os.path.join(parm, 'metplus.override.conf')
     #         ]
     infiles = list()
-    for filename in baseinputconfs:
-        infiles.append(os.path.join(parm, filename))
+    for base_conf in base_confs:
+        infiles.append(base_conf)
 
     moreopt = collections.defaultdict(dict)
 
@@ -185,22 +232,21 @@ def parse_launch_args(args, usage, filename, logger, baseinputconfs):
 # so each task needs to be able to initialize the conf files.
 # conf files are processed in the order they exist in the file_list
 # so each succesive element overwrites the previous.
-def launch(file_list, moreopt, cycle=None, init_dirs=True,
-           prelaunch=None):
+def launch(file_list, moreopt):
     for filename in file_list:
         if not isinstance(filename, str):
             raise TypeError('First input to metplus.config.for_initial_job '
                             'must be a list of strings.')
 
-    conf = METplusConfig()
-    logger = conf.log()
+    config = METplusConfig()
+    logger = config.log()
 
     # set config variable for current time
-    conf.set('config', 'CLOCK_TIME', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+    config.set('config', 'CLOCK_TIME', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
 
     # Read in and parse all the conf files.
     for filename in file_list:
-        conf.read(filename)
+        config.read(filename)
         logger.info("%s: Parsed this file" % (filename,))
 
     # Overriding or passing in specific conf items on the command line
@@ -208,54 +254,46 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
     # If spaces, seems like you need double quotes on command line.
     if moreopt:
         for section, options in moreopt.items():
-            if not conf.has_section(section):
-                conf.add_section(section)
+            if not config.has_section(section):
+                config.add_section(section)
             for option, value in options.items():
                 logger.info('Override: %s.%s=%s'
                             % (section, option, repr(value)))
-                conf.set(section, option, value)
+                config.set(section, option, value)
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
     # only set incorrectly because OUTPUT_BASE is set incorrectly
-    conf.getdir('OUTPUT_BASE')
+    # Initialize the output directories
+    util.mkdir_p(config.getdir('OUTPUT_BASE'))
 
     # All conf files and command line options have been parsed.
     # So lets set and add specific log variables to the conf object
     # based on the conf log template values.
-    _set_logvars(conf)
+    get_logger(config)
 
     # Determine if final METPLUS_CONF file already exists on disk.
     # If it does, use it instead.
-    confloc = conf.getloc('METPLUS_CONF')
+    confloc = config.getstr('config', 'METPLUS_CONF')
 
-    # Place holder for when workflow is developed in METplus.
-    # rocoto does not initialize the dirs, it returns here.
-    # if not init_dirs:
-    #    if prelaunch is not None:
-    #        prelaunch(conf,logger,cycle)
-    #    return conf
-
-    # Initialize the output directories
-    produtil.fileop.makedirs(conf.getdir('OUTPUT_BASE', logger), logger=logger)
     # A user my set the confloc METPLUS_CONF location in a subdir of OUTPUT_BASE
     # or even in another parent directory altogether, so make thedirectory
     # so the metplus_final.conf file can be written.
     if not os.path.exists(realpath(dirname(confloc))):
-        produtil.fileop.makedirs(realpath(dirname(confloc)), logger=logger)
+        util.mkdir_p(realpath(dirname(confloc)))
 
     # set METPLUS_BASE conf to location of scripts used by METplus
     # warn if user has set METPLUS_BASE to something different
     # in their conf file
-    user_metplus_base = conf.getdir('METPLUS_BASE', METPLUS_BASE)
+    user_metplus_base = config.getdir('METPLUS_BASE', METPLUS_BASE)
     if realpath(user_metplus_base) != realpath(METPLUS_BASE):
         logger.warning('METPLUS_BASE from the conf files has no effect.'+\
                        ' Overriding to '+METPLUS_BASE)
 
-    conf.set('dir', 'METPLUS_BASE', METPLUS_BASE)
+    config.set('dir', 'METPLUS_BASE', METPLUS_BASE)
 
     # do the same for PARM_BASE
-    user_parm_base = conf.getdir('PARM_BASE', PARM_BASE)
+    user_parm_base = config.getdir('PARM_BASE', PARM_BASE)
     if realpath(user_parm_base) != realpath(PARM_BASE):
         logger.error('PARM_BASE from the config ({}) '.format(user_parm_base) +\
                      'differs from METplus parm base ({}). '.format(PARM_BASE))
@@ -264,36 +302,36 @@ def launch(file_list, moreopt, cycle=None, init_dirs=True,
                      'the METplus wrappers look for config files.')
         exit(1)
 
-    conf.set('dir', 'PARM_BASE', PARM_BASE)
+    config.set('dir', 'PARM_BASE', PARM_BASE)
 
     # print config items that are set automatically
     for var in ('METPLUS_BASE', 'PARM_BASE'):
-        expand = conf.getdir(var)
+        expand = config.getdir(var)
         logger.info('Setting [dir] %s to %s' % (var, expand))
 
     # Place holder for when workflow is developed in METplus.
     # if prelaunch is not None:
-    #    prelaunch(conf,logger,cycle)
+    #    prelaunch(config,logger,cycle)
 
     # writes the METPLUS_CONF used by all tasks.
     logger.info('METPLUS_CONF: %s written here.' % (confloc,))
     with open(confloc, 'wt') as f:
-        conf.write(f)
+        config.write(f)
 
-    return conf
+    return config
 
 def load(filename):
     """!Loads the METplusConfig created by the launch() function.
 
     Creates an METplusConfig object for a METplus workflow that was
-    previously initialized by metplus.config_launcher.launch.
+    previously initialized by metplus.config_metplus.launch.
     The only argument is the name of the config file produced by
     the launch command.
 
     @param filename The metplus*.conf file created by launch()"""
-    conf = METplusConfig()
-    conf.read(filename)
-    return conf
+    config = METplusConfig()
+    config.read(filename)
+    return config
 
 def _set_logvars(config, logger=None):
     """!Sets and adds the LOG_METPLUS and LOG_TIMESTAMP
@@ -403,12 +441,112 @@ def _set_logvars(config, logger=None):
     # expand LOG_METPLUS to ensure it is available
     config.set('config', 'LOG_METPLUS', metpluslog)
 
+def get_logger(config, sublog=None):
+    """!This function will return a logger with a formatted file handler
+    for writing to the LOG_METPLUS and it sets the LOG_LEVEL. If LOG_METPLUS is
+    not defined, a logger is still returned without adding a file handler,
+    but still setting the LOG_LEVEL.
+       Args:
+           @param config:   the config instance
+           @param sublog the logging subdomain, or None
+       Returns:
+           logger: the logger
+    """
+    _set_logvars(config)
+
+    # Retrieve all logging related parameters from the param file
+    log_dir = config.getdir('LOG_DIR')
+    log_level = config.getstr('config', 'LOG_LEVEL')
+
+    # Check if the directory path for the log file exists, if
+    # not create it.
+    if not os.path.exists(log_dir):
+        util.mkdir_p(log_dir)
+
+    if sublog is not None:
+        logger = config.log(sublog)
+    else:
+        logger = config.log()
+
+    # Setting of the logger level from the config instance.
+    # Check for log_level by Integer or LevelName.
+    # Try to convert the string log_level to an integer and use that, if
+    # it can't convert then we assume it is a valid LevelName, which
+    # is what is should be anyway,  ie. DEBUG.
+    # Note:
+    # Earlier versions of python2 require setLevel(<int>), argument
+    # to be an int. Passing in the LevelName, 'DEBUG' will disable
+    # logging output. Later versions of python2 will accept 'DEBUG',
+    # not sure which version that changed with, but the logic below
+    # should work for all version. I know python 2.6.6 must be an int,
+    # and python 2.7.5 accepts the LevelName.
+    try:
+        int_log_level = int(log_level)
+        logger.setLevel(int_log_level)
+    except ValueError:
+        logger.setLevel(logging.getLevelName(log_level))
+
+    metpluslog = config.getstr('config', 'LOG_METPLUS', '')
+
+    if metpluslog:
+        # It is possible that more path, other than just LOG_DIR, was added
+        # to the metpluslog, by either a user defining more path in
+        # LOG_METPLUS or LOG_FILENAME_TEMPLATE definitions in their conf file.
+        # So lets check and make more directory if needed.
+        dir_name = os.path.dirname(metpluslog)
+        if not os.path.exists(dir_name):
+            util.mkdir_p(dir_name)
+
+        # set up the filehandler and the formatter, etc.
+        # The default matches the oformat log.py formatter of produtil
+        # So terminal output will now match log files.
+        formatter = METplusLogFormatter(config)
+        file_handler = logging.FileHandler(metpluslog, mode='a')
+        file_handler.setFormatter(formatter)
+        logger.addHandler(file_handler)
+
+    # set add the logger to the config
+    config.logger = logger
+    return logger
+
+def replace_config_from_section(config, section):
+    if not config.has_section(section):
+        error_message = f'Section {section} does not exist.'
+        if config.logger:
+            config.logger.error(error_message)
+        else:
+            print(f"ERROR: {error_message}")
+
+        return None
+
+    new_config = METplusConfig()
+    all_configs = config.keys('config')
+    for key in all_configs:
+        new_config.set('config',
+                       key,
+                       config.getraw('config', key))
+
+    all_configs = config.keys(section)
+    for key in all_configs:
+        new_config.set('config',
+                       key,
+                       config.getraw(section, key))
+
+    return new_config
+
 class METplusConfig(ProdConfig):
     """!A replacement for the produtil.config.ProdConfig used throughout
     the METplus system.  You should never need to instantiate one of
     these --- the launch() and load() functions do that for you.  This
     class is the underlying implementation of most of the
     functionality described in launch() and load()"""
+
+    # items that are found in these sections will be moved into the [config] section
+    OLD_SECTIONS = ['dir',
+                    'exe',
+                    'filename_templates',
+                    'regex_pattern',
+                    ]
 
     def __init__(self, conf=None):
         """!Creates a new METplusConfig
@@ -430,7 +568,7 @@ class METplusConfig(ProdConfig):
         """!Overrides method in ProdConfig
         If the sublog argument is
         provided, then the logger will be under that subdomain of the
-        "metplus" logging domain.  Otherwise, this METpluslauncher's logger
+        "metplus" logging domain.  Otherwise, this METplusConfig's logger
         (usually the "metplus" domain) is returned.
         @param sublog the logging subdomain, or None
         @returns a logging.Logger object"""
@@ -439,13 +577,45 @@ class METplusConfig(ProdConfig):
                 return logging.getLogger('metplus.'+sublog)
         return self._logger
 
-    def sanity_check(self):
-        """!Runs nearly all sanity checks.
+    def move_all_to_config_section(self):
+        """! Move all configuration variables that are found in the
+             previously supported sections into the config section.
+        """
+        for section in self.OLD_SECTIONS:
+            if not self.has_section(section):
+                continue
 
-        Runs simple sanity checks on the METplus installation directory
-        and configuration to make sure everything looks okay.  May
-        throw a wide variety of exceptions if sanity checks fail."""
-        logger = self.log('sanity.checker')
+            all_configs = self.keys(section)
+            for key in all_configs:
+                self.set('config',
+                         key,
+                         super().getraw(section, key))
+
+            self._conf.remove_section(section)
+
+
+    def find_section(self, sec, opt):
+        """! Search through list of previously supported config sections
+              to find variable requested. This allows the removal of these
+              sections to consider all of the variables members of the
+              [config] section.
+              Args:
+                  @param sec section requested - look in this section first
+                  @param opt configuration variable to find
+                  @returns section heading name or None if not found
+        """
+        # first check the section requested
+        if self.has_option(sec, opt):
+            return sec
+
+        # loop through previously supported sections to find variable opt
+        # return section name if found
+        for section in self.OLD_SECTIONS:
+            if self.has_option(section, opt):
+                return section
+
+        # return None if variable is not found
+        return None
 
     # override get methods to perform additional error checking
     def getraw(self, sec, opt, default='', count=0):
@@ -465,6 +635,11 @@ class METplusConfig(ProdConfig):
         if count >= 10:
             return ''
 
+        # if requested section is in the list of sections that are no longer used
+        # look in the [config] section for the variable
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         in_template = super().getraw(sec, opt, default)
         out_template = ""
         in_brackets = False
@@ -479,10 +654,6 @@ class METplusConfig(ProdConfig):
                     var = self.getraw(sec, var_name, default, count)
                 elif self.has_option('config', var_name):
                     var = self.getraw('config', var_name, default, count)
-                elif self.has_option('dir', var_name):
-                    var = self.getraw('dir', var_name, default, count)
-                elif self.has_option('filename_templates', var_name):
-                    var = self.getraw('filename_templates', var_name, default, count)
                 elif var_name[0:3] == "ENV":
                     var = os.environ.get(var_name[4:-1])
 
@@ -527,7 +698,7 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil exe with checks to see if option is set and if
             exe actually exists. Returns None if not found instead of exiting"""
         try:
-            exe_path = super().getexe(exe_name)
+            exe_path = super().getstr('config', exe_name)
         except NoOptionError as e:
             if self.logger:
                 self.logger.error(e)
@@ -546,19 +717,20 @@ class METplusConfig(ProdConfig):
             return None
 
         # set config item to full path to exe and return full path
-        self.set('exe', exe_name, full_exe_path)
+        self.set('config', exe_name, full_exe_path)
         return full_exe_path
 
     def getdir(self, dir_name, default=None, morevars=None,taskvars=None, must_exist=False):
         """!Wraps produtil getdir and reports an error if it is set to /path/to"""
         try:
-            dir_path = super().getdir(dir_name, default=None)
+            dir_path = super().getstr('config', dir_name, default=None,
+                                      morevars=morevars, taskvars=taskvars)
         except NoOptionError:
-            self.check_default('dir', dir_name, default)
+            self.check_default('config', dir_name, default)
             dir_path = default
 
         if '/path/to' in dir_path:
-            raise ValueError("[dir] " + dir_name + " cannot be set to or contain '/path/to'")
+            raise ValueError("[config] " + dir_name + " cannot be set to or contain '/path/to'")
 
         if must_exist and not os.path.exists(dir_path):
             self.logger.error(f"Path must exist: {dir_path}")
@@ -567,11 +739,15 @@ class METplusConfig(ProdConfig):
         return dir_path.replace('//', '/')
 
     def getdir_nocheck(self, dir_name, default=None):
-        return super().getdir(dir_name, default=default).replace('//', '/')
+        return super().getstr('config', dir_name, default=default).replace('//', '/')
 
     def getstr_nocheck(self, sec, name, default=None):
-        return super().getstr(sec, name, default=default).replace('//', '/')
+        # if requested section is in the list of sections that are no longer used
+        # look in the [config] section for the variable
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
 
+        return super().getstr(sec, name, default=default).replace('//', '/')
 
     def getstr(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Wraps produtil getstr. Config variable is checked with a default value of None
@@ -582,8 +758,12 @@ class METplusConfig(ProdConfig):
             Replace double forward slash with single to prevent error that occurs if that
             is found inside a MET config file (because it considers // the start of a comment
         """
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
-            return super().getstr(sec, name, default=None, badtypeok=badtypeok, morevars=morevars,
+            return super().getstr(sec, name, default=None,
+                                  badtypeok=badtypeok, morevars=morevars,
                                   taskvars=taskvars).replace('//', '/')
         except NoOptionError:
             # if config variable is not set
@@ -598,8 +778,12 @@ class METplusConfig(ProdConfig):
              If no default was specified in the call, the NoOptionError is raised again.
              @returns None if value is not a boolean (or yes/no), value if set, default if not set
          """
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
-            return super().getbool(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getbool(sec, name, default=None,
+                                   badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
         except NoOptionError:
             # config item was not set
             self.check_default(sec, name, default)
@@ -620,9 +804,13 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil getint to gracefully report if variable is not set
             and no default value is specified
             @returns Value if set, default of missing value if not set, None if value is an incorrect type"""
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
             # call ProdConfig function with no default set so we can log and set the default
-            return super().getint(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getint(sec, name, default=None,
+                                  badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
 
         # if config variable is not set
         except NoOptionError:
@@ -646,9 +834,13 @@ class METplusConfig(ProdConfig):
         """!Wraps produtil getint to gracefully report if variable is not set
             and no default value is specified
             @returns Value if set, default of missing value if not set, None if value is an incorrect type"""
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
             # call ProdConfig function with no default set so we can log and set the default
-            return super().getfloat(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            return super().getfloat(sec, name, default=None,
+                                    badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
 
         # if config variable is not set
         except NoOptionError:
@@ -670,10 +862,14 @@ class METplusConfig(ProdConfig):
 
     def getseconds(self, sec, name, default=None, badtypeok=False, morevars=None, taskvars=None):
         """!Converts time values ending in H, M, or S to seconds"""
+        if sec in self.OLD_SECTIONS:
+            sec = 'config'
+
         try:
             # convert value to seconds
             # Valid options match format 3600, 3600S, 60M, or 1H
-            value = super().getstr(sec, name, default=None, badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
+            value = super().getstr(sec, name, default=None,
+                                   badtypeok=badtypeok, morevars=morevars, taskvars=taskvars)
             regex_and_multiplier = {r'(-*)(\d+)S': 1,
                                     r'(-*)(\d+)M': 60,
                                     r'(-*)(\d+)H': 3600,
@@ -700,3 +896,28 @@ class METplusConfig(ProdConfig):
             # config item was not found
             self.check_default(sec, name, default)
             return default
+
+class METplusLogFormatter(logging.Formatter):
+    def __init__(self, config):
+        self.default_fmt = config.getraw('config', 'LOG_LINE_FORMAT')
+        self.info_fmt = config.getraw('config', 'LOG_INFO_LINE_FORMAT', self.default_fmt)
+        self.debug_fmt = config.getraw('config', 'LOG_DEBUG_LINE_FORMAT', self.default_fmt)
+        self.error_fmt = config.getraw('config', 'LOG_ERR_LINE_FORMAT', self.default_fmt)
+        super().__init__(fmt=self.default_fmt,
+                         datefmt=config.getraw('config', 'LOG_LINE_DATE_FORMAT'),
+                         style='%')
+
+    def format(self, record):
+        if record.levelno == logging.ERROR:
+            self._style._fmt = self.error_fmt
+        elif record.levelno == logging.DEBUG:
+            self._style._fmt = self.debug_fmt
+        elif record.levelno == logging.INFO:
+            self._style._fmt = self.info_fmt
+
+        output = logging.Formatter.format(self, record)
+
+        # restore default format
+        self._style._fmt = self.default_fmt
+
+        return output
