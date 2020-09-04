@@ -26,8 +26,7 @@ import time
 import calendar
 import argparse
 
-from metplus.util.config import config_launcher
-from metplus.util import met_util as util
+from metplus.util import config_metplus
 from metplus.util.metplus_check import plot_wrappers_are_enabled
 
 # keep track of use cases that failed to report at the end of execution
@@ -56,6 +55,7 @@ use_cases['met_tool_wrapper'] = [
                 use_case_dir + "/met_tool_wrapper/GenVxMask/GenVxMask.conf",
                 use_case_dir + "/met_tool_wrapper/GenVxMask/GenVxMask_multiple.conf",
                 use_case_dir + "/met_tool_wrapper/GenVxMask/GenVxMask_with_arguments.conf",
+                use_case_dir + "/met_tool_wrapper/GridDiag/GridDiag.conf",
                 use_case_dir + "/met_tool_wrapper/GridStat/GridStat.conf",
                 use_case_dir + "/met_tool_wrapper/GridStat/GridStat.conf," + use_case_dir + "/met_tool_wrapper/GridStat/GridStat_forecast.conf,dir.GRID_STAT_OUTPUT_DIR={OUTPUT_BASE}/met_tool_wrapper/GridStat/GridStat_multiple_config," + use_case_dir + "/met_tool_wrapper/GridStat/GridStat_observation.conf",
                 use_case_dir + "/met_tool_wrapper/MODE/MODE.conf",
@@ -81,10 +81,16 @@ use_cases['met_tool_wrapper'] = [
                 use_case_dir + "/met_tool_wrapper/StatAnalysis/StatAnalysis_python_embedding.conf",
                 use_case_dir + "/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis.conf",
                 use_case_dir + "/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_python_embedding.conf",
+                use_case_dir + "/met_tool_wrapper/TCGen/TCGen.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_extra_tropical.conf",
                 use_case_dir + "/met_tool_wrapper/TCPairs/TCPairs_tropical.conf",
                 use_case_dir + "/met_tool_wrapper/TCRMW/TCRMW.conf",
                 use_case_dir + "/met_tool_wrapper/TCStat/TCStat.conf",
+]
+
+use_cases['climate'] = [
+    use_case_dir + "/model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf",
+    use_case_dir + "/model_applications/climate/MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.conf",
 ]
 
 use_cases['convection_allowing_models'] = [
@@ -105,12 +111,17 @@ use_cases['medium_range1'] = [
     use_case_dir + "/model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf",
     use_case_dir + "/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.conf",
     use_case_dir + "/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf",
+#    use_case_dir + "/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf",
     use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_climoNCEP_MultiField.conf",
     use_case_dir + "/model_applications/medium_range/GridStat_fcstGFS_obsGFS_Sfc_MultiField.conf",
 ]
 
 use_cases['medium_range2'] = [
     use_case_dir + "/model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf",
+]
+
+use_cases['medium_range3'] = [
+    use_case_dir + "/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf",
 ]
 
 use_cases['precipitation'] = [
@@ -153,22 +164,21 @@ def get_param_list(param):
 def get_params(param):
     params = get_param_list(param)
 
-    logger = logging.getLogger('master_metplus')    
-
     # read confs
-    (parm, infiles, moreopt) = config_launcher.parse_launch_args(params,
-                                                                 None, None,
-                                                                 logger,
-                                                                 util.baseinputconfs)
-    p = config_launcher.launch(infiles, moreopt)
+    config = config_metplus.setup(params)
 
-    return params, p
+    return params, config
 
 def run_test_use_case(param, test_metplus_base):
     global failed_runs
 
-    params, p = get_params(param)
-    out_dir = os.path.join(p.getdir('OUTPUT_BASE'), os.path.basename(params[-2]))
+    params, config = get_params(param)
+
+    # get list of actual param files (ignoring config value overrides)
+    # to the 2nd last file to use as the output directory
+    # last param file is always the system.conf file
+    param_files = [param for param in params if os.path.exists(param)]
+    out_dir = os.path.join(config.getdir('OUTPUT_BASE'), os.path.basename(param_files[-2]))
 
     cmd = os.path.join(test_metplus_base, "ush", "master_metplus.py")
     for parm in params:
@@ -230,6 +240,7 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('host_id', action='store')
     parser.add_argument('--met_tool_wrapper', action='store_true', required=False)
+    parser.add_argument('--climate', action='store_true', required=False)
     parser.add_argument('--convection_allowing_models', action='store_true', required=False)
     parser.add_argument('--cryosphere', action='store_true', required=False)
     parser.add_argument('--medium_range1', action='store_true', required=False)
@@ -238,8 +249,45 @@ def main():
     parser.add_argument('--s2s', action='store_true', required=False)
     parser.add_argument('--space_weather', action='store_true', required=False)
     parser.add_argument('--tc_and_extra_tc', action='store_true', required=False)
+    parser.add_argument('--all', action='store_true', required=False)
+    parser.add_argument('--config', action='append', required=False)
 
     args = parser.parse_args()
+    print(args.config)
+
+    if args.config:
+        for use_case in args.config:
+            config_args = use_case.split(',')
+            config_list = []
+            for config_arg in config_args:
+                # if relative path, must be relative to parm/use_cases
+                if not os.path.isabs(config_arg):
+                    # check that the full path exists before adding
+                    # use_case_dir in case item is a config value override
+                    check_config_exists = os.path.join(use_case_dir, config_arg)
+                    if os.path.exists(check_config_exists):
+                        config_arg = check_config_exists
+
+                config_list.append(config_arg)
+
+            force_use_cases_to_run.append(','.join(config_list))
+
+    if args.config:
+        for use_case in args.config:
+            config_args = use_case.split(',')
+            config_list = []
+            for config_arg in config_args:
+                # if relative path, must be relative to parm/use_cases
+                if not os.path.isabs(config_arg):
+                    # check that the full path exists before adding
+                    # use_case_dir in case item is a config value override
+                    check_config_exists = os.path.join(use_case_dir, config_arg)
+                    if os.path.exists(check_config_exists):
+                        config_arg = check_config_exists
+
+                config_list.append(config_arg)
+
+            force_use_cases_to_run.append(','.join(config_list))
 
     # compile list of use cases to run
     use_cases_to_run = []
@@ -248,10 +296,18 @@ def main():
     use_cases_to_run.extend(force_use_cases_to_run)
 
     # add use case categories if they were provided on the command line
-    for key in args.__dict__:
-        if args.__dict__[key] and key in use_cases.keys():
+
+    # if 'all' was specified, add all use cases
+    if args.__dict__.get('all'):
+        print(f"Adding all use cases")
+        for key, value in use_cases.items():
             print(f"Adding {key} use cases")
-            use_cases_to_run.extend(use_cases[key])
+            use_cases_to_run.extend(value)
+    else:
+        for key in args.__dict__:
+            if args.__dict__[key] and key in use_cases.keys():
+                print(f"Adding {key} use cases")
+                use_cases_to_run.extend(use_cases[key])
 
     # exit if use case list is empty
     if not use_cases_to_run:

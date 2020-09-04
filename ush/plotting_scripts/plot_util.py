@@ -1,8 +1,9 @@
-import numpy as np
+import os
 import datetime as datetime
 import time
+import numpy as np
 import pandas as pd
-import os
+
 
 """!@namespace plot_util
  @brief Provides utility functions for METplus plotting use case.

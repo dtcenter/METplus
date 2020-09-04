@@ -127,11 +127,11 @@ _obsCCPA_Grib.conf
 # sphinx_gallery_thumbnail_path = '_static/precipitation-GridStat_fcstGFS_obsCCPA_GRIB.png'
 #
 # .. note::
-#     `GridStatToolUseCase <https://ncar.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
-#     `PrecipitationAppUseCase <https://ncar.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_,
-#     `PCPCombineToolUseCase <https://ncar.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_,
-#     `GRIBFileUseCase <https://ncar.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_,
-#     `NOAAEMCOrgUseCase <https://ncar.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_,
-#     `MediumRangeAppUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,
-#     `MaskingFeatureUseCase  <https://ncar.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_,
-#     `RegriddingInToolUseCase <https://ncar.github.io/METplus/search.html?q=RegriddingInToolUseCase&check_keywords=yes&area=default>`_
+#     `GridStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
+#     `PrecipitationAppUseCase <https://dtcenter.github.io/METplus/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_,
+#     `PCPCombineToolUseCase <https://dtcenter.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_,
+#     `GRIBFileUseCase <https://dtcenter.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_,
+#     `NOAAEMCOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_,
+#     `MediumRangeAppUseCase <https://dtcenter.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,
+#     `MaskingFeatureUseCase  <https://dtcenter.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_,
+#     `RegriddingInToolUseCase <https://dtcenter.github.io/METplus/search.html?q=RegriddingInToolUseCase&check_keywords=yes&area=default>`_

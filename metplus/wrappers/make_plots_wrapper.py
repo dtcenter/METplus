@@ -20,7 +20,15 @@ import itertools
 
 from ..util import met_util as util
 from . import CommandBuilder
-from ush.plotting_scripts import plot_util
+
+# handle if module can't be loaded to run wrapper
+wrapper_cannot_run = False
+exception_err = ''
+try:
+    from ush.plotting_scripts import plot_util
+except Exception as err_msg:
+    wrapper_cannot_run = True
+    exception_err = err_msg
 
 class MakePlotsWrapper(CommandBuilder):
     """! Wrapper to used to filter make plots from MET data
@@ -60,10 +68,14 @@ class MakePlotsWrapper(CommandBuilder):
         'VERIF_GRID', 'EVENT_EQUALIZATION', 'LOG_METPLUS', 'LOG_LEVEL'
     ]
 
-    def __init__(self, config, logger):
+    def __init__(self, config):
         self.app_path = 'python'
         self.app_name = 'make_plots'
-        super().__init__(config, logger)
+        super().__init__(config)
+
+        if wrapper_cannot_run:
+            self.log_error(f"There was a problem importing modules: {exception_err}\n")
+            return
 
     def get_command(self):
 
@@ -222,7 +234,9 @@ class MakePlotsWrapper(CommandBuilder):
                         os.remove(os.path.join(output_base_data_dir,rmfile))
 
     def get_met_version(self):
-        p = subprocess.Popen(["stat_analysis", "--version"],
+        stat_analysis_exe = os.path.join(self.config.getdir('MET_BIN_DIR'),
+                                         'stat_analysis')
+        p = subprocess.Popen([stat_analysis_exe, "--version"],
                              stdout=subprocess.PIPE)
         out, err = p.communicate()
         out = out.decode(encoding='utf-8', errors='strict')

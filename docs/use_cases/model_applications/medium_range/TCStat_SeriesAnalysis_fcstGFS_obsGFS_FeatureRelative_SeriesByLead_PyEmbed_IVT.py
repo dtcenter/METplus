@@ -1,6 +1,15 @@
 """
-Multi_Tool: Feature Relative by Lead using User Diagnostics
-===========================================================
+Multi_Tool: Feature Relative by Lead using User-Defined Fields 
+========================================================================
+
+model_applications/medium_range/
+TCStat_SeriesAnalysis_fcstGFS
+_obsGFS_FeatureRelative
+_SeriesByLead_PyEmbed_IVT.conf
+
+"""
+
+========================================================================
 This use case calls multiple tools to produce diagnostic plots of systematic erros relative to a 
 feature (e.g. hurricane, MCS, etc...). This use case calls a user provided python script that 
 calculates a diagnostic of interest (e.g. integrated vapor transport, potential vorticity, etc...). 
@@ -65,7 +74,7 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #
 # This use case first runs PyEmbedIngest to run the user provided python scripts to calculate the
 # desired diagnostic (in this example, IVT). PyEmbedIngest runs the RegridDataPlane tool to write 
-# IVT to a MET readable netCDF file. Then TcPairs and ExtractTiles are run to generate matched
+# IVT to a MET readable netCDF file. Then TCPairs and ExtractTiles are run to generate matched
 # tropical cyclone data and regrid them into appropriately-sized tiles along a storm track. 
 # The MET tc-stat tool is used to filter the track data and the MET regrid-dataplane tool is used to 
 # regrid the data (GRIB1 or GRIB2 into netCDF). Next, a series analysis by lead time is performed on 
@@ -82,10 +91,10 @@ to the Multi_Tools: Feature Relative by Lead use case.
 # This use case loops by process which means that each tool is run for all times before moving to the
 # next tool. The tool order is as follows:
 # 
-# PyEmbedIngest, TcPairs, ExtractTiles, SeriesByLead
+# PyEmbedIngest, TCPairs, ExtractTiles, SeriesByLead
 #
 # This example loops by forecast/lead time (with begin, end, and increment as specified in the METplus
-# TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_SBU_IVT.conf file). 
+# TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf file). 
 #
 # 4 initialization times will be run over 5 lead times:
 #
@@ -108,10 +117,10 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_SBU_IVT.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_SBU_IVT.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
 #
 
 #############################################################################
@@ -142,17 +151,17 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_SBU_IVT.conf, 
+# 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf, 
 # then a user-specific system configuration file::
 #
 #        master_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf \
+#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf \
 #        -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_SBU_IVT.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf::
 #
 #        master_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
+#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -231,16 +240,16 @@ to the Multi_Tools: Feature Relative by Lead use case.
 # --------
 #
 # .. note::
-#  `TCPairsToolUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_,
-#  `SeriesByLeadUseCase <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_,
-#  `TCStatToolUseCase <https://ncar.github.io/METplus/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_,
-#  `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_,
-#  `PyEmbedIngestToolUseCase <https://ncar.github.io/METplus/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_,
-#  `MediumRangeAppUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,
-#  `SeriesAnalysisUseCase <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_,
-#  `GRIB2FileUseCase <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_,
-#  `FeatureRelativeUseCase <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_,
-#  `SBUOrgUseCase <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
-#  `DiagnosticsUseCase <https://ncar.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
+#  `TCPairsToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_,
+#  `SeriesByLeadUseCase <https://dtcenter.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_,
+#  `TCStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_,
+#  `RegridDataPlaneToolUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_,
+#  `PyEmbedIngestToolUseCase <https://dtcenter.github.io/METplus/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_,
+#  `MediumRangeAppUseCase <https://dtcenter.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,
+#  `SeriesAnalysisUseCase <https://dtcenter.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_,
+#  `GRIB2FileUseCase <https://dtcenter.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_,
+#  `FeatureRelativeUseCase <https://dtcenter.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_,
+#  `SBUOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
+#  `DiagnosticsUseCase <https://dtcenter.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_SBU_IVT.png'

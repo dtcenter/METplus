@@ -41,6 +41,9 @@ def run_command(command, dir_to_run=None):
         sys.exit(1)
 
 def main():
+    build_pdf = os.environ.get('METPLUS_DOC_PDF')
+    if build_pdf:
+        print("PDF output enabled")
 
     # check if sphinx_gallery module is available and error/exit if not
     sphinx_gallery_spec = importlib.util.find_spec("sphinx_gallery")
@@ -77,7 +80,7 @@ def main():
                                'run')
 
     # run make to generate the documentation files
-    run_command("make clean html",
+    run_command(f"make clean html {'pdf' if build_pdf else ''}",
                 docs_dir)
 
     # build the doxygen documentation

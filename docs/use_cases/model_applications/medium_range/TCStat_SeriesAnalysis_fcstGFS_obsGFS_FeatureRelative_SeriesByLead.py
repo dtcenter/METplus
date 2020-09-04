@@ -2,7 +2,8 @@
 Multi_Tool: Feature Relative by Lead (with lead groupings) 
 ==================================================================================================
 
-model_applicaitons/medium_range/TCStat_SeriesAnalysis_fcstGFS
+model_applicaitons/medium_range/
+TCStat_SeriesAnalysis_fcstGFS
 _obsGFS_FeatureRelative
 _SeriesByLead.conf
 
@@ -39,7 +40,7 @@ _SeriesByLead.conf
 # METplus Components
 # ------------------
 #
-# This use case first runs TcPairs and ExtractTiles wrappers to generate matched
+# This use case first runs TCPairs and ExtractTiles wrappers to generate matched
 # tropical cyclone data and regrid them into appropriately-sized tiles
 # along a storm track. The MET tc-stat tool is used to filter the
 # track data, and the MET regrid-dataplane tool is used to regrid the
@@ -56,7 +57,7 @@ _SeriesByLead.conf
 #
 # The following tools are used for each run time:
 #
-# TcPairs > RegridDataPlane, TCStat > SeriesAnalysis
+# TCPairs > RegridDataPlane, TCStat > SeriesAnalysis
 #
 # This example loops by forecast/lead time (with begin, end, and increment as specified in the METplus
 # TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf file).
@@ -219,15 +220,15 @@ _SeriesByLead.conf
 # --------
 #
 # .. note::
-#  `TCPairsToolUseCase <https://ncar.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_,
-#  `SeriesByLeadUseCase <https://ncar.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_,
-#  `TCStatToolUseCase <https://ncar.github.io/METplus/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_,
-#  `RegridDataPlaneToolUseCase <https://ncar.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_,
-#  `MediumRangeAppUseCase <https://ncar.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,
-#  `SeriesAnalysisUseCase <https://ncar.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_,
-#  `GRIB2FileUseCase <https://ncar.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_,
-#  `FeatureRelativeUseCase <https://ncar.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_,
-#  `SBUOrgUseCase <https://ncar.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
-#  `DiagnosticsUseCase <https://ncar.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
+#  `TCPairsToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_,
+#  `SeriesByLeadUseCase <https://dtcenter.github.io/METplus/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_,
+#  `TCStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_,
+#  `RegridDataPlaneToolUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_,
+#  `MediumRangeAppUseCase <https://dtcenter.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,
+#  `SeriesAnalysisUseCase <https://dtcenter.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_,
+#  `GRIB2FileUseCase <https://dtcenter.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_,
+#  `FeatureRelativeUseCase <https://dtcenter.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_,
+#  `SBUOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
+#  `DiagnosticsUseCase <https://dtcenter.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.png'
