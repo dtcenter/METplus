@@ -24,7 +24,7 @@ class BlockingCalculation():
         self.blocking_var = config.getstr('Blocking','BLOCKING_VAR')
         self.smoothing_pts = config.getint('Blocking','SMOOTHING_PTS')
         lat_delta_in = config.getstr('Blocking','LAT_DELTA')
-        self.lat_delta = list(map(float,lat_delta_in.split(",")))
+        self.lat_delta = list(map(int,lat_delta_in.split(",")))
         self.ibl_dist = config.getint('Blocking','IBL_DIST')
         self.ibl_in_gibl = config.getint('Blocking','IBL_IN_GIBL')
         self.gibl_overlap = config.getint('Blocking','GIBL_OVERLAP')
@@ -143,29 +143,15 @@ class BlockingCalculation():
             CBL[j,:] = lats[cbli[j,:]]
 
         ###Apply 9-degree moving average to smooth CBL profiles
-        lt = len(lons)-1
+        lt = len(lons)
         CBLf = np.zeros((len(z500_anom_4d[:,0,0,0]),len(lons)))
-        m=((self.smoothing_pts-1)/2.0) + 1
+        m=int((self.smoothing_pts-1)/2.0)
         for i in np.arange(0,len(CBL[0,:]),1):
-            if i < m:
-                temp1 = CBL[:,-m+i:-1]
-                temp2 = CBL[:,-1:]
-                temp3 = CBL[:,0:m+i+1]
-                temp = np.concatenate((temp1,temp2),axis=1)
-                temp = np.concatenate((temp,temp3),axis=1)
-                CBLf[:,i] = np.nanmean(temp,axis=1).astype(int)
-            elif i > (lt-m):
-                temp1 = CBL[:,i-m:-1]
-                temp2 = CBL[:,-1:]
-                temp3 = CBL[:,0:m+i-lt]
-                temp = np.concatenate((temp1,temp2),axis=1)
-                temp = np.concatenate((temp,temp3),axis=1)
-                CBLf[:,i] = np.nanmean(temp,axis=1).astype(int)
-            else:
-                temp = CBL[:,i-m:i+m+1]
-                CBLf[:,i] = np.nanmean(temp,axis=1).astype(int)
-
-        np.save('TINA_CBL.npy',CBLf)
+            ma_indices = np.arange(i-m,i+m+1)
+            ma_indices = np.where(ma_indices >= lt,ma_indices-lt,ma_indices)
+            CBLf[:,i] = np.nanmean(CBL[:,ma_indices],axis=1).astype(int)
+        
+        #np.save('TINA_CBL.npy',CBLf)
         return CBLf,lats,lons,yr,mhweight
 
 
@@ -228,6 +214,8 @@ class BlockingCalculation():
             blon,BI[i,:,:] = self.run_mod_blocking1d(z500_daily[i,:,:,:],cbl,lats,lons,self.block_method)
             blonlong[i,:,:] = blon
 
+        print(blonlong)
+        exit()
         np.save('TINA_IBL.npy',blonlong)
         return blonlong
 
@@ -379,7 +367,7 @@ class BlockingCalculation():
         A = A[1:]
 
         ######### - Getting rid of non-consectutve days which would prevent blocking - #################
-
+        print(A)
         dd=[]
         dy = []
         dA = A[0]
