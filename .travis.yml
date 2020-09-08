@@ -102,8 +102,8 @@ env:
 # based on the python: keyword setting 3.7,3.6 above.
 
 matrix:
-   - stage: "Stage 1"
-     name: "Unit Tests"
+   stage: "Stage 1"
+   name: "Unit Tests"
 # ${TRAVIS_BUILD_DIR} = /home/travis/build/<user ie. NCAR>/METplus
      - pwd 
      - ls -l
