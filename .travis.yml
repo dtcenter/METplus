@@ -91,8 +91,9 @@ env:
     # set to true to use default settings
     # if set to false, to use DOCKER_USER_* settings, your dockerhub container.
     - DOCKERHUB_USE_DEFAULT=true
-    - DOCKER_DATA_INPUT=/data/input/MET_Data
+    - DOCKER_DATA_INPUT=/data/input/METplus_Data
     - DOCKER_DATA_OUTPUT=/output
+    - DOCKER_WORKDIR=/metplus
 
   matrix:
     - TASK=docs
