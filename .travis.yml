@@ -106,7 +106,6 @@ matrix:
     - stage: "Stage 1"
       name: "Unit Tests"
 # ${TRAVIS_BUILD_DIR} = /home/travis/build/<user ie. NCAR>/METplus
-      script: 
        - pwd 
        - ls -l
        - echo ${TRAVIS_BUILD_DIR}
