@@ -100,7 +100,7 @@ env:
 # Stage 1 runs 2 jobs  x.1, x.2 
 # based on the python: keyword setting 3.7,3.6 above.
 stage: "Stage 1"
-#name: "Unit Tests"
+name: "Unit Tests"
 # ${TRAVIS_BUILD_DIR} = /home/travis/build/<user ie. NCAR>/METplus
 script: 
   - pwd 
@@ -136,7 +136,7 @@ matrix:
           echo "==== who am I";
           whoami;
     - stage: "Stage 3"
-      name: "Docker Setup
+      name: "Docker Setup"
       python: 3.6
         - mkdir -p ${OWNER_BUILD_DIR}/input
         - mkdir -p ${OWNER_BUILD_DIR}/output
