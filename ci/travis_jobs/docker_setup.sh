@@ -61,7 +61,7 @@ export VOLUMES="$VOLUMES --volumes-from medium_range"
 echo 'done'
 
 echo 'Owner Builddir ',${OWNER_BUILD_DIR}
-echo 'Docker Workdir ',${DOCKER_WORKDIR}
+echo 'Docker Workdir ',${DOCKER_WORK_DIR}
 echo 'Docker Inputdir ',${DOCKER_DATA_INPUT}
 echo 'Docker Outputdir ',${DOCKER_DATA_OUTPUT}
 
