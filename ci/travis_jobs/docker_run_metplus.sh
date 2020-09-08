@@ -4,7 +4,7 @@
 # to move files that are created by docker
 
 echo  In docker_run_metplus.sh, RUNNING: $1
-docker run --rm --user root:$UID -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} ${DOCKERHUB_TAG} /bin/bash -c "umask 002; $1"
+docker run --rm --user root:$UID -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} -v ${OWNER_BUILD_DIR}/input:${DOCKER_DATA_INPUT} -v ${OWNER_BUILD_DIR}/output:/output ${DOCKERHUB_TAG} /bin/bash -c "umask 002; $1"
 ret=$?
 
 #check return codes

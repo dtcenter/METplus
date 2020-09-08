@@ -24,21 +24,24 @@ mkdir -p ${TRAVIS_INPUT_BASE}
 
 cd ${OWNER_BUILD_DIR}/test.metplus.data
 
-echo Downloading $met_tool_wrapper_tarball
-echo curl -L -O ${met_tool_wrapper_tarball}
-curl -L -O ${met_tool_wrapper_tarball}
+#echo Downloading $met_tool_wrapper_tarball
+#echo curl -L -O ${met_tool_wrapper_tarball}
+#curl -L -O ${met_tool_wrapper_tarball}
 
-echo file `basename $met_tool_wrapper_tarball`
-tarball_basename=`basename $met_tool_wrapper_tarball`
-echo `file $tarball_basename`
+#echo file `basename $met_tool_wrapper_tarball`
+#tarball_basename=`basename $met_tool_wrapper_tarball`
+#echo `file $tarball_basename`
 
-echo tar xfzp `basename $met_tool_wrapper_tarball`
-tar xfzp `basename $met_tool_wrapper_tarball`
+#echo tar xfzp `basename $met_tool_wrapper_tarball`
+#tar xfzp `basename $met_tool_wrapper_tarball`
 
-echo Downloading $gempak_to_cf_location
-curl -L -O $gempak_to_cf_location
+#echo Downloading $gempak_to_cf_location
+#curl -L -O $gempak_to_cf_location
 
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
+#${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
+
+echo 'listing input directory'
+ls -alR ${OWNER_BUILD_DIR}/input
 
 echo Running tests...
 
