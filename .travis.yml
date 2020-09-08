@@ -106,19 +106,19 @@ matrix:
     - stage: "Stage 1"
       name: "Unit Tests"
 # ${TRAVIS_BUILD_DIR} = /home/travis/build/<user ie. NCAR>/METplus
-       - pwd 
-       - ls -l
-       - echo ${TRAVIS_BUILD_DIR}
+      - pwd 
+      - ls -l
+      - echo ${TRAVIS_BUILD_DIR}
   #- export TASK=${TASK}
     # WARNING: can't have comments in if block below.
     # doc8 is an opinionated style checker
     # doc8 METplus returns errors in the rst. We want the build
     # to continue so either, add true; in the if conditional or
     # use allow_failures, keyword.
-       - if [[ ${TASK} == "docs" ]]; then
-           doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/;
-           true;
-         fi;
+      - if [[ ${TASK} == "docs" ]]; then
+         doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/;
+         true;
+        fi;
 
     # Example Note adding python: "3.7-dev", before stage: Stage 2 keyword 
     # adds another job to Stage 1, and runs the script: in Stage 1.
