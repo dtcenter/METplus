@@ -53,14 +53,14 @@ export VOLUMES="$VOLUMES --volumes-from medium_range"
 
 echo 'done'
 
+#docker run --rm -it $VOLUMES  -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} -v ${OWNER_BUILD_DIR}/input:${DOCKER_DATA_INPUT} -v ${OWNER_BUILD_DIR}/output:/output ${DOCKERHUB_TAG} /bin/bash
 
 # Note: adding --build-arg <arg-name> without any value tells docker to
 #  use value from local environment (export DO_GIT_CLONE)
-echo 'doing docker build'
-docker build -t ${DOCKERHUB_TAG} --build-arg SOURCE_BRANCH=${DOCKERHUB_DEFAULT_TAGNAME} --build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} --build-arg DO_GIT_CLONE ${TRAVIS_BUILD_DIR}/internal_tests/docker
 
-echo 'doing docker run, loading containers'
-docker run -it --rm $VOLUMES  -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} -v ${OWNER_BUILD_DIR}/input:${DOCKER_DATA_INPUT} -v ${OWNER_BUILD_DIR}/output:/output ${DOCKERHUB_TAG} /bin/bash
+echo 'doing docker build, loading containers'
+docker build $VOLUMES -t ${DOCKERHUB_TAG} --build-arg SOURCE_BRANCH=${DOCKERHUB_DEFAULT_TAGNAME} --build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} --build-arg DO_GIT_CLONE -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} -v ${OWNER_BUILD_DIR}/input:${DOCKER_DATA_INPUT} -v ${OWNER_BUILD_DIR}/output:/output ${TRAVIS_BUILD_DIR}/internal_tests/docker
+
 
 docker images
 

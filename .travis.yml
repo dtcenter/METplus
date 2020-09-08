@@ -137,7 +137,7 @@ matrix:
           whoami;
     - stage: "Stage 3"
       name: "Docker Setup"
-      python: 3.6
+      python: 3.7
       script:
         - mkdir -p ${OWNER_BUILD_DIR}/input
         - mkdir -p ${OWNER_BUILD_DIR}/output
@@ -145,7 +145,7 @@ matrix:
         - ls -alR ${OWNER_BUILD_DIR}/input
     - stage: "Stage 4"
       name: "Pytest Unit Tests"
-      python: 3.6 
+      python: 3.7
       script:
         - echo ${TASK}
         - echo ${HOME}
