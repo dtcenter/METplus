@@ -12,8 +12,8 @@ echo 'doing docker build'
 
 docker build -t ${DOCKERHUB_TAG} --build-arg SOURCE_BRANCH=${DOCKERHUB_DEFAULT_TAGNAME} --build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} --build-arg DO_GIT_CLONE ${TRAVIS_BUILD_DIR}/internal_tests/docker
 
-export 'done'
-export ' '
+echo 'done'
+echo ' '
 export VOLUMES=" "
 
 echo 'pulling 3.1-met_tool_wrapper'
@@ -69,10 +69,10 @@ echo 'Docker Inputdir ',${DOCKER_DATA_INPUT}
 echo 'Docker Outputdir ',${DOCKER_DATA_OUTPUT}
 
 echo 'doing docker run, mapping containers'
-docker run --rm $VOLUMES  -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} -v ${OWNER_BUILD_DIR}/input:${DOCKER_DATA_INPUT} -v ${OWNER_BUILD_DIR}/output:/output ${DOCKERHUB_TAG} "ls -al ${DOCKER_DATA_INPUT}"
+docker run --rm $VOLUMES  -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} -v ${OWNER_BUILD_DIR}/input:${DOCKER_DATA_INPUT} -v ${OWNER_BUILD_DIR}/output:/output ${DOCKERHUB_TAG} /bin/bash -c "ls -al ${DOCKER_DATA_INPUT}"
 
 echo 'checking TRAVIS input directory:'
-ls -al ${OWNER_BUILD_DIR}/input
+ls -alR ${OWNER_BUILD_DIR}/input
 
 docker images
 
