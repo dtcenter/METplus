@@ -100,26 +100,27 @@ env:
 
 # Stage 1 runs 2 jobs  x.1, x.2 
 # based on the python: keyword setting 3.7,3.6 above.
-stage: "Stage 1"
-name: "Unit Tests"
+
+matrix:
+  include:
+    - stage: "Stage 1"
+      name: "Unit Tests"
 # ${TRAVIS_BUILD_DIR} = /home/travis/build/<user ie. NCAR>/METplus
-script: 
-  - pwd 
-  - ls -l
-  - echo ${TRAVIS_BUILD_DIR}
+      script: 
+       - pwd 
+       - ls -l
+       - echo ${TRAVIS_BUILD_DIR}
   #- export TASK=${TASK}
     # WARNING: can't have comments in if block below.
     # doc8 is an opinionated style checker
     # doc8 METplus returns errors in the rst. We want the build
     # to continue so either, add true; in the if conditional or
     # use allow_failures, keyword.
-  - if [[ ${TASK} == "docs" ]]; then
-      doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/;
-      true;
-    fi;
+       - if [[ ${TASK} == "docs" ]]; then
+           doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/;
+           true;
+         fi;
 
-matrix:
-  include:
     # Example Note adding python: "3.7-dev", before stage: Stage 2 keyword 
     # adds another job to Stage 1, and runs the script: in Stage 1.
     # Unless it is python: "3.7" than it is ignored since 3.7 already
