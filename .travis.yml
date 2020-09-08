@@ -138,8 +138,8 @@ matrix:
     - stage: "Stage 3"
       name: "Docker Setup
       python: 3.6
-        -mkdir -p ${OWNER_BUILD_DIR}/input
-        -mkdir -p ${OWNER_BUILD_DIR}/output
+        - mkdir -p ${OWNER_BUILD_DIR}/input
+        - mkdir -p ${OWNER_BUILD_DIR}/output
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
         - ls -alR ${OWNER_BUILD_DIR}/input
     - stage: "Stage 4"
