@@ -143,9 +143,10 @@ matrix:
         - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
         - ls -alR ${OWNER_BUILD_DIR}/input
+        - echo "After setup, VOLUMES= ",$VOLUMES
     - stage: "Stage 4"
       name: "Pytest Unit Tests"
-      python: 3.6 
+      python: 3.6
       script:
         - echo ${TASK}
         - echo ${HOME}
@@ -168,7 +169,8 @@ matrix:
       python: 3.7
       script:
         # add travis_wait before command because a case takes longer than 10 minutes to return
-        - travis_wait 30 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh cryosphere
+#       - travis_wait 30 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh cryosphere
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh cryosphere
     - name: "Use Case Tests - convection_allowing_models"
       python: 3.7
       script:
