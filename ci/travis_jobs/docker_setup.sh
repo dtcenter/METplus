@@ -2,6 +2,9 @@
 # clone repository because travis is handling that step
 export DO_GIT_CLONE=false
 
+echo 'source metplus_test_env.sh'
+source ${OWNER_BUILD_DIR}/METplus/internal_tests/use_cases/metplus_test_env.docker.sh
+
 echo Get Docker image: ${DOCKERHUB_TAG}
 echo 'doing docker build'
 # Note: adding --build-arg <arg-name> without any value tells docker to
