@@ -83,6 +83,9 @@ env:
     - DOCKERHUB_DEFAULT_REPO=dtcenter/metplus
     - DOCKERHUB_DEFAULT_TAGNAME=develop
     - DOCKERHUB_MET_TAGNAME=develop
+    - DOCKER_DATA_INPUT=/data/input/MET_Data
+    - DOCKER_DATA_OUTPUT=/output
+    - DOCKER_WORK_DIR=/metplus
     # The DOCKERHUB_USER_REPO setting ASSUMES your owner_name 
     # in travis ci IS THE SAME as your docker hub user_name,
     # since it is setting it  based on the travis repo slug.
@@ -91,40 +94,37 @@ env:
     # set to true to use default settings
     # if set to false, to use DOCKER_USER_* settings, your dockerhub container.
     - DOCKERHUB_USE_DEFAULT=true
-    - DOCKER_DATA_INPUT=/data/input/METplus_Data
-    - DOCKER_DATA_OUTPUT=/output
-    - DOCKER_WORKDIR=/metplus
 
   matrix:
     - TASK=docs
 
 # Stage 1 runs 2 jobs  x.1, x.2 
 # based on the python: keyword setting 3.7,3.6 above.
-
-matrix:
-   stage: "Stage 1"
-   name: "Unit Tests"
+stage: "Stage 1"
+#name: "Unit Tests"
 # ${TRAVIS_BUILD_DIR} = /home/travis/build/<user ie. NCAR>/METplus
-     - pwd 
-     - ls -l
-     - echo ${TRAVIS_BUILD_DIR}
+script: 
+  - pwd 
+  - ls -l
+  - echo ${TRAVIS_BUILD_DIR}
   #- export TASK=${TASK}
     # WARNING: can't have comments in if block below.
     # doc8 is an opinionated style checker
     # doc8 METplus returns errors in the rst. We want the build
     # to continue so either, add true; in the if conditional or
     # use allow_failures, keyword.
-     - if [[ ${TASK} == "docs" ]]; then
-         doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/;
-         true;
-       fi;
+  - if [[ ${TASK} == "docs" ]]; then
+      doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/;
+      true;
+    fi;
 
+matrix:
+  include:
     # Example Note adding python: "3.7-dev", before stage: Stage 2 keyword 
     # adds another job to Stage 1, and runs the script: in Stage 1.
     # Unless it is python: "3.7" than it is ignored since 3.7 already
     # defined for Stage 1.
     #- python: "3.7-dev"
-  include:
     - stage: "Stage 2"
       name: "Environment test"
       script: 
@@ -137,16 +137,8 @@ matrix:
           echo "==== who am I";
           whoami;
     - stage: "Stage 3"
-      name: "Docker Setup"
-      python: 3.7
-      script:
-        - mkdir -p ${OWNER_BUILD_DIR}/input
-        - mkdir -p ${OWNER_BUILD_DIR}/output
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
-        - ls -alR ${OWNER_BUILD_DIR}/input
-    - stage: "Stage 4"
       name: "Pytest Unit Tests"
-      python: 3.7
+      python: 3.6 
       script:
         - echo ${TASK}
         - echo ${HOME}
@@ -157,7 +149,8 @@ matrix:
         #
         - mkdir -p ${OWNER_BUILD_DIR}/pytmp.docker;
         - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
-        - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus -v ${OWNER_BUILD_DIR}/input:${DOCKER_DATA_INPUT} -v ${OWNER_BUILD_DIR}/data:${DOCKER_DATA_OUTPUT} ${DOCKERHUB_TAG} /bin/bash -c "pip3 install pytest-cov; export METPLUS_PYTEST_HOST=docker; cd /metplus/METplus/internal_tests/pytests; pytest --cov=../../metplus"
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
+        - docker run --rm -v ${OWNER_BUILD_DIR}:/metplus ${DOCKERHUB_TAG} /bin/bash -c "pip3 install pytest-cov; export METPLUS_PYTEST_HOST=docker; cd /metplus/METplus/internal_tests/pytests; pytest --cov=../../metplus"
         # Dump the output directories from running METplus
         - ls -alR ${OWNER_BUILD_DIR}/pytmp.docker
     - name: "Use Case Tests - met_tool_wrapper"
