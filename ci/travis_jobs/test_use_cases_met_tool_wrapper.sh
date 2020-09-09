@@ -38,7 +38,7 @@ mkdir -p ${TRAVIS_INPUT_BASE}
 
 # download GempakToCF.jar
 cd ${TRAVIS_INPUT_BASE}
-echo Downloading $gempak_to_cf_location
+echo Downloading $gempak_to_cf_location into ${TRAVIS_INPUT_BASE}
 curl -L -O $gempak_to_cf_location
 
 #${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
