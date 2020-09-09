@@ -18,6 +18,9 @@ mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
 echo mkdir -p ${TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
 
+echo docker images
+docker images
+
 #${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 
 echo Run tests...
