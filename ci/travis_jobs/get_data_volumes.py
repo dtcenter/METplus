@@ -2,6 +2,7 @@
 
 import sys
 import subprocess
+import shlex
 
 METPLUS_VERSION = '3.1'
 
@@ -26,12 +27,12 @@ for model_app_name in MODEL_APP_NAMES:
 
         cmd = f'docker pull dtcenter/metplus-data:{volume_name}'
         print(cmd)
-        subprocess.run(cmd, check=True)
+        subprocess.run(shlex.split(cmd), check=True)
 
         cmd = (f'docker create --name {model_app_name} '
                f'dtcenter/metplus-data:{volume_name}')
         print(cmd)
-        subprocess.run(cmd, check=True)
+        subprocess.run(shlex.split(cmd), check=True)
 
         # add name to volumes from list to pass to docker build
         volume_list.append(f'--volumes-from {model_app_name}')
