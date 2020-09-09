@@ -30,7 +30,17 @@ VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py met_tool_wrapper
 # download GempakToCF.jar
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/download_gempaktocf.sh
 
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker \"$@\"" $returncode "$VOLUMES"
+test_args=''
+for i in "$@"
+do
+  if [ -z "$i" ]; then
+    continue
+  fi
+
+  test_args=${test_args}" "${i}
+done
+
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}" $returncode "$VOLUMES"
     returncode=$?
 
 # remove logs dir and move data to previous output base so next run will not prompt
