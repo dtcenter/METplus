@@ -26,6 +26,9 @@ returncode=0
 # create data volumes and get list of arguments to pass to docker run
 VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py met_tool_wrapper $@`
 
+# download GempakToCF.jar
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/download_gempaktocf.sh
+
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker $@" $returncode "$VOLUMES"
     returncode=$?
 
