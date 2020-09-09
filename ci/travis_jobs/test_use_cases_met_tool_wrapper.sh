@@ -42,7 +42,7 @@ echo Running tests...
 returncode=0
 echo 'Calling docker_run_metplus, returncode=' $returncode
 
-VOLUMES="--volumes-from met_tool_wrapper"
+VOLUMES=""--volumes-from met_tool_wrapper\""
 
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper" $returncode $VOLUMES
 returncode=$?

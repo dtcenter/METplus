@@ -70,8 +70,8 @@ do
     echo calling docker_run_metplus
   
   # use docker_run_metplus.sh
-# use docker_run_metplus.sh
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_pygrib.sh; pip3 install metpy; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode $VOLUMES
+    # use docker_run_metplus.sh
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_pygrib.sh; pip3 install metpy; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode "$VOLUMES"
     returncode=$?
 
     # remove logs dir and move data to previous output base so next run will not prompt
@@ -84,7 +84,7 @@ do
 done
 
 if [ "$test_args" != "" ]; then
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}" $returncode $VOLUMES
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}" $returncode "$VOLUMES"
     returncode=$?
 
   # remove logs dir and move data to previous output base so next run will not prompt
