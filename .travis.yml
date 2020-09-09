@@ -187,7 +187,7 @@ matrix:
     - name: "Use Case Tests - medium_range3"
       python: 3.7
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --medium_range3
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_medium_range3.sh
     - name: "Use Case Tests - precipitation"
       python: 3.7
       script:
