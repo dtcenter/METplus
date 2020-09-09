@@ -142,7 +142,7 @@ matrix:
       script:
         - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
-        - ls -alR ${OWNER_BUILD_DIR}/input
+#        - ls -alR ${OWNER_BUILD_DIR}/input
     - stage: "Stage 4"
       name: "Pytest Unit Tests"
       python: 3.6
