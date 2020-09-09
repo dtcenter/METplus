@@ -4,7 +4,7 @@ import sys
 import subprocess
 import shlex
 
-METPLUS_VERSION = '3.1'
+METPLUS_VERSION = '4.0'
 
 MODEL_APP_NAMES = ('met_tool_wrapper',
                    'convection_allowing_models',
