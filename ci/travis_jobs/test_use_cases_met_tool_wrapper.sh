@@ -20,35 +20,17 @@ mkdir -p ${TRAVIS_OUTPUT_BASE}
 echo mkdir -p ${TRAVIS_INPUT_BASE}
 mkdir -p ${TRAVIS_INPUT_BASE}
 
-#echo docker images
-#docker images
-
-#cd ${OWNER_BUILD_DIR}/test.metplus.data
-
-#echo Downloading $met_tool_wrapper_tarball
-#echo curl -L -O ${met_tool_wrapper_tarball}
-#curl -L -O ${met_tool_wrapper_tarball}
-
-#echo file `basename $met_tool_wrapper_tarball`
-#tarball_basename=`basename $met_tool_wrapper_tarball`
-#echo `file $tarball_basename`
-
-#echo tar xfzp `basename $met_tool_wrapper_tarball`
-#tar xfzp `basename $met_tool_wrapper_tarball`
-
 # download GempakToCF.jar
 cd ${TRAVIS_INPUT_BASE}
 echo Downloading $gempak_to_cf_location into ${TRAVIS_INPUT_BASE}
 curl -L -O $gempak_to_cf_location
 
-#${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 
 echo Running tests...
 
 returncode=0
 echo 'Calling docker_run_metplus, returncode=' $returncode
-
-#VOLUMES="--volumes-from met_tool_wrapper"
 
 VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py met_tool_wrapper`
 

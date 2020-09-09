@@ -18,10 +18,7 @@ mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
 echo mkdir -p ${TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
 
-echo docker images
-docker images
-
-#${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 
 echo Run tests...
 returncode=0
@@ -41,28 +38,6 @@ do
     continue
   fi
 
-#   # get sample data tarball name
-#  if [ $i == "convection_allowing_models" ]; then
-#      VOLUMES+=" --volumes-from $i"
-#  elif [ $i == "climate" ]; then
-#      VOLUMES+=" --volumes-from $i"
-#  elif [ $i == "cryosphere" ]; then
-#      VOLUMES+=" --volumes-from $i"
-#  elif [ ${i:0: -1} == "medium_range" ]; then
-#      VOLUMES+=" --volumes-from medium_range"
-#  elif [ $i == "precipitation" ]; then
-#      VOLUMES+=" --volumes-from $i"
-#  elif [ $i == "s2s" ]; then
-#      VOLUMES+=" --volumes-from $i"
-#  elif [ $i == "space_weather" ]; then
-#      VOLUMES+=" --volumes-from $i"
-#  elif [ $i == "tc_and_extra_tc" ]; then
-#      VOLUMES+=" --volumes-from $i"
-#  else
-#      echo Invalid model_applications directory specified: $i
-#      exit 1
-#  fi
-
   # run use case that requires additional packages
   # otherwise add to command line args for test script
   if [ $i == "medium_range3" ]; then
@@ -80,21 +55,16 @@ do
     # remove logs dir and move data to previous output base so next run will not prompt
     rm -rf ${TRAVIS_OUTPUT_BASE}/logs
     mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
-#  else
-#    test_args=${test_args}" --"${i}      
   fi
 
 done
 
-#if [ "$test_args" != "" ]; then
-#    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}" $returncode "$VOLUMES"
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker $@" $returncode "$VOLUMES"
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker $@" $returncode "$VOLUMES"
     returncode=$?
 
-  # remove logs dir and move data to previous output base so next run will not prompt
-  rm -rf ${TRAVIS_OUTPUT_BASE}/logs
-  mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
-#fi
+# remove logs dir and move data to previous output base so next run will not prompt
+rm -rf ${TRAVIS_OUTPUT_BASE}/logs
+mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
 
 echo Tests completed.
 
