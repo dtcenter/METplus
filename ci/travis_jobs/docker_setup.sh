@@ -55,8 +55,8 @@ echo 'done'
 
 echo 'Owner Builddir ',${OWNER_BUILD_DIR}
 echo 'Docker Workdir ',${DOCKER_WORK_DIR}
-echo 'Docker Inputdir ',${DOCKER_DATA_INPUT}
-echo 'Docker Outputdir ',${DOCKER_DATA_OUTPUT}
+#echo 'Docker Inputdir ',${DOCKER_DATA_INPUT}
+#echo 'Docker Outputdir ',${DOCKER_DATA_OUTPUT_DIR}
 
 #echo 'doing docker run, mapping containers'
 #docker run --rm $VOLUMES  -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} -v ${OWNER_BUILD_DIR}/input:${DOCKER_DATA_INPUT} -v ${OWNER_BUILD_DIR}/output:/output ${DOCKERHUB_TAG} /bin/bash -c "ls -alR ${DOCKER_DATA_INPUT}"

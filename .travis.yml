@@ -83,9 +83,7 @@ env:
     - DOCKERHUB_DEFAULT_REPO=dtcenter/metplus
     - DOCKERHUB_DEFAULT_TAGNAME=develop
     - DOCKERHUB_MET_TAGNAME=develop
-    - DOCKER_DATA_INPUT=/data/input/METplus_Data
-    - DOCKER_DATA_OUTPUT=/data/output
-    - DOCKER_WORK_DIR=/metplus
+    - DOCKER_DATA_DIR=/data
     # The DOCKERHUB_USER_REPO setting ASSUMES your owner_name 
     # in travis ci IS THE SAME as your docker hub user_name,
     # since it is setting it  based on the travis repo slug.
