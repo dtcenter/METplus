@@ -25,11 +25,11 @@ def main():
             volume_name = f'{METPLUS_VERSION}-{model_app_name}'
 
             cmd = f'docker pull dtcenter/metplus-data:{volume_name}'
-            subprocess.run(shlex.split(cmd))
+            subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL)
 
             cmd = (f'docker create --name {model_app_name} '
                    f'dtcenter/metplus-data:{volume_name}')
-            subprocess.run(shlex.split(cmd))
+            subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL)
 
             # add name to volumes from list to pass to docker build
             volume_list.append(f'--volumes-from {model_app_name}')
