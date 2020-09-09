@@ -2,7 +2,7 @@
 
 # set umask to 002 so that the travis user has (group) permission
 # to move files that are created by docker
-
+VOLUMES=$3
 echo 'In docker_run_metplus, $VOLUMES= ',$VOLUMES
 
 echo  In docker_run_metplus.sh, RUNNING: $1

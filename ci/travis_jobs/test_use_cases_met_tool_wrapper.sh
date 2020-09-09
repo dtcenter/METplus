@@ -46,9 +46,11 @@ ls -alR ${OWNER_BUILD_DIR}/input
 echo Running tests...
 
 returncode=0
-echo 'Calling docker_run_metplus, returncode=' $returncode 
+echo 'Calling docker_run_metplus, returncode=' $returncode
 
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper" $returncode
+VOLUMES="--volumes-from met_tool_wrapper"
+
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper" $returncode $VOLUMES
 returncode=$?
 
 echo 'Intermediate return code=' $returncode 
@@ -56,7 +58,7 @@ echo 'Intermediate return code=' $returncode
 rm -rf ${TRAVIS_OUTPUT_BASE}/logs
 mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
 
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip3 install h5py; ${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip3 install h5py; ${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode $VOLUMES
 returncode=$?
 
 echo '2nd Intermediate return code=' $returncode 
@@ -65,7 +67,7 @@ rm -rf ${TRAVIS_OUTPUT_BASE}/logs
 mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
 
 ### put cyclone plotter with cartopy and matplotlib
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_cartopy.sh; pip3 install matplotlib; export DISPLAY=localhost:0.0; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_cartopy.sh; pip3 install matplotlib; export DISPLAY=localhost:0.0; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode $VOLUMES
 returncode=$?
 
 echo 'Final return code=' $returncode 

@@ -20,17 +20,49 @@ mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
 echo mkdir -p ${TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
 
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
+#${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 
 echo Run tests...
 returncode=0
 
+# set volumes to include met_tool_wrapper because some use cases mistakenly use
+# data from that volume. Eventually this should be set to an empty string
+VOLUMES="--volumes-from met_tool_wrapper"
+
+# hold all command line arguments to pass to test_use_cases script
 test_args=''
+
+# loop over all command line arguments and add appropriate data volumes
 for i in "$@"
 do
   if [ -z "$i" ]; then
     continue
   fi
+
+   # get sample data tarball name
+  if [ $i == "convection_allowing_models" ]; then
+      VOLUMES+=" --volumes-from $i"
+  elif [ $i == "climate" ]; then
+      VOLUMES+=" --volumes-from $i"
+  elif [ $i == "cryosphere" ]; then
+      VOLUMES+=" --volumes-from $i"
+  elif [ ${i:0: -1} == "medium_range" ]; then
+      VOLUMES+=" --volumes-from medium_range"
+  elif [ $i == "precipitation" ]; then
+      VOLUMES+=" --volumes-from $i"
+  elif [ $i == "s2s" ]; then
+      VOLUMES+=" --volumes-from $i"
+  elif [ $i == "space_weather" ]; then
+      VOLUMES+=" --volumes-from $i"
+  elif [ $i == "tc_and_extra_tc" ]; then
+      VOLUMES+=" --volumes-from $i"
+  else
+      echo Invalid model_applications directory specified: $i
+      exit 1
+  fi
+
+  # run use case that requires additional packages
+  # otherwise add to command line args for test script
   if [ $i == "medium_range3" ]; then
       
 
@@ -41,7 +73,7 @@ do
   
   # use docker_run_metplus.sh
 # use docker_run_metplus.sh
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_pygrib.sh; pip3 install metpy; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_pygrib.sh; pip3 install metpy; /metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode $VOLUMES
     returncode=$?
 
     # remove logs dir and move data to previous output base so next run will not prompt
@@ -54,7 +86,7 @@ do
 done
 
 if [ "$test_args" != "" ]; then
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}" $returncode
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "/metplus/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}" $returncode $VOLUMES
     returncode=$?
 
   # remove logs dir and move data to previous output base so next run will not prompt
