@@ -15,7 +15,8 @@ export METPLUS_TEST_PREV_OUTPUT_BASE=/data/output-old
 export METPLUS_TEST_INPUT_BASE=/data/input/METplus_Data
 
 # location of GempakToCF to run tests that use Gempak
-export METPLUS_TEST_GEMPAKTOCF_JAR=${METPLUS_TEST_INPUT_BASE}/GempakToCF.jar
+export METPLUS_TEST_GEMPAKTOCF_JAR=/data/input/GempakToCF.jar
+
 # Location of ncap2 exe
 export METPLUS_TEST_NCAP2=ncap2
 
