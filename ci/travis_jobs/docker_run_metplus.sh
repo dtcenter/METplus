@@ -6,7 +6,7 @@ VOLUMES=$3
 echo 'In docker_run_metplus, $VOLUMES= ',$VOLUMES
 
 echo  In docker_run_metplus.sh, RUNNING: $1
-docker run --rm --user root:$UID -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} -v ${OWNER_BUILD_DIR}/input:${DOCKER_DATA_INPUT} -v ${OWNER_BUILD_DIR}/output:/output ${DOCKERHUB_TAG} /bin/bash -c "umask 002; $1"
+docker run --rm --user root:$UID -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} -v ${OWNER_BUILD_DIR}/input:${DOCKER_DATA_INPUT} -v ${OWNER_BUILD_DIR}/output:${DOCKER_DATA_OUTPUT} ${DOCKERHUB_TAG} /bin/bash -c "umask 002; $1"
 ret=$?
 
 #check return codes
