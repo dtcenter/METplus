@@ -17,24 +17,25 @@ MODEL_APP_NAMES = ('met_tool_wrapper',
                    'tc_and_extra_tc'
                   )
 
-volume_list = []
+def main():
+    volume_list = []
 
-for model_app_name in MODEL_APP_NAMES:
-    if any([model_app_name in item for item in sys.argv]):
-        volume_name = f'{METPLUS_VERSION}-{model_app_name}'
+    for model_app_name in MODEL_APP_NAMES:
+        if any([model_app_name in item for item in sys.argv]):
+            volume_name = f'{METPLUS_VERSION}-{model_app_name}'
 
-        print(f'pulling {volume_name}')
+            cmd = f'docker pull dtcenter/metplus-data:{volume_name}'
+            subprocess.run(shlex.split(cmd))
 
-        cmd = f'docker pull dtcenter/metplus-data:{volume_name}'
-        print(cmd)
-        subprocess.run(shlex.split(cmd), check=True)
+            cmd = (f'docker create --name {model_app_name} '
+                   f'dtcenter/metplus-data:{volume_name}')
+            subprocess.run(shlex.split(cmd))
 
-        cmd = (f'docker create --name {model_app_name} '
-               f'dtcenter/metplus-data:{volume_name}')
-        print(cmd)
-        subprocess.run(shlex.split(cmd), check=True)
+            # add name to volumes from list to pass to docker build
+            volume_list.append(f'--volumes-from {model_app_name}')
 
-        # add name to volumes from list to pass to docker build
-        volume_list.append(f'--volumes-from {model_app_name}')
+    return ' '.join(volume_list)
 
-print(' '.join(volume_list))
+if __name__ == "__main__":
+    out = main()
+    print(out)
