@@ -139,7 +139,7 @@ matrix:
       python: 3.7 
       script:
         - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
+#        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 #        - ls -alR ${OWNER_BUILD_DIR}/input
     - stage: "Stage 4"
       name: "Pytest Unit Tests"
@@ -166,37 +166,36 @@ matrix:
       python: 3.7
       script:
         # add travis_wait before command because a case takes longer than 10 minutes to return
-#       - travis_wait 30 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh cryosphere
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh cryosphere
+       - travis_wait 30 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --cryosphere
     - name: "Use Case Tests - convection_allowing_models"
       python: 3.7
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh convection_allowing_models
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --convection_allowing_models
     - name: "Use Case Tests - climate"
       python: 3.7
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh climate
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --climate
     - name: "Use Case Tests - medium_range1"
       python: 3.7
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range1
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --medium_range1
     - name: "Use Case Tests - medium_range2"
       python: 3.7
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range2
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --medium_range2
 # medium_range3 is TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
     - name: "Use Case Tests - medium_range3"
       python: 3.7
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh medium_range3
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --medium_range3
     - name: "Use Case Tests - precipitation"
       python: 3.7
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh precipitation
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --precipitation
     - name: "Use Case Tests - s2s, space_weather, tc_and_extra_tc"
       python: 3.7
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh s2s space_weather tc_and_extra_tc
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --s2s --space_weather --tc_and_extra_tc
 
   # stage 1 fails due to doc8 has errors.
   # This allows stage 1 to fail so the build can continue.
