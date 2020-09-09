@@ -10,7 +10,6 @@ gempak_to_cf_location=https://dtcenter.org/sites/default/files/community-code/me
 
 source ${OWNER_BUILD_DIR}/METplus/internal_tests/use_cases/metplus_test_env.docker.sh
 export TRAVIS_OUTPUT_BASE=${METPLUS_TEST_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
-export TRAVIS_INPUT_BASE=${METPLUS_TEST_INPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
 export TRAVIS_PREV_OUTPUT_BASE=${METPLUS_TEST_PREV_OUTPUT_BASE/$DOCKER_WORK_DIR/$OWNER_BUILD_DIR}
 
 echo 'Owner Build Dir:' ${OWNER_BUILD_DIR}
@@ -19,8 +18,6 @@ echo mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
 mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
 echo mkdir -p ${TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
-echo mkdir -p ${TRAVIS_INPUT_BASE}
-mkdir -p ${TRAVIS_INPUT_BASE}
 
 cd ${OWNER_BUILD_DIR}/test.metplus.data
 
@@ -39,9 +36,6 @@ cd ${OWNER_BUILD_DIR}/test.metplus.data
 #curl -L -O $gempak_to_cf_location
 
 #${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
-
-echo 'listing input directory'
-ls -alR ${OWNER_BUILD_DIR}/input
 
 echo Running tests...
 
