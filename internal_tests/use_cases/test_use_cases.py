@@ -27,7 +27,7 @@ import calendar
 import argparse
 
 from metplus.util import config_metplus
-from metplus.util.metplus_check import plot_wrappers_are_enabled
+#from metplus.util.metplus_check import plot_wrappers_are_enabled
 
 # keep track of use cases that failed to report at the end of execution
 failed_runs = []
@@ -148,11 +148,11 @@ use_cases['tc_and_extra_tc'] = [
 ]
 
 # if plot wrappers are enabled, add those use cases to the test lists
-if plot_wrappers_are_enabled(os.environ):
-    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf")
-    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf")
-    use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf")
-    use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf")
+#if plot_wrappers_are_enabled(os.environ):
+#    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf")
+#    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf")
+#    use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf")
+#    use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf")
 
 def get_param_list(param):
     conf = metplus_home+"/internal_tests/use_cases/system.conf"
