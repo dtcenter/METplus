@@ -3,7 +3,7 @@ import os
 import numpy as np
 import netCDF4
 from Blocking import BlockingCalculation
-
+from plot_blocking import plot_blocks
 
 def main():
 
@@ -75,6 +75,8 @@ def main():
     #cblout[:] = cbls
     #msdtout[:] = mhweight
     #cblfile.close()
+
+    plot_blocks(block_freq,gibls,ibls)
 
 
 if __name__ == "__main__":

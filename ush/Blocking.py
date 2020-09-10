@@ -20,11 +20,14 @@ class BlockingCalculation():
         self.start_date = loop_time.strftime('%Y%m%d%H')
         self.end_date = end_time.strftime('%Y%m%d%H')
         self.start_mth = loop_time.strftime('%m')
-        self.blocking_dir = config.getdir('Blocking','BLOCKING_DIR')
+        self.blocking_anomaly_dir = config.getstr('Blocking','BLOCKING_ANOMALY_DIR')
+        self.blocking_anomaly_var = config.getstr('Blocking','BLOCKING_ANOMALY_VAR')
+        self.blocking_dir = config.getstr('Blocking','BLOCKING_DIR')
         self.blocking_var = config.getstr('Blocking','BLOCKING_VAR')
         self.smoothing_pts = config.getint('Blocking','SMOOTHING_PTS')
         lat_delta_in = config.getstr('Blocking','LAT_DELTA')
         self.lat_delta = list(map(int,lat_delta_in.split(",")))
+        self.n_s_limits = config.getint('Blocking','NORTH_SOUTH_LIMITS')
         self.ibl_dist = config.getint('Blocking','IBL_DIST')
         self.ibl_in_gibl = config.getint('Blocking','IBL_IN_GIBL')
         self.gibl_overlap = config.getint('Blocking','GIBL_OVERLAP')
@@ -32,6 +35,10 @@ class BlockingCalculation():
         self.block_travel = config.getint('Blocking','BLOCK_TRAVEL')
         self.block_method = config.getstr('Blocking','BLOCK_METHOD')
 
+        # Check data requirements
+        if self.smoothing_pts % 2 == 0:
+            print('ERROR: Smoothing Radius must be an odd number given in grid points, Exiting...')
+            exit()
 
     def read_nc_met(self,indir,invar):
 
@@ -116,12 +123,12 @@ class BlockingCalculation():
         sdim = len(var_3d[:,0,0])/float(len(yrlist))
         var_4d = np.reshape(var_3d,[len(yrlist),int(sdim),len(var_3d[0,:,0]),len(var_3d[0,0,:])])
 
-        return var_4d,lats,lons,yr,mhweight
+        return var_4d,lats,lons,yr
 
 
     def run_CBL(self):
 
-        #z500_anom_4d,lats,lons,yr = self.read_nc_met(self.blocking_dir,self.blocking_var)
+        #z500_anom_4d,lats,lons,yr = self.read_nc_met(self.blocking_anomaly_dir,self.blocking_anomaly_var)
         z500_anom_4d = np.load('Z500_anom.npy')
         lats = np.load('lats1.npy')
         lons = np.load('lons1.npy')
@@ -142,7 +149,7 @@ class BlockingCalculation():
         for j in np.arange(0,len(yr),1):
             CBL[j,:] = lats[cbli[j,:]]
 
-        ###Apply 9-degree moving average to smooth CBL profiles
+        ###Apply Moving Average to Smooth CBL Profiles
         lt = len(lons)
         CBLf = np.zeros((len(z500_anom_4d[:,0,0,0]),len(lons)))
         m=int((self.smoothing_pts-1)/2.0)
@@ -151,32 +158,28 @@ class BlockingCalculation():
             ma_indices = np.where(ma_indices >= lt,ma_indices-lt,ma_indices)
             CBLf[:,i] = np.nanmean(CBL[:,ma_indices],axis=1).astype(int)
         
-        #np.save('TINA_CBL.npy',CBLf)
         return CBLf,lats,lons,yr,mhweight
 
 
     def run_mod_blocking1d(self,a,cbl,lat,lon,meth):
-        d = self.lat_delta
-        blon=0
-        dc = 90 - cbl
-        dc = dc.astype(int)
-        db = 30
-        BI=np.zeros((len(a[:,0,0]),len(lon)))
+        lat_d = self.lat_delta
+        #blon = 0
+        dc = (90 - cbl).astype(int)
+        db = self.n_s_limits
+        BI = np.zeros((len(a[:,0,0]),len(lon)))
         blon = np.zeros((len(a[:,0,0]),len(lon)))
         if meth=='PH':
             # loop through days
             for k in np.arange(0,len(a[:,0,0]),1):
                 blontemp=0
-                bitemp=0
+                #bitemp=0
                 q=0
-                BI1=np.zeros((3,len(lon)))
-                for l in d:
+                BI1=np.zeros((len(lat_d),len(lon)))
+                for l in lat_d:
                     blon1 = np.zeros(len(lon))
-                    d0 = dc-l#(dc - 1*db/2) - l
-                    dn = (dc - 1*db/2) - l
-                    dn = dn.astype(np.int64)
-                    ds = (dc + 1*db/2) - l
-                    ds = ds.astype(np.int64)
+                    d0 = dc-l
+                    dn = ((dc - 1*db/2) - l).astype(np.int64)
+                    ds = ((dc + 1*db/2) - l).astype(np.int64)
                     GHGS = np.zeros(len(cbl))
                     GHGN = np.zeros(len(cbl))
                     for jj in np.arange(0,len(cbl),1):
@@ -189,7 +192,6 @@ class BlockingCalculation():
                 blon1[block]=1
                 blontemp = blontemp + blon1
                 BI[k,:] = BI1
-                #blontemp[blontemp!=0]=1
                 blon[k,:] = blontemp
 
         return blon,BI
@@ -197,7 +199,7 @@ class BlockingCalculation():
 
     def run_Calc_IBL(self,cbl):
 
-        #z500_daily,lats,lons,yr = self.read_nc_met(self.daily_dir,self.var)
+        #z500_daily,lats,lons,yr = self.read_nc_met(self.blocking_dir,self.blocking_var)
         z500_daily = np.load('Z500_daily.npy')
         lats = np.load('lats2.npy')
         lons = np.load('lons2.npy')
@@ -214,10 +216,9 @@ class BlockingCalculation():
             blon,BI[i,:,:] = self.run_mod_blocking1d(z500_daily[i,:,:,:],cbl,lats,lons,self.block_method)
             blonlong[i,:,:] = blon
 
-        print(blonlong)
-        exit()
-        np.save('TINA_IBL.npy',blonlong)
+        #np.save('Nstart_IBL.npy',blonlong)
         return blonlong
+
 
     def run_Calc_GIBL(self,ibl,lons,dd,year):
 
@@ -230,7 +231,7 @@ class BlockingCalculation():
 
         for i in np.arange(0,len(GIBL[:,0,0]),1):
             for k in np.arange(0,len(GIBL[0,:,0]),1):
-                gibli = np.zeros(360)
+                gibli = np.zeros(len(GIBL[0,0,:]))
                 thresh = crit/2.0
                 a = ibl[i,k,:]
                 db = self.ibl_dist
@@ -265,12 +266,10 @@ class BlockingCalculation():
                 if len(btfin)==0:
                     continue
                 gibl1 = btfin
-                temp = np.where(gibl1>359)[0]
+                temp = np.where(gibl1>=360)[0]
                 gibl1[temp] = gibl1[temp] - 360
-                gibli[gibl1.astype(int)]=1
+                gibli[gibl1.astype(int)] = 1
                 GIBL[i,k,:] = gibli
-
-        np.save('TINA_GIBL.npy',GIBL)
 
         return GIBL
 
@@ -284,10 +283,6 @@ class BlockingCalculation():
 
 
     def run_Calc_Blocks(self,ibl,GIBL,lon,year):
-
-        days  = np.arange(1,32,1)
-        days = np.append(days,days)
-        days = np.append(days,np.arange(1,29,1))
 
         crit = self.ibl_in_gibl
 
@@ -303,7 +298,7 @@ class BlockingCalculation():
                 ct=1
                 ai = np.where(a==1)[0]
                 ai = np.append(ai,ai+360)
-                temp = np.where(ai>359)[0]
+                temp = np.where(ai>=360)[0]
                 bi=list(ai)
                 bi = np.array(bi)
                 bi[temp] = bi[temp]-360
@@ -311,11 +306,12 @@ class BlockingCalculation():
                     b = ai[i]
                     b1 = ai[i+1]
                     diff = b1-b
+                    c[y,k,bi[i]] = ct
                     if diff==1:
-                        c[y,k,bi[i]] = ct
+                        #c[y,k,bi[i]] = ct
                         ct=ct+1
-                    if diff != 1:
-                        c[y,k,bi[i]]=ct
+                    else:
+                        #c[y,k,bi[i]]=ct
                         sz = np.append(sz,ct)
                         ct=1
 
@@ -335,6 +331,7 @@ class BlockingCalculation():
 
         A = np.zeros(360)
         A = np.expand_dims(A,axis=0)
+        lon = np.arange(0,360,1)
 
         ################# - Splitting up each GIBL into its own array - ###################
 
@@ -367,7 +364,6 @@ class BlockingCalculation():
         A = A[1:]
 
         ######### - Getting rid of non-consectutve days which would prevent blocking - #################
-        print(A)
         dd=[]
         dy = []
         dA = A[0]
@@ -405,7 +401,7 @@ class BlockingCalculation():
             midtemp = np.median(temp)
             middle = np.append(middle,midtemp)
 
-        overlap=self.gibl_overlap = 10
+        overlap = self.gibl_overlap
 
         #####Track blocks. Makes sure that blocks overlap with at least 10 longitude points on consecutive days
         fin = [[]]
@@ -454,7 +450,7 @@ class BlockingCalculation():
                 for ll in np.arange(0,len(locb)-1,1):
                     if ((dd[locb[ll+1].astype(int)] - dd[locb[ll1].astype(int)]) >=1) & ((dd[locb[ll+1].astype(int)] - dd[locb[ll1].astype(int)]) <=2):
                         add = datemp[ll1] + datemp[ll+1]
-                        ai = np.where(add==2)[0]
+                    ai = np.where(add==2)[0]
                     if len(ai)>overlap:
                         locbi=np.append(locbi,locb[ll+1])
                         ll1=ll+1
@@ -484,7 +480,7 @@ class BlockingCalculation():
         ######cancel block moment it travels out of this limit
         newblock = [[]]
         newnoblock=[[]]
-        distthresh = 45
+        distthresh = self.block_travel
         for bb in blocks:
             diffb = []
             start = middle[bb[0].astype(int)]
@@ -500,10 +496,6 @@ class BlockingCalculation():
                     noblock = noblock + [bb]
 
         blocks = newblock[1:]
-
-        #londist = 100
-        #plon = np.arange(-londist,londist+1,1)
-        #plat = np.arange(30,-31,-1)
 
         #Create a final array with blocking longitudes. Similar to IBL/GIBL, but those that pass the duration threshold
         blockfreq = np.zeros((len(year),len(ibl[0,:,0]),360))
