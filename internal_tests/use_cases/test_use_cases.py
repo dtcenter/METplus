@@ -146,10 +146,8 @@ use_cases['tc_and_extra_tc'] = [
     use_case_dir + "/model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf",
 ]
 
-#tea The use cases below require additional dependencies and are no longer in the use_cases section
-#    They can be run using the --config option
-
-#if plot_wrappers_are_enabled(os.environ):
+# The use cases below require additional dependencies and are no longer run via the use_cases dictionary
+# They can be run using the --config option if needed
 #    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf")
 #    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf")
 #    use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf")
