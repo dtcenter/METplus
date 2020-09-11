@@ -178,6 +178,7 @@ def run_test_use_case(param, test_metplus_base):
     # to the 2nd last file to use as the output directory
     # last param file is always the system.conf file
     param_files = [param for param in params if os.path.exists(param)]
+
     out_dir = os.path.join(config.getdir('OUTPUT_BASE'), os.path.basename(param_files[-2]))
 
     cmd = os.path.join(test_metplus_base, "ush", "master_metplus.py")
