@@ -47,9 +47,8 @@ RUN echo export PATH=$PATH:/metplus/METplus/ush >> /etc/bashrc \
 # 
 # && echo export METPLUS_DISABLE_PLOT_WRAPPERS=yes >> /etc/bashrc \
 # && echo setenv METPLUS_DISABLE_PLOT_WRAPPERS yes >> /etc/csh.cshrc
-ENV METPLUS_DISABLE_PLOT_WRAPPERS yes
 
-#
+
 # Install required packages: Pandas, Cartopy*
 #  - *dateutil, pytest
 #

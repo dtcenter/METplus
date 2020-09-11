@@ -27,7 +27,6 @@ import calendar
 import argparse
 
 from metplus.util import config_metplus
-from metplus.util.metplus_check import plot_wrappers_are_enabled
 
 # keep track of use cases that failed to report at the end of execution
 failed_runs = []
@@ -147,12 +146,12 @@ use_cases['tc_and_extra_tc'] = [
     use_case_dir + "/model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf",
 ]
 
-# if plot wrappers are enabled, add those use cases to the test lists
-if plot_wrappers_are_enabled(os.environ):
-    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf")
-    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf")
-    use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf")
-    use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf")
+# The use cases below require additional dependencies and are no longer run via the use_cases dictionary
+# They can be run using the --config option if needed
+#    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf")
+#    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf")
+#    use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf")
+#    use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf")
 
 def get_param_list(param):
     conf = metplus_home+"/internal_tests/use_cases/system.conf"
@@ -178,6 +177,7 @@ def run_test_use_case(param, test_metplus_base):
     # to the 2nd last file to use as the output directory
     # last param file is always the system.conf file
     param_files = [param for param in params if os.path.exists(param)]
+
     out_dir = os.path.join(config.getdir('OUTPUT_BASE'), os.path.basename(param_files[-2]))
 
     cmd = os.path.join(test_metplus_base, "ush", "master_metplus.py")
