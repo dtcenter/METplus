@@ -58,7 +58,8 @@ RUN echo export PATH=$PATH:/metplus/METplus/ush >> /etc/bashrc \
 RUN yum -y update \
  && yum -y install nco.x86_64 \
  && yum -y install java-1.8.0-openjdk \
- && python3 -m pip install pytest
+ && python3 -m pip install pytest \
+ && python3 -m pip install netCDF4
 
 
 ARG SOURCE_BRANCH

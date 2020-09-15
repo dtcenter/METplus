@@ -2722,5 +2722,19 @@ def iterate_check_position(input_list, check_first):
 
     yield last, not check_first
 
+def is_met_netcdf_file(file_path):
+    try:
+        from netCDF4 import Dataset
+        nc_file = Dataset(file_path, 'r')
+        getattr(nc_file, 'MET_version')
+    except ImportError:
+        raise
+    except (AttributeError, OSError):
+        # if attribute doesn't exist, file is not a MET generated NetCDF file
+        # also if not a NetCDF file, OSError is thrown
+        return False
+
+    return True
+
 if __name__ == "__main__":
     gen_init_list("20141201", "20150331", 6, "18")

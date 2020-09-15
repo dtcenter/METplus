@@ -832,7 +832,8 @@ class CommandBuilder:
         self.c_dict[f'{input_type}_FILE_TYPE'] = f"file_type = {data_type};"
         return file_ext
 
-    def get_field_info(self, d_type, v_name, v_level='', v_thresh=[], v_extra=''):
+    def get_field_info(self, d_type, v_name, v_level='', v_thresh=[], v_extra='',
+                       is_netcdf=False):
         """! Format field information into format expected by MET config file
               Args:
                 @param v_level level of data to extract
@@ -844,7 +845,7 @@ class CommandBuilder:
                 @return Returns formatted field information
         """
         # separate character from beginning of numeric level value if applicable
-        _, level = util.split_level(v_level)
+        level_letter, level = util.split_level(v_level)
 
         # list to hold field information
         fields = []
@@ -858,20 +859,20 @@ class CommandBuilder:
 
         # if neither input is probabilistic, add all cat thresholds to same field info item
         if not self.c_dict.get('FCST_IS_PROB', False) and not self.c_dict.get('OBS_IS_PROB', False):
-
-            # if pcp_combine was run, use name_level, (*,*) format
-            # if not, use user defined name/level combination
-            if (not self.c_dict.get('USE_EXPLICIT_NAME_AND_LEVEL', False) and
-                                    d_type != 'ENS' and
-                                    self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False)):
-                field = "{ name=\"" + v_name + "_" + level + \
-                        "\"; level=\"(*,*)\";"
+            # if grib level name is used but the data is NetCDF, reformat
+            # name = name_level and level = "(*,*)"
+            if level_letter and is_netcdf:
+                field_name = f'{v_name}_{level}'
+                self.logger.warning('GRIB type level is set but the input file is NetCDF. '
+                                    f'Setting field name to {field_name}')
             else:
-                field = "{ name=\"" + v_name + "\";"
+                field_name = v_name
 
-                # add level if it is set
-                if v_level:
-                    field += " level=\"" +  v_level + "\";"
+            field = "{ name=\"" + field_name + "\";"
+
+            # add level if it is set
+            if v_level:
+                field += " level=\"" + util.remove_quotes(v_level) + "\";"
 
             # add threshold if it is set
             if cat_thresh:
@@ -897,17 +898,17 @@ class CommandBuilder:
                     # field name to the call to the script
                     if util.is_python_script(v_name):
                         field = "{ name=\"" + v_name + "\"; prob=TRUE;"
-                    elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF' or \
+                    elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF' or is_netcdf or \
                       not self.c_dict[d_type + '_PROB_IN_GRIB_PDS']:
                         field = "{ name=\"" + v_name + "\";"
                         if v_level:
-                            field += " level=\"" +  v_level + "\";"
+                            field += " level=\"" + util.remove_quotes(v_level) + "\";"
                         field += " prob=TRUE;"
                     else:
                         # a threshold value is required for GRIB prob DICT data
                         if thresh is None:
                             self.log_error('No threshold was specified for probabilistic '
-                                              'forecast GRIB data')
+                                           'forecast GRIB data')
                             return None
 
                         thresh_str = ""
@@ -938,16 +939,18 @@ class CommandBuilder:
                     fields.append(field)
             else:
                 # if input being processed is not probabilistic but the other input is
+                if level_letter and is_netcdf:
+                    field_name = f'{v_name}_{level}'
+                    self.logger.warning('GRIB type level is set but the input file is NetCDF. '
+                                        f'Setting field name to {field_name}')
+                else:
+                    field_name = v_name
+
                 for thresh in threshs:
-                    # if pcp_combine was run, use name_level, (*,*) format
-                    # if not, use user defined name/level combination
-                    if self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
-                        field = "{ name=\"" + v_name + "_" + level + \
-                                "\"; level=\"(*,*)\";"
-                    else:
-                        field = "{ name=\"" + v_name + "\";"
-                        if v_level:
-                            field += " level=\"" + v_level + "\";"
+                    field = "{ name=\"" + field_name + "\";"
+
+                    if v_level:
+                        field += " level=\"" + util.remove_quotes(v_level) + "\";"
 
                     if thresh is not None:
                         field += " cat_thresh=[ " + str(thresh) + " ];"

@@ -250,18 +250,23 @@ that reformat gridded data
 
         self.infiles.extend(obs_path)
 
+        fcst_is_netcdf = util.is_met_netcdf_file(model_path)
+        obs_is_netcdf = util.is_met_netcdf_file(obs_path)
+
         # get field info field a single field to pass to the MET config file
         fcst_field_list = self.get_field_info(v_level=var_info['fcst_level'],
                                               v_thresh=var_info['fcst_thresh'],
                                               v_name=var_info['fcst_name'],
                                               v_extra=var_info['fcst_extra'],
-                                              d_type='FCST')
+                                              d_type='FCST',
+                                              is_netcdf=fcst_is_netcdf)
 
         obs_field_list = self.get_field_info(v_level=var_info['obs_level'],
                                              v_thresh=var_info['obs_thresh'],
                                              v_name=var_info['obs_name'],
                                              v_extra=var_info['obs_extra'],
-                                             d_type='OBS')
+                                             d_type='OBS',
+                                             is_netcdf=obs_is_netcdf)
 
         if fcst_field_list is None or obs_field_list is None:
             return
@@ -300,6 +305,10 @@ that reformat gridded data
 
         self.infiles.extend(obs_path)
 
+
+        fcst_is_netcdf = util.is_met_netcdf_file(model_path[0])
+        obs_is_netcdf = util.is_met_netcdf_file(obs_path[0])
+
         fcst_field_list = []
         obs_field_list = []
         for var_info in var_list:
@@ -307,12 +316,14 @@ that reformat gridded data
                                             v_thresh=var_info['fcst_thresh'],
                                             v_name=var_info['fcst_name'],
                                             v_extra=var_info['fcst_extra'],
-                                            d_type='FCST')
+                                            d_type='FCST',
+                                            is_netcdf=fcst_is_netcdf)
             next_obs = self.get_field_info(v_level=var_info['obs_level'],
                                            v_thresh=var_info['obs_thresh'],
                                            v_name=var_info['obs_name'],
                                            v_extra=var_info['obs_extra'],
-                                           d_type='OBS')
+                                           d_type='OBS',
+                                           is_netcdf=obs_is_netcdf)
 
             if next_fcst is None or next_obs is None:
                 return
