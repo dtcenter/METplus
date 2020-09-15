@@ -48,8 +48,8 @@ Describe the steps to reproduce the behavior:
 - [ ] Select **requestor(s)**
 
 ### Projects and Milestone ###
-- [ ] Review **projects** and select relevant **Repository** and **Organization** ones
-- [ ] Select **milestone**
+- [ ] Review **projects** and select relevant **Repository** and **Organization** ones or add "alert:NEED PROJECT ASSIGNMENT" label
+- [ ] Select **milestone** to relevant bugfix version
 
 ## Define Related Issue(s) ##
 Consider the impact to the other METplus components.

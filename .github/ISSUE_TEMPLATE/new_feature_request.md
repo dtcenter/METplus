@@ -42,8 +42,8 @@ Consider breaking the new feature down into sub-issues.
 - [ ] Select **requestor(s)**
 
 ### Projects and Milestone ###
-- [ ] Review **projects** and select relevant **Repository** and **Organization** ones
-- [ ] Select **milestone**
+- [ ] Review **projects** and select relevant **Repository** and **Organization** ones or add "alert:NEED PROJECT ASSIGNMENT" label
+- [ ] Select **milestone** to next major version milestone or "Future Versions"
 
 ## Define Related Issue(s) ##
 Consider the impact to the other METplus components.
