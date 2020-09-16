@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """grid_diag
 Program Name: grid_diag_wrapper.py
 Contact(s): George McCabe
