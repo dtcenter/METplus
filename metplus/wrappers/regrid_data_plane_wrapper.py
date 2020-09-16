@@ -360,7 +360,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             # if grib type level is set but the data in a NetCDF file,
             # combine name and level with an underscore to use as the name
             level_letter, level_value = util.split_level(input_level)
-            if level_letter and is_netcdf:
+            if level_letter and is_met_netcdf:
                 field_name = f'{input_name}_{level_value}'
                 self.logger.warning('GRIB type level is set but the input file is NetCDF. '
                                     f'Setting field name to {field_name}')
@@ -406,7 +406,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             # if grib type level is set but the data in a NetCDF file,
             # combine name and level with an underscore to use as the name
             level_letter, level_value = util.split_level(input_level)
-            if level_letter and is_netcdf:
+            if level_letter and is_met_netcdf:
                 field_name = f'{input_name}_{level_value}'
                 self.logger.warning('GRIB type level is set but the input file is NetCDF. '
                                     f'Setting field name to {field_name}')
