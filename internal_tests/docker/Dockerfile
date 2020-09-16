@@ -29,17 +29,18 @@ RUN if [ -z ${MET_BRANCH+x} ]; then \
 #
 # Set working directory
 #
-WORKDIR /metplus
+ENV DOCKER_WORK_DIR /metplus
+WORKDIR ${DOCKER_WORK_DIR}
 
 #
 # Environment for interactive bash and csh container shells
 #
-# container:/metplus is mounted to the host:/path/to/parent_of_METplus_dir
-# ie. -v /Users/Frimel/projects:/metplus  where /Users/Frimel/projects/METplus/ush
-RUN echo export PATH=$PATH:/metplus/METplus/ush >> /etc/bashrc \
- && echo setenv PATH $PATH:/metplus/METplus/ush >> /etc/csh.cshrc \
- && echo export PYTHONPATH=/metplus/METplus >> /etc/bashrc \
- && echo setenv PYTHONPATH /metplus/METplus >> /etc/csh.cshrc
+# container:${DOCKER_WORK_DIR} is mounted to the host:/path/to/parent_of_METplus_dir
+# ie. -v /Users/Frimel/projects:${DOCKER_WORK_DIR} where /Users/Frimel/projects/METplus/ush
+RUN echo export PATH=$PATH:${DOCKER_WORK_DIR}/METplus/ush >> /etc/bashrc \
+ && echo setenv PATH $PATH:${DOCKER_WORK_DIR}/METplus/ush >> /etc/csh.cshrc \
+ && echo export PYTHONPATH=${DOCKER_WORK_DIR}/METplus >> /etc/bashrc \
+ && echo setenv PYTHONPATH ${DOCKER_WORK_DIR}/METplus >> /etc/csh.cshrc
 
 
 
@@ -47,9 +48,8 @@ RUN echo export PATH=$PATH:/metplus/METplus/ush >> /etc/bashrc \
 # 
 # && echo export METPLUS_DISABLE_PLOT_WRAPPERS=yes >> /etc/bashrc \
 # && echo setenv METPLUS_DISABLE_PLOT_WRAPPERS yes >> /etc/csh.cshrc
-ENV METPLUS_DISABLE_PLOT_WRAPPERS yes
 
-#
+
 # Install required packages: Pandas, Cartopy*
 #  - *dateutil, pytest
 #
