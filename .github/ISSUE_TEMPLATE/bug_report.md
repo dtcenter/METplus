@@ -48,8 +48,8 @@ Describe the steps to reproduce the behavior:
 - [ ] Select **requestor(s)**
 
 ### Projects and Milestone ###
-- [ ] Review **projects** and select relevant **Repository** and **Organization** ones
-- [ ] Select **milestone**
+- [ ] Review **projects** and select relevant **Repository** and **Organization** ones or add "alert:NEED PROJECT ASSIGNMENT" label
+- [ ] Select **milestone** to relevant bugfix version
 
 ## Define Related Issue(s) ##
 Consider the impact to the other METplus components.
@@ -58,15 +58,15 @@ Consider the impact to the other METplus components.
 ## Bugfix Checklist ##
 See the [METplus Workflow](https://dtcenter.github.io/METplus/Contributors_Guide/github_workflow.html) for details.
 - [ ] Complete the issue definition above, including the **Time Estimate** and **Funding Source**.
-- [ ] Fork this repository or create a branch of **master_\<Version>**.
-Branch name: `bugfix_<Issue Number>_master_<Version>_<Description>`
+- [ ] Fork this repository or create a branch of **main_\<Version>**.
+Branch name: `bugfix_<Issue Number>_main_<Version>_<Description>`
 - [ ] Fix the bug and test your changes.
 - [ ] Add/update log messages for easier debugging.
 - [ ] Add/update unit tests.
 - [ ] Add/update documentation.
 - [ ] Push local changes to GitHub.
-- [ ] Submit a pull request to merge into **master_\<Version>**.
-Pull request: `bugfix <Issue Number> master_<Version> <Description>`
+- [ ] Submit a pull request to merge into **main_\<Version>**.
+Pull request: `bugfix <Issue Number> main_<Version> <Description>`
 - [ ] Define the pull request metadata, as permissions allow.
 Select: **Reviewer(s)**, **Project(s)**, **Milestone**, and **Linked issues**
 - [ ] Iterate until the reviewer(s) accept and merge your changes.
