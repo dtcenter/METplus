@@ -833,7 +833,7 @@ class CommandBuilder:
         return file_ext
 
     def get_field_info(self, d_type, v_name, v_level='', v_thresh=[], v_extra='',
-                       is_netcdf=False):
+                       is_met_netcdf=False):
         """! Format field information into format expected by MET config file
               Args:
                 @param v_level level of data to extract
@@ -841,6 +841,7 @@ class CommandBuilder:
                 @param v_name name of field to process
                 @param v_extra additional field information to add if available
                 @param d_type type of data to find i.e. FCST or OBS
+                @param is_met_netcdf True if input file is a MET-generated NetCDF file
                 @rtype string
                 @return Returns formatted field information
         """
@@ -861,7 +862,7 @@ class CommandBuilder:
         if not self.c_dict.get('FCST_IS_PROB', False) and not self.c_dict.get('OBS_IS_PROB', False):
             # if grib level name is used but the data is NetCDF, reformat
             # name = name_level and level = "(*,*)"
-            if level_letter and is_netcdf:
+            if level_letter and is_met_netcdf:
                 field_name = f'{v_name}_{level}'
                 self.logger.warning('GRIB type level is set but the input file is NetCDF. '
                                     f'Setting field name to {field_name}')
@@ -898,7 +899,7 @@ class CommandBuilder:
                     # field name to the call to the script
                     if util.is_python_script(v_name):
                         field = "{ name=\"" + v_name + "\"; prob=TRUE;"
-                    elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF' or is_netcdf or \
+                    elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF' or is_met_netcdf or \
                       not self.c_dict[d_type + '_PROB_IN_GRIB_PDS']:
                         field = "{ name=\"" + v_name + "\";"
                         if v_level:
@@ -939,7 +940,7 @@ class CommandBuilder:
                     fields.append(field)
             else:
                 # if input being processed is not probabilistic but the other input is
-                if level_letter and is_netcdf:
+                if level_letter and is_met_netcdf:
                     field_name = f'{v_name}_{level}'
                     self.logger.warning('GRIB type level is set but the input file is NetCDF. '
                                         f'Setting field name to {field_name}')

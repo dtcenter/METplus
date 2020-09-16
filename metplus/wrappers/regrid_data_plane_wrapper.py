@@ -337,7 +337,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 @param field_info_list list of field dictionaries to process
                 @param data_type type of data to process, i.e. FCST or OBS
         """
-        is_netcdf = util.is_met_netcdf_file(self.infiles[0])
+        is_met_netcdf = util.is_met_netcdf(self.infiles[0])
 
         for field_info in field_info_list:
             self.args.clear()
@@ -352,7 +352,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             field_text_list = self.get_field_info(data_type,
                                                   input_name,
                                                   input_level,
-                                                  is_netcdf=is_netcdf)
+                                                  is_met_netcdf=is_met_netcdf)
 
             for field_text in field_text_list:
                 self.args.append(f"-field '{field_text.strip('{ }')}'")
@@ -386,7 +386,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 @param field_info_list list of field dictionaries to process
                 @param data_type type of data to process, i.e. FCST or OBS
         """
-        is_netcdf = util.is_met_netcdf_file(self.infiles[0])
+        is_met_netcdf = util.is_met_netcdf(self.infiles[0])
 
         self.set_command_line_arguments()
         output_names = []
@@ -399,7 +399,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             field_text_list = self.get_field_info(data_type,
                                                   input_name,
                                                   input_level,
-                                                  is_netcdf=is_netcdf)
+                                                  is_met_netcdf=is_met_netcdf)
             for field_text in field_text_list:
                 self.args.append(f"-field '{field_text.strip('{ }')}'")
 

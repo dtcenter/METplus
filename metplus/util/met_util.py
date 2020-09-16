@@ -2722,7 +2722,7 @@ def iterate_check_position(input_list, check_first):
 
     yield last, not check_first
 
-def is_met_netcdf_file(file_path):
+def is_met_netcdf(file_path):
     try:
         from netCDF4 import Dataset
         nc_file = Dataset(file_path, 'r')

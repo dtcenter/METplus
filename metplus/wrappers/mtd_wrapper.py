@@ -282,6 +282,9 @@ class MTDWrapper(MODEWrapper):
         fcst_field_list = []
         obs_field_list = []
 
+        is_fcst_netcdf = util.is_met_netcdf(model_path)
+        is_obs_netcdf = util.is_met_netcdf(obs_path)
+
         if not self.c_dict['SINGLE_RUN'] or self.c_dict['SINGLE_DATA_SRC'] == 'FCST':
             fcst_thresh_list = var_info['fcst_thresh']
 
@@ -300,7 +303,8 @@ class MTDWrapper(MODEWrapper):
                                                  v_level=var_info['fcst_level'],
                                                  v_extra=var_info['fcst_extra'],
                                                  v_thresh=[fcst_thresh],
-                                                 d_type='FCST')
+                                                 d_type='FCST',
+                                                 is_met_netcdf=is_fcst_netcdf)
 
                 if fcst_field is None:
                     self.log_error("No forecast fields found")
@@ -326,7 +330,8 @@ class MTDWrapper(MODEWrapper):
                                                 v_level=var_info['obs_level'],
                                                 v_extra=var_info['obs_extra'],
                                                 v_thresh=[obs_thresh],
-                                                d_type='OBS')
+                                                d_type='OBS',
+                                                is_met_netcdf=is_obs_netcdf)
 
                 if obs_field is None:
                     self.log_error("No observation fields found")
