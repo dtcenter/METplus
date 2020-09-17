@@ -18,13 +18,13 @@
 # are automatically pushed to DockerHub.
 #
 # Usage: build_docker_images.sh [-version name] [-push]
-#   where -version name overrides the default METplus version
+#   where -version name overrides the default METplus version (develop)
 #         -push pushes the images to DockerHub
 #
 #=======================================================================
 
 # Defaults for command line options
-METPLUS_VERSION=4.0
+METPLUS_VERSION=develop
 DO_PUSH=0
 
 # Process arguments
