@@ -1,9 +1,0 @@
-met_tool_wrapper:develop/sample_data-met_tool_wrapper.tgz:/data/input/METplus_Data/met_test
-convection_allowing_models:develop/sample_data-convection_allowing_models.tgz:/data/input/METplus_Data/model_applications/convection_allowing_models
-climate:develop/sample_data-climate.tgz:/data/input/METplus_Data/model_applications/climate
-cryosphere:develop/sample_data-cryosphere.tgz:/data/input/METplus_Data/model_applications/cryosphere
-medium_range:develop/sample_data-medium_range.tgz:/data/input/METplus_Data/model_applications/medium_range
-precipitation:develop/sample_data-precipitation.tgz:/data/input/METplus_Data/model_applications/precipitation
-s2s:develop/sample_data-s2s.tgz:/data/input/METplus_Data/model_applications/s2s
-space_weather:develop/sample_data-space_weather.tgz:/data/input/METplus_Data/model_applications/space_weather
-tc_and_extra_tc:develop/sample_data-tc_and_extra_tc.tgz:/data/input/METplus_Data/model_applications/tc_and_extra_tc

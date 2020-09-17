@@ -47,12 +47,19 @@ done
 # Script directory
 SCRIPT_DIR=$(dirname $0)
 
-# Loop over data assets
+#
+# Build separate image for each tarfile
+#
+
+TARFILE_LIST=''
 for ASSET in $(cat ${SCRIPT_DIR}/metplus_sample_data); do
 
   IMGNAME="dtcenter/metplus-data:${METPLUS_VERSION}-`echo ${ASSET} | cut -d':' -f1`"
   TARFILE=`echo ${ASSET} | cut -d':' -f2`
   MOUNTPT=`echo ${ASSET} | cut -d':' -f3`
+
+  # Append to the list
+  TARFILE_LIST="${TARFILE_LIST} ${TARFILE}"
 
   echo
   echo "Building image ... ${IMGNAME}" 
@@ -72,4 +79,25 @@ for ASSET in $(cat ${SCRIPT_DIR}/metplus_sample_data); do
   fi
 
 done
+
+
+#
+# Build one image for all tarfiles
+#
+
+IMGNAME="dtcenter/metplus-data:${METPLUS_VERSION}"
+MOUNTPT="/data/input/METplus_Data"
+
+docker build -t ${IMGNAME} . \
+  --build-arg TARFILE="${TARFILE_LIST}" \
+  --build-arg MOUNTPT=${MOUNTPT}
+
+if [ ${DO_PUSH} == 1 ]; then
+  echo
+  echo "Pushing image ... ${IMGNAME}"
+  echo
+
+  docker push ${IMGNAME}
+
+fi
 
