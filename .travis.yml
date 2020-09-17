@@ -49,14 +49,14 @@ git:
 # Build only the safelist
 #   develop
 #   feature_ branches
-#   master_ branches
+#   main_ branches
 #   bugfix_ branches
 # 
 branches:
   only:
   - develop
   - /^feature_.*/
-  - /^master_.*/
+  - /^main_.*/
   - /^bugfix_.*/  
 
 cache:
