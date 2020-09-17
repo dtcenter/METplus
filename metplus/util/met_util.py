@@ -2723,15 +2723,22 @@ def iterate_check_position(input_list, check_first):
     yield last, not check_first
 
 def is_met_netcdf(file_path):
+    """! Check if a file is a MET-generated NetCDF file.
+          If the file is not a NetCDF file, OSError occurs.
+          If the MET_version attribute doesn't exist, AttributeError occurs.
+          If the netCDF4 package is not available, ImportError should occur.
+          All of these situations result in the file being considered not
+          a MET-generated NetCDF file
+         Args:
+             @param file_path full path to file to check
+             @returns True if file is a MET-generated NetCDF file and False if
+              it is not or it can't be determined.
+    """
     try:
         from netCDF4 import Dataset
         nc_file = Dataset(file_path, 'r')
         getattr(nc_file, 'MET_version')
-    except ImportError:
-        raise
-    except (AttributeError, OSError):
-        # if attribute doesn't exist, file is not a MET generated NetCDF file
-        # also if not a NetCDF file, OSError is thrown
+    except (AttributeError, OSError, ImportError):
         return False
 
     return True
