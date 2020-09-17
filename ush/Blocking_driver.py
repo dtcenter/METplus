@@ -3,7 +3,7 @@ import os
 import numpy as np
 import netCDF4
 from Blocking import BlockingCalculation
-from plot_blocking import plot_blocks
+import plot_blocking as pb
 
 def main():
 
@@ -22,18 +22,24 @@ def main():
     ######################################################################
     config = config_metplus.setup(config_list)
     # Regrid to 1 Degree
-    #
+    #print('Regridding')
+    #RegridDataPlaneWrapper(config).run_all_times()
 
     #Compute Daily Average
+    #print('Computing Daily Averages')
     #daily_config = config_metplus.replace_config_from_section(config, 'daily_mean')
+    #PCPCombineWrapper(daily_config).run_all_times()
 
     #Take a running mean
-    rmean_config = config_metplus.replace_config_from_section(config, 'running_mean')
+    #print('Computing Running means')
+    #rmean_config = config_metplus.replace_config_from_section(config, 'running_mean')
     #PCPCombineWrapper(rmean_config).run_all_times()
 
     #Compute anomaly
-    anomaly_config = config_metplus.replace_config_from_section(config, 'anomaly')
+    #print('Computing Anomalies')
+    #anomaly_config = config_metplus.replace_config_from_section(config, 'anomaly')
     #PCPCombineWrapper(anomaly_config).run_all_times()
+    #exit()
 
 
     ######################################################################
@@ -43,17 +49,20 @@ def main():
     steps = BlockingCalculation(config)
 
     # Calculate Central Blocking Latitude
+    print('Computing CBLs')
     cbls,lats,lons,yr,mhweight = steps.run_CBL()
 
     # Run IBL
+    print('Computing IBLs')
     ibls = steps.run_Calc_IBL(cbls)
     daynum = np.arange(0,len(ibls[0,:,0]),1)
 
     # Run GIBL
+    print('Computing GIBLs')
     gibls = steps.run_Calc_GIBL(ibls,lons,daynum,yr)
 
     # Calc Blocks
-    block_freq = steps.run_Calc_Blocks(ibls,gibls,lons,yr)
+    block_freq = steps.run_Calc_Blocks(ibls,gibls,lons,daynum,yr)
 
 
     ######################################################################
@@ -76,7 +85,15 @@ def main():
     #msdtout[:] = mhweight
     #cblfile.close()
 
-    plot_blocks(block_freq,gibls,ibls)
+
+    # Plot ---Minna's code
+
+
+    # Plot IBL's
+    #pb.plot_ibls()
+
+    # Plot Blocking Frequency
+    pb.plot_blocks(block_freq,gibls,ibls,lons,'DJF','Block_Freq_DJF')
 
 
 if __name__ == "__main__":

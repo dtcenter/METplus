@@ -282,18 +282,21 @@ class BlockingCalculation():
         return final_list
 
 
-    def run_Calc_Blocks(self,ibl,GIBL,lon,year):
+    def run_Calc_Blocks(self,ibl,GIBL,lon,dayin,year):
 
         crit = self.ibl_in_gibl
 
         ##Count up the blocked longitudes for each GIBL
         c = np.zeros((GIBL.shape))
+        lonlen = len(lon)
+        yrlen = len(year)
+        daylen = len(dayin)
         sz = []
         mx = []
         min = []
 
-        for y in np.arange(0,len(GIBL[:,0,0]),1):
-            for k in np.arange(0,len(GIBL[0,:,0]),1):
+        for y in np.arange(0,yrlen,1):
+            for k in np.arange(0,daylen,1):
                 a = GIBL[y,k]
                 ct=1
                 ai = np.where(a==1)[0]
@@ -316,11 +319,11 @@ class BlockingCalculation():
                         ct=1
 
         ########## - finding where the left and right limits of the block are - ################
-        for i in np.arange(0,len(c[:,0,0]),1):
-            for k in np.arange(0,len(c[0,:,0]),1):
+        for i in np.arange(0,yrlen,1):
+            for k in np.arange(0,daylen,1):
                 maxi = argrelextrema(c[i,k],np.greater,mode='wrap')[0]
                 mini = np.where(c[i,k]==1)[0]
-                if c[i,k,359]!=0 and c[i,k,0]!=0:
+                if c[i,k,lonlen-1]!=0 and c[i,k,0]!=0:
                     mm1 = mini[-1]
                     mm2 = mini[:-1]
                     mini = np.append(mm1,mm2)
@@ -329,9 +332,8 @@ class BlockingCalculation():
 
         locy, locd, locl = np.where(c==crit)
 
-        A = np.zeros(360)
+        A = np.zeros(lonlen)
         A = np.expand_dims(A,axis=0)
-        lon = np.arange(0,360,1)
 
         ################# - Splitting up each GIBL into its own array - ###################
 
@@ -342,14 +344,14 @@ class BlockingCalculation():
             mm = int(mx[i])
             mn = min[i]
             temp1 = GIBL[m,n]
-            temp2 = np.zeros(360)
+            temp2 = np.zeros(lonlen)
             if mn>mm:
                 diff = int(mm - c[m,n,mm] + 1)
                 lons = lon[diff]
-                place1 = np.arange(lons,360,1)
+                place1 = np.arange(lons,lonlen,1)
                 place2 = np.arange(0,mm+1,1)
                 bl = np.append(place2,place1).astype(int)
-            if temp1[359] ==1 and mm>200:
+            if temp1[lonlen-1] ==1 and mm>200:
                 lons = lon[mm]
                 beg = mm - c[m,n,mm] + 1
                 bl = np.arange(beg,mm+1,1).astype(int)
@@ -392,7 +394,6 @@ class BlockingCalculation():
         dAfin = dA
 
         ############ - Finding center longitude of block - ##############
-
         middle=[]
         for l in np.arange(0,len(dAfin),1):
             temp = np.where(dAfin[l]==1)[0]
