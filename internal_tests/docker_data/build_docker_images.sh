@@ -10,15 +10,15 @@
 #   dtcenter/metplus-data:<version>-<dataset name>
 #
 # For example, the metplus_sample_data entry:
-#   s2s:v3.1/sample_data-s2s-3.1.tgz:/data/input/METplus_Data/model_applications/s2s
+#   s2s:develop/sample_data-s2s.tgz:/data/input/METplus_Data/model_applications/s2s
 # Creates an image named:
-#   dtcenter/metplus-data:3.1-s2s
+#   dtcenter/metplus-data:develop-s2s
 #
 # If the optional -push command line option is used, all images created
 # are automatically pushed to DockerHub.
 #
-# Usage: build_docker_images.sh [-version X.Y] [-push]
-#   where -version X.Y overrides the default METplus version
+# Usage: build_docker_images.sh [-version name] [-push]
+#   where -version name overrides the default METplus version
 #         -push pushes the images to DockerHub
 #
 #=======================================================================

@@ -20,7 +20,7 @@ RUN if [ "x${MOUNTPT}" == "x" ]; then \
 ENV CASE_DIR /data/input/METplus_Data
 RUN mkdir -p ${CASE_DIR}
 
-RUN curl -SL https://github.com/dtcenter/METplus/releases/download/${VERSION}/${TARFILE} | tar -xzC ${CASE_DIR}
+RUN curl -SL https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/${VERSION}/${TARFILE} | tar -xzC ${CASE_DIR}
 
 VOLUME ${MOUNTPT}
 USER root
