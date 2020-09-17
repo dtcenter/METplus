@@ -131,6 +131,7 @@ use_cases['precipitation'] = [
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf",
                 use_case_dir + "/model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.conf",
                 use_case_dir + "/model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf",
+                use_case_dir + "/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf",
 ]
 
 use_cases['s2s'] = [
