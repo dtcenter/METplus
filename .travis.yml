@@ -99,7 +99,7 @@ env:
 # Stage 1 runs 2 jobs  x.1, x.2 
 # based on the python: keyword setting 3.7,3.6 above.
 stage: "Stage 1"
-#name: "Unit Tests"
+name: "Docs"
 # ${TRAVIS_BUILD_DIR} = /home/travis/build/<user ie. NCAR>/METplus
 script: 
   - pwd 
