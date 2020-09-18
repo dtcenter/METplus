@@ -3,7 +3,8 @@ import os
 import numpy as np
 import netCDF4
 from Blocking import BlockingCalculation
-import plot_blocking as pb
+#import plot_blocking as pb
+import metplotpy.blocking_s2s.CBL_plot as cpl 
 
 def main():
 
@@ -53,16 +54,16 @@ def main():
     cbls,lats,lons,yr,mhweight = steps.run_CBL()
 
     # Run IBL
-    print('Computing IBLs')
-    ibls = steps.run_Calc_IBL(cbls)
-    daynum = np.arange(0,len(ibls[0,:,0]),1)
+#    print('Computing IBLs')
+#    ibls = steps.run_Calc_IBL(cbls)
+#    daynum = np.arange(0,len(ibls[0,:,0]),1)
 
     # Run GIBL
-    print('Computing GIBLs')
-    gibls = steps.run_Calc_GIBL(ibls,lons,daynum,yr)
-
+#    print('Computing GIBLs')
+#    gibls = steps.run_Calc_GIBL(ibls,lons,daynum,yr)
+#
     # Calc Blocks
-    block_freq = steps.run_Calc_Blocks(ibls,gibls,lons,daynum,yr)
+#    block_freq = steps.run_Calc_Blocks(ibls,gibls,lons,daynum,yr)
 
 
     ######################################################################
@@ -86,14 +87,17 @@ def main():
     #cblfile.close()
 
 
-    # Plot ---Minna's code
+    # Plot ---Using CBL_plot.py code
+    month_str='DJF'
+    outfile = '/d1/mwin/output_cbl_plot'
+    cpl.create_cbl_plot(lons,lats,cbls, mhweight,month_str, outfile) 
 
 
     # Plot IBL's
     #pb.plot_ibls()
 
     # Plot Blocking Frequency
-    pb.plot_blocks(block_freq,gibls,ibls,lons,'DJF','Block_Freq_DJF')
+    #pb.plot_blocks(block_freq,gibls,ibls,lons,'DJF','Block_Freq_DJF')
 
 
 if __name__ == "__main__":
