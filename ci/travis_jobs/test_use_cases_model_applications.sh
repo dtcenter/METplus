@@ -18,14 +18,14 @@ mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
 echo mkdir -p ${TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
 
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
+${TRAVIS_BUILD_DIR}/ci/docker/docker_setup.sh
 
 echo Run tests...
 returncode=0
 
 # create data volumes and get list of arguments to pass to docker run
-echo ${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py met_tool_wrapper $@
-VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py met_tool_wrapper $@`
+echo ${TRAVIS_BUILD_DIR}/ci/docker/get_data_volumes.py met_tool_wrapper $@
+VOLUMES=`${TRAVIS_BUILD_DIR}/ci/docker/get_data_volumes.py met_tool_wrapper $@`
 
 # download GempakToCF.jar
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/download_gempaktocf.sh
@@ -40,7 +40,7 @@ do
   test_args=${test_args}" "${i}
 done
 
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}" $returncode "$VOLUMES"
+${TRAVIS_BUILD_DIR}/ci/docker/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}" $returncode "$VOLUMES"
     returncode=$?
 
 # remove logs dir and move data to previous output base so next run will not prompt
