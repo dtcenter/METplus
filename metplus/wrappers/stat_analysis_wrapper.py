@@ -92,8 +92,11 @@ class StatAnalysisWrapper(CommandBuilder):
             return None
         
         cmd += ' -lookin ' + self.lookindir
-         
-        cmd += f" -config {self.c_dict['CONFIG_FILE']}"
+
+        if self.c_dict.get('CONFIG_FILE'):
+            cmd += f" -config {self.c_dict['CONFIG_FILE']}"
+        else:
+            cmd += f' {self.job_args}'
 
         # create output base if it does not exist
         output_base_dir = self.c_dict['OUTPUT_BASE_DIR']
@@ -194,8 +197,11 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def c_dict_error_check(self, c_dict):
 
-        if not c_dict['CONFIG_FILE']:
-            self.log_error("Must set STAT_ANALYSIS_CONFIG_FILE")
+        if not c_dict.get('CONFIG_FILE'):
+            self.logger.info("STAT_ANALYSIS_CONFIG_FILE not set. Passing job arguments to "
+                             "stat_analysis directly on the command line. This will bypass "
+                             "any filtering done unless you add the arguments to "
+                             "STAT_ANALYSIS_JOB_ARGS")
 
         if not c_dict['OUTPUT_BASE_DIR']:
             self.log_error("Must set STAT_ANALYSIS_OUTPUT_DIR")
@@ -1721,7 +1727,7 @@ class StatAnalysisWrapper(CommandBuilder):
                   containing information needed to run a StatAnalysis job
         """
         for runtime_settings_dict in runtime_settings_dict_list:
-
+            self.job_args = None
             # Set environment variables and run stat_analysis.
             for name, value in runtime_settings_dict.items():
                 self.add_env_var(name, value)
@@ -1732,6 +1738,7 @@ class StatAnalysisWrapper(CommandBuilder):
             # set lookin dir
             self.logger.debug(f"Setting -lookindir to {runtime_settings_dict['LOOKIN_DIR']}")
             self.lookindir = runtime_settings_dict['LOOKIN_DIR']
+            self.job_args = runtime_settings_dict['JOB']
 
             self.build_and_run_command()
 
