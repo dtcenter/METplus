@@ -665,7 +665,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             level = var_info[f'{data_src.lower()}_level']
             level_type, accum = util.split_level(level)
             self.logger.warning(f'{data_src}_PCP_COMBINE_OUTPUT_ACCUM is not set. Using '
-                                f'{level} from {data_src}_VAR<n>_LEVELS. '
+                                f'{accum} from {data_src}_VAR<n>_LEVELS. '
                                 'It is recommended that you explicitly set the '
                                 'output accumulation.')
 
@@ -848,7 +848,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             _, accum_string = util.split_level(level)
 
             self.logger.warning(f'{data_src}_PCP_COMBINE_OUTPUT_ACCUM is not set. Using '
-                                f'{level} from {data_src}_VAR<n>_LEVELS. '
+                                f'{accum_string} from {data_src}_VAR<n>_LEVELS. '
                                 'It is recommended that you explicitly set the '
                                 'output accumulation.')
 
