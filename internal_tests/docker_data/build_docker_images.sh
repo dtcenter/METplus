@@ -44,6 +44,17 @@ for ARG in "$@"; do
 
 done
 
+# Define a command runner utility to check return status
+function run_command {
+  echo "RUNNING: $*"
+  $*
+  error=$?
+  if [ ${error} -ne 0 ]; then
+    echo "ERROR: '$*' exited with status = ${error}"
+    exit ${error}
+  fi
+}
+
 # Script directory
 SCRIPT_DIR=$(dirname $0)
 
@@ -65,7 +76,7 @@ for ASSET in $(cat ${SCRIPT_DIR}/metplus_sample_data); do
   echo "Building image ... ${IMGNAME}" 
   echo
 
-  docker build -t ${IMGNAME} . \
+  run_command docker build -t ${IMGNAME} . \
     --build-arg TARFILE=${TARFILE} \
     --build-arg MOUNTPT=${MOUNTPT}
 
@@ -74,12 +85,11 @@ for ASSET in $(cat ${SCRIPT_DIR}/metplus_sample_data); do
     echo "Pushing image ... ${IMGNAME}"
     echo
 
-    docker push ${IMGNAME} 
+    run_command docker push ${IMGNAME} 
 
   fi
 
 done
-
 
 #
 # Build one image for all tarfiles
@@ -88,7 +98,7 @@ done
 IMGNAME="dtcenter/metplus-data:${METPLUS_VERSION}"
 MOUNTPT="/data/input/METplus_Data"
 
-docker build -t ${IMGNAME} . \
+run_command docker build -t ${IMGNAME} . \
   --build-arg TARFILE="${TARFILE_LIST}" \
   --build-arg MOUNTPT=${MOUNTPT}
 
@@ -97,7 +107,7 @@ if [ ${DO_PUSH} == 1 ]; then
   echo "Pushing image ... ${IMGNAME}"
   echo
 
-  docker push ${IMGNAME}
+  run_command docker push ${IMGNAME}
 
 fi
 
