@@ -10,21 +10,21 @@
 #   dtcenter/metplus-data:<version>-<dataset name>
 #
 # For example, the metplus_sample_data entry:
-#   s2s:v3.1/sample_data-s2s-3.1.tgz:/data/input/METplus_Data/model_applications/s2s
+#   s2s:develop/sample_data-s2s.tgz:/data/input/METplus_Data/model_applications/s2s
 # Creates an image named:
-#   dtcenter/metplus-data:3.1-s2s
+#   dtcenter/metplus-data:develop-s2s
 #
 # If the optional -push command line option is used, all images created
 # are automatically pushed to DockerHub.
 #
-# Usage: build_docker_images.sh [-version X.Y] [-push]
-#   where -version X.Y overrides the default METplus version
+# Usage: build_docker_images.sh [-version name] [-push]
+#   where -version name overrides the default METplus version (develop)
 #         -push pushes the images to DockerHub
 #
 #=======================================================================
 
 # Defaults for command line options
-METPLUS_VERSION=4.0
+METPLUS_VERSION=develop
 DO_PUSH=0
 
 # Process arguments
@@ -44,21 +44,42 @@ for ARG in "$@"; do
 
 done
 
+# Define a command runner utility to check return status
+function run_command {
+  echo "RUNNING: $*"
+  $*
+  error=$?
+  if [ ${error} -ne 0 ]; then
+    echo "ERROR: '$*' exited with status = ${error}"
+    exit ${error}
+  fi
+}
+
 # Script directory
 SCRIPT_DIR=$(dirname $0)
 
-# Loop over data assets
+#
+# Build separate image for each tarfile
+#
+
 for ASSET in $(cat ${SCRIPT_DIR}/metplus_sample_data); do
 
   IMGNAME="dtcenter/metplus-data:${METPLUS_VERSION}-`echo ${ASSET} | cut -d':' -f1`"
   TARFILE=`echo ${ASSET} | cut -d':' -f2`
   MOUNTPT=`echo ${ASSET} | cut -d':' -f3`
 
+  # Build a list of tarfiles
+  if [ -z ${TARFILE_LIST+x} ]; then
+    TARFILE_LIST=${TARFILE}
+  else
+    TARFILE_LIST=${TARFILE_LIST},${TARFILE}
+  fi
+
   echo
   echo "Building image ... ${IMGNAME}" 
   echo
 
-  docker build -t ${IMGNAME} . \
+  run_command docker build -t ${IMGNAME} . \
     --build-arg TARFILE=${TARFILE} \
     --build-arg MOUNTPT=${MOUNTPT}
 
@@ -67,9 +88,29 @@ for ASSET in $(cat ${SCRIPT_DIR}/metplus_sample_data); do
     echo "Pushing image ... ${IMGNAME}"
     echo
 
-    docker push ${IMGNAME} 
+    run_command docker push ${IMGNAME} 
 
   fi
 
 done
+
+#
+# Build one image for all tarfiles
+#
+
+IMGNAME="dtcenter/metplus-data:${METPLUS_VERSION}"
+MOUNTPT="/data/input/METplus_Data"
+
+run_command docker build -t ${IMGNAME} . \
+  --build-arg TARFILE=${TARFILE_LIST} \
+  --build-arg MOUNTPT=${MOUNTPT}
+
+if [ ${DO_PUSH} == 1 ]; then
+  echo
+  echo "Pushing image ... ${IMGNAME}"
+  echo
+
+  run_command docker push ${IMGNAME}
+
+fi
 
