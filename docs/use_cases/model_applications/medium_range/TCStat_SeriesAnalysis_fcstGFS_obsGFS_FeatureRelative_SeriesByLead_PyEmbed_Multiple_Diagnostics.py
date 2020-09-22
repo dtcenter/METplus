@@ -1,21 +1,22 @@
 """
-Multi_Tool: Feature Relative by Lead using User-Defined Fields 
+Multi_Tool: Feature Relative by Lead using Multiple User-Defined Fields 
 ========================================================================
 
 model_applications/medium_range/
 TCStat_SeriesAnalysis_fcstGFS
 _obsGFS_FeatureRelative
-_SeriesByLead_PyEmbed_IVT.conf
+_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 
 """
 
 ========================================================================
 This use case calls multiple tools to produce diagnostic plots of systematic erros relative to a 
-feature (e.g. hurricane, MCS, etc...). This use case calls a user provided python script that 
-calculates a diagnostic of interest (e.g. integrated vapor transport, potential vorticity, etc...). 
-This user diagnostic is then used to define the systematic errors. This example calculates statistics
-over varying forecast leads with the ability to define lead groupings. This use case is very similar
-to the Multi_Tools: Feature Relative by Lead use case.
+feature (e.g. hurricane, MCS, etc...). This use case calls two user provided python scripts that 
+calculate diagnostics of interest (e.g. integrated vapor transport, potential vorticity, etc...). 
+These user diagnostics are then used to define the systematic errors. This example calculates 
+statistics over varying forecast leads with the ability to define lead groupings. 
+This use case is very similar to the Multi_Tools: Feature Relative by Lead use case and the 
+Multi_Tools: Feature Relative by Lead using User-Defined Fields.
 (ADeck,GFS:BDeck,GFS:ATCF,Grib2)
 """
 ##############################################################################
@@ -40,8 +41,8 @@ to the Multi_Tools: Feature Relative by Lead use case.
 # --------
 #
 # This use case compares the Global Forecast System (GFS) forecast to the GFS analysis for
-# hurricane Dorian. It is based on the user provided python script that calculates the diagnostic 
-# integrated vaport transport (IVT). 
+# hurricane Dorian. It is based on two user provided python scripts that calculate the diagnostic 
+# integrated vaport transport (IVT) and potential vorticity (PV), respectively. 
 # 
 #  - Variables required to calculate IVT:
 #    Levels required: all pressure levels <= 100mb
@@ -50,6 +51,12 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #    #. u- component of wind
 #    #. Geopotential height
 #    #. Specific humidity OR Relative Humidity
+#
+#  - Variables required to calculate PV:
+#    Levels required: all pressure levels <= 100mb
+#    #. Absolute Vorticity
+#    #. Temperature
+
 #  - Forecast dataset: GFS Grid 4 Forecast
 #    GFS Forecast data can be found at the following website: https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs
 #    - Initialization date: 20190830
@@ -73,16 +80,17 @@ to the Multi_Tools: Feature Relative by Lead use case.
 # ------------------
 #
 # This use case first runs PyEmbedIngest to run the user provided python scripts to calculate the
-# desired diagnostic (in this example, IVT). PyEmbedIngest runs the RegridDataPlane tool to write 
-# IVT to a MET readable netCDF file. Then TCPairs and ExtractTiles are run to generate matched
-# tropical cyclone data and regrid them into appropriately-sized tiles along a storm track. 
-# The MET tc-stat tool is used to filter the track data and the MET regrid-dataplane tool is used to 
-# regrid the data (GRIB1 or GRIB2 into netCDF). Next, a series analysis by lead time is performed on 
-# the results and plots (.ps and .png) are generated for all variable-level-stat combinations from 
-# the specified variables, levels, and requested statistics. If lead grouping is turned on, the final
-# results are aggregated into forecast hour groupings as specified by the start, end and increment in
-# the METplus configuration file, as well as labels to identify each forecast hour grouping. If lead
-# grouping is not turned out, the final results will be written out for each requested lead time.
+# desired diagnostics (in this example, IVT and PV). PyEmbedIngest runs the RegridDataPlane tool 
+# to write IVT and PV to a MET readable netCDF file. Then TCPairs and ExtractTiles are run to 
+# generate matched tropical cyclone data and regrid them into appropriately-sized tiles
+# along a storm track. The MET tc-stat tool is used to filter the track data and the MET 
+# regrid-dataplane tool is used to regrid the data (GRIB1 or GRIB2 into netCDF). 
+# Next, a series analysis by lead time is performed on the results and plots (.ps and .png) are 
+# generated for all variable-level-stat combinations from the specified variables, levels, 
+# and requested statistics. If lead grouping is turned on, the final results are aggregated into 
+# forecast hour groupings as specified by the start, end and increment in the METplus configuration 
+# file, as well as labels to identify each forecast hour grouping. If lead grouping is not turned out
+# the final results will be written out for each requested lead time.
 
 ##############################################################################
 # METplus Workflow
@@ -94,7 +102,7 @@ to the Multi_Tools: Feature Relative by Lead use case.
 # PyEmbedIngest, TCPairs, ExtractTiles, SeriesByLead
 #
 # This example loops by forecast/lead time (with begin, end, and increment as specified in the METplus
-# TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf file). 
+# TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_Multiple_Diagnostics.conf file). 
 #
 # 4 initialization times will be run over 5 lead times:
 #
@@ -117,10 +125,10 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_Multiple_Diagnostics.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 #
 
 #############################################################################
@@ -151,14 +159,14 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf, 
+# 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf, 
 # then a user-specific system configuration file::
 #
 #        master_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf \
+#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf \
 #        -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf::
 #
 #        master_metplus.py \
 #        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
@@ -252,4 +260,4 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #  `SBUOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
 #  `DiagnosticsUseCase <https://dtcenter.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
 #
-# sphinx_gallery_thumbnail_path = '_static/medium_range-TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_SBU_IVT.png'
+# sphinx_gallery_thumbnail_path = '_static/medium_range-TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multivariate_Diagnostics.png'
