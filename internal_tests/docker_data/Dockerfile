@@ -20,7 +20,7 @@ RUN if [ "x${MOUNTPT}" == "x" ]; then \
 ENV CASE_DIR /data/input/METplus_Data
 RUN mkdir -p ${CASE_DIR}
 
-RUN for CUR_TARFILE in `echo "${TARFILE}"`; do \
+RUN for CUR_TARFILE in `echo ${TARFILE} | tr "," " "`; do \
       echo "Downloading: ${CUR_TARFILE}"; \
       curl -SL https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/${CUR_TARFILE} | tar -xzC ${CASE_DIR}; \
     done
