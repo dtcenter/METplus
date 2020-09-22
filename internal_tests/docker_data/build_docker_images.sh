@@ -99,7 +99,7 @@ IMGNAME="dtcenter/metplus-data:${METPLUS_VERSION}"
 MOUNTPT="/data/input/METplus_Data"
 
 run_command docker build -t ${IMGNAME} . \
-  --build-arg TARFILE=\"${TARFILE_LIST}\" \
+  --build-arg TARFILE="\"${TARFILE_LIST}\"" \
   --build-arg MOUNTPT=${MOUNTPT}
 
 if [ ${DO_PUSH} == 1 ]; then
