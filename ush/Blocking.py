@@ -220,7 +220,8 @@ class BlockingCalculation():
         return blonlong
 
 
-    def run_Calc_GIBL(self,ibl,lons,dd,year):
+    #def run_Calc_GIBL(self,ibl,lons,dd,year):
+    def run_Calc_GIBL(self,ibl,lons):
 
         #Initilize GIBL Array
         GIBL = np.zeros(np.shape(ibl))
@@ -282,7 +283,7 @@ class BlockingCalculation():
         return final_list
 
 
-    def run_Calc_Blocks(self,ibl,GIBL,lon,dayin,year):
+    def run_Calc_Blocks(self,ibl,GIBL,lon,tsin,year):
 
         crit = self.ibl_in_gibl
 
@@ -290,13 +291,13 @@ class BlockingCalculation():
         c = np.zeros((GIBL.shape))
         lonlen = len(lon)
         yrlen = len(year)
-        daylen = len(dayin)
+        tslen = len(tsin)
         sz = []
         mx = []
         min = []
 
         for y in np.arange(0,yrlen,1):
-            for k in np.arange(0,daylen,1):
+            for k in np.arange(0,tslen,1):
                 a = GIBL[y,k]
                 ct=1
                 ai = np.where(a==1)[0]
@@ -320,7 +321,7 @@ class BlockingCalculation():
 
         ########## - finding where the left and right limits of the block are - ################
         for i in np.arange(0,yrlen,1):
-            for k in np.arange(0,daylen,1):
+            for k in np.arange(0,tslen,1):
                 maxi = argrelextrema(c[i,k],np.greater,mode='wrap')[0]
                 mini = np.where(c[i,k]==1)[0]
                 if c[i,k,lonlen-1]!=0 and c[i,k,0]!=0:
@@ -365,7 +366,7 @@ class BlockingCalculation():
 
         A = A[1:]
 
-        ######### - Getting rid of non-consectutve days which would prevent blocking - #################
+        ######### - Getting rid of non-consectutve Time steps which would prevent blocking - #################
         dd=[]
         dy = []
         dA = A[0]
@@ -404,7 +405,7 @@ class BlockingCalculation():
 
         overlap = self.gibl_overlap
 
-        #####Track blocks. Makes sure that blocks overlap with at least 10 longitude points on consecutive days
+        #####Track blocks. Makes sure that blocks overlap with at least 10 longitude points on consecutive 
         fin = [[]]
         finloc = [[]]
         ddcopy=dd*1.0
@@ -517,5 +518,4 @@ class BlockingCalculation():
                 blockfreq[yearcomp,daycomp] = blockfreq[yearcomp,daycomp] + dAfin[j]
                 ct = ct + 1
 
-        print(blockfreq)
         return blockfreq

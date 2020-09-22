@@ -3,17 +3,20 @@ import os
 import numpy as np
 import netCDF4
 from Blocking import BlockingCalculation
-import plot_blocking as pb
 
 def main():
 
     # add metplus directory to path so the wrappers and utilities can be found
     sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
         os.pardir)))
+    sys.path.insert(0, "/glade/u/home/kalb/UIUC/METplotpy/metplotpy/blocking_s2s")
+    sys.path.insert(0, "/glade/u/home/kalb/UIUC/METplotpy_feature_33/metplotpy/blocking_s2s")
     from metplus.util import config_metplus
     from ush.master_metplus import get_config_inputs_from_command_line
     from metplus.wrappers import PCPCombineWrapper
     from metplus.wrappers import RegridDataPlaneWrapper
+    import plot_blocking as pb
+    from CBL_plot import create_cbl_plot
 
     config_list = get_config_inputs_from_command_line()
 
@@ -39,7 +42,6 @@ def main():
     #print('Computing Anomalies')
     #anomaly_config = config_metplus.replace_config_from_section(config, 'anomaly')
     #PCPCombineWrapper(anomaly_config).run_all_times()
-    #exit()
 
 
     ######################################################################
@@ -59,41 +61,29 @@ def main():
 
     # Run GIBL
     print('Computing GIBLs')
-    gibls = steps.run_Calc_GIBL(ibls,lons,daynum,yr)
+    gibls = steps.run_Calc_GIBL(ibls,lons)
 
     # Calc Blocks
+    print('Computing Blocks')
     block_freq = steps.run_Calc_Blocks(ibls,gibls,lons,daynum,yr)
 
 
     ######################################################################
     # Plotting
     ######################################################################
-    # Write CBLS and mstd to a file
-    #cblfile = netCDF4.Dataset("CBL.nc", "w", format="NETCDF4")
-    #yrout = cblfile.createDimension("yrs",len(yr))
-    #lonout = cblfile.createDimension("lon",len(mhweight[0,0,:]))
-    #latout = cblfile.createDimension("lat",len(mhweight[0,:,0]))
-    #years = cblfile.createVariable("yrs","i4",("yrs",))
-    #latitudes = cblfile.createVariable("lat","f4",("lat",))
-    #longitudes = cblfile.createVariable("lon","f4",("lon",))
-    #cblout = cblfile.createVariable("CBL","f4",("yrs","lon",))
-    #msdtout = cblfile.createVariable("MWEIGHT","f4",("yrs","lat","lon",))
-    #years[:] = yr
-    #latitudes[:] = lats
-    #longitudes[:] = lons
-    #cblout[:] = cbls
-    #msdtout[:] = mhweight
-    #cblfile.close()
-
-
     # Plot ---Minna's code
+    create_cbl_plot(lons, lats, cbls, mhweight, 'DFJ', 'Minna_CBL', do_averaging=True)
 
 
     # Plot IBL's
-    #pb.plot_ibls()
+    ibl_plot_title = config.getstr('Blocking','IBL_TITLE')
+    ibl_plot_outname = config.getstr('Blocking','IBL_OUTPUT_NAME')
+    pb.plot_ibls(ibls,lons,ibl_plot_title,ibl_plot_outname)
 
     # Plot Blocking Frequency
-    pb.plot_blocks(block_freq,gibls,ibls,lons,'DJF','Block_Freq_DJF')
+    blocking_plot_title = config.getstr('Blocking','BLOCKING_TITLE')
+    blocking_plot_outname = config.getstr('Blocking','BLOCKING_OUTPUT_NAME')
+    pb.plot_blocks(block_freq,gibls,ibls,lons,blocking_plot_title,blocking_plot_outname)
 
 
 if __name__ == "__main__":
