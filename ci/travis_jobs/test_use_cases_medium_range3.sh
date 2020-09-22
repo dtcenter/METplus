@@ -23,7 +23,7 @@ ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 echo Run tests...
 returncode=0
 
-VOLUMES=`${TRAVIS_BUILD_DIR}/ci/docker/get_data_volumes.py medium_range3`
+VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py medium_range3`
 
 echo medium_range3
 

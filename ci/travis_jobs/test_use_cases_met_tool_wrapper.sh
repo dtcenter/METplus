@@ -22,7 +22,7 @@ echo Running tests...
 returncode=0
 echo 'Calling docker_run_metplus, returncode=' $returncode
 
-VOLUMES=`${TRAVIS_BUILD_DIR}/ci/docker/get_data_volumes.py met_tool_wrapper`
+VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py met_tool_wrapper`
 
 # download GempakToCF.jar
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/download_gempaktocf.sh
