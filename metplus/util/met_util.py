@@ -2734,6 +2734,8 @@ def is_met_netcdf(file_path):
              @returns True if file is a MET-generated NetCDF file and False if
               it is not or it can't be determined.
     """
+    # disable functionality for testing
+    return False
     try:
         from netCDF4 import Dataset
         nc_file = Dataset(file_path, 'r')
