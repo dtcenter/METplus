@@ -264,14 +264,14 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 field_info[f'{data_type.lower()}_level'] = ''
             elif input_level:
                 field_info[f'{data_type.lower()}_level'] = input_level
-            else:
-                var_name = field_info[f'{data_type.lower()}_name']
-                _, var_level = util.split_level(field_info[f'{data_type.lower()}_level'])
-                new_name = f'{var_name}_{var_level}'
-                self.logger.warning(f"{data_type}_REGRID_DATA_PLANE_"
-                                    f"VAR{field_info['index']}_LEVEL not set. "
-                                    f"Using name = {new_name} from "
-                                    f"{data_type}_VAR{field_info['index']}_[NAME/LEVELS]")
+#            else:
+#                var_name = field_info[f'{data_type.lower()}_name']
+#                _, var_level = util.split_level(field_info[f'{data_type.lower()}_level'])
+#                new_name = f'{var_name}_{var_level}'
+#                self.logger.warning(f"{data_type}_REGRID_DATA_PLANE_"
+#                                    f"VAR{field_info['index']}_LEVEL not set. "
+#                                    f"Using name = {new_name} from "
+#                                    f"{data_type}_VAR{field_info['index']}_[NAME/LEVELS]")
 
             # also add output name
             if output_name:
