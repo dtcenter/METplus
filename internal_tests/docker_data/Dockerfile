@@ -7,7 +7,7 @@ ARG MOUNTPT
 
 # Check that TARFILE is defined.
 RUN if [ "x${TARFILE}" == "x" ]; then \
-      echo "ERROR: TARFILE undefined! Rebuild with \"--build-arg TARFILE={Data tarball name}\""; \
+      echo "ERROR: TARFILE undefined! Rebuild with \"--build-arg TARFILE={One or more input tarfiles}\""; \
       exit 1; \
     fi
 
@@ -20,7 +20,10 @@ RUN if [ "x${MOUNTPT}" == "x" ]; then \
 ENV CASE_DIR /data/input/METplus_Data
 RUN mkdir -p ${CASE_DIR}
 
-RUN curl -SL https://github.com/dtcenter/METplus/releases/download/${VERSION}/${TARFILE} | tar -xzC ${CASE_DIR}
+RUN for CUR_TARFILE in `echo ${TARFILE} | tr "," " "`; do \
+      echo "Downloading: ${CUR_TARFILE}"; \
+      curl -SL https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/${CUR_TARFILE} | tar -xzC ${CASE_DIR}; \
+    done
 
 VOLUME ${MOUNTPT}
 USER root
