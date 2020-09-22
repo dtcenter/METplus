@@ -855,7 +855,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
             field_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
         else:
-            field_name = var_info[f"{data_src.lower()}_name"] + '_' + accum_string
+#            field_name = var_info[f"{data_src.lower()}_name"] + '_' + accum_string.zfill(2)
+            field_name = var_info[f"{data_src.lower()}_name"]
 
             self.logger.warning(f'{data_src}_PCP_COMBINE_OUTPUT_NAME is not set. Using '
                                 f'{field_name} from {data_src}_VAR<n>_NAME. ')
