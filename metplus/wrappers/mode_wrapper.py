@@ -200,9 +200,6 @@ class MODEWrapper(CompareGriddedWrapper):
         fcst_thresh_list = []
         obs_thresh_list = []
 
-        is_fcst_netcdf = util.is_met_netcdf(model_path)
-        is_obs_netcdf = util.is_met_netcdf(obs_path)
-
         # if probabilistic forecast and no thresholds specified, error and skip
         if self.c_dict['FCST_IS_PROB']:
 
@@ -214,15 +211,13 @@ class MODEWrapper(CompareGriddedWrapper):
                                               v_level=var_info['fcst_level'],
                                               v_extra=var_info['fcst_extra'],
                                               v_thresh=fcst_thresh_list,
-                                              d_type='FCST',
-                                              is_met_netcdf=is_fcst_netcdf)
+                                              d_type='FCST')
 
         obs_field_list = self.get_field_info(v_name=var_info['obs_name'],
                                              v_level=var_info['obs_level'],
                                              v_extra=var_info['obs_extra'],
                                              v_thresh=obs_thresh_list,
-                                             d_type='OBS',
-                                             is_met_netcdf=is_obs_netcdf)
+                                             d_type='OBS')
 
         if fcst_field_list is None or obs_field_list is None:
             return

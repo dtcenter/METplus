@@ -216,15 +216,12 @@ class GridDiagWrapper(CommandBuilder):
             self.log_error("Could not get field information from config.")
             return False
 
-        is_met_netcdf = util.is_met_netcdf(self.infiles[0])
-
         all_fields = []
         for field in field_list:
             field_list = self.get_field_info(d_type='FCST',
                                              v_name=field['fcst_name'],
                                              v_level=field['fcst_level'],
-                                             v_extra=field['fcst_extra'],
-                                             is_met_netcdf=is_met_netcdf)
+                                             v_extra=field['fcst_extra'])
             if field_list is None:
                 return False
 

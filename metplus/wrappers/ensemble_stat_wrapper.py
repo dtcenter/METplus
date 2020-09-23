@@ -208,13 +208,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
     def get_all_field_info(self, var_list, data_type):
         """!Get field info based on data type"""
-        if data_type == 'OBS':
-            if self.grid_obs_files:
-                is_met_netcdf = util.is_met_netcdf(self.grid_obs_files[0])
-            else:
-                is_met_netcdf = False
-        else:
-            is_met_netcdf = util.is_met_netcdf(self.infiles[0])
 
         field_list = []
         for var_info in var_list:
@@ -246,8 +239,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                              v_thresh=thresh,
                                              v_name=name,
                                              v_extra=extra,
-                                             d_type=data_type,
-                                             is_met_netcdf=is_met_netcdf)
+                                             d_type=data_type)
             if next_field is None:
                 return ''
 

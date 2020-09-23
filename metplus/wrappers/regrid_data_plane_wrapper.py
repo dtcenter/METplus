@@ -264,14 +264,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 field_info[f'{data_type.lower()}_level'] = ''
             elif input_level:
                 field_info[f'{data_type.lower()}_level'] = input_level
-#            else:
-#                var_name = field_info[f'{data_type.lower()}_name']
-#                _, var_level = util.split_level(field_info[f'{data_type.lower()}_level'])
-#                new_name = f'{var_name}_{var_level}'
-#                self.logger.warning(f"{data_type}_REGRID_DATA_PLANE_"
-#                                    f"VAR{field_info['index']}_LEVEL not set. "
-#                                    f"Using name = {new_name} from "
-#                                    f"{data_type}_VAR{field_info['index']}_[NAME/LEVELS]")
 
             # also add output name
             if output_name:
@@ -337,8 +329,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 @param field_info_list list of field dictionaries to process
                 @param data_type type of data to process, i.e. FCST or OBS
         """
-        is_met_netcdf = util.is_met_netcdf(self.infiles[0])
-
         for field_info in field_info_list:
             self.args.clear()
 
@@ -351,21 +341,12 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             input_level = field_info[f'{data_type.lower()}_level']
             field_text_list = self.get_field_info(data_type,
                                                   input_name,
-                                                  input_level,
-                                                  is_met_netcdf=is_met_netcdf)
+                                                  input_level)
 
             for field_text in field_text_list:
                 self.args.append(f"-field '{field_text.strip('{ }')}'")
 
-            # if grib type level is set but the data in a NetCDF file,
-            # combine name and level with an underscore to use as the name
-            level_letter, level_value = util.split_level(input_level)
-            if level_letter and is_met_netcdf:
-                field_name = f'{input_name}_{level_value}'
-                self.logger.warning('GRIB type level is set but the input file is NetCDF. '
-                                    f'Setting field name to {field_name}')
-            else:
-                field_name = input_name
+            field_name = input_name
 
             self.args.append("-name " + self.get_output_name(field_info,
                                                              data_type,
@@ -386,8 +367,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 @param field_info_list list of field dictionaries to process
                 @param data_type type of data to process, i.e. FCST or OBS
         """
-        is_met_netcdf = util.is_met_netcdf(self.infiles[0])
-
         self.set_command_line_arguments()
         output_names = []
         for field_info in field_info_list:
@@ -398,20 +377,11 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             input_level = field_info[f'{data_type.lower()}_level']
             field_text_list = self.get_field_info(data_type,
                                                   input_name,
-                                                  input_level,
-                                                  is_met_netcdf=is_met_netcdf)
+                                                  input_level)
             for field_text in field_text_list:
                 self.args.append(f"-field '{field_text.strip('{ }')}'")
 
-            # if grib type level is set but the data in a NetCDF file,
-            # combine name and level with an underscore to use as the name
-            level_letter, level_value = util.split_level(input_level)
-            if level_letter and is_met_netcdf:
-                field_name = f'{input_name}_{level_value}'
-                self.logger.warning('GRIB type level is set but the input file is NetCDF. '
-                                    f'Setting field name to {field_name}')
-            else:
-                field_name = input_name
+            field_name = input_name
 
             # get list of output names
             output_names.append(self.get_output_name(field_info,
