@@ -45,7 +45,7 @@ def main():
 
 
     ######################################################################
-    # Blocking Calculation
+    # Blocking Calculation and Plotting
     ######################################################################
     # Set up the data
     steps = BlockingCalculation(config)
@@ -54,35 +54,35 @@ def main():
     print('Computing CBLs')
     cbls,lats,lons,yr,mhweight = steps.run_CBL()
 
+    #Plot Central Blocking Latitude
+    cbl_plot_mthstr = config.getstr('Blocking','CBL_PLOT_MTHSTR')
+    cbl_plot_outname = config.getstr('Blocking','CBL_PLOT_OUTPUT_NAME')
+    create_cbl_plot(lons, lats, cbls, mhweight, cbl_plot_mthstr, cbl_plot_outname, do_averaging=True)
+
+
     # Run IBL
     print('Computing IBLs')
     ibls = steps.run_Calc_IBL(cbls)
     daynum = np.arange(0,len(ibls[0,:,0]),1)
 
+    # Plot IBLS
+    ibl_plot_title = config.getstr('Blocking','IBL_PLOT_TITLE')
+    ibl_plot_outname = config.getstr('Blocking','IBL_PLOT_OUTPUT_NAME')
+    pb.plot_ibls(ibls,lons,ibl_plot_title,ibl_plot_outname)
+
+
     # Run GIBL
     print('Computing GIBLs')
     gibls = steps.run_Calc_GIBL(ibls,lons)
+
 
     # Calc Blocks
     print('Computing Blocks')
     block_freq = steps.run_Calc_Blocks(ibls,gibls,lons,daynum,yr)
 
-
-    ######################################################################
-    # Plotting
-    ######################################################################
-    # Plot ---Minna's code
-    create_cbl_plot(lons, lats, cbls, mhweight, 'DFJ', 'Minna_CBL', do_averaging=True)
-
-
-    # Plot IBL's
-    ibl_plot_title = config.getstr('Blocking','IBL_TITLE')
-    ibl_plot_outname = config.getstr('Blocking','IBL_OUTPUT_NAME')
-    pb.plot_ibls(ibls,lons,ibl_plot_title,ibl_plot_outname)
-
     # Plot Blocking Frequency
-    blocking_plot_title = config.getstr('Blocking','BLOCKING_TITLE')
-    blocking_plot_outname = config.getstr('Blocking','BLOCKING_OUTPUT_NAME')
+    blocking_plot_title = config.getstr('Blocking','BLOCKING_PLOT_TITLE')
+    blocking_plot_outname = config.getstr('Blocking','BLOCKING_PLOT_OUTPUT_NAME')
     pb.plot_blocks(block_freq,gibls,ibls,lons,blocking_plot_title,blocking_plot_outname)
 
 
