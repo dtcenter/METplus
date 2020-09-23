@@ -38,7 +38,7 @@ services:
 # METplus is running in the docker container space
 # NOT on the travis vm space.
 python:
-  - 3.6.3
+  - 3.6
 
 git:
   depth: 25
