@@ -64,7 +64,7 @@ env:
     - DO_GIT_CLONE=false
     - REPO_NAME=METplus
     - REPO_NAME_lc=metplus
-
+    - CURRENT_BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
     - GH_PAGES_DIR=${HOME}/gh-pages
     - PYTHON_PACKAGES=""
     - OWNER_BUILD_DIR=`dirname ${TRAVIS_BUILD_DIR}`
@@ -122,6 +122,10 @@ jobs:
       script:
         - doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
     - stage: "Docker Setup"
+      name: "Update Data Volumes"
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_update_data_volumes.py
+      name: "Get METplus Image"
       script:
         - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
