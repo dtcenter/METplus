@@ -1,10 +1,6 @@
 #! /usr/bin/env python3
 
 import sys
-
-print("Script in progress")
-sys.exit(0)
-
 import os
 import requests
 from bs4 import BeautifulSoup
