@@ -45,11 +45,6 @@ git:
 
 # This defines what is allowed to build.
 # Build only the safelist
-#   develop
-#   feature_ branches
-#   main_ branches
-#   bugfix_ branches
-# 
 branches:
   only:
   - develop
@@ -59,8 +54,6 @@ branches:
 
 cache:
   - pip
-#  - directories:
-#    - $HOME/local
 
 # HOME=/home/travis
 # TRAVIS_BUILD_DIR=/home/travis/build/owner_name/repo_name
@@ -74,7 +67,6 @@ env:
 
     - GH_PAGES_DIR=${HOME}/gh-pages
     - EXTRA_PACKAGES="pytest matplotlib numpy"
-    - EXTRA_INSTALLS=test
     - OWNER_BUILD_DIR=`dirname ${TRAVIS_BUILD_DIR}`
     - DOCKER_WORK_DIR=/metplus
     - GITHUB_REPO_ORG=DTCenter
@@ -91,68 +83,23 @@ env:
     # if set to false, to use DOCKER_USER_* settings, your dockerhub container.
     - DOCKERHUB_USE_DEFAULT=true
 
-  matrix:
-    - TASK=docs
+script:
+  - pwd
 
-# Stage 1 runs 2 jobs  x.1, x.2 
-# based on the python: keyword setting 3.7,3.6 above.
-stage: "Stage 1"
-name: "Docs"
-# ${TRAVIS_BUILD_DIR} = /home/travis/build/<user ie. NCAR>/METplus
-script: 
-  - pwd 
-  - ls -l
-  - echo ${TRAVIS_BUILD_DIR}
-  #- export TASK=${TASK}
-    # WARNING: can't have comments in if block below.
-    # doc8 is an opinionated style checker
-    # doc8 METplus returns errors in the rst. We want the build
-    # to continue so either, add true; in the if conditional or
-    # use allow_failures, keyword.
-  - if [[ ${TASK} == "docs" ]]; then
-      doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/;
-      true;
-    fi;
-
-matrix:
+jobs:
   include:
-    # Example Note adding python: "3.7-dev", before stage: Stage 2 keyword 
-    # adds another job to Stage 1, and runs the script: in Stage 1.
-    # Unless it is python: "3.7" than it is ignored since 3.7 already
-    # defined for Stage 1.
-    - stage: "Stage 2"
-      name: "Environment test"
-      script: 
-        - date
-        - printenv;
-        - echo "===================================";
-          printenv | grep -i travis;
-        - echo "===================================";
-          printenv | grep -i ncar;
-          echo "==== who am I";
-          whoami;
-    - stage: "Stage 3"
-      name: "Docker Setup"
+    - stage: "Documentation"
+      before_install: export EXTRA_PACKAGES="$EXTRA_PACKAGES sphinx_rtd_theme doc8"
       script:
-        - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
-         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
-         - ls -alR ${OWNER_BUILD_DIR}/input
-    - stage: "Stage 4"
-      name: "Pytest Unit Tests"
+        - doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/ || true
+    - stage: "Docker Setup"
       script:
-        - echo ${TASK}
-        - echo ${HOME}
-        - ls -al ${HOME}
-        # These commands should all be in a script in METplus repo.
-        # ie.
-        # - ${TRAVIS_BUILD_DIR}/ci/travis_unit_tests.sh
-        #
-        - mkdir -p ${OWNER_BUILD_DIR}/pytmp.docker;
         - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
-        - docker run --rm -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DIR} ${DOCKERHUB_TAG} /bin/bash -c "pip3 install pytest-cov; export METPLUS_PYTEST_HOST=docker; cd ${DOCKER_WORK_DIR}/METplus/internal_tests/pytests; pytest --cov=../../metplus"
-        # Dump the output directories from running METplus
-        - ls -alR ${OWNER_BUILD_DIR}/pytmp.docker
+    - stage: "Tests"
+      name: "Pytest Unit Tests"
+      script:
+        - ${TRAVIS_BUILD_DIR}ci/travis_jobs/test_unit.sh
     - name: "Use Case Tests - met_tool_wrapper"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_met_tool_wrapper.sh
@@ -201,24 +148,10 @@ matrix:
 #    - python: "3.7-dev"
 #    - python: nightly
 
-# execute all of the commands which need to be executed 
-# before installing dependencies
-before_install:
-  # We hard-code the sphinx_rtd_theme to lock in our build with patch for
-  # version chooser
-  - pip install --upgrade pip;
-  #- pip install --upgrade setuptools;
-  - if [[ $TASK == "docs" ]]; then
-      export EXTRA_INSTALLS="doc,examples";
-      export EXTRA_PACKAGES="$EXTRA_PACKAGES sphinx_rtd_theme doc8";
-    fi;
-  - pip list
-  - pip install $EXTRA_PACKAGES
-
 # install all of the dependencies you need here
-install:  # The 'install:' key, ie. travis.yml 'keys'
-
-  #- pip install ".[$EXTRA_INSTALLS]"
+install:
+  - pip install --upgrade pip;
+  - pip install $EXTRA_PACKAGES
   - pip list
 
 # execute all of the commands which 
