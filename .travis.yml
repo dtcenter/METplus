@@ -89,7 +89,7 @@ script:
 # install all of the dependencies you need here
 install:
   - pip install --upgrade pip;
-  - if [ ! -z ${EXTRA_PACKAGES+x} ]; then
+  - if [ ! -z "$EXTRA_PACKAGES" ]; then
       pip install $EXTRA_PACKAGES;
     fi
   - pip list
