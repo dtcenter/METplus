@@ -5,11 +5,21 @@ echo 'doing docker build'
 
 #${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py
 
-echo Timing docker build...
-SECONDS=0
 
-docker build -t ${DOCKERHUB_TAG} --build-arg SOURCE_BRANCH=${DOCKERHUB_DEFAULT_TAGNAME} --build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} --build-arg DO_GIT_CLONE ${TRAVIS_BUILD_DIR}/ci/docker
+echo Timing docker pull...
+start_seconds=$SECONDS
 
-duration=$SECONDS
-echo "$(($duration / 60)) minutes and $(($duration % 60)) seconds elapsed."
+docker pull ${DOCKERHUB_TAG}
+
+duration=$(( SECONDS - start_seconds ))
+echo "Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+
+
+echo Timing docker build with --cache-from...
+start_seconds=$SECONDS
+
+docker build --cached-from ${DOCKERHUB_TAG} -t ${DOCKERHUB_TAG} --build-arg SOURCE_BRANCH=${DOCKERHUB_DEFAULT_TAGNAME} --build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} --build-arg DO_GIT_CLONE ${TRAVIS_BUILD_DIR}/ci/docker
+
+duration=$(( SECONDS - start_seconds ))
+echo "Docker build took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 echo 'done'
