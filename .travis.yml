@@ -86,15 +86,12 @@ env:
 script:
   - pwd
 
-allow_failures:
-  - stage: "Documentation"
-
 # install all of the dependencies you need here
 install:
   - pip install --upgrade pip;
-  if [ ! -z ${EXTRA_PACKAGES+x} ]; then
-    pip install $EXTRA_PACKAGES;
-  fi
+  - if [ ! -z ${EXTRA_PACKAGES+x} ]; then
+      pip install $EXTRA_PACKAGES;
+    fi
   - pip list
 
 # execute all of the commands which 
@@ -115,6 +112,9 @@ before_script:
     echo ${OWNER_BUILD_DIR};
 
 jobs:
+  allow_failures:
+    - stage: "Documentation"
+
   include:
     - stage: "Documentation"
       before_install: export EXTRA_PACKAGES="$EXTRA_PACKAGES sphinx_rtd_theme doc8"
