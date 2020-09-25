@@ -18,7 +18,7 @@ echo "Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) secon
 echo Timing docker build with --cache-from...
 start_seconds=$SECONDS
 
-docker build --cached-from ${DOCKERHUB_TAG} -t ${DOCKERHUB_TAG} --build-arg SOURCE_BRANCH=${DOCKERHUB_DEFAULT_TAGNAME} --build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} --build-arg DO_GIT_CLONE ${TRAVIS_BUILD_DIR}/ci/docker
+docker build --cache-from ${DOCKERHUB_TAG} -t ${DOCKERHUB_TAG} --build-arg SOURCE_BRANCH=${DOCKERHUB_DEFAULT_TAGNAME} --build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} --build-arg DO_GIT_CLONE ${TRAVIS_BUILD_DIR}/ci/docker
 
 duration=$(( SECONDS - start_seconds ))
 echo "Docker build took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
