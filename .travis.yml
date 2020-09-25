@@ -93,7 +93,7 @@ allow_failures:
 install:
   - pip install --upgrade pip;
   if [ ! -z ${EXTRA_PACKAGES+x} ]; then
-    pip install $EXTRA_PACKAGES
+    pip install $EXTRA_PACKAGES;
   fi
   - pip list
 
