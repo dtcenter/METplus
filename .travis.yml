@@ -66,7 +66,7 @@ env:
     - REPO_NAME_lc=metplus
 
     - GH_PAGES_DIR=${HOME}/gh-pages
-    - EXTRA_PACKAGES=""
+    - PYTHON_PACKAGES=""
     - OWNER_BUILD_DIR=`dirname ${TRAVIS_BUILD_DIR}`
     - DOCKER_WORK_DIR=/metplus
     - GITHUB_REPO_ORG=DTCenter
@@ -88,9 +88,10 @@ script:
 
 # install all of the dependencies you need here
 install:
-  - pip install --upgrade pip;
-  - if [ ! -z "$EXTRA_PACKAGES" ]; then
-      pip install $EXTRA_PACKAGES;
+
+  - if [ ! -z "$PYTHON_PACKAGES" ]; then
+      pip install --upgrade pip;
+      pip install $PYTHON_PACKAGES;
     fi
   - pip list
 
@@ -117,7 +118,7 @@ jobs:
 
   include:
     - stage: "Documentation"
-      before_install: export EXTRA_PACKAGES="$EXTRA_PACKAGES sphinx_rtd_theme doc8"
+      before_install: export PYTHON_PACKAGES="$PYTHON_PACKAGES sphinx_rtd_theme doc8"
       script:
         - doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
     - stage: "Docker Setup"
@@ -126,7 +127,6 @@ jobs:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
     - stage: "Tests"
       name: "Pytest Unit Tests"
-      before_install: export EXTRA_PACKAGES="pytest"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_unit.sh
     - name: "Use Case Tests - met_tool_wrapper"
