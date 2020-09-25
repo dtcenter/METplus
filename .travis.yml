@@ -66,7 +66,7 @@ env:
     - REPO_NAME_lc=metplus
 
     - GH_PAGES_DIR=${HOME}/gh-pages
-    - EXTRA_PACKAGES="pytest matplotlib numpy"
+    - EXTRA_PACKAGES=""
     - OWNER_BUILD_DIR=`dirname ${TRAVIS_BUILD_DIR}`
     - DOCKER_WORK_DIR=/metplus
     - GITHUB_REPO_ORG=DTCenter
@@ -86,20 +86,49 @@ env:
 script:
   - pwd
 
+allow_failures:
+  - stage: "Documentation"
+
+# install all of the dependencies you need here
+install:
+  - pip install --upgrade pip;
+  if [ ! -z ${EXTRA_PACKAGES+x} ]; then
+    pip install $EXTRA_PACKAGES
+  fi
+  - pip list
+
+# execute all of the commands which 
+# should make the build pass or fail
+before_script:
+
+  # This block defines which docker image to pull and use in all
+  # the jobs for the build.
+  - if [[ ${DOCKERHUB_USE_DEFAULT} == true ]]; then
+      export DOCKERHUB_TAG=${DOCKERHUB_DEFAULT_REPO}:${DOCKERHUB_DEFAULT_TAGNAME};
+    else
+      export DOCKERHUB_TAG=${DOCKERHUB_USER_REPO}:${DOCKERHUB_USER_TAGNAME};
+    fi;
+  - echo ${DOCKERHUB_TAG};
+    echo ${GITHUB_REPO_ORG};
+    echo ${TRAVIS_REPO_SLUG};
+    echo ${TRAVIS_BUILD_DIR};
+    echo ${OWNER_BUILD_DIR};
+
 jobs:
   include:
     - stage: "Documentation"
       before_install: export EXTRA_PACKAGES="$EXTRA_PACKAGES sphinx_rtd_theme doc8"
       script:
-        - doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/ || true
+        - doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
     - stage: "Docker Setup"
       script:
         - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
     - stage: "Tests"
       name: "Pytest Unit Tests"
+      before_install: export EXTRA_PACKAGES="pytest"
       script:
-        - ${TRAVIS_BUILD_DIR}ci/travis_jobs/test_unit.sh
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_unit.sh
     - name: "Use Case Tests - met_tool_wrapper"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_met_tool_wrapper.sh
@@ -129,45 +158,3 @@ jobs:
     - name: "Use Case Tests - s2s, space_weather, tc_and_extra_tc"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --s2s --space_weather --tc_and_extra_tc
-
-  # stage 1 fails due to doc8 has errors.
-  # This allows stage 1 to fail so the build can continue.
-  # Must align with matrix include keys
-  #allow_failures:
-    # This will only work if it matches matrix: docs
-    # if matrix: "docs" is quoted than TASK="docs" must
-    # be quoted
-    # I really only wanted to allow stage 1 to fail.
-    # Since TASK is defined in all jobs this allows
-    # all jobs to fail, so I will comment out for now.
-    #- env: TASK=docs
-
-#  allow_failures:
-#    - python: "3.7"
-#    - python: "3.6"
-#    - python: "3.7-dev"
-#    - python: nightly
-
-# install all of the dependencies you need here
-install:
-  - pip install --upgrade pip;
-  - pip install $EXTRA_PACKAGES
-  - pip list
-
-# execute all of the commands which 
-# should make the build pass or fail
-before_script:
-
-  # This block defines which docker image to pull and use in all
-  # the jobs for the build.
-  - if [[ ${DOCKERHUB_USE_DEFAULT} == true ]]; then
-      export DOCKERHUB_TAG=${DOCKERHUB_DEFAULT_REPO}:${DOCKERHUB_DEFAULT_TAGNAME};
-    else
-      export DOCKERHUB_TAG=${DOCKERHUB_USER_REPO}:${DOCKERHUB_USER_TAGNAME};
-    fi;
-  - echo ${DOCKERHUB_TAG};
-    echo ${GITHUB_REPO_ORG};
-    echo ${TRAVIS_REPO_SLUG};
-    echo ${TRAVIS_BUILD_DIR};
-    echo ${OWNER_BUILD_DIR};
-
