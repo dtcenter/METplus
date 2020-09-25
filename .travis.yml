@@ -4,7 +4,7 @@
 # Help: https://config.travis-ci.com/
 
 # ASSUMPTIONS USED IN THIS TRAVIS CONFIGURATION
-# Literal assumptions:
+# Literal assumptions: 
 # If these assumptions are not true, than build will break.
 #  Docker Hub organization repository: dtcenter/metplus:develop
 #  Docker Hub user repository: user_name is the same as 
