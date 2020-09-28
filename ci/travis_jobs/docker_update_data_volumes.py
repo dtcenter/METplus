@@ -59,7 +59,7 @@ def main():
     dockerhub_request = requests.get(DOCKERHUB_URL)
 
     # if it does not exist, create all data volumes and push them to DockerHub
-    if dockerhub_request != 200:
+    if dockerhub_request.status_code != 200:
         print(f"Could not find DockerHub URL: {DOCKERHUB_URL}")
         create_data_volumes(tarfile_last_modified.keys())
 
@@ -77,6 +77,9 @@ def main():
             break
         page = requests.get(page['next']).json()
         attempts += 1
+
+    print(f"VOLUMES LAST UPDATED: {volumes_last_updated}")
+    print(f"TARFILE LAST MODIFIED: {tarfile_last_modified}")
 
     # if any tarfile was modified after creation of corresponding volume,
     # recreate those data volumes and push them to DockerHub
