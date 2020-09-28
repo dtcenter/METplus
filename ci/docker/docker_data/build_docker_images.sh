@@ -10,16 +10,14 @@
 # option. It searches for tarfiles in that directory named
 # "sample_data-<dataset name>.tgz". When the "-data" option is used,
 # it only processes the specified list of datasets. Otherwise, it
-# processes all datasets in that directory.
+# processes all datasets in that directory. For each dataset, it builds
+# a Docker data volume.
 #
-# The tarfile for each dataset must contain an empty hidden file named
-# ".VOLUME" which indicate the directory to be mounted for the Docker
-# data volume.
-#
-# For each datasest, it builds a Docker data volume. The tarfile for
-# each dataset must contain an empty hidden file named ".VOLUME" which
-# which indicates the directory to be mounted for the Docker data
-# volume.
+# Each <version> directory must contain a file named
+# "volume_mount_directories". Each line of that file is formatted as:
+#   <dataset name>:<mount point directory>
+# For example, "s2s:model_applications/s2s" indicates the directory
+# that should be mounted for the s2s dataset. 
 #
 # When "-union" is used, it also builds a Docker data volume for all
 # datasets in that directory. When "-push" is used, it pushes the
@@ -32,6 +30,8 @@
 # Constants
 SCRIPT_DIR=$(dirname $0)
 PULL_URL="https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data"
+MOUNTPT_FILE="volume_mount_directories"
+MOUNTPT_BASE="/data/input/METplus_Data"
 
 #
 # Usage statement for this script
@@ -156,7 +156,7 @@ TARFILE_LIST=`curl -s ${PULL_URL}/${VERSION}/ | tr "<>" "\n" | egrep sample_data
 
 if [[ ${TARFILE_LIST} == "" ]]; then
   echo "ERROR:"
-  echo "ERROR: No tarfiles found in ${PULL_URL}/${VERSION}/"
+  echo "ERROR: No tarfiles found in ${PULL_URL}/${VERSION}"
   echo "ERROR:"
   exit 1
 fi
@@ -186,12 +186,24 @@ for TARFILE in $TARFILE_LIST; do
   # Define the docker image name
   IMGNAME="${PUSH_REPO}:${VERSION}-${CUR_DATA}"
 
+  # Determine the mount point
+  MOUNTPT_URL="${PULL_URL}/${VERSION}/${MOUNTPT_FILE}"
+  MOUNTPT=${MOUNTPT_BASE}/`curl -s ${MOUNTPT_URL} | grep "${CUR_DATA}:" | cut -d':' -f2`
+
+  if [[ ${MOUNTPT} == "" ]]; then
+    echo "ERROR:"
+    echo "ERROR: No entry found for \"${CUR_DATA}\" found in ${MOUNTPT_URL}!"
+    echo "ERROR:"
+    exit 1
+  fi
+
   echo
   echo "Building image ... ${IMGNAME}" 
   echo
 
   run_command docker build -t ${IMGNAME} . \
-    --build-arg TARFILE_URL=${CUR_URL}
+    --build-arg TARFILE_URL=${CUR_URL} \
+    --build-arg MOUNTPT=${MOUNTPT}
 
   if [ ${DO_PUSH} == 1 ]; then
     echo
@@ -211,7 +223,7 @@ done
 if [ ${DO_UNION} == 1 ]; then
 
   IMGNAME="${PUSH_REPO}:${VERSION}"
-  MOUNTPT="/data/input/METplus_Data"
+  MOUNTPT="${MOUNTPT_BASE}"
 
   run_command docker build -t ${IMGNAME} . \
     --build-arg TARFILE_URL=${URL_LIST} \
