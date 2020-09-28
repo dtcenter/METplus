@@ -8,14 +8,17 @@ from bs4 import BeautifulSoup
 import dateutil.parser
 from urllib.parse import urljoin
 
+from docker_utils import docker_get_volumes_last_updated
+
 # URL containing METplus sample data tarfiles
 WEB_DATA_DIR = 'https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/'
 
-# repository used for storing input data for development branches
-DOCKERHUB_DATA_REPO = 'dtcenter/metplus-data-dev'
-
-# URL of DockerHub repository
-DOCKERHUB_URL = f'https://hub.docker.com/v2/repositories/{DOCKERHUB_DATA_REPO}/tags'
+# path to script that builds docker data volumes
+BUILD_DOCKER_IMAGES = os.path.join(os.environ.get('TRAVIS_BUILD_DIR', ''),
+                                   'ci',
+                                   'docker',
+                                   'docker_data',
+                                   'build_docker_images.sh')
 
 def get_tarfile_last_modified(search_dir):
     # get list of tarfiles from website
@@ -33,30 +36,13 @@ def get_tarfile_last_modified(search_dir):
 
     return tarfile_last_modified
 
-def get_volumes_last_updated(current_branch, dockerhub_request):
-    volumes_last_updated = {}
-    attempts = 0
-    page = dockerhub_request.json()
-    while attempts < 10:
-        results = page['results']
-        for repo in results:
-            repo_name = repo['name']
-            if repo_name.split('-')[0] == current_branch:
-                volumes_last_updated[repo_name] = repo['last_updated']
-        if not page['next']:
-            break
-        page = requests.get(page['next']).json()
-        attempts += 1
-
-    return volumes_last_updated
-
 def create_data_volumes(current_branch, volumes):
     if not volumes:
         print("No volumes to build")
         return
 
     datasets = ','.join(volumes)
-    cmd = f'build_docker_images.sh -pull {current_branch} -dataset {datasets} -push'
+    cmd = f'{BUILD_DOCKER_IMAGES} -pull {current_branch} -dataset {datasets} -push'
     print(f'Running command: {cmd}')
 #    ret = subprocess.run(shlex.split(cmd), check=True)
 
@@ -71,12 +57,15 @@ def main():
         print("CURRENT_BRANCH not set. Exiting.")
         sys.exit(1)
 
+    if not os.environ.get('TRAVIS_BUILD_DIR'):
+        print("TRAVIS_BUILD_DIR not set. Exiting.")
+        sys.exit(1)
+
     search_dir = f"{urljoin(WEB_DATA_DIR, current_branch)}/"
     print(f"Looking for tarfiles in {search_dir}")
 
     dir_request = requests.get(search_dir)
-
-    # if it does not exit, exit script
+    # if it does not exist, exit script
     if dir_request.status_code != 200:
         print(f'URL does not exist: {search_dir}')
         sys.exit(0)
@@ -84,12 +73,7 @@ def main():
     # get last modified time of each tarfile
     tarfile_last_modified = get_tarfile_last_modified(search_dir)
 
-    dockerhub_request = requests.get(DOCKERHUB_URL)
-    if dockerhub_request.status_code != 200:
-        print(f"Could not find DockerHub URL: {DOCKERHUB_URL}")
-        sys.exit(1)
-
-    volumes_last_updated = get_volumes_last_updated(current_branch, dockerhub_request)
+    volumes_last_updated = docker_get_volumes_last_updated(current_branch)
 
     # check status of each tarfile and add them to the list of volumes to create if needed
     volumes_to_create = []

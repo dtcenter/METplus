@@ -66,7 +66,7 @@ env:
     - REPO_NAME_lc=metplus
     - CURRENT_BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
     - GH_PAGES_DIR=${HOME}/gh-pages
-    - PYTHON_PACKAGES=""
+    - PYTHON_PACKAGES="requests"
     - OWNER_BUILD_DIR=`dirname ${TRAVIS_BUILD_DIR}`
     - DOCKER_WORK_DIR=/metplus
     - GITHUB_REPO_ORG=DTCenter
@@ -123,7 +123,7 @@ jobs:
         - doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
     - stage: "Docker Setup"
       name: "Update Data Volumes"
-      before_install: export PYTHON_PACKAGES="$PYTHON_PACKAGES bs4 python-dateutil requests"
+      before_install: export PYTHON_PACKAGES="$PYTHON_PACKAGES bs4 python-dateutil"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_update_data_volumes.py
     - name: "Get METplus Image"
