@@ -123,7 +123,7 @@ jobs:
         - doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
     - stage: "Docker Setup"
       name: "Update Data Volumes"
-      before_install: export PYTHON_PACKAGES="$PYTHON_PACKAGES bs4"
+      before_install: export PYTHON_PACKAGES="$PYTHON_PACKAGES bs4 dateutil"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_update_data_volumes.py
       name: "Get METplus Image"
