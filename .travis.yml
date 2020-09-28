@@ -122,12 +122,12 @@ jobs:
       script:
         - doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
     - stage: "Docker Setup"
-      name: "Update Data Volumes"
-      before_install: export PYTHON_PACKAGES="$PYTHON_PACKAGES bs4 python-dateutil"
-      script:
+      - name: "Update Data Volumes"
+        before_install: export PYTHON_PACKAGES="$PYTHON_PACKAGES bs4 python-dateutil"
+        script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_update_data_volumes.py
-      name: "Get METplus Image"
-      script:
+      - name: "Get METplus Image"
+        script:
         - echo "DOCKERHUB_TAG is set to *${DOCKERHUB_TAG}*"
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
     - stage: "Tests"
