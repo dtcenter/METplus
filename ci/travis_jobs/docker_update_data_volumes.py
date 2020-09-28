@@ -2,18 +2,20 @@
 
 import sys
 import os
+import shlex
 import requests
 from bs4 import BeautifulSoup
 import dateutil.parser
-from datetime import datetime
-
-#import urllib.request
 from urllib.parse import urljoin
 
+# URL containing METplus sample data tarfiles
 WEB_DATA_DIR = 'https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/'
-DOCKERHUB_REPO = 'dtcenter/metplus-data-dev'
-DOCKERHUB_URL = f'https://hub.docker.com/v2/repositories/{DOCKERHUB_REPO}/tags'
 
+# repository used for storing input data for development branches
+DOCKERHUB_DATA_REPO = 'dtcenter/metplus-data-dev'
+
+# URL of DockerHub repository
+DOCKERHUB_URL = f'https://hub.docker.com/v2/repositories/{DOCKERHUB_DATA_REPO}/tags'
 
 def get_tarfile_last_modified(search_dir):
     # get list of tarfiles from website
@@ -49,9 +51,17 @@ def get_volumes_last_updated(current_branch, dockerhub_request):
     return volumes_last_updated
 
 def create_data_volumes(current_branch, volumes):
+    if not volumes:
+        print("No volumes to build")
+        return
+
     datasets = ','.join(volumes)
     cmd = f'build_docker_images.sh -pull {current_branch} -dataset {datasets} -push'
     print(f'Running command: {cmd}')
+#    ret = subprocess.run(shlex.split(cmd), check=True)
+
+#    if ret.returncode:
+#        print(f'Command failed: {cmd}')
 
 def main():
 
@@ -63,7 +73,6 @@ def main():
 
     search_dir = f"{urljoin(WEB_DATA_DIR, current_branch)}/"
     print(f"Looking for tarfiles in {search_dir}")
-    #feature_625_stat_analysis/sample_data-tc_and_extra_tc.tgz'
 
     dir_request = requests.get(search_dir)
 
@@ -75,7 +84,6 @@ def main():
     # get last modified time of each tarfile
     tarfile_last_modified = get_tarfile_last_modified(search_dir)
 
-    # check if data volumes exists on DockerHub dtcenter/metplus-data-dev
     dockerhub_request = requests.get(DOCKERHUB_URL)
     if dockerhub_request.status_code != 200:
         print(f"Could not find DockerHub URL: {DOCKERHUB_URL}")
@@ -89,31 +97,30 @@ def main():
         category = os.path.splitext(tarfile)[0].split('-')[1]
         print(f"Checking tarfile: {category}")
 
-        volume_categories = [volume.split('-')[1] for volume in volumes_last_updated.keys()]
-
+        volume_name = f'{current_branch}-{category}'
         # if the data volume does not exist, create it and push it to DockerHub
-        if category not in volume_categories:
+        if not volume_name in volumes_last_updated.keys():
+            print(f'{volume_name} data volume does not exist. Creating data volume.')
             volumes_to_create.append(tarfile)
             continue
 
-        # if it does exist, get last updated time of volume and compare to tarfile last modified
-        volume_dt = dateutil.parser.parse(volumes_last_updated[f'{current_branch}-{category}'])
-        #tarfile_dt = datetime.strptime(last_modified, )
+        # if data volume does exist, get last updated time of volume and compare to
+        # tarfile last modified. if any tarfile was modified after creation of
+        # corresponding volume, recreate those data volumes
+        volume_dt = dateutil.parser.parse(volumes_last_updated[volume_name])
+        tarfile_dt = dateutil.parser.parse(last_modified)
+
         print(f"Volume time: {volume_dt.strftime('%Y%m%d_%H%M%S')}")
-        #print(f"Tarfile time: {last_modified.strftime('%Y%m%d_%H%M%S')}")
+        print(f"Tarfile time: {tarfile_dt.strftime('%Y%m%d_%H%M%S')}")
 
+        # if the tarfile has been modified more recently than the data volume was created,
+        # recreate the data volume
+        if volume_dt < tarfile_dt:
+            print(f'{tarfile} has changed since {volume_name} was created. '
+                  'Regenerating data volume.')
+            volumes_to_create.append(tarfile)
 
-
-    print("VOLUMES LAST UPDATED:")
-    for volume, last_updated in volumes_last_updated.items():
-        print(f"{volume}: {last_updated}")
-    print("TARFILE LAST MODIFIED:")
-    for tarfile, last_modified in tarfile_last_modified.items():
-        print(f"{tarfile}: {last_modified}")
-
-#    create_data_volumes(current_branch, tarfile_last_modified.keys())
-    # if any tarfile was modified after creation of corresponding volume,
-    # recreate those data volumes and push them to DockerHub
+    create_data_volumes(current_branch, volumes_to_create)
 
 if __name__ == "__main__":
     main()
