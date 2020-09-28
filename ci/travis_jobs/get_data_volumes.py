@@ -22,7 +22,7 @@ def main():
     volume_list = []
 
     dockerhub_repo = 'metplus-data'
-    if METPLUS_VERSION.startswith('v'):
+    if not METPLUS_VERSION.startswith('v'):
         dockerhub_repo = f'{dockerhub_repo}-dev'
 
     for model_app_name in MODEL_APP_NAMES:
