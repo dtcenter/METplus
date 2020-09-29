@@ -42,7 +42,13 @@ def create_data_volumes(current_branch, volumes):
         return
 
     # log into docker using encrypted credentials
-    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    cmd = 'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin'
+    print(f'Running command: {cmd}')
+    ret = subprocess.run(shlex.split(cmd), check=True)
+
+    if ret.returncode:
+        print(f'Command failed: {cmd}')
+        return
 
     datasets = ','.join(volumes)
     cmd = f'{BUILD_DOCKER_IMAGES} -pull {current_branch} -data {datasets} -push'
