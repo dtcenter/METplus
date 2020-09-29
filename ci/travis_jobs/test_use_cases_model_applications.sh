@@ -24,8 +24,8 @@ echo Run tests...
 returncode=0
 
 # create data volumes and get list of arguments to pass to docker run
-echo ${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py met_tool_wrapper $@
-VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py met_tool_wrapper $@`
+echo ${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py $@
+VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py $@`
 
 # download GempakToCF.jar
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/download_gempaktocf.sh
