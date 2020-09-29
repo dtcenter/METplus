@@ -201,7 +201,7 @@ for TARFILE in $TARFILE_LIST; do
   echo "Building image ... ${IMGNAME}" 
   echo
 
-  run_command docker build -t ${IMGNAME} . \
+  run_command docker build -t ${IMGNAME} ${SCRIPT_DIR} \
     --build-arg TARFILE_URL=${CUR_URL} \
     --build-arg MOUNTPT=${MOUNTPT}
 
@@ -225,7 +225,7 @@ if [ ${DO_UNION} == 1 ]; then
   IMGNAME="${PUSH_REPO}:${VERSION}"
   MOUNTPT="${MOUNTPT_BASE}"
 
-  run_command docker build -t ${IMGNAME} . \
+  run_command docker build -t ${IMGNAME} ${SCRIPT_DIR} \
     --build-arg TARFILE_URL=${URL_LIST} \
     --build-arg MOUNTPT=${MOUNTPT}
 
