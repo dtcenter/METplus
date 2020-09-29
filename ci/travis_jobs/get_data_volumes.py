@@ -21,6 +21,10 @@ MODEL_APP_NAMES = ('met_tool_wrapper',
 def main():
     volume_list = []
 
+    dockerhub_repo = 'metplus-data'
+    if not METPLUS_VERSION.startswith('v'):
+        dockerhub_repo = f'{dockerhub_repo}-dev'
+
     for model_app_name in MODEL_APP_NAMES:
 
         # if model application name if found in any command line argument.
@@ -35,7 +39,7 @@ def main():
             else:
                 volume_name = f'{METPLUS_VERSION}-{model_app_name}'
 
-            cmd = f'docker pull dtcenter/metplus-data:{volume_name}'
+            cmd = f'docker pull dtcenter/{dockerhub_repo}:{volume_name}'
             ret = subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL)
 
             # if return code is non-zero, a failure occurred
@@ -43,7 +47,7 @@ def main():
                 return f'Command failed: {cmd}'
 
             cmd = (f'docker create --name {model_app_name} '
-                   f'dtcenter/metplus-data:{volume_name}')
+                   f'dtcenter/{dockerhub_repo}:{volume_name}')
             ret = subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL)
 
             if ret.returncode:
