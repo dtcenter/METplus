@@ -144,6 +144,7 @@ use_cases['space_weather'] = [
 
 use_cases['tc_and_extra_tc'] = [
     use_case_dir + "/model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf",
+    use_case_dir + "/model_applications/tc_and_extra_tc/StatAnalysis_fcstHAFS.conf",
 ]
 
 # The use cases below require additional dependencies and are no longer run via the use_cases dictionary
