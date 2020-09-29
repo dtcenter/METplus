@@ -41,13 +41,16 @@ def create_data_volumes(current_branch, volumes):
         print("No volumes to build")
         return
 
-    datasets = ','.join(volumes)
-    cmd = f'{BUILD_DOCKER_IMAGES} -pull {current_branch} -dataset {datasets} -push'
-    print(f'Running command: {cmd}')
-#    ret = subprocess.run(shlex.split(cmd), check=True)
+    # log into docker using encrypted credentials
+    echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-#    if ret.returncode:
-#        print(f'Command failed: {cmd}')
+    datasets = ','.join(volumes)
+    cmd = f'{BUILD_DOCKER_IMAGES} -pull {current_branch} -data {datasets} -push'
+    print(f'Running command: {cmd}')
+    ret = subprocess.run(shlex.split(cmd), check=True)
+
+    if ret.returncode:
+        print(f'Command failed: {cmd}')
 
 def main():
 
@@ -85,7 +88,7 @@ def main():
         # if the data volume does not exist, create it and push it to DockerHub
         if not volume_name in volumes_last_updated.keys():
             print(f'{volume_name} data volume does not exist. Creating data volume.')
-            volumes_to_create.append(tarfile)
+            volumes_to_create.append(category)
             continue
 
         # if data volume does exist, get last updated time of volume and compare to
@@ -102,7 +105,7 @@ def main():
         if volume_dt < tarfile_dt:
             print(f'{tarfile} has changed since {volume_name} was created. '
                   'Regenerating data volume.')
-            volumes_to_create.append(tarfile)
+            volumes_to_create.append(category)
 
     create_data_volumes(current_branch, volumes_to_create)
 
