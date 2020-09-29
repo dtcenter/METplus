@@ -209,7 +209,11 @@ for TARFILE in $TARFILE_LIST; do
     echo
     echo "Pushing image ... ${IMGNAME}"
     echo
-
+    # if DOCKER_USERNAME is set, then run docker login
+    if [ ! -z ${DOCKER_USERNAME+x} ]; then
+      echo "Logging into Docker ..."
+      echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    fi
     run_command docker push ${IMGNAME}
 
   fi
