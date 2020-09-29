@@ -45,7 +45,7 @@ def create_data_volumes(current_branch, volumes):
     # log into docker using encrypted credentials and call build_docker_images.sh script
     cmd = (f'echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin; '
            f'{BUILD_DOCKER_IMAGES} -pull {current_branch} '
-           f'-data {','.join(volumes)} -push {DOCKERHUB_DATA_REPO}')
+           f'-data {",".join(volumes)} -push {DOCKERHUB_DATA_REPO}')
     print(f'Running command: {cmd}')
     ret = subprocess.run(shlex.split(cmd), check=True)
 
