@@ -54,6 +54,7 @@ def create_data_volumes(current_branch, volumes):
     datasets = ','.join(volumes)
     cmd = f'{BUILD_DOCKER_IMAGES} -pull {current_branch} -data {datasets} -push {DOCKERHUB_DATA_REPO}'
     print(f'Running command: {cmd}')
+    ret = subprocess.run(shlex.split(f'echo "{cmd}"'), check=True)
     ret = subprocess.run(shlex.split(cmd), check=True)
 
     if ret.returncode:
