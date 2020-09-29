@@ -9,7 +9,7 @@ import dateutil.parser
 from urllib.parse import urljoin
 import subprocess
 
-from docker_utils import docker_get_volumes_last_updated
+from docker_utils import docker_get_volumes_last_updated, DOCKERHUB_DATA_REPO
 
 # URL containing METplus sample data tarfiles
 WEB_DATA_DIR = 'https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/'
@@ -52,7 +52,7 @@ def create_data_volumes(current_branch, volumes):
         return
 
     datasets = ','.join(volumes)
-    cmd = f'{BUILD_DOCKER_IMAGES} -pull {current_branch} -data {datasets} -push'
+    cmd = f'{BUILD_DOCKER_IMAGES} -pull {current_branch} -data {datasets} -push {DOCKERHUB_DATA_REPO}'
     print(f'Running command: {cmd}')
     ret = subprocess.run(shlex.split(cmd), check=True)
 
