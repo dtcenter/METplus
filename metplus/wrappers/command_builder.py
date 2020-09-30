@@ -1114,7 +1114,7 @@ class CommandBuilder:
         dict_string += '}'
         return dict_string
 
-    def set_c_dict_list(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+    def set_c_dict_list(self, c_dict, mp_config_name, met_config_name, c_dict_key=None, remove_quotes=False):
         """! Get list from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
@@ -1129,6 +1129,9 @@ class CommandBuilder:
         conf_value = util.getlist(self.config.getstr('config', mp_config_name, ''))
         if conf_value:
             conf_value = str(conf_value).replace("'", '"')
+
+            if remove_quotes:
+                conf_value = conf_value.replace('"', '')
 
             if not c_dict_key:
                 c_key = met_config_name.upper()
