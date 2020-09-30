@@ -23,12 +23,12 @@ ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 echo Run tests...
 returncode=0
 
-VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py tc_and_extra_tc`
+VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py data_assimilation`
 
-echo tc_and_extra_tc that requires netCDF4 packages
+echo data_assimilation
 
 # use docker_run_metplus.sh
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip3 install netCDF4; ${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config model_applications/tc_and_extra_tc/StatAnalysis_fcstHAFS.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode "$VOLUMES"
+${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip3 install netCDF4; ${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode "$VOLUMES"
 returncode=$?
 
 # remove logs dir and move data to previous output base so next run will not prompt

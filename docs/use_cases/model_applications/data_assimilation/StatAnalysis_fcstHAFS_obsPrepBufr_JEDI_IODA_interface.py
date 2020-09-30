@@ -2,7 +2,7 @@
 StatAnalysis: JEDI
 ===========================================================================
 
-model_applications/tc_and_extra_tc/StatAnalysis_fcstHAFS.conf
+model_applications/data_assimilation/StatAnalysis_fcstHAFS.conf
 
 """
 
@@ -69,10 +69,10 @@ model_applications/tc_and_extra_tc/StatAnalysis_fcstHAFS.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/tc_and_extra_tc/StatAnalysis_fcstHAFS.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/data_assimilation/StatAnalysis_fcstHAFS.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/StatAnalysis_fcstHAFS.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/data_assimilation/StatAnalysis_fcstHAFS.conf
 
 ##############################################################################
 # MET Configuration
@@ -158,7 +158,7 @@ model_applications/tc_and_extra_tc/StatAnalysis_fcstHAFS.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/tc_and_extra_tc/StatAnalysis_HofX  (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in model_applications/data_assimilation/StatAnalysis_HofX  (relative to **OUTPUT_BASE**)
 # and will contain the following file:
 #
 # * dump.out
@@ -170,6 +170,7 @@ model_applications/tc_and_extra_tc/StatAnalysis_fcstHAFS.conf
 # .. note::
 #  `StatAnalysisToolUseCase <https://dtcenter.github.io/METplus/search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
 #  `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
+#  `TCandExtraTCAppUseCase <https://dtcenter.github.io/METplus/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
+#  `NOAAEMCOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_
 #
-
-# sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-StatAnalysis_fcstHAFS.png'
+# sphinx_gallery_thumbnail_path = '_static/data_assimilation-StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.png'

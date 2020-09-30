@@ -136,9 +136,9 @@ jobs:
     - name: "Use Case Tests - met_tool_wrapper"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_met_tool_wrapper.sh
-    - name: "Use Case Tests - tc_and_extra_tc netCDF4"
+    - name: "Use Case Tests - data_assimilation"
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_tc_and_extra_tc_w_netcdf.sh
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_data_assimilation.sh
     - name: "Use Case Tests - cryosphere"
       script:
         # add travis_wait before command because a case takes longer than 10 minutes to return
