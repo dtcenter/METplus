@@ -172,4 +172,4 @@ model_applications/tc_and_extra_tc/StatAnalysis_fcstHAFS.conf
 #  `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
 #
 
-# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-StatAnalysis.png'
+# sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-StatAnalysis_fcstHAFS.png'
