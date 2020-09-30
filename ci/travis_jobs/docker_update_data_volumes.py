@@ -96,8 +96,8 @@ def main():
         volume_dt = dateutil.parser.parse(volumes_last_updated[volume_name])
         tarfile_dt = dateutil.parser.parse(last_modified)
 
-        print(f"Volume time: {volume_dt.strftime('%Y%m%d_%H%M%S')}")
-        print(f"Tarfile time: {tarfile_dt.strftime('%Y%m%d_%H%M%S')}")
+        print(f"Volume time: {volume_dt.strftime('%Y%m%d %H:%M:%S')}")
+        print(f"Tarfile time: {tarfile_dt.strftime('%Y%m%d %H:%M:%S')}")
 
         # if the tarfile has been modified more recently than the data volume was created,
         # recreate the data volume
