@@ -19,6 +19,7 @@ MODEL_APP_NAMES = ('met_tool_wrapper',
                    's2s',
                    'space_weather',
                    'tc_and_extra_tc',
+                   'data_assimilation',
                    'all_metplus_data',
                   )
 
