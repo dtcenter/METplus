@@ -144,6 +144,7 @@ use_cases['space_weather'] = [
 
 use_cases['tc_and_extra_tc'] = [
     use_case_dir + "/model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf",
+#    use_case_dir + "/model_applications/tc_and_extra_tc/StatAnalysis_fcstHAFS.conf",
 ]
 
 # The use cases below require additional dependencies and are no longer run via the use_cases dictionary
@@ -189,7 +190,10 @@ def run_test_use_case(param, test_metplus_base):
     process.communicate()[0]
     returncode = process.returncode
     if returncode:
-        failed_runs.append(cmd)
+        failed_runs.append((cmd, out_dir))
+
+#def print_error_logs(out_dir):
+#    log_dir = os.path.join(out_dir, 'logs')
 
 def handle_output_directories(output_base, output_base_prev):
     """!if there are files in output base, prompt user to copy them to prev output base
@@ -272,23 +276,6 @@ def main():
 
             force_use_cases_to_run.append(','.join(config_list))
 
-    if args.config:
-        for use_case in args.config:
-            config_args = use_case.split(',')
-            config_list = []
-            for config_arg in config_args:
-                # if relative path, must be relative to parm/use_cases
-                if not os.path.isabs(config_arg):
-                    # check that the full path exists before adding
-                    # use_case_dir in case item is a config value override
-                    check_config_exists = os.path.join(use_case_dir, config_arg)
-                    if os.path.exists(check_config_exists):
-                        config_arg = check_config_exists
-
-                config_list.append(config_arg)
-
-            force_use_cases_to_run.append(','.join(config_list))
-
     # compile list of use cases to run
     use_cases_to_run = []
 
@@ -333,15 +320,16 @@ def main():
         print(f"diff -r {output_base_prev} {output_base} | grep -v Binary | grep -v SSH | grep -v CONDA | grep -v OLDPWD | grep -v tmp | grep -v CLOCK_TIME | grep -v XDG | grep -v GSL | grep -v METPLUS | grep -v \"METplus took\" | grep -v \"Finished\" | grep -v \"\-\-\-\" | egrep -v \"^[[:digit:]]*c[[:digit:]]*$\" | less")
 
     # list any commands that failed
-    for failed_run in failed_runs:
+    for failed_run, out_dir in failed_runs:
         print(f"ERROR: Use case failed: {failed_run}")
+#        print_error_logs(out_dir)
 
     if len(failed_runs) > 0:
         print(f"\nERROR: {len(failed_runs)} use cases failed")
         sys.exit(1)
-    else:
-        print("\nINFO: All use cases returned 0. Success!")
-        sys.exit(0)
+
+    print("\nINFO: All use cases returned 0. Success!")
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()
