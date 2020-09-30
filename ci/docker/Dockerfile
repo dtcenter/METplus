@@ -1,14 +1,13 @@
 ARG MET_BRANCH
 
+# This Dockerfile extends the MET image file to run METplus
+# use the value of MET_BRANCH to chose the tag version of the MET image
+# default value is develop
+
 FROM dtcenter/met:${MET_BRANCH:-develop}
 MAINTAINER George McCabe <mccabe@ucar.edu>
 
-# 
-# This Dockerfile extends the MET image file to run METplus
-#
-
 ARG SOURCE_BRANCH
-
 RUN if [ -z ${SOURCE_BRANCH+x} ]; then \
       echo "ERROR: SOURCE_BRANCH undefined! Rebuild with \"--build-arg SOURCE_BRANCH={branch name}\""; \
       exit 1; \
@@ -17,10 +16,8 @@ RUN if [ -z ${SOURCE_BRANCH+x} ]; then \
     fi
 
 ARG MET_BRANCH
-
 RUN if [ -z ${MET_BRANCH+x} ]; then \
-      echo "ERROR: MET_BRANCH undefined! Using default (develop) or rebuild with \"--build-arg MET_BRANCH={branch name}\""; \
-      exit 1; \
+      echo "WARNING: MET_BRANCH undefined! Using default (develop) or rebuild with \"--build-arg MET_BRANCH={branch name}\""; \
     else \
       echo "Build Argument MET_BRANCH=${MET_BRANCH}"; \
     fi
@@ -38,17 +35,7 @@ WORKDIR ${DOCKER_WORK_DIR}
 # container:${DOCKER_WORK_DIR} is mounted to the host:/path/to/parent_of_METplus_dir
 # ie. -v /Users/Frimel/projects:${DOCKER_WORK_DIR} where /Users/Frimel/projects/METplus/ush
 RUN echo export PATH=$PATH:${DOCKER_WORK_DIR}/METplus/ush >> /etc/bashrc \
- && echo setenv PATH $PATH:${DOCKER_WORK_DIR}/METplus/ush >> /etc/csh.cshrc \
- && echo export PYTHONPATH=${DOCKER_WORK_DIR}/METplus >> /etc/bashrc \
- && echo setenv PYTHONPATH ${DOCKER_WORK_DIR}/METplus >> /etc/csh.cshrc
-
-
-
-# Set this environment variable since I did not install matplotlib
-# 
-# && echo export METPLUS_DISABLE_PLOT_WRAPPERS=yes >> /etc/bashrc \
-# && echo setenv METPLUS_DISABLE_PLOT_WRAPPERS yes >> /etc/csh.cshrc
-
+ && echo setenv PATH $PATH:${DOCKER_WORK_DIR}/METplus/ush >> /etc/csh.cshrc
 
 # Install required packages: Pandas, Cartopy*
 #  - *dateutil, pytest

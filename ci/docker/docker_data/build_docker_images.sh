@@ -201,7 +201,7 @@ for TARFILE in $TARFILE_LIST; do
   echo "Building image ... ${IMGNAME}" 
   echo
 
-  run_command docker build -t ${IMGNAME} . \
+  run_command docker build -t ${IMGNAME} ${SCRIPT_DIR} \
     --build-arg TARFILE_URL=${CUR_URL} \
     --build-arg MOUNTPT=${MOUNTPT}
 
@@ -209,7 +209,11 @@ for TARFILE in $TARFILE_LIST; do
     echo
     echo "Pushing image ... ${IMGNAME}"
     echo
-
+    # if DOCKER_USERNAME is set, then run docker login
+    if [ ! -z ${DOCKER_USERNAME+x} ]; then
+      echo "Logging into Docker ..."
+      echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+    fi
     run_command docker push ${IMGNAME}
 
   fi
@@ -225,7 +229,7 @@ if [ ${DO_UNION} == 1 ]; then
   IMGNAME="${PUSH_REPO}:${VERSION}"
   MOUNTPT="${MOUNTPT_BASE}"
 
-  run_command docker build -t ${IMGNAME} . \
+  run_command docker build -t ${IMGNAME} ${SCRIPT_DIR} \
     --build-arg TARFILE_URL=${URL_LIST} \
     --build-arg MOUNTPT=${MOUNTPT}
 
