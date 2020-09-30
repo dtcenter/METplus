@@ -136,6 +136,9 @@ jobs:
     - name: "Use Case Tests - met_tool_wrapper"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_met_tool_wrapper.sh
+    - name: "Use Case Tests - tc_and_extra_tc netCDF4"
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_tc_and_extra_tc_w_netcdf.sh
     - name: "Use Case Tests - cryosphere"
       script:
         # add travis_wait before command because a case takes longer than 10 minutes to return
@@ -152,7 +155,7 @@ jobs:
     - name: "Use Case Tests - medium_range2"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --medium_range2
-# medium_range3 is TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
+    # medium_range3 is TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
     - name: "Use Case Tests - medium_range3"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_medium_range3.sh
