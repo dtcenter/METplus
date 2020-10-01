@@ -82,7 +82,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # This use case can be run two ways:
 #
-# 1) Passing in EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.conf then a user-specific system configuration file::
+# 1) Passing in EnsembleStat_fcstWOFS_obsWOFS.py then a user-specific system configuration file::
 #
 #        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf -c /path/to/user_system.conf
 #
