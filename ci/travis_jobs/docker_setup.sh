@@ -27,6 +27,6 @@ echo DOCKER IMAGES after DOCKER_SETUP
 docker images
 echo
 
-docker push dtcenter/METplus-dev:develop
+docker push dtcenter/metplus-dev:develop
 
 echo 'done'
