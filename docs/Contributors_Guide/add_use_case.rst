@@ -10,7 +10,7 @@ for the new use case exists, create it, following the instructions to fill out t
 * <description> is a short description of the issue so that it can be easily identified from a list of branches.
 This branch will be the source of the pull request to merge the changes into the develop branch.
 
-More information on this process can be found in the :ref:`github-workflow <GitHub Workflow>` chapter.
+More information on this process can be found in the :ref:`GitHub Workflow <github-workflow>` chapter.
 
 Use Case Category Directories
 -----------------------------
@@ -44,22 +44,22 @@ Use Case Content
 In the category sub-directory (parm/use_cases/model_applications/<CATEGORY>), each use case should have the following:
 
 * A METplus configuration file named \<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_cilmo\<CLIMO\>\<DESCRIPTOR\>.conf where
-  * **<MET-TOOL>** is the MET tool that performs the final analysis, i.e. GridStat or SeriesAnalysis
-  * **<FCST>** is the name of the forecast input data source (this can be excluded if no forecast data is used)
-  * **<OBS>** is the name of the observation input data source (this can be excluded if no observation data is used)
-  * **<CLIMO>** is the optional climotology input data source (this can be excluded if no climatology data is used)
-  * **<DESCRIPTION>** is an optional description that can include field category, number of fields, statistical types, and file formats
+    * **<MET-TOOL>** is the MET tool that performs the final analysis, i.e. GridStat or SeriesAnalysis
+    * **<FCST>** is the name of the forecast input data source (this can be excluded if no forecast data is used)
+    * **<OBS>** is the name of the observation input data source (this can be excluded if no observation data is used)
+    * **<CLIMO>** is the optional climotology input data source (this can be excluded if no climatology data is used)
+    * **<DESCRIPTION>** is an optional description that can include field category, number of fields, statistical types, and file formats
 * 0 or more MET configuration files named <MET-TOOL>Config_<DESCRIPTOR>
 
 In the corresponding documentation category directory (**docs**/use_cases/model_applications/<CATEGORY>), add:
 
 * A Python Sphinx Documentation (.py) file with the same name as the METplus configuration file
-  * You can copy an existing documentation file and modify it to describe the new use case.
-  * Update any references to the .conf file to use the correct name
-  * Update the Scientific Objective section to describe the use case
-  * Update the description of the input data in the Datasets section
-  * Update the list of tools used in the METplus Components section
-  * Update list of run times in the METplus Workflow section
+    * You can copy an existing documentation file and modify it to describe the new use case.
+    * Update any references to the .conf file to use the correct name
+    * Update the Scientific Objective section to describe the use case
+    * Update the description of the input data in the Datasets section
+    * Update the list of tools used in the METplus Components section
+    * Update list of run times in the METplus Workflow section
 
 Make sure to build the documentation and ensure that the new use case file is displayed and the formatting looks
 correct. The python packages sphinx, sphinx-gallery (0.6 or higher), and sphinx_rtd_theme are required to build.
@@ -121,13 +121,13 @@ containing the changes for the new use case. On mohawk:
     cd feature_XYZ
 
 If the <category> tarfile exists already
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-6. Check the symbolic link in the develop directory to determine latest tarball
+6. Check the symbolic link in the develop directory to determine latest tarball::
 
     ls -lh ../develop/sample_data-<category>.tgz
 
-7. Untar the sample data tarball into the feature_XYZ directory:
+7. Untar the sample data tarball into the feature_XYZ directory::
 
     tar zxf ../vX.Y/sample_data-<category>-X.Y.tgz -C /d2/www/dtcenter/dfiles/code/METplus/METplus_Data/feature_XYZ
 
@@ -185,7 +185,7 @@ Create a pull request
 ^^^^^^^^^^^^^^^^^^^^^
 
 Create a pull request to merge the changes from your branch into the develop branch. More information on this process
-can be found in the :ref:`github-workflow-pull-request <GitHub Workflow>` chapter.
+can be found in the :ref:`GitHub Workflow <gitHub-workflow>` chapter under "Open a pull request using your browser."
 
 
 Update the develop data directory
@@ -193,10 +193,11 @@ Update the develop data directory
 
 Once you have verified that the new use case was run successfully using the new data, you will need to update the
 links on mohawk before the pull request is merged so that the develop branch will contain the new data.
-  * Move new tarball to the upcoming release (i.e. v4.0) directory
-  * Update symbolic link in the develop directory to point to the new data
-  * Remove feature_XYZ directory
-  * Remove feature_XYZ Docker data volumes
+
+    * Move new tarball to the upcoming release (i.e. v4.0) directory
+    * Update symbolic link in the develop directory to point to the new data
+    * Remove feature_XYZ directory
+    * Remove feature_XYZ Docker data volumes
 
     runas met_test
     cd /d2/www/dtcenter/dfiles/code/METplus/METplus_Data
