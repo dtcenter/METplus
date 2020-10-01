@@ -27,5 +27,6 @@ echo DOCKER IMAGES after DOCKER_SETUP
 echo
 # get ID of new image
 echo docker ps
+docker ps
 
 echo 'done'
