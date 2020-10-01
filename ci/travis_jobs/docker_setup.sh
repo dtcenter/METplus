@@ -26,8 +26,7 @@ echo
 echo DOCKER IMAGES after DOCKER_SETUP
 docker images
 echo
-# get ID of new image
-echo docker ps
-docker ps -a
+
+docker push dtcenter/METplus-dev:develop
 
 echo 'done'
