@@ -6,7 +6,7 @@
 VOLUMES=$3
 
 echo 'In docker_run_metplus, $VOLUMES= ',$VOLUMES
-echo 'docker images'
+echo 'DOCKER IMAGES in docker_run_metplus'
 docker images
 
 echo  In docker_run_metplus.sh, RUNNING: $1

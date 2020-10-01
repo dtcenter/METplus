@@ -48,14 +48,16 @@ rm -rf ${TRAVIS_OUTPUT_BASE}/logs
 mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
 
 echo Tests completed.
+echo DOCKER_IMAGES after model_applications $@
+docker images
 
 # Dump the output directories from running METplus
-echo listing TRAVIS_OUTPUT_BASE
-ls -alR ${TRAVIS_OUTPUT_BASE}
+#echo listing TRAVIS_OUTPUT_BASE
+#ls -alR ${TRAVIS_OUTPUT_BASE}
 
-echo
-echo listing TRAVIS_PREV_OUTPUT_BASE
-ls -alR ${TRAVIS_PREV_OUTPUT_BASE}
+#echo
+#echo listing TRAVIS_PREV_OUTPUT_BASE
+#ls -alR ${TRAVIS_PREV_OUTPUT_BASE}
 
 
 # Dump and see how much space is left on Travis disk.
