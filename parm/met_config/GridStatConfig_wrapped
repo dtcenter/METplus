@@ -148,7 +148,7 @@ nbrhd = {
    field      = BOTH;
    shape      = ${NEIGHBORHOOD_SHAPE};
    width      = [ ${NEIGHBORHOOD_WIDTH} ];
-   cov_thresh = [ >=0.5 ];
+   ${NEIGHBORHOOD_COV_THRESH}
    vld_thresh = 1.0;
 }
 

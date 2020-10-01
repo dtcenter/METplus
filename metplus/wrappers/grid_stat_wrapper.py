@@ -76,6 +76,12 @@ class GridStatWrapper(CompareGriddedWrapper):
                                                           'GRID_STAT_NEIGHBORHOOD_WIDTH', '1')
         c_dict['NEIGHBORHOOD_SHAPE'] = self.config.getstr('config',
                                                           'GRID_STAT_NEIGHBORHOOD_SHAPE', 'SQUARE')
+        self.set_c_dict_list(c_dict,
+                             f'GRID_STAT_NEIGHBORHOOD_COV_THRESH',
+                             'cov_thresh',
+                             'NEIGHBORHOOD_COV_THRESH',
+                             remove_quotes=True)
+
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
                                'GRID_STAT_VERIFICATION_MASK_TEMPLATE')
@@ -107,6 +113,9 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.add_env_var('NEIGHBORHOOD_SHAPE',
                          self.c_dict['NEIGHBORHOOD_SHAPE'])
+
+        self.add_env_var('NEIGHBORHOOD_COV_THRESH',
+                         self.c_dict.get('NEIGHBORHOOD_COV_THRESH', ''))
 
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))
