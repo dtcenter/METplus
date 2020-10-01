@@ -498,7 +498,7 @@ Copy and paste the following into an empty text file and name it 'my_user_config
 .. code-block:: none
 
   # This is a comment, comments are defined with a # at the beginning of the line
-  
+
   # Set the MET_INSTALL_DIR to the location of the MET install
   [dir]
   MET_INSTALL_DIR = /usr/local/met-9.0
@@ -553,7 +553,7 @@ When the above command is run, a usage message appears indicating that other con
 
 **Example 2: Using a use-case configuration:**
 
-The command: 
+The command:
 
 .. code-block:: none
 
@@ -566,7 +566,7 @@ will run METplus using the defaults set in the config files found in parm/metplu
 The command: 
 
 .. code-block:: none
-  
+
   master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf
