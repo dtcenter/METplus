@@ -4,19 +4,22 @@ Adding Use Cases
 Work in a Feature Branch
 ------------------------
 
-Test/develop new use cases in a GitHub feature branch. The branch should be named feature_<issue_number>_<description>.
-* <issue_number> is the number of the GitHub issue that corresponds to the new use case task. If no GitHub issue
-for the new use case exists, create it, following the instructions to fill out the template.
-* <description> is a short description of the issue so that it can be easily identified from a list of branches.
-This branch will be the source of the pull request to merge the changes into the develop branch.
+Test and develop new use cases in a GitHub feature branch.
+More information on this process can be found in the
+:ref:`GitHub Workflow <github-workflow>` chapter.
+If no GitHub issue for the new use case exists, create it, following the
+instructions to fill out the template.
+This branch will be the source of the pull request to merge the changes into
+the develop branch.
 
-More information on this process can be found in the :ref:`GitHub Workflow <github-workflow>` chapter.
+
 
 Use Case Category Directories
 -----------------------------
 
-New use cases will be put in the repository under parm/use_cases/model_applications/<CATEGORY> where <CATEGORY> is one
-of the following:
+New use cases will be put in the repository under
+parm/use_cases/model_applications/<CATEGORY> where <CATEGORY> is
+one of the following:
 
 * medium_range
 * s2s (Subseasonal to Seasonal)
@@ -35,21 +38,23 @@ of the following:
 * tc_and_extra_tc (Tropcial Cyclone and Extra Tropical Cyclone)
 * miscellaneous
 
-If you feel that the new use case does not fall into any of these categories or are unsure which category is the most
-appropriate, contact Tara Jensen (jensen@ucar.edu) to discuss the possibility of adding a new category.
+If you feel that the new use case does not fall into any of these categories
+or are unsure which category is the most appropriate, contact Tara Jensen
+(jensen@ucar.edu) to discuss the possibility of adding a new category.
 
 Use Case Content
 ----------------
 
-In the category sub-directory (parm/use_cases/model_applications/<CATEGORY>), each use case should have the following:
+In the category sub-directory (parm/use_cases/model_applications/<CATEGORY>),
+each use case should have the following:
 
-* A METplus configuration file named \<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_cilmo\<CLIMO\>\<DESCRIPTOR\>.conf where
-    * **<MET-TOOL>** is the MET tool that performs the final analysis, i.e. GridStat or SeriesAnalysis
-    * **<FCST>** is the name of the forecast input data source (this can be excluded if no forecast data is used)
-    * **<OBS>** is the name of the observation input data source (this can be excluded if no observation data is used)
-    * **<CLIMO>** is the optional climotology input data source (this can be excluded if no climatology data is used)
-    * **<DESCRIPTION>** is an optional description that can include field category, number of fields, statistical types, and file formats
-* 0 or more MET configuration files named <MET-TOOL>Config_<DESCRIPTOR>
+    * A METplus configuration file named \<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_cilmo\<CLIMO\>\<DESCRIPTOR\>.conf where
+        * **<MET-TOOL>** is the MET tool that performs the final analysis, i.e. GridStat or SeriesAnalysis
+        * **<FCST>** is the name of the forecast input data source (this can be excluded if no forecast data is used)
+        * **<OBS>** is the name of the observation input data source (this can be excluded if no observation data is used)
+        * **<CLIMO>** is the optional climotology input data source (this can be excluded if no climatology data is used)
+        * **<DESCRIPTION>** is an optional description that can include field category, number of fields, statistical types, and file formats
+    * 0 or more MET configuration files named <MET-TOOL>Config_<DESCRIPTOR>
 
 In the corresponding documentation category directory (**docs**/use_cases/model_applications/<CATEGORY>), add:
 
