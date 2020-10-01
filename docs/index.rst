@@ -72,7 +72,7 @@ Acronyms
 * **VSDB** - Verification Statistics Data Base
 * **MODE** - Method for Object-Based Diagnostic Evaluation
 * **UFS** - Unified Forecast System
-* **SIMA** -System for Integrated Modeling of the Atmosphere 
+* **SIMA** -System for Integrated Modeling of the Atmosphere
 * **ESRL** - Earth Systems Research Laboratory
 * **HIWPP** - High Impact Weather Predication Project
 * **NGGPS** - Next Generation Global Predicatio System
