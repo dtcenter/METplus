@@ -23,10 +23,11 @@ docker build --pull --cache-from ${DOCKERHUB_TAG} -t ${DOCKERHUB_TAG} --build-ar
 duration=$(( SECONDS - start_seconds ))
 echo "Docker build took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 echo
+
+docker push dtcenter/metplus-dev:develop
+
 echo DOCKER IMAGES after DOCKER_SETUP
 docker images
 echo
-
-docker push dtcenter/metplus-dev:develop
 
 echo 'done'

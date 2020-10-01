@@ -5,6 +5,8 @@
 
 VOLUMES=$3
 
+docker pull dtcenter/metplus-dev:develop
+
 echo 'In docker_run_metplus, $VOLUMES= ',$VOLUMES
 echo 'DOCKER IMAGES in docker_run_metplus'
 docker images
