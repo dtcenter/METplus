@@ -120,7 +120,7 @@ jobs:
     - stage: "Documentation"
       before_install: export PYTHON_PACKAGES="$PYTHON_PACKAGES sphinx_rtd_theme doc8"
       script:
-        - doc8 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
+        - doc8 --ignore D001 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
     - stage: "Docker Setup"
       name: "Update Data Volumes"
       before_install: export PYTHON_PACKAGES="$PYTHON_PACKAGES bs4 python-dateutil"
