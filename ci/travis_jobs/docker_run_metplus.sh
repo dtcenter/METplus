@@ -5,7 +5,7 @@
 
 VOLUMES=$3
 
-docker pull dtcenter/metplus-dev:develop
+docker pull ${DOCKERHUB_TAG}
 
 echo 'In docker_run_metplus, $VOLUMES= ',$VOLUMES
 echo 'DOCKER IMAGES in docker_run_metplus'
