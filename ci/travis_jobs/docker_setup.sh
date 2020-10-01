@@ -24,8 +24,8 @@ duration=$(( SECONDS - start_seconds ))
 echo "Docker build took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 echo
 
-#${TRAVIS_BUILD_DIR}/ci/docker/docker_data/${TRAVIS_BUILD_DIR}/METplus/ci/docker/docker_data/build_docker_images.sh
-#-pull ${DOCKERHUB_TAG} -push ${DOCKERHUB_TAB}
+${TRAVIS_BUILD_DIR}/ci/docker/docker_data/${TRAVIS_BUILD_DIR}/METplus/ci/docker/docker_data/build_docker_images.sh -pull ${DOCKERHUB_TAG} -push ${DOCKERHUB_TAB}
+
 docker push ${DOCKERHUB_TAG}
 
 echo DOCKER IMAGES after DOCKER_SETUP
