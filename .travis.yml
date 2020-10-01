@@ -113,8 +113,8 @@ before_script:
     echo ${OWNER_BUILD_DIR};
 
 jobs:
-  allow_failures:
-    - stage: "Documentation"
+#  allow_failures:
+#    - stage: "Documentation"
 
   include:
     - stage: "Documentation"
