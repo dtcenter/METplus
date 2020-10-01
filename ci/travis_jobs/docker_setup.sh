@@ -24,9 +24,10 @@ duration=$(( SECONDS - start_seconds ))
 echo "Docker build took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 echo
 echo DOCKER IMAGES after DOCKER_SETUP
+docker images
 echo
 # get ID of new image
 echo docker ps
-docker ps
+docker ps -a
 
 echo 'done'
