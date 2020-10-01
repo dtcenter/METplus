@@ -24,7 +24,7 @@ duration=$(( SECONDS - start_seconds ))
 echo "Docker build took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 echo
 
-docker push dtcenter/metplus-dev:develop
+docker push ${DOCKERHUB_TAG}
 
 echo DOCKER IMAGES after DOCKER_SETUP
 docker images
