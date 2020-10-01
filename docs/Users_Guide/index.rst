@@ -22,15 +22,15 @@ software package. The first release of METplus Wrappers have occurred
 in 2017. This documentation describes the |release| release in |release_monthyear|.
 Intermediate releases may include bug fixes. METplus Wrappers is also be
 able to accept new modules contributed by the community. While we are
-setting up our community contribution protocol, please send email 
+setting up our community contribution protocol, please send email
 to: `met_help@ucar.edu <mailto:>`__ and inform us of your desired
 contribution. We will then determine the
 maturity of any new verification method and coordinate the inclusion of
 the new module in a future version.
 
 This User's Guide was prepared by the developers of the METplus
-Wrappers, including Dan Adriaansen, Minna Win-Gildenmeister, George McCabe, 
-Julie Prestopnik, Jim Frimel, John Opatz, John Halley Gotway, 
+Wrappers, including Dan Adriaansen, Minna Win-Gildenmeister, George McCabe,
+Julie Prestopnik, Jim Frimel, John Opatz, John Halley Gotway,
 Tara Jensen, Jonathan Vigh, Mallory Row, Christana Kalb, Hank Fisher,
 Lisa Goodrich, Lindsay Blank, and Todd Arbetter.
 
@@ -52,7 +52,7 @@ governing permissions and limitations under the License.
 
 The citation for this User's Guide should be:
 
-Adriaansen, D., M. Win-Gildenmeister, G. McCabe, J. Prestopnik, J. Frimel, J. Opatz, 
+Adriaansen, D., M. Win-Gildenmeister, G. McCabe, J. Prestopnik, J. Frimel, J. Opatz,
 J. Halley Gotway, T. Jensen, J. Vigh, M. Row, C. Kalb, H. Fisher, L. Goodrich,
 L. Blank, and T. Arbetter, |release_year|: The METplus Version |version| User's Guide.
 Developmental Testbed Center.  Available at: https://github.com/dtcenter/METplus/releases.
