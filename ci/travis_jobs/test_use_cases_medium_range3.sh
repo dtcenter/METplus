@@ -19,6 +19,8 @@ echo mkdir -p ${TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
 
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
+echo 'DOCKER IMAGES in medium_range3 after docker_setup'
+docker images
 
 echo Run tests...
 returncode=0
