@@ -62,7 +62,8 @@ cache:
 env:
   global:
     - DO_GIT_CLONE=false
-    - REPO_NAME=METplus
+#   - REPO_NAME=METplus
+    - REPO_NAME=METplus-dev
     - REPO_NAME_lc=metplus
     - CURRENT_BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
     - GH_PAGES_DIR=${HOME}/gh-pages
