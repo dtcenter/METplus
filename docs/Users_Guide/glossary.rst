@@ -691,7 +691,6 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-		       
    TC_STAT_CONFIG_FILE
      Path to optional configuration file read by TCStat.
 
@@ -1633,7 +1632,7 @@ METplus Configuration Glossary
 
    FCST_LEAD
      .. warning:: **DEPRECATED:** Please use :term:`FCST_LEAD_LIST` instead.
-		  
+
    FCST_LEVEL
      .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` instead.
 
@@ -3046,7 +3045,7 @@ METplus Configuration Glossary
  
    MODEL<n>_NAME
         .. warning:: **DEPRECATED:** Please use :term:`MODEL\<n\>`.
-			     
+
    MODEL<n>
      Define the model name for the first model to be used in the analysis. This is the model name listed in the MET .stat files.There can be <n> number of models defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
 
