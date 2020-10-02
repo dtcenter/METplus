@@ -27,7 +27,8 @@ env:
   - DOCKER_WORK_DIR=/metplus
   - GITHUB_REPO_ORG=DTCenter
   - DOCKERHUB_DEFAULT_REPO=dtcenter/metplus-dev
-  - DOCKERHUB_DEFAULT_TAGNAME=develop
+ #- DOCKERHUB_DEFAULT_TAGNAME=develop
+  - DOCKERHUB_DEFAULT_TAGNAME=feature_639_dockerimagepushpull
   - DOCKERHUB_MET_TAGNAME=develop
   - DOCKER_DATA_DIR=/data
   - DOCKERHUB_USER_REPO="`dirname ${TRAVIS_REPO_SLUG}| awk '{print tolower($0)}'`/metplus"
