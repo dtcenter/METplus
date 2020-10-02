@@ -33,8 +33,8 @@ env:
   - DOCKERHUB_USER_REPO="`dirname ${TRAVIS_REPO_SLUG}| awk '{print tolower($0)}'`/metplus"
   - DOCKERHUB_USER_TAGNAME=develop
   - DOCKERHUB_USE_DEFAULT=true
-  - secure: SBBsZipMtxlZQutlyxN4bWcsu8e1OBuWsr6lZ8ld5+QgpZb5Evnvu1hiDjzTg82csW2+I+0SyMg3EEtCrLuX+6OcbK82JR/yj7A8zv8YyJLNwvAkPhbTXs+1xLoqSCtDZaGhSrC3aA4sQZKGzAdmmHME5kj9hkwocJVxsaxJuoao2tXft9Llc3fwsMtT59S9A638n3DkRpM8PDzL9JHYBRYriD0gJzzZKZ89U9/OhXbJwpDj5j30rt8Ia/sDQFCP3fqQiCpnUScJVPzzFRt7Ku0qZhGLA1oc6e7vXtQ2X3nnm5+wjZeSrLGDD7xjw/2osjsQGkiNN/N9Krg/rlRv5DIZsJL8d7lUG4GNXbupukL7lOBlrsCAZDSrpmHiWvl91S1jFgNw5PpgQ8hyWW9Q7u1emq4QyQs50iw3sBs5jK5qTeNCooWDMEqSkoaoz2LpBbu9oNCunvXJ0BBxYYkvAavcVQW9ykfjcrSISOfqo35geHOIBNUDBwQPxXixWk+xKIstG264P2mozkiw9EaoYWZ0FbUQXvgdCBzlT3Sd1gkbMUbk4TgBPGw2J94n6PsF6Bdwkse5gns50EYteKUKLbYMkc15OiaD2D2+QU1YZWgDuz1N7zN7Sju6K+2J4isIKMiWLJFnKoXRMLAexbwRRPoigc5QwPT8eMA4S8nuMc0=
-  - secure: AdQSd2MRz40OJZEZA/i2+Xe0+QJY6hQy1ywkEwKW/1EzgntKkPL5z1NRZ+MHmjQ/w/YtKmI9xBnWP/5BB6aL63ohOtrfihgJ09E4OXXqr2QaUMzuxk8AjdDUvseqMhp97vR0VgujvCaM50n2saSMXLfym8r2+NrSFQTsfQoLbO7VF6QjJau0PSXcTnQXXkeS9ERt8eDRDqBWRpGgNindgMS488tyGM/2FA6Hukouj1Bl2u9jOkE9XlNI5ENwCvbotl8xphBcyUOJdF+XUdrEMgk2D+g0gYeCsGFaBH+1769RUDBv8Y3aF5/9LtS43kfByV3SLFCnZ/2D+m9oo5f/cOXogXbNAlFqKUwxB2I+K7CQHfpwcwZINmZ2TOnV8+GezIoSmApole6nuUKehcFpZJynkmSI7zyepNHc3ruAbkl9ZCiqItEDXfQnwtsiWJoFa6hMGeVg4nE4RMlUKtBMbuYpEcAk+svbt9Dff66cH/CT5g3NfZuKd0HlLZSz12cer7G3uY1vcS2fCRs0IVBrKCoiIgJL4Jo5dKP/ufZsss1UJeMMoUtZRUe510uVbBhYn47wGTF63SenDjvS6JdtOG/ZTJQ55VLmbG6hQEhznTuIZ2kkiR8ZW0V1sMLyppV/CvL5kiRma928wj3NqTHh5K6zHdRw2RYeGBgLNHOLCtc=
+  - DOCKERHUB_USERNAME="fentoad72"
+  - DOCKERHUB_PASSWORD="Qc!pher9"
 script:
 - pwd
 install:
@@ -58,12 +58,12 @@ jobs:
     name: Update Data Volumes
     before_install: export PYTHON_PACKAGES="$PYTHON_PACKAGES bs4 python-dateutil"
     script:
-    - echo "$DOCKER_PASSWORD" $DOCKER_PASSWORD
-    - echo "$DOCKER_USERNAME" $DOCKER_USERNAME
-    - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
     - "${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_update_data_volumes.py"
   - name: Get METplus Image
     script:
+    - echo "$DOCKER_PASSWORD" $DOCKER_PASSWORD
+    - echo "$DOCKER_USERNAME" $DOCKER_USERNAME
+    - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
     - "${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh"
   - stage: Tests
     name: Pytest Unit Tests
