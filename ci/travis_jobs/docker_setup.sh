@@ -3,13 +3,9 @@ echo 'doing docker build'
 # Note: adding --build-arg <arg-name> without any value tells docker to
 #  use value from local environment (export DO_GIT_CLONE)
 
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py
-
-
 echo Timing docker pull...
 start_seconds=$SECONDS
 
-echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
 docker pull ${DOCKERHUB_TAG} || true
 
 duration=$(( SECONDS - start_seconds ))
@@ -24,8 +20,6 @@ docker build --pull --cache-from ${DOCKERHUB_TAG} -t ${DOCKERHUB_TAG} --build-ar
 duration=$(( SECONDS - start_seconds ))
 echo "Docker build took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 echo
-
-#${TRAVIS_BUILD_DIR}/ci/docker/docker_data/${TRAVIS_BUILD_DIR}/ci/docker/docker_data/build_docker_images.sh -pull ${DOCKERHUB_TAG} -push ${DOCKERHUB_TAB}
 
 echo Timing docker push...
 start_seconds=$SECONDS
