@@ -90,8 +90,8 @@ In the corresponding documentation category directory
     * Update the list of keywords, referring to :ref:`quick-search` for
       a list of possible keywords to use (Note: The link text for the
       keywords must match the actual keyword exactly or it will not
-      show up in the search, i.e. **ASCII2NCToolUseCase**
-      <https://dtcenter.github.io/METplus/search.html?q=**ASCII2NCToolUseCase**
+      show up in the search, i.e. **ASCII2NCToolUseCase** must match
+      https://dtcenter.github.io/METplus/search.html?q=**ASCII2NCToolUseCase**
 
 Make sure to build the documentation and ensure that the new use case file is
 displayed and the formatting looks correct. The python packages sphinx,
