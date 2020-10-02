@@ -566,7 +566,7 @@ will run METplus using the defaults set in the config files found in parm/metplu
 The command:
 
 .. code-block::
- 
+
   master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf

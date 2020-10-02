@@ -1396,7 +1396,7 @@ configuration file for running with LOOP_ORDER = processes:
 | :term:`DATE_TYPE`
 | :term:`STAT_ANALYSIS_CONFIG_FILE`
 | :term:`MODEL\<n\>`
-| :term:`MODEL<n>_OBTYPE` 
+| :term:`MODEL<n>_OBTYPE`
 | :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR`
 | :term:`MODEL<n>_REFERENCE_NAME`
 | :term:`GROUP_LIST_ITEMS`
