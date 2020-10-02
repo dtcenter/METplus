@@ -112,8 +112,9 @@ development machines that can be used::
 
     conda activate /home/met_test/.conda/envs/sphinx_env
 
-Note: If conda is not already in your path, you will have to find it and run it
-from the full path.
+.. note::
+    If conda is not already in your path, you will have to find it and run it
+    from the full path.
 
 or you can create your own conda environment and install the packages::
 
@@ -150,10 +151,11 @@ Providing new data
     running these instructions easier. Make sure they are set to the correct
     values that correspond to the use case being added before
     copy/pasting any of these commands or there may be unintended consequences.
+    Copy and paste these values after you have modified them into a text file
+    that you can copy and paste into the terminal. **You will have to do this
+    twice in these instructions.**
 
-bash::
-
-    # NOTE: Change these variables to match the new use case
+If you are using **bash**::
 
     # upcoming release number, i.e. 4.0
     export METPLUS_VERSION=X.Y
@@ -167,21 +169,7 @@ bash::
     # feature branch where use case config files are checked in
     export METPLUS_FEATURE_BRANCH=feature_XYZ_desc
 
-    # NOTE: the following variables do not need to be changed
-    #       unless DTC moves to a new web server
-
-    # web server that hosts the input data
-    export DTC_WEB_SERVER=mohawk.rap.ucar.edu
-
-    # directory on DTC web server to put new data
-    export DATA_STAGING_DIR=/d2/projects/METplus/METplus_Data_Staging
-
-    # directory on DTC web server that contains the data tarfiles
-    export DATA_TARFILE_DIR=/d2/www/dtcenter/dfiles/code/METplus/METplus_Data
-
-csh::
-
-    # NOTE: Change these variables to match the new use case
+If you are using **csh**::
 
     # upcoming release number, i.e. 4.0
     setenv METPLUS_VERSION X.Y
@@ -195,8 +183,22 @@ csh::
     # feature branch where use case config files are checked in
     setenv METPLUS_FEATURE_BRANCH feature_XYZ_desc
 
-    # NOTE: the following variables do not need to be changed
-    #       unless DTC moves to a new web server
+.. note::
+    The following variables do not need to be changed unless DTC moves to a
+    new web server, but they still need to be set to run the instructions
+
+If you are using **bash**::
+
+    # web server that hosts the input data
+    export DTC_WEB_SERVER=mohawk.rap.ucar.edu
+
+    # directory on DTC web server to put new data
+    export DATA_STAGING_DIR=/d2/projects/METplus/METplus_Data_Staging
+
+    # directory on DTC web server that contains the data tarfiles
+    export DATA_TARFILE_DIR=/d2/www/dtcenter/dfiles/code/METplus/METplus_Data
+
+If you are using **csh**::
 
     # web server that hosts the input data
     setenv DTC_WEB_SERVER mohawk.rap.ucar.edu
@@ -207,11 +209,17 @@ csh::
     # directory on DTC web server that contains the data tarfiles
     setenv DATA_TARFILE_DIR /d2/www/dtcenter/dfiles/code/METplus/METplus_Data
 
+* Run all of the environment variable commands in your shell and verify that
+  they were set correctly.
+
 * Put new dataset into a directory that matches the use case directories, i.e.
-  model_applications/<category> or met_test
+  model_applications/<category> or met_tool_wrapper (formerly
+  met_test) where <category> is the use case category from the list above.
+
 * Set directory paths in the use case config file relative to INPUT_BASE
   i.e {INPUT_BASE}/model_applications/<category> and set {INPUT_BASE} to your
   local directory to test
+
 * Create a tarfile on your development machine with the new dataset. Make sure
   the tarball contains directories model_applications/<category> or
   met_tool_wrapper (formerly met_test)::
@@ -235,11 +243,17 @@ For an example on how to upload data to the ftp site see
 Adding new data to full sample data tarfile
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+* Switch to the met_test user on the DTC web server::
+
+    runas met_test
+
+* **Run all of the environment variable commands in your shell (from the first
+  step) and verify that they were set correctly**
+
 * As the met_test user, create a new directory in the METplus_Data web
   directory named after the branch containing the changes for the new use case.
   On the DTC web server::
 
-    runas met_test
     cd ${DATA_TARFILE_DIR}
     mkdir ${METPLUS_FEATURE_BRANCH}
     cd ${METPLUS_FEATURE_BRANCH}
@@ -249,23 +263,25 @@ Check if the category tarfile exists already
 
 * Check the symbolic link in the develop directory to determine latest tarball
 
-bash::
+If you are using **bash**::
 
     export TARFILE_TO_ADD_DATA=`ls -l ${DATA_TARFILE_DIR}/develop/sample_data-${USE_CASE_CATEGORY}.tgz | sed 's|.*->||g'`
     echo ${TARFILE_TO_ADD_DATA}
 
-csh::
+If you are using **csh**::
 
-    setenv TARFILE_TO_ADD_DATA=`ls -l ${DATA_TARFILE_DIR}/develop/sample_data-${USE_CASE_CATEGORY}.tgz | sed 's|.*->||g'`
+    setenv TARFILE_TO_ADD_DATA `ls -l ${DATA_TARFILE_DIR}/develop/sample_data-${USE_CASE_CATEGORY}.tgz | sed 's|.*->||g'`
     echo ${TARFILE_TO_ADD_DATA}
 
-If the echo command does not contain a full path to sample data tarfile, then
-the sample data tarball may not exist yet for this category.
+**If the echo command does not contain a full path to sample data tarfile, then
+the sample data tarball may not exist yet for this category.** Double check
+that no sample data tarfiles for the category are found in any of the release
+or develop directories.
 
 * Add contents of existing tarfile to feature branch directory (if applicable)
 
-If you have determined that there is an existing tarfile for the category
-(from the previous step), then untar the sample data tarball into
+**If you have determined that there is an existing tarfile for the category
+(from the previous step)**, then untar the sample data tarball into
 the feature branch directory. If no tarfile exists yet, you can skip this
 step::
 
@@ -274,16 +290,20 @@ step::
 Create the new tarfile
 ^^^^^^^^^^^^^^^^^^^^^^
 
-* Untar the new data tarball into the feature branch directory::
+* Untar the new data tarball into the feature branch directory:
+
+::
 
     tar zxf ${DATA_STAGING_DIR}/${NEW_DATA_TARFILE} -C ${DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
 * Verify that all of the old and new data exists in the directory that was
   created (i.e. model_applications/<category>)
 
-* Create the new sample data tarball. Example::
+* Create the new sample data tarball. Example:
 
-      tar czf sample_data-${USE_CASE_CATEGORY}.tgz model_applications/${USE_CASE_CATEGORY}
+::
+
+    tar czf sample_data-${USE_CASE_CATEGORY}.tgz model_applications/${USE_CASE_CATEGORY}
 
 * Remove the directory from feature branch directory. Example::
 
@@ -297,7 +317,9 @@ Add volume_mount_directories file
   has changed (unlikely) or add a new entry if adding a new sample data
   tarfile. The format of this file generally follows
   <category>:model_applications/<category>, i.e.
-  climate:model_applications/climate::
+  climate:model_applications/climate:
+
+::
 
     cp ${DATA_TARFILE_DIR}/develop/volume_mount_directories ${DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
@@ -348,10 +370,15 @@ was run successfully using the new data,
 they will need to update the links on the DTC web server before the
 pull request is merged so that the develop branch will contain the new data.
 
+- Switch to the met_test user
+- **Run all of the environment variable commands in your shell (from the first
+  step) and verify that they were set correctly**
 - Move new tarball to the upcoming release (i.e. v4.0) directory
 - Update symbolic link in the develop directory to point to the new data
 - Remove the feature branch directory
-- Remove feature branch Docker data volumes::
+- Remove feature branch Docker data volumes:
+
+::
 
     runas met_test
     cd ${DATA_TARFILE_DIR}
