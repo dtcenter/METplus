@@ -58,6 +58,9 @@ jobs:
     name: Update Data Volumes
     before_install: export PYTHON_PACKAGES="$PYTHON_PACKAGES bs4 python-dateutil"
     script:
+    - echo "$DOCKER_PASSWORD" $DOCKER_PASSWORD
+    - echo "$DOCKER_USERNAME" $DOCKER_USERNAME
+    - echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
     - "${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_update_data_volumes.py"
   - name: Get METplus Image
     script:

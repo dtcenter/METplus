@@ -9,7 +9,7 @@ ${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py
 echo Timing docker pull...
 start_seconds=$SECONDS
 
-echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
+#echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
 docker pull ${DOCKERHUB_TAG} || true
 
 duration=$(( SECONDS - start_seconds ))
@@ -27,7 +27,7 @@ echo
 
 #${TRAVIS_BUILD_DIR}/ci/docker/docker_data/${TRAVIS_BUILD_DIR}/ci/docker/docker_data/build_docker_images.sh -pull ${DOCKERHUB_TAG} -push ${DOCKERHUB_TAB}
 
-echo "$DOCKER_PASSWORD" | docker login -username "$DOCKER_USERNAME" --password-stdin
+#echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
 docker push ${DOCKERHUB_TAG}
 
 echo DOCKER IMAGES after DOCKER_SETUP
