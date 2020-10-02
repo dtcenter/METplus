@@ -20,9 +20,6 @@ ret=$?
 echo "In docker_run_metplus.sh previous return code: $2
 echo "In docker_run_metplus.sh new return code: $ret
 
-echo 'DOCKER DIFF:'
-docker diff ${DOCKERHUB_TAG}
-
 if [ $ret != 0 ]; then
   exit $ret
 fi
