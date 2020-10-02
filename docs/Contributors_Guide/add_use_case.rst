@@ -87,6 +87,12 @@ In the corresponding documentation category directory
 
     * Update list of run times in the METplus Workflow section
 
+    * Update the list of keywords, referring to :ref:`quick-search` for
+      a list of possible keywords to use (Note: The link text for the
+      keywords must match the actual keyword exactly or it will not
+      show up in the search, i.e. **ASCII2NCToolUseCase**
+      <https://dtcenter.github.io/METplus/search.html?q=**ASCII2NCToolUseCase**
+
 Make sure to build the documentation and ensure that the new use case file is
 displayed and the formatting looks correct. The python packages sphinx,
 sphinx-gallery (0.6 or higher), and sphinx_rtd_theme are required to build.
@@ -281,9 +287,7 @@ Use Case Rules
   model_applications/precipitation, the input directory should be relative to
   {INPUT_BASE}/model_applications/precipitation.
 - The input data required to run the use case should be added to the METplus
-  input data directory on the primary NCAR machine (kiowa as of this writing)
-  so that it will be available for other engineers to test and to be included
-  in the sample data tarballs for the next release.
+  input data directory on the primary mohawk following the instructions above.
 - All data written by METplus should be referenced relative to {OUTPUT_BASE}.
 - The Sphinx documentation file should be as complete as possible, listing as
   much relevant information about the use case as possible. Keyword tags should
@@ -292,3 +296,4 @@ Use Case Rules
   added to the Quick Search Guide (docs/Users_Guide/quicksearch.rst).
 - The use case should be run by someone other than the author to ensure that it
   runs smoothly outside of the development environment set up by the author.
+
