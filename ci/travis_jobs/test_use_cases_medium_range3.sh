@@ -19,8 +19,8 @@ echo mkdir -p ${TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
 
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
-echo 'DOCKER IMAGES in medium_range3 after docker_setup'
-docker images
+#echo 'DOCKER IMAGES in medium_range3 after docker_setup'
+#docker images
 
 echo Run tests...
 returncode=0
@@ -38,8 +38,8 @@ rm -rf ${TRAVIS_OUTPUT_BASE}/logs
 mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
 
 echo Tests completed.
-echo DOCKER IMAGES after medium_range3
-docker images
+#echo DOCKER IMAGES after medium_range3
+#docker images
 
 # Dump the output directories from running METplus
 #echo listing TRAVIS_OUTPUT_BASE
