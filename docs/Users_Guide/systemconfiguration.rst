@@ -805,7 +805,7 @@ Config Quick Start Example
     g. when you perform a listing of the sample_data directory, the INPUT_DATA_DIRECTORY/model_applications/medium_range contains the data you will need for this use case
 
   3. Set up the configuration file:
-    
+
     a. Your METplus Wrappers install directory will hereafter be referred to as METplus_INSTALL
     b. Verify that all the *</path/to>* values are replaced with valid paths in the METplus_INSTALL/parm/metplus_config/metplus_data.conf and METplus_INSTALL/parm/metplus_config/metplus_system.conf files
     c. One configuration file is used in this use case, Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data, and using TCPairs which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone tracks to generate matched pairs and error statistics). The TCMPRPlotter is then used (wraps the MET tool plot_tcmpr.R) to generate a mean and median plots for these matched pairs
