@@ -5,6 +5,7 @@
 
 VOLUMES=$3
 
+echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
 docker pull ${DOCKERHUB_TAG}
 
 echo 'In docker_run_metplus, $VOLUMES= ',$VOLUMES
