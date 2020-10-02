@@ -27,8 +27,15 @@ echo
 
 #${TRAVIS_BUILD_DIR}/ci/docker/docker_data/${TRAVIS_BUILD_DIR}/ci/docker/docker_data/build_docker_images.sh -pull ${DOCKERHUB_TAG} -push ${DOCKERHUB_TAB}
 
+echo Timing docker push...
+start_seconds=$SECONDS
+
 echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
 docker push ${DOCKERHUB_TAG}
+
+duration=$(( SECONDS - start_seconds ))
+echo "Docker push took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+echo
 
 echo DOCKER IMAGES after DOCKER_SETUP
 docker images
