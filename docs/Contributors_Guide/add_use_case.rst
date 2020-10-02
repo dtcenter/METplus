@@ -160,7 +160,8 @@ where feature_XYZ is the name of your branch.
 If the <category> tarfile exists already
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Check the symbolic link in the develop directory to determine latest tarball::
+* Check the symbolic link in the develop directory to determine latest tarball
+  ::
 
     ls -lh ../develop/sample_data-<category>.tgz
 
