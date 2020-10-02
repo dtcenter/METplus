@@ -33,8 +33,8 @@ env:
   - DOCKERHUB_USER_REPO="`dirname ${TRAVIS_REPO_SLUG}| awk '{print tolower($0)}'`/metplus"
   - DOCKERHUB_USER_TAGNAME=develop
   - DOCKERHUB_USE_DEFAULT=true
-  - DOCKERHUB_USERNAME="fentoad72"
-  - DOCKERHUB_PASSWORD="Qc!pher9"
+  - DOCKER_USERNAME="fentoad72"
+  - DOCKER_PASSWORD="Qc!pher9"
 script:
 - pwd
 install:
