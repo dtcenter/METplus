@@ -168,7 +168,7 @@ METplus Configuration Glossary
      | *Used by:* MakePlots
      | *Family:* config
      | *Default:* MEAN
-  
+
    MAKE_PLOTS_SCRIPTS_DIR
      Directory to find scripts used by MakePlots.
 
@@ -408,14 +408,14 @@ METplus Configuration Glossary
      | *Default:* None
 
    POINT2GRID_WINDOW_BEGIN
-     Specify the beginning of the time window to use for a date stamp window to grab observations 
+     Specify the beginning of the time window to use for a date stamp window to grab observations
 
      | *Used by:* Point2Grid
      | *Family:* [config]
      | *Default:* None
 
    POINT2GRID_WINDOW_END
-     Specify the end of the time window to use for a date stamp window to grab observations 
+     Specify the end of the time window to use for a date stamp window to grab observations
 
      | *Used by:* Point2Grid
      | *Family:* [config]
@@ -642,7 +642,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    PY_EMBED_INGEST_<n>_OUTPUT_FIELD_NAME
-     Used to specify the forecast output field name that is created by RegridDataPlane. If this option is not set, RegridDataPlane will call the field name "name_level". 
+     Used to specify the forecast output field name that is created by RegridDataPlane. If this option is not set, RegridDataPlane will call the field name "name_level".
 
      | *Used by:* PyEmbedIngest
      | *Family:* [config]
@@ -1211,7 +1211,7 @@ METplus Configuration Glossary
 
    DESC
      .. warning:: **DEPRECATED:** Please use :term:`DESC_LIST` instead.
-     
+
    DESC_LIST
      A single value or list of values used in the stat_analysis data stratification. Specifies the values of the DESC column in the MET .stat file to use.
 
@@ -1250,7 +1250,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_DLON` instead.
 
 
-   
+
 
    EXTRACT_TILES_PAIRS_INPUT_DIR
      Directory containing matched pairs input to be read by ExtractTiles.
@@ -1986,7 +1986,7 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
-     | *Default:* None   
+     | *Default:* None
 
    FCST_TILE_PREFIX
      .. warning:: **DEPRECATED:** Please use :term:`FCST_EXTRACT_TILES_PREFIX` instead.
@@ -3042,7 +3042,7 @@ METplus Configuration Glossary
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
      | *Default:*  Models listed as MODEL<n>
- 
+
    MODEL<n>_NAME
         .. warning:: **DEPRECATED:** Please use :term:`MODEL\<n\>`.
 
@@ -4784,7 +4784,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    STAT_FILES_INPUT_DIR
-      .. warning:: **DEPRECATED:** Please use :term:`MAKE_PLOTS_INPUT_DIR` instead. 
+      .. warning:: **DEPRECATED:** Please use :term:`MAKE_PLOTS_INPUT_DIR` instead.
 
    SERIES_ANALYSIS_STAT_LIST
      Specify a list of statistics to be computed by the MET series_analysis tool.
