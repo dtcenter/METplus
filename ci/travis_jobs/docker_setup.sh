@@ -11,6 +11,8 @@ docker pull ${DOCKERHUB_TAG} || true
 duration=$(( SECONDS - start_seconds ))
 echo "Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
+echo CURRENT_BRANCH = ${CURRENT_BRANCH}
+
 
 echo Timing docker build with --cache-from...
 start_seconds=$SECONDS
