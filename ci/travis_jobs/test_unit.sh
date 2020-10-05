@@ -14,3 +14,5 @@ ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip3 install pytest-co
 returncode=$?
 
 ls -alR ${TRAVIS_OUTPUT_BASE}
+
+exit $returncode
