@@ -4,8 +4,16 @@
 # to move files that are created by docker
 
 VOLUMES=$3
+echo Timing docker pull in docker_run_metplus...
+start_seconds=$SECONDS
 
 docker pull ${DOCKERHUB_TAG}
+
+duration=$(( SECONDS - start_seconds ))
+echo "Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+
+echo CURRENT_BRANCH = ${CURRENT_BRANCH}
+
 
 echo 'In docker_run_metplus, $VOLUMES= ',$VOLUMES
 echo 'DOCKER IMAGES in docker_run_metplus'

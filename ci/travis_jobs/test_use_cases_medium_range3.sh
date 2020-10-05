@@ -21,7 +21,15 @@ mkdir -p ${TRAVIS_OUTPUT_BASE}
 echo Run tests...
 returncode=0
 
+echo CURRENT_BRANCH = ${CURRENT_BRANCH}
+
+echo Timing get data volumes...
+start_seconds=$SECONDS
+
 VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py medium_range3`
+
+duration=$(( SECONDS - start_seconds ))
+echo "Get data volumes took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
 echo medium_range3
 

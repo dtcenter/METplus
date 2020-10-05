@@ -17,13 +17,24 @@ mkdir -p ${TRAVIS_OUTPUT_BASE}
 
 echo Running tests...
 
-returncode=0
-echo 'Calling docker_run_metplus, returncode=' $returncode
+
+docker pull ${DOCKERHUB_TAG} || true
+
+echo CURRENT_BRANCH = ${CURRENT_BRANCH}
+
+
+echo Timing get_data_volumes...
+start_seconds=$SECONDS
 
 VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py met_tool_wrapper`
+duration=$(( SECONDS - start_seconds ))
+echo "Docker get_data_volulmes took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
 # download GempakToCF.jar
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/download_gempaktocf.sh
+
+returncode=0
+echo 'Calling docker_run_metplus, returncode=' $returncode
 
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper" $returncode "$VOLUMES"
 returncode=$?

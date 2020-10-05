@@ -18,10 +18,18 @@ mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
 echo mkdir -p ${TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
 
+echo CURRENT_BRANCH = ${CURRENT_BRANCH}
+
 echo Run tests...
 returncode=0
 
+echo Timing Get Data Volumes...
+start_seconds=$SECONDS
+
 VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py data_assimilation`
+
+duration=$(( SECONDS - start_seconds ))
+echo "Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
 echo data_assimilation
 

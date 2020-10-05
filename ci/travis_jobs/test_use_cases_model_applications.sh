@@ -18,16 +18,27 @@ mkdir -p ${TRAVIS_PREV_OUTPUT_BASE}
 echo mkdir -p ${TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
 
-${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
+#${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
 #echo 'DOCKER IMAGES in model applications $1 after docker_setup'
 #docker images
 
 echo Run tests...
 returncode=0
 
+
+
+echo CURRENT_BRANCH = ${CURRENT_BRANCH}
+
+echo Timing get_data_volumes...
+start_seconds=$SECONDS
+
 # create data volumes and get list of arguments to pass to docker run
 echo ${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py $@
 VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py $@`
+
+duration=$(( SECONDS - start_seconds ))
+echo "Get data volumes $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+
 
 # download GempakToCF.jar
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/download_gempaktocf.sh
