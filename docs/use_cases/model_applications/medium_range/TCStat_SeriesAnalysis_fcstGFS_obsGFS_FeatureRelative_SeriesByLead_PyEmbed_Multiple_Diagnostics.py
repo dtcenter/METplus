@@ -9,19 +9,18 @@ _SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 
 """
 
-========================================================================
-This use case calls multiple tools to produce diagnostic plots of systematic erros relative to a 
-feature (e.g. hurricane, MCS, etc...). This use case calls two user provided python scripts that 
-calculate diagnostics of interest (e.g. integrated vapor transport, potential vorticity, etc...). 
-These user diagnostics are then used to define the systematic errors. This example calculates 
-statistics over varying forecast leads with the ability to define lead groupings. 
-This use case is very similar to the Multi_Tools: Feature Relative by Lead use case and the 
-Multi_Tools: Feature Relative by Lead using User-Defined Fields.
-(ADeck,GFS:BDeck,GFS:ATCF,Grib2)
-"""
 ##############################################################################
 # Scientific Objective
 # --------------------
+# This use case calls multiple tools to produce diagnostic plots of systematic erros relative to a
+# feature (e.g. hurricane, MCS, etc...). This use case calls two user provided python scripts that
+# calculate diagnostics of interest (e.g. integrated vapor transport, potential vorticity, etc...).
+# These user diagnostics are then used to define the systematic errors. This example calculates
+# statistics over varying forecast leads with the ability to define lead groupings.
+# This use case is very similar to the Multi_Tools: Feature Relative by Lead use case and the
+# Multi_Tools: Feature Relative by Lead using User-Defined Fields.
+# (ADeck,GFS:BDeck,GFS:ATCF,Grib2)
+#
 # By maintaining focus of each evaluation time (or evaluation time series, in this case)
 # on a user-defined area around a cyclone, the model statistical errors associated
 # with cyclonic physical features (moisture flux, stability, strength of upper-level
