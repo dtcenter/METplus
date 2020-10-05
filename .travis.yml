@@ -1,4 +1,4 @@
-languaget: python
+language: python
 dist: xenial
 os: linux
 services:
