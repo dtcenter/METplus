@@ -2618,6 +2618,13 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:* 1
 
+   GRID_STAT_NEIGHBORHOOD_COV_THRESH
+     Sets the neighborhood cov_thresh list used by GridStat. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:* None
+
    POINT_STAT_NEIGHBORHOOD_WIDTH
      Sets the neighborhood width used by PointStat. See `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
 

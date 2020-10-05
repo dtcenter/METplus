@@ -515,6 +515,7 @@ Configuration
 | :term:`OBS_GRID_STAT_PROB_THRESH` (optional)
 | :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` (optional)
 | :term:`GRID_STAT_NEIGHBORHOOD_SHAPE` (optional)
+| :term:`GRID_STAT_NEIGHBORHOOD_COV_THRESH` (optional)
 | :term:`FCST_GRID_STAT_WINDOW_BEGIN` (optional)
 | :term:`FCST_GRID_STAT_WINDOW_END` (optional)
 | :term:`OBS_GRID_STAT_WINDOW_BEGIN` (optional)
