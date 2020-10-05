@@ -2,7 +2,7 @@
 ========
 
 Purpose and organization of the User's Guide
---------------------------------------------      
+--------------------------------------------
 
 The goal of this User's Guide is to equip users with the information
 needed to use the Model Evaluation Tools (MET) and its companion
@@ -71,7 +71,7 @@ The METplus Wrappers code and documentation is maintained by the DTC in
 Boulder, Colorado. METplus Wrappers is freely available to the modeling,
 verification, and operational communities, including universities,
 governments, the private sector, and operational modeling and prediction
-centers through a publicly accessible GitHub repository. Refer to 
+centers through a publicly accessible GitHub repository. Refer to
 :ref:`getcode` for simple examples of obtaining METplus Wrappers.
 
 METplus Wrappers Components

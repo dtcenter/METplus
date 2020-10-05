@@ -495,10 +495,10 @@ files (file path relative to the
 **Example 1: Using a "default" configuration:**
 Copy and paste the following into an empty text file and name it 'my_user_config.conf':
 
-.. code-block:: none
+.. code-block::
 
   # This is a comment, comments are defined with a # at the beginning of the line
-  
+
   # Set the MET_INSTALL_DIR to the location of the MET install
   [dir]
   MET_INSTALL_DIR = /usr/local/met-9.0
@@ -515,7 +515,7 @@ Run METplus via: ``master_metplus.py -c ./<my_user_config.conf>`` or ``master_me
 
 When the above command is run, a usage message appears indicating that other config files are required to perform useful tasks, as well as a list of currently supported wrappers:
 
-.. code-block:: none
+.. code-block::
 
   USAGE: This text is displayed when [config] PROCESS_LIST = Usage.
   Pass in a configuration file (with -c or --config) that overrides [config] PROCESS_LIST to run other processes. For example:
@@ -553,9 +553,9 @@ When the above command is run, a usage message appears indicating that other con
 
 **Example 2: Using a use-case configuration:**
 
-The command: 
+The command:
 
-.. code-block:: none
+.. code-block::
 
   master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
@@ -563,10 +563,10 @@ will run METplus using the defaults set in the config files found in parm/metplu
 
 **Example 3: Using example configuration to perform a specific evaluation (e.g. Model 1 vs. Obs 1, Model 1 vs. Obs 2, Model 2 vs. Obs 1, etc...):**
 
-The command: 
+The command:
 
-.. code-block:: none
-  
+.. code-block::
+
   master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf
@@ -575,7 +575,7 @@ will run METplus using the defaults set in the config files in parm/metplus_conf
 
 Separating configurations into multiple files can be useful if you want to compare different forecasts or observations in the same way. For example, to compare a different forecast to the observation in this example, copy GridStat_forecast.conf into a directory outside of the METplus repository (i.e. /home/user/METplus_user_config), rename it (i.e. GridStat_myforecast.conf), then change the values to match the new data set (input directory, input filename template, field name, etc.). Then you can run the new use case:
 
-.. code-block:: none
+.. code-block::
 
   master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
   -c /home/user/METplus_user_config/GridStat_myforecast.conf \
