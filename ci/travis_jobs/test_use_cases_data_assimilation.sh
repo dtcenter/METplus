@@ -29,7 +29,7 @@ start_seconds=$SECONDS
 VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py data_assimilation`
 
 duration=$(( SECONDS - start_seconds ))
-echo "Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+echo "Docker get volumes in data assimilation took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
 echo data_assimilation
 

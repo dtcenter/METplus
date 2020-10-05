@@ -18,7 +18,13 @@ mkdir -p ${TRAVIS_OUTPUT_BASE}
 echo Running tests...
 
 
-docker pull ${DOCKERHUB_TAG} || true
+#echo Timing docker pull...
+#start_seconds=$SECONDS
+
+#docker pull ${DOCKERHUB_TAG} || true
+
+#duration=$(( SECONDS - start_seconds ))
+#echo "Docker pull in met_tool_wrappers took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
 echo CURRENT_BRANCH = ${CURRENT_BRANCH}
 

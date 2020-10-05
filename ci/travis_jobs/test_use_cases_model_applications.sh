@@ -37,7 +37,7 @@ echo ${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py $@
 VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py $@`
 
 duration=$(( SECONDS - start_seconds ))
-echo "Get data volumes $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+echo "Get data volumes in model applications $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
 
 # download GempakToCF.jar
