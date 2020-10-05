@@ -31,7 +31,8 @@ env:
   - DOCKERHUB_MET_TAGNAME=develop
   - DOCKER_DATA_DIR=/data
   - DOCKERHUB_USER_REPO="`dirname ${TRAVIS_REPO_SLUG}| awk '{print tolower($0)}'`/metplus"
-  - DOCKERHUB_USER_TAGNAME=develop
+# - DOCKERHUB_USER_TAGNAME=develop
+  - DOCKERHUB_USER_TAGNAME=feature_639_dockerimagepushpull
   - DOCKERHUB_USE_DEFAULT=true
 
 script:
@@ -45,6 +46,7 @@ before_script:
   else export DOCKERHUB_TAG=${DOCKERHUB_USER_REPO}:${DOCKERHUB_USER_TAGNAME}; fi;
 - echo ${DOCKERHUB_TAG}; echo ${GITHUB_REPO_ORG}; echo ${TRAVIS_REPO_SLUG}; echo ${TRAVIS_BUILD_DIR};
   echo ${OWNER_BUILD_DIR};
+
 jobs:
   allow_failures:
   - stage: Documentation
