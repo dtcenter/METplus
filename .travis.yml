@@ -18,21 +18,16 @@ cache:
 env:
   global:
   - DO_GIT_CLONE=false
-  - REPO_NAME=METplus-dev
-  - REPO_NAME_lc=metplus-dev
   - CURRENT_BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
   - GH_PAGES_DIR=${HOME}/gh-pages
   - PYTHON_PACKAGES="requests"
   - OWNER_BUILD_DIR=`dirname ${TRAVIS_BUILD_DIR}`
   - DOCKER_WORK_DIR=/metplus
   - GITHUB_REPO_ORG=DTCenter
-  - DOCKERHUB_DEFAULT_REPO=dtcenter/metplus-dev
-  - DOCKERHUB_DEFAULT_TAGNAME=develop
+  - DOCKERHUB_DEV_REPO=dtcenter/metplus-dev
   - DOCKERHUB_MET_TAGNAME=develop
   - DOCKER_DATA_DIR=/data
-  - DOCKERHUB_USER_REPO="`dirname ${TRAVIS_REPO_SLUG}| awk '{print tolower($0)}'`/metplus"
-  - DOCKERHUB_USER_TAGNAME=develop
-  - DOCKERHUB_USE_DEFAULT=true
+  - DOCKERHUB_TAG=${DOCKERHUB_DEV_REPO}:${CURRENT_BRANCH}
 
 script:
 - pwd
@@ -41,9 +36,8 @@ install:
   fi
 - pip list
 before_script:
-- if [[ ${DOCKERHUB_USE_DEFAULT} == true ]]; then export DOCKERHUB_TAG=${DOCKERHUB_DEFAULT_REPO}:${DOCKERHUB_DEFAULT_TAGNAME};
-  else export DOCKERHUB_TAG=${DOCKERHUB_USER_REPO}:${DOCKERHUB_USER_TAGNAME}; fi;
-- echo ${DOCKERHUB_TAG}; echo ${GITHUB_REPO_ORG}; echo ${TRAVIS_REPO_SLUG}; echo ${TRAVIS_BUILD_DIR};
+- echo ${CURRENT_BRANCH}; echo ${DOCKERHUB_TAG}; echo ${GITHUB_REPO_ORG};
+  echo ${TRAVIS_REPO_SLUG}; echo ${TRAVIS_BUILD_DIR};
   echo ${OWNER_BUILD_DIR};
 
 jobs:
@@ -78,6 +72,7 @@ jobs:
     - "${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_data_assimilation.sh"
   - name: Use Case Tests - cryosphere
     script:
+    # add travis_wait before command because a case takes longer than 10 minutes to return
     - travis_wait 30 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh
       --cryosphere
   - name: Use Case Tests - convection_allowing_models
