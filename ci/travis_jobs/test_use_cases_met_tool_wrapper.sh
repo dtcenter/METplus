@@ -39,11 +39,11 @@ echo 'Calling docker_run_metplus, returncode=' $returncode
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --met_tool_wrapper" $returncode "$VOLUMES"
 returncode=$?
 
-echo 'Intermediate return code=' $returncode 
-
 duration=$(( SECONDS - start_seconds ))
 echo TIMING test_use_cases_met_tool_wrapper $VOLUMES
 echo "Docker docker_run_metplus 1 took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+
+echo 'Intermediate return code=' $returncode 
 
 rm -rf ${TRAVIS_OUTPUT_BASE}/logs
 mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
@@ -54,11 +54,11 @@ start_seconds=$SECONDS
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "pip3 install h5py; ${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode "$VOLUMES"
 returncode=$?
 
-echo '2nd Intermediate return code=' $returncode 
-
 duration=$(( SECONDS - start_seconds ))
 echo TIMING test_use_cases_met_tool_wrapper $VOLUMES
 echo "Docker docker_run_metplus 2 took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+
+echo '2nd Intermediate return code=' $returncode 
 
 rm -rf ${TRAVIS_OUTPUT_BASE}/logs
 mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
@@ -70,11 +70,11 @@ start_seconds=$SECONDS
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/ci/travis_jobs/get_cartopy.sh; pip3 install matplotlib; export DISPLAY=localhost:0.0; ${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker --config met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf,user_env_vars.MET_PYTHON_EXE=python3" $returncode "$VOLUMES"
 returncode=$?
 
-echo 'Final return code=' $returncode 
-
 duration=$(( SECONDS - start_seconds ))
 echo TIMING test_use_cases_met_tool_wrapper $VOLUMES
 echo "Docker docker_run_metplus 3 took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+
+echo 'Final return code=' $returncode 
 
 rm -rf ${TRAVIS_OUTPUT_BASE}/logs
 mv ${TRAVIS_OUTPUT_BASE}/* ${TRAVIS_PREV_OUTPUT_BASE}/
