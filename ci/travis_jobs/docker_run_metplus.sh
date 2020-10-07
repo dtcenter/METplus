@@ -4,14 +4,14 @@
 # to move files that are created by docker
 
 VOLUMES=$3
-echo Timing docker pull in docker_run_metplus...
+echo --Timing docker pull in docker_run_metplus...
 start_seconds=$SECONDS
 
 docker pull ${DOCKERHUB_TAG}
 
 duration=$(( SECONDS - start_seconds ))
-echo TIMING docker_run_metplus
-echo "Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+echo --TIMING docker_run_metplus
+echo "--Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
 echo CURRENT_BRANCH = ${CURRENT_BRANCH}
 
@@ -21,7 +21,7 @@ echo 'DOCKER IMAGES in docker_run_metplus'
 docker images
 
 
-echo Timing docker run in docker_run_metplus...
+echo --Timing docker run in docker_run_metplus...
 start_seconds=$SECONDS
 
 echo  In docker_run_metplus.sh, RUNNING: $1
@@ -29,8 +29,8 @@ docker run --rm --user root:$UID $VOLUMES -v ${OWNER_BUILD_DIR}:${DOCKER_WORK_DI
 ret=$?
 
 duration=$(( SECONDS - start_seconds ))
-echo TIMING docker_run_metplus
-echo "Docker run took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+echo --TIMING docker_run_metplus
+echo "--Docker run took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
 # check return codes
 echo "In docker_run_metplus.sh previous return code: $2
