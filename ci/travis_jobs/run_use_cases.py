@@ -103,8 +103,9 @@ for group_name, use_cases_by_requirement in test_suite.category_groups.items():
                f' {docker_work_dir}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker '
                f'{use_case_args}" "{volumes_from}"')
         print(cmd)
-        ret = subprocess.run(shlex.split(cmd), check=True)
-        if ret.returncode != 0:
+        try:
+            ret = subprocess.run(shlex.split(cmd), check=True)
+        except subprocess.CalledProcessError as err:
             print(f"ERROR: Command failed: {cmd}")
             isOK = False
 
