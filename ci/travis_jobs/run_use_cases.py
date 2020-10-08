@@ -37,9 +37,22 @@ def handle_requirements(requirements):
 
     # add semi-colon to end of each command
     if requirement_args:
-        return f" {';'.join(requirement_args)}; "
+        return f"{';'.join(requirement_args)};"
 
     return ''
+
+def handle_subset(subset):
+    subset_list = []
+    # separate into list by comma
+    comma_list = subset.split(',')
+    for comma_item in comma_list:
+        dash_list = comma_item.split('-')
+        # if item contains X-Y, expand it
+#        if len(dash_list) == 2:
+
+
+
+    return subset_list
 
 # read command line arguments to determine which use cases to run
 if len(sys.argv) < 2:
@@ -51,8 +64,11 @@ categories = sys.argv[1]
 categories_list = categories.split(',')
 
 # get subset values if specified
-#if len(sys.argv) > 2:
-#    subset = sys.argv[2]
+if len(sys.argv) > 2:
+    subset = sys.argv[2]
+    subset_list = handle_subset(subset)
+else:
+    subset_list = None
 #    # if X-Y, get range of values
 #    if re.match(r''
     
@@ -80,7 +96,7 @@ for group_name, use_cases_by_requirement in test_suite.category_groups.items():
         travis_build_dir = os.environ['TRAVIS_BUILD_DIR']
         docker_work_dir = os.environ['DOCKER_WORK_DIR']
         cmd = (f'{travis_build_dir}/ci/travis_jobs/docker_run_metplus.sh'
-               f'"{requirement_args}'
+               f' "{requirement_args}'
                f' {docker_work_dir}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker '
                f'{use_case_args}" "{volumes_from}"')
         print(cmd)
