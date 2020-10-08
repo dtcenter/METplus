@@ -66,7 +66,7 @@ env:
     - REPO_NAME_lc=metplus
     - CURRENT_BRANCH=${TRAVIS_PULL_REQUEST_BRANCH:-$TRAVIS_BRANCH}
     - GH_PAGES_DIR=${HOME}/gh-pages
-    - PYTHON_PACKAGES="requests"
+    - PYTHON_PACKAGES="python-dateutil requests"
     - OWNER_BUILD_DIR=`dirname ${TRAVIS_BUILD_DIR}`
     - DOCKER_WORK_DIR=/metplus
     - GITHUB_REPO_ORG=DTCenter
