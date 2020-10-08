@@ -249,14 +249,14 @@ def main():
     parser.add_argument('--tc_and_extra_tc', action='store_true', required=False)
     parser.add_argument('--all', action='store_true', required=False)
     parser.add_argument('--config', action='append', required=False)
-    parser.add_argument('--skip-output-check',
+    parser.add_argument('--skip_output_check',
                         action='store_true',
                         required=False)
 
     args = parser.parse_args()
     print(args.config)
 
-    if args.skip-output-check:
+    if args.skip_output_check:
         print("Skipping output directory check. Output from previous tests "
               "may be found in output directory")
     else:
