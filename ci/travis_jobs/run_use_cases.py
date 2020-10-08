@@ -76,6 +76,7 @@ for group_name, use_cases_by_requirement in test_suite.category_groups.items():
             use_case_args = f"--config {','.join(use_case.config_args)}"
             all_use_case_args.append(use_case_args)
 
+        all_use_case_args.append('--skip-output-check')
         use_case_args = ' '.join(all_use_case_args)
         travis_build_dir = os.environ['TRAVIS_BUILD_DIR']
         docker_work_dir = os.environ['DOCKER_WORK_DIR']
