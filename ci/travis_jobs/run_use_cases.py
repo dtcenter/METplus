@@ -27,6 +27,7 @@ def handle_requirements(requirements):
 
             # check if command is a path relative to METplus directory
             command_path = os.path.join(os.environ['DOCKER_WORK_DIR'],
+                                        'METplus',
                                         command)
             if os.path.exists(command_path):
                 requirement_args.append(command_path)
