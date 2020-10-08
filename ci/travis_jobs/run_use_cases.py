@@ -5,11 +5,12 @@ import os
 import re
 import shlex
 import subprocess
+from os.path import dirname
 
 import get_data_volumes
 
 # add internal_tests/use_cases directory to path so the test suite can be found
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+sys.path.insert(0, os.path.abspath(os.path.join(dirname(__file__),
                                                 os.pardir,
                                                 os.pardir,
                                                 'internal_tests',
@@ -20,9 +21,7 @@ from metplus_use_case_suite import METplusUseCaseSuite
 
 def handle_requirements(requirements):
     requirement_args = []
-    metplus_home = os.path.join(os.path.dirname(__file__),
-                                                os.pardir,
-                                                os.pardir)
+    metplus_home = dirname(dirname(dirname(__file__)))
     for requirement in requirements:
         if requirement in mp_by_req.PYTHON_REQUIREMENTS:
             command = mp_by_req.PYTHON_REQUIREMENTS[requirement]
@@ -38,7 +37,7 @@ def handle_requirements(requirements):
 
     # add semi-colon to end of each command
     if requirement_args:
-        return ';'.join(requirement_args) + '; '
+        return f" {';'.join(requirement_args)}; "
 
     return ''
 
@@ -81,8 +80,8 @@ for group_name, use_cases_by_requirement in test_suite.category_groups.items():
         travis_build_dir = os.environ['TRAVIS_BUILD_DIR']
         docker_work_dir = os.environ['DOCKER_WORK_DIR']
         cmd = (f'{travis_build_dir}/ci/travis_jobs/docker_run_metplus.sh'
-               f'{requirement_args}'
-               f' "{docker_work_dir}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker '
+               f'"{requirement_args}'
+               f' {docker_work_dir}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker '
                f'{use_case_args}" "{volumes_from}"')
         print(cmd)
         ret = subprocess.run(shlex.split(cmd), check=True)
