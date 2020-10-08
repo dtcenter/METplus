@@ -2,9 +2,16 @@
 """! Utilities to set up and run use cases.
 """
 
+import sys
 import os
 import re
 from os.path import dirname, realpath
+
+# add metplus directory to path so the utilities can be found
+sys.path.insert(0, os.path.join(os.path.abspath(dirname(__file__)),
+                                os.pardir,
+                                os.pardir))
+from metplus.util.met_util import subset_list
 
 class METplusUseCase:
     """! Contains name of use case and a list of configuration command line
@@ -206,7 +213,6 @@ class METplusUseCaseSuite:
 
         return total
 
-
     def add_use_case_groups(self, categories, case_slice=None):
         """! Obtain use cases from a category or list of categories and
         optionally add a subset of the use cases to the test suite. Note: if
@@ -225,16 +231,11 @@ class METplusUseCaseSuite:
             # split category list by comma or ampersand
             categories = re.split('[,&]', categories)
 
-        use_cases_to_run = []
+        use_cases_list = []
         for category in categories:
-            use_cases_to_run.extend(self.all_cases[category])
+            use_cases_list.extend(self.all_cases[category])
 
-        if case_slice is not None:
-            # if case slice is a list, use only the indices in the list
-            if isinstance(case_slice, list):
-                use_cases_to_run = [use_cases_to_run[i] for i in case_slice]
-            else:
-                use_cases_to_run = use_cases_to_run[case_slice]
+        use_cases_to_run = subset_list(use_cases_list, case_slice)
 
         self.add_use_case_group('&'.join(categories),
                                 use_cases=use_cases_to_run,

@@ -13,12 +13,13 @@ import download_gempaktocf
 # add internal_tests/use_cases directory to path so the test suite can be found
 sys.path.insert(0, os.path.abspath(os.path.join(dirname(__file__),
                                                 os.pardir,
-                                                os.pardir,
-                                                'internal_tests',
-                                                'use_cases')))
+                                                os.pardir,)))
+#                                                'internal_tests',
+#                                                'use_cases')))
 
-from metplus_use_case_suite import METplusUseCasesByRequirement as mp_by_req
-from metplus_use_case_suite import METplusUseCaseSuite
+from internal_tests.use_cases.metplus_use_case_suite import METplusUseCasesByRequirement as mp_by_req
+from internal_tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
+from metplus.util.met_util import expand_int_string_to_list
 
 def handle_requirements(requirements):
     requirement_args = []
@@ -43,23 +44,6 @@ def handle_requirements(requirements):
 
     return ''
 
-def handle_subset(subset):
-    subset_list = []
-    # separate into list by comma
-    comma_list = subset.split(',')
-    for comma_item in comma_list:
-        dash_list = comma_item.split('-')
-        # if item contains X-Y, expand it
-        if len(dash_list) == 2:
-            for i in range(int(dash_list[0].strip()),
-                           int(dash_list[1].strip())+1,
-                           1):
-                subset_list.append(i)
-        else:
-            subset_list.append(comma_item.strip())
-
-    return subset_list
-
 def main(categories_list, subset_list):
 
 
@@ -77,7 +61,7 @@ def main(categories_list, subset_list):
 
     # run use cases
     test_suite = METplusUseCaseSuite()
-    test_suite.add_use_case_groups(categories)
+    test_suite.add_use_case_groups(categories, subset_list)
     for group_name, use_cases_by_requirement in test_suite.category_groups.items():
         print(group_name)
         for use_case_by_requirement in use_cases_by_requirement:
@@ -119,7 +103,7 @@ def handle_command_line_args():
 
     # get subset values if specified
     if len(sys.argv) > 2:
-        subset_list = handle_subset(sys.argv[2])
+        subset_list = expand_int_string_to_list(sys.argv[2])
     else:
         subset_list = None
 
