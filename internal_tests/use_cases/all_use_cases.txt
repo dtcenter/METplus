@@ -1,5 +1,5 @@
 # Category:met_tool_wrapper
-CyclonePlotter&met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf,user_env_vars.MET_PYTHON_EXE=python3,user_env_vars.DISPLAY=localhost:0.0&cartopy,matplotlib
+CyclonePlotter&met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf,user_env_vars.MET_PYTHON_EXE=python3&cartopy,matplotlib
 PCPCombine_python_embedding& met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf,user_env_vars.MET_PYTHON_EXE=python3&h5py
 ASCII2NC& met_tool_wrapper/ASCII2NC/ASCII2NC.conf
 met_tool_wrapper/ASCII2NC/ASCII2NC_python_embedding.conf
