@@ -170,15 +170,14 @@ jobs:
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --s2s --space_weather --tc_and_extra_tc
   include:
-    - stage: Temp tests
-      name: Medium Range 1
+    - name: Medium Range 1
       script:
 #        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py met_tool_wrapper
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py medium_range 0-4
 #        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py climate
     - name: Medium Range 2
-    - script:
+      script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py medium_range 5
     - name: Medium Range 3
-    - script:
+      script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py medium_range 6+
