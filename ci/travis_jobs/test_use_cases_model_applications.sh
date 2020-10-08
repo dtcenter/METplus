@@ -37,6 +37,7 @@ echo ${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py $@
 VOLUMES=`${TRAVIS_BUILD_DIR}/ci/travis_jobs/get_data_volumes.py $@`
 
 duration=$(( SECONDS - start_seconds ))
+echo TIMING test_use_case_model_applications $VOLUMES
 echo "Get data volumes in model applications $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
 
@@ -53,8 +54,15 @@ do
   test_args=${test_args}" "${i}
 done
 
+echo Timing docker_run_metplus...
+start_seconds=$SECONDS
+
 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh "${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker ${test_args}" $returncode "$VOLUMES"
 returncode=$?
+
+duration=$(( SECONDS - start_seconds ))
+echo TIMING test_use_case_model_applications
+echo "docker_run_metplus in model applications $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
 # remove logs dir and move data to previous output base so next run will not prompt
 rm -rf ${TRAVIS_OUTPUT_BASE}/logs
