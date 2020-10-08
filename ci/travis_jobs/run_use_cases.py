@@ -8,6 +8,7 @@ import subprocess
 from os.path import dirname
 
 import get_data_volumes
+import download_gemptaktcocf
 
 # add internal_tests/use_cases directory to path so the test suite can be found
 sys.path.insert(0, os.path.abspath(os.path.join(dirname(__file__),
@@ -79,6 +80,12 @@ else:
 print(f"calling get_data_volumes.main({categories_list})")
 volumes_from = get_data_volumes.main(categories_list)
 
+# obtain GempakToCF.jar for cases that read GEMPAK data
+input_data_directory = os.path.join(os.environ['OWNER_BUILD_DIR'],
+                                    'input')
+download_gemptaktcocf.run(input_data_directory)
+
+# becomes False if any use case fails
 isOK = True
 
 # run use cases
