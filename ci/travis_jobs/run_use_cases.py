@@ -48,9 +48,13 @@ def handle_subset(subset):
     for comma_item in comma_list:
         dash_list = comma_item.split('-')
         # if item contains X-Y, expand it
-#        if len(dash_list) == 2:
-
-
+        if len(dash_list) == 2:
+            for i in range(int(dash_list[0].strip()),
+                           int(dash_list[1].strip())+1,
+                           1):
+                subset_list.append(i)
+        else:
+            subset_list.append(comma_item.strip())
 
     return subset_list
 
@@ -69,9 +73,7 @@ if len(sys.argv) > 2:
     subset_list = handle_subset(subset)
 else:
     subset_list = None
-#    # if X-Y, get range of values
-#    if re.match(r''
-    
+
 # get data volumes
 print(f"calling get_data_volumes.main({categories_list})")
 volumes_from = get_data_volumes.main(categories_list)
@@ -91,7 +93,7 @@ for group_name, use_cases_by_requirement in test_suite.category_groups.items():
             use_case_args = f"--config {','.join(use_case.config_args)}"
             all_use_case_args.append(use_case_args)
 
-        all_use_case_args.append('--skip-output-check')
+        all_use_case_args.append('--skip_output_check')
         use_case_args = ' '.join(all_use_case_args)
         travis_build_dir = os.environ['TRAVIS_BUILD_DIR']
         docker_work_dir = os.environ['DOCKER_WORK_DIR']
@@ -104,3 +106,7 @@ for group_name, use_cases_by_requirement in test_suite.category_groups.items():
         if ret.returncode != 0:
             print(f"ERROR: Command failed: {cmd}")
             isOK = False
+
+# if any tests failed, exit 1, otherwise exit 0
+if not isOK:
+    sys.exit(1)
