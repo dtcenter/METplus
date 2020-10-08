@@ -90,6 +90,7 @@ script:
 install:
 
   - if [ ! -z "$PYTHON_PACKAGES" ]; then
+      echo Installing $PYTHON_PACKAGES
       pip install --upgrade pip;
       pip install $PYTHON_PACKAGES;
     fi
