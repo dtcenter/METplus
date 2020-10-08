@@ -9,9 +9,10 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # Scientific Objective
 # --------------------
 #
-# Post-process ensemble members to derive simple (non-bias-corrected) mean,
-# standard deviation (spread), minimum, maximum, and range fields for use in
-# other MET tools.
+# Comparing the Warn on Forecast System (WoFS) ensemble to the MRMS observed
+# variable field to understand its forecasting abilities. Specifically focusing on
+# accumulated precipitation at different neighborhood distances and accumulation
+# thresholds to provide meaningful analysis output that can provide direction to future WoFS improvement.
 
 ##############################################################################
 # Datasets
@@ -41,7 +42,7 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # Run times:
 #
 # | **Init:** 2020-06-15_17Z
-# | **Forecast lead:** 1
+# | **Forecast lead:** 1 hour
 #
 
 ##############################################################################
