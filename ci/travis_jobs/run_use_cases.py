@@ -79,6 +79,6 @@ for group_name, use_cases_by_requirement in test_suite.category_groups.items():
         cmd = ('${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_run_metplus.sh'
                f'{requirement_args}'
                ' "${DOCKER_WORK_DIR}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker '
-               f'{use_case_args}" $returncode "$VOLUMES"')
+               f'{use_case_args}" $returncode "{volumes_from}"')
         print(cmd)
         subprocess.run(shlex.split(cmd), check=True)
