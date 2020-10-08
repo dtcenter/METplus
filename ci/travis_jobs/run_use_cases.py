@@ -61,6 +61,8 @@ categories_list = categories.split(',')
 print(f"calling get_data_volumes.main({categories_list})")
 volumes_from = get_data_volumes.main(categories_list)
 
+isOK = True
+
 # run use cases
 test_suite = METplusUseCaseSuite()
 test_suite.add_use_case_groups(categories)
@@ -80,6 +82,9 @@ for group_name, use_cases_by_requirement in test_suite.category_groups.items():
         cmd = (f'{travis_build_dir}/ci/travis_jobs/docker_run_metplus.sh'
                f'{requirement_args}'
                f' "{docker_work_dir}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker '
-               f'{use_case_args}" $returncode "{volumes_from}"')
+               f'{use_case_args}" "{volumes_from}"')
         print(cmd)
-        subprocess.run(shlex.split(cmd), check=True)
+        ret = subprocess.run(shlex.split(cmd), check=True)
+        if ret.returncode != 0:
+            print(f"ERROR: Command failed: {cmd}")
+            isOK = False
