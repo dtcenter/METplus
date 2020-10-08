@@ -21,13 +21,13 @@ from metplus_use_case_suite import METplusUseCaseSuite
 
 def handle_requirements(requirements):
     requirement_args = []
-    metplus_home = dirname(dirname(dirname(__file__)))
     for requirement in requirements:
         if requirement in mp_by_req.PYTHON_REQUIREMENTS:
             command = mp_by_req.PYTHON_REQUIREMENTS[requirement]
 
             # check if command is a path relative to METplus directory
-            command_path = os.path.join(metplus_home, command)
+            command_path = os.path.join(os.environ['DOCKER_WORK_DIR'],
+                                        command)
             if os.path.exists(command_path):
                 requirement_args.append(command_path)
             else:
