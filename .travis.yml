@@ -152,6 +152,7 @@ jobs:
     - name: "Use Case Tests - medium_range1"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --medium_range1
+#        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py medium_range 0-4
     - name: "Use Case Tests - medium_range2"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --medium_range2
