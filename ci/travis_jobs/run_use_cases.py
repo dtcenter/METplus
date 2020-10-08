@@ -25,14 +25,14 @@ def handle_requirements(requirements):
         if requirement in mp_by_req.PYTHON_REQUIREMENTS:
             command = mp_by_req.PYTHON_REQUIREMENTS[requirement]
 
-            # check if command is a path relative to METplus directory
-            command_path = os.path.join(os.environ['DOCKER_WORK_DIR'],
-                                        'METplus',
-                                        command)
-            if os.path.exists(command_path):
-                requirement_args.append(command_path)
-            else:
+            if 'pip' in command:
                 requirement_args.append(command)
+            else:
+                # if script, the path is relative to METplus directory
+                command_path = os.path.join(os.environ['DOCKER_WORK_DIR'],
+                                            'METplus',
+                                            command)
+                requirement_args.append(command_path)
         else:
             raise KeyError(f"Invalid Python Requirement: {requirement}")
 
