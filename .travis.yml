@@ -169,5 +169,6 @@ jobs:
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --s2s --space_weather --tc_and_extra_tc
   include:
+    - script:
 #        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py medium_range 0-4
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py climate
