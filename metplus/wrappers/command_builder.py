@@ -840,7 +840,6 @@ class CommandBuilder:
                 @param v_name name of field to process
                 @param v_extra additional field information to add if available
                 @param d_type type of data to find i.e. FCST or OBS
-                @param is_met_netcdf True if input file is a MET-generated NetCDF file
                 @rtype string
                 @return Returns formatted field information
         """
