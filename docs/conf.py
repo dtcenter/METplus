@@ -22,7 +22,7 @@ print(sys.path)
 
 project = 'METplus'
 
-author = 'UCAR/NCAR, NOAA, and CSU/CIRA'
+author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
 # the stable version, displayed on front page of PDF
 version = '3.1'
