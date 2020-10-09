@@ -44,8 +44,9 @@ def handle_requirements(requirements):
 
     return ''
 
-def main(categories_list, subset_list):
+def main(categories, subset_list):
 
+    categories_list = categories.split(',')
 
     # get data volumes
     print(f"calling get_data_volumes.main({categories_list})")
@@ -99,7 +100,6 @@ def handle_command_line_args():
 
     # split up categories by & or ,
     categories = sys.argv[1]
-    categories_list = categories.split(',')
 
     # get subset values if specified
     if len(sys.argv) > 2:
@@ -107,8 +107,8 @@ def handle_command_line_args():
     else:
         subset_list = None
 
-    return categories_list, subset_list
+    return categories, subset_list
 
 if __name__ == "__main__":
-    categories_list, subset_list =  handle_command_line_args()
-    main(categories_list, subset_list)
+    categories, subset_list =  handle_command_line_args()
+    main(categories, subset_list)
