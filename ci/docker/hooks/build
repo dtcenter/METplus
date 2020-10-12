@@ -1,3 +1,10 @@
 #!/bin/bash
 
-docker build -t $IMAGE_NAME --build-arg SOURCE_BRANCH=$SOURCE_BRANCH --build-arg MET_BRANCH=develop --build-arg DO_GIT_CLONE=true .
+# get version, use develop or latest for MET_BRANCH
+if cat $(dirname $DOCKERFILE_PATH)/../../docs/version | egrep -q 'v[0-9.]+$'; then
+    met_branch=latest
+else
+    met_branch=develop
+fi
+
+docker build -t $IMAGE_NAME --build-arg SOURCE_BRANCH=$SOURCE_BRANCH --build-arg MET_BRANCH=$met_branch --build-arg DO_GIT_CLONE=true .
