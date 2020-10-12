@@ -62,8 +62,9 @@ jobs:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
     - stage: "Tests"
       name: "Pytest Unit Tests"
+      before_install: export PYTHON_PACKAGES="pytest pytest-cov"; export METPLUS_PYTEST_HOST=docker;
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_unit.sh
+        - cd ${TRAVIS_BUILD_DIR}/internal_tests/pytests; pytest --cov=../../metplus
     - name: "Use Case Tests - met_tool_wrapper"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py met_tool_wrapper
