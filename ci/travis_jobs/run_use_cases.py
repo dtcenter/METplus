@@ -14,8 +14,6 @@ import download_gempaktocf
 sys.path.insert(0, os.path.abspath(os.path.join(dirname(__file__),
                                                 os.pardir,
                                                 os.pardir,)))
-#                                                'internal_tests',
-#                                                'use_cases')))
 
 from internal_tests.use_cases.metplus_use_case_suite import METplusUseCasesByRequirement as mp_by_req
 from internal_tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
