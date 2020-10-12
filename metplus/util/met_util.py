@@ -2722,5 +2722,60 @@ def iterate_check_position(input_list, check_first):
 
     yield last, not check_first
 
-if __name__ == "__main__":
-    gen_init_list("20141201", "20150331", 6, "18")
+def is_met_netcdf(file_path):
+    """! Check if a file is a MET-generated NetCDF file.
+          If the file is not a NetCDF file, OSError occurs.
+          If the MET_version attribute doesn't exist, AttributeError occurs.
+          If the netCDF4 package is not available, ImportError should occur.
+          All of these situations result in the file being considered not
+          a MET-generated NetCDF file
+         Args:
+             @param file_path full path to file to check
+             @returns True if file is a MET-generated NetCDF file and False if
+              it is not or it can't be determined.
+    """
+    # disable functionality for testing
+    return False
+    try:
+        from netCDF4 import Dataset
+        nc_file = Dataset(file_path, 'r')
+        getattr(nc_file, 'MET_version')
+    except (AttributeError, OSError, ImportError):
+        return False
+
+    return True
+
+def netcdf_has_var(file_path, name, level):
+    """! Check if name is a variable in the NetCDF file. If not, check if
+         {name}_{level} (with level prefix letter removed, i.e. 06 from A06)
+          If the file is not a NetCDF file, OSError occurs.
+          If the MET_version attribute doesn't exist, AttributeError occurs.
+          If the netCDF4 package is not available, ImportError should occur.
+          All of these situations result in the file being considered not
+          a MET-generated NetCDF file
+         Args:
+             @param file_path full path to file to check
+             @returns True if file is a MET-generated NetCDF file and False if
+              it is not or it can't be determined.
+    """
+    try:
+        from netCDF4 import Dataset
+
+        nc_file = Dataset(file_path, 'r')
+        variables = nc_file.variables.keys()
+
+        # if name is a variable, return that name
+        if name in variables:
+            return name
+
+
+        # if name_level is a variable, return that
+        name_underscore_level = f"{name}_{split_level(level)[1]}"
+        if name_underscore_level in variables:
+            return name_underscore_level
+
+        # requested variable name is not found in file
+        return None
+
+    except (AttributeError, OSError, ImportError):
+        return False
