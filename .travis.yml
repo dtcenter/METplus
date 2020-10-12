@@ -117,8 +117,7 @@ jobs:
   allow_failures:
     - stage: "Documentation"
 
-#  include:
-  exclude:
+  include:
     - stage: "Documentation"
       before_install: export PYTHON_PACKAGES="$PYTHON_PACKAGES sphinx_rtd_theme doc8"
       script:
@@ -137,47 +136,32 @@ jobs:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_unit.sh
     - name: "Use Case Tests - met_tool_wrapper"
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_met_tool_wrapper.sh
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py met_tool_wrapper
     - name: "Use Case Tests - data_assimilation"
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_data_assimilation.sh
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation
     - name: "Use Case Tests - cryosphere"
       script:
         # add travis_wait before command because a case takes longer than 10 minutes to return
-       - travis_wait 30 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --cryosphere
+       - travis_wait 30 ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py cryosphere
     - name: "Use Case Tests - convection_allowing_models"
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --convection_allowing_models
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py convection_allowing_models
     - name: "Use Case Tests - climate"
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --climate
-
-    - name: "Use Case Tests - medium_range1"
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py climate
+    - name: "Use Case Tests - medium_range 0-4"
       script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --medium_range1
-
-    - name: "Use Case Tests - medium_range2"
-      script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --medium_range2
-    # medium_range3 is TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
-    - name: "Use Case Tests - medium_range3"
-      script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_medium_range3.sh
-    - name: "Use Case Tests - precipitation"
-      script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --precipitation
-    - name: "Use Case Tests - s2s, space_weather, tc_and_extra_tc"
-      script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/test_use_cases_model_applications.sh --s2s --space_weather --tc_and_extra_tc
-  include:
-    - name: Medium Range 1
-      script:
-#        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py met_tool_wrapper
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py medium_range 0-4
-#        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py climate
-    - name: Medium Range 2
+    - name: "Use Case Tests - medium_range 5"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py medium_range 5
-    - name: Medium Range 3
+    - name: "Use Case Tests - medium_range 6+"
       script:
         - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py medium_range 6+
+    - name: "Use Case Tests - precipitation"
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py precipitation
+    - name: "Use Case Tests - s2s, space_weather, tc_and_extra_tc"
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py s2s,space_weather,tc_and_extra_tc
