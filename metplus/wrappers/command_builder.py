@@ -858,20 +858,13 @@ class CommandBuilder:
 
         # if neither input is probabilistic, add all cat thresholds to same field info item
         if not self.c_dict.get('FCST_IS_PROB', False) and not self.c_dict.get('OBS_IS_PROB', False):
+            field_name = v_name
 
-            # if pcp_combine was run, use name_level, (*,*) format
-            # if not, use user defined name/level combination
-            if (not self.c_dict.get('USE_EXPLICIT_NAME_AND_LEVEL', False) and
-                                    d_type != 'ENS' and
-                                    self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False)):
-                field = "{ name=\"" + v_name + "_" + level + \
-                        "\"; level=\"(*,*)\";"
-            else:
-                field = "{ name=\"" + v_name + "\";"
+            field = "{ name=\"" + field_name + "\";"
 
-                # add level if it is set
-                if v_level:
-                    field += " level=\"" +  v_level + "\";"
+            # add level if it is set
+            if v_level:
+                field += " level=\"" + util.remove_quotes(v_level) + "\";"
 
             # add threshold if it is set
             if cat_thresh:
@@ -901,13 +894,13 @@ class CommandBuilder:
                       not self.c_dict[d_type + '_PROB_IN_GRIB_PDS']:
                         field = "{ name=\"" + v_name + "\";"
                         if v_level:
-                            field += " level=\"" +  v_level + "\";"
+                            field += " level=\"" + util.remove_quotes(v_level) + "\";"
                         field += " prob=TRUE;"
                     else:
                         # a threshold value is required for GRIB prob DICT data
                         if thresh is None:
                             self.log_error('No threshold was specified for probabilistic '
-                                              'forecast GRIB data')
+                                           'forecast GRIB data')
                             return None
 
                         thresh_str = ""
@@ -937,17 +930,13 @@ class CommandBuilder:
                     field += ' }'
                     fields.append(field)
             else:
-                # if input being processed is not probabilistic but the other input is
+                field_name = v_name
+
                 for thresh in threshs:
-                    # if pcp_combine was run, use name_level, (*,*) format
-                    # if not, use user defined name/level combination
-                    if self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
-                        field = "{ name=\"" + v_name + "_" + level + \
-                                "\"; level=\"(*,*)\";"
-                    else:
-                        field = "{ name=\"" + v_name + "\";"
-                        if v_level:
-                            field += " level=\"" + v_level + "\";"
+                    field = "{ name=\"" + field_name + "\";"
+
+                    if v_level:
+                        field += " level=\"" + util.remove_quotes(v_level) + "\";"
 
                     if thresh is not None:
                         field += " cat_thresh=[ " + str(thresh) + " ];"
