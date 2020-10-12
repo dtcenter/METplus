@@ -26,6 +26,7 @@ author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
 # the stable version, displayed on front page of PDF
 version = '3.1'
+verinfo = version
 
 # The full version, including alpha/beta/rc tags
 release = f'{version}'
