@@ -323,14 +323,14 @@ def _get_use_case_list(use_cases):
     return use_cases_list
 
 def _extract_category_lists(lines):
-    """! Look for categories (lines that start with # Category). Group the
+    """! Look for categories (lines that start with Category). Group the
     lines by use case category.
     @param lines List of all lines from the file
     @returns Dictionary with category name as key and list of use cases as the
     value
     """
     header_indices = [i for i, value in enumerate(lines)
-                      if value.startswith('#') and "Category" in value]
+                      if value.startswith('Category')]
 
     category_lists = []
     for idx, header_index in enumerate(header_indices[:-1]):
@@ -345,7 +345,7 @@ def _extract_category_lists(lines):
     # extract category name to use as key in output dictionary
     # value will contain a list of the rest of the lines
     for category_list in category_lists:
-        # first line contains category name after '# Category:'
+        # first line contains category name after 'Category:'
         # so get text after : and strip off whitespace
         category = category_list[0].split(':')[1].strip()
         if category in category_dict.keys():
@@ -353,7 +353,7 @@ def _extract_category_lists(lines):
 
         # remove first item in list that contains the category name
         use_case_list = category_list[1:]
-        # remove empty lines
+        # remove empty lines and commented out lines
         use_case_list = [use_case for use_case in use_case_list
                          if use_case.strip() and
                          not use_case.strip().startswith('#')]
@@ -378,7 +378,7 @@ def parse_all_use_cases_file():
     for category, use_case_list in category_dict.items():
         all_cases[category] = []
         for use_case in use_case_list:
-            name, *rest = use_case.split('&')
+            name, *rest = use_case.split('::')
             name = name.strip()
             requirements = []
 
