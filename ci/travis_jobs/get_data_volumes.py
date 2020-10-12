@@ -7,7 +7,7 @@ import shlex
 
 from docker_utils import docker_get_volumes_last_updated
 
-sys.path.insert(0, os.path.abspath(os.path.join(dirname(__file__),
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir,
                                                 os.pardir,)))
 
