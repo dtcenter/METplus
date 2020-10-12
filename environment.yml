@@ -5,4 +5,3 @@ dependencies:
   - python=3.6.3
   - python-dateutil
 prefix: /home/met_test/.conda/envs/metplus_base
-

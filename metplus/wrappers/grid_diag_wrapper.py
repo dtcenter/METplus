@@ -221,8 +221,7 @@ class GridDiagWrapper(CommandBuilder):
             field_list = self.get_field_info(d_type='FCST',
                                              v_name=field['fcst_name'],
                                              v_level=field['fcst_level'],
-                                             v_extra=field['fcst_extra'],
-                                             )
+                                             v_extra=field['fcst_extra'])
             if field_list is None:
                 return False
 
