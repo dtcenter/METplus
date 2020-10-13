@@ -28,6 +28,7 @@ import produtil.setup
 from metplus.util import metplus_check
 from metplus.util import pre_run_setup, run_metplus, post_run_cleanup
 from metplus.util import get_process_list
+from metplus import __version__ as metplus_version
 
 '''!@namespace master_metplus
 Main script the processes all the tasks in the PROCESS_LIST
@@ -73,6 +74,10 @@ def get_config_inputs_from_command_line():
          invalid flag was provided, i.e. -a.
          @returns list of config inputs
     """
+
+    # output version that is run to screen
+    print('Running METplus %s' % metplus_version)
+
     # if not arguments were provided, print usage and exit
     if len(sys.argv) < 2:
         usage()
