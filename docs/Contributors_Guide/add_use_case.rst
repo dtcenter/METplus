@@ -306,7 +306,7 @@ Create the new tarfile
     tar zxf ${DATA_STAGING_DIR}/${NEW_DATA_TARFILE} -C ${DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
 * Verify that all of the old and new data exists in the directory that was
-  created (i.e. model_applications/<category>)
+  created (i.e. model_applications/<category>).
 
 * Create the new sample data tarball. Example:
 
