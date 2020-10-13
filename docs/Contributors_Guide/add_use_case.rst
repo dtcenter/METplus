@@ -194,7 +194,7 @@ If you are using **csh**::
 
 .. note::
     The following variables do not need to be changed unless DTC moves to a
-    new web server, but they still need to be set to run the instructions
+    new web server, but they still need to be set to run the instructions.
 
 If you are using **bash**::
 
