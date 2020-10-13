@@ -342,7 +342,7 @@ that everything runs smoothly. If the above instructions to add new data were
 followed correctly, then Travis-CI will automatically obtain the
 new data and use it for the tests when you push your changes to GitHub.
 Adding the use case to the test suite will allow you to check that the data
-was uploaded correctly and that the use case runs in the python environment
+was uploaded correctly and that the use case runs in the Python environment
 created in Docker. The status of the tests can be viewed on the
 `Travis-CI METplus Branches webpage <https://travis-ci.com/github/dtcenter/METplus/branches>`_.
 Your feature branch should be found under the Activate Branches section.
