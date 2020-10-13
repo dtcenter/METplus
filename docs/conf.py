@@ -29,7 +29,6 @@ author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
 # The full version, including alpha/beta/rc tags
 # i.e. v4.0-beta1-dev
-release = f'{version}'
 release = __version__
 
 # the stable version, displayed on front page of PDF extract X.Y version from
