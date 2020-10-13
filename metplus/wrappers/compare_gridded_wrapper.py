@@ -308,6 +308,7 @@ that reformat gridded data
                                             v_name=var_info['fcst_name'],
                                             v_extra=var_info['fcst_extra'],
                                             d_type='FCST')
+
             next_obs = self.get_field_info(v_level=var_info['obs_level'],
                                            v_thresh=var_info['obs_thresh'],
                                            v_name=var_info['obs_name'],

@@ -208,6 +208,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
     def get_all_field_info(self, var_list, data_type):
         """!Get field info based on data type"""
+
         field_list = []
         for var_info in var_list:
             if data_type == 'FCST':
