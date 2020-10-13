@@ -105,7 +105,7 @@ Build the Documentation
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 Build the documentation and ensure that the new use case file is
-displayed and the formatting looks correct. The python packages sphinx,
+displayed and the formatting looks correct. The Python packages sphinx,
 sphinx-gallery (0.6 or higher), and sphinx_rtd_theme are required to build.
 There is a conda environment called sphinx_env available on some of the NCAR
 development machines that can be used::
@@ -431,4 +431,3 @@ Use Case Rules
   added to the Quick Search Guide (docs/Users_Guide/quicksearch.rst).
 - The use case should be run by someone other than the author to ensure that it
   runs smoothly outside of the development environment set up by the author.
-
