@@ -122,6 +122,15 @@ or you can create your own conda environment and install the packages::
     conda activate sphinx_test
     conda install sphinx
     conda install -c conda-forge sphinx-gallery
+    pip install git+https://github.com/ESMCI/sphinx_rtd_theme@version-dropdown-with-fixes
+
+.. note::
+    The specific version of sphinx_rtd_theme is needed to build the documentation
+    with the version selector. If you are building the docs locally, you don't
+    necessarily need this version. If it is easier, you can use the following
+    command to install the package
+
+    ::
     conda install sphinx_rtd_theme
 
 To build the docs, run the build_docs.py script from the docs directory. Make
