@@ -11,7 +11,7 @@ if hash wget 2>/dev/null; then
         curl https://dtcenter.org/sites/default/files/community-code/met/compile_scripts/tar_files.tgz -o tar_files.tgz
     fi
 
-## Grab GFDL tracker tar file and start building it
+## Grab GFDL tracker tar file
 if hash wget 2>/dev/null; then
         wget http://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz
     else
