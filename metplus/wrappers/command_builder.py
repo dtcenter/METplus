@@ -858,20 +858,13 @@ class CommandBuilder:
 
         # if neither input is probabilistic, add all cat thresholds to same field info item
         if not self.c_dict.get('FCST_IS_PROB', False) and not self.c_dict.get('OBS_IS_PROB', False):
+            field_name = v_name
 
-            # if pcp_combine was run, use name_level, (*,*) format
-            # if not, use user defined name/level combination
-            if (not self.c_dict.get('USE_EXPLICIT_NAME_AND_LEVEL', False) and
-                                    d_type != 'ENS' and
-                                    self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False)):
-                field = "{ name=\"" + v_name + "_" + level + \
-                        "\"; level=\"(*,*)\";"
-            else:
-                field = "{ name=\"" + v_name + "\";"
+            field = "{ name=\"" + field_name + "\";"
 
-                # add level if it is set
-                if v_level:
-                    field += " level=\"" +  v_level + "\";"
+            # add level if it is set
+            if v_level:
+                field += " level=\"" + util.remove_quotes(v_level) + "\";"
 
             # add threshold if it is set
             if cat_thresh:
@@ -901,13 +894,13 @@ class CommandBuilder:
                       not self.c_dict[d_type + '_PROB_IN_GRIB_PDS']:
                         field = "{ name=\"" + v_name + "\";"
                         if v_level:
-                            field += " level=\"" +  v_level + "\";"
+                            field += " level=\"" + util.remove_quotes(v_level) + "\";"
                         field += " prob=TRUE;"
                     else:
                         # a threshold value is required for GRIB prob DICT data
                         if thresh is None:
                             self.log_error('No threshold was specified for probabilistic '
-                                              'forecast GRIB data')
+                                           'forecast GRIB data')
                             return None
 
                         thresh_str = ""
@@ -937,17 +930,13 @@ class CommandBuilder:
                     field += ' }'
                     fields.append(field)
             else:
-                # if input being processed is not probabilistic but the other input is
+                field_name = v_name
+
                 for thresh in threshs:
-                    # if pcp_combine was run, use name_level, (*,*) format
-                    # if not, use user defined name/level combination
-                    if self.config.getbool('config', d_type + '_PCP_COMBINE_RUN', False):
-                        field = "{ name=\"" + v_name + "_" + level + \
-                                "\"; level=\"(*,*)\";"
-                    else:
-                        field = "{ name=\"" + v_name + "\";"
-                        if v_level:
-                            field += " level=\"" + v_level + "\";"
+                    field = "{ name=\"" + field_name + "\";"
+
+                    if v_level:
+                        field += " level=\"" + util.remove_quotes(v_level) + "\";"
 
                     if thresh is not None:
                         field += " cat_thresh=[ " + str(thresh) + " ];"
@@ -1114,7 +1103,7 @@ class CommandBuilder:
         dict_string += '}'
         return dict_string
 
-    def set_c_dict_list(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+    def set_c_dict_list(self, c_dict, mp_config_name, met_config_name, c_dict_key=None, remove_quotes=False):
         """! Get list from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
@@ -1129,6 +1118,9 @@ class CommandBuilder:
         conf_value = util.getlist(self.config.getstr('config', mp_config_name, ''))
         if conf_value:
             conf_value = str(conf_value).replace("'", '"')
+
+            if remove_quotes:
+                conf_value = conf_value.replace('"', '')
 
             if not c_dict_key:
                 c_key = met_config_name.upper()

@@ -66,7 +66,7 @@ Workflow Overview:
 |
 |
 | 3. Clone the fork to a local repository, ie. copy the source code to the directory where you will be doing your
-|    work. 
+|    work.
 |       'cd' to the directory where you wish to do your work. From the command line, enter the following:
 |            *git clone https://github.com/<your-github-account>/METplus*
 |
@@ -105,8 +105,8 @@ Workflow Overview:
 |
 |             You should see something like the following:
 |               * develop
-|                master_v2.2    
-|             
+|                master_v2.2
+|
 |             The asterisk, * indicates the currently active branch.
 |
 |        At the command line, create and checkout the feature branch:

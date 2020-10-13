@@ -162,55 +162,47 @@ def test_get_field_info_list(metplus_config, conf_dict, expected_field_info_list
                 is_good = False
 
 # field info is the input dictionary with name and level info to parse
-# run_pcp is a boolean if FCST_PCP_COMBINE_RUN is set or not
 # expected_arg is the argument that should be set by the function
 # note: did not include OBS because they are handled the same way as FCST
 @pytest.mark.parametrize(
-    'field_info, run_pcp, expected_arg', [
+    'field_info, expected_arg', [
 
         # 0) name/level
         ({'fcst_name': 'F_NAME',
           'fcst_level': "\"(1,*,*)\""},
-          False,
           "-field 'name=\"F_NAME\"; level=\"(1,*,*)\";'"
          ),
 
         # 1) python embedding script
         ({'fcst_name': 'my_script.py some args',
-          'fcst_level': "A06"},
-         False,
+          'fcst_level': ""},
          "-field 'name=\"my_script.py some args\";'"
          ),
 
-        # 2) name/level PCPCombine is run
+        # 2) name/level
         ({'fcst_name': 'F_NAME',
           'fcst_level': "A06"},
-         True,
-         "-field 'name=\"F_NAME_06\"; level=\"(*,*)\";'"
+         "-field 'name=\"F_NAME\"; level=\"A06\";'"
          ),
 
-        # 3) name/level PCPCombine is run, no level
+        # 3) name, no level
         ({'fcst_name': 'F_NAME',
           'fcst_level': ""},
-         True,
-         "-field 'name=\"F_NAME\"; level=\"(*,*)\";'"
+         "-field 'name=\"F_NAME\";'"
          ),
 
-        # 4) python embedding script, PCPCombine is run
+        # 4) python embedding script
         ({'fcst_name': 'my_script.py some args',
-          'fcst_level': "A06"},
-         True,
+          'fcst_level': ""},
          "-field 'name=\"my_script.py some args\";'"
          ),
     ]
 )
 
-def test_set_field_command_line_arguments(metplus_config, field_info, run_pcp, expected_arg):
+def test_set_field_command_line_arguments(metplus_config, field_info, expected_arg):
     data_type = 'FCST'
 
     config = metplus_config()
-    if run_pcp:
-        config.set('config', f"{data_type}_PCP_COMBINE_RUN", True)
 
     rdp = RegridDataPlaneWrapper(config)
 
