@@ -71,6 +71,8 @@ each use case should have the following:
 
 * 0 or more MET configuration files named <MET-TOOL>Config_<DESCRIPTOR>
 
+`Click here to see an example <https://github.com/dtcenter/METplus/tree/main_v3.1/parm/use_cases/model_applications/precipitation>`_
+
 
 Document New Use Case
 ^^^^^^^^^^^^^^^^^^^^^
