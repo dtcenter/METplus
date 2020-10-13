@@ -1822,9 +1822,6 @@ METplus Configuration Glossary
    FCST_MIN_FORECAST
      .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_MIN_FORECAST`.
 
-   FCST_MAX_FORECAST
-     .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_MAX_FORECAST`.
-
    OBS_MIN_FORECAST
      .. warning:: **DEPRECATED:** Please use :term:`OBS_PCP_COMBINE_MIN_FORECAST`.
 
@@ -5309,9 +5306,6 @@ METplus Configuration Glossary
 
    TIME_SUMMARY_FLAG
      .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_FLAG` instead.
-
-   TIME_SUMMARY_TYPES
-     .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_TYPES` instead.
 
    TITLE
      .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_TITLE` instead.
