@@ -227,7 +227,7 @@ If you are using **csh**::
 
 * Set directory paths in the use case config file relative to INPUT_BASE
   i.e {INPUT_BASE}/model_applications/<category> and set {INPUT_BASE} to your
-  local directory to test
+  local directory to test.
 
 * Create a tarfile on your development machine with the new dataset. Make sure
   the tarball contains directories model_applications/<category> or
