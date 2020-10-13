@@ -135,7 +135,7 @@ or you can create your own conda environment and install the packages::
 
 To build the docs, run the build_docs.py script from the docs directory. Make
 sure your conda environment is activated or the required packages are available
-in your python3 environment::
+in your Python 3 environment::
 
     cd ~/METplus/docs
     ./build_docs.py
