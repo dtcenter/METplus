@@ -73,7 +73,6 @@ each use case should have the following:
 
 `Click here to see an example <https://github.com/dtcenter/METplus/tree/main_v3.1/parm/use_cases/model_applications/precipitation>`_
 
-
 Document New Use Case
 ^^^^^^^^^^^^^^^^^^^^^
 
@@ -131,8 +130,8 @@ or you can create your own conda environment and install the packages::
     with the version selector. If you are building the docs locally, you don't
     necessarily need this version. If it is easier, you can use the following
     command to install the package
-
     ::
+
     conda install sphinx_rtd_theme
 
 To build the docs, run the build_docs.py script from the docs directory. Make
