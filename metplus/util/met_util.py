@@ -2722,6 +2722,81 @@ def iterate_check_position(input_list, check_first):
 
     yield last, not check_first
 
+def expand_int_string_to_list(int_string):
+    """! Expand string into a list of integer values. Items are separated by
+    commas. Items that are formatted X-Y will be expanded into each number
+    from X to Y inclusive. If the string ends with +, then add a str '+'
+    to the end of the list.
+
+    @param int_string String containing a comma-separated list of integers
+    @returns List of integers and potentially '+' as the last item
+    """
+    subset_list = []
+
+    # if string ends with +, remove it and add it back at the end
+    if int_string.strip().endswith('+'):
+        int_string = int_string.strip(' +')
+        hasPlus = True
+    else:
+        hasPlus = False
+
+    # separate into list by comma
+    comma_list = int_string.split(',')
+    for comma_item in comma_list:
+        dash_list = comma_item.split('-')
+        # if item contains X-Y, expand it
+        if len(dash_list) == 2:
+            for i in range(int(dash_list[0].strip()),
+                           int(dash_list[1].strip())+1,
+                           1):
+                subset_list.append(i)
+        else:
+            subset_list.append(int(comma_item.strip()))
+
+    if hasPlus:
+        subset_list.append('+')
+    print(f"{int_string} converted to {subset_list}")
+    return subset_list
+
+def subset_list(full_list, subset_definition):
+    """! Extract subset of items from full_list based on subset_definition
+
+    @param full_list List of all use cases that were requested
+    @param subset_definition Defines how to subset the full list. If None,
+    no subsetting occurs. If an integer value, select that index only.
+    If a slice object, i.e. slice(2,4,1), pass slice object into list.
+    If list, subset full list by integer index values in list. If
+    last item in list is '+' then subset list up to 2nd last index, then
+    get all items from 2nd last item and above
+    """
+    if subset_definition is not None:
+        subset_list = []
+
+        # if case slice is a list, use only the indices in the list
+        if isinstance(subset_definition, list):
+            # if last slice value is a plus sign, get rest of items
+            # after 2nd last slice value
+            if subset_definition[-1] == '+':
+                plus_value = subset_definition[-2]
+                # add all values before last index before plus
+                subset_list.extend([full_list[i]
+                                    for i in subset_definition[:-2]])
+                # add last index listed + all items above
+                subset_list.extend(full_list[plus_value:])
+            else:
+                # list of integers, so get items based on indices
+                subset_list = [full_list[i] for i in subset_definition]
+        else:
+            subset_list = full_list[subset_definition]
+    else:
+        subset_list = full_list
+
+    # if only 1 item is left, make it a list before returning
+    if not isinstance(subset_list, list):
+        subset_list = [subset_list]
+
+    return subset_list
+
 def is_met_netcdf(file_path):
     """! Check if a file is a MET-generated NetCDF file.
           If the file is not a NetCDF file, OSError occurs.
