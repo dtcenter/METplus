@@ -35,6 +35,7 @@ release = __version__
 # release by removing v from the left side, splitting the string into a list
 # using - as the delimeter, then getting the 1st item of the list
 version = release.lstrip('v').split('-')[0]
+verinfo = version
 
 release_year = '2020'
 
@@ -103,6 +104,10 @@ suppress_warnings = ['ref.citation']
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
+html_theme_path = ["_themes", ]
+html_js_files = ['pop_ver.js']
+html_theme_options = {'canonical_url': 'https://dtcenter.github.io/METplus/latest/'}
+html_theme_options['versions'] = {'latest': '../latest', 'develop': '../develop'}
 html_css_files = ['theme_override.css']
 
 # Add any paths that contain custom static files (such as style sheets) here,

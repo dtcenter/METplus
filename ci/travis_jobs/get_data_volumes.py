@@ -35,7 +35,7 @@ MODEL_APP_NAMES = ('met_tool_wrapper',
                    'all_metplus_data',
                   )
 
-def main():
+def main(args):
     volume_list = []
     current_branch = os.environ.get('CURRENT_BRANCH')
     if not current_branch:
@@ -57,7 +57,7 @@ def main():
         # if model application name if found in any command line argument.
         # True if the name is found within any argument string
         # i.e. met_tool_wrapper or --met_tool_wrapper
-        if any([model_app_name in item for item in sys.argv]):
+        if any([model_app_name in item for item in args]):
 
             # if name is not all_metplus_data, use branch version, otherwise
             # add model application sub category to volume name
@@ -94,5 +94,5 @@ def main():
     return ' '.join(volume_list)
 
 if __name__ == "__main__":
-    out = main()
+    out = main(sys.argv)
     print(out)
