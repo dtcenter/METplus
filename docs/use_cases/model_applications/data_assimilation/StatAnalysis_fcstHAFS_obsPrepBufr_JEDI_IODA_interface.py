@@ -2,7 +2,7 @@
 StatAnalysis: JEDI
 ===========================================================================
 
-model_applications/data_assimilation/StatAnalysis_fcstHAFS.conf
+model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.conf
 
 """
 
@@ -69,10 +69,10 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/data_assimilation/StatAnalysis_fcstHAFS.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/data_assimilation/StatAnalysis_fcstHAFS.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.conf
 
 ##############################################################################
 # MET Configuration
@@ -128,9 +128,9 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS.conf
 #
 # It is recommended to run this use case by:
 #
-# Passing in StatAnalysis_python_embedding.conf then a user-specific system configuration file::
+# Passing in StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.conf then a user-specific system configuration file::
 #
-#   master_metplus.py -c /path/to/StatAnalysis_python_embedding.conf -c /path/to/user_system.conf
+#   master_metplus.py -c /path/to/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.conf -c /path/to/user_system.conf
 #
 # The following METplus configuration variables must be set correctly to run this example.:
 #

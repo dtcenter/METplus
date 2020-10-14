@@ -1,3 +1,5 @@
+.. _github-workflow:
+
 GitHub Workflow
 ===============
 
@@ -27,7 +29,7 @@ GitHub Workflow
 |   https://help.github.com/en/github/getting-started-with-github/signing-up-for-a-new-github-account
 |
 
-| Workflow Overview:
+Workflow Overview:
 |
 |  A contributor to METplus will do the following:
 |    1.  Create a GitHub Issue to track the new contribution
