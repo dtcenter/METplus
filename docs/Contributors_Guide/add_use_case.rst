@@ -130,7 +130,8 @@ or you can create your own conda environment and install the packages::
     necessarily need this version. If it is easier, you can use the following
     command to install the package
 
-    ::
+::
+
     conda install sphinx_rtd_theme
 
 To build the docs, run the build_docs.py script from the docs directory. Make
@@ -434,7 +435,9 @@ Multiple Categories in One Test
 If the use cases run quickly and you want to run multiple categories in one
 job, you can add additional categories to this argument separated by commas or
 ampersands, i.e. category1,category2. Do not include any spaces around the
-commas.
+commas. Example::
+
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py s2s,space_weather
 
 Subset Category into Multiple Tests
 """""""""""""""""""""""""""""""""""
