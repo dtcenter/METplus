@@ -1292,6 +1292,13 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  1.0
 
+   ENSEMBLE_STAT_ENS_VLD_THRESH
+     Threshold for the ratio of the number of valid data values to the total number of expected ensemble members. This value is passed into the ensemble_stat config file to make sure the percentage of files that are valid meets the expectation.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  NONE
+
    ENSEMBLE_STAT_GRID_VX
      .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_REGRID_TO_GRID`.
 
