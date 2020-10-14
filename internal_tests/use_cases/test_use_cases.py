@@ -224,22 +224,16 @@ def handle_output_directories(output_base, output_base_prev):
 def main():
     global failed_runs
 
-    if os.environ.get('METPLUS_TEST_METPLUS_BASE') is None:
+    if not os.environ.get('METPLUS_TEST_METPLUS_BASE'):
         test_metplus_base = metplus_home
     else:
         test_metplus_base = os.environ['METPLUS_TEST_METPLUS_BASE']
-
-    if not test_metplus_base:
-        test_metplus_base = metplus_home
 
     print("Starting test script")
     print("Running " + test_metplus_base + " to test")
 
     output_base_prev = os.environ['METPLUS_TEST_PREV_OUTPUT_BASE']
     output_base = os.environ['METPLUS_TEST_OUTPUT_BASE']
-
-
-    handle_output_directories(output_base, output_base_prev)
 
     # read command line arguments to determine which use cases to run
     parser = argparse.ArgumentParser()
@@ -256,9 +250,18 @@ def main():
     parser.add_argument('--tc_and_extra_tc', action='store_true', required=False)
     parser.add_argument('--all', action='store_true', required=False)
     parser.add_argument('--config', action='append', required=False)
+    parser.add_argument('--skip_output_check',
+                        action='store_true',
+                        required=False)
 
     args = parser.parse_args()
     print(args.config)
+
+    if args.skip_output_check:
+        print("Skipping output directory check. Output from previous tests "
+              "may be found in output directory")
+    else:
+        handle_output_directories(output_base, output_base_prev)
 
     if args.config:
         for use_case in args.config:
