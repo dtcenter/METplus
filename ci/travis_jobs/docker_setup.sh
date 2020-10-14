@@ -6,7 +6,7 @@ echo 'doing docker build'
 echo Timing docker pull...
 start_seconds=$SECONDS
 
-# pip result to true because it will fail if image has not yet been built
+# pipe result to true because it will fail if image has not yet been built
 docker pull ${DOCKERHUB_TAG} || true
 
 duration=$(( SECONDS - start_seconds ))
