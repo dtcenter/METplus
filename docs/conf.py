@@ -25,7 +25,8 @@ project = 'METplus'
 author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
 # the stable version, displayed on front page of PDF
-version = '3.1'
+version = 'develop'
+verinfo = version
 
 # The full version, including alpha/beta/rc tags
 release = f'{version}'
@@ -97,6 +98,10 @@ suppress_warnings = ['ref.citation']
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
+html_theme_path = ["_themes", ]
+html_js_files = ['pop_ver.js']
+html_theme_options = {'canonical_url': 'https://dtcenter.github.io/METplus/latest/'}
+html_theme_options['versions'] = {'latest': '../latest', 'develop': '../develop'}
 html_css_files = ['theme_override.css']
 
 # Add any paths that contain custom static files (such as style sheets) here,
