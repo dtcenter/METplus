@@ -53,6 +53,10 @@ def create_data_volumes(current_branch, volumes):
 
 def main():
 
+    if not os.environ.get('DOCKER_USERNAME'):
+        print("DockerHub credentials are not stored. Skipping data volume handling.")
+        sys.exit(0)
+
     # check if tarfile directory exists on web
     current_branch = os.environ.get('CURRENT_BRANCH')
     if not current_branch:
