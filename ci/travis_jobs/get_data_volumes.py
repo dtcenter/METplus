@@ -14,7 +14,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
 from metplus import __version__
 
 # METPLUS_VERSION should be set to develop or a release version, i.e. vX.Y
-# if version is set to vX.Y without -betaZ or -dev, use that version
+# if version is set to X.Y without -betaZ or -dev, use that version
 # otherwise use develop
 if len(__version__.split('-')) == 1:
     METPLUS_VERSION = __version__
