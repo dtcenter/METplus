@@ -1,0 +1,22 @@
+The GFDL tracker code is downloaded automatically by the build_MET.sh file. You can get it manually from the url below
+
+http://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz
+
+It is not built autmatically by the build_MET.sh script but does depend on the external_libs being created and built during the MET build process.
+
+After the external_libs directory is created 
+
+set the following environment variables 
+
+LIB_Z_PATH
+LIB_JASPER_PATH
+LIB_PNG_PATH
+
+to the external_libs directory
+
+cd into standalone_gfdl-vortextracker_v3.9a
+run configure 
+run compile
+
+
+

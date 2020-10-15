@@ -167,6 +167,22 @@ Running build_components/build_MET.sh will
 Building MET requires fine tuning on just about all systems, this should at least get most of
 the way through the process and allow just a few manual changes to get it completely built.
 
+External Components
+-------------------
+
+GFDL Tracker:
+~~~~~~~~~~~~~
+
+-  The standalone Geophysical Fluid Dynamics Laboratory (GFDL) vortex tracker is a program that objectively analyzes forecast data to provide an estimate of the vortex center position (latitude and longitude), and track the storm for the duration of the forecast.
+
+-  Visit https://dtcenter.org/community-code/gfdl-vortex-tracker for more information
+
+    -  See the manage externals section of this documentation to download the GFDL vortex tracker automatically as part of the system. 
+
+    -  To download and install in your own location get http://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz and follow the instructions listed in that archive to build on your system. 
+
+    -  Instructions on how to configure and use the GFDL tracker are found here https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_tracker_UG_v3.9a.pdf 
+
 Set up your environment
 -----------------------
 
