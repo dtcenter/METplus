@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# get version, use develop or latest for MET_BRANCH
-if cat $(dirname $DOCKERFILE_PATH)/../../docs/version | egrep -q '[0-9.]+$'; then
-    met_branch=latest
+# get version, use develop or X+6.Y for MET_BRANCH
+dockerfile_path=$(dirname $DOCKERFILE_PATH)/../../docs/version
+if cat $dockerfile_path | egrep -q '[0-9.]+$'; then
+    let major=$(cut -d '.' -f1 $dockerfile_path)+6
+    minor=$(cut -d '.' -f2 $dockerfile_path )
+    met_branch=$major"."$minor
 else
     met_branch=develop
 fi
