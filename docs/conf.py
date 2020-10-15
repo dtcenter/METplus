@@ -27,13 +27,19 @@ project = 'METplus'
 author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
 # The full version, including alpha/beta/rc tags
-# i.e. v4.0-beta1-dev
+# i.e. 4.0-beta1-dev
 release = __version__
 
-# the stable version, displayed on front page of PDF extract X.Y version from
-# release by removing v from the left side, splitting the string into a list
+# the stable version, displayed on front page of PDF extract X.Y version
+# from release by splitting the string into a list
 # using - as the delimeter, then getting the 1st item of the list
-version = release.lstrip('v').split('-')[0]
+# if version is beta, rc, and/or dev then set version to develop for
+# the documentation built for develop (not release)
+if len(release.split('-')) > 1:
+    version = 'develop'
+else:
+    version = f"{release.split('-')[0]}"
+
 verinfo = version
 
 release_year = '2020'
