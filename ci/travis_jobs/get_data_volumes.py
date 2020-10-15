@@ -17,7 +17,8 @@ from metplus import __version__
 # if version is set to X.Y without -betaZ or -dev, use that version
 # otherwise use develop
 if len(__version__.split('-')) == 1:
-    METPLUS_VERSION = __version__
+    # only get first 2 numbers from version, i.e. X.Y.Z will use vX.Y
+    METPLUS_VERSION = f"v{'.'.join(__version__.split('.')[:2])}"
 
 else:
     METPLUS_VERSION = 'develop'
