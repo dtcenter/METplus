@@ -13,7 +13,6 @@
 import os
 from datetime import datetime
 import sys
-#sys.path.insert(0, os.path.abspath('../ush'))
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir)))
 sys.path.append(os.path.abspath("./_ext"))
