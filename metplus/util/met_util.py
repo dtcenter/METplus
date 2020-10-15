@@ -29,6 +29,8 @@ from .string_template_substitution import get_tags
 from . import time_util as time_util
 from . import metplus_check
 
+from .. import get_metplus_version
+
 """!@namespace met_util
  @brief Provides  Utility functions for METplus.
 """
@@ -86,7 +88,7 @@ MISSING_DATA_VALUE = -9999
 
 def pre_run_setup(config_inputs):
     from . import config_metplus
-    version_number = get_version_number()
+    version_number = get_metplus_version()
     print(f'Starting METplus v{version_number}')
 
     # Read config inputs and return a config instance
@@ -1021,19 +1023,6 @@ def get_lead_sequence(config, input_dict=None):
         return [0]
 
     return out_leads
-
-def get_version_number():
-    # read version file and return value
-    # get top level of METplus - parents[2] is 3 directories up from current file
-    # which is in ush/metplus/util
-    metplus_base = str(Path(__file__).parents[2])
-    version_file_path = os.path.join(metplus_base,
-                                     'docs',
-                                     'version')
-
-    with open(version_file_path, 'r') as version_file:
-        return version_file.read()
-
 
 def round_0p5(val):
     """! Round to the nearest point five (ie 3.3 rounds to 3.5, 3.1

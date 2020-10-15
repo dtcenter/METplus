@@ -7,8 +7,21 @@ import shlex
 
 from docker_utils import docker_get_volumes_last_updated
 
-# this should be set to develop or a release version, i.e. vX.Y
-METPLUS_VERSION = 'develop'
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                os.pardir,
+                                                os.pardir,)))
+
+from metplus import __version__
+
+# METPLUS_VERSION should be set to develop or a release version, i.e. vX.Y
+# if version is set to X.Y without -betaZ or -dev, use that version
+# otherwise use develop
+if len(__version__.split('-')) == 1:
+    # only get first 2 numbers from version, i.e. X.Y.Z will use vX.Y
+    METPLUS_VERSION = f"v{'.'.join(__version__.split('.')[:2])}"
+
+else:
+    METPLUS_VERSION = 'develop'
 
 MODEL_APP_NAMES = ('met_tool_wrapper',
                    'convection_allowing_models',

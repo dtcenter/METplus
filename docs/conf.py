@@ -13,10 +13,12 @@
 import os
 from datetime import datetime
 import sys
-sys.path.insert(0, os.path.abspath('../ush'))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                os.pardir)))
 sys.path.append(os.path.abspath("./_ext"))
 print(sys.path)
 
+from metplus import __version__
 
 # -- Project information -----------------------------------------------------
 
@@ -24,12 +26,21 @@ project = 'METplus'
 
 author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
-# the stable version, displayed on front page of PDF
-version = 'develop'
-verinfo = version
-
 # The full version, including alpha/beta/rc tags
-release = f'{version}'
+# i.e. 4.0-beta1-dev
+release = __version__
+
+# the stable version, displayed on front page of PDF extract X.Y version
+# from release by splitting the string into a list
+# using - as the delimeter, then getting the 1st item of the list
+# if version is beta, rc, and/or dev then set version to develop for
+# the documentation built for develop (not release)
+if len(release.split('-')) > 1:
+    version = 'develop'
+else:
+    version = f"{release.split('-')[0]}"
+
+verinfo = version
 
 release_year = '2020'
 
