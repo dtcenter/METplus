@@ -145,6 +145,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'ENSEMBLE_STAT_REGRID_TO_GRID', '')
 
+        self.set_c_dict_float(c_dict,
+                              'ENSEMBLE_STAT_ENS_VLD_THRESH',
+                              'vld_thresh',
+                              'ENS_VLD_THRESH')
+
         # used to override the file type for fcst/obs if using python embedding for input
         c_dict['ENS_FILE_TYPE'] = ''
         c_dict['FCST_FILE_TYPE'] = ''
@@ -342,6 +347,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_WINDOW_BEGIN", str(self.c_dict['OBS_WINDOW_BEGIN']))
         self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
         self.add_env_var("ENS_THRESH", self.c_dict['ENS_THRESH'])
+        self.add_env_var('ENS_VLD_THRESH',
+                         self.c_dict.get('ENS_VLD_THRESH', ''))
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 

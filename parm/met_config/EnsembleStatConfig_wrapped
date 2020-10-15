@@ -53,7 +53,7 @@ ens = {
    ${ENS_FILE_TYPE}
 
    ens_thresh = ${ENS_THRESH};
-   vld_thresh = 1.0;
+   ${ENS_VLD_THRESH}
 
    field = [ ${ENS_FIELD}  ];
 }
