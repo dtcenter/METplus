@@ -17,7 +17,7 @@ def main():
     from metplus.wrappers import RegridDataPlaneWrapper
     #import plot_blocking as pb
     #from CBL_plot import create_cbl_plot
-    all_steps = ["CBL","PLOTCBL","IBL","IBLS","GIBL","CALCBLOCKS","PLOTFREQ"]
+    all_steps = ["REGRID","DAILYAVE","RUNMEAN","ANOMALY","CBL","PLOTCBL","IBL","IBLS","GIBL","CALCBLOCKS","PLOTBLOCKS"]
 
     config_list = get_config_inputs_from_command_line()
 
@@ -42,23 +42,27 @@ def main():
     ######################################################################
     config = config_metplus.setup(config_list)
     # Regrid to 1 Degree
-    #print('Regridding')
-    #RegridDataPlaneWrapper(config).run_all_times()
+    if ("REGRID" in steps_list):
+        print('Regridding')
+        RegridDataPlaneWrapper(config).run_all_times()
 
     #Compute Daily Average
-    #print('Computing Daily Averages')
-    #daily_config = config_metplus.replace_config_from_section(config, 'daily_mean')
-    #PCPCombineWrapper(daily_config).run_all_times()
+    if ("DAILYAVE" in steps_list):
+        print('Computing Daily Averages')
+        daily_config = config_metplus.replace_config_from_section(config, 'daily_mean')
+        PCPCombineWrapper(daily_config).run_all_times()
 
     #Take a running mean
-    #print('Computing Running means')
-    #rmean_config = config_metplus.replace_config_from_section(config, 'running_mean')
-    #PCPCombineWrapper(rmean_config).run_all_times()
+    if ("RUNMEAN" in steps_list):
+        print('Computing Running means')
+        rmean_config = config_metplus.replace_config_from_section(config, 'running_mean')
+        PCPCombineWrapper(rmean_config).run_all_times()
 
     #Compute anomaly
-    #print('Computing Anomalies')
-    #anomaly_config = config_metplus.replace_config_from_section(config, 'anomaly')
-    #PCPCombineWrapper(anomaly_config).run_all_times()
+    if ("ANOMALY" in steps_list):
+        print('Computing Anomalies')
+        anomaly_config = config_metplus.replace_config_from_section(config, 'anomaly')
+        PCPCombineWrapper(anomaly_config).run_all_times()
 
 
     ######################################################################
@@ -104,7 +108,7 @@ def main():
         block_freq = steps.run_Calc_Blocks(ibls,gibls,lons,daynum,yr)
 
     # Plot Blocking Frequency
-    if( "PLOTFREQ" in steps_list):
+    if( "PLOTBLOCKS" in steps_list):
         blocking_plot_title = config.getstr('Blocking','BLOCKING_PLOT_TITLE')
         blocking_plot_outname = config.getstr('Blocking','BLOCKING_PLOT_OUTPUT_NAME')
         pb.plot_blocks(block_freq,gibls,ibls,lons,blocking_plot_title,blocking_plot_outname)
