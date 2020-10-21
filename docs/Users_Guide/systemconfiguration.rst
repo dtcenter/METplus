@@ -883,5 +883,12 @@ This is the equivalent of calling (bash example shown)::
 
 on the command line at the beginning of your METplus run. You can access the variable in the MET config file with ${USE_CASE_TIME_ID}.
 
+Using Environment Variables as Config Variables
+-----------------------------------------------
+
+You can set METplus config variables to the value of local environment variables when METplus is run. To set any METplus config variable to the value of a local environment variable, use the following syntax::
+
+  METPLUS_CONF_VAR = {ENV[LOCAL_ENV_VAR_NAME]}
+
 :doc:`glossary`
 
