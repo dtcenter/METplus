@@ -37,7 +37,7 @@ Internal:
 * Add to User's Guide: using environment variables in METplus configuration files (`#594 <https://github.com/dtcenter/METplus/issues/594>`_)
 * Cleanup version info (`#651 <https://github.com/dtcenter/METplus/issues/651>`_)
 * Fix Travis tests for pull requests from forks (`#659 <https://github.com/dtcenter/METplus/issues/659>`_)
-* Enhance the build_docker_images.sh script to support TravisCI updates (`#636<https://github.com/dtcenter/METplus/issues/636>`_)
+* Enhance the build_docker_images.sh script to support TravisCI updates (`#636 <https://github.com/dtcenter/METplus/issues/636>`_)
 * Reorganize use case tests so users can add new cases easily (`#648 <https://github.com/dtcenter/METplus/issues/648>`_)
 * Investigate how to add version selector to documentation (`#653 <https://github.com/dtcenter/METplus/issues/653>`_)
 * Docker push pull image repository (`#639 <https://github.com/dtcenter/METplus/issues/639>`_)

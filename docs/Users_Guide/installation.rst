@@ -177,11 +177,11 @@ GFDL Tracker:
 
 -  Visit https://dtcenter.org/community-code/gfdl-vortex-tracker for more information
 
-    -  See the manage externals section of this documentation to download the GFDL vortex tracker automatically as part of the system. 
+    -  See the manage externals section of this documentation to download the GFDL vortex tracker automatically as part of the system.
 
-    -  To download and install in your own location get http://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz and follow the instructions listed in that archive to build on your system. 
+    -  To download and install in your own location get http://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz and follow the instructions listed in that archive to build on your system.
 
-    -  Instructions on how to configure and use the GFDL tracker are found here https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_tracker_UG_v3.9a.pdf 
+    -  Instructions on how to configure and use the GFDL tracker are found here https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_tracker_UG_v3.9a.pdf
 
 Set up your environment
 -----------------------
