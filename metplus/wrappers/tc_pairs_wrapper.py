@@ -71,7 +71,6 @@ class TCPairsWrapper(CommandBuilder):
                                                    '')
         if not c_dict['CONFIG_FILE']:
             self.log_error("TC_PAIRS_CONFIG_FILE is required to run TCPairs wrapper")
-            self.isOK = False
 
         c_dict['INIT_TIME_FMT'] = self.config.getstr('config', 'INIT_TIME_FMT')
         clock_time = datetime.datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
@@ -91,7 +90,8 @@ class TCPairsWrapper(CommandBuilder):
                                         logger=self.logger)
         c_dict['INIT_END'] = init_end_dt.strftime('%Y%m%d_%H%M%S')
 
-        c_dict['INIT_INCREMENT'] = self.config.getint('config', 'INIT_INCREMENT')
+        c_dict['INIT_INCREMENT'] = self.config.getint('config',
+                                                      'INIT_INCREMENT')
 
         c_dict['INIT_INCLUDE'] = util.getlist(
             self.config.getstr('config', 'INIT_INCLUDE'))
@@ -146,10 +146,26 @@ class TCPairsWrapper(CommandBuilder):
                                    'SBU')
         c_dict['REFORMAT_DIR'] = \
                 self.config.getdir('TC_PAIRS_REFORMAT_DIR',
-                                   os.path.join(c_dict['OUTPUT_BASE'], 'track_data_atcf'))
+                                   os.path.join(c_dict['OUTPUT_BASE'],
+                                                'track_data_atcf'))
 
         c_dict['GET_ADECK'] = True if c_dict['ADECK_TEMPLATE'] else False
         c_dict['GET_EDECK'] = True if c_dict['EDECK_TEMPLATE'] else False
+
+        if c_dict['STORM_ID']:
+            # if using storm id and any other filter is set, report an error
+            if c_dict['BASIN']:
+                self.log_error('Cannot filter by both BASIN and STORM_ID')
+
+            if c_dict['CYCLONE']:
+                self.log_error('Cannot filter by both CYCLONE and STORM_ID')
+
+            # check storm ID format
+            for storm_id in c_dict['STORM_ID']:
+                # pull out info from storm_id and process
+                match = re.match(r'(\w{2})(\d{2})(\d{4})', storm_id)
+                if not match:
+                    self.log_error(f'Incorrect STORM_ID format: {storm_id}')
 
         return c_dict
 
@@ -180,7 +196,7 @@ class TCPairsWrapper(CommandBuilder):
                 return
 
             output_path = self.get_output_path()+'.tcst'
-            if os.path.isfile(output_path) and self.c_dict['SKIP_OUTPUT'] is True:
+            if os.path.isfile(output_path) and self.c_dict.get('SKIP_OUTPUT'):
                 self.logger.debug('Skip running tc_pairs because '+\
                                   'output file {} already exists'.format(output_path)+\
                                   'Change TC_PAIRS_SKIP_IF_OUTPUT_EXISTS to False to '+\
@@ -191,7 +207,7 @@ class TCPairsWrapper(CommandBuilder):
             return True
 
         # use init begin as run time (start of the storm)
-        input_dict = {'init' :
+        input_dict = {'init':
                       datetime.datetime.strptime(self.c_dict['INIT_BEG'],
                                                  '%Y%m%d_%H%M%S')
                      }
@@ -240,38 +256,22 @@ class TCPairsWrapper(CommandBuilder):
         basin_list = ['??']
         cyclone_list = ['*']
         model_list = ['*']
-        storm_id_list = ['*']
-        use_storm_id = False
-
-        if self.c_dict['STORM_ID']:
-            storm_id_list = self.c_dict['STORM_ID']
-            use_storm_id = True
-
-        # if storm id and any other filter is set, error and exit
 
         if self.c_dict['BASIN']:
-            if use_storm_id:
-                self.log_error('Cannot filter by both BASIN and STORM_ID')
-                exit(1)
             basin_list = self.c_dict['BASIN']
 
         if self.c_dict['CYCLONE']:
-            if use_storm_id:
-                self.log_error('Cannot filter by both CYCLONE and STORM_ID')
-                exit(1)
             cyclone_list = self.c_dict['CYCLONE']
 
         if self.c_dict['MODEL']:
             model_list = self.c_dict['MODEL']
 
-        if use_storm_id:
-            for storm_id in storm_id_list:
+        if self.c_dict['STORM_ID']:
+            for storm_id in self.c_dict['STORM_ID']:
                 # pull out info from storm_id and process
                 match = re.match(r'(\w{2})(\d{2})(\d{4})', storm_id)
                 if not match:
-                    self.log_error('Incorrect STORM_ID format: {}'
-                                      .format(storm_id))
-                    exit(1)
+                    return False
 
                 basin = match.group(1).lower()
                 cyclone = match.group(2)
@@ -456,8 +456,6 @@ class TCPairsWrapper(CommandBuilder):
                 @param model_list list of models that be available
                 @param time_info object containing timing information to process
         """
-        # get bdeck file
-        bdeck_files = []
 
         # set regex expressions for basin and cyclone if wildcard is used
         # cast cyclone value to integer if it is not a wildcard
@@ -486,8 +484,8 @@ class TCPairsWrapper(CommandBuilder):
         # if no bdeck_files found
         if len(bdeck_files) == 0:
             template = self.c_dict['BDECK_TEMPLATE']
-            self.log_error(f'No BDECK files found searching for basin {basin} and '
-                              f'cyclone {cyclone} using template {template}')
+            self.log_error(f'No BDECK files found searching for basin {basin} '
+                           f'and cyclone {cyclone} using template {template}')
             return False
 
         # find corresponding adeck or edeck files
@@ -553,7 +551,7 @@ class TCPairsWrapper(CommandBuilder):
 
             if not adeck_list and not edeck_list:
                 self.log_error('Could not find any corresponding '
-                                  'ADECK or EDECK files')
+                               'ADECK or EDECK files')
                 continue
 
             # reformat extra tropical cyclone files if necessary
@@ -583,11 +581,11 @@ class TCPairsWrapper(CommandBuilder):
                 return
 
             output_path = self.get_output_path()+'.tcst'
-            if os.path.isfile(output_path) and self.c_dict['SKIP_OUTPUT'] is True:
-                self.logger.debug('Skip running tc_pairs because '+\
-                                  'output file {} already exists'.format(output_path)+\
-                                  'Change TC_PAIRS_SKIP_IF_OUTPUT_EXISTS to False to '+\
-                                  'overwrite file')
+            if os.path.isfile(output_path) and self.c_dict.get('SKIP_OUTPUT'):
+                self.logger.debug('Skip running tc_pairs because '
+                                  f'output file {output_path} already exists. '
+                                  'Change TC_PAIRS_SKIP_IF_OUTPUT_EXISTS to '
+                                  'False to overwrite file')
             else:
                 self.build()
 
@@ -614,7 +612,8 @@ class TCPairsWrapper(CommandBuilder):
         # add adeck files if they exist
         for model in model_list:
             deck_glob = deck_expr.replace(model_list[0], model)
-            self.logger.debug(f'Looking for {deck}DECK file: {deck_glob} using template {template}')
+            self.logger.debug(f'Looking for {deck}DECK file: {deck_glob} '
+                              f'using template {template}')
             deck_files = glob.glob(deck_glob)
             if not deck_files:
                 continue
@@ -648,13 +647,13 @@ class TCPairsWrapper(CommandBuilder):
         for deck in file_list:
             outfile = deck.replace(deck_dir,
                                    reformat_dir)
-            if os.path.isfile(outfile) and self.c_dict['SKIP_REFORMAT'] is True:
-                self.logger.debug('Skip processing {} because '.format(deck) +\
-                                  'reformatted file already exists. Change '+\
-                                  'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS to False to '+\
-                                  'overwrite file')
+            if os.path.isfile(outfile) and self.c_dict.get('SKIP_REFORMAT'):
+                self.logger.debug(f'Skip processing {deck} because '
+                                  'reformatted file already exists. Change '
+                                  'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS to '
+                                  'False to overwrite file')
             else:
-                self.logger.debug('Reformatting {} to {}'.format(deck, outfile))
+                self.logger.debug(f'Reformatting {deck} to {outfile}')
                 self.read_modify_write_file(deck, storm_month,
                                             missing_values, outfile)
 
