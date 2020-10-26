@@ -13,13 +13,9 @@ class BlockingCalculation():
     """
     def __init__(self,config):
 
-        from metplus.util import config_metplus
-        from metplus.util import get_start_end_interval_times
-        loop_time, end_time, time_interval = get_start_end_interval_times(config)
+        from metplus.util import config_metplus, get_start_end_interval_times, get_lead_sequence
+        from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate
 
-        self.start_date = loop_time.strftime('%Y%m%d%H')
-        self.end_date = end_time.strftime('%Y%m%d%H')
-        self.start_mth = loop_time.strftime('%m')
         self.blocking_anomaly_dir = config.getstr('Blocking','BLOCKING_ANOMALY_DIR')
         self.blocking_anomaly_var = config.getstr('Blocking','BLOCKING_ANOMALY_VAR')
         self.blocking_dir = config.getstr('Blocking','BLOCKING_DIR')
@@ -31,14 +27,44 @@ class BlockingCalculation():
         self.ibl_dist = config.getint('Blocking','IBL_DIST')
         self.ibl_in_gibl = config.getint('Blocking','IBL_IN_GIBL')
         self.gibl_overlap = config.getint('Blocking','GIBL_OVERLAP')
-        self.block_time = config.getint('Blocking','BLOCK_TIME')    #####Probably should fix this so it supports other times"
+        self.block_time = config.getint('Blocking','BLOCK_TIME')  ###Probably should fix this so it supports other times"
         self.block_travel = config.getint('Blocking','BLOCK_TRAVEL')
         self.block_method = config.getstr('Blocking','BLOCK_METHOD')
+
+        blocking_config = config_metplus.replace_config_from_section(config, 'Blocking')
+        use_init = is_loop_by_init(blocking_config)
+        loop_time, end_time, time_interval = get_start_end_interval_times(blocking_config)
+        skip_times = get_skip_times(blocking_config)
+
+        self.start_mth = loop_time.strftime('%m')
+
+        alldays_list = []
+        if use_init:
+            timname = 'init'
+        else:
+            timname = 'valid'
+        input_dict = {}
+        input_dict['loop_by'] = timname
+        while loop_time <= end_time:
+            lead_seq = get_lead_sequence(config)
+            for ls in lead_seq:
+                new_time = loop_time + ls
+                input_dict[timname] = loop_time
+                input_dict['lead'] = ls
+
+                outtimestuff = ti_calculate(input_dict)
+                if not skip_time(outtimestuff, skip_times):
+                    alldays_list.append(outtimestuff['valid'])
+
+            loop_time += time_interval
+
+        self.date_list = alldays_list
 
         # Check data requirements
         if self.smoothing_pts % 2 == 0:
             print('ERROR: Smoothing Radius must be an odd number given in grid points, Exiting...')
             exit()
+
 
     def read_nc_met(self,indir,invar):
 
@@ -60,12 +86,10 @@ class BlockingCalculation():
         cntr = 1
 
         # Create a list of all the dates I need, so I can fill missing days
-        sdate_pd = self.start_date[0:4]+'-'+self.start_date[4:6]+'-'+self.start_date[6:8]
-        edate_pd = self.end_date[0:4]+'-'+self.end_date[4:6]+'-'+self.end_date[6:8]
-        djf_dates = [dt for dt in pd.date_range(start=sdate_pd, end=edate_pd).to_pydatetime() if dt.month in [1,2,12] and 
-            not (dt.month == 2 and dt.day == 29)]
+        djf_dates = self.date_list
 
-        valid_datetime = datetime.datetime(int(valid_time_str[0:4]),int(valid_time_str[4:6]),int(valid_time_str[6:8]))
+        valid_datetime = datetime.datetime(int(valid_time_str[0:4]),int(valid_time_str[4:6]),int(valid_time_str[6:8]),
+            int(valid_time_str[9:11]),int(valid_time_str[11:13]),int(valid_time_str[13:15]))
         datediff = valid_datetime - djf_dates[0]
         if valid_datetime > djf_dates[0]:
             diff = bisect.bisect_left(djf_dates,valid_datetime)
@@ -78,7 +102,7 @@ class BlockingCalculation():
             exit()
         else:
             icnt = 1
-            
+
         for i in range(1,len(infiles)):
 
             #Read in the data
@@ -90,7 +114,8 @@ class BlockingCalculation():
             indata.close()
             cmth = valid_time_str[4:6]
 
-            valid_datetime = datetime.datetime(int(valid_time_str[0:4]),int(valid_time_str[4:6]),int(valid_time_str[6:8]))
+            valid_datetime = datetime.datetime(int(valid_time_str[0:4]),int(valid_time_str[4:6]),
+                int(valid_time_str[6:8]),int(valid_time_str[9:11]),int(valid_time_str[11:13]),int(valid_time_str[13:15]))
             if valid_datetime > djf_dates[icnt]:
                 locvd = bisect.bisect_left(djf_dates,valid_datetime)
                 locc = bisect.bisect_left(djf_dates,djf_dates[icnt])
@@ -199,11 +224,11 @@ class BlockingCalculation():
 
     def run_Calc_IBL(self,cbl):
 
-        #z500_daily,lats,lons,yr = self.read_nc_met(self.blocking_dir,self.blocking_var)
-        z500_daily = np.load('Z500_daily.npy')
-        lats = np.load('lats2.npy')
-        lons = np.load('lons2.npy')
-        yr = np.load('yr2.npy')
+        z500_daily,lats,lons,yr = self.read_nc_met(self.blocking_dir,self.blocking_var)
+        #z500_daily = np.load('Z500_daily.npy')
+        #lats = np.load('lats2.npy')
+        #lons = np.load('lons2.npy')
+        #yr = np.load('yr2.npy')
 
         #Initilize arrays for IBLs and the blocking index
         # yr, day, lon
@@ -220,7 +245,6 @@ class BlockingCalculation():
         return blonlong
 
 
-    #def run_Calc_GIBL(self,ibl,lons,dd,year):
     def run_Calc_GIBL(self,ibl,lons):
 
         #Initilize GIBL Array
@@ -290,15 +314,13 @@ class BlockingCalculation():
         ##Count up the blocked longitudes for each GIBL
         c = np.zeros((GIBL.shape))
         lonlen = len(lon)
-        yrlen = len(year)
-        tslen = len(tsin)
         sz = []
         mx = []
         min = []
 
-        for y in np.arange(0,yrlen,1):
-            for k in np.arange(0,tslen,1):
-                a = GIBL[y,k]
+        for y in np.arange(0,len(GIBL[:,0,0]),1):
+            for k in np.arange(0,len(GIBL[0,:,0]),1):
+                a = GIBL[y,k] # Array of lons for each year,day
                 ct=1
                 ai = np.where(a==1)[0]
                 ai = np.append(ai,ai+360)
@@ -306,22 +328,19 @@ class BlockingCalculation():
                 bi=list(ai)
                 bi = np.array(bi)
                 bi[temp] = bi[temp]-360
+                # Loop through the lons that are part of the GIBL
                 for i in np.arange(0,len(ai)-1,1):
-                    b = ai[i]
-                    b1 = ai[i+1]
-                    diff = b1-b
+                    diff = ai[i+1] - ai[i]
                     c[y,k,bi[i]] = ct
                     if diff==1:
-                        #c[y,k,bi[i]] = ct
                         ct=ct+1
                     else:
-                        #c[y,k,bi[i]]=ct
                         sz = np.append(sz,ct)
                         ct=1
 
         ########## - finding where the left and right limits of the block are - ################
-        for i in np.arange(0,yrlen,1):
-            for k in np.arange(0,tslen,1):
+        for i in np.arange(0,len(c[:,0,0]),1):
+            for k in np.arange(0,len(c[0,:,0]),1):
                 maxi = argrelextrema(c[i,k],np.greater,mode='wrap')[0]
                 mini = np.where(c[i,k]==1)[0]
                 if c[i,k,lonlen-1]!=0 and c[i,k,0]!=0:
@@ -403,9 +422,10 @@ class BlockingCalculation():
             midtemp = np.median(temp)
             middle = np.append(middle,midtemp)
 
-        overlap = self.gibl_overlap
 
-        #####Track blocks. Makes sure that blocks overlap with at least 10 longitude points on consecutive 
+        #####Track blocks. Makes sure that blocks overlap with at least 10 longitude points on consecutive
+        overlap = self.gibl_overlap
+        btime = self.block_time
         fin = [[]]
         finloc = [[]]
         ddcopy=dd*1.0
@@ -418,7 +438,7 @@ class BlockingCalculation():
             dyy = np.where(dy==i)[0]
             rem = []
             for dk in ddil:
-                if len(ddil) < 5:
+                if len(ddil) < btime:
                     continue
                 ddil = np.append(ddil[0]-1,ddil)
                 diff = np.diff(ddil)
