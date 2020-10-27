@@ -15,9 +15,9 @@ def main():
     from ush.master_metplus import get_config_inputs_from_command_line
     from metplus.wrappers import PCPCombineWrapper
     from metplus.wrappers import RegridDataPlaneWrapper
-    #import plot_blocking as pb
-    #from CBL_plot import create_cbl_plot
-    all_steps = ["REGRID","DAILYAVE","RUNMEAN","ANOMALY","CBL","PLOTCBL","IBL","IBLS","GIBL","CALCBLOCKS","PLOTBLOCKS"]
+    import plot_blocking as pb
+    from CBL_plot import create_cbl_plot
+    all_steps = ["REGRID","DAILYAVE","RUNMEAN","ANOMALY","CBL","PLOTCBL","IBL","PLOTIBL","GIBL","CALCBLOCKS","PLOTBLOCKS"]
 
     config_list = get_config_inputs_from_command_line()
 
@@ -90,7 +90,7 @@ def main():
         daynum = np.arange(0,len(ibls[0,:,0]),1)
 
     # Plot IBLS
-    if( "IBLS" in steps_list):
+    if( "PLOTIBL" in steps_list):
         ibl_plot_title = config.getstr('Blocking','IBL_PLOT_TITLE')
         ibl_plot_outname = config.getstr('Blocking','IBL_PLOT_OUTPUT_NAME')
         pb.plot_ibls(ibls,lons,ibl_plot_title,ibl_plot_outname)
