@@ -43,6 +43,7 @@ Usage: build_docker_images.sh
         -pull version
         [-data list]
         [-union]
+        [-all]
         [-push repo]
         [-help]
 
@@ -50,6 +51,7 @@ Usage: build_docker_images.sh
           "-pull version" defines the version of the datasets to be pulled (required).
           "-data list" overrides the use of all datasets for this version with a comma-separated list (optional).
           "-union" also creates one data volume with all datasets for this version (optional).
+          "-all" create data volumes from all available datasets for this version (optional).
           "-push repo" pushes the images to the specified DockerHub repository (optional).
           "-help" prints the usage statement.
 
@@ -79,6 +81,7 @@ function run_command {
 # Defaults for command line options
 DO_UNION=0
 DO_PUSH=0
+DO_ALL=0
 
 # Parse command line options
 while true; do
@@ -100,6 +103,11 @@ while true; do
     union | -union | --union )
       DO_UNION=1
       echo "Will create a data volume containing all input datasets."
+      shift;;
+
+    all | -all | --all )
+      DO_ALL=1
+      echo "Will create a data volume for each available input dataset."
       shift;;
 
     push | -push | --push )
@@ -176,7 +184,7 @@ for TARFILE in $TARFILE_LIST; do
   # Parse the current dataset name
   CUR_DATA=`echo $TARFILE | cut -d'-' -f2 | sed 's/.tgz//g'`
 
-  if [ -z ${PULL_DATA+x} ] || [ `echo ${PULL_DATA} | grep ${CUR_DATA}` ]; then
+  if [ -z ${PULL_DATA+x} ] || [ `echo ${PULL_DATA} | grep ${CUR_DATA}` ] || [ ${DO_ALL} == 1 ]; then
     echo "Processing \"${TARFILE}\" ..." 
   else
     echo "Skipping \"${TARFILE}\" since \"${CUR_DATA}\" was not requested in \"-data\"." 
