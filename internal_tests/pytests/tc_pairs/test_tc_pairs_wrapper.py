@@ -224,11 +224,11 @@ def test_filter_by_region_nhc_data(metplus_config):
     # Verify that the init list is OK
     rtcp = tc_pairs_wrapper(metplus_config)
     # Skip if by top level dir
-    by_top_level = rtcp.c_dict['TOP_LEVEL_DIRS'].lower()
-    if by_top_level == 'yes':
+    by_top_level = rtcp.c_dict['READ_ALL_FILES']
+    if by_top_level:
         pytest.skip("This test is for data that is to be filtered")
     # Skip if not ATCF
-    if rtcp.c_dict['TRACK_TYPE'] == 'extra_tropical_cyclone':
+    if rtcp.c_dict['TC_PAIRS_REFORMAT_DECK'] and rtcp.c_dict['TC_PAIRS_REFORMAT_TYPE'] == 'SBU':
         pytest.skip("This test is for ATCF data.")
     adeck_dir = rtcp.c_dict['ADECK_TRACK_DATA_DIR'] = '/d1/METplus_TC/NHC_from_Mallory/atcf-navy/aid'
     bdeck_dir = rtcp.c_dict['BDECK_TRACK_DATA_DIR'] = '/d1/METplus_TC/NHC_from_Mallory/atcf-navy/btk'
@@ -261,11 +261,11 @@ def test_filter_by_region_data(metplus_config):
 
     rtcp = tc_pairs_wrapper(metplus_config)
     # Skip if by top level dir
-    by_top_level = rtcp.c_dict['TOP_LEVEL_DIRS'].lower()
-    if by_top_level == 'yes':
+    by_top_level = rtcp.c_dict['READ_ALL_FILES']
+    if by_top_level:
         pytest.skip("This test is for data that is to be filtered")
     # Skip if not ATCF
-    if rtcp.c_dict['TRACK_TYPE'] == 'extra_tropical_cyclone':
+    if rtcp.c_dict['TC_PAIRS_REFORMAT_DECK'] and rtcp.c_dict['TC_PAIRS_REFORMAT_TYPE'] == 'SBU':
         pytest.skip("This test is for ATCF data.")
 
     bdeck_dir = rtcp.c_dict['BDECK_TRACK_DATA_DIR'] = '/d1/METplus_TC/bdeck'
