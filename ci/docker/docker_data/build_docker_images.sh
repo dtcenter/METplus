@@ -83,6 +83,9 @@ DO_UNION=0
 DO_PUSH=0
 DO_ALL=0
 
+# Default for checking if using tagged version
+TAGGED_VERSION=0
+
 # Parse command line options
 while true; do
   case "$1" in
@@ -113,6 +116,10 @@ while true; do
     push | -push | --push )
       DO_PUSH=1
       PUSH_REPO=$2
+      if [ -z ${PUSH_REPO} ]; then
+        echo "ERROR: Must provide push repository after -push"
+        usage
+      fi
       echo "Will push images to DockerHub ${PUSH_REPO}."
       shift 2;;
 
@@ -140,18 +147,26 @@ if [ -z ${VERSION+x} ]; then
   usage
 fi
 
+# use VERSION in the Docker image tag unless using a tagged version
+DOCKER_VERSION=${VERSION}
+
+# check if using a tagged version (e.g v4.0)
+# remove v from version if tagged version
+if [[ ${VERSION} =~ ^v[0-9.]+$ ]]; then
+    TAGGED_VERSION=1
+    DOCKER_VERSION=${VERSION:1}
+fi
+
+
 # Define the target repository if necessary 
 if [ -z ${PUSH_REPO+x} ]; then
 
   # Push tagged versions (e.g. v4.0) to metplus-data
   # and all others to metplus-data-dev
-  # remove v from version if tagged version
-  if [[ ${VERSION} =~ ^v[0-9.]+$ ]]; then
+  if [ ${TAGGED_VERSION} == 1 ]; then
     PUSH_REPO="dtcenter/metplus-data"
-    DOCKER_VERSION=${VERSION:1}
   else
     PUSH_REPO="dtcenter/metplus-data-dev"
-    DOCKER_VERSION=${VERSION}
   fi
 fi 
 
