@@ -15,10 +15,10 @@ def run(output_dir, replacement_dir=None):
          {output_dir}/logs or {output_dir}/<subdir>/logs where <subdir> is
          any subdirectory under the output directory
          @param output_dir directory to search for logs
-         @param replacement_dir directory replace for output_dir to find files.
-          This is needed when running through Travis because the directory
-          in Travis differs from the directory listed in the log files because
-          the are run in the Docker container.
+         @param replacement_dir directory to replace for output_dir to find
+          files. This is needed when running through Travis because the
+          directory in Travis differs from the directory listed in the log
+          files because the are run in the Docker container.
     """
     # pytest logs directory is in top level of output_dir
     log_topdir_glob = os.path.join(output_dir,
@@ -48,7 +48,7 @@ def run(output_dir, replacement_dir=None):
     for log_file in logs_with_errors:
         try:
             if replacement_dir:
-                local_log_file = log_file.replace(output_dir, replacement_dir)
+                local_log_file = log_file.replace(replacement_dir, output_dir)
 
             with open(local_log_file, 'r') as file_handle:
                 lines = file_handle.readlines()
