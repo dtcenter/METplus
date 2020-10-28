@@ -88,7 +88,8 @@ def main(categories, subset_list):
                 isOK = False
                 output_dir = os.path.join(os.environ['OWNER_BUILD_DIR'],
                                           'output')
-                print_log_errors.run(output_dir)
+                print_log_errors.run(output_dir,
+                                     os.environ['DOCKER_DATA_DIR'])
 
     # if any tests failed, exit 1, otherwise exit 0
     if not isOK:
