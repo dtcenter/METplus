@@ -1032,9 +1032,16 @@ class CommandBuilder:
         ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name,
                                               copyable_env=self.get_env_copy())
         if ret != 0:
-            self.log_error(f"MET command returned a non-zero return code: {cmd}")
-            self.logger.info("Check the logfile for more information on why it failed: "
-                             f"{self.config.getstr('config', 'LOG_METPLUS')}")
+            logfile_path = self.config.getstr('config', 'LOG_METPLUS')
+            # if MET output is written to its own logfile, get that filename
+            if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
+                logfile_path = logfile_path.replace('master_metplus',
+                                                    self.app_name)
+
+            self.log_error("MET command returned a non-zero return code:"
+                           f"{cmd}")
+            self.logger.info("Check the logfile for more information on why "
+                             f"it failed: {logfile_path}")
             return False
 
         return True
