@@ -145,10 +145,13 @@ if [ -z ${PUSH_REPO+x} ]; then
 
   # Push tagged versions (e.g. v4.0) to metplus-data
   # and all others to metplus-data-dev
+  # remove v from version if tagged version
   if [[ ${VERSION} =~ ^v[0-9.]+$ ]]; then
     PUSH_REPO="dtcenter/metplus-data"
+    DOCKER_VERSION=${VERSION:1}
   else
     PUSH_REPO="dtcenter/metplus-data-dev"
+    DOCKER_VERSION=${VERSION}
   fi
 fi 
 
@@ -192,7 +195,7 @@ for TARFILE in $TARFILE_LIST; do
   fi
 
   # Define the docker image name
-  IMGNAME="${PUSH_REPO}:${VERSION}-${CUR_DATA}"
+  IMGNAME="${PUSH_REPO}:${DOCKER_VERSION}-${CUR_DATA}"
 
   # Determine the mount point
   MOUNTPT_URL="${PULL_URL}/${VERSION}/${MOUNTPT_FILE}"
@@ -234,7 +237,7 @@ done
 
 if [ ${DO_UNION} == 1 ]; then
 
-  IMGNAME="${PUSH_REPO}:${VERSION}"
+  IMGNAME="${PUSH_REPO}:${DOCKER_VERSION}"
   MOUNTPT="${MOUNTPT_BASE}"
 
   run_command docker build -t ${IMGNAME} ${SCRIPT_DIR} \
