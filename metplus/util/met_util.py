@@ -476,6 +476,10 @@ def check_for_deprecated_config(config):
         'CUSTOM_INGEST_<n>_OUTPUT_GRID': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_OUTPUT_GRID'},
         'CUSTOM_INGEST_<n>_SCRIPT': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_SCRIPT'},
         'CUSTOM_INGEST_<n>_TYPE': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_TYPE'},
+        'TC_STAT_RUN_VIA': {'sec': 'config', 'alt': 'TC_STAT_CONFIG_FILE',
+                            'copy': False},
+        'TC_STAT_CMD_LINE_JOB': {'sec': 'config', 'alt': 'TC_STAT_JOB_ARGS'},
+        'TC_STAT_JOBS_LIST': {'sec': 'config', 'alt': 'TC_STAT_JOB_ARGS'},
     }
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},

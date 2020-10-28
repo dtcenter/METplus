@@ -600,14 +600,6 @@ class SeriesByLeadWrapper(CommandBuilder):
                  None:          If no max value is found.
         """
 
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-
-        # Useful for logging
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
         # Determine the series_F<fhr> subdirectory where this netCDF file
         # resides.
         if do_fhr_by_range:
@@ -707,12 +699,6 @@ class SeriesByLeadWrapper(CommandBuilder):
         """
         max_temporary_files = []
         min_temporary_files = []
-
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
 
         # Initialize the threshold values for min and max.
         vmin = 999999.
@@ -1012,11 +998,8 @@ class SeriesByLeadWrapper(CommandBuilder):
         # Convert cur_fhr to a string that has zero padding/filling
         cur_fhr_str = (str(cur_fhr)).zfill(3)
 
-        # pylint:disable=unused-variable
-        # os.walk returns tuple, not all returned variables are used.
-
         # Walk the tree
-        for root, directories, files in os.walk(filedir):
+        for root, _, files in os.walk(filedir):
             for filename in files:
                 # add it to the list only if it is a match
                 # to the specified format
@@ -1056,12 +1039,6 @@ class SeriesByLeadWrapper(CommandBuilder):
              Returns: None
 
         """
-
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
 
         # Generate a plot for each variable, statistic, and lead time.
         # First, retrieve all the netCDF files that were generated
@@ -1324,14 +1301,6 @@ class SeriesByLeadWrapper(CommandBuilder):
         """
         # pylint: disable=too-many-arguments
         # Seven input arguments are needed to perform filtering.
-
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-
-        # Useful for logging
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
 
         # Create temporary directory where intermediate files are saved.
         self.logger.debug("creating tmp dir for filter files: " + staging_dir)

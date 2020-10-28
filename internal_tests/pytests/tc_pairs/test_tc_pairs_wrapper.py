@@ -49,7 +49,6 @@ def tc_pairs_wrapper(metplus_config):
 def test_no_empty_mod_dir(metplus_config):
     """ Verify that we are creating the modified extra tropical cyclone
         files. """
-    pytest.skip('Tests need to be written to match refactor')
 
     rtcp = tc_pairs_wrapper(metplus_config)
     # This test is for extra tropical cyclone data (non-ATCF data)
@@ -63,7 +62,6 @@ def test_no_empty_mod_dir(metplus_config):
 
 def test_no_empty_tcp_dir(metplus_config):
     """ Verify that we are creating tc pair output"""
-    pytest.skip('Tests need to be written to match refactor')
 
     rtcp = tc_pairs_wrapper(metplus_config)
     rtcp.run_all_times()
@@ -76,7 +74,6 @@ def test_one_less_column(metplus_config):
         Verify that the output: in the track_data_atcf directory
         has one fewer column than the input track data.
     """
-    pytest.skip('Tests need to be written to match refactor')
 
     rtcp = tc_pairs_wrapper(metplus_config)
     track_data_dir = rtcp.config.getdir('TC_PAIRS_ADECK_INPUT_DIR')
@@ -128,7 +125,6 @@ def test_col2_format_ok(metplus_config):
        Get the first row of the first file in the same subdirectory of the
        modified and input directory (i.e. same month)
     """
-    pytest.skip('Tests need to be written to match refactor')
 
     rtcp = tc_pairs_wrapper(metplus_config)
     if not rtcp.config.getbool('config', 'TC_PAIRS_REFORMAT_DECK'):
@@ -180,7 +176,6 @@ def test_num_files_in_subdir_mod_for_201412(metplus_config):
     """ Verify that for 201412 GFS data in /d1/SBU/GFS,
         the track_data_atcf directory (containing the reformatted extra-tropical cyclone
         data now in ATCF_by_pairs format) contains 450 files"""
-    pytest.skip('Tests need to be written to match refactor')
 
     rtcp = tc_pairs_wrapper(metplus_config)
     if not rtcp.config.getbool('config', 'TC_PAIRS_REFORMAT_DECK'):
@@ -192,14 +187,13 @@ def test_num_files_in_subdir_mod_for_201412(metplus_config):
             rtcp.config.getdir('TC_PAIRS_REFORMAT_DIR'),
             request_subdir)
     subdir_mod_file_list = os.listdir(atcf_dir)
-    assert len(subdir_mod_file_list) == 450
+    assert len(subdir_mod_file_list) == 4
 
 def test_top_level_dir(metplus_config):
     # Verify that invoking tc_pairs with top-level directories for A-deck and B-deck
     # track files yields the expected results (for test data from Mallory, located on
     # 'eyewall' under /d1/METplus_TC/adeck and /d1/METplus_TC/bdeck directories), an expected number of
     # rows are in the .tcst file created.
-    pytest.skip('Tests need to be written to match refactor')
 
     rtcp = tc_pairs_wrapper(metplus_config)
     if rtcp.config.getbool('config', 'TC_PAIRS_REFORMAT_DECK'):
@@ -226,7 +220,7 @@ def test_top_level_dir(metplus_config):
     assert num_lines == expected_number_results
 
 def test_filter_by_region_nhc_data(metplus_config):
-    pytest.skip("This test needs to be rewritten to check new filtering method")
+#    pytest.skip("This test needs to be rewritten to check new filtering method")
     # Verify that the init list is OK
     rtcp = tc_pairs_wrapper(metplus_config)
     # Skip if by top level dir
@@ -261,7 +255,7 @@ def test_filter_by_region_nhc_data(metplus_config):
 
 
 def test_filter_by_region_data(metplus_config):
-    pytest.skip("This test needs to be rewritten to check new filtering method")
+#    pytest.skip("This test needs to be rewritten to check new filtering method")
     # Verify that filtering bdeck data from Mallory is correct. The bdeck data has cyclone, region/basin, and
     # date in the filename.
 

@@ -45,10 +45,9 @@ def tc_stat_wrapper(metplus_config):
 
 @pytest.mark.parametrize(
     'key, value', [
-        ('APP_NAME', 'tc_stat'),
-        ('INIT_BEG', '20170705'),
-        ('INIT_END', '20170901'),
-        ('INIT_HOUR', ['00'])
+        ('INIT_BEG', 'init_beg = "20170705";'),
+        ('INIT_END', 'init_end = "20170901";'),
+        ('INIT_HOUR', 'init_hour = ["00"];')
     ]
 )
 def test_c_dict(metplus_config, key, value):
@@ -72,23 +71,23 @@ def test_config_lists(metplus_config):
     column_thresh_val = "1,2"
     tcsw.c_dict['COLUMN_THRESH_NAME'] = column_thresh_name
     tcsw.c_dict['COLUMN_THRESH_VAL'] = column_thresh_val
-    assert tcsw.config_lists_ok() is False
+    tcsw.validate_config_values(tcsw.c_dict)
+    assert tcsw.isOK is False
 
 
-def test_filter_by_al_basin(metplus_config):
+def test_filter_by_ml_basin(metplus_config):
     """! Test that for a given time window of SBU GFS data, the expected number
-         of results is returned when additional filtering by basin=["AL"].
+         of results is returned when additional filtering by basin=["ML"].
     """
-    pytest.skip('Not working - wrapper needs refactor')
     tcsw = tc_stat_wrapper(metplus_config)
-    tcsw.c_dict['INIT_BEG'] = "20170705"
-    tcsw.c_dict['INIT_END'] = "20170901"
-    tcsw.c_dict['BASIN'] = ["AL"]
-    # expect only 13 lines of output (including the header) for SBU data
-    expected_num_lines = 13
+    tcsw.c_dict['INIT_BEG'] = 'init_beg = "20150301";'
+    tcsw.c_dict['INIT_END'] = 'init_end = "20150304";'
+    tcsw.c_dict['BASIN'] = 'basin = ["ML"];'
+    # expect 352 lines of output (including the header) for SBU data
+    expected_num_lines = 352
     tcsw.run_all_times()
     output_file = \
-        tcsw.c_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
+        tcsw.config.getdir('OUTPUT_BASE') + "/tc_stat/tc_stat_summary.tcst"
     with open(output_file, 'r') as out_file:
         lines = len(out_file.readlines())
         print("Num lines: ", str(lines))
@@ -100,20 +99,19 @@ def test_filter_by_cyclone(metplus_config):
     """! Test that for a given time window of SBU GFS data, the expected number
          of results is returned when additional filtering by cyclone.
     """
-    pytest.skip('Not working - wrapper needs refactor')
     tcsw = tc_stat_wrapper(metplus_config)
-    tcsw.c_dict['INIT_BEG'] = "20170705"
-    tcsw.c_dict['INIT_END'] = "20170901"
-    tcsw.c_dict['CYCLONE'] = ["10"]
+    tcsw.c_dict['INIT_BEG'] = 'init_beg = "20150301";'
+    tcsw.c_dict['INIT_END'] = 'init_end = "20150304";'
+    tcsw.c_dict['CYCLONE'] = 'cyclone = ["030020"];'
 
     # expect only 13 lines of output (including the header) for SBU data
-    expected_num_lines = 13
+    expected_num_lines = 9
     tcsw.run_all_times()
     output_file = \
-        tcsw.c_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
+        tcsw.config.getdir('OUTPUT_BASE') + "/tc_stat/tc_stat_summary.tcst"
     with open(output_file, 'r') as out_file:
         lines = len(out_file.readlines())
-        # print("Num lines: ", str(lines))
+        print("Num lines: ", str(lines))
 
     assert lines == expected_num_lines
 
@@ -122,16 +120,15 @@ def test_filter_by_storm_name(metplus_config):
     """! Test that for a given time window of SBU GFS data, the expected number
          of results is returned when additional filtering by storm_name.
     """
-    pytest.skip('Not working - wrapper needs refactor')
     tcsw = tc_stat_wrapper(metplus_config)
-    tcsw.c_dict['INIT_BEG'] = "20170705"
-    tcsw.c_dict['INIT_END'] = "20170901"
-    tcsw.c_dict['STORM_NAME'] = ["TEN"]
+    tcsw.c_dict['INIT_BEG'] = 'init_beg = "20150301";'
+    tcsw.c_dict['INIT_END'] = 'init_end = "20150325";'
+    tcsw.c_dict['STORM_NAME'] = 'storm_name = ["123"];'
     # expect only 13 lines of output (including the header) for SBU data
-    expected_num_lines = 13
+    expected_num_lines = 15
     tcsw.run_all_times()
     output_file = \
-        tcsw.c_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
+        tcsw.config.getdir('OUTPUT_BASE') + "/tc_stat/tc_stat_summary.tcst"
     with open(output_file, 'r') as out_file:
         lines = len(out_file.readlines())
         print("Num lines: ", str(lines))
@@ -145,16 +142,16 @@ def test_filter_by_storm_id(metplus_config):
          this data and the indicated storm_id, tc_stat does not return any
          data
     """
-    pytest.skip('Not working - wrapper needs refactor')
     tcsw = tc_stat_wrapper(metplus_config)
-    tcsw.c_dict['INIT_BEG'] = "20170105"
-    tcsw.c_dict['INIT_END'] = "20170901"
-    tcsw.c_dict['STORM_ID'] = ["AL102017"]
-    # expect only 13 lines of output (including the header) for SBU data
-    expected_num_lines = 13
+    tcsw.c_dict['INIT_BEG'] = 'init_beg = "20150301";'
+    tcsw.c_dict['INIT_END'] = 'init_end = "20150304";'
+    tcsw.c_dict['INIT_HOUR'] = ''
+    tcsw.c_dict['STORM_ID'] = 'storm_id = ["ML032015"];'
+    # expect 1148 lines of output (including the header) for SBU data
+    expected_num_lines = 1148
     tcsw.run_all_times()
     output_file = \
-        tcsw.c_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
+        tcsw.config.getdir('OUTPUT_BASE') + "/tc_stat/tc_stat_summary.tcst"
     with open(output_file, 'r') as out_file:
         lines = len(out_file.readlines())
         print("Num lines: ", str(lines))
@@ -168,18 +165,18 @@ def test_filter_by_basin_cyclone(metplus_config):
          to get the same results as if filtering by storm_id (which doesn't
          work, perhaps because the storm_id is greater than 2-digits?).
     """
-    pytest.skip('Not working - wrapper needs refactor')
     tcsw = tc_stat_wrapper(metplus_config)
-    tcsw.c_dict['INIT_BEG'] = "20170705"
-    tcsw.c_dict['INIT_END'] = "20170901"
-    tcsw.c_dict['CYCLONE'] = ["10"]
-    tcsw.c_dict['BASIN'] = ["AL"]
+    tcsw.c_dict['INIT_BEG'] = 'init_beg = "20150301";'
+    tcsw.c_dict['INIT_END'] = 'init_end = "20150304";'
+    tcsw.c_dict['INIT_HOUR'] = ''
+    tcsw.c_dict['CYCLONE'] = 'cyclone = ["030020"];'
+    tcsw.c_dict['BASIN'] = 'basin = ["ML"];'
 
     # expect only 13 lines of output (including the header) for SBU data
-    expected_num_lines = 13
+    expected_num_lines = 31
     tcsw.run_all_times()
     output_file = \
-        tcsw.c_dict['OUTPUT_BASE'] + "/tc_stat/tc_stat_summary.tcst"
+        tcsw.config.getdir('OUTPUT_BASE') + "/tc_stat/tc_stat_summary.tcst"
     with open(output_file, 'r') as out_file:
         lines = len(out_file.readlines())
         print("Num lines: ", str(lines))

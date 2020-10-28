@@ -37,15 +37,11 @@ class TCStatWrapper(CommandBuilder):
 
     def __init__(self, config):
         self.app_name = 'tc_stat'
-
-        # Check whether we are running MET tc_stat from the command line
-        # or with the MET config file.
-        run_method = config.getstr('config', 'TC_STAT_RUN_VIA')
-        self.by_config = bool(run_method == 'CONFIG')
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
 
         super().__init__(config)
-        self.tc_exe = self.c_dict['APP_PATH']
-        self.logger.info("Initialized TCStatWrapper")
+        self.logger.debug("Initialized TCStatWrapper")
 
     def create_c_dict(self):
         """!  Read in and store all the values from the config file.  This
@@ -59,186 +55,108 @@ class TCStatWrapper(CommandBuilder):
                     tc_stat_dict - a dictionary of the key-value representation
                                    of options set in the config file.
         """
-        self.logger.info('Creating tc-stat dictionary...')
+        self.logger.debug('Creating tc-stat dictionary...')
 
         c_dict = super().create_c_dict()
 
-        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_TC_STAT_VERBOSITY',
+        c_dict['VERBOSITY'] = self.config.getstr('config',
+                                                 'LOG_TC_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        # Useful for logging
-        # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
-        # [File : function]| Message
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
 
-        # Check for the MET_INSTALL_DIR, if it is missing, then
-        # we cannot invoke the MET tool.
-        if not self.config.getdir('MET_INSTALL_DIR'):
-            self.log_error(
-                cur_filename + '|' + cur_function + ': MET install ' +
-                'directory not found in config file. Exiting.')
-            sys.exit(1)
-        c_dict['APP_PATH'] = os.path.join(
-            self.config.getdir('MET_BIN_DIR', ''), 'tc_stat')
-
-        c_dict['APP_NAME'] = os.path.basename(c_dict['APP_PATH'])
-
-        if self.by_config:
-            c_dict['AMODEL'] = \
-                getlist(self.config.getstr('config', 'TC_STAT_AMODEL'))
-
-            c_dict['BMODEL'] = \
-                getlist(self.config.getstr('config', 'TC_STAT_BMODEL'))
-
-            c_dict['DESC'] = \
-                getlist(self.config.getstr('config', 'TC_STAT_DESC'))
-
-            c_dict['STORM_ID'] = \
-                getlist(self.config.getstr('config', 'TC_STAT_STORM_ID'))
-
-            c_dict['BASIN'] = getlist(
-                self.config.getstr('config', 'TC_STAT_BASIN'))
-
-            c_dict['CYCLONE'] = getlist(
-                self.config.getstr('config', 'TC_STAT_CYCLONE'))
-
-            c_dict['STORM_NAME'] = getlist(
-                self.config.getstr('config', 'TC_STAT_STORM_NAME'))
-
-            c_dict['INIT_BEG'] = self.config.getstr('config',
-                                                          'TC_STAT_INIT_BEG')
-
-            c_dict['INIT_END'] = self.config.getstr('config',
-                                                          'TC_STAT_INIT_END')
-
-            c_dict['INIT_INCLUDE'] = getlist(
-                self.config.getstr('config', 'TC_STAT_INIT_INCLUDE'))
-
-            c_dict['INIT_EXCLUDE'] = getlist(
-                self.config.getstr('config', 'TC_STAT_INIT_EXCLUDE'))
-
-            c_dict['INIT_HOUR'] = getlist(
-                self.config.getstr('config', 'TC_STAT_INIT_HOUR'))
-
-            c_dict['VALID_BEG'] = self.config.getstr('config',
-                                                           'TC_STAT_INIT_BEG')
-
-            c_dict['VALID_END'] = self.config.getstr('config',
-                                                           'TC_STAT_INIT_END')
-
-            c_dict['VALID_INCLUDE'] = getlist(
-                self.config.getstr('config', 'TC_STAT_VALID_INCLUDE'))
-
-            c_dict['VALID_EXCLUDE'] = getlist(
-                self.config.getstr('config', 'TC_STAT_VALID_EXCLUDE'))
-
-            c_dict['LEAD_REQ'] = \
-                getlist(self.config.getstr('config', 'TC_STAT_LEAD_REQ'))
-
-            c_dict['INIT_MASK'] = \
-                getlist(self.config.getstr('config', 'TC_STAT_INIT_MASK'))
-
-            c_dict['VALID_MASK'] = \
-                getlist(self.config.getstr('config', 'TC_STAT_VALID_MASK'))
-
-            c_dict['VALID_HOUR'] = \
-                getlist(self.config.getstr('config', 'TC_STAT_VALID_HOUR'))
-
-            c_dict['LEAD'] = \
-                getlist(self.config.getstr('config', 'TC_STAT_LEAD'))
-
-            c_dict['TRACK_WATCH_WARN'] = \
-                getlist(
-                    self.config.getstr('config', 'TC_STAT_TRACK_WATCH_WARN'))
-
-            c_dict['COLUMN_THRESH_NAME'] = \
-                getlist(
-                    self.config.getstr('config', 'TC_STAT_COLUMN_THRESH_NAME'))
-
-            c_dict['COLUMN_THRESH_VAL'] = getlist(
-                self.config.getstr('config', 'TC_STAT_COLUMN_THRESH_VAL'))
-
-            c_dict['COLUMN_STR_NAME'] = \
-                getlist(
-                    self.config.getstr('config', 'TC_STAT_COLUMN_STR_NAME'))
-
-            c_dict['COLUMN_STR_VAL'] = \
-                getlist(
-                    self.config.getstr('config', 'TC_STAT_COLUMN_STR_VAL'))
-
-            c_dict['INIT_THRESH_NAME'] = getlist(
-                self.config.getstr('config', 'TC_STAT_INIT_THRESH_NAME'))
-
-            c_dict['INIT_THRESH_VAL'] = getlist(
-                self.config.getstr('config', 'TC_STAT_INIT_THRESH_VAL'))
-
-            c_dict['INIT_STR_NAME'] = \
-                getlist(
-                    self.config.getstr('config', 'TC_STAT_INIT_STR_NAME'))
-
-            c_dict['INIT_STR_VAL'] = \
-                getlist(
-                    self.config.getstr('config', 'TC_STAT_INIT_STR_VAL'))
-
-            try:
-                c_dict['WATER_ONLY'] = \
-                    self.config.getbool('config', 'TC_STAT_WATER_ONLY', False)
-            except ValueError:
-                # WATER_ONLY not defined in any configuration files,
-                # set to False and proceed.
-                self.logger.warn(
-                    cur_filename + '|' + cur_function +
-                    ': WATER_ONLY undefined in config file.  Setting to False.')
-                c_dict['WATER_ONLY'] = False
-                pass
-
-            try:
-                c_dict['LANDFALL'] = \
-                    self.config.getbool('config', 'TC_STAT_LANDFALL', False)
-            except ValueError:
-                # Not set by user in MET tc_stat config file or METplus config
-                # file.  Set to False and continue ingesting config file values.
-                self.logger.warn(
-                    cur_filename + '|' + cur_function + ': LANDFALL' +
-                    ' undefined in config file.  Setting to False...')
-                c_dict['LANDFALL'] = False
-                pass
-
-            c_dict['LANDFALL_BEG'] = \
-                self.config.getstr('config', 'TC_STAT_LANDFALL_BEG')
-
-            c_dict['LANDFALL_END'] = \
-                self.config.getstr('config', 'TC_STAT_LANDFALL_END')
-
-            c_dict['JOBS_LIST'] = \
-                self.config.getstr('config', 'TC_STAT_JOBS_LIST')
-        else:
-            # via command line, only one job requested
-            c_dict['CMD_LINE_JOB'] = self.config.getstr(
-                'config', 'TC_STAT_CMD_LINE_JOB')
-
-        c_dict['MATCH_POINTS'] = \
-            self.config.getstr('config', 'TC_STAT_MATCH_POINTS').upper()
-        c_dict['OUTPUT_BASE'] = self.config.getdir('OUTPUT_BASE')
-
-        c_dict['TMP_DIR'] = self.config.getdir('TMP_DIR')
-
-        c_dict['METPLUS_BASE'] = self.config.getdir('METPLUS_BASE')
-
-        c_dict['MET_INSTALL_DIR'] = self.config.getdir('MET_INSTALL_DIR')
-
-        c_dict['INPUT_DIR'] = self.config.getdir('TC_STAT_INPUT_DIR','')
-
+        c_dict['INPUT_DIR'] = self.config.getdir('TC_STAT_INPUT_DIR', '')
         if not c_dict['INPUT_DIR']:
-            self.log_error["TC_STAT_INPUT_DIR can not be empty"]
+            self.log_error("TC_STAT_INPUT_DIR must be set")
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('TC_STAT_OUTPUT_DIR')
+        if not c_dict['OUTPUT_DIR']:
+            self.log_error("TC_STAT_OUTPUT_DIR must be set")
 
-        c_dict['PARM_BASE'] = self.config.getdir('PARM_BASE')
+#        self.set_c_dict_list(c_dict,
+#                             'TC_STAT_JOB_ARGS',
+#                             'jobs')
 
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 'TC_STAT_CONFIG_FILE')
+        c_dict['JOBS'] = self.config.getstr('config',
+                                            'TC_STAT_JOB_ARGS',
+                                            '')
+        if not c_dict.get('JOBS'):
+            self.log_error('No job arguments defined. '
+                           'Please set TC_STAT_JOB_ARGS')
+
+        c_dict['MATCH_POINTS'] = (
+            self.config.getbool('config', 'TC_STAT_MATCH_POINTS')
+        )
+        if c_dict['MATCH_POINTS'] is None:
+            self.log_error('Invalid boolean value set for '
+                           'TC_STAT_MATCH_POINTS')
+
+        c_dict['CONFIG_FILE'] = self.config.getstr('config',
+                                                   'TC_STAT_CONFIG_FILE',
+                                                   '')
+        if c_dict['CONFIG_FILE']:
+            self.logger.debug("MET config file specified: "
+                              f"{c_dict['CONFIG_FILE']}. "
+                              "Reading METplus config variables that set "
+                              "environment variables used in the MET config "
+                              "file")
+            self.set_c_dict_for_environment_variables(c_dict)
 
         return c_dict
+
+    def set_c_dict_for_environment_variables(self, c_dict):
+        app_name_upper = self.app_name.upper()
+
+        for config_list in ['AMODEL',
+                            'BMODEL',
+                            'DESC',
+                            'STORM_ID',
+                            'BASIN',
+                            'CYCLONE',
+                            'STORM_NAME',
+                            'INIT_INCLUDE',
+                            'INIT_EXCLUDE',
+                            'INIT_HOUR',
+                            'VALID_INCLUDE',
+                            'VALID_EXCLUDE',
+                            'LEAD_REQ',
+                            'INIT_MASK',
+                            'VALID_MASK',
+                            'VALID_HOUR',
+                            'LEAD',
+                            'TRACK_WATCH_WARN',
+                            'COLUMN_THRESH_NAME',
+                            'COLUMN_THRESH_VAL',
+                            'COLUMN_STR_NAME',
+                            'COLUMN_STR_VAL',
+                            'INIT_THRESH_NAME',
+                            'INIT_THRESH_VAL',
+                            'INIT_STR_NAME',
+                            'INIT_STR_VAL',
+                             ]:
+            self.set_c_dict_list(c_dict,
+                                 f'{app_name_upper}_{config_list}',
+                                 config_list.lower())
+
+        for config_str in ['INIT_BEG',
+                           'INIT_END',
+                           'VALID_BEG',
+                           'VALID_END',
+                           'LANDFALL_BEG',
+                           'LANDFALL_END',
+                            ]:
+            self.set_c_dict_string(c_dict,
+                                   f'{app_name_upper}_{config_str}',
+                                   config_str.lower())
+
+        for config_bool in ['WATER_ONLY',
+                            'LANDFALL',
+                            ]:
+
+            self.set_c_dict_bool(c_dict,
+                                 f'{app_name_upper}_{config_bool}',
+                                 config_bool.lower())
+
+        # error check config values
+        self.validate_config_values(c_dict)
 
     def run_all_times(self):
         """! Builds the call to the MET tool TC-STAT for all requested
@@ -250,45 +168,32 @@ class TCStatWrapper(CommandBuilder):
                 0 if successfully runs MET tc_stat tool.
                 1 otherwise
         """
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
+        self.logger.info('Starting tc_stat_wrapper...')
 
-        # Useful for logging
-        # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
-        # [File : function]| Message
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
-        self.logger.info(cur_filename  + '|' + cur_filename +
-                         ':   Starting tc_stat_wrapper...')
-        if self.by_config:
-            self.set_envs()
-            if not self.config_lists_ok():
-                self.log_error('There is at least one <>_VAL/<>_NAME pair'
-                                  'requested in the MET tc-stat config '
-                                  'file where the size of the lists '
-                                  'is not equal.  Please '
-                                  'check your MET tc-stat config file.')
-                sys.exit(1)
+        # set environment variables only if using a config file
+#        if self.c_dict['CONFIG_FILE']:
+        self.set_environment_variables()
 
         # Don't forget to create the output directory, as MET tc_stat will
         # not do this.
         mkdir_p(self.c_dict['OUTPUT_DIR'])
 
+        self.build_and_run_command()
+        return
+
         # Since this is different from the other MET tools, we will build
         # the commands rather than use command builder's methods.
         match_points = str(self.c_dict['MATCH_POINTS'])
-        if self.by_config:
+        if self.c_dict['CONFIG_FILE']:
             # Running with config file
 
-            tc_cmd_list = [self.tc_exe,
+            tc_cmd_list = [self.app_path,
                            " -lookin", self.c_dict['INPUT_DIR'],
                            " -config ", self.c_dict['CONFIG_FILE'],
                            self.c_dict['JOBS_LIST']]
         else:
             # Run single job from command line
-            tc_cmd_list = [self.tc_exe,
+            tc_cmd_list = [self.app_path,
                            " -lookin", self.c_dict['INPUT_DIR'],
                            self.c_dict['CMD_LINE_JOB'],
                            "-match_points", match_points]
@@ -310,9 +215,28 @@ class TCStatWrapper(CommandBuilder):
         except ExitStatusException as ese:
             self.log_error(ese)
 
-        return 0
+    def get_command(self):
+        """! Builds the command to run the MET application
+           @rtype string
+           @return Returns a MET command with arguments that you can run
+        """
 
-    def set_envs(self):
+        cmd = f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
+
+        cmd += f" -lookin {self.c_dict['INPUT_DIR']}"
+
+        if self.c_dict.get('CONFIG_FILE'):
+            cmd += f" -config {self.c_dict.get('CONFIG_FILE')}"
+        else:
+            # if not using a config file, set job args on command line
+            cmd += f" {self.c_dict.get('JOBS')}"
+
+        match_points = str(self.c_dict['MATCH_POINTS']).lower()
+        cmd += f" -match_points {match_points}"
+
+        return cmd
+
+    def set_environment_variables(self, time_info=None):
         """! Set the env variables based on settings in the METplus config
              files.  This is only necessary when running MET tc_stat via
              the config file.
@@ -324,19 +248,54 @@ class TCStatWrapper(CommandBuilder):
 
 
         """
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-
-        # Useful for logging
-        # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
-        # [File : function]| Message
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
 
         self.logger.info('Setting env variables from config file...')
         # Set all the environment variables that are needed by the
         # MET config file.
+
+        for env_var in ['AMODEL',
+                        'BMODEL',
+                        'DESC',
+                        'STORM_ID',
+                        'BASIN',
+                        'CYCLONE',
+                        'STORM_NAME',
+                        'INIT_BEG',
+                        'INIT_END',
+                        'INIT_INCLUDE',
+                        'INIT_EXCLUDE',
+                        'INIT_HOUR',
+                        'VALID_BEG',
+                        'VALID_END',
+                        'VALID_INCLUDE',
+                        'VALID_EXCLUDE',
+                        'VALID_HOUR',
+                        'LEAD_REQ',
+                        'LEAD',
+                        'INIT_MASK',
+                        'VALID_MASK',
+                        'TRACK_WATCH_WARN',
+                        'COLUMN_THRESH_NAME',
+                        'COLUMN_THRESH_VAL',
+                        'COLUMN_STR_NAME',
+                        'COLUMN_STR_VAL',
+                        'INIT_THRESH_NAME',
+                        'INIT_THRESH_VAL',
+                        'INIT_STR_NAME',
+                        'INIT_STR_VAL',
+                        'LANDFALL_BEG',
+                        'LANDFALL_END',
+                        'WATER_ONLY',
+                        'LANDFALL',
+                        ]:
+            self.add_env_var(env_var,
+                             self.c_dict.get(env_var, ''))
+
+        job_args_str = f"jobs = [\"{self.c_dict.get('JOBS')}\"];"
+        self.add_env_var('JOBS', job_args_str)
+
+        super().set_environment_variables(time_info)
+        return
 
         tmp_amodel = self.c_dict['AMODEL']
         if tmp_amodel:
@@ -378,15 +337,15 @@ class TCStatWrapper(CommandBuilder):
         else:
             self.add_env_var('STORM_ID', "[]")
 
-        tmp_basin = self.c_dict['BASIN']
-        if tmp_basin:
-            # Replace any single quotes with double quotes and remove any
-            # whitespace
-            tmp_basin_str = str(tmp_basin).replace("\'", "\"")
-            tmp_basin = ''.join(tmp_basin_str.split())
-            self.add_env_var('BASIN', tmp_basin)
-        else:
-            self.add_env_var('BASIN', "[]")
+#        tmp_basin = self.c_dict['BASIN']
+#        if tmp_basin:
+#            # Replace any single quotes with double quotes and remove any
+#            # whitespace
+#            tmp_basin_str = str(tmp_basin).replace("\'", "\"")
+#            tmp_basin = ''.join(tmp_basin_str.split())
+#            self.add_env_var('BASIN', tmp_basin)
+#        else:
+#            self.add_env_var('BASIN', "[]")
 
         tmp_cyclone = self.c_dict['CYCLONE']
         if tmp_cyclone:
@@ -664,34 +623,12 @@ class TCStatWrapper(CommandBuilder):
             # Set to default
             self.add_env_var('LANDFALL_END', '00')
 
-        # boolean value for MATCH_POINTS
-        if self.c_dict['MATCH_POINTS'] == 'true':
-            flag = "TRUE"
-        else:
-            flag = "FALSE"
-        self.add_env_var('MATCH_POINTS', flag)
-
-        if self.c_dict['CONFIG_FILE']:
-            self.add_env_var('CONFIG_FILE',
-                             self.c_dict['CONFIG_FILE'])
-        else:
-            self.log_error(
-                cur_filename + '|' + cur_function +
-                ': no MET TC-Stat config file found. Exiting')
-            sys.exit(1)
-
-        jobs_list_tmp = self.c_dict['JOBS_LIST']
-        if jobs_list_tmp:
-            # MET is expecting a string
-            jobs_list_str = '"' + jobs_list_tmp + '"'
+        # MET is expecting a string
+        if self.c_dict.get('JOBS_LIST'):
+            jobs_list_str = '"' + self.c_dict.get('JOBS_LIST') + '"'
             self.add_env_var('JOBS', jobs_list_str)
-        else:
-            self.log_error('No jobs list defined. Please check your METplus'
-                              'config file.  Exiting...')
-            sys.exit(1)
-        return 0
 
-    def config_lists_ok(self):
+    def validate_config_values(self, c_dict):
         """! Verify that the length of the name and val lists
              in the MET tc-stat config file are of equal length, if
              not, log an error message and exit.  As soon as a length mismatch
@@ -704,61 +641,41 @@ class TCStatWrapper(CommandBuilder):
                        have the same length
                  False: if any name/val list length mismatch is encountered
         """
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
 
-        # Useful for logging
-        # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
-        # [File : function]| Message
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-        self.logger.info('Checking if name-val lists in config file have'
-                         'the same length...')
-        is_ok = True
-
+        self.logger.debug('Checking if name-val lists in config file have'
+                          'the same length...')
+        self.logger.debug(c_dict.keys())
         # Check COLUMN_THRESH_NAME and COLUMN_THRESH_VAL
-        if len(self.c_dict['COLUMN_THRESH_NAME']) != \
-                len(self.c_dict['COLUMN_THRESH_VAL']):
+        if len(c_dict.get('COLUMN_THRESH_NAME', '')) != \
+                len(c_dict.get('COLUMN_THRESH_VAL', '')):
             self.log_error(
-                cur_filename + '|' + cur_function +
-                ': COLUMN_THRESH_NAME does not have the same ' +
+                'COLUMN_THRESH_NAME does not have the same ' +
                 'number of items as COLUMN_THRESH_VAL. Please' +
                 ' check your MET tc_stat config file')
-            return False
 
         # Check COLUMN_STR_NAME and COLUMN_STR_VAL
-        if len(self.c_dict['COLUMN_STR_NAME']) != \
-                len(self.c_dict['COLUMN_STR_VAL']):
+        if len(c_dict.get('COLUMN_STR_NAME', '')) != \
+                len(c_dict.get('COLUMN_STR_VAL', '')):
             self.log_error(
-                cur_filename + '|' + cur_function +
-                ': COLUMN_STR_NAME does not have the same ' +
+                'COLUMN_STR_NAME does not have the same ' +
                 'number of items as COLUMN_STR_VAL. Please' +
                 ' check your MET tc_stat config file')
-            return False
 
         # Check INIT_THRESH_NAME and INIT_THRESH_VAL
-        if len(self.c_dict['INIT_THRESH_NAME']) != \
-                len(self.c_dict['INIT_THRESH_VAL']):
+        if len(c_dict.get('INIT_THRESH_NAME', '')) != \
+                len(c_dict.get('INIT_THRESH_VAL', '')):
             self.log_error(
-                cur_filename + '|' + cur_function +
-                ': INIT_THRESH_NAME does not have the same ' +
+                'INIT_THRESH_NAME does not have the same ' +
                 'number of items as INIT_THRESH_VAL. Please' +
                 ' check your MET tc_stat config file')
-            return False
 
         # Check INIT_STR_NAME and INIT_STR_VAL
-        if len(self.c_dict['INIT_STR_NAME']) != \
-                len(self.c_dict['INIT_STR_VAL']):
+        if len(c_dict.get('INIT_STR_NAME', '')) != \
+                len(c_dict.get('INIT_STR_VAL', '')):
             self.log_error(
-                cur_filename + '|' + cur_function +
-                ': INIT_STR_NAME does not have the same ' +
+                'INIT_STR_NAME does not have the same ' +
                 'number of items as INIT_STR_VAL. Please' +
                 ' check your MET tc_stat config file')
-            return False
-
-        # If we got here, all corresponding lists have the same length
-        return is_ok
 
     def build_tc_stat(self, tc_stat_output_dir, cur_init, tc_input_list,
                       filter_opts):
@@ -785,15 +702,6 @@ class TCStatWrapper(CommandBuilder):
 
                 Raises CalledProcessError
         """
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-
-        # Useful for logging
-        # Logging output: TIME UTC |TYPE (DEBUG, INFO, WARNING, etc.) |
-        # [File : function]| Message
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
 
         mkdir_p(tc_stat_output_dir)
 
@@ -804,7 +712,7 @@ class TCStatWrapper(CommandBuilder):
         mkdir_p(filter_path)
 
         # This is for extract_tiles to call without a config file
-        tc_cmd_list = [self.tc_exe, " -job filter ",
+        tc_cmd_list = [self.app_path, " -job filter ",
                        " -lookin ", tc_input_list,
                        " -match_points true ",
                        " -init_inc ", cur_init,

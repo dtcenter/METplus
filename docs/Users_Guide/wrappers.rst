@@ -1709,7 +1709,7 @@ METplus Configuration
 
 | :term:`TC_RMW_DECK_TEMPLATE`
 | :term:`TC_RMW_INPUT_TEMPLATE`
-| :term:`TC_PAIRS_OUTPUT_TEMPLATE`
+| :term:`TC_RMW_OUTPUT_TEMPLATE`
 
 [config]
 
@@ -2011,10 +2011,8 @@ Configuration
 
 [config]
 
-| :term:`TC_STAT_RUN_VIA`
 | :term:`TC_STAT_CONFIG_FILE`
-| :term:`TC_STAT_CMD_LINE_JOB`
-| :term:`TC_STAT_JOBS_LIST`
+| :term:`TC_STAT_JOB_ARGS`
 | :term:`TC_STAT_AMODEL`
 | :term:`TC_STAT_BMODEL`
 | :term:`TC_STAT_DESC`
@@ -2050,3 +2048,9 @@ Configuration
 | :term:`TC_STAT_LANDFALL_BEG`
 | :term:`TC_STAT_LANDFALL_END`
 | :term:`TC_STAT_MATCH_POINTS`
+
+.. warning:: **DEPRECATED:**
+
+   | :term:`TC_STAT_RUN_VIA`
+   | :term:`TC_STAT_CMD_LINE_JOB`
+   | :term:`TC_STAT_JOBS_LIST`

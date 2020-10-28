@@ -1115,7 +1115,9 @@ class CommandBuilder:
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
         """
-        conf_value = util.getlist(self.config.getstr('config', mp_config_name, ''))
+        conf_value = util.getlist(self.config.getstr('config',
+                                                     mp_config_name,
+                                                     ''))
         if conf_value:
             conf_value = str(conf_value).replace("'", '"')
 
@@ -1199,3 +1201,36 @@ class CommandBuilder:
                 c_key = c_dict_key
 
             c_dict[c_key] = f"{met_config_name} = {str(conf_value)};"
+
+    def set_c_dict_bool(self, c_dict, mp_config_name, met_config_name,
+                        c_dict_key=None, uppercase=True):
+        """! Get boolean from METplus configuration file and format it to be
+             passed into a MET configuration file. Set c_dict item with boolean
+             value expressed as a string.
+             Args:
+                 @param c_dict configuration dictionary to set
+                 @param mp_config_name METplus configuration variable name.
+                  Assumed to be in the [config] section.
+                 @param met_config_name name of MET configuration variable to
+                  set. Also used to determine the key in c_dict to set
+                  (upper-case)
+                 @param c_dict_key optional argument to specify c_dict key to
+                  store result. If set to None (default) then use upper-case of
+                  met_config_name
+                 @param uppercase If true, set value to TRUE or FALSE
+        """
+        conf_value = self.config.getbool('config', mp_config_name)
+        if conf_value is None:
+            self.log_error(f'Invalid boolean value set for {mp_config_name}')
+            return
+
+        if uppercase:
+            conf_value = str(conf_value).upper()
+
+        if not c_dict_key:
+            c_key = met_config_name.upper()
+        else:
+            c_key = c_dict_key
+
+        c_dict[c_key] = (f'{met_config_name} = '
+                         f'{util.remove_quotes(conf_value)};')
