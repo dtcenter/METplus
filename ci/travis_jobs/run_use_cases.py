@@ -9,6 +9,7 @@ from os.path import dirname
 
 import get_data_volumes
 import download_gempaktocf
+import get_log_errors
 
 # add internal_tests/use_cases directory to path so the test suite can be found
 sys.path.insert(0, os.path.abspath(os.path.join(dirname(__file__),
@@ -81,10 +82,13 @@ def main(categories, subset_list):
                    f'{use_case_args}" "{volumes_from}"')
             print(cmd)
             try:
-                ret = subprocess.run(shlex.split(cmd), check=True)
+                subprocess.run(shlex.split(cmd), check=True)
             except subprocess.CalledProcessError as err:
-                print(f"ERROR: Command failed: {cmd}")
+                print(f"ERROR: Command failed: {cmd} -- {err}")
                 isOK = False
+                output_dir = os.path.join(os.environ['OWNER_BUILD_DIR'],
+                                          'output')
+                get_log_errors.run(output_dir)
 
     # if any tests failed, exit 1, otherwise exit 0
     if not isOK:
