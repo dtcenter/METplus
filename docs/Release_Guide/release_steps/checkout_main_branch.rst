@@ -6,6 +6,6 @@ the |projectRepo|-3.1.1 bugfix release, checkout main_v3.1.
 
 Example:
 
-+----------------------+
-|git checkout main_v3.1|
-+----------------------+
+.. parsed-literal::
+
+    git checkout main_v3.1

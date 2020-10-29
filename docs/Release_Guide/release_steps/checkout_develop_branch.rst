@@ -3,6 +3,6 @@ Checkout the Develop Branch
 
 Checkout the develop branch
 
-+--------------------+
-|git checkout develop|
-+--------------------+
+.. parsed-literal::
+
+    git checkout develop
