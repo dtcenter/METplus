@@ -228,7 +228,7 @@ def test_filter_by_region_nhc_data(metplus_config):
     if by_top_level:
         pytest.skip("This test is for data that is to be filtered")
     # Skip if not ATCF
-    if rtcp.c_dict['TC_PAIRS_REFORMAT_DECK'] and rtcp.c_dict['TC_PAIRS_REFORMAT_TYPE'] == 'SBU':
+    if rtcp.c_dict['REFORMAT_DECK'] and rtcp.c_dict['REFORMAT_DECK_TYPE'] == 'SBU':
         pytest.skip("This test is for ATCF data.")
     adeck_dir = rtcp.c_dict['ADECK_TRACK_DATA_DIR'] = '/d1/METplus_TC/NHC_from_Mallory/atcf-navy/aid'
     bdeck_dir = rtcp.c_dict['BDECK_TRACK_DATA_DIR'] = '/d1/METplus_TC/NHC_from_Mallory/atcf-navy/btk'
@@ -265,7 +265,7 @@ def test_filter_by_region_data(metplus_config):
     if by_top_level:
         pytest.skip("This test is for data that is to be filtered")
     # Skip if not ATCF
-    if rtcp.c_dict['TC_PAIRS_REFORMAT_DECK'] and rtcp.c_dict['TC_PAIRS_REFORMAT_TYPE'] == 'SBU':
+    if rtcp.c_dict['REFORMAT_DECK'] and rtcp.c_dict['REFORMAT_DECK_TYPE'] == 'SBU':
         pytest.skip("This test is for ATCF data.")
 
     bdeck_dir = rtcp.c_dict['BDECK_TRACK_DATA_DIR'] = '/d1/METplus_TC/bdeck'
