@@ -1,3 +1,5 @@
+
+
 Clone the Project Repository
 ----------------------------
 
@@ -8,19 +10,14 @@ Make a new directory to work in to ensure a fresh environment:
 
 parsed-literal
 
-.. raw:: html
 
-   <details>
-   <summary><a>Commands</a></summary>
 
 .. parsed-literal::
 
     mkdir release-X.Y
     cd release-X.Y
 
-.. raw:: html
 
-   </details>
 
 code-block
 
