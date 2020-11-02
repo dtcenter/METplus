@@ -35,7 +35,7 @@ class CommandBuilder:
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, config):
+    def __init__(self, config, config_overrides={}):
         self.isOK = True
         self.errors = 0
         self.config = config
@@ -49,6 +49,10 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
         self.all_commands = []
+
+        # override config if any were supplied
+        self.override_config(config_overrides)
+
         self.env = os.environ.copy()
         if hasattr(config, 'env'):
             self.env = config.env
@@ -63,6 +67,15 @@ class CommandBuilder:
             self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
 
         self.clear()
+
+    def override_config(self, config_overrides):
+        if not config_overrides:
+            return
+
+        self.logger.debug("Overriding config with explicit values:")
+        for key, value in config_overrides.items():
+            self.logger.debug(f"Setting [config] {key} = {value}")
+            self.config.set('config', key, value)
 
     def create_c_dict(self):
         c_dict = dict()
