@@ -1249,11 +1249,8 @@ def get_files(filedir, filename_regex, logger):
     """
     file_paths = []
 
-    # pylint:disable=unused-variable
-    # os.walk returns a tuple. Not all returned values are needed.
-
     # Walk the tree
-    for root, directories, files in os.walk(filedir):
+    for root, _, files in os.walk(filedir):
         for filename in files:
             # add it to the list only if it is a match
             # to the specified format
