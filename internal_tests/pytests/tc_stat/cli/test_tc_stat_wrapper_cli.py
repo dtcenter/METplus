@@ -48,6 +48,7 @@ def test_run_via_command_line(metplus_config):
     """! Test that running via command line produces the expected results for
          a specific time window for the SBU GFS data.
     """
+    pytest.skip("This will be merged into a single TCStat test suite")
     tcsw = tc_stat_wrapper(metplus_config)
     output_base = tcsw.config.getdir('OUTPUT_BASE')
 

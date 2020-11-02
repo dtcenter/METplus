@@ -26,10 +26,6 @@ def cmdopt(request):
     return request.config.getoption("-c")
 
 
-#
-# ------------Pytest fixtures that can be used for all tests ---------------
-#
-#@pytest.fixture
 def tc_stat_wrapper(metplus_config):
     """! Returns a default TCStatWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
@@ -39,25 +35,10 @@ def tc_stat_wrapper(metplus_config):
     # Default, empty TcStatWrapper with some configuration values set
     # to /path/to:
     extra_configs = []
-    extra_configs.append(os.path.join(os.path.dirname(__file__), 'tc_stat_conf.conf'))
+    extra_configs.append(os.path.join(os.path.dirname(__file__),
+                                      'tc_stat_conf.conf'))
     config = metplus_config(extra_configs)
     return TCStatWrapper(config)
-
-@pytest.mark.parametrize(
-    'key, value', [
-        ('INIT_BEG', 'init_beg = "20170705";'),
-        ('INIT_END', 'init_end = "20170901";'),
-        ('INIT_HOUR', 'init_hour = ["00"];')
-    ]
-)
-def test_c_dict(metplus_config, key, value):
-    """! Test that the expected values set in the tc_stat_filter.conf
-         file are correctly read/captured in the c_dict dictionary
-    """
-    tcsw = tc_stat_wrapper(metplus_config)
-    actual_value = tcsw.c_dict[key]
-    assert actual_value == value
-
 
 def test_config_lists(metplus_config):
     """! Test that when the COLUMN_THRESH_NAME and COLUMN_THRESH_VAL lists
@@ -74,11 +55,12 @@ def test_config_lists(metplus_config):
     tcsw.validate_config_values(tcsw.c_dict)
     assert tcsw.isOK is False
 
-
 def test_filter_by_ml_basin(metplus_config):
     """! Test that for a given time window of SBU GFS data, the expected number
          of results is returned when additional filtering by basin=["ML"].
     """
+    pytest.skip("This will be rewritten to verify the METplus sets the "
+                "MET config value correctly in another test")
     tcsw = tc_stat_wrapper(metplus_config)
     tcsw.c_dict['INIT_BEG'] = 'init_beg = "20150301";'
     tcsw.c_dict['INIT_END'] = 'init_end = "20150304";'
@@ -99,6 +81,8 @@ def test_filter_by_cyclone(metplus_config):
     """! Test that for a given time window of SBU GFS data, the expected number
          of results is returned when additional filtering by cyclone.
     """
+    pytest.skip("This will be rewritten to verify the METplus sets the "
+                "MET config value correctly in another test")
     tcsw = tc_stat_wrapper(metplus_config)
     tcsw.c_dict['INIT_BEG'] = 'init_beg = "20150301";'
     tcsw.c_dict['INIT_END'] = 'init_end = "20150304";'
@@ -120,6 +104,8 @@ def test_filter_by_storm_name(metplus_config):
     """! Test that for a given time window of SBU GFS data, the expected number
          of results is returned when additional filtering by storm_name.
     """
+    pytest.skip("This will be rewritten to verify the METplus sets the "
+                "MET config value correctly in another test")
     tcsw = tc_stat_wrapper(metplus_config)
     tcsw.c_dict['INIT_BEG'] = 'init_beg = "20150301";'
     tcsw.c_dict['INIT_END'] = 'init_end = "20150325";'
@@ -142,6 +128,8 @@ def test_filter_by_storm_id(metplus_config):
          this data and the indicated storm_id, tc_stat does not return any
          data
     """
+    pytest.skip("This will be rewritten to verify the METplus sets the "
+                "MET config value correctly in another test")
     tcsw = tc_stat_wrapper(metplus_config)
     tcsw.c_dict['INIT_BEG'] = 'init_beg = "20150301";'
     tcsw.c_dict['INIT_END'] = 'init_end = "20150304";'
@@ -165,6 +153,8 @@ def test_filter_by_basin_cyclone(metplus_config):
          to get the same results as if filtering by storm_id (which doesn't
          work, perhaps because the storm_id is greater than 2-digits?).
     """
+    pytest.skip("This will be rewritten to verify the METplus sets the "
+                "MET config value correctly in another test")
     tcsw = tc_stat_wrapper(metplus_config)
     tcsw.c_dict['INIT_BEG'] = 'init_beg = "20150301";'
     tcsw.c_dict['INIT_END'] = 'init_end = "20150304";'
@@ -182,8 +172,3 @@ def test_filter_by_basin_cyclone(metplus_config):
         print("Num lines: ", str(lines))
 
     assert lines == expected_num_lines
-
-#
-
-
-
