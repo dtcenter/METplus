@@ -171,12 +171,9 @@ class ExtractTilesWrapper(CommandBuilder):
         # filter options defined in the config/param file.
         # Use TCStatWrapper to build up the tc_stat command and invoke
         # the MET tool tc_stat to perform the filtering.
-        tiles_list = util.get_files(self.tc_pairs_dir, ".*tcst", self.logger)
-        tiles_list_str = ' '.join(tiles_list)
-
         tcs = TCStatWrapper(self.config)
         tcs.build_tc_stat(self.filtered_out_dir, cur_init,
-                          tiles_list_str, self.addl_filter_opts)
+                          self.tc_pairs_dir, self.addl_filter_opts)
 
         # Remove any empty files and directories that can occur
         # from filtering.
