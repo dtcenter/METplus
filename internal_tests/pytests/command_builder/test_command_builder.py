@@ -222,7 +222,7 @@ def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
         ({'FAKE_TEMPLATE': '{valid?fmt=%Y%m%d%H}', }),
         ]
 )
-def test_override_config_in_c_dict(metplus_config, overrides):
+def test_override_config(metplus_config, overrides):
     config = metplus_config()
 
     pcw = CommandBuilder(config, overrides)
