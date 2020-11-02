@@ -34,7 +34,7 @@ met_tool_wrapper/GridStat/GridStat_python_embedding.conf
 # METplus Workflow
 # ----------------
 #
-# GridStat the only tool called in this example. It processes a single run time with three forecast leads. The input data are simple text files with no timing information, so the list of forecast leads simply duplicates the same file multiple times to demonstrate how data is read in via Python Embedding.
+# GridStat is the only tool called in this example. It processes a single run time with three forecast leads. The input data are simple text files with no timing information, so the list of forecast leads simply duplicates the same file multiple times to demonstrate how data is read in via Python embedding.
 #
 
 ##############################################################################
