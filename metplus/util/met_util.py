@@ -1963,7 +1963,7 @@ def validate_configuration_variables(config, force_check=False):
 
     # check that OUTPUT_BASE is not set to the exact same value as INPUT_BASE
     inoutbase_isOK = True
-    input_real_path = os.path.realpath(config.getdir('INPUT_BASE'))
+    input_real_path = os.path.realpath(config.getdir_nocheck('INPUT_BASE', ''))
     output_real_path = os.path.realpath(config.getdir('OUTPUT_BASE'))
     if input_real_path == output_real_path:
       config.logger.error(f"INPUT_BASE AND OUTPUT_BASE are set to the exact same path: {input_real_path}")
