@@ -2049,10 +2049,10 @@ def is_var_item_valid(item_list, index, ext, config):
     elif 'FCST' in item_list and 'OBS' not in item_list:
         # if FCST level has 1 item and OBS name is a python embedding script,
         # don't report error
-        level_list = getlist(config.getstr('config',
+        level_list = getlist(config.getraw('config',
                                            f'FCST_VAR{index}_LEVELS',
                                            ''))
-        other_name = config.getstr('config', f'OBS_VAR{index}_NAME', '')
+        other_name = config.getraw('config', f'OBS_VAR{index}_NAME', '')
         skip_error_for_py_embed = ext == 'LEVELS' and is_python_script(other_name) and len(level_list) == 1
         # do not report error for OPTIONS since it isn't required to be the same length
         if ext not in ['OPTIONS'] and not skip_error_for_py_embed:
@@ -2067,10 +2067,10 @@ def is_var_item_valid(item_list, index, ext, config):
     elif 'OBS' in item_list and 'FCST' not in item_list:
         # if OBS level has 1 item and FCST name is a python embedding script,
         # don't report error
-        level_list = getlist(config.getstr('config',
+        level_list = getlist(config.getraw('config',
                                            f'OBS_VAR{index}_LEVELS',
                                            ''))
-        other_name = config.getstr('config', f'FCST_VAR{index}_NAME', '')
+        other_name = config.getraw('config', f'FCST_VAR{index}_NAME', '')
         skip_error_for_py_embed = ext == 'LEVELS' and is_python_script(other_name) and len(level_list) == 1
 
         if ext not in ['OPTIONS'] and not skip_error_for_py_embed:
