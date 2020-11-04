@@ -4966,6 +4966,7 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  no
 
+
    TC_PAIRS_REFORMAT_DECK
      Set to true or yes if using cyclone data that needs to be reformatted to match the ATCF (Automated Tropical Cyclone Forecasting) format. If set to true or yes, you will need to set :term:`TC_PAIRS_REFORMAT_TYPE` to specify which type of reformatting to perform.
 
@@ -5037,7 +5038,9 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_CMD_LINE_JOB
-     Specify expression(s) that will be passed to the MET tc_stat tool via the command line. Only specify if TC_STAT_RUN_VIA=CLI. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ chapter for tc-stat for the details on performing job summaries and job filters.
+     .. warning:: **DEPRECATED:** Please set :term:`TC_STAT_CONFIG_FILE` to run using a config file and leave it unset to run via the command line.
+
+     Old: Specify expression(s) that will be passed to the MET tc_stat tool via the command line. Only specify if TC_STAT_RUN_VIA=CLI. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ chapter for tc-stat for the details on performing job summaries and job filters.
 
      | *Used by:*  TCStat
      | *Family:*  [config]
@@ -5169,12 +5172,15 @@ METplus Configuration Glossary
      | *Family:*  [dir]
      | *Default:*  Varies
 
-   TC_STAT_JOBS_LIST
+   TC_STAT_JOB_ARGS
      Specify expressions for the MET tc_stat tool to execute.
 
      | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
+
+   TC_STAT_JOBS_LIST
+     .. warning:: **DEPRECATED:** Please use :term:`TC_STAT_JOB_ARGS`.
 
    TC_STAT_LANDFALL
      Specify whether only those points occurring near landfall should be retained when using the MET tc_stat tool. Acceptable values: True/False
@@ -5226,7 +5232,9 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_RUN_VIA
-     Specify the method for running the MET tc_stat tool. Acceptable values: CONFIG. If left blank (unset), tc_stat will run via the command line.
+     .. warning:: **DEPRECATED:** Please set :term:`TC_STAT_CONFIG_FILE` to run using a config file and leave it unset to run via the command line.
+
+     Old: Specify the method for running the MET tc_stat tool. Acceptable values: CONFIG. If left blank (unset), tc_stat will run via the command line.
 
      | *Used by:*  TCStat
      | *Family:*  [config]

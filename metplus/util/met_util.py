@@ -476,6 +476,10 @@ def check_for_deprecated_config(config):
         'CUSTOM_INGEST_<n>_OUTPUT_GRID': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_OUTPUT_GRID'},
         'CUSTOM_INGEST_<n>_SCRIPT': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_SCRIPT'},
         'CUSTOM_INGEST_<n>_TYPE': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_TYPE'},
+        'TC_STAT_RUN_VIA': {'sec': 'config', 'alt': 'TC_STAT_CONFIG_FILE',
+                            'copy': False},
+        'TC_STAT_CMD_LINE_JOB': {'sec': 'config', 'alt': 'TC_STAT_JOB_ARGS'},
+        'TC_STAT_JOBS_LIST': {'sec': 'config', 'alt': 'TC_STAT_JOB_ARGS'},
     }
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
@@ -1245,11 +1249,8 @@ def get_files(filedir, filename_regex, logger):
     """
     file_paths = []
 
-    # pylint:disable=unused-variable
-    # os.walk returns a tuple. Not all returned values are needed.
-
     # Walk the tree
-    for root, directories, files in os.walk(filedir):
+    for root, _, files in os.walk(filedir):
         for filename in files:
             # add it to the list only if it is a match
             # to the specified format
@@ -1962,7 +1963,7 @@ def validate_configuration_variables(config, force_check=False):
 
     # check that OUTPUT_BASE is not set to the exact same value as INPUT_BASE
     inoutbase_isOK = True
-    input_real_path = os.path.realpath(config.getdir('INPUT_BASE'))
+    input_real_path = os.path.realpath(config.getdir_nocheck('INPUT_BASE', ''))
     output_real_path = os.path.realpath(config.getdir('OUTPUT_BASE'))
     if input_real_path == output_real_path:
       config.logger.error(f"INPUT_BASE AND OUTPUT_BASE are set to the exact same path: {input_real_path}")

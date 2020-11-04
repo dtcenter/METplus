@@ -15,4 +15,8 @@ returncode=$?
 
 ls -alR ${TRAVIS_OUTPUT_BASE}
 
+if [ $returncode != 0 ]; then
+  ${TRAVIS_BUILD_DIR}/ci/travis_jobs/print_log_errors.py ${TRAVIS_OUTPUT_BASE} ${METPLUS_TEST_OUTPUT_BASE}
+fi
+
 exit $returncode
