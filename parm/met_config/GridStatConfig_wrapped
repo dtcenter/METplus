@@ -53,9 +53,11 @@ rank_corr_flag   = FALSE;
 // Forecast and observation fields to be verified
 //
 fcst = {
+   ${FCST_FILE_TYPE}
    field = [ ${FCST_FIELD} ];
 }
 obs = {
+   ${OBS_FILE_TYPE}
    field = [ ${OBS_FIELD} ];
 }
 

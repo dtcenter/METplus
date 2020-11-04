@@ -35,6 +35,17 @@ class CommandBuilder:
     """
     __metaclass__ = ABCMeta
 
+    # valid file types that can be set in the MET config
+    # files as "file_type = <type>;"
+    MET_FILE_TYPES = ['GRIB',
+                      'GRIB2',
+                      'NETCDF_MET',
+                      'NETCDF_PINT',
+                      'NETCDF_NCCF',
+                      'PYTHON_NUMPY',
+                      'PYTHON_XARRAY',
+                      ]
+
     def __init__(self, config):
         self.isOK = True
         self.errors = 0
