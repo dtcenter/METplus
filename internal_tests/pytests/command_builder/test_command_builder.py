@@ -46,7 +46,7 @@ from metplus.util import time_util
 )
 def test_find_data_no_dated(metplus_config, data_type):
     config = metplus_config()
-    
+
     pcw = CommandBuilder(config)
     v = {}
     v['fcst_level'] = "6"
@@ -195,3 +195,36 @@ def test_find_obs_dated_next_day(metplus_config):
     pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
     obs_file = pcw.find_obs(time_info, v)
     assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180202/20180202_0013')
+
+@pytest.mark.parametrize(
+    'overrides, c_dict', [
+        ({'LOG_MET_VERBOSITY': '5', }, # string
+         {'VERBOSITY': '5', }),
+        ({'CUSTOM_LOOP_LIST': 'a,b,c', }, # list
+         {'CUSTOM_LOOP_LIST': ['a', 'b', 'c'], }),
+        ({'SKIP_TIMES': '"%H:12,18", "%Y%m%d:20200201"', },  # dict
+         {'SKIP_TIMES': {'%H': ['12', '18'],
+                         '%Y%m%d': ['20200201'], }}),
+        ]
+)
+def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
+    config = metplus_config()
+
+    pcw = CommandBuilder(config, overrides)
+    for key, expected_value in c_dict.items():
+        assert(pcw.c_dict.get(key) == expected_value)
+
+@pytest.mark.parametrize(
+    'overrides', [
+        ({'LOG_MET_VERBOSITY': '5', }),
+        ({'CUSTOM_LOOP_LIST': 'a,b,c', }),
+        ({'SKIP_TIMES': '"%H:12,18", "%Y%m%d:20200201"', }),
+        ({'FAKE_TEMPLATE': '{valid?fmt=%Y%m%d%H}', }),
+        ]
+)
+def test_override_config(metplus_config, overrides):
+    config = metplus_config()
+
+    pcw = CommandBuilder(config, overrides)
+    for key, expected_value in overrides.items():
+        assert(pcw.config.getraw('config', key) == expected_value)
