@@ -2027,9 +2027,18 @@ def find_indices_in_config_section(regex_expression, config, sec, noID=False):
     return indices
 
 def is_var_item_valid(item_list, index, ext, config):
-    """!Given a list of data types (FCST, OBS, ENS, or BOTH) check if the combination is valid.
+    """!Given a list of data types (FCST, OBS, ENS, or BOTH) check if the
+        combination is valid.
         If BOTH is found, FCST and OBS should not be found.
-        If FCST or OBS is found, ther other must also be found."""
+        If FCST or OBS is found, the other must also be found.
+        @param item_list list of data types that were found for a given index
+        @param index number following _VAR in the variable name
+        @param ext extension to check, i.e. NAME, LEVELS, THRESH, or OPTIONS
+        @param config METplusConfig instance
+        @returns tuple containing boolean if var item is valid, list of error
+         messages and list of sed commands to help the user update their old
+         configuration files
+    """
 
     full_ext = f"_VAR{index}_{ext}"
     msg = []
@@ -2038,30 +2047,43 @@ def is_var_item_valid(item_list, index, ext, config):
 
         msg.append(f"Cannot set FCST{full_ext} or OBS{full_ext} if BOTH{full_ext} is set.")
 
-    elif ext not in ['OPTIONS'] and 'FCST' in item_list and 'OBS' not in item_list:
+    elif 'FCST' in item_list and 'OBS' not in item_list:
+        # if FCST level has 1 item and OBS name is a python embedding script,
+        # don't report error
+        level_list = getlist(config.getraw('config',
+                                           f'FCST_VAR{index}_LEVELS',
+                                           ''))
+        other_name = config.getraw('config', f'OBS_VAR{index}_NAME', '')
+        skip_error_for_py_embed = ext == 'LEVELS' and is_python_script(other_name) and len(level_list) == 1
+        # do not report error for OPTIONS since it isn't required to be the same length
+        if ext not in ['OPTIONS'] and not skip_error_for_py_embed:
+            msg.append(f"If FCST{full_ext} is set, you must either set OBS{full_ext} or "
+                       f"change FCST{full_ext} to BOTH{full_ext}")
 
-        msg.append(f"If FCST{full_ext} is set, you must either set OBS{full_ext} or "
-                   f"change FCST{full_ext} to BOTH{full_ext}")
+            config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+            for config_file in config_files:
+                sed_cmds.append(f"sed -i 's|^FCST{full_ext}|BOTH{full_ext}|g' {config_file}")
+                sed_cmds.append(f"sed -i 's|{{FCST{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
 
-        config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
-        for config_file in config_files:
-            sed_cmds.append(f"sed -i 's|^FCST{full_ext}|BOTH{full_ext}|g' {config_file}")
-            sed_cmds.append(f"sed -i 's|{{FCST{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
+    elif 'OBS' in item_list and 'FCST' not in item_list:
+        # if OBS level has 1 item and FCST name is a python embedding script,
+        # don't report error
+        level_list = getlist(config.getraw('config',
+                                           f'OBS_VAR{index}_LEVELS',
+                                           ''))
+        other_name = config.getraw('config', f'FCST_VAR{index}_NAME', '')
+        skip_error_for_py_embed = ext == 'LEVELS' and is_python_script(other_name) and len(level_list) == 1
 
-    elif ext not in ['OPTIONS'] and 'OBS' in item_list and 'FCST' not in item_list:
+        if ext not in ['OPTIONS'] and not skip_error_for_py_embed:
+            msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or ."
+                          f"change OBS{full_ext} to BOTH{full_ext}")
 
-        msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or ."
-                      f"change OBS{full_ext} to BOTH{full_ext}")
+            config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+            for config_file in config_files:
+                sed_cmds.append(f"sed -i 's|^OBS{full_ext}|BOTH{full_ext}|g' {config_file}")
+                sed_cmds.append(f"sed -i 's|{{OBS{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
 
-        config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
-        for config_file in config_files:
-            sed_cmds.append(f"sed -i 's|^OBS{full_ext}|BOTH{full_ext}|g' {config_file}")
-            sed_cmds.append(f"sed -i 's|{{OBS{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
-
-    else:
-        return True, msg, sed_cmds
-
-    return False, msg, sed_cmds
+    return not bool(msg), msg, sed_cmds
 
 def validate_field_info_configs(config, force_check=False):
     """!Verify that config variables with _VAR<n>_ in them are valid. Returns True if all are valid.
@@ -2629,6 +2651,9 @@ def template_to_regex(template, time_info, logger):
                          **time_info)
 
 def is_python_script(name):
+    if not name:
+        return False
+
     all_items = name.split(' ')
     if any(item.endswith('.py') for item in all_items):
         return True
