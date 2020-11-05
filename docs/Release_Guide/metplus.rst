@@ -9,7 +9,7 @@ Official release (e.g. vX.Y)
 
 .. include:: release_steps/clone_project_repository.rst
 .. include:: release_steps/checkout_develop_branch.rst
-.. include:: release_steps/metplus/update_version.rst
+.. include:: release_steps/metplus/update_version_official.rst
 .. include:: release_steps/review_release_notes.rst
 .. include:: release_steps/metplus/update_docs_tagged.rst
 .. include:: release_steps/metplus/update_docker_build_hook.rst
