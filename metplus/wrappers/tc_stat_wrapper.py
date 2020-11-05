@@ -49,11 +49,8 @@ class TCStatWrapper(CommandBuilder):
               make it easier when retrieving these values, especially when
               they are needed multiple times by different methods.
 
-              Args:
-
-              Returns:
-                    tc_stat_dict - a dictionary of the key-value representation
-                                   of options set in the config file.
+              @returns a dictionary of the key-value representation of options
+               set in the config file.
         """
         self.logger.debug('Creating tc-stat dictionary...')
 
@@ -88,17 +85,19 @@ class TCStatWrapper(CommandBuilder):
         c_dict['CONFIG_FILE'] = self.config.getstr('config',
                                                    'TC_STAT_CONFIG_FILE',
                                                    '')
-        if c_dict['CONFIG_FILE']:
-            self.logger.debug("MET config file specified: "
-                              f"{c_dict['CONFIG_FILE']}. "
-                              "Reading METplus config variables that set "
-                              "environment variables used in the MET config "
-                              "file")
-            self.set_c_dict_for_environment_variables(c_dict)
+        if not c_dict['CONFIG_FILE']:
+            self.log_error("TC_STAT_CONFIG_FILE must be set to run "
+                           "TCStat wrapper")
+
+        self.set_c_dict_for_environment_variables(c_dict)
 
         return c_dict
 
     def set_c_dict_for_environment_variables(self, c_dict):
+        """! Set c_dict dictionary entries that will be set as environment
+        variables to be read by the MET config file.
+            @param c_dict dictionary to add key/value pairs
+        """
         app_name_upper = self.app_name.upper()
 
         for config_list in ['AMODEL',
@@ -157,12 +156,6 @@ class TCStatWrapper(CommandBuilder):
     def run_all_times(self):
         """! Builds the call to the MET tool TC-STAT for all requested
              initialization times (init or valid).  Called from master_metplus
-
-             Args:
-
-             Returns:
-                0 if successfully runs MET tc_stat tool.
-                1 otherwise
         """
         self.logger.info('Starting tc_stat_wrapper...')
 
@@ -175,40 +168,6 @@ class TCStatWrapper(CommandBuilder):
         self.build_and_run_command()
         return
 
-        # Since this is different from the other MET tools, we will build
-        # the commands rather than use command builder's methods.
-        match_points = str(self.c_dict['MATCH_POINTS'])
-        if self.c_dict['CONFIG_FILE']:
-            # Running with config file
-
-            tc_cmd_list = [self.app_path,
-                           " -lookin", self.c_dict['INPUT_DIR'],
-                           " -config ", self.c_dict['CONFIG_FILE'],
-                           self.c_dict['JOBS_LIST']]
-        else:
-            # Run single job from command line
-            tc_cmd_list = [self.app_path,
-                           " -lookin", self.c_dict['INPUT_DIR'],
-                           self.c_dict['CMD_LINE_JOB'],
-                           "-match_points", match_points]
-
-        tc_cmd_str = ' '.join(tc_cmd_list)
-
-        # Since this wrapper is not using the CommandBuilder to build the cmd,
-        # we need to add the met verbosity level to the MET cmd created before
-        # we run the command.
-        tc_cmd_str = self.cmdrunner.insert_metverbosity_opt(tc_cmd_str)
-
-        # Run tc_stat
-        try:
-            (ret, cmd) = \
-                self.cmdrunner.run_cmd(tc_cmd_str, self.env, app_name=self.app_name)
-            if not ret == 0:
-                raise ExitStatusException(
-                    '%s: non-zero exit status' % (repr(cmd),), ret)
-        except ExitStatusException as ese:
-            self.log_error(ese)
-
     def get_command(self):
         """! Builds the command to run the MET application
            @rtype string
@@ -219,11 +178,7 @@ class TCStatWrapper(CommandBuilder):
 
         cmd += f" -lookin {self.c_dict['INPUT_DIR']}"
 
-        if self.c_dict.get('CONFIG_FILE'):
-            cmd += f" -config {self.c_dict.get('CONFIG_FILE')}"
-        else:
-            # if not using a config file, set job args on command line
-            cmd += f" {self.c_dict.get('JOBS')}"
+        cmd += f" -config {self.c_dict.get('CONFIG_FILE')}"
 
         match_points = str(self.c_dict['MATCH_POINTS']).lower()
         cmd += f" -match_points {match_points}"
@@ -232,15 +187,7 @@ class TCStatWrapper(CommandBuilder):
 
     def set_environment_variables(self, time_info=None):
         """! Set the env variables based on settings in the METplus config
-             files.  This is only necessary when running MET tc_stat via
-             the config file.
-
-             Args:
-
-             Returns:
-                 0 - if successfully sets env variable
-
-
+             files.
         """
 
         self.logger.info('Setting env variables from config file...')
@@ -289,7 +236,6 @@ class TCStatWrapper(CommandBuilder):
         self.add_env_var('JOBS', job_args_str)
 
         super().set_environment_variables(time_info)
-        return
 
     def validate_config_values(self, c_dict):
         """! Verify that the length of the name and val lists
