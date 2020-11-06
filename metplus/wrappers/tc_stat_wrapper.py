@@ -176,12 +176,9 @@ class TCStatWrapper(CommandBuilder):
 
         cmd = f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
 
-        cmd += f" -lookin {self.c_dict['INPUT_DIR']}"
+        cmd += f" -lookin {self.c_dict['LOOKIN_DIR']}"
 
         cmd += f" -config {self.c_dict.get('CONFIG_FILE')}"
-
-        match_points = str(self.c_dict['MATCH_POINTS']).lower()
-        cmd += f" -match_points {match_points}"
 
         return cmd
 
