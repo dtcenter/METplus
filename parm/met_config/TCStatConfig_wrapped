@@ -131,4 +131,14 @@ ${LANDFALL}
 ${LANDFALL_BEG}
 ${LANDFALL_END}
 
+//
+// Specify whether only those track points common to both the ADECK and BDECK
+// tracks should be retained.  May modify using the "-match_points" job command
+// option.
+//
+${MATCH_POINTS}
+
+//
+// Array of TCStat analysis jobs to be performed on the filtered data
+//
 ${JOBS}

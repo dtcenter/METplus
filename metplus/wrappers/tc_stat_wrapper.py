@@ -17,7 +17,7 @@ import sys
 
 from produtil.run import ExitStatusException
 
-from ..util import getlist, mkdir_p
+from ..util import getlist, mkdir_p, do_string_sub, ti_calculate
 from . import CommandBuilder
 
 ## @namespace TCStatWrapper
@@ -68,26 +68,23 @@ class TCStatWrapper(CommandBuilder):
         if not c_dict['OUTPUT_DIR']:
             self.log_error("TC_STAT_OUTPUT_DIR must be set")
 
-        c_dict['JOBS'] = self.config.getstr('config',
-                                            'TC_STAT_JOB_ARGS',
-                                            '')
+        c_dict['JOBS'] = getlist(self.config.getraw('config',
+                                                    'TC_STAT_JOB_ARGS',
+                                                    ''))
         if not c_dict.get('JOBS'):
             self.log_error('No job arguments defined. '
                            'Please set TC_STAT_JOB_ARGS')
-
-        c_dict['MATCH_POINTS'] = (
-            self.config.getbool('config', 'TC_STAT_MATCH_POINTS')
-        )
-        if c_dict['MATCH_POINTS'] is None:
-            self.log_error('Invalid boolean value set for '
-                           'TC_STAT_MATCH_POINTS')
 
         c_dict['CONFIG_FILE'] = self.config.getstr('config',
                                                    'TC_STAT_CONFIG_FILE',
                                                    '')
         if not c_dict['CONFIG_FILE']:
-            self.log_error("TC_STAT_CONFIG_FILE must be set to run "
-                           "TCStat wrapper")
+            default_config = os.path.join(self.config.getdir('PARM_BASE'),
+                                          'met_config',
+                                          'TCStatConfig_wrapped')
+            self.logger.debug("TC_STAT_CONFIG_FILE not set. Using "
+                              f"{default_config}")
+            c_dict['CONFIG_FILE'] = default_config
 
         self.set_c_dict_for_environment_variables(c_dict)
 
@@ -144,6 +141,7 @@ class TCStatWrapper(CommandBuilder):
 
         for config_bool in ['WATER_ONLY',
                             'LANDFALL',
+                            'MATCH_POINTS',
                             ]:
 
             self.set_c_dict_bool(c_dict,
@@ -154,19 +152,25 @@ class TCStatWrapper(CommandBuilder):
         self.validate_config_values(c_dict)
 
     def run_all_times(self):
+        return self.run_at_time(None)
+
+    def run_at_time(self, input_dict=None):
         """! Builds the call to the MET tool TC-STAT for all requested
              initialization times (init or valid).  Called from master_metplus
         """
         self.logger.info('Starting tc_stat_wrapper...')
 
-        self.set_environment_variables()
+        time_info = None
+        if input_dict:
+            time_info = ti_calculate(input_dict)
+
+        self.set_environment_variables(time_info)
 
         # Don't forget to create the output directory, as MET tc_stat will
         # not do this.
         mkdir_p(self.c_dict['OUTPUT_DIR'])
 
-        self.build_and_run_command()
-        return
+        return self.build()
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -225,14 +229,49 @@ class TCStatWrapper(CommandBuilder):
                         'LANDFALL_END',
                         'WATER_ONLY',
                         'LANDFALL',
+                        'MATCH_POINTS',
                         ]:
             self.add_env_var(env_var,
                              self.c_dict.get(env_var, ''))
 
-        job_args_str = f"jobs = [\"{self.c_dict.get('JOBS')}\"];"
+        job_args_str = self.handle_jobs(time_info)
         self.add_env_var('JOBS', job_args_str)
 
         super().set_environment_variables(time_info)
+
+    def handle_jobs(self, time_info=None, create_parent_dir=True):
+        """! Loop through job list found in c_dict key JOBS,
+         create parent directory for -dump_row path if it is set,
+         and format jobs string to pass to MET config file
+         @param time_info optional time dictionary used to fill in filename
+          template tags if used
+         @param create_parent_dir set to False if the parent directory of the
+         -dump_row file should not be created. The log output will still
+         mention that it will be created if it doesn't exist. Default True.
+         @returns formatted jobs string as jobs = ["job1", "job2"];
+        """
+        formatted_jobs = []
+        for job in self.c_dict.get('JOBS'):
+            # if time info is available, fill in filename template tags
+            subbed_job = do_string_sub(job, **time_info) if time_info else job
+            formatted_jobs.append(subbed_job.strip())
+
+            # check if -dump_row is used
+            # if it is, create parent directory of output file
+            split_job = subbed_job.split(' ')
+            if '-dump_row' in split_job:
+                index = split_job.index('-dump_row') + 1
+                filepath = split_job[index]
+                parent_dir = os.path.dirname(filepath)
+                if not os.path.exists(parent_dir):
+                    self.logger.debug(f"Creating directory: {parent_dir}")
+                    if create_parent_dir:
+                        os.makedirs(parent_dir)
+                else:
+                    self.logger.debug(f"Parent directory exists: {parent_dir}")
+
+        job_list_string = '","'.join(formatted_jobs)
+        return f'jobs = ["{job_list_string}"];'
 
     def validate_config_values(self, c_dict):
         """! Verify that the length of the name and val lists
