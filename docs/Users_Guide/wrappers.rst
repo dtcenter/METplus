@@ -2006,7 +2006,7 @@ Configuration
 
 [dir]
 
-| :term:`TC_STAT_INPUT_DIR`
+| :term:`TC_STAT_LOOKIN_DIR`
 | :term:`TC_STAT_OUTPUT_DIR`
 
 [config]
@@ -2051,6 +2051,7 @@ Configuration
 
 .. warning:: **DEPRECATED:**
 
+   | :term:`TC_STAT_INPUT_DIR`
    | :term:`TC_STAT_RUN_VIA`
    | :term:`TC_STAT_CMD_LINE_JOB`
    | :term:`TC_STAT_JOBS_LIST`
