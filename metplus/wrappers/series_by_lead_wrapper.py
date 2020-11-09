@@ -1312,10 +1312,25 @@ class SeriesByLeadWrapper(CommandBuilder):
             filter_file = "filter_" + cur_init + ".tcst"
             filter_filename = os.path.join(series_output_dir,
                                            cur_init, filter_file)
+            input_dict = {'init': datetime.strptime(cur_init, '%Y%m%d_%H')}
+            job_args = (f'-job filter {filter_opts}'
+                        f' -dump_row {filter_filename}')
+            override_dict = {'TC_STAT_JOB_ARGS': job_args,
+                             'TC_STAT_INIT_INCLUDE': cur_init,
+                             'TC_STAT_LOOKIN_DIR': tile_dir,
+                             'TC_STAT_OUTPUT_DIR': series_output_dir,
+                             'TC_STAT_MATCH_POINTS': True,
+                             }
+            tc_stat_wrapper = TCStatWrapper(self.config, override_dict)
+            if not tc_stat_wrapper.isOK:
+                continue
 
-            tcs = TCStatWrapper(self.config)
-            tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
-                              filter_opts)
+            if not tc_stat_wrapper.run_at_time(input_dict):
+                continue
+
+#            tcs = TCStatWrapper(self.config)
+#            tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
+#                              filter_opts)
 
             # Check that the filter.tcst file isn't empty. If
             # it is, then use the files from extract_tiles as
