@@ -30,7 +30,7 @@ Sequence of Events - Contributing Code
 
 Set up a GitHub repository account if you do not already have one, and log
 into your account.  For more information about GitHub accounts, please refer
-to the GitHub Documenation on `GitHub accounts <https://help.github.com/en/github/getting-started-with-github/signing-up-for-a-new-github-account>`_.
+to the GitHub Documentation on `GitHub accounts <https://help.github.com/en/github/getting-started-with-github/signing-up-for-a-new-github-account>`_.
 
 
 **Workflow Overview:**
@@ -346,7 +346,6 @@ Clean up after a successfully merged pull request
   via your web browser. Navigate to *https://github.com/<your-github-user>/METplus*,
   replacing <your-github-user> with your GitHub username, and under the 'Branch'
   pulldown menu, you should no longer find your feature branch as a selection.
-
 
 
 
