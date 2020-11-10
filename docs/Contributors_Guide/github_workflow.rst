@@ -120,7 +120,7 @@ Set upstream remote
   will allow you to push changes to the repository you forked in step 1.
 
   .. code-block:: ini
-	  
+
     git remote add upstream https://github.com/dtcenter/METplus
 
 * To verify that the upstream and origin are correct, at the command line enter:
@@ -236,7 +236,7 @@ Commit changes to feature branch
   newly created and does not yet exist in your repository.
 
   .. code-block:: ini
-		  
+
     git add <filename>
     git commit <filename>
 
@@ -250,7 +250,7 @@ Commit changes to feature branch
   For the first line of your commit comment, enter a brief description, such as the GitHub
   Issue number and a brief description.  On the second and subsequent lines, provide a
   detailed description of the changes/additions you made.
-  
+
   **Note**: It is a best practice to commit one change per commit, rather than wait
   until you have multiple changes to include in one commit.
 
@@ -278,7 +278,7 @@ Open a pull request using a browser
 
 * In your browser, navigate to *https://github.com/<your-github-user>/METplus* replacing
   <your-github-user> with your GitHub username.
-  
+
 * Click on the green 'Compare & pull request' button
 
   * A web page with four grey buttons should appear:
@@ -331,7 +331,7 @@ Clean up after a successfully merged pull request
   .. code-block:: ini
 
     git pull upstream develop
-    
+
 * Your local cloned repository should now have all the latest changes from the
   original repository's develop branch.
 
@@ -343,7 +343,7 @@ Clean up after a successfully merged pull request
     *git push --delete origin <branch name>*
 
   where <branch name> is your feature branch name, e.g. feature_777_wrapper_xyz
-  
+
   You can verify that your feature branch has been successfully removed/deleted
   via your web browser. Navigate to *https://github.com/<your-github-user>/METplus*,
   replacing <your-github-user> with your GitHub username, and under the 'Branch'
