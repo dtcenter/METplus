@@ -220,11 +220,13 @@ local repository.
 		  
     git pull upstream develop
     git push origin develop
+    git merge origin develop
 
   The first command pulls changes from the original repository (the
   `METplus GitHub repository <https://github.com/dtcenter/METplus>`_ that you see when you
   run *git remote -v* and that you set to upstream in step 4 above).  The second command
-  pushes those changes to your forked repository.
+  pushes those changes to your forked repository.  The third command will merge the local
+  develop branch into the feature branch.
 
 
 Commit changes to feature branch
