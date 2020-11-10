@@ -40,21 +40,21 @@ A contributor to METplus will do the following:
 1.  Create a GitHub Issue to track the new contribution.
 
 2.  Fork the NCAR/METplus repository.
-    
+
 3.  Clone the fork to local repository.
-    
+
 4.  Set upstream remote (to assist in keeping upstream and local repositories synchronized).
-    
+
 5.  Generate a feature branch from the 'develop' branch for new development.
-    
+
 6.  Make changes to code in the feature branch.
-    
+
 7.  Commit changes to feature branch (limit one change per commit).
-    
+
 8.  Push the feature branch to GitHub.
-    
+
 9.  Open a pull request from feature branch to original repo (from which you forked, in step 2 above).
-    
+
 10.  Clean up after pull request has been merged by an authorized METplus developer.
 
 
@@ -74,7 +74,7 @@ Create a GitHub Issue that reflects what needs to be done
 Fork the NCAR/METplus repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Retrieve a copy of the source code by forking the NCAR/METplus repository 
+* Retrieve a copy of the source code by forking the NCAR/METplus repository
   into your own GitHub repository. Click on the **Fork** button in the upper right
   hand side of the `METplus repository <https://github.com/dtcenter/METplus>`_.
 
@@ -122,7 +122,7 @@ Set upstream remote
   .. code-block:: ini
 		  
     git remote add upstream https://github.com/dtcenter/METplus
-    
+
 * To verify that the upstream and origin are correct, at the command line enter:
 
   .. code-block:: ini
@@ -178,7 +178,7 @@ Generate a feature branch from the 'develop' branchfor new development
 * At the command line, create and checkout the feature branch. For example:
 
   .. code-block:: ini
-		  
+
     git checkout -b feature_777_wrapper_xyz
 
   replacing *feature_777_wrapper_xyz* with your feature branch name.
@@ -192,7 +192,7 @@ Generate a feature branch from the 'develop' branchfor new development
   You should see something like the following:
 
   .. code-block:: ini
-		  
+
     develop
     main_v3.1
     * feature_777_wrapper_xyz
@@ -217,7 +217,7 @@ local repository.
   to keep your fork in sync with the original repository.
 
   .. code-block:: ini
-		  
+
     git pull upstream develop
     git push origin develop
     git merge origin develop
@@ -323,13 +323,13 @@ Clean up after a successfully merged pull request
 * Verify that you are now working from the develop branch
 
   .. code-block:: ini
-		  
+
     git branch
 
 * Merge changes from the upstream develop branch with your local develop branch
 
   .. code-block:: ini
-		  
+
     git pull upstream develop
     
 * Your local cloned repository should now have all the latest changes from the
@@ -341,7 +341,7 @@ Clean up after a successfully merged pull request
 
     *git branch -D <branch name>*
     *git push --delete origin <branch name>*
-    
+
   where <branch name> is your feature branch name, e.g. feature_777_wrapper_xyz
   
   You can verify that your feature branch has been successfully removed/deleted
