@@ -55,7 +55,7 @@ if version == 'develop':
 else:
   release_info = f'{release} release ({release_monthyear})'
 
-# if set, added "Last updated on " followed by
+# if set, adds "Last updated on " followed by
 # the date in the specified format
 html_last_updated_fmt = '%c'
 
