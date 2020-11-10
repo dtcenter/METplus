@@ -120,7 +120,7 @@ Set upstream remote
   will allow you to push changes to the repository you forked in step 1.
 
   .. code-block:: ini
-		  
+	  
     git remote add upstream https://github.com/dtcenter/METplus
 
 * To verify that the upstream and origin are correct, at the command line enter:
