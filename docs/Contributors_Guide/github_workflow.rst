@@ -232,7 +232,7 @@ local repository.
 Commit changes to feature branch
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Commit any new files by running the following.  Perform this step only if this file is
+* Commit any new files by running the following.  Run the *'git add'* command only if this file is
   newly created and does not yet exist in your repository.
 
   .. code-block:: ini
