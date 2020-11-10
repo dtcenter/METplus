@@ -50,6 +50,15 @@ copyright = f'{release_year}, {author}'
 
 release_monthyear = datetime.strptime(release_date, '%Y%m%d').strftime('%B %Y')
 
+if version == 'develop':
+  release_info = 'development version'
+else:
+  release_info = f'{release} release ({release_monthyear})'
+
+# if set, added "Last updated on " followed by
+# the date in the specified format
+html_last_updated_fmt = '%c'
+
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -139,13 +148,9 @@ sphinx_gallery_conf = {
 # -- Intersphinx control ---------------------------------------------------------------
 intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
 
-rst_epilog = """
-.. |copyright| replace:: {copyrightstr}
-.. |release_date| replace:: {release_datestr}
-.. |release_year| replace:: {release_yearstr}
-.. |release_monthyear| replace:: {release_monthyearstr}
-""".format(copyrightstr=copyright,
-           release_datestr=release_date,
-           release_yearstr=release_year,
-           release_monthyearstr=release_monthyear,
-           )
+rst_epilog = f"""
+.. |copyright| replace:: {copyright}
+.. |release_date| replace:: {release_date}
+.. |release_year| replace:: {release_year}
+.. |release_info| replace:: {release_info}
+"""
