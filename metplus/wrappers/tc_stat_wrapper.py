@@ -104,11 +104,7 @@ class TCStatWrapper(CommandBuilder):
                             'BASIN',
                             'CYCLONE',
                             'STORM_NAME',
-                            'INIT_INCLUDE',
-                            'INIT_EXCLUDE',
                             'INIT_HOUR',
-                            'VALID_INCLUDE',
-                            'VALID_EXCLUDE',
                             'LEAD_REQ',
                             'INIT_MASK',
                             'VALID_MASK',
@@ -127,6 +123,16 @@ class TCStatWrapper(CommandBuilder):
             self.set_c_dict_list(c_dict,
                                  f'{app_name_upper}_{config_list}',
                                  config_list.lower())
+
+            for iv_list in ['INIT', 'VALID',]:
+                self.set_c_dict_list(c_dict,
+                                     f'{app_name_upper}_{iv_list}_INCLUDE',
+                                     f'{iv_list.lower()}_inc',
+                                     )
+                self.set_c_dict_list(c_dict,
+                                     f'{app_name_upper}_{iv_list}_EXCLUDE',
+                                     f'{iv_list.lower()}_exc',
+                                     )
 
         for config_str in ['INIT_BEG',
                            'INIT_END',
@@ -204,13 +210,13 @@ class TCStatWrapper(CommandBuilder):
                         'STORM_NAME',
                         'INIT_BEG',
                         'INIT_END',
-                        'INIT_INCLUDE',
-                        'INIT_EXCLUDE',
+                        'INIT_INC',
+                        'INIT_EXC',
                         'INIT_HOUR',
                         'VALID_BEG',
                         'VALID_END',
-                        'VALID_INCLUDE',
-                        'VALID_EXCLUDE',
+                        'VALID_INC',
+                        'VALID_EXC',
                         'VALID_HOUR',
                         'LEAD_REQ',
                         'LEAD',

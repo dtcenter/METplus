@@ -57,16 +57,16 @@ ${STORM_NAME}
 //
 ${INIT_BEG}
 ${INIT_END}
-${INIT_INCLUDE}
-${INIT_EXCLUDE}
+${INIT_INC}
+${INIT_EXC}
 
 //
 // Stratify by the VALID times.
 //
 ${VALID_BEG}
 ${VALID_END}
-${VALID_INCLUDE}
-${VALID_EXCLUDE}
+${VALID_INC}
+${VALID_EXC}
 
 //
 // Stratify by the initialization and valid hours and lead time.
