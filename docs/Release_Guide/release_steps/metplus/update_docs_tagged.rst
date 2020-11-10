@@ -5,7 +5,7 @@ Update the Documentation on the Web
   documentation:
   dtcenter.github.io/METplus/develop/Contributors_Guide/add_use_case.html#build-the-documentation
 - Build the documentation with the correct conda environment by entering the
-  docs directory and running ./build_docs.py
+  docs directory and running './build_docs.py -release' (-release will update release date file)
 - In another directory, checkout the gh-pages branch of repository
 - Create a new directory in the gh-pages branch for the release appending a
   "v" to the front, i.e. vX.Y
