@@ -83,7 +83,7 @@ Fork the NCAR/METplus repository
 
 * Your web page will refresh to your GitHub repository at, for example:
 
-  .. code-block:: none
+  .. code-block:: ini
 
     https://github.com/<your-github-user>/METplus
 
@@ -99,7 +99,7 @@ Clone the fork to a local repository
 * Change directories to a working directory. From the command line,
   enter the following:
 
-  .. code-block:: none
+  .. code-block:: ini
 
     git clone https://github.com/<your-github-user>/METplus
 
@@ -107,7 +107,7 @@ Clone the fork to a local repository
 
 * Change directories to the METplus directory:
 
-  .. code-block:: none
+  .. code-block:: ini
 
     cd METplus
 
@@ -119,19 +119,19 @@ Set upstream remote
 * Add a remote named origin to the clone of your local Git repository, which
   will allow you to push changes to the repository you forked in step 1.
 
-  .. code-block:: none
+  .. code-block:: ini
 		  
     git remote add upstream https://github.com/dtcenter/METplus
     
 * To verify that the upstream and origin are correct, at the command line enter:
 
-  .. code-block:: none
+  .. code-block:: ini
 
     git remote -v
 
   You should see something like the following:
 
-  .. code-block:: none
+  .. code-block:: ini
 
     origin	https://github.com/<your-github-user>/METplus (fetch)
     origin	https://github.com/<your-github-user>/METplus (push)
@@ -156,19 +156,19 @@ Generate a feature branch from the 'develop' branchfor new development
 
 * Create your feature branch based off the develop branch
 
-  .. code-block:: none
+  .. code-block:: ini
 
     git checkout develop
 
 * Verify that you are currently working in the develop branch by running
 
-  .. code-block:: none
+  .. code-block:: ini
 
     git branch
 
   You should see something like the following:
 
-  .. code-block:: none
+  .. code-block:: ini
 
     * develop
     main_v3.1
@@ -177,7 +177,7 @@ Generate a feature branch from the 'develop' branchfor new development
 
 * At the command line, create and checkout the feature branch. For example:
 
-  .. code-block:: none
+  .. code-block:: ini
 		  
     git checkout -b feature_777_wrapper_xyz
 
@@ -185,13 +185,13 @@ Generate a feature branch from the 'develop' branchfor new development
 
 * Verify that you are working in the correct branch by running:
 
-  .. code-block:: none
+  .. code-block:: ini
 
     git branch
 
   You should see something like the following:
 
-  .. code-block:: none
+  .. code-block:: ini
 		  
     develop
     main_v3.1
@@ -216,7 +216,7 @@ local repository.
   the original repository.  This may impact your work.  Regularly use the following commands
   to keep your fork in sync with the original repository.
 
-  .. code-block:: none
+  .. code-block:: ini
 		  
     git pull upstream develop
     git push origin develop
@@ -233,7 +233,7 @@ Commit changes to feature branch
 * Commit any new files by running the following.  Perform this step only if this file is
   newly created and does not yet exist in your repository.
 
-  .. code-block:: none
+  .. code-block:: ini
 		  
     git add <filename>
     git commit <filename>
@@ -257,7 +257,7 @@ Push the feature branch to GitHub
 
 * Run the following:
 
-  .. code-block:: none
+  .. code-block:: ini
 
     git push origin <feature_777_wrapper_xyz>
 
@@ -314,19 +314,19 @@ Clean up after a successfully merged pull request
 
 * Checkout your develop branch
 
-  .. code-block:: none
+  .. code-block:: ini
 
     git checkout develop
 
 * Verify that you are now working from the develop branch
 
-  .. code-block:: none
+  .. code-block:: ini
 		  
     git branch
 
 * Merge changes from the upstream develop branch with your local develop branch
 
-  .. code-block:: none
+  .. code-block:: ini
 		  
     git pull upstream develop
     
@@ -335,7 +335,7 @@ Clean up after a successfully merged pull request
 
   Now you can delete your feature branch:
 
-  .. code-block:: none
+  .. code-block:: ini
 
     *git branch -D <branch name>*
     *git push --delete origin <branch name>*
