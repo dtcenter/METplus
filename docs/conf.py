@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
 sys.path.append(os.path.abspath("./_ext"))
 print(sys.path)
 
-from metplus import __version__
+from metplus import __version__, __release_date__
 
 # -- Project information -----------------------------------------------------
 
@@ -42,9 +42,9 @@ else:
 
 verinfo = version
 
-release_year = '2020'
+release_date = __release_date__
 
-release_date = f'{release_year}0810'
+release_year = release_date[0:4]
 
 copyright = f'{release_year}, {author}'
 
