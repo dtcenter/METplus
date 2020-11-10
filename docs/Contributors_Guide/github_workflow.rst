@@ -206,7 +206,7 @@ Make changes to code in the feature branch
 Users should make changes to their feature branch and commit changes to their
 local repository.
 
-* Create code following the coding standards in the Coding Standards section of
+* Create code following the coding standards in the :ref:`codingstandards` section of
   the Contributor's Guide.
 
 * Provide some tests for your code using the pytest framework, provide user documentation
