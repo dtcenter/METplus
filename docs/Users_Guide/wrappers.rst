@@ -1650,9 +1650,8 @@ Configuration
 [config]
 
 | :term:`TC_PAIRS_CONFIG_FILE`
-| :term:`INIT_HOUR_END`
-| :term:`INIT_INCLUDE`
-| :term:`INIT_EXCLUDE`
+| :term:`TC_PAIRS_INIT_INCLUDE`
+| :term:`TC_PAIRS_INIT_EXCLUDE`
 | :term:`TC_PAIRS_READ_ALL_FILES`
 | :term:`TC_PAIRS_MODEL`
 | :term:`TC_PAIRS_STORM_ID`
@@ -1686,6 +1685,9 @@ Configuration
    | :term:`BDECK_FILE_PREFIX`
    | :term:`MISSING_VAL_TO_REPLACE`
    | :term:`MISSING_VAL`
+   | :term:`INIT_INCLUDE`
+   | :term:`INIT_EXCLUDE`
+   | :term:`INIT_HOUR_END`
 
 TCRMW
 ------

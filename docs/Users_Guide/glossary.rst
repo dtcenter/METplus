@@ -2703,9 +2703,12 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    INIT_EXCLUDE
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_INIT_EXCLUDE`  instead.
+
+   TC_PAIRS_INIT_EXCLUDE
      Specify which, if any, forecast initializations to exclude from the analysis.
 
-     | *Used by:*  TCPairs, TCStat
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -2736,9 +2739,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** No longer used.
 
    INIT_INCLUDE
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_INIT_INCLUDE`  instead.
+
+   TC_PAIRS_INIT_INCLUDE
      Specify which forecast initializations to include in the analysis.
 
-     | *Used by:*  TCPairs, TCStat
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
