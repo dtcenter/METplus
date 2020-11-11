@@ -43,6 +43,7 @@ Usage: build_docker_images.sh
         -pull version
         [-data list]
         [-union]
+        [-all]
         [-push repo]
         [-help]
 
@@ -50,6 +51,7 @@ Usage: build_docker_images.sh
           "-pull version" defines the version of the datasets to be pulled (required).
           "-data list" overrides the use of all datasets for this version with a comma-separated list (optional).
           "-union" also creates one data volume with all datasets for this version (optional).
+          "-all" create data volumes from all available datasets for this version (optional).
           "-push repo" pushes the images to the specified DockerHub repository (optional).
           "-help" prints the usage statement.
 
@@ -79,6 +81,10 @@ function run_command {
 # Defaults for command line options
 DO_UNION=0
 DO_PUSH=0
+DO_ALL=0
+
+# Default for checking if using tagged version
+TAGGED_VERSION=0
 
 # Parse command line options
 while true; do
@@ -102,9 +108,18 @@ while true; do
       echo "Will create a data volume containing all input datasets."
       shift;;
 
+    all | -all | --all )
+      DO_ALL=1
+      echo "Will create a data volume for each available input dataset."
+      shift;;
+
     push | -push | --push )
       DO_PUSH=1
       PUSH_REPO=$2
+      if [ -z ${PUSH_REPO} ]; then
+        echo "ERROR: Must provide push repository after -push"
+        usage
+      fi
       echo "Will push images to DockerHub ${PUSH_REPO}."
       shift 2;;
 
@@ -132,12 +147,23 @@ if [ -z ${VERSION+x} ]; then
   usage
 fi
 
+# use VERSION in the Docker image tag unless using a tagged version
+DOCKER_VERSION=${VERSION}
+
+# check if using a tagged version (e.g v4.0)
+# remove v from version if tagged version
+if [[ ${VERSION} =~ ^v[0-9.]+$ ]]; then
+    TAGGED_VERSION=1
+    DOCKER_VERSION=${VERSION:1}
+fi
+
+
 # Define the target repository if necessary 
 if [ -z ${PUSH_REPO+x} ]; then
 
   # Push tagged versions (e.g. v4.0) to metplus-data
   # and all others to metplus-data-dev
-  if [[ ${VERSION} =~ ^v[0-9.]+$ ]]; then
+  if [ ${TAGGED_VERSION} == 1 ]; then
     PUSH_REPO="dtcenter/metplus-data"
   else
     PUSH_REPO="dtcenter/metplus-data-dev"
@@ -176,7 +202,7 @@ for TARFILE in $TARFILE_LIST; do
   # Parse the current dataset name
   CUR_DATA=`echo $TARFILE | cut -d'-' -f2 | sed 's/.tgz//g'`
 
-  if [ -z ${PULL_DATA+x} ] || [ `echo ${PULL_DATA} | grep ${CUR_DATA}` ]; then
+  if [ -z ${PULL_DATA+x} ] || [ `echo ${PULL_DATA} | grep ${CUR_DATA}` ] || [ ${DO_ALL} == 1 ]; then
     echo "Processing \"${TARFILE}\" ..." 
   else
     echo "Skipping \"${TARFILE}\" since \"${CUR_DATA}\" was not requested in \"-data\"." 
@@ -184,7 +210,7 @@ for TARFILE in $TARFILE_LIST; do
   fi
 
   # Define the docker image name
-  IMGNAME="${PUSH_REPO}:${VERSION}-${CUR_DATA}"
+  IMGNAME="${PUSH_REPO}:${DOCKER_VERSION}-${CUR_DATA}"
 
   # Determine the mount point
   MOUNTPT_URL="${PULL_URL}/${VERSION}/${MOUNTPT_FILE}"
@@ -226,7 +252,7 @@ done
 
 if [ ${DO_UNION} == 1 ]; then
 
-  IMGNAME="${PUSH_REPO}:${VERSION}"
+  IMGNAME="${PUSH_REPO}:${DOCKER_VERSION}"
   MOUNTPT="${MOUNTPT_BASE}"
 
   run_command docker build -t ${IMGNAME} ${SCRIPT_DIR} \

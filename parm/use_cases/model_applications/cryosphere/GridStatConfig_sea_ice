@@ -224,6 +224,6 @@ nc_pairs_flag = {
 grid_weight_flag = NONE;
 tmp_dir          = "/tmp";
 output_prefix    = "${OUTPUT_PREFIX}";
-version          = "V9.0";
+//version          = "V10.0";
 
 ////////////////////////////////////////////////////////////////////////////////

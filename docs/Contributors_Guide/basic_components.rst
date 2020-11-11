@@ -11,10 +11,10 @@ Each wrapper contains an initialization function (__init__) that sets up the wra
     class ExampleWrapper(CommandBuilder):
         """!Wrapper can be used as a base to develop a new wrapper"""
         def __init__(self, config, logger):
-	    super().__init__(config, logger)
-	    self.app_name = 'example'
-	    self.app_path = os.path.join(self.config.getdir('MET_BIN_DIR'),
-	                                                    self.app_name)
+            super().__init__(config, logger)
+            self.app_name = 'example'
+            self.app_path = os.path.join(self.config.getdir('MET_BIN_DIR'),
+                                                             self.app_name)
 
 The above code block is an excerpt from the ExampleWrapper, found in ush/example_wrapper.py. The class name should always be the item that is passed into the METplus configuration variable list PROCESS_LIST with 'Wrapper' at the end. The text 'CommandBuilder' in parenthesis makes ExampleWrapper a subclass of CommandBuilder. In the __init__ function, the line starting with 'super()' calls the parent class __init__ function.
 
@@ -63,7 +63,7 @@ want all of the processes to attempt to be executed and then note which ones fai
 
 At the end of the wrapper initialization step, all isOK=false will be collected and reported. Execution of the wrappers will not occur unless all wrappers in the process list are initialized correctly.
 
-.. code-block:: python 
+.. code-block:: python
 
     c_dict['CONFIG_FILE'] = self.config.getstr('config', 'MODE_CONFIG_FILE', '')
     if not c_dict['CONFIG_FILE']:
@@ -108,7 +108,7 @@ get_command function
 get_command assembles a MET command with arguments that can be run via the shell or the wrapper.
 It is defined in CommandBuilder but is overridden in most wrappers because the command line arguments differ for each MET tool.
 
-set_environment_variables function 
+set_environment_variables function
 ----------------------------------
 Uses add_env_var function (CommandBuilder) to set any shell environment variables that MET or other METplus wrappers
 need to be set. This allows a wrapper to pass information into a MET configuration file. The MET config file refers to the environment variables.

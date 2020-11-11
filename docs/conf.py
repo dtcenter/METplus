@@ -13,30 +13,51 @@
 import os
 from datetime import datetime
 import sys
-sys.path.insert(0, os.path.abspath('../ush'))
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                os.pardir)))
 sys.path.append(os.path.abspath("./_ext"))
 print(sys.path)
 
+from metplus import __version__, __release_date__
 
 # -- Project information -----------------------------------------------------
 
 project = 'METplus'
 
-author = 'UCAR/NCAR, NOAA, and CSU/CIRA'
-
-# the stable version, displayed on front page of PDF
-version = '3.1'
+author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
 # The full version, including alpha/beta/rc tags
-release = f'{version}'
+# i.e. 4.0-beta1-dev
+release = __version__
 
-release_year = '2020'
+# the stable version, displayed on front page of PDF extract X.Y version
+# from release by splitting the string into a list
+# using - as the delimeter, then getting the 1st item of the list
+# if version is beta, rc, and/or dev then set version to develop for
+# the documentation built for develop (not release)
+if len(release.split('-')) > 1:
+    version = 'develop'
+else:
+    version = f"{release.split('-')[0]}"
 
-release_date = f'{release_year}0810'
+verinfo = version
+
+release_date = __release_date__
+
+release_year = release_date[0:4]
 
 copyright = f'{release_year}, {author}'
 
 release_monthyear = datetime.strptime(release_date, '%Y%m%d').strftime('%B %Y')
+
+if version == 'develop':
+  release_info = 'development version'
+else:
+  release_info = f'{release} release ({release_monthyear})'
+
+# if set, adds "Last updated on " followed by
+# the date in the specified format
+html_last_updated_fmt = '%c'
 
 # -- General configuration ---------------------------------------------------
 
@@ -97,6 +118,10 @@ suppress_warnings = ['ref.citation']
 # a list of builtin themes.
 #
 html_theme = 'sphinx_rtd_theme'
+html_theme_path = ["_themes", ]
+html_js_files = ['pop_ver.js']
+html_theme_options = {'canonical_url': 'https://dtcenter.github.io/METplus/latest/'}
+html_theme_options['versions'] = {'latest': '../latest', 'develop': '../develop'}
 html_css_files = ['theme_override.css']
 
 # Add any paths that contain custom static files (such as style sheets) here,
@@ -123,13 +148,9 @@ sphinx_gallery_conf = {
 # -- Intersphinx control ---------------------------------------------------------------
 intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
 
-rst_epilog = """
-.. |copyright| replace:: {copyrightstr}
-.. |release_date| replace:: {release_datestr}
-.. |release_year| replace:: {release_yearstr}
-.. |release_monthyear| replace:: {release_monthyearstr}
-""".format(copyrightstr=copyright,
-           release_datestr=release_date,
-           release_yearstr=release_year,
-           release_monthyearstr=release_monthyear,
-           )
+rst_epilog = f"""
+.. |copyright| replace:: {copyright}
+.. |release_date| replace:: {release_date}
+.. |release_year| replace:: {release_year}
+.. |release_info| replace:: {release_info}
+"""

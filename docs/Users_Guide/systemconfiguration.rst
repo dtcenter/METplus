@@ -297,7 +297,7 @@ Now and Today
 To make running in realtime easier, the METplus Wrappers support defining the begin and end times relative to
 the current clock time. For example, if the current time is 2019-04-26 08:17 and you start the METplus Wrappers
 with::
-  
+
   [config]
   VALID_END = {now?fmt=%Y%m%d%H}
 
@@ -467,7 +467,7 @@ This configuration will run SeriesAnalysis:
 * At 2019-02-03 using SAConfig_two config file and writing output to {OUTPUT_BASE}/SA/two
 
 
-.. _Field_Info:   
+.. _Field_Info:
 
 Field Info
 ~~~~~~~~~~
@@ -632,7 +632,7 @@ For more information on GRIB_lvl_typ and other file-specific commands, review th
 
 .. _Directory_and_Filename_Template_Info:
 
-Directory and Filename Template Info 
+Directory and Filename Template Info
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The METplus Wrappers use directory and filename template configuration variables to find the desired files for a given run.
@@ -679,7 +679,7 @@ Some data assimilation files contain offset and da_init (data assimilation initi
 
   [config]
   PB2NC_OFFSETS = 6, 3
-  
+
   [dir]
   PB2NC_INPUT_DIR = /my/path/to/prepbufr
 
@@ -689,7 +689,7 @@ Some data assimilation files contain offset and da_init (data assimilation initi
 | The PB2NC_OFFSETS list tells METplus Wrappers the order in which to prioritize files with offsets in the name. At valid time 20190201_12Z, METplus Wrappers will check if the following file exists:
 |   /my/path/to/prepbufr/prefix.20190201_18_off06.ext
 
-| The offset is added to the valid time to get the data assimilation initialization time. Note that 'cycle' can be used interchangeably with 'da_init'. It is generally used to specify the hour of the data that was generated. If that file doesn't exist, it will check if the following file exists:   
+| The offset is added to the valid time to get the data assimilation initialization time. Note that 'cycle' can be used interchangeably with 'da_init'. It is generally used to specify the hour of the data that was generated. If that file doesn't exist, it will check if the following file exists:
 |   /my/path/to/prepbufr/prefix.20190201_15_off03.ext
 
 Shifting Times in Filename Templates
@@ -713,7 +713,7 @@ The [FCST/OBS]_FILE_WINDOW_[BEGIN/END] configuration variables can be used if th
 
   [dir]
   OBS_GRID_STAT_INPUT_DIR = /my/grid_stat/input/obs
-  
+
   [filename_templates]
   OBS_GRID_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d}/pre.{valid?fmt=%Y%m%d}_{valid?fmt=%H}.ext
 
@@ -795,7 +795,7 @@ Config Quick Start Example
 
   1. Create a directory where you wish to store the sample data. Sample datasets are specific to each use case and are required in order to be able to run the use case.
   2. Retrieve the sample data from the GitHub repository:
-    
+
     a. In your browser, navigate to https://www.github.com/dtcenter/METplus/releases
     b. Locate the latest release
     c. Expand the 'Assets' menu by clicking on the black triangle to the left of the word 'Assets'
@@ -803,38 +803,38 @@ Config Quick Start Example
     e. Save it to the directory you created above, hereafter referred to as INPUT_DATA_DIRECTORY
     f. cd to your $INPUT_DATA_DIRECTORY and uncompress the tarball: *tar xvfz sample_data-medium_range-x.y.tgz* where x.y is replaced with the current release number.
     g. when you perform a listing of the sample_data directory, the INPUT_DATA_DIRECTORY/model_applications/medium_range contains the data you will need for this use case
-  
+
   3. Set up the configuration file:
-    
+
     a. Your METplus Wrappers install directory will hereafter be referred to as METplus_INSTALL
     b. Verify that all the *</path/to>* values are replaced with valid paths in the METplus_INSTALL/parm/metplus_config/metplus_data.conf and METplus_INSTALL/parm/metplus_config/metplus_system.conf files
     c. One configuration file is used in this use case, Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data, and using TCPairs which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone tracks to generate matched pairs and error statistics). The TCMPRPlotter is then used (wraps the MET tool plot_tcmpr.R) to generate a mean and median plots for these matched pairs
     d. In your editor, open the METplus_INSTALL/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf file and perform the following:
-      
+
       1. Under the [dir] section, add the following:
-        
+
         a. OUTPUT_BASE to where you wish to save the output:  e.g. OUTPUT_BASE = path-to-your/output_dir
         b. INPUT_BASE = INPUT_DATA_DIRECTORY/model_applications
         c. MET_INSTALL_DIR = path-to-your/MET-install where path-to-your/MET-install is the full path where your MET installation resides
         d. Verify that PROCESS_LIST, under the [conf] header/section is set to TCPairs, TCMPRPlotter. This instructs METplus Wrappers to run the TCPairs wrapper first (TC-Pairs) followed by the TCMPR plotter wrapper (plot_TCMPR.R).
 
       2. Save your changes and exit your editor
-    
+
 
   4. Run the use case:
-    
+
     a. Make sure you have set the following environment in your .cshrc (C Shell) or .bashrc (Bash):
-      
+
       1. csh: setenv RSCRIPTS_BASE $MET_BASE/scripts/Rscripts
       2. bash: export RSCRIPTS_BASE=$MET_BASE/scripts/Rscripts
       3. Refer to section 2.7 'Set up your environment' in the :ref:`install` chapter for the full instructions on setting up the rest of your environment
       4. On your command line, run::
-         
+
            master_metplus.py -c parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
-        
+
       5. When complete, you will have a log file in the output directory you specified, and under the tc_pairs directory you will see .tcst files under the 201412 subdirectory. These are the matched pairs created by the MET tool Tc-pairs and can be viewed in any text editor.
       6. Plots are generated under the tcmpr_plots subdirectory in .png format. You should have the following plots which can be viewed by any graphics viewers such as 'display' on Linux/Unix hosts:
-        
+
         a. AMAX_WIND-BMAX_WIND_boxplot.png
 
         b. AMAX_WIND-BMAX_WIND_mean.png
@@ -878,10 +878,17 @@ You can also reference other variables in the METplus config file. For example::
   USE_CASE_TIME_ID = {INIT_BEG}
 
 This is the equivalent of calling (bash example shown)::
-  
-  $ export USE_CAST_TIME_ID=1987020104 
+
+  $ export USE_CAST_TIME_ID=1987020104
 
 on the command line at the beginning of your METplus run. You can access the variable in the MET config file with ${USE_CASE_TIME_ID}.
+
+Using Environment Variables as Config Variables
+-----------------------------------------------
+
+You can set METplus config variables to the value of local environment variables when METplus is run. To set any METplus config variable to the value of a local environment variable, use the following syntax::
+
+  METPLUS_CONF_VAR = {ENV[LOCAL_ENV_VAR_NAME]}
 
 :doc:`glossary`
 

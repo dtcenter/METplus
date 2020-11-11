@@ -168,7 +168,7 @@ METplus Configuration Glossary
      | *Used by:* MakePlots
      | *Family:* config
      | *Default:* MEAN
-  
+
    MAKE_PLOTS_SCRIPTS_DIR
      Directory to find scripts used by MakePlots.
 
@@ -408,14 +408,14 @@ METplus Configuration Glossary
      | *Default:* None
 
    POINT2GRID_WINDOW_BEGIN
-     Specify the beginning of the time window to use for a date stamp window to grab observations 
+     Specify the beginning of the time window to use for a date stamp window to grab observations
 
      | *Used by:* Point2Grid
      | *Family:* [config]
      | *Default:* None
 
    POINT2GRID_WINDOW_END
-     Specify the end of the time window to use for a date stamp window to grab observations 
+     Specify the end of the time window to use for a date stamp window to grab observations
 
      | *Used by:* Point2Grid
      | *Family:* [config]
@@ -642,7 +642,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    PY_EMBED_INGEST_<n>_OUTPUT_FIELD_NAME
-     Used to specify the forecast output field name that is created by RegridDataPlane. If this option is not set, RegridDataPlane will call the field name "name_level". 
+     Used to specify the forecast output field name that is created by RegridDataPlane. If this option is not set, RegridDataPlane will call the field name "name_level".
 
      | *Used by:* PyEmbedIngest
      | *Family:* [config]
@@ -691,7 +691,6 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-		       
    TC_STAT_CONFIG_FILE
      Path to optional configuration file read by TCStat.
 
@@ -1212,7 +1211,7 @@ METplus Configuration Glossary
 
    DESC
      .. warning:: **DEPRECATED:** Please use :term:`DESC_LIST` instead.
-     
+
    DESC_LIST
      A single value or list of values used in the stat_analysis data stratification. Specifies the values of the DESC column in the MET .stat file to use.
 
@@ -1251,7 +1250,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_DLON` instead.
 
 
-   
+
 
    EXTRACT_TILES_PAIRS_INPUT_DIR
      Directory containing matched pairs input to be read by ExtractTiles.
@@ -1292,6 +1291,13 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:*  1.0
+
+   ENSEMBLE_STAT_ENS_VLD_THRESH
+     Threshold for the ratio of the number of valid data values to the total number of expected ensemble members. This value is passed into the ensemble_stat config file to make sure the percentage of files that are valid meets the expectation.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  NONE
 
    ENSEMBLE_STAT_GRID_VX
      .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_REGRID_TO_GRID`.
@@ -1633,7 +1639,7 @@ METplus Configuration Glossary
 
    FCST_LEAD
      .. warning:: **DEPRECATED:** Please use :term:`FCST_LEAD_LIST` instead.
-		  
+
    FCST_LEVEL
      .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` instead.
 
@@ -1823,9 +1829,6 @@ METplus Configuration Glossary
    FCST_MIN_FORECAST
      .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_MIN_FORECAST`.
 
-   FCST_MAX_FORECAST
-     .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_MAX_FORECAST`.
-
    OBS_MIN_FORECAST
      .. warning:: **DEPRECATED:** Please use :term:`OBS_PCP_COMBINE_MIN_FORECAST`.
 
@@ -1987,7 +1990,7 @@ METplus Configuration Glossary
 
      | *Used by:*  StatAnalysis
      | *Family:*  [config]
-     | *Default:* None   
+     | *Default:* None
 
    FCST_TILE_PREFIX
      .. warning:: **DEPRECATED:** Please use :term:`FCST_EXTRACT_TILES_PREFIX` instead.
@@ -3050,10 +3053,10 @@ METplus Configuration Glossary
      | *Used by:*  MakePlots, StatAnalysis
      | *Family:*  [config]
      | *Default:*  Models listed as MODEL<n>
- 
+
    MODEL<n>_NAME
         .. warning:: **DEPRECATED:** Please use :term:`MODEL\<n\>`.
-			     
+
    MODEL<n>
      Define the model name for the first model to be used in the analysis. This is the model name listed in the MET .stat files.There can be <n> number of models defined in configuration files, simply increment the "MODEL1" string to match the total number of models being used, e.g.:
 
@@ -4792,7 +4795,7 @@ METplus Configuration Glossary
      | *Default:* None
 
    STAT_FILES_INPUT_DIR
-      .. warning:: **DEPRECATED:** Please use :term:`MAKE_PLOTS_INPUT_DIR` instead. 
+      .. warning:: **DEPRECATED:** Please use :term:`MAKE_PLOTS_INPUT_DIR` instead.
 
    SERIES_ANALYSIS_STAT_LIST
      Specify a list of statistics to be computed by the MET series_analysis tool.
@@ -4963,6 +4966,7 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  no
 
+
    TC_PAIRS_REFORMAT_DECK
      Set to true or yes if using cyclone data that needs to be reformatted to match the ATCF (Automated Tropical Cyclone Forecasting) format. If set to true or yes, you will need to set :term:`TC_PAIRS_REFORMAT_TYPE` to specify which type of reformatting to perform.
 
@@ -5034,7 +5038,9 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_CMD_LINE_JOB
-     Specify expression(s) that will be passed to the MET tc_stat tool via the command line. Only specify if TC_STAT_RUN_VIA=CLI. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ chapter for tc-stat for the details on performing job summaries and job filters.
+     .. warning:: **DEPRECATED:** Please set :term:`TC_STAT_CONFIG_FILE` to run using a config file and leave it unset to run via the command line.
+
+     Old: Specify expression(s) that will be passed to the MET tc_stat tool via the command line. Only specify if TC_STAT_RUN_VIA=CLI. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ chapter for tc-stat for the details on performing job summaries and job filters.
 
      | *Used by:*  TCStat
      | *Family:*  [config]
@@ -5153,6 +5159,13 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_INPUT_DIR
+     .. warning:: **DEPRECATED:** Please use :term:`TC_STAT_LOOKIN_DIR`.
+
+     | *Used by:*  TCStat
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
+   TC_STAT_LOOKIN_DIR
      Specify the input directory where the MET tc_stat tool will look for files.
 
      | *Used by:*  TCStat
@@ -5166,12 +5179,15 @@ METplus Configuration Glossary
      | *Family:*  [dir]
      | *Default:*  Varies
 
-   TC_STAT_JOBS_LIST
+   TC_STAT_JOB_ARGS
      Specify expressions for the MET tc_stat tool to execute.
 
      | *Used by:*  TCStat
      | *Family:*  [config]
      | *Default:*  Varies
+
+   TC_STAT_JOBS_LIST
+     .. warning:: **DEPRECATED:** Please use :term:`TC_STAT_JOB_ARGS`.
 
    TC_STAT_LANDFALL
      Specify whether only those points occurring near landfall should be retained when using the MET tc_stat tool. Acceptable values: True/False
@@ -5223,7 +5239,9 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_RUN_VIA
-     Specify the method for running the MET tc_stat tool. Acceptable values: CONFIG. If left blank (unset), tc_stat will run via the command line.
+     .. warning:: **DEPRECATED:** Please set :term:`TC_STAT_CONFIG_FILE` to run using a config file and leave it unset to run via the command line.
+
+     Old: Specify the method for running the MET tc_stat tool. Acceptable values: CONFIG. If left blank (unset), tc_stat will run via the command line.
 
      | *Used by:*  TCStat
      | *Family:*  [config]
@@ -5310,9 +5328,6 @@ METplus Configuration Glossary
 
    TIME_SUMMARY_FLAG
      .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_FLAG` instead.
-
-   TIME_SUMMARY_TYPES
-     .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_TYPES` instead.
 
    TITLE
      .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_TITLE` instead.

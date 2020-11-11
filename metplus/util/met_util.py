@@ -29,6 +29,8 @@ from .string_template_substitution import get_tags
 from . import time_util as time_util
 from . import metplus_check
 
+from .. import get_metplus_version
+
 """!@namespace met_util
  @brief Provides  Utility functions for METplus.
 """
@@ -86,7 +88,7 @@ MISSING_DATA_VALUE = -9999
 
 def pre_run_setup(config_inputs):
     from . import config_metplus
-    version_number = get_version_number()
+    version_number = get_metplus_version()
     print(f'Starting METplus v{version_number}')
 
     # Read config inputs and return a config instance
@@ -474,6 +476,10 @@ def check_for_deprecated_config(config):
         'CUSTOM_INGEST_<n>_OUTPUT_GRID': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_OUTPUT_GRID'},
         'CUSTOM_INGEST_<n>_SCRIPT': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_SCRIPT'},
         'CUSTOM_INGEST_<n>_TYPE': {'sec': 'config', 'alt': 'PY_EMBED_INGEST_<n>_TYPE'},
+        'TC_STAT_RUN_VIA': {'sec': 'config', 'alt': 'TC_STAT_CONFIG_FILE',
+                            'copy': False},
+        'TC_STAT_CMD_LINE_JOB': {'sec': 'config', 'alt': 'TC_STAT_JOB_ARGS'},
+        'TC_STAT_JOBS_LIST': {'sec': 'config', 'alt': 'TC_STAT_JOB_ARGS'},
     }
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
@@ -1022,19 +1028,6 @@ def get_lead_sequence(config, input_dict=None):
 
     return out_leads
 
-def get_version_number():
-    # read version file and return value
-    # get top level of METplus - parents[2] is 3 directories up from current file
-    # which is in ush/metplus/util
-    metplus_base = str(Path(__file__).parents[2])
-    version_file_path = os.path.join(metplus_base,
-                                     'docs',
-                                     'version')
-
-    with open(version_file_path, 'r') as version_file:
-        return version_file.read()
-
-
 def round_0p5(val):
     """! Round to the nearest point five (ie 3.3 rounds to 3.5, 3.1
        rounds to 3.0) Take the input value, multiply by two, round to integer
@@ -1256,11 +1249,8 @@ def get_files(filedir, filename_regex, logger):
     """
     file_paths = []
 
-    # pylint:disable=unused-variable
-    # os.walk returns a tuple. Not all returned values are needed.
-
     # Walk the tree
-    for root, directories, files in os.walk(filedir):
+    for root, _, files in os.walk(filedir):
         for filename in files:
             # add it to the list only if it is a match
             # to the specified format
@@ -1973,7 +1963,7 @@ def validate_configuration_variables(config, force_check=False):
 
     # check that OUTPUT_BASE is not set to the exact same value as INPUT_BASE
     inoutbase_isOK = True
-    input_real_path = os.path.realpath(config.getdir('INPUT_BASE'))
+    input_real_path = os.path.realpath(config.getdir_nocheck('INPUT_BASE', ''))
     output_real_path = os.path.realpath(config.getdir('OUTPUT_BASE'))
     if input_real_path == output_real_path:
       config.logger.error(f"INPUT_BASE AND OUTPUT_BASE are set to the exact same path: {input_real_path}")
@@ -2037,9 +2027,18 @@ def find_indices_in_config_section(regex_expression, config, sec, noID=False):
     return indices
 
 def is_var_item_valid(item_list, index, ext, config):
-    """!Given a list of data types (FCST, OBS, ENS, or BOTH) check if the combination is valid.
+    """!Given a list of data types (FCST, OBS, ENS, or BOTH) check if the
+        combination is valid.
         If BOTH is found, FCST and OBS should not be found.
-        If FCST or OBS is found, ther other must also be found."""
+        If FCST or OBS is found, the other must also be found.
+        @param item_list list of data types that were found for a given index
+        @param index number following _VAR in the variable name
+        @param ext extension to check, i.e. NAME, LEVELS, THRESH, or OPTIONS
+        @param config METplusConfig instance
+        @returns tuple containing boolean if var item is valid, list of error
+         messages and list of sed commands to help the user update their old
+         configuration files
+    """
 
     full_ext = f"_VAR{index}_{ext}"
     msg = []
@@ -2048,30 +2047,43 @@ def is_var_item_valid(item_list, index, ext, config):
 
         msg.append(f"Cannot set FCST{full_ext} or OBS{full_ext} if BOTH{full_ext} is set.")
 
-    elif ext not in ['OPTIONS'] and 'FCST' in item_list and 'OBS' not in item_list:
+    elif 'FCST' in item_list and 'OBS' not in item_list:
+        # if FCST level has 1 item and OBS name is a python embedding script,
+        # don't report error
+        level_list = getlist(config.getraw('config',
+                                           f'FCST_VAR{index}_LEVELS',
+                                           ''))
+        other_name = config.getraw('config', f'OBS_VAR{index}_NAME', '')
+        skip_error_for_py_embed = ext == 'LEVELS' and is_python_script(other_name) and len(level_list) == 1
+        # do not report error for OPTIONS since it isn't required to be the same length
+        if ext not in ['OPTIONS'] and not skip_error_for_py_embed:
+            msg.append(f"If FCST{full_ext} is set, you must either set OBS{full_ext} or "
+                       f"change FCST{full_ext} to BOTH{full_ext}")
 
-        msg.append(f"If FCST{full_ext} is set, you must either set OBS{full_ext} or "
-                   f"change FCST{full_ext} to BOTH{full_ext}")
+            config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+            for config_file in config_files:
+                sed_cmds.append(f"sed -i 's|^FCST{full_ext}|BOTH{full_ext}|g' {config_file}")
+                sed_cmds.append(f"sed -i 's|{{FCST{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
 
-        config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
-        for config_file in config_files:
-            sed_cmds.append(f"sed -i 's|^FCST{full_ext}|BOTH{full_ext}|g' {config_file}")
-            sed_cmds.append(f"sed -i 's|{{FCST{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
+    elif 'OBS' in item_list and 'FCST' not in item_list:
+        # if OBS level has 1 item and FCST name is a python embedding script,
+        # don't report error
+        level_list = getlist(config.getraw('config',
+                                           f'OBS_VAR{index}_LEVELS',
+                                           ''))
+        other_name = config.getraw('config', f'FCST_VAR{index}_NAME', '')
+        skip_error_for_py_embed = ext == 'LEVELS' and is_python_script(other_name) and len(level_list) == 1
 
-    elif ext not in ['OPTIONS'] and 'OBS' in item_list and 'FCST' not in item_list:
+        if ext not in ['OPTIONS'] and not skip_error_for_py_embed:
+            msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or ."
+                          f"change OBS{full_ext} to BOTH{full_ext}")
 
-        msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or ."
-                      f"change OBS{full_ext} to BOTH{full_ext}")
+            config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+            for config_file in config_files:
+                sed_cmds.append(f"sed -i 's|^OBS{full_ext}|BOTH{full_ext}|g' {config_file}")
+                sed_cmds.append(f"sed -i 's|{{OBS{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
 
-        config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
-        for config_file in config_files:
-            sed_cmds.append(f"sed -i 's|^OBS{full_ext}|BOTH{full_ext}|g' {config_file}")
-            sed_cmds.append(f"sed -i 's|{{OBS{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
-
-    else:
-        return True, msg, sed_cmds
-
-    return False, msg, sed_cmds
+    return not bool(msg), msg, sed_cmds
 
 def validate_field_info_configs(config, force_check=False):
     """!Verify that config variables with _VAR<n>_ in them are valid. Returns True if all are valid.
@@ -2639,6 +2651,9 @@ def template_to_regex(template, time_info, logger):
                          **time_info)
 
 def is_python_script(name):
+    if not name:
+        return False
+
     all_items = name.split(' ')
     if any(item.endswith('.py') for item in all_items):
         return True
@@ -2722,5 +2737,135 @@ def iterate_check_position(input_list, check_first):
 
     yield last, not check_first
 
-if __name__ == "__main__":
-    gen_init_list("20141201", "20150331", 6, "18")
+def expand_int_string_to_list(int_string):
+    """! Expand string into a list of integer values. Items are separated by
+    commas. Items that are formatted X-Y will be expanded into each number
+    from X to Y inclusive. If the string ends with +, then add a str '+'
+    to the end of the list.
+
+    @param int_string String containing a comma-separated list of integers
+    @returns List of integers and potentially '+' as the last item
+    """
+    subset_list = []
+
+    # if string ends with +, remove it and add it back at the end
+    if int_string.strip().endswith('+'):
+        int_string = int_string.strip(' +')
+        hasPlus = True
+    else:
+        hasPlus = False
+
+    # separate into list by comma
+    comma_list = int_string.split(',')
+    for comma_item in comma_list:
+        dash_list = comma_item.split('-')
+        # if item contains X-Y, expand it
+        if len(dash_list) == 2:
+            for i in range(int(dash_list[0].strip()),
+                           int(dash_list[1].strip())+1,
+                           1):
+                subset_list.append(i)
+        else:
+            subset_list.append(int(comma_item.strip()))
+
+    if hasPlus:
+        subset_list.append('+')
+    print(f"{int_string} converted to {subset_list}")
+    return subset_list
+
+def subset_list(full_list, subset_definition):
+    """! Extract subset of items from full_list based on subset_definition
+
+    @param full_list List of all use cases that were requested
+    @param subset_definition Defines how to subset the full list. If None,
+    no subsetting occurs. If an integer value, select that index only.
+    If a slice object, i.e. slice(2,4,1), pass slice object into list.
+    If list, subset full list by integer index values in list. If
+    last item in list is '+' then subset list up to 2nd last index, then
+    get all items from 2nd last item and above
+    """
+    if subset_definition is not None:
+        subset_list = []
+
+        # if case slice is a list, use only the indices in the list
+        if isinstance(subset_definition, list):
+            # if last slice value is a plus sign, get rest of items
+            # after 2nd last slice value
+            if subset_definition[-1] == '+':
+                plus_value = subset_definition[-2]
+                # add all values before last index before plus
+                subset_list.extend([full_list[i]
+                                    for i in subset_definition[:-2]])
+                # add last index listed + all items above
+                subset_list.extend(full_list[plus_value:])
+            else:
+                # list of integers, so get items based on indices
+                subset_list = [full_list[i] for i in subset_definition]
+        else:
+            subset_list = full_list[subset_definition]
+    else:
+        subset_list = full_list
+
+    # if only 1 item is left, make it a list before returning
+    if not isinstance(subset_list, list):
+        subset_list = [subset_list]
+
+    return subset_list
+
+def is_met_netcdf(file_path):
+    """! Check if a file is a MET-generated NetCDF file.
+          If the file is not a NetCDF file, OSError occurs.
+          If the MET_version attribute doesn't exist, AttributeError occurs.
+          If the netCDF4 package is not available, ImportError should occur.
+          All of these situations result in the file being considered not
+          a MET-generated NetCDF file
+         Args:
+             @param file_path full path to file to check
+             @returns True if file is a MET-generated NetCDF file and False if
+              it is not or it can't be determined.
+    """
+    # disable functionality for testing
+    return False
+    try:
+        from netCDF4 import Dataset
+        nc_file = Dataset(file_path, 'r')
+        getattr(nc_file, 'MET_version')
+    except (AttributeError, OSError, ImportError):
+        return False
+
+    return True
+
+def netcdf_has_var(file_path, name, level):
+    """! Check if name is a variable in the NetCDF file. If not, check if
+         {name}_{level} (with level prefix letter removed, i.e. 06 from A06)
+          If the file is not a NetCDF file, OSError occurs.
+          If the MET_version attribute doesn't exist, AttributeError occurs.
+          If the netCDF4 package is not available, ImportError should occur.
+          All of these situations result in the file being considered not
+          a MET-generated NetCDF file
+         Args:
+             @param file_path full path to file to check
+             @returns True if file is a MET-generated NetCDF file and False if
+              it is not or it can't be determined.
+    """
+    try:
+        from netCDF4 import Dataset
+
+        nc_file = Dataset(file_path, 'r')
+        variables = nc_file.variables.keys()
+
+        # if name is a variable, return that name
+        if name in variables:
+            return name
+
+
+        # if name_level is a variable, return that
+        name_underscore_level = f"{name}_{split_level(level)[1]}"
+        if name_underscore_level in variables:
+            return name_underscore_level
+
+        # requested variable name is not found in file
+        return None
+
+    except (AttributeError, OSError, ImportError):
+        return False

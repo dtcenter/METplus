@@ -7,8 +7,21 @@ import shlex
 
 from docker_utils import docker_get_volumes_last_updated
 
-# this should be set to develop or a release version, i.e. vX.Y
-METPLUS_VERSION = 'develop'
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                os.pardir,
+                                                os.pardir,)))
+
+from metplus import __version__
+
+# METPLUS_VERSION should be set to develop or a release version, i.e. vX.Y
+# if version is set to X.Y without -betaZ or -dev, use that version
+# otherwise use develop
+if len(__version__.split('-')) == 1:
+    # only get first 2 numbers from version, i.e. X.Y.Z will use vX.Y
+    METPLUS_VERSION = f"v{'.'.join(__version__.split('.')[:2])}"
+
+else:
+    METPLUS_VERSION = 'develop'
 
 MODEL_APP_NAMES = ('met_tool_wrapper',
                    'convection_allowing_models',
@@ -23,7 +36,7 @@ MODEL_APP_NAMES = ('met_tool_wrapper',
                    'all_metplus_data',
                   )
 
-def main():
+def main(args):
     volume_list = []
     current_branch = os.environ.get('CURRENT_BRANCH')
     if not current_branch:
@@ -45,7 +58,7 @@ def main():
         # if model application name if found in any command line argument.
         # True if the name is found within any argument string
         # i.e. met_tool_wrapper or --met_tool_wrapper
-        if any([model_app_name in item for item in sys.argv]):
+        if any([model_app_name in item for item in args]):
 
             # if name is not all_metplus_data, use branch version, otherwise
             # add model application sub category to volume name
@@ -82,5 +95,5 @@ def main():
     return ' '.join(volume_list)
 
 if __name__ == "__main__":
-    out = main()
+    out = main(sys.argv)
     print(out)
