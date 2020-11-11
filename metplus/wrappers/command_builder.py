@@ -1023,8 +1023,9 @@ class CommandBuilder:
         cmd = self.get_command()
         if cmd is None:
             self.log_error("Could not generate command")
-            return
-        self.build()
+            return False
+
+        return self.build()
 
     # Placed running of command in its own class, command_runner run_cmd().
     # This will allow the ability to still call build() as is currenly done
@@ -1037,6 +1038,7 @@ class CommandBuilder:
         """!Build and run command"""
         cmd = self.get_command()
         if cmd is None:
+            self.log_error("Could not generate command")
             return False
 
         # add command to list of all commands run

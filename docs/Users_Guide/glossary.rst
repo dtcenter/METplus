@@ -5159,6 +5159,13 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_INPUT_DIR
+     .. warning:: **DEPRECATED:** Please use :term:`TC_STAT_LOOKIN_DIR`.
+
+     | *Used by:*  TCStat
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
+   TC_STAT_LOOKIN_DIR
      Specify the input directory where the MET tc_stat tool will look for files.
 
      | *Used by:*  TCStat
