@@ -39,10 +39,6 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
         Returns:
            None
     """
-
-    # pylint: disable=protected-access
-    # Need to call sys._getframe() to get current function and file for
-    # logging information.
     # pylint: disable=too-many-arguments
     # all input is needed to perform task
 
@@ -56,17 +52,13 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
     logger = config.logger
     rdp = RegridDataPlaneWrapper(config)
 
-    # For logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
     # Get variables, etc. from param/config file.
     model_data_dir = config.getdir('EXTRACT_TILES_GRID_INPUT_DIR')
     met_bin_dir = config.getdir('MET_BIN_DIR', '')
     regrid_data_plane_exe = os.path.join(met_bin_dir,
                                          'regrid_data_plane')
 
-    overwrite_flag = config.getbool('config', 'EXTRACT_TILES_OVERWRITE_TRACK')
+    skip_if_exists = config.getbool('config', 'EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS')
 
     # Extract the columns of interest: init time, lead time,
     # valid time lat and lon of both tropical cyclone tracks, etc.
@@ -226,7 +218,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             # Regrid the fcst file only if a fcst tile
             # file does NOT already exist or if the overwrite flag is True.
             # Create new gridded file for fcst tile
-            if util.file_exists(fcst_regridded_file) and not overwrite_flag:
+            if util.file_exists(fcst_regridded_file) and skip_if_exists:
                 msg = "Forecast tile file {} exists, skip regridding"\
                   .format(fcst_regridded_file)
                 logger.debug(msg)
@@ -257,7 +249,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
                     regrid_cmd_fcst, env=None, app_name=rdp.app_name)
 
             # Create new gridded file for anly tile
-            if util.file_exists(anly_regridded_file) and not overwrite_flag:
+            if util.file_exists(anly_regridded_file) and skip_if_exists:
                 logger.debug("Analysis tile file: " + anly_regridded_file +
                              " exists, skip regridding")
             else:
@@ -286,8 +278,6 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
                        anly_regridded_file)
                 logger.debug(msg)
 
-
-
 def retrieve_var_info(config):
     """! Retrieve the variable name and level from the
         METplus config file. This information will
@@ -302,20 +292,10 @@ def retrieve_var_info(config):
                                           for each variable defined in
                                           VAR_LIST.
     """
-
-    # pylint: disable=protected-access
-    # Need to access sys._getframe() to retrieve the current file and function/
-    # method for logging information.
-
-    # For logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
     full_list = []
 
     name_str = 'name="'
     level_str = 'level="'
-
 
     var_list_of_dicts = util.parse_var_list(config)
     for cur_dict in var_list_of_dicts:
@@ -344,15 +324,6 @@ def retrieve_var_name_levels(config):
                           var name and corresponding levels
 
     """
-
-    # pylint: disable=protected-access
-    # Need to access sys._getframe() to retrieve the current file and function/
-    # method for logging information.
-
-    # For logging
-    cur_filename = sys._getframe().f_code.co_filename
-    cur_function = sys._getframe().f_code.co_name
-
     full_list = []
 
     var_list_of_dicts = util.parse_var_list(config)

@@ -234,6 +234,7 @@ the dimensions and density of the tiles comprising the subregion:
 
 | :term:`EXTRACT_TILES_OUTPUT_DIR`
 | :term:`EXTRACT_TILES_PAIRS_INPUT_DIR`
+| :term:`EXTRACT_TILES_GRID_INPUT_DIR`
 
 [filename_templates]
 
@@ -241,6 +242,7 @@ the dimensions and density of the tiles comprising the subregion:
 | :term:`OBS_EXTRACT_TILES_INPUT_TEMPLATE`
 | :term:`FCST_EXTRACT_TILES_OUTPUT_TEMPLATE`
 | :term:`OBS_EXTRACT_TILES_OUTPUT_TEMPLATE`
+| :term:`EXTRACT_TILES_FILTERED_OUTPUT_TEMPLATE`
 
 [config]
 
@@ -252,7 +254,7 @@ the dimensions and density of the tiles comprising the subregion:
 | :term:`EXTRACT_TILES_DLAT`
 | :term:`EXTRACT_TILES_FILTER_OPTS`
 | :term:`EXTRACT_TILES_VAR_LIST`
-| :term:`EXTRACT_TILES_OVERWRITE_TRACK`
+| :term:`EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS`
 | :term:`EXTRACT_TILES_CUSTOM_LOOP_LIST`
 
 .. warning:: **DEPRECATED:**
@@ -264,6 +266,7 @@ the dimensions and density of the tiles comprising the subregion:
    | :term:`NLON`
    | :term:`DLON`
    | :term:`DLAT`
+   | :term:`EXTRACT_TILES_OVERWRITE_TRACK`
 
 GempakToCF
 ----------

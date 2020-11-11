@@ -480,6 +480,9 @@ def check_for_deprecated_config(config):
                             'copy': False},
         'TC_STAT_CMD_LINE_JOB': {'sec': 'config', 'alt': 'TC_STAT_JOB_ARGS'},
         'TC_STAT_JOBS_LIST': {'sec': 'config', 'alt': 'TC_STAT_JOB_ARGS'},
+        'EXTRACT_TILES_OVERWRITE_TRACK': {'sec': 'config',
+                                          'alt': 'EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS',
+                                          'copy': False},
     }
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
@@ -1201,7 +1204,6 @@ def get_filepaths_for_grbfiles(base_dir):
                 continue
     return file_paths
 
-
 def get_storm_ids(filter_filename, logger):
     """! Get each storm as identified by its STORM_ID in the filter file
         save these in a set so we only save the unique ids and sort them.
@@ -1232,9 +1234,7 @@ def get_storm_ids(filter_filename, logger):
     # set by using sorted rather than sort.
     sorted_storms = sorted(storm_id_list)
     return sorted_storms
-
-
-def get_files(filedir, filename_regex, logger):
+def get_files(filedir, filename_regex, logger=None):
     """! Get all the files (with a particular
         naming format) by walking
         through the directories.
