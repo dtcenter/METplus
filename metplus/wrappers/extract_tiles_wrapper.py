@@ -47,46 +47,29 @@ class ExtractTilesWrapper(CommandBuilder):
     def create_c_dict(self):
         c_dict = super().create_c_dict()
 
-        c_dict['PAIRS_INPUT_DIR'] = (
-            self.config.getdir('EXTRACT_TILES_PAIRS_INPUT_DIR', '')
+        # get TCStat data dir/template to read
+        # stat input directory is optional because the whole path can be
+        # defined in the template
+        c_dict['STAT_INPUT_DIR'] = (
+            self.config.getdir('EXTRACT_TILES_STAT_INPUT_DIR', '')
         )
-        if not c_dict['PAIRS_INPUT_DIR']:
-            self.log_error('Must set EXTRACT_TILES_PAIRS_INPUT_DIR to run '
-                           'ExtractTiles wrapper')
 
-            c_dict['GRID_INPUT_DIR'] = (
-                self.config.getdir('EXTRACT_TILES_GRID_INPUT_DIR', '')
-            )
-            if not c_dict['GRID_INPUT_DIR']:
-                self.log_error('Must set EXTRACT_TILES_GRID_INPUT_DIR to run '
-                               'ExtractTiles wrapper')
-
-        c_dict['OUTPUT_DIR'] = (
-            self.config.getdir('EXTRACT_TILES_OUTPUT_DIR', '')
-        )
-        if not c_dict['OUTPUT_DIR']:
-            self.log_error('Must set EXTRACT_TILES_OUTPUT_DIR to run '
-                           'ExtractTiles wrapper')
-
-        c_dict['FILTERED_OUTPUT_TEMPLATE'] = (
+        c_dict['STAT_INPUT_TEMPLATE'] = (
             self.config.getraw('filename_templates',
-                               'EXTRACT_TILES_FILTERED_OUTPUT_TEMPLATE',
+                               'EXTRACT_TILES_STAT_INPUT_TEMPLATE',
                                '')
         )
-        if not c_dict['FILTERED_OUTPUT_TEMPLATE']:
-            self.log_error('Must set EXTRACT_TILES_FILTERED_OUTPUT_TEMPLATE '
+        if not c_dict['STAT_INPUT_TEMPLATE']:
+            self.log_error('Must set EXTRACT_TILES_STAT_INPUT_TEMPLATE '
                            'to run ExtractTiles wrapper')
 
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = (
-            self.config.getbool('config',
-                                'EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS',
-                                False)
+        # get gridded input directory to read
+        # TODO: change this to read FCST/OBS INPUT DIRS!
+        c_dict['GRID_INPUT_DIR'] = (
+            self.config.getdir('EXTRACT_TILES_GRID_INPUT_DIR', '')
         )
-        c_dict['TC_STAT_FILTER_OPTS'] = (
-            self.config.getstr('config', 'EXTRACT_TILES_FILTER_OPTS', '')
-        )
-        if not c_dict['TC_STAT_FILTER_OPTS']:
-            self.log_error('Must set EXTRACT_TILES_FILTER_OPTS to run '
+        if not c_dict['GRID_INPUT_DIR']:
+            self.log_error('Must set EXTRACT_TILES_GRID_INPUT_DIR to run '
                            'ExtractTiles wrapper')
 
         c_dict['OUTPUT_DIR'] = (
@@ -128,35 +111,22 @@ class ExtractTilesWrapper(CommandBuilder):
         self.logger.debug("Begin extract tiles")
         init_fmt = time_info['init'].strftime('%Y%m%d_%H')
 
-        # Before proceeding, make sure we have input data.
-        if not self.tc_files_exist():
-            self.log_error("No TCPairs data found in "
-                           f"{self.c_dict['PAIRS_INPUT_DIR']}")
-            return
-
-        # Create the name of the filter file we need to find.  If
-        # the filter file doesn't yet exist, then run TCStat
+        # Create the name of the filter file to use
         filter_filename = (
-            do_string_sub(self.c_dict['FILTERED_OUTPUT_TEMPLATE'],
+            do_string_sub(self.c_dict['STAT_INPUT_TEMPLATE'],
                           **time_info)
         )
-        filter_name = os.path.join(self.c_dict['OUTPUT_DIR'],
+        filter_path = os.path.join(self.c_dict['STAT_INPUT_DIR'],
                                    filter_filename)
 
-        if (util.file_exists(filter_name) and
-                self.c_dict['SKIP_IF_OUTPUT_EXISTS']):
-            self.logger.debug("Filter file exists, using Track data file: {}"\
-                              .format(filter_name))
-        else:
-            # Invoke MET tool tc stat via the tc stat wrapper...
-            if not self.do_filtering(time_info, filter_name):
-                return
+        self.logger.debug(f"Looking for input stat file: {filter_path}")
+        if not os.path.exists(filter_path):
+            self.log_error(f"Could not find input stat file: {filter_path}")
+            return
 
         # Now get unique storm ids from the filter file
-        sorted_storm_ids = util.get_storm_ids(filter_name, self.logger)
+        sorted_storm_ids = util.get_storm_ids(filter_path)
 
-        # Useful debugging info: Check for empty sorted_storm_ids, if empty,
-        # continue to the next time.
         if not sorted_storm_ids:
             # No storms found for init time, init_fmt
             self.logger.debug(f"No storms were found for {init_fmt}"
@@ -170,57 +140,12 @@ class ExtractTilesWrapper(CommandBuilder):
         # tmp directory where each file contains information based on storm.
         if not self.create_results_files(sorted_storm_ids,
                                          init_fmt,
-                                         filter_name):
+                                         filter_path):
             self.log_error("There was a problem with processing storms from the filtered result, "\
                     "please check your METplus config file settings or your write permissions for your "\
                     "tmp directory.")
 
         util.prune_empty(self.c_dict['OUTPUT_DIR'], self.logger)
-
-    def tc_files_exist(self):
-        """! Check that there are tc_pairs data files (.tcst) which are needed
-            as input to the extract tiles wrapper
-
-            @returns True if .tcst files exist, False otherwise
-        """
-
-        tc_pairs_nc_output_regex = ".*.tcst"
-        output_files_list = util.get_files(self.c_dict['PAIRS_INPUT_DIR'],
-                                           tc_pairs_nc_output_regex)
-        return len(output_files_list) != 0
-
-    def do_filtering(self, time_info, filter_name):
-        """! run TCStat to filter TCPairs data
-
-            @param time_info time dictionary for current run
-            @param filter_name full path of the file that will contain
-             filtered results generated by the MET tool tc_stat
-        """
-
-        # Create the storm track by applying the
-        # filter options defined in the config/param file.
-        # Use TCStatWrapper to build up the tc_stat command and invoke
-        # the MET tool tc_stat to perform the filtering.
-        cur_init = time_info['init'].strftime('%Y%m%d_%H')
-        job_args = (f"-job filter {self.c_dict['TC_STAT_FILTER_OPTS']}"
-                    f' -dump_row {filter_name}')
-        override_dict = {'TC_STAT_JOB_ARGS': job_args,
-                         'TC_STAT_INIT_INCLUDE': cur_init,
-                         'TC_STAT_LOOKIN_DIR': self.c_dict['PAIRS_INPUT_DIR'],
-                         'TC_STAT_OUTPUT_DIR': self.c_dict['OUTPUT_DIR'],
-                         'TC_STAT_MATCH_POINTS': True,
-                         }
-        tc_stat_wrapper = TCStatWrapper(self.config, override_dict)
-        if not tc_stat_wrapper.isOK:
-            return False
-
-        if not tc_stat_wrapper.run_at_time(time_info):
-            return False
-
-        # Remove any empty files and directories that can occur
-        # from filtering.
-        util.prune_empty(filter_name, self.logger)
-        return True
 
     def create_results_files(self, sorted_storm_ids, cur_init, filter_name):
         ''' Create the tmp files that contain filtered results- one tmp file per storm, then

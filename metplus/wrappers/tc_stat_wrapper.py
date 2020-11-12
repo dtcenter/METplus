@@ -14,6 +14,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import sys
+from datetime import datetime
 
 from produtil.run import ExitStatusException
 
@@ -158,7 +159,11 @@ class TCStatWrapper(CommandBuilder):
         self.validate_config_values(c_dict)
 
     def run_all_times(self):
-        return self.run_at_time(None)
+        init_beg = self.config.getstr('config', 'INIT_BEG')
+        init_time_fmt = self.config.getstr('config', 'INIT_TIME_FMT')
+        init_dt = datetime.strptime(init_beg, init_time_fmt)
+        input_dict = {'init': init_dt}
+        return self.run_at_time(input_dict)
 
     def run_at_time(self, input_dict=None):
         """! Builds the call to the MET tool TC-STAT for all requested
@@ -237,8 +242,13 @@ class TCStatWrapper(CommandBuilder):
                         'LANDFALL',
                         'MATCH_POINTS',
                         ]:
+            # if time info is available, run value through string substitution
+            value = self.c_dict.get(env_var, '')
+            if time_info:
+                value = do_string_sub(value, **time_info)
+
             self.add_env_var(env_var,
-                             self.c_dict.get(env_var, ''))
+                             value)
 
         job_args_str = self.handle_jobs(time_info)
         self.add_env_var('JOBS', job_args_str)
