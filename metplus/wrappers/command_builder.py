@@ -35,7 +35,7 @@ class CommandBuilder:
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, config):
+    def __init__(self, config, config_overrides={}):
         self.isOK = True
         self.errors = 0
         self.config = config
@@ -49,6 +49,10 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
         self.all_commands = []
+
+        # override config if any were supplied
+        self.override_config(config_overrides)
+
         self.env = os.environ.copy()
         if hasattr(config, 'env'):
             self.env = config.env
@@ -63,6 +67,15 @@ class CommandBuilder:
             self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
 
         self.clear()
+
+    def override_config(self, config_overrides):
+        if not config_overrides:
+            return
+
+        self.logger.debug("Overriding config with explicit values:")
+        for key, value in config_overrides.items():
+            self.logger.debug(f"Setting [config] {key} = {value}")
+            self.config.set('config', key, value)
 
     def create_c_dict(self):
         c_dict = dict()
@@ -1010,8 +1023,9 @@ class CommandBuilder:
         cmd = self.get_command()
         if cmd is None:
             self.log_error("Could not generate command")
-            return
-        self.build()
+            return False
+
+        return self.build()
 
     # Placed running of command in its own class, command_runner run_cmd().
     # This will allow the ability to still call build() as is currenly done
@@ -1024,6 +1038,7 @@ class CommandBuilder:
         """!Build and run command"""
         cmd = self.get_command()
         if cmd is None:
+            self.log_error("Could not generate command")
             return False
 
         # add command to list of all commands run
@@ -1032,9 +1047,16 @@ class CommandBuilder:
         ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name,
                                               copyable_env=self.get_env_copy())
         if ret != 0:
-            self.log_error(f"MET command returned a non-zero return code: {cmd}")
-            self.logger.info("Check the logfile for more information on why it failed: "
-                             f"{self.config.getstr('config', 'LOG_METPLUS')}")
+            logfile_path = self.config.getstr('config', 'LOG_METPLUS')
+            # if MET output is written to its own logfile, get that filename
+            if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
+                logfile_path = logfile_path.replace('master_metplus',
+                                                    self.app_name)
+
+            self.log_error("MET command returned a non-zero return code:"
+                           f"{cmd}")
+            self.logger.info("Check the logfile for more information on why "
+                             f"it failed: {logfile_path}")
             return False
 
         return True
@@ -1115,7 +1137,9 @@ class CommandBuilder:
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
         """
-        conf_value = util.getlist(self.config.getstr('config', mp_config_name, ''))
+        conf_value = util.getlist(self.config.getstr('config',
+                                                     mp_config_name,
+                                                     ''))
         if conf_value:
             conf_value = str(conf_value).replace("'", '"')
 
@@ -1199,3 +1223,36 @@ class CommandBuilder:
                 c_key = c_dict_key
 
             c_dict[c_key] = f"{met_config_name} = {str(conf_value)};"
+
+    def set_c_dict_bool(self, c_dict, mp_config_name, met_config_name,
+                        c_dict_key=None, uppercase=True):
+        """! Get boolean from METplus configuration file and format it to be
+             passed into a MET configuration file. Set c_dict item with boolean
+             value expressed as a string.
+             Args:
+                 @param c_dict configuration dictionary to set
+                 @param mp_config_name METplus configuration variable name.
+                  Assumed to be in the [config] section.
+                 @param met_config_name name of MET configuration variable to
+                  set. Also used to determine the key in c_dict to set
+                  (upper-case)
+                 @param c_dict_key optional argument to specify c_dict key to
+                  store result. If set to None (default) then use upper-case of
+                  met_config_name
+                 @param uppercase If true, set value to TRUE or FALSE
+        """
+        conf_value = self.config.getbool('config', mp_config_name)
+        if conf_value is None:
+            self.log_error(f'Invalid boolean value set for {mp_config_name}')
+            return
+
+        if uppercase:
+            conf_value = str(conf_value).upper()
+
+        if not c_dict_key:
+            c_key = met_config_name.upper()
+        else:
+            c_key = c_dict_key
+
+        c_dict[c_key] = (f'{met_config_name} = '
+                         f'{util.remove_quotes(conf_value)};')
