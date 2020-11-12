@@ -1137,7 +1137,7 @@ class CommandBuilder:
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
         """
-        conf_value = util.getlist(self.config.getstr('config',
+        conf_value = util.getlist(self.config.getraw('config',
                                                      mp_config_name,
                                                      ''))
         if conf_value:
@@ -1153,7 +1153,8 @@ class CommandBuilder:
 
             c_dict[c_key] = f'{met_config_name} = {conf_value};'
 
-    def set_c_dict_string(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+    def set_c_dict_string(self, c_dict, mp_config_name, met_config_name,
+                          c_dict_key=None):
         """! Get string from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
@@ -1165,9 +1166,8 @@ class CommandBuilder:
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
         """
-        conf_value = self.config.getstr('config', mp_config_name, '')
+        conf_value = self.config.getraw('config', mp_config_name, '')
         if conf_value:
-
             if not c_dict_key:
                 c_key = met_config_name.upper()
             else:
