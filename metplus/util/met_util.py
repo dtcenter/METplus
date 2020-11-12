@@ -485,6 +485,11 @@ def check_for_deprecated_config(config):
                                           'copy': False},
         'INIT_INCLUDE': {'sec': 'config', 'alt': 'TC_PAIRS_INIT_INCLUDE'},
         'INIT_EXCLUDE': {'sec': 'config', 'alt': 'TC_PAIRS_INIT_EXCLUDE'},
+        'EXTRACT_TILES_PAIRS_INPUT_DIR': {'sec': 'dir',
+                                          'alt': 'EXTRACT_TILES_STAT_INPUT_DIR',
+                                          'copy': False},
+        'EXTRACT_TILES_FILTERED_OUTPUT_TEMPLATE': {'sec': 'dir',
+                                                   'alt': 'EXTRACT_TILES_STAT_INPUT_TEMPLATE',},
     }
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
