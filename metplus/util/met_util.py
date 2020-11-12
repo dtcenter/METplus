@@ -1206,7 +1206,7 @@ def get_filepaths_for_grbfiles(base_dir):
                 continue
     return file_paths
 
-def get_storm_ids(filter_filename, logger):
+def get_storm_ids(filter_filename, logger=None):
     """! Get each storm as identified by its STORM_ID in the filter file
         save these in a set so we only save the unique ids and sort them.
         Args:
@@ -1218,24 +1218,22 @@ def get_storm_ids(filter_filename, logger):
     """
     # Initialize a set because we want unique storm ids.
     storm_id_list = set()
-    empty_list = []
 
-    # Check if the filter_filename is empty, if it
-    # is, then return an empty list.
-    if not os.path.isfile(filter_filename):
-        return empty_list
-    if os.stat(filter_filename).st_size == 0:
-        return empty_list
-    with open(filter_filename, "r") as fileobj:
-        header = fileobj.readline().split()
-        header_colnum = header.index('STORM_ID')
-        for line in fileobj:
-            storm_id_list.add(str(line.split()[header_colnum]))
+    try:
+        with open(filter_filename, "r") as file_handle:
+            header, *lines = file_handle.readlines()
+
+        storm_id_column = header.split().index('STORM_ID')
+        for line in lines:
+            storm_id_list.add(line.split()[storm_id_column])
+    except (ValueError, FileNotFoundError):
+        return []
 
     # sort the unique storm ids, copy the original
     # set by using sorted rather than sort.
     sorted_storms = sorted(storm_id_list)
     return sorted_storms
+
 def get_files(filedir, filename_regex, logger=None):
     """! Get all the files (with a particular
         naming format) by walking

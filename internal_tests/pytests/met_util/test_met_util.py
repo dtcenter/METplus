@@ -1052,3 +1052,28 @@ def test_subset_list(subset_definition, expected_result):
     full_list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
     result = util.subset_list(full_list, subset_definition)
     assert(result == expected_result)
+
+@pytest.mark.parametrize(
+    'filename, expected_result', [
+        # file does not exist
+        ('filedoesnotexist.tcst', []),
+        # file is empty
+        ('empty_filter.tcst', []),
+        # file has STORM_ID column with 4 values
+        ('fake_filter_20141214_00.tcst', ['ML1201072014',
+                                          'ML1221072014',
+                                          'ML1241072014',
+                                          'ML1251072014']),
+        # file does not have STORM_ID column
+        ('test_20190101.stat', []),
+    ]
+)
+def test_get_storm_ids(metplus_config, filename, expected_result):
+    config = metplus_config()
+    filepath = os.path.join(config.getdir('METPLUS_BASE'),
+                            'internal_tests',
+                            'data',
+                            'stat_data',
+                            filename)
+
+    assert(util.get_storm_ids(filepath) == expected_result)
