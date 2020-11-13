@@ -18,8 +18,8 @@ will become the authoritative repository for verification of the Unified
 Forecast System.
 
 It is important to note here that METplus Wrappers is an evolving
-software package. The first release of METplus Wrappers have occurred
-in 2017. This documentation describes the |release| release in |release_monthyear|.
+software package. The METplus Wrappers package was first released
+in 2017. This documentation describes the |release_info|.
 Intermediate releases may include bug fixes. METplus Wrappers is also be
 able to accept new modules contributed by the community. While we are
 setting up our community contribution protocol, please send email

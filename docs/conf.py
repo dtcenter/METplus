@@ -18,7 +18,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
 sys.path.append(os.path.abspath("./_ext"))
 print(sys.path)
 
-from metplus import __version__
+from metplus import __version__, __release_date__
 
 # -- Project information -----------------------------------------------------
 
@@ -42,13 +42,22 @@ else:
 
 verinfo = version
 
-release_year = '2020'
+release_date = __release_date__
 
-release_date = f'{release_year}0810'
+release_year = release_date[0:4]
 
 copyright = f'{release_year}, {author}'
 
 release_monthyear = datetime.strptime(release_date, '%Y%m%d').strftime('%B %Y')
+
+if version == 'develop':
+  release_info = 'development version'
+else:
+  release_info = f'{release} release ({release_monthyear})'
+
+# if set, adds "Last updated on " followed by
+# the date in the specified format
+html_last_updated_fmt = '%c'
 
 # -- General configuration ---------------------------------------------------
 
@@ -139,13 +148,9 @@ sphinx_gallery_conf = {
 # -- Intersphinx control ---------------------------------------------------------------
 intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
 
-rst_epilog = """
-.. |copyright| replace:: {copyrightstr}
-.. |release_date| replace:: {release_datestr}
-.. |release_year| replace:: {release_yearstr}
-.. |release_monthyear| replace:: {release_monthyearstr}
-""".format(copyrightstr=copyright,
-           release_datestr=release_date,
-           release_yearstr=release_year,
-           release_monthyearstr=release_monthyear,
-           )
+rst_epilog = f"""
+.. |copyright| replace:: {copyright}
+.. |release_date| replace:: {release_date}
+.. |release_year| replace:: {release_year}
+.. |release_info| replace:: {release_info}
+"""
