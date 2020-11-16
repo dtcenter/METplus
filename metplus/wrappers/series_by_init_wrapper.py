@@ -255,9 +255,11 @@ class SeriesByInitWrapper(CommandBuilder):
                              }
             tc_stat_wrapper = TCStatWrapper(self.config, override_dict)
             if not tc_stat_wrapper.isOK:
+                self.log_error('TCStat wrapper did not initialize properly')
                 continue
 
             if not tc_stat_wrapper.run_at_time(input_dict):
+                self.log_error(f'TCStat wrapper failed for {cur_init}')
                 continue
 
 #            tcs = TCStatWrapper(self.config)
