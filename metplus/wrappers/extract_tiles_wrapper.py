@@ -16,7 +16,7 @@ from datetime import datetime
 from ..util import met_util as util
 from ..util import feature_util
 from ..util import do_string_sub
-from .tc_stat_wrapper import TCStatWrapper
+from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from . import CommandBuilder
 from ..util import time_util
 
@@ -43,9 +43,12 @@ class ExtractTilesWrapper(CommandBuilder):
     def __init__(self, config):
         self.app_name = 'extract_tiles'
         super().__init__(config)
+        self.regrid_data_plane = self.regrid_data_plane_init()
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
+
+        et_upper = self.app_name.upper()
 
         # get TCStat data dir/template to read
         # stat input directory is optional because the whole path can be
@@ -63,14 +66,27 @@ class ExtractTilesWrapper(CommandBuilder):
             self.log_error('Must set EXTRACT_TILES_STAT_INPUT_TEMPLATE '
                            'to run ExtractTiles wrapper')
 
-        # get gridded input directory to read
-        # TODO: change this to read FCST/OBS INPUT DIRS!
-        c_dict['GRID_INPUT_DIR'] = (
-            self.config.getdir('EXTRACT_TILES_GRID_INPUT_DIR', '')
-        )
-        if not c_dict['GRID_INPUT_DIR']:
-            self.log_error('Must set EXTRACT_TILES_GRID_INPUT_DIR to run '
-                           'ExtractTiles wrapper')
+        # get gridded input/output directory/template to read
+        for dtype in ['FCST', 'OBS']:
+            # get [FCST/OBS]_INPUT_DIR
+            # TODO: change this to read FCST/OBS INPUT DIRS!
+            c_dict[f'{dtype}_INPUT_DIR'] = (
+                self.config.getdir('EXTRACT_TILES_GRID_INPUT_DIR', '')
+            )
+            if not c_dict[f'{dtype}_INPUT_DIR']:
+                self.log_error('Must set EXTRACT_TILES_GRID_INPUT_DIR to run '
+                               'ExtractTiles wrapper')
+
+            # get [FCST/OBS]_[INPUT/OUTPUT]_TEMPLATE
+            for put in ['INPUT', 'OUTPUT']:
+                local_name = f'{dtype}_{put}_TEMPLATE'
+                config_name = f'{dtype}_{et_upper}_{put}_TEMPLATE'
+                c_dict[local_name] = (
+                    self.config.getraw('filename_templates',
+                                       config_name)
+                )
+                if not c_dict[local_name]:
+                    self.log_error(f"{config_name} must be set.")
 
         c_dict['OUTPUT_DIR'] = (
             self.config.getdir('EXTRACT_TILES_OUTPUT_DIR', '')
@@ -79,7 +95,51 @@ class ExtractTilesWrapper(CommandBuilder):
             self.log_error('Must set EXTRACT_TILES_OUTPUT_DIR to run '
                            'ExtractTiles wrapper')
 
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = (
+            self.config.getbool('config',
+                                'EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS',
+                                False)
+        )
+
+        c_dict['NLAT'] = self.config.getstr('config', 'EXTRACT_TILES_NLAT')
+        c_dict['NLON'] = self.config.getstr('config', 'EXTRACT_TILES_NLON')
+        c_dict['DLAT'] = self.config.getstr('config', 'EXTRACT_TILES_DLAT')
+        c_dict['DLON'] = self.config.getstr('config', 'EXTRACT_TILES_DLON')
+        c_dict['LAT_ADJ'] = self.config.getfloat('config',
+                                                 'EXTRACT_TILES_LAT_ADJ')
+        c_dict['LON_ADJ'] = self.config.getfloat('config',
+                                                 'EXTRACT_TILES_LON_ADJ')
+
+
         return c_dict
+
+    def regrid_data_plane_init(self):
+        # create instance of RegridDataPlane wrapper, overriding default
+        # values for required config variables. These values will be
+        # set to the appropriate value for each run of the tool
+        rdp = 'REGRID_DATA_PLANE'
+
+        overrides = {}
+        overrides[f'{rdp}_METHOD'] = 'NEAREST'
+        for dtype in ['FCST', 'OBS']:
+            overrides[f'{dtype}_{rdp}_RUN'] = True
+            # set template to something to avoid error on init
+#            overrides[f'{data_type}_{rdp}_INPUT_TEMPLATE'] = 'input_template'
+#            overrides[f'{data_type}_{rdp}_OUTPUT_TEMPLATE'] = 'output_template'
+            template = os.path.join(self.c_dict.get(f'{dtype}_INPUT_DIR'),
+                                    self.c_dict[f'{dtype}_INPUT_TEMPLATE'])
+            overrides[f'{dtype}_{rdp}_INPUT_TEMPLATE'] = template
+            overrides[f'{dtype}_{rdp}_OUTPUT_TEMPLATE'] = (
+                self.c_dict[f'{dtype}_OUTPUT_TEMPLATE']
+            )
+
+            overrides[f'{dtype}_{rdp}_OUTPUT_DIR'] = (
+                self.c_dict['OUTPUT_DIR']
+            )
+
+        overrides[f'{rdp}_ONCE_PER_FIELD'] = False
+
+        return RegridDataPlaneWrapper(self.config, overrides)
 
     def run_at_time(self, input_dict):
         """!Loops over loop strings and calls run_at_time_loop_string() to
@@ -125,20 +185,31 @@ class ExtractTilesWrapper(CommandBuilder):
             return
 
         # Now get unique storm ids from the filter file
-        sorted_storm_ids = util.get_storm_ids(filter_path)
+        storm_dict = util.get_storms(filter_path)
 
-        if not sorted_storm_ids:
+        if not storm_dict:
             # No storms found for init time, init_fmt
             self.logger.debug(f"No storms were found for {init_fmt}"
                               "...continue to next in list")
             return
 
-        # Process each storm in the sorted_storm_ids list
+        # Process each storm in the storm_dict list
         # Iterate over each filter file in the output directory and
         # search for the presence of the storm id.  Store this
         # corresponding row of data into a temporary file in the
         # tmp directory where each file contains information based on storm.
-        if not self.create_results_files(sorted_storm_ids,
+        for storm_id, storm_lines in storm_dict.items():
+            if storm_id == 'header':
+                continue
+
+            self.create_tiles_from_storm(storm_id,
+                                         storm_lines,
+                                         storm_dict['header'],
+                                         init_fmt)
+
+        return
+
+        if not self.create_results_files(storm_dict,
                                          init_fmt,
                                          filter_path):
             self.log_error("There was a problem with processing storms from the filtered result, "\
@@ -146,6 +217,109 @@ class ExtractTilesWrapper(CommandBuilder):
                     "tmp directory.")
 
         util.prune_empty(self.c_dict['OUTPUT_DIR'], self.logger)
+
+    def get_grid_info(self, lat, lon, dtype):
+            """! Create the grid specification string with the format:
+                 latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
+                 used by the MET tool, regrid_data_plane.
+
+                 @param lat The latitude of the grid point
+                 @param lon The longitude of the grid point
+                 @param dtype FCST or OBS, used for log output only
+                 @returns the tile grid string for the input lat and lon
+            """
+            nlat = self.c_dict['NLAT']
+            nlon = self.c_dict['NLON']
+            dlat = self.c_dict['DLAT']
+            dlon = self.c_dict['DLON']
+
+            # Format for regrid_data_plane:
+            # latlon Nx Ny lat_ll lon_ll delta_lat delta_lonadj_lon =
+            # float(lon) - lon_subtr
+            adj_lon = float(lon) - self.c_dict['LON_ADJ']
+            adj_lat = float(lat) - self.c_dict['LAT_ADJ']
+            lon0 = str(util.round_0p5(adj_lon))
+            lat0 = str(util.round_0p5(adj_lat))
+
+            self.logger.debug(f'{dtype} lat: {lat} => {lat0}, '
+                         f'lon: {lon} => {lon0}')
+
+            grid_def = f"latlon {nlat} {nlon} {lat0} {lon0} {dlat} {dlon}"
+
+            return grid_def
+
+    def create_tiles_from_storm(self, storm_id, storm_lines, header_line,
+                                time_fmt):
+        ''' Run RegridDataPlane to create a tile for forecast and observation
+            data for each storm track point
+
+            Args:
+                @param storm_id value from STORM_ID column to process
+                @param time_fmt: The current init time of interest
+                @param filter_path: The full file name of the filter file generated by tc stat
+
+            Return:
+             0 if successful in creating the tmp files (one per storm) in the tmp_dir
+        '''
+        header = header_line.split()
+#        storm_output_dir = os.path.join(self.c_dict['OUTPUT_DIR'],
+#                                        time_fmt, storm_id)
+#        if not os.path.exists(storm_output_dir):
+#            os.makedirs(storm_output_dir)
+
+        idx = {}
+        for column_name in ['INIT',
+                            'LEAD',
+                            'VALID',
+                            'INIT',
+                            'ALAT',
+                            'ALON',
+                            'BLAT',
+                            'BLON',
+                            'AMODEL',
+                            ]:
+            idx[column_name] = header.index(column_name)
+
+        for storm_line in storm_lines:
+            columns = storm_line.split()
+            storm_data = {}
+            for column_id, index in idx.items():
+                storm_data[column_id] = columns[index]
+
+            init_dt = datetime.strptime(storm_data['INIT'], '%Y%m%d_%H%M%S')
+            lead_hours = storm_data['LEAD'][:-4]
+            input_dict = {'init': init_dt,
+                          'lead_hours': lead_hours,
+                          }
+            time_info = time_util.ti_calculate(input_dict)
+
+            # add amodel to time_info dictionary for substitution
+            time_info['amodel'] = storm_data['AMODEL']
+            time_info['storm_id'] = storm_id
+
+            var_list = util.parse_var_list(self.config,
+                                           time_info,
+                                           met_tool=self.app_name)
+
+            # set output grid information for the forecast data
+            grid_info = self.get_grid_info(storm_data['ALAT'],
+                                           storm_data['ALON'],
+                                           'FCST')
+            self.regrid_data_plane.c_dict['VERIFICATION_GRID'] = grid_info
+
+            self.regrid_data_plane.run_at_time_once(time_info,
+                                                    var_list,
+                                                    data_type='FCST')
+
+            # set output grid information for the observation data
+            grid_info = self.get_grid_info(storm_data['BLAT'],
+                                           storm_data['BLON'],
+                                           'OBS')
+            self.regrid_data_plane.c_dict['VERIFICATION_GRID'] = grid_info
+
+            self.regrid_data_plane.run_at_time_once(time_info,
+                                                    var_list,
+                                                    data_type='OBS')
 
     def create_results_files(self, sorted_storm_ids, cur_init, filter_name):
         ''' Create the tmp files that contain filtered results- one tmp file per storm, then
