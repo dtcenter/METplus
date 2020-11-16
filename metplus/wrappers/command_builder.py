@@ -505,6 +505,10 @@ class CommandBuilder:
                            "does not allow multiple files to be provided.")
             return None
 
+        # pop level from time_info to avoid conflict with explicit level
+        # then add it back after the string sub call
+        saved_level = time_info.pop('level', None)
+
         for template in template_list:
             # perform string substitution
             filename = do_string_sub(template,
@@ -533,6 +537,10 @@ class CommandBuilder:
             else:
                 # add single file to list
                 check_file_list.append(full_path)
+
+        # if it was set, add level back to time_info
+        if saved_level:
+            time_info['level'] = saved_level
 
         # if multiple files are not supported by the wrapper and multiple files are found, error and exit
         # this will allow a wildcard to be used to find a single file. Previously a wildcard would produce
