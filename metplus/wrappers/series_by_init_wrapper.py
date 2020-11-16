@@ -279,6 +279,7 @@ class SeriesByInitWrapper(CommandBuilder):
                        " options yield nothing.")
                 self.logger.debug(msg)
                 continue
+
             else:
                 # Now retrieve the files corresponding to these
                 # storm ids that resulted from filtering.
