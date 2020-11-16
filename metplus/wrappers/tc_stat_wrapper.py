@@ -309,7 +309,7 @@ class TCStatWrapper(CommandBuilder):
 
         self.logger.debug('Checking if name-val lists in config file have'
                           'the same length...')
-        self.logger.debug(c_dict.keys())
+
         # Check COLUMN_THRESH_NAME and COLUMN_THRESH_VAL
         if len(c_dict.get('COLUMN_THRESH_NAME', '')) != \
                 len(c_dict.get('COLUMN_THRESH_VAL', '')):
