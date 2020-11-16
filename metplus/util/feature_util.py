@@ -116,10 +116,12 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
                 logger.WARN("RuntimeError raised")
 
             lead_str = str(fcst_hr).zfill(3)
-            fcst_dir = os.path.join(model_data_dir, init_ymd)
+#            fcst_dir = os.path.join(model_data_dir, init_ymd)
+            fcst_dir = model_data_dir
             init_ymdh_split = init_ymdh.split("_")
             init_yyyymmddhh = "".join(init_ymdh_split)
-            anly_dir = os.path.join(model_data_dir, valid_ymd)
+#            anly_dir = os.path.join(model_data_dir, valid_ymd)
+            anly_dir = model_data_dir
             valid_ymdh_split = valid_ymdh.split("_")
             valid_yyyymmddhh = "".join(valid_ymdh_split)
 
@@ -182,7 +184,8 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             nc_fcst_anly_base = re.sub("grb2", "nc", fcst_anly_base)
             fcst_anly_base = nc_fcst_anly_base
 
-            tile_dir = os.path.join(out_dir, cur_init, cur_storm)
+#            tile_dir = os.path.join(out_dir, cur_init, cur_storm)
+            tile_dir = out_dir
             fcst_hr_str = str(fcst_hr).zfill(3)
 
             fcst_output_template = config.getraw('filename_templates',
@@ -190,7 +193,8 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             if fcst_output_template:
                 fcst_regridded_filename = \
                     do_string_sub(fcst_output_template,
-                                  init=init_dt, lead=lead_seconds, amodel=amodel)
+                                  init=init_dt, lead=lead_seconds, amodel=amodel,
+                                  storm_id=cur_storm)
             else:
                 fcst_regridded_filename = (
                     config.getstr('regex_pattern',
@@ -202,7 +206,8 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
             if obs_output_template:
                 anly_regridded_filename = \
                     do_string_sub(obs_output_template,
-                                  valid=valid_dt, lead=lead_seconds, amodel=amodel)
+                                  init=init_dt, valid=valid_dt, lead=lead_seconds, amodel=amodel,
+                                  storm_id=cur_storm)
             else:
                 anly_regridded_filename = (
                     config.getstr('regex_pattern',
