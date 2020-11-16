@@ -158,17 +158,6 @@ class TCStatWrapper(CommandBuilder):
         # error check config values
         self.validate_config_values(c_dict)
 
-    def run_all_times(self):
-        init_beg = self.config.getstr('config', 'INIT_BEG', '')
-        if init_beg:
-            init_time_fmt = self.config.getstr('config', 'INIT_TIME_FMT')
-            init_dt = datetime.strptime(init_beg, init_time_fmt)
-            input_dict = {'init': init_dt}
-        else:
-            input_dict = None
-
-        return self.run_at_time(input_dict)
-
     def run_at_time(self, input_dict=None):
         """! Builds the call to the MET tool TC-STAT for all requested
              initialization times (init or valid).  Called from master_metplus
