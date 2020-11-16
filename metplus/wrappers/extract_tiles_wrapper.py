@@ -138,7 +138,9 @@ class ExtractTilesWrapper(CommandBuilder):
 
         overrides[f'{rdp}_ONCE_PER_FIELD'] = False
 
-        return RegridDataPlaneWrapper(self.config, overrides)
+        rdp_wrapper = RegridDataPlaneWrapper(self.config, overrides)
+        rdp_wrapper.c_dict['SHOW_WARNINGS'] = False
+        return rdp_wrapper
 
     def run_at_time(self, input_dict):
         """!Loops over loop strings and calls run_at_time_loop_string() to

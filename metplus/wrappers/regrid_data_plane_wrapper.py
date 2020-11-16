@@ -255,10 +255,14 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 field_info[f'{data_type.lower()}_name'] = input_name
             else:
                 input_name = field_info[f'{data_type.lower()}_name']
-                self.logger.warning(f"{data_type}_REGRID_DATA_PLANE_"
-                                    f"VAR{field_info['index']}_NAME not set. "
-                                    f"Using name = {input_name} from "
-                                    f"{data_type}_VAR{field_info['index']}_NAME")
+                # option to supress warnings can be set in wrapper that calls
+                # RegridDataPlane to prevent these warnings from showing up
+                if self.c_dict.get('SHOW_WARNINGS', True):
+                    msg = (f"{data_type}_REGRID_DATA_PLANE_"
+                           f"VAR{field_info['index']}_NAME not set. "
+                           f"Using name = {input_name} from "
+                           f"{data_type}_VAR{field_info['index']}_NAME")
+                    self.logger.warning(msg)
 
             if util.is_python_script(input_name):
                 field_info[f'{data_type.lower()}_level'] = ''
@@ -302,8 +306,11 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         """
         output_name = field_info.get(f'{data_type.lower()}_output_name', None)
         if not output_name:
-            self.logger.warning(f'{data_type}_REGRID_DATA_PLANE_OUTPUT_NAME not set. '
-                                f'Using {input_name} as the output name.')
+            if self.c_dict.get('SHOW_WARNINGS', True):
+                msg = (f'{data_type}_REGRID_DATA_PLANE_OUTPUT_NAME not set. '
+                       f'Using {input_name} as the output name.')
+                self.logger.warning(msg)
+
             output_name = input_name
 
         return output_name
