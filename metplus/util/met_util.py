@@ -490,6 +490,11 @@ def check_for_deprecated_config(config):
                                           'copy': False},
         'EXTRACT_TILES_FILTERED_OUTPUT_TEMPLATE': {'sec': 'dir',
                                                    'alt': 'EXTRACT_TILES_STAT_INPUT_TEMPLATE',},
+#        'EXTRACT_TILES_GRID_INPUT_DIR': {'sec': 'dir',
+#                                         'alt': 'FCST_EXTRACT_TILES_INPUT_DIR '
+#                                                'and '
+#                                                'OBS_EXTRACT_TILES_INPUT_DIR',
+#                                         'copy': False},
     }
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},

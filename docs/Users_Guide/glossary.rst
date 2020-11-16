@@ -3109,7 +3109,17 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR` instead.
 
    EXTRACT_TILES_GRID_INPUT_DIR
-     Directory containing gridded input data to be used in ExtractTiles. Currently contains both forecast and observation data.
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_EXTRACT_TILES_INPUT_DIR` and :term:`OBS_EXTRACT_TILES_INPUT_DIR` instead.
+
+   FCST_EXTRACT_TILES_INPUT_DIR
+     Directory containing gridded forecast data to be used in ExtractTiles
+
+     | *Used by:*  ExtractTiles
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
+   OBS_EXTRACT_TILES_INPUT_DIR
+     Directory containing gridded observation data to be used in ExtractTiles
 
      | *Used by:*  ExtractTiles
      | *Family:*  [dir]
