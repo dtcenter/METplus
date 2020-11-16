@@ -184,8 +184,10 @@ class MTDWrapper(MODEWrapper):
 
             for current_task in tasks:
                 # call find_model/obs as needed
-                model_file = self.find_model(current_task, var_info, False)
-                obs_file = self.find_obs(current_task, var_info, False)
+                model_file = self.find_model(current_task, var_info,
+                                             mandatory=False)
+                obs_file = self.find_obs(current_task, var_info,
+                                         mandatory=False)
                 if model_file is None and obs_file is None:
                     continue
 

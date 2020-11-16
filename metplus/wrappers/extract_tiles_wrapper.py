@@ -137,7 +137,7 @@ class ExtractTilesWrapper(CommandBuilder):
             )
 
         overrides[f'{rdp}_ONCE_PER_FIELD'] = False
-
+        overrides[f'{rdp}_MANDATORY'] = False
         rdp_wrapper = RegridDataPlaneWrapper(self.config, overrides)
         rdp_wrapper.c_dict['SHOW_WARNINGS'] = False
         return rdp_wrapper

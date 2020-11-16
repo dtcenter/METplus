@@ -101,6 +101,10 @@ class CommandBuilder:
                                 False)
             )
 
+        c_dict['MANDATORY'] = self.config.getbool('config',
+                                                  f'{app_name}_MANDATORY',
+                                                  True)
+
         return c_dict
 
     def clear(self):
@@ -552,10 +556,10 @@ class CommandBuilder:
         # return None if no files were found
         if not check_file_list:
             msg = f"Could not find any {data_type}INPUT files"
-            if mandatory:
-                self.log_error(msg)
-            else:
+            if not mandatory or not self.c_dict.get('MANDATORY', True):
                 self.logger.warning(msg)
+            else:
+                self.log_error(msg)
 
             return None
 
@@ -570,10 +574,10 @@ class CommandBuilder:
             # report error if file path could not be found
             if not processed_path:
                 msg = f"Could not find {data_type}INPUT file {file_path} using template {template}"
-                if mandatory:
-                    self.log_error(msg)
-                else:
+                if not mandatory or not self.c_dict.get('MANDATORY', True):
                     self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
 
                 return None
 
@@ -654,10 +658,11 @@ class CommandBuilder:
         if not closest_files:
             msg = f"Could not find {data_type}INPUT files under {data_dir} within range " +\
                   f"[{valid_range_lower},{valid_range_upper}] using template {template}"
-            if mandatory:
-                self.log_error(msg)
-            else:
+            if not mandatory:
                 self.logger.warning(msg)
+            else:
+                self.log_error(msg)
+
             return None
 
         # check if file(s) needs to be preprocessed before returning the path
