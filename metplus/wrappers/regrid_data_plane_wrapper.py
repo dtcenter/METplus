@@ -362,9 +362,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             if not self.handle_output_file(time_info,
                                            field_info,
                                            data_type):
-                return
+                return False
 
-            self.build_and_run_command()
+            return self.build()
 
     def run_once_for_all_fields(self, time_info, field_info_list, data_type):
         """!Loop over fields to add each field info, then run command once to
@@ -402,10 +402,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if not self.handle_output_file(time_info,
                                        field_info_list[0],
                                        data_type):
-            return
+            return False
 
         # build and run commands
-        self.build_and_run_command()
+        return self.build()
 
     def run_at_time_once(self, time_info, var_list, data_type):
         """!Build command or commands to run at the given run time
@@ -423,10 +423,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         field_info_list = self.get_field_info_list(var_list, data_type, time_info)
         if not field_info_list:
             self.log_error("Could not build field info list")
-            return
+            return False
 
         if not self.find_input_files(time_info, data_type, field_info_list):
-            return
+            return False
 
         # set environment variables
         self.set_environment_variables(time_info)
@@ -434,10 +434,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         # determine if running once for all fields or once per field
         # if running once per field, loop over field list and run once for each
         if self.c_dict['ONCE_PER_FIELD']:
-            self.run_once_per_field(time_info, field_info_list, data_type)
-        else:
-            # if not running once per field, process all fields and run once
-            self.run_once_for_all_fields(time_info, field_info_list, data_type)
+            return self.run_once_per_field(time_info, field_info_list, data_type)
+
+        # if not running once per field, process all fields and run once
+        return self.run_once_for_all_fields(time_info, field_info_list, data_type)
 
     def find_input_files(self, time_info, data_type, field_info_list):
         """!Get input file and verification grid to process. Use the first field in the
