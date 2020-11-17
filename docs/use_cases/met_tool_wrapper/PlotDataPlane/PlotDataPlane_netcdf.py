@@ -1,8 +1,8 @@
 """
-PlotDataPlane: GRIB1 Input
-==========================
+PlotDataPlane: NetCDF Input
+===========================
 
-met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
+met_tool_wrapper/PlotDataPlane/PlotDataPlane_netcdf.conf
 
 """
 ##############################################################################
@@ -16,7 +16,7 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
 # Datasets
 # --------
 #
-# | **Input:** Sample GRIB1 file
+# | **Input:** Sample NetCDF file
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
@@ -45,10 +45,10 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/PlotDataPlane/PlotDataPlane_netcdf.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PlotDataPlane/PlotDataPlane_netcdf.conf
 
 ##############################################################################
 # MET Configuration
@@ -63,13 +63,13 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
 #
 # This use case can be run two ways:
 #
-# 1) Passing in PlotDataPlane_grib1.conf then a user-specific system configuration file::
+# 1) Passing in PlotDataPlane_netcdf.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PlotDataPlane/PlotDataPlane_netcdf.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in PlotDataPlane_grib1.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in PlotDataPlane_netcdf.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/PlotDataPlane/PlotDataPlane_netcdf.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
