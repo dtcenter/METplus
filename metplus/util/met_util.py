@@ -179,19 +179,25 @@ def run_metplus(config, process_list):
             logger.info("Refer to ERROR messages above to resolve issues.")
             return 1
 
-        loop_order = config.getstr('config', 'LOOP_ORDER', '')
+        loop_order = config.getstr('config', 'LOOP_ORDER', '').lower()
 
         if loop_order == "processes":
+            all_commands = []
             for process in processes:
                 process.run_all_times()
+                all_commands.extend(process.all_commands)
+                process.all_commands.clear()
 
         elif loop_order == "times":
-            loop_over_times_and_call(config, processes)
+            all_commands = loop_over_times_and_call(config, processes)
 
         else:
             logger.error("Invalid LOOP_ORDER defined. " + \
                          "Options are processes, times")
             return 1
+
+        # write out all commands and environment variables to file
+        write_all_commands(all_commands, config)
 
        # compute total number of errors that occurred and output results
         for process in processes:
@@ -241,6 +247,17 @@ def post_run_cleanup(config, app_name, total_errors):
         logger.error(error_msg)
         logger.info(log_message)
         sys.exit(1)
+
+def write_all_commands(all_commands, config):
+    filename = os.path.join(config.getdir('LOG_DIR'), '.all_commands')
+    config.logger.debug(f"Writing all commands and environment to {filename}")
+    with open(filename, 'w') as file_handle:
+        for command, envs in all_commands:
+            for env in envs:
+                file_handle.write(f"{env}\n")
+
+            file_handle.write("COMMAND:\n")
+            file_handle.write(f"{command}\n\n")
 
 def check_for_deprecated_config(config):
     """!Checks user configuration files and reports errors or warnings if any deprecated variable
@@ -923,7 +940,13 @@ def get_start_end_interval_times(config):
     return start_time, end_time, time_interval
 
 def loop_over_times_and_call(config, processes):
-    """!Loop over all run times and call wrappers listed in config"""
+    """! Loop over all run times and call wrappers listed in config
+
+    @param config METplusConfig object
+    @param processes list of CommandBuilder subclass objects (Wrappers) to call
+    @returns list of tuples with all commands run and the environment variables
+    that were set for each
+    """
     clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
                                                 '%Y%m%d%H%M%S')
     use_init = is_loop_by_init(config)
@@ -936,6 +959,8 @@ def loop_over_times_and_call(config, processes):
         config.logger.error("Could not get [INIT/VALID] time information from configuration file")
         return None
 
+    # keep track of commands that were run
+    all_commands = []
     while loop_time <= end_time:
         run_time = loop_time.strftime("%Y-%m-%d %H:%M")
         config.logger.info("****************************************")
@@ -958,8 +983,12 @@ def loop_over_times_and_call(config, processes):
 
             process.clear()
             process.run_at_time(input_dict)
+            all_commands.extend(process.all_commands)
+            process.all_commands.clear()
 
         loop_time += time_interval
+
+    return all_commands
 
 def get_lead_sequence(config, input_dict=None):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
