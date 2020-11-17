@@ -275,6 +275,8 @@ def test_run_rdp_once_per_field(metplus_config):
 
     if len(wrap.all_commands) != len(expected_cmds):
         print("Number of commands run is not the same as expected")
+        print(f"Actual commands: {wrap.all_commands}\n")
+        print(f"Expected commands: {expected_cmds}\n")
         assert(False)
 
     for (cmd, _), expected_cmd in zip(wrap.all_commands, expected_cmds):
