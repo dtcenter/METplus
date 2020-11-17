@@ -1,19 +1,7 @@
-""" Tests for the ExtractTiles wrapper, extract_tiles_wrapper.py using tc_pairs output
-    generated from running the TCPairs wrapper, tc_pairs_wrapper.py and using the
-    sample data on 'eyewall': /d1/METplus_Data/cyclone_track_feature/reduced_model_data
+# !/usr/bin/env python3
 
-
-"""
-
-# !/usr/bin/env python
 import sys
 import os
-my_path = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, my_path + '/../../../ush')
-
-# Alternatively try this if the above my_path lines do not work
-# sys.path.append("/../../../ush/ExtractTilesWrapper")
-# sys.path.append("/../../../ush/TCPairsWrapper")
 import datetime
 import logging
 import re
@@ -22,26 +10,6 @@ import pytest
 import produtil
 
 from metplus.wrappers.extract_tiles_wrapper import ExtractTilesWrapper
-from metplus.wrappers.tc_pairs_wrapper import TCPairsWrapper
-from metplus.util import met_util as util
-
-# --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
-#
-# The test configuration and fixture support the additional configuration
-# files used in METplus
-#              !!!!!!!!!!!!!!!
-#              !!!IMPORTANT!!!
-#              !!!!!!!!!!!!!!!
-# The following two methods should be included in ALL pytest tests for METplus.
-#
-#
-def pytest_addoption(parser):
-    parser.addoption("-c", action="store", help=" -c <test config file>")
-
-
-# @pytest.fixture
-# def cmdopt(request):
-#     return request.config.getoption("-c")
 
 def get_config(metplus_config):
     extra_configs = []
@@ -132,3 +100,14 @@ def test_set_time_info_from_storm_data(metplus_config):
 def test_get_grid_info(metplus_config, lat, lon, expected_result):
     etw = extract_tiles_wrapper(metplus_config)
     assert(etw.get_grid_info(lat, lon, 'FCST') == expected_result)
+
+@pytest.mark.parametrize(
+        'lat, lon, expected_result', [
+        (-54.9, -168.6, 'latlon 60 60 -70.0 -183.5 0.5 0.5'),
+
+    ]
+)
+def test_get_grid(metplus_config, lat, lon, expected_result):
+    etw = extract_tiles_wrapper(metplus_config)
+    storm_data = {'ALAT': lat, 'ALON': lon}
+    assert(etw.get_grid('FCST', storm_data) == expected_result)
