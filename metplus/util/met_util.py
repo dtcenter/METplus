@@ -937,7 +937,7 @@ def loop_over_times_and_call(config, processes):
         return None
 
     while loop_time <= end_time:
-        run_time = loop_time.strftime("%Y%m%d%H%M")
+        run_time = loop_time.strftime("%Y-%m-%d %H:%M")
         config.logger.info("****************************************")
         config.logger.info("* Running METplus")
         if use_init:
