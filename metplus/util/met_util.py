@@ -853,7 +853,7 @@ def is_loop_by_init(config):
     else:
         config.logger.error(msg)
 
-    exit(1)
+    return None
 
 def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
     """!Substitute today or now into [INIT/VALID]_[BEG/END] if used
@@ -886,6 +886,9 @@ def get_start_end_interval_times(config):
     clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
                                                 '%Y%m%d%H%M%S')
     use_init = is_loop_by_init(config)
+    if use_init is None:
+        return None
+
     if use_init:
         time_format = config.getstr('config', 'INIT_TIME_FMT')
         start_t = config.getraw('config', 'INIT_BEG')
@@ -924,6 +927,8 @@ def loop_over_times_and_call(config, processes):
     clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
                                                 '%Y%m%d%H%M%S')
     use_init = is_loop_by_init(config)
+    if use_init is None:
+        return None
 
     # get start time, end time, and time interval from config
     loop_time, end_time, time_interval = get_start_end_interval_times(config) or (None, None, None)
