@@ -10,35 +10,18 @@ Condition codes: 0 for success, 1 for failure
 """
 
 import os
-import sys
 from datetime import datetime
 
 from ..util import met_util as util
-from ..util import feature_util
 from ..util import do_string_sub
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from . import CommandBuilder
 from ..util import time_util
 
-'''!@namespace ExtractTilesWrapper
-@brief Runs  Extracts tiles to be used by series_analysis.
-Call as follows:
-@code{.sh}
-extract_tiles_wrapper.py [-c /path/to/user.template.conf]
-@endcode
-'''
-
-
 class ExtractTilesWrapper(CommandBuilder):
     """! Takes tc-pairs data and regrids paired data to an n x m grid as
          specified in the config file.
     """
-
-    # pylint: disable=too-many-instance-attributes
-    # Eleven is needed in this case.
-    # pylint: disable=too-few-public-methods
-    # Much of the data in the class are used to perform tasks, rather than
-    # having methods operating on them.
 
     def __init__(self, config):
         self.app_name = 'extract_tiles'
@@ -46,13 +29,17 @@ class ExtractTilesWrapper(CommandBuilder):
         self.regrid_data_plane = self.regrid_data_plane_init()
 
     def create_c_dict(self):
+        """!Create dictionary from config items to be used in the wrapper
+            Allows developer to reference config items without having to know
+            the type and consolidates config get calls so it is easier to see
+            which config variables are used in the wrapper
+            @returns dictionary of values to use in wrapper
+        """
         c_dict = super().create_c_dict()
 
         et_upper = self.app_name.upper()
 
         # get TCStat data dir/template to read
-        # stat input directory is optional because the whole path can be
-        # defined in the template
         c_dict['STAT_INPUT_DIR'] = (
             self.config.getdir('EXTRACT_TILES_STAT_INPUT_DIR', '')
         )
@@ -67,20 +54,19 @@ class ExtractTilesWrapper(CommandBuilder):
                            'to run ExtractTiles wrapper')
 
         # get gridded input/output directory/template to read
-        for dtype in ['FCST', 'OBS']:
+        for data_type in ['FCST', 'OBS']:
             # get [FCST/OBS]_INPUT_DIR
-            # TODO: change this to read FCST/OBS INPUT DIRS!
-            c_dict[f'{dtype}_INPUT_DIR'] = (
-                self.config.getdir(f'{dtype}_EXTRACT_TILES_INPUT_DIR', '')
+            c_dict[f'{data_type}_INPUT_DIR'] = (
+                self.config.getdir(f'{data_type}_EXTRACT_TILES_INPUT_DIR', '')
             )
-            if not c_dict[f'{dtype}_INPUT_DIR']:
-                self.log_error(f'Must set {dtype}_EXTRACT_TILES_INPUT_DIR to '
+            if not c_dict[f'{data_type}_INPUT_DIR']:
+                self.log_error(f'Must set {data_type}_EXTRACT_TILES_INPUT_DIR to '
                                'run ExtractTiles wrapper')
 
             # get [FCST/OBS]_[INPUT/OUTPUT]_TEMPLATE
             for put in ['INPUT', 'OUTPUT']:
-                local_name = f'{dtype}_{put}_TEMPLATE'
-                config_name = f'{dtype}_{et_upper}_{put}_TEMPLATE'
+                local_name = f'{data_type}_{put}_TEMPLATE'
+                config_name = f'{data_type}_{et_upper}_{put}_TEMPLATE'
                 c_dict[local_name] = (
                     self.config.getraw('filename_templates',
                                        config_name)
@@ -110,29 +96,30 @@ class ExtractTilesWrapper(CommandBuilder):
         c_dict['LON_ADJ'] = self.config.getfloat('config',
                                                  'EXTRACT_TILES_LON_ADJ')
 
-
         return c_dict
 
     def regrid_data_plane_init(self):
-        # create instance of RegridDataPlane wrapper, overriding default
-        # values for required config variables. These values will be
-        # set to the appropriate value for each run of the tool
+        """! create instance of RegridDataPlane wrapper, overriding default
+        values for required config variables.
+
+        @returns instance of RegridDataPlaneWrapper
+        """
         rdp = 'REGRID_DATA_PLANE'
 
         overrides = {}
         overrides[f'{rdp}_METHOD'] = 'NEAREST'
-        for dtype in ['FCST', 'OBS']:
-            overrides[f'{dtype}_{rdp}_RUN'] = True
+        for data_type in ['FCST', 'OBS']:
+            overrides[f'{data_type}_{rdp}_RUN'] = True
 
             # set filename templates
-            template = os.path.join(self.c_dict.get(f'{dtype}_INPUT_DIR'),
-                                    self.c_dict[f'{dtype}_INPUT_TEMPLATE'])
-            overrides[f'{dtype}_{rdp}_INPUT_TEMPLATE'] = template
-            overrides[f'{dtype}_{rdp}_OUTPUT_TEMPLATE'] = (
-                self.c_dict[f'{dtype}_OUTPUT_TEMPLATE']
+            template = os.path.join(self.c_dict.get(f'{data_type}_INPUT_DIR'),
+                                    self.c_dict[f'{data_type}_INPUT_TEMPLATE'])
+            overrides[f'{data_type}_{rdp}_INPUT_TEMPLATE'] = template
+            overrides[f'{data_type}_{rdp}_OUTPUT_TEMPLATE'] = (
+                self.c_dict[f'{data_type}_OUTPUT_TEMPLATE']
             )
 
-            overrides[f'{dtype}_{rdp}_OUTPUT_DIR'] = (
+            overrides[f'{data_type}_{rdp}_OUTPUT_DIR'] = (
                 self.c_dict['OUTPUT_DIR']
             )
 
@@ -232,30 +219,25 @@ class ExtractTilesWrapper(CommandBuilder):
                                            time_info,
                                            met_tool=self.app_name)
 
-            # set output grid information for the forecast data
-            grid_info = self.get_grid_info(storm_data['ALAT'],
-                                           storm_data['ALON'],
-                                           'FCST')
-            self.regrid_data_plane.c_dict['VERIFICATION_GRID'] = grid_info
+            # set output grid and run for the forecast and observation data
+            for data_type in ['FCST', 'OBS']:
+                self.regrid_data_plane.c_dict['VERIFICATION_GRID'] = (
+                    self.get_grid(data_type, storm_data)
+                )
 
-            # run RegridDataPlane wrapper for forecast data
-            self.regrid_data_plane.run_at_time_once(time_info,
-                                                    var_list,
-                                                    data_type='FCST')
+                # run RegridDataPlane wrapper
+                self.regrid_data_plane.run_at_time_once(time_info,
+                                                        var_list,
+                                                        data_type=data_type)
 
-            # set output grid information for the observation data
-            grid_info = self.get_grid_info(storm_data['BLAT'],
-                                           storm_data['BLON'],
-                                           'OBS')
-            self.regrid_data_plane.c_dict['VERIFICATION_GRID'] = grid_info
+    @staticmethod
+    def get_header_indices(header_line):
+        """! get indices of values from header line
 
-            # run RegridDataPlane wrapper for observation data
-            self.regrid_data_plane.run_at_time_once(time_info,
-                                                    var_list,
-                                                    data_type='OBS')
-
-    def get_header_indices(self, header_line):
-        # get indices of values from header line
+        @param header_line first line in tcst file
+        @returns dictionary where key is column name and value is the index
+        of that column
+        """
         header = header_line.split()
         idx = {}
         for column_name in ['INIT',
@@ -272,7 +254,17 @@ class ExtractTilesWrapper(CommandBuilder):
 
         return idx
 
-    def get_storm_data_from_track_line(self, idx_dict, storm_line):
+    @staticmethod
+    def get_storm_data_from_track_line(idx_dict, storm_line):
+        """! Read line from storm track and populate a dictionary with the
+        relevant items
+
+        @param idx_dict dictionary where key is column name and value is the
+        index of that column
+        @param storm_line line from tcst storm track file to parse
+        @returns dictionary containing storm data where key is column name and
+        value is the value extracted from the appropriate column of the line
+        """
         storm_data = {}
         columns = storm_line.split()
         for column_id, index in idx_dict.items():
@@ -280,7 +272,8 @@ class ExtractTilesWrapper(CommandBuilder):
 
         return storm_data
 
-    def set_time_info_from_storm_data(self, storm_id, storm_data):
+    @staticmethod
+    def set_time_info_from_storm_data(storm_id, storm_data):
         """! Set time_info dictionary using init, lead, amodel, and storm ID
         that was extracted from the storm data
 
@@ -301,33 +294,54 @@ class ExtractTilesWrapper(CommandBuilder):
 
         return time_info
 
+    def get_grid(self, data_type, storm_data):
+        """! Call get_grid_info based on the data type, extracting the
+        appropriate lat/lon data from the storm data
 
-    def get_grid_info(self, lat, lon, dtype):
-            """! Create the grid specification string with the format:
-                 latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
-                 used by the MET tool, regrid_data_plane.
+        @param data_type type of data to process: must be FCST or OBS
+        @param storm_data dictionary containing information from the storm
+        track line. Extract ALAT/ALON for FCST data and BLAT/BLON for OBS
+        @returns grid info string or None if invalid data type is provided
+        """
+        if data_type == 'FCST':
+            return self.get_grid_info(storm_data['ALAT'],
+                                      storm_data['ALON'],
+                                      data_type)
+        if data_type == 'OBS':
+            return self.get_grid_info(storm_data['BLAT'],
+                                      storm_data['BLON'],
+                                      data_type)
 
-                 @param lat The latitude of the grid point
-                 @param lon The longitude of the grid point
-                 @param dtype FCST or OBS, used for log output only
-                 @returns the tile grid string for the input lat and lon
-            """
-            nlat = self.c_dict['NLAT']
-            nlon = self.c_dict['NLON']
-            dlat = self.c_dict['DLAT']
-            dlon = self.c_dict['DLON']
+        self.log_error("Invalid data type provided to get_grid: "
+                       f"{data_type}")
+        return None
 
-            # Format for regrid_data_plane:
-            # latlon Nx Ny lat_ll lon_ll delta_lat delta_lonadj_lon =
-            # float(lon) - lon_subtr
-            adj_lon = float(lon) - self.c_dict['LON_ADJ']
-            adj_lat = float(lat) - self.c_dict['LAT_ADJ']
-            lon0 = str(util.round_0p5(adj_lon))
-            lat0 = str(util.round_0p5(adj_lat))
+    def get_grid_info(self, lat, lon, data_type):
+        """! Create the grid specification string with the format:
+             latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
+             used by the MET tool, regrid_data_plane.
 
-            self.logger.debug(f'{dtype} lat: {lat} => {lat0}, '
-                         f'lon: {lon} => {lon0}')
+             @param lat The latitude of the grid point
+             @param lon The longitude of the grid point
+             @param data_type FCST or OBS, used for log output only
+             @returns the tile grid string for the input lat and lon
+        """
+        nlat = self.c_dict['NLAT']
+        nlon = self.c_dict['NLON']
+        dlat = self.c_dict['DLAT']
+        dlon = self.c_dict['DLON']
 
-            grid_def = f"latlon {nlat} {nlon} {lat0} {lon0} {dlat} {dlon}"
+        # Format for regrid_data_plane:
+        # latlon Nx Ny lat_ll lon_ll delta_lat delta_lonadj_lon =
+        # float(lon) - lon_subtr
+        adj_lon = float(lon) - self.c_dict['LON_ADJ']
+        adj_lat = float(lat) - self.c_dict['LAT_ADJ']
+        lon0 = str(util.round_0p5(adj_lon))
+        lat0 = str(util.round_0p5(adj_lat))
 
-            return grid_def
+        self.logger.debug(f'{data_type} lat: {lat} => {lat0}, '
+                          f'lon: {lon} => {lon0}')
+
+        grid_def = f"latlon {nlat} {nlon} {lat0} {lon0} {dlat} {dlon}"
+
+        return grid_def
