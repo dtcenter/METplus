@@ -101,9 +101,11 @@ class CommandBuilder:
                                 False)
             )
 
-        c_dict['MANDATORY'] = self.config.getbool('config',
-                                                  f'{app_name}_MANDATORY',
-                                                  True)
+        c_dict['MANDATORY'] = (
+            self.config.getbool('config',
+                                f'{app_name.upper()}_MANDATORY',
+                                True)
+        )
 
         return c_dict
 
