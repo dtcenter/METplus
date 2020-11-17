@@ -21,7 +21,7 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
-# | **Data Source:** Unknown
+# | **Data Source:** NAM
 
 ##############################################################################
 # METplus Components
