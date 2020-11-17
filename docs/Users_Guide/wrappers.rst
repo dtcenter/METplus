@@ -924,6 +924,39 @@ Configuration
    | :term:`FCST_PCP_COMBINE_<n>_FIELD_NAME`
    | :term:`OBS_PCP_COMBINE_<n>_FIELD_NAME`
 
+PlotDataPlane
+-------------
+
+Description
+~~~~~~~~~~~
+
+The PlotDataPlane wrapper is a Python script that encapsulates the MET
+plot_data_plane tool. It provides the infrastructure to read in any input that
+MET can read and plot them. This tool is often used to verify that the data
+is mapped to the correct grid location.
+
+Configuration
+~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`PLOT_DATA_PLANE_INPUT_DIR`
+| :term:`PLOT_DATA_PLANE_OUTPUT_DIR`
+
+[filename_templates]
+
+| :term:`PLOT_DATA_PLANE_INPUT_TEMPLATE`
+| :term:`PLOT_DATA_PLANE_OUTPUT_TEMPLATE`
+
+[config]
+
+| :term:`PLOT_DATA_PLANE_FIELD_NAME`
+| :term:`PLOT_DATA_PLANE_FIELD_LEVEL`
+| :term:`LOG_PLOT_DATA_PLANE_VERBOSITY`
+| :term:`PLOT_DATA_PLANE_TITLE`
+| :term:`PLOT_DATA_PLANE_COLOR_TABLE`
+| :term:`PLOT_DATA_PLANE_RANGE_MIN_MAX`
+
 Point2Grid
 ----------
 

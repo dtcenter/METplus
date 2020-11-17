@@ -6318,3 +6318,83 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
+
+   PLOT_DATA_PLANE_INPUT_DIR
+     Directory containing input data to PlotDataPlane. This variable is
+     optional because you can specify the full path to the input files
+     using :term:`PLOT_DATA_PLANE_INPUT_TEMPLATE`.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [dir]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_INPUT_TEMPLATE
+     Filename template of the input file used by PlotDataPlane.
+     Set to PYTHON_NUMPY to read from a Python embedding script.
+     See also :term:`PLOT_DATA_PLANE_INPUT_DIR`.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_OUTPUT_DIR
+     Directory to write output data from PlotDataPlane. This variable is
+     optional because you can specify the full path to the input files
+     using :term:`PLOT_DATA_PLANE_OUTPUT_TEMPLATE`.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [dir]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_OUTPUT_TEMPLATE
+     Filename template of the output file created by PlotDataPlane.
+     See also :term:`PLOT_DATA_PLANE_OUTPUT_DIR`.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_FIELD_NAME
+     Name of field to read from input file. For Python embedding input, set to
+     the path of a Python script and any arguments to the script.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_FIELD_LEVEL
+     Level of field to read from input file. For Python embedding input, do not
+     set this value.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_TITLE
+     (Optional) title to display on the output postscript file.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_COLOR_TABLE
+     (Optional) path to color table file to override the default.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_RANGE_MIN_MAX
+     (Optional) minimum and maximum values to output to postscript file.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   LOG_PLOT_DATA_PLANE_VERBOSITY
+     Overrides the log verbosity for PlotDataPlane only.
+     If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* None
