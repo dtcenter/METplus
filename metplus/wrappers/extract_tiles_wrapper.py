@@ -220,15 +220,19 @@ class ExtractTilesWrapper(CommandBuilder):
                                            met_tool=self.app_name)
 
             # set output grid and run for the forecast and observation data
-            for data_type in ['FCST', 'OBS']:
+            for dtype in ['FCST', 'OBS']:
                 self.regrid_data_plane.c_dict['VERIFICATION_GRID'] = (
-                    self.get_grid(data_type, storm_data)
+                    self.get_grid(dtype, storm_data)
                 )
 
                 # run RegridDataPlane wrapper
-                self.regrid_data_plane.run_at_time_once(time_info,
-                                                        var_list,
-                                                        data_type=data_type)
+                ret = self.regrid_data_plane.run_at_time_once(time_info,
+                                                              var_list,
+                                                              data_type=dtype)
+
+                # if RegridDataPlane failed to run for FCST, skip OBS
+                if not ret:
+                    break
 
     @staticmethod
     def get_header_indices(header_line):
