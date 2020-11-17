@@ -6330,7 +6330,7 @@ METplus Configuration Glossary
 
    PLOT_DATA_PLANE_INPUT_TEMPLATE
      Filename template of the input file used by PlotDataPlane.
-     Set to PYTHON_NUMPY to read from a Python embedding script.
+     Set to PYTHON_NUMPY/XARRAY to read from a Python embedding script.
      See also :term:`PLOT_DATA_PLANE_INPUT_DIR`.
 
      | *Used by:* PlotDataPlane
