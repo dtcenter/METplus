@@ -336,6 +336,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 @param field_info_list list of field dictionaries to process
                 @param data_type type of data to process, i.e. FCST or OBS
         """
+        return_status = True
         for field_info in field_info_list:
             self.args.clear()
 
@@ -364,7 +365,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                            data_type):
                 return False
 
-            return self.build()
+            if not self.build():
+                return_status = False
+
+        return return_status
 
     def run_once_for_all_fields(self, time_info, field_info_list, data_type):
         """!Loop over fields to add each field info, then run command once to
