@@ -189,9 +189,7 @@ def run_metplus(config, process_list):
                 process.all_commands.clear()
 
         elif loop_order == "times":
-            new_commands = loop_over_times_and_call(config, processes)
-            all_commands.extend(new_commands)
-
+            all_commands = loop_over_times_and_call(config, processes)
         else:
             logger.error("Invalid LOOP_ORDER defined. " + \
                          "Options are processes, times")
