@@ -94,11 +94,11 @@ class TCPairsWrapper(CommandBuilder):
                                                       'INIT_INCREMENT')
 
         c_dict['INIT_INCLUDE'] = util.getlist(
-            self.config.getstr('config', 'INIT_INCLUDE'))
+            self.config.getstr('config', 'TC_PAIRS_INIT_INCLUDE'))
         c_dict['INIT_EXCLUDE'] = util.getlist(
-            self.config.getstr('config', 'INIT_EXCLUDE'))
-        c_dict['VALID_BEG'] = self.config.getstr('config', 'VALID_BEG')
-        c_dict['VALID_END'] = self.config.getstr('config', 'VALID_END')
+            self.config.getstr('config', 'TC_PAIRS_INIT_EXCLUDE'))
+        c_dict['VALID_BEG'] = self.config.getstr('config', 'TC_PAIRS_VALID_BEG')
+        c_dict['VALID_END'] = self.config.getstr('config', 'TC_PAIRS_VALID_END')
         c_dict['ADECK_DIR'] = \
                 self.config.getdir('TC_PAIRS_ADECK_INPUT_DIR', '')
         c_dict['BDECK_DIR'] = \

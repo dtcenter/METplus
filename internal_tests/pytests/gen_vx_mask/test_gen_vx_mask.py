@@ -69,7 +69,7 @@ def test_run_gen_vx_mask_once(metplus_config):
 
     expected_cmd = f"{wrap.app_path} 2018020100_ZENITH LAT {wrap.config.getdir('OUTPUT_BASE')}/GenVxMask_test/2018020100_ZENITH_LAT_MASK.nc -type lat -thresh 'ge30&&le50' -v 2"
 
-    for cmd in wrap.all_commands:
+    for cmd, _ in wrap.all_commands:
         print(f"COMMAND:{cmd}")
         print("EXPECTED:{expected_cmd}")
         assert(cmd == expected_cmd)
@@ -99,7 +99,7 @@ def test_run_gen_vx_mask_twice(metplus_config):
         print("Number of commands run is not the same as expected")
         assert(False)
 
-    for cmd, expected_cmd in zip(wrap.all_commands, expected_cmds):
+    for (cmd, _), expected_cmd in zip(wrap.all_commands, expected_cmds):
         print(f"  ACTUAL:{cmd}")
         print(f"EXPECTED:{expected_cmd}")
         if cmd != expected_cmd:
