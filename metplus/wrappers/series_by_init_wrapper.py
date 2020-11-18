@@ -36,7 +36,7 @@ class SeriesByInitWrapper(CommandBuilder):
         super().__init__(config)
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
-        self.stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST'))
+
         self.extract_tiles_dir = self.config.getdir('SERIES_ANALYSIS_INPUT_DIR')
         self.series_out_dir = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR')
         self.series_filtered_out_dir = \
@@ -62,8 +62,30 @@ class SeriesByInitWrapper(CommandBuilder):
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
-        c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
-        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'SERIES_ANALYSIS_REGRID_TO_GRID', '')
+        c_dict['MODEL'] = self.config.getstr('config',
+                                             'MODEL',
+                                             'FCST')
+        c_dict['REGRID_TO_GRID'] = (
+            self.config.getstr('config',
+                               'SERIES_ANALYSIS_REGRID_TO_GRID',
+                               '')
+        )
+
+        # get stat list to loop over
+        c_dict['STAT_LIST'] = util.getlist(
+            self.config.getstr('config',
+                               'SERIES_ANALYSIS_STAT_LIST')
+        )
+        # set stat list to set output_stats.cnt in MET config file
+        self.set_c_dict_list(c_dict,
+                             'SERIES_ANALYSIS_STAT_LIST',
+                             'cnt',
+                             'OUTPUT_STATS_CNT')
+
+        c_dict['SERIES_FILTER_OPTS'] = (
+            self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
+        )
+
         return c_dict
 
     def run_all_times(self):
@@ -75,31 +97,13 @@ class SeriesByInitWrapper(CommandBuilder):
             Returns:
                 None:  Creates graphical plots of storm tracks
         """
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-
-        # Used for logging.
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
         self.logger.info("Starting series analysis by init time")
 
         # Set up the environment variable to be used in the Series Analysis
-        #   Config file (SERIES_ANALYSIS_BY_INIT_CONFIG_FILE)
-        # Used to set cnt  value in output_stats in
-        # "SERIES_ANALYSIS_BY_INIT_CONFIG_FILE"
-        # Need to do some pre-processing so that Python will use " and not '
-        #  because currently MET doesn't support single-quotes
-        tmp_stat_string = str(self.stat_list)
+        tmp_stat_string = str(self.c_dict['STAT_LIST'])
         tmp_stat_string = tmp_stat_string.replace("\'", "\"")
-
-        # For example, we want tmp_stat_string to look like
-        #   '["TOTAL","FBAR"]', NOT "['TOTAL','FBAR']"
         os.environ['STAT_LIST'] = tmp_stat_string
-        self.add_env_var('STAT_LIST', tmp_stat_string)
-
-        series_filter_opts = \
-            self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
+#        self.add_env_var('STAT_LIST', self.c_dict.get('OUTPUT_STATS_CNT', ''))
 
         # Regridding via MET Tool regrid_data_plane.
         fcst_tile_regex = self.config.getstr('regex_pattern',
@@ -125,7 +129,7 @@ class SeriesByInitWrapper(CommandBuilder):
         # If applicable, apply any filtering via tc_stat, as indicated in the
         # parameter/config file.
         staging_dir = self.config.getdir('STAGING_DIR')
-        if series_filter_opts:
+        if c_dict['SERIES_FILTER_OPTS']:
             self.apply_series_filters(tile_dir, init_times,
                                       self.series_filtered_out_dir,
                                       self.filter_opts,
@@ -223,17 +227,6 @@ class SeriesByInitWrapper(CommandBuilder):
             Returns:
                 None
         """
-        # pylint: disable=too-many-arguments
-        # Seven input arguments are needed to perform filtering.
-
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-
-        # Useful for logging
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
         # Create temporary directory where intermediate files are saved.
         self.logger.debug("creating tmp dir for filtered files: " + staging_dir)
 
@@ -261,10 +254,6 @@ class SeriesByInitWrapper(CommandBuilder):
             if not tc_stat_wrapper.run_at_time(input_dict):
                 self.log_error(f'TCStat wrapper failed for {cur_init}')
                 continue
-
-#            tcs = TCStatWrapper(self.config)
-#            tcs.build_tc_stat(series_output_dir, cur_init, tile_dir,
-#                              filter_opts)
 
             # Check that the filter.tcst file isn't empty. If
             # it is, then use the files from extract_tiles as
@@ -377,14 +366,6 @@ class SeriesByInitWrapper(CommandBuilder):
 
                             sys.exit(1) otherwise
         """
-
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-        # For logging
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
         # Get a sorted list of the forecast tile files for the init
         # time of interest for all the storm ids and return the
         # forecast hour corresponding to the first and last file.
@@ -444,12 +425,6 @@ class SeriesByInitWrapper(CommandBuilder):
                                         is the list of files created from
                                         running extract_tiles.
         """
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-        # For logging
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
         filter_init_times = util.get_updated_init_times(tile_dir, self.logger)
         sorted_filter_init = sorted(filter_init_times)
 
@@ -513,15 +488,6 @@ class SeriesByInitWrapper(CommandBuilder):
                   @param tile_dir:  The directory where the input resides.
              Returns:
         """
-
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-        # For logging
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
-
         # Now assemble the -fcst, -obs, and -out arguments and invoke the
         # MET Tool: series_analysis.
         for cur_init in sorted_filter_init:
@@ -576,13 +542,6 @@ class SeriesByInitWrapper(CommandBuilder):
 
              Returns:
         """
-
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-        # For logging
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
         ascii_fname_parts = [ascii_file_base, cur_storm]
         ascii_fname = ''.join(ascii_fname_parts)
         ascii_full_path = os.path.join(self.series_out_dir, cur_init,
@@ -605,14 +564,6 @@ class SeriesByInitWrapper(CommandBuilder):
 
             Returns:
         """
-
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-        # For logging
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
         # create the output dir
         self.outdir = os.path.join(self.series_out_dir, cur_init,
                                    cur_storm)
@@ -720,7 +671,7 @@ class SeriesByInitWrapper(CommandBuilder):
                     # Assemble the input file, output file, field string,
                     # and title
                     plot_data_plane_input_fname = self.sbi_plotting_out_dir
-                    for cur_stat in self.stat_list:
+                    for cur_stat in self.c_dict['STAT_LIST']:
                         plot_data_plane_output = [output_dir,
                                                   '/series_',
                                                   name, '_',
@@ -816,14 +767,6 @@ class SeriesByInitWrapper(CommandBuilder):
                         may result in missing storm ids even though they are
                         in the filter.tcst file)
         """
-
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-        # For logging
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
         # Retrieve filter files, first create the filename
         # by piecing together the out_dir_base with the cur_init.
         filter_filename = "filter_" + cur_init + ".tcst"
@@ -858,15 +801,6 @@ class SeriesByInitWrapper(CommandBuilder):
                                         of either FCST or ANLY files based on
                                         init time and storm id.
         """
-
-        # pylint:disable=protected-access
-        # Need to call sys.__getframe() to get the filename and method/func
-        # for logging information.
-
-        # For logging
-        cur_filename = sys._getframe().f_code.co_filename
-        cur_function = sys._getframe().f_code.co_name
-
         # Create an ASCII file containing a list of all
         # the fcst or analysis tiles.
         fcst_anly_ascii_fname_parts = [fcst_anly_filename_base, cur_storm]
