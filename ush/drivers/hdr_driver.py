@@ -8,7 +8,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir,
                                                 os.pardir)))
 
-from metplus.util import config_metplus
+from metplus.util import pre_run_setup
 from metplus.wrappers import GridStatWrapper
 
 import parm.use_cases.model_applications.tc_and_extra_tc.tdr_utils as tdr_utils
@@ -21,7 +21,7 @@ mission_ids = sys.argv[1].split(',')
 print(f"Config args: {sys.argv[2:]}")
 config_args = sys.argv[2:]
 
-config = config_metplus.setup(config_args)
+config = pre_run_setup(config_args)
 
 tc_radar_file = config.getstr('config', 'TC_RADAR_FILE')
 
