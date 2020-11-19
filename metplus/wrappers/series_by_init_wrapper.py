@@ -165,50 +165,8 @@ class SeriesByInitWrapper(CommandBuilder):
 
         # If applicable, apply any filtering via tc_stat, as indicated in the
         # parameter/config file.
-#        staging_dir = self.config.getdir('STAGING_DIR')
         if self.c_dict['SERIES_FILTER_OPTS']:
             self.apply_series_filters(tile_dir, init_times)
-
-            # Clean up any empty files and directories that could arise as
-            # a result of filtering
-            util.prune_empty(self.c_dict['FILTERED_OUTPUT_DIR'], self.logger)
-            """
-            # Get the list of all the files that were created as a result
-            # of applying the filter options.
-            # First, make sure that the series_lead_filtered_out
-            # directory isn't empty.  If so, then no files fall within the
-            # filter criteria.
-            if os.path.exists(self.c_dict['FILTERED_OUTPUT_DIR']) and \
-                    os.listdir(self.c_dict['FILTERED_OUTPUT_DIR']):
-                # The series filter directory has data, use this directory as
-                # input for series analysis.
-                tile_dir = self.c_dict['FILTERED_OUTPUT_DIR']
-
-                # Generate the tmp_anly and tmp_fcst files used to validate
-                # filtering and for troubleshooting
-                # The tmp_fcst and tmp_anly ASCII files contain the
-                # list of files that meet the filter criteria.
-                filtered_dirs_list = util.get_files(tile_dir, ".*.",
-                                                    self.logger)
-                util.create_filter_tmp_files(filtered_dirs_list,
-                                             self.c_dict['FILTERED_OUTPUT_DIR'],
-                                             self.logger)
-
-            else:
-                # Applying the filter produced no results.  Rather than
-                # stopping, continue by using the files from extract_
-                # tiles as input.
-                msg = ("Applied series filter options, no results..." +
-                       "using extract tiles data for series analysis input.")
-                self.logger.debug(msg)
-                tile_dir = self.c_dict['INPUT_DIR']
-            """
-#        else:
-            # No additional filtering was requested.
-            # Use the data in the extract tiles directory
-            # as input for series analysis.
-            # source of input tile data.
-#        tile_dir = self.c_dict['INPUT_DIR']
 
         # Create FCST and ANLY ASCII files based on init time and storm id.
         # These are arguments to the
@@ -234,11 +192,6 @@ class SeriesByInitWrapper(CommandBuilder):
             return False
 
         self.generate_plots(sorted_filter_init, tile_dir)
-
-        # clean up the tmp dir now that we are finished and create a new empty
-        # tmp dir
-#        filtered_file_regex = "filter_.*"
-#        util.remove_staged_files(staging_dir, filtered_file_regex, self.logger )
 
         self.logger.debug("Finished series analysis by init time")
         return True
@@ -734,7 +687,7 @@ class SeriesByInitWrapper(CommandBuilder):
         fcst_anly_ascii_fname = ''.join(fcst_anly_ascii_fname_parts)
         fcst_anly_ascii_dir = os.path.join(self.c_dict['OUTPUT_DIR'], cur_init,
                                            cur_storm)
-        util.mkdir_p(fcst_anly_ascii_dir)
+
         fcst_anly_ascii = os.path.join(fcst_anly_ascii_dir,
                                        fcst_anly_ascii_fname)
 
@@ -747,6 +700,13 @@ class SeriesByInitWrapper(CommandBuilder):
             if cur_fcst_anly not in tmp_param and cur_storm in cur_fcst_anly:
                 tmp_param += cur_fcst_anly
                 tmp_param += '\n'
+
+        if not tmp_param:
+            self.logger.debug(f"No files found to write to {fcst_anly_ascii}")
+            continue
+
+        util.mkdir_p(fcst_anly_ascii_dir)
+
         # Now create the fcst or analysis ASCII file
         try:
             with open(fcst_anly_ascii, 'w') as filehandle:
@@ -755,11 +715,3 @@ class SeriesByInitWrapper(CommandBuilder):
             msg = ("Could not create requested ASCII file:  " +
                    fcst_anly_ascii)
             self.log_error(msg)
-
-        if os.stat(fcst_anly_ascii).st_size == 0:
-            # Just in case there are any empty fcst ASCII or anly ASCII files
-            # at this point,
-            # explicitly remove them (and any resulting empty directories)
-            #  so they don't cause any problems with further processing
-            # steps.
-            util.prune_empty(fcst_anly_ascii_dir, self.logger)
