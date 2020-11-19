@@ -1606,11 +1606,6 @@ def create_filter_tmp_files(filtered_files_list, filter_output_dir, logger=None)
         Returns:
             None: Creates two ASCII files
     """
-
-    # Useful for logging
-    # cur_filename = sys._getframe().f_code.co_filename
-    # cur_function = sys._getframe().f_code.co_name
-
     # Create the filenames for the tmp_fcst and tmp_anly files.
     tmp_fcst_filename = os.path.join(filter_output_dir,
                                      "tmp_fcst_regridded.txt")
