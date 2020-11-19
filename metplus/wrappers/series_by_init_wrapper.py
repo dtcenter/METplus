@@ -575,8 +575,6 @@ class SeriesByInitWrapper(CommandBuilder):
 
                     fcst_path = os.path.join(output_dir,
                                              f"{self.FCST_ASCII_FILE_PREFIX}{cur_storm}")
-                    obs_path = os.path.join(output_dir,
-                                            f"{self.ANLY_ASCII_FILE_PREFIX}{cur_storm}")
                     # Now we need to invoke the MET tool
                     # plot_data_plane to generate plots that are
                     # recognized by the MET viewer.
