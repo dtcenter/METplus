@@ -57,7 +57,10 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         start_time, _, _ = util.get_start_end_interval_times(self.config) or (None, None, None)
         if start_time:
             # set init or valid based on LOOP_BY
-            if util.is_loop_by_init(self.config):
+            use_init = util.is_loop_by_init(self.config)
+            if use_init is None:
+                self.isOK = False
+            elif use_init:
                 c_dict['INPUT_TIME_DICT']['init'] = start_time
             else:
                 c_dict['INPUT_TIME_DICT']['valid'] = start_time

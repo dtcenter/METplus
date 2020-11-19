@@ -42,6 +42,9 @@ TCPairs_tropical:: met_tool_wrapper/TCPairs/TCPairs_tropical.conf
 TCRMW:: met_tool_wrapper/TCRMW/TCRMW.conf
 TCStat:: met_tool_wrapper/TCStat/TCStat.conf
 GridStat_multiple_config:: met_tool_wrapper/GridStat/GridStat.conf,met_tool_wrapper/GridStat/GridStat_forecast.conf,met_tool_wrapper/GridStat/GridStat_observation.conf
+met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
+met_tool_wrapper/PlotDataPlane/PlotDataPlane_netcdf.conf
+met_tool_wrapper/PlotDataPlane/PlotDataPlane_python_embedding.conf
 
 Category: climate
 GridStat_fcstCESM_obsGFS_ConusTemp::model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf

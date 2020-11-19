@@ -214,7 +214,14 @@ def ti_calculate(input_dict):
         out_dict['lead'] = relativedelta(minutes=input_dict['lead_minutes'])
 
     elif 'lead_hours' in input_dict.keys():
-        out_dict['lead'] = relativedelta(hours=input_dict['lead_hours'])
+        lead_hours = int(input_dict['lead_hours'])
+        lead_days = 0
+        # if hours is more than a day, pull out days and relative hours
+        if lead_hours > 23:
+            lead_days = lead_hours // 24
+            lead_hours = lead_hours % 24
+
+        out_dict['lead'] = relativedelta(hours=lead_hours, days=lead_days)
 
     else:
         out_dict['lead'] = relativedelta(seconds=0)

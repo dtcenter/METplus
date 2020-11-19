@@ -1752,6 +1752,9 @@ class StatAnalysisWrapper(CommandBuilder):
 
     def run_at_time(self, input_dict):
         loop_by_init = util.is_loop_by_init(self.config)
+        if loop_by_init is None:
+            return
+
         if loop_by_init:
             loop_by = 'INIT'
         else:
