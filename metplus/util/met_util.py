@@ -55,6 +55,7 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'modetimedomain': 'MTD',
                          'pb2nc': 'PB2NC',
                          'pcpcombine': 'PCPCombine',
+                         'plotdataplane': 'PlotDataPlane',
                          'point2grid': 'Point2Grid',
                          'pointtogrid': 'Point2Grid',
                          'Point_2_Grid': 'Point2Grid',
@@ -1258,7 +1259,7 @@ def get_storms(filter_filename):
          @returns 2 item tuple - 1)dictionary where key is storm ID and value is list
           of relevant lines from tcst file, 2) header line from tcst file.
           Also, item with key 'header' contains the header of the tcst file
-     """
+    """
     # Initialize a set because we want unique storm ids.
     storm_id_list = set()
 
