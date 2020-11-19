@@ -703,7 +703,7 @@ class SeriesByInitWrapper(CommandBuilder):
 
         if not tmp_param:
             self.logger.debug(f"No files found to write to {fcst_anly_ascii}")
-            continue
+            return
 
         util.mkdir_p(fcst_anly_ascii_dir)
 
