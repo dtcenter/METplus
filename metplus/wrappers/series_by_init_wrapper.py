@@ -28,37 +28,18 @@ class SeriesByInitWrapper(CommandBuilder):
           tc_stat_wrapper.  Next, the arguments to run the MET tool
           series_analysis is done
     """
+    FCST_ASCII_FILE_PREFIX = 'FCST_ASCII_FILES_'
+    ANLY_ASCII_FILE_PREFIX = 'ANLY_ASCII_FILES_'
+    anly_grid_regex = ".*ANLY_TILE_F.*nc"
+    fcst_grid_regex = ".*FCST_TILE_F.*nc"
 
     def __init__(self, config):
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      'series_analysis')
         self.app_name = os.path.basename(self.app_path)
         super().__init__(config)
-        # Retrieve any necessary values (dirs, executables)
-        # from the param file(s)
 
-        self.extract_tiles_dir = self.config.getdir('SERIES_ANALYSIS_INPUT_DIR')
-        self.series_out_dir = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR')
-        self.series_filtered_out_dir = \
-            self.config.getdir('SERIES_ANALYSIS_FILTERED_OUTPUT_DIR')
-        self.filter_opts = \
-            self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
-        self.fcst_ascii_file_prefix = 'FCST_ASCII_FILES_'
-        self.anly_ascii_file_prefix = 'ANLY_ASCII_FILES_'
-        self.convert_exe = self.config.getexe('CONVERT')
-        if not self.convert_exe:
-            self.isOK = False
-
-        # Needed for generating plots
-        self.sbi_plotting_out_dir = ''
-
-        self.inaddons = []
-        self.infiles = []
-        self.outdir = ""
-        self.outfile = ""
-        self.args = []
-
-        self.logger.info("Initialized SeriesByInitWrapper")
+        self.logger.debug("Initialized SeriesByInitWrapper")
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -86,6 +67,68 @@ class SeriesByInitWrapper(CommandBuilder):
             self.config.getstr('config', 'SERIES_ANALYSIS_FILTER_OPTS')
         )
 
+        c_dict['INPUT_DIR'] = self.config.getdir('SERIES_ANALYSIS_INPUT_DIR',
+                                                 '')
+        if not c_dict['INPUT_DIR']:
+            self.log_error("Must set SERIES_ANALYSIS_INPUT_DIR")
+
+        c_dict['OUTPUT_DIR'] = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR',
+                                                  '')
+        if not c_dict['OUTPUT_DIR']:
+            self.log_error("Must set SERIES_ANALYSIS_OUTPUT_DIR to run.")
+
+        c_dict['FILTERED_OUTPUT_DIR'] = (
+            self.config.getdir('SERIES_ANALYSIS_FILTERED_OUTPUT_DIR',
+                               '')
+        )
+
+        c_dict['CONVERT_EXE'] = self.config.getexe('CONVERT')
+        if not c_dict['CONVERT_EXE']:
+            self.isOK = False
+
+        c_dict['TC_STAT_OUTPUT_TEMPLATE'] = self.config.getraw('config',
+                                                               'TC_STAT_OUTPUT_TEMPLATE')
+
+        c_dict['FCST_EXTRACT_TILES_PREFIX'] = self.config.getstr('config',
+                                                                 'FCST_EXTRACT_TILES_PREFIX',
+                                                                 '')
+        if not c_dict['FCST_EXTRACT_TILES_PREFIX']:
+            self.log_error("Must set FCST_EXTRACT_TILES_PREFIX")
+
+        c_dict['OBS_EXTRACT_TILES_PREFIX'] = self.config.getstr('config',
+                                                                'OBS_EXTRACT_TILES_PREFIX',
+                                                                '')
+        if not c_dict['OBS_EXTRACT_TILES_PREFIX']:
+            self.log_error("Must set OBS_EXTRACT_TILES_PREFIX")
+
+        c_dict['FCST_TILE_REGEX'] = (
+            self.config.getstr('regex_pattern',
+                               'FCST_SERIES_ANALYSIS_NC_TILE_REGEX',
+                               '')
+        )
+        if not c_dict['FCST_TILE_REGEX']:
+            self.log_error("Must set FCST_SERIES_ANALYSIS_NC_TILE_REGEX")
+
+        c_dict['ANLY_TILE_REGEX'] = (
+            self.config.getstr('regex_pattern',
+                               'OBS_SERIES_ANALYSIS_NC_TILE_REGEX',
+                               '')
+        )
+        if not c_dict['FCST_TILE_REGEX']:
+            self.log_error("Must set OBS_SERIES_ANALYSIS_NC_TILE_REGEX")
+
+        c_dict['CONFIG_FILE'] = self.config.getstr('config',
+                                                   'SERIES_ANALYSIS_CONFIG_FILE',
+                                                   '')
+        if not c_dict['CONFIG_FILE']:
+            self.log_error("SERIES_ANALYSIS_CONFIG_FILE must be set")
+
+        c_dict['BACKGROUND_MAP'] = self.config.getbool('config',
+                                             'SERIES_ANALYSIS_BACKGROUND_MAP',
+                                             False)
+        c_dict['PLOT_DATA_PLANE'] = os.path.join(self.config.getdir('MET_BIN_DIR', ''),
+                                           'plot_data_plane')
+
         return c_dict
 
     def run_all_times(self):
@@ -97,7 +140,7 @@ class SeriesByInitWrapper(CommandBuilder):
             Returns:
                 None:  Creates graphical plots of storm tracks
         """
-        self.logger.info("Starting series analysis by init time")
+        self.logger.debug("Starting series analysis by init time")
 
         # Set up the environment variable to be used in the Series Analysis
         tmp_stat_string = str(self.c_dict['STAT_LIST'])
@@ -105,50 +148,41 @@ class SeriesByInitWrapper(CommandBuilder):
         os.environ['STAT_LIST'] = tmp_stat_string
 #        self.add_env_var('STAT_LIST', self.c_dict.get('OUTPUT_STATS_CNT', ''))
 
-        # Regridding via MET Tool regrid_data_plane.
-        fcst_tile_regex = self.config.getstr('regex_pattern',
-                                             'FCST_SERIES_ANALYSIS_NC_TILE_REGEX')
-        anly_tile_regex = self.config.getstr('regex_pattern',
-                                             'OBS_SERIES_ANALYSIS_NC_TILE_REGEX')
-
-        # Initialize the tile_dir to point to the extract_tiles_dir.
+        # Initialize the tile_dir to point to the c_dict['INPUT_DIR'].
         # And retrieve a list of init times based on the data available in
         # the extract tiles directory.
-        tile_dir = self.extract_tiles_dir
+        tile_dir = self.c_dict['INPUT_DIR']
         init_times = util.get_updated_init_times(tile_dir, self.logger)
 
         # Check for input tile data.
         try:
-            util.check_for_tiles(tile_dir, fcst_tile_regex,
-                                 anly_tile_regex, self.logger)
+            util.check_for_tiles(tile_dir, self.c_dict['FCST_TILE_REGEX'],
+                                 self.c_dict['ANLY_TILE_REGEX'], self.logger)
         except OSError:
-            msg = ("Missing n x m tile files.  " +
-                   "Extract tiles needs to be run")
-            self.log_error(msg)
+            self.log_error("Missing n x m tile files. "
+                           "ExtractTiles must be run before this wrapper")
+            return False
 
         # If applicable, apply any filtering via tc_stat, as indicated in the
         # parameter/config file.
-        staging_dir = self.config.getdir('STAGING_DIR')
-        if c_dict['SERIES_FILTER_OPTS']:
-            self.apply_series_filters(tile_dir, init_times,
-                                      self.series_filtered_out_dir,
-                                      self.filter_opts,
-                                      staging_dir)
+#        staging_dir = self.config.getdir('STAGING_DIR')
+        if self.c_dict['SERIES_FILTER_OPTS']:
+            self.apply_series_filters(tile_dir, init_times)
 
             # Clean up any empty files and directories that could arise as
             # a result of filtering
-            util.prune_empty(self.series_filtered_out_dir, self.logger)
-
+            util.prune_empty(self.c_dict['FILTERED_OUTPUT_DIR'], self.logger)
+            """
             # Get the list of all the files that were created as a result
             # of applying the filter options.
             # First, make sure that the series_lead_filtered_out
             # directory isn't empty.  If so, then no files fall within the
             # filter criteria.
-            if os.path.exists(self.series_filtered_out_dir) and \
-                    os.listdir(self.series_filtered_out_dir):
+            if os.path.exists(self.c_dict['FILTERED_OUTPUT_DIR']) and \
+                    os.listdir(self.c_dict['FILTERED_OUTPUT_DIR']):
                 # The series filter directory has data, use this directory as
                 # input for series analysis.
-                tile_dir = self.series_filtered_out_dir
+                tile_dir = self.c_dict['FILTERED_OUTPUT_DIR']
 
                 # Generate the tmp_anly and tmp_fcst files used to validate
                 # filtering and for troubleshooting
@@ -157,7 +191,7 @@ class SeriesByInitWrapper(CommandBuilder):
                 filtered_dirs_list = util.get_files(tile_dir, ".*.",
                                                     self.logger)
                 util.create_filter_tmp_files(filtered_dirs_list,
-                                             self.series_filtered_out_dir,
+                                             self.c_dict['FILTERED_OUTPUT_DIR'],
                                              self.logger)
 
             else:
@@ -167,14 +201,14 @@ class SeriesByInitWrapper(CommandBuilder):
                 msg = ("Applied series filter options, no results..." +
                        "using extract tiles data for series analysis input.")
                 self.logger.debug(msg)
-                tile_dir = self.extract_tiles_dir
-
-        else:
+                tile_dir = self.c_dict['INPUT_DIR']
+            """
+#        else:
             # No additional filtering was requested.
             # Use the data in the extract tiles directory
             # as input for series analysis.
             # source of input tile data.
-            tile_dir = self.extract_tiles_dir
+#        tile_dir = self.c_dict['INPUT_DIR']
 
         # Create FCST and ANLY ASCII files based on init time and storm id.
         # These are arguments to the
@@ -184,7 +218,7 @@ class SeriesByInitWrapper(CommandBuilder):
         sorted_filter_init = self.get_ascii_storm_files_list(tile_dir)
 
         # Clean up any remaining empty files and dirs
-        util.prune_empty(self.series_out_dir, self.logger)
+        util.prune_empty(self.c_dict['OUTPUT_DIR'], self.logger)
         self.logger.debug("Finished creating FCST and ANLY ASCII files, and " +
                           "cleaning empty files and dirs")
 
@@ -194,22 +228,22 @@ class SeriesByInitWrapper(CommandBuilder):
         # Generate plots
         # Check for .nc files in output_dir first, if these are absent, the
         # there is a problem.
-        if self.is_netcdf_created():
-            self.generate_plots(sorted_filter_init, tile_dir)
-        else:
+        if not self.is_netcdf_created():
             self.log_error("No NetCDF files were created by"
-                              " series_analysis, exiting...")
-            sys.exit(errno.ENODATA)
+                           " series_analysis, exiting...")
+            return False
+
+        self.generate_plots(sorted_filter_init, tile_dir)
 
         # clean up the tmp dir now that we are finished and create a new empty
         # tmp dir
-        filtered_file_regex = "filter_.*"
-        util.remove_staged_files(staging_dir, filtered_file_regex, self.logger )
+#        filtered_file_regex = "filter_.*"
+#        util.remove_staged_files(staging_dir, filtered_file_regex, self.logger )
 
-        self.logger.info("Finished series analysis by init time")
+        self.logger.debug("Finished series analysis by init time")
+        return True
 
-    def apply_series_filters(self, tile_dir, init_times, series_output_dir,
-                             filter_opts, staging_dir):
+    def apply_series_filters(self, tile_dir, init_times):
 
         """! Apply filter options, as specified in the
             param/config file.
@@ -219,31 +253,25 @@ class SeriesByInitWrapper(CommandBuilder):
                                  criteria.
                @param init_times:  List of init times that define the
                                    input data.
-               @param series_output_dir:  The directory where the filter results
-                                          will be stored.
-               @param filter_opts:  The filter options to apply
                @param staging_dir:  The staging directory where intermediate
                                       files are saved.
             Returns:
                 None
         """
-        # Create temporary directory where intermediate files are saved.
-        self.logger.debug("creating tmp dir for filtered files: " + staging_dir)
-
         for cur_init in init_times:
             # Call the tc_stat wrapper to build up the command and invoke
             # the MET tool tc_stat.
             filter_file = "filter_" + cur_init + ".tcst"
-            filter_filename = os.path.join(series_output_dir,
+            filter_filename = os.path.join(self.c_dict['FILTERED_OUTPUT_DIR'],
                                            cur_init, filter_file)
 
             input_dict = {'init': datetime.strptime(cur_init, '%Y%m%d_%H')}
-            job_args = (f'-job filter {filter_opts}'
+            job_args = (f"-job filter {self.c_dict['SERIES_FILTER_OPTS']}"
                         f' -dump_row {filter_filename}')
             override_dict = {'TC_STAT_JOB_ARGS': job_args,
                              'TC_STAT_INIT_INCLUDE': cur_init,
                              'TC_STAT_LOOKIN_DIR': tile_dir,
-                             'TC_STAT_OUTPUT_DIR': series_output_dir,
+                             'TC_STAT_OUTPUT_DIR': self.c_dict['FILTERED_OUTPUT_DIR'],
                              'TC_STAT_MATCH_POINTS': True,
                              }
             tc_stat_wrapper = TCStatWrapper(self.config, override_dict)
@@ -255,64 +283,6 @@ class SeriesByInitWrapper(CommandBuilder):
                 self.log_error(f'TCStat wrapper failed for {cur_init}')
                 continue
 
-            # Check that the filter.tcst file isn't empty. If
-            # it is, then use the files from extract_tiles as
-            # input (tile_dir = extract_out_dir)
-            if not util.file_exists(filter_filename):
-                msg = ("Non-existent filter file, filter " +
-                       " Never created by MET Tool tc_stat.")
-                self.logger.debug(msg)
-                continue
-            elif os.stat(filter_filename).st_size == 0:
-                msg = ("Empty filter file, filter " +
-                       " options yield nothing.")
-                self.logger.debug(msg)
-                continue
-
-            else:
-                # Now retrieve the files corresponding to these
-                # storm ids that resulted from filtering.
-                sorted_storm_ids = util.get_storm_ids(filter_filename,
-                                                      self.logger)
-
-                # Retrieve the header from filter_filename to be used in
-                # creating the temporary files.
-                with open(filter_filename, 'r') as filter_file:
-                    header = filter_file.readline()
-
-                for cur_storm in sorted_storm_ids:
-                    msg = ("Processing storm: " +
-                           cur_storm + " for file: " + filter_filename)
-                    self.logger.debug(msg)
-                    storm_output_dir = os.path.join(series_output_dir,
-                                                    cur_init, cur_storm)
-                    util.mkdir_p(storm_output_dir)
-                    util.mkdir_p(staging_dir)
-                    tmp_file = "filter_" + cur_init + "_" + cur_storm
-                    tmp_filename = os.path.join(staging_dir, tmp_file)
-                    storm_match_list = util.grep(cur_storm, filter_filename)
-                    with open(tmp_filename, "w") as tmp_file:
-                        tmp_file.write(header)
-                        for storm_match in storm_match_list:
-                            tmp_file.write(storm_match)
-
-                    # Create the analysis and forecast files based
-                    # on the storms (defined in the tmp_filename created above)
-                    # Store the analysis and forecast files in the
-                    # series_output_dir.
-                    feature_util.retrieve_and_regrid(tmp_filename, cur_init,
-                                                     cur_storm,
-                                                     series_output_dir,
-                                                     self.config)
-
-                    # remove temp file
-                    os.remove(tmp_filename)
-
-        # Check for any empty files and directories and remove them to avoid
-        # any errors or performance degradation when performing
-        # series analysis.
-        util.prune_empty(series_output_dir, self.logger)
-
     def is_netcdf_created(self):
         """! Check for the presence of NetCDF files in the series_analysis_init
              directory
@@ -322,18 +292,22 @@ class SeriesByInitWrapper(CommandBuilder):
                                     series_analysis_init/YYYYMMDD_hh/storm
                                     sub-directories, False otherwise.
         """
-        dated_dir_list = os.listdir(self.series_out_dir)
+        dated_dir_list = os.listdir(self.c_dict['OUTPUT_DIR'])
         netcdf_file_counter = 0
         is_created = False
 
         # Get the storm sub-directories in each dated sub-directory
         for dated_dir in dated_dir_list:
-            dated_dir_path = os.path.join(self.series_out_dir, dated_dir)
+            dated_dir_path = os.path.join(self.c_dict['OUTPUT_DIR'], dated_dir)
             # Get a list of the storm sub-dirs in this directory
             all_storm_list = os.listdir(dated_dir_path)
             for each_storm in all_storm_list:
                 full_storm_dirname = os.path.join(dated_dir_path, each_storm)
                 # Now get the list of files for each storm sub-dir.
+                # skip if the path is not a directory
+                if not os.path.isdir(full_storm_dirname):
+                    continue
+
                 all_files = os.listdir(full_storm_dirname)
                 for each_file in all_files:
                     full_filepath = os.path.join(full_storm_dirname, each_file)
@@ -346,7 +320,7 @@ class SeriesByInitWrapper(CommandBuilder):
 
         return is_created
 
-    def get_fcst_file_info(self, dir_to_search, cur_init, cur_storm):
+    def get_fcst_file_info(self, fcst_path):
         """! Get the number of all the gridded forecast n x m tile
             files for a given storm id and init time
             (that were created by extract_tiles). Determine the filename of the
@@ -366,15 +340,18 @@ class SeriesByInitWrapper(CommandBuilder):
 
                             sys.exit(1) otherwise
         """
+        with open(fcst_path, 'r') as file_handle:
+            files_of_interest = file_handle.readlines()
+
         # Get a sorted list of the forecast tile files for the init
         # time of interest for all the storm ids and return the
         # forecast hour corresponding to the first and last file.
         # base_dir_to_search = os.path.join(output_dir, cur_init)
-        gridded_dir = os.path.join(dir_to_search, cur_init, cur_storm)
-        search_regex = ".*FCST_TILE.*.nc"
+#        gridded_dir = os.path.join(dir_to_search, cur_init, cur_storm)
+#        search_regex = ".*FCST_TILE.*.nc"
 
-        files_of_interest = util.get_files(gridded_dir, search_regex,
-                                           self.logger)
+#        files_of_interest = util.get_files(gridded_dir, search_regex,
+#                                           self.logger)
         sorted_files = sorted(files_of_interest)
         if not files_of_interest:
             msg = ("exiting, no files found for " +
@@ -428,50 +405,49 @@ class SeriesByInitWrapper(CommandBuilder):
         filter_init_times = util.get_updated_init_times(tile_dir, self.logger)
         sorted_filter_init = sorted(filter_init_times)
 
+        fcst_grid_regex = f".*{self.c_dict['FCST_EXTRACT_TILES_PREFIX']}.*nc"
+        anly_grid_regex = f".*{self.c_dict['OBS_EXTRACT_TILES_PREFIX']}.*nc"
+
         for cur_init in sorted_filter_init:
             # Get all the storm ids for storm track pairs that
             # correspond to this init time.
             storm_list = self.get_storms_for_init(cur_init, tile_dir)
             if not storm_list:
-                # No storms for this init time,
-                # check next init time in list
+                # No storms for this init time, check next init time in list
                 continue
-            else:
-                for cur_storm in storm_list:
-                    # First get the filenames for the gridded forecast and
-                    # analysis (n deg x m deg tiles that were created by
-                    # extract_tiles). These files are aggregated by
-                    # init time and storm id.
-                    anly_grid_regex = ".*ANLY_TILE_F.*nc"
-                    fcst_grid_regex = ".*FCST_TILE_F.*nc"
 
-                    anly_grid_files = util.get_files(tile_dir,
-                                                     anly_grid_regex,
-                                                     self.logger)
-                    fcst_grid_files = util.get_files(tile_dir,
-                                                     fcst_grid_regex,
-                                                     self.logger)
+            for cur_storm in storm_list:
+                # First get the filenames for the gridded forecast and
+                # analysis (n deg x m deg tiles that were created by
+                # extract_tiles). These files are aggregated by
+                # init time and storm id.
+                anly_grid_files = util.get_files(tile_dir,
+                                                 anly_grid_regex,
+                                                 self.logger)
+                fcst_grid_files = util.get_files(tile_dir,
+                                                 fcst_grid_regex,
+                                                 self.logger)
 
-                    # Now do some checking to make sure we aren't
-                    # missing either the forecast or
-                    # analysis files, if so log the error and proceed to next
-                    # storm in the list.
-                    if not anly_grid_files or not fcst_grid_files:
-                        # No gridded analysis or forecast
-                        # files found, continue
-                        self.logger.info("no gridded analysis or forecast " +
-                                         "file found, continue to next storm")
-                        continue
+                # Now do some checking to make sure we aren't
+                # missing either the forecast or
+                # analysis files, if so log the error and proceed to next
+                # storm in the list.
+                if not anly_grid_files or not fcst_grid_files:
+                    # No gridded analysis or forecast
+                    # files found, continue
+                    self.logger.info("no gridded analysis or forecast " +
+                                     "file found, continue to next storm")
+                    continue
 
-                    # Now create the FCST and ANLY ASCII files based on
-                    # cur_init and cur_storm:
-                    self.create_fcst_anly_to_ascii_file(
-                        fcst_grid_files, cur_init, cur_storm,
-                        self.fcst_ascii_file_prefix)
-                    self.create_fcst_anly_to_ascii_file(
-                        anly_grid_files, cur_init, cur_storm,
-                        self.anly_ascii_file_prefix)
-                    util.prune_empty(self.series_out_dir, self.logger)
+                # Now create the FCST and ANLY ASCII files based on
+                # cur_init and cur_storm:
+                self.create_fcst_anly_to_ascii_file(
+                    fcst_grid_files, cur_init, cur_storm,
+                    self.FCST_ASCII_FILE_PREFIX)
+                self.create_fcst_anly_to_ascii_file(
+                    anly_grid_files, cur_init, cur_storm,
+                    self.ANLY_ASCII_FILE_PREFIX)
+                util.prune_empty(self.c_dict['OUTPUT_DIR'], self.logger)
         return sorted_filter_init
 
     def build_and_run_series_request(self, sorted_filter_init, tile_dir):
@@ -497,58 +473,28 @@ class SeriesByInitWrapper(CommandBuilder):
                     # No storm ids found for cur_init
                     # check next init time in the list.
                     continue
-                else:
-                    # Build the -obs and -fcst portions of the series_analysis
-                    # command. Then generate the -out portion, get the NAME and
-                    # corresponding LEVEL for each variable.
-                    full_vars_list = feature_util.retrieve_var_name_levels(self.config)
-                    for cur_var in full_vars_list:
-                        name, level = cur_var
-                        param = \
-                            self.config.getstr(
-                                'config',
-                                'SERIES_ANALYSIS_CONFIG_FILE')
-                        self.param = param
-                        self.create_obs_fcst_arg('obs',
-                                                 self.anly_ascii_file_prefix,
-                                                 cur_storm, cur_init)
-                        self.create_obs_fcst_arg('fcst',
-                                                 self.fcst_ascii_file_prefix,
-                                                 cur_storm,
-                                                 cur_init)
-                        self.create_out_arg(cur_storm, cur_init, name, level)
-                        self.add_common_envs()
-                        super().set_environment_variables()
-                        self.build()
-                        self.clear()
 
-    def create_obs_fcst_arg(self, param_arg, ascii_file_base, cur_storm,
-                            cur_init):
-        """! Create the argument to the -obs or -fcst flag to the MET tool,
-             series_analysis.
+                output_dir = os.path.join(self.c_dict['OUTPUT_DIR'],
+                                          cur_init,
+                                          cur_storm)
+                fcst_path = os.path.join(output_dir,
+                                         f"{self.FCST_ASCII_FILE_PREFIX}{cur_storm}")
+                obs_path = os.path.join(output_dir,
+                                        f"{self.ANLY_ASCII_FILE_PREFIX}{cur_storm}")
 
-             Args:
-                 @param param_arg:  '-obs' for the -obs argument to
-                                    series_analysis, or '-fcst' for the
-                                    -fcst argument to series_analysis.
-                 @param ascii_file_base:  The base name of the obs or fcst
-                                          ASCII file that contains a list
-                                          of the full filepath to the input
-                                          files.
-
-                 @param cur_storm:  The storm of interest.
-
-                 @param cur_init:   The initialization time of interest.
-
-             Returns:
-        """
-        ascii_fname_parts = [ascii_file_base, cur_storm]
-        ascii_fname = ''.join(ascii_fname_parts)
-        ascii_full_path = os.path.join(self.series_out_dir, cur_init,
-                                       cur_storm, ascii_fname)
-        self.add_input_file(ascii_full_path, param_arg)
-        latest_idx = len(self.infiles) - 1
-        self.logger.debug("first param: " + self.infiles[latest_idx])
+                # Build the -obs and -fcst portions of the series_analysis
+                # command. Then generate the -out portion, get the NAME and
+                # corresponding LEVEL for each variable.
+                full_vars_list = feature_util.retrieve_var_name_levels(self.config)
+                for cur_var in full_vars_list:
+                    name, level = cur_var
+                    self.infiles.append(f"-fcst {fcst_path}")
+                    self.infiles.append(f"-obs {obs_path}")
+                    self.create_out_arg(cur_storm, cur_init, name, level)
+                    self.add_common_envs()
+                    super().set_environment_variables()
+                    self.build()
+                    self.clear()
 
     def create_out_arg(self, cur_storm, cur_init, name, level):
         """! Create/build the -out portion of the series_analysis command and
@@ -565,9 +511,9 @@ class SeriesByInitWrapper(CommandBuilder):
             Returns:
         """
         # create the output dir
-        self.outdir = os.path.join(self.series_out_dir, cur_init,
+        outdir = os.path.join(self.c_dict['OUTPUT_DIR'], cur_init,
                                    cur_storm)
-        util.mkdir_p(self.outdir)
+        util.mkdir_p(outdir)
         # Set the NAME and LEVEL environment variables, this
         # is required by the MET series_analysis binary.
         os.environ['NAME'] = name
@@ -575,47 +521,30 @@ class SeriesByInitWrapper(CommandBuilder):
         self.add_env_var('NAME', name)
         self.add_env_var('LEVEL', level)
 
-        series_anly_output_parts = [self.outdir, '/',
+        series_anly_output_parts = [outdir, '/',
                                     'series_', name, '_',
                                     level, '.nc']
         # Set the sbi_out_dir for this instance, this will be
         # used for generating the plot.
-        self.sbi_plotting_out_dir = ''.join(
+        self.c_dict['PLOTTING_DIR'] = ''.join(
             series_anly_output_parts)
-        self.outfile = self.sbi_plotting_out_dir
+        self.outfile = self.c_dict['PLOTTING_DIR']
 
         self.logger.debug('output arg/output dir for series_analysis: ' +
                           self.get_output_path())
 
-    def clear(self):
-        super().clear()
-        self.inaddons = []
-
-    def add_input_file(self, filename, type_id):
-        self.infiles.append(filename)
-        self.inaddons.append("-" + type_id)
-
     def get_command(self):
-        if self.app_path is None:
-            self.log_error("No app path specified. You must use a subclass")
-            return None
-
         cmd = self.app_path + " "
-        if self.args:
-            for a in self.args:
-                cmd += a + " "
 
-        for idx, f in enumerate(self.infiles):
-            cmd += self.inaddons[idx] + " " + f + " "
+        cmd += ' '.join(self.infiles)
 
-        if self.param != "":
-            cmd += "-config " + self.param + " "
+        cmd += f" -config {self.c_dict['CONFIG_FILE']}"
 
         if self.get_output_path() == "":
             self.logger.info("No output directory specified, because series analysis has multiple directories")
             self.logger.info("No output filename specified, because series analysis has multiple files")
         else:
-            cmd += "-out " + os.path.join(self.get_output_path())
+            cmd += " -out " + os.path.join(self.get_output_path())
 
         return cmd
 
@@ -632,10 +561,6 @@ class SeriesByInitWrapper(CommandBuilder):
                @param tile_dir:  The directory where input data resides.
            Returns:
         """
-        background_map = self.config.getbool('config', 'SERIES_ANALYSIS_BACKGROUND_MAP')
-        plot_data_plane_exe = os.path.join(self.config.getdir('MET_BIN_DIR', ''),
-                                           'plot_data_plane')
-
         full_vars_list = feature_util.retrieve_var_name_levels(self.config)
         for cur_var in full_vars_list:
             name, level = cur_var
@@ -644,33 +569,34 @@ class SeriesByInitWrapper(CommandBuilder):
                 for cur_storm in storm_list:
                     # create the output directory where the finished
                     # plots will reside
-                    output_dir = os.path.join(self.series_out_dir, cur_init,
+                    output_dir = os.path.join(self.c_dict['OUTPUT_DIR'], cur_init,
                                               cur_storm)
                     util.mkdir_p(output_dir)
 
+                    fcst_path = os.path.join(output_dir,
+                                             f"{self.FCST_ASCII_FILE_PREFIX}{cur_storm}")
+                    obs_path = os.path.join(output_dir,
+                                            f"{self.ANLY_ASCII_FILE_PREFIX}{cur_storm}")
                     # Now we need to invoke the MET tool
                     # plot_data_plane to generate plots that are
                     # recognized by the MET viewer.
                     # Get the number of forecast tile files,
                     # the name of the first and last in the list
                     # to be used by the -title option.
-                    if tile_dir == self.extract_tiles_dir:
+                    if tile_dir == self.c_dict['INPUT_DIR']:
                         # Since filtering was not requested, or
                         # the additional filtering doesn't yield results,
-                        # search the series_out_dir
+                        # search the output dir
                         num, beg, end = \
-                            self.get_fcst_file_info(self.series_out_dir,
-                                                    cur_init, cur_storm)
+                            self.get_fcst_file_info(fcst_path)
                     else:
-                        # Search the series_filtered_out_dir for
+                        # Search the filtered output dir for
                         # the filtered files.
-                        num, beg, end = self.get_fcst_file_info(
-                            self.series_filtered_out_dir, cur_init,
-                            cur_storm)
+                        num, beg, end = self.get_fcst_file_info(fcst_path)
 
                     # Assemble the input file, output file, field string,
                     # and title
-                    plot_data_plane_input_fname = self.sbi_plotting_out_dir
+                    plot_data_plane_input_fname = self.c_dict.get('PLOTTING_DIR')
                     for cur_stat in self.c_dict['STAT_LIST']:
                         plot_data_plane_output = [output_dir,
                                                   '/series_',
@@ -687,7 +613,7 @@ class SeriesByInitWrapper(CommandBuilder):
                         # in param file.
                         map_data = ' map_data={ source=[];}'
 
-                        if background_map:
+                        if self.c_dict['BACKGROUND_MAP']:
                             # Flag set to True, draw background map.
                             field_string_parts = ["'name=", '"series_cnt_',
                                                   cur_stat, '";',
@@ -700,7 +626,7 @@ class SeriesByInitWrapper(CommandBuilder):
                                                   map_data, "'"]
 
                         field_string = ''.join(field_string_parts)
-                        title_parts = [' -title "GFS Init ', cur_init,
+                        title_parts = [f" -title \"{self.c_dict['MODEL']} Init ", cur_init,
                                        ' Storm ', cur_storm, ' ',
                                        str(num), ' Forecasts (',
                                        str(beg), ' to ', str(end),
@@ -710,7 +636,7 @@ class SeriesByInitWrapper(CommandBuilder):
 
                         # Now assemble the entire plot data plane command
                         data_plane_command_parts = \
-                            [plot_data_plane_exe, ' ',
+                            [self.c_dict['PLOT_DATA_PLANE'], ' ',
                              plot_data_plane_input_fname, ' ',
                              plot_data_plane_output_fname, ' ',
                              field_string, ' ', title]
@@ -735,7 +661,7 @@ class SeriesByInitWrapper(CommandBuilder):
                         # postscript file to png
                         png_fname = plot_data_plane_output_fname.replace(
                             '.ps', '.png')
-                        convert_parts = [self.convert_exe, ' -rotate 90',
+                        convert_parts = [self.c_dict['CONVERT_EXE'], ' -rotate 90',
                                          ' -background white -flatten ',
                                          plot_data_plane_output_fname,
                                          ' ', png_fname]
@@ -769,8 +695,11 @@ class SeriesByInitWrapper(CommandBuilder):
         """
         # Retrieve filter files, first create the filename
         # by piecing together the out_dir_base with the cur_init.
+
         filter_filename = "filter_" + cur_init + ".tcst"
-        filter_file = os.path.join(out_dir_base, cur_init, filter_filename)
+#        filter_file = os.path.join(out_dir_base, cur_init, filter_filename)
+        filter_file = os.path.join(self.c_dict['FILTERED_OUTPUT_DIR'],
+                                   cur_init, filter_filename)
 
         # Now that we have the filter filename for the init time, let's
         # extract all the storm ids in this filter file.
@@ -805,7 +734,7 @@ class SeriesByInitWrapper(CommandBuilder):
         # the fcst or analysis tiles.
         fcst_anly_ascii_fname_parts = [fcst_anly_filename_base, cur_storm]
         fcst_anly_ascii_fname = ''.join(fcst_anly_ascii_fname_parts)
-        fcst_anly_ascii_dir = os.path.join(self.series_out_dir, cur_init,
+        fcst_anly_ascii_dir = os.path.join(self.c_dict['OUTPUT_DIR'], cur_init,
                                            cur_storm)
         util.mkdir_p(fcst_anly_ascii_dir)
         fcst_anly_ascii = os.path.join(fcst_anly_ascii_dir,
