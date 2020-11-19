@@ -48,10 +48,6 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
 
         c_dict['PAIRED'] = self.config.getbool('config', 'SERIES_ANALYSIS_IS_PAIRED', False)
 
-        # get clock time from start of execution for input time dictionary
-        clock_time_obj = datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
-                                                    '%Y%m%d%H%M%S')
-
         # get input dir, template, and datatype for FCST, OBS, and BOTH
         for data_type in ('FCST', 'OBS', 'BOTH'):
             c_dict[f'{data_type}_INPUT_DIR'] = \
