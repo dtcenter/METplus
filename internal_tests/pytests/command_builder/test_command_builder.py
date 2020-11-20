@@ -210,7 +210,7 @@ def test_find_obs_dated_next_day(metplus_config):
 def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
     config = metplus_config()
 
-    pcw = CommandBuilder(config, overrides)
+    pcw = CommandBuilder(config, config_overrides=overrides)
     for key, expected_value in c_dict.items():
         assert(pcw.c_dict.get(key) == expected_value)
 
@@ -225,6 +225,6 @@ def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
 def test_override_config(metplus_config, overrides):
     config = metplus_config()
 
-    pcw = CommandBuilder(config, overrides)
+    pcw = CommandBuilder(config, config_overrides=overrides)
     for key, expected_value in overrides.items():
         assert(pcw.config.getraw('config', key) == expected_value)

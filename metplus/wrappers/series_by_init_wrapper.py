@@ -29,11 +29,13 @@ class SeriesByInitWrapper(CommandBuilder):
           series_analysis is done
     """
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      'series_analysis')
         self.app_name = os.path.basename(self.app_path)
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         # Retrieve any necessary values (dirs, executables)
         # from the param file(s)
         self.stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST'))
@@ -253,7 +255,8 @@ class SeriesByInitWrapper(CommandBuilder):
                              'TC_STAT_OUTPUT_DIR': series_output_dir,
                              'TC_STAT_MATCH_POINTS': True,
                              }
-            tc_stat_wrapper = TCStatWrapper(self.config, override_dict)
+            tc_stat_wrapper = TCStatWrapper(self.config,
+                                            config_overrides=override_dict)
             if not tc_stat_wrapper.isOK:
                 self.log_error('TCStat wrapper did not initialize properly')
                 continue

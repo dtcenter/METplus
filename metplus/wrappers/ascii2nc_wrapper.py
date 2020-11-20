@@ -24,11 +24,13 @@ from ..util import do_string_sub
 
 
 class ASCII2NCWrapper(CommandBuilder):
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "ascii2nc"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()

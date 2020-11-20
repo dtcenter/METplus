@@ -34,9 +34,11 @@ class SeriesByLeadWrapper(CommandBuilder):
          file.
     """
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'series_analysis'
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         # Retrieve any necessary values from the parm file(s)
         self.do_fhr_by_group = self.config.getbool('config',
                                                    'SERIES_ANALYSIS_GROUP_FCSTS')
@@ -1331,7 +1333,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                              'TC_STAT_OUTPUT_DIR': series_output_dir,
                              'TC_STAT_MATCH_POINTS': True,
                              }
-            tc_stat_wrapper = TCStatWrapper(self.config, override_dict)
+            tc_stat_wrapper = TCStatWrapper(self.config,
+                                            config_overrides=override_dict)
             if not tc_stat_wrapper.isOK:
                 continue
 

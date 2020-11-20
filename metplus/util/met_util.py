@@ -150,20 +150,25 @@ def run_metplus(config, process_list):
 
     try:
         processes = []
-        for item in process_list:
+        for process, instance in process_list:
             try:
-                logger = config.log(item)
-                package_name = 'metplus.wrappers.' + camel_to_underscore(item) + '_wrapper'
+                logname = f"{process}.{instance}" if instance else process
+                logger = config.log(logname)
+                package_name = ('metplus.wrappers.'
+                                f'{camel_to_underscore(process)}_wrapper')
                 module = import_module(package_name)
-                command_builder = getattr(module,
-                                          item + "Wrapper")(config)
+                command_builder = (
+                    getattr(module, f"{process}Wrapper")(config,
+                                                         instance=instance)
+                )
 
                 # if Usage specified in PROCESS_LIST, print usage and exit
-                if item == 'Usage':
+                if process == 'Usage':
                     command_builder.run_all_times()
                     return 0
             except AttributeError:
-                raise NameError("There was a problem loading %s wrapper." % item)
+                raise NameError("There was a problem loading "
+                                f"{process} wrapper.")
 
             processes.append(command_builder)
 
@@ -1871,39 +1876,45 @@ def camel_to_underscore(camel):
     return re.sub(r'([a-z])([A-Z])', r'\1_\2', s1).lower()
 
 def get_process_list(config):
-    """!Read process list, remove dashes/underscores and change to lower case. Then
-        map the name to the correct wrapper name"""
+    """!Read process list, Extract instance string if specified inside
+     parenthesis. Remove dashes/underscores and change to lower case,
+     then map the name to the correct wrapper name
 
+     @param config METplusConfig object to read PROCESS_LIST value
+     @returns list of tuple containing process name and instance identifier
+     (None if no instance was set)
+    """
     # get list of processes
     process_list = getlist(config.getstr('config', 'PROCESS_LIST'))
 
     out_process_list = []
     # for each item remove dashes, underscores, and cast to lower-case
     for process in process_list:
-        lower_process = process.replace('-', '').replace('_', '').replace(' ', '').lower()
-        if lower_process in LOWER_TO_WRAPPER_NAME.keys():
-            out_process_list.append(LOWER_TO_WRAPPER_NAME[lower_process])
+        # if instance is specified, extract the text inside parenthesis
+        match = re.match(f'(.*)\((.*)\)', process)
+        if match:
+            instance = match.group(2)
+            process_name = match.group(1)
         else:
-            config.logger.warning(f"PROCESS_LIST item {process} may be invalid.")
-            out_process_list.append(process)
+            instance = None
+            process_name = process
 
-    # if MakePlots is in process list, remove it because it will be called directly from StatAnalysis
-    if 'MakePlots' in out_process_list:
-        out_process_list.remove('MakePlots')
+        lower_process = (process_name.replace('-', '')
+                         .replace('_', '').replace(' ', '').lower())
+        if lower_process in LOWER_TO_WRAPPER_NAME.keys():
+            process_name = LOWER_TO_WRAPPER_NAME[lower_process]
+        else:
+            config.logger.warning(f"PROCESS_LIST item {process_name} "
+                                  "may be invalid.")
+
+        # if MakePlots is in process list, remove it because
+        # it will be called directly from StatAnalysis
+        if lower_process == 'makeplots':
+            continue
+
+        out_process_list.append((process_name, instance))
 
     return out_process_list
-
-def check_plotter_in_process_list(out_process_list, environ):
-    """! If plot wrappers are not enabled and there is a plot wrapper in the process list, do not run
-         Args:
-             @param out_process_list list of processes to examine
-             @param environ dictionary containing environment to check if plot wrappers are enabled or not
-             @returns False if plot wrappers are not enabled but they are in the process list, True otherwise
-    """
-    if not metplus_check.plot_wrappers_are_enabled(environ) and is_plotter_in_process_list(out_process_list):
-        return False
-
-    return True
 
 # minutes
 def shift_time(time_str, shift):
@@ -2055,25 +2066,13 @@ def validate_configuration_variables(config, force_check=False):
 
     return deprecated_isOK, field_isOK, inoutbase_isOK, deprecatedMET_isOK, all_sed_cmds
 
-def is_plotter_in_process_list(process_list):
-    """!Check config to see if having corresponding FCST/OBS variables is necessary. If process list only
-        contains reformatter wrappers, don't validate field info. Also, if MTD is in the process list and
-        it is configured to only process either FCST or OBS, validation is unnecessary."""
-
-    plotters = ['MakePlots', 'TCMPRPlotter', 'CyclonePlotter']
-
-    if [item for item in process_list if item in plotters]:
-        return True
-
-    return False
-
 def skip_field_info_validation(config):
     """!Check config to see if having corresponding FCST/OBS variables is necessary. If process list only
         contains reformatter wrappers, don't validate field info. Also, if MTD is in the process list and
         it is configured to only process either FCST or OBS, validation is unnecessary."""
 
     reformatters = ['PCPCombine', 'RegridDataPlane']
-    process_list = get_process_list(config)
+    process_list = [item[0] for item in get_process_list(config)]
 
     # if running MTD in single mode, you don't need matching FCST/OBS
     if 'MTD' in process_list and config.getbool('config', 'MTD_SINGLE_RUN'):
