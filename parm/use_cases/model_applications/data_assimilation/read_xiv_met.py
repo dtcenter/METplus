@@ -289,7 +289,7 @@ class ASCIIInnovationFile(InnovationFile):
         print("\nFILTERING USING: %s" % (qstr))
         df.query(qstr,inplace=True)
       if cpfstr!='' and cdbstr!='':
-        print("\nFILTERING c_pf_ob USING: %s from %02d to %02d & c_db_ob %s from %02d to %02d" % (cpfstr,cdbstr,cpfbeg,cpfend,cdbbeg,cdbend))
+        print("\nFILTERING c_pf_ob USING: %s from %02d to %02d & c_db_ob %s from %02d to %02d" % (cpfstr,cpfbeg,cpfend,cdbstr,cdbbeg,cdbend))
         #df = df[df['c_pf_ob'].str.contains(cpfstr) & df['c_db_ob'].str.contains(cdbstr)]
         df = df[df['c_pf_ob'].str.slice(start=cpfbeg,stop=cpfend,step=1).str.contains(cpfstr) & df['c_db_ob'].str.slice(start=cdbbeg,stop=cdbend,step=1).str.contains(cdbstr)]
       if cpfstr!='' and cdbstr=='':
@@ -553,7 +553,7 @@ class H5InnovationFile(InnovationFile):
         print("\nFILTERING USING: %s" % (qstr))
         df.query(qstr,inplace=True)
       if cpfstr!='' and cdbstr!='':
-        print("\nFILTERING c_pf_ob USING: %s from %02d to %02d & c_db_ob %s from %02d to %02d" % (cpfstr,cdbstr,cpfbeg,cpfend,cdbbeg,cdbend))
+        print("\nFILTERING c_pf_ob USING: %s from %02d to %02d & c_db_ob %s from %02d to %02d" % (cpfstr,cpfbeg,cpfend,cdbstr,cdbbeg,cdbend))
         #df = df[df['c_pf_ob'].str.contains(cpfstr) & df['c_db_ob'].str.contains(cdbstr)]
         df = df[df['c_pf_ob'].str.slice(start=cpfbeg,stop=cpfend,step=1).str.contains(cpfstr) & df['c_db_ob'].str.slice(start=cdbbeg,stop=cdbend,step=1).str.contains(cdbstr)]
       if cpfstr!='' and cdbstr=='':

@@ -38,11 +38,12 @@ if len(sys.argv) == 2:
         #                  names=['typ', 'sid', 'vld', 'lat', 'lon', 'elv', 'var', 'lvl', 'hgt', 'qc', 'obs'],
         #                  dtype={'typ':'str', 'sid':'str', 'vld':'str', 'var':'str', 'qc':'str'}).values.tolist()
 
-        # Get a file object from the input file
+        # Get a file object from the NRL input file
         fobj = inn.from_file(input_file)
 
         # If you want everything in the file for further inspection, use as_dataframe()
-        # If you want to subset to the MET 11-column ASCII format for ASCII2NC, use as_met_dataframe() and set the corresponding env vars
+        # If you want to subset to the MET 11-column ASCII format for ASCII2NC, use as_met_dataframe() and set the corresponding METplus
+        # [user_env_vars]
         #df = fobj.as_dataframe()
         df = fobj.as_met_dataframe()
         
