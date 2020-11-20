@@ -356,6 +356,57 @@ will process valid times starting on 20190425 at 06Z every 6 hours until the cur
 
    When using the 'now' keyword, the value of VALID_TIME_FMT must be identical to the 'fmt' value corresponding to the 'now' item in VALID_BEG and VALID_END. In the above example, this would be the %Y%m%d%H portion within values of the VALID_TIME_FMT, VALID_BEG, and VALID_END variables.
 
+.. _Process_List:
+
+Process List
+~~~~~~~~~~~~
+
+################################################################################
+The PROCESS_LIST variable defines the list of wrappers to run.
+This can be a single value or a comma separated list of values.
+Each value must match an existing wrapper name without the 'Wrapper' suffix.
+
+**Example 1 Configuration**::
+
+    [config]
+    PROCESS_LIST = GridStat
+
+This example will run GridStatWrapper only.
+
+**Example 2 Configuration**::
+
+    [config]
+    PROCESS_LIST = PCPCombine, GridStat
+
+This example will run PCPCombineWrapper then GridStatWrapper.
+
+Added in version 4.0.0 is the ability to specify an instance name for each
+process in the PROCESS_LIST. This allows multiple instances of the same
+wrapper to be specified in the PROCESS_LIST. Users can create a new section
+header in their configuration files with the same name as the instance.
+If defined, values in this section will override the values in the
+configuration for that instance. The instance name of the process is defined
+by adding text after the process name inside parenthesis. There should be
+no space between the process name and the parenthesis.
+
+**Example 3 Configuration**::
+
+    [config]
+    PROCESS_LIST = GridStat, GridStat(my_instance_name)
+
+    [dir]
+    GRID_STAT_OUTPUT_DIR = /grid/stat/output/dir
+
+    [my_instance_name]
+    GRID_STAT_OUTPUT_DIR = /my/instance/name/output/dir
+
+In this example, the first occurence of GridStat in the PROCESS_LIST does
+not have an instance name associated with it, so it will use the value
+/grid/stat/output/dir as the output directory. The second occurence has
+an instance name 'my_instance_name' and there is a section header with
+the same name, so this instance will use /my/instance/name/output/dir as
+the output directory.
+
 .. _Loop_Order:
 
 Loop Order
@@ -363,7 +414,7 @@ Loop Order
 
 The METplus wrappers can be configured to loop first by times then processes or vice-versa. Looping by times first will run each process in the process list for a given run time, increment to the next run time, run each process in the process list, and so on. Looping by processes first will run all times for the first process, then run all times for the second process, and so on.
 
-Example 1 Configuration::
+**Example 1 Configuration**::
 
   [config]
   LOOP_ORDER = times
@@ -384,7 +435,7 @@ will run in the following order::
   * GridStat   at 2019-02-03
 
 
-Example 2 Configuration::
+**Example 2 Configuration**::
 
   [config]
   LOOP_ORDER = processes
