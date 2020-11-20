@@ -10,7 +10,7 @@ git:
 branches:
   only:
   - develop
-  - "/^feature_.*/"
+#  - "/^feature_.*/"
   - "/^main_.*/"
   - "/^bugfix_.*/"
 cache:
