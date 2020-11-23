@@ -131,7 +131,8 @@ def test_validate_config_values(metplus_config):
     ]
     )
 def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
-    wrapper = TCStatWrapper(get_config(metplus_config), overrides)
+    wrapper = TCStatWrapper(get_config(metplus_config),
+                            config_overrides=overrides)
     for key, expected_value in c_dict.items():
         assert (wrapper.c_dict.get(key) == expected_value)
 

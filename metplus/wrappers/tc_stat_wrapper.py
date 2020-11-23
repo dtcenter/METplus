@@ -36,12 +36,14 @@ class TCStatWrapper(CommandBuilder):
          cyclone pair data.
     """
 
-    def __init__(self, config, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'tc_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
 
-        super().__init__(config, config_overrides)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         self.logger.debug("Initialized TCStatWrapper")
 
     def create_c_dict(self):

@@ -68,10 +68,12 @@ class MakePlotsWrapper(CommandBuilder):
         'VERIF_GRID', 'EVENT_EQUALIZATION', 'LOG_METPLUS', 'LOG_LEVEL'
     ]
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_path = 'python'
         self.app_name = 'make_plots'
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
         if wrapper_cannot_run:
             self.log_error(f"There was a problem importing modules: {exception_err}\n")
@@ -104,7 +106,6 @@ class MakePlotsWrapper(CommandBuilder):
                                c_dict['VERBOSITY'])
         )
         c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
-        c_dict['PROCESS_LIST'] = self.config.getstr('config', 'PROCESS_LIST')
         c_dict['INPUT_BASE_DIR'] = self.config.getdir('MAKE_PLOTS_INPUT_DIR')
         c_dict['OUTPUT_BASE_DIR'] = self.config.getdir('MAKE_PLOTS_OUTPUT_DIR')
         c_dict['SCRIPTS_BASE_DIR'] = self.config.getdir('MAKE_PLOTS_SCRIPTS_DIR')

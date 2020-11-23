@@ -19,6 +19,7 @@ from inspect import getframeinfo, stack
 from .command_runner import CommandRunner
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
+from ..util import config_metplus
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -35,7 +36,7 @@ class CommandBuilder:
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, config, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.isOK = True
         self.errors = 0
         self.config = config
@@ -49,6 +50,17 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
         self.all_commands = []
+
+        # if instance is set, check for a section with the same name in the
+        # METplusConfig object. If found, copy all values into the config
+        if instance:
+            self.config = (
+                config_metplus.replace_config_from_section(self.config,
+                                                           instance,
+                                                           required=False)
+            )
+
+        self.instance = instance
 
         # override config if any were supplied
         self.override_config(config_overrides)
@@ -1056,14 +1068,19 @@ class CommandBuilder:
         self.all_commands.append((cmd,
                                   self.print_all_envs(print_copyable=False)))
 
-        ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name,
+        if self.instance:
+            app_name = f"{self.app_name}.{self.instance}"
+        else:
+            app_name = self.app_name
+
+        ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=app_name,
                                               copyable_env=self.get_env_copy())
-        if ret != 0:
+        if ret:
             logfile_path = self.config.getstr('config', 'LOG_METPLUS')
             # if MET output is written to its own logfile, get that filename
             if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
                 logfile_path = logfile_path.replace('master_metplus',
-                                                    self.app_name)
+                                                    app_name)
 
             self.log_error("MET command returned a non-zero return code:"
                            f"{cmd}")

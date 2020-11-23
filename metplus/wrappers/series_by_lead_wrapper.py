@@ -34,9 +34,11 @@ class SeriesByLeadWrapper(CommandBuilder):
          file.
     """
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'series_analysis'
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         # Retrieve any necessary values from the parm file(s)
         self.do_fhr_by_group = self.config.getbool('config',
                                                    'SERIES_ANALYSIS_GROUP_FCSTS')
@@ -616,7 +618,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             msg = ("Cannot determine base directory path for " +
                    "netCDF files... exiting")
             self.log_error(msg)
-            sys.exit(1)
+            return None
 
         # TODO: critical. harden Do we ant to add -O overwrite option to
         # all ncap2 commands?? If I restart and not delete output
@@ -632,10 +634,10 @@ class SeriesByLeadWrapper(CommandBuilder):
         nco_nseries_cmd = ''.join(nco_nseries_cmd_parts)
         (ret, nco_nseries_cmd) = self.cmdrunner.run_cmd \
             (nco_nseries_cmd, env=self.env, ismetcmd=False)
-
-        if ret != 0:
-            self.log_error(f"Command returned a non-zero return code: {nco_nseries_cmd}")
-            self.logger.info("Check the logfile for more information on why it failed")
+        if ret:
+            self.logger.debug("Could not read series_cnt_TOTAL "
+                              f"from {nc_var_file}")
+            return None
 
         # Create an ASCII file with the max value, which can be parsed.
         nseries_txt_path = os.path.join(base_nc_dir, 'nseries.txt')
@@ -646,9 +648,12 @@ class SeriesByLeadWrapper(CommandBuilder):
         (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
             (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True)
 
-        if ret != 0:
-            self.log_error(f"Command returned a non-zero return code: {ncdump_max_cmd}")
-            self.logger.info("Check the logfile for more information on why it failed")
+        if ret:
+            self.log_error("Command returned a non-zero return code:"
+                           f"{ncdump_max_cmd}")
+            self.logger.info("Check the logfile for more information "
+                             "on why it failed")
+            return None
 
 
         # Look for the max value for this netCDF file.
@@ -676,6 +681,8 @@ class SeriesByLeadWrapper(CommandBuilder):
         except IOError:
             msg = ("cannot open the max text file")
             self.log_error(msg)
+
+        return None
 
     def get_netcdf_min_max(self, do_fhr_by_range, nc_var_files, cur_stat):
         """! Determine the min and max for all lead times for each
@@ -1134,7 +1141,10 @@ class SeriesByLeadWrapper(CommandBuilder):
                         continue
 
                     # Get the max series_cnt_TOTAL value (i.e. nseries)
+                    num_string = ''
                     nseries = self.get_nseries(do_fhr_by_range, cur_nc)
+                    if nseries is not None:
+                        num_string = f" (N = {nseries})"
 
                     # Create the plot data plane command based on whether
                     # the background map was requested in the
@@ -1153,10 +1163,11 @@ class SeriesByLeadWrapper(CommandBuilder):
                                              'series_cnt_', cur_stat, '";',
                                              'level=', r'"(\*,\*)"; ',
                                              ' ', map_data,
-                                             "'", ' -title ', '"GFS ',
+                                             "'", ' -title ',
+                                             f"\"{self.c_dict['MODEL']} ",
                                              str(fhr),
-                                             ' Forecasts (N = ', str(nseries),
-                                             '), ', cur_stat, ' for ', name,
+                                             f' Forecasts{num_string}', ', ',
+                                             cur_stat, ' for ', name,
                                              ' ', level,
                                              '"', ' -plot_range ', str(vmin),
                                              ' ', str(vmax)]
@@ -1322,7 +1333,8 @@ class SeriesByLeadWrapper(CommandBuilder):
                              'TC_STAT_OUTPUT_DIR': series_output_dir,
                              'TC_STAT_MATCH_POINTS': True,
                              }
-            tc_stat_wrapper = TCStatWrapper(self.config, override_dict)
+            tc_stat_wrapper = TCStatWrapper(self.config,
+                                            config_overrides=override_dict)
             if not tc_stat_wrapper.isOK:
                 continue
 
