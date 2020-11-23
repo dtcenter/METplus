@@ -23,9 +23,11 @@ class ExtractTilesWrapper(CommandBuilder):
          specified in the config file.
     """
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'extract_tiles'
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         self.regrid_data_plane = self.regrid_data_plane_init()
 
     def create_c_dict(self):
@@ -125,7 +127,8 @@ class ExtractTilesWrapper(CommandBuilder):
 
         overrides[f'{rdp}_ONCE_PER_FIELD'] = False
         overrides[f'{rdp}_MANDATORY'] = False
-        rdp_wrapper = RegridDataPlaneWrapper(self.config, overrides)
+        rdp_wrapper = RegridDataPlaneWrapper(self.config,
+                                             config_overrides=overrides)
         rdp_wrapper.c_dict['SHOW_WARNINGS'] = False
         return rdp_wrapper
 

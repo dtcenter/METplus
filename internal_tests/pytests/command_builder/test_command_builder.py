@@ -11,28 +11,6 @@ import datetime
 from metplus.wrappers.command_builder import CommandBuilder
 from metplus.util import time_util
 
-# --------------------TEST CONFIGURATION and FIXTURE SUPPORT -------------
-#
-# The test configuration and fixture support the additional configuration
-# files used in METplus
-#              !!!!!!!!!!!!!!!
-#              !!!IMPORTANT!!!
-#              !!!!!!!!!!!!!!!
-# The following two methods should be included in ALL pytest tests for METplus.
-#
-#
-#def pytest_addoption(parser):
-#    parser.addoption("-c", action="store", help=" -c <test config file>")
-
-
-# @pytest.fixture
-#def cmdopt(request):
-#    return request.config.getoption("-c")
-
-
-# ------------------------ TESTS GO HERE --------------------------
-
-
 # ------------------------
 #  test_find_data_no_dated
 # ------------------------
@@ -210,7 +188,7 @@ def test_find_obs_dated_next_day(metplus_config):
 def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
     config = metplus_config()
 
-    pcw = CommandBuilder(config, overrides)
+    pcw = CommandBuilder(config, config_overrides=overrides)
     for key, expected_value in c_dict.items():
         assert(pcw.c_dict.get(key) == expected_value)
 
@@ -225,6 +203,43 @@ def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
 def test_override_config(metplus_config, overrides):
     config = metplus_config()
 
-    pcw = CommandBuilder(config, overrides)
+    pcw = CommandBuilder(config, config_overrides=overrides)
     for key, expected_value in overrides.items():
+        assert(pcw.config.getraw('config', key) == expected_value)
+
+# dictionary items with values will be set in [test_section]
+# items with value None will not be set, so it should use
+# the value in [config], which is always 'default'
+@pytest.mark.parametrize(
+    'section_items', [
+        # all values set in test_section
+        ({'LOG_MET_VERBOSITY': '5',
+          'CUSTOM_LOOP_LIST': 'a,b,c',
+          'SKIP_TIMES': '"%H:12,18", "%Y%m%d:20200201"',
+          'FAKE_TEMPLATE': '{valid?fmt=%Y%m%d%H}' }),
+        # some values set in test_section, some not
+        ({'LOG_MET_VERBOSITY': '5',
+          'CUSTOM_LOOP_LIST': None,
+          'SKIP_TIMES': '"%H:12,18", "%Y%m%d:20200201"',
+          'FAKE_TEMPLATE': None }),
+        # no values are set in test_section
+        ({'FAKE_TEMPLATE': None}),
+        ]
+)
+def test_override_by_instance(metplus_config, section_items):
+    config = metplus_config()
+
+    # set config variables to default
+    for key in section_items:
+        config.set('config', key, 'default')
+
+    # set test_section variables to values
+    config.add_section('test_section')
+    for key, value in section_items.items():
+        if value is not None:
+            config.set('test_section', key, value)
+
+    pcw = CommandBuilder(config, instance='test_section')
+    for key, value in section_items.items():
+        expected_value = 'default' if value is None else value
         assert(pcw.config.getraw('config', key) == expected_value)

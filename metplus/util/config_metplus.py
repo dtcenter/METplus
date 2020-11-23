@@ -509,15 +509,32 @@ def get_logger(config, sublog=None):
     config.logger = logger
     return logger
 
-def replace_config_from_section(config, section):
-    if not config.has_section(section):
-        error_message = f'Section {section} does not exist.'
-        if config.logger:
-            config.logger.error(error_message)
-        else:
-            print(f"ERROR: {error_message}")
+def replace_config_from_section(config, section, required=True):
+    """! Check if config has a section named [section] If it does, create a
+    new METplusConfig object, set each value from the input config, then
+    set each value from [section], overriding any values that are found in both
 
-        return None
+    @param config input METplusConfig object
+    @param section name of section in config object to look for
+    @param required (optional) True/False to determine if an error should occur
+    if the section does not exist. Default value is True
+    @returns If required and section does not exist, error and return None.
+    If not required and section does not exist, return input config. If section
+    does exist, return new METplusConfig object with config values replaced by
+    all values in [section]
+    """
+    if not config.has_section(section):
+        # if section is required to be found, report error and return None
+        if required:
+            error_message = f'Section {section} does not exist.'
+            if config.logger:
+                config.logger.error(error_message)
+            else:
+                print(f"ERROR: {error_message}")
+
+            return None
+        # if not required, return input config object
+        return config
 
     new_config = METplusConfig()
     all_configs = config.keys('config')

@@ -20,11 +20,13 @@ from . import CompareGriddedWrapper
 
 class MTDWrapper(MODEWrapper):
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'mtd'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         self.fcst_file = None
         self.obs_file = None
 
