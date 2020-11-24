@@ -69,6 +69,10 @@ class PlotDataPlaneWrapper(CommandBuilder):
             self.config.getraw('config',
                                'PLOT_DATA_PLANE_FIELD_LEVEL')
         )
+        c_dict['FIELD_EXTRA'] = (
+            self.config.getraw('config',
+                               'PLOT_DATA_PLANE_FIELD_EXTRA')
+        )
 
         c_dict['TITLE'] = (
             self.config.getraw('config',
@@ -126,6 +130,8 @@ class PlotDataPlaneWrapper(CommandBuilder):
              Args:
                 @param time_info dictionary containing timing information
         """
+        self.clear()
+
         # get input files
         if not self.find_input_files(time_info):
             return False
@@ -165,6 +171,9 @@ class PlotDataPlaneWrapper(CommandBuilder):
         if self.c_dict['FIELD_LEVEL']:
             field_level = util.remove_quotes(self.c_dict['FIELD_LEVEL'])
             field_info += f" level=\"{field_level}\";"
+
+        if self.c_dict['FIELD_EXTRA']:
+            field_info += f" {self.c_dict['FIELD_EXTRA']}"
 
         field_info += "'"
         self.args.append(field_info)
