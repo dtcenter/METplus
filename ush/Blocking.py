@@ -1,5 +1,5 @@
 import os
-import glob
+#import glob
 import numpy as np
 import netCDF4
 import pandas as pd
@@ -7,58 +7,50 @@ import datetime
 import bisect
 from scipy import stats
 from scipy.signal import argrelextrema
+from metplus.util import config_metplus, get_start_end_interval_times, get_lead_sequence
+from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate
 
 class BlockingCalculation():
     """Contains the programs to calculate Blocking via the Pelly-Hoskins Method
     """
-    def __init__(self,config):
+    def __init__(self,config,label):
 
-        from metplus.util import config_metplus, get_start_end_interval_times, get_lead_sequence
-        from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate
-
-        self.blocking_anomaly_dir = config.getstr('Blocking','BLOCKING_ANOMALY_DIR')
-        self.blocking_anomaly_var = config.getstr('Blocking','BLOCKING_ANOMALY_VAR')
-        self.blocking_dir = config.getstr('Blocking','BLOCKING_DIR')
-        self.blocking_var = config.getstr('Blocking','BLOCKING_VAR')
-        self.smoothing_pts = config.getint('Blocking','SMOOTHING_PTS')
-        lat_delta_in = config.getstr('Blocking','LAT_DELTA')
+        self.blocking_anomaly_var = config.getstr('Blocking',label+'_BLOCKING_ANOMALY_VAR','')
+        self.blocking_var = config.getstr('Blocking',label+'_BLOCKING_VAR','')
+        self.smoothing_pts = config.getint('Blocking',label+'_SMOOTHING_PTS',9)
+        lat_delta_in = config.getstr('Blocking',label+'_LAT_DELTA','-5,0,5')
         self.lat_delta = list(map(int,lat_delta_in.split(",")))
-        self.n_s_limits = config.getint('Blocking','NORTH_SOUTH_LIMITS')
-        self.ibl_dist = config.getint('Blocking','IBL_DIST')
-        self.ibl_in_gibl = config.getint('Blocking','IBL_IN_GIBL')
-        self.gibl_overlap = config.getint('Blocking','GIBL_OVERLAP')
-        self.block_time = config.getint('Blocking','BLOCK_TIME')  ###Probably should fix this so it supports other times"
-        self.block_travel = config.getint('Blocking','BLOCK_TRAVEL')
-        self.block_method = config.getstr('Blocking','BLOCK_METHOD')
+        self.n_s_limits = config.getint('Blocking',label+'_NORTH_SOUTH_LIMITS',30)
+        self.ibl_dist = config.getint('Blocking',label+'_IBL_DIST',7)
+        self.ibl_in_gibl = config.getint('Blocking',label+'_IBL_IN_GIBL',15)
+        self.gibl_overlap = config.getint('Blocking',label+'_GIBL_OVERLAP',10)
+        self.block_time = config.getint('Blocking',label+'_BLOCK_TIME',5)  ###Should fix so it supports other times"
+        self.block_travel = config.getint('Blocking',label+'_BLOCK_TRAVEL',45)
+        self.block_method = config.getstr('Blocking',label+'_BLOCK_METHOD','PH')
 
-        blocking_config = config_metplus.replace_config_from_section(config, 'Blocking')
-        use_init = is_loop_by_init(blocking_config)
-        loop_time, end_time, time_interval = get_start_end_interval_times(blocking_config)
-        skip_times = get_skip_times(blocking_config)
+        # Get a date list for the data
+        #blocking_config = config_metplus.replace_config_from_section(config, 'Blocking')
+        #use_init = is_loop_by_init(blocking_config)
 
-        self.start_mth = loop_time.strftime('%m')
+        #self.date_list, self.ymd_list, self.start_mth = self.get_date_list(blocking_config,use_init)
 
-        alldays_list = []
-        if use_init:
-            timname = 'init'
-        else:
-            timname = 'valid'
-        input_dict = {}
-        input_dict['loop_by'] = timname
-        while loop_time <= end_time:
-            lead_seq = get_lead_sequence(config)
-            for ls in lead_seq:
-                new_time = loop_time + ls
-                input_dict[timname] = loop_time
-                input_dict['lead'] = ls
-
-                outtimestuff = ti_calculate(input_dict)
-                if not skip_time(outtimestuff, skip_times):
-                    alldays_list.append(outtimestuff['valid'])
-
-            loop_time += time_interval
-
-        self.date_list = alldays_list
+        # Check to see if a separate CBL start/end date is present
+        #cbl_config_init = config.find_section('Blocking','CBL_INIT_BEG')
+        #cbl_config_valid = config.find_section('Blocking','CBL_VALID_BEG')
+        #if use_init and (cbl_config_init is not None):
+        #    config.set('Blocking','INIT_BEG',config.getstr('Blocking','CBL_INIT_BEG'))
+        #    config.set('Blocking','INIT_END',config.getstr('Blocking','CBL_INIT_END'))
+        #    blocking_config = config_metplus.replace_config_from_section(config, 'Blocking')
+        #    self.cbl_date_list, self.cbl_ymd_list, self.cbl_start_mth = self.get_date_list(blocking_config,use_init)
+        #elif cbl_config_valid is not None:
+        #    config.set('Blocking','VALID_BEG',config.getstr('Blocking','CBL_VALID_BEG'))
+        #    config.set('Blocking','VALID_END',config.getstr('Blocking','CBL_VALID_END'))
+        #    blocking_config = config_metplus.replace_config_from_section(config, 'Blocking')
+        #    self.cbl_date_list, self.cbl_ymd_list, self.cbl_start_mth = self.get_date_list(blocking_config,use_init)
+        #else:
+        #    self.cbl_date_list = self.date_list
+        #    self.cbl_ymd_list = self.ymd_list
+        #    self.cbl_start_mth = self.start_mth
 
         # Check data requirements
         if self.smoothing_pts % 2 == 0:
@@ -66,84 +58,35 @@ class BlockingCalculation():
             exit()
 
 
-    def read_nc_met(self,indir,invar):
-
-        infiles = glob.glob(indir+"/*.nc")
-        infiles.sort()
+    def read_nc_met(self,infiles,yrlist,invar):
 
         print("Reading in Data")
-        indata = netCDF4.Dataset(infiles[0])
+
+        #Find the first non empty file name so I can get the variable sizes
+        locin = next(sub for sub in infiles if sub)
+        indata = netCDF4.Dataset(locin)
         lats = indata.variables['lat'][:]
         lons = indata.variables['lon'][:]
-        var_3d = indata.variables[invar][:]
-        var_3d = np.expand_dims(var_3d,axis=0)
-        init_time_str = indata.variables[invar].getncattr('init_time')
-        valid_time_str = indata.variables[invar].getncattr('valid_time')
+        invar_arr = indata.variables[invar][:]
         indata.close()
-        yrlist = []
-        pmth = valid_time_str[4:6]
-        loclist = [0]
-        cntr = 1
 
-        # Create a list of all the dates I need, so I can fill missing days
-        djf_dates = self.date_list
+        var_3d = np.empty([len(infiles),len(invar_arr[:,0]),len(invar_arr[0,:])])
 
-        valid_datetime = datetime.datetime(int(valid_time_str[0:4]),int(valid_time_str[4:6]),int(valid_time_str[6:8]),
-            int(valid_time_str[9:11]),int(valid_time_str[11:13]),int(valid_time_str[13:15]))
-        datediff = valid_datetime - djf_dates[0]
-        if valid_datetime > djf_dates[0]:
-            diff = bisect.bisect_left(djf_dates,valid_datetime)
-            filldata = np.empty((diff,len(var_3d[0,:,0]),len(var_3d[0,0,:])),dtype=np.float)
-            filldata[:] = np.nan
-            var_3d = np.append(filldata,var_3d,axis=0)
-            icnt = diff + 1
-        elif valid_datetime < djf_dates[0]:
-            print('Extra data present, not set up to handle this.  Exiting...')
-            exit()
-        else:
-            icnt = 1
-
-        for i in range(1,len(infiles)):
+        for i in range(0,len(infiles)):
 
             #Read in the data
-            indata = netCDF4.Dataset(infiles[i])
-            new_invar = indata.variables[invar][:]
-            new_invar = np.expand_dims(new_invar,axis=0)
-            init_time_str = indata.variables[invar].getncattr('init_time')
-            valid_time_str = indata.variables[invar].getncattr('valid_time')
-            indata.close()
-            cmth = valid_time_str[4:6]
+            if infiles[i]:
+                indata = netCDF4.Dataset(infiles[i])
+                new_invar = indata.variables[invar][:]
+                #new_invar = np.expand_dims(new_invar,axis=0)
+                init_time_str = indata.variables[invar].getncattr('init_time')
+                valid_time_str = indata.variables[invar].getncattr('valid_time')
+                indata.close()
+            else:
+                new_invar = np.empty((1,len(var_3d[0,:,0]),len(var_3d[0,0,:])),dtype=np.float)
+                new_invar[:] = np.nan
+            var_3d[i,:,:] = new_invar
 
-            valid_datetime = datetime.datetime(int(valid_time_str[0:4]),int(valid_time_str[4:6]),
-                int(valid_time_str[6:8]),int(valid_time_str[9:11]),int(valid_time_str[11:13]),int(valid_time_str[13:15]))
-            if valid_datetime > djf_dates[icnt]:
-                locvd = bisect.bisect_left(djf_dates,valid_datetime)
-                locc = bisect.bisect_left(djf_dates,djf_dates[icnt])
-                diff = bisect.bisect_left(djf_dates,valid_datetime) - bisect.bisect_left(djf_dates,djf_dates[icnt])
-                filldata = np.empty((diff,len(var_3d[0,:,0]),len(var_3d[0,0,:])),dtype=np.float)
-                filldata[:] = np.nan
-                var_3d = np.append(var_3d,filldata,axis=0)
-                icnt+=diff
-            elif valid_datetime < djf_dates[i]:
-                print('Extra data present, not set up to handle this.  Exiting...')
-                exit()
-            var_3d = np.append(var_3d,new_invar,axis=0)
-
-            if (int(cmth) == int(self.start_mth)) and (int(pmth) != int(self.start_mth)):
-                yrlist.append(int(valid_time_str[0:4]))
-                loclist.append(cntr)
-
-            pmth = cmth
-            cntr+=1
-            icnt+=1
-
-        if len(djf_dates) > len(var_3d[:,0,0]):
-            diff = len(djf_dates) - len(var_3d[:,0,0])
-            filldata = np.empty((diff,len(var_3d[0,:,0]),len(var_3d[0,0,:])),dtype=np.float)
-            filldata[:] = np.nan
-            var_3d = np.append(var_3d,filldata,axis=0)
-
-        yrlist.append(int(valid_time_str[0:4]))
         yr = np.array(yrlist)
         sdim = len(var_3d[:,0,0])/float(len(yrlist))
         var_4d = np.reshape(var_3d,[len(yrlist),int(sdim),len(var_3d[0,:,0]),len(var_3d[0,0,:])])
@@ -151,13 +94,9 @@ class BlockingCalculation():
         return var_4d,lats,lons,yr
 
 
-    def run_CBL(self):
+    def run_CBL(self,cblinfiles,cblyrs):
 
-        #z500_anom_4d,lats,lons,yr = self.read_nc_met(self.blocking_anomaly_dir,self.blocking_anomaly_var)
-        z500_anom_4d = np.load('Z500_anom.npy')
-        lats = np.load('lats1.npy')
-        lons = np.load('lons1.npy')
-        yr = np.load('yr1.npy')
+        z500_anom_4d,lats,lons,yr = self.read_nc_met(cblinfiles,cblyrs,self.blocking_anomaly_var)
 
         #Create Latitude Weight based for NH
         cos = lats
@@ -188,7 +127,6 @@ class BlockingCalculation():
 
     def run_mod_blocking1d(self,a,cbl,lat,lon,meth):
         lat_d = self.lat_delta
-        #blon = 0
         dc = (90 - cbl).astype(int)
         db = self.n_s_limits
         BI = np.zeros((len(a[:,0,0]),len(lon)))
@@ -197,7 +135,6 @@ class BlockingCalculation():
             # loop through days
             for k in np.arange(0,len(a[:,0,0]),1):
                 blontemp=0
-                #bitemp=0
                 q=0
                 BI1=np.zeros((len(lat_d),len(lon)))
                 for l in lat_d:
@@ -222,13 +159,9 @@ class BlockingCalculation():
         return blon,BI
 
 
-    def run_Calc_IBL(self,cbl):
+    def run_Calc_IBL(self,cbl,iblinfiles,iblyr):
 
-        z500_daily,lats,lons,yr = self.read_nc_met(self.blocking_dir,self.blocking_var)
-        #z500_daily = np.load('Z500_daily.npy')
-        #lats = np.load('lats2.npy')
-        #lons = np.load('lons2.npy')
-        #yr = np.load('yr2.npy')
+        z500_daily,lats,lons,yr = self.read_nc_met(iblinfiles,iblyr,self.blocking_var)
 
         #Initilize arrays for IBLs and the blocking index
         # yr, day, lon
@@ -241,7 +174,6 @@ class BlockingCalculation():
             blon,BI[i,:,:] = self.run_mod_blocking1d(z500_daily[i,:,:,:],cbl,lats,lons,self.block_method)
             blonlong[i,:,:] = blon
 
-        #np.save('Nstart_IBL.npy',blonlong)
         return blonlong
 
 
