@@ -50,6 +50,26 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
 
         c_dict['PAIRED'] = self.config.getbool('config', 'SERIES_ANALYSIS_IS_PAIRED', False)
 
+        # get clock time from start of execution for input time dictionary
+        clock_time_obj = datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
+                                                    '%Y%m%d%H%M%S')
+
+        # get start run time and set INPUT_TIME_DICT
+        c_dict['INPUT_TIME_DICT'] = {'now': clock_time_obj}
+        start_time, _, _ = util.get_start_end_interval_times(self.config) or (None, None, None)
+        if start_time:
+            # set init or valid based on LOOP_BY
+            use_init = util.is_loop_by_init(self.config)
+            if use_init is None:
+                self.isOK = False
+            elif use_init:
+                c_dict['INPUT_TIME_DICT']['init'] = start_time
+            else:
+                c_dict['INPUT_TIME_DICT']['valid'] = start_time
+        else:
+            self.config.logger.error("Could not get [INIT/VALID] time information from configuration file")
+            self.isOK = False
+
         # get input dir, template, and datatype for FCST, OBS, and BOTH
         for data_type in ('FCST', 'OBS', 'BOTH'):
             c_dict[f'{data_type}_INPUT_DIR'] = \
@@ -163,9 +183,11 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         cmd += ' -v ' + self.c_dict['VERBOSITY']
         return cmd
 
-    def run_at_time(self, input_dict):
+    def run_all_times(self):
         """! Get start time, loop over forecast leads and run SeriesAnalysis
         """
+        # get input time dictionary
+        input_dict = self.c_dict['INPUT_TIME_DICT']
 
         # loop over forecast leads and process
         lead_seq = util.get_lead_sequence(self.config, input_dict)
@@ -181,9 +203,9 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
                 self.logger.debug('Skipping run time')
                 continue
 
-            self.run_at_time_once(time_info)
+            self.run_at_time(time_info)
 
-    def run_at_time_once(self, time_info):
+    def run_at_time(self, time_info):
         """! Process runtime and try to build command to run SeriesAnalysis
              Args:
                 @param time_info dictionary containing timing information
