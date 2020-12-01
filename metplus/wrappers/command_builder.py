@@ -692,9 +692,21 @@ class CommandBuilder:
 
         return out
 
-    def write_list_file(self, filename, file_list):
-        """! Writes a file containing a list of filenames to the staging dir"""
-        list_dir = os.path.join(self.config.getdir('STAGING_DIR'), 'file_lists')
+    def write_list_file(self, filename, file_list, output_dir=None):
+        """! Writes a file containing a list of filenames to the staging dir
+
+            @param filename name of ascii file to write
+            @param file_list list of files to write to ascii file
+            @param output_dir (Optional) directory to write files. If None,
+             ascii files are written to {STAGING_DIR}/file_lists
+            @returns path to output file
+        """
+        if output_dir is None:
+            list_dir = os.path.join(self.config.getdir('STAGING_DIR'),
+                                    'file_lists')
+        else:
+            list_dir = output_dir
+
         list_path = os.path.join(list_dir, filename)
 
         if not os.path.exists(list_dir):
@@ -706,6 +718,7 @@ class CommandBuilder:
             for f_path in file_list:
                 self.logger.debug(f"Adding file to list: {f_path}")
                 file_handle.write(f_path + '\n')
+
         return list_path
 
     def find_and_check_output_file(self, time_info):
