@@ -497,6 +497,8 @@ class SeriesByInitWrapper(CommandBuilder):
                     self.plot_data_plane.c_dict['FIELD_NAME'] = f"series_cnt_{cur_stat}"
                     self.plot_data_plane.c_dict['FIELD_LEVEL'] = level
                     self.plot_data_plane.run_at_time_once(time_info)
+                    self.all_commands.extend(self.plot_data_plane.all_commands)
+                    self.plot_data_plane.all_commands.clear()
 
     def get_storms_for_init(self, time_info):
         """! Find the .tcst filter file for the current run time and get the

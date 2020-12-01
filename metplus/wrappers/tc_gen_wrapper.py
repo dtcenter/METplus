@@ -258,6 +258,7 @@ class TCGenWrapper(CommandBuilder):
         """
         # run using input time dictionary
         self.run_at_time(self.c_dict['INPUT_TIME_DICT'])
+        return self.all_commands
 
     def run_at_time(self, input_dict):
         """! Process runtime and try to build command to run ascii2nc

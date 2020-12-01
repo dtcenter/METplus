@@ -1077,7 +1077,7 @@ class CommandBuilder:
             self.log_error("Could not generate command")
             return False
 
-        self.run_command(cmd)
+        return self.run_command(cmd)
 
     def run_command(self, cmd):
         """! Run a command with the appropriate environment. Add command to
@@ -1124,7 +1124,7 @@ class CommandBuilder:
     def run_all_times(self):
         """!Loop over time range specified in conf file and
         call METplus wrapper for each time"""
-        util.loop_over_times_and_call(self.config, self)
+        return util.loop_over_times_and_call(self.config, self)
 
     def set_time_dict_for_single_runtime(self, c_dict):
         # get clock time from start of execution for input time dictionary

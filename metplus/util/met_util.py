@@ -190,9 +190,9 @@ def run_metplus(config, process_list):
         if loop_order == "processes":
             all_commands = []
             for process in processes:
-                process.run_all_times()
-                all_commands.extend(process.all_commands)
-                process.all_commands.clear()
+                new_commands = process.run_all_times()
+                if new_commands:
+                    all_commands.extend(new_commands)
 
         elif loop_order == "times":
             all_commands = loop_over_times_and_call(config, processes)
@@ -988,7 +988,8 @@ def loop_over_times_and_call(config, processes):
 
             process.clear()
             process.run_at_time(input_dict)
-            all_commands.extend(process.all_commands)
+            if process.all_commands:
+                all_commands.extend(process.all_commands)
             process.all_commands.clear()
 
         loop_time += time_interval

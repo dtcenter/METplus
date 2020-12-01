@@ -206,7 +206,7 @@ class TCPairsWrapper(CommandBuilder):
             else:
                 self.build()
 
-            return True
+            return self.all_commands
 
         # use init begin as run time (start of the storm)
         input_dict = {'init':
@@ -215,6 +215,7 @@ class TCPairsWrapper(CommandBuilder):
                      }
 
         self.run_at_time(input_dict)
+        return self.all_commands
 
     def run_at_time(self, input_dict):
         """! Create the arguments to run MET tc_pairs

@@ -1741,7 +1741,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.lookindir = runtime_settings_dict['LOOKIN_DIR']
             self.job_args = runtime_settings_dict['JOB']
 
-            self.build_and_run_command()
+            self.build()
 
             self.clear()
 
@@ -1750,6 +1750,7 @@ class StatAnalysisWrapper(CommandBuilder):
         self.c_dict['DATE_BEG'] = self.c_dict[date_type+'_BEG']
         self.c_dict['DATE_END'] = self.c_dict[date_type+'_END']
         self.run_stat_analysis()
+        return self.all_commands
 
     def run_at_time(self, input_dict):
         loop_by_init = util.is_loop_by_init(self.config)
