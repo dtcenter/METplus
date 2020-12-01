@@ -141,6 +141,12 @@ class SeriesByInitWrapper(CommandBuilder):
             self.log_error("No fields specified. Please set "
                            "[FCST/OBS]_VAR<n>_[NAME/LEVELS]")
 
+        c_dict['GENERATE_PLOTS'] = (
+            self.config.getbool('config',
+                                'SERIES_ANALYSIS_GENERATE_PLOTS',
+                                True)
+        )
+
         return c_dict
 
     def plot_data_plane_init(self):
@@ -201,7 +207,12 @@ class SeriesByInitWrapper(CommandBuilder):
         if not self.build_and_run_series_request(time_info, storm_list):
             return False
 
-        self.generate_plots(time_info, storm_list)
+        if self.c_dict['GENERATE_PLOTS']:
+            self.generate_plots(time_info, storm_list)
+        else:
+            self.logger.debug("Skip plotting output. Change "
+                              "SERIES_ANALYSIS_GENERATE_PLOTS to True to run "
+                              "this step.")
 
         self.logger.debug("Finished series analysis by init time")
         return True
