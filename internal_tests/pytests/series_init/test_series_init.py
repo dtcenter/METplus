@@ -14,17 +14,6 @@ def series_init_wrapper(metplus_config):
     config.set('config', 'LOOP_ORDER', 'processes')
     return SeriesByInitWrapper(config)
 
-def test_wrapper_ok(metplus_config):
-    """ Verify that the expected output directory for the
-        series init wrapper is what we expected, based on the
-        setting in the custom.conf config file.
-    """
-    pytest.skip('Hard-coded output directories do not match current setup')
-
-    siw = series_init_wrapper(metplus_config)
-    expected_output_dir = "/d1/METplus_test_input/series_init/series_analysis_init"
-    assert siw.series_out_dir == expected_output_dir
-
 def test_storm_files_list_OK(metplus_config):
     """ Verify that for the input data (extract tiles output),
         we are generating a list of storm files that match
@@ -91,4 +80,36 @@ def test_storms_for_init_OK(metplus_config):
     storm_list = siw.get_storms_for_init(init, tile_dir)
     assert len(storm_list) == expected_num_storms
 
-
+@pytest.mark.parametrize(
+        'file_list, storm_id, expected_files', [
+        # filter out storm ID = MY_STORM_ID
+        (['/some/file/name',
+          '/some/file/MY_STORM_ID',
+          '/some/other/MY_STORM_ID/file'],
+         'MY_STORM_ID',
+         ['/some/file/MY_STORM_ID',
+          '/some/other/MY_STORM_ID/file']
+         ),
+        # no filtering by storm ID
+        (['/some/file/name',
+          '/some/file/MY_STORM_ID',
+          '/some/other/MY_STORM_ID/file'],
+         None,
+         ['/some/file/name',
+          '/some/file/MY_STORM_ID',
+          '/some/other/MY_STORM_ID/file']
+         ),
+        # filter by non-existent storm ID
+        (['/some/file/name',
+          '/some/file/MY_STORM_ID',
+          '/some/other/MY_STORM_ID/file'],
+         'OTHER_STORM_ID',
+         []
+         ),
+    ]
+)
+def test_filter_tiles_storm_id(metplus_config, file_list, storm_id,
+                               expected_files):
+    siw = series_init_wrapper(metplus_config)
+    assert(siw.filter_tiles(file_list,
+                            storm_id=storm_id) == sorted(expected_files))
