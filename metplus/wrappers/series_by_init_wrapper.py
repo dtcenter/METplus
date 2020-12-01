@@ -415,23 +415,14 @@ class SeriesByInitWrapper(CommandBuilder):
 
     def generate_plots(self, time_info, storm_list):
         """! Generate the plots from the series_analysis output.
-           Args:
-               @param sorted_filter_init:  A list of the sorted directories
-                                        corresponding to the init times (that
-                                        are the result of filtering).  If
-                                        filtering produced no results, this
-                                        is the list of files created from
-                                        running extract_tiles.
 
-               @param tile_dir:  The directory where input data resides.
-           Returns:
+             @param time_info dictionary containing time information
+             @param storm_list list of storm IDs to process
         """
-        cur_init = time_info['init'].strftime('%Y%m%d_%H')
         output_dir_template = os.path.join(self.c_dict['OUTPUT_DIR'],
                                            self.c_dict['OUTPUT_TEMPLATE'])
 
         for var_info in self.c_dict['VAR_LIST']:
-            name = var_info['fcst_name']
             level = var_info['fcst_level']
             self.add_field_info_to_time_info(time_info, var_info)
 
