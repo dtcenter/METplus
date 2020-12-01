@@ -361,7 +361,6 @@ will process valid times starting on 20190425 at 06Z every 6 hours until the cur
 Process List
 ~~~~~~~~~~~~
 
-################################################################################
 The PROCESS_LIST variable defines the list of wrappers to run.
 This can be a single value or a comma separated list of values.
 Each value must match an existing wrapper name without the 'Wrapper' suffix.
