@@ -254,7 +254,9 @@ def post_run_cleanup(config, app_name, total_errors):
         sys.exit(1)
 
 def write_all_commands(all_commands, config):
-    filename = os.path.join(config.getdir('LOG_DIR'), '.all_commands')
+    log_timestamp = config.getstr('config', 'LOG_TIMESTAMP')
+    filename = os.path.join(config.getdir('LOG_DIR'),
+                            f'.all_commands.{log_timestamp}')
     config.logger.debug(f"Writing all commands and environment to {filename}")
     with open(filename, 'w') as file_handle:
         for command, envs in all_commands:
