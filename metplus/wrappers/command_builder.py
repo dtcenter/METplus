@@ -1077,6 +1077,15 @@ class CommandBuilder:
             self.log_error("Could not generate command")
             return False
 
+        self.run_command(cmd)
+
+    def run_command(self, cmd):
+        """! Run a command with the appropriate environment. Add command to
+        list of all commands run.
+
+        @param cmd command to run
+        @returns True on success, False otherwise
+        """
         # add command to list of all commands run
         self.all_commands.append((cmd,
                                   self.print_all_envs(print_copyable=False)))
