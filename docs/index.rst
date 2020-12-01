@@ -107,6 +107,7 @@ Authors
 
    Users_Guide/index
    Contributors_Guide/index
+   Verification_Datasets/index
 
 
 
