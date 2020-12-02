@@ -4,24 +4,7 @@
 Purpose of the Verification Datasets Guide
 ------------------------------------------
 
-Replace content below.
-
-The goal of this User's Guide is to equip users with the information
-needed to use the Model Evaluation Tools (MET) and its companion
-package METplus Wrappers. MET is a set of verification tools developed
-and supported to community via the Developmental Testbed Center (DTC)
-for use by the numerical weather prediction community. METplus Wrappers
-is a suite of Python wrappers and ancillary scripts to enhance the
-user's ability to quickly set-up and run MET. Over the next few years,
-METplus Wrappers will become the authoritative repository for
-verification of the Unified Forecast System.
-
-The METplus Wrappers User's Guide is organized as follows. An overview of METplus
-Wrappers can be found below. :ref:`install` contains basic information about how to get started with METplus
-Wrappers - including system requirements, required software, and how to
-download METplus Wrappers. :ref:`sysconf` provides
-information about configuring your environment and METplus Wrappers
-installation.
+Document the purpose here.
 
 The Developmental Testbed Center (DTC)
 --------------------------------------
