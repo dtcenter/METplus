@@ -10,35 +10,36 @@ from metplus.wrappers.series_by_init_wrapper import SeriesByInitWrapper
 
 def series_init_wrapper(metplus_config):
     extra_configs = []
-    extra_configs.append(os.path.join(os.path.dirname(__file__), 'series_init_test.conf'))
+    extra_configs.append(os.path.join(os.path.dirname(__file__),
+                                      'series_init_test.conf'))
     config = metplus_config(extra_configs)
     config.set('config', 'LOOP_ORDER', 'processes')
     return SeriesByInitWrapper(config)
 
-def test_get_fcst_file_info_OK(metplus_config):
+def test_get_fcst_file_info(metplus_config):
     """ Verify that the tuple created by get_fcst_file_info is
         not an empty tuple, and that the number, beginning
         fcst file and end fcst file are what we expected.
     """
-    pytest.skip('Wrapper needs refactor')
-
-    # number of forecast files we expect for specified storm;
-    # this information is found in the series_init_filtered directory.
-    expected_num = 9
+    storm_id = 'ML1200942014'
+    expected_num = str(9)
     expected_beg = 'F000'
     expected_end = 'F048'
-    siw = series_init_wrapper(metplus_config)
-    filtered_out_dir = siw.series_filtered_out_dir
-    cur_init = '20141214_00'
-    cur_storm = 'ML1200942014'
 
-    num,beg,end = siw.get_fcst_file_info(filtered_out_dir, cur_init, cur_storm)
-    siw.get_fcst_file_info(filtered_out_dir, cur_init, cur_storm)
+    siw = series_init_wrapper(metplus_config)
+
+    output_dir = (
+        os.path.join(siw.config.getdir('METPLUS_BASE'),
+                     'internal_tests',
+                     'data',
+                     'file_lists')
+    )
+    num, beg, end = siw.get_fcst_file_info(output_dir, storm_id)
     assert num == expected_num
     assert beg == expected_beg
     assert end == expected_end
 
-def test_storms_for_init_OK(metplus_config):
+def test_get_storms_for_init(metplus_config):
     """Verify that the expected number of storms
        are found for the init time 20141214_00
     """
