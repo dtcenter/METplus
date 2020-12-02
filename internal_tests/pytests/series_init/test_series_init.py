@@ -2,10 +2,11 @@ import pytest
 import os
 import sys
 import logging
+import datetime
+
 import produtil
 
 from metplus.wrappers.series_by_init_wrapper import SeriesByInitWrapper
-
 
 def series_init_wrapper(metplus_config):
     extra_configs = []
@@ -71,14 +72,28 @@ def test_storms_for_init_OK(metplus_config):
     """Verify that the expected number of storms
        are found for the init time 20141214_00
     """
-    pytest.skip('Hard-coded output directories do not match current setup')
+    config = metplus_config()
 
-    init = '20141214_00'
-    expected_num_storms = 12
-    tile_dir = '/d1/METplus_test_input/series_init/extract_tiles'
+    expected_storm_list = ['ML1201072014',
+                           'ML1221072014',
+                           'ML1241072014',
+                           'ML1251072014'
+                           ]
+    time_info = {'init': datetime.datetime(2014, 12, 14, 00)}
+    stat_input_dir = (
+        os.path.join(config.getdir('METPLUS_BASE'),
+                     'internal_tests',
+                     'data',
+                     'stat_data')
+    )
+    stat_input_template = 'fake_filter_{init?fmt=%Y%m%d_%H}.tcst'
+
     siw = series_init_wrapper(metplus_config)
-    storm_list = siw.get_storms_for_init(init, tile_dir)
-    assert len(storm_list) == expected_num_storms
+    siw.c_dict['STAT_INPUT_DIR'] = stat_input_dir
+    siw.c_dict['STAT_INPUT_TEMPLATE'] = stat_input_template
+
+    storm_list = siw.get_storms_for_init(time_info)
+    assert storm_list == expected_storm_list
 
 @pytest.mark.parametrize(
         'file_list, storm_id, expected_files', [
