@@ -94,7 +94,6 @@ class CommandBuilder:
         # set skip if output exists to False for all wrappers
         # wrappers that support this functionality can override this value
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = False
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
         app_name = ''
@@ -118,7 +117,11 @@ class CommandBuilder:
                                 f'{app_name.upper()}_MANDATORY',
                                 True)
         )
-
+        c_dict['SKIP_IF_OUTPUT_EXISTS'] = (
+            self.config.getbool('config',
+                                f'{app_name.upper()}_SKIP_IF_OUTPUT_EXISTS',
+                                False)
+        )
         return c_dict
 
     def clear(self):
@@ -716,8 +719,10 @@ class CommandBuilder:
                 @param time_info time dictionary to use to fill out output file template
                 @returns True if the app should be run or False if it should not
         """
-        output_path_template = os.path.join(self.c_dict['OUTPUT_DIR'],
-                                            self.c_dict['OUTPUT_TEMPLATE'])
+        output_path_template = os.path.join(self.c_dict.get('OUTPUT_DIR',
+                                                            ''),
+                                            self.c_dict.get('OUTPUT_TEMPLATE',
+                                                            ''))
         output_path = do_string_sub(output_path_template,
                                     **time_info)
         self.set_output_path(output_path)
@@ -732,7 +737,8 @@ class CommandBuilder:
         if not os.path.exists(parent_dir):
             os.makedirs(parent_dir)
 
-        if not os.path.exists(output_path) or not self.c_dict['SKIP_IF_OUTPUT_EXISTS']:
+        if (not os.path.exists(output_path) or
+                not self.c_dict.get('SKIP_IF_OUTPUT_EXISTS', False)):
             return True
 
         # if the output file exists and we are supposed to skip, don't run tool
