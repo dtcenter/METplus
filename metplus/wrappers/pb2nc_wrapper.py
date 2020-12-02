@@ -48,7 +48,6 @@ class PB2NCWrapper(CommandBuilder):
         c_dict['VERBOSITY'] = self.config.getint('config', 'LOG_PB2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', False)
         c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'PB2NC_OFFSETS', '0'))
 
         # Directories

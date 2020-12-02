@@ -342,7 +342,8 @@ that reformat gridded data
                                    **time_info)
 
         # set up output dir with time info
-        self.create_and_set_output_dir(time_info)
+        if not self.find_and_check_output_file(time_info):
+            return
 
         self.set_current_field_config()
 
