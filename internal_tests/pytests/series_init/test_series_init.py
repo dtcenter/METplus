@@ -15,35 +15,6 @@ def series_init_wrapper(metplus_config):
     config.set('config', 'LOOP_ORDER', 'processes')
     return SeriesByInitWrapper(config)
 
-def test_storm_files_list_OK(metplus_config):
-    """ Verify that for the input data (extract tiles output),
-        we are generating a list of storm files that match
-        the init time and storm basin specified in the config
-        file.
-    """
-    pytest.skip('Hard-coded output directories do not match current setup')
-
-    siw = series_init_wrapper(metplus_config)
-    tile_dir = '/d1/METplus_test_input/series_init/extract_tiles'
-    storm_list = siw.get_ascii_storm_files_list(tile_dir)
-    assert len(storm_list) > 0
-
-def test_build_and_run_series_request_OK(metplus_config):
-    """ Verify that the command that is
-        created produces output.
-        ***NOTE***:  This tests creates
-        numerous met_config_nnnnn_n files!
-
-    """
-    pytest.skip('Hard-coded output directories do not match current setup')
-
-    siw = series_init_wrapper(metplus_config)
-    tile_dir = '/d1/METplus_test_input/series_init/extract_tiles'
-    sorted_filter_init = siw.get_ascii_storm_files_list(tile_dir)
-    assert len(sorted_filter_init) > 0
-    # siw.build_and_run_series_request(sorted_filter_init, tile_dir)
-    # assert len(siw.get_command()) > 0
-
 def test_get_fcst_file_info_OK(metplus_config):
     """ Verify that the tuple created by get_fcst_file_info is
         not an empty tuple, and that the number, beginning
@@ -66,7 +37,6 @@ def test_get_fcst_file_info_OK(metplus_config):
     assert num == expected_num
     assert beg == expected_beg
     assert end == expected_end
-
 
 def test_storms_for_init_OK(metplus_config):
     """Verify that the expected number of storms
