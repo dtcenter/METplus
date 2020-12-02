@@ -1899,22 +1899,37 @@ def get_process_list(config):
             instance = None
             process_name = process
 
-        lower_process = (process_name.replace('-', '')
-                         .replace('_', '').replace(' ', '').lower())
-        if lower_process in LOWER_TO_WRAPPER_NAME.keys():
-            process_name = LOWER_TO_WRAPPER_NAME[lower_process]
-        else:
+        wrapper_name = get_wrapper_name(process_name)
+        if wrapper_name is None:
             config.logger.warning(f"PROCESS_LIST item {process_name} "
                                   "may be invalid.")
+            wrapper_name = process_name
 
         # if MakePlots is in process list, remove it because
         # it will be called directly from StatAnalysis
-        if lower_process == 'makeplots':
+        if wrapper_name == 'MakePlots':
             continue
 
-        out_process_list.append((process_name, instance))
+        out_process_list.append((wrapper_name, instance))
 
     return out_process_list
+
+def get_wrapper_name(process_name):
+    """! Determine name of wrapper from string that may not contain the correct
+         capitalization, i.e. Pcp-Combine translates to PCPCombine
+
+         @param process_name string that was listed in the PROCESS_LIST
+         @returns name of wrapper (without 'Wrapper' at the end) and None if
+          name cannot be determined
+    """
+    lower_process = (process_name.replace('-', '')
+                         .replace('_', '')
+                         .replace(' ', '')
+                         .lower())
+    if lower_process in LOWER_TO_WRAPPER_NAME.keys():
+        return LOWER_TO_WRAPPER_NAME[lower_process]
+
+    return None
 
 # minutes
 def shift_time(time_str, shift):
