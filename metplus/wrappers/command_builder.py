@@ -724,7 +724,9 @@ class CommandBuilder:
 
         return list_path
 
-    def find_and_check_output_file(self, time_info, is_directory=False):
+    def find_and_check_output_file(self, time_info=None,
+                                   is_directory=False,
+                                   output_path_template=None):
         """!Build full path for expected output file and check if it exists.
             If output file doesn't exist or it does exists and we are not skipping it
             then return True to run the tool. Otherwise return False to not run the tool
@@ -733,21 +735,35 @@ class CommandBuilder:
                 @param is_directory If True, check in output directory for
                  any files that match the pattern
                  {app_name}_{output_prefix}*YYYYMMDD_HHMMSSV*
+                 @param output_path_template optional filename template to use
+                  If None, build output path template from c_dict's OUTPUT_DIR
+                  and OUTPUT_TEMPLATE. Default is None
                 @returns True if the app should be run or False if it should not
         """
-        output_path_template = os.path.join(self.c_dict.get('OUTPUT_DIR',
-                                                            ''),
-                                            self.c_dict.get('OUTPUT_TEMPLATE',
-                                                            '')).rstrip('/')
-        output_path = do_string_sub(output_path_template,
-                                    **time_info)
+        if not output_path_template:
+            output_path_template = (
+                os.path.join(self.c_dict.get('OUTPUT_DIR',
+                                             ''),
+                            self.c_dict.get('OUTPUT_TEMPLATE',
+                                            '')).rstrip('/')
+        )
+
+        if time_info:
+            output_path = do_string_sub(output_path_template,
+                                        **time_info)
+        else:
+            output_path = output_path_template
 
         skip_if_output_exists = self.c_dict.get('SKIP_IF_OUTPUT_EXISTS', False)
 
         # get directory that the output file will exist
         if is_directory:
             parent_dir = output_path
-            valid_format = time_info['valid'].strftime('%Y%m%d_%H%M%S')
+            if time_info:
+                valid_format = time_info['valid'].strftime('%Y%m%d_%H%M%S')
+            else:
+                valid_format = ''
+
             prefix = self.get_output_prefix(time_info)
             search_string = f"{self.app_name}_{prefix}*{valid_format}V*"
             search_path = os.path.join(output_path,
@@ -771,6 +787,7 @@ class CommandBuilder:
 
         # create full output dir if it doesn't already exist
         if not os.path.exists(parent_dir):
+            self.logger.debug(f"Creating output directory: {parent_dir}")
             os.makedirs(parent_dir)
 
         if (not output_exists or not skip_if_output_exists):
@@ -1335,11 +1352,19 @@ class CommandBuilder:
         c_dict[c_key] = (f'{met_config_name} = '
                          f'{util.remove_quotes(conf_value)};')
 
-    def get_output_prefix(self, time_info):
+    def get_output_prefix(self, time_info=None):
+        """! Read {APP_NAME}_OUTPUT_PREFIX from config. If time_info is set
+         substitute values into filename template tags.
+
+             @param time_info (Optional) dictionary containing time info
+             @returns output prefix with values substituted if requested
+        """
         output_prefix = (
             self.config.getraw('config',
                                f'{self.app_name.upper()}_OUTPUT_PREFIX')
         )
+        if time_info is None:
+            return output_prefix
 
         return do_string_sub(output_prefix,
                              **time_info)
