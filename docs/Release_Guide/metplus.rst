@@ -4,8 +4,8 @@ METplus Release
 
 .. |projectRepo| replace:: METplus
 
-Official release (e.g. vX.Y)
-============================
+Official release (e.g. vX.Y.0)
+==============================
 
 .. include:: release_steps/clone_project_repository.rst
 .. include:: release_steps/checkout_develop_branch.rst
@@ -31,8 +31,8 @@ Bugfix release (e.g. vX.Y.Z)
 .. include:: release_steps/create_release_on_github.rst
 .. include:: release_steps/metplus/create_release_extra.rst
 
-Development release (e.g. vX.Y-betaN or vX.Y-rcN)
-=================================================
+Development release (e.g. vX.Y.Z-betaN or vX.Y.Z-rcN)
+=====================================================
 
 .. include:: release_steps/clone_project_repository.rst
 .. include:: release_steps/checkout_develop_branch.rst
