@@ -24,11 +24,13 @@ from ..util import do_string_sub
 '''
 
 class SeriesAnalysisWrapper(CompareGriddedWrapper):
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "series_analysis"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -57,7 +59,10 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         start_time, _, _ = util.get_start_end_interval_times(self.config) or (None, None, None)
         if start_time:
             # set init or valid based on LOOP_BY
-            if util.is_loop_by_init(self.config):
+            use_init = util.is_loop_by_init(self.config)
+            if use_init is None:
+                self.isOK = False
+            elif use_init:
                 c_dict['INPUT_TIME_DICT']['init'] = start_time
             else:
                 c_dict['INPUT_TIME_DICT']['valid'] = start_time
@@ -254,14 +259,13 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
 
     def find_input_files(self, time_info, var_info):
         if self.c_dict['USING_BOTH']:
-            if not self.get_files_and_create_list(time_info, var_info, 'BOTH'):
-                return False
-        else:
-            if not self.get_files_and_create_list(time_info, var_info, 'FCST'):
-                return False
+            return self.get_files_and_create_list(time_info, var_info, 'BOTH')
 
-            if not self.get_files_and_create_list(time_info, var_info, 'OBS'):
-                return False
+        if not self.get_files_and_create_list(time_info, var_info, 'FCST'):
+            return False
+
+        if not self.get_files_and_create_list(time_info, var_info, 'OBS'):
+            return False
 
         return True
 

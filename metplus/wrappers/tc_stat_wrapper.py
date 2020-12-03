@@ -14,6 +14,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import sys
+from datetime import datetime
 
 from produtil.run import ExitStatusException
 
@@ -35,12 +36,14 @@ class TCStatWrapper(CommandBuilder):
          cyclone pair data.
     """
 
-    def __init__(self, config, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'tc_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
 
-        super().__init__(config, config_overrides)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         self.logger.debug("Initialized TCStatWrapper")
 
     def create_c_dict(self):
@@ -157,9 +160,6 @@ class TCStatWrapper(CommandBuilder):
         # error check config values
         self.validate_config_values(c_dict)
 
-    def run_all_times(self):
-        return self.run_at_time(None)
-
     def run_at_time(self, input_dict=None):
         """! Builds the call to the MET tool TC-STAT for all requested
              initialization times (init or valid).  Called from master_metplus
@@ -237,8 +237,13 @@ class TCStatWrapper(CommandBuilder):
                         'LANDFALL',
                         'MATCH_POINTS',
                         ]:
+            # if time info is available, run value through string substitution
+            value = self.c_dict.get(env_var, '')
+            if time_info:
+                value = do_string_sub(value, **time_info)
+
             self.add_env_var(env_var,
-                             self.c_dict.get(env_var, ''))
+                             value)
 
         job_args_str = self.handle_jobs(time_info)
         self.add_env_var('JOBS', job_args_str)
@@ -295,7 +300,7 @@ class TCStatWrapper(CommandBuilder):
 
         self.logger.debug('Checking if name-val lists in config file have'
                           'the same length...')
-        self.logger.debug(c_dict.keys())
+
         # Check COLUMN_THRESH_NAME and COLUMN_THRESH_VAL
         if len(c_dict.get('COLUMN_THRESH_NAME', '')) != \
                 len(c_dict.get('COLUMN_THRESH_VAL', '')):
@@ -327,64 +332,3 @@ class TCStatWrapper(CommandBuilder):
                 'INIT_STR_NAME does not have the same ' +
                 'number of items as INIT_STR_VAL. Please' +
                 ' check your MET tc_stat config file')
-
-    def build_tc_stat(self, tc_stat_output_dir, cur_init, tc_input_list,
-                      filter_opts):
-        """!This is called from extract_tiles_wrapper and from any other
-            wrapper to provide additional filtering WITHOUT the need for
-            a tc_stat MET config file.
-
-            Creates the call to MET tool TC-STAT to subset tc-pairs output
-            based on the criteria specified in the feature relative
-            use case parameter/config file.
-
-            Args:
-            @param tc_stat_output_dir:  The output directory where filtered
-                                       results are saved.
-            @param cur_init:  The initialization time
-            @param tc_input_list:  The "list" of input data (the files containing
-                                   the tc pair data to be filtered) in a
-                                   string
-            @param filter_opts:  The list of filter options to apply
-
-            Returns:
-                None: if no error, then invoke MET tool TC-STAT and
-                    subsets tc-pairs data, creating a filter.tcst file.
-
-                Raises CalledProcessError
-        """
-
-        mkdir_p(tc_stat_output_dir)
-
-        filter_filename = "filter_" + cur_init + ".tcst"
-        filter_name = os.path.join(tc_stat_output_dir, cur_init,
-                                   filter_filename)
-        filter_path = os.path.join(tc_stat_output_dir, cur_init)
-        mkdir_p(filter_path)
-
-        # This is for extract_tiles to call without a config file
-        tc_cmd_list = [self.app_path, " -job filter ",
-                       " -lookin ", tc_input_list,
-                       " -match_points true ",
-                       " -init_inc ", cur_init,
-                       " -dump_row ", filter_name,
-                       " ", filter_opts]
-
-        tc_cmd_str = ''.join(tc_cmd_list)
-
-        # Since this wrapper is not using the CommandBuilder to build the cmd,
-        # we need to add the met verbosity level to the MET cmd created before
-        # we run the command.
-        tc_cmd_str = self.cmdrunner.insert_metverbosity_opt(tc_cmd_str)
-
-        # Run tc_stat
-        try:
-            # tc_cmd = batchexe('sh')['-c', tc_cmd_str].err2out()
-            # checkrun(tc_cmd)
-            (ret, cmd) = \
-                self.cmdrunner.run_cmd(tc_cmd_str, self.env, app_name=self.app_name)
-            if not ret == 0:
-                raise ExitStatusException(
-                    '%s: non-zero exit status' % (repr(cmd),), ret)
-        except ExitStatusException as ese:
-            self.log_error(ese)

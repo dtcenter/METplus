@@ -112,7 +112,6 @@ def test_create_c_dict(metplus_config):
     # Test 1
     c_dict = st.create_c_dict()
     assert(c_dict['LOOP_ORDER'] == 'times')
-    assert(c_dict['PROCESS_LIST'] == ['StatAnalysis'])
     assert(os.path.realpath(c_dict['CONFIG_FILE']) == (METPLUS_BASE+'/internal_tests/'
                                                        +'config/STATAnalysisConfig'))
     assert(c_dict['OUTPUT_BASE_DIR'] == (st.config.getdir('OUTPUT_BASE')
@@ -219,7 +218,9 @@ def test_set_lists_as_loop_or_group(metplus_config):
         ('==5', 'eq5'),
         ('!=0.06', 'ne0.06'),
         ('>0.05, gt0.05, >=1, ge1, <5, lt5, <=10, le10, ==15, eq15, !=20, ne20',
-           'gt0.05,gt0.05,ge1,ge1,lt5,lt5,le10,le10,eq15,eq15,ne20,ne20')
+           'gt0.05,gt0.05,ge1,ge1,lt5,lt5,le10,le10,eq15,eq15,ne20,ne20'),
+        ('<805, <1609, <4828, <8045, >=8045, <16090',
+         'lt805,lt1609,lt4828,lt8045,ge8045,lt16090'),
     ]
 )
 def test_format_thresh(metplus_config, expression, expected_result):

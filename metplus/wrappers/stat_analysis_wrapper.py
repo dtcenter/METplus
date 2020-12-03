@@ -75,11 +75,13 @@ class StatAnalysisWrapper(CommandBuilder):
         'FCST_INIT_HOUR_LIST', 'OBS_INIT_HOUR_LIST'
     ]
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      'stat_analysis')
         self.app_name = os.path.basename(self.app_path)
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     def get_command(self):
 
@@ -122,7 +124,6 @@ class StatAnalysisWrapper(CommandBuilder):
                                c_dict['VERBOSITY'])
         )
         c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
-        c_dict['PROCESS_LIST'] = util.get_process_list(self.config)
         c_dict['CONFIG_FILE'] = self.config.getstr('config', 
                                                    'STAT_ANALYSIS_CONFIG_FILE',
                                                    '')
@@ -1740,7 +1741,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.lookindir = runtime_settings_dict['LOOKIN_DIR']
             self.job_args = runtime_settings_dict['JOB']
 
-            self.build_and_run_command()
+            self.build()
 
             self.clear()
 
@@ -1749,9 +1750,13 @@ class StatAnalysisWrapper(CommandBuilder):
         self.c_dict['DATE_BEG'] = self.c_dict[date_type+'_BEG']
         self.c_dict['DATE_END'] = self.c_dict[date_type+'_END']
         self.run_stat_analysis()
+        return self.all_commands
 
     def run_at_time(self, input_dict):
         loop_by_init = util.is_loop_by_init(self.config)
+        if loop_by_init is None:
+            return
+
         if loop_by_init:
             loop_by = 'INIT'
         else:

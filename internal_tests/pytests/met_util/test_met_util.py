@@ -687,25 +687,6 @@ def test_remove_staged_files():
     # unused files and directories remaining...
     shutil.rmtree(staged_dir)
 
-@pytest.mark.parametrize(
-    'process_list, has_plotter', [
-        (['PCPCombine'], False),
-        (['PCPCombine', 'GridStat'], False),
-        (['PCPCombine', 'RegridDataPlane', 'GridStat'], False),
-        (['CyclonePlotter'], True),
-        (['PCPCombine', 'CyclonePlotter', 'Other'], True),
-        (['MakePlots', 'Other'], True),
-        (['TCMPRPlotter'], True),
-        (['TCMPRPlotter', 'Other'], True),
-        (['Other', 'TCMPRPlotter'], True),
-        ([], False),
-        (['CyclonePlotter', 'TCMPRPlotter'], True),
-        (['CyclonePlotter', 'TCMPRPlotter', 'MakePlots'], True),
-    ]
-)
-def test_is_plotter_in_process_list(process_list, has_plotter):
-    assert(util.is_plotter_in_process_list(process_list) == has_plotter)
-
 # test that if wrapper specific field info is specified, it only gets
 # values from that list. All generic values should be read if no
 # wrapper specific field info variables are specified
@@ -746,43 +727,73 @@ def test_parse_var_list_wrapper_specific(metplus_config):
     'input_list, expected_list', [
         ('Point2Grid', ['Point2Grid']),
         # MET documentation syntax (with dashes)
-        ('Pcp-Combine, Grid-Stat, Ensemble-Stat', ['PCPCombine', 'GridStat', 'EnsembleStat']),
+        ('Pcp-Combine, Grid-Stat, Ensemble-Stat', ['PCPCombine',
+                                                   'GridStat',
+                                                   'EnsembleStat']),
         ('Point-Stat', ['PointStat']),
-        ('Mode, MODE Time Domain', ['MODE', 'MTD']),
+        ('Mode, MODE Time Domain', ['MODE',
+                                    'MTD']),
         # actual tool name (lower case underscore)
-        ('point_stat, grid_stat, ensemble_stat', ['PointStat', 'GridStat', 'EnsembleStat']),
-        ('mode, mtd', ['MODE', 'MTD']),
-        ('ascii2nc, pb2nc, regrid_data_plane', ['ASCII2NC', 'PB2NC', 'RegridDataPlane']),
-        ('pcp_combine, tc_pairs, tc_stat', ['PCPCombine', 'TCPairs', 'TCStat']),
-        ('gen_vx_mask, stat_analysis, series_analysis', ['GenVxMask', 'StatAnalysis', 'SeriesAnalysis']),
+        ('point_stat, grid_stat, ensemble_stat', ['PointStat',
+                                                  'GridStat',
+                                                  'EnsembleStat']),
+        ('mode, mtd', ['MODE',
+                       'MTD']),
+        ('ascii2nc, pb2nc, regrid_data_plane', ['ASCII2NC',
+                                                'PB2NC',
+                                                'RegridDataPlane']),
+        ('pcp_combine, tc_pairs, tc_stat', ['PCPCombine',
+                                            'TCPairs',
+                                            'TCStat']),
+        ('gen_vx_mask, stat_analysis, series_analysis', ['GenVxMask',
+                                                         'StatAnalysis',
+                                                         'SeriesAnalysis']),
         # old capitalization format
-        ('PcpCombine, Ascii2Nc, TcStat, TcPairs', ['PCPCombine', 'ASCII2NC', 'TCStat', 'TCPairs']),
-
+        ('PcpCombine, Ascii2Nc, TcStat, TcPairs', ['PCPCombine',
+                                                   'ASCII2NC',
+                                                   'TCStat',
+                                                   'TCPairs']),
+        # remove MakePlots from list
+        ('StatAnalysis, MakePlots', ['StatAnalysis']),
     ]
 )
 def test_get_process_list(metplus_config, input_list, expected_list):
     conf = metplus_config()
     conf.set('config', 'PROCESS_LIST', input_list)
-    output_list = util.get_process_list(conf)
+    process_list = util.get_process_list(conf)
+    output_list = [item[0] for item in process_list]
     assert(output_list == expected_list)
 
 @pytest.mark.parametrize(
-    'input_list, environ, expected_result', [
-        (['Point2Grid'], {}, True), # no plotters, not disabled
-        (['Point2Grid'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'yes'}, True), # no plotters, disabled
-        (['TCMPRPlotter'], {}, True), # plotter, not enabled
-        (['TCMPRPlotter'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'yes'}, False), # plotters, disabled
-        (['TCMPRPlotter'], {'METPLUS_ENABLE_PLOT_WRAPPERS': 'yes'}, True), # no plotters, enabled
-        # test that env var value is interpreted to be True or False instead of
-        # just checking if it is set to any value or not set
-        (['Point2Grid'], {'METPLUS_ENABLE_PLOT_WRAPPERS': 'no'}, True), # no plotters, disabled
-        (['Point2Grid'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'no'}, True), # no plotters, disabled
-        (['TCMPRPlotter'], {'METPLUS_ENABLE_PLOT_WRAPPERS': 'no'}, False), # no plotters, enabled no
-        (['TCMPRPlotter'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'no'}, True), # no plotters, disabled no
+    'input_list, expected_list', [
+        # no instances
+        ('Point2Grid', [('Point2Grid', None)]),
+        # one with instance one without
+        ('PcpCombine, GridStat(my_instance)', [('PCPCombine', None),
+                                               ('GridStat', 'my_instance')]),
+        # duplicate process, one with instance one without
+        ('TCStat, ExtractTiles, TCStat(for_series), SeriesAnalysis', (
+                [('TCStat',None),
+                 ('ExtractTiles',None),
+                 ('TCStat', 'for_series'),
+                 ('SeriesAnalysis',None),])),
+        # two processes, both with instances
+        ('mode(uno), mtd(dos)', [('MODE', 'uno'),
+                                 ('MTD', 'dos')]),
+        # lower-case names, first with instance, second without
+        ('ascii2nc(some_name), pb2nc', [('ASCII2NC', 'some_name'),
+                                        ('PB2NC', None)]),
+        # duplicate process, both with different instances
+        ('tc_stat(one), tc_pairs, tc_stat(two)', [('TCStat', 'one'),
+                                                  ('TCPairs', None),
+                                                  ('TCStat', 'two')]),
     ]
 )
-def test_check_plotter_in_process_list(input_list, environ, expected_result):
-    assert(util.check_plotter_in_process_list(input_list, environ) == expected_result)
+def test_get_process_list_instances(metplus_config, input_list, expected_list):
+    conf = metplus_config()
+    conf.set('config', 'PROCESS_LIST', input_list)
+    output_list = util.get_process_list(conf)
+    assert(output_list == expected_list)
 
 @pytest.mark.parametrize(
     'time_from_conf, fmt, is_datetime', [
@@ -1052,3 +1063,65 @@ def test_subset_list(subset_definition, expected_result):
     full_list = ['a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j']
     result = util.subset_list(full_list, subset_definition)
     assert(result == expected_result)
+
+@pytest.mark.parametrize(
+    'filename, expected_result', [
+        # file does not exist
+        ('filedoesnotexist.tcst', []),
+        # file is empty
+        ('empty_filter.tcst', []),
+        # file has STORM_ID column with 4 values
+        ('fake_filter_20141214_00.tcst', ['ML1201072014',
+                                          'ML1221072014',
+                                          'ML1241072014',
+                                          'ML1251072014']),
+        # file does not have STORM_ID column
+        ('test_20190101.stat', []),
+    ]
+)
+def test_get_storm_ids(metplus_config, filename, expected_result):
+    config = metplus_config()
+    filepath = os.path.join(config.getdir('METPLUS_BASE'),
+                            'internal_tests',
+                            'data',
+                            'stat_data',
+                            filename)
+
+    assert(util.get_storm_ids(filepath) == expected_result)
+
+@pytest.mark.parametrize(
+    'filename, expected_result', [
+        # file does not exist
+        ('filedoesnotexist.tcst', []),
+        # file is empty
+        ('empty_filter.tcst', []),
+        # file has STORM_ID column with 4 values
+        ('fake_filter_20141214_00.tcst', ['header',
+                                          'ML1201072014',
+                                          'ML1221072014',
+                                          'ML1241072014',
+                                          'ML1251072014']),
+        # file does not have STORM_ID column
+        ('test_20190101.stat', []),
+    ]
+)
+def test_get_storms(metplus_config, filename, expected_result):
+    storm_id_index = 4
+    config = metplus_config()
+    filepath = os.path.join(config.getdir('METPLUS_BASE'),
+                            'internal_tests',
+                            'data',
+                            'stat_data',
+                            filename)
+
+    storm_dict = util.get_storms(filepath)
+    print(storm_dict)
+    assert(list(storm_dict.keys()) == expected_result)
+    for storm_id in expected_result[1:]:
+        for storm_line in storm_dict[storm_id]:
+            # ensure storm_id_index matches storm ID
+            assert(storm_line.split()[storm_id_index] == storm_id)
+
+    # ensure header matches expected format
+    if storm_dict:
+        assert(storm_dict['header'].split()[storm_id_index] == 'STORM_ID')

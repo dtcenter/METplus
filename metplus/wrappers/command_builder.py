@@ -19,6 +19,7 @@ from inspect import getframeinfo, stack
 from .command_runner import CommandRunner
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
+from ..util import config_metplus
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -35,7 +36,7 @@ class CommandBuilder:
     """
     __metaclass__ = ABCMeta
 
-    def __init__(self, config, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.isOK = True
         self.errors = 0
         self.config = config
@@ -49,6 +50,17 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
         self.all_commands = []
+
+        # if instance is set, check for a section with the same name in the
+        # METplusConfig object. If found, copy all values into the config
+        if instance:
+            self.config = (
+                config_metplus.replace_config_from_section(self.config,
+                                                           instance,
+                                                           required=False)
+            )
+
+        self.instance = instance
 
         # override config if any were supplied
         self.override_config(config_overrides)
@@ -101,6 +113,12 @@ class CommandBuilder:
                                 False)
             )
 
+        c_dict['MANDATORY'] = (
+            self.config.getbool('config',
+                                f'{app_name.upper()}_MANDATORY',
+                                True)
+        )
+
         return c_dict
 
     def clear(self):
@@ -128,7 +146,8 @@ class CommandBuilder:
         self.set_user_environment(time_info)
 
         # send environment variables to logger
-        self.print_all_envs()
+        for msg in self.print_all_envs():
+            self.logger.debug(msg)
 
     def log_error(self, error_string):
         caller = getframeinfo(stack()[1][0])
@@ -172,14 +191,24 @@ class CommandBuilder:
         self.add_env_var('REGRID_TO_GRID',
                          self.format_regrid_to_grid(to_grid))
 
-    def print_all_envs(self):
-        # send environment variables to logger
-        self.logger.debug("ENVIRONMENT FOR NEXT COMMAND: ")
-        for env_item in sorted(self.env_list):
-            self.print_env_item(env_item)
+    def print_all_envs(self, print_copyable=True):
+        """! Create list of log messages that output all environment variables
+        that were set by this wrapper.
 
-        self.logger.debug("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
-        self.print_env_copy()
+        @param print_copyable if True, also output a list of shell commands
+        that can be easily copied and pasted into a browser to recreate the
+        environment that was set when the command was run
+        @returns list of log messages
+        """
+        msg = ["ENVIRONMENT FOR NEXT COMMAND: "]
+        for env_item in sorted(self.env_list):
+            msg.append(self.print_env_item(env_item))
+
+        if print_copyable:
+            msg.append("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
+            msg.append(self.get_env_copy())
+
+        return msg
 
     def handle_window_once(self, c_dict, dtype, edge, app_name):
         """! Check and set window dictionary variables like
@@ -259,15 +288,6 @@ class CommandBuilder:
         self.env[key] = str(name)
         self.env_list.add(key)
 
-    def print_env(self):
-        """!Print all environment variables set for this application
-        """
-        for env_name in self.env:
-            self.logger.debug(env_name + '="' + self.env[env_name] + '"')
-
-    def print_env_copy(self, var_list=None):
-        self.logger.debug(self.get_env_copy(var_list))
-
     def get_env_copy(self, var_list=None):
         """!Print list of environment variables that can be easily
         copied into terminal
@@ -300,13 +320,7 @@ class CommandBuilder:
     def print_env_item(self, item):
         """!Print single environment variable in the log file
         """
-        self.logger.debug(item + "=" + self.env[item])
-
-    def print_user_env_items(self):
-        """!Prints user environment variables in the log file
-        """
-        for k in self.config.keys('user_env_vars') + ['MET_TMP_DIR']:
-            self.print_env_item(k)
+        return f"{item}={self.env[item]}"
 
     def handle_fcst_and_obs_field(self, gen_name, fcst_name, obs_name, default=None, sec='config'):
         """!Handles config variables that have fcst/obs versions or a generic
@@ -505,6 +519,10 @@ class CommandBuilder:
                            "does not allow multiple files to be provided.")
             return None
 
+        # pop level from time_info to avoid conflict with explicit level
+        # then add it back after the string sub call
+        saved_level = time_info.pop('level', None)
+
         for template in template_list:
             # perform string substitution
             filename = do_string_sub(template,
@@ -534,6 +552,10 @@ class CommandBuilder:
                 # add single file to list
                 check_file_list.append(full_path)
 
+        # if it was set, add level back to time_info
+        if saved_level:
+            time_info['level'] = saved_level
+
         # if multiple files are not supported by the wrapper and multiple files are found, error and exit
         # this will allow a wildcard to be used to find a single file. Previously a wildcard would produce
         # an error if only 1 file is allowed.
@@ -544,10 +566,10 @@ class CommandBuilder:
         # return None if no files were found
         if not check_file_list:
             msg = f"Could not find any {data_type}INPUT files"
-            if mandatory:
-                self.log_error(msg)
-            else:
+            if not mandatory or not self.c_dict.get('MANDATORY', True):
                 self.logger.warning(msg)
+            else:
+                self.log_error(msg)
 
             return None
 
@@ -562,10 +584,10 @@ class CommandBuilder:
             # report error if file path could not be found
             if not processed_path:
                 msg = f"Could not find {data_type}INPUT file {file_path} using template {template}"
-                if mandatory:
-                    self.log_error(msg)
-                else:
+                if not mandatory or not self.c_dict.get('MANDATORY', True):
                     self.logger.warning(msg)
+                else:
+                    self.log_error(msg)
 
                 return None
 
@@ -646,10 +668,11 @@ class CommandBuilder:
         if not closest_files:
             msg = f"Could not find {data_type}INPUT files under {data_dir} within range " +\
                   f"[{valid_range_lower},{valid_range_upper}] using template {template}"
-            if mandatory:
-                self.log_error(msg)
-            else:
+            if not mandatory:
                 self.logger.warning(msg)
+            else:
+                self.log_error(msg)
+
             return None
 
         # check if file(s) needs to be preprocessed before returning the path
@@ -669,9 +692,21 @@ class CommandBuilder:
 
         return out
 
-    def write_list_file(self, filename, file_list):
-        """! Writes a file containing a list of filenames to the staging dir"""
-        list_dir = os.path.join(self.config.getdir('STAGING_DIR'), 'file_lists')
+    def write_list_file(self, filename, file_list, output_dir=None):
+        """! Writes a file containing a list of filenames to the staging dir
+
+            @param filename name of ascii file to write
+            @param file_list list of files to write to ascii file
+            @param output_dir (Optional) directory to write files. If None,
+             ascii files are written to {STAGING_DIR}/file_lists
+            @returns path to output file
+        """
+        if output_dir is None:
+            list_dir = os.path.join(self.config.getdir('STAGING_DIR'),
+                                    'file_lists')
+        else:
+            list_dir = output_dir
+
         list_path = os.path.join(list_dir, filename)
 
         if not os.path.exists(list_dir):
@@ -683,6 +718,7 @@ class CommandBuilder:
             for f_path in file_list:
                 self.logger.debug(f"Adding file to list: {f_path}")
                 file_handle.write(f_path + '\n')
+
         return list_path
 
     def find_and_check_output_file(self, time_info):
@@ -1028,7 +1064,7 @@ class CommandBuilder:
         return self.build()
 
     # Placed running of command in its own class, command_runner run_cmd().
-    # This will allow the ability to still call build() as is currenly done
+    # This will allow the ability to still call build() as is currently done
     # in subclassed CommandBuilder wrappers and also allow wrappers
     # such as tc_pairs that are not heavily designed around command builder
     # to call cmdrunner.run_cmd().
@@ -1041,17 +1077,32 @@ class CommandBuilder:
             self.log_error("Could not generate command")
             return False
 
-        # add command to list of all commands run
-        self.all_commands.append(cmd)
+        return self.run_command(cmd)
 
-        ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=self.app_name,
+    def run_command(self, cmd):
+        """! Run a command with the appropriate environment. Add command to
+        list of all commands run.
+
+        @param cmd command to run
+        @returns True on success, False otherwise
+        """
+        # add command to list of all commands run
+        self.all_commands.append((cmd,
+                                  self.print_all_envs(print_copyable=False)))
+
+        if self.instance:
+            app_name = f"{self.app_name}.{self.instance}"
+        else:
+            app_name = self.app_name
+
+        ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=app_name,
                                               copyable_env=self.get_env_copy())
-        if ret != 0:
+        if ret:
             logfile_path = self.config.getstr('config', 'LOG_METPLUS')
             # if MET output is written to its own logfile, get that filename
             if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
                 logfile_path = logfile_path.replace('master_metplus',
-                                                    self.app_name)
+                                                    app_name)
 
             self.log_error("MET command returned a non-zero return code:"
                            f"{cmd}")
@@ -1073,7 +1124,7 @@ class CommandBuilder:
     def run_all_times(self):
         """!Loop over time range specified in conf file and
         call METplus wrapper for each time"""
-        util.loop_over_times_and_call(self.config, self)
+        return util.loop_over_times_and_call(self.config, self)
 
     def set_time_dict_for_single_runtime(self, c_dict):
         # get clock time from start of execution for input time dictionary
@@ -1085,7 +1136,10 @@ class CommandBuilder:
         start_time, _, _ = util.get_start_end_interval_times(self.config) or (None, None, None)
         if start_time:
             # set init or valid based on LOOP_BY
-            if util.is_loop_by_init(self.config):
+            use_init = util.is_loop_by_init(self.config)
+            if use_init is None:
+                self.isOK = False
+            elif use_init:
                 c_dict['INPUT_TIME_DICT']['init'] = start_time
             else:
                 c_dict['INPUT_TIME_DICT']['valid'] = start_time
@@ -1137,7 +1191,7 @@ class CommandBuilder:
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
         """
-        conf_value = util.getlist(self.config.getstr('config',
+        conf_value = util.getlist(self.config.getraw('config',
                                                      mp_config_name,
                                                      ''))
         if conf_value:
@@ -1153,7 +1207,8 @@ class CommandBuilder:
 
             c_dict[c_key] = f'{met_config_name} = {conf_value};'
 
-    def set_c_dict_string(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+    def set_c_dict_string(self, c_dict, mp_config_name, met_config_name,
+                          c_dict_key=None):
         """! Get string from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
@@ -1165,9 +1220,8 @@ class CommandBuilder:
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
         """
-        conf_value = self.config.getstr('config', mp_config_name, '')
+        conf_value = self.config.getraw('config', mp_config_name, '')
         if conf_value:
-
             if not c_dict_key:
                 c_key = met_config_name.upper()
             else:

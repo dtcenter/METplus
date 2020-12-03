@@ -33,12 +33,14 @@ that reformat gridded data
     # types of climatology values that should be checked and set
     climo_types = ['MEAN', 'STDEV']
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         # set app_name if not set by child class to allow tests to run on this wrapper
         if not hasattr(self, 'app_name'):
             self.app_name = 'compare_gridded'
 
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         # check to make sure all necessary probabilistic settings are set correctly
         # this relies on the subclass to finish creating the c_dict, so it has to
         # be checked after that happens

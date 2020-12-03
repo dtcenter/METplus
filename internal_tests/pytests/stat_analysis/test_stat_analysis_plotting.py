@@ -111,7 +111,6 @@ def test_set_lists_as_loop_or_group(metplus_config):
 
     config_dict = {}
     config_dict['LOOP_ORDER'] = 'processes'
-    config_dict['PROCESS_LIST'] = 'StatAnalysis, MakePlots'
     config_dict['OUTPUT_BASE_DIR'] = 'OUTPUT_BASE/stat_analysis'
     config_dict['GROUP_LIST_ITEMS'] = ['FCST_INIT_HOUR_LIST']
     config_dict['LOOP_LIST_ITEMS'] = ['FCST_VALID_HOUR_LIST']

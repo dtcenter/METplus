@@ -233,7 +233,9 @@ the dimensions and density of the tiles comprising the subregion:
 [dir]
 
 | :term:`EXTRACT_TILES_OUTPUT_DIR`
-| :term:`EXTRACT_TILES_PAIRS_INPUT_DIR`
+| :term:`EXTRACT_TILES_STAT_INPUT_DIR`
+| :term:`FCST_EXTRACT_TILES_INPUT_DIR`
+| :term:`OBS_EXTRACT_TILES_INPUT_DIR`
 
 [filename_templates]
 
@@ -241,6 +243,7 @@ the dimensions and density of the tiles comprising the subregion:
 | :term:`OBS_EXTRACT_TILES_INPUT_TEMPLATE`
 | :term:`FCST_EXTRACT_TILES_OUTPUT_TEMPLATE`
 | :term:`OBS_EXTRACT_TILES_OUTPUT_TEMPLATE`
+| :term:`EXTRACT_TILES_STAT_INPUT_TEMPLATE`
 
 [config]
 
@@ -252,7 +255,7 @@ the dimensions and density of the tiles comprising the subregion:
 | :term:`EXTRACT_TILES_DLAT`
 | :term:`EXTRACT_TILES_FILTER_OPTS`
 | :term:`EXTRACT_TILES_VAR_LIST`
-| :term:`EXTRACT_TILES_OVERWRITE_TRACK`
+| :term:`EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS`
 | :term:`EXTRACT_TILES_CUSTOM_LOOP_LIST`
 
 .. warning:: **DEPRECATED:**
@@ -264,6 +267,10 @@ the dimensions and density of the tiles comprising the subregion:
    | :term:`NLON`
    | :term:`DLON`
    | :term:`DLAT`
+   | :term:`EXTRACT_TILES_OVERWRITE_TRACK`
+   | :term:`EXTRACT_TILES_PAIRS_INPUT_DIR`
+   | :term:`EXTRACT_TILES_FILTERED_OUTPUT_TEMPLATE`
+   | :term:`EXTRACT_TILES_GRID_INPUT_DIR`
 
 GempakToCF
 ----------
@@ -924,6 +931,41 @@ Configuration
    | :term:`FCST_PCP_COMBINE_<n>_FIELD_NAME`
    | :term:`OBS_PCP_COMBINE_<n>_FIELD_NAME`
 
+PlotDataPlane
+-------------
+
+Description
+~~~~~~~~~~~
+
+The PlotDataPlane wrapper is a Python script that encapsulates the MET
+plot_data_plane tool. It provides the infrastructure to read in any input that
+MET can read and plot them. This tool is often used to verify that the data
+is mapped to the correct grid location.
+
+Configuration
+~~~~~~~~~~~~~
+
+[dir]
+
+| :term:`PLOT_DATA_PLANE_INPUT_DIR`
+| :term:`PLOT_DATA_PLANE_OUTPUT_DIR`
+
+[filename_templates]
+
+| :term:`PLOT_DATA_PLANE_INPUT_TEMPLATE`
+| :term:`PLOT_DATA_PLANE_OUTPUT_TEMPLATE`
+
+[config]
+
+| :term:`PLOT_DATA_PLANE_FIELD_NAME`
+| :term:`PLOT_DATA_PLANE_FIELD_LEVEL`
+| :term:`PLOT_DATA_PLANE_FIELD_EXTRA`
+| :term:`LOG_PLOT_DATA_PLANE_VERBOSITY`
+| :term:`PLOT_DATA_PLANE_TITLE`
+| :term:`PLOT_DATA_PLANE_COLOR_TABLE`
+| :term:`PLOT_DATA_PLANE_RANGE_MIN_MAX`
+| :term:`PLOT_DATA_PLANE_CONVERT_TO_IMAGE`
+
 Point2Grid
 ----------
 
@@ -1207,17 +1249,10 @@ Configuration
 
 [dir]
 
-| :term:`SERIES_ANALYSIS_INPUT_DIR`
+| :term:`SERIES_ANALYSIS_TILE_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR`
 | :term:`SERIES_ANALYSIS_OUTPUT_DIR`
-
-
-[regex_patterns]
-
-| :term:`FCST_SERIES_ANALYSIS_NC_TILE_REGEX`
-| :term:`OBS_SERIES_ANALYSIS_NC_TILE_REGEX`
-| :term:`FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
-| :term:`OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
+| :term:`SERIES_ANALYSIS_STAT_INPUT_DIR`
 
 [config]
 
@@ -1227,8 +1262,13 @@ Configuration
 | :term:`INIT_HOUR_END`
 | :term:`INIT_INCLUDE`
 | :term:`INIT_EXCLUDE`
-| :term:`SERIES_ANALYSIS_FILTER_OPTS`
 | :term:`SERIES_ANALYSIS_BACKGROUND_MAP`
+| :term:`SERIES_ANALYSIS_GENERATE_PLOTS`
+
+[filename_templates]
+
+| :term:`SERIES_ANALYSIS_STAT_INPUT_TEMPLATE`
+| :term:`SERIES_ANALYSIS_OUTPUT_TEMPLATE`
 
 .. warning:: **DEPRECATED:**
 
@@ -1242,6 +1282,12 @@ Configuration
    | :term:`ANLY_NC_TILE_REGEX`
    | :term:`FCST_ASCII_REGEX_LEAD`
    | :term:`ANLY_ASCII_REGEX_LEAD`
+   | :term:`SERIES_ANALYSIS_FILTER_OPTS`
+   | :term:`SERIES_ANALYSIS_INPUT_DIR`
+   | :term:`FCST_SERIES_ANALYSIS_NC_TILE_REGEX`
+   | :term:`OBS_SERIES_ANALYSIS_NC_TILE_REGEX`
+   | :term:`FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
+   | :term:`OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
 
 SeriesByLead
 ------------
@@ -1647,9 +1693,8 @@ Configuration
 [config]
 
 | :term:`TC_PAIRS_CONFIG_FILE`
-| :term:`INIT_HOUR_END`
-| :term:`INIT_INCLUDE`
-| :term:`INIT_EXCLUDE`
+| :term:`TC_PAIRS_INIT_INCLUDE`
+| :term:`TC_PAIRS_INIT_EXCLUDE`
 | :term:`TC_PAIRS_READ_ALL_FILES`
 | :term:`TC_PAIRS_MODEL`
 | :term:`TC_PAIRS_STORM_ID`
@@ -1683,6 +1728,9 @@ Configuration
    | :term:`BDECK_FILE_PREFIX`
    | :term:`MISSING_VAL_TO_REPLACE`
    | :term:`MISSING_VAL`
+   | :term:`INIT_INCLUDE`
+   | :term:`INIT_EXCLUDE`
+   | :term:`INIT_HOUR_END`
 
 TCRMW
 ------

@@ -40,11 +40,13 @@ class TCPairsWrapper(CommandBuilder):
        bdeck files.  Pre-processes extra tropical cyclone data.
     """
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'tc_pairs'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         self.adeck = []
         self.bdeck = []
         self.edeck = []
@@ -94,11 +96,11 @@ class TCPairsWrapper(CommandBuilder):
                                                       'INIT_INCREMENT')
 
         c_dict['INIT_INCLUDE'] = util.getlist(
-            self.config.getstr('config', 'INIT_INCLUDE'))
+            self.config.getstr('config', 'TC_PAIRS_INIT_INCLUDE'))
         c_dict['INIT_EXCLUDE'] = util.getlist(
-            self.config.getstr('config', 'INIT_EXCLUDE'))
-        c_dict['VALID_BEG'] = self.config.getstr('config', 'VALID_BEG')
-        c_dict['VALID_END'] = self.config.getstr('config', 'VALID_END')
+            self.config.getstr('config', 'TC_PAIRS_INIT_EXCLUDE'))
+        c_dict['VALID_BEG'] = self.config.getstr('config', 'TC_PAIRS_VALID_BEG')
+        c_dict['VALID_END'] = self.config.getstr('config', 'TC_PAIRS_VALID_END')
         c_dict['ADECK_DIR'] = \
                 self.config.getdir('TC_PAIRS_ADECK_INPUT_DIR', '')
         c_dict['BDECK_DIR'] = \
@@ -204,7 +206,7 @@ class TCPairsWrapper(CommandBuilder):
             else:
                 self.build()
 
-            return True
+            return self.all_commands
 
         # use init begin as run time (start of the storm)
         input_dict = {'init':
@@ -213,6 +215,7 @@ class TCPairsWrapper(CommandBuilder):
                      }
 
         self.run_at_time(input_dict)
+        return self.all_commands
 
     def run_at_time(self, input_dict):
         """! Create the arguments to run MET tc_pairs

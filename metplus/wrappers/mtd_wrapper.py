@@ -20,11 +20,13 @@ from . import CompareGriddedWrapper
 
 class MTDWrapper(MODEWrapper):
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'mtd'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         self.fcst_file = None
         self.obs_file = None
 
@@ -184,8 +186,10 @@ class MTDWrapper(MODEWrapper):
 
             for current_task in tasks:
                 # call find_model/obs as needed
-                model_file = self.find_model(current_task, var_info, False)
-                obs_file = self.find_obs(current_task, var_info, False)
+                model_file = self.find_model(current_task, var_info,
+                                             mandatory=False)
+                obs_file = self.find_obs(current_task, var_info,
+                                         mandatory=False)
                 if model_file is None and obs_file is None:
                     continue
 

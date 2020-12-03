@@ -3,7 +3,7 @@ Model Evaluation Tools Plus (METplus) Repository
 
 <!-- Start of Badges -->
 [![METplus_develop](https://img.shields.io/badge/METplus-develop%20branch-blue)](#)
-[![Travis build status](https://travis-ci.org/DTCenter/METplus.svg?branch=develop)](https://travis-ci.org/DTCenter/METplus)
+[![Travis build status](https://travis-ci.com/DTCenter/METplus.svg?branch=develop)](https://travis-ci.com/DTCenter/METplus)
 [![Latest Docs](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://dtcenter.github.io/METplus/)
 
 

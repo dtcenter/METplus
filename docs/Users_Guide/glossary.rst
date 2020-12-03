@@ -318,10 +318,10 @@ METplus Configuration Glossary
      | *Default:* NONE
 
    ANLY_ASCII_REGEX_LEAD
-     .. warning:: **DEPRECATED:** Please use :term:`OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`OBS_EXTRACT_TILES_PREFIX` instead.
 
    ANLY_NC_TILE_REGEX
-     .. warning:: **DEPRECATED:** Please use :term:`OBS_SERIES_ANALYSIS_NC_TILE_REGEX` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`OBS_EXTRACT_TILES_PREFIX` instead.
 
    ENSEMBLE_STAT_OUTPUT_PREFIX
      String to pass to the MET config file to prepend text to the output filenames.
@@ -359,18 +359,10 @@ METplus Configuration Glossary
      | *Default:*
 
    OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD
-     The regular expression describing the analysis (obs) file name (in ASCII format) of the intermediate file generated when running a series_by_lead process.
-
-     | *Used by:* SeriesByLead
-     | *Family:* [regex_pattern]
-     | *Default:*
+     .. warning:: **DEPRECATED:** Please use :term:`OBS_EXTRACT_TILES_PREFIX` instead.
 
    OBS_SERIES_ANALYSIS_NC_TILE_REGEX
-     The regular expression used to search the input files that are in netCDF format and used in the series_by_analysis process.
-
-     | *Used by:* SeriesByLead, SeriesByInit
-     | *Family:* [regex_pattern]
-     | *Default:*
+     .. warning:: **DEPRECATED:** Please use :term:`OBS_EXTRACT_TILES_PREFIX` instead.
 
    ANLY_TILE_PREFIX
      .. warning:: **DEPRECATED:** Please use :term:`OBS_EXTRACT_TILES_PREFIX` instead.
@@ -1035,13 +1027,20 @@ METplus Configuration Glossary
    AMODEL
      .. warning:: **DEPRECATED:** Please use :term:`TC_STAT_AMODEL`.
 
+   SERIES_ANALYSIS_GENERATE_PLOTS
+     If set to True, run plot_data_plane and convert to generate images.
+     Previously, plots were always generated.
+
+     | *Used by:*  SeriesByInit
+     | *Family:*  [config]
+     | *Default:*  True
+
    SERIES_ANALYSIS_BACKGROUND_MAP
      Control whether or not a background map shows up for series analysis plots. Set to 'yes' if background map desired.
 
      | *Used by:*  SeriesByLead, SeriesByInit
      | *Family:*  [config]
      | *Default:*  no
-
 
    BACKGROUND_MAP
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_BACKGROUND_MAP` instead.
@@ -1249,13 +1248,20 @@ METplus Configuration Glossary
    DLON
      .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_DLON` instead.
 
-
-
-
    EXTRACT_TILES_PAIRS_INPUT_DIR
-     Directory containing matched pairs input to be read by ExtractTiles.
+     .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_STAT_INPUT_DIR` instead.
 
-     | *Used by:*  ExtractTiles, SeriesByLead
+   EXTRACT_TILES_STAT_INPUT_DIR
+     Directory containing TCStat output to be read by ExtractTiles.
+
+     | *Used by:*  ExtractTiles
+     | *Family:*  [dir]
+     | *Default:*
+
+   SERIES_ANALYSIS_STAT_INPUT_DIR
+     Directory containing TCStat output to be read by SeriesByInit.
+
+     | *Used by:*  SeriesByInit
      | *Family:*  [dir]
      | *Default:*
 
@@ -1470,6 +1476,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_OUTPUT_DIR`.
 
    EXTRACT_TILES_FILTER_OPTS
+     .. warning:: **DEPRECATED:** Please use :term:`TC_STAT_JOB_ARGS` instead.
      Control what options are passed to the METplus extract_tiles utility.
 
      | *Used by:*  ExtractTiles
@@ -1497,14 +1504,10 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_<n>_FIELD_NAME` where N >=1 instead.
 
    FCST_ASCII_REGEX_LEAD
-     .. warning:: **DEPRECATED:** Please use :term:`FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD` instead. Regular expression used to find the forecast file (ASCII format) generated as an intermediate step in the series by lead use case.
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_EXTRACT_TILES_PREFIX` instead.
 
    FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD
-     Regular expression used to find the forecast file (ASCII format) generated as an intermediate step in the series by lead use case.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [regex_pattern]
-     | *Default:*  Varies
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_EXTRACT_TILES_PREFIX` instead.
 
    FCST_ENSEMBLE_STAT_FILE_WINDOW_BEGIN
      See :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN`
@@ -1762,14 +1765,10 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_INPUT_DATATYPE` instead
 
    FCST_NC_TILE_REGEX
-     .. warning:: **DEPRECATED:** Please use :term:`FCST_SERIES_ANALYSIS_NC_TILE_REGEX` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_EXTRACT_TILES_PREFIX` instead.
 
    FCST_SERIES_ANALYSIS_NC_TILE_REGEX
-     Define the regular expression for input forecast files that are in netCDF.
-
-     | *Used by:*  SeriesByLead, SeriesByInit
-     | *Family:*  [regex_pattern]
-     | *Default:*  Varies
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_EXTRACT_TILES_PREFIX` instead.
 
    FCST_PCP_COMBINE_<n>_FIELD_NAME
      .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_INPUT_NAMES` instead.
@@ -2706,9 +2705,12 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    INIT_EXCLUDE
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_INIT_EXCLUDE`  instead.
+
+   TC_PAIRS_INIT_EXCLUDE
      Specify which, if any, forecast initializations to exclude from the analysis.
 
-     | *Used by:*  TCPairs, TCStat
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -2739,9 +2741,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** No longer used.
 
    INIT_INCLUDE
+     .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_INIT_INCLUDE`  instead.
+
+   TC_PAIRS_INIT_INCLUDE
      Specify which forecast initializations to include in the analysis.
 
-     | *Used by:*  TCPairs, TCStat
+     | *Used by:*  TCPairs
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -3103,10 +3108,41 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`MODEL<n>_STAT_ANALYSIS_LOOKIN_DIR` instead.
 
    EXTRACT_TILES_GRID_INPUT_DIR
-     Directory containing gridded input data to be used in ExtractTiles. Currently contains both forecast and observation data.
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_EXTRACT_TILES_INPUT_DIR` and :term:`OBS_EXTRACT_TILES_INPUT_DIR` instead.
 
-     | *Used by:*  ExtractTiles, SeriesByLead
+   FCST_EXTRACT_TILES_INPUT_DIR
+     Directory containing gridded forecast data to be used in ExtractTiles
+
+     | *Used by:*  ExtractTiles
      | *Family:*  [dir]
+     | *Default:*  Varies
+
+   OBS_EXTRACT_TILES_INPUT_DIR
+     Directory containing gridded observation data to be used in ExtractTiles
+
+     | *Used by:*  ExtractTiles
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
+   EXTRACT_TILES_FILTERED_OUTPUT_TEMPLATE
+     .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_STAT_INPUT_TEMPLATE` instead.
+
+   EXTRACT_TILES_STAT_INPUT_TEMPLATE
+     Template used to specify the dump row output tcst file generated by TCStat
+     to filter input data to be used in ExtractTiles.
+     Example: {init?fmt=%Y%m%d_%H}/filter_{init?fmt=%Y%m%d_%H}.tcst
+
+     | *Used by:*  ExtractTiles
+     | *Family:*  [filename_templates]
+     | *Default:*  Varies
+
+   SERIES_ANALYSIS_STAT_INPUT_TEMPLATE
+     Template used to specify the dump row output tcst file generated by TCStat
+     to filter input data to be used in SeriesByInit.
+     Example: {init?fmt=%Y%m%d_%H}/filter_{init?fmt=%Y%m%d_%H}.tcst
+
+     | *Used by:*  SeriesByInit
+     | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    MODEL_DATA_DIR
@@ -4137,15 +4173,19 @@ METplus Configuration Glossary
    OVERWRITE_NC_OUTPUT
      .. warning:: **DEPRECATED:** Please use :term:`PB2NC_SKIP_IF_OUTPUT_EXISTS` instead.
 
-   EXTRACT_TILES_OVERWRITE_TRACK
-     Specify whether to overwrite the track data or not.Acceptable values: yes/no
+   EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS
+     Specify whether to overwrite the track data or not.
+     Acceptable values: yes/no
 
      | *Used by:*  ExtractTiles
      | *Family:*  [config]
      | *Default:*  no
 
+   EXTRACT_TILES_OVERWRITE_TRACK
+     .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS` instead.
+
    OVERWRITE_TRACK
-     .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_OVERWRITE_TRACK` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS` instead.
 
    PARM_BASE
      This variable will automatically be set by METplus when it is started. Specifies the top level METplus parameter file directory. You can override this value by setting the environment variable METPLUS_PARM_BASE to another directory containing a copy of the METPlus parameter file directory. If the environment variable is not set, the parm directory corresponding to the calling script is used. It is recommended that this variable is not set by the user. If it is set and is not equivalent to the value determined by METplus, execution will fail.
@@ -4615,6 +4655,8 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_CONFIG_FILE` instead.
 
    SERIES_ANALYSIS_FILTER_OPTS
+     .. warning:: **DEPRECATED:** Please use :term:`TC_STAT_JOB_ARGS` instead.
+
      Filtering options to be applied during series analysis. Filter options are performed by invoking the MET tc_stat tool within the METplus wrapper. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for the syntax to use for performing filtering via the MET tc_stat tool.
 
      | *Used by:*  SeriesByLead, SeriesByInit
@@ -4668,37 +4710,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR` instead.
 
    SERIES_ANALYSIS_INPUT_DIR
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_TILE_INPUT_DIR` instead.
+
+   SERIES_ANALYSIS_TILE_INPUT_DIR
      Specify the directory to read input to SeriesAnalysis. It is recommended to set this to {EXTRACT_TILES_OUTPUT_DIR}.
 
-     | *Used by:*  SeriesByLead, SeriesByInit
-     | *Family:*  [dir]
-     | *Default:*  Varies
-
-   FCST_SERIES_ANALYSIS_INPUT_DIR
-     Specify the directory to read forecast input for SeriesAnalysis. Corresponds to :term:`FCST_SERIES_ANALYSIS_INPUT_TEMPLATE`. There is an equivalent configuration variable for observation data called :term:`OBS_SERIES_ANALYSIS_INPUT_DIR`.
-
-     | *Used by:*  SeriesAnalysis
-     | *Family:*  [dir]
-     | *Default:*  Varies
-
-   OBS_SERIES_ANALYSIS_INPUT_DIR
-     Specify the directory to read observation input for SeriesAnalysis. Corresponds to :term:`OBS_SERIES_ANALYSIS_INPUT_TEMPLATE`. There is an equivalent configuration variable for forecast data called :term:`FCST_SERIES_ANALYSIS_INPUT_DIR`.
-
-     | *Used by:*  SeriesAnalysis
-     | *Family:*  [dir]
-     | *Default:*  Varies
-
-   FCST_SERIES_ANALYSIS_INPUT_TEMPLATE
-     Specify the filename template to find forecast input for SeriesAnalysis at each run time. Corresponds to :term:`FCST_SERIES_ANALYSIS_INPUT_DIR`. There is an equivalent configuration variable for observation data called :term:`OBS_SERIES_ANALYSIS_INPUT_TEMPLATE`.
-
-     | *Used by:*  SeriesAnalysis
-     | *Family:*  [dir]
-     | *Default:*  Varies
-
-   OBS_SERIES_ANALYSIS_INPUT_TEMPLATE
-     Specify the filename template to find observation input for SeriesAnalysis at each run time. Corresponds to :term:`OBS_SERIES_ANALYSIS_INPUT_DIR`. There is an equivalent configuration variable for forecast data called :term:`FCST_SERIES_ANALYSIS_INPUT_TEMPLATE`.
-
-     | *Used by:*  SeriesAnalysis
+     | *Used by:*  SeriesByInit
      | *Family:*  [dir]
      | *Default:*  Varies
 
@@ -6318,3 +6335,101 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
      | *Family:*  [config]
      | *Default:*  Varies
+
+   PLOT_DATA_PLANE_INPUT_DIR
+     Directory containing input data to PlotDataPlane. This variable is
+     optional because you can specify the full path to the input files
+     using :term:`PLOT_DATA_PLANE_INPUT_TEMPLATE`.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [dir]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_INPUT_TEMPLATE
+     Filename template of the input file used by PlotDataPlane.
+     Set to PYTHON_NUMPY/XARRAY to read from a Python embedding script.
+     See also :term:`PLOT_DATA_PLANE_INPUT_DIR`.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_OUTPUT_DIR
+     Directory to write output data from PlotDataPlane. This variable is
+     optional because you can specify the full path to the input files
+     using :term:`PLOT_DATA_PLANE_OUTPUT_TEMPLATE`.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [dir]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_OUTPUT_TEMPLATE
+     Filename template of the output file created by PlotDataPlane.
+     See also :term:`PLOT_DATA_PLANE_OUTPUT_DIR`.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [filename_templates]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_FIELD_NAME
+     Name of field to read from input file. For Python embedding input, set to
+     the path of a Python script and any arguments to the script.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_FIELD_LEVEL
+     Level of field to read from input file. For Python embedding input, do not
+     set this value.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_FIELD_EXTRA
+     Additional options for input field. Multiple options can be specified.
+     Each option must end with a semi-colon including the last (or only) item.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_CONVERT_TO_IMAGE
+     If set to True, run convert to create a png image with the same name as
+     the output from plot_data_plane (except the extension is png instead of
+     ps). If set to True, the application convert must either be in the user's
+     path or [exe] CONVERT must be set to the full path to the executable.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* False
+
+   PLOT_DATA_PLANE_TITLE
+     (Optional) title to display on the output postscript file.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_COLOR_TABLE
+     (Optional) path to color table file to override the default.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   PLOT_DATA_PLANE_RANGE_MIN_MAX
+     (Optional) minimum and maximum values to output to postscript file.
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* None
+
+   LOG_PLOT_DATA_PLANE_VERBOSITY
+     Overrides the log verbosity for PlotDataPlane only.
+     If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`
+
+     | *Used by:* PlotDataPlane
+     | *Family:* [config]
+     | *Default:* None

@@ -17,6 +17,7 @@ Use Cases by MET Tool:
 | `PB2NC <https://dtcenter.github.io/METplus/develop/search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_
 | `PCPCombine <https://dtcenter.github.io/METplus/develop/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_
 | `Point2Grid <https://dtcenter.github.io/METplus/develop/search.html?q=Point2GridToolUseCase&check_keywords=yes&area=default>`_
+| `PlotDataPlane <https://dtcenter.github.io/METplus/develop/search.html?q=PlotDataPlaneToolUseCase&check_keywords=yes&area=default>`_
 | `PointStat <https://dtcenter.github.io/METplus/develop/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
 | `RegridDataPlane <https://dtcenter.github.io/METplus/develop/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
 | `SeriesAnalysis <https://dtcenter.github.io/METplus/develop/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_

@@ -55,6 +55,7 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'modetimedomain': 'MTD',
                          'pb2nc': 'PB2NC',
                          'pcpcombine': 'PCPCombine',
+                         'plotdataplane': 'PlotDataPlane',
                          'point2grid': 'Point2Grid',
                          'pointtogrid': 'Point2Grid',
                          'Point_2_Grid': 'Point2Grid',
@@ -149,20 +150,25 @@ def run_metplus(config, process_list):
 
     try:
         processes = []
-        for item in process_list:
+        for process, instance in process_list:
             try:
-                logger = config.log(item)
-                package_name = 'metplus.wrappers.' + camel_to_underscore(item) + '_wrapper'
+                logname = f"{process}.{instance}" if instance else process
+                logger = config.log(logname)
+                package_name = ('metplus.wrappers.'
+                                f'{camel_to_underscore(process)}_wrapper')
                 module = import_module(package_name)
-                command_builder = getattr(module,
-                                          item + "Wrapper")(config)
+                command_builder = (
+                    getattr(module, f"{process}Wrapper")(config,
+                                                         instance=instance)
+                )
 
                 # if Usage specified in PROCESS_LIST, print usage and exit
-                if item == 'Usage':
+                if process == 'Usage':
                     command_builder.run_all_times()
                     return 0
             except AttributeError:
-                raise NameError("There was a problem loading %s wrapper." % item)
+                raise NameError("There was a problem loading "
+                                f"{process} wrapper.")
 
             processes.append(command_builder)
 
@@ -179,19 +185,24 @@ def run_metplus(config, process_list):
             logger.info("Refer to ERROR messages above to resolve issues.")
             return 1
 
-        loop_order = config.getstr('config', 'LOOP_ORDER', '')
+        loop_order = config.getstr('config', 'LOOP_ORDER', '').lower()
 
         if loop_order == "processes":
+            all_commands = []
             for process in processes:
-                process.run_all_times()
+                new_commands = process.run_all_times()
+                if new_commands:
+                    all_commands.extend(new_commands)
 
         elif loop_order == "times":
-            loop_over_times_and_call(config, processes)
-
+            all_commands = loop_over_times_and_call(config, processes)
         else:
             logger.error("Invalid LOOP_ORDER defined. " + \
                          "Options are processes, times")
             return 1
+
+        # write out all commands and environment variables to file
+        write_all_commands(all_commands, config)
 
        # compute total number of errors that occurred and output results
         for process in processes:
@@ -241,6 +252,19 @@ def post_run_cleanup(config, app_name, total_errors):
         logger.error(error_msg)
         logger.info(log_message)
         sys.exit(1)
+
+def write_all_commands(all_commands, config):
+    log_timestamp = config.getstr('config', 'LOG_TIMESTAMP')
+    filename = os.path.join(config.getdir('LOG_DIR'),
+                            f'.all_commands.{log_timestamp}')
+    config.logger.debug(f"Writing all commands and environment to {filename}")
+    with open(filename, 'w') as file_handle:
+        for command, envs in all_commands:
+            for env in envs:
+                file_handle.write(f"{env}\n")
+
+            file_handle.write("COMMAND:\n")
+            file_handle.write(f"{command}\n\n")
 
 def check_for_deprecated_config(config):
     """!Checks user configuration files and reports errors or warnings if any deprecated variable
@@ -480,6 +504,46 @@ def check_for_deprecated_config(config):
                             'copy': False},
         'TC_STAT_CMD_LINE_JOB': {'sec': 'config', 'alt': 'TC_STAT_JOB_ARGS'},
         'TC_STAT_JOBS_LIST': {'sec': 'config', 'alt': 'TC_STAT_JOB_ARGS'},
+        'EXTRACT_TILES_OVERWRITE_TRACK': {'sec': 'config',
+                                          'alt': 'EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS',
+                                          'copy': False},
+        'INIT_INCLUDE': {'sec': 'config', 'alt': 'TC_PAIRS_INIT_INCLUDE'},
+        'INIT_EXCLUDE': {'sec': 'config', 'alt': 'TC_PAIRS_INIT_EXCLUDE'},
+        'EXTRACT_TILES_PAIRS_INPUT_DIR': {'sec': 'dir',
+                                          'alt': 'EXTRACT_TILES_STAT_INPUT_DIR',
+                                          'copy': False},
+        'EXTRACT_TILES_FILTERED_OUTPUT_TEMPLATE': {'sec': 'filename_template',
+                                                   'alt': 'EXTRACT_TILES_STAT_INPUT_TEMPLATE',},
+        'EXTRACT_TILES_GRID_INPUT_DIR': {'sec': 'dir',
+                                         'alt': 'FCST_EXTRACT_TILES_INPUT_DIR'
+                                                'and '
+                                                'OBS_EXTRACT_TILES_INPUT_DIR',
+                                         'copy': False},
+#        'SERIES_ANALYSIS_FILTER_OPTS': {'sec': 'config',
+#                                        'alt': 'TC_STAT_JOB_ARGS',
+#                                        'copy': False},
+        'TC_STAT_INPUT_DIR': {'sec': 'dir',
+                              'alt': 'TC_STAT_LOOKIN_DIR'},
+        'SERIES_ANALYSIS_INPUT_DIR': {'sec': 'dir',
+                              'alt': 'SERIES_ANALYSIS_TILE_INPUT_DIR'},
+#        'FCST_SERIES_ANALYSIS_TILE_REGEX': {'sec': 'config',
+#                                        'alt': 'FCST_EXTRACT_TILES_PREFIX',
+#                                        'copy': False},
+#        'OBS_SERIES_ANALYSIS_TILE_REGEX': {'sec': 'config',
+#                                        'alt': 'OBS_EXTRACT_TILES_PREFIX',
+#                                        'copy': False},
+#        'FCST_SERIES_ANALYSIS_NC_TILE_REGEX': {'sec': 'config',
+#                                        'alt': 'FCST_EXTRACT_TILES_PREFIX',
+#                                        'copy': False},
+#        'OBS_SERIES_ANALYSIS_NC_TILE_REGEX': {'sec': 'config',
+#                                        'alt': 'OBS_EXTRACT_TILES_PREFIX',
+#                                        'copy': False},
+#        'FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD': {'sec': 'config',
+#                                        'alt': 'FCST_EXTRACT_TILES_PREFIX',
+#                                        'copy': False},
+#        'OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD': {'sec': 'config',
+#                                        'alt': 'OBS_EXTRACT_TILES_PREFIX',
+#                                        'copy': False},
     }
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
@@ -838,7 +902,7 @@ def is_loop_by_init(config):
     else:
         config.logger.error(msg)
 
-    exit(1)
+    return None
 
 def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
     """!Substitute today or now into [INIT/VALID]_[BEG/END] if used
@@ -871,6 +935,9 @@ def get_start_end_interval_times(config):
     clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
                                                 '%Y%m%d%H%M%S')
     use_init = is_loop_by_init(config)
+    if use_init is None:
+        return None
+
     if use_init:
         time_format = config.getstr('config', 'INIT_TIME_FMT')
         start_t = config.getraw('config', 'INIT_BEG')
@@ -905,10 +972,18 @@ def get_start_end_interval_times(config):
     return start_time, end_time, time_interval
 
 def loop_over_times_and_call(config, processes):
-    """!Loop over all run times and call wrappers listed in config"""
+    """! Loop over all run times and call wrappers listed in config
+
+    @param config METplusConfig object
+    @param processes list of CommandBuilder subclass objects (Wrappers) to call
+    @returns list of tuples with all commands run and the environment variables
+    that were set for each
+    """
     clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
                                                 '%Y%m%d%H%M%S')
     use_init = is_loop_by_init(config)
+    if use_init is None:
+        return None
 
     # get start time, end time, and time interval from config
     loop_time, end_time, time_interval = get_start_end_interval_times(config) or (None, None, None)
@@ -916,8 +991,10 @@ def loop_over_times_and_call(config, processes):
         config.logger.error("Could not get [INIT/VALID] time information from configuration file")
         return None
 
+    # keep track of commands that were run
+    all_commands = []
     while loop_time <= end_time:
-        run_time = loop_time.strftime("%Y%m%d%H%M")
+        run_time = loop_time.strftime("%Y-%m-%d %H:%M")
         config.logger.info("****************************************")
         config.logger.info("* Running METplus")
         if use_init:
@@ -938,8 +1015,13 @@ def loop_over_times_and_call(config, processes):
 
             process.clear()
             process.run_at_time(input_dict)
+            if process.all_commands:
+                all_commands.extend(process.all_commands)
+            process.all_commands.clear()
 
         loop_time += time_interval
+
+    return all_commands
 
 def get_lead_sequence(config, input_dict=None):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
@@ -1201,8 +1283,44 @@ def get_filepaths_for_grbfiles(base_dir):
                 continue
     return file_paths
 
+def get_storms(filter_filename):
+    """! Get each storm as identified by its STORM_ID in the filter file.
+         Create dictionary storm ID as the key and a list of lines for that
+         storm as the value.
 
-def get_storm_ids(filter_filename, logger):
+         @param filter_filename name of tcst file to read and extract storm id
+         @returns 2 item tuple - 1)dictionary where key is storm ID and value is list
+          of relevant lines from tcst file, 2) header line from tcst file.
+          Also, item with key 'header' contains the header of the tcst file
+    """
+    # Initialize a set because we want unique storm ids.
+    storm_id_list = set()
+
+    try:
+        with open(filter_filename, "r") as file_handle:
+            header, *lines = file_handle.readlines()
+
+        storm_id_column = header.split().index('STORM_ID')
+        for line in lines:
+            storm_id_list.add(line.split()[storm_id_column])
+    except (ValueError, FileNotFoundError):
+        return {}
+
+    # sort the unique storm ids, copy the original
+    # set by using sorted rather than sort.
+    sorted_storms = sorted(storm_id_list)
+
+    if not sorted_storms:
+        return {}
+
+    storm_dict = {'header': header}
+    # for each storm, get all lines for that storm
+    for storm in sorted_storms:
+        storm_dict[storm] = [line for line in lines if storm in line]
+
+    return storm_dict
+
+def get_storm_ids(filter_filename, logger=None):
     """! Get each storm as identified by its STORM_ID in the filter file
         save these in a set so we only save the unique ids and sort them.
         Args:
@@ -1214,27 +1332,23 @@ def get_storm_ids(filter_filename, logger):
     """
     # Initialize a set because we want unique storm ids.
     storm_id_list = set()
-    empty_list = []
 
-    # Check if the filter_filename is empty, if it
-    # is, then return an empty list.
-    if not os.path.isfile(filter_filename):
-        return empty_list
-    if os.stat(filter_filename).st_size == 0:
-        return empty_list
-    with open(filter_filename, "r") as fileobj:
-        header = fileobj.readline().split()
-        header_colnum = header.index('STORM_ID')
-        for line in fileobj:
-            storm_id_list.add(str(line.split()[header_colnum]))
+    try:
+        with open(filter_filename, "r") as file_handle:
+            header, *lines = file_handle.readlines()
+
+        storm_id_column = header.split().index('STORM_ID')
+        for line in lines:
+            storm_id_list.add(line.split()[storm_id_column])
+    except (ValueError, FileNotFoundError):
+        return []
 
     # sort the unique storm ids, copy the original
     # set by using sorted rather than sort.
     sorted_storms = sorted(storm_id_list)
     return sorted_storms
 
-
-def get_files(filedir, filename_regex, logger):
+def get_files(filedir, filename_regex, logger=None):
     """! Get all the files (with a particular
         naming format) by walking
         through the directories.
@@ -1526,11 +1640,6 @@ def create_filter_tmp_files(filtered_files_list, filter_output_dir, logger=None)
         Returns:
             None: Creates two ASCII files
     """
-
-    # Useful for logging
-    # cur_filename = sys._getframe().f_code.co_filename
-    # cur_function = sys._getframe().f_code.co_name
-
     # Create the filenames for the tmp_fcst and tmp_anly files.
     tmp_fcst_filename = os.path.join(filter_output_dir,
                                      "tmp_fcst_regridded.txt")
@@ -1790,39 +1899,45 @@ def camel_to_underscore(camel):
     return re.sub(r'([a-z])([A-Z])', r'\1_\2', s1).lower()
 
 def get_process_list(config):
-    """!Read process list, remove dashes/underscores and change to lower case. Then
-        map the name to the correct wrapper name"""
+    """!Read process list, Extract instance string if specified inside
+     parenthesis. Remove dashes/underscores and change to lower case,
+     then map the name to the correct wrapper name
 
+     @param config METplusConfig object to read PROCESS_LIST value
+     @returns list of tuple containing process name and instance identifier
+     (None if no instance was set)
+    """
     # get list of processes
     process_list = getlist(config.getstr('config', 'PROCESS_LIST'))
 
     out_process_list = []
     # for each item remove dashes, underscores, and cast to lower-case
     for process in process_list:
-        lower_process = process.replace('-', '').replace('_', '').replace(' ', '').lower()
-        if lower_process in LOWER_TO_WRAPPER_NAME.keys():
-            out_process_list.append(LOWER_TO_WRAPPER_NAME[lower_process])
+        # if instance is specified, extract the text inside parenthesis
+        match = re.match(f'(.*)\((.*)\)', process)
+        if match:
+            instance = match.group(2)
+            process_name = match.group(1)
         else:
-            config.logger.warning(f"PROCESS_LIST item {process} may be invalid.")
-            out_process_list.append(process)
+            instance = None
+            process_name = process
 
-    # if MakePlots is in process list, remove it because it will be called directly from StatAnalysis
-    if 'MakePlots' in out_process_list:
-        out_process_list.remove('MakePlots')
+        lower_process = (process_name.replace('-', '')
+                         .replace('_', '').replace(' ', '').lower())
+        if lower_process in LOWER_TO_WRAPPER_NAME.keys():
+            process_name = LOWER_TO_WRAPPER_NAME[lower_process]
+        else:
+            config.logger.warning(f"PROCESS_LIST item {process_name} "
+                                  "may be invalid.")
+
+        # if MakePlots is in process list, remove it because
+        # it will be called directly from StatAnalysis
+        if lower_process == 'makeplots':
+            continue
+
+        out_process_list.append((process_name, instance))
 
     return out_process_list
-
-def check_plotter_in_process_list(out_process_list, environ):
-    """! If plot wrappers are not enabled and there is a plot wrapper in the process list, do not run
-         Args:
-             @param out_process_list list of processes to examine
-             @param environ dictionary containing environment to check if plot wrappers are enabled or not
-             @returns False if plot wrappers are not enabled but they are in the process list, True otherwise
-    """
-    if not metplus_check.plot_wrappers_are_enabled(environ) and is_plotter_in_process_list(out_process_list):
-        return False
-
-    return True
 
 # minutes
 def shift_time(time_str, shift):
@@ -1974,25 +2089,13 @@ def validate_configuration_variables(config, force_check=False):
 
     return deprecated_isOK, field_isOK, inoutbase_isOK, deprecatedMET_isOK, all_sed_cmds
 
-def is_plotter_in_process_list(process_list):
-    """!Check config to see if having corresponding FCST/OBS variables is necessary. If process list only
-        contains reformatter wrappers, don't validate field info. Also, if MTD is in the process list and
-        it is configured to only process either FCST or OBS, validation is unnecessary."""
-
-    plotters = ['MakePlots', 'TCMPRPlotter', 'CyclonePlotter']
-
-    if [item for item in process_list if item in plotters]:
-        return True
-
-    return False
-
 def skip_field_info_validation(config):
     """!Check config to see if having corresponding FCST/OBS variables is necessary. If process list only
         contains reformatter wrappers, don't validate field info. Also, if MTD is in the process list and
         it is configured to only process either FCST or OBS, validation is unnecessary."""
 
     reformatters = ['PCPCombine', 'RegridDataPlane']
-    process_list = get_process_list(config)
+    process_list = [item[0] for item in get_process_list(config)]
 
     # if running MTD in single mode, you don't need matching FCST/OBS
     if 'MTD' in process_list and config.getbool('config', 'MTD_SINGLE_RUN'):

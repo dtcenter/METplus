@@ -38,7 +38,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
     indicate a file or directory in the (required) -lookin option.
     """
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         """!Constructor for TCMPRPlotterWrapper
             Args:
             @param p:  The configuration instance, contains
@@ -51,7 +51,9 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # pylint:disable=too-many-instance-attributes
         # All these instance attributes are needed to support the
         # plot_tcmpr.R functionality.
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
         # check if R is available, do not attempt to run if it is not
         if shutil.which('Rscript') is None:
