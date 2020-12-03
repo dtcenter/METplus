@@ -107,9 +107,8 @@ Authors
 
    Users_Guide/index
    Contributors_Guide/index
+   Release_Guide/index
    Verification_Datasets/index
-
-
 
 
 Index

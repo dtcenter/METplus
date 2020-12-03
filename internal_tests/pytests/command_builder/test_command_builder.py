@@ -243,3 +243,48 @@ def test_override_by_instance(metplus_config, section_items):
     for key, value in section_items.items():
         expected_value = 'default' if value is None else value
         assert(pcw.config.getraw('config', key) == expected_value)
+
+@pytest.mark.parametrize(
+    'filename, file_list, output_dir', [
+        # write lists to staging dir
+        ('my_ascii_file1', ['file1', 'file2', 'file3'], None),
+        ('my_ascii_file2', ['file4', 'file5', 'file6'], None),
+        ('my_ascii_file3', [], None),
+        ('my_ascii_file1', ['file1', 'file2', 'file3'], 'write_list_test'),
+        ('my_ascii_file2', ['file4', 'file5', 'file6'], 'write_list_test'),
+        ('my_ascii_file3', [], 'write_list_test'),
+    ]
+)
+def test_write_list_file(metplus_config, filename, file_list, output_dir):
+    config = metplus_config()
+    cbw = CommandBuilder(config)
+
+    # use output_dir relative to OUTPUT_BASE if it is specified
+    # otherwise use {STAGING_DIR}/file_lists
+    if output_dir:
+        output_dir = os.path.join(config.getdir('OUTPUT_BASE'),
+                                  output_dir)
+        check_dir = output_dir
+    else:
+        check_dir = os.path.join(config.getdir('STAGING_DIR'),
+                                 'file_lists')
+
+    check_file = os.path.join(check_dir, filename)
+    # remove expected output file is it already exists
+    if os.path.exists(check_file):
+        os.remove(check_file)
+
+    cbw.write_list_file(filename, file_list, output_dir=output_dir)
+
+    # ensure file was written
+    assert(os.path.exists(check_file))
+    with open(check_file, 'r') as file_handle:
+        lines = file_handle.readlines()
+
+    # ensure number of lines written is 1 greater than provided list
+    # to account for first line that contains 'file_list' text
+    assert(len(lines) == len(file_list) + 1)
+
+    # ensure content of file is as expected
+    for actual_line, expected_line in zip(lines[1:], file_list):
+        assert(actual_line.strip() == expected_line)
