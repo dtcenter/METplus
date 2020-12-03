@@ -45,7 +45,7 @@ class GempakToCFWrapper(CommandBuilder):
             self.config.getraw('filename_templates',
                                'GEMPAKTOCF_INPUT_TEMPLATE')
         )
-        c_dict['OUTPUT_DIR'] = self.config.getdir('GEMPAKTOCF_OUTPUT_DIR')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('GEMPAKTOCF_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('filename_templates',
                                'GEMPAKTOCF_OUTPUT_TEMPLATE')
