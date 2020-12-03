@@ -41,6 +41,10 @@ class MTDWrapper(MODEWrapper):
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('MTD_OUTPUT_DIR',
                                            self.config.getdir('OUTPUT_BASE'))
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               'MTD_OUTPUT_TEMPLATE')
+        )
         c_dict['CONFIG_FILE'] = self.config.getraw('config', 'MTD_CONFIG_FILE', '')
         c_dict['MIN_VOLUME'] = self.config.getstr('config', 'MTD_MIN_VOLUME', '2000')
         c_dict['SINGLE_RUN'] = self.config.getbool('config', 'MTD_SINGLE_RUN', False)
@@ -64,7 +68,6 @@ class MTDWrapper(MODEWrapper):
                 c_dict['FCST_CONV_RADIUS'] = self.config.getstr('config', 'MTD_CONV_RADIUS')
             else:
                 self.log_error('[config] FCST_MTD_CONV_RADIUS not set in config')
-                exit(1)
 
             if self.config.has_option('config', 'FCST_MTD_CONV_THRESH'):
                 c_dict['FCST_CONV_THRESH'] = self.config.getstr('config', 'FCST_MTD_CONV_THRESH')
@@ -72,12 +75,10 @@ class MTDWrapper(MODEWrapper):
                 c_dict['FCST_CONV_THRESH'] = self.config.getstr('config', 'MTD_CONV_THRESH')
             else:
                 self.log_error('[config] FCST_MTD_CONV_THRESH not set in config')
-                exit(1)
 
             # check that values are valid
             if not util.validate_thresholds(util.getlist(c_dict['FCST_CONV_THRESH'])):
                 self.log_error('FCST_MTD_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
-                exit(1)
 
         # only read OBS conf if processing observation data
         if not c_dict['SINGLE_RUN'] or c_dict['SINGLE_DATA_SRC'] == 'OBS':
@@ -97,7 +98,6 @@ class MTDWrapper(MODEWrapper):
                 c_dict['OBS_CONV_RADIUS'] = self.config.getstr('config', 'MTD_CONV_RADIUS')
             else:
                 self.log_error('[config] OBS_MTD_CONV_RADIUS not set in config')
-                exit(1)
 
             if self.config.has_option('config', 'OBS_MTD_CONV_THRESH'):
                 c_dict['OBS_CONV_THRESH'] = self.config.getstr('config', 'OBS_MTD_CONV_THRESH')
@@ -105,12 +105,10 @@ class MTDWrapper(MODEWrapper):
                 c_dict['OBS_CONV_THRESH'] = self.config.getstr('config', 'MTD_CONV_THRESH')
             else:
                 self.log_error('[config] OBS_MTD_CONV_THRESH not set in config')
-                exit(1)
 
             # check that values are valid
             if not util.validate_thresholds(util.getlist(c_dict['OBS_CONV_THRESH'])):
                 self.log_error('OBS_MTD_CONV_THRESH items must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)')
-                exit(1)
 
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'mtd')
@@ -210,7 +208,7 @@ class MTDWrapper(MODEWrapper):
                 return
 
             # write ascii file with list of files to process
-            input_dict['lead'] = 0
+            input_dict['lead'] = lead_seq[0]
             time_info = time_util.ti_calculate(input_dict)
 
             # if var name is a python embedding script, check type of python input and name file list file accordingly
@@ -228,7 +226,7 @@ class MTDWrapper(MODEWrapper):
             arg_dict = {'obs_path' : obs_list_path,
                         'model_path' : model_list_path }
 
-            self.process_fields_one_thresh(current_task, var_info, **arg_dict)
+            self.process_fields_one_thresh(time_info, var_info, **arg_dict)
 
 
     def run_single_mode(self, input_dict, var_info):
@@ -255,7 +253,7 @@ class MTDWrapper(MODEWrapper):
             return
 
         # write ascii file with list of files to process
-        input_dict['lead'] = 0
+        input_dict['lead'] = lead_seq[0]
         time_info = time_util.ti_calculate(input_dict)
         file_ext = self.check_for_python_embedding(data_src, var_info)
         if not file_ext:
@@ -272,7 +270,7 @@ class MTDWrapper(MODEWrapper):
             arg_dict['model_path'] = single_list_path
             arg_dict['obs_path'] = None
 
-        self.process_fields_one_thresh(current_task, var_info, **arg_dict)
+        self.process_fields_one_thresh(time_info, var_info, **arg_dict)
 
 
     def process_fields_one_thresh(self, time_info, var_info, model_path, obs_path):
@@ -351,9 +349,13 @@ class MTDWrapper(MODEWrapper):
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
             self.param  = do_string_sub(self.c_dict['CONFIG_FILE'],
                                         **time_info)
-            self.create_and_set_output_dir(time_info)
 
-            self.set_environment_variables(fcst_field, obs_field, var_info, time_info)
+            self.set_current_field_config(var_info)
+            self.set_environment_variables(fcst_field, obs_field, time_info)
+
+            if not self.find_and_check_output_file(time_info,
+                                                   is_directory=True):
+                return
 
             if self.c_dict['SINGLE_RUN']:
                 if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
@@ -385,10 +387,10 @@ class MTDWrapper(MODEWrapper):
         self.fcst_file = None
         self.obs_file = None
 
-    def set_environment_variables(self, fcst_field, obs_field, var_info, time_info):
+    def set_environment_variables(self, fcst_field, obs_field, time_info):
         self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"])
         self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-
+        """
         # set config variables that can be referenced in output_prefix
         self.config.set('config', 'CURRENT_FCST_NAME',
                         var_info['fcst_name'] if 'fcst_name' in var_info else '')
@@ -398,7 +400,7 @@ class MTDWrapper(MODEWrapper):
                         var_info['obs_name'] if 'obs_name' in var_info else '')
         self.config.set('config', 'CURRENT_OBS_LEVEL',
                         var_info['obs_level'] if 'obs_level' in var_info else '')
-
+        """
 
         # single mode - set fcst file, field, etc.
         if self.c_dict['SINGLE_RUN']:

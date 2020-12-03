@@ -65,7 +65,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.log_error("Both OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE and "
                            "OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE"
                            " are set to Python Embedding types. Only one can be used at a time")
-            self.isOK = False
 
         # if either are set, set OBS_INPUT_DATATYPE to that value so it can be found by
         # the check_for_python_embedding function
@@ -79,7 +78,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         if not c_dict['CONFIG_FILE']:
             self.log_error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
-            self.isOK = False
 
         c_dict['ENS_THRESH'] = \
           self.config.getstr('config', 'ENSEMBLE_STAT_ENS_THRESH', '1.0')
@@ -95,7 +93,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         if c_dict['N_MEMBERS'] < 0:
             self.log_error("Must set ENSEMBLE_STAT_N_MEMBERS to a integer > 0")
-            self.isOK = False
 
         c_dict['OBS_POINT_INPUT_DIR'] = \
           self.config.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
@@ -126,7 +123,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
         if not c_dict['OUTPUT_DIR']:
             self.log_error("Must set ENSEMBLE_STAT_OUTPUT_DIR in configuration file")
-            self.isOK = False
+
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               'ENSEMBLE_STAT_OUTPUT_TEMPLATE',
+                               '')
+        )
 
         # get climatology config variables
         self.read_climo_wrapper_specific('ENSEMBLE_STAT', c_dict)
@@ -375,7 +377,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                    **time_info)
 
         # set up output dir with time info
-        self.create_and_set_output_dir(time_info)
+        if not self.find_and_check_output_file(time_info,
+                                               is_directory=True):
+            return
 
         # set environment variables that are passed to the MET config
         self.set_environment_variables(fcst_field, obs_field, ens_field, time_info)

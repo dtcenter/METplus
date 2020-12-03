@@ -69,6 +69,11 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['OUTPUT_DIR'] = \
             self.config.getdir('POINT_STAT_OUTPUT_DIR', '')
 
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               'POINT_STAT_OUTPUT_TEMPLATE')
+        )
+
         # get climatology config variables
         self.read_climo_wrapper_specific('POINT_STAT', c_dict)
 
@@ -107,19 +112,15 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         if c_dict['FCST_INPUT_TEMPLATE'] == '':
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE in config file')
-            self.isOK = False
 
         if c_dict['OBS_INPUT_TEMPLATE'] == '':
             self.log_error('Must set OBS_POINT_STAT_INPUT_TEMPLATE in config file')
-            self.isOK = False
 
         if c_dict['OUTPUT_DIR'] == '':
             self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
-            self.isOK = False
 
         if not c_dict['CONFIG_FILE']:
             self.log_error("POINT_STAT_CONFIG_FILE must be set.")
-            self.isOK = False
 
         return c_dict
 

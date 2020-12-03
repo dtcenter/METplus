@@ -114,7 +114,7 @@ def test_create_c_dict(metplus_config):
     assert(c_dict['LOOP_ORDER'] == 'times')
     assert(os.path.realpath(c_dict['CONFIG_FILE']) == (METPLUS_BASE+'/internal_tests/'
                                                        +'config/STATAnalysisConfig'))
-    assert(c_dict['OUTPUT_BASE_DIR'] == (st.config.getdir('OUTPUT_BASE')
+    assert(c_dict['OUTPUT_DIR'] == (st.config.getdir('OUTPUT_BASE')
                                          +'/stat_analysis'))
     assert('FCST_INIT_HOUR_LIST' in c_dict['GROUP_LIST_ITEMS'])
     assert('FCST_VALID_HOUR_LIST' in c_dict['LOOP_LIST_ITEMS'] and
@@ -175,7 +175,7 @@ def test_set_lists_as_loop_or_group(metplus_config):
     config_dict['CONFIG_FILE'] = (
         'PARM_BASE/grid_to_grid/met_config/STATAnalysisConfig'
     )
-    config_dict['OUTPUT_BASE_DIR'] = 'OUTPUT_BASE/stat_analysis'
+    config_dict['OUTPUT_DIR'] = 'OUTPUT_BASE/stat_analysis'
     config_dict['GROUP_LIST_ITEMS'] = [ 'FCST_INIT_HOUR_LIST' ]
     config_dict['LOOP_LIST_ITEMS'] = [ 'FCST_VALID_HOUR_LIST', 'MODEL_LIST']
     config_dict['FCST_VAR_LIST'] = []

@@ -65,6 +65,11 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_STAT_OUTPUT_DIR',
                                                   self.config.getdir('OUTPUT_BASE'))
+
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               'GRID_STAT_OUTPUT_TEMPLATE')
+        )
         c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
                                                        'GRID_STAT_ONCE_PER_FIELD',
                                                        False)

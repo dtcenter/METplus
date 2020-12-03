@@ -83,12 +83,6 @@ class ExtractTilesWrapper(CommandBuilder):
             self.log_error('Must set EXTRACT_TILES_OUTPUT_DIR to run '
                            'ExtractTiles wrapper')
 
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = (
-            self.config.getbool('config',
-                                'EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS',
-                                False)
-        )
-
         c_dict['NLAT'] = self.config.getstr('config', 'EXTRACT_TILES_NLAT')
         c_dict['NLON'] = self.config.getstr('config', 'EXTRACT_TILES_NLON')
         c_dict['DLAT'] = self.config.getstr('config', 'EXTRACT_TILES_DLAT')
@@ -125,6 +119,9 @@ class ExtractTilesWrapper(CommandBuilder):
                 self.c_dict['OUTPUT_DIR']
             )
 
+        overrides[f'{rdp}_SKIP_IF_OUTPUT_EXISTS'] = (
+            self.c_dict['SKIP_IF_OUTPUT_EXISTS']
+        )
         overrides[f'{rdp}_ONCE_PER_FIELD'] = False
         overrides[f'{rdp}_MANDATORY'] = False
         rdp_wrapper = RegridDataPlaneWrapper(self.config,

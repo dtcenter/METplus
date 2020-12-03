@@ -40,10 +40,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         c_dict['VERBOSITY'] = self.config.getstr('config', f'LOG_{app}_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = \
-          self.config.getbool('config', f'{app}_SKIP_IF_OUTPUT_EXISTS',
-                              False)
-
         c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
                                                        f'{app}_ONCE_PER_FIELD',
                                                        True)
