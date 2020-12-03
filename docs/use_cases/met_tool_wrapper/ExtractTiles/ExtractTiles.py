@@ -1,6 +1,6 @@
 """
 ExtractTiles: Basic Use Case
-=========================
+============================
 
 met_tool_wrapper/ExtractTiles/ExtractTiles.conf
 

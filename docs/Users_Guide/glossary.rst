@@ -1476,8 +1476,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_OUTPUT_DIR`.
 
    EXTRACT_TILES_FILTER_OPTS
-     .. warning:: **DEPRECATED:** Please use :term:`TC_STAT_JOB_ARGS` instead.
-     Control what options are passed to the METplus extract_tiles utility.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_STAT_JOB_ARGS` instead. Control what options are passed to the METplus extract_tiles utility.
 
      | *Used by:*  ExtractTiles
      | *Family:*  [config]
@@ -4719,6 +4718,34 @@ METplus Configuration Glossary
      | *Family:*  [dir]
      | *Default:*  Varies
 
+   FCST_SERIES_ANALYSIS_INPUT_DIR
+     Specify the directory to read forecast input in SeriesAnalysis. See also :term:`FCST_SERIES_ANALYSIS_INPUT_TEMPLATE`
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
+   OBS_SERIES_ANALYSIS_INPUT_DIR
+     Specify the directory to read observation input in SeriesAnalysis. See also :term:`OBS_SERIES_ANALYSIS_INPUT_TEMPLATE`
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [dir]
+     | *Default:*  Varies
+
+   FCST_SERIES_ANALYSIS_INPUT_TEMPLATE
+     Template to find forecast input in SeriesAnalysis. See also :term:`FCST_SERIES_ANALYSIS_INPUT_DIR`
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [filename_templates]
+     | *Default:*  Varies
+
+   OBS_SERIES_ANALYSIS_INPUT_TEMPLATE
+     Template to find observation input in SeriesAnalysis. See also :term:`OBS_SERIES_ANALYSIS_INPUT_DIR`
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [filename_templates]
+     | *Default:*  Varies
+
    SERIES_ANALYSIS_OUTPUT_DIR
      Specify the directory where files will be written from the MET series analysis tool.
 
@@ -5746,7 +5773,7 @@ METplus Configuration Glossary
 
      | *Used by:*  GenVxMask
      | *Family:*  [config]
-     | *Default:*  Varies
+     | *Default:*  False
 
    GEN_VX_MASK_CUSTOM_LOOP_LIST
     Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
@@ -6433,3 +6460,101 @@ METplus Configuration Glossary
      | *Used by:* PlotDataPlane
      | *Family:* [config]
      | *Default:* None
+
+   ENSEMBLE_STAT_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  False
+
+   GRID_DIAG_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  GridDiag
+     | *Family:*  [config]
+     | *Default:*  False
+
+   GRID_STAT_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  False
+
+   MODE_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:*  False
+
+   MTD_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:*  False
+
+   PLOT_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  PlotDataPlane
+     | *Family:*  [config]
+     | *Default:*  False
+
+   POINT2GRID_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  Point2Grid
+     | *Family:*  [config]
+     | *Default:*  False
+
+   POINT_STAT_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  False
+
+   PY_EMBED_INGEST_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  PyEmbedIngest
+     | *Family:*  [config]
+     | *Default:*  False
+
+   SERIES_ANALYSIS_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  False
+
+   STAT_ANALYSIS_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  StatAnalysis
+     | *Family:*  [config]
+     | *Default:*  False
+
+   TC_GEN_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  TCGen
+     | *Family:*  [config]
+     | *Default:*  False
+
+   TC_RMW_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  TCRMW
+     | *Family:*  [config]
+     | *Default:*  False
+
+   TC_STAT_SKIP_IF_OUTPUT_EXISTS
+     If True, do not run app if output file already exists. Set to False to overwrite files.
+
+     | *Used by:*  TCStat
+     | *Family:*  [config]
+     | *Default:*  False
