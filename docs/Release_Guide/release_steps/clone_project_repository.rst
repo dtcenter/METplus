@@ -10,8 +10,8 @@ Make a new directory to work in to ensure a fresh environment:
 
 .. parsed-literal::
 
-    mkdir release-X.Y
-    cd release-X.Y
+    mkdir release-X.Y.Z
+    cd release-X.Y.Z
 
 Clone the project repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^

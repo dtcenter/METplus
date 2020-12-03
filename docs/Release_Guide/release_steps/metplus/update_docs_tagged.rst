@@ -8,7 +8,7 @@ Update the Documentation on the Web
   docs directory and running './build_docs.py -release' (-release will update release date file)
 - In another directory, checkout the gh-pages branch of repository
 - Create a new directory in the gh-pages branch for the release appending a
-  "v" to the front, i.e. vX.Y
+  "v" to the front, i.e. vX.Y.Z
 - Put all contents of docs/_build/html into the directory
 - Update versions.json to add the new directory name
 - Update symbolic link for 'latest' to point to new version
