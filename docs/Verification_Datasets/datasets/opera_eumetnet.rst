@@ -46,4 +46,4 @@ Keywords
 
   .. note:: **Application Labels:** DataApplicationPrecipitation, DataApplicationConvectionAllowingModels
 
-Existing METplus `Use Case Examples <https://dtcenter.github.io/METplus/develop/search.html?q=VxData%26%26UseCase&check_keywords=yes&area=default>`_
+Existing METplus `Use Case Examples <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataOperaEumetnet%26%26UseCase&check_keywords=yes&area=default>`_
