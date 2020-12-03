@@ -128,6 +128,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.log_error("Must set ENSEMBLE_STAT_OUTPUT_DIR in configuration file")
             self.isOK = False
 
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               'ENSEMBLE_STAT_OUTPUT_TEMPLATE',
+                               '')
+        )
+
         # get climatology config variables
         self.read_climo_wrapper_specific('ENSEMBLE_STAT', c_dict)
 
@@ -375,7 +381,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                    **time_info)
 
         # set up output dir with time info
-        self.create_and_set_output_dir(time_info)
+        if not self.find_and_check_output_file(time_info):
+            return
 
         # set environment variables that are passed to the MET config
         self.set_environment_variables(fcst_field, obs_field, ens_field, time_info)

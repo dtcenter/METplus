@@ -52,12 +52,10 @@ class PyEmbedIngestWrapper(CommandBuilder):
             if input_type not in VALID_PYTHON_EMBED_TYPES:
                 self.log_error(f'PY_EMBED_INGEST_{index}_TYPE ({input_type}) not valid. '
                                f"Valid types are {', '.join(VALID_PYTHON_EMBED_TYPES)}")
-                self.isOK = False
 
             # If input type is PANDAS, call ascii2nc? instead of RegridDataPlane
             if input_type == 'PANDAS':
                 self.log_error('Running PyEmbedIngester on pandas data not yet implemented')
-                self.isOK = False
 
             output_dir = self.config.getdir('PY_EMBED_INGEST_{}_OUTPUT_DIR'.format(index), '')
             output_template = self.config.getraw('filename_templates',
@@ -65,7 +63,6 @@ class PyEmbedIngestWrapper(CommandBuilder):
             output_grid = self.config.getraw('config', 'PY_EMBED_INGEST_{}_OUTPUT_GRID'.format(index), '')
             if output_grid == '':
                 self.log_error(f'Must set PY_EMBED_INGEST_{index}_OUTPUT_GRID')
-                self.isOK = False
 
 
             # TODO: handle multiple scripts if they are defined
@@ -103,7 +100,13 @@ class PyEmbedIngestWrapper(CommandBuilder):
 
             c_dict['INGESTERS'].append(ingester_dict)
 
-        c_dict['regrid_data_plane'] = RegridDataPlaneWrapper(self.config)
+        skip = c_dict['SKIP_IF_OUTPUT_EXISTS']
+        config_overrides = {'REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS': skip}
+
+        c_dict['regrid_data_plane'] = (
+            RegridDataPlaneWrapper(self.config,
+                                   config_overrides=config_overrides)
+        )
         return c_dict
 
     def get_ingest_items(self, item_type, index, ingest_script_addons):
@@ -157,12 +160,13 @@ class PyEmbedIngestWrapper(CommandBuilder):
             output_grid = do_string_sub(ingester['output_grid'],
                                         **time_info)
 
-            # get output file path
-            output_file = do_string_sub(ingester['output_template'],
-                                        **time_info)
-            output_path = os.path.join(ingester['output_dir'], output_file)
-
             rdp.clear()
+            # get output file path
+            rdp.c_dict['OUTPUT_DIR'] = ingester['output_dir']
+            rdp.c_dict['OUTPUT_TEMPLATE'] = ingester['output_template']
+            if not rdp.find_and_check_output_file(time_info):
+                continue
+
             rdp.infiles.append(f"PYTHON_{ingester['input_type']}")
 
             # TODO: loop over scripts and output_field_names and add each
@@ -177,14 +181,8 @@ class PyEmbedIngestWrapper(CommandBuilder):
                 rdp.infiles.append(f"-name {','.join(ingester['output_field_names'])}")
 
             rdp.infiles.append(output_grid)
-            rdp.outfile = output_path
 
             self.set_environment_variables(time_info)
-
-            cmd = rdp.get_command()
-            if cmd is None:
-                self.log_error("Could not generate command")
-                return False
 
             self.logger.info(f'Running PyEmbed Ingester {index}')
 

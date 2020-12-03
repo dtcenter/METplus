@@ -101,7 +101,7 @@ class StatAnalysisWrapper(CommandBuilder):
             cmd += f' {self.job_args}'
 
         # create output base if it does not exist
-        output_base_dir = self.c_dict['OUTPUT_BASE_DIR']
+        output_base_dir = self.c_dict['OUTPUT_DIR']
         if not os.path.exists(output_base_dir):
             util.mkdir_p(output_base_dir)
 
@@ -128,7 +128,7 @@ class StatAnalysisWrapper(CommandBuilder):
                                                    'STAT_ANALYSIS_CONFIG_FILE',
                                                    '')
 
-        c_dict['OUTPUT_BASE_DIR'] = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR',
+        c_dict['OUTPUT_DIR'] = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR',
                                                        '')
 
         c_dict['DATE_TYPE'] = self.config.getstr('config',
@@ -204,7 +204,7 @@ class StatAnalysisWrapper(CommandBuilder):
                              "any filtering done unless you add the arguments to "
                              "STAT_ANALYSIS_JOB_ARGS")
 
-        if not c_dict['OUTPUT_BASE_DIR']:
+        if not c_dict['OUTPUT_DIR']:
             self.log_error("Must set STAT_ANALYSIS_OUTPUT_DIR")
 
         for job_conf in ['JOB_NAME', 'JOB_ARGS']:
@@ -1334,7 +1334,7 @@ class StatAnalysisWrapper(CommandBuilder):
 #            else:
 #                filename_type = 'user'
 
-        filename = (
+        self.c_dict['OUTPUT_TEMPLATE'] = (
             self.get_output_filename(job_type,
                                      filename_template,
                                      filename_type,
@@ -1342,12 +1342,8 @@ class StatAnalysisWrapper(CommandBuilder):
                                      lists_to_group_items,
                                      runtime_settings_dict)
         )
-        output_file = os.path.join(self.c_dict['OUTPUT_BASE_DIR'],
-                                   filename)
-        # create directory that will contain output file if it does not exist
-        parent_dir = os.path.dirname(output_file)
-        if not os.path.exists(parent_dir):
-            util.mkdir_p(parent_dir)
+        output_file = os.path.join(self.c_dict['OUTPUT_DIR'],
+                                   self.c_dict['OUTPUT_TEMPLATE'])
 
         # substitute output filename in JOB_ARGS line
         job = job.replace(f'[{job_type}_file]', output_file)
@@ -1728,6 +1724,9 @@ class StatAnalysisWrapper(CommandBuilder):
                   containing information needed to run a StatAnalysis job
         """
         for runtime_settings_dict in runtime_settings_dict_list:
+            if not self.find_and_check_output_file(runtime_settings_dict):
+                continue
+
             self.job_args = None
             # Set environment variables and run stat_analysis.
             for name, value in runtime_settings_dict.items():
@@ -1741,7 +1740,7 @@ class StatAnalysisWrapper(CommandBuilder):
             self.lookindir = runtime_settings_dict['LOOKIN_DIR']
             self.job_args = runtime_settings_dict['JOB']
 
-            self.build_and_run_command()
+            self.build()
 
             self.clear()
 

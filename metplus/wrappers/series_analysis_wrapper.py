@@ -42,7 +42,6 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         c_dict['CONFIG_FILE'] = self.config.getraw('config', 'SERIES_ANALYSIS_CONFIG_FILE', '')
         if not c_dict['CONFIG_FILE']:
             self.log_error("SERIES_ANALYSIS_CONFIG_FILE is required to run SeriesAnalysis wrapper")
-            self.isOK = False
 
         stat_list = util.getlist(self.config.getstr('config', 'SERIES_ANALYSIS_STAT_LIST', ''))
         # replace single quotes with double quotes
@@ -67,8 +66,7 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
             else:
                 c_dict['INPUT_TIME_DICT']['valid'] = start_time
         else:
-            self.config.logger.error("Could not get [INIT/VALID] time information from configuration file")
-            self.isOK = False
+            self.log_error("Could not get [INIT/VALID] time information from configuration file")
 
         # get input dir, template, and datatype for FCST, OBS, and BOTH
         for data_type in ('FCST', 'OBS', 'BOTH'):
@@ -92,7 +90,6 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
                 self.log_error("Cannot set FCST_SERIES_ANALYSIS_INPUT_TEMPLATE or "
                                "OBS_SERIES_ANALYSIS_INPUT_TEMPLATE "
                                "if BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE is set.")
-                self.isOK = False
 
             c_dict['USING_BOTH'] = True
 
@@ -106,7 +103,6 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
                                "FCST_SERIES_ANALYSIS_INPUT_TEMPLATE and "
                                "OBS_SERIES_ANALYSIS_INPUT_TEMPLATE to run "
                                "SeriesAnalysis wrapper.")
-                self.isOK = False
 
             # set *_WINDOW_* variables for FCST and OBS
             self.handle_window_variables(c_dict, 'series_analysis', dtypes=['FCST', 'OBS'])
@@ -117,7 +113,6 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
                                                        '')
         if not c_dict['OUTPUT_TEMPLATE']:
             self.log_error("Must set SERIES_ANALYSIS_OUTPUT_TEMPLATE to run SeriesAnalysis wrapper")
-            self.isOK = False
 
         # get climatology config variables
         self.read_climo_wrapper_specific('SERIES_ANALYSIS', c_dict)
@@ -164,17 +159,7 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
             cmd += f" -obs {self.c_dict['OBS_LIST_PATH']}"
 
         # add output path
-        out_path = self.get_output_path()
-        cmd += f' -out {out_path}'
-
-        parent_dir = os.path.dirname(out_path)
-        if not parent_dir:
-            self.log_error('Must specify path to output file')
-            return None
-
-        # create full output dir if it doesn't already exist
-        if not os.path.exists(parent_dir):
-            os.makedirs(parent_dir)
+        cmd += f' -out {self.get_output_path()}'
 
         # add arguments
         cmd += ''.join(self.args)
@@ -230,12 +215,12 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
         # clear variables for next run
         self.clear()
 
-        # get input files
-        if not self.find_input_files(time_info, var_info):
-            return
-
         # get output path
         if not self.find_and_check_output_file(time_info):
+            return
+
+        # get input files
+        if not self.find_input_files(time_info, var_info):
             return
 
         self.handle_climo(time_info)
@@ -248,12 +233,6 @@ class SeriesAnalysisWrapper(CompareGriddedWrapper):
 
         # set environment variables if using config file
         self.set_environment_variables(fcst_field, obs_field, time_info)
-
-        # build command and run
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
-            return
 
         self.build()
 

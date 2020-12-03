@@ -199,7 +199,7 @@ class GridDiagWrapper(CommandBuilder):
         self.set_environment_variables(time_info)
 
         # build command and run
-        self.build_and_run_command()
+        self.build()
 
     def set_data_field(self, time_info):
         """!Get list of fields from config to process. Build list of field info

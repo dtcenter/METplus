@@ -711,24 +711,47 @@ class CommandBuilder:
                 file_handle.write(f_path + '\n')
         return list_path
 
-    def find_and_check_output_file(self, time_info):
+    def find_and_check_output_file(self, time_info, is_directory=False):
         """!Build full path for expected output file and check if it exists.
             If output file doesn't exist or it does exists and we are not skipping it
             then return True to run the tool. Otherwise return False to not run the tool
             Args:
                 @param time_info time dictionary to use to fill out output file template
+                @param is_directory If True, check in output directory for
+                 any files that match the pattern
+                 {app_name}_{output_prefix}*YYYYMMDD_HHMMSSV*
                 @returns True if the app should be run or False if it should not
         """
         output_path_template = os.path.join(self.c_dict.get('OUTPUT_DIR',
                                                             ''),
                                             self.c_dict.get('OUTPUT_TEMPLATE',
-                                                            ''))
+                                                            '')).rstrip('/')
         output_path = do_string_sub(output_path_template,
                                     **time_info)
-        self.set_output_path(output_path)
+
+        skip_if_output_exists = self.c_dict.get('SKIP_IF_OUTPUT_EXISTS', False)
 
         # get directory that the output file will exist
-        parent_dir = os.path.dirname(output_path)
+        if is_directory:
+            parent_dir = output_path
+            valid_format = time_info['valid'].strftime('%Y%m%d_%H%M%S')
+            prefix = self.get_output_prefix(time_info)
+            search_string = f"{self.app_name}_{prefix}*{valid_format}V*"
+            search_path = os.path.join(output_path,
+                                       search_string)
+            if skip_if_output_exists:
+                self.logger.debug("Looking for existing data that matches: "
+                                  f"{search_path}")
+            self.outdir = output_path
+            output_path = search_path
+        else:
+            parent_dir = os.path.dirname(output_path)
+            # search for {output_path}* for TCGen output
+            search_path = f'{output_path}*'
+            self.set_output_path(output_path)
+
+        output_exists = bool(glob.glob(search_path))
+
         if not parent_dir:
             self.log_error('Must specify path to output file')
             return False
@@ -737,12 +760,11 @@ class CommandBuilder:
         if not os.path.exists(parent_dir):
             os.makedirs(parent_dir)
 
-        if (not os.path.exists(output_path) or
-                not self.c_dict.get('SKIP_IF_OUTPUT_EXISTS', False)):
+        if (not output_exists or not skip_if_output_exists):
             return True
 
         # if the output file exists and we are supposed to skip, don't run tool
-        self.logger.debug(f'Skip writing output file {output_path} because it already '
+        self.logger.debug(f'Skip writing output {output_path} because it already '
                           'exists. Remove file or change '
                           f'{self.app_name.upper()}_SKIP_IF_OUTPUT_EXISTS to False '
                           'to process')
@@ -806,10 +828,6 @@ class CommandBuilder:
             self.logger.info("Refer to the GempakToCF use case documentation for information "
                              "on how to obtain the tool: parm/use_cases/met_tool_wrapper/GempakToCF/GempakToCF.py")
             self.isOK = False
-
-    def get_output_prefix(self, time_info):
-        return do_string_sub(self.config.getraw('config', f'{self.app_name.upper()}_OUTPUT_PREFIX', ''),
-                             **time_info)
 
     def add_field_info_to_time_info(self, time_info, field_info):
         """!Add name and level values from field info to time info dict to be used in string substitution
@@ -1294,3 +1312,12 @@ class CommandBuilder:
 
         c_dict[c_key] = (f'{met_config_name} = '
                          f'{util.remove_quotes(conf_value)};')
+
+    def get_output_prefix(self, time_info):
+        output_prefix = (
+            self.config.getraw('config',
+                               f'{self.app_name.upper()}_OUTPUT_PREFIX')
+        )
+
+        return do_string_sub(output_prefix,
+                             **time_info)

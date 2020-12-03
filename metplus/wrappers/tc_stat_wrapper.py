@@ -68,8 +68,6 @@ class TCStatWrapper(CommandBuilder):
             self.log_error("TC_STAT_LOOKIN_DIR must be set")
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('TC_STAT_OUTPUT_DIR')
-        if not c_dict['OUTPUT_DIR']:
-            self.log_error("TC_STAT_OUTPUT_DIR must be set")
 
         c_dict['JOBS'] = getlist(self.config.getraw('config',
                                                     'TC_STAT_JOB_ARGS',
@@ -170,11 +168,8 @@ class TCStatWrapper(CommandBuilder):
         if input_dict:
             time_info = ti_calculate(input_dict)
 
-        self.set_environment_variables(time_info)
-
-        # Don't forget to create the output directory, as MET tc_stat will
-        # not do this.
-        mkdir_p(self.c_dict['OUTPUT_DIR'])
+        if not self.set_environment_variables(time_info):
+            return None
 
         return self.build()
 
@@ -192,9 +187,12 @@ class TCStatWrapper(CommandBuilder):
 
         return cmd
 
-    def set_environment_variables(self, time_info=None):
+    def set_environment_variables(self, time_info):
         """! Set the env variables based on settings in the METplus config
              files.
+
+             @param time_info dictionary containing time information
+             @returns True if command should be run, False if skipping
         """
 
         self.logger.info('Setting env variables from config file...')
@@ -246,20 +244,22 @@ class TCStatWrapper(CommandBuilder):
                              value)
 
         job_args_str = self.handle_jobs(time_info)
+        if job_args_str is None:
+            return False
+
         self.add_env_var('JOBS', job_args_str)
 
         super().set_environment_variables(time_info)
+        return True
 
-    def handle_jobs(self, time_info=None, create_parent_dir=True):
+    def handle_jobs(self, time_info):
         """! Loop through job list found in c_dict key JOBS,
          create parent directory for -dump_row path if it is set,
          and format jobs string to pass to MET config file
-         @param time_info optional time dictionary used to fill in filename
+         @param time_info time dictionary used to fill in filename
           template tags if used
-         @param create_parent_dir set to False if the parent directory of the
-         -dump_row file should not be created. The log output will still
-         mention that it will be created if it doesn't exist. Default True.
-         @returns formatted jobs string as jobs = ["job1", "job2"];
+         @returns formatted jobs string as jobs = ["job1", "job2"]; or None if
+          command should be skipped
         """
         formatted_jobs = []
         for job in self.c_dict.get('JOBS'):
@@ -273,13 +273,12 @@ class TCStatWrapper(CommandBuilder):
             if '-dump_row' in split_job:
                 index = split_job.index('-dump_row') + 1
                 filepath = split_job[index]
-                parent_dir = os.path.dirname(filepath)
-                if not os.path.exists(parent_dir):
-                    self.logger.debug(f"Creating directory: {parent_dir}")
-                    if create_parent_dir:
-                        os.makedirs(parent_dir)
-                else:
-                    self.logger.debug(f"Parent directory exists: {parent_dir}")
+                self.c_dict['OUTPUT_TEMPLATE'] = split_job[index]
+                if time_info is None:
+                    time_info = {}
+
+                if not self.find_and_check_output_file(time_info):
+                    return None
 
         job_list_string = '","'.join(formatted_jobs)
         return f'jobs = ["{job_list_string}"];'

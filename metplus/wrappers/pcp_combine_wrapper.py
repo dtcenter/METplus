@@ -60,7 +60,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_PCP_COMBINE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
 
         fcst_run = self.config.getbool('config', 'FCST_PCP_COMBINE_RUN', False)
         obs_run = self.config.getbool('config', 'OBS_PCP_COMBINE_RUN', False)

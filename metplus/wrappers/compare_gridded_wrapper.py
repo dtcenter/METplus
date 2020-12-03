@@ -341,11 +341,12 @@ that reformat gridded data
         self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
                                    **time_info)
 
-        # set up output dir with time info
-        if not self.find_and_check_output_file(time_info):
-            return
-
         self.set_current_field_config()
+
+        # set up output dir with time info
+        if not self.find_and_check_output_file(time_info,
+                                               is_directory=True):
+            return
 
         # set environment variables needed by MET config file
         self.set_environment_variables(fcst_field, obs_field, time_info)
