@@ -190,4 +190,7 @@ class PyEmbedIngestWrapper(CommandBuilder):
             if not rdp.build():
                 self.errors += 1
 
+            self.all_commands.extend(rdp.all_commands)
+            rdp.all_commands.clear()
+
         return True

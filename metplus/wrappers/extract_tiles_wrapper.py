@@ -229,6 +229,8 @@ class ExtractTilesWrapper(CommandBuilder):
                 ret = self.regrid_data_plane.run_at_time_once(time_info,
                                                               var_list,
                                                               data_type=dtype)
+                self.all_commands.extend(self.regrid_data_plane.all_commands)
+                self.regrid_data_plane.all_commands.clear()
 
                 # if RegridDataPlane failed to run for FCST, skip OBS
                 if not ret:
