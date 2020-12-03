@@ -190,9 +190,9 @@ def run_metplus(config, process_list):
         if loop_order == "processes":
             all_commands = []
             for process in processes:
-                process.run_all_times()
-                all_commands.extend(process.all_commands)
-                process.all_commands.clear()
+                new_commands = process.run_all_times()
+                if new_commands:
+                    all_commands.extend(new_commands)
 
         elif loop_order == "times":
             all_commands = loop_over_times_and_call(config, processes)
@@ -254,7 +254,9 @@ def post_run_cleanup(config, app_name, total_errors):
         sys.exit(1)
 
 def write_all_commands(all_commands, config):
-    filename = os.path.join(config.getdir('LOG_DIR'), '.all_commands')
+    log_timestamp = config.getstr('config', 'LOG_TIMESTAMP')
+    filename = os.path.join(config.getdir('LOG_DIR'),
+                            f'.all_commands.{log_timestamp}')
     config.logger.debug(f"Writing all commands and environment to {filename}")
     with open(filename, 'w') as file_handle:
         for command, envs in all_commands:
@@ -510,13 +512,38 @@ def check_for_deprecated_config(config):
         'EXTRACT_TILES_PAIRS_INPUT_DIR': {'sec': 'dir',
                                           'alt': 'EXTRACT_TILES_STAT_INPUT_DIR',
                                           'copy': False},
-        'EXTRACT_TILES_FILTERED_OUTPUT_TEMPLATE': {'sec': 'dir',
+        'EXTRACT_TILES_FILTERED_OUTPUT_TEMPLATE': {'sec': 'filename_template',
                                                    'alt': 'EXTRACT_TILES_STAT_INPUT_TEMPLATE',},
-#        'EXTRACT_TILES_GRID_INPUT_DIR': {'sec': 'dir',
-#                                         'alt': 'FCST_EXTRACT_TILES_INPUT_DIR '
-#                                                'and '
-#                                                'OBS_EXTRACT_TILES_INPUT_DIR',
-#                                         'copy': False},
+        'EXTRACT_TILES_GRID_INPUT_DIR': {'sec': 'dir',
+                                         'alt': 'FCST_EXTRACT_TILES_INPUT_DIR'
+                                                'and '
+                                                'OBS_EXTRACT_TILES_INPUT_DIR',
+                                         'copy': False},
+#        'SERIES_ANALYSIS_FILTER_OPTS': {'sec': 'config',
+#                                        'alt': 'TC_STAT_JOB_ARGS',
+#                                        'copy': False},
+        'TC_STAT_INPUT_DIR': {'sec': 'dir',
+                              'alt': 'TC_STAT_LOOKIN_DIR'},
+        'SERIES_ANALYSIS_INPUT_DIR': {'sec': 'dir',
+                              'alt': 'SERIES_ANALYSIS_TILE_INPUT_DIR'},
+#        'FCST_SERIES_ANALYSIS_TILE_REGEX': {'sec': 'config',
+#                                        'alt': 'FCST_EXTRACT_TILES_PREFIX',
+#                                        'copy': False},
+#        'OBS_SERIES_ANALYSIS_TILE_REGEX': {'sec': 'config',
+#                                        'alt': 'OBS_EXTRACT_TILES_PREFIX',
+#                                        'copy': False},
+#        'FCST_SERIES_ANALYSIS_NC_TILE_REGEX': {'sec': 'config',
+#                                        'alt': 'FCST_EXTRACT_TILES_PREFIX',
+#                                        'copy': False},
+#        'OBS_SERIES_ANALYSIS_NC_TILE_REGEX': {'sec': 'config',
+#                                        'alt': 'OBS_EXTRACT_TILES_PREFIX',
+#                                        'copy': False},
+#        'FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD': {'sec': 'config',
+#                                        'alt': 'FCST_EXTRACT_TILES_PREFIX',
+#                                        'copy': False},
+#        'OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD': {'sec': 'config',
+#                                        'alt': 'OBS_EXTRACT_TILES_PREFIX',
+#                                        'copy': False},
     }
 
     # template       '' : {'sec' : '', 'alt' : '', 'copy': True},
@@ -988,7 +1015,8 @@ def loop_over_times_and_call(config, processes):
 
             process.clear()
             process.run_at_time(input_dict)
-            all_commands.extend(process.all_commands)
+            if process.all_commands:
+                all_commands.extend(process.all_commands)
             process.all_commands.clear()
 
         loop_time += time_interval
@@ -1264,7 +1292,7 @@ def get_storms(filter_filename):
          @returns 2 item tuple - 1)dictionary where key is storm ID and value is list
           of relevant lines from tcst file, 2) header line from tcst file.
           Also, item with key 'header' contains the header of the tcst file
-     """
+    """
     # Initialize a set because we want unique storm ids.
     storm_id_list = set()
 
@@ -1612,11 +1640,6 @@ def create_filter_tmp_files(filtered_files_list, filter_output_dir, logger=None)
         Returns:
             None: Creates two ASCII files
     """
-
-    # Useful for logging
-    # cur_filename = sys._getframe().f_code.co_filename
-    # cur_function = sys._getframe().f_code.co_name
-
     # Create the filenames for the tmp_fcst and tmp_anly files.
     tmp_fcst_filename = os.path.join(filter_output_dir,
                                      "tmp_fcst_regridded.txt")
