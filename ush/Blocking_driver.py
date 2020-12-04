@@ -9,7 +9,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
 sys.path.insert(0, "/glade/u/home/kalb/UIUC/METplotpy/metplotpy/blocking_s2s")
 sys.path.insert(0, "/glade/u/home/kalb/UIUC/METplotpy_feature_33/metplotpy/blocking_s2s")
 from Blocking import BlockingCalculation
-from metplus.util import config_metplus, get_start_end_interval_times, get_lead_sequence
+from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
 from ush.master_metplus import get_config_inputs_from_command_line
 from metplus.wrappers import PCPCombineWrapper
@@ -17,12 +17,15 @@ from metplus.wrappers import RegridDataPlaneWrapper
 import plot_blocking as pb
 from CBL_plot import create_cbl_plot
 
-def find_input_files(inconfig, use_init, intemplate):
+def find_input_files(inconfig, use_init, intemplate, secondtemplate=''):
     loop_time, end_time, time_interval = get_start_end_interval_times(inconfig)
     skip_times = get_skip_times(inconfig)
 
     start_mth = loop_time.strftime('%m')
     template = inconfig.getraw('config',intemplate)
+    if secondtemplate:
+        template2 = inconfig.getraw('config',secondtemplate)
+        file_list2 = []
 
     file_list = []
     yr_list = []
@@ -41,14 +44,23 @@ def find_input_files(inconfig, use_init, intemplate):
             input_dict['lead'] = ls
 
             outtimestuff = ti_calculate(input_dict)
-            cmth = outtimestuff['valid'].strftime('%m')
-            filepath = do_string_sub(template, **outtimestuff)
             if skip_time(outtimestuff, skip_times):
                 continue
-            if os.path.exists(filepath):
-                file_list.append(filepath)
+            cmth = outtimestuff['valid'].strftime('%m')
+            filepath = do_string_sub(template, **outtimestuff)
+            if secondtemplate:
+                filepath2 = do_string_sub(template2, **outtimestuff)
+                if os.path.exists(filepath) and os.path.exists(filepath2):
+                    file_list.append(filepath)
+                    file_list2.append(filepath2)
+                else:
+                    file_list.append('')
+                    file_list2.append('')
             else:
-                file_list.append('')
+                if os.path.exists(filepath):
+                    file_list.append(filepath)
+                else:
+                    file_list.append('')
 
             if (int(cmth) == int(start_mth)) and (int(pmth) != int(start_mth)):
                 yr_list.append(int(outtimestuff['valid'].strftime('%Y')))
@@ -56,6 +68,8 @@ def find_input_files(inconfig, use_init, intemplate):
 
         loop_time += time_interval
         
+    if secondtemplate:
+        file_list = [file_list,file_list2]
     yr_list.append(int(outtimestuff['valid'].strftime('%Y')))
 
     return file_list, yr_list
@@ -66,7 +80,6 @@ def main():
     all_steps = ["REGRID","TIMEAVE","RUNMEAN","ANOMALY","CBL","PLOTCBL","IBL","PLOTIBL","GIBL","CALCBLOCKS","PLOTBLOCKS"]
 
     config_list = get_config_inputs_from_command_line()
-
 
     # If the user has defined the steps they want to run
     # grab the command line parameter 
@@ -86,7 +99,8 @@ def main():
         steps_list_obs = steps_param_obs.split("+")
         config_list.remove(steps_config_part_obs[0])
 
-    config = config_metplus.setup(config_list)
+    #config = config_metplus.setup(config_list)
+    config = pre_run_setup(config_list)
     if not steps_config_part_fcst:
         steps_param_fcst = config.getstr('config','FCST_STEPS','')
         steps_list_fcst = steps_param_fcst.split("+")
@@ -162,14 +176,20 @@ def main():
     cbl_config_init = config.find_section('Blocking','CBL_INIT_BEG')
     cbl_config_valid = config.find_section('Blocking','CBL_VALID_BEG')
     use_init =  is_loop_by_init(cbl_config)
-    if use_init and (cbl_config_init is not None):
-        config.set('Blocking','INIT_BEG',config.getstr('Blocking','CBL_INIT_BEG'))
-        config.set('Blocking','INIT_END',config.getstr('Blocking','CBL_INIT_END'))
-        cbl_config = config_metplus.replace_config_from_section(config, 'Blocking')
-    elif cbl_config_valid is not None:
-        config.set('Blocking','VALID_BEG',config.getstr('Blocking','CBL_VALID_BEG'))
-        config.set('Blocking','VALID_END',config.getstr('Blocking','CBL_VALID_END'))
-        cbl_config = config_metplus.replace_config_from_section(config, 'Blocking')
+    if use_init:
+        orig_beg = config.getstr('Blocking','INIT_BEG')
+        orig_end = config.getstr('Blocking','INIT_END')
+        if cbl_config_init is not None:
+            config.set('Blocking','INIT_BEG',config.getstr('Blocking','CBL_INIT_BEG'))
+            config.set('Blocking','INIT_END',config.getstr('Blocking','CBL_INIT_END'))
+            cbl_config = config_metplus.replace_config_from_section(config, 'Blocking')
+    else:
+        orig_beg = config.getstr('Blocking','VALID_BEG')
+        orig_end = config.getstr('Blocking','VALID_END')
+        if cbl_config_valid is not None:
+            config.set('Blocking','VALID_BEG',config.getstr('Blocking','CBL_VALID_BEG'))
+            config.set('Blocking','VALID_END',config.getstr('Blocking','CBL_VALID_END'))
+            cbl_config = config_metplus.replace_config_from_section(config, 'Blocking')
 
     if ("CBL" in steps_list_obs):
         print('Computing Obs CBLs')
@@ -201,22 +221,36 @@ def main():
 
 
     # Run IBL
+    if use_init:
+       config.set('Blocking','INIT_BEG',orig_beg)
+       config.set('Blocking','INIT_END',orig_end)
+    else:
+        config.set('Blocking','VALID_BEG',orig_beg)
+        config.set('Blocking','VALID_END',orig_end)
     ibl_config = config_metplus.replace_config_from_section(config,'Blocking')
-    use_init =  is_loop_by_init(ibl_config)
     if ("IBL" in steps_list_obs) and not ("IBL" in steps_list_fcst):
+    #if ("IBL" in steps_list_obs):
         print('Computing Obs IBLs')
-        obs_infiles, yr_obs = find_input_files(ibl_config, use_init, 'OBS_BLOCKING_TEMPLATE') 
+        obs_infiles, yr_obs = find_input_files(ibl_config, use_init, 'OBS_BLOCKING_TEMPLATE')
         ibls_obs = steps_obs.run_Calc_IBL(cbls_obs,obs_infiles,yr_obs)
         daynum_obs = np.arange(0,len(ibls_obs[0,:,0]),1)
+    #if ("IBL" in steps_list_fcst):
     elif ("IBL" in steps_list_fcst) and not ("IBL" in steps_list_obs):
         print('Computing Forecast IBLs')
         fcst_infiles, yr_fcst = find_input_files(ibl_config, use_init, 'FCST_BLOCKING_TEMPLATE')
         ibls_fcst = steps_fcst.run_Calc_IBL(cbls_fcst,fcst_infiles,yr_fcst)
         daynum_fcst = np.arange(0,len(ibls_fcst[0,:,0]),1)
     elif ("IBL" in steps_list_obs) and ("IBL" in steps_list_fcst):
-        ## FIX THIS LINE obs_infiles, yr_obs = find_infiles(ibl_config, use_init, 'OBS')
+        both_infiles, yr_obs = find_input_files(ibl_config, use_init, 'OBS_BLOCKING_TEMPLATE',
+            secondtemplate='FCST_BLOCKING_TEMPLATE')
+        #  TEST THIS
+        obs_infiles = both_infiles[0]
+        fcst_infiles = both_infiles[1]
+        yr_fcst = yr_obs
+        print('Computing Obs IBLs')
         ibls_obs = steps_obs.run_Calc_IBL(cbls_obs,obs_infiles,yr_obs)
         daynum_obs = np.arange(0,len(ibls_obs[0,:,0]),1)
+        print('Computing Forecast IBLs')
         ibls_fcst = steps_fcst.run_Calc_IBL(cbls_fcst,fcst_infiles,yr_fcst)
         daynum_fcst = np.arange(0,len(ibls_fcst[0,:,0]),1)
 
