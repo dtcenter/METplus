@@ -12,42 +12,41 @@ Description
 
   Display/conversion: https://www.ncdc.noaa.gov/data-access/radar-data/radar-display-tools
 
- Recommended use
-   *Insert recommended use here*
+Sample image
+  *Insert sample image here*
+.. image:: images/sample_image.png
+   :width: 600
 
- File format
-   Binary
+Recommended use
+  *Insert recommended use here*
 
- Location of data
-   Google Cloud (raw binary): https://console.cloud.google.com/storage/browser/gcp-public-data-nexrad-l3/; NCEI (raw binary): https://www.ncdc.noaa.gov/nexradinv/choosesite.jsp
+File format
+  Binary
 
- Access restrictions
-   *Insert access restrictions here*
+Location of data
+  Google Cloud (raw binary): https://console.cloud.google.com/storage/browser/gcp-public-data-nexrad-l3/; NCEI (raw binary): https://www.ncdc.noaa.gov/nexradinv/choosesite.jsp
 
- Spatial resolution, grid, or coverage
-   Spatial resolution dependent on variable; CONUS, Alaska (7), Hawaii (4), U.S territories
+Access restrictions
+  *Insert access restrictions here*
 
- Temporal resolution
-   ~7 min
+Spatial resolution, grid, or coverage
+  Spatial resolution dependent on variable; CONUS, Alaska (7), Hawaii (4), U.S territories
 
- Starting and/or ending dates
-   May 1991 (extremely limited) to present
+Temporal resolution
+  ~7 min
 
- Data latency
-   *Insert latency here*
+Starting and/or ending dates
+  May 1991 (extremely limited) to present
 
- Variables available
-   40+ base, derived, post-processed products at reduced resolution
+Data latency
+  *Insert latency here*
 
- Keywords
-   .. note:: **Current Dataset Label:** VxDataNexradLevel3
-
-   .. note:: **Data Type Labels:** DataTypeGridded
-
-   .. note:: **Data Level Labels:** DataLevelSurface
-
-   .. note:: **Data Provider Labels:** DataProviderNOAA
-
-   .. note:: **Application Labels:** DataApplicationConvectionAllowingModels, DataApplicationMediumRange
+Variables available
+  40+ base, derived, post-processed products at reduced resolution
 
 Existing METplus `Use Case Examples <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataNexradLevel3%26%26UseCase&check_keywords=yes&area=default>`_
+
+Keywords
+  .. note:: **Current Dataset:** VxDataNexradLevel3
+
+  .. note:: **Data Type Labels:** DataTypeGridded, DataLevelSurface, DataProviderNOAA, DataApplicationConvectionAllowingModels, DataApplicationMediumRange
