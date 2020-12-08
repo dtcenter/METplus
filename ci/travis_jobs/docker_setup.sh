@@ -1,6 +1,7 @@
 #! /bin/bash
 
 CURRENT_BRANCH=`./gha_get_current_branch.sh`
+DOCKERHUB_TAG=`./gha_get_dockerhub_tag.sh`
 
 echo Get Docker image: ${DOCKERHUB_TAG}
 echo 'doing docker build'
@@ -23,7 +24,7 @@ start_seconds=$SECONDS
 docker build --pull --cache-from ${DOCKERHUB_TAG} \
 -t ${DOCKERHUB_TAG} \
 --build-arg SOURCE_BRANCH=${CURRENT_BRANCH} \
---build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} \
+--build-arg MET_BRANCH=develop \
 --build-arg DO_GIT_CLONE ${GITHUB_WORKSPACE}/ci/docker
 
 duration=$(( SECONDS - start_seconds ))

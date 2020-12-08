@@ -1,5 +1,7 @@
 #!/bin/bash
 
+DOCKERHUB_TAG=`./gha_get_dockerhub_tag.sh`
+
 # set umask to 002 so that the travis user has (group) permission
 # to move files that are created by docker
 export OWNER_BUILD_DIR=`dirname ${GITHUB_WORKSPACE}`
@@ -17,18 +19,13 @@ else
     ${GITHUB_WORKSPACE}/ci/travis_jobs/docker_setup.sh
 fi
 
-
 duration=$(( SECONDS - start_seconds ))
 echo --TIMING docker_run_metplus
 echo "--Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
-CURRENT_BRANCH=`./gha_get_current_branch.sh`
-echo CURRENT_BRANCH = ${CURRENT_BRANCH}
-
 echo 'In docker_run_metplus, $VOLUMES= ',$VOLUMES
 echo 'DOCKER IMAGES in docker_run_metplus'
 docker images
-
 
 echo --Timing docker run in docker_run_metplus...
 start_seconds=$SECONDS
@@ -50,4 +47,3 @@ echo --TIMING docker_run_metplus
 echo "--Docker run took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
 exit $ret
-
