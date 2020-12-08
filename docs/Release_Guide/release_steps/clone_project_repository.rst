@@ -6,7 +6,7 @@ Clone the Project Repository
 Create a fresh working directory
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Make a new directory to work in to ensure a fresh environment:
+Create and work in a new directory to ensure a fresh environment:
 
 .. parsed-literal::
 
@@ -30,7 +30,7 @@ Using HTTP:
 
     git clone https://github.com/dtcenter/|projectRepo|
 
-Enter the project repository directory
+Enter the project repository directory:
 
 .. parsed-literal::
 
