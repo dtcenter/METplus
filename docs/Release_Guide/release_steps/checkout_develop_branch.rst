@@ -1,7 +1,7 @@
 Checkout the Develop Branch
 ---------------------------
 
-Checkout the develop branch
+Checkout the develop branch:
 
 .. parsed-literal::
 
