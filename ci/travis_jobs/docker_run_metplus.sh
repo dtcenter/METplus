@@ -2,7 +2,7 @@
 
 # set umask to 002 so that the travis user has (group) permission
 # to move files that are created by docker
-OWNER_BUILD_DIR=`dirname ${GITHUB_WORKSPACE}`
+export OWNER_BUILD_DIR=`dirname ${GITHUB_WORKSPACE}`
 echo OWNER_BUILD_DIR is $OWNER_BUILD_DIR
 
 VOLUMES=$2
