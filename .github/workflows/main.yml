@@ -67,7 +67,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-update_data_volumes:
+  update_data_volumes:
     name: Docker Setup - Update Data Volumes
     runs-on: ubuntu-latest
     steps:
