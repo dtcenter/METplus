@@ -47,12 +47,14 @@ def main(categories, subset_list):
 
     categories_list = categories.split(',')
 
+    OWNER_BUILD_DIR = os.path.dirname(os.environ['GITHUB_WORKSPACE'])
+
     # get data volumes
     print(f"calling get_data_volumes.main({categories_list})")
     volumes_from = get_data_volumes.main(categories_list)
 
     # obtain GempakToCF.jar for cases that read GEMPAK data
-    input_data_directory = os.path.join(os.environ['OWNER_BUILD_DIR'],
+    input_data_directory = os.path.join(OWNER_BUILD_DIR,
                                         'input')
     download_gempaktocf.run(input_data_directory)
 
@@ -86,7 +88,7 @@ def main(categories, subset_list):
             except subprocess.CalledProcessError as err:
                 print(f"ERROR: Command failed: {cmd} -- {err}")
                 isOK = False
-                output_dir = os.path.join(os.environ['OWNER_BUILD_DIR'],
+                output_dir = os.path.join(OWNER_BUILD_DIR,
                                           'output')
                 replacement_dir = os.path.join(os.environ['DOCKER_DATA_DIR'],
                                                'output')
