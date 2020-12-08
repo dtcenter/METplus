@@ -63,7 +63,7 @@ jobs:
           CURRENT_BRANCH: ${{ steps.get_branch_name.outputs.branch }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  tests:
+  pytests:
     name: Pytest Unit Tests
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
@@ -87,6 +87,7 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  use_cases_1:
     name: Use Cases Tests - MET Tool Wrapper
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
