@@ -78,7 +78,7 @@ def main(categories, subset_list):
             use_case_args = ' '.join(all_use_case_args)
             travis_build_dir = os.environ['GITHUB_WORKSPACE']
             docker_work_dir = os.environ['DOCKER_WORK_DIR']
-            cmd = (f'{travis_build_dir}/ci/travis_jobs/docker_run_metplus.sh'
+            cmd = (f'{travis_build_dir}/ci/jobs/docker_run_metplus.sh'
                    f' "{requirement_args}'
                    f' {docker_work_dir}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker '
                    f'{use_case_args}" "{volumes_from}"')

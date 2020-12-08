@@ -16,7 +16,7 @@ echo Pulling image ${DOCKERHUB_TAG} from DockerHub
 docker pull ${DOCKERHUB_TAG}
 if [ $? != 0 ]; then
     echo Docker pull failed. Building image locally
-    ${GITHUB_WORKSPACE}/ci/travis_jobs/docker_setup.sh
+    ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
 fi
 
 duration=$(( SECONDS - start_seconds ))

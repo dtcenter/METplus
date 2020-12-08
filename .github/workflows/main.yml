@@ -34,7 +34,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Get METplus Image
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/docker_setup.sh
+        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -49,7 +49,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Update Data Volumes
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/docker_update_data_volumes.py
+        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_update_data_volumes.py
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -65,7 +65,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Unit Tests
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/test_unit.sh
+        run: ${GITHUB_WORKSPACE}/ci/jobs/test_unit.sh
         env:
           DOCKER_WORK_DIR: /metplus
           DOCKER_DATA_DIR: /data
@@ -83,7 +83,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/run_use_cases.py met_tool_wrapper
+        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py met_tool_wrapper
         env:
           DOCKER_WORK_DIR: /metplus
           DOCKER_DATA_DIR: /data
@@ -101,7 +101,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/run_use_cases.py data_assimilation
+        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation
         env:
           DOCKER_WORK_DIR: /metplus
           DOCKER_DATA_DIR: /data
@@ -119,7 +119,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/run_use_cases.py cryosphere
+        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py cryosphere
         env:
           DOCKER_WORK_DIR: /metplus
           DOCKER_DATA_DIR: /data
@@ -137,7 +137,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/run_use_cases.py convection_allowing_models
+        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py convection_allowing_models
         env:
           DOCKER_WORK_DIR: /metplus
           DOCKER_DATA_DIR: /data
@@ -155,7 +155,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/run_use_cases.py climate
+        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py climate
         env:
           DOCKER_WORK_DIR: /metplus
           DOCKER_DATA_DIR: /data
@@ -173,7 +173,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/run_use_cases.py medium_range 0-4
+        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py medium_range 0-4
         env:
           DOCKER_WORK_DIR: /metplus
           DOCKER_DATA_DIR: /data
@@ -191,7 +191,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/run_use_cases.py medium_range 5
+        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py medium_range 5
         env:
           DOCKER_WORK_DIR: /metplus
           DOCKER_DATA_DIR: /data
@@ -209,7 +209,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/run_use_cases.py medium_range 6+
+        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py medium_range 6+
         env:
           DOCKER_WORK_DIR: /metplus
           DOCKER_DATA_DIR: /data
@@ -227,7 +227,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/run_use_cases.py precipitation
+        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py precipitation
         env:
           DOCKER_WORK_DIR: /metplus
           DOCKER_DATA_DIR: /data
@@ -245,7 +245,7 @@ jobs:
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/run_use_cases.py s2s,space_weather,tc_and_extra_tc
+        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py s2s,space_weather,tc_and_extra_tc
         env:
           DOCKER_WORK_DIR: /metplus
           DOCKER_DATA_DIR: /data
