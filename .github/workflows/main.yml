@@ -38,7 +38,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install python-dateutil requests bs4 python-dateutil
+          pip install python-dateutil requests bs4
       - name: Get METplus Image
         run: ${GITHUB_WORKSPACE}/ci/travis_jobs/docker_setup.sh
         env:
@@ -62,7 +62,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install python-dateutil requests bs4 python-dateutil
+          pip install python-dateutil requests bs4
       - name: Update Data Volumes
         run: ${GITHUB_WORKSPACE}/ci/travis_jobs/docker_update_data_volumes.py
         env:
@@ -86,7 +86,7 @@ jobs:
           python -m pip install --upgrade pip
           pip install python-dateutil requests
       - name: Run Unit Tests
-        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/docker_update_data_volumes.py
+        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/test_unit.sh
         env:
           CURRENT_BRANCH: ${{ steps.get_branch_name.outputs.branch }}
           DOCKER_DATA_DIR: /data
