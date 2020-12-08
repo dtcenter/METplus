@@ -2,6 +2,8 @@
 
 # set umask to 002 so that the travis user has (group) permission
 # to move files that are created by docker
+OWNER_BUILD_DIR=`dirname ${GITHUB_WORKSPACE}`
+echo OWNER_BUILD_DIR is $OWNER_BUILD_DIR
 
 VOLUMES=$2
 echo --Timing docker pull in docker_run_metplus...
@@ -12,7 +14,7 @@ if [ ${DOCKER_USERNAME} ] && [ ${DOCKER_PASSWORD} ]; then
     docker pull ${DOCKERHUB_TAG}
 else
     echo DockerHub credentials not set. Building images
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/docker_setup.sh
+    ${GITHUB_WORKSPACE}/ci/travis_jobs/docker_setup.sh
 fi
 
 

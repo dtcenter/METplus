@@ -72,6 +72,7 @@ jobs:
   tests:
     name: Pytest Unit Tests
     runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
     steps:
       - name: Extract branch name
         shell: bash
@@ -89,4 +90,8 @@ jobs:
         run: ${GITHUB_WORKSPACE}/ci/travis_jobs/test_unit.sh
         env:
           CURRENT_BRANCH: ${{ steps.get_branch_name.outputs.branch }}
+          DOCKERHUB_TAG: dtcenter/metplus-dev:${{ steps.get_branch_name.outputs.branch }}
+          DOCKER_WORK_DIR: /metplus
           DOCKER_DATA_DIR: /data
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
