@@ -9,10 +9,16 @@ https://github.com/dtcenter/METplus/issues
 
 Bugfixes:
 
+* Add support for comparing inputs using a mix of python embedding and non-embedding (`#684 <https://github.com/dtcenter/METplus/issues/684>`_)
+* Fixed quick search links (`#687 <https://github.com/dtcenter/METplus/issues/687>`_)
+
 * Align the user guide with get_relativedelta() in time_util.py (`#579 <https://github.com/dtcenter/METplus/issues/579>`_)
 
 Enhancements:
 
+* Add support for skipping existing output files for all wrappers  (`#711 <https://github.com/dtcenter/METplus/issues/711>`_)
+* Add support for multiple instance of the same tool in the process list  (`#670 <https://github.com/dtcenter/METplus/issues/670>`_)
+* Add GFDL build support in build_components (`#614 <https://github.com/dtcenter/METplus/issues/614>`_)
 * Add support for vld_thresh in EnsembleStat (`#621 <https://github.com/dtcenter/METplus/issues/621>`_)
 * Decouple PCPCombine, RegridDataPlane, and GridStat wrappers behavior (`#602 <https://github.com/dtcenter/METplus/issues/602>`_)
 * Add support for GridStat neighborhood cov thresh (`#620 <https://github.com/dtcenter/METplus/issues/620>`_)
@@ -25,15 +31,27 @@ Enhancements:
 
 New Wrappers:
 
+* Met Tool Wrapper: PlotDataPlane/PlotDataPlane_grib1
+* Met Tool Wrapper: PlotDataPlane/PlotDataPlane_netcdf
+* Met Tool Wrapper: PlotDataPlane/PlotDataPlane_python_embedding
+* Met Tool Wrapper: GridStat/GridStat_python_embedding
+* Met Tool Wrapper: PyEmbedIngest_multi_field_one_file
+
 New Use Cases:
 
 * Data Assimilation: StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface
 * Medium Range: SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics
 * Precipitation: EnsembleStat_fcstWOFS_obsWOFS
-* Met Tool Wrapper: PyEmbedIngest_multi_field_one_file
 
 Internal:
 
+* Improved workflow formatting in Contributers Guide (`#688 <https://github.com/dtcenter/METplus/issues/688>`_)
+* Change INPUT_BASE to optional (`#679 <https://github.com/dtcenter/METplus/issues/679>`_)
+* Refactored TCStat and ExtractTiles wrappers to conform to current standards
+* Automated release date (`#665 <https://github.com/dtcenter/METplus/issues/665>`_)
+* Added documentation for input verification datasets (`#662 <https://github.com/dtcenter/METplus/issues/662>`_)
+* Added timing tests for Travis/Docker (`#649 <https://github.com/dtcenter/METplus/issues/649>`_)
+* Set up encrypted credentials in Travis to push to DockerHub (`#634 <https://github.com/dtcenter/METplus/issues/634>`_)
 * Add to User's Guide: using environment variables in METplus configuration files (`#594 <https://github.com/dtcenter/METplus/issues/594>`_)
 * Cleanup version info (`#651 <https://github.com/dtcenter/METplus/issues/651>`_)
 * Fix Travis tests for pull requests from forks (`#659 <https://github.com/dtcenter/METplus/issues/659>`_)
