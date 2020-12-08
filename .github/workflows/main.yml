@@ -31,6 +31,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Get METplus Image
@@ -46,6 +47,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Update Data Volumes
@@ -62,6 +64,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Unit Tests
@@ -80,6 +83,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -98,6 +102,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -116,6 +121,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -134,6 +140,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -152,6 +159,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -170,6 +178,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -188,6 +197,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -206,6 +216,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -224,6 +235,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -242,6 +254,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
+      - uses: nelonoel/branch-name@v1.0.1
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases

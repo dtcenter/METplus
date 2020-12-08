@@ -10,7 +10,6 @@ from urllib.parse import urljoin
 import subprocess
 
 from docker_utils import docker_get_volumes_last_updated, DOCKERHUB_DATA_REPO
-from docker_utils import get_branch_from_github_ref
 
 # URL containing METplus sample data tarfiles
 WEB_DATA_DIR = 'https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/'
@@ -60,7 +59,7 @@ def main():
         sys.exit(0)
 
     # check if tarfile directory exists on web
-    current_branch, _ = get_branch_from_github_ref()
+    current_branch = os.environ.get('BRANCH_NAME')
     if not current_branch:
         print("Could not get current branch. Exiting.")
         sys.exit(1)

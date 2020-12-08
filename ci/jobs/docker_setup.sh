@@ -1,8 +1,6 @@
 #! /bin/bash
 
-current_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-CURRENT_BRANCH=`$current_dir/gha_get_current_branch.sh`
-DOCKERHUB_TAG=`$current_dir/gha_get_dockerhub_tag.sh`
+DOCKERHUB_TAG=dtcenter/metplus-dev:${BRANCH_NAME}
 
 echo Get Docker image: ${DOCKERHUB_TAG}
 echo 'doing docker build'
@@ -24,7 +22,7 @@ start_seconds=$SECONDS
 
 docker build --pull --cache-from ${DOCKERHUB_TAG} \
 -t ${DOCKERHUB_TAG} \
---build-arg SOURCE_BRANCH=${CURRENT_BRANCH} \
+--build-arg SOURCE_BRANCH=${BRANCH_NAME} \
 --build-arg MET_BRANCH=develop \
 --build-arg DO_GIT_CLONE ${GITHUB_WORKSPACE}/ci/docker
 

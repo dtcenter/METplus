@@ -1,7 +1,6 @@
 #!/bin/bash
 
-current_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
-DOCKERHUB_TAG=`$current_dir/gha_get_dockerhub_tag.sh`
+DOCKERHUB_TAG=dtcenter/metplus-dev:${BRANCH_NAME}
 
 # set umask to 002 so that the travis user has (group) permission
 # to move files that are created by docker

@@ -30,20 +30,3 @@ def docker_get_volumes_last_updated(current_branch):
         attempts += 1
 
     return volumes_last_updated
-
-def get_branch_from_github_ref():
-    github_ref = os.environ.get('GITHUB_REF')
-    if github_ref is None:
-        print("GITHUB_REF is not set")
-        return None, None
-
-    # check if it matches branch or tags format
-    for ref_type in ['heads', 'tags']:
-        regex_pattern = r'refs\/' + ref_type + r'\/(.*)'
-        match = re.match(regex_pattern, github_ref)
-        if match:
-            is_branch = True if ref_type == 'heads' else False
-            return match.group(1), is_branch
-
-        print("Could not extract branch/tag name from GITHUB_REF")
-        return None, None

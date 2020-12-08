@@ -6,7 +6,6 @@ import subprocess
 import shlex
 
 from docker_utils import docker_get_volumes_last_updated
-from docker_utils import get_branch_from_github_ref
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir,
@@ -39,7 +38,7 @@ MODEL_APP_NAMES = ('met_tool_wrapper',
 
 def main(args):
     volume_list = []
-    current_branch, _ = get_branch_from_github_ref()
+    current_branch = os.environ.get('BRANCH_NAME')
     if not current_branch:
         print("Could not get current branch. Exiting.")
         sys.exit(1)
