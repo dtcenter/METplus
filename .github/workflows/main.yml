@@ -42,5 +42,5 @@ jobs:
           DOCKERHUB_TAG: dtcenter/metplus-dev:${CURRENT_BRANCH}
           DOCKERHUB_MET_TAGNAME: develop
           TRAVIS_BUILD_DIR: {GITHUB_WORKSPACE}
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+#          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
