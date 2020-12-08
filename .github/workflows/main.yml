@@ -11,6 +11,7 @@ on:
 
 jobs:
   which_branch:
+    name: Get Current Branch
     runs-on: ubuntu-latest
     steps:
       # extract branch name
@@ -33,7 +34,6 @@ jobs:
           echo $BRANCH_NAME > artifacts/branch_name.txt
       - uses: actions/upload-artifact@v2
         with:
-          name: branch-name-artifact
           path: artifacts/branch_name.txt
   documentation:
     name: Check Documentation
@@ -57,6 +57,8 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
+        with:
+          path: artifacts
       - run: echo "::set-env name=BRANCH_NAME::$(cat artifacts/branch_name.txt)"
       - run: echo BRANCH_NAME is $BRANCH_NAME
       - name: Install dependencies
