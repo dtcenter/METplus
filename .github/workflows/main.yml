@@ -8,10 +8,6 @@ on:
       - 'bugfix_*'
 
 jobs:
-  get_branch_name:
-    name: Extract branch name
-    shell: bash
-    run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
   documentation:
     name: Check Documentation
     runs-on: ubuntu-latest
@@ -28,9 +24,13 @@ jobs:
         continue-on-error: true
         run: doc8 --ignore D001 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
   get_image:
+
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
     steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
