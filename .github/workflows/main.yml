@@ -21,4 +21,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install python-dateutil requests sphinx_rtd_theme doc8
       - name: Run doc8
+        continue-on-error: true
         run: doc8 --ignore D001 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
+  get_image:
+    name: Docker Setup - Get METplus Image
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install python-dateutil requests bs4 python-dateutil
+      - name: Get METplus Image
+        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/docker_setup.sh
+        env:
+          - CURRENT_BRANCH: ${GITHUB_REF##*/}
+          - DOCKERHUB_TAG: dtcenter/metplus-dev:${CURRENT_BRANCH}
+          - DOCKERHUB_MET_TAGNAME: develop
+          - TRAVIS_BUILD_DIR: {GITHUB_WORKSPACE}
