@@ -8,6 +8,10 @@ on:
       - 'bugfix_*'
 
 jobs:
+  get_branch_name:
+    name: Extract branch name
+    shell: bash
+    run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
   documentation:
     name: Check Documentation
     runs-on: ubuntu-latest
@@ -38,8 +42,8 @@ jobs:
       - name: Get METplus Image
         run: ${GITHUB_WORKSPACE}/ci/travis_jobs/docker_setup.sh
         env:
-          CURRENT_BRANCH: ${{GITHUB_REF##*/}}
-          DOCKERHUB_TAG: dtcenter/metplus-dev:${{GITHUB_REF##*/}}
+          CURRENT_BRANCH: ${{ steps.get_branch_name.outputs.branch }}
+          DOCKERHUB_TAG: dtcenter/metplus-dev:${{ steps.get_branch_name.outputs.branch }}
           DOCKERHUB_MET_TAGNAME: develop
           TRAVIS_BUILD_DIR: ${{GITHUB_WORKSPACE}}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
