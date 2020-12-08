@@ -15,7 +15,7 @@ from docker_utils import docker_get_volumes_last_updated, DOCKERHUB_DATA_REPO
 WEB_DATA_DIR = 'https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/'
 
 # path to script that builds docker data volumes
-BUILD_DOCKER_IMAGES = os.path.join(os.environ.get('TRAVIS_BUILD_DIR', ''),
+BUILD_DOCKER_IMAGES = os.path.join(os.environ.get('GITHUB_WORKSPACE', ''),
                                    'ci',
                                    'docker',
                                    'docker_data',
@@ -54,17 +54,18 @@ def create_data_volumes(current_branch, volumes):
 def main():
 
     if not os.environ.get('DOCKER_USERNAME'):
-        print("DockerHub credentials are not stored. Skipping data volume handling.")
+        print("DockerHub credentials are not stored. "
+              "Skipping data volume handling.")
         sys.exit(0)
 
     # check if tarfile directory exists on web
-    current_branch = os.environ.get('CURRENT_BRANCH')
+    current_branch = os.environ.get('BRANCH_NAME')
     if not current_branch:
-        print("CURRENT_BRANCH not set. Exiting.")
+        print("Could not get current branch. Exiting.")
         sys.exit(1)
 
-    if not os.environ.get('TRAVIS_BUILD_DIR'):
-        print("TRAVIS_BUILD_DIR not set. Exiting.")
+    if not os.environ.get('GITHUB_WORKSPACE'):
+        print("GITHUB_WORKSPACE not set. Exiting.")
         sys.exit(1)
 
     search_dir = f"{urljoin(WEB_DATA_DIR, current_branch)}/"

@@ -1,3 +1,7 @@
+#! /bin/bash
+
+DOCKERHUB_TAG=dtcenter/metplus-dev:${BRANCH_NAME}
+
 echo Get Docker image: ${DOCKERHUB_TAG}
 echo 'doing docker build'
 # Note: adding --build-arg <arg-name> without any value tells docker to
@@ -18,9 +22,9 @@ start_seconds=$SECONDS
 
 docker build --pull --cache-from ${DOCKERHUB_TAG} \
 -t ${DOCKERHUB_TAG} \
---build-arg SOURCE_BRANCH=${CURRENT_BRANCH} \
---build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} \
---build-arg DO_GIT_CLONE ${TRAVIS_BUILD_DIR}/ci/docker
+--build-arg SOURCE_BRANCH=${BRANCH_NAME} \
+--build-arg MET_BRANCH=develop \
+--build-arg DO_GIT_CLONE ${GITHUB_WORKSPACE}/ci/docker
 
 duration=$(( SECONDS - start_seconds ))
 echo TIMING docker_setup

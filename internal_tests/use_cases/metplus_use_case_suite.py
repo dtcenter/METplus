@@ -65,8 +65,8 @@ class METplusUseCasesByRequirement:
 
     PYTHON_REQUIREMENTS = {
         'netCDF4': 'pip3 install netCDF4',
-        'cartopy': 'ci/travis_jobs/get_cartopy.sh',
-        'pygrib': 'ci/travis_jobs/get_pygrib.sh',
+        'cartopy': 'ci/jobs/get_cartopy.sh',
+        'pygrib': 'ci/jobs/get_pygrib.sh',
         'h5py': 'pip3 install h5py',
         'matplotlib': 'pip3 install matplotlib',
         'metpy': 'pip3 install metpy',

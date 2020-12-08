@@ -38,9 +38,9 @@ MODEL_APP_NAMES = ('met_tool_wrapper',
 
 def main(args):
     volume_list = []
-    current_branch = os.environ.get('CURRENT_BRANCH')
+    current_branch = os.environ.get('BRANCH_NAME')
     if not current_branch:
-        print("CURRENT_BRANCH is not set. Exiting.")
+        print("Could not get current branch. Exiting.")
         sys.exit(1)
 
     # if running development version, use metplus-data-dev

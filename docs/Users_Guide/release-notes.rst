@@ -63,7 +63,7 @@ Internal:
 * Update METplus data container logic to pull tarballs from dtcenter.org instead of GitHub release assets (`#613 <https://github.com/dtcenter/METplus/issues/613>`_)
 * Convert Travis Docker files (automated builds) to use Dockerhub data volumes instead of tarballs (`#597 <https://github.com/dtcenter/METplus/issues/597>`_)
 * Migrate from travis-ci.org to travis-ci.com (`#618 <https://github.com/dtcenter/METplus/issues/618>`_)
-* Migrate Docker run commands to the METplus ci/travis_jobs scripts/files (`#607 <https://github.com/dtcenter/METplus/issues/607>`_)
+* Migrate Docker run commands to the METplus ci/jobs scripts/files (`#607 <https://github.com/dtcenter/METplus/issues/607>`_)
 * Add stage to Travis to update or create data volumes when new sample data is available (`#633 <https://github.com/dtcenter/METplus/issues/633>`_)
 * Docker data caching (`#623 <https://github.com/dtcenter/METplus/issues/623>`_)
 * Tutorial testing on supported platforms (`#468 <https://github.com/dtcenter/METplus/issues/468>`_)
