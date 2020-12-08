@@ -1,7 +1,8 @@
 #! /bin/bash
 
-CURRENT_BRANCH=`./gha_get_current_branch.sh`
-DOCKERHUB_TAG=`./gha_get_dockerhub_tag.sh`
+current_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+CURRENT_BRANCH=`$current_dir/gha_get_current_branch.sh`
+DOCKERHUB_TAG=`$current_dir/gha_get_dockerhub_tag.sh`
 
 echo Get Docker image: ${DOCKERHUB_TAG}
 echo 'doing docker build'

@@ -1,6 +1,7 @@
 #!/bin/bash
 
-DOCKERHUB_TAG=`./gha_get_dockerhub_tag.sh`
+current_dir="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+DOCKERHUB_TAG=`$current_dir/gha_get_dockerhub_tag.sh`
 
 # set umask to 002 so that the travis user has (group) permission
 # to move files that are created by docker
@@ -11,11 +12,10 @@ VOLUMES=$2
 echo --Timing docker pull in docker_run_metplus...
 start_seconds=$SECONDS
 
-if [ ${DOCKER_USERNAME} ] && [ ${DOCKER_PASSWORD} ]; then
-    echo Pulling image ${DOCKERHUB_TAG} from DockerHub
-    docker pull ${DOCKERHUB_TAG}
-else
-    echo DockerHub credentials not set. Building images
+echo Pulling image ${DOCKERHUB_TAG} from DockerHub
+docker pull ${DOCKERHUB_TAG}
+if [ $? != 0 ]; then
+    echo Docker pull failed. Building image locally
     ${GITHUB_WORKSPACE}/ci/travis_jobs/docker_setup.sh
 fi
 
