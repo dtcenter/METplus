@@ -20,7 +20,7 @@ docker build --pull --cache-from ${DOCKERHUB_TAG} \
 -t ${DOCKERHUB_TAG} \
 --build-arg SOURCE_BRANCH=${CURRENT_BRANCH} \
 --build-arg MET_BRANCH=${DOCKERHUB_MET_TAGNAME} \
---build-arg DO_GIT_CLONE ${TRAVIS_BUILD_DIR}/ci/docker
+--build-arg DO_GIT_CLONE ${GITHUB_WORKSPACE}/ci/docker
 
 duration=$(( SECONDS - start_seconds ))
 echo TIMING docker_setup
