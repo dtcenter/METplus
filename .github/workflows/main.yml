@@ -1,6 +1,7 @@
 name: METplus CI/CD Workflow
-on: push
-   branches:
+on:
+  push:
+    branches:
       - develop
       - "/^feature_.*/"
       - "/^main_.*/"
