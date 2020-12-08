@@ -8,6 +8,11 @@ Description
   Operational Program for Exchange of Weather Radar  Information (OPERA) European National Meteorological Services (EUMETNET)
   Project Website: https://www.eumetnet.eu/activities/observations-programme/current-activities/opera/; BAMS Paper: https://doi.org/10.1175/BAMS-D-12-00216.1
 
+Sample image
+  *Insert sample image here*
+.. image:: images/sample_image.png
+   :width: 600
+
 Recommended use
   *Insert recommended use here*
 
@@ -35,15 +40,10 @@ Data latency
 Variables available
   Composite instantaneous max radar reflectivity, 1-hour rainfall accumulation, instantaneous surface rain rate
 
+METplus Use Cases
+  Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataOperaEumetnet%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
+
 Keywords
-  .. note:: **Current Dataset Label:** VxDataOperaEumetnet
+  .. note:: **Current Dataset:** VxDataOperaEumetnet
 
-  .. note:: **Data Type Labels:** DataTypePoint, DataTypeGridded
-
-  .. note:: **Data Level Labels:** DataLevelSurface
-
-  .. note:: **Data Provider Labels:** DataProviderEUMETNET
-
-  .. note:: **Application Labels:** DataApplicationPrecipitation, DataApplicationConvectionAllowingModels
-
-Existing METplus `Use Case Examples <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataOperaEumetnet%26%26UseCase&check_keywords=yes&area=default>`_
+  .. note:: **Data Labels:** DataTypePoint, DataTypeGridded, DataLevelSurface, DataProviderEUMETNET, DataApplicationPrecipitation, DataApplicationConvectionAllowingModels

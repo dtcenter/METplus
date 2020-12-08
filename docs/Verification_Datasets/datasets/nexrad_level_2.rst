@@ -10,6 +10,11 @@ Description
 
   Display/conversion: https://www.ncdc.noaa.gov/data-access/radar-data/radar-display-tools
 
+Sample image
+  *Insert sample image here*
+.. image:: images/sample_image.png
+   :width: 600
+
 Recommended use
   *Insert recommended use here*
 
@@ -37,15 +42,9 @@ Data latency
 Variables available
   Reflectivity, radial velocity, spectrum width, >2011 differential reflectivity, correlation coefficient, differential phase
 
+METplus Use Cases
+  Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataNexradLevel2%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
 Keywords
-  .. note:: **Current Dataset Label:** VxDataNexradLevel2
+  .. note:: **Current Dataset:** VxDataNexradLevel2
 
-  .. note:: **Data Type Labels:** DataTypeGridded
-
-  .. note:: **Data Level Labels:** DataLevelSurface
-
-  .. note:: **Data Provider Labels:** DataProviderNOAA
-
-  .. note:: **Application Labels:** DataApplicationConvectionAllowingModels, DataApplicationMediumRange
-
-Existing METplus `Use Case Examples <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataNexradLevel2%26%26UseCase&check_keywords=yes&area=default>`_
+  .. note:: **Data Labels:** DataTypeGridded, DataLevelSurface, DataProviderNOAA, DataApplicationConvectionAllowingModels, DataApplicationMediumRange

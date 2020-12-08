@@ -8,6 +8,11 @@ Description
   
   https://www.nssl.noaa.gov/projects/mrms
 
+Sample image
+  *Insert sample image here*
+.. image:: images/sample_image.png
+   :width: 600
+
 Recommended use
   *Insert recommended use here*
 
@@ -35,15 +40,10 @@ Data latency
 Variables available
   composite reflectivity
 
+METplus Use Cases
+  Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataMRMSCompositeReflectivity%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
+
 Keywords
-  .. note:: **Current Dataset Label:** VxDataMRMSCompositeReflectivity
+  .. note:: **Current Dataset:** VxDataMRMSCompositeReflectivity
 
-  .. note:: **Data Type Labels:** DataTypeGridded
-
-  .. note:: **Data Level Labels:** DataLevelSurface
-
-  .. note:: **Data Provider Labels:** DataProviderNOAA
-
-  .. note:: **Application Labels:** DataApplicationConvectionAllowingModels
-
-Existing METplus `Use Case Examples <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataMRMSCompositeReflectivity%26%26UseCase&check_keywords=yes&area=default>`_
+  .. note:: **Data Labels:** DataTypeGridded, DataLevelSurface, DataProviderNOAA, DataApplicationConvectionAllowingModels

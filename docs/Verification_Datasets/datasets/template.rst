@@ -2,13 +2,18 @@
 
 ..
   [Delete this comment section]
-  Define a vx-data name above
+  Define a vx-data name above and add it to the alphabetical list in datasets.rst.
 
 *Insert Dataset Name Here*
 --------------------------
 
 Description
   *Insert description here*
+
+Sample image
+  *Insert sample image here*
+.. image:: images/sample_image.png
+   :width: 600
 
 Recommended use
   *Insert recommended use here*
@@ -37,45 +42,39 @@ Data latency
 Variables available
   *Insert variables here*
 
+METplus Use Cases
+  Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxData%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
+..
+  [Delete this comment section]
+  Update search terms with the VxData label defined above.
+
 Keywords
   ..
     [Delete this comment section]
     Specify one or more labels from each of the lists above.
     When adding new labels, remember to update template.rst and quicksearch.rst.
 
-  .. note:: **Current Dataset Label:** VxData
+  .. note:: **Current Dataset:** VxData
   ..
     [Delete this comment section]
-    Define a VxData label by which this dataset can be referenced
+    Define a VxData label by which this dataset can be referenced.
 
-  .. note:: **Data Type Labels:**
+  .. note:: **Data Labels:** DataType, DataLevel, DataProvider, DataApplication
   ..
     [Delete this comment section]
-    Select at least one:
+    Select at least one DataType label:
       DataTypePoint
-      DataTypeGridded 
-
-  .. note:: **Data Level Labels:**
-  ..
-    [Delete this comment section]
-    Select at least one:
+      DataTypeGridded
+    Select at least one DataLevel label:
       DataLevelSurface
       DataLevelUpperAir
       DataLevelSatellite
-
-  .. note:: **Data Provider Labels:**
-  ..
-    [Delete this comment section]
-    Select at least one:
+    Select at least one DataProvider label:
       DataProviderEUMETNET
       DataProviderNASA
       DataProviderNOAA
       DataProviderUSAF
-
-  .. note:: **Application Labels:**
-  ..
-    [Delete this comment section]
-    Select at least one:
+    Select at least one DataApplication label:
       DataApplicationClimate
       DataApplicationConvectionAllowingModels
       DataApplicationEnsemble
@@ -85,8 +84,3 @@ Keywords
       DataApplicationSpaceWeather
       DataApplicationS2S
       DataApplicationTCandExtraTC
-
-Existing METplus `Use Case Examples <https://dtcenter.github.io/METplus/develop/search.html?q=VxData%26%26UseCase&check_keywords=yes&area=default>`_
-  ..
-    [Delete this comment section]
-    Update search terms with the VxData label defined above
