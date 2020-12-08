@@ -10,6 +10,7 @@ from urllib.parse import urljoin
 import subprocess
 
 from docker_utils import docker_get_volumes_last_updated, DOCKERHUB_DATA_REPO
+from docker_utils import get_branch_from_github_ref
 
 # URL containing METplus sample data tarfiles
 WEB_DATA_DIR = 'https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/'
@@ -54,13 +55,14 @@ def create_data_volumes(current_branch, volumes):
 def main():
 
     if not os.environ.get('DOCKER_USERNAME'):
-        print("DockerHub credentials are not stored. Skipping data volume handling.")
+        print("DockerHub credentials are not stored. "
+              "Skipping data volume handling.")
         sys.exit(0)
 
     # check if tarfile directory exists on web
-    current_branch = os.environ.get('CURRENT_BRANCH')
+    current_branch, _ = get_branch_from_github_ref()
     if not current_branch:
-        print("CURRENT_BRANCH not set. Exiting.")
+        print("Could not get current branch. Exiting.")
         sys.exit(1)
 
     if not os.environ.get('GITHUB_WORKSPACE'):

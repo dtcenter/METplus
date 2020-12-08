@@ -22,6 +22,7 @@ duration=$(( SECONDS - start_seconds ))
 echo --TIMING docker_run_metplus
 echo "--Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
+CURRENT_BRANCH=`./gha_get_current_branch.sh`
 echo CURRENT_BRANCH = ${CURRENT_BRANCH}
 
 echo 'In docker_run_metplus, $VOLUMES= ',$VOLUMES

@@ -1,3 +1,7 @@
+#! /bin/bash
+
+CURRENT_BRANCH=`./gha_get_current_branch.sh`
+
 echo Get Docker image: ${DOCKERHUB_TAG}
 echo 'doing docker build'
 # Note: adding --build-arg <arg-name> without any value tells docker to
