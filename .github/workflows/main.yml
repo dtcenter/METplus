@@ -39,7 +39,7 @@ jobs:
         run: ${GITHUB_WORKSPACE}/ci/travis_jobs/docker_setup.sh
         env:
           CURRENT_BRANCH: ${GITHUB_REF##*/}
-          DOCKERHUB_TAG: dtcenter/metplus-dev:${CURRENT_BRANCH}
+          DOCKERHUB_TAG: dtcenter/metplus-dev:${GITHUB_REF##*/}
           DOCKERHUB_MET_TAGNAME: develop
           TRAVIS_BUILD_DIR: ${GITHUB_WORKSPACE}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
