@@ -24,7 +24,6 @@ jobs:
         continue-on-error: true
         run: doc8 --ignore D001 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
   get_image:
-
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
     steps:
@@ -46,6 +45,27 @@ jobs:
           CURRENT_BRANCH: ${{ steps.get_branch_name.outputs.branch }}
           DOCKERHUB_TAG: dtcenter/metplus-dev:${{ steps.get_branch_name.outputs.branch }}
           DOCKERHUB_MET_TAGNAME: develop
-          TRAVIS_BUILD_DIR: ${{ env.GITHUB_WORKSPACE }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  update_data_volumes:
+    name: Docker Setup - Update Data Volumes
+    runs-on: ubuntu-latest
+    steps:
+      - name: Extract branch name
+        shell: bash
+        run: echo "##[set-output name=branch;]$(echo ${GITHUB_REF#refs/heads/})"
+        id: get_branch_name
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install python-dateutil requests bs4 python-dateutil
+      - name: Update Data Volumes
+        run: ${GITHUB_WORKSPACE}/ci/travis_jobs/docker_update_data_volumes.py
+        env:
+          CURRENT_BRANCH: ${{ steps.get_branch_name.outputs.branch }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
