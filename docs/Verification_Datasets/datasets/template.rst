@@ -42,10 +42,11 @@ Data latency
 Variables available
   *Insert variables here*
 
-Existing METplus `Use Case Examples <https://dtcenter.github.io/METplus/develop/search.html?q=VxData%26%26UseCase&check_keywords=yes&area=default>`_
+METplus Use Cases
+  Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxData%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
 ..
   [Delete this comment section]
-  Update search terms with the VxData label defined above
+  Update search terms with the VxData label defined above.
 
 Keywords
   ..
@@ -56,7 +57,7 @@ Keywords
   .. note:: **Current Dataset:** VxData
   ..
     [Delete this comment section]
-    Define a VxData label by which this dataset can be referenced
+    Define a VxData label by which this dataset can be referenced.
 
   .. note:: **Data Labels:** DataType, DataLevel, DataProvider, DataApplication
   ..

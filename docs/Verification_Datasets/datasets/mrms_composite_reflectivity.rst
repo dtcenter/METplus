@@ -40,7 +40,8 @@ Data latency
 Variables available
   composite reflectivity
 
-Existing METplus `Use Case Examples <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataMRMSCompositeReflectivity%26%26UseCase&check_keywords=yes&area=default>`_
+METplus Use Cases
+Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataMRMSCompositeReflectivity%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
 
 Keywords
   .. note:: **Current Dataset:** VxDataMRMSCompositeReflectivity

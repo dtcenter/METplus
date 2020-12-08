@@ -42,8 +42,8 @@ Data latency
 Variables available
   Reflectivity, radial velocity, spectrum width, >2011 differential reflectivity, correlation coefficient, differential phase
 
-Existing METplus `Use Case Examples <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataNexradLevel2%26%26UseCase&check_keywords=yes&area=default>`_
-
+METplus Use Cases
+Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataNexradLevel2%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
 Keywords
   .. note:: **Current Dataset:** VxDataNexradLevel2
 
