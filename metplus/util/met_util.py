@@ -979,8 +979,6 @@ def loop_over_times_and_call(config, processes):
     @returns list of tuples with all commands run and the environment variables
     that were set for each
     """
-    clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
-                                                '%Y%m%d%H%M%S')
     use_init = is_loop_by_init(config)
     if use_init is None:
         return None
@@ -1022,6 +1020,9 @@ def log_runtime_banner(loop_time, config, use_init):
 
 def set_input_dict(loop_time, config, use_init):
     input_dict = {}
+    clock_time_obj = datetime.datetime.strptime(config.getstr('config',
+                                                              'CLOCK_TIME'),
+                                                '%Y%m%d%H%M%S')
     input_dict['now'] = clock_time_obj
 
     if use_init:
@@ -1030,6 +1031,7 @@ def set_input_dict(loop_time, config, use_init):
         input_dict['valid'] = loop_time
 
     return input_dict
+
 def get_lead_sequence(config, input_dict=None):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
         Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects
