@@ -88,41 +88,6 @@ class SeriesByLeadWrapper(CommandBuilder):
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'SERIES_ANALYSIS_REGRID_TO_GRID', '')
         return c_dict
 
-    def get_lead_sequences(self):
-        # output will be a dictionary where the key will be the
-        #  label specified and the value will be the list of forecast leads
-        lead_seq_dict = {}
-        # used in plotting
-        self.fhr_group_labels = []
-        all_conf = self.config.keys('config')
-        indices = []
-        regex = re.compile(r"LEAD_SEQ_(\d+)")
-        for conf in all_conf:
-            result = regex.match(conf)
-            if result is not None:
-                indices.append(result.group(1))
-
-        # loop over all possible variables and add them to list
-        for n in indices:
-            if self.config.has_option('config', "LEAD_SEQ_"+n+"_LABEL"):
-                label = self.config.getstr('config', "LEAD_SEQ_"+n+"_LABEL")
-            else:
-                log_msg = 'Need to set LEAD_SEQ_{}_LABEL to describe ' +\
-                          'LEAD_SEQ_{}'.format(n, n)
-                self.log_error(log_msg)
-                exit(1)
-
-            # get forecast list for n
-            lead_seq = util.getlistint(self.config.getstr('config', 'LEAD_SEQ_'+n))
-
-            # add to output dictionary
-            lead_seq_dict[label] = lead_seq
-
-            self.fhr_group_labels.append(label)
-
-        return lead_seq_dict
-
-
     def run_all_times(self):
         """! Perform a series analysis of extra tropical cyclone
              paired data based on lead time (forecast hour)
@@ -277,7 +242,8 @@ class SeriesByLeadWrapper(CommandBuilder):
               Returns:       None
 
         """
-        lead_seq_dict = self.get_lead_sequences()
+        lead_seq_dict = util.get_lead_sequence_groups(self.config)
+        self.fhr_group_labels = lead_seq_dict.keys()
 
         self.logger.debug(' Performing series analysis on forecast hour'
                           ' groupings.')
@@ -295,7 +261,13 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         util.mkdir_p(self.series_lead_out_dir)
 
-        for cur_label, lead_seq in lead_seq_dict.items():
+        for cur_label, lead_list in lead_seq_dict.items():
+            lead_seq = []
+            for lead_sec in lead_list:
+                lead_seq.append(
+                    time_util.ti_get_hours_from_relativedelta(lead_sec)
+                )
+
             fcst_tiles_list = []
             anly_tiles_list = []
             cur_beg_str = str(lead_seq[0]).zfill(3)

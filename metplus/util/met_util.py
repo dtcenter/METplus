@@ -1043,81 +1043,195 @@ def get_lead_sequence(config, input_dict=None):
     """
 
     out_leads = []
+    lead_min, lead_max, no_max = get_lead_min_max(config)
 
-    if config.has_option('config', 'LEAD_SEQ'):
-        # return list of forecast leads
-        lead_strings = getlist(config.getstr('config', 'LEAD_SEQ'))
-        leads = []
-        for lead in lead_strings:
-            relative_delta = time_util.get_relativedelta(lead, 'H')
-            if relative_delta is not None:
-                leads.append(relative_delta)
-            else:
-                config.logger.error(f'Invalid item {lead} in LEAD_SEQ. Exiting.')
-                exit(1)
+    # check if LEAD_SEQ, INIT_SEQ, or LEAD_SEQ_<n> are set
+    # if more than one is set, report an error and exit
+    lead_seq = getlist(config.getstr('config', 'LEAD_SEQ', ''))
+    init_seq = getlistint(config.getstr('config', 'INIT_SEQ', ''))
+    lead_groups = get_lead_sequence_groups(config)
 
-        # remove any items that are outside of the range specified
-        #  by LEAD_SEQ_MIN and LEAD_SEQ_MAX
-        # convert min and max to relativedelta objects, then use current time
-        # to compare them to each forecast lead
-        # this is an approximation because relative time offsets depend on
-        # each runtime
-        lead_min_str = config.getstr('config', 'LEAD_SEQ_MIN', '0')
-        lead_max_str = config.getstr('config', 'LEAD_SEQ_MAX', '4000Y')
-        lead_min_relative = time_util.get_relativedelta(lead_min_str, 'H')
-        lead_max_relative = time_util.get_relativedelta(lead_max_str, 'H')
-        now_time = datetime.datetime.now()
-        lead_min_approx = now_time + lead_min_relative
-        lead_max_approx = now_time + lead_max_relative
-        for lead in leads:
-            lead_approx = now_time + lead
-            if lead_approx >= lead_min_approx and lead_approx <= lead_max_approx:
-                out_leads.append(lead)
+    if not are_lead_configs_ok(lead_seq,
+                               init_seq,
+                               lead_groups,
+                               config,
+                               input_dict,
+                               no_max):
+        return None
+
+    if lead_seq:
+        out_leads = handle_lead_seq(config,
+                                    lead_seq,
+                                    lead_min,
+                                    lead_max)
 
     # use INIT_SEQ to build lead list based on the valid time
-    elif config.has_option('config', 'INIT_SEQ'):
-        # if input dictionary not passed in, cannot compute lead sequence
-        #  from it, so exit
-        if input_dict is None:
-            log_msg = 'LEAD_SEQ must be specified to run'
-            if config.logger:
-                config.logger.error(log_msg)
-            else:
-                print(log_msg)
-            exit(1)
-
-        # if looping by init, fail and exit
-        if 'valid' not in input_dict.keys():
-            log_msg = 'INIT_SEQ specified while looping by init time.' + \
-                      ' Use LEAD_SEQ or change to loop by valid time'
-            if config.logger:
-                config.logger.error(log_msg)
-            else:
-                print(log_msg)
-            exit(1)
-
-        valid_hr = int(input_dict['valid'].strftime('%H'))
-        init_seq = getlistint(config.getstr('config', 'INIT_SEQ'))
-        min_forecast = config.getint('config', 'LEAD_SEQ_MIN', 0)
-        max_forecast = config.getint('config', 'LEAD_SEQ_MAX')
-        lead_seq = []
-        for i in init_seq:
-            if valid_hr >= i:
-                current_lead = valid_hr - i
-            else:
-                current_lead = valid_hr + (24 - i)
-
-            while current_lead <= max_forecast:
-                if current_lead >= min_forecast:
-                    lead_seq.append(relativedelta(hours=current_lead))
-                current_lead += 24
-
-        out_leads = sorted(lead_seq, key=lambda rd: time_util.ti_get_seconds_from_relativedelta(rd, input_dict['valid']))
+    elif init_seq:
+        out_leads = handle_init_seq(init_seq,
+                                    input_dict,
+                                    lead_min,
+                                    lead_max)
+    elif lead_groups:
+        out_leads = handle_lead_groups(lead_groups)
 
     if not out_leads:
         return [0]
 
     return out_leads
+
+def are_lead_configs_ok(lead_seq, init_seq, lead_groups,
+                        config, input_dict, no_max):
+    if lead_groups is None:
+        return False
+
+    error_message = ('%s and %s are both listed in the configuration. '
+                     'Only one may be used at a time.')
+    if lead_seq:
+        if init_seq:
+            config.logger.error(error_message.format('LEAD_SEQ',
+                                                     'INIT_SEQ'))
+            return False
+
+        if lead_groups:
+            config.logger.error(error_message.format('LEAD_SEQ',
+                                                     'LEAD_SEQ_<n>'))
+            return False
+
+    if init_seq and lead_groups:
+        config.logger.error(error_message.format('INIT_SEQ',
+                                                 'LEAD_SEQ_<n>'))
+        return False
+
+    if init_seq:
+        # if input dictionary not passed in,
+        # cannot compute lead sequence from it, so exit
+        if input_dict is None:
+            config.logger.error('Cannot run using INIT_SEQ for this wrapper')
+            return False
+
+        # if looping by init, fail and exit
+        if 'valid' not in input_dict.keys():
+            log_msg = ('INIT_SEQ specified while looping by init time.'
+                       ' Use LEAD_SEQ or change to loop by valid time')
+            config.logger.error(log_msg)
+            return False
+
+        # maximum lead must be specified to run with INIT_SEQ
+        if no_max:
+            config.logger.error('LEAD_SEQ_MAX must be set to use INIT_SEQ')
+            return False
+
+    return True
+
+def get_lead_min_max(config):
+    # remove any items that are outside of the range specified
+    #  by LEAD_SEQ_MIN and LEAD_SEQ_MAX
+    # convert min and max to relativedelta objects, then use current time
+    # to compare them to each forecast lead
+    # this is an approximation because relative time offsets depend on
+    # each runtime
+    huge_max = '4000Y'
+    lead_min_str = config.getstr('config', 'LEAD_SEQ_MIN', '0')
+    lead_max_str = config.getstr('config', 'LEAD_SEQ_MAX', huge_max)
+    no_max = lead_max_str == huge_max
+    lead_min = time_util.get_relativedelta(lead_min_str, 'H')
+    lead_max = time_util.get_relativedelta(lead_max_str, 'H')
+    return lead_min, lead_max, no_max
+
+def handle_lead_seq(config, lead_strings, lead_min=None, lead_max=None):
+    out_leads = []
+    leads = []
+    for lead in lead_strings:
+        relative_delta = time_util.get_relativedelta(lead, 'H')
+        if relative_delta is not None:
+            leads.append(relative_delta)
+        else:
+            config.logger.error(f'Invalid item {lead} in LEAD_SEQ. Exiting.')
+            return None
+
+    if lead_min is None and lead_max is None:
+        return leads
+
+    now_time = datetime.datetime.now()
+    lead_min_approx = now_time + lead_min
+    lead_max_approx = now_time + lead_max
+    for lead in leads:
+        lead_approx = now_time + lead
+        if lead_approx >= lead_min_approx and lead_approx <= lead_max_approx:
+            out_leads.append(lead)
+
+    return out_leads
+
+def handle_init_seq(init_seq, input_dict, lead_min, lead_max):
+    out_leads = []
+    lead_min_hours = time_util.ti_get_hours_from_relativedelta(lead_min)
+    lead_max_hours = time_util.ti_get_hours_from_relativedelta(lead_max)
+
+    valid_hr = int(input_dict['valid'].strftime('%H'))
+    for init in init_seq:
+        if valid_hr >= init:
+            current_lead = valid_hr - init
+        else:
+            current_lead = valid_hr + (24 - init)
+
+        while current_lead <= lead_max_hours:
+            if current_lead >= lead_min_hours:
+                out_leads.append(relativedelta(hours=current_lead))
+            current_lead += 24
+
+    out_leads = sorted(out_leads, key=lambda
+        rd: time_util.ti_get_seconds_from_relativedelta(rd,
+                                                        input_dict['valid']))
+    return out_leads
+
+def handle_lead_groups(lead_groups):
+    """! Read groups of forecast leads and create a list with all unique items
+
+         @param lead_group dictionary where the values are lists of forecast
+         leads stored as relativedelta objects
+         @returns list of forecast leads stored as relativedelta objects
+    """
+    out_leads = []
+    for _, lead_seq in lead_groups.items():
+        for lead in lead_seq:
+            if lead not in out_leads:
+                out_leads.append(lead)
+
+    return out_leads
+
+def get_lead_sequence_groups(config):
+    # output will be a dictionary where the key will be the
+    #  label specified and the value will be the list of forecast leads
+    lead_seq_dict = {}
+    # used in plotting
+    all_conf = config.keys('config')
+    indices = []
+    regex = re.compile(r"LEAD_SEQ_(\d+)")
+    for conf in all_conf:
+        result = regex.match(conf)
+        if result is not None:
+            indices.append(result.group(1))
+
+    # loop over all possible variables and add them to list
+    for index in indices:
+        if config.has_option('config', f"LEAD_SEQ_{index}_LABEL"):
+            label = config.getstr('config', f"LEAD_SEQ_{index}_LABEL")
+        else:
+            log_msg = (f'Need to set LEAD_SEQ_{index}_LABEL to describe '
+                       f'LEAD_SEQ_{index}')
+            config.logger.error(log_msg)
+            return None
+
+        # get forecast list for n
+        lead_string_list = getlist(config.getstr('config', f'LEAD_SEQ_{index}'))
+        lead_seq = handle_lead_seq(config,
+                                   lead_string_list,
+                                   lead_min=None,
+                                   lead_max=None)
+        # add to output dictionary
+        lead_seq_dict[label] = lead_seq
+
+    return lead_seq_dict
 
 def round_0p5(val):
     """! Round to the nearest point five (ie 3.3 rounds to 3.5, 3.1
