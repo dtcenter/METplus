@@ -936,7 +936,7 @@ def get_start_end_interval_times(config):
                                                 '%Y%m%d%H%M%S')
     use_init = is_loop_by_init(config)
     if use_init is None:
-        return None
+        return None, None, None
 
     if use_init:
         time_format = config.getstr('config', 'INIT_TIME_FMT')
@@ -953,21 +953,21 @@ def get_start_end_interval_times(config):
                              clock_time_obj, config.logger)
     if not start_time:
         config.logger.error("Could not format start time")
-        return None
+        return None, None, None
 
     end_time = get_time_obj(end_t, time_format,
                             clock_time_obj, config.logger)
     if not end_time:
         config.logger.error("Could not format end time")
-        return None
+        return None, None, None
 
     if start_time + time_interval < start_time + datetime.timedelta(seconds=60):
         config.logger.error("[INIT/VALID]_INCREMENT must be greater than or equal to 60 seconds")
-        return None
+        return None, None, None
 
     if start_time > end_time:
         config.logger.error("Start time must come before end time")
-        return None
+        return None, None, None
 
     return start_time, end_time, time_interval
 
@@ -986,7 +986,7 @@ def loop_over_times_and_call(config, processes):
         return None
 
     # get start time, end time, and time interval from config
-    loop_time, end_time, time_interval = get_start_end_interval_times(config) or (None, None, None)
+    loop_time, end_time, time_interval = get_start_end_interval_times(config)
     if not loop_time:
         config.logger.error("Could not get [INIT/VALID] time information from configuration file")
         return None
@@ -994,24 +994,11 @@ def loop_over_times_and_call(config, processes):
     # keep track of commands that were run
     all_commands = []
     while loop_time <= end_time:
-        run_time = loop_time.strftime("%Y-%m-%d %H:%M")
-        config.logger.info("****************************************")
-        config.logger.info("* Running METplus")
-        if use_init:
-            config.logger.info("*  at init time: " + run_time)
-        else:
-            config.logger.info("*  at valid time: " + run_time)
-        config.logger.info("****************************************")
+        log_runtime_banner(loop_time, config, use_init)
         if not isinstance(processes, list):
             processes = [processes]
         for process in processes:
-            input_dict = {}
-            input_dict['now'] = clock_time_obj
-
-            if use_init:
-                input_dict['init'] = loop_time
-            else:
-                input_dict['valid'] = loop_time
+            input_dict = set_input_dict(loop_time, config, use_init)
 
             process.clear()
             process.run_at_time(input_dict)
@@ -1023,6 +1010,26 @@ def loop_over_times_and_call(config, processes):
 
     return all_commands
 
+def log_runtime_banner(loop_time, config, use_init):
+    run_time = loop_time.strftime("%Y-%m-%d %H:%M")
+    config.logger.info("****************************************")
+    config.logger.info("* Running METplus")
+    if use_init:
+        config.logger.info("*  at init time: " + run_time)
+    else:
+        config.logger.info("*  at valid time: " + run_time)
+    config.logger.info("****************************************")
+
+def set_input_dict(loop_time, config, use_init):
+    input_dict = {}
+    input_dict['now'] = clock_time_obj
+
+    if use_init:
+        input_dict['init'] = loop_time
+    else:
+        input_dict['valid'] = loop_time
+
+    return input_dict
 def get_lead_sequence(config, input_dict=None):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
         Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects

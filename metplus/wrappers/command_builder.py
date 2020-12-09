@@ -1174,7 +1174,7 @@ class CommandBuilder:
 
         # get start run time and set INPUT_TIME_DICT
         c_dict['INPUT_TIME_DICT'] = {'now': clock_time_obj}
-        start_time, _, _ = util.get_start_end_interval_times(self.config) or (None, None, None)
+        start_time, _, _ = util.get_start_end_interval_times(self.config)
         if start_time:
             # set init or valid based on LOOP_BY
             use_init = util.is_loop_by_init(self.config)
