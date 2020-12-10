@@ -2050,16 +2050,12 @@ Resulting value 2::
 TCStat
 ------
 
-.. _description-23:
-
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool tc_stat. This wrapper can be run by
 listing it in the PROCESS_LIST, or can be called from the ExtractTiles
 wrapper (via the MET tc-stat command line commands).
-
-.. _configuration-23:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -2116,3 +2112,23 @@ Configuration
    | :term:`TC_STAT_RUN_VIA`
    | :term:`TC_STAT_CMD_LINE_JOB`
    | :term:`TC_STAT_JOBS_LIST`
+
+UserScript
+----------
+
+Description
+~~~~~~~~~~~
+
+Used to generate user-defined commands to run in the process list. Commands
+can be run once, run once for each runtime (init/valid/lead combination) or
+once for init, valid, or lead only.
+
+Configuration
+~~~~~~~~~~~~~
+
+[config]
+
+| :term:`USER_SCRIPT_RUNTIME_FREQ`
+| :term:`USER_SCRIPT_COMMAND`
+| :term:`USER_SCRIPT_CUSTOM_LOOP_LIST`
+| :term:`USER_SCRIPT_SKIP_TIMES`
