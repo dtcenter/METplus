@@ -78,7 +78,7 @@ class CommandBuilder:
         # any wrappers with a name different than the primary app that is run
         # should override this value in their init function after the call
         # to the parent init function
-        self.log_name = self.app_name
+        self.log_name = self.app_name if hasattr(self, 'app_name') else ''
 
         # if env MET_TMP_DIR was not set, set it to config TMP_DIR
         if 'MET_TMP_DIR' not in self.env:
