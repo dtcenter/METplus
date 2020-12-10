@@ -46,6 +46,11 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
 met_tool_wrapper/PlotDataPlane/PlotDataPlane_netcdf.conf
 met_tool_wrapper/PlotDataPlane/PlotDataPlane_python_embedding.conf
 met_tool_wrapper/ExtractTiles/ExtractTiles.conf
+met_tool_wrapper/UserScript/UserScript_run_once.conf
+met_tool_wrapper/UserScript/UserScript_run_once_for_each.conf
+met_tool_wrapper/UserScript/UserScript_run_once_per_init.conf
+met_tool_wrapper/UserScript/UserScript_run_once_per_lead.conf
+met_tool_wrapper/UserScript/UserScript_run_once_per_valid.conf
 
 Category: climate
 GridStat_fcstCESM_obsGFS_ConusTemp::model_applications/climate/GridStat_fcstCESM_obsGFS_ConusTemp.conf
