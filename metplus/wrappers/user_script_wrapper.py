@@ -96,6 +96,8 @@ class UserScriptWrapper(RuntimeFreqWrapper):
                         or time_info.get('valid') != '*'):
                     time_info = time_util.ti_calculate(time_info)
 
+            self.set_environment_variables(time_info)
+
             # substitute values from dictionary into command
             self.c_dict['COMMAND'] = (
                 do_string_sub(self.c_dict['COMMAND_TEMPLATE'],
