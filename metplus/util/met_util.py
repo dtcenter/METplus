@@ -72,6 +72,7 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'tcstat': 'TCStat',
                          'tcmprplotter': 'TCMPRPlotter',
                          'usage': 'Usage',
+                         'userscript': 'UserScript',
                          }
 
 valid_comparisons = {">=": "ge",
@@ -254,6 +255,11 @@ def post_run_cleanup(config, app_name, total_errors):
         sys.exit(1)
 
 def write_all_commands(all_commands, config):
+    if not all_commands:
+        config.logger.debug("No commands were run. "
+                            "Skip writing all_commands file")
+        return
+
     log_timestamp = config.getstr('config', 'LOG_TIMESTAMP')
     filename = os.path.join(config.getdir('LOG_DIR'),
                             f'.all_commands.{log_timestamp}')
@@ -1019,6 +1025,16 @@ def log_runtime_banner(loop_time, config, use_init):
     config.logger.info("****************************************")
 
 def set_input_dict(loop_time, config, use_init):
+    """! Create input dictionary, set key 'now' to clock time in
+         YYYYMMDDHHMMSS, set key 'init' to loop_time value if use_init is True,
+         set key 'valid' to loop_time value if use_init is False, do not set
+         either if use_init is None
+
+         @param loop_time datetime object of current runtime
+         @param config METplusConfig object used to read CLOCK_TIME
+         @param use_init True if looping by init, False if looping by valid,
+          None otherwise
+    """
     input_dict = {}
     clock_time_obj = datetime.datetime.strptime(config.getstr('config',
                                                               'CLOCK_TIME'),
@@ -1027,7 +1043,7 @@ def set_input_dict(loop_time, config, use_init):
 
     if use_init:
         input_dict['init'] = loop_time
-    else:
+    elif use_init is not None:
         input_dict['valid'] = loop_time
 
     return input_dict
@@ -1131,8 +1147,8 @@ def get_lead_min_max(config):
     # this is an approximation because relative time offsets depend on
     # each runtime
     huge_max = '4000Y'
-    lead_min_str = config.getstr('config', 'LEAD_SEQ_MIN', '0')
-    lead_max_str = config.getstr('config', 'LEAD_SEQ_MAX', huge_max)
+    lead_min_str = config.getstr_nocheck('config', 'LEAD_SEQ_MIN', '0')
+    lead_max_str = config.getstr_nocheck('config', 'LEAD_SEQ_MAX', huge_max)
     no_max = lead_max_str == huge_max
     lead_min = time_util.get_relativedelta(lead_min_str, 'H')
     lead_max = time_util.get_relativedelta(lead_max_str, 'H')

@@ -1160,7 +1160,7 @@ class CommandBuilder:
             LOOP_ORDER = times and the run_at_time method is not implemented"""
         self.log_error('run_at_time not implemented for {} wrapper. '
                           'Cannot run with LOOP_ORDER = times'.format(self.app_name))
-        sys.exit(1)
+        return None
 
     def run_all_times(self):
         """!Loop over time range specified in conf file and
