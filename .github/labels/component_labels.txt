@@ -1,0 +1,10 @@
+{"name": "component: CI/CD","color": "1d76db","description": "Continuous integration and deployment issues"}
+{"name": "component: build process","color": "1d76db","description": "Build process issue"}
+{"name": "component: code cleanup","color": "1d76db","description": "Code cleanup and maintenance issue"}
+{"name": "component: documentation","color": "1d76db","description": "Documentation issue"}
+{"name": "component: external dependency","color": "1d76db","description": "External dependency issue"}
+{"name": "component: code optimization","color": "1d76db","description": "Code optimization issue"}
+{"name": "component: release engineering","color": "1d76db","description": "Release engineering issue"}
+{"name": "component: testing","color": "1d76db","description": "Software testing issue"}
+{"name": "component: training","color": "1d76db","description": "Training issue"}
+{"name": "component: user support","color": "1d76db","description": "User support issue"}
