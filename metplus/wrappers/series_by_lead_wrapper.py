@@ -36,9 +36,15 @@ class SeriesByLeadWrapper(CommandBuilder):
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'series_analysis'
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config,
                          instance=instance,
                          config_overrides=config_overrides)
+
+        # override log name
+        self.log_name = 'series_by_lead'
+
         # Retrieve any necessary values from the parm file(s)
         self.do_fhr_by_group = self.config.getbool('config',
                                                    'SERIES_ANALYSIS_GROUP_FCSTS')
@@ -395,7 +401,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                    (series_analysis_cmd, env=self.env, app_name='series_analysis')
+                    (series_analysis_cmd, env=self.env, log_name=self.log_name)
 
                 if ret != 0:
                     self.log_error(f"MET command returned a non-zero return code: {series_analysis_cmd}")
@@ -547,7 +553,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 series_analysis_cmd = self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                    (series_analysis_cmd, env=self.env, app_name='series_analysis')
+                    (series_analysis_cmd, env=self.env, log_name=self.log_name)
 
                 if ret != 0:
                     self.log_error(f"MET command returned a non-zero return code: {series_analysis_cmd}")
@@ -605,7 +611,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  nc_var_file, ' ', nseries_nc_path]
         nco_nseries_cmd = ''.join(nco_nseries_cmd_parts)
         (ret, nco_nseries_cmd) = self.cmdrunner.run_cmd \
-            (nco_nseries_cmd, env=self.env, ismetcmd=False)
+            (nco_nseries_cmd, env=self.env, ismetcmd=False, log_name=self.log_name)
         if ret:
             self.logger.debug("Could not read series_cnt_TOTAL "
                               f"from {nc_var_file}")
@@ -618,7 +624,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                 '> ', nseries_txt_path]
         ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
         (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
-            (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True)
+            (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True, log_name=self.log_name)
 
         if ret:
             self.log_error("Command returned a non-zero return code:"
@@ -719,7 +725,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             nco_min_cmd = ''.join(nco_min_cmd_parts)
             self.logger.debug('nco_min_cmd: ' + nco_min_cmd)
             (ret, nco_min_cmd) = self.cmdrunner.run_cmd \
-                (nco_min_cmd, env=self.env, ismetcmd=False)
+                (nco_min_cmd, env=self.env, ismetcmd=False, log_name=self.log_name)
 
             if ret != 0:
                 self.log_error(f"Command returned a non-zero return code: {nco_min_cmd}")
@@ -744,7 +750,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             nco_max_cmd = ''.join(nco_max_cmd_parts)
             self.logger.debug('nco_max_cmd: ' + nco_max_cmd)
             (ret, nco_max_cmd) = self.cmdrunner.run_cmd(nco_max_cmd, env=self.env,
-                                                        ismetcmd=False)
+                                                        ismetcmd=False, log_name=self.log_name)
             if ret != 0:
                 self.log_error(f"Command returned a non-zero return code: {nco_max_cmd}")
                 self.logger.info("Check the logfile for more information on why it failed")
@@ -756,7 +762,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                     '/min.nc > ', min_txt_path]
             ncdump_min_cmd = ''.join(ncdump_min_cmd_parts)
             (ret, ncdump_min_cmd) = self.cmdrunner.run_cmd \
-                (ncdump_min_cmd, env=self.env, ismetcmd=False, run_inshell=True)
+                (ncdump_min_cmd, env=self.env, ismetcmd=False, run_inshell=True, log_name=self.log_name)
 
             if ret != 0:
                 self.log_error(f"Command returned a non-zero return code: {ncdump_min_cmd}")
@@ -767,7 +773,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                     '/max.nc > ', max_txt_path]
             ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
             (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
-                (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True)
+                (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True, log_name=self.log_name)
 
             if ret != 0:
                 self.log_error(f"Command returned a non-zero return code: {ncdump_max_cmd}")
@@ -1154,7 +1160,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                         self.cmdrunner.insert_metverbosity_opt\
                         (plot_data_plane_cmd)
                     (ret, plot_data_plane_cmd) = self.cmdrunner.run_cmd\
-                        (plot_data_plane_cmd, env=self.env, app_name='plot_data_plane')
+                        (plot_data_plane_cmd, env=self.env, log_name=self.log_name)
 
                     if ret != 0:
                         self.log_error(f"MET Command returned a non-zero return code: {plot_data_plane_cmd}")
@@ -1166,7 +1172,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                      ps_file, ' ', png_file]
                     convert_cmd = ''.join(convert_parts)
                     (ret, convert_cmd) = self.cmdrunner.run_cmd(convert_cmd, env=self.env,
-                                                                ismetcmd=False)
+                                                                ismetcmd=False, log_name=self.log_name)
 
                     if ret != 0:
                         self.log_error(f"Command returned a non-zero return code: {convert_cmd}")
@@ -1226,7 +1232,7 @@ class SeriesByLeadWrapper(CommandBuilder):
 
                     (ret, animate_cmd) = self.cmdrunner.run_cmd\
                         (animate_cmd, env=self.env, ismetcmd=False,
-                         run_inshell=True, log_theoutput=True)
+                         run_inshell=True, log_theoutput=True, log_name=self.log_name)
 
                     if ret != 0:
                         self.log_error(f"Command returned a non-zero return code: {animate_cmd}")
@@ -1258,7 +1264,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     animate_cmd = ''.join(gif_parts)
                     (ret, animate_cmd) = self.cmdrunner.run_cmd \
                         (animate_cmd, env=self.env, ismetcmd=False,
-                         run_inshell=True, log_theoutput=True)
+                         run_inshell=True, log_theoutput=True, log_name=self.log_name)
 
                     if ret != 0:
                         self.log_error(f"Command returned a non-zero return code: {animate_cmd}")

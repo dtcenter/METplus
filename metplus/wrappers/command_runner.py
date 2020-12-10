@@ -50,7 +50,7 @@ class CommandRunner(object):
         self.verbose = verbose
         self.log_command_to_met_log = False
 
-    def run_cmd(self, cmd, env=None, ismetcmd = True, app_name=None,
+    def run_cmd(self, cmd, env=None, ismetcmd = True, log_name=None,
                 run_inshell=False,
                 log_theoutput=False, copyable_env=None, **kwargs):
         """!The command cmd is a string which is converted to a produtil
@@ -67,7 +67,7 @@ class CommandRunner(object):
             os.environ if not set.
             @param ismetcmd: Default True, Will direct output to METplus log,
             Metlog , or TTY. Set to False and use the other keywords as needed.
-            @param app_name: Used only when ismetcmd=True, The name of the exectable
+            @param log_name: Used only when ismetcmd=True, The name of the exectable
             being run.
             @param run_inshell: Used only when ismetcmd=False, will Create a
             runner object with the cmd being run through a shell, exe('sh')['-c', cmd]
@@ -91,21 +91,21 @@ class CommandRunner(object):
 
         if ismetcmd:
 
-            # self.app_name MUST be defined in the subclass' constructor,
+            # self.log_name MUST be defined in the subclass' constructor,
             # this code block is a safety net in case that was not done.
-            # self.app_name is used to generate the MET log output name,
+            # self.log_name is used to generate the MET log output name,
             # if output is directed there, based on the conf settings.
             #
             # cmd.split()[0] 'should' be the /path/to/<some_met_binary>
-            if not app_name:
-                app_name = os.path.basename(cmd.split()[0])
-                self.logger.warning('MISSING self.app_name, '
-                                    'setting name to: %s' % repr(app_name))
+            if not log_name:
+                log_name = os.path.basename(cmd.split()[0])
+                self.logger.warning('MISSING self.log_name, '
+                                    'setting name to: %s' % repr(log_name))
                 self.logger.warning('Fix the code and edit the following objects'
                                     ' contructor: %s, ' % repr(self))
 
             # Determine where to send the output from the MET command.
-            log_dest = self.cmdlog_destination(cmdlog=app_name+'.log')
+            log_dest = self.cmdlog_destination(cmdlog=log_name+'.log')
 
             # KEEP This comment as a reference note.
             # Run the executable in a new process instead of through a shell.
@@ -121,7 +121,7 @@ class CommandRunner(object):
             the_exe = shlex.split(cmd)[0]
             the_args = shlex.split(cmd)[1:]
             if log_dest:
-                self.logger.debug("app_name is: %s, output sent to: %s" % (app_name, log_dest))
+                self.logger.debug("log_name is: %s, output sent to: %s" % (log_name, log_dest))
 
                 self.log_header_info(log_dest, copyable_env, cmd)
 
@@ -142,11 +142,11 @@ class CommandRunner(object):
             # case 3. Runnng the command and logging the output to
             #         log_dest
             if log_theoutput:
-                log_dest = self.cmdlog_destination(cmdlog=app_name + '.log')
+                log_dest = self.cmdlog_destination(cmdlog=log_name + '.log')
                 if log_dest:
                     self.logger.debug(
-                        "app_name is: %s, output sent to: %s" % (
-                            app_name, log_dest))
+                        "log_name is: %s, output sent to: %s" % (
+                            log_name, log_dest))
                     self.log_header_info(log_dest, copyable_env, cmd)
 
             if run_inshell:
@@ -154,7 +154,7 @@ class CommandRunner(object):
                 the_exe = shlex.split(cmd)[0]
 
                 if log_theoutput:
-                    log_dest = self.cmdlog_destination(cmdlog=app_name+'.log')
+                    log_dest = self.cmdlog_destination(cmdlog=log_name+'.log')
                     cmd_exe = exe('sh')['-c', cmd].env(**env).err2out() >> log_dest
                 else:
                     cmd_exe = exe('sh')['-c', cmd].env(**env)
@@ -163,7 +163,7 @@ class CommandRunner(object):
                 the_exe = shlex.split(cmd)[0]
                 the_args = shlex.split(cmd)[1:]
                 if log_theoutput:
-                    log_dest = self.cmdlog_destination(cmdlog=app_name+'.log')
+                    log_dest = self.cmdlog_destination(cmdlog=log_name+'.log')
                     cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
                 else:
                     cmd_exe = exe(the_exe)[the_args].env(**env)

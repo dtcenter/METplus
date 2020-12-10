@@ -251,7 +251,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
                 regrid_cmd_fcst = rdp.cmdrunner.insert_metverbosity_opt(
                     regrid_cmd_fcst)
                 (ret, regrid_cmd_fcst) = rdp.cmdrunner.run_cmd(
-                    regrid_cmd_fcst, env=None, app_name=rdp.app_name)
+                    regrid_cmd_fcst, env=None, log_name='series_by_lead')
 
             # Create new gridded file for anly tile
             if util.file_exists(anly_regridded_file) and skip_if_exists:
@@ -278,7 +278,7 @@ def retrieve_and_regrid(tmp_filename, cur_init, cur_storm, out_dir, config):
                 regrid_cmd_anly = rdp.cmdrunner.insert_metverbosity_opt(
                     regrid_cmd_anly)
                 (ret, regrid_cmd_anly) = rdp.cmdrunner.run_cmd(
-                    regrid_cmd_anly, env=None, app_name=rdp.app_name)
+                    regrid_cmd_anly, env=None, log_name='series_by_lead')
                 msg = ("on anly file:" +
                        anly_regridded_file)
                 logger.debug(msg)
