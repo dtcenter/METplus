@@ -50,7 +50,8 @@ class CommandRunner(object):
         self.verbose = verbose
         self.log_command_to_met_log = False
 
-    def run_cmd(self, cmd, env=None, ismetcmd = True, app_name=None, run_inshell=False,
+    def run_cmd(self, cmd, env=None, ismetcmd = True, app_name=None,
+                run_inshell=False,
                 log_theoutput=False, copyable_env=None, **kwargs):
         """!The command cmd is a string which is converted to a produtil
         exe Runner object and than run. Output of the command may also
@@ -122,20 +123,7 @@ class CommandRunner(object):
             if log_dest:
                 self.logger.debug("app_name is: %s, output sent to: %s" % (app_name, log_dest))
 
-                with open(log_dest, 'a+') as log_file_handle:
-                    # if logging MET command to its own log file, add command that was run to that log
-                    if self.log_command_to_met_log:
-                        # if environment variables were set and available, write them to MET tool log
-                        if copyable_env:
-                            log_file_handle.write("\nCOPYABLE ENVIRONMENT FOR NEXT COMMAND:\n")
-                            log_file_handle.write(f"{copyable_env}\n\n")
-                        else:
-                            log_file_handle.write('\n')
-
-                        log_file_handle.write(f"COMMAND:\n{cmd}\n\n")
-
-                    # write line to designate where MET tool output starts
-                    log_file_handle.write("MET OUTPUT:\n")
+                self.log_header_info(log_dest, copyable_env, cmd)
 
                 cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
             else:
@@ -153,12 +141,20 @@ class CommandRunner(object):
             #         ie. ncap2,  cmd = exe(the_exe)[the_args]
             # case 3. Runnng the command and logging the output to
             #         log_dest
+            if log_theoutput:
+                log_dest = self.cmdlog_destination(cmdlog=app_name + '.log')
+                if log_dest:
+                    self.logger.debug(
+                        "app_name is: %s, output sent to: %s" % (
+                            app_name, log_dest))
+                    self.log_header_info(log_dest, copyable_env, cmd)
+
             if run_inshell:
                 # set the_exe to log command has finished running
                 the_exe = shlex.split(cmd)[0]
 
                 if log_theoutput:
-                    log_dest = self.cmdlog_destination()
+                    log_dest = self.cmdlog_destination(cmdlog=app_name+'.log')
                     cmd_exe = exe('sh')['-c', cmd].env(**env).err2out() >> log_dest
                 else:
                     cmd_exe = exe('sh')['-c', cmd].env(**env)
@@ -167,7 +163,7 @@ class CommandRunner(object):
                 the_exe = shlex.split(cmd)[0]
                 the_args = shlex.split(cmd)[1:]
                 if log_theoutput:
-                    log_dest = self.cmdlog_destination()
+                    log_dest = self.cmdlog_destination(cmdlog=app_name+'.log')
                     cmd_exe = exe(the_exe)[the_args].env(**env).err2out() >> log_dest
                 else:
                     cmd_exe = exe(the_exe)[the_args].env(**env)
@@ -215,6 +211,23 @@ class CommandRunner(object):
     # /usr/local/bin/ncdump ...series_F006/min.nc ">" .../min.txt
     # We don't want to use run_cmd since that function may redirect
     # output to a log file.
+
+    def log_header_info(self, log_dest, copyable_env, cmd):
+        with open(log_dest, 'a+') as log_file_handle:
+            # if logging MET command to its own log file, add command that was run to that log
+            if self.log_command_to_met_log:
+                # if environment variables were set and available, write them to MET tool log
+                if copyable_env:
+                    log_file_handle.write(
+                        "\nCOPYABLE ENVIRONMENT FOR NEXT COMMAND:\n")
+                    log_file_handle.write(f"{copyable_env}\n\n")
+                else:
+                    log_file_handle.write('\n')
+
+                log_file_handle.write(f"COMMAND:\n{cmd}\n\n")
+
+            # write line to designate where MET tool output starts
+            log_file_handle.write("OUTPUT:\n")
 
     # if cmdlog=None. The returned value is either the METplus log
     # or None

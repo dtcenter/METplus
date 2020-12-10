@@ -41,6 +41,9 @@ class UserScriptWrapper(RuntimeFreqWrapper):
             self.log_error("Must supply a command to run with "
                            "USER_SCRIPT_COMMAND")
 
+        c_dict['IS_MET_CMD'] = False
+        c_dict['LOG_THE_OUTPUT'] = True
+
         return c_dict
 
     def get_command(self):
@@ -103,6 +106,10 @@ class UserScriptWrapper(RuntimeFreqWrapper):
                 do_string_sub(self.c_dict['COMMAND_TEMPLATE'],
                               **time_info)
             )
+
+            # if command contains wildcard character, run in shell
+            if '*' in self.c_dict['COMMAND']:
+                self.c_dict['RUN_IN_SHELL'] = True
 
             # run command
             if not self.build():

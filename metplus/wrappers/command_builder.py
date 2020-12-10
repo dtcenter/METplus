@@ -1136,7 +1136,16 @@ class CommandBuilder:
         else:
             app_name = self.app_name
 
-        ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=app_name,
+        ismetcmd = self.c_dict.get('IS_MET_CMD', True)
+        run_inshell = self.c_dict.get('RUN_IN_SHELL', False)
+        log_theoutput = self.c_dict.get('LOG_THE_OUTPUT', False)
+
+        ret, out_cmd = self.cmdrunner.run_cmd(cmd,
+                                              env=self.env,
+                                              ismetcmd=ismetcmd,
+                                              app_name=app_name,
+                                              run_inshell=run_inshell,
+                                              log_theoutput=log_theoutput,
                                               copyable_env=self.get_env_copy())
         if ret:
             logfile_path = self.config.getstr('config', 'LOG_METPLUS')
