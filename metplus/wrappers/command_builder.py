@@ -1102,14 +1102,6 @@ class CommandBuilder:
 
         return cmd
 
-    def build_and_run_command(self):
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
-            return False
-
-        return self.build()
-
     # Placed running of command in its own class, command_runner run_cmd().
     # This will allow the ability to still call build() as is currently done
     # in subclassed CommandBuilder wrappers and also allow wrappers

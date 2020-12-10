@@ -298,7 +298,7 @@ class TCGenWrapper(CommandBuilder):
         self.set_environment_variables(time_info)
 
         # build command and run
-        self.build_and_run_command()
+        self.build()
 
     def find_input_files(self, time_info):
         """!Get track and genesis files and set c_dict items. Also format forecast
