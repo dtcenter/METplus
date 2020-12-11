@@ -37,18 +37,21 @@ while read -r line; do
 
   # Check if it's a common label and a component label
   is_common=`egrep -i "\"${name}\"" ${COMMON_LABELS} | wc -l`
-  is_comp_or_type=`echo ${name} | egrep "component:|type:" | wc -l`
+  is_custom=`echo ${name} | egrep "component:|type:" | wc -l`
 
-  # POST a new label
-  if [[ $is_common -eq 0 && $is_comp_or_type -eq 0 ]]; then
+  # Keep COMMON labels
+  if [[ $is_common -gt 0 ]]; then
+    echo "[COMMON] ${repo} label ... ${name}"
+  # Keep CUSTOM, repo-specific labels
+  elif [[ $is_custom -gt 0 ]]; then
+    echo "[CUSTOM] ${repo} label ... ${name}"
+  # DELETE non-common, non-custom labels
+  else 
     echo "[DELETE] ${repo} label ... ${name}"
     DELETE_URL="${URL}/`echo ${name} | sed -r 's/ /%20/g'`"
     echo "curl -u \"${user}:${auth}\" -X PATCH \
           -H \"Accept: application/vnd.github.v3+json\" \
           ${DELETE_URL}'" >> ${CMD_FILE}
-  # Keep this label
-  else
-    echo "[KEEP  ] ${repo} label ... ${name}"
   fi
 
 done < ${TMP_FILE}
