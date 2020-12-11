@@ -43,8 +43,8 @@
 {"name": "requestor: Navy/FNMOC","color": "3101c1","description": "Navy Fleet Numerical Meteorology and Oceanography Center"}
 {"name": "requestor: UK Met Office","color": "3101c1","description": "United Kingdom Met Office"}
 {"name": "requestor: University/SBU","color": "3101c1","description": "Stony Brook University"}
-{"name": "type: bug","color": "e5bf7e","description": "Fix something that's not working"}
-{"name": "type: enhancement","color": "e5bf7e","description": "Improve something that it's currently doing"}
+{"name": "type: bug","color": "e5bf7e","description": "Fix something that is not working"}
+{"name": "type: enhancement","color": "e5bf7e","description": "Improve something that it is currently doing"}
 {"name": "type: new feature","color": "e5bf7e","description": "Make it do something new"}
 {"name": "type: sub-issue","color": "e5bf7e","description": "Break an issue down into smaller parts"}
 {"name": "type: task","color": "e5bf7e","description": "An actionable item of work"}
