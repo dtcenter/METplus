@@ -1,18 +1,18 @@
 #!/bin/sh
 
 # Must specify 4 arguments:
-#   - repository name
 #   - username
 #   - authorization key
+#   - repository name
 #   - label file
 
 if [[ $# -ne 4 ]]; then
-  echo "ERROR: $0 ... must specify the repository name, username, authorization key, and label file."
+  echo "ERROR: $0 ... must specify the GitHub username, authorization key, repository name, and label file."
   exit 1
 else
-  repo=$1
-  user=$2
-  auth=$3
+  user=$1
+  auth=$2
+  repo=$3
   labels=$4
 fi
 

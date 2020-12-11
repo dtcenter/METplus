@@ -1,17 +1,17 @@
 #!/bin/sh
 
 # Must specify 3 arguments:
-#   - repository name
 #   - username
 #   - authorization key
+#   - repository name
 
 if [[ $# -ne 3 ]]; then
-  echo "ERROR: $0 ... must specify the repository, username, and authorization key."
+  echo "ERROR: $0 ... must specify the GitHub username, authorization key, and repository name."
   exit 1
 else
-  repo=$1
-  user=$2
-  auth=$3
+  user=$1
+  auth=$2
+  repo=$3
 fi
 
 # Pull and format existing records for existing labels
