@@ -26,7 +26,7 @@ echo "#!/bin/sh -v" > ${CMD_FILE}
 # Get the current repo labels
 SCRIPT_DIR=`dirname $0`
 TMP_FILE="${repo}_labels.tmp"
-CMD="${SCRIPT_DIR}/get_labels.sh ${repo} ${user} ${auth}"
+CMD="${SCRIPT_DIR}/get_labels.sh ${user} ${auth} ${repo}"
 echo "CALLING: ${CMD}"
 ${CMD} > ${TMP_FILE}
 
