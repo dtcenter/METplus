@@ -35,7 +35,7 @@ class UserScriptWrapper(RuntimeFreqWrapper):
 
         c_dict['COMMAND_TEMPLATE'] = (
             self.config.getraw('config',
-                               f'USER_SCRIPT_COMMAND')
+                               'USER_SCRIPT_COMMAND')
         )
         if not c_dict['COMMAND_TEMPLATE']:
             self.log_error("Must supply a command to run with "
