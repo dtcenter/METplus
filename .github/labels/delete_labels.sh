@@ -16,10 +16,10 @@ fi
 
 # Constants
 URL="https://api.github.com/repos/dtcenter/${repo}/labels"
-COMMON_LABELS="`dirname $0`/../common_labels.txt"
+COMMON_LABELS="`dirname $0`/common_labels.txt"
 
 # Output command file
-CMD_FILE="delete_labels_${repo}_cmd.sh"
+CMD_FILE="`dirname $0`/commands/delete_labels_${repo}_cmd.sh"
 echo "#!/bin/sh -v" > ${CMD_FILE}
 
 # Get the current repo labels

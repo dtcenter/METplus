@@ -20,7 +20,7 @@ fi
 URL="https://api.github.com/repos/dtcenter/${repo}/labels"
 
 # Output command file
-CMD_FILE="post_patch_labels_${repo}_cmd.sh"
+CMD_FILE="`dirname $0`/commands/post_patch_labels_${repo}_cmd.sh"
 echo "#!/bin/sh -v" > ${CMD_FILE}
 
 # Get the current repo labels
