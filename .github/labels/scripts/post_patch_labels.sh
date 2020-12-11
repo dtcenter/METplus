@@ -20,13 +20,15 @@ fi
 URL="https://api.github.com/repos/dtcenter/${repo}/labels"
 
 # Output command file
-CMD="post_patch_labels_${repo}.cmd"
-rm ${CMD}
+CMD_FILE="post_patch_labels_${repo}_cmd.sh"
+echo "#!/bin/sh -v" > ${CMD_FILE}
 
 # Get the current repo labels
 SCRIPT_DIR=`dirname $0`
 TMP_FILE="${repo}_labels.tmp"
-${SCRIPT_DIR}/get_labels.sh ${repo} ${user} ${auth} > ${TMP_FILE}
+CMD="${SCRIPT_DIR}/get_labels.sh ${repo} ${user} ${auth}"
+echo "CALLING: ${CMD}"
+${CMD} > ${TMP_FILE}
 
 # Read the lines of the label file
 while read -r line; do
@@ -42,14 +44,14 @@ while read -r line; do
     echo "[POST ] ${name}"
     echo "curl -u \"${user}:${auth}\" -X POST \
           -H \"Accept: application/vnd.github.v3+json\" \
-          -d '${line}' ${URL}" >> $CMD
+          -d '${line}' '${URL}'" >> ${CMD_FILE}
   # PATCH an existing label
   else
     old_name=`egrep -i "\"${name}\"" ${TMP_FILE} | sed -r 's/,/\n/g' | grep '"name":' | cut -d':' -f2-10 | cut -d'"' -f2 | sed -r 's/ /%20/g'`
     echo "[PATCH] ${old_name} -> ${name}"
     echo "curl -u \"${user}:${auth}\" -X PATCH \
           -H \"Accept: application/vnd.github.v3+json\" \
-          -d '${line}' ${URL}/${old_name}" >> $CMD
+          -d '${line}' '${URL}/${old_name}'" >> ${CMD_FILE}
   fi
 
 done < $labels
@@ -58,7 +60,7 @@ done < $labels
 rm -f ${TMP_FILE}
 
 # Make the run command file executable
-chmod +x $CMD
+chmod +x ${CMD_FILE}
 echo "To make these changes, execute the run command file:"
-echo "./${CMD}"
+echo "./${CMD_FILE}"
 
