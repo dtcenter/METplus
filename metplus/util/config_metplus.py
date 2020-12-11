@@ -537,12 +537,16 @@ def replace_config_from_section(config, section, required=True):
         return config
 
     new_config = METplusConfig()
-    all_configs = config.keys('config')
-    for key in all_configs:
-        new_config.set('config',
-                       key,
-                       config.getraw('config', key))
 
+    # copy over all key/values from sections
+    for section_to_copy in ['config', 'user_env_vars']:
+        all_configs = config.keys(section_to_copy)
+        for key in all_configs:
+            new_config.set(section_to_copy,
+                           key,
+                           config.getraw(section_to_copy, key))
+
+    # override values in [config] with values from {section}
     all_configs = config.keys(section)
     for key in all_configs:
         new_config.set('config',
@@ -580,6 +584,9 @@ class METplusConfig(ProdConfig):
 
         # get the OS environment and store it
         self.env = os.environ.copy()
+
+        # add user_env_vars section to hold environment variables defined by the user
+        self.add_section('user_env_vars')
 
     def log(self, sublog=None):
         """!Overrides method in ProdConfig
