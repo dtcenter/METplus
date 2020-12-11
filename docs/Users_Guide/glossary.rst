@@ -1637,9 +1637,6 @@ METplus Configuration Glossary
    FCST_LEVEL
      .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_INPUT_ACCUMS` instead.
 
-   FCST_MAX_FORECAST
-     .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ_MAX` instead.
-
    FCST_MODE_CONV_RADIUS
      Comma separated list of convolution radius values used by mode for forecast fields. A corresponding variable exists for observation data called :term:`OBS_MODE_CONV_RADIUS`.
 
@@ -4272,9 +4269,6 @@ METplus Configuration Glossary
 
    TIME_SUMMARY_VAR_NAMES
      .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_VAR_NAMES` instead.
-
-   TIME_SUMMARY_TYPES
-     .. warning:: **DEPRECATED:** Please use :term:`PB2NC_TIME_SUMMARY_TYPES` instead.
 
    PB2NC_TIME_SUMMARY_TYPES
      Specify the time summary type list item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.

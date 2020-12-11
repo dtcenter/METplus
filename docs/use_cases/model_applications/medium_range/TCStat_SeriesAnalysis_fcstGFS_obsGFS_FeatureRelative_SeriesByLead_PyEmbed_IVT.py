@@ -8,19 +8,18 @@ _obsGFS_FeatureRelative
 _SeriesByLead_PyEmbed_IVT.conf
 
 """
-
-========================================================================
-This use case calls multiple tools to produce diagnostic plots of systematic erros relative to a 
-feature (e.g. hurricane, MCS, etc...). This use case calls a user provided python script that 
-calculates a diagnostic of interest (e.g. integrated vapor transport, potential vorticity, etc...). 
-This user diagnostic is then used to define the systematic errors. This example calculates statistics
-over varying forecast leads with the ability to define lead groupings. This use case is very similar
-to the Multi_Tools: Feature Relative by Lead use case.
-(ADeck,GFS:BDeck,GFS:ATCF,Grib2)
-"""
 ##############################################################################
 # Scientific Objective
 # --------------------
+#
+# This use case calls multiple tools to produce diagnostic plots of systematic erros relative to a
+# feature (e.g. hurricane, MCS, etc...). This use case calls a user provided python script that
+# calculates a diagnostic of interest (e.g. integrated vapor transport, potential vorticity, etc...).
+# This user diagnostic is then used to define the systematic errors. This example calculates statistics
+# over varying forecast leads with the ability to define lead groupings. This use case is very similar
+# to the Multi_Tools: Feature Relative by Lead use case.
+# (ADeck,GFS:BDeck,GFS:ATCF,Grib2)
+#
 # By maintaining focus of each evaluation time (or evaluation time series, in this case)
 # on a user-defined area around a cyclone, the model statistical errors associated
 # with cyclonic physical features (moisture flux, stability, strength of upper-level
@@ -93,7 +92,8 @@ to the Multi_Tools: Feature Relative by Lead use case.
 # 
 # PyEmbedIngest, TCPairs, ExtractTiles, SeriesByLead
 #
-# This example loops by forecast/lead time (with begin, end, and increment as specified in the METplus TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf file). 
+# This example loops by forecast/lead time (with begin, end, and increment as specified in the METplus
+# TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf file).
 #
 # 4 initialization times will be run over 5 lead times:
 #
@@ -150,7 +150,7 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
+# 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf,
 # then a user-specific system configuration file::
 #
 #        master_metplus.py \
