@@ -26,12 +26,25 @@ they will vary widely depending on the code base.
 New "type" labels should only be added to a repository when a corresponding
 GitHub issue template is also added.
 
-Sample commands to run to update all METplus repos with common labels: 
+Sample commands for processing all METplus repos: 
 
-for repo in `echo "metplus met metplotpy metcalcpy metdatadb metviewer metexpress metplus-training"`; do
+```
+# List of METplus repositories
+REPO_LIST="metplus met metplotpy metcalcpy metdatadb metviewer \
+                      metexpress metplus-training";
+
+# Build commands to add/update common labels
+for repo in ${REPO_LIST}; do
   echo $repo;
   ./post_patch_labels.sh [user] [auth] $repo common_labels.txt;
 done
+
+# Build commands to delete extra labels
+for repo in ${REPO_LIST}; do
+  echo $repo;
+  ./delete_labels.sh [user] [auth] $repo;
+done
+```
 
 The resulting commands are written to bash shell scripts in the commands
 directory. Those commands should be carefully reviewed before executing them.
