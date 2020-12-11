@@ -103,21 +103,28 @@ met_tool_wrapper/UserScript/UserScript_run_once_per_lead.conf
 # contain the results of the directory listing command(s)
 #
 # Forecast Lead: 0 hour
+#
 # * init_20141031093015_valid_20141031093015_lead_000.nc
 # * init_20141031213015_valid_20141031213015_lead_000.nc
 # * init_20141101093015_valid_20141101093015_lead_000.nc
+#
 # Forecast Lead: 12 hour
+#
 # * init_20141030213015_valid_20141031093015_lead_012.nc
 # * init_20141031093015_valid_20141031213015_lead_012.nc
 # * init_20141031213015_valid_20141101093015_lead_012.nc
 # * init_20141101093015_valid_20141101213015_lead_012.nc
+#
 # Forecast Lead: 24 hour
+#
 # * init_20141030093015_valid_20141031093015_lead_024.nc
 # * init_20141030213015_valid_20141031213015_lead_024.nc
 # * init_20141031093015_valid_20141101093015_lead_024.nc
 # * init_20141031213015_valid_20141101213015_lead_024.nc
 # * init_20141101093015_valid_20141102093015_lead_024.nc
+#
 # Forecast Lead: 120 hour
+#
 # * init_20141026093015_valid_20141031093015_lead_120.nc
 # * init_20141026213015_valid_20141031213015_lead_120.nc
 # * init_20141027093015_valid_20141101093015_lead_120.nc

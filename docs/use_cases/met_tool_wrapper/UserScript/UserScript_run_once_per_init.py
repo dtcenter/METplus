@@ -102,6 +102,7 @@ met_tool_wrapper/UserScript/UserScript_run_once_per_init.conf
 # contain the results of the directory listing command(s)
 #
 # Init time: 2014-10-31 09:30:15
+#
 # * init_20141031093015_valid_20141031093015_lead_000.nc
 # * init_20141031093015_valid_20141031213015_lead_012.nc
 # * init_20141031093015_valid_20141101093015_lead_024.nc
@@ -111,7 +112,9 @@ met_tool_wrapper/UserScript/UserScript_run_once_per_init.conf
 # * init_20141031093015_valid_20141105093015_lead_120.nc
 # * init_20141031093015_valid_20141106093015_lead_144.nc
 # * init_20141031093015_valid_20141107093015_lead_168.nc
+#
 # Init time: 2014-10-31 21:30:15
+#
 # * init_20141031213015_valid_20141031213015_lead_000.nc
 # * init_20141031213015_valid_20141101093015_lead_012.nc
 # * init_20141031213015_valid_20141101213015_lead_024.nc
@@ -121,7 +124,9 @@ met_tool_wrapper/UserScript/UserScript_run_once_per_init.conf
 # * init_20141031213015_valid_20141105213015_lead_120.nc
 # * init_20141031213015_valid_20141106213015_lead_144.nc
 # * init_20141031213015_valid_20141107213015_lead_168.nc
+#
 # Init time: 2014-11-01 09:30:15
+#
 # * init_20141101093015_valid_20141101093015_lead_000.nc
 # * init_20141101093015_valid_20141101213015_lead_012.nc
 # * init_20141101093015_valid_20141102093015_lead_024.nc
