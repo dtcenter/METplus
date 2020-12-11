@@ -37,8 +37,10 @@
 {"name": "requestor: NOAA/HFIP","color": "3101c1","description": "NOAA Hurricane Forecast Improvement Project"}
 {"name": "requestor: NOAA/MDL","color": "3101c1","description": "NOAA Meteorological Development Laboratory"}
 {"name": "requestor: NOAA/NSSL","color": "3101c1","description": "NOAA National Severe Storms Laboratory"}
+{"name": "requestor: NOAA/other","color": "3101c1","description": "NOAA Laboratory, not yet specified"}
 {"name": "requestor: NOAA/PSD","color": "3101c1","description": "NOAA Physical Sciences Laboratory"}
 {"name": "requestor: NOAA/SWPC","color": "3101c1","description": "NOAA Space Weather Prediction Center"}
+{"name": "requestor: NOAA/WPC","color": "3101c1","description": "NOAA Weather Prediction Center"}
 {"name": "requestor: Navy/NRL","color": "3101c1","description": "Naval Research Laboratory"}
 {"name": "requestor: Navy/FNMOC","color": "3101c1","description": "Navy Fleet Numerical Meteorology and Oceanography Center"}
 {"name": "requestor: UK Met Office","color": "3101c1","description": "United Kingdom Met Office"}
