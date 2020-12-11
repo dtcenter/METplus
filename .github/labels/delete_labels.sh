@@ -41,14 +41,14 @@ while read -r line; do
 
   # POST a new label
   if [[ $is_common -eq 0 && $is_comp_or_type -eq 0 ]]; then
-    echo "[DELETE] ${repo} -> ${name}"
+    echo "[DELETE] ${repo} label ... ${name}"
     DELETE_URL="${URL}/`echo ${name} | sed -r 's/ /%20/g'`"
     echo "curl -u \"${user}:${auth}\" -X PATCH \
           -H \"Accept: application/vnd.github.v3+json\" \
           ${DELETE_URL}'" >> ${CMD_FILE}
   # Keep this label
   else
-    echo "[KEEP  ] ${name}"
+    echo "[KEEP  ] ${repo} label ... ${name}"
   fi
 
 done < ${TMP_FILE}

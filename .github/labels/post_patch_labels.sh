@@ -41,14 +41,14 @@ while read -r line; do
 
   # POST a new label
   if [[ $exists -eq 0 ]]; then
-    echo "[POST ] ${name}"
+    echo "[POST ] ${repo} label ... ${name}"
     echo "curl -u \"${user}:${auth}\" -X POST \
           -H \"Accept: application/vnd.github.v3+json\" \
           -d '${line}' '${URL}'" >> ${CMD_FILE}
   # PATCH an existing label
   else
     old_name=`egrep -i "\"${name}\"" ${TMP_FILE} | sed -r 's/,/\n/g' | grep '"name":' | cut -d':' -f2-10 | cut -d'"' -f2 | sed -r 's/ /%20/g'`
-    echo "[PATCH] ${old_name} -> ${name}"
+    echo "[PATCH] ${repo} label ... ${old_name} -> ${name}"
     echo "curl -u \"${user}:${auth}\" -X PATCH \
           -H \"Accept: application/vnd.github.v3+json\" \
           -d '${line}' '${URL}/${old_name}'" >> ${CMD_FILE}
