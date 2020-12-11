@@ -1,4 +1,0 @@
-{"name": "priority: blocker","color": "b60205","description": "Blocker"}
-{"name": "priority: high","color": "ed2939","description": "High Priority"}
-{"name": "priority: low","color": "cce88d","description": "Low Priority"}
-{"name": "priority: medium","color": "f8de7e","description": "Medium Priority"}

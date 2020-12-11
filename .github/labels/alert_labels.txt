@@ -1,3 +1,0 @@
-{"name": "alert: NEED ACCOUNT KEY","color": "ffff33","description": "Need to assign an account key to this issue"}
-{"name": "alert: NEED MORE DEFINITION","color": "ffff33","description": "Not yet actionable, additional definition required"}
-{"name": "alert: NEED PROJECT ASSIGNMENT","color": "ffff33","description": "Need to assign to a release development cycle"}
