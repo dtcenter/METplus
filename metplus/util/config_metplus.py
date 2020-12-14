@@ -705,9 +705,14 @@ class METplusConfig(ProdConfig):
             raise
 
         # print debug message saying default value was used
-        msg = "Setting [{}] {} to default value: {}.".format(sec,
+        if not default:
+            default_text = 'empty string'
+        else:
+            default_text = default
+
+        msg = "Setting [{}] {} to default value ({})".format(sec,
                                                              name,
-                                                             default)
+                                                             default_text)
         if self.logger:
             self.logger.debug(msg)
         else:
