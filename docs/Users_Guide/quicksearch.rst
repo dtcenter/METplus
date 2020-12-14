@@ -77,6 +77,7 @@ Use Cases by METplus Feature:
 | `Series by Initialization  <https://dtcenter.github.io/METplus/develop/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
 | `Series by Forecast Lead  <https://dtcenter.github.io/METplus/develop/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
 | `Validation of Models or Analyses  <https://dtcenter.github.io/METplus/develop/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
+| `User Defined Script <https://dtcenter.github.io/METplus/develop/search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_
 
 
 Use cases by File Format:

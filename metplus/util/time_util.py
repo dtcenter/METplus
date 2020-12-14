@@ -97,6 +97,26 @@ def seconds_to_met_time(total_seconds):
     else:
         return hour_time_string
 
+def ti_get_hours_from_relativedelta(lead, valid_time=None):
+    """! Get hours from relativedelta. Simply calls get seconds function and
+         divides the result by 3600.
+
+         @param lead relativedelta object to convert
+         @param valid_time (optional) valid time required to convert values
+          that contain months or years
+         @returns integer value of hours or None if cannot compute
+    """
+    lead_hours = ti_get_seconds_from_relativedelta(lead, valid_time)
+    if lead_hours is None:
+        return None
+
+    # integer division doesn't handle negative numbers properly
+    # (result is always -1) so handle appropriately
+    if lead_hours < 0:
+        return - (-lead_hours // 3600)
+
+    return lead_hours // 3600
+
 def ti_get_seconds_from_relativedelta(lead, valid_time=None):
     """!Check relativedelta object contents and compute the total number of seconds
         in the time. Return None if years or months are set, because the exact number
@@ -250,7 +270,7 @@ def ti_calculate(input_dict):
 
         if 'valid' in input_dict.keys():
             print("ERROR: Cannot specify both valid and init to time utility")
-            exit(1)
+            return None
 
         # compute valid from init and lead
         out_dict['valid'] = out_dict['init'] + out_dict['lead']
@@ -274,7 +294,7 @@ def ti_calculate(input_dict):
 
         if 'valid' in input_dict.keys():
             print("ERROR: Cannot specify both valid and da_init to time utility")
-            exit(1)
+            return None
 
         # compute valid from da_init and offset
         out_dict['valid'] = out_dict['da_init'] - out_dict['offset']
@@ -283,7 +303,7 @@ def ti_calculate(input_dict):
         out_dict['init'] = out_dict['valid'] - out_dict['lead']
     else:
         print("ERROR: Need to specify valid, init, or da_init to time utility")
-        exit(1)
+        return None
 
     # calculate da_init from valid and offset
     out_dict['da_init'] = out_dict['valid'] + out_dict['offset']

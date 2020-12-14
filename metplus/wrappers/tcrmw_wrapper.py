@@ -420,9 +420,9 @@ class TCRMWWrapper(CommandBuilder):
             lead_list = []
             for lead in lead_seq:
                 lead_hours = (
-                    time_util.ti_get_seconds_from_relativedelta(lead,
-                                                                valid_time=time_info['valid'])
-                    ) // 3600
+                    time_util.ti_get_hours_from_relativedelta(lead,
+                                                              valid_time=time_info['valid'])
+                    )
                 lead_list.append(f'"{str(lead_hours).zfill(2)}"')
 
             self.c_dict['LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"

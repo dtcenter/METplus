@@ -33,12 +33,16 @@ class SeriesByInitWrapper(CommandBuilder):
     ANLY_ASCII_FILE_PREFIX = 'ANLY_ASCII_FILES_'
 
     def __init__(self, config, instance=None, config_overrides={}):
+        self.app_name = 'series_analysis'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
-                                     'series_analysis')
-        self.app_name = os.path.basename(self.app_path)
+                                     self.app_name)
+
         super().__init__(config,
                          instance=instance,
                          config_overrides=config_overrides)
+
+        # override log name
+        self.log_name = 'series_by_init'
 
         self.plot_data_plane = self.plot_data_plane_init()
 

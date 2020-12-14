@@ -36,9 +36,15 @@ class SeriesByLeadWrapper(CommandBuilder):
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'series_analysis'
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
         super().__init__(config,
                          instance=instance,
                          config_overrides=config_overrides)
+
+        # override log name
+        self.log_name = 'series_by_lead'
+
         # Retrieve any necessary values from the parm file(s)
         self.do_fhr_by_group = self.config.getbool('config',
                                                    'SERIES_ANALYSIS_GROUP_FCSTS')
@@ -87,41 +93,6 @@ class SeriesByLeadWrapper(CommandBuilder):
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
         c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'SERIES_ANALYSIS_REGRID_TO_GRID', '')
         return c_dict
-
-    def get_lead_sequences(self):
-        # output will be a dictionary where the key will be the
-        #  label specified and the value will be the list of forecast leads
-        lead_seq_dict = {}
-        # used in plotting
-        self.fhr_group_labels = []
-        all_conf = self.config.keys('config')
-        indices = []
-        regex = re.compile(r"LEAD_SEQ_(\d+)")
-        for conf in all_conf:
-            result = regex.match(conf)
-            if result is not None:
-                indices.append(result.group(1))
-
-        # loop over all possible variables and add them to list
-        for n in indices:
-            if self.config.has_option('config', "LEAD_SEQ_"+n+"_LABEL"):
-                label = self.config.getstr('config', "LEAD_SEQ_"+n+"_LABEL")
-            else:
-                log_msg = 'Need to set LEAD_SEQ_{}_LABEL to describe ' +\
-                          'LEAD_SEQ_{}'.format(n, n)
-                self.log_error(log_msg)
-                exit(1)
-
-            # get forecast list for n
-            lead_seq = util.getlistint(self.config.getstr('config', 'LEAD_SEQ_'+n))
-
-            # add to output dictionary
-            lead_seq_dict[label] = lead_seq
-
-            self.fhr_group_labels.append(label)
-
-        return lead_seq_dict
-
 
     def run_all_times(self):
         """! Perform a series analysis of extra tropical cyclone
@@ -277,7 +248,8 @@ class SeriesByLeadWrapper(CommandBuilder):
               Returns:       None
 
         """
-        lead_seq_dict = self.get_lead_sequences()
+        lead_seq_dict = util.get_lead_sequence_groups(self.config)
+        self.fhr_group_labels = lead_seq_dict.keys()
 
         self.logger.debug(' Performing series analysis on forecast hour'
                           ' groupings.')
@@ -295,7 +267,13 @@ class SeriesByLeadWrapper(CommandBuilder):
 
         util.mkdir_p(self.series_lead_out_dir)
 
-        for cur_label, lead_seq in lead_seq_dict.items():
+        for cur_label, lead_list in lead_seq_dict.items():
+            lead_seq = []
+            for lead_sec in lead_list:
+                lead_seq.append(
+                    time_util.ti_get_hours_from_relativedelta(lead_sec)
+                )
+
             fcst_tiles_list = []
             anly_tiles_list = []
             cur_beg_str = str(lead_seq[0]).zfill(3)
@@ -423,7 +401,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                    (series_analysis_cmd, env=self.env, app_name='series_analysis')
+                    (series_analysis_cmd, env=self.env, log_name=self.log_name)
 
                 if ret != 0:
                     self.log_error(f"MET command returned a non-zero return code: {series_analysis_cmd}")
@@ -575,7 +553,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                 series_analysis_cmd = self.cmdrunner.insert_metverbosity_opt \
                     (series_analysis_cmd)
                 (ret, series_analysis_cmd) = self.cmdrunner.run_cmd \
-                    (series_analysis_cmd, env=self.env, app_name='series_analysis')
+                    (series_analysis_cmd, env=self.env, log_name=self.log_name)
 
                 if ret != 0:
                     self.log_error(f"MET command returned a non-zero return code: {series_analysis_cmd}")
@@ -633,7 +611,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                  nc_var_file, ' ', nseries_nc_path]
         nco_nseries_cmd = ''.join(nco_nseries_cmd_parts)
         (ret, nco_nseries_cmd) = self.cmdrunner.run_cmd \
-            (nco_nseries_cmd, env=self.env, ismetcmd=False)
+            (nco_nseries_cmd, env=self.env, ismetcmd=False, log_name=self.log_name)
         if ret:
             self.logger.debug("Could not read series_cnt_TOTAL "
                               f"from {nc_var_file}")
@@ -646,7 +624,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                 '> ', nseries_txt_path]
         ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
         (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
-            (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True)
+            (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True, log_name=self.log_name)
 
         if ret:
             self.log_error("Command returned a non-zero return code:"
@@ -747,7 +725,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             nco_min_cmd = ''.join(nco_min_cmd_parts)
             self.logger.debug('nco_min_cmd: ' + nco_min_cmd)
             (ret, nco_min_cmd) = self.cmdrunner.run_cmd \
-                (nco_min_cmd, env=self.env, ismetcmd=False)
+                (nco_min_cmd, env=self.env, ismetcmd=False, log_name=self.log_name)
 
             if ret != 0:
                 self.log_error(f"Command returned a non-zero return code: {nco_min_cmd}")
@@ -772,7 +750,7 @@ class SeriesByLeadWrapper(CommandBuilder):
             nco_max_cmd = ''.join(nco_max_cmd_parts)
             self.logger.debug('nco_max_cmd: ' + nco_max_cmd)
             (ret, nco_max_cmd) = self.cmdrunner.run_cmd(nco_max_cmd, env=self.env,
-                                                        ismetcmd=False)
+                                                        ismetcmd=False, log_name=self.log_name)
             if ret != 0:
                 self.log_error(f"Command returned a non-zero return code: {nco_max_cmd}")
                 self.logger.info("Check the logfile for more information on why it failed")
@@ -784,7 +762,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                     '/min.nc > ', min_txt_path]
             ncdump_min_cmd = ''.join(ncdump_min_cmd_parts)
             (ret, ncdump_min_cmd) = self.cmdrunner.run_cmd \
-                (ncdump_min_cmd, env=self.env, ismetcmd=False, run_inshell=True)
+                (ncdump_min_cmd, env=self.env, ismetcmd=False, run_inshell=True, log_name=self.log_name)
 
             if ret != 0:
                 self.log_error(f"Command returned a non-zero return code: {ncdump_min_cmd}")
@@ -795,7 +773,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                     '/max.nc > ', max_txt_path]
             ncdump_max_cmd = ''.join(ncdump_max_cmd_parts)
             (ret, ncdump_max_cmd) = self.cmdrunner.run_cmd \
-                (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True)
+                (ncdump_max_cmd, env=self.env, ismetcmd=False, run_inshell=True, log_name=self.log_name)
 
             if ret != 0:
                 self.log_error(f"Command returned a non-zero return code: {ncdump_max_cmd}")
@@ -1182,7 +1160,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                         self.cmdrunner.insert_metverbosity_opt\
                         (plot_data_plane_cmd)
                     (ret, plot_data_plane_cmd) = self.cmdrunner.run_cmd\
-                        (plot_data_plane_cmd, env=self.env, app_name='plot_data_plane')
+                        (plot_data_plane_cmd, env=self.env, log_name=self.log_name)
 
                     if ret != 0:
                         self.log_error(f"MET Command returned a non-zero return code: {plot_data_plane_cmd}")
@@ -1194,7 +1172,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                                      ps_file, ' ', png_file]
                     convert_cmd = ''.join(convert_parts)
                     (ret, convert_cmd) = self.cmdrunner.run_cmd(convert_cmd, env=self.env,
-                                                                ismetcmd=False)
+                                                                ismetcmd=False, log_name=self.log_name)
 
                     if ret != 0:
                         self.log_error(f"Command returned a non-zero return code: {convert_cmd}")
@@ -1254,7 +1232,7 @@ class SeriesByLeadWrapper(CommandBuilder):
 
                     (ret, animate_cmd) = self.cmdrunner.run_cmd\
                         (animate_cmd, env=self.env, ismetcmd=False,
-                         run_inshell=True, log_theoutput=True)
+                         run_inshell=True, log_theoutput=True, log_name=self.log_name)
 
                     if ret != 0:
                         self.log_error(f"Command returned a non-zero return code: {animate_cmd}")
@@ -1286,7 +1264,7 @@ class SeriesByLeadWrapper(CommandBuilder):
                     animate_cmd = ''.join(gif_parts)
                     (ret, animate_cmd) = self.cmdrunner.run_cmd \
                         (animate_cmd, env=self.env, ismetcmd=False,
-                         run_inshell=True, log_theoutput=True)
+                         run_inshell=True, log_theoutput=True, log_name=self.log_name)
 
                     if ret != 0:
                         self.log_error(f"Command returned a non-zero return code: {animate_cmd}")

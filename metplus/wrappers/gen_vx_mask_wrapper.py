@@ -191,14 +191,14 @@ class GenVxMaskWrapper(CommandBuilder):
             self.set_output_path(temp_file)
 
             # run GenVxMask
-            self.build_and_run_command()
+            self.build()
 
         # use final output path for last (or only) run
         if not self.find_and_check_output_file(time_info):
             return
 
         # run GenVxMask
-        self.build_and_run_command()
+        self.build()
 
     def find_input_files(self, time_info, temp_file):
         """!Handle setting of input file list.

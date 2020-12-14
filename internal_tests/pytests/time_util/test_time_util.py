@@ -8,42 +8,43 @@ from dateutil.relativedelta import relativedelta
 from metplus.util import time_util
 
 @pytest.mark.parametrize(
-    'relative_delta, seconds, time_string', [
-        (relativedelta(seconds=1), 1, '1 second' ),
-        (relativedelta(seconds=-1), -1, '-1 second' ),
-        (relativedelta(seconds=36), 36, '36 seconds' ),
-        (relativedelta(seconds=-36), -36, '-36 seconds' ),
-        (relativedelta(minutes=1), 60, '1 minute' ),
-        (relativedelta(minutes=-1), -60, '-1 minute' ),
-        (relativedelta(minutes=4), 240, '4 minutes' ),
-        (relativedelta(minutes=-4), -240, '-4 minutes' ),
-        (relativedelta(hours=1), 3600, '1 hour' ),
-        (relativedelta(hours=-1), -3600, '-1 hour' ),
-        (relativedelta(hours=2), 7200, '2 hours' ),
-        (relativedelta(hours=-2), -7200, '-2 hours' ),
-        (relativedelta(days=1), 86400, '1 day' ),
-        (relativedelta(days=-1), -86400, '-1 day' ),
-        (relativedelta(days=2), 172800, '2 days' ),
-        (relativedelta(days=-2), -172800, '-2 days' ),
-        (relativedelta(months=1), None, '1 month' ),
-        (relativedelta(months=-1), None, '-1 month' ),
-        (relativedelta(months=6), None, '6 months' ),
-        (relativedelta(months=-6), None, '-6 months' ),
-        (relativedelta(years=1), None, '1 year' ),
-        (relativedelta(years=-1), None, '-1 year' ),
-        (relativedelta(years=6), None, '6 years' ),
-        (relativedelta(years=-6), None, '-6 years' ),
-        (relativedelta(seconds=61), 61, '1 minute 1 second' ),
-        (relativedelta(seconds=-61), -61, '-1 minute -1 second' ),
-        (relativedelta(seconds=3602), 3602, '1 hour 2 seconds' ),
-        (relativedelta(seconds=-3602), -3602, '-1 hour -2 seconds' ),
-        (relativedelta(seconds=3721), 3721, '1 hour 2 minutes 1 second' ),
-        (relativedelta(seconds=-3721), -3721, '-1 hour -2 minutes -1 second' ),
+    'rd, seconds, time_string, hours', [
+        (relativedelta(seconds=1), 1, '1 second', 0),
+        (relativedelta(seconds=-1), -1, '-1 second', 0),
+        (relativedelta(seconds=36), 36, '36 seconds', 0),
+        (relativedelta(seconds=-36), -36, '-36 seconds', 0),
+        (relativedelta(minutes=1), 60, '1 minute', 0),
+        (relativedelta(minutes=-1), -60, '-1 minute', 0),
+        (relativedelta(minutes=4), 240, '4 minutes', 0),
+        (relativedelta(minutes=-4), -240, '-4 minutes', 0),
+        (relativedelta(hours=1), 3600, '1 hour', 1),
+        (relativedelta(hours=-1), -3600, '-1 hour', -1),
+        (relativedelta(hours=2), 7200, '2 hours', 2),
+        (relativedelta(hours=-2), -7200, '-2 hours', -2),
+        (relativedelta(days=1), 86400, '1 day', 24),
+        (relativedelta(days=-1), -86400, '-1 day', -24),
+        (relativedelta(days=2), 172800, '2 days', 48),
+        (relativedelta(days=-2), -172800, '-2 days', -48),
+        (relativedelta(months=1), None, '1 month', None),
+        (relativedelta(months=-1), None, '-1 month', None),
+        (relativedelta(months=6), None, '6 months', None),
+        (relativedelta(months=-6), None, '-6 months', None),
+        (relativedelta(years=1), None, '1 year', None),
+        (relativedelta(years=-1), None, '-1 year', None),
+        (relativedelta(years=6), None, '6 years', None),
+        (relativedelta(years=-6), None, '-6 years', None),
+        (relativedelta(seconds=61), 61, '1 minute 1 second', 0),
+        (relativedelta(seconds=-61), -61, '-1 minute -1 second', 0),
+        (relativedelta(seconds=3602), 3602, '1 hour 2 seconds', 1),
+        (relativedelta(seconds=-3602), -3602, '-1 hour -2 seconds', -1),
+        (relativedelta(seconds=3721), 3721, '1 hour 2 minutes 1 second', 1),
+        (relativedelta(seconds=-3721), -3721, '-1 hour -2 minutes -1 second', -1),
     ]
 )
-def test_ti_get_seconds_and_string(relative_delta, seconds, time_string):
-    assert(time_util.ti_get_seconds_from_relativedelta(relative_delta) == seconds and\
-           time_util.ti_get_lead_string(relative_delta) == time_string)
+def test_ti_get_seconds_and_string(rd, seconds, time_string, hours):
+    assert(time_util.ti_get_seconds_from_relativedelta(rd) == seconds)
+    assert(time_util.ti_get_lead_string(rd) == time_string)
+    assert(time_util.ti_get_hours_from_relativedelta(rd) == hours)
 
 @pytest.mark.parametrize(
     'key, value', [

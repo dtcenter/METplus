@@ -74,6 +74,12 @@ class CommandBuilder:
         self.cmdrunner = CommandRunner(self.config, logger=self.logger,
                                        verbose=self.c_dict['VERBOSITY'])
 
+        # set log name to app name by default
+        # any wrappers with a name different than the primary app that is run
+        # should override this value in their init function after the call
+        # to the parent init function
+        self.log_name = self.app_name if hasattr(self, 'app_name') else ''
+
         # if env MET_TMP_DIR was not set, set it to config TMP_DIR
         if 'MET_TMP_DIR' not in self.env:
             self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
@@ -1096,14 +1102,6 @@ class CommandBuilder:
 
         return cmd
 
-    def build_and_run_command(self):
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
-            return False
-
-        return self.build()
-
     # Placed running of command in its own class, command_runner run_cmd().
     # This will allow the ability to still call build() as is currently done
     # in subclassed CommandBuilder wrappers and also allow wrappers
@@ -1132,18 +1130,27 @@ class CommandBuilder:
                                   self.print_all_envs(print_copyable=False)))
 
         if self.instance:
-            app_name = f"{self.app_name}.{self.instance}"
+            log_name = f"{self.log_name}.{self.instance}"
         else:
-            app_name = self.app_name
+            log_name = self.log_name
 
-        ret, out_cmd = self.cmdrunner.run_cmd(cmd, self.env, app_name=app_name,
+        ismetcmd = self.c_dict.get('IS_MET_CMD', True)
+        run_inshell = self.c_dict.get('RUN_IN_SHELL', False)
+        log_theoutput = self.c_dict.get('LOG_THE_OUTPUT', False)
+
+        ret, out_cmd = self.cmdrunner.run_cmd(cmd,
+                                              env=self.env,
+                                              ismetcmd=ismetcmd,
+                                              log_name=log_name,
+                                              run_inshell=run_inshell,
+                                              log_theoutput=log_theoutput,
                                               copyable_env=self.get_env_copy())
         if ret:
             logfile_path = self.config.getstr('config', 'LOG_METPLUS')
             # if MET output is written to its own logfile, get that filename
             if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
                 logfile_path = logfile_path.replace('master_metplus',
-                                                    app_name)
+                                                    log_name)
 
             self.log_error("MET command returned a non-zero return code:"
                            f"{cmd}")
@@ -1159,8 +1166,8 @@ class CommandBuilder:
         """!Used to output error and exit if wrapper is attemped to be run with
             LOOP_ORDER = times and the run_at_time method is not implemented"""
         self.log_error('run_at_time not implemented for {} wrapper. '
-                          'Cannot run with LOOP_ORDER = times'.format(self.app_name))
-        sys.exit(1)
+                          'Cannot run with LOOP_ORDER = times'.format(self.log_name))
+        return None
 
     def run_all_times(self):
         """!Loop over time range specified in conf file and
@@ -1174,7 +1181,7 @@ class CommandBuilder:
 
         # get start run time and set INPUT_TIME_DICT
         c_dict['INPUT_TIME_DICT'] = {'now': clock_time_obj}
-        start_time, _, _ = util.get_start_end_interval_times(self.config) or (None, None, None)
+        start_time, _, _ = util.get_start_end_interval_times(self.config)
         if start_time:
             # set init or valid based on LOOP_BY
             use_init = util.is_loop_by_init(self.config)

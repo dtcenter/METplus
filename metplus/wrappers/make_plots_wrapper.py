@@ -303,5 +303,5 @@ class MakePlotsWrapper(CommandBuilder):
                                  script)
                 )
 
-                self.build_and_run_command()
+                self.build()
                 self.clear()
