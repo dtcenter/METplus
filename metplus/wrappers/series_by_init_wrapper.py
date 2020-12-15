@@ -170,6 +170,12 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             self.log_error("Must set SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE "
                            "if SERIES_ANALYSIS_RUN_ONCE_PER_STORM_ID is True")
 
+        # if no forecast lead sequence is specified,
+        # use wildcard (*) so all leads are used
+        c_dict['WILDCARD_LEAD_IF_EMPTY'] = True
+
+        # allow multiple files so wildcards can be used to get input files
+        c_dict['ALLOW_MULTIPLE_FILES'] = True
 
         return c_dict
 
@@ -196,7 +202,9 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
         lead_groups = get_lead_sequence_groups(self.config)
         if not lead_groups:
-            lead_seq = get_lead_sequence(self.config, input_dict=None)
+            lead_seq = get_lead_sequence(self.config,
+                                         input_dict=None,
+                                         wildcard_if_empty=True)
             for index, lead in enumerate(lead_seq):
                 lead_groups[f'label_{index}'] = [lead]
 

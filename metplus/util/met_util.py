@@ -1048,13 +1048,15 @@ def set_input_dict(loop_time, config, use_init):
 
     return input_dict
 
-def get_lead_sequence(config, input_dict=None):
+def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
     """!Get forecast lead list from LEAD_SEQ or compute it from INIT_SEQ.
         Restrict list by LEAD_SEQ_[MIN/MAX] if set. Now returns list of relativedelta objects
         Args:
             @param config METplusConfig object to query config variable values
             @param input_dict time dictionary needed to handle using INIT_SEQ. Must contain
                valid key if processing INIT_SEQ
+            @param wildcard_if_empty if no lead sequence was set, return a
+             list with '*' if this is True, otherwise return a list with 0
             @returns list of relativedelta objects or a list containing 0 if none are found
     """
 
@@ -1091,6 +1093,9 @@ def get_lead_sequence(config, input_dict=None):
         out_leads = handle_lead_groups(lead_groups)
 
     if not out_leads:
+        if wildcard_if_empty:
+            return ['*']
+
         return [0]
 
     return out_leads

@@ -235,6 +235,8 @@ def ti_calculate(input_dict):
         # if lead is not, treat it as seconds
         if isinstance(input_dict['lead'], relativedelta):
             out_dict['lead'] = input_dict['lead']
+        elif input_dict['lead'] == '*':
+            out_dict['lead'] = input_dict['lead']
         else:
             out_dict['lead'] = relativedelta(seconds=input_dict['lead'])
 
@@ -283,8 +285,11 @@ def ti_calculate(input_dict):
             print("ERROR: Cannot specify both valid and init to time utility")
             return None
 
-        # compute valid from init and lead
-        out_dict['valid'] = out_dict['init'] + out_dict['lead']
+        # compute valid from init and lead if lead is not wildcard
+        if out_dict['lead'] == '*':
+            out_dict['valid'] = '*'
+        else:
+            out_dict['valid'] = out_dict['init'] + out_dict['lead']
 
         # set loop_by to init or valid to be able to see what was set first
         out_dict['loop_by'] = 'init'
@@ -293,8 +298,11 @@ def ti_calculate(input_dict):
     elif 'valid' in input_dict:
         out_dict['valid'] = input_dict['valid']
 
-        # compute init from valid and lead
-        out_dict['init'] = out_dict['valid'] - out_dict['lead']
+        # compute init from valid and lead if lead is not wildcard
+        if out_dict['lead'] == '*':
+            out_dict['init'] = '*'
+        else:
+            out_dict['init'] = out_dict['valid'] - out_dict['lead']
 
         # set loop_by to init or valid to be able to see what was set first
         out_dict['loop_by'] = 'valid'
@@ -310,33 +318,52 @@ def ti_calculate(input_dict):
         # compute valid from da_init and offset
         out_dict['valid'] = out_dict['da_init'] - out_dict['offset']
 
-        # compute init from valid and lead
-        out_dict['init'] = out_dict['valid'] - out_dict['lead']
+        # compute init from valid and lead if lead is not wildcard
+        if out_dict['lead'] == '*':
+            out_dict['init'] = '*'
+        else:
+            out_dict['init'] = out_dict['valid'] - out_dict['lead']
     else:
         print("ERROR: Need to specify valid, init, or da_init to time utility")
         return None
 
     # calculate da_init from valid and offset
-    out_dict['da_init'] = out_dict['valid'] + out_dict['offset']
+    if out_dict['valid'] != '*':
+        out_dict['da_init'] = out_dict['valid'] + out_dict['offset']
 
-    # add common formatted items
-    out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M%S')
-    out_dict['da_init_fmt'] = out_dict['da_init'].strftime('%Y%m%d%H%M%S')
-    out_dict['valid_fmt'] = out_dict['valid'].strftime('%Y%m%d%H%M%S')
+        # add common formatted items
+        out_dict['da_init_fmt'] = out_dict['da_init'].strftime('%Y%m%d%H%M%S')
+        out_dict['valid_fmt'] = out_dict['valid'].strftime('%Y%m%d%H%M%S')
+
+    if out_dict['init'] != '*':
+        out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M%S')
+
+    # get string representation of forecast lead
+    if out_dict['lead'] == '*':
+        out_dict['lead_string'] = 'ALL'
+    else:
+        out_dict['lead_string'] = ti_get_lead_string(out_dict['lead'])
+
+    out_dict['offset'] = int(out_dict['offset'].total_seconds())
+    out_dict['offset_hours'] = int(out_dict['offset'] // 3600)
+
+    # set synonyms for items
+    if 'da_init' in out_dict:
+        out_dict['date'] = out_dict['da_init']
+        out_dict['cycle'] = out_dict['da_init']
+
+    # if lead is wildcard, skip updating other lead values
+    if out_dict['lead'] == '*':
+        return out_dict
 
     # get difference between valid and init to get total seconds since relativedelta
     # does not have a fixed number of seconds
     total_seconds = int((out_dict['valid'] - out_dict['init']).total_seconds())
 
-    # get string representation of forecast lead
-    out_dict['lead_string'] = ti_get_lead_string(out_dict['lead'])
-
     # change relativedelta to integer seconds unless months or years are used
     # if they are, keep lead as a relativedelta object to be handled differently
     if out_dict['lead'].months == 0 and out_dict['lead'].years == 0:
         out_dict['lead'] = total_seconds
-
-    out_dict['offset'] = int(out_dict['offset'].total_seconds())
 
     # add common uses for relative times
     # Specifying integer division // Python 3,
@@ -344,10 +371,5 @@ def ti_calculate(input_dict):
     out_dict['lead_hours'] = int(total_seconds // 3600)
     out_dict['lead_minutes'] = int(total_seconds // 60)
     out_dict['lead_seconds'] = total_seconds
-    out_dict['offset_hours'] = int(out_dict['offset'] // 3600)
-
-    # set synonyms for items
-    out_dict['date'] = out_dict['da_init']
-    out_dict['cycle'] = out_dict['da_init']
 
     return out_dict

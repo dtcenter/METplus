@@ -223,7 +223,11 @@ class RuntimeFreqWrapper(CommandBuilder):
             input_dict = set_input_dict(loop_time, self.config, use_init)
 
             # loop over all forecast leads
-            lead_seq = get_lead_sequence(self.config, input_dict)
+            wildcard_if_empty = self.c_dict.get('WILDCARD_LEAD_IF_EMPTY',
+                                                False)
+            lead_seq = get_lead_sequence(self.config,
+                                         input_dict,
+                                         wildcard_if_empty=wildcard_if_empty)
             for lead in lead_seq:
                 input_dict['lead'] = lead
 
