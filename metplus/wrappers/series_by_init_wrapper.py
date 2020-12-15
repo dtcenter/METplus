@@ -20,9 +20,9 @@ from datetime import datetime
 from ..util import met_util as util
 from ..util import ti_calculate, do_string_sub
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
-from . import CommandBuilder
+from . import RuntimeFreqWrapper
 
-class SeriesByInitWrapper(CommandBuilder):
+class SeriesByInitWrapper(RuntimeFreqWrapper):
     """!  Performs series analysis based on init time by first performing any
           additional filtering via the wrapper to the MET tool tc_stat,
           tc_stat_wrapper.  Next, the arguments to run the MET tool
@@ -79,16 +79,27 @@ class SeriesByInitWrapper(CommandBuilder):
         if not c_dict['TILE_INPUT_DIR']:
             self.log_error("Must set SERIES_ANALYSIS_TILE_INPUT_DIR")
 
-        c_dict['STAT_INPUT_DIR'] = (
-            self.config.getdir('SERIES_ANALYSIS_STAT_INPUT_DIR', '')
+        # set fcst and obs input dir to tile input dir to help find files
+        c_dict['FCST_INPUT_DIR'] = c_dict['TILE_INPUT_DIR']
+        c_dict['OBS_INPUT_DIR'] = c_dict['TILE_INPUT_DIR']
+
+        c_dict['FCST_INPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               'FCST_SERIES_ANALYSIS_TILE_INPUT_TEMPLATE')
+        )
+        c_dict['OBS_INPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               'OBS_SERIES_ANALYSIS_TILE_INPUT_TEMPLATE')
         )
 
-        c_dict['STAT_INPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'SERIES_ANALYSIS_STAT_INPUT_TEMPLATE')
+        c_dict['TC_STAT_INPUT_DIR'] = (
+            self.config.getdir('SERIES_ANALYSIS_TC_STAT_INPUT_DIR', '')
         )
-        if not c_dict['STAT_INPUT_TEMPLATE']:
-            self.log_error("Must set SERIES_ANALYSIS_STAT_INPUT_TEMPLATE")
+
+        c_dict['TC_STAT_INPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               'SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE')
+        )
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('SERIES_ANALYSIS_OUTPUT_DIR',
                                                   '')
@@ -148,6 +159,17 @@ class SeriesByInitWrapper(CommandBuilder):
                                 True)
         )
 
+        c_dict['RUN_ONCE_PER_STORM_ID'] = (
+            self.config.getbool('config',
+                                'SERIES_ANALYSIS_RUN_ONCE_PER_STORM_ID',
+                                True)
+        )
+        if (c_dict['RUN_ONCE_PER_STORM_ID'] and
+                not c_dict['TC_STAT_INPUT_TEMPLATE']):
+            self.log_error("Must set SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE "
+                           "if SERIES_ANALYSIS_RUN_ONCE_PER_STORM_ID is True")
+
+
         return c_dict
 
     def plot_data_plane_init(self):
@@ -167,22 +189,24 @@ class SeriesByInitWrapper(CommandBuilder):
                                            config_overrides=plot_overrides)
         return pdp_wrapper
 
-    def run_at_time(self, input_dict):
+    def run_at_time_once(self, time_info):
         """! Invoke the series analysis script based on the init time
 
-            @param input_dict input time dictionary
+            @param time_info dictionary containing time information
             @returns True on success, False otherwise
         """
         self.logger.debug("Starting series analysis by init time")
 
-        # Calculate other time information from available time info
-        time_info = ti_calculate(input_dict)
-
-        storm_list = self.get_storms_for_init(time_info)
-        if not storm_list:
-            # No storms for this init time, check next init time in list
-            self.logger.debug(f"No storms found for current init time")
-            return False
+        # if running for each storm ID, get list of storms
+        if self.c_dict['RUN_ONCE_PER_STORM_ID']:
+            storm_list = self.get_storms_for_init(time_info)
+            if not storm_list:
+                # No storms for this init time, check next init time in list
+                self.logger.debug(f"No storms found for current init time")
+                return False
+        else:
+            # use wildcard for storm ID if processing all storms at once
+            storm_list = ['*']
 
         # Create FCST and ANLY ASCII files based on init time and storm id
         self.create_ascii_storm_files_list(time_info, storm_list)
@@ -211,8 +235,8 @@ class SeriesByInitWrapper(CommandBuilder):
         """
         # Retrieve filter files, first create the filename
         # by piecing together the out_dir_base with the cur_init.
-        filter_template = os.path.join(self.c_dict['STAT_INPUT_DIR'],
-                                       self.c_dict['STAT_INPUT_TEMPLATE'])
+        filter_template = os.path.join(self.c_dict['TC_STAT_INPUT_DIR'],
+                                       self.c_dict['TC_STAT_INPUT_TEMPLATE'])
         filter_file = do_string_sub(filter_template, **time_info)
         self.logger.debug(f"Getting storms from filter file: {filter_file}")
         if not os.path.exists(filter_file):
@@ -225,6 +249,76 @@ class SeriesByInitWrapper(CommandBuilder):
 
         return storm_list
 
+    def get_files_from_time(self, time_info):
+        """! Create dictionary containing time information (key time_info) and
+             any relevant files for that runtime. The parent implementation of
+             this function creates a dictionary and adds the time_info to it.
+             This wrapper gets all files for the current runtime and adds it to
+             the dictionary with keys 'fcst' and 'anly'
+
+             @param time_info dictionary containing time information
+             @returns dictionary containing time_info dict and any relevant
+             files with a key representing a description of that file
+        """
+        file_dict_list = []
+        # get all storm IDs
+        storm_list = self.get_storms_for_init(time_info)
+        for storm_id in storm_list:
+            time_info['storm_id'] = storm_id
+            file_dict = super().get_files_from_time(time_info)
+            fcst_files = self.find_input_files(time_info, 'FCST')
+            anly_files = self.find_input_files(time_info, 'OBS')
+            if fcst_files is None or anly_files is None:
+                return None
+
+            file_dict['fcst'] = fcst_files
+            file_dict['anly'] = anly_files
+            file_dict_list.append(file_dict)
+
+        return file_dict_list
+
+    def find_input_files(self, time_info, data_type):
+        """! Loop over list of input templates and find files for each
+
+             @param time_info time dictionary to use for string substitution
+             @returns Input file list if all files were found, None if not.
+        """
+        input_files = self.find_data(time_info,
+                                     return_list=True,
+                                     data_type=data_type)
+        return input_files
+
+    def subset_input_files(self, time_info):
+        """! Obtain a subset of input files from the c_dict ALL_FILES based on
+             the time information for the current run.
+
+              @param time_info dictionary containing time information
+              @returns the path to a ascii file containing the list of files
+               or None if could not find any files
+        """
+        fcst_files = []
+        anly_files = []
+        for file_dict in self.c_dict['ALL_FILES']:
+            # compare time information for each input file
+            # add file to list of files to use if it matches
+            if not self.compare_time_info(time_info, file_dict['time_info']):
+                continue
+
+            fcst_files.extend(file_dict['fcst'])
+            anly_files.extend(file_dict['anly'])
+
+        return fcst_files, anly_files
+
+    def compare_time_info(self, runtime, filetime):
+        if not super().compare_time_info(runtime, filetime):
+            return False
+
+        # compare storm_id
+        if runtime['storm_id'] == '*':
+            return True
+
+        return bool(filetime['storm_id'] == runtime['storm_id'])
+
     def create_ascii_storm_files_list(self, time_info, storm_list):
         """! Creates the list of ASCII files that contain the storm id and init
              times.  The list is used to create an ASCII file which will be
@@ -234,45 +328,36 @@ class SeriesByInitWrapper(CommandBuilder):
              @param time_info dictionary containing time information
              @param storm_list list of storm IDs to process
         """
-        # get all analysis and forecast files in the tile directory
-        anly_grid_files = util.get_files(self.c_dict['TILE_INPUT_DIR'],
-                                         self.c_dict['ANLY_TILE_REGEX'])
-        fcst_grid_files = util.get_files(self.c_dict['TILE_INPUT_DIR'],
-                                         self.c_dict['FCST_TILE_REGEX'])
-
-        if not anly_grid_files:
-            self.logger.error("No gridded analysis files found. ExtractTiles "
-                              "wrapper must be run first.")
-            return False
-
-        if not fcst_grid_files:
-            self.logger.error("No gridded forecast files found. ExtractTiles "
-                              "wrapper must be run first.")
-            return False
-
         output_dir_template = os.path.join(self.c_dict['OUTPUT_DIR'],
                                            self.c_dict['OUTPUT_TEMPLATE'])
         output_dir_template = os.path.dirname(output_dir_template)
 
         for storm_id in storm_list:
+            if storm_id == '*':
+                time_info['storm_id'] = 'all_storms'
+            else:
+                time_info['storm_id'] = storm_id
+
             # get output directory including storm ID
             output_dir = do_string_sub(output_dir_template,
-                                       storm_id=storm_id,
                                        **time_info)
 
+            time_info['storm_id'] = storm_id
+            fcst_files, anly_files = self.subset_input_files(time_info)
+            if not fcst_files or not anly_files:
+                return False
+
             # create forecast file list
-            fcst_ascii_filename = f"{self.FCST_ASCII_FILE_PREFIX}{storm_id}"
-            self.create_file_list(fcst_ascii_filename,
-                                  fcst_grid_files,
-                                  output_dir,
-                                  storm_id=storm_id)
+            fcst_ascii_filename = f"{self.FCST_ASCII_FILE_PREFIX}{storm_id_out}"
+            self.write_list_file(fcst_ascii_filename,
+                                 fcst_files,
+                                 output_dir=output_dir)
 
             # create analysis file list
             anly_ascii_filename = f"{self.ANLY_ASCII_FILE_PREFIX}{storm_id}"
-            self.create_file_list(anly_ascii_filename,
-                                  anly_grid_files,
-                                  output_dir,
-                                  storm_id=storm_id)
+            self.write_list_file(anly_ascii_filename,
+                                 anly_files,
+                                 output_dir=output_dir)
 
         self.logger.debug("Finished creating FCST and ANLY ASCII files")
         return True
@@ -344,7 +429,10 @@ class SeriesByInitWrapper(CommandBuilder):
         output_dir_template = os.path.dirname(output_dir_template)
         for storm_id in storm_list:
             # add the current storm ID to the time dictionary for string sub
-            time_info['storm_id'] = storm_id
+            if storm_id == '*':
+                time_info['storm_id'] = 'all_storms'
+            else:
+                time_info['storm_id'] = storm_id
 
             output_dir = do_string_sub(output_dir_template,
                                        **time_info)
@@ -431,7 +519,11 @@ class SeriesByInitWrapper(CommandBuilder):
             self.add_field_info_to_time_info(time_info, var_info)
 
             for storm_id in storm_list:
-                time_info['storm_id'] = storm_id
+                if storm_id == '*':
+                    time_info['storm_id'] = 'all_storms'
+                else:
+                    time_info['storm_id'] = storm_id
+#                time_info['storm_id'] = storm_id
                 # get the output directory where the series_analysis output
                 # was written. Plots will be written to the same directory
                 plot_input = do_string_sub(output_dir_template,
