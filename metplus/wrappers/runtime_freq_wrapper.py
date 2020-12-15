@@ -37,8 +37,6 @@ class RuntimeFreqWrapper(CommandBuilder):
         super().__init__(config,
                          instance=instance,
                          config_overrides=config_overrides)
-        if not self.get_all_files():
-            self.log_error("A problem occurred trying to obtain input files")
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -92,6 +90,10 @@ class RuntimeFreqWrapper(CommandBuilder):
 
              @returns True on success, False on failure
         """
+        if not self.get_all_files():
+            self.log_error("A problem occurred trying to obtain input files")
+            return None
+
         runtime_freq = self.c_dict['RUNTIME_FREQ']
         if runtime_freq == 'RUN_ONCE':
             self.run_once()
@@ -237,7 +239,10 @@ class RuntimeFreqWrapper(CommandBuilder):
                     time_info['custom'] = custom_string
                     file_dict = self.get_files_from_time(time_info)
                     if file_dict:
-                        all_files.append(file_dict)
+                        if isinstance(file_dict, list):
+                            all_files.extend(file_dict)
+                        else:
+                            all_files.append(file_dict)
 
             loop_time += self.c_dict['TIME_INTERVAL']
 
@@ -245,6 +250,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             return False
 
         self.c_dict['ALL_FILES'] = all_files
+        self.logger.debug(f"All files: {all_files}")
         return True
 
     def get_files_from_time(self, time_info):
