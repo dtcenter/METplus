@@ -19,6 +19,7 @@ from datetime import datetime
 
 from ..util import met_util as util
 from ..util import ti_calculate, do_string_sub
+from ..util import get_lead_sequence, get_lead_sequence_groups
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
 
@@ -189,7 +190,33 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                                            config_overrides=plot_overrides)
         return pdp_wrapper
 
-    def run_at_time_once(self, time_info):
+    def run_once_per_lead(self):
+        self.logger.debug("Running once for forecast lead time")
+        success = True
+
+        lead_groups = get_lead_sequence_groups(self.config)
+        if not lead_groups:
+            lead_seq = get_lead_sequence(self.config, input_dict=None)
+            for index, lead in enumerate(lead_seq):
+                lead_groups[f'label_{index}'] = [lead]
+
+        for lead_group in lead_groups.items():
+            # create input dict and only set 'now' item
+            # create a new dictionary each iteration in case the function
+            # that it is passed into modifies it
+            input_dict = set_input_dict(loop_time=None,
+                                        config=self.config,
+                                        use_init=None)
+
+            input_dict['init'] = '*'
+            input_dict['valid'] = '*'
+
+            if not self.run_at_time_once(input_dict, lead_group):
+                success = False
+
+        return success
+
+    def run_at_time_once(self, time_info, lead_group=None):
         """! Invoke the series analysis script based on the init time
 
             @param time_info dictionary containing time information
@@ -209,7 +236,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             storm_list = ['*']
 
         # Create FCST and ANLY ASCII files based on init time and storm id
-        self.create_ascii_storm_files_list(time_info, storm_list)
+        self.create_ascii_storm_files_list(time_info, storm_list, lead_group)
 
         # Build up the arguments to and then run the MET tool series_analysis.
         if not self.build_and_run_series_request(time_info, storm_list):
@@ -319,7 +346,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
         return bool(filetime['storm_id'] == runtime['storm_id'])
 
-    def create_ascii_storm_files_list(self, time_info, storm_list):
+    def create_ascii_storm_files_list(self, time_info, storm_list, lead_group):
         """! Creates the list of ASCII files that contain the storm id and init
              times.  The list is used to create an ASCII file which will be
              used as the option to the -obs or -fcst flag to the MET
@@ -344,20 +371,33 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                                        **time_info)
 
             time_info['storm_id'] = storm_id
-            fcst_files, anly_files = self.subset_input_files(time_info)
-            if not fcst_files or not anly_files:
-                return False
+            all_fcst_files = []
+            all_anly_files = []
+            if not lead_group:
+                fcst_files, anly_files = self.subset_input_files(time_info)
+                if not fcst_files or not anly_files:
+                    return False
+                all_fcst_files.extend(fcst_files)
+                all_anly_files.extend(anly_files)
+            else:
+                leads = lead_group[1]
+                for lead in leads:
+                    time_info['lead'] = lead
+                    fcst_files, anly_files = self.subset_input_files(time_info)
+                    if fcst_files and anly_files:
+                        all_fcst_files.extend(fcst_files)
+                        all_anly_files.extend(anly_files)
 
             # create forecast file list
             fcst_ascii_filename = f"{self.FCST_ASCII_FILE_PREFIX}{storm_id_out}"
             self.write_list_file(fcst_ascii_filename,
-                                 fcst_files,
+                                 all_fcst_files,
                                  output_dir=output_dir)
 
             # create analysis file list
             anly_ascii_filename = f"{self.ANLY_ASCII_FILE_PREFIX}{storm_id_out}"
             self.write_list_file(anly_ascii_filename,
-                                 anly_files,
+                                 all_anly_files,
                                  output_dir=output_dir)
 
         self.logger.debug("Finished creating FCST and ANLY ASCII files")
