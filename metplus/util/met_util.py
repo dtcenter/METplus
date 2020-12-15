@@ -2053,7 +2053,7 @@ def get_process_list(config):
     # for each item remove dashes, underscores, and cast to lower-case
     for process in process_list:
         # if instance is specified, extract the text inside parenthesis
-        match = re.match(f'(.*)\((.*)\)', process)
+        match = re.match(r'(.*)\((.*)\)', process)
         if match:
             instance = match.group(2)
             process_name = match.group(1)
