@@ -90,6 +90,7 @@ class RuntimeFreqWrapper(CommandBuilder):
 
              @returns True on success, False on failure
         """
+        # get a list of all input files that are available
         if not self.get_all_files():
             self.log_error("A problem occurred trying to obtain input files")
             return None
@@ -261,7 +262,7 @@ class RuntimeFreqWrapper(CommandBuilder):
              files with a key representing a description of that file
         """
         file_dict = {}
-        file_dict['time_info'] = time_info
+        file_dict['time_info'] = time_info.copy()
         return file_dict
 
     def compare_time_info(self, runtime, filetime):

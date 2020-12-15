@@ -334,11 +334,12 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
         for storm_id in storm_list:
             if storm_id == '*':
-                time_info['storm_id'] = 'all_storms'
+                storm_id_out = 'all_storms'
             else:
-                time_info['storm_id'] = storm_id
+                storm_id_out = storm_id
 
             # get output directory including storm ID
+            time_info['storm_id'] = storm_id_out
             output_dir = do_string_sub(output_dir_template,
                                        **time_info)
 
@@ -354,7 +355,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                                  output_dir=output_dir)
 
             # create analysis file list
-            anly_ascii_filename = f"{self.ANLY_ASCII_FILE_PREFIX}{storm_id}"
+            anly_ascii_filename = f"{self.ANLY_ASCII_FILE_PREFIX}{storm_id_out}"
             self.write_list_file(anly_ascii_filename,
                                  anly_files,
                                  output_dir=output_dir)
