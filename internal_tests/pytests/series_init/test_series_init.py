@@ -2,18 +2,22 @@ import pytest
 import os
 import sys
 import logging
-import datetime
+from datetime import datetime
 
 import produtil
 
 from metplus.wrappers.series_by_init_wrapper import SeriesByInitWrapper
 
-def series_init_wrapper(metplus_config):
+def series_init_wrapper(metplus_config, config_overrides=None):
     extra_configs = []
     extra_configs.append(os.path.join(os.path.dirname(__file__),
                                       'series_init_test.conf'))
     config = metplus_config(extra_configs)
     config.set('config', 'LOOP_ORDER', 'processes')
+    if config_overrides:
+        for key, value in config_overrides.items():
+            config.set('config', key, value)
+
     return SeriesByInitWrapper(config)
 
 def test_get_fcst_file_info(metplus_config):
@@ -50,7 +54,7 @@ def test_get_storms_for_init(metplus_config):
                            'ML1241072014',
                            'ML1251072014'
                            ]
-    time_info = {'init': datetime.datetime(2014, 12, 14, 00)}
+    time_info = {'init': datetime(2014, 12, 14, 00)}
     stat_input_dir = (
         os.path.join(config.getdir('METPLUS_BASE'),
                      'internal_tests',
@@ -99,3 +103,167 @@ def test_filter_tiles_storm_id(metplus_config, file_list, storm_id,
     siw = series_init_wrapper(metplus_config)
     assert(siw.filter_tiles(file_list,
                             storm_id=storm_id) == sorted(expected_files))
+
+# added list of all files for reference for creating subsets
+all_fake_fcst = ['fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
+                 'fcst/20141214_00/ML1221072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
+                 'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
+                 'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
+                 'fcst/20141214_00/ML1201072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
+                 'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
+                 'fcst/20141215_00/ML1291072014/FCST_TILE_F000_gfs_4_20141215_0000_000.nc',
+                 'fcst/20141215_00/ML1291072014/FCST_TILE_F006_gfs_4_20141215_0000_006.nc',
+                 'fcst/20141215_00/ML1291072014/FCST_TILE_F012_gfs_4_20141215_0000_012.nc',
+                  ]
+all_fake_anly = ['anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
+                 'anly/20141214_00/ML1221072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
+                 'anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+                 'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+                 'anly/20141214_00/ML1201072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
+                 'anly/20141214_00/ML1221072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
+                 'anly/20141215_00/ML1291072014/ANLY_TILE_F000_gfs_4_20141215_0000_000.nc',
+                 'anly/20141215_00/ML1291072014/ANLY_TILE_F006_gfs_4_20141215_0000_006.nc',
+                 'anly/20141215_00/ML1291072014/ANLY_TILE_F012_gfs_4_20141215_0000_012.nc',
+                  ]
+@pytest.mark.parametrize(
+        'time_info, expect_fcst_subset, expect_anly_subset', [
+        # filter by init all storms
+        ({'init': datetime(2014, 12, 14, 0, 0),
+          'valid': '*',
+          'lead': '*',
+          'storm_id': '*'},
+         ['fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'fcst/20141214_00/ML1221072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
+          'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
+          'fcst/20141214_00/ML1201072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
+          'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',],
+         ['anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'anly/20141214_00/ML1221072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+          'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+          'anly/20141214_00/ML1201072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
+          'anly/20141214_00/ML1221072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',]),
+        # filter by init single storm
+        ({'init': datetime(2014, 12, 14, 0, 0),
+          'valid': '*',
+          'lead': '*',
+          'storm_id': 'ML1201072014'},
+         [
+             'fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
+             'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
+             'fcst/20141214_00/ML1201072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
+         ],
+         [
+             'anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
+             'anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+             'anly/20141214_00/ML1201072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
+         ]),
+        # filter by init another single storm
+        ({'init': datetime(2014, 12, 14, 0, 0),
+          'valid': '*',
+          'lead': '*',
+          'storm_id': 'ML1221072014'},
+         [
+             'fcst/20141214_00/ML1221072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
+             'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
+             'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
+         ],
+         [
+             'anly/20141214_00/ML1221072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
+             'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+             'anly/20141214_00/ML1221072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
+         ]),
+        # filter by lead all storms
+        ({'init': '*',
+          'valid': '*',
+          'lead': 21600,
+          'storm_id': '*'},
+         [
+             'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
+             'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
+         ],
+         [
+             'anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+             'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+         ]),
+    ]
+)
+def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset, expect_anly_subset):
+    """! Test to ensure that get_all_files only gets the files that are
+    relevant to the runtime settings and not every file in the directory
+    """
+    config_overrides = {
+        'LOOP_BY': 'INIT',
+        'SERIES_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE',
+        'INIT_TIME_FMT': '%Y%m%d',
+        'INIT_BEG': '20141214',
+        'INIT_END': '20141214',
+        'INIT_INCREMENT': '12H',
+        'LEAD_SEQ': '0H, 6H, 12H',
+    }
+    wrapper = series_init_wrapper(metplus_config, config_overrides)
+    fake_data_dir = os.path.join(wrapper.config.getdir('METPLUS_BASE'),
+                                 'internal_tests',
+                                 'data')
+    stat_input_dir = os.path.join(fake_data_dir,
+                                  'stat_data')
+    stat_input_template = 'another_fake_filter_{init?fmt=%Y%m%d_%H}.tcst'
+
+    tile_input_dir = os.path.join(fake_data_dir,
+                                  'tiles')
+    fcst_input_dir = os.path.join(tile_input_dir,
+                                  'fcst')
+    anly_input_dir = os.path.join(tile_input_dir,
+                                  'anly')
+
+    wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
+    wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
+    wrapper.c_dict['FCST_INPUT_DIR'] = fcst_input_dir
+    wrapper.c_dict['OBS_INPUT_DIR'] = anly_input_dir
+
+    assert(wrapper.get_all_files())
+
+    expected_fcst = [
+        'fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
+        'fcst/20141214_00/ML1221072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
+        'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
+        'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
+        'fcst/20141214_00/ML1201072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
+        'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
+    ]
+    expected_fcst_files = []
+    for expected in expected_fcst:
+        expected_fcst_files.append(os.path.join(tile_input_dir, expected))
+
+
+    expected_anly = [
+        'anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
+        'anly/20141214_00/ML1221072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
+        'anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+        'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+        'anly/20141214_00/ML1201072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
+        'anly/20141214_00/ML1221072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
+    ]
+    expected_anly_files = []
+    for expected in expected_anly:
+        expected_anly_files.append(os.path.join(tile_input_dir, expected))
+
+    # convert list of lists into a single list to compare to expected results
+    fcst_files = [item['fcst'] for item in wrapper.c_dict['ALL_FILES']]
+    fcst_files = [item for sub in fcst_files for item in sub]
+    anly_files = [item['anly'] for item in wrapper.c_dict['ALL_FILES']]
+    anly_files = [item for sub in anly_files for item in sub]
+
+    assert(fcst_files == expected_fcst_files)
+    assert(anly_files == expected_anly_files)
+
+    fcst_files_sub, anly_files_sub = wrapper.subset_input_files(time_info)
+    assert(fcst_files_sub and anly_files_sub)
+    assert(len(fcst_files_sub) == len(anly_files_sub))
+
+    for actual_file, expected_file in zip(fcst_files_sub, expect_fcst_subset):
+        assert(actual_file.replace(tile_input_dir, '').lstrip('/') == expected_file)
+
+    for actual_file, expected_file in zip(anly_files_sub, expect_anly_subset):
+        assert(actual_file.replace(tile_input_dir, '').lstrip('/') == expected_file)
