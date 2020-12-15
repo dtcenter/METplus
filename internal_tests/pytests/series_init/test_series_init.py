@@ -60,8 +60,8 @@ def test_get_storms_for_init(metplus_config):
     stat_input_template = 'fake_filter_{init?fmt=%Y%m%d_%H}.tcst'
 
     siw = series_init_wrapper(metplus_config)
-    siw.c_dict['STAT_INPUT_DIR'] = stat_input_dir
-    siw.c_dict['STAT_INPUT_TEMPLATE'] = stat_input_template
+    siw.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
+    siw.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
 
     storm_list = siw.get_storms_for_init(time_info)
     assert storm_list == expected_storm_list
