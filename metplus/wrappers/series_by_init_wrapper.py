@@ -17,6 +17,15 @@ import re
 import sys
 from datetime import datetime
 
+# handle if module can't be loaded to run wrapper
+wrapper_cannot_run = False
+exception_err = ''
+try:
+    import netCDF4
+except Exception as err_msg:
+    wrapper_cannot_run = True
+    exception_err = err_msg
+
 from ..util import met_util as util
 from ..util import ti_calculate, do_string_sub
 from ..util import get_lead_sequence, get_lead_sequence_groups
@@ -47,6 +56,10 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         self.log_name = 'series_by_init'
 
         self.plot_data_plane = self.plot_data_plane_init()
+
+        if wrapper_cannot_run:
+            self.log_error("There was a problem importing modules: "
+                           f"{exception_err}\n")
 
         self.logger.debug("Initialized SeriesByInitWrapper")
 
@@ -592,7 +605,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             # Assemble the input file, output file, field string, and title
             for cur_stat in self.c_dict['STAT_LIST']:
                 min, max = self.get_netcdf_min_max(plot_input,
-                                                   cur_stat)
+                                                   f'series_cnt_{cur_stat}')
 
                 plot_output = (f"{os.path.splitext(plot_input)[0]}_"
                                f"{cur_stat}.ps")
@@ -661,3 +674,20 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         num = str(len(sorted_files))
 
         return num, beg, end
+
+    def get_netcdf_min_max(self, filepath, variable_name):
+        """! Determine the min and max for all lead times for each
+           statistic and variable pairing.
+
+           @param filepath NetCDF file to inspect
+           @param variable_name name of variable to read
+           @returns tuple containing the minimum and maximum values or
+            None, None if something went wrong
+        """
+        try:
+            nc_var = netCDF4.Dataset(filepath).variables[variable_name]
+            min = nc_var[:].min()
+            max = nc_var[:].max()
+            return min, max
+        except (FileNotFoundError, KeyError):
+            return None, None

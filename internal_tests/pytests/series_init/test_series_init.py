@@ -546,3 +546,19 @@ def test_get_output_dir(metplus_config, template, storm_id, label, expected_resu
     wrapper.c_dict['OUTPUT_TEMPLATE'] = template
     actual_result = wrapper.get_output_dir(time_info, storm_id, label)
     assert(actual_result == os.path.join(output_dir, expected_result))
+
+def test_get_netcdf_min_max(metplus_config):
+    expected_min = 0.0
+    expected_max = 8.0
+
+    wrapper = series_init_wrapper(metplus_config)
+    met_install_dir = wrapper.config.getdir('MET_INSTALL_DIR')
+    filepath = os.path.join(met_install_dir,
+                            'share',
+                            'met',
+                            'tc_data',
+                            'basin_global_tenth_degree.nc')
+    variable_name = 'basin'
+    min, max = wrapper.get_netcdf_min_max(filepath, variable_name)
+    assert(min == expected_min)
+    assert(max == expected_max)
