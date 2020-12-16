@@ -30,8 +30,8 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
           series_analysis is done
     """
     # class variables to define prefixes for intermediate files
-    FCST_ASCII_FILE_PREFIX = 'FCST_ASCII_FILES_'
-    ANLY_ASCII_FILE_PREFIX = 'ANLY_ASCII_FILES_'
+    FCST_ASCII_FILE_PREFIX = 'FCST_FILES_'
+    ANLY_ASCII_FILE_PREFIX = 'ANLY_FILES_'
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'series_analysis'
@@ -206,7 +206,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                                          input_dict=None,
                                          wildcard_if_empty=True)
             for index, lead in enumerate(lead_seq):
-                lead_groups[f'label_{index}'] = [lead]
+                lead_groups[f'NoLabel_{index}'] = [lead]
 
         for lead_group in lead_groups.items():
             # create input dict and only set 'now' item
@@ -362,6 +362,10 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
              @param time_info dictionary containing time information
              @param storm_list list of storm IDs to process
+             @param lead_group dictionary where key is label and value is a
+              list of forecast leads to process. If no label was defined, the
+              key will match the format "NoLabel_<n>" and if no lead groups
+              are defined, the dictionary should be replaced with None
         """
         output_dir_template = os.path.join(self.c_dict['OUTPUT_DIR'],
                                            self.c_dict['OUTPUT_TEMPLATE'])
@@ -395,6 +399,10 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                     if fcst_files and anly_files:
                         all_fcst_files.extend(fcst_files)
                         all_anly_files.extend(anly_files)
+
+            # skip if no files were found
+            if not all_fcst_files or not all_anly_files:
+                return False
 
             # create forecast file list
             fcst_ascii_filename = f"{self.FCST_ASCII_FILE_PREFIX}{storm_id_out}"
