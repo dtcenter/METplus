@@ -35,7 +35,7 @@ def handle_requirements(requirements):
                                             command)
                 requirement_args.append(command_path)
         else:
-            requirement_args.append(f"pip3 install {requirement")
+            requirement_args.append(f"pip3 install {requirement}")
 
     # add semi-colon to end of each command
     if requirement_args:
