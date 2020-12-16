@@ -20,6 +20,7 @@ from datetime import datetime
 from ..util import met_util as util
 from ..util import ti_calculate, do_string_sub
 from ..util import get_lead_sequence, get_lead_sequence_groups
+from ..util import ti_get_hours_from_lead
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
 
@@ -30,8 +31,8 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
           series_analysis is done
     """
     # class variables to define prefixes for intermediate files
-    FCST_ASCII_FILE_PREFIX = 'FCST_FILES_'
-    ANLY_ASCII_FILE_PREFIX = 'ANLY_FILES_'
+    FCST_ASCII_FILE_PREFIX = 'FCST_FILES'
+    ANLY_ASCII_FILE_PREFIX = 'ANLY_FILES'
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'series_analysis'
@@ -206,7 +207,8 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                                          input_dict=None,
                                          wildcard_if_empty=True)
             for index, lead in enumerate(lead_seq):
-                lead_groups[f'NoLabel_{index}'] = [lead]
+                lead_hours = str(ti_get_hours_from_lead(lead)).zfill(3)
+                lead_groups[f'series_F{lead_hours}'] = [lead]
 
         for lead_group in lead_groups.items():
             # create input dict and only set 'now' item
@@ -219,6 +221,8 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             input_dict['init'] = '*'
             input_dict['valid'] = '*'
 
+            self.logger.debug(f"Processing {lead_group[0]} - forecast leads: "
+                              f"{', '.join(lead_group[1])}")
             if not self.run_at_time_once(input_dict, lead_group):
                 success = False
 
@@ -237,23 +241,31 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         if not storm_list:
             return False
 
-        # Create FCST and ANLY ASCII files based on init time and storm id
-        if not self.create_ascii_storm_files_list(time_info,
-                                                  storm_list,
-                                                  lead_group):
-            self.log_error('No ASCII file lists were created. Skipping.')
-            return False
+        # loop over storm list and process for each
+        # this loop will execute once if not filtering by storm ID
+        for storm_id in storm_list:
+            # Create FCST and ANLY ASCII files based on init time and storm id
+            fcst_path, obs_path = (
+                self.create_ascii_storm_files_list(time_info,
+                                                   storm_id,
+                                                   lead_group)
+            )
+            if not fcst_path or not obs_path:
+                self.log_error('No ASCII file lists were created. Skipping.')
+                continue
 
-        # Build up the arguments to and then run the MET tool series_analysis.
-        if not self.build_and_run_series_request(time_info, storm_list):
-            return False
+            # Build up the arguments to and then run the MET tool series_analysis.
+            if not self.build_and_run_series_request(time_info,
+                                                     fcst_path,
+                                                     obs_path):
+                continue
 
-        if self.c_dict['GENERATE_PLOTS']:
-            self.generate_plots(time_info, storm_list)
-        else:
-            self.logger.debug("Skip plotting output. Change "
-                              "SERIES_ANALYSIS_GENERATE_PLOTS to True to run "
-                              "this step.")
+            if self.c_dict['GENERATE_PLOTS']:
+                self.generate_plots(time_info, storm_id)
+            else:
+                self.logger.debug("Skip plotting output. Change "
+                                  "SERIES_ANALYSIS_GENERATE_PLOTS to True to "
+                                  "run this step.")
 
         self.logger.debug("Finished series analysis by init time")
         return True
@@ -303,6 +315,9 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         file_dict_list = []
         # get all storm IDs
         storm_list = self.get_storm_list(time_info)
+        if not storm_list:
+            return None
+
         for storm_id in storm_list:
             time_info['storm_id'] = storm_id
             file_dict = super().get_files_from_time(time_info)
@@ -359,167 +374,142 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
         return bool(filetime['storm_id'] == runtime['storm_id'])
 
-    def create_ascii_storm_files_list(self, time_info, storm_list, lead_group):
+    def create_ascii_storm_files_list(self, time_info, storm_id, lead_group):
         """! Creates the list of ASCII files that contain the storm id and init
              times.  The list is used to create an ASCII file which will be
              used as the option to the -obs or -fcst flag to the MET
              series_analysis tool.
 
              @param time_info dictionary containing time information
-             @param storm_list list of storm IDs to process
+             @param storm_id storm ID to process
              @param lead_group dictionary where key is label and value is a
               list of forecast leads to process. If no label was defined, the
               key will match the format "NoLabel_<n>" and if no lead groups
               are defined, the dictionary should be replaced with None
         """
+        time_info['storm_id'] = storm_id
+        all_fcst_files = []
+        all_anly_files = []
+        if not lead_group:
+            fcst_files, anly_files = self.subset_input_files(time_info)
+            if not fcst_files or not anly_files:
+                return None, None
+            all_fcst_files.extend(fcst_files)
+            all_anly_files.extend(anly_files)
+            label = ''
+            leads = None
+        else:
+            label = lead_group[0]
+            leads = lead_group[1]
+            for lead in leads:
+                time_info['lead'] = lead
+                fcst_files, anly_files = self.subset_input_files(time_info)
+                if fcst_files and anly_files:
+                    all_fcst_files.extend(fcst_files)
+                    all_anly_files.extend(anly_files)
+
+        # skip if no files were found
+        if not all_fcst_files or not all_anly_files:
+            return None, None
+
+        output_dir = self.get_output_dir(time_info, storm_id, label)
+
+        # create forecast file list
+        fcst_ascii_filename = self.get_ascii_filename('FCST',
+                                                      storm_id,
+                                                      leads)
+        self.write_list_file(fcst_ascii_filename,
+                             all_fcst_files,
+                             output_dir=output_dir)
+
+        # create analysis file list
+        anly_ascii_filename = self.get_ascii_filename('ANLY',
+                                                      storm_id,
+                                                      leads)
+        self.write_list_file(anly_ascii_filename,
+                             all_anly_files,
+                             output_dir=output_dir)
+
+        fcst_path = os.path.join(output_dir, fcst_ascii_filename)
+        obs_path = os.path.join(output_dir, anly_ascii_filename)
+
+        return fcst_path, obs_path
+
+    def get_ascii_filename(self, data_type, storm_id, leads):
+        if data_type == 'FCST':
+            prefix = self.FCST_ASCII_FILE_PREFIX
+        elif data_type == 'ANLY':
+            prefix = self.ANLY_ASCII_FILE_PREFIX
+        else:
+            self.log_error("Invalid data type specified for "
+                           f"get_ascii_filename: {data_type}")
+            return None
+
+        # of storm ID is set (not wildcard), then add it to filename
+        if storm_id == '*':
+            filename = ''
+        else:
+            filename = f"_{storm_id}"
+
+        # add forecast leads if specified
+        if leads is not None:
+            lead_hours_list = [ti_get_hours_from_lead(item) for
+                                 item in leads]
+            # get first forecast lead, convert to hours, and add to filename
+            lead_hours = min(lead_hours_list)
+            lead_str = str(lead_hours).zfill(3)
+            filename += f"_F{lead_str}"
+
+            # if list of forecast leads, get min and max and add them to name
+            if len(lead_hours_list) > 1:
+                max_lead_hours = max(lead_hours_list)
+                max_lead_str = str(max_lead_hours).zfill(3)
+                filename += f"_F{max_lead_str}"
+
+        ascii_filename = f"{prefix}{filename}"
+        return ascii_filename
+
+    def get_output_dir(self, time_info, storm_id, label):
         output_dir_template = os.path.join(self.c_dict['OUTPUT_DIR'],
                                            self.c_dict['OUTPUT_TEMPLATE'])
         output_dir_template = os.path.dirname(output_dir_template)
-
-        for storm_id in storm_list:
-            if storm_id == '*':
-                storm_id_out = 'all_storms'
-            else:
-                storm_id_out = storm_id
-
-            # get output directory including storm ID
-            time_info['storm_id'] = storm_id_out
-            output_dir = do_string_sub(output_dir_template,
-                                       **time_info)
-
-            time_info['storm_id'] = storm_id
-            all_fcst_files = []
-            all_anly_files = []
-            if not lead_group:
-                fcst_files, anly_files = self.subset_input_files(time_info)
-                if not fcst_files or not anly_files:
-                    return False
-                all_fcst_files.extend(fcst_files)
-                all_anly_files.extend(anly_files)
-            else:
-                leads = lead_group[1]
-                for lead in leads:
-                    time_info['lead'] = lead
-                    fcst_files, anly_files = self.subset_input_files(time_info)
-                    if fcst_files and anly_files:
-                        all_fcst_files.extend(fcst_files)
-                        all_anly_files.extend(anly_files)
-
-            # skip if no files were found
-            if not all_fcst_files or not all_anly_files:
-                return False
-
-            # create forecast file list
-            fcst_ascii_filename = f"{self.FCST_ASCII_FILE_PREFIX}{storm_id_out}"
-            self.write_list_file(fcst_ascii_filename,
-                                 all_fcst_files,
-                                 output_dir=output_dir)
-
-            # create analysis file list
-            anly_ascii_filename = f"{self.ANLY_ASCII_FILE_PREFIX}{storm_id_out}"
-            self.write_list_file(anly_ascii_filename,
-                                 all_anly_files,
-                                 output_dir=output_dir)
-
-        self.logger.debug("Finished creating FCST and ANLY ASCII files")
-        return True
-
-    def create_file_list(self, ascii_filename, grid_files, output_dir,
-                         **kwargs):
-        """! Filter tile file list and write list file
-        @param ascii_filename output filename to write list
-        @param grid_files list of file paths to filter
-        @param output_dir directory to write output file
-        @param kwargs filtering options. Valid variable names include -
-          storm_id: ID of storm to filter
-        """
-        # filter tile files by filter criteria provided
-        filtered_files = self.filter_tiles(grid_files,
-                                           **kwargs)
-        if not filtered_files:
-            self.logger.warning("Filtering produces no results. No files "
-                                f"will be included in {ascii_filename}")
-
-        # write ascii file with list of filtered files
-        self.write_list_file(ascii_filename,
-                             filtered_files,
-                             output_dir=output_dir)
-
-    def filter_tiles(self, grid_files, **kwargs):
-        """! Filter list of gridded files based on criteria provided
-        @param grid_files list of files to filter
-        @param kwargs filtering options. Valid variable names include -
-          storm_id: ID of storm to filter
-        @returns subset list of unique files
-        """
-        # get filtering requirements from kwargs
-        if 'storm_id' in kwargs and kwargs['storm_id'] is not None:
-            storm_id = kwargs['storm_id']
-            self.logger.debug(f"Filtering by storm_id: {storm_id}")
+        if storm_id == '*':
+            storm_id_out = 'all_storms'
         else:
-            storm_id = None
+            storm_id_out = storm_id
 
-        # save output files in a set to avoid duplicates
-        output_set = set()
-        for grid_file in grid_files:
-            # filter by storm ID if requested
-            if storm_id:
-                # if ID not found in file path, skip this file
-                if storm_id not in grid_file:
-                    continue
+        # get output directory including storm ID and label
+        time_info['storm_id'] = storm_id_out
+        time_info['label'] = label
+        output_dir = do_string_sub(output_dir_template,
+                                   **time_info)
+        return output_dir
 
-            output_set.add(grid_file)
-
-        # sorted converts the set to a list that is in order
-        return sorted(output_set)
-
-    def build_and_run_series_request(self, time_info, storm_list):
+    def build_and_run_series_request(self, time_info, fcst_path, obs_path):
         """! Build up the -obs, -fcst, -out necessary for running the
              series_analysis MET tool, then invoke series_analysis.
 
              @param time_info dictionary containing time information for
              current run
-             @param storm_list list of storms IDs to process
+             @param storm_id storm ID to process
              @returns True if all runs succeeded, False if there was a problem
              with any of the runs
         """
-        # Now assemble the -fcst, -obs, and -out arguments and invoke the
-        # MET Tool: series_analysis.
         success = True
-        output_dir_template = os.path.join(self.c_dict['OUTPUT_DIR'],
-                                           self.c_dict['OUTPUT_TEMPLATE'])
-        output_dir_template = os.path.dirname(output_dir_template)
-        for storm_id in storm_list:
-            # add the current storm ID to the time dictionary for string sub
-            if storm_id == '*':
-                time_info['storm_id'] = 'all_storms'
-            else:
-                time_info['storm_id'] = storm_id
 
-            output_dir = do_string_sub(output_dir_template,
-                                       **time_info)
-            fcst_path = os.path.join(output_dir,
-                                     f"{self.FCST_ASCII_FILE_PREFIX}{storm_id}")
-            obs_path = os.path.join(output_dir,
-                                    f"{self.ANLY_ASCII_FILE_PREFIX}{storm_id}")
+        # build the command and run series_analysis for each variable
+        for var_info in self.c_dict['VAR_LIST']:
+            self.infiles.append(f"-fcst {fcst_path}")
+            self.infiles.append(f"-obs {obs_path}")
+            self.add_field_info_to_time_info(time_info, var_info)
+            self.set_environment_variables(time_info, var_info)
 
-            # Build the -obs and -fcst portions of the series_analysis
-            # command. Then generate the -out portion, get the NAME and
-            # corresponding LEVEL for each variable.
-            for var_info in self.c_dict['VAR_LIST']:
-                self.infiles.append(f"-fcst {fcst_path}")
-                self.infiles.append(f"-obs {obs_path}")
-                self.add_field_info_to_time_info(time_info, var_info)
-                self.set_environment_variables(time_info, var_info)
+            self.find_and_check_output_file(time_info)
 
-                self.find_and_check_output_file(time_info)
-                self.logger.debug(
-                    f'output dir for series_analysis: {self.get_output_path()}'
-                )
+            if not self.build():
+                success = False
 
-                if not self.build():
-                    success = False
-                self.clear()
+            self.clear()
 
         return success
 
@@ -567,11 +557,11 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
         return cmd
 
-    def generate_plots(self, time_info, storm_list):
+    def generate_plots(self, time_info, storm_id):
         """! Generate the plots from the series_analysis output.
 
              @param time_info dictionary containing time information
-             @param storm_list list of storm IDs to process
+             @param storm_id storm ID to process
         """
         output_dir_template = os.path.join(self.c_dict['OUTPUT_DIR'],
                                            self.c_dict['OUTPUT_TEMPLATE'])
@@ -580,43 +570,44 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             level = var_info['fcst_level']
             self.add_field_info_to_time_info(time_info, var_info)
 
-            for storm_id in storm_list:
-                if storm_id == '*':
-                    time_info['storm_id'] = 'all_storms'
-                else:
-                    time_info['storm_id'] = storm_id
-#                time_info['storm_id'] = storm_id
-                # get the output directory where the series_analysis output
-                # was written. Plots will be written to the same directory
-                plot_input = do_string_sub(output_dir_template,
-                                           **time_info)
+            if storm_id == '*':
+                time_info['storm_id'] = 'all_storms'
+            else:
+                time_info['storm_id'] = storm_id
+            # get the output directory where the series_analysis output
+            # was written. Plots will be written to the same directory
+            plot_input = do_string_sub(output_dir_template,
+                                       **time_info)
 
-                # Get the number of forecast tile files and the name of the
-                # first and last in the list to be used in the -title
-                num, beg, end = (
-                    self.get_fcst_file_info(os.path.dirname(plot_input),
-                                            storm_id)
-                )
-                if num is None:
-                    self.logger.debug(f"Skipping plot for {storm_id}")
-                    continue
+            # Get the number of forecast tile files and the name of the
+            # first and last in the list to be used in the -title
+            num, beg, end = (
+                self.get_fcst_file_info(os.path.dirname(plot_input),
+                                        storm_id)
+            )
+            if num is None:
+                self.logger.debug(f"Skipping plot for {storm_id}")
+                continue
 
-                # Assemble the input file, output file, field string, and title
-                for cur_stat in self.c_dict['STAT_LIST']:
-                    plot_output = (f"{os.path.splitext(plot_input)[0]}_"
-                                   f"{cur_stat}.ps")
+            # Assemble the input file, output file, field string, and title
+            for cur_stat in self.c_dict['STAT_LIST']:
+                min, max = self.get_netcdf_min_max(plot_input,
+                                                   cur_stat)
 
-                    time_info['num_leads'] = num
-                    time_info['fcst_beg'] = beg
-                    time_info['fcst_end'] = end
-                    time_info['stat'] = cur_stat
-                    self.plot_data_plane.c_dict['INPUT_TEMPLATE'] = plot_input
-                    self.plot_data_plane.c_dict['OUTPUT_TEMPLATE'] = plot_output
-                    self.plot_data_plane.c_dict['FIELD_NAME'] = f"series_cnt_{cur_stat}"
-                    self.plot_data_plane.c_dict['FIELD_LEVEL'] = level
-                    self.plot_data_plane.run_at_time_once(time_info)
-                    self.all_commands.extend(self.plot_data_plane.all_commands)
-                    self.plot_data_plane.all_commands.clear()
+                plot_output = (f"{os.path.splitext(plot_input)[0]}_"
+                               f"{cur_stat}.ps")
+
+                time_info['num_leads'] = num
+                time_info['fcst_beg'] = beg
+                time_info['fcst_end'] = end
+                time_info['stat'] = cur_stat
+                self.plot_data_plane.c_dict['INPUT_TEMPLATE'] = plot_input
+                self.plot_data_plane.c_dict['OUTPUT_TEMPLATE'] = plot_output
+                self.plot_data_plane.c_dict['FIELD_NAME'] = f"series_cnt_{cur_stat}"
+                self.plot_data_plane.c_dict['FIELD_LEVEL'] = level
+                self.plot_data_plane.run_at_time_once(time_info)
+                self.all_commands.extend(self.plot_data_plane.all_commands)
+                self.plot_data_plane.all_commands.clear()
 
     def get_fcst_file_info(self, output_dir, storm_id):
         """! Get the number of all the gridded forecast n x m tile
@@ -633,7 +624,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             be parsed, return (None, None, None)
         """
         fcst_path = os.path.join(output_dir,
-                                 f"{self.FCST_ASCII_FILE_PREFIX}{storm_id}")
+                                 f"{self.FCST_ASCII_FILE_PREFIX}_{storm_id}")
         # read the file but skip the first line because it contains 'file_list'
         with open(fcst_path, 'r') as file_handle:
             files_of_interest = file_handle.readlines()[1:]
