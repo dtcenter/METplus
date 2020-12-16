@@ -3,9 +3,11 @@ import os
 import sys
 import logging
 from datetime import datetime
+from dateutil.relativedelta import relativedelta
 
 import produtil
 
+from metplus.util import ti_get_seconds_from_lead
 from metplus.wrappers.series_by_init_wrapper import SeriesByInitWrapper
 
 def series_init_wrapper(metplus_config, config_overrides=None):
@@ -69,40 +71,6 @@ def test_get_storms_list(metplus_config):
 
     storm_list = siw.get_storm_list(time_info)
     assert storm_list == expected_storm_list
-
-@pytest.mark.parametrize(
-        'file_list, storm_id, expected_files', [
-        # filter out storm ID = MY_STORM_ID
-        (['/some/file/name',
-          '/some/file/MY_STORM_ID',
-          '/some/other/MY_STORM_ID/file'],
-         'MY_STORM_ID',
-         ['/some/file/MY_STORM_ID',
-          '/some/other/MY_STORM_ID/file']
-         ),
-        # no filtering by storm ID
-        (['/some/file/name',
-          '/some/file/MY_STORM_ID',
-          '/some/other/MY_STORM_ID/file'],
-         None,
-         ['/some/file/name',
-          '/some/file/MY_STORM_ID',
-          '/some/other/MY_STORM_ID/file']
-         ),
-        # filter by non-existent storm ID
-        (['/some/file/name',
-          '/some/file/MY_STORM_ID',
-          '/some/other/MY_STORM_ID/file'],
-         'OTHER_STORM_ID',
-         []
-         ),
-    ]
-)
-def test_filter_tiles_storm_id(metplus_config, file_list, storm_id,
-                               expected_files):
-    siw = series_init_wrapper(metplus_config)
-    assert(siw.filter_tiles(file_list,
-                            storm_id=storm_id) == sorted(expected_files))
 
 # added list of all files for reference for creating subsets
 all_fake_fcst = ['fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
@@ -269,7 +237,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
         assert(actual_file.replace(tile_input_dir, '').lstrip('/') == expected_file)
 
 @pytest.mark.parametrize(
-        'config_overrides, time_info, storm_list, lead_group, expect_fcst_subset, expect_anly_subset', [
+        'config_overrides, time_info, storm_id, lead_group, expect_fcst_subset, expect_anly_subset', [
         # filter by init all storms
         ({'LEAD_SEQ': '0H, 6H, 12H',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "{init?fmt=%Y%m%d_%H}/{storm_id}/series_{fcst_name}_{fcst_level}.nc",
@@ -278,7 +246,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'valid': '*',
           'lead': '*',
           },
-         ['*'],
+         '*',
          None,
          ['fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
           'fcst/20141214_00/ML1221072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
@@ -300,7 +268,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'valid': '*',
           'lead': '*',
           },
-         ['ML1201072014'],
+         'ML1201072014',
          None,
          ['fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
           'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
@@ -318,7 +286,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'valid': '*',
           'lead': '*',
           },
-         ['ML1221072014'],
+         'ML1221072014',
          None,
          ['fcst/20141214_00/ML1221072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
           'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
@@ -336,7 +304,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'valid': '*',
           'lead': 21600,
           },
-         ['*'],
+         '*',
          None,
          ['fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
           'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
@@ -352,7 +320,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'valid': '*',
           'lead': 21600,
           },
-         ['ML1201072014'],
+         'ML1201072014',
          None,
          ['fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
          ],
@@ -366,7 +334,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'valid': '*',
           'lead': 21600,
           },
-         ['ML1221072014'],
+         'ML1221072014',
          None,
          ['fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
          ],
@@ -382,7 +350,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
          {'init': '*',
           'valid': '*',
           },
-         ['*'],
+         '*',
          ('Group1', [0, 21600]),
          ['fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
           'fcst/20141214_00/ML1221072014/FCST_TILE_F000_gfs_4_20141214_0000_000.nc',
@@ -404,7 +372,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
          {'init': '*',
           'valid': '*',
           },
-         ['*'],
+         '*',
          ('Group2', [43200]),
          ['fcst/20141214_00/ML1201072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
           'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
@@ -415,7 +383,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     ]
 )
 def test_create_ascii_storm_files_list(metplus_config, config_overrides,
-                                       time_info, storm_list, lead_group,
+                                       time_info, storm_id, lead_group,
                                        expect_fcst_subset, expect_anly_subset):
     all_config_overrides = {
         'LOOP_BY': 'INIT',
@@ -455,10 +423,10 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
     assert(wrapper.get_all_files())
 
     # read output files and compare to expected list
-    if storm_list == ['*']:
+    if storm_id == '*':
         storm_dir = 'all_storms'
     else:
-        storm_dir = storm_list[0]
+        storm_dir = storm_id
 
     templates = config_overrides['SERIES_ANALYSIS_OUTPUT_TEMPLATE'].split('/')
     if len(templates) == 1:
@@ -466,23 +434,28 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
     else:
         output_prefix = os.path.join('20141214_00', storm_dir)
 
-    fcst_list_file = f"{wrapper.FCST_ASCII_FILE_PREFIX}{storm_dir}"
+    if lead_group:
+        leads = lead_group[1]
+    else:
+        leads = None
+    fcst_list_file = wrapper.get_ascii_filename('FCST', storm_id, leads)
     fcst_file_path = os.path.join(output_dir,
                                   output_prefix,
                                   fcst_list_file)
     if os.path.exists(fcst_file_path):
         os.remove(fcst_file_path)
 
-    anly_list_file = f"{wrapper.ANLY_ASCII_FILE_PREFIX}{storm_dir}"
+    anly_list_file = wrapper.get_ascii_filename('ANLY', storm_id, leads)
     anly_file_path = os.path.join(output_dir,
                                   output_prefix,
                                   anly_list_file)
     if os.path.exists(anly_file_path):
         os.remove(anly_file_path)
 
-    assert(wrapper.create_ascii_storm_files_list(time_info,
-                                                 storm_list,
-                                                 lead_group))
+    fcst_path, obs_path = wrapper.create_ascii_storm_files_list(time_info,
+                                                                storm_id,
+                                                                lead_group)
+    assert(fcst_path == fcst_file_path and obs_path == anly_file_path)
 
     with open(fcst_file_path, 'r') as file_handle:
         actual_fcsts = file_handle.readlines()
@@ -499,3 +472,77 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
     for actual_file, expected_file in zip(actual_anly_files, expect_anly_subset):
         actual_file = actual_file.replace(tile_input_dir, '').lstrip('/')
         assert(actual_file == expected_file)
+
+@pytest.mark.parametrize(
+        'storm_id, leads, expected_result', [
+        # storm ID, no leads
+        ('ML1221072014', None, '_FILES_ML1221072014'),
+        # no storm ID no leads
+        ('*', None, '_FILES'),
+        # storm ID, 1 lead
+        ('ML1221072014', [relativedelta(hours=12)], '_FILES_ML1221072014_F012'),
+        # no storm ID, 1 lead
+        ('*', [relativedelta(hours=12)], '_FILES_F012'),
+        # storm ID, 2 leads
+        ('ML1221072014', [relativedelta(hours=18),
+                                  relativedelta(hours=12)],
+         '_FILES_ML1221072014_F012_F018'),
+        # no storm ID, 2 leads
+        ('*', [relativedelta(hours=18),
+                       relativedelta(hours=12)],
+         '_FILES_F012_F018'),
+        # storm ID, 3 leads
+        ('ML1221072014', [relativedelta(hours=15),
+                                  relativedelta(hours=18),
+                                  relativedelta(hours=12)],
+         '_FILES_ML1221072014_F012_F018'),
+        # no storm ID, 3 leads
+        ('*', [relativedelta(hours=15),
+                       relativedelta(hours=18),
+                       relativedelta(hours=12)],
+         '_FILES_F012_F018'),
+    ]
+)
+def test_get_ascii_filename(metplus_config, storm_id, leads,
+                            expected_result):
+    wrapper = series_init_wrapper(metplus_config)
+    for data_type in ['FCST', 'ANLY']:
+        actual_result = wrapper.get_ascii_filename(data_type,
+                                                   storm_id,
+                                                   leads)
+        assert(actual_result == f"{data_type}{expected_result}")
+
+        if leads is None:
+            return
+
+        lead_seconds = [ti_get_seconds_from_lead(item) for item in leads]
+        actual_result = wrapper.get_ascii_filename(data_type,
+                                                   storm_id,
+                                                   lead_seconds)
+        assert(actual_result == f"{data_type}{expected_result}")
+@pytest.mark.parametrize(
+        # no storm ID, label
+        'template, storm_id, label, expected_result', [
+        ('{init?fmt=%Y%m%d_%H}/{storm_id}_{label}/series_{fcst_name}_{fcst_level}.nc',
+         '*', 'Label1', '20141031_12/all_storms_Label1'),
+        # storm ID, label
+        ('{init?fmt=%Y%m%d_%H}/{storm_id}_{label}/series_{fcst_name}_{fcst_level}.nc',
+         'ML1221072014', 'Label1', '20141031_12/ML1221072014_Label1'),
+        # no storm ID, no label
+        ('{init?fmt=%Y%m%d_%H}/{storm_id}_{label}/series_{fcst_name}_{fcst_level}.nc',
+         '*', '', '20141031_12/all_storms_'),
+        # storm ID, no label
+        ('{init?fmt=%Y%m%d_%H}/{storm_id}_{label}/series_{fcst_name}_{fcst_level}.nc',
+         'ML1221072014', '', '20141031_12/ML1221072014_'),
+    ]
+)
+def test_get_output_dir(metplus_config, template, storm_id, label, expected_result):
+    time_info = {'init': datetime(2014, 10, 31, 12, 15),
+                 'valid': datetime(2014, 10, 31, 18, 15),
+                 'lead': relativedelta(hours=6),}
+    wrapper = series_init_wrapper(metplus_config)
+    output_dir = '/some/fake/output/dir'
+    wrapper.c_dict['OUTPUT_DIR'] = output_dir
+    wrapper.c_dict['OUTPUT_TEMPLATE'] = template
+    actual_result = wrapper.get_output_dir(time_info, storm_id, label)
+    assert(actual_result == os.path.join(output_dir, expected_result))
