@@ -106,21 +106,22 @@ def ti_get_hours_from_relativedelta(lead, valid_time=None):
           that contain months or years
          @returns integer value of hours or None if cannot compute
     """
-    lead_hours = ti_get_seconds_from_relativedelta(lead, valid_time)
-    if lead_hours is None:
+    lead_seconds = ti_get_seconds_from_relativedelta(lead, valid_time)
+    if lead_seconds is None:
         return None
 
     # integer division doesn't handle negative numbers properly
     # (result is always -1) so handle appropriately
-    if lead_hours < 0:
-        return - (-lead_hours // 3600)
+    if lead_seconds < 0:
+        return - (-lead_seconds // 3600)
 
-    return lead_hours // 3600
+    return lead_seconds // 3600
 
 def ti_get_seconds_from_relativedelta(lead, valid_time=None):
     """!Check relativedelta object contents and compute the total number of seconds
         in the time. Return None if years or months are set, because the exact number
         of seconds cannot be calculated without a relative time"""
+
     # return None if input is not relativedelta object
     if not isinstance(lead, relativedelta):
         return None
@@ -148,7 +149,7 @@ def ti_get_seconds_from_relativedelta(lead, valid_time=None):
 
     return total_seconds
 
-def ti_get_seconds_from_lead(lead, valid):
+def ti_get_seconds_from_lead(lead, valid='*'):
     if isinstance(lead, int):
         return lead
 
@@ -158,6 +159,13 @@ def ti_get_seconds_from_lead(lead, valid):
         valid_time = valid
 
     return ti_get_seconds_from_relativedelta(lead, valid_time)
+
+def ti_get_hours_from_lead(lead, valid='*'):
+    lead_seconds = ti_get_seconds_from_lead(lead, valid)
+    if lead_seconds is None:
+        return None
+
+    return lead_seconds // 3600
 
 def ti_get_lead_string(lead, plural=True):
     """!Check relativedelta object contents and create string representation
