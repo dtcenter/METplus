@@ -43,7 +43,7 @@ def test_get_fcst_file_info(metplus_config):
     assert beg == expected_beg
     assert end == expected_end
 
-def test_get_storms_for_init(metplus_config):
+def test_get_storms_list(metplus_config):
     """Verify that the expected number of storms
        are found for the init time 20141214_00
     """
@@ -67,7 +67,7 @@ def test_get_storms_for_init(metplus_config):
     siw.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
     siw.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
 
-    storm_list = siw.get_storms_for_init(time_info)
+    storm_list = siw.get_storm_list(time_info)
     assert storm_list == expected_storm_list
 
 @pytest.mark.parametrize(

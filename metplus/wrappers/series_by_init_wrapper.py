@@ -233,18 +233,16 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         self.logger.debug("Starting series analysis by init time")
 
         # if running for each storm ID, get list of storms
-        if self.c_dict['RUN_ONCE_PER_STORM_ID']:
-            storm_list = self.get_storms_for_init(time_info)
-            if not storm_list:
-                # No storms for this init time, check next init time in list
-                self.logger.debug(f"No storms found for current init time")
-                return False
-        else:
-            # use wildcard for storm ID if processing all storms at once
-            storm_list = ['*']
+        storm_list = self.get_storm_list(time_info)
+        if not storm_list:
+            return False
 
         # Create FCST and ANLY ASCII files based on init time and storm id
-        self.create_ascii_storm_files_list(time_info, storm_list, lead_group)
+        if not self.create_ascii_storm_files_list(time_info,
+                                                  storm_list,
+                                                  lead_group):
+            self.log_error('No ASCII file lists were created. Skipping.')
+            return False
 
         # Build up the arguments to and then run the MET tool series_analysis.
         if not self.build_and_run_series_request(time_info, storm_list):
@@ -260,7 +258,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         self.logger.debug("Finished series analysis by init time")
         return True
 
-    def get_storms_for_init(self, time_info):
+    def get_storm_list(self, time_info):
         """! Find the .tcst filter file for the current run time and get the
              list of storm IDs that are found in the file.
 
@@ -268,6 +266,9 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             @returns A list of all the storms ids that correspond to the
              current init time or None if filter file does not exist
         """
+        if not self.c_dict['RUN_ONCE_PER_STORM_ID']:
+            return ['*']
+
         # Retrieve filter files, first create the filename
         # by piecing together the out_dir_base with the cur_init.
         filter_template = os.path.join(self.c_dict['TC_STAT_INPUT_DIR'],
@@ -281,6 +282,10 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         # Now that we have the filter filename for the init time, let's
         # extract all the storm ids in this filter file.
         storm_list = util.get_storm_ids(filter_file, self.logger)
+        if not storm_list:
+            # No storms for this init time, check next init time in list
+            self.logger.debug(f"No storms found for current runtime")
+            return None
 
         return storm_list
 
@@ -297,7 +302,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         """
         file_dict_list = []
         # get all storm IDs
-        storm_list = self.get_storms_for_init(time_info)
+        storm_list = self.get_storm_list(time_info)
         for storm_id in storm_list:
             time_info['storm_id'] = storm_id
             file_dict = super().get_files_from_time(time_info)
