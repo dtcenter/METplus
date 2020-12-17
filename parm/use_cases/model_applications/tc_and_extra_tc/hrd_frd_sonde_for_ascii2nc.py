@@ -70,7 +70,7 @@ with open(input_file, 'r') as f:
         dsec    = str(columns[1])     # time elasp (s)
         pres    = float(columns[2])   # pressure (mb)
         temp    = float(columns[3])   # temperature (C)
-        temp    = temp + 273.0        # convert deg C to K
+        temp    = temp + 273.15        # convert deg C to K
         relh    = float(columns[4])   # relative humidity (%)
         geop    = int(columns[5])     # geopotential mass height (m)
         wind_dir = int(columns[6])    # wind direction (E)
