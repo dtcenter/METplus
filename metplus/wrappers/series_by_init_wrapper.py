@@ -225,10 +225,12 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         return pdp_wrapper
 
     def run_all_times(self):
-        super.run_all_times()
+        super().run_all_times()
 
         if self.c_dict['GENERATE_ANIMATIONS']:
             self.generate_animations()
+
+        return self.all_commands
 
     def run_once_per_lead(self):
         self.logger.debug("Running once for forecast lead time")
@@ -632,8 +634,8 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
             # Assemble the input file, output file, field string, and title
             for cur_stat in self.c_dict['STAT_LIST']:
-                key = f"{name}_{level}_{stat}"
-                if self.c_dict['PNG_FILES'][key] is None:
+                key = f"{name}_{level}_{cur_stat}"
+                if self.c_dict['PNG_FILES'].get(key) is None:
                     self.c_dict['PNG_FILES'][key] = []
 
                 min, max = self.get_netcdf_min_max(plot_input,
