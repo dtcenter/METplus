@@ -32,15 +32,18 @@ def test_get_fcst_file_info(metplus_config):
     expected_beg = 'F000'
     expected_end = 'F048'
 
-    siw = series_init_wrapper(metplus_config)
+    wrapper = series_init_wrapper(metplus_config)
 
     output_dir = (
-        os.path.join(siw.config.getdir('METPLUS_BASE'),
+        os.path.join(wrapper.config.getdir('METPLUS_BASE'),
                      'internal_tests',
                      'data',
                      'file_lists')
     )
-    num, beg, end = siw.get_fcst_file_info(output_dir, storm_id)
+    output_filename = f"{wrapper.FCST_ASCII_FILE_PREFIX}_{storm_id}"
+    fcst_path = os.path.join(output_dir, output_filename)
+
+    num, beg, end = wrapper.get_fcst_file_info(fcst_path)
     assert num == expected_num
     assert beg == expected_beg
     assert end == expected_end
@@ -65,11 +68,11 @@ def test_get_storms_list(metplus_config):
     )
     stat_input_template = 'fake_filter_{init?fmt=%Y%m%d_%H}.tcst'
 
-    siw = series_init_wrapper(metplus_config)
-    siw.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
-    siw.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
+    wrapper = series_init_wrapper(metplus_config)
+    wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
+    wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
 
-    storm_list = siw.get_storm_list(time_info)
+    storm_list = wrapper.get_storm_list(time_info)
     assert storm_list == expected_storm_list
 
 # added list of all files for reference for creating subsets
