@@ -29,8 +29,8 @@ def test_get_fcst_file_info(metplus_config):
     """
     storm_id = 'ML1200942014'
     expected_num = str(9)
-    expected_beg = 'F000'
-    expected_end = 'F048'
+    expected_beg = '000'
+    expected_end = '048'
 
     wrapper = series_init_wrapper(metplus_config)
 

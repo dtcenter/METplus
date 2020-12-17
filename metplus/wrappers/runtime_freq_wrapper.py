@@ -255,7 +255,6 @@ class RuntimeFreqWrapper(CommandBuilder):
             return False
 
         self.c_dict['ALL_FILES'] = all_files
-        self.logger.debug(f"All files: {all_files}")
         return True
 
     def get_files_from_time(self, time_info):

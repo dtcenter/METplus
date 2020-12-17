@@ -28,8 +28,8 @@ except Exception as err_msg:
 
 from ..util import met_util as util
 from ..util import ti_calculate, do_string_sub
-from ..util import get_lead_sequence, get_lead_sequence_groups
-from ..util import ti_get_hours_from_lead
+from ..util import get_lead_sequence, get_lead_sequence_groups, set_input_dict
+from ..util import ti_get_hours_from_lead, ti_get_lead_string
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
 
@@ -124,11 +124,6 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         )
         if not c_dict['OUTPUT_DIR']:
             self.log_error("Must set SERIES_ANALYSIS_OUTPUT_DIR to run.")
-
-        c_dict['FILTERED_OUTPUT_DIR'] = (
-            self.config.getdir('SERIES_ANALYSIS_FILTERED_OUTPUT_DIR',
-                               '')
-        )
 
         c_dict['FCST_TILE_PREFIX'] = self.config.getstr('config',
                                               'FCST_EXTRACT_TILES_PREFIX',
@@ -255,9 +250,11 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
             input_dict['init'] = '*'
             input_dict['valid'] = '*'
+            lead_hours = [ti_get_lead_string(item, plural=False) for
+                          item in lead_group[1]]
 
             self.logger.debug(f"Processing {lead_group[0]} - forecast leads: "
-                              f"{', '.join(lead_group[1])}")
+                              f"{', '.join(lead_hours)}")
             if not self.run_at_time_once(input_dict, lead_group):
                 success = False
 
@@ -534,11 +531,21 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         """
         success = True
 
+        num, beg, end = self.get_fcst_file_info(fcst_path)
+        if num is None:
+            self.logger.debug(f"Skipping series_analysis")
+            return False
+
+        time_info['fcst_beg'] = beg
+        time_info['fcst_end'] = end
+
         # build the command and run series_analysis for each variable
         for var_info in self.c_dict['VAR_LIST']:
             self.infiles.append(f"-fcst {fcst_path}")
             self.infiles.append(f"-obs {obs_path}")
             self.add_field_info_to_time_info(time_info, var_info)
+            # Get the number of forecast tile files and the name of the
+            # first and last in the list to be used in the -title
             self.set_environment_variables(time_info, var_info)
 
             self.find_and_check_output_file(time_info)
@@ -662,6 +669,8 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                 self.c_dict['PNG_FILES'][key].append(png_filename)
 
     def generate_animations(self):
+        success = True
+
         convert_exe = self.c_dict.get('CONVERT_EXE')
         if not convert_exe:
             self.log_error("[exe] CONVERT not set correctly. Cannot generate"
@@ -673,20 +682,21 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         if not os.path.exists(animate_dir):
             os.makedirs(animate_dir)
 
-        for group, files in self.c_dict['PNG_FILES']:
+        for group, files in self.c_dict['PNG_FILES'].items():
             # write list of files to a text file
             list_file = f'series_animate_{group}_files.txt'
             self.write_list_file(list_file,
                                  files,
                                  output_dir=animate_dir)
 
-            list_file_path = os.path.join(animate_dir, list_file)
-
             gif_file = f'series_animate_{group}.gif'
-            git_filepath = os.path.join(animate_dir, gif_file)
+            gif_filepath = os.path.join(animate_dir, gif_file)
             convert_command = (f"{convert_exe} -dispose Background -delay 100 "
                                f"{' '.join(files)} {gif_filepath}")
-            return self.run_command(convert_command)
+            if not self.run_command(convert_command):
+                success = False
+
+        return success
 
     def get_fcst_file_info(self, fcst_path):
         """! Get the number of all the gridded forecast n x m tile
@@ -720,13 +730,13 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         match_end = re.search(fcst_regex, last)
 
         if match_beg:
-            beg = f"F{match_beg.group(1)}"
+            beg = f"{match_beg.group(1)}"
         else:
             self.log_error("Unexpected file format encountered, exiting...")
             return None, None, None
 
         if match_end:
-            end = f"F{match_end.group(1)}"
+            end = f"{match_end.group(1)}"
         else:
             self.log_error("Unexpected file format encountered, exiting...")
             return None, None, None
