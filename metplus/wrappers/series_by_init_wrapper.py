@@ -130,9 +130,6 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                                '')
         )
 
-        c_dict['TC_STAT_OUTPUT_TEMPLATE'] = self.config.getraw('config',
-                                                               'TC_STAT_OUTPUT_TEMPLATE')
-
         c_dict['FCST_TILE_PREFIX'] = self.config.getstr('config',
                                               'FCST_EXTRACT_TILES_PREFIX',
                                               '')
@@ -153,15 +150,19 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             f".*{c_dict['ANLY_TILE_PREFIX']}.*nc"
         )
 
-        c_dict['CONFIG_FILE'] = self.config.getstr('config',
-                                                   'SERIES_ANALYSIS_CONFIG_FILE',
-                                                   '')
+        c_dict['CONFIG_FILE'] = (
+            self.config.getstr('config',
+                               'SERIES_ANALYSIS_CONFIG_FILE',
+                               '')
+        )
         if not c_dict['CONFIG_FILE']:
             self.log_error("SERIES_ANALYSIS_CONFIG_FILE must be set")
 
-        c_dict['BACKGROUND_MAP'] = self.config.getbool('config',
-                                             'SERIES_ANALYSIS_BACKGROUND_MAP',
-                                             False)
+        c_dict['BACKGROUND_MAP'] = (
+            self.config.getbool('config',
+                                'SERIES_ANALYSIS_BACKGROUND_MAP',
+                                False)
+        )
 
         c_dict['VAR_LIST'] = util.parse_var_list(self.config)
         if not c_dict['VAR_LIST']:
@@ -173,6 +174,19 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                                 'SERIES_ANALYSIS_GENERATE_PLOTS',
                                 True)
         )
+
+        c_dict['GENERATE_ANIMATIONS'] = (
+            self.config.getbool('config',
+                                'SERIES_ANALYSIS_GENERATE_ANIMATIONS',
+                                False)
+        )
+
+        c_dict['CONVERT_EXE'] = self.config.getexe('CONVERT')
+        if c_dict['GENERATE_ANIMATIONS'] and not c_dict['CONVERT_EXE']:
+            self.log_error("[exe] CONVERT must be set correctly if "
+                           "SERIES_ANALYSIS_GENERATE_ANIMATIONS is True")
+
+        c_dict['PNG_FILES'] = {}
 
         c_dict['RUN_ONCE_PER_STORM_ID'] = (
             self.config.getbool('config',
@@ -209,6 +223,12 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         pdp_wrapper = PlotDataPlaneWrapper(self.config,
                                            config_overrides=plot_overrides)
         return pdp_wrapper
+
+    def run_all_times(self):
+        super.run_all_times()
+
+        if self.c_dict['GENERATE_ANIMATIONS']:
+            self.generate_animations()
 
     def run_once_per_lead(self):
         self.logger.debug("Running once for forecast lead time")
@@ -274,7 +294,9 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                 continue
 
             if self.c_dict['GENERATE_PLOTS']:
-                self.generate_plots(time_info, storm_id)
+                 self.generate_plots(fcst_path,
+                                     time_info,
+                                     storm_id)
             else:
                 self.logger.debug("Skip plotting output. Change "
                                   "SERIES_ANALYSIS_GENERATE_PLOTS to True to "
@@ -570,42 +592,53 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
         return cmd
 
-    def generate_plots(self, time_info, storm_id):
+    def generate_plots(self, fcst_path, time_info, storm_id):
         """! Generate the plots from the series_analysis output.
 
              @param time_info dictionary containing time information
              @param storm_id storm ID to process
         """
-        output_dir_template = os.path.join(self.c_dict['OUTPUT_DIR'],
-                                           self.c_dict['OUTPUT_TEMPLATE'])
+        output_dir = os.path.dirname(fcst_path)
+        output_filename = os.path.basename(self.c_dict['OUTPUT_TEMPLATE'])
+        output_template = os.path.join(output_dir, output_filename)
 
         for var_info in self.c_dict['VAR_LIST']:
+            name = var_info['fcst_name']
             level = var_info['fcst_level']
             self.add_field_info_to_time_info(time_info, var_info)
 
+            # change wildcard storm ID to all_storms
             if storm_id == '*':
                 time_info['storm_id'] = 'all_storms'
             else:
                 time_info['storm_id'] = storm_id
+
             # get the output directory where the series_analysis output
             # was written. Plots will be written to the same directory
-            plot_input = do_string_sub(output_dir_template,
+            plot_input = do_string_sub(output_template,
                                        **time_info)
 
             # Get the number of forecast tile files and the name of the
             # first and last in the list to be used in the -title
-            num, beg, end = (
-                self.get_fcst_file_info(os.path.dirname(plot_input),
-                                        storm_id)
-            )
+            num, beg, end = self.get_fcst_file_info(fcst_path)
             if num is None:
                 self.logger.debug(f"Skipping plot for {storm_id}")
                 continue
 
+            _, nseries = self.get_netcdf_min_max(plot_input,
+                                                 'series_cnt_TOTAL')
+            nseries_str = '' if nseries is None else f" (N = {nseries})"
+            time_info['nseries'] = nseries_str
+
             # Assemble the input file, output file, field string, and title
             for cur_stat in self.c_dict['STAT_LIST']:
+                key = f"{name}_{level}_{stat}"
+                if self.c_dict['PNG_FILES'][key] is None:
+                    self.c_dict['PNG_FILES'][key] = []
+
                 min, max = self.get_netcdf_min_max(plot_input,
                                                    f'series_cnt_{cur_stat}')
+                range_min_max = f"{min} {max}"
 
                 plot_output = (f"{os.path.splitext(plot_input)[0]}_"
                                f"{cur_stat}.ps")
@@ -618,26 +651,52 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                 self.plot_data_plane.c_dict['OUTPUT_TEMPLATE'] = plot_output
                 self.plot_data_plane.c_dict['FIELD_NAME'] = f"series_cnt_{cur_stat}"
                 self.plot_data_plane.c_dict['FIELD_LEVEL'] = level
+                self.plot_data_plane.c_dict['RANGE_MIN_MAX'] = range_min_max
                 self.plot_data_plane.run_at_time_once(time_info)
                 self.all_commands.extend(self.plot_data_plane.all_commands)
                 self.plot_data_plane.all_commands.clear()
 
-    def get_fcst_file_info(self, output_dir, storm_id):
+                png_filename = f"{os.path.splitext(plot_output)[0]}.png"
+                self.c_dict['PNG_FILES'][key].append(png_filename)
+
+    def generate_animations(self):
+        convert_exe = self.c_dict.get('CONVERT_EXE')
+        if not convert_exe:
+            self.log_error("[exe] CONVERT not set correctly. Cannot generate"
+                           "image file.")
+            return False
+
+        animate_dir = os.path.join(self.c_dict['OUTPUT_DIR'],
+                                   'series_animate')
+        if not os.path.exists(animate_dir):
+            os.makedirs(animate_dir)
+
+        for group, files in self.c_dict['PNG_FILES']:
+            # write list of files to a text file
+            list_file = f'series_animate_{group}_files.txt'
+            self.write_list_file(list_file,
+                                 files,
+                                 output_dir=animate_dir)
+
+            list_file_path = os.path.join(animate_dir, list_file)
+
+            gif_file = f'series_animate_{group}.gif'
+            git_filepath = os.path.join(animate_dir, gif_file)
+            convert_command = (f"{convert_exe} -dispose Background -delay 100 "
+                               f"{' '.join(files)} {gif_filepath}")
+            return self.run_command(convert_command)
+
+    def get_fcst_file_info(self, fcst_path):
         """! Get the number of all the gridded forecast n x m tile
-            files for a given storm id and init time
-            (that were created by extract_tiles). Determine the filename of the
+            files. Determine the filename of the
             first and last files.  This information is used to create
             the title value to the -title opt in plot_data_plane.
 
-            @param output_dir Directory containing ASCII list file of
-             forecast files to process
-            @param storm_id ID of storm to process
+            @param fcst_path path to forecast ascii list file to process
             @returns num, beg, end:  A tuple representing the number of
             forecast tile files, and the first and last file. If info cannot
             be parsed, return (None, None, None)
         """
-        fcst_path = os.path.join(output_dir,
-                                 f"{self.FCST_ASCII_FILE_PREFIX}_{storm_id}")
         # read the file but skip the first line because it contains 'file_list'
         with open(fcst_path, 'r') as file_handle:
             files_of_interest = file_handle.readlines()[1:]
