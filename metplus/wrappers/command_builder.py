@@ -1391,11 +1391,10 @@ class CommandBuilder:
                             'width',
                             'REGRID_WIDTH')
 
-        self.set_c_dict_thresh(c_dict,
-                               f'{app_name_upper}_REGRID_VLD_THRESH',
-                               'vld_thresh',
-                               'REGRID_VLD_THRESH'
-                               )
+        self.set_c_dict_float(c_dict,
+                              f'{app_name_upper}_REGRID_VLD_THRESH',
+                              'vld_thresh',
+                              'REGRID_VLD_THRESH')
         self.set_c_dict_string(c_dict,
                                f'{app_name_upper}_REGRID_SHAPE',
                                'shape',
