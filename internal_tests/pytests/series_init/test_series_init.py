@@ -32,7 +32,14 @@ def test_get_fcst_file_info(metplus_config):
     expected_beg = '000'
     expected_end = '048'
 
+    time_info = {'storm_id': storm_id, 'lead': 0, 'valid': '', 'init': ''}
+
     wrapper = series_init_wrapper(metplus_config)
+    wrapper.c_dict['FCST_INPUT_DIR'] = '/fake/path/of/file'
+    wrapper.c_dict['FCST_INPUT_TEMPLATE'] = (
+        "FCST_TILE_F{lead?fmt=%3H}_gfs_4_{init?fmt=%Y%m%d}_"
+        "{init?fmt=%H}00_000.nc"
+    )
 
     output_dir = (
         os.path.join(wrapper.config.getdir('METPLUS_BASE'),
@@ -43,7 +50,7 @@ def test_get_fcst_file_info(metplus_config):
     output_filename = f"{wrapper.FCST_ASCII_FILE_PREFIX}_{storm_id}"
     fcst_path = os.path.join(output_dir, output_filename)
 
-    num, beg, end = wrapper.get_fcst_file_info(fcst_path)
+    num, beg, end = wrapper.get_fcst_file_info(fcst_path, time_info)
     assert num == expected_num
     assert beg == expected_beg
     assert end == expected_end

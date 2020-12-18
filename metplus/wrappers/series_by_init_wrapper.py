@@ -807,6 +807,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         del time_info_partial['lead']
         del time_info_partial['init']
         del time_info_partial['valid']
+
         template_no_lead = do_string_sub(full_template,
                                          skip_missing_tags=True,
                                          **time_info_partial)
@@ -816,11 +817,13 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         end = None
         for filepath in files_of_interest:
             filepath = filepath.strip()
-            time_info = parse_template(template_no_lead, filepath, self.logger)
-            if not time_info:
+            file_time_info = parse_template(template_no_lead,
+                                            filepath,
+                                            self.logger)
+            if not file_time_info:
                 continue
-            lead = ti_get_seconds_from_lead(time_info.get('lead'),
-                                            time_info.get('valid'))
+            lead = ti_get_seconds_from_lead(file_time_info.get('lead'),
+                                            file_time_info.get('valid'))
             if lead < smallest_fcst:
                 smallest_fcst = lead
                 beg = str(ti_get_hours_from_lead(lead)).zfill(3)

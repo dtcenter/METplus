@@ -459,6 +459,9 @@ def find_and_replace_tags_in_template(match_list, tmpl, kwargs, skip_missing_tag
             replacement_dict[string_to_replace] = value
 
     # Replace regex with properly formatted information
+    if not replacement_dict:
+        return tmpl
+
     return multiple_replace(replacement_dict, tmpl)
 
 def parse_template(template, filepath, logger=None):
