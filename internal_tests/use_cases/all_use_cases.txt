@@ -34,8 +34,8 @@ RegridDataPlane_multi_field_one_file:: met_tool_wrapper/RegridDataPlane/RegridDa
 RegridDataPlane_python_embedding:: met_tool_wrapper/RegridDataPlane/RegridDataPlane_python_embedding.conf
 StatAnalysis:: met_tool_wrapper/StatAnalysis/StatAnalysis.conf
 StatAnalysis_python_embedding:: met_tool_wrapper/StatAnalysis/StatAnalysis_python_embedding.conf
-SeriesAnalysis:: met_tool_wrapper/SeriesAnalysis/SeriesAnalysis.conf
-SeriesAnalysis_python_embedding:: met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_python_embedding.conf
+SeriesAnalysis:: met_tool_wrapper/SeriesAnalysis/SeriesAnalysis.conf::netCDF4
+SeriesAnalysis_python_embedding:: met_tool_wrapper/SeriesAnalysis/SeriesAnalysis_python_embedding.conf::netCDF4
 TCGen:: met_tool_wrapper/TCGen/TCGen.conf
 TCPairs_extra_tropical:: met_tool_wrapper/TCPairs/TCPairs_extra_tropical.conf
 TCPairs_tropical:: met_tool_wrapper/TCPairs/TCPairs_tropical.conf
