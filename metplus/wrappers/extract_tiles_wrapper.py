@@ -42,17 +42,17 @@ class ExtractTilesWrapper(CommandBuilder):
         et_upper = self.app_name.upper()
 
         # get TCStat data dir/template to read
-        c_dict['STAT_INPUT_DIR'] = (
-            self.config.getdir('EXTRACT_TILES_STAT_INPUT_DIR', '')
+        c_dict['TC_STAT_INPUT_DIR'] = (
+            self.config.getdir('EXTRACT_TILES_TC_STAT_INPUT_DIR', '')
         )
 
-        c_dict['STAT_INPUT_TEMPLATE'] = (
+        c_dict['TC_STAT_INPUT_TEMPLATE'] = (
             self.config.getraw('filename_templates',
-                               'EXTRACT_TILES_STAT_INPUT_TEMPLATE',
+                               'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE',
                                '')
         )
-        if not c_dict['STAT_INPUT_TEMPLATE']:
-            self.log_error('Must set EXTRACT_TILES_STAT_INPUT_TEMPLATE '
+        if not c_dict['TC_STAT_INPUT_TEMPLATE']:
+            self.log_error('Must set EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE '
                            'to run ExtractTiles wrapper')
 
         # get gridded input/output directory/template to read
@@ -161,10 +161,10 @@ class ExtractTilesWrapper(CommandBuilder):
 
         # Create the name of the filter file to use
         filter_filename = (
-            do_string_sub(self.c_dict['STAT_INPUT_TEMPLATE'],
+            do_string_sub(self.c_dict['TC_STAT_INPUT_TEMPLATE'],
                           **time_info)
         )
-        filter_path = os.path.join(self.c_dict['STAT_INPUT_DIR'],
+        filter_path = os.path.join(self.c_dict['TC_STAT_INPUT_DIR'],
                                    filter_filename)
 
         self.logger.debug(f"Looking for input stat file: {filter_path}")

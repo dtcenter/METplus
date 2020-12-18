@@ -27,9 +27,10 @@ except Exception as err_msg:
     exception_err = err_msg
 
 from ..util import met_util as util
-from ..util import ti_calculate, do_string_sub
+from ..util import ti_calculate, do_string_sub, parse_template
 from ..util import get_lead_sequence, get_lead_sequence_groups, set_input_dict
-from ..util import ti_get_hours_from_lead, ti_get_lead_string
+from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
+from ..util import ti_get_lead_string
 from .plot_data_plane_wrapper import PlotDataPlaneWrapper
 from . import RuntimeFreqWrapper
 
@@ -65,14 +66,20 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
-        c_dict['MODEL'] = self.config.getstr('config',
-                                             'MODEL',
-                                             'FCST')
-        c_dict['REGRID_TO_GRID'] = (
+        c_dict['VERBOSITY'] = (
             self.config.getstr('config',
-                               'SERIES_ANALYSIS_REGRID_TO_GRID',
-                               '')
+                               'LOG_SERIES_ANALYSIS_VERBOSITY',
+                               c_dict['VERBOSITY'])
         )
+
+        self.set_c_dict_string(c_dict,
+                               'MODEL',
+                               'model')
+        self.set_c_dict_string(c_dict,
+                               'OBTYPE',
+                               'obtype')
+
+        self.handle_c_dict_regrid(c_dict, set_to_grid=True)
 
         # get stat list to loop over
         c_dict['STAT_LIST'] = util.getlist(
@@ -89,23 +96,48 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                              'cnt',
                              'OUTPUT_STATS_CNT')
 
-        c_dict['TILE_INPUT_DIR'] = self.config.getdir('SERIES_ANALYSIS_TILE_INPUT_DIR',
-                                                 '')
-        if not c_dict['TILE_INPUT_DIR']:
-            self.log_error("Must set SERIES_ANALYSIS_TILE_INPUT_DIR")
+        c_dict['PAIRED'] = self.config.getbool('config',
+                                               'SERIES_ANALYSIS_IS_PAIRED',
+                                               False)
 
-        # set fcst and obs input dir to tile input dir to help find files
-        c_dict['FCST_INPUT_DIR'] = c_dict['TILE_INPUT_DIR']
-        c_dict['OBS_INPUT_DIR'] = c_dict['TILE_INPUT_DIR']
+        # get input dir, template, and datatype for FCST, OBS, and BOTH
+        for data_type in ('FCST', 'OBS', 'BOTH'):
+            c_dict[f'{data_type}_INPUT_DIR'] = \
+              self.config.getdir(f'{data_type}_SERIES_ANALYSIS_INPUT_DIR', '')
+            c_dict[f'{data_type}_INPUT_TEMPLATE'] = \
+              self.config.getraw('filename_templates',
+                                 f'{data_type}_SERIES_ANALYSIS_INPUT_TEMPLATE',
+                                 '')
 
-        c_dict['FCST_INPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'FCST_SERIES_ANALYSIS_TILE_INPUT_TEMPLATE')
-        )
-        c_dict['OBS_INPUT_TEMPLATE'] = (
-            self.config.getraw('config',
-                               'OBS_SERIES_ANALYSIS_TILE_INPUT_TEMPLATE')
-        )
+            c_dict[f'{data_type}_INPUT_DATATYPE'] = \
+              self.config.getstr('config', f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE', '')
+
+            # initialize list path to None for each type
+            c_dict[f'{data_type}_LIST_PATH'] = None
+
+        # if BOTH is set, neither FCST or OBS can be set
+        c_dict['USING_BOTH'] = False
+        if c_dict['BOTH_INPUT_TEMPLATE']:
+            if c_dict['FCST_INPUT_TEMPLATE'] or c_dict['OBS_INPUT_TEMPLATE']:
+                self.log_error("Cannot set FCST_SERIES_ANALYSIS_INPUT_TEMPLATE or "
+                               "OBS_SERIES_ANALYSIS_INPUT_TEMPLATE "
+                               "if BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE is set.")
+
+            c_dict['USING_BOTH'] = True
+
+            # set *_WINDOW_* variables for BOTH (used in CommandBuilder.find_data function)
+            self.handle_window_variables(c_dict, 'series_analysis', dtypes=['BOTH'])
+
+        # if BOTH is not set, both FCST or OBS must be set
+        else:
+            if not c_dict['FCST_INPUT_TEMPLATE'] or not c_dict['OBS_INPUT_TEMPLATE']:
+                self.log_error("Must either set BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE or both "
+                               "FCST_SERIES_ANALYSIS_INPUT_TEMPLATE and "
+                               "OBS_SERIES_ANALYSIS_INPUT_TEMPLATE to run "
+                               "SeriesAnalysis wrapper.")
+
+            # set *_WINDOW_* variables for FCST and OBS
+            self.handle_window_variables(c_dict, 'series_analysis', dtypes=['FCST', 'OBS'])
 
         c_dict['TC_STAT_INPUT_DIR'] = (
             self.config.getdir('SERIES_ANALYSIS_TC_STAT_INPUT_DIR', '')
@@ -128,27 +160,14 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         c_dict['FCST_TILE_PREFIX'] = self.config.getstr('config',
                                               'FCST_EXTRACT_TILES_PREFIX',
                                               '')
-        if not c_dict['FCST_TILE_PREFIX']:
-            self.log_error("Must set FCST_EXTRACT_TILES_PREFIX")
 
         c_dict['ANLY_TILE_PREFIX'] = self.config.getstr('config',
                                               'OBS_EXTRACT_TILES_PREFIX',
                                               '')
-        if not c_dict['ANLY_TILE_PREFIX']:
-            self.log_error("Must set OBS_EXTRACT_TILES_PREFIX")
-
-        c_dict['FCST_TILE_REGEX'] = (
-            f".*{c_dict['FCST_TILE_PREFIX']}.*nc"
-        )
-
-        c_dict['ANLY_TILE_REGEX'] = (
-            f".*{c_dict['ANLY_TILE_PREFIX']}.*nc"
-        )
 
         c_dict['CONFIG_FILE'] = (
-            self.config.getstr('config',
-                               'SERIES_ANALYSIS_CONFIG_FILE',
-                               '')
+            self.config.getraw('config',
+                               'SERIES_ANALYSIS_CONFIG_FILE')
         )
         if not c_dict['CONFIG_FILE']:
             self.log_error("SERIES_ANALYSIS_CONFIG_FILE must be set")
@@ -193,6 +212,9 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             self.log_error("Must set SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE "
                            "if SERIES_ANALYSIS_RUN_ONCE_PER_STORM_ID is True")
 
+        # get climatology config variables
+        self.read_climo_wrapper_specific('SERIES_ANALYSIS', c_dict)
+
         # if no forecast lead sequence is specified,
         # use wildcard (*) so all leads are used
         c_dict['WILDCARD_LEAD_IF_EMPTY'] = True
@@ -218,6 +240,11 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         pdp_wrapper = PlotDataPlaneWrapper(self.config,
                                            config_overrides=plot_overrides)
         return pdp_wrapper
+
+    def clear(self):
+        super().clear()
+        for data_type in ('FCST', 'OBS', 'BOTH'):
+            self.c_dict[f'{data_type}_LIST_PATH'] = None
 
     def run_all_times(self):
         super().run_all_times()
@@ -266,7 +293,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             @param time_info dictionary containing time information
             @returns True on success, False otherwise
         """
-        self.logger.debug("Starting series analysis by init time")
+        self.logger.debug("Starting series analysis")
 
         # if running for each storm ID, get list of storms
         storm_list = self.get_storm_list(time_info)
@@ -301,7 +328,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                                   "SERIES_ANALYSIS_GENERATE_PLOTS to True to "
                                   "run this step.")
 
-        self.logger.debug("Finished series analysis by init time")
+        self.logger.debug("Finished series analysis")
         return True
 
     def get_storm_list(self, time_info):
@@ -355,8 +382,13 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         for storm_id in storm_list:
             time_info['storm_id'] = storm_id
             file_dict = super().get_files_from_time(time_info)
-            fcst_files = self.find_input_files(time_info, 'FCST')
-            anly_files = self.find_input_files(time_info, 'OBS')
+            if self.c_dict['USING_BOTH']:
+                fcst_files = self.find_input_files(time_info, 'BOTH')
+                anly_files = fcst_files
+            else:
+                fcst_files = self.find_input_files(time_info, 'FCST')
+                anly_files = self.find_input_files(time_info, 'OBS')
+
             if fcst_files is None or anly_files is None:
                 return None
 
@@ -448,6 +480,9 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
         output_dir = self.get_output_dir(time_info, storm_id, label)
 
+        if not self.check_python_embedding():
+            return None, None
+
         # create forecast file list
         fcst_ascii_filename = self.get_ascii_filename('FCST',
                                                       storm_id,
@@ -468,6 +503,19 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         obs_path = os.path.join(output_dir, anly_ascii_filename)
 
         return fcst_path, obs_path
+
+    def check_python_embedding(self):
+        for var_info in self.c_dict['VAR_LIST']:
+            if self.c_dict['USING_BOTH']:
+                if not self.check_for_python_embedding('BOTH', var_info):
+                    return False
+            else:
+                if not self.check_for_python_embedding('FCST', var_info):
+                    return False
+                if not self.check_for_python_embedding('OBS', var_info):
+                    return False
+
+        return True
 
     def get_ascii_filename(self, data_type, storm_id, leads):
         if data_type == 'FCST':
@@ -531,7 +579,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         """
         success = True
 
-        num, beg, end = self.get_fcst_file_info(fcst_path)
+        num, beg, end = self.get_fcst_file_info(fcst_path, time_info)
         if num is None:
             self.logger.debug(f"Skipping series_analysis")
             return False
@@ -539,14 +587,20 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         time_info['fcst_beg'] = beg
         time_info['fcst_end'] = end
 
+        self.handle_climo(time_info)
+
         # build the command and run series_analysis for each variable
         for var_info in self.c_dict['VAR_LIST']:
-            self.infiles.append(f"-fcst {fcst_path}")
-            self.infiles.append(f"-obs {obs_path}")
+            self.c_dict['FCST_LIST_PATH'] = fcst_path
+            self.c_dict['OBS_LIST_PATH'] = obs_path
             self.add_field_info_to_time_info(time_info, var_info)
-            # Get the number of forecast tile files and the name of the
-            # first and last in the list to be used in the -title
-            self.set_environment_variables(time_info, var_info)
+
+            # get formatted field dictionary to pass into the MET config file
+            fcst_field, obs_field = self.get_formatted_fields(var_info)
+
+            self.set_environment_variables(time_info, fcst_field, obs_field)
+
+            self.set_command_line_arguments(time_info)
 
             self.find_and_check_output_file(time_info)
 
@@ -557,7 +611,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
         return success
 
-    def set_environment_variables(self, time_info, var_info):
+    def set_environment_variables(self, time_info, fcst_field, obs_field):
         """! Set the env variables based on settings in the METplus config
              files.
 
@@ -569,36 +623,57 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         # Set all the environment variables that are needed by the
         # MET config file.
         # Set up the environment variable to be used in the Series Analysis
-        tmp_stat_string = str(self.c_dict['STAT_LIST'])
-        tmp_stat_string = tmp_stat_string.replace("\'", "\"")
-        os.environ['STAT_LIST'] = tmp_stat_string
-        self.add_env_var('STAT_LIST', tmp_stat_string)
-        #        self.add_env_var('STAT_LIST', self.c_dict.get('OUTPUT_STATS_CNT', ''))
+        self.add_env_var("FCST_FILE_TYPE", self.c_dict.get('FCST_FILE_TYPE',
+                                                           ''))
+        self.add_env_var("OBS_FILE_TYPE", self.c_dict.get('OBS_FILE_TYPE',
+                                                          ''))
 
-        # set MODEL and REGRID_TO_GRID environment variables
-        self.add_common_envs()
+#        tmp_stat_string = str(self.c_dict['STAT_LIST']).replace("'", '"')
+#        os.environ['STAT_LIST'] = tmp_stat_string
+#        self.add_env_var('STAT_LIST', tmp_stat_string)
+        self.add_env_var('STAT_LIST', self.c_dict.get('OUTPUT_STATS_CNT', ''))
 
-        # Set the NAME and LEVEL environment variables
-        self.add_env_var('NAME', var_info['fcst_name'])
-        self.add_env_var('LEVEL', var_info['fcst_level'])
+        self.add_env_var('MODEL', self.c_dict.get('MODEL', ''))
+        self.add_env_var("OBTYPE", self.c_dict.get('OBTYPE', ''))
+        self.add_env_var("FCST_FIELD", fcst_field)
+        self.add_env_var("OBS_FIELD", obs_field)
+
+        # set climatology environment variables
+        self.set_climo_env_vars()
+
+        self.set_regrid_dict()
+
 
         super().set_environment_variables(time_info)
 
+    def set_command_line_arguments(self, time_info):
+        # add input data format if set
+        if self.c_dict['PAIRED']:
+            self.args.append(" -paired")
+
+        # add config file - passing through do_string_sub
+        # to get custom string if set
+        config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
+                                    **time_info)
+        self.args.append(f" -config {config_file}")
+
     def get_command(self):
-        cmd = self.app_path + " "
+        cmd = self.app_path
 
-        cmd += ' '.join(self.infiles)
-
-        cmd += f" -config {self.c_dict['CONFIG_FILE']}"
-
-        if not self.get_output_path():
-            self.logger.info("No output directory specified, because series "
-                             "analysis has multiple directories")
-            self.logger.info("No output filename specified, because "
-                             "series analysis has multiple files")
+        if self.c_dict['USING_BOTH']:
+            cmd += f" -both {self.c_dict['BOTH_LIST_PATH']}"
         else:
-            cmd += " -out " + os.path.join(self.get_output_path())
+            cmd += f" -fcst {self.c_dict['FCST_LIST_PATH']}"
+            cmd += f" -obs {self.c_dict['OBS_LIST_PATH']}"
 
+        # add output path
+        cmd += f' -out {self.get_output_path()}'
+
+        # add arguments
+        cmd += ''.join(self.args)
+
+        # add verbosity
+        cmd += ' -v ' + self.c_dict['VERBOSITY']
         return cmd
 
     def generate_plots(self, fcst_path, time_info, storm_id):
@@ -629,7 +704,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
             # Get the number of forecast tile files and the name of the
             # first and last in the list to be used in the -title
-            num, beg, end = self.get_fcst_file_info(fcst_path)
+            num, beg, end = self.get_fcst_file_info(fcst_path, time_info)
             if num is None:
                 self.logger.debug(f"Skipping plot for {storm_id}")
                 continue
@@ -698,7 +773,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
         return success
 
-    def get_fcst_file_info(self, fcst_path):
+    def get_fcst_file_info(self, fcst_path, time_info):
         """! Get the number of all the gridded forecast n x m tile
             files. Determine the filename of the
             first and last files.  This information is used to create
@@ -711,18 +786,54 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         """
         # read the file but skip the first line because it contains 'file_list'
         with open(fcst_path, 'r') as file_handle:
-            files_of_interest = file_handle.readlines()[1:]
+            files_of_interest = file_handle.readlines()
 
-        # Get a sorted list of the forecast tile files for the init
-        # time of interest for all the storm ids and return the
-        # forecast hour corresponding to the first and last file.
-        sorted_files = sorted(files_of_interest)
-        if not files_of_interest:
+        if len(files_of_interest) < 2:
             self.log_error(f"No files found in file list: {fcst_path}")
             return None, None, None
 
-        first = sorted_files[0]
-        last = sorted_files[-1]
+        files_of_interest = files_of_interest[1:]
+        num = str(len(files_of_interest))
+
+        if self.c_dict['USING_BOTH']:
+            input_dir = self.c_dict['BOTH_INPUT_DIR']
+            input_template = self.c_dict['BOTH_INPUT_TEMPLATE']
+        else:
+            input_dir = self.c_dict['FCST_INPUT_DIR']
+            input_template = self.c_dict['FCST_INPUT_TEMPLATE']
+
+        full_template = os.path.join(input_dir, input_template)
+        time_info_partial = time_info.copy()
+        del time_info_partial['lead']
+        del time_info_partial['init']
+        del time_info_partial['valid']
+        template_no_lead = do_string_sub(full_template,
+                                         skip_missing_tags=True,
+                                         **time_info_partial)
+        smallest_fcst = 99999999
+        largest_fcst = -99999999
+        beg = None
+        end = None
+        for filepath in files_of_interest:
+            filepath = filepath.strip()
+            time_info = parse_template(template_no_lead, filepath, self.logger)
+            if not time_info:
+                continue
+            lead = ti_get_seconds_from_lead(time_info.get('lead'),
+                                            time_info.get('valid'))
+            if lead < smallest_fcst:
+                smallest_fcst = lead
+                beg = str(ti_get_hours_from_lead(lead)).zfill(3)
+            if lead > largest_fcst:
+                largest_fcst = lead
+                end = str(ti_get_hours_from_lead(lead)).zfill(3)
+
+        if beg is None or end is None:
+            self.log_error("Could not get any forecast lead info "
+                           f"from {fcst_path}")
+            return None, None, None
+
+        return num, beg, end
 
         # Extract the forecast hour from the first and last filenames.
         fcst_regex = f".*{self.c_dict['FCST_TILE_PREFIX']}" + "([0-9]{3}).*.nc"
@@ -762,3 +873,25 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             return min, max
         except (FileNotFoundError, KeyError):
             return None, None
+
+    def get_formatted_fields(self, var_info):
+        # get field info field a single field to pass to the MET config file
+        fcst_field_list = self.get_field_info(v_level=var_info['fcst_level'],
+                                              v_thresh=var_info['fcst_thresh'],
+                                              v_name=var_info['fcst_name'],
+                                              v_extra=var_info['fcst_extra'],
+                                              d_type='FCST')
+
+        obs_field_list = self.get_field_info(v_level=var_info['obs_level'],
+                                             v_thresh=var_info['obs_thresh'],
+                                             v_name=var_info['obs_name'],
+                                             v_extra=var_info['obs_extra'],
+                                             d_type='OBS')
+
+        if fcst_field_list is None or obs_field_list is None:
+            return
+
+        fcst_fields = ','.join(fcst_field_list)
+        obs_fields = ','.join(obs_field_list)
+
+        return fcst_fields, obs_fields

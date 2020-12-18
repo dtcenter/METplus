@@ -9,7 +9,7 @@
 //
 // Output model name to be written
 //
-model = "${MODEL}";
+${MODEL}
 
 //
 // Output description to be written
@@ -19,7 +19,7 @@ desc = "NA";
 //
 // Output observation type to be written
 //
-obtype = "${OBTYPE}";
+${OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -27,13 +27,7 @@ obtype = "${OBTYPE}";
 // Verification grid
 // May be set separately in each "field" entry
 //
-regrid = {
-   to_grid    = ${REGRID_TO_GRID};
-   method     = NEAREST;
-   width      = 1;
-   vld_thresh = 0.5;
-   shape      = SQUARE;
-}
+${REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -131,7 +125,7 @@ output_stats = {
    cts    = [];
    mctc   = [];
    mcts   = [];
-   cnt    = ${STAT_LIST};
+   ${STAT_LIST}
    sl1l2  = [];
    sal1l2 = [];
    pct    = [];

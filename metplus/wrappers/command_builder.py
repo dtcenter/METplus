@@ -36,6 +36,9 @@ class CommandBuilder:
     """
     __metaclass__ = ABCMeta
 
+    # types of climatology values that should be checked and set
+    climo_types = ['MEAN', 'STDEV']
+
     def __init__(self, config, instance=None, config_overrides={}):
         self.isOK = True
         self.errors = 0
@@ -1256,7 +1259,7 @@ class CommandBuilder:
             c_dict[c_key] = f'{met_config_name} = {conf_value};'
 
     def set_c_dict_string(self, c_dict, mp_config_name, met_config_name,
-                          c_dict_key=None):
+                          c_dict_key=None, remove_quotes=False):
         """! Get string from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
@@ -1275,7 +1278,12 @@ class CommandBuilder:
             else:
                 c_key = c_dict_key
 
-            c_dict[c_key] = f'{met_config_name} = "{util.remove_quotes(conf_value)}";'
+            conf_value = util.remove_quotes(conf_value)
+            # add quotes back if remote quotes is False
+            if not remove_quotes:
+                conf_value = f'"{conf_value}"'
+
+            c_dict[c_key] = f'{met_config_name} = {conf_value};'
 
     def set_c_dict_number(self, c_dict, num_type, mp_config_name, met_config_name, c_dict_key=None):
         """! Get integer from METplus configuration file and format it to be passed
@@ -1359,6 +1367,60 @@ class CommandBuilder:
         c_dict[c_key] = (f'{met_config_name} = '
                          f'{util.remove_quotes(conf_value)};')
 
+    def handle_c_dict_regrid(self, c_dict, set_to_grid=False):
+        app_name_upper = self.app_name.upper()
+
+        if set_to_grid:
+            conf_value = (
+                self.config.getstr('config',
+                                   f'{app_name_upper}_REGRID_TO_GRID', '')
+            )
+            if conf_value:
+                c_dict['REGRID_TO_GRID'] = (
+                    f"to_grid = {self.format_regrid_to_grid(conf_value)};"
+                )
+
+        self.set_c_dict_string(c_dict,
+                               f'{app_name_upper}_REGRID_METHOD',
+                               'method',
+                               'REGRID_METHOD',
+                               remove_quotes=True)
+
+        self.set_c_dict_int(c_dict,
+                            f'{app_name_upper}_REGRID_WIDTH',
+                            'width',
+                            'REGRID_WIDTH')
+
+        self.set_c_dict_thresh(c_dict,
+                               f'{app_name_upper}_REGRID_VLD_THRESH',
+                               'vld_thresh',
+                               'REGRID_VLD_THRESH'
+                               )
+        self.set_c_dict_string(c_dict,
+                               f'{app_name_upper}_REGRID_SHAPE',
+                               'shape',
+                               'REGRID_SHAPE',
+                               remove_quotes=True)
+
+    def set_regrid_dict(self):
+        regrid_dict_string = ''
+        # if any regrid items are set, create the regrid dictionary and add them
+        if (self.c_dict.get('REGRID_TO_GRID', '') or
+                self.c_dict.get('REGRID_METHOD', '') or
+                self.c_dict.get('REGRID_WIDTH', '') or
+                self.c_dict.get('REGRID_VLD_THRESH', '') or
+                self.c_dict.get('REGRID_SHAPE', '')):
+            regrid_dict_string = 'regrid = {'
+            regrid_dict_string += f"{self.c_dict.get('REGRID_TO_GRID', '')}"
+            regrid_dict_string += f"{self.c_dict.get('REGRID_METHOD', '')}"
+            regrid_dict_string += f"{self.c_dict.get('REGRID_WIDTH', '')}"
+            regrid_dict_string += f"{self.c_dict.get('REGRID_VLD_THRESH', '')}"
+            regrid_dict_string += f"{self.c_dict.get('REGRID_SHAPE', '')}"
+            regrid_dict_string += '}'
+
+        self.add_env_var('REGRID_DICT',
+                         regrid_dict_string)
+
     def get_output_prefix(self, time_info=None):
         """! Read {APP_NAME}_OUTPUT_PREFIX from config. If time_info is set
          substitute values into filename template tags.
@@ -1375,3 +1437,65 @@ class CommandBuilder:
 
         return do_string_sub(output_prefix,
                              **time_info)
+
+    def set_climo_env_vars(self):
+        """!Set all climatology environment variables from CLIMO_<item>_FILE
+            c_dict values if they are not set to None"""
+        for climo_item in self.climo_types:
+
+            # climo file is set to None if not found, so set to empty string if None
+            climo_file = (
+                util.remove_quotes(self.c_dict.get(f'CLIMO_{climo_item}_FILE'))
+            )
+
+            # remove then add double quotes for file path unless empty string
+            if climo_file:
+                climo_file = f'"{util.remove_quotes(climo_file)}"'
+
+            # set environment variable
+            self.add_env_var(f'CLIMO_{climo_item}_FILE', climo_file)
+
+    def read_climo_wrapper_specific(self, met_tool, c_dict):
+        """!Read climatology directory and template values for specific MET
+         tool specified and set the values in c_dict"""
+        for climo_item in self.climo_types:
+            c_dict[f'CLIMO_{climo_item}_INPUT_DIR'] = (
+                self.config.getdir(f'{met_tool}_CLIMO_{climo_item}_INPUT_DIR',
+                                   '')
+            )
+            c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE'] = (
+                self.config.getraw('filename_templates',
+                                   f'{met_tool}_CLIMO_{climo_item}_INPUT_TEMPLATE',
+                                   '')
+            )
+
+    def handle_climo(self, time_info):
+        """!Substitute time information into all climatology template values"""
+        for climo_item in self.climo_types:
+             self.handle_climo_file_item(time_info, climo_item)
+
+    def handle_climo_file_item(self, time_info, climo_item):
+        """!Handle a single climatology value by substituting time information,
+            prepending input directory if provided, and
+            preprocessing file if necessary. All information is read from
+            c_dict. CLIMO_<item>_FILE in c_dict is set."""
+
+        # don't process if template is not set
+        if not self.c_dict.get(f'CLIMO_{climo_item}_INPUT_TEMPLATE'):
+            return
+
+        template = self.c_dict.get(f'CLIMO_{climo_item}_INPUT_TEMPLATE', '')
+        climo_file = do_string_sub(template,
+                                   **time_info)
+        climo_path = (
+            os.path.join(self.c_dict.get(f'CLIMO_{climo_item}_INPUT_DIR',
+                                         ''),
+                         climo_file)
+        )
+        self.logger.debug(f"Looking for climatology {climo_item.lower()} "
+                          f"file {climo_path}")
+        self.c_dict[f'CLIMO_{climo_item}_FILE'] = (
+            util.preprocess_file(climo_path,
+                                 '',
+                                 self.config)
+        )
