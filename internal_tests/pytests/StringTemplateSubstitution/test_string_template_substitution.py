@@ -35,68 +35,35 @@ def test_gdas_substitution():
     filename = do_string_sub(templ, valid=valid_obj)
     assert(filename == expected_filename)
 
-def test_hh_lead():
-    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%HH}h"
-    filepath = "1987020103_A03h"
-    out = parse_template(template,
-                         filepath)
+@pytest.mark.parametrize(
+        'template, filepath, expected_valid', [
+        ("{init?fmt=%Y%m%d%H}_A{lead?fmt=%HH}h",
+         "1987020103_A03h",
+         "198702010600"),
+        ("{init?fmt=%Y%m%d%H}_A{lead?fmt=%HHH}h",
+         "1987020103_A003h",
+         "198702010600"),
+        ("{init?fmt=%Y%m%d%H}_A{lead?fmt=%.2H}h",
+         "1987020103_A03h",
+         "198702010600"),
+        ("{init?fmt=%Y%m%d%H}_A{lead?fmt=%.3H}h",
+         "1987020103_A003h",
+         "198702010600"),
+        ("{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h",
+         "1987020103_A3h",
+         "198702010600"),
+        ("{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h",
+         "1987020103_A12h",
+         "198702011500"),
+        ("{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h",
+         "1987020103_A102h",
+         "198702050900"),
+    ]
+)
+def test_parse_template(template, filepath, expected_valid):
+    out = parse_template(template, filepath)
     ftime = out['valid'].strftime('%Y%m%d%H%M')
-    assert(ftime == "198702010600")
-
-
-def test_hhh_lead():
-    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%HHH}h"
-    filepath = "1987020103_A003h"
-    out = parse_template(template,
-                         filepath)
-    ftime = out['valid'].strftime('%Y%m%d%H%M')
-    assert(ftime == "198702010600")
-
-
-def test_2h_lead():
-    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.2H}h"
-    filepath = "1987020103_A03h"
-    out = parse_template(template,
-                         filepath)
-    ftime = out['valid'].strftime('%Y%m%d%H%M')
-    assert(ftime == "198702010600")
-
-
-def test_3h_lead():
-    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%.3H}h"
-    filepath = "1987020103_A003h"
-    out = parse_template(template,
-                         filepath)
-    ftime = out['valid'].strftime('%Y%m%d%H%M')
-    assert(ftime == "198702010600")
-
-
-def test_h_lead_no_pad_1_digit():
-    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
-    filepath = "1987020103_A3h"
-    out = parse_template(template,
-                         filepath)
-    ftime = out['valid'].strftime('%Y%m%d%H%M')
-    assert(ftime == "198702010600")
-
-
-def test_h_lead_no_pad_2_digit():
-    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
-    filepath = "1987020103_A12h"
-    out = parse_template(template,
-                         filepath)
-    ftime = out['valid'].strftime('%Y%m%d%H%M')
-    assert(ftime == "198702011500")
-
-
-def test_h_lead_no_pad_3_digit():
-    template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h"
-    filepath = "1987020103_A102h"
-    out = parse_template(template,
-                         filepath)
-    ftime = out['valid'].strftime('%Y%m%d%H%M')
-    assert(ftime == "198702050900")
-
+    assert (ftime == expected_valid)
 
 def test_h_lead_no_pad_1_digit_sub():
     file_template = "{init?fmt=%Y%m%d%H}_A{lead?fmt=%1H}h"
