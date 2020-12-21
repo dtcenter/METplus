@@ -83,7 +83,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             loop_order = self.config.getstr('config', 'LOOP_ORDER', '').lower()
             if loop_order != 'processes':
                 self.log_error(f"Cannot run using {c_dict['RUNTIME_FREQ']} "
-                               "mode unless LOOP_BY = processes")
+                               "mode unless LOOP_ORDER = processes")
 
         return c_dict
 
