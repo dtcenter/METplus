@@ -2,7 +2,7 @@
 
 import sys
 import pytest
-import datetime
+from datetime import datetime
 from dateutil.relativedelta import relativedelta
 
 from metplus.util import time_util
@@ -48,26 +48,26 @@ def test_ti_get_seconds_and_string(rd, seconds, time_string, hours):
 
 @pytest.mark.parametrize(
     'key, value', [
-        ('1m', datetime.datetime(2019, 3, 1, 0) ),
-        ('-1m', datetime.datetime(2019, 1, 1, 0) ),
-        ('1Y', datetime.datetime(2020, 2, 1, 0) ),
-        ('-1Y', datetime.datetime(2018, 2, 1, 0) ),
-        ('1d', datetime.datetime(2019, 2, 2, 0) ),
-        ('-1d', datetime.datetime(2019, 1, 31, 0) ),
-        ('1H', datetime.datetime(2019, 2, 1, 1) ),
-        ('-1H', datetime.datetime(2019, 1, 31, 23) ),
-        ('1M', datetime.datetime(2019, 2, 1, 0, 1) ),
-        ('-1M', datetime.datetime(2019, 1, 31, 23, 59) ),
-        ('1S', datetime.datetime(2019, 2, 1, 0, 0, 1) ),
-        ('-1S', datetime.datetime(2019, 1, 31, 23, 59, 59) ),
-        ('1', datetime.datetime(2019, 2, 1, 0, 0, 1) ),
-        ('-1', datetime.datetime(2019, 1, 31, 23, 59, 59) ),
-        ('393d', datetime.datetime(2020, 2, 29, 0) ), # leap year
+        ('1m', datetime(2019, 3, 1, 0) ),
+        ('-1m', datetime(2019, 1, 1, 0) ),
+        ('1Y', datetime(2020, 2, 1, 0) ),
+        ('-1Y', datetime(2018, 2, 1, 0) ),
+        ('1d', datetime(2019, 2, 2, 0) ),
+        ('-1d', datetime(2019, 1, 31, 0) ),
+        ('1H', datetime(2019, 2, 1, 1) ),
+        ('-1H', datetime(2019, 1, 31, 23) ),
+        ('1M', datetime(2019, 2, 1, 0, 1) ),
+        ('-1M', datetime(2019, 1, 31, 23, 59) ),
+        ('1S', datetime(2019, 2, 1, 0, 0, 1) ),
+        ('-1S', datetime(2019, 1, 31, 23, 59, 59) ),
+        ('1', datetime(2019, 2, 1, 0, 0, 1) ),
+        ('-1', datetime(2019, 1, 31, 23, 59, 59) ),
+        ('393d', datetime(2020, 2, 29, 0) ), # leap year
     ]
 )
 def test_get_relativedelta(key, value):
     # start time is 2019-02-01_0Z
-    start_time = datetime.datetime(2019, 2, 1, 0)
+    start_time = datetime(2019, 2, 1, 0)
     assert(start_time + time_util.get_relativedelta(key) == value)
 
 @pytest.mark.parametrize(
@@ -89,4 +89,22 @@ def test_get_relativedelta(key, value):
 def test_time_string_to_met_time(time_string, default_unit, met_time):
   assert(time_util.time_string_to_met_time(time_string, default_unit) == met_time)
 
-# write tests for ti_calculate
+@pytest.mark.parametrize(
+    'input_dict, expected_time_info', [
+        ({'init': datetime(2014, 10, 31, 12),
+          'lead': relativedelta(hours=3)},
+          {'init': datetime(2014, 10, 31, 12),
+          'lead': 10800,
+          'valid':  datetime(2014, 10, 31, 15)}
+        ),
+        ]
+)
+def test_ti_calculate(input_dict, expected_time_info):
+    time_info = time_util.ti_calculate(input_dict)
+    for key, value in expected_time_info.items():
+        assert(time_info[key] == value)
+
+    time_info2 = time_util.ti_calculate(time_info)
+    for key, value in expected_time_info.items():
+        assert(time_info[key] == value)
+        assert(time_info2[key] == value)
