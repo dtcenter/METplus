@@ -428,7 +428,7 @@ def find_and_replace_tags_in_template(match_list, tmpl, kwargs, skip_missing_tag
             # otherwise log and exit
             raise TypeError("The key " + split_string[0] +
                             " was not passed to do_string_sub " +
-                            " for template: " + tmpl)
+                            " for template: " + tmpl + ": " + str(kwargs))
 
         # if shift is set, get that value before handling formatting
         shift_seconds = get_seconds_from_template(split_string, SHIFT_STRING, kwargs)
