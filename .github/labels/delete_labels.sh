@@ -50,9 +50,9 @@ while read -r line; do
   else 
     echo "[DELETE] ${repo} label ... ${name}"
     DELETE_URL="${URL}/`echo ${name} | sed -r 's/ /%20/g'`"
-    echo "curl -u \"${user}:${auth}\" -X PATCH \
+    echo "curl -u \"${user}:${auth}\" -X DELETE \
           -H \"Accept: application/vnd.github.v3+json\" \
-          ${DELETE_URL}'" >> ${CMD_FILE}
+          '${DELETE_URL}'" >> ${CMD_FILE}
   fi
 
 done < ${TMP_FILE}
