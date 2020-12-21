@@ -6,7 +6,8 @@
 #   - repository name
 
 if [[ $# -ne 3 ]]; then
-  echo "ERROR: $0 ... must specify the GitHub username, authorization key, and repository name."
+  echo "ERROR: `basename $0` ... must specify the GitHub username, authorization key, and repository name."
+  echo "ERROR:   repo list: metplus, met, metdatadb, metcalcpy, metplotpy, metviewer, metexpress, metplus-training"
   exit 1
 else
   user=$1
