@@ -168,4 +168,4 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
 ])
 def test_get_list_file_name(metplus_config, time_info, expected_filename):
     wrapper = GridDiagWrapper(metplus_config())
-    assert(wrapper.get_list_file_name(time_info) == expected_filename)
+    assert(wrapper.get_list_file_name(time_info, 'input0') == expected_filename)
