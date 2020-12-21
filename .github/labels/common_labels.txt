@@ -16,7 +16,6 @@
 {"name": "priority: low","color": "cce88d","description": "Low Priority"}
 {"name": "priority: medium","color": "f8de7e","description": "Medium Priority"}
 {"name": "reporting: DTC AF METplus","color": "fbca04","description": "Air Force METplus Project"}
-{"name": "reporting: DTC AF V&V","color": "fbca04","description": "Air Force Verification and Validation Project"}
 {"name": "reporting: DTC NCAR Base","color": "fbca04","description": "NCAR Base DTC Project"}
 {"name": "reporting: DTC NOAA OAR","color": "fbca04","description": "NOAA Office of Atmospheric Research DTC Project"}
 {"name": "reporting: DTC NOAA R2O","color": "fbca04","description": "NOAA Research to Operations DTC Project"}
@@ -30,6 +29,7 @@
 {"name": "requestor: DTC/SRW","color": "3101c1","description": "DTC Short Range Weather T&E"}
 {"name": "requestor: DTC/PAS","color": "3101c1","description": "DTC Physics Across Scales T&E"}
 {"name": "requestor: DTC/Containers","color": "3101c1","description": "DTC Containers and Cloud Computing Project"}
+{"name": "requestor: DTC/AF V&V","color": "3101c1","description": "Air Force Verification and Validation Project"}
 {"name": "requestor: NASA/CCMC","color": "3101c1","description": "NASA Community Coordinated Modeling Center"}
 {"name": "requestor: NCAR","color": "3101c1","description": "National Center for Atmospheric Research"}
 {"name": "requestor: NCAR/RAL","color": "3101c1","description": "NCAR Research Applications Laboratory"}
