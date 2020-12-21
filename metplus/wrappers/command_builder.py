@@ -452,7 +452,7 @@ class CommandBuilder:
         else:
             self.logger.warning(log_message)
 
-        return None, None
+        return None, time_info
 
     def find_data(self, time_info, var_info=None, data_type='', mandatory=True, return_list=False, allow_dir=False):
         """! Finds the data file to compare

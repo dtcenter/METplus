@@ -76,6 +76,7 @@ def test_get_storms_list(metplus_config):
     stat_input_template = 'fake_filter_{init?fmt=%Y%m%d_%H}.tcst'
 
     wrapper = series_init_wrapper(metplus_config)
+    wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
     wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
     wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
 
@@ -195,6 +196,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
     anly_input_dir = os.path.join(tile_input_dir,
                                   'anly')
 
+    wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
     wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
     wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
     wrapper.c_dict['FCST_INPUT_DIR'] = fcst_input_dir
@@ -421,6 +423,7 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
 
     wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
     wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
+    wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
     wrapper.c_dict['FCST_INPUT_DIR'] = fcst_input_dir
     wrapper.c_dict['OBS_INPUT_DIR'] = anly_input_dir
     test_out_dirname = wrapper.config.getstr('config', 'TEST_OUTPUT_DIRNAME')

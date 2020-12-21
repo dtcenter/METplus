@@ -37,6 +37,8 @@ class RuntimeFreqWrapper(CommandBuilder):
         super().__init__(config,
                          instance=instance,
                          config_overrides=config_overrides)
+        if not self.get_all_files():
+            self.log_error("A problem occurred trying to obtain input files")
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -81,7 +83,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             loop_order = self.config.getstr('config', 'LOOP_ORDER', '').lower()
             if loop_order != 'processes':
                 self.log_error(f"Cannot run using {c_dict['RUNTIME_FREQ']} "
-                               "mode unless LOOP_BY = processes")
+                               "mode unless LOOP_ORDER = processes")
 
         return c_dict
 
