@@ -1606,7 +1606,7 @@ class StatAnalysisWrapper(CommandBuilder):
         runtime_settings_dict['LOOKIN_DIR'] = ' '.join(lookin_dirs)
 
         # error and return None if lookin dir is empty
-        if not runtime_settings_dict['LOOKIN_DIR']:
+        if not self.forMakePlots and not runtime_settings_dict['LOOKIN_DIR']:
             self.log_error("No value found for lookin dir")
             return None
 
