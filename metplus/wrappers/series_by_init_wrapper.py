@@ -186,7 +186,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         c_dict['GENERATE_PLOTS'] = (
             self.config.getbool('config',
                                 'SERIES_ANALYSIS_GENERATE_PLOTS',
-                                True)
+                                False)
         )
 
         c_dict['GENERATE_ANIMATIONS'] = (
@@ -205,7 +205,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         c_dict['RUN_ONCE_PER_STORM_ID'] = (
             self.config.getbool('config',
                                 'SERIES_ANALYSIS_RUN_ONCE_PER_STORM_ID',
-                                True)
+                                False)
         )
         if (c_dict['RUN_ONCE_PER_STORM_ID'] and
                 not c_dict['TC_STAT_INPUT_TEMPLATE']):
@@ -581,8 +581,9 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
         num, beg, end = self.get_fcst_file_info(fcst_path, time_info)
         if num is None:
-            self.logger.debug(f"Skipping series_analysis")
-            return False
+            self.logger.debug(f"Could not get fcst_beg and fcst_end values. "
+                              "Those values cannot be used in filename "
+                              "templates")
 
         time_info['fcst_beg'] = beg
         time_info['fcst_end'] = end
@@ -706,6 +707,8 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             # first and last in the list to be used in the -title
             num, beg, end = self.get_fcst_file_info(fcst_path, time_info)
             if num is None:
+                self.log_error("Could not get any forecast lead info "
+                               f"from {fcst_path}")
                 self.logger.debug(f"Skipping plot for {storm_id}")
                 continue
 
@@ -811,6 +814,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         template_no_lead = do_string_sub(full_template,
                                          skip_missing_tags=True,
                                          **time_info_partial)
+        self.logger.debug(template_no_lead)
         smallest_fcst = 99999999
         largest_fcst = -99999999
         beg = None
@@ -832,8 +836,6 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                 end = str(ti_get_hours_from_lead(lead)).zfill(3)
 
         if beg is None or end is None:
-            self.log_error("Could not get any forecast lead info "
-                           f"from {fcst_path}")
             return None, None, None
 
         return num, beg, end
