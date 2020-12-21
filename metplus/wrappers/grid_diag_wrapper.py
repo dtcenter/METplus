@@ -169,11 +169,12 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         self.clear()
 
         # subset input files as appropriate
-        input_list_file = self.subset_input_files(time_info)
-        if not input_list_file:
+        input_list_files = self.subset_input_files(time_info)
+        if not input_list_files:
             return
 
-        self.infiles.append(input_list_file)
+        for input_list_file in input_list_files:
+            self.infiles.append(input_list_file)
 
         # get output path
         if not self.find_and_check_output_file(time_info):
@@ -231,16 +232,20 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         """! Loop over list of input templates and find files for each
 
              @param time_info time dictionary to use for string substitution
-             @returns Input file list if all files were found, None if not.
+             @returns Dictionary of key input number and value is list of
+              input file list if all files were found, None if not.
         """
-        all_input_files = []
+        all_input_files = {}
         for idx, input_template in enumerate(self.c_dict['INPUT_TEMPLATES']):
             self.c_dict['INPUT_TEMPLATE'] = input_template
             input_files = self.find_data(time_info, return_list=True)
             if not input_files:
                 continue
 
-            all_input_files.extend(input_files)
+            all_input_files[f'input{idx}'] = input_files
+
+        if not all_input_files:
+            return None
 
         return all_input_files
 
@@ -270,7 +275,8 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         if input_files is None:
             return None
 
-        file_dict['input'] = input_files
+        for key, value in input_files.items():
+            file_dict[key] = value
 
         return file_dict
 
@@ -282,32 +288,42 @@ class GridDiagWrapper(RuntimeFreqWrapper):
               @returns the path to a ascii file containing the list of files
                or None if could not find any files
         """
-        all_input_files = []
+        all_input_files = {}
         for file_dict in self.c_dict['ALL_FILES']:
             # compare time information for each input file
             # add file to list of files to use if it matches
             if not self.compare_time_info(time_info, file_dict['time_info']):
                 continue
 
-            all_input_files.extend(file_dict['input'])
+            input_keys = [key for key in file_dict if key.startswith('input')]
+            for input_key in input_keys:
+                if input_key not in all_input_files:
+                    all_input_files[input_key] = []
+                all_input_files[input_key].extend(file_dict[input_key])
 
         # return None if no matching input files were found
         if not all_input_files:
             return None
 
-        list_file_name = self.get_list_file_name(time_info)
-        list_file_path = self.write_list_file(list_file_name, all_input_files)
-        return list_file_path
+        # loop over all inputs and write a file list file for each
+        list_file_paths = []
+        for identifier, input_files in all_input_files.items():
+            list_file_name = self.get_list_file_name(time_info, identifier)
+            list_file_path = self.write_list_file(list_file_name, input_files)
+            list_file_paths.append(list_file_path)
+
+        return list_file_paths
 
     @staticmethod
-    def get_list_file_name(time_info):
+    def get_list_file_name(time_info, identifier):
         """! Build name of ascii file that contains a list of files to process.
              If wildcard is set for init, valid, or lead then use the text ALL
              in the filename.
 
              @param time_info dictionary containing time information
+             @param identifier string to identify which input is used
              @returns filename i.e.
-              grid_diag_files_init_{init}_valid_{valid}_lead_{lead}.txt
+              grid_diag_files_{identifier}_init_{init}_valid_{valid}_lead_{lead}.txt
         """
         if time_info['init'] == '*':
             init = 'ALL'
@@ -325,4 +341,4 @@ class GridDiagWrapper(RuntimeFreqWrapper):
             lead = time_util.ti_get_seconds_from_lead(time_info['lead'],
                                                       time_info['valid'])
 
-        return f"grid_diag_files_init_{init}_valid_{valid}_lead_{lead}.txt"
+        return f"grid_diag_files_{identifier}_init_{init}_valid_{valid}_lead_{lead}.txt"
