@@ -148,6 +148,17 @@ def ti_get_seconds_from_relativedelta(lead, valid_time=None):
 
     return total_seconds
 
+def ti_get_seconds_from_lead(lead, valid):
+    if isinstance(lead, int):
+        return lead
+
+    if valid == '*':
+        valid_time = None
+    else:
+        valid_time = valid
+
+    return ti_get_seconds_from_relativedelta(lead, valid_time)
+
 def ti_get_lead_string(lead, plural=True):
     """!Check relativedelta object contents and create string representation
         of the highest unit available (year, then, month, day, hour, minute, second).

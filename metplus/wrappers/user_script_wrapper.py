@@ -53,33 +53,6 @@ class UserScriptWrapper(RuntimeFreqWrapper):
         """
         return self.c_dict['COMMAND']
 
-    def run_at_time(self, input_dict):
-        """! Runs the command for a given run time. This function loops
-              over the list of forecast leads and list of custom loops
-              and runs once for each combination
-              Args:
-                @param input_dict dictionary containing time information
-        """
-
-        # loop of forecast leads and process each
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            input_dict['lead'] = lead
-
-            # set current lead time config and environment variables
-            time_info = time_util.ti_calculate(input_dict)
-
-            self.logger.info(
-                f"Processing forecast lead {time_info['lead_string']}"
-            )
-
-            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                continue
-
-            # Run for given init/valid time and forecast lead combination
-            self.run_at_time_once(time_info)
-
     def run_at_time_once(self, time_info):
         """! Process runtime and build command to run
 
@@ -116,3 +89,10 @@ class UserScriptWrapper(RuntimeFreqWrapper):
                 success = False
 
         return success
+
+    def get_all_files(self):
+        """! Don't get list of all files for UserScript wrapper
+
+            @returns True to report that no failures occurred
+        """
+        return True
