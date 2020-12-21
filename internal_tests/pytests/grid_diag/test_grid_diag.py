@@ -94,7 +94,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
                               ('20141031213015', '20141101213015', '024'),
                               ('20141101093015', '20141101093015', '000'),
                               ('20141101093015', '20141102093015', '024')]:
-        filename = f'init_{init}_valid_{valid}_lead_{lead}.nc'
+        filename = f'input0_init_{init}_valid_{valid}_lead_{lead}.nc'
         expected_files.append(os.path.join(input_dir,
                                            filename))
 
@@ -122,49 +122,49 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
     'time_info, expected_filename', [
         # all wildcard
         ({'init': '*', 'valid': '*', 'lead': '*'},
-         'grid_diag_files_init_ALL_valid_ALL_lead_ALL.txt'),
+         'grid_diag_files_input0_init_ALL_valid_ALL_lead_ALL.txt'),
         # valid/lead wildcard
         ({'init': datetime(2014, 10, 31, 9, 30, 15), 'valid': '*', 'lead': '*'},
-         'grid_diag_files_init_20141031093015_valid_ALL_lead_ALL.txt'),
+         'grid_diag_files_input0_init_20141031093015_valid_ALL_lead_ALL.txt'),
         # init/lead wildcard
         ({'init': '*', 'valid': datetime(2014, 10, 31, 9, 30, 15), 'lead': '*'},
-         'grid_diag_files_init_ALL_valid_20141031093015_lead_ALL.txt'),
+         'grid_diag_files_input0_init_ALL_valid_20141031093015_lead_ALL.txt'),
         # init/valid wildcard integer lead
         ({'init': '*', 'valid': '*', 'lead': 86400},
-         'grid_diag_files_init_ALL_valid_ALL_lead_86400.txt'),
+         'grid_diag_files_input0_init_ALL_valid_ALL_lead_86400.txt'),
         # init/valid wildcard relativedelta lead
         ({'init': '*', 'valid': '*', 'lead': relativedelta(hours=24)},
-         'grid_diag_files_init_ALL_valid_ALL_lead_86400.txt'),
+         'grid_diag_files_input0_init_ALL_valid_ALL_lead_86400.txt'),
         # init wildcard integer lead
         ({'init': '*',
           'valid': datetime(2014, 10, 31, 9, 30, 15),
           'lead': 86400},
-         'grid_diag_files_init_ALL_valid_20141031093015_lead_86400.txt'),
+         'grid_diag_files_input0_init_ALL_valid_20141031093015_lead_86400.txt'),
         # init wildcard relativedelta lead
         ({'init': '*',
           'valid': datetime(2014, 10, 31, 9, 30, 15),
           'lead': relativedelta(hours=24)},
-         'grid_diag_files_init_ALL_valid_20141031093015_lead_86400.txt'),
+         'grid_diag_files_input0_init_ALL_valid_20141031093015_lead_86400.txt'),
         # valid wildcard integer lead
         ({'init': datetime(2014, 10, 31, 9, 30, 15),
           'valid': '*',
           'lead': 86400},
-         'grid_diag_files_init_20141031093015_valid_ALL_lead_86400.txt'),
+         'grid_diag_files_input0_init_20141031093015_valid_ALL_lead_86400.txt'),
         # valid wildcard relativedelta lead
         ({'init': datetime(2014, 10, 31, 9, 30, 15),
           'valid': '*',
           'lead': relativedelta(hours=24)},
-         'grid_diag_files_init_20141031093015_valid_ALL_lead_86400.txt'),
+         'grid_diag_files_input0_init_20141031093015_valid_ALL_lead_86400.txt'),
         # no wildcard integer lead
         ({'init': datetime(2014, 10, 31, 9, 30, 15),
           'valid': datetime(2014, 11, 1, 9, 30, 15),
           'lead': 86400},
-         'grid_diag_files_init_20141031093015_valid_20141101093015_lead_86400.txt'),
+         'grid_diag_files_input0_init_20141031093015_valid_20141101093015_lead_86400.txt'),
         # no wildcard relativedelta lead
         ({'init': datetime(2014, 10, 31, 9, 30, 15),
           'valid': datetime(2014, 11, 1, 9, 30, 15),
           'lead': relativedelta(hours=24)},
-         'grid_diag_files_init_20141031093015_valid_20141101093015_lead_86400.txt'),
+         'grid_diag_files_input0_init_20141031093015_valid_20141101093015_lead_86400.txt'),
 ])
 def test_get_list_file_name(metplus_config, time_info, expected_filename):
     wrapper = GridDiagWrapper(metplus_config())
