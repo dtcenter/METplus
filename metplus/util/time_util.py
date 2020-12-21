@@ -182,8 +182,10 @@ def ti_get_lead_string(lead, plural=True):
 
     return output
 
-def ti_calculate(input_dict):
+def ti_calculate(input_dict_preserve):
     out_dict = {}
+    # copy input dictionary to avoid corrupting it
+    input_dict = input_dict_preserve.copy()
 
     # set output dictionary to input items
     if 'now' in input_dict.keys():
