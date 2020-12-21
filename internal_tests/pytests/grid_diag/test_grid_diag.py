@@ -94,7 +94,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
                               ('20141031213015', '20141101213015', '024'),
                               ('20141101093015', '20141101093015', '000'),
                               ('20141101093015', '20141102093015', '024')]:
-        filename = f'input0_init_{init}_valid_{valid}_lead_{lead}.nc'
+        filename = f'init_{init}_valid_{valid}_lead_{lead}.nc'
         expected_files.append(os.path.join(input_dir,
                                            filename))
 
@@ -106,9 +106,9 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
     actual_files = [item for sub in actual_files for item in sub]
     assert(actual_files == expected_files)
 
-    file_list_file = wrapper.subset_input_files(time_info)
-    assert(file_list_file is not None)
-    with open(file_list_file, 'r') as file_handle:
+    file_list_files = wrapper.subset_input_files(time_info)
+    assert(file_list_files is not None)
+    with open(file_list_files[0], 'r') as file_handle:
         file_list = file_handle.readlines()
 
     file_list = file_list[1:]
