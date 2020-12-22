@@ -37,8 +37,6 @@ class RuntimeFreqWrapper(CommandBuilder):
         super().__init__(config,
                          instance=instance,
                          config_overrides=config_overrides)
-        if not self.get_all_files():
-            self.log_error("A problem occurred trying to obtain input files")
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
