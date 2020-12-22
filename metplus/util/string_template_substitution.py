@@ -514,7 +514,6 @@ def populate_match_dict(template, filepath, logger=None):
             logger.debug("No tags found (1)")
         return None, None
 
-    # tags to process, including text in between tags
     all_tags = match.group(2)
 
     # check if text before and after tags matches template and strip off from file path
@@ -548,7 +547,8 @@ def process_match_tags(all_tags, filepath, logger):
         fmt_len, valid_shift = get_format_and_shift(tag_content,
                                                     filepath,
                                                     match_dict,
-                                                    valid_shift)
+                                                    valid_shift,
+                                                    extra_text)
 
         # if length of formatted text couldn't be determined
         if fmt_len is None:
@@ -627,7 +627,7 @@ def check_post_text(filepath, post_text, logger=None):
 
     return filepath
 
-def get_format_and_shift(tag_content, filepath, match_dict, valid_shift):
+def get_format_and_shift(tag_content, filepath, match_dict, valid_shift, extra_text):
     """! Extract format and shift information from tag. Raises TypeError if shift keyword
          is applied to a tag other than valid or if 2 different shift values are found
          Args:
@@ -643,6 +643,13 @@ def get_format_and_shift(tag_content, filepath, match_dict, valid_shift):
     # identifier is time type, i.e. valid, init, lead, etc.
     # sections is a list of key=values, i.e. fmt=%Y or shift=30
     identifier, *sections = tag_content.split('?')
+
+    if identifier == 'storm_id':
+        fmt_len = filepath.find(extra_text)
+        if fmt_len < 0:
+            fmt_len = 0
+        return fmt_len, 0
+
 
     for section in sections:
         element_name, element_value = section.split('=')
@@ -853,3 +860,11 @@ def add_offset_matches_to_output_dict(match_dict, output_dict):
             offset = int(value)
 
     output_dict['offset_hours'] = offset
+
+def extract_lead(template, filename):
+    new_template = template
+    new_template = new_template.replace('/', '\/').replace('.', '\.')
+    match_tags = re.findall(r'{(.*?)}', new_template)
+    for match_tag in match_tags:
+        if match_tag.split('?') != 'lead':
+            new_template = new_template.replace('{' + match_tag + '}', '.*')

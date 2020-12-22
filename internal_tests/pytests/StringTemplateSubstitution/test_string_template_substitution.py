@@ -58,6 +58,9 @@ def test_gdas_substitution():
         ("{init?fmt=%Y%m%d%H}_A{lead?fmt=%H}h",
          "1987020103_A102h",
          "198702050900"),
+        ("extract_tiles/{init?fmt=%Y%m%d_%H}/{storm_id}/FCST_TILE_F{lead?fmt=%3H}_gfs_4_{init?fmt=%Y%m%d}_{init?fmt=%H}00_{lead?fmt=%3H}.nc",
+         "extract_tiles/20141214_00/ML1200942014/FCST_TILE_F024_gfs_4_20141214_0000_024.nc",
+         "201412150000"),
     ]
 )
 def test_parse_template(template, filepath, expected_valid):

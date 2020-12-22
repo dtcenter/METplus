@@ -806,22 +806,14 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             input_template = self.c_dict['FCST_INPUT_TEMPLATE']
 
         full_template = os.path.join(input_dir, input_template)
-        time_info_partial = time_info.copy()
-        del time_info_partial['lead']
-        del time_info_partial['init']
-        del time_info_partial['valid']
 
-        template_no_lead = do_string_sub(full_template,
-                                         skip_missing_tags=True,
-                                         **time_info_partial)
-        self.logger.debug(template_no_lead)
         smallest_fcst = 99999999
         largest_fcst = -99999999
         beg = None
         end = None
         for filepath in files_of_interest:
             filepath = filepath.strip()
-            file_time_info = parse_template(template_no_lead,
+            file_time_info = parse_template(full_template,
                                             filepath,
                                             self.logger)
             if not file_time_info:
