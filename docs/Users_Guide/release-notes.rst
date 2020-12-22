@@ -5,6 +5,15 @@ When applicable, release notes are followed by the GitHub issue number which
 describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
+**New in v3.1.1**
+
+
+Bugfixes:
+
+* Missing dependencies for CyclonePlotter wrapper no longer prevent others wrappers from being used (`#586 <https://github.com/dtcenter/METplus/issues/586>`_)
+* Fixed corrupted time information error when running using custom loop list (`#740 <https://github.com/dtcenter/METplus/issues/740>`_)
+* Fixed logic preventing StatAnalysis to run with MakePlots (`#743 <https://github.com/dtcenter/METplus/issues/743>`_)
+
 
 **New in v3.1**
 
