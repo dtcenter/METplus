@@ -28,7 +28,6 @@ def load_data(filename):
     fieldijn = np.ma.masked_invalid(
         np.ma.masked_array(
             data=loaded['data']))
-           # mask=loaded['mask']))
 
     return lats, lons, fieldijn
 
@@ -40,17 +39,37 @@ def compute_stats(field):
 
     return mu, sigma
 
+def compute_wind_envelope():
+    """
+    Computes piecewise linear envelope for winds in knots.
 
-def compute_difficulty_index(field, mu, sigma, thresholds):
+    Returns
+    -------
+    Piecewise linear object
+
+    """
+    # Envelope for version 6.1, the default
+    xunits = 'kn'
+    A6_1_name = "A6_1"
+    A6_1_left = 0.0
+    A6_1_right = 0.0
+    A6_1_xlist = [5.0, 28.0, 34.0, 50.0]
+    A6_1_ylist = [0.0, 1.5, 1.5, 0.0]
+    Aplin =\
+            plin(A6_1_xlist, A6_1_ylist, xunits=xunits,
+                    right=A6_1_right, left=A6_1_left, name=A6_1_name)
+            
+    return Aplin
+
+def compute_difficulty_index(field, mu, sigma, thresholds, Aplin):
     """
     Compute difficulty index for an ensemble forecast given
     a set of thresholds, returning a dictionary of fields.
     """
     dij = {}
     for threshold in thresholds:
-        print(type(threshold))
         dij[threshold] =\
-            di(sigma, mu, threshold, field, sigma_over_mu_ref=EPS)
+            di(sigma, mu, threshold, field, Aplin=Aplin, sigma_over_mu_ref=EPS)
 
     return dij
 
@@ -65,7 +84,6 @@ def plot_difficulty_index(dij, lats, lons, thresholds, units):
                 'figure.max_open_warning': 40}
     plt.rcParams.update(myparams)
     figs = {}
-    #units = 'feet'
     cmap = mcmap.stoplight()
     for threshold in thresholds:
         if np.max(dij[threshold]) <= 1.0:
@@ -88,10 +106,10 @@ def save_difficulty_figures(figs, save_thresh, units):
     """
     #fig_fmt = 'png'
     #fig_fmt = ${DIFF_INDEX_FIG_FMT}
-    fig_fmt = sys.argv[6]
+    fig_fmt = sys.argv[9]
     #fig_basename = './swh_North_Pacific_difficulty_index_'
     #fig_basename = ${DIFF_INDEX_FIG_BASENAME}
-    fig_basename = sys.argv[7]
+    fig_basename = sys.argv[10]
     for thresh in save_thresh:
         thresh_str = '{:.2f}'.format(thresh).replace('.', '_')
         fig_name = (fig_basename + thresh_str +
@@ -125,10 +143,10 @@ def save_stats_figures(mu_fig, sigma_fig):
     """
     #fig_fmt = 'png'
     #fig_fmt = ${DIFF_INDEX_FIG_FMT}
-    fig_fmt = sys.argv[6]
+    fig_fmt = sys.argv[9]
     #fig_basename = './swh_North_Pacific_5dy_'
     #fig_basename = ${DIFF_INDEX_FIG_BASENAME}
-    fig_basename = sys.argv[7]
+    fig_basename = sys.argv[10]
     mu_name = fig_basename + 'mean.' + fig_fmt
     print('Saving {}...\n'.format(mu_name))
     mu_fig.savefig(mu_name, format=fig_fmt)
@@ -139,32 +157,38 @@ def save_stats_figures(mu_fig, sigma_fig):
 
 def main():
     """
-    Load fieldijn from npz file created with save_ensemble_data.py
+    Load fieldijn from npz file created with NCEP_test.py
     helper function, compute ensemble mean and spread, compute
     difficulty index for a set of thresholds, plot and save the results.
     """
-    #filename = './swh_North_Pacific_5dy_ensemble.npz'
+
     #filename = ${USER_SCRIPT_INPUT_TEMPLATE}
     filename = sys.argv[1]
     lats, lons, fieldijn = load_data(filename)
+    # Convert m/s to knots
+    units = sys.argv[8]
+    mps2kn = 1.94384
+    fieldijn = mps2kn * fieldijn
+    # Ensemble mean, std dev
     muij, sigmaij = compute_stats(fieldijn)
-    #thresholds = np.arange(4.0, 16.0, 1.0)
+    # Windspeed envelope
+    Aplin = compute_wind_envelope()
+    # Difficulty index for a set of thresholds
     #thresholds = np.arange(${DIFF_INDEX_THRESH_START},${DIFF_INDEX_THRESH_END},${DIFF_INDEX_THRESH_STEP})
     start = float(sys.argv[2])
-    print(start)
-    print(type(start))
-    print(type(4.0))
     stop = float(sys.argv[3])
     step = float(sys.argv[4])
-    units = sys.argv[5]
     thresholds = np.arange(start, stop, step)
-    dij = compute_difficulty_index(fieldijn, muij, sigmaij, thresholds)
+    dij = compute_difficulty_index(fieldijn, muij, sigmaij, thresholds, Aplin=Aplin)
+    # Plot and save difficulty index figures
     figs = plot_difficulty_index(dij, lats, lons, thresholds, units)
     #save_thresh = np.arange(9.0, 13.0, 1.0)
-    save_thresh = thresholds
+    save_start = float(sys.argv[5])
+    save_stop = float(sys.argv[6])
+    save_step = float(sys.argv[7])
+    save_thresh = np.arange(save_start, save_stop, save_step)
     save_difficulty_figures(figs, save_thresh, units)
-    #units = 'feet'
-    #units = ${DIFF_INDEX_UNITS}
+    # Plot and save ensemble mean, std_dev 
     mu_fig, sigma_fig =\
         plot_statistics(muij, sigmaij, lats, lons, units=units)
     save_stats_figures(mu_fig, sigma_fig)
