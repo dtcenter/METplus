@@ -5,8 +5,17 @@ When applicable, release notes are followed by the GitHub issue number which
 describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
+**New in v3.1.1 (20201222)**
 
-**New in v3.1**
+
+Bugfixes:
+
+* Missing dependencies for CyclonePlotter wrapper no longer prevent others wrappers from being used (`#586 <https://github.com/dtcenter/METplus/issues/586>`_)
+* Fixed corrupted time information error when running using custom loop list (`#740 <https://github.com/dtcenter/METplus/issues/740>`_)
+* Fixed logic preventing StatAnalysis to run with MakePlots (`#743 <https://github.com/dtcenter/METplus/issues/743>`_)
+
+
+**New in v3.1 (20200810)**
 
 
 Bugfixes:
@@ -55,7 +64,7 @@ Internal:
 * Update Tutorial Chapter 4 for MET 9.0, METplus 3.0 (`#428 <https://github.com/dtcenter/METplus/issues/428>`_)
 * Reorganize sphinx documentation files (`#418 <https://github.com/dtcenter/METplus/issues/418>`_)
 
-**New in v3.0**
+**New in v3.0 (20200316)**
 
 
 * Moved to using Python 3.6.3
