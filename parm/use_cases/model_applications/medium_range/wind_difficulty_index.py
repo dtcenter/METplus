@@ -11,6 +11,7 @@ Last modified Mon Apr 6 11:30:30 2020
 Taken from original test_difficulty_index.py but replacing with METcalcpy and METplotpy.
 
 """
+import os
 import sys
 import numpy as np
 import matplotlib.pyplot as plt
@@ -104,12 +105,8 @@ def save_difficulty_figures(figs, save_thresh, units):
     """
     Save subset of difficulty index figures.
     """
-    #fig_fmt = 'png'
-    #fig_fmt = ${DIFF_INDEX_FIG_FMT}
-    fig_fmt = sys.argv[9]
-    #fig_basename = './swh_North_Pacific_difficulty_index_'
-    #fig_basename = ${DIFF_INDEX_FIG_BASENAME}
-    fig_basename = sys.argv[10]
+    fig_fmt = os.environ.get('DIFF_INDEX_FIG_FMT')
+    fig_basename = os.environ.get('DIFF_INDEX_FIG_BASENAME')
     for thresh in save_thresh:
         thresh_str = '{:.2f}'.format(thresh).replace('.', '_')
         fig_name = (fig_basename + thresh_str +
@@ -141,12 +138,9 @@ def save_stats_figures(mu_fig, sigma_fig):
     """
     Save ensemble mean and spread figures.
     """
-    #fig_fmt = 'png'
-    #fig_fmt = ${DIFF_INDEX_FIG_FMT}
-    fig_fmt = sys.argv[9]
-    #fig_basename = './swh_North_Pacific_5dy_'
-    #fig_basename = ${DIFF_INDEX_FIG_BASENAME}
-    fig_basename = sys.argv[10]
+
+    fig_fmt = os.environ.get('DIFF_INDEX_FIG_FMT')
+    fig_basename = os.environ.get('DIFF_INDEX_FIG_BASENAME')
     mu_name = fig_basename + 'mean.' + fig_fmt
     print('Saving {}...\n'.format(mu_name))
     mu_fig.savefig(mu_name, format=fig_fmt)
@@ -162,11 +156,10 @@ def main():
     difficulty index for a set of thresholds, plot and save the results.
     """
 
-    #filename = ${USER_SCRIPT_INPUT_TEMPLATE}
-    filename = sys.argv[1]
+    filename = os.environ.get('DIFF_INDEX_INPUT_FILENAME')
     lats, lons, fieldijn = load_data(filename)
     # Convert m/s to knots
-    units = sys.argv[8]
+    units = os.environ.get('DIFF_INDEX_UNITS')
     mps2kn = 1.94384
     fieldijn = mps2kn * fieldijn
     # Ensemble mean, std dev
@@ -174,18 +167,17 @@ def main():
     # Windspeed envelope
     Aplin = compute_wind_envelope()
     # Difficulty index for a set of thresholds
-    #thresholds = np.arange(${DIFF_INDEX_THRESH_START},${DIFF_INDEX_THRESH_END},${DIFF_INDEX_THRESH_STEP})
-    start = float(sys.argv[2])
-    stop = float(sys.argv[3])
-    step = float(sys.argv[4])
+    #thresholds = np.arange(os.environ.get('DIFF_INDEX_THRESH_START'), os.environ.get('DIFF_INDEX_THRESH_END'), os.environ.get('DIFF_INDEX_THRESH_STEP'))
+    start = float(os.environ.get('DIFF_INDEX_THRESH_START'))
+    stop = float(os.environ.get('DIFF_INDEX_THRESH_END'))
+    step = float(os.environ.get('DIFF_INDEX_THRESH_STEP'))
     thresholds = np.arange(start, stop, step)
     dij = compute_difficulty_index(fieldijn, muij, sigmaij, thresholds, Aplin=Aplin)
     # Plot and save difficulty index figures
     figs = plot_difficulty_index(dij, lats, lons, thresholds, units)
-    #save_thresh = np.arange(9.0, 13.0, 1.0)
-    save_start = float(sys.argv[5])
-    save_stop = float(sys.argv[6])
-    save_step = float(sys.argv[7])
+    save_start = float(os.environ.get('DIFF_INDEX_SAVE_THRESH_START'))
+    save_stop = float(os.environ.get('DIFF_INDEX_SAVE_THRESH_STOP'))
+    save_step = float(os.environ.get('DIFF_INDEX_SAVE_THRESH_STEP'))
     save_thresh = np.arange(save_start, save_stop, save_step)
     save_difficulty_figures(figs, save_thresh, units)
     # Plot and save ensemble mean, std_dev 
