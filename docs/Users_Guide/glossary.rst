@@ -5986,6 +5986,13 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
+   GRID_STAT_DESCRIPTION
+     Specify the value for 'desc' in the MET configuration file for grid_stat.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
    GRID_DIAG_INPUT_DIR
      Input directory for files to use with the MET tool grid_diag.
 

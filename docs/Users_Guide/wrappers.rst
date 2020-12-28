@@ -525,6 +525,7 @@ Configuration
 | :term:`GRID_STAT_ONCE_PER_FIELD`
 | :term:`GRID_STAT_CUSTOM_LOOP_LIST`
 | :term:`GRID_STAT_SKIP_IF_OUTPUT_EXISTS`
+| :term:`GRID_STAT_DESCRIPTION` (optional)
 | :term:`FCST_GRID_STAT_PROB_THRESH` (optional)
 | :term:`OBS_GRID_STAT_PROB_THRESH` (optional)
 | :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` (optional)
