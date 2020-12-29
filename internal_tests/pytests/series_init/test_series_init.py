@@ -47,7 +47,7 @@ def test_get_fcst_file_info(metplus_config):
                      'data',
                      'file_lists')
     )
-    output_filename = f"{wrapper.FCST_ASCII_FILE_PREFIX}_{storm_id}"
+    output_filename = f"FCST_FILES_{storm_id}"
     fcst_path = os.path.join(output_dir, output_filename)
 
     num, beg, end = wrapper.get_fcst_file_info(fcst_path, time_info)
