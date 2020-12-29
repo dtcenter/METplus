@@ -8,19 +8,19 @@ from dateutil.relativedelta import relativedelta
 import produtil
 
 from metplus.util import ti_get_seconds_from_lead
-from metplus.wrappers.series_by_init_wrapper import SeriesByInitWrapper
+from metplus.wrappers.series_analysis_wrapper import SeriesAnalysisWrapper
 
 def series_init_wrapper(metplus_config, config_overrides=None):
     extra_configs = []
     extra_configs.append(os.path.join(os.path.dirname(__file__),
-                                      'series_init_test.conf'))
+                                      'series_test.conf'))
     config = metplus_config(extra_configs)
     config.set('config', 'LOOP_ORDER', 'processes')
     if config_overrides:
         for key, value in config_overrides.items():
             config.set('config', key, value)
 
-    return SeriesByInitWrapper(config)
+    return SeriesAnalysisWrapper(config)
 
 def test_get_fcst_file_info(metplus_config):
     """ Verify that the tuple created by get_fcst_file_info is

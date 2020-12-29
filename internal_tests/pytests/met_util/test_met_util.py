@@ -911,8 +911,6 @@ def test_fix_list(list_str, expected_fixed_list):
         ('PyEmbedWrapper', 'py_embed_wrapper'),
         ('RegridDataPlaneWrapper', 'regrid_data_plane_wrapper'),
         ('SeriesAnalysisWrapper', 'series_analysis_wrapper'),
-        ('SeriesByInitWrapper', 'series_by_init_wrapper'),
-        ('SeriesByLeadWrapper', 'series_by_lead_wrapper'),
         ('StatAnalysisWrapper', 'stat_analysis_wrapper'),
         ('TCMPRPlotterWrapper', 'tcmpr_plotter_wrapper'),
         ('TCPairsWrapper', 'tc_pairs_wrapper'),
