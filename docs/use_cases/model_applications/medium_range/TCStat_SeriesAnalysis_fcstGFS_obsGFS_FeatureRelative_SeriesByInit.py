@@ -138,24 +138,14 @@ _SeriesByInit.conf
 #
 #  If the executables are in the path:
 #
-# * **RM = rm**
-# * **CUT = cut**
-# * **TR = tr**
-# * **NCAP2 = ncap2**
 # * **CONVERT = convert**
-# * **NCDUMP = ncdump**
 #
 # **NOTE:** All of these executable items must be located under the [exe] section.
 #
 #
 # If the executables are not in the path, they need to be defined:
 #
-# * **RM = /path/to/rm**
-# * **CUT = /path/to/cut**
-# * **TR = /path/to/tr**
-# * **NCAP2 = /path/to/ncap2**
 # * **CONVERT = /path/to/convert**
-# * **NCDUMP= /path/to/ncdump**
 #
 # **NOTE:** All of these executable items must be located under the [exe] section.
 # Example User Configuration File::
@@ -166,12 +156,7 @@ _SeriesByInit.conf
 #   MET_INSTALL_DIR = /path/to/met-X.Y
 #
 #   [exe]
-#   RM = /path/to/rm
-#   CUT = /path/to/cut
-#   TR = /path/to/tr
-#   NCAP2 = /path/to/ncap2
 #   CONVERT = /path/to/convert
-#   NCDUMP = /path/to/ncdump
 #
 # **NOTE:** The INPUT_BASE, OUTPUT_BASE, and MET_INSTALL_DIR must be located under the [dir] section, while the RM, CUT, TR, NCAP2, CONVERT, and NCDUMP must be located under the [exe] section.
 

@@ -169,7 +169,7 @@ _SeriesByLead_PyEmbed_IVT.conf
 #
 #  and for the [exe] section, you will need to define the location of NON-MET executables.
 #  If the executable is in the user's path, METplus will find it from the name. 
-#  If the executable is not in the path, specify the full path to the executable here (i.e. RM = /bin/rm)  
+#  If the executable is not in the path, specify the full path to the executable here (i.e. CONVERT = /usr/bin/convert)
 #  The following executables are required for performing series analysis use cases:
 #
 # Example User Configuration File::
@@ -180,12 +180,7 @@ _SeriesByLead_PyEmbed_IVT.conf
 #   MET_INSTALL_DIR = /path/to/met-X.Y
 #
 #   [exe]
-#   RM = /path/to/rm
-#   CUT = /path/to/cut
-#   TR = /path/to/tr
-#   NCAP2 = /path/to/ncap2
 #   CONVERT = /path/to/convert
-#   NCDUMP = /path/to/ncdump
 #
 
 ##############################################################################
