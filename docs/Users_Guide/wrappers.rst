@@ -1171,7 +1171,7 @@ Configuration
 | :term:`SERIES_ANALYSIS_GENERATE_PLOTS` (Optional)
 | :term:`SERIES_ANALYSIS_GENERATE_ANIMATIONS` (Optional)
 | :term:`PLOT_DATA_PLANE_TITLE` (Optional)
-| :term:`LEAD_SEQ_<n>` (Optional)
+| :term:`LEAD_SEQ_\<n\>` (Optional)
 | :term:`LEAD_SEQ_<n>_LABEL` (Optional)
 | :term:`SERIES_ANALYSIS_DESCRIPTION`
 | :term:`SERIES_ANALYSIS_CAT_THRESH`
@@ -1631,6 +1631,8 @@ METplus Configuration
 | :term:`TC_RMW_SKIP_IF_OUTPUT_EXISTS`
 | :term:`MODEL`
 | :term:`LEAD_SEQ`
+
+.. _tc-rmw-met-conf:
 
 MET Configuration
 ~~~~~~~~~~~~~~~~~
