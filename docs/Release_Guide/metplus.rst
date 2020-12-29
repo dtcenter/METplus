@@ -26,7 +26,8 @@ Bugfix release (e.g. vX.Y.Z)
 
 .. include:: release_steps/clone_project_repository.rst
 .. include:: release_steps/checkout_main_branch.rst
-.. include:: release_steps/metplus/update_version.rst
+.. include:: release_steps/metplus/update_version_bugfix.rst
+.. include:: release_steps/update_release_notes.rst
 .. include:: release_steps/metplus/update_docs_bugfix.rst
 .. include:: release_steps/create_release_on_github.rst
 .. include:: release_steps/metplus/create_release_extra.rst
