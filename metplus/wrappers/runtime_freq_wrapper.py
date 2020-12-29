@@ -301,12 +301,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         if runtime['lead'] == '*':
             return True
 
-        # convert each value to seconds to compare
-        runtime_lead = time_util.ti_get_seconds_from_lead(runtime['lead'],
-                                                          runtime['valid'])
-        filetime_lead = time_util.ti_get_seconds_from_lead(filetime['lead'],
-                                                           filetime['valid'])
-        if filetime_lead != runtime_lead:
+        if runtime['lead'] != filetime['lead']:
             return False
 
         return True
