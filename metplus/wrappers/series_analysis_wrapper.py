@@ -619,7 +619,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         """
         success = True
 
-        num, beg, end = self.get_fcst_file_info(fcst_path, time_info)
+        num, beg, end = self.get_fcst_file_info(fcst_path)
         if num is None:
             self.logger.debug(f"Could not get fcst_beg and fcst_end values. "
                               "Those values cannot be used in filename "
@@ -750,7 +750,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             # Get the number of forecast tile files and the name of the
             # first and last in the list to be used in the -title
-            num, beg, end = self.get_fcst_file_info(fcst_path, time_info)
+            num, beg, end = self.get_fcst_file_info(fcst_path)
             if num is None:
                 self.log_error("Could not get any forecast lead info "
                                f"from {fcst_path}")
