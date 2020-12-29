@@ -92,7 +92,7 @@ MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB:: model_applications/precipitation
 MTD_fcstHRRR-TLE_obsMRMS:: model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf
 
 Category: s2s
-GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast:: model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf
+GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast:: model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf::netCDF
 
 Category: space_weather
 GridStat_fcstGloTEC_obsGloTEC_vx7:: model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf
