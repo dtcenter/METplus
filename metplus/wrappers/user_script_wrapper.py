@@ -73,7 +73,6 @@ class UserScriptWrapper(RuntimeFreqWrapper):
                 self.logger.info(f"Processing custom string: {custom_string}")
 
             time_info['custom'] = custom_string
-
             # if lead and either init or valid are set, compute other string sub
             if time_info.get('lead') != '*':
                 if (time_info.get('init') != '*'
