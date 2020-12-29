@@ -14,14 +14,10 @@ about each item in the METplus Configuration Glossary.
 ASCII2NC
 --------
 
-.. _description-1:
-
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool ASCII2NC
-
-.. _configuration-1:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -67,16 +63,12 @@ Configuration
 CyclonePlotter
 --------------
 
-.. _description-2:
-
 Description
 ~~~~~~~~~~~
 
 This wrapper does not have a corresponding MET tool but instead wraps
 the logic necessary to create plots of cyclone tracks. Currently only
 the output from the MET tc-pairs tool can be plotted.
-
-.. _configuration-2:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -110,14 +102,10 @@ Configuration
 EnsembleStat
 ------------
 
-.. _description-3:
-
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool ensemble_stat.
-
-.. _configuration-3:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -182,14 +170,10 @@ Configuration
 Example
 --------
 
-.. _description-4:
-
 Description
 ~~~~~~~~~~~
 
 Used to demonstrate how the METplus wrappers handle looping and building commands.
-
-.. _configuration-4:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -209,8 +193,6 @@ Configuration
 ExtractTiles
 ------------
 
-.. _description-5:
-
 3.5.1 Description
 ~~~~~~~~~~~~~~~~~
 
@@ -222,8 +204,6 @@ calls the MET tc_stat tool to determine the lat/lon positions of the
 paired track data. This information is then used to create tiles of
 subregions. The ExtractTiles wrapper creates a 2n degree x 2m degree
 grid/tile with each storm located at the center.
-
-.. _configuration-5:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -278,14 +258,10 @@ the dimensions and density of the tiles comprising the subregion:
 GempakToCF
 ----------
 
-.. _description-6:
-
 Description
 ~~~~~~~~~~~
 
 Used to configure the utility GempakToCF.
-
-.. _configuration-6:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -316,14 +292,10 @@ Configuration
 GenVxMask
 ---------
 
-.. _description-6a:
-
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool GenVxMask to define and generate masking regions.
-
-.. _configuration-6a:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -352,14 +324,10 @@ Configuration
 GridDiag
 --------
 
-.. _description-7a:
-
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool grid_diag.
-
-.. _configuration-7a:
 
 METplus Configuration
 ~~~~~~~~~~~~~~~~~~~~~
@@ -485,14 +453,10 @@ Resulting value::
 GridStat
 --------
 
-.. _description-7:
-
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool grid_stat.
-
-.. _configuration-7:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -558,8 +522,6 @@ Configuration
 MakePlots
 ---------
 
-.. _description-8:
-
 Description
 ~~~~~~~~~~~
 
@@ -567,8 +529,6 @@ The MakePlots wrapper creates various statistical plots using python
 scripts for the various METplus Wrappers use cases. This can only be run
 following StatAnalysis wrapper when LOOP_ORDER = processes. To run
 MakePlots wrapper, include MakePlots in PROCESS_LIST.
-
-.. _configuration-8:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -650,14 +610,10 @@ configuration file:
 MODE
 ----
 
-.. _description-9:
-
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET Method for Object-based Diagnostic Evaluation tool mode.
-
-.. _configuration-9:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -725,14 +681,10 @@ Configuration
 MTD
 ---
 
-.. _description-10:
-
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET MODE Time Domain tool mtd.  This tools follows objects through time and can also be used to track objects.
-
-.. _configuration-10:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -781,15 +733,11 @@ Configuration
 PB2NC
 -----
 
-.. _description-11:
-
 Description
 ~~~~~~~~~~~
 
 The PB2NC wrapper is a Python script that encapsulates the behavior of
 the MET pb2nc tool to convert prepBUFR files into netCDF.
-
-.. _configuration-11:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -846,16 +794,12 @@ Configuration
 PCPCombine
 ----------
 
-.. _description-12:
-
 Description
 ~~~~~~~~~~~
 
 The PCPCombine wrapper is a Python script that encapsulates the MET
 PCPCombine tool. It provides the infrastructure to combine or extract
 from files to build desired accumulations.
-
-.. _configuration-12:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -979,16 +923,12 @@ Configuration
 Point2Grid
 ----------
 
-.. _description-13:
-
 Description
 ~~~~~~~~~~~
 
 The Point2Grid wrapper is a Python script that encapsulates the MET
 point2grid tool. It provides the infrastructure to read in point observations
 and place them on a grid
-
-.. _configuration-13:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1023,8 +963,6 @@ Configuration
 PointStat
 ---------
 
-.. _description-14:
-
 Description
 ~~~~~~~~~~~
 
@@ -1032,8 +970,6 @@ The PointStat wrapper is a Python script that encapsulates the MET
 point_stat tool. It provides the infrastructure to read in gridded model
 data and netCDF point observation data to perform grid-to-point
 (grid-to-obs) verification.
-
-.. _configuration-14:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1111,14 +1047,10 @@ Configuration
 PyEmbedIngest
 -------------
 
-.. _description-15:
-
 Description
 ~~~~~~~~~~~
 
 Used to configure the PyEmbedIngest wrapper that runs RegridDataPlane to convert data using python embedding scripts into NetCDF so it can be read by the MET tools.
-
-.. _configuration-15:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1152,14 +1084,10 @@ Configuration
 RegridDataPlane
 ---------------
 
-.. _description-16:
-
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool regrid_data_plane which can be used to change projections of a grid with user configurable interpolation choices.  It can also be used to convert GRIB1 and GRIB2 files into netcdf files if desired.
-
-.. _configuration-16:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1273,68 +1201,10 @@ Configuration
 SeriesByInit
 ------------
 
-.. _description-18:
-
 Description
 ~~~~~~~~~~~
 
 .. warning:: **This tool has been DEPRECATED. Please use SeriesAnalysis wrapper**
-
-.. _configuration-18:
-
-Configuration
-~~~~~~~~~~~~~
-
-[dir]
-
-| :term:`SERIES_ANALYSIS_TILE_INPUT_DIR`
-| :term:`SERIES_ANALYSIS_OUTPUT_DIR`
-| :term:`SERIES_ANALYSIS_TC_STAT_INPUT_DIR`
-
-[config]
-
-| :term:`LOG_SERIES_ANALYSIS_VERBOSITY`
-| :term:`SERIES_ANALYSIS_CONFIG_FILE`
-| :term:`SERIES_ANALYSIS_REGRID_TO_GRID`
-| :term:`SERIES_ANALYSIS_STAT_LIST`
-| :term:`SERIES_ANALYSIS_BACKGROUND_MAP`
-| :term:`SERIES_ANALYSIS_GENERATE_PLOTS`
-| :term:`SERIES_ANALYSIS_GENERATE_ANIMATIONS`
-| :term:`SERIES_ANALYSIS_RUN_ONCE_PER_STORM_ID`
-| :term:`SERIES_ANALYSIS_CUSTOM_LOOP_LIST`
-| :term:`SERIES_ANALYSIS_SKIP_IF_OUTPUT_EXISTS`
-
-[filename_templates]
-
-| :term:`SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE`
-| :term:`SERIES_ANALYSIS_OUTPUT_TEMPLATE`
-| :term:`FCST_SERIES_ANALYSIS_TILE_INPUT_TEMPLATE`
-| :term:`OBS_SERIES_ANALYSIS_TILE_INPUT_TEMPLATE`
-
-.. warning:: **DEPRECATED:**
-
-   | :term:`SERIES_INIT_FILTERED_OUT_DIR`
-   | :term:`SERIES_BY_INIT_OUTPUT_DIR`
-   | :term:`FCST_TILE_PREFIX`
-   | :term:`ANLY_TILE_PREFIX`
-   | :term:`FCST_TILE_REGEX`
-   | :term:`ANLY_TILE_REGEX`
-   | :term:`FCST_NC_TILE_REGEX`
-   | :term:`ANLY_NC_TILE_REGEX`
-   | :term:`FCST_ASCII_REGEX_LEAD`
-   | :term:`ANLY_ASCII_REGEX_LEAD`
-   | :term:`SERIES_ANALYSIS_FILTER_OPTS`
-   | :term:`SERIES_ANALYSIS_INPUT_DIR`
-   | :term:`FCST_SERIES_ANALYSIS_NC_TILE_REGEX`
-   | :term:`OBS_SERIES_ANALYSIS_NC_TILE_REGEX`
-   | :term:`FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
-   | :term:`OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
-   | :term:`SERIES_ANALYSIS_STAT_INPUT_DIR`
-   | :term:`SERIES_ANALYSIS_STAT_INPUT_TEMPLATE`
-   | :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR`
-   | :term:`INIT_HOUR_END`
-   | :term:`INIT_INCLUDE`
-   | :term:`INIT_EXCLUDE`
 
 SeriesByLead
 ------------
@@ -1559,8 +1429,6 @@ Configuration
 TCMPRPlotter
 -------------
 
-.. _description-21:
-
 Description
 ~~~~~~~~~~~
 
@@ -1569,8 +1437,6 @@ plot_tcmpr.R. This script is useful for plotting the calculated
 statistics for the output from the MET-TC tools. This script, and other
 R scripts are included in the MET installation. Please refer to section
 21.2.3 of the MET User's Guide for usage information.
-
-.. _configuration-21:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1645,8 +1511,6 @@ set to 'yes', then set the flag
 TCPairs
 -------
 
-.. _description-22:
-
 Description
 ~~~~~~~~~~~
 
@@ -1656,8 +1520,6 @@ extra tropical cyclone format (such as the data used by sample data
 provided in the METplus tutorial), or ATCF formatted track data. If data
 is in an extra tropical cyclone (non-ATCF) format, the data is
 reformatted into an ATCF format that is recognized by MET.
-
-.. _configuration-22:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1722,14 +1584,10 @@ Configuration
 TCRMW
 ------
 
-.. _tc_rmw_description:
-
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool TC-RMW.
-
-.. _tc_rmw_metplus_conf:
 
 METplus Configuration
 ~~~~~~~~~~~~~~~~~~~~~
@@ -1773,8 +1631,6 @@ METplus Configuration
 | :term:`TC_RMW_SKIP_IF_OUTPUT_EXISTS`
 | :term:`MODEL`
 | :term:`LEAD_SEQ`
-
-.. _tc-rmw-met-conf:
 
 MET Configuration
 ~~~~~~~~~~~~~~~~~

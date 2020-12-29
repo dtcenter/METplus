@@ -192,15 +192,10 @@ _seasonal_forecast.conf
 # See the following file for more information about the environment variables set in this configuration file::
 #   parm/use_cases/met_tool_wrapper/GridStat/GridStat.py
 #
-# **SeriesAnalysisConfig_seasonal_forecast_climo**
+# **SeriesAnalysisConfig_wrapped**
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/SeriesAnalysisConfig_seasonal_forecast_climo
-#
-# **SeriesAnalysisConfig_seasonal_forecast_full_stats**
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/SeriesAnalysisConfig_seasonal_forecast_full_stats
+# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 #
 # See the following file for more information about the environment variables set in these configuration files::
 #   parm/use_cases/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis.conf

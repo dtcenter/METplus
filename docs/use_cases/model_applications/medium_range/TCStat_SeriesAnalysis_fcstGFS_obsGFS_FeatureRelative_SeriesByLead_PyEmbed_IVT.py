@@ -135,9 +135,8 @@ _SeriesByLead_PyEmbed_IVT.conf
 # section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCPairsETCConfig_IVT
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStatConfig_IVT
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/SeriesAnalysisConfig_IVT
+# .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 #
 # See the following files for more information about the environment variables set in these configuration files.
 #
