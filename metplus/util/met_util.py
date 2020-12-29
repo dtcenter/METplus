@@ -1065,7 +1065,11 @@ def set_input_dict(loop_time, config, use_init, instance=None, custom=None):
 
     # if instance is set, use that value, otherwise use empty string
     input_dict['instance'] = instance if instance else ''
-    input_dict['custom'] = custom if custom else ''
+
+    # if custom is specified, set it, otherwise leave it unset so it can be
+    # set within the wrapper
+    if custom:
+        input_dict['custom'] = custom
 
     return input_dict
 
