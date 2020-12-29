@@ -254,7 +254,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
         return self.all_commands
 
-    def run_once_per_lead(self):
+    def run_once_per_lead(self, custom):
         self.logger.debug("Running once for forecast lead time")
         success = True
 
@@ -282,7 +282,9 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
             # that it is passed into modifies it
             input_dict = set_input_dict(loop_time=None,
                                         config=self.config,
-                                        use_init=None)
+                                        use_init=None,
+                                        instance=self.instance,
+                                        custom=custom)
 
             input_dict['init'] = '*'
             input_dict['valid'] = '*'
@@ -659,7 +661,6 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         self.set_climo_env_vars()
 
         self.set_regrid_dict()
-
 
         super().set_environment_variables(time_info)
 

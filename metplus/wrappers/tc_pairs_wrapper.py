@@ -223,6 +223,7 @@ class TCPairsWrapper(CommandBuilder):
                  input_dict dictionary containing init or valid time
              Returns:
         """
+        input_dict['instance'] = self.instance if self.instance else ''
         for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
             if custom_string:
                 self.logger.info(f"Processing custom string: {custom_string}")

@@ -158,7 +158,15 @@ class GridDiagWrapper(RuntimeFreqWrapper):
              Args:
                 @param time_info dictionary containing timing information
         """
-        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+
+        # if custom is already set in time info, run for only that item
+        # if not, loop over the CUSTOM_LOOP_LIST and process once for each
+        if 'custom' in time_info:
+            custom_loop_list = [time_info['custom']]
+        else:
+            custom_loop_list = self.c_dict['CUSTOM_LOOP_LIST']
+
+        for custom_string in custom_loop_list:
             if custom_string:
                 self.logger.info(f"Processing custom string: {custom_string}")
 

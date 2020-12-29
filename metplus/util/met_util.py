@@ -1016,7 +1016,10 @@ def loop_over_times_and_call(config, processes):
         if not isinstance(processes, list):
             processes = [processes]
         for process in processes:
-            input_dict = set_input_dict(loop_time, config, use_init)
+            input_dict = set_input_dict(loop_time,
+                                        config,
+                                        use_init,
+                                        instance=process.instance)
 
             process.clear()
             process.run_at_time(input_dict)
@@ -1038,7 +1041,7 @@ def log_runtime_banner(loop_time, config, use_init):
         config.logger.info("*  at valid time: " + run_time)
     config.logger.info("****************************************")
 
-def set_input_dict(loop_time, config, use_init):
+def set_input_dict(loop_time, config, use_init, instance=None, custom=None):
     """! Create input dictionary, set key 'now' to clock time in
          YYYYMMDDHHMMSS, set key 'init' to loop_time value if use_init is True,
          set key 'valid' to loop_time value if use_init is False, do not set
@@ -1059,6 +1062,10 @@ def set_input_dict(loop_time, config, use_init):
         input_dict['init'] = loop_time
     elif use_init is not None:
         input_dict['valid'] = loop_time
+
+    # if instance is set, use that value, otherwise use empty string
+    input_dict['instance'] = instance if instance else ''
+    input_dict['custom'] = custom if custom else ''
 
     return input_dict
 
