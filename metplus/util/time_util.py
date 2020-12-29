@@ -21,6 +21,17 @@ to be used in other METplus wrappers
 @endcode
 '''
 
+# dictionary where key is letter of time unit, i.e. Y and value is
+# the string representation of it, i.e. year
+TIME_LETTER_TO_STRING = {
+    'Y': 'year',
+    'm': 'month',
+    'd': 'day',
+    'H': 'hour',
+    'M': 'minute',
+    'S': 'second',
+}
+
 def get_relativedelta(value, default_unit='S'):
     """!Converts time values ending in Y, m, d, H, M, or S to relativedelta object
         Args:
@@ -167,7 +178,40 @@ def ti_get_hours_from_lead(lead, valid='*'):
 
     return lead_seconds // 3600
 
-def ti_get_lead_string(lead, plural=True):
+def get_time_suffix(letter, letter_only):
+    if letter_only:
+        return letter
+
+    return f" {TIME_LETTER_TO_STRING[letter]} "
+
+def format_time_string(lead, letter, plural, letter_only):
+    if letter == 'Y':
+        value = lead.years
+    elif letter == 'm':
+        value = lead.months
+    elif letter == 'd':
+        value = lead.days
+    elif letter == 'H':
+        value = lead.hours
+    elif letter == 'M':
+        value = lead.minutes
+    elif letter == 'S':
+        value = lead.seconds
+    else:
+        return None
+
+    if value == 0:
+        return None
+
+    abs_value = abs(value)
+    suffix = get_time_suffix(letter, letter_only)
+    output = f"{abs_value}{suffix}"
+    if abs_value != 1 and plural and not letter_only:
+        output = f"{output.strip()}s "
+
+    return output
+
+def ti_get_lead_string(lead, plural=True, letter_only=False):
     """!Check relativedelta object contents and create string representation
         of the highest unit available (year, then, month, day, hour, minute, second).
         This assumes that only one unit has been set in the object"""
@@ -179,60 +223,47 @@ def ti_get_lead_string(lead, plural=True):
     if not isinstance(lead, relativedelta):
         return None
 
-    output = ''
-    if lead.years != 0:
-        output += f' {lead.years} year'
-        if abs(lead.years) != 1 and plural:
-            output += 's'
+    # if any of the values are negative, add - before the final result
+    if (lead.years < 0 or lead.months < 0 or lead.days < 0 or lead.hours < 0 or
+            lead.minutes < 0 or lead.seconds < 0):
+        negative = '-'
+    else:
+        negative = ''
 
-    if lead.months != 0:
-        output += f' {lead.months} month'
-        if abs(lead.months) != 1 and plural:
-            output += 's'
+    output_list = []
+    for time_letter in TIME_LETTER_TO_STRING.keys():
+        output = format_time_string(lead, time_letter, plural, letter_only)
+        if output is not None:
+            output_list.append(output)
 
-    if lead.days != 0:
-        output += f' {lead.days} day'
-        if abs(lead.days) != 1 and plural:
-            output += 's'
+    # if nothing was found, return 0 hour(s) or 0H
+    if not output_list:
+        if letter_only:
+            return '0H'
 
-    if lead.hours != 0:
-        output += f' {lead.hours} hour'
-        if abs(lead.hours) != 1 and plural:
-            output += 's'
+        return f"0 hour{'s' if plural else ''}"
 
-    if lead.minutes != 0:
-        output += f' {lead.minutes} minute'
-        if abs(lead.minutes) != 1 and plural:
-            output += 's'
+    output = ''.join(output_list)
+    # remove whitespace from beginning and end of string
+    output = output.strip()
 
-    if lead.seconds != 0:
-        output += f' {lead.seconds} second'
-        if abs(lead.seconds) != 1 and plural:
-            output += 's'
-
-    # remove leading space and return string
-    if output != '':
-        return output[1:]
-
-    # return 0 hour if no time units are set
-    output = '0 hour'
-    if plural:
-        output += 's'
-
-    return output
+    return f"{negative}{output}"
 
 def ti_calculate(input_dict_preserve):
     out_dict = {}
     input_dict = input_dict_preserve.copy()
+
+    KEYS_TO_COPY = ['custom', 'instance']
 
     # set output dictionary to input items
     if 'now' in input_dict.keys():
         out_dict['now'] = input_dict['now']
         out_dict['today'] = out_dict['now'].strftime('%Y%m%d')
 
-    # if custom is set in input dictionary, set it in the output dictionary
-    if 'custom' in input_dict.keys():
-        out_dict['custom'] = input_dict['custom']
+    # copy over values of some keys if it is set in input dictionary
+    for key in KEYS_TO_COPY:
+        if key in input_dict.keys():
+            out_dict[key] = input_dict[key]
 
     # read in input dictionary items and compute missing items
     # valid inputs: valid, init, lead, offset

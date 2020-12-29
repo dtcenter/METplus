@@ -264,8 +264,17 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                                          input_dict=None,
                                          wildcard_if_empty=True)
             for index, lead in enumerate(lead_seq):
-                lead_hours = str(ti_get_hours_from_lead(lead)).zfill(3)
-                lead_groups[f'series_F{lead_hours}'] = [lead]
+                lead_hours = ti_get_hours_from_lead(lead)
+
+                # if cannot get lead hours, use index of forecast lead
+                # hours cannot be computed from months or years without
+                # knowing the valid time
+                if lead_hours is None:
+                    lead_hours = index
+                else:
+                    lead_hours = f"F{str(lead_hours).zfill(3)}"
+
+                lead_groups[f'series_{lead_hours}'] = [lead]
 
         for lead_group in lead_groups.items():
             # create input dict and only set 'now' item
@@ -535,10 +544,17 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
         # add forecast leads if specified
         if leads is not None:
-            lead_hours_list = [ti_get_hours_from_lead(item) for
-                                 item in leads]
+            lead_hours_list = []
+            for lead in leads:
+                lead_hours = ti_get_hours_from_lead(lead)
+                if lead_hours is None:
+                    lead_hours = ti_get_lead_string(lead,
+                                                    letter_only=True)
+                lead_hours_list.append(lead_hours)
+
             # get first forecast lead, convert to hours, and add to filename
             lead_hours = min(lead_hours_list)
+
             lead_str = str(lead_hours).zfill(3)
             filename += f"_F{lead_str}"
 

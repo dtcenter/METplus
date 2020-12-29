@@ -277,7 +277,7 @@ def handle_format_delimiter(split_string, idx, shift_seconds, truncate_seconds, 
         if isinstance(obj, relativedelta):
             seconds = time_util.ti_get_seconds_from_relativedelta(obj)
             if seconds is None:
-                raise TypeError('Year and month intervals not yet supported in string substitution')
+                return time_util.ti_get_lead_string(obj, letter_only=True)
 
             return format_hms(fmt, seconds)
 
