@@ -11,18 +11,18 @@
 //
 // Output model name to be written
 //
-model = "${MODEL}";
+${MODEL}
 
 //
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
-desc = "${DESCRIPTION}";
+${DESC}
 
 //
 // Output observation type to be written
 //
-obtype = "${OBTYPE}";
+${OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,19 +30,13 @@ obtype = "${OBTYPE}";
 // Verification grid
 // May be set separately in each "field" entry
 //
-regrid = {
-   to_grid    = NONE;
-   method     = NEAREST;
-   width      = 1;
-   vld_thresh = 0.5;
-   shape      = SQUARE;
-}
+${REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 censor_thresh = [];
 censor_val    = [];
-cat_thresh    = [ >=50, >=100, >=150, >=200, >=250, >=300, >=400, >=500 ];
+${CAT_THRESH}
 cnt_thresh    = [ NA ];
 cnt_logic     = UNION;
 
@@ -140,13 +134,13 @@ mask = {
 // Number of grid points to be processed concurrently.  Set smaller to use
 // less memory but increase the number of passes through the data.
 //
-block_size = 360*181;
+${BLOCK_SIZE}
 
 //
 // Ratio of valid matched pairs to compute statistics for a grid point
 //
 // Requires 50% of matched pairs in series to be valid
-vld_thresh = 0.50; 
+${VLD_THRESH}
 
 ////////////////////////////////////////////////////////////////////////////////
 

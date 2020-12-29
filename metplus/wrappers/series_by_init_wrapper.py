@@ -40,9 +40,6 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
           tc_stat_wrapper.  Next, the arguments to run the MET tool
           series_analysis is done
     """
-    # class variables to define prefixes for intermediate files
-    FCST_ASCII_FILE_PREFIX = 'FCST_FILES'
-    ANLY_ASCII_FILE_PREFIX = 'ANLY_FILES'
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'series_analysis'
@@ -54,9 +51,10 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                          config_overrides=config_overrides)
 
         # override log name
-        self.log_name = 'series_by_init'
+        self.log_name = 'series_analysis'
 
-        self.plot_data_plane = self.plot_data_plane_init()
+        if self.c_dict['GENERATE_PLOTS']:
+            self.plot_data_plane = self.plot_data_plane_init()
 
         if wrapper_cannot_run:
             self.log_error("There was a problem importing modules: "
@@ -78,8 +76,25 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         self.set_c_dict_string(c_dict,
                                'OBTYPE',
                                'obtype')
+        self.set_c_dict_string(c_dict,
+                               'SERIES_ANALYSIS_DESCRIPTION',
+                               'desc')
 
         self.handle_c_dict_regrid(c_dict, set_to_grid=True)
+
+        self.set_c_dict_list(c_dict,
+                            'SERIES_ANALYSIS_CAT_THRESH',
+                            'cat_thresh',
+                            remove_quotes=True)
+
+        self.set_c_dict_float(c_dict,
+                              'SERIES_ANALYSIS_VLD_THRESH',
+                              'vld_thresh')
+
+        self.set_c_dict_string(c_dict,
+                               'SERIES_ANALYSIS_BLOCK_SIZE',
+                               'block_size',
+                               remove_quotes=True)
 
         # get stat list to loop over
         c_dict['STAT_LIST'] = util.getlist(
@@ -95,6 +110,12 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                              'SERIES_ANALYSIS_STAT_LIST',
                              'cnt',
                              'OUTPUT_STATS_CNT')
+
+        # set cts list to set output_stats.cts in MET config file
+        self.set_c_dict_list(c_dict,
+                             'SERIES_ANALYSIS_CTS_LIST',
+                             'cts',
+                             'OUTPUT_STATS_CTS')
 
         c_dict['PAIRED'] = self.config.getbool('config',
                                                'SERIES_ANALYSIS_IS_PAIRED',
@@ -178,7 +199,8 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                                 False)
         )
 
-        c_dict['VAR_LIST'] = util.parse_var_list(self.config)
+        c_dict['VAR_LIST'] = util.parse_var_list(self.config,
+                                                 met_tool=self.app_name)
         if not c_dict['VAR_LIST']:
             self.log_error("No fields specified. Please set "
                            "[FCST/OBS]_VAR<n>_[NAME/LEVELS]")
@@ -494,13 +516,22 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         if not self.check_python_embedding():
             return None, None
 
-        # create forecast file list
-        fcst_ascii_filename = self.get_ascii_filename('FCST',
+        # create forecast (or both) file list
+        if self.c_dict['USING_BOTH']:
+            data_type = 'BOTH'
+        else:
+            data_type = 'FCST'
+        fcst_ascii_filename = self.get_ascii_filename(data_type,
                                                       storm_id,
                                                       leads)
         self.write_list_file(fcst_ascii_filename,
                              all_fcst_files,
                              output_dir=output_dir)
+
+        fcst_path = os.path.join(output_dir, fcst_ascii_filename)
+
+        if self.c_dict['USING_BOTH']:
+            return fcst_path, fcst_path
 
         # create analysis file list
         anly_ascii_filename = self.get_ascii_filename('ANLY',
@@ -510,7 +541,6 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
                              all_anly_files,
                              output_dir=output_dir)
 
-        fcst_path = os.path.join(output_dir, fcst_ascii_filename)
         obs_path = os.path.join(output_dir, anly_ascii_filename)
 
         return fcst_path, obs_path
@@ -529,14 +559,7 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
         return True
 
     def get_ascii_filename(self, data_type, storm_id, leads):
-        if data_type == 'FCST':
-            prefix = self.FCST_ASCII_FILE_PREFIX
-        elif data_type == 'ANLY':
-            prefix = self.ANLY_ASCII_FILE_PREFIX
-        else:
-            self.log_error("Invalid data type specified for "
-                           f"get_ascii_filename: {data_type}")
-            return None
+        prefix = f"{data_type}_FILES"
 
         # of storm ID is set (not wildcard), then add it to filename
         if storm_id == '*':
@@ -610,8 +633,11 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 
         # build the command and run series_analysis for each variable
         for var_info in self.c_dict['VAR_LIST']:
-            self.c_dict['FCST_LIST_PATH'] = fcst_path
-            self.c_dict['OBS_LIST_PATH'] = obs_path
+            if self.c_dict['USING_BOTH']:
+                self.c_dict['BOTH_LIST_PATH'] = fcst_path
+            else:
+                self.c_dict['FCST_LIST_PATH'] = fcst_path
+                self.c_dict['OBS_LIST_PATH'] = obs_path
             self.add_field_info_to_time_info(time_info, var_info)
 
             # get formatted field dictionary to pass into the MET config file
@@ -651,9 +677,14 @@ class SeriesByInitWrapper(RuntimeFreqWrapper):
 #        os.environ['STAT_LIST'] = tmp_stat_string
 #        self.add_env_var('STAT_LIST', tmp_stat_string)
         self.add_env_var('STAT_LIST', self.c_dict.get('OUTPUT_STATS_CNT', ''))
+        self.add_env_var('CTS_LIST', self.c_dict.get('OUTPUT_STATS_CTS', ''))
 
         self.add_env_var('MODEL', self.c_dict.get('MODEL', ''))
         self.add_env_var("OBTYPE", self.c_dict.get('OBTYPE', ''))
+        self.add_env_var("DESC", self.c_dict.get('DESC', ''))
+        self.add_env_var("CAT_THRESH", self.c_dict.get('CAT_THRESH', ''))
+        self.add_env_var("VLD_THRESH", self.c_dict.get('VLD_THRESH', ''))
+        self.add_env_var("BLOCK_SIZE", self.c_dict.get('BLOCK_SIZE', ''))
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
 
