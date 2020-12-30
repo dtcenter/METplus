@@ -76,6 +76,37 @@ each use case should have the following:
 Document New Use Case
 ^^^^^^^^^^^^^^^^^^^^^
 
+Create a New Model Applications Docs Directory
+""""""""""""""""""""""""""""""""""""""""""""""
+
+**If the use case falls under an existing Model Applications category, you can
+skip this section.**
+
+If the use case is the first in a new Model Applications category, create the
+directory under **docs**/use_cases/model_applications if it does not already
+exist. Inside this directory, create a file called README.rst. Inside this file
+add the following each on a single line:
+
+* Title of category
+* Dashes (-) that are the exact same lengh as the title
+* A short description of the category
+
+For example,
+docs/use_cases/model_applications/**air_quality_and_comp/README.rst**
+would look something like this::
+
+    Air Quality and Composition
+    ---------------------------
+    A short description of this category goes here.
+
+The content of this file is rendered above the icons for the use cases in this
+category in the User's Guide > METplus Use Cases >
+`Model Applications <https://dtcenter.github.io/METplus/latest/generated/model_applications/index.html>`_
+page.
+
+Add Sphinx Documentation File
+"""""""""""""""""""""""""""""
+
 In the corresponding documentation category directory
 (**docs**/use_cases/model_applications/<CATEGORY>), add:
 
@@ -333,32 +364,177 @@ Add volume_mount_directories file
 Add use case to the test suite
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-COMING SOON! New process for adding new use cases to the list of cases to run
+There is a text file that contains the list of all use cases::
 
-All of the use cases in the METplus repository are run via Travis-CI to ensure
+  METplus/internal_tests/use_cases/all_use_cases.txt
+
+You will need to add your use case to this file so it will be available in
+the tests. The file is organized by use case category. Each category starts
+a line that following the format::
+
+  Category: <category>
+
+where <category> is the name of the use case category. If you are adding a
+use case that will go into a new category, you will have to add a new category
+definition line to this file and add your new use case under it. Each use case
+in that category will be found on its own line after this line.
+The use cases can be defined using 3 different formats::
+
+    <config_args>
+    <name>::<config_args>
+    <name>::<config_args>::<python_packages>
+
+<config_args>
+"""""""""""""
+
+This format should only be used if the use case has only 1 configuration file
+and no additional Python package dependencies besides the ones that are
+required by the METplus wrappers. <config_args> is the path of the conf file
+used for the use case relative to METplus/parm/use_cases. The filename of the
+config file without the .conf extension will be used as the name of the use
+case. Example::
+
+    model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
+
+The above example will be named
+'PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr' and will run using the
+configuration file listed.
+
+<name>::<config_args>
+"""""""""""""""""""""
+
+This format is required if the use case contains multiple configuration files.
+Instead of forcing the script to guess which conf file should be used as the
+name of the use case, you must explicitly define it. The name of the use case
+must be separated from the <config_args> with '::' and each conf file path or
+conf variable override must be separated by a comma. Example::
+
+    GridStat_multiple_config:: met_tool_wrapper/GridStat/GridStat.conf,met_tool_wrapper/GridStat/GridStat_forecast.conf,met_tool_wrapper/GridStat/GridStat_observation.conf
+
+The above example is named 'GridStat_multiple_config' and uses 3 .conf files.
+Use cases with only one configuration file can also use this format is desired.
+
+<name>::<config_args>::<python_packages>
+""""""""""""""""""""""""""""""""""""""""
+
+This format is used if there are additional Python packages required to run
+the use case. <python_packages> is a list of packages to install before running
+the use case separated by commas. The list of currently supported packages are
+found in internal_tests/use_cases/metplus_use_case_suite.py in the
+PYTHON_REQUIREMENTS variable in the METplusUseCasesByRequirement class.
+The current list of supported packages are:
+netCDF4, cartopy, pygrib, h5py, matplotlib, metpy
+
+Python packages that are not found in this list must be added to the dictionary
+to be used in use cases. This is done because some packages have dependencies
+that need to be installed before installing the package, such as pygrib or
+cartopy. We call shell scripts to install these packages. Other packages only
+require a simple pip command to install. Example::
+
+    TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics:: model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf,user_env_vars.MET_PYTHON_EXE=python3::pygrib,metpy
+
+The above example is named
+TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.
+It uses a configuration file and sets the variable MET_PYTHON_EXE from the
+user_env_vars config section to python3 (This is needed to run Python Embedding
+use cases that contain additional Python depedencies). It also needs pygrib
+and metpy Python packages to be installed before running.
+
+Add new category to test runs
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If you are adding a new use case category, you will need to add a new entry
+to the .travis.yml file found in the top level of the METplus repository. For
+example, if the new category you are adding is called data_assimilation,
+then you will add the following to the .travis.yml at the end of the list of
+tests to run::
+
+    - name: "Use Case Tests - data_assimilation"
+      script:
+        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation
+
+
+The run_use_cases.py script requires the first argument to be the use case
+category to run in that Travis-CI job.
+
+Multiple Categories in One Test
+"""""""""""""""""""""""""""""""
+
+If the use cases run quickly and you want to run multiple categories in one
+job, you can add additional categories to this argument separated by commas or
+ampersands, i.e. category1,category2. Do not include any spaces around the
+commas. Example::
+
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py s2s,space_weather
+
+Subset Category into Multiple Tests
+"""""""""""""""""""""""""""""""""""
+
+If all of the use cases in a given category take a long time to run, you can
+separate them into multiple test jobs. A second argument to the
+run_use_cases.py defines the cases to run for the job. Use cases are numbered
+starting with 0 and are in order of how they are found in the all_use_cases.txt
+file.
+
+The argument supports a comma-separated list of numbers. Example::
+
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation 0,2,4
+    ...
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation 1,3
+
+The above example will run a job with data_assimilation use cases 0, 2, and
+4, then another job with data_assimilation use cases 1 and 3.
+
+It also supports a range of numbers separated with a dash. Example::
+
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation 0-3
+    ...
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation 4+
+
+The above example will run a job with data_assimilation 0, 1, 2, and 3, then
+another job with data_assimilation 4 and higher. If you split up use cases
+into a subset, we recommend that you add a plus sign (+) to the end of the last
+number specified in case additional use cases are added to the category.
+
+You can also use a combination of commas and dashes to define the list of cases
+to run. Example::
+
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation 0-2,4+
+    ...
+    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation 3
+
+The above example will run data_assimilation 0, 1, 2, 4, and above in one
+job, then data_assimilation 3 in another job.
+
+Monitoring Automated Tests
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+All of the use cases in the METplus repository are run via GitHub Actions to
+ensure
 that everything runs smoothly. If the above instructions to add new data were
-followed correctly, then Travis-CI will automatically obtain the
+followed correctly, then GitHub Actions will automatically obtain the
 new data and use it for the tests when you push your changes to GitHub.
 Adding the use case to the test suite will allow you to check that the data
 was uploaded correctly and that the use case runs in the Python environment
-created in Docker. The status of the tests can be viewed on the
-`Travis-CI METplus Branches webpage <https://travis-ci.com/github/dtcenter/METplus/branches>`_.
-Your feature branch should be found under the Activate Branches section.
-Look at the leftmost box in this row.
+created in Docker. The status of the tests can be viewed on GitHub under the
+`Actions tab <https://github.com/dtcenter/METplus/actions>`_.
+Your feature branch should be found in the list of results near the top.
+At the far left of the entry will be a small status icon:
 
-- A yellow box with two circles spinning indicates that the build is currently
+- A yellow circle that is spinning indicates that the build is currently
   running.
-- A yellow box with two circles that are not moving indicates that the build is
+- A yellow circle that is not moving indicates that the build is
   waiting to be run.
-- A green box with a check mark indicates that all of the jobs ran
-  successfully.
-- A red box with an X inside indicates that something went wrong.
+- A green check mark indicates that all of the jobs ran successfully.
+- A red X indicates that something went wrong.
+- A grey octagon with an exclamatory mark (!) inside means it was cancelled.
 
-Click on the box to see more details. You should verify that the use case was
-actually run by referring to the appropriate section under "Tests" and search
-for the use case config filename in the log output.
-
-MORE INFO ON THIS STEP COMING SOON!
+Click on the text next to the icon (last commit message) to see more details.
+You should verify that the use case was
+actually run by referring to the appropriate section under "Jobs" that starts
+with "Use Case Tests." Click on the job and search for the use case config
+filename in the log output by using the search box on the top right of the
+log output.
 
 Create a pull request
 ^^^^^^^^^^^^^^^^^^^^^
