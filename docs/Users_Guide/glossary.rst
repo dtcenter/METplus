@@ -6546,12 +6546,7 @@ METplus Configuration Glossary
      | *Default:*  False
 
    USER_SCRIPT_RUNTIME_FREQ
-     Frequency to run the user-defined script. Depending on which option is selected, some filename template tags will translate to \*. Valid options are:
-
-     RUN_ONCE: Run the command one time. \* is substituted for init/valid/lead
-     RUN_ONCE_PER_INIT_OR_VALID: Run the command once for each init or valid time depending on the value of LOOP_BY. If LOOP_BY = INIT, \* is substituted for valid and lead. If LOOP_BY = VALID, \* is substituted for init and lead.
-     RUN_ONCE_PER_LEAD: Run the command once for each forecast lead time. \* is substituted for valid and init
-     RUN_ONCE_FOR_EACH: Run the command once for every runtime (init or valid and forecast lead combination). All filename templates are substituted with values.
+     Frequency to run the user-defined script. See :ref:`Runtime_Freq` for more information.
 
      | *Used by:*  UserScript
      | *Family:*  [config]
@@ -6582,19 +6577,14 @@ METplus Configuration Glossary
      | *Default:*  None
 
    GRID_DIAG_RUNTIME_FREQ
-     Frequency to run Grid-Diag. Depending on which option is selected, some filename template tags will translate to \*. Valid options are:
-
-     RUN_ONCE: Run the command one time. \* is substituted for init/valid/lead
-     RUN_ONCE_PER_INIT_OR_VALID: Run the command once for each init or valid time depending on the value of LOOP_BY. If LOOP_BY = INIT, \* is substituted for valid and lead. If LOOP_BY = VALID, \* is substituted for init and lead.
-     RUN_ONCE_PER_LEAD: Run the command once for each forecast lead time. \* is substituted for valid and init
-     RUN_ONCE_FOR_EACH: Run the command once for every runtime (init or valid and forecast lead combination). All filename templates are substituted with values.
+     Frequency to run Grid-Diag. See :ref:`Runtime_Freq` for more information.
 
      | *Used by:*  GridDiag
      | *Family:*  [config]
      | *Default:*  None
 
    SERIES_ANALYSIS_RUNTIME_FREQ
-     Frequency to run SeriesAnalysis. See :term:`USER_SCRIPT_RUNTIME_FREQ` for more information.
+     Frequency to run SeriesAnalysis. See :ref:`Runtime_Freq` for more information.
 
      | *Used by:*  SeriesAnalysis
      | *Family:*  [config]

@@ -74,6 +74,7 @@ Use Cases by METplus Feature:
 | `Probability Verification  <https://dtcenter.github.io/METplus/develop/search.html?q=ProbabilityVerificationUseCase&check_keywords=yes&area=default>`_
 | `Regridding in Tool <https://dtcenter.github.io/METplus/develop/search.html?q=RegriddingInToolUseCase&check_keywords=yes&area=default>`_
 | `Revision Series <https://dtcenter.github.io/METplus/develop/search.html?q=RevisionSeriesUseCase&check_keywords=yes&area=default>`_
+| `Runtime Frequency <https://dtcenter.github.io/METplus/develop/search.html?q=RuntimeFreqUseCase&check_keywords=yes&area=default>`_
 | `Series by Initialization  <https://dtcenter.github.io/METplus/develop/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
 | `Series by Forecast Lead  <https://dtcenter.github.io/METplus/develop/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
 | `Validation of Models or Analyses  <https://dtcenter.github.io/METplus/develop/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_

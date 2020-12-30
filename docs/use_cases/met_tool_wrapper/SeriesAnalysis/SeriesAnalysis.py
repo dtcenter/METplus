@@ -122,6 +122,7 @@ met_tool_wrapper/SeriesAnalysis/SeriesAnalysis.conf
 # .. note::
 #  `SeriesAnalysisUseCase <https://dtcenter.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
 #  `DiagnosticsUseCase <https://dtcenter.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
-#  `ListExpansionFeatureUseCase <https://dtcenter.github.io/METplus/search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
+#  `ListExpansionFeatureUseCase <https://dtcenter.github.io/METplus/search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_,
+#  `RuntimeFreqUseCase <https://dtcenter.github.io/METplus/search.html?q=RuntimeFreqUseCase&check_keywords=yes&area=default>`_
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-SeriesAnalysis.png'

@@ -174,7 +174,6 @@ above. Each :term:`LEAD_SEQ_\<n\>` must have a corresponding variable :term:`LEA
 
 
   [config]
-  SERIES_BY_LEAD_GROUP_FCSTS = True
   LEAD_SEQ_1 = 0, 6, 12, 18
   LEAD_SEQ_1_LABEL = Day1
   LEAD_SEQ_2 = begin_end_incr(24,42,6)
@@ -799,6 +798,200 @@ A user may need to specify a different window on a wrapper-by-wrapper basis. If 
 
 Using the above configuration, PCPCombine will use +/- 0 hours and require exact file times. GridStat will use -1800/+1800 for observation data and EnsembleStat will use -0/+3600 for observation data. :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN` was not set, so the EnsembleStat wrapper will use :term:`OBS_FILE_WINDOW_BEGIN`.
 
+.. _Runtime_Freq:
+
+Runtime Frequency
+~~~~~~~~~~~~~~~~~
+
+Some wrappers have an option to specify how frequently to process data. It can
+be run once to process all of the available files in the desired time range,
+or it can be configured to run over different intervals. This allows you to
+aggregate the output in a variety of ways. The wrappers that support this
+functionality (along with the configuration variable that controls the setting)
+include:
+
+* :ref:`series_analysis_wrapper` :   :term:`SERIES_ANALYSIS_RUNTIME_FREQ`
+* :ref:`grid_diag_wrapper` :   :term:`GRID_DIAG_RUNTIME_FREQ`
+* :ref:`user_script_wrapper` :   :term:`USER_SCRIPT_RUNTIME_FREQ`
+
+At the start of execution of the wrapper (SeriesAnalysis and GridDiag), a full
+list of all available files will be obtained. Then the wrapper will subset the
+data and call the MET tool based on the runtime frequency setting.
+UserScript wrapper will simply run at the interval specified without obtaining
+a list of files.
+
+Depending on which option is selected, some filename template tags will
+translate to \* when performing string substitution.
+The possible values for the \*_RUNTIME_FREQ variables are:
+
+* RUN_ONCE : Runs once processing all files. \* is substituted for init/valid/lead
+* RUN_ONCE_PER_INIT_OR_VALID : Run the command once for each initialization or valid time depending on the value of LOOP_BY. If LOOP_BY = INIT, \* is substituted for valid and lead. If LOOP_BY = VALID, \* is substituted for init and lead.
+* RUN_ONCE_PER_LEAD : Run the command once for each forecast lead time. \* is substituted for valid and init
+* RUN_ONCE_FOR_EACH : Run the command once for every runtime (init or valid and forecast lead combination). All filename templates are substituted with values.
+
+Note that :term:`LOOP_ORDER` must be set to processes to run these wrappers.
+Also note that the following example may not contain all of the configuration
+variables that are required for a successful run. The are intended to show how
+these variables affect how the data is processed.
+
+**SeriesAnalysis Examples**::
+
+    [config]
+    LOOP_ORDER = processes
+
+    LOOP_BY = INIT
+    INIT_TIME_FMT = %Y%m%d%H
+    INIT_BEG = 2020101712
+    INIT_END = 2020101912
+    INIT_INCREMENT = 1d
+
+    LEAD_SEQ = 3H, 6H
+
+    PROCESS_LIST = SeriesAnalysis
+
+    [dir]
+    FCST_SERIES_ANALYSIS_INPUT_DIR = /my/fcst/dir
+
+    [filename_templates]
+    FCST_SERIES_ANALYSIS_INPUT_TEMPLATE = I{init?fmt=%Y%m%d%H}_F{lead?fmt=%3H}_V{valid?fmt=%H}
+
+In this example, the wrapper will go through all initialization and forecast
+lead times and find any files that match the template under /my/fcst/dir:
+
+| Init: 2020-10-17 12Z, Forecast: 3 hour, File: I2020101712_F003_V15
+| Init: 2020-10-17 12Z, Forecast: 6 hour, File: I2020101712_F006_V18
+| Init: 2020-10-18 12Z, Forecast: 3 hour, File: I2020101812_F003_V15
+| Init: 2020-10-18 12Z, Forecast: 6 hour, File: I2020101812_F006_V18
+| Init: 2020-10-19 12Z, Forecast: 3 hour, File: I2020101912_F003_V15
+| Init: 2020-10-19 12Z, Forecast: 6 hour, File: I2020101912_F006_V18
+
+Example 1: Run Once::
+
+    [config]
+    SERIES_ANALYSIS_RUNTIME_FREQ = RUN_ONCE
+
+For this configuration, a single command will be built to call SeriesAnalysis.
+The wildcard character '\*' will replace init, valid, and lead in the template
+when attempting to find data to process.
+
+Template Used: I\*_F\*_V\*
+Files Processed::
+
+    I2020101712_F003_V15
+    I2020101712_F006_V18
+    I2020101812_F003_V15
+    I2020101812_F006_V18
+    I2020101912_F003_V15
+    I2020101912_F006_V18
+
+Example 2 Run Once Per Initialization Time::
+
+    [config]
+    SERIES_ANALYSIS_RUNTIME_FREQ = RUN_ONCE_PER_INIT_OR_VALID
+
+For this configuration, the wrapper will loop over each initialization time and
+attempt to process all files that match that time.
+The wildcard character '\*' will replace valid and lead in the template
+when attempting to find data to process.
+
+Runtime: Init: 2020-10-17 12Z
+Template Used: I2020101712_F\*_V\*
+Files Processed::
+
+    I2020101712_F003_V15
+    I2020101712_F006_V18
+
+Runtime: Init: 2020-10-18 12Z
+Template Used: I2020101812_F\*_V\*
+Files Processed::
+
+    I2020101812_F003_V15
+    I2020101812_F006_V18
+
+Runtime: Init: 2020-10-19 12Z
+Template Used: I2020101912_F\*_V\*
+Files Processed::
+
+    I2020101912_F003_V15
+    I2020101912_F006_V18
+
+.. note::
+    If LOOP_BY was set to VALID, then the values defined by VALID_BEG,
+VALID_END, and VALID_INCREMENT would be substituted for the valid time while
+init and lead would be wildcard values.
+
+Example 3 Run Once Per Forecast Lead Time::
+
+    [config]
+    SERIES_ANALYSIS_RUNTIME_FREQ = RUN_ONCE_PER_LEAD
+
+For this configuration, the wrapper will loop over each forecast lead time and
+attempt to process all files that match that time.
+The wildcard character '\*' will replace valid and init in the template
+when attempting to find data to process.
+
+Runtime: Lead: 3 hour
+Template Used: I\*_F003*_V\*
+Files Processed::
+
+    I2020101712_F003_V15
+    I2020101812_F003_V15
+    I2020101912_F003_V15
+
+Runtime: Lead: 6 hour
+Template Used: I\*_F006*_V\*
+Files Processed::
+
+    I2020101712_F006_V18
+    I2020101812_F006_V18
+    I2020101912_F006_V18
+
+Example 4 Run Once For Each Time::
+
+    [config]
+    SERIES_ANALYSIS_RUNTIME_FREQ = RUN_ONCE_FOR_EACH
+
+For this configuration, the wrapper will loop over each initialization time and
+forecast lead times and attempt to process all files that match that time.
+The wildcard character '\*' will replace valid only in the template
+when attempting to find data to process.
+
+Runtime: Init: 2020-10-17 12Z, Forecast: 3 hour
+Template Used: I2020101712_F003_V\*
+Files Processed::
+
+    I2020101712_F003_V15
+
+Runtime: Init: 2020-10-17 12Z, Forecast: 6 hour
+Template Used: I2020101712_F006_V\*
+Files Processed::
+
+    I2020101712_F006_V18
+
+Runtime: Init: 2020-10-18 12Z, Forecast: 3 hour
+Template Used: I2020101812_F003_V\*
+Files Processed::
+
+    I2020101812_F003_V15
+
+Runtime: Init: 2020-10-18 12Z, Forecast: 6 hour
+Template Used: I2020101812_F006_V\*
+Files Processed::
+
+    I2020101812_F006_V18
+
+Runtime: Init: 2020-10-19 12Z, Forecast: 3 hour
+Template Used: I2020101912_F003_V\*
+Files Processed::
+
+    I2020101912_F003_V15
+
+Runtime: Init: 2020-10-19 12Z, Forecast: 6 hour
+Template Used: I2020101912_F006_V\*
+Files Processed::
+
+    I2020101912_F006_V18
+
 Config Quick Start Example
 --------------------------
 **Simple Example Use Case**
@@ -932,6 +1125,7 @@ This is the equivalent of calling (bash example shown)::
   $ export USE_CAST_TIME_ID=1987020104
 
 on the command line at the beginning of your METplus run. You can access the variable in the MET config file with ${USE_CASE_TIME_ID}.
+
 
 Using Environment Variables as Config Variables
 -----------------------------------------------

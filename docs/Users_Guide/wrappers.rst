@@ -10,6 +10,7 @@ METplus Wrappers configuration variables that are specific to that
 wrapper organized by config file section. You can find more information
 about each item in the METplus Configuration Glossary.
 
+.. _ascii2nc_wrapper:
 
 ASCII2NC
 --------
@@ -58,7 +59,7 @@ Configuration
 | :term:`ASCII2NC_TIME_SUMMARY_VALID_THRESH`
 | :term:`ASCII2NC_CUSTOM_LOOP_LIST`
 
-
+.. _cyclone_plotter_wrapper:
 
 CyclonePlotter
 --------------
@@ -98,6 +99,8 @@ Configuration
    | :term:`CYCLONE_CIRCLE_MARKER_SIZE`
    | :term:`CYCLONE_CROSS_MARKER_SIZE`
    | :term:`CYCLONE_GENERATE_TRACK_ASCII`
+
+.. _ensemble_stat_wrapper:
 
 EnsembleStat
 ------------
@@ -166,6 +169,7 @@ Configuration
    | :term:`ENSEMBLE_STAT_MET_OBS_ERROR_TABLE`
    | :term:`ENSEMBLE_STAT_GRID_VX`
 
+.. _example_wrapper:
 
 Example
 --------
@@ -189,6 +193,7 @@ Configuration
 [config]
 | :term:`EXAMPLE_CUSTOM_LOOP_LIST`
 
+.. _extract_tiles_wrapper:
 
 ExtractTiles
 ------------
@@ -255,6 +260,8 @@ the dimensions and density of the tiles comprising the subregion:
    | :term:`EXTRACT_TILES_STAT_INPUT_DIR`
    | :term:`EXTRACT_TILES_STAT_INPUT_TEMPLATE`
 
+.. _gempak_to_cf_wrapper:
+
 GempakToCF
 ----------
 
@@ -289,6 +296,8 @@ Configuration
 
    | :term:`GEMPAKTOCF_CLASSPATH`
 
+.. _gen_vx_mask_wrapper:
+
 GenVxMask
 ---------
 
@@ -320,6 +329,8 @@ Configuration
 | :term:`GEN_VX_MASK_CUSTOM_LOOP_LIST`
 | :term:`GEN_VX_MASK_FILE_WINDOW_BEGIN`
 | :term:`GEN_VX_MASK_FILE_WINDOW_END`
+
+.. _grid_diag_wrapper:
 
 GridDiag
 --------
@@ -450,6 +461,8 @@ Resulting value::
 
     poly = "MET_BASE/poly/SAO.poly";
 
+.. _grid_stat_wrapper:
+
 GridStat
 --------
 
@@ -518,6 +531,8 @@ Configuration
    | :term:`GRID_STAT_CONFIG`
    | :term:`CLIMO_GRID_STAT_INPUT_DIR`
    | :term:`CLIMO_GRID_STAT_INPUT_TEMPLATE`
+
+.. _make_plots_wrapper:
 
 MakePlots
 ---------
@@ -607,6 +622,8 @@ configuration file:
    | :term:`VERIF_GRID`
    | :term:`EVENT_EQUALIZATION`
 
+.. _mode_wrapper:
+
 MODE
 ----
 
@@ -678,6 +695,8 @@ Configuration
    | :term:`MODE_OUT_DIR`
    | :term:`MODE_CONFIG`
 
+.. _mtd_wrapper:
+
 MTD
 ---
 
@@ -729,6 +748,8 @@ Configuration
    | :term:`MTD_OUT_DIR`
    | :term:`MTD_CONFIG`
    | :term:`MTD_SINGLE_RUN_SRC`
+
+.. _pb2nc_wrapper:
 
 PB2NC
 -----
@@ -790,6 +811,8 @@ Configuration
    | :term:`TIME_SUMMARY_TYPES`
    | :term:`OVERWRITE_NC_OUTPUT`
    | :term:`VERTICAL_LOCATION`
+
+.. _pcp_combine_wrapper:
 
 PCPCombine
 ----------
@@ -884,6 +907,8 @@ Configuration
    | :term:`FCST_PCP_COMBINE_<n>_FIELD_NAME`
    | :term:`OBS_PCP_COMBINE_<n>_FIELD_NAME`
 
+.. _plot_data_plane_wrapper:
+
 PlotDataPlane
 -------------
 
@@ -919,6 +944,8 @@ Configuration
 | :term:`PLOT_DATA_PLANE_RANGE_MIN_MAX`
 | :term:`PLOT_DATA_PLANE_CONVERT_TO_IMAGE`
 | :term:`PLOT_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS`
+
+.. _point2grid_wrapper:
 
 Point2Grid
 ----------
@@ -959,6 +986,8 @@ Configuration
 | :term:`POINT2GRID_VLD_THRESH`
 | :term:`POINT2GRID_CUSTOM_LOOP_LIST`
 | :term:`POINT2GRID_SKIP_IF_OUTPUT_EXISTS`
+
+.. _point_stat_wrapper:
 
 PointStat
 ---------
@@ -1043,6 +1072,7 @@ Configuration
    | :term:`CLIMO_POINT_STAT_INPUT_DIR`
    | :term:`CLIMO_POINT_STAT_INPUT_TEMPLATE`
 
+.. _py_embed_ingest_wrapper:
 
 PyEmbedIngest
 -------------
@@ -1080,6 +1110,7 @@ Configuration
     | :term:`CUSTOM_INGEST_<n>_TYPE`
     | :term:`CUSTOM_INGEST_<n>_OUTPUT_GRID`
 
+.. _regrid_data_plane_wrapper:
 
 RegridDataPlane
 ---------------
@@ -1130,6 +1161,8 @@ Configuration
 .. warning:: **DEPRECATED:**
 
    | :term:`VERIFICATION_GRID`
+
+.. _series_analysis_wrapper:
 
 SeriesAnalysis
 ----------------
@@ -1197,7 +1230,6 @@ Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_OUTPUT_TEMPLATE`
 
-
 SeriesByInit
 ------------
 
@@ -1214,6 +1246,7 @@ Description
 
 .. warning:: **This tool has been DEPRECATED. Please use SeriesAnalysis wrapper**
 
+.. _stat_analysis_wrapper:
 
 StatAnalysis
 ------------
@@ -1366,6 +1399,8 @@ file for running with LOOP_ORDER = processes:
    | :term:`REGION_LIST`
    | :term:`LEAD_LIST`
 
+.. _tc_gen_wrapper:
+
 TCGen
 -------
 
@@ -1425,6 +1460,8 @@ Configuration
 | :term:`TC_GEN_GENESIS_RADIUS`
 | :term:`TC_GEN_DLAND_FILE`
 | :term:`TC_GEN_SKIP_IF_OUTPUT_EXISTS`
+
+.. _tcmpr_plotter_wrapper:
 
 TCMPRPlotter
 -------------
@@ -1508,6 +1545,8 @@ set to 'yes', then set the flag
    | :term:`PLOT_CONFIG_OPTS`
    | :term:`SAVE_DATA`
 
+.. _tc_pairs_wrapper:
+
 TCPairs
 -------
 
@@ -1580,6 +1619,8 @@ Configuration
    | :term:`INIT_INCLUDE`
    | :term:`INIT_EXCLUDE`
    | :term:`INIT_HOUR_END`
+
+.. _tcrmw_wrapper:
 
 TCRMW
 ------
@@ -1880,6 +1921,7 @@ Resulting value 2::
 
     regrid = {width = 2; shape = SQUARE;}
 
+.. _tc_stat_wrapper:
 
 TCStat
 ------
@@ -1947,6 +1989,8 @@ Configuration
    | :term:`TC_STAT_CMD_LINE_JOB`
    | :term:`TC_STAT_JOBS_LIST`
 
+.. _user_script_wrapper:
+
 UserScript
 ----------
 
@@ -1955,7 +1999,12 @@ Description
 
 Used to generate user-defined commands to run in the process list. Commands
 can be run once, run once for each runtime (init/valid/lead combination) or
-once for init, valid, or lead only.
+once for init, valid, or lead only. The command to run is specified with the
+:term:`USER_SCRIPT_COMMAND` variable. The command should include a script or
+executable and any desired arguments. The variable support filename template
+substitution to send information like the current initialization or forecast
+lead time. See :ref:`Runtime_Freq` for more information on how the value of
+:term:`USER_SCRIPT_RUNTIME_FREQ` can control how the commands are called.
 
 Configuration
 ~~~~~~~~~~~~~
