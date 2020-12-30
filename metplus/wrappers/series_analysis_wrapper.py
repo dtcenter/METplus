@@ -18,13 +18,13 @@ import sys
 from datetime import datetime
 
 # handle if module can't be loaded to run wrapper
-wrapper_cannot_run = False
-exception_err = ''
+WRAPPER_CANNOT_RUN = False
+EXCEPTION_ERR = ''
 try:
     import netCDF4
 except Exception as err_msg:
-    wrapper_cannot_run = True
-    exception_err = err_msg
+    WRAPPER_CANNOT_RUN = True
+    EXCEPTION_ERR = err_msg
 
 from ..util import met_util as util
 from ..util import ti_calculate, do_string_sub, parse_template
@@ -47,15 +47,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                          instance=instance,
                          config_overrides=config_overrides)
 
-        # override log name
-        self.log_name = 'series_analysis'
-
         if self.c_dict['GENERATE_PLOTS']:
             self.plot_data_plane = self.plot_data_plane_init()
 
-        if wrapper_cannot_run:
+        if WRAPPER_CANNOT_RUN:
             self.log_error("There was a problem importing modules: "
-                           f"{exception_err}\n")
+                           f"{EXCEPTION_ERR}\n")
 
         self.logger.debug("Initialized SeriesAnalysisWrapper")
 
@@ -80,9 +77,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         self.handle_c_dict_regrid(c_dict, set_to_grid=True)
 
         self.set_c_dict_list(c_dict,
-                            'SERIES_ANALYSIS_CAT_THRESH',
-                            'cat_thresh',
-                            remove_quotes=True)
+                             'SERIES_ANALYSIS_CAT_THRESH',
+                             'cat_thresh',
+                             remove_quotes=True)
 
         self.set_c_dict_float(c_dict,
                               'SERIES_ANALYSIS_VLD_THRESH',
@@ -120,15 +117,20 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # get input dir, template, and datatype for FCST, OBS, and BOTH
         for data_type in ('FCST', 'OBS', 'BOTH'):
-            c_dict[f'{data_type}_INPUT_DIR'] = \
+            c_dict[f'{data_type}_INPUT_DIR'] = (
               self.config.getdir(f'{data_type}_SERIES_ANALYSIS_INPUT_DIR', '')
-            c_dict[f'{data_type}_INPUT_TEMPLATE'] = \
+            )
+            c_dict[f'{data_type}_INPUT_TEMPLATE'] = (
               self.config.getraw('filename_templates',
                                  f'{data_type}_SERIES_ANALYSIS_INPUT_TEMPLATE',
                                  '')
+            )
 
-            c_dict[f'{data_type}_INPUT_DATATYPE'] = \
-              self.config.getstr('config', f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE', '')
+            c_dict[f'{data_type}_INPUT_DATATYPE'] = (
+              self.config.getstr('config',
+                                 f'{data_type}_SERIES_ANALYSIS_INPUT_DATATYPE',
+                                 '')
+            )
 
             # initialize list path to None for each type
             c_dict[f'{data_type}_LIST_PATH'] = None
@@ -137,25 +139,32 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         c_dict['USING_BOTH'] = False
         if c_dict['BOTH_INPUT_TEMPLATE']:
             if c_dict['FCST_INPUT_TEMPLATE'] or c_dict['OBS_INPUT_TEMPLATE']:
-                self.log_error("Cannot set FCST_SERIES_ANALYSIS_INPUT_TEMPLATE or "
-                               "OBS_SERIES_ANALYSIS_INPUT_TEMPLATE "
-                               "if BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE is set.")
+                self.log_error("Cannot set FCST_SERIES_ANALYSIS_INPUT_TEMPLATE"
+                               " or OBS_SERIES_ANALYSIS_INPUT_TEMPLATE if "
+                               "BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE is set.")
 
             c_dict['USING_BOTH'] = True
 
-            # set *_WINDOW_* variables for BOTH (used in CommandBuilder.find_data function)
-            self.handle_window_variables(c_dict, 'series_analysis', dtypes=['BOTH'])
+            # set *_WINDOW_* variables for BOTH
+            # used in CommandBuilder.find_data function)
+            self.handle_window_variables(c_dict,
+                                         'series_analysis',
+                                         dtypes=['BOTH'])
 
         # if BOTH is not set, both FCST or OBS must be set
         else:
-            if not c_dict['FCST_INPUT_TEMPLATE'] or not c_dict['OBS_INPUT_TEMPLATE']:
-                self.log_error("Must either set BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE or both "
+            if (not c_dict['FCST_INPUT_TEMPLATE'] or
+                    not c_dict['OBS_INPUT_TEMPLATE']):
+                self.log_error("Must either set "
+                               "BOTH_SERIES_ANALYSIS_INPUT_TEMPLATE or both "
                                "FCST_SERIES_ANALYSIS_INPUT_TEMPLATE and "
                                "OBS_SERIES_ANALYSIS_INPUT_TEMPLATE to run "
                                "SeriesAnalysis wrapper.")
 
             # set *_WINDOW_* variables for FCST and OBS
-            self.handle_window_variables(c_dict, 'series_analysis', dtypes=['FCST', 'OBS'])
+            self.handle_window_variables(c_dict,
+                                         'series_analysis',
+                                         dtypes=['FCST', 'OBS'])
 
         c_dict['TC_STAT_INPUT_DIR'] = (
             self.config.getdir('SERIES_ANALYSIS_TC_STAT_INPUT_DIR', '')
@@ -175,13 +184,17 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         if not c_dict['OUTPUT_DIR']:
             self.log_error("Must set SERIES_ANALYSIS_OUTPUT_DIR to run.")
 
-        c_dict['FCST_TILE_PREFIX'] = self.config.getstr('config',
-                                              'FCST_EXTRACT_TILES_PREFIX',
-                                              '')
+        c_dict['FCST_TILE_PREFIX'] = (
+            self.config.getstr('config',
+                               'FCST_EXTRACT_TILES_PREFIX',
+                               '')
+        )
 
-        c_dict['ANLY_TILE_PREFIX'] = self.config.getstr('config',
-                                              'OBS_EXTRACT_TILES_PREFIX',
-                                              '')
+        c_dict['ANLY_TILE_PREFIX'] = (
+            self.config.getstr('config',
+                               'OBS_EXTRACT_TILES_PREFIX',
+                               '')
+        )
 
         c_dict['CONFIG_FILE'] = (
             self.config.getraw('config',
@@ -352,9 +365,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 continue
 
             if self.c_dict['GENERATE_PLOTS']:
-                 self.generate_plots(fcst_path,
-                                     time_info,
-                                     storm_id)
+                self.generate_plots(fcst_path,
+                                    time_info,
+                                    storm_id)
             else:
                 self.logger.debug("Skip plotting output. Change "
                                   "SERIES_ANALYSIS_GENERATE_PLOTS to True to "
