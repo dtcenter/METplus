@@ -11,11 +11,7 @@ Output Files:
 Condition codes: 0 for success, 1 for failure
 """
 
-import errno
 import os
-import re
-import sys
-from datetime import datetime
 
 # handle if module can't be loaded to run wrapper
 WRAPPER_CANNOT_RUN = False
@@ -27,7 +23,7 @@ except Exception as err_msg:
     EXCEPTION_ERR = err_msg
 
 from ..util import met_util as util
-from ..util import ti_calculate, do_string_sub, parse_template
+from ..util import do_string_sub, parse_template
 from ..util import get_lead_sequence, get_lead_sequence_groups, set_input_dict
 from ..util import ti_get_hours_from_lead, ti_get_seconds_from_lead
 from ..util import ti_get_lead_string
@@ -57,6 +53,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         self.logger.debug("Initialized SeriesAnalysisWrapper")
 
     def create_c_dict(self):
+        """! Populate c_dict dictionary with values from METplusConfig """
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = (
             self.config.getstr('config',
@@ -184,18 +181,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         if not c_dict['OUTPUT_DIR']:
             self.log_error("Must set SERIES_ANALYSIS_OUTPUT_DIR to run.")
 
-        c_dict['FCST_TILE_PREFIX'] = (
-            self.config.getstr('config',
-                               'FCST_EXTRACT_TILES_PREFIX',
-                               '')
-        )
-
-        c_dict['ANLY_TILE_PREFIX'] = (
-            self.config.getstr('config',
-                               'OBS_EXTRACT_TILES_PREFIX',
-                               '')
-        )
-
         c_dict['CONFIG_FILE'] = (
             self.config.getraw('config',
                                'SERIES_ANALYSIS_CONFIG_FILE')
@@ -257,7 +242,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         return c_dict
 
     def plot_data_plane_init(self):
-        # set values to allow successful initialization of PlotDataPlaneWrapper
+        """! Set values to allow successful initialization of
+              PlotDataPlane wrapper
+
+             @returns instance of PlotDataPlaneWrapper
+        """
         plot_overrides = {'PLOT_DATA_PLANE_INPUT_TEMPLATE': 'template',
                           'PLOT_DATA_PLANE_OUTPUT_TEMPLATE': 'template',
                           'PLOT_DATA_PLANE_FIELD_NAME': 'field_name',
@@ -274,11 +263,13 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         return pdp_wrapper
 
     def clear(self):
+        """! Call parent's clear function and clear additional values """
         super().clear()
         for data_type in ('FCST', 'OBS', 'BOTH'):
             self.c_dict[f'{data_type}_LIST_PATH'] = None
 
     def run_all_times(self):
+        """! Process all run times defined for this wrapper """
         super().run_all_times()
 
         if self.c_dict['GENERATE_ANIMATIONS']:
@@ -287,6 +278,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         return self.all_commands
 
     def run_once_per_lead(self, custom):
+        """! Run once per forecast lead
+
+             @param value of current CUSTOM_LOOP_LIST iteration
+             @returns True if all runs were successful, False otherwise
+        """
         self.logger.debug("Running once for forecast lead time")
         success = True
 
@@ -348,7 +344,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # loop over storm list and process for each
         # this loop will execute once if not filtering by storm ID
         for storm_id in storm_list:
-            # Create FCST and ANLY ASCII files
+            # Create FCST and OBS ASCII files
             fcst_path, obs_path = (
                 self.create_ascii_storm_files_list(time_info,
                                                    storm_id,
@@ -402,7 +398,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         storm_list = util.get_storm_ids(filter_file, self.logger)
         if not storm_list:
             # No storms for this init time, check next init time in list
-            self.logger.debug(f"No storms found for current runtime")
+            self.logger.debug("No storms found for current runtime")
             return None
 
         return storm_list
@@ -476,6 +472,16 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         return fcst_files, anly_files
 
     def compare_time_info(self, runtime, filetime):
+        """! Call parents implementation then if the current run time and file
+              time may potentially still not match, use storm_id to check
+
+             @param runtime dictionary containing time information for current
+              runtime
+             @param filetime dictionary containing time information for file
+              that is being evaluated
+             @returns True if the file should be processed in the current
+              run or False if not
+        """
         if not super().compare_time_info(runtime, filetime):
             return False
 
@@ -546,7 +552,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             return fcst_path, fcst_path
 
         # create analysis file list
-        anly_ascii_filename = self.get_ascii_filename('ANLY',
+        anly_ascii_filename = self.get_ascii_filename('OBS',
                                                       storm_id,
                                                       leads)
         self.write_list_file(anly_ascii_filename,
@@ -558,6 +564,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         return fcst_path, obs_path
 
     def check_python_embedding(self):
+        """! Check if any of the field names contain a Python embedding script.
+              See CommandBuilder.check_for_python_embedding for more info.
+
+            @returns False if something is not configured correctly or True
+        """
         for var_info in self.c_dict['VAR_LIST']:
             if self.c_dict['USING_BOTH']:
                 if not self.check_for_python_embedding('BOTH', var_info):
@@ -570,7 +581,17 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return True
 
-    def get_ascii_filename(self, data_type, storm_id, leads):
+    @staticmethod
+    def get_ascii_filename(data_type, storm_id, leads=None):
+        """! Build filename for ASCII file list file
+
+             @param data_type FCST, OBS, or BOTH
+             @param storm_id current storm ID or wildcard character
+             @param leads list of forecast leads to use add the forecast hour
+              string to the filename or the minimum and maximum forecast hour
+              strings if there are more than one lead
+             @returns string containing filename to use
+        """
         prefix = f"{data_type}_FILES"
 
         # of storm ID is set (not wildcard), then add it to filename
@@ -605,6 +626,18 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         return ascii_filename
 
     def get_output_dir(self, time_info, storm_id, label):
+        """! Determine directory that will contain output data from the
+              OUTPUT_DIR and OUTPUT_TEMPLATE. This will include any
+              subdirectories specified in the filename template.
+
+             @param time_info dictionary containing time information for
+             current run
+             @param storm_id storm ID to process
+             @param label label defined for forecast lead groups to identify
+              them
+             @returns path to output directory with filename templates
+              substituted with the information for the current run
+        """
         output_dir_template = os.path.join(self.c_dict['OUTPUT_DIR'],
                                            self.c_dict['OUTPUT_TEMPLATE'])
         output_dir_template = os.path.dirname(output_dir_template)
@@ -634,7 +667,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         num, beg, end = self.get_fcst_file_info(fcst_path)
         if num is None:
-            self.logger.debug(f"Could not get fcst_beg and fcst_end values. "
+            self.logger.debug("Could not get fcst_beg and fcst_end values. "
                               "Those values cannot be used in filename "
                               "templates")
 
@@ -706,6 +739,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         super().set_environment_variables(time_info)
 
     def set_command_line_arguments(self, time_info):
+        """! Set arguments that will be passed into the MET command
+
+             @param time_info dictionary containing time information
+        """
         # add input data format if set
         if self.c_dict['PAIRED']:
             self.args.append(" -paired")
@@ -717,6 +754,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         self.args.append(f" -config {config_file}")
 
     def get_command(self):
+        """! Build command to run
+
+             @returns string of the command that will be called
+        """
         cmd = self.app_path
 
         if self.c_dict['USING_BOTH']:
@@ -781,9 +822,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 if self.c_dict['PNG_FILES'].get(key) is None:
                     self.c_dict['PNG_FILES'][key] = []
 
-                min, max = self.get_netcdf_min_max(plot_input,
-                                                   f'series_cnt_{cur_stat}')
-                range_min_max = f"{min} {max}"
+                min_value, max_value = (
+                    self.get_netcdf_min_max(plot_input,
+                                            f'series_cnt_{cur_stat}')
+                )
+                range_min_max = f"{min_value} {max_value}"
 
                 plot_output = (f"{os.path.splitext(plot_input)[0]}_"
                                f"{cur_stat}.ps")
@@ -805,6 +848,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 self.c_dict['PNG_FILES'][key].append(png_filename)
 
     def generate_animations(self):
+        """! Use ImageMagick convert to create an animated gif from the png
+              images generated from the current run
+        """
         success = True
 
         convert_exe = self.c_dict.get('CONVERT_EXE')
@@ -890,7 +936,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return num, beg, end
 
-    def get_netcdf_min_max(self, filepath, variable_name):
+    @staticmethod
+    def get_netcdf_min_max(filepath, variable_name):
         """! Determine the min and max for all lead times for each
            statistic and variable pairing.
 
@@ -901,13 +948,20 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         """
         try:
             nc_var = netCDF4.Dataset(filepath).variables[variable_name]
-            min = nc_var[:].min()
-            max = nc_var[:].max()
-            return min, max
+            min_value = nc_var[:].min()
+            max_value = nc_var[:].max()
+            return min_value, max_value
         except (FileNotFoundError, KeyError):
             return None, None
 
     def get_formatted_fields(self, var_info):
+        """! Get forecast and observation field information for var_info and
+            format it so it can be passed into the MET config file
+
+            @param var_info dictionary containing info to format
+            @returns tuple containing strings of the formatted forecast and
+            observation information or None, None if something went wrong
+        """
         # get field info field a single field to pass to the MET config file
         fcst_field_list = self.get_field_info(v_level=var_info['fcst_level'],
                                               v_thresh=var_info['fcst_thresh'],
@@ -922,7 +976,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                              d_type='OBS')
 
         if fcst_field_list is None or obs_field_list is None:
-            return
+            return None, None
 
         fcst_fields = ','.join(fcst_field_list)
         obs_fields = ','.join(obs_field_list)
