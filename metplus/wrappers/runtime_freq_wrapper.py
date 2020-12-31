@@ -225,7 +225,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         like UserScript do not need to obtain a list of possible files. In this
         case, the function returns an empty dictionary.
         @returns A dictionary where the key is the type of data that was found,
-        i.e. fcst or anly, and the value is a list of files that fit in that
+        i.e. fcst or obs, and the value is a list of files that fit in that
         category
         """
         use_init = is_loop_by_init(self.config)
