@@ -94,18 +94,18 @@ all_fake_fcst = ['fcst/20141214_00/ML1201072014/FCST_TILE_F000_gfs_4_20141214_00
                  'fcst/20141215_00/ML1291072014/FCST_TILE_F006_gfs_4_20141215_0000_006.nc',
                  'fcst/20141215_00/ML1291072014/FCST_TILE_F012_gfs_4_20141215_0000_012.nc',
                   ]
-all_fake_anly = ['anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-                 'anly/20141214_00/ML1221072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-                 'anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-                 'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-                 'anly/20141214_00/ML1201072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
-                 'anly/20141214_00/ML1221072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
-                 'anly/20141215_00/ML1291072014/ANLY_TILE_F000_gfs_4_20141215_0000_000.nc',
-                 'anly/20141215_00/ML1291072014/ANLY_TILE_F006_gfs_4_20141215_0000_006.nc',
-                 'anly/20141215_00/ML1291072014/ANLY_TILE_F012_gfs_4_20141215_0000_012.nc',
+all_fake_obs = ['obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+                 'obs/20141214_00/ML1221072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+                 'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+                 'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+                 'obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
+                 'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
+                 'obs/20141215_00/ML1291072014/OBS_TILE_F000_gfs_4_20141215_0000_000.nc',
+                 'obs/20141215_00/ML1291072014/OBS_TILE_F006_gfs_4_20141215_0000_006.nc',
+                 'obs/20141215_00/ML1291072014/OBS_TILE_F012_gfs_4_20141215_0000_012.nc',
                   ]
 @pytest.mark.parametrize(
-        'time_info, expect_fcst_subset, expect_anly_subset', [
+        'time_info, expect_fcst_subset, expect_obs_subset', [
         # filter by init all storms
         ({'init': datetime(2014, 12, 14, 0, 0),
           'valid': '*',
@@ -117,12 +117,12 @@ all_fake_anly = ['anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_00
           'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
           'fcst/20141214_00/ML1201072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
           'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',],
-         ['anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-          'anly/20141214_00/ML1221072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-          'anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-          'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-          'anly/20141214_00/ML1201072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
-          'anly/20141214_00/ML1221072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',]),
+         ['obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+          'obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',]),
         # filter by init single storm
         ({'init': datetime(2014, 12, 14, 0, 0),
           'valid': '*',
@@ -134,9 +134,9 @@ all_fake_anly = ['anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_00
              'fcst/20141214_00/ML1201072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
          ],
          [
-             'anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-             'anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-             'anly/20141214_00/ML1201072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
+             'obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+             'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+             'obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
          ]),
         # filter by init another single storm
         ({'init': datetime(2014, 12, 14, 0, 0),
@@ -149,9 +149,9 @@ all_fake_anly = ['anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_00
              'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
          ],
          [
-             'anly/20141214_00/ML1221072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-             'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-             'anly/20141214_00/ML1221072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
+             'obs/20141214_00/ML1221072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+             'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+             'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
          ]),
         # filter by lead all storms
         ({'init': '*',
@@ -163,12 +163,12 @@ all_fake_anly = ['anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_00
              'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
          ],
          [
-             'anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-             'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+             'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+             'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
          ]),
     ]
 )
-def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset, expect_anly_subset):
+def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset, expect_obs_subset):
     """! Test to ensure that get_all_files only gets the files that are
     relevant to the runtime settings and not every file in the directory
     """
@@ -193,14 +193,14 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
                                   'tiles')
     fcst_input_dir = os.path.join(tile_input_dir,
                                   'fcst')
-    anly_input_dir = os.path.join(tile_input_dir,
-                                  'anly')
+    obs_input_dir = os.path.join(tile_input_dir,
+                                 'obs')
 
     wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
     wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
     wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
     wrapper.c_dict['FCST_INPUT_DIR'] = fcst_input_dir
-    wrapper.c_dict['OBS_INPUT_DIR'] = anly_input_dir
+    wrapper.c_dict['OBS_INPUT_DIR'] = obs_input_dir
 
     assert(wrapper.get_all_files())
 
@@ -217,39 +217,39 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
         expected_fcst_files.append(os.path.join(tile_input_dir, expected))
 
 
-    expected_anly = [
-        'anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-        'anly/20141214_00/ML1221072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-        'anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-        'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-        'anly/20141214_00/ML1201072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
-        'anly/20141214_00/ML1221072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
+    expected_obs = [
+        'obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+        'obs/20141214_00/ML1221072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+        'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+        'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+        'obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
+        'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
     ]
-    expected_anly_files = []
-    for expected in expected_anly:
-        expected_anly_files.append(os.path.join(tile_input_dir, expected))
+    expected_obs_files = []
+    for expected in expected_obs:
+        expected_obs_files.append(os.path.join(tile_input_dir, expected))
 
     # convert list of lists into a single list to compare to expected results
     fcst_files = [item['fcst'] for item in wrapper.c_dict['ALL_FILES']]
     fcst_files = [item for sub in fcst_files for item in sub]
-    anly_files = [item['anly'] for item in wrapper.c_dict['ALL_FILES']]
-    anly_files = [item for sub in anly_files for item in sub]
+    obs_files = [item['obs'] for item in wrapper.c_dict['ALL_FILES']]
+    obs_files = [item for sub in obs_files for item in sub]
 
     assert(fcst_files == expected_fcst_files)
-    assert(anly_files == expected_anly_files)
+    assert(obs_files == expected_obs_files)
 
-    fcst_files_sub, anly_files_sub = wrapper.subset_input_files(time_info)
-    assert(fcst_files_sub and anly_files_sub)
-    assert(len(fcst_files_sub) == len(anly_files_sub))
+    fcst_files_sub, obs_files_sub = wrapper.subset_input_files(time_info)
+    assert(fcst_files_sub and obs_files_sub)
+    assert(len(fcst_files_sub) == len(obs_files_sub))
 
     for actual_file, expected_file in zip(fcst_files_sub, expect_fcst_subset):
         assert(actual_file.replace(tile_input_dir, '').lstrip('/') == expected_file)
 
-    for actual_file, expected_file in zip(anly_files_sub, expect_anly_subset):
+    for actual_file, expected_file in zip(obs_files_sub, expect_obs_subset):
         assert(actual_file.replace(tile_input_dir, '').lstrip('/') == expected_file)
 
 @pytest.mark.parametrize(
-        'config_overrides, time_info, storm_id, lead_group, expect_fcst_subset, expect_anly_subset', [
+        'config_overrides, time_info, storm_id, lead_group, expect_fcst_subset, expect_obs_subset', [
         # filter by init all storms
         ({'LEAD_SEQ': '0H, 6H, 12H',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "{init?fmt=%Y%m%d_%H}/{storm_id}/series_{fcst_name}_{fcst_level}.nc",
@@ -266,12 +266,12 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
           'fcst/20141214_00/ML1201072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
           'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',],
-         ['anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-          'anly/20141214_00/ML1221072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-          'anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-          'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-          'anly/20141214_00/ML1201072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
-          'anly/20141214_00/ML1221072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',]),
+         ['obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+          'obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',]),
         # filter by init single storm
         ({'LEAD_SEQ': '0H, 6H, 12H',
           'SERIES_ANALYSIS_OUTPUT_TEMPLATE': "{init?fmt=%Y%m%d_%H}/{storm_id}/series_{fcst_name}_{fcst_level}.nc",
@@ -286,9 +286,9 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
           'fcst/20141214_00/ML1201072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
          ],
-         ['anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-          'anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-          'anly/20141214_00/ML1201072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
+         ['obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+          'obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
          ]),
         # filter by init another single storm
         ({'LEAD_SEQ': '0H, 6H, 12H',
@@ -304,9 +304,9 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
           'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
          ],
-         ['anly/20141214_00/ML1221072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-          'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-          'anly/20141214_00/ML1221072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
+         ['obs/20141214_00/ML1221072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
          ]),
         # filter by lead all storms
         ({'LEAD_SEQ': '0H, 6H, 12H',
@@ -321,8 +321,8 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
          ['fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
           'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
          ],
-         ['anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-          'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+         ['obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
          ]),
         # filter by lead 1 storm
         ({'LEAD_SEQ': '0H, 6H, 12H',
@@ -336,7 +336,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
          None,
          ['fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
          ],
-         ['anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+         ['obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
          ]),
         # filter by lead another storm
         ({'LEAD_SEQ': '0H, 6H, 12H',
@@ -350,7 +350,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
          None,
          ['fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
          ],
-         ['anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+         ['obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
          ]),
         # filter by lead groups A all storms
         ({'LEAD_SEQ_1': '0H, 6H',
@@ -369,10 +369,10 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
           'fcst/20141214_00/ML1201072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
           'fcst/20141214_00/ML1221072014/FCST_TILE_F006_gfs_4_20141214_0000_006.nc',
          ],
-         ['anly/20141214_00/ML1201072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-          'anly/20141214_00/ML1221072014/ANLY_TILE_F000_gfs_4_20141214_0000_000.nc',
-          'anly/20141214_00/ML1201072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
-          'anly/20141214_00/ML1221072014/ANLY_TILE_F006_gfs_4_20141214_0000_006.nc',
+         ['obs/20141214_00/ML1201072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F000_gfs_4_20141214_0000_000.nc',
+          'obs/20141214_00/ML1201072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F006_gfs_4_20141214_0000_006.nc',
          ]),
         # filter by lead groups B all storms
         ({'LEAD_SEQ_1': '0H, 6H',
@@ -389,14 +389,14 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
          ['fcst/20141214_00/ML1201072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
           'fcst/20141214_00/ML1221072014/FCST_TILE_F012_gfs_4_20141214_0000_012.nc',
          ],
-         ['anly/20141214_00/ML1201072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
-          'anly/20141214_00/ML1221072014/ANLY_TILE_F012_gfs_4_20141214_0000_012.nc',
+         ['obs/20141214_00/ML1201072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
+          'obs/20141214_00/ML1221072014/OBS_TILE_F012_gfs_4_20141214_0000_012.nc',
          ]),
     ]
 )
 def test_create_ascii_storm_files_list(metplus_config, config_overrides,
                                        time_info, storm_id, lead_group,
-                                       expect_fcst_subset, expect_anly_subset):
+                                       expect_fcst_subset, expect_obs_subset):
     all_config_overrides = {
         'LOOP_BY': 'INIT',
         'SERIES_ANALYSIS_RUNTIME_FREQ': 'RUN_ONCE',
@@ -418,14 +418,14 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
                                   'tiles')
     fcst_input_dir = os.path.join(tile_input_dir,
                                   'fcst')
-    anly_input_dir = os.path.join(tile_input_dir,
-                                  'anly')
+    obs_input_dir = os.path.join(tile_input_dir,
+                                  'obs')
 
     wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
     wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
     wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
     wrapper.c_dict['FCST_INPUT_DIR'] = fcst_input_dir
-    wrapper.c_dict['OBS_INPUT_DIR'] = anly_input_dir
+    wrapper.c_dict['OBS_INPUT_DIR'] = obs_input_dir
     test_out_dirname = wrapper.config.getstr('config', 'TEST_OUTPUT_DIRNAME')
     output_dir = os.path.join(wrapper.config.getdir('OUTPUT_BASE'),
                               'series_by',
@@ -458,17 +458,17 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
     if os.path.exists(fcst_file_path):
         os.remove(fcst_file_path)
 
-    anly_list_file = wrapper.get_ascii_filename('ANLY', storm_id, leads)
-    anly_file_path = os.path.join(output_dir,
+    obs_list_file = wrapper.get_ascii_filename('OBS', storm_id, leads)
+    obs_file_path = os.path.join(output_dir,
                                   output_prefix,
-                                  anly_list_file)
-    if os.path.exists(anly_file_path):
-        os.remove(anly_file_path)
+                                  obs_list_file)
+    if os.path.exists(obs_file_path):
+        os.remove(obs_file_path)
 
     fcst_path, obs_path = wrapper.create_ascii_storm_files_list(time_info,
                                                                 storm_id,
                                                                 lead_group)
-    assert(fcst_path == fcst_file_path and obs_path == anly_file_path)
+    assert(fcst_path == fcst_file_path and obs_path == obs_file_path)
 
     with open(fcst_file_path, 'r') as file_handle:
         actual_fcsts = file_handle.readlines()
@@ -478,11 +478,11 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
         actual_file = actual_file.replace(tile_input_dir, '').lstrip('/')
         assert(actual_file == expected_file)
 
-    with open(anly_file_path, 'r') as file_handle:
-        actual_anly_files = file_handle.readlines()
-    actual_anly_files = [item.strip() for item in actual_anly_files[1:]]
+    with open(obs_file_path, 'r') as file_handle:
+        actual_obs_files = file_handle.readlines()
+    actual_obs_files = [item.strip() for item in actual_obs_files[1:]]
 
-    for actual_file, expected_file in zip(actual_anly_files, expect_anly_subset):
+    for actual_file, expected_file in zip(actual_obs_files, expect_obs_subset):
         actual_file = actual_file.replace(tile_input_dir, '').lstrip('/')
         assert(actual_file == expected_file)
 
@@ -519,7 +519,7 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
 def test_get_ascii_filename(metplus_config, storm_id, leads,
                             expected_result):
     wrapper = series_init_wrapper(metplus_config)
-    for data_type in ['FCST', 'ANLY']:
+    for data_type in ['FCST', 'OBS']:
         actual_result = wrapper.get_ascii_filename(data_type,
                                                    storm_id,
                                                    leads)

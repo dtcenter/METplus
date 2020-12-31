@@ -408,7 +408,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
              any relevant files for that runtime. The parent implementation of
              this function creates a dictionary and adds the time_info to it.
              This wrapper gets all files for the current runtime and adds it to
-             the dictionary with keys 'fcst' and 'anly'
+             the dictionary with keys 'fcst' and 'obs'
 
              @param time_info dictionary containing time information
              @returns dictionary containing time_info dict and any relevant
@@ -425,16 +425,16 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             file_dict = super().get_files_from_time(time_info)
             if self.c_dict['USING_BOTH']:
                 fcst_files = self.find_input_files(time_info, 'BOTH')
-                anly_files = fcst_files
+                obs_files = fcst_files
             else:
                 fcst_files = self.find_input_files(time_info, 'FCST')
-                anly_files = self.find_input_files(time_info, 'OBS')
+                obs_files = self.find_input_files(time_info, 'OBS')
 
-            if fcst_files is None or anly_files is None:
+            if fcst_files is None or obs_files is None:
                 return None
 
             file_dict['fcst'] = fcst_files
-            file_dict['anly'] = anly_files
+            file_dict['obs'] = obs_files
             file_dict_list.append(file_dict)
 
         return file_dict_list
@@ -459,7 +459,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                or None if could not find any files
         """
         fcst_files = []
-        anly_files = []
+        obs_files = []
         for file_dict in self.c_dict['ALL_FILES']:
             # compare time information for each input file
             # add file to list of files to use if it matches
@@ -467,9 +467,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                 continue
 
             fcst_files.extend(file_dict['fcst'])
-            anly_files.extend(file_dict['anly'])
+            obs_files.extend(file_dict['obs'])
 
-        return fcst_files, anly_files
+        return fcst_files, obs_files
 
     def compare_time_info(self, runtime, filetime):
         """! Call parents implementation then if the current run time and file
@@ -506,13 +506,13 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         """
         time_info['storm_id'] = storm_id
         all_fcst_files = []
-        all_anly_files = []
+        all_obs_files = []
         if not lead_group:
-            fcst_files, anly_files = self.subset_input_files(time_info)
-            if not fcst_files or not anly_files:
+            fcst_files, obs_files = self.subset_input_files(time_info)
+            if not fcst_files or not obs_files:
                 return None, None
             all_fcst_files.extend(fcst_files)
-            all_anly_files.extend(anly_files)
+            all_obs_files.extend(obs_files)
             label = ''
             leads = None
         else:
@@ -520,13 +520,13 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             leads = lead_group[1]
             for lead in leads:
                 time_info['lead'] = lead
-                fcst_files, anly_files = self.subset_input_files(time_info)
-                if fcst_files and anly_files:
+                fcst_files, obs_files = self.subset_input_files(time_info)
+                if fcst_files and obs_files:
                     all_fcst_files.extend(fcst_files)
-                    all_anly_files.extend(anly_files)
+                    all_obs_files.extend(obs_files)
 
         # skip if no files were found
-        if not all_fcst_files or not all_anly_files:
+        if not all_fcst_files or not all_obs_files:
             return None, None
 
         output_dir = self.get_output_dir(time_info, storm_id, label)
@@ -552,14 +552,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             return fcst_path, fcst_path
 
         # create analysis file list
-        anly_ascii_filename = self.get_ascii_filename('OBS',
+        obs_ascii_filename = self.get_ascii_filename('OBS',
                                                       storm_id,
                                                       leads)
-        self.write_list_file(anly_ascii_filename,
-                             all_anly_files,
+        self.write_list_file(obs_ascii_filename,
+                             all_obs_files,
                              output_dir=output_dir)
 
-        obs_path = os.path.join(output_dir, anly_ascii_filename)
+        obs_path = os.path.join(output_dir, obs_ascii_filename)
 
         return fcst_path, obs_path
 

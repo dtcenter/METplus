@@ -433,8 +433,6 @@ def check_for_deprecated_config(config):
         'BACKGROUND_MAP': {'sec': 'config', 'alt': 'SERIES_ANALYSIS_BACKGROUND_MAP'},
         'GFS_FCST_FILE_TMPL': {'sec': 'filename_templates', 'alt': 'FCST_EXTRACT_TILES_INPUT_TEMPLATE'},
         'GFS_ANLY_FILE_TMPL': {'sec': 'filename_templates', 'alt': 'OBS_EXTRACT_TILES_INPUT_TEMPLATE'},
-        'FCST_TILE_PREFIX': {'sec': 'regex_patterns', 'alt': 'FCST_EXTRACT_TILES_PREFIX'},
-        'OBS_TILE_PREFIX': {'sec': 'regex_patterns', 'alt': 'OBS_EXTRACT_TILES_PREFIX'},
         'FCST_TILE_REGEX': {'sec': 'regex_patterns', 'alt': None},
         'OBS_TILE_REGEX': {'sec': 'regex_patterns', 'alt': None},
         'FCST_NC_TILE_REGEX': {'sec': 'regex_patterns', 'alt': 'FCST_SERIES_ANALYSIS_NC_TILE_REGEX'},
@@ -536,24 +534,6 @@ def check_for_deprecated_config(config):
                               'alt': 'FCST_SERIES_ANALYSIS_INPUT_TEMPLATE '},
         'OBS_SERIES_ANALYSIS_TILE_INPUT_TEMPLATE': {'sec': 'filename_templates',
                               'alt': 'OBS_SERIES_ANALYSIS_INPUT_TEMPLATE '},
-        'FCST_SERIES_ANALYSIS_TILE_REGEX': {'sec': 'config',
-                                        'alt': 'FCST_EXTRACT_TILES_PREFIX',
-                                        'copy': False},
-        'OBS_SERIES_ANALYSIS_TILE_REGEX': {'sec': 'config',
-                                        'alt': 'OBS_EXTRACT_TILES_PREFIX',
-                                        'copy': False},
-        'FCST_SERIES_ANALYSIS_NC_TILE_REGEX': {'sec': 'config',
-                                        'alt': 'FCST_EXTRACT_TILES_PREFIX',
-                                        'copy': False},
-        'OBS_SERIES_ANALYSIS_NC_TILE_REGEX': {'sec': 'config',
-                                        'alt': 'OBS_EXTRACT_TILES_PREFIX',
-                                        'copy': False},
-        'FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD': {'sec': 'config',
-                                        'alt': 'FCST_EXTRACT_TILES_PREFIX',
-                                        'copy': False},
-        'OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD': {'sec': 'config',
-                                        'alt': 'OBS_EXTRACT_TILES_PREFIX',
-                                        'copy': False},
         'EXTRACT_TILES_STAT_INPUT_DIR': {'sec': 'dir',
                                         'alt': 'EXTRACT_TILES_TC_STAT_INPUT_DIR',},
         'EXTRACT_TILES_STAT_INPUT_TEMPLATE': {'sec': 'filename_templates',
@@ -1545,196 +1525,6 @@ def get_files(filedir, filename_regex, logger=None):
                 continue
     return file_paths
 
-def check_for_tiles(tile_dir, fcst_file_regex, anly_file_regex, logger):
-    """! Checks for the presence of forecast and analysis
-        tiles that were created by extract_tiles
-        Args:
-            @param tile_dir:  The directory where the expected
-                              tiled files should reside.
-            @param fcst_file_regex: The regexp describing the format of the
-                                    forecast tile file.
-            @param anly_file_regex: The regexp describing the format of the
-                                    analysis tile file.
-            @param logger:    The logger to which all log messages
-                                should be directed.
-        Returns:
-            None  raises OSError if expected files are missing
-    """
-    anly_tiles = get_files(tile_dir, anly_file_regex, logger)
-    fcst_tiles = get_files(tile_dir, fcst_file_regex, logger)
-
-    num_anly_tiles = len(anly_tiles)
-    num_fcst_tiles = len(fcst_tiles)
-
-    # Check that there are analysis and forecast tiles
-    # (which were, or should have been created earlier by extract_tiles).
-    if not anly_tiles:
-        # Cannot proceed, the necessary 30x30 degree analysis tiles are missing
-        logger.error("No anly tile files were found  " + tile_dir)
-        raise OSError("No 30x30 anlysis tiles were found")
-    elif not fcst_tiles:
-        # Cannot proceed, the necessary 30x30 degree fcst tiles are missing
-        logger.error("No fcst tile files were found  " + tile_dir)
-        raise OSError("No 30x30 fcst tiles were found")
-
-    # Check for same number of fcst and analysis files
-    if num_anly_tiles != num_fcst_tiles:
-        # Something is wrong, we are missing
-        # either an ANLY tile file or a FCST tile
-        # file, this indicates a serious problem.
-        logger.info("There are a different number of anly "
-                    "and fcst tiles...")
-
-
-def extract_year_month(init_time, logger):
-    """! Retrieve the YYYYMM from the initialization time with format
-         YYYYMMDD_hh
-        Args:
-            @param init_time:  The initialization time of expected format
-            YYYYMMDD_hh
-            @param logger:  Logger
-        Returns:
-            year_month (string):  The YYYYMM portion of the initialization time
-    """
-    # Match on anything that starts with 1 or 2 (for the century)
-    #  followed by 5 digits for the remainder of the YYYMM
-    year_month = re.match(r'^((1|2)[0-9]{5})', init_time)
-    if year_month:
-        year_month = year_month.group(0)
-        return year_month
-    else:
-        logger.warning("Cannot extract YYYYMM from "
-                       "initialization time, unexpected format")
-        raise Warning("Cannot extract YYYYMM from initialization time,"
-                      " unexpected format")
-
-def create_grid_specification_string(lat, lon, logger, config):
-    """! Create the grid specification string with the format:
-         latlon Nx Ny lat_ll lon_ll delta_lat delta_lon
-         used by the MET tool, regrid_data_plane.
-         Args:
-            @param lat:   The latitude of the grid point
-            @param lon:   The longitude of the grid point
-            @param logger: The name of the logger
-            @param config: config instance
-         Returns:
-            tile_grid_str (string): the tile grid string for the
-                                    input lon and lat
-    """
-
-    # pylint: disable=protected-access
-    # Need to access sys._getframe to capture current file and function for
-    # logging information
-
-    # Initialize the tile grid string
-    # and get the other values from the parameter file
-    nlat = config.getstr('config', 'EXTRACT_TILES_NLAT')
-    nlon = config.getstr('config', 'EXTRACT_TILES_NLON')
-    dlat = config.getstr('config', 'EXTRACT_TILES_DLAT')
-    dlon = config.getstr('config', 'EXTRACT_TILES_DLON')
-    lon_subtr = config.getfloat('config', 'EXTRACT_TILES_LON_ADJ')
-    lat_subtr = config.getfloat('config', 'EXTRACT_TILES_LAT_ADJ')
-
-    # Format for regrid_data_plane:
-    # latlon Nx Ny lat_ll lon_ll delta_lat delta_lonadj_lon =
-    # float(lon) - lon_subtr
-    adj_lon = float(lon) - lon_subtr
-    adj_lat = float(lat) - lat_subtr
-    lon0 = str(round_0p5(adj_lon))
-    lat0 = str(round_0p5(adj_lat))
-
-    msg = ("lat:" + lat + " lon: " + lon +\
-           " lat0:" + lat0 + " lon0: " + lon0)
-    logger.debug(msg)
-
-    # Create the specification string based on the requested tool.
-    grid_list = ['"', 'latlon ', nlat, ' ', nlon, ' ', lat0, ' ',
-                 lon0, ' ', dlat, ' ', dlon, '"']
-
-    tile_grid_str = ''.join(grid_list)
-    return tile_grid_str
-
-
-def gen_date_list(begin_date, end_date):
-    """! Generates a list of dates of the form yyyymmdd from a being date to
-     end date
-    Inputs:
-      @param begin_date -- such as "20070101"
-      @param end_date -- such as "20070103"
-    Returns:
-      date_list -- such as ["20070101","20070102","20070103"]
-    """
-
-    begin_tm = time.strptime(begin_date, "%Y%m%d")
-    end_tm = time.strptime(end_date, "%Y%m%d")
-    begin_tv = calendar.timegm(begin_tm)
-    end_tv = calendar.timegm(end_tm)
-    date_list = []
-    for loop_tv in range(begin_tv, end_tv + 86400, 86400):
-        date_list.append(time.strftime("%Y%m%d", time.gmtime(loop_tv)))
-    return date_list
-
-
-def gen_hour_list(hour_inc, hour_end):
-    """! Generates a list of hours of the form hh or hhh
-    Inputs:
-      @param hour_inc -- increment in integer format such as 6
-      @param hour_end -- hh or hhh string indicating the end hour for the
-                       increment such as "18"
-    Returns:
-      hour_list -- such as ["00", "06", "12", "18"]
-    """
-
-    int_list = range(0, int(hour_end) + 1, hour_inc)
-
-    zfill_val = 0
-    if len(hour_end) == 2:
-        zfill_val = 2
-    elif len(hour_end) == 3:
-        zfill_val = 3
-
-    hour_list = []
-    for my_int in int_list:
-        hour_string = str(my_int).zfill(zfill_val)
-        hour_list.append(hour_string)
-
-    return hour_list
-
-
-def gen_init_list(init_date_begin, init_date_end, init_hr_inc, init_hr_end):
-    """!
-    Generates a list of initialization date and times of the form yyyymmdd_hh
-    or yyyymmdd_hhh
-    Inputs:
-      @param init_date_begin -- yyyymmdd string such as "20070101"
-      @param init_date_end -- yyyymmdd string such as "20070102"
-      @param init_hr_inc -- increment in integer format such as 6
-      @param init_hr_end -- hh or hhh string indicating the end hour for the
-                           increment such as "18"
-    Returns:
-      init_list -- such as ["20070101_00", "20070101_06", "20070101_12",
-      "20070101_18", "20070102_00", "20070102_06", "20070102_12",
-      "20070102_18"]
-    """
-
-    my_hour_list = gen_hour_list(init_hr_inc, init_hr_end)
-
-    my_date_list = gen_date_list(init_date_begin, init_date_end)
-
-    date_init_list = []
-
-    # pylint:disable=unused-variable
-    # using enumerate on my_date_list returns a tuple, and not all values
-    # are needed.
-
-    for index, my_date in enumerate(my_date_list):
-        for my_hour in my_hour_list:
-            init_string = my_date + "_" + my_hour
-            date_init_list.append(init_string)
-
-    return date_init_list
-
-
 def prune_empty(output_dir, logger):
     """! Start from the output_dir, and recursively check
         all directories and files.  If there are any empty
@@ -1769,115 +1559,6 @@ def prune_empty(output_dir, logger):
                 logger.debug("Empty directory: " + full_dir +
                              "...removing")
                 os.rmdir(full_dir)
-
-
-def cleanup_temporary_files(list_of_files):
-    """! Remove the files indicated in the list_of_files list.  The full
-       file path must be indicated.
-        Args:
-          @param list_of_files: A list of files (full filepath) to be
-          removed.
-        Returns:
-            None:  Removes the requested files.
-    """
-    for single_file in list_of_files:
-        try:
-            os.remove(single_file)
-        except OSError:
-            # Raises exception if this doesn't exist (never created or
-            # already removed).  Ignore.
-            pass
-
-
-
-
-
-def create_filter_tmp_files(filtered_files_list, filter_output_dir, logger=None):
-    """! Creates the tmp_fcst and tmp_anly ASCII files that contain the full
-        filepath of files that correspond to the filter criteria.  Useful for
-        validating that filtering returns the expected results/troubleshooting.
-        Args:
-            @param filtered_files_list:  A list of the netCDF or grb2 files
-                                          that result from applying filter
-                                          options and running the MET tool
-                                          tc_stat.
-            @param filter_output_dir:  The directory where the filtered data is
-                                       stored
-            @param logger a logging.Logger for log messages
-        Returns:
-            None: Creates two ASCII files
-    """
-    # Create the filenames for the tmp_fcst and tmp_anly files.
-    tmp_fcst_filename = os.path.join(filter_output_dir,
-                                     "tmp_fcst_regridded.txt")
-    tmp_anly_filename = os.path.join(filter_output_dir,
-                                     "tmp_anly_regridded.txt")
-
-    fcst_list = []
-    anly_list = []
-
-    for filter_file in filtered_files_list:
-        fcst_match = re.match(r'(.*/FCST_TILE_F.*.[grb2|nc])', filter_file)
-        if fcst_match:
-            fcst_list.append(fcst_match.group(1))
-
-        anly_match = re.match(r'(.*/ANLY_TILE_F.*.[grb2|nc])', filter_file)
-        if anly_match:
-            anly_list.append(anly_match.group(1))
-
-    # Write to the appropriate tmp file
-    # with open(tmp_fcst_filename, "a+") as fcst_tmpfile:
-    with open(tmp_fcst_filename, "w+") as fcst_tmpfile:
-        for fcst in fcst_list:
-            fcst_tmpfile.write(fcst + "\n")
-
-    with open(tmp_anly_filename, "w+") as anly_tmpfile:
-        for anly in anly_list:
-            anly_tmpfile.write(anly + "\n")
-
-
-def get_updated_init_times(input_dir, config=None):
-    """ Get a list of init times, derived by the .tcst files in the
-        input_dir (and below).
-        Args:
-            @param input_dir:  The topmost directory from which our search for
-                               filter.tcst files begins.
-            @param config:  Reference to metplus.conf configuration instance.
-        Returns:
-            updated_init_times_list : A list of the init times represented by
-                                      the forecast.tcst files found in the
-                                      input_dir.
-    """
-    updated_init_times_list = []
-    init_times_list = []
-    filter_list = get_files(input_dir, ".*.tcst", config)
-    if filter_list:
-        for filter_file in filter_list:
-            match = re.match(r'.*/filter_([0-9]{8}_[0-9]{2,3})', filter_file)
-            if match:
-                init_times_list.append(match.group(1))
-        updated_init_times_list = sorted(init_times_list)
-
-    return updated_init_times_list
-
-
-def get_dirs(base_dir):
-    """! Get a list of directories under a base directory.
-        Args:
-            @param base_dir:  The base directory from where search begins
-       Returns:
-           dir_list:  A list of directories under the base_dir
-    """
-
-    dir_list = []
-
-    # pylint:disable=unused-variable
-    # os.walk returns a tuple, not all returned values are needed.
-    for dir_name, dirs, filenames in os.walk(base_dir):
-        for direc in dirs:
-            dir_list.append(os.path.join(dir_name, direc))
-
-    return dir_list
 
 def handle_begin_end_incr(list_str):
     """!Check for instances of begin_end_incr() in the input string and evaluate as needed
@@ -2936,6 +2617,12 @@ def template_to_regex(template, time_info, logger):
                          **time_info)
 
 def is_python_script(name):
+    """ Check if field name is a python script by checking if any of the words
+     in the string end with .py
+
+     @param name string to check
+     @returns True if the name is determined to be a python script command
+     """
     if not name:
         return False
 
@@ -2957,76 +2644,11 @@ def check_user_environment(config):
                   'Overwriting from conf file'
             config.logger.warning(msg)
 
-
-def remove_staged_files(staged_dir, filename_regex, logger):
-    ''' Removes the staged files generated for series analysis filtering. This
-        is important in the feature relative use case, when the series analysis
-        wrappers can be run multiple times, each time the filter results are
-        appended to any existing temp files, which is not desirable.
-       Args:
-        @param staged_dir:  The location of the directory where the
-                            intermediate filter files are being saved.
-        @param filename_regex: The regular expression that identifies the
-                               filenaming format of the files to be removed.
-        @param logger:  The logger instance
-
-
-       Returns:
-           0 on successful completion
-    '''
-
-    # Determine the current user's username so we only remove that individual's
-    # staged files (important if the staged dir is a shared space).
-    username = getpass.getuser()
-
-    # Get a list of the files located in the tmp directory
-    files_in_staged_dir = get_files(staged_dir, filename_regex, logger)
-
-    for staged_file in files_in_staged_dir:
-        cur_user = getpwuid(stat(staged_file).st_uid).pw_name
-        if cur_user == username:
-            # Remove this file, it is owned by the user
-            full_filename = os.path.join(staged_dir, staged_file)
-            os.remove(full_filename)
-
-    # if we get here, all went well...
-    return 0
-
-def iterate_is_first(input_list):
-    """!Use an iterator to loop over the list and keep track if the current item is the first in the loop
-        Args:
-            @param input_list list of items to iterate over
-            @returns tuple containing the next item and a boolean that is only True for the first item"""
-    iterate_check_position(input_list, check_first=True)
-
-def iterate_is_last(input_list):
-    """!Use an iterator to loop over the list and keep track if the current item is the last in the loop
-        Args:
-            @param input_list list of items to iterate over
-            @returns tuple containing the next item and a boolean that is only True for the last item"""
-    iterate_check_position(input_list, check_first=False)
-
-def iterate_check_position(input_list, check_first):
-    """!Use an iterator to loop over the list and keep track if the current item is the first or last in the loop
-        Args:
-            @param input_list list of items to iterate over
-            @param check_first if True, return True if the current item is the first item, if False, return True
-                if the current item is the last item
-            @returns tuple containing the next item and a boolean that is only True for the first/last item"""
-    it = iter(input_list)
-    last = next(it)
-
-    for item in it:
-        yield last, check_first
-        last = item
-
-    yield last, not check_first
-
 def expand_int_string_to_list(int_string):
     """! Expand string into a list of integer values. Items are separated by
     commas. Items that are formatted X-Y will be expanded into each number
     from X to Y inclusive. If the string ends with +, then add a str '+'
-    to the end of the list.
+    to the end of the list. Used in ci/jobs/run_use_cases.py
 
     @param int_string String containing a comma-separated list of integers
     @returns List of integers and potentially '+' as the last item
@@ -3060,6 +2682,7 @@ def expand_int_string_to_list(int_string):
 
 def subset_list(full_list, subset_definition):
     """! Extract subset of items from full_list based on subset_definition
+    Used in internal_tests/use_cases/metplus_use_case_suite.py
 
     @param full_list List of all use cases that were requested
     @param subset_definition Defines how to subset the full list. If None,
@@ -3109,8 +2732,6 @@ def is_met_netcdf(file_path):
              @returns True if file is a MET-generated NetCDF file and False if
               it is not or it can't be determined.
     """
-    # disable functionality for testing
-    return False
     try:
         from netCDF4 import Dataset
         nc_file = Dataset(file_path, 'r')
