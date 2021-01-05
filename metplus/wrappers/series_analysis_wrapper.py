@@ -620,7 +620,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             if len(lead_hours_list) > 1:
                 max_lead_hours = max(lead_hours_list)
                 max_lead_str = str(max_lead_hours).zfill(3)
-                filename += f"_F{max_lead_str}"
+                filename += f"_to_F{max_lead_str}"
 
         ascii_filename = f"{prefix}{filename}"
         return ascii_filename
