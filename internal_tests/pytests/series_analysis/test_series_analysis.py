@@ -499,21 +499,21 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
         # storm ID, 2 leads
         ('ML1221072014', [relativedelta(hours=18),
                                   relativedelta(hours=12)],
-         '_FILES_ML1221072014_F012_F018'),
+         '_FILES_ML1221072014_F012_to_F018'),
         # no storm ID, 2 leads
         ('*', [relativedelta(hours=18),
                        relativedelta(hours=12)],
-         '_FILES_F012_F018'),
+         '_FILES_F012_to_F018'),
         # storm ID, 3 leads
         ('ML1221072014', [relativedelta(hours=15),
                                   relativedelta(hours=18),
                                   relativedelta(hours=12)],
-         '_FILES_ML1221072014_F012_F018'),
+         '_FILES_ML1221072014_F012_to_F018'),
         # no storm ID, 3 leads
         ('*', [relativedelta(hours=15),
                        relativedelta(hours=18),
                        relativedelta(hours=12)],
-         '_FILES_F012_F018'),
+         '_FILES_F012_to_F018'),
     ]
 )
 def test_get_ascii_filename(metplus_config, storm_id, leads,
