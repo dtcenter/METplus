@@ -14,7 +14,7 @@ import os
 
 from ..util import met_util as util
 from ..util import time_util
-from . import CommandBuilder
+from . import RuntimeFreqWrapper
 from ..util import do_string_sub
 
 '''!@namespace GridDiagWrapper
@@ -23,7 +23,7 @@ from ..util import do_string_sub
 '''
 
 
-class GridDiagWrapper(CommandBuilder):
+class GridDiagWrapper(RuntimeFreqWrapper):
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "grid_diag"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
@@ -153,33 +153,28 @@ class GridDiagWrapper(CommandBuilder):
         cmd += f" -v {self.c_dict['VERBOSITY']}"
         return cmd
 
-    def run_at_time(self, input_dict):
-        """! Runs the MET application for a given run time. This function
-              loops over the list of forecast leads and runs the application for
-              each.
-              Args:
-                @param input_dict dictionary containing timing information
-        """
-        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
-
-            input_dict['custom'] = custom_string
-
-            time_info = time_util.ti_calculate(input_dict)
-
-            self.run_at_time_once(time_info)
-
     def run_at_time_once(self, time_info):
         """! Process runtime and try to build command to run ascii2nc
              Args:
                 @param time_info dictionary containing timing information
         """
+        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+            if custom_string:
+                self.logger.info(f"Processing custom string: {custom_string}")
+
+            time_info['custom'] = custom_string
+            self.run_at_time_custom(time_info)
+
+    def run_at_time_custom(self, time_info):
         self.clear()
 
-        # get input files
-        if not self.find_input_files(time_info):
+        # subset input files as appropriate
+        input_list_files = self.subset_input_files(time_info)
+        if not input_list_files:
             return
+
+        for input_list_file in input_list_files:
+            self.infiles.append(input_list_file)
 
         # get output path
         if not self.find_and_check_output_file(time_info):
@@ -235,55 +230,115 @@ class GridDiagWrapper(CommandBuilder):
 
     def find_input_files(self, time_info):
         """! Loop over list of input templates and find files for each
-            Args:
-                @param time_info time dictionary to use for string substitution
-                @returns Input file list if all files were found, None if not.
+
+             @param time_info time dictionary to use for string substitution
+             @returns Dictionary of key input number and value is list of
+              input file list if all files were found, None if not.
         """
-        self.infiles = []
+        all_input_files = {}
         for idx, input_template in enumerate(self.c_dict['INPUT_TEMPLATES']):
             self.c_dict['INPUT_TEMPLATE'] = input_template
-            list_file = self.find_input_file_list(time_info, idx)
-
-            if list_file is None:
-                return None
-
-            self.infiles.append(list_file)
-
-        return self.infiles
-
-    def find_input_file_list(self, time_info, idx):
-        """!Get DECK file and list of input data files and set c_dict items.
-            Args:
-                @param time_info time dictionary to use for string substitution
-                @param idx index to use for file list names
-                @returns Input file list if all files were found, None if not.
-        """
-        all_input_files = []
-
-        lead_seq = util.get_lead_sequence(self.config, time_info)
-        for lead in lead_seq:
-            time_info['lead'] = lead
-
-            time_info = time_util.ti_calculate(time_info)
-
-            # get a list of the input data files, write to an ascii file if there are more than one
             input_files = self.find_data(time_info, return_list=True)
             if not input_files:
                 continue
 
-            all_input_files.extend(input_files)
+            all_input_files[f'input{idx}'] = input_files
 
         if not all_input_files:
             return None
 
-        # create an ascii file with a list of the input files
-        list_file = self.write_list_file(f"grid_diag_data_files_idx{idx}_{time_info['valid_fmt']}.txt",
-                                         all_input_files)
-        return list_file
+        return all_input_files
 
     def set_command_line_arguments(self, time_info):
+        """! add config file passing through do_string_sub to get custom
+         string if set
 
-        # add config file - passing through do_string_sub to get custom string if set
+            @param time_info dictionary containing time information
+        """
         config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
                                     **time_info)
         self.args.append(f"-config {config_file}")
+
+    def get_files_from_time(self, time_info):
+        """! Create dictionary containing time information (key time_info) and
+             any relevant files for that runtime. The parent implementation of
+             this function creates a dictionary and adds the time_info to it.
+             This wrapper gets all files for the current runtime and adds it to
+             the dictionary with key 'input'
+
+             @param time_info dictionary containing time information
+             @returns dictionary containing time_info dict and any relevant
+             files with a key representing a description of that file
+        """
+        file_dict = super().get_files_from_time(time_info)
+        input_files = self.find_input_files(time_info)
+        if input_files is None:
+            return None
+
+        for key, value in input_files.items():
+            file_dict[key] = value
+
+        return file_dict
+
+    def subset_input_files(self, time_info):
+        """! Obtain a subset of input files from the c_dict ALL_FILES based on
+             the time information for the current run.
+
+              @param time_info dictionary containing time information
+              @returns the path to a ascii file containing the list of files
+               or None if could not find any files
+        """
+        all_input_files = {}
+        for file_dict in self.c_dict['ALL_FILES']:
+            # compare time information for each input file
+            # add file to list of files to use if it matches
+            if not self.compare_time_info(time_info, file_dict['time_info']):
+                continue
+
+            input_keys = [key for key in file_dict if key.startswith('input')]
+            for input_key in input_keys:
+                if input_key not in all_input_files:
+                    all_input_files[input_key] = []
+                all_input_files[input_key].extend(file_dict[input_key])
+
+        # return None if no matching input files were found
+        if not all_input_files:
+            return None
+
+        # loop over all inputs and write a file list file for each
+        list_file_paths = []
+        for identifier, input_files in all_input_files.items():
+            list_file_name = self.get_list_file_name(time_info, identifier)
+            list_file_path = self.write_list_file(list_file_name, input_files)
+            list_file_paths.append(list_file_path)
+
+        return list_file_paths
+
+    @staticmethod
+    def get_list_file_name(time_info, identifier):
+        """! Build name of ascii file that contains a list of files to process.
+             If wildcard is set for init, valid, or lead then use the text ALL
+             in the filename.
+
+             @param time_info dictionary containing time information
+             @param identifier string to identify which input is used
+             @returns filename i.e.
+              grid_diag_files_{identifier}_init_{init}_valid_{valid}_lead_{lead}.txt
+        """
+        if time_info['init'] == '*':
+            init = 'ALL'
+        else:
+            init = time_info['init'].strftime('%Y%m%d%H%M%S')
+
+        if time_info['valid'] == '*':
+            valid = 'ALL'
+        else:
+            valid = time_info['valid'].strftime('%Y%m%d%H%M%S')
+
+        if time_info['lead'] == '*':
+            lead = 'ALL'
+        else:
+            lead = time_util.ti_get_seconds_from_lead(time_info['lead'],
+                                                      time_info['valid'])
+
+        return f"grid_diag_files_{identifier}_init_{init}_valid_{valid}_lead_{lead}.txt"

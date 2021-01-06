@@ -387,6 +387,7 @@ METplus Configuration
 | :term:`GRID_DIAG_REGRID_TO_GRID`
 | :term:`GRID_DIAG_DESCRIPTION`
 | :term:`GRID_DIAG_SKIP_IF_OUTPUT_EXISTS`
+| :term:`GRID_DIAG_RUNTIME_FREQ`
 
 MET Configuration
 ~~~~~~~~~~~~~~~~~
