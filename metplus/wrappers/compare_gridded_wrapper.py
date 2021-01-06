@@ -30,9 +30,6 @@ class CompareGriddedWrapper(CommandBuilder):
 that reformat gridded data
     """
 
-    # types of climatology values that should be checked and set
-    climo_types = ['MEAN', 'STDEV']
-
     def __init__(self, config, instance=None, config_overrides={}):
         # set app_name if not set by child class to allow tests to run on this wrapper
         if not hasattr(self, 'app_name'):
@@ -113,52 +110,6 @@ that reformat gridded data
                     self.log_error(f"If {dtype}_IS_PROB is True, you must set {dtype}_PROB_IN"
                                    "_GRIB_PDS unless the forecast datatype is set to NetCDF")
                     self.isOK = False
-
-    def set_climo_env_vars(self):
-        """!Set all climatology environment variables from CLIMO_<item>_FILE c_dict values if they are not set to None"""
-        for climo_item in self.climo_types:
-
-            # climo file is set to None if not found, so set to empty string if None
-            climo_file = util.remove_quotes(self.c_dict[f'CLIMO_{climo_item}_FILE']) or ''
-
-            # remove then add double quotes for file path unless empty string
-            if climo_file:
-                climo_file = f'"{util.remove_quotes(climo_file)}"'
-
-            # set environment variable
-            self.add_env_var(f'CLIMO_{climo_item}_FILE', climo_file)
-
-    def read_climo_wrapper_specific(self, met_tool, c_dict):
-        """!Read climatology directory and template values for specific MET tool specified and set the values in c_dict"""
-        for climo_item in self.climo_types:
-            c_dict[f'CLIMO_{climo_item}_INPUT_DIR'] = self.config.getdir(f'{met_tool}_CLIMO_{climo_item}_INPUT_DIR',
-                                                                         '')
-            c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE'] = \
-                self.config.getraw('filename_templates',
-                                   f'{met_tool}_CLIMO_{climo_item}_INPUT_TEMPLATE',
-                                   '')
-
-    def handle_climo(self, time_info):
-        """!Substitute time information into all climatology template values"""
-        for climo_item in self.climo_types:
-             self.handle_climo_file_item(time_info, climo_item)
-
-    def handle_climo_file_item(self, time_info, climo_item):
-        """!Handle a single climatology value by substituting time information, prepending input directory if provided, and
-            preprocessing file if necessary. All information is read from c_dict. CLIMO_<item>_FILE in c_dict is set."""
-
-        # don't process if template is not set
-        if not self.c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE']:
-            return
-
-        template = self.c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE']
-        climo_file = do_string_sub(template,
-                                   **time_info)
-        climo_path = os.path.join(self.c_dict[f'CLIMO_{climo_item}_INPUT_DIR'], climo_file)
-        self.logger.debug(f"Looking for climatology {climo_item.lower()} file {climo_path}")
-        self.c_dict[f'CLIMO_{climo_item}_FILE'] = util.preprocess_file(climo_path,
-                                                                       '',
-                                                                       self.config)
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops

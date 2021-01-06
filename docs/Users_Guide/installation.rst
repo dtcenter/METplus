@@ -36,7 +36,7 @@ The following software is required to run METplus Wrappers:
 
 -  dateutil Python package
 
--  MET version 9.0 or above
+-  MET version 10.0 or above
 
 If running plot wrappers, cartopy and pandas packages are required
 
@@ -44,7 +44,9 @@ Some of the wrappers have additional dependencies to run.
 
 -  TCMPRPlotter wrapper requires R version 3.2.5
 
--  SeriesByLead wrapper requires the nco (netCDF operators)
+-  SeriesAnalysis wrapper requires the netCDF4 Python package and optionally
+   if generating plots and/or animated images from the output, the ImageMagick
+   convert utility is also required
 
 -  MakePlots wrapper requires cartopy and pandas Python packages
 
@@ -119,17 +121,27 @@ directories to the METplus Wrappers directory. You should have the
 following directory structure::
 
   METplus/
-    docs/
     build_components/
+    ci/
+    docs/
+    environment.yml
     internal_tests/
     manage_exernals/
+    metplus/
     parm/
-    sorc/
-    ush/
+    produtil/
     README.md
+    requirements.txt
+    ush/
 
 The top-level METplus Wrappers directory consists of a README.md file
 and several subdirectories.
+
+The build_components/ directory contains scripts that use manage_externals
+and files available on dtcenter.org to download MET and start the build process
+
+The ci/ directory contains scripts that are used for creating Docker images and
+script that are used internally for automation
 
 The docs/ directory contains documentation for users and contributors (HTML) and Doxygen
 files that are used to create the METplus wrapper API documentaton. The Doxygen
@@ -137,20 +149,18 @@ documentation can be created and viewed via web browser if the developer
 has Doxygen installed on the host.  The Doxygen documentation is useful to contributors and is not
 necessary for METplus end-users.
 
-The build_components/ directory contains scripts that use manage_externals
-and files available on dtcenter.org to download MET and start the build process
-
-The internal_tests/ directory contains unit test scripts that are only
-relevant to METplus Wrappers developers and contributors.
+The internal_tests/ directory contains test scripts that are only
+relevant to METplus developers and contributors.
 
 The manage_externals/ directory contains scripts used to facilitate the downloading and management
 of components that METplus interacts with such as MET and METviewer
 
+The metplus/ directory contains the wrapper scripts and utilities
+
 The parm/ directory contains all the configuration files for MET and
 METplus Wrappers.
 
-The sorc/ directory contains Doxygen executables to generate
-documentation for developers.
+The produtil/ directory contains part of the external utility produtil
 
 The ush/ directory contains the Python wrappers to the MET tools.
 
@@ -204,9 +214,6 @@ shell):
 
 -  To your PATH, add: *<full-path-to*-*METplus*>/ush
 
--  Optional: add JLOGFILE variable and set to
-   *<full-path-to-save-jlog-files>*
-
 -  Close your .cshrc file and run ``source ~/.cshrc``
 
 -  For example:
@@ -216,18 +223,12 @@ shell):
     # Add METplus to $PATH
     set path = (other_path_entries ~/METplus/ush)
 
-    # Optional JLOGFILE
-    setenv JLOGFILE ~/jlog_out
-
 .bashrc/.kshrc:
 ~~~~~~~~~~~~~~~
 
 -  Open your .bashrc/.kshrc file and do the following:
 
 -  To your PATH, add : *<full-path-to-METplus*>/ush
-
--  Optional: add a JLOGFILE environment variable and set it to the
-   directory where you want the logs to reside
 
 -  Close your .bashrc file and run ``source ~/.bashrc``, or ``source ~/.kshrc`` if using ksh
 
@@ -237,9 +238,6 @@ shell):
 
     # Add METplus to $PATH
     export PATH=~/METplus/ush:$PATH
-
-    # Optional JLOGFILE
-    export JLOGFILE=~/
 
 Set up METplus Wrappers Configuration files
 -------------------------------------------
@@ -549,23 +547,28 @@ When the above command is run, a usage message appears indicating that other con
   - Example
   - ExtractTiles
   - GempakToCF
+  - GenVxMask
+  - GridDiag
   - GridStat
+  - MakePlots
   - MODE
   - MTD
-  - MakePlots
   - PB2NC
   - PCPCombine
+  - PlotDataPlane
+  - Point2Grid
   - PointStat
   - PyEmbedIngest
   - RegridDataPlane
   - SeriesAnalysis
-  - SeriesByInit
-  - SeriesByLead
   - StatAnalysis
+  - TCGen
   - TCMPRPlotter
   - TCPairs
+  - TCRMW
   - TCStat
   - Usage
+  - UserScript
 
 **Example 2: Using a use-case configuration:**
 

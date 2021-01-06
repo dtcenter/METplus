@@ -373,7 +373,7 @@ METplus Configuration Glossary
    OBS_EXTRACT_TILES_PREFIX
      Prefix for observation tile files. Used to create filename of intermediate files that are created while performing a series analysis.
 
-     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Used by:*  ExtractTiles
      | *Family:* [regex_pattern]
      | *Default:*  Varies
 
@@ -1031,14 +1031,22 @@ METplus Configuration Glossary
      If set to True, run plot_data_plane and convert to generate images.
      Previously, plots were always generated.
 
-     | *Used by:*  SeriesByInit
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  True
+
+   SERIES_ANALYSIS_GENERATE_ANIMATIONS
+     If set to True, create GIF animated images images.
+     Previously, animated images were always generated.
+
+     | *Used by:*  SeriesAnalysis
      | *Family:*  [config]
      | *Default:*  True
 
    SERIES_ANALYSIS_BACKGROUND_MAP
      Control whether or not a background map shows up for series analysis plots. Set to 'yes' if background map desired.
 
-     | *Used by:*  SeriesByLead, SeriesByInit
+     | *Used by:*  SeriesAnalysis
      | *Family:*  [config]
      | *Default:*  no
 
@@ -1102,11 +1110,11 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    CONVERT
-     Path to the ImageMagickconvert executable.
+     Path to the ImageMagick convert executable.
 
-     | *Used by:*  PB2NC, PointStat, SeriesByInit, SeriesByLead
+     | *Used by:*  PlotDataPlane
      | *Family:*  [exe]
-     | *Default:*  /path/to
+     | *Default:*  convert
 
    CONVERT_EXE
      .. warning:: **DEPRECATED:** Please use :term:`CONVERT`.
@@ -1231,14 +1239,14 @@ METplus Configuration Glossary
    EXTRACT_TILES_DLAT
      The latitude value, in degrees. Set to the value that defines the resolution of the data (in decimal degrees).
 
-     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Used by:*  ExtractTiles
      | *Family:*  [config]
      | *Default:*  0.5
 
    EXTRACT_TILES_DLON
      The longitude value, in degrees. Set to the value that defines the resolution of the data (in decimal degrees).
 
-     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Used by:*  ExtractTiles
      | *Family:*  [config]
      | *Default:*  0.5
 
@@ -1249,9 +1257,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_DLON` instead.
 
    EXTRACT_TILES_PAIRS_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_STAT_INPUT_DIR` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_TC_STAT_INPUT_DIR` instead.
 
    EXTRACT_TILES_STAT_INPUT_DIR
+     .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_TC_STAT_INPUT_DIR` instead.
+
+   EXTRACT_TILES_TC_STAT_INPUT_DIR
      Directory containing TCStat output to be read by ExtractTiles.
 
      | *Used by:*  ExtractTiles
@@ -1259,9 +1270,12 @@ METplus Configuration Glossary
      | *Default:*
 
    SERIES_ANALYSIS_STAT_INPUT_DIR
-     Directory containing TCStat output to be read by SeriesByInit.
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_TC_STAT_INPUT_DIR` instead.
 
-     | *Used by:*  SeriesByInit
+   SERIES_ANALYSIS_TC_STAT_INPUT_DIR
+     Directory containing TCStat output to be read by SeriesAnalysis.
+
+     | *Used by:*  SeriesAnalysis
      | *Family:*  [dir]
      | *Default:*
 
@@ -1357,7 +1371,7 @@ METplus Configuration Glossary
    SERIES_ANALYSIS_REGRID_TO_GRID
      Used to set the regrid dictionary item 'to_grid' in the MET SeriesAnalysis config file. See the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
 
-     | *Used by:*  SeriesByLead, SeriesByInit, SeriesAnalysis
+     | *Used by:* SeriesAnalysis
      | *Family:*  [config]
      | *Default:* NONE
 
@@ -1485,7 +1499,7 @@ METplus Configuration Glossary
    EXTRACT_TILES_OUTPUT_DIR
      Set the output directory for the METplus extract_tiles utility.
 
-     | *Used by:*  ExtractTiles, SeriesByInit, SeriesByLead
+     | *Used by:*  ExtractTiles
      | *Family:*  [dir]
      | *Default:*  Varies
 
@@ -1999,7 +2013,7 @@ METplus Configuration Glossary
    FCST_EXTRACT_TILES_PREFIX
      Prefix for forecast tile files. Used to create filename of intermediate files that are created while performing a series analysis.
 
-     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Used by:*  ExtractTiles
      | *Family:* [regex_pattern]
      | *Default:*  Varies
 
@@ -2422,46 +2436,22 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    FHR_BEG
-     Specify the first forecast lead time to use in the analysis. Use in combination with :term:`FHR_END` and :term:`FHR_INC`.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+     .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ` instead.
 
    FHR_END
-     Specify the last forecast lead time to use in the analysis. Use in combination with :term:`FHR_BEG` and :term:`FHR_INC`.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+     .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ` instead.
 
    FHR_GROUP_BEG
-     Define which forecast lead time should be first in a group of forecast leads to use in the analysis. Use in combination with :term:`FHR_GROUP_END` and :term:`FHR_INC`. Example: FHR_GROUP_BEG = 24FHR_GROUP_END = 42FHR_INC = 6 List of forecast leads processed: [24, 30, 36, 42]
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+     .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ_\<n>` instead.
 
    FHR_GROUP_END
-     Define which forecast lead time should be the last in a group of forecast leads to use in the analysis. Use in combination with :term:`FHR_GROUP_BEG` and :term:`FHR_INC`. Example: FHR_GROUP_BEG = 24FHR_GROUP_END = 42FHR_INC = 6 List of forecast leads processed: [24, 30, 36, 42]
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+     .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ_\<n>` instead.
 
    FHR_GROUP_LABELS
-     Label strings to use for the forecast groups.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+     .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ_\<n>_LABEL` instead.
 
    FHR_INC
-     Stride to use for incrementing forecast lead times used in the analysis. Use in combination with :term:`FHR_BEG` and :term:`FHR_END` or :term:`FHR_GROUP_BEG` and :term:`FHR_GROUP_END`.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+     .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ` instead.
 
    FILTER
      .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_FILTER` instead.
@@ -2557,28 +2547,28 @@ METplus Configuration Glossary
    FCST_EXTRACT_TILES_INPUT_TEMPLATE
      Filename template used to identify forecast input file to ExtractTiles.
 
-     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Used by:*  ExtractTiles
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    OBS_EXTRACT_TILES_INPUT_TEMPLATE
      Filename template used to identify observation input file to ExtractTiles.
 
-     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Used by:*  ExtractTiles
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
    FCST_EXTRACT_TILES_OUTPUT_TEMPLATE
      Filename template used to identify the forecast output file generated by ExtractTiles.
 
-     | *Used by:* ExtractTiles, SeriesByLead
+     | *Used by:* ExtractTiles
      | *Family:* [filename_templates]
      | *Default:* Varies
 
    OBS_EXTRACT_TILES_OUTPUT_TEMPLATE
      Filename template used to identify the observation output file generated by ExtractTiles.
 
-     | *Used by:* ExtractTiles, SeriesByLead
+     | *Used by:* ExtractTiles
      | *Family:* [filename_templates]
      | *Default:* Varies
 
@@ -2759,7 +2749,7 @@ METplus Configuration Glossary
    INIT_SEQ
      Specify a list of initialization hours that are used to build a sequence of forecast lead times to include in the analysis. Used only when looping by valid time (LOOP_BY = VALID). Comma separated list format, e.g.:0, 6, 12 See :ref:`looping_over_forecast_leads` for more information.
 
-     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PCPCombine, PointStat, RegridDataPlane, SeriesByLead
+     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PCPCombine, PointStat, RegridDataPlane, SeriesAnalysis
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -2820,7 +2810,7 @@ METplus Configuration Glossary
    EXTRACT_TILES_LAT_ADJ
      Specify a latitude adjustment, in degrees to be used in the analysis. In the ExtractTiles wrapper, this corresponds to the 2m portion of the 2n x 2m subregion tile.
 
-     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Used by:*  ExtractTiles
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -2857,35 +2847,35 @@ METplus Configuration Glossary
    LEAD_SEQ
      Specify the sequence of forecast lead times to include in the analysis. Comma separated list format, e.g.:0, 6, 12. See :ref:`looping_over_forecast_leads` for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
 
-     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PCPCombine, PointStat, RegridDataPlane, SeriesByLead
+     | *Used by:*  All
      | *Family:*  [config]
      | *Default:*  Varies
 
    LEAD_SEQ_MIN
      Minimum forecast lead to be processed. Used primarily with INIT_SEQ but also affects LEAD_SEQ. See :ref:`looping_over_forecast_leads` for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
 
-     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PCPCombine, PointStat, RegridDataPlane, SeriesByLead
+     | *Used by:*  All
      | *Family:*  [config]
      | *Default:*  Varies
 
    LEAD_SEQ_MAX
      Maximum forecast lead to be processed. Used primarily with :term:`INIT_SEQ` but also affects :term:`LEAD_SEQ`. See :ref:`looping_over_forecast_leads` for more information. Units are assumed to be hours unless specified with Y, m, d, H, M, or S.
 
-     | *Used by:*  EnsembleStat, GridStat, MODE, MTD, PB2NC, PCPCombine, PointStat, RegridDataPlane, SeriesByLead
+     | *Used by:*  All
      | *Family:*  [config]
      | *Default:*  Varies
 
    LEAD_SEQ_<n>
-     Required when SERIES_BY_LEAD_GROUP_FCSTS=True. Not necessary otherwise. Specify the sequence of forecast lead times to include in the analysis. Comma separated list format, e.g.:0, 6, 12. <n> corresponds to the bin in which the user wishes to aggregate series by lead results.
+     Specify the sequence of forecast lead times to include in the analysis. Comma separated list format, e.g.:0, 6, 12. <n> corresponds to the bin in which the user wishes to aggregate series by lead results.
 
-     | *Used by:*  SeriesByLead
+     | *Used by:*  SeriesAnalysis
      | *Family:*  [config]
      | *Default:*  Varies
 
    LEAD_SEQ_<n>_LABEL
      Required when SERIES_BY_LEAD_GROUP_FCSTS=True. Specify the label of the corresponding bin of series by lead results.
 
-     | *Used by:*  SeriesByLead
+     | *Used by:*  SeriesAnalysis
      | *Family:*  [config]
      | *Default:*
 
@@ -2970,7 +2960,7 @@ METplus Configuration Glossary
    EXTRACT_TILES_LON_ADJ
      Specify a longitude adjustment, in degrees to be used in the analysis. In the ExtractTiles wrapper, this corresponds to the 2n portion of the 2n x 2m subregion tile.
 
-     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Used by:*  ExtractTiles
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -3009,11 +2999,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    MET_BASE
-     The base directory where your MET installation resides.
-
-     | *Used by:*  CyclonePlotter, ExtractTiles, PB2NC, PointStat, SeriesByInit, SeriesByLead, TCMPRPlotter, TCPairs
-     | *Family:*  [dir]
-     | *Default:*
+     .. warning:: **DEPRECATED:** Do not set.
 
    MET_BIN
      .. warning:: **DEPRECATED:** Please use :term:`MET_INSTALL_DIR` instead.
@@ -3124,9 +3110,12 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    EXTRACT_TILES_FILTERED_OUTPUT_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_STAT_INPUT_TEMPLATE` instead.
+     .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE` instead.
 
    EXTRACT_TILES_STAT_INPUT_TEMPLATE
+     .. warning:: **DEPRECATED:** Please use :term:`EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE` instead.
+
+   EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE
      Template used to specify the dump row output tcst file generated by TCStat
      to filter input data to be used in ExtractTiles.
      Example: {init?fmt=%Y%m%d_%H}/filter_{init?fmt=%Y%m%d_%H}.tcst
@@ -3136,11 +3125,14 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    SERIES_ANALYSIS_STAT_INPUT_TEMPLATE
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE` instead.
+
+   SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE
      Template used to specify the dump row output tcst file generated by TCStat
-     to filter input data to be used in SeriesByInit.
+     to filter input data to be used in SeriesAnalysis.
      Example: {init?fmt=%Y%m%d_%H}/filter_{init?fmt=%Y%m%d_%H}.tcst
 
-     | *Used by:*  SeriesByInit
+     | *Used by:*  SeriesAnalysis
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
@@ -3362,7 +3354,7 @@ METplus Configuration Glossary
    NCDUMP
      Path to thencdump executable.
 
-     | *Used by:*  PB2NC, PointStat, SeriesByLead
+     | *Used by:*  PB2NC, PointStat
      | *Family:*  [exe]
      | *Default:*  /path/to
 
@@ -3382,14 +3374,14 @@ METplus Configuration Glossary
    EXTRACT_TILES_NLAT
      The number of latitude points, set to a whole number. This defines the number of latitude points to incorporate into the subregion (density).
 
-     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Used by:*  ExtractTiles
      | *Family:*  [config]
      | *Default:*  Varies
 
    EXTRACT_TILES_NLON
      The number of longitude points, set to a whole number. This defines the number of longitude points to incorporate into the subregion (density).
 
-     | *Used by:*  ExtractTiles, SeriesByLead
+     | *Used by:*  ExtractTiles
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -4564,14 +4556,10 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    RM
-     Specify the path to the Linuxrm executable.
-
-     | *Used by:*  PB2NC, PointStat, SeriesByLead
-     | *Family:*  [exe]
-     | *Default:*  /path/to
+     .. warning:: **DEPRECATED:** Do not use.
 
    RM_EXE
-     .. warning:: **DEPRECATED:** Please use :term:`RM`.
+     .. warning:: **DEPRECATED:** Do not use.
 
    RP_DIFF
      .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_RP_DIFF` instead.
@@ -4643,7 +4631,7 @@ METplus Configuration Glossary
    SERIES_ANALYSIS_CONFIG_FILE
      Specify the absolute path for the configuration file to use with the MET series_analysis tool by initialization time.
 
-     | *Used by:*  SeriesByInit, SeriesByLead, SeriesAnalysis
+     | *Used by:* SeriesAnalysis
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -4656,25 +4644,15 @@ METplus Configuration Glossary
    SERIES_ANALYSIS_FILTER_OPTS
      .. warning:: **DEPRECATED:** Please use :term:`TC_STAT_JOB_ARGS` instead.
 
-     Filtering options to be applied during series analysis. Filter options are performed by invoking the MET tc_stat tool within the METplus wrapper. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for the syntax to use for performing filtering via the MET tc_stat tool.
-
-     | *Used by:*  SeriesByLead, SeriesByInit
-     | *Family:*  [config]
-     | *Default:*  Varies
-
    SERIES_ANALYSIS_FILTERED_OUTPUT
-     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR` instead.
+     .. warning:: **DEPRECATED:** No longer used.
 
 
    SERIES_ANALYSIS_FILTERED_OUTPUT_DIR
-     Specifies the directory where filtered files will be written from the MET SeriesAnalysis tool.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+     .. warning:: **DEPRECATED:** No longer used.
 
    SERIES_BY_INIT_FILTERED_OUTPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR` instead.
+     .. warning:: **DEPRECATED:** No longer used.
 
    SERIES_BY_INIT_OUTPUT_DIR
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_OUTPUT_DIR` instead.
@@ -4686,11 +4664,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR` instead.
 
    SERIES_ANALYSIS_GROUP_FCSTS
-     Set to True to aggregate the series by lead results into bins of time.
-
-     | *Used by:*  SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+     .. warning:: **DEPRECATED:** Please use :term:`LEAD_SEQ_\<n>` and :term:`SERIES_ANALYSIS_RUNTIME_FREQ` instead.
 
    SERIES_BY_LEAD_GROUP_FCSTS
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_GROUP_FCSTS` instead.
@@ -4712,11 +4686,13 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_TILE_INPUT_DIR` instead.
 
    SERIES_ANALYSIS_TILE_INPUT_DIR
-     Specify the directory to read input to SeriesAnalysis. It is recommended to set this to {EXTRACT_TILES_OUTPUT_DIR}.
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_SERIES_ANALYSIS_INPUT_DIR` and  :term:`OBS_SERIES_ANALYSIS_INPUT_DIR` instead.
 
-     | *Used by:*  SeriesByInit
-     | *Family:*  [dir]
-     | *Default:*  Varies
+   FCST_SERIES_ANALYSIS_TILE_INPUT_DIR
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_SERIES_ANALYSIS_INPUT_DIR` instead.
+
+   OBS_SERIES_ANALYSIS_TILE_INPUT_DIR
+     .. warning:: **DEPRECATED:** Please use :term:`OBS_SERIES_ANALYSIS_INPUT_DIR` instead.
 
    FCST_SERIES_ANALYSIS_INPUT_DIR
      Specify the directory to read forecast input in SeriesAnalysis. See also :term:`FCST_SERIES_ANALYSIS_INPUT_TEMPLATE`
@@ -4749,7 +4725,7 @@ METplus Configuration Glossary
    SERIES_ANALYSIS_OUTPUT_DIR
      Specify the directory where files will be written from the MET series analysis tool.
 
-     | *Used by:*  SeriesByInit, SeriesAnalysis
+     | *Used by:*  SeriesAnalysis
      | *Family:*  [dir]
      | *Default:*  Varies
 
@@ -4842,9 +4818,16 @@ METplus Configuration Glossary
       .. warning:: **DEPRECATED:** Please use :term:`MAKE_PLOTS_INPUT_DIR` instead.
 
    SERIES_ANALYSIS_STAT_LIST
-     Specify a list of statistics to be computed by the MET series_analysis tool.
+     Specify a list of statistics to be computed by the MET series_analysis tool. Sets the 'cnt' value in the output_stats dictionary in the MET SeriesAnalysis config file
 
-     | *Used by:*  SeriesByInit, SeriesByLead, SeriesAnalysis
+     | *Used by:* SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   SERIES_ANALYSIS_CTS_LIST
+     Specify a list of contingency table statistics to be computed by the MET series_analysis tool. Sets the 'cts' value in the output_stats dictionary in the MET SeriesAnalysis config file
+
+     | *Used by:* SeriesAnalysis
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -5386,7 +5369,7 @@ METplus Configuration Glossary
    TMP_DIR
      Specify the path to a temporary directory where the user has write permissions.
 
-     | *Used by:*  ExtractTiles, PB2NC, PointStat, SeriesByInit, SeriesByLead, TCStat
+     | *Used by:*  PB2NC, PointStat, TCStat
      | *Family:*  [dir]
      | *Default:*  Varies
 
@@ -5470,14 +5453,10 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    SERIES_ANALYSIS_VAR_LIST
-     Specify a comma separated list of variables to be used in the analysis.
-
-     | *Used by:*  PB2NC, SeriesByInit, SeriesByLead
-     | *Family:*  [config]
-     | *Default:*  Varies
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_VAR<n>_NAME` and :term:`OBS_VAR<n>_NAME` instead.
 
    VAR_LIST
-     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_VAR_LIST`.
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_VAR<n>_NAME` and :term:`OBS_VAR<n>_NAME` instead.
 
    VAR<n>_FOURIER_DECOMP
      Specify if Fourier decomposition is to be considered (True) or not (False). If this is set to True, data stratification will be done for the Fourier decomposition of FCS_VAR<n>_NAME. This should have been previously run in grid_stat_wrapper. The default value is set to False.
@@ -5983,6 +5962,13 @@ METplus Configuration Glossary
      Specify the value for 'desc' in the MET configuration file for grid_diag.
 
      | *Used by:*  GridDiag
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   GRID_STAT_DESCRIPTION
+     Specify the value for 'desc' in the MET configuration file for grid_stat.
+
+     | *Used by:*  GridStat
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -6560,12 +6546,7 @@ METplus Configuration Glossary
      | *Default:*  False
 
    USER_SCRIPT_RUNTIME_FREQ
-     Frequency to run the user-defined script. Depending on which option is selected, some filename template tags will translate to \*. Valid options are:
-
-     RUN_ONCE: Run the command one time. \* is substituted for init/valid/lead
-     RUN_ONCE_PER_INIT_OR_VALID: Run the command once for each init or valid time depending on the value of LOOP_BY. If LOOP_BY = INIT, \* is substituted for valid and lead. If LOOP_BY = VALID, \* is substituted for init and lead.
-     RUN_ONCE_PER_LEAD: Run the command once for each forecast lead time. \* is substituted for valid and init
-     RUN_ONCE_FOR_EACH: Run the command once for every runtime (init or valid and forecast lead combination). All filename templates are substituted with values.
+     Frequency to run the user-defined script. See :ref:`Runtime_Freq` for more information.
 
      | *Used by:*  UserScript
      | *Family:*  [config]
@@ -6596,13 +6577,80 @@ METplus Configuration Glossary
      | *Default:*  None
 
    GRID_DIAG_RUNTIME_FREQ
-     Frequency to run Grid-Diag. Depending on which option is selected, some filename template tags will translate to \*. Valid options are:
-
-     RUN_ONCE: Run the command one time. \* is substituted for init/valid/lead
-     RUN_ONCE_PER_INIT_OR_VALID: Run the command once for each init or valid time depending on the value of LOOP_BY. If LOOP_BY = INIT, \* is substituted for valid and lead. If LOOP_BY = VALID, \* is substituted for init and lead.
-     RUN_ONCE_PER_LEAD: Run the command once for each forecast lead time. \* is substituted for valid and init
-     RUN_ONCE_FOR_EACH: Run the command once for every runtime (init or valid and forecast lead combination). All filename templates are substituted with values.
+     Frequency to run Grid-Diag. See :ref:`Runtime_Freq` for more information.
 
      | *Used by:*  GridDiag
      | *Family:*  [config]
      | *Default:*  None
+
+   SERIES_ANALYSIS_RUNTIME_FREQ
+     Frequency to run SeriesAnalysis. See :ref:`Runtime_Freq` for more information.
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  None
+
+
+   SERIES_ANALYSIS_RUN_ONCE_PER_STORM_ID
+     If True, run SeriesAnalysis once for each storm ID found in the .tcst (TCStat output) file specified with :term:`SERIES_ANALYSIS_TC_STAT_INPUT_DIR` and :term:`SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE`.
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  None
+
+   SERIES_ANALYSIS_REGRID_METHOD
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for SeriesAnalysis.
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   SERIES_ANALYSIS_REGRID_WIDTH
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for SeriesAnalysis.
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   SERIES_ANALYSIS_REGRID_VLD_THRESH
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for SeriesAnalysis.
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   SERIES_ANALYSIS_REGRID_SHAPE
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for SeriesAnalysis.
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   SERIES_ANALYSIS_DESCRIPTION
+     Specify the value for 'desc' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   SERIES_ANALYSIS_CAT_THRESH
+     Specify the value for 'cat_thresh' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   SERIES_ANALYSIS_VLD_THRESH
+     Specify the value for 'vld_thresh' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   SERIES_ANALYSIS_BLOCK_SIZE
+     Specify the value for 'block_size' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:*  SeriesAnalysis
+     | *Family:*  [config]
+     | *Default:*  Varies
+
