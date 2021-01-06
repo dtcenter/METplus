@@ -70,6 +70,7 @@ class METplusUseCasesByRequirement:
         'h5py': 'pip3 install h5py',
         'matplotlib': 'pip3 install matplotlib',
         'metpy': 'pip3 install metpy',
+        'METcalcpy': 'ci/jobs/get_metcalcpy.sh',
     }
     """! dictionary of extra python packages to
     install for certain use cases the keys are name of the package and the
