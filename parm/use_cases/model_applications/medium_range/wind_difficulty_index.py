@@ -1,5 +1,5 @@
-#!/usr/bin/env conda run -n diff_index_plot python
-# -*- coding: utf-8 -*-
+#!/usr/bin/env python3
+
 """
 Load fieldijn from npz file created with save_ensemble_data.py
 helper function, compute ensemble mean and spread, compute
@@ -59,7 +59,7 @@ def compute_wind_envelope():
     Aplin =\
             plin(A6_1_xlist, A6_1_ylist, xunits=xunits,
                     right=A6_1_right, left=A6_1_left, name=A6_1_name)
-            
+
     return Aplin
 
 def compute_difficulty_index(field, mu, sigma, thresholds, Aplin):
@@ -180,7 +180,7 @@ def main():
     save_step = float(os.environ.get('DIFF_INDEX_SAVE_THRESH_STEP'))
     save_thresh = np.arange(save_start, save_stop, save_step)
     save_difficulty_figures(figs, save_thresh, units)
-    # Plot and save ensemble mean, std_dev 
+    # Plot and save ensemble mean, std_dev
     mu_fig, sigma_fig =\
         plot_statistics(muij, sigmaij, lats, lons, units=units)
     save_stats_figures(mu_fig, sigma_fig)
