@@ -102,6 +102,7 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
     assert(wrapper.get_all_files())
 
     # convert list of lists into a single list to compare to expected results
+
     actual_files = [item['input0'] for item in wrapper.c_dict['ALL_FILES']]
     actual_files = [item for sub in actual_files for item in sub]
     assert(actual_files == expected_files)

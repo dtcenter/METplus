@@ -10,18 +10,15 @@ METplus Wrappers configuration variables that are specific to that
 wrapper organized by config file section. You can find more information
 about each item in the METplus Configuration Glossary.
 
+.. _ascii2nc_wrapper:
 
 ASCII2NC
 --------
-
-.. _description-1:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool ASCII2NC
-
-.. _configuration-1:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -62,12 +59,10 @@ Configuration
 | :term:`ASCII2NC_TIME_SUMMARY_VALID_THRESH`
 | :term:`ASCII2NC_CUSTOM_LOOP_LIST`
 
-
+.. _cyclone_plotter_wrapper:
 
 CyclonePlotter
 --------------
-
-.. _description-2:
 
 Description
 ~~~~~~~~~~~
@@ -75,8 +70,6 @@ Description
 This wrapper does not have a corresponding MET tool but instead wraps
 the logic necessary to create plots of cyclone tracks. Currently only
 the output from the MET tc-pairs tool can be plotted.
-
-.. _configuration-2:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -107,17 +100,15 @@ Configuration
    | :term:`CYCLONE_CROSS_MARKER_SIZE`
    | :term:`CYCLONE_GENERATE_TRACK_ASCII`
 
+.. _ensemble_stat_wrapper:
+
 EnsembleStat
 ------------
-
-.. _description-3:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool ensemble_stat.
-
-.. _configuration-3:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -178,18 +169,15 @@ Configuration
    | :term:`ENSEMBLE_STAT_MET_OBS_ERROR_TABLE`
    | :term:`ENSEMBLE_STAT_GRID_VX`
 
+.. _example_wrapper:
 
 Example
 --------
-
-.. _description-4:
 
 Description
 ~~~~~~~~~~~
 
 Used to demonstrate how the METplus wrappers handle looping and building commands.
-
-.. _configuration-4:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -205,11 +193,10 @@ Configuration
 [config]
 | :term:`EXAMPLE_CUSTOM_LOOP_LIST`
 
+.. _extract_tiles_wrapper:
 
 ExtractTiles
 ------------
-
-.. _description-5:
 
 3.5.1 Description
 ~~~~~~~~~~~~~~~~~
@@ -223,8 +210,6 @@ paired track data. This information is then used to create tiles of
 subregions. The ExtractTiles wrapper creates a 2n degree x 2m degree
 grid/tile with each storm located at the center.
 
-.. _configuration-5:
-
 Configuration
 ~~~~~~~~~~~~~
 
@@ -234,7 +219,7 @@ the dimensions and density of the tiles comprising the subregion:
 [dir]
 
 | :term:`EXTRACT_TILES_OUTPUT_DIR`
-| :term:`EXTRACT_TILES_STAT_INPUT_DIR`
+| :term:`EXTRACT_TILES_TC_STAT_INPUT_DIR`
 | :term:`FCST_EXTRACT_TILES_INPUT_DIR`
 | :term:`OBS_EXTRACT_TILES_INPUT_DIR`
 
@@ -244,7 +229,7 @@ the dimensions and density of the tiles comprising the subregion:
 | :term:`OBS_EXTRACT_TILES_INPUT_TEMPLATE`
 | :term:`FCST_EXTRACT_TILES_OUTPUT_TEMPLATE`
 | :term:`OBS_EXTRACT_TILES_OUTPUT_TEMPLATE`
-| :term:`EXTRACT_TILES_STAT_INPUT_TEMPLATE`
+| :term:`EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE`
 
 [config]
 
@@ -272,18 +257,18 @@ the dimensions and density of the tiles comprising the subregion:
    | :term:`EXTRACT_TILES_PAIRS_INPUT_DIR`
    | :term:`EXTRACT_TILES_FILTERED_OUTPUT_TEMPLATE`
    | :term:`EXTRACT_TILES_GRID_INPUT_DIR`
+   | :term:`EXTRACT_TILES_STAT_INPUT_DIR`
+   | :term:`EXTRACT_TILES_STAT_INPUT_TEMPLATE`
+
+.. _gempak_to_cf_wrapper:
 
 GempakToCF
 ----------
-
-.. _description-6:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the utility GempakToCF.
-
-.. _configuration-6:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -311,17 +296,15 @@ Configuration
 
    | :term:`GEMPAKTOCF_CLASSPATH`
 
+.. _gen_vx_mask_wrapper:
+
 GenVxMask
 ---------
-
-.. _description-6a:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool GenVxMask to define and generate masking regions.
-
-.. _configuration-6a:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -347,17 +330,15 @@ Configuration
 | :term:`GEN_VX_MASK_FILE_WINDOW_BEGIN`
 | :term:`GEN_VX_MASK_FILE_WINDOW_END`
 
+.. _grid_diag_wrapper:
+
 GridDiag
 --------
-
-.. _description-7a:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool grid_diag.
-
-.. _configuration-7a:
 
 METplus Configuration
 ~~~~~~~~~~~~~~~~~~~~~
@@ -480,17 +461,15 @@ Resulting value::
 
     poly = "MET_BASE/poly/SAO.poly";
 
+.. _grid_stat_wrapper:
+
 GridStat
 --------
-
-.. _description-7:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool grid_stat.
-
-.. _configuration-7:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -523,6 +502,7 @@ Configuration
 | :term:`GRID_STAT_ONCE_PER_FIELD`
 | :term:`GRID_STAT_CUSTOM_LOOP_LIST`
 | :term:`GRID_STAT_SKIP_IF_OUTPUT_EXISTS`
+| :term:`GRID_STAT_DESCRIPTION` (optional)
 | :term:`FCST_GRID_STAT_PROB_THRESH` (optional)
 | :term:`OBS_GRID_STAT_PROB_THRESH` (optional)
 | :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` (optional)
@@ -552,10 +532,10 @@ Configuration
    | :term:`CLIMO_GRID_STAT_INPUT_DIR`
    | :term:`CLIMO_GRID_STAT_INPUT_TEMPLATE`
 
+.. _make_plots_wrapper:
+
 MakePlots
 ---------
-
-.. _description-8:
 
 Description
 ~~~~~~~~~~~
@@ -564,8 +544,6 @@ The MakePlots wrapper creates various statistical plots using python
 scripts for the various METplus Wrappers use cases. This can only be run
 following StatAnalysis wrapper when LOOP_ORDER = processes. To run
 MakePlots wrapper, include MakePlots in PROCESS_LIST.
-
-.. _configuration-8:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -644,17 +622,15 @@ configuration file:
    | :term:`VERIF_GRID`
    | :term:`EVENT_EQUALIZATION`
 
+.. _mode_wrapper:
+
 MODE
 ----
-
-.. _description-9:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET Method for Object-based Diagnostic Evaluation tool mode.
-
-.. _configuration-9:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -719,17 +695,15 @@ Configuration
    | :term:`MODE_OUT_DIR`
    | :term:`MODE_CONFIG`
 
+.. _mtd_wrapper:
+
 MTD
 ---
-
-.. _description-10:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET MODE Time Domain tool mtd.  This tools follows objects through time and can also be used to track objects.
-
-.. _configuration-10:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -775,18 +749,16 @@ Configuration
    | :term:`MTD_CONFIG`
    | :term:`MTD_SINGLE_RUN_SRC`
 
+.. _pb2nc_wrapper:
+
 PB2NC
 -----
-
-.. _description-11:
 
 Description
 ~~~~~~~~~~~
 
 The PB2NC wrapper is a Python script that encapsulates the behavior of
 the MET pb2nc tool to convert prepBUFR files into netCDF.
-
-.. _configuration-11:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -840,10 +812,10 @@ Configuration
    | :term:`OVERWRITE_NC_OUTPUT`
    | :term:`VERTICAL_LOCATION`
 
+.. _pcp_combine_wrapper:
+
 PCPCombine
 ----------
-
-.. _description-12:
 
 Description
 ~~~~~~~~~~~
@@ -851,8 +823,6 @@ Description
 The PCPCombine wrapper is a Python script that encapsulates the MET
 PCPCombine tool. It provides the infrastructure to combine or extract
 from files to build desired accumulations.
-
-.. _configuration-12:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -937,6 +907,8 @@ Configuration
    | :term:`FCST_PCP_COMBINE_<n>_FIELD_NAME`
    | :term:`OBS_PCP_COMBINE_<n>_FIELD_NAME`
 
+.. _plot_data_plane_wrapper:
+
 PlotDataPlane
 -------------
 
@@ -973,10 +945,10 @@ Configuration
 | :term:`PLOT_DATA_PLANE_CONVERT_TO_IMAGE`
 | :term:`PLOT_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS`
 
+.. _point2grid_wrapper:
+
 Point2Grid
 ----------
-
-.. _description-13:
 
 Description
 ~~~~~~~~~~~
@@ -984,8 +956,6 @@ Description
 The Point2Grid wrapper is a Python script that encapsulates the MET
 point2grid tool. It provides the infrastructure to read in point observations
 and place them on a grid
-
-.. _configuration-13:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1017,10 +987,10 @@ Configuration
 | :term:`POINT2GRID_CUSTOM_LOOP_LIST`
 | :term:`POINT2GRID_SKIP_IF_OUTPUT_EXISTS`
 
+.. _point_stat_wrapper:
+
 PointStat
 ---------
-
-.. _description-14:
 
 Description
 ~~~~~~~~~~~
@@ -1029,8 +999,6 @@ The PointStat wrapper is a Python script that encapsulates the MET
 point_stat tool. It provides the infrastructure to read in gridded model
 data and netCDF point observation data to perform grid-to-point
 (grid-to-obs) verification.
-
-.. _configuration-14:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1104,18 +1072,15 @@ Configuration
    | :term:`CLIMO_POINT_STAT_INPUT_DIR`
    | :term:`CLIMO_POINT_STAT_INPUT_TEMPLATE`
 
+.. _py_embed_ingest_wrapper:
 
 PyEmbedIngest
 -------------
-
-.. _description-15:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the PyEmbedIngest wrapper that runs RegridDataPlane to convert data using python embedding scripts into NetCDF so it can be read by the MET tools.
-
-.. _configuration-15:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1145,18 +1110,15 @@ Configuration
     | :term:`CUSTOM_INGEST_<n>_TYPE`
     | :term:`CUSTOM_INGEST_<n>_OUTPUT_GRID`
 
+.. _regrid_data_plane_wrapper:
 
 RegridDataPlane
 ---------------
-
-.. _description-16:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool regrid_data_plane which can be used to change projections of a grid with user configurable interpolation choices.  It can also be used to convert GRIB1 and GRIB2 files into netcdf files if desired.
-
-.. _configuration-16:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1200,25 +1162,61 @@ Configuration
 
    | :term:`VERIFICATION_GRID`
 
+.. _series_analysis_wrapper:
+
 SeriesAnalysis
 ----------------
-
-.. _description-17:
 
 Description
 ~~~~~~~~~~~
 
-The SeriesAnalysis wrapper is used to find files and build a command that calls the MET tool SeriesAnalysis.
-
-.. _configuration-17:
+The SeriesAnalysis wrapper is used to find files and build a command that calls
+the MET tool SeriesAnalysis. It can be configured to process ranges of inputs,
+i.e. once for all files, once for each forecast lead (using , once for a group of
+forecast leads, once for each initialization time, etc. with the
+:term:`SERIES_ANALYSIS_RUNTIME_FREQ` variable.
+Optionally, a .tcst file generated by TCStat can be provided to allow
+filtering by storm ID (see :term:`SERIES_ANALYSIS_RUN_ONCE_PER_STORM_ID`).
+Images of the output data can also optionally be generated as well as animated
+gif images (See
+:term:`SERIES_ANALYSIS_GENERATE_PLOTS` and
+:term:`SERIES_ANALYSIS_GENERATE_ANIMATIONS`)
 
 Configuration
 ~~~~~~~~~~~~~
+
+[config]
+
+| :term:`LOG_SERIES_ANALYSIS_VERBOSITY`
+| :term:`SERIES_ANALYSIS_CONFIG_FILE`
+| :term:`SERIES_ANALYSIS_RUNTIME_FREQ`
+| :term:`SERIES_ANALYSIS_RUN_ONCE_PER_STORM_ID`
+| :term:`SERIES_ANALYSIS_BACKGROUND_MAP`
+| :term:`SERIES_ANALYSIS_REGRID_TO_GRID`
+| :term:`SERIES_ANALYSIS_REGRID_METHOD`
+| :term:`SERIES_ANALYSIS_REGRID_WIDTH`
+| :term:`SERIES_ANALYSIS_REGRID_VLD_THRESH`
+| :term:`SERIES_ANALYSIS_REGRID_SHAPE`
+| :term:`SERIES_ANALYSIS_STAT_LIST`
+| :term:`SERIES_ANALYSIS_IS_PAIRED`
+| :term:`SERIES_ANALYSIS_CUSTOM_LOOP_LIST`
+| :term:`SERIES_ANALYSIS_SKIP_IF_OUTPUT_EXISTS`
+| :term:`SERIES_ANALYSIS_GENERATE_PLOTS` (Optional)
+| :term:`SERIES_ANALYSIS_GENERATE_ANIMATIONS` (Optional)
+| :term:`PLOT_DATA_PLANE_TITLE` (Optional)
+| :term:`LEAD_SEQ_\<n\>` (Optional)
+| :term:`LEAD_SEQ_<n>_LABEL` (Optional)
+| :term:`SERIES_ANALYSIS_DESCRIPTION`
+| :term:`SERIES_ANALYSIS_CAT_THRESH`
+| :term:`SERIES_ANALYSIS_VLD_THRESH`
+| :term:`SERIES_ANALYSIS_BLOCK_SIZE`
+| :term:`SERIES_ANALYSIS_CTS_LIST`
 
 [dir]
 
 | :term:`FCST_SERIES_ANALYSIS_INPUT_DIR`
 | :term:`OBS_SERIES_ANALYSIS_INPUT_DIR`
+| :term:`SERIES_ANALYSIS_TC_STAT_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_OUTPUT_DIR`
@@ -1227,150 +1225,32 @@ Configuration
 
 | :term:`FCST_SERIES_ANALYSIS_INPUT_TEMPLATE`
 | :term:`OBS_SERIES_ANALYSIS_INPUT_TEMPLATE`
+| :term:`SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_OUTPUT_TEMPLATE`
 
-[config]
-
-| :term:`LOG_SERIES_ANALYSIS_VERBOSITY`
-| :term:`SERIES_ANALYSIS_IS_PAIRED`
-| :term:`SERIES_ANALYSIS_CONFIG_FILE`
-| :term:`SERIES_ANALYSIS_REGRID_TO_GRID`
-| :term:`SERIES_ANALYSIS_STAT_LIST`
-| :term:`SERIES_ANALYSIS_CUSTOM_LOOP_LIST`
-| :term:`SERIES_ANALYSIS_SKIP_IF_OUTPUT_EXISTS`
-
 SeriesByInit
 ------------
-
-.. _description-18:
 
 Description
 ~~~~~~~~~~~
 
-The SeriesByInit wrapper provides the infrastructure needed to demonstrates the use  of the series analysis tool using tropical cyclone data, based on initialization times. The SeriesByInit_wrapper creates numerous plots that represent the
-field, level, and statistic for each initialization time.
-
-.. _configuration-18:
-
-Configuration
-~~~~~~~~~~~~~
-
-[dir]
-
-| :term:`SERIES_ANALYSIS_TILE_INPUT_DIR`
-| :term:`SERIES_ANALYSIS_FILTERED_OUTPUT_DIR`
-| :term:`SERIES_ANALYSIS_OUTPUT_DIR`
-| :term:`SERIES_ANALYSIS_STAT_INPUT_DIR`
-
-[config]
-
-| :term:`SERIES_ANALYSIS_CONFIG_FILE`
-| :term:`SERIES_ANALYSIS_REGRID_TO_GRID`
-| :term:`SERIES_ANALYSIS_STAT_LIST`
-| :term:`INIT_HOUR_END`
-| :term:`INIT_INCLUDE`
-| :term:`INIT_EXCLUDE`
-| :term:`SERIES_ANALYSIS_BACKGROUND_MAP`
-| :term:`SERIES_ANALYSIS_GENERATE_PLOTS`
-
-[filename_templates]
-
-| :term:`SERIES_ANALYSIS_STAT_INPUT_TEMPLATE`
-| :term:`SERIES_ANALYSIS_OUTPUT_TEMPLATE`
-
-.. warning:: **DEPRECATED:**
-
-   | :term:`SERIES_INIT_FILTERED_OUT_DIR`
-   | :term:`SERIES_BY_INIT_OUTPUT_DIR`
-   | :term:`FCST_TILE_PREFIX`
-   | :term:`ANLY_TILE_PREFIX`
-   | :term:`FCST_TILE_REGEX`
-   | :term:`ANLY_TILE_REGEX`
-   | :term:`FCST_NC_TILE_REGEX`
-   | :term:`ANLY_NC_TILE_REGEX`
-   | :term:`FCST_ASCII_REGEX_LEAD`
-   | :term:`ANLY_ASCII_REGEX_LEAD`
-   | :term:`SERIES_ANALYSIS_FILTER_OPTS`
-   | :term:`SERIES_ANALYSIS_INPUT_DIR`
-   | :term:`FCST_SERIES_ANALYSIS_NC_TILE_REGEX`
-   | :term:`OBS_SERIES_ANALYSIS_NC_TILE_REGEX`
-   | :term:`FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
-   | :term:`OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
+.. warning:: **This tool has been DEPRECATED. Please use SeriesAnalysis wrapper**
 
 SeriesByLead
 ------------
 
-.. _description-19:
-
 Description
 ~~~~~~~~~~~
 
-The SeriesByLead wrapper provides the infrastructure needed to perform a
-series analysis on tropical cyclone data, based on lead (forecast hour)
-times. The SeriesByLead wrapper creates numerous plots that represent
-the field, level, and statistic for each lead (forecast) time. The
-SeriesByLead can be done in one of two ways: by all forecast hours or by
-forecast hour groupings. Performing a series analysis by valid time with
-forecast hour groupings can be useful when analyzing storm tracks based
-on time 'bins' such as by days (eg. day 1, day 2, day 3, etc.).
+.. warning:: **This tool has been DEPRECATED. Please use SeriesAnalysis wrapper**
 
-.. _configuration-19:
-
-Configuration
-~~~~~~~~~~~~~
-
-The input track and model data files are defined in any one of the
-user's METplus Wrappers configuration files. If creating a final
-configuration file that overrides all other config files, it is
-customary to define the MODEL_DATA_DIR, pointing to the directory where
-all model data resides. The full file path to the INIT_INCLUDE and
-INIT_EXCLUDE are used to list the times in YYYYMMDD_HH format to include
-or exclude from your time window. If these values are undefined (i.e. no
-value is set for the variable), then all available times in your time
-window will be considered. For example, if your data is available every
-6 hours and you are interested in creating a series analysis from init
-time 20180601 to 20180615 for all available times, from 00z to 23z, you
-would set the following:
-
-[dir]
-
-| :term:`SERIES_ANALYSIS_INPUT_DIR`
-| :term:`SERIES_ANALYSIS_FILTERED_OUTPUT`
-| :term:`SERIES_ANALYSIS_OUTPUT_DIR`
-
-[regex_patterns]
-
-| :term:`FCST_SERIES_ANALYSIS_NC_TILE_REGEX`
-| :term:`OBS_SERIES_ANALYSIS_NC_TILE_REGEX`
-| :term:`FCST_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
-| :term:`OBS_SERIES_ANALYSIS_ASCII_REGEX_LEAD`
-
-[config]
-
-| :term:`SERIES_ANALYSIS_REGRID_TO_GRID`
-| :term:`SERIES_ANALYSIS_STAT_LIST`
-| :term:`SERIES_ANALYSIS_BACKGROUND_MAP`
-| :term:`SERIES_ANALYSIS_GROUP_FCSTS`
-| :term:`LEAD_SEQ_<n>_LABEL`
-| :term:`LEAD_SEQ_\<n\>`
-| :term:`SERIES_ANALYSIS_FILTER_OPTS`
-| :term:`SERIES_ANALYSIS_STAT_LIST`
-
-.. warning:: **DEPRECATED:**
-
-   | :term:`SERIES_LEAD_FILTERED_OUT_DIR`
-   | :term:`SERIES_BY_LEAD_FILTERED_OUTPUT`
-   | :term:`SERIES_BY_LEAD_OUTPUT_DIR`
-   | :term:`SERIES_BY_LEAD_GROUP_FCSTS`
-   | :term:`VAR_LIST`
-   | :term:`STAT_LIST`
+.. _stat_analysis_wrapper:
 
 StatAnalysis
 ------------
 
-.. _description-20:
 
 Description
 ~~~~~~~~~~~
@@ -1383,8 +1263,6 @@ to use this method set LOOP_ORDER = times. Second is to look at the STAT
 lines over a span of dates, to use this method set LOOP_ORDER =
 processes. To run StatAnalysis wrapper, include StatAnalysis in
 PROCESS_LIST.
-
-.. _configuration-20:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1521,6 +1399,8 @@ file for running with LOOP_ORDER = processes:
    | :term:`REGION_LIST`
    | :term:`LEAD_LIST`
 
+.. _tc_gen_wrapper:
+
 TCGen
 -------
 
@@ -1581,10 +1461,10 @@ Configuration
 | :term:`TC_GEN_DLAND_FILE`
 | :term:`TC_GEN_SKIP_IF_OUTPUT_EXISTS`
 
+.. _tcmpr_plotter_wrapper:
+
 TCMPRPlotter
 -------------
-
-.. _description-21:
 
 Description
 ~~~~~~~~~~~
@@ -1594,8 +1474,6 @@ plot_tcmpr.R. This script is useful for plotting the calculated
 statistics for the output from the MET-TC tools. This script, and other
 R scripts are included in the MET installation. Please refer to section
 21.2.3 of the MET User's Guide for usage information.
-
-.. _configuration-21:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1667,10 +1545,10 @@ set to 'yes', then set the flag
    | :term:`PLOT_CONFIG_OPTS`
    | :term:`SAVE_DATA`
 
+.. _tc_pairs_wrapper:
+
 TCPairs
 -------
-
-.. _description-22:
 
 Description
 ~~~~~~~~~~~
@@ -1681,8 +1559,6 @@ extra tropical cyclone format (such as the data used by sample data
 provided in the METplus tutorial), or ATCF formatted track data. If data
 is in an extra tropical cyclone (non-ATCF) format, the data is
 reformatted into an ATCF format that is recognized by MET.
-
-.. _configuration-22:
 
 Configuration
 ~~~~~~~~~~~~~
@@ -1744,17 +1620,15 @@ Configuration
    | :term:`INIT_EXCLUDE`
    | :term:`INIT_HOUR_END`
 
+.. _tcrmw_wrapper:
+
 TCRMW
 ------
-
-.. _tc_rmw_description:
 
 Description
 ~~~~~~~~~~~
 
 Used to configure the MET tool TC-RMW.
-
-.. _tc_rmw_metplus_conf:
 
 METplus Configuration
 ~~~~~~~~~~~~~~~~~~~~~
@@ -2047,6 +1921,7 @@ Resulting value 2::
 
     regrid = {width = 2; shape = SQUARE;}
 
+.. _tc_stat_wrapper:
 
 TCStat
 ------
@@ -2114,6 +1989,8 @@ Configuration
    | :term:`TC_STAT_CMD_LINE_JOB`
    | :term:`TC_STAT_JOBS_LIST`
 
+.. _user_script_wrapper:
+
 UserScript
 ----------
 
@@ -2122,7 +1999,12 @@ Description
 
 Used to generate user-defined commands to run in the process list. Commands
 can be run once, run once for each runtime (init/valid/lead combination) or
-once for init, valid, or lead only.
+once for init, valid, or lead only. The command to run is specified with the
+:term:`USER_SCRIPT_COMMAND` variable. The command should include a script or
+executable and any desired arguments. The variable support filename template
+substitution to send information like the current initialization or forecast
+lead time. See :ref:`Runtime_Freq` for more information on how the value of
+:term:`USER_SCRIPT_RUNTIME_FREQ` can control how the commands are called.
 
 Configuration
 ~~~~~~~~~~~~~

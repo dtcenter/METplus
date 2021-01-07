@@ -700,39 +700,6 @@ def test_is_var_item_valid_levels(metplus_config, item_list, configs_to_set, is_
 
     assert(util.is_var_item_valid(item_list, '1', 'LEVELS', conf)[0] == is_valid)
 
-def test_remove_staged_files():
-    ''' Verify that the remove_staged_files correctly removes
-        the files with a filename pattern specified by the
-        filename_regex that are owned by the current are
-        removed, leaving all other files intact.
-
-    '''
-
-    # Create filter files (which are to be deleted later on) and some
-    # other files with a different filename pattern
-    staged_dir = '/tmp/test_cleanup'
-    util.mkdir_p(staged_dir)
-    filename_regex = 'filter_.*'
-    files_to_create = ['foo.txt', 'bar.txt', 'baz.csv', 'filter_20191214_00', 'filter-do-not-delete-me.txt', 'filter_20121212.tcst']
-    expected_deleted = ['filter_20191214_00','filter_20121212.tcst' ]
-
-    for cur_file in files_to_create:
-        full_file = os.path.join(staged_dir, cur_file)
-        subprocess.run(['touch', full_file])
-
-    util.remove_staged_files(staged_dir, filename_regex, None)
-
-    # Now check the /tmp/test_cleanup dir and verify that we no longer have the two filter_xyz files
-    # we deleted
-    actual_remaining_files = util.get_files(staged_dir, ".*", None)
-    for cur_deleted in expected_deleted:
-        assert (cur_deleted not in actual_remaining_files)
-
-
-    # Now clean up your /tmp/test_cleanup directory so we don't leave
-    # unused files and directories remaining...
-    shutil.rmtree(staged_dir)
-
 # test that if wrapper specific field info is specified, it only gets
 # values from that list. All generic values should be read if no
 # wrapper specific field info variables are specified
@@ -911,8 +878,6 @@ def test_fix_list(list_str, expected_fixed_list):
         ('PyEmbedWrapper', 'py_embed_wrapper'),
         ('RegridDataPlaneWrapper', 'regrid_data_plane_wrapper'),
         ('SeriesAnalysisWrapper', 'series_analysis_wrapper'),
-        ('SeriesByInitWrapper', 'series_by_init_wrapper'),
-        ('SeriesByLeadWrapper', 'series_by_lead_wrapper'),
         ('StatAnalysisWrapper', 'stat_analysis_wrapper'),
         ('TCMPRPlotterWrapper', 'tcmpr_plotter_wrapper'),
         ('TCPairsWrapper', 'tc_pairs_wrapper'),
