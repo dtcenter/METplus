@@ -105,6 +105,14 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      # copy output data to save as artifact
+      - name: Save output data
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        with:
+          path: artifact/${{ github.job }}
   pytests:
     name: Pytest Unit Tests
     runs-on: ubuntu-latest
