@@ -107,10 +107,12 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       # copy output data to save as artifact
       - name: Save output data
+        if: always()
         run: |
           mkdir -p artifact/${{ github.job }}
           cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
       - uses: actions/upload-artifact@v2
+        if: always()
         with:
           path: artifact/${{ github.job }}
   pytests:
