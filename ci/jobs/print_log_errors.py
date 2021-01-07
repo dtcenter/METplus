@@ -7,7 +7,7 @@ import glob
 # strings to search for to find errors
 error_str = 'ERROR'
 command_start_str = 'COPYABLE ENVIRONMENT FOR NEXT COMMAND'
-check_logfile_string = "Check the logfile for more information on why it failed"
+check_logfile_string = "Check the logfile for more information"
 
 def run(output_dir, replacement_dir=None):
     """! Search for logs under output_dir that have MET errors and print the
