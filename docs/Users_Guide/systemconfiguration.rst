@@ -174,7 +174,6 @@ above. Each :term:`LEAD_SEQ_\<n\>` must have a corresponding variable :term:`LEA
 
 
   [config]
-  SERIES_BY_LEAD_GROUP_FCSTS = True
   LEAD_SEQ_1 = 0, 6, 12, 18
   LEAD_SEQ_1_LABEL = Day1
   LEAD_SEQ_2 = begin_end_incr(24,42,6)
@@ -297,7 +296,7 @@ Now and Today
 To make running in realtime easier, the METplus Wrappers support defining the begin and end times relative to
 the current clock time. For example, if the current time is 2019-04-26 08:17 and you start the METplus Wrappers
 with::
-  
+
   [config]
   VALID_END = {now?fmt=%Y%m%d%H}
 
@@ -356,6 +355,56 @@ will process valid times starting on 20190425 at 06Z every 6 hours until the cur
 
    When using the 'now' keyword, the value of VALID_TIME_FMT must be identical to the 'fmt' value corresponding to the 'now' item in VALID_BEG and VALID_END. In the above example, this would be the %Y%m%d%H portion within values of the VALID_TIME_FMT, VALID_BEG, and VALID_END variables.
 
+.. _Process_List:
+
+Process List
+~~~~~~~~~~~~
+
+The PROCESS_LIST variable defines the list of wrappers to run.
+This can be a single value or a comma separated list of values.
+Each value must match an existing wrapper name without the 'Wrapper' suffix.
+
+**Example 1 Configuration**::
+
+    [config]
+    PROCESS_LIST = GridStat
+
+This example will run GridStatWrapper only.
+
+**Example 2 Configuration**::
+
+    [config]
+    PROCESS_LIST = PCPCombine, GridStat
+
+This example will run PCPCombineWrapper then GridStatWrapper.
+
+Added in version 4.0.0 is the ability to specify an instance name for each
+process in the PROCESS_LIST. This allows multiple instances of the same
+wrapper to be specified in the PROCESS_LIST. Users can create a new section
+header in their configuration files with the same name as the instance.
+If defined, values in this section will override the values in the
+configuration for that instance. The instance name of the process is defined
+by adding text after the process name inside parenthesis. There should be
+no space between the process name and the parenthesis.
+
+**Example 3 Configuration**::
+
+    [config]
+    PROCESS_LIST = GridStat, GridStat(my_instance_name)
+
+    [dir]
+    GRID_STAT_OUTPUT_DIR = /grid/stat/output/dir
+
+    [my_instance_name]
+    GRID_STAT_OUTPUT_DIR = /my/instance/name/output/dir
+
+In this example, the first occurence of GridStat in the PROCESS_LIST does
+not have an instance name associated with it, so it will use the value
+/grid/stat/output/dir as the output directory. The second occurence has
+an instance name 'my_instance_name' and there is a section header with
+the same name, so this instance will use /my/instance/name/output/dir as
+the output directory.
+
 .. _Loop_Order:
 
 Loop Order
@@ -363,7 +412,7 @@ Loop Order
 
 The METplus wrappers can be configured to loop first by times then processes or vice-versa. Looping by times first will run each process in the process list for a given run time, increment to the next run time, run each process in the process list, and so on. Looping by processes first will run all times for the first process, then run all times for the second process, and so on.
 
-Example 1 Configuration::
+**Example 1 Configuration**::
 
   [config]
   LOOP_ORDER = times
@@ -384,7 +433,7 @@ will run in the following order::
   * GridStat   at 2019-02-03
 
 
-Example 2 Configuration::
+**Example 2 Configuration**::
 
   [config]
   LOOP_ORDER = processes
@@ -467,7 +516,7 @@ This configuration will run SeriesAnalysis:
 * At 2019-02-03 using SAConfig_two config file and writing output to {OUTPUT_BASE}/SA/two
 
 
-.. _Field_Info:   
+.. _Field_Info:
 
 Field Info
 ~~~~~~~~~~
@@ -632,7 +681,7 @@ For more information on GRIB_lvl_typ and other file-specific commands, review th
 
 .. _Directory_and_Filename_Template_Info:
 
-Directory and Filename Template Info 
+Directory and Filename Template Info
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 The METplus Wrappers use directory and filename template configuration variables to find the desired files for a given run.
@@ -679,7 +728,7 @@ Some data assimilation files contain offset and da_init (data assimilation initi
 
   [config]
   PB2NC_OFFSETS = 6, 3
-  
+
   [dir]
   PB2NC_INPUT_DIR = /my/path/to/prepbufr
 
@@ -689,7 +738,7 @@ Some data assimilation files contain offset and da_init (data assimilation initi
 | The PB2NC_OFFSETS list tells METplus Wrappers the order in which to prioritize files with offsets in the name. At valid time 20190201_12Z, METplus Wrappers will check if the following file exists:
 |   /my/path/to/prepbufr/prefix.20190201_18_off06.ext
 
-| The offset is added to the valid time to get the data assimilation initialization time. Note that 'cycle' can be used interchangeably with 'da_init'. It is generally used to specify the hour of the data that was generated. If that file doesn't exist, it will check if the following file exists:   
+| The offset is added to the valid time to get the data assimilation initialization time. Note that 'cycle' can be used interchangeably with 'da_init'. It is generally used to specify the hour of the data that was generated. If that file doesn't exist, it will check if the following file exists:
 |   /my/path/to/prepbufr/prefix.20190201_15_off03.ext
 
 Shifting Times in Filename Templates
@@ -713,7 +762,7 @@ The [FCST/OBS]_FILE_WINDOW_[BEGIN/END] configuration variables can be used if th
 
   [dir]
   OBS_GRID_STAT_INPUT_DIR = /my/grid_stat/input/obs
-  
+
   [filename_templates]
   OBS_GRID_STAT_INPUT_TEMPLATE = {valid?fmt=%Y%m%d}/pre.{valid?fmt=%Y%m%d}_{valid?fmt=%H}.ext
 
@@ -748,6 +797,200 @@ A user may need to specify a different window on a wrapper-by-wrapper basis. If 
   OBS_ENSEMBLE_STAT_FILE_WINDOW_END = 3600
 
 Using the above configuration, PCPCombine will use +/- 0 hours and require exact file times. GridStat will use -1800/+1800 for observation data and EnsembleStat will use -0/+3600 for observation data. :term:`OBS_ENSEMBLE_STAT_FILE_WINDOW_BEGIN` was not set, so the EnsembleStat wrapper will use :term:`OBS_FILE_WINDOW_BEGIN`.
+
+.. _Runtime_Freq:
+
+Runtime Frequency
+~~~~~~~~~~~~~~~~~
+
+Some wrappers have an option to specify how frequently to process data. It can
+be run once to process all of the available files in the desired time range,
+or it can be configured to run over different intervals. This allows you to
+aggregate the output in a variety of ways. The wrappers that support this
+functionality (along with the configuration variable that controls the setting)
+include:
+
+* :ref:`series_analysis_wrapper` :   :term:`SERIES_ANALYSIS_RUNTIME_FREQ`
+* :ref:`grid_diag_wrapper` :   :term:`GRID_DIAG_RUNTIME_FREQ`
+* :ref:`user_script_wrapper` :   :term:`USER_SCRIPT_RUNTIME_FREQ`
+
+At the start of execution of the wrapper (SeriesAnalysis and GridDiag), a full
+list of all available files will be obtained. Then the wrapper will subset the
+data and call the MET tool based on the runtime frequency setting.
+UserScript wrapper will simply run at the interval specified without obtaining
+a list of files.
+
+Depending on which option is selected, some filename template tags will
+translate to \* when performing string substitution.
+The possible values for the \*_RUNTIME_FREQ variables are:
+
+* RUN_ONCE : Runs once processing all files. \* is substituted for init/valid/lead
+* RUN_ONCE_PER_INIT_OR_VALID : Run the command once for each initialization or valid time depending on the value of LOOP_BY. If LOOP_BY = INIT, \* is substituted for valid and lead. If LOOP_BY = VALID, \* is substituted for init and lead.
+* RUN_ONCE_PER_LEAD : Run the command once for each forecast lead time. \* is substituted for valid and init
+* RUN_ONCE_FOR_EACH : Run the command once for every runtime (init or valid and forecast lead combination). All filename templates are substituted with values.
+
+Note that :term:`LOOP_ORDER` must be set to processes to run these wrappers.
+Also note that the following example may not contain all of the configuration
+variables that are required for a successful run. The are intended to show how
+these variables affect how the data is processed.
+
+**SeriesAnalysis Examples**::
+
+    [config]
+    LOOP_ORDER = processes
+
+    LOOP_BY = INIT
+    INIT_TIME_FMT = %Y%m%d%H
+    INIT_BEG = 2020101712
+    INIT_END = 2020101912
+    INIT_INCREMENT = 1d
+
+    LEAD_SEQ = 3H, 6H
+
+    PROCESS_LIST = SeriesAnalysis
+
+    [dir]
+    FCST_SERIES_ANALYSIS_INPUT_DIR = /my/fcst/dir
+
+    [filename_templates]
+    FCST_SERIES_ANALYSIS_INPUT_TEMPLATE = I{init?fmt=%Y%m%d%H}_F{lead?fmt=%3H}_V{valid?fmt=%H}
+
+In this example, the wrapper will go through all initialization and forecast
+lead times and find any files that match the template under /my/fcst/dir:
+
+| Init: 2020-10-17 12Z, Forecast: 3 hour, File: I2020101712_F003_V15
+| Init: 2020-10-17 12Z, Forecast: 6 hour, File: I2020101712_F006_V18
+| Init: 2020-10-18 12Z, Forecast: 3 hour, File: I2020101812_F003_V15
+| Init: 2020-10-18 12Z, Forecast: 6 hour, File: I2020101812_F006_V18
+| Init: 2020-10-19 12Z, Forecast: 3 hour, File: I2020101912_F003_V15
+| Init: 2020-10-19 12Z, Forecast: 6 hour, File: I2020101912_F006_V18
+
+Example 1: Run Once::
+
+    [config]
+    SERIES_ANALYSIS_RUNTIME_FREQ = RUN_ONCE
+
+For this configuration, a single command will be built to call SeriesAnalysis.
+The wildcard character '\*' will replace init, valid, and lead in the template
+when attempting to find data to process.
+
+Template Used: I\*_F\*_V\*
+Files Processed::
+
+    I2020101712_F003_V15
+    I2020101712_F006_V18
+    I2020101812_F003_V15
+    I2020101812_F006_V18
+    I2020101912_F003_V15
+    I2020101912_F006_V18
+
+Example 2 Run Once Per Initialization Time::
+
+    [config]
+    SERIES_ANALYSIS_RUNTIME_FREQ = RUN_ONCE_PER_INIT_OR_VALID
+
+For this configuration, the wrapper will loop over each initialization time and
+attempt to process all files that match that time.
+The wildcard character '\*' will replace valid and lead in the template
+when attempting to find data to process.
+
+Runtime: Init: 2020-10-17 12Z
+Template Used: I2020101712_F\*_V\*
+Files Processed::
+
+    I2020101712_F003_V15
+    I2020101712_F006_V18
+
+Runtime: Init: 2020-10-18 12Z
+Template Used: I2020101812_F\*_V\*
+Files Processed::
+
+    I2020101812_F003_V15
+    I2020101812_F006_V18
+
+Runtime: Init: 2020-10-19 12Z
+Template Used: I2020101912_F\*_V\*
+Files Processed::
+
+    I2020101912_F003_V15
+    I2020101912_F006_V18
+
+.. note::
+    If LOOP_BY was set to VALID, then the values defined by VALID_BEG,
+VALID_END, and VALID_INCREMENT would be substituted for the valid time while
+init and lead would be wildcard values.
+
+Example 3 Run Once Per Forecast Lead Time::
+
+    [config]
+    SERIES_ANALYSIS_RUNTIME_FREQ = RUN_ONCE_PER_LEAD
+
+For this configuration, the wrapper will loop over each forecast lead time and
+attempt to process all files that match that time.
+The wildcard character '\*' will replace valid and init in the template
+when attempting to find data to process.
+
+Runtime: Lead: 3 hour
+Template Used: I\*_F003*_V\*
+Files Processed::
+
+    I2020101712_F003_V15
+    I2020101812_F003_V15
+    I2020101912_F003_V15
+
+Runtime: Lead: 6 hour
+Template Used: I\*_F006*_V\*
+Files Processed::
+
+    I2020101712_F006_V18
+    I2020101812_F006_V18
+    I2020101912_F006_V18
+
+Example 4 Run Once For Each Time::
+
+    [config]
+    SERIES_ANALYSIS_RUNTIME_FREQ = RUN_ONCE_FOR_EACH
+
+For this configuration, the wrapper will loop over each initialization time and
+forecast lead times and attempt to process all files that match that time.
+The wildcard character '\*' will replace valid only in the template
+when attempting to find data to process.
+
+Runtime: Init: 2020-10-17 12Z, Forecast: 3 hour
+Template Used: I2020101712_F003_V\*
+Files Processed::
+
+    I2020101712_F003_V15
+
+Runtime: Init: 2020-10-17 12Z, Forecast: 6 hour
+Template Used: I2020101712_F006_V\*
+Files Processed::
+
+    I2020101712_F006_V18
+
+Runtime: Init: 2020-10-18 12Z, Forecast: 3 hour
+Template Used: I2020101812_F003_V\*
+Files Processed::
+
+    I2020101812_F003_V15
+
+Runtime: Init: 2020-10-18 12Z, Forecast: 6 hour
+Template Used: I2020101812_F006_V\*
+Files Processed::
+
+    I2020101812_F006_V18
+
+Runtime: Init: 2020-10-19 12Z, Forecast: 3 hour
+Template Used: I2020101912_F003_V\*
+Files Processed::
+
+    I2020101912_F003_V15
+
+Runtime: Init: 2020-10-19 12Z, Forecast: 6 hour
+Template Used: I2020101912_F006_V\*
+Files Processed::
+
+    I2020101912_F006_V18
 
 Config Quick Start Example
 --------------------------
@@ -795,7 +1038,7 @@ Config Quick Start Example
 
   1. Create a directory where you wish to store the sample data. Sample datasets are specific to each use case and are required in order to be able to run the use case.
   2. Retrieve the sample data from the GitHub repository:
-    
+
     a. In your browser, navigate to https://www.github.com/dtcenter/METplus/releases
     b. Locate the latest release
     c. Expand the 'Assets' menu by clicking on the black triangle to the left of the word 'Assets'
@@ -803,38 +1046,38 @@ Config Quick Start Example
     e. Save it to the directory you created above, hereafter referred to as INPUT_DATA_DIRECTORY
     f. cd to your $INPUT_DATA_DIRECTORY and uncompress the tarball: *tar xvfz sample_data-medium_range-x.y.tgz* where x.y is replaced with the current release number.
     g. when you perform a listing of the sample_data directory, the INPUT_DATA_DIRECTORY/model_applications/medium_range contains the data you will need for this use case
-  
+
   3. Set up the configuration file:
-    
+
     a. Your METplus Wrappers install directory will hereafter be referred to as METplus_INSTALL
     b. Verify that all the *</path/to>* values are replaced with valid paths in the METplus_INSTALL/parm/metplus_config/metplus_data.conf and METplus_INSTALL/parm/metplus_config/metplus_system.conf files
     c. One configuration file is used in this use case, Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data, and using TCPairs which wraps the MET TC-Pairs tool (to match ADeck and BDeck cyclone tracks to generate matched pairs and error statistics). The TCMPRPlotter is then used (wraps the MET tool plot_tcmpr.R) to generate a mean and median plots for these matched pairs
     d. In your editor, open the METplus_INSTALL/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf file and perform the following:
-      
+
       1. Under the [dir] section, add the following:
-        
+
         a. OUTPUT_BASE to where you wish to save the output:  e.g. OUTPUT_BASE = path-to-your/output_dir
         b. INPUT_BASE = INPUT_DATA_DIRECTORY/model_applications
         c. MET_INSTALL_DIR = path-to-your/MET-install where path-to-your/MET-install is the full path where your MET installation resides
         d. Verify that PROCESS_LIST, under the [conf] header/section is set to TCPairs, TCMPRPlotter. This instructs METplus Wrappers to run the TCPairs wrapper first (TC-Pairs) followed by the TCMPR plotter wrapper (plot_TCMPR.R).
 
       2. Save your changes and exit your editor
-    
+
 
   4. Run the use case:
-    
+
     a. Make sure you have set the following environment in your .cshrc (C Shell) or .bashrc (Bash):
-      
+
       1. csh: setenv RSCRIPTS_BASE $MET_BASE/scripts/Rscripts
       2. bash: export RSCRIPTS_BASE=$MET_BASE/scripts/Rscripts
       3. Refer to section 2.7 'Set up your environment' in the :ref:`install` chapter for the full instructions on setting up the rest of your environment
       4. On your command line, run::
-         
+
            master_metplus.py -c parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
-        
+
       5. When complete, you will have a log file in the output directory you specified, and under the tc_pairs directory you will see .tcst files under the 201412 subdirectory. These are the matched pairs created by the MET tool Tc-pairs and can be viewed in any text editor.
       6. Plots are generated under the tcmpr_plots subdirectory in .png format. You should have the following plots which can be viewed by any graphics viewers such as 'display' on Linux/Unix hosts:
-        
+
         a. AMAX_WIND-BMAX_WIND_boxplot.png
 
         b. AMAX_WIND-BMAX_WIND_mean.png
@@ -878,10 +1121,18 @@ You can also reference other variables in the METplus config file. For example::
   USE_CASE_TIME_ID = {INIT_BEG}
 
 This is the equivalent of calling (bash example shown)::
-  
-  $ export USE_CAST_TIME_ID=1987020104 
+
+  $ export USE_CAST_TIME_ID=1987020104
 
 on the command line at the beginning of your METplus run. You can access the variable in the MET config file with ${USE_CASE_TIME_ID}.
+
+
+Using Environment Variables as Config Variables
+-----------------------------------------------
+
+You can set METplus config variables to the value of local environment variables when METplus is run. To set any METplus config variable to the value of a local environment variable, use the following syntax::
+
+  METPLUS_CONF_VAR = {ENV[LOCAL_ENV_VAR_NAME]}
 
 :doc:`glossary`
 

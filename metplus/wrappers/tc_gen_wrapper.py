@@ -26,11 +26,13 @@ from ..util import do_string_sub
 
 
 class TCGenWrapper(CommandBuilder):
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "tc_gen"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
                                      self.app_name)
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -256,12 +258,14 @@ class TCGenWrapper(CommandBuilder):
         """
         # run using input time dictionary
         self.run_at_time(self.c_dict['INPUT_TIME_DICT'])
+        return self.all_commands
 
     def run_at_time(self, input_dict):
         """! Process runtime and try to build command to run ascii2nc
              Args:
                 @param input_dict dictionary containing timing information
         """
+        input_dict['instance'] = self.instance if self.instance else ''
         for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
             if custom_string:
                 self.logger.info(f"Processing custom string: {custom_string}")
@@ -295,7 +299,7 @@ class TCGenWrapper(CommandBuilder):
         self.set_environment_variables(time_info)
 
         # build command and run
-        self.build_and_run_command()
+        self.build()
 
     def find_input_files(self, time_info):
         """!Get track and genesis files and set c_dict items. Also format forecast

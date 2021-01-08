@@ -12,8 +12,8 @@ import sys
 import collections
 
 # handle if module can't be loaded to run wrapper
-wrapper_cannot_run = False
-exception_err = ''
+WRAPPER_CANNOT_RUN = False
+EXCEPTION_ERR = ''
 try:
     import matplotlib.pyplot as plt
     import matplotlib.ticker as mticker
@@ -21,8 +21,8 @@ try:
     import cartopy.feature as cfeature
     from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 except Exception as err_msg:
-    wrapper_cannot_run = True
-    exception_err = err_msg
+    WRAPPER_CANNOT_RUN = True
+    EXCEPTION_ERR = err_msg
 
 import produtil.setup
 
@@ -34,14 +34,15 @@ class CyclonePlotterWrapper(CommandBuilder):
         Reads input from ATCF files generated from MET TC-Pairs
     """
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'cyclone_plotter'
 
-        # pylint:disable=redefined-outer-name
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
-        if wrapper_cannot_run:
-            self.log_error(f"There was a problem importing modules: {exception_err}\n")
+        if WRAPPER_CANNOT_RUN:
+            self.log_error(f"There was a problem importing modules: {EXCEPTION_ERR}\n")
             return
 
         self.input_data = self.config.getdir('CYCLONE_PLOTTER_INPUT_DIR')
@@ -61,11 +62,6 @@ class CyclonePlotterWrapper(CommandBuilder):
                                     'BLON', 'AMSLP', 'BMSLP']
         self.circle_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE')
         self.cross_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CROSS_MARKER_SIZE')
-        if 'DISPLAY' not in self.env:
-            self.log_error("DISPLAY environment variable must be set to run {} ".format(self.app_name)+
-                           "If you are using SSH to log into a machine, make sure window forwarding is enabled."
-                            " You can also try setting DISPLAY to localhost:0.0")
-            self.isOK = False
 
     def run_all_times(self):
         """! Calls the defs needed to create the cyclone plots

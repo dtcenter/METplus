@@ -25,6 +25,7 @@ import shutil
 import subprocess
 import re
 import importlib
+from datetime import datetime
 
 def run_command(command, dir_to_run=None):
     log_text = f"Running {command}"
@@ -40,7 +41,23 @@ def run_command(command, dir_to_run=None):
         print(error_text)
         sys.exit(1)
 
+def write_release_date_file(docs_dir):
+    release_date_file = os.path.join(docs_dir,
+                                     'release_date')
+
+    # get current date in %Y%m%d
+    today_date = datetime.now().strftime('%Y%m%d')
+
+    print(f"Updating {release_date_file} with {today_date}")
+
+    # write today's date to release date file
+    with open(release_date_file, 'w') as file_handle:
+        file_handle.write(today_date)
+
 def main():
+    # check if release is in any command line argument
+    is_release = any(['release' in arg for arg in sys.argv])
+
     build_pdf = os.environ.get('METPLUS_DOC_PDF')
     if build_pdf:
         print("PDF output enabled")
@@ -61,6 +78,10 @@ def main():
 
     # docs directory
     docs_dir = os.getcwd()
+
+    # update release_date file if creating a release
+    if is_release:
+        write_release_date_file(docs_dir)
 
     # generated use case HTML output
     generated_dir = os.path.join(docs_dir,

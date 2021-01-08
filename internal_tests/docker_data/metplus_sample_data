@@ -1,9 +1,0 @@
-met_tool_wrapper:v3.1/sample_data-met_tool_wrapper-3.1.tgz:/data/input/METplus_Data/met_test
-convection_allowing_models:v3.1/sample_data-convection_allowing_models-3.1.tgz:/data/input/METplus_Data/model_applications/convection_allowing_models
-climate:v3.1/sample_data-climate-3.1.tgz:/data/input/METplus_Data/model_applications/climate
-cryosphere:v3.0/sample_data-cryosphere-3.0.tgz:/data/input/METplus_Data/model_applications/cryosphere
-medium_range:v3.1/sample_data-medium_range-3.1.tgz:/data/input/METplus_Data/model_applications/medium_range
-precipitation:v3.0/sample_data-precipitation-3.0.tgz:/data/input/METplus_Data/model_applications/precipitation
-s2s:v3.1/sample_data-s2s-3.1.tgz:/data/input/METplus_Data/model_applications/s2s
-space_weather:v3.0/sample_data-space_weather-3.0.tgz:/data/input/METplus_Data/model_applications/space_weather
-tc_and_extra_tc:v3.1/sample_data-tc_and_extra_tc-3.1.tgz:/data/input/METplus_Data/model_applications/tc_and_extra_tc

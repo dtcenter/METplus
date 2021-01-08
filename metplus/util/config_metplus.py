@@ -509,23 +509,44 @@ def get_logger(config, sublog=None):
     config.logger = logger
     return logger
 
-def replace_config_from_section(config, section):
-    if not config.has_section(section):
-        error_message = f'Section {section} does not exist.'
-        if config.logger:
-            config.logger.error(error_message)
-        else:
-            print(f"ERROR: {error_message}")
+def replace_config_from_section(config, section, required=True):
+    """! Check if config has a section named [section] If it does, create a
+    new METplusConfig object, set each value from the input config, then
+    set each value from [section], overriding any values that are found in both
 
-        return None
+    @param config input METplusConfig object
+    @param section name of section in config object to look for
+    @param required (optional) True/False to determine if an error should occur
+    if the section does not exist. Default value is True
+    @returns If required and section does not exist, error and return None.
+    If not required and section does not exist, return input config. If section
+    does exist, return new METplusConfig object with config values replaced by
+    all values in [section]
+    """
+    if not config.has_section(section):
+        # if section is required to be found, report error and return None
+        if required:
+            error_message = f'Section {section} does not exist.'
+            if config.logger:
+                config.logger.error(error_message)
+            else:
+                print(f"ERROR: {error_message}")
+
+            return None
+        # if not required, return input config object
+        return config
 
     new_config = METplusConfig()
-    all_configs = config.keys('config')
-    for key in all_configs:
-        new_config.set('config',
-                       key,
-                       config.getraw('config', key))
 
+    # copy over all key/values from sections
+    for section_to_copy in ['config', 'user_env_vars']:
+        all_configs = config.keys(section_to_copy)
+        for key in all_configs:
+            new_config.set(section_to_copy,
+                           key,
+                           config.getraw(section_to_copy, key))
+
+    # override values in [config] with values from {section}
     all_configs = config.keys(section)
     for key in all_configs:
         new_config.set('config',
@@ -563,6 +584,9 @@ class METplusConfig(ProdConfig):
 
         # get the OS environment and store it
         self.env = os.environ.copy()
+
+        # add user_env_vars section to hold environment variables defined by the user
+        self.add_section('user_env_vars')
 
     def log(self, sublog=None):
         """!Overrides method in ProdConfig
@@ -681,9 +705,14 @@ class METplusConfig(ProdConfig):
             raise
 
         # print debug message saying default value was used
-        msg = "Setting [{}] {} to default value: {}.".format(sec,
+        if not default:
+            default_text = 'empty string'
+        else:
+            default_text = default
+
+        msg = "Setting [{}] {} to default value ({})".format(sec,
                                                              name,
-                                                             default)
+                                                             default_text)
         if self.logger:
             self.logger.debug(msg)
         else:

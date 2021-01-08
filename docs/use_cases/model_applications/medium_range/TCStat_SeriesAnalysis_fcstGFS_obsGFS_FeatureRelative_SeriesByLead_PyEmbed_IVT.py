@@ -8,19 +8,18 @@ _obsGFS_FeatureRelative
 _SeriesByLead_PyEmbed_IVT.conf
 
 """
-
-========================================================================
-This use case calls multiple tools to produce diagnostic plots of systematic erros relative to a 
-feature (e.g. hurricane, MCS, etc...). This use case calls a user provided python script that 
-calculates a diagnostic of interest (e.g. integrated vapor transport, potential vorticity, etc...). 
-This user diagnostic is then used to define the systematic errors. This example calculates statistics
-over varying forecast leads with the ability to define lead groupings. This use case is very similar
-to the Multi_Tools: Feature Relative by Lead use case.
-(ADeck,GFS:BDeck,GFS:ATCF,Grib2)
-"""
 ##############################################################################
 # Scientific Objective
 # --------------------
+#
+# This use case calls multiple tools to produce diagnostic plots of systematic erros relative to a
+# feature (e.g. hurricane, MCS, etc...). This use case calls a user provided python script that
+# calculates a diagnostic of interest (e.g. integrated vapor transport, potential vorticity, etc...).
+# This user diagnostic is then used to define the systematic errors. This example calculates statistics
+# over varying forecast leads with the ability to define lead groupings. This use case is very similar
+# to the Multi_Tools: Feature Relative by Lead use case.
+# (ADeck,GFS:BDeck,GFS:ATCF,Grib2)
+#
 # By maintaining focus of each evaluation time (or evaluation time series, in this case)
 # on a user-defined area around a cyclone, the model statistical errors associated
 # with cyclonic physical features (moisture flux, stability, strength of upper-level
@@ -93,7 +92,8 @@ to the Multi_Tools: Feature Relative by Lead use case.
 # 
 # PyEmbedIngest, TCPairs, ExtractTiles, SeriesByLead
 #
-# This example loops by forecast/lead time (with begin, end, and increment as specified in the METplus TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf file). 
+# This example loops by forecast/lead time (with begin, end, and increment as specified in the METplus
+# TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf file). 
 #
 # 4 initialization times will be run over 5 lead times:
 #
@@ -135,9 +135,8 @@ to the Multi_Tools: Feature Relative by Lead use case.
 # section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCPairsETCConfig_IVT
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStatConfig_IVT
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/SeriesAnalysisConfig_IVT
+# .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 #
 # See the following files for more information about the environment variables set in these configuration files.
 #
@@ -150,7 +149,7 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #
 # This use case can be run two ways:
 #
-# 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
+# 1) Passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf, 
 # then a user-specific system configuration file::
 #
 #        master_metplus.py \
@@ -170,7 +169,7 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #
 #  and for the [exe] section, you will need to define the location of NON-MET executables.
 #  If the executable is in the user's path, METplus will find it from the name. 
-#  If the executable is not in the path, specify the full path to the executable here (i.e. RM = /bin/rm)  
+#  If the executable is not in the path, specify the full path to the executable here (i.e. CONVERT = /usr/bin/convert)
 #  The following executables are required for performing series analysis use cases:
 #
 # Example User Configuration File::
@@ -181,12 +180,7 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #   MET_INSTALL_DIR = /path/to/met-X.Y
 #
 #   [exe]
-#   RM = /path/to/rm
-#   CUT = /path/to/cut
-#   TR = /path/to/tr
-#   NCAP2 = /path/to/ncap2
 #   CONVERT = /path/to/convert
-#   NCDUMP = /path/to/ncdump
 #
 
 ##############################################################################
@@ -250,5 +244,6 @@ to the Multi_Tools: Feature Relative by Lead use case.
 #  `FeatureRelativeUseCase <https://dtcenter.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_,
 #  `SBUOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
 #  `DiagnosticsUseCase <https://dtcenter.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
+#  `RuntimeFreqUseCase <https://dtcenter.github.io/METplus/search.html?q=RuntimeFreqUseCase&check_keywords=yes&area=default>`_
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_SBU_IVT.png'

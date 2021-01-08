@@ -22,13 +22,13 @@ from ..util import met_util as util
 from . import CommandBuilder
 
 # handle if module can't be loaded to run wrapper
-wrapper_cannot_run = False
-exception_err = ''
+WRAPPER_CANNOT_RUN = False
+EXCEPTION_ERR = ''
 try:
     from ush.plotting_scripts import plot_util
 except Exception as err_msg:
-    wrapper_cannot_run = True
-    exception_err = err_msg
+    WRAPPER_CANNOT_RUN = True
+    EXCEPTION_ERR = err_msg
 
 class MakePlotsWrapper(CommandBuilder):
     """! Wrapper to used to filter make plots from MET data
@@ -68,13 +68,15 @@ class MakePlotsWrapper(CommandBuilder):
         'VERIF_GRID', 'EVENT_EQUALIZATION', 'LOG_METPLUS', 'LOG_LEVEL'
     ]
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_path = 'python'
         self.app_name = 'make_plots'
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
-        if wrapper_cannot_run:
-            self.log_error(f"There was a problem importing modules: {exception_err}\n")
+        if WRAPPER_CANNOT_RUN:
+            self.log_error(f"There was a problem importing modules: {EXCEPTION_ERR}\n")
             return
 
     def get_command(self):
@@ -104,7 +106,6 @@ class MakePlotsWrapper(CommandBuilder):
                                c_dict['VERBOSITY'])
         )
         c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
-        c_dict['PROCESS_LIST'] = self.config.getstr('config', 'PROCESS_LIST')
         c_dict['INPUT_BASE_DIR'] = self.config.getdir('MAKE_PLOTS_INPUT_DIR')
         c_dict['OUTPUT_BASE_DIR'] = self.config.getdir('MAKE_PLOTS_OUTPUT_DIR')
         c_dict['SCRIPTS_BASE_DIR'] = self.config.getdir('MAKE_PLOTS_SCRIPTS_DIR')
@@ -302,5 +303,5 @@ class MakePlotsWrapper(CommandBuilder):
                                  script)
                 )
 
-                self.build_and_run_command()
+                self.build()
                 self.clear()

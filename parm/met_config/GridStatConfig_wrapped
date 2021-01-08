@@ -15,7 +15,7 @@ model = "${MODEL}";
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
-desc = "NA";
+${DESC}
 
 //
 // Output observation type to be written
@@ -148,7 +148,7 @@ nbrhd = {
    field      = BOTH;
    shape      = ${NEIGHBORHOOD_SHAPE};
    width      = [ ${NEIGHBORHOOD_WIDTH} ];
-   cov_thresh = [ >=0.5 ];
+   ${NEIGHBORHOOD_COV_THRESH}
    vld_thresh = 1.0;
 }
 

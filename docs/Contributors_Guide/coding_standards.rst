@@ -1,5 +1,8 @@
+.. _codingstandards:
+
 Coding Standards
 ================
+
 
 
 * Python code style outlined in `PEP8 <https://pep8.org>`_

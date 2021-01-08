@@ -27,7 +27,6 @@ import calendar
 import argparse
 
 from metplus.util import config_metplus
-from metplus.util.metplus_check import plot_wrappers_are_enabled
 
 # keep track of use cases that failed to report at the end of execution
 failed_runs = []
@@ -132,6 +131,7 @@ use_cases['precipitation'] = [
                 use_case_dir + "/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf",
                 use_case_dir + "/model_applications/precipitation/MTD_fcstHRRR-TLE_FcstOnly_RevisionSeries_GRIB.conf",
                 use_case_dir + "/model_applications/precipitation/MTD_fcstHRRR-TLE_obsMRMS.conf",
+                use_case_dir + "/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf",
 ]
 
 use_cases['s2s'] = [
@@ -145,14 +145,15 @@ use_cases['space_weather'] = [
 
 use_cases['tc_and_extra_tc'] = [
     use_case_dir + "/model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf",
+#    use_case_dir + "/model_applications/tc_and_extra_tc/StatAnalysis_fcstHAFS.conf",
 ]
 
-# if plot wrappers are enabled, add those use cases to the test lists
-if plot_wrappers_are_enabled(os.environ):
-    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf")
-    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf")
-    use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf")
-    use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf")
+# The use cases below require additional dependencies and are no longer run via the use_cases dictionary
+# They can be run using the --config option if needed
+#    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf")
+#    use_cases['met_tool_wrapper'].append(use_case_dir + "/met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf")
+#    use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf")
+#    use_cases['tc_and_extra_tc'].append(use_case_dir + "/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf")
 
 def get_param_list(param):
     conf = metplus_home+"/internal_tests/use_cases/system.conf"
@@ -178,6 +179,7 @@ def run_test_use_case(param, test_metplus_base):
     # to the 2nd last file to use as the output directory
     # last param file is always the system.conf file
     param_files = [param for param in params if os.path.exists(param)]
+
     out_dir = os.path.join(config.getdir('OUTPUT_BASE'), os.path.basename(param_files[-2]))
 
     cmd = os.path.join(test_metplus_base, "ush", "master_metplus.py")
@@ -189,7 +191,10 @@ def run_test_use_case(param, test_metplus_base):
     process.communicate()[0]
     returncode = process.returncode
     if returncode:
-        failed_runs.append(cmd)
+        failed_runs.append((cmd, out_dir))
+
+#def print_error_logs(out_dir):
+#    log_dir = os.path.join(out_dir, 'logs')
 
 def handle_output_directories(output_base, output_base_prev):
     """!if there are files in output base, prompt user to copy them to prev output base
@@ -219,22 +224,16 @@ def handle_output_directories(output_base, output_base_prev):
 def main():
     global failed_runs
 
-    if os.environ.get('METPLUS_TEST_METPLUS_BASE') is None:
+    if not os.environ.get('METPLUS_TEST_METPLUS_BASE'):
         test_metplus_base = metplus_home
     else:
         test_metplus_base = os.environ['METPLUS_TEST_METPLUS_BASE']
-
-    if not test_metplus_base:
-        test_metplus_base = metplus_home
 
     print("Starting test script")
     print("Running " + test_metplus_base + " to test")
 
     output_base_prev = os.environ['METPLUS_TEST_PREV_OUTPUT_BASE']
     output_base = os.environ['METPLUS_TEST_OUTPUT_BASE']
-
-
-    handle_output_directories(output_base, output_base_prev)
 
     # read command line arguments to determine which use cases to run
     parser = argparse.ArgumentParser()
@@ -251,26 +250,18 @@ def main():
     parser.add_argument('--tc_and_extra_tc', action='store_true', required=False)
     parser.add_argument('--all', action='store_true', required=False)
     parser.add_argument('--config', action='append', required=False)
+    parser.add_argument('--skip_output_check',
+                        action='store_true',
+                        required=False)
 
     args = parser.parse_args()
     print(args.config)
 
-    if args.config:
-        for use_case in args.config:
-            config_args = use_case.split(',')
-            config_list = []
-            for config_arg in config_args:
-                # if relative path, must be relative to parm/use_cases
-                if not os.path.isabs(config_arg):
-                    # check that the full path exists before adding
-                    # use_case_dir in case item is a config value override
-                    check_config_exists = os.path.join(use_case_dir, config_arg)
-                    if os.path.exists(check_config_exists):
-                        config_arg = check_config_exists
-
-                config_list.append(config_arg)
-
-            force_use_cases_to_run.append(','.join(config_list))
+    if args.skip_output_check:
+        print("Skipping output directory check. Output from previous tests "
+              "may be found in output directory")
+    else:
+        handle_output_directories(output_base, output_base_prev)
 
     if args.config:
         for use_case in args.config:
@@ -333,15 +324,16 @@ def main():
         print(f"diff -r {output_base_prev} {output_base} | grep -v Binary | grep -v SSH | grep -v CONDA | grep -v OLDPWD | grep -v tmp | grep -v CLOCK_TIME | grep -v XDG | grep -v GSL | grep -v METPLUS | grep -v \"METplus took\" | grep -v \"Finished\" | grep -v \"\-\-\-\" | egrep -v \"^[[:digit:]]*c[[:digit:]]*$\" | less")
 
     # list any commands that failed
-    for failed_run in failed_runs:
+    for failed_run, out_dir in failed_runs:
         print(f"ERROR: Use case failed: {failed_run}")
+#        print_error_logs(out_dir)
 
     if len(failed_runs) > 0:
         print(f"\nERROR: {len(failed_runs)} use cases failed")
         sys.exit(1)
-    else:
-        print("\nINFO: All use cases returned 0. Success!")
-        sys.exit(0)
+
+    print("\nINFO: All use cases returned 0. Success!")
+    sys.exit(0)
 
 if __name__ == "__main__":
     main()
