@@ -7,7 +7,7 @@ on:
       - 'main_*'
       - 'bugfix_*'
   pull_request:
-    types: [opened, created, edited, reopened, synchronize]
+    types: [opened, reopened, synchronize]
 
 jobs:
   get_current_branch:
