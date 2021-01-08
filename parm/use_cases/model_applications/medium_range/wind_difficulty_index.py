@@ -107,6 +107,12 @@ def save_difficulty_figures(figs, save_thresh, units):
     """
     fig_fmt = os.environ.get('DIFF_INDEX_FIG_FMT')
     fig_basename = os.environ.get('DIFF_INDEX_FIG_BASENAME')
+
+    # create output directory if it does not already exist
+    output_dir = os.path.dirname(fig_basename)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     for thresh in save_thresh:
         thresh_str = '{:.2f}'.format(thresh).replace('.', '_')
         fig_name = (fig_basename + thresh_str +
