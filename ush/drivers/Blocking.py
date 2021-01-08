@@ -1,7 +1,6 @@
 import os
-#import glob
 import numpy as np
-import netCDF4
+#import netCDF4
 import pandas as pd
 import datetime
 import bisect
@@ -9,6 +8,7 @@ from scipy import stats
 from scipy.signal import argrelextrema
 from metplus.util import config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate
+from Blocking_WeatherRegime_util import read_nc_met
 
 class BlockingCalculation():
     """Contains the programs to calculate Blocking via the Pelly-Hoskins Method
@@ -28,75 +28,15 @@ class BlockingCalculation():
         self.block_travel = config.getint('Blocking',label+'_BLOCK_TRAVEL',45)
         self.block_method = config.getstr('Blocking',label+'_BLOCK_METHOD','PH')
 
-        # Get a date list for the data
-        #blocking_config = config_metplus.replace_config_from_section(config, 'Blocking')
-        #use_init = is_loop_by_init(blocking_config)
-
-        #self.date_list, self.ymd_list, self.start_mth = self.get_date_list(blocking_config,use_init)
-
-        # Check to see if a separate CBL start/end date is present
-        #cbl_config_init = config.find_section('Blocking','CBL_INIT_BEG')
-        #cbl_config_valid = config.find_section('Blocking','CBL_VALID_BEG')
-        #if use_init and (cbl_config_init is not None):
-        #    config.set('Blocking','INIT_BEG',config.getstr('Blocking','CBL_INIT_BEG'))
-        #    config.set('Blocking','INIT_END',config.getstr('Blocking','CBL_INIT_END'))
-        #    blocking_config = config_metplus.replace_config_from_section(config, 'Blocking')
-        #    self.cbl_date_list, self.cbl_ymd_list, self.cbl_start_mth = self.get_date_list(blocking_config,use_init)
-        #elif cbl_config_valid is not None:
-        #    config.set('Blocking','VALID_BEG',config.getstr('Blocking','CBL_VALID_BEG'))
-        #    config.set('Blocking','VALID_END',config.getstr('Blocking','CBL_VALID_END'))
-        #    blocking_config = config_metplus.replace_config_from_section(config, 'Blocking')
-        #    self.cbl_date_list, self.cbl_ymd_list, self.cbl_start_mth = self.get_date_list(blocking_config,use_init)
-        #else:
-        #    self.cbl_date_list = self.date_list
-        #    self.cbl_ymd_list = self.ymd_list
-        #    self.cbl_start_mth = self.start_mth
-
         # Check data requirements
         if self.smoothing_pts % 2 == 0:
             print('ERROR: Smoothing Radius must be an odd number given in grid points, Exiting...')
             exit()
 
 
-    def read_nc_met(self,infiles,yrlist,invar):
-
-        print("Reading in Data")
-
-        #Find the first non empty file name so I can get the variable sizes
-        locin = next(sub for sub in infiles if sub)
-        indata = netCDF4.Dataset(locin)
-        lats = indata.variables['lat'][:]
-        lons = indata.variables['lon'][:]
-        invar_arr = indata.variables[invar][:]
-        indata.close()
-
-        var_3d = np.empty([len(infiles),len(invar_arr[:,0]),len(invar_arr[0,:])])
-
-        for i in range(0,len(infiles)):
-
-            #Read in the data
-            if infiles[i]:
-                indata = netCDF4.Dataset(infiles[i])
-                new_invar = indata.variables[invar][:]
-                #new_invar = np.expand_dims(new_invar,axis=0)
-                init_time_str = indata.variables[invar].getncattr('init_time')
-                valid_time_str = indata.variables[invar].getncattr('valid_time')
-                indata.close()
-            else:
-                new_invar = np.empty((1,len(var_3d[0,:,0]),len(var_3d[0,0,:])),dtype=np.float)
-                new_invar[:] = np.nan
-            var_3d[i,:,:] = new_invar
-
-        yr = np.array(yrlist)
-        sdim = len(var_3d[:,0,0])/float(len(yrlist))
-        var_4d = np.reshape(var_3d,[len(yrlist),int(sdim),len(var_3d[0,:,0]),len(var_3d[0,0,:])])
-
-        return var_4d,lats,lons,yr
-
-
     def run_CBL(self,cblinfiles,cblyrs):
 
-        z500_anom_4d,lats,lons,yr = self.read_nc_met(cblinfiles,cblyrs,self.blocking_anomaly_var)
+        z500_anom_4d,lats,lons,yr = read_nc_met(cblinfiles,cblyrs,self.blocking_anomaly_var)
 
         #Create Latitude Weight based for NH
         cos = lats
@@ -161,7 +101,7 @@ class BlockingCalculation():
 
     def run_Calc_IBL(self,cbl,iblinfiles,iblyr):
 
-        z500_daily,lats,lons,yr = self.read_nc_met(iblinfiles,iblyr,self.blocking_var)
+        z500_daily,lats,lons,yr = read_nc_met(iblinfiles,iblyr,self.blocking_var)
 
         #Initilize arrays for IBLs and the blocking index
         # yr, day, lon
