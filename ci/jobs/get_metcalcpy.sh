@@ -1,7 +1,7 @@
 #! /bin/bash
 
-pip3 install tkinter
-pip3 install matplotlib==2.2.2
+#pip3 install matplotlib==2.2.2
+pip3 install matplotlib
 pip3 install scipy
 
 # run manage externals to obtain METcalcpy
