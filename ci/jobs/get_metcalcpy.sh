@@ -1,5 +1,6 @@
 #! /bin/bash
 
+pip3 install tkinter
 pip3 install matplotlib==2.2.2
 pip3 install scipy
 
