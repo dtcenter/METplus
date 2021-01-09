@@ -7,4 +7,3 @@ pip3 install scipy
 ${DOCKER_WORK_DIR}/METplus/manage_externals/checkout_externals -e ${DOCKER_WORK_DIR}/METplus/ci/parm/Externals_metcalcpy.cfg
 
 pip3 install ${DOCKER_WORK_DIR}/METcalcpy
-pip3 install ${DOCKER_WORK_DIR}/METplotpy
