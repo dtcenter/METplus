@@ -32,10 +32,9 @@ Regrid_PCP_fcstGFS_obsERA_Blocking.conf
 # (TIMEAVE), computing a running mean (RMEAN), computing anomalies (ANOMALY), computing CBLs
 # (CBL), plotting CBLs (PLOTCBL), computing IBLs (IBL), plotting IBL frequency (PLOTIBL), 
 # computing GIBLs (GIBL), computing blocks (CALCBLOCKS), and plotting the blocking frequency
-# (PLOTBLOCKS).  The steps can be listed on the command line or in a .conf file and are 
-# formatted as follows:
+# (PLOTBLOCKS).  The steps are listed in a .conf file and are formatted as follows:
 #
-# FCST_STEPS = REGRID+TIMEAVE+IBL+PLOTIBL+GIBL+CALCBLOCKS+PLOTBLOCKS
+# FCST_STEPS = REGRID+TIMEAVE+CBL+IBL+PLOTIBL+GIBL+CALCBLOCKS+PLOTBLOCKS
 # OBS_STEPS = REGRID+TIMEAVE+RUNMEAN+ANOMALY+CBL+PLOTCBL+IBL+PLOTIBL+GIBL+CALCBLOCKS+PLOTBLOCKS
 
 ##############################################################################
@@ -44,10 +43,6 @@ Regrid_PCP_fcstGFS_obsERA_Blocking.conf
 #
 # The regrid_data_plane, pcp_combine, and blocking python code are run for each
 # time for the forecast and observations data. This example loops by valid time.  
-# It processes 1 valid time, listed below.
-#
-# | **Valid:** 2020-02-06_12Z
-# | **Forecast lead:** 36
 
 ##############################################################################
 # METplus Configuration
@@ -81,11 +76,11 @@ Regrid_PCP_fcstGFS_obsERA_Blocking.conf
 #
 # 1) Passing in Regrid_PCP_fcstGFS_obsERA_Blocking.conf then a user-specific system configuration file::
 #
-#        Blocking_driver.py /path/to/METplus/parm/use_cases/model_applications/s2s/Regrid_PCP_fcstGFS_obsERA_Blocking.conf /path/to/user_system.conf
+#        master_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s/Regrid_PCP_fcstGFS_obsERA_Blocking.conf /path/to/user_system.conf
 #
-# 2) Passing in Regrid_PCP_fcstGFS_obsERA_Blocking.conf then a user-specific system configuration file and then listing steps::
+# 2) Modifying the configurations in parm/metplus_config, then passing in Regrid_PCP_fcstGFS_obsERA_Blocking.conf::
 #
-#        Blocking_driver.py /path/to/METplus/parm/use_cases/model_applications/s2s/Regrid_PCP_fcstGFS_obsERA_Blocking.conf /path/to/user_system.conf FCST_STEPS=REGRID+TIMEAVE+IBL+PLOTIBL+GIBL+CALCBLOCKS+PLOTBLOCKS OBS_STEPS=REGRID+TIMEAVE+RUNMEAN+ANOMALY+CBL+PLOTCBL+IBL+PLOTIBL+GIBL+CALCBLOCKS+PLOTBLOCKS
+#        master_metplus.py /path/to/METplus/parm/use_cases/model_applications/s2s/Regrid_PCP_fcstGFS_obsERA_Blocking.conf
 #
 # The following variables must be set correctly:
 #
