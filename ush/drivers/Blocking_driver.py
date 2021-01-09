@@ -28,32 +28,6 @@ def main():
     steps_list_fcst,steps_list_obs,config_list = parse_steps(inconfig_list)
     config = pre_run_setup(config_list)
 
-    # If the user has defined the steps they want to run
-    # grab the command line parameter 
-    #steps_config_part_fcst = [s for s in config_list if "FCST_STEPS" in s]
-    #steps_list_fcst = []
-
-    #steps_config_part_obs = [s for s in config_list if "OBS_STEPS" in s]
-    #steps_list_obs = []
-
-    # Setup the Steps
-    #if steps_config_part_fcst:
-    #    steps_param_fcst = steps_config_part_fcst[0].split("=")[1]
-    #    steps_list_fcst = steps_param_fcst.split("+")
-    #    config_list.remove(steps_config_part_fcst[0])
-    #if steps_config_part_obs:
-    #    steps_param_obs = steps_config_part_obs[0].split("=")[1]
-    #    steps_list_obs = steps_param_obs.split("+")
-    #    config_list.remove(steps_config_part_obs[0])
-
-    #config = pre_run_setup(config_list)
-    #if not steps_config_part_fcst:
-    #    steps_param_fcst = config.getstr('config','FCST_STEPS','')
-    #    steps_list_fcst = steps_param_fcst.split("+")
-    #if not steps_config_part_obs:
-    #    steps_param_obs = config.getstr('config','OBS_STEPS','')
-    #    steps_list_obs = steps_param_obs.split("+")
-
     if not steps_list_obs and not steps_list_fcst:
         print('No processing steps requested for either the model or observations,')
         print('no data will be processed')
@@ -142,12 +116,14 @@ def main():
         obs_infiles, yr_obs = find_input_files(cbl_config, use_init, 'OBS_BLOCKING_ANOMALY_TEMPLATE')
         cbls_obs,lats_obs,lons_obs,yr_obs,mhweight_obs = steps_obs.run_CBL(obs_infiles,yr_obs)
 
-    if ("CBL" in steps_list_fcst):
+    if ("CBL" in steps_list_fcst) and not use_cbl_obs:
         # Add in step to use obs for CBLS
         print('Computing Forecast CBLs')
         fcst_infiles,yr_fcst = find_input_files(cbl_config, use_init, 'FCST_BLOCKING_ANOMALY_TEMPLATE')
         cbls_fcst,lats_fcst,lons_fcst,yr_fcst,mhweight_fcst = steps_fcst.run_CBL(fcst_infiles,yr_fcst)
-    elif use_cbl_obs:
+    elif ("CBL" in steps_list_fcst) and use_cbl_obs:
+        if not ("CBL" in steps_list_obs):
+            raise Exception('Must run observed CBLs before using them as a forecast.')
         cbls_fcst = cbls_obs
         lats_fcst = lats_obs
         lons_fcst = lons_obs
@@ -158,7 +134,8 @@ def main():
     if ("PLOTCBL" in steps_list_obs):
         cbl_plot_mthstr = config.getstr('Blocking','OBS_CBL_PLOT_MTHSTR')
         cbl_plot_outname = config.getstr('Blocking','OBS_CBL_PLOT_OUTPUT_NAME')
-        create_cbl_plot(lons_obs, lats_obs, cbls_obs, mhweight_obs, cbl_plot_mthstr, cbl_plot_outname, do_averaging=True)
+        create_cbl_plot(lons_obs, lats_obs, cbls_obs, mhweight_obs, cbl_plot_mthstr, cbl_plot_outname, 
+            do_averaging=True)
     if ("PLOTCBL" in steps_list_fcst):
         cbl_plot_mthstr = config.getstr('Blocking','FCST_CBL_PLOT_MTHSTR')
         cbl_plot_outname = config.getstr('Blocking','FCST_CBL_PLOT_OUTPUT_NAME')
@@ -175,21 +152,24 @@ def main():
         config.set('Blocking','VALID_END',orig_end)
     ibl_config = config_metplus.replace_config_from_section(config,'Blocking')
     if ("IBL" in steps_list_obs) and not ("IBL" in steps_list_fcst):
-    #if ("IBL" in steps_list_obs):
+        if not ("CBL" in steps_list_obs):
+            raise Exception('Must run observed CBLs before running IBLs.')
         print('Computing Obs IBLs')
         obs_infiles, yr_obs = find_input_files(ibl_config, use_init, 'OBS_BLOCKING_TEMPLATE')
         ibls_obs = steps_obs.run_Calc_IBL(cbls_obs,obs_infiles,yr_obs)
         daynum_obs = np.arange(0,len(ibls_obs[0,:,0]),1)
-    #if ("IBL" in steps_list_fcst):
     elif ("IBL" in steps_list_fcst) and not ("IBL" in steps_list_obs):
+        if (not "CBL" in steps_list_fcst):
+            raise Exception('Must run forecast CBLs or use observed CBLs before running IBLs.')
         print('Computing Forecast IBLs')
         fcst_infiles, yr_fcst = find_input_files(ibl_config, use_init, 'FCST_BLOCKING_TEMPLATE')
         ibls_fcst = steps_fcst.run_Calc_IBL(cbls_fcst,fcst_infiles,yr_fcst)
         daynum_fcst = np.arange(0,len(ibls_fcst[0,:,0]),1)
     elif ("IBL" in steps_list_obs) and ("IBL" in steps_list_fcst):
+        if not ("CBL" in steps_list_obs) and not ("CBL" in steps_list_fcst):
+            raise Exception('Must run observed and forecast CBLs before running IBLs.')
         both_infiles, yr_obs = find_input_files(ibl_config, use_init, 'OBS_BLOCKING_TEMPLATE',
             secondtemplate='FCST_BLOCKING_TEMPLATE')
-        #  TEST THIS
         obs_infiles = both_infiles[0]
         fcst_infiles = both_infiles[1]
         yr_fcst = yr_obs
@@ -202,16 +182,22 @@ def main():
 
     # Plot IBLS
     if("PLOTIBL" in steps_list_obs) and not ("PLOTIBL" in steps_list_fcst):
+        if not ("IBL" in steps_list_obs):
+            raise Exception('Must run observed IBLs before plotting them.')
         ibl_plot_title = config.getstr('Blocking','OBS_IBL_PLOT_TITLE','IBL Frequency')
         ibl_plot_outname = config.getstr('Blocking','OBS_IBL_PLOT_OUTPUT_NAME','')
         ibl_plot_label1 = config.getstr('Blocking','IBL_PLOT_OBS_LABEL','')
         pb.plot_ibls(ibls_obs,lons_obs,ibl_plot_title,ibl_plot_outname,label1=ibl_plot_label1)
     elif ("PLOTIBL" in steps_list_fcst) and not ("PLOTIBL" in steps_list_obs):
+        if not ("IBL" in steps_list_fcst):
+            raise Exception('Must run forecast IBLs before plotting them.')
         ibl_plot_title = config.getstr('Blocking','FCST_IBL_PLOT_TITLE','IBL Frequency')
         ibl_plot_outname = config.getstr('Blocking','FCST_IBL_PLOT_OUTPUT_NAME')
         ibl_plot_label1 = config.getstr('Blocking','IBL_PLOT_FCST_LABEL',None)
         pb.plot_ibls(ibls_fcst,lons_fcst,ibl_plot_title,ibl_plot_outname,label1=ibl_plot_label1)
     elif ("PLOTIBL" in steps_list_obs) and ("PLOTIBL" in steps_list_fcst):
+        if (not "IBL" in steps_list_obs) and (not "IBL" in steps_list_fcst):
+            raise Exception('Must run forecast and observed IBLs before plotting them.')
         ibl_plot_title = config.getstr('Blocking','IBL_PLOT_TITLE')
         ibl_plot_outname = config.getstr('Blocking','IBL_PLOT_OUTPUT_NAME')
         #Check to see if there are plot legend labels
@@ -223,36 +209,44 @@ def main():
 
     # Run GIBL
     if ("GIBL" in steps_list_obs):
-        print('Computing GIBLs')
+        if not ("IBL" in steps_list_obs):
+            raise Exception('Must run observed IBLs before running GIBLs.')
+        print('Computing Obs GIBLs')
         gibls_obs = steps_obs.run_Calc_GIBL(ibls_obs,lons_obs)
 
     if ("GIBL" in steps_list_fcst):
-        print('Computing GIBLs')
+        if not ("IBL" in steps_list_fcst):
+            raise Exception('Must run Forecast IBLs before running GIBLs.')
+        print('Computing Forecast GIBLs')
         gibls_fcst = steps_fcst.run_Calc_GIBL(ibls_fcst,lons_fcst)
 
 
     # Calc Blocks
     if ("CALCBLOCKS" in steps_list_obs):
+        if not ("GIBL" in steps_list_obs):
+            raise Exception('Must run observed GIBLs before calculating blocks.')
         print('Computing Blocks')
         block_freq_obs = steps_obs.run_Calc_Blocks(ibls_obs,gibls_obs,lons_obs,daynum_obs,yr_obs)
 
     if ("CALCBLOCKS" in steps_list_fcst):
+        if not ("GIBL" in steps_list_fcst):
+            raise Exception('Must run Forecast GIBLs before calculating blocks.')
         print('Computing Blocks')
         block_freq_fcst = steps_fcst.run_Calc_Blocks(ibls_fcst,gibls_fcst,lons_fcst,daynum_fcst,yr_fcst)
 
     # Plot Blocking Frequency
-    if ("PLOTBLOCKS" in steps_list_obs) and not ("PLOTBLOCKS" in steps_list_fcst):
+    if ("PLOTBLOCKS" in steps_list_obs):
+        if not ("CALCBLOCKS" in steps_list_obs):
+            raise Exception('Must compute observed blocks before plotting them.')
         blocking_plot_title = config.getstr('Blocking','OBS_BLOCKING_PLOT_TITLE')
         blocking_plot_outname = config.getstr('Blocking','OBS_BLOCKING_PLOT_OUTPUT_NAME')
         pb.plot_blocks(block_freq_obs,gibls_obs,ibls_obs,lons_obs,blocking_plot_title,blocking_plot_outname)
-    elif ("PLOTBLOCKS" in steps_list_fcst) and not ("PLOTBLOCKS" in steps_list_obs):
+    if ("PLOTBLOCKS" in steps_list_fcst):
+        if not ("CALCBLOCKS" in steps_list_fcst):
+            raise Exception('Must compute forecast blocks before plotting them.')
         blocking_plot_title = config.getstr('Blocking','FCST_BLOCKING_PLOT_TITLE')
         blocking_plot_outname = config.getstr('Blocking','FCST_BLOCKING_PLOT_OUTPUT_NAME')
         pb.plot_blocks(block_freq_fcst,gibls_fcst,ibls_fcst,lons_fcst,blocking_plot_title,blocking_plot_outname)
-    elif ("PLOTBLOCKS" in steps_list_obs) and ("PLOTBLOCKS" in steps_list_fcst):
-        blocking_plot_title = config.getstr('Blocking','BLOCKING_PLOT_TITLE')
-        blocking_plot_outname = config.getstr('Blocking','BLOCKING_PLOT_OUTPUT_NAME')
-        pb.plot_blocks(block_freq,gibls,ibls,lons,blocking_plot_title,blocking_plot_outname)
 
 
 if __name__ == "__main__":
