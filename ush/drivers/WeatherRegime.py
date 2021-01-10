@@ -118,9 +118,6 @@ class WeatherRegimeCalculation():
         mi = np.where(d==d.min())[0]
         print('Optimal Cluster # = '+str(mi+1)+'')
 
-        print(line)
-        print(curve)
-        exit()
         return a,lat,lon,yr,K,d,mi,line,curve
 
 

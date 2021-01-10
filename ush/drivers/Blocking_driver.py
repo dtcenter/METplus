@@ -49,12 +49,12 @@ def main():
 
     #Compute Daily Average
     if ("TIMEAVE" in steps_list_obs):
-        print('Computing Daily Averages')
+        print('Computing Time Averages')
         daily_config = config_metplus.replace_config_from_section(config, 'daily_mean_obs')
         PCPCombineWrapper(daily_config).run_all_times()
 
     if ("TIMEAVE" in steps_list_fcst):
-        print('Computing Daily Averages')
+        print('Computing Time Averages')
         daily_config = config_metplus.replace_config_from_section(config, 'daily_mean_fcst')
         PCPCombineWrapper(daily_config).run_all_times()
 

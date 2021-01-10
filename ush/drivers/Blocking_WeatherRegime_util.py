@@ -110,7 +110,6 @@ def read_nc_met(infiles,yrlist,invar):
         if infiles[i]:
             indata = netCDF4.Dataset(infiles[i])
             new_invar = indata.variables[invar][:]
-            #new_invar = np.expand_dims(new_invar,axis=0)
             init_time_str = indata.variables[invar].getncattr('init_time')
             valid_time_str = indata.variables[invar].getncattr('valid_time')
             indata.close()
@@ -120,6 +119,13 @@ def read_nc_met(infiles,yrlist,invar):
         var_3d[i,:,:] = new_invar
 
     yr = np.array(yrlist)
+    if len(var_3d[:,0,0])%float(len(yrlist)) != 0:
+        lowval = int(len(var_3d[:,0,0])/float(len(yrlist)))
+        newarrlen = (lowval+1) * float(len(yrlist))
+        arrexp = int(newarrlen - len(var_3d[:,0,0]))
+        arrfill = np.empty((arrexp,len(var_3d[0,:,0]),len(var_3d[0,0,:])),dtype=np.float)
+        arrfill[:] = np.nan
+        var_3d = np.append(var_3d,arrfill,axis=0)
     sdim = len(var_3d[:,0,0])/float(len(yrlist))
     var_4d = np.reshape(var_3d,[len(yrlist),int(sdim),len(var_3d[0,:,0]),len(var_3d[0,0,:])])
 
