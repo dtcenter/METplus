@@ -88,6 +88,14 @@ def main():
     steps_fcst = BlockingCalculation(config,'FCST')
     steps_obs = BlockingCalculation(config,'OBS')
 
+    # Check to see if there is a plot directory
+    oplot_dir = config.getstr('Blocking','BLOCKING_PLOT_OUTPUT_DIR','')
+    if not oplot_dir:
+        obase = config.getstr('config','OUTPUT_BASE')
+        oplot_dir = obase+'/'+plots
+    if not os.path.exists(oplot_dir):
+        os.makedirs(oplot_dir)
+
     # Check to see if CBL's are used from an obs climatology
     use_cbl_obs = config.getbool('Blocking','USE_CBL_OBS',False)
 
@@ -133,12 +141,12 @@ def main():
     #Plot Central Blocking Latitude
     if ("PLOTCBL" in steps_list_obs):
         cbl_plot_mthstr = config.getstr('Blocking','OBS_CBL_PLOT_MTHSTR')
-        cbl_plot_outname = config.getstr('Blocking','OBS_CBL_PLOT_OUTPUT_NAME')
+        cbl_plot_outname = oplot_dir+'/'+config.getstr('Blocking','OBS_CBL_PLOT_OUTPUT_NAME')
         create_cbl_plot(lons_obs, lats_obs, cbls_obs, mhweight_obs, cbl_plot_mthstr, cbl_plot_outname, 
             do_averaging=True)
     if ("PLOTCBL" in steps_list_fcst):
         cbl_plot_mthstr = config.getstr('Blocking','FCST_CBL_PLOT_MTHSTR')
-        cbl_plot_outname = config.getstr('Blocking','FCST_CBL_PLOT_OUTPUT_NAME')
+        cbl_plot_outname = oplot_dir+'/'+config.getstr('Blocking','FCST_CBL_PLOT_OUTPUT_NAME')
         create_cbl_plot(lons_fcst, lats_fcst, cbls_fcst, mhweight_fcst, cbl_plot_mthstr, cbl_plot_outname, 
             do_averaging=True)
 
@@ -185,21 +193,21 @@ def main():
         if not ("IBL" in steps_list_obs):
             raise Exception('Must run observed IBLs before plotting them.')
         ibl_plot_title = config.getstr('Blocking','OBS_IBL_PLOT_TITLE','IBL Frequency')
-        ibl_plot_outname = config.getstr('Blocking','OBS_IBL_PLOT_OUTPUT_NAME','')
+        ibl_plot_outname = oplot_dir+'/'+config.getstr('Blocking','OBS_IBL_PLOT_OUTPUT_NAME','')
         ibl_plot_label1 = config.getstr('Blocking','IBL_PLOT_OBS_LABEL','')
         pb.plot_ibls(ibls_obs,lons_obs,ibl_plot_title,ibl_plot_outname,label1=ibl_plot_label1)
     elif ("PLOTIBL" in steps_list_fcst) and not ("PLOTIBL" in steps_list_obs):
         if not ("IBL" in steps_list_fcst):
             raise Exception('Must run forecast IBLs before plotting them.')
         ibl_plot_title = config.getstr('Blocking','FCST_IBL_PLOT_TITLE','IBL Frequency')
-        ibl_plot_outname = config.getstr('Blocking','FCST_IBL_PLOT_OUTPUT_NAME')
+        ibl_plot_outname = oplot_dir+'/'+config.getstr('Blocking','FCST_IBL_PLOT_OUTPUT_NAME')
         ibl_plot_label1 = config.getstr('Blocking','IBL_PLOT_FCST_LABEL',None)
         pb.plot_ibls(ibls_fcst,lons_fcst,ibl_plot_title,ibl_plot_outname,label1=ibl_plot_label1)
     elif ("PLOTIBL" in steps_list_obs) and ("PLOTIBL" in steps_list_fcst):
         if (not "IBL" in steps_list_obs) and (not "IBL" in steps_list_fcst):
             raise Exception('Must run forecast and observed IBLs before plotting them.')
         ibl_plot_title = config.getstr('Blocking','IBL_PLOT_TITLE')
-        ibl_plot_outname = config.getstr('Blocking','IBL_PLOT_OUTPUT_NAME')
+        ibl_plot_outname = oplot_dir+'/'+config.getstr('Blocking','IBL_PLOT_OUTPUT_NAME')
         #Check to see if there are plot legend labels
         ibl_plot_label1 = config.getstr('Blocking','IBL_PLOT_OBS_LABEL','Observation')
         ibl_plot_label2 = config.getstr('Blocking','IBL_PLOT_FCST_LABEL','Forecast')
@@ -239,13 +247,13 @@ def main():
         if not ("CALCBLOCKS" in steps_list_obs):
             raise Exception('Must compute observed blocks before plotting them.')
         blocking_plot_title = config.getstr('Blocking','OBS_BLOCKING_PLOT_TITLE')
-        blocking_plot_outname = config.getstr('Blocking','OBS_BLOCKING_PLOT_OUTPUT_NAME')
+        blocking_plot_outname = oplot_dir+'/'+config.getstr('Blocking','OBS_BLOCKING_PLOT_OUTPUT_NAME')
         pb.plot_blocks(block_freq_obs,gibls_obs,ibls_obs,lons_obs,blocking_plot_title,blocking_plot_outname)
     if ("PLOTBLOCKS" in steps_list_fcst):
         if not ("CALCBLOCKS" in steps_list_fcst):
             raise Exception('Must compute forecast blocks before plotting them.')
         blocking_plot_title = config.getstr('Blocking','FCST_BLOCKING_PLOT_TITLE')
-        blocking_plot_outname = config.getstr('Blocking','FCST_BLOCKING_PLOT_OUTPUT_NAME')
+        blocking_plot_outname = oplot_dir+'/'+config.getstr('Blocking','FCST_BLOCKING_PLOT_OUTPUT_NAME')
         pb.plot_blocks(block_freq_fcst,gibls_fcst,ibls_fcst,lons_fcst,blocking_plot_title,blocking_plot_outname)
 
 
