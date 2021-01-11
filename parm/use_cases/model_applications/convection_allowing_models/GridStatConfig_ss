@@ -27,13 +27,7 @@ ${OBTYPE}
 //
 // Verification grid
 //
-regrid = {
-   to_grid    = ${REGRID_TO_GRID};
-   method     = NEAREST;
-   width      = 1;
-   vld_thresh = 0.5;
-   shape      = SQUARE;
-}
+${REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
