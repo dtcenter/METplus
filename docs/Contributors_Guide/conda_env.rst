@@ -1,7 +1,8 @@
 Instructions for the Conda Environment
 ======================================
 
-**Overview:  Replicating the Python 3.6.3 environment for running METplus**
+Overview:  Replicating the Python 3.6.3 environment for running METplus
+_______________________________________________________________________
 
 If the host (i.e. the computer on which the METplus and MET tools are
 running) doesn't already have all the necessary packages installed, it is
@@ -14,14 +15,17 @@ environments.yml file to recreate the Python environment used by METplus.
 This file is found at the top-level dirctory of the
 METplus source code:
 
-   METplus/environments.yml
+   *METplus/environments.yml*
 
-**Pre-condition- installing the conda package manager if it doesn't exist**
+Pre-condition- installing the conda package manager if it doesn't exist
+_______________________________________________________________________
 
-** *These instructions only need to be followed once.* **
+**These instructions only need to be followed once.**
 
-1. First, download **miniconda3** from the Miniconda/Continuum Analytics
-   web site (this is a minimal installer that contains the package manager,
+1. First, download **miniconda3** from the
+   `Miniconda/Continuum Analytics
+   web site <https://docs.conda.io/en/latest/miniconda.html>`_
+   (this is a minimal installer that contains the package manager,
    *conda* that has Python 3 and other dependent packages.)
 
 If it doesn't exist on the computer, download it from:
@@ -43,7 +47,9 @@ to a partition with more space.
 
 From the command line, enter:
 
-    *df -h*
+.. code-block:: none
+
+    df -h
 
 to see how much space is available on the disk partitions on the computer/host.
 
@@ -66,9 +72,10 @@ conda env.
 
 
 
-**Creating the METplus conda env**
+Creating the METplus conda env
+______________________________
 
-** *These instructions only need to be implemented once.* **
+**These instructions only need to be implemented once.**
 
 After the METplus conda env has been created, activate the
 conda env to run the METplus applications and deactivate the conda env
@@ -92,7 +99,9 @@ to end the application.
 2.  Recreate the Python 3.x environment used for METplus via the
     environment.yml file found in the repository under the METplus directory:
 
-     *conda env create -f environment.yml*
+      .. code-block:: none
+		    
+        conda env create -f environment.yml
 
      This may take a few minutes to install all the packages specified
      in the environment.yml file.
@@ -100,7 +109,9 @@ to end the application.
 
 3.  Activate the environment.  From the (base) prompt, enter:
 
-     *conda activate name-of-env*
+      .. code-block:: none
+
+        conda activate name-of-env
 
      where name-of-env is found at the top of the environment.yml file
 
@@ -113,9 +124,12 @@ to end the application.
     
 5.  When finished, deactivate the environment:
 
-       *conda deactivate*
+    .. code-block:: none
 
-**Activating and deactivating the METplus conda env**
+       conda deactivate
+
+Activating and deactivating the METplus conda env
+_________________________________________________
 
 Once the user has followed the instructions under the "Creating the METplus
 conda env", follow these instructions to start running METplus :
@@ -132,7 +146,9 @@ conda env", follow these instructions to start running METplus :
 
 2.  Activate the environment.  From the (base) prompt, enter:
 
-     *conda activate name-of-env*
+      .. code-block:: none
+
+         conda activate name-of-env
 
      where **name-of-env** is found at the top of the environment.yml file
 
@@ -140,20 +156,23 @@ conda env", follow these instructions to start running METplus :
 
 Another way to find the name of the conda env is to enter the following:
 
-        *conda env list*
+.. code-block:: none
+
+   conda env list
 
 to get a list of all the available conda envs.
 
-****
 
 
 
-**Optional: Checking for missing packages and mismatched version**
-
+Optional: Checking for missing packages and mismatched version
+______________________________________________________________
 To check for missing and mismatched packages run the check_python.py script
 in the METplus directory:
 
-    *python check_python.py*
+.. code-block:: none
+
+  python check_python.py
 
 The results are sent to stdout (screen) and three files are created:
 
