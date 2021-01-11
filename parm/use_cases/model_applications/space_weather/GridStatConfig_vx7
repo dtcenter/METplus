@@ -12,7 +12,7 @@
 //
 // Output model name to be written
 //
-model = "${MODEL}";	  // "GloTEC_without_cosmic";
+${MODEL}
 
 //
 // Output description to be written
@@ -23,7 +23,7 @@ ${DESC}
 //
 // Output observation type to be written
 //
-obtype = "${OBTYPE}";  	  // "GloTEC_with_cosmic";
+${OBTYPE}
 
 
 ////////////////////////////////////////////////////////////////////////////////

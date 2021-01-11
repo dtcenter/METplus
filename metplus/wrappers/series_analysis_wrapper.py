@@ -61,12 +61,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                c_dict['VERBOSITY'])
         )
 
-        self.set_c_dict_string(c_dict,
-                               'MODEL',
-                               'model')
-        self.set_c_dict_string(c_dict,
-                               'OBTYPE',
-                               'obtype')
+        self.set_c_dict_string(c_dict, 'MODEL', 'model')
+        self.set_c_dict_string(c_dict, 'OBTYPE', 'obtype')
         self.set_c_dict_string(c_dict,
                                'SERIES_ANALYSIS_DESCRIPTION',
                                'desc')

@@ -10,7 +10,7 @@
    // Output model name to be written
    //
 
-model = "${MODEL}";
+${MODEL}
 
    //
    // Output description to be written
@@ -22,7 +22,7 @@ desc = "NA";
    // Output observation type to be written
    //
 
-obtype = "${OBTYPE}";
+${OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
 

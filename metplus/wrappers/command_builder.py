@@ -197,7 +197,6 @@ class CommandBuilder:
 
     def add_common_envs(self, time_info=None):
         # Set the environment variables
-        self.add_env_var('MODEL', str(self.c_dict['MODEL']))
 
         to_grid = self.c_dict.get('REGRID_TO_GRID')
         self.add_env_var('REGRID_TO_GRID',

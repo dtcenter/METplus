@@ -49,8 +49,9 @@ that reformat gridded data
             the type and consolidates config get calls so it is easier to see
             which config variables are used in the wrapper"""
         c_dict = super().create_c_dict()
-        c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
-        c_dict['OBTYPE'] = self.config.getstr('config', 'OBTYPE', 'OBS')
+        self.set_c_dict_string(c_dict, 'MODEL', 'model')
+        self.set_c_dict_string(c_dict, 'OBTYPE', 'obtype')
+
         # INPUT_BASE is not required unless it is referenced in a config file
         # it is used in the use case config files. Don't error if it is not set
         # to a value that contains /path/to
@@ -89,7 +90,8 @@ that reformat gridded data
             version to handle user configs and printing
             Args:
               @param time_info dictionary containing timing info from current run"""
-
+        self.add_env_var('MODEL', self.c_dict.get('MODEL', ''))
+        self.add_env_var('OBTYPE', self.c_dict.get('OBTYPE', ''))
         self.add_common_envs()
 
         super().set_environment_variables(time_info)

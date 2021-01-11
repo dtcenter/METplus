@@ -147,7 +147,6 @@ class MODEWrapper(CompareGriddedWrapper):
         return c_dict
 
     def set_environment_variables(self, fcst_field, obs_field, time_info):
-        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
 
