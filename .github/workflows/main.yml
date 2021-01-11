@@ -105,7 +105,7 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_1:
+  use_cases_met_tool_wrapper:
     name: Use Cases Tests - MET Tool Wrapper
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
@@ -125,7 +125,18 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_2:
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_data_assimilation:
     name: Use Cases Tests - data_assimilation
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
@@ -145,7 +156,18 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_3:
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_cryosphere:
     name: Use Cases Tests - cryosphere
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
@@ -165,7 +187,18 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_4:
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_convection_allowing_models:
     name: Use Cases Tests - convection_allowing_models
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
@@ -185,7 +218,18 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_5:
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_climate:
     name: Use Cases Tests - climate
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
@@ -205,7 +249,18 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_6:
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_medium_range_a:
     name: Use Cases Tests - medium_range 0-4
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
@@ -225,7 +280,18 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_7:
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_medium_range_b:
     name: Use Cases Tests - medium_range 5
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
@@ -245,7 +311,18 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_8:
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_medium_range_c:
     name: Use Cases Tests - medium_range 6+
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
@@ -265,7 +342,18 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_9:
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_precipitation:
     name: Use Cases Tests - precipitation
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
@@ -285,7 +373,18 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_10:
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_s2s_space_weather_tc_and_extra_tc:
     name: Use Cases Tests - s2s,space_weather,tc_and_extra_tc
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
@@ -305,3 +404,14 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
