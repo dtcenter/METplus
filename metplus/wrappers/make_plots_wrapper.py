@@ -22,13 +22,13 @@ from ..util import met_util as util
 from . import CommandBuilder
 
 # handle if module can't be loaded to run wrapper
-wrapper_cannot_run = False
-exception_err = ''
+WRAPPER_CANNOT_RUN = False
+EXCEPTION_ERR = ''
 try:
     from ush.plotting_scripts import plot_util
 except Exception as err_msg:
-    wrapper_cannot_run = True
-    exception_err = err_msg
+    WRAPPER_CANNOT_RUN = True
+    EXCEPTION_ERR = err_msg
 
 class MakePlotsWrapper(CommandBuilder):
     """! Wrapper to used to filter make plots from MET data
@@ -75,8 +75,8 @@ class MakePlotsWrapper(CommandBuilder):
                          instance=instance,
                          config_overrides=config_overrides)
 
-        if wrapper_cannot_run:
-            self.log_error(f"There was a problem importing modules: {exception_err}\n")
+        if WRAPPER_CANNOT_RUN:
+            self.log_error(f"There was a problem importing modules: {EXCEPTION_ERR}\n")
             return
 
     def get_command(self):

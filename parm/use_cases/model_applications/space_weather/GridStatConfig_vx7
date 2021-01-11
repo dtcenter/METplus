@@ -18,7 +18,7 @@ model = "${MODEL}";	  // "GloTEC_without_cosmic";
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
-desc = "${DESCRIPTION}";  // was "NA"
+${DESC}
 
 //
 // Output observation type to be written

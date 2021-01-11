@@ -12,8 +12,8 @@ import sys
 import collections
 
 # handle if module can't be loaded to run wrapper
-wrapper_cannot_run = False
-exception_err = ''
+WRAPPER_CANNOT_RUN = False
+EXCEPTION_ERR = ''
 try:
     import matplotlib.pyplot as plt
     import matplotlib.ticker as mticker
@@ -21,8 +21,8 @@ try:
     import cartopy.feature as cfeature
     from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
 except Exception as err_msg:
-    wrapper_cannot_run = True
-    exception_err = err_msg
+    WRAPPER_CANNOT_RUN = True
+    EXCEPTION_ERR = err_msg
 
 import produtil.setup
 
@@ -41,8 +41,8 @@ class CyclonePlotterWrapper(CommandBuilder):
                          instance=instance,
                          config_overrides=config_overrides)
 
-        if wrapper_cannot_run:
-            self.log_error(f"There was a problem importing modules: {exception_err}\n")
+        if WRAPPER_CANNOT_RUN:
+            self.log_error(f"There was a problem importing modules: {EXCEPTION_ERR}\n")
             return
 
         self.input_data = self.config.getdir('CYCLONE_PLOTTER_INPUT_DIR')

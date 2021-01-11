@@ -8,42 +8,43 @@ from dateutil.relativedelta import relativedelta
 from metplus.util import time_util
 
 @pytest.mark.parametrize(
-    'rd, seconds, time_string, hours', [
-        (relativedelta(seconds=1), 1, '1 second', 0),
-        (relativedelta(seconds=-1), -1, '-1 second', 0),
-        (relativedelta(seconds=36), 36, '36 seconds', 0),
-        (relativedelta(seconds=-36), -36, '-36 seconds', 0),
-        (relativedelta(minutes=1), 60, '1 minute', 0),
-        (relativedelta(minutes=-1), -60, '-1 minute', 0),
-        (relativedelta(minutes=4), 240, '4 minutes', 0),
-        (relativedelta(minutes=-4), -240, '-4 minutes', 0),
-        (relativedelta(hours=1), 3600, '1 hour', 1),
-        (relativedelta(hours=-1), -3600, '-1 hour', -1),
-        (relativedelta(hours=2), 7200, '2 hours', 2),
-        (relativedelta(hours=-2), -7200, '-2 hours', -2),
-        (relativedelta(days=1), 86400, '1 day', 24),
-        (relativedelta(days=-1), -86400, '-1 day', -24),
-        (relativedelta(days=2), 172800, '2 days', 48),
-        (relativedelta(days=-2), -172800, '-2 days', -48),
-        (relativedelta(months=1), None, '1 month', None),
-        (relativedelta(months=-1), None, '-1 month', None),
-        (relativedelta(months=6), None, '6 months', None),
-        (relativedelta(months=-6), None, '-6 months', None),
-        (relativedelta(years=1), None, '1 year', None),
-        (relativedelta(years=-1), None, '-1 year', None),
-        (relativedelta(years=6), None, '6 years', None),
-        (relativedelta(years=-6), None, '-6 years', None),
-        (relativedelta(seconds=61), 61, '1 minute 1 second', 0),
-        (relativedelta(seconds=-61), -61, '-1 minute -1 second', 0),
-        (relativedelta(seconds=3602), 3602, '1 hour 2 seconds', 1),
-        (relativedelta(seconds=-3602), -3602, '-1 hour -2 seconds', -1),
-        (relativedelta(seconds=3721), 3721, '1 hour 2 minutes 1 second', 1),
-        (relativedelta(seconds=-3721), -3721, '-1 hour -2 minutes -1 second', -1),
+    'rd, seconds, time_string, time_letter_only, hours', [
+        (relativedelta(seconds=1), 1, '1 second', '1S', 0),
+        (relativedelta(seconds=-1), -1, '-1 second', '-1S', 0),
+        (relativedelta(seconds=36), 36, '36 seconds', '36S', 0),
+        (relativedelta(seconds=-36), -36, '-36 seconds', '-36S', 0),
+        (relativedelta(minutes=1), 60, '1 minute', '1M', 0),
+        (relativedelta(minutes=-1), -60, '-1 minute', '-1M', 0),
+        (relativedelta(minutes=4), 240, '4 minutes', '4M', 0),
+        (relativedelta(minutes=-4), -240, '-4 minutes', '-4M', 0),
+        (relativedelta(hours=1), 3600, '1 hour', '1H', 1),
+        (relativedelta(hours=-1), -3600, '-1 hour', '-1H', -1),
+        (relativedelta(hours=2), 7200, '2 hours', '2H', 2),
+        (relativedelta(hours=-2), -7200, '-2 hours', '-2H', -2),
+        (relativedelta(days=1), 86400, '1 day', '1d', 24),
+        (relativedelta(days=-1), -86400, '-1 day', '-1d', -24),
+        (relativedelta(days=2), 172800, '2 days', '2d', 48),
+        (relativedelta(days=-2), -172800, '-2 days', '-2d', -48),
+        (relativedelta(months=1), None, '1 month', '1m', None),
+        (relativedelta(months=-1), None, '-1 month', '-1m', None),
+        (relativedelta(months=6), None, '6 months', '6m', None),
+        (relativedelta(months=-6), None, '-6 months', '-6m', None),
+        (relativedelta(years=1), None, '1 year', '1Y', None),
+        (relativedelta(years=-1), None, '-1 year', '-1Y', None),
+        (relativedelta(years=6), None, '6 years', '6Y', None),
+        (relativedelta(years=-6), None, '-6 years', '-6Y', None),
+        (relativedelta(seconds=61), 61, '1 minute 1 second', '1M1S', 0),
+        (relativedelta(seconds=-61), -61, '-1 minute 1 second', '-1M1S', 0),
+        (relativedelta(seconds=3602), 3602, '1 hour 2 seconds', '1H2S', 1),
+        (relativedelta(seconds=-3602), -3602, '-1 hour 2 seconds', '-1H2S', -1),
+        (relativedelta(seconds=3721), 3721, '1 hour 2 minutes 1 second', '1H2M1S', 1),
+        (relativedelta(seconds=-3721), -3721, '-1 hour 2 minutes 1 second', '-1H2M1S', -1),
     ]
 )
-def test_ti_get_seconds_and_string(rd, seconds, time_string, hours):
+def test_ti_get_seconds_and_string(rd, seconds, time_string, time_letter_only, hours):
     assert(time_util.ti_get_seconds_from_relativedelta(rd) == seconds)
     assert(time_util.ti_get_lead_string(rd) == time_string)
+    assert(time_util.ti_get_lead_string(rd, letter_only=True) == time_letter_only)
     assert(time_util.ti_get_hours_from_relativedelta(rd) == hours)
 
 @pytest.mark.parametrize(

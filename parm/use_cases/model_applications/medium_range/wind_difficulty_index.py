@@ -18,8 +18,8 @@ import matplotlib.pyplot as plt
 from metcalcpy.calc_difficulty_index import forecast_difficulty as di
 from metcalcpy.calc_difficulty_index import EPS
 from metcalcpy.piecewise_linear import PiecewiseLinear as plin
-import metplotpy.difficulty_index.mycolormaps as mcmap
-from metplotpy.difficulty_index.plot_difficulty_index import plot_field
+import metplotpy.plots.difficulty_index.mycolormaps as mcmap
+from metplotpy.plots.difficulty_index.plot_difficulty_index import plot_field
 
 
 def load_data(filename):
@@ -107,6 +107,12 @@ def save_difficulty_figures(figs, save_thresh, units):
     """
     fig_fmt = os.environ.get('DIFF_INDEX_FIG_FMT')
     fig_basename = os.environ.get('DIFF_INDEX_FIG_BASENAME')
+
+    # create output directory if it does not already exist
+    output_dir = os.path.dirname(fig_basename)
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
     for thresh in save_thresh:
         thresh_str = '{:.2f}'.format(thresh).replace('.', '_')
         fig_name = (fig_basename + thresh_str +

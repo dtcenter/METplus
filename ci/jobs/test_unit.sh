@@ -15,7 +15,7 @@ echo mkdir -p ${TRAVIS_OUTPUT_BASE}
 mkdir -p ${TRAVIS_OUTPUT_BASE}
 
 returncode=0
-${GITHUB_WORKSPACE}/ci/jobs/docker_run_metplus.sh "pip3 install pytest-cov; export METPLUS_PYTEST_HOST=docker; cd ${DOCKER_WORK_DIR}/METplus/internal_tests/pytests; pytest --cov=../../metplus"
+${GITHUB_WORKSPACE}/ci/jobs/docker_run_metplus.sh "pip3 install pytest-cov netCDF4; export METPLUS_PYTEST_HOST=docker; cd ${DOCKER_WORK_DIR}/METplus/internal_tests/pytests; pytest --cov=../../metplus"
 returncode=$?
 
 ls -alR ${TRAVIS_OUTPUT_BASE}

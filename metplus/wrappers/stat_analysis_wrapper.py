@@ -167,8 +167,8 @@ class StatAnalysisWrapper(CommandBuilder):
         self.runMakePlots = 'MakePlots' in self.config.getstr('config', 'PROCESS_LIST')
         if self.runMakePlots:
             # only import MakePlots wrappers if it will be used
-            from .make_plots_wrapper import MakePlotsWrapper, wrapper_cannot_run
-            if wrapper_cannot_run:
+            from .make_plots_wrapper import MakePlotsWrapper, WRAPPER_CANNOT_RUN
+            if WRAPPER_CANNOT_RUN:
                 self.log_error("Cannot import MakePlots wrapper! Requires pandas and numpy")
             else:
                 self.check_MakePlots_config(c_dict)
