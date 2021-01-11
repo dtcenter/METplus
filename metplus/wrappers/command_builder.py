@@ -195,13 +195,6 @@ class CommandBuilder:
 
         return to_grid
 
-    def add_common_envs(self, time_info=None):
-        # Set the environment variables
-
-        to_grid = self.c_dict.get('REGRID_TO_GRID')
-        self.add_env_var('REGRID_TO_GRID',
-                         self.format_regrid_to_grid(to_grid))
-
     def print_all_envs(self, print_copyable=True):
         """! Create list of log messages that output all environment variables
         that were set by this wrapper.
