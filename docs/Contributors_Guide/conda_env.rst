@@ -88,7 +88,7 @@ to end the application.
 
    where the (base) indicates that the user is in the base conda
    environment which contains the basic packages for the version of
-   Python (corresponding to your miniconda3 installation).
+   Python (corresponding to the miniconda3 installation).
 
 
    *Note: The user's prompt may vary, based on how the system administrator
