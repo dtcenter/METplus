@@ -67,7 +67,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                'SERIES_ANALYSIS_DESCRIPTION',
                                'desc')
 
-        self.handle_c_dict_regrid(c_dict, set_to_grid=True)
+        self.handle_c_dict_regrid(c_dict)
 
         self.set_c_dict_list(c_dict,
                              'SERIES_ANALYSIS_CAT_THRESH',

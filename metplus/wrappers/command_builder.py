@@ -1359,7 +1359,7 @@ class CommandBuilder:
         c_dict[c_key] = (f'{met_config_name} = '
                          f'{util.remove_quotes(conf_value)};')
 
-    def handle_c_dict_regrid(self, c_dict, set_to_grid=False):
+    def handle_c_dict_regrid(self, c_dict, set_to_grid=True):
         app_name_upper = self.app_name.upper()
 
         if set_to_grid:

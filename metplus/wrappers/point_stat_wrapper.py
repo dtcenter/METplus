@@ -81,8 +81,6 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['CONFIG_FILE'] = \
             self.config.getraw('config', 'POINT_STAT_CONFIG_FILE', '')
 
-        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'POINT_STAT_REGRID_TO_GRID', '')
-
         c_dict['POINT_STAT_GRID'] = self.config.getstr('config', 'POINT_STAT_GRID')
         c_dict['POINT_STAT_POLY'] = self.config.getstr('config', 'POINT_STAT_POLY', '')
         c_dict['POINT_STAT_STATION_ID'] = self.config.getstr('config', 'POINT_STAT_STATION_ID', '')

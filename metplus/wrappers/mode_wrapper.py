@@ -126,8 +126,6 @@ class MODEWrapper(CompareGriddedWrapper):
             self.config.getraw('filename_templates',
                                'MODE_VERIFICATION_MASK_TEMPLATE')
 
-        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'MODE_REGRID_TO_GRID', '')
-
         # check that values are valid
         error_message = 'items must start with a comparison operator '+\
                         '(>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)'
