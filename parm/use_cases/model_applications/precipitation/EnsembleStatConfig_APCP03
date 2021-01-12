@@ -44,15 +44,10 @@ nc_var_str    = "";
 // Ensemble product fields to be processed
 //
 ens = {
-   ens_thresh = 0.5;
-   vld_thresh = 1.0;
+   ${ENS_THRESH}
+   ${ENS_VLD_THRESH}
 
-   field = [
-      {
-         name       = "APCP_03";
-         level      = "(*,*)";
-      }
-   ];
+   field = [ ${ENS_FIELD}  ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -61,10 +56,18 @@ ens = {
 // Forecast and observation fields to be verified
 //
 fcst = {
-   field = [
-   ];
+
+   ${FCST_FILE_TYPE}
+
+   field = [ ${FCST_FIELD}  ];
 }
-obs = fcst;
+
+obs = {
+
+   ${OBS_FILE_TYPE}
+
+   field = [ ${OBS_FIELD}   ];
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -126,8 +129,8 @@ climo_mean = {
 // Point observation time window
 //
 obs_window = {
-   beg = -5400;
-   end =  5400;
+   beg = ${OBS_WINDOW_BEGIN};
+   end = ${OBS_WINDOW_END};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
