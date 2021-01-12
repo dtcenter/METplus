@@ -152,9 +152,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                               'vld_thresh',
                               'ENS_VLD_THRESH')
 
-        self.set_met_config_int(c_dict,
-                                'ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE',
-                                'ens_ssvar_bin_size')
+        self.set_met_config_float(c_dict,
+                                  'ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE',
+                                  'ens_ssvar_bin_size')
         self.set_met_config_float(c_dict,
                                   'ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE',
                                   'ens_phist_bin_size')
@@ -163,10 +163,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.config.getraw('filename_templates',
                                'ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE')
 
-        # used to override the file type for fcst/obs if using python embedding for input
-        c_dict['ENS_FILE_TYPE'] = ''
-        c_dict['FCST_FILE_TYPE'] = ''
-        c_dict['OBS_FILE_TYPE'] = ''
         c_dict['VAR_LIST_OPTIONAL'] = True
 
         return c_dict
@@ -345,7 +341,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
     def set_environment_variables(self, fcst_field, obs_field, ens_field, time_info):
         self.add_env_var("MET_OBS_ERROR_TABLE",
-                         self.c_dict["MET_OBS_ERR_TABLE"])
+                         self.c_dict.get('MET_OBS_ERR_TABLE', ''))
 
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
@@ -354,20 +350,28 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         else:
             self.add_env_var("ENS_FIELD", fcst_field)
 
-        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-        self.add_env_var("INPUT_BASE", self.c_dict['INPUT_BASE'])
-        self.add_env_var("FCST_LEAD", str(time_info['lead_hours']).zfill(3))
-        self.add_env_var("OBS_WINDOW_BEGIN", str(self.c_dict['OBS_WINDOW_BEGIN']))
-        self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
-        self.add_env_var("ENS_THRESH", self.c_dict['ENS_THRESH'])
-        self.add_env_var('ENS_VLD_THRESH',
-                         self.c_dict.get('ENS_VLD_THRESH', ''))
+        self.add_env_var("OBS_WINDOW_BEGIN",
+                         str(self.c_dict['OBS_WINDOW_BEGIN']))
+        self.add_env_var("OBS_WINDOW_END",
+                         str(self.c_dict['OBS_WINDOW_END']))
+
+        # set env vars for MET config file that c_dict key is
+        # the same name as the environment variable
+        met_config_list = [
+            'OBTYPE',
+            'INPUT_BASE',
+            'ENS_THRESH',
+            'ENS_VLD_THRESH',
+            'ENS_FILE_TYPE',
+            'FCST_FILE_TYPE',
+            'OBS_FILE_TYPE',
+            'ENS_SSVAR_BIN_SIZE',
+            'ENS_PHIST_BIN_SIZE',
+        ]
+        for item in met_config_list:
+            self.add_env_var(item, self.c_dict.get(item, ''))
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
-
-        self.add_env_var("ENS_FILE_TYPE", self.c_dict['ENS_FILE_TYPE'])
-        self.add_env_var("FCST_FILE_TYPE", self.c_dict['FCST_FILE_TYPE'])
-        self.add_env_var("OBS_FILE_TYPE", self.c_dict['OBS_FILE_TYPE'])
 
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))

@@ -95,8 +95,8 @@ message_type_group_map = [
 // Ensemble bin sizes
 // May be set separately in each "obs.field" entry
 //
-ens_ssvar_bin_size = 1.0;
-ens_phist_bin_size = 0.05;
+${ENS_SSVAR_BIN_SIZE}
+${ENS_PHIST_BIN_SIZE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
