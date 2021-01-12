@@ -201,7 +201,7 @@ obs_window = {
 //
 mask = {
    grid  = ["FULL"];
-   poly  = [];
+   poly = [ ${VERIF_MASK} ];
    sid   = [];
    llpnt = [];
 }

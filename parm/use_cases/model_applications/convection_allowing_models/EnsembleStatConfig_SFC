@@ -202,10 +202,7 @@ obs_window = {
 //
 mask = {
    grid = [];
-   poly = [ "${INPUT_BASE}/model_applications/convection_allowing_models/mask/EAST.nc",
-            "${INPUT_BASE}/model_applications/convection_allowing_models/mask/WEST.nc",
-            "${INPUT_BASE}/model_applications/convection_allowing_models/mask/CONUS.nc",
-            "${INPUT_BASE}/model_applications/convection_allowing_models/mask/LMV.nc" ];
+   poly = [ ${VERIF_MASK} ];
    sid  = [];
    llpnt = [];
 }

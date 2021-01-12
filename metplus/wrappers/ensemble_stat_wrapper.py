@@ -152,6 +152,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                               'vld_thresh',
                               'ENS_VLD_THRESH')
 
+        c_dict['VERIFICATION_MASK_TEMPLATE'] = \
+            self.config.getraw('filename_templates',
+                               'ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE')
+
         # used to override the file type for fcst/obs if using python embedding for input
         c_dict['ENS_FILE_TYPE'] = ''
         c_dict['FCST_FILE_TYPE'] = ''
@@ -357,6 +361,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_env_var("ENS_FILE_TYPE", self.c_dict['ENS_FILE_TYPE'])
         self.add_env_var("FCST_FILE_TYPE", self.c_dict['FCST_FILE_TYPE'])
         self.add_env_var("OBS_FILE_TYPE", self.c_dict['OBS_FILE_TYPE'])
+
+        self.add_env_var('VERIF_MASK',
+                         self.c_dict.get('VERIFICATION_MASK', ''))
 
         # set climatology environment variables
         self.set_climo_env_vars()

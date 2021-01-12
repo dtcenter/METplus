@@ -202,11 +202,7 @@ obs_window = {
 //
 mask = {
    grid  = [ "FULL" ];
-   poly  = [ "MET_BASE/poly/HMT_masks/huc4_1605_poly.nc",
-             "MET_BASE/poly/HMT_masks/huc4_1803_poly.nc",
-             "MET_BASE/poly/HMT_masks/huc4_1804_poly.nc",
-             "MET_BASE/poly/HMT_masks/huc4_1805_poly.nc",
-             "MET_BASE/poly/HMT_masks/huc4_1806_poly.nc" ];
+   poly = [ ${VERIF_MASK} ];
    sid   = [];
    llpnt = [];
 }
