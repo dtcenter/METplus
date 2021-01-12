@@ -56,7 +56,7 @@ class TCRMWWrapper(CommandBuilder):
             c_dict[f'DATA_FILE_TYPE'] = f"file_type = {data_type};"
 
         # values used in configuration file
-        self.set_c_dict_string(c_dict, 'MODEL', 'model')
+        self.set_met_config_string(c_dict, 'MODEL', 'model')
 
         self.handle_c_dict_regrid(c_dict, set_to_grid=False)
 

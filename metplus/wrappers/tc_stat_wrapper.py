@@ -87,11 +87,11 @@ class TCStatWrapper(CommandBuilder):
                               f"{default_config}")
             c_dict['CONFIG_FILE'] = default_config
 
-        self.set_c_dict_for_environment_variables(c_dict)
+        self.set_met_config_for_environment_variables(c_dict)
 
         return c_dict
 
-    def set_c_dict_for_environment_variables(self, c_dict):
+    def set_met_config_for_environment_variables(self, c_dict):
         """! Set c_dict dictionary entries that will be set as environment
         variables to be read by the MET config file.
             @param c_dict dictionary to add key/value pairs
@@ -121,16 +121,16 @@ class TCStatWrapper(CommandBuilder):
                             'INIT_STR_NAME',
                             'INIT_STR_VAL',
                              ]:
-            self.set_c_dict_list(c_dict,
+            self.set_met_config_list(c_dict,
                                  f'{app_name_upper}_{config_list}',
                                  config_list.lower())
 
             for iv_list in ['INIT', 'VALID',]:
-                self.set_c_dict_list(c_dict,
+                self.set_met_config_list(c_dict,
                                      f'{app_name_upper}_{iv_list}_INCLUDE',
                                      f'{iv_list.lower()}_inc',
                                      )
-                self.set_c_dict_list(c_dict,
+                self.set_met_config_list(c_dict,
                                      f'{app_name_upper}_{iv_list}_EXCLUDE',
                                      f'{iv_list.lower()}_exc',
                                      )
@@ -142,7 +142,7 @@ class TCStatWrapper(CommandBuilder):
                            'LANDFALL_BEG',
                            'LANDFALL_END',
                             ]:
-            self.set_c_dict_string(c_dict,
+            self.set_met_config_string(c_dict,
                                    f'{app_name_upper}_{config_str}',
                                    config_str.lower())
 
@@ -151,7 +151,7 @@ class TCStatWrapper(CommandBuilder):
                             'MATCH_POINTS',
                             ]:
 
-            self.set_c_dict_bool(c_dict,
+            self.set_met_config_bool(c_dict,
                                  f'{app_name_upper}_{config_bool}',
                                  config_bool.lower())
 

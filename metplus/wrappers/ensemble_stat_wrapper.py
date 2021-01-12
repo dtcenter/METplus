@@ -147,10 +147,17 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_GRID_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
         c_dict['OBS_GRID_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
 
-        self.set_c_dict_float(c_dict,
+        self.set_met_config_float(c_dict,
                               'ENSEMBLE_STAT_ENS_VLD_THRESH',
                               'vld_thresh',
                               'ENS_VLD_THRESH')
+
+        self.set_met_config_int(c_dict,
+                                'ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE',
+                                'ens_ssvar_bin_size')
+        self.set_met_config_float(c_dict,
+                                  'ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE',
+                                  'ens_phist_bin_size')
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',

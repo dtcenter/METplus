@@ -49,8 +49,8 @@ that reformat gridded data
             the type and consolidates config get calls so it is easier to see
             which config variables are used in the wrapper"""
         c_dict = super().create_c_dict()
-        self.set_c_dict_string(c_dict, 'MODEL', 'model')
-        self.set_c_dict_string(c_dict, 'OBTYPE', 'obtype')
+        self.set_met_config_string(c_dict, 'MODEL', 'model')
+        self.set_met_config_string(c_dict, 'OBTYPE', 'obtype')
 
         # INPUT_BASE is not required unless it is referenced in a config file
         # it is used in the use case config files. Don't error if it is not set
