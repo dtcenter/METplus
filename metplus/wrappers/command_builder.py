@@ -1316,7 +1316,7 @@ class CommandBuilder:
 
     def set_met_config_thresh(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
         conf_value = self.config.getstr('config', mp_config_name, '')
-        if conf_value and conf_value != 'NA':
+        if conf_value:
             if util.get_threshold_via_regex(conf_value) is None:
                 self.log_error(f"Incorrectly formatted threshold: {mp_config_name}")
                 return
