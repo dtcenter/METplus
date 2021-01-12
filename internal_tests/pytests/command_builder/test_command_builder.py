@@ -411,3 +411,88 @@ def test_get_regrid_dict(metplus_config, c_dict_values, expected_output):
         cbw.c_dict[key] = value
 
     assert(cbw.get_regrid_dict() == expected_output)
+
+@pytest.mark.parametrize(
+    'mp_config_name,met_config_name,c_dict_key,remove_quotes,expected_output', [
+        # var is set, use quotes
+        ('TEST_STRING_1', 'test_string_1', None,
+         False, 'test_string_1 = "value_1";'),
+        # var is set, remove quotes
+        ('TEST_STRING_1', 'test_string_1', None,
+         True, 'test_string_1 = value_1;'),
+        # var is not set
+        ('TEST_STRING_2', 'test_string_2', None,
+         False, ''),
+        # var is set, use quotes, set c_dict key
+        ('TEST_STRING_1', 'test_string_1', 'the_key',
+         False, 'test_string_1 = "value_1";'),
+        # var is set, remove quotes, set c_dict key
+        ('TEST_STRING_1', 'test_string_1', 'the_key',
+         True, 'test_string_1 = value_1;'),
+    ]
+)
+def test_set_met_config_string(metplus_config, mp_config_name, met_config_name,
+                               c_dict_key, remove_quotes, expected_output):
+    cbw = CommandBuilder(metplus_config())
+
+    # set some config variables to test
+    cbw.config.set('config', 'TEST_STRING_1', 'value_1')
+
+    c_dict = {}
+
+    cbw.set_met_config_string(c_dict,
+                              mp_config_name,
+                              met_config_name,
+                              c_dict_key=c_dict_key,
+                              remove_quotes=remove_quotes)
+    key = c_dict_key
+    if key is None:
+        key = met_config_name.upper()
+
+    assert(c_dict.get(key, '') == expected_output)
+
+@pytest.mark.parametrize(
+    'mp_config_name,met_config_name,c_dict_key,uppercase,expected_output', [
+        # var is set to True, not uppercase
+        ('TEST_BOOL_1', 'test_bool_1', None,
+         False, 'test_bool_1 = True;'),
+        # var is set to True, uppercase
+        ('TEST_BOOL_1', 'test_bool_1', None,
+         True, 'test_bool_1 = TRUE;'),
+        # var is not set
+        ('TEST_BOOL_2', 'test_bool_2', None,
+         False, ''),
+        # var is set to False, not uppercase
+        ('TEST_BOOL_3', 'test_bool_3', None,
+         False, 'test_bool_3 = False;'),
+        # var is set to False, uppercase
+        ('TEST_BOOL_3', 'test_bool_3', None,
+         True, 'test_bool_3 = FALSE;'),
+        # var is set, not uppercase, set c_dict key
+        ('TEST_BOOL_1', 'test_bool_1', 'the_key',
+         False, 'test_bool_1 = True;'),
+        # var is set, uppercase, set c_dict key
+        ('TEST_BOOL_1', 'test_bool_1', 'the_key',
+         True, 'test_bool_1 = TRUE;'),
+    ]
+)
+def test_set_met_config_bool(metplus_config, mp_config_name, met_config_name,
+                             c_dict_key, uppercase, expected_output):
+    cbw = CommandBuilder(metplus_config())
+
+    # set some config variables to test
+    cbw.config.set('config', 'TEST_BOOL_1', True)
+    cbw.config.set('config', 'TEST_BOOL_3', False)
+
+    c_dict = {}
+
+    cbw.set_met_config_bool(c_dict,
+                            mp_config_name,
+                            met_config_name,
+                            c_dict_key=c_dict_key,
+                            uppercase=uppercase)
+    key = c_dict_key
+    if key is None:
+        key = met_config_name.upper()
+
+    assert(c_dict.get(key, '') == expected_output)
