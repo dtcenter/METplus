@@ -23,20 +23,6 @@ if len(__version__.split('-')) == 1:
 else:
     METPLUS_VERSION = 'develop'
 
-MODEL_APP_NAMES = ('met_tool_wrapper',
-                   'convection_allowing_models',
-                   'climate',
-                   'cryosphere',
-                   'medium_range',
-                   'precipitation',
-                   's2s',
-                   'space_weather',
-                   'tc_and_extra_tc',
-                   'data_assimilation',
-                   'air_qualilty_and_comp',
-                   'all_metplus_data',
-                  )
-
 def main(args):
     volume_list = []
     current_branch = os.environ.get('BRANCH_NAME')
@@ -54,44 +40,40 @@ def main(args):
     # get all docker data volumes associated with current branch
     available_volumes = docker_get_volumes_last_updated(current_branch).keys()
 
-    for model_app_name in MODEL_APP_NAMES:
+    # loop through arguments and get data volume for each category
+    for model_app_name in args:
 
-        # if model application name if found in any command line argument.
-        # True if the name is found within any argument string
-        # i.e. met_tool_wrapper or --met_tool_wrapper
-        if any([model_app_name in item for item in args]):
-
-            # if name is not all_metplus_data, use branch version, otherwise
-            # add model application sub category to volume name
-            if model_app_name == 'all_metplus_data':
-                volume_name = METPLUS_VERSION
+        # if name is not all_metplus_data, use branch version, otherwise
+        # add model application sub category to volume name
+        if model_app_name == 'all_metplus_data':
+            volume_name = METPLUS_VERSION
+        else:
+            # if using development version and branch data volume is available
+            # use it, otherwise use develop version of data volume
+            if (METPLUS_VERSION == 'develop' and
+                    f'{current_branch}-{model_app_name}' in available_volumes):
+                version = current_branch
             else:
-                # if using development version and branch data volume is available
-                # use it, otherwise use develop version of data volume
-                if (METPLUS_VERSION == 'develop' and
-                        f'{current_branch}-{model_app_name}' in available_volumes):
-                    version = current_branch
-                else:
-                    version = METPLUS_VERSION
+                version = METPLUS_VERSION
 
-                volume_name = f'{version}-{model_app_name}'
+            volume_name = f'{version}-{model_app_name}'
 
-            cmd = f'docker pull {data_repo}:{volume_name}'
-            ret = subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL)
+        cmd = f'docker pull {data_repo}:{volume_name}'
+        ret = subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL)
 
-            # if return code is non-zero, a failure occurred
-            if ret.returncode:
-                return f'Command failed: {cmd}'
+        # if return code is non-zero, a failure occurred
+        if ret.returncode:
+            return f'Command failed: {cmd}'
 
-            cmd = (f'docker create --name {model_app_name} '
-                   f'{data_repo}:{volume_name}')
-            ret = subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL)
+        cmd = (f'docker create --name {model_app_name} '
+               f'{data_repo}:{volume_name}')
+        ret = subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL)
 
-            if ret.returncode:
-                return f'Command failed: {cmd}'
+        if ret.returncode:
+            return f'Command failed: {cmd}'
 
-            # add name to volumes from list to pass to docker build
-            volume_list.append(f'--volumes-from {model_app_name}')
+        # add name to volumes from list to pass to docker build
+        volume_list.append(f'--volumes-from {model_app_name}')
 
     return ' '.join(volume_list)
 
