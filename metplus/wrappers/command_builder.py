@@ -1223,7 +1223,8 @@ class CommandBuilder:
         dict_string += '}'
         return dict_string
 
-    def set_met_config_list(self, c_dict, mp_config_name, met_config_name, c_dict_key=None, remove_quotes=False):
+    def set_met_config_list(self, c_dict, mp_config_name, met_config_name,
+                            c_dict_key=None, remove_quotes=False):
         """! Get list from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
@@ -1360,12 +1361,12 @@ class CommandBuilder:
         c_dict[c_key] = (f'{met_config_name} = '
                          f'{util.remove_quotes(conf_value)};')
 
-    def get_met_config_dictionary(self, name, keys):
+    def format_met_config_dictionary(self, name, keys):
         """! Return formatted dictionary named <name> with any <items> if they
         are set to a value. If none of the items are set, return empty string
 
         @param name name of dictionary to create
-        @param items list of c_dict keys to use if they are set
+        @param keys list of c_dict keys to use if they are set
         @returns MET config formatted dictionary if any items are set, or empty
          string if not
         """
@@ -1422,7 +1423,7 @@ class CommandBuilder:
                 'REGRID_VLD_THRESH',
                 'REGRID_SHAPE',
                 ]
-        return self.get_met_config_dictionary('regrid', keys)
+        return self.format_met_config_dictionary('regrid', keys)
 
     def handle_description(self, c_dict):
         """! Get description from config. If <app_name>_DESCRIPTION is set, use
