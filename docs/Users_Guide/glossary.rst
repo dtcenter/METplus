@@ -6891,3 +6891,24 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:*  Varies
+
+   ENSEMBLE_STAT_CLIMO_CDF_BINS
+     Specify the value for 'climo_cdf.cdf_bins' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS
+     Specify the value for 'climo_cdf.center_bins' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS
+     Specify the value for 'climo_cdf.write_bins' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies

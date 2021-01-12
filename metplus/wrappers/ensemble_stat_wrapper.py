@@ -185,6 +185,19 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                   'ENSEMBLE_STAT_ENS_THRESH',
                                   'ens_thresh')
 
+        self.set_met_config_float(c_dict,
+                                  'ENSEMBLE_STAT_CLIMO_CDF_BINS',
+                                  'cdf_bins',
+                                  'CLIMO_CDF_BINS')
+        self.set_met_config_bool(c_dict,
+                                 'ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS',
+                                 'center_bins',
+                                 'CLIMO_CDF_CENTER_BINS')
+        self.set_met_config_bool(c_dict,
+                                 'ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS',
+                                 'write_bins',
+                                 'CLIMO_CDF_WRITE_BINS')
+
         c_dict['VAR_LIST_OPTIONAL'] = True
 
         return c_dict
@@ -406,6 +419,14 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                                'NBRHD_PROB_VLD_THRESH'])
         )
         self.add_env_var('NBRHD_PROB_DICT', nbrhd_prob)
+
+        climo_cdf = (
+            self.format_met_config_dictionary('climo_cdf',
+                                              ['CLIMO_CDF_BINS',
+                                               'CLIMO_CDF_CENTER_BINS',
+                                               'CLIMO_CDF_WRITE_BINS'])
+        )
+        self.add_env_var('CLIMO_CDF_DICT', climo_cdf)
 
         # set climatology environment variables
         self.set_climo_env_vars()
