@@ -1319,6 +1319,13 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  NONE
 
+   ENSEMBLE_STAT_ENS_OBS_THRESH
+     Sets the ens.obs_thresh value in the ensemble_stat MET config file.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  NONE
+
    ENSEMBLE_STAT_GRID_VX
      .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_REGRID_TO_GRID`.
 
@@ -6859,6 +6866,27 @@ METplus Configuration Glossary
 
    ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE
      Specify the value for 'ens_phist_bin_size' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_NBRHD_PROB_WIDTH
+     Specify the value for 'nbrhd_prob.width' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_NBRHD_PROB_SHAPE
+     Specify the value for 'nbrhd_prob.shape' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH
+     Specify the value for 'nbrhd_prob.vld_thresh' in the MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
      | *Family:*  [config]

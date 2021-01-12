@@ -46,7 +46,8 @@ nc_var_str    = "";
 //
 ens = {
    ${ENS_THRESH}
-   vld_thresh = 1.0;
+   ${ENS_VLD_THRESH}
+   ${ENS_OBS_THRESH}
 
    field = [ ${ENS_FIELD}  ];
 }
@@ -56,11 +57,7 @@ ens = {
 //
 // Neighborhood ensemble probabilities
 //
-nbrhd_prob = {
-   width      = [ 5 ];
-   shape      = CIRCLE;
-   vld_thresh = 0.0;
-}
+${NBRHD_PROB_DICT}
 
 //
 // NMEP smoothing methods

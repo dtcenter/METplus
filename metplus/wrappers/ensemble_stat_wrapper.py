@@ -149,6 +149,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                               'vld_thresh',
                               'ENS_VLD_THRESH')
 
+        self.set_met_config_list(c_dict,
+                                 'ENSEMBLE_STAT_ENS_OBS_THRESH',
+                                 'obs_thresh',
+                                 'ENS_OBS_THRESH',
+                                 remove_quotes=True)
+
         self.set_met_config_float(c_dict,
                                   'ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE',
                                   'ens_ssvar_bin_size')
@@ -378,6 +384,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             'INPUT_BASE',
             'ENS_THRESH',
             'ENS_VLD_THRESH',
+            'ENS_OBS_THRESH',
             'ENS_FILE_TYPE',
             'FCST_FILE_TYPE',
             'OBS_FILE_TYPE',
@@ -391,6 +398,14 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))
+
+        nbrhd_prob = (
+            self.format_met_config_dictionary('nbrhd_prob',
+                                              ['NBRHD_PROB_WIDTH',
+                                               'NBRHD_PROB_SHAPE',
+                                               'NBRHD_PROB_VLD_THRESH'])
+        )
+        self.add_env_var('NBRHD_PROB_DICT', nbrhd_prob)
 
         # set climatology environment variables
         self.set_climo_env_vars()

@@ -46,9 +46,12 @@ nc_var_str    = "";
 ens = {
    ${ENS_THRESH}
    ${ENS_VLD_THRESH}
+   ${ENS_OBS_THRESH}
 
    field = [ ${ENS_FIELD}  ];
 }
+
+${NBRHD_PROB_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
