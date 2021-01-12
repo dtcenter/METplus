@@ -2669,6 +2669,13 @@ METplus Configuration Glossary
      | *Family:*  [filename_templates]
      | *Default:*  Varies
 
+   ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE
+     Template used to specify the verification mask filename for the MET tool ensemble_stat. Now supports a list of filenames.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [filename_templates]
+     | *Default:*  Varies
+
    HFIP_BASELINE
      .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_HFIP_BASELINE` instead.
 
@@ -6840,5 +6847,19 @@ METplus Configuration Glossary
      Specify the value for 'shape' in the regrid dictionary in MET configuration file for PointStat.
 
      | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE
+     Specify the value for 'ens_ssvar_bin_size' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE
+     Specify the value for 'ens_phist_bin_size' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:*  Varies

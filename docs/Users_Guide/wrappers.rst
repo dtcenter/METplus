@@ -154,6 +154,9 @@ Configuration
 | :term:`ENSEMBLE_STAT_CUSTOM_LOOP_LIST`
 | :term:`ENSEMBLE_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`ENSEMBLE_STAT_DESCRIPTION`
+| :term:`ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE`
+| :term:`ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE`
+| :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`ENS_VAR<n>_NAME` (optional)
 | :term:`ENS_VAR<n>_LEVELS` (optional)
 | :term:`ENS_VAR<n>_THRESH` (optional)
