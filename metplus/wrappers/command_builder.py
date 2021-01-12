@@ -1253,7 +1253,7 @@ class CommandBuilder:
             c_dict[c_key] = f'{met_config_name} = {conf_value};'
 
     def set_met_config_string(self, c_dict, mp_config_name, met_config_name,
-                          c_dict_key=None, remove_quotes=False):
+                              c_dict_key=None, remove_quotes=False):
         """! Get string from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
