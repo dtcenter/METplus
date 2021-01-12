@@ -79,9 +79,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         if not c_dict['CONFIG_FILE']:
             self.log_error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
 
-        c_dict['ENS_THRESH'] = \
-          self.config.getstr('config', 'ENSEMBLE_STAT_ENS_THRESH', '1.0')
-
         # met_obs_error_table is not required, if it is not defined
         # set it to the empty string '', that way the MET default is used.
         c_dict['MET_OBS_ERR_TABLE'] = \
@@ -162,6 +159,25 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
                                'ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE')
+
+        self.set_met_config_list(c_dict,
+                                 'ENSEMBLE_STAT_NBRHD_PROB_WIDTH',
+                                 'width',
+                                 'NBRHD_PROB_WIDTH',
+                                 remove_quotes=True)
+        self.set_met_config_string(c_dict,
+                                   'ENSEMBLE_STAT_NBRHD_PROB_SHAPE',
+                                   'shape',
+                                   'NBRHD_PROB_SHAPE',
+                                   remove_quotes=True)
+        self.set_met_config_float(c_dict,
+                                  'ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH',
+                                  'vld_thresh',
+                                  'NBRHD_PROB_VLD_THRESH')
+
+        self.set_met_config_float(c_dict,
+                                  'ENSEMBLE_STAT_ENS_THRESH',
+                                  'ens_thresh')
 
         c_dict['VAR_LIST_OPTIONAL'] = True
 

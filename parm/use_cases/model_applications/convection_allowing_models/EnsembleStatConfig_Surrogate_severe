@@ -45,7 +45,7 @@ nc_var_str    = "";
 // Ensemble product fields to be processed
 //
 ens = {
-   ens_thresh = ${ENS_THRESH};
+   ${ENS_THRESH}
    vld_thresh = 1.0;
 
    field = [ ${ENS_FIELD}  ];
