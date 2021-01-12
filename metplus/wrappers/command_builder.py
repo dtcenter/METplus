@@ -1412,6 +1412,29 @@ class CommandBuilder:
         self.add_env_var('REGRID_DICT',
                          regrid_dict_string)
 
+    def handle_description(self, c_dict):
+        """! Get description from config. If <app_name>_DESCRIPTION is set, use
+         that value. If not, check for DESCRIPTION and use that if it is set.
+         If set, set the DESCRIPTION c_dict key to "desc = <value>;"
+
+        @param c_dict dictionary to set value
+        """
+        # check if <app_name>_DESCRIPTION is set
+        app_name_upper = self.app_name.upper()
+        conf_value = self.config.getstr('config',
+                                        f'{app_name_upper}_DESCRIPTION',
+                                        '')
+
+        # if not, check if DESCRIPTION is set
+        if not conf_value:
+            conf_value = self.config.getstr('config',
+                                            'DESCRIPTION',
+                                            '')
+
+        # if the value is set, set the DESCRIPTION c_dict
+        if conf_value:
+            c_dict['DESC'] = f'desc = "{util.remove_quotes(conf_value)}";'
+
     def get_output_prefix(self, time_info=None):
         """! Read {APP_NAME}_OUTPUT_PREFIX from config. If time_info is set
          substitute values into filename template tags.

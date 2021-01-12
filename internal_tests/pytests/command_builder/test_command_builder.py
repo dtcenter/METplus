@@ -288,3 +288,35 @@ def test_write_list_file(metplus_config, filename, file_list, output_dir):
     # ensure content of file is as expected
     for actual_line, expected_line in zip(lines[1:], file_list):
         assert(actual_line.strip() == expected_line)
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_value', [
+        ({}, ''),
+        ({'DESCRIPTION': 'generic_desc'}, 'desc = "generic_desc";'),
+        ({'GRID_STAT_DESCRIPTION': 'gs_desc'}, 'desc = "gs_desc";'),
+        ({'DESCRIPTION': 'generic_desc',
+          'GRID_STAT_DESCRIPTION': 'gs_desc'}, 'desc = "gs_desc";'),
+        # same but with quotes around value
+        ({'DESCRIPTION': '"generic_desc"'}, 'desc = "generic_desc";'),
+        ({'GRID_STAT_DESCRIPTION': '"gs_desc"'}, 'desc = "gs_desc";'),
+        ({'DESCRIPTION': '"generic_desc"',
+          'GRID_STAT_DESCRIPTION': '"gs_desc"'}, 'desc = "gs_desc";'),
+    ]
+)
+def test_handle_description(metplus_config, config_overrides, expected_value):
+    config = metplus_config()
+
+    # set config values
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    cbw = CommandBuilder(config)
+
+    # set app_name to grid_stat for testing
+    cbw.app_name = 'grid_stat'
+
+    # create empty dictionary for testing
+    c_dict = {}
+
+    cbw.handle_description(c_dict)
+    assert(c_dict.get('DESC', '') == expected_value)
