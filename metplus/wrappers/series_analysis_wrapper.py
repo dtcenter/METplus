@@ -728,7 +728,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # set climatology environment variables
         self.set_climo_env_vars()
 
-        self.set_regrid_dict()
+        self.add_env_var('REGRID_DICT',
+                         self.get_regrid_dict())
 
         super().set_environment_variables(time_info)
 

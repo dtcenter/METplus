@@ -162,7 +162,8 @@ class TCRMWWrapper(CommandBuilder):
         self.add_env_var('MODEL',
                          self.c_dict.get('MODEL', ''))
 
-        self.set_regrid_dict()
+        self.add_env_var('REGRID_DICT',
+                         self.get_regrid_dict())
 
         self.add_env_var('N_RANGE',
                          self.c_dict.get('N_RANGE', ''))

@@ -184,7 +184,8 @@ class CommandBuilder:
                                           **time_info)
             self.add_env_var(env_var, env_var_value)
 
-    def format_regrid_to_grid(self, to_grid):
+    @staticmethod
+    def format_regrid_to_grid(to_grid):
         to_grid = to_grid.strip('"')
         if not to_grid:
             to_grid = 'NONE'
@@ -1393,7 +1394,7 @@ class CommandBuilder:
                                'REGRID_SHAPE',
                                remove_quotes=True)
 
-    def set_regrid_dict(self):
+    def get_regrid_dict(self):
         regrid_dict_string = ''
         # if any regrid items are set, create the regrid dictionary and add them
         if (self.c_dict.get('REGRID_TO_GRID', '') or
@@ -1409,8 +1410,7 @@ class CommandBuilder:
             regrid_dict_string += f"{self.c_dict.get('REGRID_SHAPE', '')}"
             regrid_dict_string += '}'
 
-        self.add_env_var('REGRID_DICT',
-                         regrid_dict_string)
+        return regrid_dict_string
 
     def handle_description(self, c_dict):
         """! Get description from config. If <app_name>_DESCRIPTION is set, use

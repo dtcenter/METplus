@@ -98,7 +98,8 @@ that reformat gridded data
         self.add_env_var('OBTYPE', self.c_dict.get('OBTYPE', ''))
         self.add_env_var('DESC', self.c_dict.get('DESC', ''))
 
-        self.set_regrid_dict()
+        self.add_env_var('REGRID_DICT',
+                         self.get_regrid_dict())
 
         super().set_environment_variables(time_info)
 
