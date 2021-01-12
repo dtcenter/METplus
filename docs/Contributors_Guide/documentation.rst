@@ -5,17 +5,18 @@ Viewing METplus documentation
 _____________________________
 
 The METplus documentation (beginning with version 3.0) is available
-online at the following URL:
+`online <https://dtcenter.github.io/METplus>`_.
 
-https://dtcenter.github.io/METplus
+
 
 
 Doxygen Source Code Documentation
 _________________________________
 
-The source code documentation is found here:
+The source code documentation is found
+`here <https://dtcenter.github.io/METplus/doxygen>`_.
 
-https://dtcenter.github.io/METplus/doxygen
+
 
 Documentation Overview
 ______________________
@@ -23,9 +24,8 @@ ______________________
 The majority of the documentation is created using the Sphinx documentation
 generator
 tool, which was originally created for Python documentation.
-The documentation is created using reStructuredText (rst):
-
-https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html
+The documentation is created using
+`reStructuredText (rst) <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_.
 
 The following Sphinx modules are required to generate the necessary
 documentation:
@@ -76,8 +76,8 @@ To determine where to add new documentation:
 * Use cases that involve a single MET tool/METplus wrapper will reside
   in the *METplus/parm/use_cases/met_tool_wrapper* directory.
 
-* Use cases that involv multiple MET tools/METplus wrappers will reside
-  in the METplus/parm/use_cases/model_applications directory, under
+* Use cases that involve multiple MET tools/METplus wrappers will reside
+  in the *METplus/parm/use_cases/model_applications* directory, under
   a subdirectory that corresponds to a specific category.
 
 * The User's Guide for any instructions or details that will enable a user
@@ -91,11 +91,11 @@ Use cases that have only one MET tool/METplus wrapper:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Create a new subdirectory, based on the name of the MET tool:
-  e.g. METplus/parm/use_cases/met_tool_wrapper/ASCII2NC
+  e.g. *METplus/parm/use_cases/met_tool_wrapper/ASCII2NC*
 
 * Create a new Python file with the .py extension.
  
-   * for a use case document in the *METplus/parm/use_cases/met_tools*
+   * For a use case document in the *METplus/parm/use_cases/met_tools*
      directory, follow this pattern:
 
      <MET tool name>.py
@@ -127,6 +127,7 @@ Use cases that use more than one MET tool/METplus wrapper:
 	  
       * If no category exists, create a new subdirectory with the
         name of the new category.
+	
         * Create a new Python (.py) file with a descriptive
 	  name, following the convention:	 
 
@@ -138,6 +139,7 @@ User's Guide:
 * To add/modify any content that affects METplus users.
 * Modify any of the affected sections from the
   *METplus/docs/Users_Guide* directory:
+  
   * glossary.rst (Glossary)
   * references.rst (Reference)
   * systemconfiguration.rst (System Configuration)
@@ -150,6 +152,7 @@ Contributor's Guide:
 * To add/modify any content that affects METplus contributors.
 * Modify any of the affected sections from the
   *METplus/docs/Contributors_Guide* directory:
+  
   * add_use_case.rst (How to add new use cases.)
   * basic_components.rst (The basic components of a METplus wrapper.)
   * coding_standards.rst (The coding standards currently in use.)
@@ -167,7 +170,6 @@ Contributor's Guide:
     wrapper code.)
 
 
-
 Building Sphinx Documentation
 _____________________________
 
@@ -176,7 +178,7 @@ source code are located on the same computer/host.
 
 All the sphinx modules (listed earlier) need to be present in order to
 generate the HTML content that comprises the documentation.
-From the command line, change to the METplus/docs directory and
+From the command line, change to the *METplus/docs* directory and
 enter the following:
 
 .. code-block:: none
@@ -193,7 +195,7 @@ This script does the following:
   'generated' to preserve old URL paths.
 
 The html files that are created can be found in the *METplus/docs/_build/html*
-directory.  Theweb browser can point to this directory by entering
+directory.  The web browser can point to this directory by entering
 the following in the web browser's navigation bar:
 
    *file:///<path-to>/METplus/docs/_build/html/index.html*
@@ -201,7 +203,7 @@ the following in the web browser's navigation bar:
 Where <path-to> is the full file path leading to the METplus
 source code. This will direct to the home page of the
 documentation.  Click on the "User's Guide"
-link (which poens the user documentation and the use cases)
+link (which opens the user documentation and the use cases)
 or the "Contributor's Guide" link (which is relevant if the user intends to
 contribute code and/or new use cases).
 
@@ -216,23 +218,21 @@ is useful in generating details about the METplus wrapper API
 This is a useful reference for contributors to peruse prior to creating
 new METplus wrappers.
 The Doxygen files located in the */path/to/METplus/docs/doxygen* directory
-do **NOT** need to bemodified and should not be modified.
+do **NOT** need to be modified and should not be modified.
 
 
-For more information about Doxygen, please refer to the following:
+For more information about Doxygen, please refer to this
+`Doxygen web page <http://doxygen.nl/>`_.
 
-http://doxygen.nl/
-
-Download and install Doxygen to create this documentation:
-
-http://doxygen.nl/download.html
+`Download and install Doxygen <http://doxygen.nl/download.html>`_
+to create this documentation.
 
 **Note**: Doxygen version 1.8.9.1 or higher is required to create the
 documentation for the METplus wrappers.
 
 Create the Doxygen documentation by performing the following:
 
-* Ensure that the user is working with Python 3.6 (minimum)
+* Ensure that the user is working with Python 3.6 (minimum).
 * cd to the */path/to/METplus/sorc* directory, where */path/to* is the
   file path where the METplus source code is installed.
 * At the command line, enter the following:
