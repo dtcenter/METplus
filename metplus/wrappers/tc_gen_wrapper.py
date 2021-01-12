@@ -145,6 +145,9 @@ class TCGenWrapper(CommandBuilder):
         # get INPUT_TIME_DICT values since wrapper only runs once (doesn't look over time)
         self.set_time_dict_for_single_runtime(c_dict)
 
+        # read desc from TC_GEN_DESCRIPTION or DESCRIPTION into c_dict['DESC']
+        self.handle_description(c_dict)
+
         return c_dict
 
     def get_filter_values(self):
@@ -213,7 +216,8 @@ class TCGenWrapper(CommandBuilder):
                         'LEAD_LIST',
                         'VX_MASK',
                         'GENESIS_RADIUS',
-                        'DLAND_FILE'
+                        'DLAND_FILE',
+                        'DESC',
                         ]:
             self.add_env_var(env_var,
                              self.c_dict.get(env_var, ''))

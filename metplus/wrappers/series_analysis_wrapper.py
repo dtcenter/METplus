@@ -63,9 +63,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         self.set_c_dict_string(c_dict, 'MODEL', 'model')
         self.set_c_dict_string(c_dict, 'OBTYPE', 'obtype')
-        self.set_c_dict_string(c_dict,
-                               'SERIES_ANALYSIS_DESCRIPTION',
-                               'desc')
+        self.handle_description(c_dict)
 
         self.handle_c_dict_regrid(c_dict)
 

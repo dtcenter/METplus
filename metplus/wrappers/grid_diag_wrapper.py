@@ -59,9 +59,9 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         # set regrid dictionary values
         self.handle_c_dict_regrid(c_dict)
 
-        conf_value = self.config.getstr('config', 'GRID_DIAG_DESCRIPTION', '')
-        if conf_value:
-            c_dict['DESC'] = f'desc = "{util.remove_quotes(conf_value)}";'
+
+        # set desc
+        self.handle_description(c_dict)
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',

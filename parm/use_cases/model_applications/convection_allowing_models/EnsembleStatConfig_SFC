@@ -15,7 +15,7 @@ ${MODEL}
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
-desc = "NA";
+${DESC}
 
 //
 // Output observation type to be written

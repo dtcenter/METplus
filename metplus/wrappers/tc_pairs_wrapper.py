@@ -169,6 +169,8 @@ class TCPairsWrapper(CommandBuilder):
                 if not match:
                     self.log_error(f'Incorrect STORM_ID format: {storm_id}')
 
+        self.handle_description(c_dict)
+
         return c_dict
 
     def run_all_times(self):
@@ -449,6 +451,9 @@ class TCPairsWrapper(CommandBuilder):
         # DLAND_FILE
         tmp_dland_file = self.c_dict['DLAND_FILE']
         self.add_env_var('DLAND_FILE', str(tmp_dland_file))
+
+        self.add_env_var('DESC',
+                         self.c_dict.get('DESC', ''))
 
         super().set_environment_variables(time_info)
 

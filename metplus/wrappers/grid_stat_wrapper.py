@@ -96,10 +96,6 @@ class GridStatWrapper(CompareGriddedWrapper):
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'grid_stat')
 
-        self.set_c_dict_string(c_dict,
-                               'GRID_STAT_DESCRIPTION',
-                               'desc')
-
         return c_dict
 
     def set_environment_variables(self, fcst_field, obs_field, time_info):
@@ -130,7 +126,5 @@ class GridStatWrapper(CompareGriddedWrapper):
                          self.c_dict.get('VERIFICATION_MASK', ''))
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
-
-        self.add_env_var("DESC", self.c_dict.get('DESC', ''))
 
         super().set_environment_variables(time_info)

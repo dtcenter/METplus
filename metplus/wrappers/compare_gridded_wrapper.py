@@ -84,6 +84,8 @@ that reformat gridded data
 
         self.handle_c_dict_regrid(c_dict)
 
+        self.handle_description(c_dict)
+
         return c_dict
 
     def set_environment_variables(self, time_info):
@@ -94,6 +96,7 @@ that reformat gridded data
               @param time_info dictionary containing timing info from current run"""
         self.add_env_var('MODEL', self.c_dict.get('MODEL', ''))
         self.add_env_var('OBTYPE', self.c_dict.get('OBTYPE', ''))
+        self.add_env_var('DESC', self.c_dict.get('DESC', ''))
 
         self.set_regrid_dict()
 

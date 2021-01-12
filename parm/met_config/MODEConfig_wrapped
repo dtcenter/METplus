@@ -14,7 +14,7 @@ ${MODEL}
 //
 // Output description to be written
 //
-desc = "NA";
+${DESC}
 
 //
 // Output observation type to be written
