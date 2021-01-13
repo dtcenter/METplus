@@ -147,8 +147,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_GRID_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
         c_dict['OBS_GRID_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
 
-        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'ENSEMBLE_STAT_REGRID_TO_GRID', '')
-
         self.set_c_dict_float(c_dict,
                               'ENSEMBLE_STAT_ENS_VLD_THRESH',
                               'vld_thresh',

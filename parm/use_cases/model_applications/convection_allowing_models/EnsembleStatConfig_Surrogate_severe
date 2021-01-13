@@ -9,41 +9,33 @@
 //
 // Output model name to be written
 //
-model = "${MODEL}_ens";
+${MODEL}
 
 //
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
-desc = "NA";
+${DESC}
 
 //
 // Output observation type to be written
 //
-obtype = "ANALYS";
+${OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Verification grid
 //
-regrid = {
-   to_grid    = ${REGRID_TO_GRID};
-   method     = MAX;
-   width      = 27;
-   vld_thresh = 0.0;
-   shape      = SQUARE;
-   censor_thresh = [==-9999];
-   censor_val    = [0.0];
-}
+${REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // May be set separately in each "field" entry
 //
-censor_thresh = [];
-censor_val    = [];
+censor_thresh = [==-9999];
+censor_val    = [0.0];
 cat_thresh    = [];
 nc_var_str    = "";
 

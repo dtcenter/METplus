@@ -17,7 +17,7 @@ model = ${MODEL};
 //
 // Description
 //
-desc = "NA";
+${DESC}
 
 //
 // Storm identifiers

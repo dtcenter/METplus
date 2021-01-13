@@ -9,18 +9,18 @@
 //
 // Output model name to be written
 //
-model = "${MODEL}";
+${MODEL}
 
 //
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
-desc = "NA";
+${DESC}
 
 //
 // Output observation type to be written
 //
-obtype = "ANALYS";
+${OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -28,13 +28,7 @@ obtype = "ANALYS";
 // Verification grid
 // May be set separately in each "field" entry
 //
-regrid = {
-   to_grid    = NONE;
-   method     = NEAREST;
-   width      = 1;
-   vld_thresh = 0.5;
-   shape      = SQUARE;
-}
+${REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
