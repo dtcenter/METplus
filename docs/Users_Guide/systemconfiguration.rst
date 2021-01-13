@@ -10,31 +10,54 @@ Config Best Practices
 
 1. Set your log level to an appropriate level:
 
-  a. Debug is the most verbose and is useful when you are troubleshooting problems
+  a. Debug is the most verbose and is useful when you are troubleshooting
+     problems
   b. Info is the default level
   c. Warning only logs warnings, error, or critical events
   d. Error only logs errors or critical events
   e. Critical is the least verbose and is rarely used
 
-2. Log output will be written to a log file as well as shown on the screen. Reviewing the log files to verify that all your processes ran cleanly is recommended, as they contain more information that what is output in the terminal, such as log output from the MET tools.
-3. The order in which you list your METplus wrapper config files matters. Each subsequent config file on the command line will override any values defined in an earlier config file. It is recommended to put user-specific configurations, like OUTPUT_BASE, in its own configuration file to be read in last in case any information configurations are accidentally defined in multiple conf files.
-4. Check the metplus_final.conf file (found in the top level of OUTPUT_BASE) to verify that you have defined things as you expected, as it contains all the key-values that you have specified.
+2. Log output will be written to a log file as well as shown on the screen.
+   Reviewing the log files to verify that all your processes ran cleanly is
+   recommended, as they contain more information that what is output in the
+   terminal, such as log output from the MET tools.
+3. The order in which you list your METplus wrapper config files matters.
+   Each subsequent config file on the command line will override any values
+   defined in an earlier config file. It is recommended to put user-specific
+   configurations, like OUTPUT_BASE, in its own configuration file to be
+   read in last in case any information configurations are accidentally
+   defined in multiple conf files.
+4. Check the metplus_final.conf file (found in the top level of OUTPUT_BASE)
+   to verify that you have defined things as you expected, as it contains
+   all the key-values that you have specified.
 
 Config File Structure
 ---------------------
 
-METplus Wrappers employs a hierarchy of configuration files employed in METplus Wrappers. At the lowest level are the "set-and-forget" type configuration files that reside in the *<METplus_installation_dir>/parm/metplus_config*. At the next level are the configuration files that pertain to a user's specific needs in the *<METplus_installation_dir>/parm/use_cases/<specific_use_case>*.
+METplus Wrappers employs a hierarchy of configuration files employed in
+METplus Wrappers. At the lowest level are the "set-and-forget" type
+configuration files that reside in the
+*<METplus_installation_dir>/parm/metplus_config*. At the next level are
+the configuration files that pertain to a user's specific needs in the
+*<METplus_installation_dir>/parm/use_cases/<specific_use_case>*.
 
-Four configuration files are required for METplus Wrappers to be fully configured (i.e. all keywords are defined by either whitespace or a valid value):
+Four configuration files are required for METplus Wrappers to be fully
+configured (i.e. all keywords are defined by either whitespace or a valid
+value):
 
   1. metplus_system
   2. metplus_data
   3. metplus_logging
   4. metplus_runtime
 
-By default, key-values that require the user's input are set to *</path/to>*. Make sure to replace these with the appropriate directory for your project.
+By default, key-values that require the user's input are set to *</path/to>*.
+Make sure to replace these with the appropriate directory for your project.
 
-Additional configuration files are optional and the key-values defined there will override any values defined in the four mandatory METplus Wrappers configuration files. These additional configuration files enable users to use a common set of configuration files and to create customized environments for their verification tasks.
+Additional configuration files are optional and the key-values defined there
+will override any values defined in the four mandatory METplus Wrappers
+configuration files. These additional configuration files enable users to
+use a common set of configuration files and to create customized environments
+for their verification tasks.
 
 Common Config Variables
 -----------------------
@@ -42,44 +65,74 @@ Common Config Variables
 Timing Control
 ~~~~~~~~~~~~~~
 
-This section describes the METplus wrapper configuration variables that are used to control which times are processed. It also covers functionality that is useful for processing data in realtime by setting run times based on the clock time when the METplus wrappers are run.
+This section describes the METplus wrapper configuration variables that are
+used to control which times are processed. It also covers functionality that
+is useful for processing data in realtime by setting run times based on the
+clock time when the METplus wrappers are run.
 
 .. _LOOP_BY_ref:
 
 :term:`LOOP_BY`
 ^^^^^^^^^^^^^^^
 
-The METplus wrappers can be configured to loop over a set of valid times or a set of initialization times. This is controlled by the configuration variable called :term:`LOOP_BY`. If the value of this variable is set to INIT or RETRO, looping will be relative to initialization time. If the value is set to VALID or REALTIME, looping will be relative to valid time.
+The METplus wrappers can be configured to loop over a set of valid times or a
+set of initialization times. This is controlled by the configuration variable
+called :term:`LOOP_BY`. If the value of this variable is set to INIT or
+RETRO, looping will be relative to initialization time. If the value is set
+to VALID or REALTIME, looping will be relative to valid time.
 
 .. _Looping_by_Valid_Time:
 
 Looping by Valid Time
 ^^^^^^^^^^^^^^^^^^^^^
 
-When looping over valid time (`LOOP_BY` = VALID or REALTIME), the following variables must be set:
+When looping over valid time (`LOOP_BY` = VALID or REALTIME), the following
+variables must be set:
 
 :term:`VALID_TIME_FMT`:
-This is the format of the valid times the user can configure in the METplus Wrappers. The value of `VALID_BEG` and `VALID_END` must correspond to this format.
+This is the format of the valid times the user can configure in the METplus
+Wrappers. The value of `VALID_BEG` and `VALID_END` must correspond to this
+format.
 
 Example::
 
     VALID_TIME_FMT = %Y%m%d%H
 
-Using this format, the valid time range values specified must be defined as YYYYMMDDHH, i.e. 2019020112.
+Using this format, the valid time range values specified must be defined
+as YYYYMMDDHH, i.e. 2019020112.
 
 :term:`VALID_BEG`:
-This is the first valid time that will be processed. The format of this variable is controlled by :term:`VALID_TIME_FMT`. For example, if VALID_TIME_FMT=%Y%m%d, then VALID_BEG must be set to a valid time matching YYYYMMDD, such as 20190201.
+This is the first valid time that will be processed. The format of this
+variable is controlled by :term:`VALID_TIME_FMT`. For example, if
+VALID_TIME_FMT=%Y%m%d, then VALID_BEG must be set to a valid time matching
+YYYYMMDD, such as 20190201.
 
 :term:`VALID_END`:
-This is the last valid time that can be processed. The format of this variable is controlled by :term:`VALID_TIME_FMT`. For example, if VALID_TIME_FMT=%Y%m%d, then VALID_END must be set to a valid time matching YYYYMMDD, such as 20190202.
+This is the last valid time that can be processed. The format of this
+variable is controlled by :term:`VALID_TIME_FMT`. For example, if
+VALID_TIME_FMT=%Y%m%d, then VALID_END must be set to a valid time matching
+YYYYMMDD, such as 20190202.
 
 .. note::
-    The time specified for this variable will not necessarily be processed. It is used to determine the cutoff of run times that can be processed. For example, if METplus Wrappers is configured to start at 20190201 and end at 20190202 processing data in 48 hour increments, it will process valid time 20190201 then increment the run time to 20190203. This is later than the VALID_END value, so execution will stop. However, if the increment is set to 24 hours (see :term:`VALID_INCREMENT`), then METplus Wrappers will process valid times 20190201 and 20190202 before ending execution.
+    The time specified for this variable will not necessarily be processed.
+    It is used to determine the cutoff of run times that can be processed.
+    For example, if METplus Wrappers is configured to start at 20190201 and
+    end at 20190202 processing data in 48 hour increments, it will process
+    valid time 20190201 then increment the run time to 20190203. This is
+    later than the VALID_END value, so execution will stop. However, if the
+    increment is set to 24 hours (see :term:`VALID_INCREMENT`), then METplus
+    Wrappers will process valid times 20190201 and 20190202 before ending
+    execution.
 
 :term:`VALID_INCREMENT`:
-This is the time interval to add to each run time to determine the next run time to process. See :ref:`time-interval-units` for information on time interval formatting. Units of hours are assumed if no units are specified. This value must be greater than or equal to 60 seconds because the METplus wrappers currently do not support processing intervals of less than one minute.
+This is the time interval to add to each run time to determine the next run
+time to process. See :ref:`time-interval-units` for information on time
+interval formatting. Units of hours are assumed if no units are specified.
+This value must be greater than or equal to 60 seconds because the METplus
+wrappers currently do not support processing intervals of less than one minute.
 
-The following is a configuration that will process valid time 2019-02-01 at 00Z until 2019-02-02 at 00Z in 6 hour (21600 seconds) increments::
+The following is a configuration that will process valid time 2019-02-01 at
+00Z until 2019-02-02 at 00Z in 6 hour (21600 seconds) increments::
 
    [config]
    LOOP_BY = VALID
@@ -917,8 +970,8 @@ Files Processed::
 
 .. note::
     If LOOP_BY was set to VALID, then the values defined by VALID_BEG,
-VALID_END, and VALID_INCREMENT would be substituted for the valid time while
-init and lead would be wildcard values.
+    VALID_END, and VALID_INCREMENT would be substituted for the valid time
+    while init and lead would be wildcard values.
 
 Example 3 Run Once Per Forecast Lead Time::
 
