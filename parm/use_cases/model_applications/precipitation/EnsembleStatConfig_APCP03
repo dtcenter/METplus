@@ -53,6 +53,8 @@ ens = {
 
 ${NBRHD_PROB_DICT}
 
+${NMEP_SMOOTH_DICT}
+
 ////////////////////////////////////////////////////////////////////////////////
 
 //
@@ -82,10 +84,10 @@ message_type   = [ "ADPUPA" ];
 sid_exc        = [];
 obs_thresh     = [ NA ];
 obs_quality    = [];
-duplicate_flag = NONE;
+${DUPLICATE_FLAG}
 obs_summary    = NONE;
 obs_perc_value = 50;
-skip_const     = FALSE;
+${SKIP_CONST}
 
 //
 // Mapping of message type group name to comma-separated list of values.

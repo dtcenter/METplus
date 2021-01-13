@@ -63,18 +63,7 @@ ${NBRHD_PROB_DICT}
 //
 // NMEP smoothing methods
 //
-nmep_smooth = {
-   vld_thresh      = 1.0;
-   shape           = SQUARE;
-   gaussian_dx     = 3;
-   gaussian_radius = 3;
-   type = [
-      {
-         method = NEAREST;
-         width  = [1];
-      }
-   ];
-}
+${NMEP_SMOOTH_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -107,10 +96,10 @@ message_type   = [];
 sid_exc        = [];
 obs_thresh     = [ NA ];
 obs_quality    = [];
-duplicate_flag = NONE;
+${DUPLICATE_FLAG}
 obs_summary    = NONE;
 obs_perc_value = 50;
-skip_const     = FALSE;
+${SKIP_CONST}
 
 //
 // Observation error options

@@ -185,6 +185,16 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                   'ENSEMBLE_STAT_ENS_THRESH',
                                   'ens_thresh')
 
+        self.set_met_config_string(c_dict,
+                                   'ENSEMBLE_STAT_DUPLICATE_FLAG',
+                                   'duplicate_flag',
+                                   remove_quotes=True)
+
+        self.set_met_config_bool(c_dict,
+                                 'ENSEMBLE_STAT_SKIP_CONST',
+                                 'skip_const')
+
+        # set climo_cdf dictionary variables
         self.set_met_config_float(c_dict,
                                   'ENSEMBLE_STAT_CLIMO_CDF_BINS',
                                   'cdf_bins',
@@ -198,9 +208,53 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                  'write_bins',
                                  'CLIMO_CDF_WRITE_BINS')
 
+        # set nmep_smooth dictionary variables
+        self.set_met_config_float(c_dict,
+                                  'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX',
+                                  'gaussian_dx',
+                                  'NMEP_SMOOTH_GAUSSIAN_DX')
+        self.set_met_config_float(c_dict,
+                                  'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS',
+                                  'gaussian_radius',
+                                  'NMEP_SMOOTH_GAUSSIAN_RADIUS')
+        self.set_met_config_float(c_dict,
+                                  'ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH',
+                                  'vld_thresh',
+                                  'NMEP_SMOOTH_VLD_THRESH')
+        self.set_met_config_string(c_dict,
+                                   'ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE',
+                                   'shape',
+                                   'NMEP_SMOOTH_SHAPE',
+                                   remove_quotes=True)
+        self.set_met_config_string(c_dict,
+                                   'ENSEMBLE_STAT_NMEP_SMOOTH_METHOD',
+                                   'method',
+                                   'NMEP_SMOOTH_METHOD',
+                                   remove_quotes=True)
+        self.set_met_config_int(c_dict,
+                                'ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH',
+                                'width',
+                                'NMEP_SMOOTH_WIDTH')
+
+        self.format_nmep_smooth_type(c_dict)
+
         c_dict['VAR_LIST_OPTIONAL'] = True
 
         return c_dict
+
+    @staticmethod
+    def format_nmep_smooth_type(c_dict):
+        """! If NMEP_SMOOTH_METHOD or NMEP_SMOOTH_WIDTH are set in c_dict, then
+        format the values and set NMEP_SMOOTH_TYPE
+
+        @param c_dict dictionary to check and add item if appropriate
+        """
+        nmep_method = c_dict.get('NMEP_SMOOTH_METHOD', '')
+        nmep_width = c_dict.get('NMEP_SMOOTH_WIDTH', '')
+        if nmep_method or nmep_width:
+            c_dict['NMEP_SMOOTH_TYPE'] = (
+                f"type = [{nmep_width}{nmep_width}];"
+            )
 
     def run_at_time_all_fields(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination
@@ -403,6 +457,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             'OBS_FILE_TYPE',
             'ENS_SSVAR_BIN_SIZE',
             'ENS_PHIST_BIN_SIZE',
+            'DUPLICATE_FLAG',
+            'SKIP_CONST',
         ]
         for item in met_config_list:
             self.add_env_var(item, self.c_dict.get(item, ''))
@@ -427,6 +483,17 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                                'CLIMO_CDF_WRITE_BINS'])
         )
         self.add_env_var('CLIMO_CDF_DICT', climo_cdf)
+
+        nmep_smooth = (
+            self.format_met_config_dictionary('nmep_smooth',
+                                              ['NMEP_SMOOTH_GAUSSIAN_RADIUS',
+                                               'NMEP_SMOOTH_GAUSSIAN_DX',
+                                               'NMEP_SMOOTH_VLD_THRESH',
+                                               'NMEP_SMOOTH_SHAPE',
+                                               'NMEP_SMOOTH_TYPE',
+                                              ])
+        )
+        self.add_env_var('NMEP_SMOOTH_DICT', nmep_smooth)
 
         # set climatology environment variables
         self.set_climo_env_vars()

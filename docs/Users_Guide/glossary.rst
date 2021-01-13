@@ -6912,3 +6912,59 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:*  Varies
+
+   ENSEMBLE_STAT_DUPLICATE_FLAG
+     Specify the value for 'duplicate_flag' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_SKIP_CONST
+     Specify the value for 'skip_const' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX
+     Specify the value for 'nmep_smooth.gaussian_dx' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS
+     Specify the value for 'nmep_smooth.gaussian_radius' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH
+     Specify the value for 'nmep_smooth.vld_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE
+     Specify the value for 'nmep_smooth.shape' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_NMEP_SMOOTH_METHOD
+     Specify the value for 'nmep_smooth.type.method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH
+     Specify the value for 'nmep_smooth.type.width' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies

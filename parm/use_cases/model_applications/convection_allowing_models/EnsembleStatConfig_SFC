@@ -62,19 +62,7 @@ ${NBRHD_PROB_DICT}
 //
 // NMEP smoothing methods
 //
-nmep_smooth = {
-   vld_thresh      = 0.0;
-   shape           = CIRCLE;
-   gaussian_dx     = 81.27;
-   gaussian_radius = 120;
-   type = [
-      {
-         method = GAUSSIAN;
-         width  = 1;
-      }
-   ];
-}
-
+${NMEP_SMOOTH_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -109,10 +97,10 @@ message_type       = [ "ADPSFC" ];
 sid_exc            = [];
 obs_thresh         = [ NA ];
 obs_quality        = [];
-duplicate_flag     = UNIQUE;
+${DUPLICATE_FLAG}
 obs_summary        = NONE;
 obs_perc_value     = 50;
-skip_const         = TRUE;
+${SKIP_CONST}
 
 //
 // Observation error options
