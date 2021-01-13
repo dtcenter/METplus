@@ -10,12 +10,12 @@ The branching model employed by the METplus GitHub repository is similar to
 that described in
 `A successful Git branching model <https://nvie.com/posts/a-successful-git-branching-model/>`_,
 where new or updated code is created on a 'feature' branch that is based on
-the `NCAR/METplus GitHub 'develop' branch <https://github.com/dtcenter/METplus/tree/develop>`_..
+the `NCAR/METplus GitHub 'develop' branch <https://github.com/dtcenter/METplus/tree/develop>`_.
 
 The feature branch is named after the corresponding GitHub issue:
 
-| *feature_<Github Issue number>_<brief_description>*
-|
+*feature_<Github Issue number>_<brief_description>*
+
 
 When work is complete, the code in the feature branch is merged into the
 develop branch.  When a release candidate for METplus has been determined,
@@ -28,13 +28,14 @@ Sequence of Events - Contributing Code
 
 *Pre-requisite:*
 
-Set up a GitHub repository account if you do not already have one, and log
-into your account.  For more information about GitHub accounts, please refer
-to the GitHub Documentation on `GitHub accounts <https://help.github.com/en/github/getting-started-with-github/signing-up-for-a-new-github-account>`_.
+The user must set up a GitHub repository account if one does not already have exhist.
+Log into the account.  For more information about GitHub accounts, please refer
+to the GitHub Documentation on
+`GitHub accounts <https://help.github.com/en/github/getting-started-with-github/signing-up-for-a-new-github-account>`_.
 
 
-**Workflow Overview:**
-
+Workflow Overview
+~~~~~~~~~~~~~~~~~
 A contributor to METplus will do the following:
 
 1.  Create a GitHub Issue to track the new contribution.
@@ -53,7 +54,8 @@ A contributor to METplus will do the following:
 
 8.  Push the feature branch to GitHub.
 
-9.  Open a pull request from feature branch to original repo (from which you forked, in step 2 above).
+9.  Open a pull request from feature branch to original repo (from which the original
+    branch was forked, in step 2 above).
 
 10.  Clean up after pull request has been merged by an authorized METplus developer.
 
@@ -75,20 +77,20 @@ Fork the NCAR/METplus repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Retrieve a copy of the source code by forking the NCAR/METplus repository
-  into your own GitHub repository. Click on the **Fork** button in the upper right
+  into into the user's own GitHub repository. Click on the **Fork** button in the upper right
   hand side of the `METplus repository <https://github.com/dtcenter/METplus>`_.
 
 * Click on the appropriate GitHub account when presented with the pop-up window
   with the question 'Where should we fork METplus?'.
 
-* Your web page will refresh to your GitHub repository at, for example:
+* The web page will refresh to the GitHub repository at, for example:
 
   .. code-block:: ini
 
     https://github.com/<your-github-user>/METplus
 
-  where *<your-github-user>* is replaced with your GitHub username.  You now
-  have an entire copy of the NCAR/METplus Github repository.
+  where *<your-github-user>* is replaced with the user's GitHub username.
+  An entire copy of the NCAR/METplus Github repository is now in the User's area.
 
 
 Clone the fork to a local repository
