@@ -24,51 +24,47 @@ _______________________________________________________________________
 
 1. First, download **miniconda3** from the
    `Miniconda/Continuum Analytics
-   web site <https://docs.conda.io/en/latest/miniconda.html>`_
+   website <https://docs.conda.io/en/latest/miniconda.html>`_
    (this is a minimal installer that contains the package manager,
    *conda* that has Python 3 and other dependent packages.)
 
-If it doesn't exist on the computer, download it from:
-
-       https://conda.io/en/latest/miniconda.html
-
+   If it doesn't exist on the computer, download it `here <https://conda.io/en/latest/miniconda.html>`_.
+   
+| 
 
 2. Select the appropriate Python 3.7 (or newer) version for the operating
    system and computer's architecture.
 
-   Follow the installation instructions:
+   Follow the `installation instructions <https://conda.io/projects/conda/en/latest/user-guide/install/index.html>`_.
 
-       https://conda.io/projects/conda/en/latest/user-guide/install/index.html
+   *Note: It may be worth considering changing the default installation location
+   to a partition with more space.*
 
-*Note:*
+   From the command line, enter:
 
-It may be worth considering changing the default installation location
-to a partition with more space.
+   .. code-block:: ini
 
-From the command line, enter:
+     df -h
 
-.. code-block:: none
-
-    df -h
-
-to see how much space is available on the disk partitions on the computer/host.
-
+   to see how much space is available on the disk partitions on the computer/host.
+   
+| 
+   
 3. When queried whether to run initialization:
 
-    *Do you wish the installer to initialize Miniconda3 by running conda init?*
+   *Do you wish the installer to initialize Miniconda3 by running conda init?*
 
 
-Enter 'yes'.  This allows *conda* to append the user's .bashrc file so that
-when the bash shell is invoked, the user will automatically be placed in
-a conda 'base'environment.  This base environment is a very simple,
-minimal environment that has Python 3.7 (or whatever version of Python 3 that
-has been selected in step 2 above) and a few other basic Python packages.
-From this base environment, the user can readily activate other conda
-envs.  For instance, if the user is working on a project that uses
-Python 3.5, and another project that requires
-Python 3.6, the user can create two conda envs, one for Python 3.5 and
-the other for Python 3.6 and simply activate and work within the desired
-conda env.
+   Enter 'yes'.  This allows *conda* to append the user's .bashrc file so that
+   when the bash shell is invoked, the user will automatically be placed in
+   a conda 'base' environment.  This base environment is a very simple,
+   minimal environment that has Python 3.7 (or whatever version of Python 3 that
+   has been selected in step 2 above) and a few other basic Python packages.
+   From this base environment, the user can readily activate other conda
+   envs.  For instance, if the user is working on a project that uses
+   Python 3.5, and another project that requires Python 3.6, the user can
+   create two conda envs, one for Python 3.5 and the other for Python 3.6
+   and simply activate and work within the desired conda env.
 
 
 
@@ -99,21 +95,22 @@ to end the application.
 2.  Recreate the Python 3.x environment used for METplus via the
     environment.yml file found in the repository under the METplus directory:
 
-      .. code-block:: none
+    .. code-block:: ini
 		    
-        conda env create -f environment.yml
+      conda env create -f environment.yml
 
-     This may take a few minutes to install all the packages specified
-     in the environment.yml file.
-
+    This may take a few minutes to install all the packages specified
+    in the environment.yml file.
+    
+| 
 
 3.  Activate the environment.  From the (base) prompt, enter:
 
-      .. code-block:: none
+    .. code-block:: ini
 
-        conda activate name-of-env
+      conda activate name-of-env
 
-     where name-of-env is found at the top of the environment.yml file
+    where name-of-env is found at the top of the environment.yml file
 
         e.g. *mini3.6.3*
 
@@ -124,7 +121,7 @@ to end the application.
     
 5.  When finished, deactivate the environment:
 
-    .. code-block:: none
+    .. code-block:: ini
 
        conda deactivate
 
@@ -140,27 +137,28 @@ conda env", follow these instructions to start running METplus :
       *(base)username@host:*
 
 
-      *Note:  The prompt may vary, based on how the sys admin set up
-      the account.*
-
+    *Note:  The prompt may vary, based on how the sys admin set up
+    the account.*
+    
+| 
 
 2.  Activate the environment.  From the (base) prompt, enter:
 
-      .. code-block:: none
+    .. code-block:: ini
 
-         conda activate name-of-env
+      conda activate name-of-env
 
-     where **name-of-env** is found at the top of the environment.yml file
+    where **name-of-env** is found at the top of the environment.yml file
 
-     e.g. *mini3.6.3*
+      e.g. *mini3.6.3*
 
-Another way to find the name of the conda env is to enter the following:
+    Another way to find the name of the conda env is to enter the following:
 
-.. code-block:: none
+    .. code-block:: ini
 
-   conda env list
+      conda env list
 
-to get a list of all the available conda envs.
+    to get a list of all the available conda envs.
 
 
 
@@ -170,7 +168,7 @@ ______________________________________________________________
 To check for missing and mismatched packages run the check_python.py script
 in the METplus directory:
 
-.. code-block:: none
+.. code-block:: ini
 
   python check_python.py
 
