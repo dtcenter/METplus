@@ -1,3 +1,5 @@
+.. _conda_env:
+
 Instructions for the Conda Environment
 ======================================
 
@@ -37,8 +39,9 @@ _______________________________________________________________________
 
    Follow the `installation instructions <https://conda.io/projects/conda/en/latest/user-guide/install/index.html>`_.
 
-   *Note: It may be worth considering changing the default installation location
-   to a partition with more space.*
+   .. note::
+      
+     It may be worth considering changing the default installation location to a partition with more space.
 
    From the command line, enter:
 
@@ -86,10 +89,10 @@ to end the application.
    environment which contains the basic packages for the version of
    Python (corresponding to the miniconda3 installation).
 
+   .. note::
 
-   *Note: The user's prompt may vary, based on how the system administrator
-   set up the account.*
-
+      The user's prompt may vary, based on how the system administrator set up the account.
+      
    |
 
 2.  Recreate the Python 3.x environment used for METplus via the
@@ -136,9 +139,9 @@ conda env", follow these instructions to start running METplus :
 
       *(base)username@host:*
 
-
-    *Note:  The prompt may vary, based on how the sys admin set up
-    the account.*
+    .. note::
+       
+      The prompt may vary, based on how the sys admin set up the account.
     
 | 
 

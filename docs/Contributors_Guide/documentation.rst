@@ -37,8 +37,8 @@ documentation:
 Which versions are being used by the current METplus release can be viewed
 by looking at either environment.yml or requirements.txt, both of which
 are found in the METplus/ directory.  If the desire is to replicate all the
-packages employed by METplus, please refer to the "Instructions for the
-Conda Environment" section of the Contributor's Guide.
+packages employed by METplus, please refer to :numref:`conda_env` of the
+Contributor's Guide.
 
 
 Description of Documentation Directories
@@ -88,7 +88,7 @@ To determine where to add new documentation:
 
 
 Use cases that have only one MET tool/METplus wrapper:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * Create a new subdirectory, based on the name of the MET tool:
   e.g. *METplus/parm/use_cases/met_tool_wrapper/ASCII2NC*
@@ -110,15 +110,19 @@ Use cases that have only one MET tool/METplus wrapper:
 
 
 Use cases that use more than one MET tool/METplus wrapper:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 * The model_applications directory contains subdirectories that
   are based on the following categories:
   
+  * climate
   * convection_allowing_models
+  * cryosphere
+  * data_assimilation
   * medium_range
   * precipitation
   * s2s (sub-seasonal to seasonal)
+  * space_weather
   * tc_and_extra_tc
 
     * For documenting a use case that spans more than one MET tool/
@@ -134,7 +138,7 @@ Use cases that use more than one MET tool/METplus wrapper:
 	  <descriptive name>.py
 
 User's Guide:
-~~~~~~~~~~~~
+~~~~~~~~~~~~~
   
 * To add/modify any content that affects METplus users.
 * Modify any of the affected sections from the
@@ -147,7 +151,7 @@ User's Guide:
   * wrappers.rst (METplus wrappers)
 
 Contributor's Guide:
-~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~
   
 * To add/modify any content that affects METplus contributors.
 * Modify any of the affected sections from the
@@ -173,8 +177,10 @@ Contributor's Guide:
 Building Sphinx Documentation
 _____________________________
 
-**NOTE**:  It is assumed that the web browser application and METplus
-source code are located on the same computer/host.
+.. note::
+   
+  It is assumed that the web browser application and METplus
+  source code are located on the same computer/host.
 
 All the sphinx modules (listed earlier) need to be present in order to
 generate the HTML content that comprises the documentation.
@@ -247,7 +253,7 @@ generates new documentation based on the current source code.
 
 The HTML files are generated in the */path/to/METplus/docs/doxygen/html*
 directory, which can be viewed in the local browser. The file corresponding
-to the home page is */path/to/METplus/docs/doxygen/html/index.html*
+to the home page is */path/to/METplus/docs/doxygen/html/index.html*.
 
 Useful information can be found under the *Packages*, *Classes*, and
 *Python Files* tabs located at the top of the home page.
