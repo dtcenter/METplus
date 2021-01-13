@@ -2,8 +2,7 @@
 EnsembleStat: Using Python Embedding for Aerosol Optical Depth
 =============================================================================
 
-model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_
-_aod.conf
+model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
 
 """
 
@@ -136,4 +135,4 @@ _aod.conf
 #  `AirQualityandCompAppUseCase <https://dtcenter.github.io/METplus/search.html?q=AirQualityandCompAppUseCase&check_keywords=yes&area=default>`_,
 #  `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_,
 #
-# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-EnsembleStat.png'
+# sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-EnsembleStat_fcstICAP_obsMODIS_aod.png'
