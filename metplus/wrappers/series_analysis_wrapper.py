@@ -63,6 +63,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         self.set_c_dict_string(c_dict, 'MODEL', 'model')
         self.set_c_dict_string(c_dict, 'OBTYPE', 'obtype')
+
+        # handle old format of MODEL and OBTYPE
+        c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'WRF')
+        c_dict['OBTYPE_OLD'] = self.config.getstr('config', 'OBTYPE', 'ANALYS')
+
         self.handle_description(c_dict)
 
         self.handle_c_dict_regrid(c_dict)
@@ -713,7 +718,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         self.add_env_var("OBS_FILE_TYPE", self.c_dict.get('OBS_FILE_TYPE',
                                                           ''))
 
-        self.add_env_var('STAT_LIST', self.c_dict.get('OUTPUT_STATS_CNT', ''))
+        self.add_env_var('METPLUS_STAT_LIST', self.c_dict.get('OUTPUT_STATS_CNT', ''))
         self.add_env_var('CTS_LIST', self.c_dict.get('OUTPUT_STATS_CTS', ''))
 
         self.add_env_var('METPLUS_MODEL', self.c_dict.get('MODEL', ''))
@@ -736,6 +741,15 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         self.add_env_var("OBTYPE", self.c_dict.get('OBTYPE_OLD', ''))
         self.add_env_var('REGRID_TO_GRID',
                          self.c_dict.get('REGRID_TO_GRID_OLD', ''))
+
+        # format old stat list
+        stat_list = self.c_dict.get('STAT_LIST')
+        if not stat_list:
+            stat_list = "[]"
+        else:
+            stat_list = '","'.join(stat_list)
+            stat_list = f'["{stat_list}"]'
+        self.add_env_var('STAT_LIST', stat_list)
 
         super().set_environment_variables(time_info)
 
