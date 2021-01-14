@@ -43,7 +43,7 @@ def run_command(command, dir_to_run=None):
 
 def write_release_date_file(docs_dir):
     release_date_file = os.path.join(docs_dir,
-                                     'release_date')
+                                     'RELEASE_DATE')
 
     # get current date in %Y%m%d
     today_date = datetime.now().strftime('%Y%m%d')
@@ -77,11 +77,14 @@ def main():
                      ]
 
     # docs directory
-    docs_dir = os.getcwd()
+    docs_dir = os.path.abspath(os.path.dirname(__file__))
+    package_dir = os.path.join(docs_dir,
+                               os.pardir,
+                               'metplus')
 
     # update release_date file if creating a release
     if is_release:
-        write_release_date_file(docs_dir)
+        write_release_date_file(package_dir)
 
     # generated use case HTML output
     generated_dir = os.path.join(docs_dir,
