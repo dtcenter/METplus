@@ -184,7 +184,8 @@ class CommandBuilder:
                                           **time_info)
             self.add_env_var(env_var, env_var_value)
 
-    def format_regrid_to_grid(self, to_grid):
+    @staticmethod
+    def format_regrid_to_grid(to_grid):
         to_grid = to_grid.strip('"')
         if not to_grid:
             to_grid = 'NONE'
@@ -194,14 +195,6 @@ class CommandBuilder:
             to_grid = f'"{to_grid}"'
 
         return to_grid
-
-    def add_common_envs(self, time_info=None):
-        # Set the environment variables
-        self.add_env_var('MODEL', str(self.c_dict['MODEL']))
-
-        to_grid = self.c_dict.get('REGRID_TO_GRID')
-        self.add_env_var('REGRID_TO_GRID',
-                         self.format_regrid_to_grid(to_grid))
 
     def print_all_envs(self, print_copyable=True):
         """! Create list of log messages that output all environment variables
@@ -1367,7 +1360,7 @@ class CommandBuilder:
         c_dict[c_key] = (f'{met_config_name} = '
                          f'{util.remove_quotes(conf_value)};')
 
-    def handle_c_dict_regrid(self, c_dict, set_to_grid=False):
+    def handle_c_dict_regrid(self, c_dict, set_to_grid=True):
         app_name_upper = self.app_name.upper()
 
         if set_to_grid:
@@ -1401,7 +1394,7 @@ class CommandBuilder:
                                'REGRID_SHAPE',
                                remove_quotes=True)
 
-    def set_regrid_dict(self):
+    def get_regrid_dict(self):
         regrid_dict_string = ''
         # if any regrid items are set, create the regrid dictionary and add them
         if (self.c_dict.get('REGRID_TO_GRID', '') or
@@ -1417,8 +1410,30 @@ class CommandBuilder:
             regrid_dict_string += f"{self.c_dict.get('REGRID_SHAPE', '')}"
             regrid_dict_string += '}'
 
-        self.add_env_var('REGRID_DICT',
-                         regrid_dict_string)
+        return regrid_dict_string
+
+    def handle_description(self, c_dict):
+        """! Get description from config. If <app_name>_DESCRIPTION is set, use
+         that value. If not, check for DESCRIPTION and use that if it is set.
+         If set, set the DESCRIPTION c_dict key to "desc = <value>;"
+
+        @param c_dict dictionary to set value
+        """
+        # check if <app_name>_DESCRIPTION is set
+        app_name_upper = self.app_name.upper()
+        conf_value = self.config.getstr('config',
+                                        f'{app_name_upper}_DESCRIPTION',
+                                        '')
+
+        # if not, check if DESCRIPTION is set
+        if not conf_value:
+            conf_value = self.config.getstr('config',
+                                            'DESCRIPTION',
+                                            '')
+
+        # if the value is set, set the DESCRIPTION c_dict
+        if conf_value:
+            c_dict['DESC'] = f'desc = "{util.remove_quotes(conf_value)}";'
 
     def get_output_prefix(self, time_info=None):
         """! Read {APP_NAME}_OUTPUT_PREFIX from config. If time_info is set

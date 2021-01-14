@@ -56,10 +56,7 @@ class TCRMWWrapper(CommandBuilder):
             c_dict[f'DATA_FILE_TYPE'] = f"file_type = {data_type};"
 
         # values used in configuration file
-
-        conf_value = self.config.getstr('config', 'MODEL', '')
-        if conf_value:
-            c_dict['MODEL'] = f'model = "{util.remove_quotes(conf_value)}";'
+        self.set_c_dict_string(c_dict, 'MODEL', 'model')
 
         self.handle_c_dict_regrid(c_dict, set_to_grid=False)
 
@@ -165,7 +162,8 @@ class TCRMWWrapper(CommandBuilder):
         self.add_env_var('MODEL',
                          self.c_dict.get('MODEL', ''))
 
-        self.set_regrid_dict()
+        self.add_env_var('REGRID_DICT',
+                         self.get_regrid_dict())
 
         self.add_env_var('N_RANGE',
                          self.c_dict.get('N_RANGE', ''))

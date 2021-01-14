@@ -288,3 +288,126 @@ def test_write_list_file(metplus_config, filename, file_list, output_dir):
     # ensure content of file is as expected
     for actual_line, expected_line in zip(lines[1:], file_list):
         assert(actual_line.strip() == expected_line)
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_value', [
+        ({}, ''),
+        ({'DESCRIPTION': 'generic_desc'}, 'desc = "generic_desc";'),
+        ({'GRID_STAT_DESCRIPTION': 'gs_desc'}, 'desc = "gs_desc";'),
+        ({'DESCRIPTION': 'generic_desc',
+          'GRID_STAT_DESCRIPTION': 'gs_desc'}, 'desc = "gs_desc";'),
+        # same but with quotes around value
+        ({'DESCRIPTION': '"generic_desc"'}, 'desc = "generic_desc";'),
+        ({'GRID_STAT_DESCRIPTION': '"gs_desc"'}, 'desc = "gs_desc";'),
+        ({'DESCRIPTION': '"generic_desc"',
+          'GRID_STAT_DESCRIPTION': '"gs_desc"'}, 'desc = "gs_desc";'),
+    ]
+)
+def test_handle_description(metplus_config, config_overrides, expected_value):
+    config = metplus_config()
+
+    # set config values
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    cbw = CommandBuilder(config)
+
+    # set app_name to grid_stat for testing
+    cbw.app_name = 'grid_stat'
+
+    # create empty dictionary for testing
+    c_dict = {}
+
+    cbw.handle_description(c_dict)
+    assert(c_dict.get('DESC', '') == expected_value)
+
+@pytest.mark.parametrize(
+    'input, output', [
+        ('', 'NONE'),
+        ('NONE', 'NONE'),
+        ('FCST', 'FCST'),
+        ('OBS', 'OBS'),
+        ('G002', '"G002"'),
+    ]
+)
+def test_format_regrid_to_grid(metplus_config, input, output):
+    cbw = CommandBuilder(metplus_config())
+    assert(cbw.format_regrid_to_grid(input) == output)
+
+@pytest.mark.parametrize(
+    'config_overrides, set_to_grid, expected_dict', [
+        ({}, True, {}),
+        ({}, False, {}),
+        ({'APP_REGRID_TO_GRID': 'G002'},
+         True,
+         {'REGRID_TO_GRID': 'to_grid = "G002";'}),
+        ({'APP_REGRID_TO_GRID': 'G002'},
+         False,
+         {}),
+        ({'APP_REGRID_METHOD': 'BILIN'},
+         True,
+         {'REGRID_METHOD': 'method = BILIN;'}),
+        ({'APP_REGRID_WIDTH': '2'},
+         True,
+         {'REGRID_WIDTH': 'width = 2;'}),
+        ({'APP_REGRID_VLD_THRESH': '0.8'},
+         True,
+         {'REGRID_VLD_THRESH': 'vld_thresh = 0.8;'}),
+        ({'APP_REGRID_SHAPE': 'CIRCLE'},
+         True,
+         {'REGRID_SHAPE': 'shape = CIRCLE;'}),
+    ]
+)
+def test_handle_c_dict_regrid(metplus_config, config_overrides, set_to_grid,
+                              expected_dict):
+    config = metplus_config()
+
+    # set config values
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    cbw = CommandBuilder(config)
+
+    # set app_name to grid_stat for testing
+    cbw.app_name = 'app'
+
+    # create empty dictionary for testing
+    c_dict = {}
+
+    cbw.handle_c_dict_regrid(c_dict, set_to_grid=set_to_grid)
+    assert(len(c_dict) == len(expected_dict))
+    for key, value in expected_dict.items():
+        assert(c_dict.get(key, '') == value)
+
+@pytest.mark.parametrize(
+    'c_dict_values, expected_output', [
+        ({}, ''),
+        ({'REGRID_TO_GRID': 'to_grid = FCST;',},
+         'regrid = {to_grid = FCST;}'),
+        ({'REGRID_METHOD': 'method = BILIN;',},
+         'regrid = {method = BILIN;}'),
+        ({'REGRID_WIDTH': 'width = 2;',},
+         'regrid = {width = 2;}'),
+        ({'REGRID_VLD_THRESH': 'vld_thresh = 0.8;',},
+         'regrid = {vld_thresh = 0.8;}'),
+        ({'REGRID_SHAPE': 'shape = CIRCLE;',},
+         'regrid = {shape = CIRCLE;}'),
+        ({'REGRID_TO_GRID': 'to_grid = FCST;',
+          'REGRID_WIDTH': 'width = 2;',
+          'REGRID_SHAPE': 'shape = CIRCLE;',},
+         'regrid = {to_grid = FCST;width = 2;shape = CIRCLE;}'),
+        ({'REGRID_TO_GRID': 'to_grid = FCST;',
+          'REGRID_METHOD': 'method = BILIN;',
+          'REGRID_WIDTH': 'width = 2;',
+          'REGRID_VLD_THRESH': 'vld_thresh = 0.8;',
+          'REGRID_SHAPE': 'shape = CIRCLE;',},
+         'regrid = {to_grid = FCST;method = BILIN;width = 2;vld_thresh = 0.8;shape = CIRCLE;}'),
+    ]
+)
+def test_get_regrid_dict(metplus_config, c_dict_values, expected_output):
+    cbw = CommandBuilder(metplus_config())
+
+    for key, value in c_dict_values.items():
+        cbw.c_dict[key] = value
+
+    assert(cbw.get_regrid_dict() == expected_output)

@@ -5,41 +5,43 @@ NEXRAD Level 3
 
 Description
   Next-Generation Radar (NEXRAD) Level 3, gridded radial
-
-  https://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.ncdc:C00345
   
   https://www.ncdc.noaa.gov/data-access/radar-data/nexrad-products
 
   Display/conversion: https://www.ncdc.noaa.gov/data-access/radar-data/radar-display-tools
 
 Sample image
-  *Insert sample image here*
-.. image:: images/sample_image.png
+
+.. image:: images/nexrad_L3.png
    :width: 600
 
 Recommended use
-  *Insert recommended use here*
+  Weather Radar research
 
 File format
   Binary
 
 Location of data
-  Google Cloud (raw binary): https://console.cloud.google.com/storage/browser/gcp-public-data-nexrad-l3/; NCEI (raw binary): https://www.ncdc.noaa.gov/nexradinv/choosesite.jsp
+  Google Cloud: https://console.cloud.google.com/storage/browser/gcp-public-data-nexrad-l3/
+  
+  NCEI: https://www.ncdc.noaa.gov/nexradinv/choosesite.jsp
 
 Access restrictions
-  *Insert access restrictions here*
+  None
 
 Spatial resolution, grid, or coverage
-  Spatial resolution dependent on variable; CONUS, Alaska (7), Hawaii (4), U.S territories
+  Radar sites over CONUS, Alaska (7), Hawaii (4), U.S territories
+
+  Radial coverage of 0.5 degree azmuthal by 250m range gate resolution out to 230 km for most fields
 
 Temporal resolution
-  ~7 min
+  4.5 - 10 mins depending on Volume Coverage Patterns (VCPs)
 
 Starting and/or ending dates
-  May 1991 (extremely limited) to present
+  May 1992 (extremely limited) to present
 
 Data latency
-  *Insert latency here*
+  Archived: ~ 2 days (station dependent)
 
 Variables available
   40+ base, derived, post-processed products at reduced resolution
