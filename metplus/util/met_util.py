@@ -503,8 +503,6 @@ def check_for_deprecated_config(config):
         'EXTRACT_TILES_OVERWRITE_TRACK': {'sec': 'config',
                                           'alt': 'EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS',
                                           'copy': False},
-        'INIT_INCLUDE': {'sec': 'config', 'alt': 'TC_PAIRS_INIT_INCLUDE'},
-        'INIT_EXCLUDE': {'sec': 'config', 'alt': 'TC_PAIRS_INIT_EXCLUDE'},
         'EXTRACT_TILES_PAIRS_INPUT_DIR': {'sec': 'dir',
                                           'alt': 'EXTRACT_TILES_STAT_INPUT_DIR',
                                           'copy': False},
