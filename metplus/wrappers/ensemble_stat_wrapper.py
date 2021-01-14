@@ -145,9 +145,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_GRID_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
 
         self.set_met_config_float(c_dict,
-                              'ENSEMBLE_STAT_ENS_VLD_THRESH',
-                              'vld_thresh',
-                              'ENS_VLD_THRESH')
+                                  'ENSEMBLE_STAT_ENS_VLD_THRESH',
+                                  'vld_thresh',
+                                  'ENS_VLD_THRESH')
 
         self.set_met_config_list(c_dict,
                                  'ENSEMBLE_STAT_ENS_OBS_THRESH',

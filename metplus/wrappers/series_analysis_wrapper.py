@@ -68,18 +68,18 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         self.handle_c_dict_regrid(c_dict)
 
         self.set_met_config_list(c_dict,
-                             'SERIES_ANALYSIS_CAT_THRESH',
-                             'cat_thresh',
-                             remove_quotes=True)
+                                 'SERIES_ANALYSIS_CAT_THRESH',
+                                 'cat_thresh',
+                                 remove_quotes=True)
 
         self.set_met_config_float(c_dict,
-                              'SERIES_ANALYSIS_VLD_THRESH',
-                              'vld_thresh')
+                                  'SERIES_ANALYSIS_VLD_THRESH',
+                                  'vld_thresh')
 
         self.set_met_config_string(c_dict,
-                               'SERIES_ANALYSIS_BLOCK_SIZE',
-                               'block_size',
-                               remove_quotes=True)
+                                   'SERIES_ANALYSIS_BLOCK_SIZE',
+                                   'block_size',
+                                   remove_quotes=True)
 
         # get stat list to loop over
         c_dict['STAT_LIST'] = util.getlist(

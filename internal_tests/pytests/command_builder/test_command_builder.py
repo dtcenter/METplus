@@ -680,3 +680,4 @@ def test_set_met_config_list(metplus_config, mp_config_name, met_config_name,
         key = met_config_name.upper()
 
     assert(c_dict.get(key, '') == expected_output)
+
