@@ -15,6 +15,9 @@ setup(
     long_description_content_type="text/markdown",
     url="https://github.com/dtcenter/METplus",
     packages=find_packages(),
+    install_requires=[
+        'python-dateutil',
+    ],
     classifiers=[
          "Programming Language :: Python :: 3",
          "License :: OSI Approved :: MIT License", 
