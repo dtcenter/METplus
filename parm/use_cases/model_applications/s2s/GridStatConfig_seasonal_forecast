@@ -214,7 +214,6 @@ nc_pairs_flag   = {
 
 grid_weight_flag = NONE;
 tmp_dir          = "/tmp";
-//output_prefix    = "${MODEL}-${DESCRIPTION}_${CURRENT_OBS_NAME}_vs_${OBTYPE}_${OUTPUT_FILENAME_INFO}";
 output_prefix    = "${OUTPUT_PREFIX}";
 //version          = "V8.1";
 ////////////////////////////////////////////////////////////////////////////////
