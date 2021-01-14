@@ -518,8 +518,6 @@ def check_for_deprecated_config(config):
         'SERIES_ANALYSIS_FILTER_OPTS': {'sec': 'config',
                                         'alt': 'TC_STAT_JOB_ARGS',
                                         'copy': False},
-        'TC_STAT_INPUT_DIR': {'sec': 'dir',
-                              'alt': 'TC_STAT_LOOKIN_DIR'},
         'SERIES_ANALYSIS_INPUT_DIR': {'sec': 'dir',
                               'alt': 'FCST_SERIES_ANALYSIS_INPUT_DIR '
                                      'and '

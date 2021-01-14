@@ -64,6 +64,11 @@ class TCStatWrapper(CommandBuilder):
                                                  c_dict['VERBOSITY'])
 
         c_dict['LOOKIN_DIR'] = self.config.getdir('TC_STAT_LOOKIN_DIR', '')
+
+        # support LOOKIN_DIR and INPUT_DIR
+        if not c_dict['LOOKIN_DIR']:
+            c_dict['LOOKIN_DIR'] = self.config.getdir('TC_STAT_INPUT_DIR', '')
+
         if not c_dict['LOOKIN_DIR']:
             self.log_error("TC_STAT_LOOKIN_DIR must be set")
 
