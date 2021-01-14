@@ -375,6 +375,11 @@ def test_handle_c_dict_regrid(metplus_config, config_overrides, set_to_grid,
     c_dict = {}
 
     cbw.handle_c_dict_regrid(c_dict, set_to_grid=set_to_grid)
+
+    # remove old to_grid item if set
+    if 'REGRID_TO_GRID_OLD' in c_dict:
+        del c_dict['REGRID_TO_GRID_OLD']
+
     assert(len(c_dict) == len(expected_dict))
     for key, value in expected_dict.items():
         assert(c_dict.get(key, '') == value)

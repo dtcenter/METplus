@@ -716,9 +716,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         self.add_env_var('STAT_LIST', self.c_dict.get('OUTPUT_STATS_CNT', ''))
         self.add_env_var('CTS_LIST', self.c_dict.get('OUTPUT_STATS_CTS', ''))
 
-        self.add_env_var('MODEL', self.c_dict.get('MODEL', ''))
-        self.add_env_var("OBTYPE", self.c_dict.get('OBTYPE', ''))
-        self.add_env_var("DESC", self.c_dict.get('DESC', ''))
+        self.add_env_var('METPLUS_MODEL', self.c_dict.get('MODEL', ''))
+        self.add_env_var("METPLUS_OBTYPE", self.c_dict.get('OBTYPE', ''))
+        self.add_env_var("METPLUS_DESC", self.c_dict.get('DESC', ''))
         self.add_env_var("CAT_THRESH", self.c_dict.get('CAT_THRESH', ''))
         self.add_env_var("VLD_THRESH", self.c_dict.get('VLD_THRESH', ''))
         self.add_env_var("BLOCK_SIZE", self.c_dict.get('BLOCK_SIZE', ''))
@@ -730,6 +730,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         self.add_env_var('REGRID_DICT',
                          self.get_regrid_dict())
+
+        # set old env var settings for backwards compatibility
+        self.add_env_var('MODEL', self.c_dict.get('MODEL_OLD', ''))
+        self.add_env_var("OBTYPE", self.c_dict.get('OBTYPE_OLD', ''))
+        self.add_env_var('REGRID_TO_GRID',
+                         self.c_dict.get('REGRID_TO_GRID_OLD', ''))
 
         super().set_environment_variables(time_info)
 

@@ -9,17 +9,17 @@
 //
 // Output model name to be written
 //
-${MODEL}
+${METPLUS_MODEL}
 
 //
 // Output description to be written
 //
-${DESC}
+${METPLUS_DESC}
 
 //
 // Output observation type to be written
 //
-${OBTYPE}
+${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
 

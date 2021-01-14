@@ -1368,9 +1368,14 @@ class CommandBuilder:
                 self.config.getstr('config',
                                    f'{app_name_upper}_REGRID_TO_GRID', '')
             )
+
+            # set to_grid without formatting for backwards compatibility
+            formatted_to_grid = self.format_regrid_to_grid(conf_value)
+            c_dict['REGRID_TO_GRID_OLD'] = formatted_to_grid
+
             if conf_value:
                 c_dict['REGRID_TO_GRID'] = (
-                    f"to_grid = {self.format_regrid_to_grid(conf_value)};"
+                    f"to_grid = {formatted_to_grid};"
                 )
 
         self.set_c_dict_string(c_dict,
