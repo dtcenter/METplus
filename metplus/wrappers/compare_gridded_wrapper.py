@@ -100,7 +100,7 @@ that reformat gridded data
               @param time_info dictionary containing timing info from current run"""
         self.add_env_var('METPLUS_MODEL', self.c_dict.get('MODEL', ''))
         self.add_env_var('METPLUS_OBTYPE', self.c_dict.get('OBTYPE', ''))
-        self.add_env_var('METPLUS_DESC', self.c_dict.get('DESC', ''))
+        self.add_env_var('METPLUS_DESC', self.c_dict.get('METPLUS_DESC', ''))
 
         self.add_env_var('REGRID_DICT',
                          self.get_regrid_dict())

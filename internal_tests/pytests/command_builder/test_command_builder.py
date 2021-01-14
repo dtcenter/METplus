@@ -292,15 +292,15 @@ def test_write_list_file(metplus_config, filename, file_list, output_dir):
 @pytest.mark.parametrize(
     'config_overrides, expected_value', [
         ({}, ''),
-        ({'DESCRIPTION': 'generic_desc'}, 'desc = "generic_desc";'),
-        ({'GRID_STAT_DESCRIPTION': 'gs_desc'}, 'desc = "gs_desc";'),
-        ({'DESCRIPTION': 'generic_desc',
-          'GRID_STAT_DESCRIPTION': 'gs_desc'}, 'desc = "gs_desc";'),
+        ({'DESC': 'generic_desc'}, 'desc = "generic_desc";'),
+        ({'GRID_STAT_DESC': 'gs_desc'}, 'desc = "gs_desc";'),
+        ({'DESC': 'generic_desc',
+          'GRID_STAT_DESC': 'gs_desc'}, 'desc = "gs_desc";'),
         # same but with quotes around value
-        ({'DESCRIPTION': '"generic_desc"'}, 'desc = "generic_desc";'),
-        ({'GRID_STAT_DESCRIPTION': '"gs_desc"'}, 'desc = "gs_desc";'),
-        ({'DESCRIPTION': '"generic_desc"',
-          'GRID_STAT_DESCRIPTION': '"gs_desc"'}, 'desc = "gs_desc";'),
+        ({'DESC': '"generic_desc"'}, 'desc = "generic_desc";'),
+        ({'GRID_STAT_DESC': '"gs_desc"'}, 'desc = "gs_desc";'),
+        ({'DESC': '"generic_desc"',
+          'GRID_STAT_DESC': '"gs_desc"'}, 'desc = "gs_desc";'),
     ]
 )
 def test_handle_description(metplus_config, config_overrides, expected_value):
@@ -319,7 +319,7 @@ def test_handle_description(metplus_config, config_overrides, expected_value):
     c_dict = {}
 
     cbw.handle_description(c_dict)
-    assert(c_dict.get('DESC', '') == expected_value)
+    assert(c_dict.get('METPLUS_DESC', '') == expected_value)
 
 @pytest.mark.parametrize(
     'input, output', [

@@ -159,6 +159,8 @@ class TCRMWWrapper(CommandBuilder):
         self.add_env_var('DATA_FIELD',
                          self.c_dict.get('DATA_FIELD', ''))
 
+        self.add_env_var('METPLUS_MODEL',
+                         self.c_dict.get('MODEL', ''))
         self.add_env_var('MODEL',
                          self.c_dict.get('MODEL', ''))
 

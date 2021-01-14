@@ -723,7 +723,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         self.add_env_var('METPLUS_MODEL', self.c_dict.get('MODEL', ''))
         self.add_env_var("METPLUS_OBTYPE", self.c_dict.get('OBTYPE', ''))
-        self.add_env_var("METPLUS_DESC", self.c_dict.get('DESC', ''))
+        self.add_env_var("METPLUS_DESC", self.c_dict.get('METPLUS_DESC', ''))
         self.add_env_var("CAT_THRESH", self.c_dict.get('CAT_THRESH', ''))
         self.add_env_var("VLD_THRESH", self.c_dict.get('VLD_THRESH', ''))
         self.add_env_var("BLOCK_SIZE", self.c_dict.get('BLOCK_SIZE', ''))

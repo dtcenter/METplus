@@ -372,11 +372,14 @@ class TCPairsWrapper(CommandBuilder):
             # Empty, MET is expecting [] to indicate all models are to be
             # included
             self.add_env_var('MODEL', "[]")
+            self.add_env_var('METPLUS_MODEL', "model = [];")
         else:
             # Replace ' with " and remove whitespace
             model = str(tmp_model).replace("\'", "\"")
             model_str = ''.join(model.split())
             self.add_env_var('MODEL', str(model_str))
+            model_fmt = f"model = {model_str};"
+            self.add_env_var('METPLUS_MODEL', model_fmt)
 
         # STORM_ID
         tmp_storm_id = self.c_dict['STORM_ID']
@@ -454,8 +457,8 @@ class TCPairsWrapper(CommandBuilder):
         tmp_dland_file = self.c_dict['DLAND_FILE']
         self.add_env_var('DLAND_FILE', str(tmp_dland_file))
 
-        self.add_env_var('DESC',
-                         self.c_dict.get('DESC', ''))
+        self.add_env_var('METPLUS_DESC',
+                         self.c_dict.get('METPLUS_DESC', ''))
 
         super().set_environment_variables(time_info)
 

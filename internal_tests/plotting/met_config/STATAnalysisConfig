@@ -9,8 +9,8 @@
 //
 // Filtering input STAT lines by the contents of each column
 //
-model = [${MODEL}];
-desc  = [${DESC}];
+${METPLUS_MODEL}
+${METPLUS_DESC}
 
 fcst_lead = [${FCST_LEAD}];
 obs_lead  = [${OBS_LEAD}];
@@ -40,7 +40,7 @@ obs_units  = [${OBS_UNITS}];
 fcst_lev = [${FCST_LEVEL}];
 obs_lev  = [${OBS_LEVEL}];
 
-obtype = [${OBTYPE}];
+${METPLUS_OBTYPE}
 
 vx_mask = [${VX_MASK}];
 

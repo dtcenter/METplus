@@ -66,7 +66,7 @@ each use case should have the following:
     * **<CLIMO>** is the optional climotology input data source (this can be
       excluded if no climatology data is used)
 
-    * **<DESCRIPTION>** is an optional description that can include field
+    * **<DESCRIPTOR>** is an optional description that can include field
       category, number of fields, statistical types, and file formats
 
 * 0 or more MET configuration files named <MET-TOOL>Config_<DESCRIPTOR>

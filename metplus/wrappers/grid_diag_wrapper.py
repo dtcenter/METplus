@@ -84,8 +84,10 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         self.add_env_var('REGRID_DICT',
                          self.get_regrid_dict())
 
+        self.add_env_var('METPLUS_DESC',
+                         self.c_dict.get('METPLUS_DESC', ''))
         self.add_env_var('DESC',
-                         self.c_dict.get('DESC', ''))
+                         self.c_dict.get('METPLUS_DESC', ''))
 
         verif_mask = self.c_dict.get('VERIFICATION_MASK', '')
         if verif_mask:
