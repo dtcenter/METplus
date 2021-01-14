@@ -15,3 +15,7 @@ def get_metplus_info(info_rel_path):
 
 __version__ = get_metplus_version()
 __release_date__ = get_metplus_release_date()
+
+# import util and wrappers
+from .util import *
+from .wrappers import *
