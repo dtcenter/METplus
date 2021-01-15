@@ -164,8 +164,12 @@ class TCRMWWrapper(CommandBuilder):
         self.add_env_var('MODEL',
                          self.c_dict.get('MODEL', ''))
 
+        regrid_dict = self.get_regrid_dict()
+        self.add_env_var('METPLUS_REGRID_DICT',
+                         regrid_dict)
+        # support deprecated version
         self.add_env_var('REGRID_DICT',
-                         self.get_regrid_dict())
+                         regrid_dict)
 
         self.add_env_var('N_RANGE',
                          self.c_dict.get('N_RANGE', ''))

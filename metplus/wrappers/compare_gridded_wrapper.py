@@ -102,7 +102,7 @@ that reformat gridded data
         self.add_env_var('METPLUS_OBTYPE', self.c_dict.get('OBTYPE', ''))
         self.add_env_var('METPLUS_DESC', self.c_dict.get('METPLUS_DESC', ''))
 
-        self.add_env_var('REGRID_DICT',
+        self.add_env_var('METPLUS_REGRID_DICT',
                          self.get_regrid_dict())
 
         # set old environment variable values for backwards compatibility

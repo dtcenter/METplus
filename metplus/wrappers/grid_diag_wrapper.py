@@ -81,8 +81,12 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         self.add_env_var('DATA_FIELD',
                          self.c_dict.get('DATA_FIELD', ''))
 
+        regrid_dict = self.get_regrid_dict()
+        self.add_env_var('METPLUS_REGRID_DICT',
+                         regrid_dict)
+        # support deprecated version
         self.add_env_var('REGRID_DICT',
-                         self.get_regrid_dict())
+                         regrid_dict)
 
         self.add_env_var('METPLUS_DESC',
                          self.c_dict.get('METPLUS_DESC', ''))
