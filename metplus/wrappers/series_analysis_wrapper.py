@@ -61,17 +61,11 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                c_dict['VERBOSITY'])
         )
 
-        self.set_c_dict_string(c_dict,
-                               'MODEL',
-                               'model')
-        self.set_c_dict_string(c_dict,
-                               'OBTYPE',
-                               'obtype')
-        self.set_c_dict_string(c_dict,
-                               'SERIES_ANALYSIS_DESCRIPTION',
-                               'desc')
+        self.set_c_dict_string(c_dict, 'MODEL', 'model')
+        self.set_c_dict_string(c_dict, 'OBTYPE', 'obtype')
+        self.handle_description(c_dict)
 
-        self.handle_c_dict_regrid(c_dict, set_to_grid=True)
+        self.handle_c_dict_regrid(c_dict)
 
         self.set_c_dict_list(c_dict,
                              'SERIES_ANALYSIS_CAT_THRESH',
@@ -734,7 +728,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         # set climatology environment variables
         self.set_climo_env_vars()
 
-        self.set_regrid_dict()
+        self.add_env_var('REGRID_DICT',
+                         self.get_regrid_dict())
 
         super().set_environment_variables(time_info)
 

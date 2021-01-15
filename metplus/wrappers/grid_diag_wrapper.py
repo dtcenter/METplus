@@ -56,35 +56,12 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
         # values used in configuration file
 
-        conf_value = self.config.getstr('config', 'GRID_DIAG_REGRID_METHOD', '')
-        if conf_value:
-            c_dict['REGRID_METHOD'] = f"method = {conf_value};"
+        # set regrid dictionary values
+        self.handle_c_dict_regrid(c_dict)
 
-        conf_value = self.config.getint('config', 'GRID_DIAG_REGRID_WIDTH')
-        if conf_value is None:
-            self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE:
-            c_dict['REGRID_WIDTH'] = f"width = {str(conf_value)};"
 
-        conf_value = self.config.getfloat('config', 'GRID_DIAG_REGRID_VLD_THRESH', )
-        if conf_value is None:
-            self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE:
-            c_dict['REGRID_VLD_THRESH'] = f"vld_thresh = {str(conf_value)};"
-
-        conf_value = self.config.getstr('config', 'GRID_DIAG_REGRID_SHAPE', '')
-        if conf_value:
-            c_dict['REGRID_SHAPE'] = f"shape = {conf_value};"
-
-        conf_value = self.config.getstr('config', 'GRID_DIAG_REGRID_TO_GRID', '')
-        if conf_value:
-            c_dict['REGRID_TO_GRID'] = (
-                f"to_grid = {self.format_regrid_to_grid(conf_value)};"
-            )
-
-        conf_value = self.config.getstr('config', 'GRID_DIAG_DESCRIPTION', '')
-        if conf_value:
-            c_dict['DESC'] = f'desc = "{util.remove_quotes(conf_value)}";'
+        # set desc
+        self.handle_description(c_dict)
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
@@ -104,24 +81,8 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         self.add_env_var('DATA_FIELD',
                          self.c_dict.get('DATA_FIELD', ''))
 
-        regrid_dict_string = ''
-        # if any regrid items are set, create the regrid dictionary and add them
-        if (self.c_dict.get('REGRID_METHOD', '') or
-                self.c_dict.get('REGRID_WIDTH', '') or
-                self.c_dict.get('REGRID_VLD_THRESH', '') or
-                self.c_dict.get('REGRID_SHAPE', '') or
-                self.c_dict.get('REGRID_TO_GRID', '')
-        ):
-            regrid_dict_string = 'regrid = {'
-            regrid_dict_string += f"{self.c_dict.get('REGRID_TO_GRID', '')}"
-            regrid_dict_string += f"{self.c_dict.get('REGRID_METHOD', '')}"
-            regrid_dict_string += f"{self.c_dict.get('REGRID_WIDTH', '')}"
-            regrid_dict_string += f"{self.c_dict.get('REGRID_VLD_THRESH', '')}"
-            regrid_dict_string += f"{self.c_dict.get('REGRID_SHAPE', '')}"
-            regrid_dict_string += '}'
-
         self.add_env_var('REGRID_DICT',
-                         regrid_dict_string)
+                         self.get_regrid_dict())
 
         self.add_env_var('DESC',
                          self.c_dict.get('DESC', ''))

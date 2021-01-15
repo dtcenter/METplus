@@ -12,7 +12,7 @@
 //
 // Output model name to be written
 //
-model = "${MODEL}";	  // "GloTEC_without_cosmic";
+${MODEL}
 
 //
 // Output description to be written
@@ -23,7 +23,7 @@ ${DESC}
 //
 // Output observation type to be written
 //
-obtype = "${OBTYPE}";  	  // "GloTEC_with_cosmic";
+${OBTYPE}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -32,13 +32,7 @@ obtype = "${OBTYPE}";  	  // "GloTEC_with_cosmic";
 // Verification grid
 // May be set separately in each "field" entry
 //
-regrid = {
-   to_grid    = NONE;
-   method     = NEAREST;
-   width      = 1;
-   vld_thresh = 0.5;
-   shape      = SQUARE;
-}
+${REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

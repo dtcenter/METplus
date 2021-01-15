@@ -73,7 +73,7 @@ ${FILTER}
 //
 // Description written to output DESC column
 //
-//desc = "NA";
+${DESC}
 
 //
 // Forecast ATCF ID's
