@@ -385,7 +385,7 @@ This is the MET configuration file used for this wrapper. Below the file content
 
 The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
 
-**${MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${METPLUS_MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
 
 METplus Configuration::
 
@@ -424,7 +424,7 @@ Resulting value::
 
     file_type = GRIB2;
 
-**${REGRID_DICT}** - Corresponds to GRID_DIAG_REGRID_METHOD, GRID_DIAG_REGRID_WIDTH, GRID_DIAG_REGRID_VLD_THRESH, GRID_DIAG_REGRID_SHAPE, and GRID_DIAG_REGRID_TO_GRID in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET GridDiag configuration file will be used.
+**${METPLUS_REGRID_DICT}** - Corresponds to GRID_DIAG_REGRID_METHOD, GRID_DIAG_REGRID_WIDTH, GRID_DIAG_REGRID_VLD_THRESH, GRID_DIAG_REGRID_SHAPE, and GRID_DIAG_REGRID_TO_GRID in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET GridDiag configuration file will be used.
 
 METplus Configuration 1::
 
@@ -1714,7 +1714,7 @@ This is the MET configuration file used for this wrapper. Below the file content
 
 The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
 
-**${MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${METPLUS_MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
 
 METplus Configuration::
 
@@ -1930,7 +1930,7 @@ Resulting value::
 
     rmw_scale = 0.2;
 
-**${REGRID_DICT}** - Corresponds to TC_RMW_REGRID_METHOD, TC_RMW_REGRID_WIDTH, TC_RMW_REGRID_VLD_THRESH, and TC_RMW_REGRID_SHAPE in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${METPLUS_REGRID_DICT}** - Corresponds to TC_RMW_REGRID_METHOD, TC_RMW_REGRID_WIDTH, TC_RMW_REGRID_VLD_THRESH, and TC_RMW_REGRID_SHAPE in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET TCRMW configuration file will be used.
 
 METplus Configuration 1::
 
