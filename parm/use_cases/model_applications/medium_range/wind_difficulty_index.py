@@ -4,9 +4,7 @@
 Load fieldijn from npz file created with save_ensemble_data.py
 helper function, compute ensemble mean and spread, compute
 difficulty index for a set of thresholds, plot and save the results.
-Created on Tue Mar 17 08:06:07 2020
-Last modified Mon Apr 6 11:30:30 2020
-@author: campbell
+Author: Bill Campbell, NRL and Lindsay Blank, NCAR
 
 Taken from original test_difficulty_index.py but replacing with METcalcpy and METplotpy.
 
