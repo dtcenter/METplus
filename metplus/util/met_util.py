@@ -2178,10 +2178,14 @@ def get_var_items(config, data_type, index, time_info, met_tool=None):
         extra = do_string_sub(config.getraw('config', search_extra),
                               **time_info)
 
-        # split up each item by semicolon, then add a semicolon to the end of each item
+        # strip off empty space around each value
+        extra_list = [item.strip() for item in extra.split(';')]
+
+        # split up each item by semicolon, then add a semicolon to the
+        # end of each item
         # to avoid errors where the user forgot to add a semicolon at the end
         # use list(filter(None to remove empty strings from list
-        extra_list = list(filter(None, extra.split(';')))
+        extra_list = list(filter(None, extra_list))
         extra = f"{'; '.join(extra_list)};"
 
     return name, levels, thresh, extra
