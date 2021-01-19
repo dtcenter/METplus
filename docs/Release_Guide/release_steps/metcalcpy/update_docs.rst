@@ -7,7 +7,7 @@ Update the Documentation on the Web
 .. parsed-literal::
 
     git clone https://github.com/dtcenter/METcalcpy
-    cd METcalcpy/metcalcpy/docs
+    cd METcalcpy/docs
     git checkout vX.Y.Z
     bash
     conda deactivate
