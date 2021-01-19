@@ -77,7 +77,7 @@ met_tool_wrapper/MODE/MODE.conf
 # * **${FCST_FIELD}** - Formatted forecast field information. Generated from FCST_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
 # * **${OBS_FIELD}** - Formatted observation field information. Generated from OBS_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
 # * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to MODE_REGRID_TO_GRID in the METplus configuration file.
-# * **${VERIF_MASK}** - Optional verification mask file or list of files. Corresponds to GRID_STAT_VERIFICATION_MASK_TEMPLATE in the METplus configuration file.
+# * **${VERIF_MASK}** - Optional verification mask file or list of files. Corresponds to MODE_VERIFICATION_MASK_TEMPLATE in the METplus configuration file.
 # * **${OUTPUT_PREFIX}** - String to prepend to the output filenames. Corresponds to MODE_OUTPUT_PREFIX in the METplus configuration file.
 #
 
