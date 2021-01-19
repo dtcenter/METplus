@@ -144,6 +144,24 @@ _SeriesByLead_PyEmbed_IVT.conf
 #
 
 ##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case uses two Python embedding scripts to read input data
+#
+# parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT/gfs_ivt_fcst.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT/gfs_ivt_fcst.py
+#
+# parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT/gfs_ivt_analysis.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT/gfs_ivt_analysis.py
+#
+#
+
+##############################################################################
 # Running METplus
 # ---------------
 #
