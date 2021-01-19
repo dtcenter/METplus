@@ -1,5 +1,5 @@
 ******************
-METploypy Release
+METplotpy Release
 ******************
 
 .. |projectRepo| replace:: METploypy
@@ -18,3 +18,4 @@ Development release (e.g. vX.Y-betaN or vX.Y-rcN)
 =================================================
 
 .. include:: release_steps/clone_project_repository.rst
+.. include:: release_steps/metplotpy/update_docs.rst
