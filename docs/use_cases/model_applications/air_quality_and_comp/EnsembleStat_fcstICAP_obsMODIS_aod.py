@@ -81,15 +81,15 @@ _aod.conf
 #
 # This use case uses two Python embedding scripts to read input data
 #
-# forecast_embedded.py
+# parm/use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod/forecast_embedded.py
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod/forecast_embedded.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod/forecast_embedded.py
 #
-# analysis_embedded.py
+# parm/use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod/analysis_embedded.py
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod/analysis_embedded.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod/analysis_embedded.py
 #
 
 
