@@ -24,7 +24,7 @@ bmodel = ${BMODEL};
 //
 // Stratify by the DESC column.
 //
-desc = ${DESC};
+${METPLUS_DESC}
 
 //
 // Stratify by the STORM_ID column.

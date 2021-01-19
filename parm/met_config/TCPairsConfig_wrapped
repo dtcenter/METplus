@@ -12,12 +12,12 @@
 //
 // Models
 //
-model = ${MODEL};
+${METPLUS_MODEL}
 
 //
 // Description
 //
-${DESC}
+${METPLUS_DESC}
 
 //
 // Storm identifiers
