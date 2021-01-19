@@ -1136,3 +1136,36 @@ def test_get_storms(metplus_config, filename, expected_result):
     # ensure header matches expected format
     if storm_dict:
         assert(storm_dict['header'].split()[storm_id_index] == 'STORM_ID')
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_result', [
+        # 2 items semi-colon at end
+        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;  desc = "HI_CLOUD";',},
+         'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
+        # 2 items no semi-colon at end
+        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;  desc = "HI_CLOUD"',},
+         'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
+        # 1 item semi-colon at end
+        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;',
+          },
+         'GRIB_lvl_typ = 234;'),
+        # 1 item no semi-colon at end
+        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234',
+          },
+         'GRIB_lvl_typ = 234;'),
+    ]
+)
+def test_get_var_items_options_semicolon(metplus_config, config_overrides,
+                                         expected_result):
+    config = metplus_config()
+    config.set('config', 'FCST_VAR1_NAME', 'FNAME')
+    config.set('config', 'FCST_VAR1_LEVELS', 'FLEVEL')
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    data_type = 'FCST'
+    index = 1
+    time_info = {}
+
+    _, _, _, result = util.get_var_items(config, data_type, index, time_info)
+    assert(result == expected_result)
