@@ -298,9 +298,28 @@ Open a pull request using a browser
       where <your_feature_branch> corresponds to the feature branch where you have been
       making your changes (e.g. feature_777_wrapper_xyz).
 
-    * In the 'write' window, add any additional comments/details.  In this window are the
+    * In the 'write' window, follow the directions and fill in the template
+      add any additional comments/details.
+      In this window are the
       comments you created when you committed your changes in step 6 above.
 
+
+submitting the pull request
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+When filling in the template, users will need to:
+
+* Define the PR metadata, as permissions allow.
+* Select: **Reviewer(s), Project(s)**, and **Milestone**
+  
+When selecting a reviewer, internal contributors submitting pull requests
+should select the appropriate reviewer(s) and let the reviewer know that the
+pull request has been assigned to them. If external contributors are unsure
+who to assign as a reviewer, they should send an email to met_help@ucar.edu
+asking the met-help point person to help with the assignment of a reviewer.
+
+
+      
     *  You can scroll down to see what changes were made to the file you committed.
 
     * When everything looks satisfactory, click on the green 'Create pull request' button.
@@ -308,6 +327,56 @@ Open a pull request using a browser
     * An authorized METplus developer will accept the pull request (if everything
       meets acceptance criteria) and merge your code into the remote repository's develop
       branch.
+
+Approve a pull request using a browser
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Submitting a pull request allows a user to propose changes, request a
+review of the contributions and have the proposed changes merged into a
+different branch. Pull requests allow the reviewer to see the differences
+in the content from both branches.
+
+`GitHub Actions <https://github.com/dtcenter/METplus/actions>`_ to test the code to make sure there aren’t errors when doing pull requests.
+
+It is important to note that a review has three possible statuses, which are listed on this page `About pull request reviews <https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-request-reviews>`_:
+
+* **Comment**: Submit general feedback without explicitly approving the
+  changes or requesting additional changes.
+* **Approve**: Submit feedback and approve merging the changes proposed in
+  the pull request.
+* **Request changes**: Submit feedback that must be addressed before the pull request can be merged.
+
+There are three merge methods to choose from:
+
+* **Create a merge commit**
+* **Squash and merge** (This is the most common merge method in METplus)
+* **Rebase and merge**
+
+
+  For internal contributors:
+The person submitting the pull request selects the appropriate reviewer(s) and let’s them know that the ticket has been assigned to them.
+
+For external contributors:
+Recommend that the met-help point person is responsible for assigning unassigned pull request on their day. 
+
+Internal or External or Both?
+Need to set up and ensure that GitHub Actions regression tests pass.
+
+All Contributors:
+
+Review items (as an approver) from the Pull Request Template:
+Describe testing already performed for these changes:
+Recommend testing for the reviewer to perform, including the location of input datasets:
+Will this PR result in changes to the test suite? [Yes or No]
+  If yes, describe the new output and/or changes to the existing output:
+After merging, should the reviewer DELETE the feature branch from GitHub? [Yes or No]
+
+
+From George: If a sub-task doesn't make sense in the code base without other sub-tasks being completed, then I would say we should wait to create a pull request.
+
+
+
+
 
 Clean up after a successfully merged pull request
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
