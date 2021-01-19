@@ -76,6 +76,24 @@ _aod.conf
 # * **${CLIMO_STDEV_FILE}** - Optional path to climatology standard deviation file. Corresponds to ENSEMBLE_STAT_CLIMO_STDEV_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
 
 ##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case uses two Python embedding scripts to read input data
+#
+# forecast_embedded.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod/forecast_embedded.py
+#
+# analysis_embedded.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../use_cases/model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod/analysis_embedded.py
+#
+
+
+##############################################################################
 # Running METplus
 # ---------------
 #
