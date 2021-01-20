@@ -25,6 +25,30 @@ from ..util import do_string_sub
 class EnsembleStatWrapper(CompareGriddedWrapper):
     """!Wraps the MET tool ensemble_stat to compare ensemble datasets
     """
+    OUTPUT_FLAGS = ['ecnt',
+                    'rps',
+                    'rhist',
+                    'phist',
+                    'orank',
+                    'ssvar',
+                    'relp'
+                    ]
+    ENSEMBLE_FLAGS = ['latlon',
+                      'mean',
+                      'stdev',
+                      'minus',
+                      'plus',
+                      'min',
+                      'max',
+                      'range',
+                      'vld_count',
+                      'frequency',
+                      'nep',
+                      'nmep',
+                      'rank',
+                      'weight',
+                      ]
+
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'ensemble_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
@@ -243,7 +267,85 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                 'width',
                                 'NMEP_SMOOTH_WIDTH')
 
-        self.format_nmep_smooth_type(c_dict)
+        c_dict['NMEP_SMOOTH_TYPE'] = self.format_met_config_type(c_dict,
+                                                                 'NMEP_SMOOTH')
+
+        self.set_met_config_bool(c_dict,
+                                 'ENSEMBLE_STAT_OBS_ERROR_FLAG',
+                                 'flag',
+                                 'OBS_ERROR_FLAG')
+        self.set_met_config_int(c_dict,
+                                'ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL',
+                                'day_interval',
+                                'CLIMO_MEAN_DAY_INTERVAL')
+        self.set_met_config_int(c_dict,
+                                'ENSEMBLE_STAT_CLIMO_MEAN_HOUR_INTERVAL',
+                                'hour_interval',
+                                'CLIMO_MEAN_HOUR_INTERVAL')
+        self.set_met_config_list(c_dict,
+                                 'ENSEMBLE_STAT_MASK_GRID',
+                                 'grid',
+                                 'MASK_GRID',
+                                 allow_empty=True)
+        self.set_met_config_list(c_dict,
+                                 'ENSEMBLE_STAT_CI_ALPHA',
+                                 'ci_alpha',
+                                 remove_quotes=True)
+        # interp dictionary values
+        self.set_met_config_string(c_dict,
+                                   'ENSEMBLE_STAT_INTERP_FIELD',
+                                   'field',
+                                   'INTERP_FIELD',
+                                   remove_quotes=True)
+        self.set_met_config_float(c_dict,
+                                  'ENSEMBLE_STAT_INTERP_VLD_THRESH',
+                                  'vld_thresh',
+                                  'INTERP_VLD_THRESH')
+        self.set_met_config_string(c_dict,
+                                   'ENSEMBLE_STAT_INTERP_SHAPE',
+                                   'shape',
+                                   'INTERP_SHAPE',
+                                   remove_quotes=True)
+        self.set_met_config_string(c_dict,
+                                   'ENSEMBLE_STAT_INTERP_METHOD',
+                                   'method',
+                                   'INTERP_METHOD',
+                                   remove_quotes=True)
+        self.set_met_config_int(c_dict,
+                                'ENSEMBLE_STAT_INTERP_WIDTH',
+                                'width',
+                                'INTERP_WIDTH')
+
+        c_dict['INTERP_TYPE'] = self.format_met_config_type(c_dict,
+                                                            'INTERP')
+
+        self.set_met_config_list(c_dict,
+                                 'ENSEMBLE_STAT_CENSOR_THRESH',
+                                 'censor_thresh',
+                                 remove_quotes=True)
+        self.set_met_config_list(c_dict,
+                                 'ENSEMBLE_STAT_CENSOR_VAL',
+                                 'censor_val',
+                                 remove_quotes=True)
+
+
+        for flag in self.OUTPUT_FLAGS:
+            flag_upper = flag.upper()
+            prefix = 'OUTPUT_FLAG'
+            self.set_met_config_string(c_dict,
+                                       f'ENSEMBLE_STAT_{prefix}_{flag_upper}',
+                                       flag,
+                                       f'{prefix}_{flag_upper}',
+                                       remove_quotes=True)
+
+        for flag in self.ENSEMBLE_FLAGS:
+            flag_upper = flag.upper()
+            prefix = 'ENSEMBLE_FLAG'
+            self.set_met_config_string(c_dict,
+                                       f'ENSEMBLE_STAT_{prefix}_{flag_upper}',
+                                       flag,
+                                       f'{prefix}_{flag_upper}',
+                                       remove_quotes=True)
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
@@ -260,19 +362,24 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         return c_dict
 
-    @staticmethod
-    def format_nmep_smooth_type(c_dict):
-        """! If NMEP_SMOOTH_METHOD or NMEP_SMOOTH_WIDTH are set in c_dict, then
-        format the values and set NMEP_SMOOTH_TYPE
+    def format_met_config_type(self, c_dict, key_prefix):
+        """! Format type item for MET config
 
         @param c_dict dictionary to check and add item if appropriate
+        @param key_prefix prefix to add to input keys to search in c_dict
+        @returns formatted string "type = [{}];" or empty string if nothing is
+         set
         """
-        nmep_method = c_dict.get('NMEP_SMOOTH_METHOD', '')
-        nmep_width = c_dict.get('NMEP_SMOOTH_WIDTH', '')
-        if nmep_method or nmep_width:
-            c_dict['NMEP_SMOOTH_TYPE'] = (
-                f"type = [{nmep_width}{nmep_width}];"
-            )
+        input_keys = ['METHOD', 'WIDTH']
+        type_string = self.format_met_config_dict(c_dict,
+                                                  key_prefix,
+                                                  input_keys)
+        if not type_string:
+            return ''
+
+        # only get value, so remove variable name and equal sign
+        type_string = type_string.split('=', 1)[1].strip()
+        return f"type = [{type_string}];"
 
     def run_at_time_all_fields(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination
@@ -471,6 +578,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             'ENS_PHIST_BIN_SIZE',
             'DUPLICATE_FLAG',
             'SKIP_CONST',
+            'OBS_ERROR_FLAG',
+            'CLIMO_MEAN_DAY_INTERVAL',
+            'CLIMO_MEAN_HOUR_INTERVAL',
+            'MASK_GRID',
+            'CENSOR_THRESH',
+            'CENSOR_VAL',
         ]
         for item in met_config_list:
             self.add_env_var(f'METPLUS_{item}',
@@ -512,6 +625,32 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                               ])
         )
         self.add_env_var('METPLUS_NMEP_SMOOTH_DICT', nmep_smooth)
+
+        interp = (
+            self.format_met_config_dictionary('interp',
+                                              ['INTERP_FIELD',
+                                               'INTERP_VLD_THRESH',
+                                               'INTERP_SHAPE',
+                                               'INTERP_TYPE',
+                                              ])
+        )
+        self.add_env_var('METPLUS_INTERP_DICT', interp)
+
+        output_flag_list = [f"OUTPUT_FLAG_{item.upper()}"
+                            for item in self.OUTPUT_FLAGS]
+        output_flag = (
+            self.format_met_config_dictionary('output_flag',
+                                              output_flag_list)
+        )
+        self.add_env_var('METPLUS_OUTPUT_FLAG_DICT', output_flag)
+
+        ens_flag_list = [f"ENSEMBLE_FLAG_{item.upper()}"
+                         for item in self.ENSEMBLE_FLAGS]
+        ens_flag = (
+            self.format_met_config_dictionary('ensemble_flag',
+                                              ens_flag_list)
+        )
+        self.add_env_var('METPLUS_ENSEMBLE_FLAG_DICT', ens_flag)
 
         # set climatology environment variables
         self.set_climo_env_vars()

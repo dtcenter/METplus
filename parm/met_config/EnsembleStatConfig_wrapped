@@ -34,8 +34,8 @@ ${METPLUS_REGRID_DICT}
 //
 // May be set separately in each "field" entry
 //
-censor_thresh = [];
-censor_val    = [];
+${METPLUS_CENSOR_THRESH}
+${METPLUS_CENSOR_VAL}
 cat_thresh    = [];
 nc_var_str    = "";
 
@@ -107,7 +107,7 @@ ${METPLUS_SKIP_CONST}
 // May be set separately in each "obs.field" entry
 //
 obs_error = {
-   flag             = FALSE;
+   ${METPLUS_OBS_ERROR_FLAG}
    dist_type        = NONE;
    dist_parm        = [];
    inst_bias_scale  = 1.0;
@@ -151,8 +151,8 @@ climo_mean = {
    }
 
    time_interp_method = DW_MEAN;
-   day_interval       = 31;
-   hour_interval      = 6;
+   ${METPLUS_CLIMO_MEAN_DAY_INTERVAL}
+   ${METPLUS_CLIMO_MEAN_HOUR_INTERVAL}
 }
 
 climo_stdev = climo_mean;
@@ -181,7 +181,7 @@ obs_window = {
 // Verification masking regions
 //
 mask = {
-   grid  = [ "FULL" ];
+   ${METPLUS_MASK_GRID}
    poly = [ ${VERIF_MASK} ];
    sid   = [];
    llpnt = [];
@@ -199,54 +199,21 @@ ci_alpha  = [ 0.05 ];
 //
 // Interpolation methods
 //
-interp = {
-   field      = BOTH;
-   vld_thresh = 1.0;
-   shape  = SQUARE;
-
-   type = [
-      {
-         method = NEAREST;
-         width  = 1;
-      }
-   ];
-}
+${METPLUS_INTERP_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Statistical output types
 //
-output_flag = {
-   ecnt  = BOTH;
-   rhist = BOTH;
-   phist = BOTH;
-   orank = BOTH;
-   ssvar = BOTH;
-   relp  = BOTH;
-}
+${METPLUS_OUTPUT_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Ensemble product output types
 //
-ensemble_flag = {
-   latlon    = TRUE;
-   mean      = TRUE;
-   stdev     = TRUE;
-   minus     = TRUE;
-   plus      = TRUE;
-   min       = TRUE;
-   max       = TRUE;
-   range     = TRUE;
-   vld_count = TRUE;
-   frequency = TRUE;
-   nep       = FALSE;
-   nmep      = FALSE;
-   rank      = TRUE;
-   weight    = FALSE;
-}
+${METPLUS_ENSEMBLE_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
