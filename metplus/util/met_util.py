@@ -2131,6 +2131,7 @@ def get_var_items(config, data_type, index, time_info, met_tool=None):
         return '', '', '', ''
 
     name = do_string_sub(config.getraw('config', search_name),
+                         skip_missing_tags=True,
                          **time_info)
 
     # get levels if available
@@ -2269,7 +2270,10 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
                 continue
 
             for level in levels:
-                var_dict = {f"{data_type_lower}_name": name,
+                # add {data_type}_level to name
+                sub_info = {f'{data_type.lower()}_level': level}
+                subbed_name = do_string_sub(name, **sub_info)
+                var_dict = {f"{data_type_lower}_name": subbed_name,
                             f"{data_type_lower}_level": level,
                             f"{data_type_lower}_thresh": thresh,
                             f"{data_type_lower}_extra": extra,
@@ -2297,11 +2301,16 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
                 return []
 
             for f_level, o_level in zip(f_levels, o_levels):
-                var_dict = {"fcst_name": f_name,
+                # add fcst_level and obs_level to name
+                sub_info = {'fcst_level': f_level,
+                            'obs_level': o_level}
+                subbed_f_name = do_string_sub(f_name, **sub_info)
+                subbed_o_name = do_string_sub(o_name, **sub_info)
+                var_dict = {"fcst_name": subbed_f_name,
                             "fcst_level": f_level,
                             "fcst_thresh": f_thresh,
                             "fcst_extra": f_extra,
-                            "obs_name": o_name,
+                            "obs_name": subbed_o_name,
                             "obs_level": o_level,
                             "obs_thresh": o_thresh,
                             "obs_extra": o_extra,
