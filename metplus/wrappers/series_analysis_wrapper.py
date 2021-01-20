@@ -61,8 +61,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                c_dict['VERBOSITY'])
         )
 
-        self.set_c_dict_string(c_dict, 'MODEL', 'model')
-        self.set_c_dict_string(c_dict, 'OBTYPE', 'obtype')
+        self.set_met_config_string(c_dict, 'MODEL', 'model')
+        self.set_met_config_string(c_dict, 'OBTYPE', 'obtype')
 
         # handle old format of MODEL and OBTYPE
         c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'WRF')
