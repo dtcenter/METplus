@@ -44,30 +44,39 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         """
         c_dict = super().create_c_dict()
 
-        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_ENSEMBLE_STAT_VERBOSITY',
+        c_dict['VERBOSITY'] = self.config.getstr('config',
+                                                 'LOG_ENSEMBLE_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
         c_dict['ENS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'ENS_ENSEMBLE_STAT_INPUT_DATATYPE', '')
 
         c_dict['FCST_INPUT_DATATYPE'] = \
-          self.config.getstr('config', 'FCST_ENSEMBLE_STAT_INPUT_DATATYPE', '')
+          self.config.getstr('config',
+                             'FCST_ENSEMBLE_STAT_INPUT_DATATYPE',
+                             '')
 
         c_dict['OBS_POINT_INPUT_DATATYPE'] = \
-          self.config.getstr('config', 'OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE', '')
+          self.config.getstr('config',
+                             'OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE',
+                             '')
 
         c_dict['OBS_GRID_INPUT_DATATYPE'] = \
-          self.config.getstr('config', 'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE', '')
+          self.config.getstr('config',
+                             'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE',
+                             '')
 
-        # check if more than 1 obs datatype is set to python embedding, only one can be used
+        # check if more than 1 obs datatype is set to python embedding,
+        # only one can be used
         if (c_dict['OBS_POINT_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES and
             c_dict['OBS_GRID_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES):
             self.log_error("Both OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE and "
                            "OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE"
-                           " are set to Python Embedding types. Only one can be used at a time")
+                           " are set to Python Embedding types. "
+                           "Only one can be used at a time")
 
-        # if either are set, set OBS_INPUT_DATATYPE to that value so it can be found by
-        # the check_for_python_embedding function
+        # if either are set, set OBS_INPUT_DATATYPE to that value so
+        # it can be found by the check_for_python_embedding function
         elif c_dict['OBS_POINT_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES:
             c_dict['OBS_INPUT_DATATYPE'] = c_dict['OBS_POINT_INPUT_DATATYPE']
         elif c_dict['OBS_GRID_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES:
@@ -117,9 +126,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE")
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR',
+                                                  '')
         if not c_dict['OUTPUT_DIR']:
-            self.log_error("Must set ENSEMBLE_STAT_OUTPUT_DIR in configuration file")
+            self.log_error("Must set ENSEMBLE_STAT_OUTPUT_DIR "
+                           "in configuration file")
 
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('config',
