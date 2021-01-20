@@ -1368,9 +1368,14 @@ class CommandBuilder:
                 self.config.getstr('config',
                                    f'{app_name_upper}_REGRID_TO_GRID', '')
             )
+
+            # set to_grid without formatting for backwards compatibility
+            formatted_to_grid = self.format_regrid_to_grid(conf_value)
+            c_dict['REGRID_TO_GRID_OLD'] = formatted_to_grid
+
             if conf_value:
                 c_dict['REGRID_TO_GRID'] = (
-                    f"to_grid = {self.format_regrid_to_grid(conf_value)};"
+                    f"to_grid = {formatted_to_grid};"
                 )
 
         self.set_c_dict_string(c_dict,
@@ -1413,27 +1418,29 @@ class CommandBuilder:
         return regrid_dict_string
 
     def handle_description(self, c_dict):
-        """! Get description from config. If <app_name>_DESCRIPTION is set, use
-         that value. If not, check for DESCRIPTION and use that if it is set.
-         If set, set the DESCRIPTION c_dict key to "desc = <value>;"
+        """! Get description from config. If <app_name>_DESC is set, use
+         that value. If not, check for DESC and use that if it is set.
+         If set, set the DESC c_dict key to "desc = <value>;"
 
         @param c_dict dictionary to set value
         """
-        # check if <app_name>_DESCRIPTION is set
+        # check if <app_name>_DESC is set
         app_name_upper = self.app_name.upper()
         conf_value = self.config.getstr('config',
-                                        f'{app_name_upper}_DESCRIPTION',
+                                        f'{app_name_upper}_DESC',
                                         '')
 
-        # if not, check if DESCRIPTION is set
+        # if not, check if DESC is set
         if not conf_value:
             conf_value = self.config.getstr('config',
-                                            'DESCRIPTION',
+                                            'DESC',
                                             '')
 
-        # if the value is set, set the DESCRIPTION c_dict
+        # if the value is set, set the DESC c_dict
         if conf_value:
-            c_dict['DESC'] = f'desc = "{util.remove_quotes(conf_value)}";'
+            c_dict['METPLUS_DESC'] = (
+                f'desc = "{util.remove_quotes(conf_value)}";'
+            )
 
     def get_output_prefix(self, time_info=None):
         """! Read {APP_NAME}_OUTPUT_PREFIX from config. If time_info is set
@@ -1513,3 +1520,23 @@ class CommandBuilder:
                                  '',
                                  self.config)
         )
+
+    def get_wrapper_or_generic_config(self, generic_config_name):
+        """! Check for config variable with <APP_NAME>_ prepended first. If set
+        use that value. If not, check for config without prefix.
+
+        @param generic_config_name name of variable to read from config
+        @returns value if set or empty string if not
+        """
+        wrapper_config_name = f'{self.app_name.upper()}_{generic_config_name}'
+        value = self.config.getstr_nocheck('config',
+                                           wrapper_config_name,
+                                           '')
+
+        # if wrapper specific variable not set, check for generic
+        if not value:
+            value = self.config.getstr_nocheck('config',
+                                               generic_config_name,
+                                               '')
+
+        return value

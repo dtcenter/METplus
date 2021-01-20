@@ -9,25 +9,25 @@
 //
 // Output model name to be written
 //
-${MODEL}
+${METPLUS_MODEL}
 
 //
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
-${DESC}
+${METPLUS_DESC}
 
 //
 // Output observation type to be written
 //
-${OBTYPE}
+${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Verification grid
 //
-${REGRID_DICT}
+${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
