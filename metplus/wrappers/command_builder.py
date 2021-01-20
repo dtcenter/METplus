@@ -1191,11 +1191,13 @@ class CommandBuilder:
             self.config.logger.error("Could not get [INIT/VALID] time information from configuration file")
             self.isOK = False
 
-    def create_met_config_dictionary_string(self, dict_name, item_list):
+    @staticmethod
+    def format_met_config_dict(c_dict, dict_name, item_list):
         """! Build string containing dictionary from a MET configuration file
              with any items that were set in the user's METplus configuration. Any variables
              that were not set will not be included in the dictionary string.
              Args:
+                 @param c_dict dictionary to check for items
                  @param dict_name name of dictionary to create in all caps. This corresponds
                   to the name of the METplus configuration variable and c_dict value. The
                   lower-case name also matches the name of the MET dictionary item, i.e.
@@ -1210,7 +1212,8 @@ class CommandBuilder:
                   variables were set
         """
         # check if any of the items are set in c_dict
-        create_dict = [item for item in item_list if self.c_dict.get(f'{dict_name}_{item}')]
+        create_dict = [item for item in item_list
+                       if c_dict.get(f'{dict_name}_{item}')]
 
         # if any dict items are set, create the dictionary string and add them
         if not create_dict:
@@ -1218,7 +1221,7 @@ class CommandBuilder:
 
         dict_string = dict_name.lower() + ' = {'
         for item in item_list:
-            dict_string += self.c_dict.get(f'{dict_name}_{item}', '')
+            dict_string += c_dict.get(f'{dict_name}_{item}', '')
 
         dict_string += '}'
         return dict_string
