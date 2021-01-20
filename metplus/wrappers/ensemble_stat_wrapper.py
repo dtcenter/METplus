@@ -185,6 +185,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                   'ENSEMBLE_STAT_ENS_THRESH',
                                   'ens_thresh')
 
+        # support old method to set ens_thresh
+        c_dict['ENS_THRESH_OLD'] = (
+            self.config.getstr('config', 'ENSEMBLE_STAT_ENS_THRESH', '1.0')
+        )
+
         self.set_met_config_string(c_dict,
                                    'ENSEMBLE_STAT_DUPLICATE_FLAG',
                                    'duplicate_flag',
@@ -444,26 +449,25 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_WINDOW_END",
                          str(self.c_dict['OBS_WINDOW_END']))
 
-        # set env vars for MET config file that c_dict key is
-        # the same name as the environment variable
         met_config_list = [
-            'OBTYPE',
-            'INPUT_BASE',
             'ENS_THRESH',
             'ENS_VLD_THRESH',
             'ENS_OBS_THRESH',
-            'ENS_FILE_TYPE',
-            'FCST_FILE_TYPE',
-            'OBS_FILE_TYPE',
             'ENS_SSVAR_BIN_SIZE',
             'ENS_PHIST_BIN_SIZE',
             'DUPLICATE_FLAG',
             'SKIP_CONST',
         ]
         for item in met_config_list:
-            self.add_env_var(item, self.c_dict.get(item, ''))
+            self.add_env_var(f'METPLUS_{item}',
+                             self.c_dict.get(item, ''))
 
-        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
+        output_prefix = self.get_output_prefix(time_info)
+        if output_prefix:
+            metplus_output_prefix = f'output_prefix = "{output_prefix}";'
+        else:
+            metplus_output_prefix = ''
+        self.add_env_var('METPLUS_OUTPUT_PREFIX', metplus_output_prefix)
 
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))
@@ -498,6 +502,22 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # set climatology environment variables
         self.set_climo_env_vars()
 
+        # support old method of setting variables in MET config files
+        self.add_env_var('ENS_THRESH',
+                         self.c_dict.get('ENS_THRESH_OLD'))
+        self.add_env_var('OUTPUT_PREFIX', output_prefix)
+        met_config_list_old = [
+            'OBTYPE',
+            'INPUT_BASE',
+            'ENS_FILE_TYPE',
+            'FCST_FILE_TYPE',
+            'OBS_FILE_TYPE',
+        ]
+        for item in met_config_list_old:
+            self.add_env_var(item, self.c_dict.get(item, ''))
+
+        # call parent function to set common vars, user env vars,
+        # and print list of variables that are set
         super().set_environment_variables(time_info)
 
     def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):

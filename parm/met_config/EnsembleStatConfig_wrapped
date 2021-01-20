@@ -46,7 +46,7 @@ ens = {
 
    ${ENS_FILE_TYPE}
 
-   ${ENS_THRESH}
+   ${METPLUS_ENS_THRESH}
    ${ENS_VLD_THRESH}
    ${ENS_OBS_THRESH}
 
@@ -261,7 +261,7 @@ rng = {
 ////////////////////////////////////////////////////////////////////////////////
 
 grid_weight_flag = NONE;
-output_prefix    = "${OUTPUT_PREFIX}";
+${METPLUS_OUTPUT_PREFIX}
 //version          = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////
