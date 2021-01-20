@@ -343,7 +343,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         else:
             self.add_env_var("ENS_FIELD", fcst_field)
 
-        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("INPUT_BASE", self.c_dict['INPUT_BASE'])
         self.add_env_var("FCST_LEAD", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("OBS_WINDOW_BEGIN", str(self.c_dict['OBS_WINDOW_BEGIN']))

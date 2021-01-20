@@ -52,6 +52,10 @@ that reformat gridded data
         self.set_c_dict_string(c_dict, 'MODEL', 'model')
         self.set_c_dict_string(c_dict, 'OBTYPE', 'obtype')
 
+        # set old MET config items for backwards compatibility
+        c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'FCST')
+        c_dict['OBTYPE_OLD'] = self.config.getstr('config', 'OBTYPE', 'OBS')
+
         # INPUT_BASE is not required unless it is referenced in a config file
         # it is used in the use case config files. Don't error if it is not set
         # to a value that contains /path/to
@@ -94,12 +98,19 @@ that reformat gridded data
             version to handle user configs and printing
             Args:
               @param time_info dictionary containing timing info from current run"""
-        self.add_env_var('MODEL', self.c_dict.get('MODEL', ''))
-        self.add_env_var('OBTYPE', self.c_dict.get('OBTYPE', ''))
-        self.add_env_var('DESC', self.c_dict.get('DESC', ''))
+        self.add_env_var('METPLUS_MODEL', self.c_dict.get('MODEL', ''))
+        self.add_env_var('METPLUS_OBTYPE', self.c_dict.get('OBTYPE', ''))
+        self.add_env_var('METPLUS_DESC', self.c_dict.get('METPLUS_DESC', ''))
 
-        self.add_env_var('REGRID_DICT',
+        self.add_env_var('METPLUS_REGRID_DICT',
                          self.get_regrid_dict())
+
+        # set old environment variable values for backwards compatibility
+        self.add_env_var('MODEL', self.c_dict.get('MODEL_OLD', ''))
+        self.add_env_var('OBTYPE', self.c_dict.get('OBTYPE_OLD', ''))
+        self.add_env_var('REGRID_TO_GRID',
+                         self.c_dict.get('REGRID_TO_GRID_OLD',
+                                         'NONE'))
 
         super().set_environment_variables(time_info)
 
