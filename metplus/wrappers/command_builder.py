@@ -1224,7 +1224,8 @@ class CommandBuilder:
         return dict_string
 
     def set_met_config_list(self, c_dict, mp_config_name, met_config_name,
-                            c_dict_key=None, remove_quotes=False):
+                            c_dict_key=None, remove_quotes=False,
+                            allow_empty=False):
         """! Get list from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
@@ -1235,11 +1236,20 @@ class CommandBuilder:
                   to determine the key in c_dict to set (upper-case)
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
+                 @param allow_empty if True, if METplus config variable is set
+                  but is an empty string, then set the c_dict value to an empty
+                  list. If False, behavior is the same as when the variable is
+                  not set at all, which is to not set anything for the c_dict
+                  value
         """
+        # if variable is not set at all, return
+        if not self.config.has_option('config', mp_config_name):
+            return
+
         conf_value = util.getlist(self.config.getraw('config',
                                                      mp_config_name,
                                                      ''))
-        if conf_value:
+        if conf_value or allow_empty:
             conf_value = str(conf_value).replace("'", '"')
 
             if remove_quotes:

@@ -686,3 +686,32 @@ def test_set_met_config_list(metplus_config, mp_config_name, met_config_name,
 
     assert(c_dict.get(key, '') == expected_output)
 
+@pytest.mark.parametrize(
+    'mp_config_name,allow_empty,expected_output', [
+        # var is set to empty, don't set
+        ('TEST_LIST_1', False, ''),
+        # var is set to empty, set to empty list
+        ('TEST_LIST_1', True, 'test_list_1 = [];'),
+        # var is not set
+        ('TEST_LIST_2', False, ''),
+        # var is not set
+        ('TEST_LIST_2', True, ''),
+    ]
+)
+def test_set_met_config_list_allow_empty(metplus_config, mp_config_name,
+                                         allow_empty, expected_output):
+    cbw = CommandBuilder(metplus_config())
+
+    # set some config variables to test
+    cbw.config.set('config', 'TEST_LIST_1', '')
+
+    c_dict = {}
+
+    met_config_name = mp_config_name.lower()
+
+    cbw.set_met_config_list(c_dict,
+                            mp_config_name,
+                            met_config_name,
+                            allow_empty=allow_empty)
+
+    assert(c_dict.get(mp_config_name, '') == expected_output)
