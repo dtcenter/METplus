@@ -143,8 +143,8 @@ Set upstream remote
   where <your-github-user> is your GitHub username.
 
 
-Generate a feature branch from the 'develop' branchfor new development
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Generate a feature branch from the 'develop' branch for new development
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Create a feature branch in the NCAR/METplus GitHub repository following this naming convention
 
@@ -299,34 +299,22 @@ Open a pull request using a browser
       making your changes (e.g. feature_777_wrapper_xyz).
 
     * In the 'write' window, follow the directions and fill in the template
-      add any additional comments/details.
-      In this window are the
-      comments you created when you committed your changes in step 6 above.
-
-
-submitting the pull request
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
-
-When filling in the template, users will need to:
-
-* Define the PR metadata, as permissions allow.
-* Select: **Reviewer(s), Project(s)**, and **Milestone**
-  
-When selecting a reviewer, internal contributors submitting pull requests
-should select the appropriate reviewer(s) and let the reviewer know that the
-pull request has been assigned to them. If external contributors are unsure
-who to assign as a reviewer, they should send an email to met_help@ucar.edu
-asking the met-help point person to help with the assignment of a reviewer.
+      add any additional comments/details.  When filling in the template,
+      users will need to "Define the PR metadata, as permissions allow.
+      Select: **Reviewer(s), Project(s)**, and **Milestone**" When selecting a
+      reviewer, internal contributors submitting pull requests should select
+      the appropriate reviewer(s) and let the reviewer know that the pull
+      request has been assigned to them. If external contributors are unsure
+      who to assign as a reviewer, they should send an email to
+      met_help@ucar.edu asking the met-help point person to help with the
+      assignment of a reviewer.
       
-*  You can scroll down to see what changes were made to the file
-   you committed.
+    * When everything looks satisfactory, click on the green 'Create pull
+      request' button.
 
-* When everything looks satisfactory, click on the green
-  'Create pull request' button.
-
-* An authorized METplus developer will accept the pull request (if everything
-  meets acceptance criteria) and merge your code into the remote
-  repository's develop branch.
+    * An authorized METplus developer will accept the pull request (if
+      everything meets acceptance criteria) and merge your code into the remote
+      repository's develop branch.
 
 Approve a pull request using a browser
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -336,7 +324,15 @@ review of the contributions and have the proposed changes merged into a
 different branch. Pull requests allow the reviewer to see the differences
 in the content from both branches.
 
-To start a pull request
+For issues with sub-tasks, it may be desired to get some changes into the
+develop branch sooner, rather than later. If the changes seem to make sense
+on their own and don't rely on other sub-tasks to be complete, creating a pull
+request for a sub-task may make sense. If a sub-task does rely on other
+sub-tasks to be complete, then it may be best to wait to create a pull request
+until the other sub-tasks are also complete.
+
+
+Creating a pull request
 ^^^^^^^^^^^^^^^^^^^^^^^
 
 1.  Click on the “Pull requests” tab in the GitHub repository and
@@ -351,78 +347,65 @@ To start a pull request
 
     A reviewer can suggest changes be made by:
     
-    Mousing over the line to comment on.
+    a. Mousing over the line to comment on.
 
-    .. figure:: figure/add_comment_on_line.png
+       .. figure:: figure/add_comment_on_line.png
 
-        A blue box with a plus will appear Click on the blue box.
+         A blue box with a plus will appear. Click on the blue box.
 
-    .. figure:: figure/insert_suggestion.png
+       .. figure:: figure/insert_suggestion.png
     
-      Click on the icon of a paper with +/- “Insert a Suggestion”.  The line
-      will be quoted and the reviewer can enter their suggestion below.
+         Click on the icon of a paper with +/- to “Insert a Suggestion”.  The line
+         will be quoted and the reviewer can enter their suggestion below. Then, click on
+         the “Add Single Comment” button, so that the requestor will get an
+         email letting them know the reviewer has made a suggested change.
 
+    b. Or, a reviewer can edit the file directly on the web by clicking on the
+       “...” icon (three dots) in the right hand corner next to
+       “Viewed” icon and select “Edit file”. 	
 
+       .. figure:: figure/how_to_edit_file.png
 
-      Click on the “Add Single Comment” button, the requestor will get an
-      email letting them know the reviewer has made a suggested change.
+6. A reviewer has three possible options:
 
-.. figure:: figure/how_to_edit_file.png
+   * **Comment**: Submit general feedback without explicitly approving the
+     changes or requesting additional changes.
+     
+   * **Approve**: Submit feedback and approve merging the changes proposed in
+     the pull request.
 
-	    Or a reviewer can edit the file directly on the web by clicking
-	    on the “...” (three dots) in the right hand corner next to
-	    “Viewed” and select “Edit file”. 
-
-
-
-
-Where does this belong??
-`GitHub Actions <https://github.com/dtcenter/METplus/actions>`_ to test the
-code to make sure there aren’t errors when doing pull requests.
-
-.. figure:: figure/review_approve_changes.png
-
-	    It is important to note that a review has three possible
-	    statuses, which are listed on this page
-	    `About pull request reviews <https://docs.github.com/en/github/collaborating-with-issues-and-pull-requests/about-pull-request-reviews>`_:
-
-* **Comment**: Submit general feedback without explicitly approving the
-  changes or requesting additional changes.
-* **Approve**: Submit feedback and approve merging the changes proposed in
-  the pull request.
-* **Request changes**: Submit feedback that must be addressed before the pull
-  request can be merged.
-
-.. figure:: figure/review_changes_button.png
+   * **Request changes**: Submit feedback that must be addressed before the
+     pull request can be merged.
 	    
-	    A reviewer should click on: “Review changes”, add comments to
-	    the “Write” box, and “Comment”, “Approve”,
-	    or “Request Changes”, and then click on “Submit Review”.
+   .. figure:: figure/review_approve_changes.png
+
+     A reviewer should click on: "Review changes", add comments to
+     the "Write box", and select either  "Comment", "Approve",
+     or "Request Changes", and then click on "Submit Review". 
+					  
 
 Merging pull requests
 ^^^^^^^^^^^^^^^^^^^^^
 
+Once the pull request is approved it is ready to be merged, the reviewer should
+ensure that “All checks have passed” from the tests run in
+`GitHub Actions <https://github.com/dtcenter/METplus/actions>`_ and that
+“This branch has no conflicts with the base branch”.  Let the requestor
+know if the checks do not pass or if there is a conflict with the base branch so
+that they can make the  necessary changes.
+	    
 .. figure:: figure/checks_pass_no_conflicts.png
-
-	    Once the pull request is approved it is ready to be merged.
-	    The reviewer should ensure that “All checks have passed” and
-	    that “This branch has no conflicts with the base branch”.  Let
-	    the requestor know if the checks do not pass or if there is a
-	    conflict with the base branch so that they can make the
-	    necessary changes.
-
 
 
 There are three merge methods to choose from:
 
 * **Create a merge commit**
-* **Squash and merge** Our METplus team usually selects this because all of
+* **Squash and merge** (Our METplus team usually selects this because all of
   the merge request’s commits are combined into one and a clean history
-  is retained. Once selected click on “Confirm Squash and Merge”.  
+  is retained.) 
 * **Rebase and merge**
 
-Keep or delete the feature branch
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Click on the chosen merge method.  
 
 After merging, the reviewer should check the pull request creator’s comments
 on whether to delete the feature branch from GitHub or leave it in place.
@@ -431,44 +414,6 @@ on whether to delete the feature branch from GitHub or leave it in place.
 
 If the reviewer should delete the “compare” branch, the “Delete branch”
 button should be selected.
-
-_____________________
-
-For internal contributors:
-
-The person submitting the pull request selects the appropriate reviewer(s)
-and let’s them know that the ticket has been assigned to them.
-
-For external contributors:
-
-Recommend that the met-help point person is responsible for assigning
-unassigned pull request on their day. 
-
-Internal or External or Both?
-Need to set up and ensure that GitHub Actions regression tests pass.
-
-All Contributors:
-
-Review items (as an approver) from the Pull Request Template:
-
-Describe testing already performed for these changes:
-
-Recommend testing for the reviewer to perform, including the location of
-input datasets:
-
-Will this PR result in changes to the test suite? [Yes or No]
-
-If yes, describe the new output and/or changes to the existing output:
-After merging, should the reviewer DELETE the feature branch from GitHub?
-[Yes or No]
-
-
-From George??: If a sub-task doesn't make sense in the code base without
-other sub-tasks being completed, then I would say we should wait to create
-a pull request.
-
-
-
 
 
 Clean up after a successfully merged pull request
