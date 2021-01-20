@@ -10,7 +10,8 @@ Description
 
 Sample image
   *Insert sample image here*
-.. image:: images/sample_image.png
+
+  .. image:: images/sample_image.png
    :width: 600
 
 Recommended use
