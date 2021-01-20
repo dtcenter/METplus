@@ -6,23 +6,25 @@ NEXRAD Level 2
 Description
   Next-Generation Radar (NEXRAD) Level 2, gridded radial
 
-  https://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.ncdc:C00345
+  https://www.ncdc.noaa.gov/data-access/radar-data/nexrad-products
 
   Display/conversion: https://www.ncdc.noaa.gov/data-access/radar-data/radar-display-tools
 
 Sample image
-  *Insert sample image here*
-.. image:: images/sample_image.png
+
+.. image:: images/nexrad_L2.png
    :width: 600
 
 Recommended use
-  *Insert recommended use here*
+  Weather radar related research
 
 File format
   Binary sweep files
 
 Location of data
-  Amazon AWS: https://s3.amazonaws.com/noaa-nexrad-level2/index.htmlhttps://www.ncdc.noaa.gov/nexradinv/choosesite.jsp
+  Amazon AWS: https://s3.amazonaws.com/noaa-nexrad-level2/index.html
+  
+  NCEI: https://www.ncdc.noaa.gov/nexradinv/choosesite.jsp
 
 Access restrictions
   None
@@ -37,7 +39,7 @@ Starting and/or ending dates
   1991 (extremely limited) to present
 
 Data latency
-  *Insert latency here*
+  A few hours
 
 Variables available
   Reflectivity, radial velocity, spectrum width, >2011 differential reflectivity, correlation coefficient, differential phase

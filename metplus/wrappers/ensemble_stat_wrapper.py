@@ -147,8 +147,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_GRID_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
         c_dict['OBS_GRID_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
 
-        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'ENSEMBLE_STAT_REGRID_TO_GRID', '')
-
         self.set_c_dict_float(c_dict,
                               'ENSEMBLE_STAT_ENS_VLD_THRESH',
                               'vld_thresh',
@@ -345,7 +343,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         else:
             self.add_env_var("ENS_FIELD", fcst_field)
 
-        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("INPUT_BASE", self.c_dict['INPUT_BASE'])
         self.add_env_var("FCST_LEAD", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("OBS_WINDOW_BEGIN", str(self.c_dict['OBS_WINDOW_BEGIN']))

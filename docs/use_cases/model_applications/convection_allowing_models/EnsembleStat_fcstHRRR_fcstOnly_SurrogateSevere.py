@@ -74,7 +74,7 @@ SurrogateSevere.conf
 # **EnsembleStatConfig_Surrogate_severe**
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/EnsembleStatConfig_Surrogate_severe 
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere/EnsembleStatConfig_Surrogate_severe
 #
 # See the following file for more information about the environment variables set in this configuration file:
 #   parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.py

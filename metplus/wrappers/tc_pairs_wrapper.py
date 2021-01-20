@@ -96,11 +96,13 @@ class TCPairsWrapper(CommandBuilder):
                                                       'INIT_INCREMENT')
 
         c_dict['INIT_INCLUDE'] = util.getlist(
-            self.config.getstr('config', 'TC_PAIRS_INIT_INCLUDE'))
+            self.get_wrapper_or_generic_config('INIT_INCLUDE')
+        )
         c_dict['INIT_EXCLUDE'] = util.getlist(
-            self.config.getstr('config', 'TC_PAIRS_INIT_EXCLUDE'))
-        c_dict['VALID_BEG'] = self.config.getstr('config', 'TC_PAIRS_VALID_BEG')
-        c_dict['VALID_END'] = self.config.getstr('config', 'TC_PAIRS_VALID_END')
+            self.get_wrapper_or_generic_config('INIT_EXCLUDE')
+        )
+        c_dict['VALID_BEG'] = self.get_wrapper_or_generic_config('VALID_BEG')
+        c_dict['VALID_END'] = self.get_wrapper_or_generic_config('VALID_END')
         c_dict['ADECK_DIR'] = \
                 self.config.getdir('TC_PAIRS_ADECK_INPUT_DIR', '')
         c_dict['BDECK_DIR'] = \
@@ -168,6 +170,8 @@ class TCPairsWrapper(CommandBuilder):
                 match = re.match(r'(\w{2})(\d{2})(\d{4})', storm_id)
                 if not match:
                     self.log_error(f'Incorrect STORM_ID format: {storm_id}')
+
+        self.handle_description(c_dict)
 
         return c_dict
 
@@ -368,11 +372,14 @@ class TCPairsWrapper(CommandBuilder):
             # Empty, MET is expecting [] to indicate all models are to be
             # included
             self.add_env_var('MODEL', "[]")
+            self.add_env_var('METPLUS_MODEL', "model = [];")
         else:
             # Replace ' with " and remove whitespace
             model = str(tmp_model).replace("\'", "\"")
             model_str = ''.join(model.split())
             self.add_env_var('MODEL', str(model_str))
+            model_fmt = f"model = {model_str};"
+            self.add_env_var('METPLUS_MODEL', model_fmt)
 
         # STORM_ID
         tmp_storm_id = self.c_dict['STORM_ID']
@@ -449,6 +456,9 @@ class TCPairsWrapper(CommandBuilder):
         # DLAND_FILE
         tmp_dland_file = self.c_dict['DLAND_FILE']
         self.add_env_var('DLAND_FILE', str(tmp_dland_file))
+
+        self.add_env_var('METPLUS_DESC',
+                         self.c_dict.get('METPLUS_DESC', ''))
 
         super().set_environment_variables(time_info)
 

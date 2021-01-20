@@ -5123,7 +5123,7 @@ METplus Configuration Glossary
      | *Default:*  Varies
 
    TC_STAT_DESC
-     Specify the DESC option for use with the MET tc_stat tool.
+     Specify the desc option for use with the MET tc_stat tool.
 
      | *Used by:*  TCStat
      | *Family:*  [config]
@@ -5958,17 +5958,66 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   GRID_DIAG_DESCRIPTION
+   GRID_DIAG_DESC
      Specify the value for 'desc' in the MET configuration file for grid_diag.
 
      | *Used by:*  GridDiag
      | *Family:*  [config]
      | *Default:*  Varies
 
-   GRID_STAT_DESCRIPTION
+   GRID_STAT_DESC
      Specify the value for 'desc' in the MET configuration file for grid_stat.
 
      | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_DESC
+     Specify the value for 'desc' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   MODE_DESC
+     Specify the value for 'desc' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   MTD_DESC
+     Specify the value for 'desc' in the MET configuration file for MTD.
+
+     | *Used by:* MTD
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   POINT_STAT_DESC
+     Specify the value for 'desc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_GEN_DESC
+     Specify the value for 'desc' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_PAIRS_DESC
+     Specify the value for 'desc' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   TC_RMW_DESC
+     Specify the value for 'desc' in the MET configuration file for TCRMW.
+
+     | *Used by:* TCRMW
      | *Family:*  [config]
      | *Default:*  Varies
 
@@ -6626,7 +6675,7 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
-   SERIES_ANALYSIS_DESCRIPTION
+   SERIES_ANALYSIS_DESC
      Specify the value for 'desc' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:*  SeriesAnalysis
@@ -6654,3 +6703,142 @@ METplus Configuration Glossary
      | *Family:*  [config]
      | *Default:*  Varies
 
+   ENSEMBLE_STAT_REGRID_METHOD
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_REGRID_WIDTH
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_REGRID_VLD_THRESH
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_REGRID_SHAPE
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   GRID_STAT_REGRID_METHOD
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for GridStat.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   GRID_STAT_REGRID_WIDTH
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for GridStat.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   GRID_STAT_REGRID_VLD_THRESH
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for GridStat.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   GRID_STAT_REGRID_SHAPE
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for GridStat.
+
+     | *Used by:*  GridStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   MODE_REGRID_METHOD
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for MODE.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   MODE_REGRID_WIDTH
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for MODE.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   MODE_REGRID_VLD_THRESH
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for MODE.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   MODE_REGRID_SHAPE
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for MODE.
+
+     | *Used by:*  MODE
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   MTD_REGRID_METHOD
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for MTD.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   MTD_REGRID_WIDTH
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for MTD.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   MTD_REGRID_VLD_THRESH
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for MTD.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   MTD_REGRID_SHAPE
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for MTD.
+
+     | *Used by:*  MTD
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   POINT_STAT_REGRID_METHOD
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   POINT_STAT_REGRID_WIDTH
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   POINT_STAT_REGRID_VLD_THRESH
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   POINT_STAT_REGRID_SHAPE
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for PointStat.
+
+     | *Used by:*  PointStat
+     | *Family:*  [config]
+     | *Default:*  Varies

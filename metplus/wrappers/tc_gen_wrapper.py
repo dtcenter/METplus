@@ -103,7 +103,7 @@ class TCGenWrapper(CommandBuilder):
             filter_string += '}];'
             c_dict['FILTER'] = filter_string
 
-        self.set_c_dict_list(c_dict, 'MODEL', 'model')
+        self.set_c_dict_list(c_dict, 'MODEL', 'model', 'METPLUS_MODEL')
         self.set_c_dict_list(c_dict, f'{app_name_upper}_STORM_ID', 'storm_id')
         self.set_c_dict_list(c_dict, f'{app_name_upper}_STORM_NAME', 'storm_name')
         self.set_c_dict_list(c_dict, f'{app_name_upper}_INIT_HOUR_LIST', 'init_hour')
@@ -144,6 +144,9 @@ class TCGenWrapper(CommandBuilder):
 
         # get INPUT_TIME_DICT values since wrapper only runs once (doesn't look over time)
         self.set_time_dict_for_single_runtime(c_dict)
+
+        # read desc from TC_GEN_DESC or DESC into c_dict['DESC']
+        self.handle_description(c_dict)
 
         return c_dict
 
@@ -202,7 +205,7 @@ class TCGenWrapper(CommandBuilder):
         for env_var in ['FILTER',
                         'INIT_FREQ',
                         'MIN_DURATION',
-                        'MODEL',
+                        'METPLUS_MODEL',
                         'STORM_ID',
                         'STORM_NAME',
                         'INIT_BEG',
@@ -213,10 +216,15 @@ class TCGenWrapper(CommandBuilder):
                         'LEAD_LIST',
                         'VX_MASK',
                         'GENESIS_RADIUS',
-                        'DLAND_FILE'
+                        'DLAND_FILE',
+                        'METPLUS_DESC',
                         ]:
             self.add_env_var(env_var,
                              self.c_dict.get(env_var, ''))
+
+        # set old names until they are deprecated
+        self.add_env_var('MODEL', self.c_dict.get('METPLUS_MODEL', ''))
+        self.add_env_var('DESC', self.c_dict.get('METPLUS_DESC', ''))
 
         super().set_environment_variables(time_info)
 

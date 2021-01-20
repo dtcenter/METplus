@@ -138,6 +138,10 @@ Configuration
 | :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE`
 | :term:`OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE`
 | :term:`ENSEMBLE_STAT_REGRID_TO_GRID`
+| :term:`ENSEMBLE_STAT_REGRID_METHOD`
+| :term:`ENSEMBLE_STAT_REGRID_WIDTH`
+| :term:`ENSEMBLE_STAT_REGRID_VLD_THRESH`
+| :term:`ENSEMBLE_STAT_REGRID_SHAPE`
 | :term:`ENSEMBLE_STAT_CONFIG_FILE`
 | :term:`ENSEMBLE_STAT_MET_OBS_ERR_TABLE`
 | :term:`ENSEMBLE_STAT_N_MEMBERS`
@@ -149,6 +153,7 @@ Configuration
 | :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`
 | :term:`ENSEMBLE_STAT_CUSTOM_LOOP_LIST`
 | :term:`ENSEMBLE_STAT_SKIP_IF_OUTPUT_EXISTS`
+| :term:`ENSEMBLE_STAT_DESC`
 | :term:`ENS_VAR<n>_NAME` (optional)
 | :term:`ENS_VAR<n>_LEVELS` (optional)
 | :term:`ENS_VAR<n>_THRESH` (optional)
@@ -366,9 +371,10 @@ METplus Configuration
 | :term:`GRID_DIAG_REGRID_VLD_THRESH`
 | :term:`GRID_DIAG_REGRID_SHAPE`
 | :term:`GRID_DIAG_REGRID_TO_GRID`
-| :term:`GRID_DIAG_DESCRIPTION`
+| :term:`GRID_DIAG_DESC`
 | :term:`GRID_DIAG_SKIP_IF_OUTPUT_EXISTS`
 | :term:`GRID_DIAG_RUNTIME_FREQ`
+| :term:`GRID_DIAG_DESC`
 
 MET Configuration
 ~~~~~~~~~~~~~~~~~
@@ -379,7 +385,7 @@ This is the MET configuration file used for this wrapper. Below the file content
 
 The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
 
-**${MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${METPLUS_MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
 
 METplus Configuration::
 
@@ -418,7 +424,7 @@ Resulting value::
 
     file_type = GRIB2;
 
-**${REGRID_DICT}** - Corresponds to GRID_DIAG_REGRID_METHOD, GRID_DIAG_REGRID_WIDTH, GRID_DIAG_REGRID_VLD_THRESH, GRID_DIAG_REGRID_SHAPE, and GRID_DIAG_REGRID_TO_GRID in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET GridDiag configuration file will be used.
+**${METPLUS_REGRID_DICT}** - Corresponds to GRID_DIAG_REGRID_METHOD, GRID_DIAG_REGRID_WIDTH, GRID_DIAG_REGRID_VLD_THRESH, GRID_DIAG_REGRID_SHAPE, and GRID_DIAG_REGRID_TO_GRID in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET GridDiag configuration file will be used.
 
 METplus Configuration 1::
 
@@ -502,7 +508,13 @@ Configuration
 | :term:`GRID_STAT_ONCE_PER_FIELD`
 | :term:`GRID_STAT_CUSTOM_LOOP_LIST`
 | :term:`GRID_STAT_SKIP_IF_OUTPUT_EXISTS`
-| :term:`GRID_STAT_DESCRIPTION` (optional)
+| :term:`GRID_STAT_DESC`
+
+| :term:`GRID_STAT_REGRID_TO_GRID`
+| :term:`GRID_STAT_REGRID_METHOD`
+| :term:`GRID_STAT_REGRID_WIDTH`
+| :term:`GRID_STAT_REGRID_VLD_THRESH`
+| :term:`GRID_STAT_REGRID_SHAPE`
 | :term:`FCST_GRID_STAT_PROB_THRESH` (optional)
 | :term:`OBS_GRID_STAT_PROB_THRESH` (optional)
 | :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` (optional)
@@ -653,6 +665,10 @@ Configuration
 | :term:`LOG_MODE_VERBOSITY`
 | :term:`MODE_OUTPUT_PREFIX`
 | :term:`MODE_REGRID_TO_GRID`
+| :term:`MODE_REGRID_METHOD`
+| :term:`MODE_REGRID_WIDTH`
+| :term:`MODE_REGRID_VLD_THRESH`
+| :term:`MODE_REGRID_SHAPE`
 | :term:`MODE_CONFIG_FILE`
 | :term:`FCST_MODE_INPUT_DATATYPE`
 | :term:`OBS_MODE_INPUT_DATATYPE`
@@ -680,6 +696,7 @@ Configuration
 | :term:`OBS_MODE_FILE_WINDOW_END`
 | :term:`MODE_CUSTOM_LOOP_LIST`
 | :term:`MODE_SKIP_IF_OUTPUT_EXISTS`
+| :term:`MODE_DESC`
 | :term:`FCST_MODE_VAR<n>_NAME` (optional)
 | :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MODE_VAR<n>_THRESH` (optional)
@@ -734,6 +751,12 @@ Configuration
 | :term:`OBS_MTD_CONV_THRESH`
 | :term:`MTD_CUSTOM_LOOP_LIST`
 | :term:`MTD_SKIP_IF_OUTPUT_EXISTS`
+| :term:`MTD_DESC`
+| :term:`MTD_REGRID_TO_GRID`
+| :term:`MTD_REGRID_METHOD`
+| :term:`MTD_REGRID_WIDTH`
+| :term:`MTD_REGRID_VLD_THRESH`
+| :term:`MTD_REGRID_SHAPE`
 | :term:`FCST_MTD_VAR<n>_NAME` (optional)
 | :term:`FCST_MTD_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MTD_VAR<n>_THRESH` (optional)
@@ -1029,12 +1052,17 @@ Configuration
 | :term:`POINT_STAT_CONFIG_FILE`
 | :term:`MODEL`
 | :term:`POINT_STAT_REGRID_TO_GRID`
+| :term:`POINT_STAT_REGRID_METHOD`
+| :term:`POINT_STAT_REGRID_WIDTH`
+| :term:`POINT_STAT_REGRID_VLD_THRESH`
+| :term:`POINT_STAT_REGRID_SHAPE`
 | :term:`POINT_STAT_GRID`
 | :term:`POINT_STAT_POLY`
 | :term:`POINT_STAT_STATION_ID`
 | :term:`POINT_STAT_MESSAGE_TYPE`
 | :term:`POINT_STAT_CUSTOM_LOOP_LIST`
 | :term:`POINT_STAT_SKIP_IF_OUTPUT_EXISTS`
+| :term:`POINT_STAT_DESC`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
 | :term:`FCST_POINT_STAT_WINDOW_END` (optional)
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
@@ -1206,7 +1234,7 @@ Configuration
 | :term:`PLOT_DATA_PLANE_TITLE` (Optional)
 | :term:`LEAD_SEQ_\<n\>` (Optional)
 | :term:`LEAD_SEQ_<n>_LABEL` (Optional)
-| :term:`SERIES_ANALYSIS_DESCRIPTION`
+| :term:`SERIES_ANALYSIS_DESC`
 | :term:`SERIES_ANALYSIS_CAT_THRESH`
 | :term:`SERIES_ANALYSIS_VLD_THRESH`
 | :term:`SERIES_ANALYSIS_BLOCK_SIZE`
@@ -1434,7 +1462,6 @@ Configuration
 | :term:`TC_GEN_LEAD_WINDOW_BEGIN`
 | :term:`TC_GEN_LEAD_WINDOW_END`
 | :term:`TC_GEN_MIN_DURATION`
-
 | :term:`TC_GEN_FCST_GENESIS_VMAX_THRESH`
 | :term:`TC_GEN_FCST_GENESIS_MSLP_THRESH`
 | :term:`TC_GEN_BEST_GENESIS_TECHNIQUE`
@@ -1460,6 +1487,7 @@ Configuration
 | :term:`TC_GEN_GENESIS_RADIUS`
 | :term:`TC_GEN_DLAND_FILE`
 | :term:`TC_GEN_SKIP_IF_OUTPUT_EXISTS`
+| :term:`TC_GEN_DESC`
 
 .. _tcmpr_plotter_wrapper:
 
@@ -1597,6 +1625,7 @@ Configuration
 | :term:`TC_PAIRS_REFORMAT_DECK`
 | :term:`TC_PAIRS_REFORMAT_TYPE`
 | :term:`TC_PAIRS_CUSTOM_LOOP_LIST`
+| :term:`TC_PAIRS_DESC`
 
 .. warning:: **DEPRECATED:**
 
@@ -1670,6 +1699,7 @@ METplus Configuration
 | :term:`TC_RMW_VALID_EXCLUDE_LIST`
 | :term:`TC_RMW_VALID_HOUR_LIST`
 | :term:`TC_RMW_SKIP_IF_OUTPUT_EXISTS`
+| :term:`TC_RMW_DESC`
 | :term:`MODEL`
 | :term:`LEAD_SEQ`
 
@@ -1684,7 +1714,7 @@ This is the MET configuration file used for this wrapper. Below the file content
 
 The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
 
-**${MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${METPLUS_MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
 
 METplus Configuration::
 
@@ -1900,7 +1930,7 @@ Resulting value::
 
     rmw_scale = 0.2;
 
-**${REGRID_DICT}** - Corresponds to TC_RMW_REGRID_METHOD, TC_RMW_REGRID_WIDTH, TC_RMW_REGRID_VLD_THRESH, and TC_RMW_REGRID_SHAPE in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${METPLUS_REGRID_DICT}** - Corresponds to TC_RMW_REGRID_METHOD, TC_RMW_REGRID_WIDTH, TC_RMW_REGRID_VLD_THRESH, and TC_RMW_REGRID_SHAPE in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET TCRMW configuration file will be used.
 
 METplus Configuration 1::
 
