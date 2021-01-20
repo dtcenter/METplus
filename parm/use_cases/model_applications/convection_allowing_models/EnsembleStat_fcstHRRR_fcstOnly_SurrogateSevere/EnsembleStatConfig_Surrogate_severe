@@ -96,10 +96,10 @@ message_type       = [ "ADPSFC" ];
 sid_exc            = [];
 obs_thresh         = [ NA ];
 obs_quality        = [];
-${DUPLICATE_FLAG}
+${METPLUS_DUPLICATE_FLAG}
 obs_summary        = NONE;
 obs_perc_value     = 50;
-${SKIP_CONST}
+${METPLUS_SKIP_CONST}
 
 //
 // Observation error options
