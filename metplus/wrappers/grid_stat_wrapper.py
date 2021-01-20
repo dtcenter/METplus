@@ -102,7 +102,6 @@ class GridStatWrapper(CompareGriddedWrapper):
         """!Set environment variables that are referenced by the MET config file"""
 
         # set environment variables needed for MET application
-        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
 

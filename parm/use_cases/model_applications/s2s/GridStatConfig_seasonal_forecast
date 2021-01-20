@@ -9,18 +9,18 @@
 //
 // Output model name to be written
 //
-${MODEL}
+${METPLUS_MODEL}
 
 //
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
-${DESC}
+${METPLUS_DESC}
 
 //
 // Output observation type to be written
 //
-${OBTYPE}
+${METPLUS_OBTYPE}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -28,7 +28,7 @@ ${OBTYPE}
 //
 // Verification grid
 //
-${REGRID_DICT}
+${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -214,7 +214,6 @@ nc_pairs_flag   = {
 
 grid_weight_flag = NONE;
 tmp_dir          = "/tmp";
-//output_prefix    = "${MODEL}-${DESCRIPTION}_${CURRENT_OBS_NAME}_vs_${OBTYPE}_${OUTPUT_FILENAME_INFO}";
 output_prefix    = "${OUTPUT_PREFIX}";
 //version          = "V8.1";
 ////////////////////////////////////////////////////////////////////////////////

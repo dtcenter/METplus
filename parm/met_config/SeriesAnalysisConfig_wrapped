@@ -9,17 +9,17 @@
 //
 // Output model name to be written
 //
-${MODEL}
+${METPLUS_MODEL}
 
 //
 // Output description to be written
 //
-${DESC}
+${METPLUS_DESC}
 
 //
 // Output observation type to be written
 //
-${OBTYPE}
+${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -27,7 +27,7 @@ ${OBTYPE}
 // Verification grid
 // May be set separately in each "field" entry
 //
-${REGRID_DICT}
+${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -129,7 +129,7 @@ output_stats = {
    ${CTS_LIST}
    mctc   = [];
    mcts   = [];
-   ${STAT_LIST}
+   ${METPLUS_STAT_LIST}
    sl1l2  = [];
    sal1l2 = [];
    pct    = [];
