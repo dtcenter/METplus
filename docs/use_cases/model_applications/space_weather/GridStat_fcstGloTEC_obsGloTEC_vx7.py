@@ -99,7 +99,7 @@ _obsGloTEC_vx7.conf
 # These variables are referenced in the MET configuration file.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/space_weather/GridStatConfig_vx7
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7/GridStatConfig_vx7
 #
 # Note the following variables are referenced in the MET configuration file.
 # 
