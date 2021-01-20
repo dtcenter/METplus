@@ -45,15 +45,15 @@ nc_var_str    = "";
 //
 ens = {
    ${METPLUS_ENS_THRESH}
-   ${ENS_VLD_THRESH}
-   ${ENS_OBS_THRESH}
+   ${METPLUS_ENS_VLD_THRESH}
+   ${METPLUS_ENS_OBS_THRESH}
 
    field = [ ${ENS_FIELD}  ];
 }
 
-${NBRHD_PROB_DICT}
+${METPLUS_NBRHD_PROB_DICT}
 
-${NMEP_SMOOTH_DICT}
+${METPLUS_NMEP_SMOOTH_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -84,10 +84,10 @@ message_type   = [ "ADPUPA" ];
 sid_exc        = [];
 obs_thresh     = [ NA ];
 obs_quality    = [];
-${DUPLICATE_FLAG}
+${METPLUS_DUPLICATE_FLAG}
 obs_summary    = NONE;
 obs_perc_value = 50;
-${SKIP_CONST}
+${METPLUS_SKIP_CONST}
 
 //
 // Mapping of message type group name to comma-separated list of values.
@@ -103,8 +103,8 @@ message_type_group_map = [
 // Ensemble bin sizes
 // May be set separately in each "obs.field" entry
 //
-${ENS_SSVAR_BIN_SIZE}
-${ENS_PHIST_BIN_SIZE}
+${METPLUS_ENS_SSVAR_BIN_SIZE}
+${METPLUS_ENS_PHIST_BIN_SIZE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -128,7 +128,7 @@ climo_mean = {
    time_step          = 21600;
 }
 
-${CLIMO_CDF_DICT}
+${METPLUS_CLIMO_CDF_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

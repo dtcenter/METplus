@@ -82,18 +82,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         elif c_dict['OBS_GRID_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES:
             c_dict['OBS_INPUT_DATATYPE'] = c_dict['OBS_GRID_INPUT_DATATYPE']
 
-        c_dict['CONFIG_FILE'] = \
-            self.config.getraw('config', 'ENSEMBLE_STAT_CONFIG_FILE', '')
-
-        if not c_dict['CONFIG_FILE']:
-            self.log_error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
-
-        # met_obs_error_table is not required, if it is not defined
-        # set it to the empty string '', that way the MET default is used.
-        c_dict['MET_OBS_ERR_TABLE'] = \
-            self.config.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE', '')
-
-        # No Default being set this is REQUIRED TO BE DEFINED in conf file.
         c_dict['N_MEMBERS'] = \
             self.config.getint('config', 'ENSEMBLE_STAT_N_MEMBERS', -1)
 
@@ -155,6 +143,18 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_GRID_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
         c_dict['OBS_GRID_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
 
+        # set the MET config file path and variables set
+        # in th config file via environment variables
+        c_dict['CONFIG_FILE'] = \
+            self.config.getraw('config', 'ENSEMBLE_STAT_CONFIG_FILE', '')
+
+        if not c_dict['CONFIG_FILE']:
+            self.log_error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
+
+        # read by MET through environment variable, not set in MET config file
+        c_dict['MET_OBS_ERR_TABLE'] = \
+            self.config.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE', '')
+
         self.set_met_config_float(c_dict,
                                   'ENSEMBLE_STAT_ENS_VLD_THRESH',
                                   'vld_thresh',
@@ -172,10 +172,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.set_met_config_float(c_dict,
                                   'ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE',
                                   'ens_phist_bin_size')
-
-        c_dict['VERIFICATION_MASK_TEMPLATE'] = \
-            self.config.getraw('filename_templates',
-                               'ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE')
 
         self.set_met_config_list(c_dict,
                                  'ENSEMBLE_STAT_NBRHD_PROB_WIDTH',
@@ -195,11 +191,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.set_met_config_float(c_dict,
                                   'ENSEMBLE_STAT_ENS_THRESH',
                                   'ens_thresh')
-
-        # support old method to set ens_thresh
-        c_dict['ENS_THRESH_OLD'] = (
-            self.config.getstr('config', 'ENSEMBLE_STAT_ENS_THRESH', '1.0')
-        )
 
         self.set_met_config_string(c_dict,
                                    'ENSEMBLE_STAT_DUPLICATE_FLAG',
@@ -254,6 +245,17 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         self.format_nmep_smooth_type(c_dict)
 
+        c_dict['VERIFICATION_MASK_TEMPLATE'] = \
+            self.config.getraw('filename_templates',
+                               'ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE')
+
+        # old method of setting MET config values
+        c_dict['ENS_THRESH_OLD'] = (
+            self.config.getstr('config', 'ENSEMBLE_STAT_ENS_THRESH', '1.0')
+        )
+
+        # signifies that the tool can be run without setting
+        # field information for fcst and obs
         c_dict['VAR_LIST_OPTIONAL'] = True
 
         return c_dict
@@ -460,6 +462,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_WINDOW_END",
                          str(self.c_dict['OBS_WINDOW_END']))
 
+        # set METPLUS_ environment variables
         met_config_list = [
             'ENS_THRESH',
             'ENS_VLD_THRESH',
@@ -489,7 +492,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                                'NBRHD_PROB_SHAPE',
                                                'NBRHD_PROB_VLD_THRESH'])
         )
-        self.add_env_var('NBRHD_PROB_DICT', nbrhd_prob)
+        self.add_env_var('METPLUS_NBRHD_PROB_DICT', nbrhd_prob)
 
         climo_cdf = (
             self.format_met_config_dictionary('climo_cdf',
@@ -497,7 +500,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                                'CLIMO_CDF_CENTER_BINS',
                                                'CLIMO_CDF_WRITE_BINS'])
         )
-        self.add_env_var('CLIMO_CDF_DICT', climo_cdf)
+        self.add_env_var('METPLUS_CLIMO_CDF_DICT', climo_cdf)
 
         nmep_smooth = (
             self.format_met_config_dictionary('nmep_smooth',
@@ -508,7 +511,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                                'NMEP_SMOOTH_TYPE',
                                               ])
         )
-        self.add_env_var('NMEP_SMOOTH_DICT', nmep_smooth)
+        self.add_env_var('METPLUS_NMEP_SMOOTH_DICT', nmep_smooth)
 
         # set climatology environment variables
         self.set_climo_env_vars()

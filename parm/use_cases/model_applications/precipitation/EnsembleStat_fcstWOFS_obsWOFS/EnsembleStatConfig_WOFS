@@ -47,8 +47,8 @@ ens = {
    ${ENS_FILE_TYPE}
 
    ${METPLUS_ENS_THRESH}
-   ${ENS_VLD_THRESH}
-   ${ENS_OBS_THRESH}
+   ${METPLUS_ENS_VLD_THRESH}
+   ${METPLUS_ENS_OBS_THRESH}
 
    field = [ ${ENS_FIELD}  ];
 }
@@ -58,12 +58,12 @@ ens = {
 //
 // Neighborhood ensemble probabilities
 //
-${NBRHD_PROB_DICT}
+${METPLUS_NBRHD_PROB_DICT}
 
 //
 // NMEP smoothing methods
 //
-${NMEP_SMOOTH_DICT}
+${METPLUS_NMEP_SMOOTH_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -96,10 +96,10 @@ message_type   = [];
 sid_exc        = [];
 obs_thresh     = [ NA ];
 obs_quality    = [];
-${DUPLICATE_FLAG}
+${METPLUS_DUPLICATE_FLAG}
 obs_summary    = NONE;
 obs_perc_value = 50;
-${SKIP_CONST}
+${METPLUS_SKIP_CONST}
 
 //
 // Observation error options
@@ -130,8 +130,8 @@ message_type_group_map = [
 // Ensemble bin sizes
 // May be set separately in each "obs.field" entry
 //
-${ENS_SSVAR_BIN_SIZE}
-${ENS_PHIST_BIN_SIZE}
+${METPLUS_ENS_SSVAR_BIN_SIZE}
+${METPLUS_ENS_PHIST_BIN_SIZE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -163,7 +163,7 @@ climo_stdev = {
 //
 // May be set separately in each "obs.field" entry
 //
-${CLIMO_CDF_DICT}
+${METPLUS_CLIMO_CDF_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
