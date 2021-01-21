@@ -366,7 +366,12 @@ Creating a pull request
 
        .. figure:: figure/how_to_edit_file.png
 
-6. A reviewer has three possible options:
+6.  Make sure Continuous Integration (CI) have passed.  If not, ask
+    the requestor make changes.
+		   
+7.  Before moving on, make sure "All checks have passed." 
+
+8.  A reviewer has three possible options:
 
    * **Comment**: Submit general feedback without explicitly approving the
      changes or requesting additional changes.
@@ -397,22 +402,18 @@ that they can make the  necessary changes.
 .. figure:: figure/checks_pass_no_conflicts.png
 
 
-There are three merge methods to choose from:
+There are three merge methods to choose from.  It is recommended to use:
+**Squash and merge** (The METplus team usually selects this because all of
+the merge request’s commits are combined into one and a clean history
+is retained.) Click on the merge method.  
 
-* **Create a merge commit**
-* **Squash and merge** (Our METplus team usually selects this because all of
-  the merge request’s commits are combined into one and a clean history
-  is retained.) 
-* **Rebase and merge**
-
-Click on the chosen merge method.  
-
-After merging, the reviewer should check the pull request creator’s comments
-on whether to delete the feature branch from GitHub or leave it in place.
+After merging, the reviewer should notify the requestor the testing and
+merging are complete.  The requestor can then decide to delete the
+feature branch from GitHub or leave it in place.
 
 .. figure:: figure/delete_branch.png
 
-If the reviewer should delete the “compare” branch, the “Delete branch”
+If the requestor should delete the “compare” branch, the “Delete branch”
 button should be selected.
 
 
