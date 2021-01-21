@@ -213,22 +213,7 @@ ${METPLUS_OUTPUT_FLAG_DICT}
 //
 // Ensemble product output types
 //
-ensemble_flag = {
-   latlon    = TRUE;
-   mean      = FALSE;
-   stdev     = FALSE;
-   minus     = FALSE;
-   plus      = FALSE;
-   min       = FALSE;
-   max       = FALSE;
-   range     = FALSE;
-   vld_count = FALSE;
-   frequency = TRUE;
-   nep       = FALSE;
-   nmep      = FALSE;
-   rank      = FALSE;
-   weight    = FALSE;
-}
+${METPLUS_ENSEMBLE_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
