@@ -58,7 +58,7 @@ data = {
 //
 // Regridding options
 //
-${REGRID_DICT}
+${METPLUS_REGRID_DICT}
 
 //
 // Range-Azimuth grid parameters 
