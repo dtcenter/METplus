@@ -196,7 +196,7 @@ class TCGenWrapper(CommandBuilder):
                                                         'END',
                                                        ],
                                      }.items():
-            dict_string = self.format_met_config_dict(c_dict,
+            dict_string = self.format_met_config_dict(self.c_dict,
                                                       dict_name,
                                                       item_list)
             self.add_env_var(f'{dict_name}_DICT',
