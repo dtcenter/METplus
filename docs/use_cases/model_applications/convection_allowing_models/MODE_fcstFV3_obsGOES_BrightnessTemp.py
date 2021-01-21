@@ -106,8 +106,8 @@ MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in hailtest (relative to **OUTPUT_BASE**)
-# and will contain the following files:
+# Output for this use case will be found in convection_allowing_models/brightness_temperature 
+# (relative to **OUTPUT_BASE**) and will contain the following files:
 #
 # mode_FV3_core_lsm1_010000L_20190521_010000V_NAA_cts.txt
 # mode_FV3_core_lsm1_010000L_20190521_010000V_NAA_obj.nc
