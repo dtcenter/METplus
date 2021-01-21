@@ -584,6 +584,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             'MASK_GRID',
             'CENSOR_THRESH',
             'CENSOR_VAL',
+            'CI_ALPHA',
         ]
         for item in met_config_list:
             self.add_env_var(f'METPLUS_{item}',
