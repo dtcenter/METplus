@@ -337,13 +337,23 @@ Creating a pull request
 
 1.  Click on the “Pull requests” tab in the GitHub repository and
     click on the assigned pull request.
-2.  Take a look at the description of the testing already performed for
+2.  Ensure the continuous integration (CI) tests from
+    `GitHub Actions <https://github.com/dtcenter/METplus/actions>`_ have
+    passed.  See "All checks have passed" in the figure below. If the tests
+    were not successful or if there are conflicts with the base branch,
+    ask the requestor make changes.
+
+    .. figure:: figure/checks_pass_no_conflicts.png
+    
+3.  Take a look at the description of the testing already performed for
     these changes and then see what the recommended testing is for the
     reviewer to perform.
-3.  Perform any testing that is requested of the reviewer.
-4.  Click on the “Files Changed” tab to review the differences in code
+4.  Perform any testing that is requested of the reviewer.
+5.  Check to ensure the correct "base" branch is selected. In most cases, the
+    "base" branch will be the "develop" branch.
+6.  Click on the “Files Changed” tab to review the differences in code
     between the “base” branch and the “compare” branch.
-5.  Review each file and ensure that the changes seem reasonable.
+7.  Review each file and ensure that the changes seem reasonable.
 
     A reviewer can suggest changes be made by:
     
@@ -366,55 +376,56 @@ Creating a pull request
 
        .. figure:: figure/how_to_edit_file.png
 
-6.  Make sure Continuous Integration (CI) have passed.  If not, ask
-    the requestor make changes.
-		   
-7.  Before moving on, make sure "All checks have passed." 
+8.  Ensure the requestor has made all necessary documentation updates.
 
-8.  A reviewer has three possible options:
+9.  Ensure the requestor has made all necessary testing updates.
 
-   * **Comment**: Submit general feedback without explicitly approving the
-     changes or requesting additional changes.
+10.  If any changes were made, note that the CI tests will rerun.
+     Before moving on, make sure "All checks have passed." and make sure
+     “This branch has no conflicts with the base branch”.  Let the requestor
+     know if the checks do not pass or if there is a conflict with the base
+     branch so that they can make the  necessary changes.
+
+11.  A reviewer has three possible options:
+
+     * **Comment**: Submit general feedback without explicitly approving the
+       changes or requesting additional changes.
      
-   * **Approve**: Submit feedback and approve merging the changes proposed in
-     the pull request.
+     * **Approve**: Submit feedback and approve merging the changes proposed in
+       the pull request.
 
-   * **Request changes**: Submit feedback that must be addressed before the
-     pull request can be merged.
+     * **Request changes**: Submit feedback that must be addressed before the
+       pull request can be merged.
 	    
-   .. figure:: figure/review_approve_changes.png
+     .. figure:: figure/review_approve_changes.png
 
      A reviewer should click on: "Review changes", add comments to
      the "Write box", and select either  "Comment", "Approve",
-     or "Request Changes", and then click on "Submit Review". 
+     or "Request Changes", and then click on "Submit Review".
+
+12. Once the recommended testing is complete and any necessary changes have
+    been made, approve the request.
 					  
 
 Merging pull requests
 ^^^^^^^^^^^^^^^^^^^^^
-
-Once the pull request is approved it is ready to be merged, the reviewer should
-ensure that “All checks have passed” from the tests run in
-`GitHub Actions <https://github.com/dtcenter/METplus/actions>`_ and that
-“This branch has no conflicts with the base branch”.  Let the requestor
-know if the checks do not pass or if there is a conflict with the base branch so
-that they can make the  necessary changes.
-	    
-.. figure:: figure/checks_pass_no_conflicts.png
+Once the pull request has been approved it is ready to be merged.  **As
+permissions allow, the requestor is responsible for merging the pull request
+once it has been approved.**
 
 
-There are three merge methods to choose from.  It is recommended to use:
-**Squash and merge** (The METplus team usually selects this because all of
-the merge request’s commits are combined into one and a clean history
-is retained.) Click on the merge method.  
+There are three merge methods to choose from: "Create a merge commit",
+"Squash and merge", and "Rebase and merge". It is recommended to use the
+**Squash and merge** method because all of the merge request’s commits are
+combined into one and a clean history is retained. Click on the chosen merge
+method.  
 
-After merging, the reviewer should notify the requestor the testing and
-merging are complete.  The requestor can then decide to delete the
-feature branch from GitHub or leave it in place.
+After merging, the requestor can then decide whether or not to delete the branch.
 
 .. figure:: figure/delete_branch.png
 
-If the requestor should delete the “compare” branch, the “Delete branch”
-button should be selected.
+If the requestor wishes to delete the “compare” branch, the “Delete branch”
+button should be selected and the corresponding GitHub issue should be closed.
 
 
 Clean up after a successfully merged pull request
