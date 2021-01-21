@@ -77,7 +77,7 @@ Fork the NCAR/METplus repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Retrieve a copy of the source code by forking the NCAR/METplus repository
-  into into the user's own GitHub repository. Click on the **Fork** button in the upper right
+  into the user's own GitHub repository. Click on the **Fork** button in the upper right
   hand side of the `METplus repository <https://github.com/dtcenter/METplus>`_.
 
 * Click on the appropriate GitHub account when presented with the pop-up window
