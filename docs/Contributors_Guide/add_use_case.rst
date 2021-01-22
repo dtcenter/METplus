@@ -193,7 +193,9 @@ Switch to Bash
 
 If you are not using a shell other than bash, run "bash" to activate a bash
 shell. This will make the instructions you need to run on the DTC web server
-as the met_test user easier because met_test's default shell is bash.
+as the met_test user easier because met_test's default shell is bash::
+
+    bash
 
 If you are unsure which shell you use, run the following command::
 
@@ -205,8 +207,7 @@ If you are unsure which shell you use, run the following command::
     values that correspond to the use case being added before
     copy/pasting any of these commands or there may be unintended consequences.
     Copy and paste these values after you have modified them into a text file
-    that you can copy and paste into the terminal. **You will have to do this
-    twice in these instructions.**
+    that you can copy and paste into the terminal.
 
 Download the template environment file
 """"""""""""""""""""""""""""""""""""""
@@ -263,7 +264,8 @@ bash::
 
 .. note::
     Write down or copy the value for $METPLUS_DTC_WEB_SERVER and
-    $METPLUS_DATA_STAGING_DIR.
+    $METPLUS_DATA_STAGING_DIR. You will need this to get to the new data
+    on the DTC Web Server.
 .. note::
     The value for METPLUS_USER_ENV_FILE should be the name of the environment
     file that you just sourced.
@@ -292,6 +294,18 @@ model_applications/${METPLUS_USE_CASE_CATEGORY}::
 
     tar czf ${METPLUS_NEW_DATA_TARFILE} model_applications/${METPLUS_USE_CASE_CATEGORY}
 
+Verify that the correct directory structure is found inside the tarfile::
+
+    tar tzf ${METPLUS_NEW_DATA_TARFILE}
+
+The output should show that all of the data is found under the
+model_applications/<category> directory. For example::
+
+    model_applications/air_quality_and_comp/
+    model_applications/air_quality_and_comp/aod/
+    model_applications/air_quality_and_comp/aod/icap_2016081500_aod.nc
+    model_applications/air_quality_and_comp/aod/AGGR_HOURLY_20160815T1200_1deg_global_archive.nc
+
 Copy files to DTC Web Server
 """"""""""""""""""""""""""""
 
@@ -301,7 +315,7 @@ the environment file to the staging directory::
     scp ${METPLUS_NEW_DATA_TARFILE} ${METPLUS_DTC_WEB_SERVER}:${METPLUS_DATA_STAGING_DIR}/
     scp ${METPLUS_USER_ENV_FILE} ${METPLUS_DTC_WEB_SERVER}:${METPLUS_DATA_STAGING_DIR}/
 
-* If you do not, upload the files to the RAL FTP::
+If you do not, upload the files to the RAL FTP::
 
     ftp -p ftp.rap.ucar.edu
 
@@ -315,7 +329,7 @@ Adding new data to full sample data tarfile
 Log into the DTC Web Server with SSH
 """"""""""""""""""""""""""""""""""""
 
-The web server is only accessible if you are on the NCAR VPN.:
+The web server is only accessible if you are on the NCAR VPN.::
 
     ssh ${METPLUS_DTC_WEB_SERVER}
 
@@ -534,9 +548,10 @@ tests to run::
               path: artifact/${{ github.job }}
 
 .. note::
-    There are 3 places where you need to change "data_assimilation" to the new
-    category that is being created. The run_use_cases.py script requires the
-    first argument to be the use case category to run in that Travis-CI job.
+    There are 3 places in this new section where you need to change
+    "data_assimilation" to the new category that is being created.
+    The run_use_cases.py script requires the
+    first argument to be the use case category to run in that job.
 
 Multiple Categories in One Test
 """""""""""""""""""""""""""""""
