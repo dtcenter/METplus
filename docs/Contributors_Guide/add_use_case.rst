@@ -726,7 +726,7 @@ pull request is merged so that the develop branch will contain the new data.
     cd develop
     ln -s ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_VERSION}/sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
 
-- Merge the pull request and verify that all of the Travis-CI tests pass for
+- Merge the pull request and verify that all of the GitHub Actions tests pass for
   the develop branch.
 
 Use Case Rules
