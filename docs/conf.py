@@ -106,6 +106,7 @@ exclude_patterns = ['_build',
                     '.DS_Store',
                     'Users_Guide/METplus_*.rst',
                     'use_cases',
+                    'Release_Guide/release_steps',
                     ]
 
 # Suppress certain warning messages
