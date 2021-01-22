@@ -78,7 +78,7 @@ _obsNCEP_sea_ice.conf
 # **GridStatConfig_sea_ice**
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/cryosphere/GridStatConfig_sea_ice
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice/GridStatConfig_sea_ice
 #
 # See the following file for more information about the environment variables set in this configuration file:
 #   parm/use_cases/met_tool_wrapper/GridStat/GridStat.py
@@ -86,7 +86,7 @@ _obsNCEP_sea_ice.conf
 # **MODEConfig_sea_ice**
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/cryosphere/MODEConfig_sea_ice
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice/MODEConfig_sea_ice
 #
 # See the following file for more information about the environment variables set in this configuration file:
 #   parm/use_cases/met_tool_wrapper/MODE/MODE.py

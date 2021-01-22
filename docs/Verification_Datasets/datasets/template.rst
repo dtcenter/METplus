@@ -12,7 +12,8 @@ Description
 
 Sample image
   *Insert sample image here*
-.. image:: images/sample_image.png
+
+  .. image:: images/sample_image.png
    :width: 600
 
 Recommended use
@@ -43,10 +44,13 @@ Variables available
   *Insert variables here*
 
 METplus Use Cases
-  Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxData%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
-..
-  [Delete this comment section]
-  Update search terms with the VxData label defined above.
+  Link to
+  `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxData%26%26UseCase&check_keywords=yes&area=default>`_
+  for this dataset.
+
+  .. 
+   [Delete this comment section]
+   Update search terms with the VxData label defined above.
 
 Keywords
   ..

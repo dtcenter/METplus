@@ -64,6 +64,11 @@ class TCStatWrapper(CommandBuilder):
                                                  c_dict['VERBOSITY'])
 
         c_dict['LOOKIN_DIR'] = self.config.getdir('TC_STAT_LOOKIN_DIR', '')
+
+        # support LOOKIN_DIR and INPUT_DIR
+        if not c_dict['LOOKIN_DIR']:
+            c_dict['LOOKIN_DIR'] = self.config.getdir('TC_STAT_INPUT_DIR', '')
+
         if not c_dict['LOOKIN_DIR']:
             self.log_error("TC_STAT_LOOKIN_DIR must be set")
 
@@ -100,7 +105,6 @@ class TCStatWrapper(CommandBuilder):
 
         for config_list in ['AMODEL',
                             'BMODEL',
-                            'DESC',
                             'STORM_ID',
                             'BASIN',
                             'CYCLONE',
@@ -125,15 +129,24 @@ class TCStatWrapper(CommandBuilder):
                                  f'{app_name_upper}_{config_list}',
                                  config_list.lower())
 
-            for iv_list in ['INIT', 'VALID',]:
-                self.set_c_dict_list(c_dict,
-                                     f'{app_name_upper}_{iv_list}_INCLUDE',
-                                     f'{iv_list.lower()}_inc',
-                                     )
-                self.set_c_dict_list(c_dict,
-                                     f'{app_name_upper}_{iv_list}_EXCLUDE',
-                                     f'{iv_list.lower()}_exc',
-                                     )
+        self.set_c_dict_list(c_dict,
+                             f'{app_name_upper}_DESC',
+                             'desc',
+                             'METPLUS_DESC')
+        # support previous format of desc until it is deprecated
+        c_dict['DESC'] = self.config.getraw('config',
+                                            f'{app_name_upper}_DESC',
+                                            '')
+
+        for iv_list in ['INIT', 'VALID',]:
+            self.set_c_dict_list(c_dict,
+                                 f'{app_name_upper}_{iv_list}_INCLUDE',
+                                 f'{iv_list.lower()}_inc',
+                                 )
+            self.set_c_dict_list(c_dict,
+                                 f'{app_name_upper}_{iv_list}_EXCLUDE',
+                                 f'{iv_list.lower()}_exc',
+                                 )
 
         for config_str in ['INIT_BEG',
                            'INIT_END',
@@ -202,6 +215,7 @@ class TCStatWrapper(CommandBuilder):
         for env_var in ['AMODEL',
                         'BMODEL',
                         'DESC',
+                        'METPLUS_DESC',
                         'STORM_ID',
                         'BASIN',
                         'CYCLONE',

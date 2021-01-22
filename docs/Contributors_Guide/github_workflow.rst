@@ -10,12 +10,12 @@ The branching model employed by the METplus GitHub repository is similar to
 that described in
 `A successful Git branching model <https://nvie.com/posts/a-successful-git-branching-model/>`_,
 where new or updated code is created on a 'feature' branch that is based on
-the `NCAR/METplus GitHub 'develop' branch <https://github.com/dtcenter/METplus/tree/develop>`_..
+the `NCAR/METplus GitHub 'develop' branch <https://github.com/dtcenter/METplus/tree/develop>`_.
 
 The feature branch is named after the corresponding GitHub issue:
 
-| *feature_<Github Issue number>_<brief_description>*
-|
+*feature_<Github Issue number>_<brief_description>*
+
 
 When work is complete, the code in the feature branch is merged into the
 develop branch.  When a release candidate for METplus has been determined,
@@ -28,13 +28,14 @@ Sequence of Events - Contributing Code
 
 *Pre-requisite:*
 
-Set up a GitHub repository account if you do not already have one, and log
-into your account.  For more information about GitHub accounts, please refer
-to the GitHub Documentation on `GitHub accounts <https://help.github.com/en/github/getting-started-with-github/signing-up-for-a-new-github-account>`_.
+The user must set up a GitHub repository account if one does not already have exhist.
+Log into the account.  For more information about GitHub accounts, please refer
+to the GitHub Documentation on
+`GitHub accounts <https://help.github.com/en/github/getting-started-with-github/signing-up-for-a-new-github-account>`_.
 
 
-**Workflow Overview:**
-
+Workflow Overview
+~~~~~~~~~~~~~~~~~
 A contributor to METplus will do the following:
 
 1.  Create a GitHub Issue to track the new contribution.
@@ -53,7 +54,8 @@ A contributor to METplus will do the following:
 
 8.  Push the feature branch to GitHub.
 
-9.  Open a pull request from feature branch to original repo (from which you forked, in step 2 above).
+9.  Open a pull request from feature branch to original repo (from which the original
+    branch was forked, in step 2 above).
 
 10.  Clean up after pull request has been merged by an authorized METplus developer.
 
@@ -75,20 +77,20 @@ Fork the NCAR/METplus repository
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Retrieve a copy of the source code by forking the NCAR/METplus repository
-  into your own GitHub repository. Click on the **Fork** button in the upper right
+  into the user's own GitHub repository. Click on the **Fork** button in the upper right
   hand side of the `METplus repository <https://github.com/dtcenter/METplus>`_.
 
 * Click on the appropriate GitHub account when presented with the pop-up window
   with the question 'Where should we fork METplus?'.
 
-* Your web page will refresh to your GitHub repository at, for example:
+* The web page will refresh to the GitHub repository at, for example:
 
   .. code-block:: ini
 
     https://github.com/<your-github-user>/METplus
 
-  where *<your-github-user>* is replaced with your GitHub username.  You now
-  have an entire copy of the NCAR/METplus Github repository.
+  where *<your-github-user>* is replaced with the user's GitHub username.
+  An entire copy of the NCAR/METplus Github repository is now in the User's area.
 
 
 Clone the fork to a local repository
@@ -141,8 +143,8 @@ Set upstream remote
   where <your-github-user> is your GitHub username.
 
 
-Generate a feature branch from the 'develop' branchfor new development
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Generate a feature branch from the 'develop' branch for new development
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Create a feature branch in the NCAR/METplus GitHub repository following this naming convention
 
@@ -296,16 +298,135 @@ Open a pull request using a browser
       where <your_feature_branch> corresponds to the feature branch where you have been
       making your changes (e.g. feature_777_wrapper_xyz).
 
-    * In the 'write' window, add any additional comments/details.  In this window are the
-      comments you created when you committed your changes in step 6 above.
+    * In the 'write' window, follow the directions and fill in the template
+      add any additional comments/details.  When filling in the template,
+      users will need to "Define the PR metadata, as permissions allow.
+      Select: **Reviewer(s), Project(s)**, and **Milestone**" When selecting a
+      reviewer, internal contributors submitting pull requests should select
+      the appropriate reviewer(s) and let the reviewer know that the pull
+      request has been assigned to them. If external contributors are unsure
+      who to assign as a reviewer, they should send an email to
+      met_help@ucar.edu asking the met-help point person to help with the
+      assignment of a reviewer.
+      
+    * When everything looks satisfactory, click on the green 'Create pull
+      request' button.
 
-    *  You can scroll down to see what changes were made to the file you committed.
+    * An authorized METplus developer will accept the pull request (if
+      everything meets acceptance criteria) and merge your code into the remote
+      repository's develop branch.
 
-    * When everything looks satisfactory, click on the green 'Create pull request' button.
+Approve a pull request using a browser
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-    * An authorized METplus developer will accept the pull request (if everything
-      meets acceptance criteria) and merge your code into the remote repository's develop
-      branch.
+Submitting a pull request allows a user to propose changes, request a
+review of the contributions and have the proposed changes merged into a
+different branch. Pull requests allow the reviewer to see the differences
+in the content from both branches.
+
+For issues with sub-tasks, it may be desired to get some changes into the
+develop branch sooner, rather than later. If the changes seem to make sense
+on their own and don't rely on other sub-tasks to be complete, creating a pull
+request for a sub-task may make sense. If a sub-task does rely on other
+sub-tasks to be complete, then it may be best to wait to create a pull request
+until the other sub-tasks are also complete.
+
+
+Creating a pull request
+^^^^^^^^^^^^^^^^^^^^^^^
+
+1.  Click on the “Pull requests” tab in the GitHub repository and
+    click on the assigned pull request.
+2.  Ensure the continuous integration (CI) tests from
+    `GitHub Actions <https://github.com/dtcenter/METplus/actions>`_ have
+    passed.  See "All checks have passed" in the figure below. If the tests
+    were not successful or if there are conflicts with the base branch,
+    ask the requestor make changes.
+
+    .. figure:: figure/checks_pass_no_conflicts.png
+    
+3.  Take a look at the description of the testing already performed for
+    these changes and then see what the recommended testing is for the
+    reviewer to perform.
+4.  Perform any testing that is requested of the reviewer.
+5.  Check to ensure the correct "base" branch is selected. In most cases, the
+    "base" branch will be the "develop" branch.
+6.  Click on the “Files Changed” tab to review the differences in code
+    between the “base” branch and the “compare” branch.
+7.  Review each file and ensure that the changes seem reasonable.
+
+    A reviewer can suggest changes be made by:
+    
+    a. Mousing over the line to comment on.
+
+       .. figure:: figure/add_comment_on_line.png
+
+         A blue box with a plus will appear. Click on the blue box.
+
+       .. figure:: figure/insert_suggestion.png
+    
+         Click on the icon of a paper with +/- to “Insert a Suggestion”.  The line
+         will be quoted and the reviewer can enter their suggestion below. Then, click on
+         the “Add Single Comment” button, so that the requestor will get an
+         email letting them know the reviewer has made a suggested change.
+
+    b. Or, a reviewer can edit the file directly on the web by clicking on the
+       “...” icon (three dots) in the right hand corner next to
+       “Viewed” icon and select “Edit file”. 	
+
+       .. figure:: figure/how_to_edit_file.png
+
+8.  Ensure the requestor has made all necessary documentation updates.
+
+9.  Ensure the requestor has made all necessary testing updates.
+
+10.  If any changes were made, note that the CI tests will rerun.
+     Before moving on, make sure "All checks have passed." and make sure
+     “This branch has no conflicts with the base branch”.  Let the requestor
+     know if the checks do not pass or if there is a conflict with the base
+     branch so that they can make the  necessary changes.
+
+11.  A reviewer has three possible options:
+
+     * **Comment**: Submit general feedback without explicitly approving the
+       changes or requesting additional changes.
+     
+     * **Approve**: Submit feedback and approve merging the changes proposed in
+       the pull request.
+
+     * **Request changes**: Submit feedback that must be addressed before the
+       pull request can be merged.
+	    
+     .. figure:: figure/review_approve_changes.png
+
+     A reviewer should click on: "Review changes", add comments to
+     the "Write box", and select either  "Comment", "Approve",
+     or "Request Changes", and then click on "Submit Review".
+
+12. Once the recommended testing is complete and any necessary changes have
+    been made, approve the request.
+					  
+
+Merging pull requests
+^^^^^^^^^^^^^^^^^^^^^
+Once the pull request has been approved it is ready to be merged.  **As
+permissions allow, the requestor is responsible for merging the pull request
+once it has been approved.**
+
+
+There are three merge methods to choose from: "Create a merge commit",
+"Squash and merge", and "Rebase and merge". It is recommended to use the
+**Squash and merge** method because all of the merge request’s commits are
+combined into one and a clean history is retained. Click on the chosen merge
+method.  
+
+After merging, the requestor can then decide whether or not to delete the branch.
+
+.. figure:: figure/delete_branch.png
+
+If the requestor wishes to delete the “compare” branch, the “Delete branch”
+button should be selected and the corresponding GitHub issue should be closed.
+
 
 Clean up after a successfully merged pull request
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
