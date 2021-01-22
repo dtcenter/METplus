@@ -691,7 +691,14 @@ pull request is merged so that the develop branch will contain the new data.
 - Move new tarball to the upcoming release (i.e. v4.0) directory
 - Update symbolic link in the develop directory to point to the new data
 - Remove the feature branch directory
-- Remove feature branch Docker data volumes:
+- Remove feature branch Docker data volumes
+
+.. warning::
+    Check if there are multiple feature branch directories that have data for
+    the same model_applications category. If there are more than one, then
+    you will need to be careful not to overwrite the final tarfile so that
+    one or more of the new data files are lost! These instructions need
+    to be updated to handle this situation.
 
 ::
 
