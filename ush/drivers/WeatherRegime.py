@@ -8,14 +8,13 @@ from numpy import ones,vstack
 from numpy.linalg import lstsq
 from metplus.util import config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate
-from Blocking_WeatherRegime_util import read_nc_met
+
 
 class WeatherRegimeCalculation():
     """Contains the programs to perform a Weather Regime Analysis
     """
     def __init__(self,config,label):
 
-        self.invar = config.getstr('WeatherRegime',label+'_WR_VAR','')
         self.wrnum = config.getint('WeatherRegime',label+'_WR_NUMBER',6)
         self.numi = config.getint('WeatherRegime',label+'_NUM_CLUSTERS',20)
 
@@ -46,48 +45,10 @@ class WeatherRegimeCalculation():
         return a,a1
 
 
-    def run_elbow(self,elbowinfiles,elbowyrs):
-        wrnum=6
-        k=KMeans(n_clusters=wrnum, random_state=0, n_jobs=-1)  #Initilize cluster centers
-
-        a,lat,lon,yr = read_nc_met(elbowinfiles,elbowyrs,self.invar)
-
-        #var = 'Z500'
-        #file1 = '/glade/work/demiller/ERAi/Z/Z500day/Z500dayDJF.nc'
-        #f1 = Dataset(file1, mode="r")
-        #dec = f1.variables[var][:]
-        #a=np.array(dec)
-        #f1.close()
-
-        #Set your domain. Limits below specify US
-        lon1=230
-        lon2=301
-        lat1=35 #index, lat = 90-lat1
-        lat2=66 #index, lat = 90-lat2
-
-        a = a[:,:,lat1:lat2,lon1:lon2]
-
-        #US Lats and lons
-        lat = np.arange(90-lat1,90-lat2,-1)
-        lon = np.arange(lon1,lon2,1)
+    def run_elbow(self,a,lat,lon,yr):
+        k=KMeans(n_clusters=self.wrnum, random_state=0, n_jobs=-1)  #Initilize cluster centers
 
         a,a1 = self.weights_detrend(lat,lon,a)
-        ##Set up weight array
-        #cos = lat * np.pi / 180.0
-        #way = np.cos(cos)
-        #weightf = np.repeat(way[:,np.newaxis],len(lon),axis=1)
-
-        #Remove trend and seasonal cycle
-        #atemp = np.zeros(a.shape)
-        #for i in np.arange(0,len(a[0,:,0,0]),1):
-        #    atemp[:,i] = signal.detrend(atemp[:,i],axis=0)
-        #    atemp[:,i] = (a[:,i] - np.nanmean(a[:,i],axis=0)) * weightf
-
-        #a = atemp
-        #atemp=0
-
-        #Reshape into time X space
-        #a1 = np.reshape(a,[len(a[:,0,0,0])*len(a[0,:,0,0]),len(lon)*len(lat)])
 
         #Calculate sum of squared distances for clusters 1-15
         kind = np.arange(1,self.numi,1)
@@ -118,22 +79,10 @@ class WeatherRegimeCalculation():
         mi = np.where(d==d.min())[0]
         print('Optimal Cluster # = '+str(mi+1)+'')
 
-        return a,lat,lon,yr,K,d,mi,line,curve
+        return a,K,d,mi,line,curve
 
 
     def Calc_EOF(self,Z500in,lats,lons):
-
-        #Set your domain. Limits below specify US
-        lon1=230
-        lon2=301
-        lat1=35 #index, lat = 90-lat1
-        lat2=66 #index, lat = 90-lat2
-
-        a = a[:,:,lat1:lat2,lon1:lon2]
-
-        #US Lats and lons
-        lat = np.arange(90-lat1,90-lat2,-1)
-        lon = np.arange(lon1,lon2,1)
 
         eofin = a #signal.detrend
         #Remove trend and seasonal cycle
@@ -160,21 +109,11 @@ class WeatherRegimeCalculation():
         return
 
 
-    def run_K_means(self,Z500in,lats,lons):
+    def run_K_means(self,a,lat,lon,yr):
 
-        #Set your domain. Limits below specify US
-        lon1=230
-        lon2=301
-        lat1=35 #index, lat = 90-lat1
-        lat2=66 #index, lat = 90-lat2
+        k=KMeans(n_clusters=self.wrnum, random_state=0, n_jobs=-1)
 
-        a = a[:,:,lat1:lat2,lon1:lon2]
-
-        #US Lats and lons
-        lat = np.arange(90-lat1,90-lat2,-1)
-        lon = np.arange(lon1,lon2,1)
-
-        a,a1 = self.weights_detrend(lats,lons,z500in)
+        a,a1 = self.weights_detrend(lat,lon,a)
 
         #fit the K-means algorithm to the data
         f=k.fit(a1)
@@ -191,7 +130,7 @@ class WeatherRegimeCalculation():
         #Get frequency of occurence for each cluster
         perc=np.zeros(self.wrnum)
         for ii in np.arange(0,self.wrnum,1):
-            perc[ii] = get_cluster_fraction(f,ii)
+            perc[ii] = self.get_cluster_fraction(f,ii)
 
         #Sort % from low to high
         ii = np.argsort(perc)
@@ -214,5 +153,5 @@ class WeatherRegimeCalculation():
         np.save('WR_LABELS',wrc)
         print(wr.shape)
 
-        return
+        return input, self.wrnum, perc
 
