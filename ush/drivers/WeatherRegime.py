@@ -1,11 +1,12 @@
 import os
 import numpy as np
-from netCDF4 import Dataset
 from pylab import *
 from sklearn.cluster import KMeans
+import scipy
 from scipy import stats,signal
 from numpy import ones,vstack
 from numpy.linalg import lstsq
+from eofs.standard import Eof
 from metplus.util import config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate
 
@@ -17,6 +18,7 @@ class WeatherRegimeCalculation():
 
         self.wrnum = config.getint('WeatherRegime',label+'_WR_NUMBER',6)
         self.numi = config.getint('WeatherRegime',label+'_NUM_CLUSTERS',20)
+        self.NUMPCS = 10
 
 
     def get_cluster_fraction(self, m, label):
@@ -82,7 +84,7 @@ class WeatherRegimeCalculation():
         return a,K,d,mi,line,curve
 
 
-    def Calc_EOF(self,Z500in,lats,lons):
+    def Calc_EOF(self,a,lats,lons):
 
         eofin = a #signal.detrend
         #Remove trend and seasonal cycle
@@ -95,18 +97,15 @@ class WeatherRegimeCalculation():
 
         # Use EOF solver and get PCs and EOFs
         solver = Eof(eofin,center=False)
-        pc = solver.pcs(npcs=NUMPCS,pcscaling=1)
-        eof = solver.eofsAsCovariance(neofs=NUMPCS,pcscaling=1)
-        eof = np.reshape(eof,(NUMPCS,len(lats),len(lons)))
+        pc = solver.pcs(npcs=self.NUMPCS,pcscaling=1)
+        eof = solver.eofsAsCovariance(neofs=self.NUMPCS,pcscaling=1)
+        eof = np.reshape(eof,(self.NUMPCS,len(lats),len(lons)))
 
         #Get variance fractions
         variance_fractions = solver.varianceFraction(neigs=10) * 100
         print(variance_fractions)
 
-        lonext=lons
-        latext=lats
-
-        return
+        return eof
 
 
     def run_K_means(self,a,lat,lon,yr):

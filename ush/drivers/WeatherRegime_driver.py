@@ -92,21 +92,23 @@ def main():
 
     if ("ELBOW" in steps_list_obs):
         print('Running Obs Elbow.py')
-        obs_infiles, yr_obs = find_input_files(elbow_config, use_init, 'OBS_WR_TEMPLATE')
         elbow_obs,K_obs,d_obs,mi_obs,line_obs,curve_obs = steps_obs.run_elbow(z500_obs,lats_obs,lons_obs,year_obs)
 
     if ("ELBOW" in steps_list_fcst):
         print('Running Forecast Elbow.py')
-        fcst_infiles,yr_fcst = find_input_files(elbow_config, use_init, 'FCST_WR_TEMPLATE')
         elbow_fcst,K_fcst,d_fcst,mi_fcst,line_fcst,curve_fcst = steps_fcst.run_elbow(z500_fcst,lats_fcst,lons_fcst,year_fcst)
 
     if ("PLOTELBOW" in steps_list_obs):
+        if not ("ELBOW" in steps_list_obs):
+            raise Exception('Must run observed Elbow before plotting observed elbow.')
         print('Creating Obs Elbow plot')
         elbow_plot_title = config.getstr('WeatherRegime','OBS_ELBOW_PLOT_TITLE','Elbow Method For Optimal k')
         elbow_plot_outname = config.getstr('WeatherRegime','OBS_ELBOW_PLOT_OUTPUT_NAME','obs_elbow')
         pwr.plot_elbow(K_obs,d_obs,mi_obs,line_obs,curve_obs,elbow_plot_title,elbow_plot_outname)
 
     if ("PLOTELBOW" in steps_list_fcst):
+        if not ("ELBOW" in steps_list_fcst):
+            raise Exception('Must run forecast Elbow before plotting forecast elbow.')
         print('Creating Forecast Elbow plot')
         elbow_plot_title = config.getstr('WeatherRegime','FCST_ELBOW_PLOT_TITLE','Elbow Method For Optimal k')
         elbow_plot_outname = config.getstr('WeatherRegime','FCST_ELBOW_PLOT_OUTPUT_NAME','fcst_elbow')
@@ -115,14 +117,20 @@ def main():
 
     if ("CALCEOF" in steps_list_obs):
         print('Running Obs EOF')
+        eof_obs = steps_obs.Calc_EOF(z500_obs,lats_obs,lons_obs)
 
     if ("CALCEOF" in steps_list_fcst):
         print('Running Forecast EOF')
+        eof_fcst = steps_fcst.Calc_EOF(z500_fcst,lats_fcst,lons_fcst)
 
     if ("PLOTEOF" in steps_list_obs):
+        if not ("CALCEOF" in steps_list_obs):
+            raise Exception('Must run observed EOFs before plotting observed EOFs.')
         print('Plotting Obs EOFs')
 
     if ("PLOTEOF" in steps_list_fcst):
+        if not ("CALCEOF" in steps_list_fcst):
+            raise Exception('Must run forecast EOFs before plotting forecast EOFs.')
         print('Plotting Forecast EOFs')
 
 
@@ -135,11 +143,15 @@ def main():
         kmeans_fcst,wrnum_fcst,perc_fcst = steps_fcst.run_K_means(z500_fcst,lats_fcst,lons_fcst,year_fcst)
 
     if ("PLOTKMEANS" in steps_list_obs):
+        if not ("KMEANS" in steps_list_obs):
+            raise Exception('Must run observed Kmeans before plotting observed Kmeans.')
         print('Plotting Obs K Means')
         kmeans_plot_outname = config.getstr('WeatherRegime','OBS_ELBOW_PLOT_OUTPUT_NAME','fcst_elbow')
         pwr.plot_K_means(kmeans_obs,wrnum_obs,lons_obs,lats_obs,perc_obs,kmeans_plot_outname)
 
     if ("PLOTKMEANS" in steps_list_fcst):
+        if not ("KMEANS" in steps_list_fcst):
+            raise Exception('Must run forecast Kmeans before plotting forecast Kmeans.')
         print('Plotting Forecast K Means')
         kmeans_plot_outname = config.getstr('WeatherRegime','FCST_ELBOW_PLOT_OUTPUT_NAME','fcst_elbow')
         pwr.plot_K_means(kmeans_fcst,wrnum_fcst,lons_fcst,lats_fcst,perc_fcts,kmeans_plot_outname)
