@@ -1,27 +1,77 @@
 import os
 import netCDF4
+import filecmp
 
 def compare_dir(dir_a, dir_b, debug=False):
     all_equal = True
     for root, _, files in os.walk(dir_a):
+        # skip log directory
+        if root.endswith('logs'):
+            continue
+
         for filename in files:
             filepath = os.path.join(root, filename)
 
+            # skip directories
+            if not os.path.isfile(filepath):
+                continue
+
+            # skip metplus_final.conf
+            if filepath.endswith('metplus_final.conf'):
+                continue
+
+            # if file does not exist in dir_b, report difference
+            filepath2 = filepath.replace(dir_a, dir_b)
+            if not os.path.exists(filepath2):
+                if debug:
+                    print(f"File does not exist: {filepath2}")
+                all_equal = False
+                continue
+
             # compare NetCDF data
             if filepath.endswith('nc'):
-                filepath2 = filepath.replace(dir_a, dir_b)
-                if not os.path.exists(filepath2):
-                    if debug:
-                        print(f"File does not exist: {filepath2}")
+                if debug:
+                    print(filepath)
+                    print(filepath2)
+                if not nc_is_equal(filepath, filepath2):
                     all_equal = False
-                else:
-                    if debug:
-                        print(filepath)
-                        print(filepath2)
-                    if not nc_is_equal(filepath, filepath2):
-                        all_equal = False
+                continue
+
+            # if not a NetCDF file, use diff to compare
+            if not filecmp.cmp(filepath, filepath2):
+                # if files differ, open files and handle expected diffs
+                if not compare_txt_files(filepath, filepath2, dir_a, dir_b):
+                    print(f"File differs: {filepath2}")
+                    all_equal = False
 
     return all_equal
+
+def compare_txt_files(filepath, filepath2, dir_a, dir_b):
+    with open(filepath, 'r') as file_handle:
+        lines_a = file_handle.readlines()
+
+    with open(filepath2, 'r') as file_handle:
+        lines_b = file_handle.readlines()
+
+    if len(lines_a) != len(lines_b):
+        print(f"Different number of lines in {filepath2}")
+        print(f"A: {len(lines_a)}, B: {len(lines_b)}")
+        return False
+
+    for line_a, line_b in zip(lines_a, lines_b):
+        compare_a = line_a.strip()
+        compare_b = line_b.strip()
+        # if files are file list files, compare each line after replacing
+        # dir_b with dir_a in filepath2
+        if lines_a[0].strip() == 'file_list':
+            compare_b = compare_b.replace(dir_b, dir_a)
+            if compare_a != compare_b:
+                print(f"Line in {filepath2} differs")
+                print(f"  A: {compare_a}")
+                print(f"  B: {compare_b}")
+                return False
+
+    return True
 
 def nc_is_equal(file_a, file_b, fields=None, debug=False):
     """! Check if two NetCDF files have the same data
