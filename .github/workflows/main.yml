@@ -404,7 +404,7 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_11:
+  use_cases_air_quality_and_comp:
     name: Use Cases Tests - air_quality_and_comp
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
