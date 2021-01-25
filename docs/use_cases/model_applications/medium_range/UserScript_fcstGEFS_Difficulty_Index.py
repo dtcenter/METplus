@@ -29,7 +29,7 @@ Difficulty_Index.conf
 # precision, or ensemble spread. The greater the spread around the ensemble mean, the more likely 
 # it is that there will be ensemble members both above and below the decision threshold, making 
 # the decision harder. (A third factor that we will not address here is undiagnosed systematic 
-# error, which adds uncertainty in a similar way to ensemble spread.) The challenge is combing 
+# error, which adds uncertainty in a similar way to ensemble spread.) The challenge is combining 
 # these factors into a continuous function that allows the user to assess relative risk. 
 
 ##############################################################################
