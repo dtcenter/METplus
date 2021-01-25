@@ -34,8 +34,8 @@ ${METPLUS_REGRID_DICT}
 //
 // May be set separately in each "field" entry
 //
-censor_thresh = [];
-censor_val    = [];
+${METPLUS_CENSOR_THRESH}
+${METPLUS_CENSOR_VAL}
 cat_thresh    = [];
 nc_var_str    = "";
 
@@ -107,7 +107,7 @@ ${METPLUS_SKIP_CONST}
 // May be set separately in each "obs.field" entry
 //
 obs_error = {
-   flag             = FALSE;
+   ${METPLUS_OBS_ERROR_FLAG}
    dist_type        = NONE;
    dist_parm        = [];
    inst_bias_scale  = 1.0;
@@ -140,7 +140,7 @@ ${METPLUS_ENS_PHIST_BIN_SIZE}
 //
 climo_mean = {
 
-   file_name = [];
+   file_name = [ ${CLIMO_MEAN_FILE} ];
    field     = [];
 
    regrid = {
@@ -151,8 +151,8 @@ climo_mean = {
    }
 
    time_interp_method = DW_MEAN;
-   day_interval       = 31;
-   hour_interval      = 6;
+   ${METPLUS_CLIMO_MEAN_DAY_INTERVAL}
+   ${METPLUS_CLIMO_MEAN_HOUR_INTERVAL}
 }
 
 climo_stdev = climo_mean;
@@ -181,7 +181,7 @@ obs_window = {
 // Verification masking regions
 //
 mask = {
-   grid  = ["FULL"];
+   ${METPLUS_MASK_GRID}
    poly = [ ${VERIF_MASK} ];
    sid   = [];
    llpnt = [];
@@ -192,61 +192,28 @@ mask = {
 //
 // Confidence interval settings
 //
-ci_alpha  = [ 0.05 ];
+${METPLUS_CI_ALPHA}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Interpolation methods
 //
-interp = {
-   field      = BOTH;
-   vld_thresh = 1.0;
-   shape  = SQUARE;
-
-   type = [
-      {
-         method = NEAREST;
-         width  = 1;
-      }
-   ];
-}
+${METPLUS_INTERP_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Statistical output types
 //
-output_flag = {
-   ecnt  = STAT;
-   rhist = STAT;
-   phist = STAT;
-   orank = STAT;
-   ssvar = STAT;
-   relp  = STAT;
-}
+${METPLUS_OUTPUT_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Ensemble product output types
 //
-ensemble_flag = {
-   latlon    = TRUE;
-   mean      = TRUE;
-   stdev     = FALSE;
-   minus     = FALSE;
-   plus      = FALSE;
-   min       = FALSE;
-   max       = FALSE;
-   range     = FALSE;
-   vld_count = FALSE;
-   frequency = FALSE;
-   nep       = FALSE;
-   nmep      = TRUE;
-   rank      = TRUE;
-   weight    = FALSE;
-}
+${METPLUS_ENSEMBLE_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -262,6 +229,5 @@ rng = {
 
 grid_weight_flag = NONE;
 ${METPLUS_OUTPUT_PREFIX}
-//version          = "V10.0";
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -35,8 +35,8 @@ ${METPLUS_REGRID_DICT}
 //
 // May be set separately in each "field" entry
 //
-censor_thresh = [];
-censor_val    = [];
+${METPLUS_CENSOR_THRESH}
+${METPLUS_CENSOR_VAL}
 cat_thresh    = [];
 nc_var_str    = "";
 
@@ -113,7 +113,7 @@ ${METPLUS_ENS_PHIST_BIN_SIZE}
 //
 climo_mean = {
 
-   file_name = [];
+   file_name = [ ${CLIMO_MEAN_FILE} ];
    field     = [];
 
    regrid = {
@@ -126,6 +126,11 @@ climo_mean = {
    time_interp_method = DW_MEAN;
    match_day          = FALSE;
    time_step          = 21600;
+}
+
+climo_stdev = climo_mean;
+climo_stdev = {
+   file_name = [ ${CLIMO_STDEV_FILE} ];
 }
 
 ${METPLUS_CLIMO_CDF_DICT}
@@ -146,7 +151,7 @@ obs_window = {
 // Verification masking regions
 //
 mask = {
-   grid    = [ "FULL" ];
+   ${METPLUS_MASK_GRID}
    poly = [ ${VERIF_MASK} ];
    sid     = [];
 }
@@ -156,58 +161,28 @@ mask = {
 //
 // Confidence interval settings
 //
-ci_alpha  = [ 0.05 ];
+${METPLUS_CI_ALPHA}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Interpolation methods
 //
-interp = {
-   field      = BOTH;
-   vld_thresh = 1.0;
-   shape  = SQUARE;
-
-   type = [
-      {
-         method = NEAREST;
-         width  = 1;
-      }
-   ];
-}
+${METPLUS_INTERP_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Statistical output types
 //
-output_flag = {
-   rhist = NONE;
-   phist = NONE;
-   orank = NONE;
-   ssvar = NONE;
-   relp  = NONE;
-}
+${METPLUS_OUTPUT_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Ensemble product output types
 //
-ensemble_flag = {
-   latlon    = TRUE;
-   mean      = TRUE;
-   stdev     = TRUE;
-   minus     = FALSE;
-   plus      = FALSE;
-   min       = TRUE;
-   max       = TRUE;
-   range     = TRUE;
-   vld_count = TRUE;
-   frequency = TRUE;
-   rank      = FALSE;
-   weight    = FALSE;
-}
+${METPLUS_ENSEMBLE_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

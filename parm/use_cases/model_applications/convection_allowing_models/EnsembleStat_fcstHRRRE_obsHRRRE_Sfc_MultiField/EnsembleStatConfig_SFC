@@ -34,8 +34,8 @@ ${METPLUS_REGRID_DICT}
 //
 // May be set separately in each "field" entry
 //
-censor_thresh = [];
-censor_val    = [];
+${METPLUS_CENSOR_THRESH}
+${METPLUS_CENSOR_VAL}
 cat_thresh    = [];
 nc_var_str    = "";
 
@@ -107,7 +107,7 @@ ${METPLUS_SKIP_CONST}
 // May be set separately in each "obs.field" entry
 //
 obs_error = {
-   flag             = TRUE;    // TRUE or FALSE
+   ${METPLUS_OBS_ERROR_FLAG}
    dist_type        = NONE;    // Distribution type
    dist_parm        = [];      // Distribution parameters
    inst_bias_scale  = 1.0;     // Instrument bias scale adjustment
@@ -140,7 +140,7 @@ ${METPLUS_ENS_PHIST_BIN_SIZE}
 //
 climo_mean = {
 
-   file_name = [];
+   file_name = [ ${CLIMO_MEAN_FILE} ];
    field     = [];
 
    regrid = {
@@ -151,13 +151,13 @@ climo_mean = {
    }
 
    time_interp_method = DW_MEAN;
-   day_interval       = 31;
-   hour_interval      = 6;
+   ${METPLUS_CLIMO_MEAN_DAY_INTERVAL}
+   ${METPLUS_CLIMO_MEAN_HOUR_INTERVAL}
 }
 
 climo_stdev = climo_mean;
 climo_stdev = {
-   file_name = [];
+   file_name = [ ${CLIMO_STDEV_FILE} ];
 }
 
 //
@@ -181,7 +181,7 @@ obs_window = {
 // Verification masking regions
 //
 mask = {
-   grid = [];
+   ${METPLUS_MASK_GRID}
    poly = [ ${VERIF_MASK} ];
    sid  = [];
    llpnt = [];
@@ -192,55 +192,28 @@ mask = {
 //
 // Confidence interval settings
 //
-ci_alpha  = [ 0.01 ]; 
+${METPLUS_CI_ALPHA}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Interpolation methods
 //
-interp = {
-   field      = BOTH;
-   type       = [ { method = BILIN; width = 2; } ];
-   vld_thresh = 1.0;
-   shape  = SQUARE;
-}
+${METPLUS_INTERP_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Statistical output types
 //
-output_flag = {
-   ecnt  = BOTH;
-   rhist = BOTH;
-   phist = BOTH;
-   orank = BOTH;
-   ssvar = BOTH;
-   relp  = BOTH;
-}
+${METPLUS_OUTPUT_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Ensemble product output types
 //
-ensemble_flag = {
-   latlon    = TRUE;
-   mean      = TRUE;
-   stdev     = TRUE;
-   minus     = FALSE;
-   plus      = FALSE;
-   min       = FALSE;
-   max       = FALSE;
-   range     = FALSE;
-   vld_count = TRUE;
-   frequency = TRUE;
-   nep       = FALSE;
-   nmep      = FALSE;
-   rank      = FALSE;
-   weight    = FALSE;
-}
+${METPLUS_ENSEMBLE_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -257,6 +230,5 @@ rng = {
 
 grid_weight_flag = NONE;
 ${METPLUS_OUTPUT_PREFIX}
-//version          = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////
