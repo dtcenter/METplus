@@ -61,8 +61,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                c_dict['VERBOSITY'])
         )
 
-        self.set_c_dict_string(c_dict, 'MODEL', 'model')
-        self.set_c_dict_string(c_dict, 'OBTYPE', 'obtype')
+        self.set_met_config_string(c_dict, 'MODEL', 'model')
+        self.set_met_config_string(c_dict, 'OBTYPE', 'obtype')
 
         # handle old format of MODEL and OBTYPE
         c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'WRF')
@@ -72,19 +72,19 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         self.handle_c_dict_regrid(c_dict)
 
-        self.set_c_dict_list(c_dict,
-                             'SERIES_ANALYSIS_CAT_THRESH',
-                             'cat_thresh',
-                             remove_quotes=True)
+        self.set_met_config_list(c_dict,
+                                 'SERIES_ANALYSIS_CAT_THRESH',
+                                 'cat_thresh',
+                                 remove_quotes=True)
 
-        self.set_c_dict_float(c_dict,
-                              'SERIES_ANALYSIS_VLD_THRESH',
-                              'vld_thresh')
+        self.set_met_config_float(c_dict,
+                                  'SERIES_ANALYSIS_VLD_THRESH',
+                                  'vld_thresh')
 
-        self.set_c_dict_string(c_dict,
-                               'SERIES_ANALYSIS_BLOCK_SIZE',
-                               'block_size',
-                               remove_quotes=True)
+        self.set_met_config_string(c_dict,
+                                   'SERIES_ANALYSIS_BLOCK_SIZE',
+                                   'block_size',
+                                   remove_quotes=True)
 
         # get stat list to loop over
         c_dict['STAT_LIST'] = util.getlist(
@@ -96,13 +96,13 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             self.log_error("Must set SERIES_ANALYSIS_STAT_LIST to run.")
 
         # set stat list to set output_stats.cnt in MET config file
-        self.set_c_dict_list(c_dict,
+        self.set_met_config_list(c_dict,
                              'SERIES_ANALYSIS_STAT_LIST',
                              'cnt',
                              'OUTPUT_STATS_CNT')
 
         # set cts list to set output_stats.cts in MET config file
-        self.set_c_dict_list(c_dict,
+        self.set_met_config_list(c_dict,
                              'SERIES_ANALYSIS_CTS_LIST',
                              'cts',
                              'OUTPUT_STATS_CTS')

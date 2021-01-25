@@ -1191,11 +1191,13 @@ class CommandBuilder:
             self.config.logger.error("Could not get [INIT/VALID] time information from configuration file")
             self.isOK = False
 
-    def create_met_config_dictionary_string(self, dict_name, item_list):
+    @staticmethod
+    def format_met_config_dict(c_dict, dict_name, item_list):
         """! Build string containing dictionary from a MET configuration file
              with any items that were set in the user's METplus configuration. Any variables
              that were not set will not be included in the dictionary string.
              Args:
+                 @param c_dict dictionary to check for items
                  @param dict_name name of dictionary to create in all caps. This corresponds
                   to the name of the METplus configuration variable and c_dict value. The
                   lower-case name also matches the name of the MET dictionary item, i.e.
@@ -1210,7 +1212,8 @@ class CommandBuilder:
                   variables were set
         """
         # check if any of the items are set in c_dict
-        create_dict = [item for item in item_list if self.c_dict.get(f'{dict_name}_{item}')]
+        create_dict = [item for item in item_list
+                       if c_dict.get(f'{dict_name}_{item}')]
 
         # if any dict items are set, create the dictionary string and add them
         if not create_dict:
@@ -1218,12 +1221,14 @@ class CommandBuilder:
 
         dict_string = dict_name.lower() + ' = {'
         for item in item_list:
-            dict_string += self.c_dict.get(f'{dict_name}_{item}', '')
+            dict_string += c_dict.get(f'{dict_name}_{item}', '')
 
         dict_string += '}'
         return dict_string
 
-    def set_c_dict_list(self, c_dict, mp_config_name, met_config_name, c_dict_key=None, remove_quotes=False):
+    def set_met_config_list(self, c_dict, mp_config_name, met_config_name,
+                            c_dict_key=None, remove_quotes=False,
+                            allow_empty=False):
         """! Get list from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
@@ -1234,11 +1239,20 @@ class CommandBuilder:
                   to determine the key in c_dict to set (upper-case)
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
+                 @param allow_empty if True, if METplus config variable is set
+                  but is an empty string, then set the c_dict value to an empty
+                  list. If False, behavior is the same as when the variable is
+                  not set at all, which is to not set anything for the c_dict
+                  value
         """
+        # if variable is not set at all, return
+        if not self.config.has_option('config', mp_config_name):
+            return
+
         conf_value = util.getlist(self.config.getraw('config',
                                                      mp_config_name,
                                                      ''))
-        if conf_value:
+        if conf_value or allow_empty:
             conf_value = str(conf_value).replace("'", '"')
 
             if remove_quotes:
@@ -1251,8 +1265,8 @@ class CommandBuilder:
 
             c_dict[c_key] = f'{met_config_name} = {conf_value};'
 
-    def set_c_dict_string(self, c_dict, mp_config_name, met_config_name,
-                          c_dict_key=None, remove_quotes=False):
+    def set_met_config_string(self, c_dict, mp_config_name, met_config_name,
+                              c_dict_key=None, remove_quotes=False):
         """! Get string from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
@@ -1278,7 +1292,7 @@ class CommandBuilder:
 
             c_dict[c_key] = f'{met_config_name} = {conf_value};'
 
-    def set_c_dict_number(self, c_dict, num_type, mp_config_name, met_config_name, c_dict_key=None):
+    def set_met_config_number(self, c_dict, num_type, mp_config_name, met_config_name, c_dict_key=None):
         """! Get integer from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
@@ -1307,15 +1321,15 @@ class CommandBuilder:
 
             c_dict[c_key] = f"{met_config_name} = {str(conf_value)};"
 
-    def set_c_dict_int(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
-        self.set_c_dict_number(c_dict, 'int', mp_config_name, met_config_name, c_dict_key=c_dict_key)
+    def set_met_config_int(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+        self.set_met_config_number(c_dict, 'int', mp_config_name, met_config_name, c_dict_key=c_dict_key)
 
-    def set_c_dict_float(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
-        self.set_c_dict_number(c_dict, 'float', mp_config_name, met_config_name, c_dict_key=c_dict_key)
+    def set_met_config_float(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+        self.set_met_config_number(c_dict, 'float', mp_config_name, met_config_name, c_dict_key=c_dict_key)
 
-    def set_c_dict_thresh(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+    def set_met_config_thresh(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
         conf_value = self.config.getstr('config', mp_config_name, '')
-        if conf_value and conf_value != 'NA':
+        if conf_value:
             if util.get_threshold_via_regex(conf_value) is None:
                 self.log_error(f"Incorrectly formatted threshold: {mp_config_name}")
                 return
@@ -1327,8 +1341,8 @@ class CommandBuilder:
 
             c_dict[c_key] = f"{met_config_name} = {str(conf_value)};"
 
-    def set_c_dict_bool(self, c_dict, mp_config_name, met_config_name,
-                        c_dict_key=None, uppercase=True):
+    def set_met_config_bool(self, c_dict, mp_config_name, met_config_name,
+                            c_dict_key=None, uppercase=True):
         """! Get boolean from METplus configuration file and format it to be
              passed into a MET configuration file. Set c_dict item with boolean
              value expressed as a string.
@@ -1344,13 +1358,18 @@ class CommandBuilder:
                   met_config_name
                  @param uppercase If true, set value to TRUE or FALSE
         """
-        conf_value = self.config.getbool('config', mp_config_name)
+        conf_value = self.config.getbool('config', mp_config_name, '')
         if conf_value is None:
             self.log_error(f'Invalid boolean value set for {mp_config_name}')
             return
 
+        # if not invalid but unset, return without setting c_dict with no error
+        if conf_value == '':
+            return
+
+        conf_value = str(conf_value)
         if uppercase:
-            conf_value = str(conf_value).upper()
+            conf_value = conf_value.upper()
 
         if not c_dict_key:
             c_key = met_config_name.upper()
@@ -1359,6 +1378,27 @@ class CommandBuilder:
 
         c_dict[c_key] = (f'{met_config_name} = '
                          f'{util.remove_quotes(conf_value)};')
+
+    def format_met_config_dictionary(self, name, keys):
+        """! Return formatted dictionary named <name> with any <items> if they
+        are set to a value. If none of the items are set, return empty string
+
+        @param name name of dictionary to create
+        @param keys list of c_dict keys to use if they are set
+        @returns MET config formatted dictionary if any items are set, or empty
+         string if not
+        """
+        values = []
+        for key in keys:
+            value = self.c_dict.get(key)
+            if value:
+                values.append(value)
+
+        # if none of the keys are set to a value in dict, return empty string
+        if not values:
+            return ''
+
+        return f"{name} = {{{''.join(values)}}}"
 
     def handle_c_dict_regrid(self, c_dict, set_to_grid=True):
         app_name_upper = self.app_name.upper()
@@ -1378,44 +1418,35 @@ class CommandBuilder:
                     f"to_grid = {formatted_to_grid};"
                 )
 
-        self.set_c_dict_string(c_dict,
+        self.set_met_config_string(c_dict,
                                f'{app_name_upper}_REGRID_METHOD',
                                'method',
                                'REGRID_METHOD',
                                remove_quotes=True)
 
-        self.set_c_dict_int(c_dict,
+        self.set_met_config_int(c_dict,
                             f'{app_name_upper}_REGRID_WIDTH',
                             'width',
                             'REGRID_WIDTH')
 
-        self.set_c_dict_float(c_dict,
+        self.set_met_config_float(c_dict,
                               f'{app_name_upper}_REGRID_VLD_THRESH',
                               'vld_thresh',
                               'REGRID_VLD_THRESH')
-        self.set_c_dict_string(c_dict,
+        self.set_met_config_string(c_dict,
                                f'{app_name_upper}_REGRID_SHAPE',
                                'shape',
                                'REGRID_SHAPE',
                                remove_quotes=True)
 
     def get_regrid_dict(self):
-        regrid_dict_string = ''
-        # if any regrid items are set, create the regrid dictionary and add them
-        if (self.c_dict.get('REGRID_TO_GRID', '') or
-                self.c_dict.get('REGRID_METHOD', '') or
-                self.c_dict.get('REGRID_WIDTH', '') or
-                self.c_dict.get('REGRID_VLD_THRESH', '') or
-                self.c_dict.get('REGRID_SHAPE', '')):
-            regrid_dict_string = 'regrid = {'
-            regrid_dict_string += f"{self.c_dict.get('REGRID_TO_GRID', '')}"
-            regrid_dict_string += f"{self.c_dict.get('REGRID_METHOD', '')}"
-            regrid_dict_string += f"{self.c_dict.get('REGRID_WIDTH', '')}"
-            regrid_dict_string += f"{self.c_dict.get('REGRID_VLD_THRESH', '')}"
-            regrid_dict_string += f"{self.c_dict.get('REGRID_SHAPE', '')}"
-            regrid_dict_string += '}'
-
-        return regrid_dict_string
+        keys = ['REGRID_TO_GRID',
+                'REGRID_METHOD',
+                'REGRID_WIDTH',
+                'REGRID_VLD_THRESH',
+                'REGRID_SHAPE',
+                ]
+        return self.format_met_config_dictionary('regrid', keys)
 
     def handle_description(self, c_dict):
         """! Get description from config. If <app_name>_DESC is set, use

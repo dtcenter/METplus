@@ -83,7 +83,7 @@ class GridStatWrapper(CompareGriddedWrapper):
                                                           'GRID_STAT_NEIGHBORHOOD_WIDTH', '1')
         c_dict['NEIGHBORHOOD_SHAPE'] = self.config.getstr('config',
                                                           'GRID_STAT_NEIGHBORHOOD_SHAPE', 'SQUARE')
-        self.set_c_dict_list(c_dict,
+        self.set_met_config_list(c_dict,
                              f'GRID_STAT_NEIGHBORHOOD_COV_THRESH',
                              'cov_thresh',
                              'NEIGHBORHOOD_COV_THRESH',
