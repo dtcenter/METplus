@@ -12,7 +12,7 @@ def compare_dir(dir_a, dir_b, debug=False):
                 filepath2 = filepath.replace(dir_a, dir_b)
                 if not os.path.exists(filepath2):
                     if debug:
-                        print("File does not exist: {filepath2}")
+                        print(f"File does not exist: {filepath2}")
                     all_equal = False
                 else:
                     if debug:
@@ -69,6 +69,7 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
                     print(f"Field ({field}) values differ\n"
                           f"Min diff: {values_diff.min()}, "
                           f"Max diff: {values_diff.max()}")
+                    is_equal = False
                     # print indices that are not zero and count of diffs if debug
                     if debug:
                         count = 0
@@ -87,7 +88,7 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
                     is_equal = False
 
     except KeyError:
-        print("ERROR: Field {field} not found")
+        print(f"ERROR: Field {field} not found")
         return False
 
     return is_equal
