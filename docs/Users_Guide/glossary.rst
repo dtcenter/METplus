@@ -6968,3 +6968,235 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat
      | *Family:*  [config]
      | *Default:*  Varies
+
+   ENSEMBLE_STAT_CENSOR_THRESH
+     Specify the value for 'censor_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_CENSOR_VAL
+     Specify the value for 'censor_val' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_OBS_ERROR_FLAG
+     Specify the value for 'obs_error.flag' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'climo_mean.day_interval' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'climo_mean.hour_interval' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_MASK_GRID
+     Specify the value for 'mask.grid' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_CI_ALPHA
+     Specify the value for 'ci_alpha' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+
+   ENSEMBLE_STAT_INTERP_FIELD
+     Specify the value for 'interp.field' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_INTERP_VLD_THRESH
+     Specify the value for 'interp.vld_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_INTERP_SHAPE
+     Specify the value for 'interp.shape' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_INTERP_METHOD
+     Specify the value for 'interp.type.method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_INTERP_WIDTH
+     Specify the value for 'interp.type.width' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_ECNT
+     Specify the value for 'output_flag.ecnt' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_RPS
+     Specify the value for 'output_flag.rps' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_RHIST
+     Specify the value for 'output_flag.rhist' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_PHIST
+     Specify the value for 'output_flag.phist' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_ORANK
+     Specify the value for 'output_flag.orank' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_SSVAR
+     Specify the value for 'output_flag.ssvar' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_OUTPUT_FLAG_RELP
+     Specify the value for 'output_flag.relp' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON
+     Specify the value for 'ensemble_flag.latlon' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN
+     Specify the value for 'ensemble_flag.mean' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV
+     Specify the value for 'ensemble_flag.stdev' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_MINUS
+     Specify the value for 'ensemble_flag.minus' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS
+     Specify the value for 'ensemble_flag.plus' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_MIN
+     Specify the value for 'ensemble_flag.min' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_MAX
+     Specify the value for 'ensemble_flag.max' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_RANGE
+     Specify the value for 'ensemble_flag.range' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT
+     Specify the value for 'ensemble_flag.vld_count' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_FREQUENCY
+     Specify the value for 'ensemble_flag.frequency' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP
+     Specify the value for 'ensemble_flag.nep' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP
+     Specify the value for 'ensemble_flag.nmep' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK
+     Specify the value for 'ensemble_flag.rank' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
+
+   ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT
+     Specify the value for 'ensemble_flag.weight' in the MET configuration file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+     | *Family:*  [config]
+     | *Default:*  Varies
