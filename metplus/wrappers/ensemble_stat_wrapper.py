@@ -328,6 +328,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                  'censor_val',
                                  remove_quotes=True)
 
+        self.set_met_config_list(c_dict,
+                                 'ENSEMBLE_STAT_MESSAGE_TYPE',
+                                 'message_type',
+                                 'MESSAGE_TYPE',
+                                 allow_empty=True)
+
 
         for flag in self.OUTPUT_FLAGS:
             flag_upper = flag.upper()
@@ -585,6 +591,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             'CENSOR_THRESH',
             'CENSOR_VAL',
             'CI_ALPHA',
+            'MESSAGE_TYPE',
         ]
         for item in met_config_list:
             self.add_env_var(f'METPLUS_{item}',

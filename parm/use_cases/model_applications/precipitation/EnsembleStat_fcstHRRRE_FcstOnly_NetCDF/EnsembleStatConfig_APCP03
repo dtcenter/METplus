@@ -80,7 +80,7 @@ obs = {
 // Point observation filtering options
 // May be set separately in each "obs.field" entry
 //
-message_type   = [ "ADPUPA" ];
+${METPLUS_MESSAGE_TYPE}
 sid_exc        = [];
 obs_thresh     = [ NA ];
 obs_quality    = [];
