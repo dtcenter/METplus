@@ -234,6 +234,8 @@ def test_move_all_to_config_section(metplus_config, config_key, expected_result)
                     'config_2.conf',
                     'config_3.conf',
                    ]
+    test_dir = os.path.dirname(__file__)
+    config_files = [os.path.join(test_dir, item) for item in config_files]
     config = metplus_config(config_files)
     assert(config.getstr('config', config_key) == expected_result)
 
