@@ -142,3 +142,5 @@ ${MATCH_POINTS}
 // Array of TCStat analysis jobs to be performed on the filtered data
 //
 ${JOBS}
+
+${METPLUS_MET_CONFIG_UNSUPPORTED}
