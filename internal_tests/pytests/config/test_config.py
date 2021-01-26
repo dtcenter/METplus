@@ -236,3 +236,35 @@ def test_move_all_to_config_section(metplus_config, config_key, expected_result)
                    ]
     config = metplus_config(config_files)
     assert(config.getstr('config', config_key) == expected_result)
+
+@pytest.mark.parametrize(
+    'overrides, config_key, expected_result', [
+        (['config.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', '1'),
+        (['dir.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', '1'),
+        (['filename_templates.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', '1'),
+        (['user_env_vars.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', ''),
+        (['made_up.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', ''),
+        (['config.CMD_LINE_1=1',
+          'dir.CMD_LINE_1=2',
+          ],
+        'CMD_LINE_1', '2'),
+        (['dir.CMD_LINE_1=1',
+          'config.CMD_LINE_1=2',
+          ],
+        'CMD_LINE_1', '2'),
+    ]
+)
+def test_move_all_to_config_section_cmd_line(metplus_config, overrides,
+                                             config_key, expected_result):
+    config = metplus_config(overrides)
+    assert(config.getstr('config', config_key, '') == expected_result)
