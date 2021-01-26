@@ -140,8 +140,6 @@ def setup(config_inputs, logger=None, base_confs=METPLUS_BASE_CONFS):
 
     logger.info('Completed METplus configuration setup.')
 
-    config.move_all_to_config_section()
-
     return config
 
 # def parse_launch_args(args,usage,logger,PARM_BASE=None):
@@ -242,7 +240,8 @@ def launch(file_list, moreopt):
     logger = config.log()
 
     # set config variable for current time
-    config.set('config', 'CLOCK_TIME', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+    config.set('config', 'CLOCK_TIME',
+               datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
 
     # Read in and parse all the conf files.
     for filename in file_list:
@@ -260,6 +259,10 @@ def launch(file_list, moreopt):
                 logger.info('Override: %s.%s=%s'
                             % (section, option, repr(value)))
                 config.set(section, option, value)
+
+    # after all of the config files and overrides have been read in
+    # move all config variables from old sections into the [config] section
+    config.move_all_to_config_section()
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
@@ -290,7 +293,7 @@ def launch(file_list, moreopt):
         logger.warning('METPLUS_BASE from the conf files has no effect.'+\
                        ' Overriding to '+METPLUS_BASE)
 
-    config.set('dir', 'METPLUS_BASE', METPLUS_BASE)
+    config.set('config', 'METPLUS_BASE', METPLUS_BASE)
 
     # do the same for PARM_BASE
     user_parm_base = config.getdir('PARM_BASE', PARM_BASE)
@@ -300,9 +303,9 @@ def launch(file_list, moreopt):
         logger.error('Please remove PARM_BASE from any config file. Set the ' +\
                      'environment variable METPLUS_PARM_BASE to change where ' +\
                      'the METplus wrappers look for config files.')
-        exit(1)
+        sys.exit(1)
 
-    config.set('dir', 'PARM_BASE', PARM_BASE)
+    config.set('config', 'PARM_BASE', PARM_BASE)
 
     # print config items that are set automatically
     for var in ('METPLUS_BASE', 'PARM_BASE'):
