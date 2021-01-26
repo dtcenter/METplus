@@ -220,3 +220,19 @@ def test_getint(metplus_config, input_value, default, result):
         if result is None:
             assert(True)
 
+@pytest.mark.parametrize(
+    'config_key, expected_result', [
+        ('VAR_TO_TEST_1', '1'),
+        ('VAR_TO_TEST_2', '2'),
+        ('VAR_TO_TEST_3', '3'),
+        # should use last instance in config_3.conf
+        ('VAR_TO_TEST_A', 'A3'),
+    ]
+)
+def test_move_all_to_config_section(metplus_config, config_key, expected_result):
+    config_files = ['config_1.conf',
+                    'config_2.conf',
+                    'config_3.conf',
+                   ]
+    config = metplus_config(config_files)
+    assert(config.getstr('config', config_key) == expected_result)

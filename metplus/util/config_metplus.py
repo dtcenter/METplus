@@ -248,6 +248,9 @@ def launch(file_list, moreopt):
         config.read(filename)
         logger.info("%s: Parsed this file" % (filename,))
 
+        # move all config variables from old sections into the [config] section
+        config.move_all_to_config_section()
+
     # Overriding or passing in specific conf items on the command line
     # ie. config.NEWVAR="a new var" dir.SOMEDIR=/override/dir/path
     # If spaces, seems like you need double quotes on command line.
@@ -260,7 +263,7 @@ def launch(file_list, moreopt):
                             % (section, option, repr(value)))
                 config.set(section, option, value)
 
-    # after all of the config files and overrides have been read in
+    # after all of the overrides have been read in
     # move all config variables from old sections into the [config] section
     config.move_all_to_config_section()
 
