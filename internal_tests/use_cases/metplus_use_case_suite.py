@@ -66,9 +66,8 @@ class METplusUseCasesByRequirement:
     PYTHON_REQUIREMENTS = {
         'cartopy': 'ci/jobs/get_cartopy.sh',
         'pygrib': 'ci/jobs/get_pygrib.sh',
-        'h5py': 'pip3 install h5py',
-        'matplotlib': 'pip3 install matplotlib',
-        'metpy': 'pip3 install metpy',
+        'METcalcpy': 'ci/jobs/get_metcalcpy.sh',
+        'METplotpy': 'ci/jobs/get_metplotpy.sh',
     }
     """! dictionary of extra python packages to
     install for certain use cases the keys are name of the package and the
