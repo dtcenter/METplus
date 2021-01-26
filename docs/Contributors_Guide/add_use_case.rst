@@ -372,6 +372,15 @@ On the DTC web server::
     mkdir ${METPLUS_FEATURE_BRANCH}
     cd ${METPLUS_FEATURE_BRANCH}
 
+Copy the environment file into the feature branch directory
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+This will make it easier for the person who will update the tarfiles for the
+next release to include the new data (right before the pull request is merged
+into the develop branch)::
+
+    cp ${METPLUS_DATA_STAGING_DIR}/feature_ABC_desc_env.bash ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+
 Check if the category tarfile exists already
 """"""""""""""""""""""""""""""""""""""""""""
 
@@ -700,7 +709,6 @@ was run successfully using the new data,
 they will need to update the links on the DTC web server before the
 pull request is merged so that the develop branch will contain the new data.
 
-- Switch to the met_test user
 - **Run all of the environment variable commands in your shell (from the first
   step) and verify that they were set correctly**
 - Move new tarball to the upcoming release (i.e. v4.0) directory
@@ -715,19 +723,125 @@ pull request is merged so that the develop branch will contain the new data.
     one or more of the new data files are lost! These instructions need
     to be updated to handle this situation.
 
+Switch to the met_test user
+"""""""""""""""""""""""""""
+
 ::
-
     runas met_test
-    cd ${METPLUS_DATA_TARFILE_DIR}
-    diff ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
-    mv ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
-    rm v${METPLUS_VERSION}/sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz
-    mv ${METPLUS_FEATURE_BRANCH}/sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz v${METPLUS_VERSION}/sample_data-<category>-${METPLUS_VERSION}.tgz
-    cd develop
-    ln -s ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_VERSION}/sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
 
-- Merge the pull request and verify that all of the GitHub Actions tests pass for
-  the develop branch.
+Change directory to the feature tarfile directory
+"""""""""""""""""""""""""""""""""""""""""""""""""
+
+The path will look something like this::
+
+    cd /d2/www/dtcenter/dfiles/code/METplus/METplus_Data/feature_ABC_desc
+
+Source the environment file for the feature::
+
+    source feature_ABC_desc_env.sh
+
+Compare the volume_mount_directories file
+"""""""""""""""""""""""""""""""""""""""""
+
+Compare the feature branch file to the develop directory file. If there is a
+new entry or change in the feature version, copy the feature file into the
+develop directory::
+
+    diff ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
+    cp ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
+
+Copy the data from the feature directory into the next version directory
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Make sure the paths are correct before copying::
+
+    from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/model_applications/${METPLUS_USE_CASE_CATEGORY}
+    echo $from_directory
+    ls $from_directory
+
+    to_directory=${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}/model_applications/${METPLUS_USE_CASE_CATEGORY}
+    echo $to_directory
+    ls $to_directory
+
+    cp -r $from_directory/* $to_directory/
+
+Rename the existing sample data tarball for the use case category just in case
+something goes wrong::
+
+    cd ${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}
+    mv sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.sav.`date +%Y%m%d%H%M`.tgz
+
+Create the new sample data tarfile::
+
+    tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz model_applications/${METPLUS_USE_CASE_CATEGORY}
+
+Update the link in the develop directory if needed
+""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Check if the develop directory contains a symbolic link to an older version of
+the tarfile. Note: These commands must be run together (no other commands in
+between) to work::
+
+    cd ${METPLUS_DATA_TARFILE_DIR}/develop
+    ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz | grep ${METPLUS_VERSION}
+    if [ $? != 0 ]; then echo Please update the link; else echo The link is already correct; fi
+
+If the screen output says "The link is already correct" then do not
+run the next command. If it says "Please update the link" then please listen
+to the polite instructions::
+
+    rm sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
+    ln -s ${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}/sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
+
+Check that the link now points to the new tarfile that was just created::
+
+  ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
+
+Merge the pull request and ensure that all tests pass
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Merge the pull request on GitHub. Then go to the "Actions" tab and verify that
+all of the GitHub Actions tests pass for the develop branch. A green check mark
+for the latest run that lists "develop" as the branch signifies that the run
+completed successfully.
+
+.. figure:: figure/github_actions_develop.png
+
+If the circle on the left side is yellow, then the run has not completed yet.
+If everything ran smoothly, clean up the files on the web server.
+
+Remove the saved copy of the sample data tarfile
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+Check if there are any "sav" files in the METplus version directory::
+
+    cd ${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}
+    ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.sav.*.tgz
+
+If there is more than one file with "sav" in the filename, make sure that the
+file removed is the file that was created for this feature.
+
+Remove the feature branch data directory
+""""""""""""""""""""""""""""""""""""""""
+
+If more development is needed for the feature branch, do not remove the
+directory. If the work is complete, then remove the directory::
+
+    ls ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+    rm -rf ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+
+Clean up the staging directory
+""""""""""""""""""""""""""""""
+
+Remove the tarfile and environment file from the staging directory::
+
+    cd ${METPLUS_DATA_STAGING_DIR}
+
+    ls ${METPLUS_NEW_DATA_TARFILE}
+    rm ${METPLUS_NEW_DATA_TARFILE}
+
+    ls ${METPLUS_USER_ENV_FILE}
+    rm ${METPLUS_USER_ENV_FILE}
 
 Use Case Rules
 --------------
