@@ -34,9 +34,11 @@ class GridStatWrapper(CompareGriddedWrapper):
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
-        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_GRID_STAT_VERBOSITY',
+        c_dict['VERBOSITY'] = self.config.getstr('config',
+                                                 'LOG_GRID_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['CONFIG_FILE'] = self.config.getraw('config', 'GRID_STAT_CONFIG_FILE', '')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config',
+                                                   'GRID_STAT_CONFIG_FILE', '')
         c_dict['OBS_INPUT_DIR'] = \
           self.config.getdir('OBS_GRID_STAT_INPUT_DIR', '')
         c_dict['OBS_INPUT_TEMPLATE'] = \
@@ -63,31 +65,43 @@ class GridStatWrapper(CompareGriddedWrapper):
         # get climatology config variables
         self.read_climo_wrapper_specific('GRID_STAT', c_dict)
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_STAT_OUTPUT_DIR',
-                                                  self.config.getdir('OUTPUT_BASE'))
+        c_dict['OUTPUT_DIR'] = (
+            self.config.getdir('GRID_STAT_OUTPUT_DIR',
+                               self.config.getdir('OUTPUT_BASE'))
+        )
 
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('config',
                                'GRID_STAT_OUTPUT_TEMPLATE')
         )
-        c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
-                                                       'GRID_STAT_ONCE_PER_FIELD',
-                                                       False)
-        c_dict['FCST_PROB_THRESH'] = self.config.getstr('config',
-                                                        'FCST_GRID_STAT_PROB_THRESH', '==0.1')
-        c_dict['OBS_PROB_THRESH'] = self.config.getstr('config',
-                                                       'OBS_GRID_STAT_PROB_THRESH', '==0.1')
+        c_dict['ONCE_PER_FIELD'] = (
+            self.config.getbool('config',
+                                'GRID_STAT_ONCE_PER_FIELD',
+                                False)
+        )
+        c_dict['FCST_PROB_THRESH'] = (
+            self.config.getstr('config',
+                               'FCST_GRID_STAT_PROB_THRESH', '==0.1')
+        )
+        c_dict['OBS_PROB_THRESH'] = (
+            self.config.getstr('config',
+                               'OBS_GRID_STAT_PROB_THRESH', '==0.1')
+        )
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
-        c_dict['NEIGHBORHOOD_WIDTH'] = self.config.getstr('config',
-                                                          'GRID_STAT_NEIGHBORHOOD_WIDTH', '1')
-        c_dict['NEIGHBORHOOD_SHAPE'] = self.config.getstr('config',
-                                                          'GRID_STAT_NEIGHBORHOOD_SHAPE', 'SQUARE')
+        c_dict['NEIGHBORHOOD_WIDTH'] = (
+            self.config.getstr('config',
+                               'GRID_STAT_NEIGHBORHOOD_WIDTH', '1')
+        )
+        c_dict['NEIGHBORHOOD_SHAPE'] = (
+            self.config.getstr('config',
+                               'GRID_STAT_NEIGHBORHOOD_SHAPE', 'SQUARE')
+        )
         self.set_met_config_list(c_dict,
-                             f'GRID_STAT_NEIGHBORHOOD_COV_THRESH',
-                             'cov_thresh',
-                             'NEIGHBORHOOD_COV_THRESH',
-                             remove_quotes=True)
+                                 f'GRID_STAT_NEIGHBORHOOD_COV_THRESH',
+                                 'cov_thresh',
+                                 'NEIGHBORHOOD_COV_THRESH',
+                                 remove_quotes=True)
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
@@ -99,7 +113,8 @@ class GridStatWrapper(CompareGriddedWrapper):
         return c_dict
 
     def set_environment_variables(self, fcst_field, obs_field, time_info):
-        """!Set environment variables that are referenced by the MET config file"""
+        """!Set environment variables that are referenced by the
+            MET config file"""
 
         # set environment variables needed for MET application
         self.add_env_var("FCST_FIELD", fcst_field)
