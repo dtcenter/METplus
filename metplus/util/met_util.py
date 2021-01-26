@@ -503,8 +503,6 @@ def check_for_deprecated_config(config):
         'EXTRACT_TILES_OVERWRITE_TRACK': {'sec': 'config',
                                           'alt': 'EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS',
                                           'copy': False},
-        'INIT_INCLUDE': {'sec': 'config', 'alt': 'TC_PAIRS_INIT_INCLUDE'},
-        'INIT_EXCLUDE': {'sec': 'config', 'alt': 'TC_PAIRS_INIT_EXCLUDE'},
         'EXTRACT_TILES_PAIRS_INPUT_DIR': {'sec': 'dir',
                                           'alt': 'EXTRACT_TILES_STAT_INPUT_DIR',
                                           'copy': False},
@@ -518,8 +516,6 @@ def check_for_deprecated_config(config):
         'SERIES_ANALYSIS_FILTER_OPTS': {'sec': 'config',
                                         'alt': 'TC_STAT_JOB_ARGS',
                                         'copy': False},
-        'TC_STAT_INPUT_DIR': {'sec': 'dir',
-                              'alt': 'TC_STAT_LOOKIN_DIR'},
         'SERIES_ANALYSIS_INPUT_DIR': {'sec': 'dir',
                               'alt': 'FCST_SERIES_ANALYSIS_INPUT_DIR '
                                      'and '
@@ -673,6 +669,12 @@ def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool)
         config.logger.error(f"Config file does not exist: {met_config}")
         return False
 
+    deprecate_warning_list = ['MODEL',
+                              'OBTYPE',
+                              'DESC',
+                              'REGRID_TO_GRID',
+                              'REGRID_DICT',
+                              ]
     deprecated_met_list = ['MET_VALID_HHMM', 'GRID_VX', 'CONFIG_DIR']
     deprecated_output_prefix_list = ['FCST_VAR', 'OBS_VAR']
     config.logger.debug(f"Checking for deprecated environment variables in: {met_config}")
@@ -735,6 +737,18 @@ def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool)
                     sed_cmds.append(f"#Add {add_line}")
                     all_good = False
                     break
+
+            for deprecated_item in deprecate_warning_list:
+                if '${' + deprecated_item + '}' in line:
+                    msg = ("Use of ${" + deprecated_item + "} in MET config "
+                           "file is deprecated and will not be supported in "
+                           "future versions. Please use ${METPLUS_")
+                    if deprecated_item == 'REGRID_TO_GRID':
+                        sub_value = 'REGRID_DICT'
+                    else:
+                        sub_value = deprecated_item
+                    msg += sub_value + "} instead."
+                    config.logger.warning(msg)
 
     return all_good
 
@@ -2131,6 +2145,7 @@ def get_var_items(config, data_type, index, time_info, met_tool=None):
         return '', '', '', ''
 
     name = do_string_sub(config.getraw('config', search_name),
+                         skip_missing_tags=True,
                          **time_info)
 
     # get levels if available
@@ -2178,10 +2193,14 @@ def get_var_items(config, data_type, index, time_info, met_tool=None):
         extra = do_string_sub(config.getraw('config', search_extra),
                               **time_info)
 
-        # split up each item by semicolon, then add a semicolon to the end of each item
+        # strip off empty space around each value
+        extra_list = [item.strip() for item in extra.split(';')]
+
+        # split up each item by semicolon, then add a semicolon to the
+        # end of each item
         # to avoid errors where the user forgot to add a semicolon at the end
         # use list(filter(None to remove empty strings from list
-        extra_list = list(filter(None, extra.split(';')))
+        extra_list = list(filter(None, extra_list))
         extra = f"{'; '.join(extra_list)};"
 
     return name, levels, thresh, extra
@@ -2265,7 +2284,10 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
                 continue
 
             for level in levels:
-                var_dict = {f"{data_type_lower}_name": name,
+                # add {data_type}_level to name
+                sub_info = {f'{data_type.lower()}_level': level}
+                subbed_name = do_string_sub(name, **sub_info)
+                var_dict = {f"{data_type_lower}_name": subbed_name,
                             f"{data_type_lower}_level": level,
                             f"{data_type_lower}_thresh": thresh,
                             f"{data_type_lower}_extra": extra,
@@ -2293,11 +2315,16 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
                 return []
 
             for f_level, o_level in zip(f_levels, o_levels):
-                var_dict = {"fcst_name": f_name,
+                # add fcst_level and obs_level to name
+                sub_info = {'fcst_level': f_level,
+                            'obs_level': o_level}
+                subbed_f_name = do_string_sub(f_name, **sub_info)
+                subbed_o_name = do_string_sub(o_name, **sub_info)
+                var_dict = {"fcst_name": subbed_f_name,
                             "fcst_level": f_level,
                             "fcst_thresh": f_thresh,
                             "fcst_extra": f_extra,
-                            "obs_name": o_name,
+                            "obs_name": subbed_o_name,
                             "obs_level": o_level,
                             "obs_thresh": o_thresh,
                             "obs_extra": o_extra,

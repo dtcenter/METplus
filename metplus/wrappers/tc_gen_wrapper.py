@@ -60,12 +60,12 @@ class TCGenWrapper(CommandBuilder):
             self.log_error(f'{app_name_upper}_TRACK_INPUT_TEMPLATE must be set to run TCGen')
 
         # values used in configuration file
-        self.set_c_dict_int(c_dict, f'{app_name_upper}_INIT_FREQUENCY', 'init_freq')
+        self.set_met_config_int(c_dict, f'{app_name_upper}_INIT_FREQUENCY', 'init_freq')
 
-        self.set_c_dict_int(c_dict, f'{app_name_upper}_LEAD_WINDOW_BEGIN', 'beg', 'LEAD_WINDOW_BEG')
-        self.set_c_dict_int(c_dict, f'{app_name_upper}_LEAD_WINDOW_END', 'end', 'LEAD_WINDOW_END')
+        self.set_met_config_int(c_dict, f'{app_name_upper}_LEAD_WINDOW_BEGIN', 'beg', 'LEAD_WINDOW_BEG')
+        self.set_met_config_int(c_dict, f'{app_name_upper}_LEAD_WINDOW_END', 'end', 'LEAD_WINDOW_END')
 
-        self.set_c_dict_int(c_dict, f'{app_name_upper}_MIN_DURATION', 'min_duration')
+        self.set_met_config_int(c_dict, f'{app_name_upper}_MIN_DURATION', 'min_duration')
 
         conf_value = self.config.getstr('config', f'{app_name_upper}_FCST_GENESIS_VMAX_THRESH', '')
         if conf_value and conf_value != 'NA':
@@ -76,7 +76,7 @@ class TCGenWrapper(CommandBuilder):
         for dict_name in ['FCST_GENESIS', 'BEST_GENESIS', 'OPER_GENESIS']:
             # set threshold values
             for thresh_name in ['VMAX_THRESH', 'MSLP_THRESH']:
-                self.set_c_dict_thresh(c_dict,
+                self.set_met_config_thresh(c_dict,
                                        f'{app_name_upper}_{dict_name}_{thresh_name}',
                                        thresh_name.lower(),
                                        f'{dict_name}_{thresh_name}')
@@ -85,12 +85,12 @@ class TCGenWrapper(CommandBuilder):
                 continue
 
             # get technique and category
-            self.set_c_dict_string(c_dict,
+            self.set_met_config_string(c_dict,
                                    f'{app_name_upper}_{dict_name}_TECHNIQUE',
                                    'technique',
                                    f'{dict_name}_TECHNIQUE')
 
-            self.set_c_dict_list(c_dict,
+            self.set_met_config_list(c_dict,
                                  f'{app_name_upper}_{dict_name}_CATEGORY',
                                  'category',
                                  f'{dict_name}_CATEGORY')
@@ -103,10 +103,10 @@ class TCGenWrapper(CommandBuilder):
             filter_string += '}];'
             c_dict['FILTER'] = filter_string
 
-        self.set_c_dict_list(c_dict, 'MODEL', 'model')
-        self.set_c_dict_list(c_dict, f'{app_name_upper}_STORM_ID', 'storm_id')
-        self.set_c_dict_list(c_dict, f'{app_name_upper}_STORM_NAME', 'storm_name')
-        self.set_c_dict_list(c_dict, f'{app_name_upper}_INIT_HOUR_LIST', 'init_hour')
+        self.set_met_config_list(c_dict, 'MODEL', 'model')
+        self.set_met_config_list(c_dict, f'{app_name_upper}_STORM_ID', 'storm_id')
+        self.set_met_config_list(c_dict, f'{app_name_upper}_STORM_NAME', 'storm_name')
+        self.set_met_config_list(c_dict, f'{app_name_upper}_INIT_HOUR_LIST', 'init_hour')
 
         # set INIT_BEG, INIT_END, VALID_BEG, and VALID_END
         for time_type in ['INIT', 'VALID']:
@@ -121,29 +121,32 @@ class TCGenWrapper(CommandBuilder):
                     time_value = f'{time_key.lower()} = "{time_value}";'
                     c_dict[time_key] = time_value
 
-        self.set_c_dict_int(c_dict,
+        self.set_met_config_int(c_dict,
                             f'{app_name_upper}_GENESIS_WINDOW_BEGIN',
                             'beg',
                             'GENESIS_WINDOW_BEG')
-        self.set_c_dict_int(c_dict,
+        self.set_met_config_int(c_dict,
                             f'{app_name_upper}_GENESIS_WINDOW_END',
                             'end',
                             'GENESIS_WINDOW_END')
 
-        self.set_c_dict_int(c_dict,
+        self.set_met_config_int(c_dict,
                             f'{app_name_upper}_GENESIS_RADIUS',
                             'genesis_radius')
 
-        self.set_c_dict_string(c_dict,
+        self.set_met_config_string(c_dict,
                                f'{app_name_upper}_VX_MASK',
                                'vx_mask')
 
-        self.set_c_dict_string(c_dict,
+        self.set_met_config_string(c_dict,
                                f'{app_name_upper}_DLAND_FILE',
                                'dland_file')
 
         # get INPUT_TIME_DICT values since wrapper only runs once (doesn't look over time)
         self.set_time_dict_for_single_runtime(c_dict)
+
+        # read desc from TC_GEN_DESC or DESC into c_dict['DESC']
+        self.handle_description(c_dict)
 
         return c_dict
 
@@ -193,8 +196,9 @@ class TCGenWrapper(CommandBuilder):
                                                         'END',
                                                        ],
                                      }.items():
-            dict_string = self.create_met_config_dictionary_string(dict_name,
-                                                                   item_list)
+            dict_string = self.format_met_config_dict(self.c_dict,
+                                                      dict_name,
+                                                      item_list)
             self.add_env_var(f'{dict_name}_DICT',
                              dict_string)
 
@@ -202,7 +206,7 @@ class TCGenWrapper(CommandBuilder):
         for env_var in ['FILTER',
                         'INIT_FREQ',
                         'MIN_DURATION',
-                        'MODEL',
+                        'METPLUS_MODEL',
                         'STORM_ID',
                         'STORM_NAME',
                         'INIT_BEG',
@@ -213,10 +217,15 @@ class TCGenWrapper(CommandBuilder):
                         'LEAD_LIST',
                         'VX_MASK',
                         'GENESIS_RADIUS',
-                        'DLAND_FILE'
+                        'DLAND_FILE',
+                        'METPLUS_DESC',
                         ]:
             self.add_env_var(env_var,
                              self.c_dict.get(env_var, ''))
+
+        # set old names until they are deprecated
+        self.add_env_var('MODEL', self.c_dict.get('METPLUS_MODEL', ''))
+        self.add_env_var('DESC', self.c_dict.get('METPLUS_DESC', ''))
 
         super().set_environment_variables(time_info)
 

@@ -126,8 +126,6 @@ class MODEWrapper(CompareGriddedWrapper):
             self.config.getraw('filename_templates',
                                'MODE_VERIFICATION_MASK_TEMPLATE')
 
-        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'MODE_REGRID_TO_GRID', '')
-
         # check that values are valid
         error_message = 'items must start with a comparison operator '+\
                         '(>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)'
@@ -147,7 +145,6 @@ class MODEWrapper(CompareGriddedWrapper):
         return c_dict
 
     def set_environment_variables(self, fcst_field, obs_field, time_info):
-        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
 

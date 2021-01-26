@@ -78,6 +78,18 @@ Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #
 
 ##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case uses a Python embedding script to read input data
+#
+# parm/use_cases/model_applications/convection_allowing_models/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect/read_ascii_storm.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect/read_ascii_storm.py
+#
+
+##############################################################################
 # Running METplus
 # ---------------
 #

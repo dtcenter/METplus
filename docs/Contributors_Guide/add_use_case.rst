@@ -13,6 +13,7 @@ This branch will be the source of the pull request to merge the changes into
 the develop branch.
 
 
+.. _use_case_dirs:
 
 Use Case Category Directories
 -----------------------------
@@ -66,7 +67,7 @@ each use case should have the following:
     * **<CLIMO>** is the optional climotology input data source (this can be
       excluded if no climatology data is used)
 
-    * **<DESCRIPTION>** is an optional description that can include field
+    * **<DESCRIPTOR>** is an optional description that can include field
       category, number of fields, statistical types, and file formats
 
 * 0 or more MET configuration files named <MET-TOOL>Config_<DESCRIPTOR>
@@ -132,6 +133,11 @@ In the corresponding documentation category directory
       show up in the search, i.e. **ASCII2NCToolUseCase** must match
       https://dtcenter.github.io/METplus/search.html?q=**ASCII2NCToolUseCase**
 
+.. note::
+    Text that ends with an underscore (_) may be interpreted as a reference, so
+    avoid ending a line with this character to avoid generating warnings in the
+    documentation.
+
 
 Build the Documentation
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -184,93 +190,137 @@ file.grib2, run the following command::
 Providing new data
 ^^^^^^^^^^^^^^^^^^
 
+Log into the computer where your input data resides
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Switch to Bash
+""""""""""""""
+
+If you are not using a shell other than bash, run "bash" to activate a bash
+shell. This will make the instructions you need to run on the DTC web server
+as the met_test user easier because met_test's default shell is bash::
+
+    bash
+
+If you are unsure which shell you use, run the following command::
+
+    echo $SHELL
+
 .. warning::
-    **IMPORTANT:** The following environment variables can be set to make
+    **IMPORTANT:** The following environment variables are set to make
     running these instructions easier. Make sure they are set to the correct
     values that correspond to the use case being added before
     copy/pasting any of these commands or there may be unintended consequences.
     Copy and paste these values after you have modified them into a text file
-    that you can copy and paste into the terminal. **You will have to do this
-    twice in these instructions.**
+    that you can copy and paste into the terminal.
 
-If you are using **bash**::
+Download the template environment file
+""""""""""""""""""""""""""""""""""""""
 
-    # upcoming release number, i.e. 4.0
-    export METPLUS_VERSION=X.Y
+This file is available on the DTC web server. You can use wget to download the
+file to your current working directory, or visit the URL in a browser and save
+it to your computer::
 
-    # use case category (see list above)
-    export USE_CASE_CATEGORY=category
+    wget https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/add_use_case_env.bash
 
-    # name of tarfile containing only the new data to add to the use case
-    export NEW_DATA_TARFILE=new_use_case_data.tgz
+Rename env file
+"""""""""""""""
 
-    # feature branch where use case config files are checked in
-    export METPLUS_FEATURE_BRANCH=feature_XYZ_desc
+Rename this file to include your feature branch. For example, if your branch
+is feature_ABC_desc, then run::
 
-If you are using **csh**::
+    mv add_use_case_env.bash feature_ABC_desc_env.bash
 
-    # upcoming release number, i.e. 4.0
-    setenv METPLUS_VERSION X.Y
+Change the values of the env file
+"""""""""""""""""""""""""""""""""
 
-    # use case category (see list above)
-    setenv USE_CASE_CATEGORY category
+Open this file with your favorite editor and modify it to include the
+appropriate information for your use case.
 
-    # name of tarfile containing only the new data to add to the use case
-    setenv NEW_DATA_TARFILE new_use_case_data.tgz
+* METPLUS_VERSION should only include the major and minor version. For example,
+  if the next release is 4.0.0, set this value to 4.0. If the next release is
+  4.0.1, set this value to 4.0.
 
-    # feature branch where use case config files are checked in
-    setenv METPLUS_FEATURE_BRANCH feature_XYZ_desc
+* METPLUS_USE_CASE_CATEGORY should be one of the list items in the :ref:`use_case_dirs`
+  section unless you have received approval to create a new category.
+
+* METPLUS_NEW_DATA_TARFILE will not exist yet. You will create this file in an upcoming
+  step.
+
+* METPLUS_FEATURE_BRANCH should match the name of the branch you are working in
+  exactly.
+
+Source the env file and check environment
+"""""""""""""""""""""""""""""""""""""""""
+
+Source your environment file and verify that the variables are set
+correctly. If the source command fails, make sure you have switched to using
+bash::
+
+    source feature_ABC_desc_env.bash
+    echo $METPLUS_VERSION
+    echo $METPLUS_USE_CASE_CATEGORY
+    echo $METPLUS_NEW_DATA_TARFILE
+    echo $METPLUS_FEATURE_BRANCH
+    echo $METPLUS_DTC_WEB_SERVER
+    echo $METPLUS_DATA_STAGING_DIR
+    echo $METPLUS_DATA_TARFILE_DIR
+    echo $METPLUS_USER_ENV_FILE
 
 .. note::
-    The following variables do not need to be changed unless DTC moves to a
-    new web server, but they still need to be set to run the instructions.
+    Write down or copy the value for $METPLUS_DTC_WEB_SERVER and
+    $METPLUS_DATA_STAGING_DIR. You will need this to get to the new data
+    on the DTC Web Server.
+.. note::
+    The value for METPLUS_USER_ENV_FILE should be the name of the environment
+    file that you just sourced.
 
-If you are using **bash**::
+Create sub-directories for input data
+"""""""""""""""""""""""""""""""""""""
 
-    # web server that hosts the input data
-    export DTC_WEB_SERVER=mohawk.rap.ucar.edu
+Put new dataset into a directory that matches the use case directories, i.e.
+model_applications/${METPLUS_USE_CASE_CATEGORY}
 
-    # directory on DTC web server to put new data
-    export DATA_STAGING_DIR=/d2/projects/METplus/METplus_Data_Staging
+Verify use case config file contains correct directory
+""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-    # directory on DTC web server that contains the data tarfiles
-    export DATA_TARFILE_DIR=/d2/www/dtcenter/dfiles/code/METplus/METplus_Data
+Set directory paths in the use case config file relative to INPUT_BASE
+i.e {INPUT_BASE}/model_applications/<category> where <category> is the value
+you set for ${METPLUS_USE_CASE_CATEGORY}.
+You can set {INPUT_BASE} to your local directory to test that the use case
+still runs properly.
 
-If you are using **csh**::
+Create new data tarfile
+"""""""""""""""""""""""
 
-    # web server that hosts the input data
-    setenv DTC_WEB_SERVER mohawk.rap.ucar.edu
+Create a tarfile on your development machine with the new dataset. Make sure
+the tarfile contains directories, i.e.
+model_applications/${METPLUS_USE_CASE_CATEGORY}::
 
-    # directory on DTC web server to put new data
-    setenv DATA_STAGING_DIR /d2/projects/METplus/METplus_Data_Staging
+    tar czf ${METPLUS_NEW_DATA_TARFILE} model_applications/${METPLUS_USE_CASE_CATEGORY}
 
-    # directory on DTC web server that contains the data tarfiles
-    setenv DATA_TARFILE_DIR /d2/www/dtcenter/dfiles/code/METplus/METplus_Data
+Verify that the correct directory structure is found inside the tarfile::
 
-* Run all of the environment variable commands in your shell and verify that
-  they were set correctly.
+    tar tzf ${METPLUS_NEW_DATA_TARFILE}
 
-* Put new dataset into a directory that matches the use case directories, i.e.
-  model_applications/<category> or met_tool_wrapper (formerly
-  met_test) where <category> is the use case category from the list above.
+The output should show that all of the data is found under the
+model_applications/<category> directory. For example::
 
-* Set directory paths in the use case config file relative to INPUT_BASE
-  i.e {INPUT_BASE}/model_applications/<category> and set {INPUT_BASE} to your
-  local directory to test.
+    model_applications/air_quality_and_comp/
+    model_applications/air_quality_and_comp/aod/
+    model_applications/air_quality_and_comp/aod/icap_2016081500_aod.nc
+    model_applications/air_quality_and_comp/aod/AGGR_HOURLY_20160815T1200_1deg_global_archive.nc
 
-* Create a tarfile on your development machine with the new dataset. Make sure
-  the tarball contains directories model_applications/<category> or
-  met_tool_wrapper (formerly met_test)::
+Copy files to DTC Web Server
+""""""""""""""""""""""""""""
 
-    tar czf ${NEW_DATA_TARFILE} model_applications/${USE_CASE_CATEGORY}
+If you have access to the internal DTC web server, copy over the tarfile and
+the environment file to the staging directory::
 
-* If you have access to the internal DTC web server,
-  copy over the tarfile to
-  /d2/projects/METplus/METplus_Data_Staging::
+    scp ${METPLUS_NEW_DATA_TARFILE} ${METPLUS_DTC_WEB_SERVER}:${METPLUS_DATA_STAGING_DIR}/
+    scp ${METPLUS_USER_ENV_FILE} ${METPLUS_DTC_WEB_SERVER}:${METPLUS_DATA_STAGING_DIR}/
 
-    scp ${NEW_DATA_TARFILE} ${DTC_WEB_SERVER}:${DATA_STAGING_DIR}/
-
-* If you do not, upload the tarfile to the RAL FTP::
+If you do not, upload the files to the RAL FTP::
 
     ftp -p ftp.rap.ucar.edu
 
@@ -281,94 +331,126 @@ For an example on how to upload data to the ftp site see
 Adding new data to full sample data tarfile
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Switch to the met_test user on the DTC web server::
+Log into the DTC Web Server with SSH
+""""""""""""""""""""""""""""""""""""
+
+The web server is only accessible if you are on the NCAR VPN.::
+
+    ssh ${METPLUS_DTC_WEB_SERVER}
+
+Switch to the met_test user
+"""""""""""""""""""""""""""
+
+The commands must be run as the met_test user to write into the data
+directory::
 
     runas met_test
 
-* **Run all of the environment variable commands in your shell (from the first
-  step) and verify that they were set correctly**
+Setup the environment to run commands on web server
+"""""""""""""""""""""""""""""""""""""""""""""""""""
 
-* As the met_test user, create a new directory in the METplus_Data web
-  directory named after the branch containing the changes for the new use case.
-  On the DTC web server::
+Change directory to the data staging dir (${METPLUS_DATA_STAGING_DIR}),
+source the environment file you created, and make sure the environment
+variables are set properly.
+The staging dir variable will not be set until you source the environment file,
+so refer to the previous instructions to obtain the directory path::
 
-    cd ${DATA_TARFILE_DIR}
+    cd ${METPLUS_DATA_STAGING_DIR}
+    source feature_ABC_desc_env.bash
+    echo $METPLUS_VERSION
+    echo $METPLUS_USE_CASE_CATEGORY
+    echo $METPLUS_NEW_DATA_TARFILE
+    echo $METPLUS_FEATURE_BRANCH
+    echo $METPLUS_DTC_WEB_SERVER
+    echo $METPLUS_DATA_STAGING_DIR
+    echo $METPLUS_DATA_TARFILE_DIR
+    echo $METPLUS_USER_ENV_FILE
+
+Create a feature branch directory in the tarfile directory
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+As the met_test user, create a new directory in the METplus_Data web
+directory named after the branch containing the changes for the new use case.
+On the DTC web server::
+
+    cd ${METPLUS_DATA_TARFILE_DIR}
     mkdir ${METPLUS_FEATURE_BRANCH}
     cd ${METPLUS_FEATURE_BRANCH}
 
+Copy the environment file into the feature branch directory
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+This will make it easier for the person who will update the tarfiles for the
+next release to include the new data (right before the pull request is merged
+into the develop branch)::
+
+    cp ${METPLUS_DATA_STAGING_DIR}/feature_ABC_desc_env.bash ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+
 Check if the category tarfile exists already
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""""""""""""""""
 
-* Check the symbolic link in the develop directory to determine latest tarball
+Check the symbolic link in the develop directory to determine latest tarball::
 
-If you are using **bash**::
-
-    export TARFILE_TO_ADD_DATA=`ls -l ${DATA_TARFILE_DIR}/develop/sample_data-${USE_CASE_CATEGORY}.tgz | sed 's|.*->||g'`
-    echo ${TARFILE_TO_ADD_DATA}
-
-If you are using **csh**::
-
-    setenv TARFILE_TO_ADD_DATA `ls -l ${DATA_TARFILE_DIR}/develop/sample_data-${USE_CASE_CATEGORY}.tgz | sed 's|.*->||g'`
-    echo ${TARFILE_TO_ADD_DATA}
+    export METPLUS_TARFILE_TO_ADD_DATA=`ls -l ${METPLUS_DATA_TARFILE_DIR}/develop/sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz | sed 's|.*->||g'`
+    echo ${METPLUS_TARFILE_TO_ADD_DATA}
 
 **If the echo command does not contain a full path to sample data tarfile, then
 the sample data tarball may not exist yet for this category.** Double check
 that no sample data tarfiles for the category are found in any of the release
 or develop directories.
 
-* Add contents of existing tarfile to feature branch directory (if applicable)
+Add contents of existing tarfile to feature branch directory (if applicable)
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 **If you have determined that there is an existing tarfile for the category
 (from the previous step)**, then untar the sample data tarball into
 the feature branch directory. If no tarfile exists yet, you can skip this
 step::
 
-    tar zxf ${TARFILE_TO_ADD_DATA} -C ${DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+    tar zxf ${METPLUS_TARFILE_TO_ADD_DATA} -C ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
 Create the new tarfile
-^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""
 
-* Untar the new data tarball into the feature branch directory:
+Untar the new data tarball into the feature branch directory::
 
-::
+    tar zxf ${METPLUS_DATA_STAGING_DIR}/${METPLUS_NEW_DATA_TARFILE} -C ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
-    tar zxf ${DATA_STAGING_DIR}/${NEW_DATA_TARFILE} -C ${DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+Verify that all of the old and new data exists in the directory that was
+created (i.e. model_applications/<category>).
 
-* Verify that all of the old and new data exists in the directory that was
-  created (i.e. model_applications/<category>).
+Create the new sample data tarball. Example::
 
-* Create the new sample data tarball. Example:
+    tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz model_applications/${METPLUS_USE_CASE_CATEGORY}
 
-::
-
-    tar czf sample_data-${USE_CASE_CATEGORY}.tgz model_applications/${USE_CASE_CATEGORY}
-
-* Remove the directory from feature branch directory. Example::
-
-      rm -rf model_applications
 
 Add volume_mount_directories file
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+"""""""""""""""""""""""""""""""""
 
-* Copy the volume_mount_directories file from the develop directory into the
-  branch directory. Update the entry for the new tarball if the mounting point
-  has changed (unlikely) or add a new entry if adding a new sample data
-  tarfile. The format of this file generally follows
-  <category>:model_applications/<category>, i.e.
-  climate:model_applications/climate:
+Copy the volume_mount_directories file from the develop directory into the
+branch directory. Update the entry for the new tarball if the mounting point
+has changed (unlikely) or add a new entry if adding a new sample data
+tarfile. The format of this file generally follows
+<category>:model_applications/<category>, i.e.
+climate:model_applications/climate::
 
-::
+    cp ${METPLUS_DATA_TARFILE_DIR}/develop/volume_mount_directories ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
-    cp ${DATA_TARFILE_DIR}/develop/volume_mount_directories ${DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+Log out of DTC Web Server
+"""""""""""""""""""""""""
+
+The rest of the instructions are run on the machine where the use case was
+created and tested.
 
 Add use case to the test suite
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+""""""""""""""""""""""""""""""
 
-There is a text file that contains the list of all use cases::
+In the METplus repository, there is a text file that contains the list of
+all use cases::
 
-  METplus/internal_tests/use_cases/all_use_cases.txt
+  internal_tests/use_cases/all_use_cases.txt
 
-You will need to add your use case to this file so it will be available in
+Add the new use case to this file so it will be available in
 the tests. The file is organized by use case category. Each category starts
 a line that following the format::
 
@@ -384,8 +466,7 @@ The use cases can be defined using 3 different formats::
     <name>::<config_args>
     <name>::<config_args>::<python_packages>
 
-<config_args>
-"""""""""""""
+**<config_args>**
 
 This format should only be used if the use case has only 1 configuration file
 and no additional Python package dependencies besides the ones that are
@@ -400,8 +481,7 @@ The above example will be named
 'PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr' and will run using the
 configuration file listed.
 
-<name>::<config_args>
-"""""""""""""""""""""
+**<name>::<config_args>**
 
 This format is required if the use case contains multiple configuration files.
 Instead of forcing the script to guess which conf file should be used as the
@@ -414,8 +494,7 @@ conf variable override must be separated by a comma. Example::
 The above example is named 'GridStat_multiple_config' and uses 3 .conf files.
 Use cases with only one configuration file can also use this format is desired.
 
-<name>::<config_args>::<python_packages>
-""""""""""""""""""""""""""""""""""""""""
+**<name>::<config_args>::<python_packages>**
 
 This format is used if there are additional Python packages required to run
 the use case. <python_packages> is a list of packages to install before running
@@ -444,18 +523,49 @@ Add new category to test runs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you are adding a new use case category, you will need to add a new entry
-to the .travis.yml file found in the top level of the METplus repository. For
+to the main.yml file found in the .github/workflows directory in the METplus
+repository. For
 example, if the new category you are adding is called data_assimilation,
-then you will add the following to the .travis.yml at the end of the list of
+then you will add the following to the main.yml at the end of the list of
 tests to run::
 
-    - name: "Use Case Tests - data_assimilation"
-      script:
-        - ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation
+    use_cases_data_assimilation:
+        name: Use Cases Tests - data_assimilation
+        runs-on: ubuntu-latest
+        needs: [get_image, update_data_volumes]
+        steps:
+          - uses: actions/checkout@v2
+          - uses: actions/setup-python@v2
+            with:
+              python-version: '3.6'
+          - uses: actions/download-artifact@v2
+          - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          - name: Install dependencies
+            run: python -m pip install --upgrade pip python-dateutil requests
+          - name: Run Use Cases
+            run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation
+            env:
+              DOCKER_WORK_DIR: /metplus
+              DOCKER_DATA_DIR: /data
+              DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+              DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          # copy output data to save as artifact
+          - name: Save output data
+            if: always()
+            run: |
+              mkdir -p artifact/${{ github.job }}
+              cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+          - uses: actions/upload-artifact@v2
+            if: always()
+            with:
+              name: ${{ github.job }}
+              path: artifact/${{ github.job }}
 
-
-The run_use_cases.py script requires the first argument to be the use case
-category to run in that Travis-CI job.
+.. note::
+    There are 3 places in this new section where you need to change
+    "data_assimilation" to the new category that is being created.
+    The run_use_cases.py script requires the
+    first argument to be the use case category to run in that job.
 
 Multiple Categories in One Test
 """""""""""""""""""""""""""""""
@@ -465,7 +575,9 @@ job, you can add additional categories to this argument separated by commas or
 ampersands, i.e. category1,category2. Do not include any spaces around the
 commas. Example::
 
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py s2s,space_weather
+    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py s2s,space_weather
+
+.. _subset_category:
 
 Subset Category into Multiple Tests
 """""""""""""""""""""""""""""""""""
@@ -478,18 +590,18 @@ file.
 
 The argument supports a comma-separated list of numbers. Example::
 
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation 0,2,4
+    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation 0,2,4
     ...
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation 1,3
+    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation 1,3
 
 The above example will run a job with data_assimilation use cases 0, 2, and
 4, then another job with data_assimilation use cases 1 and 3.
 
 It also supports a range of numbers separated with a dash. Example::
 
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation 0-3
+    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation 0-3
     ...
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation 4+
+    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation 4+
 
 The above example will run a job with data_assimilation 0, 1, 2, and 3, then
 another job with data_assimilation 4 and higher. If you split up use cases
@@ -499,9 +611,9 @@ number specified in case additional use cases are added to the category.
 You can also use a combination of commas and dashes to define the list of cases
 to run. Example::
 
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation 0-2,4+
+    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation 0-2,4+
     ...
-    ${TRAVIS_BUILD_DIR}/ci/travis_jobs/run_use_cases.py data_assimilation 3
+    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation 3
 
 The above example will run data_assimilation 0, 1, 2, 4, and above in one
 job, then data_assimilation 3 in another job.
@@ -530,11 +642,60 @@ At the far left of the entry will be a small status icon:
 - A grey octagon with an exclamatory mark (!) inside means it was cancelled.
 
 Click on the text next to the icon (last commit message) to see more details.
+
+Verifying that new input data was found
+"""""""""""""""""""""""""""""""""""""""
+
+On the left side of the window there will be a list of jobs that are run.
+Click on the job titled "Docker Setup - Update Data Volumes"
+
+.. figure:: figure/update_data_volumes.png
+
+On this page, click the item labeled "Update Data Volumes" to view the log
+output. If the new data was found properly, there will be output saying
+"Will pull data from..." followed by the path to the feature branch directory.
+It will also list the dataset category that will be added
+
+.. figure:: figure/data_volume_pull.png
+
+If the data volume was already successfully created from a prior job, the
+script will check if the tarfile on the web server has been modified since
+the data volume was created. It will recreate it if it has been modified or
+do nothing for this step otherwise.
+
+.. figure:: figure/data_volume_exists.png
+
+If the log file cannot find the directory on the web server, then something
+went wrong in the previous instructions.
+
+.. figure:: figure/data_volume_not_found.png
+
+If this is the case and data should be found, repeat the instructions to stage
+the input data or contact met_help@ucar.edu for assistance.
+
+Verify that the use case ran successfully
+"""""""""""""""""""""""""""""""""""""""""
+
 You should verify that the use case was
 actually run by referring to the appropriate section under "Jobs" that starts
 with "Use Case Tests." Click on the job and search for the use case config
 filename in the log output by using the search box on the top right of the
 log output.
+
+Verify that the use case ran in a reasonable amount of time
+"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Find the last successful run of the use case category job and compare the time
+it took to run to the run that includes the new use case. The time for the job
+is listed in the Summary view of the latest workflow run next to the name of
+the job. If the time to run has
+increased by a substantial amount, please look into modifying the configuration
+so that it runs in a reasonable time frame.
+
+If the new use case runs in a reasonable amount of time but the total time to
+run the set of use cases is now above 20 minutes or so, consider creating a
+new job for the new use case. See the :ref:`subset_category` section and the
+multiple medium_range jobs for an example.
 
 Create a pull request
 ^^^^^^^^^^^^^^^^^^^^^
@@ -553,27 +714,140 @@ was run successfully using the new data,
 they will need to update the links on the DTC web server before the
 pull request is merged so that the develop branch will contain the new data.
 
-- Switch to the met_test user
 - **Run all of the environment variable commands in your shell (from the first
   step) and verify that they were set correctly**
 - Move new tarball to the upcoming release (i.e. v4.0) directory
 - Update symbolic link in the develop directory to point to the new data
 - Remove the feature branch directory
-- Remove feature branch Docker data volumes:
+- Remove feature branch Docker data volumes
 
-::
+.. warning::
+    Check if there are multiple feature branch directories that have data for
+    the same model_applications category. If there are more than one, then
+    you will need to be careful not to overwrite the final tarfile so that
+    one or more of the new data files are lost! These instructions need
+    to be updated to handle this situation.
+
+Switch to the met_test user
+"""""""""""""""""""""""""""
+
+Commands must run as the met_test user::
 
     runas met_test
-    cd ${DATA_TARFILE_DIR}
-    diff ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
-    mv ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
-    rm v${METPLUS_VERSION}/sample_data-${USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz
-    mv ${METPLUS_FEATURE_BRANCH}/sample_data-${USE_CASE_CATEGORY}.tgz v${METPLUS_VERSION}/sample_data-<category>-${METPLUS_VERSION}.tgz
-    cd develop
-    ln -s ${DATA_TARFILE_DIR}/${METPLUS_VERSION}/sample_data-${USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz sample_data-${USE_CASE_CATEGORY}.tgz
 
-- Merge the pull request and verify that all of the Travis-CI tests pass for
-  the develop branch.
+Change directory to the feature tarfile directory
+"""""""""""""""""""""""""""""""""""""""""""""""""
+
+The path will look something like this::
+
+    cd /d2/www/dtcenter/dfiles/code/METplus/METplus_Data/feature_ABC_desc
+
+Source the environment file for the feature::
+
+    source feature_ABC_desc_env.sh
+
+Compare the volume_mount_directories file
+"""""""""""""""""""""""""""""""""""""""""
+
+Compare the feature branch file to the develop directory file. If there is a
+new entry or change in the feature version, copy the feature file into the
+develop directory::
+
+    diff ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
+    cp ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
+
+Copy the data from the feature directory into the next version directory
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Make sure the paths are correct before copying::
+
+    from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/model_applications/${METPLUS_USE_CASE_CATEGORY}
+    echo $from_directory
+    ls $from_directory
+
+    to_directory=${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}/model_applications/${METPLUS_USE_CASE_CATEGORY}
+    echo $to_directory
+    ls $to_directory
+
+    cp -r $from_directory/* $to_directory/
+
+Rename the existing sample data tarball for the use case category just in case
+something goes wrong::
+
+    cd ${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}
+    mv sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.sav.`date +%Y%m%d%H%M`.tgz
+
+Create the new sample data tarfile::
+
+    tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz model_applications/${METPLUS_USE_CASE_CATEGORY}
+
+Update the link in the develop directory if needed
+""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Check if the develop directory contains a symbolic link to an older version of
+the tarfile. Note: These commands must be run together (no other commands in
+between) to work::
+
+    cd ${METPLUS_DATA_TARFILE_DIR}/develop
+    ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz | grep ${METPLUS_VERSION}
+    if [ $? != 0 ]; then echo Please update the link; else echo The link is already correct; fi
+
+If the screen output says "The link is already correct" then do not
+run the next command. If it says "Please update the link" then please listen
+to the polite instructions::
+
+    rm sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
+    ln -s ${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}/sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
+
+Check that the link now points to the new tarfile that was just created::
+
+  ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
+
+Merge the pull request and ensure that all tests pass
+"""""""""""""""""""""""""""""""""""""""""""""""""""""
+
+Merge the pull request on GitHub. Then go to the "Actions" tab and verify that
+all of the GitHub Actions tests pass for the develop branch. A green check mark
+for the latest run that lists "develop" as the branch signifies that the run
+completed successfully.
+
+.. figure:: figure/github_actions_develop.png
+
+If the circle on the left side is yellow, then the run has not completed yet.
+If everything ran smoothly, clean up the files on the web server.
+
+Remove the saved copy of the sample data tarfile
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+Check if there are any "sav" files in the METplus version directory::
+
+    cd ${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}
+    ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.sav.*.tgz
+
+If there is more than one file with "sav" in the filename, make sure that the
+file removed is the file that was created for this feature.
+
+Remove the feature branch data directory
+""""""""""""""""""""""""""""""""""""""""
+
+If more development is needed for the feature branch, do not remove the
+directory. If the work is complete, then remove the directory::
+
+    ls ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+    rm -rf ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+
+Clean up the staging directory
+""""""""""""""""""""""""""""""
+
+Remove the tarfile and environment file from the staging directory::
+
+    cd ${METPLUS_DATA_STAGING_DIR}
+
+    ls ${METPLUS_NEW_DATA_TARFILE}
+    rm ${METPLUS_NEW_DATA_TARFILE}
+
+    ls ${METPLUS_USER_ENV_FILE}
+    rm ${METPLUS_USER_ENV_FILE}
 
 Use Case Rules
 --------------

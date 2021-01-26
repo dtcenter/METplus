@@ -113,8 +113,6 @@ class MTDWrapper(MODEWrapper):
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'mtd')
 
-        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'MTD_REGRID_TO_GRID', '')
-
         # used to override the file type for fcst/obs if using python embedding for input
         c_dict['FCST_FILE_TYPE'] = ''
         c_dict['OBS_FILE_TYPE'] = ''
@@ -389,7 +387,7 @@ class MTDWrapper(MODEWrapper):
 
     def set_environment_variables(self, fcst_field, obs_field, time_info):
         self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"])
-        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
+
         """
         # set config variables that can be referenced in output_prefix
         self.config.set('config', 'CURRENT_FCST_NAME',

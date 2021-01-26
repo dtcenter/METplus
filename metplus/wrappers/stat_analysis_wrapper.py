@@ -1685,6 +1685,11 @@ class StatAnalysisWrapper(CommandBuilder):
 
             self.job_args = None
             # Set environment variables and run stat_analysis.
+            for mp_type in ['MODEL', 'DESC', 'OBTYPE']:
+                value = (f"{mp_type.lower()} = "
+                         f"[{runtime_settings_dict.get(mp_type, '')}];")
+                self.add_env_var(f'METPLUS_{mp_type}', value)
+
             for name, value in runtime_settings_dict.items():
                 self.add_env_var(name, value)
 
