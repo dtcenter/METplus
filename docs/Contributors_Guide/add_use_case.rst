@@ -133,6 +133,11 @@ In the corresponding documentation category directory
       show up in the search, i.e. **ASCII2NCToolUseCase** must match
       https://dtcenter.github.io/METplus/search.html?q=**ASCII2NCToolUseCase**
 
+.. note::
+    Text that ends with an underscore (_) may be interpreted as a reference, so
+    avoid ending a line with this character to avoid generating warnings in the
+    documentation.
+
 
 Build the Documentation
 ^^^^^^^^^^^^^^^^^^^^^^^
@@ -726,7 +731,8 @@ pull request is merged so that the develop branch will contain the new data.
 Switch to the met_test user
 """""""""""""""""""""""""""
 
-::
+Commands must run as the met_test user::
+
     runas met_test
 
 Change directory to the feature tarfile directory

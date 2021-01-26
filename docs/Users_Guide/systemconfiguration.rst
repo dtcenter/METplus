@@ -793,6 +793,27 @@ Note that some MET applications allow multiple fields to be specified for
 a single run. If the MET tool allows it and METplus Wrappers is configured
 accordingly, these two comparisons would be configured in a single run.
 
+Read explicit time dimension from a NetCDF level
+""""""""""""""""""""""""""""""""""""""""""""""""
+
+If the input NetCDF data contains a time dimension, the time can be specified
+in the level value. The MET tool will find the data for the time requested::
+
+    [config]
+    OBS_VAR1_NAME = TEMP
+    OBS_VAR1_LEVELS = "(20190201_120000,*,*)"
+
+This example will extract the data that corresponds to Feb. 1, 2019 at 12Z if
+it is available (see the MET Documentation for more information on this
+functionality). The time can be specified based on the current run time, i.e.::
+
+    [config]
+    OBS_VAR1_NAME = TEMP
+    OBS_VAR1_LEVELS = "({valid?fmt=%Y%m%d_%H%M%S},*,*)"
+
+In this example, {valid?fmt=%Y%m%d_%H%M%S} will be substituted with the valid
+time of the current run.
+
 :term:`FCST_VAR<n>_THRESH` / :term:`OBS_VAR<n>_THRESH`
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 

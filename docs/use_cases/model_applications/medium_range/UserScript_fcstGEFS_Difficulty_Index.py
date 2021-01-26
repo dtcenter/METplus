@@ -3,8 +3,8 @@ UserScript: Calculate the Difficulty Index
 ========================================================================
 
 model_applications/medium_range/
-UserScript_fcstGEFS_
-Difficulty_Index.conf
+UserScript_fcstGEFS
+_Difficulty_Index.conf
 
 """
 
