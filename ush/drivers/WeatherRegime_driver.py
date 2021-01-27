@@ -11,7 +11,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
 sys.path.insert(0, "/glade/u/home/kalb/UIUC/METplotpy_feature_74/metplotpy/contributed/weather_regime")
 from WeatherRegime import WeatherRegimeCalculation
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
-from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
+from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub, getlist
 from ush.master_metplus import get_config_inputs_from_command_line
 from metplus.wrappers import PCPCombineWrapper
 from metplus.wrappers import RegridDataPlaneWrapper
@@ -117,26 +117,34 @@ def main():
 
     if ("CALCEOF" in steps_list_obs):
         print('Running Obs EOF')
-        eof_obs = steps_obs.Calc_EOF(z500_obs,lats_obs,lons_obs)
+        eof_obs,wrnum_obs,variance_fractions_obs = steps_obs.Calc_EOF(z500_obs,lats_obs,lons_obs)
 
     if ("CALCEOF" in steps_list_fcst):
         print('Running Forecast EOF')
-        eof_fcst = steps_fcst.Calc_EOF(z500_fcst,lats_fcst,lons_fcst)
+        eof_fcst,wrnum_fcst,variance_fractions_fcst = steps_fcst.Calc_EOF(z500_fcst,lats_fcst,lons_fcst)
 
     if ("PLOTEOF" in steps_list_obs):
         if not ("CALCEOF" in steps_list_obs):
             raise Exception('Must run observed EOFs before plotting observed EOFs.')
         print('Plotting Obs EOFs')
+        pltlvls_str = getlist(config.getstr('WeatherRegime','EOF_PLOT_LEVELS',''))
+        pltlvls = [float(pp) for pp in pltlvls_str]
+        eof_plot_outname = config.getstr('WeatherRegime','OBS_EOF_PLOT_OUTPUT_NAME','obs_eof')
+        pwr.plot_eof(eof_obs,wrnum_obs,variance_fractions_obs,lons_obs,lats_obs,eof_plot_outname,pltlvls)
 
     if ("PLOTEOF" in steps_list_fcst):
         if not ("CALCEOF" in steps_list_fcst):
             raise Exception('Must run forecast EOFs before plotting forecast EOFs.')
         print('Plotting Forecast EOFs')
+        pltlvls_str = getlist(config.getstr('WeatherRegime','EOF_PLOT_LEVELS',''))
+        pltlvls = [float(pp) for pp in pltlvls_str]
+        eof_plot_outname = config.getstr('WeatherRegime','OBS_EOF_PLOT_OUTPUT_NAME','obs_eof')
+        pwr.plot_eof(eof_fcst,wrnum_fcst,variance_fractions_fcst,lons_fcst,lats_fcst,eof_plot_outname,pltlvls)
 
 
     if ("KMEANS" in steps_list_obs):
         print('Running Obs K Means')
-        kmeans_obs,wrnum_obs,perc_obs =steps_obs.run_K_means(z500_obs,lats_obs,lons_obs,year_obs)
+        kmeans_obs,wrnum_obs,perc_obs = steps_obs.run_K_means(z500_obs,lats_obs,lons_obs,year_obs)
 
     if ("KMEANS" in steps_list_fcst):
         print('Running Forecast K Means')
@@ -146,15 +154,19 @@ def main():
         if not ("KMEANS" in steps_list_obs):
             raise Exception('Must run observed Kmeans before plotting observed Kmeans.')
         print('Plotting Obs K Means')
-        kmeans_plot_outname = config.getstr('WeatherRegime','OBS_ELBOW_PLOT_OUTPUT_NAME','fcst_elbow')
-        pwr.plot_K_means(kmeans_obs,wrnum_obs,lons_obs,lats_obs,perc_obs,kmeans_plot_outname)
+        pltlvls_str = getlist(config.getstr('WeatherRegime','KMEANS_PLOT_LEVELS',''))
+        pltlvls = [float(pp) for pp in pltlvls_str]
+        kmeans_plot_outname = config.getstr('WeatherRegime','OBS_KMEANS_PLOT_OUTPUT_NAME','obs_kmeans')
+        pwr.plot_K_means(kmeans_obs,wrnum_obs,lons_obs,lats_obs,perc_obs,kmeans_plot_outname,pltlvls)
 
     if ("PLOTKMEANS" in steps_list_fcst):
         if not ("KMEANS" in steps_list_fcst):
             raise Exception('Must run forecast Kmeans before plotting forecast Kmeans.')
         print('Plotting Forecast K Means')
-        kmeans_plot_outname = config.getstr('WeatherRegime','FCST_ELBOW_PLOT_OUTPUT_NAME','fcst_elbow')
-        pwr.plot_K_means(kmeans_fcst,wrnum_fcst,lons_fcst,lats_fcst,perc_fcts,kmeans_plot_outname)
+        pltlvls_str = getlist(config.getstr('WeatherRegime','KMEANS_PLOT_LEVELS',''))
+        pltlvls = [float(pp) for pp in pltlvls_str]
+        kmeans_plot_outname = config.getstr('WeatherRegime','FCST_KMEANS_PLOT_OUTPUT_NAME','fcst_kmeans')
+        pwr.plot_K_means(kmeans_fcst,wrnum_fcst,lons_fcst,lats_fcst,perc_fcts,kmeans_plot_outname,pltlvls)
 
 
 if __name__ == "__main__":

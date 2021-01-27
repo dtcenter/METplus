@@ -105,7 +105,7 @@ class WeatherRegimeCalculation():
         variance_fractions = solver.varianceFraction(neigs=10) * 100
         print(variance_fractions)
 
-        return eof
+        return eof, self.wrnum, variance_fractions
 
 
     def run_K_means(self,a,lat,lon,yr):
