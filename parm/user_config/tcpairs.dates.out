@@ -1,0 +1,385 @@
+Running METplus 4.0.0-beta3-dev
+Starting METplus v4.0.0-beta3-dev
+01/26 18:07:56.669 metplus (config_metplus.py:121) INFO: Starting METplus configuration setup.
+01/26 18:07:56.671 metplus (config_metplus.py:250) INFO: /d1/personal/arbetter/METplus/parm/metplus_config/metplus_system.conf: Parsed this file
+01/26 18:07:56.672 metplus (config_metplus.py:250) INFO: /d1/personal/arbetter/METplus/parm/metplus_config/metplus_data.conf: Parsed this file
+01/26 18:07:56.672 metplus (config_metplus.py:250) INFO: /d1/personal/arbetter/METplus/parm/metplus_config/metplus_runtime.conf: Parsed this file
+01/26 18:07:56.673 metplus (config_metplus.py:250) INFO: /d1/personal/arbetter/METplus/parm/metplus_config/metplus_logging.conf: Parsed this file
+01/26 18:07:56.674 metplus (config_metplus.py:250) INFO: TCPairs_extra_tropical.conf: Parsed this file
+01/26 18:07:56.674 metplus (config_metplus.py:250) INFO: ArbetterKiowa.conf: Parsed this file
+01/26 18:07:56.676 metplus (config_metplus.py:432) INFO: Adding: config.LOG_TIMESTAMP='20210126180756'
+01/26 18:07:56.676 metplus (config_metplus.py:438) INFO: Replace [config] LOG_METPLUS with '/d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756'
+01/26 18:07:56.677 metplus (config_metplus.py:717) DEBUG: Setting [config] METPLUS_BASE to default value (/d1/personal/arbetter/METplus)
+01/26 18:07:56.677 metplus (config_metplus.py:717) DEBUG: Setting [config] PARM_BASE to default value (/d1/personal/arbetter/METplus/parm)
+01/26 18:07:56.677 metplus (config_metplus.py:310) INFO: Setting [dir] METPLUS_BASE to /d1/personal/arbetter/METplus
+01/26 18:07:56.677 metplus (config_metplus.py:310) INFO: Setting [dir] PARM_BASE to /d1/personal/arbetter/METplus/parm
+01/26 18:07:56.677 metplus (config_metplus.py:317) INFO: METPLUS_CONF: /d1/personal/arbetter/METplus_output/metplus_final.conf written here.
+01/26 18:07:56.678 metplus (config_metplus.py:141) INFO: Completed METplus configuration setup.
+01/26 18:07:56.678 metplus (met_util.py:103) INFO: Running METplus v4.0.0-beta3-dev called with command: /d1/personal/arbetter/METplus/ush/master_metplus.py -c TCPairs_extra_tropical.conf -c ArbetterKiowa.conf
+01/26 18:07:56.678 metplus (met_util.py:105) INFO: Log file: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:07:56.685 metplus (met_util.py:692) DEBUG: Checking for deprecated environment variables in: /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped
+01/26 18:07:56.688 metplus (config_metplus.py:717) DEBUG: Setting [config] USER_SHELL to default value (bash)
+01/26 18:07:56.688 metplus (config_metplus.py:717) DEBUG: Setting [config] DO_NOT_RUN_EXE to default value (empty string)
+01/26 18:07:57.504 metplus (config_metplus.py:717) DEBUG: Setting [config] TC_PAIRS_SKIP_TIMES to default value (empty string)
+01/26 18:07:57.504 metplus (config_metplus.py:717) DEBUG: Setting [config] SKIP_TIMES to default value (empty string)
+01/26 18:07:57.504 metplus (config_metplus.py:717) DEBUG: Setting [config] USE_EXPLICIT_NAME_AND_LEVEL to default value (empty string)
+01/26 18:07:57.504 metplus (config_metplus.py:717) DEBUG: Setting [config] TC_PAIRS_MANDATORY to default value (True)
+01/26 18:07:57.504 metplus (config_metplus.py:717) DEBUG: Setting [config] LOG_TC_PAIRS_VERBOSITY to default value (5)
+01/26 18:07:57.508 metplus (config_metplus.py:717) DEBUG: Setting [config] TC_PAIRS_EDECK_INPUT_DIR to default value (empty string)
+01/26 18:07:57.509 metplus (met_util.py:1019) INFO: ****************************************
+01/26 18:07:57.509 metplus (met_util.py:1020) INFO: * Running METplus
+01/26 18:07:57.509 metplus (met_util.py:1022) INFO: *  at init time: 2020-12-07 00:00
+01/26 18:07:57.510 metplus (met_util.py:1025) INFO: ****************************************
+01/26 18:07:57.510 metplus (command_builder.py:159) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:07:57.510 metplus (command_builder.py:159) DEBUG: BASIN=["ML"]
+01/26 18:07:57.510 metplus (command_builder.py:159) DEBUG: CYCLONE=[]
+01/26 18:07:57.510 metplus (command_builder.py:159) DEBUG: DLAND_FILE=/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc
+01/26 18:07:57.510 metplus (command_builder.py:159) DEBUG: INIT_BEG=20201207_000000
+01/26 18:07:57.510 metplus (command_builder.py:159) DEBUG: INIT_END=20201210_000000
+01/26 18:07:57.510 metplus (command_builder.py:159) DEBUG: INIT_EXCLUDE=[]
+01/26 18:07:57.510 metplus (command_builder.py:159) DEBUG: INIT_INCLUDE=[]
+01/26 18:07:57.510 metplus (command_builder.py:159) DEBUG: MET_TMP_DIR=/d1/personal/arbetter/METplus_output/tmp
+01/26 18:07:57.511 metplus (command_builder.py:159) DEBUG: MODEL=[]
+01/26 18:07:57.511 metplus (command_builder.py:159) DEBUG: STORM_ID=[]
+01/26 18:07:57.511 metplus (command_builder.py:159) DEBUG: STORM_NAME=[]
+01/26 18:07:57.511 metplus (command_builder.py:159) DEBUG: VALID_BEG=
+01/26 18:07:57.511 metplus (command_builder.py:159) DEBUG: VALID_END=
+01/26 18:07:57.511 metplus (command_builder.py:159) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:07:57.511 metplus (command_builder.py:159) DEBUG: export BASIN="[\"ML\"]"; export CYCLONE="[]"; export DLAND_FILE="/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc"; export INIT_BEG="20201207_000000"; export INIT_END="20201210_000000"; export INIT_EXCLUDE="[]"; export INIT_INCLUDE="[]"; export MET_TMP_DIR="/d1/personal/arbetter/METplus_output/tmp"; export MODEL="[]"; export STORM_ID="[]"; export STORM_NAME="[]"; export VALID_BEG=""; export VALID_END=""; 
+01/26 18:07:57.511 metplus (tc_pairs_wrapper.py:482) DEBUG: Looking for BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120700.dat
+01/26 18:07:57.511 metplus (tc_pairs_wrapper.py:496) DEBUG: Found BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120700.dat
+01/26 18:07:57.511 metplus (tc_pairs_wrapper.py:618) DEBUG: Looking for ADECK file: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120700.dat using template adeck.gfso.atcf_gen.glbl.{date?fmt=%Y%m%d%H}.dat
+01/26 18:07:57.512 metplus (tc_pairs_wrapper.py:629) DEBUG: Adding ADECK: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120700.dat
+01/26 18:07:57.512 metplus (command_runner.py:90) INFO: COMMAND: /usr/local/met/bin/tc_pairs -v 5 -bdeck /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120700.dat -adeck /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120700.dat -config /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped -out /d1/personal/arbetter/METplus_output/tc_pairs/202012/mlq2020120700.gfso
+01/26 18:07:57.513 metplus (command_runner.py:124) DEBUG: log_name is: tc_pairs, output sent to: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:07:59.122 metplus (command_runner.py:186) DEBUG: Finished running /usr/local/met/bin/tc_pairs in 0:00:01.606116
+01/26 18:07:59.123 metplus (met_util.py:1019) INFO: ****************************************
+01/26 18:07:59.123 metplus (met_util.py:1020) INFO: * Running METplus
+01/26 18:07:59.123 metplus (met_util.py:1022) INFO: *  at init time: 2020-12-07 06:00
+01/26 18:07:59.124 metplus (met_util.py:1025) INFO: ****************************************
+01/26 18:07:59.125 metplus (command_builder.py:159) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:07:59.125 metplus (command_builder.py:159) DEBUG: BASIN=["ML"]
+01/26 18:07:59.125 metplus (command_builder.py:159) DEBUG: CYCLONE=[]
+01/26 18:07:59.126 metplus (command_builder.py:159) DEBUG: DLAND_FILE=/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc
+01/26 18:07:59.126 metplus (command_builder.py:159) DEBUG: INIT_BEG=20201207_000000
+01/26 18:07:59.126 metplus (command_builder.py:159) DEBUG: INIT_END=20201210_000000
+01/26 18:07:59.126 metplus (command_builder.py:159) DEBUG: INIT_EXCLUDE=[]
+01/26 18:07:59.126 metplus (command_builder.py:159) DEBUG: INIT_INCLUDE=[]
+01/26 18:07:59.127 metplus (command_builder.py:159) DEBUG: MET_TMP_DIR=/d1/personal/arbetter/METplus_output/tmp
+01/26 18:07:59.127 metplus (command_builder.py:159) DEBUG: MODEL=[]
+01/26 18:07:59.127 metplus (command_builder.py:159) DEBUG: STORM_ID=[]
+01/26 18:07:59.127 metplus (command_builder.py:159) DEBUG: STORM_NAME=[]
+01/26 18:07:59.127 metplus (command_builder.py:159) DEBUG: VALID_BEG=
+01/26 18:07:59.128 metplus (command_builder.py:159) DEBUG: VALID_END=
+01/26 18:07:59.128 metplus (command_builder.py:159) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:07:59.128 metplus (command_builder.py:159) DEBUG: export BASIN="[\"ML\"]"; export CYCLONE="[]"; export DLAND_FILE="/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc"; export INIT_BEG="20201207_000000"; export INIT_END="20201210_000000"; export INIT_EXCLUDE="[]"; export INIT_INCLUDE="[]"; export MET_TMP_DIR="/d1/personal/arbetter/METplus_output/tmp"; export MODEL="[]"; export STORM_ID="[]"; export STORM_NAME="[]"; export VALID_BEG=""; export VALID_END=""; 
+01/26 18:07:59.129 metplus (tc_pairs_wrapper.py:482) DEBUG: Looking for BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120706.dat
+01/26 18:07:59.129 metplus (tc_pairs_wrapper.py:496) DEBUG: Found BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120706.dat
+01/26 18:07:59.129 metplus (tc_pairs_wrapper.py:618) DEBUG: Looking for ADECK file: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120706.dat using template adeck.gfso.atcf_gen.glbl.{date?fmt=%Y%m%d%H}.dat
+01/26 18:07:59.130 metplus (tc_pairs_wrapper.py:629) DEBUG: Adding ADECK: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120706.dat
+01/26 18:07:59.130 metplus (command_runner.py:90) INFO: COMMAND: /usr/local/met/bin/tc_pairs -v 5 -bdeck /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120706.dat -adeck /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120706.dat -config /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped -out /d1/personal/arbetter/METplus_output/tc_pairs/202012/mlq2020120706.gfso
+01/26 18:07:59.134 metplus (command_runner.py:124) DEBUG: log_name is: tc_pairs, output sent to: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:08:00.742 metplus (command_runner.py:186) DEBUG: Finished running /usr/local/met/bin/tc_pairs in 0:00:01.607463
+01/26 18:08:00.743 metplus (met_util.py:1019) INFO: ****************************************
+01/26 18:08:00.744 metplus (met_util.py:1020) INFO: * Running METplus
+01/26 18:08:00.744 metplus (met_util.py:1022) INFO: *  at init time: 2020-12-07 12:00
+01/26 18:08:00.744 metplus (met_util.py:1025) INFO: ****************************************
+01/26 18:08:00.746 metplus (command_builder.py:159) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:00.746 metplus (command_builder.py:159) DEBUG: BASIN=["ML"]
+01/26 18:08:00.746 metplus (command_builder.py:159) DEBUG: CYCLONE=[]
+01/26 18:08:00.746 metplus (command_builder.py:159) DEBUG: DLAND_FILE=/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc
+01/26 18:08:00.746 metplus (command_builder.py:159) DEBUG: INIT_BEG=20201207_000000
+01/26 18:08:00.747 metplus (command_builder.py:159) DEBUG: INIT_END=20201210_000000
+01/26 18:08:00.747 metplus (command_builder.py:159) DEBUG: INIT_EXCLUDE=[]
+01/26 18:08:00.747 metplus (command_builder.py:159) DEBUG: INIT_INCLUDE=[]
+01/26 18:08:00.747 metplus (command_builder.py:159) DEBUG: MET_TMP_DIR=/d1/personal/arbetter/METplus_output/tmp
+01/26 18:08:00.747 metplus (command_builder.py:159) DEBUG: MODEL=[]
+01/26 18:08:00.748 metplus (command_builder.py:159) DEBUG: STORM_ID=[]
+01/26 18:08:00.748 metplus (command_builder.py:159) DEBUG: STORM_NAME=[]
+01/26 18:08:00.748 metplus (command_builder.py:159) DEBUG: VALID_BEG=
+01/26 18:08:00.748 metplus (command_builder.py:159) DEBUG: VALID_END=
+01/26 18:08:00.748 metplus (command_builder.py:159) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:00.749 metplus (command_builder.py:159) DEBUG: export BASIN="[\"ML\"]"; export CYCLONE="[]"; export DLAND_FILE="/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc"; export INIT_BEG="20201207_000000"; export INIT_END="20201210_000000"; export INIT_EXCLUDE="[]"; export INIT_INCLUDE="[]"; export MET_TMP_DIR="/d1/personal/arbetter/METplus_output/tmp"; export MODEL="[]"; export STORM_ID="[]"; export STORM_NAME="[]"; export VALID_BEG=""; export VALID_END=""; 
+01/26 18:08:00.749 metplus (tc_pairs_wrapper.py:482) DEBUG: Looking for BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120712.dat
+01/26 18:08:00.750 metplus (tc_pairs_wrapper.py:496) DEBUG: Found BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120712.dat
+01/26 18:08:00.750 metplus (tc_pairs_wrapper.py:618) DEBUG: Looking for ADECK file: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120712.dat using template adeck.gfso.atcf_gen.glbl.{date?fmt=%Y%m%d%H}.dat
+01/26 18:08:00.750 metplus (tc_pairs_wrapper.py:629) DEBUG: Adding ADECK: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120712.dat
+01/26 18:08:00.751 metplus (command_runner.py:90) INFO: COMMAND: /usr/local/met/bin/tc_pairs -v 5 -bdeck /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120712.dat -adeck /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120712.dat -config /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped -out /d1/personal/arbetter/METplus_output/tc_pairs/202012/mlq2020120712.gfso
+01/26 18:08:00.754 metplus (command_runner.py:124) DEBUG: log_name is: tc_pairs, output sent to: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:08:02.363 metplus (command_runner.py:186) DEBUG: Finished running /usr/local/met/bin/tc_pairs in 0:00:01.607496
+01/26 18:08:02.364 metplus (met_util.py:1019) INFO: ****************************************
+01/26 18:08:02.364 metplus (met_util.py:1020) INFO: * Running METplus
+01/26 18:08:02.364 metplus (met_util.py:1022) INFO: *  at init time: 2020-12-07 18:00
+01/26 18:08:02.365 metplus (met_util.py:1025) INFO: ****************************************
+01/26 18:08:02.366 metplus (command_builder.py:159) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:02.366 metplus (command_builder.py:159) DEBUG: BASIN=["ML"]
+01/26 18:08:02.367 metplus (command_builder.py:159) DEBUG: CYCLONE=[]
+01/26 18:08:02.367 metplus (command_builder.py:159) DEBUG: DLAND_FILE=/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc
+01/26 18:08:02.367 metplus (command_builder.py:159) DEBUG: INIT_BEG=20201207_000000
+01/26 18:08:02.367 metplus (command_builder.py:159) DEBUG: INIT_END=20201210_000000
+01/26 18:08:02.367 metplus (command_builder.py:159) DEBUG: INIT_EXCLUDE=[]
+01/26 18:08:02.368 metplus (command_builder.py:159) DEBUG: INIT_INCLUDE=[]
+01/26 18:08:02.368 metplus (command_builder.py:159) DEBUG: MET_TMP_DIR=/d1/personal/arbetter/METplus_output/tmp
+01/26 18:08:02.368 metplus (command_builder.py:159) DEBUG: MODEL=[]
+01/26 18:08:02.368 metplus (command_builder.py:159) DEBUG: STORM_ID=[]
+01/26 18:08:02.368 metplus (command_builder.py:159) DEBUG: STORM_NAME=[]
+01/26 18:08:02.369 metplus (command_builder.py:159) DEBUG: VALID_BEG=
+01/26 18:08:02.369 metplus (command_builder.py:159) DEBUG: VALID_END=
+01/26 18:08:02.369 metplus (command_builder.py:159) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:02.369 metplus (command_builder.py:159) DEBUG: export BASIN="[\"ML\"]"; export CYCLONE="[]"; export DLAND_FILE="/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc"; export INIT_BEG="20201207_000000"; export INIT_END="20201210_000000"; export INIT_EXCLUDE="[]"; export INIT_INCLUDE="[]"; export MET_TMP_DIR="/d1/personal/arbetter/METplus_output/tmp"; export MODEL="[]"; export STORM_ID="[]"; export STORM_NAME="[]"; export VALID_BEG=""; export VALID_END=""; 
+01/26 18:08:02.370 metplus (tc_pairs_wrapper.py:482) DEBUG: Looking for BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120718.dat
+01/26 18:08:02.370 metplus (tc_pairs_wrapper.py:496) DEBUG: Found BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120718.dat
+01/26 18:08:02.371 metplus (tc_pairs_wrapper.py:618) DEBUG: Looking for ADECK file: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120718.dat using template adeck.gfso.atcf_gen.glbl.{date?fmt=%Y%m%d%H}.dat
+01/26 18:08:02.371 metplus (tc_pairs_wrapper.py:629) DEBUG: Adding ADECK: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120718.dat
+01/26 18:08:02.372 metplus (command_runner.py:90) INFO: COMMAND: /usr/local/met/bin/tc_pairs -v 5 -bdeck /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120718.dat -adeck /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120718.dat -config /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped -out /d1/personal/arbetter/METplus_output/tc_pairs/202012/mlq2020120718.gfso
+01/26 18:08:02.375 metplus (command_runner.py:124) DEBUG: log_name is: tc_pairs, output sent to: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:08:03.984 metplus (command_runner.py:186) DEBUG: Finished running /usr/local/met/bin/tc_pairs in 0:00:01.607461
+01/26 18:08:03.985 metplus (met_util.py:1019) INFO: ****************************************
+01/26 18:08:03.985 metplus (met_util.py:1020) INFO: * Running METplus
+01/26 18:08:03.985 metplus (met_util.py:1022) INFO: *  at init time: 2020-12-08 00:00
+01/26 18:08:03.985 metplus (met_util.py:1025) INFO: ****************************************
+01/26 18:08:03.987 metplus (command_builder.py:159) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:03.987 metplus (command_builder.py:159) DEBUG: BASIN=["ML"]
+01/26 18:08:03.987 metplus (command_builder.py:159) DEBUG: CYCLONE=[]
+01/26 18:08:03.987 metplus (command_builder.py:159) DEBUG: DLAND_FILE=/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc
+01/26 18:08:03.988 metplus (command_builder.py:159) DEBUG: INIT_BEG=20201207_000000
+01/26 18:08:03.988 metplus (command_builder.py:159) DEBUG: INIT_END=20201210_000000
+01/26 18:08:03.988 metplus (command_builder.py:159) DEBUG: INIT_EXCLUDE=[]
+01/26 18:08:03.988 metplus (command_builder.py:159) DEBUG: INIT_INCLUDE=[]
+01/26 18:08:03.988 metplus (command_builder.py:159) DEBUG: MET_TMP_DIR=/d1/personal/arbetter/METplus_output/tmp
+01/26 18:08:03.989 metplus (command_builder.py:159) DEBUG: MODEL=[]
+01/26 18:08:03.989 metplus (command_builder.py:159) DEBUG: STORM_ID=[]
+01/26 18:08:03.989 metplus (command_builder.py:159) DEBUG: STORM_NAME=[]
+01/26 18:08:03.989 metplus (command_builder.py:159) DEBUG: VALID_BEG=
+01/26 18:08:03.989 metplus (command_builder.py:159) DEBUG: VALID_END=
+01/26 18:08:03.990 metplus (command_builder.py:159) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:03.990 metplus (command_builder.py:159) DEBUG: export BASIN="[\"ML\"]"; export CYCLONE="[]"; export DLAND_FILE="/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc"; export INIT_BEG="20201207_000000"; export INIT_END="20201210_000000"; export INIT_EXCLUDE="[]"; export INIT_INCLUDE="[]"; export MET_TMP_DIR="/d1/personal/arbetter/METplus_output/tmp"; export MODEL="[]"; export STORM_ID="[]"; export STORM_NAME="[]"; export VALID_BEG=""; export VALID_END=""; 
+01/26 18:08:03.990 metplus (tc_pairs_wrapper.py:482) DEBUG: Looking for BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120800.dat
+01/26 18:08:03.991 metplus (tc_pairs_wrapper.py:496) DEBUG: Found BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120800.dat
+01/26 18:08:03.991 metplus (tc_pairs_wrapper.py:618) DEBUG: Looking for ADECK file: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120800.dat using template adeck.gfso.atcf_gen.glbl.{date?fmt=%Y%m%d%H}.dat
+01/26 18:08:03.991 metplus (tc_pairs_wrapper.py:629) DEBUG: Adding ADECK: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120800.dat
+01/26 18:08:03.992 metplus (command_runner.py:90) INFO: COMMAND: /usr/local/met/bin/tc_pairs -v 5 -bdeck /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120800.dat -adeck /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120800.dat -config /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped -out /d1/personal/arbetter/METplus_output/tc_pairs/202012/mlq2020120800.gfso
+01/26 18:08:03.996 metplus (command_runner.py:124) DEBUG: log_name is: tc_pairs, output sent to: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:08:05.604 metplus (command_runner.py:186) DEBUG: Finished running /usr/local/met/bin/tc_pairs in 0:00:01.607490
+01/26 18:08:05.605 metplus (met_util.py:1019) INFO: ****************************************
+01/26 18:08:05.605 metplus (met_util.py:1020) INFO: * Running METplus
+01/26 18:08:05.606 metplus (met_util.py:1022) INFO: *  at init time: 2020-12-08 06:00
+01/26 18:08:05.606 metplus (met_util.py:1025) INFO: ****************************************
+01/26 18:08:05.607 metplus (command_builder.py:159) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:05.608 metplus (command_builder.py:159) DEBUG: BASIN=["ML"]
+01/26 18:08:05.608 metplus (command_builder.py:159) DEBUG: CYCLONE=[]
+01/26 18:08:05.608 metplus (command_builder.py:159) DEBUG: DLAND_FILE=/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc
+01/26 18:08:05.608 metplus (command_builder.py:159) DEBUG: INIT_BEG=20201207_000000
+01/26 18:08:05.609 metplus (command_builder.py:159) DEBUG: INIT_END=20201210_000000
+01/26 18:08:05.609 metplus (command_builder.py:159) DEBUG: INIT_EXCLUDE=[]
+01/26 18:08:05.609 metplus (command_builder.py:159) DEBUG: INIT_INCLUDE=[]
+01/26 18:08:05.609 metplus (command_builder.py:159) DEBUG: MET_TMP_DIR=/d1/personal/arbetter/METplus_output/tmp
+01/26 18:08:05.609 metplus (command_builder.py:159) DEBUG: MODEL=[]
+01/26 18:08:05.610 metplus (command_builder.py:159) DEBUG: STORM_ID=[]
+01/26 18:08:05.610 metplus (command_builder.py:159) DEBUG: STORM_NAME=[]
+01/26 18:08:05.610 metplus (command_builder.py:159) DEBUG: VALID_BEG=
+01/26 18:08:05.610 metplus (command_builder.py:159) DEBUG: VALID_END=
+01/26 18:08:05.610 metplus (command_builder.py:159) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:05.610 metplus (command_builder.py:159) DEBUG: export BASIN="[\"ML\"]"; export CYCLONE="[]"; export DLAND_FILE="/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc"; export INIT_BEG="20201207_000000"; export INIT_END="20201210_000000"; export INIT_EXCLUDE="[]"; export INIT_INCLUDE="[]"; export MET_TMP_DIR="/d1/personal/arbetter/METplus_output/tmp"; export MODEL="[]"; export STORM_ID="[]"; export STORM_NAME="[]"; export VALID_BEG=""; export VALID_END=""; 
+01/26 18:08:05.611 metplus (tc_pairs_wrapper.py:482) DEBUG: Looking for BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120806.dat
+01/26 18:08:05.611 metplus (tc_pairs_wrapper.py:496) DEBUG: Found BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120806.dat
+01/26 18:08:05.612 metplus (tc_pairs_wrapper.py:618) DEBUG: Looking for ADECK file: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120806.dat using template adeck.gfso.atcf_gen.glbl.{date?fmt=%Y%m%d%H}.dat
+01/26 18:08:05.612 metplus (tc_pairs_wrapper.py:629) DEBUG: Adding ADECK: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120806.dat
+01/26 18:08:05.613 metplus (command_runner.py:90) INFO: COMMAND: /usr/local/met/bin/tc_pairs -v 5 -bdeck /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120806.dat -adeck /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120806.dat -config /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped -out /d1/personal/arbetter/METplus_output/tc_pairs/202012/mlq2020120806.gfso
+01/26 18:08:05.616 metplus (command_runner.py:124) DEBUG: log_name is: tc_pairs, output sent to: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:08:07.225 metplus (command_runner.py:186) DEBUG: Finished running /usr/local/met/bin/tc_pairs in 0:00:01.607459
+01/26 18:08:07.226 metplus (met_util.py:1019) INFO: ****************************************
+01/26 18:08:07.226 metplus (met_util.py:1020) INFO: * Running METplus
+01/26 18:08:07.226 metplus (met_util.py:1022) INFO: *  at init time: 2020-12-08 12:00
+01/26 18:08:07.226 metplus (met_util.py:1025) INFO: ****************************************
+01/26 18:08:07.228 metplus (command_builder.py:159) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:07.228 metplus (command_builder.py:159) DEBUG: BASIN=["ML"]
+01/26 18:08:07.228 metplus (command_builder.py:159) DEBUG: CYCLONE=[]
+01/26 18:08:07.229 metplus (command_builder.py:159) DEBUG: DLAND_FILE=/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc
+01/26 18:08:07.229 metplus (command_builder.py:159) DEBUG: INIT_BEG=20201207_000000
+01/26 18:08:07.229 metplus (command_builder.py:159) DEBUG: INIT_END=20201210_000000
+01/26 18:08:07.229 metplus (command_builder.py:159) DEBUG: INIT_EXCLUDE=[]
+01/26 18:08:07.229 metplus (command_builder.py:159) DEBUG: INIT_INCLUDE=[]
+01/26 18:08:07.230 metplus (command_builder.py:159) DEBUG: MET_TMP_DIR=/d1/personal/arbetter/METplus_output/tmp
+01/26 18:08:07.230 metplus (command_builder.py:159) DEBUG: MODEL=[]
+01/26 18:08:07.230 metplus (command_builder.py:159) DEBUG: STORM_ID=[]
+01/26 18:08:07.230 metplus (command_builder.py:159) DEBUG: STORM_NAME=[]
+01/26 18:08:07.230 metplus (command_builder.py:159) DEBUG: VALID_BEG=
+01/26 18:08:07.231 metplus (command_builder.py:159) DEBUG: VALID_END=
+01/26 18:08:07.231 metplus (command_builder.py:159) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:07.231 metplus (command_builder.py:159) DEBUG: export BASIN="[\"ML\"]"; export CYCLONE="[]"; export DLAND_FILE="/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc"; export INIT_BEG="20201207_000000"; export INIT_END="20201210_000000"; export INIT_EXCLUDE="[]"; export INIT_INCLUDE="[]"; export MET_TMP_DIR="/d1/personal/arbetter/METplus_output/tmp"; export MODEL="[]"; export STORM_ID="[]"; export STORM_NAME="[]"; export VALID_BEG=""; export VALID_END=""; 
+01/26 18:08:07.232 metplus (tc_pairs_wrapper.py:482) DEBUG: Looking for BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120812.dat
+01/26 18:08:07.232 metplus (tc_pairs_wrapper.py:496) DEBUG: Found BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120812.dat
+01/26 18:08:07.232 metplus (tc_pairs_wrapper.py:618) DEBUG: Looking for ADECK file: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120812.dat using template adeck.gfso.atcf_gen.glbl.{date?fmt=%Y%m%d%H}.dat
+01/26 18:08:07.233 metplus (tc_pairs_wrapper.py:629) DEBUG: Adding ADECK: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120812.dat
+01/26 18:08:07.233 metplus (command_runner.py:90) INFO: COMMAND: /usr/local/met/bin/tc_pairs -v 5 -bdeck /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120812.dat -adeck /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120812.dat -config /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped -out /d1/personal/arbetter/METplus_output/tc_pairs/202012/mlq2020120812.gfso
+01/26 18:08:07.237 metplus (command_runner.py:124) DEBUG: log_name is: tc_pairs, output sent to: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:08:08.845 metplus (command_runner.py:186) DEBUG: Finished running /usr/local/met/bin/tc_pairs in 0:00:01.607472
+01/26 18:08:08.846 metplus (met_util.py:1019) INFO: ****************************************
+01/26 18:08:08.846 metplus (met_util.py:1020) INFO: * Running METplus
+01/26 18:08:08.847 metplus (met_util.py:1022) INFO: *  at init time: 2020-12-08 18:00
+01/26 18:08:08.847 metplus (met_util.py:1025) INFO: ****************************************
+01/26 18:08:08.848 metplus (command_builder.py:159) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:08.849 metplus (command_builder.py:159) DEBUG: BASIN=["ML"]
+01/26 18:08:08.849 metplus (command_builder.py:159) DEBUG: CYCLONE=[]
+01/26 18:08:08.849 metplus (command_builder.py:159) DEBUG: DLAND_FILE=/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc
+01/26 18:08:08.849 metplus (command_builder.py:159) DEBUG: INIT_BEG=20201207_000000
+01/26 18:08:08.850 metplus (command_builder.py:159) DEBUG: INIT_END=20201210_000000
+01/26 18:08:08.850 metplus (command_builder.py:159) DEBUG: INIT_EXCLUDE=[]
+01/26 18:08:08.850 metplus (command_builder.py:159) DEBUG: INIT_INCLUDE=[]
+01/26 18:08:08.850 metplus (command_builder.py:159) DEBUG: MET_TMP_DIR=/d1/personal/arbetter/METplus_output/tmp
+01/26 18:08:08.850 metplus (command_builder.py:159) DEBUG: MODEL=[]
+01/26 18:08:08.851 metplus (command_builder.py:159) DEBUG: STORM_ID=[]
+01/26 18:08:08.851 metplus (command_builder.py:159) DEBUG: STORM_NAME=[]
+01/26 18:08:08.851 metplus (command_builder.py:159) DEBUG: VALID_BEG=
+01/26 18:08:08.851 metplus (command_builder.py:159) DEBUG: VALID_END=
+01/26 18:08:08.851 metplus (command_builder.py:159) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:08.852 metplus (command_builder.py:159) DEBUG: export BASIN="[\"ML\"]"; export CYCLONE="[]"; export DLAND_FILE="/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc"; export INIT_BEG="20201207_000000"; export INIT_END="20201210_000000"; export INIT_EXCLUDE="[]"; export INIT_INCLUDE="[]"; export MET_TMP_DIR="/d1/personal/arbetter/METplus_output/tmp"; export MODEL="[]"; export STORM_ID="[]"; export STORM_NAME="[]"; export VALID_BEG=""; export VALID_END=""; 
+01/26 18:08:08.852 metplus (tc_pairs_wrapper.py:482) DEBUG: Looking for BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120818.dat
+01/26 18:08:08.853 metplus (tc_pairs_wrapper.py:496) DEBUG: Found BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120818.dat
+01/26 18:08:08.853 metplus (tc_pairs_wrapper.py:618) DEBUG: Looking for ADECK file: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120818.dat using template adeck.gfso.atcf_gen.glbl.{date?fmt=%Y%m%d%H}.dat
+01/26 18:08:08.853 metplus (tc_pairs_wrapper.py:629) DEBUG: Adding ADECK: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120818.dat
+01/26 18:08:08.854 metplus (command_runner.py:90) INFO: COMMAND: /usr/local/met/bin/tc_pairs -v 5 -bdeck /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120818.dat -adeck /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120818.dat -config /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped -out /d1/personal/arbetter/METplus_output/tc_pairs/202012/mlq2020120818.gfso
+01/26 18:08:08.857 metplus (command_runner.py:124) DEBUG: log_name is: tc_pairs, output sent to: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:08:10.466 metplus (command_runner.py:186) DEBUG: Finished running /usr/local/met/bin/tc_pairs in 0:00:01.607461
+01/26 18:08:10.467 metplus (met_util.py:1019) INFO: ****************************************
+01/26 18:08:10.467 metplus (met_util.py:1020) INFO: * Running METplus
+01/26 18:08:10.467 metplus (met_util.py:1022) INFO: *  at init time: 2020-12-09 00:00
+01/26 18:08:10.467 metplus (met_util.py:1025) INFO: ****************************************
+01/26 18:08:10.469 metplus (command_builder.py:159) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:10.469 metplus (command_builder.py:159) DEBUG: BASIN=["ML"]
+01/26 18:08:10.469 metplus (command_builder.py:159) DEBUG: CYCLONE=[]
+01/26 18:08:10.470 metplus (command_builder.py:159) DEBUG: DLAND_FILE=/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc
+01/26 18:08:10.470 metplus (command_builder.py:159) DEBUG: INIT_BEG=20201207_000000
+01/26 18:08:10.470 metplus (command_builder.py:159) DEBUG: INIT_END=20201210_000000
+01/26 18:08:10.470 metplus (command_builder.py:159) DEBUG: INIT_EXCLUDE=[]
+01/26 18:08:10.470 metplus (command_builder.py:159) DEBUG: INIT_INCLUDE=[]
+01/26 18:08:10.471 metplus (command_builder.py:159) DEBUG: MET_TMP_DIR=/d1/personal/arbetter/METplus_output/tmp
+01/26 18:08:10.471 metplus (command_builder.py:159) DEBUG: MODEL=[]
+01/26 18:08:10.471 metplus (command_builder.py:159) DEBUG: STORM_ID=[]
+01/26 18:08:10.471 metplus (command_builder.py:159) DEBUG: STORM_NAME=[]
+01/26 18:08:10.471 metplus (command_builder.py:159) DEBUG: VALID_BEG=
+01/26 18:08:10.472 metplus (command_builder.py:159) DEBUG: VALID_END=
+01/26 18:08:10.472 metplus (command_builder.py:159) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:10.472 metplus (command_builder.py:159) DEBUG: export BASIN="[\"ML\"]"; export CYCLONE="[]"; export DLAND_FILE="/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc"; export INIT_BEG="20201207_000000"; export INIT_END="20201210_000000"; export INIT_EXCLUDE="[]"; export INIT_INCLUDE="[]"; export MET_TMP_DIR="/d1/personal/arbetter/METplus_output/tmp"; export MODEL="[]"; export STORM_ID="[]"; export STORM_NAME="[]"; export VALID_BEG=""; export VALID_END=""; 
+01/26 18:08:10.473 metplus (tc_pairs_wrapper.py:482) DEBUG: Looking for BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120900.dat
+01/26 18:08:10.473 metplus (tc_pairs_wrapper.py:496) DEBUG: Found BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120900.dat
+01/26 18:08:10.473 metplus (tc_pairs_wrapper.py:618) DEBUG: Looking for ADECK file: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120900.dat using template adeck.gfso.atcf_gen.glbl.{date?fmt=%Y%m%d%H}.dat
+01/26 18:08:10.474 metplus (tc_pairs_wrapper.py:629) DEBUG: Adding ADECK: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120900.dat
+01/26 18:08:10.474 metplus (command_runner.py:90) INFO: COMMAND: /usr/local/met/bin/tc_pairs -v 5 -bdeck /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120900.dat -adeck /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120900.dat -config /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped -out /d1/personal/arbetter/METplus_output/tc_pairs/202012/mlq2020120900.gfso
+01/26 18:08:10.478 metplus (command_runner.py:124) DEBUG: log_name is: tc_pairs, output sent to: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:08:12.086 metplus (command_runner.py:186) DEBUG: Finished running /usr/local/met/bin/tc_pairs in 0:00:01.607501
+01/26 18:08:12.087 metplus (met_util.py:1019) INFO: ****************************************
+01/26 18:08:12.087 metplus (met_util.py:1020) INFO: * Running METplus
+01/26 18:08:12.088 metplus (met_util.py:1022) INFO: *  at init time: 2020-12-09 06:00
+01/26 18:08:12.088 metplus (met_util.py:1025) INFO: ****************************************
+01/26 18:08:12.089 metplus (command_builder.py:159) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:12.090 metplus (command_builder.py:159) DEBUG: BASIN=["ML"]
+01/26 18:08:12.090 metplus (command_builder.py:159) DEBUG: CYCLONE=[]
+01/26 18:08:12.090 metplus (command_builder.py:159) DEBUG: DLAND_FILE=/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc
+01/26 18:08:12.090 metplus (command_builder.py:159) DEBUG: INIT_BEG=20201207_000000
+01/26 18:08:12.090 metplus (command_builder.py:159) DEBUG: INIT_END=20201210_000000
+01/26 18:08:12.091 metplus (command_builder.py:159) DEBUG: INIT_EXCLUDE=[]
+01/26 18:08:12.091 metplus (command_builder.py:159) DEBUG: INIT_INCLUDE=[]
+01/26 18:08:12.091 metplus (command_builder.py:159) DEBUG: MET_TMP_DIR=/d1/personal/arbetter/METplus_output/tmp
+01/26 18:08:12.091 metplus (command_builder.py:159) DEBUG: MODEL=[]
+01/26 18:08:12.091 metplus (command_builder.py:159) DEBUG: STORM_ID=[]
+01/26 18:08:12.092 metplus (command_builder.py:159) DEBUG: STORM_NAME=[]
+01/26 18:08:12.092 metplus (command_builder.py:159) DEBUG: VALID_BEG=
+01/26 18:08:12.092 metplus (command_builder.py:159) DEBUG: VALID_END=
+01/26 18:08:12.092 metplus (command_builder.py:159) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:12.092 metplus (command_builder.py:159) DEBUG: export BASIN="[\"ML\"]"; export CYCLONE="[]"; export DLAND_FILE="/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc"; export INIT_BEG="20201207_000000"; export INIT_END="20201210_000000"; export INIT_EXCLUDE="[]"; export INIT_INCLUDE="[]"; export MET_TMP_DIR="/d1/personal/arbetter/METplus_output/tmp"; export MODEL="[]"; export STORM_ID="[]"; export STORM_NAME="[]"; export VALID_BEG=""; export VALID_END=""; 
+01/26 18:08:12.093 metplus (tc_pairs_wrapper.py:482) DEBUG: Looking for BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120906.dat
+01/26 18:08:12.093 metplus (tc_pairs_wrapper.py:496) DEBUG: Found BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120906.dat
+01/26 18:08:12.094 metplus (tc_pairs_wrapper.py:618) DEBUG: Looking for ADECK file: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120906.dat using template adeck.gfso.atcf_gen.glbl.{date?fmt=%Y%m%d%H}.dat
+01/26 18:08:12.094 metplus (tc_pairs_wrapper.py:629) DEBUG: Adding ADECK: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120906.dat
+01/26 18:08:12.095 metplus (command_runner.py:90) INFO: COMMAND: /usr/local/met/bin/tc_pairs -v 5 -bdeck /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120906.dat -adeck /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120906.dat -config /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped -out /d1/personal/arbetter/METplus_output/tc_pairs/202012/mlq2020120906.gfso
+01/26 18:08:12.098 metplus (command_runner.py:124) DEBUG: log_name is: tc_pairs, output sent to: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:08:13.707 metplus (command_runner.py:186) DEBUG: Finished running /usr/local/met/bin/tc_pairs in 0:00:01.607532
+01/26 18:08:13.708 metplus (met_util.py:1019) INFO: ****************************************
+01/26 18:08:13.708 metplus (met_util.py:1020) INFO: * Running METplus
+01/26 18:08:13.708 metplus (met_util.py:1022) INFO: *  at init time: 2020-12-09 12:00
+01/26 18:08:13.709 metplus (met_util.py:1025) INFO: ****************************************
+01/26 18:08:13.710 metplus (command_builder.py:159) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:13.710 metplus (command_builder.py:159) DEBUG: BASIN=["ML"]
+01/26 18:08:13.711 metplus (command_builder.py:159) DEBUG: CYCLONE=[]
+01/26 18:08:13.711 metplus (command_builder.py:159) DEBUG: DLAND_FILE=/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc
+01/26 18:08:13.711 metplus (command_builder.py:159) DEBUG: INIT_BEG=20201207_000000
+01/26 18:08:13.711 metplus (command_builder.py:159) DEBUG: INIT_END=20201210_000000
+01/26 18:08:13.711 metplus (command_builder.py:159) DEBUG: INIT_EXCLUDE=[]
+01/26 18:08:13.712 metplus (command_builder.py:159) DEBUG: INIT_INCLUDE=[]
+01/26 18:08:13.712 metplus (command_builder.py:159) DEBUG: MET_TMP_DIR=/d1/personal/arbetter/METplus_output/tmp
+01/26 18:08:13.712 metplus (command_builder.py:159) DEBUG: MODEL=[]
+01/26 18:08:13.712 metplus (command_builder.py:159) DEBUG: STORM_ID=[]
+01/26 18:08:13.712 metplus (command_builder.py:159) DEBUG: STORM_NAME=[]
+01/26 18:08:13.713 metplus (command_builder.py:159) DEBUG: VALID_BEG=
+01/26 18:08:13.713 metplus (command_builder.py:159) DEBUG: VALID_END=
+01/26 18:08:13.713 metplus (command_builder.py:159) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:13.713 metplus (command_builder.py:159) DEBUG: export BASIN="[\"ML\"]"; export CYCLONE="[]"; export DLAND_FILE="/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc"; export INIT_BEG="20201207_000000"; export INIT_END="20201210_000000"; export INIT_EXCLUDE="[]"; export INIT_INCLUDE="[]"; export MET_TMP_DIR="/d1/personal/arbetter/METplus_output/tmp"; export MODEL="[]"; export STORM_ID="[]"; export STORM_NAME="[]"; export VALID_BEG=""; export VALID_END=""; 
+01/26 18:08:13.714 metplus (tc_pairs_wrapper.py:482) DEBUG: Looking for BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120912.dat
+01/26 18:08:13.714 metplus (tc_pairs_wrapper.py:496) DEBUG: Found BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120912.dat
+01/26 18:08:13.715 metplus (tc_pairs_wrapper.py:618) DEBUG: Looking for ADECK file: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120912.dat using template adeck.gfso.atcf_gen.glbl.{date?fmt=%Y%m%d%H}.dat
+01/26 18:08:13.715 metplus (tc_pairs_wrapper.py:629) DEBUG: Adding ADECK: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120912.dat
+01/26 18:08:13.716 metplus (command_runner.py:90) INFO: COMMAND: /usr/local/met/bin/tc_pairs -v 5 -bdeck /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120912.dat -adeck /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120912.dat -config /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped -out /d1/personal/arbetter/METplus_output/tc_pairs/202012/mlq2020120912.gfso
+01/26 18:08:13.719 metplus (command_runner.py:124) DEBUG: log_name is: tc_pairs, output sent to: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:08:15.328 metplus (command_runner.py:186) DEBUG: Finished running /usr/local/met/bin/tc_pairs in 0:00:01.607500
+01/26 18:08:15.329 metplus (met_util.py:1019) INFO: ****************************************
+01/26 18:08:15.329 metplus (met_util.py:1020) INFO: * Running METplus
+01/26 18:08:15.329 metplus (met_util.py:1022) INFO: *  at init time: 2020-12-09 18:00
+01/26 18:08:15.329 metplus (met_util.py:1025) INFO: ****************************************
+01/26 18:08:15.331 metplus (command_builder.py:159) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:15.331 metplus (command_builder.py:159) DEBUG: BASIN=["ML"]
+01/26 18:08:15.331 metplus (command_builder.py:159) DEBUG: CYCLONE=[]
+01/26 18:08:15.331 metplus (command_builder.py:159) DEBUG: DLAND_FILE=/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc
+01/26 18:08:15.332 metplus (command_builder.py:159) DEBUG: INIT_BEG=20201207_000000
+01/26 18:08:15.332 metplus (command_builder.py:159) DEBUG: INIT_END=20201210_000000
+01/26 18:08:15.332 metplus (command_builder.py:159) DEBUG: INIT_EXCLUDE=[]
+01/26 18:08:15.332 metplus (command_builder.py:159) DEBUG: INIT_INCLUDE=[]
+01/26 18:08:15.332 metplus (command_builder.py:159) DEBUG: MET_TMP_DIR=/d1/personal/arbetter/METplus_output/tmp
+01/26 18:08:15.333 metplus (command_builder.py:159) DEBUG: MODEL=[]
+01/26 18:08:15.333 metplus (command_builder.py:159) DEBUG: STORM_ID=[]
+01/26 18:08:15.333 metplus (command_builder.py:159) DEBUG: STORM_NAME=[]
+01/26 18:08:15.333 metplus (command_builder.py:159) DEBUG: VALID_BEG=
+01/26 18:08:15.333 metplus (command_builder.py:159) DEBUG: VALID_END=
+01/26 18:08:15.333 metplus (command_builder.py:159) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:15.334 metplus (command_builder.py:159) DEBUG: export BASIN="[\"ML\"]"; export CYCLONE="[]"; export DLAND_FILE="/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc"; export INIT_BEG="20201207_000000"; export INIT_END="20201210_000000"; export INIT_EXCLUDE="[]"; export INIT_INCLUDE="[]"; export MET_TMP_DIR="/d1/personal/arbetter/METplus_output/tmp"; export MODEL="[]"; export STORM_ID="[]"; export STORM_NAME="[]"; export VALID_BEG=""; export VALID_END=""; 
+01/26 18:08:15.334 metplus (tc_pairs_wrapper.py:482) DEBUG: Looking for BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120918.dat
+01/26 18:08:15.335 metplus (tc_pairs_wrapper.py:496) DEBUG: Found BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120918.dat
+01/26 18:08:15.335 metplus (tc_pairs_wrapper.py:618) DEBUG: Looking for ADECK file: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120918.dat using template adeck.gfso.atcf_gen.glbl.{date?fmt=%Y%m%d%H}.dat
+01/26 18:08:15.335 metplus (tc_pairs_wrapper.py:629) DEBUG: Adding ADECK: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120918.dat
+01/26 18:08:15.336 metplus (command_runner.py:90) INFO: COMMAND: /usr/local/met/bin/tc_pairs -v 5 -bdeck /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020120918.dat -adeck /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020120918.dat -config /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped -out /d1/personal/arbetter/METplus_output/tc_pairs/202012/mlq2020120918.gfso
+01/26 18:08:15.339 metplus (command_runner.py:124) DEBUG: log_name is: tc_pairs, output sent to: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:08:16.947 metplus (command_runner.py:186) DEBUG: Finished running /usr/local/met/bin/tc_pairs in 0:00:01.607365
+01/26 18:08:16.948 metplus (met_util.py:1019) INFO: ****************************************
+01/26 18:08:16.949 metplus (met_util.py:1020) INFO: * Running METplus
+01/26 18:08:16.949 metplus (met_util.py:1022) INFO: *  at init time: 2020-12-10 00:00
+01/26 18:08:16.949 metplus (met_util.py:1025) INFO: ****************************************
+01/26 18:08:16.951 metplus (command_builder.py:159) DEBUG: ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:16.951 metplus (command_builder.py:159) DEBUG: BASIN=["ML"]
+01/26 18:08:16.951 metplus (command_builder.py:159) DEBUG: CYCLONE=[]
+01/26 18:08:16.951 metplus (command_builder.py:159) DEBUG: DLAND_FILE=/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc
+01/26 18:08:16.951 metplus (command_builder.py:159) DEBUG: INIT_BEG=20201207_000000
+01/26 18:08:16.952 metplus (command_builder.py:159) DEBUG: INIT_END=20201210_000000
+01/26 18:08:16.952 metplus (command_builder.py:159) DEBUG: INIT_EXCLUDE=[]
+01/26 18:08:16.952 metplus (command_builder.py:159) DEBUG: INIT_INCLUDE=[]
+01/26 18:08:16.952 metplus (command_builder.py:159) DEBUG: MET_TMP_DIR=/d1/personal/arbetter/METplus_output/tmp
+01/26 18:08:16.952 metplus (command_builder.py:159) DEBUG: MODEL=[]
+01/26 18:08:16.953 metplus (command_builder.py:159) DEBUG: STORM_ID=[]
+01/26 18:08:16.953 metplus (command_builder.py:159) DEBUG: STORM_NAME=[]
+01/26 18:08:16.953 metplus (command_builder.py:159) DEBUG: VALID_BEG=
+01/26 18:08:16.953 metplus (command_builder.py:159) DEBUG: VALID_END=
+01/26 18:08:16.953 metplus (command_builder.py:159) DEBUG: COPYABLE ENVIRONMENT FOR NEXT COMMAND: 
+01/26 18:08:16.954 metplus (command_builder.py:159) DEBUG: export BASIN="[\"ML\"]"; export CYCLONE="[]"; export DLAND_FILE="/usr/local/met/share/met/tc_data/dland_global_tenth_degree.nc"; export INIT_BEG="20201207_000000"; export INIT_END="20201210_000000"; export INIT_EXCLUDE="[]"; export INIT_INCLUDE="[]"; export MET_TMP_DIR="/d1/personal/arbetter/METplus_output/tmp"; export MODEL="[]"; export STORM_ID="[]"; export STORM_NAME="[]"; export VALID_BEG=""; export VALID_END=""; 
+01/26 18:08:16.954 metplus (tc_pairs_wrapper.py:482) DEBUG: Looking for BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020121000.dat
+01/26 18:08:16.955 metplus (tc_pairs_wrapper.py:496) DEBUG: Found BDECK: /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020121000.dat
+01/26 18:08:16.955 metplus (tc_pairs_wrapper.py:618) DEBUG: Looking for ADECK file: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020121000.dat using template adeck.gfso.atcf_gen.glbl.{date?fmt=%Y%m%d%H}.dat
+01/26 18:08:16.955 metplus (tc_pairs_wrapper.py:629) DEBUG: Adding ADECK: /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020121000.dat
+01/26 18:08:16.956 metplus (command_runner.py:90) INFO: COMMAND: /usr/local/met/bin/tc_pairs -v 5 -bdeck /d1/personal/arbetter/2020_dates/bdeck.gfso.atcf_gen.glbl.2020121000.dat -adeck /d1/personal/arbetter/2020_dates/adeck.gfso.atcf_gen.glbl.2020121000.dat -config /d1/personal/arbetter/METplus/parm/met_config/TCPairsConfig_wrapped -out /d1/personal/arbetter/METplus_output/tc_pairs/202012/mlq2020121000.gfso
+01/26 18:08:16.959 metplus (command_runner.py:124) DEBUG: log_name is: tc_pairs, output sent to: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:08:18.568 metplus (command_runner.py:186) DEBUG: Finished running /usr/local/met/bin/tc_pairs in 0:00:01.607471
+01/26 18:08:18.569 metplus (met_util.py:266) DEBUG: Writing all commands and environment to /d1/personal/arbetter/METplus_output/logs/.all_commands.20210126180756
+01/26 18:08:18.571 metplus (config_metplus.py:717) DEBUG: Setting [config] SCRUB_STAGING_DIR to default value (empty string)
+01/26 18:08:18.571 metplus (met_util.py:883) INFO: /d1/personal/arbetter/METplus_output/metplus_final.conf: write metplus.conf here
+01/26 18:08:18.573 metplus (met_util.py:242) DEBUG: METplus took 0:00:22.573375 to run.
+01/26 18:08:18.573 metplus (met_util.py:246) INFO: Check the log file for more information: /d1/personal/arbetter/METplus_output/logs/master_metplus.log.20210126180756
+01/26 18:08:18.573 metplus (met_util.py:247) INFO: METplus has successfully finished running.
