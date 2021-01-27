@@ -18,3 +18,5 @@ Update Development Release Version Number
   * In *met/docs/conf.py*, update the *version*, *release_year*, and
     *release_date* variables for the documentation.
    
+  * In *met/docs/version*, update the version string.
+
