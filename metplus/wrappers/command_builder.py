@@ -1241,7 +1241,7 @@ class CommandBuilder:
         dict_string += '}'
         return dict_string
 
-    def set_met_config_list(self, c_dict, mp_config_name, met_config_name,
+    def set_met_config_list(self, c_dict, mp_config, met_config_name,
                             c_dict_key=None, remove_quotes=False,
                             allow_empty=False):
         """! Get list from METplus configuration file and format it to be passed
@@ -1250,7 +1250,7 @@ class CommandBuilder:
                  @param c_dict configuration dictionary to set
                  @param mp_config_name METplus configuration variable name. Assumed to be
                   in the [config] section. Value can be a comma-separated list of items.
-                 @param met_config_name name of MET configuration variable to set. Also used
+                 @param met_config name of MET configuration variable to set. Also used
                   to determine the key in c_dict to set (upper-case)
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
@@ -1260,8 +1260,8 @@ class CommandBuilder:
                   not set at all, which is to not set anything for the c_dict
                   value
         """
-        # if variable is not set at all, return
-        if not self.config.has_option('config', mp_config_name):
+        mp_config_name = self.get_mp_config_name(mp_config)
+        if mp_config_name is None:
             return
 
         conf_value = util.getlist(self.config.getraw('config',
@@ -1280,19 +1280,23 @@ class CommandBuilder:
 
             c_dict[c_key] = f'{met_config_name} = {conf_value};'
 
-    def set_met_config_string(self, c_dict, mp_config_name, met_config_name,
+    def set_met_config_string(self, c_dict, mp_config, met_config_name,
                               c_dict_key=None, remove_quotes=False):
         """! Get string from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
                  @param c_dict configuration dictionary to set
-                 @param mp_config_name METplus configuration variable name. Assumed to be
+                 @param mp_config METplus configuration variable name. Assumed to be
                   in the [config] section. Value can be a comma-separated list of items.
                  @param met_config_name name of MET configuration variable to set. Also used
                   to determine the key in c_dict to set (upper-case)
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
         """
+        mp_config_name = self.get_mp_config_name(mp_config)
+        if mp_config_name is None:
+            return
+
         conf_value = self.config.getraw('config', mp_config_name, '')
         if conf_value:
             if not c_dict_key:
@@ -1307,20 +1311,24 @@ class CommandBuilder:
 
             c_dict[c_key] = f'{met_config_name} = {conf_value};'
 
-    def set_met_config_number(self, c_dict, num_type, mp_config_name, met_config_name, c_dict_key=None):
+    def set_met_config_number(self, c_dict, num_type, mp_config, met_config_name, c_dict_key=None):
         """! Get integer from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
                  @param c_dict configuration dictionary to set
                  @param num_type type of number to get from config. If set to 'int', call
                    getint function. If not, call getfloat function.
-                 @param mp_config_name METplus configuration variable name. Assumed to be
+                 @param mp_config METplus configuration variable name. Assumed to be
                   in the [config] section. Value can be a comma-separated list of items.
                  @param met_config_name name of MET configuration variable to set. Also used
                   to determine the key in c_dict to set (upper-case) if c_dict_key is None
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
         """
+        mp_config_name = self.get_mp_config_name(mp_config)
+        if mp_config_name is None:
+            return
+
         if num_type == 'int':
             conf_value = self.config.getint('config', mp_config_name)
         else:
@@ -1342,7 +1350,12 @@ class CommandBuilder:
     def set_met_config_float(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
         self.set_met_config_number(c_dict, 'float', mp_config_name, met_config_name, c_dict_key=c_dict_key)
 
-    def set_met_config_thresh(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+    def set_met_config_thresh(self, c_dict, mp_config, met_config_name,
+                              c_dict_key=None):
+        mp_config_name = self.get_mp_config_name(mp_config)
+        if mp_config_name is None:
+            return
+
         conf_value = self.config.getstr('config', mp_config_name, '')
         if conf_value:
             if util.get_threshold_via_regex(conf_value) is None:
@@ -1356,14 +1369,14 @@ class CommandBuilder:
 
             c_dict[c_key] = f"{met_config_name} = {str(conf_value)};"
 
-    def set_met_config_bool(self, c_dict, mp_config_name, met_config_name,
+    def set_met_config_bool(self, c_dict, mp_config, met_config_name,
                             c_dict_key=None, uppercase=True):
         """! Get boolean from METplus configuration file and format it to be
              passed into a MET configuration file. Set c_dict item with boolean
              value expressed as a string.
              Args:
                  @param c_dict configuration dictionary to set
-                 @param mp_config_name METplus configuration variable name.
+                 @param mp_config METplus configuration variable name.
                   Assumed to be in the [config] section.
                  @param met_config_name name of MET configuration variable to
                   set. Also used to determine the key in c_dict to set
@@ -1373,6 +1386,9 @@ class CommandBuilder:
                   met_config_name
                  @param uppercase If true, set value to TRUE or FALSE
         """
+        mp_config_name = self.get_mp_config_name(mp_config)
+        if mp_config_name is None:
+            return
         conf_value = self.config.getbool('config', mp_config_name, '')
         if conf_value is None:
             self.log_error(f'Invalid boolean value set for {mp_config_name}')
@@ -1393,6 +1409,25 @@ class CommandBuilder:
 
         c_dict[c_key] = (f'{met_config_name} = '
                          f'{util.remove_quotes(conf_value)};')
+
+    def get_mp_config_name(self, mp_config):
+        """! Get first name of METplus config variable that is set.
+
+        @param mp_config list of METplus config keys to check. Can also be a
+        single item
+        @returns Name of first METplus config name in list that is set in the
+        METplusConfig object. None if none keys in the list are set.
+        """
+        if not isinstance(mp_config, list):
+            mp_configs = [mp_config]
+        else:
+            mp_configs = mp_config
+
+        for mp_config_name in mp_configs:
+            if self.config.has_option('config', mp_config_name):
+                return mp_config_name
+
+        return None
 
     def format_met_config_dictionary(self, name, keys):
         """! Return formatted dictionary named <name> with any <items> if they
@@ -1586,3 +1621,14 @@ class CommandBuilder:
                                                '')
 
         return value
+
+    def format_field(self, field_formatted, data_type):
+        """! Set {data_type}_FIELD c_dict value to the formatted field string
+        Also set {data_type_FIELD_OLD value to support old format until it is
+        deprecated.
+
+        @param field_formatted field string
+        @param data_type type of data to set, i.e. FCST, OBS
+        """
+        self.c_dict[f'{data_type}_FIELD'] = f"field = [{field_formatted}];"
+        self.c_dict[f'{data_type}_FIELD_OLD'] = field_formatted
