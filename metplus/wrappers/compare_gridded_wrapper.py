@@ -320,7 +320,9 @@ that reformat gridded data
             return
 
         # set environment variables needed by MET config file
-        self.set_environment_variables(fcst_field, obs_field, time_info)
+        self.set_environment_variables(time_info,
+                                       fcst_field=fcst_field,
+                                       obs_field=obs_field)
 
         # check if METplus can generate the command successfully
         cmd = self.get_command()

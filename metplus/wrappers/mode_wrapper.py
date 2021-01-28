@@ -144,7 +144,7 @@ class MODEWrapper(CompareGriddedWrapper):
 
         return c_dict
 
-    def set_environment_variables(self, fcst_field, obs_field, time_info):
+    def set_environment_variables(self, time_info, fcst_field, obs_field):
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
 
@@ -230,7 +230,7 @@ class MODEWrapper(CompareGriddedWrapper):
             self.infiles.append(obs_path)
             self.add_merge_config_file(time_info)
             self.set_current_field_config(var_info)
-            self.set_environment_variables(fcst_field, obs_field, time_info)
+            self.set_environment_variables(time_info, fcst_field, obs_field)
             if not self.find_and_check_output_file(time_info,
                                                    is_directory=True):
                 return

@@ -131,7 +131,7 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         return c_dict
 
-    def set_environment_variables(self, fcst_field, obs_field, time_info):
+    def set_environment_variables(self, time_info, fcst_field, obs_field):
         """!Set environment variables that are referenced by the
             MET config file"""
         # set environment variables needed for MET application

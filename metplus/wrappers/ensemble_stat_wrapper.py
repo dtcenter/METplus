@@ -559,7 +559,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
           str(time_info['lead_hours']) + '_ensemble.txt'
         return self.write_list_file(list_filename, ens_members_path)
 
-    def set_environment_variables(self, fcst_field, obs_field, ens_field, time_info):
+    def set_environment_variables(self, time_info, fcst_field, obs_field, ens_field):
         self.add_env_var("MET_OBS_ERROR_TABLE",
                          self.c_dict.get('MET_OBS_ERR_TABLE', ''))
 
@@ -698,7 +698,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             return
 
         # set environment variables that are passed to the MET config
-        self.set_environment_variables(fcst_field, obs_field, ens_field, time_info)
+        self.set_environment_variables(time_info, fcst_field, obs_field, ens_field)
 
         # check if METplus can generate the command successfully
         cmd = self.get_command()
