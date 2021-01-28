@@ -1068,6 +1068,7 @@ class CommandBuilder:
                                   **time_info)
         mask_list_string = self.format_list_string(filenames)
         self.c_dict['VERIFICATION_MASK'] = mask_list_string
+        self.c_dict['MASK_POLY'] = f"poly = [{mask_list_string}];"
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -1550,11 +1551,18 @@ class CommandBuilder:
                 util.remove_quotes(self.c_dict.get(f'CLIMO_{climo_item}_FILE'))
             )
 
+            climo_string = ''
             # remove then add double quotes for file path unless empty string
             if climo_file:
                 climo_file = f'"{util.remove_quotes(climo_file)}"'
+                climo_string = f"file_name = [{climo_file}];"
+
+                if climo_item == 'STDEV':
+                    climo_string = f'climo_stdev = {{{climo_string}}}'
 
             # set environment variable
+            self.add_env_var(f'METPLUS_CLIMO_{climo_item}_FILE', climo_string)
+            # set old method
             self.add_env_var(f'CLIMO_{climo_item}_FILE', climo_file)
 
     def read_climo_wrapper_specific(self, met_tool, c_dict):
