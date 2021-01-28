@@ -8,10 +8,12 @@ release. Open the following URL in a browser:
 
     https://github.com/dtcenter/|projectRepo|/issues
 
-- Click on the Projects tab and select the project (under Repository) that
+* Click on the Projects tab and select the project (under Repository) that
   corresponds to the release you are creating.
 
-- Update the release-notes.rst file found in the User's Guide directory
+* Update the release-notes.rst file found in the User's Guide directory.
 
-- If you are creating a beta1 release, remove the previous version's release
+* If you are creating a beta1 release, remove the previous version's release
   notes, i.e. for 3.0-beta1, remove all 2.Y notes and start the 3.0 section.
+
+* Commit changes and push to GitHub.
