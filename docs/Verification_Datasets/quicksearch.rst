@@ -20,6 +20,7 @@ Dataset Providers
 | `NOAA <https://dtcenter.github.io/METplus/develop/search.html?q=DataProviderNOAA&check_keywords=yes&area=default>`_
 | `NASA <https://dtcenter.github.io/METplus/develop/search.html?q=DataProviderNASA&check_keywords=yes&area=default>`_
 | `USAF <https://dtcenter.github.io/METplus/develop/search.html?q=DataProviderUSAF&check_keywords=yes&area=default>`_
+| `ISU <https://dtcenter.github.io/METplus/develop/search.html?q=DataProviderISU&check_keywords=yes&area=default>`_
 
 Dataset Applications
 --------------------
