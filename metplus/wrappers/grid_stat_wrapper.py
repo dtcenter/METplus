@@ -97,11 +97,30 @@ class GridStatWrapper(CompareGriddedWrapper):
             self.config.getstr('config',
                                'GRID_STAT_NEIGHBORHOOD_SHAPE', 'SQUARE')
         )
+
         self.set_met_config_list(c_dict,
                                  f'GRID_STAT_NEIGHBORHOOD_COV_THRESH',
                                  'cov_thresh',
-                                 'NEIGHBORHOOD_COV_THRESH',
+                                 'NBRHD_COV_THRESH',
                                  remove_quotes=True)
+
+        self.set_met_config_list(c_dict,
+                                 f'GRID_STAT_NEIGHBORHOOD_COV_WIDTH',
+                                 'width',
+                                 'NBRHD_WIDTH',
+                                 remove_quotes=True)
+
+        self.set_met_config_string(c_dict,
+                                   'GRID_STAT_NEIGHBORHOOD_SHAPE',
+                                   'shape',
+                                   'NBRHD_SHAPE',
+                                   remove_quotes=True)
+
+        self.set_met_config_list(c_dict,
+                                 'GRID_STAT_MASK_GRID',
+                                 'grid',
+                                 'MASK_GRID',
+                                 allow_empty=True)
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
@@ -115,12 +134,30 @@ class GridStatWrapper(CompareGriddedWrapper):
     def set_environment_variables(self, fcst_field, obs_field, time_info):
         """!Set environment variables that are referenced by the
             MET config file"""
+        # set environment variables needed for MET application
         fcst_field_str = f"field = [ {fcst_field} ];"
         obs_field_str = f"field = [ {obs_field} ];"
         self.add_env_var("METPLUS_FCST_FIELD", fcst_field_str)
         self.add_env_var("METPLUS_OBS_FIELD", obs_field_str)
 
-        # set environment variables needed for MET application
+        mask_dict_string = self.format_met_config_dict(self.c_dict,
+                                                       'MASK',
+                                                       ['GRID', 'POLY'])
+        self.add_env_var("METPLUS_MASK_DICT", mask_dict_string)
+
+        self.add_env_var("METPLUS_NBRHD_SHAPE",
+                         self.c_dict.get('NBRHD_SHAPE', ''))
+        self.add_env_var("METPLUS_NBRHD_WIDTH",
+                         self.c_dict.get('NBRHD_WIDTH', ''))
+        self.add_env_var("METPLUS_NBRHD_COV_THRESH",
+                         self.c_dict.get('NBRHD_COV_THRESH', ''))
+
+        output_prefix = self.get_output_prefix(time_info)
+        output_prefix_fmt = f'output_prefix = "{output_prefix}";'
+        self.add_env_var('METPLUS_OUTPUT_PREFIX',
+                         output_prefix_fmt)
+
+        # add old method of setting env vars
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
 
@@ -130,7 +167,6 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.add_env_var("FCST_TIME", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("INPUT_BASE", self.c_dict["INPUT_BASE"])
 
-        # add additional env vars if they are specified
         self.add_env_var('NEIGHBORHOOD_WIDTH',
                          self.c_dict['NEIGHBORHOOD_WIDTH'])
 
@@ -138,11 +174,11 @@ class GridStatWrapper(CompareGriddedWrapper):
                          self.c_dict['NEIGHBORHOOD_SHAPE'])
 
         self.add_env_var('NEIGHBORHOOD_COV_THRESH',
-                         self.c_dict.get('NEIGHBORHOOD_COV_THRESH', ''))
+                         self.c_dict.get('NBRHD_COV_THRESH', ''))
 
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))
 
-        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
+        self.add_env_var('OUTPUT_PREFIX', output_prefix)
 
         super().set_environment_variables(time_info)
