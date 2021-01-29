@@ -51,6 +51,7 @@ Data latency
   Present data set appears to be a 6-7 day latency (no documented latency)
 
 Variables available
+  Here is a list of relevant variables. There are more in the grib2 files. 
  * Cloud mixing ratio, CMWR
  * Ice water mixing ratio, IWMR
  * Rain water mixing ratio, RWMR
