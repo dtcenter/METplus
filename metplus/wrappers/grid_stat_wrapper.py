@@ -28,6 +28,7 @@ class GridStatWrapper(CompareGriddedWrapper):
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
         'METPLUS_OBTYPE',
+        'METPLUS_DESC',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
