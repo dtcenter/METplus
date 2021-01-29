@@ -8,12 +8,6 @@ Description
   
   https://www.nssl.noaa.gov/projects/mrms
 
-Sample image
-  *Insert sample image here*
-
-  .. image:: images/sample_image.png
-   :width: 600
-
 Recommended use
   *Insert recommended use here*
 
