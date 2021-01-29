@@ -16,4 +16,6 @@
    datasets/nexrad_level_2
    datasets/nexrad_level_3
    datasets/opera_eumetnet
+   datasets/gdas_ice
+   datasets/ims_ice
    datasets/viirs
