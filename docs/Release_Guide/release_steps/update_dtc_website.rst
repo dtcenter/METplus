@@ -7,7 +7,7 @@ Update DTC Website
 
 * Create a new *Software Release* for the newly released version.
 
-  * Under *Related Community Code* select both the *METplus* and *|projectRepo|* options.
+  * For *Related Community Code* select both the METplus and the |projectRepo| options.
 
   * Select the release type (*Recommended* for official or bugfix releases or *Development* for development versions). If necessary, change previously *Recommended* versions to *Other*.
 

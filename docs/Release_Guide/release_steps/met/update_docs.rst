@@ -2,10 +2,10 @@ Update the Documentation on the Web
 -----------------------------------
 
 - Regenerate the User's Guide and push the release to the gh-pages branch.
-- For example, on kiowa:
 
 .. parsed-literal::
 
+    # Example for kiowa
     git clone https://github.com/dtcenter/MET
     cd MET/met/docs
     git checkout vX.Y.Z
