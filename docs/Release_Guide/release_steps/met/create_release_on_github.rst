@@ -7,7 +7,7 @@ Create Release on GitHub
 
 * Set the branch value to 'develop' for a development release or 'main_vX.Y' for a bugfix or official release
 
-* Choose a release name (i.e. |projectRepo|-X.Y.Z, |projectRepo|-X.Y.Z-betaN, or |projectRepo|-X.Y.Z)
+* Choose a release name (i.e. |projectRepo|-X.Y.Z-betaN, |projectRepo|-X.Y.Z-rcN, or |projectRepo|-X.Y.Z)
 
 * Add a link to the release notes from the |projectRepo| User's Guide
 
