@@ -1,5 +1,5 @@
-Build Release Tarfile
----------------------
+Attach Release Tarfile
+----_-----------------
 
 The MET software is distributed as a tarfile, but not the one created by GitHub. On a project machine (e.g. kiowa), clone the MET repository and run a script to build the tarfile for the newly tagged release.
 
