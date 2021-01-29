@@ -1,19 +1,21 @@
-.. _vx-data-goes-level-1b.rst:
+.. _vx-data-goes-level-2-aerosol.rst:
 
-GOES ABI L1b Radiances
-----------------------
+GOES ABI L2 Aerosol
+-------------------
 
 Description
-  Geostationary Operational Environmental Satellite (GOES-16/17) Advanced Baseline Imagers (ABIs) Data - Level 1b Radiances
+  Geostationary Operational Environmental Satellite (GOES-16/17) Advanced Baseline Imagers (ABIs) Data - Level 2 Aerosol Products
 
   https://www.goes-r.gov/spacesegment/abi.html
 
 Sample image
-  .. image:: images/goes16_IR_Ch13.png
+  .. image:: images/GOES_16_ADP.jpg
    :width: 600
 
+  Image frm NOAA/SSD
+
 Recommended use
-  Evaluating cloud and land-surface properties with remotely-sensed data
+  Evaluating air quality, visibility, and dust with remotely-sensed data
 
 File format
   NetCDF
@@ -43,18 +45,22 @@ Temporal resolution
   Mesoscale: 30-60 s
   
 Starting and/or ending dates
-  2017-Present (on Google Cloud)
+  2017-Present for aerosol optical depth (on Google Cloud)
+
+  2019-Present for aerosol detection (on Google Cloud)
 
 Data latency
   ~10 min
 
 Variables available
-  ABI L1b Radiances
+  ABI L2 aerosol detection (ADP)
+
+  ABI L2 aerosol optical depth (AOD)
 
 METplus Use Cases
   Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataGOESLEV1B%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
 
 Keywords
-  .. note:: **Current Dataset:** VxDataGOESLEV1B
+  .. note:: **Current Dataset:** VxDataGOESLEV2AERO
 
   .. note:: **Data Labels:** DataTypeGridded, DataLevelSatellite, DataProviderNASA, DataApplicationConvectionAllowingModels

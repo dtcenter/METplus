@@ -4,18 +4,12 @@ METAR Data
 ----------
 
 Description
-  Meteorological Aviation Routine Weather Report (METAR)
-  METAR is a format for observational weather data, which typically comes from airports or permanent observing stations around the world.
+  Meteorological Aviation Routine Weather Report (METAR) is a format for observational weather data, which typically comes from airports or permanent observing stations around the world.
 
   Iowa State University maintains an archive of METAR data:
   https://mesonet.agron.iastate.edu/request/download.phtml
 
   Note: METAR data is also available via other sources (e.g., MADIS, NCEP prepbufr files); however, ISU provides a long archive and does not require an account.
-
-Sample image
-
-  .. image:: images/sample_image.png
-   :width: 600
 
 Recommended use
   METAR data are commonly used for near-surface verification of standard meteorological variables, such as temperaures, dew point temperature, wind speed, visibility, and precipitation, and precipitation type.

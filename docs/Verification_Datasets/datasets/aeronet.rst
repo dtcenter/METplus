@@ -4,8 +4,7 @@ AERONET
 -------
 
 Description
-  AErosol RObotic NETwork (AERONET)
-  This is data from a group of ground-based remore sensing aerosol networks, providing globally distributed observations of aerosol optical depth (AOD).
+  AErosol RObotic NETwork (AERONET) - This is data from a group of ground-based remote sensing aerosol networks, providing globally distributed observations of aerosol optical depth (AOD) and related fields. This application focuses on AOD, specifically.
 
   Current version (unless noted): V3
 
@@ -14,10 +13,11 @@ Description
 Sample image
   .. image:: images/aeronet.gif
    :width: 600
+
   Image from NASA
 
 Recommended use
-  Verification and validation of AOD and related fields.
+  Verification and validation of AOD and related fields
 
 File format
   ASCII
@@ -33,16 +33,16 @@ Spatial resolution, grid, or coverage
   Point observations with locations spanning the globe  
 
 Temporal resolution
-  *Insert temporal resolution here*
-
-Starting and/or ending dates
   Varies based on reporting station
 
+Starting and/or ending dates
+  Varies based on reporting station, starting in 1993-present
+
 Data latency
-  *Insert latency here*
+  Varies based on reporting station
 
 Variables available
-  *Insert variables here*
+  AOD at various wavelengths
 
 METplus Use Cases
   Link to
@@ -52,4 +52,4 @@ METplus Use Cases
 Keywords
   .. note:: **Current Dataset:** VxDataAERONET
 
-  .. note:: **Data Labels:** DataTypePoint, DataLevelUpperAir, DataProviderNASA, DataApplicationConvectionAllowingModels, DataApplicationMediumRange
+  .. note:: **Data Labels:** DataTypePoint, DataLevelSurface, DataLevelUpperAir, DataProviderNASA, DataApplicationConvectionAllowingModels, DataApplicationMediumRange

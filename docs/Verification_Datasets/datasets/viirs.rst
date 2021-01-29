@@ -5,54 +5,51 @@ VIIRS
 
 Description
   Visible Infrared Imaging Radiometer Suite (VIIRS)
-  This instrument is on a polar-orbiting satellite providing global observations related to the atmosphere, oceans, and Earth's surface.
-  
-  Current version: V06B
+  This instrument is on a polar-orbiting satellite providing global observations related to the atmosphere, oceans, and Earth's surface. This information is focused on aerosol optical thickness (other VIIRS products are available).
   
   https://www.jpss.noaa.gov/viirs.html
 
 Sample image
 
-.. image:: images/imerg.png
+  .. image:: images/viirs.png
    :width: 600
 
+  Image from NOAA/STAR
+
 Recommended use
-  Early Run: Flood analysis and other short-fuse applications
-  
-  Late Run: Daily and longer applications
-  
-  Final Run: Research-grade product
+  Evaluating aerosol properties with remotely-sensed data  
 
 File format
   NetCDF
 
 Location of data
-  VIIRS Land: https://earthdata.nasa.gov/earth-observation-data/near-real-time/download-nrt-data/viirs-nrt
   VIIRS Atmosphere: https://earthdata.nasa.gov/earth-observation-data/near-real-time/download-nrt-data/viirs-a-nrt
+
+  VIIRS Land: https://earthdata.nasa.gov/earth-observation-data/near-real-time/download-nrt-data/viirs-nrt
 
 Access restrictions
   Requires a free Earthdata account
 
 Spatial resolution, grid, or coverage
-  Global coverage (swath data) 
-  
-  375 m and 750 m at nadir (resampled to 500 m, 1 km, and 0.05 degrees in the NASA-produced products)
+  Global coverage via polar orbiting swaths, with approximately 1 pass per day per given location near the equator
+
+  At-nadir resolution of 6 km x 6 km  
 
 Temporal resolution
-  Variable dependent, ranging from sub-daily to monthly
+  6 min
 
 Starting and/or ending dates
-  June 2000-Present
+  For Level 2 Dust AOD: 1 March 2012-Present
 
 Data latency
-  Need info
+  147 min
 
 Variables available
-  Thermal anomalies and fire, surface reflectance. vegetation indices, fraction of photosynthetically active radiation, leaf area index, emissivity, land surface temperature, land cover, bidirectional reflectance distribution function, albedo, burned area
+  Aerosol optical thickness at 550 nm over land, ocean, and land/ocean
 
 METplus Use Cases
-  Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataIMERG%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
+  Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxData%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
 
 Keywords
   .. note:: **Current Dataset:** VxDataVIIRS
-  .. note:: **Data Labels:** DataTypeGridded, DataLevelUpperAir, DataProviderNASA, DataApplicationConvectionAllowingModels, DataApplicationMediumRange
+  .. note:: **Data Labels:** DataTypeGridded, DataLevelSatellite, DataProviderNASA, DataApplicationConvectionAllowingModels, DataApplicationMediumRange
