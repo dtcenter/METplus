@@ -26,6 +26,12 @@ from ..util import do_string_sub
 
 
 class TCGenWrapper(CommandBuilder):
+
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MODEL',
+        'METPLUS_DESC',
+    ]
+
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "tc_gen"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
@@ -103,6 +109,8 @@ class TCGenWrapper(CommandBuilder):
             filter_string += '}];'
             c_dict['FILTER'] = filter_string
 
+        self.set_met_config_list(self.env_var_dict, 'MODEL', 'model',
+                                 'METPLUS_MODEL')
         self.set_met_config_list(c_dict, 'MODEL', 'model')
         self.set_met_config_list(c_dict, f'{app_name_upper}_STORM_ID', 'storm_id')
         self.set_met_config_list(c_dict, f'{app_name_upper}_STORM_NAME', 'storm_name')
@@ -146,7 +154,7 @@ class TCGenWrapper(CommandBuilder):
         self.set_time_dict_for_single_runtime(c_dict)
 
         # read desc from TC_GEN_DESC or DESC into c_dict['DESC']
-        self.handle_description(c_dict)
+        self.handle_description()
 
         return c_dict
 
@@ -206,7 +214,6 @@ class TCGenWrapper(CommandBuilder):
         for env_var in ['FILTER',
                         'INIT_FREQ',
                         'MIN_DURATION',
-                        'METPLUS_MODEL',
                         'STORM_ID',
                         'STORM_NAME',
                         'INIT_BEG',
@@ -218,14 +225,13 @@ class TCGenWrapper(CommandBuilder):
                         'VX_MASK',
                         'GENESIS_RADIUS',
                         'DLAND_FILE',
-                        'METPLUS_DESC',
                         ]:
             self.add_env_var(env_var,
                              self.c_dict.get(env_var, ''))
 
         # set old names until they are deprecated
-        self.add_env_var('MODEL', self.c_dict.get('METPLUS_MODEL', ''))
-        self.add_env_var('DESC', self.c_dict.get('METPLUS_DESC', ''))
+        self.add_env_var('MODEL', self.env_var_dict.get('METPLUS_MODEL', ''))
+        self.add_env_var('DESC', self.env_var_dict.get('METPLUS_DESC', ''))
 
         super().set_environment_variables(time_info)
 

@@ -28,6 +28,12 @@ class StatAnalysisWrapper(CommandBuilder):
          ensemble_stat, and wavelet_stat
     """
 
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MODEL',
+        'METPLUS_OBTYPE',
+        'METPLUS_DESC',
+    ]
+
     field_lists = ['FCST_VAR_LIST',
                    'OBS_VAR_LIST',
                    'FCST_UNITS_LIST',
@@ -1688,7 +1694,7 @@ class StatAnalysisWrapper(CommandBuilder):
             for mp_type in ['MODEL', 'DESC', 'OBTYPE']:
                 value = (f"{mp_type.lower()} = "
                          f"[{runtime_settings_dict.get(mp_type, '')}];")
-                self.add_env_var(f'METPLUS_{mp_type}', value)
+                self.env_var_dict[f'METPLUS_{mp_type}'] = value
 
             for name, value in runtime_settings_dict.items():
                 self.add_env_var(name, value)

@@ -24,6 +24,12 @@ from . import CompareGriddedWrapper
 class GridStatWrapper(CompareGriddedWrapper):
     '''!Wraps the MET tool grid_stat to compare gridded datasets
     '''
+
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MODEL',
+        'METPLUS_OBTYPE',
+    ]
+
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'grid_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),

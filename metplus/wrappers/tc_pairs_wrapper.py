@@ -36,6 +36,12 @@ tc_pairs_wrapper.py [-c /path/to/user.template.conf]
 '''
 
 class TCPairsWrapper(CommandBuilder):
+
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MODEL',
+        'METPLUS_DESC',
+    ]
+
     """!Wraps the MET tool, tc_pairs to parse and match ATCF_by_pairs adeck and
        bdeck files.  Pre-processes extra tropical cyclone data.
     """
@@ -73,6 +79,9 @@ class TCPairsWrapper(CommandBuilder):
                                                    '')
         if not c_dict['CONFIG_FILE']:
             self.log_error("TC_PAIRS_CONFIG_FILE is required to run TCPairs wrapper")
+
+        self.set_met_config_list(self.env_var_dict, 'MODEL', 'model',
+                                 'METPLUS_MODEL')
 
         c_dict['INIT_TIME_FMT'] = self.config.getstr('config', 'INIT_TIME_FMT')
         clock_time = datetime.datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
@@ -171,7 +180,7 @@ class TCPairsWrapper(CommandBuilder):
                 if not match:
                     self.log_error(f'Incorrect STORM_ID format: {storm_id}')
 
-        self.handle_description(c_dict)
+        self.handle_description()
 
         return c_dict
 
@@ -372,14 +381,11 @@ class TCPairsWrapper(CommandBuilder):
             # Empty, MET is expecting [] to indicate all models are to be
             # included
             self.add_env_var('MODEL', "[]")
-            self.add_env_var('METPLUS_MODEL', "model = [];")
         else:
             # Replace ' with " and remove whitespace
             model = str(tmp_model).replace("\'", "\"")
             model_str = ''.join(model.split())
             self.add_env_var('MODEL', str(model_str))
-            model_fmt = f"model = {model_str};"
-            self.add_env_var('METPLUS_MODEL', model_fmt)
 
         # STORM_ID
         tmp_storm_id = self.c_dict['STORM_ID']
@@ -456,9 +462,6 @@ class TCPairsWrapper(CommandBuilder):
         # DLAND_FILE
         tmp_dland_file = self.c_dict['DLAND_FILE']
         self.add_env_var('DLAND_FILE', str(tmp_dland_file))
-
-        self.add_env_var('METPLUS_DESC',
-                         self.c_dict.get('METPLUS_DESC', ''))
 
         super().set_environment_variables(time_info)
 

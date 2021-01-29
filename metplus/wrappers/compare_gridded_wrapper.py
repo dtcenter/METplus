@@ -49,8 +49,9 @@ that reformat gridded data
             the type and consolidates config get calls so it is easier to see
             which config variables are used in the wrapper"""
         c_dict = super().create_c_dict()
-        self.set_met_config_string(c_dict, 'MODEL', 'model')
-        self.set_met_config_string(c_dict, 'OBTYPE', 'obtype')
+
+        self.set_met_config_string(self.env_var_dict, 'MODEL', 'model', 'METPLUS_MODEL')
+        self.set_met_config_string(self.env_var_dict, 'OBTYPE', 'obtype', 'METPLUS_OBTYPE')
 
         # set old MET config items for backwards compatibility
         c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'FCST')
@@ -86,9 +87,9 @@ that reformat gridded data
             c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE'] = ''
             c_dict[f'CLIMO_{climo_item}_FILE'] = None
 
-        self.handle_c_dict_regrid(c_dict)
+        self.handle_regrid(c_dict)
 
-        self.handle_description(c_dict)
+        self.handle_description()
 
         return c_dict
 
@@ -98,8 +99,6 @@ that reformat gridded data
             version to handle user configs and printing
             Args:
               @param time_info dictionary containing timing info from current run"""
-        self.add_env_var('METPLUS_MODEL', self.c_dict.get('MODEL', ''))
-        self.add_env_var('METPLUS_OBTYPE', self.c_dict.get('OBTYPE', ''))
         self.add_env_var('METPLUS_DESC', self.c_dict.get('METPLUS_DESC', ''))
 
         self.add_env_var('METPLUS_REGRID_DICT',

@@ -18,6 +18,12 @@ from ..util import do_string_sub
 
 class MODEWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""
+
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MODEL',
+        'METPLUS_OBTYPE',
+    ]
+
     def __init__(self, config, instance=None, config_overrides={}):
         # only set app variables if not already set by MTD (subclass)
         if not hasattr(self, 'app_name'):

@@ -20,6 +20,11 @@ from . import CompareGriddedWrapper
 class PointStatWrapper(CompareGriddedWrapper):
     """! Wrapper to the MET tool, Point-Stat."""
 
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MODEL',
+        'METPLUS_OBTYPE',
+    ]
+
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'point_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
@@ -127,7 +132,7 @@ class PointStatWrapper(CompareGriddedWrapper):
                                           **time_info)
                 self.args.append(f"-obs_valid_{ext.lower()} {obs_valid}")
 
-    def set_environment_variables(self, fcst_field=None, obs_field=None, time_info=None):
+    def set_environment_variables(self, time_info=None, fcst_field=None, obs_field=None):
         """! Set all the environment variables in the MET config
              file to the corresponding values in the METplus config file.
 

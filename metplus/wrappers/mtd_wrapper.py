@@ -20,6 +20,11 @@ from . import CompareGriddedWrapper
 
 class MTDWrapper(MODEWrapper):
 
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MODEL',
+        'METPLUS_OBTYPE',
+    ]
+
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'mtd'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),

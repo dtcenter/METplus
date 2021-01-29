@@ -24,6 +24,11 @@ from ..util import do_string_sub
 
 
 class GridDiagWrapper(RuntimeFreqWrapper):
+
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_DESC',
+    ]
+
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "grid_diag"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
@@ -57,11 +62,11 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         # values used in configuration file
 
         # set regrid dictionary values
-        self.handle_c_dict_regrid(c_dict)
+        self.handle_regrid(c_dict)
 
 
         # set desc
-        self.handle_description(c_dict)
+        self.handle_description()
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
@@ -88,10 +93,8 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         self.add_env_var('REGRID_DICT',
                          regrid_dict)
 
-        self.add_env_var('METPLUS_DESC',
-                         self.c_dict.get('METPLUS_DESC', ''))
         self.add_env_var('DESC',
-                         self.c_dict.get('METPLUS_DESC', ''))
+                         self.env_var_dict.get('METPLUS_DESC', ''))
 
         verif_mask = self.c_dict.get('VERIFICATION_MASK', '')
         if verif_mask:

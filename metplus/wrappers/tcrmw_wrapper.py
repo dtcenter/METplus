@@ -24,6 +24,10 @@ from ..util import do_string_sub
 
 
 class TCRMWWrapper(CommandBuilder):
+
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MODEL',
+    ]
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "tc_rmw"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
@@ -56,9 +60,11 @@ class TCRMWWrapper(CommandBuilder):
             c_dict[f'DATA_FILE_TYPE'] = f"file_type = {data_type};"
 
         # values used in configuration file
+        self.set_met_config_string(self.env_var_dict, 'MODEL', 'model',
+                                   'METPLUS_MODEL')
         self.set_met_config_string(c_dict, 'MODEL', 'model')
 
-        self.handle_c_dict_regrid(c_dict, set_to_grid=False)
+        self.handle_regrid(c_dict, set_to_grid=False)
 
         conf_value = self.config.getint('config', 'TC_RMW_N_RANGE')
         if conf_value is None:
@@ -159,8 +165,6 @@ class TCRMWWrapper(CommandBuilder):
         self.add_env_var('DATA_FIELD',
                          self.c_dict.get('DATA_FIELD', ''))
 
-        self.add_env_var('METPLUS_MODEL',
-                         self.c_dict.get('MODEL', ''))
         self.add_env_var('MODEL',
                          self.c_dict.get('MODEL', ''))
 

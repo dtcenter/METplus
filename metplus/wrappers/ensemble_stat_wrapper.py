@@ -25,6 +25,12 @@ from ..util import do_string_sub
 class EnsembleStatWrapper(CompareGriddedWrapper):
     """!Wraps the MET tool ensemble_stat to compare ensemble datasets
     """
+
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MODEL',
+        'METPLUS_OBTYPE',
+    ]
+
     OUTPUT_FLAGS = ['ecnt',
                     'rps',
                     'rhist',

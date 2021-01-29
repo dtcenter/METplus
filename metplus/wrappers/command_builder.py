@@ -40,7 +40,7 @@ class CommandBuilder:
     climo_types = ['MEAN', 'STDEV']
 
     # name of variable to hold any MET config overrides
-    MET_OVERRIDES = 'MET_CONFIG_UNSUPPORTED'
+    MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_UNSUPPORTED'
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.isOK = True
@@ -56,6 +56,16 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
         self.all_commands = []
+
+        # store values to set in environment variables for each command
+        self.env_var_dict = {}
+
+        # list of environment variables to set before running command
+        self.env_var_keys = [
+            'MET_TMP_DIR',
+        ]
+        if hasattr(self, 'WRAPPER_ENV_VAR_KEYS'):
+            self.env_var_keys.extend(self.WRAPPER_ENV_VAR_KEYS)
 
         # if instance is set, check for a section with the same name in the
         # METplusConfig object. If found, copy all values into the config
@@ -74,14 +84,24 @@ class CommandBuilder:
         self.env = os.environ.copy()
         if hasattr(config, 'env'):
             self.env = config.env
+
+        # populate c_dict dictionary
         self.c_dict = self.create_c_dict()
 
-        # if wrapper has a config file, read unsupported MET config variable
+        # if wrapper has a config file, read MET config overrides variable
         if 'CONFIG_FILE' in self.c_dict:
-            config_name = f"{self.app_name.upper()}_{self.MET_OVERRIDES}"
-            self.c_dict[self.MET_OVERRIDES] = (
+            config_name = self.MET_OVERRIDES_KEY.replace('METPLUS',
+                                                         self.app_name.upper())
+            self.env_var_dict[self.MET_OVERRIDES_KEY] = (
                 self.config.getraw('config', config_name)
             )
+
+            # add key to list of env vars to set
+            self.env_var_keys.append(self.MET_OVERRIDES_KEY)
+
+        # set MET_TMP_DIR environment variable that controls
+        # where the MET tools write temporary files
+        self.env_var_dict['MET_TMP_DIR'] = self.config.getdir('TMP_DIR')
 
         self.check_for_externals()
 
@@ -93,10 +113,6 @@ class CommandBuilder:
         # should override this value in their init function after the call
         # to the parent init function
         self.log_name = self.app_name if hasattr(self, 'app_name') else ''
-
-        # if env MET_TMP_DIR was not set, set it to config TMP_DIR
-        if 'MET_TMP_DIR' not in self.env:
-            self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
 
         self.clear()
 
@@ -155,9 +171,6 @@ class CommandBuilder:
         self.param = ""
         self.env_list.clear()
 
-        # add MET_TMP_DIR back to env_list
-        self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
-
     def set_environment_variables(self, time_info=None):
         """!Set environment variables that will be read set when running this tool.
             This tool does not have a config file, but environment variables may still
@@ -165,12 +178,26 @@ class CommandBuilder:
             Reformat as needed. Print list of variables that were set and their values.
             Args:
               @param time_info dictionary containing timing info from current run"""
-        # set user environment variables
-        self.set_user_environment(time_info)
+        if time_info is None:
+            clock_time_fmt = (
+                datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
+                                  '%Y%m%d%H%M%S')
+            )
+            time_info = {'now': clock_time_fmt}
 
-        # set MET config overrides that are not set by other variables
-        self.add_env_var(f'METPLUS_{self.MET_OVERRIDES}',
-                         self.c_dict.get(self.MET_OVERRIDES, ''))
+        # loop over list of environment variables that need to be set for the
+        # wrapper, apply time info substitution if available, and
+        # set environment variable setting empty string if key is not set in
+        # the env_var_dict dictionary
+        for key in self.env_var_keys:
+            value = self.env_var_dict.get(key, '')
+            if time_info:
+                value = do_string_sub(value, **time_info)
+
+            self.add_env_var(key, value)
+
+        # set user defined environment variables
+        self.set_user_environment(time_info)
 
         # send environment variables to logger
         for msg in self.print_all_envs():
@@ -182,13 +209,9 @@ class CommandBuilder:
         self.errors += 1
         self.isOK = False
 
-    def set_user_environment(self, time_info=None):
+    def set_user_environment(self, time_info):
         """!Set environment variables defined in [user_env_vars] section of config
         """
-        if time_info is None:
-            time_info = {'now': datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
-                                                  '%Y%m%d%H%M%S')}
-
         if 'user_env_vars' not in self.config.sections():
             self.config.add_section('user_env_vars')
 
@@ -1451,7 +1474,7 @@ class CommandBuilder:
 
         return f"{name} = {{{''.join(values)}}}"
 
-    def handle_c_dict_regrid(self, c_dict, set_to_grid=True):
+    def handle_regrid(self, c_dict, set_to_grid=True):
         app_name_upper = self.app_name.upper()
 
         if set_to_grid:
@@ -1499,12 +1522,11 @@ class CommandBuilder:
                 ]
         return self.format_met_config_dictionary('regrid', keys)
 
-    def handle_description(self, c_dict):
+    def handle_description(self):
         """! Get description from config. If <app_name>_DESC is set, use
          that value. If not, check for DESC and use that if it is set.
-         If set, set the DESC c_dict key to "desc = <value>;"
+         If set, set the METPLUS_DESC env_var_dict key to "desc = <value>;"
 
-        @param c_dict dictionary to set value
         """
         # check if <app_name>_DESC is set
         app_name_upper = self.app_name.upper()
@@ -1520,7 +1542,7 @@ class CommandBuilder:
 
         # if the value is set, set the DESC c_dict
         if conf_value:
-            c_dict['METPLUS_DESC'] = (
+            self.env_var_dict['METPLUS_DESC'] = (
                 f'desc = "{util.remove_quotes(conf_value)}";'
             )
 
