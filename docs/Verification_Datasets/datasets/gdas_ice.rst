@@ -17,7 +17,6 @@ Recommended use
 
 File format
 * Grib2
-* BUFR
 
 Location of data
   NCDC/NCEI: https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-data-assimilation-system-gdas
