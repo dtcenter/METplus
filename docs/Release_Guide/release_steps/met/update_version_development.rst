@@ -1,7 +1,7 @@
 Update Version Number
 ---------------------
 
-*  Create a feature branch from the *develop* branch being sure to include the GitHub issue number for the new release (e.g. feature_NNNN_vX.Y.Z-betaN or feature_NNNN_vX.Y-rcN).
+*  Create a feature branch from the *develop* branch being sure to include the GitHub issue number for the new release (e.g. feature_NNNN_vX.Y.Z-betaN or feature_NNNN_vX.Y.Z-rcN).
 
 .. parsed-literal::
 
