@@ -1,66 +1,53 @@
-.. _vx-data-gpm-imerg:
+.. _vx-data-mping:
 
-GPM IMERG
----------
+mPING
+-----
 
 Description
-  Global Precipitation Measurement (GPM) Integrated Multi-satellitE Retrievals for GPM (IMERG)
-  This is a precipitation estimate using an algorithm combining information from the GPM satellite constellation.
+  Meteorological Phenomena Identification Near the Ground (mPING)
+  This is a crowd-sourced weather observing network developed through partnership between the National Severe Storms Laboratory, The University of Oklahoma, and the Cooperative Institute for Mesoscale Meteorological Studies.
   
-  Current version: V06B
-  
-  https://gpm.nasa.gov/data/imerg
+  https://mping.ou.edu/
+  https://mping.nssl.noaa.gov/ 
 
 Sample image
 
-.. image:: images/imerg.png
+.. image:: images/mping.png
    :width: 600
 
+   Image taken from https://mping.ou.edu/display
+
 Recommended use
-  Early Run: Flood analysis and other short-fuse applications
-  
-  Late Run: Daily and longer applications
-  
-  Final Run: Research-grade product
+  Evaluating weather types, including precipitation, hail size, wind, visibility, flood, tornadoes, and mud/landslides
 
 File format
-  HDF5, NetCDF
+  ASCII 
 
 Location of data
-  Main url (there are others) https://gpm.nasa.gov/data/directory
+  To request access: https://mping.ou.edu/static/mping/access.html
 
 Access restrictions
-  Requires a free Earthdata account
+  Both research and commerical licenses are available (access link above)
 
 Spatial resolution, grid, or coverage
-  Full coverage for latitudes of 60N-60S, with partial coverage extending to 90N/90S
-  
-  10 km/0.1 degree resolution
+  Reports can be submitted from anywhere in the world; however, reports typically are over CONUS
 
 Temporal resolution
-  Early Run: 30 min, 1 day
-  
-  Late Run: 30 min, 1 day
-  
-  Final Run: 30 min, 1 day, 1 month
+  Varies
 
 Starting and/or ending dates
-  June 2000-Present
+  2012-Present
 
 Data latency
-  Early Run: 4 hours
-  
-  Late Run: 12 hours
-  
-  Final Run: 3.5 months
+  Real-time
 
 Variables available
-  Precipitation Rate (mm/hr), precipitationCal
+  None, drizzle, freezing drizzle, rain, freezing rain, ice pellets/sleet, snow, mixed rain/snow, mixed ice pellets/snow, hail, wind damage (by severity), flooding (by severity), mudslide/landslide, dense fog, and blowing dust/sand
 
 METplus Use Cases
-  Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataIMERG%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
+  Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataMPING%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
 
 Keywords
-  .. note:: **Current Dataset:** VxDataIMERG
+  .. note:: **Current Dataset:** VxDataMPING
 
-  .. note:: **Data Labels:** DataTypeGridded, DataLevelSurface, DataProviderNASA, DataApplicationPrecipitation
+  .. note:: **Data Labels:** DataTypePoint, DataLevelSurface, DataProviderOU, DataApplicationPrecipitation, DataApplicationConvectionAllowingModels
