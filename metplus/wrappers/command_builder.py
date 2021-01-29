@@ -192,7 +192,9 @@ class CommandBuilder:
         for key in self.env_var_keys:
             value = self.env_var_dict.get(key, '')
             if time_info:
-                value = do_string_sub(value, **time_info)
+                value = do_string_sub(value,
+                                      skip_missing_tags=True,
+                                      **time_info)
 
             self.add_env_var(key, value)
 
@@ -1652,7 +1654,7 @@ class CommandBuilder:
 
         return value
 
-    def format_field(self, field_formatted, data_type):
+    def format_field(self, data_type, field_formatted):
         """! Set {data_type}_FIELD c_dict value to the formatted field string
         Also set {data_type_FIELD_OLD value to support old format until it is
         deprecated.
@@ -1660,5 +1662,7 @@ class CommandBuilder:
         @param field_formatted field string
         @param data_type type of data to set, i.e. FCST, OBS
         """
-        self.c_dict[f'{data_type}_FIELD'] = f"field = [{field_formatted}];"
-        self.c_dict[f'{data_type}_FIELD_OLD'] = field_formatted
+        self.env_var_dict[f'METPLUS_{data_type}_FIELD'] = (
+            f"field = [{field_formatted}];"
+        )
+        self.c_dict[f'{data_type}_FIELD'] = field_formatted
