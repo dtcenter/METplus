@@ -13,7 +13,7 @@ Description
 
 Sample image
 
-.. image:: images/imerg.png
+  .. image:: images/imerg.png
    :width: 600
 
 Recommended use

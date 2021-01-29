@@ -13,7 +13,7 @@ Description
 
 Sample image
 
-.. image:: images/eumetnet.gif
+  .. image:: images/eumetnet.gif
    :width: 600
 
 Recommended use
