@@ -315,11 +315,8 @@ def test_handle_description(metplus_config, config_overrides, expected_value):
     # set app_name to grid_stat for testing
     cbw.app_name = 'grid_stat'
 
-    # create empty dictionary for testing
-    c_dict = {}
-
-    cbw.handle_description(c_dict)
-    assert(c_dict.get('METPLUS_DESC', '') == expected_value)
+    cbw.handle_description()
+    assert(cbw.env_var_dict.get('METPLUS_DESC', '') == expected_value)
 
 @pytest.mark.parametrize(
     'input, output', [
@@ -358,7 +355,7 @@ def test_format_regrid_to_grid(metplus_config, input, output):
          {'REGRID_SHAPE': 'shape = CIRCLE;'}),
     ]
 )
-def test_handle_c_dict_regrid(metplus_config, config_overrides, set_to_grid,
+def test_handle_regrid(metplus_config, config_overrides, set_to_grid,
                               expected_dict):
     config = metplus_config()
 
@@ -374,7 +371,7 @@ def test_handle_c_dict_regrid(metplus_config, config_overrides, set_to_grid,
     # create empty dictionary for testing
     c_dict = {}
 
-    cbw.handle_c_dict_regrid(c_dict, set_to_grid=set_to_grid)
+    cbw.handle_regrid(c_dict, set_to_grid=set_to_grid)
 
     # remove old to_grid item if set
     if 'REGRID_TO_GRID_OLD' in c_dict:
