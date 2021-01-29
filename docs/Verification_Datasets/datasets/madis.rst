@@ -4,14 +4,14 @@ MADIS Data
 ----------
 
 Description
-  Meteorological Assimilation Data Ingest System (MADIS) consists of NOAA and non-NOAA data providers and provides observational data in a common format, with quality checks. This infomration is focused on METAR data.
+  Meteorological Assimilation Data Ingest System (MADIS) consists of NOAA and non-NOAA data providers and provides observational data in a common format, with quality checks. This information is focused on METAR data.
 
   https://madis.ncep.noaa.gov/index.shtml 
 
   Note: METAR data is also available via other sources (e.g., NCEP prepbufr files); METAR data from MADIS allows for verification over CONUS and OCONUS.
 
 Recommended use
-  METAR data are commonly used for near-surface verification of standard meteorological variables, such as temperaures, dew point temperature, wind speed, visibility, and precipitation, and precipitation type.
+  METAR data are commonly used for near-surface verification of standard meteorological variables, such as temperatures, dew point temperature, wind speed, visibility, and precipitation, and precipitation type.
 
 File format
   NetCDF

@@ -12,7 +12,7 @@ Description
   Note: GDAS prepbufr data is also available via other sources (e.g., NOMADS, NOAA HPSS, and NCAR/Research Data Archive); however, NOAA/NCEI does not require an account and provides a long archive period.
 
 Recommended use
-  GDAS prepbufr data are commonly used for verification of standard meteorological variables, such as temperaures, dew point temperature, wind speed, visibility, and precipitation, and precipitation type.
+  GDAS prepbufr data are commonly used for verification of standard meteorological variables, such as temperatures, dew point temperature, wind speed, visibility, and precipitation, and precipitation type.
 
 File format
   BUFR 
@@ -38,7 +38,7 @@ Data latency
   For a near-realtime archive (but shorter retention period, see: https://nomads.ncep.noaa.gov/pub/data/nccf/com/gfs/prod)
 
 Variables available
-  Air temperature, dew point temperature, relative humidity, heat index/wind chill, wind direction, wind speed, altimeter, seas level pressure, 1-h precipitation, visibility, wind gust, cloud coverage, cloud height level, present weather code(s), ice accretion, peak wing gust, peak wind direction, and peak wind time
+  Temperature, sea surface temperature, wind, geopotential height, visibility, and moisture
 
 METplus Use Cases
   Link to

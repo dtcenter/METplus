@@ -12,7 +12,7 @@ Description
   Note: METAR data is also available via other sources (e.g., MADIS, NCEP prepbufr files); however, ISU provides a long archive and does not require an account.
 
 Recommended use
-  METAR data are commonly used for near-surface verification of standard meteorological variables, such as temperaures, dew point temperature, wind speed, visibility, and precipitation, and precipitation type.
+  METAR data are commonly used for near-surface verification of standard meteorological variables, such as temperatures, dew point temperature, wind speed, visibility, precipitation, and precipitation type.
 
 File format
   ASCII
@@ -36,7 +36,7 @@ Data latency
   Archive is updated in near-realtime (however, it is not operational and subject to downtime)
 
 Variables available
-  Air temperature, dew point temperature, relative humidity, heat index/wind chill, wind direction, wind speed, altimeter, seas level pressure, 1-h precipitation, visibility, wind gust, cloud coverage, cloud height level, present weather code(s), ice accretion, peak wing gust, peak wind direction, and peak wind time
+  Air temperature, dew point temperature, relative humidity, heat index/wind chill, wind direction, wind speed, altimeter, sea level pressure, 1-h precipitation, visibility, wind gust, cloud coverage, cloud height level, present weather code(s), ice accretion, peak wind gust, peak wind direction, and peak wind time
 
 METplus Use Cases
   Link to
