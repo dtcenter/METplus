@@ -117,4 +117,4 @@ _gonzolo.conf
 #   `TCRMWToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCRMWToolUseCase&check_keywords=yes&area=default>`_
 #   `GRIB2FileUseCase  <https://dtcenter.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_
 #
-
+# sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-TCRMW_fcstGFS_fcstOnly_gonzolo.png'
