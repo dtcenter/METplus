@@ -4,7 +4,7 @@ Blocking Calculation: RegridDataPlane, PcpCombine, and Blocking python code
 
 model_applications/
 s2s/
-Regrid_PCP_obsERA_obsOnly_Blocking.conf
+UserScript_obsERA_obsOnly_Blocking.py
 
 """
 
@@ -20,6 +20,7 @@ Regrid_PCP_obsERA_obsOnly_Blocking.conf
 # Datasets
 # --------
 #
+#  * Forecast dataset: None 
 #  * Observation dataset: ERA Reanlaysis 500 mb height.
 
 ##############################################################################
@@ -31,8 +32,7 @@ Regrid_PCP_obsERA_obsOnly_Blocking.conf
 # (TIMEAVE), computing a running mean (RMEAN), computing anomalies (ANOMALY), computing CBLs
 # (CBL), plotting CBLs (PLOTCBL), computing IBLs (IBL), plotting IBL frequency (PLOTIBL), 
 # computing GIBLs (GIBL), computing blocks (CALCBLOCKS), and plotting the blocking frequency
-# (PLOTBLOCKS).  The steps can be listed on the command line or in a .conf file and are 
-# formatted as follows:
+# (PLOTBLOCKS).  The steps are listed in a .conf file and are formatted as follows:
 #
 # OBS_STEPS = REGRID+TIMEAVE+RUNMEAN+ANOMALY+CBL+PLOTCBL+IBL+PLOTIBL+GIBL+CALCBLOCKS+PLOTBLOCKS
 
@@ -41,10 +41,7 @@ Regrid_PCP_obsERA_obsOnly_Blocking.conf
 # ----------------
 #
 # The regrid_data_plane, pcp_combine, and blocking python code are run for each
-# time. This example loops by valid time.  It processes 1 valid time, listed below.
-#
-# | **Valid:** 2020-02-06_12Z
-# | **Forecast lead:** 36
+# time for the forecast and observations data. This example loops by valid time.  
 
 ##############################################################################
 # METplus Configuration
@@ -52,10 +49,13 @@ Regrid_PCP_obsERA_obsOnly_Blocking.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/s2s/Regrid_PCP_obsERA_obsOnly_Blocking.conf
+# i.e. parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.py.  
+# The file UserScript_obsERA_obsOnly_Blocking.conf runs the python program, however
+# UserScript_obsERA_obsOnly_Blocking/Regrid_PCP_obsERA_obsOnly_Blocking.conf sets the 
+# variables for all steps of the Blocking use case.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/Regrid_PCP_obsERA_obsOnly_Blocking.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s
 
 ##############################################################################
 # MET Configuration
@@ -76,13 +76,13 @@ Regrid_PCP_obsERA_obsOnly_Blocking.conf
 #
 # This use case is run in the following ways:
 #
-# 1) Passing in Regrid_PCP_obsERA_obsOnly_Blocking.conf then a user-specific system configuration file::
+# 1) Passing in UserScript_obsERA_obsOnly_Blocking.py then a user-specific system configuration file::
 #
-#        Blocking_driver.py /path/to/METplus/parm/use_cases/model_applications/s2s/Regrid_PCP_obsERA_obsOnly_Blocking.conf /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.py -c /path/to/user_system.conf
 #
-# 2) Passing in Regrid_PCP_obsERA_obsOnly_Blocking.conf then a user-specific system configuration file and then listing steps::
+# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_obsERA_obsOnly_Blocking.py::
 #
-#        Blocking_driver.py /path/to/METplus/parm/use_cases/model_applications/s2s/Regrid_PCP_obsERA_obsOnly_Blocking.conf /path/to/user_system.conf OBS_STEPS=REGRID+TIMEAVE+RUNMEAN+ANOMALY+CBL+PLOTCBL+IBL+PLOTIBL+GIBL+CALCBLOCKS+PLOTBLOCKS
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.py
 #
 # The following variables must be set correctly:
 #
@@ -105,7 +105,9 @@ Regrid_PCP_obsERA_obsOnly_Blocking.conf
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
 # case will be found in model_applications/s2s/Blocking (relative to **OUTPUT_BASE**) and will contain output 
 # for the steps requested.  This may include the regridded data, daily averaged files, running mean files, 
-# anomaly files, the CBL , an IBL frequency plot, and blocking frequency plots.
+# and anomaly files.  In addition, output CBL, IBL, and Blocking frequency plots can be generated.  The location
+# of these output plots can be specified as BLOCKING_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent 
+# to model_applications/s2s/Blocking/plots (relative to **OUTPUT_BASE**).
 
 ##############################################################################
 # Keywords

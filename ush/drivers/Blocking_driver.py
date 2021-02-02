@@ -92,7 +92,7 @@ def main():
     oplot_dir = config.getstr('Blocking','BLOCKING_PLOT_OUTPUT_DIR','')
     if not oplot_dir:
         obase = config.getstr('config','OUTPUT_BASE')
-        oplot_dir = obase+'/'+plots
+        oplot_dir = obase+'/'+'plots'
     if not os.path.exists(oplot_dir):
         os.makedirs(oplot_dir)
 

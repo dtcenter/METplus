@@ -18,7 +18,7 @@ class WeatherRegimeCalculation():
 
         self.wrnum = config.getint('WeatherRegime',label+'_WR_NUMBER',6)
         self.numi = config.getint('WeatherRegime',label+'_NUM_CLUSTERS',20)
-        self.NUMPCS = 10
+        self.NUMPCS = config.getint('WeatherRegime',label+'_NUM_PCS',10)
 
 
     def get_cluster_fraction(self, m, label):
