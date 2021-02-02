@@ -207,7 +207,7 @@ class TCGenWrapper(CommandBuilder):
             dict_string = self.format_met_config_dict(self.c_dict,
                                                       dict_name,
                                                       item_list)
-            self.add_env_var(f'{dict_name}_DICT',
+            self.add_env_var(f'{dict_name.upper()}_DICT',
                              dict_string)
 
 
