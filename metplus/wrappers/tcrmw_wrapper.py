@@ -27,6 +27,7 @@ class TCRMWWrapper(CommandBuilder):
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
+        'METPLUS_REGRID_DICT',
     ]
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "tc_rmw"
@@ -167,13 +168,6 @@ class TCRMWWrapper(CommandBuilder):
 
         self.add_env_var('MODEL',
                          self.c_dict.get('MODEL', ''))
-
-        regrid_dict = self.get_regrid_dict()
-        self.add_env_var('METPLUS_REGRID_DICT',
-                         regrid_dict)
-        # support deprecated version
-        self.add_env_var('REGRID_DICT',
-                         regrid_dict)
 
         self.add_env_var('N_RANGE',
                          self.c_dict.get('N_RANGE', ''))

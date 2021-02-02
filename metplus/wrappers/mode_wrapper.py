@@ -21,7 +21,9 @@ class MODEWrapper(CompareGriddedWrapper):
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
+        'METPLUS_DESC',
         'METPLUS_OBTYPE',
+        'METPLUS_REGRID_DICT',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):

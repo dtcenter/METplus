@@ -38,6 +38,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_MODEL',
         'METPLUS_OBTYPE',
         'METPLUS_DESC',
+        'METPLUS_REGRID_DICT',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -735,9 +736,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # set climatology environment variables
         self.set_climo_env_vars()
-
-        self.add_env_var('METPLUS_REGRID_DICT',
-                         self.get_regrid_dict())
 
         # set old env var settings for backwards compatibility
         self.add_env_var('MODEL', self.c_dict.get('MODEL', ''))

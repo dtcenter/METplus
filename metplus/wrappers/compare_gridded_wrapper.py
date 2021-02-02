@@ -91,6 +91,11 @@ that reformat gridded data
 
         self.handle_description()
 
+        self.set_met_config_string(self.env_var_dict,
+                                   f'{self.app_name.upper()}_OUTPUT_PREFIX',
+                                   'output_prefix',
+                                   'METPLUS_OUTPUT_PREFIX')
+
         return c_dict
 
     def set_environment_variables(self, time_info):
@@ -99,10 +104,6 @@ that reformat gridded data
             version to handle user configs and printing
             Args:
               @param time_info dictionary containing timing info from current run"""
-        self.add_env_var('METPLUS_DESC', self.c_dict.get('METPLUS_DESC', ''))
-
-        self.add_env_var('METPLUS_REGRID_DICT',
-                         self.get_regrid_dict())
 
         # set old environment variable values for backwards compatibility
         self.add_env_var('MODEL', self.c_dict.get('MODEL_OLD', ''))

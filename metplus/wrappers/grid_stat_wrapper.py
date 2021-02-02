@@ -27,8 +27,9 @@ class GridStatWrapper(CompareGriddedWrapper):
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
-        'METPLUS_OBTYPE',
         'METPLUS_DESC',
+        'METPLUS_OBTYPE',
+        'METPLUS_REGRID_DICT',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -149,7 +150,8 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         mask_dict_string = self.format_met_config_dict(self.c_dict,
                                                        'MASK',
-                                                       ['GRID', 'POLY'])
+                                                       ['MASK_GRID',
+                                                        'MASK_POLY'])
         self.add_env_var("METPLUS_MASK_DICT", mask_dict_string)
 
         self.add_env_var("METPLUS_NBRHD_SHAPE",

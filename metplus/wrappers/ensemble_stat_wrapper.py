@@ -28,7 +28,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
+        'METPLUS_DESC',
         'METPLUS_OBTYPE',
+        'METPLUS_REGRID_DICT',
     ]
 
     OUTPUT_FLAGS = ['ecnt',
@@ -274,7 +276,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                 'NMEP_SMOOTH_WIDTH')
 
         c_dict['NMEP_SMOOTH_TYPE'] = self.format_met_config_type(c_dict,
-                                                                 'NMEP_SMOOTH')
+                                                                 'nmep_smooth')
 
         self.set_met_config_bool(c_dict,
                                  'ENSEMBLE_STAT_OBS_ERROR_FLAG',
@@ -323,7 +325,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                 'INTERP_WIDTH')
 
         c_dict['INTERP_TYPE'] = self.format_met_config_type(c_dict,
-                                                            'INTERP')
+                                                            'interp')
 
         self.set_met_config_list(c_dict,
                                  'ENSEMBLE_STAT_CENSOR_THRESH',
@@ -374,17 +376,18 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         return c_dict
 
-    def format_met_config_type(self, c_dict, key_prefix):
+    def format_met_config_type(self, c_dict, dict_name):
         """! Format type item for MET config
 
         @param c_dict dictionary to check and add item if appropriate
-        @param key_prefix prefix to add to input keys to search in c_dict
+        @param dict_name name of dictionary to format
         @returns formatted string "type = [{}];" or empty string if nothing is
          set
         """
-        input_keys = ['METHOD', 'WIDTH']
+        input_keys = [f'{dict_name.upper()}_METHOD',
+                      f'{dict_name.upper()}_WIDTH']
         type_string = self.format_met_config_dict(c_dict,
-                                                  key_prefix,
+                                                  dict_name,
                                                   input_keys)
         if not type_string:
             return ''
@@ -614,55 +617,61 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                          self.c_dict.get('VERIFICATION_MASK', ''))
 
         nbrhd_prob = (
-            self.format_met_config_dictionary('nbrhd_prob',
-                                              ['NBRHD_PROB_WIDTH',
-                                               'NBRHD_PROB_SHAPE',
-                                               'NBRHD_PROB_VLD_THRESH'])
+            self.format_met_config_dict(self.c_dict,
+                                        'nbrhd_prob',
+                                        ['NBRHD_PROB_WIDTH',
+                                         'NBRHD_PROB_SHAPE',
+                                         'NBRHD_PROB_VLD_THRESH'])
         )
         self.add_env_var('METPLUS_NBRHD_PROB_DICT', nbrhd_prob)
 
         climo_cdf = (
-            self.format_met_config_dictionary('climo_cdf',
-                                              ['CLIMO_CDF_BINS',
-                                               'CLIMO_CDF_CENTER_BINS',
-                                               'CLIMO_CDF_WRITE_BINS'])
+            self.format_met_config_dict(self.c_dict,
+                                        'climo_cdf',
+                                        ['CLIMO_CDF_BINS',
+                                         'CLIMO_CDF_CENTER_BINS',
+                                         'CLIMO_CDF_WRITE_BINS'])
         )
         self.add_env_var('METPLUS_CLIMO_CDF_DICT', climo_cdf)
 
         nmep_smooth = (
-            self.format_met_config_dictionary('nmep_smooth',
-                                              ['NMEP_SMOOTH_GAUSSIAN_RADIUS',
-                                               'NMEP_SMOOTH_GAUSSIAN_DX',
-                                               'NMEP_SMOOTH_VLD_THRESH',
-                                               'NMEP_SMOOTH_SHAPE',
-                                               'NMEP_SMOOTH_TYPE',
-                                              ])
+            self.format_met_config_dict(self.c_dict,
+                                        'nmep_smooth',
+                                        ['NMEP_SMOOTH_GAUSSIAN_RADIUS',
+                                         'NMEP_SMOOTH_GAUSSIAN_DX',
+                                         'NMEP_SMOOTH_VLD_THRESH',
+                                         'NMEP_SMOOTH_SHAPE',
+                                         'NMEP_SMOOTH_TYPE',
+                                        ])
         )
         self.add_env_var('METPLUS_NMEP_SMOOTH_DICT', nmep_smooth)
 
         interp = (
-            self.format_met_config_dictionary('interp',
-                                              ['INTERP_FIELD',
-                                               'INTERP_VLD_THRESH',
-                                               'INTERP_SHAPE',
-                                               'INTERP_TYPE',
-                                              ])
+            self.format_met_config_dict(self.c_dict,
+                                        'interp',
+                                        ['INTERP_FIELD',
+                                         'INTERP_VLD_THRESH',
+                                         'INTERP_SHAPE',
+                                         'INTERP_TYPE',
+                                        ])
         )
         self.add_env_var('METPLUS_INTERP_DICT', interp)
 
         output_flag_list = [f"OUTPUT_FLAG_{item.upper()}"
                             for item in self.OUTPUT_FLAGS]
         output_flag = (
-            self.format_met_config_dictionary('output_flag',
-                                              output_flag_list)
+            self.format_met_config_dict(self.c_dict,
+                                        'output_flag',
+                                        output_flag_list)
         )
         self.add_env_var('METPLUS_OUTPUT_FLAG_DICT', output_flag)
 
         ens_flag_list = [f"ENSEMBLE_FLAG_{item.upper()}"
                          for item in self.ENSEMBLE_FLAGS]
         ens_flag = (
-            self.format_met_config_dictionary('ensemble_flag',
-                                              ens_flag_list)
+            self.format_met_config_dict(self.c_dict,
+                                        'ensemble_flag',
+                                         ens_flag_list)
         )
         self.add_env_var('METPLUS_ENSEMBLE_FLAG_DICT', ens_flag)
 

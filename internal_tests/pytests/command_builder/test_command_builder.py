@@ -412,7 +412,7 @@ def test_get_regrid_dict(metplus_config, c_dict_values, expected_output):
     for key, value in c_dict_values.items():
         cbw.c_dict[key] = value
 
-    assert(cbw.get_regrid_dict() == expected_output)
+    assert(cbw.get_regrid_dict(cbw.c_dict) == expected_output)
 
 @pytest.mark.parametrize(
     'mp_config_name,met_config_name,c_dict_key,remove_quotes,expected_output', [
