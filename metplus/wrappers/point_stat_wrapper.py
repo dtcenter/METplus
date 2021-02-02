@@ -134,7 +134,7 @@ class PointStatWrapper(CompareGriddedWrapper):
                                           **time_info)
                 self.args.append(f"-obs_valid_{ext.lower()} {obs_valid}")
 
-    def set_environment_variables(self, time_info=None, fcst_field=None, obs_field=None):
+    def set_environment_variables(self, time_info=None):
         """! Set all the environment variables in the MET config
              file to the corresponding values in the METplus config file.
 
@@ -161,8 +161,11 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_env_var('POINT_STAT_MESSAGE_TYPE',
                          f"[{self.format_list_string(self.c_dict['POINT_STAT_MESSAGE_TYPE'])}]")
 
-        self.add_env_var('FCST_FIELD', fcst_field)
-        self.add_env_var('OBS_FIELD', obs_field)
+        # add old method of setting env vars
+        self.add_env_var("FCST_FIELD",
+                         self.c_dict.get('FCST_FIELD', ''))
+        self.add_env_var("OBS_FIELD",
+                         self.c_dict.get('OBS_FIELD', ''))
 
         # Set the environment variables corresponding to the obs_window
         # dictionary.
