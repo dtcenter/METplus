@@ -40,7 +40,7 @@ class CommandBuilder:
     climo_types = ['MEAN', 'STDEV']
 
     # name of variable to hold any MET config overrides
-    MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_UNSUPPORTED'
+    MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_OVERRIDES'
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.isOK = True
