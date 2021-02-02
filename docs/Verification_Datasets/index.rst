@@ -11,10 +11,6 @@ Verification Datasets Guide
    datasets
    quicksearch
 
-.. toctree::
-   :hidden:
-
-   datasets/template
    
 Indices and tables
 ==================

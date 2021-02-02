@@ -12,7 +12,6 @@ Official release (e.g. vX.Y.0)
 .. include:: release_steps/metplus/update_version_official.rst
 .. include:: release_steps/review_release_notes.rst
 .. include:: release_steps/metplus/update_docs_tagged.rst
-.. include:: release_steps/metplus/update_docker_build_hook.rst
 .. include:: release_steps/create_release_branch.rst
 .. include:: release_steps/metplus/update_readme.rst
 .. include:: release_steps/push_release_branch.rst
@@ -40,7 +39,6 @@ Development release (e.g. vX.Y.Z-betaN or vX.Y.Z-rcN)
 .. include:: release_steps/metplus/update_version.rst
 .. include:: release_steps/update_release_notes.rst
 .. include:: release_steps/metplus/update_docs_develop.rst
-.. include:: release_steps/metplus/update_docker_build_hook.rst
 .. include:: release_steps/create_release_branch.rst
 .. include:: release_steps/push_release_branch.rst
 .. include:: release_steps/create_release_on_github.rst
