@@ -806,7 +806,7 @@ class CommandBuilder:
             else:
                 valid_format = ''
 
-            prefix = self.get_output_prefix(time_info)
+            prefix = self.get_output_prefix(time_info, set_env_vars=False)
             search_string = f"{self.app_name}_{prefix}*{valid_format}V*"
             search_path = os.path.join(output_path,
                                        search_string)
@@ -1521,11 +1521,13 @@ class CommandBuilder:
                 f'desc = "{util.remove_quotes(conf_value)}";'
             )
 
-    def get_output_prefix(self, time_info=None):
+    def get_output_prefix(self, time_info=None, set_env_vars=True):
         """! Read {APP_NAME}_OUTPUT_PREFIX from config. If time_info is set
          substitute values into filename template tags.
 
              @param time_info (Optional) dictionary containing time info
+             @param set_env_vars (Optional) if True, set env vars with
+             values computed from this function
              @returns output prefix with values substituted if requested
         """
         output_prefix = (
@@ -1535,8 +1537,18 @@ class CommandBuilder:
         if time_info is None:
             return output_prefix
 
-        return do_string_sub(output_prefix,
-                             **time_info)
+        output_prefix = do_string_sub(output_prefix,
+                                      **time_info)
+
+        if set_env_vars:
+            # set METPLUS_OUTPUT_PREFIX in env_var_dict
+            output_prefix_fmt = f'output_prefix = "{output_prefix}";'
+            self.env_var_dict['METPLUS_OUTPUT_PREFIX'] = output_prefix_fmt
+
+            # set old method of setting OUTPUT_PREFIX
+            self.add_env_var('OUTPUT_PREFIX', output_prefix)
+
+        return output_prefix
 
     def set_climo_env_vars(self):
         """!Set all climatology environment variables from CLIMO_<item>_FILE

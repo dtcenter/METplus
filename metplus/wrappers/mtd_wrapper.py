@@ -414,11 +414,6 @@ class MTDWrapper(MODEWrapper):
         self.obs_file = None
 
     def set_environment_variables(self, time_info):
-        # read output prefix at this step to ensure that
-        # CURRENT_[FCST/OBS]_[NAME/LEVEL] is substituted correctly
-        output_prefix = self.get_output_prefix(time_info)
-        self.env_var_dict['METPLUS_OUTPUT_PREFIX'] = output_prefix
-
         # old method of setting MET config variables
         self.add_env_var("FCST_FIELD",
                          self.c_dict.get('FCST_FIELD', ''))
@@ -434,7 +429,7 @@ class MTDWrapper(MODEWrapper):
                          self.c_dict.get('FCST_CONV_THRESH', ''))
 
         self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"])
-        self.add_env_var('OUTPUT_PREFIX', output_prefix)
+
 
         self.add_env_var("FCST_FILE_TYPE",
                          self.c_dict.get('FCST_FILE_TYPE', ''))

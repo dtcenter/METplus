@@ -168,11 +168,6 @@ class GridStatWrapper(CompareGriddedWrapper):
         self.add_env_var("METPLUS_NBRHD_COV_THRESH",
                          self.c_dict.get('NBRHD_COV_THRESH', ''))
 
-        output_prefix = self.get_output_prefix(time_info)
-        output_prefix_fmt = f'output_prefix = "{output_prefix}";'
-        self.add_env_var('METPLUS_OUTPUT_PREFIX',
-                         output_prefix_fmt)
-
         # add old method of setting env vars
         self.add_env_var("FCST_FIELD",
                          self.c_dict.get('FCST_FIELD', ''))
@@ -196,7 +191,5 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))
-
-        self.add_env_var('OUTPUT_PREFIX', output_prefix)
 
         super().set_environment_variables(time_info)

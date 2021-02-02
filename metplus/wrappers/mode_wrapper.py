@@ -170,8 +170,6 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_env_var('VERIF_MASK', self.c_dict.get('VERIFICATION_MASK',
                                                        '""'))
 
-        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
-
         super().set_environment_variables(time_info)
 
     def run_at_time_one_field(self, time_info, var_info):

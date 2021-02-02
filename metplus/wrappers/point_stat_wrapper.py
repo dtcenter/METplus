@@ -174,8 +174,6 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))
 
-        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
-
         # set climatology environment variables
         self.set_climo_env_vars()
 

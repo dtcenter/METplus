@@ -636,9 +636,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # read output prefix at this step to ensure that
         # CURRENT_[FCST/OBS]_[NAME/LEVEL] is substituted correctly
-        output_prefix = self.get_output_prefix(time_info)
-        self.env_var_dict['METPLUS_OUTPUT_PREFIX'] = output_prefix
-
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))
 
@@ -707,7 +704,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # support old method of setting variables in MET config files
         self.add_env_var('ENS_THRESH',
                          self.c_dict.get('ENS_THRESH'))
-        self.add_env_var('OUTPUT_PREFIX', output_prefix)
         met_config_list_old = [
             'OBTYPE',
             'INPUT_BASE',

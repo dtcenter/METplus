@@ -105,6 +105,8 @@ that reformat gridded data
             Args:
               @param time_info dictionary containing timing info from current run"""
 
+        self.get_output_prefix(time_info)
+
         # set old environment variable values for backwards compatibility
         self.add_env_var('MODEL', self.c_dict.get('MODEL_OLD', ''))
         self.add_env_var('OBTYPE', self.c_dict.get('OBTYPE_OLD', ''))
