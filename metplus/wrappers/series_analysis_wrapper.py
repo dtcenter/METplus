@@ -741,7 +741,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         self.add_env_var('MODEL', self.c_dict.get('MODEL', ''))
         self.add_env_var("OBTYPE", self.c_dict.get('OBTYPE', ''))
         self.add_env_var('REGRID_TO_GRID',
-                         self.c_dict.get('REGRID_TO_GRID_OLD', ''))
+                         self.c_dict.get('REGRID_TO_GRID', ''))
 
         # format old stat list
         stat_list = self.c_dict.get('STAT_LIST')

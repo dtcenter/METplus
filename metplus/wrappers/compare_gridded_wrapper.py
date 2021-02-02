@@ -109,7 +109,7 @@ that reformat gridded data
         self.add_env_var('MODEL', self.c_dict.get('MODEL_OLD', ''))
         self.add_env_var('OBTYPE', self.c_dict.get('OBTYPE_OLD', ''))
         self.add_env_var('REGRID_TO_GRID',
-                         self.c_dict.get('REGRID_TO_GRID_OLD',
+                         self.c_dict.get('REGRID_TO_GRID',
                                          'NONE'))
 
         super().set_environment_variables(time_info)
@@ -242,7 +242,10 @@ that reformat gridded data
         fcst_fields = ','.join(fcst_field_list)
         obs_fields = ','.join(obs_field_list)
 
-        self.process_fields(time_info, fcst_fields, obs_fields)
+        self.format_field('FCST', fcst_fields)
+        self.format_field('OBS', obs_fields)
+
+        self.process_fields(time_info)
 
     def run_at_time_all_fields(self, time_info):
         """! Build MET command for all of the field/level combinations for a given
@@ -297,9 +300,12 @@ that reformat gridded data
         fcst_field = ','.join(fcst_field_list)
         obs_field = ','.join(obs_field_list)
 
-        self.process_fields(time_info, fcst_field, obs_field)
+        self.format_field('FCST', fcst_field)
+        self.format_field('OBS', obs_field)
 
-    def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
+        self.process_fields(time_info)
+
+    def process_fields(self, time_info):
         """! Set and print environment variables, then build/run MET command
               Args:
                 @param time_info dictionary with time information
@@ -320,9 +326,7 @@ that reformat gridded data
             return
 
         # set environment variables needed by MET config file
-        self.set_environment_variables(time_info,
-                                       fcst_field=fcst_field,
-                                       obs_field=obs_field)
+        self.set_environment_variables(time_info)
 
         # check if METplus can generate the command successfully
         cmd = self.get_command()

@@ -1448,6 +1448,9 @@ class CommandBuilder:
     def handle_regrid(self, c_dict, set_to_grid=True):
         app_name_upper = self.app_name.upper()
 
+        # dictionary to hold regrid values as they are read
+        tmp_dict = {}
+
         if set_to_grid:
             conf_value = (
                 self.config.getstr('config',
@@ -1456,44 +1459,43 @@ class CommandBuilder:
 
             # set to_grid without formatting for backwards compatibility
             formatted_to_grid = self.format_regrid_to_grid(conf_value)
-            c_dict['REGRID_TO_GRID_OLD'] = formatted_to_grid
+            c_dict['REGRID_TO_GRID'] = formatted_to_grid
 
             if conf_value:
-                c_dict['REGRID_TO_GRID'] = (
+                tmp_dict['REGRID_TO_GRID'] = (
                     f"to_grid = {formatted_to_grid};"
                 )
 
-        self.set_met_config_string(c_dict,
+        self.set_met_config_string(tmp_dict,
                                    f'{app_name_upper}_REGRID_METHOD',
                                    'method',
                                    'REGRID_METHOD',
                                    remove_quotes=True)
 
-        self.set_met_config_int(c_dict,
+        self.set_met_config_int(tmp_dict,
                                 f'{app_name_upper}_REGRID_WIDTH',
                                 'width',
                                 'REGRID_WIDTH')
 
-        self.set_met_config_float(c_dict,
+        self.set_met_config_float(tmp_dict,
                                   f'{app_name_upper}_REGRID_VLD_THRESH',
                                   'vld_thresh',
                                   'REGRID_VLD_THRESH')
-        self.set_met_config_string(c_dict,
+        self.set_met_config_string(tmp_dict,
                                    f'{app_name_upper}_REGRID_SHAPE',
                                    'shape',
                                    'REGRID_SHAPE',
                                    remove_quotes=True)
 
-        self.env_var_dict['METPLUS_REGRID_DICT'] = self.get_regrid_dict(c_dict)
-
-    def get_regrid_dict(self, c_dict):
-        keys = ['REGRID_TO_GRID',
-                'REGRID_METHOD',
-                'REGRID_WIDTH',
-                'REGRID_VLD_THRESH',
-                'REGRID_SHAPE',
-                ]
-        return self.format_met_config_dict(c_dict, 'regrid', keys)
+        regrid_string = self.format_met_config_dict(tmp_dict,
+                                                    'regrid',
+                                                    ['REGRID_TO_GRID',
+                                                     'REGRID_METHOD',
+                                                     'REGRID_WIDTH',
+                                                     'REGRID_VLD_THRESH',
+                                                     'REGRID_SHAPE',
+                                                     ])
+        self.env_var_dict['METPLUS_REGRID_DICT'] = regrid_string
 
     def handle_description(self):
         """! Get description from config. If <app_name>_DESC is set, use

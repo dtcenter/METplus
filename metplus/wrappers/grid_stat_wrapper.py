@@ -30,6 +30,17 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_DESC',
         'METPLUS_OBTYPE',
         'METPLUS_REGRID_DICT',
+        'METPLUS_FCST_FILE_TYPE',
+        'METPLUS_FCST_FIELD',
+        'METPLUS_OBS_FILE_TYPE',
+        'METPLUS_OBS_FIELD',
+        'METPLUS_CLIMO_MEAN_FILE',
+        'METPLUS_CLIMO_STDEV_FILE',
+        'METPLUS_MASK_DICT',
+        'METPLUS_NBRHD_SHAPE',
+        'METPLUS_NBRHD_WIDTH',
+        'METPLUS_NBRHD_COV_THRESH',
+        'METPLUS_OUTPUT_PREFIX',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -139,14 +150,10 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         return c_dict
 
-    def set_environment_variables(self, time_info, fcst_field, obs_field):
+    def set_environment_variables(self, time_info):
         """!Set environment variables that are referenced by the
             MET config file"""
         # set environment variables needed for MET application
-        fcst_field_str = f"field = [ {fcst_field} ];"
-        obs_field_str = f"field = [ {obs_field} ];"
-        self.add_env_var("METPLUS_FCST_FIELD", fcst_field_str)
-        self.add_env_var("METPLUS_OBS_FIELD", obs_field_str)
 
         mask_dict_string = self.format_met_config_dict(self.c_dict,
                                                        'MASK',
@@ -167,8 +174,10 @@ class GridStatWrapper(CompareGriddedWrapper):
                          output_prefix_fmt)
 
         # add old method of setting env vars
-        self.add_env_var("FCST_FIELD", fcst_field)
-        self.add_env_var("OBS_FIELD", obs_field)
+        self.add_env_var("FCST_FIELD",
+                         self.c_dict.get('FCST_FIELD', ''))
+        self.add_env_var("OBS_FIELD",
+                         self.c_dict.get('OBS_FIELD', ''))
 
         # set climatology environment variables
         self.set_climo_env_vars()
