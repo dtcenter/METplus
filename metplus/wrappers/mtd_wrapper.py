@@ -139,12 +139,20 @@ class MTDWrapper(MODEWrapper):
             conf_value = self.config.getstr('config', 'MTD_CONV_RADIUS', '')
         c_dict[f'{write_type}_CONV_RADIUS'] = conf_value
 
+        # set OBS values if single run to support old method
+        if c_dict['SINGLE_RUN']:
+            c_dict['OBS_CONV_RADIUS'] = conf_value
+
         conf_value = (
             self.config.getstr('config', f'{read_type}_MTD_CONV_THRESH', '')
         )
         if not conf_value:
             conf_value = self.config.getstr('config', 'MTD_CONV_THRESH', '')
         c_dict[f'{write_type}_CONV_THRESH'] = conf_value
+
+        # set OBS values if single run to support old method
+        if c_dict['SINGLE_RUN']:
+            c_dict['OBS_CONV_THRESH'] = conf_value
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
