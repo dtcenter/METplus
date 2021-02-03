@@ -237,4 +237,4 @@ output_prefix    = "${METPLUS_OUTPUT_PREFIX}";
 
 ////////////////////////////////////////////////////////////////////////////////
 
-${METPLUS_MET_CONFIG_UNSUPPORTED}
+${METPLUS_MET_CONFIG_OVERRIDES}

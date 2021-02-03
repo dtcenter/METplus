@@ -133,4 +133,4 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #    `GRIB2FileUseCase  <https://dtcenter.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_,
 #    `EnsembleAppUseCase <https://dtcenter.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_,
 
-# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-EnsembleStat.png'
+# sphinx_gallery_thumbnail_path = '_static/precipitation-EnsembleStat_fcstWOFS_obsWOFS.png'

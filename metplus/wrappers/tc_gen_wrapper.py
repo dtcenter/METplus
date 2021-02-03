@@ -184,30 +184,30 @@ class TCGenWrapper(CommandBuilder):
               @param time_info dictionary containing timing info from current run"""
 
         # set environment variables for dictionary items
-        for dict_name, item_list in {'LEAD_WINDOW': ['BEG',
+        for dict_name, item_list in {'lead_window': ['BEG',
                                                      'END',
                                                     ],
-                                    'FCST_GENESIS': ['VMAX_THRESH',
+                                    'fcst_genesis': ['VMAX_THRESH',
                                                      'MSLP_THRESH',
                                                     ],
-                                     'BEST_GENESIS': ['TECHNIQUE',
+                                     'best_genesis': ['TECHNIQUE',
                                                       'CATEGORY',
                                                       'VMAX_THRESH',
                                                       'MSLP_THRESH',
                                                      ],
-                                     'OPER_GENESIS': ['TECHNIQUE',
+                                     'oper_genesis': ['TECHNIQUE',
                                                       'CATEGORY',
                                                       'VMAX_THRESH',
                                                       'MSLP_THRESH',
                                                      ],
-                                     'GENESIS_WINDOW': ['BEG',
+                                     'genesis_window': ['BEG',
                                                         'END',
                                                        ],
                                      }.items():
             dict_string = self.format_met_config_dict(self.c_dict,
                                                       dict_name,
                                                       item_list)
-            self.add_env_var(f'{dict_name}_DICT',
+            self.add_env_var(f'{dict_name.upper()}_DICT',
                              dict_string)
 
 

@@ -21,7 +21,9 @@ class MODEWrapper(CompareGriddedWrapper):
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
+        'METPLUS_DESC',
         'METPLUS_OBTYPE',
+        'METPLUS_REGRID_DICT',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -167,8 +169,6 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"])
         self.add_env_var('VERIF_MASK', self.c_dict.get('VERIFICATION_MASK',
                                                        '""'))
-
-        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
         super().set_environment_variables(time_info)
 

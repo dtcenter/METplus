@@ -49,4 +49,4 @@ message_type_map = [
 //
 //version = "V10.0";
 
-${METPLUS_MET_CONFIG_UNSUPPORTED}
+${METPLUS_MET_CONFIG_OVERRIDES}

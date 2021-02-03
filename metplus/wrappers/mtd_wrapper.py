@@ -22,14 +22,19 @@ class MTDWrapper(MODEWrapper):
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
+        'METPLUS_DESC',
         'METPLUS_OBTYPE',
-        'METPLUS_MIN_VOLUME',
+        'METPLUS_REGRID_DICT',
+        'METPLUS_FCST_FILE_TYPE',
         'METPLUS_FCST_FIELD',
-        'METPLUS_OBS_FIELD',
         'METPLUS_FCST_CONV_RADIUS',
-        'METPLUS_OBS_CONV_RADIUS',
         'METPLUS_FCST_CONV_THRESH',
+        'METPLUS_OBS_FILE_TYPE',
+        'METPLUS_OBS_FIELD',
+        'METPLUS_OBS_CONV_RADIUS',
         'METPLUS_OBS_CONV_THRESH',
+        'METPLUS_MIN_VOLUME',
+        'METPLUS_OUTPUT_PREFIX',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -139,12 +144,20 @@ class MTDWrapper(MODEWrapper):
             conf_value = self.config.getstr('config', 'MTD_CONV_RADIUS', '')
         c_dict[f'{write_type}_CONV_RADIUS'] = conf_value
 
+        # set OBS values if single run to support old method
+        if c_dict['SINGLE_RUN']:
+            c_dict['OBS_CONV_RADIUS'] = conf_value
+
         conf_value = (
             self.config.getstr('config', f'{read_type}_MTD_CONV_THRESH', '')
         )
         if not conf_value:
             conf_value = self.config.getstr('config', 'MTD_CONV_THRESH', '')
         c_dict[f'{write_type}_CONV_THRESH'] = conf_value
+
+        # set OBS values if single run to support old method
+        if c_dict['SINGLE_RUN']:
+            c_dict['OBS_CONV_THRESH'] = conf_value
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
@@ -416,7 +429,7 @@ class MTDWrapper(MODEWrapper):
                          self.c_dict.get('FCST_CONV_THRESH', ''))
 
         self.add_env_var("MIN_VOLUME", self.c_dict["MIN_VOLUME"])
-        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
+
 
         self.add_env_var("FCST_FILE_TYPE",
                          self.c_dict.get('FCST_FILE_TYPE', ''))

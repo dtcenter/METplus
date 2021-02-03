@@ -12,7 +12,7 @@ Description
 
 Sample image
 
-.. image:: images/nexrad_L3.png
+  .. image:: images/nexrad_L3.png
    :width: 600
 
 Recommended use

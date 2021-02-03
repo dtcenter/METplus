@@ -40,7 +40,7 @@ class CommandBuilder:
     climo_types = ['MEAN', 'STDEV']
 
     # name of variable to hold any MET config overrides
-    MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_UNSUPPORTED'
+    MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_OVERRIDES'
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.isOK = True
@@ -806,7 +806,7 @@ class CommandBuilder:
             else:
                 valid_format = ''
 
-            prefix = self.get_output_prefix(time_info)
+            prefix = self.get_output_prefix(time_info, set_env_vars=False)
             search_string = f"{self.app_name}_{prefix}*{valid_format}V*"
             search_path = os.path.join(output_path,
                                        search_string)
@@ -961,7 +961,9 @@ class CommandBuilder:
             return None
 
         # set file type string to be set in MET config file to specify Python Embedding is being used for this dataset
-        self.c_dict[f'{input_type}_FILE_TYPE'] = f"file_type = {data_type};"
+        file_type = f"file_type = {data_type};"
+        self.c_dict[f'{input_type}_FILE_TYPE'] = file_type
+        self.env_var_dict[f'METPLUS_{input_type}_FILE_TYPE'] = file_type
         return file_ext
 
     def get_field_info(self, d_type, v_name, v_level='', v_thresh=[], v_extra=''):
@@ -1232,41 +1234,6 @@ class CommandBuilder:
             self.config.logger.error("Could not get [INIT/VALID] time information from configuration file")
             self.isOK = False
 
-    @staticmethod
-    def format_met_config_dict(c_dict, dict_name, item_list):
-        """! Build string containing dictionary from a MET configuration file
-             with any items that were set in the user's METplus configuration. Any variables
-             that were not set will not be included in the dictionary string.
-             Args:
-                 @param c_dict dictionary to check for items
-                 @param dict_name name of dictionary to create in all caps. This corresponds
-                  to the name of the METplus configuration variable and c_dict value. The
-                  lower-case name also matches the name of the MET dictionary item, i.e.
-                  FCST_GENESIS corresponds to METpluc configuration variables
-                  TC_GEN_FCST_GENESIS_VMAX_THRESH and TC_GEN_FCST_GENESIS_MSLP_THRESH and
-                  c_dict keys FCST_GENESIS_VMAX_THRESH and FCST_GENESIS_MSLP_THRESH and
-                  MET configuration dictionary fcst_genesis = {}.
-                 @param item_list list of MET dictionary items that can be set, i.e.
-                  [VMAX_THRESH, MSLP_THRESH], which corresponds to vmax_thresh and
-                  mslp_thresh in the MET configuration dictionary specified with dict_name.
-                 @returns string of formatted MET dictionary or empty string if no relevant
-                  variables were set
-        """
-        # check if any of the items are set in c_dict
-        create_dict = [item for item in item_list
-                       if c_dict.get(f'{dict_name}_{item}')]
-
-        # if any dict items are set, create the dictionary string and add them
-        if not create_dict:
-            return ''
-
-        dict_string = dict_name.lower() + ' = {'
-        for item in item_list:
-            dict_string += c_dict.get(f'{dict_name}_{item}', '')
-
-        dict_string += '}'
-        return dict_string
-
     def set_met_config_list(self, c_dict, mp_config, met_config_name,
                             c_dict_key=None, remove_quotes=False,
                             allow_empty=False):
@@ -1455,10 +1422,12 @@ class CommandBuilder:
 
         return None
 
-    def format_met_config_dictionary(self, name, keys):
+    @staticmethod
+    def format_met_config_dict(c_dict, name, keys):
         """! Return formatted dictionary named <name> with any <items> if they
         are set to a value. If none of the items are set, return empty string
 
+        @param c_dict config dictionary to read values from
         @param name name of dictionary to create
         @param keys list of c_dict keys to use if they are set
         @returns MET config formatted dictionary if any items are set, or empty
@@ -1466,7 +1435,7 @@ class CommandBuilder:
         """
         values = []
         for key in keys:
-            value = self.c_dict.get(key)
+            value = c_dict.get(key)
             if value:
                 values.append(value)
 
@@ -1479,6 +1448,9 @@ class CommandBuilder:
     def handle_regrid(self, c_dict, set_to_grid=True):
         app_name_upper = self.app_name.upper()
 
+        # dictionary to hold regrid values as they are read
+        tmp_dict = {}
+
         if set_to_grid:
             conf_value = (
                 self.config.getstr('config',
@@ -1487,42 +1459,43 @@ class CommandBuilder:
 
             # set to_grid without formatting for backwards compatibility
             formatted_to_grid = self.format_regrid_to_grid(conf_value)
-            c_dict['REGRID_TO_GRID_OLD'] = formatted_to_grid
+            c_dict['REGRID_TO_GRID'] = formatted_to_grid
 
             if conf_value:
-                c_dict['REGRID_TO_GRID'] = (
+                tmp_dict['REGRID_TO_GRID'] = (
                     f"to_grid = {formatted_to_grid};"
                 )
 
-        self.set_met_config_string(c_dict,
-                               f'{app_name_upper}_REGRID_METHOD',
-                               'method',
-                               'REGRID_METHOD',
-                               remove_quotes=True)
+        self.set_met_config_string(tmp_dict,
+                                   f'{app_name_upper}_REGRID_METHOD',
+                                   'method',
+                                   'REGRID_METHOD',
+                                   remove_quotes=True)
 
-        self.set_met_config_int(c_dict,
-                            f'{app_name_upper}_REGRID_WIDTH',
-                            'width',
-                            'REGRID_WIDTH')
+        self.set_met_config_int(tmp_dict,
+                                f'{app_name_upper}_REGRID_WIDTH',
+                                'width',
+                                'REGRID_WIDTH')
 
-        self.set_met_config_float(c_dict,
-                              f'{app_name_upper}_REGRID_VLD_THRESH',
-                              'vld_thresh',
-                              'REGRID_VLD_THRESH')
-        self.set_met_config_string(c_dict,
-                               f'{app_name_upper}_REGRID_SHAPE',
-                               'shape',
-                               'REGRID_SHAPE',
-                               remove_quotes=True)
+        self.set_met_config_float(tmp_dict,
+                                  f'{app_name_upper}_REGRID_VLD_THRESH',
+                                  'vld_thresh',
+                                  'REGRID_VLD_THRESH')
+        self.set_met_config_string(tmp_dict,
+                                   f'{app_name_upper}_REGRID_SHAPE',
+                                   'shape',
+                                   'REGRID_SHAPE',
+                                   remove_quotes=True)
 
-    def get_regrid_dict(self):
-        keys = ['REGRID_TO_GRID',
-                'REGRID_METHOD',
-                'REGRID_WIDTH',
-                'REGRID_VLD_THRESH',
-                'REGRID_SHAPE',
-                ]
-        return self.format_met_config_dictionary('regrid', keys)
+        regrid_string = self.format_met_config_dict(tmp_dict,
+                                                    'regrid',
+                                                    ['REGRID_TO_GRID',
+                                                     'REGRID_METHOD',
+                                                     'REGRID_WIDTH',
+                                                     'REGRID_VLD_THRESH',
+                                                     'REGRID_SHAPE',
+                                                     ])
+        self.env_var_dict['METPLUS_REGRID_DICT'] = regrid_string
 
     def handle_description(self):
         """! Get description from config. If <app_name>_DESC is set, use
@@ -1548,11 +1521,13 @@ class CommandBuilder:
                 f'desc = "{util.remove_quotes(conf_value)}";'
             )
 
-    def get_output_prefix(self, time_info=None):
+    def get_output_prefix(self, time_info=None, set_env_vars=True):
         """! Read {APP_NAME}_OUTPUT_PREFIX from config. If time_info is set
          substitute values into filename template tags.
 
              @param time_info (Optional) dictionary containing time info
+             @param set_env_vars (Optional) if True, set env vars with
+             values computed from this function
              @returns output prefix with values substituted if requested
         """
         output_prefix = (
@@ -1562,8 +1537,18 @@ class CommandBuilder:
         if time_info is None:
             return output_prefix
 
-        return do_string_sub(output_prefix,
-                             **time_info)
+        output_prefix = do_string_sub(output_prefix,
+                                      **time_info)
+
+        if set_env_vars:
+            # set METPLUS_OUTPUT_PREFIX in env_var_dict
+            output_prefix_fmt = f'output_prefix = "{output_prefix}";'
+            self.env_var_dict['METPLUS_OUTPUT_PREFIX'] = output_prefix_fmt
+
+            # set old method of setting OUTPUT_PREFIX
+            self.add_env_var('OUTPUT_PREFIX', output_prefix)
+
+        return output_prefix
 
     def set_climo_env_vars(self):
         """!Set all climatology environment variables from CLIMO_<item>_FILE
