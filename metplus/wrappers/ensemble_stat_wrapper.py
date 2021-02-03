@@ -198,11 +198,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.handle_window_variables(c_dict, 'ensemble_stat')
 
         # need to set these so that find_data will succeed
-        c_dict['OBS_POINT_WINDOW_BEGIN'] = c_dict['OBS_WINDOW_BEGIN']
-        c_dict['OBS_POINT_WINDOW_END'] = c_dict['OBS_WINDOW_END']
-        c_dict['OBS_GRID_WINDOW_BEGIN'] = c_dict['OBS_WINDOW_BEGIN']
-        c_dict['OBS_GRID_WINDOW_END'] = c_dict['OBS_WINDOW_END']
-
         c_dict['OBS_POINT_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
         c_dict['OBS_POINT_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
         c_dict['OBS_GRID_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
