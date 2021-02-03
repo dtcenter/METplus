@@ -99,10 +99,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_VALID_BEG'] = self.config.getraw('config', 'POINT_STAT_OBS_VALID_BEG', '')
         c_dict['OBS_VALID_END'] = self.config.getraw('config', 'POINT_STAT_OBS_VALID_END', '')
 
-        c_dict['VERIFICATION_MASK_TEMPLATE'] = \
-            self.config.getraw('filename_templates',
-                               'POINT_STAT_VERIFICATION_MASK_TEMPLATE',
-                               '')
+        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
 
         c_dict['FCST_PROB_THRESH'] = self.config.getstr('config',
                                                         'FCST_POINT_STAT_PROB_THRESH', '==0.1')

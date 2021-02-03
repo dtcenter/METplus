@@ -1127,10 +1127,27 @@ class CommandBuilder:
         # return list of field dictionary items
         return fields
 
+    def read_mask_poly(self):
+        """! Read old or new config variables used to set mask.poly in MET
+             config files
+
+            @returns value from config or empty string if neither variable
+             is set
+        """
+        app = self.app_name.upper()
+        conf_value = self.config.getraw('config', f'{app}_MASK_POLY', '')
+        if not conf_value:
+            conf_value = (
+                self.config.getraw('config',
+                                   f'{app}_VERIFICATION_MASK_TEMPLATE',
+                                   '')
+        )
+        return conf_value
+
     def get_verification_mask(self, time_info):
         """!If verification mask template is set in the config file,
             use it to find the verification mask filename"""
-        template = self.c_dict.get('VERIFICATION_MASK_TEMPLATE')
+        template = self.c_dict.get('MASK_POLY_TEMPLATE')
         if not template:
             return
 
@@ -1138,7 +1155,8 @@ class CommandBuilder:
                                   **time_info)
         mask_list_string = self.format_list_string(filenames)
         self.c_dict['VERIFICATION_MASK'] = mask_list_string
-        self.c_dict['MASK_POLY'] = f"poly = [{mask_list_string}];"
+        mask_fmt = f"poly = [{mask_list_string}];"
+        self.c_dict['MASK_POLY'] = mask_fmt
 
     def get_command(self):
         """! Builds the command to run the MET application

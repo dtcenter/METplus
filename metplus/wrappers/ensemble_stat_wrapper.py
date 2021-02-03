@@ -394,9 +394,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                        f'{prefix}_{flag_upper}',
                                        remove_quotes=True)
 
-        c_dict['VERIFICATION_MASK_TEMPLATE'] = \
-            self.config.getraw('filename_templates',
-                               'ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE')
+        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
 
         # old method of setting MET config values
         c_dict['ENS_THRESH'] = (

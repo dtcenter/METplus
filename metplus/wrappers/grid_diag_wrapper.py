@@ -69,9 +69,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         # set desc
         self.handle_description()
 
-        c_dict['VERIFICATION_MASK_TEMPLATE'] = \
-            self.config.getraw('filename_templates',
-                               'GRID_DIAG_VERIFICATION_MASK_TEMPLATE')
+        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
 
         return c_dict
 

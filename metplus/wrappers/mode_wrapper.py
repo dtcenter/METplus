@@ -127,9 +127,7 @@ class MODEWrapper(CompareGriddedWrapper):
 
         c_dict['MERGE_CONFIG_FILE'] = self.config.getraw('config', 'MODE_MERGE_CONFIG_FILE', '')
 
-        c_dict['VERIFICATION_MASK_TEMPLATE'] = \
-            self.config.getraw('filename_templates',
-                               'MODE_VERIFICATION_MASK_TEMPLATE')
+        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
 
         # check that values are valid
         error_message = 'items must start with a comparison operator '+\
