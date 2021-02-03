@@ -101,11 +101,11 @@ def test_get_field_info_no_prob(metplus_config, key, value):
     w.c_dict['FCST_IS_PROB'] = False
     w.c_dict['OBS_IS_PROB'] = False
 
-    field_dict = {'v_name' : key[0],
-                  'v_level' : key[1],
-                  'v_thresh' : key[2],
-                  'v_extra' : key[3],
-                  'd_type' : key[4],
+    field_dict = {'v_name': key[0],
+                  'v_level': key[1],
+                  'v_thresh': key[2],
+                  'v_extra': key[3],
+                  'd_type': key[4],
                   }
 
     fields = w.get_field_info(**field_dict)
@@ -233,11 +233,11 @@ def test_get_field_info_fcst_prob_netcdf(metplus_config, key, value):
     w.c_dict['OBS_IS_PROB'] = False
     w.c_dict['FCST_INPUT_DATATYPE'] = 'NETCDF'
 
-    field_dict = {'v_name' : key[0],
-                  'v_level' : key[1],
-                  'v_thresh' : key[2],
-                  'v_extra' : key[3],
-                  'd_type' : key[4],
+    field_dict = {'v_name': key[0],
+                  'v_level': key[1],
+                  'v_thresh': key[2],
+                  'v_extra': key[3],
+                  'd_type': key[4],
                   }
     
     fields = w.get_field_info(**field_dict)
@@ -245,13 +245,13 @@ def test_get_field_info_fcst_prob_netcdf(metplus_config, key, value):
 
 @pytest.mark.parametrize(
     'win, app_win, file_win, app_file_win, win_value, file_win_value', [
-        ([1, 2, 3, 4, 2, 4 ]),
+        ([1, 2, 3, 4, 2, 4]),
         ([1, 2, 3, None, 2, 3]),
         ([1, 2, None, None, 2, 0]),
         ([1, None, None, None, 1, 0]),
-        ([None, None, None, None, 0, 0]),
-        ([1, None, 3, 4, 1, 4 ]),
-        ([1, None, 3, 4, 1, 4 ]),
+        ([None, None, None, None, -5400, 0]),
+        ([1, None, 3, 4, 1, 4]),
+        ([1, None, 3, 4, 1, 4]),
          ]
 )
 def test_handle_window_once(metplus_config, win, app_win, file_win, app_file_win, win_value, file_win_value):
