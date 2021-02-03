@@ -438,7 +438,7 @@ This is the MET configuration file used for this wrapper. Below the file content
 
 The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
 
-**${METPLUS_MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${METPLUS_MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET GridDiag configuration file will be used.
 
 METplus Configuration::
 
@@ -562,12 +562,12 @@ Configuration
 | :term:`GRID_STAT_CUSTOM_LOOP_LIST`
 | :term:`GRID_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`GRID_STAT_DESC`
-
 | :term:`GRID_STAT_REGRID_TO_GRID`
 | :term:`GRID_STAT_REGRID_METHOD`
 | :term:`GRID_STAT_REGRID_WIDTH`
 | :term:`GRID_STAT_REGRID_VLD_THRESH`
 | :term:`GRID_STAT_REGRID_SHAPE`
+| :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`FCST_GRID_STAT_PROB_THRESH` (optional)
 | :term:`OBS_GRID_STAT_PROB_THRESH` (optional)
 | :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` (optional)
@@ -596,6 +596,101 @@ Configuration
    | :term:`GRID_STAT_CONFIG`
    | :term:`CLIMO_GRID_STAT_INPUT_DIR`
    | :term:`CLIMO_GRID_STAT_INPUT_TEMPLATE`
+
+.. _grid-stat-met-conf:
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+This is the MET configuration file used for this wrapper. Below the file contents are descriptions of each environment variable referenced in this file and how the METplus configuration variables relate to them.
+
+.. literalinclude:: ../../parm/met_config/GridStatConfig_wrapped
+
+The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
+
+
+<----
+METPLUS_MODEL
+METPLUS_DESC
+METPLUS_OBTYPE
+METPLUS_REGRID_DICT
+METPLUS_FCST_FIELD
+METPLUS_OBS_FIELD
+METPLUS_CLIMO_MEAN_FILE
+METPLUS_CLIMO_STDEV_FILE
+METPLUS_MASK_GRID
+METPLUS_VERIF_MASK
+METPLUS_NBRHD_SHAPE
+METPLUS_NBRHD_WIDTH
+METPLUS_NBRHD_COV_THRESH
+METPLUS_OUTPUT_PREFIX
+METPLUS_MET_CONFIG_UNSUPPORTED
+---->
+
+**${METPLUS_MODEL}** - Corresponds to :term:`MODEL` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    MODEL = GFS
+
+Resulting value::
+
+    model = "GFS";
+
+**${METPLUS_DESC}** - Corresponds to :term:`GRID_STAT_DESC` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    GRID_STAT_DESC = MY_TEST
+
+Resulting value::
+
+    desc = "MY_TEST";
+
+**${METPLUS_OBTYPE}** - Corresponds to :term:`OBTYPE` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    OBTYPE = ANALYS
+
+Resulting value::
+
+    obtype = "ANALYS";
+
+**${METPLUS_REGRID_DICT}** - Corresponds to :term:`GRID_STAT_REGRID_METHOD`, :term:`GRID_STAT_REGRID_WIDTH`, :term:`GRID_STAT_REGRID_VLD_THRESH`, and :term:`GRID_STAT_REGRID_SHAPE` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+
+METplus Configuration 1::
+
+    [config]
+    GRID_STAT_REGRID_SHAPE = SQUARE
+
+Resulting value 1::
+
+    regrid = {shape = SQUARE;}
+
+METplus Configuration 2::
+
+    [config]
+    GRID_STAT_REGRID_WIDTH = 2
+    GRID_STAT_REGRID_SHAPE = SQUARE
+
+Resulting value 2::
+
+    regrid = {width = 2; shape = SQUARE;}
+
+**${METPLUS_OBTYPE}** - Corresponds to :term:`OBTYPE` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    OBTYPE = ANALYS
+
+Resulting value::
+
+    obtype = "ANALYS";
 
 .. _make_plots_wrapper:
 
