@@ -1721,3 +1721,31 @@ class CommandBuilder:
             f"field = [{field_formatted}];"
         )
         self.c_dict[f'{data_type}_FIELD'] = field_formatted
+
+    def handle_flags(self, flag_type):
+        """! Handle reading and setting of flag dictionary values to set in
+        a MET config file. Sets METPLUS_{flag_type}_FLAG_DICT in the
+        env_var_dict.
+
+            @param flag_type type of flag to read, i.e. OUTPUT or ENSEMBLE
+        """
+        if not hasattr(self, f'{flag_type}_FLAGS'):
+            return
+
+        tmp_dict = {}
+        flag_list = []
+        for flag in getattr(self, f'{flag_type}_FLAGS'):
+            flag_name = f'{flag_type}_FLAG_{flag.upper()}'
+            flag_list.append(flag_name)
+            self.set_met_config_string(tmp_dict,
+                                       f'{self.app_name.upper()}_{flag_name}',
+                                       flag,
+                                       f'{flag_name}',
+                                       remove_quotes=True)
+
+        flag_fmt = (
+            self.format_met_config_dict(tmp_dict,
+                                        f'{flag_type.lower()}_flag',
+                                        flag_list)
+        )
+        self.env_var_dict[f'METPLUS_{flag_type}_FLAG_DICT'] = flag_fmt
