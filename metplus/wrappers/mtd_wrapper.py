@@ -73,8 +73,12 @@ class MTDWrapper(MODEWrapper):
         c_dict['MIN_VOLUME'] = self.config.getstr('config',
                                                   'MTD_MIN_VOLUME', '2000')
 
-        c_dict['SINGLE_RUN'] = self.config.getbool('config', 'MTD_SINGLE_RUN', False)
-        c_dict['SINGLE_DATA_SRC'] = self.config.getstr('config', 'MTD_SINGLE_DATA_SRC', 'FCST')
+        c_dict['SINGLE_RUN'] = self.config.getbool('config',
+                                                   'MTD_SINGLE_RUN',
+                                                   False)
+        c_dict['SINGLE_DATA_SRC'] = self.config.getstr('config',
+                                                       'MTD_SINGLE_DATA_SRC',
+                                                       'FCST')
 
         c_dict['FCST_INPUT_DIR'] = (
             self.config.getdir('FCST_MTD_INPUT_DIR', '')
@@ -158,8 +162,8 @@ class MTDWrapper(MODEWrapper):
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
-              over the list of user-defined strings and runs the application for each.
-              Overrides run_at_time in compare_gridded_wrapper.py
+              over the list of user-defined strings and runs the application
+               for each. Overrides run_at_time in compare_gridded_wrapper.py
               Args:
                 @param input_dict dictionary containing timing information
         """
@@ -177,7 +181,7 @@ class MTDWrapper(MODEWrapper):
 
     def run_at_time_loop_string(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
-              over the list of forecast leads and runs the application for each.
+             over the list of forecast leads and runs the application for each.
               Overrides run_at_time in compare_gridded_wrapper.py
               Args:
                 @param input_dict dictionary containing timing information
@@ -186,7 +190,8 @@ class MTDWrapper(MODEWrapper):
 #        file_interval = self.c_dict['FILE_INTERVAL']
         lead_seq = util.get_lead_sequence(self.config, input_dict)
 
-        # if only processing a single data set (FCST or OBS) then only read that var list and process
+        # if only processing a single data set (FCST or OBS) then only read
+        # that var list and process
         if self.c_dict['SINGLE_RUN']:
             var_list = util.parse_var_list(self.config, input_dict,
                                            self.c_dict['SINGLE_DATA_SRC'],
@@ -196,14 +201,15 @@ class MTDWrapper(MODEWrapper):
 
             return
 
-        # if comparing FCST and OBS data, get var list from FCST/OBS or BOTH variables
+        # if comparing FCST and OBS data, get var list from
+        # FCST/OBS or BOTH variables
         var_list = util.parse_var_list(self.config, input_dict,
                                        met_tool=self.app_name)
 
         # report error and exit if field info is not set
         if not var_list:
-            self.log_error('No input fields were specified to MTD. You must set '
-                           '[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
+            self.log_error('No input fields were specified to MTD. You must '
+                           'set [FCST/OBS]_VAR<n>_[NAME/LEVELS].')
             return None
 
         for var_info in var_list:
@@ -233,8 +239,8 @@ class MTDWrapper(MODEWrapper):
                 if obs_file is None:
                     continue
 
-                self.logger.debug("Adding forecast file: {}".format(model_file))
-                self.logger.debug("Adding observation file: {}".format(obs_file))
+                self.logger.debug(f"Adding forecast file: {model_file}")
+                self.logger.debug(f"Adding observation file: {obs_file}")
                 model_list.append(model_file)
                 obs_list.append(obs_file)
 
@@ -247,15 +253,20 @@ class MTDWrapper(MODEWrapper):
             input_dict['lead'] = lead_seq[0]
             time_info = time_util.ti_calculate(input_dict)
 
-            # if var name is a python embedding script, check type of python input and name file list file accordingly
+            # if var name is a python embedding script, check type of python
+            # input and name file list file accordingly
             fcst_file_ext = self.check_for_python_embedding('FCST', var_info)
             obs_file_ext = self.check_for_python_embedding('OBS', var_info)
             # if check_for_python_embedding returns None, an error occurred
             if not fcst_file_ext or not obs_file_ext:
                 return
 
-            model_outfile = time_info['valid_fmt'] + '_mtd_fcst_' + fcst_file_ext + '.txt'
-            obs_outfile = time_info['valid_fmt'] + '_mtd_obs_' + obs_file_ext + '.txt'
+            model_outfile = (
+                f"{time_info['valid_fmt']}_mtd_fcst_{fcst_file_ext}.txt"
+            )
+            obs_outfile = (
+                    f"{time_info['valid_fmt']}_mtd_obs_{obs_file_ext}.txt"
+            )
             model_list_path = self.write_list_file(model_outfile, model_list)
             obs_list_path = self.write_list_file(obs_outfile, obs_list)
 
@@ -295,7 +306,9 @@ class MTDWrapper(MODEWrapper):
         if not file_ext:
             return
 
-        single_outfile = time_info['valid_fmt'] + '_mtd_single_' + file_ext + '.txt'
+        single_outfile = (
+                f"{time_info['valid_fmt']}_mtd_single_{file_ext}.txt"
+        )
         single_list_path = self.write_list_file(single_outfile, single_list)
 
         arg_dict = {}
@@ -308,7 +321,8 @@ class MTDWrapper(MODEWrapper):
 
         self.process_fields_one_thresh(time_info, var_info, **arg_dict)
 
-    def process_fields_one_thresh(self, time_info, var_info, model_path, obs_path):
+    def process_fields_one_thresh(self, time_info, var_info, model_path,
+                                  obs_path):
         """! For each threshold, set up environment variables and run mode
               Args:
                 @param time_info dictionary containing timing information
@@ -322,9 +336,11 @@ class MTDWrapper(MODEWrapper):
         if model_path:
             fcst_thresh_list = var_info['fcst_thresh']
 
-            # if probabilistic forecast and no thresholds specified, error and skip
+            # if probabilistic forecast and no thresholds specified,
+            # error and skip
             if self.c_dict['FCST_IS_PROB'] and not fcst_thresh_list:
-                self.logger.error("Must specify thresholds for probabilistic forecast data")
+                self.logger.error("Must specify thresholds for "
+                                  "probabilistic forecast data")
                 return
 
             # if no thresholds are specified, run once
@@ -333,11 +349,13 @@ class MTDWrapper(MODEWrapper):
 
            # loop over thresholds and build field list with one thresh per item
             for fcst_thresh in fcst_thresh_list:
-                fcst_field = self.get_field_info(v_name=var_info['fcst_name'],
-                                                 v_level=var_info['fcst_level'],
-                                                 v_extra=var_info['fcst_extra'],
-                                                 v_thresh=[fcst_thresh],
-                                                 d_type='FCST')
+                fcst_field = (
+                    self.get_field_info(v_name=var_info['fcst_name'],
+                                        v_level=var_info['fcst_level'],
+                                        v_extra=var_info['fcst_extra'],
+                                        v_thresh=[fcst_thresh],
+                                        d_type='FCST')
+                )
 
                 if fcst_field is None:
                     self.log_error("No forecast fields found")
@@ -350,14 +368,15 @@ class MTDWrapper(MODEWrapper):
             obs_thresh_list = var_info['obs_thresh']
 
             if self.c_dict['OBS_IS_PROB'] and not obs_thresh_list:
-                self.logger.error("Must specify thresholds for probabilistic obs data")
+                self.logger.error("Must specify thresholds for "
+                                  "probabilistic obs data")
                 return
 
             # if no thresholds are specified, run once
             if not obs_thresh_list:
                 obs_thresh_list = [""]
 
-            # loop over thresholds and build field list with one thresh per item
+            # loop over thresholds and build field list w/ one thresh per item
             for obs_thresh in obs_thresh_list:
                 obs_field = self.get_field_info(v_name=var_info['obs_name'],
                                                 v_level=var_info['obs_level'],
@@ -371,12 +390,14 @@ class MTDWrapper(MODEWrapper):
 
                 obs_field_list.extend(obs_field)
 
-            # if FCST is not set, set it to the OBS field list so the lists are the same length
+            # if FCST is not set, set it to the OBS field list so
+            # the lists are the same length
             if not fcst_field_list:
                 fcst_field_list = obs_field_list
 
         else:
-            # if OBS is not set, set it to the FCST field list so the lists are the same length
+            # if OBS is not set, set it to the FCST field list so
+            # the lists are the same length
             obs_field_list = fcst_field_list
 
 
@@ -440,30 +461,14 @@ class MTDWrapper(MODEWrapper):
            @rtype string
            @return Returns a MET command with arguments that you can run
         """
-        if self.app_path is None:
-            self.log_error(self.app_name + ": No app path specified. \
-                              You must use a subclass")
-            return None
-
         cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
 
         for a in self.args:
             cmd += a + " "
 
         if self.c_dict['SINGLE_RUN']:
-            if self.fcst_file == None:
-                self.log_error("No file path specified")
-                return None
             cmd += '-single ' + self.fcst_file + ' '
         else:
-            if self.fcst_file == None:
-                self.log_error("No forecast file path specified")
-                return None
-
-            if self.obs_file == None:
-                self.log_error("No observation file path specified")
-                return None
-
             cmd += '-fcst ' + self.fcst_file + ' '
             cmd += '-obs ' + self.obs_file + ' '
 
