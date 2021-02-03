@@ -1484,17 +1484,21 @@ class CommandBuilder:
         return None
 
     @staticmethod
-    def format_met_config_dict(c_dict, name, keys):
+    def format_met_config_dict(c_dict, name, keys=None):
         """! Return formatted dictionary named <name> with any <items> if they
         are set to a value. If none of the items are set, return empty string
 
         @param c_dict config dictionary to read values from
         @param name name of dictionary to create
-        @param keys list of c_dict keys to use if they are set
+        @param keys list of c_dict keys to use if they are set. If unset (None)
+         then read all keys from c_dict
         @returns MET config formatted dictionary if any items are set, or empty
          string if not
         """
         values = []
+        if keys is None:
+            keys = c_dict.keys()
+
         for key in keys:
             value = c_dict.get(key)
             if value:
@@ -1750,8 +1754,19 @@ class CommandBuilder:
         )
         self.env_var_dict[f'METPLUS_{flag_type}_FLAG_DICT'] = flag_fmt
 
-    def get_env_var_value(self, env_var_name):
-        mask_value = self.env_var_dict.get(env_var_name, '')
+    def get_env_var_value(self, env_var_name, read_dict=None):
+        """! Read env var value, get text after the equals sign and remove the
+        trailing semi-colon.
+
+            @param env_var_name key to obtain
+            @param read_dict (Optional) directory to read from. If unset (None)
+             then read from self.env_var_dict
+            @returns extracted value
+        """
+        if read_dict is None:
+            read_dict = self.env_var_dict
+
+        mask_value = read_dict.get(env_var_name, '')
         if not mask_value:
             return ''
 
