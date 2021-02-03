@@ -25,6 +25,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_DESC',
         'METPLUS_OBTYPE',
         'METPLUS_REGRID_DICT',
+        'METPLUS_OBS_WINDOW_DICT',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -88,6 +89,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['CONFIG_FILE'] = \
             self.config.getraw('config', 'POINT_STAT_CONFIG_FILE', '')
 
+        self.handle_obs_window_variables(c_dict)
+
         c_dict['POINT_STAT_GRID'] = self.config.getstr('config', 'POINT_STAT_GRID')
         c_dict['POINT_STAT_POLY'] = self.config.getstr('config', 'POINT_STAT_POLY', '')
         c_dict['POINT_STAT_STATION_ID'] = self.config.getstr('config', 'POINT_STAT_STATION_ID', '')
@@ -95,9 +98,6 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         c_dict['OBS_VALID_BEG'] = self.config.getraw('config', 'POINT_STAT_OBS_VALID_BEG', '')
         c_dict['OBS_VALID_END'] = self.config.getraw('config', 'POINT_STAT_OBS_VALID_END', '')
-
-        # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict, 'point_stat')
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
@@ -134,7 +134,7 @@ class PointStatWrapper(CompareGriddedWrapper):
                                           **time_info)
                 self.args.append(f"-obs_valid_{ext.lower()} {obs_valid}")
 
-    def set_environment_variables(self, time_info=None, fcst_field=None, obs_field=None):
+    def set_environment_variables(self, time_info=None):
         """! Set all the environment variables in the MET config
              file to the corresponding values in the METplus config file.
 
@@ -161,8 +161,11 @@ class PointStatWrapper(CompareGriddedWrapper):
         self.add_env_var('POINT_STAT_MESSAGE_TYPE',
                          f"[{self.format_list_string(self.c_dict['POINT_STAT_MESSAGE_TYPE'])}]")
 
-        self.add_env_var('FCST_FIELD', fcst_field)
-        self.add_env_var('OBS_FIELD', obs_field)
+        # add old method of setting env vars
+        self.add_env_var("FCST_FIELD",
+                         self.c_dict.get('FCST_FIELD', ''))
+        self.add_env_var("OBS_FIELD",
+                         self.c_dict.get('OBS_FIELD', ''))
 
         # Set the environment variables corresponding to the obs_window
         # dictionary.
@@ -173,8 +176,6 @@ class PointStatWrapper(CompareGriddedWrapper):
         # add additional env vars if they are specified
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))
-
-        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
         # set climatology environment variables
         self.set_climo_env_vars()

@@ -23,6 +23,10 @@ class PB2NCWrapper(CommandBuilder):
          to NetCDF for MET's point_stat tool can recognize.
     """
 
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_OBS_WINDOW_DICT',
+    ]
+
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'pb2nc'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
@@ -114,23 +118,9 @@ class PB2NCWrapper(CommandBuilder):
                                                          'PB2NC_TIME_SUMMARY_TYPES')))
         c_dict['TIME_SUMMARY_TYPES'] = time_types.replace("\'", "\"")
 
-        c_dict['OBS_WINDOW_BEGIN'] = \
-          self.config.getseconds('config', 'PB2NC_WINDOW_BEGIN',
-                             self.config.getseconds('config',
-                                                'OBS_WINDOW_BEGIN', 0))
-        c_dict['OBS_WINDOW_END'] = \
-          self.config.getseconds('config', 'PB2NC_WINDOW_END',
-                             self.config.getseconds('config',
-                                                'OBS_WINDOW_END', 0))
+        self.handle_obs_window_variables(c_dict)
 
-        c_dict['OBS_FILE_WINDOW_BEGIN'] = \
-          self.config.getseconds('config', 'PB2NC_FILE_WINDOW_BEGIN',
-                             self.config.getseconds('config',
-                                                'OBS_FILE_WINDOW_BEGIN', 0))
-        c_dict['OBS_FILE_WINDOW_END'] = \
-          self.config.getseconds('config', 'PB2NC_FILE_WINDOW_END',
-                             self.config.getseconds('config',
-                                                'OBS_FILE_WINDOW_END', 0))
+        self.handle_file_window_variables(c_dict, dtypes=['OBS'])
 
         c_dict['VALID_BEGIN_TEMPLATE'] = \
           self.config.getraw('config', 'PB2NC_VALID_BEGIN', '')

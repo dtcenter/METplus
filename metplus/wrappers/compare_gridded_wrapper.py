@@ -91,6 +91,9 @@ that reformat gridded data
 
         self.handle_description()
 
+        # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
+        self.handle_file_window_variables(c_dict)
+
         self.set_met_config_string(self.env_var_dict,
                                    f'{self.app_name.upper()}_OUTPUT_PREFIX',
                                    'output_prefix',
@@ -104,6 +107,8 @@ that reformat gridded data
             version to handle user configs and printing
             Args:
               @param time_info dictionary containing timing info from current run"""
+
+        self.get_output_prefix(time_info)
 
         # set old environment variable values for backwards compatibility
         self.add_env_var('MODEL', self.c_dict.get('MODEL_OLD', ''))

@@ -55,8 +55,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_CLIMO_MEAN_HOUR_INTERVAL',
         'METPLUS_CLIMO_STDEV_FILE',
         'METPLUS_CLIMO_CDF_DICT',
-        'METPLUS_OBS_WINDOW_BEGIN',
-        'METPLUS_OBS_WINDOW_END',
+        'METPLUS_OBS_WINDOW_DICT',
         'METPLUS_MASK_GRID',
         'METPLUS_MASK_POLY',
         'METPLUS_CI_ALPHA',
@@ -193,9 +192,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # get climatology config variables
         self.read_climo_wrapper_specific('ENSEMBLE_STAT', c_dict)
-
-        # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict, 'ensemble_stat')
 
         # need to set these so that find_data will succeed
         c_dict['OBS_POINT_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
@@ -377,6 +373,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                  'message_type',
                                  'METPLUS_MESSAGE_TYPE',
                                  allow_empty=True)
+
+        self.handle_obs_window_variables(c_dict)
 
         for flag in self.OUTPUT_FLAGS:
             flag_upper = flag.upper()
@@ -631,9 +629,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
 
         # read output prefix at this step to ensure that
         # CURRENT_[FCST/OBS]_[NAME/LEVEL] is substituted correctly
-        output_prefix = self.get_output_prefix(time_info)
-        self.env_var_dict['METPLUS_OUTPUT_PREFIX'] = output_prefix
-
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))
 
@@ -702,7 +697,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # support old method of setting variables in MET config files
         self.add_env_var('ENS_THRESH',
                          self.c_dict.get('ENS_THRESH'))
-        self.add_env_var('OUTPUT_PREFIX', output_prefix)
         met_config_list_old = [
             'OBTYPE',
             'INPUT_BASE',

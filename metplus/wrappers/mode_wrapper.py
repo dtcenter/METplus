@@ -127,9 +127,6 @@ class MODEWrapper(CompareGriddedWrapper):
 
         c_dict['MERGE_CONFIG_FILE'] = self.config.getraw('config', 'MODE_MERGE_CONFIG_FILE', '')
 
-        # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict, 'mode')
-
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',
                                'MODE_VERIFICATION_MASK_TEMPLATE')
@@ -169,8 +166,6 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"])
         self.add_env_var('VERIF_MASK', self.c_dict.get('VERIFICATION_MASK',
                                                        '""'))
-
-        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
         super().set_environment_variables(time_info)
 

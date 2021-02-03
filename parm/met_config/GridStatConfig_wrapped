@@ -47,10 +47,10 @@ rank_corr_flag   = FALSE;
 // Forecast and observation fields to be verified
 //
 fcst = {
-   field = [ ${FCST_FIELD} ];
+   field = [ ${METPLUS_FCST_FIELD} ];
 }
 obs = {
-   field = [ ${OBS_FIELD} ];
+   field = [ ${METPLUS_OBS_FIELD} ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -60,7 +60,7 @@ obs = {
 //
 climo_mean = {
 
-   file_name = [ ${CLIMO_MEAN_FILE} ];
+   file_name = [ ${METPLUS_CLIMO_MEAN_FILE} ];
    field     = [];
 
    regrid = {
@@ -78,7 +78,7 @@ climo_mean = {
 
 climo_stdev = climo_mean;
 climo_stdev = {
-   file_name = [ ${CLIMO_STDEV_FILE} ];
+   file_name = [ ${METPLUS_CLIMO_STDEV_FILE} ];
 }
 
 //
@@ -96,8 +96,8 @@ climo_cdf = {
 // Verification masking regions
 //
 mask = {
-   grid = ["FULL"];
-   poly = [ ${VERIF_MASK} ];
+   ${METPLUS_MASK_GRID}
+   poly = [ ${METPLUS_VERIF_MASK} ];
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,9 +140,9 @@ interp = {
 //
 nbrhd = {
    field      = BOTH;
-   shape      = ${NEIGHBORHOOD_SHAPE};
-   width      = [ ${NEIGHBORHOOD_WIDTH} ];
-   ${NEIGHBORHOOD_COV_THRESH}
+   shape      = ${METPLUS_NBRHD_SHAPE};
+   width      = [ ${METPLUS_NBRHD_WIDTH} ];
+   ${METPLUS_NBRHD_COV_THRESH}
    vld_thresh = 1.0;
 }
 
@@ -232,7 +232,7 @@ nc_pairs_flag = {
 
 grid_weight_flag = NONE;
 tmp_dir          = "/tmp";
-output_prefix    = "${OUTPUT_PREFIX}";
+output_prefix    = "${METPLUS_OUTPUT_PREFIX}";
 //version 	 = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////

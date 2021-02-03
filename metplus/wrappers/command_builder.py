@@ -255,54 +255,51 @@ class CommandBuilder:
 
         return msg
 
-    def handle_window_once(self, c_dict, dtype, edge, app_name):
+    def handle_window_once(self, input_list, default_val=0):
         """! Check and set window dictionary variables like
               OBS_WINDOW_BEG or FCST_FILE_WINDW_END
-              Args:
-                @param c_dict dictionary to set items in
-                @param dtype type of data 'FCST' or 'OBS'
-                @param edge either 'BEGIN' or 'END'
+
+             @param input_list list of config keys to check for value
+             @param default_val value to use if none of the input keys found
         """
-        app = app_name.upper()
+        for input_key in input_list:
+            if self.config.has_option('config', input_key):
+                return self.config.getseconds('config', input_key)
 
-        # if value specific to given wrapper is set, override value
-        if self.config.has_option('config',
-                                  dtype + '_' + app + '_WINDOW_' + edge):
-            c_dict[dtype + '_WINDOW_' + edge] = \
-                self.config.getseconds('config',
-                                   dtype + '_' + app + '_WINDOW_' + edge)
-        # if generic value is set, use that
-        elif self.config.has_option('config',
-                                    dtype + '_WINDOW_' + edge):
-            c_dict[dtype + '_WINDOW_' + edge] = \
-                self.config.getseconds('config',
-                                       dtype + '_WINDOW_' + edge)
-        # otherwise set to default of 0
-        else:
-            c_dict[dtype + '_WINDOW_' + edge] = 0
+        return default_val
 
-        # do the same for FILE_WINDOW
-        if self.config.has_option('config',
-                                  dtype + '_' + app + '_FILE_WINDOW_' + edge):
-            c_dict[dtype + '_FILE_WINDOW_' + edge] = \
-                self.config.getseconds('config',
-                                   dtype + '_' + app + '_FILE_WINDOW_' + edge)
-        elif self.config.has_option('config',
-                                    dtype + '_FILE_WINDOW_' + edge):
-            c_dict[dtype + '_FILE_WINDOW_' + edge] = \
-                self.config.getseconds('config',
-                                       dtype + '_FILE_WINDOW_' + edge)
-        # if generic FILE_WINDOW_ is set, use that
-        elif self.config.has_option('config',
-                                    'FILE_WINDOW_' + edge):
-            c_dict['FILE_WINDOW_' + edge] = \
-                self.config.getseconds('config',
-                                       'FILE_WINDOW_' + edge)
-        # otherwise set to 0
-        else:
-            c_dict[dtype + '_FILE_WINDOW_' + edge] = 0
+    def handle_obs_window_variables(self, c_dict):
+        """! Handle obs window config variables like
+        OBS_<app_name>_WINDOW_[BEGIN/END]. Set c_dict values for begin and end
+        to handle old method of setting env vars in MET config files, i.e.
+        OBS_WINDOW_[BEGIN/END]. Set env_var_dict value if any of the values
+        are set
 
-    def handle_window_variables(self, c_dict, app_name, dtypes=['FCST', 'OBS']):
+             @param c_dict dictionary to read items from
+        """
+        edges = [('BEGIN', -5400),
+                 ('END', 5400)]
+        app = self.app_name.upper()
+
+        keys = []
+        tmp_dict = {}
+        for edge, default_val in edges:
+            input_list = [f'OBS_{app}_WINDOW_{edge}',
+                          f'OBS_WINDOW_{edge}',
+                         ]
+            output_key = f'OBS_WINDOW_{edge}'
+            value = self.handle_window_once(input_list, default_val)
+            c_dict[output_key] = value
+            tmp_dict[output_key] = f'{edge.lower()} = {value};'
+            # if something other than the default is used, add output key
+            # to the list of items to add to the env_var_dict value
+            if value != default_val:
+                keys.append(output_key)
+
+        window_str = self.format_met_config_dict(tmp_dict, 'obs_window', keys)
+        self.env_var_dict['METPLUS_OBS_WINDOW_DICT'] = window_str
+
+    def handle_file_window_variables(self, c_dict, dtypes=['FCST', 'OBS']):
         """! Handle all window config variables like
               [FCST/OBS]_<app_name>_WINDOW_[BEGIN/END] and
               [FCST/OBS]_<app_name>_FILE_WINDOW_[BEGIN/END]
@@ -310,10 +307,27 @@ class CommandBuilder:
                 @param c_dict dictionary to set items in
         """
         edges = ['BEGIN', 'END']
+        app = self.app_name.upper()
 
         for dtype in dtypes:
             for edge in edges:
-                self.handle_window_once(c_dict, dtype, edge, app_name)
+                input_list = [f'{dtype}_{app}_FILE_WINDOW_{edge}',
+                               f'{dtype}_FILE_WINDOW_{edge}',
+                               f'FILE_WINDOW_{edge}',
+                               ]
+                output_key = f'{dtype}_FILE_WINDOW_{edge}'
+                value = self.handle_window_once(input_list, 0)
+                c_dict[output_key] = value
+
+    def set_met_config_obs_window(self, c_dict):
+        for edge in ['BEGIN', 'END']:
+            obs_window = c_dict.get(f'OBS_WINDOW_{edge}', '')
+            if obs_window:
+                obs_window_fmt = f"{edge.lower()} = {obs_window};"
+            else:
+                obs_window_fmt = ''
+
+            self.env_var_dict[f'METPLUS_OBS_WINDOW_{edge}'] = obs_window_fmt
 
     def set_output_path(self, outpath):
         """!Split path into directory and filename then save both
@@ -806,7 +820,7 @@ class CommandBuilder:
             else:
                 valid_format = ''
 
-            prefix = self.get_output_prefix(time_info)
+            prefix = self.get_output_prefix(time_info, set_env_vars=False)
             search_string = f"{self.app_name}_{prefix}*{valid_format}V*"
             search_path = os.path.join(output_path,
                                        search_string)
@@ -1437,7 +1451,7 @@ class CommandBuilder:
         for key in keys:
             value = c_dict.get(key)
             if value:
-                values.append(value)
+                values.append(str(value))
 
         # if none of the keys are set to a value in dict, return empty string
         if not values:
@@ -1521,11 +1535,13 @@ class CommandBuilder:
                 f'desc = "{util.remove_quotes(conf_value)}";'
             )
 
-    def get_output_prefix(self, time_info=None):
+    def get_output_prefix(self, time_info=None, set_env_vars=True):
         """! Read {APP_NAME}_OUTPUT_PREFIX from config. If time_info is set
          substitute values into filename template tags.
 
              @param time_info (Optional) dictionary containing time info
+             @param set_env_vars (Optional) if True, set env vars with
+             values computed from this function
              @returns output prefix with values substituted if requested
         """
         output_prefix = (
@@ -1535,8 +1551,18 @@ class CommandBuilder:
         if time_info is None:
             return output_prefix
 
-        return do_string_sub(output_prefix,
-                             **time_info)
+        output_prefix = do_string_sub(output_prefix,
+                                      **time_info)
+
+        if set_env_vars:
+            # set METPLUS_OUTPUT_PREFIX in env_var_dict
+            output_prefix_fmt = f'output_prefix = "{output_prefix}";'
+            self.env_var_dict['METPLUS_OUTPUT_PREFIX'] = output_prefix_fmt
+
+            # set old method of setting OUTPUT_PREFIX
+            self.add_env_var('OUTPUT_PREFIX', output_prefix)
+
+        return output_prefix
 
     def set_climo_env_vars(self):
         """!Set all climatology environment variables from CLIMO_<item>_FILE
