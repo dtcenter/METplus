@@ -158,6 +158,12 @@ class CommandBuilder:
                                 f'{app_name.upper()}_SKIP_IF_OUTPUT_EXISTS',
                                 False)
         )
+
+        # option to bypass check for the existence of input files
+        # to make testing easier
+        c_dict['INPUT_MUST_EXIST'] = self.config.getbool('config',
+                                                         'INPUT_MUST_EXIST',
+                                                         True)
         return c_dict
 
     def clear(self):
@@ -649,6 +655,11 @@ class CommandBuilder:
             return None
 
         for file_path in check_file_list:
+            # if file doesn't need to exist, skip check
+            if not self.c_dict.get('INPUT_MUST_EXIST', True):
+                found_file_list.append(file_path)
+                continue
+
             # check if file exists
             input_data_type = self.c_dict.get(data_type + 'INPUT_DATATYPE', '')
             processed_path = util.preprocess_file(file_path,
