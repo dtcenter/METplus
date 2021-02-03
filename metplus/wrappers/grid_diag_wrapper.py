@@ -28,6 +28,10 @@ class GridDiagWrapper(RuntimeFreqWrapper):
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_DESC',
         'METPLUS_REGRID_DICT',
+        'METPLUS_CENSOR_THRESH',
+        'METPLUS_CENSOR_VAL',
+        'METPLUS_DATA_DICT',
+        'METPLUS_MASK_DICT',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -40,10 +44,12 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
-        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_GRID_DIAG_VERBOSITY',
+        c_dict['VERBOSITY'] = self.config.getstr('config',
+                                                 'LOG_GRID_DIAG_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['CONFIG_FILE'] = self.config.getraw('config', 'GRID_DIAG_CONFIG_FILE')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config',
+                                                   'GRID_DIAG_CONFIG_FILE')
         if not c_dict['CONFIG_FILE']:
             self.log_error('GRID_DIAG_CONFIG_FILE required to run.')
 
@@ -53,10 +59,14 @@ class GridDiagWrapper(RuntimeFreqWrapper):
                                'GRID_DIAG_INPUT_TEMPLATE'))
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_DIAG_OUTPUT_DIR', '')
-        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                       'GRID_DIAG_OUTPUT_TEMPLATE')
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('filename_templates',
+                               'GRID_DIAG_OUTPUT_TEMPLATE')
+        )
 
-        data_type = self.config.getstr('config', 'GRID_DIAG_INPUT_DATATYPE', '')
+        data_type = self.config.getstr('config',
+                                       'GRID_DIAG_INPUT_DATATYPE',
+                                       '')
         if data_type:
             c_dict['DATA_FILE_TYPE'] = f"file_type = {data_type};"
 
@@ -65,20 +75,57 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         # set regrid dictionary values
         self.handle_regrid(c_dict)
 
-
-        # set desc
         self.handle_description()
+
+        self.handle_mask(single_value=True)
+
+        self.handle_censor_val_and_thresh()
 
         c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
 
         return c_dict
 
+    def handle_mask(self, single_value=False):
+        """! Read mask dictionary values and set them into env_var_list
+
+            @param single_value if True, only a single value for grid and poly
+            are allowed. If False, they should be treated as as list
+        """
+        tmp_dict = {}
+        if single_value:
+            function_call = self.set_met_config_string
+        else:
+            function_call = self.set_met_config_list
+
+        function_call(tmp_dict,
+                      'GRID_DIAG_MASK_GRID',
+                      'grid',
+                      'MASK_GRID')
+        function_call(tmp_dict,
+                      'GRID_DIAG_MASK_POLY',
+                      'poly',
+                      'MASK_POLY')
+
+        mask_dict_string = self.format_met_config_dict(tmp_dict,
+                                                       'mask',
+                                                       ['MASK_GRID',
+                                                        'MASK_POLY'])
+        self.env_var_dict['METPLUS_MASK_DICT'] = mask_dict_string
+
     def set_environment_variables(self, time_info):
         """!Set environment variables that will be read by the MET config file.
-            Reformat as needed. Print list of variables that were set and their values.
-            Args:
-              @param time_info dictionary containing timing info from current run"""
+             Reformat as needed. Print list of variables that were set and
+              their values.
 
+            @param time_info dictionary containing timing info from current run
+        """
+        data_dict = self.format_met_config_dict(self.c_dict,
+                                                'data',
+                                                 ['DATA_FILE_TYPE',
+                                                  'DATA_FIELD_FMT'])
+        self.env_var_dict['METPLUS_DATA_DICT'] = data_dict
+
+        # support old method of setting MET config variables
         self.add_env_var('DATA_FILE_TYPE',
                          self.c_dict.get('DATA_FILE_TYPE', ''))
 
@@ -168,8 +215,8 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
     def set_data_field(self, time_info):
         """!Get list of fields from config to process. Build list of field info
-            that are formatted to be read by the MET config file. Set DATA_FIELD
-            item of c_dict with the formatted list of fields.
+            that are formatted to be read by the MET config file. Set
+            DATA_FIELD item of c_dict with the formatted list of fields.
             Args:
                 @param time_info time dictionary to use for string substitution
                 @returns True if field list could be built, False if not.
@@ -194,7 +241,11 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
             all_fields.extend(field_list)
 
-        self.c_dict['DATA_FIELD'] = ','.join(all_fields)
+        data_field = ','.join(all_fields)
+        self.c_dict['DATA_FIELD_FMT'] = f"field = [ {data_field} ];"
+
+        # support old method of setting environment variable
+        self.c_dict['DATA_FIELD'] = data_field
 
         return True
 
