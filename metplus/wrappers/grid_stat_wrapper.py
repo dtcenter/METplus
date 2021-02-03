@@ -30,9 +30,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_DESC',
         'METPLUS_OBTYPE',
         'METPLUS_REGRID_DICT',
-        'METPLUS_FCST_FILE_TYPE',
         'METPLUS_FCST_FIELD',
-        'METPLUS_OBS_FILE_TYPE',
         'METPLUS_OBS_FIELD',
         'METPLUS_CLIMO_MEAN_FILE',
         'METPLUS_CLIMO_STDEV_FILE',
@@ -84,10 +82,9 @@ class GridStatWrapper(CompareGriddedWrapper):
         # get climatology config variables
         self.read_climo_wrapper_specific('GRID_STAT', c_dict)
 
-        c_dict['OUTPUT_DIR'] = (
-            self.config.getdir('GRID_STAT_OUTPUT_DIR',
-                               self.config.getdir('OUTPUT_BASE'))
-        )
+        c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_STAT_OUTPUT_DIR', '')
+        if not c_dict['OUTPUT_DIR']:
+            self.log_error("Must set GRID_STAT_OUTPUT_DIR")
 
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('config',
@@ -108,6 +105,26 @@ class GridStatWrapper(CompareGriddedWrapper):
         )
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
+
+
+        self.set_met_config_list(self.env_var_dict,
+                                 f'GRID_STAT_NEIGHBORHOOD_COV_THRESH',
+                                 'cov_thresh',
+                                 'METPLUS_NBRHD_COV_THRESH',
+                                 remove_quotes=True)
+
+        self.set_met_config_list(self.env_var_dict,
+                                 f'GRID_STAT_NEIGHBORHOOD_WIDTH',
+                                 'width',
+                                 'METPLUS_NBRHD_WIDTH',
+                                 remove_quotes=True)
+
+        self.set_met_config_string(self.env_var_dict,
+                                   'GRID_STAT_NEIGHBORHOOD_SHAPE',
+                                   'shape',
+                                   'METPLUS_NBRHD_SHAPE',
+                                   remove_quotes=True)
+
         c_dict['NEIGHBORHOOD_WIDTH'] = (
             self.config.getstr('config',
                                'GRID_STAT_NEIGHBORHOOD_WIDTH', '1')
@@ -117,23 +134,6 @@ class GridStatWrapper(CompareGriddedWrapper):
                                'GRID_STAT_NEIGHBORHOOD_SHAPE', 'SQUARE')
         )
 
-        self.set_met_config_list(c_dict,
-                                 f'GRID_STAT_NEIGHBORHOOD_COV_THRESH',
-                                 'cov_thresh',
-                                 'NBRHD_COV_THRESH',
-                                 remove_quotes=True)
-
-        self.set_met_config_list(c_dict,
-                                 f'GRID_STAT_NEIGHBORHOOD_COV_WIDTH',
-                                 'width',
-                                 'NBRHD_WIDTH',
-                                 remove_quotes=True)
-
-        self.set_met_config_string(c_dict,
-                                   'GRID_STAT_NEIGHBORHOOD_SHAPE',
-                                   'shape',
-                                   'NBRHD_SHAPE',
-                                   remove_quotes=True)
 
         self.set_met_config_list(c_dict,
                                  'GRID_STAT_MASK_GRID',
@@ -141,9 +141,7 @@ class GridStatWrapper(CompareGriddedWrapper):
                                  'MASK_GRID',
                                  allow_empty=True)
 
-        c_dict['VERIFICATION_MASK_TEMPLATE'] = \
-            self.config.getraw('filename_templates',
-                               'GRID_STAT_VERIFICATION_MASK_TEMPLATE')
+        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
 
         return c_dict
 
@@ -153,17 +151,10 @@ class GridStatWrapper(CompareGriddedWrapper):
         # set environment variables needed for MET application
 
         mask_dict_string = self.format_met_config_dict(self.c_dict,
-                                                       'MASK',
+                                                       'mask',
                                                        ['MASK_GRID',
                                                         'MASK_POLY'])
-        self.add_env_var("METPLUS_MASK_DICT", mask_dict_string)
-
-        self.add_env_var("METPLUS_NBRHD_SHAPE",
-                         self.c_dict.get('NBRHD_SHAPE', ''))
-        self.add_env_var("METPLUS_NBRHD_WIDTH",
-                         self.c_dict.get('NBRHD_WIDTH', ''))
-        self.add_env_var("METPLUS_NBRHD_COV_THRESH",
-                         self.c_dict.get('NBRHD_COV_THRESH', ''))
+        self.env_var_dict["METPLUS_MASK_DICT"] = mask_dict_string
 
         # add old method of setting env vars
         self.add_env_var("FCST_FIELD",
