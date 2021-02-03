@@ -1749,3 +1749,10 @@ class CommandBuilder:
                                         flag_list)
         )
         self.env_var_dict[f'METPLUS_{flag_type}_FLAG_DICT'] = flag_fmt
+
+    def get_env_var_value(self, env_var_name):
+        mask_value = self.env_var_dict.get(env_var_name, '')
+        if not mask_value:
+            return ''
+
+        return mask_value.split('=', 1)[1].rstrip(';').strip()

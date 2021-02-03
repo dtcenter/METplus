@@ -184,14 +184,6 @@ class PointStatWrapper(CompareGriddedWrapper):
                                           **time_info)
                 self.args.append(f"-obs_valid_{ext.lower()} {obs_valid}")
 
-    def get_list_value(self, list_type):
-        output = '[]'
-        mask_value = self.env_var_dict.get(f'METPLUS_{list_type}', '')
-        if mask_value:
-            output = mask_value.split('=', 1)[1].rstrip(';').strip()
-
-        return output
-
     def set_environment_variables(self, time_info=None):
         """! Set all the environment variables in the MET config
              file to the corresponding values in the METplus config file.
@@ -203,10 +195,20 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         """
         # handle old method of setting env vars in MET config files
-        point_stat_poly = self.get_list_value('MASK_POLY')
-        point_stat_grid = self.get_list_value('MASK_GRID')
-        point_stat_sid = self.get_list_value('MASK_SID')
-        point_stat_message_type = self.get_list_value('MESSAGE_TYPE')
+        # pull out value after equals sign before the last semi-colon of
+        # each value. If not set, then set the value to an empty string
+        point_stat_poly = self.get_env_var_value('METPLUS_MASK_POLY')
+        if not point_stat_poly:
+            point_stat_poly = '[]'
+        point_stat_grid = self.get_env_var_value('METPLUS_MASK_GRID')
+        if not point_stat_grid:
+            point_stat_grid = '[]'
+        point_stat_sid = self.get_env_var_value('METPLUS_MASK_SID')
+        if not point_stat_sid:
+            point_stat_sid = '[]'
+        point_stat_message_type = self.get_env_var_value('METPLUS_MESSAGE_TYPE')
+        if not point_stat_message_type:
+            point_stat_message_type = '[]'
 
         self.add_env_var('POINT_STAT_POLY',
                          point_stat_poly)
