@@ -426,13 +426,14 @@ class CommandBuilder:
         self.logger.warning('Using default values for {}'.format(gen_name))
         return default, default
 
-    def find_model(self, time_info, var_info=None, mandatory=True, return_list=False):
+    def find_model(self, time_info, var_info=None, mandatory=True,
+                   return_list=False):
         """! Finds the model file to compare
               Args:
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
-                @param mandatory if True, report error if not found, warning if not
-                  default is True
+                @param mandatory if True, report error if not found, warning
+                 if not, default is True
                 @rtype string
                 @return Returns the path to an model file
         """
@@ -442,13 +443,14 @@ class CommandBuilder:
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_obs(self, time_info, var_info=None, mandatory=True, return_list=False):
+    def find_obs(self, time_info, var_info=None, mandatory=True,
+                 return_list=False):
         """! Finds the observation file to compare
               Args:
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
-                @param mandatory if True, report error if not found, warning if not
-                  default is True
+                @param mandatory if True, report error if not found, warning
+                 if not, default is True
                 @rtype string
                 @return Returns the path to an observation file
         """
@@ -458,21 +460,24 @@ class CommandBuilder:
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_obs_offset(self, time_info, var_info=None, mandatory=True, return_list=False):
-        """! Finds the observation file to compare, looping through offset list until a file is found
-              Args:
-                @param time_info dictionary containing timing information
-                @param var_info object containing variable information
-                @param mandatory if True, report error if not found, warning if not
-                  default is True
-                @rtype string
-                @return Returns tuple of the path to an observation file and the time_info object
-                used to find the data so the value of offset can be preserved
+    def find_obs_offset(self, time_info, var_info=None, mandatory=True,
+                        return_list=False):
+        """! Finds the observation file to compare, looping through offset
+            list until a file is found
+
+             @param time_info dictionary containing timing information
+             @param var_info object containing variable information
+             @param mandatory if True, report error if not found, warning
+              if not, default is True
+             @rtype string
+             @return Returns tuple of the path to an observation file and
+              the time_info object
+              used to find the data so the value of offset can be preserved
         """
         offsets = self.c_dict.get('OFFSETS', [0])
-        # if no offsets are specified, use argument to determine if file is mandatory
-        # if offsets are specified, set mandatory to False to avoid errors when searching
-        # through offset list
+        # if no offsets are specified, use argument to determine if file is
+        # mandatory if offsets are specified, set mandatory to False to avoid
+        # errors when searching through offset list
         is_mandatory = mandatory if offsets == [0] else False
 
         for offset in offsets:
@@ -501,14 +506,15 @@ class CommandBuilder:
 
         return None, time_info
 
-    def find_data(self, time_info, var_info=None, data_type='', mandatory=True, return_list=False, allow_dir=False):
+    def find_data(self, time_info, var_info=None, data_type='', mandatory=True,
+                  return_list=False, allow_dir=False):
         """! Finds the data file to compare
               Args:
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
                 @param data_type type of data to find (i.e. FCST_ or OBS_)
-                @param mandatory if True, report error if not found, warning if not
-                  default is True
+                @param mandatory if True, report error if not found, warning
+                 if not. default is True
                 @rtype string
                 @return Returns the path to an observation file
         """
@@ -525,7 +531,8 @@ class CommandBuilder:
             else:
                 v_level = var_info['fcst_level']
 
-            # separate character from beginning of numeric level value if applicable
+            # separate character from beginning of numeric
+            # level value if applicable
             level = util.split_level(v_level)[1]
 
             # set level to 0 character if it is not a number
@@ -548,20 +555,22 @@ class CommandBuilder:
                     'return_list': return_list}
 
         # if looking for a file with an exact time match:
-        if self.c_dict.get(data_type_fmt + 'FILE_WINDOW_BEGIN', 0) == 0 and \
-                self.c_dict.get(data_type_fmt + 'FILE_WINDOW_END', 0) == 0:
+        if (self.c_dict.get(data_type_fmt + 'FILE_WINDOW_BEGIN', 0) == 0 and
+                self.c_dict.get(data_type_fmt + 'FILE_WINDOW_END', 0) == 0):
 
             return self.find_exact_file(**arg_dict, allow_dir=allow_dir)
 
         # if looking for a file within a time window:
         return self.find_file_in_window(**arg_dict)
 
-    def find_exact_file(self, level, data_type, time_info, mandatory=True, return_list=False, allow_dir=False):
+    def find_exact_file(self, level, data_type, time_info, mandatory=True,
+                        return_list=False, allow_dir=False):
         input_template = self.c_dict.get(f'{data_type}INPUT_TEMPLATE', '')
         data_dir = self.c_dict.get(f'{data_type}INPUT_DIR', '')
 
         if not input_template:
-            self.log_error(f"Could not find any {data_type}INPUT files because no template was specified")
+            self.log_error(f"Could not find any {data_type}INPUT files "
+                           "because no template was specified")
             return None
 
         check_file_list = []
@@ -573,7 +582,8 @@ class CommandBuilder:
 
         # return None if a list is provided for a wrapper that doesn't allow
         # multiple files to be processed
-        if len(template_list) > 1 and not self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
+        if (len(template_list) > 1 and
+                not self.c_dict.get('ALLOW_MULTIPLE_FILES', False)):
             self.log_error("List of templates specified for a wrapper that "
                            "does not allow multiple files to be provided.")
             return None
@@ -592,7 +602,8 @@ class CommandBuilder:
             full_path = os.path.join(data_dir, filename)
 
             if os.path.sep not in full_path:
-                self.logger.debug(f"{full_path} is not a file path. Returning that string.")
+                self.logger.debug(f"{full_path} is not a file path. "
+                                  "Returning that string.")
                 return full_path
 
             self.logger.debug(f"Looking for {data_type}INPUT file {full_path}")
@@ -602,7 +613,8 @@ class CommandBuilder:
 
                 wildcard_files = sorted(glob.glob(full_path))
                 self.logger.debug(f'Wildcard file pattern: {full_path}')
-                self.logger.debug(f'{str(len(wildcard_files))} files match pattern')
+                self.logger.debug(f'{str(len(wildcard_files))} files '
+                                  'match pattern')
 
                 # add files to list of files
                 for wildcard_file in wildcard_files:
@@ -615,11 +627,15 @@ class CommandBuilder:
         if saved_level:
             time_info['level'] = saved_level
 
-        # if multiple files are not supported by the wrapper and multiple files are found, error and exit
-        # this will allow a wildcard to be used to find a single file. Previously a wildcard would produce
+        # if multiple files are not supported by the wrapper and multiple
+        # files are found, error and exit
+        # this will allow a wildcard to be used to find a single file.
+        # Previously a wildcard would produce
         # an error if only 1 file is allowed.
-        if not self.c_dict.get('ALLOW_MULTIPLE_FILES', False) and len(check_file_list) > 1:
-            self.log_error("Multiple files found when wrapper does not support multiple files.")
+        if (not self.c_dict.get('ALLOW_MULTIPLE_FILES', False) and
+                len(check_file_list) > 1):
+            self.log_error("Multiple files found when wrapper does not "
+                           "support multiple files.")
             return None
 
         # return None if no files were found
@@ -642,7 +658,8 @@ class CommandBuilder:
 
             # report error if file path could not be found
             if not processed_path:
-                msg = f"Could not find {data_type}INPUT file {file_path} using template {template}"
+                msg = (f"Could not find {data_type}INPUT file {file_path} "
+                       "using template {template}")
                 if not mandatory or not self.c_dict.get('MANDATORY', True):
                     self.logger.warning(msg)
                 else:
@@ -662,7 +679,8 @@ class CommandBuilder:
 
         return found_file_list
 
-    def find_file_in_window(self, level, data_type, time_info, mandatory=True, return_list=False):
+    def find_file_in_window(self, level, data_type, time_info, mandatory=True,
+                            return_list=False):
         template = self.c_dict[f'{data_type}INPUT_TEMPLATE']
         data_dir = self.c_dict[f'{data_type}INPUT_DIR']
 
