@@ -1602,9 +1602,10 @@ class CommandBuilder:
                                       **time_info)
 
         if set_env_vars:
-            # set METPLUS_OUTPUT_PREFIX in env_var_dict
-            output_prefix_fmt = f'output_prefix = "{output_prefix}";'
-            self.env_var_dict['METPLUS_OUTPUT_PREFIX'] = output_prefix_fmt
+            # set METPLUS_OUTPUT_PREFIX in env_var_dict if it is set
+            if output_prefix:
+                output_prefix_fmt = f'output_prefix = "{output_prefix}";'
+                self.env_var_dict['METPLUS_OUTPUT_PREFIX'] = output_prefix_fmt
 
             # set old method of setting OUTPUT_PREFIX
             self.add_env_var('OUTPUT_PREFIX', output_prefix)
@@ -1672,13 +1673,21 @@ class CommandBuilder:
                                          ''),
                          climo_file)
         )
-        self.logger.debug(f"Looking for climatology {climo_item.lower()} "
-                          f"file {climo_path}")
-        self.c_dict[f'CLIMO_{climo_item}_FILE'] = (
-            util.preprocess_file(climo_path,
-                                 '',
-                                 self.config)
-        )
+
+        if not self.c_dict.get('INPUT_MUST_EXIST'):
+            output_path = climo_path
+        else:
+            self.logger.debug(f"Looking for climatology {climo_item.lower()} "
+                              f"file {climo_path}")
+            output_path = util.preprocess_file(climo_path,
+                                               '',
+                                               self.config)
+
+        self.c_dict[f'CLIMO_{climo_item}_FILE'] = output_path
+        output_fmt = f'file_name = ["{output_path}"];'
+        if climo_item == 'STDEV':
+            output_fmt = f'climo_stdev = {{ {output_fmt} }}'
+        self.env_var_dict[f'METPLUS_CLIMO_{climo_item}_FILE'] = output_fmt
 
     def get_wrapper_or_generic_config(self, generic_config_name):
         """! Check for config variable with <APP_NAME>_ prepended first. If set
