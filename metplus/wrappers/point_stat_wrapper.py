@@ -25,6 +25,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_DESC',
         'METPLUS_OBTYPE',
         'METPLUS_REGRID_DICT',
+        'METPLUS_OBS_WINDOW_DICT',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -88,6 +89,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         c_dict['CONFIG_FILE'] = \
             self.config.getraw('config', 'POINT_STAT_CONFIG_FILE', '')
 
+        self.handle_obs_window_variables(c_dict)
+
         c_dict['POINT_STAT_GRID'] = self.config.getstr('config', 'POINT_STAT_GRID')
         c_dict['POINT_STAT_POLY'] = self.config.getstr('config', 'POINT_STAT_POLY', '')
         c_dict['POINT_STAT_STATION_ID'] = self.config.getstr('config', 'POINT_STAT_STATION_ID', '')
@@ -95,9 +98,6 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         c_dict['OBS_VALID_BEG'] = self.config.getraw('config', 'POINT_STAT_OBS_VALID_BEG', '')
         c_dict['OBS_VALID_END'] = self.config.getraw('config', 'POINT_STAT_OBS_VALID_END', '')
-
-        # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict, 'point_stat')
 
         c_dict['VERIFICATION_MASK_TEMPLATE'] = \
             self.config.getraw('filename_templates',

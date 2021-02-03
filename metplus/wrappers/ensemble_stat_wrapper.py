@@ -55,8 +55,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_CLIMO_MEAN_HOUR_INTERVAL',
         'METPLUS_CLIMO_STDEV_FILE',
         'METPLUS_CLIMO_CDF_DICT',
-        'METPLUS_OBS_WINDOW_BEGIN',
-        'METPLUS_OBS_WINDOW_END',
+        'METPLUS_OBS_WINDOW_DICT',
         'METPLUS_MASK_GRID',
         'METPLUS_MASK_POLY',
         'METPLUS_CI_ALPHA',
@@ -194,15 +193,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # get climatology config variables
         self.read_climo_wrapper_specific('ENSEMBLE_STAT', c_dict)
 
-        # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict, 'ensemble_stat')
-
         # need to set these so that find_data will succeed
-        c_dict['OBS_POINT_WINDOW_BEGIN'] = c_dict['OBS_WINDOW_BEGIN']
-        c_dict['OBS_POINT_WINDOW_END'] = c_dict['OBS_WINDOW_END']
-        c_dict['OBS_GRID_WINDOW_BEGIN'] = c_dict['OBS_WINDOW_BEGIN']
-        c_dict['OBS_GRID_WINDOW_END'] = c_dict['OBS_WINDOW_END']
-
         c_dict['OBS_POINT_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
         c_dict['OBS_POINT_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
         c_dict['OBS_GRID_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
@@ -382,6 +373,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                  'message_type',
                                  'METPLUS_MESSAGE_TYPE',
                                  allow_empty=True)
+
+        self.handle_obs_window_variables(c_dict)
 
         for flag in self.OUTPUT_FLAGS:
             flag_upper = flag.upper()

@@ -259,10 +259,10 @@ def test_handle_window_once(metplus_config, win, app_win, file_win, app_file_win
     config = cgw.config
 
     if win is not None:
-        config.set('config', 'FCST_WINDOW_BEGIN', win)
+        config.set('config', 'OBS_WINDOW_BEGIN', win)
 
     if app_win is not None:
-        config.set('config', 'FCST_APP_NAME_WINDOW_BEGIN', app_win)
+        config.set('config', 'OBS_APP_NAME_WINDOW_BEGIN', app_win)
 
     if file_win is not None:
         config.set('config', 'FCST_FILE_WINDOW_BEGIN', file_win)
@@ -270,7 +270,16 @@ def test_handle_window_once(metplus_config, win, app_win, file_win, app_file_win
     if app_file_win is not None:
         config.set('config', 'FCST_APP_NAME_FILE_WINDOW_BEGIN', app_file_win)
 
-    c_dict = {}
-    cgw.handle_window_once(c_dict, 'FCST', 'BEGIN', 'APP_NAME')
-    assert(c_dict['FCST_WINDOW_BEGIN'] == win_value and \
-           c_dict['FCST_FILE_WINDOW_BEGIN'] == file_win_value)
+    input_list = ['FCST_APP_NAME_FILE_WINDOW_BEGIN',
+                  'FCST_FILE_WINDOW_BEGIN',
+                  'FILE_WINDOW_BEGIN',
+                 ]
+    fcst_file_window_begin = cgw.handle_window_once(input_list, 0)
+
+    input_list = ['OBS_APP_NAME_WINDOW_BEGIN',
+                  'OBS_WINDOW_BEGIN',
+                 ]
+    obs_window_begin = cgw.handle_window_once(input_list, -5400)
+
+    assert(obs_window_begin == win_value and
+           fcst_file_window_begin == file_win_value)

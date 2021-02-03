@@ -91,6 +91,9 @@ that reformat gridded data
 
         self.handle_description()
 
+        # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
+        self.handle_file_window_variables(c_dict)
+
         self.set_met_config_string(self.env_var_dict,
                                    f'{self.app_name.upper()}_OUTPUT_PREFIX',
                                    'output_prefix',

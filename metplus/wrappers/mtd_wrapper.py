@@ -113,9 +113,6 @@ class MTDWrapper(MODEWrapper):
         if not c_dict['SINGLE_RUN']:
             self.read_field_values(c_dict, 'OBS', 'OBS')
 
-        # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict, 'mtd')
-
         return c_dict
 
     def read_field_values(self, c_dict, read_type, write_type):

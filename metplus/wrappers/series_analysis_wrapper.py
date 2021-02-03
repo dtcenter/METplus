@@ -150,9 +150,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             # set *_WINDOW_* variables for BOTH
             # used in CommandBuilder.find_data function)
-            self.handle_window_variables(c_dict,
-                                         'series_analysis',
-                                         dtypes=['BOTH'])
+            self.handle_file_window_variables(c_dict, dtypes=['BOTH'])
 
         # if BOTH is not set, both FCST or OBS must be set
         else:
@@ -165,9 +163,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                "SeriesAnalysis wrapper.")
 
             # set *_WINDOW_* variables for FCST and OBS
-            self.handle_window_variables(c_dict,
-                                         'series_analysis',
-                                         dtypes=['FCST', 'OBS'])
+            self.handle_file_window_variables(c_dict, dtypes=['FCST', 'OBS'])
 
         c_dict['TC_STAT_INPUT_DIR'] = (
             self.config.getdir('SERIES_ANALYSIS_TC_STAT_INPUT_DIR', '')
