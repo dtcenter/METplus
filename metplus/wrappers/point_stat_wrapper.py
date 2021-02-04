@@ -206,7 +206,11 @@ class PointStatWrapper(CompareGriddedWrapper):
         point_stat_sid = self.get_env_var_value('METPLUS_MASK_SID')
         if not point_stat_sid:
             point_stat_sid = '[]'
-        point_stat_message_type = self.get_env_var_value('METPLUS_MESSAGE_TYPE')
+
+        point_stat_message_type = (
+            self.get_env_var_value('METPLUS_MESSAGE_TYPE')
+        )
+
         if not point_stat_message_type:
             point_stat_message_type = '[]'
 
