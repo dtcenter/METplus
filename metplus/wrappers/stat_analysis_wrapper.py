@@ -1718,63 +1718,67 @@ class StatAnalysisWrapper(CommandBuilder):
             if not self.create_output_directories(runtime_settings_dict):
                 continue
 
-            self.job_args = None
             # Set environment variables and run stat_analysis.
-            for mp_lists in ['MODEL',
-                             'DESC',
-                             'OBTYPE',
-                             'FCST_LEAD',
-                             'OBS_LEAD',
-                             'FCST_VALID_HOUR',
-                             'OBS_VALID_HOUR',
-                             'FCST_INIT_HOUR',
-                             'OBS_INIT_HOUR',
-                             'FCST_VAR',
-                             'OBS_VAR',
-                             'FCST_UNITS',
-                             'OBS_UNITS',
-                             'FCST_LEVEL',
-                             'OBS_LEVEL',
-                             'VX_MASK',
-                             'INTERP_MTHD',
-                             'INTERP_PNTS',
-                             'FCST_THRESH',
-                             'OBS_THRESH',
-                             'CONV_THRESH',
-                             'ALPHA',
-                             'LINE_TYPE',
-                            ]:
-                if not runtime_settings_dict.get(mp_lists, ''):
-                    continue
-                value = (f"{mp_lists.lower()} = "
-                         f"[{runtime_settings_dict.get(mp_lists, '')}];")
-                self.env_var_dict[f'METPLUS_{mp_lists}'] = value
+            for name, value in runtime_settings_dict.items():
+                self.add_env_var(name, value)
 
-            for mp_items in ['FCST_VALID_BEG',
-                             'FCST_VALID_END',
-                             'OBS_VALID_BEG',
-                             'OBS_VALID_END',
-                             'FCST_INIT_BEG',
-                             'FCST_INIT_END',
-                             'OBS_INIT_BEG',
-                             'OBS_INIT_END',
-                             'DESC',
-                             'OBTYPE',
-                             'FCST_LEAD',
-                ]:
-                    if not runtime_settings_dict.get(mp_lists, ''):
-                        continue
-                    value = (f"{mp_items.lower()} = "
-                             f"{runtime_settings_dict.get(mp_items, '')};")
-                    self.env_var_dict[f'METPLUS_{mp_items}'] = value
+            self.job_args = None
+            # set METPLUS_ env vars for MET config file to be consistent
+            # with other wrappers
+            mp_lists = ['MODEL',
+                        'DESC',
+                        'OBTYPE',
+                        'FCST_LEAD',
+                        'OBS_LEAD',
+                        'FCST_VALID_HOUR',
+                        'OBS_VALID_HOUR',
+                        'FCST_INIT_HOUR',
+                        'OBS_INIT_HOUR',
+                        'FCST_VAR',
+                        'OBS_VAR',
+                        'FCST_UNITS',
+                        'OBS_UNITS',
+                        'FCST_LEVEL',
+                        'OBS_LEVEL',
+                        'VX_MASK',
+                        'INTERP_MTHD',
+                        'INTERP_PNTS',
+                        'FCST_THRESH',
+                        'OBS_THRESH',
+                        'CONV_THRESH',
+                        'ALPHA',
+                        'LINE_TYPE'
+                        ]
+            for mp_list in mp_lists:
+                if not runtime_settings_dict.get(mp_list, ''):
+                    continue
+                value = (f"{mp_list.lower()} = "
+                         f"[{runtime_settings_dict.get(mp_list, '')}];")
+                self.env_var_dict[f'METPLUS_{mp_list}'] = value
+
+            mp_items = ['FCST_VALID_BEG',
+                        'FCST_VALID_END',
+                        'OBS_VALID_BEG',
+                        'OBS_VALID_END',
+                        'FCST_INIT_BEG',
+                        'FCST_INIT_END',
+                        'OBS_INIT_BEG',
+                        'OBS_INIT_END',
+                        'DESC',
+                        'OBTYPE',
+                        'FCST_LEAD'
+                        ]
+            for mp_item in mp_items:
+                if not runtime_settings_dict.get(mp_item, ''):
+                    continue
+                value = (f"{mp_item.lower()} = "
+                         f"{runtime_settings_dict.get(mp_item, '')};")
+                self.env_var_dict[f'METPLUS_{mp_item}'] = value
 
             value = f'job = ["'
             value += runtime_settings_dict.get('JOB', '')
             value += '"];'
             self.env_var_dict[f'METPLUS_JOB'] = value
-
-            for name, value in runtime_settings_dict.items():
-                self.add_env_var(name, value)
 
             # send environment variables to logger
             self.set_environment_variables()
