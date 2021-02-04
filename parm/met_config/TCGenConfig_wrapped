@@ -167,3 +167,5 @@ ${DLAND_FILE}
 // The value should generally not be modified.
 //
 //version = "V9.1";
+
+${METPLUS_MET_CONFIG_OVERRIDES}
