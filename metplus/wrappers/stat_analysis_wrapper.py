@@ -32,6 +32,35 @@ class StatAnalysisWrapper(CommandBuilder):
         'METPLUS_MODEL',
         'METPLUS_OBTYPE',
         'METPLUS_DESC',
+        'METPLUS_FCST_LEAD',
+        'METPLUS_OBS_LEAD',
+        'METPLUS_FCST_VALID_BEG',
+        'METPLUS_FCST_VALID_END',
+        'METPLUS_FCST_VALID_HOUR',
+        'METPLUS_OBS_VALID_BEG',
+        'METPLUS_OBS_VALID_END',
+        'METPLUS_OBS_VALID_HOUR',
+        'METPLUS_FCST_INIT_BEG',
+        'METPLUS_FCST_INIT_END',
+        'METPLUS_FCST_INIT_HOUR',
+        'METPLUS_OBS_INIT_BEG',
+        'METPLUS_OBS_INIT_END',
+        'METPLUS_OBS_INIT_HOUR',
+        'METPLUS_FCST_VAR',
+        'METPLUS_OBS_VAR',
+        'METPLUS_FCST_UNITS',
+        'METPLUS_OBS_UNITS',
+        'METPLUS_FCST_LEVEL',
+        'METPLUS_OBS_LEVEL',
+        'METPLUS_VX_MASK',
+        'METPLUS_INTERP_MTHD',
+        'METPLUS_INTERP_PNTS',
+        'METPLUS_FCST_THRESH',
+        'METPLUS_OBS_THRESH',
+        'METPLUS_COV_THRESH',
+        'METPLUS_ALPHA',
+        'METPLUS_LINE_TYPE',
+        'METPLUS_JOB',
     ]
 
     field_lists = ['FCST_VAR_LIST',
@@ -1691,10 +1720,58 @@ class StatAnalysisWrapper(CommandBuilder):
 
             self.job_args = None
             # Set environment variables and run stat_analysis.
-            for mp_type in ['MODEL', 'DESC', 'OBTYPE']:
-                value = (f"{mp_type.lower()} = "
-                         f"[{runtime_settings_dict.get(mp_type, '')}];")
-                self.env_var_dict[f'METPLUS_{mp_type}'] = value
+            for mp_lists in ['MODEL',
+                             'DESC',
+                             'OBTYPE',
+                             'FCST_LEAD',
+                             'OBS_LEAD',
+                             'FCST_VALID_HOUR',
+                             'OBS_VALID_HOUR',
+                             'FCST_INIT_HOUR',
+                             'OBS_INIT_HOUR',
+                             'FCST_VAR',
+                             'OBS_VAR',
+                             'FCST_UNITS',
+                             'OBS_UNITS',
+                             'FCST_LEVEL',
+                             'OBS_LEVEL',
+                             'VX_MASK',
+                             'INTERP_MTHD',
+                             'INTERP_PNTS',
+                             'FCST_THRESH',
+                             'OBS_THRESH',
+                             'CONV_THRESH',
+                             'ALPHA',
+                             'LINE_TYPE',
+                            ]:
+                if not runtime_settings_dict.get(mp_lists, ''):
+                    continue
+                value = (f"{mp_lists.lower()} = "
+                         f"[{runtime_settings_dict.get(mp_lists, '')}];")
+                self.env_var_dict[f'METPLUS_{mp_lists}'] = value
+
+            for mp_items in ['FCST_VALID_BEG',
+                             'FCST_VALID_END',
+                             'OBS_VALID_BEG',
+                             'OBS_VALID_END',
+                             'FCST_INIT_BEG',
+                             'FCST_INIT_END',
+                             'OBS_INIT_BEG',
+                             'OBS_INIT_END',
+                             'DESC',
+                             'OBTYPE',
+                             'FCST_LEAD',
+                ]:
+                    if not runtime_settings_dict.get(mp_lists, ''):
+                        continue
+                    value = (f"{mp_items.lower()} = "
+                             f"{runtime_settings_dict.get(mp_items, '')};")
+                    self.env_var_dict[f'METPLUS_{mp_items}'] = value
+
+            value = f'job = ["'
+            value += runtime_settings_dict.get('JOB', '')
+            value += '"];'
+            self.env_var_dict[f'METPLUS_JOB'] = value
 
             for name, value in runtime_settings_dict.items():
                 self.add_env_var(name, value)
