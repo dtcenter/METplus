@@ -78,8 +78,8 @@ class CommandBuilder:
 
         # if wrapper has a config file, read unsupported MET config variable
         if 'CONFIG_FILE' in self.c_dict:
-            config_name = f"{self.app_name.upper()}_{self.MET_OVERRIDES}"
-            self.c_dict[self.MET_OVERRIDES] = (
+            config_name = f"{self.app_name.upper()}_{self.MET_OVERRIDES_KEY}"
+            self.c_dict[self.MET_OVERRIDES_KEY] = (
                 self.config.getraw('config', config_name)
             )
 
@@ -169,8 +169,8 @@ class CommandBuilder:
         self.set_user_environment(time_info)
 
         # set MET config overrides that are not set by other variables
-        self.add_env_var(f'METPLUS_{self.MET_OVERRIDES}',
-                         self.c_dict.get(self.MET_OVERRIDES, ''))
+        self.add_env_var(f'METPLUS_{self.MET_OVERRIDES_KEY}',
+                         self.c_dict.get(self.MET_OVERRIDES_KEY, ''))
 
         # send environment variables to logger
         for msg in self.print_all_envs():
