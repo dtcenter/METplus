@@ -74,7 +74,11 @@ class ASCII2NCWrapper(CommandBuilder):
         )
 
         # MET config variables
-        self.handle_time_summary_dict(c_dict)
+        self.handle_time_summary_dict(c_dict,
+                                      ['TIME_SUMMARY_GRIB_CODES',
+                                       'TIME_SUMMARY_VAR_NAMES',
+                                       'TIME_SUMMARY_TYPES']
+                                      )
 
         # handle file window variables
         for edge in ['BEGIN', 'END']:
@@ -93,86 +97,6 @@ class ASCII2NCWrapper(CommandBuilder):
             c_dict[f'OBS_FILE_WINDOW_{edge}'] = file_window
 
         return c_dict
-
-    def handle_time_summary_dict(self, c_dict):
-        tmp_dict = {}
-        self.set_met_config_bool(tmp_dict,
-                                 'ASCII2NC_TIME_SUMMARY_FLAG',
-                                 'flag',
-                                 'TIME_SUMMARY_FLAG')
-
-        self.set_met_config_bool(tmp_dict,
-                                 'ASCII2NC_TIME_SUMMARY_RAW_DATA',
-                                 'raw_data',
-                                 'TIME_SUMMARY_RAW_DATA')
-
-        self.set_met_config_string(tmp_dict,
-                                   'ASCII2NC_TIME_SUMMARY_BEG',
-                                   'beg',
-                                   'TIME_SUMMARY_BEG')
-
-        self.set_met_config_string(tmp_dict,
-                                   'ASCII2NC_TIME_SUMMARY_END',
-                                   'end',
-                                   'TIME_SUMMARY_END')
-
-        self.set_met_config_int(tmp_dict,
-                                'ASCII2NC_TIME_SUMMARY_STEP',
-                                'step',
-                                'TIME_SUMMARY_STEP')
-
-        self.set_met_config_int(tmp_dict,
-                                'ASCII2NC_TIME_SUMMARY_WIDTH',
-                                'width',
-                                'TIME_SUMMARY_WIDTH')
-
-        self.set_met_config_list(tmp_dict,
-                                 ['ASCII2NC_TIME_SUMMARY_GRIB_CODES',
-                                  'ASCII2NC_TIME_SUMMARY_GRIB_CODE'],
-                                 'grib_code',
-                                 'TIME_SUMMARY_GRIB_CODES',
-                                 remove_quotes=True,
-                                 allow_empty=True)
-
-        self.set_met_config_list(tmp_dict,
-                                 ['ASCII2NC_TIME_SUMMARY_OBS_VAR',
-                                  'ASCII2NC_TIME_SUMMARY_VAR_NAMES'],
-                                 'obs_var',
-                                 'TIME_SUMMARY_VAR_NAMES',
-                                 allow_empty=True)
-
-        self.set_met_config_list(tmp_dict,
-                                 ['ASCII2NC_TIME_SUMMARY_TYPE',
-                                  'ASCII2NC_TIME_SUMMARY_TYPES'],
-                                 'type',
-                                 'TIME_SUMMARY_TYPES')
-
-        self.set_met_config_int(tmp_dict,
-                                ['ASCII2NC_TIME_SUMMARY_VLD_FREQ',
-                                 'ASCII2NC_TIME_SUMMARY_VALID_FREQ'],
-                                'vld_freq',
-                                'TIME_SUMMARY_VALID_FREQ')
-
-        self.set_met_config_float(tmp_dict,
-                                  ['ASCII2NC_TIME_SUMMARY_VLD_THRESH',
-                                   'ASCII2NC_TIME_SUMMARY_VALID_THRESH'],
-                                  'vld_thresh',
-                                  'TIME_SUMMARY_VALID_THRESH')
-
-        time_summary = self.format_met_config_dict(tmp_dict,
-                                                   'time_summary',
-                                                    keys=None)
-        self.env_var_dict['METPLUS_TIME_SUMMARY_DICT'] = time_summary
-
-        # set c_dict values to support old method of setting env vars
-        for key, value in tmp_dict.items():
-            c_dict[key] = self.get_env_var_value(key, read_dict=tmp_dict)
-
-        # remove brackets [] from lists
-        for list_values in ['TIME_SUMMARY_GRIB_CODES',
-                            'TIME_SUMMARY_VAR_NAMES',
-                            'TIME_SUMMARY_TYPES']:
-            c_dict[list_values] = c_dict[list_values].strip('[]')
 
     def set_environment_variables(self, time_info):
         """!Set environment variables that will be read by the MET config file.

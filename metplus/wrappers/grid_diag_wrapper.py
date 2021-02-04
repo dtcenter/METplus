@@ -85,33 +85,6 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
         return c_dict
 
-    def handle_mask(self, single_value=False):
-        """! Read mask dictionary values and set them into env_var_list
-
-            @param single_value if True, only a single value for grid and poly
-            are allowed. If False, they should be treated as as list
-        """
-        tmp_dict = {}
-        if single_value:
-            function_call = self.set_met_config_string
-        else:
-            function_call = self.set_met_config_list
-
-        function_call(tmp_dict,
-                      'GRID_DIAG_MASK_GRID',
-                      'grid',
-                      'MASK_GRID')
-        function_call(tmp_dict,
-                      'GRID_DIAG_MASK_POLY',
-                      'poly',
-                      'MASK_POLY')
-
-        mask_dict_string = self.format_met_config_dict(tmp_dict,
-                                                       'mask',
-                                                       ['MASK_GRID',
-                                                        'MASK_POLY'])
-        self.env_var_dict['METPLUS_MASK_DICT'] = mask_dict_string
-
     def set_environment_variables(self, time_info):
         """!Set environment variables that will be read by the MET config file.
              Reformat as needed. Print list of variables that were set and
