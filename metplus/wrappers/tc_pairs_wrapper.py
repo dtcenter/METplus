@@ -149,13 +149,6 @@ class TCPairsWrapper(CommandBuilder):
                                         logger=self.logger)
         c_dict['INIT_BEG'] = init_beg_dt.strftime('%Y%m%d_%H%M%S')
 
-        # init_end = self.config.getraw('config', 'INIT_END')
-        # init_end_dt = util.get_time_obj(init_end,
-        #                                 init_time_fmt,
-        #                                 clock_time,
-        #                                 logger=self.logger)
-        # c_dict['INIT_END'] = init_end_dt.strftime('%Y%m%d_%H%M%S')
-
         c_dict['INIT_INCLUDE'] = util.getlist(
             self.get_wrapper_or_generic_config('INIT_INCLUDE')
         )
@@ -418,61 +411,6 @@ class TCPairsWrapper(CommandBuilder):
             model = '[]'
         self.add_env_var('MODEL', model)
 
-        # # INIT_BEG, INIT_END
-        # # pull out YYYYMMDD from INIT_BEG/END
-        # tmp_init_beg = self.c_dict['INIT_BEG']
-        # tmp_init_end = self.c_dict['INIT_END']
-        #
-        # if not tmp_init_beg:
-        #     self.add_env_var('INIT_BEG', "")
-        # else:
-        #     init_beg = str(tmp_init_beg).replace("\'", "\"")
-        #     init_beg_str = ''.join(init_beg.split())
-        #     self.add_env_var('INIT_BEG', str(init_beg_str))
-        #
-        # if not tmp_init_end:
-        #     self.add_env_var('INIT_END', "")
-        # else:
-        #     init_end = str(tmp_init_end).replace("\'", "\"")
-        #     init_end_str = ''.join(init_end.split())
-        #     self.add_env_var('INIT_END', str(init_end_str))
-        #
-        # # INIT_INCLUDE and INIT_EXCLUDE
-        # # Used to set init_inc in "TC_PAIRS_CONFIG_FILE"
-        # tmp_init_inc = self.c_dict['INIT_INCLUDE']
-        # if not tmp_init_inc:
-        #     self.add_env_var('INIT_INCLUDE', "[]")
-        # else:
-        #     # Not empty, set the environment variable to the
-        #     # value specified in the MET+ config file after removing whitespace
-        #     # and replacing ' with ".
-        #     init_inc = str(tmp_init_inc).replace("\'", "\"")
-        #     init_inc_str = ''.join(init_inc.split())
-        #     self.add_env_var('INIT_INCLUDE', str(init_inc_str))
-        #
-        # tmp_init_exc = self.c_dict['INIT_EXCLUDE']
-        # if not tmp_init_exc:
-        #     # Empty, MET is expecting [] to indicate all models are
-        #     # to be included
-        #     self.add_env_var('INIT_EXCLUDE', "[]")
-        # else:
-        #     # Replace ' with " and remove whitespace
-        #     init_exc = str(tmp_init_exc).replace("\'", "\"")
-        #     init_exc_str = ''.join(init_exc.split())
-        #     self.add_env_var('INIT_EXCLUDE', str(init_exc_str))
-        #
-        # # MODEL
-        # tmp_model = self.c_dict['MODEL']
-        # if not tmp_model:
-        #     # Empty, MET is expecting [] to indicate all models are to be
-        #     # included
-        #     self.add_env_var('MODEL', "[]")
-        # else:
-        #     # Replace ' with " and remove whitespace
-        #     model = str(tmp_model).replace("\'", "\"")
-        #     model_str = ''.join(model.split())
-        #     self.add_env_var('MODEL', str(model_str))
-
         # STORM_ID
         tmp_storm_id = self.c_dict['STORM_ID']
         if not tmp_storm_id:
@@ -543,25 +481,7 @@ class TCPairsWrapper(CommandBuilder):
         storm_name_fmt = f"cyclone = {tmp_storm_name};"
         self.env_var_dict['METPLUS_STORM_NAME'] = storm_name_fmt
 
-        # # Valid time window variables
-        # tmp_valid_beg = self.c_dict['VALID_BEG']
-        # tmp_valid_end = self.c_dict['VALID_END']
-        #
-        # if not tmp_valid_beg:
-        #     self.add_env_var('VALID_BEG', "")
-        # else:
-        #     valid_beg = str(tmp_valid_beg).replace("\'", "\"")
-        #     valid_beg_str = ''.join(valid_beg.split())
-        #     self.add_env_var('VALID_BEG', str(valid_beg_str))
-        #
-        # if not tmp_valid_end:
-        #     self.add_env_var('VALID_END', "")
-        # else:
-        #     valid_end = str(tmp_valid_end).replace("\'", "\"")
-        #     valid_end_str = ''.join(valid_end.split())
-        #     self.add_env_var('VALID_END', str(valid_end_str))
-        #
-        # # DLAND_FILE
+        # DLAND_FILE
         tmp_dland_file = self.c_dict['DLAND_FILE']
         self.add_env_var('DLAND_FILE', str(tmp_dland_file))
 
