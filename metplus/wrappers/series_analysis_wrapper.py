@@ -39,6 +39,17 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_OBTYPE',
         'METPLUS_DESC',
         'METPLUS_REGRID_DICT',
+        'METPLUS_CAT_THRESH',
+        'METPLUS_FCST_FILE_TYPE',
+        'METPLUS_FCST_FIELD',
+        'METPLUS_OBS_FILE_TYPE',
+        'METPLUS_OBS_FIELD',
+        'METPLUS_CLIMO_MEAN_FILE',
+        'METPLUS_CLIMO_STDEV_FILE',
+        'METPLUS_BLOCK_SIZE',
+        'METPLUS_VLD_THRESH',
+        'METPLUS_CTS_LIST',
+        'METPLUS_STAT_LIST',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -68,8 +79,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                c_dict['VERBOSITY'])
         )
 
-        self.set_met_config_string(self.env_var_dict, 'MODEL', 'model', 'METPLUS_MODEL')
-        self.set_met_config_string(self.env_var_dict, 'OBTYPE', 'obtype', 'METPLUS_OBTYPE')
+        self.set_met_config_string(self.env_var_dict,
+                                   'MODEL',
+                                   'model',
+                                   'METPLUS_MODEL')
+        self.set_met_config_string(self.env_var_dict,
+                                   'OBTYPE',
+                                   'obtype',
+                                   'METPLUS_OBTYPE')
 
         # handle old format of MODEL and OBTYPE
         c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'WRF')
@@ -79,18 +96,21 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         self.handle_regrid(c_dict)
 
-        self.set_met_config_list(c_dict,
+        self.set_met_config_list(self.env_var_dict,
                                  'SERIES_ANALYSIS_CAT_THRESH',
                                  'cat_thresh',
+                                 'METPLUS_CAT_THRESH',
                                  remove_quotes=True)
 
-        self.set_met_config_float(c_dict,
+        self.set_met_config_float(self.env_var_dict,
                                   'SERIES_ANALYSIS_VLD_THRESH',
-                                  'vld_thresh')
+                                  'vld_thresh',
+                                  'METPLUS_VLD_THRESH')
 
-        self.set_met_config_string(c_dict,
+        self.set_met_config_string(self.env_var_dict,
                                    'SERIES_ANALYSIS_BLOCK_SIZE',
                                    'block_size',
+                                   'METPLUS_BLOCK_SIZE',
                                    remove_quotes=True)
 
         # get stat list to loop over
@@ -103,16 +123,16 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             self.log_error("Must set SERIES_ANALYSIS_STAT_LIST to run.")
 
         # set stat list to set output_stats.cnt in MET config file
-        self.set_met_config_list(c_dict,
-                             'SERIES_ANALYSIS_STAT_LIST',
-                             'cnt',
-                             'OUTPUT_STATS_CNT')
+        self.set_met_config_list(self.env_var_dict,
+                                 'SERIES_ANALYSIS_STAT_LIST',
+                                 'cnt',
+                                 'METPLUS_STAT_LIST')
 
         # set cts list to set output_stats.cts in MET config file
-        self.set_met_config_list(c_dict,
-                             'SERIES_ANALYSIS_CTS_LIST',
-                             'cts',
-                             'OUTPUT_STATS_CTS')
+        self.set_met_config_list(self.env_var_dict,
+                                 'SERIES_ANALYSIS_CTS_LIST',
+                                 'cts',
+                                 'METPLUS_CTS_LIST')
 
         c_dict['PAIRED'] = self.config.getbool('config',
                                                'SERIES_ANALYSIS_IS_PAIRED',
@@ -690,7 +710,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             # get formatted field dictionary to pass into the MET config file
             fcst_field, obs_field = self.get_formatted_fields(var_info)
 
-            self.set_environment_variables(time_info, fcst_field, obs_field)
+            self.format_field('FCST', fcst_field)
+            self.format_field('OBS', obs_field)
+
+            self.set_environment_variables(time_info)
 
             self.set_command_line_arguments(time_info)
 
@@ -703,7 +726,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         return success
 
-    def set_environment_variables(self, time_info, fcst_field, obs_field):
+    def set_environment_variables(self, time_info):
         """! Set the env variables based on settings in the METplus config
              files.
 
@@ -721,14 +744,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         self.add_env_var("OBS_FILE_TYPE", self.c_dict.get('OBS_FILE_TYPE',
                                                           ''))
 
-        self.add_env_var('METPLUS_STAT_LIST', self.c_dict.get('OUTPUT_STATS_CNT', ''))
-        self.add_env_var('CTS_LIST', self.c_dict.get('OUTPUT_STATS_CTS', ''))
-
-        self.add_env_var("CAT_THRESH", self.c_dict.get('CAT_THRESH', ''))
-        self.add_env_var("VLD_THRESH", self.c_dict.get('VLD_THRESH', ''))
-        self.add_env_var("BLOCK_SIZE", self.c_dict.get('BLOCK_SIZE', ''))
-        self.add_env_var("FCST_FIELD", fcst_field)
-        self.add_env_var("OBS_FIELD", obs_field)
+        self.add_env_var("FCST_FIELD",
+                         self.c_dict.get('FCST_FIELD', ''))
+        self.add_env_var("OBS_FIELD",
+                         self.c_dict.get('OBS_FIELD', ''))
 
         # set climatology environment variables
         self.set_climo_env_vars()
