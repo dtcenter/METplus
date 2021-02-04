@@ -78,8 +78,8 @@ class CommandBuilder:
 
         # if wrapper has a config file, read unsupported MET config variable
         if 'CONFIG_FILE' in self.c_dict:
-            config_name = f"{self.app_name.upper()}_{self.MET_OVERRIDES}"
-            self.c_dict[self.MET_OVERRIDES] = (
+            config_name = f"{self.app_name.upper()}_{self.MET_OVERRIDES_KEY}"
+            self.c_dict[self.MET_OVERRIDES_KEY] = (
                 self.config.getraw('config', config_name)
             )
 
