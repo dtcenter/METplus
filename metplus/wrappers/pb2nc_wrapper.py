@@ -282,6 +282,10 @@ class PB2NCWrapper(CommandBuilder):
 
         # if multiple input files, add first now, then add rest with
         # -pbfile argument
+        if not self.infiles:
+            self.log_error("No input files found")
+            return None
+
         cmd += f" {self.infiles[0]}"
 
         out_path = self.get_output_path()
