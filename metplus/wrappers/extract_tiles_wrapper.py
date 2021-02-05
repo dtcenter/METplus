@@ -23,9 +23,11 @@ class ExtractTilesWrapper(CommandBuilder):
          specified in the config file.
     """
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'extract_tiles'
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         self.regrid_data_plane = self.regrid_data_plane_init()
 
     def create_c_dict(self):
@@ -40,17 +42,17 @@ class ExtractTilesWrapper(CommandBuilder):
         et_upper = self.app_name.upper()
 
         # get TCStat data dir/template to read
-        c_dict['STAT_INPUT_DIR'] = (
-            self.config.getdir('EXTRACT_TILES_STAT_INPUT_DIR', '')
+        c_dict['TC_STAT_INPUT_DIR'] = (
+            self.config.getdir('EXTRACT_TILES_TC_STAT_INPUT_DIR', '')
         )
 
-        c_dict['STAT_INPUT_TEMPLATE'] = (
+        c_dict['TC_STAT_INPUT_TEMPLATE'] = (
             self.config.getraw('filename_templates',
-                               'EXTRACT_TILES_STAT_INPUT_TEMPLATE',
+                               'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE',
                                '')
         )
-        if not c_dict['STAT_INPUT_TEMPLATE']:
-            self.log_error('Must set EXTRACT_TILES_STAT_INPUT_TEMPLATE '
+        if not c_dict['TC_STAT_INPUT_TEMPLATE']:
+            self.log_error('Must set EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE '
                            'to run ExtractTiles wrapper')
 
         # get gridded input/output directory/template to read
@@ -80,12 +82,6 @@ class ExtractTilesWrapper(CommandBuilder):
         if not c_dict['OUTPUT_DIR']:
             self.log_error('Must set EXTRACT_TILES_OUTPUT_DIR to run '
                            'ExtractTiles wrapper')
-
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = (
-            self.config.getbool('config',
-                                'EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS',
-                                False)
-        )
 
         c_dict['NLAT'] = self.config.getstr('config', 'EXTRACT_TILES_NLAT')
         c_dict['NLON'] = self.config.getstr('config', 'EXTRACT_TILES_NLON')
@@ -123,9 +119,13 @@ class ExtractTilesWrapper(CommandBuilder):
                 self.c_dict['OUTPUT_DIR']
             )
 
+        overrides[f'{rdp}_SKIP_IF_OUTPUT_EXISTS'] = (
+            self.c_dict['SKIP_IF_OUTPUT_EXISTS']
+        )
         overrides[f'{rdp}_ONCE_PER_FIELD'] = False
         overrides[f'{rdp}_MANDATORY'] = False
-        rdp_wrapper = RegridDataPlaneWrapper(self.config, overrides)
+        rdp_wrapper = RegridDataPlaneWrapper(self.config,
+                                             config_overrides=overrides)
         rdp_wrapper.c_dict['SHOW_WARNINGS'] = False
         return rdp_wrapper
 
@@ -161,10 +161,10 @@ class ExtractTilesWrapper(CommandBuilder):
 
         # Create the name of the filter file to use
         filter_filename = (
-            do_string_sub(self.c_dict['STAT_INPUT_TEMPLATE'],
+            do_string_sub(self.c_dict['TC_STAT_INPUT_TEMPLATE'],
                           **time_info)
         )
-        filter_path = os.path.join(self.c_dict['STAT_INPUT_DIR'],
+        filter_path = os.path.join(self.c_dict['TC_STAT_INPUT_DIR'],
                                    filter_filename)
 
         self.logger.debug(f"Looking for input stat file: {filter_path}")
@@ -229,6 +229,8 @@ class ExtractTilesWrapper(CommandBuilder):
                 ret = self.regrid_data_plane.run_at_time_once(time_info,
                                                               var_list,
                                                               data_type=dtype)
+                self.all_commands.extend(self.regrid_data_plane.all_commands)
+                self.regrid_data_plane.all_commands.clear()
 
                 # if RegridDataPlane failed to run for FCST, skip OBS
                 if not ret:

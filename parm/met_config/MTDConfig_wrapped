@@ -10,19 +10,19 @@
    // Output model name to be written
    //
 
-model = "${MODEL}";
+${METPLUS_MODEL}
 
    //
    // Output description to be written
    //
 
-desc = "NA";
+${METPLUS_DESC}
 
    //
    // Output observation type to be written
    //
 
-obtype = "${OBTYPE}";
+${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -30,14 +30,7 @@ obtype = "${OBTYPE}";
    //  Verification grid
    //  May be set separately in each "field" entry
    //
-
-regrid = {
-   to_grid    = ${REGRID_TO_GRID};
-   method     = NEAREST;
-   width      = 1;
-   vld_thresh = 0.5;
-   shape     = SQUARE;
-}
+${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

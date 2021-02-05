@@ -40,11 +40,13 @@ class TCPairsWrapper(CommandBuilder):
        bdeck files.  Pre-processes extra tropical cyclone data.
     """
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'tc_pairs'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         self.adeck = []
         self.bdeck = []
         self.edeck = []
@@ -94,11 +96,13 @@ class TCPairsWrapper(CommandBuilder):
                                                       'INIT_INCREMENT')
 
         c_dict['INIT_INCLUDE'] = util.getlist(
-            self.config.getstr('config', 'TC_PAIRS_INIT_INCLUDE'))
+            self.get_wrapper_or_generic_config('INIT_INCLUDE')
+        )
         c_dict['INIT_EXCLUDE'] = util.getlist(
-            self.config.getstr('config', 'TC_PAIRS_INIT_EXCLUDE'))
-        c_dict['VALID_BEG'] = self.config.getstr('config', 'TC_PAIRS_VALID_BEG')
-        c_dict['VALID_END'] = self.config.getstr('config', 'TC_PAIRS_VALID_END')
+            self.get_wrapper_or_generic_config('INIT_EXCLUDE')
+        )
+        c_dict['VALID_BEG'] = self.get_wrapper_or_generic_config('VALID_BEG')
+        c_dict['VALID_END'] = self.get_wrapper_or_generic_config('VALID_END')
         c_dict['ADECK_DIR'] = \
                 self.config.getdir('TC_PAIRS_ADECK_INPUT_DIR', '')
         c_dict['BDECK_DIR'] = \
@@ -167,6 +171,8 @@ class TCPairsWrapper(CommandBuilder):
                 if not match:
                     self.log_error(f'Incorrect STORM_ID format: {storm_id}')
 
+        self.handle_description(c_dict)
+
         return c_dict
 
     def run_all_times(self):
@@ -204,7 +210,7 @@ class TCPairsWrapper(CommandBuilder):
             else:
                 self.build()
 
-            return True
+            return self.all_commands
 
         # use init begin as run time (start of the storm)
         input_dict = {'init':
@@ -213,6 +219,7 @@ class TCPairsWrapper(CommandBuilder):
                      }
 
         self.run_at_time(input_dict)
+        return self.all_commands
 
     def run_at_time(self, input_dict):
         """! Create the arguments to run MET tc_pairs
@@ -220,6 +227,7 @@ class TCPairsWrapper(CommandBuilder):
                  input_dict dictionary containing init or valid time
              Returns:
         """
+        input_dict['instance'] = self.instance if self.instance else ''
         for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
             if custom_string:
                 self.logger.info(f"Processing custom string: {custom_string}")
@@ -364,11 +372,14 @@ class TCPairsWrapper(CommandBuilder):
             # Empty, MET is expecting [] to indicate all models are to be
             # included
             self.add_env_var('MODEL', "[]")
+            self.add_env_var('METPLUS_MODEL', "model = [];")
         else:
             # Replace ' with " and remove whitespace
             model = str(tmp_model).replace("\'", "\"")
             model_str = ''.join(model.split())
             self.add_env_var('MODEL', str(model_str))
+            model_fmt = f"model = {model_str};"
+            self.add_env_var('METPLUS_MODEL', model_fmt)
 
         # STORM_ID
         tmp_storm_id = self.c_dict['STORM_ID']
@@ -445,6 +456,9 @@ class TCPairsWrapper(CommandBuilder):
         # DLAND_FILE
         tmp_dland_file = self.c_dict['DLAND_FILE']
         self.add_env_var('DLAND_FILE', str(tmp_dland_file))
+
+        self.add_env_var('METPLUS_DESC',
+                         self.c_dict.get('METPLUS_DESC', ''))
 
         super().set_environment_variables(time_info)
 

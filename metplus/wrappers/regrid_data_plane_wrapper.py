@@ -25,11 +25,13 @@ from . import ReformatGriddedWrapper
 class RegridDataPlaneWrapper(ReformatGriddedWrapper):
     '''!Wraps the MET tool regrid_data_plane to reformat gridded datasets
     '''
-    def __init__(self, config, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'regrid_data_plane'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config, config_overrides)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -37,10 +39,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         app = 'REGRID_DATA_PLANE'
         c_dict['VERBOSITY'] = self.config.getstr('config', f'LOG_{app}_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = \
-          self.config.getbool('config', f'{app}_SKIP_IF_OUTPUT_EXISTS',
-                              False)
 
         c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
                                                        f'{app}_ONCE_PER_FIELD',

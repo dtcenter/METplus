@@ -427,8 +427,8 @@ def test_get_lead_sequence_lead(metplus_config):
     test_seq = util.get_lead_sequence(conf, input_dict)
     hour_seq = []
     for test in test_seq:
-        hour_seq.append(time_util.ti_get_seconds_from_relativedelta(test) // 3600)
-    lead_seq = [ 3, 6, 9, 12 ]
+        hour_seq.append(time_util.ti_get_hours_from_relativedelta(test))
+    lead_seq = [3, 6, 9, 12]
     assert(hour_seq == lead_seq)
 
 
@@ -454,9 +454,56 @@ def test_get_lead_sequence_lead_list(metplus_config, key, value):
     hour_seq = []
 
     for test in test_seq:
-        hour_seq.append(time_util.ti_get_seconds_from_relativedelta(test) // 3600)
+        hour_seq.append(time_util.ti_get_hours_from_relativedelta(test))
     lead_seq = value
     assert(hour_seq == lead_seq)
+
+@pytest.mark.parametrize(
+    'config_dict, expected_list', [
+        # 1 group
+        ({'LEAD_SEQ_1': "0, 1, 2, 3",
+          'LEAD_SEQ_1_LABEL': 'Day1',
+          },  [0, 1, 2, 3]),
+        # 2 groups, no overlap
+        ({'LEAD_SEQ_1': "0, 1, 2, 3",
+          'LEAD_SEQ_1_LABEL': 'Day1',
+          'LEAD_SEQ_2': "8, 9, 10, 11",
+          'LEAD_SEQ_2_LABEL': 'Day2',
+          },  [0, 1, 2, 3, 8, 9, 10, 11]),
+        # 2 groups, overlap
+        ({'LEAD_SEQ_1': "0, 1, 2, 3",
+          'LEAD_SEQ_1_LABEL': 'Day1',
+          'LEAD_SEQ_2': "3, 4, 5, 6",
+          'LEAD_SEQ_2_LABEL': 'Day2',
+          }, [0, 1, 2, 3, 4, 5, 6]),
+        # 2 groups, no overlap, out of order
+        ({'LEAD_SEQ_1': "8, 9, 10, 11",
+          'LEAD_SEQ_1_LABEL': 'Day2',
+          'LEAD_SEQ_2': "0, 1, 2, 3",
+          'LEAD_SEQ_2_LABEL': 'Day1',
+          },  [8, 9, 10, 11, 0, 1, 2, 3]),
+        # 2 groups, overlap, out of order
+        ({'LEAD_SEQ_1': "3, 4, 5, 6",
+          'LEAD_SEQ_1_LABEL': 'Day2',
+          'LEAD_SEQ_2': "0, 1, 2, 3",
+          'LEAD_SEQ_2_LABEL': 'Day1',
+          }, [3, 4, 5, 6, 0, 1, 2]),
+    ]
+)
+def test_get_lead_sequence_groups(metplus_config, config_dict, expected_list):
+    config = metplus_config()
+    for key, value in config_dict.items():
+        config.set('config', key, value)
+
+    output_list = util.get_lead_sequence(config)
+    hour_seq = []
+
+    for output in output_list:
+        hour_seq.append(
+            time_util.ti_get_hours_from_relativedelta(output)
+        )
+
+    assert(hour_seq == expected_list)
 
 @pytest.mark.parametrize(
     'list_string, output_list', [
@@ -516,53 +563,52 @@ def test_get_lead_sequence_lead_list(metplus_config, key, value):
 def test_getlist_begin_end_incr(list_string, output_list):
     assert(util.getlist(list_string) == output_list)
 
-# @pytest.mark.parametrize(
-#     'key, value', [
-#         (0,  [ 0, 12, 24, 36]),
-#         (1,  [ 1, 13, 25 ]),
-#         (2,  [ 2, 14, 26 ]),
-#         (3,  [ 3, 15, 27 ]),
-#         (4,  [ 4, 16, 28 ]),
-#         (5,  [ 5, 17, 29 ]),
-#         (6,  [ 6, 18, 30 ]),
-#         (7,  [ 7, 19, 31 ]),
-#         (8,  [ 8, 20, 32 ]),
-#         (9,  [ 9, 21, 33 ]),
-#         (10, [ 10, 22, 34 ]),
-#         (11, [ 11, 23, 35 ]),
-#         (12, [ 0, 12, 24, 36 ]),
-#         (13, [ 1, 13, 25 ]),
-#         (14, [ 2, 14, 26 ]),
-#         (15, [ 3, 15, 27 ]),
-#         (16, [ 4, 16, 28 ]),
-#         (17, [ 5, 17, 29 ]),
-#         (18, [ 6, 18, 30 ]),
-#         (19, [ 7, 19, 31 ]),
-#         (20, [ 8, 20, 32 ]),
-#         (21, [ 9, 21, 33 ]),
-#         (22, [ 10, 22, 34 ]),
-#         (23, [ 11, 23, 35 ])
-#     ]
-# )
-# def test_get_lead_sequence_init(key, value):
-#     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, key) }
-#     conf = metplus_config()
-#     conf.set('config', 'INIT_SEQ', "0, 12")
-#     conf.set('config', 'LEAD_SEQ_MAX', 36)
-#     test_seq = util.get_lead_sequence(conf, input_dict)
-#     lead_seq = value
-#     assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
-#
-# def test_get_lead_sequence_init_min_10():
-#     input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 12) }
-#     conf = metplus_config()
-#     conf.set('config', 'INIT_SEQ', "0, 12")
-#     conf.set('config', 'LEAD_SEQ_MAX', 24)
-#     conf.set('config', 'LEAD_SEQ_MIN', 10)
-#     test_seq = util.get_lead_sequence(conf, input_dict)
-#     lead_seq = [ 12, 24 ]
-#     assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
-#
+@pytest.mark.parametrize(
+    'current_hour, lead_seq', [
+        (0,  [0, 12, 24, 36]),
+        (1,  [1, 13, 25]),
+        (2,  [2, 14, 26]),
+        (3,  [3, 15, 27]),
+        (4,  [4, 16, 28]),
+        (5,  [5, 17, 29]),
+        (6,  [6, 18, 30]),
+        (7,  [7, 19, 31]),
+        (8,  [8, 20, 32]),
+        (9,  [9, 21, 33]),
+        (10, [10, 22, 34]),
+        (11, [11, 23, 35]),
+        (12, [0, 12, 24, 36]),
+        (13, [1, 13, 25]),
+        (14, [2, 14, 26]),
+        (15, [3, 15, 27]),
+        (16, [4, 16, 28]),
+        (17, [5, 17, 29]),
+        (18, [6, 18, 30]),
+        (19, [7, 19, 31]),
+        (20, [8, 20, 32]),
+        (21, [9, 21, 33]),
+        (22, [10, 22, 34]),
+        (23, [11, 23, 35])
+    ]
+)
+def test_get_lead_sequence_init(metplus_config, current_hour, lead_seq):
+    input_dict = {'valid': datetime.datetime(2019, 2, 1, current_hour)}
+    conf = metplus_config()
+    conf.set('config', 'INIT_SEQ', "0, 12")
+    conf.set('config', 'LEAD_SEQ_MAX', 36)
+    test_seq = util.get_lead_sequence(conf, input_dict)
+    assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
+
+def test_get_lead_sequence_init_min_10(metplus_config):
+    input_dict = {'valid': datetime.datetime(2019, 2, 1, 12)}
+    conf = metplus_config()
+    conf.set('config', 'INIT_SEQ', "0, 12")
+    conf.set('config', 'LEAD_SEQ_MAX', 24)
+    conf.set('config', 'LEAD_SEQ_MIN', 10)
+    test_seq = util.get_lead_sequence(conf, input_dict)
+    lead_seq = [12, 24]
+    assert(test_seq == [relativedelta(hours=lead) for lead in lead_seq])
+
 @pytest.mark.parametrize(
     'item_list, extension, is_valid', [
         (['FCST'], 'NAME', False),
@@ -654,58 +700,6 @@ def test_is_var_item_valid_levels(metplus_config, item_list, configs_to_set, is_
 
     assert(util.is_var_item_valid(item_list, '1', 'LEVELS', conf)[0] == is_valid)
 
-def test_remove_staged_files():
-    ''' Verify that the remove_staged_files correctly removes
-        the files with a filename pattern specified by the
-        filename_regex that are owned by the current are
-        removed, leaving all other files intact.
-
-    '''
-
-    # Create filter files (which are to be deleted later on) and some
-    # other files with a different filename pattern
-    staged_dir = '/tmp/test_cleanup'
-    util.mkdir_p(staged_dir)
-    filename_regex = 'filter_.*'
-    files_to_create = ['foo.txt', 'bar.txt', 'baz.csv', 'filter_20191214_00', 'filter-do-not-delete-me.txt', 'filter_20121212.tcst']
-    expected_deleted = ['filter_20191214_00','filter_20121212.tcst' ]
-
-    for cur_file in files_to_create:
-        full_file = os.path.join(staged_dir, cur_file)
-        subprocess.run(['touch', full_file])
-
-    util.remove_staged_files(staged_dir, filename_regex, None)
-
-    # Now check the /tmp/test_cleanup dir and verify that we no longer have the two filter_xyz files
-    # we deleted
-    actual_remaining_files = util.get_files(staged_dir, ".*", None)
-    for cur_deleted in expected_deleted:
-        assert (cur_deleted not in actual_remaining_files)
-
-
-    # Now clean up your /tmp/test_cleanup directory so we don't leave
-    # unused files and directories remaining...
-    shutil.rmtree(staged_dir)
-
-@pytest.mark.parametrize(
-    'process_list, has_plotter', [
-        (['PCPCombine'], False),
-        (['PCPCombine', 'GridStat'], False),
-        (['PCPCombine', 'RegridDataPlane', 'GridStat'], False),
-        (['CyclonePlotter'], True),
-        (['PCPCombine', 'CyclonePlotter', 'Other'], True),
-        (['MakePlots', 'Other'], True),
-        (['TCMPRPlotter'], True),
-        (['TCMPRPlotter', 'Other'], True),
-        (['Other', 'TCMPRPlotter'], True),
-        ([], False),
-        (['CyclonePlotter', 'TCMPRPlotter'], True),
-        (['CyclonePlotter', 'TCMPRPlotter', 'MakePlots'], True),
-    ]
-)
-def test_is_plotter_in_process_list(process_list, has_plotter):
-    assert(util.is_plotter_in_process_list(process_list) == has_plotter)
-
 # test that if wrapper specific field info is specified, it only gets
 # values from that list. All generic values should be read if no
 # wrapper specific field info variables are specified
@@ -746,43 +740,73 @@ def test_parse_var_list_wrapper_specific(metplus_config):
     'input_list, expected_list', [
         ('Point2Grid', ['Point2Grid']),
         # MET documentation syntax (with dashes)
-        ('Pcp-Combine, Grid-Stat, Ensemble-Stat', ['PCPCombine', 'GridStat', 'EnsembleStat']),
+        ('Pcp-Combine, Grid-Stat, Ensemble-Stat', ['PCPCombine',
+                                                   'GridStat',
+                                                   'EnsembleStat']),
         ('Point-Stat', ['PointStat']),
-        ('Mode, MODE Time Domain', ['MODE', 'MTD']),
+        ('Mode, MODE Time Domain', ['MODE',
+                                    'MTD']),
         # actual tool name (lower case underscore)
-        ('point_stat, grid_stat, ensemble_stat', ['PointStat', 'GridStat', 'EnsembleStat']),
-        ('mode, mtd', ['MODE', 'MTD']),
-        ('ascii2nc, pb2nc, regrid_data_plane', ['ASCII2NC', 'PB2NC', 'RegridDataPlane']),
-        ('pcp_combine, tc_pairs, tc_stat', ['PCPCombine', 'TCPairs', 'TCStat']),
-        ('gen_vx_mask, stat_analysis, series_analysis', ['GenVxMask', 'StatAnalysis', 'SeriesAnalysis']),
+        ('point_stat, grid_stat, ensemble_stat', ['PointStat',
+                                                  'GridStat',
+                                                  'EnsembleStat']),
+        ('mode, mtd', ['MODE',
+                       'MTD']),
+        ('ascii2nc, pb2nc, regrid_data_plane', ['ASCII2NC',
+                                                'PB2NC',
+                                                'RegridDataPlane']),
+        ('pcp_combine, tc_pairs, tc_stat', ['PCPCombine',
+                                            'TCPairs',
+                                            'TCStat']),
+        ('gen_vx_mask, stat_analysis, series_analysis', ['GenVxMask',
+                                                         'StatAnalysis',
+                                                         'SeriesAnalysis']),
         # old capitalization format
-        ('PcpCombine, Ascii2Nc, TcStat, TcPairs', ['PCPCombine', 'ASCII2NC', 'TCStat', 'TCPairs']),
-
+        ('PcpCombine, Ascii2Nc, TcStat, TcPairs', ['PCPCombine',
+                                                   'ASCII2NC',
+                                                   'TCStat',
+                                                   'TCPairs']),
+        # remove MakePlots from list
+        ('StatAnalysis, MakePlots', ['StatAnalysis']),
     ]
 )
 def test_get_process_list(metplus_config, input_list, expected_list):
     conf = metplus_config()
     conf.set('config', 'PROCESS_LIST', input_list)
-    output_list = util.get_process_list(conf)
+    process_list = util.get_process_list(conf)
+    output_list = [item[0] for item in process_list]
     assert(output_list == expected_list)
 
 @pytest.mark.parametrize(
-    'input_list, environ, expected_result', [
-        (['Point2Grid'], {}, True), # no plotters, not disabled
-        (['Point2Grid'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'yes'}, True), # no plotters, disabled
-        (['TCMPRPlotter'], {}, True), # plotter, not enabled
-        (['TCMPRPlotter'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'yes'}, False), # plotters, disabled
-        (['TCMPRPlotter'], {'METPLUS_ENABLE_PLOT_WRAPPERS': 'yes'}, True), # no plotters, enabled
-        # test that env var value is interpreted to be True or False instead of
-        # just checking if it is set to any value or not set
-        (['Point2Grid'], {'METPLUS_ENABLE_PLOT_WRAPPERS': 'no'}, True), # no plotters, disabled
-        (['Point2Grid'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'no'}, True), # no plotters, disabled
-        (['TCMPRPlotter'], {'METPLUS_ENABLE_PLOT_WRAPPERS': 'no'}, False), # no plotters, enabled no
-        (['TCMPRPlotter'], {'METPLUS_DISABLE_PLOT_WRAPPERS': 'no'}, True), # no plotters, disabled no
+    'input_list, expected_list', [
+        # no instances
+        ('Point2Grid', [('Point2Grid', None)]),
+        # one with instance one without
+        ('PcpCombine, GridStat(my_instance)', [('PCPCombine', None),
+                                               ('GridStat', 'my_instance')]),
+        # duplicate process, one with instance one without
+        ('TCStat, ExtractTiles, TCStat(for_series), SeriesAnalysis', (
+                [('TCStat',None),
+                 ('ExtractTiles',None),
+                 ('TCStat', 'for_series'),
+                 ('SeriesAnalysis',None),])),
+        # two processes, both with instances
+        ('mode(uno), mtd(dos)', [('MODE', 'uno'),
+                                 ('MTD', 'dos')]),
+        # lower-case names, first with instance, second without
+        ('ascii2nc(some_name), pb2nc', [('ASCII2NC', 'some_name'),
+                                        ('PB2NC', None)]),
+        # duplicate process, both with different instances
+        ('tc_stat(one), tc_pairs, tc_stat(two)', [('TCStat', 'one'),
+                                                  ('TCPairs', None),
+                                                  ('TCStat', 'two')]),
     ]
 )
-def test_check_plotter_in_process_list(input_list, environ, expected_result):
-    assert(util.check_plotter_in_process_list(input_list, environ) == expected_result)
+def test_get_process_list_instances(metplus_config, input_list, expected_list):
+    conf = metplus_config()
+    conf.set('config', 'PROCESS_LIST', input_list)
+    output_list = util.get_process_list(conf)
+    assert(output_list == expected_list)
 
 @pytest.mark.parametrize(
     'time_from_conf, fmt, is_datetime', [
@@ -854,8 +878,6 @@ def test_fix_list(list_str, expected_fixed_list):
         ('PyEmbedWrapper', 'py_embed_wrapper'),
         ('RegridDataPlaneWrapper', 'regrid_data_plane_wrapper'),
         ('SeriesAnalysisWrapper', 'series_analysis_wrapper'),
-        ('SeriesByInitWrapper', 'series_by_init_wrapper'),
-        ('SeriesByLeadWrapper', 'series_by_lead_wrapper'),
         ('StatAnalysisWrapper', 'stat_analysis_wrapper'),
         ('TCMPRPlotterWrapper', 'tcmpr_plotter_wrapper'),
         ('TCPairsWrapper', 'tc_pairs_wrapper'),
@@ -1114,3 +1136,110 @@ def test_get_storms(metplus_config, filename, expected_result):
     # ensure header matches expected format
     if storm_dict:
         assert(storm_dict['header'].split()[storm_id_index] == 'STORM_ID')
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_result', [
+        # 2 items semi-colon at end
+        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;  desc = "HI_CLOUD";',},
+         'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
+        # 2 items no semi-colon at end
+        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;  desc = "HI_CLOUD"',},
+         'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
+        # 1 item semi-colon at end
+        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;',
+          },
+         'GRIB_lvl_typ = 234;'),
+        # 1 item no semi-colon at end
+        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234',
+          },
+         'GRIB_lvl_typ = 234;'),
+    ]
+)
+def test_get_var_items_options_semicolon(metplus_config, config_overrides,
+                                         expected_result):
+    config = metplus_config()
+    config.set('config', 'FCST_VAR1_NAME', 'FNAME')
+    config.set('config', 'FCST_VAR1_LEVELS', 'FLEVEL')
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    data_type = 'FCST'
+    index = 1
+    time_info = {}
+
+    _, _, _, result = util.get_var_items(config, data_type, index, time_info)
+    assert(result == expected_result)
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_results', [
+        # 2 levels
+        ({'FCST_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d} {fcst_level}',
+          'FCST_VAR1_LEVELS': 'P500,P250',
+          'OBS_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d} {obs_level}',
+          'OBS_VAR1_LEVELS': 'P500,P250',
+          },
+         ['read_data.py TMP 20200201 P500',
+          'read_data.py TMP 20200201 P250',
+          ]),
+        ({'BOTH_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d} {fcst_level}',
+          'BOTH_VAR1_LEVELS': 'P500,P250',
+          },
+         ['read_data.py TMP 20200201 P500',
+          'read_data.py TMP 20200201 P250',
+          ]),
+        # no level but level specified in name
+        ({'FCST_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d} {fcst_level}',
+          'OBS_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d} {obs_level}',
+         },
+         ['read_data.py TMP 20200201 ',
+          ]),
+        # no level
+        ({'FCST_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d}',
+          'OBS_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d}',
+          },
+         ['read_data.py TMP 20200201',
+          ]),
+        # real example
+        ({'BOTH_VAR1_NAME': ('myscripts/read_nc2xr.py '
+                            'mydata/forecast_file.nc4 TMP '
+                            '{valid?fmt=%Y%m%d_%H%M} {fcst_level}'),
+         'BOTH_VAR1_LEVELS': 'P1000,P850,P700,P500,P250,P100',
+          },
+        [('myscripts/read_nc2xr.py mydata/forecast_file.nc4 TMP 20200201_1225'
+         ' P1000'),
+         ('myscripts/read_nc2xr.py mydata/forecast_file.nc4 TMP 20200201_1225'
+         ' P850'),
+         ('myscripts/read_nc2xr.py mydata/forecast_file.nc4 TMP 20200201_1225'
+         ' P700'),
+         ('myscripts/read_nc2xr.py mydata/forecast_file.nc4 TMP 20200201_1225'
+         ' P500'),
+         ('myscripts/read_nc2xr.py mydata/forecast_file.nc4 TMP 20200201_1225'
+         ' P250'),
+         ('myscripts/read_nc2xr.py mydata/forecast_file.nc4 TMP 20200201_1225'
+         ' P100'),
+         ]),
+    ]
+)
+def test_parse_var_list_py_embed_multi_levels(metplus_config, config_overrides,
+                                              expected_results):
+    config = metplus_config()
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    time_info = {'valid': datetime.datetime(2020, 2, 1, 12, 25)}
+    var_list = util.parse_var_list(config,
+                                   time_info=time_info,
+                                   data_type=None)
+    assert(len(var_list) == len(expected_results))
+
+    for var_item, expected_result in zip(var_list, expected_results):
+        assert(var_item['fcst_name'] == expected_result)
+
+    # run again with data type specified
+    var_list = util.parse_var_list(config,
+                                    time_info=time_info,
+                                    data_type='FCST')
+    assert(len(var_list) == len(expected_results))
+
+    for var_item, expected_result in zip(var_list, expected_results):
+        assert(var_item['fcst_name'] == expected_result)

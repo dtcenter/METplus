@@ -135,13 +135,30 @@ _SeriesByLead_PyEmbed_IVT.conf
 # section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCPairsETCConfig_IVT
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStatConfig_IVT
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/SeriesAnalysisConfig_IVT
+# .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 #
 # See the following files for more information about the environment variables set in these configuration files.
 #
 # parm/use_cases/met_tool_wrapper/TCPairs/TCPairs.py
+#
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case uses two Python embedding scripts to read input data
+#
+# parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT/gfs_ivt_fcst.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT/gfs_ivt_fcst.py
+#
+# parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT/gfs_ivt_analysis.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT/gfs_ivt_analysis.py
+#
 #
 
 ##############################################################################
@@ -170,7 +187,7 @@ _SeriesByLead_PyEmbed_IVT.conf
 #
 #  and for the [exe] section, you will need to define the location of NON-MET executables.
 #  If the executable is in the user's path, METplus will find it from the name. 
-#  If the executable is not in the path, specify the full path to the executable here (i.e. RM = /bin/rm)  
+#  If the executable is not in the path, specify the full path to the executable here (i.e. CONVERT = /usr/bin/convert)
 #  The following executables are required for performing series analysis use cases:
 #
 # Example User Configuration File::
@@ -181,12 +198,7 @@ _SeriesByLead_PyEmbed_IVT.conf
 #   MET_INSTALL_DIR = /path/to/met-X.Y
 #
 #   [exe]
-#   RM = /path/to/rm
-#   CUT = /path/to/cut
-#   TR = /path/to/tr
-#   NCAP2 = /path/to/ncap2
 #   CONVERT = /path/to/convert
-#   NCDUMP = /path/to/ncdump
 #
 
 ##############################################################################
@@ -250,5 +262,6 @@ _SeriesByLead_PyEmbed_IVT.conf
 #  `FeatureRelativeUseCase <https://dtcenter.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_,
 #  `SBUOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
 #  `DiagnosticsUseCase <https://dtcenter.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
+#  `RuntimeFreqUseCase <https://dtcenter.github.io/METplus/search.html?q=RuntimeFreqUseCase&check_keywords=yes&area=default>`_
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_SBU_IVT.png'

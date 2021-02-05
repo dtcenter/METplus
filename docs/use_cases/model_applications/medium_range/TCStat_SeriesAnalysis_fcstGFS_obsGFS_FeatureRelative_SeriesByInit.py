@@ -100,9 +100,8 @@ _SeriesByInit.conf
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCPairsETCConfig
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStatConfig
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/SeriesAnalysisConfig
+# .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 #
 # See the following files for more information about the environment variables set in these configuration files.
 # 
@@ -134,29 +133,19 @@ _SeriesByInit.conf
 #  and for the [exe] section, you will need to define the location of
 #  NON-MET executables.  If the executable is in the user's path, METplus will find it from
 #  the name. If the executable is not in the path, specify the full
-#  path to the executable here (i.e. RM = /bin/rm)  The following executables are required
+#  path to the executable here (i.e. CONVERT = /usr/bin/convert)  The following executables are required
 #  for performing series analysis use cases:
 #
 #  If the executables are in the path:
 #
-# * **RM = rm**
-# * **CUT = cut**
-# * **TR = tr**
-# * **NCAP2 = ncap2**
 # * **CONVERT = convert**
-# * **NCDUMP = ncdump**
 #
 # **NOTE:** All of these executable items must be located under the [exe] section.
 #
 #
 # If the executables are not in the path, they need to be defined:
 #
-# * **RM = /path/to/rm**
-# * **CUT = /path/to/cut**
-# * **TR = /path/to/tr**
-# * **NCAP2 = /path/to/ncap2**
 # * **CONVERT = /path/to/convert**
-# * **NCDUMP= /path/to/ncdump**
 #
 # **NOTE:** All of these executable items must be located under the [exe] section.
 # Example User Configuration File::
@@ -167,12 +156,7 @@ _SeriesByInit.conf
 #   MET_INSTALL_DIR = /path/to/met-X.Y
 #
 #   [exe]
-#   RM = /path/to/rm
-#   CUT = /path/to/cut
-#   TR = /path/to/tr
-#   NCAP2 = /path/to/ncap2
 #   CONVERT = /path/to/convert
-#   NCDUMP = /path/to/ncdump
 #
 # **NOTE:** The INPUT_BASE, OUTPUT_BASE, and MET_INSTALL_DIR must be located under the [dir] section, while the RM, CUT, TR, NCAP2, CONVERT, and NCDUMP must be located under the [exe] section.
 
@@ -225,4 +209,7 @@ _SeriesByInit.conf
 #
 # sphinx_gallery_thumbnail_path = '_static/medium_range-TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByInit.png'
 #
-# .. note:: `TCStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_, `SeriesByInitUseCase <https://dtcenter.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_, `RegridDataPlaneToolUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_, `MediumRangeAppUseCase <https://dtcenter.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_,  `SeriesAnalysisUseCase <https://dtcenter.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_, `GRIB2FileUseCase <https://dtcenter.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_, `TCPairsToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_, `FeatureRelativeUseCase <https://dtcenter.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_, `SBUOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_, `DiagnosticsUseCase <https://dtcenter.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
+# .. note::
+#
+#  `TCStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_, `SeriesByInitUseCase <https://dtcenter.github.io/METplus/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_, `RegridDataPlaneToolUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_, `MediumRangeAppUseCase <https://dtcenter.github.io/METplus/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_, `SeriesAnalysisUseCase <https://dtcenter.github.io/METplus/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_,`GRIB2FileUseCase <https://dtcenter.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_, `TCPairsToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_, `FeatureRelativeUseCase <https://dtcenter.github.io/METplus/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_, `SBUOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_, `DiagnosticsUseCase <https://dtcenter.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_, `RuntimeFreqUseCase <https://dtcenter.github.io/METplus/search.html?q=RuntimeFreqUseCase&check_keywords=yes&area=default>`_
+

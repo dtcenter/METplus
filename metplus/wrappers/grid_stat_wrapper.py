@@ -24,11 +24,13 @@ from . import CompareGriddedWrapper
 class GridStatWrapper(CompareGriddedWrapper):
     '''!Wraps the MET tool grid_stat to compare gridded datasets
     '''
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'grid_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -63,6 +65,11 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_STAT_OUTPUT_DIR',
                                                   self.config.getdir('OUTPUT_BASE'))
+
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               'GRID_STAT_OUTPUT_TEMPLATE')
+        )
         c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
                                                        'GRID_STAT_ONCE_PER_FIELD',
                                                        False)
@@ -76,7 +83,7 @@ class GridStatWrapper(CompareGriddedWrapper):
                                                           'GRID_STAT_NEIGHBORHOOD_WIDTH', '1')
         c_dict['NEIGHBORHOOD_SHAPE'] = self.config.getstr('config',
                                                           'GRID_STAT_NEIGHBORHOOD_SHAPE', 'SQUARE')
-        self.set_c_dict_list(c_dict,
+        self.set_met_config_list(c_dict,
                              f'GRID_STAT_NEIGHBORHOOD_COV_THRESH',
                              'cov_thresh',
                              'NEIGHBORHOOD_COV_THRESH',
@@ -89,15 +96,12 @@ class GridStatWrapper(CompareGriddedWrapper):
         # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
         self.handle_window_variables(c_dict, 'grid_stat')
 
-        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'GRID_STAT_REGRID_TO_GRID', '')
-
         return c_dict
 
     def set_environment_variables(self, fcst_field, obs_field, time_info):
         """!Set environment variables that are referenced by the MET config file"""
 
         # set environment variables needed for MET application
-        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
 
@@ -121,7 +125,5 @@ class GridStatWrapper(CompareGriddedWrapper):
                          self.c_dict.get('VERIFICATION_MASK', ''))
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
-
-        self.add_common_envs()
 
         super().set_environment_variables(time_info)

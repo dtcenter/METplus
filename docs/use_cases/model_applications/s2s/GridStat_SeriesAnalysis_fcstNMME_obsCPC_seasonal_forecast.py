@@ -187,20 +187,15 @@ _seasonal_forecast.conf
 # **GridStatConfig_seasonal_forecast**
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/GridStatConfig_seasonal_forecast
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast/GridStatConfig_seasonal_forecast
 #
 # See the following file for more information about the environment variables set in this configuration file::
 #   parm/use_cases/met_tool_wrapper/GridStat/GridStat.py
 #
-# **SeriesAnalysisConfig_seasonal_forecast_climo**
+# **SeriesAnalysisConfig_wrapped**
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/SeriesAnalysisConfig_seasonal_forecast_climo
-#
-# **SeriesAnalysisConfig_seasonal_forecast_full_stats**
-#
-# .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/SeriesAnalysisConfig_seasonal_forecast_full_stats
+# .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
 #
 # See the following file for more information about the environment variables set in these configuration files::
 #   parm/use_cases/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis.conf
@@ -268,8 +263,8 @@ _seasonal_forecast.conf
 #    `GridStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
 #    `NetCDFFileUseCase <https://dtcenter.github.io/METplus/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_,
 #    `LoopByMonthFeatureUseCase  <https://dtcenter.github.io/METplus/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_,
-#    `NCAROrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
-#    `CustomStringLoopingUseCase  <https://dtcenter.github.io/METplus/search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_
+#    `NCAROrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_,
+#    `RuntimeFreqUseCase <https://dtcenter.github.io/METplus/search.html?q=RuntimeFreqUseCase&check_keywords=yes&area=default>`_
 #
 # sphinx_gallery_thumbnail_path = '_static/s2s-GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.png'
 #

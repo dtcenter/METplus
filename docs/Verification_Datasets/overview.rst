@@ -1,0 +1,7 @@
+﻿Overview
+========
+
+One of biggest challenges in verification is identifying appropriate and available datasets. While countless observations and analyses exist for both standard (e.g., temperature, pressure, wind, and precipitation) and non-state (e.g., aerosol optical depth, composite reflectivity, and turbulence) variables, it is often difficult to identify, procure, and apply the necessary datasets needed for a robust model evaluation. To address the need for a centralized catalogue of verification datasets, the DTC has assembled an initial version of the Verification Datasets Guide to provide the model verification community with relevant “truth” datasets, including data from satellite platforms (geostationary and polar orbiting), gridded analyses (global and regional), station or point-based datasets (global and regional), and radar networks.
+
+For each entry in the catalogue, information such as dataset description, recommended/scientific use, file format, location of data, access restrictions, spatial and temporal resolution, grid and/or coverage, date/time availability, and variables available is provided. In addition, when available, a link to a METplus use case is provided to show examples of how to use the dataset within MET. The catalogue also contains keywords to help identify datasets based on data type, application, and provider. The goal is to have the Verification Datasets Guide be a living document. As new datasets are used within MET, they can be added, and as older datasets become less relevant, they can be retired.
+

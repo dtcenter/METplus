@@ -9,17 +9,17 @@
 //
 // Output model name to be written
 //
-model = "${MODEL}";
+${METPLUS_MODEL}
 
 //
 // Output description to be written
 //
-desc = "NA";
+${METPLUS_DESC}
 
 //
 // Output observation type to be written
 //
-obtype = "${OBTYPE}";
+${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -27,19 +27,14 @@ obtype = "${OBTYPE}";
 // Verification grid
 // May be set separately in each "field" entry
 //
-regrid = {
-   to_grid    = ${REGRID_TO_GRID};
-   method     = NEAREST;
-   width      = 1;
-   vld_thresh = 0.5;
-   shape      = SQUARE;
-}
+${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 censor_thresh = [];
 censor_val    = [];
-cat_thresh    = [ NA ];
+//cat_thresh    = [ NA ];
+${CAT_THRESH}
 cnt_thresh    = [ NA ];
 cnt_logic     = UNION;
 
@@ -113,12 +108,14 @@ mask = {
 // Number of grid points to be processed concurrently.  Set smaller to use
 // less memory but increase the number of passes through the data.
 //
-block_size = 1024;
+//block_size = 1024;
+${BLOCK_SIZE}
 
 //
 // Ratio of valid matched pairs to compute statistics for a grid point
 //
-vld_thresh = 1.0;
+//vld_thresh = 1.0;
+${VLD_THRESH}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -128,10 +125,11 @@ vld_thresh = 1.0;
 output_stats = {
    fho    = [];
    ctc    = [];
-   cts    = [];
+//   cts    = [];
+   ${CTS_LIST}
    mctc   = [];
    mcts   = [];
-   cnt    = ${STAT_LIST};
+   ${METPLUS_STAT_LIST}
    sl1l2  = [];
    sal1l2 = [];
    pct    = [];

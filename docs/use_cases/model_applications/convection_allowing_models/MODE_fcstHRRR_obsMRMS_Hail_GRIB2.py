@@ -66,7 +66,7 @@ MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/MODEConfig_hailcast
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/convection_allowing_models/MODE_fcstHRRR_obsMRMS_Hail_GRIB2/MODEConfig_hailcast
 #
 # See the following files for more information about the environment variables set in this configuration file.
 #

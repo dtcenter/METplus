@@ -9,39 +9,33 @@
 //
 // Output model name to be written
 //
-model = "${MODEL}";
+${METPLUS_MODEL}
 
 //
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
-desc = "NA";
+${METPLUS_DESC}
 
 //
 // Output observation type to be written
 //
-obtype = "${OBTYPE}";
+${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Verification grid
 //
-regrid = {
-   to_grid    = ${REGRID_TO_GRID};
-   method     = NEAREST;
-   width      = 1;
-   vld_thresh = 0.5;
-   shape      = SQUARE;
-}
+${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // May be set separately in each "field" entry
 //
-censor_thresh = [];
-censor_val    = [];
+${METPLUS_CENSOR_THRESH}
+${METPLUS_CENSOR_VAL}
 cat_thresh    = [];
 nc_var_str    = "";
 
@@ -52,8 +46,9 @@ ens = {
 
    ${ENS_FILE_TYPE}
 
-   ens_thresh = ${ENS_THRESH};
-   ${ENS_VLD_THRESH}
+   ${METPLUS_ENS_THRESH}
+   ${METPLUS_ENS_VLD_THRESH}
+   ${METPLUS_ENS_OBS_THRESH}
 
    field = [ ${ENS_FIELD}  ];
 }
@@ -63,27 +58,12 @@ ens = {
 //
 // Neighborhood ensemble probabilities
 //
-nbrhd_prob = {
-   width      = [ 5 ];
-   shape      = CIRCLE;
-   vld_thresh = 0.0;
-}
+${METPLUS_NBRHD_PROB_DICT}
 
 //
 // NMEP smoothing methods
 //
-nmep_smooth = {
-   vld_thresh      = 0.0;
-   shape           = CIRCLE;
-   gaussian_dx     = 81.27;
-   gaussian_radius = 120;
-   type = [
-      {
-         method = GAUSSIAN;
-         width  = 1;
-      }
-   ];
-}
+${METPLUS_NMEP_SMOOTH_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -112,14 +92,14 @@ obs = {
 // May be set separately in each "obs.field" entry
 //
 
-message_type = [ "ADPSFC" ];
+${METPLUS_MESSAGE_TYPE}
 sid_exc        = [];
 obs_thresh     = [ NA ];
 obs_quality    = [];
-duplicate_flag = NONE;
+${METPLUS_DUPLICATE_FLAG}
 obs_summary    = NONE;
 obs_perc_value = 50;
-skip_const     = FALSE;
+${METPLUS_SKIP_CONST}
 
 //
 // Observation error options
@@ -127,7 +107,7 @@ skip_const     = FALSE;
 // May be set separately in each "obs.field" entry
 //
 obs_error = {
-   flag             = FALSE;
+   ${METPLUS_OBS_ERROR_FLAG}
    dist_type        = NONE;
    dist_parm        = [];
    inst_bias_scale  = 1.0;
@@ -150,8 +130,8 @@ message_type_group_map = [
 // Ensemble bin sizes
 // May be set separately in each "obs.field" entry
 //
-ens_ssvar_bin_size = 1.0;
-ens_phist_bin_size = 0.05;
+${METPLUS_ENS_SSVAR_BIN_SIZE}
+${METPLUS_ENS_PHIST_BIN_SIZE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -171,8 +151,8 @@ climo_mean = {
    }
 
    time_interp_method = DW_MEAN;
-   day_interval       = 31;
-   hour_interval      = 6;
+   ${METPLUS_CLIMO_MEAN_DAY_INTERVAL}
+   ${METPLUS_CLIMO_MEAN_HOUR_INTERVAL}
 }
 
 climo_stdev = climo_mean;
@@ -183,12 +163,7 @@ climo_stdev = {
 //
 // May be set separately in each "obs.field" entry
 //
-climo_cdf = {
-   cdf_bins    = 1;
-   center_bins = FALSE;
-   write_bins  = TRUE;
-}
-
+${METPLUS_CLIMO_CDF_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -206,12 +181,8 @@ obs_window = {
 // Verification masking regions
 //
 mask = {
-   grid  = [ "FULL" ];
-   poly  = [ "MET_BASE/poly/HMT_masks/huc4_1605_poly.nc",
-             "MET_BASE/poly/HMT_masks/huc4_1803_poly.nc",
-             "MET_BASE/poly/HMT_masks/huc4_1804_poly.nc",
-             "MET_BASE/poly/HMT_masks/huc4_1805_poly.nc",
-             "MET_BASE/poly/HMT_masks/huc4_1806_poly.nc" ];
+   ${METPLUS_MASK_GRID}
+   poly = [ ${VERIF_MASK} ];
    sid   = [];
    llpnt = [];
 }
@@ -221,61 +192,28 @@ mask = {
 //
 // Confidence interval settings
 //
-ci_alpha  = [ 0.05 ];
+${METPLUS_CI_ALPHA}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Interpolation methods
 //
-interp = {
-   field      = BOTH;
-   vld_thresh = 1.0;
-   shape  = SQUARE;
-
-   type = [
-      {
-         method = NEAREST;
-         width  = 1;
-      }
-   ];
-}
+${METPLUS_INTERP_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Statistical output types
 //
-output_flag = {
-   ecnt  = BOTH;
-   rhist = BOTH;
-   phist = BOTH;
-   orank = BOTH;
-   ssvar = BOTH;
-   relp  = BOTH;
-}
+${METPLUS_OUTPUT_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Ensemble product output types
 //
-ensemble_flag = {
-   latlon    = TRUE;
-   mean      = TRUE;
-   stdev     = TRUE;
-   minus     = TRUE;
-   plus      = TRUE;
-   min       = TRUE;
-   max       = TRUE;
-   range     = TRUE;
-   vld_count = TRUE;
-   frequency = TRUE;
-   nep       = FALSE;
-   nmep      = FALSE;
-   rank      = TRUE;
-   weight    = FALSE;
-}
+${METPLUS_ENSEMBLE_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -290,7 +228,7 @@ rng = {
 ////////////////////////////////////////////////////////////////////////////////
 
 grid_weight_flag = NONE;
-output_prefix    = "${OUTPUT_PREFIX}";
+${METPLUS_OUTPUT_PREFIX}
 //version          = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////

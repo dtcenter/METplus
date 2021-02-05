@@ -140,8 +140,6 @@ def setup(config_inputs, logger=None, base_confs=METPLUS_BASE_CONFS):
 
     logger.info('Completed METplus configuration setup.')
 
-    config.move_all_to_config_section()
-
     return config
 
 # def parse_launch_args(args,usage,logger,PARM_BASE=None):
@@ -242,12 +240,16 @@ def launch(file_list, moreopt):
     logger = config.log()
 
     # set config variable for current time
-    config.set('config', 'CLOCK_TIME', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+    config.set('config', 'CLOCK_TIME',
+               datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
 
     # Read in and parse all the conf files.
     for filename in file_list:
         config.read(filename)
         logger.info("%s: Parsed this file" % (filename,))
+
+        # move all config variables from old sections into the [config] section
+        config.move_all_to_config_section()
 
     # Overriding or passing in specific conf items on the command line
     # ie. config.NEWVAR="a new var" dir.SOMEDIR=/override/dir/path
@@ -260,6 +262,10 @@ def launch(file_list, moreopt):
                 logger.info('Override: %s.%s=%s'
                             % (section, option, repr(value)))
                 config.set(section, option, value)
+
+                # after each config variable override,
+                # move old sections to [config]
+                config.move_all_to_config_section()
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
@@ -290,7 +296,7 @@ def launch(file_list, moreopt):
         logger.warning('METPLUS_BASE from the conf files has no effect.'+\
                        ' Overriding to '+METPLUS_BASE)
 
-    config.set('dir', 'METPLUS_BASE', METPLUS_BASE)
+    config.set('config', 'METPLUS_BASE', METPLUS_BASE)
 
     # do the same for PARM_BASE
     user_parm_base = config.getdir('PARM_BASE', PARM_BASE)
@@ -300,9 +306,9 @@ def launch(file_list, moreopt):
         logger.error('Please remove PARM_BASE from any config file. Set the ' +\
                      'environment variable METPLUS_PARM_BASE to change where ' +\
                      'the METplus wrappers look for config files.')
-        exit(1)
+        sys.exit(1)
 
-    config.set('dir', 'PARM_BASE', PARM_BASE)
+    config.set('config', 'PARM_BASE', PARM_BASE)
 
     # print config items that are set automatically
     for var in ('METPLUS_BASE', 'PARM_BASE'):
@@ -509,23 +515,44 @@ def get_logger(config, sublog=None):
     config.logger = logger
     return logger
 
-def replace_config_from_section(config, section):
-    if not config.has_section(section):
-        error_message = f'Section {section} does not exist.'
-        if config.logger:
-            config.logger.error(error_message)
-        else:
-            print(f"ERROR: {error_message}")
+def replace_config_from_section(config, section, required=True):
+    """! Check if config has a section named [section] If it does, create a
+    new METplusConfig object, set each value from the input config, then
+    set each value from [section], overriding any values that are found in both
 
-        return None
+    @param config input METplusConfig object
+    @param section name of section in config object to look for
+    @param required (optional) True/False to determine if an error should occur
+    if the section does not exist. Default value is True
+    @returns If required and section does not exist, error and return None.
+    If not required and section does not exist, return input config. If section
+    does exist, return new METplusConfig object with config values replaced by
+    all values in [section]
+    """
+    if not config.has_section(section):
+        # if section is required to be found, report error and return None
+        if required:
+            error_message = f'Section {section} does not exist.'
+            if config.logger:
+                config.logger.error(error_message)
+            else:
+                print(f"ERROR: {error_message}")
+
+            return None
+        # if not required, return input config object
+        return config
 
     new_config = METplusConfig()
-    all_configs = config.keys('config')
-    for key in all_configs:
-        new_config.set('config',
-                       key,
-                       config.getraw('config', key))
 
+    # copy over all key/values from sections
+    for section_to_copy in ['config', 'user_env_vars']:
+        all_configs = config.keys(section_to_copy)
+        for key in all_configs:
+            new_config.set(section_to_copy,
+                           key,
+                           config.getraw(section_to_copy, key))
+
+    # override values in [config] with values from {section}
     all_configs = config.keys(section)
     for key in all_configs:
         new_config.set('config',
@@ -563,6 +590,9 @@ class METplusConfig(ProdConfig):
 
         # get the OS environment and store it
         self.env = os.environ.copy()
+
+        # add user_env_vars section to hold environment variables defined by the user
+        self.add_section('user_env_vars')
 
     def log(self, sublog=None):
         """!Overrides method in ProdConfig
@@ -681,9 +711,14 @@ class METplusConfig(ProdConfig):
             raise
 
         # print debug message saying default value was used
-        msg = "Setting [{}] {} to default value: {}.".format(sec,
+        if not default:
+            default_text = 'empty string'
+        else:
+            default_text = default
+
+        msg = "Setting [{}] {} to default value ({})".format(sec,
                                                              name,
-                                                             default)
+                                                             default_text)
         if self.logger:
             self.logger.debug(msg)
         else:

@@ -131,7 +131,8 @@ def test_validate_config_values(metplus_config):
     ]
     )
 def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
-    wrapper = TCStatWrapper(get_config(metplus_config), overrides)
+    wrapper = TCStatWrapper(get_config(metplus_config),
+                            config_overrides=overrides)
     for key, expected_value in c_dict.items():
         assert (wrapper.c_dict.get(key) == expected_value)
 
@@ -173,7 +174,7 @@ def test_handle_jobs(metplus_config, jobs, init_dt, expected_output):
     for job in jobs:
         wrapper.c_dict['JOBS'].append(job.replace('<output_dir>', output_dir))
 
-    output = wrapper.handle_jobs(time_info, create_parent_dir=False)
+    output = wrapper.handle_jobs(time_info)
     assert(output == expected_output.replace('<output_dir>', output_dir))
 
 
@@ -255,7 +256,7 @@ def test_handle_jobs_create_parent_dir(metplus_config, jobs, init_dt,
     for job in jobs:
         wrapper.c_dict['JOBS'].append(job.replace('<output_dir>', output_dir))
 
-    output = wrapper.handle_jobs(time_info, create_parent_dir=True)
+    output = wrapper.handle_jobs(time_info)
     if output != expected_output.replace('<output_dir>', output_dir):
         assert False
 

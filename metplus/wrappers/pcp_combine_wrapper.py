@@ -34,11 +34,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     # valid values for [FCST/OBS]_PCP_COMBINE_METHOD
     valid_run_methods = ['ADD', 'SUM', 'SUBTRACT', 'DERIVE', 'USER_DEFINED']
 
-    def __init__(self, config):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'pcp_combine'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         self.inaddons = []
         self.method = ""
         self.pcp_dir = ""
@@ -58,7 +60,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_PCP_COMBINE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
 
         fcst_run = self.config.getbool('config', 'FCST_PCP_COMBINE_RUN', False)
         obs_run = self.config.getbool('config', 'OBS_PCP_COMBINE_RUN', False)

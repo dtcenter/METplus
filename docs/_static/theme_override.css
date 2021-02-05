@@ -12,3 +12,20 @@ div[class^="highlight"] a:hover {
 div[class^="highlight"] {
   background-color: #FFFFFF;
 }
+
+/* Change format of literal blocks and parsed-literal blocks*/
+
+pre.code-block, .rst-content .code-block, .rst-content pre.code-block, .code-block, pre.literal-block, .rst-content .literal-block, .rst-content pre.literal-block, pre.parsed-literal, .rst-content .parsed-literal, .rst-content pre.parsed-literal div[class^='highlight'] {
+font-size: 12px;
+font-family: Consolas, "Andale Mono WT", "Andale Mono", "Lucida Console", "Lucida Sans Typewriter", "DejaVu Sans Mono", "Bitstream Vera Sans Mono", "Liberation Mono", "Nimbus Mono L", Monaco, "Courier New", Courier, monospace;
+line-height: 1.5;
+display: block;
+overflow: auto;
+padding: 12px 12px;
+}
+
+/*
+.codeblock,div[class^='highlight'] {
+padding: 0;
+}
+*/
