@@ -12,9 +12,8 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # Scientific Objective
 # --------------------
 #
-# To compute the Central Blocking Latitude, Instantaneousy blocked latitudes,
-# Group Instantaneousy blocked latitudes, and the frequency of atmospheric 
-# blocking using the Pelly-Hoskins Method.
+# To perform a weather regime analysis using 500 mb height data.  There are 3
+# steps in the weather regime analysis, elbow, EOFs, and K means.
 
 ##############################################################################
 # Datasets
@@ -29,7 +28,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # This use case runs the weather regime driver script which runs the steps the user
 # lists in STEPS_OBS.  The possible steps are regridding (REGRID), time averaging
-# (TIMEAVE), computing the elbow (ELBOX), plotting the elbow (PLOTELBOW), computing 
+# (TIMEAVE), computing the elbow (ELBOW), plotting the elbow (PLOTELBOW), computing 
 # EOFs (EOF), plotting EOFs (PLOTEOF), computing K means (KMEANS), and plotting the 
 # K means (PLOTKMEANS).  The steps are listed in a .conf file and are formatted as follows:
 #

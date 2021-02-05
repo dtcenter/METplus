@@ -27,13 +27,18 @@ class WeatherRegimeCalculation():
 
     def weights_detrend(self,lats,lons,indata):
 
+        arr_shape = indata.shape
+
         ##Set up weight array
         cos = lats * np.pi / 180.0
         way = np.cos(cos)
-        weightf = np.repeat(way[:,np.newaxis],len(lons),axis=1)
+        if len(lats.shape) == 1:
+            weightf = np.repeat(way[:,np.newaxis],len(lons),axis=1)
+        else:
+            weightf = way
 
         #Remove trend and seasonal cycle
-        atemp = np.zeros(indata.shape)
+        atemp = np.zeros(arr_shape)
         for i in np.arange(0,len(indata[0,:,0,0]),1):
             atemp[:,i] = signal.detrend(atemp[:,i],axis=0)
             atemp[:,i] = (indata[:,i] - np.nanmean(indata[:,i],axis=0)) * weightf
@@ -47,10 +52,9 @@ class WeatherRegimeCalculation():
         return a,a1
 
 
-    def run_elbow(self,a,lat,lon,yr):
-        k=KMeans(n_clusters=self.wrnum, random_state=0, n_jobs=-1)  #Initilize cluster centers
+    def run_elbow(self,a1):
 
-        a,a1 = self.weights_detrend(lat,lon,a)
+        k=KMeans(n_clusters=self.wrnum, random_state=0, n_jobs=-1)  #Initilize cluster centers
 
         #Calculate sum of squared distances for clusters 1-15
         kind = np.arange(1,self.numi,1)
@@ -81,38 +85,53 @@ class WeatherRegimeCalculation():
         mi = np.where(d==d.min())[0]
         print('Optimal Cluster # = '+str(mi+1)+'')
 
-        return a,K,d,mi,line,curve
+        return K,d,mi,line,curve
 
 
-    def Calc_EOF(self,a,lats,lons):
+    def Calc_EOF(self,eofin):
 
-        eofin = a #signal.detrend
         #Remove trend and seasonal cycle
         for d in np.arange(0,len(eofin[0,:,0,0]),1):
             eofin[:,d] = signal.detrend(eofin[:,d],axis=0)
             eofin[:,d] = eofin[:,d] - np.nanmean(eofin[:,d],axis=0)
 
         #Reshape into time X space
-        eofin = np.reshape(eofin,(len(eofin[:,0,0,0])*len(eofin[0,:,0,0]),len(eofin[0,0,:,0])*len(eofin[0,0,0,:])))
+        arr_shape = eofin.shape
+        arrdims = len(arr_shape)
+        eofin = np.reshape(eofin,(np.prod(arr_shape[0:arrdims-2]),arr_shape[arrdims-2]*arr_shape[arrdims-1]))
 
         # Use EOF solver and get PCs and EOFs
         solver = Eof(eofin,center=False)
         pc = solver.pcs(npcs=self.NUMPCS,pcscaling=1)
         eof = solver.eofsAsCovariance(neofs=self.NUMPCS,pcscaling=1)
-        eof = np.reshape(eof,(self.NUMPCS,len(lats),len(lons)))
+        eof = np.reshape(eof,(self.NUMPCS,arr_shape[arrdims-2],arr_shape[arrdims-1]))
 
         #Get variance fractions
-        variance_fractions = solver.varianceFraction(neigs=10) * 100
+        variance_fractions = solver.varianceFraction(neigs=self.NUMPCS) * 100
         print(variance_fractions)
 
-        return eof, self.wrnum, variance_fractions
+        return eof, pc, self.wrnum, variance_fractions
 
 
-    def run_K_means(self,a,lat,lon,yr):
+    def reconstruct_heights(self,eof,pc,reshape_arr):
+
+        rssize = len(reshape_arr)
+
+        #reconstruction. If NUMPCS=nt, then a1=a0
+        eofs=np.reshape(eof,(self.NUMPCS,reshape_arr[rssize-2]*reshape_arr[rssize-1]))
+        a1=np.matmul(pc,eofs)
+        a1 = np.reshape(a1,reshape_arr)
+
+        return a1
+
+
+    def run_K_means(self,a1,arr_shape):
+
+        arrdims = len(arr_shape)
 
         k=KMeans(n_clusters=self.wrnum, random_state=0, n_jobs=-1)
 
-        a,a1 = self.weights_detrend(lat,lon,a)
+        #a,a1 = self.weights_detrend(lat,lon,a)
 
         #fit the K-means algorithm to the data
         f=k.fit(a1)
@@ -122,9 +141,11 @@ class WeatherRegimeCalculation():
 
         #Obtain cluster labels for each day [Reshape to Year,day]
         wr = f.labels_
-        wr = np.reshape(wr,[len(a[:,0,0,0]),len(a[0,:,0,0])])
+        #wr = np.reshape(wr,[len(a[:,0,0,0]),len(a[0,:,0,0])])
+        wr = np.reshape(wr,arr_shape[0:arrdims-2])
 
-        yf = np.reshape(y,[self.wrnum,len(lat),len(lon)]) # reshape cluster anomalies to latlon
+        yf = np.reshape(y,[self.wrnum,arr_shape[arrdims-2],arr_shape[arrdims-1]]) # reshape cluster anomalies to latlon
+        #yf = np.reshape(y,[self.wrnum,len(lat),len(lon)]) # reshape cluster anomalies to latlon
 
         #Get frequency of occurence for each cluster
         perc=np.zeros(self.wrnum)

@@ -78,33 +78,26 @@ def main():
     use_init =  is_loop_by_init(elbow_config)
 
 
-    #lon1=230
-    #lon2=301
-    #lat1=35 #index, lat = 90-lat1
-    #lat2=66 #index, lat = 90-lat2
     if ("ELBOW" in steps_list_obs) or ("EOF" in steps_list_obs) or ("KMEANS" in steps_list_obs):
         obs_infiles, yr_obs = find_input_files(elbow_config, use_init, 'OBS_WR_TEMPLATE')
         obs_invar = config.getstr('WeatherRegime','OBS_WR_VAR','')
         z500_obs,lats_obs,lons_obs,year_obs = read_nc_met(obs_infiles,yr_obs,obs_invar)
-        #z500_obs = z500_obs[:,:,lat1:lat2,lon1:lon2]
-        #lats_obs = np.arange(90-lat1,90-lat2,-1)
-        #lons_obs = np.arange(lon1,lon2,1)
+        z500_detrend_obs,z500_detrend_3d_obs = steps_obs.weights_detrend(lats_obs,lons_obs,z500_obs)
 
     if ("ELBOW" in steps_list_fcst) or ("EOF" in steps_list_fcst) or("KMEANS" in steps_list_fcst):
         fcst_infiles,yr_fcst = find_input_files(elbow_config, use_init, 'FCST_WR_TEMPLATE')
         fcst_invar = config.getstr('WeatherRegime','FCST_WR_VAR','')
         z500_fcst,lats_fcst,lons_fcst,year_fcst = read_nc_met(fcst_infiles,yr_fcst,fcst_invar)
-        #z500_fcst = z500_fcst[:,:,lat1:lat2,lon1:lon2]
-        #lats_fcst = np.arange(90-lat1,90-lat2,-1)
-        #lons_fcst = np.arange(lon1,lon2,1)
+        z500_detrend_fcst,z500_detrend_3d_fcst = steps_fcst.weights_detrend(lats_fcst,lons_fcst,z500_fcst)
+
 
     if ("ELBOW" in steps_list_obs):
-        print('Running Obs Elbow.py')
-        elbow_obs,K_obs,d_obs,mi_obs,line_obs,curve_obs = steps_obs.run_elbow(z500_obs,lats_obs,lons_obs,year_obs)
+        print('Running Obs Elbow')
+        K_obs,d_obs,mi_obs,line_obs,curve_obs = steps_obs.run_elbow(z500_detrend_3d_obs)
 
     if ("ELBOW" in steps_list_fcst):
-        print('Running Forecast Elbow.py')
-        elbow_fcst,K_fcst,d_fcst,mi_fcst,line_fcst,curve_fcst = steps_fcst.run_elbow(z500_fcst,lats_fcst,lons_fcst,year_fcst)
+        print('Running Forecast Elbow')
+        K_fcst,d_fcst,mi_fcst,line_fcst,curve_fcst = steps_fcst.run_elbow(z500_detrend_3d_fcst)
 
     if ("PLOTELBOW" in steps_list_obs):
         if not ("ELBOW" in steps_list_obs):
@@ -125,11 +118,13 @@ def main():
 
     if ("EOF" in steps_list_obs):
         print('Running Obs EOF')
-        eof_obs,wrnum_obs,variance_fractions_obs = steps_obs.Calc_EOF(z500_obs,lats_obs,lons_obs)
+        eof_obs,pc_obs,wrnum_obs,variance_fractions_obs = steps_obs.Calc_EOF(z500_obs)
+        z500_detrend_3d_obs = steps_obs.reconstruct_heights(eof_obs,pc_obs,z500_obs.shape)
 
     if ("EOF" in steps_list_fcst):
         print('Running Forecast EOF')
-        eof_fcst,wrnum_fcst,variance_fractions_fcst = steps_fcst.Calc_EOF(z500_fcst,lats_fcst,lons_fcst)
+        eof_fcst,pc_fcst,wrnum_fcst,variance_fractions_fcst = steps_fcst.Calc_EOF(z500_fcst)
+        z500_detrend_3d_fcst = steps_fcst.reconstruct_heights(eof_fcst,pc_fcst,z500_fcst.shape)
 
     if ("PLOTEOF" in steps_list_obs):
         if not ("EOF" in steps_list_obs):
@@ -152,11 +147,11 @@ def main():
 
     if ("KMEANS" in steps_list_obs):
         print('Running Obs K Means')
-        kmeans_obs,wrnum_obs,perc_obs = steps_obs.run_K_means(z500_obs,lats_obs,lons_obs,year_obs)
+        kmeans_obs,wrnum_obs,perc_obs = steps_obs.run_K_means(z500_detrend_3d_obs,z500_obs.shape)
 
     if ("KMEANS" in steps_list_fcst):
         print('Running Forecast K Means')
-        kmeans_fcst,wrnum_fcst,perc_fcst = steps_fcst.run_K_means(z500_fcst,lats_fcst,lons_fcst,year_fcst)
+        kmeans_fcst,wrnum_fcst,perc_fcst = steps_fcst.run_K_means(z500_detrend_3d_fcst,z500_fcst.shape)
 
     if ("PLOTKMEANS" in steps_list_obs):
         if not ("KMEANS" in steps_list_obs):
