@@ -21,6 +21,7 @@ from internal_tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
 from metplus.util.met_util import expand_int_string_to_list
 
 def handle_requirements(requirements):
+    OWNER_BUILD_DIR = os.path.dirname(os.environ['GITHUB_WORKSPACE'])
     requirement_args = []
     for requirement in requirements:
         # check if get_{requirement} script exists and use it if it does
