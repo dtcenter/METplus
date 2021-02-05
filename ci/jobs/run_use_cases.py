@@ -29,10 +29,13 @@ def handle_requirements(requirements):
                                    'ci',
                                    'jobs',
                                     f'get_{requirement.lower()}.sh')
+        print(f"Looking for script: {script_path}")
         if os.path.exists(script_path):
+            print("Script found, using script to obtain dependencies")
             requirement_args.append(script_path)
         else:
             # if script doesn't exist, use pip3 install to obtain package
+            print("Script does not exist. Using pip3 install to obtain depdencies")
             requirement_args.append(f"pip3 install {requirement}")
 
     # add semi-colon to end of each command
