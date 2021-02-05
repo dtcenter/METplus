@@ -28,7 +28,7 @@ def handle_requirements(requirements):
                                    'METplus',
                                    'ci',
                                    'jobs',
-                                    f'get_{requirement.lower().sh')
+                                    f'get_{requirement.lower()}.sh')
         if os.path.exists(script_path):
             requirement_args.append(script_path)
         else:
