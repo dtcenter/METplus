@@ -530,17 +530,9 @@ Use cases with only one configuration file can also use this format is desired.
 
 This format is used if there are additional Python packages required to run
 the use case. <python_packages> is a list of packages to install before running
-the use case separated by commas. The list of currently supported packages are
-found in internal_tests/use_cases/metplus_use_case_suite.py in the
-PYTHON_REQUIREMENTS variable in the METplusUseCasesByRequirement class.
-The current list of supported packages are:
-netCDF4, cartopy, pygrib, h5py, matplotlib, metpy
+the use case separated by commas.
 
-Python packages that are not found in this list must be added to the dictionary
-to be used in use cases. This is done because some packages have dependencies
-that need to be installed before installing the package, such as pygrib or
-cartopy. We call shell scripts to install these packages. Other packages only
-require a simple pip command to install. Example::
+Example::
 
     TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics:: model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf,user_env_vars.MET_PYTHON_EXE=python3::pygrib,metpy
 
@@ -550,6 +542,42 @@ It uses a configuration file and sets the variable MET_PYTHON_EXE from the
 user_env_vars config section to python3 (This is needed to run Python Embedding
 use cases that contain additional Python depedencies). It also needs pygrib
 and metpy Python packages to be installed before running.
+
+**Obtaining Python Packages**
+
+Some Python packages can be installed simply by running
+"pip3 install <package_name>" while others require their own dependencies to be
+installed as well. If pip3 is sufficient, then no additional action is
+required. If not, then a bash script can be added to the ci/jobs directory to
+handle the installation. The script should be named get_<package>.sh where
+<package> is the name of the package in all lowercase. For example, if a use
+case in all_use_cases.txt lists METcalcpy as a Python package dependency, then
+the test will look for a script called ci/jobs/get_metcalpy.sh and call it if
+it exists. If it does not exist, it will try to run "pip3 install metcalcpy"
+which would fail (as of the time of writing this documentation).
+
+Existing scripts currently include::
+
+    ci/jobs/get_cartopy.sh
+    ci/jobs/get_metcalpy.sh
+    ci/jobs/get_metplotpy.sh
+    ci/jobs/get_pygrib.sh
+    ci/jobs/get_xesmf.sh
+
+**Using Conda**
+
+If Conda (Miniconda) is needed to install the package, then script should
+contain a call to get_miniconda.sh. If Miniconda was already installed for
+another package, the script is smart enough to skip that step. Here is an
+example of a script that uses Conda to install a package::
+
+    #! /bin/bash
+
+    $DOCKER_WORK_DIR/METplus/ci/jobs/get_miniconda.sh
+
+    echo Installing xesmf with conda
+    conda install -c conda-forge xesmf
+
 
 Add new category to test runs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
