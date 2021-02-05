@@ -24,13 +24,15 @@ def handle_requirements(requirements):
     requirement_args = []
     for requirement in requirements:
         # check if get_{requirement} script exists and use it if it does
-        script_path = os.path.join(os.environ['DOCKER_WORK_DIR'],
+        script_path = os.path.join(OWNER_BUILD_DIR,
                                    'METplus',
                                    'ci',
                                    'jobs',
                                     f'get_{requirement.lower()}.sh')
         print(f"Looking for script: {script_path}")
         if os.path.exists(script_path):
+            script_path = script_path.replace(OWNER_BUILD_DIR,
+                                              os.environ['DOCKER_WORK_DIR'])
             print("Script found, using script to obtain dependencies")
             requirement_args.append(script_path)
         else:
@@ -77,9 +79,9 @@ def main(categories, subset_list):
 
             all_use_case_args.append('--skip_output_check')
             use_case_args = ' '.join(all_use_case_args)
-            travis_build_dir = os.environ['GITHUB_WORKSPACE']
+            github_workspace = os.environ['GITHUB_WORKSPACE']
             docker_work_dir = os.environ['DOCKER_WORK_DIR']
-            cmd = (f'{travis_build_dir}/ci/jobs/docker_run_metplus.sh'
+            cmd = (f'{github_workspace}/ci/jobs/docker_run_metplus.sh'
                    f' "{requirement_args}'
                    f' {docker_work_dir}/METplus/internal_tests/use_cases/run_test_use_cases.sh docker '
                    f'{use_case_args}" "{volumes_from}"')
