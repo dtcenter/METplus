@@ -165,7 +165,7 @@ delta_lat = (float(met_data['lat'].max()) - float(met_data['lat'].min()))/float(
 delta_lon = (float(met_data['lon'].max()) - float(met_data['lon'].min()))/float(n_lon)
 
 # create the attributes dictionary to describe the data to pass to MET
-attrs = {
+met_data.attrs = {
         'valid': valid_time,
         'init': valid_time,
         'lead': "00",
@@ -189,4 +189,4 @@ attrs = {
             }
         }
 
-print("Attributes: " + repr(attrs))
+print("Attributes: " + repr(met_data.attrs))
