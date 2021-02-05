@@ -27,15 +27,11 @@ Access restrictions
   None
 
 Spatial resolution, grid, or coverage
-  
-  Coverage:
-        * Latitude: 90.000000 to -90.000000  
-        * Longitude: 0.000000 to 359.750000
+  The spatial coverage is as follows. 
+  Latitude: 90.000000 to -90.000000  
+  Longitude: 0.000000 to 359.750000
 
-  Resolution:
-        * 1° by 1°
-        * 0.5° by 0.5°
-        * 0.25° by 0.25°
+  There are three spatial resolution options: 1° by 1°, 0.5° by 0.5°, and  0.25° by 0.25°
 
 Temporal resolution
   * Model cycle: 4/day: 00, 06, 12, 18UTC
