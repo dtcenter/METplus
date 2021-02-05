@@ -23,18 +23,16 @@ from metplus.util.met_util import expand_int_string_to_list
 def handle_requirements(requirements):
     requirement_args = []
     for requirement in requirements:
-        if requirement in mp_by_req.PYTHON_REQUIREMENTS:
-            command = mp_by_req.PYTHON_REQUIREMENTS[requirement]
-
-            if 'pip' in command:
-                requirement_args.append(command)
-            else:
-                # if script, the path is relative to METplus directory
-                command_path = os.path.join(os.environ['DOCKER_WORK_DIR'],
-                                            'METplus',
-                                            command)
-                requirement_args.append(command_path)
+        # check if get_{requirement} script exists and use it if it does
+        script_path = os.path.join(os.environ['DOCKER_WORK_DIR'],
+                                   'METplus',
+                                   'ci',
+                                   'jobs',
+                                    f'get_{requirement.lower().sh')
+        if os.path.exists(script_path):
+            requirement_args.append(script_path)
         else:
+            # if script doesn't exist, use pip3 install to obtain package
             requirement_args.append(f"pip3 install {requirement}")
 
     # add semi-colon to end of each command
