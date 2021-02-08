@@ -170,8 +170,14 @@ class CommandBuilder:
         self.set_user_environment(time_info)
 
         # set MET config overrides that are not set by other variables
+        met_overrides = self.c_dict.get(self.MET_OVERRIDES_KEY, '')
+        if time_info:
+            met_overrides = do_string_sub(met_overrides,
+                                          skip_missing_tags=True,
+                                          **time_info)
+
         self.add_env_var(self.MET_OVERRIDES_KEY,
-                         self.c_dict.get(self.MET_OVERRIDES_KEY, ''))
+                         met_overrides)
 
         # send environment variables to logger
         for msg in self.print_all_envs():
