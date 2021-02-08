@@ -131,7 +131,7 @@ class CommandBuilder:
 
     def check_for_unused_env_vars(self):
         config_file = self.c_dict.get('CONFIG_FILE')
-        if config_file is None:
+        if not config_file:
             return
 
         if not hasattr(self, 'WRAPPER_ENV_VAR_KEYS'):
