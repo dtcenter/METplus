@@ -31,14 +31,9 @@ Access restrictions
   None
 
 Spatial resolution, grid, or coverage
-  
-  Coverage:
-        * Northern Hemisphere only (N: 90, S: 0, E: 180, W: -180)
+  Northern Hemisphere only (N: 90, S: 0, E: 180, W: -180)
 
-  Resolution:
-        * 1 x 1km
-        * 4 x 4km
-        * 24 x 24km
+  There are three resolution options: 1 x 1km, 4 x 4km, 24 x 24km
 
 Temporal resolution
   1 Day

@@ -98,7 +98,7 @@ def get_config_inputs_from_command_line():
                 continue
 
             # error/exit if an argument that is not supported was used
-            logger.critical('Invalid argument: %s.' % arg)
+            print('ERROR: Invalid argument: %s.' % arg)
             usage()
 
         # split up comma separated lists into individual items
@@ -119,6 +119,5 @@ if __name__ == "__main__":
         produtil.setup.setup(send_dbn=False, jobname='run-METplus')
         main()
     except Exception as exc:
-        produtil.log.jlogger.critical(
-            'master_metplus  failed: %s' % (str(exc),), exc_info=True)
+        print('ERROR: master_metplus  failed: %s' % exc)
         sys.exit(2)
