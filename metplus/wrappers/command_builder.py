@@ -99,6 +99,10 @@ class CommandBuilder:
             # add key to list of env vars to set
             self.env_var_keys.append(self.MET_OVERRIDES_KEY)
 
+            # warn if any environment variables set by the wrapper are not
+            # being utilized in the user's config file
+            self.check_for_unused_env_vars()
+
         # set MET_TMP_DIR environment variable that controls
         # where the MET tools write temporary files
         self.env_var_dict['MET_TMP_DIR'] = self.config.getdir('TMP_DIR')
@@ -125,11 +129,34 @@ class CommandBuilder:
             self.logger.debug(f"Setting [config] {key} = {value}")
             self.config.set('config', key, value)
 
+    def check_for_unused_env_vars(self):
+        config_file = self.c_dict.get('CONFIG_FILE')
+        if config_file is None:
+            return
+
+        if not hasattr(self, 'WRAPPER_ENV_VAR_KEYS'):
+            return
+
+        # read config file content
+        with open(config_file, 'r') as file_handle:
+            content = file_handle.read()
+
+        # report a warning if any env var in the list is not being used
+        for env_var_key in self.WRAPPER_ENV_VAR_KEYS:
+            env_var_string = f"${{{env_var_key}}}"
+            if env_var_string not in content:
+                self.logger.warning(f"Environment variable {env_var_string} "
+                                    "is not utilized in MET config file: "
+                                    f"{config_file}")
+
+
     def create_c_dict(self):
         c_dict = dict()
         # set skip if output exists to False for all wrappers
         # wrappers that support this functionality can override this value
-        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
+        c_dict['VERBOSITY'] = self.config.getstr('config',
+                                                 'LOG_MET_VERBOSITY',
+                                                 '2')
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
         app_name = ''
