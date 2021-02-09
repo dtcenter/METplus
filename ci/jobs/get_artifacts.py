@@ -24,9 +24,9 @@ ARTIFACT_IDS_DEVELOP = {
 for name in names:
     artifact_id = ARTIFACT_IDS_DEVELOP[name]
     artifact_url = f'https://api.github.com/repos/dtcenter/metplus/actions/artifacts/{artifact_id}/zip'
-    truth_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'),
-                             os.pardir,
-                             'truth')
+    truth_dir = os.path.abspath(os.path.join(os.environ.get('GITHUB_WORKSPACE'),
+                                             os.pardir,
+                                             'truth'))
 
     output_file = os.path.join(truth_dir, f'{name}.zip')
 
