@@ -36,5 +36,5 @@ for name in names:
     cmd = f'curl -H "Accept: application/vnd.github.v3+json" {artifact_url} -O {output_file}'
     ret = subprocess.run(shlex.split(cmd))
 
-    cmd = f'unzip {output_file} -d {truth_dir}/')
+    cmd = f'unzip {output_file} -d {truth_dir}/'
     ret = subprocess.run(shlex.split(cmd))
