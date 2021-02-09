@@ -28,7 +28,7 @@ jobs:
         if: github.event_name == 'pull_request'
         run: |
           echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
-          echo "DOCKER_NAME=$(echo ${GITHUB_REF#refs/heads/})-pr" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(echo ${GITHUB_HEAD_REF})-PR" >> $GITHUB_ENV
 
       # save branch name as artifact
       - name: Get branch name
