@@ -14,6 +14,10 @@ NETCDF_EXTENSIONS = [
     '.cdf',
 ]
 
+SKIP_EXTENSIONS = [
+    '.zip',
+]
+
 def get_file_type(filepath):
     _, file_extension = os.path.splitext(filepath)
     if file_extension in IMAGE_EXTENSIONS:
@@ -31,6 +35,10 @@ def get_file_type(filepath):
     except:
         pass
 
+    if file_extension in SKIP_EXTENSIONS:
+        return 'skip'
+
+    return 'unknown'
 
 def compare_dir(dir_a, dir_b, debug=False):
     all_equal = True
@@ -68,6 +76,10 @@ def compare_dir(dir_a, dir_b, debug=False):
                 continue
 
             file_type = get_file_type(filepath)
+            if file_type == 'skip':
+                print(f'Skipping')
+                continue
+
             if file_type == 'netcdf':
                 print("Comparing NetCDF")
                 if not nc_is_equal(filepath, filepath2):
