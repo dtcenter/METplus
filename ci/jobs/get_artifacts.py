@@ -35,6 +35,7 @@ for name in names:
 
 #    cmd = f'wget --header "Authorization: token {github_token}" {artifact_url} -O {output_file}'
     cmd = f'curl -H "Accept: application/vnd.github.v3+json" {artifact_url} -O {output_file}'
+    print(cmd)
     ret = subprocess.run(shlex.split(cmd))
 
     cmd = f'unzip {output_file} -d {truth_dir}/'
