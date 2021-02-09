@@ -18,23 +18,31 @@ jobs:
       - name: Extract branch name
         if: github.event_name != 'pull_request'
         shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+        run: |
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
         id: extract_branch
 
       # extract branch name on pull request
       - name: Print branch name
         if: github.event_name == 'pull_request'
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
+        run: |
+          echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(echo ${GITHUB_REF#refs/heads/})-pr" >> $GITHUB_ENV
 
       # save branch name as artifact
       - name: Get branch name
         run: |
           mkdir artifact
           echo 'The branch name is' $BRANCH_NAME
+          echo 'The Docker name is' $DOCKER_NAME
           echo $BRANCH_NAME > artifact/branch_name.txt
+          echo $DOCKER_NAME > artifact/docker_name.txt
       - uses: actions/upload-artifact@v2
         with:
-          path: artifact/branch_name.txt
+          path: |
+            artifact/branch_name.txt
+            artifact/docker_name.txt
   documentation:
     name: Check Documentation
     runs-on: ubuntu-latest
@@ -58,8 +66,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-      - run: echo BRANCH_NAME is $BRANCH_NAME
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Get METplus Image
@@ -77,7 +88,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Update Data Volumes
@@ -95,7 +110,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Unit Tests
@@ -115,7 +134,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -146,7 +169,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -177,7 +204,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -208,7 +239,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -239,7 +274,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -270,7 +309,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -301,7 +344,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -332,7 +379,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -363,7 +414,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -394,7 +449,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -425,7 +484,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -445,7 +508,11 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_NAME=$(cat artifact/docker_name.txt)" >> $GITHUB_ENV
+          echo BRANCH_NAME is $BRANCH_NAME
+          echo DOCKER_NAME is $DOCKER_NAME
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
