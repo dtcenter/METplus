@@ -362,14 +362,6 @@ class CyclonePlotterWrapper(CommandBuilder):
         # set the marker, marker size, and annotation
         # before drawing the line and scatter plots.
 
-        # If requested, create an ASCII file with the tracks that are going to
-        # be plotted.  This is useful to debug or verify that what you
-        # see on the plot is what is expected.
-        ascii_track_parts = [self.init_date, '.txt']
-        ascii_track_output_name = ''.join(ascii_track_parts)
-        plot_filename = os.path.join(self.output_dir, ascii_track_output_name)
-        ascii_track_file = open(plot_filename, 'w')
-
         # Use counters to set the labels for the legend. Since we don't
         # want repetitions in the legend, do this for a select number
         # of points.
@@ -377,14 +369,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         plus_counter = 0
         dummy_counter = 0
 
-        # If requested, create an ASCII file with the tracks that are going to
-        # be plotted.  This is useful to debug or verify that what you
-        # see on the plot is what is expected.
-        ascii_track_parts = [self.init_date, '.txt']
-        ascii_track_output_name = ''.join(ascii_track_parts)
-        plot_filename = os.path.join(self.output_dir, ascii_track_output_name)
-        ascii_track_file = open(plot_filename, 'w')
-
+        lines_to_write = []
         for cur_storm_id in self.unique_storm_id:
             # Lists used in creating each storm track.
             cyclone_points = []
@@ -450,8 +435,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                                   'lead_group: ', track['lead_group'], '   ',
                                   'first_point:', str(track['first_point'])]
                     line = ''.join(line_parts)
-                    ascii_track_file.write(line)
-                    ascii_track_file.write('\n')
+                    lines_to_write.append(line)
 
             # Create ascatter plot to add
             # the appropriate marker symbol to the forecast
@@ -511,6 +495,17 @@ class CyclonePlotterWrapper(CommandBuilder):
                                 edgecolors=colours,
                                 facecolors=colours, marker=symbol, zorder=2)
 
+        # If requested, create an ASCII file with the tracks that are going to
+        # be plotted.  This is useful to debug or verify that what you
+        # see on the plot is what is expected.
+        if self.gen_ascii:
+            ascii_track_parts = [self.init_date, '.txt']
+            ascii_track_output_name = ''.join(ascii_track_parts)
+            plot_filename = os.path.join(self.output_dir,
+                                         ascii_track_output_name)
+            with open(plot_filename, 'w') as file_handle:
+                for line in lines_to_write:
+                    file_handle.write(line)
 
         # Draw the legend on the plot
         # If you wish to have the legend within the plot:
@@ -530,11 +525,6 @@ class CyclonePlotterWrapper(CommandBuilder):
         output_plot_name = ''.join(out_filename_parts)
         plot_filename = os.path.join(self.output_dir, output_plot_name)
         plt.savefig(plot_filename)
-
-        # Close the ASCII track file, if generated
-        if self.gen_ascii:
-            ascii_track_file.close()
-
 
         # Plot data onto axes
         # Uncomment the two lines below if you wish to have a pop up 
