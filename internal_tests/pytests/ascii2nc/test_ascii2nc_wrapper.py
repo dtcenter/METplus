@@ -25,7 +25,8 @@ def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
     overrides = {'DO_NOT_RUN_EXE': True,
                  'INPUT_MUST_EXIST': False}
     if config_overrides:
-        overrides.extend(config_overrides)
+        for key, value in config_overrides.items():
+            overrides[key] = value
 
     return ASCII2NCWrapper(config,
                            config_overrides=overrides)
