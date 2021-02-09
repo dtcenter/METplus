@@ -76,7 +76,7 @@ should use LOOP_ORDER, but it is not required to change
 immediately. If you do this, you should check for LOOP_ORDER and then
 check for LOOP_METHOD if it is not set.
 
-In master_metplus.py:
+In run_metplus.py:
 
 ::
 

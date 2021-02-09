@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 """
-Program Name: master_metplus.py
+Program Name: run_metplus.py
 Contact(s): George McCabe, Julie Prestopnik, Jim Frimel, Minna Win
 Abstract: Runs METplus Wrappers scripts
 History Log:  Initial version
@@ -30,13 +30,13 @@ from metplus.util import pre_run_setup, run_metplus, post_run_cleanup
 from metplus.util import get_process_list
 from metplus import __version__ as metplus_version
 
-'''!@namespace master_metplus
+'''!@namespace run_metplus
 Main script the processes all the tasks in the PROCESS_LIST
 '''
 
 def main():
     """!Main program.
-    Master METplus script that invokes the necessary Python scripts
+    METplus script that invokes the necessary Python scripts
     to perform various activities, such as series analysis."""
 
     config_inputs = get_config_inputs_from_command_line()
@@ -119,5 +119,5 @@ if __name__ == "__main__":
         produtil.setup.setup(send_dbn=False, jobname='run-METplus')
         main()
     except Exception as exc:
-        print('ERROR: master_metplus  failed: %s' % exc)
+        print('ERROR: run_metplus  failed: %s' % exc)
         sys.exit(2)

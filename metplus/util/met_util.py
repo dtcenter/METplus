@@ -2238,7 +2238,7 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
             list of dictionaries with variable information
     """
 
-    # validate configs again in case wrapper is not running from master_metplus
+    # validate configs again in case wrapper is not running from run_metplus
     # this does not need to be done if parsing a specific data type, i.e. ENS or FCST
     if data_type is None:
         if not validate_field_info_configs(config)[0]:
