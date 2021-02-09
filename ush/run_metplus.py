@@ -42,6 +42,13 @@ def main():
     config_inputs = get_config_inputs_from_command_line()
     config = pre_run_setup(config_inputs)
 
+    # warn if calling master_metplus.py
+    script_name = os.path.basename(__file__)
+    if script_name == 'master_metplus.py':
+        msg = ("master_metplus.py has been renamed to run_metplus.py. "
+               "This script name will be removed in a future version.")
+        config.logger.warning(msg)
+
     # Use config object to get the list of processes to call
     process_list = get_process_list(config)
 
