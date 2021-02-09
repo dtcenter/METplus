@@ -128,8 +128,7 @@ jobs:
       - name: Obtain Truth Data
         run: |
           mkdir -p ${GITHUB_WORKSPACE}/../truth
-          echo curl -H "Accept: application/vnd.github.v3+json" -o ${GITHUB_WORKSPACE}/../truth/met_tool_wrapper.zip https://${{secrets.GITHUB_PAT}}@api.github.com/repos/dtcenter/metplus/actions/artifacts/39369675/zip
-          curl -H "Accept: application/vnd.github.v3+json" -o ${GITHUB_WORKSPACE}/../truth/met_tool_wrapper.zip https://${{secrets.GITHUB_PAT}}@api.github.com/repos/dtcenter/metplus/actions/artifacts/39369675/zip
+          curl -L -o ${GITHUB_WORKSPACE}/../truth/met_tool_wrapper.zip "https://${{secrets.MY_API_TOKEN}}@api.github.com/repos/dtcenter/metplus/actions/artifacts/39369675/zip"
           echo unzip ${GITHUB_WORKSPACE}/../truth/met_tool_wrapper.zip
           unzip ${GITHUB_WORKSPACE}/../truth/met_tool_wrapper.zip
           echo ls ${GITHUB_WORKSPACE}/../truth
