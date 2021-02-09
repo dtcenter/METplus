@@ -10,24 +10,6 @@ import produtil
 from metplus.wrappers.tc_stat_wrapper import TCStatWrapper
 from metplus.util import ti_calculate
 
-
-#
-# -----------Mandatory-----------
-#  configuration and fixture to support METplus configuration files beyond
-#  the metplus_data, metplus_system, and metplus_runtime conf files.
-#
-
-# Add a test configuration
-def pytest_addoption(parser):
-    """! For supporting config files from the command line"""
-    parser.addoption("-c", action="store", help=" -c <test config file>")
-
-
-# @pytest.fixture
-def cmdopt(request):
-    """! For supporting the additional config files used by METplus"""
-    return request.config.getoption("-c")
-
 def get_config(metplus_config):
     extra_configs = []
     extra_configs.append(os.path.join(os.path.dirname(__file__),
