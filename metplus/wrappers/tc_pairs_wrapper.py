@@ -92,12 +92,14 @@ class TCPairsWrapper(CommandBuilder):
                            "run TCPairs wrapper")
 
         self.set_met_config_string(self.env_var_dict,
-                                   'TC_PAIRS_INIT_BEG',
+                                   ['TC_PAIRS_INIT_BEG',
+                                    'INIT_BEG'],
                                    'init_beg',
                                    'METPLUS_INIT_BEG')
 
         self.set_met_config_string(self.env_var_dict,
-                                   'TC_PAIRS_INIT_END',
+                                   ['TC_PAIRS_INIT_END',
+                                    'INIT_END'],
                                    'init_end',
                                    'METPLUS_INIT_END')
 
