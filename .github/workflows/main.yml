@@ -129,7 +129,7 @@ jobs:
         run: |
           mkdir -p ${GITHUB_WORKSPACE}/../truth
           curl -H "Accept: application/vnd.github.v3+json" -o ${GITHUB_WORKSPACE}/../truth/met_tool_wrapper.zip https://api.github.com/repos/dtcenter/metplus/actions/artifacts/39369675/zip
-          unzip ${GITHUB_WORKSPACE}/../truth/
+          unzip ${GITHUB_WORKSPACE}/../truth/met_tool_wrapper.zip
           ls ${GITHUB_WORKSPACE}/../truth/*
       # copy output data to save as artifact
       - name: Save output data
