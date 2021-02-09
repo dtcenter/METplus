@@ -116,22 +116,22 @@ class WeatherRegimeCalculation():
     def reconstruct_heights(self,eof,pc,reshape_arr):
 
         rssize = len(reshape_arr)
+        eofshape = eof.shape
+        eosize = len(eofshape)
 
         #reconstruction. If NUMPCS=nt, then a1=a0
-        eofs=np.reshape(eof,(self.NUMPCS,reshape_arr[rssize-2]*reshape_arr[rssize-1]))
+        eofs=np.reshape(eof,(self.NUMPCS,eofshape[eosize-2]*eofshape[eosize-1]))
         a1=np.matmul(pc,eofs)
-        a1 = np.reshape(a1,reshape_arr)
+        #a1 = np.reshape(a1,reshape_arr)
 
         return a1
 
 
-    def run_K_means(self,a1,arr_shape):
+    def run_K_means(self,a1,yr,arr_shape):
 
         arrdims = len(arr_shape)
 
         k=KMeans(n_clusters=self.wrnum, random_state=0, n_jobs=-1)
-
-        #a,a1 = self.weights_detrend(lat,lon,a)
 
         #fit the K-means algorithm to the data
         f=k.fit(a1)
@@ -141,11 +141,9 @@ class WeatherRegimeCalculation():
 
         #Obtain cluster labels for each day [Reshape to Year,day]
         wr = f.labels_
-        #wr = np.reshape(wr,[len(a[:,0,0,0]),len(a[0,:,0,0])])
         wr = np.reshape(wr,arr_shape[0:arrdims-2])
 
         yf = np.reshape(y,[self.wrnum,arr_shape[arrdims-2],arr_shape[arrdims-1]]) # reshape cluster anomalies to latlon
-        #yf = np.reshape(y,[self.wrnum,len(lat),len(lon)]) # reshape cluster anomalies to latlon
 
         #Get frequency of occurence for each cluster
         perc=np.zeros(self.wrnum)
@@ -170,8 +168,27 @@ class WeatherRegimeCalculation():
         input = input[::-1]
 
         #Save Label data [YR,DAY]
-        np.save('WR_LABELS',wrc)
-        print(wr.shape)
+        #if os.path.isfile(outfile+'.nc'):
+        #   os.remove(outfile+'.nc')
+        #nc = nc4.Dataset(outfile, 'w')
+        #nc.createDimension('year', arr_shape[0])
+        #nc.createDimension('day', arr_shape[1])
+
+        #ncyr = nc.createVariable('time','i',('year'))
+        #nc.variables['time'].long_name = "time"
+        #nc.variables['time'].standard_name = "time"
+        #nc.variables['time'].units = "years"
+       
+        #ncnum = nc.createVariable('wrnum','i',('year','day'),fill_value=-9999.0)
+        #nc.variables['wrnum'].long_name = "weather_regime_number"
+        #nc.variables['wrnum'].standard_name = "weather_regime_number"
+        #nc.variables['wrnum'].units = "unitless"
+
+        #ncyr[:,:] = yr
+        #ncnum[:,:] = wrc
+        #nc.close()
+
+        #np.save('WR_LABELS',wrc)
 
         return input, self.wrnum, perc
 
