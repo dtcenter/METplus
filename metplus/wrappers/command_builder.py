@@ -699,7 +699,7 @@ class CommandBuilder:
             # report error if file path could not be found
             if not processed_path:
                 msg = (f"Could not find {data_type}INPUT file {file_path} "
-                       "using template {template}")
+                       f"using template {template}")
                 if not mandatory or not self.c_dict.get('MANDATORY', True):
                     self.logger.warning(msg)
                 else:
