@@ -22,7 +22,11 @@ def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
         config_full_path = os.path.join(parm_base, config_path)
         config = metplus_config([config_full_path])
 
-    overrides = {} if config_overrides is None else config_overrides
+    overrides = {'DO_NOT_RUN_EXE': True,
+                 'INPUT_MUST_EXIST': False}
+    if config_overrides:
+        overrides.extend(config_overrides)
+
     return ASCII2NCWrapper(config,
                            config_overrides=overrides)
 
