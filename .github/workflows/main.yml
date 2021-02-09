@@ -127,8 +127,8 @@ jobs:
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       - name: Obtain Truth Data
         run: |
-	  ${GITHUB_WORKSPACE}/ci/jobs/get_artifacts.py met_tool_wrapper
-	  ls ${GITHUB_WORKSPACE}/../truth/*
+          ${GITHUB_WORKSPACE}/ci/jobs/get_artifacts.py met_tool_wrapper
+          ls ${GITHUB_WORKSPACE}/../truth/*
       # copy output data to save as artifact
       - name: Save output data
         if: always()
