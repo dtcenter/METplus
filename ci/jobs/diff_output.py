@@ -17,4 +17,5 @@ data_dir = os.path.abspath(os.path.join(workspace,
 dir_a = os.path.join(data_dir, 'truth')
 dir_b = os.path.join(data_dir, 'output')
 
-netcdf_util.compare_dir(dir_a, dir_b, debug=True)
+if not netcdf_util.compare_dir(dir_a, dir_b, debug=True):
+    sys.exit(1)
