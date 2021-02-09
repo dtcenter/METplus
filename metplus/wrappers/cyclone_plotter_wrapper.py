@@ -42,16 +42,22 @@ class CyclonePlotterWrapper(CommandBuilder):
                          config_overrides=config_overrides)
 
         if WRAPPER_CANNOT_RUN:
-            self.log_error(f"There was a problem importing modules: {EXCEPTION_ERR}\n")
+            self.log_error("There was a problem importing modules: "
+                           f"{EXCEPTION_ERR}\n")
             return
 
         self.input_data = self.config.getdir('CYCLONE_PLOTTER_INPUT_DIR')
         self.output_dir = self.config.getdir('CYCLONE_PLOTTER_OUTPUT_DIR')
-        self.init_date = self.config.getstr('config', 'CYCLONE_PLOTTER_INIT_DATE')
+        self.init_date = self.config.getstr('config',
+                                            'CYCLONE_PLOTTER_INIT_DATE')
         self.init_hr = self.config.getstr('config', 'CYCLONE_PLOTTER_INIT_HR')
         self.model = self.config.getstr('config', 'CYCLONE_PLOTTER_MODEL')
-        self.title = self.config.getstr('config', 'CYCLONE_PLOTTER_PLOT_TITLE')
-        self.gen_ascii = self.config.getbool('config', 'CYCLONE_PLOTTER_GENERATE_TRACK_ASCII')
+        self.title = self.config.getstr('config',
+                                        'CYCLONE_PLOTTER_PLOT_TITLE')
+        self.gen_ascii = (
+            self.config.getbool('config',
+                                'CYCLONE_PLOTTER_GENERATE_TRACK_ASCII')
+        )
         # Create a set to keep track of unique storm_ids for each track file.
         self.unique_storm_id = set()
         # Data structure to separate data based on storm id.
@@ -60,8 +66,14 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.columns_of_interest = ['AMODEL', 'STORM_ID', 'BASIN', 'INIT',
                                     'LEAD', 'VALID', 'ALAT', 'ALON', 'BLAT',
                                     'BLON', 'AMSLP', 'BMSLP']
-        self.circle_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE')
-        self.cross_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CROSS_MARKER_SIZE')
+        self.circle_marker = (
+            self.config.getint('config',
+                               'CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE')
+        )
+        self.cross_marker = (
+            self.config.getint('config',
+                               'CYCLONE_PLOTTER_CROSS_MARKER_SIZE')
+        )
 
     def run_all_times(self):
         """! Calls the defs needed to create the cyclone plots
@@ -90,7 +102,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             for init_file in all_init_files:
                 # Ignore empty files
                 if os.stat(init_file).st_size == 0:
-                    self.logger.info("Ignoring empty file {}".format(init_file))
+                    self.logger.info(f"Ignoring empty file {init_file}")
                     continue
 
                 # logger.info("Consider all files under directory" +
@@ -307,7 +319,6 @@ class CyclonePlotterWrapper(CommandBuilder):
         #use central meridian for central longitude
         cm_lon = 180
         ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=cm_lon))
-        # ax = plt.axes(projection=ccrs.LambertCylindrical(central_longitude=0.0))
 
         # Add land, coastlines, and ocean
         ax.add_feature(cfeature.LAND)
@@ -351,14 +362,6 @@ class CyclonePlotterWrapper(CommandBuilder):
         # set the marker, marker size, and annotation
         # before drawing the line and scatter plots.
 
-        # If requested, create an ASCII file with the tracks that are going to
-        # be plotted.  This is useful to debug or verify that what you
-        # see on the plot is what is expected.
-        ascii_track_parts = [self.init_date, '.txt']
-        ascii_track_output_name = ''.join(ascii_track_parts)
-        plot_filename = os.path.join(self.output_dir, ascii_track_output_name)
-        ascii_track_file = open(plot_filename, 'w')
-
         # Use counters to set the labels for the legend. Since we don't
         # want repetitions in the legend, do this for a select number
         # of points.
@@ -366,15 +369,8 @@ class CyclonePlotterWrapper(CommandBuilder):
         plus_counter = 0
         dummy_counter = 0
 
-        # If requested, create an ASCII file with the tracks that are going to
-        # be plotted.  This is useful to debug or verify that what you
-        # see on the plot is what is expected.
-        ascii_track_parts = [self.init_date, '.txt']
-        ascii_track_output_name = ''.join(ascii_track_parts)
-        plot_filename = os.path.join(self.output_dir, ascii_track_output_name)
-        ascii_track_file = open(plot_filename, 'w')
-
-        for cur_storm_id in self.unique_storm_id:
+        lines_to_write = []
+        for cur_storm_id in sorted(self.unique_storm_id):
             # Lists used in creating each storm track.
             cyclone_points = []
             lon = []
@@ -386,12 +382,10 @@ class CyclonePlotterWrapper(CommandBuilder):
             # For this storm id, get a list of all data (corresponding
             # to lines/rows in the tcst data file).
             track_info_list = self.storm_id_dict[cur_storm_id]
-            # pylint:disable=len-as-condition
-            # if len(track_info_list) == 0:
             if not track_info_list:
                 self.log_error("Empty track list, no data extracted " +
                                   "from track files, exiting.")
-                sys.exit(1)
+                return
 
             for track in track_info_list:
                 # For now, all the marker symbols will be one color.
@@ -439,8 +433,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                                   'lead_group: ', track['lead_group'], '   ',
                                   'first_point:', str(track['first_point'])]
                     line = ''.join(line_parts)
-                    ascii_track_file.write(line)
-                    ascii_track_file.write('\n')
+                    lines_to_write.append(line)
 
             # Create ascatter plot to add
             # the appropriate marker symbol to the forecast
@@ -496,9 +489,22 @@ class CyclonePlotterWrapper(CommandBuilder):
                                     "time storm was able to be tracked " +
                                     "in model")
                         dummy_counter += 1
-                    plt.scatter(adj_lon, adj_lat, s=sz, c=colours, edgecolors=colours,
+                    plt.scatter(adj_lon, adj_lat, s=sz, c=colours,
+                                edgecolors=colours,
                                 facecolors=colours, marker=symbol, zorder=2)
 
+        # If requested, create an ASCII file with the tracks that are going to
+        # be plotted.  This is useful to debug or verify that what you
+        # see on the plot is what is expected.
+        if self.gen_ascii:
+            ascii_track_parts = [self.init_date, '.txt']
+            ascii_track_output_name = ''.join(ascii_track_parts)
+            track_filename = os.path.join(self.output_dir,
+                                         ascii_track_output_name)
+            self.logger.info(f"Writing ascii track info: {track_filename}")
+            with open(track_filename, 'w') as file_handle:
+                for line in lines_to_write:
+                    file_handle.write(f"{line}\n")
 
         # Draw the legend on the plot
         # If you wish to have the legend within the plot:
@@ -519,16 +525,12 @@ class CyclonePlotterWrapper(CommandBuilder):
         plot_filename = os.path.join(self.output_dir, output_plot_name)
         plt.savefig(plot_filename)
 
-        # Close the ASCII track file, if generated
-        if self.gen_ascii:
-            ascii_track_file.close()
-
-
         # Plot data onto axes
         # Uncomment the two lines below if you wish to have a pop up 
         # window of the plot automatically appear, in addition to the creation
         # of the .png version of the plot.
-        #self.logger.info("Plot is displayed in separate window. Close window to continue METplus execution")
+        #self.logger.info("Plot is displayed in separate window.
+        # Close window to continue METplus execution")
         #plt.show()
 
 
