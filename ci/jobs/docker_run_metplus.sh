@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DOCKERHUB_TAG=dtcenter/metplus-dev:${DOCKER_NAME}
+DOCKERHUB_TAG=dtcenter/metplus-dev:${DOCKER_IMAGE}
 
 # set umask to 002 so that the travis user has (group) permission
 # to move files that are created by docker
