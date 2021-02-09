@@ -370,7 +370,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         dummy_counter = 0
 
         lines_to_write = []
-        for cur_storm_id in self.unique_storm_id:
+        for cur_storm_id in sorted(self.unique_storm_id):
             # Lists used in creating each storm track.
             cyclone_points = []
             lon = []
@@ -385,7 +385,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             if not track_info_list:
                 self.log_error("Empty track list, no data extracted " +
                                   "from track files, exiting.")
-                sys.exit(1)
+                return
 
             for track in track_info_list:
                 # For now, all the marker symbols will be one color.
