@@ -382,8 +382,6 @@ class CyclonePlotterWrapper(CommandBuilder):
             # For this storm id, get a list of all data (corresponding
             # to lines/rows in the tcst data file).
             track_info_list = self.storm_id_dict[cur_storm_id]
-            # pylint:disable=len-as-condition
-            # if len(track_info_list) == 0:
             if not track_info_list:
                 self.log_error("Empty track list, no data extracted " +
                                   "from track files, exiting.")
@@ -501,11 +499,12 @@ class CyclonePlotterWrapper(CommandBuilder):
         if self.gen_ascii:
             ascii_track_parts = [self.init_date, '.txt']
             ascii_track_output_name = ''.join(ascii_track_parts)
-            plot_filename = os.path.join(self.output_dir,
+            track_filename = os.path.join(self.output_dir,
                                          ascii_track_output_name)
-            with open(plot_filename, 'w') as file_handle:
+            self.logger.info(f"Writing ascii track info: {track_filename}")
+            with open(track_filename, 'w') as file_handle:
                 for line in lines_to_write:
-                    file_handle.write(line)
+                    file_handle.write(f"{line}\n")
 
         # Draw the legend on the plot
         # If you wish to have the legend within the plot:
