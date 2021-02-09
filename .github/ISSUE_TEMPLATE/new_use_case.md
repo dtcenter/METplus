@@ -40,6 +40,7 @@ Consider breaking the new feature down into sub-issues.
 - [ ] Select **component(s)**
 - [ ] Select **priority**
 - [ ] Select **requestor(s)**
+- [ ] Select **privacy**
 
 ### Projects and Milestone ###
 - [ ] Review **projects** and select relevant **Repository** and **Organization** ones or add "alert:NEED PROJECT ASSIGNMENT" label
