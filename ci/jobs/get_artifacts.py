@@ -31,6 +31,7 @@ for name in names:
     output_file = os.path.join(truth_dir, f'{name}.zip')
 
     if not os.path.exists(truth_dir):
+        print(f"Creating directory: {truth_dir}")
         os.makedirs(truth_dir)
 
 #    cmd = f'wget --header "Authorization: token {github_token}" {artifact_url} -O {output_file}'
