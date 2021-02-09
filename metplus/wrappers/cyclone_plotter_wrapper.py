@@ -42,16 +42,22 @@ class CyclonePlotterWrapper(CommandBuilder):
                          config_overrides=config_overrides)
 
         if WRAPPER_CANNOT_RUN:
-            self.log_error(f"There was a problem importing modules: {EXCEPTION_ERR}\n")
+            self.log_error("There was a problem importing modules: "
+                           f"{EXCEPTION_ERR}\n")
             return
 
         self.input_data = self.config.getdir('CYCLONE_PLOTTER_INPUT_DIR')
         self.output_dir = self.config.getdir('CYCLONE_PLOTTER_OUTPUT_DIR')
-        self.init_date = self.config.getstr('config', 'CYCLONE_PLOTTER_INIT_DATE')
+        self.init_date = self.config.getstr('config',
+                                            'CYCLONE_PLOTTER_INIT_DATE')
         self.init_hr = self.config.getstr('config', 'CYCLONE_PLOTTER_INIT_HR')
         self.model = self.config.getstr('config', 'CYCLONE_PLOTTER_MODEL')
-        self.title = self.config.getstr('config', 'CYCLONE_PLOTTER_PLOT_TITLE')
-        self.gen_ascii = self.config.getbool('config', 'CYCLONE_PLOTTER_GENERATE_TRACK_ASCII')
+        self.title = self.config.getstr('config',
+                                        'CYCLONE_PLOTTER_PLOT_TITLE')
+        self.gen_ascii = (
+            self.config.getbool('config',
+                                'CYCLONE_PLOTTER_GENERATE_TRACK_ASCII')
+        )
         # Create a set to keep track of unique storm_ids for each track file.
         self.unique_storm_id = set()
         # Data structure to separate data based on storm id.
@@ -60,8 +66,14 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.columns_of_interest = ['AMODEL', 'STORM_ID', 'BASIN', 'INIT',
                                     'LEAD', 'VALID', 'ALAT', 'ALON', 'BLAT',
                                     'BLON', 'AMSLP', 'BMSLP']
-        self.circle_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE')
-        self.cross_marker = self.config.getint('config', 'CYCLONE_PLOTTER_CROSS_MARKER_SIZE')
+        self.circle_marker = (
+            self.config.getint('config',
+                               'CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE')
+        )
+        self.cross_marker = (
+            self.config.getint('config',
+                               'CYCLONE_PLOTTER_CROSS_MARKER_SIZE')
+        )
 
     def run_all_times(self):
         """! Calls the defs needed to create the cyclone plots
@@ -90,7 +102,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             for init_file in all_init_files:
                 # Ignore empty files
                 if os.stat(init_file).st_size == 0:
-                    self.logger.info("Ignoring empty file {}".format(init_file))
+                    self.logger.info(f"Ignoring empty file {init_file}")
                     continue
 
                 # logger.info("Consider all files under directory" +
@@ -307,7 +319,6 @@ class CyclonePlotterWrapper(CommandBuilder):
         #use central meridian for central longitude
         cm_lon = 180
         ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=cm_lon))
-        # ax = plt.axes(projection=ccrs.LambertCylindrical(central_longitude=0.0))
 
         # Add land, coastlines, and ocean
         ax.add_feature(cfeature.LAND)
@@ -496,7 +507,8 @@ class CyclonePlotterWrapper(CommandBuilder):
                                     "time storm was able to be tracked " +
                                     "in model")
                         dummy_counter += 1
-                    plt.scatter(adj_lon, adj_lat, s=sz, c=colours, edgecolors=colours,
+                    plt.scatter(adj_lon, adj_lat, s=sz, c=colours,
+                                edgecolors=colours,
                                 facecolors=colours, marker=symbol, zorder=2)
 
 
@@ -528,7 +540,8 @@ class CyclonePlotterWrapper(CommandBuilder):
         # Uncomment the two lines below if you wish to have a pop up 
         # window of the plot automatically appear, in addition to the creation
         # of the .png version of the plot.
-        #self.logger.info("Plot is displayed in separate window. Close window to continue METplus execution")
+        #self.logger.info("Plot is displayed in separate window.
+        # Close window to continue METplus execution")
         #plt.show()
 
 
