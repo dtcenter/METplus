@@ -23,7 +23,7 @@ ARTIFACT_IDS_DEVELOP = {
 for name in names:
     artifact_id = ARTIFACT_IDS_DEVELOP[name]
     artifact_url = f'https://api.github.com/repos/dtcenter/metplus/actions/artifacts/{artifact_id}/zip'
-    truth_dir = os.path.join(os.environ('GITHUB_WORKSPACE'),
+    truth_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'),
                              os.pardir,
                              'truth')
 
