@@ -323,6 +323,8 @@ class CommandBuilder:
             output_key = f'OBS_WINDOW_{edge}'
             value = self.handle_window_once(input_list, default_val)
             c_dict[output_key] = value
+            if edge == 'BEGIN':
+                edge = 'BEG'
             tmp_dict[output_key] = f'{edge.lower()} = {value};'
             # if something other than the default is used, add output key
             # to the list of items to add to the env_var_dict value
@@ -1184,6 +1186,7 @@ class CommandBuilder:
         self.c_dict['VERIFICATION_MASK'] = mask_list_string
         mask_fmt = f"poly = [{mask_list_string}];"
         self.c_dict['MASK_POLY'] = mask_fmt
+        self.env_var_dict['METPLUS_MASK_POLY'] = mask_fmt
 
     def get_command(self):
         """! Builds the command to run the MET application
