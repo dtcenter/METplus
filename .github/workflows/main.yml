@@ -108,6 +108,7 @@ jobs:
   run_use_case_action:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
       - run: echo "DOCKERHUB_TAG2=dtcenter/metplus:$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
       - uses: ./ci/actions/run_use_cases
