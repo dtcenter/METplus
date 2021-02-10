@@ -105,6 +105,14 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  run_use_case_action:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/download-artifact@v2
+      - runs: echo "DOCKERHUB_TAG2=dtcenter/metplus:$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - uses: ./ci/actions/run_use_cases
+        with:
+          DOCKERHUB_TAG: dtcenter/metplus:develop
   use_cases_met_tool_wrapper:
     name: Use Cases Tests - MET Tool Wrapper
     runs-on: ubuntu-latest
@@ -125,12 +133,11 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          MY_SECRET_API_TOKEN: ${{ secrets.MY_API_TOKEN }}
       - name: Obtain Truth Data
         run: |
-          mkdir -p ${GITHUB_WORKSPACE}/../truth
-          curl -L -o ${GITHUB_WORKSPACE}/../truth/met_tool_wrapper.zip "https://${{secrets.MY_API_TOKEN}}@api.github.com/repos/dtcenter/metplus/actions/artifacts/39369675/zip"
-          echo unzip ${GITHUB_WORKSPACE}/../truth/met_tool_wrapper.zip -d ${GITHUB_WORKSPACE}/../truth/
-          unzip ${GITHUB_WORKSPACE}/../truth/met_tool_wrapper.zip -d ${GITHUB_WORKSPACE}/../truth/
+          echo ${GITHUB_WORKSPACE}/ci/jobs/get_artifacts.py met_tool_wrapper
+          ${GITHUB_WORKSPACE}/ci/jobs/get_artifacts.py met_tool_wrapper
           echo ls ${GITHUB_WORKSPACE}/../truth
           ls ${GITHUB_WORKSPACE}/../truth
       - name: Compare Output to Truth Data

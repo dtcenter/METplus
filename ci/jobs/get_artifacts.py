@@ -7,6 +7,8 @@ import shlex
 
 names = sys.argv[1].split(',')
 
+DEVELOP_REF_RUN = 552853822
+
 ARTIFACT_IDS_DEVELOP = {
     'air_quality_and_comp': 39369666,
     'climate': 39369667,
@@ -23,7 +25,8 @@ ARTIFACT_IDS_DEVELOP = {
 
 for name in names:
     artifact_id = ARTIFACT_IDS_DEVELOP[name]
-    artifact_url = f'https://api.github.com/repos/dtcenter/metplus/actions/artifacts/{artifact_id}/zip'
+    artifact_url = f"https://${MY_SECRET_API_TOKEN}@api.github.com/repos/dtcenter/metplus/actions/artifacts/{artifact_id}/zip"
+
     truth_dir = os.path.abspath(os.path.join(os.environ.get('GITHUB_WORKSPACE'),
                                              os.pardir,
                                              'truth'))
@@ -34,8 +37,7 @@ for name in names:
         print(f"Creating directory: {truth_dir}")
         os.makedirs(truth_dir)
 
-#    cmd = f'wget --header "Authorization: token {github_token}" {artifact_url} -O {output_file}'
-    cmd = f'curl -H "Accept: application/vnd.github.v3+json" {artifact_url} -O {output_file}'
+    cmd = f'curl -L -o {output_file} {artifact_url}'
     print(cmd)
     ret = subprocess.run(shlex.split(cmd))
 
