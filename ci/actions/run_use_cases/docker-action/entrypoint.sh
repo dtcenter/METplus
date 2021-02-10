@@ -7,4 +7,4 @@ echo CATEGORIES: ${INPUT_CATEGORIES}
 python3 -m pip install requests
 
 echo Running use cases
-${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py ${CATEGORIES}
+${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py ${INPUT_CATEGORIES}
