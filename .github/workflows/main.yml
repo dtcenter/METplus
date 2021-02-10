@@ -110,10 +110,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
-      - run: echo "DOCKERHUB_TAG2=dtcenter/metplus:$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
       - uses: ./ci/actions/run_use_cases
         with:
-          dockerhubTag: dtcenter/metplus-dev:develop
+          dockerhubTag: dtcenter/metplus-dev:${{ env.BRANCH_NAME }}
   use_cases_met_tool_wrapper:
     name: Use Cases Tests - MET Tool Wrapper
     runs-on: ubuntu-latest
