@@ -109,7 +109,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/download-artifact@v2
-      - runs: echo "DOCKERHUB_TAG2=dtcenter/metplus:$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: echo "DOCKERHUB_TAG2=dtcenter/metplus:$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
       - uses: ./ci/actions/run_use_cases
         with:
           DOCKERHUB_TAG: dtcenter/metplus:develop
