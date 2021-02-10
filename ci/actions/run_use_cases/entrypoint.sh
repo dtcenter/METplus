@@ -13,6 +13,7 @@ docker build -t docker-action --build-arg dockerhub_tag="$INPUT_DOCKERHUBTAG" .
 echo "Get Docker data volumes for input data"
 ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $INPUT_CATEGORIES
 
+readarray -d : -t category_list <<< "$INPUT_CATEGORIES"
 VOLUMES_FROM=""
 for (( n=0; n < ${#category_list[*]}; n++)); do
   VOLUMES_FROM+=`echo --volumes-from "${category_list[n]} "`
