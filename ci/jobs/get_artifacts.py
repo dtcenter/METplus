@@ -25,7 +25,8 @@ ARTIFACT_IDS_DEVELOP = {
 
 for name in names:
     artifact_id = ARTIFACT_IDS_DEVELOP[name]
-    artifact_url = f"https://${MY_SECRET_API_TOKEN}@api.github.com/repos/dtcenter/metplus/actions/artifacts/{artifact_id}/zip"
+    my_secret_api_token = os.environ.get('MY_SECRET_API_TOKEN')
+    artifact_url = f"https://{my_secret_api_token}@api.github.com/repos/dtcenter/metplus/actions/artifacts/{artifact_id}/zip"
 
     truth_dir = os.path.abspath(os.path.join(os.environ.get('GITHUB_WORKSPACE'),
                                              os.pardir,
