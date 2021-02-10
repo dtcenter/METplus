@@ -1,6 +1,6 @@
 ARG DOCKERHUB_TAG
 
-FROM ${DOCKERHUB_TAG:-dtcenter/metplus:develop}
+FROM ${DOCKERHUB_TAG:-dtcenter/metplus:latest}
 
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
