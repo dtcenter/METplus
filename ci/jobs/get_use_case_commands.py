@@ -30,10 +30,7 @@ def handle_requirements(requirements, work_dir):
             requirement_args.append(f"pip3 install {requirement}")
 
     # add semi-colon to end of each command
-    if requirement_args:
-        return f"{';'.join(requirement_args)};"
-
-    return ''
+    return requirement_args
 
 def main(categories, subset_list, work_dir=None, host_name='docker'):
     all_commands = []
@@ -55,12 +52,11 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
 
             all_use_case_args.append('--skip_output_check')
             use_case_args = ' '.join(all_use_case_args)
-            cmd = (f'{requirement_args} '
-                   f'{work_dir}/internal_tests/use_cases/run_test_use_cases.sh {host_name} '
-                   f'{use_case_args}')
-            all_commands.append(cmd)
+            cmd = (f'{work_dir}/internal_tests/use_cases/run_test_use_cases.sh '
+                   f'{host_name} {use_case_args}')
+            all_commands.append((cmd, requirement_args))
 
-    return all_commands
+    return sorted(all_commands, key = lambda x: x[1])
 
 def handle_command_line_args():
     # read command line arguments to determine which use cases to run
@@ -81,4 +77,9 @@ def handle_command_line_args():
 
 if __name__ == '__main__':
     categories, subset_list =  handle_command_line_args()
-    main(categories, subset_list)
+    all_commands = main(categories, subset_list)
+    for command, requirements in all_commands:
+        print(f"COMMAND:")
+        for req in requirements:
+            print(f'{req}')
+        print(f'{command}\n')
