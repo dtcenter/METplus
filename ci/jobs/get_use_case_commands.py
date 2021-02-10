@@ -36,8 +36,11 @@ def handle_requirements(requirements, work_dir):
 
     return ''
 
-def main(categories, subset_list, work_dir=USE_CASES_DIR, host_name='docker'):
+def main(categories, subset_list, work_dir=None, host_name='docker'):
     all_commands = []
+
+    if work_dir is None:
+        work_dir = USE_CASES_DIR
 
     test_suite = METplusUseCaseSuite()
     test_suite.add_use_case_groups(categories, subset_list)
