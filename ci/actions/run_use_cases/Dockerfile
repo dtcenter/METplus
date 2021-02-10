@@ -1,6 +1,6 @@
-ARG DOCKERHUB_TAG2
+ARG INPUT_DOCKERHUB_TAG
 
-FROM ${DOCKERHUB_TAG2:-dtcenter/metplus:latest}
+FROM ${INPUT_DOCKERHUB_TAG:-dtcenter/metplus:latest}
 
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
