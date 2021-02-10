@@ -17,7 +17,7 @@ if num_args < 3:
 
 def startswith_date(storm_name, search_date):
     storm_date = str(storm_name).split('_')[0].strip()
-    return storm_date == search_date
+    return storm_date.startswith(search_date)
 
 input_file = sys.argv[1]
 output_dir = sys.argv[2]
