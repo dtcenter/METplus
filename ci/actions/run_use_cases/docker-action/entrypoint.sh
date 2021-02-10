@@ -1,6 +1,6 @@
 #! /bin/sh
 
 echo In Docker: ${DOCKERHUB_TAG}
-echo DOCKERHUB_TAG2: ${DOCKERHUB_TAG2}
+echo BRANCH_NAME: ${BRANCH_NAME}
 ls /metplus/METplus
 echo end
