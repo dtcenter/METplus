@@ -23,7 +23,7 @@ def main():
         print(f'{reqs}\n{cmd}')
         full_cmd = f"{reqs_fmt}{cmd}"
         try:
-            subprocess.run(shlex.split(full_cmd), check=True, shell=True)
+            subprocess.run(full_cmd, check=True, shell=True)
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Command failed: {full_cmd} -- {err}")
             isOK = False
