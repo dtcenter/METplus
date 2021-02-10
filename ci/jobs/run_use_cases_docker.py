@@ -15,12 +15,13 @@ def main():
                                               work_dir=os.environ.get('GITHUB_WORKSPACE'))
 
     isOK = True
-    for cmd in all_commands:
-        print(cmd)
+    for cmd, reqs in all_commands:
+        print(f'{reqs}\n{cmd}')
+        full_cmd = f"{';'.join(reqs)};{cmd}"
         try:
-            subprocess.run(shlex.split(cmd), check=True)
+            subprocess.run(shlex.split(full_cmd), check=True, shell=True)
         except subprocess.CalledProcessError as err:
-            print(f"ERROR: Command failed: {cmd} -- {err}")
+            print(f"ERROR: Command failed: {full_cmd} -- {err}")
             isOK = False
 
     if not isOK:
