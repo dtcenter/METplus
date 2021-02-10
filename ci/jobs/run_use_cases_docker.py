@@ -16,8 +16,12 @@ def main():
 
     isOK = True
     for cmd, reqs in all_commands:
+        if reqs:
+            reqs_fmt = f"{';'.join(reqs)};"
+        else:
+            reqs_fmt = ''
         print(f'{reqs}\n{cmd}')
-        full_cmd = f"{';'.join(reqs)};{cmd}"
+        full_cmd = f"{reqs_fmt}{cmd}"
         try:
             subprocess.run(shlex.split(full_cmd), check=True, shell=True)
         except subprocess.CalledProcessError as err:
