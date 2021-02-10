@@ -1,0 +1,11 @@
+name: "Run Use Cases"
+description: "Run METplus Use Cases"
+author: "mccabe@ucar.edu"
+
+inputs:
+  DOCKERHUB_TAG:
+    required: true
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
