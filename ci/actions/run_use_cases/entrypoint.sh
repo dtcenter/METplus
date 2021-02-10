@@ -15,7 +15,7 @@ ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $INPUT_CATEGORIES
 
 #readarray -d , -t category_list <<< "$INPUT_CATEGORIES"
 
-category_list=($(echo $INPUT_CATEGORIES | tr "," "\n"))
+category_list=`echo $INPUT_CATEGORIES | tr "," "\n"`
 
 VOLUMES_FROM=""
 for (( n=0; n < ${#category_list[*]}; n++)); do
