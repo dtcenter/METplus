@@ -3,11 +3,12 @@ description: "Run METplus Use Cases"
 author: "mccabe@ucar.edu"
 
 inputs:
-  DOCKERHUB_TAG:
+  dockerhubTag:
+    description: 'Docker image to build'
     required: true
 
 runs:
   using: "docker"
   image: "Dockerfile"
   args:
-    - ${{ inputs.DOCKERHUB_TAG }}
+    - ${{ inputs.dockerhubTag }}

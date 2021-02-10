@@ -1,6 +1,6 @@
-ARG INPUT_DOCKERHUB_TAG
+ARG dockerhub_tag
 
-FROM ${INPUT_DOCKERHUB_TAG:-dtcenter/metplus:latest}
+FROM ${dockerhub_tag:-dtcenter/metplus:latest}
 
 ADD entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
