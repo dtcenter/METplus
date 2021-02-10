@@ -9,7 +9,8 @@ import get_use_case_commands
 
 def main():
     categories, subset_list = get_use_case_commands.handle_command_line_args()
-    all_commands = get_use_case_commands.main(categories,
+    categories_list = categories.split(',')
+    all_commands = get_use_case_commands.main(categories_list,
                                               subset_list,
                                               work_dir=os.environ.get('GITHUB_WORKSPACE'))
 

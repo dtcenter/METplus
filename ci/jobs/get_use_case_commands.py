@@ -24,7 +24,6 @@ def handle_requirements(requirements, work_dir):
             else:
                 # if script, the path is relative to METplus directory
                 command_path = os.path.join(work_dir,
-                                            'METplus',
                                             command)
                 requirement_args.append(command_path)
         else:
@@ -57,7 +56,7 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             all_use_case_args.append('--skip_output_check')
             use_case_args = ' '.join(all_use_case_args)
             cmd = (f'{requirement_args} '
-                   f'{work_dir}/METplus/internal_tests/use_cases/run_test_use_cases.sh {host_name} '
+                   f'{work_dir}/internal_tests/use_cases/run_test_use_cases.sh {host_name} '
                    f'{use_case_args}')
             all_commands.append(cmd)
 
