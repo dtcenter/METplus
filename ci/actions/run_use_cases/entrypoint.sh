@@ -19,7 +19,7 @@ category_list=`echo $INPUT_CATEGORIES | tr "," "\n"`
 
 VOLUMES_FROM=""
 for n in ${category_list}; do
-  VOLUMES_FROM+=`echo --volumes-from $n" "`
+  VOLUMES_FROM=${VOLUMES_FROM}`echo --volumes-from $n" "`
 done
 
 echo VOLUMES_FROM: $VOLUMES_FROM
