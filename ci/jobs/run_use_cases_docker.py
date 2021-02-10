@@ -11,7 +11,7 @@ def main():
     categories, subset_list = get_use_case_commands.handle_command_line_args()
     all_commands = get_use_case_commands.main(categories,
                                               subset_list,
-                                              work_dir=os.environ.get('DOCKER_WORK_DIR'))
+                                              work_dir=os.environ.get('GITHUB_WORKSPACE'))
 
     isOK = True
     for cmd in all_commands:
