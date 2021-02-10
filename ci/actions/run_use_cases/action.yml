@@ -7,5 +7,11 @@ inputs:
     required: true
 
 runs:
-  using: "docker"
-  image: "Dockerfile"
+  using: "composite"
+  steps:
+    - id: build
+      run: docker build . --build-arg DOCKERHUB_TAG=$DOCKERHUB_TAG -t image:tag
+      shell: bash
+    - id: run
+      run: docker run --rm -v $(pwd):/github/workspace --workdir /github/workspace image:tag
+      shell: bash
