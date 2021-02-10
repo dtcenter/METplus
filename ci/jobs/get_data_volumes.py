@@ -78,5 +78,5 @@ def main(args):
     return ' '.join(volume_list)
 
 if __name__ == "__main__":
-    out = main(sys.argv)
+    out = main(sys.argv[1:])
     print(out)
