@@ -111,7 +111,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
       - run: echo "DOCKERHUB_TAG2=dtcenter/metplus:$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-      - uses: dtcenter/METplus/ci/actions/run_use_cases
+      - uses: ./ci/actions/run_use_cases
         with:
           dockerhubTag: dtcenter/metplus-dev:develop
   use_cases_met_tool_wrapper:
