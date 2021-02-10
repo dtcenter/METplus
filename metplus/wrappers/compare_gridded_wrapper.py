@@ -121,7 +121,7 @@ that reformat gridded data
             if self.c_dict[f'{dtype}_IS_PROB']:
                 # if the data type is NetCDF, then we know how to
                 # format the probabilistic fields
-                if self.c_dict[f'{dtype}_INPUT_DATATYPE'] == 'NETCDF':
+                if self.c_dict[f'{dtype}_INPUT_DATATYPE'] != 'GRIB':
                     continue
 
                 # if the data is grib, the user must specify if the data is in
