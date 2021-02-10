@@ -13,4 +13,4 @@ echo "Creating a docker image with Dockerhub Tag: $DOCKERHUB_TAG"
 docker build -t docker-action --build-arg dockerhub_tag="$DOCKERHUB_TAG" .
 
 echo "Run Docker Action container"
-docker run -e DOCKERHUB_TAG2 -v $WS_PATH:$GITHUB_WORKSPACE  --workdir $GITHUB_WORKSPACE docker-action
+docker run -e DOCKERHUB_TAG2 -e DOCKERHUB_TAG -v $WS_PATH:$GITHUB_WORKSPACE  --workdir $GITHUB_WORKSPACE docker-action
