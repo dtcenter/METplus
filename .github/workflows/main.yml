@@ -134,13 +134,14 @@ jobs:
           DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          MY_SECRET_API_TOKEN: ${{ secrets.MY_API_TOKEN }}
       - name: Obtain Truth Data
         run: |
           echo ${GITHUB_WORKSPACE}/ci/jobs/get_artifacts.py met_tool_wrapper
           ${GITHUB_WORKSPACE}/ci/jobs/get_artifacts.py met_tool_wrapper
           echo ls ${GITHUB_WORKSPACE}/../truth
           ls ${GITHUB_WORKSPACE}/../truth
+        env:
+          MY_SECRET_API_TOKEN: ${{ secrets.MY_API_TOKEN }}
       - name: Compare Output to Truth Data
         run: ${GITHUB_WORKSPACE}/ci/jobs/diff_output.py
       # copy output data to save as artifact
