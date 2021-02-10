@@ -6,4 +6,4 @@ RUN chmod +x /entrypoint.sh
 
 RUN apk add --update --no-cache docker
 
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh ${INPUT_DOCKERHUBTAG}"]
