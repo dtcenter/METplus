@@ -19,7 +19,7 @@ def main():
             print(f"ERROR: Command failed: {cmd} -- {err}")
             isOK = False
 
-    is not isOK:
+    if not isOK:
         sys.exit(1)
 
 if __name__ == '__main__':
