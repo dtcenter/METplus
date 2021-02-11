@@ -12,11 +12,11 @@ GHA_OUTPUT_DIR=$RUNNER_WORKSPACE/output
 cd /docker-action
 
 echo "Creating a docker image with Dockerhub Tag: $INPUT_DOCKERHUBTAG"
-#docker build -t docker-action --build-arg dockerhub_tag="$INPUT_DOCKERHUBTAG" .
+docker build -t docker-action --build-arg dockerhub_tag="$INPUT_DOCKERHUBTAG" .
 
 # add input volumes to run command
 echo "Get Docker data volumes for input data"
-#${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $INPUT_CATEGORIES
+${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $INPUT_CATEGORIES
 
 # keep track of --volumes-from arguments to docker run command
 VOLUMES_FROM=""
@@ -45,7 +45,7 @@ done
 echo VOLUMES_FROM: $VOLUMES_FROM
 
 echo "Run Docker Action container: $INPUT_DOCKERHUBTAG"
-#docker run -e GITHUB_WORKSPACE -e INPUT_CATEGORIES -e INPUT_SUBSETLIST -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE docker-action
+docker run -e GITHUB_WORKSPACE -e INPUT_CATEGORIES -e INPUT_SUBSETLIST -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE docker-action
 ret=$?
 
 # if branch ends with -ref and not a pull request, create/update Docker
@@ -56,3 +56,8 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ] || [ "${BRANCH_NAME: -4}" != "-ref
 fi
 
 echo Updating Docker data volume for output data from reference branch: ${BRANCH_NAME}
+image_name=dtcenter/metplus-data-dev:output-${GITHUB_ACTION}
+docker build -t ${image_name} --build-arg output_dir=${GHA_OUTPUT_DIR} output_data_volumes
+
+echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+docker push ${image_name}
