@@ -270,3 +270,52 @@ def test_move_all_to_config_section_cmd_line(metplus_config, overrides,
                                              config_key, expected_result):
     config = metplus_config(overrides)
     assert(config.getstr('config', config_key, '') == expected_result)
+
+@pytest.mark.parametrize(
+    'config_name, expected_result', [
+
+        ('RAW_WITH_TAG',
+         'some stuff {valid?fmt=%Y%m%d} other'
+         ),
+        ('RAW_WITH_TAG_AND_VAR',
+         'some stuff {valid?fmt=%Y%m%d} A1 other'
+         ),
+        ('NESTED_BRACES',
+         "value = { name='some_value_{init?fmt=%Y}';}"
+         ),
+        # variable that references a variable that references a variable
+        ('SECOND_REF',
+         "value"
+         ),
+        # variable that references a variable that references a variable x5
+        ('FIFTH_REF',
+         "some text value"
+         ),
+        # circular reference
+        ('YOU_GOT_I',
+         ''
+         ),
+        # improperly formatted value
+        ('BAD_VAR',
+         'FIRST_REF} {valid?fmt=%Y%m%d}'
+         ),
+        ('GRID_STAT_MET_CONFIG_OVERRIDES',
+         ('climo_mean = {field = [{name= "/d1/projects/CPC_data/scripts/'
+          'precip_climo_mean_embedded.py /d1/projects/CPC_data/input/'
+          'MET_precip_climos/precip_clim_mean_unsmoothed_07d.nc:'
+          '{valid?fmt=%d%m}"}]}; climo_stdev = {field = [{name= "/d1/projects/'
+          'CPC_data/scripts/precip_climo_mean_embedded.py /d1/projects/'
+          'CPC_data/input/MET_precip_climos/precip_clim_std_unsmoothed_07d.nc:'
+          '{valid?fmt=%d%m}";}]};')
+         ),
+    ]
+)
+def test_getraw_nested_curly_braces(metplus_config,
+                                    config_name,
+                                    expected_result):
+    config_files = ['config_1.conf',
+                   ]
+    test_dir = os.path.dirname(__file__)
+    config_files = [os.path.join(test_dir, item) for item in config_files]
+    config = metplus_config(config_files)
+    assert(config.getraw('config', config_name) == expected_result)
