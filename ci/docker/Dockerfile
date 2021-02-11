@@ -48,7 +48,7 @@ RUN yum -y update \
  && yum -y install java-1.8.0-openjdk \
  && python3 -m pip install pytest
 
-RUN mkdir -p /data/input && curl -L -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar -o /data/input || true
+RUN mkdir -p /data/input && curl -L -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar -o /data/input/GempakToCF.jar || true
 
 
 ARG SOURCE_BRANCH
