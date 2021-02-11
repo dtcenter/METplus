@@ -530,33 +530,29 @@ Description
 
 Used to configure the MET tool grid_stat.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+~~~~~~~~~~~~~~~~~~~~~
 
-[dir]
+**REQUIRED**
 
 | :term:`FCST_GRID_STAT_INPUT_DIR`
 | :term:`OBS_GRID_STAT_INPUT_DIR`
 | :term:`GRID_STAT_OUTPUT_DIR`
 | :term:`GRID_STAT_CLIMO_MEAN_INPUT_DIR`
 | :term:`GRID_STAT_CLIMO_STDEV_INPUT_DIR`
-
-[filename_templates]
-
 | :term:`FCST_GRID_STAT_INPUT_TEMPLATE`
 | :term:`OBS_GRID_STAT_INPUT_TEMPLATE`
 | :term:`GRID_STAT_OUTPUT_TEMPLATE`
 | :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
 | :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
 | :term:`GRID_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
-
-
-[config]
-
 | :term:`LOG_GRID_STAT_VERBOSITY`
 | :term:`GRID_STAT_OUTPUT_PREFIX`
 | :term:`GRID_STAT_CONFIG_FILE`
 | :term:`FCST_GRID_STAT_INPUT_DATATYPE`
+
+**USER OPTIONAL**
+
 | :term:`OBS_GRID_STAT_INPUT_DATATYPE`
 | :term:`GRID_STAT_ONCE_PER_FIELD`
 | :term:`GRID_STAT_CUSTOM_LOOP_LIST`
@@ -568,6 +564,7 @@ Configuration
 | :term:`GRID_STAT_REGRID_VLD_THRESH`
 | :term:`GRID_STAT_REGRID_SHAPE`
 | :term:`GRID_STAT_MASK_GRID` (optional)
+| :term:`GRID_STAT_MASK_POLY` (optional)
 | :term:`FCST_GRID_STAT_PROB_THRESH` (optional)
 | :term:`OBS_GRID_STAT_PROB_THRESH` (optional)
 | :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` (optional)
@@ -589,188 +586,204 @@ Configuration
 | :term:`OBS_GRID_STAT_VAR<n>_LEVELS` (optional)
 | :term:`OBS_GRID_STAT_VAR<n>_THRESH` (optional)
 | :term:`OBS_GRID_STAT_VAR<n>_OPTIONS` (optional)
-|
+| 
 
-.. warning:: **DEPRECATED:**
+.. warning:: **DEPRECATED**
 
    | :term:`GRID_STAT_OUT_DIR`
    | :term:`GRID_STAT_CONFIG`
    | :term:`CLIMO_GRID_STAT_INPUT_DIR`
    | :term:`CLIMO_GRID_STAT_INPUT_TEMPLATE`
+   |
 
 .. _grid-stat-met-conf:
 
 MET Configuration
 ~~~~~~~~~~~~~~~~~
 
-This is the MET configuration file used for this wrapper. Below the file contents are descriptions of each environment variable referenced in this file and how the METplus configuration variables relate to them.
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from:
+
+:term:`MET_INSTALL_DIR`/share/met/config/GridStatDefault_config
+
+Below the file contents are descriptions of each environment variable referenced in this file and examples showing how to override them by using METplus configuration.
 
 .. literalinclude:: ../../parm/met_config/GridStatConfig_wrapped
 
-The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
+**${METPLUS_MODEL}**
 
+Override default by setting :term:`MODEL` in the METplus configuration file::
 
-<----
-xxMETPLUS_MODEL
-xxMETPLUS_DESC
-xxMETPLUS_OBTYPE
-xxMETPLUS_REGRID_DICT
-xxMETPLUS_FCST_FIELD
-xxMETPLUS_OBS_FIELD
-xxMETPLUS_CLIMO_MEAN_FILE
-xxMETPLUS_CLIMO_STDEV_FILE
-xxMETPLUS_MASK_GRID
-xxMETPLUS_VERIF_MASK
-METPLUS_NBRHD_SHAPE
-METPLUS_NBRHD_WIDTH
-METPLUS_NBRHD_COV_THRESH
-METPLUS_OUTPUT_PREFIX
-METPLUS_MET_CONFIG_UNSUPPORTED
----->
+  MODEL = GFS
 
-**${METPLUS_MODEL}** - Corresponds to :term:`MODEL` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+Resulting environment variable contents::
 
-METplus Configuration::
+  model = "GFS";
 
-    MODEL = GFS
+**${METPLUS_DESC}** 
 
-Resulting value::
-
-    model = "GFS";
-
-**${METPLUS_DESC}** - Corresponds to :term:`DESC` or :term:`GRID_STAT_DESC` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
-
-METplus Configuration::
+Override default by setting :term:`DESC` or :term:`GRID_STAT_DESC` in the METplus configuration file::
 
     GRID_STAT_DESC = MY_TEST
 
-Resulting value::
+Resulting environment variable contents::
 
     desc = "MY_TEST";
 
-**${METPLUS_OBTYPE}** - Corresponds to :term:`OBTYPE` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+**${METPLUS_OBTYPE}** 
 
-METplus Configuration::
+Override default by setting :term:`OBTYPE` in the METplus configuration file::
 
     OBTYPE = ANALYS
 
-Resulting value::
+Resulting environment variable contents::
 
     obtype = "ANALYS";
 
-**${METPLUS_REGRID_DICT}** - Corresponds to :term:`GRID_STAT_REGRID_METHOD`, :term:`GRID_STAT_REGRID_WIDTH`, :term:`GRID_STAT_REGRID_VLD_THRESH`, and :term:`GRID_STAT_REGRID_SHAPE` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+**${METPLUS_REGRID_DICT}** 
 
-METplus Configuration 1::
+Override default by setting any or all of:
+
+| :term:`GRID_STAT_REGRID_METHOD` 
+| :term:`GRID_STAT_REGRID_WIDTH`
+| :term:`GRID_STAT_REGRID_VLD_THRESH`
+| :term:`GRID_STAT_REGRID_SHAPE` 
+|
+
+in the METplus configuration file::
 
     GRID_STAT_REGRID_SHAPE = SQUARE
 
-Resulting value 1::
+Resulting environment variable contents::
 
     regrid = {shape = SQUARE;}
 
-METplus Configuration 2::
+Another ${METPLUS_REGRID_DICT} example::
 
     GRID_STAT_REGRID_WIDTH = 2
     GRID_STAT_REGRID_SHAPE = SQUARE
 
-Resulting value 2::
+Resulting environment variable contents::
 
     regrid = {width = 2; shape = SQUARE;}
 
-**${METPLUS_FCST_FIELD}** - Corresponds to :term:`FCST_VAR<n>_NAME`, :term:`FCST_VAR<n>_LEVELS`, :term:`FCST_VAR<n>_THRESH`, and :term:`FCST_VAR<n>_OPTIONS` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used. For more information on controlling the forecast fields used, please see the :ref:`Field_Info` section of the User's Guide.
+**${METPLUS_FCST_FIELD}** 
 
-METplus Configuration::
+Override default by setting any or all of:
+
+| :term:`FCST_VAR<n>_NAME`
+| :term:`FCST_VAR<n>_LEVELS`
+| :term:`FCST_VAR<n>_THRESH`
+| :term:`FCST_VAR<n>_OPTIONS` 
+|
+
+in the METplus configuration file:: 
 
   FCST_VAR1_NAME = APCP
   FCST_VAR1_LEVELS = A01
     
-
-Resulting value::
+Resulting environment variable contents::
 
     field = [{name = "APCP"; level = ["A01"];}]
 
-**${METPLUS_OBS_FIELD}** - Corresponds to :term:`OBS_VAR<n>_NAME`, :term:`OBS_VAR<n>_LEVELS`, :term:`OBS_VAR<n>_THRESH`, and :term:`OBS_VAR<n>_OPTIONS` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used. For more information on controlling the forecast fields used, please see the :ref:`Field_Info` section of the User's Guide.
+.. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
-METplus Configuration::
+**${METPLUS_OBS_FIELD}** 
+
+Override default by setting any or all of:
+
+| :term:`OBS_VAR<n>_NAME`
+| :term:`OBS_VAR<n>_LEVELS`
+| :term:`OBS_VAR<n>_THRESH`
+| :term:`OBS_VAR<n>_OPTIONS` 
+|
+
+in the METplus configuration file::
 
   OBS_VAR1_NAME = ASNOW
   OBS_VAR1_LEVELS = A01 
 
-Resulting value::
+Resulting environment variable contents::
 
   field = [{name = "ASNOW"; level = ["A01"];}]
 
-**${METPLUS_CLIMO_MEAN_FILE}** - Corresponds to :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+.. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
-METplus configuration::
-  
+**${METPLUS_CLIMO_MEAN_FILE}** 
+
+Override default by sewtting :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE` in the METplus configuration file::
+
   GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE = /home/username/climo_file.nc
 
-Resulting value::
+Resulting environment variable contents::
   
   file_name = ['/home/username/climo_file.nc'];
 
-**${METPLUS_CLIMO_STDEV_FILE}** - Corresponds to :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+**${METPLUS_CLIMO_STDEV_FILE}** 
 
-METplus configuration:
+Override default by setting :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE` in the METplus configuration file::
 
   GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE = /home/username/climo_file.nc
 
-Resulting value::
+Resulting environment variable contents::
   
   climo_stdev = { file_name = ["/some/path/climo/stdfile.nc"]; }
 
-**${METPLUS_MASK_DICT}** - Corresponds to :term:`GRID_STAT_MASK_GRID` and :term:`GRID_STAT_VERIFICATION_MASK_TEMPLATE` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+**${METPLUS_MASK_DICT}** 
 
-METplus configuration::
+Override default by setting any or all of:
+
+| :term:`GRID_STAT_MASK_GRID`
+| :term:`GRID_STAT_MASK_POLY`
+|
+
+in the METplus configuration file::
   
   GRID_STAT_MASK_GRID = FULL
-  GRID_STAT_VERIFICATION_MASK_TEMPLATE = one,two
+  GRID_STAT_MASK_POLY = one,two
 
-Resulting value::
+Resulting environment variable contents::
 
-  mask = {grid = ["FULL"];poly = ["one","two"];}
+  mask = {grid = ["FULL"]; poly = ["one","two"];}
 
-**${METPLUS_NBRHD_SHAPE}** - Corresponds to :term:`GRID_STAT_NEIGHBORHOOD_SHAPE` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+**${METPLUS_NBRHD_SHAPE}** 
 
-METplus configuration::
+Override default by setting :term:`GRID_STAT_NEIGHBORHOOD_SHAPE` in the METplus configuration file::
 
   GRID_STAT_NEIGHBORHOOD_SHAPE = SQUARE
 
-Resulting value::
+Resulting environment variable contents::
 
   shape = SQUARE;
 
-**${METPLUS_NBRHD_WIDTH}** - Corresponds to :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+**${METPLUS_NBRHD_WIDTH}** 
 
-METplus configuration::
+Override default by setting :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` in the METplus configuration file::
 
   GRID_STAT_NEIGHBORHOOD_SHAPE = 1
 
-Resulting value::
+Resulting environment variable contents::
 
   width = [ 1 ];
 
-**${METPLUS_NBRHD_COV_THRESH}** - Corresponds to :term:`GRID_STAT_NEIHBORHOOD_COV_THRESH` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+**${METPLUS_NBRHD_COV_THRESH}** 
 
-METplus configuration::
+Override default by setting :term:`GRID_STAT_NEIGHBORHOOD_COV_THRESH` in the METplus configuration file::
 
   GRID_STAT_NBRHD_COV_THRESH = >=0.5
 
-Resulting value::
+Resulting environment variable contents::
 
   cov_thresh = [ >=0.5 ];
 
-**${METPLUS_OUTPUT_PREFIX}** - Corresponds to :term:`GRID_STAT_OUTPUT_PREFIX` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+**${METPLUS_OUTPUT_PREFIX}** 
 
-METplus configuration::
-  
+Override default by setting :term:`GRID_STAT_OUTPUT_PREFIX` in the METplus configuration file::
+ 
   GRID_STAT_OUTPUT_PREFIX = OutputPrefixString
 
-Resulting value::
+Resulting environment variable contents::
 
   output_prefix = "OutputPrefixString";
-
 
 .. _make_plots_wrapper:
 
