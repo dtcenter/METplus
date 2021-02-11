@@ -13,8 +13,6 @@ docker build -t docker-action --build-arg dockerhub_tag="$INPUT_DOCKERHUBTAG" .
 echo "Get Docker data volumes for input data"
 ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $INPUT_CATEGORIES
 
-#readarray -d , -t category_list <<< "$INPUT_CATEGORIES"
-
 category_list=`echo $INPUT_CATEGORIES | tr "," "\n"`
 
 VOLUMES_FROM=""
@@ -24,5 +22,5 @@ done
 
 echo VOLUMES_FROM: $VOLUMES_FROM
 
-echo "Run Docker Action container"
-docker run -e GITHUB_WORKSPACE -e BRANCH_NAME -e INPUT_DOCKERHUBTAG -e INPUT_CATEGORIES -e DOCKER_USERNAME -e DOCKER_PASSWORD -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE docker-action
+echo "Run Docker Action container: $INPUT_DOCKERHUBTAG"
+docker run -e GITHUB_WORKSPACE -e INPUT_CATEGORIES -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE docker-action
