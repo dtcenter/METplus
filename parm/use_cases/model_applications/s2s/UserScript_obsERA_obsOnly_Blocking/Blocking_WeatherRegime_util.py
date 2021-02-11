@@ -45,6 +45,9 @@ def find_input_files(inconfig, use_init, intemplate, secondtemplate=''):
 
     file_list = []
     yr_list = []
+    mth_list = []
+    day_list = []
+    yr_full_list = []
     if use_init:
         timname = 'init'
     else:
@@ -64,6 +67,9 @@ def find_input_files(inconfig, use_init, intemplate, secondtemplate=''):
                 continue
             cmth = outtimestuff['valid'].strftime('%m')
             filepath = do_string_sub(template, **outtimestuff)
+            mth_list.append(cmth)
+            day_list.append(outtimestuff['valid'].strftime('%d'))
+            yr_full_list.append(outtimestuff['valid'].strftime('%Y'))
             if secondtemplate:
                 filepath2 = do_string_sub(template2, **outtimestuff)
                 if os.path.exists(filepath) and os.path.exists(filepath2):
@@ -88,7 +94,7 @@ def find_input_files(inconfig, use_init, intemplate, secondtemplate=''):
         file_list = [file_list,file_list2]
     yr_list.append(int(outtimestuff['valid'].strftime('%Y')))
 
-    return file_list, yr_list
+    return file_list, yr_list, mth_list, day_list, yr_full_list
 
 def read_nc_met(infiles,yrlist,invar):
 

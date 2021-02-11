@@ -11,7 +11,7 @@ mp_fpath_split = str.split(mp_fpath,os.path.sep)
 mp_loc_ind = mp_fpath_split.index('METplus')
 
 sys.path.insert(0,os.path.sep.join(mp_fpath_split[0:mp_loc_ind+1]))
-sys.path.insert(0, "/glade/u/home/kalb/UIUC/METplotpy")
+sys.path.insert(0, os.path.sep.join(mp_fpath_split[0:mp_loc_ind])+"/METplotpy")
 from Blocking import BlockingCalculation
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
@@ -123,13 +123,13 @@ def main():
 
     if ("CBL" in steps_list_obs):
         print('Computing Obs CBLs')
-        obs_infiles, yr_obs = find_input_files(cbl_config, use_init, 'OBS_BLOCKING_ANOMALY_TEMPLATE')
+        obs_infiles,yr_obs,mth_obs,day_obs,yr_full_obs = find_input_files(cbl_config, use_init, 'OBS_BLOCKING_ANOMALY_TEMPLATE')
         cbls_obs,lats_obs,lons_obs,yr_obs,mhweight_obs = steps_obs.run_CBL(obs_infiles,yr_obs)
 
     if ("CBL" in steps_list_fcst) and not use_cbl_obs:
         # Add in step to use obs for CBLS
         print('Computing Forecast CBLs')
-        fcst_infiles,yr_fcst = find_input_files(cbl_config, use_init, 'FCST_BLOCKING_ANOMALY_TEMPLATE')
+        fcst_infiles,yr_fcst,mth_fcst,day_fcst,yr_full_fcst = find_input_files(cbl_config, use_init, 'FCST_BLOCKING_ANOMALY_TEMPLATE')
         cbls_fcst,lats_fcst,lons_fcst,yr_fcst,mhweight_fcst = steps_fcst.run_CBL(fcst_infiles,yr_fcst)
     elif ("CBL" in steps_list_fcst) and use_cbl_obs:
         if not ("CBL" in steps_list_obs):
@@ -171,24 +171,26 @@ def main():
         if not ("CBL" in steps_list_obs):
             raise Exception('Must run observed CBLs before running IBLs.')
         print('Computing Obs IBLs')
-        obs_infiles, yr_obs = find_input_files(ibl_config, use_init, 'OBS_BLOCKING_TEMPLATE')
+        obs_infiles,yr_obs,mth_obs,day_obs,yr_full_obs = find_input_files(ibl_config, use_init, 'OBS_BLOCKING_TEMPLATE')
         ibls_obs = steps_obs.run_Calc_IBL(cbls_obs,obs_infiles,yr_obs)
         daynum_obs = np.arange(0,len(ibls_obs[0,:,0]),1)
     elif ("IBL" in steps_list_fcst) and not ("IBL" in steps_list_obs):
         if (not "CBL" in steps_list_fcst):
             raise Exception('Must run forecast CBLs or use observed CBLs before running IBLs.')
         print('Computing Forecast IBLs')
-        fcst_infiles, yr_fcst = find_input_files(ibl_config, use_init, 'FCST_BLOCKING_TEMPLATE')
+        fcst_infiles,yr_fcst,mth_fcst,day_fcst,yr_full_fcst = find_input_files(ibl_config, use_init, 'FCST_BLOCKING_TEMPLATE')
         ibls_fcst = steps_fcst.run_Calc_IBL(cbls_fcst,fcst_infiles,yr_fcst)
         daynum_fcst = np.arange(0,len(ibls_fcst[0,:,0]),1)
     elif ("IBL" in steps_list_obs) and ("IBL" in steps_list_fcst):
         if not ("CBL" in steps_list_obs) and not ("CBL" in steps_list_fcst):
             raise Exception('Must run observed and forecast CBLs before running IBLs.')
-        both_infiles, yr_obs = find_input_files(ibl_config, use_init, 'OBS_BLOCKING_TEMPLATE',
+        both_infiles,yr_obs,mth_obs,day_obs = find_input_files(ibl_config, use_init, 'OBS_BLOCKING_TEMPLATE',
             secondtemplate='FCST_BLOCKING_TEMPLATE')
         obs_infiles = both_infiles[0]
         fcst_infiles = both_infiles[1]
         yr_fcst = yr_obs
+        mth_fcst = mth_obs
+        day_fcst = day_obs
         print('Computing Obs IBLs')
         ibls_obs = steps_obs.run_Calc_IBL(cbls_obs,obs_infiles,yr_obs)
         daynum_obs = np.arange(0,len(ibls_obs[0,:,0]),1)

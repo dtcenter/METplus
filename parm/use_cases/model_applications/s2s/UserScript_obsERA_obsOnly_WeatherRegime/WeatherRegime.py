@@ -3,6 +3,7 @@ import numpy as np
 from pylab import *
 from sklearn.cluster import KMeans
 import scipy
+import netCDF4 as nc4
 from scipy import stats,signal
 from numpy import ones,vstack
 from numpy.linalg import lstsq
@@ -19,6 +20,9 @@ class WeatherRegimeCalculation():
         self.wrnum = config.getint('WeatherRegime',label+'_WR_NUMBER',6)
         self.numi = config.getint('WeatherRegime',label+'_NUM_CLUSTERS',20)
         self.NUMPCS = config.getint('WeatherRegime',label+'_NUM_PCS',10)
+        self.wr_outfile_type = config.getstr('WeatherRegime',label+'_WR_OUTPUT_FILE_TYPE','text')
+        self.wr_outfile_dir = config.getstr('WeatherRegime','WR_OUTPUT_FILE_DIR','')
+        self.wr_outfile = config.getstr('WeatherRegime',label+'_WR_OUTPUT_FILE',label+'_WeatherRegime')
 
 
     def get_cluster_fraction(self, m, label):
@@ -127,7 +131,7 @@ class WeatherRegimeCalculation():
         return a1
 
 
-    def run_K_means(self,a1,yr,arr_shape):
+    def run_K_means(self,a1,yr,mth,day,arr_shape):
 
         arrdims = len(arr_shape)
 
@@ -168,27 +172,65 @@ class WeatherRegimeCalculation():
         input = input[::-1]
 
         #Save Label data [YR,DAY]
-        #if os.path.isfile(outfile+'.nc'):
-        #   os.remove(outfile+'.nc')
-        #nc = nc4.Dataset(outfile, 'w')
-        #nc.createDimension('year', arr_shape[0])
-        #nc.createDimension('day', arr_shape[1])
+        # Make some conversions first
+        wrc_shape = wrc.shape
+        yr_1d = np.array(yr)
+        mth_1d = np.array(mth)
+        day_1d = np.array(day)
+        wrc_1d = np.reshape(wrc,len(mth))
 
-        #ncyr = nc.createVariable('time','i',('year'))
-        #nc.variables['time'].long_name = "time"
-        #nc.variables['time'].standard_name = "time"
-        #nc.variables['time'].units = "years"
+        # netcdf file
+        if self.wr_outfile_type=='netcdf':
+            wr_full_outfile = self.wr_outfile_dir+'/'+self.wr_outfile+'.nc'
+
+            if os.path.isfile(wr_full_outfile):
+                os.remove(wr_full_outfile)
+
+            # Create CF compliant time unit
+            rdate = datetime.datetime(int(yr_1d[0]),int(mth_1d[0]),int(day_1d[0]),0,0,0)
+            cf_diffdays = np.zeros(len(yr_1d))
+            ymd_arr = np.empty(len(yr_1d))
+            for dd in range(len(yr_1d)):
+                loopdate = datetime.datetime(int(yr_1d[dd]),int(mth_1d[dd]),int(day_1d[dd]),0,0,0)
+                cf_diffdays[dd] = (loopdate - rdate).days
+                ymd_arr[dd] = yr_1d[dd]+mth_1d[dd]+day_1d[dd]
+
+            nc = nc4.Dataset(wr_full_outfile, 'w')
+            nc.createDimension('time', len(mth))
+            nc.Conventions = "CF-1.7"
+            nc.title = "Weather Regime Classification"
+            nc.institution = "NCAR DTCenter"
+            nc.source = "Weather Regime METplus use-case"
+
+            ncti = nc.createVariable('time','d',('time'))
+            nc.variables['time'].long_name = "time"
+            nc.variables['time'].standard_name = "time"
+            nc.variables['time'].units = "days since "+rdate.strftime('%Y-%m-%d %H:%M:%S')
+            nc.variables['time'].calendar = "gregorian"
+
+            ncdate = nc.createVariable('date','i',('time'))
+            nc.variables['date'].long_name = "date YYYYMMDD"
        
-        #ncnum = nc.createVariable('wrnum','i',('year','day'),fill_value=-9999.0)
-        #nc.variables['wrnum'].long_name = "weather_regime_number"
-        #nc.variables['wrnum'].standard_name = "weather_regime_number"
-        #nc.variables['wrnum'].units = "unitless"
+            ncnum = nc.createVariable('wrnum','i',('time'),fill_value=-9999.0)
+            nc.variables['wrnum'].long_name = "weather_regime_number"
 
-        #ncyr[:,:] = yr
-        #ncnum[:,:] = wrc
-        #nc.close()
+            ncti[:] = cf_diffdays
+            ncdate[:] = ymd_arr
+            ncnum[:] = wrc_1d
+            nc.close()
 
-        #np.save('WR_LABELS',wrc)
+        # text file
+        if self.wr_outfile_type=='text':
+           wr_full_outfile = self.wr_outfile_dir+'/'+self.wr_outfile+'.txt'
+
+           if os.path.isfile(wr_full_outfile):
+                os.remove(wr_full_outfile)
+
+           otdata = np.array([yr_1d, mth_1d, day_1d, wrc_1d])
+           otdata = otdata.T
+
+           with open(wr_full_outfile, 'w+') as datafile_id:
+               np.savetxt(datafile_id, otdata, fmt=['%6s','%3s','%4s','%6s'], header='Year Month Day WeatherRegime')
+
 
         return input, self.wrnum, perc
-

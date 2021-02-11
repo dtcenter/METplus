@@ -6,16 +6,22 @@ import numpy as np
 import netCDF4
 import re
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-    os.pardir,os.pardir)))
-sys.path.insert(0, "/glade/u/home/kalb/UIUC/METplotpy_feature_74/metplotpy/contributed/weather_regime")
+mp_fpath = os.path.abspath(__file__)
+mp_fpath_split = str.split(mp_fpath,os.path.sep)
+mp_loc_ind = mp_fpath_split.index('METplus')
+
+sys.path.insert(0,os.path.sep.join(mp_fpath_split[0:mp_loc_ind+1]))
+sys.path.insert(0, os.path.sep.join(mp_fpath_split[0:mp_loc_ind])+"/METplotpy_feature_74")
+#sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+#    os.pardir,os.pardir)))
+#sys.path.insert(0, "/glade/u/home/kalb/UIUC/METplotpy_feature_74/metplotpy/contributed/weather_regime")
 from WeatherRegime import WeatherRegimeCalculation
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub, getlist
 from ush.master_metplus import get_config_inputs_from_command_line
 from metplus.wrappers import PCPCombineWrapper
 from metplus.wrappers import RegridDataPlaneWrapper
-import plot_weather_regime as pwr
+from metplotpy.contributed.weather_regime import plot_weather_regime as pwr
 from Blocking_WeatherRegime_util import find_input_files, parse_steps, read_nc_met
 
 def main():
@@ -79,13 +85,13 @@ def main():
 
 
     if ("ELBOW" in steps_list_obs) or ("EOF" in steps_list_obs) or ("KMEANS" in steps_list_obs):
-        obs_infiles, yr_obs = find_input_files(elbow_config, use_init, 'OBS_WR_TEMPLATE')
+        obs_infiles,yr_obs,mth_obs,day_obs,yr_full_obs = find_input_files(elbow_config, use_init, 'OBS_WR_TEMPLATE')
         obs_invar = config.getstr('WeatherRegime','OBS_WR_VAR','')
         z500_obs,lats_obs,lons_obs,year_obs = read_nc_met(obs_infiles,yr_obs,obs_invar)
         z500_detrend_obs,z500_detrend_2d_obs = steps_obs.weights_detrend(lats_obs,lons_obs,z500_obs)
 
     if ("ELBOW" in steps_list_fcst) or ("EOF" in steps_list_fcst) or("KMEANS" in steps_list_fcst):
-        fcst_infiles,yr_fcst = find_input_files(elbow_config, use_init, 'FCST_WR_TEMPLATE')
+        fcst_infiles,yr_fcst, mth_fcst,day_fcst,yr_full_fcst = find_input_files(elbow_config, use_init, 'FCST_WR_TEMPLATE')
         fcst_invar = config.getstr('WeatherRegime','FCST_WR_VAR','')
         z500_fcst,lats_fcst,lons_fcst,year_fcst = read_nc_met(fcst_infiles,yr_fcst,fcst_invar)
         z500_detrend_fcst,z500_detrend_2d_fcst = steps_fcst.weights_detrend(lats_fcst,lons_fcst,z500_fcst)
@@ -147,11 +153,11 @@ def main():
 
     if ("KMEANS" in steps_list_obs):
         print('Running Obs K Means')
-        kmeans_obs,wrnum_obs,perc_obs = steps_obs.run_K_means(z500_detrend_2d_obs,year_obs,z500_obs.shape)
+        kmeans_obs,wrnum_obs,perc_obs = steps_obs.run_K_means(z500_detrend_2d_obs,yr_full_obs,mth_obs,day_obs,z500_obs.shape)
 
     if ("KMEANS" in steps_list_fcst):
         print('Running Forecast K Means')
-        kmeans_fcst,wrnum_fcst,perc_fcst = steps_fcst.run_K_means(z500_detrend_2d_fcst,year_fcst,z500_fcst.shape)
+        kmeans_fcst,wrnum_fcst,perc_fcst = steps_fcst.run_K_means(z500_detrend_2d_fcst,yr_full_fcst,mth_fcst,day_fcst,z500_fcst.shape)
 
     if ("PLOTKMEANS" in steps_list_obs):
         if not ("KMEANS" in steps_list_obs):
