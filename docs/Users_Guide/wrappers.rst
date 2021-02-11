@@ -610,16 +610,16 @@ The following environment variables are referenced in the MET configuration file
 
 
 <----
-METPLUS_MODEL
-METPLUS_DESC
-METPLUS_OBTYPE
-METPLUS_REGRID_DICT
-METPLUS_FCST_FIELD
-METPLUS_OBS_FIELD
-METPLUS_CLIMO_MEAN_FILE
-METPLUS_CLIMO_STDEV_FILE
-METPLUS_MASK_GRID
-METPLUS_VERIF_MASK
+xxMETPLUS_MODEL
+xxMETPLUS_DESC
+xxMETPLUS_OBTYPE
+xxMETPLUS_REGRID_DICT
+xxMETPLUS_FCST_FIELD
+xxMETPLUS_OBS_FIELD
+xxMETPLUS_CLIMO_MEAN_FILE
+xxMETPLUS_CLIMO_STDEV_FILE
+xxMETPLUS_MASK_GRID
+xxMETPLUS_VERIF_MASK
 METPLUS_NBRHD_SHAPE
 METPLUS_NBRHD_WIDTH
 METPLUS_NBRHD_COV_THRESH
@@ -676,16 +676,60 @@ Resulting value 2::
 
     regrid = {width = 2; shape = SQUARE;}
 
-**${METPLUS_FCST_FIELD}** - Corresponds to :term:`OBTYPE` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+**${METPLUS_FCST_FIELD}** - Corresponds to :term:`FCST_VAR<n>_NAME`, :term:`FCST_VAR<n>_LEVELS`, :term:`FCST_VAR<n>_THRESH`, and :term:`FCST_VAR<n>_OPTIONS` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used. For more information on controlling the forecast fields used, please see the :ref:`Field_Info` section of the User's Guide.
 
 METplus Configuration::
 
-    [config]
-    OBTYPE = ANALYS
+  FCST_VAR1_NAME = APCP
+  FCST_VAR1_LEVELS = A01
+    
 
 Resulting value::
 
-    obtype = "ANALYS";
+    field = [{name = "APCP"; level = ["A01"];}]
+
+**${METPLUS_OBS_FIELD}** - Corresponds to :term:`OBS_VAR<n>_NAME`, :term:`OBS_VAR<n>_LEVELS`, :term:`OBS_VAR<n>_THRESH`, and :term:`OBS_VAR<n>_OPTIONS` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used. For more information on controlling the forecast fields used, please see the :ref:`Field_Info` section of the User's Guide.
+
+METplus Configuration::
+
+  OBS_VAR1_NAME = ASNOW
+  OBS_VAR1_LEVELS = A01 
+
+Resulting value::
+
+  field = [{name = "ASNOW"; level = ["A01"];}]
+
+**${METPLUS_CLIMO_MEAN_FILE}** - Corresponds to :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+
+METplus configuration::
+  
+  GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE = /home/username/climo_file.nc
+
+Resulting value::
+  
+  file_name = ['/home/username/climo_file.nc'];
+
+**${METPLUS_CLIMO_STDEV_FILE}** - Corresponds to :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+
+METplus configuration:
+
+  GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE = /home/username/climo_file.nc
+
+Resulting value::
+  
+  climo_stdev = { file_name = ["/some/path/climo/stdfile.nc"]; }
+
+**${METPLUS_MASK_DICT}** - Corresponds to :term:`GRID_STAT_MASK_GRID` and :term:`GRID_STAT_VERIFICATION_MASK_TEMPLATE` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+
+METplus configuration::
+  
+  GRID_STAT_MASK_GRID = FULL
+  GRID_STAT_VERIFICATION_MASK_TEMPLATE = one,two
+
+Resulting value::
+
+  mask = {grid = ["FULL"];poly = ["one","two"];}
+
 
 .. _make_plots_wrapper:
 
