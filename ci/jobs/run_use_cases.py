@@ -38,9 +38,12 @@ def main(categories, subset_list):
                                               work_dir=os.environ.get('DOCKER_WORK_DIR'))
     for command, requirements in all_commands:
         travis_build_dir = os.environ['GITHUB_WORKSPACE']
-        reqs = ';'.join(requirements)
+        if requirements:
+            reqs = f"{';'.join(requirements)};"
+        else:
+            reqs = ''
         cmd = (f'{travis_build_dir}/ci/jobs/docker_run_metplus.sh'
-               f' "{reqs};{command}" "{volumes_from}"')
+               f' "{reqs}{command}" "{volumes_from}"')
         print(cmd)
         try:
             subprocess.run(shlex.split(cmd), check=True)
