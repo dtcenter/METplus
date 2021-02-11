@@ -679,6 +679,8 @@ class METplusConfig(ProdConfig):
             # check if each tag is an existing METplus config variable
             if self.has_option(sec, var_name):
                 value = self.getraw(sec, var_name, default, count+1)
+            elif self.has_option('config', var_name):
+                value = self.getraw('config', var_name, default, count+1)
             elif var_name.startswith('ENV'):
                 # if environment variable, ENV[nameofvar], get nameofvar
                 value = os.environ.get(var_name[4:-1])
