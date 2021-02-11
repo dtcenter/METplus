@@ -48,6 +48,8 @@ RUN yum -y update \
  && yum -y install java-1.8.0-openjdk \
  && python3 -m pip install pytest
 
+RUN mkdir /data/input && curl -L -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar -o /data/input || 0
+
 
 ARG SOURCE_BRANCH
 ARG DO_GIT_CLONE
