@@ -14,12 +14,11 @@ release. Open the following URL in a browser:
 * Update the release-notes.rst file found in the User's Guide directory.
 
 * If you are creating a beta1 release, remove the previous version's release
-  notes, i.e. for 3.0-beta1, remove all 2.Y notes and start the 3.0 section.
+  notes, i.e. for 3.0.0-beta1, remove all 2.Y.Z notes and start a 3.0.0
+  section with the format "Version X.Y.Z release notes (YYYYMMDD)".
+    
+* If you are creating a beta1 release, remove the previous version's release
+  notes, i.e. for 3.0.0-beta1, remove all 2.Y.Z notes and start the 3.0.0
+  section.
 
-* If you are creating a beta2 release, add a new beta2 section above the beta1
-  release.
-
-* If you are creating an official release combine the beta release sections
-  into one section (i.e. "Version X.Y release notes (YYYYMMDD)")
-  
 * Commit changes and push to GitHub.

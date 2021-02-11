@@ -20,7 +20,7 @@ Development release (e.g. vX.Y-betaN or vX.Y-rcN)
 .. include:: release_steps/clone_project_repository.rst
 .. include:: release_steps/metcalcpy/update_version.rst
 .. include:: release_steps/metcalcpy/update_docs.rst
-.. include:: release_steps/update_release_notes.rst
+.. include:: release_steps/update_release_notes_development.rst
 .. include:: release_steps/create_release_branch.rst
 .. include:: release_steps/metcalcpy/update_readme.rst
 .. include:: release_steps/push_release_branch.rst

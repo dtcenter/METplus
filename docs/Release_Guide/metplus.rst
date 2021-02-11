@@ -11,7 +11,7 @@ Official release (e.g. vX.Y.0)
 .. include:: release_steps/clone_project_repository.rst
 .. include:: release_steps/checkout_develop_branch.rst
 .. include:: release_steps/metplus/update_version_official.rst
-.. include:: release_steps/update_release_notes.rst
+.. include:: release_steps/update_release_notes_official.rst
 .. include:: release_steps/metplus/update_docs_tagged.rst
 .. include:: release_steps/merge_release_issue.rst
 .. include:: release_steps/create_release_branch.rst
@@ -31,7 +31,7 @@ Bugfix release (e.g. vX.Y.Z)
 .. include:: release_steps/clone_project_repository.rst
 .. include:: release_steps/checkout_main_branch.rst
 .. include:: release_steps/metplus/update_version_bugfix.rst
-.. include:: release_steps/update_release_notes.rst
+.. include:: release_steps/update_release_notes_bugfix.rst
 .. include:: release_steps/metplus/update_docs_bugfix.rst
 .. include:: release_steps/merge_release_issue.rst
 .. include:: release_steps/create_release_on_github.rst
@@ -46,7 +46,7 @@ Development release (e.g. vX.Y.Z-betaN or vX.Y.Z-rcN)
 .. include:: release_steps/clone_project_repository.rst
 .. include:: release_steps/checkout_develop_branch.rst
 .. include:: release_steps/metplus/update_version.rst
-.. include:: release_steps/update_release_notes.rst
+.. include:: release_steps/update_release_notes_development.rst
 .. include:: release_steps/metplus/update_docs_develop.rst
 .. include:: release_steps/merge_release_issue.rst
 .. include:: release_steps/create_release_on_github.rst
