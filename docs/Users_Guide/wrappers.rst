@@ -533,8 +533,6 @@ Used to configure the MET tool grid_stat.
 METplus Configuration
 ~~~~~~~~~~~~~~~~~~~~~
 
-**REQUIRED**
-
 | :term:`FCST_GRID_STAT_INPUT_DIR`
 | :term:`OBS_GRID_STAT_INPUT_DIR`
 | :term:`GRID_STAT_OUTPUT_DIR`
@@ -550,9 +548,6 @@ METplus Configuration
 | :term:`GRID_STAT_OUTPUT_PREFIX`
 | :term:`GRID_STAT_CONFIG_FILE`
 | :term:`FCST_GRID_STAT_INPUT_DATATYPE`
-
-**USER OPTIONAL**
-
 | :term:`OBS_GRID_STAT_INPUT_DATATYPE`
 | :term:`GRID_STAT_ONCE_PER_FIELD`
 | :term:`GRID_STAT_CUSTOM_LOOP_LIST`
@@ -601,7 +596,7 @@ METplus Configuration
 MET Configuration
 ~~~~~~~~~~~~~~~~~
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from:
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
 :term:`MET_INSTALL_DIR`/share/met/config/GridStatDefault_config
 
@@ -744,6 +739,8 @@ in the METplus configuration file::
 Resulting environment variable contents::
 
   mask = {grid = ["FULL"]; poly = ["one","two"];}
+
+.. note:: Since the default value in the MET config file for 'grid' is grid = [ "FULL" ];, setting GRID_STAT_MASK_GRID to an empty string will result in a value of grid = []; in the MET config file.
 
 **${METPLUS_NBRHD_SHAPE}** 
 
@@ -1644,7 +1641,6 @@ file for running with LOOP_ORDER = processes:
    | :term:`OBTYPE`
    | :term:`JOB_NAME`
    | :term:`JOB_ARGS`
-   | :term:`DESC`
    | :term:`FCST_LEAD`
    | :term:`FCST_VAR_NAME`
    | :term:`FCST_VAR_LEVEL`

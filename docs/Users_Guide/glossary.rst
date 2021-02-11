@@ -906,9 +906,6 @@ METplus Configuration Glossary
 
      | *Used by:*  TCMPRPlotter
 
-   DESC
-     .. warning:: **DEPRECATED:** Please use :term:`DESC_LIST` instead.
-
    DESC_LIST
      A single value or list of values used in the stat_analysis data stratification. Specifies the values of the DESC column in the MET .stat file to use.
 
@@ -5455,3 +5452,18 @@ METplus Configuration Glossary
      Specify the value for 'ensemble_flag.weight' in the MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
+
+   GRID_STAT_MASK_GRID
+     Specify the value for 'mask.grid' in the MET configuration file for GridStat.
+
+     | *Used by:*  GridStat
+
+   GRID_STAT_MASK_POLY
+     Specify the value for 'mask.poly' in the MET configuration file for GridStat.
+
+     | *Used by:*  GridStat
+   
+   DESC
+     Specify the value for 'desc' in the MET configuration file for the MET tool being used
+
+    | *Used by:* GridStat, PointStat, EnsembleStat, GridDiag, MODE, MTD, SeriesAnalysis, TCGen, TCPairs, TCStat
