@@ -296,7 +296,11 @@ def handle_format_delimiter(split_string, idx, shift_seconds, truncate_seconds, 
 
     return None
 
-def do_string_sub(tmpl, skip_missing_tags=False, attempt=0, **kwargs):
+def do_string_sub(tmpl,
+                  skip_missing_tags=False,
+                  recurse=False,
+                  attempt=MAX_ATTEMPTS,
+                  **kwargs):
     """ Perform string substitution on a template. Replace filename template
         tags (found within curly braces) with values passed into the function
         as arguments. In some cases, the template keys can have parameters
@@ -316,6 +320,9 @@ def do_string_sub(tmpl, skip_missing_tags=False, attempt=0, **kwargs):
          (i.e. in a MET config variable) that should not be substituted. If
          set to False (default) and a key to be substituted was not passed into
          the function call, a TypeError exception will be raised.
+        @param recurse If True, try to substitute values recursively until max
+         number of attempts have been made. If False, only try once. Default
+         value is False.
         @param attempt Counter to prevent infinite recursion if a set of curly
          braces are expected to not be substituted. This argument shouldn't be
          defined in the call to this function.
@@ -325,6 +332,17 @@ def do_string_sub(tmpl, skip_missing_tags=False, attempt=0, **kwargs):
          in the template will be substituted with 'my_value'.
         @returns template with tags substituted with values
     """
+    if recurse:
+        # set argument to another variable to avoid changing the input value
+        attempt_local = attempt
+        # if number of attempts provided is more than the max,
+        # set it to the max
+        if attempt_local > MAX_ATTEMPTS:
+            attempt_local = MAX_ATTEMPTS
+    else:
+        # if recursion is off, only attempt once
+        attempt_local = 0
+
     # find inner most tags between nested curly braces
     # match_list is a list with the contents being the data between the
     # curly braces
@@ -338,12 +356,13 @@ def do_string_sub(tmpl, skip_missing_tags=False, attempt=0, **kwargs):
                                                      kwargs,
                                                      skip_missing_tags)
 
-    if attempt >= MAX_ATTEMPTS:
+    # if no more recursive attempts should be made, return the result
+    if attempt_local <= 0:
         return match_result
 
     return do_string_sub(match_result,
                          skip_missing_tags=skip_missing_tags,
-                         attempt=attempt+1,
+                         attempt=attempt_local-1,
                          **kwargs)
 
 def find_and_replace_tags_in_template(match_list, tmpl, kwargs, skip_missing_tags=False):

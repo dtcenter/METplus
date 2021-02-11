@@ -546,6 +546,20 @@ def test_get_fmt_info(fmt, filepath, identifier, expected_fmt_len, expected_matc
         # test valid time extraction
         ("{init?fmt=%Y%m%d%H}_{missing_tag?fmt=%H}_f{lead?fmt=%2H}",
          "2017060400_{missing_tag?fmt=%H}_f06"),
+    ]
+)
+def test_do_string_sub_skip_missing_tags(templ, expected_filename):
+    init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
+    lead_string = int("6") * 3600
+    filename = do_string_sub(templ,
+                             init=init_string,
+                             lead=lead_string,
+                             skip_missing_tags=True,
+                             recurse=True)
+    assert(filename == expected_filename)
+
+@pytest.mark.parametrize(
+    'templ, expected_filename', [
         # test template within dictionary item
         ("dict = { my_stuff_{init?fmt=%Y%m%d%H} more;}",
          "dict = { my_stuff_2017060400 more;}"),
@@ -555,11 +569,29 @@ def test_get_fmt_info(fmt, filepath, identifier, expected_fmt_len, expected_matc
          "climo_stdev = {field = [{name= \"filename.py other.nc:0406\";}]};")
     ]
 )
-def test_do_string_sub_skip_missing_tags(templ, expected_filename):
+def test_do_string_sub_recurse(templ, expected_filename):
     init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
     lead_string = int("6") * 3600
     filename = do_string_sub(templ,
                              init=init_string,
                              lead=lead_string,
-                             skip_missing_tags=True)
+                             skip_missing_tags=True,
+                             recurse=True)
+    assert(filename == expected_filename)
+
+@pytest.mark.parametrize(
+    'templ, expected_filename', [
+        # test sub values that contain regex expressions with curly braces
+        ("{date?fmt=%Y%m}/b{basin?fmt=%s}q{date?fmt=%Y%m}*.gfso.{cyclone?fmt=%s}",
+         "201706/b([a-zA-Z]{2})q201706*.gfso.([0-9]{2,4})"),
+    ]
+)
+def test_do_string_sub_no_recurse_no_missing(templ, expected_filename):
+    date_dt = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
+    basin_regex = "([a-zA-Z]{2})"
+    cyclone_regex = "([0-9]{2,4})"
+    filename = do_string_sub(templ,
+                             date=date_dt,
+                             basin=basin_regex,
+                             cyclone=cyclone_regex)
     assert(filename == expected_filename)

@@ -174,6 +174,7 @@ class CommandBuilder:
         if time_info:
             met_overrides = do_string_sub(met_overrides,
                                           skip_missing_tags=True,
+                                          recurse=True,
                                           **time_info)
 
         self.add_env_var(self.MET_OVERRIDES_KEY,
