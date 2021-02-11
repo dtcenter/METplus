@@ -8,5 +8,12 @@ Finalize Release on GitHub
 * Close the current milestone.
 * Confirm that all existing development projects for the current milestone are closed.
 * If necessary, create development projects for the next milestone (e.g. |projectRepo|-X.Y.Z-beta1, beta2, beta3).
-* Update the repository settings by resetting the *Default branch* to the new main_vX.Y branch.
+* Update the repository settings by resetting the *Default branch* to the new main_vX.Y branch:
+
+.. parsed-literal::
+
+     https://github.com/dtcenter|projectRepo|
+     -> Settings
+     -> Branches (tab on left)
+     -> change the drop down to new branch
 
