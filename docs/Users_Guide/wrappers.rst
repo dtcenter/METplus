@@ -589,6 +589,7 @@ Configuration
 | :term:`OBS_GRID_STAT_VAR<n>_LEVELS` (optional)
 | :term:`OBS_GRID_STAT_VAR<n>_THRESH` (optional)
 | :term:`OBS_GRID_STAT_VAR<n>_OPTIONS` (optional)
+|
 
 .. warning:: **DEPRECATED:**
 
@@ -729,6 +730,46 @@ METplus configuration::
 Resulting value::
 
   mask = {grid = ["FULL"];poly = ["one","two"];}
+
+**${METPLUS_NBRHD_SHAPE}** - Corresponds to :term:`GRID_STAT_NEIGHBORHOOD_SHAPE` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+
+METplus configuration::
+
+  GRID_STAT_NEIGHBORHOOD_SHAPE = SQUARE
+
+Resulting value::
+
+  shape = SQUARE;
+
+**${METPLUS_NBRHD_WIDTH}** - Corresponds to :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+
+METplus configuration::
+
+  GRID_STAT_NEIGHBORHOOD_SHAPE = 1
+
+Resulting value::
+
+  width = [ 1 ];
+
+**${METPLUS_NBRHD_COV_THRESH}** - Corresponds to :term:`GRID_STAT_NEIHBORHOOD_COV_THRESH` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+
+METplus configuration::
+
+  GRID_STAT_NBRHD_COV_THRESH = >=0.5
+
+Resulting value::
+
+  cov_thresh = [ >=0.5 ];
+
+**${METPLUS_OUTPUT_PREFIX}** - Corresponds to :term:`GRID_STAT_OUTPUT_PREFIX` in the METplus configuration file. If unset in METplus, the value set in the default MET GridStat configuration file will be used.
+
+METplus configuration::
+  
+  GRID_STAT_OUTPUT_PREFIX = OutputPrefixString
+
+Resulting value::
+
+  output_prefix = "OutputPrefixString";
 
 
 .. _make_plots_wrapper:
