@@ -50,7 +50,7 @@ ret=$?
 
 # if branch ends with -ref and not a pull request, create/update Docker
 # data volume for output data
-if [ "$GITHUB_EVENT_NAME" == "pull_request" || "${BRANCH_NAME: -4}" != "-ref" ]; then
+if [ "$GITHUB_EVENT_NAME" == "pull_request" ] || [ "${BRANCH_NAME: -4}" != "-ref" ]; then
   echo $BRANCH_NAME is not a reference branch.
   exit $ret
 fi
