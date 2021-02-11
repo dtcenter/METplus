@@ -27,3 +27,13 @@ echo VOLUMES_FROM: $VOLUMES_FROM
 
 echo "Run Docker Action container: $INPUT_DOCKERHUBTAG"
 docker run -e GITHUB_WORKSPACE -e INPUT_CATEGORIES -e INPUT_SUBSETLIST -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE docker-action
+ret=$?
+
+# if branch ends with -ref and not a pull request, create/update Docker
+# data volume for output data
+if [ "$GITHUB_EVENT_NAME" == "pull_request" || "${BRANCH_NAME: -4}" != "-ref"]; then
+  echo $BRANCH_NAME is not a reference branch.
+  exit $ret
+fi
+
+echo Updating Docker data volume for output data from reference branch: ${BRANCH_NAME}
