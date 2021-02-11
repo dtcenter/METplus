@@ -631,18 +631,16 @@ METPLUS_MET_CONFIG_UNSUPPORTED
 
 METplus Configuration::
 
-    [config]
     MODEL = GFS
 
 Resulting value::
 
     model = "GFS";
 
-**${METPLUS_DESC}** - Corresponds to :term:`GRID_STAT_DESC` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+**${METPLUS_DESC}** - Corresponds to :term:`DESC` or :term:`GRID_STAT_DESC` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
 
 METplus Configuration::
 
-    [config]
     GRID_STAT_DESC = MY_TEST
 
 Resulting value::
@@ -653,7 +651,6 @@ Resulting value::
 
 METplus Configuration::
 
-    [config]
     OBTYPE = ANALYS
 
 Resulting value::
@@ -664,7 +661,6 @@ Resulting value::
 
 METplus Configuration 1::
 
-    [config]
     GRID_STAT_REGRID_SHAPE = SQUARE
 
 Resulting value 1::
@@ -673,7 +669,6 @@ Resulting value 1::
 
 METplus Configuration 2::
 
-    [config]
     GRID_STAT_REGRID_WIDTH = 2
     GRID_STAT_REGRID_SHAPE = SQUARE
 
@@ -681,7 +676,7 @@ Resulting value 2::
 
     regrid = {width = 2; shape = SQUARE;}
 
-**${METPLUS_OBTYPE}** - Corresponds to :term:`OBTYPE` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+**${METPLUS_FCST_FIELD}** - Corresponds to :term:`OBTYPE` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
 
 METplus Configuration::
 
