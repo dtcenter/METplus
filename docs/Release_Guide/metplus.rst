@@ -49,8 +49,6 @@ Development release (e.g. vX.Y.Z-betaN or vX.Y.Z-rcN)
 .. include:: release_steps/update_release_notes.rst
 .. include:: release_steps/metplus/update_docs_develop.rst
 .. include:: release_steps/merge_release_issue.rst
-.. include:: release_steps/create_release_branch.rst
-.. include:: release_steps/push_release_branch.rst
 .. include:: release_steps/create_release_on_github.rst
 .. include:: release_steps/metplus/create_release_extra.rst
 .. include:: release_steps/update_dtc_website.rst
