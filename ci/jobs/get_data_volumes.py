@@ -78,5 +78,9 @@ def main(args):
     return ' '.join(volume_list)
 
 if __name__ == "__main__":
-    out = main(sys.argv[1:])
+    # split up command line args that have commas before passing into main
+    args = []
+    for arg in sys.argv[1:]:
+        args.extend(arg.split(','))
+    out = main(args)
     print(out)
