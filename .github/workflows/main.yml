@@ -114,9 +114,6 @@ jobs:
         with:
           dockerhubTag: dtcenter/metplus-dev:${{ env.BRANCH_NAME }}
           categories: met_tool_wrapper
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
   use_cases_met_tool_wrapper:
     name: Use Cases Tests - MET Tool Wrapper
     runs-on: ubuntu-latest
