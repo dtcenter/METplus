@@ -19,7 +19,7 @@ Update DTC Website
 
   * Click on *Add Code Download* then *Add Link* to add links for release tar file, *User's Guide*, *Existing Builds and Docker*, and *Release Notes* section provide a direct link to the release-notes.html in the User's Guide.
 
-  * If creating a new official release, be sure to add a new *Existing Builds and Docker* page.
+  * If creating a new official release, be sure to add a new *Existing Builds and Docker* page, if one was not already created.
 
   * Click on "Create Release".
 
