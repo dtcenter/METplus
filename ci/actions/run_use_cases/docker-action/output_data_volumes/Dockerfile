@@ -5,7 +5,7 @@ RUN mkdir -p /data/output
 
 ARG vol_name
 
-COPY artifact/${vol_name}/* /data/output/
+COPY ${vol_name}/* /data/output/
 
 # Define the volume mount point
 VOLUME /data/output
