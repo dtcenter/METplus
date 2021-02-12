@@ -9,7 +9,12 @@ DOCKER_DATA_DIR=/data
 DOCKER_OUTPUT_DIR=${DOCKER_DATA_DIR}/output
 GHA_OUTPUT_DIR=$RUNNER_WORKSPACE/output
 
+
 cd /docker-action
+
+
+LOCAL_OUT_DIR=output_data_volumes/output
+mkdir -p ${LOCAL_OUT_DIR}
 
 echo "Creating a docker image with Dockerhub Tag: $INPUT_DOCKERHUBTAG"
 docker build -t docker-action --build-arg dockerhub_tag="$INPUT_DOCKERHUBTAG" .
@@ -45,7 +50,7 @@ done
 echo VOLUMES_FROM: $VOLUMES_FROM
 
 echo "Run Docker Action container: $INPUT_DOCKERHUBTAG"
-docker run -e GITHUB_WORKSPACE -e INPUT_CATEGORIES -e INPUT_SUBSETLIST -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE docker-action
+docker run -e GITHUB_WORKSPACE -e INPUT_CATEGORIES -e INPUT_SUBSETLIST -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v ${LOCAL_OUT_DIR}:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE docker-action
 ret=$?
 
 # if branch ends with -ref and not a pull request, create/update Docker
