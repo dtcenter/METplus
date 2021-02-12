@@ -248,7 +248,7 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: use_cases_met_tool_wrapper
-      - run: |
+        run: |
           for f in use_cases*; do echo $f; done
           ci/jobs/create_output_data_volumes.sh
         env:
