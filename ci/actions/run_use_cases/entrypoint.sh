@@ -9,6 +9,7 @@ DOCKER_DATA_DIR=/data
 DOCKER_OUTPUT_DIR=${DOCKER_DATA_DIR}/output
 GHA_OUTPUT_DIR=$RUNNER_WORKSPACE/output
 
+echo creating dir ${GHA_OUTPUT_DIR}
 mkdir -p ${GHA_OUTPUT_DIR}
 
 cd /docker-action
@@ -74,6 +75,6 @@ ls ${GHA_OUTPUT_DIR}/*
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 image_name=dtcenter/metplus-data-dev:output-${GITHUB_JOB}
-docker build -t ${image_name} --build-arg OUTPUT_DIR="${GHA_OUTPUT_DIR}" output_data_volumes
+echo docker build -t ${image_name} --build-arg OUTPUT_DIR="${GHA_OUTPUT_DIR}" output_data_volumes
 
-docker push ${image_name}
+echo docker push ${image_name}
