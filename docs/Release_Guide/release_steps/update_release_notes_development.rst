@@ -17,8 +17,7 @@ release. Open the following URL in a browser:
   notes, i.e. for 3.0.0-beta1, remove all 2.Y.Z notes and start a 3.0.0
   section with the format "Version X.Y.Z release notes (YYYYMMDD)".
     
-* If you are creating a beta1 release, remove the previous version's release
-  notes, i.e. for 3.0.0-beta1, remove all 2.Y.Z notes and start the 3.0.0
-  section.
+* If you are creating a betaX release, add a new betaX section above the betaX-1
+  release.
 
 * Commit changes and push to GitHub.
