@@ -1,5 +1,5 @@
 METdatadb Bugfix Release
-=========================
+========================
 
 .. |projectRepo| replace:: METdatadb
 
