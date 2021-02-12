@@ -3,7 +3,9 @@ MAINTAINER George McCabe <mccabe@ucar.edu>
 
 RUN mkdir -p /data/output
 
-COPY output/* /data/output/
+ARG vol_name
+
+COPY artifact/${vol_name}/* /data/output/
 
 # Define the volume mount point
 VOLUME /data/output
