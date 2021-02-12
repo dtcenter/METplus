@@ -246,6 +246,8 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
+        with:
+          name: use_cases_met_tool_wrapper
       - run: |
           for f in artifact/*; do echo $f; done
           ci/jobs/create_output_data_volumes.sh
