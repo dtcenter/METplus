@@ -57,6 +57,12 @@ fi
 
 echo Updating Docker data volume for output data from reference branch: ${BRANCH_NAME}
 
+echo list GHA_OUTPUT_DIR: ${GHA_OUTPUT_DIR}
+ls ${GHA_OUTPUT_DIR}
+
+echo list DOCKER_OUTPUT_DIR: ${DOCKER_OUTPUT_DIR}
+ls ${DOCKER_OUTPUT_DIR}
+
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 image_name=dtcenter/metplus-data-dev:output-${GITHUB_JOB}
