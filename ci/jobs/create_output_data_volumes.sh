@@ -4,6 +4,9 @@ echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 ls
 ls use_cases*
+if [ $? != 0 ]; then
+  exit 0
+fi
 
 for vol_name in use_cases*; do
     echo vol name is $vol_name
