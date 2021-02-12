@@ -9,6 +9,8 @@ DOCKER_DATA_DIR=/data
 DOCKER_OUTPUT_DIR=${DOCKER_DATA_DIR}/output
 GHA_OUTPUT_DIR=$RUNNER_WORKSPACE/output
 
+mkdir -p ${GHA_OUTPUT_DIR}
+
 cd /docker-action
 
 LOCAL_OUT_DIR=/docker-action/output_data_volumes/output
@@ -61,13 +63,12 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ] || [ "${BRANCH_NAME: -4}" != "-ref
   echo $BRANCH_NAME is not a reference branch.
   exit $ret
 fi
-exit $ret
 echo Updating Docker data volume for output data from reference branch: ${BRANCH_NAME}
 
 cp -r ${GHA_OUTPUT_DIR}/* ${LOCAL_OUT_DIR}/
 
-echo list runner workspace
-ls ${RUNNER_WORKSPACE}/*
+echo list ${GHA_OUTPUT_DIR}
+ls ${GHA_OUTPUT_DIR}/*
 
 
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin

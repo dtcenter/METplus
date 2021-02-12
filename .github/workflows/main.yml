@@ -246,12 +246,9 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
-        with:
-          name: use_cases_met_tool_wrapper
-          path: use_case_artifacts
       - run: |
           pwd
-          for f in use_case_artifacts/*; do echo $f; done
+          for f in *; do echo $f; done
           ci/jobs/create_output_data_volumes.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
