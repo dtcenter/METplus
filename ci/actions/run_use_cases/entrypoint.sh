@@ -9,14 +9,14 @@ DOCKER_DATA_DIR=/data
 DOCKER_OUTPUT_DIR=${DOCKER_DATA_DIR}/output
 GHA_OUTPUT_DIR=$RUNNER_WORKSPACE/output
 
-
 cd /docker-action
 
 LOCAL_OUT_DIR=/docker-action/output_data_volumes/output
 mkdir -p ${LOCAL_OUT_DIR}
 
 echo "Creating a docker image with Dockerhub Tag: $INPUT_DOCKERHUBTAG"
-docker build -t docker-action --build-arg dockerhub_tag="$INPUT_DOCKERHUBTAG" .
+#docker build -t docker-action --build-arg dockerhub_tag="$INPUT_DOCKERHUBTAG" .
+docker pull $INPUT_DOCKERHUBTAG
 
 # add input volumes to run command
 echo "Get Docker data volumes for input data"
@@ -49,7 +49,9 @@ done
 echo VOLUMES_FROM: $VOLUMES_FROM
 
 echo "Run Docker Action container: $INPUT_DOCKERHUBTAG"
-docker run -e GITHUB_WORKSPACE -e INPUT_CATEGORIES -e INPUT_SUBSETLIST -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE docker-action
+command=${GITHUB_WORKSPACE}/ci/jobs/run_use_cases_docker.py ${INPUT_CATEGORIES} ${INPUT_SUBSETLIST}
+#docker run -e GITHUB_WORKSPACE -e INPUT_CATEGORIES -e INPUT_SUBSETLIST -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE docker-action
+docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $INPUT_DOCKERHUB_TAG $command
 ret=$?
 
 # if branch ends with -ref and not a pull request, create/update Docker
@@ -65,6 +67,9 @@ cp -r ${GHA_OUTPUT_DIR}/* ${LOCAL_OUT_DIR}/
 
 echo list LOCAL_OUT_DIR: ${LOCAL_OUT_DIR}
 ls ${LOCAL_OUT_DIR}
+
+echo list top level
+ls /*
 
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
