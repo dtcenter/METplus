@@ -2,7 +2,7 @@
 Point-Stat: Standard Verification for CONUS Surface 
 ==============================================================================
 
-model_applications/tc_and_extra_tc/PointStat_fcstHAFS_obsFRD
+model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD
 _NetCDF.conf
 
 """
@@ -68,20 +68,27 @@ _NetCDF.conf
 #
 # Note the following variables are referenced in the MET configuration file.
 #
+# UserScript:
+#
+# * **${USER_SCRIPT_RUNTIME_FREQ}** - Corresponds to USER_SCRIPT_RUNTIME_FREQ in the METplus configuration file.
+# * **${USER_SCRIPT_INPUT_DIR}** - Corresponds to USER_SCRIPT_INPUT_DIR in the METplus configuration file.
+# * **${USER_SCRIPT_OUTPUT_DIR}** - Corresponds to USER_SCRIPT_OUTPUT_DIR in the METplus configuration file.
+# * **${USER_SCRIPT_COMMAND}** - Arguments needed to hrd_frd_sonde_find_tar.py corresponds to USER_SCRIPT_INPUT_TEMPLATE.
+# * **${USER_SCRIPT_INPUT_TEMPLATE}** - Input template to hrd_frd_sonde_find_tar.py: USER_SCRIPT_INPUT_DIR, valid date (%Y%m%d), and USER_SCRIPT_OUTPUT_DIR.
+#
 # ASCII2NC:
 #
-# * **${PB2NC_MESSAGE_TYPE}** - Corresponds to PB2NC_MESSAGE_TYPE in the METplus configuration file.
-# * **${PB2NC_STATION_ID}** - Corresponds to PB2NC_STATION_ID in the METplus configuration file.
-# * **${PB2NC_GRID}** - Corresponds to PB2NC_GRID in the METplus configuration file.
-# * **${PB2NC_POLY}** - Corresponds to PB2NC_POLY in the METplus configuration file.
-# * **${OBS_WINDOW_BEGIN}** - Corresponds to OBS_WINDOW_BEGIN or PB2NC_WINDOW_BEGIN in the METplus configuration file.
-# * **${OBS_WINDOW_END}** - Corresponds to OBS_WINDOW_END or PB2NC_WINDOW_END in the METplus configuration file.
-# * **${OBS_BUFR_VAR_LIST}** - Corresponds to PB2NC_OBS_BUFR_VAR_LIST in the METplus configuration file.
-# * **${TIME_SUMMARY_FLAG}** - True/False option to compute time summary statistics. Corresponds to PB2NC_TIME_SUMMARY_FLAG in the METplus configuration file.
-# * **${TIME_SUMMARY_BEG}** - Corresponds to PB2NC_TIME_SUMMARY_BEG in the METplus configuration file.
-# * **${TIME_SUMMARY_END}** - Corresponds to PB2NC_TIME_SUMMARY_END in the METplus configuration file.
-# * **${TIME_SUMMARY_VAR_NAMES}** - Corresponds to PB2NC_TIME_SUMMARY_VAR_NAMES in the METplus configuration file.
-# * **${TIME_SUMMARY_TYPES}** - Corresponds to PB2NC_TIME_SUMMARY_TYPES in the METplus configuration file.
+# * **${ASCII2NC_TIME_SUMMARY_BEG}** - Corresponds to ASCII2NC_TIME_SUMMARY_BEG in the METplus configuration file.
+# * **${ASCII2NC_TIME_SUMMARY_END}** - Corresponds to ASCII2NC_TIME_SUMMARY_END in the METplus configuration file.
+# * **${ASCII2NC_TIME_SUMMARY_STEP}** - Corresponds to ASCII2NC_TIME_SUMMARY_STEP in the METplus configuration file.
+# * **${ASCII2NC_TIME_SUMMARY_WIDTH}** - Corresponds to ASCII2NC_TIME_SUMMARY_WIDTH in the METplus configuration file.
+# * **${ASCII2NC_TIME_SUMMARY_GRIB_CODES}** - Corresponds to ASCII2NC_TIME_SUMMARY_GRIB_CODES in the METplus configuration file.
+# * **${ASCII2NC_TIME_SUMMARY_VAR_NAMES}** - Corresponds to ASCII2NC_TIME_SUMMARY_VAR_NAMES in the METplus configuration file.
+# * **${ASCII2NC_TIME_SUMMARY_TYPES}** - Corresponds to ASCII2NC_TIME_SUMMARY_TYPES in the METplus configuration file.
+# * **${ASCII2NC_TIME_SUMMARY_VALID_FREQ}** - Corresponds to ASCII2NC_TIME_SUMMARY_VALID_FREQ in the METplus configuration file.
+# * **${ASCII2NC_TIME_SUMMARY_VALID_THRESH}** - Corresponds to ASCII2NC_TIME_SUMMARY_VALID_THRESH in the METplus configuration file.
+# * **${ASCII2NC_INPUT_TEMPLATE}** - Corresponds to ASCII2NC_INPUT_TEMPLATE in the METplus configuration file.
+# * **${ASCII2NC_OUTPUT_TEMPLATE}** - Corresponds to ASCII2NC_OUTPUT_TEMPLATE in the METplus configuration file.
 #
 # PointStat:
 #
@@ -92,10 +99,14 @@ _NetCDF.conf
 # * **${OBS_WINDOW_BEGIN}** - Corresponds to OBS_WINDOW_BEGIN or OBS_POINT_STAT_WINDOW_BEGIN in the METplus configuration file.
 # * **${OBS_WINDOW_END}** - Corresponds to OBS_WINDOW_END or OBS_POINT_STAT_WINDOW_END in the METplus configuration file.
 # * **${MODEL}** - Name of forecast input. Corresponds to MODEL in the METplus configuration file.
-# * **${FCST_FIELD}** - Formatted forecast field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${OBS_FIELD}** - Formatted observation field information. Generated from [OBS/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to POINT_STAT_REGRID_TO_GRID in the METplus configuration file.
-# * **${VERIF_MASK}** - Optional verification mask file or list of files. Corresponds to POINT_STAT_VERIFICATION_MASK_TEMPLATE in the METplus configuration file.
+# * **${OBTYPE}** - Name of forecast input. Corresponds to OBTYPE in the METplus configuration file.
+# * **${BOTH_VAR1_NAME}** - Formatted forecast field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+# * **${BOTH_VAR1_LEVELS}** - Formatted observation field information. Generated from [OBS/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
+# * **${POINT_STAT_CONFIG_FILE}** - Corresponds to POINT_STAT_CONFIG_FILE in the METplus configuration file.
+# * **${POINT_STAT_MET_CONFIG_OVERRIDES}** - Overrides options in POINT_STAT_MET_CONFIG_OVERRIDES in the METplus configuration file.
+# * **${POINT_STAT_REGRID_TO_GRID}** - Grid to remap data. Corresponds to POINT_STAT_REGRID_TO_GRID in the METplus configuration file.
+# * **${FCST_POINT_STAT_INPUT_TEMPLATE}** - Corresponds to FCST_POINT_STAT_INPUT_TEMPLATE in the METplus configuration file.
+# * **${OBS_POINT_STAT_INPUT_TEMPLATE}** - Location of ASCII2NC_OUTPUT template.
 #
 
 ##############################################################################
@@ -104,13 +115,13 @@ _NetCDF.conf
 #
 # This use case can be run two ways:
 #
-# 1) Passing in PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf then a user-specific system configuration file::
+# 1) Passing in UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications//tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf:
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/PointStat_fcstGFS_obsNAM_Sfc_MultiField_PrepBufr.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -139,10 +150,12 @@ _NetCDF.conf
 # Output for this use case will be found in nam (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * point_stat_000000L_20170601_000000V.stat
-# * point_stat_000000L_20170602_000000V.stat
-# * point_stat_000000L_20170603_000000V.stat
-#
+# * point_stat_180000L_20190829_120000V.stat
+# * point_stat_180000L_20190829_120000V_fho.txt
+# * point_stat_180000L_20190829_120000V_eclv.txt
+# * point_stat_180000L_20190829_120000V_ctc.txt
+# * point_stat_180000L_20190829_120000V_cnt.txt
+# * point_stat_180000L_20190829_120000V_mpr.txt
 
 ##############################################################################
 # Keywords
