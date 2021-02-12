@@ -13,7 +13,7 @@ release. Open the following URL in a browser:
 
 * Update the release-notes.rst file found in the User's Guide directory.
 
-* In creating the official release, combine the beta release sections
+* When creating the official release, combine the beta release sections
   into one section (i.e. "Version X.Y.Z release notes (YYYYMMDD)").
   
 * Commit changes and push to GitHub.
