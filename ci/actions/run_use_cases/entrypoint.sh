@@ -61,7 +61,7 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ] || [ "${BRANCH_NAME: -4}" != "-ref
   echo $BRANCH_NAME is not a reference branch.
   exit $ret
 fi
-
+exit $ret
 echo Updating Docker data volume for output data from reference branch: ${BRANCH_NAME}
 
 cp -r ${GHA_OUTPUT_DIR}/* ${LOCAL_OUT_DIR}/

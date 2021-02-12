@@ -239,3 +239,13 @@ jobs:
 #        with:
 #          name: ${{ github.job }}
 #          path: artifact/${{ github.job }}
+  create_output_data_volumes:
+    name: Create Output Docker Data Volumes
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/download-artifact@v2
+        runs: for f in artifacts/*; do echo $f; done
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
