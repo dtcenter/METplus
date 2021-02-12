@@ -249,6 +249,7 @@ jobs:
       - run: |
           pwd
           for f in *; do echo $f; done
+	  cp -r use_case_met_tool_wrapper ci/actions/run_use_cases/docker-action/output_data_volumes/
           ci/jobs/create_output_data_volumes.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
