@@ -249,7 +249,7 @@ jobs:
         with:
           name: use_cases_met_tool_wrapper
       - run: |
-          for f in artifact/*; do echo $f; done
+          for f in use_cases*; do echo $f; done
           ci/jobs/create_output_data_volumes.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}

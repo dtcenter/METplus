@@ -2,10 +2,10 @@
 
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-ls artifact
-ls artifact/use_cases*
+ls
+ls use_cases*
 
-for vol_name in artifact/*; do
+for vol_name in use_cases*; do
     echo vol name is $vol_name
     image_name=dtcenter/metplus-data-dev:output-${vol_name}
     echo docker build -t ${image_name} --build-arg vol_name=${vol_name} ci/actions/run_use_cases/docker-action/output_data_volumes
