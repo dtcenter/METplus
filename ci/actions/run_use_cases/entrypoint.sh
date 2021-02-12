@@ -57,7 +57,7 @@ fi
 
 echo Updating Docker data volume for output data from reference branch: ${BRANCH_NAME}
 image_name=dtcenter/metplus-data-dev:output-${GITHUB_ACTION}
-docker build -t ${image_name} --build-arg output_dir=${GHA_OUTPUT_DIR} output_data_volumes
+docker build -t ${image_name} --build-arg OUTPUT_DIR=${GHA_OUTPUT_DIR} output_data_volumes
 
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 docker push ${image_name}
