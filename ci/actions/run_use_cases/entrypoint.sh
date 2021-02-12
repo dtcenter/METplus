@@ -66,10 +66,8 @@ echo Updating Docker data volume for output data from reference branch: ${BRANCH
 
 cp -r ${GHA_OUTPUT_DIR}/* ${LOCAL_OUT_DIR}/
 
-echo list top
-ls /*
-echo gha out dir: ${GHA_OUTPUT_DIR}
-ls ${GHA_OUTPUT_DIR}
+echo list gha workspace
+ls ${GITHUB_WORKSPACE}/*
 
 
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
