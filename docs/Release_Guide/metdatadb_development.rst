@@ -1,5 +1,5 @@
 METdatadb Development Release
-==============================
+=============================
 
 .. |projectRepo| replace:: METdatadb
 
