@@ -52,7 +52,7 @@ echo "Run Docker Action container: $INPUT_DOCKERHUBTAG"
 command="${GITHUB_WORKSPACE}/ci/jobs/run_use_cases_docker.py ${INPUT_CATEGORIES} ${INPUT_SUBSETLIST}"
 #docker run -e GITHUB_WORKSPACE -e INPUT_CATEGORIES -e INPUT_SUBSETLIST -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE docker-action
 echo docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $INPUT_DOCKERHUBTAG "$command"
-docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $INPUT_DOCKERHUBTAG \"$command\"
+docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $INPUT_DOCKERHUBTAG "$command"
 ret=$?
 
 # if branch ends with -ref and not a pull request, create/update Docker
@@ -68,6 +68,8 @@ cp -r ${GHA_OUTPUT_DIR}/* ${LOCAL_OUT_DIR}/
 
 echo list workspace
 ls /github/workspace/*
+echo list jobs dir: ${GITHUB_WORKSPACE}/ci/jobs/
+ls ${GITHUB_WORKSPACE}/ci/jobs/
 
 
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
