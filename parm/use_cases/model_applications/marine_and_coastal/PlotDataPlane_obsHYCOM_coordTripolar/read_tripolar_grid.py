@@ -188,5 +188,5 @@ met_data.attrs = {
             'Nlon': n_lon,
             }
         }
-
+attrs = met_data.attrs
 print("Attributes: " + repr(met_data.attrs))
