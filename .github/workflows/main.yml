@@ -242,10 +242,13 @@ jobs:
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
     runs-on: ubuntu-latest
+    needs [use_cases_met_tool_wrapper]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
-      - run: for f in artifact/*; do echo $f; done
+      - run: |
+          for f in artifact/*; do echo $f; done
+          ci/jobs/create_output_data_volumes.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
