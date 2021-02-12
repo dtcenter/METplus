@@ -56,8 +56,10 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ] || [ "${BRANCH_NAME: -4}" != "-ref
 fi
 
 echo Updating Docker data volume for output data from reference branch: ${BRANCH_NAME}
-image_name=dtcenter/metplus-data-dev:output-${GITHUB_ACTION}
-docker build -t ${image_name} --build-arg OUTPUT_DIR=${GHA_OUTPUT_DIR} output_data_volumes
 
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
+
+image_name=dtcenter/metplus-data-dev:output-${GITHUB_JOB}
+docker build -t ${image_name} --build-arg OUTPUT_DIR="${GHA_OUTPUT_DIR}" output_data_volumes
+
 docker push ${image_name}
