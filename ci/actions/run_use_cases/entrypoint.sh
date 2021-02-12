@@ -13,7 +13,7 @@ GHA_OUTPUT_DIR=$RUNNER_WORKSPACE/output
 cd /docker-action
 
 
-LOCAL_OUT_DIR=output_data_volumes/output
+LOCAL_OUT_DIR=/docker-action/output_data_volumes/output
 mkdir -p ${LOCAL_OUT_DIR}
 
 echo "Creating a docker image with Dockerhub Tag: $INPUT_DOCKERHUBTAG"
@@ -62,11 +62,8 @@ fi
 
 echo Updating Docker data volume for output data from reference branch: ${BRANCH_NAME}
 
-echo list GHA_OUTPUT_DIR: ${GHA_OUTPUT_DIR}
-ls ${GHA_OUTPUT_DIR}
-
-echo list DOCKER_OUTPUT_DIR: ${DOCKER_OUTPUT_DIR}
-ls ${DOCKER_OUTPUT_DIR}
+echo list LOCAL_OUT_DIR: ${LOCAL_OUT_DIR}
+ls ${LOCAL_OUT_DIR}
 
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
