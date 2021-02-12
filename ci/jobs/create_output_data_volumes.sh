@@ -2,8 +2,9 @@
 
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
+pwd
 ls
-ls use_cases*
+ls use_case_artifacts/*
 if [ $? != 0 ]; then
   exit 0
 fi
