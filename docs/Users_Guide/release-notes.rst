@@ -68,11 +68,11 @@ METplus Version |version| release notes (|release_date|)
   
 * New Wrappers:
 
-  * Met Tool Wrapper: PlotDataPlane/PlotDataPlane_grib1
-  * Met Tool Wrapper: PlotDataPlane/PlotDataPlane_netcdf
-  * Met Tool Wrapper: PlotDataPlane/PlotDataPlane_python_embedding
-  * Met Tool Wrapper: GridStat/GridStat_python_embedding
-  * Met Tool Wrapper: PyEmbedIngest_multi_field_one_file
+  * MET Tool Wrapper: PlotDataPlane/PlotDataPlane_grib1
+  * MET Tool Wrapper: PlotDataPlane/PlotDataPlane_netcdf
+  * MET Tool Wrapper: PlotDataPlane/PlotDataPlane_python_embedding
+  * MET Tool Wrapper: GridStat/GridStat_python_embedding
+  * MET Tool Wrapper: PyEmbedIngest_multi_field_one_file
 
 * New Use Cases:
 
