@@ -102,4 +102,4 @@ wmo_fisher_stats = [ "CNT:PR_CORR", "CNT:SP_CORR",
 rank_corr_flag = FALSE;
 vif_flag       = FALSE;
 tmp_dir        = "/tmp";
-version        = "V9.0";
+//version        = "V10.0";
