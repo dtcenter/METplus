@@ -12,7 +12,6 @@ GHA_OUTPUT_DIR=$RUNNER_WORKSPACE/output
 
 cd /docker-action
 
-
 LOCAL_OUT_DIR=/docker-action/output_data_volumes/output
 mkdir -p ${LOCAL_OUT_DIR}
 
