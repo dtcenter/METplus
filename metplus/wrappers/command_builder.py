@@ -36,10 +36,25 @@ class CommandBuilder:
     """
     __metaclass__ = ABCMeta
 
+<<<<<<< HEAD
     # types of climatology values that should be checked and set
     climo_types = ['MEAN', 'STDEV']
 
     def __init__(self, config, instance=None, config_overrides={}):
+=======
+    # valid file types that can be set in the MET config
+    # files as "file_type = <type>;"
+    MET_FILE_TYPES = ['GRIB',
+                      'GRIB2',
+                      'NETCDF_MET',
+                      'NETCDF_PINT',
+                      'NETCDF_NCCF',
+                      'PYTHON_NUMPY',
+                      'PYTHON_XARRAY',
+                      ]
+
+    def __init__(self, config, config_overrides={}):
+>>>>>>> 573fafe04ea8d6f716d293e9da33306be21c3ff1
         self.isOK = True
         self.errors = 0
         self.config = config

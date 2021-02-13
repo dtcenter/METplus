@@ -126,4 +126,19 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
+<<<<<<< HEAD
+=======
+        # set file_type if value is one of the supported types
+        for prefix in ['FCST', 'OBS']:
+            data_type = self.c_dict.get(f'{prefix}_INPUT_DATATYPE', '')
+            if data_type in self.MET_FILE_TYPES:
+                data_type = f'file_type = {data_type};'
+            else:
+                data_type = ''
+
+            self.add_env_var(f'{prefix}_FILE_TYPE', data_type)
+
+        self.add_common_envs()
+
+>>>>>>> 573fafe04ea8d6f716d293e9da33306be21c3ff1
         super().set_environment_variables(time_info)
