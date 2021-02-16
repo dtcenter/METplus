@@ -9,7 +9,7 @@ if [ $? != 0 ]; then
   exit 0
 fi
 
-branch_name=$((cat artifact/branch_name.txt))
+branch_name=`cat artifact/branch_name.txt`
 
 for vol_name in use_cases*; do
     echo vol name is $vol_name
@@ -20,4 +20,7 @@ for vol_name in use_cases*; do
     docker build -t ${image_name} --build-arg vol_name=${vol_name} ci/actions/run_use_cases/docker-action/output_data_volumes
     echo docker push ${image_name}
     docker push ${image_name}
+
+    # remove data after it has been added to data volume
+    rm -rf ci/actions/run_use_cases/docker-action/output_data_volumes/$vol_name
 done
