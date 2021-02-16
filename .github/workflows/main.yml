@@ -10,52 +10,52 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
-  get_current_branch:
-    name: Get Current Branch
-    runs-on: ubuntu-latest
-    steps:
-      # extract branch name
-      - name: Extract branch name
-        if: github.event_name != 'pull_request'
-        shell: bash
-        run: |
-          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-        id: extract_branch
-
-      # extract branch name on pull request
-      - name: Print branch name
-        if: github.event_name == 'pull_request'
-        run: |
-          echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(echo ${GITHUB_HEAD_REF})-PR" >> $GITHUB_ENV
-
-      # save branch name as artifact
-      - name: Get branch name
-        run: |
-          mkdir artifact
-          echo 'The branch name is' $BRANCH_NAME
-          echo 'The Docker name is' $DOCKER_IMAGE
-          echo $BRANCH_NAME > artifact/branch_name.txt
-          echo $DOCKER_IMAGE > artifact/docker_image.txt
-      - uses: actions/upload-artifact@v2
-        with:
-          path: |
-            artifact/branch_name.txt
-            artifact/docker_image.txt
-#  documentation:
-#    name: Check Documentation
+#  get_current_branch:
+#    name: Get Current Branch
 #    runs-on: ubuntu-latest
 #    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/setup-python@v2
+#      # extract branch name
+#      - name: Extract branch name
+#        if: github.event_name != 'pull_request'
+#        shell: bash
+#        run: |
+#          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+#          echo "DOCKER_IMAGE=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+#        id: extract_branch
+#
+#      # extract branch name on pull request
+#      - name: Print branch name
+#        if: github.event_name == 'pull_request'
+#        run: |
+#          echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
+#          echo "DOCKER_IMAGE=$(echo ${GITHUB_HEAD_REF})-PR" >> $GITHUB_ENV
+#
+#      # save branch name as artifact
+#      - name: Get branch name
+#        run: |
+#          mkdir artifact
+#          echo 'The branch name is' $BRANCH_NAME
+#          echo 'The Docker name is' $DOCKER_IMAGE
+#          echo $BRANCH_NAME > artifact/branch_name.txt
+#          echo $DOCKER_IMAGE > artifact/docker_image.txt
+#      - uses: actions/upload-artifact@v2
 #        with:
-#          python-version: '3.6'
-#      - name: Install dependencies
-#        run: python -m pip install --upgrade pip python-dateutil requests sphinx_rtd_theme doc8
-#      - name: Run doc8
-#        continue-on-error: true
-#        run: doc8 --ignore D001 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
+#          path: |
+#            artifact/branch_name.txt
+#            artifact/docker_image.txt
+  documentation:
+    name: Check Documentation
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip python-dateutil requests sphinx_rtd_theme doc8
+      - name: Run doc8
+        continue-on-error: true
+        run: doc8 --ignore D001 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
   get_image:
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
@@ -88,26 +88,6 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-#  pytests:
-#    name: Pytest Unit Tests
-#    runs-on: ubuntu-latest
-#    needs: [get_image, update_data_volumes]
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/setup-python@v2
-#        with:
-#          python-version: '3.6'
-#      - uses: actions/download-artifact@v2
-#      - run: |
-#          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-#          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-#      - name: Install dependencies
-#        run: python -m pip install --upgrade pip python-dateutil requests
-#      - name: Run Unit Tests
-#        run: ${GITHUB_WORKSPACE}/ci/jobs/test_unit.sh
-#        env:
-#          DOCKER_WORK_DIR: /metplus
-#          DOCKER_DATA_DIR: /data
   unit_tests_pytest:
     name: Unit Tests - Pytest
     runs-on: ubuntu-latest
@@ -138,144 +118,258 @@ jobs:
         with:
           name: ${{ github.job }}
           path: artifact/${{ github.job }}
-#  use_cases_convection_allowing_models_b:
-#    name: Use Cases Tests - convection_allowing_models B
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/download-artifact@v2
-#      - run: |
-#          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-#          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-#      - uses: ./ci/actions/run_use_cases
-#        with:
-#          dockerhubTag: dtcenter/metplus-dev:${{ env.DOCKER_IMAGE }}
-#          categories: convection_allowing_models
-#          subsetList: 6+
-#        env:
-#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-#          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-#      # copy output data to save as artifact
-#      - name: Save output data
-#        if: always()
-#        run: |
-#          mkdir -p artifact/${{ github.job }}
-#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-#      - uses: actions/upload-artifact@v2
-#        if: always()
-#        with:
-#          name: ${{ github.job }}
-#          path: artifact/${{ github.job }}
-#  use_cases_s2s_space_weather_tc_and_extra_tc:
-#    name: Use Cases Tests - s2s,space_weather,tc_and_extra_tc
-#    runs-on: ubuntu-latest
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/download-artifact@v2
-#      - run: |
-#          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-#          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-#      - uses: ./ci/actions/run_use_cases
-#        with:
-#          dockerhubTag: dtcenter/metplus-dev:${{ env.DOCKER_IMAGE }}
-#          categories: s2s,space_weather,tc_and_extra_tc
-#      # copy output data to save as artifact
-#      - name: Save output data
-#        if: always()
-#        run: |
-#          mkdir -p artifact/${{ github.job }}
-#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-#      - uses: actions/upload-artifact@v2
-#        if: always()
-#        with:
-#          name: ${{ github.job }}
-#          path: artifact/${{ github.job }}
-#  use_cases_met_tool_wrapper:
-#    name: Use Cases Tests - MET Tool Wrapper
-#    runs-on: ubuntu-latest
-#    needs: [get_image, update_data_volumes]
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/setup-python@v2
-#        with:
-#          python-version: '3.6'
-#      - uses: actions/download-artifact@v2
-#      - run: |
-#          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-#          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-#      - name: Install dependencies
-#        run: python -m pip install --upgrade pip python-dateutil requests
-#      - name: Run Use Cases
-#        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py met_tool_wrapper
-#        env:
-#          DOCKER_WORK_DIR: /metplus
-#          DOCKER_DATA_DIR: /data
-#      - name: Obtain Truth Data
-#        run: |
-#          echo ${GITHUB_WORKSPACE}/ci/jobs/get_artifacts.py met_tool_wrapper
-#          ${GITHUB_WORKSPACE}/ci/jobs/get_artifacts.py met_tool_wrapper
-#          echo ls ${GITHUB_WORKSPACE}/../truth
-#          ls ${GITHUB_WORKSPACE}/../truth
-#        env:
-#          MY_SECRET_API_TOKEN: ${{ secrets.MY_API_TOKEN }}
-#      - name: Install dependencies
-#        run: python -m pip install --upgrade pip netCDF4 Pillow
-#      - name: Compare Output to Truth Data
-#        run: ${GITHUB_WORKSPACE}/ci/jobs/diff_output.py
-#      # copy output data to save as artifact
-#      - name: Save output data
-#        if: always()
-#        run: |
-#          mkdir -p artifact/${{ github.job }}
-#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-#      - uses: actions/upload-artifact@v2
-#        if: always()
-#        with:
-#          name: ${{ github.job }}
-#          path: artifact/${{ github.job }}
+  use_cases_data_assimilation:
+    name: Use Cases Tests - Data Assimilation
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_use_cases
+        with:
+          categories: data_assimilation
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_cryosphere:
+    name: Use Cases Tests - Cryosphere
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_use_cases
+        with:
+          categories: cryosphere
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_convection_allowing_models_a:
+    name: Use Cases Tests - Convection Allowing Models A
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_use_cases
+        with:
+          categories: convection_allowing_models
+          subsetList: 0-5
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_convection_allowing_models_b:
+    name: Use Cases Tests - Convection Allowing Models B
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_use_cases
+        with:
+          categories: convection_allowing_models
+          subsetList: 6+
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_climate:
+    name: Use Cases Tests - Climate
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_use_cases
+        with:
+          categories: climate
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_medium_range_a:
+    name: Use Cases Tests - Medium Range A
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_use_cases
+        with:
+          categories: medium_range
+          subsetList: 0-4
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_medium_range_b:
+    name: Use Cases Tests - Medium Range B
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_use_cases
+        with:
+          categories: medium_range
+          subsetList: 5
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_medium_range_c:
+    name: Use Cases Tests - Medium Range C
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_use_cases
+        with:
+          categories: medium_range
+          subsetList: 6+
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_precipitation:
+    name: Use Cases Tests - Precipitation
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_use_cases
+        with:
+          categories: precipitation
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_s2s_space_weather_tc_and_extra_tc:
+    name: Use Cases Tests - S2S,SpaceWeather,TCandExtraTC
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_use_cases
+        with:
+          categories: s2s,space_weather,tc_and_extra_tc
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_air_quality_and_comp:
+    name: Use Cases Tests - Air Quality and Comp
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_use_cases
+        with:
+          categories: air_quality_and_comp
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
+  use_cases_marine_and_coastal:
+    name: Use Cases Tests - Marine and Coastal
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_use_cases
+        with:
+          categories: marine_and_coastal
+      # copy output data to save as artifact
+      - name: Save output data
+        if: always()
+        run: |
+          mkdir -p artifact/${{ github.job }}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+      - uses: actions/upload-artifact@v2
+        if: always()
+        with:
+          name: ${{ github.job }}
+          path: artifact/${{ github.job }}
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
     runs-on: ubuntu-latest
-    needs: [use_cases_met_tool_wrapper]
+    needs: [use_cases_met_tool_wrapper, use_cases_data_assimilation, use_cases_cryosphere, use_cases_convection_allowing_models_a, use_cases_convection_allowing_models_b, use_cases_climate, use_cases_medium_range_a, use_cases_medium_range_b, use_cases_medium_range_c, use_cases_precipitation, use_cases_s2s_space_weather_tc_and_extra_tc, use_cases_air_quality_and_comp, use_cases_marine_and_coastal]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2
-      - run: |
-          pwd
-          ci/jobs/create_output_data_volumes.sh
+      - run: ci/jobs/create_output_data_volumes.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-#  use_cases_marine_and_coastal:
-#    name: Use Cases Tests - marine_and_coastal
-#    runs-on: ubuntu-latest
-#    needs: [get_image, update_data_volumes]
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/setup-python@v2
-#        with:
-#          python-version: '3.6'
-#      - uses: actions/download-artifact@v2
-#      - run: |
-#          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-#          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-#      - name: Install dependencies
-#        run: python -m pip install --upgrade pip python-dateutil requests
-#      - name: Run Use Cases
-#        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py marine_and_coastal
-#        env:
-#          DOCKER_WORK_DIR: /metplus
-#          DOCKER_DATA_DIR: /data
-#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-#          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-#      # copy output data to save as artifact
-#      - name: Save output data
-#        if: always()
-#        run: |
-#          mkdir -p artifact/${{ github.job }}
-#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-#      - uses: actions/upload-artifact@v2
-#        if: always()
-#        with:
-#          name: ${{ github.job }}
-#          path: artifact/${{ github.job }}
