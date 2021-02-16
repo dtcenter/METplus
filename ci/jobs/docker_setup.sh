@@ -1,6 +1,6 @@
 #! /bin/bash
 
-branch_name=`./print_branch_name.py`
+branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
   branch_name=${branch_name}-PR
 fi
