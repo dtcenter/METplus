@@ -1,6 +1,6 @@
 #! /bin/bash
 
-DOCKERHUB_TAG=dtcenter/metplus-dev:${BRANCH_NAME}
+DOCKERHUB_TAG=dtcenter/metplus-dev:${DOCKER_IMAGE}
 
 echo Get Docker image: ${DOCKERHUB_TAG}
 echo 'doing docker build'
@@ -22,7 +22,7 @@ start_seconds=$SECONDS
 
 docker build --pull --cache-from ${DOCKERHUB_TAG} \
 -t ${DOCKERHUB_TAG} \
---build-arg SOURCE_BRANCH=${BRANCH_NAME} \
+--build-arg SOURCE_BRANCH=${GITHUB_SHA} \
 --build-arg MET_BRANCH=develop \
 --build-arg DO_GIT_CLONE ${GITHUB_WORKSPACE}/ci/docker
 

@@ -55,9 +55,10 @@ ARG DO_GIT_CLONE
 # if user has not cloned from Git, clone the repository using the branch
 # also replace MET_INSTALL_DIR value in default conf with correct location
 RUN if [ ${DO_GIT_CLONE:-true} == true ]; then \
-      echo "Cloning METplus repository using branch: ${SOURCE_BRANCH}"; \
-      git clone --branch ${SOURCE_BRANCH} https://github.com/dtcenter/METplus; \
+      echo "Cloning METplus repository using: ${SOURCE_BRANCH}"; \
+      git clone https://github.com/dtcenter/METplus; \
       cd METplus; \
+      git checkout ${SOURCE_BRANCH}; \
       sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
     else \
       echo "Running from user's local METplus repository, so don't clone through Docker"; \

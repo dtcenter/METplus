@@ -18,23 +18,31 @@ jobs:
       - name: Extract branch name
         if: github.event_name != 'pull_request'
         shell: bash
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+        run: |
+          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
         id: extract_branch
 
       # extract branch name on pull request
       - name: Print branch name
         if: github.event_name == 'pull_request'
-        run: echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
+        run: |
+          echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(echo ${GITHUB_HEAD_REF})-PR" >> $GITHUB_ENV
 
       # save branch name as artifact
       - name: Get branch name
         run: |
           mkdir artifact
           echo 'The branch name is' $BRANCH_NAME
+          echo 'The Docker name is' $DOCKER_IMAGE
           echo $BRANCH_NAME > artifact/branch_name.txt
+          echo $DOCKER_IMAGE > artifact/docker_image.txt
       - uses: actions/upload-artifact@v2
         with:
-          path: artifact/branch_name.txt
+          path: |
+            artifact/branch_name.txt
+            artifact/docker_image.txt
   documentation:
     name: Check Documentation
     runs-on: ubuntu-latest
@@ -58,8 +66,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-      - run: echo BRANCH_NAME is $BRANCH_NAME
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Get METplus Image
@@ -77,7 +86,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Update Data Volumes
@@ -95,7 +106,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Unit Tests
@@ -115,7 +128,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -146,7 +161,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -177,7 +194,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -208,7 +227,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -239,7 +260,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -270,7 +293,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -301,7 +326,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -332,7 +359,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -363,7 +392,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -394,7 +425,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -425,7 +458,9 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
@@ -445,11 +480,35 @@ jobs:
         with:
           python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests
       - name: Run Use Cases
         run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py air_quality_and_comp
+        env:
+          DOCKER_WORK_DIR: /metplus
+          DOCKER_DATA_DIR: /data
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  use_cases_marine_and_coastal:
+    name: Use Cases Tests - marine_and_coastal
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+      - uses: actions/download-artifact@v2
+      - run: |
+          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
+          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip python-dateutil requests
+      - name: Run Use Cases
+        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py marine_and_coastal
         env:
           DOCKER_WORK_DIR: /metplus
           DOCKER_DATA_DIR: /data
