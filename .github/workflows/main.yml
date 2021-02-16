@@ -129,7 +129,7 @@ jobs:
         with:
           dockerhubTag: dtcenter/metplus-dev:${{ env.DOCKER_IMAGE }}
           categories: met_tool_wrapper
-          subsetList: 2,5
+          subsetList: 2,5-6
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
