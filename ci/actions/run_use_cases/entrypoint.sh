@@ -17,9 +17,15 @@ cd /docker-action
 LOCAL_OUT_DIR=/docker-action/output_data_volumes/output
 mkdir -p ${LOCAL_OUT_DIR}
 
-echo "Creating a docker image with Dockerhub Tag: $INPUT_DOCKERHUBTAG"
-#docker build -t docker-action --build-arg dockerhub_tag="$INPUT_DOCKERHUBTAG" .
-docker pull $INPUT_DOCKERHUBTAG
+branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
+if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+  branch_name=${branch_name}-PR
+fi
+DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
+
+echo "Pulling docker image: $DOCKERHUBTAG"
+#docker build -t docker-action --build-arg dockerhub_tag="$DOCKERHUBTAG" .
+docker pull $DOCKERHUBTAG
 
 # add input volumes to run command
 echo "Get Docker data volumes for input data"
@@ -51,11 +57,11 @@ done
 
 echo VOLUMES_FROM: $VOLUMES_FROM
 
-echo "Run Docker Action container: $INPUT_DOCKERHUBTAG"
+echo "Run Docker Action container: $DOCKERHUBTAG"
 command="./ci/jobs/run_use_cases_docker.py ${INPUT_CATEGORIES} ${INPUT_SUBSETLIST}"
 #docker run -e GITHUB_WORKSPACE -e INPUT_CATEGORIES -e INPUT_SUBSETLIST -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE docker-action
-echo docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $INPUT_DOCKERHUBTAG bash -c "$command"
-docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $INPUT_DOCKERHUBTAG bash -c "$command"
+echo docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "$command"
+docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "$command"
 ret=$?
 
 # if branch ends with -ref and not a pull request, create/update Docker

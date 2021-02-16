@@ -114,13 +114,8 @@ jobs:
     needs: [get_image, update_data_volumes]
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - uses: ./ci/actions/run_use_cases
         with:
-          dockerhubTag: dtcenter/metplus-dev:${{ env.DOCKER_IMAGE }}
           categories: met_tool_wrapper
           subsetList: 2,5-6
         env:

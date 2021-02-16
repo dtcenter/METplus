@@ -3,9 +3,6 @@ description: "Run METplus Use Cases"
 author: "mccabe@ucar.edu"
 
 inputs:
-  dockerhubTag:
-    description: 'Docker image to build'
-    required: true
   categories:
     description: 'Use case category or categories to run (separate by comma)'
     required: true
@@ -17,6 +14,5 @@ runs:
   using: "docker"
   image: "Dockerfile"
   args:
-    - ${{ inputs.dockerhubTag }}
     - ${{ inputs.categories }}
     - ${{ inputs.subsetList }}
