@@ -345,6 +345,7 @@ jobs:
           path: artifact/${{ github.job }}
   use_cases_marine_and_coastal:
     name: Use Cases Tests - Marine and Coastal
+    runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
     steps:
       - uses: actions/checkout@v2
