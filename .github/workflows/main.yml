@@ -108,6 +108,15 @@ jobs:
 #        env:
 #          DOCKER_WORK_DIR: /metplus
 #          DOCKER_DATA_DIR: /data
+  unit_tests_pytest:
+    name: Unit Tests - Pytest
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_use_cases
+        with:
+          categories: pytests
   use_cases_met_tool_wrapper:
     name: Use Cases Tests - MET Tool Wrapper
     runs-on: ubuntu-latest

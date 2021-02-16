@@ -18,6 +18,13 @@ DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
 echo "Pulling docker image: $DOCKERHUBTAG"
 docker pull $DOCKERHUBTAG
 
+if [ "$INPUT_CATEGORIES" == "pytests" ]; then
+  echo Running Pytests
+  command = "pip3 install pytest-cov netCDF4; export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; pytest --cov=../../metplus"
+  docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "$command"
+  exit $?
+fi
+
 # add input volumes to run command
 echo "Get Docker data volumes for input data"
 ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $INPUT_CATEGORIES
