@@ -30,15 +30,14 @@ class CompareGriddedWrapper(CommandBuilder):
 that reformat gridded data
     """
 
-    # types of climatology values that should be checked and set
-    climo_types = ['MEAN', 'STDEV']
-
-    def __init__(self, config, logger):
+    def __init__(self, config, instance=None, config_overrides={}):
         # set app_name if not set by child class to allow tests to run on this wrapper
         if not hasattr(self, 'app_name'):
             self.app_name = 'compare_gridded'
 
-        super().__init__(config, logger)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         # check to make sure all necessary probabilistic settings are set correctly
         # this relies on the subclass to finish creating the c_dict, so it has to
         # be checked after that happens
@@ -50,8 +49,13 @@ that reformat gridded data
             the type and consolidates config get calls so it is easier to see
             which config variables are used in the wrapper"""
         c_dict = super().create_c_dict()
-        c_dict['MODEL'] = self.config.getstr('config', 'MODEL', 'FCST')
-        c_dict['OBTYPE'] = self.config.getstr('config', 'OBTYPE', 'OBS')
+        self.set_met_config_string(c_dict, 'MODEL', 'model')
+        self.set_met_config_string(c_dict, 'OBTYPE', 'obtype')
+
+        # set old MET config items for backwards compatibility
+        c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'FCST')
+        c_dict['OBTYPE_OLD'] = self.config.getstr('config', 'OBTYPE', 'OBS')
+
         # INPUT_BASE is not required unless it is referenced in a config file
         # it is used in the use case config files. Don't error if it is not set
         # to a value that contains /path/to
@@ -82,6 +86,10 @@ that reformat gridded data
             c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE'] = ''
             c_dict[f'CLIMO_{climo_item}_FILE'] = None
 
+        self.handle_c_dict_regrid(c_dict)
+
+        self.handle_description(c_dict)
+
         return c_dict
 
     def set_environment_variables(self, time_info):
@@ -90,8 +98,19 @@ that reformat gridded data
             version to handle user configs and printing
             Args:
               @param time_info dictionary containing timing info from current run"""
+        self.add_env_var('METPLUS_MODEL', self.c_dict.get('MODEL', ''))
+        self.add_env_var('METPLUS_OBTYPE', self.c_dict.get('OBTYPE', ''))
+        self.add_env_var('METPLUS_DESC', self.c_dict.get('METPLUS_DESC', ''))
 
-        self.add_common_envs()
+        self.add_env_var('METPLUS_REGRID_DICT',
+                         self.get_regrid_dict())
+
+        # set old environment variable values for backwards compatibility
+        self.add_env_var('MODEL', self.c_dict.get('MODEL_OLD', ''))
+        self.add_env_var('OBTYPE', self.c_dict.get('OBTYPE_OLD', ''))
+        self.add_env_var('REGRID_TO_GRID',
+                         self.c_dict.get('REGRID_TO_GRID_OLD',
+                                         'NONE'))
 
         super().set_environment_variables(time_info)
 
@@ -111,52 +130,6 @@ that reformat gridded data
                     self.log_error(f"If {dtype}_IS_PROB is True, you must set {dtype}_PROB_IN"
                                    "_GRIB_PDS unless the forecast datatype is set to NetCDF")
                     self.isOK = False
-
-    def set_climo_env_vars(self):
-        """!Set all climatology environment variables from CLIMO_<item>_FILE c_dict values if they are not set to None"""
-        for climo_item in self.climo_types:
-
-            # climo file is set to None if not found, so set to empty string if None
-            climo_file = util.remove_quotes(self.c_dict[f'CLIMO_{climo_item}_FILE']) or ''
-
-            # remove then add double quotes for file path unless empty string
-            if climo_file:
-                climo_file = f'"{util.remove_quotes(climo_file)}"'
-
-            # set environment variable
-            self.add_env_var(f'CLIMO_{climo_item}_FILE', climo_file)
-
-    def read_climo_wrapper_specific(self, met_tool, c_dict):
-        """!Read climatology directory and template values for specific MET tool specified and set the values in c_dict"""
-        for climo_item in self.climo_types:
-            c_dict[f'CLIMO_{climo_item}_INPUT_DIR'] = self.config.getdir(f'{met_tool}_CLIMO_{climo_item}_INPUT_DIR',
-                                                                         '')
-            c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE'] = \
-                self.config.getraw('filename_templates',
-                                   f'{met_tool}_CLIMO_{climo_item}_INPUT_TEMPLATE',
-                                   '')
-
-    def handle_climo(self, time_info):
-        """!Substitute time information into all climatology template values"""
-        for climo_item in self.climo_types:
-             self.handle_climo_file_item(time_info, climo_item)
-
-    def handle_climo_file_item(self, time_info, climo_item):
-        """!Handle a single climatology value by substituting time information, prepending input directory if provided, and
-            preprocessing file if necessary. All information is read from c_dict. CLIMO_<item>_FILE in c_dict is set."""
-
-        # don't process if template is not set
-        if not self.c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE']:
-            return
-
-        template = self.c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE']
-        climo_file = do_string_sub(template,
-                                   **time_info)
-        climo_path = os.path.join(self.c_dict[f'CLIMO_{climo_item}_INPUT_DIR'], climo_file)
-        self.logger.debug(f"Looking for climatology {climo_item.lower()} file {climo_path}")
-        self.c_dict[f'CLIMO_{climo_item}_FILE'] = util.preprocess_file(climo_path,
-                                                                       '',
-                                                                       self.config)
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function loops
@@ -308,6 +281,7 @@ that reformat gridded data
                                             v_name=var_info['fcst_name'],
                                             v_extra=var_info['fcst_extra'],
                                             d_type='FCST')
+
             next_obs = self.get_field_info(v_level=var_info['obs_level'],
                                            v_thresh=var_info['obs_thresh'],
                                            v_name=var_info['obs_name'],
@@ -338,10 +312,12 @@ that reformat gridded data
         self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
                                    **time_info)
 
-        # set up output dir with time info
-        self.create_and_set_output_dir(time_info)
-
         self.set_current_field_config()
+
+        # set up output dir with time info
+        if not self.find_and_check_output_file(time_info,
+                                               is_directory=True):
+            return
 
         # set environment variables needed by MET config file
         self.set_environment_variables(fcst_field, obs_field, time_info)
@@ -366,9 +342,9 @@ that reformat gridded data
         # use output template if it is set
         # if output template is not set, do not add any extra directories to path
         out_template_name = '{}_OUTPUT_TEMPLATE'.format(self.app_name.upper())
-        if self.config.has_option('filename_templates',
+        if self.config.has_option('config',
                                   out_template_name):
-            template = self.config.getraw('filename_templates',
+            template = self.config.getraw('config',
                                           out_template_name)
             # perform string substitution to get full path
             extra_path = do_string_sub(template,

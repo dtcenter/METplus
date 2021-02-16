@@ -73,14 +73,14 @@ ${FILTER}
 //
 // Description written to output DESC column
 //
-//desc = "NA";
+${METPLUS_DESC}
 
 //
 // Forecast ATCF ID's
 // If empty, all ATCF ID's found will be processed.
 // Statistics will be generated separately for each ATCF ID.
 //
-${MODEL}
+${METPLUS_MODEL}
 
 //
 // BEST and operational track storm identifiers

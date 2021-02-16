@@ -1,8 +1,10 @@
-﻿   
+﻿
+
 =========================
 METplus version |version|
 =========================
-Developed by the `Developmental Testbed Center <https://dtcenter.org/>`_, Boulder, CO
+Developed by the `Developmental Testbed Center <https://dtcenter.org/>`_,
+Boulder, CO
 
 .. image:: _static/METplus_banner_photo_web.png
 
@@ -11,9 +13,32 @@ Developed by the `Developmental Testbed Center <https://dtcenter.org/>`_, Boulde
 
 History
 -------
-The Model Evaluation Tools (MET) were developed by the Developmental Testbed Center (DTC)  and released in January 2008.  The goal of the tools was to provide the community with a platform independent and extensible framework for reproducible verification.  The DTC partners, including NCAR, NOAA, and the USAF, decided to start by replicating the NOAA EMC (see list of acronyms below) Mesoscale Branch verification package, called VSDB.  In the first release, MET included several pre-processing, statistical, and analysis tools to provided the primary functionality as the EMC VSDB system, and also included a spatial verification package called MODE.
+The Model Evaluation Tools (MET) were developed by the Developmental Testbed
+Center (DTC)  and released in January 2008. The goal of the tools was to
+provide the community with a platform independent and extensible framework
+for reproducible verification.
+The DTC partners, including NCAR, NOAA, and the USAF, decided to start by
+replicating the NOAA EMC (see list of acronyms below) Mesoscale Branch
+verification package, called VSDB.
+In the first release, MET included several pre-processing, statistical,
+and analysis tools to provided the primary functionality as the EMC VSDB
+system, and also included a spatial verification package called MODE.
 
-Over the years, MET and VSDB packages grew in complexity.  Verification capability at other NOAA laboratories, such as ESRL, were also under heavy development.  An effort to unify verification capability was first started under the HIWPP project and led by NOAA ESRL.  In 2015, the NGGPS Program Office started working groups to focus on several aspects of the next gen system, including the Verification and Validation Working Group.  This group made the recommendation to use MET as the foundation for a unified verification capability.  In 2016, NCAR and GSD leads visited EMC to gather requirements.  At that time, the concept of METplus was developed as it extends beyond the original code base.  It was originally called METplus but several constraints have driven the transition to the use of METplus. METplus is now the unified verification, validation, and diagnostics capability for NOAA's UFS and a component of NCAR's SIMA modeling frameworks.  It being actively developed by NCAR, ESRL, EMC and is open to community contributions.
+Over the years, MET and VSDB packages grew in complexity.  Verification
+capability at other NOAA laboratories, such as ESRL, were also under heavy
+development.  An effort to unify verification capability was first started
+under the HIWPP project and led by NOAA ESRL.  In 2015, the NGGPS
+Program Office started working groups to focus on several aspects of the
+next gen system, including the Verification and Validation Working Group.
+This group made the recommendation to use MET as the foundation for a
+unified verification capability.  In 2016, NCAR and GSD leads visited EMC
+to gather requirements.  At that time, the concept of METplus was developed
+as it extends beyond the original code base.  It was originally called
+METplus but several constraints have driven the transition to the use of
+METplus. METplus is now the unified verification, validation, and
+diagnostics capability for NOAA's UFS and a component of NCAR's SIMA
+modeling frameworks.  It being actively developed by NCAR, ESRL, EMC
+and is open to community contributions.
 
 
 METplus Concept
@@ -33,22 +58,22 @@ METplus is the overarching, or umbrella, repository and hence framework for the 
   to plotting
 * **METdatadb**  - database to store MET output and to be used by both
   METviewer and METexpress
-  
+
 The umbrella repository will be brought together by using a software package called manage_externals developed by the Community Earth System Modeling (CESM) team, hosted at NCAR and NOAA Earth System’s Research Laboratory.  The GitHub repository is:  (https://github.com/ESMCI/manage_externals).  The manage_externals package was developed because CESM is comprised of a number of different components that are developed and managed independently. Each component also may have additional “external” dependencies that need to be maintained independently.
 
 
 Acronyms
 --------
 
-* **MET** - Model Evaluation Tools 
-* **DTC** - Developmental Testbed Center 
-* **NCAR** - National Center for Atmospheric Research 
+* **MET** - Model Evaluation Tools
+* **DTC** - Developmental Testbed Center
+* **NCAR** - National Center for Atmospheric Research
 * **NOAA** - National Oceanic and Atmospheric Administration
 * **EMC** - Environmental Modeling Center
 * **VSDB** - Verification Statistics Data Base
 * **MODE** - Method for Object-Based Diagnostic Evaluation
-* **UFS** - Unified Forecast System 
-* **SIMA** -System for Integrated Modeling of the Atmosphere 
+* **UFS** - Unified Forecast System
+* **SIMA** -System for Integrated Modeling of the Atmosphere
 * **ESRL** - Earth Systems Research Laboratory
 * **HIWPP** - High Impact Weather Predication Project
 * **NGGPS** - Next Generation Global Predicatio System
@@ -56,25 +81,27 @@ Acronyms
 
 Authors
 -------
-* Daniel Adriaansen [1]_
-* Minna Win-Gildenmeister [1]_
-* James Frimel [2]_
-* Julie Prestopnik [1]_
-* Mallory Row [3]_
-* John Halley Gotway [1]_
-* George McCabe [1]_
-* Tara Jensen [1]_
-* Jonathan Vigh [1]_
-* Christina Kalb [1]_
-* Hank Fisher [1]_
-* John Opatz [1]_
+* Daniel Adriaansen [#NCAR]_
+* Minna Win-Gildenmeister [#NCAR]_
+* James Frimel [#CIR]_
+* Julie Prestopnik [#NCAR]_
+* Mallory Row [#IM]_
+* John Halley Gotway [#NCAR]_
+* George McCabe [#NCAR]_
+* Tara Jensen [#NCAR]_
+* Jonathan Vigh [#NCAR]_
+* Christina Kalb [#NCAR]_
+* Hank Fisher [#NCAR]_
+* John Opatz [#NCAR]_
 
-.. [#] `National Center for Atmospheric Research, Research
+.. rubric:: Organization
+
+.. [#NCAR] `National Center for Atmospheric Research, Research
        Applications Laboratory <https://ral.ucar.edu/>`_, `Developmental Testbed Center <https://dtcenter.org/>`_
-.. [#] `Cooperative Institute for Research in the Atmosphere at
+.. [#CIR] `Cooperative Institute for Research in the Atmosphere at
        National Oceanic and Atmospheric Administration (NOAA) Earth
        System Research Laboratory <https://www.esrl.noaa.gov/>`_
-.. [#] `I.M. Systems Group at NOAA Environmental Modeling Center <https://imsg.com/>`_
+.. [#IM] `I.M. Systems Group at NOAA Environmental Modeling Center <https://imsg.com/>`_
 
 
 .. toctree::
@@ -83,8 +110,8 @@ Authors
 
    Users_Guide/index
    Contributors_Guide/index
-
-
+   Release_Guide/index
+   Verification_Datasets/index
 
 
 Index

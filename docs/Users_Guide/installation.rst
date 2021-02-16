@@ -36,7 +36,7 @@ The following software is required to run METplus Wrappers:
 
 -  dateutil Python package
 
--  MET version 9.0 or above
+-  MET version 10.0 or above
 
 If running plot wrappers, cartopy and pandas packages are required
 
@@ -44,7 +44,9 @@ Some of the wrappers have additional dependencies to run.
 
 -  TCMPRPlotter wrapper requires R version 3.2.5
 
--  SeriesByLead wrapper requires the nco (netCDF operators)
+-  SeriesAnalysis wrapper requires the netCDF4 Python package and optionally
+   if generating plots and/or animated images from the output, the ImageMagick
+   convert utility is also required
 
 -  MakePlots wrapper requires cartopy and pandas Python packages
 
@@ -119,17 +121,27 @@ directories to the METplus Wrappers directory. You should have the
 following directory structure::
 
   METplus/
-    docs/
     build_components/
+    ci/
+    docs/
+    environment.yml
     internal_tests/
     manage_exernals/
+    metplus/
     parm/
-    sorc/
-    ush/
+    produtil/
     README.md
+    requirements.txt
+    ush/
 
 The top-level METplus Wrappers directory consists of a README.md file
 and several subdirectories.
+
+The build_components/ directory contains scripts that use manage_externals
+and files available on dtcenter.org to download MET and start the build process
+
+The ci/ directory contains scripts that are used for creating Docker images and
+script that are used internally for automation
 
 The docs/ directory contains documentation for users and contributors (HTML) and Doxygen
 files that are used to create the METplus wrapper API documentaton. The Doxygen
@@ -137,20 +149,18 @@ documentation can be created and viewed via web browser if the developer
 has Doxygen installed on the host.  The Doxygen documentation is useful to contributors and is not
 necessary for METplus end-users.
 
-The build_components/ directory contains scripts that use manage_externals
-and files available on dtcenter.org to download MET and start the build process
-
-The internal_tests/ directory contains unit test scripts that are only
-relevant to METplus Wrappers developers and contributors.
+The internal_tests/ directory contains test scripts that are only
+relevant to METplus developers and contributors.
 
 The manage_externals/ directory contains scripts used to facilitate the downloading and management
 of components that METplus interacts with such as MET and METviewer
 
+The metplus/ directory contains the wrapper scripts and utilities
+
 The parm/ directory contains all the configuration files for MET and
 METplus Wrappers.
 
-The sorc/ directory contains Doxygen executables to generate
-documentation for developers.
+The produtil/ directory contains part of the external utility produtil
 
 The ush/ directory contains the Python wrappers to the MET tools.
 
@@ -166,6 +176,22 @@ Running build_components/build_MET.sh will
 
 Building MET requires fine tuning on just about all systems, this should at least get most of
 the way through the process and allow just a few manual changes to get it completely built.
+
+External Components
+-------------------
+
+GFDL Tracker:
+~~~~~~~~~~~~~
+
+-  The standalone Geophysical Fluid Dynamics Laboratory (GFDL) vortex tracker is a program that objectively analyzes forecast data to provide an estimate of the vortex center position (latitude and longitude), and track the storm for the duration of the forecast.
+
+-  Visit https://dtcenter.org/community-code/gfdl-vortex-tracker for more information
+
+    -  See the manage externals section of this documentation to download the GFDL vortex tracker automatically as part of the system.
+
+    -  To download and install in your own location get http://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz and follow the instructions listed in that archive to build on your system.
+
+    -  Instructions on how to configure and use the GFDL tracker are found here https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_tracker_UG_v3.9a.pdf
 
 Set up your environment
 -----------------------
@@ -188,9 +214,6 @@ shell):
 
 -  To your PATH, add: *<full-path-to*-*METplus*>/ush
 
--  Optional: add JLOGFILE variable and set to
-   *<full-path-to-save-jlog-files>*
-
 -  Close your .cshrc file and run ``source ~/.cshrc``
 
 -  For example:
@@ -200,18 +223,12 @@ shell):
     # Add METplus to $PATH
     set path = (other_path_entries ~/METplus/ush)
 
-    # Optional JLOGFILE
-    setenv JLOGFILE ~/jlog_out
-
 .bashrc/.kshrc:
 ~~~~~~~~~~~~~~~
 
 -  Open your .bashrc/.kshrc file and do the following:
 
 -  To your PATH, add : *<full-path-to-METplus*>/ush
-
--  Optional: add a JLOGFILE environment variable and set it to the
-   directory where you want the logs to reside
 
 -  Close your .bashrc file and run ``source ~/.bashrc``, or ``source ~/.kshrc`` if using ksh
 
@@ -221,9 +238,6 @@ shell):
 
     # Add METplus to $PATH
     export PATH=~/METplus/ush:$PATH
-
-    # Optional JLOGFILE
-    export JLOGFILE=~/
 
 Set up METplus Wrappers Configuration files
 -------------------------------------------
@@ -495,10 +509,10 @@ files (file path relative to the
 **Example 1: Using a "default" configuration:**
 Copy and paste the following into an empty text file and name it 'my_user_config.conf':
 
-.. code-block:: none
+.. code-block::
 
   # This is a comment, comments are defined with a # at the beginning of the line
-  
+
   # Set the MET_INSTALL_DIR to the location of the MET install
   [dir]
   MET_INSTALL_DIR = /usr/local/met-9.0
@@ -515,7 +529,7 @@ Run METplus via: ``master_metplus.py -c ./<my_user_config.conf>`` or ``master_me
 
 When the above command is run, a usage message appears indicating that other config files are required to perform useful tasks, as well as a list of currently supported wrappers:
 
-.. code-block:: none
+.. code-block::
 
   USAGE: This text is displayed when [config] PROCESS_LIST = Usage.
   Pass in a configuration file (with -c or --config) that overrides [config] PROCESS_LIST to run other processes. For example:
@@ -533,29 +547,34 @@ When the above command is run, a usage message appears indicating that other con
   - Example
   - ExtractTiles
   - GempakToCF
+  - GenVxMask
+  - GridDiag
   - GridStat
+  - MakePlots
   - MODE
   - MTD
-  - MakePlots
   - PB2NC
   - PCPCombine
+  - PlotDataPlane
+  - Point2Grid
   - PointStat
   - PyEmbedIngest
   - RegridDataPlane
   - SeriesAnalysis
-  - SeriesByInit
-  - SeriesByLead
   - StatAnalysis
+  - TCGen
   - TCMPRPlotter
   - TCPairs
+  - TCRMW
   - TCStat
   - Usage
+  - UserScript
 
 **Example 2: Using a use-case configuration:**
 
-The command: 
+The command:
 
-.. code-block:: none
+.. code-block::
 
   master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
@@ -563,10 +582,10 @@ will run METplus using the defaults set in the config files found in parm/metplu
 
 **Example 3: Using example configuration to perform a specific evaluation (e.g. Model 1 vs. Obs 1, Model 1 vs. Obs 2, Model 2 vs. Obs 1, etc...):**
 
-The command: 
+The command:
 
-.. code-block:: none
-  
+.. code-block::
+
   master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf
@@ -575,7 +594,7 @@ will run METplus using the defaults set in the config files in parm/metplus_conf
 
 Separating configurations into multiple files can be useful if you want to compare different forecasts or observations in the same way. For example, to compare a different forecast to the observation in this example, copy GridStat_forecast.conf into a directory outside of the METplus repository (i.e. /home/user/METplus_user_config), rename it (i.e. GridStat_myforecast.conf), then change the values to match the new data set (input directory, input filename template, field name, etc.). Then you can run the new use case:
 
-.. code-block:: none
+.. code-block::
 
   master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
   -c /home/user/METplus_user_config/GridStat_myforecast.conf \

@@ -161,4 +161,4 @@ _altitude.conf
 #    `NOAASWPCOrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_,
 #    `MaskingFeatureUseCase  <https://dtcenter.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_,
 #
-# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-GenVxMask.png'
+# sphinx_gallery_thumbnail_path = '_static/space_weather-GenVxMask_fcstGloTEC_solar_altitude.png'

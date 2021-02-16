@@ -10,7 +10,6 @@ import datetime
 
 import produtil
 
-from metplus.util.config import config_metplus
 from metplus.wrappers.regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from metplus.util import met_util as util
 from metplus.util import time_util
@@ -36,7 +35,7 @@ from metplus.util import time_util
 
 # -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
 #@pytest.fixture
-def rdp_wrapper():
+def rdp_wrapper(metplus_config):
     """! Returns a default RegridDataPlane with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -44,19 +43,7 @@ def rdp_wrapper():
 
     config = metplus_config()
     config.set('config', 'DO_NOT_RUN_EXE', True)
-    return RegridDataPlaneWrapper(config, config.logger)
-
-#@pytest.fixture
-def metplus_config():
-    """! Create a METplus configuration object that can be
-    manipulated/modified to
-         reflect different paths, directories, values, etc. for individual
-         tests.
-    """
-    config = config_metplus.setup(util.baseinputconfs)
-    util.get_logger(config)
-    return config
-
+    return RegridDataPlaneWrapper(config)
 
 # ------------------------ TESTS GO HERE --------------------------
 
@@ -145,9 +132,8 @@ def metplus_config():
     ]
 )
 
-def test_get_field_info_list(conf_dict, expected_field_info_list):
+def test_get_field_info_list(metplus_config, conf_dict, expected_field_info_list):
     config = metplus_config()
-    logger = logging.getLogger("dummy")
 
     data_type = 'OBS'
 
@@ -160,7 +146,7 @@ def test_get_field_info_list(conf_dict, expected_field_info_list):
 
     var_list = util.parse_var_list(config, time_info, data_type=data_type)
 
-    rdp = RegridDataPlaneWrapper(config, logger)
+    rdp = RegridDataPlaneWrapper(config)
 
     field_info_list = rdp.get_field_info_list(var_list, data_type, time_info)
     print(f"FIELD INFO LIST: {field_info_list}")
@@ -176,57 +162,49 @@ def test_get_field_info_list(conf_dict, expected_field_info_list):
                 is_good = False
 
 # field info is the input dictionary with name and level info to parse
-# run_pcp is a boolean if FCST_PCP_COMBINE_RUN is set or not
 # expected_arg is the argument that should be set by the function
 # note: did not include OBS because they are handled the same way as FCST
 @pytest.mark.parametrize(
-    'field_info, run_pcp, expected_arg', [
+    'field_info, expected_arg', [
 
         # 0) name/level
         ({'fcst_name': 'F_NAME',
           'fcst_level': "\"(1,*,*)\""},
-          False,
           "-field 'name=\"F_NAME\"; level=\"(1,*,*)\";'"
          ),
 
         # 1) python embedding script
         ({'fcst_name': 'my_script.py some args',
-          'fcst_level': "A06"},
-         False,
+          'fcst_level': ""},
          "-field 'name=\"my_script.py some args\";'"
          ),
 
-        # 2) name/level PCPCombine is run
+        # 2) name/level
         ({'fcst_name': 'F_NAME',
           'fcst_level': "A06"},
-         True,
-         "-field 'name=\"F_NAME_06\"; level=\"(*,*)\";'"
+         "-field 'name=\"F_NAME\"; level=\"A06\";'"
          ),
 
-        # 3) name/level PCPCombine is run, no level
+        # 3) name, no level
         ({'fcst_name': 'F_NAME',
           'fcst_level': ""},
-         True,
-         "-field 'name=\"F_NAME\"; level=\"(*,*)\";'"
+         "-field 'name=\"F_NAME\";'"
          ),
 
-        # 4) python embedding script, PCPCombine is run
+        # 4) python embedding script
         ({'fcst_name': 'my_script.py some args',
-          'fcst_level': "A06"},
-         True,
+          'fcst_level': ""},
          "-field 'name=\"my_script.py some args\";'"
          ),
     ]
 )
 
-def test_set_field_command_line_arguments(field_info, run_pcp, expected_arg):
+def test_set_field_command_line_arguments(metplus_config, field_info, expected_arg):
     data_type = 'FCST'
 
     config = metplus_config()
-    if run_pcp:
-        config.set('config', f"{data_type}_PCP_COMBINE_RUN", True)
 
-    rdp = RegridDataPlaneWrapper(config, config.logger)
+    rdp = RegridDataPlaneWrapper(config)
 
     rdp.set_field_command_line_arguments(field_info, data_type)
     assert(rdp.args[0] == expected_arg)
@@ -253,15 +231,15 @@ def test_set_field_command_line_arguments(field_info, run_pcp, expected_arg):
          ),
     ]
 )
-def test_get_output_name(field_info, input_name, expected_name):
+def test_get_output_name(metplus_config, field_info, input_name, expected_name):
     data_type = 'FCST'
 
     config = metplus_config()
-    rdp = RegridDataPlaneWrapper(config, config.logger)
+    rdp = RegridDataPlaneWrapper(config)
 
     assert(rdp.get_output_name(field_info, data_type, input_name) == expected_name)
 
-def test_run_rdp_once_per_field():
+def test_run_rdp_once_per_field(metplus_config):
     data_type = 'FCST'
 
     input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),
@@ -272,7 +250,7 @@ def test_run_rdp_once_per_field():
                 {'index': '2', 'fcst_name': 'FNAME2', 'fcst_level': 'A03', 'fcst_output_name': 'OUTNAME2'},
                 ]
 
-    wrap = rdp_wrapper()
+    wrap = rdp_wrapper(metplus_config)
     wrap.c_dict['ONCE_PER_FIELD'] = True
     wrap.c_dict['FCST_OUTPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_accum{level?fmt=%2H}.nc'
 
@@ -297,9 +275,11 @@ def test_run_rdp_once_per_field():
 
     if len(wrap.all_commands) != len(expected_cmds):
         print("Number of commands run is not the same as expected")
+        print(f"Actual commands: {wrap.all_commands}\n")
+        print(f"Expected commands: {expected_cmds}\n")
         assert(False)
 
-    for cmd, expected_cmd in zip(wrap.all_commands, expected_cmds):
+    for (cmd, _), expected_cmd in zip(wrap.all_commands, expected_cmds):
         print(f"  ACTUAL:{cmd}")
         print(f"EXPECTED:{expected_cmd}")
         if cmd != expected_cmd:
@@ -307,7 +287,7 @@ def test_run_rdp_once_per_field():
 
     assert(test_passed)
 
-def test_run_rdp_all_fields():
+def test_run_rdp_all_fields(metplus_config):
     data_type = 'FCST'
 
     input_dict = {'valid': datetime.datetime.strptime("201802010000",'%Y%m%d%H%M'),
@@ -318,7 +298,7 @@ def test_run_rdp_all_fields():
                 {'index': '2', 'fcst_name': 'FNAME2', 'fcst_level': 'A03', 'fcst_output_name': 'OUTNAME2'},
                 ]
 
-    wrap = rdp_wrapper()
+    wrap = rdp_wrapper(metplus_config)
     wrap.c_dict['ONCE_PER_FIELD'] = False
     wrap.c_dict['FCST_OUTPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d%H}_ALL.nc'
 
@@ -343,7 +323,7 @@ def test_run_rdp_all_fields():
         print("Number of commands run is not the same as expected")
         assert(False)
 
-    for cmd, expected_cmd in zip(wrap.all_commands, expected_cmds):
+    for (cmd, _), expected_cmd in zip(wrap.all_commands, expected_cmds):
         print(f"  ACTUAL:{cmd}")
         print(f"EXPECTED:{expected_cmd}")
         if cmd != expected_cmd:
@@ -351,9 +331,9 @@ def test_run_rdp_all_fields():
 
     assert(test_passed)
 
-def test_set_command_line_arguments():
+def test_set_command_line_arguments(metplus_config):
     test_passed = True
-    wrap = rdp_wrapper()
+    wrap = rdp_wrapper(metplus_config)
 
     expected_args = ['-width 1',]
 

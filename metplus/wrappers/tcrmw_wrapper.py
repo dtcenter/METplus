@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """tc_rmw
 Program Name: tc_rmw_wrapper.py
 Contact(s): George McCabe
@@ -26,11 +24,13 @@ from ..util import do_string_sub
 
 
 class TCRMWWrapper(CommandBuilder):
-    def __init__(self, config, logger):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "tc_rmw"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -56,30 +56,9 @@ class TCRMWWrapper(CommandBuilder):
             c_dict[f'DATA_FILE_TYPE'] = f"file_type = {data_type};"
 
         # values used in configuration file
+        self.set_met_config_string(c_dict, 'MODEL', 'model')
 
-        conf_value = self.config.getstr('config', 'MODEL', '')
-        if conf_value:
-            c_dict['MODEL'] = f'model = "{util.remove_quotes(conf_value)}";'
-
-        conf_value = self.config.getstr('config', 'TC_RMW_REGRID_METHOD', '')
-        if conf_value:
-            c_dict['REGRID_METHOD'] = f"method = {conf_value};"
-
-        conf_value = self.config.getint('config', 'TC_RMW_REGRID_WIDTH')
-        if conf_value is None:
-            self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE:
-            c_dict['REGRID_WIDTH'] = f"width = {str(conf_value)};"
-
-        conf_value = self.config.getfloat('config', 'TC_RMW_REGRID_VLD_THRESH', )
-        if conf_value is None:
-            self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE:
-            c_dict['REGRID_VLD_THRESH'] = f"vld_thresh = {str(conf_value)};"
-
-        conf_value = self.config.getstr('config', 'TC_RMW_REGRID_SHAPE', '')
-        if conf_value:
-            c_dict['REGRID_SHAPE'] = f"shape = {conf_value};"
+        self.handle_c_dict_regrid(c_dict, set_to_grid=False)
 
         conf_value = self.config.getint('config', 'TC_RMW_N_RANGE')
         if conf_value is None:
@@ -180,22 +159,17 @@ class TCRMWWrapper(CommandBuilder):
         self.add_env_var('DATA_FIELD',
                          self.c_dict.get('DATA_FIELD', ''))
 
+        self.add_env_var('METPLUS_MODEL',
+                         self.c_dict.get('MODEL', ''))
         self.add_env_var('MODEL',
                          self.c_dict.get('MODEL', ''))
 
-        regrid_dict_string = ''
-        # if any regrid items are set, create the regrid dictionary and add them
-        if (self.c_dict.get('REGRID_METHOD', '') or self.c_dict.get('REGRID_WIDTH', '') or
-                self.c_dict.get('REGRID_VLD_THRESH', '') or self.c_dict.get('REGRID_SHAPE', '')):
-            regrid_dict_string = 'regrid = {'
-            regrid_dict_string += f"{self.c_dict.get('REGRID_METHOD', '')}"
-            regrid_dict_string += f"{self.c_dict.get('REGRID_WIDTH', '')}"
-            regrid_dict_string += f"{self.c_dict.get('REGRID_VLD_THRESH', '')}"
-            regrid_dict_string += f"{self.c_dict.get('REGRID_SHAPE', '')}"
-            regrid_dict_string += '}'
-
+        regrid_dict = self.get_regrid_dict()
+        self.add_env_var('METPLUS_REGRID_DICT',
+                         regrid_dict)
+        # support deprecated version
         self.add_env_var('REGRID_DICT',
-                         regrid_dict_string)
+                         regrid_dict)
 
         self.add_env_var('N_RANGE',
                          self.c_dict.get('N_RANGE', ''))
@@ -420,9 +394,9 @@ class TCRMWWrapper(CommandBuilder):
             lead_list = []
             for lead in lead_seq:
                 lead_hours = (
-                    time_util.ti_get_seconds_from_relativedelta(lead,
-                                                                valid_time=time_info['valid'])
-                    ) // 3600
+                    time_util.ti_get_hours_from_relativedelta(lead,
+                                                              valid_time=time_info['valid'])
+                    )
                 lead_list.append(f'"{str(lead_hours).zfill(2)}"')
 
             self.c_dict['LEAD_LIST'] = f"lead = [{', '.join(lead_list)}];"
@@ -436,6 +410,3 @@ class TCRMWWrapper(CommandBuilder):
             config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
                                         **time_info)
             self.args.append(f"-config {config_file}")
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "TCRMW")

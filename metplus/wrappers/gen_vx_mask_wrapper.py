@@ -25,11 +25,13 @@ from ..util import do_string_sub
 
 class GenVxMaskWrapper(CommandBuilder):
 
-    def __init__(self, config, logger):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "gen_vx_mask"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -37,11 +39,6 @@ class GenVxMaskWrapper(CommandBuilder):
                                                  'LOG_GEN_VX_MASK_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = False
-
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = \
-          self.config.getbool('config',
-                              'GEN_VX_MASK_SKIP_IF_OUTPUT_EXISTS',
-                              False)
 
         # input and output files
         c_dict['INPUT_DIR'] = self.config.getdir('GEN_VX_MASK_INPUT_DIR',
@@ -194,14 +191,14 @@ class GenVxMaskWrapper(CommandBuilder):
             self.set_output_path(temp_file)
 
             # run GenVxMask
-            self.build_and_run_command()
+            self.build()
 
         # use final output path for last (or only) run
         if not self.find_and_check_output_file(time_info):
             return
 
         # run GenVxMask
-        self.build_and_run_command()
+        self.build()
 
     def find_input_files(self, time_info, temp_file):
         """!Handle setting of input file list.

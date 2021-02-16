@@ -21,6 +21,17 @@ to be used in other METplus wrappers
 @endcode
 '''
 
+# dictionary where key is letter of time unit, i.e. Y and value is
+# the string representation of it, i.e. year
+TIME_LETTER_TO_STRING = {
+    'Y': 'year',
+    'm': 'month',
+    'd': 'day',
+    'H': 'hour',
+    'M': 'minute',
+    'S': 'second',
+}
+
 def get_relativedelta(value, default_unit='S'):
     """!Converts time values ending in Y, m, d, H, M, or S to relativedelta object
         Args:
@@ -97,10 +108,31 @@ def seconds_to_met_time(total_seconds):
     else:
         return hour_time_string
 
+def ti_get_hours_from_relativedelta(lead, valid_time=None):
+    """! Get hours from relativedelta. Simply calls get seconds function and
+         divides the result by 3600.
+
+         @param lead relativedelta object to convert
+         @param valid_time (optional) valid time required to convert values
+          that contain months or years
+         @returns integer value of hours or None if cannot compute
+    """
+    lead_seconds = ti_get_seconds_from_relativedelta(lead, valid_time)
+    if lead_seconds is None:
+        return None
+
+    # integer division doesn't handle negative numbers properly
+    # (result is always -1) so handle appropriately
+    if lead_seconds < 0:
+        return - (-lead_seconds // 3600)
+
+    return lead_seconds // 3600
+
 def ti_get_seconds_from_relativedelta(lead, valid_time=None):
     """!Check relativedelta object contents and compute the total number of seconds
         in the time. Return None if years or months are set, because the exact number
         of seconds cannot be calculated without a relative time"""
+
     # return None if input is not relativedelta object
     if not isinstance(lead, relativedelta):
         return None
@@ -128,7 +160,58 @@ def ti_get_seconds_from_relativedelta(lead, valid_time=None):
 
     return total_seconds
 
-def ti_get_lead_string(lead, plural=True):
+def ti_get_seconds_from_lead(lead, valid='*'):
+    if isinstance(lead, int):
+        return lead
+
+    if valid == '*':
+        valid_time = None
+    else:
+        valid_time = valid
+
+    return ti_get_seconds_from_relativedelta(lead, valid_time)
+
+def ti_get_hours_from_lead(lead, valid='*'):
+    lead_seconds = ti_get_seconds_from_lead(lead, valid)
+    if lead_seconds is None:
+        return None
+
+    return lead_seconds // 3600
+
+def get_time_suffix(letter, letter_only):
+    if letter_only:
+        return letter
+
+    return f" {TIME_LETTER_TO_STRING[letter]} "
+
+def format_time_string(lead, letter, plural, letter_only):
+    if letter == 'Y':
+        value = lead.years
+    elif letter == 'm':
+        value = lead.months
+    elif letter == 'd':
+        value = lead.days
+    elif letter == 'H':
+        value = lead.hours
+    elif letter == 'M':
+        value = lead.minutes
+    elif letter == 'S':
+        value = lead.seconds
+    else:
+        return None
+
+    if value == 0:
+        return None
+
+    abs_value = abs(value)
+    suffix = get_time_suffix(letter, letter_only)
+    output = f"{abs_value}{suffix}"
+    if abs_value != 1 and plural and not letter_only:
+        output = f"{output.strip()}s "
+
+    return output
+
+def ti_get_lead_string(lead, plural=True, letter_only=False):
     """!Check relativedelta object contents and create string representation
         of the highest unit available (year, then, month, day, hour, minute, second).
         This assumes that only one unit has been set in the object"""
@@ -140,61 +223,47 @@ def ti_get_lead_string(lead, plural=True):
     if not isinstance(lead, relativedelta):
         return None
 
-    output = ''
-    if lead.years != 0:
-        output += f' {lead.years} year'
-        if abs(lead.years) != 1 and plural:
-            output += 's'
+    # if any of the values are negative, add - before the final result
+    if (lead.years < 0 or lead.months < 0 or lead.days < 0 or lead.hours < 0 or
+            lead.minutes < 0 or lead.seconds < 0):
+        negative = '-'
+    else:
+        negative = ''
 
-    if lead.months != 0:
-        output += f' {lead.months} month'
-        if abs(lead.months) != 1 and plural:
-            output += 's'
+    output_list = []
+    for time_letter in TIME_LETTER_TO_STRING.keys():
+        output = format_time_string(lead, time_letter, plural, letter_only)
+        if output is not None:
+            output_list.append(output)
 
-    if lead.days != 0:
-        output += f' {lead.days} day'
-        if abs(lead.days) != 1 and plural:
-            output += 's'
+    # if nothing was found, return 0 hour(s) or 0H
+    if not output_list:
+        if letter_only:
+            return '0H'
 
-    if lead.hours != 0:
-        output += f' {lead.hours} hour'
-        if abs(lead.hours) != 1 and plural:
-            output += 's'
+        return f"0 hour{'s' if plural else ''}"
 
-    if lead.minutes != 0:
-        output += f' {lead.minutes} minute'
-        if abs(lead.minutes) != 1 and plural:
-            output += 's'
+    output = ''.join(output_list)
+    # remove whitespace from beginning and end of string
+    output = output.strip()
 
-    if lead.seconds != 0:
-        output += f' {lead.seconds} second'
-        if abs(lead.seconds) != 1 and plural:
-            output += 's'
-
-    # remove leading space and return string
-    if output != '':
-        return output[1:]
-
-    # return 0 hour if no time units are set
-    output = '0 hour'
-    if plural:
-        output += 's'
-
-    return output
+    return f"{negative}{output}"
 
 def ti_calculate(input_dict_preserve):
     out_dict = {}
-    # copy input dictionary to avoid corrupting it
     input_dict = input_dict_preserve.copy()
+
+    KEYS_TO_COPY = ['custom', 'instance']
 
     # set output dictionary to input items
     if 'now' in input_dict.keys():
         out_dict['now'] = input_dict['now']
         out_dict['today'] = out_dict['now'].strftime('%Y%m%d')
 
-    # if custom is set in input dictionary, set it in the output dictionary
-    if 'custom' in input_dict.keys():
-        out_dict['custom'] = input_dict['custom']
+    # copy over values of some keys if it is set in input dictionary
+    for key in KEYS_TO_COPY:
+        if key in input_dict.keys():
+            out_dict[key] = input_dict[key]
 
     # read in input dictionary items and compute missing items
     # valid inputs: valid, init, lead, offset
@@ -206,6 +275,8 @@ def ti_calculate(input_dict_preserve):
         # if lead is not, treat it as seconds
         if isinstance(input_dict['lead'], relativedelta):
             out_dict['lead'] = input_dict['lead']
+        elif input_dict['lead'] == '*':
+            out_dict['lead'] = input_dict['lead']
         else:
             out_dict['lead'] = relativedelta(seconds=input_dict['lead'])
 
@@ -216,7 +287,14 @@ def ti_calculate(input_dict_preserve):
         out_dict['lead'] = relativedelta(minutes=input_dict['lead_minutes'])
 
     elif 'lead_hours' in input_dict.keys():
-        out_dict['lead'] = relativedelta(hours=input_dict['lead_hours'])
+        lead_hours = int(input_dict['lead_hours'])
+        lead_days = 0
+        # if hours is more than a day, pull out days and relative hours
+        if lead_hours > 23:
+            lead_days = lead_hours // 24
+            lead_hours = lead_hours % 24
+
+        out_dict['lead'] = relativedelta(hours=lead_hours, days=lead_days)
 
     else:
         out_dict['lead'] = relativedelta(seconds=0)
@@ -245,10 +323,13 @@ def ti_calculate(input_dict_preserve):
 
         if 'valid' in input_dict.keys():
             print("ERROR: Cannot specify both valid and init to time utility")
-            exit(1)
+            return None
 
-        # compute valid from init and lead
-        out_dict['valid'] = out_dict['init'] + out_dict['lead']
+        # compute valid from init and lead if lead is not wildcard
+        if out_dict['lead'] == '*':
+            out_dict['valid'] = '*'
+        else:
+            out_dict['valid'] = out_dict['init'] + out_dict['lead']
 
         # set loop_by to init or valid to be able to see what was set first
         out_dict['loop_by'] = 'init'
@@ -257,8 +338,11 @@ def ti_calculate(input_dict_preserve):
     elif 'valid' in input_dict:
         out_dict['valid'] = input_dict['valid']
 
-        # compute init from valid and lead
-        out_dict['init'] = out_dict['valid'] - out_dict['lead']
+        # compute init from valid and lead if lead is not wildcard
+        if out_dict['lead'] == '*':
+            out_dict['init'] = '*'
+        else:
+            out_dict['init'] = out_dict['valid'] - out_dict['lead']
 
         # set loop_by to init or valid to be able to see what was set first
         out_dict['loop_by'] = 'valid'
@@ -269,38 +353,57 @@ def ti_calculate(input_dict_preserve):
 
         if 'valid' in input_dict.keys():
             print("ERROR: Cannot specify both valid and da_init to time utility")
-            exit(1)
+            return None
 
         # compute valid from da_init and offset
         out_dict['valid'] = out_dict['da_init'] - out_dict['offset']
 
-        # compute init from valid and lead
-        out_dict['init'] = out_dict['valid'] - out_dict['lead']
+        # compute init from valid and lead if lead is not wildcard
+        if out_dict['lead'] == '*':
+            out_dict['init'] = '*'
+        else:
+            out_dict['init'] = out_dict['valid'] - out_dict['lead']
     else:
         print("ERROR: Need to specify valid, init, or da_init to time utility")
-        exit(1)
+        return None
 
     # calculate da_init from valid and offset
-    out_dict['da_init'] = out_dict['valid'] + out_dict['offset']
+    if out_dict['valid'] != '*':
+        out_dict['da_init'] = out_dict['valid'] + out_dict['offset']
 
-    # add common formatted items
-    out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M%S')
-    out_dict['da_init_fmt'] = out_dict['da_init'].strftime('%Y%m%d%H%M%S')
-    out_dict['valid_fmt'] = out_dict['valid'].strftime('%Y%m%d%H%M%S')
+        # add common formatted items
+        out_dict['da_init_fmt'] = out_dict['da_init'].strftime('%Y%m%d%H%M%S')
+        out_dict['valid_fmt'] = out_dict['valid'].strftime('%Y%m%d%H%M%S')
+
+    if out_dict['init'] != '*':
+        out_dict['init_fmt'] = out_dict['init'].strftime('%Y%m%d%H%M%S')
+
+    # get string representation of forecast lead
+    if out_dict['lead'] == '*':
+        out_dict['lead_string'] = 'ALL'
+    else:
+        out_dict['lead_string'] = ti_get_lead_string(out_dict['lead'])
+
+    out_dict['offset'] = int(out_dict['offset'].total_seconds())
+    out_dict['offset_hours'] = int(out_dict['offset'] // 3600)
+
+    # set synonyms for items
+    if 'da_init' in out_dict:
+        out_dict['date'] = out_dict['da_init']
+        out_dict['cycle'] = out_dict['da_init']
+
+    # if lead is wildcard, skip updating other lead values
+    if out_dict['lead'] == '*':
+        return out_dict
 
     # get difference between valid and init to get total seconds since relativedelta
     # does not have a fixed number of seconds
     total_seconds = int((out_dict['valid'] - out_dict['init']).total_seconds())
 
-    # get string representation of forecast lead
-    out_dict['lead_string'] = ti_get_lead_string(out_dict['lead'])
-
     # change relativedelta to integer seconds unless months or years are used
     # if they are, keep lead as a relativedelta object to be handled differently
     if out_dict['lead'].months == 0 and out_dict['lead'].years == 0:
         out_dict['lead'] = total_seconds
-
-    out_dict['offset'] = int(out_dict['offset'].total_seconds())
 
     # add common uses for relative times
     # Specifying integer division // Python 3,
@@ -308,10 +411,5 @@ def ti_calculate(input_dict_preserve):
     out_dict['lead_hours'] = int(total_seconds // 3600)
     out_dict['lead_minutes'] = int(total_seconds // 60)
     out_dict['lead_seconds'] = total_seconds
-    out_dict['offset_hours'] = int(out_dict['offset'] // 3600)
-
-    # set synonyms for items
-    out_dict['date'] = out_dict['da_init']
-    out_dict['cycle'] = out_dict['da_init']
 
     return out_dict

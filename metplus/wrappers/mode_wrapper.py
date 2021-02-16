@@ -18,13 +18,15 @@ from ..util import do_string_sub
 
 class MODEWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""
-    def __init__(self, config, logger):
+    def __init__(self, config, instance=None, config_overrides={}):
         # only set app variables if not already set by MTD (subclass)
         if not hasattr(self, 'app_name'):
             self.app_name = 'mode'
             self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                          self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     def add_merge_config_file(self, time_info):
         """!If merge config file is defined, add it to the command"""
@@ -68,6 +70,11 @@ class MODEWrapper(CompareGriddedWrapper):
         if not c_dict['OUTPUT_DIR']:
             self.log_error('MODE_OUTPUT_DIR must be set')
             self.isOK = False
+
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               'MODE_OUTPUT_TEMPLATE')
+        )
 
         c_dict['ONCE_PER_FIELD'] = True
         c_dict['QUILT'] = self.config.getbool('config', 'MODE_QUILT', False)
@@ -119,8 +126,6 @@ class MODEWrapper(CompareGriddedWrapper):
             self.config.getraw('filename_templates',
                                'MODE_VERIFICATION_MASK_TEMPLATE')
 
-        c_dict['REGRID_TO_GRID'] = self.config.getstr('config', 'MODE_REGRID_TO_GRID', '')
-
         # check that values are valid
         error_message = 'items must start with a comparison operator '+\
                         '(>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)'
@@ -139,13 +144,7 @@ class MODEWrapper(CompareGriddedWrapper):
 
         return c_dict
 
-    def set_environment_variables(self, fcst_field, obs_field, var_info, time_info):
-        self.config.set('config', 'CURRENT_FCST_NAME', var_info['fcst_name'])
-        self.config.set('config', 'CURRENT_OBS_NAME', var_info['obs_name'])
-        self.config.set('config', 'CURRENT_FCST_LEVEL', var_info['fcst_level'])
-        self.config.set('config', 'CURRENT_OBS_LEVEL', var_info['obs_level'])
-
-        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
+    def set_environment_variables(self, fcst_field, obs_field, time_info):
         self.add_env_var("FCST_FIELD", fcst_field)
         self.add_env_var("OBS_FIELD", obs_field)
 
@@ -226,15 +225,15 @@ class MODEWrapper(CompareGriddedWrapper):
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
             self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
                                        **time_info)
-            self.create_and_set_output_dir(time_info)
+
             self.infiles.append(model_path)
             self.infiles.append(obs_path)
             self.add_merge_config_file(time_info)
-
-            self.set_environment_variables(fcst_field,obs_field, var_info, time_info)
-            cmd = self.get_command()
-            if cmd is None:
-                self.log_error("Could not generate command")
+            self.set_current_field_config(var_info)
+            self.set_environment_variables(fcst_field, obs_field, time_info)
+            if not self.find_and_check_output_file(time_info,
+                                                   is_directory=True):
                 return
+
             self.build()
             self.clear()

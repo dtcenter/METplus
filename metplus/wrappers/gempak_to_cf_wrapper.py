@@ -24,10 +24,12 @@ from . import CommandBuilder
 
 
 class GempakToCFWrapper(CommandBuilder):
-    def __init__(self, config, logger):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "GempakToCF"
         self.app_path = config.getstr('exe', 'GEMPAKTOCF_JAR', '')
-        super().__init__(config, logger)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     def create_c_dict(self):
         """!Create dictionary from config items to be used in the wrapper
@@ -38,6 +40,16 @@ class GempakToCFWrapper(CommandBuilder):
 
         # set this for check if we are using Gempak data to ensure GempakToCF is found
         c_dict['INPUT_DATATYPE'] = 'GEMPAK'
+        c_dict['INPUT_DIR'] = self.config.getdir('GEMPAKTOCF_INPUT_DIR', '')
+        c_dict['INPUT_TEMPLATE'] = (
+            self.config.getraw('filename_templates',
+                               'GEMPAKTOCF_INPUT_TEMPLATE')
+        )
+        c_dict['OUTPUT_DIR'] = self.config.getdir('GEMPAKTOCF_OUTPUT_DIR', '')
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('filename_templates',
+                               'GEMPAKTOCF_OUTPUT_TEMPLATE')
+        )
         return c_dict
 
     def get_command(self):
@@ -88,39 +100,13 @@ class GempakToCFWrapper(CommandBuilder):
              Args:
                 @param time_info dictionary containing timing information
         """
-        valid_time = time_info['valid']
-        input_dir = self.config.getdir('GEMPAKTOCF_INPUT_DIR')
-        input_template = self.config.getraw('filename_templates',
-                                            'GEMPAKTOCF_INPUT_TEMPLATE')
-        output_dir = self.config.getdir('GEMPAKTOCF_OUTPUT_DIR')
-        output_template = self.config.getraw('filename_templates',
-                                             'GEMPAKTOCF_OUTPUT_TEMPLATE')
-
-        infile = do_string_sub(input_template,
-                               valid=valid_time)
-        infile = os.path.join(input_dir, infile)
+        infile = do_string_sub(self.c_dict['INPUT_TEMPLATE'],
+                               **time_info)
+        infile = os.path.join(self.c_dict.get('INPUT_DIR', ''),
+                              infile)
         self.infiles.append(infile)
 
-        outfile = do_string_sub(output_template,
-                                valid=valid_time)
-        outfile = os.path.join(output_dir, outfile)
-
-        if os.path.exists(outfile) and \
-                        self.config.getbool('config', 'GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS', False) is True:
-            self.logger.debug('Skip writing output file {} because it already '
-                              'exists. Remove file or change '
-                              'GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS to True to process'
-                              .format(outfile))
-            return
-
-        self.set_output_path(outfile)
-
-        if not os.path.exists(os.path.dirname(outfile)):
-            os.makedirs(os.path.dirname(outfile))
-
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
+        if not self.find_and_check_output_file(time_info):
             return
 
         self.build()

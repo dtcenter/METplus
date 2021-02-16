@@ -9,21 +9,7 @@ from shutil import which
 
 import produtil
 
-from metplus.util.config.config_launcher import METplusConfig
 from metplus.util import met_util as util
-from metplus.wrappers.command_builder import CommandBuilder
-from metplus.util.config import config_metplus
-
-#@pytest.fixture
-def metplus_config():
-    """! Create a METplus configuration object that can be
-    manipulated/modified to
-         reflect different paths, directories, values, etc. for individual
-         tests.
-    """
-    # Read in the configuration object CONFIG
-    config = config_metplus.setup(util.baseinputconfs)
-    return config
 
 @pytest.mark.parametrize(
     'input_value, result', [
@@ -42,7 +28,7 @@ def metplus_config():
         (None, None),
     ]
 )
-def test_getseconds(input_value, result):
+def test_getseconds(metplus_config, input_value, result):
     conf = metplus_config()
     if input_value is not None:
         conf.set('config', 'TEST_SECONDS', input_value)
@@ -69,7 +55,7 @@ def test_getseconds(input_value, result):
         (None, '1', '1'),
     ]
 )
-def test_getstr(input_value, default, result):
+def test_getstr(metplus_config, input_value, default, result):
     conf = metplus_config()
     if input_value is not None:
         conf.set('config', 'TEST_GETSTR', input_value)
@@ -92,10 +78,10 @@ def test_getstr(input_value, default, result):
 
     ]
 )
-def test_getdir(input_value, default, result):
+def test_getdir(metplus_config, input_value, default, result):
     conf = metplus_config()
     if input_value is not None:
-        conf.set('dir', 'TEST_GETDIR', input_value)
+        conf.set('config', 'TEST_GETDIR', input_value)
 
     # catch NoOptionError exception and pass test if default is None
     try:
@@ -118,7 +104,7 @@ def test_getdir(input_value, default, result):
         ('{valid?fmt=%Y%m%d}_{NOT_REAL_VAR}', None, '{valid?fmt=%Y%m%d}_{NOT_REAL_VAR}'),
     ]
 )
-def test_getraw(input_value, default, result):
+def test_getraw(metplus_config, input_value, default, result):
     conf = metplus_config()
     conf.set('config', 'TEST_EXTRA', 'extra')
     conf.set('config', 'TEST_EXTRA2', '{TEST_EXTRA}_extra')
@@ -151,7 +137,7 @@ def test_getraw(input_value, default, result):
         (None, None, None),
     ]
 )
-def test_getbool(input_value, default, result):
+def test_getbool(metplus_config, input_value, default, result):
     conf = metplus_config()
     if input_value is not None:
         conf.set('config', 'TEST_GETBOOL', input_value)
@@ -172,10 +158,10 @@ def test_getbool(input_value, default, result):
         ('sh', which('sh')),
     ]
 )
-def test_getexe(input_value, result):
+def test_getexe(metplus_config, input_value, result):
     conf = metplus_config()
     if input_value is not None:
-        conf.set('exe', 'TEST_GETEXE', input_value)
+        conf.set('config', 'TEST_GETEXE', input_value)
 
     assert(result == conf.getexe('TEST_GETEXE'))
 
@@ -194,7 +180,7 @@ def test_getexe(input_value, result):
         ('', 2.2, util.MISSING_DATA_VALUE),
     ]
 )
-def test_getfloat(input_value, default, result):
+def test_getfloat(metplus_config, input_value, default, result):
     conf = metplus_config()
     if input_value is not None:
         conf.set('config', 'TEST_GETFLOAT', input_value)
@@ -223,7 +209,7 @@ def test_getfloat(input_value, default, result):
         ('', 2.2, util.MISSING_DATA_VALUE),
     ]
 )
-def test_getint(input_value, default, result):
+def test_getint(metplus_config, input_value, default, result):
     conf = metplus_config()
     if input_value is not None:
         conf.set('config', 'TEST_GETINT', input_value)
@@ -233,3 +219,54 @@ def test_getint(input_value, default, result):
     except ValueError:
         if result is None:
             assert(True)
+
+@pytest.mark.parametrize(
+    'config_key, expected_result', [
+        ('VAR_TO_TEST_1', '1'),
+        ('VAR_TO_TEST_2', '2'),
+        ('VAR_TO_TEST_3', '3'),
+        # should use last instance in config_3.conf
+        ('VAR_TO_TEST_A', 'A3'),
+    ]
+)
+def test_move_all_to_config_section(metplus_config, config_key, expected_result):
+    config_files = ['config_1.conf',
+                    'config_2.conf',
+                    'config_3.conf',
+                   ]
+    test_dir = os.path.dirname(__file__)
+    config_files = [os.path.join(test_dir, item) for item in config_files]
+    config = metplus_config(config_files)
+    assert(config.getstr('config', config_key) == expected_result)
+
+@pytest.mark.parametrize(
+    'overrides, config_key, expected_result', [
+        (['config.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', '1'),
+        (['dir.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', '1'),
+        (['filename_templates.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', '1'),
+        (['user_env_vars.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', ''),
+        (['made_up.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', ''),
+        (['config.CMD_LINE_1=1',
+          'dir.CMD_LINE_1=2',
+          ],
+        'CMD_LINE_1', '2'),
+        (['dir.CMD_LINE_1=1',
+          'config.CMD_LINE_1=2',
+          ],
+        'CMD_LINE_1', '2'),
+    ]
+)
+def test_move_all_to_config_section_cmd_line(metplus_config, overrides,
+                                             config_key, expected_result):
+    config = metplus_config(overrides)
+    assert(config.getstr('config', config_key, '') == expected_result)

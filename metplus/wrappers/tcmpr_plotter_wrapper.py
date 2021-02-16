@@ -38,7 +38,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
     indicate a file or directory in the (required) -lookin option.
     """
 
-    def __init__(self, config, logger):
+    def __init__(self, config, instance=None, config_overrides={}):
         """!Constructor for TCMPRPlotterWrapper
             Args:
             @param p:  The configuration instance, contains
@@ -51,11 +51,13 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # pylint:disable=too-many-instance-attributes
         # All these instance attributes are needed to support the
         # plot_tcmpr.R functionality.
-        super().__init__(config, logger)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
         # check if R is available, do not attempt to run if it is not
-        if shutil.which('R') is None:
-            self.log_error('R is not in the path. It is required to run TCMPRPlotter')
+        if shutil.which('Rscript') is None:
+            self.log_error('Rscript is not in the path. It is required to run TCMPRPlotter')
 
         self._init_tcmpr_script()
 
@@ -117,13 +119,13 @@ class TCMPRPlotterWrapper(CommandBuilder):
         else:
             # MET_INSTALL_DIR is required, so we want to throw an error if it is
             # not defined.
-            if self.config.has_option('dir', 'MET_INSTALL_DIR'):
-                os.environ['MET_INSTALL_DIR'] = \
-                    self.config.getdir('MET_INSTALL_DIR')
-            else:
+            met_install_dir = self.config.getdir('MET_INSTALL_DIR')
+            if not met_install_dir:
                 self.log_error('NO tcmpr_plot.R script could be found, '
                                   'Check your MET_INSTALL_DIR path in your METplus conf file.')
                 sys.exit(1)
+
+            os.environ['MET_INSTALL_DIR'] = met_install_dir
 
         met_tcmpr_script =\
         os.path.join(self.config.getdir('MET_INSTALL_DIR'), 'share/met/Rscripts/plot_tcmpr.R')

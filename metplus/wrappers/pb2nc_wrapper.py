@@ -23,11 +23,13 @@ class PB2NCWrapper(CommandBuilder):
          to NetCDF for MET's point_stat tool can recognize.
     """
 
-    def __init__(self, config, logger):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'pb2nc'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     def create_c_dict(self):
         """! Create a data structure (dictionary) that contains all the
@@ -46,7 +48,6 @@ class PB2NCWrapper(CommandBuilder):
         c_dict['VERBOSITY'] = self.config.getint('config', 'LOG_PB2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PB2NC_SKIP_IF_OUTPUT_EXISTS', False)
         c_dict['OFFSETS'] = util.getlistint(self.config.getstr('config', 'PB2NC_OFFSETS', '0'))
 
         # Directories

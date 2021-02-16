@@ -10,7 +10,6 @@ import datetime
 
 import produtil
 
-from metplus.util.config import config_metplus
 from metplus.wrappers.grid_stat_wrapper import GridStatWrapper
 from metplus.util import met_util as util
 from metplus.util import time_util
@@ -32,44 +31,6 @@ from metplus.util import time_util
 # @pytest.fixture
 #def cmdopt(request):
 #    return request.config.getoption("-c")
-
-
-# -----------------FIXTURES THAT CAN BE USED BY ALL TESTS----------------
-#@pytest.fixture
-def grid_stat_wrapper():
-    """! Returns a default GridStatWrapper with /path/to entries in the
-         metplus_system.conf and metplus_runtime.conf configuration
-         files.  Subsequent tests can customize the final METplus configuration
-         to over-ride these /path/to values."""
-
-    config = metplus_config()
-    return GridStatWrapper(config, config.logger)
-
-#@pytest.fixture
-def metplus_config():
-    """! Create a METplus configuration object that can be
-    manipulated/modified to
-         reflect different paths, directories, values, etc. for individual
-         tests.
-    """
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='GridStatWrapper',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='GridStatWrapper')
-        produtil.log.postmsg('grid_stat_wrapper  is starting')
-
-        # Read in the configuration object CONFIG
-        config = config_metplus.setup(util.baseinputconfs)
-        logger = util.get_logger(config)
-        return config
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'grid_stat_wrapper failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
-
 
 # ------------------------ TESTS GO HERE --------------------------
 
@@ -102,14 +63,13 @@ def metplus_config():
     ]
 )
 
-def test_window_variables_(conf_dict, out_dict):
-    conf = metplus_config()
-    logger = logging.getLogger("dummy")
+def test_window_variables_(metplus_config, conf_dict, out_dict):
+    config = metplus_config()
 
     for key, value in conf_dict.items():
-        conf.set('config', key, value)
+        config.set('config', key, value)
     
-    gsw = GridStatWrapper(conf, logger)
+    gsw = GridStatWrapper(config)
 
     good = True
     for key, value in out_dict.items():

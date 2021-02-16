@@ -9,7 +9,6 @@ import datetime
 
 import produtil.setup
 
-from metplus.util.config import config_metplus
 from metplus.wrappers.make_plots_wrapper import MakePlotsWrapper
 from metplus.util import met_util as util
 
@@ -43,7 +42,7 @@ def cmdopt(request):
 # ------------Pytest fixtures that can be used for all tests ---------------
 #
 #@pytest.fixture
-def make_plots_wrapper():
+def make_plots_wrapper(metplus_config):
     """! Returns a default MakePlotsWrapper with /path/to entries in the
          metplus_system.conf and metplus_runtime.conf configuration
          files.  Subsequent tests can customize the final METplus configuration
@@ -51,30 +50,10 @@ def make_plots_wrapper():
 
     # Default, empty MakePlotsWrapper with some configuration values set
     # to /path/to:
-    config = metplus_config()
-    return MakePlotsWrapper(config, config.logger)
-
-
-#@pytest.fixture
-def metplus_config():
-    try:
-        if 'JLOGFILE' in os.environ:
-            produtil.setup.setup(send_dbn=False, jobname='MakePlotsWrapper ',
-                                 jlogfile=os.environ['JLOGFILE'])
-        else:
-            produtil.setup.setup(send_dbn=False, jobname='MakePlotsWrapper ')
-        produtil.log.postmsg('make_plots_wrapper  is starting')
-
-        # Read in the configuration object CONFIG
-        config = config_metplus.setup(util.baseinputconfs)
-        logger = util.get_logger(config)
-        return config
-
-    except Exception as e:
-        produtil.log.jlogger.critical(
-            'make_plots_wrapper failed: %s' % (str(e),), exc_info=True)
-        sys.exit(2)
-
+    extra_configs = []
+    extra_configs.append(os.path.join(os.path.dirname(__file__), 'test_make_plots.conf'))
+    config = metplus_config(extra_configs)
+    return MakePlotsWrapper(config)
 
 # ------------------TESTS GO BELOW ---------------------------
 #
@@ -105,12 +84,12 @@ def metplus_config():
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 METPLUS_BASE = os.getcwd().split('/internal_tests')[0]
 
-def test_get_command():
+def test_get_command(metplus_config):
     # Independently test that the make_plots python
     # command is being put together correctly with
     # python command followed by the full path
     # to the plotting script
-    mp = make_plots_wrapper()
+    mp = make_plots_wrapper(metplus_config)
     # Test 1
     expected_command = (
         'python plot_fake_script_name.py'
@@ -119,15 +98,14 @@ def test_get_command():
     test_command = mp.get_command()
     assert(expected_command == test_command)
 
-def test_create_c_dict():
+def test_create_c_dict(metplus_config):
     # Independently test that c_dict is being created
     # and that the wrapper and config reader 
     # is setting the values as expected
-    mp = make_plots_wrapper()
+    mp = make_plots_wrapper(metplus_config)
     # Test 1
     c_dict = mp.create_c_dict()
     assert(c_dict['LOOP_ORDER'] == 'processes')
-    assert(c_dict['PROCESS_LIST'] == 'StatAnalysis, MakePlots')
     # NOTE: MakePlots relies on output from StatAnalysis
     #       so its input resides in the output of StatAnalysis
     assert(c_dict['INPUT_BASE_DIR'] == mp.config.getdir('OUTPUT_BASE')
@@ -176,6 +154,4 @@ def test_create_c_dict():
     assert(c_dict['VERIF_GRID'] == 'G002')
     assert(c_dict['EVENT_EQUALIZATION'] == 'False')
     assert(c_dict['LOG_METPLUS'] == mp.config.getdir('OUTPUT_BASE')
-                                    +'/logs/master_metplus.log.'
-                                    +mp.config.getstr('config',
-                                                      'LOG_TIMESTAMP'))
+                                    +'/logs/master_metplus.log')

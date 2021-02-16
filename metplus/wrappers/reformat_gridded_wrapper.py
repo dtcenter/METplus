@@ -30,8 +30,10 @@ class ReformatGriddedWrapper(CommandBuilder):
     """!Common functionality to wrap similar MET applications
 that reformat gridded data
     """
-    def __init__(self, config, logger):
-        super().__init__(config, logger)
+    def __init__(self, config, instance=None, config_overrides={}):
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     # this class should not be called directly
     # pylint:disable=unused-argument

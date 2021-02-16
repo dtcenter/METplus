@@ -34,11 +34,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     # valid values for [FCST/OBS]_PCP_COMBINE_METHOD
     valid_run_methods = ['ADD', 'SUM', 'SUBTRACT', 'DERIVE', 'USER_DEFINED']
 
-    def __init__(self, config, logger):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'pcp_combine'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
         self.inaddons = []
         self.method = ""
         self.pcp_dir = ""
@@ -58,7 +60,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_PCP_COMBINE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = self.config.getbool('config', 'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS', False)
 
         fcst_run = self.config.getbool('config', 'FCST_PCP_COMBINE_RUN', False)
         obs_run = self.config.getbool('config', 'OBS_PCP_COMBINE_RUN', False)
@@ -655,6 +656,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             field_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
         else:
             field_name = var_info[f"{data_src.lower()}_name"]
+            self.logger.warning(f'{data_src}_PCP_COMBINE_OUTPUT_NAME is not set. Using '
+                                f'{field_name} from {data_src}_VAR{var_info.get("index")}_NAME. ')
 
         if self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
             accum = self.c_dict[f"{data_src}_OUTPUT_ACCUM"]
@@ -662,12 +665,16 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         else:
             level = var_info[f'{data_src.lower()}_level']
             level_type, accum = util.split_level(level)
+            self.logger.warning(f'{data_src}_PCP_COMBINE_OUTPUT_ACCUM is not set. Using '
+                                f'{accum} from {data_src}_VAR{var_info.get("index")}_LEVELS. '
+                                'It is recommended that you explicitly set the '
+                                'output accumulation.')
 
         accum = time_util.get_seconds_from_string(accum,
                                                   default_unit='H',
                                                   valid_time=time_info['valid'])
         if accum is None:
-            self.log_error("Could not get accumulation from {data_src}_VAR<n>_LEVEL or "
+            self.log_error("Could not get accumulation from {data_src}_VAR{var_info.get('index')}_LEVEL or "
                            f"{data_src}_PCP_COMBINE_OUTPUT_ACCUM")
             return None
 
@@ -774,8 +781,17 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             if out_accum[0].isalpha():
                 out_accum = out_accum[1:]
 
+            self.logger.warning(f'{data_src}_PCP_COMBINE_OUTPUT_ACCUM is not set. Using '
+                                f'{out_accum} from {data_src}_VAR{var_info.get("index")}_LEVELS. '
+                                'It is recommended that you explicitly set the '
+                                'output accumulation.')
+
         if self.c_dict[data_src+'_OUTPUT_NAME']:
             self.output_name = self.c_dict[data_src+'_OUTPUT_NAME']
+        else:
+            self.output_name = var_info[f"{data_src.lower()}_name"]
+            self.logger.warning(f'{data_src}_PCP_COMBINE_OUTPUT_NAME is not set. Using '
+                                f'{self.output_name} from {data_src}_VAR{var_info.get("index")}_NAME.')
 
         # set field name and level if set in config
         if self.c_dict[f'{data_src}_NAMES']:
@@ -836,10 +852,18 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             level = var_info[f'{data_src.lower()}_level']
             _, accum_string = util.split_level(level)
 
+            self.logger.warning(f'{data_src}_PCP_COMBINE_OUTPUT_ACCUM is not set. Using '
+                                f'{accum_string} from {data_src}_VAR{var_info.get("index")}_LEVELS. '
+                                'It is recommended that you explicitly set the '
+                                'output accumulation.')
+
         if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
             field_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
         else:
-            field_name = var_info[f"{data_src.lower()}_name"] + '_' + accum_string
+            field_name = var_info[f"{data_src.lower()}_name"]
+
+            self.logger.warning(f'{data_src}_PCP_COMBINE_OUTPUT_NAME is not set. Using '
+                                f'{field_name} from {data_src}_VAR{var_info.get("index")}_NAME.')
 
         # get number of seconds relative to valid time
         accum_seconds = time_util.get_seconds_from_string(accum_string,

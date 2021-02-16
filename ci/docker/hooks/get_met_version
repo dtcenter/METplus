@@ -1,0 +1,14 @@
+#!/bin/bash
+
+# get version, use develop or X+6.Y for MET_BRANCH
+version_file=$(dirname $DOCKERFILE_PATH)/../../docs/version
+
+if cat $version_file | egrep -q '^[0-9.]+$'; then
+  let major=$(cut -d '.' -f1 $version_file)+6
+  minor=$(cut -d '.' -f2 $version_file )
+  met_branch=$major"."$minor"-latest"
+else
+  met_branch=develop
+fi
+
+echo $met_branch

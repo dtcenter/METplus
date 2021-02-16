@@ -10,15 +10,15 @@ How to Create Your Own Wrapper
 
     class NewToolWrapper(CommandBuilder)
 
-* The new wrapper should reflect the name of the MET application without underscores because of the way the application gets called from the wrapper:: 
+* The new wrapper should reflect the name of the MET application without underscores because of the way the application gets called from the wrapper::
 
     Point2GridWrapper =  correct
     Point_2_Grid_Wrapper = incorrect
 
 * Modify the init function to initialize NewExample from its base class (CommandBuilder), and to set the name and path to the MET application you are wrapping::
 
-    def __init__(self, config, logger):
-        super(NewToolWrapper, self).__init__(config, logger)
+    def __init__(self, config):
+        super(NewToolWrapper, self).__init__(config)
         self.app_path = os.path.join(self.p.getdir('MET_BIN_DIR', ''),
                                      'new_tool')
         self.app_name = os.path.basename(self.app_path)
@@ -29,21 +29,21 @@ How to Create Your Own Wrapper
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function
-	loops over the list of forecast leads and runs the application for
-	each.
-	Args:
-	  @param input_dict dictionary containing timing information
-	  @returns None
-	"""
+        loops over the list of forecast leads and runs the application for
+        each.
+        Args:
+          @param input_dict dictionary containing timing information
+          @returns None
+          """
         lead_seq = util.get_lead_sequence(self.config, input_dict)
-	for lead in lead_seq:
-	    self.clear()
-	    input_dict['lead'] = lead
+            for lead in lead_seq:
+            self.clear()
+            input_dict['lead'] = lead
 
-	    time_info = time_util.ti_calculate(input_dict)
-	    for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+            time_info = time_util.ti_calculate(input_dict)
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
                 if custom_string:
-	            self.logger.info(f"Processing custom string: {custom_string}")
+                    self.logger.info(f"Processing custom string: {custom_string}")
 
                 time_info['custom'] = custom_string
 
@@ -68,7 +68,7 @@ How to Create Your Own Wrapper
         # set environment variables if using config file
         self.set_environment_variables(time_info)
 
-        # build command and run 
+        # build command and run
         self.build_and_run_command()
 
 
@@ -132,7 +132,7 @@ Some wrappers require multiple entries to cover all of the bases. For example, u
 * Add a section to the Python Wrappers page of the documentation with information about the new tool including a list of all METplus configuration variables that can be used.
 
 * Add an entry for each METplus configuration variable added to the wrapper to the METplus Configuration Glossary. Each configuration variable should be the MET tool name in all caps i.e. GRID_STAT followed by the variable name. MET tool names generally have underscores between words unless there is a number in the name. Examples below::
-    
+
     GRID_STAT_PROB_THRESH
     REGRID_DATA_PLANE_METHOD
     POINT2GRID_QC_FLAGS

@@ -25,11 +25,13 @@ from . import ReformatGriddedWrapper
 class RegridDataPlaneWrapper(ReformatGriddedWrapper):
     '''!Wraps the MET tool regrid_data_plane to reformat gridded datasets
     '''
-    def __init__(self, config, logger):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'regrid_data_plane'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -37,10 +39,6 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         app = 'REGRID_DATA_PLANE'
         c_dict['VERBOSITY'] = self.config.getstr('config', f'LOG_{app}_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-
-        c_dict['SKIP_IF_OUTPUT_EXISTS'] = \
-          self.config.getbool('config', f'{app}_SKIP_IF_OUTPUT_EXISTS',
-                              False)
 
         c_dict['ONCE_PER_FIELD'] = self.config.getbool('config',
                                                        f'{app}_ONCE_PER_FIELD',
@@ -253,8 +251,20 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
             if input_name:
                 field_info[f'{data_type.lower()}_name'] = input_name
+            else:
+                input_name = field_info[f'{data_type.lower()}_name']
+                # option to supress warnings can be set in wrapper that calls
+                # RegridDataPlane to prevent these warnings from showing up
+                if self.c_dict.get('SHOW_WARNINGS', True):
+                    msg = (f"{data_type}_REGRID_DATA_PLANE_"
+                           f"VAR{field_info['index']}_NAME not set. "
+                           f"Using name = {input_name} from "
+                           f"{data_type}_VAR{field_info['index']}_NAME")
+                    self.logger.warning(msg)
 
-            if input_level:
+            if util.is_python_script(input_name):
+                field_info[f'{data_type.lower()}_level'] = ''
+            elif input_level:
                 field_info[f'{data_type.lower()}_level'] = input_level
 
             # also add output name
@@ -294,6 +304,11 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         """
         output_name = field_info.get(f'{data_type.lower()}_output_name', None)
         if not output_name:
+            if self.c_dict.get('SHOW_WARNINGS', True):
+                msg = (f'{data_type}_REGRID_DATA_PLANE_OUTPUT_NAME not set. '
+                       f'Using {input_name} as the output name.')
+                self.logger.warning(msg)
+
             output_name = input_name
 
         return output_name
@@ -319,6 +334,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 @param field_info_list list of field dictionaries to process
                 @param data_type type of data to process, i.e. FCST or OBS
         """
+        return_status = True
         for field_info in field_info_list:
             self.args.clear()
 
@@ -327,19 +343,30 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             self.add_field_info_to_time_info(time_info,
                                              field_info)
 
-            input_name = self.set_field_command_line_arguments(field_info,
-                                                               data_type)
+            input_name = field_info[f'{data_type.lower()}_name']
+            input_level = field_info[f'{data_type.lower()}_level']
+            field_text_list = self.get_field_info(data_type,
+                                                  input_name,
+                                                  input_level)
+
+            for field_text in field_text_list:
+                self.args.append(f"-field '{field_text.strip('{ }')}'")
+
+            field_name = input_name
 
             self.args.append("-name " + self.get_output_name(field_info,
                                                              data_type,
-                                                             input_name))
+                                                             field_name))
 
             if not self.handle_output_file(time_info,
                                            field_info,
                                            data_type):
-                return
+                return False
 
-            self.build_and_run_command()
+            if not self.build():
+                return_status = False
+
+        return return_status
 
     def run_once_for_all_fields(self, time_info, field_info_list, data_type):
         """!Loop over fields to add each field info, then run command once to
@@ -355,13 +382,20 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             self.add_field_info_to_time_info(time_info,
                                              field_info)
 
-            input_name = self.set_field_command_line_arguments(field_info,
-                                                               data_type)
+            input_name = field_info[f'{data_type.lower()}_name']
+            input_level = field_info[f'{data_type.lower()}_level']
+            field_text_list = self.get_field_info(data_type,
+                                                  input_name,
+                                                  input_level)
+            for field_text in field_text_list:
+                self.args.append(f"-field '{field_text.strip('{ }')}'")
+
+            field_name = input_name
 
             # get list of output names
             output_names.append(self.get_output_name(field_info,
                                                      data_type,
-                                                     input_name))
+                                                     field_name))
 
 
         # add list of output names
@@ -370,10 +404,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         if not self.handle_output_file(time_info,
                                        field_info_list[0],
                                        data_type):
-            return
+            return False
 
         # build and run commands
-        self.build_and_run_command()
+        return self.build()
 
     def run_at_time_once(self, time_info, var_list, data_type):
         """!Build command or commands to run at the given run time
@@ -391,10 +425,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         field_info_list = self.get_field_info_list(var_list, data_type, time_info)
         if not field_info_list:
             self.log_error("Could not build field info list")
-            return
+            return False
 
         if not self.find_input_files(time_info, data_type, field_info_list):
-            return
+            return False
 
         # set environment variables
         self.set_environment_variables(time_info)
@@ -402,10 +436,10 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         # determine if running once for all fields or once per field
         # if running once per field, loop over field list and run once for each
         if self.c_dict['ONCE_PER_FIELD']:
-            self.run_once_per_field(time_info, field_info_list, data_type)
-        else:
-            # if not running once per field, process all fields and run once
-            self.run_once_for_all_fields(time_info, field_info_list, data_type)
+            return self.run_once_per_field(time_info, field_info_list, data_type)
+
+        # if not running once per field, process all fields and run once
+        return self.run_once_for_all_fields(time_info, field_info_list, data_type)
 
     def find_input_files(self, time_info, data_type, field_info_list):
         """!Get input file and verification grid to process. Use the first field in the
@@ -454,23 +488,12 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
         # strip off quotes around input_level if found
         input_level = util.remove_quotes(field_info[f'{data_type.lower()}_level'])
 
-        _, level = util.split_level(input_level)
+        field_text = f"-field 'name=\"{field_name}\";"
 
-        # if using python script to supply input data, just set field name
-        # if PcpCombine has been run on this data, set field name = name_level
-        # and level=(*,*), otherwise set name=name and level=level
-        if util.is_python_script(field_name):
-            self.args.append(f"-field 'name=\"{field_name}\";'")
-            name = field_name
-        elif (not self.c_dict.get('USE_EXPLICIT_NAME_AND_LEVEL', False) and
-              self.config.getbool('config', data_type + '_PCP_COMBINE_RUN', False)):
-            if len(str(level)) > 0:
-                name = "{:s}_{:s}".format(field_name, str(level))
-            else:
-                name = "{:s}".format(field_name)
-            self.args.append(f"-field 'name=\"{name}\"; level=\"(*,*)\";'")
-        else:
-            name = "{:s}".format(field_name)
-            self.args.append(f"-field 'name=\"{name}\"; level=\"{input_level}\";'")
+        if input_level:
+            field_text +=f" level=\"{input_level}\";"
 
-        return name
+        field_text += "'"
+        self.args.append(field_text)
+
+        return field_name

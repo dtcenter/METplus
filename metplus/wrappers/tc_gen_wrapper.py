@@ -1,5 +1,3 @@
-#!/usr/bin/env python
-
 """tc_gen
 Program Name: tc_gen_wrapper.py
 Contact(s): George McCabe
@@ -28,11 +26,13 @@ from ..util import do_string_sub
 
 
 class TCGenWrapper(CommandBuilder):
-    def __init__(self, config, logger):
+    def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "tc_gen"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
                                      self.app_name)
-        super().__init__(config, logger)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
@@ -46,6 +46,8 @@ class TCGenWrapper(CommandBuilder):
         c_dict['GENESIS_INPUT_DIR'] = self.config.getdir(f'{app_name_upper}_GENESIS_INPUT_DIR', '')
         c_dict['GENESIS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                               f'{app_name_upper}_GENESIS_INPUT_TEMPLATE')
+        if not c_dict['GENESIS_INPUT_TEMPLATE']:
+            self.log_error(f'{app_name_upper}_GENESIS_INPUT_TEMPLATE must be set to run TCGen')
 
         c_dict['OUTPUT_DIR'] = self.config.getdir(f'{app_name_upper}_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
@@ -54,15 +56,16 @@ class TCGenWrapper(CommandBuilder):
         c_dict['TRACK_INPUT_DIR'] = self.config.getdir(f'{app_name_upper}_TRACK_INPUT_DIR', '')
         c_dict['TRACK_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                             f'{app_name_upper}_TRACK_INPUT_TEMPLATE')
-
+        if not c_dict['TRACK_INPUT_TEMPLATE']:
+            self.log_error(f'{app_name_upper}_TRACK_INPUT_TEMPLATE must be set to run TCGen')
 
         # values used in configuration file
-        self.set_c_dict_int(c_dict, f'{app_name_upper}_INIT_FREQUENCY', 'init_freq')
+        self.set_met_config_int(c_dict, f'{app_name_upper}_INIT_FREQUENCY', 'init_freq')
 
-        self.set_c_dict_int(c_dict, f'{app_name_upper}_LEAD_WINDOW_BEGIN', 'beg', 'LEAD_WINDOW_BEG')
-        self.set_c_dict_int(c_dict, f'{app_name_upper}_LEAD_WINDOW_END', 'end', 'LEAD_WINDOW_END')
+        self.set_met_config_int(c_dict, f'{app_name_upper}_LEAD_WINDOW_BEGIN', 'beg', 'LEAD_WINDOW_BEG')
+        self.set_met_config_int(c_dict, f'{app_name_upper}_LEAD_WINDOW_END', 'end', 'LEAD_WINDOW_END')
 
-        self.set_c_dict_int(c_dict, f'{app_name_upper}_MIN_DURATION', 'min_duration')
+        self.set_met_config_int(c_dict, f'{app_name_upper}_MIN_DURATION', 'min_duration')
 
         conf_value = self.config.getstr('config', f'{app_name_upper}_FCST_GENESIS_VMAX_THRESH', '')
         if conf_value and conf_value != 'NA':
@@ -73,7 +76,7 @@ class TCGenWrapper(CommandBuilder):
         for dict_name in ['FCST_GENESIS', 'BEST_GENESIS', 'OPER_GENESIS']:
             # set threshold values
             for thresh_name in ['VMAX_THRESH', 'MSLP_THRESH']:
-                self.set_c_dict_thresh(c_dict,
+                self.set_met_config_thresh(c_dict,
                                        f'{app_name_upper}_{dict_name}_{thresh_name}',
                                        thresh_name.lower(),
                                        f'{dict_name}_{thresh_name}')
@@ -82,12 +85,12 @@ class TCGenWrapper(CommandBuilder):
                 continue
 
             # get technique and category
-            self.set_c_dict_string(c_dict,
+            self.set_met_config_string(c_dict,
                                    f'{app_name_upper}_{dict_name}_TECHNIQUE',
                                    'technique',
                                    f'{dict_name}_TECHNIQUE')
 
-            self.set_c_dict_list(c_dict,
+            self.set_met_config_list(c_dict,
                                  f'{app_name_upper}_{dict_name}_CATEGORY',
                                  'category',
                                  f'{dict_name}_CATEGORY')
@@ -100,10 +103,10 @@ class TCGenWrapper(CommandBuilder):
             filter_string += '}];'
             c_dict['FILTER'] = filter_string
 
-        self.set_c_dict_list(c_dict, 'MODEL', 'model')
-        self.set_c_dict_list(c_dict, f'{app_name_upper}_STORM_ID', 'storm_id')
-        self.set_c_dict_list(c_dict, f'{app_name_upper}_STORM_NAME', 'storm_name')
-        self.set_c_dict_list(c_dict, f'{app_name_upper}_INIT_HOUR_LIST', 'init_hour')
+        self.set_met_config_list(c_dict, 'MODEL', 'model')
+        self.set_met_config_list(c_dict, f'{app_name_upper}_STORM_ID', 'storm_id')
+        self.set_met_config_list(c_dict, f'{app_name_upper}_STORM_NAME', 'storm_name')
+        self.set_met_config_list(c_dict, f'{app_name_upper}_INIT_HOUR_LIST', 'init_hour')
 
         # set INIT_BEG, INIT_END, VALID_BEG, and VALID_END
         for time_type in ['INIT', 'VALID']:
@@ -118,29 +121,32 @@ class TCGenWrapper(CommandBuilder):
                     time_value = f'{time_key.lower()} = "{time_value}";'
                     c_dict[time_key] = time_value
 
-        self.set_c_dict_int(c_dict,
+        self.set_met_config_int(c_dict,
                             f'{app_name_upper}_GENESIS_WINDOW_BEGIN',
                             'beg',
                             'GENESIS_WINDOW_BEG')
-        self.set_c_dict_int(c_dict,
+        self.set_met_config_int(c_dict,
                             f'{app_name_upper}_GENESIS_WINDOW_END',
                             'end',
                             'GENESIS_WINDOW_END')
 
-        self.set_c_dict_int(c_dict,
+        self.set_met_config_int(c_dict,
                             f'{app_name_upper}_GENESIS_RADIUS',
                             'genesis_radius')
 
-        self.set_c_dict_string(c_dict,
+        self.set_met_config_string(c_dict,
                                f'{app_name_upper}_VX_MASK',
                                'vx_mask')
 
-        self.set_c_dict_string(c_dict,
+        self.set_met_config_string(c_dict,
                                f'{app_name_upper}_DLAND_FILE',
                                'dland_file')
 
         # get INPUT_TIME_DICT values since wrapper only runs once (doesn't look over time)
         self.set_time_dict_for_single_runtime(c_dict)
+
+        # read desc from TC_GEN_DESC or DESC into c_dict['DESC']
+        self.handle_description(c_dict)
 
         return c_dict
 
@@ -190,8 +196,9 @@ class TCGenWrapper(CommandBuilder):
                                                         'END',
                                                        ],
                                      }.items():
-            dict_string = self.create_met_config_dictionary_string(dict_name,
-                                                                   item_list)
+            dict_string = self.format_met_config_dict(self.c_dict,
+                                                      dict_name,
+                                                      item_list)
             self.add_env_var(f'{dict_name}_DICT',
                              dict_string)
 
@@ -199,7 +206,7 @@ class TCGenWrapper(CommandBuilder):
         for env_var in ['FILTER',
                         'INIT_FREQ',
                         'MIN_DURATION',
-                        'MODEL',
+                        'METPLUS_MODEL',
                         'STORM_ID',
                         'STORM_NAME',
                         'INIT_BEG',
@@ -210,10 +217,15 @@ class TCGenWrapper(CommandBuilder):
                         'LEAD_LIST',
                         'VX_MASK',
                         'GENESIS_RADIUS',
-                        'DLAND_FILE'
+                        'DLAND_FILE',
+                        'METPLUS_DESC',
                         ]:
             self.add_env_var(env_var,
                              self.c_dict.get(env_var, ''))
+
+        # set old names until they are deprecated
+        self.add_env_var('MODEL', self.c_dict.get('METPLUS_MODEL', ''))
+        self.add_env_var('DESC', self.c_dict.get('METPLUS_DESC', ''))
 
         super().set_environment_variables(time_info)
 
@@ -255,12 +267,14 @@ class TCGenWrapper(CommandBuilder):
         """
         # run using input time dictionary
         self.run_at_time(self.c_dict['INPUT_TIME_DICT'])
+        return self.all_commands
 
     def run_at_time(self, input_dict):
         """! Process runtime and try to build command to run ascii2nc
              Args:
                 @param input_dict dictionary containing timing information
         """
+        input_dict['instance'] = self.instance if self.instance else ''
         for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
             if custom_string:
                 self.logger.info(f"Processing custom string: {custom_string}")
@@ -280,7 +294,7 @@ class TCGenWrapper(CommandBuilder):
                 @param time_info dictionary containing timing information
         """
         # get input files
-        if self.find_input_files(time_info) is None:
+        if not self.find_input_files(time_info):
             return
 
         # get output path
@@ -294,7 +308,7 @@ class TCGenWrapper(CommandBuilder):
         self.set_environment_variables(time_info)
 
         # build command and run
-        self.build_and_run_command()
+        self.build()
 
     def find_input_files(self, time_info):
         """!Get track and genesis files and set c_dict items. Also format forecast
@@ -347,6 +361,3 @@ class TCGenWrapper(CommandBuilder):
         config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
                                     **time_info)
         self.args.append(f"-config {config_file}")
-
-if __name__ == "__main__":
-    util.run_stand_alone(__file__, "TCRMW")
