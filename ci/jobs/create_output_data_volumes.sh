@@ -8,7 +8,7 @@ fi
 branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
 
 if [ "${branch_name: -4}" != "-ref" ]; then
-  echo Not a reference branch (${branch_name}), so skip this step
+  echo Branch ${branch_name} is not a reference branch, so skip this step
   exit 0
 fi
 
