@@ -5,7 +5,7 @@ import os
 import subprocess
 import shlex
 
-from docker_utils import docker_get_volumes_last_updated
+from docker_utils import docker_get_volumes_last_updated, get_branch_name
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir,
@@ -25,8 +25,8 @@ else:
 
 def main(args):
     volume_list = []
-    current_branch = os.environ.get('BRANCH_NAME')
-    if not current_branch:
+    branch_name = get_branch_name()
+    if not branch_name:
         print("Could not get current branch. Exiting.")
         sys.exit(1)
 
@@ -38,7 +38,7 @@ def main(args):
         data_repo = 'dtcenter/metplus-data'
 
     # get all docker data volumes associated with current branch
-    available_volumes = docker_get_volumes_last_updated(current_branch).keys()
+    available_volumes = docker_get_volumes_last_updated(branch_name).keys()
 
     # loop through arguments and get data volume for each category
     for model_app_name in args:
@@ -51,8 +51,8 @@ def main(args):
             # if using development version and branch data volume is available
             # use it, otherwise use develop version of data volume
             if (METPLUS_VERSION == 'develop' and
-                    f'{current_branch}-{model_app_name}' in available_volumes):
-                version = current_branch
+                    f'{branch_name}-{model_app_name}' in available_volumes):
+                version = branch_name
             else:
                 version = METPLUS_VERSION
 
