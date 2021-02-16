@@ -70,10 +70,20 @@ class CyclonePlotterWrapper(CommandBuilder):
             self.config.getint('config',
                                'CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE')
         )
+        self.annotation_font_size = (
+            self.config.getint('config',
+                               'CYCLONE_PLOTTER_ANNOTATION_FONT_SIZE')
+        )
         self.cross_marker = (
             self.config.getint('config',
                                'CYCLONE_PLOTTER_CROSS_MARKER_SIZE')
         )
+        self.resolution_dpi = (
+            self.config.getint('config',
+                               'CYCLONE_PLOTTER_RESOLUTION_DPI')
+        )
+
+
 
     def run_all_times(self):
         """! Calls the defs needed to create the cyclone plots
@@ -121,8 +131,8 @@ class CyclonePlotterWrapper(CommandBuilder):
                     # retrieve information from each row:
                     # lon, lat, init time, lead hour, valid time,
                     # model name, mslp, and basin.
-                    # NOTE: Some of these aren't used until we fully
-                    # emulate Guang Ping's plots.
+                    # NOTE: Some of these columns aren't used until we fully
+                    # emulate Guang Ping's plots (ie collect all columns).
                     for line in infile:
                         track_dict = {}
                         col = line.split()
@@ -315,6 +325,7 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         """
 
+
         # Use PlateCarree projection for now
         #use central meridian for central longitude
         cm_lon = 180
@@ -448,7 +459,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                 # overlaying the annotation text over all points (all but
                 # one will have text).
                 plt.annotate(anno, xy=(adj_lon, adj_lat), xytext=(2, 2),
-                             textcoords='offset points', fontsize=11,
+                             textcoords='offset points', fontsize=self.annotation_font_size,
                              color='red')
 
             # Generate the scatterplot, where the 6/18 Z forecast times
@@ -470,7 +481,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                                     marker='o', zorder=2,
                                     label="Indicates a position " +
                                     "at 00 or 12 UTC")
-                        plt.plot(adj_lon, adj_lat, linestyle='-')
+                        plt.plot(lon,lat, linestyle='-', color=colours, linewidth=1)
                         circle_counter += 1
                     elif symbol == '+':
                         plt.scatter(adj_lon, adj_lat, s=sz, c=colours,
@@ -492,6 +503,10 @@ class CyclonePlotterWrapper(CommandBuilder):
                     plt.scatter(adj_lon, adj_lat, s=sz, c=colours,
                                 edgecolors=colours,
                                 facecolors=colours, marker=symbol, zorder=2)
+
+            # Finally, overlay the line plot to define the storm tracks
+            plt.plot(lon, lat, linestyle='-', color=colours, linewidth=.3)
+
 
         # If requested, create an ASCII file with the tracks that are going to
         # be plotted.  This is useful to debug or verify that what you
@@ -515,7 +530,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         # ax.legend(loc='lower left', bbox_to_anchor=(-0.03, -0.5),
         #           fancybox=True, shadow=True, scatterpoints=1,
         #           prop={'size': 6})
-        ax.legend(loc='lower left', bbox_to_anchor=(-0.01, -0.4),
+        ax.legend(loc='lower left', bbox_to_anchor=(-0.01, -0.5),
                   fancybox=True, shadow=True, scatterpoints=1,
                   prop={'size': 6})
 
@@ -523,7 +538,12 @@ class CyclonePlotterWrapper(CommandBuilder):
         out_filename_parts = [self.init_date, '.png']
         output_plot_name = ''.join(out_filename_parts)
         plot_filename = os.path.join(self.output_dir, output_plot_name)
-        plt.savefig(plot_filename)
+        if self.resolution_dpi > 0:
+            plt.savefig(plot_filename, dpi=self.resolution_dpi)
+        else:
+            # use Matplotlib's default if no resolution is set in config file
+            plt.savefig(plot_filename)
+
 
         # Plot data onto axes
         # Uncomment the two lines below if you wish to have a pop up 
@@ -531,7 +551,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         # of the .png version of the plot.
         #self.logger.info("Plot is displayed in separate window.
         # Close window to continue METplus execution")
-        #plt.show()
+        # plt.show()
 
 
     @staticmethod
