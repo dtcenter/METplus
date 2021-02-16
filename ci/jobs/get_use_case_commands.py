@@ -22,8 +22,6 @@ def handle_requirements(requirements, work_dir):
                                     f'get_{requirement.lower()}.sh')
         print(f"Looking for script: {script_path}")
         if os.path.exists(script_path):
-            script_path = script_path.replace(OWNER_BUILD_DIR,
-                                              os.environ['DOCKER_WORK_DIR'])
             print("Script found, using script to obtain dependencies")
             requirement_args.append(script_path)
         else:
