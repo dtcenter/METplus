@@ -5,29 +5,32 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
   exit 0
 fi
 
-if [ "${GITHUB_REF: -4}" != "-ref" ]; then
-  echo Not a reference branch, so skip this step
+branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
+
+if [ "${branch_name: -4}" != "-ref" ]; then
+  echo Not a reference branch (${branch_name}), so skip this step
   exit 0
 fi
 
+# remove -ref from branch name
+branch_name=${branch_name:0: -4}
+
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
-pwd
-ls
-ls use_cases*
+# if no artifacts that start with use_cases_ are found, exit
+ls use_cases_*
 if [ $? != 0 ]; then
   exit 0
 fi
 
-branch_name=`cat artifact/branch_name.txt`
-
 docker_data_output_dir=ci/docker/docker_data_output
 
-for vol_name in use_cases*; do
+for vol_name in use_cases_*; do
     echo vol name is $vol_name
     cp -r $vol_name ${docker_data_output_dir}/
 
-    image_name=dtcenter/metplus-data-dev:output-${branch_name}-${vol_name}
+    image_name=dtcenter/metplus-data-dev:output-${branch_name}-${vol_name#use_cases_}
+    echo Creating Docker data volume: ${image_name}
     echo docker build -t ${image_name} --build-arg vol_name=${vol_name} ${docker_data_output_dir}
     docker build -t ${image_name} --build-arg vol_name=${vol_name} ${docker_data_output_dir}
     echo docker push ${image_name}
