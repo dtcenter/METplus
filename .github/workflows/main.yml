@@ -233,7 +233,6 @@ jobs:
       - uses: actions/download-artifact@v2
       - run: |
           pwd
-          for f in *; do echo $f; done
           ci/jobs/create_output_data_volumes.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
