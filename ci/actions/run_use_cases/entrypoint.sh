@@ -20,7 +20,7 @@ docker pull $DOCKERHUBTAG
 
 if [ "$INPUT_CATEGORIES" == "pytests" ]; then
   echo Running Pytests
-  command = "pip3 install pytest-cov netCDF4; export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; pytest --cov=../../metplus"
+  command="pip3 install pytest-cov netCDF4; export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; pytest --cov=../../metplus"
   docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "$command"
   exit $?
 fi
