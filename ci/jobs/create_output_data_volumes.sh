@@ -21,16 +21,18 @@ fi
 
 branch_name=`cat artifact/branch_name.txt`
 
+docker_data_output_dir=ci/docker/docker_data_output
+
 for vol_name in use_cases*; do
     echo vol name is $vol_name
-    cp -r $vol_name ci/actions/run_use_cases/docker-action/output_data_volumes/
+    cp -r $vol_name ${docker_data_output_dir}/
 
     image_name=dtcenter/metplus-data-dev:output-${branch_name}-${vol_name}
-    echo docker build -t ${image_name} --build-arg vol_name=${vol_name} ci/actions/run_use_cases/docker-action/output_data_volumes
-    docker build -t ${image_name} --build-arg vol_name=${vol_name} ci/actions/run_use_cases/docker-action/output_data_volumes
+    echo docker build -t ${image_name} --build-arg vol_name=${vol_name} ${docker_data_output_dir}
+    docker build -t ${image_name} --build-arg vol_name=${vol_name} ${docker_data_output_dir}
     echo docker push ${image_name}
     docker push ${image_name}
 
     # remove data after it has been added to data volume
-    rm -rf ci/actions/run_use_cases/docker-action/output_data_volumes/$vol_name
+    rm -rf ${docker_data_output_dir}/$vol_name
 done

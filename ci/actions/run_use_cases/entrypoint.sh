@@ -9,14 +9,6 @@ DOCKER_DATA_DIR=/data
 DOCKER_OUTPUT_DIR=${DOCKER_DATA_DIR}/output
 GHA_OUTPUT_DIR=$RUNNER_WORKSPACE/output
 
-echo creating dir ${GHA_OUTPUT_DIR}
-mkdir -p ${GHA_OUTPUT_DIR}
-
-cd /docker-action
-
-LOCAL_OUT_DIR=/docker-action/output_data_volumes/output
-mkdir -p ${LOCAL_OUT_DIR}
-
 branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
   branch_name=${branch_name}-PR
@@ -24,7 +16,6 @@ fi
 DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
 
 echo "Pulling docker image: $DOCKERHUBTAG"
-#docker build -t docker-action --build-arg dockerhub_tag="$DOCKERHUBTAG" .
 docker pull $DOCKERHUBTAG
 
 # add input volumes to run command
@@ -59,7 +50,6 @@ echo VOLUMES_FROM: $VOLUMES_FROM
 
 echo "Run Docker Action container: $DOCKERHUBTAG"
 command="./ci/jobs/run_use_cases_docker.py ${INPUT_CATEGORIES} ${INPUT_SUBSETLIST}"
-#docker run -e GITHUB_WORKSPACE -e INPUT_CATEGORIES -e INPUT_SUBSETLIST -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE docker-action
 echo docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "$command"
 docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "$command"
 ret=$?
