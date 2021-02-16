@@ -118,9 +118,6 @@ jobs:
         with:
           categories: met_tool_wrapper
           subsetList: 2,5-6
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
       # copy output data to save as artifact
       - name: Save output data
         if: always()
