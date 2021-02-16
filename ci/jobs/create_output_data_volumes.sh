@@ -1,5 +1,15 @@
 #! /bin/bash
 
+if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+  echo This is a pull request, so skip this setp
+  exit 0
+fi
+
+if [ "${GITHUB_REF: -4}" != "-ref" ]; then
+  echo Not a reference branch, so skip this step
+  exit 0
+fi
+
 echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_USERNAME" --password-stdin
 
 pwd
