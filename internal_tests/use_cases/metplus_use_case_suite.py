@@ -63,19 +63,6 @@ class METplusUseCasesByRequirement:
     package dependencies.
     """
 
-    PYTHON_REQUIREMENTS = {
-        'cartopy': 'ci/jobs/get_cartopy.sh',
-        'pygrib': 'ci/jobs/get_pygrib.sh',
-        'METcalcpy': 'ci/jobs/get_metcalcpy.sh',
-        'METplotpy': 'ci/jobs/get_metplotpy.sh',
-    }
-    """! dictionary of extra python packages to
-    install for certain use cases the keys are name of the package and the
-    value is the command or function to call to obtain the dependency.
-     Note: The get_* functions include yum commands to install applications
-      needed to build the python packages. yum is not available on every OS
-    """
-
     def __init__(self, requirements=None):
         """! Create empty list of requirements and use cases (METplusUseCase)
 
