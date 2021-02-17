@@ -178,8 +178,19 @@ def run_test_use_case(param, test_metplus_base):
     out_dir = os.path.join(output_base, os.path.basename(param_files[-2]))
 
     cmd = os.path.join(test_metplus_base, "ush", "master_metplus.py")
+    use_case_name = None
     for parm in params:
+        if parm.startswith('config.USE_CASE_NAME'):
+            use_case_name = parm.split('=', 1)[1]
         cmd += " -c "+parm
+
+    if use_case_name is not None:
+        use_case_name = os.path.basename(params[-2])
+        if use_case_name.endswith('.conf'):
+            use_case_name = use_case_name[0: -5]
+
+    output_dir = os.path.join(output_base, use_case_name)
+    cmd += f" -c dir.OUTPUT_BASE={output_dir}"
     print("CMD:"+cmd)
     process = subprocess.Popen(cmd, shell=True)
     process.communicate()[0]

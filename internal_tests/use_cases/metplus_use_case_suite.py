@@ -381,7 +381,7 @@ def parse_all_use_cases_file():
                     requirements = [req.strip() for req in requirements]
 
             # set output dir based on name
-            set_output = f'dir.OUTPUT_BASE={{OUTPUT_BASE}}/{name}'
+            set_output = f'config.USE_CASE_NAME={name}'
             config_args.append(set_output)
 
             use_case_dict = {'name': name,
