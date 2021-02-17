@@ -2,6 +2,7 @@ import os
 import netCDF4
 import filecmp
 from PIL import Image, ImageChops
+import numpy
 
 IMAGE_EXTENSIONS = [
     '.png',
@@ -44,8 +45,8 @@ def compare_dir(dir_a, dir_b, debug=False):
     all_equal = True
     diff_files = []
     for root, _, files in os.walk(dir_a):
-        # skip logs and stage directories
-        if root.endswith('logs') or root.endswith('stage'):
+        # skip logs directories
+        if root.endswith('logs'):
             continue
 
         for filename in files:
@@ -61,7 +62,8 @@ def compare_dir(dir_a, dir_b, debug=False):
 
             filepath2 = filepath.replace(dir_a, dir_b)
             if debug:
-                print(f"\n# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n")
+                print("\n# # # # # # # # # # # # # # # # # # # # # # # # # # "
+                      "# # # #\n")
                 rel_path = filepath.replace(f'{dir_a}/', '')
                 print(f"COMPARING {rel_path}")
                 print(f"file1: {filepath}")
@@ -240,15 +242,20 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
                 values_a = var_a[:]
                 values_b = var_b[:]
                 values_diff = values_a - values_b
-                if values_diff.min() != 0.0 or values_diff.max() != 0.0:
+                if (numpy.isnan(values_diff.min()) and
+                        numpy.isnan(values_diff.max())):
+                    print(f"WARNING: Variable {field} contains NaN values. "
+                          "Cannot perform comparison.")
+                elif values_diff.min() != 0.0 or values_diff.max() != 0.0:
                     print(f"ERROR: Field ({field}) values differ\n"
                           f"Min diff: {values_diff.min()}, "
                           f"Max diff: {values_diff.max()}")
                     is_equal = False
-                    # print indices that are not zero and count of diffs if debug
+                    # print indices that are not zero and count of diffs
                     if debug:
                         count = 0
-                        values_list = [j for sub in values_diff.tolist() for j in sub]
+                        values_list = [j for sub in values_diff.tolist()
+                                       for j in sub]
                         for idx, val in enumerate(values_list):
                             if val != 0.0:
                                 print(f"{idx}: {val}")
@@ -258,7 +265,8 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
             except TypeError:
                 # handle non-numeric fields
                 if any(var_a[:].flatten() != var_b[:].flatten()):
-                    print(f"ERROR: Field ({field}) values (non-numeric) differ\n"
+                    print(f"ERROR: Field ({field}) values (non-numeric) "
+                          "differ\n"
                           f"A: {var_a}, B: {var_b}")
                     is_equal = False
 
