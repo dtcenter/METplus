@@ -39,18 +39,16 @@ def main():
             print(f"ERROR: Command failed: {full_cmd} -- {err}")
             isOK = False
 
-    if not isOK:
-        sys.exit(1)
-
     if compare:
         print('******************************')
         print("Comparing output to truth data")
         truth_dir = '/data/truth'
         output_dir = '/data/output'
         if not compare_dir(truth_dir, output_dir, debug=True):
-            return False
+            isOK = False
 
-    return True
+    if not isOK:
+        sys.exit(1)
 
 if __name__ == '__main__':
     if not main():
