@@ -65,7 +65,7 @@ command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
 
 # add 3rd argument to trigger comparison if pull request
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
-  command=$command True
+  command=${command}" true"
 fi
 
 echo docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
