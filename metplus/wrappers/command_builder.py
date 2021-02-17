@@ -392,6 +392,9 @@ class CommandBuilder:
 
         if 'user_env_vars' in self.config.sections():
             for user_var in self.config.keys('user_env_vars'):
+                # skip unset user env vars if not needed
+                if self.env.get(user_var) is None:
+                    continue
                 var_list.add(user_var)
 
         shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
