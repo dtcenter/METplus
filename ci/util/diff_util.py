@@ -85,6 +85,8 @@ def compare_dir(dir_a, dir_b, debug=False):
                 if not nc_is_equal(filepath, filepath2):
                     all_equal = False
                     diff_files.append((filepath, filepath2, 'NetCDF diff'))
+                else:
+                    print("No differences in NetCDF files")
                 continue
 
             if file_type == 'image':
@@ -92,6 +94,8 @@ def compare_dir(dir_a, dir_b, debug=False):
                 if not compare_image_files(filepath, filepath2):
                     all_equal = False
                     diff_files.append((filepath, filepath2, 'Image diff'))
+                else:
+                    print("No differences in image files")
                 continue
 
             # if not any of the above types, use diff to compare
@@ -102,11 +106,15 @@ def compare_dir(dir_a, dir_b, debug=False):
                     print(f"ERROR: File differs: {filepath2}")
                     all_equal = False
                     diff_files.append((filepath, filepath2, 'Text diff'))
+                else:
+                    print("No differences in text files")
 
     if not all_equal:
         print("ERROR: Some differences were found")
         for filepath_a, filepath_b, reason in diff_files:
             print(f"{reason}\n  {filepath_a}\n  {filepath_b}")
+    else:
+        print("No differences found in any files")
 
     return all_equal
 

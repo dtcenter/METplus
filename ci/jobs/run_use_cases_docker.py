@@ -43,10 +43,15 @@ def main():
         sys.exit(1)
 
     if compare:
+        print('******************************')
         print("Comparing output to truth data")
         truth_dir = '/data/truth'
         output_dir = '/data/output'
-        compare_dir(truth_dir, output_dir, debug=True)
+        if not compare_dir(truth_dir, output_dir, debug=True):
+            return False
+
+    return True
 
 if __name__ == '__main__':
-    main()
+    if not main():
+        sys.exit(1)
