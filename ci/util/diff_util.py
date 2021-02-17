@@ -108,6 +108,8 @@ def compare_dir(dir_a, dir_b, debug=False):
                     diff_files.append((filepath, filepath2, 'Text diff'))
                 else:
                     print("No differences in text files")
+            else:
+                print("No differences in text files")
 
     if not all_equal:
         print("ERROR: Some differences were found")
