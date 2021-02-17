@@ -59,7 +59,7 @@ jobs:
     needs: get_image
     steps:
       - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
+      - uses: ./ci/actions/run_tests
         with:
           categories: pytests
   use_case_tests:
@@ -85,7 +85,7 @@ jobs:
           - "s2s,space_weather,tc_and_extra_tc"
     steps:
       - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
+      - uses: ./ci/actions/run_tests
         with:
           categories: ${{ matrix.categories }}
       # copy output data to save as artifact
