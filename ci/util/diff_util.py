@@ -133,7 +133,7 @@ def compare_image_files(filepath, filepath2):
             if pixel != (0, 0, 0, 0):
                 diff_count += 1
     if diff_count:
-        print(f"Found {diff_count} differences between images")
+        print(f"ERROR: Found {diff_count} differences between images")
         return False
     return True
 
@@ -219,7 +219,7 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
         a_fields = sorted(nc_a.variables.keys())
         b_fields = sorted(nc_b.variables.keys())
         if a_fields != b_fields:
-            print("Field list differs between files\n"
+            print("ERROR: Field list differs between files\n"
                   f"A: {a_fields}\nB:{b_fields}\n"
                   f"Using A fields.")
 
@@ -241,7 +241,7 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
                 values_b = var_b[:]
                 values_diff = values_a - values_b
                 if values_diff.min() != 0.0 or values_diff.max() != 0.0:
-                    print(f"Field ({field}) values differ\n"
+                    print(f"ERROR: Field ({field}) values differ\n"
                           f"Min diff: {values_diff.min()}, "
                           f"Max diff: {values_diff.max()}")
                     is_equal = False
@@ -258,7 +258,7 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
             except TypeError:
                 # handle non-numeric fields
                 if any(var_a[:].flatten() != var_b[:].flatten()):
-                    print(f"Field ({field}) values (non-numeric) differ\n"
+                    print(f"ERROR: Field ({field}) values (non-numeric) differ\n"
                           f"A: {var_a}, B: {var_b}")
                     is_equal = False
 
