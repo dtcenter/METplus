@@ -39,7 +39,7 @@ def main():
             print(f"ERROR: Command failed: {full_cmd} -- {err}")
             isOK = False
 
-    if compare:
+    if compare and isOK:
         print('******************************')
         print("Comparing output to truth data")
         truth_dir = '/data/truth'
