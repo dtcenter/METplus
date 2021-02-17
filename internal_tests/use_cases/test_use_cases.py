@@ -184,7 +184,7 @@ def run_test_use_case(param, test_metplus_base):
             use_case_name = parm.split('=', 1)[1]
         cmd += " -c "+parm
 
-    if use_case_name is not None:
+    if use_case_name is None:
         use_case_name = os.path.basename(params[-2])
         if use_case_name.endswith('.conf'):
             use_case_name = use_case_name[0: -5]
