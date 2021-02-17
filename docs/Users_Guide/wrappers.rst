@@ -606,7 +606,7 @@ Below the file contents are descriptions of each environment variable referenced
 
 **${METPLUS_MODEL}**
 
-Override default by setting :term:`MODEL` in the METplus configuration file::
+Override the MET default value for 'model' by setting :term:`MODEL` in the METplus configuration file::
 
   MODEL = GFS
 
@@ -616,7 +616,7 @@ Resulting environment variable contents::
 
 **${METPLUS_DESC}** 
 
-Override default by setting :term:`DESC` or :term:`GRID_STAT_DESC` in the METplus configuration file::
+Override the MET default value for 'desc' by setting :term:`DESC` or :term:`GRID_STAT_DESC` in the METplus configuration file::
 
     GRID_STAT_DESC = MY_TEST
 
@@ -626,7 +626,7 @@ Resulting environment variable contents::
 
 **${METPLUS_OBTYPE}** 
 
-Override default by setting :term:`OBTYPE` in the METplus configuration file::
+Override the MET default value for 'obtype' by setting :term:`OBTYPE` in the METplus configuration file::
 
     OBTYPE = ANALYS
 
@@ -636,12 +636,13 @@ Resulting environment variable contents::
 
 **${METPLUS_REGRID_DICT}** 
 
-Override default by setting any or all of:
+Override the MET default items for 'regrid.method', 'regrid.width', 'regrid.vld_thresh', 'regrid.shape', and 'regrid.to_grid' by setting any or all of:
 
 | :term:`GRID_STAT_REGRID_METHOD` 
 | :term:`GRID_STAT_REGRID_WIDTH`
 | :term:`GRID_STAT_REGRID_VLD_THRESH`
 | :term:`GRID_STAT_REGRID_SHAPE` 
+| :term:`GRID_STAT_REGRID_TO_GRID`
 |
 
 in the METplus configuration file::
@@ -663,7 +664,7 @@ Resulting environment variable contents::
 
 **${METPLUS_FCST_FIELD}** 
 
-Override default by setting any or all of:
+Override the MET default items for 'fcst.field.name', 'fcst.field.level', 'fcst.field.cat_thresh', and add additional info to 'fcst.field' by setting any or all of:
 
 | :term:`FCST_VAR<n>_NAME`
 | :term:`FCST_VAR<n>_LEVELS`
@@ -684,7 +685,7 @@ Resulting environment variable contents::
 
 **${METPLUS_OBS_FIELD}** 
 
-Override default by setting any or all of:
+Override the MET default items for 'obs.field.name', 'obs.field.level', 'obs.field.cat_thresh', and add additional info to 'obs.field' by setting any or all of:
 
 | :term:`OBS_VAR<n>_NAME`
 | :term:`OBS_VAR<n>_LEVELS`
@@ -705,7 +706,7 @@ Resulting environment variable contents::
 
 **${METPLUS_CLIMO_MEAN_FILE}** 
 
-Override default by sewtting :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE` in the METplus configuration file::
+Override the MET default value for 'climo_mean.file_name' by setting :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE` in the METplus configuration file::
 
   GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE = /home/username/climo_file.nc
 
@@ -715,7 +716,7 @@ Resulting environment variable contents::
 
 **${METPLUS_CLIMO_STDEV_FILE}** 
 
-Override default by setting :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE` in the METplus configuration file::
+Override the MET default value for 'climo_stdev.file_name' by setting :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE` in the METplus configuration file::
 
   GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE = /home/username/climo_file.nc
 
@@ -725,7 +726,7 @@ Resulting environment variable contents::
 
 **${METPLUS_MASK_DICT}** 
 
-Override default by setting any or all of:
+Override the MET default items for 'mask.grid', and 'mask.poly' by setting any or all of:
 
 | :term:`GRID_STAT_MASK_GRID`
 | :term:`GRID_STAT_MASK_POLY`
@@ -744,7 +745,7 @@ Resulting environment variable contents::
 
 **${METPLUS_NBRHD_SHAPE}** 
 
-Override default by setting :term:`GRID_STAT_NEIGHBORHOOD_SHAPE` in the METplus configuration file::
+Override the MET default value for 'nbrhd.shape' by setting :term:`GRID_STAT_NEIGHBORHOOD_SHAPE` in the METplus configuration file::
 
   GRID_STAT_NEIGHBORHOOD_SHAPE = SQUARE
 
@@ -754,7 +755,7 @@ Resulting environment variable contents::
 
 **${METPLUS_NBRHD_WIDTH}** 
 
-Override default by setting :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` in the METplus configuration file::
+Override the MET default value for 'nbrhd.width' by setting :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` in the METplus configuration file::
 
   GRID_STAT_NEIGHBORHOOD_SHAPE = 1
 
@@ -764,7 +765,7 @@ Resulting environment variable contents::
 
 **${METPLUS_NBRHD_COV_THRESH}** 
 
-Override default by setting :term:`GRID_STAT_NEIGHBORHOOD_COV_THRESH` in the METplus configuration file::
+Override the MET default value for 'nbrhd.cov_thresh' by setting :term:`GRID_STAT_NEIGHBORHOOD_COV_THRESH` in the METplus configuration file::
 
   GRID_STAT_NBRHD_COV_THRESH = >=0.5
 
@@ -774,7 +775,7 @@ Resulting environment variable contents::
 
 **${METPLUS_OUTPUT_PREFIX}** 
 
-Override default by setting :term:`GRID_STAT_OUTPUT_PREFIX` in the METplus configuration file::
+Override the MET default value for 'output_prefix' by setting :term:`GRID_STAT_OUTPUT_PREFIX` in the METplus configuration file::
  
   GRID_STAT_OUTPUT_PREFIX = OutputPrefixString
 
