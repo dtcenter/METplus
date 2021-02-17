@@ -14,7 +14,6 @@ from __future__ import print_function
 import re
 import os
 import sys
-import matplotlib.pyplot as plt
 import numpy as np
 import itertools
 import datetime as dt
