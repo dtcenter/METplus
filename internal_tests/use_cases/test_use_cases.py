@@ -180,7 +180,6 @@ def run_test_use_case(param, test_metplus_base):
     cmd = os.path.join(test_metplus_base, "ush", "master_metplus.py")
     for parm in params:
         cmd += " -c "+parm
-    cmd += ' -c dir.OUTPUT_BASE='+out_dir
     print("CMD:"+cmd)
     process = subprocess.Popen(cmd, shell=True)
     process.communicate()[0]
