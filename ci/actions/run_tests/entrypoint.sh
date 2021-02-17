@@ -20,7 +20,7 @@ docker pull $DOCKERHUBTAG
 
 if [ "$INPUT_CATEGORIES" == "pytests" ]; then
   echo Running Pytests
-  command="pip3 install pytest-cov netCDF4; export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; pytest --cov=../../metplus"
+  command="pip3 install pytest-cov; export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; pytest --cov=../../metplus"
   docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "$command"
   exit $?
 fi
@@ -57,8 +57,8 @@ echo VOLUMES_FROM: $VOLUMES_FROM
 
 echo "Run Docker container: $DOCKERHUBTAG"
 
-# install netCDF4 library needed for diff testing
-pip_command="pip3 install netCDF4"
+# install Pillow library needed for diff testing
+pip_command="pip3 install Pillow"
 
 # build command to run
 command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
