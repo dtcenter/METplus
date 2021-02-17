@@ -70,7 +70,7 @@ jobs:
       fail-fast: false
       matrix:
         categories:
-          - "met_tool_wrapper:2,5-6"
+          - "met_tool_wrapper"
           - "air_quality_and_comp"
           - "climate"
           - "convection_allowing_models:0-5"
