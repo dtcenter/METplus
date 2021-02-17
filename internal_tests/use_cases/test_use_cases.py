@@ -161,26 +161,21 @@ def get_param_list(param):
     params = params + [conf]
     return params
 
-
-def get_params(param):
-    params = get_param_list(param)
-
-    # read confs
-    config = config_metplus.setup(params)
-
-    return params, config
-
 def run_test_use_case(param, test_metplus_base):
     global failed_runs
 
-    params, config = get_params(param)
+    params = get_param_list(param)
+    output_base = os.environ.get('METPLUS_TEST_OUTPUT_BASE')
+    if not output_base:
+        print("ERROR: Must set METPLUS_TEST_OUTPUT_BASE to run")
+        sys.exit(1)
 
     # get list of actual param files (ignoring config value overrides)
     # to the 2nd last file to use as the output directory
     # last param file is always the system.conf file
     param_files = [param for param in params if os.path.exists(param)]
 
-    out_dir = os.path.join(config.getdir('OUTPUT_BASE'), os.path.basename(param_files[-2]))
+    out_dir = os.path.join(output_base, os.path.basename(param_files[-2]))
 
     cmd = os.path.join(test_metplus_base, "ush", "master_metplus.py")
     for parm in params:
