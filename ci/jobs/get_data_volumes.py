@@ -70,6 +70,9 @@ def main(args):
             prefix, model_app_name = model_app_name.rsplit('-use_cases_', 1)
             volume_name = f'{prefix}-{model_app_name}'
 
+            # add output- to model app name
+            model_app_name=output-${model_app_name}
+
             # set DockerHub repo to dev version because all output data
             # should be in dev repository
             repo_to_use = DOCKERHUB_METPLUS_DATA_DEV

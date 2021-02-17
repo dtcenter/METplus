@@ -63,7 +63,8 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
   output_category=output-${pr_destination}-${category}
 
   ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $output_category
-  VOLUMES_FROM=${VOLUMES_FROM}`echo --volumes-from $output_category" "`
+  new_volume=output-${category#use_cases_}
+  VOLUMES_FROM=${VOLUMES_FROM}`echo --volumes-from $new_volume" "`
 fi
 
 echo VOLUMES_FROM: $VOLUMES_FROM
