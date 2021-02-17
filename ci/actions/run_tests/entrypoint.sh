@@ -43,7 +43,7 @@ for category in ${category_list}; do
   VOLUMES_FROM=${VOLUMES_FROM}`echo --volumes-from $category" "`
 done
 
-# get Docker data volumes for output data if running a pull request
+# get Docker data volumes for output data if running a pull request 
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
   # echo "Get Docker data volumes for output data"
   pr_destination=${GITHUB_BASE_REF}
