@@ -44,22 +44,25 @@ for category in ${category_list}; do
 done
 
 # get Docker data volumes for output data if running a pull request
-#if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
-#  echo "Get Docker data volumes for output data"
-#  output_categories=""
-#  for category in ${category_list}; do
-#    output_category=output-${category}
-#    output_categories=${output_categories} ${output_category}
-#    VOLUMES_FROM=${VOLUMES_FROM}`echo --volumes-from $output_category" "`
-#  done
-#
-#  ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $output_categories
-#fi
+if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+  # echo "Get Docker data volumes for output data"
+  pr_destination=${GITHUB_BASE_REF}
+  category=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh $INPUT_CATEGORIES`
+  output_category=output-${pr_destination}-${category}
 
+  ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $output_category
+  VOLUMES_FROM=${VOLUMES_FROM}`echo --volumes-from $output_category" "`
+fi
 echo VOLUMES_FROM: $VOLUMES_FROM
 
-echo "Run Docker Action container: $DOCKERHUBTAG"
+echo "Run Docker container: $DOCKERHUBTAG"
 command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
+
+# add 3rd argument to trigger comparison if pull request
+if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+  command=$command True
+fi
+
 echo docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "$command"
 docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "$command"
 ret=$?

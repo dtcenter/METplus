@@ -7,12 +7,23 @@ import shlex
 
 import get_use_case_commands
 
+# add ci/util to sys path to get diff utility
+diff_util_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'),
+                             'ci',
+                             'util')
+sys.path.insert(0, diff_util_dir)
+from diff_util import compare_dir
+
 def main():
-    categories, subset_list = get_use_case_commands.handle_command_line_args()
+    categories, subset_list, compare = (
+        get_use_case_commands.handle_command_line_args()
+    )
     categories_list = categories.split(',')
-    all_commands = get_use_case_commands.main(categories_list,
-                                              subset_list,
-                                              work_dir=os.environ.get('GITHUB_WORKSPACE'))
+    all_commands = (
+        get_use_case_commands.main(categories_list,
+                                   subset_list,
+                                   work_dir=os.environ.get('GITHUB_WORKSPACE'))
+    )
 
     isOK = True
     for cmd, reqs in all_commands:
@@ -30,6 +41,12 @@ def main():
 
     if not isOK:
         sys.exit(1)
+
+    if compare:
+        print("Comparing output to truth data")
+        truth_dir = '/data/truth'
+        output_dir = '/data/output'
+        compare_dir(truth_dir, output_dir, debug=True)
 
 if __name__ == '__main__':
     main()

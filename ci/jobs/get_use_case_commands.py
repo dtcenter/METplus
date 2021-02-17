@@ -72,10 +72,17 @@ def handle_command_line_args():
     else:
         subset_list = None
 
-    return categories, subset_list
+
+    # check if comparison flag should be set
+    if len(sys.argv) > 3:
+        do_comparison = True
+    else:
+        do_comparison = False
+
+    return categories, subset_list, do_comparison
 
 if __name__ == '__main__':
-    categories, subset_list =  handle_command_line_args()
+    categories, subset_list, _ =  handle_command_line_args()
     all_commands = main(categories, subset_list)
     for command, requirements in all_commands:
         print(f"COMMAND:")
