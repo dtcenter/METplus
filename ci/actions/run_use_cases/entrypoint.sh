@@ -25,8 +25,8 @@ if [ "$INPUT_CATEGORIES" == "pytests" ]; then
   exit $?
 fi
 
-CATEGORIES=`echo $INPUT_CATEGORIES | awk -F: '{print $1}'
-SUBSETLIST=`echo $INPUT_CATEGORIES | awk -F: '{print $2}'
+CATEGORIES=`echo $INPUT_CATEGORIES | awk -F: '{print $1}'`
+SUBSETLIST=`echo $INPUT_CATEGORIES | awk -F: '{print $2}'`
 
 # add input volumes to run command
 echo "Get Docker data volumes for input data"
