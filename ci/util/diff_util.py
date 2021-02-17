@@ -44,8 +44,8 @@ def compare_dir(dir_a, dir_b, debug=False):
     all_equal = True
     diff_files = []
     for root, _, files in os.walk(dir_a):
-        # skip log directory
-        if root.endswith('logs'):
+        # skip logs and stage directories
+        if root.endswith('logs') or root.endswith('stage'):
             continue
 
         for filename in files:
