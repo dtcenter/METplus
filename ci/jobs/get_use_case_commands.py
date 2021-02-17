@@ -68,7 +68,10 @@ def handle_command_line_args():
 
     # get subset values if specified
     if len(sys.argv) > 2:
-        subset_list = expand_int_string_to_list(sys.argv[2])
+        if sys.argv[2] == 'all':
+            subset_list = None
+        else:
+            subset_list = expand_int_string_to_list(sys.argv[2])
     else:
         subset_list = None
 
