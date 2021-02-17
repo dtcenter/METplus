@@ -71,7 +71,7 @@ def main(args):
             volume_name = f'{prefix}-{model_app_name}'
 
             # add output- to model app name
-            model_app_name=output-${model_app_name}
+            model_app_name=f'output-{model_app_name}'
 
             # set DockerHub repo to dev version because all output data
             # should be in dev repository
