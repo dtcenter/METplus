@@ -22,7 +22,7 @@ def docker_get_volumes_last_updated(current_branch):
         results = page['results']
         for repo in results:
             repo_name = repo['name']
-            if repo_name.split('-')[0] == current_branch:
+            if current_branch in repo_name:
                 volumes_last_updated[repo_name] = repo['last_updated']
         if not page['next']:
             break

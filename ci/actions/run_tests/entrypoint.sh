@@ -43,21 +43,32 @@ for category in ${category_list}; do
   VOLUMES_FROM=${VOLUMES_FROM}`echo --volumes-from $category" "`
 done
 
-# get Docker data volumes for output data if running a pull request
+# get Docker data volumes for output data if running a pull request 
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
-  # echo "Get Docker data volumes for output data"
+
+  echo "Get Docker data volumes for output data"
+
+  # get branch of pull request destination
   pr_destination=${GITHUB_BASE_REF}
+
+  # strip off -ref if found
+  if [ "${pr_destination: -4}" == "-ref" ]; then
+    pr_destination=${pr_destination:0: -4}
+  fi
+
   category=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh $INPUT_CATEGORIES`
   output_category=output-${pr_destination}-${category}
 
   ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $output_category
   VOLUMES_FROM=${VOLUMES_FROM}`echo --volumes-from $output_category" "`
 fi
+
 echo VOLUMES_FROM: $VOLUMES_FROM
 
 echo "Run Docker container: $DOCKERHUBTAG"
 
 # install Pillow library needed for diff testing
+# this will be replaced with better image diffing package used by METplotpy
 pip_command="pip3 install Pillow"
 
 # build command to run
@@ -65,7 +76,7 @@ command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
 
 # add 3rd argument to trigger comparison if pull request
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
-  command=$command True
+  command=${command}" true"
 fi
 
 echo docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
