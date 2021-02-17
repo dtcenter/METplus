@@ -86,7 +86,7 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  unit_tests_pytest:
+  unit_tests:
     name: Unit Tests - Pytest
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
@@ -95,276 +95,301 @@ jobs:
       - uses: ./ci/actions/run_use_cases
         with:
           categories: pytests
-  use_cases_met_tool_wrapper:
-    name: Use Cases Tests - MET Tool Wrapper
+  use_case_tests:
+    name: Use Case Tests
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
+    matrix:
+      categories: ["met_tool_wrapper:2,5-6", "climate", "s2s,space_weather,tc_and_extra_tc"]
     steps:
       - uses: actions/checkout@v2
       - uses: ./ci/actions/run_use_cases
         with:
-          categories: met_tool_wrapper
-          subsetList: 2,5-6
+          categories: ${{ matrix.categories }}
       # copy output data to save as artifact
       - name: Save output data
+        id: save-output
         if: always()
         run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+          export artifact_name=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh ${{matrix.categories}}`
+          mkdir -p artifact/${artifact_name}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${artifact_name}/
+          echo ::set-output name=artifact_name::${artifact_name}
       - uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_data_assimilation:
-    name: Use Cases Tests - Data Assimilation
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
-        with:
-          categories: data_assimilation
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_cryosphere:
-    name: Use Cases Tests - Cryosphere
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
-        with:
-          categories: cryosphere
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_convection_allowing_models_a:
-    name: Use Cases Tests - Convection Allowing Models A
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
-        with:
-          categories: convection_allowing_models
-          subsetList: 0-5
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_convection_allowing_models_b:
-    name: Use Cases Tests - Convection Allowing Models B
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
-        with:
-          categories: convection_allowing_models
-          subsetList: 6+
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_climate:
-    name: Use Cases Tests - Climate
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
-        with:
-          categories: climate
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_medium_range_a:
-    name: Use Cases Tests - Medium Range A
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
-        with:
-          categories: medium_range
-          subsetList: 0-4
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_medium_range_b:
-    name: Use Cases Tests - Medium Range B
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
-        with:
-          categories: medium_range
-          subsetList: 5
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_medium_range_c:
-    name: Use Cases Tests - Medium Range C
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
-        with:
-          categories: medium_range
-          subsetList: 6+
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_precipitation:
-    name: Use Cases Tests - Precipitation
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
-        with:
-          categories: precipitation
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_s2s_space_weather_tc_and_extra_tc:
-    name: Use Cases Tests - S2S,SpaceWeather,TCandExtraTC
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
-        with:
-          categories: s2s,space_weather,tc_and_extra_tc
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_air_quality_and_comp:
-    name: Use Cases Tests - Air Quality and Comp
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
-        with:
-          categories: air_quality_and_comp
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_marine_and_coastal:
-    name: Use Cases Tests - Marine and Coastal
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_use_cases
-        with:
-          categories: marine_and_coastal
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
+          name: ${{ steps.save-output.outputs.artifact_name }}
+          path: artifact/${{ steps.save-output.outputs.artifact_name }}
+#  use_cases_met_tool_wrapper:
+#    name: Use Cases Tests - MET Tool Wrapper
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_use_cases
+#        with:
+#          categories: met_tool_wrapper
+#          subsetList: 2,5-6
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        if: always()
+#        run: |
+#          mkdir -p artifact/${{ github.job }}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ github.job }}
+#          path: artifact/${{ github.job }}
+#  use_cases_data_assimilation:
+#    name: Use Cases Tests - Data Assimilation
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_use_cases
+#        with:
+#          categories: data_assimilation
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        if: always()
+#        run: |
+#          mkdir -p artifact/${{ github.job }}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ github.job }}
+#          path: artifact/${{ github.job }}
+#  use_cases_cryosphere:
+#    name: Use Cases Tests - Cryosphere
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_use_cases
+#        with:
+#          categories: cryosphere
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        if: always()
+#        run: |
+#          mkdir -p artifact/${{ github.job }}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ github.job }}
+#          path: artifact/${{ github.job }}
+#  use_cases_convection_allowing_models_a:
+#    name: Use Cases Tests - Convection Allowing Models A
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_use_cases
+#        with:
+#          categories: convection_allowing_models
+#          subsetList: 0-5
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        if: always()
+#        run: |
+#          mkdir -p artifact/${{ github.job }}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ github.job }}
+#          path: artifact/${{ github.job }}
+#  use_cases_convection_allowing_models_b:
+#    name: Use Cases Tests - Convection Allowing Models B
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_use_cases
+#        with:
+#          categories: convection_allowing_models
+#          subsetList: 6+
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        if: always()
+#        run: |
+#          mkdir -p artifact/${{ github.job }}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ github.job }}
+#          path: artifact/${{ github.job }}
+#  use_cases_climate:
+#    name: Use Cases Tests - Climate
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_use_cases
+#        with:
+#          categories: climate
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        if: always()
+#        run: |
+#          mkdir -p artifact/${{ github.job }}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ github.job }}
+#          path: artifact/${{ github.job }}
+#  use_cases_medium_range_a:
+#    name: Use Cases Tests - Medium Range A
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_use_cases
+#        with:
+#          categories: medium_range
+#          subsetList: 0-4
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        if: always()
+#        run: |
+#          mkdir -p artifact/${{ github.job }}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ github.job }}
+#          path: artifact/${{ github.job }}
+#  use_cases_medium_range_b:
+#    name: Use Cases Tests - Medium Range B
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_use_cases
+#        with:
+#          categories: medium_range
+#          subsetList: 5
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        if: always()
+#        run: |
+#          mkdir -p artifact/${{ github.job }}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ github.job }}
+#          path: artifact/${{ github.job }}
+#  use_cases_medium_range_c:
+#    name: Use Cases Tests - Medium Range C
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_use_cases
+#        with:
+#          categories: medium_range
+#          subsetList: 6+
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        if: always()
+#        run: |
+#          mkdir -p artifact/${{ github.job }}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ github.job }}
+#          path: artifact/${{ github.job }}
+#  use_cases_precipitation:
+#    name: Use Cases Tests - Precipitation
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_use_cases
+#        with:
+#          categories: precipitation
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        if: always()
+#        run: |
+#          mkdir -p artifact/${{ github.job }}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ github.job }}
+#          path: artifact/${{ github.job }}
+#  use_cases_s2s_space_weather_tc_and_extra_tc:
+#    name: Use Cases Tests - S2S,SpaceWeather,TCandExtraTC
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_use_cases
+#        with:
+#          categories: s2s,space_weather,tc_and_extra_tc
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        if: always()
+#        run: |
+#          mkdir -p artifact/${{ github.job }}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ github.job }}
+#          path: artifact/${{ github.job }}
+#  use_cases_air_quality_and_comp:
+#    name: Use Cases Tests - Air Quality and Comp
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_use_cases
+#        with:
+#          categories: air_quality_and_comp
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        if: always()
+#        run: |
+#          mkdir -p artifact/${{ github.job }}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ github.job }}
+#          path: artifact/${{ github.job }}
+#  use_cases_marine_and_coastal:
+#    name: Use Cases Tests - Marine and Coastal
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_use_cases
+#        with:
+#          categories: marine_and_coastal
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        if: always()
+#        run: |
+#          mkdir -p artifact/${{ github.job }}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ github.job }}
+#          path: artifact/${{ github.job }}
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
     runs-on: ubuntu-latest
-    needs: [use_cases_met_tool_wrapper, use_cases_data_assimilation, use_cases_cryosphere, use_cases_convection_allowing_models_a, use_cases_convection_allowing_models_b, use_cases_climate, use_cases_medium_range_a, use_cases_medium_range_b, use_cases_medium_range_c, use_cases_precipitation, use_cases_s2s_space_weather_tc_and_extra_tc, use_cases_air_quality_and_comp, use_cases_marine_and_coastal]
+    needs: [use_case_tests]
     steps:
       - uses: actions/checkout@v2
       - uses: actions/download-artifact@v2

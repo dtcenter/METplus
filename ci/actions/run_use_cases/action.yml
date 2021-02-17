@@ -6,13 +6,9 @@ inputs:
   categories:
     description: 'Use case category or categories to run (separate by comma)'
     required: true
-  subsetList:
-    description: '(Optional) List of use case indices to process'
-    default: ''
 
 runs:
   using: "docker"
   image: "Dockerfile"
   args:
     - ${{ inputs.categories }}
-    - ${{ inputs.subsetList }}

@@ -25,15 +25,18 @@ if [ "$INPUT_CATEGORIES" == "pytests" ]; then
   exit $?
 fi
 
+CATEGORIES=`echo $INPUT_CATEGORIES | awk -F: '{print $1}'
+SUBSETLIST=`echo $INPUT_CATEGORIES | awk -F: '{print $2}'
+
 # add input volumes to run command
 echo "Get Docker data volumes for input data"
-${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $INPUT_CATEGORIES
+${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $CATEGORIES
 
 # keep track of --volumes-from arguments to docker run command
 VOLUMES_FROM=""
 
 # split list of categories by comma
-category_list=`echo $INPUT_CATEGORIES | tr "," "\n"`
+category_list=`echo $CATEGORIES | tr "," "\n"`
 
 # add input category --volumes-from arguments for docker run command
 for category in ${category_list}; do
@@ -56,7 +59,7 @@ done
 echo VOLUMES_FROM: $VOLUMES_FROM
 
 echo "Run Docker Action container: $DOCKERHUBTAG"
-command="./ci/jobs/run_use_cases_docker.py ${INPUT_CATEGORIES} ${INPUT_SUBSETLIST}"
+command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
 echo docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "$command"
 docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "$command"
 ret=$?
