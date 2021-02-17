@@ -7,6 +7,6 @@ basedir=$(dirname "$0")
 work_dir=$basedir/../..
 
 # run manage externals to obtain METcalcpy
-${work_dir}/METplus/manage_externals/checkout_externals -e ${work_dir}/METplus/ci/parm/Externals_metcalcpy.cfg
+${work_dir}/manage_externals/checkout_externals -e ${work_dir}/ci/parm/Externals_metcalcpy.cfg
 
 pip3 install ${work_dir}/METcalcpy
