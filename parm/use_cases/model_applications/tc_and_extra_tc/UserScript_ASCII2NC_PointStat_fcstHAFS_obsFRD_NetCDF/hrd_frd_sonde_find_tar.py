@@ -3,7 +3,7 @@
 #  This script will untar the FRD formatted dropsonde tar files from 
 #  https://www.aoml.noaa.gov/hrd/data_sub/dropsonde.htmli
 #  The untarred files will be downloaded in to a direcory
-#  named YYYYMMDD. Arguments to the scripts includes
+#  under USER_SCRIPT_OUTPUT_DIR. Arguments to the scripts includes
 #  directory where the tar files exists, the user specified 
 #  date in YYYYMMDD, and output directory
 #  Author: biswas@ucar.edu
