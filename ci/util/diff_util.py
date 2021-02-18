@@ -133,7 +133,6 @@ def compare_image_files(filepath, filepath2):
         for y in range(0, int(ny)):
             pixel = image_diff.getpixel((x, y))
             if pixel != 0 and pixel != (0, 0, 0, 0):
-                print(f"Pixel differs by {pixel}")
                 diff_count += 1
     if diff_count:
         print(f"ERROR: Found {diff_count} differences between images")
