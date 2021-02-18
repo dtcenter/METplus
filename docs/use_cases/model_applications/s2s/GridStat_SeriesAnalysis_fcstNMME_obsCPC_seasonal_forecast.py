@@ -150,23 +150,24 @@ _seasonal_forecast.conf
 #
 # | **Init:** 1982-07
 # | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
-#
+# |
 # | **Init:** 1983-07
 # | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
-#
+# |
 # | **Init:** 1984-07
 # | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
-#
+# |
 # | **Init:** 1985-07
 # | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
-#
-# ...
-#
+# |
+# | ...
+# |
 # | **Init:** 2009-07
 # | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
-#
+# |
 # | **Init:** 2010-07
 # | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
+# |
 #
 
 ##############################################################################

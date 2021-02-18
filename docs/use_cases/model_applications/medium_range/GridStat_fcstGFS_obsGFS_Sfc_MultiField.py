@@ -21,9 +21,11 @@ _Sfc_MultiField.conf
 # | **Forecast:** GFS
 # | **Observation:** GFS
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://github.com/dtcenter/METplus/releases/download/v3.0/sample_data-medium_range-3.0.tgz
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
-#
+# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# |
 # | **Data Source:** GFS
+# |
+#
 
 ##############################################################################
 # METplus Components
@@ -41,11 +43,10 @@ _Sfc_MultiField.conf
 #
 # | **Valid:** 2017-06-13 0Z
 # | **Forecast lead:** 24 hour
-#
+# |
 # | **Valid:** 2017-06-13 6Z
 # | **Forecast lead:** 24 hour
-#
-#
+# |
 #
 
 ##############################################################################
@@ -61,7 +62,7 @@ _Sfc_MultiField.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on the values in the METplus configuration file.
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.

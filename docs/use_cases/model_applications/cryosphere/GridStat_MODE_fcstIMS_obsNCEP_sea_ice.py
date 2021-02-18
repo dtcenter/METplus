@@ -55,7 +55,7 @@ _obsNCEP_sea_ice.conf
 # The workflow processes the data by valid time, meaning that each tool will be run for each time 
 # before moving onto the next valid time. The GridStat tool is called first followed by the MODE
 # tool. It processes analysis times from 2019-02-01 to 2019-02-05. The valid times for each analysis
-# are different from one another (please see 'Dataset' section for more information).
+# are different from one another (please see `Datasets`_ section for more information).
 
 ###################################################################################################
 # METplus Configuration
