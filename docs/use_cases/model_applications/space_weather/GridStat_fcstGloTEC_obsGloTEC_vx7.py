@@ -41,11 +41,9 @@ _obsGloTEC_vx7.conf
 #
 # | **Forecast:** GloTEC Total Electron Content (TEC) model run without assimilation of any COSMIC-1 RO data
 # | **Observation:** GloTEC TEC model run that assimilates COSMIC-1 RO data
-# |
 # | **Location:** All of the input data required for this use case can be found in the sample data tarball. 
 # | Click here to download: https://github.com/dtcenter/METplus/releases/download/v3.0/sample_data-space_weather-3.0.tgz
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
-# |
 # | **Data source:** NOAA Space Weather Prediction Center (SWPC)
 # | **Data contact:** Dominic Fuller-Rowell (dominic.fuller-rowell@noaa.gov)
 # |

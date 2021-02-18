@@ -34,7 +34,7 @@ _ConusTemp.conf
 # METplus Workflow
 # ----------------
 #
-# The grid_stat tool is run for each time. This example loops by initialization
+#  The grid_stat tool is run for each time. This example loops by initialization
 #  time.  It processes 4 valid times, listed below.
 #
 # | **Valid:** 2014-08-01_06Z

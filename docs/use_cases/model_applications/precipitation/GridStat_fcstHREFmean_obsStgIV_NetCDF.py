@@ -40,7 +40,7 @@ _obsStgIV_Netcdf.conf
 # ----------------
 #
 # The following tools are used for each run time:
-#  PCPCombine (observation) > RegridDataPlane (observation) > GridStat
+# PCPCombine (observation) > RegridDataPlane (observation) > GridStat
 #
 # This example loops by initialization time.
 # There is only one initalization time in this example so the following will be run:
