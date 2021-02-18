@@ -661,42 +661,41 @@ class METplusConfig(ProdConfig):
             Returns:
                 Raw string or empty string if function calls itself too many times
         """
-        count = count + 1
         if count >= 10:
+            self.logger.error("Could not resolve getraw - check for circular "
+                              "references in METplus configuration variables")
             return ''
 
-        # if requested section is in the list of sections that are no longer used
-        # look in the [config] section for the variable
+        # if requested section is in the list of sections that are no longer
+        # used, look in the [config] section for the variable
         if sec in self.OLD_SECTIONS:
             sec = 'config'
 
         in_template = super().getraw(sec, opt, default)
-        out_template = ""
-        in_brackets = False
-        for index, character in enumerate(in_template):
-            if character == "{":
-                in_brackets = True
-                start_idx = index
-            elif character == "}":
-                var_name = in_template[start_idx+1:index]
-                var = None
-                if self.has_option(sec, var_name):
-                    var = self.getraw(sec, var_name, default, count)
-                elif self.has_option('config', var_name):
-                    var = self.getraw('config', var_name, default, count)
-                elif var_name[0:3] == "ENV":
-                    var = os.environ.get(var_name[4:-1])
 
-                if var is None:
-                    out_template += in_template[start_idx:index+1]
-                else:
-                    out_template += var
-                in_brackets = False
-            elif not in_brackets:
-                out_template += character
+        # get inner-most tags that could potentially be other variables
+        match_list = re.findall(r'\{([^}{]*)\}', in_template)
+        for var_name in match_list:
+            # check if each tag is an existing METplus config variable
+            if self.has_option(sec, var_name):
+                value = self.getraw(sec, var_name, default, count+1)
+            elif self.has_option('config', var_name):
+                value = self.getraw('config', var_name, default, count+1)
+            elif var_name.startswith('ENV'):
+                # if environment variable, ENV[nameofvar], get nameofvar
+                value = os.environ.get(var_name[4:-1])
+            else:
+                value = None
 
-        # replace double slash in path to single slash
-        return out_template.replace('//', '/')
+            if value is None:
+                continue
+            in_template = in_template.replace(f"{{{var_name}}}", value)
+
+        # Replace double slash with single slash because MET config files fail
+        # when they encounter double slash. This is a GitHub issue MET #1277
+        # This fix will prevent using URLs with https:// so the MET issue must
+        # be resolved before we can remove the replace call
+        return in_template.replace('//', '/')
 
     def check_default(self, sec, name, default):
         """!helper function for get methods, report error and raise NoOptionError if
