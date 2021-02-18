@@ -27,8 +27,8 @@ from ..util import get_tags
 from . import CommandBuilder
 
 '''!@namespace TCPairsWrapper
-@brief Wraps the MET tool tc_pairs to parse ADeck and BDeck ATCF_by_pairs files,
-filter the data, and match them up.
+@brief Wraps the MET tool tc_pairs to parse ADeck and BDeck ATCF_by_pairs
+ files, filter the data, and match them up.
 Call as follows:
 @code{.sh}
 tc_pairs_wrapper.py [-c /path/to/user.template.conf]
@@ -39,6 +39,22 @@ class TCPairsWrapper(CommandBuilder):
     """!Wraps the MET tool, tc_pairs to parse and match ATCF_by_pairs adeck and
        bdeck files.  Pre-processes extra tropical cyclone data.
     """
+
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MODEL',
+        'METPLUS_DESC',
+        'METPLUS_STORM_ID',
+        'METPLUS_BASIN',
+        'METPLUS_CYCLONE',
+        'METPLUS_STORM_NAME',
+        'METPLUS_INIT_BEG',
+        'METPLUS_INIT_END',
+        'METPLUS_INIT_INCLUDE',
+        'METPLUS_INIT_EXCLUDE',
+        'METPLUS_VALID_BEG',
+        'METPLUS_VALID_END',
+        'METPLUS_DLAND_FILE',
+    ]
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'tc_pairs'
@@ -52,48 +68,88 @@ class TCPairsWrapper(CommandBuilder):
         self.edeck = []
 
     def create_c_dict(self):
-        """! Create a dictionary containing all the values set in the config file.
-             This will make it easier for unit testing.
+        """! Create a dictionary containing all the values set in the
+         config file. This will make it easier for unit testing.
 
-             Args:
-
-             Returns:
-                 c_dict - A dictionary of the values from the config file
-
+             @returns Dictionary of the values from the config file
         """
         c_dict = super().create_c_dict()
-        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_TC_PAIRS_VERBOSITY',
+        c_dict['VERBOSITY'] = self.config.getstr('config',
+                                                 'LOG_TC_PAIRS_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['MISSING_VAL_TO_REPLACE'] =\
-            self.config.getstr('config', 'TC_PAIRS_MISSING_VAL_TO_REPLACE', '-99')
-        c_dict['MISSING_VAL'] =\
+        c_dict['MISSING_VAL_TO_REPLACE'] = (
+            self.config.getstr('config',
+                               'TC_PAIRS_MISSING_VAL_TO_REPLACE', '-99')
+        )
+        c_dict['MISSING_VAL'] = (
             self.config.getstr('config', 'TC_PAIRS_MISSING_VAL', '-9999')
+        )
         c_dict['CONFIG_FILE'] = self.config.getraw('config',
                                                    'TC_PAIRS_CONFIG_FILE',
                                                    '')
         if not c_dict['CONFIG_FILE']:
-            self.log_error("TC_PAIRS_CONFIG_FILE is required to run TCPairs wrapper")
+            self.log_error("TC_PAIRS_CONFIG_FILE is required to "
+                           "run TCPairs wrapper")
 
-        c_dict['INIT_TIME_FMT'] = self.config.getstr('config', 'INIT_TIME_FMT')
-        clock_time = datetime.datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
-                                                '%Y%m%d%H%M%S')
+        self.set_met_config_string(self.env_var_dict,
+                                   ['TC_PAIRS_INIT_BEG',
+                                    'INIT_BEG'],
+                                   'init_beg',
+                                   'METPLUS_INIT_BEG')
+
+        self.set_met_config_string(self.env_var_dict,
+                                   ['TC_PAIRS_INIT_END',
+                                    'INIT_END'],
+                                   'init_end',
+                                   'METPLUS_INIT_END')
+
+        self.set_met_config_list(self.env_var_dict,
+                                 ['TC_PAIRS_INIT_INCLUDE',
+                                  'INIT_INCLUDE'],
+                                 'init_inc',
+                                 'METPLUS_INIT_INCLUDE')
+
+        self.set_met_config_list(self.env_var_dict,
+                                 ['TC_PAIRS_INIT_EXCLUDE',
+                                  'INIT_EXCLUDE'],
+                                 'init_inc',
+                                 'METPLUS_INIT_EXCLUDE')
+
+        self.set_met_config_string(self.env_var_dict,
+                                   ['TC_PAIRS_VALID_BEG',
+                                    'VALID_BEG'],
+                                   'valid_beg',
+                                   'METPLUS_VALID_BEG')
+
+        self.set_met_config_string(self.env_var_dict,
+                                   ['TC_PAIRS_VALID_END',
+                                    'VALID_END'],
+                                   'valid_end',
+                                   'METPLUS_VALID_END')
+
+        self.set_met_config_string(self.env_var_dict,
+                                   'TC_PAIRS_DLAND_FILE',
+                                   'dland_file',
+                                   'METPLUS_DLAND_FILE')
+
+        self.set_met_config_list(self.env_var_dict,
+                                 'MODEL',
+                                 'model',
+                                 'METPLUS_MODEL')
+
+        init_time_fmt = self.config.getstr('config', 'INIT_TIME_FMT')
+        clock_time = datetime.datetime.strptime(
+            self.config.getstr('config',
+                               'CLOCK_TIME'),
+            '%Y%m%d%H%M%S'
+        )
 
         init_beg = self.config.getraw('config', 'INIT_BEG')
         init_beg_dt = util.get_time_obj(init_beg,
-                                        c_dict['INIT_TIME_FMT'],
+                                        init_time_fmt,
                                         clock_time,
                                         logger=self.logger)
         c_dict['INIT_BEG'] = init_beg_dt.strftime('%Y%m%d_%H%M%S')
-
-        init_end = self.config.getraw('config', 'INIT_END')
-        init_end_dt = util.get_time_obj(init_end,
-                                        c_dict['INIT_TIME_FMT'],
-                                        clock_time,
-                                        logger=self.logger)
-        c_dict['INIT_END'] = init_end_dt.strftime('%Y%m%d_%H%M%S')
-
-        c_dict['INIT_INCREMENT'] = self.config.getint('config',
-                                                      'INIT_INCREMENT')
 
         c_dict['INIT_INCLUDE'] = util.getlist(
             self.get_wrapper_or_generic_config('INIT_INCLUDE')
@@ -110,48 +166,68 @@ class TCPairsWrapper(CommandBuilder):
         c_dict['EDECK_DIR'] = \
                 self.config.getdir('TC_PAIRS_EDECK_INPUT_DIR', '')
         c_dict['OUTPUT_DIR'] = self.config.getdir('TC_PAIRS_OUTPUT_DIR')
-        c_dict['READ_ALL_FILES'] = self.config.getbool('config',
-                                                       'TC_PAIRS_READ_ALL_FILES')
+        c_dict['READ_ALL_FILES'] = (
+            self.config.getbool('config',
+                                'TC_PAIRS_READ_ALL_FILES')
+        )
         c_dict['OUTPUT_BASE'] = self.config.getstr('dir', 'OUTPUT_BASE')
         c_dict['CYCLONE'] = util.getlist(
             self.config.getstr('config', 'TC_PAIRS_CYCLONE', ''))
-        c_dict['MODEL'] = util.getlist(self.config.getstr('config', 'MODEL', ''))
+        c_dict['MODEL'] = util.getlist(self.config.getstr('config',
+                                                          'MODEL', ''))
         c_dict['STORM_ID'] = util.getlist(
             self.config.getstr('config', 'TC_PAIRS_STORM_ID', ''))
-        c_dict['BASIN'] = util.getlist(self.config.getstr('config', 'TC_PAIRS_BASIN', ''))
+        c_dict['BASIN'] = util.getlist(self.config.getstr('config',
+                                                          'TC_PAIRS_BASIN',
+                                                          ''))
         c_dict['STORM_NAME'] = util.getlist(
             self.config.getstr('config', 'TC_PAIRS_STORM_NAME'))
-        c_dict['DLAND_FILE'] = self.config.getstr('config', 'TC_PAIRS_DLAND_FILE')
+        c_dict['DLAND_FILE'] = self.config.getstr('config',
+                                                  'TC_PAIRS_DLAND_FILE')
 
-        c_dict['ADECK_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                      'TC_PAIRS_ADECK_TEMPLATE',
-                                                      '')
+        c_dict['ADECK_TEMPLATE'] = (
+            self.config.getraw('filename_templates',
+                               'TC_PAIRS_ADECK_TEMPLATE',
+                               '')
+        )
 
-        c_dict['BDECK_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                      'TC_PAIRS_BDECK_TEMPLATE')
+        c_dict['BDECK_TEMPLATE'] = (
+            self.config.getraw('filename_templates',
+                               'TC_PAIRS_BDECK_TEMPLATE')
+        )
 
-        c_dict['EDECK_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                      'TC_PAIRS_EDECK_TEMPLATE',
-                                                      '')
+        c_dict['EDECK_TEMPLATE'] = (
+            self.config.getraw('filename_templates',
+                               'TC_PAIRS_EDECK_TEMPLATE',
+                               '')
+        )
 
-        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                       'TC_PAIRS_OUTPUT_TEMPLATE')
-        c_dict['SKIP_REFORMAT'] = self.config.getbool('config',
-                                                      'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS',
-                                                      False)
-        c_dict['SKIP_OUTPUT'] = self.config.getbool('config',
-                                                    'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS',
-                                                    False)
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('filename_templates',
+                               'TC_PAIRS_OUTPUT_TEMPLATE')
+        )
+        c_dict['SKIP_REFORMAT'] = (
+            self.config.getbool('config',
+                                'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS',
+                                False)
+        )
+        c_dict['SKIP_OUTPUT'] = (
+            self.config.getbool('config',
+                                'TC_PAIRS_SKIP_IF_OUTPUT_EXISTS',
+                                False)
+        )
         c_dict['REFORMAT_DECK'] = self.config.getbool('config',
                                                       'TC_PAIRS_REFORMAT_DECK',
                                                       False)
-        c_dict['REFORMAT_DECK_TYPE'] = \
+        c_dict['REFORMAT_DECK_TYPE'] = (
                 self.config.getstr('config', 'TC_PAIRS_REFORMAT_TYPE',
                                    'SBU')
-        c_dict['REFORMAT_DIR'] = \
-                self.config.getdir('TC_PAIRS_REFORMAT_DIR',
-                                   os.path.join(c_dict['OUTPUT_BASE'],
-                                                'track_data_atcf'))
+        )
+        c_dict['REFORMAT_DIR'] = self.config.getdir('TC_PAIRS_REFORMAT_DIR',
+                                                    '')
+        if c_dict['REFORMAT_DECK'] and not c_dict['REFORMAT_DIR']:
+            self.log_error('Must set TC_PAIRS_REFORMAT_DIR if '
+                           'TC_PAIRS_REFORMAT_DECK is True')
 
         c_dict['GET_ADECK'] = True if c_dict['ADECK_TEMPLATE'] else False
         c_dict['GET_EDECK'] = True if c_dict['EDECK_TEMPLATE'] else False
@@ -171,7 +247,7 @@ class TCPairsWrapper(CommandBuilder):
                 if not match:
                     self.log_error(f'Incorrect STORM_ID format: {storm_id}')
 
-        self.handle_description(c_dict)
+        self.handle_description()
 
         return c_dict
 
@@ -196,17 +272,12 @@ class TCPairsWrapper(CommandBuilder):
             self.outdir = self.c_dict['OUTPUT_DIR']
             self.outfile = 'tc_pairs'
 
-            cmd = self.get_command()
-            if cmd is None:
-                self.log_error("Could not generate command")
-                return
-
             output_path = self.get_output_path()+'.tcst'
             if os.path.isfile(output_path) and self.c_dict.get('SKIP_OUTPUT'):
-                self.logger.debug('Skip running tc_pairs because '+\
-                                  'output file {} already exists'.format(output_path)+\
-                                  'Change TC_PAIRS_SKIP_IF_OUTPUT_EXISTS to False to '+\
-                                  'overwrite file')
+                self.logger.debug('Skip running tc_pairs because '
+                                  f'output file {output_path} already exists'
+                                  'Change TC_PAIRS_SKIP_IF_OUTPUT_EXISTS to '
+                                  'False to overwrite file')
             else:
                 self.build()
 
@@ -216,7 +287,7 @@ class TCPairsWrapper(CommandBuilder):
         input_dict = {'init':
                       datetime.datetime.strptime(self.c_dict['INIT_BEG'],
                                                  '%Y%m%d_%H%M%S')
-                     }
+                      }
 
         self.run_at_time(input_dict)
         return self.all_commands
@@ -248,10 +319,6 @@ class TCPairsWrapper(CommandBuilder):
             self.logger.debug('Skipping run time')
             return
 
-        # Set up the environment variable to be used in the TCPairs Config
-        # file (TC_PAIRS_CONFIG_FILE)
-        self.set_environment_variables(time_info)
-
         # set output dir
         self.outdir = self.c_dict['OUTPUT_DIR']
 
@@ -281,16 +348,20 @@ class TCPairsWrapper(CommandBuilder):
                 if not match:
                     return False
 
+                # set env var for current storm ID
+                self.env_var_dict['METPLUS_STORM_ID'] = (
+                    f"storm_id = [{storm_id}];"
+                )
+
                 basin = match.group(1).lower()
                 cyclone = match.group(2)
                 year = match.group(3)
 
                 init_year = time_info['init'].strftime('%Y')
                 if year != init_year:
-                    msg = 'Year specified in STORM_ID {}'.format(storm_id) +\
-                          ' ({})'.format(year) +\
-                          ' does not match init time year {}'.format(init_year)
-                    msg += '. Skipping...'
+                    msg = (f'Year specified in STORM_ID {storm_id} '
+                           f'({year}) does not match '
+                           f'init time year {init_year}. Skipping...')
                     self.logger.warning(msg)
                     continue
 
@@ -299,7 +370,6 @@ class TCPairsWrapper(CommandBuilder):
             for basin in [basin.lower() for basin in basin_list]:
                 for cyclone in cyclone_list:
                     self.process_data(basin, cyclone, model_list, time_info)
-
 
         return True
 
@@ -315,100 +385,70 @@ class TCPairsWrapper(CommandBuilder):
              Returns:
                  nothing - sets the environment variables
         """
-        print_list = ['INIT_BEG', 'INIT_END', 'INIT_INCLUDE', 'INIT_EXCLUDE',
-                      'MODEL', 'STORM_ID', 'BASIN', 'CYCLONE', 'STORM_NAME',
-                      'VALID_BEG', 'VALID_END', 'DLAND_FILE']
+        # handle old method for setting env vars in MET config files
+        init_beg = self.get_env_var_value('METPLUS_INIT_BEG').strip('"')
+        self.add_env_var('INIT_BEG', init_beg)
 
-        # For all cases below, we need to do some pre-processing so that
-        #  Python will use " and not ' because currently MET doesn't
-        # support single-quotes.
+        init_end = self.get_env_var_value('METPLUS_INIT_END').strip('"')
+        self.add_env_var('INIT_END', init_end)
 
-        # INIT_BEG, INIT_END
-        # pull out YYYYMMDD from INIT_BEG/END
-        tmp_init_beg = self.c_dict['INIT_BEG']
-        tmp_init_end = self.c_dict['INIT_END']
+        valid_beg = self.get_env_var_value('METPLUS_VALID_BEG').strip('"')
+        self.add_env_var('VALID_BEG', valid_beg)
 
-        if not tmp_init_beg:
-            self.add_env_var('INIT_BEG', "")
-        else:
-            init_beg = str(tmp_init_beg).replace("\'", "\"")
-            init_beg_str = ''.join(init_beg.split())
-            self.add_env_var('INIT_BEG', str(init_beg_str))
+        valid_end = self.get_env_var_value('METPLUS_VALID_END').strip('"')
+        self.add_env_var('VALID_END', valid_end)
 
-        if not tmp_init_end:
-            self.add_env_var('INIT_END', "")
-        else:
-            init_end = str(tmp_init_end).replace("\'", "\"")
-            init_end_str = ''.join(init_end.split())
-            self.add_env_var('INIT_END', str(init_end_str))
+        init_inc = self.get_env_var_value('METPLUS_INIT_INCLUDE')
+        if not init_inc:
+            init_inc = '[]'
+        self.add_env_var('INIT_INCLUDE', init_inc)
 
-        # INIT_INCLUDE and INIT_EXCLUDE
-        # Used to set init_inc in "TC_PAIRS_CONFIG_FILE"
-        tmp_init_inc = self.c_dict['INIT_INCLUDE']
-        if not tmp_init_inc:
-            self.add_env_var('INIT_INCLUDE', "[]")
-        else:
-            # Not empty, set the environment variable to the
-            # value specified in the MET+ config file after removing whitespace
-            # and replacing ' with ".
-            init_inc = str(tmp_init_inc).replace("\'", "\"")
-            init_inc_str = ''.join(init_inc.split())
-            self.add_env_var('INIT_INCLUDE', str(init_inc_str))
+        init_exc = self.get_env_var_value('METPLUS_INIT_EXCLUDE')
+        if not init_exc:
+            init_exc = '[]'
+        self.add_env_var('INIT_EXCLUDE', init_exc)
 
-        tmp_init_exc = self.c_dict['INIT_EXCLUDE']
-        if not tmp_init_exc:
-            # Empty, MET is expecting [] to indicate all models are
-            # to be included
-            self.add_env_var('INIT_EXCLUDE', "[]")
-        else:
-            # Replace ' with " and remove whitespace
-            init_exc = str(tmp_init_exc).replace("\'", "\"")
-            init_exc_str = ''.join(init_exc.split())
-            self.add_env_var('INIT_EXCLUDE', str(init_exc_str))
-
-        # MODEL
-        tmp_model = self.c_dict['MODEL']
-        if not tmp_model:
-            # Empty, MET is expecting [] to indicate all models are to be
-            # included
-            self.add_env_var('MODEL', "[]")
-            self.add_env_var('METPLUS_MODEL', "model = [];")
-        else:
-            # Replace ' with " and remove whitespace
-            model = str(tmp_model).replace("\'", "\"")
-            model_str = ''.join(model.split())
-            self.add_env_var('MODEL', str(model_str))
-            model_fmt = f"model = {model_str};"
-            self.add_env_var('METPLUS_MODEL', model_fmt)
+        model = self.get_env_var_value('METPLUS_MODEL')
+        if not model:
+            model = '[]'
+        self.add_env_var('MODEL', model)
 
         # STORM_ID
         tmp_storm_id = self.c_dict['STORM_ID']
         if not tmp_storm_id:
             # Empty, use all storm_ids, indicate this to MET via '[]'
-            self.add_env_var('STORM_ID', "[]")
+            tmp_storm_id = '[]'
         else:
             # Replace ' with " and remove whitespace
             storm_id = str(tmp_storm_id).replace("\'", "\"")
-            storm_id_str = ''.join(storm_id.split())
-            self.add_env_var('STORM_ID', str(storm_id_str))
+            tmp_storm_id = ''.join(storm_id.split())
+
+        self.add_env_var('STORM_ID', tmp_storm_id)
+
+        storm_id_fmt = f"storm_id = {tmp_storm_id};"
+        self.env_var_dict['METPLUS_STORM_ID'] = storm_id_fmt
 
         # BASIN
         tmp_basin = self.c_dict['BASIN']
         if not tmp_basin:
             # Empty, we want all basins.  Send MET '[]' to indicate that
             # we want all the basins.
-            self.add_env_var('BASIN', "[]")
+            tmp_basin = '[]'
         else:
             # Replace any ' with " and remove whitespace.
             basin = str(tmp_basin).replace("\'", "\"")
-            basin_str = ''.join(basin.split())
-            self.add_env_var('BASIN', str(basin_str))
+            tmp_basin = ''.join(basin.split())
+
+        self.add_env_var('BASIN', tmp_basin)
+
+        basin_fmt = f"basin = {tmp_basin};"
+        self.env_var_dict['METPLUS_BASIN'] = basin_fmt
 
         # CYCLONE
         tmp_cyclone = self.c_dict['CYCLONE']
         if not tmp_cyclone:
             # Empty, use all cyclones, send '[]' to MET.
-            self.add_env_var('CYCLONE', "[]")
+            tmp_cyclone = '[]'
         else:
             # add storm month to each cyclone item if reformatting SBU
             if self.c_dict['REFORMAT_DECK'] and \
@@ -421,54 +461,41 @@ class TCPairsWrapper(CommandBuilder):
 
             # Replace ' with " and get rid of any whitespace
             cyclone = str(tmp_cyclone).replace("\'", "\"")
-            cyclone_str = ''.join(cyclone.split())
-            self.add_env_var('CYCLONE', str(cyclone_str))
+            tmp_cyclone = ''.join(cyclone.split())
+
+        self.add_env_var('CYCLONE', tmp_cyclone)
+
+        cyclone_fmt = f"cyclone = {tmp_cyclone};"
+        self.env_var_dict['METPLUS_CYCLONE'] = cyclone_fmt
 
         # STORM_NAME
         tmp_storm_name = self.c_dict['STORM_NAME']
         if not tmp_storm_name:
             # Empty, equivalent to 'STORM_NAME = "[]"; in MET config file,
             # use all storm names.
-            self.add_env_var('STORM_NAME', "[]")
+            tmp_storm_name = '[]'
         else:
             storm_name = str(tmp_storm_name).replace("\'", "\"")
-            storm_name_str = ''.join(storm_name.split())
-            self.add_env_var('STORM_NAME', str(storm_name_str))
+            tmp_storm_name = ''.join(storm_name.split())
 
-        # Valid time window variables
-        tmp_valid_beg = self.c_dict['VALID_BEG']
-        tmp_valid_end = self.c_dict['VALID_END']
+        self.add_env_var('STORM_NAME', tmp_storm_name)
 
-        if not tmp_valid_beg:
-            self.add_env_var('VALID_BEG', "")
-        else:
-            valid_beg = str(tmp_valid_beg).replace("\'", "\"")
-            valid_beg_str = ''.join(valid_beg.split())
-            self.add_env_var('VALID_BEG', str(valid_beg_str))
-
-        if not tmp_valid_end:
-            self.add_env_var('VALID_END', "")
-        else:
-            valid_end = str(tmp_valid_end).replace("\'", "\"")
-            valid_end_str = ''.join(valid_end.split())
-            self.add_env_var('VALID_END', str(valid_end_str))
+        storm_name_fmt = f"cyclone = {tmp_storm_name};"
+        self.env_var_dict['METPLUS_STORM_NAME'] = storm_name_fmt
 
         # DLAND_FILE
         tmp_dland_file = self.c_dict['DLAND_FILE']
         self.add_env_var('DLAND_FILE', str(tmp_dland_file))
 
-        self.add_env_var('METPLUS_DESC',
-                         self.c_dict.get('METPLUS_DESC', ''))
-
         super().set_environment_variables(time_info)
 
     def process_data(self, basin, cyclone, model_list, time_info):
         """!Find requested files and run tc_pairs
-            Args:
-                @param basin region of storm from config
-                @param cyclone ID number of cyclone from config
-                @param model_list list of models that be available
-                @param time_info object containing timing information to process
+
+            @param basin region of storm from config
+            @param cyclone ID number of cyclone from config
+            @param model_list list of models that be available
+            @param time_info dictionary with timing info for current run
         """
 
         # set regex expressions for basin and cyclone if wildcard is used
@@ -545,9 +572,9 @@ class TCPairsWrapper(CommandBuilder):
                         elif tag == '*' or tag == '?':
                             match_count += 1
 
-            # create lists for deck files, put bdeck in list so it can be handled
-            # the same as a and e for reformatting even though it will always be
-            # size 1
+            # create lists for deck files, put bdeck in list so it can
+            # be handled the same as a and e for reformatting even though
+            # it will always be size 1
             bdeck_list = [bdeck_file]
             adeck_list = []
             edeck_list = []
@@ -588,11 +615,9 @@ class TCPairsWrapper(CommandBuilder):
                 output_file = 'tc_pairs'
             self.outfile = output_file
 
-            # build command and run tc_pairs
-            cmd = self.get_command()
-            if cmd is None:
-                self.log_error("Could not generate command")
-                return
+            # Set up the environment variable to be used in the TCPairs Config
+            # file (TC_PAIRS_CONFIG_FILE)
+            self.set_environment_variables(time_info)
 
             output_path = self.get_output_path()+'.tcst'
             if os.path.isfile(output_path) and self.c_dict.get('SKIP_OUTPUT'):
@@ -605,12 +630,12 @@ class TCPairsWrapper(CommandBuilder):
 
     def find_deck_files(self, deck, basin, cyclone, model_list, time_info):
         """!Find ADECK or EDECK files that correspond to the BDECk file found
-            Args:
-                @param deck type of deck (A or E)
-                @param basin region of storm from config
-                @param cyclone ID number of cyclone from config
-                @param model_list list of models that be available
-                @param time_info object containing timing information to process
+
+            @param deck type of deck (A or E)
+            @param basin region of storm from config
+            @param cyclone ID number of cyclone from config
+            @param model_list list of models that be available
+            @param time_info dictionary with timing info for current run
         """
         deck_list = []
         template = self.c_dict[deck+'DECK_TEMPLATE']
@@ -644,11 +669,11 @@ class TCPairsWrapper(CommandBuilder):
 
     def reformat_files(self, file_list, deck_type, time_info):
         """!Reformat track data to match expected ATCF format
-            Args:
-                @param file_list list of files to reformat
-                @param deck_type type of deck (A or E)
-                @param time_info object with timing information to get storm month
-            Returns: list of output files that are in ATCF format
+
+            @param file_list list of files to reformat
+            @param deck_type type of deck (A or E)
+            @param time_info dictionary with timing info for current run
+            @returns list of output files that are in ATCF format
         """
         storm_month = time_info['init'].strftime('%m')
         missing_values = \

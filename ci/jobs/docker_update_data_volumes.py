@@ -10,6 +10,7 @@ from urllib.parse import urljoin
 import subprocess
 
 from docker_utils import docker_get_volumes_last_updated, DOCKERHUB_DATA_REPO
+from docker_utils import get_branch_name
 
 # URL containing METplus sample data tarfiles
 WEB_DATA_DIR = 'https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/'
@@ -37,13 +38,13 @@ def get_tarfile_last_modified(search_dir):
 
     return tarfile_last_modified
 
-def create_data_volumes(current_branch, volumes):
+def create_data_volumes(branch_name, volumes):
     if not volumes:
         print("No volumes to build")
         return
 
     # log into docker using encrypted credentials and call build_docker_images.sh script
-    cmd = (f'{BUILD_DOCKER_IMAGES} -pull {current_branch} '
+    cmd = (f'{BUILD_DOCKER_IMAGES} -pull {branch_name} '
            f'-data {",".join(volumes)} -push {DOCKERHUB_DATA_REPO}')
     print(f'Running command: {cmd}')
     ret = subprocess.run(shlex.split(cmd), check=True)
@@ -59,8 +60,8 @@ def main():
         sys.exit(0)
 
     # check if tarfile directory exists on web
-    current_branch = os.environ.get('BRANCH_NAME')
-    if not current_branch:
+    branch_name = get_branch_name()
+    if not branch_name:
         print("Could not get current branch. Exiting.")
         sys.exit(1)
 
@@ -68,7 +69,7 @@ def main():
         print("GITHUB_WORKSPACE not set. Exiting.")
         sys.exit(1)
 
-    search_dir = f"{urljoin(WEB_DATA_DIR, current_branch)}/"
+    search_dir = f"{urljoin(WEB_DATA_DIR, branch_name)}/"
     print(f"Looking for tarfiles in {search_dir}")
 
     dir_request = requests.get(search_dir)
@@ -80,7 +81,7 @@ def main():
     # get last modified time of each tarfile
     tarfile_last_modified = get_tarfile_last_modified(search_dir)
 
-    volumes_last_updated = docker_get_volumes_last_updated(current_branch)
+    volumes_last_updated = docker_get_volumes_last_updated(branch_name)
 
     # check status of each tarfile and add them to the list of volumes to create if needed
     volumes_to_create = []
@@ -88,7 +89,7 @@ def main():
         category = os.path.splitext(tarfile)[0].split('-')[1]
         print(f"Checking tarfile: {category}")
 
-        volume_name = f'{current_branch}-{category}'
+        volume_name = f'{branch_name}-{category}'
         # if the data volume does not exist, create it and push it to DockerHub
         if not volume_name in volumes_last_updated.keys():
             print(f'{volume_name} data volume does not exist. Creating data volume.')
@@ -111,7 +112,7 @@ def main():
                   'Regenerating data volume.')
             volumes_to_create.append(category)
 
-    create_data_volumes(current_branch, volumes_to_create)
+    create_data_volumes(branch_name, volumes_to_create)
 
 if __name__ == "__main__":
     main()

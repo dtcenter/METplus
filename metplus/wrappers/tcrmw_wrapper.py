@@ -24,6 +24,28 @@ from ..util import do_string_sub
 
 
 class TCRMWWrapper(CommandBuilder):
+
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MODEL',
+        'METPLUS_STORM_ID',
+        'METPLUS_BASIN',
+        'METPLUS_CYCLONE',
+        'METPLUS_INIT_INCLUDE',
+        'METPLUS_VALID_BEG',
+        'METPLUS_VALID_END',
+        'METPLUS_VALID_INCLUDE_LIST',
+        'METPLUS_VALID_EXCLUDE_LIST',
+        'METPLUS_VALID_HOUR_LIST',
+        'METPLUS_LEAD_LIST',
+        'METPLUS_DATA_FILE_TYPE',
+        'METPLUS_DATA_FIELD',
+        'METPLUS_REGRID_DICT',
+        'METPLUS_N_RANGE',
+        'METPLUS_N_AZIMUTH',
+        'METPLUS_MAX_RANGE_KM',
+        'METPLUS_DELTA_RANGE_KM',
+        'METPLUS_RMW_SCALE',
+    ]
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "tc_rmw"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
@@ -34,189 +56,114 @@ class TCRMWWrapper(CommandBuilder):
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
-        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_TC_RMW_VERBOSITY',
+        c_dict['VERBOSITY'] = self.config.getstr('config',
+                                                 'LOG_TC_RMW_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['CONFIG_FILE'] = self.config.getraw('config', 'TC_RMW_CONFIG_FILE', '')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config',
+                                                   'TC_RMW_CONFIG_FILE', '')
 
         c_dict['INPUT_DIR'] = self.config.getdir('TC_RMW_INPUT_DIR', '')
         c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                                       'TC_RMW_INPUT_TEMPLATE')
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('TC_RMW_OUTPUT_DIR', '')
-        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                       'TC_RMW_OUTPUT_TEMPLATE')
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('filename_templates',
+                               'TC_RMW_OUTPUT_TEMPLATE')
+        )
 
-        c_dict['DECK_INPUT_DIR'] = self.config.getdir('TC_RMW_DECK_INPUT_DIR', '')
-        c_dict['DECK_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                            'TC_RMW_DECK_TEMPLATE')
+        c_dict['DECK_INPUT_DIR'] = self.config.getdir('TC_RMW_DECK_INPUT_DIR',
+                                                      '')
+        c_dict['DECK_INPUT_TEMPLATE'] = (
+            self.config.getraw('filename_templates',
+                               'TC_RMW_DECK_TEMPLATE')
+        )
 
-        data_type = self.config.getstr('config', 'TC_RMW_INPUT_DATATYPE', '')
-        if data_type:
-            c_dict[f'DATA_FILE_TYPE'] = f"file_type = {data_type};"
+        self.set_met_config_string(self.env_var_dict,
+                                   'TC_RMW_INPUT_DATATYPE',
+                                   'file_type',
+                                   'METPLUS_DATA_FILE_TYPE')
 
         # values used in configuration file
-        self.set_met_config_string(c_dict, 'MODEL', 'model')
+        self.set_met_config_string(self.env_var_dict,
+                                   'MODEL',
+                                   'model',
+                                   'METPLUS_MODEL')
 
-        self.handle_c_dict_regrid(c_dict, set_to_grid=False)
+        self.handle_regrid(c_dict, set_to_grid=False)
 
-        conf_value = self.config.getint('config', 'TC_RMW_N_RANGE')
-        if conf_value is None:
-            self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE:
-            c_dict['N_RANGE'] = f"n_range = {str(conf_value)};"
+        self.set_met_config_int(self.env_var_dict,
+                                'TC_RMW_N_RANGE',
+                                'n_range',
+                                'METPLUS_N_RANGE')
 
-        conf_value = self.config.getint('config', 'TC_RMW_N_AZIMUTH')
-        if conf_value is None:
-            self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE:
-            c_dict['N_AZIMUTH'] = f"n_azimuth = {str(conf_value)};"
+        self.set_met_config_int(self.env_var_dict,
+                                'TC_RMW_N_AZIMUTH',
+                                'n_azimuth',
+                                'METPLUS_N_AZIMUTH')
 
-        conf_value = self.config.getfloat('config', 'TC_RMW_MAX_RANGE_KM',)
-        if conf_value is None:
-            self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE:
-            c_dict['MAX_RANGE_KM'] = f"max_range_km = {str(conf_value)};"
+        self.set_met_config_float(self.env_var_dict,
+                                  'TC_RMW_MAX_RANGE_KM',
+                                  'max_range_km',
+                                  'METPLUS_MAX_RANGE_KM')
 
-        conf_value = self.config.getfloat('config', 'TC_RMW_DELTA_RANGE_KM')
-        if conf_value is None:
-            self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE:
-            c_dict['DELTA_RANGE_KM'] = f"delta_range_km = {str(conf_value)};"
+        self.set_met_config_float(self.env_var_dict,
+                                  'TC_RMW_DELTA_RANGE_KM',
+                                  'delta_range_km',
+                                  'METPLUS_DELTA_RANGE_KM')
 
-        conf_value = self.config.getfloat('config', 'TC_RMW_SCALE')
-        if conf_value is None:
-            self.isOK = False
-        elif conf_value != util.MISSING_DATA_VALUE:
-            c_dict['RMW_SCALE'] = f"rmw_scale = {str(conf_value)};"
+        self.set_met_config_float(self.env_var_dict,
+                                  'TC_RMW_SCALE',
+                                  'rmw_scale',
+                                  'METPLUS_RMW_SCALE')
 
-        conf_value = self.config.getstr('config', 'TC_RMW_STORM_ID', '')
-        if conf_value:
-            c_dict['STORM_ID'] = f'storm_id = "{conf_value}";'
+        self.set_met_config_string(self.env_var_dict,
+                                   'TC_RMW_STORM_ID',
+                                   'storm_id',
+                                   'METPLUS_STORM_ID')
 
-        conf_value = self.config.getstr('config', 'TC_RMW_BASIN', '')
-        if conf_value:
-            c_dict['BASIN'] = f'basin = "{conf_value}";'
+        self.set_met_config_string(self.env_var_dict,
+                                   'TC_RMW_BASIN',
+                                   'basin',
+                                   'METPLUS_BASIN')
 
-        conf_value = self.config.getstr('config', 'TC_RMW_CYCLONE', '')
-        if conf_value:
-            c_dict['CYCLONE'] = f'cyclone = "{conf_value}";'
+        self.set_met_config_string(self.env_var_dict,
+                                   'TC_RMW_CYCLONE',
+                                   'cyclone',
+                                   'METPLUS_CYCLONE')
 
-        conf_value = self.config.getstr('config',
-                                        'TC_RMW_INIT_INCLUDE',
-                                        '')
-        if conf_value:
-            c_dict['INIT_INCLUDE'] = f'init_inc = "{conf_value}";'
+        self.set_met_config_string(self.env_var_dict,
+                                   'TC_RMW_INIT_INCLUDE',
+                                   'init_inc',
+                                   'METPLUS_INIT_INCLUDE')
 
-        conf_value = self.config.getstr('config',
-                                        'TC_RMW_VALID_BEG',
-                                        self.config.getstr('config',
-                                                           'VALID_BEG',
-                                                           ''))
-        if conf_value:
-            c_dict['VALID_BEG'] = f'valid_beg = "{conf_value}";'
+        self.set_met_config_string(self.env_var_dict,
+                                   'TC_RMW_VALID_BEG',
+                                   'valid_beg',
+                                   'METPLUS_VALID_BEG')
 
-        conf_value = self.config.getstr('config',
-                                        'TC_RMW_VALID_END',
-                                        self.config.getstr('config',
-                                                           'VALID_END',
-                                                           ''))
-        if conf_value:
-            c_dict['VALID_END'] = f'valid_end = "{conf_value}";'
+        self.set_met_config_string(self.env_var_dict,
+                                   'TC_RMW_VALID_END',
+                                   'valid_end',
+                                   'METPLUS_VALID_END')
 
-        conf_value = util.getlist(self.config.getstr('config',
-                                                     'TC_RMW_VALID_INCLUDE_LIST',
-                                                     ''))
-        if conf_value:
-            conf_list = str(conf_value).replace("'", '"')
-            c_dict['VALID_INCLUDE_LIST'] = f"valid_inc = {conf_list};"
+        self.set_met_config_list(self.env_var_dict,
+                                 'TC_RMW_VALID_INCLUDE_LIST',
+                                 'valid_inc',
+                                 'METPLUS_VALID_INCLUDE_LIST')
 
-        conf_value = util.getlist(self.config.getstr('config',
-                                                     'TC_RMW_VALID_EXCLUDE_LIST',
-                                                     ''))
-        if conf_value:
-            conf_list = str(conf_value).replace("'", '"')
-            c_dict['VALID_EXCLUDE_LIST'] = f"valid_exc = {conf_list};"
+        self.set_met_config_list(self.env_var_dict,
+                                 'TC_RMW_VALID_EXCLUDE_LIST',
+                                 'valid_exc',
+                                 'METPLUS_VALID_EXCLUDE_LIST')
 
-        conf_value = util.getlist(self.config.getstr('config',
-                                                     'TC_RMW_VALID_HOUR_LIST',
-                                                     ''))
-        if conf_value:
-            conf_list = str(conf_value).replace("'", '"')
-            c_dict['VALID_HOUR_LIST'] = f"valid_hour = {conf_list};"
+        self.set_met_config_list(self.env_var_dict,
+                                 'TC_RMW_VALID_HOUR_LIST',
+                                 'valid_hour',
+                                 'METPLUS_VALID_HOUR_LIST')
 
         return c_dict
-
-    def set_environment_variables(self, time_info):
-        """!Set environment variables that will be read by the MET config file.
-            Reformat as needed. Print list of variables that were set and their values.
-            Args:
-              @param time_info dictionary containing timing info from current run"""
-
-        self.add_env_var('DATA_FILE_TYPE',
-                         self.c_dict.get('DATA_FILE_TYPE', ''))
-
-        self.add_env_var('DATA_FIELD',
-                         self.c_dict.get('DATA_FIELD', ''))
-
-        self.add_env_var('METPLUS_MODEL',
-                         self.c_dict.get('MODEL', ''))
-        self.add_env_var('MODEL',
-                         self.c_dict.get('MODEL', ''))
-
-        regrid_dict = self.get_regrid_dict()
-        self.add_env_var('METPLUS_REGRID_DICT',
-                         regrid_dict)
-        # support deprecated version
-        self.add_env_var('REGRID_DICT',
-                         regrid_dict)
-
-        self.add_env_var('N_RANGE',
-                         self.c_dict.get('N_RANGE', ''))
-
-        self.add_env_var('N_AZIMUTH',
-                         self.c_dict.get('N_AZIMUTH', ''))
-
-        self.add_env_var('MAX_RANGE_KM',
-                         self.c_dict.get('MAX_RANGE_KM', ''))
-
-        self.add_env_var('DELTA_RANGE_KM',
-                         self.c_dict.get('DELTA_RANGE_KM', ''))
-
-        self.add_env_var('RMW_SCALE',
-                         self.c_dict.get('RMW_SCALE', ''))
-
-        self.add_env_var('STORM_ID',
-                         self.c_dict.get('STORM_ID', ''))
-
-        self.add_env_var('BASIN',
-                         self.c_dict.get('BASIN', ''))
-
-        self.add_env_var('CYCLONE',
-                         self.c_dict.get('CYCLONE', ''))
-
-        self.add_env_var('INIT_INCLUDE',
-                         self.c_dict.get('INIT_INC', ''))
-
-        self.add_env_var('VALID_BEG',
-                         self.c_dict.get('VALID_BEG', ''))
-
-        self.add_env_var('VALID_END',
-                         self.c_dict.get('VALID_END', ''))
-
-        self.add_env_var('VALID_INCLUDE_LIST',
-                         self.c_dict.get('VALID_INCLUDE_LIST', ''))
-
-        self.add_env_var('VALID_EXCLUDE_LIST',
-                         self.c_dict.get('VALID_EXCLUDE_LIST', ''))
-
-        self.add_env_var('VALID_HOUR_LIST',
-                         self.c_dict.get('VALID_HOUR_LIST', ''))
-
-        self.add_env_var('LEAD_LIST',
-                         self.c_dict.get('LEAD_LIST', ''))
-
-        super().set_environment_variables(time_info)
 
     def get_command(self):
         cmd = self.app_path
@@ -260,8 +207,8 @@ class TCRMWWrapper(CommandBuilder):
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function
-              loops over the list of forecast leads and runs the application for
-              each.
+              loops over the list of forecast leads and runs the
+               application for each.
               Args:
                 @param input_dict dictionary containing timing information
         """
@@ -338,7 +285,8 @@ class TCRMWWrapper(CommandBuilder):
 
             all_fields.extend(field_list)
 
-        self.c_dict['DATA_FIELD'] = ','.join(all_fields)
+        data_field = ','.join(all_fields)
+        self.env_var_dict['METPLUS_DATA_FIELD'] = f'field = [{data_field}];'
 
         return True
 
