@@ -1,6 +1,5 @@
 import os
 import re
-import requests
 
 # repository used for storing input data for development branches
 DOCKERHUB_DATA_REPO = 'dtcenter/metplus-data-dev'
@@ -8,8 +7,8 @@ DOCKERHUB_DATA_REPO = 'dtcenter/metplus-data-dev'
 # URL of DockerHub repository
 DOCKERHUB_URL = f'https://hub.docker.com/v2/repositories/{DOCKERHUB_DATA_REPO}/tags'
 
-
 def docker_get_volumes_last_updated(current_branch):
+    import requests
     dockerhub_request = requests.get(DOCKERHUB_URL)
     if dockerhub_request.status_code != 200:
         print(f"Could not find DockerHub URL: {DOCKERHUB_URL}")
