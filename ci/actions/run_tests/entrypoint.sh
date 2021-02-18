@@ -15,8 +15,9 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
 fi
 DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
 
-echo actor: $GITHUB_ACTOR
+echo github head ref: $GITHUB_HEAD_REF
 echo repo: $GITHUB_REPOSITORY
+echo repo owner: $GITHUB_REPOSITORY_OWNER
 exit 0
 
 echo "Pulling docker image: $DOCKERHUBTAG"
