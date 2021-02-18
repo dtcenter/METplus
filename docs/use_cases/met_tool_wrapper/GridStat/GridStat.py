@@ -61,19 +61,8 @@ met_tool_wrapper/GridStat/GridStat.conf
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 #
-# Note the following variables are referenced in the MET configuration file.
 #
-# * **${MODEL}** - Name of forecast input. Corresponds to MODEL in the METplus configuration file.
-# * **${OBTYPE}** - Name of observation input. Corresponds to OBTYPE in the METplus configuration file.
-# * **${FCST_FIELD}** - Formatted forecast field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${OBS_FIELD}** - Formatted observation field information. Generated from [OBS/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to GRID_STAT_REGRID_TO_GRID in the METplus configuration file.
-# * **${VERIF_MASK}** - Optional verification mask file or list of files. Corresponds to GRID_STAT_VERIFICATION_MASK_TEMPLATE in the METplus configuration file.
-# * **${CLIMO_MEAN_FILE}** - Optional path to climatology mean file. Corresponds to GRID_STAT_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
-# * **${CLIMO_STDEV_FILE}** - Optional path to climatology standard deviation file. Corresponds to GRID_STAT_CLIMO_STDEV_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
-# * **${NEIGHBORHOOD_SHAPE}** - Shape of the neighborhood method applied. Corresponds to GRID_STAT_NEIGHBORHOOD_SHAPE in the METplus configuration file. Default value is 1 if not set.
-# * **${NEIGHBORHOOD_WIDTH}** - Width of the neighborhood method applied. Corresponds to GRID_STAT_NEIGHBORHOOD_WIDTH in the METplus configuration file. Default value is SQUARE if not set.
-# * **${OUTPUT_PREFIX}** - String to prepend to the output filenames. Corresponds to GRID_STAT_OUTPUT_PREFIX in the METplus configuration file.
+# See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables set in this file.
 #
 
 ##############################################################################

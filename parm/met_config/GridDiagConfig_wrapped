@@ -2,7 +2,7 @@
 //
 // Grid-Diag configuration file.
 //
-// For additional information, see the MET_BASE/config/README file.
+// For additional information, see the MET_BASE/config/GridDiagConfig_default file.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -23,25 +23,14 @@ ${METPLUS_REGRID_DICT}
 //
 // May be set separately in each "field" entry
 //
-censor_thresh = [];
-censor_val    = [];
+${METPLUS_CENSOR_THRESH}
+${METPLUS_CENSOR_VAL}
 
 //
 // Data fields
 //
-data = {
-   field = [ ${DATA_FIELD} ];
-}
+${METPLUS_DATA_DICT}
 
-////////////////////////////////////////////////////////////////////////////////
+${METPLUS_MASK_DICT}
 
-mask = {
-   grid = "";
-   ${VERIF_MASK}
-}
-
-////////////////////////////////////////////////////////////////////////////////
-
-//version = "V10.0";
-
-////////////////////////////////////////////////////////////////////////////////
+${METPLUS_MET_CONFIG_OVERRIDES}

@@ -374,11 +374,15 @@ def parse_all_use_cases_file():
             else:
                 config_args = rest[0].split(',')
                 config_args = [arg.strip() for arg in config_args]
+
                 # if python requirements listed, set them
                 if len(rest) > 1:
                     requirements = rest[1].split(',')
                     requirements = [req.strip() for req in requirements]
 
+            # set output dir based on name
+            set_output = f'config.USE_CASE_NAME={name}'
+            config_args.append(set_output)
 
             use_case_dict = {'name': name,
                              'config_args': config_args,
