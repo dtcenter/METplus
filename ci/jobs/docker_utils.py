@@ -22,7 +22,7 @@ def docker_get_volumes_last_updated(current_branch):
         results = page['results']
         for repo in results:
             repo_name = repo['name']
-            if repo_name.split('-')[0] == current_branch:
+            if current_branch in repo_name:
                 volumes_last_updated[repo_name] = repo['last_updated']
         if not page['next']:
             break
@@ -30,3 +30,23 @@ def docker_get_volumes_last_updated(current_branch):
         attempts += 1
 
     return volumes_last_updated
+
+def get_branch_name():
+    # get branch name from env var BRANCH_NAME
+    branch_name = os.environ.get('BRANCH_NAME')
+    if branch_name:
+        return branch_name
+
+    # if BRANCH_NAME not set, use GITHUB env vars
+    github_event_name = os.environ.get('GITHUB_EVENT_NAME')
+    if not github_event_name:
+        return None
+
+    if github_event_name == 'pull_request':
+        return os.environ.get('GITHUB_HEAD_REF')
+
+    github_ref = os.environ.get('GITHUB_REF')
+    if github_ref is None:
+        return None
+
+    return github_ref.replace('refs/heads/', '')

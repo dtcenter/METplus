@@ -10,24 +10,6 @@ import produtil
 from metplus.wrappers.tc_stat_wrapper import TCStatWrapper
 from metplus.util import ti_calculate
 
-
-#
-# -----------Mandatory-----------
-#  configuration and fixture to support METplus configuration files beyond
-#  the metplus_data, metplus_system, and metplus_runtime conf files.
-#
-
-# Add a test configuration
-def pytest_addoption(parser):
-    """! For supporting config files from the command line"""
-    parser.addoption("-c", action="store", help=" -c <test config file>")
-
-
-# @pytest.fixture
-def cmdopt(request):
-    """! For supporting the additional config files used by METplus"""
-    return request.config.getoption("-c")
-
 def get_config(metplus_config):
     extra_configs = []
     extra_configs.append(os.path.join(os.path.dirname(__file__),
@@ -44,21 +26,6 @@ def tc_stat_wrapper(metplus_config):
     # to /path/to:
     config = get_config(metplus_config)
     return TCStatWrapper(config)
-
-def test_validate_config_values(metplus_config):
-    """! Test that when the COLUMN_THRESH_NAME and COLUMN_THRESH_VAL lists
-         are of different length, the appropriate value is returned
-         from config_lists_ok()
-    """
-    tcsw = tc_stat_wrapper(metplus_config)
-
-    # Uneven lengths, expect False to be returned
-    column_thresh_name = "A, B, C"
-    column_thresh_val = "1,2"
-    tcsw.c_dict['COLUMN_THRESH_NAME'] = column_thresh_name
-    tcsw.c_dict['COLUMN_THRESH_VAL'] = column_thresh_val
-    tcsw.validate_config_values(tcsw.c_dict)
-    assert tcsw.isOK is False
 
 @pytest.mark.parametrize(
         'overrides, c_dict', [
@@ -134,7 +101,8 @@ def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
     wrapper = TCStatWrapper(get_config(metplus_config),
                             config_overrides=overrides)
     for key, expected_value in c_dict.items():
-        assert (wrapper.c_dict.get(key) == expected_value)
+        assert (wrapper.env_var_dict.get(f'METPLUS_{key}') == expected_value or
+                wrapper.c_dict.get(key) == expected_value)
 
 @pytest.mark.parametrize(
     'jobs, init_dt, expected_output', [
