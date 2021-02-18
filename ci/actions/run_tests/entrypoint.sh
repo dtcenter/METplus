@@ -17,6 +17,11 @@ DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
 
 echo "Pulling docker image: $DOCKERHUBTAG"
 docker pull $DOCKERHUBTAG
+if [ $? != 0 ];
+   # if docker pull fails, build locally
+   echo docker pull failed. Building Docker image locally...
+   ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
+fi
 
 if [ "$INPUT_CATEGORIES" == "pytests" ]; then
   echo Running Pytests
