@@ -85,7 +85,7 @@ SurrogateSevere.conf
 #
 # The command to run this use case is::
 #
-#    master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.conf
+#    run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.conf
 
 ###################################################################################################
 # Expected Output

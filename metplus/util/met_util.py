@@ -2004,6 +2004,9 @@ def is_var_item_valid(item_list, index, ext, config):
     if 'BOTH' in item_list and ('FCST' in item_list or 'OBS' in item_list):
 
         msg.append(f"Cannot set FCST{full_ext} or OBS{full_ext} if BOTH{full_ext} is set.")
+    elif ext == 'THRESH':
+        # allow thresholds unless BOTH and (FCST or OBS) are set
+        pass
 
     elif 'FCST' in item_list and 'OBS' not in item_list:
         # if FCST level has 1 item and OBS name is a python embedding script,
@@ -2033,7 +2036,7 @@ def is_var_item_valid(item_list, index, ext, config):
         skip_error_for_py_embed = ext == 'LEVELS' and is_python_script(other_name) and len(level_list) == 1
 
         if ext not in ['OPTIONS'] and not skip_error_for_py_embed:
-            msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or ."
+            msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or "
                           f"change OBS{full_ext} to BOTH{full_ext}")
 
             config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
@@ -2222,7 +2225,7 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
             list of dictionaries with variable information
     """
 
-    # validate configs again in case wrapper is not running from master_metplus
+    # validate configs again in case wrapper is not running from run_metplus
     # this does not need to be done if parsing a specific data type, i.e. ENS or FCST
     if data_type is None:
         if not validate_field_info_configs(config)[0]:
