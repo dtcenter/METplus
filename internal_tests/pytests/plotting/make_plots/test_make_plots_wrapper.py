@@ -106,7 +106,6 @@ def test_create_c_dict(metplus_config):
     # Test 1
     c_dict = mp.create_c_dict()
     assert(c_dict['LOOP_ORDER'] == 'processes')
-    assert(c_dict['PROCESS_LIST'] == 'StatAnalysis, MakePlots')
     # NOTE: MakePlots relies on output from StatAnalysis
     #       so its input resides in the output of StatAnalysis
     assert(c_dict['INPUT_BASE_DIR'] == mp.config.getdir('OUTPUT_BASE')
@@ -155,4 +154,4 @@ def test_create_c_dict(metplus_config):
     assert(c_dict['VERIF_GRID'] == 'G002')
     assert(c_dict['EVENT_EQUALIZATION'] == 'False')
     assert(c_dict['LOG_METPLUS'] == mp.config.getdir('OUTPUT_BASE')
-                                    +'/logs/master_metplus.log')
+                                    +'/logs/metplus.log')

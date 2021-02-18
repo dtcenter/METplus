@@ -17,6 +17,7 @@ Use Cases by MET Tool:
 | `PB2NC <https://dtcenter.github.io/METplus/develop/search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_
 | `PCPCombine <https://dtcenter.github.io/METplus/develop/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_
 | `Point2Grid <https://dtcenter.github.io/METplus/develop/search.html?q=Point2GridToolUseCase&check_keywords=yes&area=default>`_
+| `PlotDataPlane <https://dtcenter.github.io/METplus/develop/search.html?q=PlotDataPlaneToolUseCase&check_keywords=yes&area=default>`_
 | `PointStat <https://dtcenter.github.io/METplus/develop/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
 | `RegridDataPlane <https://dtcenter.github.io/METplus/develop/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
 | `SeriesAnalysis <https://dtcenter.github.io/METplus/develop/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
@@ -73,9 +74,11 @@ Use Cases by METplus Feature:
 | `Probability Verification  <https://dtcenter.github.io/METplus/develop/search.html?q=ProbabilityVerificationUseCase&check_keywords=yes&area=default>`_
 | `Regridding in Tool <https://dtcenter.github.io/METplus/develop/search.html?q=RegriddingInToolUseCase&check_keywords=yes&area=default>`_
 | `Revision Series <https://dtcenter.github.io/METplus/develop/search.html?q=RevisionSeriesUseCase&check_keywords=yes&area=default>`_
+| `Runtime Frequency <https://dtcenter.github.io/METplus/develop/search.html?q=RuntimeFreqUseCase&check_keywords=yes&area=default>`_
 | `Series by Initialization  <https://dtcenter.github.io/METplus/develop/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
 | `Series by Forecast Lead  <https://dtcenter.github.io/METplus/develop/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
 | `Validation of Models or Analyses  <https://dtcenter.github.io/METplus/develop/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
+| `User Defined Script <https://dtcenter.github.io/METplus/develop/search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_
 
 
 Use cases by File Format:

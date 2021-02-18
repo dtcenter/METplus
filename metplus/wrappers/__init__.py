@@ -18,6 +18,7 @@ parent_classes = {
     'reformat_gridded_wrapper': 'ReformatGriddedWrapper',
     'compare_gridded_wrapper': 'CompareGriddedWrapper',
     'regrid_data_plane_wrapper': 'RegridDataPlaneWrapper',
+    'runtime_freq_wrapper': 'RuntimeFreqWrapper',
 }
 
 for module_name, attribute_name in parent_classes.items():

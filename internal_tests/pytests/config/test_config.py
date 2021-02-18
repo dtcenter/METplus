@@ -220,3 +220,107 @@ def test_getint(metplus_config, input_value, default, result):
         if result is None:
             assert(True)
 
+@pytest.mark.parametrize(
+    'config_key, expected_result', [
+        ('VAR_TO_TEST_1', '1'),
+        ('VAR_TO_TEST_2', '2'),
+        ('VAR_TO_TEST_3', '3'),
+        # should use last instance in config_3.conf
+        ('VAR_TO_TEST_A', 'A3'),
+    ]
+)
+def test_move_all_to_config_section(metplus_config, config_key, expected_result):
+    config_files = ['config_1.conf',
+                    'config_2.conf',
+                    'config_3.conf',
+                   ]
+    test_dir = os.path.dirname(__file__)
+    config_files = [os.path.join(test_dir, item) for item in config_files]
+    config = metplus_config(config_files)
+    assert(config.getstr('config', config_key) == expected_result)
+
+@pytest.mark.parametrize(
+    'overrides, config_key, expected_result', [
+        (['config.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', '1'),
+        (['dir.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', '1'),
+        (['filename_templates.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', '1'),
+        (['user_env_vars.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', ''),
+        (['made_up.CMD_LINE_1=1',
+          ],
+        'CMD_LINE_1', ''),
+        (['config.CMD_LINE_1=1',
+          'dir.CMD_LINE_1=2',
+          ],
+        'CMD_LINE_1', '2'),
+        (['dir.CMD_LINE_1=1',
+          'config.CMD_LINE_1=2',
+          ],
+        'CMD_LINE_1', '2'),
+    ]
+)
+def test_move_all_to_config_section_cmd_line(metplus_config, overrides,
+                                             config_key, expected_result):
+    config = metplus_config(overrides)
+    assert(config.getstr('config', config_key, '') == expected_result)
+
+@pytest.mark.parametrize(
+    'config_name, expected_result', [
+
+        ('config.RAW_WITH_TAG',
+         'some stuff {valid?fmt=%Y%m%d} other'
+         ),
+        ('config.RAW_WITH_TAG_AND_VAR',
+         'some stuff {valid?fmt=%Y%m%d} A1 other'
+         ),
+        ('config.NESTED_BRACES',
+         "value = { name='some_value_{init?fmt=%Y}';}"
+         ),
+        # variable that references a variable that references a variable
+        ('config.SECOND_REF',
+         "value"
+         ),
+        # variable that references a variable that references a variable x5
+        ('config.FIFTH_REF',
+         "some text value"
+         ),
+        # circular reference
+        ('config.YOU_GOT_I',
+         ''
+         ),
+        # improperly formatted value
+        ('config.BAD_VAR',
+         'FIRST_REF} {valid?fmt=%Y%m%d}'
+         ),
+        ('config.GRID_STAT_MET_CONFIG_OVERRIDES',
+         ('climo_mean = {field = [{name= "/d1/projects/CPC_data/scripts/'
+          'precip_climo_mean_embedded.py /d1/projects/CPC_data/input/'
+          'MET_precip_climos/precip_clim_mean_unsmoothed_07d.nc:'
+          '{valid?fmt=%d%m}"}]}; climo_stdev = {field = [{name= "/d1/projects/'
+          'CPC_data/scripts/precip_climo_mean_embedded.py /d1/projects/'
+          'CPC_data/input/MET_precip_climos/precip_clim_std_unsmoothed_07d.nc:'
+          '{valid?fmt=%d%m}";}]};')
+         ),
+        # from another setion
+        ('user_env_vars.USER_VALUE',
+         'some stuff {valid?fmt=%Y%m%d} A1 other'
+         ),
+    ]
+)
+def test_getraw_nested_curly_braces(metplus_config,
+                                    config_name,
+                                    expected_result):
+    config_files = ['config_1.conf',
+                   ]
+    test_dir = os.path.dirname(__file__)
+    config_files = [os.path.join(test_dir, item) for item in config_files]
+    config = metplus_config(config_files)
+    sec, name = config_name.split('.', 1)
+    assert(config.getraw(sec, name) == expected_result)
