@@ -7,7 +7,7 @@ Abstract: Checks configuration files and reports if anything needs to be changed
   Prompts user with the changes that will be made and asks if they want to have
   the changes made for them.
 History Log:  Initial version
-Usage: Call the same as master_metplus.py, 
+Usage: Call the same as run_metplus.py, 
   i.e. validate_config.py -c <config_file> -c <config_file>
 Parameters: None
 Input Files: Configuration files
@@ -25,7 +25,7 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir)))
 
 from metplus.util import config_metplus, validate_configuration_variables
-from master_metplus import get_config_inputs_from_command_line
+from run_metplus import get_config_inputs_from_command_line
 
 def main():
     config_inputs = get_config_inputs_from_command_line()

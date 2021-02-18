@@ -7,7 +7,7 @@ wrapping the MET tools suite.
 
 #### Utility scripts of general interest:
 
-* master_metplus ---  This is the main script that calls all the 
+* run_metplus ---  This is the main script that calls all the 
   tasks in the PROCESS_LIST.
 
 

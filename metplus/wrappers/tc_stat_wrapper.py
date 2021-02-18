@@ -208,7 +208,7 @@ class TCStatWrapper(CommandBuilder):
 
     def run_at_time(self, input_dict=None):
         """! Builds the call to the MET tool TC-STAT for all requested
-             initialization times (init or valid).  Called from master_metplus
+             initialization times (init or valid).  Called from run_metplus
         """
         self.logger.info('Starting tc_stat_wrapper...')
 
