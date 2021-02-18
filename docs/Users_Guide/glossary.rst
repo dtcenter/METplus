@@ -5467,3 +5467,9 @@ METplus Configuration Glossary
      Specify the value for 'desc' in the MET configuration file for the MET tool being used
 
     | *Used by:* GridStat, PointStat, EnsembleStat, GridDiag, MODE, MTD, SeriesAnalysis, TCGen, TCPairs, TCStat
+
+   METPLUS_MET_CONFIG_OVERRIDES
+     Allows the user to override MET config file settings for which there are no direct METplus configuration options to set.
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
+
+    | *Used by:* Universal

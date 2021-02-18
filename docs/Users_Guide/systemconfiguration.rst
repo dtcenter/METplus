@@ -1461,6 +1461,8 @@ Returning to what the entire 'fcst' dictionary would look like in this instance,
 Note that the above is simply for illustration purposes, and there will never be a physical GridStat config file that exists with that string written in it. The
 same substitution is made for every item supported for each wrapper. This information can be found in the 'MET Configuration' section for each wrapper, in :doc:`wrappers`.
 
+.. _met-config-overrides:
+
 Overriding Unsupported MET config file settings
 -----------------------------------------------
 
