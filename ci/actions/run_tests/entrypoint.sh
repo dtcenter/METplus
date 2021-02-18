@@ -15,19 +15,15 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
 fi
 DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
 
-echo github head ref: $GITHUB_HEAD_REF
-echo repo: $GITHUB_REPOSITORY
-echo repo owner: $GITHUB_REPOSITORY_OWNER
-exit 0
-
 echo "Pulling docker image: $DOCKERHUBTAG"
 docker pull $DOCKERHUBTAG
+docker inspect --type=image $DOCKERHUBTAG > /dev/null
 if [ $? != 0 ]; then
    # if docker pull fails, build locally
    echo docker pull failed. Building Docker image locally...
    ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
 fi
-
+exit 0
 if [ "$INPUT_CATEGORIES" == "pytests" ]; then
   echo Running Pytests
   command="pip3 install pytest-cov; export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; pytest --cov=../../metplus"
