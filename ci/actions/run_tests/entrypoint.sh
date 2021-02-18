@@ -15,7 +15,7 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
 fi
 DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
 
-echo full name: $GITHUB_EVENT_PULL_REQUEST_HEAD_REPO_FULL_NAME
+echo actor: $GITHUB_ACTOR
 echo repo: $GITHUB_REPOSITORY
 exit 0
 
