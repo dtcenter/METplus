@@ -126,7 +126,7 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                                "OBS_REGRID_DATA_PLANE_RUN is True")
                 self.isOK = False
 
-        self.handle_window_variables(c_dict, self.app_name, dtypes=window_types)
+        self.handle_file_window_variables(c_dict, dtypes=window_types)
 
         c_dict['VERIFICATION_GRID'] = \
             self.config.getraw('config', 'REGRID_DATA_PLANE_VERIF_GRID', '')

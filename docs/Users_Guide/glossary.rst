@@ -5455,3 +5455,8 @@ METplus Configuration Glossary
      Specify the value for 'ensemble_flag.weight' in the MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
+
+   GRID_STAT_MASK_GRID
+     Specify the value for 'mask.grid' in the MET configuration file for GridStat.
+
+     | *Used by:*  GridStat

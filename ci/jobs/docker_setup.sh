@@ -1,6 +1,12 @@
 #! /bin/bash
 
-DOCKERHUB_TAG=dtcenter/metplus-dev:${DOCKER_IMAGE}
+branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
+if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+  branch_name=${branch_name}-PR
+fi
+
+#DOCKERHUB_TAG=dtcenter/metplus-dev:${DOCKER_IMAGE}
+DOCKERHUB_TAG=dtcenter/metplus-dev:${branch_name}
 
 echo Get Docker image: ${DOCKERHUB_TAG}
 echo 'doing docker build'

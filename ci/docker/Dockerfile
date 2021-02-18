@@ -46,7 +46,9 @@ RUN echo export PATH=$PATH:${DOCKER_WORK_DIR}/METplus/ush >> /etc/bashrc \
 RUN yum -y update \
  && yum -y install nco.x86_64 \
  && yum -y install java-1.8.0-openjdk \
- && python3 -m pip install pytest
+ && python3 -m pip install pytest netCDF4
+
+RUN mkdir -p /data/input && curl -L -o /data/input/GempakToCF.jar -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar || true
 
 
 ARG SOURCE_BRANCH
