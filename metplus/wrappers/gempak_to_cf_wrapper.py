@@ -106,6 +106,9 @@ class GempakToCFWrapper(CommandBuilder):
                               infile)
         self.infiles.append(infile)
 
+        # set environment variables
+        self.set_environment_variables(time_info)
+
         if not self.find_and_check_output_file(time_info):
             return
 

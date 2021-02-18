@@ -642,7 +642,8 @@ def check_for_deprecated_met_config(config):
 
     # check if *_CONFIG_FILE if set in the METplus config file and check for
     # deprecated environment variables in those files
-    met_config_keys = [key for key in config.keys('config') if key.endswith('CONFIG_FILE')]
+    met_config_keys = [key for key in config.keys('config')
+                       if key.endswith('CONFIG_FILE')]
 
     for met_config_key in met_config_keys:
         met_tool = met_config_key.replace('_CONFIG_FILE', '')
@@ -669,86 +670,69 @@ def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool)
         config.logger.error(f"Config file does not exist: {met_config}")
         return False
 
-    deprecate_warning_list = ['MODEL',
-                              'OBTYPE',
-                              'DESC',
-                              'REGRID_TO_GRID',
-                              'REGRID_DICT',
-                              ]
     deprecated_met_list = ['MET_VALID_HHMM', 'GRID_VX', 'CONFIG_DIR']
     deprecated_output_prefix_list = ['FCST_VAR', 'OBS_VAR']
     config.logger.debug(f"Checking for deprecated environment variables in: {met_config}")
 
-    with open(met_config, 'r') as f:
-        for line in f:
+    with open(met_config, 'r') as file_handle:
+        lines = file_handle.read().splitlines()
 
-            for deprecated_item in deprecated_met_list:
-                if '${' + deprecated_item + '}' in line:
-                    all_good = False
-                    config.logger.error("Please remove deprecated environment variable "
-                                        f"${{{deprecated_item}}} found in MET config file: "
-                                        f"{met_config}")
+    for line in lines:
+        for deprecated_item in deprecated_met_list:
+            if '${' + deprecated_item + '}' in line:
+                all_good = False
+                config.logger.error("Please remove deprecated environment variable "
+                                    f"${{{deprecated_item}}} found in MET config file: "
+                                    f"{met_config}")
 
-                    if deprecated_item == 'MET_VALID_HHMM' and 'file_name' in line:
-                        config.logger.error(f"Set {met_tool}_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in a "
-                                            "METplus config file to set CLIMO_MEAN_FILE in a MET config")
-                        new_line = "   file_name = [ ${CLIMO_MEAN_FILE} ];"
-
-                        # escape [ and ] because they are special characters in sed commands
-                        old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
-
-                        sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
-                        add_line = f"{met_tool}_CLIMO_MEAN_INPUT_TEMPLATE"
-                        sed_cmds.append(f"#Add {add_line}")
-                        break
-
-                    if 'to_grid' in line:
-                        config.logger.error("MET to_grid variable should reference "
-                                            "${REGRID_TO_GRID} environment variable")
-                        new_line = "   to_grid    = ${REGRID_TO_GRID};"
-
-                        # escape [ and ] because they are special characters in sed commands
-                        old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
-
-                        sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
-                        config.logger.info(f"Be sure to set {met_tool}_REGRID_TO_GRID to the correct value.")
-                        add_line = f"{met_tool}_REGRID_TO_GRID"
-                        sed_cmds.append(f"#Add {add_line}")
-                        break
-
-
-            for deprecated_item in deprecated_output_prefix_list:
-                # if deprecated item found in output prefix or to_grid line, replace line to use
-                # env var OUTPUT_PREFIX or REGRID_TO_GRID
-                if '${' + deprecated_item + '}' in line and 'output_prefix' in line:
-                    config.logger.error("output_prefix variable should reference "
-                                        "${OUTPUT_PREFIX} environment variable")
-                    new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
+                if deprecated_item == 'MET_VALID_HHMM' and 'file_name' in line:
+                    config.logger.error(f"Set {met_tool}_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in a "
+                                        "METplus config file to set CLIMO_MEAN_FILE in a MET config")
+                    new_line = "   file_name = [ ${CLIMO_MEAN_FILE} ];"
 
                     # escape [ and ] because they are special characters in sed commands
                     old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
 
                     sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
-                    config.logger.info(f"You will need to add {met_tool}_OUTPUT_PREFIX to the METplus config file"
-                                       f" that sets {met_tool}_CONFIG_FILE. Set it to:")
-                    output_prefix = replace_output_prefix(line)
-                    add_line = f"{met_tool}_OUTPUT_PREFIX = {output_prefix}"
-                    config.logger.info(add_line)
+                    add_line = f"{met_tool}_CLIMO_MEAN_INPUT_TEMPLATE"
                     sed_cmds.append(f"#Add {add_line}")
-                    all_good = False
                     break
 
-            for deprecated_item in deprecate_warning_list:
-                if '${' + deprecated_item + '}' in line:
-                    msg = ("Use of ${" + deprecated_item + "} in MET config "
-                           "file is deprecated and will not be supported in "
-                           "future versions. Please use ${METPLUS_")
-                    if deprecated_item == 'REGRID_TO_GRID':
-                        sub_value = 'REGRID_DICT'
-                    else:
-                        sub_value = deprecated_item
-                    msg += sub_value + "} instead."
-                    config.logger.warning(msg)
+                if 'to_grid' in line:
+                    config.logger.error("MET to_grid variable should reference "
+                                        "${REGRID_TO_GRID} environment variable")
+                    new_line = "   to_grid    = ${REGRID_TO_GRID};"
+
+                    # escape [ and ] because they are special characters in sed commands
+                    old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
+
+                    sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
+                    config.logger.info(f"Be sure to set {met_tool}_REGRID_TO_GRID to the correct value.")
+                    add_line = f"{met_tool}_REGRID_TO_GRID"
+                    sed_cmds.append(f"#Add {add_line}")
+                    break
+
+
+        for deprecated_item in deprecated_output_prefix_list:
+            # if deprecated item found in output prefix or to_grid line, replace line to use
+            # env var OUTPUT_PREFIX or REGRID_TO_GRID
+            if '${' + deprecated_item + '}' in line and 'output_prefix' in line:
+                config.logger.error("output_prefix variable should reference "
+                                    "${OUTPUT_PREFIX} environment variable")
+                new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
+
+                # escape [ and ] because they are special characters in sed commands
+                old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
+
+                sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
+                config.logger.info(f"You will need to add {met_tool}_OUTPUT_PREFIX to the METplus config file"
+                                   f" that sets {met_tool}_CONFIG_FILE. Set it to:")
+                output_prefix = replace_output_prefix(line)
+                add_line = f"{met_tool}_OUTPUT_PREFIX = {output_prefix}"
+                config.logger.info(add_line)
+                sed_cmds.append(f"#Add {add_line}")
+                all_good = False
+                break
 
     return all_good
 

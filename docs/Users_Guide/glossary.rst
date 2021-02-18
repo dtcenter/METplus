@@ -5609,3 +5609,8 @@ METplus Configuration Glossary
      ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
 
      | *Used by:* TCStat
+
+   GRID_STAT_MASK_GRID
+     Specify the value for 'mask.grid' in the MET configuration file for GridStat.
+
+     | *Used by:*  GridStat
