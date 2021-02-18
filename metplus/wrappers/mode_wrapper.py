@@ -18,6 +18,27 @@ from ..util import do_string_sub
 
 class MODEWrapper(CompareGriddedWrapper):
     """!Wrapper for the mode MET tool"""
+
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MODEL',
+        'METPLUS_DESC',
+        'METPLUS_OBTYPE',
+        'METPLUS_REGRID_DICT',
+        'METPLUS_QUILT',
+        'METPLUS_FCST_FIELD',
+        'METPLUS_FCST_CONV_RADIUS',
+        'METPLUS_FCST_CONV_THRESH',
+        'METPLUS_FCST_MERGE_THRESH',
+        'METPLUS_FCST_MERGE_FLAG',
+        'METPLUS_OBS_FIELD',
+        'METPLUS_OBS_CONV_RADIUS',
+        'METPLUS_OBS_CONV_THRESH',
+        'METPLUS_OBS_MERGE_THRESH',
+        'METPLUS_OBS_MERGE_FLAG',
+        'METPLUS_MASK_POLY',
+        'METPLUS_OUTPUT_PREFIX',
+    ]
+
     def __init__(self, config, instance=None, config_overrides={}):
         # only set app variables if not already set by MTD (subclass)
         if not hasattr(self, 'app_name'):
@@ -77,78 +98,77 @@ class MODEWrapper(CompareGriddedWrapper):
         )
 
         c_dict['ONCE_PER_FIELD'] = True
-        c_dict['QUILT'] = self.config.getbool('config', 'MODE_QUILT', False)
-        fcst_conv_radius, obs_conv_radius = \
-            self.handle_fcst_and_obs_field('MODE_CONV_RADIUS',
-                                           'FCST_MODE_CONV_RADIUS',
-                                           'OBS_MODE_CONV_RADIUS')
-        c_dict['FCST_CONV_RADIUS'] = fcst_conv_radius
-        c_dict['OBS_CONV_RADIUS'] = obs_conv_radius
-        if fcst_conv_radius is None or obs_conv_radius is None:
-            self.isOK = False
+        self.set_met_config_bool(self.env_var_dict,
+                                 'MODE_QUILT',
+                                 'quilt',
+                                 'METPLUS_QUILT')
 
-        fcst_conv_thresh, obs_conv_thresh = self.handle_fcst_and_obs_field('MODE_CONV_THRESH',
-                                                                           'FCST_MODE_CONV_THRESH',
-                                                                           'OBS_MODE_CONV_THRESH')
+        for data_type in ['FCST', 'OBS']:
+            self.set_met_config_float(self.env_var_dict,
+                                      [f'{data_type}_MODE_CONV_RADIUS',
+                                       'MODE_CONV_RADIUS'],
+                                      'conv_radius',
+                                      f'METPLUS_{data_type}_CONV_RADIUS')
 
-        c_dict['FCST_CONV_THRESH'] = fcst_conv_thresh
-        c_dict['OBS_CONV_THRESH'] = obs_conv_thresh
-        if fcst_conv_thresh is None or obs_conv_thresh is None:
-            self.isOK = False
+            self.set_met_config_thresh(self.env_var_dict,
+                                       [f'{data_type}_MODE_CONV_THRESH',
+                                        'MODE_CONV_THRESH'],
+                                       'conv_thresh',
+                                       f'METPLUS_{data_type}_CONV_THRESH')
 
-        fcst_merge_thresh, obs_merge_thresh = \
-                self.handle_fcst_and_obs_field('MODE_MERGE_THRESH',
-                                               'FCST_MODE_MERGE_THRESH',
-                                               'OBS_MODE_MERGE_THRESH')
-        c_dict['FCST_MERGE_THRESH'] = fcst_merge_thresh
-        c_dict['OBS_MERGE_THRESH'] = obs_merge_thresh
-        if fcst_merge_thresh is None or obs_merge_thresh is None:
-            self.isOK = False
+            self.set_met_config_thresh(self.env_var_dict,
+                                       [f'{data_type}_MODE_MERGE_THRESH',
+                                        'MODE_MERGE_THRESH'],
+                                       'merge_thresh',
+                                       f'METPLUS_{data_type}_MERGE_THRESH')
 
-        fcst_merge_flag, obs_merge_flag = \
-                self.handle_fcst_and_obs_field('MODE_MERGE_FLAG',
-                                               'FCST_MODE_MERGE_FLAG',
-                                               'OBS_MODE_MERGE_FLAG')
+            self.set_met_config_string(self.env_var_dict,
+                                       [f'{data_type}_MODE_MERGE_FLAG',
+                                        'MODE_MERGE_FLAG'],
+                                       'merge_flag',
+                                       f'METPLUS_{data_type}_MERGE_FLAG',
+                                       remove_quotes=True)
 
-        c_dict['FCST_MERGE_FLAG'] = fcst_merge_flag
-        c_dict['OBS_MERGE_FLAG'] = obs_merge_flag
-        if fcst_merge_flag is None or obs_merge_flag is None:
-            self.isOK = False
+            # set c_dict values for old method of setting env vars
+            for name in ['CONV_RADIUS',
+                         'CONV_THRESH',
+                         'MERGE_THRESH',
+                         'MERGE_FLAG']:
+                value = self.get_env_var_value(f'METPLUS_{data_type}_{name}')
+                c_dict[f'{data_type}_{name}'] = value
+
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
-        c_dict['MERGE_CONFIG_FILE'] = self.config.getraw('config', 'MODE_MERGE_CONFIG_FILE', '')
+        c_dict['MERGE_CONFIG_FILE'] = (
+            self.config.getraw('config',
+                               'MODE_MERGE_CONFIG_FILE', '')
+            )
 
-        # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict, 'mode')
+        mask_poly = self.read_mask_poly()
+        c_dict['MASK_POLY_TEMPLATE'] = mask_poly
 
-        c_dict['VERIFICATION_MASK_TEMPLATE'] = \
-            self.config.getraw('filename_templates',
-                               'MODE_VERIFICATION_MASK_TEMPLATE')
-
-        # check that values are valid
-        error_message = 'items must start with a comparison operator '+\
-                        '(>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le)'
-        if not util.validate_thresholds(util.getlist(c_dict['FCST_CONV_THRESH'])):
-            self.log_error('MODE_FCST_CONV_THRESH {}'.format(error_message))
-            self.isOK = False
-        if not util.validate_thresholds(util.getlist(c_dict['OBS_CONV_THRESH'])):
-            self.log_error('MODE_OBS_CONV_THRESH {}'.format(error_message))
-            self.isOK = False
-        if not util.validate_thresholds(util.getlist(c_dict['FCST_MERGE_THRESH'])):
-            self.log_error('MODE_FCST_MERGE_THRESH {}'.format(error_message))
-            self.isOK = False
-        if not util.validate_thresholds(util.getlist(c_dict['OBS_MERGE_THRESH'])):
-            self.log_error('MODE_OBS_MERGE_THRESH {}'.format(error_message))
-            self.isOK = False
+        if mask_poly:
+            self.env_var_dict['METPLUS_MASK_POLY'] = f'poly = "{mask_poly}";'
 
         return c_dict
 
-    def set_environment_variables(self, fcst_field, obs_field, time_info):
-        self.add_env_var("FCST_FIELD", fcst_field)
-        self.add_env_var("OBS_FIELD", obs_field)
+    def set_environment_variables(self, time_info):
+        """!Set environment variables that will be read set when running this
+          tool.
 
-        quilt = 'TRUE' if self.c_dict['QUILT'] else 'FALSE'
+            @param time_info dictionary containing timing info for current run
+        """
+
+        # support old method of setting env vars in MET config files
+        self.add_env_var("FCST_FIELD",
+                         self.c_dict.get('FCST_FIELD', ''))
+        self.add_env_var("OBS_FIELD",
+                         self.c_dict.get('OBS_FIELD', ''))
+
+        quilt = self.get_env_var_value('METPLUS_QUILT')
+        if not quilt:
+            quilt = 'FALSE'
 
         self.add_env_var("QUILT", quilt)
         self.add_env_var("FCST_CONV_RADIUS", self.c_dict["FCST_CONV_RADIUS"])
@@ -161,8 +181,6 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_env_var("OBS_MERGE_FLAG", self.c_dict["OBS_MERGE_FLAG"])
         self.add_env_var('VERIF_MASK', self.c_dict.get('VERIFICATION_MASK',
                                                        '""'))
-
-        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
 
         super().set_environment_variables(time_info)
 
@@ -185,7 +203,6 @@ class MODEWrapper(CompareGriddedWrapper):
 
         # loop over all variables and levels (and probability thresholds) and call the app for each
         self.process_fields_one_thresh(time_info, var_info, model_path, obs_path)
-
 
     def process_fields_one_thresh(self, time_info, var_info, model_path, obs_path):
         """! For each threshold, set up environment variables and run mode
@@ -223,6 +240,10 @@ class MODEWrapper(CompareGriddedWrapper):
 
         # loop through fields and call MODE
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
+            self.clear()
+            self.format_field('FCST', fcst_field)
+            self.format_field('OBS', obs_field)
+
             self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
                                        **time_info)
 
@@ -230,10 +251,9 @@ class MODEWrapper(CompareGriddedWrapper):
             self.infiles.append(obs_path)
             self.add_merge_config_file(time_info)
             self.set_current_field_config(var_info)
-            self.set_environment_variables(fcst_field, obs_field, time_info)
+            self.set_environment_variables(time_info)
             if not self.find_and_check_output_file(time_info,
                                                    is_directory=True):
                 return
 
             self.build()
-            self.clear()

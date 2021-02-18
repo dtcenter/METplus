@@ -50,27 +50,6 @@ def pb2nc_wrapper(metplus_config):
 # ------------------------ TESTS GO HERE --------------------------
 
 # ---------------------
-# test_reformat_grid_id
-# ---------------------
-@pytest.mark.parametrize(
-    # key = grid_id, value = expected reformatted grid id
-        'key, value', [
-            ('G1', 'G001'),
-            ('G100', 'G100'),
-            ('G10', 'G010'),
-            ('123', '123'),
-            ('G1234', None),
-            ('GG', None),
-            ('G', None),
-        ]
-)
-def test_reformat_grid_id(metplus_config, key, value):
-    # Verify that reformatting of the grid id is correct
-    pb = pb2nc_wrapper(metplus_config)
-    reformatted = pb.reformat_grid_id(key)
-    assert value == reformatted
-
-# ---------------------
 # test_find_and_check_output_file_skip
 # test that find_and_check_output_file returns correctly based on
 # if file exists and if 'skip if exists' is turned on

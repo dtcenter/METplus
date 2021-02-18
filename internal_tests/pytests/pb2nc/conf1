@@ -15,7 +15,7 @@ PROCESS_LIST = PB2NC
 #LOG_LEVEL = DEBUG
 
 ## MET Configuration files for pb2nc
-PB2NC_CONFIG_FILE = /some/fake/PB2NCConfig
+PB2NC_CONFIG_FILE = {PARM_BASE}/met_config/PB2NCConfig_wrapped
 
 PB2NC_SKIP_IF_OUTPUT_EXISTS = True
 

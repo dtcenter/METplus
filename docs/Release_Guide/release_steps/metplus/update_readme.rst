@@ -1,5 +1,5 @@
-Update README
--------------
+Update the README.md file
+-------------------------
 
 * Change 'METplus_develop' to replace develop with the release branch name,
   i.e. 'METplus_main_v4.0'
