@@ -101,7 +101,7 @@ _files.conf
 #
 # 1) Passing in GridStat.conf, GridStat_forecast.conf, GridStat_observation.conf, an explicit override of the output directory, then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 #        -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf
 #        -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf
 #        -c dir.GRID_STAT_OUTPUT_DIR={OUTPUT_BASE}/met_tool_wrapper/GridStat/GridStat_multiple_config
@@ -109,7 +109,7 @@ _files.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, passing in GridStat.conf, GridStat_forecast.conf, GridStat_observation.conf, and an explicit override of the output directory::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 #        -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf
 #        -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf
 #        -c dir.GRID_STAT_OUTPUT_DIR={OUTPUT_BASE}/met_tool_wrapper/GridStat/GridStat_multiple_config

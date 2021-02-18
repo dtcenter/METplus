@@ -1282,7 +1282,7 @@ class CommandBuilder:
             logfile_path = self.config.getstr('config', 'LOG_METPLUS')
             # if MET output is written to its own logfile, get that filename
             if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
-                logfile_path = logfile_path.replace('master_metplus',
+                logfile_path = logfile_path.replace('run_metplus',
                                                     log_name)
 
             self.log_error("MET command returned a non-zero return code:"

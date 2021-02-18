@@ -123,11 +123,11 @@ _obsGloTEC_vx7.conf
 #
 # 1) Passing in GridStat_fcstGloTEC_obsGloTEC_vx7.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstGloTEC_obsGloTEC_vx7.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
