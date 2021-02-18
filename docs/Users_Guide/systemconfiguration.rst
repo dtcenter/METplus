@@ -1308,6 +1308,8 @@ Files Processed::
 
     I2020101912_F006_V18
 
+.. _metplus-control-met:
+
 How METplus controls MET config file settings
 ---------------------------------------------
 
