@@ -21,8 +21,6 @@ docker inspect --type=image $DOCKERHUBTAG > /dev/null
 if [ $? != 0 ]; then
    # if docker pull fails, build locally
    echo docker pull failed. Building Docker image locally...
-   ls ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
-   ls ${GITHUB_WORKSPACE}/ci/jobs
    ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
 fi
 exit 0
