@@ -187,10 +187,10 @@ _seasonal_forecast.conf
 # **GridStatConfig_seasonal_forecast**
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast/GridStatConfig_seasonal_forecast
+# .. literalinclude:: ../../../parm/met_config/GridStatConfig_wrapped
 #
-# See the following file for more information about the environment variables set in this configuration file::
-#   parm/use_cases/met_tool_wrapper/GridStat/GridStat.py
+#
+# See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in this file.
 #
 # **SeriesAnalysisConfig_wrapped**
 #
