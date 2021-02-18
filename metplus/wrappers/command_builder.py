@@ -39,6 +39,9 @@ class CommandBuilder:
     # types of climatology values that should be checked and set
     climo_types = ['MEAN', 'STDEV']
 
+    # name of variable to hold any MET config overrides
+    MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_OVERRIDES'
+
     def __init__(self, config, instance=None, config_overrides={}):
         self.isOK = True
         self.errors = 0
@@ -72,6 +75,15 @@ class CommandBuilder:
         if hasattr(config, 'env'):
             self.env = config.env
         self.c_dict = self.create_c_dict()
+
+        # if wrapper has a config file, read unsupported MET config variable
+        if 'CONFIG_FILE' in self.c_dict:
+            config_name = self.MET_OVERRIDES_KEY.replace('METPLUS',
+                                                         self.app_name.upper())
+            self.c_dict[self.MET_OVERRIDES_KEY] = (
+                self.config.getraw('config', config_name)
+            )
+
         self.check_for_externals()
 
         self.cmdrunner = CommandRunner(self.config, logger=self.logger,
@@ -156,6 +168,10 @@ class CommandBuilder:
               @param time_info dictionary containing timing info from current run"""
         # set user environment variables
         self.set_user_environment(time_info)
+
+        # set MET config overrides that are not set by other variables
+        self.add_env_var(self.MET_OVERRIDES_KEY,
+                         self.c_dict.get(self.MET_OVERRIDES_KEY, ''))
 
         # send environment variables to logger
         for msg in self.print_all_envs():
