@@ -78,7 +78,7 @@ _obsNCEP_sea_ice.conf
 # **GridStatConfig_sea_ice**
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/met_config/GridStatConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 #
 #
 # See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in this file.

@@ -187,7 +187,7 @@ _seasonal_forecast.conf
 # **GridStatConfig_seasonal_forecast**
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../parm/met_config/GridStatConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 #
 #
 # See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in this file.
