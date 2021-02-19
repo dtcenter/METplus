@@ -38,6 +38,8 @@ model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
 # It processes the following run time:
 #
 # | **Valid:** 2020-01-27 0Z
+# |
+#
 # As it is currently set, the configuration file will pass in the path to the observation data,
 # as well as a path to the weights for the coordinate system. This is done in an effort to speed up running the use case.
 # These weight files are not required to run at the time of executing the use case, but will be made via Python Embedding
