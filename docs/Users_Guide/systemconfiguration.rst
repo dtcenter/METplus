@@ -1469,7 +1469,28 @@ Overriding Unsupported MET config file settings
 -----------------------------------------------
 
 While METplus does provide configuration settings for most MET config file options, there will certainly be instances when a user wishes to control a MET config file
-option that has no corresponding METplus configuration file setting. In this instance, the user would set the special :term:`METPLUS_MET_CONFIG_OVERRIDES` METplus configuration item.
+option that has no corresponding METplus configuration file setting. In this instance, the user would set a special METplus configuration item to accomplish this. There
+is one of these special METplus configuration items for the following wrappers:
+
+| :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
+| :term:`ASCII2NC_MET_CONFIG_OVERRIDES`
+| :term:`GRID_DIAG_MET_CONFIG_OVERRIDES`
+| :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
+| :term:`MODE_MET_CONFIG_OVERRIDES`
+| :term:`MTD_MET_CONFIG_OVERRIDES`
+| :term:`PB2NC_MET_CONFIG_OVERRIDES`
+| :term:`POINT_STAT_MET_CONFIG_OVERRIDES`
+| :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
+| :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
+| :term:`TC_GEN_MET_CONFIG_OVERRIDES`
+| :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
+| :term:`TC_RMW_MET_CONFIG_OVERRIDES`
+| :term:`TC_STAT_MET_CONFIG_OVERRIDES`
+|
+
+These special METplus configuration items will control the value of the special environment variable **${METPLUS_MET_CONFIG_OVERRIDES}** which can be found at the bottom
+of each MET config file that METplus uses. To demonstrate how you can use this powerful feature, see the two examples below for GridStat. The general concept can be
+applied to any MET tool that supports this special configuration item in METplus (see list above).
 
 .. note:: We do not recommend modifying MET config files when using METplus. Instead, this new approach to controlling unsupported MET config options is strongly encouraged.
 
@@ -1485,9 +1506,9 @@ Let's use the example of a user running GridStat. The user has a customized Grid
    zhu_weight        = 0.5;
   }
 
-Currently there is no support in METplus to control any of these items specifically, however they can be set using :term:`METPLUS_MET_CONFIG_OVERRIDES`. Recall from `How METplus controls MET config file settings`_ that METplus will utilize the default settings for each variable in the 'distance_map' dictionary. If a user wishes to override the default value of the 'baddeley_p' variable, then they would create the following entry in their METplus configuration file::
+Currently there is no support in METplus to control any of these items specifically, however they can be set using :term:`GRID_STAT_MET_CONFIG_OVERRIDES`. Recall from `How METplus controls MET config file settings`_ that METplus will utilize the default settings for each variable in the 'distance_map' dictionary. If a user wishes to override the default value of the 'baddeley_p' variable, then they would create the following entry in their METplus configuration file::
 
-  METPLUS_MET_CONFIG_OVERRIDES = distance_map = {baddeley_p = 10;}
+  GRID_STAT_MET_CONFIG_OVERRIDES = distance_map = {baddeley_p = 10;}
 
 This is quite confusing to read since there are three '=' characters, however METplus interprets everything to the right of the first '=' character (reading left --> right) as a single string which in this case would be **'distance_map = {baddeley_p = 10;}'**. When METplus runs GridStat, it appends a special 'distance_map' dictionary to the end of the GridStat MET config file used by METplus to override the default value of the 'baddeley_p' variable in the 'distance_map' dictionary. A line would be added that looks like::
 
@@ -1498,9 +1519,9 @@ This simply causes MET to update the value of the 'baddeley_p' variable in the '
 MET Config Override GridStat Complex Example
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-The special :term:`METPLUS_MET_CONFIG_OVERRIDES` is quite powerful and allows the user to control multiple unsupported MET config file changes at once. In addition to setting custom 'distance_map' dictionary settings, a user could also change the 'output_flag' and 'nc_pairs_flag' settings in GridStat simultaneously by creating the following entry in their METplus config file::
+The special :term:`GRID_STAT_MET_CONFIG_OVERRIDES` is quite powerful and allows the user to control multiple unsupported MET config file changes at once. In addition to setting custom 'distance_map' dictionary settings, a user could also change the 'output_flag' and 'nc_pairs_flag' settings in GridStat simultaneously by creating the following entry in their METplus config file::
 
-  METPLUS_MET_CONFIG_OVERRIDES = distance_map = {baddeley_p = 10;} output_flag = {eclv = NONE;} nc_pairs_flag = {latlon = TRUE;}
+  GRID_STAT_MET_CONFIG_OVERRIDES = distance_map = {baddeley_p = 10;} output_flag = {eclv = NONE;} nc_pairs_flag = {latlon = TRUE;}
 
 Again, METplus is capable of correctly interpreting the above as three separate overrides that need to be appended to the end of the GridStat MET config file used by METplus at runtime::
 

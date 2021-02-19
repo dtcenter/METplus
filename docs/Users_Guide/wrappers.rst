@@ -787,7 +787,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`METPLUS_MET_CONFIG_OVERRIDES`
+   * - :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
      - n/a
 
 .. _make_plots_wrapper:

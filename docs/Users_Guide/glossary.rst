@@ -5468,20 +5468,17 @@ METplus Configuration Glossary
 
     | *Used by:* GridStat, PointStat, EnsembleStat, GridDiag, MODE, MTD, SeriesAnalysis, TCGen, TCPairs, TCStat
 
-   METPLUS_MET_CONFIG_OVERRIDES
-     Allows the user to override MET config file settings for which there are no direct METplus configuration options to set.
-     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
-
-    | *Used by:* Universal
-
    ENSEMBLE_STAT_MET_CONFIG_OVERRIDES
      Override any variables in the MET configuration file that are not
      supported by the wrapper. This should be set to the full variable name
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
      ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:*  EnsembleStat
 
@@ -5491,8 +5488,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     ASCII2NC_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* ASCII2NC
 
@@ -5502,8 +5502,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     GRID_DIAG_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* GridDiag
 
@@ -5513,8 +5516,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     GRID_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+  
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* GridStat
 
@@ -5524,8 +5530,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     MODE_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* MODE
 
@@ -5535,8 +5544,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     MTD_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* MTD
 
@@ -5546,8 +5558,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     PB2NC_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* PB2NC
 
@@ -5557,8 +5572,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     POINT_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* PointStat
 
@@ -5568,8 +5586,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     SERIES_ANALYSIS_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* SeriesAnalysis
 
@@ -5579,8 +5600,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     STAT_ANALYSIS_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* StatAnalysis
 
@@ -5590,8 +5614,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     TC_GEN_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* TCGen
 
@@ -5601,8 +5628,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     TC_PAIRS_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* TCPairs
 
@@ -5612,8 +5642,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     TC_RMW_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* TCRMW
 
@@ -5623,7 +5656,10 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     TC_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* TCStat
