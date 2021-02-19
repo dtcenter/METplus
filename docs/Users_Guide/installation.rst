@@ -269,7 +269,7 @@ METplus Wrappers run and do not need to be invoked on the command line.
 
    -  runtime-related settings:
 
-      -  location of METplus master_metplus.conf file (the 'master' conf
+      -  location of METplus run_metplus.conf file (the conf
          file that is a collection of all the final METplus
          configuration files)
 
@@ -393,7 +393,7 @@ These cases can be handled automatically by using the :ref:`validate_config`, bu
 
 SED Commands
 ~~~~~~~~~~~~
-Running master_metplus.py with one or more configuration files that contain deprecated variables that can be fixed with a find/replace command will generate a file in the {OUTPUT_BASE} called sed_commands.txt. This file contains a list of commands that can be run to update the configuration file. Lines that start with "#Add" are intended to notify the user to add a variable to their METplus configuration file.
+Running run_metplus.py with one or more configuration files that contain deprecated variables that can be fixed with a find/replace command will generate a file in the {OUTPUT_BASE} called sed_commands.txt. This file contains a list of commands that can be run to update the configuration file. Lines that start with "#Add" are intended to notify the user to add a variable to their METplus configuration file.
 
 The :ref:`validate_config` will step you through each of these commands and execute them upon your approval.
 
@@ -412,9 +412,9 @@ Example sed_commands.txt content::
 
 Validate Config Helper Script
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-The script named validate_config.py is found in the same directory as master_metplus.py. To use this script, call it with the same arguments that you would pass to master_metplus.py::
+The script named validate_config.py is found in the same directory as run_metplus.py. To use this script, call it with the same arguments that you would pass to run_metplus.py::
 
-  master_metplus.py  -c ./my_conf.py -c ./another_config.py
+  run_metplus.py  -c ./my_conf.py -c ./another_config.py
   validate_config.py -c ./my_conf.py -c ./another_config.py
 
 You must pass a valid configuration to the script, as in you must properly set :term:`MET_INSTALL_DIR`, :term:`INPUT_BASE`, and :term:`OUTPUT_BASE`, or it will not run.
@@ -498,7 +498,7 @@ Running METplus Wrappers
 ------------------------
 
 Running METplus Wrappers involves invoking the Python script
-master_metplus.py from any directory followed by a list of configuration
+run_metplus.py from any directory followed by a list of configuration
 files (file path relative to the
 *<path_to_METplus_install_dir>*/parm directory).
 
@@ -525,7 +525,7 @@ Copy and paste the following into an empty text file and name it 'my_user_config
   # It will be created if it does not exist
   OUTPUT_BASE = /tmp/output
 
-Run METplus via: ``master_metplus.py -c ./<my_user_config.conf>`` or ``master_metplus.py -c /<username>/<my_user_config.conf>`` if you saved your default config in a directory other than where you are running master_metplus.py.
+Run METplus via: ``run_metplus.py -c ./<my_user_config.conf>`` or ``run_metplus.py -c /<username>/<my_user_config.conf>`` if you saved your default config in a directory other than where you are running run_metplus.py.
 
 When the above command is run, a usage message appears indicating that other config files are required to perform useful tasks, as well as a list of currently supported wrappers:
 
@@ -534,11 +534,11 @@ When the above command is run, a usage message appears indicating that other con
   USAGE: This text is displayed when [config] PROCESS_LIST = Usage.
   Pass in a configuration file (with -c or --config) that overrides [config] PROCESS_LIST to run other processes. For example:
 
-  master_metplus.py -c parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
+  run_metplus.py -c parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
   or
 
-  master_metplus.py --config parm/use_cases/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
+  run_metplus.py --config parm/use_cases/model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
 
   Possible processes:
   - ASCII2NC
@@ -576,7 +576,7 @@ The command:
 
 .. code-block::
 
-  master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf
+  run_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
 will run METplus using the defaults set in the config files found in parm/metplus_config. Any variables defined in these three config files can be overridden in the parm/use_cases/GridStat/GridStat.conf file. METplus will run using the values specified in the GridStat.conf file.
 
@@ -586,7 +586,7 @@ The command:
 
 .. code-block::
 
-  master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
+  run_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf
 
@@ -596,6 +596,6 @@ Separating configurations into multiple files can be useful if you want to compa
 
 .. code-block::
 
-  master_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
+  run_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf \
   -c /home/user/METplus_user_config/GridStat_myforecast.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf

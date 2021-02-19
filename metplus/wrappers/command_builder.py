@@ -234,6 +234,17 @@ class CommandBuilder:
         # set user defined environment variables
         self.set_user_environment(time_info)
 
+        # set MET config overrides that are not set by other variables
+        met_overrides = self.c_dict.get(self.MET_OVERRIDES_KEY, '')
+        if time_info:
+            met_overrides = do_string_sub(met_overrides,
+                                          skip_missing_tags=True,
+                                          recurse=True,
+                                          **time_info)
+
+        self.add_env_var(self.MET_OVERRIDES_KEY,
+                         met_overrides)
+
         # send environment variables to logger
         for msg in self.print_all_envs():
             self.logger.debug(msg)
@@ -392,6 +403,9 @@ class CommandBuilder:
 
         if 'user_env_vars' in self.config.sections():
             for user_var in self.config.keys('user_env_vars'):
+                # skip unset user env vars if not needed
+                if self.env.get(user_var) is None:
+                    continue
                 var_list.add(user_var)
 
         shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
@@ -1279,7 +1293,7 @@ class CommandBuilder:
             logfile_path = self.config.getstr('config', 'LOG_METPLUS')
             # if MET output is written to its own logfile, get that filename
             if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
-                logfile_path = logfile_path.replace('master_metplus',
+                logfile_path = logfile_path.replace('run_metplus',
                                                     log_name)
 
             self.log_error("MET command returned a non-zero return code:"

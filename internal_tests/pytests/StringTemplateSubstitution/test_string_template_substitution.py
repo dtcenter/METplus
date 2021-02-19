@@ -174,7 +174,6 @@ def test_ymd_region_cyclone():
     region_str = 'al'
     cyclone_str = '05'
     year_str = '2017'
-    # templ = '/d1/METplus_TC/bdeck/{date?fmt=%Y%m}/bal{region?fmt=%s}.dat'
     templ = '/d1/METplus_TC/bdeck/{date?fmt=%s}/b{region?fmt=%s}' \
             '{cyclone?fmt=%s}{misc?fmt=%s}.dat'
     full_file = do_string_sub(templ, date=date_str, region=region_str,
@@ -201,16 +200,10 @@ def test_crow_variable_hour():
     crow_1_output = do_string_sub(templ, valid=valid_1, lead=lead_1)
     crow_2_output = do_string_sub(templ, valid=valid_2, lead=lead_2)
     crow_3_output = do_string_sub(templ, valid=valid_3, lead=lead_3)
-    # print("crow_1 output: ", crow_1_output)
-    # print("crow_2 output: ", crow_2_output)
-    # print("crow_3 output: ", crow_3_output)
 
     assert(crow_1_output == crow_input_file_1 and
            crow_2_output == crow_input_file_2 and
            crow_3_output == crow_input_file_3)
-
-
-
 
 def test_multiple_valid_substitution_valid():
     valid_string = datetime.datetime.strptime("2018020112", '%Y%m%d%H')
@@ -523,6 +516,7 @@ def test_populate_match_dict(template, filepath, expected_match_dict, expected_v
 
     except TypeError:
         assert(expected_match_dict is None and expected_valid_shift is None)
+
 @pytest.mark.parametrize(
     'fmt, filepath, identifier, expected_fmt_len, expected_match_dict', [
         # test valid time extraction
@@ -547,10 +541,57 @@ def test_get_fmt_info(fmt, filepath, identifier, expected_fmt_len, expected_matc
 
     assert(True)
 
-def test_do_string_sub_skip_missing_tags():
+@pytest.mark.parametrize(
+    'templ, expected_filename', [
+        # test valid time extraction
+        ("{init?fmt=%Y%m%d%H}_{missing_tag?fmt=%H}_f{lead?fmt=%2H}",
+         "2017060400_{missing_tag?fmt=%H}_f06"),
+    ]
+)
+def test_do_string_sub_skip_missing_tags(templ, expected_filename):
     init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
     lead_string = int("6") * 3600
-    templ = "{init?fmt=%Y%m%d%H}_{missing_tag?fmt=%H}_f{lead?fmt=%2H}"
-    expected_filename = "2017060400_{missing_tag?fmt=%H}_f06"
-    filename = do_string_sub(templ, init=init_string, lead=lead_string, skip_missing_tags=True)
+    filename = do_string_sub(templ,
+                             init=init_string,
+                             lead=lead_string,
+                             skip_missing_tags=True,
+                             recurse=True)
+    assert(filename == expected_filename)
+
+@pytest.mark.parametrize(
+    'templ, expected_filename', [
+        # test template within dictionary item
+        ("dict = { my_stuff_{init?fmt=%Y%m%d%H} more;}",
+         "dict = { my_stuff_2017060400 more;}"),
+        ("dict = { my_stuff_{init?fmt=%Y%m%d%H} more;}",
+         "dict = { my_stuff_2017060400 more;}"),
+        ("climo_stdev = {field = [{name= \"filename.py other.nc:{init?fmt=%d%m}\";}]};",
+         "climo_stdev = {field = [{name= \"filename.py other.nc:0406\";}]};")
+    ]
+)
+def test_do_string_sub_recurse(templ, expected_filename):
+    init_string = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
+    lead_string = int("6") * 3600
+    filename = do_string_sub(templ,
+                             init=init_string,
+                             lead=lead_string,
+                             skip_missing_tags=True,
+                             recurse=True)
+    assert(filename == expected_filename)
+
+@pytest.mark.parametrize(
+    'templ, expected_filename', [
+        # test sub values that contain regex expressions with curly braces
+        ("{date?fmt=%Y%m}/b{basin?fmt=%s}q{date?fmt=%Y%m}*.gfso.{cyclone?fmt=%s}",
+         "201706/b([a-zA-Z]{2})q201706*.gfso.([0-9]{2,4})"),
+    ]
+)
+def test_do_string_sub_no_recurse_no_missing(templ, expected_filename):
+    date_dt = datetime.datetime.strptime("2017060400", '%Y%m%d%H')
+    basin_regex = "([a-zA-Z]{2})"
+    cyclone_regex = "([0-9]{2,4})"
+    filename = do_string_sub(templ,
+                             date=date_dt,
+                             basin=basin_regex,
+                             cyclone=cyclone_regex)
     assert(filename == expected_filename)

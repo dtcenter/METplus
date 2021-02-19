@@ -18,6 +18,7 @@ Release instructions for each of the METplus components are described in the fol
 
 .. toctree::
    :titlesonly:
+   :maxdepth: 1
    :numbered: 4
 
    metplus
