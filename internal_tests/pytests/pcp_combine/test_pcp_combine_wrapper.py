@@ -318,6 +318,7 @@ def test_pcp_combine_add_subhourly(metplus_config):
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
+    assert(len(all_cmds) == len(expected_cmds))
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
@@ -340,11 +341,11 @@ def test_pcp_combine_bucket(metplus_config):
 
     # set process and time config variables
     config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'VALID')
-    config.set('config', 'VALID_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'VALID_BEG', '2012040900')
-    config.set('config', 'VALID_END', '2012040900')
-    config.set('config', 'VALID_INCREMENT', '1M')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2012040900')
+    config.set('config', 'INIT_END', '2012040900')
+    config.set('config', 'INIT_INCREMENT', '1M')
     config.set('config', 'LEAD_SEQ', '15H')
     config.set('config', 'LOOP_ORDER', 'times')
     config.set('config', 'FCST_PCP_COMBINE_RUN', 'True')
@@ -359,7 +360,7 @@ def test_pcp_combine_bucket(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_BUCKET_INTERVAL', '6H')
     config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '{lead}')
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_NAME', fcst_output_name)
-    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '15M')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '15H')
 
     wrapper = PCPCombineWrapper(config)
     assert(wrapper.isOK)
@@ -378,12 +379,26 @@ def test_pcp_combine_bucket(metplus_config):
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
+    assert(len(all_cmds) == len(expected_cmds))
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert(cmd == expected_cmd)
 
-def test_pcp_combine_derive(metplus_config):
+@pytest.mark.parametrize(
+        'config_overrides, extra_fields', [
+            ({},
+             ''),
+            ({'FCST_PCP_COMBINE_EXTRA_NAMES': 'NAME1',
+              'FCST_PCP_COMBINE_EXTRA_LEVELS': 'LEVEL1', },
+             "-field 'name=\"NAME1\"; level=\"LEVEL1\";' "),
+            ({'FCST_PCP_COMBINE_EXTRA_NAMES': 'NAME1, NAME2',
+              'FCST_PCP_COMBINE_EXTRA_LEVELS': 'LEVEL1, LEVEL2', },
+             ("-field 'name=\"NAME1\"; level=\"LEVEL1\";' "
+              "-field 'name=\"NAME2\"; level=\"LEVEL2\";' ")),
+    ]
+)
+def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
     stat_list = 'sum,min,max,range,mean,stdev,vld_count'
     fcst_name = 'APCP'
     fcst_level = 'A03'
@@ -403,11 +418,11 @@ def test_pcp_combine_derive(metplus_config):
 
     # set process and time config variables
     config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'VALID')
-    config.set('config', 'VALID_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'VALID_BEG', '2005080700')
-    config.set('config', 'VALID_END', '2005080700')
-    config.set('config', 'VALID_INCREMENT', '1M')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2005080700')
+    config.set('config', 'INIT_END', '2005080700')
+    config.set('config', 'INIT_INCREMENT', '1M')
     config.set('config', 'LEAD_SEQ', '24H')
     config.set('config', 'LOOP_ORDER', 'times')
     config.set('config', 'FCST_PCP_COMBINE_RUN', 'True')
@@ -417,7 +432,7 @@ def test_pcp_combine_derive(metplus_config):
                '{init?fmt=%Y%m%d%H}/{lead?fmt=%HH}.tm00_G212')
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR', fcst_output_dir)
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_TEMPLATE',
-               '{valid?fmt=%Y%m%d%H}_A{level?fmt=%3H}.nc')
+               '{init?fmt=%Y%m%d%H}_f{lead?fmt=%HH}_A{level?fmt=%HH}.nc')
     config.set('config', 'FCST_PCP_COMBINE_INPUT_DATATYPE', 'GRIB')
     config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '3H')
     config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', fcst_name)
@@ -428,6 +443,10 @@ def test_pcp_combine_derive(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_STAT_LIST', stat_list)
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '18M')
 
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
     wrapper = PCPCombineWrapper(config)
     assert(wrapper.isOK)
 
@@ -435,19 +454,20 @@ def test_pcp_combine_derive(metplus_config):
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
     expected_cmds = [(f"{app_path} {verbosity} "
-                      f"-derive {stat_list}"
+                      f"-derive {stat_list} "
                       f"{fcst_input_dir}/2005080700/24.tm00_G212 "
                       f"{fcst_input_dir}/2005080700/21.tm00_G212 "
                       f"{fcst_input_dir}/2005080700/18.tm00_G212 "
                       f"{fcst_input_dir}/2005080700/15.tm00_G212 "
                       f"{fcst_input_dir}/2005080700/12.tm00_G212 "
                       f"{fcst_input_dir}/2005080700/09.tm00_G212 "
-                      f"{fcst_fmt} "
+                      f"{fcst_fmt} {extra_fields}"
                       f"{out_dir}/2005080700_f24_A18.nc"),
                      ]
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
+    assert(len(all_cmds) == len(expected_cmds))
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
@@ -471,11 +491,11 @@ def test_pcp_combine_loop_custom(metplus_config):
 
     # set process and time config variables
     config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'VALID')
-    config.set('config', 'VALID_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'VALID_BEG', '2009123112')
-    config.set('config', 'VALID_END', '2009123112')
-    config.set('config', 'VALID_INCREMENT', '1M')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2009123112')
+    config.set('config', 'INIT_END', '2009123112')
+    config.set('config', 'INIT_INCREMENT', '1M')
     config.set('config', 'LEAD_SEQ', '24H')
     config.set('config', 'LOOP_ORDER', 'times')
     config.set('config', 'FCST_PCP_COMBINE_RUN', 'True')
@@ -502,7 +522,7 @@ def test_pcp_combine_loop_custom(metplus_config):
     expected_cmds = []
     for ens in ens_list:
         cmd = (f"{app_path} {verbosity} "
-               f"-name {fcst_name}"
+               f"-name {fcst_name} "
                f"-add "
                f"{fcst_input_dir}/{ens}/2009123112_02400.grib 24 "
                f"{out_dir}/{ens}/2009123112_02400.nc")
@@ -510,14 +530,13 @@ def test_pcp_combine_loop_custom(metplus_config):
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
+    assert(len(all_cmds) == len(expected_cmds))
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert(cmd == expected_cmd)
 
 def test_pcp_combine_subtract(metplus_config):
-    fcst_name = 'APCP'
-    fcst_level = 'A03'
     config = metplus_config()
 
     test_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
@@ -533,11 +552,11 @@ def test_pcp_combine_subtract(metplus_config):
 
     # set process and time config variables
     config.set('config', 'PROCESS_LIST', 'PCPCombine')
-    config.set('config', 'LOOP_BY', 'VALID')
-    config.set('config', 'VALID_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'VALID_BEG', '2005080700')
-    config.set('config', 'VALID_END', '2005080700')
-    config.set('config', 'VALID_INCREMENT', '1M')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2005080700')
+    config.set('config', 'INIT_END', '2005080700')
+    config.set('config', 'INIT_INCREMENT', '1M')
     config.set('config', 'LEAD_SEQ', '18H')
     config.set('config', 'LOOP_ORDER', 'times')
     config.set('config', 'FCST_PCP_COMBINE_RUN', 'True')
@@ -560,17 +579,19 @@ def test_pcp_combine_subtract(metplus_config):
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
     expected_cmds = [(f"{app_path} {verbosity} "
                       f"-subtract "
-                      f"{fcst_input_dir}/2005080700/18.tm00_G212 18"
-                      f"{fcst_input_dir}/2005080700/15.tm00_G212 15"
-                      f"{out_dir}/2005080700_f18_A03.nc"),
+                      f"{fcst_input_dir}/2005080700/18.tm00_G212 18 "
+                      f"{fcst_input_dir}/2005080700/15.tm00_G212 15 "
+                      f"{out_dir}/2005080718_A003.nc"),
                      ]
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
+    assert(len(all_cmds) == len(expected_cmds))
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert(cmd == expected_cmd)
+
 def test_pcp_combine_sum_subhourly(metplus_config):
     fcst_name = 'A000500'
     fcst_level = 'Surface'
@@ -632,6 +653,7 @@ def test_pcp_combine_sum_subhourly(metplus_config):
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
+    assert(len(all_cmds) == len(expected_cmds))
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
