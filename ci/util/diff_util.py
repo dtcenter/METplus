@@ -2,6 +2,7 @@ import os
 import netCDF4
 import filecmp
 from PIL import Image, ImageChops
+import numpy
 
 IMAGE_EXTENSIONS = [
     '.png',
@@ -44,7 +45,7 @@ def compare_dir(dir_a, dir_b, debug=False):
     all_equal = True
     diff_files = []
     for root, _, files in os.walk(dir_a):
-        # skip log directory
+        # skip logs directories
         if root.endswith('logs'):
             continue
 
@@ -61,7 +62,8 @@ def compare_dir(dir_a, dir_b, debug=False):
 
             filepath2 = filepath.replace(dir_a, dir_b)
             if debug:
-                print(f"\n# # # # # # # # # # # # # # # # # # # # # # # # # # # # # #\n")
+                print("\n# # # # # # # # # # # # # # # # # # # # # # # # # # "
+                      "# # # #\n")
                 rel_path = filepath.replace(f'{dir_a}/', '')
                 print(f"COMPARING {rel_path}")
                 print(f"file1: {filepath}")
@@ -85,6 +87,8 @@ def compare_dir(dir_a, dir_b, debug=False):
                 if not nc_is_equal(filepath, filepath2):
                     all_equal = False
                     diff_files.append((filepath, filepath2, 'NetCDF diff'))
+                else:
+                    print("No differences in NetCDF files")
                 continue
 
             if file_type == 'image':
@@ -92,6 +96,8 @@ def compare_dir(dir_a, dir_b, debug=False):
                 if not compare_image_files(filepath, filepath2):
                     all_equal = False
                     diff_files.append((filepath, filepath2, 'Image diff'))
+                else:
+                    print("No differences in image files")
                 continue
 
             # if not any of the above types, use diff to compare
@@ -102,11 +108,17 @@ def compare_dir(dir_a, dir_b, debug=False):
                     print(f"ERROR: File differs: {filepath2}")
                     all_equal = False
                     diff_files.append((filepath, filepath2, 'Text diff'))
+                else:
+                    print("No differences in text files")
+            else:
+                print("No differences in text files")
 
     if not all_equal:
         print("ERROR: Some differences were found")
         for filepath_a, filepath_b, reason in diff_files:
             print(f"{reason}\n  {filepath_a}\n  {filepath_b}")
+    else:
+        print("No differences found in any files")
 
     return all_equal
 
@@ -120,10 +132,10 @@ def compare_image_files(filepath, filepath2):
     for x in range(0, int(nx)):
         for y in range(0, int(ny)):
             pixel = image_diff.getpixel((x, y))
-            if pixel != (0, 0, 0, 0):
+            if pixel != 0 and pixel != (0, 0, 0, 0):
                 diff_count += 1
     if diff_count:
-        print(f"Found {diff_count} differences between images")
+        print(f"ERROR: Found {diff_count} differences between images")
         return False
     return True
 
@@ -209,7 +221,7 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
         a_fields = sorted(nc_a.variables.keys())
         b_fields = sorted(nc_b.variables.keys())
         if a_fields != b_fields:
-            print("Field list differs between files\n"
+            print("ERROR: Field list differs between files\n"
                   f"A: {a_fields}\nB:{b_fields}\n"
                   f"Using A fields.")
 
@@ -230,15 +242,20 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
                 values_a = var_a[:]
                 values_b = var_b[:]
                 values_diff = values_a - values_b
-                if values_diff.min() != 0.0 or values_diff.max() != 0.0:
-                    print(f"Field ({field}) values differ\n"
+                if (numpy.isnan(values_diff.min()) and
+                        numpy.isnan(values_diff.max())):
+                    print(f"WARNING: Variable {field} contains NaN values. "
+                          "Cannot perform comparison.")
+                elif values_diff.min() != 0.0 or values_diff.max() != 0.0:
+                    print(f"ERROR: Field ({field}) values differ\n"
                           f"Min diff: {values_diff.min()}, "
                           f"Max diff: {values_diff.max()}")
                     is_equal = False
-                    # print indices that are not zero and count of diffs if debug
+                    # print indices that are not zero and count of diffs
                     if debug:
                         count = 0
-                        values_list = [j for sub in values_diff.tolist() for j in sub]
+                        values_list = [j for sub in values_diff.tolist()
+                                       for j in sub]
                         for idx, val in enumerate(values_list):
                             if val != 0.0:
                                 print(f"{idx}: {val}")
@@ -248,7 +265,8 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
             except TypeError:
                 # handle non-numeric fields
                 if any(var_a[:].flatten() != var_b[:].flatten()):
-                    print(f"Field ({field}) values (non-numeric) differ\n"
+                    print(f"ERROR: Field ({field}) values (non-numeric) "
+                          "differ\n"
                           f"A: {var_a}, B: {var_b}")
                     is_equal = False
 
