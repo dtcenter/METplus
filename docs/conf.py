@@ -27,7 +27,7 @@ project = 'METplus'
 author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
 # The full version, including alpha/beta/rc tags
-# i.e. 4.0-beta1-dev
+# i.e. 4.0.0-beta1-dev
 release = __version__
 
 # the stable version, displayed on front page of PDF extract X.Y version
@@ -107,6 +107,8 @@ exclude_patterns = ['_build',
                     'Users_Guide/METplus_*.rst',
                     'use_cases',
                     'Release_Guide/release_steps',
+                    'Verification_Datasets/datasets/template.rst',
+                    'Contributors_Guide/continuous_integration.rst',
                     ]
 
 # Suppress certain warning messages

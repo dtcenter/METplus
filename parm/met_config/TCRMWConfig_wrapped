@@ -23,20 +23,20 @@
 // ${VALID_HOUR_LIST} sets "valid_hour = [<user setting>];"
 // ${LEAD_LIST} sets "lead = [<user setting>];"
 
-${MODEL}
+${METPLUS_MODEL}
 
-${STORM_ID}
-${BASIN}
-${CYCLONE}
-${INIT_INCLUDE}
+${METPLUS_STORM_ID}
+${METPLUS_BASIN}
+${METPLUS_CYCLONE}
+${METPLUS_INIT_INCLUDE}
 
-${VALID_BEG}
-${VALID_END}
-${VALID_INCLUDE_LIST}
-${VALID_EXCLUDE_LIST}
+${METPLUS_VALID_BEG}
+${METPLUS_VALID_END}
+${METPLUS_VALID_INCLUDE_LIST}
+${METPLUS_VALID_EXCLUDE_LIST}
 
-${VALID_HOUR_LIST}
-${LEAD_LIST}
+${METPLUS_VALID_HOUR_LIST}
+${METPLUS_LEAD_LIST}
 
 //
 // May be set separately in each "field" entry
@@ -48,9 +48,9 @@ censor_val    = [];
 // Data fields
 //
 data = {
-   ${DATA_FILE_TYPE}
+   ${METPLUS_DATA_FILE_TYPE}
 
-   field = [ ${DATA_FIELD} ];
+   ${METPLUS_DATA_FIELD}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,14 +73,16 @@ ${METPLUS_REGRID_DICT}
 // ${DELTA_RANGE_KM} sets "delta_range_km = <user setting>;"
 // ${RMW_SCALE} sets "rmw_scale = <user setting>;"
 
-${N_RANGE}
-${N_AZIMUTH}
-${MAX_RANGE_KM}
-${DELTA_RANGE_KM}
-${RMW_SCALE}
+${METPLUS_N_RANGE}
+${METPLUS_N_AZIMUTH}
+${METPLUS_MAX_RANGE_KM}
+${METPLUS_DELTA_RANGE_KM}
+${METPLUS_RMW_SCALE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //version = "V10.0";
 
 ////////////////////////////////////////////////////////////////////////////////
+
+${METPLUS_MET_CONFIG_OVERRIDES}

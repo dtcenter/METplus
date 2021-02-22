@@ -58,6 +58,7 @@ Configuration
 | :term:`ASCII2NC_TIME_SUMMARY_VALID_FREQ`
 | :term:`ASCII2NC_TIME_SUMMARY_VALID_THRESH`
 | :term:`ASCII2NC_CUSTOM_LOOP_LIST`
+| :term:`ASCII2NC_MET_CONFIG_OVERRIDES`
 
 .. _cyclone_plotter_wrapper:
 
@@ -206,6 +207,7 @@ Configuration
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT`
+| :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
 | :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`ENS_VAR<n>_NAME` (optional)
 | :term:`ENS_VAR<n>_LEVELS` (optional)
@@ -428,6 +430,7 @@ METplus Configuration
 | :term:`GRID_DIAG_SKIP_IF_OUTPUT_EXISTS`
 | :term:`GRID_DIAG_RUNTIME_FREQ`
 | :term:`GRID_DIAG_DESC`
+| :term:`GRID_DIAG_MET_CONFIG_OVERRIDES`
 
 MET Configuration
 ~~~~~~~~~~~~~~~~~
@@ -438,7 +441,7 @@ This is the MET configuration file used for this wrapper. Below the file content
 
 The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
 
-**${METPLUS_MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${METPLUS_MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET GridDiag configuration file will be used.
 
 METplus Configuration::
 
@@ -550,7 +553,6 @@ Configuration
 | :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
 | :term:`GRID_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 
-
 [config]
 
 | :term:`LOG_GRID_STAT_VERBOSITY`
@@ -562,12 +564,13 @@ Configuration
 | :term:`GRID_STAT_CUSTOM_LOOP_LIST`
 | :term:`GRID_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`GRID_STAT_DESC`
-
 | :term:`GRID_STAT_REGRID_TO_GRID`
 | :term:`GRID_STAT_REGRID_METHOD`
 | :term:`GRID_STAT_REGRID_WIDTH`
 | :term:`GRID_STAT_REGRID_VLD_THRESH`
 | :term:`GRID_STAT_REGRID_SHAPE`
+| :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
+| :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`FCST_GRID_STAT_PROB_THRESH` (optional)
 | :term:`OBS_GRID_STAT_PROB_THRESH` (optional)
 | :term:`GRID_STAT_NEIGHBORHOOD_WIDTH` (optional)
@@ -596,6 +599,101 @@ Configuration
    | :term:`GRID_STAT_CONFIG`
    | :term:`CLIMO_GRID_STAT_INPUT_DIR`
    | :term:`CLIMO_GRID_STAT_INPUT_TEMPLATE`
+
+.. _grid-stat-met-conf:
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+This is the MET configuration file used for this wrapper. Below the file contents are descriptions of each environment variable referenced in this file and how the METplus configuration variables relate to them.
+
+.. literalinclude:: ../../parm/met_config/GridStatConfig_wrapped
+
+The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
+
+
+<----
+METPLUS_MODEL
+METPLUS_DESC
+METPLUS_OBTYPE
+METPLUS_REGRID_DICT
+METPLUS_FCST_FIELD
+METPLUS_OBS_FIELD
+METPLUS_CLIMO_MEAN_FILE
+METPLUS_CLIMO_STDEV_FILE
+METPLUS_MASK_GRID
+METPLUS_VERIF_MASK
+METPLUS_NBRHD_SHAPE
+METPLUS_NBRHD_WIDTH
+METPLUS_NBRHD_COV_THRESH
+METPLUS_OUTPUT_PREFIX
+METPLUS_MET_CONFIG_UNSUPPORTED
+---->
+
+**${METPLUS_MODEL}** - Corresponds to :term:`MODEL` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    MODEL = GFS
+
+Resulting value::
+
+    model = "GFS";
+
+**${METPLUS_DESC}** - Corresponds to :term:`GRID_STAT_DESC` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    GRID_STAT_DESC = MY_TEST
+
+Resulting value::
+
+    desc = "MY_TEST";
+
+**${METPLUS_OBTYPE}** - Corresponds to :term:`OBTYPE` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    OBTYPE = ANALYS
+
+Resulting value::
+
+    obtype = "ANALYS";
+
+**${METPLUS_REGRID_DICT}** - Corresponds to :term:`GRID_STAT_REGRID_METHOD`, :term:`GRID_STAT_REGRID_WIDTH`, :term:`GRID_STAT_REGRID_VLD_THRESH`, and :term:`GRID_STAT_REGRID_SHAPE` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+
+METplus Configuration 1::
+
+    [config]
+    GRID_STAT_REGRID_SHAPE = SQUARE
+
+Resulting value 1::
+
+    regrid = {shape = SQUARE;}
+
+METplus Configuration 2::
+
+    [config]
+    GRID_STAT_REGRID_WIDTH = 2
+    GRID_STAT_REGRID_SHAPE = SQUARE
+
+Resulting value 2::
+
+    regrid = {width = 2; shape = SQUARE;}
+
+**${METPLUS_OBTYPE}** - Corresponds to :term:`OBTYPE` in the METplus configuration file. If unset in METplus, value set in the default MET GridStat configuration file will be used.
+
+METplus Configuration::
+
+    [config]
+    OBTYPE = ANALYS
+
+Resulting value::
+
+    obtype = "ANALYS";
 
 .. _make_plots_wrapper:
 
@@ -750,6 +848,7 @@ Configuration
 | :term:`MODE_CUSTOM_LOOP_LIST`
 | :term:`MODE_SKIP_IF_OUTPUT_EXISTS`
 | :term:`MODE_DESC`
+| :term:`MODE_MET_CONFIG_OVERRIDES`
 | :term:`FCST_MODE_VAR<n>_NAME` (optional)
 | :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MODE_VAR<n>_THRESH` (optional)
@@ -810,6 +909,7 @@ Configuration
 | :term:`MTD_REGRID_WIDTH`
 | :term:`MTD_REGRID_VLD_THRESH`
 | :term:`MTD_REGRID_SHAPE`
+| :term:`MTD_MET_CONFIG_OVERRIDES`
 | :term:`FCST_MTD_VAR<n>_NAME` (optional)
 | :term:`FCST_MTD_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MTD_VAR<n>_THRESH` (optional)
@@ -870,6 +970,7 @@ Configuration
 | :term:`PB2NC_VALID_BEGIN`
 | :term:`PB2NC_VALID_END`
 | :term:`PB2NC_CUSTOM_LOOP_LIST`
+| :term:`PB2NC_MET_CONFIG_OVERRIDES`
 
 .. warning:: **DEPRECATED:**
 
@@ -1116,6 +1217,7 @@ Configuration
 | :term:`POINT_STAT_CUSTOM_LOOP_LIST`
 | :term:`POINT_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`POINT_STAT_DESC`
+| :term:`POINT_STAT_MET_CONFIG_OVERRIDES`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
 | :term:`FCST_POINT_STAT_WINDOW_END` (optional)
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
@@ -1292,6 +1394,7 @@ Configuration
 | :term:`SERIES_ANALYSIS_VLD_THRESH`
 | :term:`SERIES_ANALYSIS_BLOCK_SIZE`
 | :term:`SERIES_ANALYSIS_CTS_LIST`
+| :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
 
 [dir]
 
@@ -1372,6 +1475,7 @@ configuration file for running with LOOP_ORDER = times:
 | :term:`STAT_ANALYSIS_CONFIG_FILE`
 | :term:`STAT_ANALYSIS_JOB_NAME`
 | :term:`STAT_ANALYSIS_JOB_ARGS`
+| :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
 
 The following values are **optional** in the METplus Wrappers
 configuration file for running with LOOP_ORDER = times:
@@ -1541,6 +1645,7 @@ Configuration
 | :term:`TC_GEN_DLAND_FILE`
 | :term:`TC_GEN_SKIP_IF_OUTPUT_EXISTS`
 | :term:`TC_GEN_DESC`
+| :term:`TC_GEN_MET_CONFIG_OVERRIDES`
 
 .. _tcmpr_plotter_wrapper:
 
@@ -1679,6 +1784,7 @@ Configuration
 | :term:`TC_PAIRS_REFORMAT_TYPE`
 | :term:`TC_PAIRS_CUSTOM_LOOP_LIST`
 | :term:`TC_PAIRS_DESC`
+| :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
 
 .. warning:: **DEPRECATED:**
 
@@ -1755,6 +1861,7 @@ METplus Configuration
 | :term:`TC_RMW_DESC`
 | :term:`MODEL`
 | :term:`LEAD_SEQ`
+| :term:`TC_RMW_MET_CONFIG_OVERRIDES`
 
 .. _tc-rmw-met-conf:
 
@@ -2064,6 +2171,7 @@ Configuration
 | :term:`TC_STAT_LANDFALL_END`
 | :term:`TC_STAT_MATCH_POINTS`
 | :term:`TC_STAT_SKIP_IF_OUTPUT_EXISTS`
+| :term:`TC_STAT_MET_CONFIG_OVERRIDES`
 
 .. warning:: **DEPRECATED:**
 

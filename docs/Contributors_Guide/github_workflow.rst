@@ -19,7 +19,7 @@ The feature branch is named after the corresponding GitHub issue:
 
 When work is complete, the code in the feature branch is merged into the
 develop branch.  When a release candidate for METplus has been determined,
-then the develop branch is used to create a master_vx.y release of METplus,
+then the develop branch is used to create a main_vx.y release of METplus,
 which includes data tarballs for use in running use cases.
 
 

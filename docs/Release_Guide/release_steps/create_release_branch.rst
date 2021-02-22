@@ -1,13 +1,13 @@
 Create Release Branch
 ---------------------
 
-Create a branch from the develop branch that corresponds to the release and
-push the branch to GitHub. For release X.Y-betaN, run the following commands
-(for bash, use setenv for first command if using csh)::
+* Create a branch from the develop branch for the new official release and push it to GitHub.
 
-    release_branch=main_vX.Y-betaN
+.. parsed-literal::
 
-    cd METplus
+    cd |projectRepo|
     git checkout develop
     git pull
-    git checkout -b $release_branch
+    git checkout -b main_vX.Y
+    git push -u origin main_vX.Y
+

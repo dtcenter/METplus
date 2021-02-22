@@ -36,6 +36,45 @@ class TCStatWrapper(CommandBuilder):
          cyclone pair data.
     """
 
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_AMODEL',
+        'METPLUS_BMODEL',
+        'METPLUS_DESC',
+        'METPLUS_STORM_ID',
+        'METPLUS_BASIN',
+        'METPLUS_CYCLONE',
+        'METPLUS_STORM_NAME',
+        'METPLUS_INIT_BEG',
+        'METPLUS_INIT_END',
+        'METPLUS_INIT_INCLUDE',
+        'METPLUS_INIT_EXCLUDE',
+        'METPLUS_VALID_BEG',
+        'METPLUS_VALID_END',
+        'METPLUS_VALID_INCLUDE',
+        'METPLUS_VALID_EXCLUDE',
+        'METPLUS_INIT_HOUR',
+        'METPLUS_VALID_HOUR',
+        'METPLUS_LEAD',
+        'METPLUS_LEAD_REQ',
+        'METPLUS_INIT_MASK',
+        'METPLUS_VALID_MASK',
+        'METPLUS_TRACK_WATCH_WARN',
+        'METPLUS_COLUMN_THRESH_NAME',
+        'METPLUS_COLUMN_THRESH_VAL',
+        'METPLUS_COLUMN_STR_NAME',
+        'METPLUS_COLUMN_STR_VAL',
+        'METPLUS_INIT_THRESH_NAME',
+        'METPLUS_INIT_THRESH_VAL',
+        'METPLUS_INIT_STR_NAME',
+        'METPLUS_INIT_STR_VAL',
+        'METPLUS_WATER_ONLY',
+        'METPLUS_LANDFALL',
+        'METPLUS_LANDFALL_BEG',
+        'METPLUS_LANDFALL_END',
+        'METPLUS_MATCH_POINTS',
+        'METPLUS_JOBS',
+    ]
+
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'tc_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
@@ -92,11 +131,13 @@ class TCStatWrapper(CommandBuilder):
                               f"{default_config}")
             c_dict['CONFIG_FILE'] = default_config
 
-        self.set_met_config_for_environment_variables(c_dict)
+        self.handle_description()
+
+        self.set_met_config_for_environment_variables()
 
         return c_dict
 
-    def set_met_config_for_environment_variables(self, c_dict):
+    def set_met_config_for_environment_variables(self):
         """! Set c_dict dictionary entries that will be set as environment
         variables to be read by the MET config file.
             @param c_dict dictionary to add key/value pairs
@@ -125,28 +166,22 @@ class TCStatWrapper(CommandBuilder):
                             'INIT_STR_NAME',
                             'INIT_STR_VAL',
                              ]:
-            self.set_met_config_list(c_dict,
-                                 f'{app_name_upper}_{config_list}',
-                                 config_list.lower())
-
-        self.set_met_config_list(c_dict,
-                             f'{app_name_upper}_DESC',
-                             'desc',
-                             'METPLUS_DESC')
-        # support previous format of desc until it is deprecated
-        c_dict['DESC'] = self.config.getraw('config',
-                                            f'{app_name_upper}_DESC',
-                                            '')
+            self.set_met_config_list(self.env_var_dict,
+                                     f'{app_name_upper}_{config_list}',
+                                     config_list.lower(),
+                                     f'METPLUS_{config_list}')
 
         for iv_list in ['INIT', 'VALID',]:
-            self.set_met_config_list(c_dict,
-                                 f'{app_name_upper}_{iv_list}_INCLUDE',
-                                 f'{iv_list.lower()}_inc',
-                                 )
-            self.set_met_config_list(c_dict,
-                                 f'{app_name_upper}_{iv_list}_EXCLUDE',
-                                 f'{iv_list.lower()}_exc',
-                                 )
+            self.set_met_config_list(self.env_var_dict,
+                                     f'{app_name_upper}_{iv_list}_INCLUDE',
+                                     f'{iv_list.lower()}_inc',
+                                     f'METPLUS_{iv_list}_INC'
+                                     )
+            self.set_met_config_list(self.env_var_dict,
+                                     f'{app_name_upper}_{iv_list}_EXCLUDE',
+                                     f'{iv_list.lower()}_exc',
+                                     f'METPLUS_{iv_list}_EXC'
+                                     )
 
         for config_str in ['INIT_BEG',
                            'INIT_END',
@@ -155,25 +190,25 @@ class TCStatWrapper(CommandBuilder):
                            'LANDFALL_BEG',
                            'LANDFALL_END',
                             ]:
-            self.set_met_config_string(c_dict,
-                                   f'{app_name_upper}_{config_str}',
-                                   config_str.lower())
+            self.set_met_config_string(self.env_var_dict,
+                                       [f'{app_name_upper}_{config_str}',
+                                        f'{config_str}'],
+                                       config_str.lower(),
+                                       f'METPLUS_{config_str}')
 
         for config_bool in ['WATER_ONLY',
                             'LANDFALL',
                             'MATCH_POINTS',
                             ]:
 
-            self.set_met_config_bool(c_dict,
-                                 f'{app_name_upper}_{config_bool}',
-                                 config_bool.lower())
-
-        # error check config values
-        self.validate_config_values(c_dict)
+            self.set_met_config_bool(self.env_var_dict,
+                                     f'{app_name_upper}_{config_bool}',
+                                     config_bool.lower(),
+                                     f'METPLUS_{config_bool}')
 
     def run_at_time(self, input_dict=None):
         """! Builds the call to the MET tool TC-STAT for all requested
-             initialization times (init or valid).  Called from master_metplus
+             initialization times (init or valid).  Called from run_metplus
         """
         self.logger.info('Starting tc_stat_wrapper...')
 
@@ -181,8 +216,13 @@ class TCStatWrapper(CommandBuilder):
         if input_dict:
             time_info = ti_calculate(input_dict)
 
-        if not self.set_environment_variables(time_info):
+        job_args_str = self.handle_jobs(time_info)
+        if job_args_str is None:
             return None
+
+        self.env_var_dict['METPLUS_JOBS'] = job_args_str
+
+        self.set_environment_variables(time_info)
 
         return self.build()
 
@@ -205,66 +245,66 @@ class TCStatWrapper(CommandBuilder):
              files.
 
              @param time_info dictionary containing time information
-             @returns True if command should be run, False if skipping
         """
+        # handle old method of setting env vars in MET config files
 
-        self.logger.info('Setting env variables from config file...')
-        # Set all the environment variables that are needed by the
-        # MET config file.
+        # variables that are lists in the MET config
+        # need to set them to an empty list if they are unset
+        var_lists = ['AMODEL',
+                     'BMODEL',
+                     'DESC',
+                     'STORM_ID',
+                     'BASIN',
+                     'CYCLONE',
+                     'STORM_NAME',
+                     'INIT_INCLUDE',
+                     'INIT_EXCLUDE',
+                     'VALID_INCLUDE',
+                     'VALID_EXCLUDE',
+                     'INIT_HOUR',
+                     'VALID_HOUR',
+                     'LEAD',
+                     'LEAD_REQ',
+                     'INIT_MASK',
+                     'VALID_MASK',
+                     'TRACK_WATCH_WARN',
+                     'COLUMN_THRESH_NAME',
+                     'COLUMN_THRESH_VAL',
+                     'COLUMN_STR_NAME',
+                     'COLUMN_STR_VAL',
+                     'INIT_THRESH_NAME',
+                     'INIT_THRESH_VAL',
+                     'INIT_STR_NAME',
+                     'INIT_STR_VAL',
+                     'JOBS',
+                     ]
+        for name in var_lists:
+            value = self.get_env_var_value(f'METPLUS_{name}')
+            if not value:
+                value = '[]'
+            self.add_env_var(name, value)
 
-        for env_var in ['AMODEL',
-                        'BMODEL',
-                        'DESC',
-                        'METPLUS_DESC',
-                        'STORM_ID',
-                        'BASIN',
-                        'CYCLONE',
-                        'STORM_NAME',
-                        'INIT_BEG',
-                        'INIT_END',
-                        'INIT_INC',
-                        'INIT_EXC',
-                        'INIT_HOUR',
-                        'VALID_BEG',
-                        'VALID_END',
-                        'VALID_INC',
-                        'VALID_EXC',
-                        'VALID_HOUR',
-                        'LEAD_REQ',
-                        'LEAD',
-                        'INIT_MASK',
-                        'VALID_MASK',
-                        'TRACK_WATCH_WARN',
-                        'COLUMN_THRESH_NAME',
-                        'COLUMN_THRESH_VAL',
-                        'COLUMN_STR_NAME',
-                        'COLUMN_STR_VAL',
-                        'INIT_THRESH_NAME',
-                        'INIT_THRESH_VAL',
-                        'INIT_STR_NAME',
-                        'INIT_STR_VAL',
-                        'LANDFALL_BEG',
-                        'LANDFALL_END',
-                        'WATER_ONLY',
-                        'LANDFALL',
-                        'MATCH_POINTS',
-                        ]:
-            # if time info is available, run value through string substitution
-            value = self.c_dict.get(env_var, '')
-            if time_info:
-                value = do_string_sub(value, **time_info)
+        # variables that previously had quotes around them in the MET config
+        # need to remove quotes before setting env var
+        var_quotes = ['INIT_BEG',
+                      'INIT_END',
+                      'VALID_BEG',
+                      'VALID_END',
+                      'LANDFALL_BEG',
+                      'LANDFALL_END']
+        for name in var_quotes:
+            value = self.get_env_var_value(f'METPLUS_{name}').strip('"')
+            self.add_env_var(name, value)
 
-            self.add_env_var(env_var,
-                             value)
-
-        job_args_str = self.handle_jobs(time_info)
-        if job_args_str is None:
-            return False
-
-        self.add_env_var('JOBS', job_args_str)
+        # variables that can be set directly once the value is extracted
+        var_items = ['WATER_ONLY',
+                     'LANDFALL',
+                     'MATCH_POINTS']
+        for name in var_items:
+            value = self.get_env_var_value(f'METPLUS_{name}')
+            self.add_env_var(name, value)
 
         super().set_environment_variables(time_info)
-        return True
 
     def handle_jobs(self, time_info):
         """! Loop through job list found in c_dict key JOBS,
@@ -287,7 +327,7 @@ class TCStatWrapper(CommandBuilder):
             if '-dump_row' in split_job:
                 index = split_job.index('-dump_row') + 1
                 filepath = split_job[index]
-                self.c_dict['OUTPUT_TEMPLATE'] = split_job[index]
+                self.c_dict['OUTPUT_TEMPLATE'] = filepath
                 if time_info is None:
                     time_info = {}
 
@@ -296,52 +336,3 @@ class TCStatWrapper(CommandBuilder):
 
         job_list_string = '","'.join(formatted_jobs)
         return f'jobs = ["{job_list_string}"];'
-
-    def validate_config_values(self, c_dict):
-        """! Verify that the length of the name and val lists
-             in the MET tc-stat config file are of equal length, if
-             not, log an error message and exit.  As soon as a length mismatch
-             is encountered, return False.
-
-             Args:
-
-             Returns:
-                 True: if all corresponding <>_NAME and <>_VAL lists
-                       have the same length
-                 False: if any name/val list length mismatch is encountered
-        """
-
-        self.logger.debug('Checking if name-val lists in config file have'
-                          'the same length...')
-
-        # Check COLUMN_THRESH_NAME and COLUMN_THRESH_VAL
-        if len(c_dict.get('COLUMN_THRESH_NAME', '')) != \
-                len(c_dict.get('COLUMN_THRESH_VAL', '')):
-            self.log_error(
-                'COLUMN_THRESH_NAME does not have the same ' +
-                'number of items as COLUMN_THRESH_VAL. Please' +
-                ' check your MET tc_stat config file')
-
-        # Check COLUMN_STR_NAME and COLUMN_STR_VAL
-        if len(c_dict.get('COLUMN_STR_NAME', '')) != \
-                len(c_dict.get('COLUMN_STR_VAL', '')):
-            self.log_error(
-                'COLUMN_STR_NAME does not have the same ' +
-                'number of items as COLUMN_STR_VAL. Please' +
-                ' check your MET tc_stat config file')
-
-        # Check INIT_THRESH_NAME and INIT_THRESH_VAL
-        if len(c_dict.get('INIT_THRESH_NAME', '')) != \
-                len(c_dict.get('INIT_THRESH_VAL', '')):
-            self.log_error(
-                'INIT_THRESH_NAME does not have the same ' +
-                'number of items as INIT_THRESH_VAL. Please' +
-                ' check your MET tc_stat config file')
-
-        # Check INIT_STR_NAME and INIT_STR_VAL
-        if len(c_dict.get('INIT_STR_NAME', '')) != \
-                len(c_dict.get('INIT_STR_VAL', '')):
-            self.log_error(
-                'INIT_STR_NAME does not have the same ' +
-                'number of items as INIT_STR_VAL. Please' +
-                ' check your MET tc_stat config file')

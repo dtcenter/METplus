@@ -63,19 +63,6 @@ class METplusUseCasesByRequirement:
     package dependencies.
     """
 
-    PYTHON_REQUIREMENTS = {
-        'cartopy': 'ci/jobs/get_cartopy.sh',
-        'pygrib': 'ci/jobs/get_pygrib.sh',
-        'METcalcpy': 'ci/jobs/get_metcalcpy.sh',
-        'METplotpy': 'ci/jobs/get_metplotpy.sh',
-    }
-    """! dictionary of extra python packages to
-    install for certain use cases the keys are name of the package and the
-    value is the command or function to call to obtain the dependency.
-     Note: The get_* functions include yum commands to install applications
-      needed to build the python packages. yum is not available on every OS
-    """
-
     def __init__(self, requirements=None):
         """! Create empty list of requirements and use cases (METplusUseCase)
 
@@ -387,11 +374,15 @@ def parse_all_use_cases_file():
             else:
                 config_args = rest[0].split(',')
                 config_args = [arg.strip() for arg in config_args]
+
                 # if python requirements listed, set them
                 if len(rest) > 1:
                     requirements = rest[1].split(',')
                     requirements = [req.strip() for req in requirements]
 
+            # set output dir based on name
+            set_output = f'config.USE_CASE_NAME={name}'
+            config_args.append(set_output)
 
             use_case_dict = {'name': name,
                              'config_args': config_args,

@@ -622,13 +622,9 @@ def test_get_lead_sequence_init_min_10(metplus_config):
         (['BOTH', 'ENS'], 'NAME', True),
         (['FCST', 'OBS', 'BOTH', 'ENS'], 'NAME', False),
 
-        (['FCST'], 'THRESH', False),
-        (['OBS'], 'THRESH', False),
         (['FCST', 'OBS'], 'THRESH', True),
         (['BOTH'], 'THRESH', True),
         (['FCST', 'OBS', 'BOTH'], 'THRESH', False),
-        (['FCST', 'ENS'], 'THRESH', False),
-        (['OBS', 'ENS'], 'THRESH', False),
         (['FCST', 'OBS', 'ENS'], 'THRESH', True),
         (['BOTH', 'ENS'], 'THRESH', True),
         (['FCST', 'OBS', 'BOTH', 'ENS'], 'THRESH', False),
