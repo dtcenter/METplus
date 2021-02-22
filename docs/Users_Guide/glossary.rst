@@ -5616,7 +5616,7 @@ METplus Configuration Glossary
      | *Used by:*  GridStat
 
    FCST_PCP_COMBINE_EXTRA_NAMES
-     Specify a list of any additional field to add to the command. The number of items in this list should match :term:`FCST_PCP_COMBINE_EXTRA_LEVELS`. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_EXTRA_NAMES`. Example:
+     Specify a list of any additional fields to add to the command. The number of items in this list should match :term:`FCST_PCP_COMBINE_EXTRA_LEVELS`. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_EXTRA_NAMES`. Example:
 
      | FCST_PCP_COMBINE_EXTRA_NAMES = TMP, HGT
      | FCST_PCP_COMBINE_EXTRA_LEVELS = "(*,*)", "(*,*)"
