@@ -1,0 +1,14 @@
+name: "Run Use Cases"
+description: "Run METplus Use Cases"
+author: "mccabe@ucar.edu"
+
+inputs:
+  categories:
+    description: 'Use case category or categories to run (separate by comma)'
+    required: true
+
+runs:
+  using: "docker"
+  image: "Dockerfile"
+  args:
+    - ${{ inputs.categories }}

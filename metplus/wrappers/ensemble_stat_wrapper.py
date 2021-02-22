@@ -25,6 +25,71 @@ from ..util import do_string_sub
 class EnsembleStatWrapper(CompareGriddedWrapper):
     """!Wraps the MET tool ensemble_stat to compare ensemble datasets
     """
+
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MODEL',
+        'METPLUS_DESC',
+        'METPLUS_OBTYPE',
+        'METPLUS_REGRID_DICT',
+        'METPLUS_CENSOR_THRESH',
+        'METPLUS_CENSOR_VAL',
+        'METPLUS_ENS_FILE_TYPE',
+        'METPLUS_ENS_THRESH',
+        'METPLUS_ENS_VLD_THRESH',
+        'METPLUS_ENS_OBS_THRESH',
+        'METPLUS_ENS_FIELD',
+        'METPLUS_NBRHD_PROB_DICT',
+        'METPLUS_NMEP_SMOOTH_DICT',
+        'METPLUS_FCST_FILE_TYPE',
+        'METPLUS_FCST_FIELD',
+        'METPLUS_OBS_FILE_TYPE',
+        'METPLUS_OBS_FIELD',
+        'METPLUS_MESSAGE_TYPE',
+        'METPLUS_DUPLICATE_FLAG',
+        'METPLUS_SKIP_CONST',
+        'METPLUS_OBS_ERROR_FLAG',
+        'METPLUS_ENS_SSVAR_BIN_SIZE',
+        'METPLUS_ENS_PHIST_BIN_SIZE',
+        'METPLUS_CLIMO_MEAN_FILE',
+        'METPLUS_CLIMO_MEAN_DAY_INTERVAL',
+        'METPLUS_CLIMO_MEAN_HOUR_INTERVAL',
+        'METPLUS_CLIMO_STDEV_FILE',
+        'METPLUS_CLIMO_CDF_DICT',
+        'METPLUS_OBS_WINDOW_DICT',
+        'METPLUS_MASK_GRID',
+        'METPLUS_MASK_POLY',
+        'METPLUS_CI_ALPHA',
+        'METPLUS_INTERP_DICT',
+        'METPLUS_OUTPUT_FLAG_DICT',
+        'METPLUS_ENSEMBLE_FLAG_DICT',
+        'METPLUS_OUTPUT_PREFIX',
+    ]
+
+    OUTPUT_FLAGS = ['ecnt',
+                    'rps',
+                    'rhist',
+                    'phist',
+                    'orank',
+                    'ssvar',
+                    'relp'
+                    ]
+
+    ENSEMBLE_FLAGS = ['latlon',
+                      'mean',
+                      'stdev',
+                      'minus',
+                      'plus',
+                      'min',
+                      'max',
+                      'range',
+                      'vld_count',
+                      'frequency',
+                      'nep',
+                      'nmep',
+                      'rank',
+                      'weight',
+                      ]
+
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'ensemble_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
@@ -44,50 +109,44 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         """
         c_dict = super().create_c_dict()
 
-        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_ENSEMBLE_STAT_VERBOSITY',
+        c_dict['VERBOSITY'] = self.config.getstr('config',
+                                                 'LOG_ENSEMBLE_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
         c_dict['ENS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'ENS_ENSEMBLE_STAT_INPUT_DATATYPE', '')
 
         c_dict['FCST_INPUT_DATATYPE'] = \
-          self.config.getstr('config', 'FCST_ENSEMBLE_STAT_INPUT_DATATYPE', '')
+          self.config.getstr('config',
+                             'FCST_ENSEMBLE_STAT_INPUT_DATATYPE',
+                             '')
 
         c_dict['OBS_POINT_INPUT_DATATYPE'] = \
-          self.config.getstr('config', 'OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE', '')
+          self.config.getstr('config',
+                             'OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE',
+                             '')
 
         c_dict['OBS_GRID_INPUT_DATATYPE'] = \
-          self.config.getstr('config', 'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE', '')
+          self.config.getstr('config',
+                             'OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE',
+                             '')
 
-        # check if more than 1 obs datatype is set to python embedding, only one can be used
+        # check if more than 1 obs datatype is set to python embedding,
+        # only one can be used
         if (c_dict['OBS_POINT_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES and
             c_dict['OBS_GRID_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES):
             self.log_error("Both OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE and "
                            "OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE"
-                           " are set to Python Embedding types. Only one can be used at a time")
+                           " are set to Python Embedding types. "
+                           "Only one can be used at a time")
 
-        # if either are set, set OBS_INPUT_DATATYPE to that value so it can be found by
-        # the check_for_python_embedding function
+        # if either are set, set OBS_INPUT_DATATYPE to that value so
+        # it can be found by the check_for_python_embedding function
         elif c_dict['OBS_POINT_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES:
             c_dict['OBS_INPUT_DATATYPE'] = c_dict['OBS_POINT_INPUT_DATATYPE']
         elif c_dict['OBS_GRID_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES:
             c_dict['OBS_INPUT_DATATYPE'] = c_dict['OBS_GRID_INPUT_DATATYPE']
 
-        c_dict['CONFIG_FILE'] = \
-            self.config.getraw('config', 'ENSEMBLE_STAT_CONFIG_FILE', '')
-
-        if not c_dict['CONFIG_FILE']:
-            self.log_error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
-
-        c_dict['ENS_THRESH'] = \
-          self.config.getstr('config', 'ENSEMBLE_STAT_ENS_THRESH', '1.0')
-
-        # met_obs_error_table is not required, if it is not defined
-        # set it to the empty string '', that way the MET default is used.
-        c_dict['MET_OBS_ERR_TABLE'] = \
-            self.config.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE', '')
-
-        # No Default being set this is REQUIRED TO BE DEFINED in conf file.
         c_dict['N_MEMBERS'] = \
             self.config.getint('config', 'ENSEMBLE_STAT_N_MEMBERS', -1)
 
@@ -120,9 +179,11 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE")
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR', '')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('ENSEMBLE_STAT_OUTPUT_DIR',
+                                                  '')
         if not c_dict['OUTPUT_DIR']:
-            self.log_error("Must set ENSEMBLE_STAT_OUTPUT_DIR in configuration file")
+            self.log_error("Must set ENSEMBLE_STAT_OUTPUT_DIR "
+                           "in configuration file")
 
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('config',
@@ -133,32 +194,282 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # get climatology config variables
         self.read_climo_wrapper_specific('ENSEMBLE_STAT', c_dict)
 
-        # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
-        self.handle_window_variables(c_dict, 'ensemble_stat')
-
         # need to set these so that find_data will succeed
-        c_dict['OBS_POINT_WINDOW_BEGIN'] = c_dict['OBS_WINDOW_BEGIN']
-        c_dict['OBS_POINT_WINDOW_END'] = c_dict['OBS_WINDOW_END']
-        c_dict['OBS_GRID_WINDOW_BEGIN'] = c_dict['OBS_WINDOW_BEGIN']
-        c_dict['OBS_GRID_WINDOW_END'] = c_dict['OBS_WINDOW_END']
-
         c_dict['OBS_POINT_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
         c_dict['OBS_POINT_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
         c_dict['OBS_GRID_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
         c_dict['OBS_GRID_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
 
-        self.set_c_dict_float(c_dict,
-                              'ENSEMBLE_STAT_ENS_VLD_THRESH',
-                              'vld_thresh',
-                              'ENS_VLD_THRESH')
+        # set the MET config file path and variables set
+        # in th config file via environment variables
+        c_dict['CONFIG_FILE'] = \
+            self.config.getraw('config', 'ENSEMBLE_STAT_CONFIG_FILE', '')
 
-        # used to override the file type for fcst/obs if using python embedding for input
-        c_dict['ENS_FILE_TYPE'] = ''
-        c_dict['FCST_FILE_TYPE'] = ''
-        c_dict['OBS_FILE_TYPE'] = ''
+        if not c_dict['CONFIG_FILE']:
+            self.log_error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
+
+        # read by MET through environment variable, not set in MET config file
+        c_dict['MET_OBS_ERR_TABLE'] = \
+            self.config.getstr('config', 'ENSEMBLE_STAT_MET_OBS_ERR_TABLE', '')
+
+        self.set_met_config_float(self.env_var_dict,
+                                  'ENSEMBLE_STAT_ENS_VLD_THRESH',
+                                  'vld_thresh',
+                                  'METPLUS_ENS_VLD_THRESH')
+
+        self.set_met_config_list(self.env_var_dict,
+                                 'ENSEMBLE_STAT_ENS_OBS_THRESH',
+                                 'obs_thresh',
+                                 'METPLUS_ENS_OBS_THRESH',
+                                 remove_quotes=True)
+
+        self.set_met_config_float(self.env_var_dict,
+                                  'ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE',
+                                  'ens_ssvar_bin_size',
+                                  'METPLUS_ENS_SSVAR_BIN_SIZE')
+        self.set_met_config_float(self.env_var_dict,
+                                  'ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE',
+                                  'ens_phist_bin_size',
+                                  'METPLUS_ENS_PHIST_BIN_SIZE')
+
+        self.handle_nbrhd_prob_dict()
+
+        self.set_met_config_float(self.env_var_dict,
+                                  'ENSEMBLE_STAT_ENS_THRESH',
+                                  'ens_thresh',
+                                  'METPLUS_ENS_THRESH')
+
+        self.set_met_config_string(self.env_var_dict,
+                                   'ENSEMBLE_STAT_DUPLICATE_FLAG',
+                                   'duplicate_flag',
+                                   'METPLUS_DUPLICATE_FLAG',
+                                   remove_quotes=True)
+
+        self.set_met_config_bool(self.env_var_dict,
+                                 'ENSEMBLE_STAT_SKIP_CONST',
+                                 'skip_const',
+                                 'METPLUS_SKIP_CONST')
+
+        # set climo_cdf dictionary variables
+        self.handle_climo_cdf_dict()
+
+        # set nmep_smooth dictionary variables
+        self.handle_nmep_smooth_dict()
+
+        # interp dictionary values
+        self.handle_interp_dict()
+
+        self.handle_flags('OUTPUT')
+        self.handle_flags('ENSEMBLE')
+
+        self.set_met_config_bool(self.env_var_dict,
+                                 'ENSEMBLE_STAT_OBS_ERROR_FLAG',
+                                 'flag',
+                                 'METPLUS_OBS_ERROR_FLAG')
+        self.set_met_config_int(self.env_var_dict,
+                                'ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL',
+                                'day_interval',
+                                'METPLUS_CLIMO_MEAN_DAY_INTERVAL')
+        self.set_met_config_int(self.env_var_dict,
+                                'ENSEMBLE_STAT_CLIMO_MEAN_HOUR_INTERVAL',
+                                'hour_interval',
+                                'METPLUS_CLIMO_MEAN_HOUR_INTERVAL')
+        self.set_met_config_list(self.env_var_dict,
+                                 'ENSEMBLE_STAT_MASK_GRID',
+                                 'grid',
+                                 'METPLUS_MASK_GRID',
+                                 allow_empty=True)
+        self.set_met_config_list(self.env_var_dict,
+                                 'ENSEMBLE_STAT_CI_ALPHA',
+                                 'ci_alpha',
+                                 'METPLUS_CI_ALPHA',
+                                 remove_quotes=True)
+
+        self.set_met_config_list(self.env_var_dict,
+                                 'ENSEMBLE_STAT_CENSOR_THRESH',
+                                 'censor_thresh',
+                                 'METPLUS_CENSOR_THRESH',
+                                 remove_quotes=True)
+        self.set_met_config_list(self.env_var_dict,
+                                 'ENSEMBLE_STAT_CENSOR_VAL',
+                                 'censor_val',
+                                 'METPLUS_CENSOR_VAL',
+                                 remove_quotes=True)
+
+        self.set_met_config_list(self.env_var_dict,
+                                 'ENSEMBLE_STAT_MESSAGE_TYPE',
+                                 'message_type',
+                                 'METPLUS_MESSAGE_TYPE',
+                                 allow_empty=True)
+
+        self.handle_obs_window_variables(c_dict)
+
+        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
+
+        # old method of setting MET config values
+        c_dict['ENS_THRESH'] = (
+            self.config.getstr('config', 'ENSEMBLE_STAT_ENS_THRESH', '1.0')
+        )
+
+        # signifies that the tool can be run without setting
+        # field information for fcst and obs
         c_dict['VAR_LIST_OPTIONAL'] = True
 
         return c_dict
+
+    def handle_nmep_smooth_dict(self):
+        tmp_dict = {}
+        self.set_met_config_float(tmp_dict,
+                                  'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX',
+                                  'gaussian_dx',
+                                  'NMEP_SMOOTH_GAUSSIAN_DX')
+        self.set_met_config_float(tmp_dict,
+                                  'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS',
+                                  'gaussian_radius',
+                                  'NMEP_SMOOTH_GAUSSIAN_RADIUS')
+        self.set_met_config_float(tmp_dict,
+                                  'ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH',
+                                  'vld_thresh',
+                                  'NMEP_SMOOTH_VLD_THRESH')
+        self.set_met_config_string(tmp_dict,
+                                   'ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE',
+                                   'shape',
+                                   'NMEP_SMOOTH_SHAPE',
+                                   remove_quotes=True)
+        self.set_met_config_string(tmp_dict,
+                                   'ENSEMBLE_STAT_NMEP_SMOOTH_METHOD',
+                                   'method',
+                                   'NMEP_SMOOTH_METHOD',
+                                   remove_quotes=True)
+        self.set_met_config_int(tmp_dict,
+                                'ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH',
+                                'width',
+                                'NMEP_SMOOTH_WIDTH')
+
+        tmp_dict['NMEP_SMOOTH_TYPE'] = (
+            self.format_met_config_type(tmp_dict,
+                                        'nmep_smooth')
+        )
+        nmep_smooth = (
+            self.format_met_config_dict(tmp_dict,
+                                        'nmep_smooth',
+                                        ['NMEP_SMOOTH_GAUSSIAN_RADIUS',
+                                         'NMEP_SMOOTH_GAUSSIAN_DX',
+                                         'NMEP_SMOOTH_VLD_THRESH',
+                                         'NMEP_SMOOTH_SHAPE',
+                                         'NMEP_SMOOTH_TYPE',
+                                        ])
+        )
+        self.env_var_dict['METPLUS_NMEP_SMOOTH_DICT'] = nmep_smooth
+
+    def handle_nbrhd_prob_dict(self):
+        tmp_dict = {}
+        self.set_met_config_list(tmp_dict,
+                                 'ENSEMBLE_STAT_NBRHD_PROB_WIDTH',
+                                 'width',
+                                 'NBRHD_PROB_WIDTH',
+                                 remove_quotes=True)
+        self.set_met_config_string(tmp_dict,
+                                   'ENSEMBLE_STAT_NBRHD_PROB_SHAPE',
+                                   'shape',
+                                   'NBRHD_PROB_SHAPE',
+                                   remove_quotes=True)
+        self.set_met_config_float(tmp_dict,
+                                  'ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH',
+                                  'vld_thresh',
+                                  'NBRHD_PROB_VLD_THRESH')
+        nbrhd_prob = (
+            self.format_met_config_dict(tmp_dict,
+                                        'nbrhd_prob',
+                                        ['NBRHD_PROB_WIDTH',
+                                         'NBRHD_PROB_SHAPE',
+                                         'NBRHD_PROB_VLD_THRESH'])
+        )
+        self.env_var_dict['METPLUS_NBRHD_PROB_DICT'] = nbrhd_prob
+
+    def handle_climo_cdf_dict(self):
+        tmp_dict = {}
+        self.set_met_config_float(tmp_dict,
+                                  'ENSEMBLE_STAT_CLIMO_CDF_BINS',
+                                  'cdf_bins',
+                                  'CLIMO_CDF_BINS')
+        self.set_met_config_bool(tmp_dict,
+                                 'ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS',
+                                 'center_bins',
+                                 'CLIMO_CDF_CENTER_BINS')
+        self.set_met_config_bool(tmp_dict,
+                                 'ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS',
+                                 'write_bins',
+                                 'CLIMO_CDF_WRITE_BINS')
+        climo_cdf = (
+            self.format_met_config_dict(tmp_dict,
+                                        'climo_cdf',
+                                        ['CLIMO_CDF_BINS',
+                                         'CLIMO_CDF_CENTER_BINS',
+                                         'CLIMO_CDF_WRITE_BINS'])
+        )
+        self.env_var_dict['METPLUS_CLIMO_CDF_DICT'] = climo_cdf
+
+    def handle_interp_dict(self):
+        tmp_dict = {}
+        self.set_met_config_string(tmp_dict,
+                                   'ENSEMBLE_STAT_INTERP_FIELD',
+                                   'field',
+                                   'INTERP_FIELD',
+                                   remove_quotes=True)
+        self.set_met_config_float(tmp_dict,
+                                  'ENSEMBLE_STAT_INTERP_VLD_THRESH',
+                                  'vld_thresh',
+                                  'INTERP_VLD_THRESH')
+        self.set_met_config_string(tmp_dict,
+                                   'ENSEMBLE_STAT_INTERP_SHAPE',
+                                   'shape',
+                                   'INTERP_SHAPE',
+                                   remove_quotes=True)
+        self.set_met_config_string(tmp_dict,
+                                   'ENSEMBLE_STAT_INTERP_METHOD',
+                                   'method',
+                                   'INTERP_METHOD',
+                                   remove_quotes=True)
+        self.set_met_config_int(tmp_dict,
+                                'ENSEMBLE_STAT_INTERP_WIDTH',
+                                'width',
+                                'INTERP_WIDTH')
+
+        tmp_dict['INTERP_TYPE'] = self.format_met_config_type(tmp_dict,
+                                                              'interp')
+
+
+        interp = (
+            self.format_met_config_dict(tmp_dict,
+                                        'interp',
+                                        ['INTERP_FIELD',
+                                         'INTERP_VLD_THRESH',
+                                         'INTERP_SHAPE',
+                                         'INTERP_TYPE',
+                                        ])
+        )
+        self.env_var_dict['METPLUS_INTERP_DICT'] = interp
+
+    def format_met_config_type(self, c_dict, dict_name):
+        """! Format type item for MET config
+
+        @param c_dict dictionary to check and add item if appropriate
+        @param dict_name name of dictionary to format
+        @returns formatted string "type = [{}];" or empty string if nothing is
+         set
+        """
+        input_keys = [f'{dict_name.upper()}_METHOD',
+                      f'{dict_name.upper()}_WIDTH']
+        type_string = self.format_met_config_dict(c_dict,
+                                                  dict_name,
+                                                  input_keys)
+        if not type_string:
+            return ''
+
+        # only get value, so remove variable name and equal sign
+        type_string = type_string.split('=', 1)[1].strip()
+        return f"type = [{type_string}];"
 
     def run_at_time_all_fields(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination
@@ -209,8 +520,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.log_error("Could not build field info for fcst, obs, or ens")
             return
 
+        self.format_field('FCST', fcst_field)
+        self.format_field('OBS', obs_field)
+        self.format_field('ENS', ens_field)
+
         # run
-        self.process_fields(time_info, fcst_field, obs_field, ens_field)
+        self.process_fields(time_info)
 
 
     def get_all_field_info(self, var_list, data_type):
@@ -332,38 +647,54 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
           str(time_info['lead_hours']) + '_ensemble.txt'
         return self.write_list_file(list_filename, ens_members_path)
 
-    def set_environment_variables(self, fcst_field, obs_field, ens_field, time_info):
+    def set_environment_variables(self, time_info):
         self.add_env_var("MET_OBS_ERROR_TABLE",
-                         self.c_dict["MET_OBS_ERR_TABLE"])
+                         self.c_dict.get('MET_OBS_ERR_TABLE', ''))
 
-        self.add_env_var("FCST_FIELD", fcst_field)
-        self.add_env_var("OBS_FIELD", obs_field)
-        if ens_field != '':
-            self.add_env_var("ENS_FIELD", ens_field)
-        else:
-            self.add_env_var("ENS_FIELD", fcst_field)
+        fcst_field = self.c_dict.get('FCST_FIELD', '')
+        self.add_env_var("FCST_FIELD",
+                         fcst_field)
+        self.add_env_var("OBS_FIELD",
+                         self.c_dict.get('OBS_FIELD', ''))
 
-        self.add_env_var("OBTYPE", self.c_dict['OBTYPE'])
-        self.add_env_var("INPUT_BASE", self.c_dict['INPUT_BASE'])
-        self.add_env_var("FCST_LEAD", str(time_info['lead_hours']).zfill(3))
-        self.add_env_var("OBS_WINDOW_BEGIN", str(self.c_dict['OBS_WINDOW_BEGIN']))
-        self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
-        self.add_env_var("ENS_THRESH", self.c_dict['ENS_THRESH'])
-        self.add_env_var('ENS_VLD_THRESH',
-                         self.c_dict.get('ENS_VLD_THRESH', ''))
+        ens_field = self.c_dict.get('ENS_FIELD', '')
+        # if ens field is not set, use fcst field
+        if not ens_field:
+            ens_field = fcst_field
 
-        self.add_env_var('OUTPUT_PREFIX', self.get_output_prefix(time_info))
+        self.add_env_var("ENS_FIELD", ens_field)
 
-        self.add_env_var("ENS_FILE_TYPE", self.c_dict['ENS_FILE_TYPE'])
-        self.add_env_var("FCST_FILE_TYPE", self.c_dict['FCST_FILE_TYPE'])
-        self.add_env_var("OBS_FILE_TYPE", self.c_dict['OBS_FILE_TYPE'])
+        self.add_env_var("OBS_WINDOW_BEGIN",
+                         str(self.c_dict['OBS_WINDOW_BEGIN']))
+        self.add_env_var("OBS_WINDOW_END",
+                         str(self.c_dict['OBS_WINDOW_END']))
+
+        # read output prefix at this step to ensure that
+        # CURRENT_[FCST/OBS]_[NAME/LEVEL] is substituted correctly
+        self.add_env_var('VERIF_MASK',
+                         self.c_dict.get('VERIFICATION_MASK', ''))
 
         # set climatology environment variables
         self.set_climo_env_vars()
 
+        # support old method of setting variables in MET config files
+        self.add_env_var('ENS_THRESH',
+                         self.c_dict.get('ENS_THRESH'))
+        met_config_list_old = [
+            'OBTYPE',
+            'INPUT_BASE',
+            'ENS_FILE_TYPE',
+            'FCST_FILE_TYPE',
+            'OBS_FILE_TYPE',
+        ]
+        for item in met_config_list_old:
+            self.add_env_var(item, self.c_dict.get(item, ''))
+
+        # call parent function to set common vars, user env vars,
+        # and print list of variables that are set
         super().set_environment_variables(time_info)
 
-    def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
+    def process_fields(self, time_info):
         """! Set and print environment variables, then build/run MET command
               Args:
                 @param time_info dictionary containing timing information
@@ -380,7 +711,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             return
 
         # set environment variables that are passed to the MET config
-        self.set_environment_variables(fcst_field, obs_field, ens_field, time_info)
+        self.set_environment_variables(time_info)
 
         # check if METplus can generate the command successfully
         cmd = self.get_command()
