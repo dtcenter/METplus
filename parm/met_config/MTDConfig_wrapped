@@ -241,3 +241,5 @@ output_prefix    = "${OUTPUT_PREFIX}";
 //version        = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////
+
+${METPLUS_MET_CONFIG_OVERRIDES}

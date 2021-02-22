@@ -5455,3 +5455,162 @@ METplus Configuration Glossary
      Specify the value for 'ensemble_flag.weight' in the MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:*  EnsembleStat
+
+   ASCII2NC_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:* ASCII2NC
+
+   GRID_DIAG_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:* GridDiag
+
+   GRID_STAT_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:* GridStat
+
+   MODE_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:* MODE
+
+   MTD_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:* MTD
+
+   PB2NC_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:* PB2NC
+
+   POINT_STAT_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:* PointStat
+
+   SERIES_ANALYSIS_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:* SeriesAnalysis
+
+   STAT_ANALYSIS_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:* StatAnalysis
+
+   TC_GEN_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:* TCGen
+
+   TC_PAIRS_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:* TCPairs
+
+   TC_RMW_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:* TCRMW
+
+   TC_STAT_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+     Example:
+     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     | *Used by:* TCStat
+
+   GRID_STAT_MASK_GRID
+     Specify the value for 'mask.grid' in the MET configuration file for GridStat.
+
+     | *Used by:*  GridStat
