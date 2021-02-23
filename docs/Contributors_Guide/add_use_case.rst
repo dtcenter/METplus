@@ -879,13 +879,16 @@ List the tarfile for the use case category in the next release version directory
     cd ${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}
     ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}*
 
-If the sample data tarfile for the category is a link to another METplus
-version, then simply remove the tarfile link. If the latest version of the
-tarfile in in this directory, then rename the existing sample data tarball for
+If the latest version of the
+tarfile is in this directory, then rename the existing sample data tarball for
 the use case category just in case something goes wrong::
 
-    rm sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
     mv sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.sav.`date +%Y%m%d%H%M`.tgz
+
+**OR** If the sample data tarfile for the category is a link to another METplus
+version, then simply remove the tarfile link::
+
+    rm sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
 
 Create the new sample data tarfile::
 
