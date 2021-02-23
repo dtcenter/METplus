@@ -816,19 +816,19 @@ was run successfully using the new data,
 they will need to update the links on the DTC web server before the
 pull request is merged so that the develop branch will contain the new data.
 
-- **Run all of the environment variable commands in your shell (from the first
-  step) and verify that they were set correctly**
-- Move new tarball to the upcoming release (i.e. v4.0) directory
-- Update symbolic link in the develop directory to point to the new data
-- Remove the feature branch directory
-- Remove feature branch Docker data volumes
-
 .. warning::
     Check if there are multiple feature branch directories that have data for
     the same model_applications category. If there are more than one, then
     you will need to be careful not to overwrite the final tarfile so that
     one or more of the new data files are lost! These instructions need
     to be updated to handle this situation.
+
+Log into the DTC Web Server with SSH
+""""""""""""""""""""""""""""""""""""
+
+The web server is only accessible if you are on the NCAR VPN.::
+
+    ssh ${METPLUS_DTC_WEB_SERVER}
 
 Switch to the met_test user
 """""""""""""""""""""""""""
@@ -837,16 +837,17 @@ Commands must run as the met_test user::
 
     runas met_test
 
-Change directory to the feature tarfile directory
-"""""""""""""""""""""""""""""""""""""""""""""""""
+Change directory to the METplus Data Directory
+""""""""""""""""""""""""""""""""""""""""""""""
 
-The path will look something like this::
+Note that this path may change::
 
-    cd /d2/www/dtcenter/dfiles/code/METplus/METplus_Data/feature_ABC_desc
+    cd /d2/www/dtcenter/dfiles/code/METplus/METplus_Data
 
-Source the environment file for the feature::
+Source the environment file for the feature. The relative path will look
+something like this::
 
-    source feature_ABC_desc_env.sh
+    source feature_ABC_desc/feature_ABC_desc_env.sh
 
 Compare the volume_mount_directories file
 """""""""""""""""""""""""""""""""""""""""
