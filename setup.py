@@ -1,15 +1,17 @@
 from setuptools import setup, find_packages
 from distutils.util import convert_path
-from metplus import get_metplus_version
 
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
+with open("metplus/VERSION", "r") as fh:
+    version = fh.read()
+
 setup(
     name="metplus",
-    version=get_metplus_version(),
+    version=version,
     author="METplus",
-    author_email="met-help@ucar.edu",
+    author_email="met_help@ucar.edu",
     description="METplus wrappers",
     long_description=long_description,
     long_description_content_type="text/markdown",
@@ -24,4 +26,5 @@ setup(
          "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
+    data_files=[('metplus', ['metplus/VERSION', 'metplus/RELEASE_DATE'])],
 )
