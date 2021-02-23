@@ -1,6 +1,10 @@
 Adding Use Cases
 ================
 
+.. |metplus_data_dir| replace:: /d2/www/dtcenter/dfiles/code/METplus/METplus_Data
+.. |metplus_staging_dir| replace:: /d2/projects/METplus/METplus_Data_Staging
+.. |dtc_web_server| replace:: mohawk.rap.ucar.edu
+
 Work in a Feature Branch
 ------------------------
 
@@ -384,9 +388,11 @@ to contact, then please contact met_help@ucar.edu.
 Log into the DTC Web Server with SSH
 """"""""""""""""""""""""""""""""""""
 
-The web server is only accessible if you are on the NCAR VPN.::
+The web server is only accessible if you are on the NCAR VPN.:
 
-    ssh ${METPLUS_DTC_WEB_SERVER}
+.. parsed-literal::
+
+    ssh |dtc_web_server|
 
 Switch to the met_test user
 """""""""""""""""""""""""""
@@ -405,9 +411,11 @@ Change directory to the data staging dir (${METPLUS_DATA_STAGING_DIR}),
 source the environment file you created, and make sure the environment
 variables are set properly.
 The staging dir variable will not be set until you source the environment file,
-so refer to the previous instructions to obtain the directory path::
+so refer to the previous instructions to obtain the directory path:
 
-    cd ${METPLUS_DATA_STAGING_DIR}
+.. parsed-literal::
+
+    cd |metplus_staging_dir|
     source feature_ABC_desc_env.bash
     echo $METPLUS_VERSION
     echo $METPLUS_USE_CASE_CATEGORY
@@ -475,7 +483,6 @@ created (i.e. model_applications/<category>).
 Create the new sample data tarball. Example::
 
     tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz model_applications/${METPLUS_USE_CASE_CATEGORY}
-
 
 Add volume_mount_directories file
 """""""""""""""""""""""""""""""""
@@ -643,29 +650,29 @@ If you are adding a new use case category, you will need to add a new entry
 to the main.yml file found in the .github/workflows directory in the METplus
 repository.
 Find the job in the main.yml file named "use_case_tests" and add the new
-category to the matrix categories list if it is not already there.
+category to the matrix categories list if it is not already there::
 
-  use_case_tests:
-    name: Use Case Tests
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    strategy:
-      fail-fast: false
-      matrix:
-        categories:
-          - "met_tool_wrapper"
-          - "air_quality_and_comp"
-          - "climate"
-          - "convection_allowing_models:0-5"
-          - "convection_allowing_models:6+"
-          - "cryosphere"
-          - "data_assimilation"
-          - "marine_and_coastal"
-          - "medium_range:0-4"
-          - "medium_range:5"
-          - "medium_range:6+"
-          - "precipitation"
-          - "s2s,space_weather,tc_and_extra_tc"
+    use_case_tests:
+      name: Use Case Tests
+      runs-on: ubuntu-latest
+      needs: [get_image, update_data_volumes]
+      strategy:
+        fail-fast: false
+        matrix:
+          categories:
+            - "met_tool_wrapper"
+            - "air_quality_and_comp"
+            - "climate"
+            - "convection_allowing_models:0-5"
+            - "convection_allowing_models:6+"
+            - "cryosphere"
+            - "data_assimilation"
+            - "marine_and_coastal"
+            - "medium_range:0-4"
+            - "medium_range:5"
+            - "medium_range:6+"
+            - "precipitation"
+            - "s2s,space_weather,tc_and_extra_tc"
 
 Multiple Categories in One Test
 """""""""""""""""""""""""""""""
@@ -826,9 +833,11 @@ pull request is merged so that the develop branch will contain the new data.
 Log into the DTC Web Server with SSH
 """"""""""""""""""""""""""""""""""""
 
-The web server is only accessible if you are on the NCAR VPN.::
+The web server is only accessible if you are on the NCAR VPN.:
 
-    ssh ${METPLUS_DTC_WEB_SERVER}
+.. parsed-literal::
+
+    ssh |dtc_web_server|
 
 Switch to the met_test user
 """""""""""""""""""""""""""
@@ -840,9 +849,11 @@ Commands must run as the met_test user::
 Change directory to the METplus Data Directory
 """"""""""""""""""""""""""""""""""""""""""""""
 
-Note that this path may change::
+Note that this path may change:
 
-    cd /d2/www/dtcenter/dfiles/code/METplus/METplus_Data
+.. parsed-literal::
+
+    cd |metplus_data_dir|
 
 Source the environment file for the feature. The relative path will look
 something like this::
@@ -888,7 +899,7 @@ the use case category just in case something goes wrong::
 **OR** If the sample data tarfile for the category is a link to another METplus
 version, then simply remove the tarfile link::
 
-    rm sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
+    unlink sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
 
 Create the new sample data tarfile::
 
@@ -909,7 +920,7 @@ If the screen output says "The link is already correct" then do not
 run the next command. If it says "Please update the link" then please listen
 to the polite instructions::
 
-    rm sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
+    unlink sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
     ln -s ${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}/sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
 
 Check that the link now points to the new tarfile that was just created::
