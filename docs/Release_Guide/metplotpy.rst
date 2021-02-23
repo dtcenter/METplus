@@ -1,20 +1,10 @@
-******************
-METploypy Release
-******************
+*****************
+METplotpy Release
+*****************
 
-.. |projectRepo| replace:: METploypy
+.. toctree::
+   :titlesonly:
 
-Official release (e.g. vX.Y)
-============================
-
-.. include:: release_steps/clone_project_repository.rst
-
-Bugfix release (e.g. vX.Y.Z)
-============================
-
-.. include:: release_steps/clone_project_repository.rst
-
-Development release (e.g. vX.Y-betaN or vX.Y-rcN)
-=================================================
-
-.. include:: release_steps/clone_project_repository.rst
+   metplotpy_official
+   metplotpy_bugfix
+   metplotpy_development

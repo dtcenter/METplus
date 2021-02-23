@@ -140,8 +140,6 @@ def setup(config_inputs, logger=None, base_confs=METPLUS_BASE_CONFS):
 
     logger.info('Completed METplus configuration setup.')
 
-    config.move_all_to_config_section()
-
     return config
 
 # def parse_launch_args(args,usage,logger,PARM_BASE=None):
@@ -242,12 +240,16 @@ def launch(file_list, moreopt):
     logger = config.log()
 
     # set config variable for current time
-    config.set('config', 'CLOCK_TIME', datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
+    config.set('config', 'CLOCK_TIME',
+               datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
 
     # Read in and parse all the conf files.
     for filename in file_list:
         config.read(filename)
         logger.info("%s: Parsed this file" % (filename,))
+
+        # move all config variables from old sections into the [config] section
+        config.move_all_to_config_section()
 
     # Overriding or passing in specific conf items on the command line
     # ie. config.NEWVAR="a new var" dir.SOMEDIR=/override/dir/path
@@ -260,6 +262,10 @@ def launch(file_list, moreopt):
                 logger.info('Override: %s.%s=%s'
                             % (section, option, repr(value)))
                 config.set(section, option, value)
+
+                # after each config variable override,
+                # move old sections to [config]
+                config.move_all_to_config_section()
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
@@ -290,7 +296,7 @@ def launch(file_list, moreopt):
         logger.warning('METPLUS_BASE from the conf files has no effect.'+\
                        ' Overriding to '+METPLUS_BASE)
 
-    config.set('dir', 'METPLUS_BASE', METPLUS_BASE)
+    config.set('config', 'METPLUS_BASE', METPLUS_BASE)
 
     # do the same for PARM_BASE
     user_parm_base = config.getdir('PARM_BASE', PARM_BASE)
@@ -300,9 +306,9 @@ def launch(file_list, moreopt):
         logger.error('Please remove PARM_BASE from any config file. Set the ' +\
                      'environment variable METPLUS_PARM_BASE to change where ' +\
                      'the METplus wrappers look for config files.')
-        exit(1)
+        sys.exit(1)
 
-    config.set('dir', 'PARM_BASE', PARM_BASE)
+    config.set('config', 'PARM_BASE', PARM_BASE)
 
     # print config items that are set automatically
     for var in ('METPLUS_BASE', 'PARM_BASE'):
@@ -655,42 +661,41 @@ class METplusConfig(ProdConfig):
             Returns:
                 Raw string or empty string if function calls itself too many times
         """
-        count = count + 1
         if count >= 10:
+            self.logger.error("Could not resolve getraw - check for circular "
+                              "references in METplus configuration variables")
             return ''
 
-        # if requested section is in the list of sections that are no longer used
-        # look in the [config] section for the variable
+        # if requested section is in the list of sections that are no longer
+        # used, look in the [config] section for the variable
         if sec in self.OLD_SECTIONS:
             sec = 'config'
 
         in_template = super().getraw(sec, opt, default)
-        out_template = ""
-        in_brackets = False
-        for index, character in enumerate(in_template):
-            if character == "{":
-                in_brackets = True
-                start_idx = index
-            elif character == "}":
-                var_name = in_template[start_idx+1:index]
-                var = None
-                if self.has_option(sec, var_name):
-                    var = self.getraw(sec, var_name, default, count)
-                elif self.has_option('config', var_name):
-                    var = self.getraw('config', var_name, default, count)
-                elif var_name[0:3] == "ENV":
-                    var = os.environ.get(var_name[4:-1])
 
-                if var is None:
-                    out_template += in_template[start_idx:index+1]
-                else:
-                    out_template += var
-                in_brackets = False
-            elif not in_brackets:
-                out_template += character
+        # get inner-most tags that could potentially be other variables
+        match_list = re.findall(r'\{([^}{]*)\}', in_template)
+        for var_name in match_list:
+            # check if each tag is an existing METplus config variable
+            if self.has_option(sec, var_name):
+                value = self.getraw(sec, var_name, default, count+1)
+            elif self.has_option('config', var_name):
+                value = self.getraw('config', var_name, default, count+1)
+            elif var_name.startswith('ENV'):
+                # if environment variable, ENV[nameofvar], get nameofvar
+                value = os.environ.get(var_name[4:-1])
+            else:
+                value = None
 
-        # replace double slash in path to single slash
-        return out_template.replace('//', '/')
+            if value is None:
+                continue
+            in_template = in_template.replace(f"{{{var_name}}}", value)
+
+        # Replace double slash with single slash because MET config files fail
+        # when they encounter double slash. This is a GitHub issue MET #1277
+        # This fix will prevent using URLs with https:// so the MET issue must
+        # be resolved before we can remove the replace call
+        return in_template.replace('//', '/')
 
     def check_default(self, sec, name, default):
         """!helper function for get methods, report error and raise NoOptionError if

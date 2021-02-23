@@ -60,7 +60,7 @@ _obsGFS_ExtraTC.conf
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/TCPairsETCConfig
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC/TCPairsETCConfig
 #
 #
 # See the following files for more information about the environment variables set in these configuration files.
@@ -77,11 +77,11 @@ _obsGFS_ExtraTC.conf
 #
 # 1) Passing in Plotter_fcstGFS_obsGFS_ExtraTC.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in Plotter_fcstGFS_obsGFS_ExtraTC.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_ExtraTC.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #

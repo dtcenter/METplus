@@ -82,7 +82,7 @@ If the wrapper will not loop and process for each forecast lead, put the logic t
 
 * Call self.clear() at the beginning of each loop iteration that tries to build/run a MET command to prevent inadvertently reusing/re-running commands that were previously created.
 
-* Update the METplus/ush/master_metplus.py file to recognize your wrapper by adding an import statement::
+* Update the METplus/ush/run_metplus.py file to recognize your wrapper by adding an import statement::
 
     from new_tool_wrapper import NewToolWrapper
 
