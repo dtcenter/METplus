@@ -373,6 +373,14 @@ For an example on how to upload data to the ftp site see
 Adding new data to full sample data tarfile
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+If you are unable to access the DTC web server to upload data or if you do
+not have permission to use the met_test shared user account, someone from the
+METplus development team will have to complete the instructions in this
+section. Please let one of the team members know if this is the case.
+Comment on the GitHub issue associated with this use case and/or email the team
+member(s) you have been coordinating with for this work. If you are unsure who
+to contact, then please contact met_help@ucar.edu.
+
 Log into the DTC Web Server with SSH
 """"""""""""""""""""""""""""""""""""
 
@@ -387,6 +395,8 @@ The commands must be run as the met_test user to write into the data
 directory::
 
     runas met_test
+
+If unable to run this command successfully, please contact a METplus developer.
 
 Setup the environment to run commands on web server
 """""""""""""""""""""""""""""""""""""""""""""""""""
@@ -485,8 +495,44 @@ Log out of DTC Web Server
 The rest of the instructions are run on the machine where the use case was
 created and tested.
 
+Trigger Input Data Ingest
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If working in the dtcenter/METplus repository, please skip this step.
+If working in a forked METplus repository, the newly added input data will not
+become available for the tests unless it is triggered from the dtcenter
+repository. A METplus developer will need to run the following steps. Please
+provide them with the name of your forked repository and the branch that will
+be used to create the pull request with the new use case. In this example,
+the branch feature_XYZ exists in the my_fake_user/METplus repository. First,
+clone the dtcenter/METplus repository, the run the following::
+
+    git remote add my_fake_user https://github.com/my_fake_user/METplus
+    git checkout develop
+    git checkout -b feature_XYZ
+    git pull my_fake_user feature_XYZ
+    git push origin feature_XYZ
+    git remote remove my_fake_user
+
+These commands will add a new remote to the forked repository, create a branch
+off of the develop branch with the same name as the branch on the fork, pull
+in the changes from the forked branch, then push the new branch up to
+dtcenter/METplus on GitHub. Finally, the remote is removed to avoid clutter.
+
+Once these steps have been completed, go to dtcenter/METplus on GitHub in a web
+browser and navigate to the
+`Actions tab <https://github.com/dtcenter/METplus/actions>`_.
+Click on the job named
+"Docker Setup - Update Data Volumes" then click on "Update Data Volumes" and
+verify that the new data tarfile was found on the DTC web server and the new
+Docker data volume was created successfully. See
+:ref:`verify-new-input-data-was-found`. If the input data was ingested
+properly, then delete the feature branch from dtcenter/METplus. This will avoid
+confusion if this branch diverges from the branch on the forked repository that
+will be used in the final pull request.
+
 Add use case to the test suite
-""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In the METplus repository, there is a text file that contains the list of
 all use cases::
@@ -595,48 +641,31 @@ Add new category to test runs
 
 If you are adding a new use case category, you will need to add a new entry
 to the main.yml file found in the .github/workflows directory in the METplus
-repository. For
-example, if the new category you are adding is called data_assimilation,
-then you will add the following to the main.yml at the end of the list of
-tests to run::
+repository.
+Find the job in the main.yml file named "use_case_tests" and add the new
+category to the matrix categories list if it is not already there.
 
-    use_cases_data_assimilation:
-        name: Use Cases Tests - data_assimilation
-        runs-on: ubuntu-latest
-        needs: [get_image, update_data_volumes]
-        steps:
-          - uses: actions/checkout@v2
-          - uses: actions/setup-python@v2
-            with:
-              python-version: '3.6'
-          - uses: actions/download-artifact@v2
-          - run: echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          - name: Install dependencies
-            run: python -m pip install --upgrade pip python-dateutil requests
-          - name: Run Use Cases
-            run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation
-            env:
-              DOCKER_WORK_DIR: /metplus
-              DOCKER_DATA_DIR: /data
-              DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-              DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-          # copy output data to save as artifact
-          - name: Save output data
-            if: always()
-            run: |
-              mkdir -p artifact/${{ github.job }}
-              cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-          - uses: actions/upload-artifact@v2
-            if: always()
-            with:
-              name: ${{ github.job }}
-              path: artifact/${{ github.job }}
-
-.. note::
-    There are 3 places in this new section where you need to change
-    "data_assimilation" to the new category that is being created.
-    The run_use_cases.py script requires the
-    first argument to be the use case category to run in that job.
+  use_case_tests:
+    name: Use Case Tests
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    strategy:
+      fail-fast: false
+      matrix:
+        categories:
+          - "met_tool_wrapper"
+          - "air_quality_and_comp"
+          - "climate"
+          - "convection_allowing_models:0-5"
+          - "convection_allowing_models:6+"
+          - "cryosphere"
+          - "data_assimilation"
+          - "marine_and_coastal"
+          - "medium_range:0-4"
+          - "medium_range:5"
+          - "medium_range:6+"
+          - "precipitation"
+          - "s2s,space_weather,tc_and_extra_tc"
 
 Multiple Categories in One Test
 """""""""""""""""""""""""""""""
@@ -646,7 +675,7 @@ job, you can add additional categories to this argument separated by commas or
 ampersands, i.e. category1,category2. Do not include any spaces around the
 commas. Example::
 
-    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py s2s,space_weather
+    "s2s,space_weather,tc_and_extra_tc"
 
 .. _subset_category:
 
@@ -654,25 +683,25 @@ Subset Category into Multiple Tests
 """""""""""""""""""""""""""""""""""
 
 If all of the use cases in a given category take a long time to run, you can
-separate them into multiple test jobs. A second argument to the
-run_use_cases.py defines the cases to run for the job. Use cases are numbered
+separate them into multiple test jobs. Add a colon (:), then define
+the cases to run for the job. Use cases are numbered
 starting with 0 and are in order of how they are found in the all_use_cases.txt
 file.
 
 The argument supports a comma-separated list of numbers. Example::
 
-    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation 0,2,4
+    "data_assimilation:0,2,4"
     ...
-    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation 1,3
+    "data_assimilation:1,3"
 
 The above example will run a job with data_assimilation use cases 0, 2, and
 4, then another job with data_assimilation use cases 1 and 3.
 
 It also supports a range of numbers separated with a dash. Example::
 
-    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation 0-3
+    "data_assimilation:0-3"
     ...
-    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation 4+
+    "data_assimilation:4+"
 
 The above example will run a job with data_assimilation 0, 1, 2, and 3, then
 another job with data_assimilation 4 and higher. If you split up use cases
@@ -682,9 +711,9 @@ number specified in case additional use cases are added to the category.
 You can also use a combination of commas and dashes to define the list of cases
 to run. Example::
 
-    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation 0-2,4+
+    "data_assimilation:0-2,4+"
     ...
-    ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation 3
+    "data_assimilation:3"
 
 The above example will run data_assimilation 0, 1, 2, 4, and above in one
 job, then data_assimilation 3 in another job.
@@ -713,6 +742,8 @@ At the far left of the entry will be a small status icon:
 - A grey octagon with an exclamatory mark (!) inside means it was cancelled.
 
 Click on the text next to the icon (last commit message) to see more details.
+
+.. _verify-new-input-data-was-found:
 
 Verifying that new input data was found
 """""""""""""""""""""""""""""""""""""""
@@ -893,6 +924,16 @@ completed successfully.
 
 If the circle on the left side is yellow, then the run has not completed yet.
 If everything ran smoothly, clean up the files on the web server.
+
+Create a pull request from develop into develop-ref
+"""""""""""""""""""""""""""""""""""""""""""""""""""
+
+The addition of a new use case results in new output data. When this happens,
+the reference branch needs to be updated so that future pull requests will
+compare their results to a "truth" data set that contains the new files.
+Create a pull request with "develop" as the source branch and "develop-ref" as
+the destination branch. Assign this pull request to another METplus team
+member.
 
 Remove the saved copy of the sample data tarfile
 """"""""""""""""""""""""""""""""""""""""""""""""
