@@ -116,7 +116,7 @@ met_tool_wrapper/StatAnalysis/StatAnalysis.conf
 #
 # Passing in StatAnalysis.conf then a user-specific system configuration file::
 #
-#   master_metplus.py -c /path/to/StatAnalysis.conf -c /path/to/user_system.conf
+#   run_metplus.py -c /path/to/StatAnalysis.conf -c /path/to/user_system.conf
 #
 # The following METplus configuration variables must be set correctly to run this example.:
 #

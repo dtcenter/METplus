@@ -88,10 +88,10 @@ met_tool_wrapper/TCPairs/TCPairs_tropical.conf
 #
 # 1) Passing in TCPairs_tropical.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/TCPairs_tropical.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/TCPairs_tropical.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in TCPairs_tropical.conf::
-#        master_metplus.py -c /path/to/TCPairs_tropical.conf
+#        run_metplus.py -c /path/to/TCPairs_tropical.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following METplus configuration variables must be set correctly to run this example.:
 #

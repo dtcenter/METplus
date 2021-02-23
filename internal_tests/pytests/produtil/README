@@ -7,7 +7,7 @@ To run the test:
 2) open the test_produtil.py file and replace the '/path/to' with the full path to the directory where your produtil_test.conf file
 resides (this will be in METplus/internal_tests/pytest/produtil).
 
-NOTE: This is necessary, as we are NOT using master_metplus.py to begin the process of reading in the config
+NOTE: This is necessary, as we are NOT using run_metplus.py to begin the process of reading in the config
 file, test_produtil.conf
 
 

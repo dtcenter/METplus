@@ -68,11 +68,11 @@ met_tool_wrapper/UserScript/UserScript_run_once_per_init.conf
 #
 # 1) Passing in UserScript_run_once_per_init.conf_run_once then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/UserScript/UserScript_run_once_per_init.conf_run_once -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/UserScript/UserScript_run_once_per_init.conf_run_once -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_run_once_per_init.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/UserScript_run_once_per_init.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/UserScript_run_once_per_init.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #

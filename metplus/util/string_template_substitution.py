@@ -45,6 +45,7 @@ LENGTH_DICT = {'Y': 4,
                'b': 3,
                }
 
+MAX_ATTEMPTS = 5
 
 def multiple_replace(replace_dict, text):
     """Helper function for do_string_sub. Replace in 'text' all occurrences of any key in the
@@ -295,108 +296,74 @@ def handle_format_delimiter(split_string, idx, shift_seconds, truncate_seconds, 
 
     return None
 
-def do_string_sub(tmpl, skip_missing_tags=False, **kwargs):
+def do_string_sub(tmpl,
+                  skip_missing_tags=False,
+                  recurse=False,
+                  attempt=MAX_ATTEMPTS,
+                  **kwargs):
+    """ Perform string substitution on a template. Replace filename template
+        tags (found within curly braces) with values passed into the function
+        as arguments. In some cases, the template keys can have parameters
+        containing formatting information. datetime objects
+        set as the value of an argument can be formatted using Python datetime
+        strftime format syntax, i.e. {init?fmt=%Y%m%d}. Integers and
+        relativedelta objects passed as the value of an argument can be
+        formatted with %H, %M, %S, or %d (hour, minute, second, or day
+        respectively). Integers are assumed to be seconds.
+
+        @param tmpl template to substitute values into
+        @param skip_missing_tags (Optional) argument to allow the function to
+         not fail if a tag cannot be substituted. This is useful when a
+         developer wants to substitute some of the tags in a template but
+         leave others alone before substituting them later. This is also needed
+         if the template contains curly braces that are part of a dictionary
+         (i.e. in a MET config variable) that should not be substituted. If
+         set to False (default) and a key to be substituted was not passed into
+         the function call, a TypeError exception will be raised.
+        @param recurse If True, try to substitute values recursively until max
+         number of attempts have been made. If False, only try once. Default
+         value is False.
+        @param attempt Counter to prevent infinite recursion if a set of curly
+         braces are expected to not be substituted. This argument shouldn't be
+         defined in the call to this function.
+        @param kwargs any additional arguments that are passed to the function.
+         These will be used to replace values in the template. For example, if
+         my_arg=my_value is passed to the function, any occurence of {my_arg}
+         in the template will be substituted with 'my_value'.
+        @returns template with tags substituted with values
     """
-    log - log object
-    tmpl_str - template string to populate
-    kwargs - dictionary containing values for each template key
+    if recurse:
+        # set argument to another variable to avoid changing the input value
+        attempt_local = attempt
+        # if number of attempts provided is more than the max,
+        # set it to the max
+        if attempt_local > MAX_ATTEMPTS:
+            attempt_local = MAX_ATTEMPTS
+    else:
+        # if recursion is off, only attempt once
+        attempt_local = 0
 
-    This class provides functionality for substituting values for
-    string templates.
-
-    Possible keys for vals:
-       init - datetime object
-       valid - datetime object
-       lead - must be in seconds
-       level - must be in seconds
-       model - the name of the model
-       domain - the domain number (01, 02, etc.) read in as a string
-       cycle - the cycle hour in HH format (00, 03, 06, etc.)
-       offset_hour - the offset hour in HH format to add
-                     to the init + cycl time:
-                      (YYYYMMDD + hh) + offset
-                     Indicate a negative offset by using a '-' sign
-                     in the
-       date - datetime object
-       region - the two-character (upper or lower case) region/basin designation
-       cyclone - a two-digit annual cyclone number (if ATCF_by_pairs) or
-                 four-digit cyclone number (leading zeros)
-       misc - any string
-
-    Populates the specified template with information from the
-           kwargs dictionary.  The template structure is comprised of
-           a fixed string populated with template place-holders inside curly
-           braces, for example {tmpl_str}.  The tmpl_str must be present as
-           a key in the kwargs dictionary, and the value will replace the
-           {tmpl_str} in the returned string.
-
-            In some cases, the template keys can have parameters containing
-            formatting information. The format of the template in this case
-            is {tmpl_str?parm=val}.  The supported parameters are:
-
-            init, valid:
-                fmt - specifies a strftime format for the date/time
-                      e.g. %Y%m%d%H%M%S, %Y%m%d%H
-
-              lead, level:
-                fmt -  specifies an amount of time in [H]HH[MMSS] format
-                       e.g. %HH, %HHH, %HH%MMSS, %HHH%MMSS
-
-              cycle, negative_offset, positive_offset:
-                fmt - specifies the cycle and offset hours in HH format. H and
-                      HHH format are supported, to anticipate any changes
-                      in prepbufr data.
-
-              The following were created to support processing of
-              tropical cyclone data:
-              cyclone:
-                fmt - specifies the annual cyclone number as a string.
-
-              region:
-                fmt - a string that specifies the region/basin of cyclone.
-                      For ATCF_by_pairs formatted data, this is a 2-character
-                      designation:
-                      AL|WP|CP|EP|SH|IO|LS lower case designations are
-                      observed in filenames.
-              date:
-                fmt - a string representation of the date format for a
-                      subdirectory in which track data resides, or the
-                      string representation of the date format in a file.
-                      Expected formats: YYYY, YYYYMM, YYYYMMDD, and YYYYMMDDhh
-              misc:
-                fmt -a string that represents any other miscellaneous feature
-                     of the track data, such as experiment name or some other descriptor
-    """
-
-    # The . matches any single character except newline, and the
-    # following + matches 1 or more occurrence of preceding expression.
-    # The ? after the .+ makes it a lazy match so that it stops
-    # after the first "}" instead of continuing to match as many
-    # characters as possible
-
-    # findall searches through the string and finds all non-overlapping
-    # matches and returns the group
+    # find inner most tags between nested curly braces
     # match_list is a list with the contents being the data between the
     # curly braces
-    match_list = re.findall(r'\{(.+?)\}', tmpl)
-
-    # finditer gets the start and end indices
-    # Iterate over each match to get the starting and ending indices
-    matches = re.finditer(r'\{(.+?)\}', tmpl)
-    match_start_end_list = []
-    for match in matches:
-        match_start_end_list.append((match.start(), match.end()))
+    match_list = re.findall(r'\{([^}{]*)\}', tmpl)
 
     if len(match_list) == 0:
         return tmpl
 
-    if len(match_list) != len(match_start_end_list):
-        # Log and exit
-        raise TypeError("match_list and match_start_end_list should " +
-                        "have the same length for template: " +
-                        tmpl)
+    match_result = find_and_replace_tags_in_template(match_list,
+                                                     tmpl,
+                                                     kwargs,
+                                                     skip_missing_tags)
 
-    return find_and_replace_tags_in_template(match_list, tmpl, kwargs, skip_missing_tags)
+    # if no more recursive attempts should be made, return the result
+    if attempt_local <= 0:
+        return match_result
+
+    return do_string_sub(match_result,
+                         skip_missing_tags=skip_missing_tags,
+                         attempt=attempt_local-1,
+                         **kwargs)
 
 def find_and_replace_tags_in_template(match_list, tmpl, kwargs, skip_missing_tags=False):
     """! Loop through tags from template and replace them with the correct time values

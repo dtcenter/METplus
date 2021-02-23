@@ -55,7 +55,7 @@ def run_test_use_case(param, test_metplus_base):
 
     out_dir = os.path.join(output_base, os.path.basename(param_files[-2]))
 
-    cmd = os.path.join(test_metplus_base, "ush", "master_metplus.py")
+    cmd = os.path.join(test_metplus_base, "ush", "run_metplus.py")
     use_case_name = None
     for parm in params:
         if parm.startswith('config.USE_CASE_NAME'):
