@@ -822,7 +822,7 @@ went wrong in the previous instructions.
 .. figure:: figure/data_volume_not_found.png
 
 If this is the case and data should be found, repeat the instructions to stage
-the input data or contact MET Help (met_help@ucar.edu). for assistance.
+the input data or contact MET Help (met_help@ucar.edu) for assistance.
 
 Verify that the use case ran successfully
 """""""""""""""""""""""""""""""""""""""""
