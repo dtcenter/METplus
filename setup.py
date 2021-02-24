@@ -38,4 +38,5 @@ setup(
                 (met_config_dir, met_config_files),
                 (metplus_config_dir, metplus_config_files),
                ],
+    zip_safe=False,
 )
