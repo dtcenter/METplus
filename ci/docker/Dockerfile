@@ -42,13 +42,14 @@ RUN echo export PATH=$PATH:${DOCKER_WORK_DIR}/METplus/ush >> /etc/bashrc \
 #
 # Install nco tools for ncap2
 # Install Java 1.8.0 OpenJDK for GempakToCF.jar
-# Install pytest
+# Install pytest and netCDF4 python packages
+# Obtain GempakToCF.jar
 RUN yum -y update \
  && yum -y install nco.x86_64 \
  && yum -y install java-1.8.0-openjdk \
- && python3 -m pip install pytest netCDF4
-
-RUN mkdir -p /data/input && curl -L -o /data/input/GempakToCF.jar -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar || true
+ && python3 -m pip install pytest netCDF4 \
+ && mkdir -p /data/input \
+ && curl -L -o /data/input/GempakToCF.jar -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar || true
 
 
 ARG SOURCE_BRANCH
@@ -62,6 +63,8 @@ RUN if [ ${DO_GIT_CLONE:-true} == true ]; then \
       cd METplus; \
       git checkout ${SOURCE_BRANCH}; \
       sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
+      sed -i 's|OUTPUT_BASE = /path/to|OUTPUT_BASE = /data/output|g' parm/metplus_config/metplus_system.conf; \
+      sed -i 's|INPUT_BASE = /path/to|INPUT_BASE = /data/input/METplus_Data|g' parm/metplus_config/metplus_data.conf; \
       python3 setup.py install; \
     else \
       echo "Running from user's local METplus repository, so don't clone through Docker"; \
