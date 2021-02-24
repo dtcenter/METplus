@@ -21,24 +21,24 @@ _NetCDF.conf
 # | **Forecast:** HAFS temperature
 # | **Observation:** HRD Dropsonde data 
 #
-# | **Location of Model forecast and Dropsonde files:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data
+# | **Location of Model forecast and Dropsonde files:** All of the input data required for this use case can be found in the sample data tarball. Click `here <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_ to download.
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
-# | **Dropsonde data Source:** https://www.aoml.noaa.gov/hrd/data_sub/dropsonde.html
+# | **Dropsonde Data Source:** `Hurricane Research Division Sonde Archive  <https://www.aoml.noaa.gov/hrd/data_sub/dropsonde.html>`_
 #
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus ASCII2NC wrapper to convert frd dopsonde point observations to NetCDF format and then compare them to gridded forecast data using PointStat.
+# This use case utilizes the METplus ASCII2NC wrapper to convert full-resolution data (frd) dopsonde point observations to NetCDF format and then compare them to gridded forecast data using PointStat.
 
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# The use case runs the UserScript wrapper (untar the dropsonde file and extract the files to a directory), ASCII2NC (convert the ascii files to NetCDF format), and PointStat (compute statistics against HAFS model output) are the tools called in this example. It processes the following run times:
+# The use case runs the UserScript wrapper (untar the dropsonde file and extract the files to a directory), ASCII2NC (convert the ascii files to NetCDF format), and PointStat (compute statistics against HAFS model output), which are the tools called in this example. It processes the following run times:
 #
 # | **Valid:** 2019-08-29 12Z
 #
@@ -117,11 +117,11 @@ _NetCDF.conf
 #
 # 1) Passing in UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications//tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications//tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf:
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
