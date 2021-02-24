@@ -1,6 +1,6 @@
 """
 CyclonePlotter_fcstGFS_obsGFS_OPC.conf: Use Case for OPC (EMC) cyclone data
-========================================================================
+===========================================================================
 
 model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 
