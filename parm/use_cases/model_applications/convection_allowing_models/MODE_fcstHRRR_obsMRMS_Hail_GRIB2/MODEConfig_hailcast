@@ -253,4 +253,4 @@ shift_right = 0;   //  grid squares
 output_prefix    = "${OUTPUT_PREFIX}";
 
 ////////////////////////////////////////////////////////////////////////////////
->>>>>>> origin/feature_803_cycloneplotter_line:parm/use_cases/model_applications/convection_allowing_models/MODE_fcstHRRR_obsMRMS_Hail_GRIB2/MODEConfig_hailcast
+

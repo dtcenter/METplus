@@ -28,4 +28,5 @@ RUN for URL in `echo ${TARFILE_URL} | tr "," " "`; do \
 # Define the volume mount point
 VOLUME ${MOUNTPT}
 
-
+USER root
+CMD ["true"]
