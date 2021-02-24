@@ -20,8 +20,8 @@ import os
 import sys
 
 # add metplus directory to path so the wrappers and utilities can be found
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                os.pardir)))
+#sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
+#                                                os.pardir)))
 
 import produtil.setup
 
