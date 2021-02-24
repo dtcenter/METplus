@@ -41,7 +41,7 @@ grid_res = 3;
 //
 // Run all permutations of radius and threshold
 //
-quilt = ${QUILT};
+${METPLUS_QUILT}
 
 //
 // Forecast and observation fields to be verified
