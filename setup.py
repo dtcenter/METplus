@@ -8,13 +8,26 @@ with open("README.md", "r") as fh:
 with open("metplus/VERSION", "r") as fh:
     version = fh.read()
 
-# get parm files needed to run
-met_config_dir = 'parm/met_config'
-metplus_config_dir = 'parm/metplus_config'
-met_config_files = [os.path.join(met_config_dir, item) for
-                    item in os.listdir(met_config_dir)]
-metplus_config_files = [os.path.join(metplus_config_dir, item) for
-                        item in os.listdir(metplus_config_dir)]
+# get list of additional files needed to add to package
+data_files = []
+# add version and release date files
+data_files.append(('metplus',
+                  ['metplus/VERSION',
+                   'metplus/RELEASE_DATE',
+                  ]))
+
+for root, _, files in os.walk('parm'):
+    parm_files = []
+    for filename in files:
+        filepath = os.path.join(root, filename)
+        # skip README, tilda, and pycache files
+        if ('__pycache__' in filepath or
+                'README' in filepath or
+                filepath.endswith('~')):
+            continue
+        parm_files.append(filepath)
+    if parm_files:
+        data_files.append((root, parm_files))
 
 setup(
     name="metplus",
@@ -32,11 +45,6 @@ setup(
          "Operating System :: OS Independent",
     ],
     python_requires='>=3.6',
-    data_files=[('metplus', ['metplus/VERSION',
-                             'metplus/RELEASE_DATE',
-                            ]),
-                (met_config_dir, met_config_files),
-                (metplus_config_dir, metplus_config_files),
-               ],
+    data_files=data_files,
     zip_safe=False,
 )
