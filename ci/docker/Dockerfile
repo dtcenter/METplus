@@ -62,7 +62,7 @@ RUN if [ ${DO_GIT_CLONE:-true} == true ]; then \
       cd METplus; \
       git checkout ${SOURCE_BRANCH}; \
       sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
-      python3 setup.py install
+      python3 setup.py install; \
     else \
       echo "Running from user's local METplus repository, so don't clone through Docker"; \
     fi
