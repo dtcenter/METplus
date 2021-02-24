@@ -39,6 +39,9 @@ class CommandBuilder:
     # types of climatology values that should be checked and set
     climo_types = ['MEAN', 'STDEV']
 
+    # name of variable to hold any MET config overrides
+    MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_OVERRIDES'
+
     def __init__(self, config, instance=None, config_overrides={}):
         self.isOK = True
         self.errors = 0
@@ -53,6 +56,16 @@ class CommandBuilder:
         self.outfile = ""
         self.param = ""
         self.all_commands = []
+
+        # store values to set in environment variables for each command
+        self.env_var_dict = {}
+
+        # list of environment variables to set before running command
+        self.env_var_keys = [
+            'MET_TMP_DIR',
+        ]
+        if hasattr(self, 'WRAPPER_ENV_VAR_KEYS'):
+            self.env_var_keys.extend(self.WRAPPER_ENV_VAR_KEYS)
 
         # if instance is set, check for a section with the same name in the
         # METplusConfig object. If found, copy all values into the config
@@ -71,7 +84,29 @@ class CommandBuilder:
         self.env = os.environ.copy()
         if hasattr(config, 'env'):
             self.env = config.env
+
+        # populate c_dict dictionary
         self.c_dict = self.create_c_dict()
+
+        # if wrapper has a config file, read MET config overrides variable
+        if 'CONFIG_FILE' in self.c_dict:
+            config_name = self.MET_OVERRIDES_KEY.replace('METPLUS',
+                                                         self.app_name.upper())
+            self.env_var_dict[self.MET_OVERRIDES_KEY] = (
+                self.config.getraw('config', config_name)
+            )
+
+            # add key to list of env vars to set
+            self.env_var_keys.append(self.MET_OVERRIDES_KEY)
+
+            # warn if any environment variables set by the wrapper are not
+            # being utilized in the user's config file
+            self.check_for_unused_env_vars()
+
+        # set MET_TMP_DIR environment variable that controls
+        # where the MET tools write temporary files
+        self.env_var_dict['MET_TMP_DIR'] = self.config.getdir('TMP_DIR')
+
         self.check_for_externals()
 
         self.cmdrunner = CommandRunner(self.config, logger=self.logger,
@@ -82,10 +117,6 @@ class CommandBuilder:
         # should override this value in their init function after the call
         # to the parent init function
         self.log_name = self.app_name if hasattr(self, 'app_name') else ''
-
-        # if env MET_TMP_DIR was not set, set it to config TMP_DIR
-        if 'MET_TMP_DIR' not in self.env:
-            self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
 
         self.clear()
 
@@ -98,11 +129,34 @@ class CommandBuilder:
             self.logger.debug(f"Setting [config] {key} = {value}")
             self.config.set('config', key, value)
 
+    def check_for_unused_env_vars(self):
+        config_file = self.c_dict.get('CONFIG_FILE')
+        if not config_file:
+            return
+
+        if not hasattr(self, 'WRAPPER_ENV_VAR_KEYS'):
+            return
+
+        # read config file content
+        with open(config_file, 'r') as file_handle:
+            content = file_handle.read()
+
+        # report a warning if any env var in the list is not being used
+        for env_var_key in self.WRAPPER_ENV_VAR_KEYS:
+            env_var_string = f"${{{env_var_key}}}"
+            if env_var_string not in content:
+                self.logger.warning(f"Environment variable {env_var_string} "
+                                    "is not utilized in MET config file: "
+                                    f"{config_file}")
+
+
     def create_c_dict(self):
         c_dict = dict()
         # set skip if output exists to False for all wrappers
         # wrappers that support this functionality can override this value
-        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MET_VERBOSITY', '2')
+        c_dict['VERBOSITY'] = self.config.getstr('config',
+                                                 'LOG_MET_VERBOSITY',
+                                                 '2')
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
         app_name = ''
@@ -131,6 +185,12 @@ class CommandBuilder:
                                 f'{app_name.upper()}_SKIP_IF_OUTPUT_EXISTS',
                                 False)
         )
+
+        # option to bypass check for the existence of input files
+        # to make testing easier
+        c_dict['INPUT_MUST_EXIST'] = self.config.getbool('config',
+                                                         'INPUT_MUST_EXIST',
+                                                         True)
         return c_dict
 
     def clear(self):
@@ -144,9 +204,6 @@ class CommandBuilder:
         self.param = ""
         self.env_list.clear()
 
-        # add MET_TMP_DIR back to env_list
-        self.add_env_var('MET_TMP_DIR', self.config.getdir('TMP_DIR'))
-
     def set_environment_variables(self, time_info=None):
         """!Set environment variables that will be read set when running this tool.
             This tool does not have a config file, but environment variables may still
@@ -154,7 +211,27 @@ class CommandBuilder:
             Reformat as needed. Print list of variables that were set and their values.
             Args:
               @param time_info dictionary containing timing info from current run"""
-        # set user environment variables
+        if time_info is None:
+            clock_time_fmt = (
+                datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
+                                  '%Y%m%d%H%M%S')
+            )
+            time_info = {'now': clock_time_fmt}
+
+        # loop over list of environment variables that need to be set for the
+        # wrapper, apply time info substitution if available, and
+        # set environment variable setting empty string if key is not set in
+        # the env_var_dict dictionary
+        for key in self.env_var_keys:
+            value = self.env_var_dict.get(key, '')
+            if time_info:
+                value = do_string_sub(value,
+                                      skip_missing_tags=True,
+                                      **time_info)
+
+            self.add_env_var(key, value)
+
+        # set user defined environment variables
         self.set_user_environment(time_info)
 
         # send environment variables to logger
@@ -167,13 +244,9 @@ class CommandBuilder:
         self.errors += 1
         self.isOK = False
 
-    def set_user_environment(self, time_info=None):
+    def set_user_environment(self, time_info):
         """!Set environment variables defined in [user_env_vars] section of config
         """
-        if time_info is None:
-            time_info = {'now': datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
-                                                  '%Y%m%d%H%M%S')}
-
         if 'user_env_vars' not in self.config.sections():
             self.config.add_section('user_env_vars')
 
@@ -215,54 +288,53 @@ class CommandBuilder:
 
         return msg
 
-    def handle_window_once(self, c_dict, dtype, edge, app_name):
+    def handle_window_once(self, input_list, default_val=0):
         """! Check and set window dictionary variables like
               OBS_WINDOW_BEG or FCST_FILE_WINDW_END
-              Args:
-                @param c_dict dictionary to set items in
-                @param dtype type of data 'FCST' or 'OBS'
-                @param edge either 'BEGIN' or 'END'
+
+             @param input_list list of config keys to check for value
+             @param default_val value to use if none of the input keys found
         """
-        app = app_name.upper()
+        for input_key in input_list:
+            if self.config.has_option('config', input_key):
+                return self.config.getseconds('config', input_key)
 
-        # if value specific to given wrapper is set, override value
-        if self.config.has_option('config',
-                                  dtype + '_' + app + '_WINDOW_' + edge):
-            c_dict[dtype + '_WINDOW_' + edge] = \
-                self.config.getseconds('config',
-                                   dtype + '_' + app + '_WINDOW_' + edge)
-        # if generic value is set, use that
-        elif self.config.has_option('config',
-                                    dtype + '_WINDOW_' + edge):
-            c_dict[dtype + '_WINDOW_' + edge] = \
-                self.config.getseconds('config',
-                                       dtype + '_WINDOW_' + edge)
-        # otherwise set to default of 0
-        else:
-            c_dict[dtype + '_WINDOW_' + edge] = 0
+        return default_val
 
-        # do the same for FILE_WINDOW
-        if self.config.has_option('config',
-                                  dtype + '_' + app + '_FILE_WINDOW_' + edge):
-            c_dict[dtype + '_FILE_WINDOW_' + edge] = \
-                self.config.getseconds('config',
-                                   dtype + '_' + app + '_FILE_WINDOW_' + edge)
-        elif self.config.has_option('config',
-                                    dtype + '_FILE_WINDOW_' + edge):
-            c_dict[dtype + '_FILE_WINDOW_' + edge] = \
-                self.config.getseconds('config',
-                                       dtype + '_FILE_WINDOW_' + edge)
-        # if generic FILE_WINDOW_ is set, use that
-        elif self.config.has_option('config',
-                                    'FILE_WINDOW_' + edge):
-            c_dict['FILE_WINDOW_' + edge] = \
-                self.config.getseconds('config',
-                                       'FILE_WINDOW_' + edge)
-        # otherwise set to 0
-        else:
-            c_dict[dtype + '_FILE_WINDOW_' + edge] = 0
+    def handle_obs_window_variables(self, c_dict):
+        """! Handle obs window config variables like
+        OBS_<app_name>_WINDOW_[BEGIN/END]. Set c_dict values for begin and end
+        to handle old method of setting env vars in MET config files, i.e.
+        OBS_WINDOW_[BEGIN/END]. Set env_var_dict value if any of the values
+        are set
 
-    def handle_window_variables(self, c_dict, app_name, dtypes=['FCST', 'OBS']):
+             @param c_dict dictionary to read items from
+        """
+        edges = [('BEGIN', -5400),
+                 ('END', 5400)]
+        app = self.app_name.upper()
+
+        keys = []
+        tmp_dict = {}
+        for edge, default_val in edges:
+            input_list = [f'OBS_{app}_WINDOW_{edge}',
+                          f'OBS_WINDOW_{edge}',
+                         ]
+            output_key = f'OBS_WINDOW_{edge}'
+            value = self.handle_window_once(input_list, default_val)
+            c_dict[output_key] = value
+            if edge == 'BEGIN':
+                edge = 'BEG'
+            tmp_dict[output_key] = f'{edge.lower()} = {value};'
+            # if something other than the default is used, add output key
+            # to the list of items to add to the env_var_dict value
+            if value != default_val:
+                keys.append(output_key)
+
+        window_str = self.format_met_config_dict(tmp_dict, 'obs_window', keys)
+        self.env_var_dict['METPLUS_OBS_WINDOW_DICT'] = window_str
+
+    def handle_file_window_variables(self, c_dict, dtypes=['FCST', 'OBS']):
         """! Handle all window config variables like
               [FCST/OBS]_<app_name>_WINDOW_[BEGIN/END] and
               [FCST/OBS]_<app_name>_FILE_WINDOW_[BEGIN/END]
@@ -270,10 +342,27 @@ class CommandBuilder:
                 @param c_dict dictionary to set items in
         """
         edges = ['BEGIN', 'END']
+        app = self.app_name.upper()
 
         for dtype in dtypes:
             for edge in edges:
-                self.handle_window_once(c_dict, dtype, edge, app_name)
+                input_list = [f'{dtype}_{app}_FILE_WINDOW_{edge}',
+                               f'{dtype}_FILE_WINDOW_{edge}',
+                               f'FILE_WINDOW_{edge}',
+                               ]
+                output_key = f'{dtype}_FILE_WINDOW_{edge}'
+                value = self.handle_window_once(input_list, 0)
+                c_dict[output_key] = value
+
+    def set_met_config_obs_window(self, c_dict):
+        for edge in ['BEGIN', 'END']:
+            obs_window = c_dict.get(f'OBS_WINDOW_{edge}', '')
+            if obs_window:
+                obs_window_fmt = f"{edge.lower()} = {obs_window};"
+            else:
+                obs_window_fmt = ''
+
+            self.env_var_dict[f'METPLUS_OBS_WINDOW_{edge}'] = obs_window_fmt
 
     def set_output_path(self, outpath):
         """!Split path into directory and filename then save both
@@ -303,6 +392,9 @@ class CommandBuilder:
 
         if 'user_env_vars' in self.config.sections():
             for user_var in self.config.keys('user_env_vars'):
+                # skip unset user env vars if not needed
+                if self.env.get(user_var) is None:
+                    continue
                 var_list.add(user_var)
 
         shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
@@ -372,13 +464,14 @@ class CommandBuilder:
         self.logger.warning('Using default values for {}'.format(gen_name))
         return default, default
 
-    def find_model(self, time_info, var_info=None, mandatory=True, return_list=False):
+    def find_model(self, time_info, var_info=None, mandatory=True,
+                   return_list=False):
         """! Finds the model file to compare
               Args:
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
-                @param mandatory if True, report error if not found, warning if not
-                  default is True
+                @param mandatory if True, report error if not found, warning
+                 if not, default is True
                 @rtype string
                 @return Returns the path to an model file
         """
@@ -388,13 +481,14 @@ class CommandBuilder:
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_obs(self, time_info, var_info=None, mandatory=True, return_list=False):
+    def find_obs(self, time_info, var_info=None, mandatory=True,
+                 return_list=False):
         """! Finds the observation file to compare
               Args:
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
-                @param mandatory if True, report error if not found, warning if not
-                  default is True
+                @param mandatory if True, report error if not found, warning
+                 if not, default is True
                 @rtype string
                 @return Returns the path to an observation file
         """
@@ -404,21 +498,24 @@ class CommandBuilder:
                               mandatory=mandatory,
                               return_list=return_list)
 
-    def find_obs_offset(self, time_info, var_info=None, mandatory=True, return_list=False):
-        """! Finds the observation file to compare, looping through offset list until a file is found
-              Args:
-                @param time_info dictionary containing timing information
-                @param var_info object containing variable information
-                @param mandatory if True, report error if not found, warning if not
-                  default is True
-                @rtype string
-                @return Returns tuple of the path to an observation file and the time_info object
-                used to find the data so the value of offset can be preserved
+    def find_obs_offset(self, time_info, var_info=None, mandatory=True,
+                        return_list=False):
+        """! Finds the observation file to compare, looping through offset
+            list until a file is found
+
+             @param time_info dictionary containing timing information
+             @param var_info object containing variable information
+             @param mandatory if True, report error if not found, warning
+              if not, default is True
+             @rtype string
+             @return Returns tuple of the path to an observation file and
+              the time_info object
+              used to find the data so the value of offset can be preserved
         """
         offsets = self.c_dict.get('OFFSETS', [0])
-        # if no offsets are specified, use argument to determine if file is mandatory
-        # if offsets are specified, set mandatory to False to avoid errors when searching
-        # through offset list
+        # if no offsets are specified, use argument to determine if file is
+        # mandatory if offsets are specified, set mandatory to False to avoid
+        # errors when searching through offset list
         is_mandatory = mandatory if offsets == [0] else False
 
         for offset in offsets:
@@ -447,14 +544,15 @@ class CommandBuilder:
 
         return None, time_info
 
-    def find_data(self, time_info, var_info=None, data_type='', mandatory=True, return_list=False, allow_dir=False):
+    def find_data(self, time_info, var_info=None, data_type='', mandatory=True,
+                  return_list=False, allow_dir=False):
         """! Finds the data file to compare
               Args:
                 @param time_info dictionary containing timing information
                 @param var_info object containing variable information
                 @param data_type type of data to find (i.e. FCST_ or OBS_)
-                @param mandatory if True, report error if not found, warning if not
-                  default is True
+                @param mandatory if True, report error if not found, warning
+                 if not. default is True
                 @rtype string
                 @return Returns the path to an observation file
         """
@@ -471,7 +569,8 @@ class CommandBuilder:
             else:
                 v_level = var_info['fcst_level']
 
-            # separate character from beginning of numeric level value if applicable
+            # separate character from beginning of numeric
+            # level value if applicable
             level = util.split_level(v_level)[1]
 
             # set level to 0 character if it is not a number
@@ -494,20 +593,22 @@ class CommandBuilder:
                     'return_list': return_list}
 
         # if looking for a file with an exact time match:
-        if self.c_dict.get(data_type_fmt + 'FILE_WINDOW_BEGIN', 0) == 0 and \
-                self.c_dict.get(data_type_fmt + 'FILE_WINDOW_END', 0) == 0:
+        if (self.c_dict.get(data_type_fmt + 'FILE_WINDOW_BEGIN', 0) == 0 and
+                self.c_dict.get(data_type_fmt + 'FILE_WINDOW_END', 0) == 0):
 
             return self.find_exact_file(**arg_dict, allow_dir=allow_dir)
 
         # if looking for a file within a time window:
         return self.find_file_in_window(**arg_dict)
 
-    def find_exact_file(self, level, data_type, time_info, mandatory=True, return_list=False, allow_dir=False):
+    def find_exact_file(self, level, data_type, time_info, mandatory=True,
+                        return_list=False, allow_dir=False):
         input_template = self.c_dict.get(f'{data_type}INPUT_TEMPLATE', '')
         data_dir = self.c_dict.get(f'{data_type}INPUT_DIR', '')
 
         if not input_template:
-            self.log_error(f"Could not find any {data_type}INPUT files because no template was specified")
+            self.log_error(f"Could not find any {data_type}INPUT files "
+                           "because no template was specified")
             return None
 
         check_file_list = []
@@ -519,7 +620,8 @@ class CommandBuilder:
 
         # return None if a list is provided for a wrapper that doesn't allow
         # multiple files to be processed
-        if len(template_list) > 1 and not self.c_dict.get('ALLOW_MULTIPLE_FILES', False):
+        if (len(template_list) > 1 and
+                not self.c_dict.get('ALLOW_MULTIPLE_FILES', False)):
             self.log_error("List of templates specified for a wrapper that "
                            "does not allow multiple files to be provided.")
             return None
@@ -538,7 +640,8 @@ class CommandBuilder:
             full_path = os.path.join(data_dir, filename)
 
             if os.path.sep not in full_path:
-                self.logger.debug(f"{full_path} is not a file path. Returning that string.")
+                self.logger.debug(f"{full_path} is not a file path. "
+                                  "Returning that string.")
                 return full_path
 
             self.logger.debug(f"Looking for {data_type}INPUT file {full_path}")
@@ -548,7 +651,8 @@ class CommandBuilder:
 
                 wildcard_files = sorted(glob.glob(full_path))
                 self.logger.debug(f'Wildcard file pattern: {full_path}')
-                self.logger.debug(f'{str(len(wildcard_files))} files match pattern')
+                self.logger.debug(f'{str(len(wildcard_files))} files '
+                                  'match pattern')
 
                 # add files to list of files
                 for wildcard_file in wildcard_files:
@@ -561,11 +665,15 @@ class CommandBuilder:
         if saved_level:
             time_info['level'] = saved_level
 
-        # if multiple files are not supported by the wrapper and multiple files are found, error and exit
-        # this will allow a wildcard to be used to find a single file. Previously a wildcard would produce
+        # if multiple files are not supported by the wrapper and multiple
+        # files are found, error and exit
+        # this will allow a wildcard to be used to find a single file.
+        # Previously a wildcard would produce
         # an error if only 1 file is allowed.
-        if not self.c_dict.get('ALLOW_MULTIPLE_FILES', False) and len(check_file_list) > 1:
-            self.log_error("Multiple files found when wrapper does not support multiple files.")
+        if (not self.c_dict.get('ALLOW_MULTIPLE_FILES', False) and
+                len(check_file_list) > 1):
+            self.log_error("Multiple files found when wrapper does not "
+                           "support multiple files.")
             return None
 
         # return None if no files were found
@@ -579,6 +687,11 @@ class CommandBuilder:
             return None
 
         for file_path in check_file_list:
+            # if file doesn't need to exist, skip check
+            if not self.c_dict.get('INPUT_MUST_EXIST', True):
+                found_file_list.append(file_path)
+                continue
+
             # check if file exists
             input_data_type = self.c_dict.get(data_type + 'INPUT_DATATYPE', '')
             processed_path = util.preprocess_file(file_path,
@@ -588,7 +701,8 @@ class CommandBuilder:
 
             # report error if file path could not be found
             if not processed_path:
-                msg = f"Could not find {data_type}INPUT file {file_path} using template {template}"
+                msg = (f"Could not find {data_type}INPUT file {file_path} "
+                       f"using template {template}")
                 if not mandatory or not self.c_dict.get('MANDATORY', True):
                     self.logger.warning(msg)
                 else:
@@ -608,7 +722,8 @@ class CommandBuilder:
 
         return found_file_list
 
-    def find_file_in_window(self, level, data_type, time_info, mandatory=True, return_list=False):
+    def find_file_in_window(self, level, data_type, time_info, mandatory=True,
+                            return_list=False):
         template = self.c_dict[f'{data_type}INPUT_TEMPLATE']
         data_dir = self.c_dict[f'{data_type}INPUT_DIR']
 
@@ -766,7 +881,7 @@ class CommandBuilder:
             else:
                 valid_format = ''
 
-            prefix = self.get_output_prefix(time_info)
+            prefix = self.get_output_prefix(time_info, set_env_vars=False)
             search_string = f"{self.app_name}_{prefix}*{valid_format}V*"
             search_path = os.path.join(output_path,
                                        search_string)
@@ -921,7 +1036,9 @@ class CommandBuilder:
             return None
 
         # set file type string to be set in MET config file to specify Python Embedding is being used for this dataset
-        self.c_dict[f'{input_type}_FILE_TYPE'] = f"file_type = {data_type};"
+        file_type = f"file_type = {data_type};"
+        self.c_dict[f'{input_type}_FILE_TYPE'] = file_type
+        self.env_var_dict[f'METPLUS_{input_type}_FILE_TYPE'] = file_type
         return file_ext
 
     def get_field_info(self, d_type, v_name, v_level='', v_thresh=[], v_extra=''):
@@ -1042,10 +1159,27 @@ class CommandBuilder:
         # return list of field dictionary items
         return fields
 
+    def read_mask_poly(self):
+        """! Read old or new config variables used to set mask.poly in MET
+             config files
+
+            @returns value from config or empty string if neither variable
+             is set
+        """
+        app = self.app_name.upper()
+        conf_value = self.config.getraw('config', f'{app}_MASK_POLY', '')
+        if not conf_value:
+            conf_value = (
+                self.config.getraw('config',
+                                   f'{app}_VERIFICATION_MASK_TEMPLATE',
+                                   '')
+        )
+        return conf_value
+
     def get_verification_mask(self, time_info):
         """!If verification mask template is set in the config file,
             use it to find the verification mask filename"""
-        template = self.c_dict.get('VERIFICATION_MASK_TEMPLATE')
+        template = self.c_dict.get('MASK_POLY_TEMPLATE')
         if not template:
             return
 
@@ -1053,6 +1187,9 @@ class CommandBuilder:
                                   **time_info)
         mask_list_string = self.format_list_string(filenames)
         self.c_dict['VERIFICATION_MASK'] = mask_list_string
+        mask_fmt = f"poly = [{mask_list_string}];"
+        self.c_dict['MASK_POLY'] = mask_fmt
+        self.env_var_dict['METPLUS_MASK_POLY'] = mask_fmt
 
     def get_command(self):
         """! Builds the command to run the MET application
@@ -1145,7 +1282,7 @@ class CommandBuilder:
             logfile_path = self.config.getstr('config', 'LOG_METPLUS')
             # if MET output is written to its own logfile, get that filename
             if not self.config.getbool('config', 'LOG_MET_OUTPUT_TO_METPLUS'):
-                logfile_path = logfile_path.replace('master_metplus',
+                logfile_path = logfile_path.replace('run_metplus',
                                                     log_name)
 
             self.log_error("MET command returned a non-zero return code:"
@@ -1191,42 +1328,7 @@ class CommandBuilder:
             self.config.logger.error("Could not get [INIT/VALID] time information from configuration file")
             self.isOK = False
 
-    @staticmethod
-    def format_met_config_dict(c_dict, dict_name, item_list):
-        """! Build string containing dictionary from a MET configuration file
-             with any items that were set in the user's METplus configuration. Any variables
-             that were not set will not be included in the dictionary string.
-             Args:
-                 @param c_dict dictionary to check for items
-                 @param dict_name name of dictionary to create in all caps. This corresponds
-                  to the name of the METplus configuration variable and c_dict value. The
-                  lower-case name also matches the name of the MET dictionary item, i.e.
-                  FCST_GENESIS corresponds to METpluc configuration variables
-                  TC_GEN_FCST_GENESIS_VMAX_THRESH and TC_GEN_FCST_GENESIS_MSLP_THRESH and
-                  c_dict keys FCST_GENESIS_VMAX_THRESH and FCST_GENESIS_MSLP_THRESH and
-                  MET configuration dictionary fcst_genesis = {}.
-                 @param item_list list of MET dictionary items that can be set, i.e.
-                  [VMAX_THRESH, MSLP_THRESH], which corresponds to vmax_thresh and
-                  mslp_thresh in the MET configuration dictionary specified with dict_name.
-                 @returns string of formatted MET dictionary or empty string if no relevant
-                  variables were set
-        """
-        # check if any of the items are set in c_dict
-        create_dict = [item for item in item_list
-                       if c_dict.get(f'{dict_name}_{item}')]
-
-        # if any dict items are set, create the dictionary string and add them
-        if not create_dict:
-            return ''
-
-        dict_string = dict_name.lower() + ' = {'
-        for item in item_list:
-            dict_string += c_dict.get(f'{dict_name}_{item}', '')
-
-        dict_string += '}'
-        return dict_string
-
-    def set_met_config_list(self, c_dict, mp_config_name, met_config_name,
+    def set_met_config_list(self, c_dict, mp_config, met_config_name,
                             c_dict_key=None, remove_quotes=False,
                             allow_empty=False):
         """! Get list from METplus configuration file and format it to be passed
@@ -1235,7 +1337,7 @@ class CommandBuilder:
                  @param c_dict configuration dictionary to set
                  @param mp_config_name METplus configuration variable name. Assumed to be
                   in the [config] section. Value can be a comma-separated list of items.
-                 @param met_config_name name of MET configuration variable to set. Also used
+                 @param met_config name of MET configuration variable to set. Also used
                   to determine the key in c_dict to set (upper-case)
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
@@ -1245,8 +1347,8 @@ class CommandBuilder:
                   not set at all, which is to not set anything for the c_dict
                   value
         """
-        # if variable is not set at all, return
-        if not self.config.has_option('config', mp_config_name):
+        mp_config_name = self.get_mp_config_name(mp_config)
+        if mp_config_name is None:
             return
 
         conf_value = util.getlist(self.config.getraw('config',
@@ -1265,19 +1367,23 @@ class CommandBuilder:
 
             c_dict[c_key] = f'{met_config_name} = {conf_value};'
 
-    def set_met_config_string(self, c_dict, mp_config_name, met_config_name,
+    def set_met_config_string(self, c_dict, mp_config, met_config_name,
                               c_dict_key=None, remove_quotes=False):
         """! Get string from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
                  @param c_dict configuration dictionary to set
-                 @param mp_config_name METplus configuration variable name. Assumed to be
+                 @param mp_config METplus configuration variable name. Assumed to be
                   in the [config] section. Value can be a comma-separated list of items.
                  @param met_config_name name of MET configuration variable to set. Also used
                   to determine the key in c_dict to set (upper-case)
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
         """
+        mp_config_name = self.get_mp_config_name(mp_config)
+        if mp_config_name is None:
+            return
+
         conf_value = self.config.getraw('config', mp_config_name, '')
         if conf_value:
             if not c_dict_key:
@@ -1292,20 +1398,24 @@ class CommandBuilder:
 
             c_dict[c_key] = f'{met_config_name} = {conf_value};'
 
-    def set_met_config_number(self, c_dict, num_type, mp_config_name, met_config_name, c_dict_key=None):
+    def set_met_config_number(self, c_dict, num_type, mp_config, met_config_name, c_dict_key=None):
         """! Get integer from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
              Args:
                  @param c_dict configuration dictionary to set
                  @param num_type type of number to get from config. If set to 'int', call
                    getint function. If not, call getfloat function.
-                 @param mp_config_name METplus configuration variable name. Assumed to be
+                 @param mp_config METplus configuration variable name. Assumed to be
                   in the [config] section. Value can be a comma-separated list of items.
                  @param met_config_name name of MET configuration variable to set. Also used
                   to determine the key in c_dict to set (upper-case) if c_dict_key is None
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
         """
+        mp_config_name = self.get_mp_config_name(mp_config)
+        if mp_config_name is None:
+            return
+
         if num_type == 'int':
             conf_value = self.config.getint('config', mp_config_name)
         else:
@@ -1327,7 +1437,12 @@ class CommandBuilder:
     def set_met_config_float(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
         self.set_met_config_number(c_dict, 'float', mp_config_name, met_config_name, c_dict_key=c_dict_key)
 
-    def set_met_config_thresh(self, c_dict, mp_config_name, met_config_name, c_dict_key=None):
+    def set_met_config_thresh(self, c_dict, mp_config, met_config_name,
+                              c_dict_key=None):
+        mp_config_name = self.get_mp_config_name(mp_config)
+        if mp_config_name is None:
+            return
+
         conf_value = self.config.getstr('config', mp_config_name, '')
         if conf_value:
             if util.get_threshold_via_regex(conf_value) is None:
@@ -1341,14 +1456,14 @@ class CommandBuilder:
 
             c_dict[c_key] = f"{met_config_name} = {str(conf_value)};"
 
-    def set_met_config_bool(self, c_dict, mp_config_name, met_config_name,
+    def set_met_config_bool(self, c_dict, mp_config, met_config_name,
                             c_dict_key=None, uppercase=True):
         """! Get boolean from METplus configuration file and format it to be
              passed into a MET configuration file. Set c_dict item with boolean
              value expressed as a string.
              Args:
                  @param c_dict configuration dictionary to set
-                 @param mp_config_name METplus configuration variable name.
+                 @param mp_config METplus configuration variable name.
                   Assumed to be in the [config] section.
                  @param met_config_name name of MET configuration variable to
                   set. Also used to determine the key in c_dict to set
@@ -1358,6 +1473,9 @@ class CommandBuilder:
                   met_config_name
                  @param uppercase If true, set value to TRUE or FALSE
         """
+        mp_config_name = self.get_mp_config_name(mp_config)
+        if mp_config_name is None:
+            return
         conf_value = self.config.getbool('config', mp_config_name, '')
         if conf_value is None:
             self.log_error(f'Invalid boolean value set for {mp_config_name}')
@@ -1379,20 +1497,45 @@ class CommandBuilder:
         c_dict[c_key] = (f'{met_config_name} = '
                          f'{util.remove_quotes(conf_value)};')
 
-    def format_met_config_dictionary(self, name, keys):
+    def get_mp_config_name(self, mp_config):
+        """! Get first name of METplus config variable that is set.
+
+        @param mp_config list of METplus config keys to check. Can also be a
+        single item
+        @returns Name of first METplus config name in list that is set in the
+        METplusConfig object. None if none keys in the list are set.
+        """
+        if not isinstance(mp_config, list):
+            mp_configs = [mp_config]
+        else:
+            mp_configs = mp_config
+
+        for mp_config_name in mp_configs:
+            if self.config.has_option('config', mp_config_name):
+                return mp_config_name
+
+        return None
+
+    @staticmethod
+    def format_met_config_dict(c_dict, name, keys=None):
         """! Return formatted dictionary named <name> with any <items> if they
         are set to a value. If none of the items are set, return empty string
 
+        @param c_dict config dictionary to read values from
         @param name name of dictionary to create
-        @param keys list of c_dict keys to use if they are set
+        @param keys list of c_dict keys to use if they are set. If unset (None)
+         then read all keys from c_dict
         @returns MET config formatted dictionary if any items are set, or empty
          string if not
         """
         values = []
+        if keys is None:
+            keys = c_dict.keys()
+
         for key in keys:
-            value = self.c_dict.get(key)
+            value = c_dict.get(key)
             if value:
-                values.append(value)
+                values.append(str(value))
 
         # if none of the keys are set to a value in dict, return empty string
         if not values:
@@ -1400,8 +1543,11 @@ class CommandBuilder:
 
         return f"{name} = {{{''.join(values)}}}"
 
-    def handle_c_dict_regrid(self, c_dict, set_to_grid=True):
+    def handle_regrid(self, c_dict, set_to_grid=True):
         app_name_upper = self.app_name.upper()
+
+        # dictionary to hold regrid values as they are read
+        tmp_dict = {}
 
         if set_to_grid:
             conf_value = (
@@ -1411,49 +1557,49 @@ class CommandBuilder:
 
             # set to_grid without formatting for backwards compatibility
             formatted_to_grid = self.format_regrid_to_grid(conf_value)
-            c_dict['REGRID_TO_GRID_OLD'] = formatted_to_grid
+            c_dict['REGRID_TO_GRID'] = formatted_to_grid
 
             if conf_value:
-                c_dict['REGRID_TO_GRID'] = (
+                tmp_dict['REGRID_TO_GRID'] = (
                     f"to_grid = {formatted_to_grid};"
                 )
 
-        self.set_met_config_string(c_dict,
-                               f'{app_name_upper}_REGRID_METHOD',
-                               'method',
-                               'REGRID_METHOD',
-                               remove_quotes=True)
+        self.set_met_config_string(tmp_dict,
+                                   f'{app_name_upper}_REGRID_METHOD',
+                                   'method',
+                                   'REGRID_METHOD',
+                                   remove_quotes=True)
 
-        self.set_met_config_int(c_dict,
-                            f'{app_name_upper}_REGRID_WIDTH',
-                            'width',
-                            'REGRID_WIDTH')
+        self.set_met_config_int(tmp_dict,
+                                f'{app_name_upper}_REGRID_WIDTH',
+                                'width',
+                                'REGRID_WIDTH')
 
-        self.set_met_config_float(c_dict,
-                              f'{app_name_upper}_REGRID_VLD_THRESH',
-                              'vld_thresh',
-                              'REGRID_VLD_THRESH')
-        self.set_met_config_string(c_dict,
-                               f'{app_name_upper}_REGRID_SHAPE',
-                               'shape',
-                               'REGRID_SHAPE',
-                               remove_quotes=True)
+        self.set_met_config_float(tmp_dict,
+                                  f'{app_name_upper}_REGRID_VLD_THRESH',
+                                  'vld_thresh',
+                                  'REGRID_VLD_THRESH')
+        self.set_met_config_string(tmp_dict,
+                                   f'{app_name_upper}_REGRID_SHAPE',
+                                   'shape',
+                                   'REGRID_SHAPE',
+                                   remove_quotes=True)
 
-    def get_regrid_dict(self):
-        keys = ['REGRID_TO_GRID',
-                'REGRID_METHOD',
-                'REGRID_WIDTH',
-                'REGRID_VLD_THRESH',
-                'REGRID_SHAPE',
-                ]
-        return self.format_met_config_dictionary('regrid', keys)
+        regrid_string = self.format_met_config_dict(tmp_dict,
+                                                    'regrid',
+                                                    ['REGRID_TO_GRID',
+                                                     'REGRID_METHOD',
+                                                     'REGRID_WIDTH',
+                                                     'REGRID_VLD_THRESH',
+                                                     'REGRID_SHAPE',
+                                                     ])
+        self.env_var_dict['METPLUS_REGRID_DICT'] = regrid_string
 
-    def handle_description(self, c_dict):
+    def handle_description(self):
         """! Get description from config. If <app_name>_DESC is set, use
          that value. If not, check for DESC and use that if it is set.
-         If set, set the DESC c_dict key to "desc = <value>;"
+         If set, set the METPLUS_DESC env_var_dict key to "desc = <value>;"
 
-        @param c_dict dictionary to set value
         """
         # check if <app_name>_DESC is set
         app_name_upper = self.app_name.upper()
@@ -1469,15 +1615,17 @@ class CommandBuilder:
 
         # if the value is set, set the DESC c_dict
         if conf_value:
-            c_dict['METPLUS_DESC'] = (
+            self.env_var_dict['METPLUS_DESC'] = (
                 f'desc = "{util.remove_quotes(conf_value)}";'
             )
 
-    def get_output_prefix(self, time_info=None):
+    def get_output_prefix(self, time_info=None, set_env_vars=True):
         """! Read {APP_NAME}_OUTPUT_PREFIX from config. If time_info is set
          substitute values into filename template tags.
 
              @param time_info (Optional) dictionary containing time info
+             @param set_env_vars (Optional) if True, set env vars with
+             values computed from this function
              @returns output prefix with values substituted if requested
         """
         output_prefix = (
@@ -1487,8 +1635,19 @@ class CommandBuilder:
         if time_info is None:
             return output_prefix
 
-        return do_string_sub(output_prefix,
-                             **time_info)
+        output_prefix = do_string_sub(output_prefix,
+                                      **time_info)
+
+        if set_env_vars:
+            # set METPLUS_OUTPUT_PREFIX in env_var_dict if it is set
+            if output_prefix:
+                output_prefix_fmt = f'output_prefix = "{output_prefix}";'
+                self.env_var_dict['METPLUS_OUTPUT_PREFIX'] = output_prefix_fmt
+
+            # set old method of setting OUTPUT_PREFIX
+            self.add_env_var('OUTPUT_PREFIX', output_prefix)
+
+        return output_prefix
 
     def set_climo_env_vars(self):
         """!Set all climatology environment variables from CLIMO_<item>_FILE
@@ -1500,11 +1659,18 @@ class CommandBuilder:
                 util.remove_quotes(self.c_dict.get(f'CLIMO_{climo_item}_FILE'))
             )
 
+            climo_string = ''
             # remove then add double quotes for file path unless empty string
             if climo_file:
                 climo_file = f'"{util.remove_quotes(climo_file)}"'
+                climo_string = f"file_name = [{climo_file}];"
+
+                if climo_item == 'STDEV':
+                    climo_string = f'climo_stdev = {{{climo_string}}}'
 
             # set environment variable
+            self.add_env_var(f'METPLUS_CLIMO_{climo_item}_FILE', climo_string)
+            # set old method
             self.add_env_var(f'CLIMO_{climo_item}_FILE', climo_file)
 
     def read_climo_wrapper_specific(self, met_tool, c_dict):
@@ -1544,13 +1710,21 @@ class CommandBuilder:
                                          ''),
                          climo_file)
         )
-        self.logger.debug(f"Looking for climatology {climo_item.lower()} "
-                          f"file {climo_path}")
-        self.c_dict[f'CLIMO_{climo_item}_FILE'] = (
-            util.preprocess_file(climo_path,
-                                 '',
-                                 self.config)
-        )
+
+        if not self.c_dict.get('INPUT_MUST_EXIST'):
+            output_path = climo_path
+        else:
+            self.logger.debug(f"Looking for climatology {climo_item.lower()} "
+                              f"file {climo_path}")
+            output_path = util.preprocess_file(climo_path,
+                                               '',
+                                               self.config)
+
+        self.c_dict[f'CLIMO_{climo_item}_FILE'] = output_path
+        output_fmt = f'file_name = ["{output_path}"];'
+        if climo_item == 'STDEV':
+            output_fmt = f'climo_stdev = {{ {output_fmt} }}'
+        self.env_var_dict[f'METPLUS_CLIMO_{climo_item}_FILE'] = output_fmt
 
     def get_wrapper_or_generic_config(self, generic_config_name):
         """! Check for config variable with <APP_NAME>_ prepended first. If set
@@ -1571,3 +1745,192 @@ class CommandBuilder:
                                                '')
 
         return value
+
+    def format_field(self, data_type, field_formatted):
+        """! Set {data_type}_FIELD c_dict value to the formatted field string
+        Also set {data_type_FIELD_OLD value to support old format until it is
+        deprecated.
+
+        @param field_formatted field string
+        @param data_type type of data to set, i.e. FCST, OBS
+        """
+        self.env_var_dict[f'METPLUS_{data_type}_FIELD'] = (
+            f"field = [{field_formatted}];"
+        )
+        self.c_dict[f'{data_type}_FIELD'] = field_formatted
+
+    def handle_flags(self, flag_type):
+        """! Handle reading and setting of flag dictionary values to set in
+        a MET config file. Sets METPLUS_{flag_type}_FLAG_DICT in the
+        env_var_dict.
+
+            @param flag_type type of flag to read, i.e. OUTPUT or ENSEMBLE
+        """
+        if not hasattr(self, f'{flag_type}_FLAGS'):
+            return
+
+        tmp_dict = {}
+        flag_list = []
+        for flag in getattr(self, f'{flag_type}_FLAGS'):
+            flag_name = f'{flag_type}_FLAG_{flag.upper()}'
+            flag_list.append(flag_name)
+            self.set_met_config_string(tmp_dict,
+                                       f'{self.app_name.upper()}_{flag_name}',
+                                       flag,
+                                       f'{flag_name}',
+                                       remove_quotes=True)
+
+        flag_fmt = (
+            self.format_met_config_dict(tmp_dict,
+                                        f'{flag_type.lower()}_flag',
+                                        flag_list)
+        )
+        self.env_var_dict[f'METPLUS_{flag_type}_FLAG_DICT'] = flag_fmt
+
+    def handle_censor_val_and_thresh(self):
+        """! Read {APP_NAME}_CENSOR_[VAL/THRESH] and set
+         METPLUS_CENSOR_[VAL/THRESH] in self.env_var_dict so it can be
+         referenced in a MET config file
+        """
+        self.set_met_config_list(self.env_var_dict,
+                                 f'{self.app_name.upper()}_CENSOR_THRESH',
+                                 'censor_thresh',
+                                 'METPLUS_CENSOR_THRESH',
+                                 remove_quotes=True)
+
+        self.set_met_config_list(self.env_var_dict,
+                                 f'{self.app_name.upper()}_CENSOR_VAL',
+                                 'censor_val',
+                                 'METPLUS_CENSOR_VAL',
+                                 remove_quotes=True)
+
+    def get_env_var_value(self, env_var_name, read_dict=None):
+        """! Read env var value, get text after the equals sign and remove the
+        trailing semi-colon.
+
+            @param env_var_name key to obtain
+            @param read_dict (Optional) directory to read from. If unset (None)
+             then read from self.env_var_dict
+            @returns extracted value
+        """
+        if read_dict is None:
+            read_dict = self.env_var_dict
+
+        mask_value = read_dict.get(env_var_name, '')
+        if not mask_value:
+            return ''
+
+        return mask_value.split('=', 1)[1].rstrip(';').strip()
+
+    def handle_time_summary_dict(self, c_dict, remove_bracket_list=None):
+        tmp_dict = {}
+        app = self.app_name.upper()
+        self.set_met_config_bool(tmp_dict,
+                                 f'{app}_TIME_SUMMARY_FLAG',
+                                 'flag',
+                                 'TIME_SUMMARY_FLAG')
+
+        self.set_met_config_bool(tmp_dict,
+                                 f'{app}_TIME_SUMMARY_RAW_DATA',
+                                 'raw_data',
+                                 'TIME_SUMMARY_RAW_DATA')
+
+        self.set_met_config_string(tmp_dict,
+                                   f'{app}_TIME_SUMMARY_BEG',
+                                   'beg',
+                                   'TIME_SUMMARY_BEG')
+
+        self.set_met_config_string(tmp_dict,
+                                   f'{app}_TIME_SUMMARY_END',
+                                   'end',
+                                   'TIME_SUMMARY_END')
+
+        self.set_met_config_int(tmp_dict,
+                                f'{app}_TIME_SUMMARY_STEP',
+                                'step',
+                                'TIME_SUMMARY_STEP')
+
+        self.set_met_config_int(tmp_dict,
+                                f'{app}_TIME_SUMMARY_WIDTH',
+                                'width',
+                                'TIME_SUMMARY_WIDTH')
+
+        self.set_met_config_list(tmp_dict,
+                                 [f'{app}_TIME_SUMMARY_GRIB_CODES',
+                                  f'{app}_TIME_SUMMARY_GRIB_CODE'],
+                                 'grib_code',
+                                 'TIME_SUMMARY_GRIB_CODES',
+                                 remove_quotes=True,
+                                 allow_empty=True)
+
+        self.set_met_config_list(tmp_dict,
+                                 [f'{app}_TIME_SUMMARY_OBS_VAR',
+                                  f'{app}_TIME_SUMMARY_VAR_NAMES'],
+                                 'obs_var',
+                                 'TIME_SUMMARY_VAR_NAMES',
+                                 allow_empty=True)
+
+        self.set_met_config_list(tmp_dict,
+                                 [f'{app}_TIME_SUMMARY_TYPE',
+                                  f'{app}_TIME_SUMMARY_TYPES'],
+                                 'type',
+                                 'TIME_SUMMARY_TYPES')
+
+        self.set_met_config_int(tmp_dict,
+                                [f'{app}_TIME_SUMMARY_VLD_FREQ',
+                                 f'{app}_TIME_SUMMARY_VALID_FREQ'],
+                                'vld_freq',
+                                'TIME_SUMMARY_VALID_FREQ')
+
+        self.set_met_config_float(tmp_dict,
+                                  [f'{app}_TIME_SUMMARY_VLD_THRESH',
+                                   f'{app}_TIME_SUMMARY_VALID_THRESH'],
+                                  'vld_thresh',
+                                  'TIME_SUMMARY_VALID_THRESH')
+
+        time_summary = self.format_met_config_dict(tmp_dict,
+                                                   'time_summary',
+                                                    keys=None)
+        self.env_var_dict['METPLUS_TIME_SUMMARY_DICT'] = time_summary
+
+        # set c_dict values to support old method of setting env vars
+        for key, value in tmp_dict.items():
+            c_dict[key] = self.get_env_var_value(key, read_dict=tmp_dict)
+
+        # remove brackets [] from lists
+        if not remove_bracket_list:
+            return
+
+        for list_values in remove_bracket_list:
+            c_dict[list_values] = c_dict[list_values].strip('[]')
+
+    def handle_mask(self, single_value=False):
+        """! Read mask dictionary values and set them into env_var_list
+
+            @param single_value if True, only a single value for grid and poly
+            are allowed. If False, they should be treated as as list
+        """
+        app = self.app_name.upper()
+        tmp_dict = {}
+        if single_value:
+            function_call = self.set_met_config_string
+        else:
+            function_call = self.set_met_config_list
+
+        function_call(tmp_dict,
+                      [f'{app}_MASK_GRID',
+                       f'{app}_GRID'],
+                      'grid',
+                      'MASK_GRID')
+        function_call(tmp_dict,
+                      [f'{app}_MASK_POLY',
+                       f'{app}_VERIFICATION_MASK_TEMPLATE',
+                       f'{app}_POLY'],
+                      'poly',
+                      'MASK_POLY')
+
+        mask_dict_string = self.format_met_config_dict(tmp_dict,
+                                                       'mask',
+                                                       ['MASK_GRID',
+                                                        'MASK_POLY'])
+        self.env_var_dict['METPLUS_MASK_DICT'] = mask_dict_string

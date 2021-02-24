@@ -43,12 +43,12 @@ def test_logdir_exists(metplus_config):
     config = metplus_config()
     log_dir = config.get('config', 'LOG_DIR')
     # Verify that a logfile exists in the log dir, with a filename
-    # like {LOG_DIR}/master_metplus.YYYYMMDD.log
+    # like {LOG_DIR}/metplus.YYYYMMDD.log
     assert os.path.exists(log_dir)
 
 
 def test_logfile_exists(metplus_config):
-    # Verify that a logfile with format master_metplus.log exists
+    # Verify that a logfile with format metplus.log exists
     # We are assuming that there can be numerous files in the log directory.
     config = metplus_config()
     log_dir = config.get('config', 'LOG_DIR')
@@ -56,7 +56,7 @@ def test_logfile_exists(metplus_config):
     if os.path.exists(log_dir):
         found = False
         for f in os.listdir(log_dir):
-            match = re.match(r'master_metplus.log', f)
+            match = re.match(r'metplus.log', f)
             if match:
                 # Check all files, first file may not be master log
                 assert match.group(0)

@@ -315,11 +315,8 @@ def test_handle_description(metplus_config, config_overrides, expected_value):
     # set app_name to grid_stat for testing
     cbw.app_name = 'grid_stat'
 
-    # create empty dictionary for testing
-    c_dict = {}
-
-    cbw.handle_description(c_dict)
-    assert(c_dict.get('METPLUS_DESC', '') == expected_value)
+    cbw.handle_description()
+    assert(cbw.env_var_dict.get('METPLUS_DESC', '') == expected_value)
 
 @pytest.mark.parametrize(
     'input, output', [
@@ -336,30 +333,30 @@ def test_format_regrid_to_grid(metplus_config, input, output):
 
 @pytest.mark.parametrize(
     'config_overrides, set_to_grid, expected_dict', [
-        ({}, True, {}),
+        ({}, True, {'REGRID_TO_GRID': 'NONE'}),
         ({}, False, {}),
         ({'APP_REGRID_TO_GRID': 'G002'},
          True,
-         {'REGRID_TO_GRID': 'to_grid = "G002";'}),
+         {'REGRID_TO_GRID': '"G002"'}),
         ({'APP_REGRID_TO_GRID': 'G002'},
          False,
          {}),
         ({'APP_REGRID_METHOD': 'BILIN'},
          True,
-         {'REGRID_METHOD': 'method = BILIN;'}),
+         {'REGRID_TO_GRID': 'NONE'}),
         ({'APP_REGRID_WIDTH': '2'},
          True,
-         {'REGRID_WIDTH': 'width = 2;'}),
+         {'REGRID_TO_GRID': 'NONE'}),
         ({'APP_REGRID_VLD_THRESH': '0.8'},
          True,
-         {'REGRID_VLD_THRESH': 'vld_thresh = 0.8;'}),
+         {'REGRID_TO_GRID': 'NONE'}),
         ({'APP_REGRID_SHAPE': 'CIRCLE'},
          True,
-         {'REGRID_SHAPE': 'shape = CIRCLE;'}),
+         {'REGRID_TO_GRID': 'NONE'}),
     ]
 )
-def test_handle_c_dict_regrid(metplus_config, config_overrides, set_to_grid,
-                              expected_dict):
+def test_handle_regrid_old(metplus_config, config_overrides, set_to_grid,
+                           expected_dict):
     config = metplus_config()
 
     # set config values
@@ -374,48 +371,52 @@ def test_handle_c_dict_regrid(metplus_config, config_overrides, set_to_grid,
     # create empty dictionary for testing
     c_dict = {}
 
-    cbw.handle_c_dict_regrid(c_dict, set_to_grid=set_to_grid)
-
-    # remove old to_grid item if set
-    if 'REGRID_TO_GRID_OLD' in c_dict:
-        del c_dict['REGRID_TO_GRID_OLD']
+    cbw.handle_regrid(c_dict, set_to_grid=set_to_grid)
 
     assert(len(c_dict) == len(expected_dict))
     for key, value in expected_dict.items():
         assert(c_dict.get(key, '') == value)
 
 @pytest.mark.parametrize(
-    'c_dict_values, expected_output', [
+    'config_overrides, expected_output', [
         ({}, ''),
-        ({'REGRID_TO_GRID': 'to_grid = FCST;',},
+        ({'APP_REGRID_TO_GRID': 'FCST',},
          'regrid = {to_grid = FCST;}'),
-        ({'REGRID_METHOD': 'method = BILIN;',},
+        ({'APP_REGRID_METHOD': 'BILIN',},
          'regrid = {method = BILIN;}'),
-        ({'REGRID_WIDTH': 'width = 2;',},
+        ({'APP_REGRID_WIDTH': '2',},
          'regrid = {width = 2;}'),
-        ({'REGRID_VLD_THRESH': 'vld_thresh = 0.8;',},
+        ({'APP_REGRID_VLD_THRESH': '0.8',},
          'regrid = {vld_thresh = 0.8;}'),
-        ({'REGRID_SHAPE': 'shape = CIRCLE;',},
+        ({'APP_REGRID_SHAPE': 'CIRCLE',},
          'regrid = {shape = CIRCLE;}'),
-        ({'REGRID_TO_GRID': 'to_grid = FCST;',
-          'REGRID_WIDTH': 'width = 2;',
-          'REGRID_SHAPE': 'shape = CIRCLE;',},
+        ({'APP_REGRID_TO_GRID': 'FCST',
+          'APP_REGRID_WIDTH': '2',
+          'APP_REGRID_SHAPE': 'CIRCLE',},
          'regrid = {to_grid = FCST;width = 2;shape = CIRCLE;}'),
-        ({'REGRID_TO_GRID': 'to_grid = FCST;',
-          'REGRID_METHOD': 'method = BILIN;',
-          'REGRID_WIDTH': 'width = 2;',
-          'REGRID_VLD_THRESH': 'vld_thresh = 0.8;',
-          'REGRID_SHAPE': 'shape = CIRCLE;',},
-         'regrid = {to_grid = FCST;method = BILIN;width = 2;vld_thresh = 0.8;shape = CIRCLE;}'),
+        ({'APP_REGRID_TO_GRID': 'FCST',
+          'APP_REGRID_METHOD': 'BILIN',
+          'APP_REGRID_WIDTH': '2',
+          'APP_REGRID_VLD_THRESH': '0.8',
+          'APP_REGRID_SHAPE': 'CIRCLE',},
+         ('regrid = {to_grid = FCST;method = BILIN;width = 2;'
+          'vld_thresh = 0.8;shape = CIRCLE;}')),
     ]
 )
-def test_get_regrid_dict(metplus_config, c_dict_values, expected_output):
-    cbw = CommandBuilder(metplus_config())
+def test_handle_regrid_new(metplus_config, config_overrides, expected_output):
+    config = metplus_config()
 
-    for key, value in c_dict_values.items():
-        cbw.c_dict[key] = value
+    # set config values
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
 
-    assert(cbw.get_regrid_dict() == expected_output)
+    cbw = CommandBuilder(config)
+
+    # set app_name to grid_stat for testing
+    cbw.app_name = 'app'
+
+    cbw.handle_regrid(cbw.c_dict)
+    assert(cbw.env_var_dict['METPLUS_REGRID_DICT'] == expected_output)
 
 @pytest.mark.parametrize(
     'mp_config_name,met_config_name,c_dict_key,remove_quotes,expected_output', [

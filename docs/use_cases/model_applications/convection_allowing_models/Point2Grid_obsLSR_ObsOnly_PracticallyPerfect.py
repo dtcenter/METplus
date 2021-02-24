@@ -97,11 +97,11 @@ Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #
 # 1) Passing in EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in EnsembleStat_fcstHRRRE_obsHRRRE_Sfc_MultiField.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #

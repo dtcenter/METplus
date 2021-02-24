@@ -33,8 +33,7 @@ ${METPLUS_REGRID_DICT}
 
 censor_thresh = [];
 censor_val    = [];
-//cat_thresh    = [ NA ];
-${CAT_THRESH}
+${METPLUS_CAT_THRESH}
 cnt_thresh    = [ NA ];
 cnt_logic     = UNION;
 
@@ -42,14 +41,12 @@ cnt_logic     = UNION;
 // Forecast and observation fields to be verified
 //
 fcst = {
-   ${FCST_FILE_TYPE}
-
-   field = [ ${FCST_FIELD} ];
+   ${METPLUS_FCST_FILE_TYPE}
+   ${METPLUS_FCST_FIELD}
 }
 obs = {
-   ${OBS_FILE_TYPE}
-
-   field = [ ${OBS_FIELD} ];
+   ${METPLUS_OBS_FILE_TYPE}
+   ${METPLUS_OBS_FIELD}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -59,7 +56,7 @@ obs = {
 //
 climo_mean = {
 
-   file_name = [ ${CLIMO_MEAN_FILE} ];
+   ${METPLUS_CLIMO_MEAN_FILE}
    field     = [];
 
    regrid = {
@@ -75,9 +72,7 @@ climo_mean = {
 }
 
 climo_stdev = climo_mean;
-climo_stdev = {
-   file_name = [ ${CLIMO_STDEV_FILE} ];
-}
+${METPLUS_CLIMO_STDEV_FILE}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -108,14 +103,12 @@ mask = {
 // Number of grid points to be processed concurrently.  Set smaller to use
 // less memory but increase the number of passes through the data.
 //
-//block_size = 1024;
-${BLOCK_SIZE}
+${METPLUS_BLOCK_SIZE}
 
 //
 // Ratio of valid matched pairs to compute statistics for a grid point
 //
-//vld_thresh = 1.0;
-${VLD_THRESH}
+${METPLUS_VLD_THRESH}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -125,8 +118,7 @@ ${VLD_THRESH}
 output_stats = {
    fho    = [];
    ctc    = [];
-//   cts    = [];
-   ${CTS_LIST}
+   ${METPLUS_CTS_LIST}
    mctc   = [];
    mcts   = [];
    ${METPLUS_STAT_LIST}
@@ -145,3 +137,5 @@ tmp_dir        = "/tmp";
 //version        = "V10.0";
 
 ////////////////////////////////////////////////////////////////////////////////
+
+${METPLUS_MET_CONFIG_OVERRIDES}
