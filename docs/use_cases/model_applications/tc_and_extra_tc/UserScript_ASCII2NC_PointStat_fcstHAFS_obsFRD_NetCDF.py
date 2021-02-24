@@ -31,7 +31,7 @@ _NetCDF.conf
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus ASCII2NC wrapper to convert frd dopsonde point observations to NetCDF format and then compare them to gridded forecast data using PointStat.
+# This use case utilizes the METplus ASCII2NC wrapper to convert full-resolution data (frd) dopsonde point observations to NetCDF format and then compare them to gridded forecast data using PointStat.
 
 
 ##############################################################################
