@@ -87,6 +87,19 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 # * **${DLAND_FILE}** - Corresponds to TC_PAIRS_DLAND_FILE in the METplus configuration file.
 
 ##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case uses a Python embedding script to read input data
+#
+# parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC/extract_opc_decks.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC/extract_opc_decks.py
+#
+
+
+##############################################################################
 # Running METplus
 # ---------------
 #
