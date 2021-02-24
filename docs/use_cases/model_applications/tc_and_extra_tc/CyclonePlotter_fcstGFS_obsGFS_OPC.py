@@ -1,6 +1,6 @@
 """
-CyclonePlotter_fcstGFS_obsGFS_OPC.conf: Use Case for OPC (EMC) cyclone data
-===========================================================================
+CyclonePlotter: Use Case for OPC (EMC) cyclone data
+===================================================
 
 model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 
@@ -46,7 +46,7 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 # run times:
 #
 # | **Init/Valid:** 2020100700
-
+#
 # CyclonePlotter is the second (and final) tool called in this example. It processes the output
 # from TCPairs.
 #
@@ -107,7 +107,7 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 #
 # Passing in TCPairs_extra_tropical.conf then a user-specific system configuration file::
 #
-#   master_metplus.py -c /path/to/CyclonePlotter_fcstGFS_obsGFS_OPC.conf -c /path/to/user_system.conf
+#   run_metplus.py -c /path/to/CyclonePlotter_fcstGFS_obsGFS_OPC.conf -c /path/to/user_system.conf
 #
 # The following METplus configuration variables must be set correctly to run this example.:
 #
@@ -152,7 +152,7 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 #  `SBUOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
 # .. note:: `CyclonePlotterUseCase <https://dtcenter.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
 #
-# sphinx_gallery_thumbnail_path = '_static/CyclonePlotter_fcstGFS_obsGFS_OPC.png'
+# sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-CyclonePlotter_fcstGFS_obsGFS_OPC.png'
 
 
 

@@ -154,4 +154,4 @@ def test_create_c_dict(metplus_config):
     assert(c_dict['VERIF_GRID'] == 'G002')
     assert(c_dict['EVENT_EQUALIZATION'] == 'False')
     assert(c_dict['LOG_METPLUS'] == mp.config.getdir('OUTPUT_BASE')
-                                    +'/logs/master_metplus.log')
+                                    +'/logs/metplus.log')

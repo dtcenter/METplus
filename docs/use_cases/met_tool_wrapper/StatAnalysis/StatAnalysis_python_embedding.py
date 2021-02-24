@@ -114,7 +114,7 @@ met_tool_wrapper/StatAnalysis/StatAnalysis_python_embedding.conf
 #
 # Passing in StatAnalysis_python_embedding.conf then a user-specific system configuration file::
 #
-#   master_metplus.py -c /path/to/StatAnalysis_python_embedding.conf -c /path/to/user_system.conf
+#   run_metplus.py -c /path/to/StatAnalysis_python_embedding.conf -c /path/to/user_system.conf
 #
 # The following METplus configuration variables must be set correctly to run this example.:
 #

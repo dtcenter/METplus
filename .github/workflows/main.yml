@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - develop
+      - develop-ref
       - 'feature_*'
       - 'main_*'
       - 'bugfix_*'
@@ -10,39 +11,6 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
-  get_current_branch:
-    name: Get Current Branch
-    runs-on: ubuntu-latest
-    steps:
-      # extract branch name
-      - name: Extract branch name
-        if: github.event_name != 'pull_request'
-        shell: bash
-        run: |
-          echo "BRANCH_NAME=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(echo ${GITHUB_REF#refs/heads/})" >> $GITHUB_ENV
-        id: extract_branch
-
-      # extract branch name on pull request
-      - name: Print branch name
-        if: github.event_name == 'pull_request'
-        run: |
-          echo "BRANCH_NAME=$(echo ${GITHUB_HEAD_REF})" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(echo ${GITHUB_HEAD_REF})-PR" >> $GITHUB_ENV
-
-      # save branch name as artifact
-      - name: Get branch name
-        run: |
-          mkdir artifact
-          echo 'The branch name is' $BRANCH_NAME
-          echo 'The Docker name is' $DOCKER_IMAGE
-          echo $BRANCH_NAME > artifact/branch_name.txt
-          echo $DOCKER_IMAGE > artifact/docker_image.txt
-      - uses: actions/upload-artifact@v2
-        with:
-          path: |
-            artifact/branch_name.txt
-            artifact/docker_image.txt
   documentation:
     name: Check Documentation
     runs-on: ubuntu-latest
@@ -59,18 +27,11 @@ jobs:
   get_image:
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
-    needs: get_current_branch
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Get METplus Image
         run: ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
         env:
@@ -79,16 +40,11 @@ jobs:
   update_data_volumes:
     name: Docker Setup - Update Data Volumes
     runs-on: ubuntu-latest
-    needs: get_current_branch
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
       - name: Install dependencies
         run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Update Data Volumes
@@ -96,432 +52,63 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  pytests:
-    name: Pytest Unit Tests
+  unit_tests:
+    name: Unit Tests - Pytest
     runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
+    needs: get_image
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: ./ci/actions/run_tests
         with:
-          python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Unit Tests
-        run: ${GITHUB_WORKSPACE}/ci/jobs/test_unit.sh
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_met_tool_wrapper:
-    name: Use Cases Tests - MET Tool Wrapper
+          categories: pytests
+  use_case_tests:
+    name: Use Case Tests
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes]
+    strategy:
+      fail-fast: false
+      matrix:
+        categories:
+          - "met_tool_wrapper"
+          - "air_quality_and_comp"
+          - "climate"
+          - "convection_allowing_models:0-5"
+          - "convection_allowing_models:6+"
+          - "cryosphere"
+          - "data_assimilation"
+          - "marine_and_coastal"
+          - "medium_range:0-4"
+          - "medium_range:5"
+          - "medium_range:6+"
+          - "precipitation"
+          - "s2s,space_weather,tc_and_extra_tc"
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
+      - uses: ./ci/actions/run_tests
         with:
-          python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py met_tool_wrapper
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          categories: ${{ matrix.categories }}
       # copy output data to save as artifact
       - name: Save output data
+        id: save-output
         if: always()
         run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
+          artifact_name=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh ${{matrix.categories}}`
+          mkdir -p artifact/${artifact_name}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${artifact_name}/
+          echo ::set-output name=artifact_name::${artifact_name}
       - uses: actions/upload-artifact@v2
         if: always()
         with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_data_assimilation:
-    name: Use Cases Tests - data_assimilation
+          name: ${{ steps.save-output.outputs.artifact_name }}
+          path: artifact/${{ steps.save-output.outputs.artifact_name }}
+  create_output_data_volumes:
+    name: Create Output Docker Data Volumes
     runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
+    needs: [use_case_tests]
     steps:
       - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
       - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py data_assimilation
+      - run: ci/jobs/create_output_data_volumes.sh
         env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_cryosphere:
-    name: Use Cases Tests - cryosphere
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py cryosphere
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_convection_allowing_models_a:
-    name: Use Cases Tests - convection_allowing_models A
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py convection_allowing_models 0-5
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_convection_allowing_models_b:
-    name: Use Cases Tests - convection_allowing_models B
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py convection_allowing_models 6+
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_climate:
-    name: Use Cases Tests - climate
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py climate
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_medium_range_a:
-    name: Use Cases Tests - medium_range 0-4
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py medium_range 0-4
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_medium_range_b:
-    name: Use Cases Tests - medium_range 5
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py medium_range 5
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_medium_range_c:
-    name: Use Cases Tests - medium_range 6+
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py medium_range 6+
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_precipitation:
-    name: Use Cases Tests - precipitation
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py precipitation
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}
-  use_cases_s2s_space_weather_tc_and_extra_tc:
-    name: Use Cases Tests - s2s,space_weather,tc_and_extra_tc
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py s2s,space_weather,tc_and_extra_tc
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_air_quality_and_comp:
-    name: Use Cases Tests - air_quality_and_comp
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py air_quality_and_comp
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  use_cases_marine_and_coastal:
-    name: Use Cases Tests - marine_and_coastal
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - uses: actions/download-artifact@v2
-      - run: |
-          echo "BRANCH_NAME=$(cat artifact/branch_name.txt)" >> $GITHUB_ENV
-          echo "DOCKER_IMAGE=$(cat artifact/docker_image.txt)" >> $GITHUB_ENV
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests
-      - name: Run Use Cases
-        run: ${GITHUB_WORKSPACE}/ci/jobs/run_use_cases.py marine_and_coastal
-        env:
-          DOCKER_WORK_DIR: /metplus
-          DOCKER_DATA_DIR: /data
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      # copy output data to save as artifact
-      - name: Save output data
-        if: always()
-        run: |
-          mkdir -p artifact/${{ github.job }}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${{ github.job }}/
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ github.job }}
-          path: artifact/${{ github.job }}

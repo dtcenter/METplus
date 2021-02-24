@@ -33,7 +33,7 @@ MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 # METplus Workflow
 # ----------------
 #
-# The MODE tool is run for each of the 4 ensemble members and for eachtime. This 
+# The MODE tool is run for each of 2 ensemble members and for eachtime. This 
 # example loops by initialization time.  It processes 2 lead times, listed below.
 #
 # | **Valid:** 2019-05-21_01Z
@@ -75,11 +75,11 @@ MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 #
 # 1) Passing in MODE_fcstFV3_obsGOES_BrightnessTemp.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/MODE_fcstFV3_obsGOES_BrightnessTemp.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/MODE_fcstFV3_obsGOES_BrightnessTemp.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in MODE_fcstFV3_obsGOES_BrightnessTemp.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/MODE_fcstFV3_obsGOES_BrightnessTemp.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/convection_allowing_models/MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -125,22 +125,6 @@ MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 # mode_FV3_core_mp1_010000L_20190521_020000V_NAA_obj.nc
 # mode_FV3_core_mp1_010000L_20190521_020000V_NAA_obj.txt
 # mode_FV3_core_mp1_010000L_20190521_020000V_NAA.ps
-# mode_FV3_core_mp2_010000L_20190521_010000V_NAA_cts.txt
-# mode_FV3_core_mp2_010000L_20190521_010000V_NAA_obj.nc
-# mode_FV3_core_mp2_010000L_20190521_010000V_NAA_obj.txt
-# mode_FV3_core_mp2_010000L_20190521_010000V_NAA.ps
-# mode_FV3_core_mp2_010000L_20190521_020000V_NAA_cts.txt
-# mode_FV3_core_mp2_010000L_20190521_020000V_NAA_obj.nc
-# mode_FV3_core_mp2_010000L_20190521_020000V_NAA_obj.txt
-# mode_FV3_core_mp2_010000L_20190521_020000V_NAA.ps
-# mode_FV3_core_pbl1_010000L_20190521_010000V_NAA_cts.txt
-# mode_FV3_core_pbl1_010000L_20190521_010000V_NAA_obj.nc
-# mode_FV3_core_pbl1_010000L_20190521_010000V_NAA_obj.txt
-# mode_FV3_core_pbl1_010000L_20190521_010000V_NAA.ps
-# mode_FV3_core_pbl1_010000L_20190521_020000V_NAA_cts.txt
-# mode_FV3_core_pbl1_010000L_20190521_020000V_NAA_obj.nc
-# mode_FV3_core_pbl1_010000L_20190521_020000V_NAA_obj.txt
-# mode_FV3_core_pbl1_010000L_20190521_020000V_NAA.ps
 
 
 ##############################################################################

@@ -49,8 +49,9 @@ that reformat gridded data
             the type and consolidates config get calls so it is easier to see
             which config variables are used in the wrapper"""
         c_dict = super().create_c_dict()
-        self.set_met_config_string(c_dict, 'MODEL', 'model')
-        self.set_met_config_string(c_dict, 'OBTYPE', 'obtype')
+
+        self.set_met_config_string(self.env_var_dict, 'MODEL', 'model', 'METPLUS_MODEL')
+        self.set_met_config_string(self.env_var_dict, 'OBTYPE', 'obtype', 'METPLUS_OBTYPE')
 
         # set old MET config items for backwards compatibility
         c_dict['MODEL_OLD'] = self.config.getstr('config', 'MODEL', 'FCST')
@@ -86,9 +87,17 @@ that reformat gridded data
             c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE'] = ''
             c_dict[f'CLIMO_{climo_item}_FILE'] = None
 
-        self.handle_c_dict_regrid(c_dict)
+        self.handle_regrid(c_dict)
 
-        self.handle_description(c_dict)
+        self.handle_description()
+
+        # handle window variables [FCST/OBS]_[FILE_]_WINDOW_[BEGIN/END]
+        self.handle_file_window_variables(c_dict)
+
+        self.set_met_config_string(self.env_var_dict,
+                                   f'{self.app_name.upper()}_OUTPUT_PREFIX',
+                                   'output_prefix',
+                                   'METPLUS_OUTPUT_PREFIX')
 
         return c_dict
 
@@ -98,18 +107,14 @@ that reformat gridded data
             version to handle user configs and printing
             Args:
               @param time_info dictionary containing timing info from current run"""
-        self.add_env_var('METPLUS_MODEL', self.c_dict.get('MODEL', ''))
-        self.add_env_var('METPLUS_OBTYPE', self.c_dict.get('OBTYPE', ''))
-        self.add_env_var('METPLUS_DESC', self.c_dict.get('METPLUS_DESC', ''))
 
-        self.add_env_var('METPLUS_REGRID_DICT',
-                         self.get_regrid_dict())
+        self.get_output_prefix(time_info)
 
         # set old environment variable values for backwards compatibility
         self.add_env_var('MODEL', self.c_dict.get('MODEL_OLD', ''))
         self.add_env_var('OBTYPE', self.c_dict.get('OBTYPE_OLD', ''))
         self.add_env_var('REGRID_TO_GRID',
-                         self.c_dict.get('REGRID_TO_GRID_OLD',
+                         self.c_dict.get('REGRID_TO_GRID',
                                          'NONE'))
 
         super().set_environment_variables(time_info)
@@ -121,7 +126,7 @@ that reformat gridded data
             if self.c_dict[f'{dtype}_IS_PROB']:
                 # if the data type is NetCDF, then we know how to
                 # format the probabilistic fields
-                if self.c_dict[f'{dtype}_INPUT_DATATYPE'] == 'NETCDF':
+                if self.c_dict[f'{dtype}_INPUT_DATATYPE'] != 'GRIB':
                     continue
 
                 # if the data is grib, the user must specify if the data is in
@@ -242,7 +247,10 @@ that reformat gridded data
         fcst_fields = ','.join(fcst_field_list)
         obs_fields = ','.join(obs_field_list)
 
-        self.process_fields(time_info, fcst_fields, obs_fields)
+        self.format_field('FCST', fcst_fields)
+        self.format_field('OBS', obs_fields)
+
+        self.process_fields(time_info)
 
     def run_at_time_all_fields(self, time_info):
         """! Build MET command for all of the field/level combinations for a given
@@ -297,9 +305,12 @@ that reformat gridded data
         fcst_field = ','.join(fcst_field_list)
         obs_field = ','.join(obs_field_list)
 
-        self.process_fields(time_info, fcst_field, obs_field)
+        self.format_field('FCST', fcst_field)
+        self.format_field('OBS', obs_field)
 
-    def process_fields(self, time_info, fcst_field, obs_field, ens_field=None):
+        self.process_fields(time_info)
+
+    def process_fields(self, time_info):
         """! Set and print environment variables, then build/run MET command
               Args:
                 @param time_info dictionary with time information
@@ -320,7 +331,7 @@ that reformat gridded data
             return
 
         # set environment variables needed by MET config file
-        self.set_environment_variables(fcst_field, obs_field, time_info)
+        self.set_environment_variables(time_info)
 
         # check if METplus can generate the command successfully
         cmd = self.get_command()

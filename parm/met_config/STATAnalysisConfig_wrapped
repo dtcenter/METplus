@@ -103,3 +103,5 @@ rank_corr_flag = FALSE;
 vif_flag       = FALSE;
 tmp_dir        = "/tmp";
 //version        = "V10.0";
+
+${METPLUS_MET_CONFIG_OVERRIDES}

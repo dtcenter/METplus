@@ -1346,7 +1346,7 @@ Config Quick Start Example
 
    a. On your command line, run::
 
-            master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf -c /path/to/user_system.conf
+            run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf -c /path/to/user_system.conf
 
             *where /path/to/user_system.conf indicates the location of the user_system.conf file you created earlier.
 
@@ -1430,7 +1430,7 @@ Config Quick Start Example
 	 up the rest of your environment
       4. On your command line, run::
 
-           master_metplus.py -c parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
+           run_metplus.py -c parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
 
       5. When complete, you will have a log file in the output directory
 	 you specified, and under the tc_pairs directory you will see

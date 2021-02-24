@@ -18,8 +18,8 @@
 //
 // Stratify by the AMODEL or BMODEL columns.
 //
-${AMODEL}
-${BMODEL}
+${METPLUS_AMODEL}
+${METPLUS_BMODEL}
 
 //
 // Stratify by the DESC column.
@@ -29,25 +29,25 @@ ${METPLUS_DESC}
 //
 // Stratify by the STORM_ID column.
 //
-${STORM_ID}
+${METPLUS_STORM_ID}
 
 //
 // Stratify by the BASIN column.
 // May add using the "-basin" job command option.
 //
-${BASIN}
+${METPLUS_BASIN}
 
 //
 // Stratify by the CYCLONE column.
 // May add using the "-cyclone" job command option.
 //
-${CYCLONE}
+${METPLUS_CYCLONE}
 
 //
 // Stratify by the STORM_NAME column.
 // May add using the "-storm_name" job command option.
 //
-${STORM_NAME}
+${METPLUS_STORM_NAME}
 
 //
 // Stratify by the INIT times.
@@ -55,90 +55,92 @@ ${STORM_NAME}
 // May modify using the "-init_beg", "-init_end", "-init_inc",
 // and "-init_exc" job command options.
 //
-${INIT_BEG}
-${INIT_END}
-${INIT_INC}
-${INIT_EXC}
+${METPLUS_INIT_BEG}
+${METPLUS_INIT_END}
+${METPLUS_INIT_INCLUDE}
+${METPLUS_INIT_EXCLUDE}
 
 //
 // Stratify by the VALID times.
 //
-${VALID_BEG}
-${VALID_END}
-${VALID_INC}
-${VALID_EXC}
+${METPLUS_VALID_BEG}
+${METPLUS_VALID_END}
+${METPLUS_VALID_INCLUDE}
+${METPLUS_VALID_EXCLUDE}
 
 //
 // Stratify by the initialization and valid hours and lead time.
 //
-${INIT_HOUR}
-${VALID_HOUR}
-${LEAD}
+${METPLUS_INIT_HOUR}
+${METPLUS_VALID_HOUR}
+${METPLUS_LEAD}
 
 //
 // Select tracks which contain all required lead times.
 //
-${LEAD_REQ}
+${METPLUS_LEAD_REQ}
 
 //
 // Stratify by the INIT_MASK and VALID_MASK columns.
 //
-${INIT_MASK}
-${VALID_MASK}
+${METPLUS_INIT_MASK}
+${METPLUS_VALID_MASK}
 
 //
 // Stratify by checking the watch/warning status for each track point
 // common to both the ADECK and BDECK tracks.  If the watch/warning status
 // of any of the track points appears in the list, retain the entire track.
 //
-${TRACK_WATCH_WARN}
+${METPLUS_TRACK_WATCH_WARN}
 
 //
 // Stratify by applying thresholds to numeric data columns.
 //
-${COLUMN_THRESH_NAME}
-${COLUMN_THRESH_VAL}
+${METPLUS_COLUMN_THRESH_NAME}
+${METPLUS_COLUMN_THRESH_VAL}
 
 //
 // Stratify by performing string matching on non-numeric data columns.
 //
-${COLUMN_STR_NAME}
-${COLUMN_STR_VAL}
+${METPLUS_COLUMN_STR_NAME}
+${METPLUS_COLUMN_STR_VAL}
 
 //
 // Similar to the column_thresh options above
 //
-${INIT_THRESH_NAME}
-${INIT_THRESH_VAL}
+${METPLUS_INIT_THRESH_NAME}
+${METPLUS_INIT_THRESH_VAL}
 
 //
 // Similar to the column_str options above
 //
-${INIT_STR_NAME}
-${INIT_STR_VAL}
+${METPLUS_INIT_STR_NAME}
+${METPLUS_INIT_STR_VAL}
 
 //
 // Stratify by the ADECK and BDECK distances to land.
 //
-${WATER_ONLY}
+${METPLUS_WATER_ONLY}
 
 //
 // Specify whether only those track points occurring near landfall should be
 // retained, and define the landfall retention window in HH[MMSS] format
 // around the landfall time.
 //
-${LANDFALL}
-${LANDFALL_BEG}
-${LANDFALL_END}
+${METPLUS_LANDFALL}
+${METPLUS_LANDFALL_BEG}
+${METPLUS_LANDFALL_END}
 
 //
 // Specify whether only those track points common to both the ADECK and BDECK
 // tracks should be retained.  May modify using the "-match_points" job command
 // option.
 //
-${MATCH_POINTS}
+${METPLUS_MATCH_POINTS}
 
 //
 // Array of TCStat analysis jobs to be performed on the filtered data
 //
-${JOBS}
+${METPLUS_JOBS}
+
+${METPLUS_MET_CONFIG_OVERRIDES}
