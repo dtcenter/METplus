@@ -38,7 +38,7 @@ _NetCDF.conf
 # METplus Workflow
 # ----------------
 #
-# The use case runs the UserScript wrapper (untar the dropsonde file and extract the files to a directory), ASCII2NC (convert the ascii files to NetCDF format), and PointStat (compute statistics against HAFS model output) are the tools called in this example. It processes the following run times:
+# The use case runs the UserScript wrapper (untar the dropsonde file and extract the files to a directory), ASCII2NC (convert the ascii files to NetCDF format), and PointStat (compute statistics against HAFS model output), which are the tools called in this example. It processes the following run times:
 #
 # | **Valid:** 2019-08-29 12Z
 #
