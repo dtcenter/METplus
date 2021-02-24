@@ -178,6 +178,12 @@ class TCPairsWrapper(CommandBuilder):
     def run_all_times(self):
         """! Build up the command to invoke the MET tool tc_pairs.
         """
+        # use init begin as run time (start of the storm)
+        input_dict = {'init':
+                      datetime.datetime.strptime(self.c_dict['INIT_BEG'],
+                                                 '%Y%m%d_%H%M%S')
+                      }
+
         # if running in READ_ALL_FILES mode, call tc_pairs once and exit
         if self.c_dict['READ_ALL_FILES']:
             # Set up the environment variable to be used in the tc_pairs Config
@@ -193,8 +199,16 @@ class TCPairsWrapper(CommandBuilder):
             if edeck_dir:
                 self.edeck = [edeck_dir]
 
+            if self.c_dict['OUTPUT_TEMPLATE']:
+                # get output filename from template
+                time_info = time_util.ti_calculate(input_dict)
+                output_file = do_string_sub(self.c_dict['OUTPUT_TEMPLATE'],
+                                            **time_info)
+            else:
+                output_file = 'tc_pairs'
+
             self.outdir = self.c_dict['OUTPUT_DIR']
-            self.outfile = 'tc_pairs'
+            self.outfile = output_file
 
             cmd = self.get_command()
             if cmd is None:
