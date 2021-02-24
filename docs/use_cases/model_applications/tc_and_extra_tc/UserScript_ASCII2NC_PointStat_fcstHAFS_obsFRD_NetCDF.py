@@ -21,7 +21,7 @@ _NetCDF.conf
 # | **Forecast:** HAFS temperature
 # | **Observation:** HRD Dropsonde data 
 #
-# | **Location of Model forecast and Dropsonde files:** All of the input data required for this use case can be found in the sample data tarball. Click here to download: https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data
+# | **Location of Model forecast and Dropsonde files:** All of the input data required for this use case can be found in the sample data tarball. Click `here <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_ to download.
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Dropsonde data Source:** https://www.aoml.noaa.gov/hrd/data_sub/dropsonde.html
