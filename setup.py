@@ -8,12 +8,16 @@ with open("README.md", "r") as fh:
 with open("metplus/VERSION", "r") as fh:
     version = fh.read()
 
+with open("metplus/PYTHON_VERSION", "r") as fh:
+    python_version = fh.read()
+
 # get list of additional files needed to add to package
 data_files = []
 # add version and release date files
 data_files.append(('metplus',
                   ['metplus/VERSION',
                    'metplus/RELEASE_DATE',
+                   'metplus/PYTHON_VERSION',
                   ]))
 
 for root, _, files in os.walk('parm'):
@@ -44,7 +48,7 @@ setup(
          "License :: OSI Approved :: MIT License", 
          "Operating System :: OS Independent",
     ],
-    python_requires='>=3.6',
+    python_requires=f'>={python_version}',
     data_files=data_files,
     zip_safe=False,
 )
