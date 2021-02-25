@@ -100,7 +100,7 @@ mask = {
    grid      = "";
    grid_flag = NONE; // Apply to NONE, FCST, OBS, or BOTH
    poly      = ${VERIF_MASK};
-   poly_flag = NONE; // Apply to NONE, FCST, OBS, or BOTH
+   poly_flag = BOTH; // Apply to NONE, FCST, OBS, or BOTH
 }
 
 ////////////////////////////////////////////////////////////////////////////////
