@@ -27,6 +27,7 @@ except Exception as err_msg:
 import produtil.setup
 
 from ..util import met_util as util
+from ..util import do_string_sub
 from . import CommandBuilder
 
 class CyclonePlotterWrapper(CommandBuilder):
@@ -48,9 +49,27 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         self.input_data = self.config.getdir('CYCLONE_PLOTTER_INPUT_DIR')
         self.output_dir = self.config.getdir('CYCLONE_PLOTTER_OUTPUT_DIR')
-        self.init_date = self.config.getstr('config',
+        self.init_date = self.config.getraw('config',
                                             'CYCLONE_PLOTTER_INIT_DATE')
-        self.init_hr = self.config.getstr('config', 'CYCLONE_PLOTTER_INIT_HR')
+        self.init_hr = self.config.getraw('config', 'CYCLONE_PLOTTER_INIT_HR')
+
+        init_time_fmt = self.config.getstr('config', 'INIT_TIME_FMT', '')
+        if init_time_fmt:
+            clock_time = datetime.datetime.strptime(
+                self.config.getstr('config',
+                                   'CLOCK_TIME'),
+                '%Y%m%d%H%M%S'
+            )
+
+            init_beg = self.config.getraw('config', 'INIT_BEG')
+            if init_beg:
+                init_beg_dt = util.get_time_obj(init_beg,
+                                                init_time_fmt,
+                                                clock_time,
+                                                logger=self.logger)
+                self.init_date = do_string_sub(self.init_date, init=init_beg_dt)
+                self.init_hr = do_string_sub(self.init_hr, init=init_beg_dt)
+
         self.model = self.config.getstr('config', 'CYCLONE_PLOTTER_MODEL')
         self.title = self.config.getstr('config',
                                         'CYCLONE_PLOTTER_PLOT_TITLE')
