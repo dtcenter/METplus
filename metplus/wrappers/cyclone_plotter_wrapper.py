@@ -547,9 +547,9 @@ class CyclonePlotterWrapper(CommandBuilder):
         # ax.legend(loc='lower left', bbox_to_anchor=(-0.03, -0.5),
         #           fancybox=True, shadow=True, scatterpoints=1,
         #           prop={'size': 6})
-#       ax.legend(loc='lower left', bbox_to_anchor=(-0.01, -0.5),
-#                 fancybox=True, shadow=True, scatterpoints=1,
-#                 prop={'size': 6})
+        ax.legend(loc='lower left', bbox_to_anchor=(-0.01, -0.5),
+                  fancybox=True, shadow=True, scatterpoints=1,
+                  prop={'size': 6})
 
         # Write the plot to the output directory
         out_filename_parts = [self.init_date, '.png']
