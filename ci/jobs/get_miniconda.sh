@@ -3,7 +3,7 @@
 script_dir=$(dirname "$0")
 
 python_version=`${script_dir}/print_python_version.py`
-echo Python Version is $python_version
+
 # these are used to obtain version of MiniConda3
 # the version determines the default version of Python
 # that is used, but earlier versions can be obtained
@@ -14,7 +14,7 @@ MINIC_VERS=4.8.3
 
 echo Checking if Miniconda is installed
 # check if conda is already available and exit if it is
-conda --version
+conda --version &> /dev/null
 if [ $? == 0 ]; then
     echo Miniconda is already installed
     exit 0
