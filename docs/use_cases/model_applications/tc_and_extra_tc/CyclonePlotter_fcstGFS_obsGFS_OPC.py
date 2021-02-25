@@ -50,6 +50,7 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 # CyclonePlotter is the second (and final) tool called in this example. It processes the output
 # from TCPairs.
 #
+
 ##############################################################################
 # METplus Configuration
 # ---------------------
@@ -63,7 +64,7 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # METplus sets environment variables based on the values in the METplus configuration file.
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
