@@ -3,6 +3,7 @@ on:
   push:
     branches:
       - develop
+      - develop-ref
       - 'feature_*'
       - 'main_*'
       - 'bugfix_*'

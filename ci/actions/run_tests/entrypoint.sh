@@ -48,7 +48,6 @@ command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
 echo "Get Docker data volumes for input data"
 ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $CATEGORIES
 
-
 # keep track of --volumes-from arguments to docker run command
 VOLUMES_FROM=""
 
