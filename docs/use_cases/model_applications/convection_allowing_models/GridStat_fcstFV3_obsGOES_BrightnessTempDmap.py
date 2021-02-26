@@ -1,5 +1,5 @@
 """
-Grid-Stat: Brightness Temperature Distance Maps 
+Grid-Stat: Brightness Temperature Distance Maps
 =========================================================================
 
 model_applications/
@@ -11,9 +11,9 @@ GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 # Scientific Objective
 # --------------------
 #
-# To provide statistical inforation on regions of low brightness temperatures, 
-# defined by creating distance maps on the FV3 ensemble members compared to GOES 
-# channel 13 brightness temperature satellite data. 
+# To provide statistical inforation on regions of low brightness temperatures,
+# defined by creating distance maps on the FV3 ensemble members compared to GOES
+# channel 13 brightness temperature satellite data.
 
 ##############################################################################
 # Datasets
@@ -28,14 +28,14 @@ GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 # ------------------
 #
 # This use case runs runs grid_stat to compute distance maps using a brightness
-# temperature less than 235 K for the forecast and observations. 
+# temperature less than 235 K for the forecast and observations.
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# The GridStat tool is run for each of 2 ensemble members and for each time. 
-# This example loops by initialization time.  It processes 2 lead times, listed 
+# The GridStat tool is run for each of 2 ensemble members and for each time.
+# This example loops by initialization time.  It processes 2 lead times, listed
 # below.
 #
 # | **Valid:** 2019-05-21_01Z
@@ -94,7 +94,7 @@ GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 #   [dir]
 #   INPUT_BASE = /path/to/sample/input/data
 #   OUTPUT_BASE = /path/to/output/dir
-#   MET_INSTALL_DIR = /path/to/met-X.Y 
+#   MET_INSTALL_DIR = /path/to/met-X.Y
 #
 # **NOTE:** All of these items must be found under the [dir] section.
 #
@@ -108,7 +108,7 @@ GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in convection_allowing_models/brightness_temperature 
+# Output for this use case will be found in convection_allowing_models/brightness_temperature
 # (relative to **OUTPUT_BASE**) and will contain the following files:
 #
 # grid_stat/grid_stat_FV3_core_lsm1_000000L_20190521_010000V_dmap.txt
