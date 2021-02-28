@@ -51,27 +51,31 @@ fcst = {
 
    censor_thresh      = [<=0];
    censor_val         = [9999];
-   conv_radius       = [${FCST_CONV_RADIUS}];
-   conv_thresh       = [${FCST_CONV_THRESH}];
+   ${METPLUS_FCST_CONV_RADIUS}
+   ${METPLUS_FCST_CONV_THRESH}
    vld_thresh         = 0.5;
    filter_attr_name   = [];
    filter_attr_thresh = [];
-   merge_thresh      = [${FCST_MERGE_THRESH}];
-   merge_flag        = ${FCST_MERGE_FLAG};
+   ${METPLUS_FCST_MERGE_THRESH}
+   ${METPLUS_FCST_MERGE_FLAG}
+   //merge_thresh      = [${FCST_MERGE_THRESH}];
+   //merge_flag        = ${FCST_MERGE_FLAG};
 }
 
 obs = {
-   field = ${OBS_FIELD};
+   field = ${OBS_FIELD}
 
    censor_thresh     = [<=0];
    censor_val        = [9999];
-   conv_radius       = [${OBS_CONV_RADIUS}];
-   conv_thresh       = [${OBS_CONV_THRESH}];
+   ${METPLUS_OBS_CONV_RADIUS}
+   ${METPLUS_OBS_CONV_THRESH}
    vld_thresh         = 0.5;
    filter_attr_name   = [];
    filter_attr_thresh = [];
-   merge_thresh      = [${OBS_MERGE_THRESH}];
-   merge_flag        = ${OBS_MERGE_FLAG};
+   ${METPLUS_OBS_MERGE_THRESH}
+   ${METPLUS_OBS_MERGE_FLAG}
+   //merge_thresh      = [${OBS_MERGE_THRESH}];
+   //merge_flag        = ${OBS_MERGE_FLAG};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -249,7 +253,8 @@ shift_right = 0;   //  grid squares
 
 ////////////////////////////////////////////////////////////////////////////////
 
-output_prefix    = "${OUTPUT_PREFIX}";
+${METPLUS_OUTPUT_PREFIX}
+//output_prefix    = "${OUTPUT_PREFIX}";
 //version        = "V10.0";
 
 ////////////////////////////////////////////////////////////////////////////////
