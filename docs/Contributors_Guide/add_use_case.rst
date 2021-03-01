@@ -460,7 +460,7 @@ variables are set properly.
 
     cd |metplus_staging_dir|
     source feature_ABC_desc_env.bash
-    printenv | grep METPLUS_
+    printenv | grep METPLUS\_
 
 Create a feature branch directory in the tarfile directory
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
