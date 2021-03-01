@@ -326,10 +326,13 @@ If the above is shown, then METPLUS_VERSION should be set to 4.0
 
 * METPLUS_USE_CASE_CATEGORY should be one of the list items in the
   :ref:`use_case_categories` section unless you have received approval to
-  create a new category.
+  create a new category. For a new met_tool_wrapper use case, set this value
+  to met_tool_wrapper.
 
 * METPLUS_USE_CASE_NAME should be the name of the new use case without the
-  .conf extension, i.e. EnsembleStat_fcstICAP_obsMODIS_aod
+  .conf extension, i.e. EnsembleStat_fcstICAP_obsMODIS_aod. If adding a new
+  met_tool_wrapper use case, set this value to met_test_YYYYMMDD where
+  YYYYMMDD is today's date.
 
 * METPLUS_FEATURE_BRANCH should match the name of the branch you are working in
   exactly.
@@ -342,15 +345,7 @@ correctly. If the source command fails, make sure you have switched to using
 bash::
 
     source feature_ABC_desc_env.bash
-    echo $METPLUS_VERSION
-    echo $METPLUS_USE_CASE_CATEGORY
-    echo $METPLUS_USE_CASE_NAME
-    echo $METPLUS_NEW_DATA_TARFILE
-    echo $METPLUS_FEATURE_BRANCH
-    echo $METPLUS_DTC_WEB_SERVER
-    echo $METPLUS_DATA_STAGING_DIR
-    echo $METPLUS_DATA_TARFILE_DIR
-    echo $METPLUS_USER_ENV_FILE
+    printenv | grep METPLUS_
 
 .. note::
     The value for METPLUS_USER_ENV_FILE should be the name of the environment
@@ -361,6 +356,8 @@ Create sub-directories for input data
 
 Put new dataset into a directory that matches the use case directories, i.e.
 model_applications/${METPLUS_USE_CASE_CATEGORY}/${METPLUS_USE_CASE_NAME}.
+For a new met_tool_wrapper use case, put the data in a directory called
+met_test/new.
 All of the data required for the use case belongs in this directory so that it
 is clear which use case uses the data. Additional sub-directories under the
 use case directory can be used to separate out different data sources if
@@ -372,7 +369,8 @@ Verify use case config file contains correct directory
 Set directory paths in the use case config file relative to INPUT_BASE
 i.e {INPUT_BASE}/model_applications/<category>/<use_case> where
 <category> is the value you set for ${METPLUS_USE_CASE_CATEGORY} and
-<use_case> is the value you set for ${METPLUS_USE_CASE_NAME}.
+<use_case> is the value you set for ${METPLUS_USE_CASE_NAME}. For a new
+met_tool_wrapper use case, use {INPUT_BASE}/met_test/new.
 You can set {INPUT_BASE} to your local directory to test that the use case
 still runs properly.
 
@@ -384,6 +382,10 @@ the tarfile contains directories, i.e.
 model_applications/${METPLUS_USE_CASE_CATEGORY}::
 
     tar czf ${METPLUS_NEW_DATA_TARFILE} model_applications/${METPLUS_USE_CASE_CATEGORY}/${METPLUS_USE_CASE_NAME}
+
+OR for a met_tool_wrapper use case, run::
+
+    tar czf ${METPLUS_NEW_DATA_TARFILE} met_test/new
 
 Verify that the correct directory structure is found inside the tarfile::
 
@@ -458,15 +460,7 @@ variables are set properly.
 
     cd |metplus_staging_dir|
     source feature_ABC_desc_env.bash
-    echo $METPLUS_VERSION
-    echo $METPLUS_USE_CASE_CATEGORY
-    echo $METPLUS_USE_CASE_NAME
-    echo $METPLUS_NEW_DATA_TARFILE
-    echo $METPLUS_FEATURE_BRANCH
-    echo $METPLUS_DTC_WEB_SERVER
-    echo $METPLUS_DATA_STAGING_DIR
-    echo $METPLUS_DATA_TARFILE_DIR
-    echo $METPLUS_USER_ENV_FILE
+    printenv | grep METPLUS_
 
 Create a feature branch directory in the tarfile directory
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -486,7 +480,7 @@ This will make it easier for the person who will update the tarfiles for the
 next release to include the new data (right before the pull request is merged
 into the develop branch)::
 
-    cp ${METPLUS_DATA_STAGING_DIR}/feature_ABC_desc_env.bash ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+    cp ${METPLUS_DATA_STAGING_DIR}/${METPLUS_USER_ENV_FILE} ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
 Check if the category tarfile exists already
 """"""""""""""""""""""""""""""""""""""""""""
@@ -521,9 +515,15 @@ Untar the new data tarball into the feature branch directory::
 Verify that all of the old and new data exists in the directory that was
 created (i.e. model_applications/<category>).
 
-Create the new sample data tarball. Example::
+Create the new sample data tarball.
+
+Model Application Use Case Example::
 
     tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz model_applications/${METPLUS_USE_CASE_CATEGORY}
+
+MET Tool Wrapper Use Case Example::
+
+    tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz met_test
 
 Add volume_mount_directories file
 """""""""""""""""""""""""""""""""
@@ -917,7 +917,9 @@ copy the feature file into the develop directory::
 Copy the data from the feature directory into the next version directory
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Make sure the paths are correct before copying::
+Make sure the paths are correct before copying.
+
+Model Applications Use Cases::
 
     from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/model_applications/${METPLUS_USE_CASE_CATEGORY}
     echo $from_directory
@@ -926,6 +928,18 @@ Make sure the paths are correct before copying::
     to_directory=${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}/model_applications/${METPLUS_USE_CASE_CATEGORY}
     echo $to_directory
     ls $to_directory
+
+MET Tool Wrapper Use Cases::
+
+    from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/met_test
+    echo $from_directory
+    ls $from_directory
+
+    to_directory=${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}/met_test
+    echo $to_directory
+    ls $to_directory
+
+Once you have verified the correct directories are set, copy the files::
 
     cp -r $from_directory/* $to_directory/
 
@@ -947,9 +961,15 @@ version**, then simply remove the tarfile link::
 
     unlink sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
 
-Create the new sample data tarfile::
+Create the new sample data tarfile.
+
+Model Applications Use Cases::
 
     tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz model_applications/${METPLUS_USE_CASE_CATEGORY}
+
+MET Tool Wrapper Use Cases::
+
+    tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz met_test
 
 Update the link in the develop directory if needed
 """"""""""""""""""""""""""""""""""""""""""""""""""
