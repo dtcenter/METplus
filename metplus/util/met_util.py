@@ -27,7 +27,6 @@ from .string_template_substitution import do_string_sub
 from .string_template_substitution import parse_template
 from .string_template_substitution import get_tags
 from . import time_util as time_util
-from . import metplus_check
 
 from .. import get_metplus_version
 
