@@ -993,6 +993,9 @@ Check that the link now points to the new tarfile that was just created::
 
   ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
 
+After the Pull Request is Approved
+----------------------------------
+  
 Merge the pull request and ensure that all tests pass
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
