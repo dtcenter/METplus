@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /bin/sh
 
 branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
