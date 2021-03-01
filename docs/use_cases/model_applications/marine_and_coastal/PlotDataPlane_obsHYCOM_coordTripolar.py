@@ -38,6 +38,7 @@ model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
 # It processes the following run time:
 #
 # | **Valid:** 2020-01-27 0Z
+#
 # As it is currently set, the configuration file will pass in the path to the observation data,
 # as well as a path to the weights for the coordinate system. This is done in an effort to speed up running the use case.
 # These weight files are not required to run at the time of executing the use case, but will be made via Python Embedding
@@ -82,11 +83,11 @@ model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
 #
 # 1) Passing in PlotDataPlane_obsHYCOM_coordTripolar.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in PlotDataPlane_obsHYCOM_coordTripolar.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
