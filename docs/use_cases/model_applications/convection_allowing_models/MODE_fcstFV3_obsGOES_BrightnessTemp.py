@@ -33,7 +33,7 @@ MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 # METplus Workflow
 # ----------------
 #
-# The MODE tool is run for each of the 4 ensemble members and for eachtime. This 
+# The MODE tool is run for each of 2 ensemble members and for eachtime. This 
 # example loops by initialization time.  It processes 2 lead times, listed below.
 #
 # | **Valid:** 2019-05-21_01Z
@@ -125,22 +125,6 @@ MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 # mode_FV3_core_mp1_010000L_20190521_020000V_NAA_obj.nc
 # mode_FV3_core_mp1_010000L_20190521_020000V_NAA_obj.txt
 # mode_FV3_core_mp1_010000L_20190521_020000V_NAA.ps
-# mode_FV3_core_mp2_010000L_20190521_010000V_NAA_cts.txt
-# mode_FV3_core_mp2_010000L_20190521_010000V_NAA_obj.nc
-# mode_FV3_core_mp2_010000L_20190521_010000V_NAA_obj.txt
-# mode_FV3_core_mp2_010000L_20190521_010000V_NAA.ps
-# mode_FV3_core_mp2_010000L_20190521_020000V_NAA_cts.txt
-# mode_FV3_core_mp2_010000L_20190521_020000V_NAA_obj.nc
-# mode_FV3_core_mp2_010000L_20190521_020000V_NAA_obj.txt
-# mode_FV3_core_mp2_010000L_20190521_020000V_NAA.ps
-# mode_FV3_core_pbl1_010000L_20190521_010000V_NAA_cts.txt
-# mode_FV3_core_pbl1_010000L_20190521_010000V_NAA_obj.nc
-# mode_FV3_core_pbl1_010000L_20190521_010000V_NAA_obj.txt
-# mode_FV3_core_pbl1_010000L_20190521_010000V_NAA.ps
-# mode_FV3_core_pbl1_010000L_20190521_020000V_NAA_cts.txt
-# mode_FV3_core_pbl1_010000L_20190521_020000V_NAA_obj.nc
-# mode_FV3_core_pbl1_010000L_20190521_020000V_NAA_obj.txt
-# mode_FV3_core_pbl1_010000L_20190521_020000V_NAA.ps
 
 
 ##############################################################################
@@ -153,4 +137,6 @@ MODE_fcstFV3_obsGOES_BrightnessTemp.conf
 #  `MODEToolUseCase <https://dtcenter.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_,
 #  `ConvectionAllowingModelsAppUseCase <https://dtcenter.github.io/METplus/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_,
 #  `NetCDFFileUseCase <https://dtcenter.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_,
-#  `NCAROrgUseCase <https://dtcenter.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_,
+#  `NOAAEMCOrgUseCase <https://dtcenter.github.io/METplus/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_,
+#  `NOAAHWTOrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_,
+#  `ValidationUseCase  <https://dtcenter.github.io/METplus/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_

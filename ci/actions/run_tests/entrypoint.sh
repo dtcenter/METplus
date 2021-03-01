@@ -48,7 +48,6 @@ command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
 echo "Get Docker data volumes for input data"
 ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $CATEGORIES
 
-
 # keep track of --volumes-from arguments to docker run command
 VOLUMES_FROM=""
 
@@ -60,21 +59,13 @@ for category in ${category_list}; do
   VOLUMES_FROM=${VOLUMES_FROM}`echo --volumes-from $category" "`
 done
 
-# get Docker data volumes for output data if running a pull request into
-# develop or main_v* branches
-if [ "$GITHUB_EVENT_NAME" == "pull_request" ] && ([ "${GITHUB_BASE_REF:0:7}" == "develop" ] || [ "${GITHUB_BASE_REF:0:6}" == "main_v" ]); then
+# get Docker data volumes for output data and run diffing logic
+# if running a pull request into develop or main_v* branches, not -ref branches
+if [ "$GITHUB_EVENT_NAME" == "pull_request" ] && [ "${GITHUB_BASE_REF: -4}" != "-ref" ] && ([ "${GITHUB_BASE_REF:0:7}" == "develop" ] || [ "${GITHUB_BASE_REF:0:6}" == "main_v" ]); then
   echo "Get Docker data volumes for output data"
 
-  # get branch of pull request destination
-  pr_destination=${GITHUB_BASE_REF}
-
-  # strip off -ref if found
-  if [ "${pr_destination: -4}" == "-ref" ]; then
-    pr_destination=${pr_destination:0: -4}
-  fi
-
   category=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh $INPUT_CATEGORIES`
-  output_category=output-${pr_destination}-${category}
+  output_category=output-${GITHUB_BASE_REF}-${category}
 
   ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $output_category
   new_volume=output-${category#use_cases_}
