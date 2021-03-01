@@ -237,7 +237,7 @@ nc_pairs_flag   = {
    object_raw   = TRUE;
    object_id    = TRUE;
    cluster_id   = TRUE;
-   polylines    = FALSE;
+   polylines    = TRUE;
 }
 ct_stats_flag   = TRUE;
 

@@ -58,8 +58,6 @@ fcst = {
    filter_attr_thresh = [];
    ${METPLUS_FCST_MERGE_THRESH}
    ${METPLUS_FCST_MERGE_FLAG}
-   //merge_thresh      = [${FCST_MERGE_THRESH}];
-   //merge_flag        = ${FCST_MERGE_FLAG};
 }
 
 obs = {
@@ -74,8 +72,6 @@ obs = {
    filter_attr_thresh = [];
    ${METPLUS_OBS_MERGE_THRESH}
    ${METPLUS_OBS_MERGE_FLAG}
-   //merge_thresh      = [${OBS_MERGE_THRESH}];
-   //merge_flag        = ${OBS_MERGE_FLAG};
 }
 
 ////////////////////////////////////////////////////////////////////////////////
