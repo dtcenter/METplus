@@ -127,6 +127,16 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # initialize custom string for tests
         c_dict['CUSTOM_STRING'] = ''
 
+        # read any additional names/levels to add to command
+        c_dict[d_type+'_EXTRA_NAMES'] = util.getlist(
+            self.config.getraw('config',
+                               d_type+'_PCP_COMBINE_EXTRA_NAMES', '')
+        )
+        c_dict[d_type+'_EXTRA_LEVELS'] = util.getlist(
+            self.config.getraw('config',
+                               d_type+'_PCP_COMBINE_EXTRA_LEVELS', '')
+        )
+
         if run_method not in self.valid_run_methods:
             self.log_error(f"Invalid value for {d_type}_PCP_COMBINE_METHOD: "
                            f"{run_method}. Valid options are "
@@ -188,6 +198,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.name = ""
         self.compress = -1
         self.user_command = ''
+        self.extra_fields = ''
 
     def add_input_file(self, filename, addon):
         self.infiles.append(filename)
@@ -545,7 +556,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 if self.method != 'DERIVE':
                     cmd += self.inaddons[idx] + " "
 
-
         # set -field options if set
         if self.field_name:
             cmd += "-field 'name=\""+self.field_name+"\";"
@@ -557,6 +567,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 cmd += f' {self.field_extra}'
 
             cmd += "' "
+
+        if self.extra_fields:
+            cmd += self.extra_fields + ' '
 
         if self.output_name:
             cmd += f'-name "{self.output_name}" '
@@ -588,7 +601,21 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # remove whitespace at beginning/end and return command
         return cmd.strip()
 
+    def get_extra_fields(self, data_src):
+        extra_names = self.c_dict.get(data_src + '_EXTRA_NAMES')
+        if not extra_names:
+            return
+
+        extra_list = []
+
+        extra_levels = self.c_dict.get(data_src + '_EXTRA_LEVELS')
+        for name, level in zip(extra_names, extra_levels):
+            extra_list.append(f"-field 'name=\"{name}\"; level=\"{level}\";'")
+
+        return ' '.join(extra_list)
+
     def run_at_time_once(self, time_info, var_list, data_src):
+
         if not var_list:
             var_list = [None]
 
@@ -598,6 +625,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     def run_at_time_one_field(self, time_info, var_info, data_src):
 
         self.clear()
+
+        # read additional names/levels to add to command if set
+        self.extra_fields = self.get_extra_fields(data_src)
+
         cmd = None
         self.method = self.c_dict[data_src+'_RUN_METHOD']
 

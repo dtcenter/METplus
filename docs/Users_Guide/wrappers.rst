@@ -1059,6 +1059,10 @@ Configuration
 | :term:`FCST_PCP_COMBINE_COMMAND`
 | :term:`OBS_PCP_COMBINE_COMMAND`
 | :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`
+| :term:`FCST_PCP_COMBINE_EXTRA_NAMES` (optional)
+| :term:`FCST_PCP_COMBINE_EXTRA_LEVELS` (optional)
+| :term:`OBS_PCP_COMBINE_EXTRA_NAMES` (optional)
+| :term:`OBS_PCP_COMBINE_EXTRA_LEVELS` (optional)
 | :term:`FCST_PCP_COMBINE_OUTPUT_ACCUM` (optional)
 | :term:`FCST_PCP_COMBINE_OUTPUT_NAME` (optional)
 | :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM` (optional)
