@@ -17,6 +17,7 @@ DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
 
 echo "Pulling docker image: $DOCKERHUBTAG"
 docker pull $DOCKERHUBTAG
+docker inspect --type=image $DOCKERHUBTAG > /dev/null
 if [ $? != 0 ]; then
    # if docker pull fails, build locally
    echo docker pull failed. Building Docker image locally...
@@ -36,6 +37,13 @@ if [ -z "${SUBSETLIST}" ]; then
     SUBSETLIST="all"
 fi
 
+# install Pillow library needed for diff testing
+# this will be replaced with better image diffing package used by METplotpy
+pip_command="pip3 install Pillow"
+
+# build command to run
+command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
+
 # add input volumes to run command
 echo "Get Docker data volumes for input data"
 ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $CATEGORIES
@@ -51,42 +59,24 @@ for category in ${category_list}; do
   VOLUMES_FROM=${VOLUMES_FROM}`echo --volumes-from $category" "`
 done
 
-# get Docker data volumes for output data if running a pull request
-if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
-
+# get Docker data volumes for output data and run diffing logic
+# if running a pull request into develop or main_v* branches, not -ref branches
+if [ "$GITHUB_EVENT_NAME" == "pull_request" ] && [ "${GITHUB_BASE_REF: -4}" != "-ref" ] && ([ "${GITHUB_BASE_REF:0:7}" == "develop" ] || [ "${GITHUB_BASE_REF:0:6}" == "main_v" ]); then
   echo "Get Docker data volumes for output data"
 
-  # get branch of pull request destination
-  pr_destination=${GITHUB_BASE_REF}
-
-  # strip off -ref if found
-  if [ "${pr_destination: -4}" == "-ref" ]; then
-    pr_destination=${pr_destination:0: -4}
-  fi
-
   category=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh $INPUT_CATEGORIES`
-  output_category=output-${pr_destination}-${category}
+  output_category=output-${GITHUB_BASE_REF}-${category}
 
   ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $output_category
   new_volume=output-${category#use_cases_}
   VOLUMES_FROM=${VOLUMES_FROM}`echo --volumes-from $new_volume" "`
+
+  # add 3rd argument to command to trigger difference testing
+  command=${command}" true"
 fi
 
 echo VOLUMES_FROM: $VOLUMES_FROM
 
 echo "Run Docker container: $DOCKERHUBTAG"
-
-# install Pillow library needed for diff testing
-# this will be replaced with better image diffing package used by METplotpy
-pip_command="pip3 install Pillow"
-
-# build command to run
-command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
-
-# add 3rd argument to trigger comparison if pull request
-if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
-  command=${command}" true"
-fi
-
 echo docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
 docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"

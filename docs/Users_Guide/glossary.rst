@@ -5614,3 +5614,30 @@ METplus Configuration Glossary
      Specify the value for 'mask.grid' in the MET configuration file for GridStat.
 
      | *Used by:*  GridStat
+
+   FCST_PCP_COMBINE_EXTRA_NAMES
+     Specify a list of any additional fields to add to the command. The number of items in this list should match :term:`FCST_PCP_COMBINE_EXTRA_LEVELS`. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_EXTRA_NAMES`. Example:
+
+     | FCST_PCP_COMBINE_EXTRA_NAMES = TMP, HGT
+     | FCST_PCP_COMBINE_EXTRA_LEVELS = "(*,*)", "(*,*)"
+
+     This will add the following to the end of the command:
+
+     -field 'name="TMP"; level="(*,*)";' -field 'name="HGT"; level="(*,*)";'
+
+     | *Used by:*  PCPCombine
+
+   OBS_PCP_COMBINE_EXTRA_NAMES
+     See :term:`FCST_PCP_COMBINE_EXTRA_NAMES`
+
+     | *Used by:*  PCPCombine
+
+   FCST_PCP_COMBINE_EXTRA_LEVELS
+     Specify a list of any additional fields to add to the command. The number of items in this list should match :term:`FCST_PCP_COMBINE_EXTRA_NAMES`. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_EXTRA_LEVELS`. See :term:`FCST_PCP_COMBINE_EXTRA_NAMES` for an example.
+
+     | *Used by:*  PCPCombine
+
+   OBS_PCP_COMBINE_EXTRA_LEVELS
+     See :term:`FCST_PCP_COMBINE_EXTRA_LEVELS`
+
+     | *Used by:*  PCPCombine
