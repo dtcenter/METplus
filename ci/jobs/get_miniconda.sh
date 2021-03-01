@@ -16,6 +16,6 @@ curl -sSL https://repo.continuum.io/miniconda/Miniconda3-py${PYTHON_VERS}_${MINI
 
 bash /tmp/miniconda.sh -bfp /usr/local/
 rm -rf /tmp/miniconda.sh
-conda install -y python=3
+conda install -y python=3.6.3
 conda update conda
 conda clean --all --yes
