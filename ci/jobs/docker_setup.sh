@@ -28,9 +28,9 @@ start_seconds=$SECONDS
 
 docker build --pull --cache-from ${DOCKERHUB_TAG} \
 -t ${DOCKERHUB_TAG} \
---build-arg SOURCE_BRANCH=${GITHUB_SHA} \
---build-arg MET_BRANCH=develop \
---build-arg DO_GIT_CLONE ${GITHUB_WORKSPACE}/ci/docker
+--build-arg OBTAIN_SOURCE_CODE='copy' \
+--build-arg MET_TAG=develop \
+-f ${GITHUB_WORKSPACE}/ci/docker/Dockerfile ${GITHUB_WORKSPACE}
 
 duration=$(( SECONDS - start_seconds ))
 echo TIMING docker_setup

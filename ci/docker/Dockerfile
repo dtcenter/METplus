@@ -1,67 +1,75 @@
-ARG MET_BRANCH
-
 # This Dockerfile extends the MET image file to run METplus
-# use the value of MET_BRANCH to chose the tag version of the MET image
-# default value is develop
+#
+# Build Arguments:
+#
+# OBTAIN_SOURCE_CODE - determines how to obtain source code
+#   Options: clone (default), copy, or none
+#
+# MET_TAG - tag to use for obtaining MET image (default is develop)
+#
+# SOURCE_VERSION - optional branch/tag/commit to obtain from METplus repository
+#   Only used if OBTAIN_SOURCE_CODE=clone
+#
 
-FROM dtcenter/met:${MET_BRANCH:-develop}
+ARG OBTAIN_SOURCE_CODE=clone
+
+ARG MET_TAG=develop
+
+# if OBTAIN_SOURCE_CODE=copy, copy files from build context into image
+FROM dtcenter/met:${MET_TAG} as build_copy
+ONBUILD WORKDIR /metplus
+ONBUILD RUN mkdir -p METplus
+ONBUILD COPY . METplus
+ONBUILD RUN if [ ! -e "METplus/ush/run_metplus.py" ]; then \
+    echo "ERROR: docker build must be run from the METplus directory"; \
+    exit 1; \
+  fi
+
+# if OBTAIN_SOURCE_CODE=clone, clone repository
+FROM dtcenter/met:${MET_TAG} as build_clone
+ONBUILD WORKDIR /metplus
+ONBUILD ARG SOURCE_VERSION
+ONBUILD RUN echo "Cloning METplus repository"; \
+  git clone https://github.com/dtcenter/METplus; \
+  if [ ! -z "${SOURCE_VERSION+x}" ]; then \
+        echo "Checking out: ${SOURCE_VERSION}"; \
+        cd METplus; \
+        git checkout ${SOURCE_VERSION}; \
+  fi
+
+# if OBTAIN_SOURCE_CODE=none, do not retrieve files
+FROM dtcenter/met:${MET_TAG} as build_none
+ONBUILD WORKDIR /metplus
+
+# use build alias based on OBTAIN_SOURCE_CODE value
+FROM build_${OBTAIN_SOURCE_CODE}
 MAINTAINER George McCabe <mccabe@ucar.edu>
 
-ARG SOURCE_BRANCH
-RUN if [ -z ${SOURCE_BRANCH+x} ]; then \
-      echo "ERROR: SOURCE_BRANCH undefined! Rebuild with \"--build-arg SOURCE_BRANCH={branch name}\""; \
-      exit 1; \
-    else \
-      echo "Build Argument SOURCE_BRANCH=${SOURCE_BRANCH}"; \
-    fi
-
-ARG MET_BRANCH
-RUN if [ -z ${MET_BRANCH+x} ]; then \
-      echo "WARNING: MET_BRANCH undefined! Using default (develop) or rebuild with \"--build-arg MET_BRANCH={branch name}\""; \
-    else \
-      echo "Build Argument MET_BRANCH=${MET_BRANCH}"; \
-    fi
-
-
-#
-# Set working directory
-#
-ENV DOCKER_WORK_DIR /metplus
-WORKDIR ${DOCKER_WORK_DIR}
-
-#
-# Environment for interactive bash and csh container shells
-#
-# container:${DOCKER_WORK_DIR} is mounted to the host:/path/to/parent_of_METplus_dir
-# ie. -v /Users/Frimel/projects:${DOCKER_WORK_DIR} where /Users/Frimel/projects/METplus/ush
-RUN echo export PATH=$PATH:${DOCKER_WORK_DIR}/METplus/ush >> /etc/bashrc \
- && echo setenv PATH $PATH:${DOCKER_WORK_DIR}/METplus/ush >> /etc/csh.cshrc
+RUN echo export PATH=$PATH:`pwd`/METplus/ush >> /etc/bashrc \
+ && echo setenv PATH $PATH:`pwd`/METplus/ush >> /etc/csh.cshrc
 
 # Install required packages: Pandas, Cartopy*
 #  - *dateutil, pytest
 #
 # Install nco tools for ncap2
 # Install Java 1.8.0 OpenJDK for GempakToCF.jar
-# Install pytest
+# Install pytest and netCDF4 python packages
+# Obtain GempakToCF.jar
 RUN yum -y update \
  && yum -y install nco.x86_64 \
  && yum -y install java-1.8.0-openjdk \
- && python3 -m pip install pytest netCDF4
+ && python3 -m pip install pytest netCDF4 \
+ && mkdir -p /data/input \
+ && curl -L -o /data/input/GempakToCF.jar -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar || true
 
-RUN mkdir -p /data/input && curl -L -o /data/input/GempakToCF.jar -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar || true
 
-
-ARG SOURCE_BRANCH
-ARG DO_GIT_CLONE
-
-# if user has not cloned from Git, clone the repository using the branch
-# also replace MET_INSTALL_DIR value in default conf with correct location
-RUN if [ ${DO_GIT_CLONE:-true} == true ]; then \
-      echo "Cloning METplus repository using: ${SOURCE_BRANCH}"; \
-      git clone https://github.com/dtcenter/METplus; \
-      cd METplus; \
-      git checkout ${SOURCE_BRANCH}; \
-      sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
-    else \
-      echo "Running from user's local METplus repository, so don't clone through Docker"; \
-    fi
+# if source code was retrieved, set default config variables and install package
+ARG OBTAIN_SOURCE_CODE=clone
+RUN if [ ${OBTAIN_SOURCE_CODE} != "none" ]; then \
+  echo "Installing METplus package and setting default configs"; \
+  cd METplus; \
+  sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
+  sed -i 's|OUTPUT_BASE = /path/to|OUTPUT_BASE = /data/output|g' parm/metplus_config/metplus_system.conf; \
+  sed -i 's|INPUT_BASE = /path/to|INPUT_BASE = /data/input/METplus_Data|g' parm/metplus_config/metplus_data.conf; \
+  python3 setup.py install; \
+fi
