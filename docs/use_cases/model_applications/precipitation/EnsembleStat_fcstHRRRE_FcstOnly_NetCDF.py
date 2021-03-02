@@ -89,6 +89,8 @@ _FcstOnly_NetCDF.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
+# .. note:: See the :ref:`EnsembleStat MET Configuration<ens-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/EnsembleStatConfig_wrapped
 

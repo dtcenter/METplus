@@ -5690,3 +5690,13 @@ METplus Configuration Glossary
      See :term:`FCST_PCP_COMBINE_EXTRA_LEVELS`
 
      | *Used by:*  PCPCombine
+
+   ENSEMBLE_STAT_MESSAGE_TYPE
+     Set the message_type option in the EnsembleStat MET config file.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_MASK_POLY
+     Set the mask.poly entry in the EnsembleStat MET config file.
+
+     | *Used by:*  EnsembleStat

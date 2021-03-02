@@ -213,6 +213,7 @@ Configuration
 | :term:`OBS_ENSEMBLE_STAT_VAR<n>_LEVELS` (optional)
 | :term:`OBS_ENSEMBLE_STAT_VAR<n>_THRESH` (optional)
 | :term:`OBS_ENSEMBLE_STAT_VAR<n>_OPTIONS` (optional)
+|
 
 .. warning:: **DEPRECATED:**
 
@@ -220,7 +221,6 @@ Configuration
    | :term:`ENSEMBLE_STAT_CONFIG`
    | :term:`ENSEMBLE_STAT_MET_OBS_ERROR_TABLE`
    | :term:`ENSEMBLE_STAT_GRID_VX`
-   |
 
 .. _ens-stat-met-conf:
 
@@ -245,6 +245,498 @@ Below the file contents are descriptions of each environment variable referenced
      - MET Config File
    * - :term:`MODEL`
      - model
+
+**${METPLUS_DESC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`DESC` or :term:`ENSEMBLE_STAT_DESC`
+     - desc
+
+**${METPLUS_OBTYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBTYPE`
+     - obtype
+
+**${METPLUS_REGRID_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_REGRID_SHAPE`
+     - regrid.shape
+   * - :term:`ENSEMBLE_STAT_REGRID_METHOD`
+     - regrid.method
+   * - :term:`ENSEMBLE_STAT_REGRID_WIDTH`
+     - regrid.width
+   * - :term:`ENSEMBLE_STAT_REGRID_VLD_THRESH`
+     - regrid.vld_thresh
+   * - :term:`ENSEMBLE_STAT_REGRID_TO_GRID`
+     - regrid.to_grid
+
+**${METPLUS_CENSOR_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_CENSOR_THRESH`
+     - censor_thresh
+
+**${METPLUS_CENSOR_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_CENSOR_VAL`
+     - censor_val
+
+**${METPLUS_ENS_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENS_ENSEMBLE_STAT_DATATYPE`
+     - ens.file_type
+
+**${METPLUS_ENS_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_ENS_THRESH`
+     - ens.ens_thresh
+
+**${METPLUS_ENS_VLD_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_ENS_VLD_THRESH`
+     - ens.vld_thresh
+
+**${METPLUS_ENS_OBS_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_ENS_OBS_THRESH`
+     - ens.obs_thresh
+
+**${METPLUS_ENS_FIELD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENS_VAR<n>_NAME`
+     - ens.field.name
+   * - :term:`ENS_VAR<n>_LEVELS`
+     - ens.field.level
+   * - :term:`ENS_VAR<n>_THRESH`
+     - ens.field.cat_thresh
+   * - :term:`ENS_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+**${METPLUS_NBRHD_PROB_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_NBRHD_PROB_WIDTH`
+     - nbrhd_prob.width
+   * - :term:`ENSEMBLE_STAT_NBRHD_PROB_SHAPE`
+     - nbrhd_prob.shape
+   * - :term:`ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH`
+     - nbrhd_prob.vld_thresh
+
+**${METPLUS_NMEP_SMOOTH_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH`
+     - nmep_smooth.vld_thresh
+   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE`
+     - nmep_smooth.shape
+   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX`
+     - nmep_smooth.gaussian_dx
+   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS`
+     - nmep_smooth.gaussian_radius
+   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_METHOD`
+     - nmep_smooth.type.method
+   * - :term:`ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH`
+     - nmep_smooth.type.width
+
+**${METPLUS_FCST_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_ENSEMBLE_STAT_INPUT_DATATYPE`
+     - fcst.file_type
+
+**${METPLUS_FCST_FIELD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_VAR<n>_NAME`
+     - fcst.field.name
+   * - :term:`FCST_VAR<n>_LEVELS`
+     - fcst.field.level
+   * - :term:`FCST_VAR<n>_THRESH`
+     - fcst.field.cat_thresh
+   * - :term:`FCST_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+**${METPLUS_OBS_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE` -or- :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE`
+     - obs.file_type
+
+**${METPLUS_OBS_FIELD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_VAR<n>_NAME`
+     - fcst.field.name
+   * - :term:`OBS_VAR<n>_LEVELS`
+     - fcst.field.level
+   * - :term:`OBS_VAR<n>_THRESH`
+     - fcst.field.cat_thresh
+   * - :term:`OBS_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+**${METPLUS_MESSAGE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_MESSAGE_TYPE`
+     - message_type
+
+**${METPLUS_DUPLICATE_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
+     - duplicate_flag
+
+**${METPLUS_SKIP_CONST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_SKIP_CONST`
+     - skip_const
+
+**${METPLUS_OBS_ERROR_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_ERROR_FLAG`
+     - obs_error.flag
+
+**${METPLUS_ENS_SSVAR_BIN_SIZE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_ENS_SSVAR_BIN_SIZE`
+     - ens_ssvar_bin_size
+
+**${METPLUS_ENS_PHIST_BIN_SIZE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE`
+     - ens_phist_bin_size
+
+**${METPLUS_CLIMO_MEAN_FILE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
+     - climo_mean.file_name
+
+**${METPLUS_CLIMO_MEAN_DAY_INTERVAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL`
+     - climo_mean.day_interval
+
+**${METPLUS_CLIMO_MEAN_HOUR_INTERVAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_HOUR_INTERVAL`
+     - climo_mean.hour_interval
+
+**${METPLUS_CLIMO_STDEV_FILE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
+     - climo_stdev.file_name
+
+**${METPLUS_CLIMO_CDF_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL`
+     - model
+
+**${METPLUS_OBS_WINDOW_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_CLIMO_CDF_BINS`
+     - climo_cdv.cdf_bins
+   * - :term:`ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS`
+     - climo_cdv.center_bins
+   * - :term:`ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS`
+     - climo_cdv.write_bins
+
+**${METPLUS_MASK_GRID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_MASK_GRID`
+     - mask.grid
+
+**${METPLUS_MASK_POLY}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_MASK_POLY`
+     - mask.poly
+
+**${METPLUS_CI_ALPHA}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_CI_ALPHA`
+     - ci_alpha
+
+**${METPLUS_INTERP_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_INTERP_FIELD`
+     - interp.field
+   * - :term:`ENSEMBLE_STAT_INTERP_VLD_THRESH`
+     - interp.vld_thresh
+   * - :term:`ENSEMBLE_STAT_INTERP_SHAPE`
+     - interp.shape
+   * - :term:`ENSEMBLE_STAT_INTERP_METHOD`
+     - interp.type.method
+   * - :term:`ENSEMBLE_STAT_INTERP_WIDTH`
+     - interp.type.width
+
+**${METPLUS_OUTPUT_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ECNT`
+     - output_flag.ecnt
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_RPS`
+     - output_flag.rps
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_RHIST`
+     - output_flag.rhist
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PHIST`
+     - output_flag.phist
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ORANK`
+     - output_flag.orank
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_SSVAR`
+     - output_flag.ssvar
+   * - :term:`ENSEMBLE_STAT_OUTPUT_FLAG_RELP`
+     - output_flag.relp
+
+**${METPLUS_ENSEMBLE_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_LATLON`
+     - ensemble_flag.latlon
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MEAN`
+     - ensemble_flag.mean
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_STDEV`
+     - ensemble_flag.stdev
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MINUS`
+     - ensemble_flag.minus
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_PLUS`
+     - ensemble_flag.plus
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MIN`
+     - ensemble_flag.min
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_MAX`
+     - ensemble_flag.max
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANGE`
+     - ensemble_flag.range
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_VLD_COUNT`
+     - ensemble_flag.vld_count
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_FREQUENCY`
+     - ensemble_flag.frequency
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NEP`
+     - ensemble_flag.nep
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP`
+     - ensemble_flag.nmep
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK`
+     - ensemble_flag.rank
+   * - :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT`
+     - ensemble_flag.weight
+
+**${METPLUS_OUTPUT_PREFIX}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OUTPUT_PREFIX`
+     - output_prefix
+
+**${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _example_wrapper:
 
