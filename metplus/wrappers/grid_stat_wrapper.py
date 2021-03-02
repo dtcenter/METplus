@@ -134,14 +134,7 @@ class GridStatWrapper(CompareGriddedWrapper):
                                'GRID_STAT_NEIGHBORHOOD_SHAPE', 'SQUARE')
         )
 
-
-        self.set_met_config_list(c_dict,
-                                 'GRID_STAT_MASK_GRID',
-                                 'grid',
-                                 'MASK_GRID',
-                                 allow_empty=True)
-
-        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
+        self.handle_mask(single_value=False)
 
         return c_dict
 
@@ -149,12 +142,6 @@ class GridStatWrapper(CompareGriddedWrapper):
         """!Set environment variables that are referenced by the
             MET config file"""
         # set environment variables needed for MET application
-
-        mask_dict_string = self.format_met_config_dict(self.c_dict,
-                                                       'mask',
-                                                       ['MASK_GRID',
-                                                        'MASK_POLY'])
-        self.env_var_dict["METPLUS_MASK_DICT"] = mask_dict_string
 
         # add old method of setting env vars
         self.add_env_var("FCST_FIELD",
