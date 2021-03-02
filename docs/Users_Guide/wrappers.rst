@@ -114,26 +114,18 @@ Used to configure the MET tool ensemble_stat.
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`OBS_ENSEMBLE_STAT_POINT_INPUT_DIR`
 | :term:`OBS_ENSEMBLE_STAT_GRID_INPUT_DIR`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_DIR`
 | :term:`ENSEMBLE_STAT_OUTPUT_DIR`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_DIR`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_DIR`
-
-[filename_templates]
-
 | :term:`OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE`
 | :term:`OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE`
 | :term:`ENSEMBLE_STAT_OUTPUT_TEMPLATE`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
 | :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
-
-[config]
-
 | :term:`LOG_ENSEMBLE_STAT_VERBOSITY`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_DATATYPE`
 | :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE`
@@ -228,6 +220,30 @@ Configuration
    | :term:`ENSEMBLE_STAT_CONFIG`
    | :term:`ENSEMBLE_STAT_MET_OBS_ERROR_TABLE`
    | :term:`ENSEMBLE_STAT_GRID_VX`
+
+.. _ens-stat-met-conf:
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+
+:term:`MET_INSTALL_DIR`/share/met/config/EnsembleStatDefault_config
+
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/EnsembleStatConfig_wrapped
+
+**${METPLUS_MODEL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL`
+     - model
 
 .. _example_wrapper:
 
