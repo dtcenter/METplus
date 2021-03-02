@@ -1600,18 +1600,10 @@ the MET pb2nc tool to convert prepBUFR files into netCDF.
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`PB2NC_INPUT_DIR`
 | :term:`PB2NC_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`PB2NC_INPUT_TEMPLATE`
 | :term:`PB2NC_OUTPUT_TEMPLATE`
-
-[config]
-
 | :term:`PB2NC_SKIP_IF_OUTPUT_EXISTS`
 | :term:`PB2NC_OFFSETS`
 | :term:`PB2NC_INPUT_DATATYPE`
@@ -1632,6 +1624,7 @@ Configuration
 | :term:`PB2NC_VALID_END`
 | :term:`PB2NC_CUSTOM_LOOP_LIST`
 | :term:`PB2NC_MET_CONFIG_OVERRIDES`
+|
 
 .. warning:: **DEPRECATED:**
 
@@ -1649,6 +1642,123 @@ Configuration
    | :term:`TIME_SUMMARY_TYPES`
    | :term:`OVERWRITE_NC_OUTPUT`
    | :term:`VERTICAL_LOCATION`
+   |
+
+.. _pb2nc-met-conf:
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+
+:term:`MET_INSTALL_DIR`/share/met/config/PB2NCDefault_config
+
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/PB2NCConfig_wrapped
+
+**${METPLUS_MESSAGE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_MESSAGE_TYPE`
+     - message_type
+
+**${METPLUS_STATION_ID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_STATION_ID`
+     - station_id
+
+**${METPLUS_OBS_WINDOW_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_WINDOW_BEGIN`
+     - obs_window.beg
+   * - :term:`PB2NC_WINDOW_END`
+     - obs_window.end
+
+**${METPLUS_MASK_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_MASK_GRID`
+     - mask.grid
+   * - :term:`PB2NC_MASK_POLY`
+     - mask.poly
+
+.. note:: Since the default value in the MET config file for 'grid' is grid = [ "FULL" ];, setting GRID_STAT_MASK_GRID to an empty string will result in a value of grid = []; in the MET config file.
+
+**${METPLUS_OBS_BUFR_VAR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_OBS_BUFR_VAR_LIST`
+     - obs_bufr_var
+
+**${METPLUS_TIME_SUMMARY_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_TIME_SUMMARY_FLAG`
+     - time_summary.flag
+   * - :term:`PB2NC_TIME_SUMMARY_RAW_DATA`
+     - time_summary.raw_data
+   * - :term:`PB2NC_TIME_SUMMARY_BEG`
+     - time_summary.beg
+   * - :term:`PB2NC_TIME_SUMMARY_END`
+     - time_summary.end
+   * - :term:`PB2NC_TIME_SUMMARY_STEP`
+     - time_summary.step
+   * - :term:`PB2NC_TIME_SUMMARY_WIDTH`
+     - time_summary.width
+   * - :term:`PB2NC_TIME_SUMMARY_GRIB_CODES`
+     - time_summary.grib_code
+   * - :term:`PB2NC_TIME_SUMMARY_VAR_NAMES`
+     - time_summary.obs_var
+   * - :term:`PB2NC_TIME_SUMMARY_TYPES`
+     - time_summary.type
+   * - :term:`PB2NC_TIME_SUMMARY_VALID_FREQ`
+     - time_summary.vld_freq
+   * - :term:`PB2NC_TIME_SUMMARY_VALID_THRESH`
+     - time_summary.vld_thresh
+
+**${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _pcp_combine_wrapper:
 
