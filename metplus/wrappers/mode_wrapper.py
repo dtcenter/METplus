@@ -104,23 +104,26 @@ class MODEWrapper(CompareGriddedWrapper):
                                  'METPLUS_QUILT')
 
         for data_type in ['FCST', 'OBS']:
-            self.set_met_config_float(self.env_var_dict,
-                                      [f'{data_type}_MODE_CONV_RADIUS',
-                                       'MODE_CONV_RADIUS'],
-                                      'conv_radius',
-                                      f'METPLUS_{data_type}_CONV_RADIUS')
+            self.set_met_config_list(self.env_var_dict,
+                                     [f'{data_type}_MODE_CONV_RADIUS',
+                                      'MODE_CONV_RADIUS'],
+                                     'conv_radius',
+                                     f'METPLUS_{data_type}_CONV_RADIUS',
+                                     remove_quotes=True)
 
-            self.set_met_config_thresh(self.env_var_dict,
-                                       [f'{data_type}_MODE_CONV_THRESH',
-                                        'MODE_CONV_THRESH'],
-                                       'conv_thresh',
-                                       f'METPLUS_{data_type}_CONV_THRESH')
+            self.set_met_config_list(self.env_var_dict,
+                                     [f'{data_type}_MODE_CONV_THRESH',
+                                      'MODE_CONV_THRESH'],
+                                     'conv_thresh',
+                                     f'METPLUS_{data_type}_CONV_THRESH',
+                                     remove_quotes=True)
 
-            self.set_met_config_thresh(self.env_var_dict,
-                                       [f'{data_type}_MODE_MERGE_THRESH',
-                                        'MODE_MERGE_THRESH'],
-                                       'merge_thresh',
-                                       f'METPLUS_{data_type}_MERGE_THRESH')
+            self.set_met_config_list(self.env_var_dict,
+                                     [f'{data_type}_MODE_MERGE_THRESH',
+                                      'MODE_MERGE_THRESH'],
+                                     'merge_thresh',
+                                     f'METPLUS_{data_type}_MERGE_THRESH',
+                                     remove_quotes=True)
 
             self.set_met_config_string(self.env_var_dict,
                                        [f'{data_type}_MODE_MERGE_FLAG',
