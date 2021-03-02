@@ -220,6 +220,7 @@ Configuration
    | :term:`ENSEMBLE_STAT_CONFIG`
    | :term:`ENSEMBLE_STAT_MET_OBS_ERROR_TABLE`
    | :term:`ENSEMBLE_STAT_GRID_VX`
+   |
 
 .. _ens-stat-met-conf:
 
