@@ -150,9 +150,7 @@ class MODEWrapper(CompareGriddedWrapper):
 
         mask_poly = self.read_mask_poly()
         c_dict['MASK_POLY_TEMPLATE'] = mask_poly
-
-        if mask_poly:
-            self.env_var_dict['METPLUS_MASK_POLY'] = f'poly = "{mask_poly}";'
+        c_dict['MASK_POLY_IS_LIST'] = False
 
         return c_dict
 

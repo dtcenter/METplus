@@ -1187,7 +1187,9 @@ class CommandBuilder:
                                   **time_info)
         mask_list_string = self.format_list_string(filenames)
         self.c_dict['VERIFICATION_MASK'] = mask_list_string
-        mask_fmt = f"poly = [{mask_list_string}];"
+        if self.c_dict.get('MASK_POLY_IS_LIST', True):
+            mask_list_string = f'[{mask_list_string}]'
+        mask_fmt = f"poly = {mask_list_string};"
         self.c_dict['MASK_POLY'] = mask_fmt
         self.env_var_dict['METPLUS_MASK_POLY'] = mask_fmt
 
