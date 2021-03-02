@@ -23,18 +23,10 @@ Used to configure the MET tool ASCII2NC
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`ASCII2NC_INPUT_DIR`
 | :term:`ASCII2NC_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`ASCII2NC_INPUT_TEMPLATE`
 | :term:`ASCII2NC_OUTPUT_TEMPLATE`
-
-[config]
-
 | :term:`LOG_ASCII2NC_VERBOSITY`
 | :term:`ASCII2NC_SKIP_IF_OUTPUT_EXISTS`
 | :term:`ASCII2NC_CONFIG_FILE`
@@ -59,6 +51,62 @@ Configuration
 | :term:`ASCII2NC_TIME_SUMMARY_VALID_THRESH`
 | :term:`ASCII2NC_CUSTOM_LOOP_LIST`
 | :term:`ASCII2NC_MET_CONFIG_OVERRIDES`
+|
+
+.. _ascii2nc-met-conf:
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+
+:term:`MET_INSTALL_DIR`/share/met/config/Ascii2NcDefault_config
+
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/Ascii2NcConfig_wrapped
+
+**${METPLUS_TIME_SUMMARY_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ASCII2NC_TIME_SUMMARY_FLAG`
+     - time_summary.flag
+   * - :term:`ASCII2NC_TIME_SUMMARY_RAW_DATA`
+     - time_summary.raw_data
+   * - :term:`ASCII2NC_TIME_SUMMARY_BEG`
+     - time_summary.beg
+   * - :term:`ASCII2NC_TIME_SUMMARY_END`
+     - time_summary.end
+   * - :term:`ASCII2NC_TIME_SUMMARY_STEP`
+     - time_summary.step
+   * - :term:`ASCII2NC_TIME_SUMMARY_WIDTH`
+     - time_summary.width
+   * - :term:`ASCII2NC_TIME_SUMMARY_GRIB_CODES`
+     - time_summary.grib_code
+   * - :term:`ASCII2NC_TIME_SUMMARY_VAR_NAMES`
+     - time_summary.obs_var
+   * - :term:`ASCII2NC_TIME_SUMMARY_TYPES`
+     - time_summary.type
+   * - :term:`ASCII2NC_TIME_SUMMARY_VALID_FREQ`
+     - time_summary.vld_freq
+   * - :term:`ASCII2NC_TIME_SUMMARY_VALID_THRESH`
+     - time_summary.vld_thresh
+
+**${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ASCII2NC_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _cyclone_plotter_wrapper:
 
