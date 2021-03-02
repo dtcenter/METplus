@@ -1,5 +1,5 @@
 """
-ASCII2NC:Basic Use Case
+ASCII2NC: Basic Use Case
 ========================
 
 met_tool_wrapper/ASCII2NC/ASCII2NC.conf
