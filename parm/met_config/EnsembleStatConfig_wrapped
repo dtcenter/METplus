@@ -50,7 +50,7 @@ ens = {
    ${METPLUS_ENS_VLD_THRESH}
    ${METPLUS_ENS_OBS_THRESH}
 
-   field = [ ${METPLUS_ENS_FIELD}  ];
+   ${METPLUS_ENS_FIELD}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -75,14 +75,14 @@ fcst = {
 
    ${METPLUS_FCST_FILE_TYPE}
 
-   field = [ ${METPLUS_FCST_FIELD}  ];
+   ${METPLUS_FCST_FIELD}
 }
 
 obs = {
 
    ${METPLUS_OBS_FILE_TYPE}
  
-   field = [ ${METPLUS_OBS_FIELD}   ];
+   ${METPLUS_OBS_FIELD}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -140,7 +140,7 @@ ${METPLUS_ENS_PHIST_BIN_SIZE}
 //
 climo_mean = {
 
-   file_name = [ ${METPLUS_CLIMO_MEAN_FILE} ];
+   ${METPLUS_CLIMO_MEAN_FILE}
    field     = [];
 
    regrid = {
@@ -156,9 +156,8 @@ climo_mean = {
 }
 
 climo_stdev = climo_mean;
-climo_stdev = {
-   file_name = [ ${METPLUS_CLIMO_STDEV_FILE} ];
-}
+${METPLUS_CLIMO_STDEV_FILE}
+
 
 //
 // May be set separately in each "obs.field" entry
