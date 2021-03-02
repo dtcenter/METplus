@@ -3251,7 +3251,7 @@ METplus Configuration Glossary
      | *Used by:*  PointStat
 
    PB2NC_OUTPUT_DIR
-     Specify the directory where files will be written from the MET pb2nc tool. Varies :term:`PB2NC_POLY` Specify a polygon to be used with the MET pb2nc tool.
+     Specify the directory where files will be written from the MET pb2nc tool. 
 
      | *Used by:*  PB2NC
 
@@ -3392,7 +3392,7 @@ METplus Configuration Glossary
      | *Used by:*  PointStat
 
    PB2NC_POLY
-     Specify a polygon to use with the MET PB2NC tool.
+     .. note:: please use :term:`PB2NC_MASK_POLY`
 
      | *Used by:*  PB2NC
 
@@ -5720,3 +5720,43 @@ METplus Configuration Glossary
      Set the censor_val entry in the GridDiag MET config file.
 
      | *Used by:*  GridDiag
+
+   PB2NC_TIME_SUMMARY_RAW_DATA
+     Specify the time summary raw_data item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  PB2NC
+
+   PB2NC_TIME_SUMMARY_STEP
+     Specify the time summary step item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  PB2NC
+
+   PB2NC_TIME_SUMMARY_WIDTH
+     Specify the time summary width item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  PB2NC
+
+   PB2NC_TIME_SUMMARY_GRIB_CODES
+     Specify the time summary grib_code item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  PB2NC
+
+   PB2NC_TIME_SUMMARY_VALID_FREQ
+     Specify the time summary valid_freq item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  PB2NC
+
+   PB2NC_TIME_SUMMARY_VALID_THRESH
+     Specify the time summary valid_thresh item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  PN2NC
+
+   PB2NC_MASK_POLY
+     Set the mask.poly entry in the PB2NC MET config file.
+
+     | *Used by:*  PN2NC
+
+   PB2NC_MASK_GRID
+     Set the mask.grid entry in the PB2NC MET config file.
+
+     | *Used by:*  PN2NC
