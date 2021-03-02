@@ -40,34 +40,34 @@ grid_res = 40;
 //
 // Run all permutations of radius and threshold
 //
-quilt = ${QUILT};
+${METPLUS_QUILT}
 
 //
 // Forecast and observation fields to be verified
 //
 fcst = {
-   field = ${FCST_FIELD};
+   ${METPLUS_FCST_FIELD}
 
    censor_thresh      = [];
    censor_val         = [];
-   conv_radius       = [${FCST_CONV_RADIUS}];
-   conv_thresh       = [${FCST_CONV_THRESH}];
+   ${METPLUS_FCST_CONV_RADIUS}
+   ${METPLUS_FCST_CONV_THRESH}
    vld_thresh         = 0.5;
    filter_attr_name   = [];
    filter_attr_thresh = [];
-   merge_thresh      = [${FCST_MERGE_THRESH}];
-   merge_flag        = ${FCST_MERGE_FLAG};
+   ${METPLUS_FCST_MERGE_THRESH}
+   ${METPLUS_FCST_MERGE_FLAG}
 }
 
 obs = fcst;
 
 obs = {
-   field = ${OBS_FIELD};
+   ${METPLUS_OBS_FIELD}
 
-   conv_radius       = [${OBS_CONV_RADIUS}];
-   conv_thresh       = [${OBS_CONV_THRESH}];
-   merge_thresh      = [${OBS_MERGE_THRESH}];
-   merge_flag        = ${OBS_MERGE_FLAG};
+   ${METPLUS_OBS_CONV_RADIUS}
+   ${METPLUS_OBS_CONV_THRESH}
+   ${METPLUS_OBS_MERGE_THRESH}
+   ${METPLUS_OBS_MERGE_FLAG}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -95,7 +95,7 @@ max_centroid_dist = 800.0/grid_res;
 mask = {
    grid      = "";
    grid_flag = NONE; // Apply to NONE, FCST, OBS, or BOTH
-   poly      = ${VERIF_MASK};
+   ${METPLUS_MASK_POLY}
    poly_flag = NONE; // Apply to NONE, FCST, OBS, or BOTH
 }
 
@@ -245,7 +245,7 @@ shift_right = 0;   //  grid squares
 
 ////////////////////////////////////////////////////////////////////////////////
 
-output_prefix    = "${OUTPUT_PREFIX}";
+${METPLUS_OUTPUT_PREFIX}
 //version        = "V10.0";
 
 ////////////////////////////////////////////////////////////////////////////////
