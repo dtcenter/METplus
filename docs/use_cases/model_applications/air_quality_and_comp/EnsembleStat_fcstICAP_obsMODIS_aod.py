@@ -56,7 +56,6 @@ _aod.conf
 # MET Configuration
 # ---------------------
 #
-#
 # METplus sets environment variables based on user settings in the METplus configuration file. 
 # See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
 #
