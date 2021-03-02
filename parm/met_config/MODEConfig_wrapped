@@ -57,8 +57,6 @@ fcst = {
    filter_attr_thresh = [];
    merge_thresh      = [${FCST_MERGE_THRESH}];
    merge_flag        = ${FCST_MERGE_FLAG};
-   merge_thresh       = >=75.0;
-   merge_flag         = NONE;
 }
 
 obs = fcst;
