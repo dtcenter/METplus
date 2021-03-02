@@ -1751,18 +1751,23 @@ class CommandBuilder:
 
         return value
 
-    def format_field(self, data_type, field_formatted):
+    def format_field(self, data_type, field_string, is_list=True):
         """! Set {data_type}_FIELD c_dict value to the formatted field string
         Also set {data_type_FIELD_OLD value to support old format until it is
         deprecated.
 
-        @param field_formatted field string
         @param data_type type of data to set, i.e. FCST, OBS
+        @param field_string field information formatted to be read by MET config
+        @param is_list if True, add square brackets around field info
         """
+        field_formatted = field_string
+        if is_list:
+            field_formatted = f'[{field_formatted}]'
+
         self.env_var_dict[f'METPLUS_{data_type}_FIELD'] = (
-            f"field = [{field_formatted}];"
+            f"field = {field_formatted};"
         )
-        self.c_dict[f'{data_type}_FIELD'] = field_formatted
+        self.c_dict[f'{data_type}_FIELD'] = field_string
 
     def handle_flags(self, flag_type):
         """! Handle reading and setting of flag dictionary values to set in
