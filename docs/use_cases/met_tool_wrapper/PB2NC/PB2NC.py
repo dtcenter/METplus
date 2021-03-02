@@ -21,6 +21,7 @@ met_tool_wrapper/PB2NC/PB2NC.conf
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** Unknown
+# |
 
 ##############################################################################
 # METplus Components
@@ -36,6 +37,7 @@ met_tool_wrapper/PB2NC/PB2NC.conf
 # run time:
 #
 # | **Valid:** 2007-03-31_12Z
+# |
 
 ##############################################################################
 # METplus Configuration
@@ -52,27 +54,18 @@ met_tool_wrapper/PB2NC/PB2NC.conf
 # MET Configuration
 # ---------------------
 #
-# METplus sets environment variables based on the values in the METplus configuration file.
-# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
+# METplus sets environment variables based on user settings in the METplus configuration file. 
+# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
+#
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
+#
+# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
+# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
+#
+# .. note:: See the :ref:`PB2NC MET Configuration<pb2nc-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/PB2NCConfig_wrapped
-#
-# Note the following variables are referenced in the MET configuration file. Please see the MET User's Guide section regarding PB2NC options for more information.
-#
-# * **${PB2NC_MESSAGE_TYPE}** - Corresponds to PB2NC_MESSAGE_TYPE in the METplus configuration file.
-# * **${PB2NC_STATION_ID}** - Corresponds to PB2NC_STATION_ID in the METplus configuration file.
-# * **${PB2NC_GRID}** - Corresponds to PB2NC_GRID in the METplus configuration file.
-# * **${PB2NC_POLY}** - Corresponds to PB2NC_POLY in the METplus configuration file.
-# * **${OBS_WINDOW_BEGIN}** - Corresponds to OBS_WINDOW_BEGIN or PB2NC_WINDOW_BEGIN in the METplus configuration file.
-# * **${OBS_WINDOW_END}** - Corresponds to OBS_WINDOW_END or PB2NC_WINDOW_END in the METplus configuration file.
-# * **${OBS_BUFR_VAR_LIST}** - Corresponds to PB2NC_OBS_BUFR_VAR_LIST in the METplus configuration file.
-# * **${TIME_SUMMARY_FLAG}** - True/False option to compute time summary statistics. Corresponds to PB2NC_TIME_SUMMARY_FLAG in the METplus configuration file.
-# * **${TIME_SUMMARY_BEG}** - Corresponds to PB2NC_TIME_SUMMARY_BEG in the METplus configuration file.
-# * **${TIME_SUMMARY_END}** - Corresponds to PB2NC_TIME_SUMMARY_END in the METplus configuration file.
-# * **${TIME_SUMMARY_VAR_NAMES}** - Corresponds to PB2NC_TIME_SUMMARY_VAR_NAMES in the METplus configuration file.
-# * **${TIME_SUMMARY_TYPES}** - Corresponds to PB2NC_TIME_SUMMARY_TYPES in the METplus configuration file.
-#
 
 ##############################################################################
 # Running METplus
