@@ -1355,7 +1355,12 @@ class CommandBuilder:
                                                      mp_config_name,
                                                      ''))
         if conf_value or allow_empty:
-            conf_value = str(conf_value).replace("'", '"')
+            conf_value = str(conf_value)
+            # if not removing quotes, escape any quotes found in list items
+            if not remove_quotes:
+                conf_value = conf_value.replace('"', '\\"')
+
+            conf_value = conf_value.replace("'", '"')
 
             if remove_quotes:
                 conf_value = conf_value.replace('"', '')
@@ -1912,22 +1917,26 @@ class CommandBuilder:
         """
         app = self.app_name.upper()
         tmp_dict = {}
+        extra_args = {}
         if single_value:
             function_call = self.set_met_config_string
         else:
             function_call = self.set_met_config_list
+            extra_args['allow_empty'] = True
 
         function_call(tmp_dict,
                       [f'{app}_MASK_GRID',
                        f'{app}_GRID'],
                       'grid',
-                      'MASK_GRID')
+                      'MASK_GRID',
+                      **extra_args)
         function_call(tmp_dict,
                       [f'{app}_MASK_POLY',
                        f'{app}_VERIFICATION_MASK_TEMPLATE',
                        f'{app}_POLY'],
                       'poly',
-                      'MASK_POLY')
+                      'MASK_POLY',
+                      **extra_args)
 
         mask_dict_string = self.format_met_config_dict(tmp_dict,
                                                        'mask',
