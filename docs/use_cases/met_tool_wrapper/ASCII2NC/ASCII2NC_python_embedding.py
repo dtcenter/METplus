@@ -22,6 +22,7 @@ _embedding.conf
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** Unknown
+# |
 
 ##############################################################################
 # METplus Components

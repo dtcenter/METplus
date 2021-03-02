@@ -5700,3 +5700,23 @@ METplus Configuration Glossary
      Set the mask.poly entry in the EnsembleStat MET config file.
 
      | *Used by:*  EnsembleStat
+
+   GRID_DIAG_MASK_POLY
+     Set the mask.poly entry in the GridDiag MET config file.
+
+     | *Used by:*  GridDiag
+
+   GRID_DIAG_MASK_GRID
+     Set the mask.grid entry in the GridDiag MET config file.
+
+     | *Used by:*  GridDiag
+
+   GRID_DIAG_CENSOR_THRESH
+     Set the censor_thresh entry in the GridDiag MET config file.
+
+     | *Used by:*  GridDiag
+
+   GRID_DIAG_CENSOR_VAL
+     Set the censor_val entry in the GridDiag MET config file.
+
+     | *Used by:*  GridDiag
