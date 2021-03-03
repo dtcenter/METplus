@@ -1765,11 +1765,9 @@ class CommandBuilder:
         field_formatted = field_string
         if is_list:
             field_formatted = f'[{field_formatted}]'
-        else:
-            field_formatted = f'{field_formatted};'
 
         self.env_var_dict[f'METPLUS_{data_type}_FIELD'] = (
-            f"field = {field_formatted}"
+            f"field = {field_formatted};"
         )
         self.c_dict[f'{data_type}_FIELD'] = field_string
 

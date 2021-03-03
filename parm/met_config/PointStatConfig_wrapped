@@ -42,10 +42,13 @@ rank_corr_flag = FALSE;
 //
 // Forecast and observation fields to be verified
 //
-${METPLUS_FCST_FIELD}
+fcst = {
+  ${METPLUS_FCST_FIELD}
+}
 
-${METPLUS_OBS_FIELD}
-
+obs = {
+  ${METPLUS_OBS_FIELD}
+}
 ////////////////////////////////////////////////////////////////////////////////
 
 //
