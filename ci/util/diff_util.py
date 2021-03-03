@@ -257,7 +257,7 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
                                 count += 1
                         print(f"{count} / {idx+1} points differ")
 
-            except TypeError:
+            except:
                 # handle non-numeric fields
                 if any(var_a[:].flatten() != var_b[:].flatten()):
                     print(f"ERROR: Field ({field}) values (non-numeric) "
