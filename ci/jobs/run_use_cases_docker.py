@@ -29,7 +29,7 @@ def copy_diff_output(diff_files):
      and file path of output that was just generated. Either tuple
      value may be an empty string if the file was not found.
     """
-    for truth_file, out_file in diff_files:
+    for truth_file, out_file, _ in diff_files:
         if truth_file:
             copy_to_diff_dir(truth_file,
                              'truth')
@@ -106,9 +106,9 @@ def main():
         if diff_files:
             isOK = False
 
-        # copy difference files into directory
-        # so it can be easily downloaded and compared
-        copy_diff_output(diff_files)
+            # copy difference files into directory
+            # so it can be easily downloaded and compared
+            copy_diff_output(diff_files)
 
     if not isOK:
         sys.exit(1)
