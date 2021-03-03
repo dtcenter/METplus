@@ -24,7 +24,7 @@ import shlex
 import shutil
 import subprocess
 import re
-import importlib
+import importlib.util
 from datetime import datetime
 
 def run_command(command, dir_to_run=None):
@@ -35,11 +35,10 @@ def run_command(command, dir_to_run=None):
     command_out = subprocess.run(shlex.split(command),
                                  cwd=dir_to_run)
     if command_out.returncode != 0:
-        error_text = f"Could not create symbolic links by running {command}"
+        error_text = f"Command failed: {command}"
         if dir_to_run:
-            error_text += f"in {dir_to_run}"
+            error_text += f" (in {dir_to_run})"
         print(error_text)
-        sys.exit(1)
 
 def write_release_date_file(docs_dir):
     release_date_file = os.path.join(docs_dir,
@@ -57,6 +56,7 @@ def write_release_date_file(docs_dir):
 def main():
     # check if release is in any command line argument
     is_release = any(['release' in arg for arg in sys.argv])
+    skip_doxygen = any(['skip-doxygen' in arg for arg in sys.argv])
 
     build_pdf = os.environ.get('METPLUS_DOC_PDF')
     if build_pdf:
@@ -107,27 +107,28 @@ def main():
     run_command(f"make clean html {'pdf' if build_pdf else ''}",
                 docs_dir)
 
-    # build the doxygen documentation
-    run_command("make clean all",
-                doxygen_dir)
+    if not skip_doxygen:
+        # build the doxygen documentation
+        run_command("make clean all",
+                    doxygen_dir)
 
-    # copy doxygen documentation into _build/html/doxygen
-    doxygen_generated = os.path.join(docs_dir,
-                                     'generated',
-                                     'doxygen',
-                                     'html')
-    doxygen_output = os.path.join(docs_dir,
-                                  '_build',
-                                  'html',
-                                  'doxygen')
+        # copy doxygen documentation into _build/html/doxygen
+        doxygen_generated = os.path.join(docs_dir,
+                                         'generated',
+                                         'doxygen',
+                                         'html')
+        doxygen_output = os.path.join(docs_dir,
+                                      '_build',
+                                      'html',
+                                      'doxygen')
 
-    # make doxygen output dir if it does not exist
-    if os.path.exists(doxygen_output):
-        print(f"Removing {doxygen_output}")
-        os.rmtree(doxygen_output)
+        # make doxygen output dir if it does not exist
+        if os.path.exists(doxygen_output):
+            print(f"Removing {doxygen_output}")
+            os.rmtree(doxygen_output)
 
-    print(f"Copying doxygen files from {doxygen_generated} to {doxygen_output}")
-    shutil.copytree(doxygen_generated, doxygen_output)
+        print(f"Copying doxygen files from {doxygen_generated} to {doxygen_output}")
+        shutil.copytree(doxygen_generated, doxygen_output)
 
     # remove download buttons
     print(f"Removing download buttons from files under {generated_dir}")

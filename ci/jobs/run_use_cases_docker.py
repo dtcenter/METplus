@@ -18,6 +18,29 @@ from diff_util import compare_dir
 TRUTH_DIR = '/data/truth'
 OUTPUT_DIR = '/data/output'
 DIFF_DIR = '/data/diff'
+ERROR_LOG_DIR = '/data/error_logs'
+
+def copy_error_logs():
+    """! Copy log output to error log directory if any use case failed """
+    use_case_dirs = os.listdir(OUTPUT_DIR)
+    for use_case_dir in use_case_dirs:
+        log_dir = os.path.join(OUTPUT_DIR,
+                               use_case_dir,
+                               'logs')
+        if not os.path.isdir(log_dir):
+            continue
+        output_dir = os.path.join(ERROR_LOG_DIR,
+                                  use_case_dir)
+        log_files = os.listdir(log_dir)
+        for log_file in log_files:
+            log_path = os.path.join(log_dir, log_file)
+            output_path = os.path.join(output_dir, log_file)
+            print(f"Copying {log_path} to {output_path}")
+            # create output directory if it doesn't exist
+            output_dir = os.path.dirname(output_path)
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
+            shutil.copyfile(log_path, output_path)
 
 def copy_diff_output(diff_files):
     """!  Loop through difference output and copy files
@@ -98,6 +121,7 @@ def main():
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Command failed: {full_cmd} -- {err}")
             isOK = False
+            copy_error_logs()
 
     if compare and isOK:
         print('******************************')
