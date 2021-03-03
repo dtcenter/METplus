@@ -36,6 +36,10 @@ def copy_error_logs():
             log_path = os.path.join(log_dir, log_file)
             output_path = os.path.join(output_dir, log_file)
             print(f"Copying {log_path} to {output_path}")
+            # create output directory if it doesn't exist
+            output_dir = os.path.dirname(output_path)
+            if not os.path.exists(output_dir):
+                os.makedirs(output_dir)
             shutil.copyfile(log_path, output_path)
 
 def copy_diff_output(diff_files):
