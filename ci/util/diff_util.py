@@ -42,7 +42,6 @@ def get_file_type(filepath):
     return 'unknown'
 
 def compare_dir(dir_a, dir_b, debug=False):
-    all_equal = True
     diff_files = []
     for root, _, files in os.walk(dir_a):
         # skip logs directories
@@ -73,7 +72,6 @@ def compare_dir(dir_a, dir_b, debug=False):
             if not os.path.exists(filepath2):
                 if debug:
                     print(f"ERROR: File does not exist: {filepath2}")
-                all_equal = False
                 diff_files.append((filepath, '', 'file not found'))
                 continue
 
@@ -85,7 +83,6 @@ def compare_dir(dir_a, dir_b, debug=False):
             if file_type == 'netcdf':
                 print("Comparing NetCDF")
                 if not nc_is_equal(filepath, filepath2):
-                    all_equal = False
                     diff_files.append((filepath, filepath2, 'NetCDF diff'))
                 else:
                     print("No differences in NetCDF files")
@@ -94,7 +91,6 @@ def compare_dir(dir_a, dir_b, debug=False):
             if file_type == 'image':
                 print("Comparing images")
                 if not compare_image_files(filepath, filepath2):
-                    all_equal = False
                     diff_files.append((filepath, filepath2, 'Image diff'))
                 else:
                     print("No differences in image files")
@@ -106,21 +102,20 @@ def compare_dir(dir_a, dir_b, debug=False):
                 # if files differ, open files and handle expected diffs
                 if not compare_txt_files(filepath, filepath2, dir_a, dir_b):
                     print(f"ERROR: File differs: {filepath2}")
-                    all_equal = False
                     diff_files.append((filepath, filepath2, 'Text diff'))
                 else:
                     print("No differences in text files")
             else:
                 print("No differences in text files")
 
-    if not all_equal:
-        print("ERROR: Some differences were found")
+    if diff_files:
+        print("\nERROR: Some differences were found")
         for filepath_a, filepath_b, reason in diff_files:
             print(f"{reason}\n  {filepath_a}\n  {filepath_b}")
     else:
-        print("No differences found in any files")
+        print("\nNo differences found in any files")
 
-    return all_equal
+    return diff_files
 
 def compare_image_files(filepath, filepath2):
     diff_count = 0
