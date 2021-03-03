@@ -2026,7 +2026,7 @@ Configuration
    | :term:`CLIMO_POINT_STAT_INPUT_TEMPLATE`
    |
 
-.. _point-stat-met-config:
+.. _point-stat-met-conf:
 
 MET Configuration
 ~~~~~~~~~~~~~~~~~
@@ -2159,9 +2159,9 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`POINT_STAT_WINDOW_BEGIN`
+   * - :term:`OBS_WINDOW_BEGIN`
      - obs_window.beg
-   * - :term:`POINT_STAT_WINDOW_END`
+   * - :term:`OBS_WINDOW_END`
      - obs_window.end
 
 **${METPLUS_MASK_GRID}**
@@ -2172,7 +2172,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`POINT_STAT_GRID`
+   * - :term:`POINT_STAT_MASK_GRID`
      - mask.grid
 
 **${METPLUS_MASK_POLY}**
@@ -2183,7 +2183,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`POINT_STAT_POLY`
+   * - :term:`POINT_STAT_MASK_POLY`
      - mask.poly
 
 **${METPLUS_MASK_SID}**
