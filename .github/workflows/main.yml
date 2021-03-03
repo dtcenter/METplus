@@ -20,19 +20,14 @@ jobs:
         with:
           python-version: '3.6'
       - name: Install dependencies
-        run: |
-          python -m pip install --upgrade pip python-dateutil requests sphinx sphinx-gallery sphinx-rtd-theme Pillow
-          conda install -y python=3.6
-          conda update conda
-          conda clean --all --yes
-          conda install -c conda-forge doxygen
+        run: python -m pip install --upgrade pip python-dateutil requests sphinx sphinx-gallery sphinx-rtd-theme Pillow
       - name: Run build_docs.py
         continue-on-error: true
         run: |
           cd ${GITHUB_WORKSPACE}/docs
-          ./build_docs.py
+          ./build_docs.py skip-doxygen
           mkdir -p artifact/documentation
-          cp -r ${GITHUB_WORKSPACE}/docs/_build/html/* artifact/documentation
+          cp -r _build/html/* artifact/documentation
       - uses: actions/upload-artifact@v2
         with:
           name: METplus_documentation
