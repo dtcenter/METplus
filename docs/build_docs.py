@@ -24,7 +24,7 @@ import shlex
 import shutil
 import subprocess
 import re
-import importlib
+import importlib.util
 from datetime import datetime
 
 def run_command(command, dir_to_run=None):
