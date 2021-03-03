@@ -136,11 +136,13 @@ jobs:
         with:
           name: error_logs
           path: artifact/error_logs
+          if-no-files-found: ignore
       - uses: actions/upload-artifact@v2
         if: ${{ always() && steps.save-output.outputs.upload_diff }}
         with:
           name: diff-${{ steps.save-output.outputs.artifact_name }}
           path: artifact/diff-${{ steps.save-output.outputs.artifact_name }}
+          if-no-files-found: ignore
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
     runs-on: ubuntu-latest
