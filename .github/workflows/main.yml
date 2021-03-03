@@ -96,7 +96,7 @@ jobs:
           mkdir -p artifact/${artifact_name}
           cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${artifact_name}/
           echo ::set-output name=artifact_name::${artifact_name}
-          if [ -d "${GITHUB_WORKSPACE}/../diff" ]; then
+          if [ "$( ls -A ${GITHUB_WORKSPACE}/../diff)" ]; then
             mkdir -p artifact/diff
             cp -r ${GITHUB_WORKSPACE}/../diff/* artifact/diff/
             echo ::set-output name=upload_diff::true
