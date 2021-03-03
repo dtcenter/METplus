@@ -2399,7 +2399,6 @@ Description
 StatAnalysis
 ------------
 
-
 Description
 ~~~~~~~~~~~
 
@@ -2418,17 +2417,9 @@ Configuration
 The following values must be defined in the METplus Wrappers
 configuration file for running with LOOP_ORDER = times:
 
-[dir]
-
 | :term:`STAT_ANALYSIS_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE`
 | :term:`MODEL<n>_STAT_ANALYSIS_OUT_STAT_TEMPLATE`
-
-[config]
-
 | :term:`LOG_STAT_ANALYSIS_VERBOSITY`
 | :term:`MODEL\<n\>`
 | :term:`MODEL<n>_OBTYPE`
@@ -2440,11 +2431,10 @@ configuration file for running with LOOP_ORDER = times:
 | :term:`STAT_ANALYSIS_JOB_NAME`
 | :term:`STAT_ANALYSIS_JOB_ARGS`
 | :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
+|
 
 The following values are **optional** in the METplus Wrappers
 configuration file for running with LOOP_ORDER = times:
-
-[config]
 
 | :term:`DESC_LIST`
 | :term:`FCST_VALID_HOUR_LIST`
@@ -2468,16 +2458,12 @@ configuration file for running with LOOP_ORDER = times:
 | :term:`COV_THRESH_LIST`
 | :term:`LINE_TYPE_LIST`
 | :term:`STAT_ANALYSIS_SKIP_IF_OUTPUT_EXISTS`
+|
 
 The following values **must** be defined in the METplus Wrappers
 configuration file for running with LOOP_ORDER = processes:
 
-[dir]
-
 | :term:`STAT_ANALYSIS_OUTPUT_DIR`
-
-[config]
-
 | :term:`LOG_STAT_ANALYSIS_VERBOSITY`
 | :term:`DATE_TYPE`
 | :term:`STAT_ANALYSIS_CONFIG_FILE`
@@ -2491,6 +2477,7 @@ configuration file for running with LOOP_ORDER = processes:
 | :term:`VX_MASK_LIST`
 | :term:`FCST_LEAD_LIST`
 | :term:`LINE_TYPE_LIST`
+|
 
 The following values are optional in the METplus Wrappers configuration
 file for running with LOOP_ORDER = processes:
@@ -2546,6 +2533,158 @@ file for running with LOOP_ORDER = processes:
    | :term:`MODEL<n>_STAT_DIR`
    | :term:`REGION_LIST`
    | :term:`LEAD_LIST`
+   |
+
+.. _stat-analysis-met-conf:
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+
+:term:`MET_INSTALL_DIR`/share/met/config/STATAnalysisDefault_config
+
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/STATAnalysisConfig_wrapped
+
+**${METPLUS_MODEL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL`
+     - model
+
+**${METPLUS_DESC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`DESC`
+     - desc
+
+**${METPLUS_FCST_LEAD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_LEAD_LIST`
+     - desc
+
+**${METPLUS_OBS_LEAD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_LEAD_LIST`
+     - desc
+
+**${METPLUS_FCST_VALID_BEG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`DESC`
+     - desc
+
+**${METPLUS_FCST_VALID_END}**
+
+
+**${METPLUS_FCST_VALID_HOUR}**
+
+
+**${METPLUS_OBS_VALID_BEG}**
+
+
+**${METPLUS_OBS_VALID_END}**
+
+
+**${METPLUS_OBS_VALID_HOUR}**
+
+
+**${METPLUS_FCST_INIT_BEG}**
+
+
+**${METPLUS_FCST_INIT_END}**
+
+
+**${METPLUS_FCST_INIT_HOUR}**
+
+
+**${METPLUS_OBS_INIT_BEG}**
+
+
+**${METPLUS_OBS_INIT_END}**
+
+
+**${METPLUS_OBS_INIT_HOUR}**
+
+
+**${METPLUS_FCST_VAR}**
+
+
+**${METPLUS_OBS_VAR}**
+
+
+**${METPLUS_FCST_UNITS}**
+
+
+**${METPLUS_OBS_UNITS}**
+
+
+**${METPLUS_FCST_LEVEL}**
+
+
+**${METPLUS_OBS_LEVEL}**
+
+
+**${METPLUS_OBTYPE}**
+
+
+**${METPLUS_VX_MASK}**
+
+
+**${METPLUS_INTERP_MTHD}**
+
+
+**${METPLUS_INTERP_PNTS}**
+
+
+**${METPLUS_FCST_THRESH}**
+
+
+**${METPLUS_OBS_THRESH}**
+
+
+**${METPLUS_COV_THRESH}**
+
+
+**${METPLUS_ALPHA}**
+
+
+**${METPLUS_LINE_TYPE}**
+
+
+**${METPLUS_JOB}**
+
+
+**${METPLUS_MET_CONFIG_OVERRIDES}**
 
 .. _tc_gen_wrapper:
 
