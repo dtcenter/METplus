@@ -22,16 +22,12 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip python-dateutil requests
-          ${GITHUB_WORKSPACE}/ci/jobs/get_miniconda.sh
+          conda install -y python=3.6.3
+          conda update conda
           conda install -c conda-forge doxygen
           conda install sphinx
           conda install -c conda-forge sphinx-gallery
           conda install sphinx_rtd_theme
-          #python -m pip install --upgrade pip python-dateutil requests Pillow
-          #python -m pip install sphinx sphinx-gallery sphinx_rtd_theme
-          #wget https://doxygen.nl/files/doxygen-1.9.1.linux.bin.tar.gz
-          #tar zxf doxygen-1.9.1.linux.bin.tar.gz
-          #echo "DOXYGEN_PATH=`pwd`/doxygen-1.9.1/bin/doxygen" >> $GITHUB_ENV
       - name: Run build_docs.py
         continue-on-error: true
         run: |
@@ -124,7 +120,7 @@ jobs:
           fi
           if [ "$( ls -A ${GITHUB_WORKSPACE}/../error_logs)" ]; then
             mkdir -p artifact/error_logs
-            cp -r ${GITHUB_WORKSPACE}/../diff/* artifact/error_logs
+            cp -r ${GITHUB_WORKSPACE}/../error_logs/* artifact/error_logs
             echo ::set-output name=upload_error_logs::true
           else
             echo ::set-output name=upload_error_logs::false
