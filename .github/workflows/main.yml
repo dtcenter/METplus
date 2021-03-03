@@ -109,7 +109,7 @@ jobs:
           name: ${{ steps.save-output.outputs.artifact_name }}
           path: artifact/${{ steps.save-output.outputs.artifact_name }}
       - uses: actions/upload-artifact@v2
-        if: ${{ steps.save-output.outputs.upload_diff }}
+        if: always() && ${{ steps.save-output.outputs.upload_diff }}
         with:
           name: diff
           path: artifact/diff
