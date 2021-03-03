@@ -1771,8 +1771,9 @@ class StatAnalysisWrapper(CommandBuilder):
             for mp_item in mp_items:
                 if not runtime_settings_dict.get(mp_item, ''):
                     continue
-                value = (f"{mp_item.lower()} = "
-                         f"{runtime_settings_dict.get(mp_item, '')};")
+                value = util.remove_quotes(runtime_settings_dict.get(mp_item,
+                                                                     ''))
+                value = (f"{mp_item.lower()} = \"{value}\";")
                 self.env_var_dict[f'METPLUS_{mp_item}'] = value
 
             value = f'job = ["'
