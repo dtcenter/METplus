@@ -3364,6 +3364,8 @@ METplus Configuration Glossary
    POINT_STAT_GRID
      Specify the grid to use with the MET point_stat tool.
 
+     .. note:: please use :term:`POINT_STAT_MASK_GRID`
+
      | *Used by:*  PointStat
 
    POINT_STAT_MESSAGE_TYPE
@@ -3388,6 +3390,8 @@ METplus Configuration Glossary
 
    POINT_STAT_POLY
      Specify a polygon to use with the MET PointStat tool.
+
+     .. note:: please use :term:`POINT_STAT_MASK_POLY`
 
      | *Used by:*  PointStat
 
@@ -5760,3 +5764,18 @@ METplus Configuration Glossary
      Set the mask.grid entry in the PB2NC MET config file.
 
      | *Used by:*  PN2NC
+
+   POINT_STAT_MASK_SID
+     Set the mask.sid entry in the PointStat MET config file.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_MASK_GRID
+     Set the mask.grid entry in the PointStat MET config file.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_MASK_POLY
+     Set the mask.poly entry in the PointStat MET config file.
+
+     | *Used by:*  PointStat
