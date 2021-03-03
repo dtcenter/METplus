@@ -42,13 +42,9 @@ rank_corr_flag = FALSE;
 //
 // Forecast and observation fields to be verified
 //
-fcst = {
-    field = [ ${FCST_FIELD} ];
-    };
+${METPLUS_FCST_FIELD}
 
-obs = {
-    field = [ ${OBS_FIELD} ];
-    };
+${METPLUS_OBS_FIELD}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -56,7 +52,7 @@ obs = {
 // Point observation filtering options
 // May be set separately in each "obs.field" entry
 //
-message_type = ${POINT_STAT_MESSAGE_TYPE};
+${METPLUS_MESSAGE_TYPE}
 sid_exc        = [];
 obs_quality    = [ "1", "2", "3" ];
 duplicate_flag = NONE;
@@ -82,7 +78,7 @@ message_type_group_map = [
 //
 climo_mean = {
 
-   file_name = [ ${CLIMO_MEAN_FILE} ];
+   ${METPLUS_CLIMO_MEAN_FILE}
    field     = [];
 
    regrid = {
@@ -98,9 +94,7 @@ climo_mean = {
 }
 
 climo_stdev = climo_mean;
-climo_stdev = {
-   file_name = [ ${CLIMO_STDEV_FILE} ];
-}
+${METPLUS_CLIMO_STDEV_FILE}
 
 //
 // May be set separately in each "obs.field" entry
@@ -116,10 +110,7 @@ climo_cdf = {
 //
 // Point observation time window
 //
-obs_window = {
-  beg = ${OBS_WINDOW_BEGIN};
-  end = ${OBS_WINDOW_END};
-}
+${METPLUS_OBS_WINDOW_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -127,9 +118,9 @@ obs_window = {
 // Verification masking regions
 //
 mask = {
-   grid = ${POINT_STAT_GRID};
-   poly = ${POINT_STAT_POLY};
-   sid     = ${POINT_STAT_STATION_ID};
+   ${METPLUS_MASK_GRID}
+   ${METPLUS_MASK_POLY}
+   ${METPLUS_MASK_SID}
    llpnt = [];
 }
 
@@ -207,7 +198,7 @@ output_flag = {
 ////////////////////////////////////////////////////////////////////////////////
 
 tmp_dir        = "/tmp";
-output_prefix    = "${OUTPUT_PREFIX}";
+${METPLUS_OUTPUT_PREFIX}
 //version        = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////

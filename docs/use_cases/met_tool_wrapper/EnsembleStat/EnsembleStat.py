@@ -34,7 +34,7 @@ met_tool_wrapper/EnsembleStat/EnsembleStat.conf
 # |         met_test/out/ascii2nc/precip24_2010010112.nc 
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 # | **Data Source:** Unknown
 # |
 
