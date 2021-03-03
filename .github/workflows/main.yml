@@ -24,123 +24,122 @@ jobs:
       - name: Run build_docs.py
         continue-on-error: true
         run: |
-          cd ${GITHUB_WORKSPACE}/docs
-          ./build_docs.py skip-doxygen
+          ${GITHUB_WORKSPACE}/docs/build_docs.py skip-doxygen
           mkdir -p artifact/documentation
-          cp -r _build/html/* artifact/documentation
+          cp -r ${GITHUB_WORKSPACE}/docs/_build/html/* artifact/documentation
       - uses: actions/upload-artifact@v2
         with:
           name: METplus_documentation
           path: artifact/documentation
-  get_image:
-    name: Docker Setup - Get METplus Image
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - name: Get METplus Image
-        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  update_data_volumes:
-    name: Docker Setup - Update Data Volumes
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests bs4
-      - name: Update Data Volumes
-        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_update_data_volumes.py
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  unit_tests:
-    name: Unit Tests - Pytest
-    runs-on: ubuntu-latest
-    needs: get_image
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_tests
-        with:
-          categories: pytests
-  use_case_tests:
-    name: Use Case Tests
-    runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
-    strategy:
-      fail-fast: false
-      matrix:
-        categories:
-          - "met_tool_wrapper"
-          - "air_quality_and_comp"
-          - "climate"
-          - "convection_allowing_models:0-5"
-          - "convection_allowing_models:6+"
-          - "cryosphere"
-          - "data_assimilation"
-          - "marine_and_coastal"
-          - "medium_range:0-4"
-          - "medium_range:5"
-          - "medium_range:6+"
-          - "precipitation"
-          - "s2s,space_weather,tc_and_extra_tc"
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_tests
-        with:
-          categories: ${{ matrix.categories }}
-      # copy output data to save as artifact
-      - name: Save output data
-        id: save-output
-        if: always()
-        run: |
-          artifact_name=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh ${{matrix.categories}}`
-          mkdir -p artifact/${artifact_name}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${artifact_name}/
-          echo ::set-output name=artifact_name::${artifact_name}
-          if [ "$( ls -A ${GITHUB_WORKSPACE}/../diff)" ]; then
-            mkdir -p artifact/diff-${artifact_name}
-            cp -r ${GITHUB_WORKSPACE}/../diff/* artifact/diff-${artifact_name}/
-            echo ::set-output name=upload_diff::true
-          else
-            echo ::set-output name=upload_diff::false
-          fi
-          if [ "$( ls -A ${GITHUB_WORKSPACE}/../error_logs)" ]; then
-            mkdir -p artifact/error_logs
-            cp -r ${GITHUB_WORKSPACE}/../error_logs/* artifact/error_logs
-            echo ::set-output name=upload_error_logs::true
-          else
-            echo ::set-output name=upload_error_logs::false
-          fi
-      - uses: actions/upload-artifact@v2
-        if: always()
-        with:
-          name: ${{ steps.save-output.outputs.artifact_name }}
-          path: artifact/${{ steps.save-output.outputs.artifact_name }}
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() && steps.save-output.outputs.upload_error_logs }}
-        with:
-          name: error_logs
-          path: artifact/error_logs
-      - uses: actions/upload-artifact@v2
-        if: ${{ always() && steps.save-output.outputs.upload_diff }}
-        with:
-          name: diff-${{ steps.save-output.outputs.artifact_name }}
-          path: artifact/diff-${{ steps.save-output.outputs.artifact_name }}
-  create_output_data_volumes:
-    name: Create Output Docker Data Volumes
-    runs-on: ubuntu-latest
-    needs: [use_case_tests]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
-      - run: ci/jobs/create_output_data_volumes.sh
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#  get_image:
+#    name: Docker Setup - Get METplus Image
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions/setup-python@v2
+#        with:
+#          python-version: '3.6'
+#      - name: Get METplus Image
+#        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
+#        env:
+#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+#          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#  update_data_volumes:
+#    name: Docker Setup - Update Data Volumes
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions/setup-python@v2
+#        with:
+#          python-version: '3.6'
+#      - name: Install dependencies
+#        run: python -m pip install --upgrade pip python-dateutil requests bs4
+#      - name: Update Data Volumes
+#        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_update_data_volumes.py
+#        env:
+#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+#          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#  unit_tests:
+#    name: Unit Tests - Pytest
+#    runs-on: ubuntu-latest
+#    needs: get_image
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_tests
+#        with:
+#          categories: pytests
+#  use_case_tests:
+#    name: Use Case Tests
+#    runs-on: ubuntu-latest
+#    needs: [get_image, update_data_volumes]
+#    strategy:
+#      fail-fast: false
+#      matrix:
+#        categories:
+#          - "met_tool_wrapper"
+#          - "air_quality_and_comp"
+#          - "climate"
+#          - "convection_allowing_models:0-5"
+#          - "convection_allowing_models:6+"
+#          - "cryosphere"
+#          - "data_assimilation"
+#          - "marine_and_coastal"
+#          - "medium_range:0-4"
+#          - "medium_range:5"
+#          - "medium_range:6+"
+#          - "precipitation"
+#          - "s2s,space_weather,tc_and_extra_tc"
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_tests
+#        with:
+#          categories: ${{ matrix.categories }}
+#      # copy output data to save as artifact
+#      - name: Save output data
+#        id: save-output
+#        if: always()
+#        run: |
+#          artifact_name=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh ${{matrix.categories}}`
+#          mkdir -p artifact/${artifact_name}
+#          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${artifact_name}/
+#          echo ::set-output name=artifact_name::${artifact_name}
+#          if [ "$( ls -A ${GITHUB_WORKSPACE}/../diff)" ]; then
+#            mkdir -p artifact/diff-${artifact_name}
+#            cp -r ${GITHUB_WORKSPACE}/../diff/* artifact/diff-${artifact_name}/
+#            echo ::set-output name=upload_diff::true
+#          else
+#            echo ::set-output name=upload_diff::false
+#          fi
+#          if [ "$( ls -A ${GITHUB_WORKSPACE}/../error_logs)" ]; then
+#            mkdir -p artifact/error_logs
+#            cp -r ${GITHUB_WORKSPACE}/../error_logs/* artifact/error_logs
+#            echo ::set-output name=upload_error_logs::true
+#          else
+#            echo ::set-output name=upload_error_logs::false
+#          fi
+#      - uses: actions/upload-artifact@v2
+#        if: always()
+#        with:
+#          name: ${{ steps.save-output.outputs.artifact_name }}
+#          path: artifact/${{ steps.save-output.outputs.artifact_name }}
+#      - uses: actions/upload-artifact@v2
+#        if: ${{ always() && steps.save-output.outputs.upload_error_logs }}
+#        with:
+#          name: error_logs
+#          path: artifact/error_logs
+#      - uses: actions/upload-artifact@v2
+#        if: ${{ always() && steps.save-output.outputs.upload_diff }}
+#        with:
+#          name: diff-${{ steps.save-output.outputs.artifact_name }}
+#          path: artifact/diff-${{ steps.save-output.outputs.artifact_name }}
+#  create_output_data_volumes:
+#    name: Create Output Docker Data Volumes
+#    runs-on: ubuntu-latest
+#    needs: [use_case_tests]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions/download-artifact@v2
+#      - run: ci/jobs/create_output_data_volumes.sh
+#        env:
+#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+#          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
