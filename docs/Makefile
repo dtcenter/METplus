@@ -25,4 +25,5 @@ pdf:
 # "make mode" option.  $(O) is meant as a shortcut for $(SPHINXOPTS).
 # -w creates log file with warning messages
 %: Makefile
+	mkdir $(BUILDDIR)
 	@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)" $(SPHINXOPTS) $(O) -w "$(BUILDDIR)/warnings.log"
