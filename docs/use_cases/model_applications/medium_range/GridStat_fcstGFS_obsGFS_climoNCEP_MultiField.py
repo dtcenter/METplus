@@ -85,7 +85,7 @@ _climoNCEP_MultiField.conf
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 #
-# **StatAnalysisConfig**
+# **StatAnalysisConfig_wrapped**
 #
 # .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
