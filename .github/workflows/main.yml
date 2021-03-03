@@ -23,11 +23,14 @@ jobs:
         run: python -m pip install --upgrade pip python-dateutil requests Pillow sphinx sphinx-gallery sphinx_rtd_theme
       - name: Run build_docs.py
         continue-on-error: true
-        run: ${GITHUB_WORKSPACE}/docs/build_docs.py
+        run: |
+          ${GITHUB_WORKSPACE}/docs/build_docs.py
+          mkdir -p artifact/documentation
+          cp -r ${GITHUB_WORKSPACE}/docs/_build/html/* artifact/documentation
       - uses: actions/upload-artifact@v2
         with:
           name: METplus_documentation
-          path: ${GITHUB_WORKSPACE}/docs/_build/html
+          path: artifact/documentation
 #  get_image:
 #    name: Docker Setup - Get METplus Image
 #    runs-on: ubuntu-latest
@@ -107,13 +110,25 @@ jobs:
           else
             echo ::set-output name=upload_diff::false
           fi
+          if [ "$( ls -A ${GITHUB_WORKSPACE}/../error_logs)" ]; then
+            mkdir -p artifact/error_logs
+            cp -r ${GITHUB_WORKSPACE}/../diff/* artifact/error_logs
+            echo ::set-output name=upload_error_logs::true
+          else
+            echo ::set-output name=upload_error_logs::false
+          fi
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: ${{ steps.save-output.outputs.artifact_name }}
           path: artifact/${{ steps.save-output.outputs.artifact_name }}
       - uses: actions/upload-artifact@v2
-        if: ${{ steps.save-output.outputs.upload_diff }}
+        if: ${{ always() && steps.save-output.outputs.upload_error_logs }}
+        with:
+          name: error_logs
+          path: artifact/error_logs
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() && steps.save-output.outputs.upload_diff }}
         with:
           name: diff
           path: artifact/diff-${{ steps.save-output.outputs.artifact_name }}
