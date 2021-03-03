@@ -96,16 +96,20 @@ jobs:
           mkdir -p artifact/${artifact_name}
           cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${artifact_name}/
           echo ::set-output name=artifact_name::${artifact_name}
-          mkdir -p artifact/diff
-          cp -r ${GITHUB_WORKSPACE}/../diff/* artifact/diff/
-          echo ::set-output name=upload_diff::true
+          if [ -d "${GITHUB_WORKSPACE}/../diff" ]; then
+            mkdir -p artifact/diff
+            cp -r ${GITHUB_WORKSPACE}/../diff/* artifact/diff/
+            echo ::set-output name=upload_diff::true
+          else
+            echo ::set-output name=upload_diff::false
+          fi
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: ${{ steps.save-output.outputs.artifact_name }}
           path: artifact/${{ steps.save-output.outputs.artifact_name }}
       - uses: actions/upload-artifact@v2
-        if: always()
+        if: ${{ always() && steps.save-output.outputs.upload_diff }}
         with:
           name: diff
           path: artifact/diff
