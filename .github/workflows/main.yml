@@ -21,6 +21,7 @@ jobs:
           python-version: '3.6'
       - name: Install dependencies
         run: |
+          python -m pip install --upgrade pip python-dateutil requests
           ${GITHUB_WORKSPACE}/ci/jobs/get_miniconda.sh
           conda install -c conda-forge doxygen
           conda install sphinx
