@@ -11,7 +11,7 @@ Update DTC Website
 
   * For *Related Community Code* select both the METplus and the |projectRepo| options (use shift to select).
 
-  * For *Version Label* type "|projectRepo| X.Y.Z".
+  * For *Version Label* type "|projectRepo| X.Y.Z betaN".
 
   * Select the release type (*Recommended* for official or bugfix releases or *Development* for development versions). If necessary, change previously *Recommended* versions to *Other*.
 
