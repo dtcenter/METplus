@@ -24,6 +24,7 @@ jobs:
           python -m pip install --upgrade pip python-dateutil requests
           conda install -y python=3.6.3
           conda update conda
+          conda clean --all --yes
           conda install -c conda-forge doxygen
           conda install sphinx
           conda install -c conda-forge sphinx-gallery
