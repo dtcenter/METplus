@@ -80,7 +80,7 @@ jobs:
 #          - "medium_range:0-4"
 #          - "medium_range:5"
 #          - "medium_range:6+"
-#          - "precipitation"
+          - "precipitation"
 #          - "s2s,space_weather,tc_and_extra_tc"
     steps:
       - uses: actions/checkout@v2
