@@ -20,13 +20,19 @@ jobs:
         with:
           python-version: '3.6'
       - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests Pillow sphinx sphinx-gallery sphinx_rtd_theme
+        run: |
+          python -m pip install --upgrade pip python-dateutil requests Pillow
+          python -m pip install sphinx sphinx-gallery sphinx_rtd_theme
+          wget https://doxygen.nl/files/doxygen-1.9.1.linux.bin.tar.gz
+          tar zxf doxygen-1.9.1.linux.bin.tar.gz
+          echo "DOXYGEN_PATH=`pwd`/doxygen-1.9.1/bin/doxygen" >> $GITHUB_ENV
       - name: Run build_docs.py
         continue-on-error: true
         run: |
-          ${GITHUB_WORKSPACE}/docs/build_docs.py
+          cd ${GITHUB_WORKSPACE}/docs
+          ./build_docs.py
           mkdir -p artifact/documentation
-          cp -r _build/html/* artifact/documentation
+          cp -r ${GITHUB_WORKSPACE}/docs/_build/html/* artifact/documentation
       - uses: actions/upload-artifact@v2
         with:
           name: METplus_documentation
