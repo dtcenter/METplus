@@ -111,7 +111,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         if: ${{ steps.save-output.outputs.upload_diff }}
         with:
-	  name: diff
+          name: diff
           path: artifact/diff
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
