@@ -1584,6 +1584,20 @@ Below the file contents are descriptions of each environment variable referenced
 
 .. literalinclude:: ../../parm/met_config/MTDConfig_wrapped
 
+**${METPLUS_MODEL}**
+**${METPLUS_DESC}**
+**${METPLUS_OBTYPE}**
+**${METPLUS_REGRID_DICT}**
+**${METPLUS_FCST_FILE_TYPE}**
+**${METPLUS_FCST_FIELD}**
+**${METPLUS_FCST_CONV_RADIUS}**
+**${METPLUS_FCST_CONV_THRESH}**
+**${METPLUS_OBS_CONV_RADIUS}**
+**${METPLUS_OBS_CONV_THRESH}**
+**${METPLUS_MIN_VOLUME}**
+**${METPLUS_OUTPUT_PREFIX}**
+**${METPLUS_MET_CONFIG_OVERRIDES}**
+
 .. _pb2nc_wrapper:
 
 PB2NC
