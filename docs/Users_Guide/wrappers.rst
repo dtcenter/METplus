@@ -123,13 +123,8 @@ the output from the MET tc-pairs tool can be plotted.
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`CYCLONE_PLOTTER_INPUT_DIR`
 | :term:`CYCLONE_PLOTTER_OUTPUT_DIR`
-
-[config]
-
 | :term:`CYCLONE_PLOTTER_INIT_DATE`
 | :term:`CYCLONE_PLOTTER_INIT_HR`
 | :term:`CYCLONE_PLOTTER_MODEL`
@@ -137,6 +132,7 @@ Configuration
 | :term:`CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE`
 | :term:`CYCLONE_PLOTTER_CROSS_MARKER_SIZE`
 | :term:`CYCLONE_PLOTTER_GENERATE_TRACK_ASCII`
+|
 
 .. warning:: **DEPRECATED:**
 
@@ -148,6 +144,7 @@ Configuration
    | :term:`CYCLONE_CIRCLE_MARKER_SIZE`
    | :term:`CYCLONE_CROSS_MARKER_SIZE`
    | :term:`CYCLONE_GENERATE_TRACK_ASCII`
+   |
 
 .. _ensemble_stat_wrapper:
 
@@ -799,16 +796,10 @@ Used to demonstrate how the METplus wrappers handle looping and building command
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`EXAMPLE_INPUT_DIR`
-
-[filename_templates]
-
 | :term:`EXAMPLE_INPUT_TEMPLATE`
-
-[config]
 | :term:`EXAMPLE_CUSTOM_LOOP_LIST`
+|
 
 .. _extract_tiles_wrapper:
 
@@ -833,23 +824,15 @@ Configuration
 The following should be set in the METplus configuration file to define
 the dimensions and density of the tiles comprising the subregion:
 
-[dir]
-
 | :term:`EXTRACT_TILES_OUTPUT_DIR`
 | :term:`EXTRACT_TILES_TC_STAT_INPUT_DIR`
 | :term:`FCST_EXTRACT_TILES_INPUT_DIR`
 | :term:`OBS_EXTRACT_TILES_INPUT_DIR`
-
-[filename_templates]
-
 | :term:`FCST_EXTRACT_TILES_INPUT_TEMPLATE`
 | :term:`OBS_EXTRACT_TILES_INPUT_TEMPLATE`
 | :term:`FCST_EXTRACT_TILES_OUTPUT_TEMPLATE`
 | :term:`OBS_EXTRACT_TILES_OUTPUT_TEMPLATE`
 | :term:`EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE`
-
-[config]
-
 | :term:`EXTRACT_TILES_LON_ADJ`
 | :term:`EXTRACT_TILES_LAT_ADJ`
 | :term:`EXTRACT_TILES_NLAT`
@@ -860,6 +843,7 @@ the dimensions and density of the tiles comprising the subregion:
 | :term:`EXTRACT_TILES_VAR_LIST`
 | :term:`EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS`
 | :term:`EXTRACT_TILES_CUSTOM_LOOP_LIST`
+|
 
 .. warning:: **DEPRECATED:**
 
@@ -876,6 +860,7 @@ the dimensions and density of the tiles comprising the subregion:
    | :term:`EXTRACT_TILES_GRID_INPUT_DIR`
    | :term:`EXTRACT_TILES_STAT_INPUT_DIR`
    | :term:`EXTRACT_TILES_STAT_INPUT_TEMPLATE`
+   |
 
 .. _gempak_to_cf_wrapper:
 
@@ -890,28 +875,19 @@ Used to configure the utility GempakToCF.
 Configuration
 ~~~~~~~~~~~~~
 
-[exe]
-
 | :term:`GEMPAKTOCF_JAR`
-
-[dir]
-
 | :term:`GEMPAKTOCF_INPUT_DIR`
 | :term:`GEMPAKTOCF_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`GEMPAKTOCF_INPUT_TEMPLATE`
 | :term:`GEMPAKTOCF_OUTPUT_TEMPLATE`
-
-[config]
-
 | :term:`GEMPAKTOCF_SKIP_IF_OUTPUT_EXISTS`
 | :term:`GEMPAKTOCF_CUSTOM_LOOP_LIST`
+|
 
 .. warning:: **DEPRECATED:**
 
    | :term:`GEMPAKTOCF_CLASSPATH`
+   |
 
 .. _gen_vx_mask_wrapper:
 
@@ -926,20 +902,12 @@ Used to configure the MET tool GenVxMask to define and generate masking regions.
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`GEN_VX_MASK_INPUT_DIR`
 | :term:`GEN_VX_MASK_INPUT_MASK_DIR`
 | :term:`GEN_VX_MASK_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`GEN_VX_MASK_INPUT_TEMPLATE`
 | :term:`GEN_VX_MASK_INPUT_MASK_TEMPLATE`
 | :term:`GEN_VX_MASK_OUTPUT_TEMPLATE`
-
-[config]
-
 | :term:`GEN_VX_MASK_OPTIONS`
 | :term:`LOG_GEN_VX_MASK_VERBOSITY`
 | :term:`GEN_VX_MASK_SKIP_IF_OUTPUT_EXISTS`
@@ -1377,14 +1345,9 @@ Configuration
 The following values **must** be defined in the METplus Wrappers
 configuration file:
 
-[dir]
-
 | :term:`MAKE_PLOTS_SCRIPTS_DIR`
 | :term:`MAKE_PLOTS_INPUT_DIR`
 | :term:`MAKE_PLOTS_OUTPUT_DIR`
-
-[config]
-
 | :term:`MAKE_PLOTS_VERIF_CASE`
 | :term:`MAKE_PLOTS_VERIF_TYPE`
 | :term:`DATE_TYPE`
@@ -1402,11 +1365,10 @@ configuration file:
 | :term:`MAKE_PLOTS_CI_METHOD`
 | :term:`MAKE_PLOTS_VERIF_GRID`
 | :term:`MAKE_PLOTS_EVENT_EQUALIZATION`
+|
 
 The following values are **optional** in the METplus Wrappers
 configuration file:
-
-[config]
 
 | :term:`VAR<n>_FOURIER_DECOMP`
 | :term:`VAR<n>_WAVE_NUM_LIST`
@@ -1420,6 +1382,7 @@ configuration file:
 | :term:`INTERP_PNTS_LIST`
 | :term:`COV_THRESH_LIST`
 | :term:`ALPHA_LIST`
+|
 
 .. warning:: **DEPRECATED:**
 
@@ -1447,6 +1410,7 @@ configuration file:
    | :term:`CI_METHOD`
    | :term:`VERIF_GRID`
    | :term:`EVENT_EQUALIZATION`
+   |
 
 .. _mode_wrapper:
 
@@ -1877,18 +1841,10 @@ is mapped to the correct grid location.
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`PLOT_DATA_PLANE_INPUT_DIR`
 | :term:`PLOT_DATA_PLANE_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`PLOT_DATA_PLANE_INPUT_TEMPLATE`
 | :term:`PLOT_DATA_PLANE_OUTPUT_TEMPLATE`
-
-[config]
-
 | :term:`PLOT_DATA_PLANE_FIELD_NAME`
 | :term:`PLOT_DATA_PLANE_FIELD_LEVEL`
 | :term:`PLOT_DATA_PLANE_FIELD_EXTRA`
@@ -1898,6 +1854,7 @@ Configuration
 | :term:`PLOT_DATA_PLANE_RANGE_MIN_MAX`
 | :term:`PLOT_DATA_PLANE_CONVERT_TO_IMAGE`
 | :term:`PLOT_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS`
+|
 
 .. _point2grid_wrapper:
 
@@ -1914,18 +1871,10 @@ and place them on a grid
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`POINT2GRID_INPUT_DIR`
 | :term:`POINT2GRID_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`POINT2GRID_INPUT_TEMPLATE`
 | :term:`POINT2GRID_OUTPUT_TEMPLATE`
-
-[config]
-
 | :term:`POINT2GRID_WINDOW_BEGIN`
 | :term:`POINT2GRID_WINDOW_END`
 | :term:`POINT2GRID_REGRID_TO_GRID`
@@ -1940,6 +1889,7 @@ Configuration
 | :term:`POINT2GRID_VLD_THRESH`
 | :term:`POINT2GRID_CUSTOM_LOOP_LIST`
 | :term:`POINT2GRID_SKIP_IF_OUTPUT_EXISTS`
+|
 
 .. _point_stat_wrapper:
 
@@ -2232,22 +2182,15 @@ Used to configure the PyEmbedIngest wrapper that runs RegridDataPlane to convert
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`
-
-[config]
-
 | :term:`PY_EMBED_INGEST_<n>_SCRIPT`
 | :term:`PY_EMBED_INGEST_<n>_TYPE`
 | :term:`PY_EMBED_INGEST_<n>_OUTPUT_GRID`
 | :term:`PY_EMBED_INGEST_CUSTOM_LOOP_LIST`
 | :term:`PY_EMBED_INGEST_<n>_OUTPUT_FIELD_NAME`
 | :term:`PY_EMBED_INGEST_SKIP_IF_OUTPUT_EXISTS`
+|
 
 .. warning:: **DEPRECATED:**
 
@@ -2256,6 +2199,7 @@ Configuration
     | :term:`CUSTOM_INGEST_<n>_SCRIPT`
     | :term:`CUSTOM_INGEST_<n>_TYPE`
     | :term:`CUSTOM_INGEST_<n>_OUTPUT_GRID`
+    |
 
 .. _regrid_data_plane_wrapper:
 
@@ -2270,22 +2214,14 @@ Used to configure the MET tool regrid_data_plane which can be used to change pro
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`FCST_REGRID_DATA_PLANE_INPUT_DIR`
 | :term:`OBS_REGRID_DATA_PLANE_INPUT_DIR`
-
-[filename_templates]
-
 | :term:`FCST_REGRID_DATA_PLANE_INPUT_TEMPLATE`
 | :term:`OBS_REGRID_DATA_PLANE_INPUT_TEMPLATE`
 | :term:`FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE`
 | :term:`OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE`
 | :term:`FCST_REGRID_DATA_PLANE_TEMPLATE`
 | :term:`OBS_REGRID_DATA_PLANE_TEMPLATE`
-
-[config]
-
 | :term:`FCST_REGRID_DATA_PLANE_RUN`
 | :term:`OBS_REGRID_DATA_PLANE_RUN`
 | :term:`REGRID_DATA_PLANE_SKIP_IF_OUTPUT_EXISTS`
@@ -2304,10 +2240,12 @@ Configuration
 | :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_FIELD_NAME` (optional)
 | :term:`OBS_REGRID_DATA_PLANE_VAR<n>_INPUT_LEVEL` (optional)
 | :term:`OBS_REGRID_DATA_PLANE_VAR<n>_OUTPUT_FIELD_NAME` (optional)
+|
 
 .. warning:: **DEPRECATED:**
 
    | :term:`VERIFICATION_GRID`
+   |
 
 .. _series_analysis_wrapper:
 
@@ -3464,13 +3402,8 @@ R scripts are included in the MET installation. Please refer to section
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`TCMPR_PLOTTER_TCMPR_DATA_DIR`
 | :term:`TCMPR_PLOTTER_PLOT_OUTPUT_DIR`
-
-[config]
-
 | :term:`TCMPR_PLOTTER_CONFIG_FILE`
 | :term:`TCMPR_PLOTTER_PREFIX`
 | :term:`TCMPR_PLOTTER_TITLE`
@@ -3496,6 +3429,7 @@ Configuration
 | :term:`TCMPR_PLOTTER_FOOTNOTE_FLAG`
 | :term:`TCMPR_PLOTTER_PLOT_CONFIG_OPTS`
 | :term:`TCMPR_PLOTTER_SAVE_DATA`
+|
 
 The following are TCMPR flags, if set to 'no', then don't set flag, if
 set to 'yes', then set the flag
@@ -3503,6 +3437,7 @@ set to 'yes', then set the flag
 | :term:`TCMPR_PLOTTER_NO_EE`
 | :term:`TCMPR_PLOTTER_NO_LOG`
 | :term:`TCMPR_PLOTTER_SAVE`
+|
 
 .. warning:: **DEPRECATED:**
 
@@ -3530,6 +3465,7 @@ set to 'yes', then set the flag
    | :term:`FOOTNOTE_FLAG`
    | :term:`PLOT_CONFIG_OPTS`
    | :term:`SAVE_DATA`
+   |
 
 .. _tc_pairs_wrapper:
 
