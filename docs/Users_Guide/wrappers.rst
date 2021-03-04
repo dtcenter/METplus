@@ -2494,6 +2494,7 @@ file for running with LOOP_ORDER = processes:
 | :term:`INTERP_PNTS_LIST`
 | :term:`COV_THRESH_LIST`
 | :term:`ALPHA_LIST`
+|
 
 .. warning:: **DEPRECATED:**
 
@@ -2567,7 +2568,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`DESC`
+   * - :term:`DESC_LIST`
      - desc
 
 **${METPLUS_FCST_LEAD}**
@@ -2579,7 +2580,7 @@ Below the file contents are descriptions of each environment variable referenced
    * - METplus Config(s)
      - MET Config File
    * - :term:`FCST_LEAD_LIST`
-     - desc
+     - fcst_lead
 
 **${METPLUS_OBS_LEAD}**
 
@@ -2590,7 +2591,7 @@ Below the file contents are descriptions of each environment variable referenced
    * - METplus Config(s)
      - MET Config File
    * - :term:`OBS_LEAD_LIST`
-     - desc
+     - obs_lead
 
 **${METPLUS_FCST_VALID_BEG}**
 
@@ -2600,91 +2601,316 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`DESC`
-     - desc
+   * - :term:`FCST_VALID_BEG`
+     - fcst_valid_beg
 
 **${METPLUS_FCST_VALID_END}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_VALID_END`
+     - fcst_valid_end
 
 **${METPLUS_FCST_VALID_HOUR}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_VALID_HOUR_LIST`
+     - fcst_valid_hour
 
 **${METPLUS_OBS_VALID_BEG}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_VALID_BEG`
+     - obs_valid_beg
 
 **${METPLUS_OBS_VALID_END}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_VALID_END`
+     - obs_valid_end
 
 **${METPLUS_OBS_VALID_HOUR}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_VALID_HOUR_LIST`
+     - obs_valid_hour
 
 **${METPLUS_FCST_INIT_BEG}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_INIT_BEG`
+     - fcst_init_beg
 
 **${METPLUS_FCST_INIT_END}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_INIT_END`
+     - fcst_init_end
 
 **${METPLUS_FCST_INIT_HOUR}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_INIT_HOUR_LIST`
+     - fcst_init_hour
 
 **${METPLUS_OBS_INIT_BEG}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_INIT_BEG`
+     - obs_init_beg
 
 **${METPLUS_OBS_INIT_END}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_INIT_END`
+     - obs_init_end
 
 **${METPLUS_OBS_INIT_HOUR}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_INIT_HOUR_LIST`
+     - obs_init_hour
 
 **${METPLUS_FCST_VAR}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_VAR_LIST`
+     - fcst_var
 
 **${METPLUS_OBS_VAR}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_VAR_LIST`
+     - obs_var
 
 **${METPLUS_FCST_UNITS}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_UNITS_LIST`
+     - fcst_units
 
 **${METPLUS_OBS_UNITS}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_UNITS_LIST`
+     - obs_units
 
 **${METPLUS_FCST_LEVEL}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_LEVEL_LIST`
+     - fcst_lev
 
 **${METPLUS_OBS_LEVEL}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_LEVEL_LIST`
+     - obs_lev
 
 **${METPLUS_OBTYPE}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL<n>_OBTYPE`
+     - obtype
 
 **${METPLUS_VX_MASK}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`VX_MASK_LIST`
+     - vx_mask
 
 **${METPLUS_INTERP_MTHD}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`INTERP_MTHD_LIST`
+     - interp_mthd
 
 **${METPLUS_INTERP_PNTS}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`INTERP_PNTS_LIST`
+     - interp_pnts
 
 **${METPLUS_FCST_THRESH}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_THRESH_LIST`
+     - fcst_thresh
 
 **${METPLUS_OBS_THRESH}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_THRESH_LIST`
+     - obs_thresh
 
 **${METPLUS_COV_THRESH}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`COV_THRESH_LIST`
+     - cov_thresh
 
 **${METPLUS_ALPHA}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ALPHA_LIST`
+     - alpha
 
 **${METPLUS_LINE_TYPE}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`LINE_TYPE_LIST`
+     - line_type
 
 **${METPLUS_JOB}**
 
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`STAT_ANALYSIS_JOB_NAME`
+     - jobs
 
 **${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _tc_gen_wrapper:
 
