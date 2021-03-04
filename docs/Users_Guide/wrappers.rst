@@ -3549,23 +3549,15 @@ reformatted into an ATCF format that is recognized by MET.
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`TC_PAIRS_ADECK_INPUT_DIR`
 | :term:`TC_PAIRS_BDECK_INPUT_DIR`
 | :term:`TC_PAIRS_EDECK_INPUT_DIR`
 | :term:`TC_PAIRS_OUTPUT_DIR`
 | :term:`TC_PAIRS_REFORMAT_DIR`
-
-[filename_templates]
-
 | :term:`TC_PAIRS_ADECK_INPUT_TEMPLATE`
 | :term:`TC_PAIRS_BDECK_INPUT_TEMPLATE`
 | :term:`TC_PAIRS_EDECK_INPUT_TEMPLATE`
 | :term:`TC_PAIRS_OUTPUT_TEMPLATE`
-
-[config]
-
 | :term:`TC_PAIRS_CONFIG_FILE`
 | :term:`TC_PAIRS_INIT_INCLUDE`
 | :term:`TC_PAIRS_INIT_EXCLUDE`
@@ -3585,6 +3577,7 @@ Configuration
 | :term:`TC_PAIRS_CUSTOM_LOOP_LIST`
 | :term:`TC_PAIRS_DESC`
 | :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
+|
 
 .. warning:: **DEPRECATED:**
 
@@ -3607,6 +3600,35 @@ Configuration
    | :term:`INIT_INCLUDE`
    | :term:`INIT_EXCLUDE`
    | :term:`INIT_HOUR_END`
+   |
+
+.. _tc-pairs-met-conf:
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+
+:term:`MET_INSTALL_DIR`/share/met/config/TCPairsDefault_config
+
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/TCPairsConfig_wrapped
+
+**${METPLUS_MODEL}**
+**${METPLUS_DESC}**
+**${METPLUS_STORM_ID}**
+**${METPLUS_BASIN}**
+**${METPLUS_CYCLONE}**
+**${METPLUS_STORM_NAME}**
+**${METPLUS_INIT_BEG}**
+**${METPLUS_INIT_END}**
+**${METPLUS_INIT_INCLUDE}**
+**${METPLUS_INIT_EXCLUDE}**
+**${METPLUS_VALID_BEG}**
+**${METPLUS_VALID_END}**
+**${METPLUS_DLAND_FILE}**
+**${METPLUS_MET_CONFIG_OVERRIDES}**
 
 .. _tcrmw_wrapper:
 
