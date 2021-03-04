@@ -87,15 +87,12 @@ _obsNCEP_sea_ice.conf
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 #
-# **MODEConfig_sea_ice**
+# **MODEConfig_wrapped**
+#
+# .. note:: See the :ref:`MODE MET Configuration<mode-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice/MODEConfig_sea_ice
-#
-# See the following file for more information about the environment variables set in this configuration file:
-#   parm/use_cases/met_tool_wrapper/MODE/MODE.py
-#
-
+# .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
 
 ###################################################################################################
 # Running METplus

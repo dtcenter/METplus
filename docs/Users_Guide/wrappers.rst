@@ -1425,21 +1425,13 @@ Used to configure the MET Method for Object-based Diagnostic Evaluation tool mod
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`FCST_MODE_INPUT_DIR`
 | :term:`OBS_MODE_INPUT_DIR`
 | :term:`MODE_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`FCST_MODE_INPUT_TEMPLATE`
 | :term:`OBS_MODE_INPUT_TEMPLATE`
 | :term:`MODE_OUTPUT_TEMPLATE`
 | :term:`MODE_VERIFICATION_MASK_TEMPLATE`
-
-[config]
-
 | :term:`LOG_MODE_VERBOSITY`
 | :term:`MODE_OUTPUT_PREFIX`
 | :term:`MODE_REGRID_TO_GRID`
@@ -1484,12 +1476,45 @@ Configuration
 | :term:`OBS_MODE_VAR<n>_LEVELS` (optional)
 | :term:`OBS_MODE_VAR<n>_THRESH` (optional)
 | :term:`OBS_MODE_VAR<n>_OPTIONS` (optional)
-
+|
 
 .. warning:: **DEPRECATED:**
 
    | :term:`MODE_OUT_DIR`
    | :term:`MODE_CONFIG`
+   |
+
+.. _mode-met-conf:
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+
+:term:`MET_INSTALL_DIR`/share/met/config/MODEDefault_config
+
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/MODEConfig_wrapped
+
+**${METPLUS_MODEL}**
+**${METPLUS_DESC}**
+**${METPLUS_OBTYPE}**
+**${METPLUS_REGRID_DICT}**
+**${METPLUS_QUILT}**
+**${METPLUS_FCST_FIELD}**
+**${METPLUS_FCST_CONV_RADIUS}**
+**${METPLUS_FCST_CONV_THRESH}**
+**${METPLUS_FCST_MERGE_THRESH}**
+**${METPLUS_FCST_MERGE_FLAG}**
+**${METPLUS_OBS_FIELD}**
+**${METPLUS_OBS_CONV_RADIUS}**
+**${METPLUS_OBS_CONV_THRESH}**
+**${METPLUS_OBS_MERGE_THRESH}**
+**${METPLUS_OBS_MERGE_FLAG}**
+**${METPLUS_MASK_POLY}**
+**${METPLUS_OUTPUT_PREFIX}**
+**${METPLUS_MET_CONFIG_OVERRIDES}**
 
 .. _mtd_wrapper:
 
@@ -1504,20 +1529,12 @@ Used to configure the MET MODE Time Domain tool mtd.  This tools follows objects
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`FCST_MTD_INPUT_DIR`
 | :term:`OBS_MTD_INPUT_DIR`
 | :term:`MTD_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`FCST_MTD_INPUT_TEMPLATE`
 | :term:`OBS_MTD_INPUT_TEMPLATE`
 | :term:`MTD_OUTPUT_TEMPLATE`
-
-[config]
-
 | :term:`MTD_CONFIG_FILE`
 | :term:`MTD_MIN_VOLUME`
 | :term:`MTD_SINGLE_RUN`
@@ -1545,12 +1562,27 @@ Configuration
 | :term:`OBS_MTD_VAR<n>_LEVELS` (optional)
 | :term:`OBS_MTD_VAR<n>_THRESH` (optional)
 | :term:`OBS_MTD_VAR<n>_OPTIONS` (optional)
+|
 
 .. warning:: **DEPRECATED:**
 
    | :term:`MTD_OUT_DIR`
    | :term:`MTD_CONFIG`
    | :term:`MTD_SINGLE_RUN_SRC`
+   |
+
+.. _mtd-met-conf:
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+
+:term:`MET_INSTALL_DIR`/share/met/config/MTDConfig_default
+
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/MTDConfig_wrapped
 
 .. _pb2nc_wrapper:
 
