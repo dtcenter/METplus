@@ -2332,8 +2332,6 @@ gif images (See
 Configuration
 ~~~~~~~~~~~~~
 
-[config]
-
 | :term:`LOG_SERIES_ANALYSIS_VERBOSITY`
 | :term:`SERIES_ANALYSIS_CONFIG_FILE`
 | :term:`SERIES_ANALYSIS_RUNTIME_FREQ`
@@ -2359,24 +2357,232 @@ Configuration
 | :term:`SERIES_ANALYSIS_BLOCK_SIZE`
 | :term:`SERIES_ANALYSIS_CTS_LIST`
 | :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
-
-[dir]
-
 | :term:`FCST_SERIES_ANALYSIS_INPUT_DIR`
 | :term:`OBS_SERIES_ANALYSIS_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_TC_STAT_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`FCST_SERIES_ANALYSIS_INPUT_TEMPLATE`
 | :term:`OBS_SERIES_ANALYSIS_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_OUTPUT_TEMPLATE`
+|
+
+.. _series-analysis-met-conf:
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+
+:term:`MET_INSTALL_DIR`/share/met/config/SeriesAnalysisDefault_config
+
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/SeriesAnalysisConfig_wrapped
+
+**${METPLUS_MODEL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL`
+     - model
+
+**${METPLUS_DESC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`DESC` -or- :term:`SERIES_ANALYSIS_DESC`
+     - desc
+
+**${METPLUS_OBTYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBTYPE`
+     - obtype
+
+**${METPLUS_REGRID_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_REGRID_SHAPE`
+     - regrid.shape
+   * - :term:`SERIES_ANALYSIS_REGRID_METHOD`
+     - regrid.method
+   * - :term:`SERIES_ANALYSIS_REGRID_WIDTH`
+     - regrid.width
+   * - :term:`SERIES_ANALYSIS_REGRID_VLD_THRESH`
+     - regrid.vld_thresh
+   * - :term:`SERIES_ANALYSIS_REGRID_TO_GRID`
+     - regrid.to_grid
+
+**${METPLUS_CAT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_CAT_THRESH`
+     - cat_thresh
+
+**${METPLUS_FCST_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_FCST_FILE_TYPE`
+     - fcst.file_type
+
+**${METPLUS_FCST_FIELD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_VAR<n>_NAME`
+     - fcst.field.name
+   * - :term:`FCST_VAR<n>_LEVELS`
+     - fcst.field.level
+   * - :term:`FCST_VAR<n>_THRESH`
+     - fcst.field.cat_thresh
+   * - :term:`FCST_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+**${METPLUS_OBS_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_OBS_FILE_TYPE`
+     - obs.file_type
+
+**${METPLUS_OBS_FIELD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_VAR<n>_NAME`
+     - fcst.field.name
+   * - :term:`OBS_VAR<n>_LEVELS`
+     - fcst.field.level
+   * - :term:`OBS_VAR<n>_THRESH`
+     - fcst.field.cat_thresh
+   * - :term:`OBS_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+**${METPLUS_CLIMO_MEAN_FILE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE`
+     - climo_mean.file_name
+
+**${METPLUS_CLIMO_STDEV_FILE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE`
+     - climo_stdev.file_name
+
+**${METPLUS_BLOCK_SIZE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_BLOCK_SIZE`
+     - block_size
+
+**${METPLUS_VLD_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_VLD_THRESH`
+     - vld_thresh
+
+**${METPLUS_CTS_LIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_CTS_LIST`
+     - output_stats.cts
+
+**${METPLUS_STAT_LIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_STAT_LIST`
+     - output_stats.cnt
+
+**${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
+     - n/a
 
 SeriesByInit
 ------------
@@ -2890,7 +3096,7 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`LINE_TYPE_LIST`
      - line_type
 
-**${METPLUS_JOB}**
+**${METPLUS_JOBS}**
 
 .. list-table::
    :widths: 5 5
