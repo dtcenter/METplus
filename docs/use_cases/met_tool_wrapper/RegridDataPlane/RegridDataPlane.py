@@ -19,6 +19,7 @@ met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# |
 
 ##############################################################################
 # METplus Components
@@ -35,6 +36,7 @@ met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
 #
 # | **Init:** 2005-08-07_0Z
 # | **Forecast lead:** 3 hour
+# |
 #
 # This use case regrids data to another domain specified with REGRID_DATA_PLANE_VERIF_GRID. This is done so that
 # forecast and observation comparisons are done on the same grid. Many MET comparison tools have regridding capabilities

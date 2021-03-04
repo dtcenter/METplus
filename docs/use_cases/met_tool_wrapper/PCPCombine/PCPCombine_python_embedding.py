@@ -22,6 +22,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** IMERG
+# |
 
 ##############################################################################
 # External Dependencies
@@ -56,6 +57,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf
 # run times:
 #
 # | **Valid:** 2018-01-02_13:30Z
+# |
 #
 
 ##############################################################################

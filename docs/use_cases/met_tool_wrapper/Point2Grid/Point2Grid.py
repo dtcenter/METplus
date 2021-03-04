@@ -19,6 +19,7 @@ met_tool_wrapper/Point2Grid/Point2Grid.conf
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# |
 
 ##############################################################################
 # METplus Components
@@ -34,6 +35,7 @@ met_tool_wrapper/Point2Grid/Point2Grid.conf
 # run time:
 #
 # | **Init:** 2017-06-01_0Z
+# |
 #
 # This use case puts point observations onto a specified grid
 

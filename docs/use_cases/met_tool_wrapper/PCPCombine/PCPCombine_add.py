@@ -22,6 +22,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_add.conf
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** NEWSe
+# |
 
 ##############################################################################
 # METplus Components
@@ -40,6 +41,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_add.conf
 #
 # | **Valid:** 2019-08-02_18:15Z
 # | **Forecast lead:** 15 minute
+# |
 
 ##############################################################################
 # METplus Configuration

@@ -199,12 +199,10 @@ _seasonal_forecast.conf
 #
 # **SeriesAnalysisConfig_wrapped**
 #
+# .. note:: See the :ref:`SeriesAnalysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/SeriesAnalysisConfig_wrapped
-#
-# See the following file for more information about the environment variables set in these configuration files::
-#   parm/use_cases/met_tool_wrapper/SeriesAnalysis/SeriesAnalysis.conf
-#
 
 ##############################################################################
 # Running METplus
