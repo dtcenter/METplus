@@ -5779,3 +5779,8 @@ METplus Configuration Glossary
      Set the mask.poly entry in the PointStat MET config file.
 
      | *Used by:*  PointStat
+
+   MODE_GRID_RES
+     Set the grid_res entry in the MODE MET config file.
+
+     | *Used by:*  MODE

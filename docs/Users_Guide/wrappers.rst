@@ -1549,6 +1549,17 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`MODE_REGRID_TO_GRID`
      - regrid.to_grid
 
+**${METPLUS_GRID_RES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_GRID_RES`
+     - grid_res
+
 **${METPLUS_QUILT}**
 
 .. list-table::
