@@ -259,10 +259,14 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
 
             except:
                 # handle non-numeric fields
-                if any(var_a[:].flatten() != var_b[:].flatten()):
-                    print(f"ERROR: Field ({field}) values (non-numeric) "
-                          "differ\n"
-                          f"A: {var_a}, B: {var_b}")
+                try:
+                    if any(var_a[:].flatten() != var_b[:].flatten()):
+                        print(f"ERROR: Field ({field}) values (non-numeric) "
+                              "differ\n"
+                              f"A: {var_a}, B: {var_b}")
+                        is_equal = False
+                except:
+                    print("ERROR: Couldn't diff NetCDF files, need to update diff method")
                     is_equal = False
 
     except KeyError:
