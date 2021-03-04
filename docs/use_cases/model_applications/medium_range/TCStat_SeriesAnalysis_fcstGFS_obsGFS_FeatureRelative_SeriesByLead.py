@@ -102,6 +102,13 @@ _SeriesByLead.conf
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/TCPairsConfig_wrapped
 #
+# **TCStatConfig_wrapped**
+#
+# .. note:: See the :ref:`TCStat MET Configuration<tc-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+#
+# .. highlight:: bash
+# .. literalinclude:: ../../../../parm/met_config/TCStatConfig_wrapped
+#
 # **SeriesAnalysisConfig_wrapped**
 #
 # .. note:: See the :ref:`SeriesAnalysis MET Configuration<series-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:

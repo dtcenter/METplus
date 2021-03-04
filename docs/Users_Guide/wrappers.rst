@@ -4058,6 +4058,57 @@ Configuration
    | :term:`TC_STAT_JOBS_LIST`
    |
 
+.. _tc-stat-met-conf:
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+
+:term:`MET_INSTALL_DIR`/share/met/config/TCStatDefault_config
+
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/TCStatConfig_wrapped
+
+**${METPLUS_AMODEL}**
+**${METPLUS_BMODEL}**
+**${METPLUS_DESC}**
+**${METPLUS_STORM_ID}**
+**${METPLUS_BASIN}**
+**${METPLUS_CYCLONE}**
+**${METPLUS_STORM_NAME}**
+**${METPLUS_INIT_BEG}**
+**${METPLUS_INIT_END}**
+**${METPLUS_INIT_INCLUDE}**
+**${METPLUS_INIT_EXCLUDE}**
+**${METPLUS_VALID_BEG}**
+**${METPLUS_VALID_END}**
+**${METPLUS_VALID_INCLUDE}**
+**${METPLUS_VALID_EXCLUDE}**
+**${METPLUS_INIT_HOUR}**
+**${METPLUS_VALID_HOUR}**
+**${METPLUS_LEAD}**
+**${METPLUS_LEAD_REQ}**
+**${METPLUS_INIT_MASK}**
+**${METPLUS_VALID_MASK}**
+**${METPLUS_TRACK_WATCH_WARN}**
+**${METPLUS_COLUMN_THRESH_NAME}**
+**${METPLUS_COLUMN_THRESH_VAL}**
+**${METPLUS_COLUMN_STR_NAME}**
+**${METPLUS_COLUMN_STR_VAL}**
+**${METPLUS_INIT_THRESH_NAME}**
+**${METPLUS_INIT_THRESH_VAL}**
+**${METPLUS_INIT_STR_NAME}**
+**${METPLUS_INIT_STR_VAL}**
+**${METPLUS_WATER_ONLY}**
+**${METPLUS_LANDFALL}**
+**${METPLUS_LANDFALL_BEG}**
+**${METPLUS_LANDFALL_END}**
+**${METPLUS_MATCH_POINTS}**
+**${METPLUS_JOBS}**
+**${METPLUS_MET_CONFIG_OVERRIDES}**
+
 .. _user_script_wrapper:
 
 UserScript
