@@ -60,7 +60,7 @@ MET Configuration
 
 Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/Ascii2NcDefault_config
+:term:`MET_INSTALL_DIR`/share/met/config/Ascii2NcConfig_default
 
 Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
@@ -274,7 +274,7 @@ MET Configuration
 
 Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/EnsembleStatDefault_config
+:term:`MET_INSTALL_DIR`/share/met/config/EnsembleStatConfig_default
 
 Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
@@ -957,7 +957,7 @@ MET Configuration
 
 Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/GridDiagDefault_config
+:term:`MET_INSTALL_DIR`/share/met/config/GridDiagConfig_default
 
 Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
@@ -1138,7 +1138,7 @@ MET Configuration
 
 Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/GridStatDefault_config
+:term:`MET_INSTALL_DIR`/share/met/config/GridStatConfig_default
 
 Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
@@ -1491,7 +1491,7 @@ MET Configuration
 
 Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/MODEDefault_config
+:term:`MET_INSTALL_DIR`/share/met/config/MODEConfig_default
 
 Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
@@ -2052,7 +2052,7 @@ MET Configuration
 
 Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/PB2NCDefault_config
+:term:`MET_INSTALL_DIR`/share/met/config/PB2NCConfig_default
 
 Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
@@ -2412,7 +2412,7 @@ MET Configuration
 
 Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/PointStatDefault_config
+:term:`MET_INSTALL_DIR`/share/met/config/PointStatConfig_default
 
 Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
@@ -2745,7 +2745,7 @@ MET Configuration
 
 Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/SeriesAnalysisDefault_config
+:term:`MET_INSTALL_DIR`/share/met/config/SeriesAnalysisConfig_default
 
 Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
@@ -3116,7 +3116,7 @@ MET Configuration
 
 Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/STATAnalysisDefault_config
+:term:`MET_INSTALL_DIR`/share/met/config/STATAnalysisConfig_default
 
 Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
@@ -3548,7 +3548,7 @@ MET Configuration
 
 Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/TCGenDefault_config
+:term:`MET_INSTALL_DIR`/share/met/config/TCGenConfig_default
 
 Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
@@ -3974,7 +3974,7 @@ MET Configuration
 
 Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/TCPairsDefault_config
+:term:`MET_INSTALL_DIR`/share/met/config/TCPairsConfig_default
 
 Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
@@ -4189,7 +4189,7 @@ MET Configuration
 
 Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/TCRMWDefault_config
+:term:`MET_INSTALL_DIR`/share/met/config/TCRMWConfig_default
 
 Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
@@ -4500,7 +4500,7 @@ MET Configuration
 
 Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/TCStatDefault_config
+:term:`MET_INSTALL_DIR`/share/met/config/TCStatConfig_default
 
 Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
