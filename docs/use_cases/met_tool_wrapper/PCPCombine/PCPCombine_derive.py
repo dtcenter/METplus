@@ -23,6 +23,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_derive.conf
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** WRF
+# |
 
 ##############################################################################
 # METplus Components
@@ -41,6 +42,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_derive.conf
 #
 # | **Valid:** 2005-08-07_00Z
 # | **Forecast lead:** 24 hour
+# |
 
 ##############################################################################
 # METplus Configuration

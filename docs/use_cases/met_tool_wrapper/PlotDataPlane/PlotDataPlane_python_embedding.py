@@ -22,6 +22,7 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_python_embedding.conf
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** Unknown
+# |
 
 ##############################################################################
 # METplus Components
@@ -38,6 +39,7 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_python_embedding.conf
 # It processes the following run time:
 #
 # | **Valid:** 2005-08-07 12Z
+# |
 
 ##############################################################################
 # METplus Configuration

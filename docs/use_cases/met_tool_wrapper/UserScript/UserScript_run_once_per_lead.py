@@ -21,6 +21,7 @@ met_tool_wrapper/UserScript/UserScript_run_once_per_lead.conf
 # --------
 #
 # | **Input:** Empty test files from the METplus repository
+# |
 #
 
 ##############################################################################
@@ -41,6 +42,7 @@ met_tool_wrapper/UserScript/UserScript_run_once_per_lead.conf
 # | **Forecast Lead:** 12 hour
 # | **Forecast Lead:** 24 hour
 # | **Forecast Lead:** 120 hour
+# |
 #
 
 ##############################################################################

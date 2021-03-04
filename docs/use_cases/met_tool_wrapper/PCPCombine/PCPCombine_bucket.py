@@ -22,6 +22,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_bucket.conf
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** GFS
+# |
 
 ##############################################################################
 # METplus Components
@@ -40,6 +41,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_bucket.conf
 #
 # | **Valid:** 2012-04-09_00Z
 # | **Forecast lead:** 15 hour
+# |
 
 ##############################################################################
 # METplus Configuration
