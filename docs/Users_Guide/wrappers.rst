@@ -1788,18 +1788,193 @@ Below the file contents are descriptions of each environment variable referenced
 .. literalinclude:: ../../parm/met_config/MTDConfig_wrapped
 
 **${METPLUS_MODEL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL`
+     - model
+
 **${METPLUS_DESC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MTD_DESC`
+     - desc
+
 **${METPLUS_OBTYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBTYPE`
+     - obtype
+
 **${METPLUS_REGRID_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MTD_REGRID_SHAPE`
+     - regrid.shape
+   * - :term:`MTD_REGRID_METHOD`
+     - regrid.method
+   * - :term:`MTD_REGRID_WIDTH`
+     - regrid.width
+   * - :term:`MTD_REGRID_VLD_THRESH`
+     - regrid.vld_thresh
+   * - :term:`MTD_REGRID_TO_GRID`
+     - regrid.to_grid
+
 **${METPLUS_FCST_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MTD_FCST_INPUT_DATATYPE`
+     - fcst.file_type
+
 **${METPLUS_FCST_FIELD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_VAR<n>_NAME`
+     - fcst.field.name
+   * - :term:`FCST_VAR<n>_LEVELS`
+     - fcst.field.level
+   * - :term:`FCST_VAR<n>_THRESH`
+     - fcst.field.cat_thresh
+   * - :term:`FCST_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
 **${METPLUS_FCST_CONV_RADIUS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MTD_FCST_CONV_RADIUS`
+     - fcst.conv_radius
+
 **${METPLUS_FCST_CONV_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MTD_FCST_CONV_THRESH`
+     - fcst.conv_thresh
+
+**${METPLUS_OBS_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MTD_OBS_INPUT_DATATYPE`
+     - obs.file_type
+
+**${METPLUS_OBS_FIELD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_VAR<n>_NAME`
+     - fcst.field.name
+   * - :term:`OBS_VAR<n>_LEVELS`
+     - fcst.field.level
+   * - :term:`OBS_VAR<n>_THRESH`
+     - fcst.field.cat_thresh
+   * - :term:`OBS_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
 **${METPLUS_OBS_CONV_RADIUS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MTD_OBS_CONV_RADIUS`
+     - obs.conv_radius
+
 **${METPLUS_OBS_CONV_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MTD_OBS_CONV_THRESH`
+     - obs.conv_thresh
+
 **${METPLUS_MIN_VOLUME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MTD_MIN_VOLUME`
+     - min_volume
+
 **${METPLUS_OUTPUT_PREFIX}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MTD_OUTPUT_PREFIX`
+     - output_prefix
+
 **${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MTD_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _pb2nc_wrapper:
 

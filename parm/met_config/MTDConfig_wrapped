@@ -62,9 +62,9 @@ fcst = {
 
 obs = {
 
-   ${OBS_FILE_TYPE}
+   ${METPLUS_OBS_FILE_TYPE}
 
-   field = ${OBS_FIELD};
+   ${METPLUS_OBS_FIELD}
 
    censor_thresh     = [];
    censor_val        = [];
