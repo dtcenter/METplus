@@ -48,15 +48,15 @@ grid_res = 4;
 
 fcst = {
 
-   ${FCST_FILE_TYPE}
+   ${METPLUS_FCST_FILE_TYPE}
 
-   field = ${FCST_FIELD};
+   ${METPLUS_FCST_FIELD}
 
    censor_thresh     = [];
    censor_val        = [];
    conv_time_window  = { beg = -1; end = 1; };
-   conv_radius       = ${FCST_CONV_RADIUS};
-   conv_thresh       = ${FCST_CONV_THRESH};
+   ${METPLUS_FCST_CONV_RADIUS}
+   ${METPLUS_FCST_CONV_THRESH}
 
 }
 
@@ -69,8 +69,8 @@ obs = {
    censor_thresh     = [];
    censor_val        = [];
    conv_time_window  = { beg = -1; end = 1; };
-   conv_radius       = ${OBS_CONV_RADIUS};
-   conv_thresh       = ${OBS_CONV_THRESH};
+   ${METPLUS_OBS_CONV_RADIUS}
+   ${METPLUS_OBS_CONV_THRESH}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -86,8 +86,7 @@ inten_perc_value = 99;
    //
    //  Throw away 3D objects with volumes smaller than this
    //
-
-min_volume = ${MIN_VOLUME};
+${METPLUS_MIN_VOLUME}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -237,7 +236,7 @@ txt_output = {
 
 ////////////////////////////////////////////////////////////////////////////////
 
-output_prefix    = "${OUTPUT_PREFIX}";
+${METPLUS_OUTPUT_PREFIX}
 //version        = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////
