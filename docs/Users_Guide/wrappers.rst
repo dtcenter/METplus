@@ -1741,22 +1741,14 @@ from files to build desired accumulations.
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`FCST_PCP_COMBINE_INPUT_DIR`
 | :term:`FCST_PCP_COMBINE_OUTPUT_DIR`
 | :term:`OBS_PCP_COMBINE_INPUT_DIR`
 | :term:`OBS_PCP_COMBINE_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`FCST_PCP_COMBINE_INPUT_TEMPLATE`
 | :term:`FCST_PCP_COMBINE_OUTPUT_TEMPLATE`
 | :term:`OBS_PCP_COMBINE_INPUT_TEMPLATE`
 | :term:`OBS_PCP_COMBINE_OUTPUT_TEMPLATE`
-
-[config]
-
 | :term:`LOG_PCP_COMBINE_VERBOSITY`
 | :term:`FCST_IS_PROB`
 | :term:`OBS_IS_PROB`
@@ -1804,6 +1796,7 @@ Configuration
 | :term:`FCST_PCP_COMBINE_OUTPUT_NAME` (optional)
 | :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM` (optional)
 | :term:`OBS_PCP_COMBINE_OUTPUT_NAME` (optional)
+|
 
 .. warning:: **DEPRECATED:**
 
@@ -1824,6 +1817,7 @@ Configuration
    | :term:`OBS_PCP_COMBINE_INPUT_LEVEL`
    | :term:`FCST_PCP_COMBINE_<n>_FIELD_NAME`
    | :term:`OBS_PCP_COMBINE_<n>_FIELD_NAME`
+   |
 
 .. _plot_data_plane_wrapper:
 
@@ -3718,20 +3712,12 @@ Used to configure the MET tool TC-RMW.
 METplus Configuration
 ~~~~~~~~~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`TC_RMW_INPUT_DIR`
 | :term:`TC_RMW_DECK_INPUT_DIR`
 | :term:`TC_RMW_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`TC_RMW_DECK_TEMPLATE`
 | :term:`TC_RMW_INPUT_TEMPLATE`
 | :term:`TC_RMW_OUTPUT_TEMPLATE`
-
-[config]
-
 | :term:`LOG_TC_RMW_VERBOSITY`
 | :term:`TC_RMW_CONFIG_FILE`
 | :term:`TC_RMW_INPUT_DATATYPE`
@@ -3759,254 +3745,252 @@ METplus Configuration
 | :term:`MODEL`
 | :term:`LEAD_SEQ`
 | :term:`TC_RMW_MET_CONFIG_OVERRIDES`
+|
 
 .. _tc-rmw-met-conf:
 
 MET Configuration
 ~~~~~~~~~~~~~~~~~
 
-This is the MET configuration file used for this wrapper. Below the file contents are descriptions of each environment variable referenced in this file and how the METplus configuration variables relate to them.
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+
+:term:`MET_INSTALL_DIR`/share/met/config/TCRMWDefault_config
+
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/TCRMWConfig_wrapped
 
-The following environment variables are referenced in the MET configuration file. The values are generated based on values in the METplus configuration files.
+**${METPLUS_MODEL}**
 
-**${METPLUS_MODEL}** - Corresponds to MODEL in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-METplus Configuration::
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL`
+     - model
 
-    [config]
-    MODEL = GFS
+**${METPLUS_STORM_ID}**
 
-Resulting value::
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-    model = "GFS";
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_STORM_ID`
+     - storm_id
 
-**${STORM_ID}** - Corresponds to TC_RMW_STORM_ID in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${METPLUS_BASIN}**
 
-METplus Configuration::
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-    [config]
-    TC_RMW_STORM_ID = al062018
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_BASIN`
+     - basin
 
-Resulting value::
+**${METPLUS_CYCLONE}**
 
-    storm_id = "al062018";
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-**${BASIN}** - Corresponds to TC_RMW_BASIN in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_CYCLONE`
+     - cyclone
 
-METplus Configuration::
+**${METPLUS_INIT_INCLUDE}**
 
-    [config]
-    TC_RMW_BASIN = AL
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-Resulting value::
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_INIT_INCLUDE`
+     - init_inc
 
-    basin = "AL";
+**${METPLUS_VALID_BEG}**
 
-**${CYCLONE}** - Corresponds to TC_RMW_CYCLONE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-METplus Configuration::
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_VALID_BEG`
+     - valid_beg
 
-    [config]
-    TC_RMW_CYCLONE = 06
+**${METPLUS_VALID_END}**
 
-Resulting value::
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-   cyclone = "06";
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_VALID_END`
+     - valid_end
 
-**${STORM_NAME}** - Corresponds to TC_RMW_STORM_NAME in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${METPLUS_VALID_INCLUDE_LIST}**
 
-METplus Configuration::
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-    [config]
-    TC_RMW_STORM_NAME = al062018
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_VALID_INCLUDE_LIST`
+     - valid_inc
 
-Resulting value::
+**${METPLUS_VALID_EXCLUDE_LIST}**
 
-    storm_name = "al062018";
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-**${INIT_INCLUDE}** - Corresponds to TC_RMW_INIT_INCLUDE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_VALID_EXCLUDE_LIST`
+     - valid_exc
 
-METplus Configuration::
+**${METPLUS_VALID_HOUR_LIST}**
 
-    [config]
-    TC_RMW_INIT_INCLUDE = 20101231_06
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-Resulting value::
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_VALID_HOUR_LIST`
+     - valid_hour
+
+**${METPLUS_LEAD_LIST}**
 
-    init_inc = "20101231_06";
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-Resulting value::
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`LEAD_SEQ`
+     - lead
 
-    init_exc = "20101231_00";
+**${METPLUS_DATA_FILE_TYPE}**
 
-**${VALID_BEG}** - Corresponds to TC_RMW_VALID_BEG in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-METplus Configuration::
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_INPUT_DATATYPE`
+     - data.file_type
 
-    [config]
-    TC_RMW_VALID_BEG = 20100101
+**${METPLUS_DATA_FIELD}**
 
-Resulting value::
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-    valid_beg = "20100101";
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`BOTH_VAR<n>_NAME`
+     - data.field.name
+   * - :term:`BOTH_VAR<n>_LEVELS`
+     - data.field.level
+   * - :term:`BOTH_VAR<n>_OPTIONS`
+     - n/a
 
-**${VALID_END}** - Corresponds to TC_RMW_VALID_END in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+.. note:: For more information on controlling the field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
-METplus Configuration::
+**${METPLUS_REGRID_DICT}**
 
-    [config]
-    TC_RMW_VALID_END = 20101231_12
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-Resulting value::
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_REGRID_SHAPE`
+     - regrid.shape
+   * - :term:`TC_RMW_REGRID_METHOD`
+     - regrid.method
+   * - :term:`TC_RMW_REGRID_WIDTH`
+     - regrid.width
+   * - :term:`TC_RMW_REGRID_VLD_THRESH`
+     - regrid.vld_thresh
 
-    valid_end = "20101231_12";
+**${METPLUS_N_RANGE}**
 
-**${VALID_INCLUDE_LIST}** - Corresponds to TC_RMW_VALID_INCLUDE_LIST in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-METplus Configuration::
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_N_RANGE`
+     - n_range
 
-    [config]
-    TC_RMW_VALID_INCLUDE_LIST = 20101231_06, 20101231_12
+**${METPLUS_N_AZIMUTH}**
 
-Resulting value::
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-    valid_inc = [ "20101231_06", "20101231_12" ];
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_N_AZIMUTH`
+     - n_azimuth
 
-**${VALID_EXCLUDE_LIST}** - Corresponds to TC_RMW_VALID_EXCLUDE_LIST in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+**${METPLUS_MAX_RANGE_KM}**
 
-METplus Configuration::
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-    [config]
-    TC_RMW_VALID_EXCLUDE_LIST = 20101231_00, 20101231_03
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_MAX_RANGE_KM`
+     - max_range_km
 
-Resulting value::
+**${METPLUS_DELTA_RANGE_KM}**
 
-    valid_exc = [ "20101231_00", "20101231_03" ];
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-**${VALID_HOUR_LIST}** - Corresponds to TC_RMW_VALID_HOUR_LIST in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_DELTA_RANGE_KM`
+     - delta_range_km
 
-METplus Configuration::
+**${METPLUS_RMW_SCALE}**
 
-    [config]
-    TC_RMW_VALID_HOUR_LIST = 12, 15
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-Resulting value::
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_SCALE`
+     - rmw_scale
 
-    valid_hour = [ "12", "15" ];
+**${METPLUS_MET_CONFIG_OVERRIDES}**
 
-**${LEAD_LIST}** - Corresponds to LEAD_SEQ in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
 
-METplus Configuration::
-
-    [config]
-    LEAD_SEQ = 6, 12, 18, 24
-
-Resulting value::
-
-    lead = ["06", "12", "18", "24"];
-
-**${DATA_FIELD}** - Formatted input field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-
-METplus Configuration::
-
-    [config]
-    BOTH_VAR1_NAME = PRMSL
-    BOTH_VAR1_LEVELS = L0
-    BOTH_VAR2_NAME = TMP
-    BOTH_VAR2_LEVELS = P1000, P750
-
-Resulting value::
-
-    { name="PRMSL"; level="L0"; },{ name="TMP"; level="P1000"; },{ name="TMP"; level="P750"; }
-
-**${DATA_FILE_TYPE}** - Type of input data set only if necessary to allow MET to read the data. Generated from TC_RMW_INPUT_DATATYPE in the METplus configuration file.
-
-METplus Configuration::
-
-    [config]
-    TC_RMW_INPUT_DATATYPE = GRIB2
-
-Resulting value::
-
-    file_type = GRIB2;
-
-**${N_RANGE}** - Corresponds to TC_RMW_N_RANGE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
-
-METplus Configuration::
-
-    [config]
-    TC_RMW_N_RANGE = 100
-
-Resulting value::
-
-    n_range = 100;
-
-**${N_AZIMUTH}** - Corresponds to TC_RMW_N_AZIMUTH in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
-
-METplus Configuration::
-
-    [config]
-    TC_RMW_N_AZIMUTH = 180
-
-Resulting value::
-
-    n_azimuth = 180;
-
-**${MAX_RANGE_KM}** - Corresponds to TC_RMW_MAX_RANGE_KM in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
-
-METplus Configuration::
-
-    [config]
-    TC_RMW_MAX_RANGE_KM = 1000.0
-
-Resulting value::
-
-    max_range_km = 1000.0;
-
-**${DELTA_RANGE_KM}** - Corresponds to TC_RMW_DELTA_RANGE_KM in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
-
-METplus Configuration::
-
-    [config]
-    TC_RMW_DELTA_RANGE_KM = 10.0
-
-Resulting value::
-
-    delta_range_km = 10.0;
-
-**${RMW_SCALE}** - Corresponds to TC_RMW_SCALE in the METplus configuration file. If unset in METplus, value set in the default MET TCRMW configuration file will be used.
-
-METplus Configuration::
-
-    [config]
-    TC_RMW_SCALE = 0.2
-
-Resulting value::
-
-    rmw_scale = 0.2;
-
-**${METPLUS_REGRID_DICT}** - Corresponds to TC_RMW_REGRID_METHOD, TC_RMW_REGRID_WIDTH, TC_RMW_REGRID_VLD_THRESH, and TC_RMW_REGRID_SHAPE in the METplus configuration file. If any of these variables are unset in METplus, value set in the default MET TCRMW configuration file will be used.
-
-METplus Configuration 1::
-
-    [config]
-    TC_RMW_REGRID_SHAPE = SQUARE
-
-Resulting value 1::
-
-    regrid = {shape = SQUARE;}
-
-METplus Configuration 2::
-
-    [config]
-    TC_RMW_REGRID_WIDTH = 2
-    TC_RMW_REGRID_SHAPE = SQUARE
-
-Resulting value 2::
-
-    regrid = {width = 2; shape = SQUARE;}
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_RMW_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _tc_stat_wrapper:
 
@@ -4023,13 +4007,8 @@ wrapper (via the MET tc-stat command line commands).
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`TC_STAT_LOOKIN_DIR`
 | :term:`TC_STAT_OUTPUT_DIR`
-
-[config]
-
 | :term:`TC_STAT_CONFIG_FILE`
 | :term:`TC_STAT_JOB_ARGS`
 | :term:`TC_STAT_AMODEL`
@@ -4069,6 +4048,7 @@ Configuration
 | :term:`TC_STAT_MATCH_POINTS`
 | :term:`TC_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`TC_STAT_MET_CONFIG_OVERRIDES`
+|
 
 .. warning:: **DEPRECATED:**
 
@@ -4076,6 +4056,7 @@ Configuration
    | :term:`TC_STAT_RUN_VIA`
    | :term:`TC_STAT_CMD_LINE_JOB`
    | :term:`TC_STAT_JOBS_LIST`
+   |
 
 .. _user_script_wrapper:
 
@@ -4097,9 +4078,8 @@ lead time. See :ref:`Runtime_Freq` for more information on how the value of
 Configuration
 ~~~~~~~~~~~~~
 
-[config]
-
 | :term:`USER_SCRIPT_RUNTIME_FREQ`
 | :term:`USER_SCRIPT_COMMAND`
 | :term:`USER_SCRIPT_CUSTOM_LOOP_LIST`
 | :term:`USER_SCRIPT_SKIP_TIMES`
+|
