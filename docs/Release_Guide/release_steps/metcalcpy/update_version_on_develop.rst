@@ -1,7 +1,7 @@
 Update Version on Develop Branch
 --------------------------------
 
-Change metcalcpy/docs/version __version__ value to the next release after this one with -dev added
+Change METcalcpy/docs/version __version__ value to the next release after this one with -dev added
 to the end. Releases will loosely following these names, but are subject to
 change:
 
