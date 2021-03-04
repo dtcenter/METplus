@@ -4,7 +4,7 @@ Update the Documentation on the Web
 * Refer to the Contributor's Guide for instructions on `how to build the
   documentation <https://dtcenter.github.io/METplus/develop/Contributors_Guide/add_use_case.html#build-the-documentation>`_.
 * Build the documentation with the correct conda environment by entering the
-  docs directory and running './build_docs.py -release' (-release will update release date file).
+  docs directory and running 'make clean;make html'.
 * In another directory, checkout the gh-pages branch of repository.
 * Create a new directory in the gh-pages branch for the release appending a
   "v" to the front, i.e. vX.Y.Z
