@@ -65,7 +65,7 @@ weight = [];
 //
 // Array of STAT-Analysis jobs to be performed on the filtered data
 //
-${METPLUS_JOB}
+${METPLUS_JOBS}
 
 ////////////////////////////////////////////////////////////////////////////////
 
