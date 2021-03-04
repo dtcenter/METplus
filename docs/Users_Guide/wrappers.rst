@@ -3132,20 +3132,12 @@ The wrapper accepts track (Adeck or Bdeck) data and Genesis data.
 Configuration
 ~~~~~~~~~~~~~
 
-[dir]
-
 | :term:`TC_GEN_TRACK_INPUT_DIR`
 | :term:`TC_GEN_GENESIS_INPUT_DIR`
 | :term:`TC_GEN_OUTPUT_DIR`
-
-[filename_templates]
-
 | :term:`TC_GEN_TRACK_INPUT_TEMPLATE`
 | :term:`TC_GEN_GENESIS_INPUT_TEMPLATE`
 | :term:`TC_GEN_OUTPUT_TEMPLATE`
-
-[config]
-
 | :term:`LOG_TC_GEN_VERBOSITY`
 | :term:`TC_GEN_CUSTOM_LOOP_LIST`
 | :term:`TC_GEN_CONFIG_FILE`
@@ -3180,6 +3172,280 @@ Configuration
 | :term:`TC_GEN_SKIP_IF_OUTPUT_EXISTS`
 | :term:`TC_GEN_DESC`
 | :term:`TC_GEN_MET_CONFIG_OVERRIDES`
+|
+
+.. _tc-gen-met-conf:
+
+MET Configuration
+~~~~~~~~~~~~~~~~~
+
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+
+:term:`MET_INSTALL_DIR`/share/met/config/TCGenDefault_config
+
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/TCGenConfig_wrapped
+
+**${METPLUS_INIT_FREQ}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_INIT_FREQUENCY`
+     - init_freq
+
+**${METPLUS_LEAD_WINDOW_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_LEAD_WINDOW_BEGIN`
+     - lead_window.beg
+   * - :term:`TC_GEN_LEAD_WINDOW_END`
+     - lead_window.end
+
+**${METPLUS_MIN_DURATION}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_MIN_DURATION`
+     - min_duration
+
+**${METPLUS_FCST_GENESIS_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_FCST_GENESIS_VMAX_THRESH`
+     - fcst_genesis.vmax_thresh
+   * - :term:`TC_GEN_FCST_GENESIS_MSLP_THRESH`
+     - fcst_genesis.mslp_thresh
+
+**${METPLUS_BEST_GENESIS_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_BEST_GENESIS_TECHNIQUE`
+     - best_genesis.technique
+   * - :term:`TC_GEN_BEST_GENESIS_CATEGORY`
+     - best_genesis.category
+   * - :term:`TC_GEN_BEST_GENESIS_VMAX_THRESH`
+     - best_genesis.vmax_thresh
+   * - :term:`TC_GEN_BEST_GENESIS_MSLP_THRESH`
+     - best_genesis.mslp_thresh
+
+**${METPLUS_OPER_GENESIS_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_OPER_GENESIS_TECHNIQUE`
+     - oper_genesis.technique
+   * - :term:`TC_GEN_OPER_GENESIS_CATEGORY`
+     - oper_genesis.category
+   * - :term:`TC_GEN_OPER_GENESIS_VMAX_THRESH`
+     - oper_genesis.vmax_thresh
+   * - :term:`TC_GEN_OPER_GENESIS_MSLP_THRESH`
+     - oper_genesis.mslp_thresh
+
+**${METPLUS_FILTER}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_FILTER_\<n\>`
+     - filter
+
+**${METPLUS_DESC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`DESC` -or- :term:`TC_GEN_DESC`
+     - desc
+
+**${METPLUS_MODEL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL`
+     - model
+
+**${METPLUS_STORM_ID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_STORM_ID`
+     - storm_id
+
+**${METPLUS_STORM_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_STORM_NAME`
+     - storm_name
+
+**${METPLUS_INIT_BEG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_INIT_BEG`
+     - init_beg
+
+**${METPLUS_INIT_END}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_INIT_END`
+     - init_end
+
+**${METPLUS_VALID_BEG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_VALID_BEG`
+     - valid_beg
+
+**${METPLUS_VALID_END}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_VALID_END`
+     - valid_end
+
+**${METPLUS_INIT_HOUR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_INIT_HOUR_LIST`
+     - init_hour
+
+**${METPLUS_LEAD_LIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_LEAD_LIST`
+     - lead
+
+**${METPLUS_VX_MASK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_VX_MASK`
+     - vx_mask
+
+**${METPLUS_GENESIS_WINDOW_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_GENESIS_WINDOW_BEGIN`
+     - genesis_window.beg
+   * - :term:`TC_GEN_GENESIS_WINDOW_END`
+     - genesis_window.end
+
+**${METPLUS_GENESIS_RADIUS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_GENESIS_RADIUS`
+     - genesis_radius
+
+**${METPLUS_DLAND_FILE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_DLAND_FILE`
+     - dland_file
+
+**${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _tcmpr_plotter_wrapper:
 
