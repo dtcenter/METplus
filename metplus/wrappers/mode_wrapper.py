@@ -37,6 +37,7 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_MERGE_FLAG',
         'METPLUS_MASK_POLY',
         'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_GRID_RES',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -140,6 +141,10 @@ class MODEWrapper(CompareGriddedWrapper):
                 value = self.get_env_var_value(f'METPLUS_{data_type}_{name}')
                 c_dict[f'{data_type}_{name}'] = value
 
+        self.set_met_config_float(self.env_var_dict,
+                                  'MODE_GRID_RES',
+                                  'grid_res',
+                                  'METPLUS_GRID_RES')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
