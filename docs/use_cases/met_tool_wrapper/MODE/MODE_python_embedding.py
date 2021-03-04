@@ -61,7 +61,7 @@ met_tool_wrapper/MODE/MODE_python_embedding.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# .. note:: See the :ref:`MODE MET Configuration<mode-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
+# .. note:: See the :ref:`MODE MET Configuration<mode-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped

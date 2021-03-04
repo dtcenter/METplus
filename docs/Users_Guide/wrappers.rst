@@ -1498,23 +1498,226 @@ Below the file contents are descriptions of each environment variable referenced
 .. literalinclude:: ../../parm/met_config/MODEConfig_wrapped
 
 **${METPLUS_MODEL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL`
+     - model
+
 **${METPLUS_DESC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_DESC`
+     - desc
+
 **${METPLUS_OBTYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBTYPE`
+     - obtype
+
 **${METPLUS_REGRID_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_REGRID_SHAPE`
+     - regrid.shape
+   * - :term:`MODE_REGRID_METHOD`
+     - regrid.method
+   * - :term:`MODE_REGRID_WIDTH`
+     - regrid.width
+   * - :term:`MODE_REGRID_VLD_THRESH`
+     - regrid.vld_thresh
+   * - :term:`MODE_REGRID_TO_GRID`
+     - regrid.to_grid
+
 **${METPLUS_QUILT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_QUILT`
+     - quilt
+
 **${METPLUS_FCST_FIELD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_VAR<n>_NAME`
+     - fcst.field.name
+   * - :term:`FCST_VAR<n>_LEVELS`
+     - fcst.field.level
+   * - :term:`FCST_VAR<n>_THRESH`
+     - fcst.field.cat_thresh
+   * - :term:`FCST_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
 **${METPLUS_FCST_CONV_RADIUS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_CONV_RADIUS`
+     - fcst.conv_radius
+
 **${METPLUS_FCST_CONV_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_CONV_THRESH`
+     - fcst.conv_thresh
+
 **${METPLUS_FCST_MERGE_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_MERGE_THRESH`
+     - fcst.merge_thresh
+
 **${METPLUS_FCST_MERGE_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_MERGE_FLAG`
+     - fcst.merge_flag
+
 **${METPLUS_OBS_FIELD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_VAR<n>_NAME`
+     - fcst.field.name
+   * - :term:`OBS_VAR<n>_LEVELS`
+     - fcst.field.level
+   * - :term:`OBS_VAR<n>_THRESH`
+     - fcst.field.cat_thresh
+   * - :term:`OBS_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
 **${METPLUS_OBS_CONV_RADIUS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_MODE_CONV_RADIUS`
+     - obs.conv_radius
+
 **${METPLUS_OBS_CONV_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_MODE_CONV_THRESH`
+     - obs.conv_thresh
+
 **${METPLUS_OBS_MERGE_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_MODE_MERGE_THRESH`
+     - obs.merge_thresh
+
 **${METPLUS_OBS_MERGE_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`OBS_MODE_MERGE_FLAG`
+     - obs.merge_flag
+
 **${METPLUS_MASK_POLY}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MASK_POLY`
+     - mask.poly
+
 **${METPLUS_OUTPUT_PREFIX}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OUTPUT_PREFIX`
+     - output_prefix
+
 **${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _mtd_wrapper:
 
@@ -4118,42 +4321,411 @@ Below the file contents are descriptions of each environment variable referenced
 .. literalinclude:: ../../parm/met_config/TCStatConfig_wrapped
 
 **${METPLUS_AMODEL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_AMODEL`
+     - amodel
+
 **${METPLUS_BMODEL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_BMODEL`
+     - bmodel
+
 **${METPLUS_DESC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_DESC`
+     - desc
+
 **${METPLUS_STORM_ID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_STORM_ID`
+     - storm_id
+
 **${METPLUS_BASIN}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_BASIN`
+     - basin
+
 **${METPLUS_CYCLONE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_CYCLONE`
+     - cyclone
+
 **${METPLUS_STORM_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_STORM_NAME`
+     - storm_name
+
 **${METPLUS_INIT_BEG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_BEG`
+     - init_beg
+
 **${METPLUS_INIT_END}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_END`
+     - init_end
+
 **${METPLUS_INIT_INCLUDE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_INCLUDE`
+     - init_inc
+
 **${METPLUS_INIT_EXCLUDE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_EXCLUDE`
+     - init_exc
+
 **${METPLUS_VALID_BEG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_VALID_BEG`
+     - valid_beg
+
 **${METPLUS_VALID_END}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_VALID_END`
+     - valid_end
+
 **${METPLUS_VALID_INCLUDE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_VALID_INCLUDE`
+     - valid_inc
+
 **${METPLUS_VALID_EXCLUDE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_VALID_EXCLUDE`
+     - valid_exc
+
 **${METPLUS_INIT_HOUR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_HOUR`
+     - init_hour
+
 **${METPLUS_VALID_HOUR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_VALID_HOUR`
+     - valid_hour
+
 **${METPLUS_LEAD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_LEAD`
+     - lead
+
 **${METPLUS_LEAD_REQ}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_LEAD_REQ`
+     - lead_req
+
 **${METPLUS_INIT_MASK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_MASK`
+     - init_mask
+
 **${METPLUS_VALID_MASK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_VALID_MASK`
+     - valid_mask
+
 **${METPLUS_TRACK_WATCH_WARN}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_TRACK_WATCH_WARN`
+     - track_watch_warn
+
 **${METPLUS_COLUMN_THRESH_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_COLUMN_THRESH_NAME`
+     - column_thresh_name
+
 **${METPLUS_COLUMN_THRESH_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_COLUMN_THRESH_VAL`
+     - column_thresh_val
+
 **${METPLUS_COLUMN_STR_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_COLUMN_STR_NAME`
+     - column_str_name
+
 **${METPLUS_COLUMN_STR_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_COLUMN_STR_VAL`
+     - column_str_val
+
 **${METPLUS_INIT_THRESH_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_THRESH_NAME`
+     - init_thresh_name
+
 **${METPLUS_INIT_THRESH_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_THRESH_VAL`
+     - init_thresh_val
+
 **${METPLUS_INIT_STR_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_STR_NAME`
+     - init_str_name
+
 **${METPLUS_INIT_STR_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_STR_VAL`
+     - init_str_val
+
 **${METPLUS_WATER_ONLY}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_WATER_ONLY`
+     - water_only
+
 **${METPLUS_LANDFALL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_LANDFALL`
+     - landfall
+
 **${METPLUS_LANDFALL_BEG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_LANDFALL_BEG`
+     - landfall_beg
+
 **${METPLUS_LANDFALL_END}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_LANDFALL_END`
+     - landfall_end
+
 **${METPLUS_MATCH_POINTS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_MATCH_POINTS`
+     - match_points
+
 **${METPLUS_JOBS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_JOBS_LIST`
+     - jobs
+
 **${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _user_script_wrapper:
 
