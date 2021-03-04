@@ -59,13 +59,16 @@ fcst = {
    ${METPLUS_FCST_MERGE_FLAG}
 }
 
-obs = fcst;
-
 obs = {
    ${METPLUS_OBS_FIELD}
 
+   censor_thresh      = [];
+   censor_val         = [];
    ${METPLUS_OBS_CONV_RADIUS}
    ${METPLUS_OBS_CONV_THRESH}
+   vld_thresh         = 0.5;
+   filter_attr_name   = [];
+   filter_attr_thresh = [];
    ${METPLUS_OBS_MERGE_THRESH}
    ${METPLUS_OBS_MERGE_FLAG}
 }
