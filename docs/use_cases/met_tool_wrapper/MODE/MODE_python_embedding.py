@@ -1,23 +1,23 @@
 """
-MODE: Basic Use Case
-====================
+MODE: Using Python Embedding
+============================
 
-met_tool_wrapper/MODE/MODE.conf
+met_tool_wrapper/MODE/MODE_python_embedding.conf
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# Compare relative humidity 12 hour forecast to 0 hour observations.
-# Generate statistics of the results.
+# Compare dummy forecast data to dummy observations. Generate statistics of
+# the results.
 
 ##############################################################################
 # Datasets
 # --------
 #
-# | **Forecast:** WRF Relative Humidity
-# | **Observation:** WRF Relative Humidity
+# | **Forecast:** Dummy text files found in the MET shared directory
+# | **Observation:** Dummy text files found in the MET shared directory
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
@@ -34,11 +34,8 @@ met_tool_wrapper/MODE/MODE.conf
 # METplus Workflow
 # ----------------
 #
-# MODE is the only tool called in this example. It processes the following
-# run times:
+# MODE is the only tool called in this example. It processes a single run time with three forecast leads. The input data are simple text files with no timing information, so the list of forecast leads simply duplicates the same file multiple times to demonstrate how data is read in via Python embedding.
 #
-# | **Init:** 2005-08-07_0Z
-# | **Forecast lead:** 12 hour
 
 ##############################################################################
 # METplus Configuration
@@ -46,17 +43,17 @@ met_tool_wrapper/MODE/MODE.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/MODE/MODE.conf
+# with the -c option, i.e. -c parm/use_cases/met_tool_wrapper/MODE/MODE_python_embedding.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/MODE/MODE.conf
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/MODE/MODE_python_embedding.conf
 
 ##############################################################################
 # MET Configuration
-# -----------------
+# ---------------------
 #
 # METplus sets environment variables based on the values in the METplus configuration file.
-# These variables are referenced in the MET configuration file.
+# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/MODEConfig_wrapped
@@ -87,13 +84,13 @@ met_tool_wrapper/MODE/MODE.conf
 #
 # This use case can be run two ways:
 #
-# 1) Passing in MODE.conf then a user-specific system configuration file::
+# 1) Passing in MODE_python_embedding.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MODE/MODE.conf -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MODE/MODE_python_embedding.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in MODE.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in MODE_python_embedding.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MODE/MODE.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/MODE/MODE_python_embedding.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -120,19 +117,19 @@ met_tool_wrapper/MODE/MODE.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in mode/2005080712 (relative to **OUTPUT_BASE**)
+# Output for this use case will be found in met_tool_wrapper/MODE_python_embedding/2005080712 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
-
-# * mode_WRF_RH_vs_WRF_RH_P500_120000L_20050807_120000V_000000A_cts.txt
-# * mode_WRF_RH_vs_WRF_RH_P500_120000L_20050807_120000V_000000A_obj.nc
-# * mode_WRF_RH_vs_WRF_RH_P500_120000L_20050807_120000V_000000A_obj.txt
-# * mode_WRF_RH_vs_WRF_RH_P500_120000L_20050807_120000V_000000A.ps
-
+# * mode_FCST_vs_OBS_120000L_20050807_120000V_120000A_cts.txt
+# * mode_FCST_vs_OBS_120000L_20050807_120000V_120000A_obj.nc
+# * mode_FCST_vs_OBS_120000L_20050807_120000V_120000A_obj.txt
+# * mode_FCST_vs_OBS_120000L_20050807_120000V_120000A.ps
+#
 
 ##############################################################################
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-MODE.png'
+# .. note:: `MODEToolUseCase <https://dtcenter.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
+#  `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
 #
-# .. note:: `MODEToolUseCase <https://dtcenter.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_, `DiagnosticsUseCase <https://dtcenter.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
+# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-MODE.png'
