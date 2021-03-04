@@ -3319,7 +3319,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_LEAD_LIST`
+   * - :term:`LEAD_SEQ`
      - lead
 
 **${METPLUS_VX_MASK}**
