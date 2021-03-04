@@ -1,7 +1,7 @@
 Update Version on Develop Branch
 --------------------------------
 
-Change docs/version value to the next release after this one with -dev added
+Change metplus/VERSION value to the next release after this one with -dev added
 to the end. Releases will loosely following these names, but are subject to
 change:
 
