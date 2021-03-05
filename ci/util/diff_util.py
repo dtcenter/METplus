@@ -44,7 +44,7 @@ def get_file_type(filepath):
 def compare_dir(dir_a, dir_b, debug=False):
     # if input are files and not directories, compare them
     if os.path.isfile(dir_a):
-        result = compare_files(dir_a, dir_b, debug)
+        result = compare_files(dir_a, dir_b, debug=debug)
         if result is None or result is True:
             return []
 
@@ -72,7 +72,11 @@ def compare_dir(dir_a, dir_b, debug=False):
                   "# # # #\n")
             rel_path = filepath_a.replace(f'{dir_a}/', '')
             print(f"COMPARING {rel_path}")
-            result = compare_files(filepath_a, filepath_b, debug)
+            result = compare_files(filepath_a,
+                                   filepath_b,
+                                   debug=debug,
+                                   dir_a=dir_a,
+                                   dir_b=dir_b)
 
             # no differences of skipped
             if result is None or result is True:
@@ -105,7 +109,10 @@ def compare_dir(dir_a, dir_b, debug=False):
           "**************************************************\n\n")
     return diff_files
 
-def compare_files(filepath_a, filepath_b, debug=False):
+def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None):
+    # dir_a and dir_b are only needed if comparing file lists that need those
+    # directories to substitute when comparing because files in the list will
+    # have different paths
     print(f"file_A: {filepath_a}")
     print(f"file_B: {filepath_b}\n")
 
@@ -168,7 +175,7 @@ def compare_image_files(filepath_a, filepath_b):
         return False
     return True
 
-def compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
+def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     with open(filepath_a, 'r') as file_handle:
         lines_a = file_handle.read().splitlines()
 
@@ -225,7 +232,7 @@ def compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
         compare_b = line_b
         # if files are file list files, compare each line after replacing
         # dir_b with dir_a in filepath_b
-        if is_file_list:
+        if is_file_list and dir_a and dir_b:
             compare_b = compare_b.replace(dir_b, dir_a)
 
         # check for differences
