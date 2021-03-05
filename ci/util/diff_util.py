@@ -76,6 +76,19 @@ def compare_dir(dir_a, dir_b, debug=False):
 
             diff_files.append(result)
 
+    # loop through dir_b and report if any files are not found in dir_a
+    for root, _, files in os.walk(dir_b):
+        # skip logs directories
+        if root.endswith('logs'):
+            continue
+
+        for filename in files:
+            filepath_b = os.path.join(root, filename)
+            filepath_a = filepath_b.replace(dir_b, dir_a)
+            if not os.path.exists(filepath_a):
+                print(f"ERROR: File does not exist: {filepath_b}")
+                diff_files.append('', filepath_b, 'file not found')
+
     print("\nSummary:\n")
     if diff_files:
         print("\nERROR: Some differences were found")
