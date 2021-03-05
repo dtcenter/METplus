@@ -95,7 +95,7 @@ def compare_dir(dir_a, dir_b, debug=False):
             filepath_a = filepath_b.replace(dir_b, dir_a)
             if not os.path.exists(filepath_a):
                 print(f"ERROR: File does not exist: {filepath_b}")
-                diff_files.append('', filepath_b, 'file not found')
+                diff_files.append(('', filepath_b, 'file not found'))
 
     print("\nSummary:\n")
     if diff_files:
