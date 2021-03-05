@@ -1,1 +1,0 @@
-* For *Related Community Code* select both the METplus and the |projectRepo| options (use shift to select).
