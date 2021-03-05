@@ -12,7 +12,7 @@ Update DTC Website
   * For *Full Title of Release* type "|projectRepo| Version X.Y.Z".
 
   * For *Related Community Code* select both the METplus and the |projectRepo|
-    options (use shift to select).
+    Wrappers options (use shift to select).
 
   * For *Version Label* type "|projectRepo| X.Y.Z betaN".
 
