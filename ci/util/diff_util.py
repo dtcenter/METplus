@@ -223,12 +223,12 @@ def compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
                 cols_b = compare_b.split()[1:]
                 for col_a, col_b, label in zip(cols_a, cols_b, header_a):
                     if col_a != col_b:
-                        print(f"ERROR: {label} differs: {col_a} vs {col_b}")
+                        print(f"ERROR: {label} differs:\n"
+                              f" A: {col_a}\n B: {col_b}")
                         all_good = False
             else:
-                print(f"ERROR: Line in {filepath_b} differs")
-                print(f"  A: {compare_a}")
-                print(f"  B: {compare_b}")
+                print(f"ERROR: Line in {filepath_b} differs\n"
+                      f" A: {compare_a}\n B: {compare_b}")
                 all_good = False
 
     return all_good
