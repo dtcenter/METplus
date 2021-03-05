@@ -24,8 +24,8 @@ Update DTC Website
 
   * Click on *Add Code Download* then click *Add Link* to add links for each of the following:
 
-    * Add Link: Link text should be the name of the release and the URL should be
-      the release page that was just created under the GitHub Releases tab.
+    * Add Link: Link text should be the file name of the tar file and  the URL
+      should be the .tar.gz file created in the "Attach Release Tarfile" step.
 
     * Add Link: Link text should be "User's Guide" and the URL should be the top
       level directory of the User's Guide hosted on the web.

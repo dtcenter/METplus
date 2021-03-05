@@ -43,6 +43,7 @@ jobs:
   get_image:
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -56,6 +57,7 @@ jobs:
   update_data_volumes:
     name: Docker Setup - Update Data Volumes
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -71,6 +73,7 @@ jobs:
   unit_tests:
     name: Unit Tests - Pytest
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
     needs: get_image
     steps:
       - uses: actions/checkout@v2
@@ -80,6 +83,7 @@ jobs:
   use_case_tests:
     name: Use Case Tests
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
     needs: [get_image, update_data_volumes]
     strategy:
       fail-fast: false
@@ -146,6 +150,7 @@ jobs:
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
     needs: [use_case_tests]
     steps:
       - uses: actions/checkout@v2

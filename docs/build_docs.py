@@ -155,6 +155,13 @@ def main():
     run_command("ln -s ../generated/model_applications",
                 users_guide_dir)
 
+    warning_file = os.path.join(docs_dir,
+                                '_build',
+                                'warnings.log')
+    if os.stat(warning_file).st_size == 0:
+        print(f"No warnings found, removing {warning_file}")
+        os.remove(warning_file)
+
     print("Documentation build completed")
 
 if __name__ == "__main__":
