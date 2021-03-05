@@ -68,6 +68,10 @@ def compare_dir(dir_a, dir_b, debug=False):
                 continue
 
             filepath_b = filepath_a.replace(dir_a, dir_b)
+            print("\n# # # # # # # # # # # # # # # # # # # # # # # # # # "
+                  "# # # #\n")
+            rel_path = filepath_a.replace(f'{dir_a}/', '')
+            print(f"COMPARING {rel_path}")
             result = compare_files(filepath_a, filepath_b, debug)
 
             # no differences of skipped
@@ -102,10 +106,6 @@ def compare_dir(dir_a, dir_b, debug=False):
     return diff_files
 
 def compare_files(filepath_a, filepath_b, debug=False):
-    print("\n# # # # # # # # # # # # # # # # # # # # # # # # # # "
-          "# # # #\n")
-    rel_path = filepath_a.replace(f'{dir_a}/', '')
-    print(f"COMPARING {rel_path}")
     print(f"file_A: {filepath_a}")
     print(f"file_B: {filepath_b}\n")
 
