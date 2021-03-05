@@ -105,7 +105,7 @@ def compare_dir(dir_a, dir_b, debug=False):
     else:
         print("\nNo differences found in any files")
 
-    print("Finished comparing directories"
+    print("Finished comparing directories\n"
           "**************************************************\n\n")
     return diff_files
 
