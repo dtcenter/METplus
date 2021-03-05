@@ -42,6 +42,14 @@ def get_file_type(filepath):
     return 'unknown'
 
 def compare_dir(dir_a, dir_b, debug=False):
+    # if input are files and not directories, compare them
+    if os.path.isfile(dir_a):
+        result = compare_files(dir_a, dir_b, debug)
+        if result is None or result is True:
+            return []
+
+        return [result]
+
     diff_files = []
     for root, _, files in os.walk(dir_a):
         # skip logs directories
@@ -60,53 +68,13 @@ def compare_dir(dir_a, dir_b, debug=False):
                 continue
 
             filepath_b = filepath_a.replace(dir_a, dir_b)
-            if debug:
-                print("\n# # # # # # # # # # # # # # # # # # # # # # # # # # "
-                      "# # # #\n")
-                rel_path = filepath_a.replace(f'{dir_a}/', '')
-                print(f"COMPARING {rel_path}")
-                print(f"file_A: {filepath_a}")
-                print(f"file_B: {filepath_b}\n")
+            result = compare_files(filepath_a, filepath_b, debug)
 
-            # if file does not exist in dir_b, report difference
-            if not os.path.exists(filepath_b):
-                if debug:
-                    print(f"ERROR: File does not exist: {filepath_b}")
-                diff_files.append((filepath_a, '', 'file not found'))
+            # no differences of skipped
+            if result is None or result is True:
                 continue
 
-            file_type = get_file_type(filepath_a)
-            if file_type == 'skip':
-                print(f'Skipping')
-                continue
-
-            if file_type == 'netcdf':
-                print("Comparing NetCDF")
-                if not nc_is_equal(filepath_a, filepath_b):
-                    diff_files.append((filepath_a, filepath_b, 'NetCDF diff'))
-                else:
-                    print("No differences in NetCDF files")
-                continue
-
-            if file_type == 'image':
-                print("Comparing images")
-                if not compare_image_files(filepath_a, filepath_b):
-                    diff_files.append((filepath_a, filepath_b, 'Image diff'))
-                else:
-                    print("No differences in image files")
-                continue
-
-            # if not any of the above types, use diff to compare
-            print("Comparing text files")
-            if not filecmp.cmp(filepath_a, filepath_b):
-                # if files differ, open files and handle expected diffs
-                if not compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
-                    print(f"ERROR: File differs: {filepath_b}")
-                    diff_files.append((filepath_a, filepath_b, 'Text diff'))
-                else:
-                    print("No differences in text files")
-            else:
-                print("No differences in text files")
+            diff_files.append(result)
 
     if diff_files:
         print("\nERROR: Some differences were found")
@@ -116,6 +84,56 @@ def compare_dir(dir_a, dir_b, debug=False):
         print("\nNo differences found in any files")
 
     return diff_files
+
+def compare_files(filepath_a, filepath_b, debug=False):
+    print("\n# # # # # # # # # # # # # # # # # # # # # # # # # # "
+          "# # # #\n")
+    rel_path = filepath_a.replace(f'{dir_a}/', '')
+    print(f"COMPARING {rel_path}")
+    print(f"file_A: {filepath_a}")
+    print(f"file_B: {filepath_b}\n")
+
+    # if file does not exist in dir_b, report difference
+    if not os.path.exists(filepath_b):
+        if debug:
+            print(f"ERROR: File does not exist: {filepath_b}")
+        return (filepath_a, '', 'file not found')
+
+    file_type = get_file_type(filepath_a)
+    if file_type == 'skip':
+        print(f'Skipping')
+        return None
+
+    if file_type == 'netcdf':
+        print("Comparing NetCDF")
+        if not nc_is_equal(filepath_a, filepath_b):
+            return (filepath_a, filepath_b, 'NetCDF diff')
+
+        print("No differences in NetCDF files")
+        return True
+
+    if file_type == 'image':
+        print("Comparing images")
+        if not compare_image_files(filepath_a, filepath_b):
+            return (filepath_a, filepath_b, 'Image diff')
+
+        print("No differences in image files")
+        return True
+
+    # if not any of the above types, use diff to compare
+    print("Comparing text files")
+    if not filecmp.cmp(filepath_a, filepath_b):
+        # if files differ, open files and handle expected diffs
+        if not compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
+            print(f"ERROR: File differs: {filepath_b}")
+            return (filepath_a, filepath_b, 'Text diff')
+
+        print("No differences in text files")
+        return True
+    else:
+        print("No differences in text files")
+
+    return True
 
 def compare_image_files(filepath_a, filepath_b):
     diff_count = 0
@@ -185,6 +203,7 @@ def compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
         print(f" File_A: {len(lines_a)}\n File_B: {len(lines_b)}")
         return False
 
+    all_good = True
     for line_a, line_b in zip(lines_a, lines_b):
         compare_a = line_a
         compare_b = line_b
@@ -194,7 +213,6 @@ def compare_txt_files(filepath_a, filepath_b, dir_a, dir_b):
             compare_b = compare_b.replace(dir_b, dir_a)
 
         # check for differences
-        all_good = True
         if compare_a != compare_b:
             # if the diff is in a stat file, ignore the version number
             if is_stat_file:
