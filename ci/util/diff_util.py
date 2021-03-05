@@ -76,6 +76,7 @@ def compare_dir(dir_a, dir_b, debug=False):
 
             diff_files.append(result)
 
+    print("\nSummary:\n")
     if diff_files:
         print("\nERROR: Some differences were found")
         for filepath_a, filepath_b, reason in diff_files:
@@ -83,6 +84,8 @@ def compare_dir(dir_a, dir_b, debug=False):
     else:
         print("\nNo differences found in any files")
 
+    print("Finished comparing directories"
+          "**************************************************\n\n")
     return diff_files
 
 def compare_files(filepath_a, filepath_b, debug=False):
