@@ -1918,7 +1918,7 @@ class CommandBuilder:
         for list_values in remove_bracket_list:
             c_dict[list_values] = c_dict[list_values].strip('[]')
 
-    def handle_mask(self, single_value=False):
+    def handle_mask(self, single_value=False, c_dict=None):
         """! Read mask dictionary values and set them into env_var_list
 
             @param single_value if True, only a single value for grid and poly
@@ -1946,6 +1946,15 @@ class CommandBuilder:
                       'poly',
                       'MASK_POLY',
                       **extra_args)
+
+        # set VERIFICATION MASK to support old method of setting mask.poly
+        mask_poly_string = tmp_dict['MASK_POLY']
+        if mask_poly_string:
+            mask_poly_string = (
+                mask_poly_string.split('=')[1].strip().strip(';').strip('[]')
+            )
+        if c_dict:
+            c_dict['VERIFICATION_MASK'] = mask_poly_string
 
         mask_dict_string = self.format_met_config_dict(tmp_dict,
                                                        'mask',

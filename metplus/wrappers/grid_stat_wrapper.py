@@ -134,7 +134,8 @@ class GridStatWrapper(CompareGriddedWrapper):
                                'GRID_STAT_NEIGHBORHOOD_SHAPE', 'SQUARE')
         )
 
-        self.handle_mask(single_value=False)
+        self.handle_mask(single_value=False,
+                         c_dict=c_dict)
 
         return c_dict
 
