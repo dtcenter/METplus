@@ -1948,14 +1948,18 @@ class CommandBuilder:
                       **extra_args)
 
         # set VERIFICATION MASK to support old method of setting mask.poly
-        mask_poly_string = tmp_dict['MASK_POLY']
+        mask_poly_string = tmp_dict.get('MASK_POLY')
         if mask_poly_string:
             mask_poly_string = (
                 mask_poly_string.split('=')[1].strip().strip(';').strip('[]')
             )
+        else:
+            mask_poly_string = ''
+
         if c_dict:
             c_dict['VERIFICATION_MASK'] = mask_poly_string
 
+        # set METPLUS_MASK_DICT env var with mask items if set
         mask_dict_string = self.format_met_config_dict(tmp_dict,
                                                        'mask',
                                                        ['MASK_GRID',
