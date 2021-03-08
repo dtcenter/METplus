@@ -17,7 +17,7 @@ echo Timing docker pull...
 start_seconds=$SECONDS
 
 # pipe result to true because it will fail if image has not yet been built
-docker pull ${DOCKERHUB_TAG} || true
+docker pull ${DOCKERHUB_TAG} &> /dev/null || true
 
 duration=$(( SECONDS - start_seconds ))
 echo TIMING docker_setup
