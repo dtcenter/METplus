@@ -6,6 +6,8 @@ Basic Description
 The files in this directory are used to grab all of the METplus components including MET and then build MET.
 
 Compents are cloned from a github repository using manage_externals and are specified in the Externals.cfg file.
+You can copy either Externals_stable.cf or Externals_develop.cfg to Externals.cfg to checkout out either the most
+current stable versions or the most recent developmental versions of the components.
 
 MET external libraries are grabbed from dtcenter.org.
 
