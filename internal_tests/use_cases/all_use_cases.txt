@@ -15,6 +15,7 @@ GenVxMask_with_arguments:: met_tool_wrapper/GenVxMask/GenVxMask_with_arguments.c
 GridDiag:: met_tool_wrapper/GridDiag/GridDiag.conf
 GridStat:: met_tool_wrapper/GridStat/GridStat.conf
 MODE:: met_tool_wrapper/MODE/MODE.conf
+MODE_python_emedding:: met_tool_wrapper/MODE/MODE_python_embedding.conf
 MTD:: met_tool_wrapper/MTD/MTD.conf
 MTD_python_embedding:: met_tool_wrapper/MTD/MTD_python_embedding.conf
 PB2NC:: met_tool_wrapper/PB2NC/PB2NC.conf
@@ -26,6 +27,7 @@ PCPCombine_derive:: met_tool_wrapper/PCPCombine/PCPCombine_derive.conf
 PCPCombine_loop_custom:: met_tool_wrapper/PCPCombine/PCPCombine_loop_custom.conf
 PCPCombine_subtract:: met_tool_wrapper/PCPCombine/PCPCombine_subtract.conf
 PointStat:: met_tool_wrapper/PointStat/PointStat.conf
+PointStat_python_embedding:: met_tool_wrapper/PointStat/PointStat_python_embedding.conf
 Point2Grid:: met_tool_wrapper/Point2Grid/Point2Grid.conf
 PointStat_once_per_field:: met_tool_wrapper/PointStat/PointStat_once_per_field.conf
 RegridDataPlane:: met_tool_wrapper/RegridDataPlane/RegridDataPlane.conf
