@@ -16,4 +16,3 @@ Create a new vX.Y.Z bugfix release from the main_vX.Y branch.
 .. include:: release_steps/met/update_dtc_website.rst
 .. include:: release_steps/finalize_release_on_github_bugfix.rst
 .. include:: release_steps/met/update_docs.rst
-	     
