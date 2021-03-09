@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import sys
 import os
 import numpy as np
@@ -16,15 +15,16 @@ from Blocking import BlockingCalculation
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
 from ush.master_metplus import get_config_inputs_from_command_line
-from metplus.wrappers import PCPCombineWrapper
-from metplus.wrappers import RegridDataPlaneWrapper
+#from metplus.wrappers import PCPCombineWrapper
+#from metplus.wrappers import RegridDataPlaneWrapper
 from metplotpy.blocking_s2s import plot_blocking as pb
 from metplotpy.contributed.blocking_s2s.CBL_plot import create_cbl_plot
 from Blocking_WeatherRegime_util import find_input_files, parse_steps
 
 def main():
 
-    all_steps = ["REGRID","TIMEAVE","RUNMEAN","ANOMALY","CBL","PLOTCBL","IBL","PLOTIBL","GIBL","CALCBLOCKS","PLOTBLOCKS"]
+    #all_steps = ["REGRID","TIMEAVE","RUNMEAN","ANOMALY","CBL","PLOTCBL","IBL","PLOTIBL","GIBL","CALCBLOCKS","PLOTBLOCKS"]
+    all_steps = ["CBL","PLOTCBL","IBL","PLOTIBL","GIBL","CALCBLOCKS","PLOTBLOCKS"]
 
     inconfig_list = get_config_inputs_from_command_line()
     steps_list_fcst,steps_list_obs,config_list = parse_steps(inconfig_list)
@@ -39,48 +39,48 @@ def main():
     # Pre-Process Data:
     ######################################################################
     # Regrid
-    if ("REGRID" in steps_list_obs):
-        print('Regridding Observations')
-        regrid_config = config_metplus.replace_config_from_section(config, 'regrid_obs')
-        RegridDataPlaneWrapper(regrid_config).run_all_times()
+    #if ("REGRID" in steps_list_obs):
+    #    print('Regridding Observations')
+    #    regrid_config = config_metplus.replace_config_from_section(config, 'regrid_obs')
+    #    RegridDataPlaneWrapper(regrid_config).run_all_times()
 
-    if ("REGRID" in steps_list_fcst):
-       print('Regridding Model')
-       regrid_config = config_metplus.replace_config_from_section(config, 'regrid_fcst')
-       RegridDataPlaneWrapper(regrid_config).run_all_times()
+    #if ("REGRID" in steps_list_fcst):
+    #   print('Regridding Model')
+    #   regrid_config = config_metplus.replace_config_from_section(config, 'regrid_fcst')
+    #   RegridDataPlaneWrapper(regrid_config).run_all_times()
 
     #Compute Daily Average
-    if ("TIMEAVE" in steps_list_obs):
-        print('Computing Time Averages')
-        daily_config = config_metplus.replace_config_from_section(config, 'daily_mean_obs')
-        PCPCombineWrapper(daily_config).run_all_times()
+    #if ("TIMEAVE" in steps_list_obs):
+    #    print('Computing Time Averages')
+    #    daily_config = config_metplus.replace_config_from_section(config, 'daily_mean_obs')
+    #    PCPCombineWrapper(daily_config).run_all_times()
 
-    if ("TIMEAVE" in steps_list_fcst):
-        print('Computing Time Averages')
-        daily_config = config_metplus.replace_config_from_section(config, 'daily_mean_fcst')
-        PCPCombineWrapper(daily_config).run_all_times()
+    #if ("TIMEAVE" in steps_list_fcst):
+    #    print('Computing Time Averages')
+    #    daily_config = config_metplus.replace_config_from_section(config, 'daily_mean_fcst')
+    #    PCPCombineWrapper(daily_config).run_all_times()
 
     #Take a running mean
-    if ("RUNMEAN" in steps_list_obs):
-        print('Computing Obs Running means')
-        rmean_config = config_metplus.replace_config_from_section(config, 'running_mean_obs')
-        PCPCombineWrapper(rmean_config).run_all_times()
+    #if ("RUNMEAN" in steps_list_obs):
+    #    print('Computing Obs Running means')
+    #    rmean_config = config_metplus.replace_config_from_section(config, 'running_mean_obs')
+    #    PCPCombineWrapper(rmean_config).run_all_times()
 
-    if ("RUNMEAN" in steps_list_fcst):
-        print('Computing Model Running means')
-        rmean_config = config_metplus.replace_config_from_section(config, 'running_mean_fcst')
-        PCPCombineWrapper(rmean_config).run_all_times()
+    #if ("RUNMEAN" in steps_list_fcst):
+    #    print('Computing Model Running means')
+    #    rmean_config = config_metplus.replace_config_from_section(config, 'running_mean_fcst')
+    #    PCPCombineWrapper(rmean_config).run_all_times()
 
     #Compute anomaly
-    if ("ANOMALY" in steps_list_obs):
-        print('Computing Obs Anomalies')
-        anomaly_config = config_metplus.replace_config_from_section(config, 'anomaly_obs')
-        PCPCombineWrapper(anomaly_config).run_all_times()
+    #if ("ANOMALY" in steps_list_obs):
+    #    print('Computing Obs Anomalies')
+    #    anomaly_config = config_metplus.replace_config_from_section(config, 'anomaly_obs')
+    #    PCPCombineWrapper(anomaly_config).run_all_times()
 
-    if ("ANOMALY" in steps_list_fcst):
-        print('Computing Model Anomalies')
-        anomaly_config = config_metplus.replace_config_from_section(config, 'anomaly_fcst')
-        PCPCombineWrapper(anomaly_config).run_all_times()
+    #if ("ANOMALY" in steps_list_fcst):
+    #    print('Computing Model Anomalies')
+    #    anomaly_config = config_metplus.replace_config_from_section(config, 'anomaly_fcst')
+    #    PCPCombineWrapper(anomaly_config).run_all_times()
 
 
     ######################################################################

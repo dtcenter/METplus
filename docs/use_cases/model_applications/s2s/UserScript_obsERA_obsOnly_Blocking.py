@@ -32,9 +32,13 @@ UserScript_obsERA_obsOnly_Blocking.py
 # (TIMEAVE), computing a running mean (RMEAN), computing anomalies (ANOMALY), computing CBLs
 # (CBL), plotting CBLs (PLOTCBL), computing IBLs (IBL), plotting IBL frequency (PLOTIBL), 
 # computing GIBLs (GIBL), computing blocks (CALCBLOCKS), and plotting the blocking frequency
-# (PLOTBLOCKS).  The steps are listed in a .conf file and are formatted as follows:
+# (PLOTBLOCKS).  Regridding, time averaging, running means, and anomaloies are set up in the 
+# UserScript .conf file and are formatted as follows:
+# PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), PcpCombine(running_mean_obs), PcpCombine(anomaly_obs), UserScript(script_blocking)
 #
-# OBS_STEPS = REGRID+TIMEAVE+RUNMEAN+ANOMALY+CBL+PLOTCBL+IBL+PLOTIBL+GIBL+CALCBLOCKS+PLOTBLOCKS
+# The other steps are listed in the Blocking .conf file and are formatted as follows:
+# OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GIBL+CALCBLOCKS+PLOTBLOCKS 
+#
 
 ##############################################################################
 # METplus Workflow

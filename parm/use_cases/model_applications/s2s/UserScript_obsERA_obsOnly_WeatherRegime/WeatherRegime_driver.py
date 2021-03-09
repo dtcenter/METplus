@@ -1,5 +1,4 @@
 #!/usr/bin/env python3
-
 import sys
 import os
 import numpy as np
@@ -11,22 +10,17 @@ mp_fpath_split = str.split(mp_fpath,os.path.sep)
 mp_loc_ind = mp_fpath_split.index('METplus')
 
 sys.path.insert(0,os.path.sep.join(mp_fpath_split[0:mp_loc_ind+1]))
-sys.path.insert(0, os.path.sep.join(mp_fpath_split[0:mp_loc_ind])+"/METplotpy_feature_74")
-#sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-#    os.pardir,os.pardir)))
-#sys.path.insert(0, "/glade/u/home/kalb/UIUC/METplotpy_feature_74/metplotpy/contributed/weather_regime")
+#sys.path.insert(0, os.path.sep.join(mp_fpath_split[0:mp_loc_ind])+"/METplotpy_feature_74")
 from WeatherRegime import WeatherRegimeCalculation
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub, getlist
 from ush.master_metplus import get_config_inputs_from_command_line
-from metplus.wrappers import PCPCombineWrapper
-from metplus.wrappers import RegridDataPlaneWrapper
 from metplotpy.contributed.weather_regime import plot_weather_regime as pwr
 from Blocking_WeatherRegime_util import find_input_files, parse_steps, read_nc_met
 
 def main():
 
-    all_steps = ["REGRID","TIMEAVE","ELBOW","PLOTELBOW","EOF","PLOTEOF","KMEANS","PLOTKMEANS"]
+    all_steps = ["ELBOW","PLOTELBOW","EOF","PLOTEOF","KMEANS","PLOTKMEANS"]
 
     inconfig_list = get_config_inputs_from_command_line()
     steps_list_fcst,steps_list_obs,config_list = parse_steps(inconfig_list)
@@ -35,32 +29,6 @@ def main():
     if not steps_list_obs and not steps_list_fcst:
         print('No processing steps requested for either the model or observations,')
         print('no data will be processed')
-
-
-    ######################################################################
-    # Pre-Process Data:
-    ######################################################################
-    # Regrid
-    if ("REGRID" in steps_list_obs):
-        print('Regridding Observations')
-        regrid_config = config_metplus.replace_config_from_section(config, 'regrid_obs')
-        RegridDataPlaneWrapper(regrid_config).run_all_times()
-
-    if ("REGRID" in steps_list_fcst):
-       print('Regridding Model')
-       regrid_config = config_metplus.replace_config_from_section(config, 'regrid_fcst')
-       RegridDataPlaneWrapper(regrid_config).run_all_times()
-
-    #Compute Daily Average
-    if ("TIMEAVE" in steps_list_obs):
-        print('Computing Daily Averages')
-        daily_config = config_metplus.replace_config_from_section(config, 'daily_mean_obs')
-        PCPCombineWrapper(daily_config).run_all_times()
-
-    if ("TIMEAVE" in steps_list_fcst):
-        print('Computing Daily Averages')
-        daily_config = config_metplus.replace_config_from_section(config, 'daily_mean_fcst')
-        PCPCombineWrapper(daily_config).run_all_times()
 
 
     ######################################################################

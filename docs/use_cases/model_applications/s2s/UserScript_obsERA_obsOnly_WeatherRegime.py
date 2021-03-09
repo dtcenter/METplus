@@ -13,7 +13,8 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # --------------------
 #
 # To perform a weather regime analysis using 500 mb height data.  There are 3
-# steps in the weather regime analysis, elbow, EOFs, and K means.
+# steps in the weather regime analysis, elbow, EOFs, and K means, and 2 pre-
+# processing steps, RegridDataPlane and PcpCombine.
 
 ##############################################################################
 # Datasets
@@ -30,9 +31,13 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # lists in STEPS_OBS.  The possible steps are regridding (REGRID), time averaging
 # (TIMEAVE), computing the elbow (ELBOW), plotting the elbow (PLOTELBOW), computing 
 # EOFs (EOF), plotting EOFs (PLOTEOF), computing K means (KMEANS), and plotting the 
-# K means (PLOTKMEANS).  The steps are listed in a .conf file and are formatted as follows:
+# K means (PLOTKMEANS).  Regridding and time averaging are set up in the UserScript
+# .conf file and are formatted as follows:
+# PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), UserScript(script_wr)
 #
-# OBS_STEPS = REGRID+TIMEAVE+ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS
+# The other steps are listed in the weather regime analsysis .conf file
+# in the following format:
+# OBS_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS
 
 ##############################################################################
 # METplus Workflow
