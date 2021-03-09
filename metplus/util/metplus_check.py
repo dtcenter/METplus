@@ -7,11 +7,13 @@ import sys
 import os
 import re
 
-SUPPORTED_PY_VERSION = '3.6.3'
+from .. import get_python_version
+
+SUPPORTED_PY_VERSION = get_python_version()
 
 def metplus_check_python_version(user_py, supported_py):
     """!Test that the user's version of python is equal of higher than the
-        the supported version of python. Imported in each wrapper and master_metplus
+        the supported version of python. Imported in each wrapper and run_metplus
         to avoid confusing failures if the user's version is not current. Note:
         SyntaxError from using f-strings (available in 3.6+) in earlier versions of
         Python are output before the output from this function can be displayed.

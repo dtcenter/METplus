@@ -64,14 +64,14 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/EnsembleStatConfig_WOFS
+# .. literalinclude:: ../../../../parm/met_config/EnsembleStatConfig_wrapped
 #
 # See the following files for more information about the environment variables set in this configuration file.
 #
 # parm/use_cases/met_tool_wrapper/EnsembleStat.py
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/GridStatConfig_WOFS_PCP_1H
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS/GridStatConfig_WOFS_PCP_1H
 #
 # See the following files for more information about the environment variables set in this configuration file.
 #
@@ -85,11 +85,11 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # 1) Passing in EnsembleStat_fcstWOFS_obsWOFS.py then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in EnsembleStat_fcstWOFS_obsWOFS.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -133,4 +133,4 @@ model_application/precipitation/EnsembleStat_fcstWOFS_obsWOFS.conf
 #    `GRIB2FileUseCase  <https://dtcenter.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_,
 #    `EnsembleAppUseCase <https://dtcenter.github.io/METplus/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_,
 
-# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-EnsembleStat.png'
+# sphinx_gallery_thumbnail_path = '_static/precipitation-EnsembleStat_fcstWOFS_obsWOFS.png'

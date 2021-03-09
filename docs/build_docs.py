@@ -43,7 +43,7 @@ def run_command(command, dir_to_run=None):
 
 def write_release_date_file(docs_dir):
     release_date_file = os.path.join(docs_dir,
-                                     'release_date')
+                                     'RELEASE_DATE')
 
     # get current date in %Y%m%d
     today_date = datetime.now().strftime('%Y%m%d')
@@ -57,6 +57,7 @@ def write_release_date_file(docs_dir):
 def main():
     # check if release is in any command line argument
     is_release = any(['release' in arg for arg in sys.argv])
+    skip_doxygen = any(['skip-doxygen' in arg for arg in sys.argv])
 
     build_pdf = os.environ.get('METPLUS_DOC_PDF')
     if build_pdf:
@@ -77,11 +78,14 @@ def main():
                      ]
 
     # docs directory
-    docs_dir = os.getcwd()
+    docs_dir = os.path.abspath(os.path.dirname(__file__))
+    package_dir = os.path.join(docs_dir,
+                               os.pardir,
+                               'metplus')
 
     # update release_date file if creating a release
     if is_release:
-        write_release_date_file(docs_dir)
+        write_release_date_file(package_dir)
 
     # generated use case HTML output
     generated_dir = os.path.join(docs_dir,
@@ -104,27 +108,28 @@ def main():
     run_command(f"make clean html {'pdf' if build_pdf else ''}",
                 docs_dir)
 
-    # build the doxygen documentation
-    run_command("make clean all",
-                doxygen_dir)
+    if not skip_doxygen:
+        # build the doxygen documentation
+        run_command("make clean all",
+                    doxygen_dir)
 
-    # copy doxygen documentation into _build/html/doxygen
-    doxygen_generated = os.path.join(docs_dir,
-                                     'generated',
-                                     'doxygen',
-                                     'html')
-    doxygen_output = os.path.join(docs_dir,
-                                  '_build',
-                                  'html',
-                                  'doxygen')
+        # copy doxygen documentation into _build/html/doxygen
+        doxygen_generated = os.path.join(docs_dir,
+                                         'generated',
+                                         'doxygen',
+                                         'html')
+        doxygen_output = os.path.join(docs_dir,
+                                      '_build',
+                                      'html',
+                                      'doxygen')
 
-    # make doxygen output dir if it does not exist
-    if os.path.exists(doxygen_output):
-        print(f"Removing {doxygen_output}")
-        os.rmtree(doxygen_output)
+        # make doxygen output dir if it does not exist
+        if os.path.exists(doxygen_output):
+            print(f"Removing {doxygen_output}")
+            os.rmtree(doxygen_output)
 
-    print(f"Copying doxygen files from {doxygen_generated} to {doxygen_output}")
-    shutil.copytree(doxygen_generated, doxygen_output)
+        print(f"Copying doxygen files from {doxygen_generated} to {doxygen_output}")
+        shutil.copytree(doxygen_generated, doxygen_output)
 
     # remove download buttons
     print(f"Removing download buttons from files under {generated_dir}")
@@ -150,6 +155,13 @@ def main():
 
     run_command("ln -s ../generated/model_applications",
                 users_guide_dir)
+
+    warning_file = os.path.join(docs_dir,
+                                '_build',
+                                'warnings.log')
+    if os.stat(warning_file).st_size == 0:
+        print(f"No warnings found, removing {warning_file}")
+        os.remove(warning_file)
 
     print("Documentation build completed")
 

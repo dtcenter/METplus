@@ -27,7 +27,6 @@ from .string_template_substitution import do_string_sub
 from .string_template_substitution import parse_template
 from .string_template_substitution import get_tags
 from . import time_util as time_util
-from . import metplus_check
 
 from .. import get_metplus_version
 
@@ -503,8 +502,6 @@ def check_for_deprecated_config(config):
         'EXTRACT_TILES_OVERWRITE_TRACK': {'sec': 'config',
                                           'alt': 'EXTRACT_TILES_SKIP_IF_OUTPUT_EXISTS',
                                           'copy': False},
-        'INIT_INCLUDE': {'sec': 'config', 'alt': 'TC_PAIRS_INIT_INCLUDE'},
-        'INIT_EXCLUDE': {'sec': 'config', 'alt': 'TC_PAIRS_INIT_EXCLUDE'},
         'EXTRACT_TILES_PAIRS_INPUT_DIR': {'sec': 'dir',
                                           'alt': 'EXTRACT_TILES_STAT_INPUT_DIR',
                                           'copy': False},
@@ -518,8 +515,6 @@ def check_for_deprecated_config(config):
         'SERIES_ANALYSIS_FILTER_OPTS': {'sec': 'config',
                                         'alt': 'TC_STAT_JOB_ARGS',
                                         'copy': False},
-        'TC_STAT_INPUT_DIR': {'sec': 'dir',
-                              'alt': 'TC_STAT_LOOKIN_DIR'},
         'SERIES_ANALYSIS_INPUT_DIR': {'sec': 'dir',
                               'alt': 'FCST_SERIES_ANALYSIS_INPUT_DIR '
                                      'and '
@@ -646,7 +641,8 @@ def check_for_deprecated_met_config(config):
 
     # check if *_CONFIG_FILE if set in the METplus config file and check for
     # deprecated environment variables in those files
-    met_config_keys = [key for key in config.keys('config') if key.endswith('CONFIG_FILE')]
+    met_config_keys = [key for key in config.keys('config')
+                       if key.endswith('CONFIG_FILE')]
 
     for met_config_key in met_config_keys:
         met_tool = met_config_key.replace('_CONFIG_FILE', '')
@@ -677,64 +673,65 @@ def check_for_deprecated_met_config_file(config, met_config, sed_cmds, met_tool)
     deprecated_output_prefix_list = ['FCST_VAR', 'OBS_VAR']
     config.logger.debug(f"Checking for deprecated environment variables in: {met_config}")
 
-    with open(met_config, 'r') as f:
-        for line in f:
+    with open(met_config, 'r') as file_handle:
+        lines = file_handle.read().splitlines()
 
-            for deprecated_item in deprecated_met_list:
-                if '${' + deprecated_item + '}' in line:
-                    all_good = False
-                    config.logger.error("Please remove deprecated environment variable "
-                                        f"${{{deprecated_item}}} found in MET config file: "
-                                        f"{met_config}")
+    for line in lines:
+        for deprecated_item in deprecated_met_list:
+            if '${' + deprecated_item + '}' in line:
+                all_good = False
+                config.logger.error("Please remove deprecated environment variable "
+                                    f"${{{deprecated_item}}} found in MET config file: "
+                                    f"{met_config}")
 
-                    if deprecated_item == 'MET_VALID_HHMM' and 'file_name' in line:
-                        config.logger.error(f"Set {met_tool}_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in a "
-                                            "METplus config file to set CLIMO_MEAN_FILE in a MET config")
-                        new_line = "   file_name = [ ${CLIMO_MEAN_FILE} ];"
-
-                        # escape [ and ] because they are special characters in sed commands
-                        old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
-
-                        sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
-                        add_line = f"{met_tool}_CLIMO_MEAN_INPUT_TEMPLATE"
-                        sed_cmds.append(f"#Add {add_line}")
-                        break
-
-                    if 'to_grid' in line:
-                        config.logger.error("MET to_grid variable should reference "
-                                            "${REGRID_TO_GRID} environment variable")
-                        new_line = "   to_grid    = ${REGRID_TO_GRID};"
-
-                        # escape [ and ] because they are special characters in sed commands
-                        old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
-
-                        sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
-                        config.logger.info(f"Be sure to set {met_tool}_REGRID_TO_GRID to the correct value.")
-                        add_line = f"{met_tool}_REGRID_TO_GRID"
-                        sed_cmds.append(f"#Add {add_line}")
-                        break
-
-
-            for deprecated_item in deprecated_output_prefix_list:
-                # if deprecated item found in output prefix or to_grid line, replace line to use
-                # env var OUTPUT_PREFIX or REGRID_TO_GRID
-                if '${' + deprecated_item + '}' in line and 'output_prefix' in line:
-                    config.logger.error("output_prefix variable should reference "
-                                        "${OUTPUT_PREFIX} environment variable")
-                    new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
+                if deprecated_item == 'MET_VALID_HHMM' and 'file_name' in line:
+                    config.logger.error(f"Set {met_tool}_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in a "
+                                        "METplus config file to set CLIMO_MEAN_FILE in a MET config")
+                    new_line = "   file_name = [ ${CLIMO_MEAN_FILE} ];"
 
                     # escape [ and ] because they are special characters in sed commands
                     old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
 
                     sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
-                    config.logger.info(f"You will need to add {met_tool}_OUTPUT_PREFIX to the METplus config file"
-                                       f" that sets {met_tool}_CONFIG_FILE. Set it to:")
-                    output_prefix = replace_output_prefix(line)
-                    add_line = f"{met_tool}_OUTPUT_PREFIX = {output_prefix}"
-                    config.logger.info(add_line)
+                    add_line = f"{met_tool}_CLIMO_MEAN_INPUT_TEMPLATE"
                     sed_cmds.append(f"#Add {add_line}")
-                    all_good = False
                     break
+
+                if 'to_grid' in line:
+                    config.logger.error("MET to_grid variable should reference "
+                                        "${REGRID_TO_GRID} environment variable")
+                    new_line = "   to_grid    = ${REGRID_TO_GRID};"
+
+                    # escape [ and ] because they are special characters in sed commands
+                    old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
+
+                    sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
+                    config.logger.info(f"Be sure to set {met_tool}_REGRID_TO_GRID to the correct value.")
+                    add_line = f"{met_tool}_REGRID_TO_GRID"
+                    sed_cmds.append(f"#Add {add_line}")
+                    break
+
+
+        for deprecated_item in deprecated_output_prefix_list:
+            # if deprecated item found in output prefix or to_grid line, replace line to use
+            # env var OUTPUT_PREFIX or REGRID_TO_GRID
+            if '${' + deprecated_item + '}' in line and 'output_prefix' in line:
+                config.logger.error("output_prefix variable should reference "
+                                    "${OUTPUT_PREFIX} environment variable")
+                new_line = "output_prefix    = \"${OUTPUT_PREFIX}\";"
+
+                # escape [ and ] because they are special characters in sed commands
+                old_line = line.rstrip().replace('[', r'\[').replace(']', r'\]')
+
+                sed_cmds.append(f"sed -i 's|^{old_line}|{new_line}|g' {met_config}")
+                config.logger.info(f"You will need to add {met_tool}_OUTPUT_PREFIX to the METplus config file"
+                                   f" that sets {met_tool}_CONFIG_FILE. Set it to:")
+                output_prefix = replace_output_prefix(line)
+                add_line = f"{met_tool}_OUTPUT_PREFIX = {output_prefix}"
+                config.logger.info(add_line)
+                sed_cmds.append(f"#Add {add_line}")
+                all_good = False
+                break
 
     return all_good
 
@@ -2006,6 +2003,9 @@ def is_var_item_valid(item_list, index, ext, config):
     if 'BOTH' in item_list and ('FCST' in item_list or 'OBS' in item_list):
 
         msg.append(f"Cannot set FCST{full_ext} or OBS{full_ext} if BOTH{full_ext} is set.")
+    elif ext == 'THRESH':
+        # allow thresholds unless BOTH and (FCST or OBS) are set
+        pass
 
     elif 'FCST' in item_list and 'OBS' not in item_list:
         # if FCST level has 1 item and OBS name is a python embedding script,
@@ -2035,7 +2035,7 @@ def is_var_item_valid(item_list, index, ext, config):
         skip_error_for_py_embed = ext == 'LEVELS' and is_python_script(other_name) and len(level_list) == 1
 
         if ext not in ['OPTIONS'] and not skip_error_for_py_embed:
-            msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or ."
+            msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or "
                           f"change OBS{full_ext} to BOTH{full_ext}")
 
             config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
@@ -2131,6 +2131,7 @@ def get_var_items(config, data_type, index, time_info, met_tool=None):
         return '', '', '', ''
 
     name = do_string_sub(config.getraw('config', search_name),
+                         skip_missing_tags=True,
                          **time_info)
 
     # get levels if available
@@ -2178,10 +2179,14 @@ def get_var_items(config, data_type, index, time_info, met_tool=None):
         extra = do_string_sub(config.getraw('config', search_extra),
                               **time_info)
 
-        # split up each item by semicolon, then add a semicolon to the end of each item
+        # strip off empty space around each value
+        extra_list = [item.strip() for item in extra.split(';')]
+
+        # split up each item by semicolon, then add a semicolon to the
+        # end of each item
         # to avoid errors where the user forgot to add a semicolon at the end
         # use list(filter(None to remove empty strings from list
-        extra_list = list(filter(None, extra.split(';')))
+        extra_list = list(filter(None, extra_list))
         extra = f"{'; '.join(extra_list)};"
 
     return name, levels, thresh, extra
@@ -2219,7 +2224,7 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
             list of dictionaries with variable information
     """
 
-    # validate configs again in case wrapper is not running from master_metplus
+    # validate configs again in case wrapper is not running from run_metplus
     # this does not need to be done if parsing a specific data type, i.e. ENS or FCST
     if data_type is None:
         if not validate_field_info_configs(config)[0]:
@@ -2265,7 +2270,10 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
                 continue
 
             for level in levels:
-                var_dict = {f"{data_type_lower}_name": name,
+                # add {data_type}_level to name
+                sub_info = {f'{data_type.lower()}_level': level}
+                subbed_name = do_string_sub(name, **sub_info)
+                var_dict = {f"{data_type_lower}_name": subbed_name,
                             f"{data_type_lower}_level": level,
                             f"{data_type_lower}_thresh": thresh,
                             f"{data_type_lower}_extra": extra,
@@ -2293,11 +2301,16 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
                 return []
 
             for f_level, o_level in zip(f_levels, o_levels):
-                var_dict = {"fcst_name": f_name,
+                # add fcst_level and obs_level to name
+                sub_info = {'fcst_level': f_level,
+                            'obs_level': o_level}
+                subbed_f_name = do_string_sub(f_name, **sub_info)
+                subbed_o_name = do_string_sub(o_name, **sub_info)
+                var_dict = {"fcst_name": subbed_f_name,
                             "fcst_level": f_level,
                             "fcst_thresh": f_thresh,
                             "fcst_extra": f_extra,
-                            "obs_name": o_name,
+                            "obs_name": subbed_o_name,
                             "obs_level": o_level,
                             "obs_thresh": o_thresh,
                             "obs_extra": o_extra,

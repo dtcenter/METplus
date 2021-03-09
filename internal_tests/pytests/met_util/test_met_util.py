@@ -622,13 +622,9 @@ def test_get_lead_sequence_init_min_10(metplus_config):
         (['BOTH', 'ENS'], 'NAME', True),
         (['FCST', 'OBS', 'BOTH', 'ENS'], 'NAME', False),
 
-        (['FCST'], 'THRESH', False),
-        (['OBS'], 'THRESH', False),
         (['FCST', 'OBS'], 'THRESH', True),
         (['BOTH'], 'THRESH', True),
         (['FCST', 'OBS', 'BOTH'], 'THRESH', False),
-        (['FCST', 'ENS'], 'THRESH', False),
-        (['OBS', 'ENS'], 'THRESH', False),
         (['FCST', 'OBS', 'ENS'], 'THRESH', True),
         (['BOTH', 'ENS'], 'THRESH', True),
         (['FCST', 'OBS', 'BOTH', 'ENS'], 'THRESH', False),
@@ -1136,3 +1132,110 @@ def test_get_storms(metplus_config, filename, expected_result):
     # ensure header matches expected format
     if storm_dict:
         assert(storm_dict['header'].split()[storm_id_index] == 'STORM_ID')
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_result', [
+        # 2 items semi-colon at end
+        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;  desc = "HI_CLOUD";',},
+         'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
+        # 2 items no semi-colon at end
+        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;  desc = "HI_CLOUD"',},
+         'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
+        # 1 item semi-colon at end
+        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;',
+          },
+         'GRIB_lvl_typ = 234;'),
+        # 1 item no semi-colon at end
+        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234',
+          },
+         'GRIB_lvl_typ = 234;'),
+    ]
+)
+def test_get_var_items_options_semicolon(metplus_config, config_overrides,
+                                         expected_result):
+    config = metplus_config()
+    config.set('config', 'FCST_VAR1_NAME', 'FNAME')
+    config.set('config', 'FCST_VAR1_LEVELS', 'FLEVEL')
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    data_type = 'FCST'
+    index = 1
+    time_info = {}
+
+    _, _, _, result = util.get_var_items(config, data_type, index, time_info)
+    assert(result == expected_result)
+
+@pytest.mark.parametrize(
+    'config_overrides, expected_results', [
+        # 2 levels
+        ({'FCST_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d} {fcst_level}',
+          'FCST_VAR1_LEVELS': 'P500,P250',
+          'OBS_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d} {obs_level}',
+          'OBS_VAR1_LEVELS': 'P500,P250',
+          },
+         ['read_data.py TMP 20200201 P500',
+          'read_data.py TMP 20200201 P250',
+          ]),
+        ({'BOTH_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d} {fcst_level}',
+          'BOTH_VAR1_LEVELS': 'P500,P250',
+          },
+         ['read_data.py TMP 20200201 P500',
+          'read_data.py TMP 20200201 P250',
+          ]),
+        # no level but level specified in name
+        ({'FCST_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d} {fcst_level}',
+          'OBS_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d} {obs_level}',
+         },
+         ['read_data.py TMP 20200201 ',
+          ]),
+        # no level
+        ({'FCST_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d}',
+          'OBS_VAR1_NAME': 'read_data.py TMP {valid?fmt=%Y%m%d}',
+          },
+         ['read_data.py TMP 20200201',
+          ]),
+        # real example
+        ({'BOTH_VAR1_NAME': ('myscripts/read_nc2xr.py '
+                            'mydata/forecast_file.nc4 TMP '
+                            '{valid?fmt=%Y%m%d_%H%M} {fcst_level}'),
+         'BOTH_VAR1_LEVELS': 'P1000,P850,P700,P500,P250,P100',
+          },
+        [('myscripts/read_nc2xr.py mydata/forecast_file.nc4 TMP 20200201_1225'
+         ' P1000'),
+         ('myscripts/read_nc2xr.py mydata/forecast_file.nc4 TMP 20200201_1225'
+         ' P850'),
+         ('myscripts/read_nc2xr.py mydata/forecast_file.nc4 TMP 20200201_1225'
+         ' P700'),
+         ('myscripts/read_nc2xr.py mydata/forecast_file.nc4 TMP 20200201_1225'
+         ' P500'),
+         ('myscripts/read_nc2xr.py mydata/forecast_file.nc4 TMP 20200201_1225'
+         ' P250'),
+         ('myscripts/read_nc2xr.py mydata/forecast_file.nc4 TMP 20200201_1225'
+         ' P100'),
+         ]),
+    ]
+)
+def test_parse_var_list_py_embed_multi_levels(metplus_config, config_overrides,
+                                              expected_results):
+    config = metplus_config()
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    time_info = {'valid': datetime.datetime(2020, 2, 1, 12, 25)}
+    var_list = util.parse_var_list(config,
+                                   time_info=time_info,
+                                   data_type=None)
+    assert(len(var_list) == len(expected_results))
+
+    for var_item, expected_result in zip(var_list, expected_results):
+        assert(var_item['fcst_name'] == expected_result)
+
+    # run again with data type specified
+    var_list = util.parse_var_list(config,
+                                    time_info=time_info,
+                                    data_type='FCST')
+    assert(len(var_list) == len(expected_results))
+
+    for var_item, expected_result in zip(var_list, expected_results):
+        assert(var_item['fcst_name'] == expected_result)

@@ -24,6 +24,11 @@ from ..util import do_string_sub
 
 
 class ASCII2NCWrapper(CommandBuilder):
+
+    WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_TIME_SUMMARY_DICT',
+    ]
+
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "ascii2nc"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
@@ -34,71 +39,63 @@ class ASCII2NCWrapper(CommandBuilder):
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
-        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_ASCII2NC_VERBOSITY',
+        c_dict['VERBOSITY'] = self.config.getstr('config',
+                                                 'LOG_ASCII2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['CONFIG_FILE'] = self.config.getraw('config', 'ASCII2NC_CONFIG_FILE', '')
-        c_dict['ASCII_FORMAT'] = self.config.getstr('config', 'ASCII2NC_INPUT_FORMAT', '')
-        c_dict['MASK_GRID'] = self.config.getstr('config', 'ASCII2NC_MASK_GRID', '')
-        c_dict['MASK_POLY'] = self.config.getstr('config', 'ASCII2NC_MASK_POLY', '')
-        c_dict['MASK_SID'] = self.config.getstr('config', 'ASCII2NC_MASK_SID', '')
-        c_dict['OBS_INPUT_DIR'] = self.config.getdir('ASCII2NC_INPUT_DIR', '')
-        c_dict['OBS_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                          'ASCII2NC_INPUT_TEMPLATE')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config',
+                                                   'ASCII2NC_CONFIG_FILE',
+                                                   '')
+        c_dict['ASCII_FORMAT'] = self.config.getstr('config',
+                                                    'ASCII2NC_INPUT_FORMAT',
+                                                    '')
+        c_dict['MASK_GRID'] = self.config.getstr('config',
+                                                 'ASCII2NC_MASK_GRID',
+                                                 '')
+        c_dict['MASK_POLY'] = self.config.getstr('config',
+                                                 'ASCII2NC_MASK_POLY',
+                                                 '')
+        c_dict['MASK_SID'] = self.config.getstr('config',
+                                                'ASCII2NC_MASK_SID',
+                                                '')
+        c_dict['OBS_INPUT_DIR'] = self.config.getdir('ASCII2NC_INPUT_DIR',
+                                                     '')
+        c_dict['OBS_INPUT_TEMPLATE'] = (
+            self.config.getraw('filename_templates',
+                               'ASCII2NC_INPUT_TEMPLATE')
+        )
         if not c_dict['OBS_INPUT_TEMPLATE']:
             self.log_error("ASCII2NC_INPUT_TEMPLATE required to run")
+
         c_dict['OUTPUT_DIR'] = self.config.getdir('ASCII2NC_OUTPUT_DIR', '')
-        c_dict['OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                       'ASCII2NC_OUTPUT_TEMPLATE')
-        c_dict['TIME_SUMMARY_FLAG'] = 'TRUE' if self.config.getbool('config',
-                                                    'ASCII2NC_TIME_SUMMARY_FLAG', False) else 'FALSE'
+        c_dict['OUTPUT_TEMPLATE'] = (
+            self.config.getraw('filename_templates',
+                               'ASCII2NC_OUTPUT_TEMPLATE')
+        )
 
-        c_dict['TIME_SUMMARY_RAW_DATA'] = 'TRUE' if self.config.getbool('config',
-                                                        'ASCII2NC_TIME_SUMMARY_RAW_DATA', False) else 'FALSE'
-        c_dict['TIME_SUMMARY_BEG'] = self.config.getstr('config',
-                                                        'ASCII2NC_TIME_SUMMARY_BEG')
-        # add quotes if not already added
-        if c_dict['TIME_SUMMARY_BEG'][0] != '"' and c_dict['TIME_SUMMARY_BEG'][-1] != '"':
-            c_dict['TIME_SUMMARY_BEG'] = "\"{}\"".format(c_dict['TIME_SUMMARY_BEG'])
-        c_dict['TIME_SUMMARY_END'] = self.config.getstr('config',
-                                                        'ASCII2NC_TIME_SUMMARY_END')
-        if c_dict['TIME_SUMMARY_END'][0] != '"' and c_dict['TIME_SUMMARY_END'][-1] != '"':
-            c_dict['TIME_SUMMARY_END'] = "\"{}\"".format(c_dict['TIME_SUMMARY_END'])
+        # MET config variables
+        self.handle_time_summary_dict(c_dict,
+                                      ['TIME_SUMMARY_GRIB_CODES',
+                                       'TIME_SUMMARY_VAR_NAMES',
+                                       'TIME_SUMMARY_TYPES']
+                                      )
 
-        c_dict['TIME_SUMMARY_STEP'] = self.config.getstr('config',
-                                                         'ASCII2NC_TIME_SUMMARY_STEP')
-        c_dict['TIME_SUMMARY_WIDTH'] = self.config.getstr('config',
-                                                          'ASCII2NC_TIME_SUMMARY_WIDTH')
-        c_dict['TIME_SUMMARY_GRIB_CODES'] = ','.join(util.getlist(
-            self.config.getstr('config', 'ASCII2NC_TIME_SUMMARY_GRIB_CODES')))
+        # handle file window variables
+        for edge in ['BEGIN', 'END']:
+            file_window = (
+                self.config.getseconds('config',
+                                       f'ASCII2NC_FILE_WINDOW_{edge}',
+                                       '')
+            )
+            if file_window == '':
+                file_window = (
+                    self.config.getseconds('config',
+                                           f'OBS_FILE_WINDOW_{edge}',
+                                           0)
+                )
 
-        c_dict['TIME_SUMMARY_VAR_NAMES'] = '"' + '","'.join(util.getlist(
-            self.config.getstr('config', 'ASCII2NC_TIME_SUMMARY_VAR_NAMES'))) + '"'
-        c_dict['TIME_SUMMARY_TYPES'] = '"' + '","'.join(util.getlist(
-            self.config.getstr('config', 'ASCII2NC_TIME_SUMMARY_TYPES'))) + '"'
-        c_dict['TIME_SUMMARY_VALID_FREQ'] = self.config.getstr('config',
-                                                               'ASCII2NC_TIME_SUMMARY_VALID_FREQ')
-        c_dict['TIME_SUMMARY_VALID_THRESH'] = self.config.getstr('config',
-                                                                 'ASCII2NC_TIME_SUMMARY_VALID_THRESH')
+            c_dict[f'OBS_FILE_WINDOW_{edge}'] = file_window
 
-        # handle window variables [ASCII2NC_][FILE_]_WINDOW_[BEGIN/END]
-        c_dict['OBS_WINDOW_BEGIN'] = \
-          self.config.getseconds('config', 'ASCII2NC_WINDOW_BEGIN',
-                                 self.config.getseconds('config',
-                                                        'OBS_WINDOW_BEGIN', 0))
-        c_dict['OBS_WINDOW_END'] = \
-          self.config.getseconds('config', 'ASCII_WINDOW_END',
-                                 self.config.getseconds('config',
-                                                        'OBS_WINDOW_END', 0))
-
-        c_dict['OBS_FILE_WINDOW_BEGIN'] = \
-          self.config.getseconds('config', 'ASCII2NC_FILE_WINDOW_BEGIN',
-                                 self.config.getseconds('config',
-                                                        'OBS_FILE_WINDOW_BEGIN', 0))
-        c_dict['OBS_FILE_WINDOW_END'] = \
-          self.config.getseconds('config', 'ASCII2NC_FILE_WINDOW_END',
-                                 self.config.getseconds('config',
-                                                        'OBS_FILE_WINDOW_END', 0))
         return c_dict
 
     def set_environment_variables(self, time_info):

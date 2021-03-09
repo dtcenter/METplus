@@ -121,6 +121,19 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA
 # * **${LINE_TYPE}** - Line types used for all analysis. Corresponds to LINE_TYPE_LIST in the METplus configuration file.
 # * **${JOB}** - Analysis jobs to be performed. Corresponds to STAT_ANALYSIS_JOB_NAME, STAT_ANALYSIS_JOB_ARGS and MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE in the METplus configuration file.
 
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case uses a Python embedding script to read input data
+#
+# parm/use_cases/model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface/read_ioda_mpr.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface/read_ioda_mpr.py
+#
+
+
 
 ##############################################################################
 # Running METplus
@@ -130,7 +143,7 @@ model_applications/data_assimilation/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA
 #
 # Passing in StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.conf then a user-specific system configuration file::
 #
-#   master_metplus.py -c /path/to/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.conf -c /path/to/user_system.conf
+#   run_metplus.py -c /path/to/StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface.conf -c /path/to/user_system.conf
 #
 # The following METplus configuration variables must be set correctly to run this example.:
 #

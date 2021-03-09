@@ -89,7 +89,7 @@ met_tool_wrapper/TCPairs/TCPairs_extra_tropical.conf
 #
 # Passing in TCPairs_extra_tropical.conf then a user-specific system configuration file::
 #
-#   master_metplus.py -c /path/to/TCPairs_extra_tropical.conf -c /path/to/user_system.conf
+#   run_metplus.py -c /path/to/TCPairs_extra_tropical.conf -c /path/to/user_system.conf
 #
 # The following METplus configuration variables must be set correctly to run this example.:
 #
