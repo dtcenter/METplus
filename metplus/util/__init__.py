@@ -3,3 +3,4 @@ from .config_metplus import *
 from .time_util import *
 from .met_util import *
 from .string_template_substitution import *
+from .met_dictionary_info import *
