@@ -10,6 +10,7 @@ import pytest
 import datetime
 from metplus.wrappers.command_builder import CommandBuilder
 from metplus.util import time_util
+from metplus.util import METConfigInfo as met_config
 
 # ------------------------
 #  test_find_data_no_dated
@@ -716,3 +717,45 @@ def test_set_met_config_list_allow_empty(metplus_config, mp_config_name,
                             allow_empty=allow_empty)
 
     assert(c_dict.get(mp_config_name, '') == expected_output)
+
+@pytest.mark.parametrize(
+    'data_type, expected_function', [
+        ('int', 'set_met_config_int'),
+        ('float', 'set_met_config_float'),
+        ('list', 'set_met_config_list'),
+        ('string', 'set_met_config_string'),
+        ('thresh', 'set_met_config_thresh'),
+        ('bool', 'set_met_config_bool'),
+        ('bad_name', None),
+    ]
+)
+def test_get_met_config_function(metplus_config, data_type, expected_function):
+    cbw = CommandBuilder(metplus_config())
+    function_found = cbw.get_met_config_function(data_type)
+    function_name = function_found.__name__ if function_found else None
+    assert(function_name == expected_function)
+
+def test_handle_met_config_dict(metplus_config):
+    dict_name = 'fcst_hr_window'
+    beg = -3
+    end = 5
+    expected_value = f'{dict_name} = {{beg = -3;end = 5;}}'
+
+    config = metplus_config()
+    config.set('config', 'TC_GEN_FCST_HR_WINDOW_BEG', beg)
+    config.set('config', 'TC_GEN_FCST_HR_WINDOW_END', end)
+    cbw = CommandBuilder(config)
+
+    dict_items = []
+    item = met_config(name='beg',
+                      data_type='int',
+                      metplus_configs=['TC_GEN_FCST_HR_WINDOW_BEG'])
+    dict_items.append(item)
+    item = met_config(name='end',
+                      data_type='int',
+                      metplus_configs=['TC_GEN_FCST_HR_WINDOW_END'])
+    dict_items.append(item)
+
+    cbw.handle_met_config_dict(dict_name, dict_items)
+    print(f"env_var_dict: {cbw.env_var_dict}")
+    assert(cbw.env_var_dict.get('METPLUS_FCST_HR_WINDOW_DICT') == expected_value)
