@@ -17,7 +17,7 @@ from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculat
 from ush.master_metplus import get_config_inputs_from_command_line
 #from metplus.wrappers import PCPCombineWrapper
 #from metplus.wrappers import RegridDataPlaneWrapper
-from metplotpy.blocking_s2s import plot_blocking as pb
+from metplotpy.contributed.blocking_s2s import plot_blocking as pb
 from metplotpy.contributed.blocking_s2s.CBL_plot import create_cbl_plot
 from Blocking_WeatherRegime_util import find_input_files, parse_steps
 
