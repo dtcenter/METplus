@@ -22,6 +22,7 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** NAM
+# |
 
 ##############################################################################
 # METplus Components
@@ -38,6 +39,7 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_grib1.conf
 # It processes the following run time:
 #
 # | **Valid:** 2007-03-30 0Z
+# |
 
 ##############################################################################
 # METplus Configuration
