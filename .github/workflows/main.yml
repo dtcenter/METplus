@@ -12,7 +12,7 @@ on:
 
 jobs:
   documentation:
-    name: Check Documentation
+    name: Build Documentation
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,13 +20,30 @@ jobs:
         with:
           python-version: '3.6'
       - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests sphinx_rtd_theme doc8
-      - name: Run doc8
+        run: |
+          python -m pip install --upgrade python-dateutil requests sphinx sphinx-gallery Pillow
+          pip install git+https://github.com/ESMCI/sphinx_rtd_theme@version-dropdown-with-fixes
+      - name: Run build_docs.py
         continue-on-error: true
-        run: doc8 --ignore D001 docs/index.rst docs/Users_Guide/ docs/Contributors_Guide/
+        run: |
+          ${GITHUB_WORKSPACE}/docs/build_docs.py skip-doxygen
+          mkdir -p artifact/documentation
+          cp -r ${GITHUB_WORKSPACE}/docs/_build/html/* artifact/documentation
+          cp -r ${GITHUB_WORKSPACE}/docs/_build/warnings.log artifact/doc_warnings.log
+          cp artifact/doc_warnings.log artifact/documentation
+      - uses: actions/upload-artifact@v2
+        with:
+          name: METplus_documentation
+          path: artifact/documentation
+      - uses: actions/upload-artifact@v2
+        with:
+          name: documentation_warnings.log
+          path: artifact/doc_warnings.log
+          if-no-files-found: ignore
   get_image:
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -40,6 +57,7 @@ jobs:
   update_data_volumes:
     name: Docker Setup - Update Data Volumes
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
@@ -55,6 +73,7 @@ jobs:
   unit_tests:
     name: Unit Tests - Pytest
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
     needs: get_image
     steps:
       - uses: actions/checkout@v2
@@ -64,6 +83,7 @@ jobs:
   use_case_tests:
     name: Use Case Tests
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
     needs: [get_image, update_data_volumes]
     strategy:
       fail-fast: false
@@ -96,14 +116,41 @@ jobs:
           mkdir -p artifact/${artifact_name}
           cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${artifact_name}/
           echo ::set-output name=artifact_name::${artifact_name}
+          if [ "$( ls -A ${GITHUB_WORKSPACE}/../diff)" ]; then
+            mkdir -p artifact/diff-${artifact_name}
+            cp -r ${GITHUB_WORKSPACE}/../diff/* artifact/diff-${artifact_name}/
+            echo ::set-output name=upload_diff::true
+          else
+            echo ::set-output name=upload_diff::false
+          fi
+          if [ "$( ls -A ${GITHUB_WORKSPACE}/../error_logs)" ]; then
+            mkdir -p artifact/error_logs
+            cp -r ${GITHUB_WORKSPACE}/../error_logs/* artifact/error_logs
+            echo ::set-output name=upload_error_logs::true
+          else
+            echo ::set-output name=upload_error_logs::false
+          fi
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: ${{ steps.save-output.outputs.artifact_name }}
           path: artifact/${{ steps.save-output.outputs.artifact_name }}
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() && steps.save-output.outputs.upload_error_logs }}
+        with:
+          name: error_logs
+          path: artifact/error_logs
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() && steps.save-output.outputs.upload_diff }}
+        with:
+          name: diff-${{ steps.save-output.outputs.artifact_name }}
+          path: artifact/diff-${{ steps.save-output.outputs.artifact_name }}
+          if-no-files-found: ignore
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
     needs: [use_case_tests]
     steps:
       - uses: actions/checkout@v2

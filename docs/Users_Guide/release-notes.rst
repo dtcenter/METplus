@@ -40,6 +40,7 @@ METplus Version |version| release notes (|release_date|)
   * Add support for comparing inputs using a mix of python embedding and non-embedding (`#684 <https://github.com/dtcenter/METplus/issues/684>`_)
   * Fix quick search links (`#687 <https://github.com/dtcenter/METplus/issues/687>`_)
   * Align the user guide with get_relativedelta() in time_util.py (`#579 <https://github.com/dtcenter/METplus/issues/579>`_)
+  * Updated CyclonePlotter to connect storm track points feature that was deprecated in a Python dependency (`#803 <https://github.com/dtcenter/METplus/issues/803>`_)
 
 * Enhancements:
 
@@ -65,14 +66,14 @@ METplus Version |version| release notes (|release_date|)
   * Filename templates that have other arguments besides a filename for python embedding fails (`#581 <https://github.com/dtcenter/METplus/issues/581>`_)
   * Implement [INIT/VALID]EXCLUDE for time looping (`#307 <https://github.com/dtcenter/METplus/issues/307>`_)
   * Add more logging to tc_gen_wrapper (`#576 <https://github.com/dtcenter/METplus/issues/576>`_)
-  
-* New Wrappers:
+  * Add files to allow installation of METplus wrappers as a Python package (`#282 <https://github.com/dtcenter/METplus/issues/282>`_)
+  * Enhance PCPCombine wrapper to be able to process multiple fields (`#718 <https://github.com/dtcenter/METplus/issues/718>`_)
+  * Prevent crash when improperly formatted filename template is used (`#674 <https://github.com/dtcenter/METplus/issues/674>`_)
+  * Rename master_metplus.py script to run_metplus.py (`#794 <https://github.com/dtcenter/METplus/issues/794>`_)
 
-  * MET Tool Wrapper: PlotDataPlane/PlotDataPlane_grib1
-  * MET Tool Wrapper: PlotDataPlane/PlotDataPlane_netcdf
-  * MET Tool Wrapper: PlotDataPlane/PlotDataPlane_python_embedding
-  * MET Tool Wrapper: GridStat/GridStat_python_embedding
-  * MET Tool Wrapper: PyEmbedIngest_multi_field_one_file
+* New Wrappers:
+  * PlotDataPlane
+  * UserScript
 
 * New Use Cases:
 
@@ -82,6 +83,14 @@ METplus Version |version| release notes (|release_date|)
   * Data Assimilation: StatAnalysis_fcstHAFS_obsPrepBufr_JEDI_IODA_interface
   * Medium Range: SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics
   * Precipitation: EnsembleStat_fcstWOFS_obsWOFS
+  * TC and Extra TC: CyclonePlotter_fcstGFS_obsGFS_OPC
+  * TC and Extra TC: UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF
+  * Marine and Coastal: PlotDataPlane_obsHYCOM_coordTripolar
+  * MET Tool Wrapper: PlotDataPlane/PlotDataPlane_grib1
+  * MET Tool Wrapper: PlotDataPlane/PlotDataPlane_netcdf
+  * MET Tool Wrapper: PlotDataPlane/PlotDataPlane_python_embedding
+  * MET Tool Wrapper: GridStat/GridStat_python_embedding
+  * MET Tool Wrapper: PyEmbedIngest_multi_field_one_file
 
 * Internal:
 
@@ -120,3 +129,4 @@ METplus Version |version| release notes (|release_date|)
   * Change $DOCKER_WORK_DIR from /metplus to /root to be consistent with METplus tutorial (`#595 <https://github.com/dtcenter/METplus/issues/595>`_)
   * Add all use_cases to automated tests (eg Travis) (`#571 <https://github.com/dtcenter/METplus/issues/571>`_)
   * Add support to run METplus tests against multiple version of Python (`#483 <https://github.com/dtcenter/METplus/issues/483>`_)
+  * Enhanced testing to use Docker data volumes to supply truth data for output comparisons (`#567 <https://github.com/dtcenter/METplus/issues/567>`_)

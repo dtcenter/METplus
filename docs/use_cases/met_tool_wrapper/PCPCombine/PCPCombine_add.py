@@ -19,9 +19,10 @@ met_tool_wrapper/PCPCombine/PCPCombine_add.conf
 # | **Forecast:** NEWSe 5 minute precipitation accumulation
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** NEWSe
+# |
 
 ##############################################################################
 # METplus Components
@@ -40,6 +41,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_add.conf
 #
 # | **Valid:** 2019-08-02_18:15Z
 # | **Forecast lead:** 15 minute
+# |
 
 ##############################################################################
 # METplus Configuration
