@@ -192,11 +192,8 @@ class TCGenWrapper(CommandBuilder):
         self.add_met_config(name='init_hour',
                             data_type='list',
                             metplus_configs=['TC_GEN_INIT_HOUR',
-                                             'TC_GEN_INIT_HR'])
-        self.add_met_config(name='lead',
-                            data_type='list',
-                            metplus_configs=['TC_GEN_LEAD'],
-                            extra_args={'remove_quotes': True})
+                                             'TC_GEN_INIT_HR',
+                                             'TC_GEN_INIT_HOUR_LIST',])
         self.add_met_config(name='vx_mask',
                             data_type='string',
                             metplus_configs=['TC_GEN_VX_MASK'])
@@ -484,7 +481,7 @@ class TCGenWrapper(CommandBuilder):
                 ) // 3600
                 lead_list.append(f'"{str(lead_hours).zfill(2)}"')
 
-            self.env_var_dict['METPLUS_LEAD_LIST'] = (
+            self.env_var_dict['METPLUS_LEAD'] = (
                 f"lead = [{', '.join(lead_list)}];"
             )
 
