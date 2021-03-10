@@ -9,14 +9,6 @@ from metplus.wrappers.tc_gen_wrapper import TCGenWrapper
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
-        ({'MODEL': 'model1, model2'},
-         {'METPLUS_MODEL': 'model = ["model1", "model2"];'}),
-
-        ({'TC_GEN_DESC': 'my_desc'},
-         {'METPLUS_DESC': 'desc = "my_desc";'}),
-
-        ({'DESC': 'my_desc'},
-         {'METPLUS_DESC': 'desc = "my_desc";'}),
 
         ({'TC_GEN_INIT_FREQUENCY': '8'},
          {'METPLUS_INIT_FREQ': 'init_freq = 8;'}),
@@ -80,14 +72,180 @@ from metplus.wrappers.tc_gen_wrapper import TCGenWrapper
           'TC_GEN_FILTER_2': 'desc = "dos";'},
          {'METPLUS_FILTER': 'filter = [{desc = "uno";}, {desc = "dos";}];'}),
 
-        ({'TC_GEN_': ''},
-         {'METPLUS_': ' = "";'}),
+        ({'TC_GEN_DESC': 'my_desc'},
+         {'METPLUS_DESC': 'desc = "my_desc";'}),
 
-        ({'TC_GEN_': ''},
-         {'METPLUS_': ' = "";'}),
+        ({'DESC': 'my_desc'},
+         {'METPLUS_DESC': 'desc = "my_desc";'}),
+
+        ({'MODEL': 'model1, model2'},
+         {'METPLUS_MODEL': 'model = ["model1", "model2"];'}),
+
+        ({'TC_GEN_STORM_ID': 'al062018, al092018'},
+         {'METPLUS_STORM_ID': 'storm_id = ["al062018", "al092018"];'}),
+
+        ({'TC_GEN_STORM_NAME': 'al062018, al092018'},
+         {'METPLUS_STORM_NAME': 'storm_name = ["al062018", "al092018"];'}),
+
+        ({'TC_GEN_INIT_BEG': '20160201_123045'},
+         {'METPLUS_INIT_BEG': 'init_beg = "20160201_123045";'}),
+
+        ({'TC_GEN_INIT_END': '20160201_123045'},
+         {'METPLUS_INIT_END': 'init_end = "20160201_123045";'}),
+
+        ({'TC_GEN_INIT_INC': '20160201_123045, 20160202_123045'},
+         {'METPLUS_INIT_INC': ('init_inc = ["20160201_123045", '
+                               '"20160202_123045"];')}),
+
+        ({'TC_GEN_INIT_EXC': '20160201_123045, 20160202_123045'},
+         {'METPLUS_INIT_EXC': ('init_exc = ["20160201_123045", '
+                              '"20160202_123045"];')}),
+
+        ({'TC_GEN_VALID_BEG': '20160201_123045'},
+         {'METPLUS_VALID_BEG': 'valid_beg = "20160201_123045";'}),
+
+        ({'TC_GEN_VALID_END': '20160201_123045'},
+         {'METPLUS_VALID_END': 'valid_end = "20160201_123045";'}),
+
+        ({'TC_GEN_INIT_HOUR': '123045, 123045'},
+         {'METPLUS_INIT_HOUR': ('init_hour = ["123045", '
+                               '"123045"];')}),
+
+        ({'LEAD_SEQ': '12, 15'},
+         {'METPLUS_LEAD': ('lead = ["12", "15"];')}),
+
+        ({'TC_GEN_VX_MASK': 'my_vx_mask'},
+         {'METPLUS_VX_MASK': 'vx_mask = "my_vx_mask";'}),
+
+        ({'TC_GEN_BASIN_MASK': 'basin_mask1, basin_mask2'},
+         {'METPLUS_BASIN_MASK': 'basin_mask = ["basin_mask1", "basin_mask2"];'}),
+
+        ({'TC_GEN_DLAND_THRESH': '>12'},
+         {'METPLUS_DLAND_THRESH': 'dland_thresh = >12;'}),
+
+        ({'TC_GEN_GENESIS_MATCH_RADIUS': '502'},
+         {'METPLUS_GENESIS_MATCH_RADIUS': 'genesis_match_radius = 502;'}),
+
+        ({'TC_GEN_DEV_HIT_RADIUS': '502'},
+         {'METPLUS_DEV_HIT_RADIUS': 'dev_hit_radius = 502;'}),
+
+        ({'TC_GEN_DEV_HIT_WINDOW_BEG': '-30'},
+         {'METPLUS_DEV_HIT_WINDOW_DICT': 'dev_hit_window = {beg = -30;}'}),
+
+        ({'TC_GEN_DEV_HIT_WINDOW_BEGIN': '-30'},
+         {'METPLUS_DEV_HIT_WINDOW_DICT': 'dev_hit_window = {beg = -30;}'}),
+
+        ({'TC_GEN_DEV_HIT_WINDOW_END': '30'},
+         {'METPLUS_DEV_HIT_WINDOW_DICT': 'dev_hit_window = {end = 30;}'}),
+
+        ({'TC_GEN_DEV_HIT_WINDOW_BEG': '-30',
+          'TC_GEN_DEV_HIT_WINDOW_END': '30'},
+         {'METPLUS_DEV_HIT_WINDOW_DICT': 'dev_hit_window = {beg = -30;end = 30;}'}),
+
+        ({'TC_GEN_OPS_HIT_TDIFF': '49'},
+         {'METPLUS_OPS_HIT_TDIFF': 'ops_hit_tdiff = 49;'}),
+
+        ({'TC_GEN_DISCARD_INIT_POST_GENESIS_FLAG': 'False'},
+         {'METPLUS_DISCARD_INIT_POST_GENESIS_FLAG': 'discard_init_post_genesis_flag = FALSE;'}),
+
+        ({'TC_GEN_DEV_METHOD_FLAG': 'False'},
+         {'METPLUS_DEV_METHOD_FLAG': 'dev_method_flag = FALSE;'}),
+
+        ({'TC_GEN_OPS_METHOD_FLAG': 'False'},
+         {'METPLUS_OPS_METHOD_FLAG': 'ops_method_flag = FALSE;'}),
+
+        ({'TC_GEN_CI_ALPHA': '0.06'},
+         {'METPLUS_CI_ALPHA': 'ci_alpha = 0.06;'}),
+
+        ({'TC_GEN_OUTPUT_FLAG_FHO': 'BOTH'},
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {fho = BOTH;}'}),
+
+        ({'TC_GEN_OUTPUT_FLAG_CTC': 'NONE'},
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {ctc = NONE;}'}),
+
+        ({'TC_GEN_OUTPUT_FLAG_CTS': 'BOTH'},
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {cts = BOTH;}'}),
+
+        ({'TC_GEN_OUTPUT_FLAG_GENMPR': 'NONE'},
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {genmpr = NONE;}'}),
+
+        ({'TC_GEN_OUTPUT_FLAG_FHO': 'BOTH',
+          'TC_GEN_OUTPUT_FLAG_CTC': 'NONE',
+          'TC_GEN_OUTPUT_FLAG_CTS': 'BOTH',
+          'TC_GEN_OUTPUT_FLAG_GENMPR': 'NONE'},
+         {'METPLUS_OUTPUT_FLAG_DICT': ('output_flag = {fho = BOTH;ctc = NONE;'
+                                       'cts = BOTH;genmpr = NONE;}')}),
+
+        ({'TC_GEN_NC_PAIRS_FLAG_LATLON': 'false'},
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {latlon = FALSE;}'}),
+
+        ({'TC_GEN_NC_PAIRS_FLAG_FCST_GENESIS': 'false'},
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {fcst_genesis = FALSE;}'}),
+
+        ({'TC_GEN_NC_PAIRS_FLAG_FCST_TRACKS': 'false'},
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {fcst_tracks = FALSE;}'}),
+
+        ({'TC_GEN_NC_PAIRS_FLAG_FCST_FY_OY': 'false'},
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {fcst_fy_oy = FALSE;}'}),
+
+        ({'TC_GEN_NC_PAIRS_FLAG_FCST_FY_ON': 'false'},
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {fcst_fy_on = FALSE;}'}),
+
+        ({'TC_GEN_NC_PAIRS_FLAG_BEST_GENESIS': 'false'},
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {best_genesis = FALSE;}'}),
+
+        ({'TC_GEN_NC_PAIRS_FLAG_BEST_TRACKS': 'false'},
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {best_tracks = FALSE;}'}),
+
+        ({'TC_GEN_NC_PAIRS_FLAG_BEST_FY_OY': 'false'},
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {best_fy_oy = FALSE;}'}),
+
+        ({'TC_GEN_NC_PAIRS_FLAG_BEST_FN_OY': 'false'},
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {best_fn_oy = FALSE;}'}),
+
+        ({'TC_GEN_NC_PAIRS_FLAG_LATLON': 'false',
+          'TC_GEN_NC_PAIRS_FLAG_FCST_GENESIS': 'false',
+          'TC_GEN_NC_PAIRS_FLAG_FCST_TRACKS': 'false',
+          'TC_GEN_NC_PAIRS_FLAG_FCST_FY_OY': 'false',
+          'TC_GEN_NC_PAIRS_FLAG_FCST_FY_ON': 'false',
+          'TC_GEN_NC_PAIRS_FLAG_BEST_GENESIS': 'false',
+          'TC_GEN_NC_PAIRS_FLAG_BEST_TRACKS': 'false',
+          'TC_GEN_NC_PAIRS_FLAG_BEST_FY_OY': 'false',
+          'TC_GEN_NC_PAIRS_FLAG_BEST_FN_OY': 'false',
+          },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': ('nc_pairs_flag = {latlon = FALSE;'
+                                         'fcst_genesis = FALSE;'
+                                         'fcst_tracks = FALSE;'
+                                         'fcst_fy_oy = FALSE;'
+                                         'fcst_fy_on = FALSE;'
+                                         'best_genesis = FALSE;'
+                                         'best_tracks = FALSE;'
+                                         'best_fy_oy = FALSE;'
+                                         'best_fn_oy = FALSE;'
+                                         '}')}),
+
+        ({'TC_GEN_VALID_MINUS_GENESIS_DIFF_THRESH': '>4'},
+         {'METPLUS_VALID_MINUS_GENESIS_DIFF_THRESH': 'valid_minus_genesis_diff_thresh = >4;'}),
+
+        ({'TC_GEN_BEST_UNIQUE_FLAG': 'false'},
+         {'METPLUS_BEST_UNIQUE_FLAG': 'best_unique_flag = FALSE;'}),
+
+        ({'TC_GEN_DLAND_FILE': 'MET_BASE/other_file.nc'},
+         {'METPLUS_DLAND_FILE': 'dland_file = "MET_BASE/other_file.nc";'}),
+
+        ({'TC_GEN_BASIN_FILE': 'MET_BASE/other_basin.nc'},
+         {'METPLUS_BASIN_FILE': 'basin_file = "MET_BASE/other_basin.nc";'}),
+
+        ({'TC_GEN_NC_PAIRS_GRID': 'G004'},
+         {'METPLUS_NC_PAIRS_GRID': 'nc_pairs_grid = "G004";'}),
+
     ]
 )
 def test_tc_gen(metplus_config, config_overrides, env_var_values):
+    # expected number of 2016 files (including file_list line)
+    expected_genesis_count = 7
+    expected_track_count = expected_genesis_count
+
     config = metplus_config()
 
     test_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
@@ -134,14 +292,23 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     file_list_dir = os.path.join(wrapper.config.getdir('STAGING_DIR'),
                                  'file_lists')
-    genesis_ext = '0101000000_tc_gen_genesis.txt'
-    track_ext = '0101000000_tc_gen_track.txt'
+    genesis_path = os.path.join(file_list_dir,
+                                '20160101000000_tc_gen_genesis.txt')
+    track_path = os.path.join(file_list_dir,
+                              '20160101000000_tc_gen_track.txt')
+
+    # remove list files if they already exist
+    if os.path.exists(genesis_path):
+        os.remove(genesis_path)
+    if os.path.exists(track_path):
+        os.remove(track_path)
+
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
 
     expected_cmds = [
         (f"{app_path} {verbosity} "
-         f"-genesis {file_list_dir}/2016{genesis_ext} "
-         f"-track {file_list_dir}/2016{track_ext} "
+         f"-genesis {genesis_path} "
+         f"-track {track_path} "
          f"-config {config_file} -out {out_dir}/tc_gen_2016"),
     ]
 
@@ -160,3 +327,12 @@ def test_tc_gen(metplus_config, config_overrides, env_var_values):
             assert(match is not None)
             value = match.split('=', 1)[1]
             assert(env_var_values.get(env_var_key, '') == value)
+
+    # verify file count of genesis and track file list files
+    with open(genesis_path, 'r') as file_handle:
+        lines = file_handle.read().splitlines()
+    assert(len(lines) == expected_genesis_count)
+
+    with open(track_path, 'r') as file_handle:
+        lines = file_handle.read().splitlines()
+    assert(len(lines) == expected_track_count)
