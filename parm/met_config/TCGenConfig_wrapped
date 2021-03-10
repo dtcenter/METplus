@@ -139,7 +139,7 @@ ${METPLUS_INIT_HOUR}
 // Forecast and operational lead times in hours
 //
 // lead =
-${METPLUS_LEAD_LIST}
+${METPLUS_LEAD}
 
 //
 // Spatial masking region (path to gridded data file or polyline file)
