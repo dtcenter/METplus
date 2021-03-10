@@ -930,13 +930,17 @@ def get_start_end_interval_times(config):
     if use_init:
         time_format = config.getstr('config', 'INIT_TIME_FMT')
         start_t = config.getraw('config', 'INIT_BEG')
-        end_t = config.getraw('config', 'INIT_END')
-        time_interval = time_util.get_relativedelta(config.getstr('config', 'INIT_INCREMENT'))
+        end_t = config.getraw('config', 'INIT_END', start_t)
+        time_interval = time_util.get_relativedelta(
+            config.getstr('config', 'INIT_INCREMENT', '60')
+        )
     else:
         time_format = config.getstr('config', 'VALID_TIME_FMT')
         start_t = config.getraw('config', 'VALID_BEG')
-        end_t = config.getraw('config', 'VALID_END')
-        time_interval = time_util.get_relativedelta(config.getstr('config', 'VALID_INCREMENT'))
+        end_t = config.getraw('config', 'VALID_END', start_t)
+        time_interval = time_util.get_relativedelta(
+            config.getstr('config', 'VALID_INCREMENT', '60')
+        )
 
     start_time = get_time_obj(start_t, time_format,
                              clock_time_obj, config.logger)
