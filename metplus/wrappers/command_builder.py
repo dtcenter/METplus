@@ -20,6 +20,7 @@ from .command_runner import CommandRunner
 from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import config_metplus
+from ..util import METConfigInfo as met_config
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -1792,13 +1793,17 @@ class CommandBuilder:
 
             @param flag_type type of flag to read, i.e. OUTPUT or ENSEMBLE
         """
-        if not hasattr(self, f'{flag_type}_FLAGS'):
+        # create variables for upper and lower flag type so that either option
+        # can be used as input to the function
+        flag_type_upper = flag_type.upper()
+        flag_type_lower = flag_type.lower()
+        if not hasattr(self, f'{flag_type_upper}_FLAGS'):
             return
 
         tmp_dict = {}
         flag_list = []
-        for flag in getattr(self, f'{flag_type}_FLAGS'):
-            flag_name = f'{flag_type}_FLAG_{flag.upper()}'
+        for flag in getattr(self, f'{flag_type_upper}_FLAGS'):
+            flag_name = f'{flag_type_upper}_FLAG_{flag.upper()}'
             flag_list.append(flag_name)
             self.set_met_config_string(tmp_dict,
                                        f'{self.app_name.upper()}_{flag_name}',
@@ -1808,10 +1813,10 @@ class CommandBuilder:
 
         flag_fmt = (
             self.format_met_config_dict(tmp_dict,
-                                        f'{flag_type.lower()}_flag',
+                                        f'{flag_type_lower}_flag',
                                         flag_list)
         )
-        self.env_var_dict[f'METPLUS_{flag_type}_FLAG_DICT'] = flag_fmt
+        self.env_var_dict[f'METPLUS_{flag_type_upper}_FLAG_DICT'] = flag_fmt
 
     def handle_censor_val_and_thresh(self):
         """! Read {APP_NAME}_CENSOR_[VAL/THRESH] and set
@@ -2013,7 +2018,7 @@ class CommandBuilder:
         set_met_config(output_dict,
                        item.metplus_configs,
                        item.name,
-                       c_dict_key=item.name,
+                       c_dict_key=f'METPLUS_{item.name.upper()}',
                        **item.extra_args)
         return True
 
@@ -2037,3 +2042,11 @@ class CommandBuilder:
         output_dict[env_var_name] = dict_string
 
         return True
+
+    def add_met_config(self, **kwargs):
+        """! Create METConfigInfo object from arguments and process
+             @param kwargs key arguments that should match METConfigInfo
+              arguments
+        """
+        item = met_config(**kwargs)
+        self.handle_met_config_item(item)

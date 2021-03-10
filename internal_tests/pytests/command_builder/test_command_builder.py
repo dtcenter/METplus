@@ -759,3 +759,16 @@ def test_handle_met_config_dict(metplus_config):
     cbw.handle_met_config_dict(dict_name, dict_items)
     print(f"env_var_dict: {cbw.env_var_dict}")
     assert(cbw.env_var_dict.get('METPLUS_FCST_HR_WINDOW_DICT') == expected_value)
+
+def test_add_met_config(metplus_config):
+    config = metplus_config()
+    value = 5
+    config.set('config', 'TC_GEN_VALID_FREQUENCY', value)
+    cbw = CommandBuilder(config)
+    cbw.add_met_config(name='valid_freq',
+                       data_type='int',
+                       metplus_configs=['TC_GEN_VALID_FREQUENCY',
+                                       'TC_GEN_VALID_FREQ',])
+    print(f"env_var_dict: {cbw.env_var_dict}")
+    expected_value = f'valid_freq = {value};'
+    assert(cbw.env_var_dict['METPLUS_VALID_FREQ'] == expected_value)
