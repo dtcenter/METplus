@@ -22,35 +22,36 @@ ${METPLUS_DESC}
 //
 // Storm identifiers
 //
-storm_id = ${STORM_ID};
+${METPLUS_STORM_ID}
 
 //
 // Basins
 //
-basin = ${BASIN};
+${METPLUS_BASIN}
 
 //
 // Cyclone numbers
 //
-cyclone = ${CYCLONE};
+${METPLUS_CYCLONE}
 
 //
 // Storm names
 //
-storm_name = ${STORM_NAME};
+${METPLUS_STORM_NAME}
 
 //
 // Model initialization time windows to include or exclude
 //
-init_beg = "${INIT_BEG}";
-init_end = "${INIT_END}";
-init_inc = ${INIT_INCLUDE};
-init_exc = ${INIT_EXCLUDE};
+${METPLUS_INIT_BEG}
+${METPLUS_INIT_END}
+${METPLUS_INIT_INCLUDE}
+${METPLUS_INIT_EXCLUDE}
+
 //
 // Valid model time window
 //
-valid_beg = "${VALID_BEG}";
-valid_end = "${VALID_END}";
+${METPLUS_VALID_BEG}
+${METPLUS_VALID_END}
 
 //
 // Model initialization hours
@@ -114,7 +115,7 @@ match_points = TRUE;
 // Specify the NetCDF output of the gen_dland tool containing a gridded
 // representation of the minimum distance to land.
 //
-dland_file = "${DLAND_FILE}";
+${METPLUS_DLAND_FILE}
 
 //
 // Specify watch/warning information:

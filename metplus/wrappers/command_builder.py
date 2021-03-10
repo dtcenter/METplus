@@ -1189,7 +1189,9 @@ class CommandBuilder:
                                   **time_info)
         mask_list_string = self.format_list_string(filenames)
         self.c_dict['VERIFICATION_MASK'] = mask_list_string
-        mask_fmt = f"poly = [{mask_list_string}];"
+        if self.c_dict.get('MASK_POLY_IS_LIST', True):
+            mask_list_string = f'[{mask_list_string}]'
+        mask_fmt = f"poly = {mask_list_string};"
         self.c_dict['MASK_POLY'] = mask_fmt
         self.env_var_dict['METPLUS_MASK_POLY'] = mask_fmt
 
@@ -1357,7 +1359,12 @@ class CommandBuilder:
                                                      mp_config_name,
                                                      ''))
         if conf_value or allow_empty:
-            conf_value = str(conf_value).replace("'", '"')
+            conf_value = str(conf_value)
+            # if not removing quotes, escape any quotes found in list items
+            if not remove_quotes:
+                conf_value = conf_value.replace('"', '\\"')
+
+            conf_value = conf_value.replace("'", '"')
 
             if remove_quotes:
                 conf_value = conf_value.replace('"', '')
@@ -1748,18 +1755,23 @@ class CommandBuilder:
 
         return value
 
-    def format_field(self, data_type, field_formatted):
+    def format_field(self, data_type, field_string, is_list=True):
         """! Set {data_type}_FIELD c_dict value to the formatted field string
         Also set {data_type_FIELD_OLD value to support old format until it is
         deprecated.
 
-        @param field_formatted field string
         @param data_type type of data to set, i.e. FCST, OBS
+        @param field_string field information formatted to be read by MET config
+        @param is_list if True, add square brackets around field info
         """
+        field_formatted = field_string
+        if is_list:
+            field_formatted = f'[{field_formatted}]'
+
         self.env_var_dict[f'METPLUS_{data_type}_FIELD'] = (
-            f"field = [{field_formatted}];"
+            f"field = {field_formatted};"
         )
-        self.c_dict[f'{data_type}_FIELD'] = field_formatted
+        self.c_dict[f'{data_type}_FIELD'] = field_string
 
     def handle_flags(self, flag_type):
         """! Handle reading and setting of flag dictionary values to set in
@@ -1876,7 +1888,8 @@ class CommandBuilder:
                                  [f'{app}_TIME_SUMMARY_TYPE',
                                   f'{app}_TIME_SUMMARY_TYPES'],
                                  'type',
-                                 'TIME_SUMMARY_TYPES')
+                                 'TIME_SUMMARY_TYPES',
+                                 allow_empty=True)
 
         self.set_met_config_int(tmp_dict,
                                 [f'{app}_TIME_SUMMARY_VLD_FREQ',
@@ -1906,7 +1919,7 @@ class CommandBuilder:
         for list_values in remove_bracket_list:
             c_dict[list_values] = c_dict[list_values].strip('[]')
 
-    def handle_mask(self, single_value=False):
+    def handle_mask(self, single_value=False, c_dict=None):
         """! Read mask dictionary values and set them into env_var_list
 
             @param single_value if True, only a single value for grid and poly
@@ -1914,23 +1927,40 @@ class CommandBuilder:
         """
         app = self.app_name.upper()
         tmp_dict = {}
+        extra_args = {}
         if single_value:
             function_call = self.set_met_config_string
         else:
             function_call = self.set_met_config_list
+            extra_args['allow_empty'] = True
 
         function_call(tmp_dict,
                       [f'{app}_MASK_GRID',
                        f'{app}_GRID'],
                       'grid',
-                      'MASK_GRID')
+                      'MASK_GRID',
+                      **extra_args)
         function_call(tmp_dict,
                       [f'{app}_MASK_POLY',
                        f'{app}_VERIFICATION_MASK_TEMPLATE',
                        f'{app}_POLY'],
                       'poly',
-                      'MASK_POLY')
+                      'MASK_POLY',
+                      **extra_args)
 
+        # set VERIFICATION MASK to support old method of setting mask.poly
+        mask_poly_string = tmp_dict.get('MASK_POLY')
+        if mask_poly_string:
+            mask_poly_string = (
+                mask_poly_string.split('=')[1].strip().strip(';').strip('[]')
+            )
+        else:
+            mask_poly_string = ''
+
+        if c_dict:
+            c_dict['VERIFICATION_MASK'] = mask_poly_string
+
+        # set METPLUS_MASK_DICT env var with mask items if set
         mask_dict_string = self.format_met_config_dict(tmp_dict,
                                                        'mask',
                                                        ['MASK_GRID',
