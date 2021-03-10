@@ -1421,6 +1421,9 @@ class CommandBuilder:
             if not kwargs.get('remove_quotes'):
                 conf_value = f'"{conf_value}"'
 
+            if kwargs.get('uppercase', False):
+                conf_value = conf_value.upper()
+
             c_dict[c_key] = f'{met_config_name} = {conf_value};'
 
     def set_met_config_number(self, c_dict, num_type, mp_config,
@@ -1821,7 +1824,8 @@ class CommandBuilder:
                                        f'{self.app_name.upper()}_{flag_name}',
                                        flag,
                                        c_dict_key=f'{flag_name}',
-                                       remove_quotes=True)
+                                       remove_quotes=True,
+                                       uppercase=True)
 
         flag_fmt = (
             self.format_met_config_dict(tmp_dict,
