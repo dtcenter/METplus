@@ -2,22 +2,15 @@
 
 import os
 import sys
-import re
-import logging
-from collections import namedtuple
 import pytest
 import datetime
 
-import produtil
-
-from metplus.wrappers.grid_stat_wrapper import GridStatWrapper
-from metplus.util import met_util as util
-from metplus.util import time_util
+from metplus.wrappers.tc_gen_wrapper import TCGenWrapper
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
-        ({'MODEL': 'my_model'},
-         {'METPLUS_MODEL': 'model = "my_model";'}),
+        ({'MODEL': 'model1, model2'},
+         {'METPLUS_MODEL': 'model = ["model1", "model2"];'}),
 
         ({'TC_GEN_DESC': 'my_desc'},
          {'METPLUS_DESC': 'desc = "my_desc";'}),
@@ -31,26 +24,61 @@ from metplus.util import time_util
         ({'TC_GEN_VALID_FREQUENCY': '8'},
          {'METPLUS_VALID_FREQ': 'valid_freq = 8;'}),
 
-        ({'TC_GEN_': ''},
-         {'METPLUS_': ' = "";'}),
+        ({'TC_GEN_FCST_HR_WINDOW_BEGIN': '7'},
+         {'METPLUS_FCST_HR_WINDOW_DICT': 'fcst_hr_window = {beg = 7;}'}),
 
-        ({'TC_GEN_': ''},
-         {'METPLUS_': ' = "";'}),
+        ({'TC_GEN_FCST_HR_WINDOW_END': '119'},
+         {'METPLUS_FCST_HR_WINDOW_DICT': 'fcst_hr_window = {end = 119;}'}),
 
-        ({'TC_GEN_': ''},
-         {'METPLUS_': ' = "";'}),
+        ({'TC_GEN_FCST_HR_WINDOW_BEGIN': '7',
+          'TC_GEN_FCST_HR_WINDOW_END': '119'},
+         {'METPLUS_FCST_HR_WINDOW_DICT': 'fcst_hr_window = {beg = 7;end = 119;}'}),
 
-        ({'TC_GEN_': ''},
-         {'METPLUS_': ' = "";'}),
+        ({'TC_GEN_MIN_DURATION': '13'},
+         {'METPLUS_MIN_DURATION': 'min_duration = 13;'}),
 
-        ({'TC_GEN_': ''},
-         {'METPLUS_': ' = "";'}),
+        ({'TC_GEN_FCST_GENESIS_VMAX_THRESH': '>3'},
+         {'METPLUS_FCST_GENESIS_DICT': 'fcst_genesis = {vmax_thresh = >3;}'}),
 
-        ({'TC_GEN_': ''},
-         {'METPLUS_': ' = "";'}),
+        ({'TC_GEN_FCST_GENESIS_MSLP_THRESH': '>4'},
+         {'METPLUS_FCST_GENESIS_DICT': 'fcst_genesis = {mslp_thresh = >4;}'}),
 
-        ({'TC_GEN_': ''},
-         {'METPLUS_': ' = "";'}),
+        ({'TC_GEN_FCST_GENESIS_VMAX_THRESH': '>3',
+          'TC_GEN_FCST_GENESIS_MSLP_THRESH': '>4'},
+         {'METPLUS_FCST_GENESIS_DICT': 'fcst_genesis = {vmax_thresh = >3;mslp_thresh = >4;}'}),
+
+        ({'TC_GEN_BEST_GENESIS_TECHNIQUE': 'WORST'},
+         {'METPLUS_BEST_GENESIS_DICT': 'best_genesis = {technique = "WORST";}'}),
+
+        ({'TC_GEN_BEST_GENESIS_CATEGORY': 'PH, SH'},
+         {'METPLUS_BEST_GENESIS_DICT': 'best_genesis = {category = ["PH", "SH"];}'}),
+
+        ({'TC_GEN_BEST_GENESIS_VMAX_THRESH': '>3'},
+         {'METPLUS_BEST_GENESIS_DICT': 'best_genesis = {vmax_thresh = >3;}'}),
+
+        ({'TC_GEN_BEST_GENESIS_MSLP_THRESH': '>4'},
+         {'METPLUS_BEST_GENESIS_DICT': 'best_genesis = {mslp_thresh = >4;}'}),
+
+        ({'TC_GEN_BEST_GENESIS_TECHNIQUE': 'WORST',
+          'TC_GEN_BEST_GENESIS_CATEGORY': 'PH, SH',
+          'TC_GEN_BEST_GENESIS_VMAX_THRESH': '>3',
+          'TC_GEN_BEST_GENESIS_MSLP_THRESH': '>4'},
+         {'METPLUS_BEST_GENESIS_DICT': ('best_genesis = {technique = "WORST";'
+                                        'category = ["PH", "SH"];'
+                                        'vmax_thresh = >3;'
+                                        'mslp_thresh = >4;}')}),
+
+        ({'TC_GEN_OPER_TECHNIQUE': 'CARQ'},
+         {'METPLUS_OPER_TECHNIQUE': 'oper_technique = "CARQ";'}),
+
+        ({'TC_GEN_FILTER_1': 'desc = "uno";'},
+         {'METPLUS_FILTER': 'filter = [{desc = "uno";}];'}),
+
+        ({'TC_GEN_FILTER_2': 'desc = "dos";'},
+         {'METPLUS_FILTER': 'filter = [{desc = "dos";}];'}),
+        ({'TC_GEN_FILTER_1': 'desc = "uno";',
+          'TC_GEN_FILTER_2': 'desc = "dos";'},
+         {'METPLUS_FILTER': 'filter = [{desc = "uno";}, {desc = "dos";}];'}),
 
         ({'TC_GEN_': ''},
          {'METPLUS_': ' = "";'}),
@@ -59,19 +87,18 @@ from metplus.util import time_util
          {'METPLUS_': ' = "";'}),
     ]
 )
-def test_grid_stat_single_field(metplus_config, config_overrides,
-                                env_var_values):
-    fcst_dir = '/some/path/fcst'
-    obs_dir = '/some/path/obs'
-    fcst_name = 'APCP'
-    fcst_level = 'A03'
-    obs_name = 'APCP_03'
-    obs_level_no_quotes = '(*,*)'
-    obs_level = f'"{obs_level_no_quotes}"'
-    fcst_fmt = f'field = [{{ name="{fcst_name}"; level="{fcst_level}"; }}];'
-    obs_fmt = (f'field = [{{ name="{obs_name}"; '
-               f'level="{obs_level_no_quotes}"; }}];')
+def test_tc_gen(metplus_config, config_overrides, env_var_values):
     config = metplus_config()
+
+    test_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
+                                 'internal_tests',
+                                 'data',
+                                 'tc_gen')
+    track_dir = os.path.join(test_data_dir, 'track')
+    genesis_dir = os.path.join(test_data_dir, 'genesis')
+
+    track_template = 'track_*{init?fmt=%Y}*'
+    genesis_template = 'genesis_*{init?fmt=%Y}*'
 
     # set config variables to prevent command from running and bypass check
     # if input files actually exist
@@ -79,55 +106,48 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
     config.set('config', 'INPUT_MUST_EXIST', False)
 
     # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'GridStat')
+    config.set('config', 'PROCESS_LIST', 'TCGen')
     config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'INIT_BEG', '2005080700')
-    config.set('config', 'INIT_END', '2005080712')
-    config.set('config', 'INIT_INCREMENT', '12H')
-    config.set('config', 'LEAD_SEQ', '12H')
-    config.set('config', 'LOOP_ORDER', 'times')
-    config.set('config', 'GRID_STAT_CONFIG_FILE',
-               '{PARM_BASE}/met_config/GridStatConfig_wrapped')
-    config.set('config', 'FCST_GRID_STAT_INPUT_DIR', fcst_dir)
-    config.set('config', 'OBS_GRID_STAT_INPUT_DIR', obs_dir)
-    config.set('config', 'FCST_GRID_STAT_INPUT_TEMPLATE',
-               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
-    config.set('config', 'OBS_GRID_STAT_INPUT_TEMPLATE',
-               '{valid?fmt=%Y%m%d%H}/obs_file')
-    config.set('config', 'GRID_STAT_OUTPUT_DIR',
-               '{OUTPUT_BASE}/GridStat/output')
-    config.set('config', 'GRID_STAT_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
+    config.set('config', 'INIT_TIME_FMT', '%Y')
+    config.set('config', 'INIT_BEG', '2016')
+    config.set('config', 'LOOP_ORDER', 'processes')
 
-    config.set('config', 'FCST_VAR1_NAME', fcst_name)
-    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
-    config.set('config', 'OBS_VAR1_NAME', obs_name)
-    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+    config.set('config', 'TC_GEN_TRACK_INPUT_DIR', track_dir)
+    config.set('config', 'TC_GEN_TRACK_INPUT_TEMPLATE', track_template)
+    config.set('config', 'TC_GEN_GENESIS_INPUT_DIR', genesis_dir)
+    config.set('config', 'TC_GEN_GENESIS_INPUT_TEMPLATE', genesis_template)
+    config.set('config', 'TC_GEN_OUTPUT_DIR', '{OUTPUT_BASE}/TCGen/output')
+    config.set('config', 'TC_GEN_OUTPUT_TEMPLATE', 'tc_gen_{init?fmt=%Y}')
+
+    config.set('config', 'TC_GEN_CONFIG_FILE',
+               '{PARM_BASE}/met_config/TCGenConfig_wrapped')
 
     # set config variable overrides
     for key, value in config_overrides.items():
         config.set('config', key, value)
 
-    wrapper = GridStatWrapper(config)
+    wrapper = TCGenWrapper(config)
     assert(wrapper.isOK)
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
     config_file = wrapper.c_dict.get('CONFIG_FILE')
+    file_list_dir = os.path.join(wrapper.config.getdir('STAGING_DIR'),
+                                 'file_lists')
+    genesis_ext = '0101000000_tc_gen_genesis.txt'
+    track_ext = '0101000000_tc_gen_track.txt'
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
-    expected_cmds = [(f"{app_path} {verbosity} "
-                      f"{fcst_dir}/2005080700/fcst_file_F012 "
-                      f"{obs_dir}/2005080712/obs_file "
-                      f"{config_file} -outdir {out_dir}/2005080712"),
-                     (f"{app_path} {verbosity} "
-                      f"{fcst_dir}/2005080712/fcst_file_F012 "
-                      f"{obs_dir}/2005080800/obs_file "
-                      f"{config_file} -outdir {out_dir}/2005080800"),
-                     ]
 
+    expected_cmds = [
+        (f"{app_path} {verbosity} "
+         f"-genesis {file_list_dir}/2016{genesis_ext} "
+         f"-track {file_list_dir}/2016{track_ext} "
+         f"-config {config_file} -out {out_dir}/tc_gen_2016"),
+    ]
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
+    assert(len(all_cmds) == len(expected_cmds))
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
@@ -139,9 +159,4 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
                           item.startswith(env_var_key)), None)
             assert(match is not None)
             value = match.split('=', 1)[1]
-            if env_var_key == 'METPLUS_FCST_FIELD':
-                assert(value == fcst_fmt)
-            elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert (value == obs_fmt)
-            else:
-                assert(env_var_values.get(env_var_key, '') == value)
+            assert(env_var_values.get(env_var_key, '') == value)
