@@ -1957,6 +1957,7 @@ class CommandBuilder:
         """
         app = self.app_name.upper()
         tmp_dict = {}
+        extra_args = {}
         if single_value:
             set_met_config = self.set_met_config_string
         else:
