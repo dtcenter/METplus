@@ -1905,7 +1905,8 @@ class CommandBuilder:
                                  [f'{app}_TIME_SUMMARY_TYPE',
                                   f'{app}_TIME_SUMMARY_TYPES'],
                                  'type',
-                                 'TIME_SUMMARY_TYPES')
+                                 'TIME_SUMMARY_TYPES',
+                                 allow_empty=True)
 
         self.set_met_config_int(tmp_dict,
                                 [f'{app}_TIME_SUMMARY_VLD_FREQ',
