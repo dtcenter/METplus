@@ -236,7 +236,14 @@ class CommandBuilder:
         self.set_user_environment(time_info)
 
         # send environment variables to logger
-        for msg in self.print_all_envs():
+        for msg in self.print_all_envs(print_each_item=True,
+                                       print_copyable=False):
+            self.logger.info(msg)
+
+        # log environment variables that can be copied into terminal
+        # to rerun application if debug logging is turned on
+        for msg in self.print_all_envs(print_each_item=False,
+                                       print_copyable=True):
             self.logger.debug(msg)
 
     def log_error(self, error_string):
@@ -270,18 +277,22 @@ class CommandBuilder:
 
         return to_grid
 
-    def print_all_envs(self, print_copyable=True):
+    def print_all_envs(self, print_copyable=True, print_each_item=True):
         """! Create list of log messages that output all environment variables
         that were set by this wrapper.
 
         @param print_copyable if True, also output a list of shell commands
         that can be easily copied and pasted into a browser to recreate the
         environment that was set when the command was run
+        @param print_each_item if True, print each environment variable and
+        value on a single line (default is True)
         @returns list of log messages
         """
-        msg = ["ENVIRONMENT FOR NEXT COMMAND: "]
-        for env_item in sorted(self.env_list):
-            msg.append(self.print_env_item(env_item))
+        msg = []
+        if print_each_item:
+            msg.append("ENVIRONMENT FOR NEXT COMMAND: ")
+            for env_item in sorted(self.env_list):
+                msg.append(self.print_env_item(env_item))
 
         if print_copyable:
             msg.append("COPYABLE ENVIRONMENT FOR NEXT COMMAND: ")
