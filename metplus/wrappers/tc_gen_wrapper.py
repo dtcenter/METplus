@@ -355,7 +355,7 @@ class TCGenWrapper(CommandBuilder):
             self.env_var_dict['METPLUS_FILTER'] = filter_string
 
     def get_command(self):
-        cmd = self.app_path
+        cmd = f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
 
         # add genesis
         cmd += ' -genesis ' + self.c_dict['GENESIS_FILE']
@@ -379,8 +379,6 @@ class TCGenWrapper(CommandBuilder):
         if not os.path.exists(parent_dir):
             os.makedirs(parent_dir)
 
-        # add verbosity
-        cmd += f" -v {self.c_dict['VERBOSITY']}"
         return cmd
 
     def run_all_times(self):
