@@ -37,6 +37,7 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_MERGE_FLAG',
         'METPLUS_MASK_POLY',
         'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_GRID_RES',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -104,23 +105,26 @@ class MODEWrapper(CompareGriddedWrapper):
                                  'METPLUS_QUILT')
 
         for data_type in ['FCST', 'OBS']:
-            self.set_met_config_float(self.env_var_dict,
-                                      [f'{data_type}_MODE_CONV_RADIUS',
-                                       'MODE_CONV_RADIUS'],
-                                      'conv_radius',
-                                      f'METPLUS_{data_type}_CONV_RADIUS')
+            self.set_met_config_list(self.env_var_dict,
+                                     [f'{data_type}_MODE_CONV_RADIUS',
+                                      'MODE_CONV_RADIUS'],
+                                     'conv_radius',
+                                     f'METPLUS_{data_type}_CONV_RADIUS',
+                                     remove_quotes=True)
 
-            self.set_met_config_thresh(self.env_var_dict,
-                                       [f'{data_type}_MODE_CONV_THRESH',
-                                        'MODE_CONV_THRESH'],
-                                       'conv_thresh',
-                                       f'METPLUS_{data_type}_CONV_THRESH')
+            self.set_met_config_list(self.env_var_dict,
+                                     [f'{data_type}_MODE_CONV_THRESH',
+                                      'MODE_CONV_THRESH'],
+                                     'conv_thresh',
+                                     f'METPLUS_{data_type}_CONV_THRESH',
+                                     remove_quotes=True)
 
-            self.set_met_config_thresh(self.env_var_dict,
-                                       [f'{data_type}_MODE_MERGE_THRESH',
-                                        'MODE_MERGE_THRESH'],
-                                       'merge_thresh',
-                                       f'METPLUS_{data_type}_MERGE_THRESH')
+            self.set_met_config_list(self.env_var_dict,
+                                     [f'{data_type}_MODE_MERGE_THRESH',
+                                      'MODE_MERGE_THRESH'],
+                                     'merge_thresh',
+                                     f'METPLUS_{data_type}_MERGE_THRESH',
+                                     remove_quotes=True)
 
             self.set_met_config_string(self.env_var_dict,
                                        [f'{data_type}_MODE_MERGE_FLAG',
@@ -137,6 +141,10 @@ class MODEWrapper(CompareGriddedWrapper):
                 value = self.get_env_var_value(f'METPLUS_{data_type}_{name}')
                 c_dict[f'{data_type}_{name}'] = value
 
+        self.set_met_config_float(self.env_var_dict,
+                                  'MODE_GRID_RES',
+                                  'grid_res',
+                                  'METPLUS_GRID_RES')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
@@ -147,9 +155,7 @@ class MODEWrapper(CompareGriddedWrapper):
 
         mask_poly = self.read_mask_poly()
         c_dict['MASK_POLY_TEMPLATE'] = mask_poly
-
-        if mask_poly:
-            self.env_var_dict['METPLUS_MASK_POLY'] = f'poly = "{mask_poly}";'
+        c_dict['MASK_POLY_IS_LIST'] = False
 
         return c_dict
 
@@ -241,8 +247,12 @@ class MODEWrapper(CompareGriddedWrapper):
         # loop through fields and call MODE
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
             self.clear()
-            self.format_field('FCST', fcst_field)
-            self.format_field('OBS', obs_field)
+            self.format_field('FCST',
+                              fcst_field,
+                              is_list=False)
+            self.format_field('OBS',
+                              obs_field,
+                              is_list=False)
 
             self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
                                        **time_info)

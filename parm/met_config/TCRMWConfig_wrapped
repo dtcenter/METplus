@@ -10,18 +10,6 @@
 // variables at defined in the METplus config. If not, they are set to
 // and empty string, which will cause MET to use the value defined in the
 // default configuration file.
-// ${MODEL} sets "model = <user setting>;"
-// ${STORM_ID} sets "storm_id = <user setting>;"
-// ${BASIN} sets "basin = <user setting>;"
-// ${CYCLONE} sets "cyclone = <user setting>;"
-// ${STORM_NAME} sets " = <user setting>;"
-// ${INIT_INCLUDE} sets "init_inc = <user setting>;"
-// ${VALID_BEG} sets "valid_beg = <user setting>;"
-// ${VALID_END} sets "valid_end = <user setting>;"
-// ${VALID_INCLUDE_LIST} sets "valid_inc = [<user setting>];"
-// ${VALID_EXCLUDE_LIST} sets "valid_exc = [<user setting>];"
-// ${VALID_HOUR_LIST} sets "valid_hour = [<user setting>];"
-// ${LEAD_LIST} sets "lead = [<user setting>];"
 
 ${METPLUS_MODEL}
 
@@ -67,11 +55,6 @@ ${METPLUS_REGRID_DICT}
 // variables at defined in the METplus config. If not, they are set to
 // and empty string, which will cause MET to use the value defined in the
 // default configuration file.
-// ${N_RANGE} sets "n_range = <user setting>;"
-// ${N_AZIMUTH} sets "n_azimuth = <user setting>;"
-// ${MAX_RANGE_KM} sets "max_range_km = <user setting>;"
-// ${DELTA_RANGE_KM} sets "delta_range_km = <user setting>;"
-// ${RMW_SCALE} sets "rmw_scale = <user setting>;"
 
 ${METPLUS_N_RANGE}
 ${METPLUS_N_AZIMUTH}
