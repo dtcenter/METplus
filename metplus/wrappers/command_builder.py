@@ -1325,7 +1325,8 @@ class CommandBuilder:
 
     def set_time_dict_for_single_runtime(self, c_dict):
         # get clock time from start of execution for input time dictionary
-        clock_time_obj = datetime.strptime(self.config.getstr('config', 'CLOCK_TIME'),
+        clock_time_obj = datetime.strptime(self.config.getstr('config',
+                                                              'CLOCK_TIME'),
                                            '%Y%m%d%H%M%S')
 
         # get start run time and set INPUT_TIME_DICT
