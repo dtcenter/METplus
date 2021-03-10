@@ -23,9 +23,9 @@
 ${METPLUS_INIT_FREQ}
 
 //
-// Lead times in hours to be searched for genesis events.
+// Valid hour frequency to be analyzed in hours, starting at 0
 //
-${METPLUS_LEAD_WINDOW_DICT}
+${METPLUS_VALID_FREQ}
 
 //
 // Minimum track duration for genesis event in hours.
@@ -54,7 +54,7 @@ ${METPLUS_BEST_GENESIS_DICT}
 // sea-level pressure threshold.  The operational track genesis time is valid
 // time of the first track point where all of these criteria are met.
 //
-${METPLUS_OPER_GENESIS_DICT}
+${METPLUS_OPER_TECHNIQUE}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
@@ -129,12 +129,12 @@ ${METPLUS_VX_MASK}
 //
 // Genesis matching time window, in hours relative to the forecast genesis time
 //
-${METPLUS_GENESIS_WINDOW_DICT}
+${METPLUS_DEV_HIT_WINDOW_DICT}
 
 //
 // Genesis matching search radius in km.
 //
-${METPLUS_GENESIS_RADIUS}
+${METPLUS_GENESIS_MATCH_RADIUS}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
