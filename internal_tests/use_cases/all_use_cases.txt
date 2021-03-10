@@ -97,9 +97,9 @@ MTD_fcstHRRR-TLE_obsMRMS:: model_applications/precipitation/MTD_fcstHRRR-TLE_obs
 
 Category: s2s
 GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast:: model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf::netCDF4
-UserScript_fcstGFS_obsERA_Blocking:: model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.conf::cartopy,METplotpy,METcalcpy
-UserScript_obsERA_obsOnly_Blocking:: model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.conf::cartopy,METplotpy,METcalcpy
-UserScript_obsERA_obsOnly_WeatherRegime:: model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.conf::cartopy,METplotpy,METcalcpy
+UserScript_fcstGFS_obsERA_Blocking:: model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.conf::cartopy,scipy,METplotpy,METcalcpy
+UserScript_obsERA_obsOnly_Blocking:: model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.conf::cartopy,scipy,METplotpy,METcalcpy
+UserScript_obsERA_obsOnly_WeatherRegime:: model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.conf::cartopy,scipy,METplotpy,METcalcpy
 
 Category: space_weather
 GridStat_fcstGloTEC_obsGloTEC_vx7:: model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf
