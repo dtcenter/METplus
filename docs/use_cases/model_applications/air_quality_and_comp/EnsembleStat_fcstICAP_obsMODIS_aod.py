@@ -23,7 +23,8 @@ _aod.conf
 # | **Observation:** Aggregate netCDF file with MODIS observed AOD field
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# |
 #
 
 ##############################################################################
@@ -55,25 +56,18 @@ _aod.conf
 # MET Configuration
 # ---------------------
 #
-# METplus sets environment variables based on the values in the METplus configuration file.
-# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
+# METplus sets environment variables based on user settings in the METplus configuration file. 
+# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
+#
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
+#
+# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
+# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
+#
+# .. note:: See the :ref:`EnsembleStat MET Configuration<ens-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/EnsembleStatConfig_wrapped
-#
-# Note the following variables are referenced in the MET configuration file.
-#
-# * **${MODEL}** - Name of forecast input. Corresponds to MODEL in the METplus configuration file.
-# * **${OBTYPE}** - Name of observation input. Corresponds to OBTYPE in the METplus configuration file.
-# * **${ENS_THRESH}** - Threshold for ratio of valid files to expected files to allow application to run. Corresponds to ENSEMBLE_STAT_ENS_THRESH in the METplus configuration file.
-# * **${ENS_VLD_THRESH}** - Threshold for ratio of valid data values for each grid point to number of ensemble mebers to allow application to run. Corresponds to ENSEMBLE_STAT_ENS_VLD_THRESH in the METplus configuration file.
-# * **${ENS_FIELD}** - Formatted ensemble product fields information. Generated from ENS_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${FCST_FIELD}** - Formatted forecast field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${OBS_FIELD}** - Formatted observation field information. Generated from [OBS/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${OBS_WINDOW_BEGIN}** - Corresponds to OBS_WINDOW_BEGIN or OBS_ENSEMBLE_STAT_WINDOW_BEGIN in the METplus configuration file.
-# * **${OBS_WINDOW_END}** - Corresponds to OBS_WINDOW_END or OBS_ENSEMBLE_STAT_WINDOW_END in the METplus configuration file.
-# * **${CLIMO_MEAN_FILE}** - Optional path to climatology mean file. Corresponds to ENSEMBLE_STAT_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
-# * **${CLIMO_STDEV_FILE}** - Optional path to climatology standard deviation file. Corresponds to ENSEMBLE_STAT_CLIMO_STDEV_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
 
 ##############################################################################
 # Python Embedding

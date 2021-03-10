@@ -75,14 +75,14 @@ from metplus.util import time_util
           'GRID_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
           },
          {'METPLUS_MASK_DICT':
-              'mask = {grid = ["FULL"];poly = ["one","two"];}',
+              'mask = {grid = ["FULL"];poly = ["one", "two"];}',
           }),
         # mask grid and poly (new config var)
         ({'GRID_STAT_MASK_GRID': 'FULL',
           'GRID_STAT_MASK_POLY': 'one, two',
           },
          {'METPLUS_MASK_DICT':
-              'mask = {grid = ["FULL"];poly = ["one","two"];}',
+              'mask = {grid = ["FULL"];poly = ["one", "two"];}',
           }),
         # mask grid value
         ({'GRID_STAT_MASK_GRID': 'FULL',
@@ -100,13 +100,13 @@ from metplus.util import time_util
         ({'GRID_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
           },
          {'METPLUS_MASK_DICT':
-              'mask = {poly = ["one","two"];}',
+              'mask = {poly = ["one", "two"];}',
           }),
         # mask poly (new config var)
         ({'GRID_STAT_MASK_POLY': 'one, two',
           },
          {'METPLUS_MASK_DICT':
-              'mask = {poly = ["one","two"];}',
+              'mask = {poly = ["one", "two"];}',
           }),
 
         ({'GRID_STAT_NEIGHBORHOOD_COV_THRESH': '>=0.5'},

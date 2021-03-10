@@ -13,20 +13,7 @@
 // obs_var (string array) is added and works like grib_code (int array)
 // when the obs name is given instead of grib_code
 //
-
-time_summary = {
-  flag = ${TIME_SUMMARY_FLAG};
-  raw_data = ${TIME_SUMMARY_RAW_DATA};
-  beg = ${TIME_SUMMARY_BEG};
-  end = ${TIME_SUMMARY_END};
-  step = ${TIME_SUMMARY_STEP};
-  width = ${TIME_SUMMARY_WIDTH};
-  grib_code = [ ${TIME_SUMMARY_GRIB_CODES} ];
-  obs_var   = [ ${TIME_SUMMARY_VAR_NAMES} ];
-  type = [ ${TIME_SUMMARY_TYPES} ];
-  vld_freq = ${TIME_SUMMARY_VALID_FREQ};
-  vld_thresh = ${TIME_SUMMARY_VALID_THRESH};
-}
+${METPLUS_TIME_SUMMARY_DICT}
 
 //
 // Mapping of input little_r report types to output message types

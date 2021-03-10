@@ -906,9 +906,6 @@ METplus Configuration Glossary
 
      | *Used by:*  TCMPRPlotter
 
-   DESC
-     .. warning:: **DEPRECATED:** Please use :term:`DESC_LIST` instead.
-
    DESC_LIST
      A single value or list of values used in the stat_analysis data stratification. Specifies the values of the DESC column in the MET .stat file to use.
 
@@ -3254,7 +3251,7 @@ METplus Configuration Glossary
      | *Used by:*  PointStat
 
    PB2NC_OUTPUT_DIR
-     Specify the directory where files will be written from the MET pb2nc tool. Varies :term:`PB2NC_POLY` Specify a polygon to be used with the MET pb2nc tool.
+     Specify the directory where files will be written from the MET pb2nc tool. 
 
      | *Used by:*  PB2NC
 
@@ -3367,6 +3364,8 @@ METplus Configuration Glossary
    POINT_STAT_GRID
      Specify the grid to use with the MET point_stat tool.
 
+     .. note:: please use :term:`POINT_STAT_MASK_GRID`
+
      | *Used by:*  PointStat
 
    POINT_STAT_MESSAGE_TYPE
@@ -3392,10 +3391,12 @@ METplus Configuration Glossary
    POINT_STAT_POLY
      Specify a polygon to use with the MET PointStat tool.
 
+     .. note:: please use :term:`POINT_STAT_MASK_POLY`
+
      | *Used by:*  PointStat
 
    PB2NC_POLY
-     Specify a polygon to use with the MET PB2NC tool.
+     .. note:: please use :term:`PB2NC_MASK_POLY`
 
      | *Used by:*  PB2NC
 
@@ -5456,14 +5457,32 @@ METplus Configuration Glossary
 
      | *Used by:*  EnsembleStat
 
+   GRID_STAT_MASK_GRID
+     Specify the value for 'mask.grid' in the MET configuration file for GridStat.
+
+     | *Used by:*  GridStat
+
+   GRID_STAT_MASK_POLY
+     Specify the value for 'mask.poly' in the MET configuration file for GridStat.
+
+     | *Used by:*  GridStat
+   
+   DESC
+     Specify the value for 'desc' in the MET configuration file for the MET tool being used
+
+    | *Used by:* GridStat, PointStat, EnsembleStat, GridDiag, MODE, MTD, SeriesAnalysis, TCGen, TCPairs, TCStat
+
    ENSEMBLE_STAT_MET_CONFIG_OVERRIDES
      Override any variables in the MET configuration file that are not
      supported by the wrapper. This should be set to the full variable name
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
      ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:*  EnsembleStat
 
@@ -5473,8 +5492,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     ASCII2NC_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* ASCII2NC
 
@@ -5484,8 +5506,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     GRID_DIAG_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* GridDiag
 
@@ -5495,8 +5520,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     GRID_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+  
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* GridStat
 
@@ -5506,8 +5534,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     MODE_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* MODE
 
@@ -5517,8 +5548,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     MTD_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* MTD
 
@@ -5528,8 +5562,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     PB2NC_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* PB2NC
 
@@ -5539,8 +5576,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     POINT_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* PointStat
 
@@ -5550,8 +5590,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     SERIES_ANALYSIS_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* SeriesAnalysis
 
@@ -5561,8 +5604,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     STAT_ANALYSIS_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* StatAnalysis
 
@@ -5572,8 +5618,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     TC_GEN_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* TCGen
 
@@ -5583,8 +5632,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     TC_PAIRS_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* TCPairs
 
@@ -5594,8 +5646,11 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     TC_RMW_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* TCRMW
 
@@ -5605,15 +5660,13 @@ METplus Configuration Glossary
      and value that you want to override, including the equal sign and the
      ending semi-colon. The value is directly appended to the end of the
      wrapped MET config file.
+     
      Example:
-     ENSEMBLE_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+     TC_STAT_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* TCStat
-
-   GRID_STAT_MASK_GRID
-     Specify the value for 'mask.grid' in the MET configuration file for GridStat.
-
-     | *Used by:*  GridStat
 
    FCST_PCP_COMBINE_EXTRA_NAMES
      Specify a list of any additional fields to add to the command. The number of items in this list should match :term:`FCST_PCP_COMBINE_EXTRA_LEVELS`. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_EXTRA_NAMES`. Example:
@@ -5641,3 +5694,93 @@ METplus Configuration Glossary
      See :term:`FCST_PCP_COMBINE_EXTRA_LEVELS`
 
      | *Used by:*  PCPCombine
+
+   ENSEMBLE_STAT_MESSAGE_TYPE
+     Set the message_type option in the EnsembleStat MET config file.
+
+     | *Used by:*  EnsembleStat
+
+   ENSEMBLE_STAT_MASK_POLY
+     Set the mask.poly entry in the EnsembleStat MET config file.
+
+     | *Used by:*  EnsembleStat
+
+   GRID_DIAG_MASK_POLY
+     Set the mask.poly entry in the GridDiag MET config file.
+
+     | *Used by:*  GridDiag
+
+   GRID_DIAG_MASK_GRID
+     Set the mask.grid entry in the GridDiag MET config file.
+
+     | *Used by:*  GridDiag
+
+   GRID_DIAG_CENSOR_THRESH
+     Set the censor_thresh entry in the GridDiag MET config file.
+
+     | *Used by:*  GridDiag
+
+   GRID_DIAG_CENSOR_VAL
+     Set the censor_val entry in the GridDiag MET config file.
+
+     | *Used by:*  GridDiag
+
+   PB2NC_TIME_SUMMARY_RAW_DATA
+     Specify the time summary raw_data item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  PB2NC
+
+   PB2NC_TIME_SUMMARY_STEP
+     Specify the time summary step item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  PB2NC
+
+   PB2NC_TIME_SUMMARY_WIDTH
+     Specify the time summary width item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  PB2NC
+
+   PB2NC_TIME_SUMMARY_GRIB_CODES
+     Specify the time summary grib_code item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  PB2NC
+
+   PB2NC_TIME_SUMMARY_VALID_FREQ
+     Specify the time summary valid_freq item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  PB2NC
+
+   PB2NC_TIME_SUMMARY_VALID_THRESH
+     Specify the time summary valid_thresh item in the MET pb2nc config file. Refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more information.
+
+     | *Used by:*  PN2NC
+
+   PB2NC_MASK_POLY
+     Set the mask.poly entry in the PB2NC MET config file.
+
+     | *Used by:*  PN2NC
+
+   PB2NC_MASK_GRID
+     Set the mask.grid entry in the PB2NC MET config file.
+
+     | *Used by:*  PN2NC
+
+   POINT_STAT_MASK_SID
+     Set the mask.sid entry in the PointStat MET config file.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_MASK_GRID
+     Set the mask.grid entry in the PointStat MET config file.
+
+     | *Used by:*  PointStat
+
+   POINT_STAT_MASK_POLY
+     Set the mask.poly entry in the PointStat MET config file.
+
+     | *Used by:*  PointStat
+
+   MODE_GRID_RES
+     Set the grid_res entry in the MODE MET config file.
+
+     | *Used by:*  MODE

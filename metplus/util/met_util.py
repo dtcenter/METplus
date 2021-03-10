@@ -1700,7 +1700,7 @@ def getlist(list_str, expand_begin_end_incr=True):
 
     # use csv reader to divide comma list while preserving strings with comma
     # convert the csv reader to a list and get first item (which is the whole list)
-    item_list = list(reader([list_str]))[0]
+    item_list = list(reader([list_str], escapechar='\\'))[0]
 
     item_list = fix_list(item_list)
 
