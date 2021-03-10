@@ -5,18 +5,9 @@ import numpy as np
 import netCDF4
 import re
 
-#mp_fpath = os.path.abspath(__file__)
-#mp_fpath_split = str.split(mp_fpath,os.path.sep)
-#mp_loc_ind = mp_fpath_split.index('METplus')
-
-#sys.path.insert(0,os.path.sep.join(mp_fpath_split[0:mp_loc_ind+1]))
-#sys.path.insert(0, os.path.sep.join(mp_fpath_split[0:mp_loc_ind])+"/METplotpy")
 from Blocking import BlockingCalculation
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
-from ush.master_metplus import get_config_inputs_from_command_line
-#from metplus.wrappers import PCPCombineWrapper
-#from metplus.wrappers import RegridDataPlaneWrapper
 from metplotpy.contributed.blocking_s2s import plot_blocking as pb
 from metplotpy.contributed.blocking_s2s.CBL_plot import create_cbl_plot
 from Blocking_WeatherRegime_util import find_input_files, parse_steps
@@ -26,7 +17,7 @@ def main():
     #all_steps = ["REGRID","TIMEAVE","RUNMEAN","ANOMALY","CBL","PLOTCBL","IBL","PLOTIBL","GIBL","CALCBLOCKS","PLOTBLOCKS"]
     all_steps = ["CBL","PLOTCBL","IBL","PLOTIBL","GIBL","CALCBLOCKS","PLOTBLOCKS"]
 
-    inconfig_list = get_config_inputs_from_command_line()
+    inconfig_list = sys.argv[1:]
     steps_list_fcst,steps_list_obs,config_list = parse_steps(inconfig_list)
     config = pre_run_setup(config_list)
 
