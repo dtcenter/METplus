@@ -2051,3 +2051,11 @@ class CommandBuilder:
         """
         item = met_config(**kwargs)
         self.handle_met_config_item(item)
+
+    def get_met_config(self, **kwargs):
+        """! Get METConfigInfo object from arguments and return it
+             @param kwargs key arguments that should match METConfigInfo
+              arguments
+             @returns METConfigInfo object
+        """
+        return met_config(**kwargs)

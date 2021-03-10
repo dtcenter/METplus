@@ -259,15 +259,15 @@ class TCGenWrapper(CommandBuilder):
         dict_name = 'fcst_hr_window'
         dict_items = []
         dict_items.append(
-            met_config(name='beg',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_FCST_HR_WINDOW_BEGIN',
-                                        'TC_GEN_FCST_HR_WINDOW_BEG',
-                                        'TC_GEN_LEAD_WINDOW_BEGIN',
-                                        'TC_GEN_LEAD_WINDOW_BEG'])
+            self.get_met_config(name='beg',
+                           data_type='int',
+                           metplus_configs=['TC_GEN_FCST_HR_WINDOW_BEGIN',
+                                            'TC_GEN_FCST_HR_WINDOW_BEG',
+                                            'TC_GEN_LEAD_WINDOW_BEGIN',
+                                            'TC_GEN_LEAD_WINDOW_BEG'])
         )
         dict_items.append(
-            met_config(name='end',
+            self.get_met_config(name='end',
                        data_type='int',
                        metplus_configs=['TC_GEN_FCST_HR_WINDOW_END',
                                         'TC_GEN_LEAD_WINDOW_END'])
@@ -278,7 +278,7 @@ class TCGenWrapper(CommandBuilder):
         dict_name = 'dev_hit_window'
         dict_items = []
         dict_items.append(
-            met_config(name='beg',
+            self.get_met_config(name='beg',
                        data_type='int',
                        metplus_configs=['TC_GEN_DEV_HIT_WINDOW_BEGIN',
                                         'TC_GEN_DEV_HIT_WINDOW_BEG',
@@ -286,7 +286,7 @@ class TCGenWrapper(CommandBuilder):
                                         'TC_GEN_GENESIS_WINDOW_BEG'])
         )
         dict_items.append(
-            met_config(name='end',
+            self.get_met_config(name='end',
                        data_type='int',
                        metplus_configs=['TC_GEN_DEV_HIT_WINDOW_END',
                                         'TC_GEN_GENESIS_WINDOW_END'])
@@ -297,12 +297,12 @@ class TCGenWrapper(CommandBuilder):
         dict_name = 'fcst_genesis'
         dict_items = []
         dict_items.append(
-            met_config(name='vmax_thresh',
+            self.get_met_config(name='vmax_thresh',
                        data_type='thresh',
                        metplus_configs=['TC_GEN_FCST_GENESIS_VMAX_THRESH'])
         )
         dict_items.append(
-            met_config(name='mslp_thresh',
+            self.get_met_config(name='mslp_thresh',
                        data_type='thresh',
                        metplus_configs=['TC_GEN_FCST_GENESIS_MSLP_THRESH'])
         )
@@ -312,22 +312,22 @@ class TCGenWrapper(CommandBuilder):
         dict_name = 'best_genesis'
         dict_items = []
         dict_items.append(
-            met_config(name='technique',
+            self.get_met_config(name='technique',
                        data_type='string',
                        metplus_configs=['TC_GEN_BEST_GENESIS_TECHNIQUE'])
         )
         dict_items.append(
-            met_config(name='category',
+            self.get_met_config(name='category',
                        data_type='list',
                        metplus_configs=['TC_GEN_BEST_GENESIS_CATEGORY'])
         )
         dict_items.append(
-            met_config(name='vmax_thresh',
+            self.get_met_config(name='vmax_thresh',
                        data_type='thresh',
                        metplus_configs=['TC_GEN_BEST_GENESIS_VMAX_THRESH'])
         )
         dict_items.append(
-            met_config(name='mslp_thresh',
+            self.get_met_config(name='mslp_thresh',
                        data_type='thresh',
                        metplus_configs=['TC_GEN_BEST_GENESIS_MSLP_THRESH'])
         )
