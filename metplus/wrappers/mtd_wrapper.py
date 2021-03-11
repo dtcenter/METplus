@@ -403,8 +403,12 @@ class MTDWrapper(MODEWrapper):
 
         # loop through fields and call MTD
         for fcst_field, obs_field in zip(fcst_field_list, obs_field_list):
-            self.format_field('FCST', fcst_field)
-            self.format_field('OBS', obs_field)
+            self.format_field('FCST',
+                              fcst_field,
+                              is_list=False)
+            self.format_field('OBS',
+                              obs_field,
+                              is_list=False)
 
             self.param = do_string_sub(self.c_dict['CONFIG_FILE'],
                                        **time_info)

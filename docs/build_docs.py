@@ -24,7 +24,7 @@ import shlex
 import shutil
 import subprocess
 import re
-import importlib
+import importlib.util
 from datetime import datetime
 
 def run_command(command, dir_to_run=None):
@@ -35,11 +35,10 @@ def run_command(command, dir_to_run=None):
     command_out = subprocess.run(shlex.split(command),
                                  cwd=dir_to_run)
     if command_out.returncode != 0:
-        error_text = f"Could not create symbolic links by running {command}"
+        error_text = f"Command failed: {command}"
         if dir_to_run:
-            error_text += f"in {dir_to_run}"
+            error_text += f" (in {dir_to_run})"
         print(error_text)
-        sys.exit(1)
 
 def write_release_date_file(docs_dir):
     release_date_file = os.path.join(docs_dir,

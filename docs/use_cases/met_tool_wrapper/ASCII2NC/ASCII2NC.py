@@ -1,5 +1,5 @@
 """
-ASCII2NC:Basic Use Case
+ASCII2NC: Basic Use Case
 ========================
 
 met_tool_wrapper/ASCII2NC/ASCII2NC.conf
@@ -18,9 +18,10 @@ met_tool_wrapper/ASCII2NC/ASCII2NC.conf
 # | **Observations:** Precipitation accumulation observations in ASCII text files
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** Unknown
+# |
 
 ##############################################################################
 # METplus Components
@@ -36,6 +37,7 @@ met_tool_wrapper/ASCII2NC/ASCII2NC.conf
 # run time:
 #
 # | **Valid:** 2010-01-01_12Z
+# |
 
 ##############################################################################
 # METplus Configuration
@@ -52,26 +54,18 @@ met_tool_wrapper/ASCII2NC/ASCII2NC.conf
 # MET Configuration
 # ---------------------
 #
-# METplus sets environment variables based on the values in the METplus configuration file.
-# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
+# METplus sets environment variables based on user settings in the METplus configuration file. 
+# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
+#
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
+#
+# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
+# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
+#
+# .. note:: See the :ref:`ASCII2NC MET Configuration<ascii2nc-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
-#
-# Note the following variables are referenced in the MET configuration file. Please see the MET User's Guide section regarding ASCII2NC time summary options for more information.
-#
-# * **${TIME_SUMMARY_FLAG}** - True/False option to compute time summary statistics. Corresponds to ASCII2NC_TIME_SUMMARY_FLAG in the METplus configuration file.
-# * **${TIME_SUMMARY_RAW_DATA}** - Corresponds to ASCII2NC_TIME_SUMMARY_RAW_DATA in the METplus configuration file.
-# * **${TIME_SUMMARY_BEG}** - Corresponds to ASCII2NC_TIME_SUMMARY_BEG in the METplus configuration file.
-# * **${TIME_SUMMARY_END}** - Corresponds to ASCII2NC_TIME_SUMMARY_END in the METplus configuration file.
-# * **${TIME_SUMMARY_STEP}** - Corresponds to ASCII2NC_TIME_SUMMARY_STEP in the METplus configuration file.
-# * **${TIME_SUMMARY_WIDTH}** - Corresponds to ASCII2NC_TIME_SUMMARY_WIDTH in the METplus configuration file.
-# * **${TIME_SUMMARY_GRIB_CODES}** - Corresponds to ASCII2NC_TIME_SUMMARY_GRIB_CODES in the METplus configuration file.
-# * **${TIME_SUMMARY_VAR_NAMES}** - Corresponds to ASCII2NC_TIME_SUMMARY_VAR_NAMES in the METplus configuration file.
-# * **${TIME_SUMMARY_TYPES}** - Corresponds to ASCII2NC_TIME_SUMMARY_TYPES in the METplus configuration file.
-# * **${TIME_SUMMARY_VALID_FREQ}** - Corresponds to ASCII2NC_TIME_SUMMARY_VALID_FREQ in the METplus configuration file.
-# * **${TIME_SUMMARY_VALID_THRESH}** - Corresponds to ASCII2NC_TIME_SUMMARY_VALID_THRESH in the METplus configuration file.
-#
 
 ##############################################################################
 # Running METplus

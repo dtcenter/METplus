@@ -12,7 +12,7 @@ Finalize Release on GitHub
 
 .. parsed-literal::
 
-     https://github.com/dtcenter|projectRepo|
+     https://github.com/dtcenter/|projectRepo|
      -> Settings
      -> Branches (tab on left)
      -> change the drop down to new branch

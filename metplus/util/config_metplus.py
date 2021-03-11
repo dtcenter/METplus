@@ -233,9 +233,9 @@ def launch(file_list, moreopt):
                             % (section, option, repr(value)))
                 config.set(section, option, value)
 
-                # after each config variable override,
-                # move old sections to [config]
-                config.move_all_to_config_section()
+            # after each config variable override,
+            # move old sections to [config]
+            config.move_all_to_config_section()
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
@@ -592,7 +592,6 @@ class METplusConfig(ProdConfig):
                          super().getraw(section, key))
 
             self._conf.remove_section(section)
-
 
     def find_section(self, sec, opt):
         """! Search through list of previously supported config sections

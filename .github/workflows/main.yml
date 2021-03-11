@@ -118,11 +118,37 @@ jobs:
           mkdir -p artifact/${artifact_name}
           cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${artifact_name}/
           echo ::set-output name=artifact_name::${artifact_name}
+          if [ "$( ls -A ${GITHUB_WORKSPACE}/../diff)" ]; then
+            mkdir -p artifact/diff-${artifact_name}
+            cp -r ${GITHUB_WORKSPACE}/../diff/* artifact/diff-${artifact_name}/
+            echo ::set-output name=upload_diff::true
+          else
+            echo ::set-output name=upload_diff::false
+          fi
+          if [ "$( ls -A ${GITHUB_WORKSPACE}/../error_logs)" ]; then
+            mkdir -p artifact/error_logs
+            cp -r ${GITHUB_WORKSPACE}/../error_logs/* artifact/error_logs
+            echo ::set-output name=upload_error_logs::true
+          else
+            echo ::set-output name=upload_error_logs::false
+          fi
       - uses: actions/upload-artifact@v2
         if: always()
         with:
           name: ${{ steps.save-output.outputs.artifact_name }}
           path: artifact/${{ steps.save-output.outputs.artifact_name }}
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() && steps.save-output.outputs.upload_error_logs }}
+        with:
+          name: error_logs
+          path: artifact/error_logs
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() && steps.save-output.outputs.upload_diff }}
+        with:
+          name: diff-${{ steps.save-output.outputs.artifact_name }}
+          path: artifact/diff-${{ steps.save-output.outputs.artifact_name }}
+          if-no-files-found: ignore
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
     runs-on: ubuntu-latest
