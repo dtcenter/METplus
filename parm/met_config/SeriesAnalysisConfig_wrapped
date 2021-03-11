@@ -72,7 +72,9 @@ climo_mean = {
 }
 
 climo_stdev = climo_mean;
-${METPLUS_CLIMO_STDEV_FILE}
+climo_stdev = {
+   ${METPLUS_CLIMO_STDEV_FILE}
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
