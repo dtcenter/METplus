@@ -14,7 +14,6 @@ from Blocking_WeatherRegime_util import find_input_files, parse_steps
 
 def main():
 
-    #all_steps = ["REGRID","TIMEAVE","RUNMEAN","ANOMALY","CBL","PLOTCBL","IBL","PLOTIBL","GIBL","CALCBLOCKS","PLOTBLOCKS"]
     all_steps = ["CBL","PLOTCBL","IBL","PLOTIBL","GIBL","CALCBLOCKS","PLOTBLOCKS"]
 
     inconfig_list = sys.argv[1:]
@@ -24,54 +23,6 @@ def main():
     if not steps_list_obs and not steps_list_fcst:
         print('No processing steps requested for either the model or observations,')
         print('no data will be processed')
-
-
-    ######################################################################
-    # Pre-Process Data:
-    ######################################################################
-    # Regrid
-    #if ("REGRID" in steps_list_obs):
-    #    print('Regridding Observations')
-    #    regrid_config = config_metplus.replace_config_from_section(config, 'regrid_obs')
-    #    RegridDataPlaneWrapper(regrid_config).run_all_times()
-
-    #if ("REGRID" in steps_list_fcst):
-    #   print('Regridding Model')
-    #   regrid_config = config_metplus.replace_config_from_section(config, 'regrid_fcst')
-    #   RegridDataPlaneWrapper(regrid_config).run_all_times()
-
-    #Compute Daily Average
-    #if ("TIMEAVE" in steps_list_obs):
-    #    print('Computing Time Averages')
-    #    daily_config = config_metplus.replace_config_from_section(config, 'daily_mean_obs')
-    #    PCPCombineWrapper(daily_config).run_all_times()
-
-    #if ("TIMEAVE" in steps_list_fcst):
-    #    print('Computing Time Averages')
-    #    daily_config = config_metplus.replace_config_from_section(config, 'daily_mean_fcst')
-    #    PCPCombineWrapper(daily_config).run_all_times()
-
-    #Take a running mean
-    #if ("RUNMEAN" in steps_list_obs):
-    #    print('Computing Obs Running means')
-    #    rmean_config = config_metplus.replace_config_from_section(config, 'running_mean_obs')
-    #    PCPCombineWrapper(rmean_config).run_all_times()
-
-    #if ("RUNMEAN" in steps_list_fcst):
-    #    print('Computing Model Running means')
-    #    rmean_config = config_metplus.replace_config_from_section(config, 'running_mean_fcst')
-    #    PCPCombineWrapper(rmean_config).run_all_times()
-
-    #Compute anomaly
-    #if ("ANOMALY" in steps_list_obs):
-    #    print('Computing Obs Anomalies')
-    #    anomaly_config = config_metplus.replace_config_from_section(config, 'anomaly_obs')
-    #    PCPCombineWrapper(anomaly_config).run_all_times()
-
-    #if ("ANOMALY" in steps_list_fcst):
-    #    print('Computing Model Anomalies')
-    #    anomaly_config = config_metplus.replace_config_from_section(config, 'anomaly_fcst')
-    #    PCPCombineWrapper(anomaly_config).run_all_times()
 
 
     ######################################################################
