@@ -1674,9 +1674,6 @@ class CommandBuilder:
                 climo_file = f'"{util.remove_quotes(climo_file)}"'
                 climo_string = f"file_name = [{climo_file}];"
 
-                if climo_item == 'STDEV':
-                    climo_string = f'climo_stdev = {{{climo_string}}}'
-
             # set environment variable
             self.add_env_var(f'METPLUS_CLIMO_{climo_item}_FILE', climo_string)
             # set old method
