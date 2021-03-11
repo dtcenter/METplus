@@ -89,7 +89,7 @@ jobs:
       fail-fast: false
       matrix:
         categories:
-          - "met_tool_wrapper0-53"
+          - "met_tool_wrapper:0-53"
           - "air_quality_and_comp:0"
           - "climate:0-1"
           - "convection_allowing_models:0"
