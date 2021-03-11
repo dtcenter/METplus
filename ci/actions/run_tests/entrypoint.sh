@@ -63,8 +63,9 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ] && [ "${GITHUB_BASE_REF: -4}" != "
   category=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh $INPUT_CATEGORIES`
   output_category=output-${GITHUB_BASE_REF}-${category}
 
+  echo Get output data volume: ${output_category}
   OUT_VOLUMES_FROM=`${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $output_category`
-  VOLUMES_FROM+=" "$OUT_VOLUMES_FROM
+  VOLUMES_FROM=${VOLUMES_FROM}" "$OUT_VOLUMES_FROM
 
   # add 3rd argument to command to trigger difference testing
   command=${command}" true"
