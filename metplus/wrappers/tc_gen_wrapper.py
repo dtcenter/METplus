@@ -170,10 +170,12 @@ class TCGenWrapper(CommandBuilder):
         self.add_met_config(name='init_beg',
                             data_type='string',
                             metplus_configs=['TC_GEN_INIT_BEG',
-                                             'TC_GEN_INIT_BEGIN'])
+                                             'TC_GEN_INIT_BEGIN',
+                                             'INIT_BEG'])
         self.add_met_config(name='init_end',
                             data_type='string',
-                            metplus_configs=['TC_GEN_INIT_END'])
+                            metplus_configs=['TC_GEN_INIT_END',
+                                             'INIT_END'])
         self.add_met_config(name='init_inc',
                             data_type='list',
                             metplus_configs=['TC_GEN_INIT_INC',
@@ -185,10 +187,12 @@ class TCGenWrapper(CommandBuilder):
         self.add_met_config(name='valid_beg',
                             data_type='string',
                             metplus_configs=['TC_GEN_VALID_BEG',
-                                             'TC_GEN_VALID_BEGIN'])
+                                             'TC_GEN_VALID_BEGIN',
+                                             'VALID_BEG'])
         self.add_met_config(name='valid_end',
                             data_type='string',
-                            metplus_configs=['TC_GEN_VALID_END'])
+                            metplus_configs=['TC_GEN_VALID_END',
+                                             'VALID_END'])
         self.add_met_config(name='init_hour',
                             data_type='list',
                             metplus_configs=['TC_GEN_INIT_HOUR',
