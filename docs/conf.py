@@ -13,7 +13,11 @@
 import os
 from datetime import datetime
 import sys
+import shlex
 import shutil
+import subprocess
+import re
+import importlib.util
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir)))
@@ -168,6 +172,22 @@ rst_epilog = f"""
 .. |release_year| replace:: {release_year}
 .. |release_info| replace:: {release_info}
 """
+
+# -- run_command
+
+def run_command(command, dir_to_run=None):
+    log_text = f"Running {command}"
+    if dir_to_run:
+        log_text += f" under {dir_to_run}"
+
+    command_out = subprocess.run(shlex.split(command),
+                                 cwd=dir_to_run)
+    if command_out.returncode != 0:
+        error_text = f"Command failed: {command}"
+        if dir_to_run:
+            error_text += f" (in {dir_to_run})"
+        print(error_text)
+
 
 # -- Doxygen ---------------------------------------------------------------
 
