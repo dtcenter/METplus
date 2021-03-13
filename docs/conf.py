@@ -67,7 +67,7 @@ if not skip_doxygen:
     if on_rtd:
         os.chdir(doxygen_dir)
         from subprocess import call 
-        call('doxygen')
+        call('make clean all')
         del call
         os.chdir(docs_dir)
     else: 
