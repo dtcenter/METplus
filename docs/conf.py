@@ -35,6 +35,63 @@ package_dir = os.path.join(docs_dir,
                            os.pardir,
                            'metplus')
 
+# -- run_command -----------------------------------------------------
+
+def run_command(command, dir_to_run=None):
+    log_text = f"Running {command}"
+    if dir_to_run:
+        log_text += f" under {dir_to_run}"
+
+    command_out = subprocess.run(shlex.split(command),
+                                 cwd=dir_to_run)
+    if command_out.returncode != 0:
+        error_text = f"Command failed: {command}"
+        if dir_to_run:
+            error_text += f" (in {dir_to_run})"
+        print(error_text)
+
+# -- Doxygen ---------------------------------------------------------------                                                                                           
+
+# Skip doxygen if skip_doxygen is set to 1                                                                                                                            
+skip_doxygen = 0
+on_rtd = os.environ.get('READTHEDOCS', None) == 'True'
+
+
+if not skip_doxygen:
+    # directory where doxygen Makefile exists                                                                                                                         
+    doxygen_dir = os.path.join(docs_dir,
+                               'doxygen',
+                               'run')
+
+    # build the doxygen documentation                                                                                                                                 
+    if on_rtd:
+        os.chdir(doxygen_dir)
+        from subprocess import call 
+        call('doxygen')
+        del call
+        os.chdir(docs_dir)
+    else: 
+        run_command("make clean all",                                                                                                                                                     doxygen_dir)                                                                                                                                      
+
+    # copy doxygen documentation into _build/html/doxygen                                                                                                             
+    doxygen_generated = os.path.join(docs_dir,
+                                     'generated',
+                                     'doxygen',
+                                     'html')
+    doxygen_output = os.path.join(docs_dir,
+                                  '_build',
+                                  'html',
+                                  'doxygen')
+
+    # make doxygen output dir if it does not exist                                                                                                                    
+    if os.path.exists(doxygen_output):
+        print(f"Removing {doxygen_output}")
+        os.rmtree(doxygen_output)
+
+    print(f"Copying doxygen files from {doxygen_generated} to {doxygen_output}")
+    shutil.copytree(doxygen_generated, doxygen_output)
+
+
 # -- Project information -----------------------------------------------------
 
 project = 'METplus'
@@ -173,52 +230,3 @@ rst_epilog = f"""
 .. |release_info| replace:: {release_info}
 """
 
-# -- run_command
-
-def run_command(command, dir_to_run=None):
-    log_text = f"Running {command}"
-    if dir_to_run:
-        log_text += f" under {dir_to_run}"
-
-    command_out = subprocess.run(shlex.split(command),
-                                 cwd=dir_to_run)
-    if command_out.returncode != 0:
-        error_text = f"Command failed: {command}"
-        if dir_to_run:
-            error_text += f" (in {dir_to_run})"
-        print(error_text)
-
-
-# -- Doxygen ---------------------------------------------------------------
-
-# Skip doxygen if skip_doxygen is set to 1
-skip_doxygen = 0
-
-if not skip_doxygen:
-
-    # directory where doxygen Makefile exists
-    doxygen_dir = os.path.join(docs_dir,
-                               'doxygen',
-                               'run')
-    
-    # build the doxygen documentation
-    run_command("make clean all",
-                 doxygen_dir)
-
-    # copy doxygen documentation into _build/html/doxygen                                                                                                  
-    doxygen_generated = os.path.join(docs_dir,
-                                     'generated',
-                                     'doxygen',
-                                     'html')
-    doxygen_output = os.path.join(docs_dir,
-                                  '_build',
-                                  'html',
-                                  'doxygen')
-
-    # make doxygen output dir if it does not exist                                                                                                         
-    if os.path.exists(doxygen_output):
-        print(f"Removing {doxygen_output}")
-        os.rmtree(doxygen_output)
-
-    print(f"Copying doxygen files from {doxygen_generated} to {doxygen_output}")
-    shutil.copytree(doxygen_generated, doxygen_output)
