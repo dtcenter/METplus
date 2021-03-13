@@ -13,12 +13,23 @@
 import os
 from datetime import datetime
 import sys
+import shutil
+
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir)))
 sys.path.append(os.path.abspath("./_ext"))
 print(sys.path)
 
 from metplus import __version__, __release_date__
+
+# docs directory                                                                                                                                                   
+# docs_dir will be set to the directory that this script is in                                                                                                     
+# __file__ is a variable that contains the path to the module that is                                                                                              
+# currently being imported                                                                                                                                         
+docs_dir = os.path.abspath(os.path.dirname(__file__))
+package_dir = os.path.join(docs_dir,
+                           os.pardir,
+                           'metplus')
 
 # -- Project information -----------------------------------------------------
 
@@ -157,3 +168,37 @@ rst_epilog = f"""
 .. |release_year| replace:: {release_year}
 .. |release_info| replace:: {release_info}
 """
+
+# -- Doxygen ---------------------------------------------------------------
+
+# Skip doxygen if skip_doxygen is set to 1
+skip_doxygen = 0
+
+if not skip_doxygen:
+
+    # directory where doxygen Makefile exists
+    doxygen_dir = os.path.join(docs_dir,
+                               'doxygen',
+                               'run')
+    
+    # build the doxygen documentation
+    run_command("make clean all",
+                 doxygen_dir)
+
+    # copy doxygen documentation into _build/html/doxygen                                                                                                  
+    doxygen_generated = os.path.join(docs_dir,
+                                     'generated',
+                                     'doxygen',
+                                     'html')
+    doxygen_output = os.path.join(docs_dir,
+                                  '_build',
+                                  'html',
+                                  'doxygen')
+
+    # make doxygen output dir if it does not exist                                                                                                         
+    if os.path.exists(doxygen_output):
+        print(f"Removing {doxygen_output}")
+        os.rmtree(doxygen_output)
+
+    print(f"Copying doxygen files from {doxygen_generated} to {doxygen_output}")
+    shutil.copytree(doxygen_generated, doxygen_output)
