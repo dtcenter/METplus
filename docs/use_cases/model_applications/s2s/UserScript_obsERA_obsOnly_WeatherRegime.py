@@ -19,7 +19,8 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # draws a straight line from the sum of squared distance for the clusters.  This helps 
 # determine the optimal cluster number by examining the largest difference between the 
 # curve and the straight line.  The EOFs step is optional.  It computes an empirical 
-# orthogonal function analysis.
+# orthogonal function analysis.  The K means step uses clustering to compute the 
+# frequency of occurrernce and anomalies for each cluster.
 
 ##############################################################################
 # Datasets
