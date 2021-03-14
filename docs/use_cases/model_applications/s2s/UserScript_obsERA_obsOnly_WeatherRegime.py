@@ -12,9 +12,12 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # Scientific Objective
 # --------------------
 #
-# To perform a weather regime analysis using 500 mb height data.  There are 3
-# steps in the weather regime analysis, elbow, EOFs, and K means, and 2 pre-
-# processing steps, RegridDataPlane and PcpCombine.
+# To perform a weather regime analysis using 500 mb height data.  There are 2 pre-
+# processing steps, RegridDataPlane and PcpCombine, and 3 steps in the weather regime 
+# analysis, elbow, EOFs, and K means.  Elbow computes the sum of squared distances
+# for clusters.  It draws a straight line from the sum of squared distance for the
+# clusters.  his helps determine the optimal cluster number by examining the largest 
+# difference between the curve and the straight line.  The EOFs step is optional.  
 
 ##############################################################################
 # Datasets
