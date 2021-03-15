@@ -13,6 +13,4 @@ Update Version Number
 
   * In *met/docs/conf.py*, update the *version*, *release_year*, and *release_date* variables for the documentation.
  
-  * In *met/docs/version*, update the version string.
-
   * DO NOT update the version number listed in the MET configuration files, add a new table file, or add a new test header file.

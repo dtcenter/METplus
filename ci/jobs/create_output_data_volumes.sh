@@ -31,10 +31,16 @@ for vol_name in use_cases_*; do
 
     image_name=dtcenter/metplus-data-dev:output-${branch_name}-${vol_name#use_cases_}
     echo Creating Docker data volume: ${image_name}
+
+    start_time=$SECONDS
     echo docker build -t ${image_name} --build-arg vol_name=${vol_name} ${docker_data_output_dir}
     docker build -t ${image_name} --build-arg vol_name=${vol_name} ${docker_data_output_dir}
+    echo Build took $(( SECONDS - start_time))
+
+    start_time=$SECONDS
     echo docker push ${image_name}
     docker push ${image_name}
+    echo Push took $(( SECONDS - start_time))
 
     # remove data after it has been added to data volume
     rm -rf ${docker_data_output_dir}/$vol_name
