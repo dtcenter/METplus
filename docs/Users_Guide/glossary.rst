@@ -5669,7 +5669,7 @@ METplus Configuration Glossary
      | *Used by:* TCStat
 
    FCST_PCP_COMBINE_EXTRA_NAMES
-     Specify a list of any additional fields to add to the command. The number of items in this list should match :term:`FCST_PCP_COMBINE_EXTRA_LEVELS`. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_EXTRA_NAMES`. Example:
+     Specify a list of any additional fields to add to the command. The items in this list correspond to the list set by :term:`FCST_PCP_COMBINE_EXTRA_LEVELS`. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_EXTRA_NAMES`. Example:
 
      | FCST_PCP_COMBINE_EXTRA_NAMES = TMP, HGT
      | FCST_PCP_COMBINE_EXTRA_LEVELS = "(*,*)", "(*,*)"
@@ -5686,12 +5686,22 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_EXTRA_LEVELS
-     Specify a list of any additional fields to add to the command. The number of items in this list should match :term:`FCST_PCP_COMBINE_EXTRA_NAMES`. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_EXTRA_LEVELS`. See :term:`FCST_PCP_COMBINE_EXTRA_NAMES` for an example.
+     Specify a list of any additional fields to add to the command. The items in this list correspond to the list set by :term:`FCST_PCP_COMBINE_EXTRA_NAMES`. If this list has fewer items than the names list, then no level value will be specified for those names (i.e. if using Python Embedding). A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_EXTRA_LEVELS`. See :term:`FCST_PCP_COMBINE_EXTRA_NAMES` for an example.
 
      | *Used by:*  PCPCombine
 
    OBS_PCP_COMBINE_EXTRA_LEVELS
      See :term:`FCST_PCP_COMBINE_EXTRA_LEVELS`
+
+     | *Used by:*  PCPCombine
+
+   FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES
+     Specify a list of output names for any additional fields to add to the command. The items in this list correspond to the list set by :term:`FCST_PCP_COMBINE_EXTRA_NAMES`. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_EXTRA_OUTPUT_NAMES`. Example:
+
+     | *Used by:*  PCPCombine
+
+   OBS_PCP_COMBINE_EXTRA_OUTPUT_NAMES
+     See :term:`FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES`
 
      | *Used by:*  PCPCombine
 
