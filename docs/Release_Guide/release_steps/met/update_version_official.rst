@@ -13,8 +13,6 @@ Update Version Number
 
   * In *met/docs/conf.py*, update the *version*, *release_year*, and *release_date* variables for the documentation.
    
-  * In *met/docs/version*, update the version string.
-  
   * If necessary, update the version number listed in the MET configuration files:
 
     * Default configuration files in *met/data/config*.

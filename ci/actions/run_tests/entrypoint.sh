@@ -17,7 +17,7 @@ GHA_ERROR_LOG_DIR=$RUNNER_WORKSPACE/error_logs
 
 branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
-  branch_name=${branch_name}-PR
+  branch_name=${branch_name}-pull_request
 fi
 DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
 
@@ -51,20 +51,11 @@ pip_command="pip3 install Pillow"
 command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
 
 # add input volumes to run command
-echo "Get Docker data volumes for input data"
-${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $CATEGORIES
-
 # keep track of --volumes-from arguments to docker run command
-VOLUMES_FROM=""
+echo "Get Docker data volumes for input data"
+VOLUMES_FROM=`${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $CATEGORIES`
 
-# split list of categories by comma
-category_list=`echo $CATEGORIES | tr "," "\n"`
-
-# add input category --volumes-from arguments for docker run command
-for category in ${category_list}; do
-  VOLUMES_FROM=${VOLUMES_FROM}`echo --volumes-from $category" "`
-done
-
+echo Input: ${VOLUMES_FROM}
 # get Docker data volumes for output data and run diffing logic
 # if running a pull request into develop or main_v* branches, not -ref branches
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ] && [ "${GITHUB_BASE_REF: -4}" != "-ref" ] && ([ "${GITHUB_BASE_REF:0:7}" == "develop" ] || [ "${GITHUB_BASE_REF:0:6}" == "main_v" ]); then
@@ -73,9 +64,11 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ] && [ "${GITHUB_BASE_REF: -4}" != "
   category=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh $INPUT_CATEGORIES`
   output_category=output-${GITHUB_BASE_REF}-${category}
 
-  ${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $output_category
-  new_volume=output-${category#use_cases_}
-  VOLUMES_FROM=${VOLUMES_FROM}`echo --volumes-from $new_volume" "`
+  echo Get output data volume: ${output_category}
+  OUT_VOLUMES_FROM=`${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $output_category`
+
+  echo Output: ${OUT_VOLUMES_FROM}
+  VOLUMES_FROM=${VOLUMES_FROM}" "$OUT_VOLUMES_FROM
 
   # add 3rd argument to command to trigger difference testing
   command=${command}" true"
