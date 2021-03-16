@@ -77,6 +77,9 @@ def main():
                      ]
 
     # docs directory
+    # docs_dir will be set to the directory that this script is in
+    # __file__ is a variable that contains the path to the module that is
+    # currently being imported
     docs_dir = os.path.abspath(os.path.dirname(__file__))
     package_dir = os.path.join(docs_dir,
                                os.pardir,

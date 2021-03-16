@@ -640,7 +640,11 @@ class METplusConfig(ProdConfig):
         if sec in self.OLD_SECTIONS:
             sec = 'config'
 
-        in_template = super().getraw(sec, opt, default)
+        in_template = super().getraw(sec, opt, '')
+        # if default is set but variable was not, set variable to default value
+        if not in_template and default:
+            self.check_default(sec, opt, default)
+            return default
 
         # get inner-most tags that could potentially be other variables
         match_list = re.findall(r'\{([^}{]*)\}', in_template)
