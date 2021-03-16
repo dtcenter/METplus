@@ -19,8 +19,8 @@ from ..util import do_string_sub
 from . import ReformatGriddedWrapper
 
 '''!@namespace PCPCombineWrapper
-@brief Wraps the MET tool pcp_combine to combine or divide
-precipitation accumulations
+@brief Wraps the MET tool pcp_combine to combine/divide
+precipitation accumulations or derive additional fields
 Call as follows:
 @code{.sh}
 Cannot be called directly. Must use child classes.
