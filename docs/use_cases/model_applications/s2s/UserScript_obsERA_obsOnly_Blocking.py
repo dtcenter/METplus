@@ -28,12 +28,12 @@ UserScript_obsERA_obsOnly_Blocking.py
 # ------------------
 #
 # This use case runs the blocking driver script which runs the steps the user
-# lists in STEPS_OBS.  The possible steps are regridding (REGRID), time averaging
-# (TIMEAVE), computing a running mean (RMEAN), computing anomalies (ANOMALY), computing CBLs
-# (CBL), plotting CBLs (PLOTCBL), computing IBLs (IBL), plotting IBL frequency (PLOTIBL), 
-# computing GIBLs (GIBL), computing blocks (CALCBLOCKS), and plotting the blocking frequency
-# (PLOTBLOCKS).  Regridding, time averaging, running means, and anomaloies are set up in the 
-# UserScript .conf file and are formatted as follows:
+# lists in STEPS_OBS.  The possible steps are regridding, time averaging, computing a 
+# running mean, computing anomalies, computing CBLs (CBL), plotting CBLs (PLOTCBL), 
+# computing IBLs (IBL), plotting IBL frequency (PLOTIBL), computing GIBLs (GIBL), 
+# computing blocks (CALCBLOCKS), and plotting the blocking frequency (PLOTBLOCKS).  
+# Regridding, time averaging, running means, and anomaloies are set up in the UserScript 
+# .conf file and are formatted as follows:
 # PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), PcpCombine(running_mean_obs), PcpCombine(anomaly_obs), UserScript(script_blocking)
 #
 # The other steps are listed in the Blocking .conf file and are formatted as follows:
@@ -44,8 +44,11 @@ UserScript_obsERA_obsOnly_Blocking.py
 # METplus Workflow
 # ----------------
 #
-# The regrid_data_plane, pcp_combine, and blocking python code are run for each
-# time for the forecast and observations data. This example loops by valid time.  
+# The blocking python code is run for each time for the forecast and observations 
+# data. This example loops by valid time.  This version is set to only process the blocking
+# steps (CBL, PLOTCBL, IBL, PLOTIBL, GIBL, CALCBLOCKS, PLOTBLOCKS), omitting the regridding, 
+# time averaging, running mean, and anomaly pre-processing steps.  However, the configurations 
+# for pre-processing are available for user reference.
 
 ##############################################################################
 # METplus Configuration

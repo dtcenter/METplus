@@ -15,10 +15,10 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # To perform a weather regime analysis using 500 mb height data.  There are 2 pre-
 # processing steps, RegridDataPlane and PcpCombine, and 3 steps in the weather regime 
 # analysis, elbow, EOFs, and K means.  The elbow and K means steps begin with K means
-# clustering.  Elbow then computes the sum of squared distances for clusters 1- 14 and 
-# draws a straight line from the sum of squared distance for the clusters.  This helps 
-# determine the optimal cluster number by examining the largest difference between the 
-# curve and the straight line.  The EOFs step is optional.  It computes an empirical 
+# clustering.  Elbow then computes the sum of squared distances for clusters 1 - 14 
+# and draws a straight line from the sum of squared distance for the clusters.  This 
+# helps determine the optimal cluster number by examining the largest difference between 
+# the curve and the straight line.  The EOFs step is optional.  It computes an empirical 
 # orthogonal function analysis.  The K means step uses clustering to compute the 
 # frequency of occurrernce and anomalies for each cluster.
 
@@ -34,11 +34,10 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # ------------------
 #
 # This use case runs the weather regime driver script which runs the steps the user
-# lists in STEPS_OBS.  The possible steps are regridding (REGRID), time averaging
-# (TIMEAVE), computing the elbow (ELBOW), plotting the elbow (PLOTELBOW), computing 
-# EOFs (EOF), plotting EOFs (PLOTEOF), computing K means (KMEANS), and plotting the 
-# K means (PLOTKMEANS).  Regridding and time averaging are set up in the UserScript
-# .conf file and are formatted as follows:
+# lists in STEPS_OBS.  The possible steps are regridding, time averaging, computing the 
+# elbow (ELBOW), plotting the elbow (PLOTELBOW), computing EOFs (EOF), plotting EOFs 
+# (PLOTEOF), computing K means (KMEANS), and plotting the K means (PLOTKMEANS).  Regridding 
+# and time averaging are set up in the UserScript .conf file and are formatted as follows:
 # PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), UserScript(script_wr)
 #
 # The other steps are listed in the weather regime analsysis .conf file
@@ -49,8 +48,11 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # METplus Workflow
 # ----------------
 #
-# The regrid_data_plane, pcp_combine, and weather regime python code are run for 
-# each time for the forecast and observations data. This example loops by valid time.  
+# The weather regime python code is run for each time for the forecast and observations 
+# data. This example loops by valid time.  This version is set to only process the weather 
+# regime steps (ELBOW, PLOTELBOW, EOF, PLOTEOF, KMEANS, PLOTKMEANS), omitting the REGRID 
+# and TIMEAVE pre-processing steps.  However, the configurations for pre-processing are
+# available for user reference.
 
 ##############################################################################
 # METplus Configuration
