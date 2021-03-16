@@ -21,6 +21,9 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
 fi
 DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
 
+echo "Setting up METviewer"
+${GITHUB_WORKSPACE}/ci/jobs/get_metviewer.sh
+
 echo "Pulling docker image: $DOCKERHUBTAG"
 docker pull $DOCKERHUBTAG
 docker inspect --type=image $DOCKERHUBTAG > /dev/null
