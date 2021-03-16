@@ -1,9 +1,9 @@
 <load_spec>
   <connection>
-    <host>METPLUS_HOST</host>
-    <database>METPLUS_DATABASE</database>
-    <user>METPLUS_USER</user>
-    <password>METPLUS_PASSWORD</password>
+    <host>${METPLUS_HOST}</host>
+    <database>${METPLUS_DATABASE}</database>
+    <user>${METPLUS_USER}</user>
+    <password>${METPLUS_MV_PASSWORD}</password>
   </connection>
 
   <verbose>false</verbose>
@@ -17,5 +17,5 @@
   <load_mtd>true</load_mtd>
   <load_mpr>false</load_mpr>
 
-  <folder_tmpl>METPLUS_INPUT_PATH</folder_tmpl>
+  <folder_tmpl>${METPLUS_INPUT_PATH}</folder_tmpl>
 </load_spec>
