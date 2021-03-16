@@ -20,16 +20,25 @@
 //
 // Model initialization frequency in hours, starting at 0.
 //
+// init_freq =
 ${METPLUS_INIT_FREQ}
 
 //
-// Lead times in hours to be searched for genesis events.
+// Valid hour frequency to be analyzed in hours, starting at 0
 //
-${METPLUS_LEAD_WINDOW_DICT}
+// valid_freq =
+${METPLUS_VALID_FREQ}
+
+//
+// Forecast hours to be searched for genesis events
+//
+// fcst_hr_window =
+${METPLUS_FCST_HR_WINDOW_DICT}
 
 //
 // Minimum track duration for genesis event in hours.
 //
+// min_duration =
 ${METPLUS_MIN_DURATION}
 
 //
@@ -38,6 +47,7 @@ ${METPLUS_MIN_DURATION}
 // pressure threshold.  The forecast genesis time is the valid time of the first
 // track point where all of these criteria are met.
 //
+// fcst_genesis =
 ${METPLUS_FCST_GENESIS_DICT}
 
 //
@@ -46,33 +56,33 @@ ${METPLUS_FCST_GENESIS_DICT}
 // pressure threshold.  The BEST track genesis time is the valid time of the
 // first track point where all of these criteria are met.
 //
+// best_genesis =
 ${METPLUS_BEST_GENESIS_DICT}
 
 //
-// Operational track genesis event criteria.  Defined as tracks reaching the
-// specified intensity category, maximum wind speed threshold, and minimum
-// sea-level pressure threshold.  The operational track genesis time is valid
-// time of the first track point where all of these criteria are met.
+// Operational track technique name
 //
-${METPLUS_OPER_GENESIS_DICT}
+// oper_technique =
+${METPLUS_OPER_TECHNIQUE}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Track filtering options which may be specified separately in each filter
-// array entry.
+// Track filtering options
+// May be specified separately in each filter array entry.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 //
-// Filter is an array of dictionaries containing the track filtering options
-// listed below.  If empty, a single filter is defined using the top-level
-// settings.
+// Array of dictionaries containing the track filtering options
+// If empty, a single filter is defined using the top-level settings.
 //
+// filter =
 ${METPLUS_FILTER}
 
 //
 // Description written to output DESC column
 //
+// desc =
 ${METPLUS_DESC}
 
 //
@@ -80,92 +90,193 @@ ${METPLUS_DESC}
 // If empty, all ATCF ID's found will be processed.
 // Statistics will be generated separately for each ATCF ID.
 //
+// model =
 ${METPLUS_MODEL}
 
 //
 // BEST and operational track storm identifiers
 //
+// storm_id =
 ${METPLUS_STORM_ID}
 
 //
 // BEST and operational track storm names
 //
+// storm_name =
 ${METPLUS_STORM_NAME}
 
 //
-// Forecast and operational initialization time window
+// Forecast and operational initialization times to include or exclude
 //
-
+// init_beg =
 ${METPLUS_INIT_BEG}
+
+// init_end =
 ${METPLUS_INIT_END}
+
+// init_inc =
+${METPLUS_INIT_INC}
+
+// init_exc =
+${METPLUS_INIT_EXC}
 
 //
 // Forecast, BEST, and operational valid time window
 //
-
+// valid_beg =
 ${METPLUS_VALID_BEG}
+
+// valid_end =
 ${METPLUS_VALID_END}
 
 //
 // Forecast and operational initialization hours
 //
+// init_hour =
 ${METPLUS_INIT_HOUR}
 
 //
 // Forecast and operational lead times in hours
 //
-${METPLUS_LEAD_LIST}
+// lead =
+${METPLUS_LEAD}
 
 //
 // Spatial masking region (path to gridded data file or polyline file)
 //
+// vx_mask =
 ${METPLUS_VX_MASK}
+
+//
+// Spatial masking of hurricane basin names from the basin_file
+//
+// basin_mask =
+${METPLUS_BASIN_MASK}
 
 //
 // Distance to land threshold
 //
-//dland_thresh = NA;
-
-//
-// Genesis matching time window, in hours relative to the forecast genesis time
-//
-${METPLUS_GENESIS_WINDOW_DICT}
-
-//
-// Genesis matching search radius in km.
-//
-${METPLUS_GENESIS_RADIUS}
+//dland_thresh =
+${METPLUS_DLAND_THRESH}
 
 ////////////////////////////////////////////////////////////////////////////////
 //
-// Global settings.
+// Matching and scoring options
+// May be specified separately in each filter array entry.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Radius in km to search for a matching genesis event
+//
+// genesis_match_radius =
+${METPLUS_GENESIS_MATCH_RADIUS}
+
+//
+// Radius in km for a development scoring method hit
+//
+// dev_hit_radius =
+${METPLUS_DEV_HIT_RADIUS}
+
+//
+// Time window in hours for a development scoring method hit
+//
+// dev_hit_window =
+${METPLUS_DEV_HIT_WINDOW_DICT}
+
+//
+// Maximum Best track genesis minus model initialization time difference for an
+// operational scoring method hit
+//
+// ops_hit_tdiff =
+${METPLUS_OPS_HIT_TDIFF}
+
+//
+// Discard genesis forecasts for initializations at or after the matching
+// BEST track genesis time
+//
+// discard_init_post_genesis_flag =
+${METPLUS_DISCARD_INIT_POST_GENESIS_FLAG}
+
+//
+// Scoring methods to be applied
+//
+//dev_method_flag =
+${METPLUS_DEV_METHOD_FLAG}
+
+// ops_method_flag =
+${METPLUS_OPS_METHOD_FLAG}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Output options
+// May be specified separately in each filter array entry.
 //
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Confidence interval alpha value
 //
-//ci_alpha = 0.05;
+// ci_alpha =
+${METPLUS_CI_ALPHA}
 
 //
 // Statistical output types
 //
-//output_flag = {
-//   fho    = NONE;
-//   ctc    = BOTH;
-//   cts    = BOTH;
-//}
+// output_flag =
+${METPLUS_OUTPUT_FLAG_DICT}
+
+//
+// NetCDF genesis pair counts
+//
+// nc_pairs_flag =
+${METPLUS_NC_PAIRS_FLAG_DICT}
+
+//
+// Specify which track points should be counted by thresholding the track point
+// valid time minus genesis time difference.
+//
+// valid_minus_genesis_diff_thresh =
+${METPLUS_VALID_MINUS_GENESIS_DIFF_THRESH}
+
+//
+// Count unique BEST track genesis event locations (TRUE) versus counting the
+// location for all pairs (FALSE).
+//
+// best_unique_flag =
+${METPLUS_BEST_UNIQUE_FLAG}
+
+////////////////////////////////////////////////////////////////////////////////
+//
+// Global settings
+// May only be specified once.
+//
+////////////////////////////////////////////////////////////////////////////////
 
 //
 // Specify the NetCDF output of the gen_dland tool containing a gridded
 // representation of the minimum distance to land.
 //
+// dland_file =
 ${METPLUS_DLAND_FILE}
+
+//
+// Specify the NetCDF file containing a gridded representation of the
+// global basins.
+//
+// basin_file =
+${METPLUS_BASIN_FILE}
+
+//
+// NetCDF genesis pairs grid
+//
+// nc_pairs_grid =
+${METPLUS_NC_PAIRS_GRID}
 
 //
 // Indicate a version number for the contents of this configuration file.
 // The value should generally not be modified.
 //
-//version = "V9.1";
+//version = "V10.0.0";
 
 ${METPLUS_MET_CONFIG_OVERRIDES}

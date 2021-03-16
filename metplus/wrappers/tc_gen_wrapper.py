@@ -24,16 +24,16 @@ from ..util import do_string_sub
 @endcode
 '''
 
-
 class TCGenWrapper(CommandBuilder):
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_INIT_FREQ',
-        'METPLUS_LEAD_WINDOW_DICT',
+        'METPLUS_VALID_FREQ',
+        'METPLUS_FCST_HR_WINDOW_DICT',
         'METPLUS_MIN_DURATION',
         'METPLUS_FCST_GENESIS_DICT',
         'METPLUS_BEST_GENESIS_DICT',
-        'METPLUS_OPER_GENESIS_DICT',
+        'METPLUS_OPER_TECHNIQUE',
         'METPLUS_FILTER',
         'METPLUS_DESC',
         'METPLUS_MODEL',
@@ -41,15 +41,49 @@ class TCGenWrapper(CommandBuilder):
         'METPLUS_STORM_NAME',
         'METPLUS_INIT_BEG',
         'METPLUS_INIT_END',
+        'METPLUS_INIT_INC',
+        'METPLUS_INIT_EXC',
         'METPLUS_VALID_BEG',
         'METPLUS_VALID_END',
         'METPLUS_INIT_HOUR',
-        'METPLUS_LEAD_LIST',
+        'METPLUS_LEAD',
         'METPLUS_VX_MASK',
-        'METPLUS_GENESIS_WINDOW_DICT',
-        'METPLUS_GENESIS_RADIUS',
+        'METPLUS_BASIN_MASK',
+        'METPLUS_DLAND_THRESH',
+        'METPLUS_GENESIS_MATCH_RADIUS',
+        'METPLUS_DEV_HIT_RADIUS',
+        'METPLUS_DEV_HIT_WINDOW_DICT',
+        'METPLUS_OPS_HIT_TDIFF',
+        'METPLUS_DISCARD_INIT_POST_GENESIS_FLAG',
+        'METPLUS_DEV_METHOD_FLAG',
+        'METPLUS_OPS_METHOD_FLAG',
+        'METPLUS_CI_ALPHA',
+        'METPLUS_OUTPUT_FLAG_DICT',
+        'METPLUS_NC_PAIRS_FLAG_DICT',
+        'METPLUS_VALID_MINUS_GENESIS_DIFF_THRESH',
+        'METPLUS_BEST_UNIQUE_FLAG',
         'METPLUS_DLAND_FILE',
+        'METPLUS_BASIN_FILE',
+        'METPLUS_NC_PAIRS_GRID',
     ]
+
+    OUTPUT_FLAGS = ['fho',
+                    'ctc',
+                    'cts',
+                    'genmpr',
+                    ]
+
+    NC_PAIRS_FLAGS = ['latlon',
+                      'fcst_genesis',
+                      'fcst_tracks',
+                      'fcst_fy_oy',
+                      'fcst_fy_on',
+                      'best_genesis',
+                      'best_tracks',
+                      'best_fy_oy',
+                      'best_fn_oy',
+                    ]
+
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = "tc_gen"
@@ -105,159 +139,199 @@ class TCGenWrapper(CommandBuilder):
                            'set to run TCGen')
 
         # values used in configuration file
-        self.set_met_config_int(self.env_var_dict,
-                                f'{app_name_upper}_INIT_FREQUENCY',
-                                'init_freq',
-                                'METPLUS_INIT_FREQ')
-
-        self.set_met_config_int(c_dict,
-                                f'{app_name_upper}_LEAD_WINDOW_BEGIN',
-                                'beg',
-                                'LEAD_WINDOW_BEG')
-        self.set_met_config_int(c_dict,
-                                f'{app_name_upper}_LEAD_WINDOW_END',
-                                'end',
-                                'LEAD_WINDOW_END')
-
-        self.set_met_config_int(self.env_var_dict,
-                                f'{app_name_upper}_MIN_DURATION',
-                                'min_duration',
-                                'METPLUS_MIN_DURATION')
-
-        conf_value = (
-            self.config.getstr('config',
-                               f'{app_name_upper}_FCST_GENESIS_VMAX_THRESH',
-                               '')
-        )
-        if conf_value and conf_value != 'NA':
-            if util.get_threshold_via_regex(conf_value) is None:
-                self.log_error("Incorrectly formatted threshold: "
-                               f"{app_name_upper}_FCST_GENESIS_VMAX_THRESH")
-
-        # set values for dictionaries
-        for dict_name in ['FCST_GENESIS', 'BEST_GENESIS', 'OPER_GENESIS']:
-            # set threshold values
-            for thresh_name in ['VMAX_THRESH', 'MSLP_THRESH']:
-                self.set_met_config_thresh(
-                    c_dict,
-                    f'{app_name_upper}_{dict_name}_{thresh_name}',
-                    thresh_name.lower(),
-                    f'{dict_name}_{thresh_name}',
-                )
-
-            if dict_name == 'FCST_GENESIS':
-                continue
-
-            # get technique and category
-            self.set_met_config_string(c_dict,
-                                   f'{app_name_upper}_{dict_name}_TECHNIQUE',
-                                   'technique',
-                                   f'{dict_name}_TECHNIQUE')
-
-            self.set_met_config_list(c_dict,
-                                 f'{app_name_upper}_{dict_name}_CATEGORY',
-                                 'category',
-                                 f'{dict_name}_CATEGORY')
-
-        # get filter values
-        filters = self.get_filter_values()
-        if filters:
-            filter_string = 'filter = [{'
-            filter_string += '}, {'.join(filters)
-            filter_string += '}];'
-            self.env_var_dict['METPLUS_FILTER'] = filter_string
-
-        self.set_met_config_list(self.env_var_dict, 'MODEL', 'model',
-                                 'METPLUS_MODEL')
-        self.set_met_config_list(c_dict, 'MODEL', 'model')
-        self.set_met_config_list(self.env_var_dict,
-                                 f'{app_name_upper}_STORM_ID',
-                                 'storm_id',
-                                 'METPLUS_STORM_ID')
-        self.set_met_config_list(self.env_var_dict,
-                                 f'{app_name_upper}_STORM_NAME',
-                                 'storm_name',
-                                 'METPLUS_STORM_NAME')
-        self.set_met_config_list(self.env_var_dict,
-                                 f'{app_name_upper}_INIT_HOUR_LIST',
-                                 'init_hour',
-                                 'METPLUS_INIT_HOUR')
-
-        # set INIT_BEG, INIT_END, VALID_BEG, and VALID_END
-        for time_type in ['INIT', 'VALID']:
-            for time_bound in ['BEG', "END"]:
-                conf_value = self.config.getraw(
-                    'config',
-                    f'{self.app_name.upper()}_{time_type}_{time_bound}',
-                    '',
-                )
-                time_value = util.remove_quotes(conf_value)
-
-                if time_value:
-                    time_key = f'{time_type}_{time_bound}'
-                    time_value = f'{time_key.lower()} = "{time_value}";'
-                    self.env_var_dict[f'METPLUS_{time_key}'] = time_value
-
-        self.set_met_config_int(c_dict,
-                                f'{app_name_upper}_GENESIS_WINDOW_BEGIN',
-                                'beg',
-                                'GENESIS_WINDOW_BEG')
-        self.set_met_config_int(c_dict,
-                                f'{app_name_upper}_GENESIS_WINDOW_END',
-                                'end',
-                                'GENESIS_WINDOW_END')
-
-        self.set_met_config_int(self.env_var_dict,
-                                f'{app_name_upper}_GENESIS_RADIUS',
-                                'genesis_radius',
-                                'METPLUS_GENESIS_RADIUS')
-
-        self.set_met_config_string(self.env_var_dict,
-                                   f'{app_name_upper}_VX_MASK',
-                                   'vx_mask',
-                                   'METPLUS_VX_MASK')
-
-        self.set_met_config_string(self.env_var_dict,
-                                   f'{app_name_upper}_DLAND_FILE',
-                                   'dland_file',
-                                   'METPLUS_DLAND_FILE')
-
-        # set environment variables for dictionary items
-        for dict_name, item_list in {'lead_window': ['BEG',
-                                                     'END',
-                                                    ],
-                                    'fcst_genesis': ['VMAX_THRESH',
-                                                     'MSLP_THRESH',
-                                                    ],
-                                     'best_genesis': ['TECHNIQUE',
-                                                      'CATEGORY',
-                                                      'VMAX_THRESH',
-                                                      'MSLP_THRESH',
-                                                     ],
-                                     'oper_genesis': ['TECHNIQUE',
-                                                      'CATEGORY',
-                                                      'VMAX_THRESH',
-                                                      'MSLP_THRESH',
-                                                     ],
-                                     'genesis_window': ['BEG',
-                                                        'END',
-                                                       ],
-                                     }.items():
-            dict_str = self.format_met_config_dict(c_dict,
-                                                   dict_name,
-                                                   item_list)
-            self.env_var_dict[f'METPLUS_{dict_name.upper()}_DICT'] = dict_str
+        self.add_met_config(name='init_freq',
+                            data_type='int',
+                            metplus_configs=['TC_GEN_INIT_FREQUENCY',
+                                             'TC_GEN_INIT_FREQ'])
+        self.add_met_config(name='valid_freq',
+                            data_type='int',
+                            metplus_configs=['TC_GEN_VALID_FREQUENCY',
+                                             'TC_GEN_VALID_FREQ'])
+        self.handle_fcst_hr_window()
+        self.add_met_config(name='min_duration',
+                            data_type='int',
+                            metplus_configs=['TC_GEN_MIN_DURATION'])
+        self.handle_fcst_genesis()
+        self.handle_best_genesis()
+        self.add_met_config(name='oper_technique',
+                            data_type='string',
+                            metplus_configs=['TC_GEN_OPER_TECHNIQUE'])
+        self.handle_filter()
+        self.handle_description()
+        self.add_met_config(name='model',
+                            data_type='list',
+                            metplus_configs=['MODEL'])
+        self.add_met_config(name='storm_id',
+                            data_type='list',
+                            metplus_configs=['TC_GEN_STORM_ID'])
+        self.add_met_config(name='storm_name',
+                            data_type='list',
+                            metplus_configs=['TC_GEN_STORM_NAME'])
+        self.add_met_config(name='init_beg',
+                            data_type='string',
+                            metplus_configs=['TC_GEN_INIT_BEG',
+                                             'TC_GEN_INIT_BEGIN'])
+        self.add_met_config(name='init_end',
+                            data_type='string',
+                            metplus_configs=['TC_GEN_INIT_END'])
+        self.add_met_config(name='init_inc',
+                            data_type='list',
+                            metplus_configs=['TC_GEN_INIT_INC',
+                                             'TC_GEN_INIT_INCLUDE'])
+        self.add_met_config(name='init_exc',
+                            data_type='list',
+                            metplus_configs=['TC_GEN_INIT_EXC',
+                                             'TC_GEN_INIT_EXCLUDE'])
+        self.add_met_config(name='valid_beg',
+                            data_type='string',
+                            metplus_configs=['TC_GEN_VALID_BEG',
+                                             'TC_GEN_VALID_BEGIN'])
+        self.add_met_config(name='valid_end',
+                            data_type='string',
+                            metplus_configs=['TC_GEN_VALID_END'])
+        self.add_met_config(name='init_hour',
+                            data_type='list',
+                            metplus_configs=['TC_GEN_INIT_HOUR',
+                                             'TC_GEN_INIT_HR',
+                                             'TC_GEN_INIT_HOUR_LIST',])
+        self.add_met_config(name='vx_mask',
+                            data_type='string',
+                            metplus_configs=['TC_GEN_VX_MASK'])
+        self.add_met_config(name='basin_mask',
+                            data_type='list',
+                            metplus_configs=['TC_GEN_BASIN_MASK'])
+        self.add_met_config(name='dland_thresh',
+                            data_type='thresh',
+                            metplus_configs=['TC_GEN_DLAND_THRESH'])
+        self.add_met_config(name='genesis_match_radius',
+                            data_type='int',
+                            metplus_configs=['TC_GEN_GENESIS_MATCH_RADIUS'])
+        self.add_met_config(name='dev_hit_radius',
+                            data_type='int',
+                            metplus_configs=['TC_GEN_DEV_HIT_RADIUS'])
+        self.handle_dev_hit_window()
+        self.add_met_config(name='ops_hit_tdiff',
+                            data_type='int',
+                            metplus_configs=['TC_GEN_OPS_HIT_TDIFF'])
+        self.add_met_config(name='discard_init_post_genesis_flag',
+                            data_type='bool',
+                            metplus_configs=[
+                                'TC_GEN_DISCARD_INIT_POST_GENESIS_FLAG'
+                            ])
+        self.add_met_config(name='dev_method_flag',
+                            data_type='bool',
+                            metplus_configs=['TC_GEN_DEV_METHOD_FLAG'])
+        self.add_met_config(name='ops_method_flag',
+                            data_type='bool',
+                            metplus_configs=['TC_GEN_OPS_METHOD_FLAG'])
+        self.add_met_config(name='ci_alpha',
+                            data_type='float',
+                            metplus_configs=['TC_GEN_CI_ALPHA'])
+        self.handle_flags('output')
+        self.handle_flags('nc_pairs')
+        self.add_met_config(name='valid_minus_genesis_diff_thresh',
+                            data_type='thresh',
+                            metplus_configs=[
+                                'TC_GEN_VALID_MINUS_GENESIS_DIFF_THRESH'
+                            ])
+        self.add_met_config(name='best_unique_flag',
+                            data_type='bool',
+                            metplus_configs=['TC_GEN_BEST_UNIQUE_FLAG'])
+        self.add_met_config(name='dland_file',
+                            data_type='string',
+                            metplus_configs=['TC_GEN_DLAND_FILE'])
+        self.add_met_config(name='basin_file',
+                            data_type='string',
+                            metplus_configs=['TC_GEN_BASIN_FILE'])
+        self.add_met_config(name='nc_pairs_grid',
+                            data_type='string',
+                            metplus_configs=['TC_GEN_NC_PAIRS_GRID'])
 
         # get INPUT_TIME_DICT values since wrapper only runs
         # once (doesn't look over time)
         self.set_time_dict_for_single_runtime(c_dict)
 
-        # read desc from TC_GEN_DESC or DESC into c_dict['DESC']
-        self.handle_description()
-
         return c_dict
 
-    def get_filter_values(self):
+    def handle_fcst_hr_window(self):
+        dict_name = 'fcst_hr_window'
+        dict_items = []
+        dict_items.append(
+            self.get_met_config(name='beg',
+                           data_type='int',
+                           metplus_configs=['TC_GEN_FCST_HR_WINDOW_BEGIN',
+                                            'TC_GEN_FCST_HR_WINDOW_BEG',
+                                            'TC_GEN_LEAD_WINDOW_BEGIN',
+                                            'TC_GEN_LEAD_WINDOW_BEG'])
+        )
+        dict_items.append(
+            self.get_met_config(name='end',
+                       data_type='int',
+                       metplus_configs=['TC_GEN_FCST_HR_WINDOW_END',
+                                        'TC_GEN_LEAD_WINDOW_END'])
+        )
+        self.handle_met_config_dict(dict_name, dict_items)
+
+    def handle_dev_hit_window(self):
+        dict_name = 'dev_hit_window'
+        dict_items = []
+        dict_items.append(
+            self.get_met_config(name='beg',
+                       data_type='int',
+                       metplus_configs=['TC_GEN_DEV_HIT_WINDOW_BEGIN',
+                                        'TC_GEN_DEV_HIT_WINDOW_BEG',
+                                        'TC_GEN_GENESIS_WINDOW_BEGIN',
+                                        'TC_GEN_GENESIS_WINDOW_BEG'])
+        )
+        dict_items.append(
+            self.get_met_config(name='end',
+                       data_type='int',
+                       metplus_configs=['TC_GEN_DEV_HIT_WINDOW_END',
+                                        'TC_GEN_GENESIS_WINDOW_END'])
+        )
+        self.handle_met_config_dict(dict_name, dict_items)
+
+    def handle_fcst_genesis(self):
+        dict_name = 'fcst_genesis'
+        dict_items = []
+        dict_items.append(
+            self.get_met_config(name='vmax_thresh',
+                       data_type='thresh',
+                       metplus_configs=['TC_GEN_FCST_GENESIS_VMAX_THRESH'])
+        )
+        dict_items.append(
+            self.get_met_config(name='mslp_thresh',
+                       data_type='thresh',
+                       metplus_configs=['TC_GEN_FCST_GENESIS_MSLP_THRESH'])
+        )
+        self.handle_met_config_dict(dict_name, dict_items)
+
+    def handle_best_genesis(self):
+        dict_name = 'best_genesis'
+        dict_items = []
+        dict_items.append(
+            self.get_met_config(name='technique',
+                       data_type='string',
+                       metplus_configs=['TC_GEN_BEST_GENESIS_TECHNIQUE'])
+        )
+        dict_items.append(
+            self.get_met_config(name='category',
+                       data_type='list',
+                       metplus_configs=['TC_GEN_BEST_GENESIS_CATEGORY'])
+        )
+        dict_items.append(
+            self.get_met_config(name='vmax_thresh',
+                       data_type='thresh',
+                       metplus_configs=['TC_GEN_BEST_GENESIS_VMAX_THRESH'])
+        )
+        dict_items.append(
+            self.get_met_config(name='mslp_thresh',
+                       data_type='thresh',
+                       metplus_configs=['TC_GEN_BEST_GENESIS_MSLP_THRESH'])
+        )
+        self.handle_met_config_dict(dict_name, dict_items)
+
+    def handle_filter(self):
         """! find all TC_GEN_FILTER_<n> values in the config files
         """
         filters = []
@@ -274,10 +348,14 @@ class TCGenWrapper(CommandBuilder):
             filter = self.config.getraw('config', f'TC_GEN_FILTER_{index}')
             filters.append(filter)
 
-        return filters
+        if filters:
+            filter_string = 'filter = [{'
+            filter_string += '}, {'.join(filters)
+            filter_string += '}];'
+            self.env_var_dict['METPLUS_FILTER'] = filter_string
 
     def get_command(self):
-        cmd = self.app_path
+        cmd = f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
 
         # add genesis
         cmd += ' -genesis ' + self.c_dict['GENESIS_FILE']
@@ -301,8 +379,6 @@ class TCGenWrapper(CommandBuilder):
         if not os.path.exists(parent_dir):
             os.makedirs(parent_dir)
 
-        # add verbosity
-        cmd += f" -v {self.c_dict['VERBOSITY']}"
         return cmd
 
     def run_all_times(self):
@@ -403,7 +479,7 @@ class TCGenWrapper(CommandBuilder):
                 ) // 3600
                 lead_list.append(f'"{str(lead_hours).zfill(2)}"')
 
-            self.env_var_dict['METPLUS_LEAD_LIST'] = (
+            self.env_var_dict['METPLUS_LEAD'] = (
                 f"lead = [{', '.join(lead_list)}];"
             )
 

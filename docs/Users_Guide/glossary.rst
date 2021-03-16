@@ -4752,18 +4752,29 @@ METplus Configuration Glossary
 
      | *Used by:*  TCGen
 
-   TC_GEN_INIT_FREQUENCY
+   TC_GEN_INIT_FREQ
      Specify the value of init_freq in the MET configuration file.
 
      | *Used by:*  TCGen
 
-   TC_GEN_LEAD_WINDOW_BEGIN
-     Specify the value of lead_window {begin} in the MET configuration file.
+   TC_GEN_VALID_FREQ
+     Specify the value of valid_freq in the MET configuration file.
 
      | *Used by:*  TCGen
 
+   TC_GEN_LEAD_WINDOW_BEGIN
+     .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_FCST_HR_WINDOW_BEGIN`.
+
    TC_GEN_LEAD_WINDOW_END
-     Specify the value of lead_window {end} in the MET configuration file.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_FCST_HR_WINDOW_END`.
+
+   TC_GEN_FCST_HR_WINDOW_BEGIN
+     Specify the value of fcst_hr_window {begin} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_FCST_HR_WINDOW_END
+     Specify the value of fcst_hr_window {end} in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4802,25 +4813,22 @@ METplus Configuration Glossary
 
      | *Used by:*  TCGen
 
-   TC_GEN_OPER_GENESIS_TECHNIQUE
-     Specify the value of oper_genesis {technique} in the MET configuration file.
+   TC_GEN_OPER_TECHNIQUE
+     Specify the value of oper_technique in the MET configuration file.
 
      | *Used by:*  TCGen
+
+   TC_GEN_OPER_GENESIS_TECHNIQUE
+     .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_OPER_TECHNIQUE`.
 
    TC_GEN_OPER_GENESIS_CATEGORY
-     Specify the value of oper_genesis {category} in the MET configuration file.
-
-     | *Used by:*  TCGen
+     .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_OPER_TECHNIQUE`.
 
    TC_GEN_OPER_GENESIS_VMAX_THRESH
-     Specify the value of oper_genesis {vmax_thresh} in the MET configuration file.
-
-     | *Used by:*  TCGen
+     .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_OPER_TECHNIQUE`.
 
    TC_GEN_OPER_GENESIS_MSLP_THRESH
-     Specify the value of oper_genesis {mslp_thresh} in the MET configuration file.
-
-     | *Used by:*  TCGen
+     .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_OPER_TECHNIQUE`.
 
    TC_GEN_FILTER_<n>
      Specify the values of filter in the MET configuration file where <n> is any integer.
@@ -4848,6 +4856,16 @@ METplus Configuration Glossary
 
      | *Used by:*  TCGen
 
+   TC_GEN_INIT_INC
+     Specify the value of init_inc in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_INIT_EXC
+     Specify the value of init_exc in the MET configuration file.
+
+     | *Used by:*  TCGen
+
    TC_GEN_VALID_BEG
      Specify the beginning valid time for stratification when using the MET TCGen tool. Acceptable formats: YYYYMMDD_HH, YYYYMMDD_HHmmss
 
@@ -4858,7 +4876,7 @@ METplus Configuration Glossary
 
      | *Used by:*  TCGen
 
-   TC_GEN_INIT_HOUR_LIST
+   TC_GEN_INIT_HOUR
      Specify a list of hours for initialization times for use in the analysis.
 
      | *Used by:*  TCGen
@@ -4868,20 +4886,154 @@ METplus Configuration Glossary
 
      | *Used by:*  TCGen
 
-   TC_GEN_GENESIS_WINDOW_BEGIN
-     Specify the value for genesis_window {begin} in the MET configuration file.
+   TC_GEN_BASIN_MASK
+     Specify the basin_mask value to set in the MET configuration file.
 
      | *Used by:*  TCGen
 
+   TC_GEN_DLAND_THRESH
+     Specify the value of dland_thresh in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_GENESIS_WINDOW_BEGIN
+     .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_DEV_HIT_WINDOW_BEGIN`.
+
    TC_GEN_GENESIS_WINDOW_END
-     Specify the value of genesis_window {end} in the MET configuration file.
+     .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_DEV_HIT_WINDOW_END`.
+
+   TC_GEN_DEV_HIT_WINDOW_BEGIN
+     Specify the value for dev_hit_window {begin} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_DEV_HIT_WINDOW_END
+     Specify the value of dev_hit_window {end} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_DEV_HIT_RADIUS
+     Specify the value of dev_hit_radius in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_OPS_HIT_TDIFF
+     Specify the value of ops_hit_tdiff in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_DISCARD_INIT_POST_GENESIS_FLAG
+     Specify the value of discard_init_post_genesis_flag in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_DEV_METHOD_FLAG
+     Specify the value of dev_method_flag in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_OPS_METHOD_FLAG
+     Specify the value of ops_method_flag in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_CI_ALPHA
+     Specify the value of ci_alpha in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_OUTPUT_FLAG_FHO
+     Specify the value of output_flag {fho} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_OUTPUT_FLAG_CTC
+     Specify the value of output_flag {ctc} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_OUTPUT_FLAG_CTS
+     Specify the value of output_flag {cts} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_OUTPUT_FLAG_GENMPR
+     Specify the value of output_flag {genmpr} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_NC_PAIRS_FLAG_LATLON
+     Specify the value of nc_pairs_flag {latlon} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_NC_PAIRS_FLAG_FCST_GENESIS
+     Specify the value of nc_pairs_flag {fcst_genesis} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_NC_PAIRS_FLAG_FCST_TRACKS
+     Specify the value of nc_pairs_flag {fcst_tracks} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_NC_PAIRS_FLAG_FCST_FY_OY
+     Specify the value of nc_pairs_flag {fcst_fy_oy} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_NC_PAIRS_FLAG_FCST_FY_ON
+     Specify the value of nc_pairs_flag {fcst_fy_on} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_NC_PAIRS_FLAG_BEST_GENESIS
+     Specify the value of nc_pairs_flag {best_genesis} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_NC_PAIRS_FLAG_BEST_TRACKS
+     Specify the value of nc_pairs_flag {best_tracks} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_NC_PAIRS_FLAG_BEST_FY_OY
+     Specify the value of nc_pairs_flag {best_fy_oy} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_NC_PAIRS_FLAG_BEST_FN_OY
+     Specify the value of nc_pairs_flag {best_fn_oy} in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_VALID_MINUS_GENESIS_DIFF_THRESH
+     Specify the value of valid_minus_genesis_diff_thresh in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_BEST_UNIQUE_FLAG
+     Specify the value of best_unique_flag in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_BASIN_FILE
+     Specify the value of basin_file in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_NC_PAIRS_GRID
+     Specify the value of nc_pairs_grid in the MET configuration file.
+
+     | *Used by:*  TCGen
+
+   TC_GEN_GENESIS_MATCH_RADIUS
+     Specify the value of genesis_match_radius in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_GENESIS_RADIUS
-     Specify the value of genesis_radius in the MET configuration file.
-
-     | *Used by:*  TCGen
+     .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_GENESIS_MATCH_RADIUS` and :term:`TC_GEN_DEV_HIT_RADIUS`.
 
    TC_GEN_DLAND_FILE
      Specify the value of dland_file in the MET configuration file.
