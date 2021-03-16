@@ -11,35 +11,35 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
-  documentation:
-    name: Build Documentation
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - name: Install dependencies
-        run: |
-          python -m pip install --upgrade python-dateutil requests sphinx sphinx-gallery Pillow
-          pip install git+https://github.com/ESMCI/sphinx_rtd_theme@version-dropdown-with-fixes
-      - name: Run build_docs.py
-        continue-on-error: true
-        run: |
-          ${GITHUB_WORKSPACE}/docs/build_docs.py skip-doxygen
-          mkdir -p artifact/documentation
-          cp -r ${GITHUB_WORKSPACE}/docs/_build/html/* artifact/documentation
-          cp -r ${GITHUB_WORKSPACE}/docs/_build/warnings.log artifact/doc_warnings.log
-          cp artifact/doc_warnings.log artifact/documentation
-      - uses: actions/upload-artifact@v2
-        with:
-          name: METplus_documentation
-          path: artifact/documentation
-      - uses: actions/upload-artifact@v2
-        with:
-          name: documentation_warnings.log
-          path: artifact/doc_warnings.log
-          if-no-files-found: ignore
+#  documentation:
+#    name: Build Documentation
+#    runs-on: ubuntu-latest
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions/setup-python@v2
+#        with:
+#          python-version: '3.6'
+#      - name: Install dependencies
+#        run: |
+#          python -m pip install --upgrade python-dateutil requests sphinx sphinx-gallery Pillow
+#          pip install git+https://github.com/ESMCI/sphinx_rtd_theme@version-dropdown-with-fixes
+#      - name: Run build_docs.py
+#        continue-on-error: true
+#        run: |
+#          ${GITHUB_WORKSPACE}/docs/build_docs.py skip-doxygen
+#          mkdir -p artifact/documentation
+#          cp -r ${GITHUB_WORKSPACE}/docs/_build/html/* artifact/documentation
+#          cp -r ${GITHUB_WORKSPACE}/docs/_build/warnings.log artifact/doc_warnings.log
+#          cp artifact/doc_warnings.log artifact/documentation
+#      - uses: actions/upload-artifact@v2
+#        with:
+#          name: METplus_documentation
+#          path: artifact/documentation
+#      - uses: actions/upload-artifact@v2
+#        with:
+#          name: documentation_warnings.log
+#          path: artifact/doc_warnings.log
+#          if-no-files-found: ignore
   get_image:
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
@@ -54,22 +54,22 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  update_data_volumes:
-    name: Docker Setup - Update Data Volumes
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-python@v2
-        with:
-          python-version: '3.6'
-      - name: Install dependencies
-        run: python -m pip install --upgrade pip python-dateutil requests bs4
-      - name: Update Data Volumes
-        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_update_data_volumes.py
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#  update_data_volumes:
+#    name: Docker Setup - Update Data Volumes
+#    runs-on: ubuntu-latest
+#    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions/setup-python@v2
+#        with:
+#          python-version: '3.6'
+#      - name: Install dependencies
+#        run: python -m pip install --upgrade pip python-dateutil requests bs4
+#      - name: Update Data Volumes
+#        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_update_data_volumes.py
+#        env:
+#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+#          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   unit_tests:
     name: Unit Tests - Pytest
     runs-on: ubuntu-latest
@@ -89,29 +89,30 @@ jobs:
       fail-fast: false
       matrix:
         categories:
-          - "met_tool_wrapper:0-53"
-          - "air_quality_and_comp:0"
-          - "climate:0-1"
-          - "convection_allowing_models:0"
-          - "convection_allowing_models:1"
-          - "convection_allowing_models:2-6"
-          - "convection_allowing_models:7"
-          - "convection_allowing_models:8"
-          - "cryosphere:0"
-          - "data_assimilation:0"
-          - "marine_and_coastal:0"
-          - "medium_range:0"
-          - "medium_range:1-2"
-          - "medium_range:3-5"
-          - "medium_range:6"
-          - "medium_range:7-8"
-          - "precipitation:0"
-          - "precipitation:1"
-          - "precipitation:2"
-          - "precipitation:3-8"
-          - "s2s:0"
-          - "space_weather:0-1"
-          - "tc_and_extra_tc:0-2"
+#          - "met_tool_wrapper:0-53"
+#          - "air_quality_and_comp:0"
+#          - "climate:0-1"
+#          - "convection_allowing_models:0"
+#          - "convection_allowing_models:1"
+#          - "convection_allowing_models:2-6"
+#          - "convection_allowing_models:7"
+#          - "convection_allowing_models:8"
+#          - "cryosphere:0"
+#          - "data_assimilation:0"
+#          - "marine_and_coastal:0"
+#          - "medium_range:0"
+#          - "medium_range:1-2"
+#          - "medium_range:3-5"
+#          - "medium_range:6"
+#          - "medium_range:7-8"
+#          - "precipitation:0"
+#          - "precipitation:1"
+#          - "precipitation:2"
+#          - "precipitation:3-8"
+#          - "s2s:0"
+#          - "space_weather:0-1"
+#          - "tc_and_extra_tc:0-2"
+          - "met_tool_wrapper:54"
     steps:
       - uses: actions/checkout@v2
       - uses: ./ci/actions/run_tests
@@ -157,15 +158,15 @@ jobs:
           name: diff-${{ steps.save-output.outputs.artifact_name }}
           path: artifact/diff-${{ steps.save-output.outputs.artifact_name }}
           if-no-files-found: ignore
-  create_output_data_volumes:
-    name: Create Output Docker Data Volumes
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
-    needs: [use_case_tests]
-    steps:
-      - uses: actions/checkout@v2
-      - uses: actions/download-artifact@v2
-      - run: ci/jobs/create_output_data_volumes.sh
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#  create_output_data_volumes:
+#    name: Create Output Docker Data Volumes
+#    runs-on: ubuntu-latest
+#    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
+#    needs: [use_case_tests]
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: actions/download-artifact@v2
+#      - run: ci/jobs/create_output_data_volumes.sh
+#        env:
+#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+#          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
