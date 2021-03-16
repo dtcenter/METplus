@@ -49,6 +49,7 @@ LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
                          'griddiag': 'GridDiag',
                          'gridstat': 'GridStat',
                          'makeplots': 'MakePlots',
+                         'metdbload': 'METDbLoad',
                          'mode': 'MODE',
                          'mtd': 'MTD',
                          'modetimedomain': 'MTD',
@@ -2786,3 +2787,10 @@ def netcdf_has_var(file_path, name, level):
 
     except (AttributeError, OSError, ImportError):
         return False
+
+def generate_tmp_filename():
+    import random
+    import string
+    random_string = ''.join(random.choice(string.ascii_letters)
+                            for i in range(10))
+    return f"metplus_tmp_{random_string}"
