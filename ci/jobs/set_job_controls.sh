@@ -12,7 +12,7 @@ run_diff=false
 
 # run all use cases and save truth data if -ref branch and not PR
 # run all use cases and diff logic for pull request
-if [ ${{ github.event_name }} == 'pull_request' ]; then
+if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
   # only run diff logic if pull request INTO develop or main_v*
   # branches, not branches ending with -ref
   if [ "${GITHUB_BASE_REF: -4}" != "-ref" ] && \
@@ -29,7 +29,6 @@ elif [ "${GITHUB_HEAD_REF: -4}" == -ref ]; then
 fi
 
 # check commit messages for skip or force keywords
-commit_msg="${{ github.event.head_commit.message }}"
 if grep -q "ci-skip-all" <<< "$commit_msg"; then
   run_docs=false
   run_get_image=false
