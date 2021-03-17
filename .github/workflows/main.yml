@@ -138,7 +138,7 @@ jobs:
         categories:
           - "met_tool_wrapper:0-53"
           - "air_quality_and_comp:0"
-          - "climate:0-1:NEW"
+          - "climate:0-1"
           - "convection_allowing_models:0"
           - "convection_allowing_models:1"
           - "convection_allowing_models:2-6"
