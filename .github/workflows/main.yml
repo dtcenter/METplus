@@ -144,7 +144,7 @@ jobs:
       # copy output data to save as artifact
       - name: Save output data
         id: save-output
-        if: ${{ always() && steps.run_tests.conclusion != skipped}}
+        if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         run: |
           artifact_name=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh ${{matrix.categories}}`
           mkdir -p artifact/${artifact_name}
