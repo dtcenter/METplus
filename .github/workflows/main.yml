@@ -236,9 +236,7 @@ jobs:
           name: job_control_status
       - run: cat job_control_status >> $GITHUB_ENV
       - run: |
-          if [ ${{ env.run_use_cases == 'true' }} ] && \
-             ([ ${{ endsWith(matrix.categories, ':NEW') }} ] || \
-              [ !${{ env.run_new_use_cases_only }} ]); then
+          if [ ${{ env.run_use_cases == 'true' && (endsWith(matrix.categories, ':NEW') || !env.run_new_use_cases_only) }} ]; then
             run_this_case=true
           else
             run_this_case=false
