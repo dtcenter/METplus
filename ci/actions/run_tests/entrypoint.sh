@@ -64,7 +64,7 @@ VOLUMES_FROM=`${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $CATEGORIES`
 echo Input: ${VOLUMES_FROM}
 # get Docker data volumes for output data and run diffing logic
 # if running a pull request into develop or main_v* branches, not -ref branches
-if [ "${INPUT_RUN_DIFF}" == 'true' ]; then
+if [ "${INPUT_RUN_DIFF}" == "true" ]; then
   echo "Get Docker data volumes for output data"
 
   category=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh $INPUT_CATEGORIES`
