@@ -35,7 +35,7 @@ jobs:
           run_unit_tests=true
           run_use_cases=true
           run_save_truth_data=false
-          run_new_use_cases_only=false
+          run_new_use_cases_only=true
           run_diff=false
 
           # run all use cases and save truth data if -ref branch and not PR
@@ -200,35 +200,34 @@ jobs:
   use_case_tests:
     name: Use Case Tests
     runs-on: ubuntu-latest
-    #needs: [get_image, update_data_volumes]
-    needs: [get_image]
+    needs: [get_image, update_data_volumes]
     strategy:
       fail-fast: false
       matrix:
         categories:
-#          - "met_tool_wrapper:0-53"
+          - "met_tool_wrapper:0-53"
           - "air_quality_and_comp:0"
-#          - "climate:0-1"
-#          - "convection_allowing_models:0"
-#          - "convection_allowing_models:1"
-#          - "convection_allowing_models:2-6"
-#          - "convection_allowing_models:7"
-#          - "convection_allowing_models:8"
-#          - "cryosphere:0"
-#          - "data_assimilation:0"
-#          - "marine_and_coastal:0"
-#          - "medium_range:0"
-#          - "medium_range:1-2"
-#          - "medium_range:3-5"
-#          - "medium_range:6"
-#          - "medium_range:7-8"
-#          - "precipitation:0"
-#          - "precipitation:1"
-#          - "precipitation:2"
-#          - "precipitation:3-8"
-#          - "s2s:0"
-#          - "space_weather:0-1"
-#          - "tc_and_extra_tc:0-2"
+          - "climate:0-1"
+          - "convection_allowing_models:0"
+          - "convection_allowing_models:1"
+          - "convection_allowing_models:2-6"
+          - "convection_allowing_models:7"
+          - "convection_allowing_models:8"
+          - "cryosphere:0"
+          - "data_assimilation:0"
+          - "marine_and_coastal:0"
+          - "medium_range:0"
+          - "medium_range:1-2"
+          - "medium_range:3-5"
+          - "medium_range:6"
+          - "medium_range:7-8"
+          - "precipitation:0"
+          - "precipitation:1"
+          - "precipitation:2"
+          - "precipitation:3-8"
+          - "s2s:0"
+          - "space_weather:0-1"
+          - "tc_and_extra_tc:0-2"
           - "met_tool_wrapper:54:NEW"
     steps:
       - uses: actions/download-artifact@v2
@@ -239,7 +238,6 @@ jobs:
       - uses: ./ci/actions/run_tests
         id: run_tests
         if: ${{ env.run_use_cases == 'true' && (endsWith(matrix.categories, ':NEW') || !env.run_new_use_cases_only) }}
-        #if: ${{ endsWith(matrix.categories, ':NEW') && env.run_new_use_cases_only }}
         with:
           categories: ${{ matrix.categories }}
 
