@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
-      - name: GITHUB_CONTEXT
+      - name: Print GitHub values for reference
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
@@ -25,74 +25,6 @@ jobs:
         run: ${GITHUB_WORKSPACE}/ci/jobs/set_job_controls.sh
         env:
           commit_msg: ${{ github.event.head_commit.message }}
-#        run: |
-#          # set default status for jobs
-#          run_docs=true
-#          run_get_image=true
-#          run_get_input_data=true
-#          run_unit_tests=true
-#          run_use_cases=true
-#          run_save_truth_data=false
-#          run_all_use_cases=false
-#          run_diff=false
-#
-#          # run all use cases and save truth data if -ref branch and not PR
-#          # run all use cases and diff logic for pull request
-#          if [ ${{ github.event_name }} == 'pull_request' ]; then
-#            # only run diff logic if pull request INTO develop or main_v*
-#            # branches, not branches ending with -ref
-#            if [ "${GITHUB_BASE_REF: -4}" != "-ref" ] && \
-#              ([ "${GITHUB_BASE_REF:0:7}" == "develop" ] || \
-#               [ "${GITHUB_BASE_REF:0:6}" == "main_v" ]); then
-#              run_use_cases=true
-#              run_all_use_cases=true
-#              run_diff=true
-#            fi
-#          elif [ "${GITHUB_HEAD_REF: -4}" == -ref ]; then
-#            run_use_cases=true
-#            run_all_use_cases=true
-#            run_save_truth_data=true
-#          fi
-#
-#          # check commit messages for skip or force keywords
-#          commit_msg="${{ github.event.head_commit.message }}"
-#          if grep -q "ci-skip-all" <<< "$commit_msg"; then
-#            run_docs=false
-#            run_get_image=false
-#            run_get_input_data=false
-#            run_unit_tests=false
-#            run_use_cases=false
-#            run_save_truth_data=false
-#            run_diff=false
-#          fi
-#          if grep -q "ci-skip-get-image" <<< "$commit_msg"; then
-#            run_get_image=false
-#          fi
-#          if grep -q "ci-skip-use-cases" <<< "$commit_msg"; then
-#            run_use_cases=false
-#          fi
-#          if grep -q "ci-new-cases-only" <<< "$commit_msg"; then
-#            run_all_use_cases=false
-#          fi
-#          if grep -q "ci-force-diff" <<< "$commit_msg"; then
-#            run_diff=true
-#          fi
-#          if grep -q "ci-force-all-cases" <<< "$commit_msg"; then
-#            run_use_cases=true
-#            run_all_use_cases=true
-#          fi
-#
-#          touch job_control_status
-#          echo run_docs=${run_docs} >> job_control_status
-#          echo run_get_image=${run_get_image} >> job_control_status
-#          echo run_get_input_data=${run_get_input_data} >> job_control_status
-#          echo run_unit_tests=${run_unit_tests} >> job_control_status
-#          echo run_use_cases=${run_use_cases} >> job_control_status
-#          echo run_save_truth_data=${run_save_truth_data} >> job_control_status
-#          echo run_all_use_cases=${run_all_use_cases} >> job_control_status
-#          echo run_diff=${run_diff} >> job_control_status
-#          echo Job Control Settings:
-#          cat job_control_status
       - uses: actions/upload-artifact@v2
         with:
           name: job_control_status
@@ -204,29 +136,29 @@ jobs:
       fail-fast: false
       matrix:
         categories:
-#          - "met_tool_wrapper:0-53"
+          - "met_tool_wrapper:0-53"
           - "air_quality_and_comp:0"
-#          - "climate:0-1"
-#          - "convection_allowing_models:0"
-#          - "convection_allowing_models:1"
-#          - "convection_allowing_models:2-6"
-#          - "convection_allowing_models:7"
-#          - "convection_allowing_models:8"
-#          - "cryosphere:0"
-#          - "data_assimilation:0"
-#          - "marine_and_coastal:0"
-#          - "medium_range:0"
-#          - "medium_range:1-2"
-#          - "medium_range:3-5"
-#          - "medium_range:6"
-#          - "medium_range:7-8"
-#          - "precipitation:0"
-#          - "precipitation:1"
-#          - "precipitation:2"
-#          - "precipitation:3-8"
-#          - "s2s:0"
-#          - "space_weather:0-1"
-#          - "tc_and_extra_tc:0-2"
+          - "climate:0-1"
+          - "convection_allowing_models:0"
+          - "convection_allowing_models:1"
+          - "convection_allowing_models:2-6"
+          - "convection_allowing_models:7"
+          - "convection_allowing_models:8"
+          - "cryosphere:0"
+          - "data_assimilation:0"
+          - "marine_and_coastal:0"
+          - "medium_range:0"
+          - "medium_range:1-2"
+          - "medium_range:3-5"
+          - "medium_range:6"
+          - "medium_range:7-8"
+          - "precipitation:0"
+          - "precipitation:1"
+          - "precipitation:2"
+          - "precipitation:3-8"
+          - "s2s:0"
+          - "space_weather:0-1"
+          - "tc_and_extra_tc:0-2"
           - "met_tool_wrapper:54:NEW"
     steps:
       - uses: actions/download-artifact@v2
