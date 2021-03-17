@@ -46,7 +46,7 @@ On Push to Reference Branch
 """""""""""""""""""""""""""
 
 Branches with a name that ends with "-ref" contain the state of the repository
-that will generate output that is considered "truth" data.
+that will generate output that is considered "truth" data. 
 In addition to the jobs run for a normal push, the scripts will:
 
 * Run all use cases
