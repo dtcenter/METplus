@@ -51,7 +51,10 @@ jobs:
           echo ::set-output name=run_use_cases::${run_use_cases}
           echo ::set-output name=run_save_truth_data::${run_save_truth_data}
           echo ::set-output name=run_new_use_cases_only::${run_new_use_cases_only}
-
+    check_job_status:
+      runs-on: ubuntu-latest
+      steps:
+        - run: echo ${{ needs.job_control.steps.status.outputs.run_get_image }}
 #  documentation:
 #    name: Build Documentation
 #    runs-on: ubuntu-latest
