@@ -24,7 +24,7 @@ jobs:
         run: |
           # set default status for jobs
           run_docs=true
-          run_get_image=true
+          run_get_image=false
           run_get_input_data=true
           run_unit_tests=true
           run_use_cases=true
