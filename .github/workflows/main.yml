@@ -46,6 +46,11 @@ jobs:
     if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
     steps:
       - uses: actions/checkout@v2
+      - name: GITHUB_CONTEXT
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
