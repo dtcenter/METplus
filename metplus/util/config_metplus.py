@@ -739,6 +739,11 @@ class METplusConfig(ProdConfig):
         if '/path/to' in dir_path:
             raise ValueError("[config] " + dir_name + " cannot be set to or contain '/path/to'")
 
+        if '\n' in dir_path:
+            raise ValueError(f"Invalid value for [config] {dir_name} "
+                             f"({dir_path}). Hint: Check that next variable "
+                             "in the config file does not start with a space")
+
         if must_exist and not os.path.exists(dir_path):
             self.logger.error(f"Path must exist: {dir_path}")
             return None
