@@ -57,8 +57,8 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # then it loads any configuration files passed to METplus via the command line
 # i.e. parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.py.  
 # The file UserScript_fcstGFS_obsERA_Blocking.conf runs the python program, however
-# UserScript_fcstGFS_obsERA_Blocking/Regrid_PCP_fcstGFS_obsERA_Blocking.conf sets the 
-# variables for all steps of the Blocking use case.
+# UserScript_fcstGFS_obsERA_Blocking/Blocking_fcstGFS_obsERA.conf sets the variables 
+# for all steps of the Blocking use case including data paths.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s
