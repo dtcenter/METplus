@@ -230,7 +230,11 @@ jobs:
           name: job_control_status
       - run: cat job_control_status >> $GITHUB_ENV
       - run: |
-          run_this_case=`${{ env.run_use_cases == 'true' && (endsWith(matrix.categories, ':NEW') || !env.run_new_use_cases_only) }}`
+          if [ "${{ env.run_use_cases == 'true' && (endsWith(matrix.categories, ':NEW') || !env.run_new_use_cases_only) }}" == "true" ]; then
+            run_this_case=true
+          else
+            run_this_case=false
+          fi
           echo run_this_case=$run_this_case >> $GITHUB_ENV
       - uses: actions/checkout@v2
         if: ${{ env.run_this_case == 'true' }}
