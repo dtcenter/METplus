@@ -94,6 +94,9 @@ def find_input_files(inconfig, use_init, intemplate, secondtemplate=''):
         file_list = [file_list,file_list2]
     yr_list.append(int(outtimestuff['valid'].strftime('%Y')))
 
+    if all('' == fn for fn in file_list):
+        raise Exception('No input files found as given: '+template)
+
     return file_list, yr_list, mth_list, day_list, yr_full_list
 
 def read_nc_met(infiles,yrlist,invar):
