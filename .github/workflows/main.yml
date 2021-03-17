@@ -241,7 +241,6 @@ jobs:
             run_this_case=false
           fi
           echo run_this_case=$run_this_case >> $GITHUB_ENV
-          echo Run use cases: ${{ env.run_use_cases == 'true' }}
           echo Ends with NEW: ${{ endsWith(matrix.categories, ':NEW') }}
           echo Not run new only: ${{ !env.run_new_use_cases_only }}
       - uses: actions/checkout@v2
