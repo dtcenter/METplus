@@ -29,10 +29,10 @@ jobs:
           ${GITHUB_WORKSPACE}/docs/build_docs.py skip-doxygen
           mkdir -p artifact/documentation
           cp -r ${GITHUB_WORKSPACE}/docs/_build/html/* artifact/documentation
-	  if [ "$( ls -A ${GITHUB_WORKSPACE}/docs/_build/warnings.log)" ]; then
+          if [ "$( ls -A ${GITHUB_WORKSPACE}/docs/_build/warnings.log)" ]; then
             cp -r ${GITHUB_WORKSPACE}/docs/_build/warnings.log artifact/doc_warnings.log
             cp artifact/doc_warnings.log artifact/documentation
-	  fi
+          fi
       - uses: actions/upload-artifact@v2
         with:
           name: METplus_documentation
