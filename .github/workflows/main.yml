@@ -44,18 +44,35 @@ jobs:
             run_new_use_cases_only=true
           fi
           echo $run_get_image
-          echo ::set-output name=run_docs::${run_docs}
-          echo ::set-output name=run_get_image::${run_get_image}
-          echo ::set-output name=run_get_input_data::${run_get_input_data}
-          echo ::set-output name=run_unit_tests::${run_unit_tests}
-          echo ::set-output name=run_use_cases::${run_use_cases}
-          echo ::set-output name=run_save_truth_data::${run_save_truth_data}
-          echo ::set-output name=run_new_use_cases_only::${run_new_use_cases_only}
+          touch job_control_status
+          echo run_docs=${run_docs} >> job_control_status
+          echo run_get_image=${run_get_image} >> job_control_status
+          echo run_get_input_data=${run_get_input_data} >> job_control_status
+          echo run_unit_tests=${run_unit_tests} >> job_control_status
+          echo run_use_cases=${run_use_cases} >> job_control_status
+          echo run_save_truth_data=${run_save_truth_data} >> job_control_status
+          echo run_new_use_cases_only=${run_new_use_cases_only} >> job_control_status
+          #echo ::set-output name=run_docs::${run_docs}
+          #echo ::set-output name=run_get_image::${run_get_image}
+          #echo ::set-output name=run_get_input_data::${run_get_input_data}
+          #echo ::set-output name=run_unit_tests::${run_unit_tests}
+          #echo ::set-output name=run_use_cases::${run_use_cases}
+          #echo ::set-output name=run_save_truth_data::${run_save_truth_data}
+          #echo ::set-output name=run_new_use_cases_only::${run_new_use_cases_only}
+
+      - uses: actions/upload-artifact@v2
+        with:
+          name: job_control_status
+          path: job_control_status
   check_job_status:
     runs-on: ubuntu-latest
     needs: job_control
     steps:
-      - run: echo ${{ jobs.job_control.outputs.run_get_image }}
+      - uses: actions/download-artifact@v2
+        with:
+          name: job_control_status
+      - run: echo job_control_status >> $GITHUB_ENV
+      - run: echo $run_use_cases
 #  documentation:
 #    name: Build Documentation
 #    runs-on: ubuntu-latest
