@@ -12,6 +12,7 @@ inputs:
     default: false
 
 runs:
+  if: ${{ !inputs.only_run_new || endsWith(inputs.categories, ":NEW") }}
   using: "docker"
   image: "Dockerfile"
   args:

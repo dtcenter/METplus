@@ -29,12 +29,16 @@ fi
 IS_NEW_USE_CASE=false
 if [ -z "${NEW_TAG}" ] && [ "$INPUT_CATEGORIES" != "pytests" ]; then
     IS_NEW_USE_CASE=true
+    echo This is a new use case group
 fi
 
-if [ "$INPUT_ONLY_RUN_NEW" == true ] && [ "IS_NEW_USE_CASE" == false ]; then
+if [ "$INPUT_ONLY_RUN_NEW" == "true" ] && [ "IS_NEW_USE_CASE" == false ]; then
   echo Only processing new use cases. Skipping $CATEGORIES $SUBSETLIST
   exit 0
 fi
+
+echo Processing $CATEGORIES $SUBSETLIST
+exit 0
 
 branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
