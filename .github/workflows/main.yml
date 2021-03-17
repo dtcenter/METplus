@@ -135,7 +135,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./ci/actions/run_tests
-        if: ${{ endsWith(matrix.categories, ":NEW") }}
+        if: ${{ endsWith(matrix.categories, ':NEW') }}
         with:
           categories: ${{ matrix.categories }}
           only_run_new: true
