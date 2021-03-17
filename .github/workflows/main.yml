@@ -11,6 +11,18 @@ on:
     types: [opened, reopened, synchronize]
 
 jobs:
+  job_control:
+    name: Decide Jobs To Run
+    steps:
+      - name: Parse Commit Message
+        run: |
+          run_docs=true
+          run_get_image=true
+          run_get_input_data=true
+          run_unit_tests=true
+          run_use_cases=true
+          commit_msg=${{ github.event.head_commit.message }}
+          echo ::set-output name=run_docs::${run_docs}
 #  documentation:
 #    name: Build Documentation
 #    runs-on: ubuntu-latest
@@ -88,7 +100,8 @@ jobs:
   use_case_tests:
     name: Use Case Tests
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
+    #if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
+    if: ${{ endsWith(matrix.categories, ":NEW") }}
     #needs: [get_image, update_data_volumes]
     needs: [get_image]
     strategy:
