@@ -49,8 +49,6 @@ if [ "$INPUT_CATEGORIES" == "pytests" ]; then
   exit $?
 fi
 
-
-
 # install Pillow library needed for diff testing
 # this will be replaced with better image diffing package used by METplotpy
 pip_command="pip3 install Pillow"
@@ -66,7 +64,7 @@ VOLUMES_FROM=`${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $CATEGORIES`
 echo Input: ${VOLUMES_FROM}
 # get Docker data volumes for output data and run diffing logic
 # if running a pull request into develop or main_v* branches, not -ref branches
-if [ "$GITHUB_EVENT_NAME" == "pull_request" ] && [ "${GITHUB_BASE_REF: -4}" != "-ref" ] && ([ "${GITHUB_BASE_REF:0:7}" == "develop" ] || [ "${GITHUB_BASE_REF:0:6}" == "main_v" ]); then
+if [ "${INPUT_RUN_DIFF}" == 'true' ]; then
   echo "Get Docker data volumes for output data"
 
   category=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh $INPUT_CATEGORIES`

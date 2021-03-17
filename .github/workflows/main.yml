@@ -240,6 +240,7 @@ jobs:
         if: ${{ env.run_use_cases == 'true' && (endsWith(matrix.categories, ':NEW') || !env.run_new_use_cases_only) }}
         with:
           categories: ${{ matrix.categories }}
+          run_diff: ${{ env.run_diff }}
 
       # copy output data to save as artifact
       - name: Save output data
