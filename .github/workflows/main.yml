@@ -7,18 +7,12 @@ on:
       - 'feature_*'
       - 'main_*'
       - 'bugfix_*'
-    paths-ignore:
-      - 'docs/**'
   pull_request:
     types: [opened, reopened, synchronize]
 
-#defaults:
-#  run:
-#    shell: bash
-
 jobs:
   job_control:
-    name: Decide Jobs To Run
+    name: Determine which jobs to run
     runs-on: ubuntu-latest
     steps:
       - name: GITHUB_CONTEXT
