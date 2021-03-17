@@ -30,6 +30,7 @@ jobs:
           run_use_cases=true
           run_save_truth_data=true
           run_new_use_cases_only=false
+          run_diff=false
           # check commit messages
           commit_msg="${{ github.event.head_commit.message }}"
           if grep -q "ci-skip-all" <<< "$commit_msg"; then
@@ -39,6 +40,7 @@ jobs:
             run_unit_tests=false
             run_use_cases=false
             run_save_truth_data=false
+            run_diff=false
           elif grep -q "ci-skip-get-image" <<< "$commit_msg"; then
             run_get_image=false
           elif grep -q "ci-new-cases-only" <<< "$commit_msg"; then
@@ -70,6 +72,7 @@ jobs:
   documentation:
     name: Build Documentation
     runs-on: ubuntu-latest
+    needs: job_control
     steps:
       - uses: actions/download-artifact@v2
         with:
