@@ -113,15 +113,15 @@ jobs:
           name: job_control_status
       - run: cat job_control_status >> $GITHUB_ENV
       - uses: actions/checkout@v2
-        if: ${{ env.run_get_image }}
+        if: ${{ env.run_get_image == 'true' }}
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
-      - name: Get METplus Image
-        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+#      - name: Get METplus Image
+#        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
+#        env:
+#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+#          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
   update_data_volumes:
     name: Docker Setup - Update Data Volumes
     runs-on: ubuntu-latest
