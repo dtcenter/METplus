@@ -64,8 +64,15 @@ echo Input: ${VOLUMES_FROM}
 if [ "${INPUT_RUN_DIFF}" == "true" ]; then
   echo "Get Docker data volumes for output data"
 
+  # use develop branch output data volumes if not a pull request (forced diff)
+  if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+    output_data_branch=${GITHUB_BASE_REF}
+  else:
+    output_data_branch=develop
+  fi
+
   category=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh $INPUT_CATEGORIES`
-  output_category=output-${GITHUB_BASE_REF}-${category}
+  output_category=output-${output_data_branch}-${category}
 
   echo Get output data volume: ${output_category}
   OUT_VOLUMES_FROM=`${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $output_category`
