@@ -55,7 +55,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: job_control
     steps:
-      - run: echo ${{ needs.job_control.steps.status.outputs.run_get_image }}
+      - run: echo ${{ jobs.job_control.outputs.run_get_image }}
 #  documentation:
 #    name: Build Documentation
 #    runs-on: ubuntu-latest
@@ -89,7 +89,7 @@ jobs:
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
     needs: job_control
-    if: ${{ needs.job_control.steps.status.outputs.run_get_image == true }}
+    if: ${{ jobs.job_control.steps.status.outputs.run_get_image == true }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
