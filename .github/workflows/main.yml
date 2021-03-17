@@ -33,7 +33,7 @@ jobs:
 #          run_unit_tests=true
 #          run_use_cases=true
 #          run_save_truth_data=false
-#          run_new_use_cases_only=true
+#          run_all_use_cases=false
 #          run_diff=false
 #
 #          # run all use cases and save truth data if -ref branch and not PR
@@ -45,12 +45,12 @@ jobs:
 #              ([ "${GITHUB_BASE_REF:0:7}" == "develop" ] || \
 #               [ "${GITHUB_BASE_REF:0:6}" == "main_v" ]); then
 #              run_use_cases=true
-#              run_new_use_cases_only=false
+#              run_all_use_cases=true
 #              run_diff=true
 #            fi
 #          elif [ "${GITHUB_HEAD_REF: -4}" == -ref ]; then
 #            run_use_cases=true
-#            run_new_use_cases_only=false
+#            run_all_use_cases=true
 #            run_save_truth_data=true
 #          fi
 #
@@ -72,14 +72,14 @@ jobs:
 #            run_use_cases=false
 #          fi
 #          if grep -q "ci-new-cases-only" <<< "$commit_msg"; then
-#            run_new_use_cases_only=true
+#            run_all_use_cases=false
 #          fi
 #          if grep -q "ci-force-diff" <<< "$commit_msg"; then
 #            run_diff=true
 #          fi
 #          if grep -q "ci-force-all-cases" <<< "$commit_msg"; then
 #            run_use_cases=true
-#            run_new_use_cases_only=false
+#            run_all_use_cases=true
 #          fi
 #
 #          touch job_control_status
@@ -89,7 +89,7 @@ jobs:
 #          echo run_unit_tests=${run_unit_tests} >> job_control_status
 #          echo run_use_cases=${run_use_cases} >> job_control_status
 #          echo run_save_truth_data=${run_save_truth_data} >> job_control_status
-#          echo run_new_use_cases_only=${run_new_use_cases_only} >> job_control_status
+#          echo run_all_use_cases=${run_all_use_cases} >> job_control_status
 #          echo run_diff=${run_diff} >> job_control_status
 #          echo Job Control Settings:
 #          cat job_control_status
@@ -235,14 +235,14 @@ jobs:
       - run: cat job_control_status >> $GITHUB_ENV
       - name: Check if use case group should run or be skipped
         run: |
-          if [ "${{ env.run_use_cases == 'true' && (endsWith(matrix.categories, ':NEW') || !env.run_new_use_cases_only) }}" == "true" ]; then
+          if [ "${{ env.run_use_cases == 'true' && (endsWith(matrix.categories, ':NEW') || env.run_all_use_cases) }}" == "true" ]; then
             run_this_case=true
           else
             run_this_case=false
           fi
           echo run_this_case=$run_this_case >> $GITHUB_ENV
           echo Ends with NEW: ${{ endsWith(matrix.categories, ':NEW') }}
-          echo Not run new only: ${{ !env.run_new_use_cases_only }}
+          echo Run all: ${{ env.run_all_use_cases }}
       - uses: actions/checkout@v2
         if: ${{ env.run_this_case == 'true' }}
       - uses: ./ci/actions/run_tests

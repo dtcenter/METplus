@@ -7,7 +7,7 @@ run_get_input_data=true
 run_unit_tests=true
 run_use_cases=true
 run_save_truth_data=false
-run_new_use_cases_only=true
+run_all_use_cases=false
 run_diff=false
 
 # run all use cases and save truth data if -ref branch and not PR
@@ -19,12 +19,12 @@ if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
     ([ "${GITHUB_BASE_REF:0:7}" == "develop" ] || \
      [ "${GITHUB_BASE_REF:0:6}" == "main_v" ]); then
     run_use_cases=true
-    run_new_use_cases_only=false
+    run_all_use_cases=true
     run_diff=true
   fi
 elif [ "${GITHUB_HEAD_REF: -4}" == -ref ]; then
   run_use_cases=true
-  run_new_use_cases_only=false
+  run_all_use_cases=true
   run_save_truth_data=true
 fi
 
@@ -39,16 +39,12 @@ if grep -q "ci-skip-all" <<< "$commit_msg"; then
   run_diff=false
 fi
 
-if grep -q "ci-skip-get-image" <<< "$commit_msg"; then
-  run_get_image=false
-fi
-
 if grep -q "ci-skip-use-cases" <<< "$commit_msg"; then
   run_use_cases=false
 fi
 
 if grep -q "ci-new-cases-only" <<< "$commit_msg"; then
-  run_new_use_cases_only=true
+  run_all_use_cases=false
 fi
 
 if grep -q "ci-force-diff" <<< "$commit_msg"; then
@@ -57,7 +53,7 @@ fi
 
 if grep -q "ci-force-all-cases" <<< "$commit_msg"; then
   run_use_cases=true
-  run_new_use_cases_only=false
+  run_all_use_cases=true
 fi
 
 touch job_control_status
@@ -67,7 +63,7 @@ echo run_get_input_data=${run_get_input_data} >> job_control_status
 echo run_unit_tests=${run_unit_tests} >> job_control_status
 echo run_use_cases=${run_use_cases} >> job_control_status
 echo run_save_truth_data=${run_save_truth_data} >> job_control_status
-echo run_new_use_cases_only=${run_new_use_cases_only} >> job_control_status
+echo run_all_use_cases=${run_all_use_cases} >> job_control_status
 echo run_diff=${run_diff} >> job_control_status
 echo Job Control Settings:
 cat job_control_status
