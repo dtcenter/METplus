@@ -93,7 +93,8 @@ jobs:
           echo run_save_truth_data=${run_save_truth_data} >> job_control_status
           echo run_new_use_cases_only=${run_new_use_cases_only} >> job_control_status
           echo run_diff=${run_diff} >> job_control_status
-          echo Job Control Settings:\n$job_control_status
+          echo Job Control Settings:
+          cat job_control_status
       - uses: actions/upload-artifact@v2
         with:
           name: job_control_status
