@@ -22,3 +22,9 @@ docker-compose up -d
 
 docker images
 docker ps -a
+
+# commands to run inside METviewer container
+# mysql -hmysql_mv -uroot -pmvuser -e"create database mv_met_out;"
+# mysql -hmysql_mv -uroot -pmvuser mv_met_out < /METviewer/sql/mv_mysql.sql
+# chmod +x /METviewer/bin/mv_load.sh
+# /METviewer/bin/mv_load.sh /data/path/to/xml/file.xml
