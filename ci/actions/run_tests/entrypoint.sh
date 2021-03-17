@@ -67,7 +67,7 @@ if [ "${INPUT_RUN_DIFF}" == "true" ]; then
   # use develop branch output data volumes if not a pull request (forced diff)
   if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
     output_data_branch=${GITHUB_BASE_REF}
-  else:
+  else
     output_data_branch=develop
   fi
 
