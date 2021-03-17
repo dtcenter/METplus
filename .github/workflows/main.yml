@@ -112,8 +112,8 @@ jobs:
         with:
           name: job_control_status
       - run: cat job_control_status >> $GITHUB_ENV
-      - if: ${{ env.run_get_image }}
       - uses: actions/checkout@v2
+        if: ${{ env.run_get_image }}
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
