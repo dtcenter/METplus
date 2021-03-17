@@ -22,7 +22,7 @@ if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
     run_all_use_cases=true
     run_diff=true
   fi
-elif [ "${GITHUB_HEAD_REF: -4}" == -ref ]; then
+elif [ "${GITHUB_REF: -4}" == -ref ]; then
   run_use_cases=true
   run_all_use_cases=true
   run_save_truth_data=true
@@ -31,6 +31,16 @@ fi
 # check commit messages for skip or force keywords
 if grep -q "ci-skip-all" <<< "$commit_msg"; then
   run_docs=false
+  run_get_image=false
+  run_get_input_data=false
+  run_unit_tests=false
+  run_use_cases=false
+  run_save_truth_data=false
+  run_diff=false
+fi
+
+if grep -q "ci-docs-only" <<< "$commit_msg"; then
+  run_docs=true
   run_get_image=false
   run_get_input_data=false
   run_unit_tests=false
