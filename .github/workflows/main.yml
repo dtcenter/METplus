@@ -22,7 +22,7 @@ jobs:
           run_get_input_data=true
           run_unit_tests=true
           run_use_cases=true
-          commit_msg=${{ github.event.head_commit.message }}
+          commit_msg="${{ github.event.head_commit.message }}"
           echo ::set-output name=run_docs::${run_docs}
 #  documentation:
 #    name: Build Documentation
@@ -135,6 +135,7 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - uses: ./ci/actions/run_tests
+        id: run_tests
         if: ${{ endsWith(matrix.categories, ':NEW') }}
         with:
           categories: ${{ matrix.categories }}
@@ -143,7 +144,7 @@ jobs:
       # copy output data to save as artifact
       - name: Save output data
         id: save-output
-        if: always()
+        if: ${{ always() && steps.run_tests.conclusion != skipped}}
         run: |
           artifact_name=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh ${{matrix.categories}}`
           mkdir -p artifact/${artifact_name}
