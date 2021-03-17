@@ -24,23 +24,23 @@ jobs:
         run: |
           # set default status for jobs
           run_docs=true
-          run_get_image=false
+          run_get_image=true
           run_get_input_data=true
           run_unit_tests=true
           run_use_cases=true
           run_save_truth_data=true
           run_new_use_cases_only=false
           commit_msg="${{ github.event.head_commit.message }}"
-          if grep -q "ci-skip-all" <<< "commit_msg"; then
+          if grep -q "ci-skip-all" <<< "$commit_msg"; then
             run_docs=false
             run_get_image=false
             run_get_input_data=false
             run_unit_tests=false
             run_use_cases=false
             run_save_truth_data=false
-          elif grep -q "ci-skip-get-image" <<< "commit_msg"; then
+          elif grep -q "ci-skip-get-image" <<< "$commit_msg"; then
             run_get_image=false
-          elif grep -q "ci-new-cases-only" <<< "commit_msg"; then
+          elif grep -q "ci-new-cases-only" <<< "$commit_msg"; then
             run_new_use_cases_only=true
           fi
           echo $run_get_image
@@ -52,14 +52,6 @@ jobs:
           echo run_use_cases=${run_use_cases} >> job_control_status
           echo run_save_truth_data=${run_save_truth_data} >> job_control_status
           echo run_new_use_cases_only=${run_new_use_cases_only} >> job_control_status
-          #echo ::set-output name=run_docs::${run_docs}
-          #echo ::set-output name=run_get_image::${run_get_image}
-          #echo ::set-output name=run_get_input_data::${run_get_input_data}
-          #echo ::set-output name=run_unit_tests::${run_unit_tests}
-          #echo ::set-output name=run_use_cases::${run_use_cases}
-          #echo ::set-output name=run_save_truth_data::${run_save_truth_data}
-          #echo ::set-output name=run_new_use_cases_only::${run_new_use_cases_only}
-
       - uses: actions/upload-artifact@v2
         with:
           name: job_control_status
