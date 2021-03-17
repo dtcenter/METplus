@@ -18,27 +18,11 @@ GHA_ERROR_LOG_DIR=$RUNNER_WORKSPACE/error_logs
 # get use case category, subset list, and optional NEW tag from input
 CATEGORIES=`echo $INPUT_CATEGORIES | awk -F: '{print $1}'`
 SUBSETLIST=`echo $INPUT_CATEGORIES | awk -F: '{print $2}'`
-NEW_TAG=`echo $INPUT_CATEGORIES | awk -F: '{print $3}'`
 
 # run all cases if no subset list specified
 if [ -z "${SUBSETLIST}" ]; then
     SUBSETLIST="all"
 fi
-
-# check if current use case group is new (marked with :NEW)
-IS_NEW_USE_CASE=false
-if [ -z "${NEW_TAG}" ] && [ "$INPUT_CATEGORIES" != "pytests" ]; then
-    IS_NEW_USE_CASE=true
-    echo This is a new use case group
-fi
-
-if [ "$INPUT_ONLY_RUN_NEW" == "true" ] && [ "IS_NEW_USE_CASE" == false ]; then
-  echo Only processing new use cases. Skipping $CATEGORIES $SUBSETLIST
-  exit 0
-fi
-
-echo Processing $CATEGORIES $SUBSETLIST
-exit 0
 
 branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
