@@ -53,6 +53,7 @@ jobs:
           echo ::set-output name=run_new_use_cases_only::${run_new_use_cases_only}
   check_job_status:
     runs-on: ubuntu-latest
+    needs: job_control
     steps:
       - run: echo ${{ needs.job_control.steps.status.outputs.run_get_image }}
 #  documentation:
