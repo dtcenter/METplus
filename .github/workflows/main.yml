@@ -70,16 +70,16 @@ jobs:
 #        env:
 #          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
 #          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-  unit_tests:
-    name: Unit Tests - Pytest
-    runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
-    needs: get_image
-    steps:
-      - uses: actions/checkout@v2
-      - uses: ./ci/actions/run_tests
-        with:
-          categories: pytests
+#  unit_tests:
+#    name: Unit Tests - Pytest
+#    runs-on: ubuntu-latest
+#    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
+#    needs: get_image
+#    steps:
+#      - uses: actions/checkout@v2
+#      - uses: ./ci/actions/run_tests
+#        with:
+#          categories: pytests
   use_case_tests:
     name: Use Case Tests
     runs-on: ubuntu-latest
