@@ -28,15 +28,28 @@ jobs:
           run_get_input_data=true
           run_unit_tests=true
           run_use_cases=true
+          run_save_truth_data=true
+          run_new_use_cases_only=false
           commit_msg="${{ github.event.head_commit.message }}"
-          if grep -q "ci-skip-get-image" <<< "commit_msg"; then
+          if grep -q "ci-skip-all" <<< "commit_msg"; then
+            run_docs=false
             run_get_image=false
+            run_get_input_data=false
+            run_unit_tests=false
+            run_use_cases=false
+            run_save_truth_data=false
+          elif grep -q "ci-skip-get-image" <<< "commit_msg"; then
+            run_get_image=false
+          elif grep -q "ci-new-cases-only" <<< "commit_msg"; then
+            run_new_use_cases_only=true
           fi
           echo ::set-output name=run_docs::${run_docs}
           echo ::set-output name=run_get_image::${run_get_image}
           echo ::set-output name=run_get_input_data::${run_get_input_data}
           echo ::set-output name=run_unit_tests::${run_unit_tests}
           echo ::set-output name=run_use_cases::${run_use_cases}
+          echo ::set-output name=run_save_truth_data::${run_save_truth_data}
+          echo ::set-output name=run_new_use_cases_only::${run_new_use_cases_only}
 
 #  documentation:
 #    name: Build Documentation
@@ -81,36 +94,36 @@ jobs:
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-#  update_data_volumes:
-#    name: Docker Setup - Update Data Volumes
-#    runs-on: ubuntu-latest
-#    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: actions/setup-python@v2
-#        with:
-#          python-version: '3.6'
-#      - name: Install dependencies
-#        run: python -m pip install --upgrade pip python-dateutil requests bs4
-#      - name: Update Data Volumes
-#        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_update_data_volumes.py
-#        env:
-#          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-#          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-#  unit_tests:
-#    name: Unit Tests - Pytest
-#    runs-on: ubuntu-latest
-#    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
-#    needs: get_image
-#    steps:
-#      - uses: actions/checkout@v2
-#      - uses: ./ci/actions/run_tests
-#        with:
-#          categories: pytests
+  update_data_volumes:
+    name: Docker Setup - Update Data Volumes
+    runs-on: ubuntu-latest
+    if: ${{ needs.job_control.steps.status.outputs.run_get_input_data }}
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-python@v2
+        with:
+          python-version: '3.6'
+      - name: Install dependencies
+        run: python -m pip install --upgrade pip python-dateutil requests bs4
+      - name: Update Data Volumes
+        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_update_data_volumes.py
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  unit_tests:
+    name: Unit Tests - Pytest
+    runs-on: ubuntu-latest
+    if: ${{ needs.job_control.steps.status.outputs.run_unit_tests }}
+    needs: get_image
+    steps:
+      - uses: actions/checkout@v2
+      - uses: ./ci/actions/run_tests
+        with:
+          categories: pytests
   use_case_tests:
     name: Use Case Tests
     runs-on: ubuntu-latest
-    #if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
+    if: ${{ needs.job_control.steps.status.outputs.run_use_cases }}
     #needs: [get_image, update_data_volumes]
     needs: [get_image]
     strategy:
@@ -145,7 +158,7 @@ jobs:
       - uses: actions/checkout@v2
       - uses: ./ci/actions/run_tests
         id: run_tests
-        if: ${{ endsWith(matrix.categories, ':NEW') }}
+        if: ${{ endsWith(matrix.categories, ':NEW') && needs.job_control.steps.status.outputs.run_new_use_cases_only }}
         with:
           categories: ${{ matrix.categories }}
           only_run_new: true
