@@ -21,7 +21,7 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
       - name: Parse Commit Message
         id: status
-        run: ci/jobs/set_job_controls.sh
+        run: ${GITHUB_WORKSPACE}/ci/jobs/set_job_controls.sh
 #        run: |
 #          # set default status for jobs
 #          run_docs=true
