@@ -62,8 +62,8 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # then it loads any configuration files passed to METplus via the command line
 # i.e. parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.py.  
 # The file UserScript_obsERA_obsOnly_WeatherRegime.conf runs the python program, however
-# UserScript_obsERA_obsOnly_Blocking/Regrid_PCP_obsERA_obsOnly_WeatherRegime.conf sets the 
-# variables for all steps of the Weather Regime use case.
+# UserScript_obsERA_obsOnly_Blocking/WeatherRegime_obsERA_obsOnly.conf sets the variables 
+# for all steps of the Weather Regime use case including data paths.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s
