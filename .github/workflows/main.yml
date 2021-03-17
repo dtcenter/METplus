@@ -71,8 +71,8 @@ jobs:
       - uses: actions/download-artifact@v2
         with:
           name: job_control_status
-      - run: echo $job_control_status >> $GITHUB_ENV
-      - run: echo $run_use_cases
+      - run: echo job_control_status/job_control_status >> $GITHUB_ENV
+      - run: echo ${{ env.run_use_cases }}
 #  documentation:
 #    name: Build Documentation
 #    runs-on: ubuntu-latest
