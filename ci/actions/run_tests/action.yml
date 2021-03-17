@@ -6,9 +6,14 @@ inputs:
   categories:
     description: 'Use case category or categories to run (separate by comma)'
     required: true
+  only_run_new:
+    description: 'If true, only run use cases that have :NEW at the end'
+    required: false
+    default: false
 
 runs:
   using: "docker"
   image: "Dockerfile"
   args:
     - ${{ inputs.categories }}
+    - ${{ inputs.only_run_new }}

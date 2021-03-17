@@ -96,7 +96,7 @@ jobs:
       matrix:
         categories:
 #          - "met_tool_wrapper:0-53"
-#          - "air_quality_and_comp:0"
+          - "air_quality_and_comp:0"
 #          - "climate:0-1"
 #          - "convection_allowing_models:0"
 #          - "convection_allowing_models:1"
@@ -118,12 +118,14 @@ jobs:
 #          - "s2s:0"
 #          - "space_weather:0-1"
 #          - "tc_and_extra_tc:0-2"
-          - "met_tool_wrapper:54"
+          - "met_tool_wrapper:54:NEW"
     steps:
       - uses: actions/checkout@v2
       - uses: ./ci/actions/run_tests
         with:
           categories: ${{ matrix.categories }}
+          only_run_new: true
+
       # copy output data to save as artifact
       - name: Save output data
         id: save-output
