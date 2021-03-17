@@ -70,7 +70,7 @@ jobs:
   get_image:
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
-    if: "jobs.job_control.steps.status.outputs.run_get_image"
+    if: ${{ jobs.job_control.steps.status.outputs.run_get_image }}
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-python@v2
