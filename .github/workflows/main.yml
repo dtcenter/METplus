@@ -238,7 +238,7 @@ jobs:
       - run: |
           if [ ${{ env.run_use_cases == 'true' }} ] && \
              ([ ${{ endsWith(matrix.categories, ':NEW') }} ] || \
-              [ !${{ env.run_new_use_cases_only) }} ]); then
+              [ !${{ env.run_new_use_cases_only }} ]); then
             run_this_case=true
           else
             run_this_case=false
