@@ -15,15 +15,29 @@ jobs:
     name: Decide Jobs To Run
     runs-on: ubuntu-latest
     steps:
+      - name: GITHUB_CONTEXT
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
       - name: Parse Commit Message
+        id: status
         run: |
+          # set default status for jobs
           run_docs=true
           run_get_image=true
           run_get_input_data=true
           run_unit_tests=true
           run_use_cases=true
           commit_msg="${{ github.event.head_commit.message }}"
+          if grep -q "ci-skip-get-image" <<< "commit_msg"; then
+            run_get_image=false
+          fi
           echo ::set-output name=run_docs::${run_docs}
+          echo ::set-output name=run_get_image::${run_get_image}
+          echo ::set-output name=run_get_input_data::${run_get_input_data}
+          echo ::set-output name=run_unit_tests::${run_unit_tests}
+          echo ::set-output name=run_use_cases::${run_use_cases}
+
 #  documentation:
 #    name: Build Documentation
 #    runs-on: ubuntu-latest
@@ -56,14 +70,9 @@ jobs:
   get_image:
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
-    if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
+    if: jobs.job_control.steps.status.outputs.run_get_image
     steps:
       - uses: actions/checkout@v2
-      - name: GITHUB_CONTEXT
-        env:
-          GITHUB_CONTEXT: ${{ toJson(github) }}
-        run: echo "$GITHUB_CONTEXT"
-
       - uses: actions/setup-python@v2
         with:
           python-version: '3.6'
@@ -165,7 +174,7 @@ jobs:
             echo ::set-output name=upload_error_logs::false
           fi
       - uses: actions/upload-artifact@v2
-        if: always()
+        if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         with:
           name: ${{ steps.save-output.outputs.artifact_name }}
           path: artifact/${{ steps.save-output.outputs.artifact_name }}
