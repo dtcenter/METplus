@@ -328,7 +328,7 @@ class BlockingCalculation():
                     locb = np.append(locb,np.where((dy==i) & (dd==ll))[0])
                 ddil=ddil[1:]
                 locbtemp = 1.0*locb
-                ree=[]
+                ree=np.empty(0,dtype=int)
                 for hh in np.arange(0,len(noloc),1):
                     ree = np.append(ree,np.where(locb == noloc[hh])[0])
                 ree.astype(int)
