@@ -56,15 +56,19 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
 
         c_dict['MV_HOST'] = (
             self.config.getraw('config',
-                               'MET_DB_LOAD_HOST')
+                               'MET_DB_LOAD_MV_HOST')
         )
         c_dict['MV_DATABASE'] = (
             self.config.getraw('config',
-                               'MET_DB_LOAD_DATABASE')
+                               'MET_DB_LOAD_MV_DATABASE')
         )
         c_dict['MV_USER'] = (
             self.config.getraw('config',
-                               'MET_DB_LOAD_USER')
+                               'MET_DB_LOAD_MV_USER')
+        )
+        c_dict['MV_PASSWORD'] = (
+            self.config.getraw('config',
+                               'MET_DB_LOAD_MV_PASSWORD')
         )
 
         c_dict['IS_MET_CMD'] = False
@@ -144,9 +148,10 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
                           **time_info)
         )
         substitution_dict['METPLUS_INPUT_PATH'] = input_path
-        substitution_dict['METPLUS_USER'] = self.c_dict['MV_USER']
-        substitution_dict['METPLUS_HOST'] = self.c_dict['MV_HOST']
-        substitution_dict['METPLUS_DATABASE'] = self.c_dict['MV_DATABASE']
+        substitution_dict['METPLUS_MV_USER'] = self.c_dict['MV_USER']
+        substitution_dict['METPLUS_MV_PASSWORD'] = self.c_dict['MV_PASSWORD']
+        substitution_dict['METPLUS_MV_HOST'] = self.c_dict['MV_HOST']
+        substitution_dict['METPLUS_MV_DATABASE'] = self.c_dict['MV_DATABASE']
 
         # open XML template file and replace any values encountered
         with open(xml_template, 'r') as file_handle:

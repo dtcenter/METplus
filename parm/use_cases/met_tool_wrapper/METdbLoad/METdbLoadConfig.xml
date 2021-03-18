@@ -1,8 +1,8 @@
 <load_spec>
   <connection>
-    <host>${METPLUS_HOST}</host>
-    <database>${METPLUS_DATABASE}</database>
-    <user>${METPLUS_USER}</user>
+    <host>${METPLUS_MV_HOST}</host>
+    <database>${METPLUS_MV_DATABASE}</database>
+    <user>${METPLUS_MV_USER}</user>
     <password>${METPLUS_MV_PASSWORD}</password>
   </connection>
 
