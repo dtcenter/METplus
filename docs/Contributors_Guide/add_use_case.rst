@@ -702,8 +702,9 @@ Add a new entry to the main.yml file found in the .github/workflows directory
 in the METplus repository.
 Find the job in the main.yml file named "use_case_tests" and add a new entry
 in the "categories" list with the category of the new use case followed by a
-colon and the index of the use case from the list described in the
-:ref:`add_use_case_to_test_suite` section. For example, if the new use case
+colon, then the index of the use case from the list described in the
+:ref:`add_use_case_to_test_suite` section, then another colon followed by
+"NEW". For example, if the new use case
 is found in the medium_range category with an index of 9, and the main.yml file
 has the following entries in the categories list::
 
@@ -742,7 +743,7 @@ has the following entries in the categories list::
 
 then add the following to the list::
 
-    - "medium_range:9"
+    - "medium_range:9:NEW"
 
 .. note::
     Make sure that the indentation matches the other lines and use spaces to
