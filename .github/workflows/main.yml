@@ -20,7 +20,7 @@ jobs:
         env:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
-      - name: Parse Commit Message
+      - name: Set job controls
         id: status
         run: ${GITHUB_WORKSPACE}/ci/jobs/set_job_controls.sh
         env:
@@ -40,18 +40,18 @@ jobs:
           name: job_control_status
       - run: cat job_control_status >> $GITHUB_ENV
       - uses: actions/checkout@v2
-        if: ${{ env.run_docs == 'true' }}
+        if: ${{ env.run_docs }}
       - uses: actions/setup-python@v2
-        if: ${{ env.run_docs == 'true' }}
+        if: ${{ env.run_docs }}
         with:
           python-version: '3.6'
       - name: Install dependencies
-        if: ${{ env.run_docs == 'true' }}
+        if: ${{ env.run_docs }}
         run: |
           python -m pip install --upgrade python-dateutil requests sphinx sphinx-gallery Pillow
           pip install git+https://github.com/ESMCI/sphinx_rtd_theme@version-dropdown-with-fixes
       - name: Run build_docs.py
-        if: ${{ env.run_docs == 'true' }}
+        if: ${{ env.run_docs }}
         continue-on-error: true
         run: |
           ${GITHUB_WORKSPACE}/docs/build_docs.py skip-doxygen
@@ -78,13 +78,13 @@ jobs:
           name: job_control_status
       - run: cat job_control_status >> $GITHUB_ENV
       - uses: actions/checkout@v2
-        if: ${{ env.run_get_image == 'true' }}
+        if: ${{ env.run_get_image }}
       - uses: actions/setup-python@v2
-        if: ${{ env.run_get_image == 'true' }}
+        if: ${{ env.run_get_image }}
         with:
           python-version: '3.6'
       - name: Get METplus Image
-        if: ${{ env.run_get_image == 'true' }}
+        if: ${{ env.run_get_image }}
         run: ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -99,16 +99,16 @@ jobs:
           name: job_control_status
       - run: cat job_control_status >> $GITHUB_ENV
       - uses: actions/checkout@v2
-        if: ${{ env.run_get_input_data == 'true' }}
+        if: ${{ env.run_get_input_data }}
       - uses: actions/setup-python@v2
-        if: ${{ env.run_get_input_data == 'true' }}
+        if: ${{ env.run_get_input_data }}
         with:
           python-version: '3.6'
       - name: Install dependencies
-        if: ${{ env.run_get_input_data == 'true' }}
+        if: ${{ env.run_get_input_data }}
         run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Update Data Volumes
-        if: ${{ env.run_get_input_data == 'true' }}
+        if: ${{ env.run_get_input_data }}
         run: ${GITHUB_WORKSPACE}/ci/jobs/docker_update_data_volumes.py
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -123,9 +123,9 @@ jobs:
           name: job_control_status
       - run: cat job_control_status >> $GITHUB_ENV
       - uses: actions/checkout@v2
-        if: ${{ env.run_unit_tests == 'true' }}
+        if: ${{ env.run_unit_tests }}
       - uses: ./ci/actions/run_tests
-        if: ${{ env.run_unit_tests == 'true' }}
+        if: ${{ env.run_unit_tests }}
         with:
           categories: pytests
   use_case_tests:
@@ -167,19 +167,17 @@ jobs:
       - run: cat job_control_status >> $GITHUB_ENV
       - name: Check if use case group should run or be skipped
         run: |
-          if [ "${{ env.run_use_cases == 'true' && (endsWith(matrix.categories, ':NEW') || env.run_all_use_cases) }}" == "true" ]; then
+          if [ "${{ env.run_use_cases && (endsWith(matrix.categories, ':NEW') || env.run_all_use_cases) }}" == "true" ]; then
             run_this_case=true
           else
             run_this_case=false
           fi
           echo run_this_case=$run_this_case >> $GITHUB_ENV
-          echo Ends with NEW: ${{ endsWith(matrix.categories, ':NEW') }}
-          echo Run all: ${{ env.run_all_use_cases }}
       - uses: actions/checkout@v2
-        if: ${{ env.run_this_case == 'true' }}
+        if: ${{ env.run_this_case }}
       - uses: ./ci/actions/run_tests
         id: run_tests
-        if: ${{ env.run_this_case == 'true' }}
+        if: ${{ env.run_this_case }}
         with:
           categories: ${{ matrix.categories }}
           run_diff: ${{ env.run_diff }}
@@ -234,11 +232,11 @@ jobs:
           name: job_control_status
       - run: cat job_control_status >> $GITHUB_ENV
       - uses: actions/checkout@v2
-        if: ${{ env.run_save_truth_data == 'true' }}
+        if: ${{ env.run_save_truth_data }}
       - uses: actions/download-artifact@v2
-        if: ${{ env.run_save_truth_data == 'true' }}
+        if: ${{ env.run_save_truth_data }}
       - run: ci/jobs/create_output_data_volumes.sh
-        if: ${{ env.run_save_truth_data == 'true' }}
+        if: ${{ env.run_save_truth_data }}
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}

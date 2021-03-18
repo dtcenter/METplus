@@ -46,7 +46,7 @@ On Push to Reference Branch
 """""""""""""""""""""""""""
 
 Branches with a name that ends with "-ref" contain the state of the repository
-that will generate output that is considered "truth" data.
+that will generate output that is considered "truth" data. 
 In addition to the jobs run for a normal push, the scripts will:
 
 * Run all use cases
@@ -61,6 +61,7 @@ push. Keywords in the commit message can override the default behavior.
 Here is a list of the currently supported keywords and what they control:
 
 * **ci-skip-all**: Don't run anything - skip all automation jobs
+* **ci-docs-only**: Only run build documentation job - skip the rest
 * **ci-skip-use-cases**: Don't run any use cases
 * **ci-new-cases-only**: Only run new use cases
 * **ci-force-all-cases**: Run all use cases
