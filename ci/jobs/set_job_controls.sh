@@ -40,7 +40,11 @@ else
     run_diff=false
   fi
 
-  if grep -q "ci-docs-only" <<< "$commit_msg"; then
+  if grep -q "ci-skip-use-cases" <<< "$commit_msg"; then
+    run_use_cases=false
+  fi
+
+  if grep -q "ci-only-docs" <<< "$commit_msg"; then
     run_docs=true
     run_get_image=false
     run_get_input_data=false
@@ -50,20 +54,16 @@ else
     run_diff=false
   fi
 
-  if grep -q "ci-skip-use-cases" <<< "$commit_msg"; then
-    run_use_cases=false
-  fi
-
-  if grep -q "ci-new-cases-only" <<< "$commit_msg"; then
+  if grep -q "ci-only-new-cases" <<< "$commit_msg"; then
     run_all_use_cases=false
   fi
 
-  if grep -q "ci-force-diff" <<< "$commit_msg"; then
+  if grep -q "ci-run-diff" <<< "$commit_msg"; then
     run_all_use_cases=true
     run_diff=true
   fi
 
-  if grep -q "ci-force-all-cases" <<< "$commit_msg"; then
+  if grep -q "ci-run-all-cases" <<< "$commit_msg"; then
     run_use_cases=true
     run_all_use_cases=true
   fi

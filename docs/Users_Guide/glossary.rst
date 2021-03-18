@@ -5946,3 +5946,44 @@ METplus Configuration Glossary
      Set the grid_res entry in the MODE MET config file.
 
      | *Used by:*  MODE
+
+   MODE_MASK_POLY
+     Set the mask.poly entry in the MODE MET config file.
+
+     | *Used by:*  MODE
+
+   TC_PAIRS_INIT_BEG
+     Set the initialization begin time for TCpairs.
+
+     | *Used by:*  TCPairs
+
+   TC_PAIRS_INIT_END
+     Set the initialization end time for TCpairs.
+
+     | *Used by:*  TCPairs
+
+   TC_PAIRS_VALID_BEG
+     Set the valid begin time for TCPairs.
+
+     | *Used by:*  TCPairs
+
+   TC_PAIRS_VALID_END
+     Set the valid end time for TCpairs.
+
+     | *Used by:*  TCpairs
+
+   ENS_ENSEMBLE_STAT_INPUT_DATATYPE
+     Set the file_type entry of the ens dictionary in the MET config file for EnsembleStat.
+
+     | *Used by:*  EnsembleStat
+
+   FCST_SERIES_ANALYSIS_INPUT_DATATYPE
+     Set the file_type entry of the fcst dictionary in the MET config file for SeriesAnalysis.
+
+     | *Used by:*  SeriesAnalysis
+
+   OBS_SERIES_ANALYSIS_INPUT_DATATYPE
+     Set the file_type entry of the obs dictionary in the MET config file for SeriesAnalysis.
+
+     | *Used by:*  SeriesAnalysis
+
