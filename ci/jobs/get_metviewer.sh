@@ -31,7 +31,7 @@ cmd="mysql -hmysql_mv -uroot -pmvuser -e\"create database mv_metplus_test;\";"
 cmd+=" mysql -hmysql_mv -uroot -pmvuser mv_metplus_test < /METviewer/sql/mv_mysql.sql"
 
 # sleep for a few seconds to ensure database has fully started
-sleep 3
+sleep 10
 
 echo Check if mysqld is running
 ps xa | grep mysqld
