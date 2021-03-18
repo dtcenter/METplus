@@ -8,7 +8,7 @@ import re
 from WeatherRegime import WeatherRegimeCalculation
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub, getlist
-from metplotpy.contributed.weather_regime import plot_weather_regime as pwr
+#from metplotpy.contributed.weather_regime import plot_weather_regime as pwr
 from Blocking_WeatherRegime_util import find_input_files, parse_steps, read_nc_met
 
 def main():
