@@ -331,8 +331,7 @@ class BlockingCalculation():
                 ree=[]
                 for hh in np.arange(0,len(noloc),1):
                     ree = np.append(ree,np.where(locb == noloc[hh])[0])
-                print(locbtemp)
-                print(ree)
+                ree.astype(int)
                 locbtemp = np.delete(locbtemp,ree)
                 locb=locbtemp * 1.0
                 datemp = dAfin[locb.astype(int)]
