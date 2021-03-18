@@ -10,7 +10,6 @@ run_save_truth_data=false
 run_all_use_cases=false
 run_diff=false
 
-# run all use cases and save truth data if -ref branch and not PR
 # run all use cases and diff logic for pull request
 if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
   # only run diff logic if pull request INTO develop or main_v*
@@ -22,49 +21,53 @@ if [ "${GITHUB_EVENT_NAME}" == "pull_request" ]; then
     run_all_use_cases=true
     run_diff=true
   fi
+# run all use cases and save truth data if -ref branch and not PR
 elif [ "${GITHUB_REF: -4}" == -ref ]; then
   run_use_cases=true
   run_all_use_cases=true
   run_save_truth_data=true
-fi
+# if not pull request or -ref branch, apply commit messages overrides
+else
 
-# check commit messages for skip or force keywords
-if grep -q "ci-skip-all" <<< "$commit_msg"; then
-  run_docs=false
-  run_get_image=false
-  run_get_input_data=false
-  run_unit_tests=false
-  run_use_cases=false
-  run_save_truth_data=false
-  run_diff=false
-fi
+  # check commit messages for skip or force keywords
+  if grep -q "ci-skip-all" <<< "$commit_msg"; then
+    run_docs=false
+    run_get_image=false
+    run_get_input_data=false
+    run_unit_tests=false
+    run_use_cases=false
+    run_save_truth_data=false
+    run_diff=false
+  fi
 
-if grep -q "ci-docs-only" <<< "$commit_msg"; then
-  run_docs=true
-  run_get_image=false
-  run_get_input_data=false
-  run_unit_tests=false
-  run_use_cases=false
-  run_save_truth_data=false
-  run_diff=false
-fi
+  if grep -q "ci-docs-only" <<< "$commit_msg"; then
+    run_docs=true
+    run_get_image=false
+    run_get_input_data=false
+    run_unit_tests=false
+    run_use_cases=false
+    run_save_truth_data=false
+    run_diff=false
+  fi
 
-if grep -q "ci-skip-use-cases" <<< "$commit_msg"; then
-  run_use_cases=false
-fi
+  if grep -q "ci-skip-use-cases" <<< "$commit_msg"; then
+    run_use_cases=false
+  fi
 
-if grep -q "ci-new-cases-only" <<< "$commit_msg"; then
-  run_all_use_cases=false
-fi
+  if grep -q "ci-new-cases-only" <<< "$commit_msg"; then
+    run_all_use_cases=false
+  fi
 
-if grep -q "ci-force-diff" <<< "$commit_msg"; then
-  run_all_use_cases=true
-  run_diff=true
-fi
+  if grep -q "ci-force-diff" <<< "$commit_msg"; then
+    run_all_use_cases=true
+    run_diff=true
+  fi
 
-if grep -q "ci-force-all-cases" <<< "$commit_msg"; then
-  run_use_cases=true
-  run_all_use_cases=true
+  if grep -q "ci-force-all-cases" <<< "$commit_msg"; then
+    run_use_cases=true
+    run_all_use_cases=true
+  fi
+
 fi
 
 touch job_control_status
