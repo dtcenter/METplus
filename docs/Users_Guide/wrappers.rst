@@ -362,7 +362,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENS_ENSEMBLE_STAT_DATATYPE`
+   * - :term:`ENS_ENSEMBLE_STAT_INPUT_DATATYPE`
      - ens.file_type
 
 **${METPLUS_ENS_THRESH}**
@@ -1858,7 +1858,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MTD_FCST_INPUT_DATATYPE`
+   * - :term:`FCST_MTD_INPUT_DATATYPE`
      - fcst.file_type
 
 **${METPLUS_FCST_FIELD}**
@@ -1910,7 +1910,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MTD_OBS_INPUT_DATATYPE`
+   * - :term:`OBS_MTD_INPUT_DATATYPE`
      - obs.file_type
 
 **${METPLUS_OBS_FIELD}**
@@ -2225,8 +2225,10 @@ Configuration
 | :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`
 | :term:`FCST_PCP_COMBINE_EXTRA_NAMES` (optional)
 | :term:`FCST_PCP_COMBINE_EXTRA_LEVELS` (optional)
+| :term:`FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES` (optional)
 | :term:`OBS_PCP_COMBINE_EXTRA_NAMES` (optional)
 | :term:`OBS_PCP_COMBINE_EXTRA_LEVELS` (optional)
+| :term:`OBS_PCP_COMBINE_EXTRA_OUTPUT_NAMES` (optional)
 | :term:`FCST_PCP_COMBINE_OUTPUT_ACCUM` (optional)
 | :term:`FCST_PCP_COMBINE_OUTPUT_NAME` (optional)
 | :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM` (optional)
@@ -2822,7 +2824,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`SERIES_ANALYSIS_FCST_FILE_TYPE`
+   * - :term:`FCST_SERIES_ANALYSIS_INPUT_DATATYPE`
      - fcst.file_type
 
 **${METPLUS_FCST_FIELD}**
@@ -2852,7 +2854,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`SERIES_ANALYSIS_OBS_FILE_TYPE`
+   * - :term:`OBS_SERIES_ANALYSIS_INPUT_DATATYPE`
      - obs.file_type
 
 **${METPLUS_OBS_FIELD}**
@@ -3174,7 +3176,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_VALID_BEG`
+   * - :term:`FCST_VALID_HOUR_LIST` and :term:`VALID_BEG`
      - fcst_valid_beg
 
 **${METPLUS_FCST_VALID_END}**
@@ -3185,7 +3187,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_VALID_END`
+   * - :term:`FCST_VALID_HOUR_LIST` and :term:`VALID_END`
      - fcst_valid_end
 
 **${METPLUS_FCST_VALID_HOUR}**
@@ -3207,7 +3209,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_VALID_BEG`
+   * - :term:`OBS_VALID_HOUR_LIST` and :term:`VALID_BEG`
      - obs_valid_beg
 
 **${METPLUS_OBS_VALID_END}**
@@ -3218,7 +3220,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_VALID_END`
+   * - :term:`OBS_VALID_HOUR_LIST` and :term:`VALID_END`
      - obs_valid_end
 
 **${METPLUS_OBS_VALID_HOUR}**
@@ -3240,7 +3242,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_INIT_BEG`
+   * - :term:`FCST_INIT_HOUR_LIST` and :term:`INIT_BEG`
      - fcst_init_beg
 
 **${METPLUS_FCST_INIT_END}**
@@ -3251,7 +3253,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_INIT_END`
+   * - :term:`FCST_INIT_HOUR_LIST` and :term:`INIT_END`
      - fcst_init_end
 
 **${METPLUS_FCST_INIT_HOUR}**
@@ -3273,7 +3275,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_INIT_BEG`
+   * - :term:`OBS_INIT_HOUR_LIST` and :term:`INIT_BEG`
      - obs_init_beg
 
 **${METPLUS_OBS_INIT_END}**
@@ -3284,7 +3286,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_INIT_END`
+   * - :term:`OBS_INIT_HOUR_LIST` and :term:`INIT_END`
      - obs_init_end
 
 **${METPLUS_OBS_INIT_HOUR}**
@@ -3500,17 +3502,20 @@ Configuration
 ~~~~~~~~~~~~~
 
 | :term:`TC_GEN_TRACK_INPUT_DIR`
-| :term:`TC_GEN_GENESIS_INPUT_DIR`
-| :term:`TC_GEN_OUTPUT_DIR`
 | :term:`TC_GEN_TRACK_INPUT_TEMPLATE`
+| :term:`TC_GEN_GENESIS_INPUT_DIR`
 | :term:`TC_GEN_GENESIS_INPUT_TEMPLATE`
+| :term:`TC_GEN_OUTPUT_DIR`
 | :term:`TC_GEN_OUTPUT_TEMPLATE`
 | :term:`LOG_TC_GEN_VERBOSITY`
 | :term:`TC_GEN_CUSTOM_LOOP_LIST`
+| :term:`TC_GEN_SKIP_IF_OUTPUT_EXISTS`
+| :term:`TC_GEN_MET_CONFIG_OVERRIDES`
 | :term:`TC_GEN_CONFIG_FILE`
-| :term:`TC_GEN_INIT_FREQUENCY`
-| :term:`TC_GEN_LEAD_WINDOW_BEGIN`
-| :term:`TC_GEN_LEAD_WINDOW_END`
+| :term:`TC_GEN_INIT_FREQ`
+| :term:`TC_GEN_VALID_FREQ`
+| :term:`TC_GEN_FCST_HR_WINDOW_BEGIN`
+| :term:`TC_GEN_FCST_HR_WINDOW_END`
 | :term:`TC_GEN_MIN_DURATION`
 | :term:`TC_GEN_FCST_GENESIS_VMAX_THRESH`
 | :term:`TC_GEN_FCST_GENESIS_MSLP_THRESH`
@@ -3518,28 +3523,62 @@ Configuration
 | :term:`TC_GEN_BEST_GENESIS_CATEGORY`
 | :term:`TC_GEN_BEST_GENESIS_VMAX_THRESH`
 | :term:`TC_GEN_BEST_GENESIS_MSLP_THRESH`
-| :term:`TC_GEN_OPER_GENESIS_TECHNIQUE`
-| :term:`TC_GEN_OPER_GENESIS_CATEGORY`
-| :term:`TC_GEN_OPER_GENESIS_VMAX_THRESH`
-| :term:`TC_GEN_OPER_GENESIS_MSLP_THRESH`
+| :term:`TC_GEN_OPER_TECHNIQUE`
 | :term:`TC_GEN_FILTER_\<n\>`
+| :term:`TC_GEN_DESC`
 | :term:`MODEL`
 | :term:`TC_GEN_STORM_ID`
 | :term:`TC_GEN_STORM_NAME`
 | :term:`TC_GEN_INIT_BEG`
 | :term:`TC_GEN_INIT_END`
+| :term:`TC_GEN_INIT_INC`
+| :term:`TC_GEN_INIT_EXC`
 | :term:`TC_GEN_VALID_BEG`
 | :term:`TC_GEN_VALID_END`
-| :term:`TC_GEN_INIT_HOUR_LIST`
+| :term:`TC_GEN_INIT_HOUR`
+| :term:`LEAD_SEQ`
 | :term:`TC_GEN_VX_MASK`
-| :term:`TC_GEN_GENESIS_WINDOW_BEGIN`
-| :term:`TC_GEN_GENESIS_WINDOW_END`
-| :term:`TC_GEN_GENESIS_RADIUS`
+| :term:`TC_GEN_BASIN_MASK`
+| :term:`TC_GEN_DLAND_THRESH`
+| :term:`TC_GEN_GENESIS_MATCH_RADIUS`
+| :term:`TC_GEN_DEV_HIT_RADIUS`
+| :term:`TC_GEN_DEV_HIT_WINDOW_BEGIN`
+| :term:`TC_GEN_DEV_HIT_WINDOW_END`
+| :term:`TC_GEN_OPS_HIT_TDIFF`
+| :term:`TC_GEN_DISCARD_INIT_POST_GENESIS_FLAG`
+| :term:`TC_GEN_DEV_METHOD_FLAG`
+| :term:`TC_GEN_OPS_METHOD_FLAG`
+| :term:`TC_GEN_CI_ALPHA`
+| :term:`TC_GEN_OUTPUT_FLAG_FHO`
+| :term:`TC_GEN_OUTPUT_FLAG_CTC`
+| :term:`TC_GEN_OUTPUT_FLAG_CTS`
+| :term:`TC_GEN_OUTPUT_FLAG_GENMPR`
+| :term:`TC_GEN_NC_PAIRS_FLAG_LATLON`
+| :term:`TC_GEN_NC_PAIRS_FLAG_FCST_GENESIS`
+| :term:`TC_GEN_NC_PAIRS_FLAG_FCST_TRACKS`
+| :term:`TC_GEN_NC_PAIRS_FLAG_FCST_FY_OY`
+| :term:`TC_GEN_NC_PAIRS_FLAG_FCST_FY_ON`
+| :term:`TC_GEN_NC_PAIRS_FLAG_BEST_GENESIS`
+| :term:`TC_GEN_NC_PAIRS_FLAG_BEST_TRACKS`
+| :term:`TC_GEN_NC_PAIRS_FLAG_BEST_FY_OY`
+| :term:`TC_GEN_NC_PAIRS_FLAG_BEST_FN_OY`
+| :term:`TC_GEN_VALID_MINUS_GENESIS_DIFF_THRESH`
+| :term:`TC_GEN_BEST_UNIQUE_FLAG`
 | :term:`TC_GEN_DLAND_FILE`
-| :term:`TC_GEN_SKIP_IF_OUTPUT_EXISTS`
-| :term:`TC_GEN_DESC`
-| :term:`TC_GEN_MET_CONFIG_OVERRIDES`
-|
+| :term:`TC_GEN_BASIN_FILE`
+| :term:`TC_GEN_NC_PAIRS_GRID`
+
+.. warning:: **DEPRECATED:**
+
+   | :term:`TC_GEN_LEAD_WINDOW_BEGIN`
+   | :term:`TC_GEN_LEAD_WINDOW_END`
+   | :term:`TC_GEN_OPER_GENESIS_TECHNIQUE`
+   | :term:`TC_GEN_OPER_GENESIS_CATEGORY`
+   | :term:`TC_GEN_OPER_GENESIS_VMAX_THRESH`
+   | :term:`TC_GEN_OPER_GENESIS_MSLP_THRESH`
+   | :term:`TC_GEN_GENESIS_RADIUS`
+   | :term:`TC_GEN_GENESIS_WINDOW_BEGIN`
+   | :term:`TC_GEN_GENESIS_WINDOW_END`
 
 .. _tc-gen-met-conf:
 
@@ -3562,10 +3601,10 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_INIT_FREQUENCY`
+   * - :term:`TC_GEN_INIT_FREQ`
      - init_freq
 
-**${METPLUS_LEAD_WINDOW_DICT}**
+**${METPLUS_VALID_FREQ}**
 
 .. list-table::
    :widths: 5 5
@@ -3573,10 +3612,21 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_LEAD_WINDOW_BEGIN`
-     - lead_window.beg
-   * - :term:`TC_GEN_LEAD_WINDOW_END`
-     - lead_window.end
+   * - :term:`TC_GEN_VALID_FREQ`
+     - valid_freq
+
+**${METPLUS_FCST_HR_WINDOW_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_FCST_HR_WINDOW_BEGIN`
+     - fcst_hr_window.beg
+   * - :term:`TC_GEN_FCST_HR_WINDOW_END`
+     - fcst_hr_window.end
 
 **${METPLUS_MIN_DURATION}**
 
@@ -3619,7 +3669,7 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`TC_GEN_BEST_GENESIS_MSLP_THRESH`
      - best_genesis.mslp_thresh
 
-**${METPLUS_OPER_GENESIS_DICT}**
+**${METPLUS_OPER_TECHNIQUE}**
 
 .. list-table::
    :widths: 5 5
@@ -3627,14 +3677,8 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_OPER_GENESIS_TECHNIQUE`
-     - oper_genesis.technique
-   * - :term:`TC_GEN_OPER_GENESIS_CATEGORY`
-     - oper_genesis.category
-   * - :term:`TC_GEN_OPER_GENESIS_VMAX_THRESH`
-     - oper_genesis.vmax_thresh
-   * - :term:`TC_GEN_OPER_GENESIS_MSLP_THRESH`
-     - oper_genesis.mslp_thresh
+   * - :term:`TC_GEN_OPER_TECHNIQUE`
+     - oper_technique
 
 **${METPLUS_FILTER}**
 
@@ -3713,6 +3757,29 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`TC_GEN_INIT_END`
      - init_end
 
+**${METPLUS_INIT_INC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_INIT_INC`
+     - init_inc
+
+
+**${METPLUS_INIT_EXC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_INIT_EXC`
+     - init_exc
+
 **${METPLUS_VALID_BEG}**
 
 .. list-table::
@@ -3743,10 +3810,10 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_INIT_HOUR_LIST`
+   * - :term:`TC_GEN_INIT_HOUR`
      - init_hour
 
-**${METPLUS_LEAD_LIST}**
+**${METPLUS_LEAD}**
 
 .. list-table::
    :widths: 5 5
@@ -3768,7 +3835,7 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`TC_GEN_VX_MASK`
      - vx_mask
 
-**${METPLUS_GENESIS_WINDOW_DICT}**
+**${METPLUS_BASIN_MASK}**
 
 .. list-table::
    :widths: 5 5
@@ -3776,12 +3843,10 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_GENESIS_WINDOW_BEGIN`
-     - genesis_window.beg
-   * - :term:`TC_GEN_GENESIS_WINDOW_END`
-     - genesis_window.end
+   * - :term:`TC_GEN_BASIN_MASK`
+     - basin_mask
 
-**${METPLUS_GENESIS_RADIUS}**
+**${METPLUS_DLAND_THRESH}**
 
 .. list-table::
    :widths: 5 5
@@ -3789,8 +3854,164 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_GENESIS_RADIUS`
-     - genesis_radius
+   * - :term:`TC_GEN_DLAND_THRESH`
+     - dland_thresh
+
+**${METPLUS_DEV_HIT_WINDOW_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_DEV_HIT_WINDOW_BEGIN`
+     - dev_hit_window.beg
+   * - :term:`TC_GEN_DEV_HIT_WINDOW_END`
+     - dev_hit_window.end
+
+**${METPLUS_GENESIS_MATCH_RADIUS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_GENESIS_MATCH_RADIUS`
+     - genesis_match_radius
+
+**${METPLUS_DEV_HIT_RADIUS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_DEV_HIT_RADIUS`
+     - dev_hit_radius
+
+**${METPLUS_OPS_HIT_TDIFF}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_OPS_HIT_TDIFF`
+     - ops_hit_tdiff
+
+**${METPLUS_DISCARD_INIT_POST_GENESIS_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_DISCARD_INIT_POST_GENESIS_FLAG`
+     - discard_init_post_genesis_flag
+
+**${METPLUS_DEV_METHOD_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_DEV_METHOD_FLAG`
+     - dev_method_flag
+
+**${METPLUS_OPS_METHOD_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_OPS_METHOD_FLAG`
+     - ops_method_flag
+
+**${METPLUS_CI_ALPHA}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_CI_ALPHA`
+     - ci_alpha
+
+**${METPLUS_OUTPUT_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_OUTPUT_FLAG_FHO`
+     - output_flag.fho
+   * - :term:`TC_GEN_OUTPUT_FLAG_CTC`
+     - output_flag.ctc
+   * - :term:`TC_GEN_OUTPUT_FLAG_CTS`
+     - output_flag.cts
+   * - :term:`TC_GEN_OUTPUT_FLAG_GENMPR`
+     - output_flag.genmpr
+
+**${METPLUS_NC_PAIRS_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_LATLON`
+     - nc_pairs_flag.latlon
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_FCST_GENESIS`
+     - nc_pairs_flag.fcst_genesis
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_FCST_TRACKS`
+     - nc_pairs_flag.fcst_tracks
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_FCST_FY_OY`
+     - nc_pairs_flag.fcst_fy_oy
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_FCST_FY_ON`
+     - nc_pairs_flag.fcst_fy_on
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_BEST_GENESIS`
+     - nc_pairs_flag.best_genesis
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_BEST_TRACKS`
+     - nc_pairs_flag.best_tracks
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_BEST_FY_OY`
+     - nc_pairs_flag.best_fy_oy
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_BEST_FN_OY`
+     - nc_pairs_flag.best_fn_oy
+
+**${METPLUS_VALID_MINUS_GENESIS_DIFF_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_VALID_MINUS_GENESIS_DIFF_THRESH`
+     - valid_minus_genesis_diff_thresh
+
+**${METPLUS_BEST_UNIQUE_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_BEST_UNIQUE_FLAG`
+     - best_unique_flag
 
 **${METPLUS_DLAND_FILE}**
 
@@ -3802,6 +4023,28 @@ Below the file contents are descriptions of each environment variable referenced
      - MET Config File
    * - :term:`TC_GEN_DLAND_FILE`
      - dland_file
+
+**${METPLUS_BASIN_FILE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_BASIN_FILE`
+     - basin_file
+
+**${METPLUS_NC_PAIRS_GRID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_NC_PAIRS_GRID`
+     - nc_pairs_grid
 
 **${METPLUS_MET_CONFIG_OVERRIDES}**
 

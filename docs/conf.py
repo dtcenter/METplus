@@ -108,7 +108,6 @@ exclude_patterns = ['_build',
                     'use_cases',
                     'Release_Guide/release_steps',
                     'Verification_Datasets/datasets/template.rst',
-                    'Contributors_Guide/continuous_integration.rst',
                     ]
 
 # Suppress certain warning messages
