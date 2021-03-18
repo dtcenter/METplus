@@ -8,13 +8,13 @@
 
   <verbose>false</verbose>
   <insert_size>1</insert_size>
-  <mode_header_db_check>true</mode_header_db_check>
+  <mode_header_db_check>false</mode_header_db_check>
   <drop_indexes>false</drop_indexes>
   <apply_indexes>true</apply_indexes>
   <group>Group name</group>
   <load_stat>true</load_stat>
-  <load_mode>true</load_mode>
-  <load_mtd>true</load_mtd>
+  <load_mode>false</load_mode>
+  <load_mtd>false</load_mtd>
   <load_mpr>false</load_mpr>
 
   <folder_tmpl>${METPLUS_INPUT_PATH}</folder_tmpl>
