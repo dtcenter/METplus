@@ -328,12 +328,12 @@ class BlockingCalculation():
                     locb = np.append(locb,np.where((dy==i) & (dd==ll))[0])
                 ddil=ddil[1:]
                 locbtemp = 1.0*locb
-                re=[]
+                ree=[]
                 for hh in np.arange(0,len(noloc),1):
-                    re = np.append(re,np.where(locb == noloc[hh])[0])
+                    ree = np.append(ree,np.where(locb == noloc[hh])[0])
                 print(locbtemp)
                 print(re)
-                locbtemp = np.delete(locbtemp,re)
+                locbtemp = np.delete(locbtemp,ree)
                 locb=locbtemp * 1.0
                 datemp = dAfin[locb.astype(int)]
                 blocktemp = [[datemp[0]]]
