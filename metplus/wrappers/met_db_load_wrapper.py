@@ -24,6 +24,26 @@ from ..util import do_string_sub
 '''
 
 class METDbLoadWrapper(RuntimeFreqWrapper):
+    """! Config variable names - All names are prepended with MET_DB_LOAD_MV_
+         and all c_dict values are prepended with MV_.
+         The name is the key and string specifying the type is the value.
+    """
+    CONFIG_NAMES = {'HOST': 'string',
+                    'DATABASE': 'string',
+                    'USER': 'string',
+                    'PASSWORD': 'string',
+                    'VERBOSE': 'bool',
+                    'INSERT_SIZE': 'int',
+                    'MODE_HEADER_DB_CHECK': 'bool',
+                    'DROP_INDEXES': 'bool',
+                    'APPLY_INDEXES': 'bool',
+                    'GROUP': 'string',
+                    'LOAD_STAT': 'bool',
+                    'LOAD_MODE': 'bool',
+                    'LOAD_MTD': 'bool',
+                    'LOAD_MPR': 'bool',
+                    }
+
     def __init__(self, config, instance=None, config_overrides={}):
         met_data_db_dir = config.getdir('MET_DATA_DB_DIR')
         self.app_path = os.path.join(met_data_db_dir,
@@ -54,22 +74,26 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
             self.log_error("Must supply an input template with "
                            "MET_DB_LOAD_INPUT_TEMPLATE")
 
-        c_dict['MV_HOST'] = (
-            self.config.getraw('config',
-                               'MET_DB_LOAD_MV_HOST')
+        c_dict['REMOVE_TMP_XML'] = (
+            self.config.getbool('config',
+                                'MET_DB_LOAD_REMOVE_TMP_XML',
+                                True)
         )
-        c_dict['MV_DATABASE'] = (
-            self.config.getraw('config',
-                               'MET_DB_LOAD_MV_DATABASE')
-        )
-        c_dict['MV_USER'] = (
-            self.config.getraw('config',
-                               'MET_DB_LOAD_MV_USER')
-        )
-        c_dict['MV_PASSWORD'] = (
-            self.config.getraw('config',
-                               'MET_DB_LOAD_MV_PASSWORD')
-        )
+
+        # read config variables
+        for name, type in self.CONFIG_NAMES.items():
+            if type == 'int':
+                get_fct = self.config.getint
+            elif type == 'bool':
+                get_fct = self.config.getbool
+            else:
+                get_fct = self.config.getraw
+            value = get_fct('config',
+                            f'MET_DB_LOAD_MV_{name}',
+                            '')
+            if value == '':
+                self.log_error(f"Must set MET_DB_LOAD_MV_{name}")
+            c_dict[f'MV_{name}'] = value
 
         c_dict['IS_MET_CMD'] = False
         c_dict['LOG_THE_OUTPUT'] = True
@@ -119,9 +143,11 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
                 success = False
 
             # remove tmp file
-#            xml_file = self.c_dict.get('XML_TMP_FILE')
-#            if xml_file and os.path.exists(xml_file):
-#                os.remove(xml_file)
+            if self.c_dict.get('REMOVE_TMP_XML', True):
+                xml_file = self.c_dict.get('XML_TMP_FILE')
+                if xml_file and os.path.exists(xml_file):
+                    self.logger.debug(f"Removing tmp file: {xml_file}")
+                    os.remove(xml_file)
 
         return success
 
@@ -140,18 +166,23 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
             return False
 
         # set up dictionary of text to substitute in XML file
-        substitution_dict = {}
+        sub_dict = {}
 
         # substitute values from time dictionary
         input_path = (
             do_string_sub(self.c_dict['INPUT_TEMPLATE'],
                           **time_info)
         )
-        substitution_dict['METPLUS_INPUT_PATH'] = input_path
-        substitution_dict['METPLUS_MV_USER'] = self.c_dict['MV_USER']
-        substitution_dict['METPLUS_MV_PASSWORD'] = self.c_dict['MV_PASSWORD']
-        substitution_dict['METPLUS_MV_HOST'] = self.c_dict['MV_HOST']
-        substitution_dict['METPLUS_MV_DATABASE'] = self.c_dict['MV_DATABASE']
+        sub_dict['METPLUS_INPUT_PATH'] = input_path
+        for name, type in self.CONFIG_NAMES.items():
+            value = str(self.c_dict.get(f'MV_{name}'))
+            if type == 'bool':
+                value = value.lower()
+
+            value = do_string_sub(value,
+                                  **time_info)
+
+            sub_dict[f'METPLUS_MV_{name}'] = value
 
         # open XML template file and replace any values encountered
         with open(xml_template, 'r') as file_handle:
@@ -160,7 +191,7 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
         output_lines = []
         for input_line in input_lines:
             output_line = input_line
-            for replace_string, value in substitution_dict.items():
+            for replace_string, value in sub_dict.items():
                 output_line = output_line.replace(f"${{{replace_string}}}",
                                                   value)
             output_lines.append(output_line)
