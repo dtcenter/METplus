@@ -17,8 +17,8 @@ mkdir -p $MYSQL_DIR
 apk add docker-compose
 
 # download docker-compose.yml file from METviewer develop branch
-wget https://raw.githubusercontent.com/dtcenter/METviewer/develop/docker/docker-compose.yml
-
+#wget https://raw.githubusercontent.com/dtcenter/METviewer/develop/docker/docker-compose.yml
+wget https://raw.githubusercontent.com/dtcenter/METviewer/main_v3.1/docker/docker-compose.yml
 # Run docker-compose to create the containers
 docker-compose up -d
 
