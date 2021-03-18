@@ -58,6 +58,7 @@ if grep -q "ci-new-cases-only" <<< "$commit_msg"; then
 fi
 
 if grep -q "ci-force-diff" <<< "$commit_msg"; then
+  run_all_use_cases=true
   run_diff=true
 fi
 
