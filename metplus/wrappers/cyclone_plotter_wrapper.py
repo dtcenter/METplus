@@ -30,6 +30,8 @@ from ..util import met_util as util
 from ..util import do_string_sub
 from . import CommandBuilder
 
+
+
 class CyclonePlotterWrapper(CommandBuilder):
     """! Generate plots of extra tropical storm forecast tracks.
         Reads input from ATCF files generated from MET TC-Pairs
@@ -174,7 +176,9 @@ class CyclonePlotterWrapper(CommandBuilder):
                         if lon == 'NA' or lat == 'NA':
                             continue
                         else:
-                            track_dict['lon'] = float(lon)
+                            # convert longitudes that are in the 0 to 360 scale
+                            # to the -180 to 180 scale
+                            track_dict['lon'] = self.rescale_lon(float(lon))
                             track_dict['lat'] = float(lat)
 
                         # If the lead hour is 'NA', skip to next line.
@@ -349,22 +353,25 @@ class CyclonePlotterWrapper(CommandBuilder):
         #use central meridian for central longitude
         cm_lon = 180
         ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=cm_lon))
+        prj = ccrs.PlateCarree()
 
         # Add land, coastlines, and ocean
         ax.add_feature(cfeature.LAND)
         ax.coastlines()
         ax.add_feature(cfeature.OCEAN)
+        # keep map zoomed out to full world.  If this
+        # is absent, the default behavior is to zoom
+        # into the portion of the map that contains points.
+        ax.set_global()
 
         # Add grid lines for longitude and latitude
         ax.gridlines(draw_labels=False, xlocs=[180, -180])
-        gl = ax.gridlines(crs=ccrs.PlateCarree(central_longitude=0.0),
+        gl = ax.gridlines(crs=prj,
                           draw_labels=True, linewidth=1, color='gray',
                           alpha=0.5, linestyle='--')
         gl.xlabels_top = False
         gl.ylabels_left = False
         gl.xlines = True
-        gl.xlocator = mticker.FixedLocator(
-            [ -180,-140, -100, -60, -20, 20, 60, 100, 140, 180])
         gl.xformatter = LONGITUDE_FORMATTER
         gl.yformatter = LATITUDE_FORMATTER
         gl.xlabel_style = {'size': 9, 'color': 'blue'}
@@ -375,15 +382,14 @@ class CyclonePlotterWrapper(CommandBuilder):
                   self.init_date)
 
         # Create the NCAR watermark with a timestamp
-        # This will appear in the bottom left corner of the plot, below
-        # the legend.  NOTE: The timestamp is in the user's local time zone
+        # This will appear in the bottom right corner of the plot, below
+        # the x-axis.  NOTE: The timestamp is in the user's local time zone
         # and not in UTC time.
         ts = time.time()
         st = datetime.datetime.fromtimestamp(ts).strftime(
             '%Y-%m-%d %H:%M:%S')
         watermark = 'DTC METplus\nplot created at: ' + st
-        # plt.text(1, -180, watermark, fontsize=8, alpha=0.25)
-        plt.text(-180, -170, watermark, fontsize=5, alpha=0.25)
+        plt.text(60, -130, watermark, fontsize=5, alpha=0.25)
 
         # Make sure the output directory exists, and create it if it doesn't.
         util.mkdir_p(self.output_dir)
@@ -465,21 +471,19 @@ class CyclonePlotterWrapper(CommandBuilder):
                     line = ''.join(line_parts)
                     lines_to_write.append(line)
 
-            # Create ascatter plot to add
+            # Create a scatter plot to add
             # the appropriate marker symbol to the forecast
             # hours corresponding to 6/18 hours.
-
-            # map.plot(x, y, color='red', linestyle='-')
 
             # Annotate the first point of the storm track
             for anno, adj_lon, adj_lat in zip(anno_list, lon, lat):
                 # x, y = map(adj_lon, adj_lat)
                 # Annotate the first point of the storm track by
                 # overlaying the annotation text over all points (all but
-                # one will have text).
-                plt.annotate(anno, xy=(adj_lon, adj_lat), xytext=(2, 2),
-                             textcoords='offset points', fontsize=self.annotation_font_size,
-                             color='red')
+                # one will have text). plt.annotate DOES NOT work with cartopy,
+                # instead, use the plt.text method.
+                plt.text(adj_lon+2, adj_lat+2, anno, transform=prj,
+                         fontsize=self.annotation_font_size, color='red')
 
             # Generate the scatterplot, where the 6/18 Z forecast times
             # are labelled with a '+'
@@ -499,7 +503,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                                     edgecolors=colours, facecolors=colours,
                                     marker='o', zorder=2,
                                     label="Indicates a position " +
-                                    "at 00 or 12 UTC")
+                                    "at 00 or 12 UTC", transform=prj)
                         plt.plot(lon,lat, linestyle='-', color=colours, linewidth=1)
                         circle_counter += 1
                     elif symbol == '+':
@@ -507,7 +511,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                                     edgecolors=colours, facecolors=colours,
                                     marker='+', zorder=2,
                                     label="\nIndicates a position at 06 or " +
-                                    "18 UTC\n")
+                                    "18 UTC\n", transform=prj)
                         plus_counter += 1
 
                 else:
@@ -521,11 +525,12 @@ class CyclonePlotterWrapper(CommandBuilder):
                         dummy_counter += 1
                     plt.scatter(adj_lon, adj_lat, s=sz, c=colours,
                                 edgecolors=colours,
-                                facecolors=colours, marker=symbol, zorder=2)
+                                facecolors=colours, marker=symbol, zorder=2,
+                                transform=prj)
 
             # Finally, overlay the line plot to define the storm tracks
-            plt.plot(lon, lat, linestyle='-', color=colours, linewidth=.3)
-
+            plt.plot(lon, lat, linestyle='-', color=colours, linewidth=.3,
+                     transform=prj)
 
         # If requested, create an ASCII file with the tracks that are going to
         # be plotted.  This is useful to debug or verify that what you
@@ -549,7 +554,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         # ax.legend(loc='lower left', bbox_to_anchor=(-0.03, -0.5),
         #           fancybox=True, shadow=True, scatterpoints=1,
         #           prop={'size': 6})
-        ax.legend(loc='lower left', bbox_to_anchor=(-0.01, -0.5),
+        ax.legend(loc='lower left', bbox_to_anchor=(-0.01, -0.4),
                   fancybox=True, shadow=True, scatterpoints=1,
                   prop={'size': 6})
 
@@ -574,19 +579,11 @@ class CyclonePlotterWrapper(CommandBuilder):
 
 
     @staticmethod
-    def set_lead_group(track_dict, init_hh):
-        """! Sets the position indicator key to 0 if init hour is 0 or 12,
-        and 6 if init hour is 6 or 18.  This is used to determine which
-        symbol to use, a '+' or 'o' when plotting track points."""
-        if init_hh == '00' or init_hh == '12':
-            track_dict['position_indicator'] = '0'
-        elif init_hh == '06' or init_hh == '18':
-            track_dict['position_indicator'] = '6'
-
-    @staticmethod
     def rescale_lon(lon):
-        """! Rescales longitude, using the same logic employed by MET."""
-        if float(lon) < 0.:
+        """! Rescales longitude, using the same logic employed by MET
+        """
+
+        if float(lon) < 180.:
             adj_lon = lon + 360.
         elif float(lon) > 180.:
             adj_lon = lon - 360.
