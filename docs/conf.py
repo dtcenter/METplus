@@ -74,6 +74,53 @@ extensions = ['sphinx.ext.autodoc',
 if os.environ.get('METPLUS_DOC_PDF'):
     extensions.append('rst2pdf.pdfbuilder')
 
+# settings for ReadTheDocs PDF creation
+latex_engine = 'pdflatex'
+latex_theme = 'manual'
+latex_logo = os.path.join('_static','METplus_logo.png')
+latex_show_pagerefs = 'True'
+master_doc = 'Users_Guide/index'
+
+latex_elements = {
+   # The paper size ('letterpaper' or 'a4paper').
+   #
+   'papersize': 'letterpaper',
+   'releasename':"{version}",
+   'fncychap': '\\usepackage{fncychap}',
+   'fontpkg': '\\usepackage{amsmath,amsfonts,amssymb,amsthm}',
+                                                     
+   'figure_align':'htbp',
+   'pointsize': '11pt',
+                                        
+   'preamble': r'''
+       \usepackage{charter}
+       \usepackage[defaultsans]{lato}
+       \usepackage{inconsolata}
+    ''',
+                                                                            
+    'sphinxsetup': \
+        'hmargin={0.7in,0.7in}, vmargin={1in,1in}, \
+        verbatimwithframe=true, \
+        TitleColor={rgb}{0,0,0}, \
+        HeaderFamily=\\rmfamily\\bfseries, \
+        InnerLinkColor={rgb}{0,0,1}, \
+        OuterLinkColor={rgb}{0,0,1}',
+                                                                                                                                           'maketitle': '\\sphinxmaketitle',  
+       'tableofcontents': '\\sphinxtableofcontents',
+                                                                                                                                            'printindex': ' '
+                                                                                                                                    }
+
+# Grouping the document tree into LaTeX files. List of tuples
+# (source start file, target name, title,
+#  author, documentclass [howto, manual, or own class]).
+latex_documents = [
+    (master_doc, 
+     'users_guide.tex', 
+     'METplus User\'s Guide',
+     'George McCabe, et al.', 
+     'manual')
+]
+    
 # used for generating PDF
 pdf_documents = [('index',
                   f'METplus_Users_Guide_v{version}',
