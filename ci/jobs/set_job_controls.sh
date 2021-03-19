@@ -45,7 +45,7 @@ else
   fi
 
   if grep -q "ci-skip-unit-tests" <<< "$commit_msg"; then
-    run_unit-tests=false
+    run_unit_tests=false
   fi
 
   if grep -q "ci-only-docs" <<< "$commit_msg"; then
