@@ -44,6 +44,10 @@ else
     run_use_cases=false
   fi
 
+  if grep -q "ci-skip-unit-tests" <<< "$commit_msg"; then
+    run_unit-tests=false
+  fi
+
   if grep -q "ci-only-docs" <<< "$commit_msg"; then
     run_docs=true
     run_get_image=false
