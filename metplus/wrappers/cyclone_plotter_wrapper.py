@@ -477,7 +477,6 @@ class CyclonePlotterWrapper(CommandBuilder):
 
             # Annotate the first point of the storm track
             for anno, adj_lon, adj_lat in zip(anno_list, lon, lat):
-                # x, y = map(adj_lon, adj_lat)
                 # Annotate the first point of the storm track by
                 # overlaying the annotation text over all points (all but
                 # one will have text). plt.annotate DOES NOT work with cartopy,
@@ -504,7 +503,6 @@ class CyclonePlotterWrapper(CommandBuilder):
                                     marker='o', zorder=2,
                                     label="Indicates a position " +
                                     "at 00 or 12 UTC", transform=prj)
-                        plt.plot(lon,lat, linestyle='-', color=colours, linewidth=1)
                         circle_counter += 1
                     elif symbol == '+':
                         plt.scatter(adj_lon, adj_lat, s=sz, c=colours,
@@ -583,9 +581,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         """! Rescales longitude, using the same logic employed by MET
         """
 
-        if float(lon) < 180.:
-            adj_lon = lon + 360.
-        elif float(lon) > 180.:
+        if float(lon) > 180.:
             adj_lon = lon - 360.
         else:
             adj_lon = lon
