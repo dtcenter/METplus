@@ -58,7 +58,7 @@ class WeatherRegimeCalculation():
 
     def run_elbow(self,a1):
 
-        k=KMeans(n_clusters=self.wrnum, random_state=0, n_jobs=-1)  #Initilize cluster centers
+        k=KMeans(n_clusters=self.wrnum, random_state=0)  #Initilize cluster centers
 
         #Calculate sum of squared distances for clusters 1-15
         kind = np.arange(1,self.numi,1)
@@ -126,7 +126,6 @@ class WeatherRegimeCalculation():
         #reconstruction. If NUMPCS=nt, then a1=a0
         eofs=np.reshape(eof,(self.NUMPCS,eofshape[eosize-2]*eofshape[eosize-1]))
         a1=np.matmul(pc,eofs)
-        #a1 = np.reshape(a1,reshape_arr)
 
         return a1
 
@@ -135,7 +134,7 @@ class WeatherRegimeCalculation():
 
         arrdims = len(arr_shape)
 
-        k=KMeans(n_clusters=self.wrnum, random_state=0, n_jobs=-1)
+        k=KMeans(n_clusters=self.wrnum, random_state=0)
 
         #fit the K-means algorithm to the data
         f=k.fit(a1)
