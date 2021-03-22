@@ -28,7 +28,8 @@ docker ps -a
 
 # commands to run inside METviewer container
 cmd="mysql -hmysql_mv -uroot -pmvuser -e\"create database mv_metplus_test;\";"
-cmd+=" mysql -hmysql_mv -uroot -pmvuser mv_metplus_test < /METviewer/sql/mv_mysql.sql"
+cmd+="mysql -hmysql_mv -uroot -pmvuser mv_metplus_test < /METviewer/sql/mv_mysql.sql"
+cmd+=";mysql -hmysql_mv -uroot -pmvuser -e\"show databases;\"
 
 # sleep for a few seconds to ensure database has fully started
 sleep 20
@@ -40,5 +41,3 @@ ps xa | grep mysqld
 echo Executing commands inside metviewer_1 container to create database
 echo docker exec metviewer_1 /bin/bash -c "$cmd"
 docker exec metviewer_1 /bin/bash -c "$cmd"
-
-ls /var/run/mysqld

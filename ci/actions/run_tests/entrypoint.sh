@@ -51,7 +51,7 @@ fi
 
 # install Pillow library needed for diff testing
 # this will be replaced with better image diffing package used by METplotpy
-pip_command="pip3 install Pillow; ls /var/run/mysqld"
+pip_command="pip3 install Pillow; mysql -hmysql_mv -uroot -pmvuser -e\"show databases;\""
 
 # build command to run
 command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
@@ -95,9 +95,6 @@ docker ps -a
 echo docker port mysql_mv
 docker port mysql_mv
 
-echo ls /var/run/mysqld
-ls /var/run/mysqld
-
 echo "Run Docker container: $DOCKERHUBTAG"
-echo docker run -e GITHUB_WORKSPACE -v /var/run/mysqld:/var/run/mysqld -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
-docker run -e GITHUB_WORKSPACE -v /var/run/mysqld:/var/run/mysqld -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
+echo docker run -e GITHUB_WORKSPACE -v $RUNNER_WORKSPACE/mysql:/var/lib/mysql -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
+docker run -e GITHUB_WORKSPACE -v $RUNNER_WORKSPACE/mysql:/var/lib/mysql -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
