@@ -21,9 +21,8 @@ import cartopy.feature as cfeat
 import matplotlib.pyplot as plt
 import matplotlib.ticker as mticker
 import matplotlib.gridspec as gridspec
-import sys
 
-import multiprocessing
+import sys, datetime, multiprocessing
 
 # Stuff for making the colorbar height not extend past the plot box
 from mpl_toolkits.axes_grid1 import make_axes_locatable
@@ -48,7 +47,14 @@ GDF_OBS_STRING = 'BEST'
 GDF_DESC_STRING = 'GDF'
 GDF_EARLY_STRING = 'GDF_EARLY'
 GDF_LATE_STRING = 'GDF_LATE'
-GDF_NUM_YEARS = 4 # --> use this to normalize the GDF?
+GDF_NORM_YEARS = 4.0 # --> use this to normalize the GDF?
+
+# Compute the total number of model forecasts that could have forecasted a hypothetical genesis event
+# within the user defined lead window
+lead_step = 6 # how many hours between valid forecasts?
+shortest_lead = 24 # what is the shortest forecast lead requested by user?
+longest_lead = 120 # what is the longest forecast lead requested by user?
+num_forecasts = float(len([shortest_lead + x for x in range(0,longest_lead,lead_step) if shortest_lead+x <= longest_lead]))
 
 # Local variables
 DEBUG = True
@@ -111,7 +117,7 @@ otrk_lon = tcgendata1d[obstrackvarname].where(tcgendata1d[obstrackvarname]>0.0,d
 
 # Function to take gridded counts of data and create a density plot given a lat/lon region defined by GDF_LAT/LON_HALF_DELTA around these counts.
 # Input are the individual lats/lons of each location where there are any events, as well as the actual gridded variable of counts
-def as_density(elats,elons,grid_var):
+def as_density(elats,elons,grid_var,fcst):
 
   # Create a DataArray that looks like the input grid_var
   dens_var = xr.zeros_like(grid_var,dtype='float32')
@@ -137,33 +143,26 @@ def as_density(elats,elons,grid_var):
     llcnt += 1
 
   # Return the dens_var
-  return(dens_var)
+  if fcst:
+    return(dens_var/(GDF_NORM_YEARS*num_forecasts))
+  else:
+    return(dens_var/(GDF_NORM_YEARS))
 
 # Create some lists of function arguments to as_density() to run in parallel
 varlist = [fcstgenvarname,fcsthitvarname,fcstfalmvarname,fcsttrackvarname,obsgenvarname,obsmissvarname,obstrackvarname,fcstlatehitvarname,fcstearlyhitvarname]
 varlats = [fcst_lat,fcst_lat,fcst_lat,ftrk_lat,obs_lat,obs_lat,otrk_lat,late_lat,earl_lat]
 varlons = [fcst_lon,fcst_lon,fcst_lon,ftrk_lon,obs_lon,obs_lon,otrk_lon,late_lon,earl_lon]
+fcstobs = [True,True,True,True,False,True,False,True,True]
 denvars = ['FCST_DENS','FYOY_DENS','FYON_DENS','FTRK_DENS','OBS_DENS','FNOY_DENS','OTRK_DENS','LHIT_DENS','EHIT_DENS']
 
 # Use multiprocessing to run in parallel
 # Results is a list of DataArray objects
 mp = multiprocessing.Pool(multiprocessing.cpu_count()-2)
-results = mp.starmap(as_density,[(x,y,tcgendata[z]) for x,y,z in tuple(zip(varlats,varlons,varlist))])
+results = mp.starmap(as_density,[(x,y,tcgendata[z],f) for x,y,z,f  in tuple(zip(varlats,varlons,varlist,fcstobs))])
 
 # Unpack the results
 for r,n in tuple(zip(results,denvars)):
   tcgendata[n] = r
-
-# Forecast densities
-#tcgendata['FCST_DENS'] = as_density(fcst_lat,fcst_lon,tcgendata[fcstgenvarname])
-#tcgendata['FYOY_DENS'] = as_density(fcst_lat,fcst_lon,tcgendata[fcsthitvarname])
-#tcgendata['FYON_DENS'] = as_density(fcst_lat,fcst_lon,tcgendata[fcstfalmvarname])
-#tcgendata['FTRK_DENS'] = as_density(ftrk_lat,ftrk_lon,tcgendata[fcsttrackvarname])
-
-# Observation densities
-#tcgendata['OBS_DENS'] = as_density(obs_lat,obs_lon,tcgendata[obsgenvarname])
-#tcgendata['FNOY_DENS'] = as_density(obs_lat,obs_lon,tcgendata[obsmissvarname])
-#tcgendata['OTRK_DENS'] = as_density(otrk_lat,otrk_lon,tcgendata[obstrackvarname])
 
 if DEBUG:
   print("\nOBS_DENS")
@@ -200,7 +199,7 @@ if DEBUG:
 # 2. Total MODEL (forecast) genesis density
 # 3. Difference 2-1
 gdf_varlist = ['OBS_DENS','FCST_DENS']
-tc_s2s_panel.plot_gdf(tcgendata[gdf_varlist]/GDF_NUM_YEARS)
+tc_s2s_panel.plot_gdf(tcgendata[gdf_varlist])
 
 # Call plotting for TDF. tc_s2s_panel.plot_tdf() requires just the Xarray Dataset object
 # Panel order for TDF is:
@@ -208,7 +207,7 @@ tc_s2s_panel.plot_gdf(tcgendata[gdf_varlist]/GDF_NUM_YEARS)
 # 2. Total FCST (hour 24-120) track points
 # 3. FCST-BEST
 tdf_varlist = ['FTRK_DENS','OTRK_DENS']
-tc_s2s_panel.plot_tdf(tcgendata[tdf_varlist]/GDF_NUM_YEARS)
+tc_s2s_panel.plot_tdf(tcgendata[tdf_varlist])
 
 # Call plotting for GDF category. tc_s2s_panel.plot_gdf_cat() requires just the Xarray Dataset object
 # Panel order for GDF category is:
@@ -217,7 +216,7 @@ tc_s2s_panel.plot_tdf(tcgendata[tdf_varlist]/GDF_NUM_YEARS)
 # 3. Total LATE HITS density
 # 4. Total FALSE_ALARMS density
 gdf_cat_varlist = ['FYOY_DENS','EHIT_DENS','LHIT_DENS','FYON_DENS']
-tc_s2s_panel.plot_gdf_cat(tcgendata[gdf_cat_varlist]/GDF_NUM_YEARS)
+tc_s2s_panel.plot_gdf_cat(tcgendata[gdf_cat_varlist])
 
 # Call plotting for GDF UFS. tc_s2s_panel.plot_gdf_ufs() requires just the Xarray Dataset object
 # Panel order for GDF UFS is:
@@ -226,4 +225,4 @@ tc_s2s_panel.plot_gdf_cat(tcgendata[gdf_cat_varlist]/GDF_NUM_YEARS)
 # 3. Total FALSE_ALARMS density (scatter is FCST genesis locations, but only false?)
 # 4. Total HITS+FALSE_ALARMS density (scatter is FCST genesis locations, but only hits+false?)
 gdf_ufs_varlist = ['OBS_DENS','FYOY_DENS','FYON_DENS']
-tc_s2s_panel.plot_gdf_ufs(tcgendata[gdf_ufs_varlist]/GDF_NUM_YEARS)
+tc_s2s_panel.plot_gdf_ufs(tcgendata[gdf_ufs_varlist])
