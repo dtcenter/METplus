@@ -40,3 +40,5 @@ ps xa | grep mysqld
 echo Executing commands inside metviewer_1 container to create database
 echo docker exec metviewer_1 /bin/bash -c "$cmd"
 docker exec metviewer_1 /bin/bash -c "$cmd"
+
+ls /var/run/mysqld
