@@ -1,39 +1,7 @@
 #!/usr/bin/env python
 
-# Four panel
-# 1. BEST/OBS DENSITY
-# 2. HITS DENSITY (FYOY)
-# 3. FALSE DENSITY (FYON)
-# 4. HIT + FALSE DENSITY (FYOY+FYON)
-#
-# Bonus adornments:
-# 1. Event locations as dots
-# 2. Lat/lon grid lines
-# Contour levels
-# lat/lon window view
-
 import xarray as xr
-import pandas as pd
-import numpy as np
-import cartopy.crs as ccrs
-import cartopy.feature as cfeat
-
-import matplotlib.pyplot as plt
-import matplotlib.ticker as mticker
-import matplotlib.gridspec as gridspec
-
 import sys, datetime, multiprocessing
-
-# Stuff for making the colorbar height not extend past the plot box
-from mpl_toolkits.axes_grid1 import make_axes_locatable
-
-# For lat/lon grid lines
-from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
-from cartopy.mpl.ticker import LongitudeFormatter, LatitudeFormatter
-
-# For drawing polylines
-import matplotlib.patches as patches
-from matplotlib.path import Path
 
 # Import METplotpy
 from metplotpy.contributed.tc_s2s_panel import plot_tc_s2s_panel as tc_s2s_panel
