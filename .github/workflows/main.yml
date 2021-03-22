@@ -177,6 +177,8 @@ jobs:
           echo run_this_case=$run_this_case >> $GITHUB_ENV
           echo Ends with NEW: ${{ endsWith(matrix.categories, ':NEW') }}
           echo Run all: ${{ env.run_all_use_cases }}
+      - name: Shutdown Ubuntu MYSQL
+        run: sudo service mysql stop
       - uses: actions/checkout@v2
         if: ${{ env.run_this_case == 'true' }}
       - uses: ./ci/actions/run_tests
