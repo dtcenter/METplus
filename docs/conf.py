@@ -117,7 +117,7 @@ latex_documents = [
     (master_doc, 
      'users_guide.tex', 
      'METplus User\'s Guide',
-     'George McCabe, et al.', 
+     ' ', 
      'manual')
 ]
     
