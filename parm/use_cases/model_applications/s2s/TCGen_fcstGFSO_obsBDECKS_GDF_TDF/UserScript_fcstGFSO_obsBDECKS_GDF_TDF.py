@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import xarray as xr
-import sys, datetime, multiprocessing
+import os, datetime, multiprocessing
 
 # Import METplotpy
 from metplotpy.contributed.tc_s2s_panel import plot_tc_s2s_panel as tc_s2s_panel
@@ -19,9 +19,9 @@ GDF_NORM_YEARS = 4.0 # --> use this to normalize the GDF?
 
 # Compute the total number of model forecasts that could have forecasted a hypothetical genesis event
 # within the user defined lead window
-lead_step = 6 # how many hours between valid forecasts?
-shortest_lead = 24 # what is the shortest forecast lead requested by user?
-longest_lead = 120 # what is the longest forecast lead requested by user?
+lead_step = int(str(os.environ.get('TCGEN_INIT_FREQ')))
+shortest_lead = int(str(os.environ.get('TCGEN_MIN_LEAD')))
+longest_lead = int(str(os.environ.get('TCGEN_MAX_LEAD')))
 num_forecasts = float(len([shortest_lead + x for x in range(0,longest_lead,lead_step) if shortest_lead+x <= longest_lead]))
 
 # Local variables
