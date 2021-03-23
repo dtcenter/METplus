@@ -17,10 +17,13 @@ mkdir -p $MYSQL_DIR
 apk add docker-compose
 
 # download docker-compose.yml file from METviewer develop branch
-#wget https://raw.githubusercontent.com/dtcenter/METviewer/develop/docker/docker-compose.yml
-wget https://raw.githubusercontent.com/dtcenter/METviewer/main_v3.1/docker/docker-compose.yml
+wget https://raw.githubusercontent.com/dtcenter/METviewer/develop/docker/docker-compose.yml
+#wget https://raw.githubusercontent.com/dtcenter/METviewer/main_v3.1/docker/docker-compose.yml
 # Run docker-compose to create the containers
-docker-compose up -d
+docker-compose up -d --verbose
+
+# sleep for a few seconds to ensure database has fully started
+sleep 20
 
 # print list of currently running containers to
 # verify mysql and metviewer are running
@@ -30,9 +33,6 @@ docker ps -a
 cmd="mysql -hmysql_mv -uroot -pmvuser -e\"create database mv_metplus_test;\";"
 cmd+="mysql -hmysql_mv -uroot -pmvuser mv_metplus_test < /METviewer/sql/mv_mysql.sql"
 cmd+=";mysql -hmysql_mv -uroot -pmvuser -e\"show databases;\""
-
-# sleep for a few seconds to ensure database has fully started
-sleep 20
 
 # execute commands inside metviewer container to create database
 echo Executing commands inside metviewer_1 container to create database
