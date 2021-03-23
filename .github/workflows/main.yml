@@ -185,6 +185,9 @@ jobs:
           mkdir -p output/metviewer
           chmod a+w output/mysql
           chmod a+w output/metviewer
+          chmod a+x output/mysql
+          chmod a+x output/metviewer
+          ls -lh output/mysql
       - uses: actions/checkout@v2
         if: ${{ env.run_this_case == 'true' }}
       - uses: ./ci/actions/run_tests
