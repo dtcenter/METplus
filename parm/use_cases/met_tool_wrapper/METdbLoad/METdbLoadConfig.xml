@@ -19,8 +19,8 @@
 
   <folder_tmpl>{dirs}</folder_tmpl>
   <load_val>
-    <field_name="dirs">
+    <field name="dirs">
       ${METPLUS_INPUT_PATHS}
-    </field_name>
+    </field>
   </load_val>
 </load_spec>
