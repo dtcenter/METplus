@@ -1,24 +1,16 @@
 #! /bin/bash
 
-basedir=$(dirname "$0")
-work_dir=$basedir/../..
-
 # set environment variables needed by METviewer docker-compose.yml
 export METVIEWER_DATA=$RUNNER_WORKSPACE
 export MYSQL_DIR=$RUNNER_WORKSPACE/mysql
 export METVIEWER_DIR=$RUNNER_WORKSPACE/output/metviewer
 export METVIEWER_DOCKER_IMAGE=dtcenter/metviewer
 
-# create directories for METviewer and database output
-#mkdir -p $METVIEWER_DIR
-#mkdir -p $MYSQL_DIR
-
 # install docker-compose
 apk add docker-compose
 
 # download docker-compose.yml file from METviewer develop branch
 wget https://raw.githubusercontent.com/dtcenter/METviewer/develop/docker/docker-compose.yml
-#wget https://raw.githubusercontent.com/dtcenter/METviewer/main_v3.1/docker/docker-compose.yml
 
 # Run docker-compose to create the containers
 docker-compose up -d
