@@ -5,8 +5,8 @@ work_dir=$basedir/../..
 
 # set environment variables needed by METviewer docker-compose.yml
 export METVIEWER_DATA=$RUNNER_WORKSPACE
-export MYSQL_DIR=$RUNNER_WORKSPACE/mysql
-export METVIEWER_DIR=$RUNNER_WORKSPACE/metviewer
+export MYSQL_DIR=$RUNNER_WORKSPACE/output/mysql
+export METVIEWER_DIR=$RUNNER_WORKSPACE/output/metviewer
 export METVIEWER_DOCKER_IMAGE=dtcenter/metviewer
 
 # create directories for METviewer and database output
@@ -33,9 +33,6 @@ cmd+=";mysql -hmysql_mv -uroot -pmvuser -e\"show databases;\""
 
 # sleep for a few seconds to ensure database has fully started
 sleep 20
-
-echo Check if mysqld is running
-ps xa | grep mysqld
 
 # execute commands inside metviewer container to create database
 echo Executing commands inside metviewer_1 container to create database
