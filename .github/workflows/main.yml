@@ -203,8 +203,9 @@ jobs:
         run: |
           artifact_name=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh ${{matrix.categories}}`
           mkdir -p artifact/${artifact_name}
-          ls -lh ${GITHUB_WORKSPACE}/../output/mysql/
           cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${artifact_name}/
+          ls -lh $RUNNER_WORKSPACE/output/metviewer
+          cp -r $RUNNER_WORKSPACE/output/metviewer artifact/${artifact_name}/
           echo ::set-output name=artifact_name::${artifact_name}
           if [ "$( ls -A ${GITHUB_WORKSPACE}/../diff)" ]; then
             mkdir -p artifact/diff-${artifact_name}
