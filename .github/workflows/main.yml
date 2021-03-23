@@ -187,7 +187,7 @@ jobs:
           chmod a+w output/metviewer
           chmod a+x output/mysql
           chmod a+x output/metviewer
-          ls -lh output/mysql
+          ls -lh output
       - uses: actions/checkout@v2
         if: ${{ env.run_this_case == 'true' }}
       - uses: ./ci/actions/run_tests
