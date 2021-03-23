@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<plot_spec>
+    <connection>
+        <host>mysql_mv</host>
+        <database>mv_metplus_test</database>
+        <user>******</user>
+        <password>******</password>
+        <management_system>mariadb</management_system>
+    </connection>
+    <folders>
+        <r_tmpl>/opt/tomcat/webapps/metviewer//R_tmpl</r_tmpl>
+        <r_work>/opt/tomcat/webapps/metviewer//R_work</r_work>
+        <plots>/opt/tomcat/webapps/metviewer_output//plots</plots>
+        <data>/opt/tomcat/webapps/metviewer_output//data</data>
+        <scripts>/opt/tomcat/webapps/metviewer_output//scripts</scripts>
+    </folders>
+    <plot>
+        <template>series_plot.R_tmpl</template>
+        <dep>
+            <dep1>
+                <fcst_var name="TMP">
+                    <stat>FMEAN</stat>
+                </fcst_var>
+                <fcst_var name="RH">
+                    <stat>FMEAN</stat>
+                </fcst_var>
+            </dep1>
+            <dep2/>
+        </dep>
+        <series1>
+            <field name="model">
+                <val>WRF</val>
+            </field>
+        </series1>
+        <series2/>
+        <plot_fix>
+            <field equalize="false" name="model">
+                <set name="model_0">
+                    <val>WRF</val>
+                </set>
+            </field>
+        </plot_fix>
+        <plot_cond/>
+        <indep equalize="false" name="fcst_thresh">
+            <val label="NA" plot_val="">NA</val>
+            <val label="&gt;=80" plot_val="">&gt;=80</val>
+            <val label="&lt;=273" plot_val="">&lt;=273</val>
+            <val label="&gt;273" plot_val="">&gt;273</val>
+            <val label="&lt;300" plot_val="">&lt;300</val>
+            <val label="&gt;=300" plot_val="">&gt;=300</val>
+        </indep>
+        <plot_stat>median</plot_stat>
+        <tmpl>
+            <data_file>plot_20210323_231725.data</data_file>
+            <plot_file>plot_20210323_231725.png</plot_file>
+            <r_file>plot_20210323_231725.R</r_file>
+            <title>test title</title>
+            <x_label>test x_label</x_label>
+            <y1_label>test y_label</y1_label>
+            <y2_label/>
+            <caption/>
+            <job_title/>
+            <keep_revisions>false</keep_revisions>
+            <listdiffseries1>list()</listdiffseries1>
+            <listdiffseries2>list()</listdiffseries2>
+        </tmpl>
+        <execution_type>Rscript</execution_type>
+        <event_equal>false</event_equal>
+        <vert_plot>false</vert_plot>
+        <x_reverse>false</x_reverse>
+        <num_stats>false</num_stats>
+        <indy1_stag>false</indy1_stag>
+        <indy2_stag>false</indy2_stag>
+        <grid_on>true</grid_on>
+        <sync_axes>false</sync_axes>
+        <dump_points1>false</dump_points1>
+        <dump_points2>false</dump_points2>
+        <log_y1>false</log_y1>
+        <log_y2>false</log_y2>
+        <varianceinflationfactor>true</varianceinflationfactor>
+        <plot_type>png16m</plot_type>
+        <plot_height>8.5</plot_height>
+        <plot_width>11</plot_width>
+        <plot_res>72</plot_res>
+        <plot_units>in</plot_units>
+        <mar>c(8,4,5,4)</mar>
+        <mgp>c(1,1,0)</mgp>
+        <cex>1</cex>
+        <title_weight>2</title_weight>
+        <title_size>1.4</title_size>
+        <title_offset>-2</title_offset>
+        <title_align>0.5</title_align>
+        <xtlab_orient>1</xtlab_orient>
+        <xtlab_perp>-0.75</xtlab_perp>
+        <xtlab_horiz>0.5</xtlab_horiz>
+        <xtlab_freq>0</xtlab_freq>
+        <xtlab_size>1</xtlab_size>
+        <xlab_weight>1</xlab_weight>
+        <xlab_size>1</xlab_size>
+        <xlab_offset>2</xlab_offset>
+        <xlab_align>0.5</xlab_align>
+        <ytlab_orient>1</ytlab_orient>
+        <ytlab_perp>0.5</ytlab_perp>
+        <ytlab_horiz>0.5</ytlab_horiz>
+        <ytlab_size>1</ytlab_size>
+        <ylab_weight>1</ylab_weight>
+        <ylab_size>1</ylab_size>
+        <ylab_offset>-2</ylab_offset>
+        <ylab_align>0.5</ylab_align>
+        <grid_lty>3</grid_lty>
+        <grid_col>#cccccc</grid_col>
+        <grid_lwd>1</grid_lwd>
+        <grid_x>listX</grid_x>
+        <x2tlab_orient>1</x2tlab_orient>
+        <x2tlab_perp>1</x2tlab_perp>
+        <x2tlab_horiz>0.5</x2tlab_horiz>
+        <x2tlab_size>0.8</x2tlab_size>
+        <x2lab_size>0.8</x2lab_size>
+        <x2lab_offset>-0.5</x2lab_offset>
+        <x2lab_align>0.5</x2lab_align>
+        <y2tlab_orient>1</y2tlab_orient>
+        <y2tlab_perp>0.5</y2tlab_perp>
+        <y2tlab_horiz>0.5</y2tlab_horiz>
+        <y2tlab_size>1</y2tlab_size>
+        <y2lab_size>1</y2lab_size>
+        <y2lab_offset>1</y2lab_offset>
+        <y2lab_align>0.5</y2lab_align>
+        <legend_box>o</legend_box>
+        <legend_inset>c(0, -.25)</legend_inset>
+        <legend_ncol>3</legend_ncol>
+        <legend_size>0.8</legend_size>
+        <caption_weight>1</caption_weight>
+        <caption_col>#333333</caption_col>
+        <caption_size>0.8</caption_size>
+        <caption_offset>3</caption_offset>
+        <caption_align>0</caption_align>
+        <ci_alpha>0.05</ci_alpha>
+        <plot_ci>c("none","none")</plot_ci>
+        <show_signif>c(FALSE,FALSE)</show_signif>
+        <plot_disp>c(TRUE,TRUE)</plot_disp>
+        <colors>c("#ff0000FF","#00aaffFF")</colors>
+        <pch>c(20,20)</pch>
+        <type>c("b","b")</type>
+        <lty>c(1,1)</lty>
+        <lwd>c(1,1)</lwd>
+        <con_series>c(1,1)</con_series>
+        <order_series>c(1,2)</order_series>
+        <plot_cmd/>
+        <legend>c("","")</legend>
+        <y1_lim>c()</y1_lim>
+        <x1_lim>c()</x1_lim>
+        <y1_bufr>0.04</y1_bufr>
+        <y2_lim>c()</y2_lim>
+    </plot>
+</plot_spec> 
