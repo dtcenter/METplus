@@ -181,13 +181,14 @@ jobs:
         run: sudo service mysql stop
       - name: Create directories for database
         run: |
-          mkdir -p output/mysql
-          mkdir -p output/metviewer
-          chmod a+w output/mysql
-          chmod a+w output/metviewer
-          chmod a+x output/mysql
-          chmod a+x output/metviewer
-          ls -lh output
+          mkdir -p $RUNNER_WORKSPACE/output/mysql
+          mkdir -p $RUNNER_WORKSPACE/output/metviewer
+          chmod a+w $RUNNER_WORKSPACE/output/mysql
+          chmod a+w $RUNNER_WORKSPACE/output/metviewer
+          chmod a+x $RUNNER_WORKSPACE/output/mysql
+          chmod a+x $RUNNER_WORKSPACE/output/metviewer
+          ls -lh $RUNNER_WORKSPACE/output
+          pwd
       - uses: actions/checkout@v2
         if: ${{ env.run_this_case == 'true' }}
       - uses: ./ci/actions/run_tests
