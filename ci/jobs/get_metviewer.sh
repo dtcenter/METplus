@@ -20,7 +20,7 @@ apk add docker-compose
 wget https://raw.githubusercontent.com/dtcenter/METviewer/develop/docker/docker-compose.yml
 #wget https://raw.githubusercontent.com/dtcenter/METviewer/main_v3.1/docker/docker-compose.yml
 # Run docker-compose to create the containers
-docker-compose up -d --verbose
+docker-compose up -d
 
 # sleep for a few seconds to ensure database has fully started
 sleep 20
