@@ -9,24 +9,30 @@ Config Best Practices
 ---------------------
 
 1. Set your log level to an appropriate level:
-   
+
    a. Debug is the most verbose and is useful when you are troubleshooting
       problems
+
    b. Info is the default level
+
    c. Warning only logs warnings, error, or critical events
+
    d. Error only logs errors or critical events
+
    e. Critical is the least verbose and is rarely used
 
 2. Log output will be written to a log file as well as shown on the screen.
    Reviewing the log files to verify that all your processes ran cleanly is
    recommended, as they contain more information that what is output in the
    terminal, such as log output from the MET tools.
+
 3. The order in which you list your METplus wrapper config files matters.
    Each subsequent config file on the command line will override any values
    defined in an earlier config file. It is recommended to put user-specific
    configurations, like OUTPUT_BASE, in its own configuration file to be
    read in last in case any information configurations are accidentally
    defined in multiple conf files.
+
 4. Check the metplus_final.conf file (found in the top level of OUTPUT_BASE)
    to verify that you have defined things as you expected, as it contains
    all the key-values that you have specified.
