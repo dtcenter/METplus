@@ -12,18 +12,18 @@ export METVIEWER_DOCKER_IMAGE=dtcenter/metviewer
 # create directories for METviewer and database output
 mkdir -p $METVIEWER_DIR
 mkdir -p $MYSQL_DIR
-mkdir -p /var/lib/mysql
-chmod -R +w /var/lib/mysql
-chmod -R +x /var/lib/mysql
+#mkdir -p /var/lib/mysql
+#chmod -R +w /var/lib/mysql
+#chmod -R +x /var/lib/mysql
 
 # install docker-compose
 apk add docker-compose
 
 # download docker-compose.yml file from METviewer develop branch
-wget https://raw.githubusercontent.com/dtcenter/METviewer/develop/docker/docker-compose.yml
-#wget https://raw.githubusercontent.com/dtcenter/METviewer/main_v3.1/docker/docker-compose.yml
+#wget https://raw.githubusercontent.com/dtcenter/METviewer/develop/docker/docker-compose.yml
+wget https://raw.githubusercontent.com/dtcenter/METviewer/main_v3.1/docker/docker-compose.yml
 
-docker-compose up db
+#docker-compose up db
 # Run docker-compose to create the containers
 docker-compose up -d
 
