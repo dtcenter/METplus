@@ -5,7 +5,7 @@ work_dir=$basedir/../..
 
 # set environment variables needed by METviewer docker-compose.yml
 export METVIEWER_DATA=$RUNNER_WORKSPACE
-export MYSQL_DIR=$RUNNER_WORKSPACE/output/mysql
+export MYSQL_DIR=$RUNNER_WORKSPACE/mysql
 export METVIEWER_DIR=$RUNNER_WORKSPACE/output/metviewer
 export METVIEWER_DOCKER_IMAGE=dtcenter/metviewer
 
