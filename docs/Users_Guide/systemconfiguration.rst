@@ -9,13 +9,13 @@ Config Best Practices
 ---------------------
 
 1. Set your log level to an appropriate level:
-
-  a. Debug is the most verbose and is useful when you are troubleshooting
-     problems
-  b. Info is the default level
-  c. Warning only logs warnings, error, or critical events
-  d. Error only logs errors or critical events
-  e. Critical is the least verbose and is rarely used
+   
+   a. Debug is the most verbose and is useful when you are troubleshooting
+      problems
+   b. Info is the default level
+   c. Warning only logs warnings, error, or critical events
+   d. Error only logs errors or critical events
+   e. Critical is the least verbose and is rarely used
 
 2. Log output will be written to a log file as well as shown on the screen.
    Reviewing the log files to verify that all your processes ran cleanly is
@@ -1543,30 +1543,30 @@ Config Quick Start Example
        the path to where you saved it) and under the [dir] section, do the
        following:
 
-           -set INPUT_BASE = /tmp/input
+       - set INPUT_BASE = /tmp/input
 
-           (or to some other directory that exists, as this use case does
-	   not use input data)
+         (or to some other directory that exists, as this use case does
+	  not use input data)
 
-           -set OUTPUT_BASE = /tmp/output
+       - set OUTPUT_BASE = /tmp/output
 
-           (or to some other directory that exists where you wish to
-	   direct your output)
+         (or to some other directory that exists where you wish to
+	 direct your output)
 
-           -set MET_INSTALL_DIR = <path/to/your/MET>
+       - set MET_INSTALL_DIR = <path/to/your/MET>
 
-           where *<path/to/your/MET>* is the full path to your MET
-	   installation:
+         where *<path/to/your/MET>* is the full path to your MET
+	 installation:
 
-            e.g. /d1/projects/MET/met-9.0
+         e.g., /d1/projects/MET/met-9.0
 
 2. Run the use case:
 
    a. On your command line, run::
 
-            run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf -c /path/to/user_system.conf
+      run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf -c /path/to/user_system.conf
 
-            *where /path/to/user_system.conf indicates the location of the user_system.conf file you created earlier.
+      * where /path/to/user_system.conf indicates the location of the user_system.conf file you created earlier.
 
    b. When complete, you should see the following message printed to the
       screen upon successful completion: "INFO: METplus has successfully
@@ -1581,65 +1581,67 @@ Config Quick Start Example
 
 **Track and Intensity Use Case with Sample Data**
 
-  1. Create a directory where you wish to store the sample data. Sample
-     datasets are specific to each use case and are required in order to
-     be able to run the use case.
-  2. Retrieve the sample data from the GitHub repository:
+1. Create a directory where you wish to store the sample data. Sample
+   datasets are specific to each use case and are required in order to
+   be able to run the use case.
 
-    a. In your browser, navigate to
-       https://www.github.com/dtcenter/METplus/releases
-    b. Locate the latest release
-    c. Expand the 'Assets' menu by clicking on the black triangle to the
-       left of the word 'Assets'
-    d. Click on the *sample_data-medium_range-x.y.tgz* link associated
-       with that release, where x.y refers to the release number.
-    e. Save it to the directory you created above, hereafter referred to
-       as INPUT_DATA_DIRECTORY
-    f. cd to your $INPUT_DATA_DIRECTORY and uncompress the tarball:
-       *tar xvfz sample_data-medium_range-x.y.tgz* where x.y is replaced
-       with the current release number.
-    g. when you perform a listing of the sample_data directory, the
-       INPUT_DATA_DIRECTORY/model_applications/medium_range contains the
-       data you will need for this use case
+2. Retrieve the sample data from the GitHub repository:
 
-  3. Set up the configuration file:
+   a. In your browser, navigate to
+      https://www.github.com/dtcenter/METplus/releases
+   b. Locate the latest release
+   c. Expand the 'Assets' menu by clicking on the black triangle to the
+      left of the word 'Assets'
+   d. Click on the *sample_data-medium_range-x.y.tgz* link associated
+      with that release, where x.y refers to the release number.
+   e. Save it to the directory you created above, hereafter referred to
+      as INPUT_DATA_DIRECTORY
+   f. cd to your $INPUT_DATA_DIRECTORY and uncompress the tarball:
+      *tar xvfz sample_data-medium_range-x.y.tgz* where x.y is replaced
+      with the current release number.
+   g. when you perform a listing of the sample_data directory, the
+      INPUT_DATA_DIRECTORY/model_applications/medium_range contains the
+      data you will need for this use case
 
-    a. Your METplus Wrappers install directory will hereafter be referred
-       to as METplus_INSTALL
-    b. Verify that all the *</path/to>* values are replaced with valid paths
-       in the METplus_INSTALL/parm/metplus_config/metplus_data.conf and
-       METplus_INSTALL/parm/metplus_config/metplus_system.conf files
-    c. One configuration file is used in this use case,
-       Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data,
-       and using TCPairs which wraps the MET TC-Pairs tool (to match ADeck
-       and BDeck cyclone tracks to generate matched pairs and error
-       statistics). The TCMPRPlotter is then used (wraps the MET tool
-       plot_tcmpr.R) to generate a mean and median plots for these
-       matched pairs
-    d. In your editor, open the
-       METplus_INSTALL/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
-       file and perform the following:
+3. Set up the configuration file:
+
+   a. Your METplus Wrappers install directory will hereafter be referred
+      to as METplus_INSTALL
+   b. Verify that all the *</path/to>* values are replaced with valid paths
+      in the METplus_INSTALL/parm/metplus_config/metplus_data.conf and
+      METplus_INSTALL/parm/metplus_config/metplus_system.conf files
+   c. One configuration file is used in this use case,
+      Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data,
+      and using TCPairs which wraps the MET TC-Pairs tool (to match ADeck
+      and BDeck cyclone tracks to generate matched pairs and error
+      statistics). The TCMPRPlotter is then used (wraps the MET tool
+      plot_tcmpr.R) to generate a mean and median plots for these
+      matched pairs
+
+   d. In your editor, open the
+      METplus_INSTALL/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
+      file and perform the following:
 
       1. Under the [dir] section, add the following:
 
-        a. OUTPUT_BASE to where you wish to save the output:
-	   e.g. OUTPUT_BASE = path-to-your/output_dir
-        b. INPUT_BASE = INPUT_DATA_DIRECTORY/model_applications
-        c. MET_INSTALL_DIR =
-	   path-to-your/MET-install where path-to-your/MET-install is the
-	   full path where your MET installation resides
-        d. Verify that PROCESS_LIST, under the [conf] header/section is set
-	   to TCPairs, TCMPRPlotter. This instructs METplus Wrappers to run
-	   the TCPairs wrapper first (TC-Pairs) followed by the TCMPR plotter
-	   wrapper (plot_TCMPR.R).
+         a. OUTPUT_BASE to where you wish to save the output:
+	    e.g., OUTPUT_BASE = path-to-your/output_dir
+         b. INPUT_BASE = INPUT_DATA_DIRECTORY/model_applications
+         c. MET_INSTALL_DIR =
+	    path-to-your/MET-install where path-to-your/MET-install is the
+	    full path where your MET installation resides
+         d. Verify that PROCESS_LIST, under the [conf] header/section is set
+	    to TCPairs, TCMPRPlotter. This instructs METplus Wrappers to run
+	    the TCPairs wrapper first (TC-Pairs) followed by the TCMPR plotter
+	    wrapper (plot_TCMPR.R).
 
       2. Save your changes and exit your editor
 
 
-  4. Run the use case:
+4. Run the use case:
 
-    a. Make sure you have set the following environment in your .cshrc
-       (C Shell) or .bashrc (Bash):
+   a. Make sure you have set the following environment in your .cshrc
+      (C Shell) or .bashrc (Bash):
 
       1. csh: setenv RSCRIPTS_BASE $MET_BASE/scripts/Rscripts
       2. bash: export RSCRIPTS_BASE=$MET_BASE/scripts/Rscripts
@@ -1648,7 +1650,7 @@ Config Quick Start Example
 	 up the rest of your environment
       4. On your command line, run::
 
-           run_metplus.py -c parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
+         run_metplus.py -c parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
 
       5. When complete, you will have a log file in the output directory
 	 you specified, and under the tc_pairs directory you will see
@@ -1659,23 +1661,23 @@ Config Quick Start Example
 	 format. You should have the following plots which can be viewed
 	 by any graphics viewers such as 'display' on Linux/Unix hosts:
 
-        a. AMAX_WIND-BMAX_WIND_boxplot.png
+         a. AMAX_WIND-BMAX_WIND_boxplot.png
 
-        b. AMAX_WIND-BMAX_WIND_mean.png
+         b. AMAX_WIND-BMAX_WIND_mean.png
 
-        c. AMAX_WIND-BMAX_WIND_median.png
+         c. AMAX_WIND-BMAX_WIND_median.png
 
-        d. AMSLP-BMSLP_boxplot.png
+         d. AMSLP-BMSLP_boxplot.png
 
-        e. AMSLP-BMSLP_mean.png
+         e. AMSLP-BMSLP_mean.png
 
-        f. AMSLP-BMSLP_median.png
+         f. AMSLP-BMSLP_median.png
 
-        g. TK_ERR_boxplot.png
+         g. TK_ERR_boxplot.png
 
-        h. TK_ERR_mean.png
+         h. TK_ERR_mean.png
 
-        i. TK_ERR_median.png
+         i. TK_ERR_median.png
 
 User Defined Config
 -------------------
