@@ -179,6 +179,12 @@ jobs:
           echo Run all: ${{ env.run_all_use_cases }}
       - name: Shutdown Ubuntu MYSQL
         run: sudo service mysql stop
+      - name: Create directories for database
+        run: |
+          mkdir -p output/mysql
+          mkdir -p output/metviewer
+          chmod a+w output/mysql
+          chmod a+w output/metviewer
       - uses: actions/checkout@v2
         if: ${{ env.run_this_case == 'true' }}
       - uses: ./ci/actions/run_tests
