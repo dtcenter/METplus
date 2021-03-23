@@ -23,7 +23,7 @@ apk add docker-compose
 wget https://raw.githubusercontent.com/dtcenter/METviewer/develop/docker/docker-compose.yml
 #wget https://raw.githubusercontent.com/dtcenter/METviewer/main_v3.1/docker/docker-compose.yml
 
-#docker-compose up db
+docker-compose up db
 # Run docker-compose to create the containers
 docker-compose up -d
 
