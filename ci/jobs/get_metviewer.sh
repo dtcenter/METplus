@@ -12,9 +12,10 @@ export METVIEWER_DOCKER_IMAGE=dtcenter/metviewer
 # create directories for METviewer and database output
 mkdir -p $METVIEWER_DIR
 mkdir -p $MYSQL_DIR
-mkdir -p /var/lib/mysql
-chmod -R a+w /var/lib/mysql
-chmod -R a+x /var/lib/mysql
+chmod a+w $METVIEWER_DIR
+chmod a+w $MYSQL_DIR
+chmod a+x $METVIEWER_DIR
+chmod a+x $MYSQL_DIR
 
 # install docker-compose
 apk add docker-compose
