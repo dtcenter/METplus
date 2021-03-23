@@ -16,7 +16,7 @@ from datetime import datetime
 from ..util import met_util as util
 from ..util import time_util
 from . import RuntimeFreqWrapper
-from ..util import do_string_sub
+from ..util import do_string_sub, getlist
 
 '''!@namespace METDbLoadWrapper
 @brief Parent class for wrappers that run over a grouping of times
@@ -158,22 +158,58 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
         """
         return True
 
-    def replace_values_in_xml(self, time_info):
-        self.c_dict['XML_TMP_FILE'] = None
+    def get_stat_directories(self, input_paths):
+        """! Traverse through files under input path and find all directories
+        that contain .stat or .tcst files.
 
-        xml_template = self.c_dict.get('XML_TEMPLATE')
-        if not xml_template:
-            return False
+        @param input_path top level directory to search
+        @returns list of unique directories that contain stat files
+        """
+        stat_dirs = set()
+        for input_path in getlist(input_paths):
+            self.logger.debug("Finding directories with stat files "
+                              f"under {input_path}")
+            for root, _, files in os.walk(input_path):
+                for filename in files:
+                    if (not filename.endswith('.stat') and
+                            not filename.endswith('.tcst')):
+                        continue
+                    filepath = os.path.join(root, filename)
+                    stat_dir = os.path.dirname(filepath)
+                    stat_dirs.add(stat_dir)
 
-        # set up dictionary of text to substitute in XML file
+        stat_dirs = list(stat_dirs)
+        for stat_dir in stat_dirs:
+            self.logger.info(f"Adding stat file directory: {stat_dir}")
+
+        return stat_dirs
+
+    def format_stat_dirs(self, stat_dirs):
+        """! Format list of stat directories to substitute into XML file.
+        <vaL></val> tags wil be added around each value.
+
+        @param stat_dirs list of directories that contain stat files
+        @returns string of formatted values
+        """
+        formatted_stat_dirs = []
+        for stat_dir in stat_dirs:
+            formatted_stat_dirs.append(f'<val>{stat_dir}</val>')
+
+        output_string = '\n      '.join(formatted_stat_dirs)
+        return output_string
+
+    def populate_sub_dict(self, time_info):
         sub_dict = {}
 
         # substitute values from time dictionary
-        input_path = (
+        input_paths = (
             do_string_sub(self.c_dict['INPUT_TEMPLATE'],
                           **time_info)
         )
-        sub_dict['METPLUS_INPUT_PATH'] = input_path
+        stat_dirs = self.get_stat_directories(input_paths)
+        formatted_stat_dirs = self.format_stat_dirs(stat_dirs)
+        sub_dict['METPLUS_INPUT_PATHS'] = formatted_stat_dirs
+
         for name, type in self.CONFIG_NAMES.items():
             value = str(self.c_dict.get(f'MV_{name}'))
             if type == 'bool':
@@ -183,6 +219,18 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
                                   **time_info)
 
             sub_dict[f'METPLUS_MV_{name}'] = value
+
+        return sub_dict
+
+    def replace_values_in_xml(self, time_info):
+        self.c_dict['XML_TMP_FILE'] = None
+
+        xml_template = self.c_dict.get('XML_TEMPLATE')
+        if not xml_template:
+            return False
+
+        # set up dictionary of text to substitute in XML file
+        sub_dict = self.populate_sub_dict(time_info)
 
         # open XML template file and replace any values encountered
         with open(xml_template, 'r') as file_handle:
