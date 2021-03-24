@@ -113,4 +113,4 @@ met_tool_wrapper/METdbLoad/METdbLoad.conf
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-METdbLoad.png'
 #
-# .. note:: `METdbLoadUseCase <https://dtcenter.github.io/METplus/search.html?q=METdbLoadUseCase&check_keywords=yes&area=default>`_, `DiagnosticsUseCase <https://dtcenter.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
+# .. note:: `METdbLoadUseCase <https://dtcenter.github.io/METplus/search.html?q=METdbLoadUseCase&check_keywords=yes&area=default>`_
