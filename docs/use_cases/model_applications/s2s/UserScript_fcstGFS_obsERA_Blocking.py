@@ -24,6 +24,26 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #  * Observation dataset: ERA Reanlaysis 500 mb height.
 
 ##############################################################################
+# External Dependencies
+# ---------------------
+#
+# You will need to use a version of Python 3.6+ that has the following packages installed::
+#
+# * numpy
+# * netCDF4
+# * datetime
+# * bisect
+# * scipy
+#
+# If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
+#
+# If this is the case, you will need to set the MET_PYTHON_EXE environment variable to the path of the version of Python you want to use. If you want this version of Python to only apply to this use case, set it in the [user_env_vars] section of a METplus configuration file.:
+#
+#    [user_env_vars]
+#    MET_PYTHON_EXE = /path/to/python/with/required/packages/bin/python
+#
+
+##############################################################################
 # METplus Components
 # ------------------
 #
@@ -75,6 +95,32 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.py
 # parm/use_cases/met_tool_wrapper/PCPCombine/PCPCOmbine_derive.py
 # parm/use_cases/met_tool_wrapper/PCPCombine/PCPCOmbine_subtract.py
+
+##############################################################################
+# Python Scripts
+# ----------------
+#
+# This use case uses Python scripts to perform the blocking calculation
+#
+# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py:
+# This script calls the requested steps in the blocking analysis for a forecast, observation, or both.  The possible
+# steps are computing CBLs, plotting CBLs, computing IBLs, plotting IBLs, computing GIBLs, computing blocks, and
+# plotting blocks.
+#
+# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking.py:
+# This script runs the requested steps, containing the code for computing CBLs, computing IBLs, computing GIBLs,
+# and computing blocks.
+#
+# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking_WeatherRegime_util.py:
+# This script contains functions used by both the blocking anwd weather regime analysis, including the code for
+# determining which steps the user wants to run, and finding and reading the input files in the format from the output
+# pre-processing steps
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking_driver.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking_WeatherRegime_util.py
+#
 
 ##############################################################################
 # Running METplus
