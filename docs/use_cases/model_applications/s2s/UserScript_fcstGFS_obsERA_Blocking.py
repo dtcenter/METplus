@@ -61,7 +61,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # for all steps of the Blocking use case including data paths.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.conf
 
 ##############################################################################
 # MET Configuration

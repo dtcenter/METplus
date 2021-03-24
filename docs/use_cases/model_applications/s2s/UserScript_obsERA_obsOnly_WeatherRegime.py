@@ -1,6 +1,6 @@
 """
 WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python code
-============================================================================
+=====================================================================================
 
 model_applications/
 s2s/
@@ -67,7 +67,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # for all steps of the Weather Regime use case including data paths.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.conf
 
 ##############################################################################
 # MET Configuration

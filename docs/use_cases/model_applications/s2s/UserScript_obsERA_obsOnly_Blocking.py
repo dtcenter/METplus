@@ -1,6 +1,6 @@
 """
 Blocking Calculation: RegridDataPlane, PcpCombine, and Blocking python code
-============================================================================
+===========================================================================
 
 model_applications/
 s2s/
@@ -62,7 +62,7 @@ UserScript_obsERA_obsOnly_Blocking.py
 # variables for all steps of the Blocking use case.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.conf
 
 ##############################################################################
 # MET Configuration
