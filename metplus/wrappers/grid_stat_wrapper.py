@@ -39,6 +39,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_NBRHD_WIDTH',
         'METPLUS_NBRHD_COV_THRESH',
         'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_CLIMO_CDF_DICT',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -136,6 +137,8 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.handle_mask(single_value=False,
                          c_dict=c_dict)
+
+        self.handle_climo_cdf_dict()
 
         return c_dict
 

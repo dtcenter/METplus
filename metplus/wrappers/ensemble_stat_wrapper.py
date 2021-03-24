@@ -387,29 +387,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         )
         self.env_var_dict['METPLUS_NBRHD_PROB_DICT'] = nbrhd_prob
 
-    def handle_climo_cdf_dict(self):
-        tmp_dict = {}
-        self.set_met_config_float(tmp_dict,
-                                  'ENSEMBLE_STAT_CLIMO_CDF_BINS',
-                                  'cdf_bins',
-                                  'CLIMO_CDF_BINS')
-        self.set_met_config_bool(tmp_dict,
-                                 'ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS',
-                                 'center_bins',
-                                 'CLIMO_CDF_CENTER_BINS')
-        self.set_met_config_bool(tmp_dict,
-                                 'ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS',
-                                 'write_bins',
-                                 'CLIMO_CDF_WRITE_BINS')
-        climo_cdf = (
-            self.format_met_config_dict(tmp_dict,
-                                        'climo_cdf',
-                                        ['CLIMO_CDF_BINS',
-                                         'CLIMO_CDF_CENTER_BINS',
-                                         'CLIMO_CDF_WRITE_BINS'])
-        )
-        self.env_var_dict['METPLUS_CLIMO_CDF_DICT'] = climo_cdf
-
     def handle_interp_dict(self):
         tmp_dict = {}
         self.set_met_config_string(tmp_dict,
