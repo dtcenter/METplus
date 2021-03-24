@@ -40,7 +40,45 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_NBRHD_COV_THRESH',
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_CLIMO_CDF_DICT',
+        'METPLUS_OUTPUT_FLAG_DICT',
+        'METPLUS_NC_PAIRS_FLAG_DICT',
     ]
+
+    OUTPUT_FLAGS = ['fho',
+                    'ctc',
+                    'cts',
+                    'mctc',
+                    'mcts',
+                    'cnt',
+                    'sl1l2',
+                    'sal1l2',
+                    'vl1l2',
+                    'val1l2',
+                    'vcnt',
+                    'pct',
+                    'pstd',
+                    'pjc',
+                    'prc',
+                    'eclv',
+                    'nbrctc',
+                    'nbrcts',
+                    'nbrcnt',
+                    'grad',
+                    'dmap',
+                    ]
+
+    NC_PAIRS_FLAGS = ['latlon',
+                      'raw',
+                      'diff',
+                      'climo',
+                      'climo_cdp',
+                      'weight',
+                      'nbrhd',
+                      'fourier',
+                      'gradient',
+                      'distance_map',
+                      'apply_mask',
+                    ]
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'grid_stat'
@@ -139,6 +177,9 @@ class GridStatWrapper(CompareGriddedWrapper):
                          c_dict=c_dict)
 
         self.handle_climo_cdf_dict()
+
+        self.handle_flags('output')
+        self.handle_flags('nc_pairs')
 
         return c_dict
 
