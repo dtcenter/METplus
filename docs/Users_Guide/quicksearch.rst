@@ -65,6 +65,7 @@ Use Cases by METplus Feature:
 | `Looping by Month or Year  <https://dtcenter.github.io/METplus/develop/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
 | `List Expansion (using begin_end_incr syntax)  <https://dtcenter.github.io/METplus/develop/search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
 | `Masking for Regions of Interest <https://dtcenter.github.io/METplus/develop/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
+| `METdbLoad <https://dtcenter.github.io/METplus/develop/search.html?q=METdbLoadUseCase&check_keywords=yes&area=default>`_
 | `MET_PYTHON_EXE Environment Variable  <https://dtcenter.github.io/METplus/develop/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
 | `Multiple Conf File Use <https://dtcenter.github.io/METplus/develop/search.html?q=MultiConfUseCase&check_keywords=yes&area=default>`_
 | `Observation Time Summary <https://dtcenter.github.io/METplus/develop/search.html?q=ObsTimeSummaryUseCase&check_keywords=yes&area=default>`_
