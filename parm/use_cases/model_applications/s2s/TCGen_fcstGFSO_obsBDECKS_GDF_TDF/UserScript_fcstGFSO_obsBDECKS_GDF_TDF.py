@@ -16,6 +16,7 @@ Date: 24 March 2021
 
 import xarray as xr
 import os
+import sys
 import datetime
 import multiprocessing
 
@@ -23,15 +24,15 @@ import multiprocessing
 from metplotpy.contributed.tc_s2s_panel import plot_tc_s2s_panel as tc_s2s_panel
 
 # Enviromnment variables for use case
-GDF_INPUT_FILENAME = "/home/dadriaan/projects/s2s/gdf/output801/met_tool_wrapper/TCGen/tc_gen_2016_pairs.nc"
-GDF_LAT_HALF_DELTA = float(str(os.environ.get['GDF_LAT_HALF_DELTA']))
-GDF_LON_HALF_DELTA = float(str(os.environ.get['GDF_LON_HALF_DELTA']))
-GDF_MODEL_STRING = 'GFSO' # use METplus "MODEL"
-GDF_OBS_STRING = 'BEST'
-GDF_DESC_STRING = 'GDF'
-GDF_EARLY_STRING = 'GDF_EARLY'
-GDF_LATE_STRING = 'GDF_LATE'
-GDF_NORM_YEARS = float(str(os.environ.get['GDF_NORM_YEARS']))
+GDF_INPUT_FILENAME = sys.argv[1]
+GDF_LAT_HALF_DELTA = float(str(os.environ.get('GDF_LAT_HALF_DELTA',5.0)))
+GDF_LON_HALF_DELTA = float(str(os.environ.get('GDF_LON_HALF_DELTA',5.0)))
+GDF_MODEL_STRING = str(os.environ.get('GDF_MODEL_STRING','TESTMODEL'))
+GDF_OBS_STRING = str(os.environ.get('GDF_OBS_STRING','TESTOBS'))
+GDF_DESC_STRING = str(os.environ.get('GDF_DESC_STRING','GDF'))
+GDF_EARLY_STRING = str(os.environ.get('GDF_EARLY_STRING','GDF_EARLY'))
+GDF_LATE_STRING = str(os.environ.get('GDF_LATE_STRING','GDF_LATE'))
+GDF_NORM_YEARS = float(str(os.environ.get('GDF_NORM_YEARS',1.0)))
 
 # Compute the total number of model forecasts that could have forecasted a hypothetical genesis event
 # within the user defined lead window
@@ -41,7 +42,7 @@ longest_lead = int(str(os.environ.get('TCGEN_MAX_LEAD')))
 num_forecasts = float(len([shortest_lead + x for x in range(0,longest_lead,lead_step) if shortest_lead+x <= longest_lead]))
 
 # Local variables
-DEBUG = True
+DEBUG = False
 
 # Create some netCDF varname strings to use when referencing the data
 fcstgenvarname = f"{GDF_DESC_STRING}_{GDF_MODEL_STRING}_GENESIS"
@@ -198,7 +199,7 @@ if DEBUG:
 # 2. Total MODEL (forecast) genesis density
 # 3. Difference 2-1
 gdf_varlist = ['OBS_DENS','FCST_DENS']
-tc_s2s_panel.plot_gdf(tcgendata[gdf_varlist])
+tc_s2s_panel.plot_gdf(tcgendata[gdf_varlist],os.environ.get('GDF_PLOT_OUTDIR'))
 
 # Call plotting for TDF. tc_s2s_panel.plot_tdf() requires just the Xarray Dataset object
 # Panel order for TDF is:
@@ -206,7 +207,7 @@ tc_s2s_panel.plot_gdf(tcgendata[gdf_varlist])
 # 2. Total FCST (hour 24-120) track points
 # 3. FCST-BEST
 tdf_varlist = ['FTRK_DENS','OTRK_DENS']
-tc_s2s_panel.plot_tdf(tcgendata[tdf_varlist])
+tc_s2s_panel.plot_tdf(tcgendata[tdf_varlist],os.environ.get('GDF_PLOT_OUTDIR'))
 
 # Call plotting for GDF category. tc_s2s_panel.plot_gdf_cat() requires just the Xarray Dataset object
 # Panel order for GDF category is:
@@ -215,7 +216,7 @@ tc_s2s_panel.plot_tdf(tcgendata[tdf_varlist])
 # 3. Total LATE HITS density
 # 4. Total FALSE_ALARMS density
 gdf_cat_varlist = ['FYOY_DENS','EHIT_DENS','LHIT_DENS','FYON_DENS']
-tc_s2s_panel.plot_gdf_cat(tcgendata[gdf_cat_varlist])
+tc_s2s_panel.plot_gdf_cat(tcgendata[gdf_cat_varlist],os.environ.get('GDF_PLOT_OUTDIR'))
 
 # Call plotting for GDF UFS. tc_s2s_panel.plot_gdf_ufs() requires just the Xarray Dataset object
 # Panel order for GDF UFS is:
@@ -224,4 +225,4 @@ tc_s2s_panel.plot_gdf_cat(tcgendata[gdf_cat_varlist])
 # 3. Total FALSE_ALARMS density (scatter is FCST genesis locations, but only false?)
 # 4. Total HITS+FALSE_ALARMS density (scatter is FCST genesis locations, but only hits+false?)
 gdf_ufs_varlist = ['OBS_DENS','FYOY_DENS','FYON_DENS']
-tc_s2s_panel.plot_gdf_ufs(tcgendata[gdf_ufs_varlist])
+tc_s2s_panel.plot_gdf_ufs(tcgendata[gdf_ufs_varlist],os.environ.get('GDF_PLOT_OUTDIR'))
