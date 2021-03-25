@@ -104,6 +104,9 @@ class CyclonePlotterWrapper(CommandBuilder):
                                'CYCLONE_PLOTTER_RESOLUTION_DPI')
         )
 
+        self.add_watermark = self.config.getbool('config',
+                                                 'CYCLONE_PLOTTER_ADD_WATERMARK',
+                                                 True)
 
 
     def run_all_times(self):
@@ -385,11 +388,12 @@ class CyclonePlotterWrapper(CommandBuilder):
         # This will appear in the bottom right corner of the plot, below
         # the x-axis.  NOTE: The timestamp is in the user's local time zone
         # and not in UTC time.
-        ts = time.time()
-        st = datetime.datetime.fromtimestamp(ts).strftime(
-            '%Y-%m-%d %H:%M:%S')
-        watermark = 'DTC METplus\nplot created at: ' + st
-        plt.text(60, -130, watermark, fontsize=5, alpha=0.25)
+        if self.add_watermark:
+            ts = time.time()
+            st = datetime.datetime.fromtimestamp(ts).strftime(
+                '%Y-%m-%d %H:%M:%S')
+            watermark = 'DTC METplus\nplot created at: ' + st
+            plt.text(60, -130, watermark, fontsize=5, alpha=0.25)
 
         # Make sure the output directory exists, and create it if it doesn't.
         util.mkdir_p(self.output_dir)
