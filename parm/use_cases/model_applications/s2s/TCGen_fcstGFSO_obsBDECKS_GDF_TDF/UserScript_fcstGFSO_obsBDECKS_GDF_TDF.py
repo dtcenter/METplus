@@ -157,7 +157,7 @@ denvars = ['FCST_DENS','FYOY_DENS','FYON_DENS','FTRK_DENS','OBS_DENS','FNOY_DENS
 
 # Use multiprocessing to run in parallel
 # Results is a list of DataArray objects
-mp = multiprocessing.Pool(multiprocessing.cpu_count()-2)
+mp = multiprocessing.Pool(max(multiprocessing.cpu_count()-2, 1))
 results = mp.starmap(as_density,[(x,y,tcgendata[z],f) for x,y,z,f  in tuple(zip(varlats,varlons,varlist,fcstobs))])
 
 # Unpack the results
