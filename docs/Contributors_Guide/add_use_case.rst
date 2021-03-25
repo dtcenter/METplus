@@ -579,6 +579,8 @@ properly, then delete the feature branch from dtcenter/METplus. This will avoid
 confusion if this branch diverges from the branch on the forked repository that
 will be used in the final pull request.
 
+.. _add_use_case_to_test_suite:
+
 Add use case to the test suite
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -599,11 +601,17 @@ definition line to this file and add your new use case under it. Each use case
 in that category will be found on its own line after this line.
 The use cases can be defined using 3 different formats::
 
-    <config_args>
-    <name>::<config_args>
-    <name>::<config_args>::<python_packages>
+    <index>::<config_args>
+    <index>::<name>::<config_args>
+    <index>::<name>::<config_args>::<python_packages>
 
-**<config_args>**
+**<index>**
+
+The index is the number associated with the use case so it can be referenced
+easily. The first index number in a new category should be 0.
+Each use case added should have an index that is one greater than the previous.
+
+**<index>::<config_args>**
 
 This format should only be used if the use case has only 1 configuration file
 and no additional Python package dependencies besides the ones that are
@@ -612,13 +620,13 @@ used for the use case relative to METplus/parm/use_cases. The filename of the
 config file without the .conf extension will be used as the name of the use
 case. Example::
 
-    model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
+    6::model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
 
 The above example will be named
 'PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr' and will run using the
 configuration file listed.
 
-**<name>::<config_args>**
+**<index>::<name>::<config_args>**
 
 This format is required if the use case contains multiple configuration files.
 Instead of forcing the script to guess which conf file should be used as the
@@ -626,12 +634,12 @@ name of the use case, you must explicitly define it. The name of the use case
 must be separated from the <config_args> with '::' and each conf file path or
 conf variable override must be separated by a comma. Example::
 
-    GridStat_multiple_config:: met_tool_wrapper/GridStat/GridStat.conf,met_tool_wrapper/GridStat/GridStat_forecast.conf,met_tool_wrapper/GridStat/GridStat_observation.conf
+    44::GridStat_multiple_config:: met_tool_wrapper/GridStat/GridStat.conf,met_tool_wrapper/GridStat/GridStat_forecast.conf,met_tool_wrapper/GridStat/GridStat_observation.conf
 
 The above example is named 'GridStat_multiple_config' and uses 3 .conf files.
 Use cases with only one configuration file can also use this format is desired.
 
-**<name>::<config_args>::<python_packages>**
+**<index>::<name>::<config_args>::<python_packages>**
 
 This format is used if there are additional Python packages required to run
 the use case. <python_packages> is a list of packages to install before running
@@ -639,7 +647,7 @@ the use case separated by commas.
 
 Example::
 
-    TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics:: model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf,user_env_vars.MET_PYTHON_EXE=python3::pygrib,metpy
+    8::TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics:: model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf,user_env_vars.MET_PYTHON_EXE=python3::pygrib,metpy
 
 The above example is named
 TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.
@@ -685,86 +693,107 @@ example of a script that uses Conda to install a package::
     echo Installing xesmf with conda
     conda install -c conda-forge dask netCDF4 xesmf
 
+.. _add_new_category_to_test_runs:
+
 Add new category to test runs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you are adding a new use case category, you will need to add a new entry
-to the main.yml file found in the .github/workflows directory in the METplus
-repository.
-Find the job in the main.yml file named "use_case_tests" and add the new
-category to the matrix categories list if it is not already there::
+Add a new entry to the main.yml file found in the .github/workflows directory
+in the METplus repository.
+Find the job in the main.yml file named "use_case_tests" and add a new entry
+in the "categories" list with the category of the new use case followed by a
+colon, then the index of the use case from the list described in the
+:ref:`add_use_case_to_test_suite` section, then another colon followed by
+"NEW". For example, if the new use case
+is found in the medium_range category with an index of 9, and the main.yml file
+has the following entries in the categories list::
 
     use_case_tests:
       name: Use Case Tests
       runs-on: ubuntu-latest
+      if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
       needs: [get_image, update_data_volumes]
       strategy:
         fail-fast: false
         matrix:
           categories:
-            - "met_tool_wrapper"
-            - "air_quality_and_comp"
-            - "climate"
-            - "convection_allowing_models:0-5"
-            - "convection_allowing_models:6+"
-            - "cryosphere"
-            - "data_assimilation"
-            - "marine_and_coastal"
-            - "medium_range:0-4"
-            - "medium_range:5"
-            - "medium_range:6+"
-            - "precipitation"
-            - "s2s,space_weather,tc_and_extra_tc"
+            - "met_tool_wrapper:0-53"
+            - "air_quality_and_comp:0"
+            - "climate:0-1"
+            - "convection_allowing_models:0"
+            - "convection_allowing_models:1"
+            - "convection_allowing_models:2-6"
+            - "convection_allowing_models:7"
+            - "convection_allowing_models:8"
+            - "cryosphere:0"
+            - "data_assimilation:0"
+            - "marine_and_coastal:0"
+            - "medium_range:0"
+            - "medium_range:1-2"
+            - "medium_range:3-5"
+            - "medium_range:6"
+            - "medium_range:7-8"
+            - "precipitation:0"
+            - "precipitation:1"
+            - "precipitation:2"
+            - "precipitation:3-8"
+            - "s2s:0"
+            - "space_weather:0-1"
+            - "tc_and_extra_tc:0-2"
 
-Multiple Categories in One Test
-"""""""""""""""""""""""""""""""
+then add the following to the list::
 
-If the use cases run quickly and you want to run multiple categories in one
-job, you can add additional categories to this argument separated by commas or
-ampersands, i.e. category1,category2. Do not include any spaces around the
-commas. Example::
+    - "medium_range:9:NEW"
 
-    "s2s,space_weather,tc_and_extra_tc"
+.. note::
+    Make sure that the indentation matches the other lines and use spaces to
+    indent instead of tabs.
+
+New use cases are added as a separate item to make reviewing the test results
+easier. A new use case will produce new output data that is not found in the
+"truth" data set which is compared the output of the use case runs to check
+if code changes altered the final results. Isolating the new output will make
+it easier to verify that the only differences are caused by the new data.
+It also makes it easier to check the size of the output data and length of time
+the use case takes to run to determine if it can be added to an existing group
+or if it should remain in its own group.
+
 
 .. _subset_category:
 
 Subset Category into Multiple Tests
 """""""""""""""""""""""""""""""""""
 
-If all of the use cases in a given category take a long time to run, you can
-separate them into multiple test jobs. Add a colon (:), then define
+Use cases can be separated into multiple test jobs.
+Add a colon (:), then define
 the cases to run for the job. Use cases are numbered
 starting with 0 and are in order of how they are found in the all_use_cases.txt
 file.
 
 The argument supports a comma-separated list of numbers. Example::
 
-    "data_assimilation:0,2,4"
-    ...
-    "data_assimilation:1,3"
+    - "data_assimilation:0,2,4"
+    - "data_assimilation:1,3"
 
 The above example will run a job with data_assimilation use cases 0, 2, and
 4, then another job with data_assimilation use cases 1 and 3.
 
 It also supports a range of numbers separated with a dash. Example::
 
-    "data_assimilation:0-3"
-    ...
-    "data_assimilation:4+"
+    - "data_assimilation:0-3"
+    - "data_assimilation:4-5"
 
 The above example will run a job with data_assimilation 0, 1, 2, and 3, then
-another job with data_assimilation 4 and higher. If you split up use cases
-into a subset, we recommend that you add a plus sign (+) to the end of the last
-number specified in case additional use cases are added to the category.
+another job with data_assimilation 4 and 5.
 
 You can also use a combination of commas and dashes to define the list of cases
 to run. Example::
 
-    "data_assimilation:0-2,4+"
+    "data_assimilation:0-2,4"
     ...
     "data_assimilation:3"
 
-The above example will run data_assimilation 0, 1, 2, 4, and above in one
+The above example will run data_assimilation 0, 1, 2, and 4 in one
 job, then data_assimilation 3 in another job.
 
 Monitoring Automated Tests
@@ -1009,8 +1038,32 @@ completed successfully.
 If the circle on the left side is yellow, then the run has not completed yet.
 If everything ran smoothly, clean up the files on the web server.
 
+Consider rearranging the use case groups
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If another group of use cases in the same category exists, consider adding the
+new use case to an existing group to speed up execution.
+If a new use case runs quickly (check the time next to the use case group in
+the diagram found on the Summary page of each GitHub Actions run),
+produces a reasonably small sized output data
+artifact (found at the bottom of a completed GitHub Actions run), and the same
+applies to another group of same category, it would make sense to combine them.
+In the .github/workflow/main.yml file, modify the categories list under the
+"use_case_tests" job (see :ref:`add_new_category_to_test_runs`). For example,
+if the following is found in the list::
+
+    - "met_tool_wrapper:0-53"
+
+and the new use case is defined with::
+
+    - "met_tool_wrapper:54"
+
+then combine the two list items into a single item::
+
+    - "met_tool_wrapper:0-54"
+
 Create a pull request from develop into develop-ref
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The addition of a new use case results in new output data. When this happens,
 the reference branch needs to be updated so that future pull requests will

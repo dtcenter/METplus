@@ -90,14 +90,14 @@ def main(args):
 
         # if return code is non-zero, a failure occurred
         if ret.returncode:
-            return f'Command failed: {cmd}'
+            continue
 
         cmd = (f'docker create --name {model_app_name} '
                f'{repo_to_use}:{volume_name}')
         ret = subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL)
 
         if ret.returncode:
-            return f'Command failed: {cmd}'
+            continue
 
         # add name to volumes from list to pass to docker build
         volume_list.append(f'--volumes-from {model_app_name}')

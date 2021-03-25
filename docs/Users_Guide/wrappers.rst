@@ -132,6 +132,7 @@ Configuration
 | :term:`CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE`
 | :term:`CYCLONE_PLOTTER_CROSS_MARKER_SIZE`
 | :term:`CYCLONE_PLOTTER_GENERATE_TRACK_ASCII`
+| :term:`CYCLONE_PLOTTER_ADD_WATERMARK`
 |
 
 .. warning:: **DEPRECATED:**
@@ -362,7 +363,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENS_ENSEMBLE_STAT_DATATYPE`
+   * - :term:`ENS_ENSEMBLE_STAT_INPUT_DATATYPE`
      - ens.file_type
 
 **${METPLUS_ENS_THRESH}**
@@ -1858,7 +1859,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MTD_FCST_INPUT_DATATYPE`
+   * - :term:`FCST_MTD_INPUT_DATATYPE`
      - fcst.file_type
 
 **${METPLUS_FCST_FIELD}**
@@ -1910,7 +1911,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MTD_OBS_INPUT_DATATYPE`
+   * - :term:`OBS_MTD_INPUT_DATATYPE`
      - obs.file_type
 
 **${METPLUS_OBS_FIELD}**
@@ -2225,8 +2226,10 @@ Configuration
 | :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`
 | :term:`FCST_PCP_COMBINE_EXTRA_NAMES` (optional)
 | :term:`FCST_PCP_COMBINE_EXTRA_LEVELS` (optional)
+| :term:`FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES` (optional)
 | :term:`OBS_PCP_COMBINE_EXTRA_NAMES` (optional)
 | :term:`OBS_PCP_COMBINE_EXTRA_LEVELS` (optional)
+| :term:`OBS_PCP_COMBINE_EXTRA_OUTPUT_NAMES` (optional)
 | :term:`FCST_PCP_COMBINE_OUTPUT_ACCUM` (optional)
 | :term:`FCST_PCP_COMBINE_OUTPUT_NAME` (optional)
 | :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM` (optional)
@@ -2822,7 +2825,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`SERIES_ANALYSIS_FCST_FILE_TYPE`
+   * - :term:`FCST_SERIES_ANALYSIS_INPUT_DATATYPE`
      - fcst.file_type
 
 **${METPLUS_FCST_FIELD}**
@@ -2852,7 +2855,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`SERIES_ANALYSIS_OBS_FILE_TYPE`
+   * - :term:`OBS_SERIES_ANALYSIS_INPUT_DATATYPE`
      - obs.file_type
 
 **${METPLUS_OBS_FIELD}**
@@ -3174,7 +3177,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_VALID_BEG`
+   * - :term:`FCST_VALID_HOUR_LIST` and :term:`VALID_BEG`
      - fcst_valid_beg
 
 **${METPLUS_FCST_VALID_END}**
@@ -3185,7 +3188,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_VALID_END`
+   * - :term:`FCST_VALID_HOUR_LIST` and :term:`VALID_END`
      - fcst_valid_end
 
 **${METPLUS_FCST_VALID_HOUR}**
@@ -3207,7 +3210,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_VALID_BEG`
+   * - :term:`OBS_VALID_HOUR_LIST` and :term:`VALID_BEG`
      - obs_valid_beg
 
 **${METPLUS_OBS_VALID_END}**
@@ -3218,7 +3221,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_VALID_END`
+   * - :term:`OBS_VALID_HOUR_LIST` and :term:`VALID_END`
      - obs_valid_end
 
 **${METPLUS_OBS_VALID_HOUR}**
@@ -3240,7 +3243,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_INIT_BEG`
+   * - :term:`FCST_INIT_HOUR_LIST` and :term:`INIT_BEG`
      - fcst_init_beg
 
 **${METPLUS_FCST_INIT_END}**
@@ -3251,7 +3254,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_INIT_END`
+   * - :term:`FCST_INIT_HOUR_LIST` and :term:`INIT_END`
      - fcst_init_end
 
 **${METPLUS_FCST_INIT_HOUR}**
@@ -3273,7 +3276,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_INIT_BEG`
+   * - :term:`OBS_INIT_HOUR_LIST` and :term:`INIT_BEG`
      - obs_init_beg
 
 **${METPLUS_OBS_INIT_END}**
@@ -3284,7 +3287,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_INIT_END`
+   * - :term:`OBS_INIT_HOUR_LIST` and :term:`INIT_END`
      - obs_init_end
 
 **${METPLUS_OBS_INIT_HOUR}**
