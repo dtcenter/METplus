@@ -1,7 +1,9 @@
 #!/usr/bin/env python
 
 import xarray as xr
-import os, datetime, multiprocessing
+import os
+import datetime
+import multiprocessing
 
 # Import METplotpy
 from metplotpy.contributed.tc_s2s_panel import plot_tc_s2s_panel as tc_s2s_panel
