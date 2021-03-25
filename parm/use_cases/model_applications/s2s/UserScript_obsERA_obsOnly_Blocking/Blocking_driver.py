@@ -3,7 +3,6 @@ import sys
 import os
 import numpy as np
 import netCDF4
-import re
 
 from Blocking import BlockingCalculation
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence

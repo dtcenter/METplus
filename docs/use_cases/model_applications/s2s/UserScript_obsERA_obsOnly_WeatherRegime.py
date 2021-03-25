@@ -111,11 +111,11 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime/WeatherRegime_driver.py:
 # This script calls the requested steps in the blocking analysis for a forecast, observation, or both.  The possible
-# steps are computing CBLs, plotting CBLs, computing IBLs, plotting IBLs, computing GIBLs, computing blocks, and
-# plotting blocks.
+# steps are computing the elbow, computing EOFs, and computing weather regimes using k means clustering.
 #
 # parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime/WeatherRegime.py:
-# This script runs the requested steps, containing the code for 
+# This script runs the requested steps, containing the code for computing the bend in the elbow, computing EOFs, and
+# computing weather regimes using k means clustering 
 #
 # parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime/Blocking_WeatherRegime_util.py:
 # This script contains functions used by both the blocking anwd weather regime analysis, including the code for
