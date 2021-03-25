@@ -1,5 +1,19 @@
 #!/usr/bin/env python
 
+"""UserScript to compute density variables for the METplus S2S TDF/GDF use case
+
+This script is used to read in netCDF output from the MET TCGen tool and compute
+various density variables related to the Genesis Density Function (GDF) and
+Track Density Function (TDF) metrics for subseasonal-to-seasonal applications.
+
+Contains the following functions:
+  * as_density()
+
+Author: Daniel R. Adriaansen
+Date: 24 March 2021
+
+"""
+
 import xarray as xr
 import os
 import datetime
@@ -10,14 +24,14 @@ from metplotpy.contributed.tc_s2s_panel import plot_tc_s2s_panel as tc_s2s_panel
 
 # Enviromnment variables for use case
 GDF_INPUT_FILENAME = "/home/dadriaan/projects/s2s/gdf/output801/met_tool_wrapper/TCGen/tc_gen_2016_pairs.nc"
-GDF_LAT_HALF_DELTA = 5.0
-GDF_LON_HALF_DELTA = 5.0
+GDF_LAT_HALF_DELTA = float(str(os.environ.get['GDF_LAT_HALF_DELTA']))
+GDF_LON_HALF_DELTA = float(str(os.environ.get['GDF_LON_HALF_DELTA']))
 GDF_MODEL_STRING = 'GFSO' # use METplus "MODEL"
 GDF_OBS_STRING = 'BEST'
 GDF_DESC_STRING = 'GDF'
 GDF_EARLY_STRING = 'GDF_EARLY'
 GDF_LATE_STRING = 'GDF_LATE'
-GDF_NORM_YEARS = 4.0 # --> use this to normalize the GDF?
+GDF_NORM_YEARS = float(str(os.environ.get['GDF_NORM_YEARS']))
 
 # Compute the total number of model forecasts that could have forecasted a hypothetical genesis event
 # within the user defined lead window
@@ -88,6 +102,21 @@ otrk_lon = tcgendata1d[obstrackvarname].where(tcgendata1d[obstrackvarname]>0.0,d
 # Function to take gridded counts of data and create a density plot given a lat/lon region defined by GDF_LAT/LON_HALF_DELTA around these counts.
 # Input are the individual lats/lons of each location where there are any events, as well as the actual gridded variable of counts
 def as_density(elats,elons,grid_var,fcst):
+
+  """Computes the density of an event based on a gridded count variable and the lat/lon of each event
+ 
+  Parameters
+  ----------
+  elats: list of floating point latitude values of individual events
+  elons: list of floating point longitude values of individual events
+  grid_var: Xarray DataArray containing the count at each event location
+  fcst: a boolean to denote whether the grid_var is a forecast (True) or observation (False) variable
+
+  Returns
+  -------
+  Xarray DataArray object the with the same likeness as grid_var
+  
+  """
 
   # Create a DataArray that looks like the input grid_var
   dens_var = xr.zeros_like(grid_var,dtype='float32')
