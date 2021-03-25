@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import xarray as xr
 import os, datetime, multiprocessing
