@@ -410,7 +410,8 @@ that reformat gridded data
         app_name_upper = self.app_name.upper()
         tmp_dict = {}
         self.set_met_config_float(tmp_dict,
-                                  f'{app_name_upper}_CLIMO_CDF_BINS',
+                                  [f'{app_name_upper}_CLIMO_CDF_BINS',
+                                   f'{app_name_upper}_CLIMO_CDF_CDF_BINS'],
                                   'cdf_bins',
                                   'CLIMO_CDF_BINS')
         self.set_met_config_bool(tmp_dict,
