@@ -4,7 +4,9 @@
 
 - [ ] Recommend testing for the reviewer(s) to perform, including the location of input datasets, and any additional instructions:</br>
 
-- [ ] Do these changes include sufficient documentation and testing updates? **[Yes or No]**
+- [ ] Do these changes include sufficient documentation updates, ensuring that no errors or warnings exist in the build of the documentation? **[Yes or No]**
+
+- [ ] Do these changes include sufficient testing updates? **[Yes or No]**
 
 - [ ] Will this PR result in changes to the test suite? **[Yes or No]**</br>
 If **yes**, describe the new output and/or changes to the existing output:</br>

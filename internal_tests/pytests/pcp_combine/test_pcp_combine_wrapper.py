@@ -658,3 +658,69 @@ def test_pcp_combine_sum_subhourly(metplus_config):
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert(cmd == expected_cmd)
+
+@pytest.mark.parametrize(
+    'output_name,extra_output,expected_result', [
+        (None, None, None),
+        ('out_name1', None, '"out_name1"'),
+        ('out_name1', '"out_name2"', '"out_name1","out_name2"'),
+        ('out_name1', '"out_name2","out_name3"',
+         '"out_name1","out_name2","out_name3"'),
+    ]
+)
+def test_get_output_string(metplus_config, output_name, extra_output,
+                           expected_result):
+    config = metplus_config()
+    wrapper = PCPCombineWrapper(config)
+    wrapper.output_name = output_name
+    wrapper.extra_output = extra_output
+    actual_result = wrapper.get_output_string()
+    assert(actual_result == expected_result)
+
+
+@pytest.mark.parametrize(
+    'names,levels,out_names,expected_input,expected_output', [
+        # none specified
+        ('', '', '',
+         None, None),
+        # 1 input name, no level
+        ('input1', '', '',
+         "-field 'name=\"input1\";'", None),
+        # 1 input name, 1 level
+        ('input1', 'level1', '',
+         "-field 'name=\"input1\"; level=\"level1\";'", None),
+        # 2 input names, no levels
+        ('input1,input2', '', '',
+         "-field 'name=\"input1\";' -field 'name=\"input2\";'", None),
+        # 2 input names, 2 levels
+        ('input1,input2', 'level1,level2', '',
+         ("-field 'name=\"input1\"; level=\"level1\";' "
+          "-field 'name=\"input2\"; level=\"level2\";'"), None),
+        # 2 input names, 1 level
+        ('input1,input2', 'level1', '',
+         ("-field 'name=\"input1\"; level=\"level1\";' "
+          "-field 'name=\"input2\";'"),
+         None),
+        # 1 input name, 1 level, 1 output
+        ('input1', 'level1', 'output1',
+         "-field 'name=\"input1\"; level=\"level1\";'", '"output1"'),
+        # 2 input names, 2 levels, 2 outputs
+        ('input1,input2', 'level1,level2', 'output1,output2',
+         ("-field 'name=\"input1\"; level=\"level1\";' "
+          "-field 'name=\"input2\"; level=\"level2\";'"),
+         '"output1","output2"'),
+    ]
+)
+def test_get_extra_fields(metplus_config, names, levels, out_names,
+                          expected_input, expected_output):
+    config = metplus_config()
+    config.set('config', 'FCST_PCP_COMBINE_RUN', True)
+    config.set('config', 'FCST_PCP_COMBINE_EXTRA_NAMES', names)
+    config.set('config', 'FCST_PCP_COMBINE_EXTRA_LEVELS', levels)
+    config.set('config', 'FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES', out_names)
+
+    wrapper = PCPCombineWrapper(config)
+
+    actual_input, actual_output = wrapper.get_extra_fields('FCST')
+    assert(actual_input == expected_input)
+    assert (actual_output == expected_output)
