@@ -2,6 +2,7 @@
 
 pip3 install matplotlib
 pip3 install scipy
+pip3 install cmocean
 
 basedir=$(dirname "$0")
 work_dir=$basedir/../..
