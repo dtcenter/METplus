@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 """UserScript to compute density variables for the METplus S2S TDF/GDF use case
 
