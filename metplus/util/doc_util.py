@@ -85,7 +85,7 @@ def print_doc_text(tool_name, met_var, dict_items):
             metplus_config_names.append(metplus_config_name)
             met_config_values.append(f"{met_var}.{item_name}")
 
-    print(f"Wrapper: {wrapper_camel}")
+    print(f"\nWrapper: {wrapper_camel}")
     print(f"MET Variable: {met_var}")
     if dict_items:
         print(f"Dictionary Items:")
@@ -99,7 +99,12 @@ def print_doc_text(tool_name, met_var, dict_items):
 
     print(f"\n\nIn docs/Users_Guide/wrappers.rst under {wrapper_camel} => "
           "MET Configuration section, add:\n\n")
-    list_table_text = (".. list-table::\n"
+    var_header = (f"**${{METPLUS_{met_var_caps}"
+                  f"{'_DICT' if dict_items else ''}"
+                  "}**")
+
+    list_table_text = (f"{var_header}\n\n"
+                       ".. list-table::\n"
                        "   :widths: 5 5\n"
                        "   :header-rows: 0\n\n"
                        "   * - METplus Config(s)\n"
