@@ -70,7 +70,6 @@ def print_doc_text(tool_name, met_var, dict_items):
 
     wrapper_camel = get_wrapper_name(wrapper_caps)
 
-
     metplus_var = f'{wrapper_caps}_{met_var_caps}'
 
     metplus_config_names = []
