@@ -123,6 +123,13 @@ def print_doc_text(tool_name, met_var, dict_items):
               "as an example to write a new one.\n\n")
 
     print('\n==================================================\n')
+    print('Add the new variables to the basic use case example for the tool,\n'
+          f'i.e. parm/use_cases/met_tool_wrapper/{wrapper_camel}/'
+          f'{wrapper_camel}.conf:\n\n')
+    for mp_config in metplus_config_names:
+        print(f'#{mp_config} =')
+
+    print('\n\n==================================================\n')
     print(f"In the parm/met_config/{wrapper_camel}Config_wrapped file, "
           "replace:\n\n")
     print(f"{met_var} = ...\n\n with:\n\n//{met_var} ="
