@@ -66,6 +66,7 @@ def print_doc_text(tool_name, met_var, dict_items):
     """
     wrapper_caps = tool_name.upper()
     met_var_caps = met_var.upper()
+    env_var_name = f'METPLUS_{met_var_caps}'
 
     wrapper_camel = get_wrapper_name(wrapper_caps)
 
@@ -78,12 +79,18 @@ def print_doc_text(tool_name, met_var, dict_items):
         metplus_config_names.append(metplus_var)
         met_config_values.append(met_var)
     else:
+        env_var_name = f'{env_var_name}_DICT'
         for item_name in dict_items:
             item_name_caps = item_name.upper()
             metplus_config_name = f'{metplus_var}_{item_name_caps}'
 
             metplus_config_names.append(metplus_config_name)
             met_config_values.append(f"{met_var}.{item_name}")
+
+    print('WARNING: Guidance output from this script may differ slightly '
+          'from the actual steps to take. It is intended to assist the process.'
+          ' The text that is generated should be reviewed for accuracy before '
+          'adding to codebase.')
 
     print(f"\nWrapper: {wrapper_camel}")
     print(f"MET Variable: {met_var}")
@@ -92,16 +99,39 @@ def print_doc_text(tool_name, met_var, dict_items):
         for item in dict_items:
             print(f'  {item}')
 
+    print(f'\n\nIn the {tool_name}_wrapper.py file, in the {wrapper_camel}Wrapper '
+          f'class, add the following to the WRAPPER_ENV_VAR_KEYS class '
+          f"variable list:\n\n\n        '{env_var_name}',\n\n")
+
+    print(f'In the create_c_dict function for {wrapper_camel}Wrapper, add a '
+          'function call to read the new METplus config variables and save '
+          'the value to be added to the wrapped MET config file.\n\n')
+    if not dict_items:
+        print(f"        self.add_met_config(name='{met_var}',\n"
+              "                            data_type='<DATA_TYPE>',\n"
+              f"                            metplus_configs=['{metplus_var}'])"
+              "\n\n"
+              "where <DATA_TYPE> can be string, list, int, float, bool, "
+              "or thresh.\n\n")
+    else:
+        print("Typically a function is written to handle MET config dictionary"
+              " items. Search for functions that start with handle_ in "
+              "CommandBuilder or other parent class wrappers to see if a "
+              "function already exists for the item you are adding or to use "
+              "as an example to write a new one.\n\n")
+
+    print(f"In the parm/met_config/{wrapper_camel}Config_wrapped file, "
+          "replace:\n\n")
+    print(f"{met_var} = ...\n\n with:\n\n//{met_var} =\n${{{env_var_name}}}\n\n")
+
     print(f"\n\nIn docs/Users_Guide/wrappers.rst under {wrapper_camel} => "
-          "METplus Configuration section, add:\n\n")
+         "METplus Configuration section, add:\n\n")
     for metplus_config_name in metplus_config_names:
         print(f'| :term:`{metplus_config_name}`')
 
     print(f"\n\nIn docs/Users_Guide/wrappers.rst under {wrapper_camel} => "
           "MET Configuration section, add:\n\n")
-    var_header = (f"**${{METPLUS_{met_var_caps}"
-                  f"{'_DICT' if dict_items else ''}"
-                  "}**")
+    var_header = (f"**${{{env_var_name}}}**")
 
     list_table_text = (f"{var_header}\n\n"
                        ".. list-table::\n"
