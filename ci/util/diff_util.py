@@ -19,8 +19,11 @@ SKIP_EXTENSIONS = [
     '.zip',
 ]
 
-UNSUPPORTED_EXTENSIONS = [
+PDF_EXTENSIONS = [
     '.pdf',
+]
+
+UNSUPPORTED_EXTENSIONS = [
 ]
 
 def get_file_type(filepath):
@@ -42,6 +45,9 @@ def get_file_type(filepath):
 
     if file_extension in SKIP_EXTENSIONS:
         return 'skip'
+
+    if file_extension in PDF_EXTENSIONS:
+        return 'pdf'
 
     if file_extension in UNSUPPORTED_EXTENSIONS:
         return f'unsupported{file_extension}'
@@ -146,6 +152,14 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None):
         print("No differences in NetCDF files")
         return True
 
+    if file_type == 'pdf':
+        print("Comparing PDF as images")
+        if not compare_pdf_as_images(filepath_a, filepath_b):
+            return (filepath_a, filepath_b, 'PDF diff')
+
+        print("No differences in PDF files")
+        return True
+
     if file_type == 'image':
         print("Comparing images")
         if not compare_image_files(filepath_a, filepath_b):
@@ -169,22 +183,41 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None):
 
     return True
 
-def compare_image_files(filepath_a, filepath_b):
-    diff_count = 0
+def compare_pdf_as_images(filepath_a, filepath_b):
+    try:
+        from pdf2image import convert_from_path
+    except ModuleNotFoundError:
+        print("Cannot compare PDF files without pdf2image Python package")
+        return False
 
+    all_equal = True
+    images_a = convert_from_path(filepath_a)
+    images_b = convert_from_path(filepath_b)
+    for image_a, image_b in zip(images_a, images_b):
+      if not compare_images(image_a, image_b):
+          all_equal = False
+
+    return all_equal
+
+def compare_image_files(filepath_a, filepath_b):
     image_a = Image.open(filepath_a)
     image_b = Image.open(filepath_b)
+    return compare_images(image_a, image_b)
+
+def compare_images(image_a, image_b):
+    diff_count = 0
     image_diff = ImageChops.difference(image_a, image_b)
     nx, ny = image_diff.size
     for x in range(0, int(nx)):
         for y in range(0, int(ny)):
             pixel = image_diff.getpixel((x, y))
-            if pixel != 0 and pixel != (0, 0, 0, 0):
+            if pixel != 0 and pixel != (0, 0, 0, 0) and pixel != (0, 0, 0):
                 diff_count += 1
     if diff_count:
         print(f"ERROR: Found {diff_count} differences between images")
         return False
     return True
+
 
 def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
     with open(filepath_a, 'r') as file_handle:
