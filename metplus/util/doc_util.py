@@ -99,10 +99,12 @@ def print_doc_text(tool_name, met_var, dict_items):
         for item in dict_items:
             print(f'  {item}')
 
+    print('\n==================================================\n')
     print(f'\n\nIn the {tool_name}_wrapper.py file, in the {wrapper_camel}Wrapper '
           f'class, add the following to the WRAPPER_ENV_VAR_KEYS class '
           f"variable list:\n\n\n        '{env_var_name}',\n\n")
 
+    print('\n==================================================\n')
     print(f'In the create_c_dict function for {wrapper_camel}Wrapper, add a '
           'function call to read the new METplus config variables and save '
           'the value to be added to the wrapped MET config file.\n\n')
@@ -110,7 +112,7 @@ def print_doc_text(tool_name, met_var, dict_items):
         print(f"        self.add_met_config(name='{met_var}',\n"
               "                            data_type='<DATA_TYPE>',\n"
               f"                            metplus_configs=['{metplus_var}'])"
-              "\n\n"
+              "\n\n\n"
               "where <DATA_TYPE> can be string, list, int, float, bool, "
               "or thresh.\n\n")
     else:
@@ -120,15 +122,19 @@ def print_doc_text(tool_name, met_var, dict_items):
               "function already exists for the item you are adding or to use "
               "as an example to write a new one.\n\n")
 
+    print('\n==================================================\n')
     print(f"In the parm/met_config/{wrapper_camel}Config_wrapped file, "
           "replace:\n\n")
-    print(f"{met_var} = ...\n\n with:\n\n//{met_var} =\n${{{env_var_name}}}\n\n")
+    print(f"{met_var} = ...\n\n with:\n\n//{met_var} ="
+          f"{' {' if dict_items else ''}\n${{{env_var_name}}}\n\n")
 
+    print('\n==================================================\n')
     print(f"\n\nIn docs/Users_Guide/wrappers.rst under {wrapper_camel} => "
          "METplus Configuration section, add:\n\n")
     for metplus_config_name in metplus_config_names:
         print(f'| :term:`{metplus_config_name}`')
 
+    print('\n==================================================\n')
     print(f"\n\nIn docs/Users_Guide/wrappers.rst under {wrapper_camel} => "
           "MET Configuration section, add:\n\n")
     var_header = (f"**${{{env_var_name}}}**")
@@ -147,6 +153,7 @@ def print_doc_text(tool_name, met_var, dict_items):
                             )
     print(list_table_text)
 
+    print('\n==================================================\n')
     print(f"In docs/Users_Guide/glossary.rst, add:\n\n")
     for metplus_config_name, met_config_name in zip(metplus_config_names, met_config_values):
         glossary_entry = (f"   {metplus_config_name}\n"
