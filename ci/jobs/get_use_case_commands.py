@@ -1,5 +1,9 @@
 #! /usr/bin/env python3
 
+# Script to obtain commands needed to run use case groups including
+# scripts or pip commands to obtain external Python dependencies
+# Run by GitHub Actions (in ci/jobs/run_use_cases.py) to run use case tests
+
 import sys
 import os
 
