@@ -23,6 +23,7 @@ def handle_requirements(requirements, work_dir):
         script_path = os.path.join(work_dir,
                                    'ci',
                                    'jobs',
+                                   'python_requirements',
                                     f'get_{requirement.lower()}.sh')
         print(f"Looking for script: {script_path}")
         if os.path.exists(script_path):

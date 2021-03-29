@@ -2,7 +2,7 @@
 
 script_dir=$(dirname "$0")
 
-python_version=`${script_dir}/print_python_version.py`
+python_version=`${script_dir}/../print_python_version.py`
 
 # these are used to obtain version of MiniConda3
 # the version determines the default version of Python
