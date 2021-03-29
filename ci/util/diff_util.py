@@ -8,6 +8,7 @@ IMAGE_EXTENSIONS = [
     '.png',
     '.jpg',
     '.jpeg',
+    '.pdf',
 ]
 
 NETCDF_EXTENSIONS = [
