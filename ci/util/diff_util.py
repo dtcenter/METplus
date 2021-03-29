@@ -55,7 +55,7 @@ def get_file_type(filepath):
     return 'unknown'
 
 def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
-    # if input are files and not directories, compare them
+    # if input are files and not directories, compare them 
     if os.path.isfile(dir_a):
         result = compare_files(dir_a, dir_b, debug=debug, save_diff=save_diff)
         if result is None or result is True:
