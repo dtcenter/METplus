@@ -51,7 +51,7 @@ fi
 pip_command="pip3 install Pillow"
 
 # build command to run
-command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
+command="./ci/jobs/run_use_cases.py ${CATEGORIES} ${SUBSETLIST}"
 
 # add input volumes to run command
 # keep track of --volumes-from arguments to docker run command
