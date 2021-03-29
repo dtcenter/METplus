@@ -173,6 +173,48 @@ def print_doc_text(tool_name, met_var, dict_items):
                           f"     | *Used by:* {wrapper_camel}")
         print(f'{glossary_entry}\n')
 
+    print('\n==================================================\n')
+    print(f"In internal_tests/pytests/{tool_name}/"
+          f"test_{tool_name}_wrapper.py, add the following items to "
+          "the tests to ensure the new items are set properly. Note: "
+          "if the tool does not have unit tests to check the handling of "
+          "MET config variables, you will need to add those tests. See "
+          "grid_stat/test_grid_stat_wrapper.py for an example. Change "
+          "VALUE to an appropriate value for the variable.\n\n")
+
+    input_dict_items = []
+    output_items = []
+    for metplus_config_name, met_config_name in zip(metplus_config_names, met_config_values):
+        if dict_items:
+            item_name = met_config_name.split('.')[1]
+            output_item = f"{item_name} = VALUE;"
+        else:
+            output_item = 'VALUE;'
+        mp_config_dict_item = f"'{metplus_config_name}': 'VALUE',"
+        input_dict_items.append(mp_config_dict_item)
+        output_items.append(output_item)
+        if dict_items:
+            output_fmt = f"{{{output_item}}}"
+        else:
+            output_fmt = output_item
+
+
+        test_text = (f"        ({{{mp_config_dict_item} }},\n"
+                     f"         {{'{env_var_name}': '{met_var} = "
+                     f"{output_fmt}'}}),\n")
+        print(test_text)
+
+    if dict_items:
+        all_items_text = "        ({\n"
+        for input_dict_item in input_dict_items:
+            all_items_text += f"           {input_dict_item}\n"
+        all_items_text += ("          },\n"
+                           f"         {{'{env_var_name}': '{met_var} = {{")
+        all_items_text += ''.join(output_items)
+        all_items_text += "}'}),"
+        print(all_items_text)
+
+
 def doc_util_usage():
     """! Print usage statement for script """
     print(f"{__file__} <met-tool> <met-variable> [<met-dict-items]\n"
