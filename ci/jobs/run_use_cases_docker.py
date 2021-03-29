@@ -29,6 +29,17 @@ def copy_error_logs():
                                'logs')
         if not os.path.isdir(log_dir):
             continue
+
+        # check if there are errors in the metplus.log file and
+        # only copy directory if there are any errors
+        metplus_log = os.path.join(log_dir, 'metplus.log')
+        found_errors = False
+        with open(metplus_log, 'r') as file_handle:
+            if 'ERROR:' in file_handle.read():
+                found_errors = True
+        if not found_errors:
+            continue
+
         output_dir = os.path.join(ERROR_LOG_DIR,
                                   use_case_dir)
         log_files = os.listdir(log_dir)
