@@ -130,6 +130,11 @@ def print_doc_text(tool_name, met_var, dict_items):
 
     print('\n\n==================================================\n')
     print(f"In the parm/met_config/{wrapper_camel}Config_wrapped file, "
+          f"compare the default values set for {met_var} to the version"
+          f" in share/met/config/{wrapper_camel}Config_default. If "
+          "they do differ, make sure to add variables to the use case "
+          "config files so that they produce the same output.\n\n")
+    print(f"In the parm/met_config/{wrapper_camel}Config_wrapped file, "
           "replace:\n\n")
     print(f"{met_var} = ...\n\n with:\n\n//{met_var} ="
           f"{' {' if dict_items else ''}\n${{{env_var_name}}}\n\n")
