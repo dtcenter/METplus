@@ -1,5 +1,9 @@
 #! /usr/bin/env python3
 
+# Script to obtain commands needed to run use case groups including
+# scripts or pip commands to obtain external Python dependencies
+# Run by GitHub Actions (in ci/jobs/run_use_cases.py) to run use case tests
+
 import sys
 import os
 
@@ -19,6 +23,7 @@ def handle_requirements(requirements, work_dir):
         script_path = os.path.join(work_dir,
                                    'ci',
                                    'jobs',
+                                   'python_requirements',
                                     f'get_{requirement.lower()}.sh')
         print(f"Looking for script: {script_path}")
         if os.path.exists(script_path):

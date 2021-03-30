@@ -19,6 +19,10 @@ SKIP_EXTENSIONS = [
     '.zip',
 ]
 
+UNSUPPORTED_EXTENSIONS = [
+    '.pdf',
+]
+
 def get_file_type(filepath):
     _, file_extension = os.path.splitext(filepath)
     if file_extension in IMAGE_EXTENSIONS:
@@ -38,6 +42,9 @@ def get_file_type(filepath):
 
     if file_extension in SKIP_EXTENSIONS:
         return 'skip'
+
+    if file_extension in UNSUPPORTED_EXTENSIONS:
+        return f'unsupported{file_extension}'
 
     return 'unknown'
 
@@ -126,6 +133,10 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None):
     if file_type == 'skip':
         print(f'Skipping')
         return None
+
+    if file_type.startswith('unsupported'):
+        print(f"Unsupported file type encountered: {file_type.split('.')[1]}")
+        return (filepath_a, filepath_b, file_type)
 
     if file_type == 'netcdf':
         print("Comparing NetCDF")

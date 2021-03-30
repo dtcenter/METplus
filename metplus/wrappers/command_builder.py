@@ -2064,7 +2064,13 @@ class CommandBuilder:
     def add_met_config(self, **kwargs):
         """! Create METConfigInfo object from arguments and process
              @param kwargs key arguments that should match METConfigInfo
-              arguments
+              arguments, which includes the following:
+             @param name MET config variable name to set
+             @param data_type type of variable to set, i.e. string, list, bool
+             @param metplus_configs variables from METplus config that should
+              be read to get the value. This can be a list of variable names
+              in order of precedence (first variable is used if it is set,
+              otherwise 2nd variable is used if set, etc.)
         """
         item = met_config(**kwargs)
         self.handle_met_config_item(item)

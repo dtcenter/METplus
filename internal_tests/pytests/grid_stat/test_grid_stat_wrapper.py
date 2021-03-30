@@ -120,6 +120,172 @@ from metplus.util import time_util
 
         ({'GRID_STAT_OUTPUT_PREFIX': 'my_output_prefix'},
          {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_output_prefix";'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_FHO': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {fho = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_CTC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {ctc = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_CTS': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {cts = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_MCTC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {mctc = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_MCTS': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {mcts = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_CNT': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {cnt = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_SL1L2': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {sl1l2 = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_SAL1L2': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {sal1l2 = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_VL1L2': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {vl1l2 = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_VAL1L2': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {val1l2 = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_VCNT': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {vcnt = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_PCT': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pct = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_PSTD': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pstd = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_PJC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pjc = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_PRC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {prc = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_ECLV': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {eclv = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_NBRCTC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {nbrctc = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_NBRCTS': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {nbrcts = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_NBRCNT': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {nbrcnt = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_GRAD': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {grad = STAT;}'}),
+
+        ({'GRID_STAT_OUTPUT_FLAG_DMAP': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {dmap = STAT;}'}),
+
+        ({
+             'GRID_STAT_OUTPUT_FLAG_FHO': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_CTC': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_CTS': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_MCTC': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_MCTS': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_CNT': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_SL1L2': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_SAL1L2': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_VL1L2': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_VAL1L2': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_VCNT': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_PCT': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_PSTD': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_PJC': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_PRC': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_ECLV': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_NBRCTC': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_NBRCTS': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_NBRCNT': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_GRAD': 'STAT',
+             'GRID_STAT_OUTPUT_FLAG_DMAP': 'STAT',
+         },
+         {
+             'METPLUS_OUTPUT_FLAG_DICT': (
+                     'output_flag = {fho = STAT;ctc = STAT;cts = STAT;'
+                     'mctc = STAT;mcts = STAT;cnt = STAT;sl1l2 = STAT;'
+                     'sal1l2 = STAT;vl1l2 = STAT;val1l2 = STAT;'
+                     'vcnt = STAT;pct = STAT;pstd = STAT;pjc = STAT;'
+                     'prc = STAT;eclv = STAT;nbrctc = STAT;nbrcts = STAT;'
+                     'nbrcnt = STAT;grad = STAT;dmap = STAT;}')}),
+
+        ({'GRID_STAT_NC_PAIRS_FLAG_LATLON': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {latlon = TRUE;}'}),
+
+        ({'GRID_STAT_NC_PAIRS_FLAG_RAW': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {raw = TRUE;}'}),
+
+        ({'GRID_STAT_NC_PAIRS_FLAG_DIFF': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {diff = TRUE;}'}),
+
+        ({'GRID_STAT_NC_PAIRS_FLAG_CLIMO': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {climo = TRUE;}'}),
+
+        ({'GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP': 'TRUE', },
+         {
+             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {climo_cdp = TRUE;}'}),
+
+        ({'GRID_STAT_NC_PAIRS_FLAG_WEIGHT': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {weight = TRUE;}'}),
+
+        ({'GRID_STAT_NC_PAIRS_FLAG_NBRHD': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {nbrhd = TRUE;}'}),
+
+        ({'GRID_STAT_NC_PAIRS_FLAG_FOURIER': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {fourier = TRUE;}'}),
+
+        ({'GRID_STAT_NC_PAIRS_FLAG_GRADIENT': 'TRUE', },
+         {
+             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {gradient = TRUE;}'}),
+
+        ({'GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP': 'TRUE', },
+         {
+             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {distance_map = TRUE;}'}),
+
+        ({'GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK': 'TRUE', },
+         {
+             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {apply_mask = TRUE;}'}),
+
+        ({
+             'GRID_STAT_NC_PAIRS_FLAG_LATLON': 'TRUE',
+             'GRID_STAT_NC_PAIRS_FLAG_RAW': 'TRUE',
+             'GRID_STAT_NC_PAIRS_FLAG_DIFF': 'TRUE',
+             'GRID_STAT_NC_PAIRS_FLAG_CLIMO': 'TRUE',
+             'GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP': 'TRUE',
+             'GRID_STAT_NC_PAIRS_FLAG_WEIGHT': 'TRUE',
+             'GRID_STAT_NC_PAIRS_FLAG_NBRHD': 'TRUE',
+             'GRID_STAT_NC_PAIRS_FLAG_FOURIER': 'TRUE',
+             'GRID_STAT_NC_PAIRS_FLAG_GRADIENT': 'TRUE',
+             'GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP': 'TRUE',
+             'GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK': 'TRUE',
+         },
+         {
+             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {latlon = TRUE;raw = TRUE;diff = TRUE;climo = TRUE;climo_cdp = TRUE;weight = TRUE;nbrhd = TRUE;fourier = TRUE;gradient = TRUE;distance_map = TRUE;apply_mask = TRUE;}'}),
+
+        ({'GRID_STAT_CLIMO_CDF_CDF_BINS': '1', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;}'}),
+
+        ({'GRID_STAT_CLIMO_CDF_CENTER_BINS': 'True', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {center_bins = TRUE;}'}),
+
+        ({'GRID_STAT_CLIMO_CDF_WRITE_BINS': 'False', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {write_bins = FALSE;}'}),
+
+        ({
+             'GRID_STAT_CLIMO_CDF_CDF_BINS': '1',
+             'GRID_STAT_CLIMO_CDF_CENTER_BINS': 'True',
+             'GRID_STAT_CLIMO_CDF_WRITE_BINS': 'False',
+         },
+         {
+             'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;}'}),
+
     ]
 )
 def test_grid_stat_single_field(metplus_config, config_overrides,
