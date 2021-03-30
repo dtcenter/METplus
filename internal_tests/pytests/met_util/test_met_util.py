@@ -15,6 +15,85 @@ from metplus.util import met_util as util
 from metplus.util import time_util
 
 @pytest.mark.parametrize(
+    'data_type, index, met_tool, expected_out', [
+        ('FCST', '1', None, ['BOTH_VAR1_',
+                             'FCST_VAR1_',]),
+        ('OBS', '2', None, ['BOTH_VAR2_',
+                            'OBS_VAR2_',]),
+        ('FCST', '3', 'grid_stat', ['BOTH_GRID_STAT_VAR3_',
+                                    'FCST_GRID_STAT_VAR3_',]),
+        ('OBS', '4', 'extract_tiles', ['BOTH_EXTRACT_TILES_VAR4_',
+                                       'OBS_EXTRACT_TILES_VAR4_',]),
+        ('ENS', '1', None, ['ENS_VAR1_']),
+        ('DATA', '2', None, ['DATA_VAR2_']),
+        ('DATA', '3', 'tc_gen', ['DATA_TC_GEN_VAR3_']),
+
+    ]
+)
+def test_get_field_search_prefixes(data_type, index, met_tool, expected_out):
+    assert(util.get_field_search_prefixes(data_type,
+                                          index,
+                                          met_tool) == expected_out)
+
+# search prefixes are valid prefixes to append to field info variables
+# config_keys are a list of config variables that have been set to something
+# search_key is the key of the field config item to check
+# expected_value is the variable that search_key is set to
+@pytest.mark.parametrize(
+    'search_prefixes, config_keys, expected_prefix', [
+        (['BOTH_VAR1_', 'FCST_VAR1_'],
+         ['FCST_VAR1_'],
+         'FCST_VAR1_'
+         ),
+        (['BOTH_VAR1_', 'FCST_VAR1_'], [], None),
+
+        (['BOTH_VAR1_', 'FCST_VAR1_'],
+         ['FCST_VAR1_',
+          'BOTH_VAR1_'],
+         'BOTH_VAR1_'
+         ),
+
+        (['BOTH_GRID_STAT_VAR1_', 'FCST_GRID_STAT_VAR1_'],
+         ['FCST_GRID_STAT_VAR1_'],
+         'FCST_GRID_STAT_VAR1_'
+         ),
+        (['BOTH_GRID_STAT_VAR1_', 'FCST_GRID_STAT_VAR1_'], [], None),
+        (['BOTH_GRID_STAT_VAR1_', 'FCST_GRID_STAT_VAR1_'],
+         ['FCST_GRID_STAT_VAR1_',
+          'BOTH_GRID_STAT_VAR1_'],
+         'BOTH_GRID_STAT_VAR1_'
+         ),
+
+        (['ENS_VAR1_'],
+         ['ENS_VAR1_'],
+         'ENS_VAR1_'
+         ),
+        (['ENS_VAR1_'], [], None),
+
+    ]
+)
+def test_get_field_config_variables(metplus_config,
+                                    search_prefixes,
+                                    config_keys,
+                                    expected_prefix):
+    config = metplus_config()
+    field_info_types = ['name', 'levels', 'thresh', 'options', 'output_names']
+    for field_info_type in field_info_types:
+        for key in config_keys:
+            config.set('config',
+                       f'{key}{field_info_type.upper()}',
+                       'something')
+
+        field_configs = util.get_field_config_variables(config,
+                                                        search_prefixes)
+        if expected_prefix is None:
+            expected_value = None
+        else:
+            expected_value = f'{expected_prefix}{field_info_type.upper()}'
+
+        assert(field_configs.get(field_info_type) == expected_value)
+
+@pytest.mark.parametrize(
     'before, after', [
         ('string', 'string'),
         ('"string"', 'string'),
@@ -1163,7 +1242,8 @@ def test_get_var_items_options_semicolon(metplus_config, config_overrides,
     index = 1
     time_info = {}
 
-    _, _, _, result = util.get_var_items(config, data_type, index, time_info)
+    var_items = util.get_var_items(config, data_type, index, time_info)
+    result = var_items.get('extra')
     assert(result == expected_result)
 
 @pytest.mark.parametrize(
