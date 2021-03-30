@@ -2278,10 +2278,10 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
                                       met_tool=use_met_tool)
 
             name = both_info.get('name')
-            levels = both_info.get('levels')
-            thresh = both_info.get('thresh')
-            extra = both_info.get('extra')
-            out_names = both_info.get('output_names')
+            levels = both_info.get('levels', [])
+            thresh = both_info.get('thresh', [])
+            extra = both_info.get('extra', '')
+            out_names = both_info.get('output_names', [])
             if not name:
                 continue
 
@@ -2316,13 +2316,13 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
 
         f_name = fcst_info.get('name')
         f_levels = fcst_info.get('levels', [])
-        f_thresh = fcst_info.get('', [])
+        f_thresh = fcst_info.get('thresh', [])
         f_extra = fcst_info.get('extra', '')
         f_out_names = fcst_info.get('output_names', [])
 
         o_name = obs_info.get('name')
         o_levels = obs_info.get('levels', [])
-        o_thresh = obs_info.get('', [])
+        o_thresh = obs_info.get('thresh', [])
         o_extra = obs_info.get('extra', '')
         o_out_names = obs_info.get('output_names', [])
 
