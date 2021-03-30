@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# The repo source code is cloned to $RUNNER_WORKSPACE/$REPO_NAME 
+# The repo source code is cloned to $RUNNER_WORKSPACE/$REPO_NAME
 # Setup the workspace path to that for easier access later
 REPO_NAME=$(basename $RUNNER_WORKSPACE)
 WS_PATH=$RUNNER_WORKSPACE/$REPO_NAME
