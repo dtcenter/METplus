@@ -65,6 +65,9 @@ def main():
         print("Could not get current branch. Exiting.")
         sys.exit(1)
 
+    if branch_name.endswith('-ref'):
+        branch_name = branch_name[0:-4]
+
     if not os.environ.get('GITHUB_WORKSPACE'):
         print("GITHUB_WORKSPACE not set. Exiting.")
         sys.exit(1)
