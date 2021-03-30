@@ -100,8 +100,12 @@ def copy_to_diff_dir(file_path, data_type):
     diff_out = file_path.replace(data_dir, DIFF_DIR)
 
     # add data type identifier to filename before extension
-    output_path, extension = os.path.splitext(diff_out)
-    output_path = f'{output_path}_{data_type}{extension}'
+    # if data is not difference output
+    if data_type == 'diff':
+        output_path = diff_out
+    else:
+        output_path, extension = os.path.splitext(diff_out)
+        output_path = f'{output_path}_{data_type}{extension}'
 
     # create output directory if it doesn't exist
     output_dir = os.path.dirname(output_path)
