@@ -1,5 +1,9 @@
 #! /bin/bash
 
+# Run by GitHub Actions (in .github/workflows/main.yml) to create
+# Docker data volumes from output data to create a "truth"
+# data set to use in difference tests.
+
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
   echo This is a pull request, so skip this setp
   exit 0

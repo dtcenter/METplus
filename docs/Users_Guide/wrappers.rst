@@ -1047,7 +1047,7 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`GRID_DIAG_MASK_POLY`
      - mask.poly
 
-.. note:: Since the default value in the MET config file for 'grid' is grid = [ "FULL" ];, setting GRID_STAT_MASK_GRID to an empty string will result in a value of grid = []; in the MET config file.
+.. note:: Since the default value in the MET config file for 'grid' is grid = [ "FULL" ];, setting GRID_DIAG_MASK_GRID to an empty string will result in a value of grid = []; in the MET config file.
 
 **${METPLUS_MET_CONFIG_OVERRIDES}**
 
@@ -1098,6 +1098,41 @@ METplus Configuration
 | :term:`GRID_STAT_REGRID_WIDTH`
 | :term:`GRID_STAT_REGRID_VLD_THRESH`
 | :term:`GRID_STAT_REGRID_SHAPE`
+| :term:`GRID_STAT_CLIMO_CDF_BINS`
+| :term:`GRID_STAT_CLIMO_CDF_CENTER_BINS`
+| :term:`GRID_STAT_CLIMO_CDF_WRITE_BINS`
+| :term:`GRID_STAT_OUTPUT_FLAG_FHO`
+| :term:`GRID_STAT_OUTPUT_FLAG_CTC`
+| :term:`GRID_STAT_OUTPUT_FLAG_CTS`
+| :term:`GRID_STAT_OUTPUT_FLAG_MCTC`
+| :term:`GRID_STAT_OUTPUT_FLAG_MCTS`
+| :term:`GRID_STAT_OUTPUT_FLAG_CNT`
+| :term:`GRID_STAT_OUTPUT_FLAG_SL1L2`
+| :term:`GRID_STAT_OUTPUT_FLAG_SAL1L2`
+| :term:`GRID_STAT_OUTPUT_FLAG_VL1L2`
+| :term:`GRID_STAT_OUTPUT_FLAG_VAL1L2`
+| :term:`GRID_STAT_OUTPUT_FLAG_VCNT`
+| :term:`GRID_STAT_OUTPUT_FLAG_PCT`
+| :term:`GRID_STAT_OUTPUT_FLAG_PSTD`
+| :term:`GRID_STAT_OUTPUT_FLAG_PJC`
+| :term:`GRID_STAT_OUTPUT_FLAG_PRC`
+| :term:`GRID_STAT_OUTPUT_FLAG_ECLV`
+| :term:`GRID_STAT_OUTPUT_FLAG_NBRCTC`
+| :term:`GRID_STAT_OUTPUT_FLAG_NBRCTS`
+| :term:`GRID_STAT_OUTPUT_FLAG_NBRCNT`
+| :term:`GRID_STAT_OUTPUT_FLAG_GRAD`
+| :term:`GRID_STAT_OUTPUT_FLAG_DMAP`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_LATLON`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_RAW`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_DIFF`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_CLIMO`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_WEIGHT`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_NBRHD`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_FOURIER`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_GRADIENT`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK`
 | :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`GRID_STAT_MASK_POLY` (optional)
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
@@ -1326,6 +1361,104 @@ Below the file contents are descriptions of each environment variable referenced
      - MET Config File
    * - :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
      - n/a
+
+**${METPLUS_CLIMO_CDF_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_CLIMO_CDF_BINS`
+     - climo_cdf.cdf_bins
+   * - :term:`GRID_STAT_CLIMO_CDF_CENTER_BINS`
+     - climo_cdf.center_bins
+   * - :term:`GRID_STAT_CLIMO_CDF_WRITE_BINS`
+     - climo_cdf.write_bins
+
+**${METPLUS_OUTPUT_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_OUTPUT_FLAG_FHO`
+     - output_flag.fho
+   * - :term:`GRID_STAT_OUTPUT_FLAG_CTC`
+     - output_flag.ctc
+   * - :term:`GRID_STAT_OUTPUT_FLAG_CTS`
+     - output_flag.cts
+   * - :term:`GRID_STAT_OUTPUT_FLAG_MCTC`
+     - output_flag.mctc
+   * - :term:`GRID_STAT_OUTPUT_FLAG_MCTS`
+     - output_flag.mcts
+   * - :term:`GRID_STAT_OUTPUT_FLAG_CNT`
+     - output_flag.cnt
+   * - :term:`GRID_STAT_OUTPUT_FLAG_SL1L2`
+     - output_flag.sl1l2
+   * - :term:`GRID_STAT_OUTPUT_FLAG_SAL1L2`
+     - output_flag.sal1l2
+   * - :term:`GRID_STAT_OUTPUT_FLAG_VL1L2`
+     - output_flag.vl1l2
+   * - :term:`GRID_STAT_OUTPUT_FLAG_VAL1L2`
+     - output_flag.val1l2
+   * - :term:`GRID_STAT_OUTPUT_FLAG_VCNT`
+     - output_flag.vcnt
+   * - :term:`GRID_STAT_OUTPUT_FLAG_PCT`
+     - output_flag.pct
+   * - :term:`GRID_STAT_OUTPUT_FLAG_PSTD`
+     - output_flag.pstd
+   * - :term:`GRID_STAT_OUTPUT_FLAG_PJC`
+     - output_flag.pjc
+   * - :term:`GRID_STAT_OUTPUT_FLAG_PRC`
+     - output_flag.prc
+   * - :term:`GRID_STAT_OUTPUT_FLAG_ECLV`
+     - output_flag.eclv
+   * - :term:`GRID_STAT_OUTPUT_FLAG_NBRCTC`
+     - output_flag.nbrctc
+   * - :term:`GRID_STAT_OUTPUT_FLAG_NBRCTS`
+     - output_flag.nbrcts
+   * - :term:`GRID_STAT_OUTPUT_FLAG_NBRCNT`
+     - output_flag.nbrcnt
+   * - :term:`GRID_STAT_OUTPUT_FLAG_GRAD`
+     - output_flag.grad
+   * - :term:`GRID_STAT_OUTPUT_FLAG_DMAP`
+     - output_flag.dmap
+
+**${METPLUS_NC_PAIRS_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_LATLON`
+     - nc_pairs_flag.latlon
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_RAW`
+     - nc_pairs_flag.raw
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_DIFF`
+     - nc_pairs_flag.diff
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_CLIMO`
+     - nc_pairs_flag.climo
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP`
+     - nc_pairs_flag.climo_cdp
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_WEIGHT`
+     - nc_pairs_flag.weight
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_NBRHD`
+     - nc_pairs_flag.nbrhd
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_FOURIER`
+     - nc_pairs_flag.fourier
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_GRADIENT`
+     - nc_pairs_flag.gradient
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP`
+     - nc_pairs_flag.distance_map
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK`
+     - nc_pairs_flag.apply_mask
+
 
 .. _make_plots_wrapper:
 
@@ -2369,6 +2502,9 @@ Configuration
 | :term:`POINT_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`POINT_STAT_DESC`
 | :term:`POINT_STAT_MET_CONFIG_OVERRIDES`
+| :term:`POINT_STAT_CLIMO_CDF_BINS`
+| :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
+| :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
 | :term:`FCST_POINT_STAT_WINDOW_END` (optional)
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
@@ -2600,6 +2736,21 @@ Below the file contents are descriptions of each environment variable referenced
      - MET Config File
    * - :term:`POINT_STAT_MET_CONFIG_OVERRIDES`
      - n/a
+
+**${METPLUS_CLIMO_CDF_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_CLIMO_CDF_BINS`
+     - climo_cdf.cdf_bins
+   * - :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
+     - climo_cdf.center_bins
+   * - :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
+     - climo_cdf.write_bins
 
 .. _py_embed_ingest_wrapper:
 

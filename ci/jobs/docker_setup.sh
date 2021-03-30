@@ -1,5 +1,13 @@
 #! /bin/bash
 
+# Run by GitHub Actions (in .github/workflows/main.yml) to build
+# METplus Docker image and put it up to DockerHub so it can be
+# used by the use case tests.
+# If GitHub Actions run is triggered by a fork that does not have
+# permissions to push Docker images to DockerHub, the script is
+# is also called (in ci/actions/run_tests/entrypoint.sh) to
+# build the Docker image to use for each use case test group
+
 branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
   branch_name=${branch_name}-pull_request
