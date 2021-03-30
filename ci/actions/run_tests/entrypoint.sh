@@ -48,10 +48,10 @@ fi
 
 # install Pillow library needed for diff testing
 # this will be replaced with better image diffing package used by METplotpy
-pip_command="pip3 install Pillow"
+pip_command="pip3 install Pillow; yum -y install poppler-utils; pip3 install pdf2image"
 
 # build command to run
-command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
+command="./ci/jobs/run_use_cases.py ${CATEGORIES} ${SUBSETLIST}"
 
 # add input volumes to run command
 # keep track of --volumes-from arguments to docker run command
