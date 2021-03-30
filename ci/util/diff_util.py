@@ -110,7 +110,7 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
             if not os.path.exists(filepath_a):
                 # check if missing file is actually diff file that was generated
                 diff_list = [item[3] for item in diff_files]
-                if filepath_a in diff_list:
+                if filepath_b in diff_list:
                     continue
                 print(f"ERROR: File does not exist: {filepath_a}")
                 diff_files.append(('', filepath_b, 'file not found (new output)', ''))
