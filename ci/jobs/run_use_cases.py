@@ -69,13 +69,16 @@ def copy_diff_output(diff_files):
      and file path of output that was just generated. Either tuple
      value may be an empty string if the file was not found.
     """
-    for truth_file, out_file, _ in diff_files:
+    for truth_file, out_file, _, diff_file in diff_files:
         if truth_file:
             copy_to_diff_dir(truth_file,
                              'truth')
         if out_file:
             copy_to_diff_dir(out_file,
                              'output')
+        if diff_file:
+            copy_to_diff_dir(diff_file,
+                             'diff')
 
 def copy_to_diff_dir(file_path, data_type):
     """! Generate output path based on input file path,
@@ -97,8 +100,12 @@ def copy_to_diff_dir(file_path, data_type):
     diff_out = file_path.replace(data_dir, DIFF_DIR)
 
     # add data type identifier to filename before extension
-    output_path, extension = os.path.splitext(diff_out)
-    output_path = f'{output_path}_{data_type}{extension}'
+    # if data is not difference output
+    if data_type == 'diff':
+        output_path = diff_out
+    else:
+        output_path, extension = os.path.splitext(diff_out)
+        output_path = f'{output_path}_{data_type}{extension}'
 
     # create output directory if it doesn't exist
     output_dir = os.path.dirname(output_path)
@@ -143,7 +150,9 @@ def main():
     if compare and isOK:
         print('******************************')
         print("Comparing output to truth data")
-        diff_files = compare_dir(TRUTH_DIR, OUTPUT_DIR, debug=True)
+        diff_files = compare_dir(TRUTH_DIR, OUTPUT_DIR,
+                                 debug=True,
+                                 save_diff=True)
         if diff_files:
             isOK = False
 
