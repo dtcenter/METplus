@@ -48,7 +48,7 @@ fi
 
 # install Pillow library needed for diff testing
 # this will be replaced with better image diffing package used by METplotpy
-pip_command="pip3 install Pillow; pip3 install pdf2image"
+pip_command="pip3 install Pillow; pip3 install python-poppler; pip3 install pdf2image"
 
 # build command to run
 command="./ci/jobs/run_use_cases.py ${CATEGORIES} ${SUBSETLIST}"
