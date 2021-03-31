@@ -31,7 +31,7 @@ fi
 DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
 
 echo "Setting up METviewer"
-${GITHUB_WORKSPACE}/ci/jobs/get_metviewer.sh
+${GITHUB_WORKSPACE}/ci/jobs/python_requirements/get_metviewer.sh
 
 echo "Pulling docker image: $DOCKERHUBTAG"
 docker pull $DOCKERHUBTAG
