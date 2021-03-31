@@ -4,7 +4,7 @@
 # info from GitHub event and commit message from last commit before
 # a push to determine which jobs to run and which to skip.
 
-# set default status for jobs
+# set default status for jobs 
 run_docs=true
 run_get_image=true
 run_get_input_data=true
