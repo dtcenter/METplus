@@ -6191,3 +6191,23 @@ METplus Configuration Glossary
      Specify the value for 'nc_pairs_flag.apply_mask' in the MET configuration file for GridStat.
 
      | *Used by:* GridStat
+
+   TC_STAT_COLUMN_STR_EXC_NAME
+     Specify the value for 'column_str_exc_name' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_COLUMN_STR_EXC_VAL
+     Specify the value for 'column_str_exc_val' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_INIT_STR_EXC_NAME
+     Specify the value for 'init_str_exc_name' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_INIT_STR_EXC_VAL
+     Specify the value for 'init_str_exc_val' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
