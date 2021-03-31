@@ -21,12 +21,19 @@ from metplus.util import time_util
         ('OBS', '2', None, ['BOTH_VAR2_',
                             'OBS_VAR2_',]),
         ('FCST', '3', 'grid_stat', ['BOTH_GRID_STAT_VAR3_',
-                                    'FCST_GRID_STAT_VAR3_',]),
+                                    'FCST_GRID_STAT_VAR3_',
+                                    'BOTH_VAR3_',
+                                    'FCST_VAR3_',
+                                    ]),
         ('OBS', '4', 'extract_tiles', ['BOTH_EXTRACT_TILES_VAR4_',
-                                       'OBS_EXTRACT_TILES_VAR4_',]),
+                                       'OBS_EXTRACT_TILES_VAR4_',
+                                       'BOTH_VAR4_',
+                                       'OBS_VAR4_',
+                                       ]),
         ('ENS', '1', None, ['ENS_VAR1_']),
         ('DATA', '2', None, ['DATA_VAR2_']),
-        ('DATA', '3', 'tc_gen', ['DATA_TC_GEN_VAR3_']),
+        ('DATA', '3', 'tc_gen', ['DATA_TC_GEN_VAR3_',
+                                 'DATA_VAR3_']),
 
     ]
 )

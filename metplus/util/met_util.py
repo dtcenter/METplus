@@ -2065,13 +2065,22 @@ def get_field_search_prefixes(data_type, index, met_tool=None):
          [ENS_VAR2_] or [BOTH_GRID_STAT_VAR3_, OBS_GRID_STAT_VAR3_]
     """
     search_prefixes = []
-    var_string = f"_{met_tool.upper() + '_' if met_tool else ''}VAR{index}_"
+    var_strings = []
 
-    # if looking for FCST or OBS, check for BOTH prefix first
-    if data_type in ['FCST', 'OBS']:
-        search_prefixes.append(f"BOTH{var_string}")
+    # if met tool name is set, prioritize
+    # wrapper-specific configs before generic configs
+    if met_tool:
+        var_strings.append(f"_{met_tool.upper()}_VAR{index}_")
 
-    search_prefixes.append(f"{data_type}{var_string}")
+    var_strings.append(f"_VAR{index}_")
+
+    for var_string in var_strings:
+        # if looking for FCST or OBS, check for BOTH prefix first
+        if data_type in ['FCST', 'OBS']:
+            search_prefixes.append(f"BOTH{var_string}")
+
+        search_prefixes.append(f"{data_type}{var_string}")
+
     return search_prefixes
 
 def get_field_config_variables(config, search_prefixes):
