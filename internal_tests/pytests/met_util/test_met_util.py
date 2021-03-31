@@ -94,6 +94,70 @@ def test_get_field_config_variables(metplus_config,
         assert(field_configs.get(field_info_type) == expected_value)
 
 @pytest.mark.parametrize(
+    'config_keys, field_key, expected_suffix', [
+        (['NAME',
+          ],
+         'name', 'NAME'
+         ),
+        (['NAME',
+          'INPUT_FIELD_NAME',
+          ],
+         'name', 'NAME'
+         ),
+        (['INPUT_FIELD_NAME',
+          ],
+         'name', 'INPUT_FIELD_NAME'
+         ),
+        ([], 'name', None),
+        (['LEVELS',
+          ],
+         'levels', 'LEVELS'
+         ),
+        (['LEVELS',
+          'INPUT_FIELD_LEVEL',
+          ],
+         'levels', 'LEVELS'
+         ),
+        (['INPUT_FIELD_LEVEL',
+          ],
+         'levels', 'INPUT_FIELD_LEVEL'
+         ),
+         ([], 'levels', None),
+        (['OUTPUT_NAMES',
+          ],
+         'output_names', 'OUTPUT_NAMES'
+         ),
+        (['OUTPUT_NAMES',
+          'OUTPUT_FIELD_NAME',
+          ],
+         'output_names', 'OUTPUT_NAMES'
+         ),
+        (['OUTPUT_FIELD_NAME',
+          ],
+         'output_names', 'OUTPUT_FIELD_NAME'
+         ),
+        ([], 'output_names', None),
+    ]
+)
+def test_get_field_config_variables_synonyms(metplus_config,
+                                             config_keys,
+                                             field_key,
+                                             expected_suffix):
+    config = metplus_config()
+    prefix = 'BOTH_REGRID_DATA_PLANE_VAR1_'
+    for key in config_keys:
+        config.set('config', f'{prefix}{key}', 'something')
+
+    field_configs = util.get_field_config_variables(config,
+                                                   [prefix])
+    if expected_suffix is None:
+        expected_value = None
+    else:
+        expected_value = f'{prefix}{expected_suffix}'
+
+    assert(field_configs.get(field_key) == expected_value)
+
+@pytest.mark.parametrize(
     'before, after', [
         ('string', 'string'),
         ('"string"', 'string'),

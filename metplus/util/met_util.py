@@ -2076,7 +2076,9 @@ def get_field_search_prefixes(data_type, index, met_tool=None):
 
 def get_field_config_variables(config, search_prefixes):
     """! Search for variables that are set in the config that correspond to
-     the fields requested. Called by get_var_items.
+     the fields requested. Called by get_var_items. Some field info items have
+     synonyms that can be used if the typical name is not set. This is used
+     in RegridDataPlane wrapper.
 
         @param config METplusConfig object to search
         @param search_prefixes list of valid prefixes to search for variables
@@ -2090,17 +2092,43 @@ def get_field_config_variables(config, search_prefixes):
                      'levels': None,
                      'thresh': None,
                      'options': None,
-                     'output_names': None
+                     'output_names': None,
                      }
 
+    # look for synonyms of variable names to use if the
+    # corresponding value is not set
+    synonyms = {'name': ['input_field_name'],
+                'levels': ['input_field_level'],
+                'output_names': ['output_field_name'],
+                }
+
+    # add all synonyms to field_configs so they will be searched in config
+    for synonym_group in synonyms.values():
+        for synonym in synonym_group:
+            field_configs[synonym] = None
+
+    # look through field config keys and obtain highest priority
+    # variable name for each field config
     for search_var in field_configs:
         for search_prefix in search_prefixes:
             var_name = f"{search_prefix}{search_var.upper()}"
-            # if variable is found in config, set the name and break out of
-            # prefix loop
+            # if variable is found in config, set the name and
+            # break out of prefix loop
             if config.has_option('config', var_name):
                 field_configs[search_var] = var_name
                 break
+
+    # replace unset field configs with synonyms if they are set
+    for config_name, synonym_group in synonyms.items():
+        for synonym in synonym_group:
+            # check if config_name value is None each time so first
+            # occurance of a set synonym is used
+            if (field_configs[config_name] is None and
+                    field_configs[synonym] is not None):
+                field_configs[config_name] = field_configs[synonym]
+
+            # delete synonym from output field config dictionary
+            del field_configs[synonym]
 
     return field_configs
 
