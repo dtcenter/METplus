@@ -2097,9 +2097,14 @@ def get_field_config_variables(config, search_prefixes):
 
     # look for synonyms of variable names to use if the
     # corresponding value is not set
-    synonyms = {'name': ['input_field_name'],
-                'levels': ['input_field_level'],
-                'output_names': ['output_field_name'],
+    synonyms = {'name': ['input_field_name',
+                         'field_name',
+                         ],
+                'levels': ['input_field_level',
+                           ],
+                'output_names': ['output_field_name',
+                                 'field_name',
+                                 ],
                 }
 
     # add all synonyms to field_configs so they will be searched in config
@@ -2124,11 +2129,12 @@ def get_field_config_variables(config, search_prefixes):
             # check if config_name value is None each time so first
             # occurence of a set synonym is used
             if (field_configs[config_name] is None and
-                    field_configs[synonym] is not None):
+                    field_configs.get(synonym) is not None):
                 field_configs[config_name] = field_configs[synonym]
 
             # delete synonym from output field config dictionary
-            del field_configs[synonym]
+            if synonym in field_configs:
+                del field_configs[synonym]
 
     return field_configs
 
@@ -2859,3 +2865,13 @@ def netcdf_has_var(file_path, name, level):
 
     except (AttributeError, OSError, ImportError):
         return False
+
+def format_level(level):
+    """! Format level string to prevent NetCDF level values from creating
+         filenames and field names with bad characters. Replaces '*' with 'all'
+         and ',' with '_'
+
+        @param level string of level to format
+        @returns formatted string
+    """
+    return level.replace('*', 'all').replace(',', '_')

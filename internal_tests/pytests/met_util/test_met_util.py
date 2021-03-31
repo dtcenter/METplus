@@ -1383,3 +1383,14 @@ def test_parse_var_list_py_embed_multi_levels(metplus_config, config_overrides,
 
     for var_item, expected_result in zip(var_list, expected_results):
         assert(var_item['fcst_name'] == expected_result)
+
+@pytest.mark.parametrize(
+    'level, expected_result', [
+        ('level', 'level'),
+        ('P500', 'P500'),
+        ('*,*', 'all_all'),
+        ('1,*,*', '1_all_all'),
+    ]
+)
+def test_format_level(level, expected_result):
+    assert(util.format_level(level) == expected_result)
