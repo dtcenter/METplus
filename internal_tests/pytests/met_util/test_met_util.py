@@ -114,13 +114,13 @@ def test_get_field_config_variables(metplus_config,
          'levels', 'LEVELS'
          ),
         (['LEVELS',
-          'INPUT_FIELD_LEVEL',
+          'INPUT_LEVEL',
           ],
          'levels', 'LEVELS'
          ),
-        (['INPUT_FIELD_LEVEL',
+        (['INPUT_LEVEL',
           ],
-         'levels', 'INPUT_FIELD_LEVEL'
+         'levels', 'INPUT_LEVEL'
          ),
          ([], 'levels', None),
         (['OUTPUT_NAMES',

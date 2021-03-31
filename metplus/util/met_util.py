@@ -2100,7 +2100,7 @@ def get_field_config_variables(config, search_prefixes):
     synonyms = {'name': ['input_field_name',
                          'field_name',
                          ],
-                'levels': ['input_field_level',
+                'levels': ['input_level',
                            ],
                 'output_names': ['output_field_name',
                                  'field_name',
@@ -2247,7 +2247,7 @@ def find_var_name_indices(config, data_type, met_tool=None):
     if met_tool:
         regex_string += f"_{met_tool.upper()}"
 
-    regex_string += r"_VAR(\d+)_NAME"
+    regex_string += r"_VAR(\d+)_(NAME|INPUT_FIELD_NAME)"
 
     # find all <data_type>_VAR<n>_NAME keys in the conf files
     return find_indices_in_config_section(regex_string,
