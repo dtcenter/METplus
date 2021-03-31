@@ -2122,7 +2122,7 @@ def get_field_config_variables(config, search_prefixes):
     for config_name, synonym_group in synonyms.items():
         for synonym in synonym_group:
             # check if config_name value is None each time so first
-            # occurance of a set synonym is used
+            # occurence of a set synonym is used
             if (field_configs[config_name] is None and
                     field_configs[synonym] is not None):
                 field_configs[config_name] = field_configs[synonym]
