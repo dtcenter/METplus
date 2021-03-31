@@ -5090,6 +5090,10 @@ Configuration
 | :term:`TC_STAT_MATCH_POINTS`
 | :term:`TC_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`TC_STAT_MET_CONFIG_OVERRIDES`
+| :term:`TC_STAT_COLUMN_STR_EXC_NAME`
+| :term:`TC_STAT_COLUMN_STR_EXC_VAL`
+| :term:`TC_STAT_INIT_STR_EXC_NAME`
+| :term:`TC_STAT_INIT_STR_EXC_VAL`
 |
 
 .. warning:: **DEPRECATED:**
@@ -5399,6 +5403,28 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`TC_STAT_COLUMN_STR_VAL`
      - column_str_val
 
+**${METPLUS_COLUMN_STR_EXC_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_COLUMN_STR_EXC_NAME`
+     - column_str_exc_name
+
+**${METPLUS_COLUMN_STR_EXC_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_COLUMN_STR_EXC_VAL`
+     - column_str_exc_val
+
 **${METPLUS_INIT_THRESH_NAME}**
 
 .. list-table::
@@ -5442,6 +5468,28 @@ Below the file contents are descriptions of each environment variable referenced
      - MET Config File
    * - :term:`TC_STAT_INIT_STR_VAL`
      - init_str_val
+
+**${METPLUS_INIT_STR_EXC_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_STR_EXC_NAME`
+     - init_str_exc_name
+
+**${METPLUS_INIT_STR_EXC_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_STR_EXC_VAL`
+     - init_str_exc_val
 
 **${METPLUS_WATER_ONLY}**
 
