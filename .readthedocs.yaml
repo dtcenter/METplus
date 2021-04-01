@@ -15,7 +15,8 @@ python:
    version: 3.6
    install:
    - requirements: docs/requirements.txt
-
+   - requirements: requirements.txt
+   
 # Configuration for Sphinx documentation (this is the default documentation
 # type)
 sphinx:
