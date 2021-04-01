@@ -10,6 +10,7 @@ on:
   pull_request:
     types: [opened, reopened, synchronize]
 
+jobs:
   documentation:
     name: Build Documentation
     runs-on: ubuntu-latest
