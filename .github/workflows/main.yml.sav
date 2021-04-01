@@ -1,0 +1,246 @@
+name: METplus CI/CD Workflow
+on:
+  push:
+    branches:
+      - develop
+      - develop-ref
+      - feature_*
+      - main_*
+      - bugfix_*
+  pull_request:
+    types: [opened, reopened, synchronize]
+
+jobs:
+  job_control:
+    name: Determine which jobs to run
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Print GitHub values for reference
+        env:
+          GITHUB_CONTEXT: ${{ toJson(github) }}
+        run: echo "$GITHUB_CONTEXT"
+      - name: Set job controls
+        id: status
+        run: ${GITHUB_WORKSPACE}/ci/jobs/set_job_controls.sh
+        env:
+          commit_msg: ${{ github.event.head_commit.message }}
+      - uses: actions/upload-artifact@v2
+        with:
+          name: job_control_status
+          path: job_control_status
+
+  documentation:
+    name: Build Documentation
+    runs-on: ubuntu-latest
+    needs: job_control
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: job_control_status
+      - run: cat job_control_status >> $GITHUB_ENV
+      - uses: actions/checkout@v2
+        if: ${{ env.run_docs == 'true' }}
+      - uses: actions/setup-python@v2
+        if: ${{ env.run_docs == 'true' }}
+        with:
+          python-version: '3.6'
+      - name: Install dependencies
+        if: ${{ env.run_docs == 'true' }}
+        run: |
+          python -m pip install --upgrade python-dateutil requests sphinx sphinx-gallery Pillow
+          pip install git+https://github.com/ESMCI/sphinx_rtd_theme@version-dropdown-with-fixes
+      - name: Run build_docs.py
+        if: ${{ env.run_docs == 'true' }}
+        continue-on-error: true
+        run: |
+          ${GITHUB_WORKSPACE}/docs/build_docs.py skip-doxygen
+          mkdir -p artifact/documentation
+          cp -r ${GITHUB_WORKSPACE}/docs/_build/html/* artifact/documentation
+          if [ "$( ls -A ${GITHUB_WORKSPACE}/docs/_build/warnings.log)" ]; then
+            cp -r ${GITHUB_WORKSPACE}/docs/_build/warnings.log artifact/doc_warnings.log
+            cp artifact/doc_warnings.log artifact/documentation
+          fi
+      - uses: actions/upload-artifact@v2
+        with:
+          name: METplus_documentation
+          path: artifact/documentation
+      - uses: actions/upload-artifact@v2
+        with:
+          name: documentation_warnings.log
+          path: artifact/doc_warnings.log
+          if-no-files-found: ignore
+  get_image:
+    name: Docker Setup - Get METplus Image
+    runs-on: ubuntu-latest
+    needs: job_control
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: job_control_status
+      - run: cat job_control_status >> $GITHUB_ENV
+      - uses: actions/checkout@v2
+        if: ${{ env.run_get_image == 'true' }}
+      - uses: actions/setup-python@v2
+        if: ${{ env.run_get_image == 'true' }}
+        with:
+          python-version: '3.6'
+      - name: Get METplus Image
+        if: ${{ env.run_get_image == 'true' }}
+        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  update_data_volumes:
+    name: Docker Setup - Update Data Volumes
+    runs-on: ubuntu-latest
+    needs: job_control
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: job_control_status
+      - run: cat job_control_status >> $GITHUB_ENV
+      - uses: actions/checkout@v2
+        if: ${{ env.run_get_input_data == 'true' }}
+      - uses: actions/setup-python@v2
+        if: ${{ env.run_get_input_data == 'true' }}
+        with:
+          python-version: '3.6'
+      - name: Install dependencies
+        if: ${{ env.run_get_input_data == 'true' }}
+        run: python -m pip install --upgrade pip python-dateutil requests bs4
+      - name: Update Data Volumes
+        if: ${{ env.run_get_input_data == 'true' }}
+        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_update_data_volumes.py
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+  unit_tests:
+    name: Unit Tests - Pytest
+    runs-on: ubuntu-latest
+    needs: get_image
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: job_control_status
+      - run: cat job_control_status >> $GITHUB_ENV
+      - uses: actions/checkout@v2
+        if: ${{ env.run_unit_tests == 'true' }}
+      - uses: ./ci/actions/run_tests
+        if: ${{ env.run_unit_tests == 'true' }}
+        with:
+          categories: pytests
+  use_case_tests:
+    name: Use Case Tests
+    runs-on: ubuntu-latest
+    needs: [get_image, update_data_volumes]
+    strategy:
+      fail-fast: false
+      matrix:
+        categories:
+          - "met_tool_wrapper:0-53"
+          - "air_quality_and_comp:0"
+          - "climate:0-1"
+          - "convection_allowing_models:0"
+          - "convection_allowing_models:1"
+          - "convection_allowing_models:2-6"
+          - "convection_allowing_models:7"
+          - "convection_allowing_models:8"
+          - "cryosphere:0"
+          - "data_assimilation:0"
+          - "marine_and_coastal:0"
+          - "medium_range:0"
+          - "medium_range:1-2"
+          - "medium_range:3-5"
+          - "medium_range:6"
+          - "medium_range:7-8"
+          - "precipitation:0"
+          - "precipitation:1"
+          - "precipitation:2"
+          - "precipitation:3-8"
+          - "s2s:0"
+          - "s2s:1-3"
+          - "space_weather:0-1"
+          - "tc_and_extra_tc:0-2"
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: job_control_status
+      - run: cat job_control_status >> $GITHUB_ENV
+      - name: Check if use case group should run or be skipped
+        run: |
+          if [ "${{ env.run_use_cases == 'true' && (endsWith(matrix.categories, ':NEW') || env.run_all_use_cases) }}" == "true" ]; then
+            run_this_case=true
+          else
+            run_this_case=false
+          fi
+          echo run_this_case=$run_this_case >> $GITHUB_ENV
+          echo Ends with NEW: ${{ endsWith(matrix.categories, ':NEW') }}
+          echo Run all: ${{ env.run_all_use_cases }}
+      - uses: actions/checkout@v2
+        if: ${{ env.run_this_case == 'true' }}
+      - uses: ./ci/actions/run_tests
+        id: run_tests
+        if: ${{ env.run_this_case == 'true' }}
+        with:
+          categories: ${{ matrix.categories }}
+          run_diff: ${{ env.run_diff }}
+
+      # copy output data to save as artifact
+      - name: Save output data
+        id: save-output
+        if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
+        run: |
+          artifact_name=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh ${{matrix.categories}}`
+          mkdir -p artifact/${artifact_name}
+          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${artifact_name}/
+          echo ::set-output name=artifact_name::${artifact_name}
+          if [ "$( ls -A ${GITHUB_WORKSPACE}/../diff)" ]; then
+            mkdir -p artifact/diff-${artifact_name}
+            cp -r ${GITHUB_WORKSPACE}/../diff/* artifact/diff-${artifact_name}/
+            echo ::set-output name=upload_diff::true
+          else
+            echo ::set-output name=upload_diff::false
+          fi
+          if [ "$( ls -A ${GITHUB_WORKSPACE}/../error_logs)" ]; then
+            mkdir -p artifact/error_logs
+            cp -r ${GITHUB_WORKSPACE}/../error_logs/* artifact/error_logs
+            echo ::set-output name=upload_error_logs::true
+          else
+            echo ::set-output name=upload_error_logs::false
+          fi
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
+        with:
+          name: ${{ steps.save-output.outputs.artifact_name }}
+          path: artifact/${{ steps.save-output.outputs.artifact_name }}
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() && steps.save-output.outputs.upload_error_logs }}
+        with:
+          name: error_logs
+          path: artifact/error_logs
+          if-no-files-found: ignore
+      - uses: actions/upload-artifact@v2
+        if: ${{ always() && steps.save-output.outputs.upload_diff }}
+        with:
+          name: diff-${{ steps.save-output.outputs.artifact_name }}
+          path: artifact/diff-${{ steps.save-output.outputs.artifact_name }}
+          if-no-files-found: ignore
+  create_output_data_volumes:
+    name: Create Output Docker Data Volumes
+    runs-on: ubuntu-latest
+    needs: [use_case_tests]
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: job_control_status
+      - run: cat job_control_status >> $GITHUB_ENV
+      - uses: actions/checkout@v2
+        if: ${{ env.run_save_truth_data == 'true' }}
+      - uses: actions/download-artifact@v2
+        if: ${{ env.run_save_truth_data == 'true' }}
+      - run: ci/jobs/create_output_data_volumes.sh
+        if: ${{ env.run_save_truth_data == 'true' }}
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
