@@ -15,93 +15,90 @@ from metplus.util import met_util as util
 from metplus.util import time_util
 
 @pytest.mark.parametrize(
-    'data_type, index, met_tool, expected_out', [
-        ('FCST', '1', None, ['BOTH_VAR1_',
-                             'FCST_VAR1_',]),
-        ('OBS', '2', None, ['BOTH_VAR2_',
-                            'OBS_VAR2_',]),
-        ('FCST', '3', 'grid_stat', ['BOTH_GRID_STAT_VAR3_',
-                                    'FCST_GRID_STAT_VAR3_',
-                                    'BOTH_VAR3_',
-                                    'FCST_VAR3_',
-                                    ]),
-        ('OBS', '4', 'extract_tiles', ['BOTH_EXTRACT_TILES_VAR4_',
-                                       'OBS_EXTRACT_TILES_VAR4_',
-                                       'BOTH_VAR4_',
-                                       'OBS_VAR4_',
-                                       ]),
-        ('ENS', '1', None, ['ENS_VAR1_']),
-        ('DATA', '2', None, ['DATA_VAR2_']),
-        ('DATA', '3', 'tc_gen', ['DATA_TC_GEN_VAR3_',
-                                 'DATA_VAR3_']),
+    'data_type, met_tool, expected_out', [
+        ('FCST', None, ['BOTH_',
+                        'FCST_',]),
+        ('OBS', None, ['BOTH_',
+                       'OBS_',]),
+        ('FCST', 'grid_stat', ['BOTH_GRID_STAT_',
+                               'FCST_GRID_STAT_',
+                               'BOTH_',
+                               'FCST_',
+                               ]),
+        ('OBS', 'extract_tiles', ['BOTH_EXTRACT_TILES_',
+                                  'OBS_EXTRACT_TILES_',
+                                  'BOTH_',
+                                  'OBS_',
+                                  ]),
+        ('ENS', None, ['ENS_']),
+        ('DATA', None, ['DATA_']),
+        ('DATA', 'tc_gen', ['DATA_TC_GEN_',
+                            'DATA_']),
 
     ]
 )
-def test_get_field_search_prefixes(data_type, index, met_tool, expected_out):
+def test_get_field_search_prefixes(data_type, met_tool, expected_out):
     assert(util.get_field_search_prefixes(data_type,
-                                          index,
                                           met_tool) == expected_out)
 
 # search prefixes are valid prefixes to append to field info variables
-# config_keys are a list of config variables that have been set to something
+# config_overrides are a dict of config vars and their values
 # search_key is the key of the field config item to check
 # expected_value is the variable that search_key is set to
 @pytest.mark.parametrize(
-    'search_prefixes, config_keys, expected_prefix', [
-        (['BOTH_VAR1_', 'FCST_VAR1_'],
-         ['FCST_VAR1_'],
-         'FCST_VAR1_'
+    'search_prefixes, config_overrides, expected_value', [
+        (['BOTH_', 'FCST_'],
+         {'FCST_VAR1_': 'fcst_var1'},
+         'fcst_var1'
          ),
-        (['BOTH_VAR1_', 'FCST_VAR1_'], [], None),
+        (['BOTH_', 'FCST_'], {}, None),
 
-        (['BOTH_VAR1_', 'FCST_VAR1_'],
-         ['FCST_VAR1_',
-          'BOTH_VAR1_'],
-         'BOTH_VAR1_'
-         ),
-
-        (['BOTH_GRID_STAT_VAR1_', 'FCST_GRID_STAT_VAR1_'],
-         ['FCST_GRID_STAT_VAR1_'],
-         'FCST_GRID_STAT_VAR1_'
-         ),
-        (['BOTH_GRID_STAT_VAR1_', 'FCST_GRID_STAT_VAR1_'], [], None),
-        (['BOTH_GRID_STAT_VAR1_', 'FCST_GRID_STAT_VAR1_'],
-         ['FCST_GRID_STAT_VAR1_',
-          'BOTH_GRID_STAT_VAR1_'],
-         'BOTH_GRID_STAT_VAR1_'
+        (['BOTH_', 'FCST_'],
+         {'FCST_VAR1_': 'fcst_var1',
+          'BOTH_VAR1_': 'both_var1'},
+         'both_var1'
          ),
 
-        (['ENS_VAR1_'],
-         ['ENS_VAR1_'],
-         'ENS_VAR1_'
+        (['BOTH_GRID_STAT_', 'FCST_GRID_STAT_'],
+         {'FCST_GRID_STAT_VAR1_': 'fcst_grid_stat_var1'},
+         'fcst_grid_stat_var1'
          ),
-        (['ENS_VAR1_'], [], None),
+        (['BOTH_GRID_STAT_', 'FCST_GRID_STAT_'], {}, None),
+        (['BOTH_GRID_STAT_', 'FCST_GRID_STAT_'],
+         {'FCST_GRID_STAT_VAR1_': 'fcst_grid_stat_var1',
+          'BOTH_GRID_STAT_VAR1_': 'both_grid_stat_var1'},
+         'both_grid_stat_var1'
+         ),
+
+        (['ENS_'],
+         {'ENS_VAR1_': 'env_var1'},
+         'env_var1'
+         ),
+        (['ENS_'], {}, None),
 
     ]
 )
 def test_get_field_config_variables(metplus_config,
                                     search_prefixes,
-                                    config_keys,
-                                    expected_prefix):
+                                    config_overrides,
+                                    expected_value):
     config = metplus_config()
+    index = '1'
     field_info_types = ['name', 'levels', 'thresh', 'options', 'output_names']
     for field_info_type in field_info_types:
-        for key in config_keys:
+        for key, value in config_overrides.items():
             config.set('config',
                        f'{key}{field_info_type.upper()}',
-                       'something')
+                       value)
 
         field_configs = util.get_field_config_variables(config,
+                                                        index,
                                                         search_prefixes)
-        if expected_prefix is None:
-            expected_value = None
-        else:
-            expected_value = f'{expected_prefix}{field_info_type.upper()}'
 
         assert(field_configs.get(field_info_type) == expected_value)
 
 @pytest.mark.parametrize(
-    'config_keys, field_key, expected_suffix', [
+    'config_keys, field_key, expected_value', [
         (['NAME',
           ],
          'name', 'NAME'
@@ -121,13 +118,13 @@ def test_get_field_config_variables(metplus_config,
          'levels', 'LEVELS'
          ),
         (['LEVELS',
-          'INPUT_LEVEL',
+          'FIELD_LEVEL',
           ],
          'levels', 'LEVELS'
          ),
-        (['INPUT_LEVEL',
+        (['FIELD_LEVEL',
           ],
-         'levels', 'INPUT_LEVEL'
+         'levels', 'FIELD_LEVEL'
          ),
          ([], 'levels', None),
         (['OUTPUT_NAMES',
@@ -149,18 +146,16 @@ def test_get_field_config_variables(metplus_config,
 def test_get_field_config_variables_synonyms(metplus_config,
                                              config_keys,
                                              field_key,
-                                             expected_suffix):
+                                             expected_value):
     config = metplus_config()
-    prefix = 'BOTH_REGRID_DATA_PLANE_VAR1_'
+    index = '1'
+    prefix = 'BOTH_REGRID_DATA_PLANE_'
     for key in config_keys:
-        config.set('config', f'{prefix}{key}', 'something')
+        config.set('config', f'{prefix}VAR{index}_{key}', key)
 
     field_configs = util.get_field_config_variables(config,
-                                                   [prefix])
-    if expected_suffix is None:
-        expected_value = None
-    else:
-        expected_value = f'{prefix}{expected_suffix}'
+                                                    index,
+                                                    [prefix])
 
     assert(field_configs.get(field_key) == expected_value)
 
@@ -1301,7 +1296,7 @@ def test_get_storms(metplus_config, filename, expected_result):
          'GRIB_lvl_typ = 234;'),
     ]
 )
-def test_get_var_items_options_semicolon(metplus_config, config_overrides,
+def test_format_var_items_options_semicolon(metplus_config, config_overrides,
                                          expected_result):
     config = metplus_config()
     config.set('config', 'FCST_VAR1_NAME', 'FNAME')
@@ -1313,7 +1308,7 @@ def test_get_var_items_options_semicolon(metplus_config, config_overrides,
     index = 1
     time_info = {}
 
-    var_items = util.get_var_items(config, data_type, index, time_info)
+    var_items = util.format_var_items(config, data_type, index, time_info)
     result = var_items.get('extra')
     assert(result == expected_result)
 
