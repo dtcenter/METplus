@@ -218,6 +218,7 @@ documentation can be accessed by directly modifying the URL. For example, to
 view "feature_836_rtd_doc" for the METplus repository the URL would be:
 
   **https://metplus.readthedocs.io/en/feature_836_rtd_doc**
+
   (Note that this link is not valid as this branch does not currently exist,
   however contributors can replace the "feature_836_rtd_doc" with the
   appropriate branch name.)
