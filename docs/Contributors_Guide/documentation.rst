@@ -188,12 +188,21 @@ Verification Datasets Guide:
 
 Coming soon!
 
+.. _read-the-docs:
+
 Read the Docs METplus Documentation
 ___________________________________
 
 The METplus components use `Read the Docs <https://docs.readthedocs.io/>`_ to
 build and display the documentation. Read the Docs simplifies the
 documentation process by building, versioning, and hosting the documentation.
+
+Read the Docs supports multiple versions for each repository. For the METplus
+compoents, the "latest" version will point to the latest official (stable)
+release. The "develop" or "development" version will point to the most up to
+date development code. There may also be other previous versions of the
+software available in the version selector menu, which is accessible by
+clicking in the bottom left corner of the the documentation pages.
 
 Automation rules allow project maintainers to automate actions on new branches
 and tags on repositories.  For the METplus components, documentation is
@@ -203,6 +212,15 @@ branch is created with the prefix:
 * feature (e.g. feature_836_rtd_doc)
 * bugfix (e.g. bugfix_1716_develop_perc_thresh)
 
+The documentation of these "versions" are automatically hidden, however, the
+documentation can be accessed by directly modifying the URL. For example, to
+view "feature_836_rtd_doc" for the METplus repository the URL would be:
+
+  **https://metplus.readthedocs.io/en/feature_836_rtd_doc**
+  (Note that this link is not valid as this branch does not currently exist,
+  however contributors can replace the "feature_836_rtd_doc" with the
+  appropriate branch name.)
+  
 Read the Docs will automatically delete the documentation for a feature
 branch and a bugfix branch when the branch is deleted.
 
@@ -216,12 +234,6 @@ Documentation for each METplus component can be found at the links below:
 * `METplotpy <https://metplotpy.readthedocs.io/>`_
 * `METviewer <https://metviewer.readthedocs.io/>`_
 
-Read the Docs supports multiple versions for each repository. For the METplus
-compoents, the "latest" version will point to the latest official (stable)
-release. The "develop" or "development" version will point to the most up to
-date development code. There may also be other previous versions available
-in the version selector menu, which is accessible by clicking in the bottom
-left corner of the the documentation pages.
 
 Building Sphinx Documentation Manually
 ______________________________________

@@ -150,7 +150,7 @@ would look something like this::
 
 The content of this file is rendered above the icons for the use cases in this
 category in the User's Guide > METplus Use Cases >
-`Model Applications <https://dtcenter.github.io/METplus/latest/generated/model_applications/index.html>`_
+`Model Applications <https://metplus.readthedocs.io/en/latest/generated/model_applications/index.html>`_
 page.
 
 Add Sphinx Documentation File
@@ -179,7 +179,7 @@ In the corresponding documentation category directory
       a list of possible keywords to use (Note: The link text for the
       keywords must match the actual keyword exactly or it will not
       show up in the search, i.e. **ASCII2NCToolUseCase** must match
-      https://dtcenter.github.io/METplus/search.html?q=**ASCII2NCToolUseCase**
+      https://metplus.readthedocs.io/en/latest/search.html?q=**ASCII2NCToolUseCase**
 
     * Add an image to use as the thumbnail (if desired). Images can be added
       to the docs/_static directory and should be named <category>-<conf>.png
