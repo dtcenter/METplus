@@ -197,9 +197,23 @@ In the corresponding documentation category directory
     avoid ending a line with this character to avoid generating warnings in the
     documentation.
 
+Accessing the Documentation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Build the Documentation
-^^^^^^^^^^^^^^^^^^^^^^^
+It is important to ensure that the new use case files is displayed and the
+formatting looks correct. Prior to the release of METplus v4.0.0 contributors
+were required to build the documentation manually.  However, the METplus
+components now use Read the Docs to build and display the documentation. For
+more information on how to view the newly added use case, see the 
+:ref:`Read the Docs METplus Documenation <read-the-docs>`.  Contributors can
+still build the documentation manually if desired. See the
+:ref:`Build the Documentation Manually <manual-build>` section below for more
+information.
+
+.. _manual-build:
+
+Build the Documentation Manually
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Build the documentation and ensure that the new use case file is
 displayed and the formatting looks correct. The Python packages sphinx,
