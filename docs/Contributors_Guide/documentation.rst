@@ -209,8 +209,9 @@ and tags on repositories.  For the METplus components, documentation is
 automatically built by Read the Docs when a new tag is created and when a
 branch is created with the prefix::
 
-* feature (e.g. feature_836_rtd_doc)
-* bugfix (e.g. bugfix_1716_develop_perc_thresh)
+  * feature (e.g. feature_836_rtd_doc)
+    
+  * bugfix (e.g. bugfix_1716_develop_perc_thresh)
 
 The documentation of these "versions" are automatically hidden, however, the
 documentation can be accessed by directly modifying the URL. For example, to
