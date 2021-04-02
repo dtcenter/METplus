@@ -5,25 +5,20 @@ Viewing METplus documentation
 _____________________________
 
 The METplus documentation (beginning with version 3.0) is available
-`online <https://dtcenter.github.io/METplus>`_.
-
-
+`online <https://metplus.readthedocs.io/>`_.
 
 
 Doxygen Source Code Documentation
 _________________________________
 
-The source code documentation is found
-`here <https://dtcenter.github.io/METplus/doxygen>`_.
-
+The source code documentation is coming soon.
 
 
 Documentation Overview
 ______________________
 
 The majority of the documentation is created using the Sphinx documentation
-generator
-tool, which was originally created for Python documentation.
+generator tool, which was originally created for Python documentation.
 The documentation is created using
 `reStructuredText (rst) <https://www.sphinx-doc.org/en/master/usage/restructuredtext/basics.html>`_.
 
@@ -44,9 +39,9 @@ Contributor's Guide.
 Description of Documentation Directories
 ________________________________________
 
-Core documentation is divided into two sections: the User's Guide and
-Contributor's Guide, both of which reside under the *METplus/docs*
-directory, with files ending in .rst.
+Core documentation is divided into four sections: User's Guide, Contributor's
+Guide, Release Guide, and Verification Datasets Guide all of which reside
+under the *METplus/docs* directory and contain files ending in .rst.
 
 
 Documentation for the use cases is found in the following directories:
@@ -83,9 +78,16 @@ To determine where to add new documentation:
 * The User's Guide for any instructions or details that will enable a user
   to run/use the use case and/or new code.
 
-* The Contributor's Guide for any instructions for instructions on
-  creating/constructing the new code.
+* The Contributor's Guide for instructions on creating/constructing new
+  code.
 
+* The Release Guide for instructions for creating software releases for any
+  METplus component, including official, bugfix, and development releases.
+
+* The Verification Datasets Guide for any relevant "truth" datasets, including
+  data from satellite platforms (geostationary and polar orbiting), gridded
+  analyses (global and regional), station or point-based datasets (global and
+  regional), and radar networks.
 
 Use cases that have only one MET tool/METplus wrapper:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -115,10 +117,12 @@ Use cases that use more than one MET tool/METplus wrapper:
 * The model_applications directory contains subdirectories that
   are based on the following categories:
   
+  * air_quality_and_comp
   * climate
   * convection_allowing_models
   * cryosphere
   * data_assimilation
+  * marine_and_coastal  
   * medium_range
   * precipitation
   * s2s (sub-seasonal to seasonal)
@@ -157,25 +161,63 @@ Contributor's Guide:
 * Modify any of the affected sections from the
   *METplus/docs/Contributors_Guide* directory:
   
-  * add_use_case.rst (How to add new use cases.)
-  * basic_components.rst (The basic components of a METplus wrapper.)
-  * coding_standards.rst (The coding standards currently in use.)
+  * add_use_case.rst (How to add new use cases)
+  * basic_components.rst (The basic components of a METplus wrapper)
+  * coding_standards.rst (The coding standards currently in use)
   * conda_env.rst  (How to set up the conda environment for
-    running METplus.)
-  * create_wrapper.rst (How to create a new METplus wrapper.)
-  * deprecation.rst (What to do to deprecate a variable.)
-  * documentation.rst (Describing the
-    documentation process and files.)
+    running METplus)
+  * continuous_integration.rst (How to set up a continuous integration
+    workflow)  
+  * create_wrapper.rst (How to create a new METplus wrapper)
+  * deprecation.rst (What to do to deprecate a variable)
+  * documentation.rst (Describing the documentation process and files)
   * github_workflow.rst (A description of how releases are made,
-    how to to obtain source code from the GitHub repository.)
+    how to to obtain source code from the GitHub repository)
   * index.rst (The page that shows all the 'chapters/sections'
-    of the Contributor's Guide.)
+    of the Contributor's Guide)
   * testing.rst (A description of how to set up testing the
-    wrapper code.)
+    wrapper code)
 
+Release Guide:
+~~~~~~~~~~~~~~
 
-Building Sphinx Documentation
-_____________________________
+Coming soon!
+
+Verification Datasets Guide:
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Coming soon!
+
+Read the Docs METplus Documentation
+___________________________________
+
+The METplus components use `Read the Docs <https://docs.readthedocs.io/>`_ to
+build and display the documentation. Read the Docs simplifies the
+documentation process by building, versioning, and hosting the documentation.
+
+Automation rules allow project maintainers to automate actions on new branches
+and tags on repositories.  For the METplus components, documentation is
+automatically built by Read the Docs when a new tag is created and when a
+branch is created with the prefix:
+
+* feature (e.g. feature_836_rtd_doc)
+* bugfix (e.g. bugfix_1716_develop_perc_thresh)
+
+Read the Docs will automatically delete the documentation for a feature
+branch and a bugfix branch when the branch is deleted.
+
+Documentation for each METplus component can be found at the links below:
+
+* `METplus <https://metplus.readthedocs.io/>`_
+* `MET <https://met.readthedocs.io/>`_  
+* `METcalcpy <https://metcalcpy.readthedocs.io/>`_
+* `METdatadb <https://metdatadb.readthedocs.io/>`_
+* `METexpress <https://metexpress.readthedocs.io/>`_
+* `METplotpy <https://metplotpy.readthedocs.io/>`_
+* `METviewer <https://metviewer.readthedocs.io/>`_
+  
+Building Sphinx Documentation Manually
+______________________________________
 
 .. note::
    
@@ -193,12 +235,12 @@ enter the following:
 
 This script does the following:
 
-* Builds the Sphinx documentation.
-* Builds the doxygen documentation.
-* Removes unwanted text from use case documentation.
-* Copies doxygen files into _build/html for easy deployment.
+* Builds the Sphinx documentation
+* Builds the doxygen documentation
+* Removes unwanted text from use case documentation
+* Copies doxygen files into _build/html for easy deployment
 * Creates symbolic links under Users_Guide to the directories under
-  'generated' to preserve old URL paths.
+  'generated' to preserve old URL paths
 
 The html files that are created can be found in the *METplus/docs/_build/html*
 directory.  The web browser can point to this directory by entering
@@ -206,21 +248,16 @@ the following in the web browser's navigation bar:
 
    *file:///<path-to>/METplus/docs/_build/html/index.html*
 
-Where <path-to> is the full file path leading to the METplus
-source code. This will direct to the home page of the
-documentation.  Click on the "User's Guide"
-link (which opens the user documentation and the use cases)
-or the "Contributor's Guide" link (which is relevant if the user intends to
-contribute code and/or new use cases).
-
+Where <path-to> is the full file path leading to the METplus source code. This
+will direct to the home page of the documentation.  Click on the links to
+navigate to the desired information.
 
 Relevant Documentation for Contributors
 _______________________________________
 
 The Doxygen tool is employed to create documentation from the source code.
-This documentation
-is useful in generating details about the METplus wrapper API
-(Application Programming Interface).
+This documentation is useful in generating details about the METplus wrapper
+API (Application Programming Interface).
 This is a useful reference for contributors to peruse prior to creating
 new METplus wrappers.
 The Doxygen files located in the */path/to/METplus/docs/doxygen* directory
