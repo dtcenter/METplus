@@ -416,7 +416,7 @@ def test_parse_var_list_both(metplus_config, data_type, list_created):
         assert(False)
 
     var_list = util.parse_var_list(conf, time_info=None, data_type=data_type)
-
+    print(f'var_list:{var_list}')
     for list_to_check in list_created.split(':'):
         if not var_list[0][f'{list_to_check}_name']  == "NAME1" or \
            not var_list[1][f'{list_to_check}_name']  == "NAME1" or \
@@ -558,7 +558,7 @@ def test_find_var_indices_wrapper_specific(metplus_config, met_tool, indices):
     conf.set('config', f'{data_type}_VAR1_NAME', "NAME1")
     conf.set('config', f'{data_type}_GRID_STAT_VAR2_NAME', "GSNAME2")
 
-    var_name_indices = util.find_var_name_indices(conf, data_type=data_type,
+    var_name_indices = util.find_var_name_indices(conf, data_types=[data_type],
                                                   met_tool=met_tool)
 
     assert(var_name_indices == indices)
@@ -1297,7 +1297,7 @@ def test_get_storms(metplus_config, filename, expected_result):
     ]
 )
 def test_format_var_items_options_semicolon(metplus_config, config_overrides,
-                                         expected_result):
+                                            expected_result):
     config = metplus_config()
     config.set('config', 'FCST_VAR1_NAME', 'FNAME')
     config.set('config', 'FCST_VAR1_LEVELS', 'FLEVEL')

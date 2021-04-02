@@ -2120,6 +2120,7 @@ def get_field_config_variables(config, index, search_prefixes):
     # add alternate suffixes for config variable names to attempt
     search_suffixes['name'].append('INPUT_FIELD_NAME')
     search_suffixes['name'].append('FIELD_NAME')
+    search_suffixes['levels'].append('INPUT_LEVEL')
     search_suffixes['levels'].append('FIELD_LEVEL')
     search_suffixes['output_names'].append('OUTPUT_FIELD_NAME')
     search_suffixes['output_names'].append('FIELD_NAME')
@@ -2227,15 +2228,10 @@ def format_var_items(field_configs, time_info):
 
     return var_items
 
-def find_var_name_indices(config, data_type, met_tool=None):
+def find_var_name_indices(config, data_types, met_tool=None):
+    data_type_regex = f"{'|'.join(data_types)}|BOTH"
 
-    regex_string = ''
-    # if specific data type is requested, only get that type or BOTH
-    if data_type:
-        regex_string += f"({data_type}|BOTH)"
-    # if no data type requested, get one or more characters that are not underscore
-    else:
-        regex_string += r"([^_]+)"
+    regex_string = f"({data_type_regex})"
 
     # if MET tool is specified, get tool specific items
     if met_tool:
@@ -2284,19 +2280,19 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
     # var_list is a list containing an list of dictionaries
     var_list = []
 
-    # get indices of VAR<n> items for data type and/or met tool
-    indices = []
-    if met_tool:
-        indices = find_var_name_indices(config, data_type, met_tool).keys()
-    if not indices:
-        indices = find_var_name_indices(config, data_type).keys()
-
     # if specific data type is requested, only get that type
     if data_type:
         data_types = [data_type]
     # otherwise get both FCST and OBS
     else:
         data_types = ['FCST', 'OBS']
+
+    # get indices of VAR<n> items for data type and/or met tool
+    indices = []
+    if met_tool:
+        indices = find_var_name_indices(config, data_types, met_tool).keys()
+    if not indices:
+        indices = find_var_name_indices(config, data_types).keys()
 
     # get config name prefixes for each data type to find
     dt_search_prefixes = {}
