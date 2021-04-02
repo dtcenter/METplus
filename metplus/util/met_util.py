@@ -1662,6 +1662,7 @@ def getlist(list_str, expand_begin_end_incr=True):
     """
     if not list_str:
         return []
+
     # FIRST remove surrounding comma, and spaces, form the string.
     list_str = list_str.strip().strip(',').strip()
 
