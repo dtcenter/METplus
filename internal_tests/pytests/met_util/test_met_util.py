@@ -8,6 +8,7 @@ import subprocess
 import shutil
 from dateutil.relativedelta import relativedelta
 from csv import reader
+import pprint
 
 import produtil
 
@@ -16,19 +17,19 @@ from metplus.util import time_util
 
 @pytest.mark.parametrize(
     'data_type, met_tool, expected_out', [
-        ('FCST', None, ['BOTH_',
-                        'FCST_',]),
-        ('OBS', None, ['BOTH_',
-                       'OBS_',]),
-        ('FCST', 'grid_stat', ['BOTH_GRID_STAT_',
-                               'FCST_GRID_STAT_',
-                               'BOTH_',
+        ('FCST', None, ['FCST_',
+                        'BOTH_',]),
+        ('OBS', None, ['OBS_',
+                       'BOTH_',]),
+        ('FCST', 'grid_stat', ['FCST_GRID_STAT_',
+                               'BOTH_GRID_STAT_',
                                'FCST_',
+                               'BOTH_',
                                ]),
-        ('OBS', 'extract_tiles', ['BOTH_EXTRACT_TILES_',
-                                  'OBS_EXTRACT_TILES_',
-                                  'BOTH_',
+        ('OBS', 'extract_tiles', ['OBS_EXTRACT_TILES_',
+                                  'BOTH_EXTRACT_TILES_',
                                   'OBS_',
+                                  'BOTH_',
                                   ]),
         ('ENS', None, ['ENS_']),
         ('DATA', None, ['DATA_']),
@@ -158,6 +159,162 @@ def test_get_field_config_variables_synonyms(metplus_config,
                                                     [prefix])
 
     assert(field_configs.get(field_key) == expected_value)
+
+# ensure that the field configuration used for
+# met_tool_wrapper/EnsembleStat/EnsembleStat.conf
+# works as expected
+def test_parse_var_list_ensemble(metplus_config):
+    config = metplus_config()
+    config.set('config', 'ENS_VAR1_NAME', 'APCP')
+    config.set('config', 'ENS_VAR1_LEVELS', 'A24')
+    config.set('config', 'ENS_VAR1_THRESH', '>0.0, >=10.0')
+    config.set('config', 'ENS_VAR2_NAME', 'REFC')
+    config.set('config', 'ENS_VAR2_LEVELS', 'L0')
+    config.set('config', 'ENS_VAR2_THRESH', '>35.0')
+    config.set('config', 'ENS_VAR2_OPTIONS', 'GRIB1_ptv = 129;')
+    config.set('config', 'ENS_VAR3_NAME', 'UGRD')
+    config.set('config', 'ENS_VAR3_LEVELS', 'Z10')
+    config.set('config', 'ENS_VAR3_THRESH', '>=5.0')
+    config.set('config', 'ENS_VAR4_NAME', 'VGRD')
+    config.set('config', 'ENS_VAR4_LEVELS', 'Z10')
+    config.set('config', 'ENS_VAR4_THRESH', '>=5.0')
+    config.set('config', 'ENS_VAR5_NAME', 'WIND')
+    config.set('config', 'ENS_VAR5_LEVELS', 'Z10')
+    config.set('config', 'ENS_VAR5_THRESH', '>=5.0')
+    config.set('config', 'FCST_VAR1_NAME', 'APCP')
+    config.set('config', 'FCST_VAR1_LEVELS', 'A24')
+    config.set('config', 'FCST_VAR1_THRESH', '>0.01, >=10.0')
+    config.set('config', 'FCST_VAR1_OPTIONS', ('ens_ssvar_bin_size = 0.1; '
+                                               'ens_phist_bin_size = 0.05;'))
+    config.set('config', 'OBS_VAR1_NAME', 'APCP')
+    config.set('config', 'OBS_VAR1_LEVELS', 'A24')
+    config.set('config', 'OBS_VAR1_THRESH', '>0.01, >=10.0')
+    config.set('config', 'OBS_VAR1_OPTIONS', ('ens_ssvar_bin_size = 0.1; '
+                                              'ens_phist_bin_size = 0.05;'))
+    time_info = {}
+
+    expected_ens_list = [{'index': '1',
+                          'ens_name': 'APCP',
+                          'ens_level': 'A24',
+                          'ens_thresh': ['>0.0', '>=10.0']},
+                         {'index': '2',
+                          'ens_name': 'REFC',
+                          'ens_level': 'L0',
+                          'ens_thresh': ['>35.0']},
+                         {'index': '3',
+                          'ens_name': 'UGRD',
+                          'ens_level': 'Z10',
+                          'ens_thresh': ['>=5.0']},
+                         {'index': '4',
+                          'ens_name': 'VGRD',
+                          'ens_level': 'Z10',
+                          'ens_thresh': ['>=5.0']},
+                         {'index': '5',
+                          'ens_name': 'WIND',
+                          'ens_level': 'Z10',
+                          'ens_thresh': ['>=5.0']},
+                        ]
+    expected_var_list = [{'index': '1',
+                          'fcst_name': 'APCP',
+                          'fcst_level': 'A24',
+                          'fcst_thresh': ['>0.01', '>=10.0'],
+                          'fcst_extra': ('ens_ssvar_bin_size = 0.1; '
+                                         'ens_phist_bin_size = 0.05;'),
+                          'obs_name': 'APCP',
+                          'obs_level': 'A24',
+                          'obs_thresh': ['>0.01', '>=10.0'],
+                          'obs_extra': ('ens_ssvar_bin_size = 0.1; '
+                                        'ens_phist_bin_size = 0.05;')
+
+                          },
+                        ]
+
+    ensemble_var_list = util.parse_var_list(config, time_info,
+                                            data_type='ENS')
+
+    # parse optional var list for FCST and/or OBS fields
+    var_list = util.parse_var_list(config, time_info,
+                                   met_tool='ensemble_stat')
+
+    pp = pprint.PrettyPrinter()
+    print(f'ENSEMBLE_VAR_LIST:')
+    pp.pprint(ensemble_var_list)
+    print(f'VAR_LIST:')
+    pp.pprint(var_list)
+
+    assert(len(ensemble_var_list) == len(expected_ens_list))
+    for actual_ens, expected_ens in zip(ensemble_var_list, expected_ens_list):
+        for key, value in expected_ens.items():
+            assert(actual_ens.get(key) == value)
+
+    assert(len(var_list) == len(expected_var_list))
+    for actual_var, expected_var in zip(var_list, expected_var_list):
+        for key, value in expected_var.items():
+            assert(actual_var.get(key) == value)
+
+@pytest.mark.parametrize(
+    'config_var_name, expected_indices, set_met_tool', [
+        ('FCST_GRID_STAT_VAR1_NAME', ['1'], True),
+        ('FCST_GRID_STAT_VAR2_INPUT_FIELD_NAME', ['2'], True),
+        ('FCST_GRID_STAT_VAR3_FIELD_NAME', ['3'], True),
+        ('BOTH_GRID_STAT_VAR4_NAME', ['4'], True),
+        ('BOTH_GRID_STAT_VAR5_INPUT_FIELD_NAME', ['5'], True),
+        ('BOTH_GRID_STAT_VAR6_FIELD_NAME', ['6'], True),
+        ('FCST_VAR7_NAME', ['7'], False),
+        ('FCST_VAR8_INPUT_FIELD_NAME', ['8'], False),
+        ('FCST_VAR9_FIELD_NAME', ['9'], False),
+        ('BOTH_VAR10_NAME', ['10'], False),
+        ('BOTH_VAR11_INPUT_FIELD_NAME', ['11'], False),
+        ('BOTH_VAR12_FIELD_NAME', ['12'], False),
+    ]
+)
+def test_find_var_indices_fcst(metplus_config,
+                               config_var_name,
+                               expected_indices,
+                               set_met_tool):
+    config = metplus_config()
+    data_types = ['FCST']
+    config.set('config', config_var_name, "NAME1")
+    met_tool = 'grid_stat' if set_met_tool else None
+    var_name_indices = util.find_var_name_indices(config,
+                                                  data_types=data_types,
+                                                  met_tool=met_tool)
+
+    assert(len(var_name_indices) == len(expected_indices))
+    for actual_index in var_name_indices:
+        assert(actual_index in expected_indices)
+
+def test_parse_var_list_priority_fcst(metplus_config):
+    priority_list = ['FCST_GRID_STAT_VAR1_NAME',
+                     'FCST_GRID_STAT_VAR1_INPUT_FIELD_NAME',
+                     'FCST_GRID_STAT_VAR1_FIELD_NAME',
+                     'BOTH_GRID_STAT_VAR1_NAME',
+                     'BOTH_GRID_STAT_VAR1_INPUT_FIELD_NAME',
+                     'BOTH_GRID_STAT_VAR1_FIELD_NAME',
+                     'FCST_VAR1_NAME',
+                     'FCST_VAR1_INPUT_FIELD_NAME',
+                     'FCST_VAR1_FIELD_NAME',
+                     'BOTH_VAR1_NAME',
+                     'BOTH_VAR1_INPUT_FIELD_NAME',
+                     'BOTH_VAR1_FIELD_NAME',
+                     ]
+    time_info = {}
+
+    # loop through priority list, process, then pop first value off and
+    # process again until all items have been popped.
+    # This will check that list is in priority order
+    while(priority_list):
+        config = metplus_config()
+        for key in priority_list:
+            config.set('config', key, key.lower())
+
+        var_list = util.parse_var_list(config, time_info=time_info,
+                                       data_type='FCST',
+                                       met_tool='grid_stat')
+
+        assert(len(var_list) == 1)
+        assert(var_list[0].get('fcst_name') == priority_list[0].lower())
+        priority_list.pop(0)
 
 @pytest.mark.parametrize(
     'before, after', [
@@ -547,8 +704,8 @@ def test_parse_var_list_fcst_only_options(metplus_config, data_type, list_len):
 
 @pytest.mark.parametrize(
     'met_tool, indices', [
-        (None, {'1':['FCST']}),
-        ('GRID_STAT', {'2':['FCST']}),
+        (None, {'1': ['FCST']}),
+        ('GRID_STAT', {'2': ['FCST']}),
         ('ENSEMBLE_STAT', {}),
     ]
 )
@@ -563,10 +720,8 @@ def test_find_var_indices_wrapper_specific(metplus_config, met_tool, indices):
 
     assert(var_name_indices == indices)
 
-
-
 def test_get_lead_sequence_lead(metplus_config):
-    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 13) }
+    input_dict = {'valid': datetime.datetime(2019, 2, 1, 13)}
     conf = metplus_config()
     conf.set('config', 'LEAD_SEQ', "3,6,9,12")
     test_seq = util.get_lead_sequence(conf, input_dict)
@@ -1279,36 +1434,30 @@ def test_get_storms(metplus_config, filename, expected_result):
         assert(storm_dict['header'].split()[storm_id_index] == 'STORM_ID')
 
 @pytest.mark.parametrize(
-    'config_overrides, expected_result', [
+    'config_value, expected_result', [
         # 2 items semi-colon at end
-        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;  desc = "HI_CLOUD";',},
+        ('GRIB_lvl_typ = 234;  desc = "HI_CLOUD";',
          'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
         # 2 items no semi-colon at end
-        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;  desc = "HI_CLOUD"',},
+        ('GRIB_lvl_typ = 234;  desc = "HI_CLOUD"',
          'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
         # 1 item semi-colon at end
-        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;',
-          },
+        ('GRIB_lvl_typ = 234;',
          'GRIB_lvl_typ = 234;'),
         # 1 item no semi-colon at end
-        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234',
-          },
+        ('GRIB_lvl_typ = 234',
          'GRIB_lvl_typ = 234;'),
     ]
 )
-def test_format_var_items_options_semicolon(metplus_config, config_overrides,
+def test_format_var_items_options_semicolon(config_value,
                                             expected_result):
-    config = metplus_config()
-    config.set('config', 'FCST_VAR1_NAME', 'FNAME')
-    config.set('config', 'FCST_VAR1_LEVELS', 'FLEVEL')
-    for key, value in config_overrides.items():
-        config.set('config', key, value)
-
-    data_type = 'FCST'
-    index = 1
     time_info = {}
 
-    var_items = util.format_var_items(config, data_type, index, time_info)
+    field_configs = {'name': 'FNAME',
+                     'levels': 'FLEVEL',
+                     'options': config_value}
+
+    var_items = util.format_var_items(field_configs, time_info)
     result = var_items.get('extra')
     assert(result == expected_result)
 
