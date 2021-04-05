@@ -30,8 +30,6 @@ model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
 #
 # You will need to use a version of Python 3.6+ that has the following packages installed::
 #
-# * pandas
-# * xarray
 # * xesmf
 #
 # If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
