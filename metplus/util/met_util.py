@@ -2237,7 +2237,7 @@ def find_var_name_indices(config, data_types, met_tool=None):
     if met_tool:
         regex_string += f"_{met_tool.upper()}"
 
-    regex_string += r"_VAR(\d+)_(NAME|INPUT_FIELD_NAME)"
+    regex_string += r"_VAR(\d+)_(NAME|INPUT_FIELD_NAME|FIELD_NAME)"
 
     # find all <data_type>_VAR<n>_NAME keys in the conf files
     return find_indices_in_config_section(regex_string,
