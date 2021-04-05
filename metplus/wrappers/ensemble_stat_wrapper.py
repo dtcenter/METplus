@@ -461,7 +461,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.infiles.append(fcst_file_list)
 
         # parse var list for ENS fields
-        ensemble_var_list = util.parse_var_list(self.config, time_info, data_type='ENS')
+        ensemble_var_list = util.parse_var_list(self.config,
+                                                time_info,
+                                                data_type='ENS',
+                                                met_tool=self.app_name)
 
         # parse optional var list for FCST and/or OBS fields
         var_list = util.parse_var_list(self.config, time_info, met_tool=self.app_name)
