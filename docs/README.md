@@ -19,4 +19,4 @@ The build script performs the following:
 * Generates Doxygen documentation
 * Copies doxygen files to _build/html for easy deployment
 * Creates symbolic links under Users_Guide to directories
-  under 'generated' to preserve old URL paths 
+  under 'generated' to preserve old URL paths
