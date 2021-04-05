@@ -8,7 +8,7 @@ on:
       - main_*
       - bugfix_*
     ignore-paths:
-      - docs/**
+      - 'docs/**'
   pull_request:
     types: [opened, reopened, synchronize]
 
