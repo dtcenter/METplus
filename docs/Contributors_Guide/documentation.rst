@@ -207,7 +207,7 @@ clicking in the bottom left corner of the the documentation pages.
 Automation rules allow project maintainers to automate actions on new branches
 and tags on repositories.  For the METplus components, documentation is
 automatically built by Read the Docs when a new tag is created and when a
-branch is created with the prefix::
+branch is created with the prefix:
 
   * feature (e.g. feature_836_rtd_doc)
     
