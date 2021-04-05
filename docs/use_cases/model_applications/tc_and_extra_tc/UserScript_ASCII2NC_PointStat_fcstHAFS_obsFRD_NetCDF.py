@@ -29,6 +29,22 @@ _NetCDF.conf
 #
 
 ##############################################################################
+# External Dependencies
+# ---------------------
+#
+# You will need to use a version of Python 3.6+ that has the following packages installed::
+#
+# * numpy
+# * pandas
+#
+# If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
+#
+# If this it the case, you will need to set the MET_PYTHON_EXE environment variable to the path of the version of Python you want to use. If you want this version of Python to only apply to this use case, set it in the [user_env_vars] section of a METplus configuration file.:
+#
+#    [user_env_vars]
+#    MET_PYTHON_EXE = /path/to/python/with/h5-py/and/numpy/packages/bin/python
+
+##############################################################################
 # METplus Components
 # ------------------
 #
@@ -88,6 +104,23 @@ _NetCDF.conf
 # .. note:: See the :ref:`PointStat MET Configuration<point-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case uses two Python embedding scripts: one to download the data (hrd_frd_sonde_find_tar.py) and the other to process it (hrd_frd_sonde_for_ascii2nc.py).
+#
+# parm/use_cases/model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF/hrd_frd_sonde_find_tar.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF/hrd_frd_sonde_find_tar.py
+#
+# parm/use_cases/model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF/hrd_frd_sonde_for_ascii2nc.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF/hrd_frd_sonde_for_ascii2nc.py
+#
 
 ##############################################################################
 # Running METplus
