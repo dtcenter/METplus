@@ -2076,11 +2076,11 @@ def get_field_search_prefixes(data_type, met_tool=None):
     var_strings.append('')
 
     for var_string in var_strings:
-        # if looking for FCST or OBS, check for BOTH prefix first
+        search_prefixes.append(f"{data_type}_{var_string}")
+
+        # if looking for FCST or OBS, also check for BOTH prefix
         if data_type in ['FCST', 'OBS']:
             search_prefixes.append(f"BOTH_{var_string}")
-
-        search_prefixes.append(f"{data_type}_{var_string}")
 
     return search_prefixes
 
