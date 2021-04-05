@@ -1,4 +1,4 @@
-name: METplus CI/CD Workflow
+name: Testing Workflow
 on:
   push:
     branches:
