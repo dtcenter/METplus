@@ -5,7 +5,7 @@ from PIL import Image, ImageChops
 import numpy
 
 IMAGE_EXTENSIONS = [
-    '.png',
+#    '.png',
     '.jpg',
     '.jpeg',
 ]
@@ -17,6 +17,7 @@ NETCDF_EXTENSIONS = [
 
 SKIP_EXTENSIONS = [
     '.zip',
+    '.png',
 ]
 
 PDF_EXTENSIONS = [
