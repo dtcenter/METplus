@@ -309,12 +309,43 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
         print("Comparing stat file")
         header_a = lines_a.pop(0).split()[1:]
         header_b = lines_b.pop(0).split()[1:]
+    else:
+        header_a = header_b = None
 
     if len(lines_a) != len(lines_b):
         print(f"ERROR: Different number of lines in {filepath_b}")
         print(f" File_A: {len(lines_a)}\n File_B: {len(lines_b)}")
         return False
 
+    all_good = diff_text_lines(lines_a,
+                               lines_b,
+                               dir_a=dir_a,
+                               dir_b=dir_b,
+                               print_error=False,
+                               is_file_list=is_file_list,
+                               is_stat_file=is_stat_file,
+                               header_a=header_a)
+
+    # if differences found in text file, sort and try again
+    if not all_good:
+        lines_a.sort()
+        lines_b.sort()
+        all_good = diff_text_lines(lines_a,
+                                   lines_b,
+                                   dir_a=dir_a,
+                                   dir_b=dir_b,
+                                   print_error=True,
+                                   is_file_list=is_file_list,
+                                   is_stat_file=is_stat_file,
+                                   header_a=header_a)
+
+    return all_good
+
+def diff_text_lines(lines_a, lines_b,
+                    dir_a=None, dir_b=None,
+                    print_error=False,
+                    is_file_list=False, is_stat_file=False,
+                    header_a=None):
     all_good = True
     for line_a, line_b in zip(lines_a, lines_b):
         compare_a = line_a
@@ -332,12 +363,14 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
                 cols_b = compare_b.split()[1:]
                 for col_a, col_b, label in zip(cols_a, cols_b, header_a):
                     if col_a != col_b:
-                        print(f"ERROR: {label} differs:\n"
-                              f" A: {col_a}\n B: {col_b}")
+                        if print_error:
+                            print(f"ERROR: {label} differs:\n"
+                                  f" A: {col_a}\n B: {col_b}")
                         all_good = False
             else:
-                print(f"ERROR: Line in {filepath_b} differs\n"
-                      f" A: {compare_a}\n B: {compare_b}")
+                if print_error:
+                    print(f"ERROR: Line differs\n"
+                          f" A: {compare_a}\n B: {compare_b}")
                 all_good = False
 
     return all_good
