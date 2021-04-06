@@ -54,10 +54,19 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_python_embedding.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # This tool does not use a MET configuration file.
 #
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case calls a Python script to read the input data.
+# The Python script is stored in the MET repository: /path/to/MET/installation/share/met/python/read_ascii_numpy.py
+#
+# `read_ascii_numpy.py <https://github.com/dtcenter/MET/blob/develop/met/scripts/python/read_ascii_numpy.py>`_
 
 ##############################################################################
 # Running METplus
