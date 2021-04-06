@@ -73,6 +73,17 @@ met_tool_wrapper/PointStat/PointStat_python_embedding.conf
 # .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
 
 ##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case calls a Python script to read the binary input data.
+# /parm/use_cases/met_tool_wrapper/PointStat/PointStat_python_embedding/read_NRL_binary.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/met_tool_wrapper/PointStat/PointStat_python_embedding/read_NRL_binary.py
+#
+
+##############################################################################
 # Running METplus
 # ---------------
 #
