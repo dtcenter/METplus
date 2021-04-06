@@ -26,21 +26,6 @@ met_tool_wrapper/PointStat/PointStat_python_embedding.conf
 # |
 
 ##############################################################################
-# External Dependencies
-# ---------------------
-#
-# You will need to use a version of Python 3.6+ that has the following packages installed::
-#
-# * numpy
-#
-# If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
-#
-# If this is the case, you will need to set the MET_PYTHON_EXE environment variable to the path of the version of Python you want to use. If you want this version of Python to only apply to this use case, set it in the [user_env_vars] section of a METplus configuration file.:
-#
-#    [user_env_vars]
-#    MET_PYTHON_EXE = /path/to/python/with/required/packages/bin/python
-
-##############################################################################
 # METplus Components
 # ------------------
 #
