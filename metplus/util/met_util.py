@@ -2362,7 +2362,7 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
             var_list.append(var_dict)
 
     # extra debugging information used for developer debugging only
-
+    '''
     for v in var_list:
         config.logger.debug(f"VAR{v['index']}:")
         if 'fcst_name' in v.keys():
@@ -2392,7 +2392,7 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
             config.logger.debug(" ens_extra:"+v['ens_extra'])
         if 'ens_output_name' in v.keys():
             config.logger.debug(" ens_output_name:"+v['ens_output_name'])
-
+    '''
     return sorted(var_list, key=lambda x: x['index'])
 
 def split_level(level):
