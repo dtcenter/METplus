@@ -252,6 +252,72 @@ def test_parse_var_list_ensemble(metplus_config):
         for key, value in expected_var.items():
             assert(actual_var.get(key) == value)
 
+def test_parse_var_list_series_by(metplus_config):
+    config = metplus_config()
+    config.set('config', 'BOTH_EXTRACT_TILES_VAR1_NAME', 'RH')
+    config.set('config', 'BOTH_EXTRACT_TILES_VAR1_LEVELS', 'P850, P700')
+    config.set('config', 'BOTH_EXTRACT_TILES_VAR1_OUTPUT_NAMES',
+               'RH_850mb, RH_700mb')
+
+    config.set('config', 'BOTH_SERIES_ANALYSIS_VAR1_NAME', 'RH_850mb')
+    config.set('config', 'BOTH_SERIES_ANALYSIS_VAR1_LEVELS', 'P850')
+    config.set('config', 'BOTH_SERIES_ANALYSIS_VAR2_NAME', 'RH_700mb')
+    config.set('config', 'BOTH_SERIES_ANALYSIS_VAR2_LEVELS', 'P700')
+    time_info = {}
+
+    expected_et_list = [{'index': '1',
+                         'fcst_name': 'RH',
+                         'fcst_level': 'P850',
+                         'fcst_output_name': 'RH_850mb',
+                         'obs_name': 'RH',
+                         'obs_level': 'P850',
+                         'obs_output_name': 'RH_850mb',
+                         },
+                        {'index': '1',
+                         'fcst_name': 'RH',
+                         'fcst_level': 'P700',
+                         'fcst_output_name': 'RH_700mb',
+                         'obs_name': 'RH',
+                         'obs_level': 'P700',
+                         'obs_output_name': 'RH_700mb',
+                         },
+                        ]
+    expected_sa_list = [{'index': '1',
+                         'fcst_name': 'RH_850mb',
+                         'fcst_level': 'P850',
+                         'obs_name': 'RH_850mb',
+                         'obs_level': 'P850',
+                         },
+                        {'index': '2',
+                         'fcst_name': 'RH_700mb',
+                         'fcst_level': 'P700',
+                         'obs_name': 'RH_700mb',
+                         'obs_level': 'P700',
+                         },
+                        ]
+
+    actual_et_list = util.parse_var_list(config, time_info,
+                                         met_tool='extract_tiles')
+
+    actual_sa_list = util.parse_var_list(config,
+                                         met_tool='series_analysis')
+
+    pp = pprint.PrettyPrinter()
+    print(f'ExtractTiles var list:')
+    pp.pprint(actual_et_list)
+    print(f'SeriesAnalysis var list:')
+    pp.pprint(actual_sa_list)
+
+    assert(len(actual_et_list) == len(expected_et_list))
+    for actual_et, expected_et in zip(actual_et_list, expected_et_list):
+        for key, value in expected_et.items():
+            assert(actual_et.get(key) == value)
+
+    assert(len(actual_sa_list) == len(expected_sa_list))
+    for actual_sa, expected_sa in zip(actual_sa_list, expected_sa_list):
+        for key, value in expected_sa.items():
+            assert(actual_sa.get(key) == value)
+
 @pytest.mark.parametrize(
     'config_var_name, expected_indices, set_met_tool', [
         ('FCST_GRID_STAT_VAR1_NAME', ['1'], True),
