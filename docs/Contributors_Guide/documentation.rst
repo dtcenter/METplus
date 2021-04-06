@@ -43,37 +43,27 @@ Core documentation is divided into four sections: User's Guide, Contributor's
 Guide, Release Guide, and Verification Datasets Guide all of which reside
 under the *METplus/docs* directory and contain files ending in .rst.
 
-
 Documentation for the use cases is found in the following directories:
 
-* *METplus/parm/met_tools*
+* *METplus/docs/use_cases/met_tool_wrapper*
 
-  * This directory contains documentation pertaining to use cases
-    that use one MET *tool/METplus* wrapper.
+  * This directory contains documentation pertaining to use cases that use
+    one MET *tool/METplus* wrapper.
 
-* *METplus/parm/model_applications*
+* *METplus/docs/use_cases/model_applications*
 	
-  * This directory contains documentation pertaining to use cases
-    that are based on model data, and utilize more than one
-    MET tool/METplus wrapper. The corresponding METplus
-    configuration files to these use cases have the same name
-    as the .py files, with a .conf file extension.
+  * This directory contains documentation pertaining to use cases that are
+    based on model data, and utilize more than one MET tool/METplus
+    wrapper.
 
-Documentation files end with a .py extension and these files generate the
-clickable graphics in the gallery.
+Please refer to the :ref:`Document New Use Case <use_case_documentation>`
+section for more information on documenting a new use case.
 
 
 Adding New Documentation
 ________________________
 
 To determine where to add new documentation:
-
-* Use cases that involve a single MET tool/METplus wrapper will reside
-  in the *METplus/parm/use_cases/met_tool_wrapper* directory.
-
-* Use cases that involve multiple MET tools/METplus wrappers will reside
-  in the *METplus/parm/use_cases/model_applications* directory, under
-  a subdirectory that corresponds to a specific category.
 
 * The User's Guide for any instructions or details that will enable a user
   to run/use the use case and/or new code.
@@ -89,57 +79,6 @@ To determine where to add new documentation:
   analyses (global and regional), station or point-based datasets (global and
   regional), and radar networks.
 
-Use cases that have only one MET tool/METplus wrapper:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-* Create a new subdirectory, based on the name of the MET tool:
-  e.g. *METplus/parm/use_cases/met_tool_wrapper/ASCII2NC*
-
-* Create a new Python file with the .py extension.
- 
-   * For a use case document in the *METplus/parm/use_cases/met_tools*
-     directory, follow this pattern:
-
-     <MET tool name>.py
-
-     Where the MET tool name follows PascalCase, e.g. GridStat.py or
-     ASCII2NC.py.  This file is a hybrid RST and Python file.
-
-* Add a METplus configuration file for this use case, using the same
-  name as the .py file above, except replace the .py extension with
-  .conf.  The contents of this file will be pulled into the .py file
-  that was created.
-
-
-Use cases that use more than one MET tool/METplus wrapper:
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-* The model_applications directory contains subdirectories that
-  are based on the following categories:
-  
-  * air_quality_and_comp
-  * climate
-  * convection_allowing_models
-  * cryosphere
-  * data_assimilation
-  * marine_and_coastal  
-  * medium_range
-  * precipitation
-  * s2s (sub-seasonal to seasonal)
-  * space_weather
-  * tc_and_extra_tc
-
-    * For documenting a use case that spans more than one MET tool/
-      METplus wrapper, determine which category to place the
-      documentation.
-	  
-      * If no category exists, create a new subdirectory with the
-        name of the new category.
-	
-        * Create a new Python (.py) file with a descriptive
-	  name, following the convention:	 
-
-	  <descriptive name>.py
 
 User's Guide:
 ~~~~~~~~~~~~~

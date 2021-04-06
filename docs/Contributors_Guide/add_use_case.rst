@@ -16,32 +16,45 @@ instructions to fill out the template.
 This branch will be the source of the pull request to merge the changes into
 the develop branch.
 
+Types of Use Cases
+------------------
+
+* Use cases that involve a single MET tool/METplus wrapper will reside
+  in the *METplus/parm/use_cases/met_tool_wrapper* directory.
+
+* Use cases that involve multiple MET tools/METplus wrappers will reside
+  in the *METplus/parm/use_cases/model_applications* directory, under a
+  subdirectory that corresponds to a specific category.  
 
 .. _use_case_categories:
 
 Use Case Categories
 -------------------
 
-New use cases will be put in the repository under
+New MET tool wrapper use cases will be put in the repository under
+parm/use_cases/met_tool_wrapper/<MET TOOL NAME> where <MET TOOL NAME>
+is the name of the MET tool being wrapped.
+
+New model applications use cases will be put in the repository under
 parm/use_cases/model_applications/<CATEGORY> where <CATEGORY> is
 one of the following:
 
-* medium_range
-* s2s (Subseasonal to Seasonal)
-* convection_allowing_models
-* data_assimilation
-* space_weather
-* marine
-* cryosphere
-* coastal
-* air_quality
-* pbl
-* land_surface
-* extremes
+* air_quality_and_comp
 * climate
-* precipitation
-* tc_and_extra_tc (Tropcial Cyclone and Extra Tropical Cyclone)
+* coastal
+* convection_allowing_models
+* cryosphere
+* data_assimilation
+* extremes
+* land_surface
+* marine_and_coastal
+* medium_range
 * miscellaneous
+* pbl
+* precipitation
+* s2s (Subseasonal to Seasonal)
+* space_weather
+* tc_and_extra_tc (Tropcial Cyclone and Extra Tropical Cyclone)
 
 If you feel that the new use case does not fall into any of these categories
 or are unsure which category is the most appropriate, please contact MET Help
@@ -53,8 +66,19 @@ Use Case Content
 Configure New Use Case
 ^^^^^^^^^^^^^^^^^^^^^^
 
-In the category sub-directory (parm/use_cases/model_applications/<CATEGORY>),
-each use case should have the following:
+If creating a new MET tool wrapper use case, in the MET tool name
+sub-directory (parm/use_cases/met_tool_wrapper/<MET TOOL NAME>), each
+use case should have the following:
+
+* A METplus configuration file where the MET tool name follows PascalCase,
+  e.g. GridStat.conf or ASCII2NC.conf.  This file is a hybrid RST and Python
+  file.  If the use case uses a Python embedding script, it should be
+  indicasted in the by adding "_python_embedding" to the MET tool name.
+  e.g. GridStat_python_embedding.conf
+
+If createing a new model applications use case, in the category sub-directory
+(parm/use_cases/model_applications/<CATEGORY>), each use case should have the
+following:
 
 * A METplus configuration file named
   \<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_cilmo\<CLIMO\>\<DESCRIPTOR\>.conf where
@@ -156,7 +180,9 @@ page.
 Add Sphinx Documentation File
 """""""""""""""""""""""""""""
 
-In the corresponding documentation category directory
+In the corresponding documentation MET tool name directory
+(**docs**/use_cases/met_tool_wrapper/<MET TOOL NAME>) for a met_tool_wrappers
+use case OR category directory for a model_applications use case
 (**docs**/use_cases/model_applications/<CATEGORY>), add:
 
 * A Python Sphinx Documentation (.py) file with the same name as the METplus
