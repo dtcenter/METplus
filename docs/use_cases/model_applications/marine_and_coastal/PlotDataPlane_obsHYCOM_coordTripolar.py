@@ -28,7 +28,7 @@ model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
 # External Dependencies
 # ---------------------
 #
-# You will need to use a version of Python 3.6+ that has the following packages installed::
+# You will need to use a version of Python 3.6+ that has the following packages installed:
 #
 # * xesmf
 #

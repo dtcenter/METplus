@@ -34,7 +34,7 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 # External Dependencies
 # ---------------------
 #
-# You will need to use a version of Python 3.6+ that has the following packages installed::
+# You will need to use a version of Python 3.6+ that has the following packages installed:
 #
 # * cartopy
 # * matplotlib

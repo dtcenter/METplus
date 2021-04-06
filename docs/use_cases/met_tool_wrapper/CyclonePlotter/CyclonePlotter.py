@@ -25,7 +25,7 @@ met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf
 # External Dependencies
 # ---------------------
 #
-# You will need to use a version of Python 3.6+ that has the following packages installed::
+# You will need to use a version of Python 3.6+ that has the following packages installed:
 #
 # * cartopy
 # * matplotlib
