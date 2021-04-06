@@ -84,7 +84,7 @@ met_tool_wrapper/StatAnalysis/StatAnalysis_python_embedding.conf
 # This use case calls a Python script to read matched pair lines from an input source.
 # The Python script is stored in the MET repository: /path/to/MET/installation/share/met/python/read_ascii_mpr.py
 #
-# `read_ascii_mpr.py <https://github.com/dtcenter/MET/blob/408f52e9183ab35178d795ef458e1df5283302e2/met/scripts/python/read_ascii_mpr.py>`_
+# `read_ascii_mpr.py <https://github.com/dtcenter/MET/blob/develop/met/scripts/python/read_ascii_mpr.py>`_
 
 ##############################################################################
 # Running METplus

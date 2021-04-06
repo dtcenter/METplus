@@ -62,7 +62,7 @@ _embedding.conf
 # This use case calls a Python script to read the input data.
 # The Python script is stored in the MET repository: /path/to/MET/installation/share/met/python/read_ascii_point.py
 #
-# `read_ascii_point.py <https://github.com/dtcenter/MET/blob/804b1ac397ccc78bb19d39e855dbde27dcfaedc7/met/scripts/python/read_ascii_point.py>`_
+# `read_ascii_point.py <https://github.com/dtcenter/MET/blob/develop/met/scripts/python/read_ascii_point.py>`_
 
 ##############################################################################
 # Running METplus
