@@ -296,7 +296,8 @@ def test_parse_var_list_series_by(metplus_config):
                          },
                         ]
 
-    actual_et_list = util.parse_var_list(config, time_info,
+    actual_et_list = util.parse_var_list(config,
+                                         time_info=time_info,
                                          met_tool='extract_tiles')
 
     actual_sa_list = util.parse_var_list(config,
