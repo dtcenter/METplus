@@ -15,6 +15,7 @@ Contributor's Guide
    github_workflow
    testing
    add_use_case
+   continuous_integration
    documentation
 
 Indices and tables

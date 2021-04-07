@@ -7,7 +7,9 @@ import sys
 import os
 import re
 
-SUPPORTED_PY_VERSION = '3.6.3'
+from .. import get_python_version
+
+SUPPORTED_PY_VERSION = get_python_version()
 
 def metplus_check_python_version(user_py, supported_py):
     """!Test that the user's version of python is equal of higher than the

@@ -1,8 +1,16 @@
-#! /bin/sh
+#! /bin/bash
+
+# Run by GitHub Actions (in .github/workflows/main.yml) to build
+# METplus Docker image and put it up to DockerHub so it can be
+# used by the use case tests.
+# If GitHub Actions run is triggered by a fork that does not have
+# permissions to push Docker images to DockerHub, the script is
+# is also called (in ci/actions/run_tests/entrypoint.sh) to
+# build the Docker image to use for each use case test group
 
 branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
-  branch_name=${branch_name}-PR
+  branch_name=${branch_name}-pull_request
 fi
 
 #DOCKERHUB_TAG=dtcenter/metplus-dev:${DOCKER_IMAGE}
@@ -17,7 +25,7 @@ echo Timing docker pull...
 start_seconds=$SECONDS
 
 # pipe result to true because it will fail if image has not yet been built
-docker pull ${DOCKERHUB_TAG} || true
+docker pull ${DOCKERHUB_TAG} &> /dev/null || true
 
 duration=$(( SECONDS - start_seconds ))
 echo TIMING docker_setup
@@ -28,9 +36,9 @@ start_seconds=$SECONDS
 
 docker build --pull --cache-from ${DOCKERHUB_TAG} \
 -t ${DOCKERHUB_TAG} \
---build-arg SOURCE_BRANCH=${GITHUB_SHA} \
---build-arg MET_BRANCH=develop \
---build-arg DO_GIT_CLONE ${GITHUB_WORKSPACE}/ci/docker
+--build-arg OBTAIN_SOURCE_CODE='copy' \
+--build-arg MET_TAG=develop \
+-f ${GITHUB_WORKSPACE}/ci/docker/Dockerfile ${GITHUB_WORKSPACE}
 
 duration=$(( SECONDS - start_seconds ))
 echo TIMING docker_setup

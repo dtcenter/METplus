@@ -30,4 +30,3 @@ VOLUME ${MOUNTPT}
 
 USER root
 CMD ["true"]
-

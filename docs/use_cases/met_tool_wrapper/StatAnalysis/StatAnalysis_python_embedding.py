@@ -26,8 +26,9 @@ met_tool_wrapper/StatAnalysis/StatAnalysis_python_embedding.conf
 # |         point_stat_120000L_20050807_120000V.stat
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | The tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 # | **Data Source:** WRF
+# |
 
 ##############################################################################
 # METplus Components
@@ -46,6 +47,7 @@ met_tool_wrapper/StatAnalysis/StatAnalysis_python_embedding.conf
 #
 # | **Valid:** 2005-08-07_00Z  
 # | **Forecast lead:** 12 hour
+# |
 
 ##############################################################################
 # METplus Configuration
@@ -62,49 +64,27 @@ met_tool_wrapper/StatAnalysis/StatAnalysis_python_embedding.conf
 # MET Configuration
 # ---------------------
 #
-# METplus sets environment variables based on the values in the METplus configuration file.
-# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
+# METplus sets environment variables based on user settings in the METplus configuration file. 
+# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
+#
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
+#
+# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
+# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
+#
+# .. note:: See the :ref:`StatAnalysis MET Configuration<stat-analysis-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/STATAnalysisConfig_wrapped
-#
-# Note the following variables can be referenced in the MET configuration file.
-# Refer to the MET Stat-Analysis Tool users guide for a further description of
-# these MET configuration file settings.
-#
-# * **${MODEL}** - Name of forecast input. Corresponds to MODEL_LIST = {MODEL<n>} in the METplus configuration file.
-# * **${DESC}** - User specified Description field. Corresponds to DESC_LIST in the METplus configuration file.
-# * **${FCST_LEAD}** - Forecast lead time.  Corresponds to FCST_LEAD_LIST in the METplus configuration file.
-# * **${OBS_LEAD}** -  Observation lead time.  Corresponds to OBS_LEAD_LIST in the METplus configuration file.
-# * **${FCST_VALID_BEG}** - Forecast valid begin time. Corresponds to VALID_BEG in the METplus configuration file.
-# * **${FCST_VALID_END}** - Forecast valid end time. Corresponds to VALID_END in the METplus configuration file.
-# * **${FCST_VALID_HOUR}** - Forecast valid hour. Corresponds to FCST_VALID_HOUR_LIST in the METplus configuration file.
-# * **${OBS_VALID_BEG}** - Observation valid begin time. Corresponds to VALID_BEG in the METplus configuration file.
-# * **${OBS_VALID_END}** - Observation valid end time. Corresponds to VALID_END in the METplus configuration file.
-# * **${OBS_VALID_HOUR}** - Observation valid hour. Corresponds to OBS_VALID_HOUR_LIST in the METplus configuration file.
-# * **${FCST_INIT_BEG}** - Forecast initialization begin time. Corresponds to INIT_BEG in the METplus configuration file.
-# * **${FCST_INIT_END}** - Forecast initialization end time. Corresponds to INIT_END in the METplus configuration file.
-# * **${FCST_INIT_HOUR}** - Forecast initialization hour time. Corresponds to FCST_INIT_HOUR_LIST in the METplus configuration file.
-# * **${OBS_INIT_BEG}** - Observation initialization begin time. Corresponds to INIT_BEG in the METplus configuration file.
-# * **${OBS_INIT_END}** - Observation initialization end time. Corresponds to INIT_END in the METplus configuration file.
-# * **${OBS_INIT_HOUR}** - Observation initialization hour time. Corresponds to OBS_INIT_HOUR_LIST in the METplus configuration file.
-# * **${FCST_VAR}** - Forecast variable type. Corresponds to FCST_VAR_LIST in the METplus configuration file.
-# * **${OBS_VAR}** -  Observation variable type. Corresponds to OBS_VAR_LIST in the METplus configuration file.
-# * **${FCST_UNITS}** - Forecast units. Corresponds to FCST_UNITS_LIST in the METplus configuration file.
-# * **${OBS_UNITS}** - Observation units. Corresponds to OBS_UNITS_LIST in the METplus configuration file.
-# * **${FCST_LEVEL}** - Forecast level type. Corresponds to FCST_LEVEL_LIST in the METplus configuration file.
-# * **${OBS_LEVEL}** - Observation level type. Corresponds to OBS_LEVEL_LIST in the METplus configuration file.
-# * **${OBTYPE}** -  Observation type. Corresponds to a MODEL<n>_OBTYPE  in the METplus configuration file.
-# * **${VX_MASK}** - Verification masking regions. Corresponds to VX_MASK_LIST in the METplus configuration file.
-# * **${INTERP_MTHD}** - Interpolation methods. Corresponds to INTERP_MTHD_LIST in the METplus configuration file.
-# * **${INTERP_PNTS}** - Interpolation points. Corresponds to INTERP_PNTS_LIST in the METplus configuration file.
-# * **${FCST_THRESH}** - Forecast threshold. Corresponds to FCST_THRESH_LIST in the METplus configuration file.
-# * **${OBS_THRESH}** - Observation threshold. Corresponds to OBS_THRESH_LIST in the METplus configuration file.
-# * **${COV_THRESH}** - Coverage threshold. Corresponds to COV_THRESH_LIST in the METplus configuration file.
-# * **${ALPHA}** - Alpha confidence values. Corresponds to ALPHA_LIST in the METplus configuration file.
-# * **${LINE_TYPE}** - Line types used for all analysis. Corresponds to LINE_TYPE_LIST in the METplus configuration file.
-# * **${JOB}** - Analysis jobs to be performed. Corresponds to STAT_ANALYSIS_JOB_NAME, STAT_ANALYSIS_JOB_ARGS and MODEL<n>_STAT_ANALYSIS_DUMP_ROW_TEMPLATE in the METplus configuration file.
 
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case calls a Python script to read matched pair lines from an input source.
+# The Python script is stored in the MET repository: /path/to/MET/installation/share/met/python/read_ascii_mpr.py
+#
+# `read_ascii_mpr.py <https://github.com/dtcenter/MET/blob/develop/met/scripts/python/read_ascii_mpr.py>`_
 
 ##############################################################################
 # Running METplus

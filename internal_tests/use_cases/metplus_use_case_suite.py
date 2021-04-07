@@ -220,7 +220,17 @@ class METplusUseCaseSuite:
         for category in categories:
             use_cases_list.extend(self.all_cases[category])
 
-        use_cases_to_run = subset_list(use_cases_list, case_slice)
+        # if argument is a slice object or None, call subset_list util
+        if isinstance(case_slice, slice) or case_slice is None:
+            use_cases_to_run = subset_list(use_cases_list, case_slice)
+        # if not, get all use cases that have an index in the list
+        else:
+            case_indices = case_slice
+            if not isinstance(case_slice, list):
+                case_indices = [case_indices]
+            use_cases_to_run = [use_case for use_case in use_cases_list
+                                if use_case['index'] in case_indices]
+
 
         self.add_use_case_group('&'.join(categories),
                                 use_cases=use_cases_to_run,
@@ -363,7 +373,8 @@ def parse_all_use_cases_file():
     for category, use_case_list in category_dict.items():
         all_cases[category] = []
         for use_case in use_case_list:
-            name, *rest = use_case.split('::')
+            index, name, *rest = use_case.split('::')
+            index = int(index.strip())
             name = name.strip()
             requirements = []
 
@@ -384,7 +395,8 @@ def parse_all_use_cases_file():
             set_output = f'config.USE_CASE_NAME={name}'
             config_args.append(set_output)
 
-            use_case_dict = {'name': name,
+            use_case_dict = {'index': index,
+                             'name': name,
                              'config_args': config_args,
                              'requirements': requirements}
             all_cases[category].append(use_case_dict)
@@ -408,13 +420,13 @@ if __name__ == "__main__":
 
     # slice(5) == medium range 0-4
     all_use_cases.add_use_case_groups('medium_range',
-                                      case_slice=slice(5))
+                                      case_slice=range(5))
     # 5 = medium range 5
     all_use_cases.add_use_case_groups('medium_range',
                                       case_slice=5)
-    # slice(6, None) == medium range 6+
+    # slice(6, None) == medium range 6-8
     all_use_cases.add_use_case_groups('medium_range',
-                                      case_slice=slice(6, None))
+                                      case_slice=range(6, 9))
 
     all_use_cases.add_use_case_groups('precipitation')
 

@@ -95,6 +95,16 @@ def tc_stat_wrapper(metplus_config):
         ({'TC_STAT_LOOKIN_DIR': '/my/new/input/dir', },
          {'LOOKIN_DIR': '/my/new/input/dir'}),
 
+        ({'TC_STAT_COLUMN_STR_EXC_NAME': 'WATCH_WARN',
+          'TC_STAT_COLUMN_STR_EXC_VAL': 'TSWATCH',},
+         {'COLUMN_STR_EXC_NAME': 'column_str_exc_name = ["WATCH_WARN"];',
+          'COLUMN_STR_EXC_VAL': 'column_str_exc_val = ["TSWATCH"];'}),
+
+        ({'TC_STAT_INIT_STR_EXC_NAME': 'WATCH_WARN',
+          'TC_STAT_INIT_STR_EXC_VAL': 'HUWARN',},
+         {'INIT_STR_EXC_NAME': 'init_str_exc_name = ["WATCH_WARN"];',
+          'INIT_STR_EXC_VAL': 'init_str_exc_val = ["HUWARN"];'}),
+
     ]
     )
 def test_override_config_in_c_dict(metplus_config, overrides, c_dict):

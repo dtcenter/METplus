@@ -19,9 +19,25 @@ model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
 # | **Input:** Python Embedding script/file, HYCOM observation file, coordinate system weight files (optional)
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** HYCOM model
+# |
+
+##############################################################################
+# External Dependencies
+# ---------------------
+#
+# You will need to use a version of Python 3.6+ that has the following packages installed:
+#
+# * xesmf
+#
+# If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
+#
+# If this is the case, you will need to set the MET_PYTHON_EXE environment variable to the path of the version of Python you want to use. If you want this version of Python to only apply to this use case, set it in the [user_env_vars] section of a METplus configuration file.:
+#
+#    [user_env_vars]
+#    MET_PYTHON_EXE = /path/to/python/with/required/packages/bin/python
 
 ##############################################################################
 # METplus Components
@@ -38,6 +54,9 @@ model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
 # It processes the following run time:
 #
 # | **Valid:** 2020-01-27 0Z
+# |
+
+#
 # As it is currently set, the configuration file will pass in the path to the observation data,
 # as well as a path to the weights for the coordinate system. This is done in an effort to speed up running the use case.
 # These weight files are not required to run at the time of executing the use case, but will be made via Python Embedding
@@ -82,11 +101,11 @@ model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
 #
 # 1) Passing in PlotDataPlane_obsHYCOM_coordTripolar.conf then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in PlotDataPlane_obsHYCOM_coordTripolar.conf::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #

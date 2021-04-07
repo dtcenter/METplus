@@ -21,9 +21,10 @@ met_tool_wrapper/PointStat/PointStat_once_per_field.conf
 # | **Observation:** prepBURF data that has been converted to NetCDF format via PB2NC
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** Unknown
+# |
 
 ##############################################################################
 # METplus Components
@@ -46,6 +47,7 @@ met_tool_wrapper/PointStat/PointStat_once_per_field.conf
 # run times:
 #
 # | **Valid:** 2007-03-30_0Z
+# |
 
 ##############################################################################
 # METplus Configuration
@@ -62,29 +64,18 @@ met_tool_wrapper/PointStat/PointStat_once_per_field.conf
 # MET Configuration
 # ---------------------
 #
-# METplus sets environment variables based on the values in the METplus configuration file.
-# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
+# METplus sets environment variables based on user settings in the METplus configuration file. 
+# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
+#
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
+#
+# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
+# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
+#
+# .. note:: See the :ref:`PointStat MET Configuration<point-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/PointStatConfig_wrapped
-#
-# Note the following variables are referenced in the MET configuration file.
-#
-# * **${POINT_STAT_MESSAGE_TYPE}** - Corresponds to POINT_STAT_MESSAGE_TYPE in the METplus configuration file.
-# * **${POINT_STAT_STATION_ID}** - Corresponds to POINT_STAT_STATION_ID in the METplus configuration file.
-# * **${POINT_STAT_GRID}** - Corresponds to POINT_STAT_GRID in the METplus configuration file.
-# * **${POINT_STAT_POLY}** - Corresponds to POINT_STAT_POLY in the METplus configuration file.
-# * **${OBS_WINDOW_BEGIN}** - Corresponds to OBS_WINDOW_BEGIN or OBS_POINT_STAT_WINDOW_BEGIN in the METplus configuration file.
-# * **${OBS_WINDOW_END}** - Corresponds to OBS_WINDOW_END or OBS_POINT_STAT_WINDOW_END in the METplus configuration file.
-# * **${MODEL}** - Name of forecast input. Corresponds to MODEL in the METplus configuration file.
-# * **${FCST_FIELD}** - Formatted forecast field information. Generated from [FCST/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${OBS_FIELD}** - Formatted observation field information. Generated from [OBS/BOTH]_VAR<n>_[NAME/LEVEL/THRESH/OPTIONS] in the METplus configuration file.
-# * **${REGRID_TO_GRID}** - Grid to remap data. Corresponds to POINT_STAT_REGRID_TO_GRID in the METplus configuration file.
-# * **${VERIF_MASK}** - Optional verification mask file or list of files. Corresponds to POINT_STAT_VERIFICATION_MASK_TEMPLATE in the METplus configuration file.
-# * **${CLIMO_MEAN_FILE}** - Optional path to climatology mean file. Corresponds to POINT_STAT_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
-# * **${CLIMO_STDEV_FILE}** - Optional path to climatology standard deviation file. Corresponds to POINT_STAT_CLIMO_STDEV_INPUT_[DIR/TEMPLATE] in the METplus configuration file.
-# * **${OUTPUT_PREFIX}** - String to prepend to the output filenames. Corresponds to POINT_STAT_OUTPUT_PREFIX in the METplus configuration file.
-#
 
 ##############################################################################
 # Running METplus
