@@ -71,7 +71,7 @@ sub-directory (parm/use_cases/met_tool_wrapper/<MET TOOL NAME>), each
 use case should have the following:
 
 * A METplus configuration file where the MET tool name follows PascalCase,
-  e.g. GridStat.conf or ASCII2NC.conf.  This file is a hybrid RST and Python
+  e.g. GridStat.conf or ASCII2NC.conf.
   file.  If the use case uses a Python embedding script, it should be
   indicasted in the by adding "_python_embedding" to the MET tool name.
   e.g. GridStat_python_embedding.conf
@@ -1153,4 +1153,3 @@ Remove the tarfile and environment file from the staging directory::
 
     ls ${METPLUS_USER_ENV_FILE}
     rm ${METPLUS_USER_ENV_FILE}
-
