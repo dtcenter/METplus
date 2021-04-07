@@ -34,6 +34,15 @@ _SeriesByInit.conf
 #
 
 ##############################################################################
+# External Dependencies
+# ---------------------
+#
+# You will need to use a version of Python 3.6+ that has the following packages installed::
+#
+# * netCDF4
+#
+
+##############################################################################
 # METplus Components
 # ------------------
 #

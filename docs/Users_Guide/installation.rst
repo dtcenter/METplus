@@ -38,7 +38,16 @@ The following software is required to run METplus Wrappers:
 
 -  MET version 10.0 or above
 
-If running plot wrappers, cartopy and pandas packages are required
+If running use cases that use Python embedding, MET must be installed
+with python enabled and the following Python packages installed:
+
+- xarray
+
+- numpy
+
+- pandas
+
+- netCDF4
 
 Some of the wrappers have additional dependencies to run.
 
