@@ -76,7 +76,7 @@ use case should have the following:
   indicasted in the by adding "_python_embedding" to the MET tool name.
   e.g. GridStat_python_embedding.conf
 
-If createing a new model applications use case, in the category sub-directory
+If creating a new model applications use case, in the category sub-directory
 (parm/use_cases/model_applications/<CATEGORY>), each use case should have the
 following:
 
