@@ -145,7 +145,6 @@ class ASCIIInnovationFile(InnovationFile):
 
     def as_dataframe(self):
 
-      #=========test6 --> Get the whole thing in a dataframe
       t1 = datetime.datetime.now()
       line_list = [list(self._parse_innovation_line(line)) for line in self.file]
       print(datetime.datetime.now()-t1)
@@ -155,8 +154,6 @@ class ASCIIInnovationFile(InnovationFile):
 
     def as_met_dataframe(self):
       
-      #=========test4 --> subset in another method
-
       # Get the whole dataframe so we can filter
       t1 = datetime.datetime.now()
       df = self.as_dataframe()
