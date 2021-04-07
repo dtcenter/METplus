@@ -139,20 +139,6 @@ class ASCIIInnovationFile(InnovationFile):
 
             return contents
 
-    def _parse_innovation_met_line(self ,line, inds):
-            temp = list(line)
-            temp.insert(43, ' ')                  # separate column "xiv_ob" and "err_ob"
-            c_pf = temp[123:139]                  # get column "c_pf_ob"
-            c_db = temp[141:151]                  # get column "c_db_ob"
-            del temp[123:151]
-            temp_line = ''.join(str(t) for t in temp)
-
-            contents = temp_line.split()
-            contents.insert(15, "".join(str(p) for p in c_pf))    # insert columns "c_pf_ob" and "c_db_ob"
-            contents.insert(16, "".join(str(d) for d in c_db))
-
-            return [contents[i] for i in inds]
-
     def __iter__(self):
         for line in self.file:
             yield self._parse_innovation_line(line)
@@ -166,97 +152,6 @@ class ASCIIInnovationFile(InnovationFile):
       df = pd.DataFrame(line_list,columns=self.header['column_titles'])
       print(datetime.datetime.now()-t1)
       return(df)
-
-      #=========test5 --> process using multiprocessing?
-      #pool = mp.Pool(4)
-      #jobs = []
-      #requestcols = ['jvar','ob']
-      #requestinds = [x for x in range(len(self.header['column_titles'])) if self.header['column_titles'][x] in requestcols]
-
-      # Make file chunks
-      #def chunks(self, l, n):
-      #  for i in range(0, len(l), n):
-      #    yield l[i:i + n]
-
-      # Chunk file
-
-      #jobs = [pool.apply_async(self._parse_innovation_met_line(line,requestinds),(line)) for line in self.file]
-      #jobs = [pool.apply_async(self._parse_innovation_met_line,args=((line,requestinds))) for line in self.file]
-
-      #jobs = [item.get() for item in jobs]
-      #tmp = [item.get() for item in jobs]
-      #print(sum(tmp,[]))
-      #exit()
-
-      #=========test4 --> subset in another method
-      # Define a list of columns we want from the INNOV file
-      #requestcols = ['jvar','ob']
-
-      # Figure out which index into each line the column is we want
-      #t1 = datetime.datetime.now()
-      #requestinds = [x for x in range(len(self.header['column_titles'])) if self.header['column_titles'][x] in requestcols]
-      #print(self.header['column_titles'])
-      #print(requestcols)
-      #print(requestinds)
-
-      #line_list = [list(self._parse_innovation_met_line(line,requestinds)) for line in self.file] # use parser
-      #line_list = [list(data) for data in self] # use iter
-      #print(datetime.datetime.now()-t1)
-      #df = pd.DataFrame(line_list,columns=requestcols)
-      #print(datetime.datetime.now()-t1)
-      #return(df)
-
-      #=========test1 --> subset based on requested columns 4.5 minutes
-
-      # Define a list of columns we want from the INNOV file
-      #requestcols = ['jvar','ob']
-
-      # Figure out which index into each line the column is we want
-      #t1 = datetime.datetime.now()
-      #requestinds = [x for x in range(len(self.header['column_titles'])) if self.header['column_titles'][x] in requestcols]
-      #print(self.header['column_titles'])
-      #print(requestcols)
-      #print(requestinds)
-
-      # Create a list using the indexes
-      #line_list = [[list(self._parse_innovation_line(line))[i] for i in requestinds] for line in self.file]
-      #print(line_list)
-      #fdf = pd.DataFrame(line_list,columns=requestcols[::-1])
-      #return(fdf)
-
-      #===========test2 --> entire file 3 minutes
-
-      # OK, after all it looks like MET just takes a "list of lists", where each item in the list is a row
-      # in the input file, or dataframe. So perhaps it's not worth using Pandas here? Perhaps the best way would
-      # be to have the user pass in a list of desired columns from the NRL file to use?
-
-      # Dictionary of dtypes for NRL innovation data
-      #NRLdtype = {'ob':'float'}
-
-      # Would it be faster to write out a temp file and re-read it in? This would also
-      # Allow creating a dataframe by mapping NRL columns to the MET columns, then adding
-      # additional columns to the df. Note that the columns don't need to be in order (I don't think)
-      # since hopefully the df is being used by column name and not by column number.
-
-      #t1 = datetime.datetime.now()
-      #line_list = [list(self._parse_innovation_line(line)) for line in self.file]
-      #fdf = pd.DataFrame(line_list,columns=self.header['column_titles'])
-      #print(datetime.datetime.now()-t1)
-      #return(fdf)
-
-      #========test3 --> write temp file 3 minutes
-
-      #t1 = datetime.datetime.now()
-      #tmpF = open('tmp.out','w')
-      #[tmpF.write('%s\n' % (list(self._parse_innovation_line(line)))) for line in self.file]
-      #[tmpF.write('%s\n' % (','.join(list(self._parse_innovation_line(line))))) for line in self.file]
-      #[tmpF.write('%s\n' % (list(self._parse_innovation_line(line)))) for line in self.file]
-      #print(datetime.datetime.now()-t1)
-      #tmpF.close()
-      #fdf = pd.read_csv('tmp.out',header=None,delimiter=',',keep_default_na=False,names=self.header['column_titles'])
-      #fdf = pd.read_csv('tmp.out',header=None,delim_whitespace=True,keep_default_na=False,names=self.header['column_titles'])
-      #print(datetime.datetime.now()-t1)
-      #return(fdf)
 
     def as_met_dataframe(self):
       
