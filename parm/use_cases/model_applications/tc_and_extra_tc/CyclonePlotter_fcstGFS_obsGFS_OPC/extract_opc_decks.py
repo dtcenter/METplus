@@ -64,25 +64,21 @@ if not os.path.exists(bdeck_base):
     print(f"Creating output directory: {bdeck_base}")
     os.makedirs(bdeck_base)
 
-print(f"Reading input file: {input_file}")
-
 # using pandas (pd), read input file
+print(f"Reading input file: {input_file}")
 pd_data = pd.read_csv(input_file, names=atcf_headers_trak)
 
 print(f"Filtering data...")
 
-print(f"Filtering data with {search_date} in YYYYMMDDHH column for adeck")
+# get all 0 hour analyses data
+print(f"Filtering data 0 (hr) in TAU (forecast hour) column for bdeck")
+pd_0hr_data = pd_data[pd_data['TAU'] == 0]
 
 # get adeck - all lines that match the desired date for YYYYMMDDHH (init time)
+print(f"Filtering data with {search_date} in YYYYMMDDHH column for adeck")
 init_matches = pd_data['YYYYMMDDHH'].apply(is_equal,
                                            args=(search_date,))
 adeck = pd_data[init_matches]
-
-
-print(f"Filtering data 0 (hr) in TAU (forecast hour) column...")
-
-# get all 0 hour analyses data
-pd_0hr_data = pd_data[pd_data['TAU'] == 0]
 
 # get list of STORMNAMEs from adeck data
 all_storms = adeck.STORMNAME.unique()
@@ -103,47 +99,43 @@ for storm_name in all_storms:
                                                    args=(storm_name,))
     storm_bdeck = pd_0hr_data[storm_b_match]
 
-    if storm_bdeck.empty:
+    print(f"Setting CYCLONE column to {index_pad} to ensure TCPairs can "
+          "match the storms properly.")
+
+    # set CYCLONE column values to same value
+    storm_bdeck = storm_bdeck.assign(CYCLONE=index_pad)
+
+    print(f"Processing storm: {storm_name}")
+    wrote_a = wrote_b = False
+
+    if not storm_bdeck.empty:
+        bdeck_filename = f'b{file_prefix}{index_pad}.dat'
+        bdeck_path = os.path.join(bdeck_base, bdeck_filename)
+
+        print(f"Writing bdeck to {bdeck_path}")
+        storm_bdeck.to_csv(bdeck_path, header=False, index=False)
+        wrote_b = True
+    else:
         print(f"BDECK for {storm_name} is empty. Skipping")
-        continue
 
     # filter out adeck data for given storm
     storm_a_match = adeck['STORMNAME'].apply(is_equal,
                                              args=(storm_name,))
     storm_adeck = adeck[storm_a_match]
 
-    if storm_adeck.empty:
-        print(f"ADECK for {storm_name} is empty. Skipping")
-        continue
-
-    print(f"Processing storm: {storm_name} == {index_pad}")
-
-    print(f"Setting CYCLONE column to {index_pad} to ensure TCPairs can "
-          "match the storms properly.")
-
     # set CYCLONE column values to same value
-    pd_data = pd_data.assign(CYCLONE=index_pad)
+    storm_adeck = storm_adeck.assign(CYCLONE=index_pad)
 
-    # remove STORMNAME column
-#    storm_adeck = storm_adeck.drop(columns=['STORMNAME'])
-#    storm_bdeck = storm_bdeck.drop(columns=['STORMNAME'])
+    if not storm_adeck.empty:
+        adeck_filename = f'a{file_prefix}{index_pad}.dat'
+        adeck_path = os.path.join(adeck_base, adeck_filename)
+        print(f"Writing adeck to {adeck_path}")
+        storm_adeck.to_csv(adeck_path, header=False, index=False)
+        wrote_a = True
+    else:
+        print(f"ADECK for {storm_name} is empty. Skipping")
 
-    # write adeck and bdeck files for given storm
-    adeck_filename = f'a{file_prefix}{index_pad}.dat'
-    bdeck_filename = f'b{file_prefix}{index_pad}.dat'
-
-    # full pathway for files, including the filename
-    adeck_path = os.path.join(adeck_base, adeck_filename)
-    bdeck_path = os.path.join(bdeck_base, bdeck_filename)
-
-    # write ADECK
-    print(f"Writing adeck to {adeck_path}")
-    storm_adeck.to_csv(adeck_path, header=False, index=False)
-
-    # write BDECK
-    print(f"Writing bdeck to {bdeck_path}")
-    storm_bdeck.to_csv(bdeck_path, header=False, index=False)
-
-    index += 1
+    if wrote_a or wrote_b:
+        index += 1
 
 print("Finished processing all storms")
