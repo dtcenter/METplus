@@ -33,43 +33,44 @@ ${METPLUS_REGRID_DICT}
 //
 // Approximate grid resolution (km)
 //
-grid_res = 40;
+${METPLUS_GRID_RES}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Run all permutations of radius and threshold
 //
-quilt = ${QUILT};
+${METPLUS_QUILT}
 
 //
 // Forecast and observation fields to be verified
 //
 fcst = {
-   field = ${FCST_FIELD};
+   ${METPLUS_FCST_FIELD}
 
    censor_thresh      = [];
    censor_val         = [];
-   conv_radius       = [${FCST_CONV_RADIUS}];
-   conv_thresh       = [${FCST_CONV_THRESH}];
+   ${METPLUS_FCST_CONV_RADIUS}
+   ${METPLUS_FCST_CONV_THRESH}
    vld_thresh         = 0.5;
    filter_attr_name   = [];
    filter_attr_thresh = [];
-   merge_thresh      = [${FCST_MERGE_THRESH}];
-   merge_flag        = ${FCST_MERGE_FLAG};
-   merge_thresh       = >=75.0;
-   merge_flag         = NONE;
+   ${METPLUS_FCST_MERGE_THRESH}
+   ${METPLUS_FCST_MERGE_FLAG}
 }
 
-obs = fcst;
-
 obs = {
-   field = ${OBS_FIELD};
+   ${METPLUS_OBS_FIELD}
 
-   conv_radius       = [${OBS_CONV_RADIUS}];
-   conv_thresh       = [${OBS_CONV_THRESH}];
-   merge_thresh      = [${OBS_MERGE_THRESH}];
-   merge_flag        = ${OBS_MERGE_FLAG};
+   censor_thresh      = [];
+   censor_val         = [];
+   ${METPLUS_OBS_CONV_RADIUS}
+   ${METPLUS_OBS_CONV_THRESH}
+   vld_thresh         = 0.5;
+   filter_attr_name   = [];
+   filter_attr_thresh = [];
+   ${METPLUS_OBS_MERGE_THRESH}
+   ${METPLUS_OBS_MERGE_FLAG}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -97,7 +98,7 @@ max_centroid_dist = 800.0/grid_res;
 mask = {
    grid      = "";
    grid_flag = NONE; // Apply to NONE, FCST, OBS, or BOTH
-   poly      = ${VERIF_MASK};
+   ${METPLUS_MASK_POLY}
    poly_flag = NONE; // Apply to NONE, FCST, OBS, or BOTH
 }
 
@@ -198,14 +199,14 @@ print_interest_thresh = 0.0;
 met_data_dir = "MET_BASE";
 
 fcst_raw_plot = {
-   color_table      = "MET_BASE/colortables/mode_raw.ctable";
+   color_table      = "MET_BASE/colortables/met_default.ctable";
    plot_min         = 0.0;
    plot_max         = 0.0;
    colorbar_spacing = 1;
 }
 
 obs_raw_plot = {
-   color_table      = "MET_BASE/colortables/mode_raw.ctable";
+   color_table      = "MET_BASE/colortables/met_default.ctable";
    plot_min         = 0.0;
    plot_max         = 0.0;
    colorbar_spacing = 1;
@@ -247,7 +248,7 @@ shift_right = 0;   //  grid squares
 
 ////////////////////////////////////////////////////////////////////////////////
 
-output_prefix    = "${OUTPUT_PREFIX}";
+${METPLUS_OUTPUT_PREFIX}
 //version        = "V10.0";
 
 ////////////////////////////////////////////////////////////////////////////////

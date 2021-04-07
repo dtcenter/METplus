@@ -34,6 +34,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_MASK_POLY',
         'METPLUS_MASK_SID',
         'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_CLIMO_CDF_DICT',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -136,6 +137,8 @@ class PointStatWrapper(CompareGriddedWrapper):
                                  'POINT_STAT_MESSAGE_TYPE',
                                  'message_type',
                                  'METPLUS_MESSAGE_TYPE',)
+
+        self.handle_climo_cdf_dict()
 
         c_dict['OBS_VALID_BEG'] = (
             self.config.getraw('config', 'POINT_STAT_OBS_VALID_BEG', '')

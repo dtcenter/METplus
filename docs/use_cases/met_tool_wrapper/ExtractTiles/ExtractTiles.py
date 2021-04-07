@@ -22,7 +22,8 @@ met_tool_wrapper/ExtractTiles/ExtractTiles.conf
 # | **Observation:** GFS Analysis
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# |
 
 ##############################################################################
 # METplus Components
@@ -40,6 +41,7 @@ met_tool_wrapper/ExtractTiles/ExtractTiles.conf
 # It processes the following run time:
 #
 # | **Init:** 2014-12-14 0Z
+# |
 #
 
 ##############################################################################

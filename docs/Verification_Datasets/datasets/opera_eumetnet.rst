@@ -46,7 +46,7 @@ Variables available
   Composite instantaneous max radar reflectivity, 1-hour rainfall accumulation, instantaneous surface rain rate
 
 METplus Use Cases
-  Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataOperaEumetnet%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
+  Link to `METplus Use Cases <https://metplus.readthedocs.io/en/develop/search.html?q=VxDataOperaEumetnet%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
 
 Keywords
   .. note:: **Current Dataset:** VxDataOperaEumetnet

@@ -6,9 +6,14 @@ inputs:
   categories:
     description: 'Use case category or categories to run (separate by comma)'
     required: true
+  run_diff:
+    description: 'Obtain truth data and run diffing logic if true'
+    required: false
+    default: false
 
 runs:
   using: "docker"
   image: "Dockerfile"
   args:
     - ${{ inputs.categories }}
+    - ${{ inputs.run_diff }}

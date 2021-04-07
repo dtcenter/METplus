@@ -27,7 +27,7 @@ from .string_template_substitution import do_string_sub
 from .string_template_substitution import parse_template
 from .string_template_substitution import get_tags
 from . import time_util as time_util
-from . import metplus_check
+from .doc_util import get_wrapper_name
 
 from .. import get_metplus_version
 
@@ -39,39 +39,6 @@ from .. import get_metplus_version
 VALID_EXTENSIONS = ['.gz', '.bz2', '.zip']
 
 PYTHON_EMBEDDING_TYPES = ['PYTHON_NUMPY', 'PYTHON_XARRAY', 'PYTHON_PANDAS']
-
-LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
-                         'cycloneplotter': 'CyclonePlotter',
-                         'ensemblestat': 'EnsembleStat',
-                         'example': 'Example',
-                         'extracttiles': 'ExtractTiles',
-                         'gempaktocf': 'GempakToCF',
-                         'genvxmask': 'GenVxMask',
-                         'griddiag': 'GridDiag',
-                         'gridstat': 'GridStat',
-                         'makeplots': 'MakePlots',
-                         'mode': 'MODE',
-                         'mtd': 'MTD',
-                         'modetimedomain': 'MTD',
-                         'pb2nc': 'PB2NC',
-                         'pcpcombine': 'PCPCombine',
-                         'plotdataplane': 'PlotDataPlane',
-                         'point2grid': 'Point2Grid',
-                         'pointtogrid': 'Point2Grid',
-                         'Point_2_Grid': 'Point2Grid',
-                         'pointstat': 'PointStat',
-                         'pyembedingest': 'PyEmbedIngest',
-                         'regriddataplane': 'RegridDataPlane',
-                         'seriesanalysis': 'SeriesAnalysis',
-                         'statanalysis': 'StatAnalysis',
-                         'tcgen': 'TCGen',
-                         'tcpairs': 'TCPairs',
-                         'tcrmw': 'TCRMW',
-                         'tcstat': 'TCStat',
-                         'tcmprplotter': 'TCMPRPlotter',
-                         'usage': 'Usage',
-                         'userscript': 'UserScript',
-                         }
 
 valid_comparisons = {">=": "ge",
                      ">": "gt",
@@ -931,13 +898,17 @@ def get_start_end_interval_times(config):
     if use_init:
         time_format = config.getstr('config', 'INIT_TIME_FMT')
         start_t = config.getraw('config', 'INIT_BEG')
-        end_t = config.getraw('config', 'INIT_END')
-        time_interval = time_util.get_relativedelta(config.getstr('config', 'INIT_INCREMENT'))
+        end_t = config.getraw('config', 'INIT_END', start_t)
+        time_interval = time_util.get_relativedelta(
+            config.getstr('config', 'INIT_INCREMENT', '60')
+        )
     else:
         time_format = config.getstr('config', 'VALID_TIME_FMT')
         start_t = config.getraw('config', 'VALID_BEG')
-        end_t = config.getraw('config', 'VALID_END')
-        time_interval = time_util.get_relativedelta(config.getstr('config', 'VALID_INCREMENT'))
+        end_t = config.getraw('config', 'VALID_END', start_t)
+        time_interval = time_util.get_relativedelta(
+            config.getstr('config', 'VALID_INCREMENT', '60')
+        )
 
     start_time = get_time_obj(start_t, time_format,
                              clock_time_obj, config.logger)
@@ -1701,7 +1672,7 @@ def getlist(list_str, expand_begin_end_incr=True):
 
     # use csv reader to divide comma list while preserving strings with comma
     # convert the csv reader to a list and get first item (which is the whole list)
-    item_list = list(reader([list_str]))[0]
+    item_list = list(reader([list_str], escapechar='\\'))[0]
 
     item_list = fix_list(item_list)
 
@@ -1776,23 +1747,6 @@ def get_process_list(config):
         out_process_list.append((wrapper_name, instance))
 
     return out_process_list
-
-def get_wrapper_name(process_name):
-    """! Determine name of wrapper from string that may not contain the correct
-         capitalization, i.e. Pcp-Combine translates to PCPCombine
-
-         @param process_name string that was listed in the PROCESS_LIST
-         @returns name of wrapper (without 'Wrapper' at the end) and None if
-          name cannot be determined
-    """
-    lower_process = (process_name.replace('-', '')
-                         .replace('_', '')
-                         .replace(' ', '')
-                         .lower())
-    if lower_process in LOWER_TO_WRAPPER_NAME.keys():
-        return LOWER_TO_WRAPPER_NAME[lower_process]
-
-    return None
 
 # minutes
 def shift_time(time_str, shift):
@@ -2656,7 +2610,7 @@ def expand_int_string_to_list(int_string):
     """! Expand string into a list of integer values. Items are separated by
     commas. Items that are formatted X-Y will be expanded into each number
     from X to Y inclusive. If the string ends with +, then add a str '+'
-    to the end of the list. Used in ci/jobs/run_use_cases.py
+    to the end of the list. Used in ci/jobs/get_use_case_commands.py
 
     @param int_string String containing a comma-separated list of integers
     @returns List of integers and potentially '+' as the last item

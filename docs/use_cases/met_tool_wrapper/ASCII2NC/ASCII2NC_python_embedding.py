@@ -19,9 +19,10 @@ _embedding.conf
 # | **Observations:** Precipitation accumulation observations in ASCII text files
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** Unknown
+# |
 
 ##############################################################################
 # METplus Components
@@ -49,10 +50,19 @@ _embedding.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # None. No MET configuration file for ASCII2NC is used in this case.
 #
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case calls a Python script to read the input data.
+# The Python script is stored in the MET repository: /path/to/MET/installation/share/met/python/read_ascii_point.py
+#
+# `read_ascii_point.py <https://github.com/dtcenter/MET/blob/develop/met/scripts/python/read_ascii_point.py>`_
 
 ##############################################################################
 # Running METplus
