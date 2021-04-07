@@ -8,6 +8,25 @@ import read_xiv_met as inn
 
 ########################################################################
 
+# Mapping of NRL Innovation "jvar" ID's to human-readable strings
+jvar_map = {'1':'GHGT',
+            '2':'TVRT',
+            '3':'UWND',
+            '4':'VWND',
+            '5':'PSRH',
+            '6':'OMXR',
+            '7':'WDIR',
+            '8':'WSPD',
+            '9':'THCK',
+            '10':'MSLP',
+            '11':'PSTN',
+            '12':'TDPD',
+            '13':'BTDK',
+            '14':'TPPW',
+            '15':'QMXR',
+            '16':'TPOT',
+            '17':'RFRA'}
+
 print('Python Script:\t', sys.argv[0])
 
    ##
@@ -46,6 +65,10 @@ if len(sys.argv) == 2:
         # [user_env_vars]
         #df = fobj.as_dataframe()
         df = fobj.as_met_dataframe()
+        
+        # Remap the 'var' column to human strings
+        df = df.replace({"var":jvar_map})
+        print(df['var'])
         
         # Convert the returned dataframe into a list of lists for MET to handle
         point_data = df.values.tolist()

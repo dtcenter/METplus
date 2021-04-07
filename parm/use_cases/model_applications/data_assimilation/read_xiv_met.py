@@ -222,19 +222,19 @@ class ASCIIInnovationFile(InnovationFile):
 
       # Set the type of each column
       #col_dtypes = {'typ':'int64',
-      col_dtypes = {'typ':'str',
+      col_dtypes = {'typ':'string',
                     #'sid':'object',
-                    'sid':'str',
+                    'sid':'string',
                     'vld':'int64',
                     'lat':'float64',
                     'lon':'float64',
                     'elv':'object',
                     #'var':'int64',
-                    'var':'str',
+                    'var':'string',
                     'lvl':'float64',
                     'hgt':'object',
                     #'qc':'int64',
-                    'qc':'str',
+                    'qc':'string',
                     'obs':'float64'}
 
       # The list of columns we want from the file is simply the values for each key in the nrl_met_map dict
@@ -486,19 +486,19 @@ class H5InnovationFile(InnovationFile):
 
       # Set the type of each column
       #col_dtypes = {'typ':'int64',
-      col_dtypes = {'typ':'str',
+      col_dtypes = {'typ':'string',
                     #'sid':'object',
-                    'sid':'str',
+                    'sid':'string',
                     'vld':'int64',
                     'lat':'float64',
                     'lon':'float64',
                     'elv':'object',
                     #'var':'int64',
-                    'var':'str',
+                    'var':'string',
                     'lvl':'float64',
                     'hgt':'object',
                     #'qc':'int64',
-                    'qc':'str',
+                    'qc':'string',
                     'obs':'float64'} 
 
       # The list of columns we want from the file is simply the values for each key in the nrl_met_map dict
