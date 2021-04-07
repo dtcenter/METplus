@@ -5388,6 +5388,9 @@ METplus Configuration Glossary
 
      | *Used by:*  EnsembleStat
 
+   ENSEMBLE_STAT_CLIMO_CDF_CDF_BINS
+     See :term:`ENSEMBLE_STAT_CLIMO_CDF_BINS`
+
    ENSEMBLE_STAT_CLIMO_CDF_BINS
      Specify the value for 'climo_cdf.cdf_bins' in the MET configuration file for EnsembleStat.
 
@@ -5993,3 +5996,218 @@ METplus Configuration Glossary
 
      | *Used by:* CyclonePlotter
 
+   GRID_STAT_CLIMO_CDF_CDF_BINS
+     See :term:`GRID_STAT_CLIMO_CDF_BINS`
+
+   GRID_STAT_CLIMO_CDF_BINS
+     Specify the value for 'climo_cdf.cdf_bins' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_CDF_CENTER_BINS
+     Specify the value for 'climo_cdf.center_bins' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_CDF_WRITE_BINS
+     Specify the value for 'climo_cdf.write_bins' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   POINT_STAT_CLIMO_CDF_CDF_BINS
+     See :term:`POINT_STAT_CLIMO_CDF_BINS`
+
+   POINT_STAT_CLIMO_CDF_BINS
+     Specify the value for 'climo_cdf.cdf_bins' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_CDF_CENTER_BINS
+     Specify the value for 'climo_cdf.center_bins' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_CDF_WRITE_BINS
+     Specify the value for 'climo_cdf.write_bins' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   GRID_STAT_OUTPUT_FLAG_FHO
+     Specify the value for 'output_flag.fho' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_CTC
+     Specify the value for 'output_flag.ctc' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_CTS
+     Specify the value for 'output_flag.cts' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_MCTC
+     Specify the value for 'output_flag.mctc' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_MCTS
+     Specify the value for 'output_flag.mcts' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_CNT
+     Specify the value for 'output_flag.cnt' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_SL1L2
+     Specify the value for 'output_flag.sl1l2' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_SAL1L2
+     Specify the value for 'output_flag.sal1l2' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_VL1L2
+     Specify the value for 'output_flag.vl1l2' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_VAL1L2
+     Specify the value for 'output_flag.val1l2' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_VCNT
+     Specify the value for 'output_flag.vcnt' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_PCT
+     Specify the value for 'output_flag.pct' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_PSTD
+     Specify the value for 'output_flag.pstd' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_PJC
+     Specify the value for 'output_flag.pjc' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_PRC
+     Specify the value for 'output_flag.prc' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_ECLV
+     Specify the value for 'output_flag.eclv' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_NBRCTC
+     Specify the value for 'output_flag.nbrctc' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_NBRCTS
+     Specify the value for 'output_flag.nbrcts' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_NBRCNT
+     Specify the value for 'output_flag.nbrcnt' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_GRAD
+     Specify the value for 'output_flag.grad' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_OUTPUT_FLAG_DMAP
+     Specify the value for 'output_flag.dmap' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_FLAG_LATLON
+     Specify the value for 'nc_pairs_flag.latlon' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_FLAG_RAW
+     Specify the value for 'nc_pairs_flag.raw' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_FLAG_DIFF
+     Specify the value for 'nc_pairs_flag.diff' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_FLAG_CLIMO
+     Specify the value for 'nc_pairs_flag.climo' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP
+     Specify the value for 'nc_pairs_flag.climo_cdp' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_FLAG_WEIGHT
+     Specify the value for 'nc_pairs_flag.weight' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_FLAG_NBRHD
+     Specify the value for 'nc_pairs_flag.nbrhd' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_FLAG_FOURIER
+     Specify the value for 'nc_pairs_flag.fourier' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_FLAG_GRADIENT
+     Specify the value for 'nc_pairs_flag.gradient' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP
+     Specify the value for 'nc_pairs_flag.distance_map' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK
+     Specify the value for 'nc_pairs_flag.apply_mask' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   TC_STAT_COLUMN_STR_EXC_NAME
+     Specify the value for 'column_str_exc_name' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_COLUMN_STR_EXC_VAL
+     Specify the value for 'column_str_exc_val' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_INIT_STR_EXC_NAME
+     Specify the value for 'init_str_exc_name' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat
+
+   TC_STAT_INIT_STR_EXC_VAL
+     Specify the value for 'init_str_exc_val' in the MET configuration file for TCStat.
+
+     | *Used by:* TCStat

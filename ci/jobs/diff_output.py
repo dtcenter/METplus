@@ -1,5 +1,8 @@
 #! /usr/bin/env python3
 
+# Run by GitHub Actions (in ci/jobs/run_use_cases.py) to
+# trigger difference tests.
+
 import sys
 import os
 

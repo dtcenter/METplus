@@ -1,5 +1,10 @@
 #! /usr/bin/env python3
 
+# Run by GitHub Actions (in .github/workflows/main.yml) check DTCenter web
+# server for any input data tarfiles that have been updated and need to be
+# regenerated as Docker data volumes to be used in use case tests.
+# Push new/updated data volumes up to DockerHub
+
 import sys
 import os
 import shlex
@@ -64,6 +69,9 @@ def main():
     if not branch_name:
         print("Could not get current branch. Exiting.")
         sys.exit(1)
+
+    if branch_name.endswith('-ref'):
+        branch_name = branch_name[0:-4]
 
     if not os.environ.get('GITHUB_WORKSPACE'):
         print("GITHUB_WORKSPACE not set. Exiting.")

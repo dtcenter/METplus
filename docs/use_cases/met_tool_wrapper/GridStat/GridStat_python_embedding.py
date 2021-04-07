@@ -23,6 +23,7 @@ met_tool_wrapper/GridStat/GridStat_python_embedding.conf
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 # |
 
+
 ##############################################################################
 # METplus Components
 # ------------------
@@ -65,6 +66,15 @@ met_tool_wrapper/GridStat/GridStat_python_embedding.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case calls a Python script to read the input data.
+# The Python script is stored in the MET repository: /path/to/MET/installation/share/met/python/read_ascii_numpy.py
+#
+# `read_ascii_numpy.py <https://github.com/dtcenter/MET/blob/develop/met/scripts/python/read_ascii_numpy.py>`_
 
 ##############################################################################
 # Running METplus
