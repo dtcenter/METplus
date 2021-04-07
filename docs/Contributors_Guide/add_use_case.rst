@@ -72,7 +72,7 @@ use case should have the following:
 
 * A METplus configuration file where the MET tool name follows PascalCase,
   e.g. GridStat.conf or ASCII2NC.conf.
-  file.  If the use case uses a Python embedding script, it should be
+  If the use case uses a Python embedding script, it should be
   indicasted in the by adding "_python_embedding" to the MET tool name.
   e.g. GridStat_python_embedding.conf
 
