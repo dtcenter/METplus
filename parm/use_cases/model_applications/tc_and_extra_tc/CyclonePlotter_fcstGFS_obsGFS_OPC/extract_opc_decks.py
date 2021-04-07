@@ -35,10 +35,9 @@ if num_args < 3:
     print("ERROR: Not enough arguments")
     sys.exit(1)
 
-# function to extract start date from stormname (stormname contains date 1st observed, lat-lon 1st observed)
-def startswith_date(storm_name, search_date):
-    storm_date = str(storm_name).split('_')[0].strip()
-    return storm_date.startswith(search_date)
+# function to compare storm warning time to search time
+def startswith_date(warning_time, search_date):
+    return str(warning_time).startswith(search_date)
 
 input_file = sys.argv[1]
 output_dir = sys.argv[2]
@@ -48,8 +47,13 @@ search_date = sys.argv[3]
 adeck_filename = f'adeck.{search_date}.dat'
 bdeck_filename = f'bdeck.{search_date}.dat'
 
-adeck_path = os.path.join(output_dir, adeck_filename)
-bdeck_path = os.path.join(output_dir, bdeck_filename)
+# an intermediate directory path for the separate files
+adeck_base = os.path.join(output_dir, "adeck")
+bdeck_base = os.path.join(output_dir, "bdeck")
+
+#full pathway for files, including the filename
+adeck_path = os.path.join(adeck_base, adeck_filename)
+bdeck_path = os.path.join(bdeck_base, bdeck_filename)
 
 # using pandas (pd), read input file
 pd_data = pd.read_csv(input_file, names=atcf_headers_trak)
@@ -68,10 +72,14 @@ all_storms = adeck.STORMNAME.unique()
 only_adeck_storms = pd_0hr_data['STORMNAME'].isin(all_storms)
 bdeck = pd_0hr_data[only_adeck_storms]
 
-# create output directory if not already there
-if not os.path.exists(output_dir):
-    print(f"Creating output directory: {output_dir}")
-    os.makedirs(output_dir)
+# create output directories if not already there
+if not os.path.exists(adeck_base):
+    print(f"Creating output directory: {adeck_base}")
+    os.makedirs(adeck_base)
+
+if not os.path.exists(bdeck_base):
+    print(f"Creating output directory: {bdeck_base}")
+    os.makedirs(bdeck_base)
 
 # write ADECK
 print(f"Writing adeck to {adeck_path}")
