@@ -168,13 +168,13 @@ class ASCIIInnovationFile(InnovationFile):
       # cdbbeg is the beginning index of the cdb substring
       # cdbend is the ending index of the cdb substring
       # for now, only support 1 string for each string column, and only the "&" operator for combining with qstr
-      qstr = os.environ['NRL_QUERY_STRING']
-      cpfstr = os.environ['NRL_CPFOB_SUBSTR']
-      cpfbeg = int(os.environ['NRL_CPFOB_BEGIND'])
-      cpfend = int(os.environ['NRL_CPFOB_ENDIND'])
-      cdbstr = os.environ['NRL_CDBOB_SUBSTR']
-      cdbbeg = int(os.environ['NRL_CDBOB_BEGIND'])
-      cdbend = int(os.environ['NRL_CDBOB_ENDIND'])
+      qstr = os.environ.get('NRL_QUERY_STRING','')
+      cpfstr = os.environ.get('NRL_CPFOB_SUBSTR','')
+      cpfbeg = int(os.environ.get('NRL_CPFOB_BEGIND',0))
+      cpfend = int(os.environ.get('NRL_CPFOB_ENDIND',16))
+      cdbstr = os.environ.get('NRL_CDBOB_SUBSTR','')
+      cdbbeg = int(os.environ.get('NRL_CDBOB_BEGIND',0))
+      cdbend = int(os.environ.get('NRL_CDBOB_ENDIND',10))
      
       # Filter based on user requested filter strings
       if qstr!='':
@@ -432,13 +432,13 @@ class H5InnovationFile(InnovationFile):
       # cdbbeg is the beginning index of the cdb substring
       # cdbend is the ending index of the cdb substring
       # for now, only support 1 string for each string column, and only the "&" operator for combining with qstr
-      qstr = os.environ['NRL_QUERY_STRING']
-      cpfstr = os.environ['NRL_CPFOB_SUBSTR']
-      cpfbeg = int(os.environ['NRL_CPFOB_BEGIND'])
-      cpfend = int(os.environ['NRL_CPFOB_ENDIND'])
-      cdbstr = os.environ['NRL_CDBOB_SUBSTR']
-      cdbbeg = int(os.environ['NRL_CDBOB_BEGIND'])
-      cdbend = int(os.environ['NRL_CDBOB_ENDIND'])
+      qstr = os.environ.get('NRL_QUERY_STRING','')
+      cpfstr = os.environ.get('NRL_CPFOB_SUBSTR','')
+      cpfbeg = int(os.environ.get('NRL_CPFOB_BEGIND',0))
+      cpfend = int(os.environ.get('NRL_CPFOB_ENDIND',16))
+      cdbstr = os.environ.get('NRL_CDBOB_SUBSTR','')
+      cdbbeg = int(os.environ.get('NRL_CDBOB_BEGIND',0))
+      cdbend = int(os.environ.get('NRL_CDBOB_ENDIND',10))
 
       # Filter based on user requested filter strings
       if qstr!='':
