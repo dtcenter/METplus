@@ -16,32 +16,45 @@ instructions to fill out the template.
 This branch will be the source of the pull request to merge the changes into
 the develop branch.
 
+Types of Use Cases
+------------------
+
+* Use cases that involve a single MET tool/METplus wrapper will reside
+  in the *METplus/parm/use_cases/met_tool_wrapper* directory.
+
+* Use cases that involve multiple MET tools/METplus wrappers will reside
+  in the *METplus/parm/use_cases/model_applications* directory, under a
+  subdirectory that corresponds to a specific category.  
 
 .. _use_case_categories:
 
 Use Case Categories
 -------------------
 
-New use cases will be put in the repository under
+New MET tool wrapper use cases will be put in the repository under
+parm/use_cases/met_tool_wrapper/<MET TOOL NAME> where <MET TOOL NAME>
+is the name of the MET tool being wrapped.
+
+New model applications use cases will be put in the repository under
 parm/use_cases/model_applications/<CATEGORY> where <CATEGORY> is
 one of the following:
 
-* medium_range
-* s2s (Subseasonal to Seasonal)
-* convection_allowing_models
-* data_assimilation
-* space_weather
-* marine
-* cryosphere
-* coastal
-* air_quality
-* pbl
-* land_surface
-* extremes
+* air_quality_and_comp
 * climate
-* precipitation
-* tc_and_extra_tc (Tropcial Cyclone and Extra Tropical Cyclone)
+* coastal
+* convection_allowing_models
+* cryosphere
+* data_assimilation
+* extremes
+* land_surface
+* marine_and_coastal
+* medium_range
 * miscellaneous
+* pbl
+* precipitation
+* s2s (Subseasonal to Seasonal)
+* space_weather
+* tc_and_extra_tc (Tropcial Cyclone and Extra Tropical Cyclone)
 
 If you feel that the new use case does not fall into any of these categories
 or are unsure which category is the most appropriate, please contact MET Help
@@ -53,8 +66,19 @@ Use Case Content
 Configure New Use Case
 ^^^^^^^^^^^^^^^^^^^^^^
 
-In the category sub-directory (parm/use_cases/model_applications/<CATEGORY>),
-each use case should have the following:
+If creating a new MET tool wrapper use case, in the MET tool name
+sub-directory (parm/use_cases/met_tool_wrapper/<MET TOOL NAME>), each
+use case should have the following:
+
+* A METplus configuration file where the MET tool name follows PascalCase,
+  e.g. GridStat.conf or ASCII2NC.conf.
+  If the use case uses a Python embedding script, it should be
+  indicasted in the by adding "_python_embedding" to the MET tool name.
+  e.g. GridStat_python_embedding.conf
+
+If creating a new model applications use case, in the category sub-directory
+(parm/use_cases/model_applications/<CATEGORY>), each use case should have the
+following:
 
 * A METplus configuration file named
   \<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_cilmo\<CLIMO\>\<DESCRIPTOR\>.conf where
@@ -150,13 +174,15 @@ would look something like this::
 
 The content of this file is rendered above the icons for the use cases in this
 category in the User's Guide > METplus Use Cases >
-`Model Applications <https://dtcenter.github.io/METplus/latest/generated/model_applications/index.html>`_
+`Model Applications <https://metplus.readthedocs.io/en/latest/generated/model_applications/index.html>`_
 page.
 
 Add Sphinx Documentation File
 """""""""""""""""""""""""""""
 
-In the corresponding documentation category directory
+In the corresponding documentation MET tool name directory
+(**docs**/use_cases/met_tool_wrapper/<MET TOOL NAME>) for a met_tool_wrappers
+use case OR category directory for a model_applications use case
 (**docs**/use_cases/model_applications/<CATEGORY>), add:
 
 * A Python Sphinx Documentation (.py) file with the same name as the METplus
@@ -179,7 +205,7 @@ In the corresponding documentation category directory
       a list of possible keywords to use (Note: The link text for the
       keywords must match the actual keyword exactly or it will not
       show up in the search, i.e. **ASCII2NCToolUseCase** must match
-      https://dtcenter.github.io/METplus/search.html?q=**ASCII2NCToolUseCase**
+      https://metplus.readthedocs.io/en/latest/search.html?q=**ASCII2NCToolUseCase**
 
     * Add an image to use as the thumbnail (if desired). Images can be added
       to the docs/_static directory and should be named <category>-<conf>.png
@@ -197,9 +223,23 @@ In the corresponding documentation category directory
     avoid ending a line with this character to avoid generating warnings in the
     documentation.
 
+Accessing the Documentation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Build the Documentation
-^^^^^^^^^^^^^^^^^^^^^^^
+It is important to ensure that the new use case files is displayed and the
+formatting looks correct. Prior to the release of METplus v4.0.0 contributors
+were required to build the documentation manually.  However, the METplus
+components now use Read the Docs to build and display the documentation. For
+more information on how to view the newly added use case, see the 
+:ref:`Read the Docs METplus Documenation <read-the-docs>`.  Contributors can
+still build the documentation manually if desired. See the
+:ref:`Build the Documentation Manually <manual-build>` section below for more
+information.
+
+.. _manual-build:
+
+Build the Documentation Manually
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Build the documentation and ensure that the new use case file is
 displayed and the formatting looks correct. The Python packages sphinx,
@@ -1113,4 +1153,3 @@ Remove the tarfile and environment file from the staging directory::
 
     ls ${METPLUS_USER_ENV_FILE}
     rm ${METPLUS_USER_ENV_FILE}
-
