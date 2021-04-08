@@ -99,12 +99,6 @@ for storm_name in all_storms:
                                                    args=(storm_name,))
     storm_bdeck = pd_0hr_data[storm_b_match]
 
-    print(f"Setting CYCLONE column to {index_pad} to ensure TCPairs can "
-          "match the storms properly.")
-
-    # set CYCLONE column values to same value
-    storm_bdeck = storm_bdeck.assign(CYCLONE=index_pad)
-
     print(f"Processing storm: {storm_name}")
     wrote_a = wrote_b = False
 
@@ -122,9 +116,6 @@ for storm_name in all_storms:
     storm_a_match = adeck['STORMNAME'].apply(is_equal,
                                              args=(storm_name,))
     storm_adeck = adeck[storm_a_match]
-
-    # set CYCLONE column values to same value
-    storm_adeck = storm_adeck.assign(CYCLONE=index_pad)
 
     if not storm_adeck.empty:
         adeck_filename = f'a{file_prefix}{index_pad}.dat'
