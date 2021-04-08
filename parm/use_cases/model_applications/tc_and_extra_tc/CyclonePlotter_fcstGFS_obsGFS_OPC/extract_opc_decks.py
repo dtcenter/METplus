@@ -34,7 +34,7 @@ num_args = len(sys.argv) - 1
 if num_args < 3:
     print("ERROR: Not enough arguments")
     sys.exit(1)
-
+debug = 'debug' in sys.argv
 # function to compare storm warning time to search time
 def is_equal(column_val, search_string):
     return str(column_val).strip() == search_string
@@ -43,7 +43,8 @@ input_file = sys.argv[1]
 output_dir = sys.argv[2]
 search_date = sys.argv[3]
 
-print(f"Running {__file__}\nSearch date: {search_date}")
+if debug:
+    print(f"Running {__file__}\nSearch date: {search_date}")
 
 # get 2 digit year to use in CYCLONE column substitute value
 search_year = search_date[2:4]
@@ -53,16 +54,16 @@ file_prefix = f'deck.{search_date}.'
 
 # an intermediate directory path for the separate files
 adeck_base = os.path.join(output_dir, "adeck")
-bdeck_base = os.path.join(output_dir, "bdeck")
+#bdeck_base = os.path.join(output_dir, "bdeck")
 
 # create output directories if not already there
 if not os.path.exists(adeck_base):
     print(f"Creating output directory: {adeck_base}")
     os.makedirs(adeck_base)
 
-if not os.path.exists(bdeck_base):
-    print(f"Creating output directory: {bdeck_base}")
-    os.makedirs(bdeck_base)
+#if not os.path.exists(bdeck_base):
+#    print(f"Creating output directory: {bdeck_base}")
+#    os.makedirs(bdeck_base)
 
 # using pandas (pd), read input file
 print(f"Reading input file: {input_file}")
@@ -98,19 +99,21 @@ for storm_name in all_storms:
     storm_b_match = pd_0hr_data['STORMNAME'].apply(is_equal,
                                                    args=(storm_name,))
     storm_bdeck = pd_0hr_data[storm_b_match]
-
-    print(f"Processing storm: {storm_name}")
+    if debug:
+        print(f"Processing storm: {storm_name}")
     wrote_a = wrote_b = False
 
+    #Logic for writing out Analysis files. Currently commented out,
+    #but left in for possible future use
     if not storm_bdeck.empty:
-        bdeck_filename = f'b{file_prefix}{index_pad}.dat'
-        bdeck_path = os.path.join(bdeck_base, bdeck_filename)
+    #    bdeck_filename = f'b{file_prefix}{index_pad}.dat'
+    #    bdeck_path = os.path.join(bdeck_base, bdeck_filename)
 
-        print(f"Writing bdeck to {bdeck_path}")
-        storm_bdeck.to_csv(bdeck_path, header=False, index=False)
+    #    print(f"Writing bdeck to {bdeck_path}")
+    #    storm_bdeck.to_csv(bdeck_path, header=False, index=False)
         wrote_b = True
-    else:
-        print(f"BDECK for {storm_name} is empty. Skipping")
+    #else:
+    #    print(f"BDECK for {storm_name} is empty. Skipping")
 
     # filter out adeck data for given storm
     storm_a_match = adeck['STORMNAME'].apply(is_equal,
@@ -120,11 +123,13 @@ for storm_name in all_storms:
     if not storm_adeck.empty:
         adeck_filename = f'a{file_prefix}{index_pad}.dat'
         adeck_path = os.path.join(adeck_base, adeck_filename)
-        print(f"Writing adeck to {adeck_path}")
+        if debug:
+            print(f"Writing adeck to {adeck_path}")
         storm_adeck.to_csv(adeck_path, header=False, index=False)
         wrote_a = True
     else:
-        print(f"ADECK for {storm_name} is empty. Skipping")
+        if debug:
+            print(f"ADECK for {storm_name} is empty. Skipping")
 
     if wrote_a or wrote_b:
         index += 1
