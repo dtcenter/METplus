@@ -44,6 +44,7 @@
 {"name": "requestor: NOAA/PSD","color": "3101c1","description": "NOAA Physical Sciences Laboratory"}
 {"name": "requestor: NOAA/SWPC","color": "3101c1","description": "NOAA Space Weather Prediction Center"}
 {"name": "requestor: NOAA/WPC","color": "3101c1","description": "NOAA Weather Prediction Center"}
+{"name": "requestor: NOAA/CPC","color": "3101c1","description": "NOAA Climate Prediction Center"}
 {"name": "requestor: Navy/NRL","color": "3101c1","description": "Naval Research Laboratory"}
 {"name": "requestor: Navy/FNMOC","color": "3101c1","description": "Navy Fleet Numerical Meteorology and Oceanography Center"}
 {"name": "requestor: METplus Team","color": "3101c1","description": "METplus Development Team"}
