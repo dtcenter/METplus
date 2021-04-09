@@ -145,12 +145,18 @@ class ASCIIInnovationFile(InnovationFile):
 
     def as_dataframe(self):
 
+      # NRL dtypes, based on H5InnovationFile class
+      innovdtypes = ['int64','float64','float64','float64','float64','float64','float64','object','object','float64',\
+                     'int64','int64','object','int64','int64','object','object','int64','int64','float64','float64',\
+                     'float64']
+      innovdict = {self.header['column_titles'][i]:innovdtypes[i] for i in range(len(innovdtypes))}
+
       t1 = datetime.datetime.now()
       line_list = [list(self._parse_innovation_line(line)) for line in self.file]
       print(datetime.datetime.now()-t1)
       df = pd.DataFrame(line_list,columns=self.header['column_titles'])
       print(datetime.datetime.now()-t1)
-      return(df)
+      return(df.astype(innovdict))
 
     def as_met_dataframe(self):
       
@@ -221,20 +227,16 @@ class ASCIIInnovationFile(InnovationFile):
                      'obs':[os.environ['NRL_OBS_STRING']]}
 
       # Set the type of each column
-      #col_dtypes = {'typ':'int64',
-      col_dtypes = {'typ':'string',
-                    #'sid':'object',
-                    'sid':'string',
+      col_dtypes = {'typ':'str',
+                    'sid':'str',
                     'vld':'int64',
                     'lat':'float64',
                     'lon':'float64',
-                    'elv':'object',
-                    #'var':'int64',
-                    'var':'string',
+                    'elv':'float64',
+                    'var':'str',
                     'lvl':'float64',
-                    'hgt':'object',
-                    #'qc':'int64',
-                    'qc':'string',
+                    'hgt':'float64',
+                    'qc':'str',
                     'obs':'float64'}
 
       # The list of columns we want from the file is simply the values for each key in the nrl_met_map dict
@@ -485,21 +487,17 @@ class H5InnovationFile(InnovationFile):
                      'obs':[os.environ['NRL_OBS_STRING']]}
 
       # Set the type of each column
-      #col_dtypes = {'typ':'int64',
-      col_dtypes = {'typ':'string',
-                    #'sid':'object',
-                    'sid':'string',
+      col_dtypes = {'typ':'str',
+                    'sid':'str',
                     'vld':'int64',
                     'lat':'float64',
                     'lon':'float64',
-                    'elv':'object',
-                    #'var':'int64',
-                    'var':'string',
+                    'elv':'float64',
+                    'var':'str',
                     'lvl':'float64',
-                    'hgt':'object',
-                    #'qc':'int64',
-                    'qc':'string',
-                    'obs':'float64'} 
+                    'hgt':'float64',
+                    'qc':'str',
+                    'obs':'float64'}
 
       # The list of columns we want from the file is simply the values for each key in the nrl_met_map dict
       requestcols = [''.join(value) for value in nrl_met_map.values()]
