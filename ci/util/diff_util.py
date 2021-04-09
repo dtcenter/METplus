@@ -5,7 +5,6 @@ from PIL import Image, ImageChops
 import numpy
 
 IMAGE_EXTENSIONS = [
-#    '.png',
     '.jpg',
     '.jpeg',
 ]
