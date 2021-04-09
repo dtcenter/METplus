@@ -8,77 +8,60 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 ##############################################################################
 # Scientific Objective
 # --------------------
+# 
+# Tropocal cyclone (TC) genesis density function (GDF) and track density function (TDF) are designed to
+# quantitatively evaluate geographic distributions of TC activities including TC genesis frequency and
+# subsequent TC tracks. Spacial patterns of long-term averaged GDF or TDF on the regional or global scale
+# are particularly useful to evaluate TC forecasts against those derived from an observational best-track
+# dataset, such as IBTrACS or ATCF B-decks, from a climate perspective. The metrics can help assess the forecast biases
+# (under- or over-prediction) of TC formations or TC vortices around particular locations in a numerical model.
 #
 
 ##############################################################################
 # Datasets
 # --------
 #
-# All datasets are traditionally in netCDF format. Grids are either regular gaussian
-# Latitude/Longitude grids or they are Lambert-conformal WRF grids.
+# Both forecast and observation datasets for this use case must adhere to the ATCF format.
 #
-# The forecast datasets contain weekly, monthly or seasonally integrated data. Here, the
-# time format of the use-case is monthly. Since the verification is done on the hindcasts
-# rather than the forecast (would require another 6 months of waiting), the key
-# identification here is the month of initialization and then the lead-time of the forecast
-# of interest.
+# **Forecast data:**
+# GFDL Cyclone Tracker output configured for "genesis mode" for the Global Forecast System (GFS) model
 #
-# The hindcast data, the 'observational' data that is to be compared to the forecast,
-# is a collection of datasets formatted in equivalent format to the forecast. The
-# hindcast ensemble is identified through the year in the filename (as well as in the
-# time variable inside the netCDF file).
+# **Observation data:**
+# Global ATCF B-decks files from the National Hurricane Center (NHC) and Joint Typhoon Warning Center (JTWC)
 #
-# Forecast Datasets:
-# 
-# NMME
-# * variable of interest: pr (precipitation: cumulative monthly sum)
-# * format of precipitation variable: time,lat,lon (here dimensions: 29,181,361) with time variable representing 29 samples of same Julian Init-Time of hindcasts over past 29 years.
+# **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. 
+# Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
+# This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See ‘Running METplus’ section for more information.
 #
-# Hindcast Datasets:
+# The MET TCGen tool requires forecast data to be provided from the GFDL cyclone tracker. More information
+# about the GFDL cyclone tracker can be found here: https://dtcenter.org/community-code/gfdl-vortex-tracker
 #
-# Observational Dataset:
+# Archives of ATCF B-decks files can be found at these locations:
 #
-# * CPC precipitation reference data (same format and grid)
+# | https://www.metoc.navy.mil/jtwc/jtwc.html?best-tracks
+# | https://www.nhc.noaa.gov/data/#hurdat
+# |
 #
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case loops over initialization years and processes forecast lead months with GridStat
-# It also processes the output of GridStat using two calls to SeriesAnalysis.
+# This use case utilizes the MET TCGen tool to generate matched pairs of TC genesis,
+# and then uses Python Embedding to compute the TDF and GDF metrics and create graphics for
+# the year 2016.
 #
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# The following tools are used for each run time: GridStat
+# The following tools are used for each run time: TCGen, Python
 #
-# This example loops by initialization time. Each initialization time is July of each year from 1982 to 2010. For each init time it will run once, processing forecast leads 1 month through 5 months. The following times are processed:
-#
-# Run times:
-#
-# | **Init:** 1982-07
-# | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
-# |
-# | **Init:** 1983-07
-# | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
-# |
-# | **Init:** 1984-07
-# | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
-# |
-# | **Init:** 1985-07
-# | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
-# |
-# | ...
-# |
-# | **Init:** 2009-07
-# | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
-# |
-# | **Init:** 2010-07
-# | **Forecast leads:** 1 month, 2 months, 3 months, 4 months, 5 months
-# |
+# The TCGen tool is designed to be provided a single file pair or a directory containing a list of files,
+# rather than loop over valid or initialization times. Thus, a single year is used in the METplus configuration
+# file and wildcard symbols are provided to gather all the tracker and genesis input files at each
+# input directory.
 #
 
 ##############################################################################
@@ -107,6 +90,7 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/TCGenConfig_wrapped
+#
 
 ##############################################################################
 # Python Embedding
@@ -125,13 +109,13 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # ---------------
 # This use case can be run two ways:
 #
-# 1) Passing in GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf then a user-specific system configuration file::
+# 1) Passing in TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -141,13 +125,10 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 #
 # Example User Configuration File::
 #
-#   [dir]
+#   [config]
 #   INPUT_BASE = /path/to/sample/input/data
 #   OUTPUT_BASE = /path/to/output/dir
 #   MET_INSTALL_DIR = /path/to/met-X.Y
-#
-# **NOTE:** All of these items must be found under the [dir] section.
-#
 #
 
 ##############################################################################
@@ -159,19 +140,16 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast/GridStat (relative to **OUTPUT_BASE**)
 #
-# For each month and year there will be two files written::
+# Output from TCGen for this use case will be found in model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF/TCGen (relative to **OUTPUT_BASE**)
 #
-# * grid_stat_NMME-hindcast_precip_vs_CPC_IC{%Y%b}01_2301360000L_20081001_000000V.stat
-# * grid_stat_NMME-hindcast_precip_vs_CPC_IC{%Y%b}01_2301360000L_20081001_000000V_pairs.nc
+# For each month and year there will be five files written::
 #
-# Output from SeriesAnalysis will be found in model_applications/s2s/GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast/SeriesAnalysis (relative to **OUTPUT_BASE**)
-#
-# For each month there will be two files written::
-#
-# * series_analysis_NMME_CPC_stats_ICJul_{%m}_climo.nc
-# * series_analysis_NMME_CPC_stats_ICJul_{%m}_full_stats.nc
+# * tc_gen_2016_pairs.nc
+# * tc_gen_2016_genmpr.txt
+# * tc_gen_2016_ctc.txt
+# * tc_gen_2016_cts.txt
+# * tc_gen_2016.stat
 #
 
 ##############################################################################
@@ -183,5 +161,5 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 #    `S2SAppUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
 #    `UserScriptUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s-GridStat_SeriesAnalysis_fcstNMME_obsCPC_seasonal_forecast.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s-TCGen_fcstGFSO_obsBDECKS_GDF_TDF.png'
 #
