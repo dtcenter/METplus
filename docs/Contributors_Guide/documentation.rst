@@ -5,13 +5,13 @@ Documentation
 |
 | The METplus documentation (beginning with version 3.0) is available
 | online at the following URL:
-|     https://dtcenter.github.io/METplus
+|     https://metplus.readthedocs.io
 |
 
 | **Doxygen Source Code Documentation**
 |
-| The source code documentation is found here:
-|     https://dtcenter.github.io/METplus/doxygen
+| The source code documentation is coming soon.
+| 
 
 | **Documentation Overview**
 |
