@@ -4917,11 +4917,6 @@ METplus Configuration Glossary
 
      | *Used by:*  TCGen
 
-   TC_GEN_OPS_HIT_TDIFF
-     Specify the value of ops_hit_tdiff in the MET configuration file.
-
-     | *Used by:*  TCGen
-
    TC_GEN_DISCARD_INIT_POST_GENESIS_FLAG
      Specify the value of discard_init_post_genesis_flag in the MET configuration file.
 
@@ -6211,3 +6206,28 @@ METplus Configuration Glossary
      Specify the value for 'init_str_exc_val' in the MET configuration file for TCStat.
 
      | *Used by:* TCStat
+
+   TC_GEN_GENESIS_MATCH_POINT_TO_TRACK
+     Specify the value for 'genesis_match_point_to_track' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
+
+   TC_GEN_GENESIS_MATCH_WINDOW_BEG
+     Specify the value for 'genesis_match_window.beg' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
+
+   TC_GEN_GENESIS_MATCH_WINDOW_END
+     Specify the value for 'genesis_match_window.end' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
+
+   TC_GEN_OPS_HIT_WINDOW_BEG
+     Specify the value for 'ops_hit_window.beg' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
+
+   TC_GEN_OPS_HIT_WINDOW_END
+     Specify the value for 'ops_hit_window.end' in the MET configuration file for TCGen.
+
+     | *Used by:* TCGen
