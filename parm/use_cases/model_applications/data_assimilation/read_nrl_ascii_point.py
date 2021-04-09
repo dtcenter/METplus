@@ -68,7 +68,6 @@ if len(sys.argv) == 2:
         
         # Remap the 'var' column to human strings
         df = df.replace({"var":jvar_map})
-        print(df['var'])
         
         # Convert the returned dataframe into a list of lists for MET to handle
         point_data = df.values.tolist()
