@@ -26,6 +26,13 @@ PDF_EXTENSIONS = [
 UNSUPPORTED_EXTENSIONS = [
 ]
 
+PDF_EXTENSIONS = [
+    '.pdf',
+]
+
+UNSUPPORTED_EXTENSIONS = [
+]
+
 def get_file_type(filepath):
     _, file_extension = os.path.splitext(filepath)
     if file_extension in IMAGE_EXTENSIONS:
