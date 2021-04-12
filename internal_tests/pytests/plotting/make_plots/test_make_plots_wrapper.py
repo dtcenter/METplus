@@ -120,16 +120,22 @@ def test_create_c_dict(metplus_config):
     assert(c_dict['INIT_END'] == '')
     assert(c_dict['GROUP_LIST_ITEMS'] == [ 'FCST_INIT_HOUR_LIST' ])
     assert(c_dict['LOOP_LIST_ITEMS'] == [ 'FCST_VALID_HOUR_LIST' ])
-    assert(c_dict['VAR_LIST'] == [ {'fcst_name': 'HGT', 'obs_name': 'HGT',
-                                    'fcst_extra': '', 'obs_extra': '',
-                                    'fcst_thresh': [], 'obs_thresh': [], 
-                                    'fcst_level': 'P1000', 
-                                    'obs_level': 'P1000', 'index': '1'},
-                                    {'fcst_name': 'HGT', 'obs_name': 'HGT',
-                                    'fcst_extra': '', 'obs_extra': '',
-                                    'fcst_thresh': [], 'obs_thresh': [],
-                                    'fcst_level': 'P850',
-                                    'obs_level': 'P850', 'index': '1'}])
+    assert(c_dict['VAR_LIST'] == [{'fcst_name': 'HGT',
+                                   'fcst_output_name': 'HGT',
+                                   'obs_name': 'HGT',
+                                   'obs_output_name': 'HGT',
+                                   'fcst_extra': '', 'obs_extra': '',
+                                   'fcst_thresh': [], 'obs_thresh': [],
+                                   'fcst_level': 'P1000',
+                                   'obs_level': 'P1000', 'index': '1'},
+                                  {'fcst_name': 'HGT',
+                                   'fcst_output_name': 'HGT',
+                                    'obs_name': 'HGT',
+                                   'obs_output_name': 'HGT',
+                                   'fcst_extra': '', 'obs_extra': '',
+                                   'fcst_thresh': [], 'obs_thresh': [],
+                                   'fcst_level': 'P850',
+                                   'obs_level': 'P850', 'index': '1'}])
     assert(c_dict['MODEL_LIST'] == [ 'MODEL_TEST1', 'MODEL_TEST2'])
     assert(c_dict['DESC_LIST'] == [])
     assert(c_dict['FCST_LEAD_LIST'] == [ '24', '48' ]) 
