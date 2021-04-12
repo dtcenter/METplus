@@ -1,12 +1,14 @@
-name: METplus CI/CD Workflow
+name: Testing Workflow
 on:
   push:
     branches:
       - develop
       - develop-ref
-      - 'feature_*'
-      - 'main_*'
-      - 'bugfix_*'
+      - feature_*
+      - main_*
+      - bugfix_*
+    paths-ignore:
+      - docs/**
   pull_request:
     types: [opened, reopened, synchronize]
 
@@ -29,47 +31,6 @@ jobs:
         with:
           name: job_control_status
           path: job_control_status
-
-  documentation:
-    name: Build Documentation
-    runs-on: ubuntu-latest
-    needs: job_control
-    steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: job_control_status
-      - run: cat job_control_status >> $GITHUB_ENV
-      - uses: actions/checkout@v2
-        if: ${{ env.run_docs == 'true' }}
-      - uses: actions/setup-python@v2
-        if: ${{ env.run_docs == 'true' }}
-        with:
-          python-version: '3.6'
-      - name: Install dependencies
-        if: ${{ env.run_docs == 'true' }}
-        run: |
-          python -m pip install --upgrade python-dateutil requests sphinx sphinx-gallery Pillow
-          pip install git+https://github.com/ESMCI/sphinx_rtd_theme@version-dropdown-with-fixes
-      - name: Run build_docs.py
-        if: ${{ env.run_docs == 'true' }}
-        continue-on-error: true
-        run: |
-          ${GITHUB_WORKSPACE}/docs/build_docs.py skip-doxygen
-          mkdir -p artifact/documentation
-          cp -r ${GITHUB_WORKSPACE}/docs/_build/html/* artifact/documentation
-          if [ "$( ls -A ${GITHUB_WORKSPACE}/docs/_build/warnings.log)" ]; then
-            cp -r ${GITHUB_WORKSPACE}/docs/_build/warnings.log artifact/doc_warnings.log
-            cp artifact/doc_warnings.log artifact/documentation
-          fi
-      - uses: actions/upload-artifact@v2
-        with:
-          name: METplus_documentation
-          path: artifact/documentation
-      - uses: actions/upload-artifact@v2
-        with:
-          name: documentation_warnings.log
-          path: artifact/doc_warnings.log
-          if-no-files-found: ignore
   get_image:
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
