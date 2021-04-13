@@ -36,8 +36,20 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_MERGE_THRESH',
         'METPLUS_OBS_MERGE_FLAG',
         'METPLUS_MASK_POLY',
+        'METPLUS_MASK_DICT',
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_GRID_RES',
+        'METPLUS_FCST_FILTER_ATTR_NAME',
+        'METPLUS_FCST_FILTER_ATTR_THRESH',
+        'METPLUS_FCST_CENSOR_THRESH',
+        'METPLUS_FCST_CENSOR_VAL',
+        'METPLUS_FCST_VLD_THRESH',
+        'METPLUS_OBS_FILTER_ATTR_NAME',
+        'METPLUS_OBS_FILTER_ATTR_THRESH',
+        'METPLUS_OBS_CENSOR_THRESH',
+        'METPLUS_OBS_CENSOR_VAL',
+        'METPLUS_OBS_VLD_THRESH',
+        'METPLUS_MATCH_FLAG',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -153,8 +165,11 @@ class MODEWrapper(CompareGriddedWrapper):
                                'MODE_MERGE_CONFIG_FILE', '')
             )
 
-        mask_poly = self.read_mask_poly()
-        c_dict['MASK_POLY_TEMPLATE'] = mask_poly
+        self.handle_mask(single_value=True,
+                         get_flags=True)
+
+        # handle setting VERIFICATION_MASK for old wrapped MET config files
+        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
         c_dict['MASK_POLY_IS_LIST'] = False
 
         return c_dict

@@ -95,12 +95,8 @@ max_centroid_dist = 800.0/grid_res;
 //
 // Verification masking regions
 //
-mask = {
-   grid      = "";
-   grid_flag = NONE; // Apply to NONE, FCST, OBS, or BOTH
-   ${METPLUS_MASK_POLY}
-   poly_flag = NONE; // Apply to NONE, FCST, OBS, or BOTH
-}
+//mask = {
+${METPLUS_MASK_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
