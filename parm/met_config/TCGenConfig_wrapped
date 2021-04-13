@@ -167,10 +167,24 @@ ${METPLUS_DLAND_THRESH}
 ////////////////////////////////////////////////////////////////////////////////
 
 //
+// Genesis matching logic. Compare the forecast genesis point to all points in
+// the Best track (TRUE) or the single Best track genesis point (FALSE).
+//
+//genesis_match_point_to_track =
+${METPLUS_GENESIS_MATCH_POINT_TO_TRACK}
+
+//
 // Radius in km to search for a matching genesis event
 //
 // genesis_match_radius =
 ${METPLUS_GENESIS_MATCH_RADIUS}
+
+//
+// Time window in hours, relative to the model genesis time, to search for a
+// matching Best track point
+//
+//genesis_match_window = {
+${METPLUS_GENESIS_MATCH_WINDOW_DICT}
 
 //
 // Radius in km for a development scoring method hit
@@ -184,12 +198,11 @@ ${METPLUS_DEV_HIT_RADIUS}
 // dev_hit_window =
 ${METPLUS_DEV_HIT_WINDOW_DICT}
 
+// Time window in hours for the Best track genesis minus model initialization
+// time difference for an operational scoring method hit
 //
-// Maximum Best track genesis minus model initialization time difference for an
-// operational scoring method hit
-//
-// ops_hit_tdiff =
-${METPLUS_OPS_HIT_TDIFF}
+//ops_hit_window = {
+${METPLUS_OPS_HIT_WINDOW_DICT}
 
 //
 // Discard genesis forecasts for initializations at or after the matching

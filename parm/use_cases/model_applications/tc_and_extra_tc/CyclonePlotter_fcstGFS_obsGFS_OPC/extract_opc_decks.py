@@ -34,49 +34,104 @@ num_args = len(sys.argv) - 1
 if num_args < 3:
     print("ERROR: Not enough arguments")
     sys.exit(1)
-
-# function to extract start date from stormname (stormname contains date 1st observed, lat-lon 1st observed)
-def startswith_date(storm_name, search_date):
-    storm_date = str(storm_name).split('_')[0].strip()
-    return storm_date.startswith(search_date)
+debug = 'debug' in sys.argv
+# function to compare storm warning time to search time
+def is_equal(column_val, search_string):
+    return str(column_val).strip() == search_string
 
 input_file = sys.argv[1]
 output_dir = sys.argv[2]
 search_date = sys.argv[3]
 
-# name of ADECK & BDECK files contain search date
-adeck_filename = f'adeck.{search_date}.dat'
-bdeck_filename = f'bdeck.{search_date}.dat'
+if debug:
+    print(f"Running {__file__}\nSearch date: {search_date}")
 
-adeck_path = os.path.join(output_dir, adeck_filename)
-bdeck_path = os.path.join(output_dir, bdeck_filename)
+# get 2 digit year to use in CYCLONE column substitute value
+search_year = search_date[2:4]
+
+# string to use in output file names for filtered adeck and bdeck files
+file_prefix = f'deck.{search_date}.'
+
+# an intermediate directory path for the separate files
+adeck_base = os.path.join(output_dir, "adeck")
+#bdeck_base = os.path.join(output_dir, "bdeck")
+
+# create output directories if not already there
+if not os.path.exists(adeck_base):
+    print(f"Creating output directory: {adeck_base}")
+    os.makedirs(adeck_base)
+
+#if not os.path.exists(bdeck_base):
+#    print(f"Creating output directory: {bdeck_base}")
+#    os.makedirs(bdeck_base)
 
 # using pandas (pd), read input file
+print(f"Reading input file: {input_file}")
 pd_data = pd.read_csv(input_file, names=atcf_headers_trak)
 
-# get adeck - all lines that match the desired date for YYYYMMDDHH (init time)
-init_matches = pd_data['YYYYMMDDHH'].apply(startswith_date, args=(search_date,))
-adeck = pd_data[init_matches]
+print(f"Filtering data...")
 
 # get all 0 hour analyses data
+print(f"Filtering data 0 (hr) in TAU (forecast hour) column for bdeck")
 pd_0hr_data = pd_data[pd_data['TAU'] == 0]
+
+# get adeck - all lines that match the desired date for YYYYMMDDHH (init time)
+print(f"Filtering data with {search_date} in YYYYMMDDHH column for adeck")
+init_matches = pd_data['YYYYMMDDHH'].apply(is_equal,
+                                           args=(search_date,))
+adeck = pd_data[init_matches]
 
 # get list of STORMNAMEs from adeck data
 all_storms = adeck.STORMNAME.unique()
 
-# get lines where forecast hour is 0 and STORMNAME is in ADECK list
-only_adeck_storms = pd_0hr_data['STORMNAME'].isin(all_storms)
-bdeck = pd_0hr_data[only_adeck_storms]
+# initialize counter to use to set output filenames with "cyclone" number
+# to keep storms in separate files
+index = 0
 
-# create output directory if not already there
-if not os.path.exists(output_dir):
-    print(f"Creating output directory: {output_dir}")
-    os.makedirs(output_dir)
+# loop over storms
+for storm_name in all_storms:
+    index_pad = str(index).zfill(4)
 
-# write ADECK
-print(f"Writing adeck to {adeck_path}")
-adeck.to_csv(adeck_path, header=False, index=False)
+    # remove whitespace at beginning of storm name
+    storm_name = storm_name.strip()
 
-# write BDECK
-print(f"Writing bdeck to {bdeck_path}")
-bdeck.to_csv(bdeck_path, header=False, index=False)
+    # get 0hr data for given storm to use as bdeck
+    storm_b_match = pd_0hr_data['STORMNAME'].apply(is_equal,
+                                                   args=(storm_name,))
+    storm_bdeck = pd_0hr_data[storm_b_match]
+    if debug:
+        print(f"Processing storm: {storm_name}")
+    wrote_a = wrote_b = False
+
+    #Logic for writing out Analysis files. Currently commented out,
+    #but left in for possible future use
+    if not storm_bdeck.empty:
+    #    bdeck_filename = f'b{file_prefix}{index_pad}.dat'
+    #    bdeck_path = os.path.join(bdeck_base, bdeck_filename)
+
+    #    print(f"Writing bdeck to {bdeck_path}")
+    #    storm_bdeck.to_csv(bdeck_path, header=False, index=False)
+        wrote_b = True
+    #else:
+    #    print(f"BDECK for {storm_name} is empty. Skipping")
+
+    # filter out adeck data for given storm
+    storm_a_match = adeck['STORMNAME'].apply(is_equal,
+                                             args=(storm_name,))
+    storm_adeck = adeck[storm_a_match]
+
+    if not storm_adeck.empty:
+        adeck_filename = f'a{file_prefix}{index_pad}.dat'
+        adeck_path = os.path.join(adeck_base, adeck_filename)
+        if debug:
+            print(f"Writing adeck to {adeck_path}")
+        storm_adeck.to_csv(adeck_path, header=False, index=False)
+        wrote_a = True
+    else:
+        if debug:
+            print(f"ADECK for {storm_name} is empty. Skipping")
+
+    if wrote_a or wrote_b:
+        index += 1
+
+print("Finished processing all storms")
