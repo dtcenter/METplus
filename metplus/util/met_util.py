@@ -2732,7 +2732,7 @@ def expand_int_string_to_list(int_string):
 
     if hasPlus:
         subset_list.append('+')
-    print(f"{int_string} converted to {subset_list}")
+
     return subset_list
 
 def subset_list(full_list, subset_definition):
