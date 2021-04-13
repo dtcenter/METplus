@@ -2147,7 +2147,7 @@ def get_field_config_variables(config, index, search_prefixes):
 
     return field_configs
 
-def format_var_items(field_configs, time_info):
+def format_var_items(field_configs, time_info=None):
     """! Substitute time information into field information and format values.
 
         @param field_configs dictionary with config variable names to read
@@ -2172,15 +2172,18 @@ def format_var_items(field_configs, time_info):
         return 'Name not found'
 
     # perform string substitution on name
-    var_items['name'] = do_string_sub(search_name,
-                                      skip_missing_tags=True,
-                                      **time_info)
+    if time_info:
+        search_name = do_string_sub(search_name,
+                                    skip_missing_tags=True,
+                                    **time_info)
+    var_items['name'] = search_name
 
     # get levels, performing string substitution on each item of list
     for level in getlist(field_configs.get('levels')):
-        subbed_level = do_string_sub(level,
-                                     **time_info)
-        var_items['levels'].append(subbed_level)
+        if time_info:
+            level = do_string_sub(level,
+                                  **time_info)
+        var_items['levels'].append(level)
 
     # if no levels are found, add an empty string
     if not var_items['levels']:
@@ -2199,11 +2202,12 @@ def format_var_items(field_configs, time_info):
     # get extra options if it is set, format with semi-colons between items
     search_extra = field_configs.get('options')
     if search_extra:
-        extra = do_string_sub(search_extra,
-                              **time_info)
+        if time_info:
+            search_extra = do_string_sub(search_extra,
+                                         **time_info)
 
         # strip off empty space around each value
-        extra_list = [item.strip() for item in extra.split(';')]
+        extra_list = [item.strip() for item in search_extra.split(';')]
 
         # split up each item by semicolon, then add a semicolon to the end
         # use list(filter(None to remove empty strings from list
@@ -2219,8 +2223,9 @@ def format_var_items(field_configs, time_info):
             var_items['output_names'].append(var_items['name'])
     else:
         for out_name in getlist(out_name_str):
-            out_name = do_string_sub(out_name,
-                                     **time_info)
+            if time_info:
+                out_name = do_string_sub(out_name,
+                                         **time_info)
             var_items['output_names'].append(out_name)
 
     if len(var_items['levels']) != len(var_items['output_names']):
@@ -2271,11 +2276,11 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
     # if time_info is not passed in, set 'now' to CLOCK_TIME
     # NOTE: any attempt to use string template substitution with an item other
     # than 'now' will fail if time_info is not passed into parse_var_list
-    if time_info is None:
-        time_info = {'now': datetime.datetime.strptime(
-            config.getstr('config', 'CLOCK_TIME'),
-            '%Y%m%d%H%M%S')
-        }
+#    if time_info is None:
+#        time_info = {'now': datetime.datetime.strptime(
+#            config.getstr('config', 'CLOCK_TIME'),
+#            '%Y%m%d%H%M%S')
+#        }
 
     # var_list is a list containing an list of dictionaries
     var_list = []
@@ -2350,7 +2355,9 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
                 output_name = field_info.get('output_names')[level_index]
 
                 # substitute level in name if filename template is specified
-                subbed_name = do_string_sub(name, **sub_info)
+                subbed_name = do_string_sub(name,
+                                            skip_missing_tags=True,
+                                            **sub_info)
 
                 var_dict[f"{current_type}_name"] = subbed_name
                 var_dict[f"{current_type}_level"] = level
