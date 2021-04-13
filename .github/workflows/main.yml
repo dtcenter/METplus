@@ -139,16 +139,16 @@ jobs:
           echo run_this_case=$run_this_case >> $GITHUB_ENV
           echo Ends with NEW: ${{ endsWith(matrix.categories, ':NEW') }}
           echo Run all: ${{ env.run_all_use_cases }}
-      - name: Shutdown Ubuntu MYSQL
-        run: sudo service mysql stop
-      - name: Create directories for database
-        run: |
-          mkdir -p $RUNNER_WORKSPACE/mysql
-          mkdir -p $RUNNER_WORKSPACE/output/metviewer
-          chmod a+w $RUNNER_WORKSPACE/mysql
-          chmod a+w $RUNNER_WORKSPACE/output/metviewer
-          chmod a+x $RUNNER_WORKSPACE/mysql
-          chmod a+x $RUNNER_WORKSPACE/output/metviewer
+      #- name: Shutdown Ubuntu MYSQL
+      #  run: sudo service mysql stop
+      #- name: Create directories for database
+      #  run: |
+      #    mkdir -p $RUNNER_WORKSPACE/mysql
+      #    mkdir -p $RUNNER_WORKSPACE/output/metviewer
+      #    chmod a+w $RUNNER_WORKSPACE/mysql
+      #    chmod a+w $RUNNER_WORKSPACE/output/metviewer
+      #    chmod a+x $RUNNER_WORKSPACE/mysql
+      #    chmod a+x $RUNNER_WORKSPACE/output/metviewer
       - uses: actions/checkout@v2
         if: ${{ env.run_this_case == 'true' }}
       - uses: ./ci/actions/run_tests
@@ -166,8 +166,6 @@ jobs:
           artifact_name=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh ${{matrix.categories}}`
           mkdir -p artifact/${artifact_name}
           cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${artifact_name}/
-          ls -lh $RUNNER_WORKSPACE/output/metviewer
-          cp -r $RUNNER_WORKSPACE/output/metviewer artifact/${artifact_name}/
           echo ::set-output name=artifact_name::${artifact_name}
           if [ "$( ls -A ${GITHUB_WORKSPACE}/../diff)" ]; then
             mkdir -p artifact/diff-${artifact_name}
