@@ -17,6 +17,8 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # (under- or over-prediction) of TC formations or TC vortices around particular locations in a numerical model.
 #
 # For demonstration purposes, only cyclone tracker output and b-decks data for 2016 are used.
+# 
+# The following settings are used in the use case, all of which are configurable in the METplus configuration file (see below).
 #
 # Forecast genesis event criteria:
 #
@@ -43,6 +45,10 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # | Late genesis hit scoring window: +120h
 # | Matching and Scoring radius: 555 km
 # | 
+#
+# In addition to the above settings, normalization is performed on the metrics by the number of years included in the dataset
+# (in this example, just one), and the total number of model forecasts valid at the time of an observed genesis event. The latter
+# can also be thought of as the total number of chances that the model had to forecast a genesis event.
 #
 
 ##############################################################################
