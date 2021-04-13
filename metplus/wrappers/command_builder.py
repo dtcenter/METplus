@@ -1952,54 +1952,56 @@ class CommandBuilder:
         for list_values in remove_bracket_list:
             c_dict[list_values] = c_dict[list_values].strip('[]')
 
-    def handle_mask(self, single_value=False, c_dict=None):
+    def handle_mask(self, single_value=False, get_flags=False):
         """! Read mask dictionary values and set them into env_var_list
 
             @param single_value if True, only a single value for grid and poly
             are allowed. If False, they should be treated as as list
-            @param c_dict (optional) dictionary to set VERIFICATION_MASK key
-            with mask.grid value to support old MET config environment variable
+            @param get_flags if True, read grid_flag and poly_flag values
         """
         app = self.app_name.upper()
-        tmp_dict = {}
-        extra_args = {}
-        if single_value:
-            set_met_config = self.set_met_config_string
-        else:
-            set_met_config = self.set_met_config_list
 
-        set_met_config(tmp_dict,
-                      [f'{app}_MASK_GRID',
-                       f'{app}_GRID'],
-                      'grid',
-                      'MASK_GRID',
-                      allow_empty=True)
-        set_met_config(tmp_dict,
-                      [f'{app}_MASK_POLY',
-                       f'{app}_VERIFICATION_MASK_TEMPLATE',
-                       f'{app}_POLY'],
-                      'poly',
-                      'MASK_POLY',
-                      allow_empty=True)
+        dict_name = 'mask'
+        dict_items = []
 
-        # set VERIFICATION MASK to support old method of setting mask.poly
-        mask_poly_string = tmp_dict.get('MASK_POLY')
-        if mask_poly_string:
-            mask_poly_string = (
-                mask_poly_string.split('=')[1].strip().strip(';').strip('[]')
+        data_type = 'string' if single_value else 'list'
+
+        dict_items.append(
+            self.get_met_config(
+                name='grid',
+                data_type=data_type,
+                metplus_configs=[f'{app}_MASK_GRID',
+                                 f'{app}_GRID'],
+                extra_args={'allow_empty': True}
             )
-        else:
-            mask_poly_string = ''
+        )
 
-        if c_dict:
-            c_dict['VERIFICATION_MASK'] = mask_poly_string
+        dict_items.append(
+            self.get_met_config(
+                name='poly',
+                data_type=data_type,
+                metplus_configs=[f'{app}_MASK_POLY',
+                                 f'{app}_VERIFICATION_MASK_TEMPLATE',
+                                 f'{app}_POLY'],
+                extra_args={'allow_empty': True}
+            )
+        )
+        # get grid_flag and poly_flag if requested
+        if get_flags:
+            dict_items.append(
+                self.get_met_config(name='grid_flag',
+                                    data_type='string',
+                                    metplus_configs=[f'{app}_MASK_GRID_FLAG'],
+                                    extra_args={'remove_quotes': True})
+            )
+            dict_items.append(
+                self.get_met_config(name='poly_flag',
+                                    data_type='string',
+                                    metplus_configs=[f'{app}_MASK_POLY_FLAG'],
+                                    extra_args={'remove_quotes': True})
+            )
 
-        # set METPLUS_MASK_DICT env var with mask items if set
-        mask_dict_string = self.format_met_config_dict(tmp_dict,
-                                                       'mask',
-                                                       ['MASK_GRID',
-                                                        'MASK_POLY'])
-        self.env_var_dict['METPLUS_MASK_DICT'] = mask_dict_string
+        self.handle_met_config_dict(dict_name, dict_items)
 
     def get_met_config_function(self, item_type):
         """! Return function to use based on item type
