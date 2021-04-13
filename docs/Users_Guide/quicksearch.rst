@@ -57,29 +57,29 @@ Use Cases by Organization:
 
 Use Cases by METplus Feature:
 -----------------------------
-| `Introductory Example <https://dtcenter.github.io/METplus/develop/search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_
-| `Custom String Looping <https://dtcenter.github.io/METplus/develop/search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_
-| `Diagnostics <https://dtcenter.github.io/METplus/develop/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
-| `Feature Relative  <https://dtcenter.github.io/METplus/develop/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_
-| `GempakToCF <https://dtcenter.github.io/METplus/develop/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_
-| `Looping by Month or Year  <https://dtcenter.github.io/METplus/develop/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
-| `List Expansion (using begin_end_incr syntax)  <https://dtcenter.github.io/METplus/develop/search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
-| `Masking for Regions of Interest <https://dtcenter.github.io/METplus/develop/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
-| `METdbLoad <https://dtcenter.github.io/METplus/develop/search.html?q=METdbLoadUseCase&check_keywords=yes&area=default>`_
-| `MET_PYTHON_EXE Environment Variable  <https://dtcenter.github.io/METplus/develop/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
-| `Multiple Conf File Use <https://dtcenter.github.io/METplus/develop/search.html?q=MultiConfUseCase&check_keywords=yes&area=default>`_
-| `Observation Time Summary <https://dtcenter.github.io/METplus/develop/search.html?q=ObsTimeSummaryUseCase&check_keywords=yes&area=default>`_
-| `Observation Uncertainty <https://dtcenter.github.io/METplus/develop/search.html?q=ObsUncertaintyUseCase&check_keywords=yes&area=default>`_
-| `Python Embedding Ingest <https://dtcenter.github.io/METplus/develop/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_
-| `Probability Generation  <https://dtcenter.github.io/METplus/develop/search.html?q=ProbabilityGenerationUseCase&check_keywords=yes&area=default>`_
-| `Probability Verification  <https://dtcenter.github.io/METplus/develop/search.html?q=ProbabilityVerificationUseCase&check_keywords=yes&area=default>`_
-| `Regridding in Tool <https://dtcenter.github.io/METplus/develop/search.html?q=RegriddingInToolUseCase&check_keywords=yes&area=default>`_
-| `Revision Series <https://dtcenter.github.io/METplus/develop/search.html?q=RevisionSeriesUseCase&check_keywords=yes&area=default>`_
-| `Runtime Frequency <https://dtcenter.github.io/METplus/develop/search.html?q=RuntimeFreqUseCase&check_keywords=yes&area=default>`_
-| `Series by Initialization  <https://dtcenter.github.io/METplus/develop/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
-| `Series by Forecast Lead  <https://dtcenter.github.io/METplus/develop/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
-| `Validation of Models or Analyses  <https://dtcenter.github.io/METplus/develop/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
-| `User Defined Script <https://dtcenter.github.io/METplus/develop/search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_
+| `Introductory Example <https://metplus.readthedocs.io/en/develop/search.html?q=ExampleToolUseCase&check_keywords=yes&area=default>`_
+| `Custom String Looping <https://metplus.readthedocs.io/en/develop/search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_
+| `Diagnostics <https://metplus.readthedocs.io/en/develop/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
+| `Feature Relative  <https://metplus.readthedocs.io/en/develop/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_
+| `GempakToCF <https://metplus.readthedocs.io/en/develop/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_
+| `Looping by Month or Year  <https://metplus.readthedocs.io/en/develop/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
+| `List Expansion (using begin_end_incr syntax)  <https://metplus.readthedocs.io/en/develop/search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
+| `Masking for Regions of Interest <https://metplus.readthedocs.io/en/develop/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
+| `METdbLoad <https://metplus.readthedocs.io/en/develop/search.html?q=METdbLoadUseCase&check_keywords=yes&area=default>`_
+| `MET_PYTHON_EXE Environment Variable  <https://metplus.readthedocs.io/en/develop/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
+| `Multiple Conf File Use <https://metplus.readthedocs.io/en/develop/search.html?q=MultiConfUseCase&check_keywords=yes&area=default>`_
+| `Observation Time Summary <https://metplus.readthedocs.io/en/develop/search.html?q=ObsTimeSummaryUseCase&check_keywords=yes&area=default>`_
+| `Observation Uncertainty <https://metplus.readthedocs.io/en/develop/search.html?q=ObsUncertaintyUseCase&check_keywords=yes&area=default>`_
+| `Python Embedding Ingest <https://metplus.readthedocs.io/en/develop/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_
+| `Probability Generation  <https://metplus.readthedocs.io/en/develop/search.html?q=ProbabilityGenerationUseCase&check_keywords=yes&area=default>`_
+| `Probability Verification  <https://metplus.readthedocs.io/en/develop/search.html?q=ProbabilityVerificationUseCase&check_keywords=yes&area=default>`_
+| `Regridding in Tool <https://metplus.readthedocs.io/en/develop/search.html?q=RegriddingInToolUseCase&check_keywords=yes&area=default>`_
+| `Revision Series <https://metplus.readthedocs.io/en/develop/search.html?q=RevisionSeriesUseCase&check_keywords=yes&area=default>`_
+| `Runtime Frequency <https://metplus.readthedocs.io/en/develop/search.html?q=RuntimeFreqUseCase&check_keywords=yes&area=default>`_
+| `Series by Initialization  <https://metplus.readthedocs.io/en/develop/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
+| `Series by Forecast Lead  <https://metplus.readthedocs.io/en/develop/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
+| `Validation of Models or Analyses  <https://metplus.readthedocs.io/en/develop/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
+| `User Defined Script <https://metplus.readthedocs.io/en/develop/search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_
 
 
 Use cases by File Format:
