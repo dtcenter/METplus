@@ -9,10 +9,10 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 # Scientific Objective
 # --------------------
 #
-# Once this method is complete, a forecast and reference track analysis file
-# for the valid date of interest (YYYYMMDDHH) will have been created {OUTPUT_BASE}/decks, 
-# forecast and reference tracks paired up {OUTPUT_BASE}/tc_pairs and global storm tracks 
-# for the valid date of interest will be plotted {OUTPUT_BASE}/cyclone (PlateCaree projection)
+# Once this method is complete, a user-created extra TC track file
+# for the valid date of interest (YYYYMMDDHH) will have been created, 
+# paired up by TCPairs, and global storm tracks 
+# for the valid date of interest will be plotted by CyclonePlotter (PlateCaree projection)
 
 ##############################################################################
 # Datasets
@@ -44,17 +44,17 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus TCPairs wrapper to search for
-# files that are valid at a given run time and generate a command to run
-# the MET tool tc_pairs. It then uses the CyclonePlotter wrapper to create
-# a global plot of storm tracks for the desired day of interest (YYYYMMDDHH)
+# This use case utilizes Python user script-created output files that are accessible via the TCPairs wrapper.
+# Due to the nature of the source file (already tracked extra TCs), the TCPairs wrapper is passed the "Adeck" file for each storm twice:
+# once as the adeck or forecast file, and once as the bdeck or analysis file. Essentially, TCPairs is matching a forecast to itself.
+# It then uses the CyclonePlotter wrapper to create a global plot of storm tracks for the desired day of interest (YYYYMMDDHH).
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
 # TCPairs is the first tool called in this example. It processes the following
-# run times:
+# run times for each storm file:
 #
 # | **Init/Valid:** 2020100700
 # |
@@ -95,7 +95,11 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 # Python Embedding
 # ----------------
 #
-# This use case uses a Python embedding script to read input data
+# This use case uses a Python embedding script to read input data.
+# Because the source file already contains "analysis" tracks for the extra TCs,
+# this Python script only needs to output storm tracks that have a valid time matching
+# the user input. These storms are put into separate storm files, to better mimic how TC storms are
+# typically passed to TCPairs.
 #
 # parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC/extract_opc_decks.py
 #
@@ -142,11 +146,12 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 # Output for this use case will be found in **tc_pairs/201412** (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * decks/adeck.2020100700.dat
-# * decks/bdeck.2020100700.dat
-# * tc_pairs/tc_pairs.2020100700.dat
+# * decks/adeck/adeck.2020100700.xxxx.dat
+# * tc_pairs/tc_pairs.2020100700.xxxx.tcst
 # * cyclone/20201007.png
 # * cyclone/20201007.txt
+#
+# where "xxxx" is the unique four digit storm identifier for TCPairs wrapper to use.
 
 ##############################################################################
 # Keywords
