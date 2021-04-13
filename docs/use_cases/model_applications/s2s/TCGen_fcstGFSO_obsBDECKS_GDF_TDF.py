@@ -16,6 +16,34 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # dataset, such as IBTrACS or ATCF B-decks, from a climate perspective. The metrics can help assess the forecast biases
 # (under- or over-prediction) of TC formations or TC vortices around particular locations in a numerical model.
 #
+# For demonstration purposes, only cyclone tracker output and b-decks data for 2016 are used.
+#
+# Forecast genesis event criteria:
+#
+# | Minimum forecast lead: 48h
+# | Maximum forecast lead: 120h
+# | Maximum velocity threshold: >= 16.5 m/s
+# | Minimum TC duration: 24h
+# |
+#
+# Observed genesis event criteria:
+#
+# | Minimum TC duration: 24h
+# | Maximum velocity threshold: >= 17.0 m/s
+# | Minimum TC Category: TD
+# |
+#
+# Matching settings:
+#
+# | Genesis matching window: +/- 24h
+# | Early genesis matching window: -120h
+# | Late genesis matching window: +120h
+# | Genesis hit scoring window: +/- 24h
+# | Early genesis hit scoring window: -120h
+# | Late genesis hit scoring window: +120h
+# | Matching and Scoring radius: 555 km
+# | 
+#
 
 ##############################################################################
 # Datasets
@@ -42,6 +70,19 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # | https://www.nhc.noaa.gov/data/#hurdat
 # |
 #
+
+##############################################################################
+# Software Versions
+# -----------------
+#
+# This use case was developed with the following versions of various software and Python packages. Any deviation from these versions
+# may require re-configuration or adaptation to reproduce the results shown.
+python-3.6.3
+cartopy-0.18.0
+matplotlib-3.1.2
+MET-10.0.0
+METplus-4.0.0
+METplotpy-1.0.0
 
 ##############################################################################
 # METplus Components
