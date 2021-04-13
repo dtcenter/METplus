@@ -11,7 +11,7 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # 
 # Tropocal cyclone (TC) genesis density function (GDF) and track density function (TDF) are designed to
 # quantitatively evaluate geographic distributions of TC activities including TC genesis frequency and
-# subsequent TC tracks. Spacial patterns of long-term averaged GDF or TDF on the regional or global scale
+# subsequent TC tracks. Spatial patterns of long-term averaged GDF or TDF on the regional or global scale
 # are particularly useful to evaluate TC forecasts against those derived from an observational best-track
 # dataset, such as IBTrACS or ATCF B-decks, from a climate perspective. The metrics can help assess the forecast biases
 # (under- or over-prediction) of TC formations or TC vortices around particular locations in a numerical model.
