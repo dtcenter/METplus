@@ -322,7 +322,7 @@ def test_parse_var_list_series_by(metplus_config):
 @pytest.mark.parametrize(
     'input_dict, expected_list', [
         ({'init': datetime.datetime(2019, 2, 1, 6),
-          'lead': 7200,},
+          'lead': 7200, },
          [
              {'index': '1',
               'fcst_name': 'FNAME_2019',
