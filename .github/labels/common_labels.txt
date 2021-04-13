@@ -35,11 +35,13 @@
 {"name": "requestor: NCAR/RAL","color": "3101c1","description": "NCAR Research Applications Laboratory"}
 {"name": "requestor: NCAR/MMM","color": "3101c1","description": "NCAR Meso and Microscale Meteorology Laboratory"}
 {"name": "requestor: NCAR/SIMA","color": "3101c1","description": "NCAR System for Integrated Modeling of the Atmosphere"}
+{"name": "requestor: NOAA/CPC","color": "3101c1","description": "NOAA Climate Prediction Center"}
 {"name": "requestor: NOAA/EMC","color": "3101c1","description": "NOAA Environmental Modeling Center"}
 {"name": "requestor: NOAA/GSL","color": "3101c1","description": "NOAA Global Systems Laboratory"}
 {"name": "requestor: NOAA/HFIP","color": "3101c1","description": "NOAA Hurricane Forecast Improvement Project"}
 {"name": "requestor: NOAA/MDL","color": "3101c1","description": "NOAA Meteorological Development Laboratory"}
 {"name": "requestor: NOAA/NSSL","color": "3101c1","description": "NOAA National Severe Storms Laboratory"}
+{"name": "requestor: NOAA/OPC","color": "3101c1","description": "NOAA Ocean Prediction Center"}
 {"name": "requestor: NOAA/other","color": "3101c1","description": "NOAA Laboratory, not otherwise specified"}
 {"name": "requestor: NOAA/PSD","color": "3101c1","description": "NOAA Physical Sciences Laboratory"}
 {"name": "requestor: NOAA/SWPC","color": "3101c1","description": "NOAA Space Weather Prediction Center"}

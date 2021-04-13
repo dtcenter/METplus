@@ -3693,10 +3693,14 @@ Configuration
 | :term:`TC_GEN_BASIN_MASK`
 | :term:`TC_GEN_DLAND_THRESH`
 | :term:`TC_GEN_GENESIS_MATCH_RADIUS`
+| :term:`TC_GEN_GENESIS_MATCH_POINT_TO_TRACK`
+| :term:`TC_GEN_GENESIS_MATCH_WINDOW_BEG`
+| :term:`TC_GEN_GENESIS_MATCH_WINDOW_END`
 | :term:`TC_GEN_DEV_HIT_RADIUS`
 | :term:`TC_GEN_DEV_HIT_WINDOW_BEGIN`
 | :term:`TC_GEN_DEV_HIT_WINDOW_END`
-| :term:`TC_GEN_OPS_HIT_TDIFF`
+| :term:`TC_GEN_OPS_HIT_WINDOW_BEG`
+| :term:`TC_GEN_OPS_HIT_WINDOW_END`
 | :term:`TC_GEN_DISCARD_INIT_POST_GENESIS_FLAG`
 | :term:`TC_GEN_DEV_METHOD_FLAG`
 | :term:`TC_GEN_OPS_METHOD_FLAG`
@@ -4033,6 +4037,30 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`TC_GEN_GENESIS_MATCH_RADIUS`
      - genesis_match_radius
 
+**${METPLUS_GENESIS_MATCH_POINT_TO_TRACK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_GENESIS_MATCH_POINT_TO_TRACK`
+     - genesis_match_point_to_track
+
+**${METPLUS_GENESIS_MATCH_WINDOW_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_GENESIS_MATCH_WINDOW_BEG`
+     - genesis_match_window.beg
+   * - :term:`TC_GEN_GENESIS_MATCH_WINDOW_END`
+     - genesis_match_window.end
+
 **${METPLUS_DEV_HIT_RADIUS}**
 
 .. list-table::
@@ -4044,7 +4072,7 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`TC_GEN_DEV_HIT_RADIUS`
      - dev_hit_radius
 
-**${METPLUS_OPS_HIT_TDIFF}**
+**${METPLUS_OPS_HIT_WINDOW_DICT}**
 
 .. list-table::
    :widths: 5 5
@@ -4052,8 +4080,10 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_OPS_HIT_TDIFF`
-     - ops_hit_tdiff
+   * - :term:`TC_GEN_OPS_HIT_WINDOW_BEG`
+     - ops_hit_window.beg
+   * - :term:`TC_GEN_OPS_HIT_WINDOW_END`
+     - ops_hit_window.end
 
 **${METPLUS_DISCARD_INIT_POST_GENESIS_FLAG}**
 
