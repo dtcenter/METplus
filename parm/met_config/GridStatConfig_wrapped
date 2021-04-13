@@ -33,7 +33,7 @@ ${METPLUS_REGRID_DICT}
 
 censor_thresh    = [];
 censor_val       = [];
-cat_thresh  	 = [ NA ];
+cat_thresh  	 = [];
 cnt_thresh  	 = [ NA ];
 cnt_logic   	 = UNION;
 wind_thresh 	 = [ NA ];
@@ -76,17 +76,29 @@ climo_mean = {
    hour_interval      = 6;
 }
 
-climo_stdev = climo_mean;
-${METPLUS_CLIMO_STDEV_FILE}
+climo_stdev = {
+
+   ${METPLUS_CLIMO_STDEV_FILE}
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape	 = SQUARE;
+   }
+
+   time_interp_method = DW_MEAN;
+   match_month        = TRUE;
+   day_interval       = 31;
+   hour_interval      = 6;
+}
 
 //
 // May be set separately in each "obs.field" entry
 //
-climo_cdf = {
-   cdf_bins    = 1;
-   center_bins = FALSE;
-   write_bins  = TRUE;
-}
+//climo_cdf = {
+${METPLUS_CLIMO_CDF_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -181,47 +193,15 @@ distance_map = {
 //
 // Statistical output types
 //
-output_flag = {
-   fho    = NONE;
-   ctc    = STAT;
-   cts    = STAT;
-   mctc   = NONE;
-   mcts   = NONE;
-   cnt    = NONE;
-   sl1l2  = NONE;
-   sal1l2 = NONE;
-   vl1l2  = NONE;
-   val1l2 = NONE;
-   vcnt   = NONE;
-   pct    = NONE;
-   pstd   = NONE;
-   pjc    = NONE;
-   prc    = NONE;
-   eclv   = BOTH;
-   nbrctc = NONE;
-   nbrcts = NONE;
-   nbrcnt = NONE;
-   grad   = BOTH;
-   dmap   = NONE;
-}
+//output_flag = {
+${METPLUS_OUTPUT_FLAG_DICT}
 
 //
 // NetCDF matched pairs output file
 // May be set separately in each "obs.field" entry
 //
-nc_pairs_flag = {
-   latlon       = FALSE;
-   raw          = FALSE;
-   diff         = FALSE;
-   climo        = FALSE;
-   climo_cdp    = FALSE;
-   weight       = FALSE;
-   nbrhd        = FALSE;
-   fourier      = FALSE;
-   gradient     = FALSE;
-   distance_map = FALSE;
-   apply_mask   = FALSE;
-}
+// nc_pairs_flag = {
+${METPLUS_NC_PAIRS_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

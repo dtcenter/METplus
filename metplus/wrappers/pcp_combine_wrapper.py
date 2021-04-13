@@ -19,8 +19,8 @@ from ..util import do_string_sub
 from . import ReformatGriddedWrapper
 
 '''!@namespace PCPCombineWrapper
-@brief Wraps the MET tool pcp_combine to combine or divide
-precipitation accumulations
+@brief Wraps the MET tool pcp_combine to combine/divide
+precipitation accumulations or derive additional fields
 Call as follows:
 @code{.sh}
 Cannot be called directly. Must use child classes.
@@ -66,7 +66,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         if not fcst_run and not obs_run:
             self.log_error("Must set either FCST_PCP_COMBINE_RUN or OBS_PCP_COMBINE_RUN")
-            self.isOK = False
         else:
             if fcst_run:
                 c_dict = self.set_fcst_or_obs_dict_items('FCST', c_dict)
@@ -95,6 +94,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                               d_type+'_PCP_COMBINE_INPUT_TEMPLATE', '')
         if not c_dict[d_type+'_INPUT_TEMPLATE']:
             self.log_error(d_type + "_PCP_COMBINE_INPUT_TEMPLATE required to run")
+
         c_dict[d_type+'_OUTPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_OUTPUT_DIR', '')
         c_dict[d_type+'_OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
                                      d_type+'_PCP_COMBINE_OUTPUT_TEMPLATE')
@@ -127,30 +127,46 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # initialize custom string for tests
         c_dict['CUSTOM_STRING'] = ''
 
+        # read any additional names/levels to add to command
+        c_dict[d_type+'_EXTRA_NAMES'] = util.getlist(
+            self.config.getraw('config',
+                               d_type+'_PCP_COMBINE_EXTRA_NAMES', '')
+        )
+        c_dict[d_type+'_EXTRA_LEVELS'] = util.getlist(
+            self.config.getraw('config',
+                               d_type+'_PCP_COMBINE_EXTRA_LEVELS', '')
+        )
+        # fill in missing extra level values with None
+        fill_num = (len(c_dict[f'{d_type}_EXTRA_NAMES']) -
+                    len(c_dict[f'{d_type}_EXTRA_LEVELS']))
+        if fill_num > 0:
+            for num in range(fill_num):
+                c_dict[d_type + '_EXTRA_LEVELS'].append(None)
+
+        c_dict[d_type+'_EXTRA_OUTPUT_NAMES'] = util.getlist(
+            self.config.getraw('config',
+                               d_type+'_PCP_COMBINE_EXTRA_OUTPUT_NAMES', '')
+        )
+
         if run_method not in self.valid_run_methods:
             self.log_error(f"Invalid value for {d_type}_PCP_COMBINE_METHOD: "
                            f"{run_method}. Valid options are "
                            f"{','.join(self.valid_run_methods)}.")
-            self.isOK = False
 
         if run_method == 'DERIVE' and not c_dict[d_type+'_STAT_LIST']:
             self.log_error('Statistic list is empty. ' + \
               'Must set ' + d_type + '_PCP_COMBINE_STAT_LIST if running ' +\
                               'derive mode')
-            self.isOK = False
 
         if not c_dict[d_type+'_INPUT_TEMPLATE'] and c_dict[d_type+'_RUN_METHOD'] != 'SUM':
             self.log_error(f"Must set {d_type}_PCP_COMBINE_INPUT_TEMPLATE unless using SUM method")
-            self.isOK = False
 
         if not c_dict[d_type+'_OUTPUT_TEMPLATE']:
             self.log_error(f"Must set {d_type}_PCP_COMBINE_OUTPUT_TEMPLATE")
-            self.isOK = False
 
         if run_method == 'DERIVE' or run_method == 'ADD':
             if not c_dict[d_type+'_ACCUMS']:
                 self.log_error(f'{d_type}_PCP_COMBINE_INPUT_ACCUMS must be specified.')
-                self.isOK = False
 
             # name list should either be empty or the same length as accum list
             if c_dict[d_type+'_NAMES'] and \
@@ -159,7 +175,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                       'either empty or the same length as ' +\
                       f'{d_type}_PCP_COMBINE_INPUT_ACCUMS list.'
                 self.log_error(msg)
-                self.isOK = False
 
             if c_dict[d_type+'_LEVELS'] and \
               len(c_dict[d_type+'_ACCUMS']) != len(c_dict[d_type+'_LEVELS']):
@@ -167,7 +182,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                       'either empty or the same length as ' +\
                       f'{d_type}_PCP_COMBINE_INPUT_ACCUMS list.'
                 self.log_error(msg)
-                self.isOK = False
 
         return c_dict
 
@@ -188,6 +202,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.name = ""
         self.compress = -1
         self.user_command = ''
+        self.extra_fields = None
+        self.extra_output = None
 
     def add_input_file(self, filename, addon):
         self.infiles.append(filename)
@@ -545,7 +561,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 if self.method != 'DERIVE':
                     cmd += self.inaddons[idx] + " "
 
-
         # set -field options if set
         if self.field_name:
             cmd += "-field 'name=\""+self.field_name+"\";"
@@ -558,8 +573,12 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
             cmd += "' "
 
-        if self.output_name:
-            cmd += f'-name "{self.output_name}" '
+        if self.extra_fields:
+            cmd += self.extra_fields + ' '
+
+        output_string = self.get_output_string()
+        if output_string:
+            cmd += f'-name {output_string} '
 
         if not self.outfile:
             self.log_error("No output filename specified")
@@ -588,7 +607,52 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # remove whitespace at beginning/end and return command
         return cmd.strip()
 
+    def get_extra_fields(self, data_src):
+        extra_names = self.c_dict.get(data_src + '_EXTRA_NAMES')
+        if not extra_names:
+            return None, None
+
+        extra_list = []
+
+        extra_levels = self.c_dict.get(data_src + '_EXTRA_LEVELS')
+        for name, level in zip(extra_names, extra_levels):
+            field_fmt = f"-field 'name=\"{name}\";"
+            if level:
+                field_fmt += f" level=\"{level}\";"
+            field_fmt += "'"
+            extra_list.append(field_fmt)
+
+        extra_input_fmt = ' '.join(extra_list)
+
+        # handle extra output names if specified
+        extra_output_names = self.c_dict.get(data_src + '_EXTRA_OUTPUT_NAMES')
+        if not extra_output_names:
+            extra_output_fmt = None
+        else:
+            extra_output_fmt = '","'.join(extra_output_names)
+            extra_output_fmt = f'"{extra_output_fmt}"'
+
+        return extra_input_fmt, extra_output_fmt
+
+    def get_output_string(self):
+        """! If self.output_name is set, add quotes and return the string. If
+        self.extra_output is also set, add the additional names separated by
+        commas inside the quotes.
+
+        @returns formatted string if output name(s) is specified, None if not
+        """
+        if not self.output_name:
+            return None
+
+        output_string = f'"{self.output_name}"'
+        # add extra output field names
+        if self.extra_output:
+            output_string = f'{output_string},{self.extra_output}'
+
+        return output_string
+
     def run_at_time_once(self, time_info, var_list, data_src):
+
         if not var_list:
             var_list = [None]
 
@@ -598,6 +662,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
     def run_at_time_one_field(self, time_info, var_info, data_src):
 
         self.clear()
+
+        # read additional names/levels to add to command if set
+        self.extra_fields, self.extra_output = self.get_extra_fields(data_src)
+
         cmd = None
         self.method = self.c_dict[data_src+'_RUN_METHOD']
 

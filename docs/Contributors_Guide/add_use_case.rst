@@ -16,32 +16,45 @@ instructions to fill out the template.
 This branch will be the source of the pull request to merge the changes into
 the develop branch.
 
+Types of Use Cases
+------------------
+
+* Use cases that involve a single MET tool/METplus wrapper will reside
+  in the *METplus/parm/use_cases/met_tool_wrapper* directory.
+
+* Use cases that involve multiple MET tools/METplus wrappers will reside
+  in the *METplus/parm/use_cases/model_applications* directory, under a
+  subdirectory that corresponds to a specific category.  
 
 .. _use_case_categories:
 
 Use Case Categories
 -------------------
 
-New use cases will be put in the repository under
+New MET tool wrapper use cases will be put in the repository under
+parm/use_cases/met_tool_wrapper/<MET TOOL NAME> where <MET TOOL NAME>
+is the name of the MET tool being wrapped.
+
+New model applications use cases will be put in the repository under
 parm/use_cases/model_applications/<CATEGORY> where <CATEGORY> is
 one of the following:
 
-* medium_range
-* s2s (Subseasonal to Seasonal)
-* convection_allowing_models
-* data_assimilation
-* space_weather
-* marine
-* cryosphere
-* coastal
-* air_quality
-* pbl
-* land_surface
-* extremes
+* air_quality_and_comp
 * climate
-* precipitation
-* tc_and_extra_tc (Tropcial Cyclone and Extra Tropical Cyclone)
+* coastal
+* convection_allowing_models
+* cryosphere
+* data_assimilation
+* extremes
+* land_surface
+* marine_and_coastal
+* medium_range
 * miscellaneous
+* pbl
+* precipitation
+* s2s (Subseasonal to Seasonal)
+* space_weather
+* tc_and_extra_tc (Tropcial Cyclone and Extra Tropical Cyclone)
 
 If you feel that the new use case does not fall into any of these categories
 or are unsure which category is the most appropriate, please contact MET Help
@@ -53,8 +66,19 @@ Use Case Content
 Configure New Use Case
 ^^^^^^^^^^^^^^^^^^^^^^
 
-In the category sub-directory (parm/use_cases/model_applications/<CATEGORY>),
-each use case should have the following:
+If creating a new MET tool wrapper use case, in the MET tool name
+sub-directory (parm/use_cases/met_tool_wrapper/<MET TOOL NAME>), each
+use case should have the following:
+
+* A METplus configuration file where the MET tool name follows PascalCase,
+  e.g. GridStat.conf or ASCII2NC.conf.
+  If the use case uses a Python embedding script, it should be
+  indicasted in the by adding "_python_embedding" to the MET tool name.
+  e.g. GridStat_python_embedding.conf
+
+If creating a new model applications use case, in the category sub-directory
+(parm/use_cases/model_applications/<CATEGORY>), each use case should have the
+following:
 
 * A METplus configuration file named
   \<MET-TOOL\>_fcst\<FCST\>_obs\<OBS\>_cilmo\<CLIMO\>\<DESCRIPTOR\>.conf where
@@ -150,13 +174,15 @@ would look something like this::
 
 The content of this file is rendered above the icons for the use cases in this
 category in the User's Guide > METplus Use Cases >
-`Model Applications <https://dtcenter.github.io/METplus/latest/generated/model_applications/index.html>`_
+`Model Applications <https://metplus.readthedocs.io/en/latest/generated/model_applications/index.html>`_
 page.
 
 Add Sphinx Documentation File
 """""""""""""""""""""""""""""
 
-In the corresponding documentation category directory
+In the corresponding documentation MET tool name directory
+(**docs**/use_cases/met_tool_wrapper/<MET TOOL NAME>) for a met_tool_wrappers
+use case OR category directory for a model_applications use case
 (**docs**/use_cases/model_applications/<CATEGORY>), add:
 
 * A Python Sphinx Documentation (.py) file with the same name as the METplus
@@ -179,7 +205,7 @@ In the corresponding documentation category directory
       a list of possible keywords to use (Note: The link text for the
       keywords must match the actual keyword exactly or it will not
       show up in the search, i.e. **ASCII2NCToolUseCase** must match
-      https://dtcenter.github.io/METplus/search.html?q=**ASCII2NCToolUseCase**
+      https://metplus.readthedocs.io/en/latest/search.html?q=**ASCII2NCToolUseCase**
 
     * Add an image to use as the thumbnail (if desired). Images can be added
       to the docs/_static directory and should be named <category>-<conf>.png
@@ -197,9 +223,23 @@ In the corresponding documentation category directory
     avoid ending a line with this character to avoid generating warnings in the
     documentation.
 
+Accessing the Documentation
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Build the Documentation
-^^^^^^^^^^^^^^^^^^^^^^^
+It is important to ensure that the new use case files is displayed and the
+formatting looks correct. Prior to the release of METplus v4.0.0 contributors
+were required to build the documentation manually.  However, the METplus
+components now use Read the Docs to build and display the documentation. For
+more information on how to view the newly added use case, see the 
+:ref:`Read the Docs METplus Documenation <read-the-docs>`.  Contributors can
+still build the documentation manually if desired. See the
+:ref:`Build the Documentation Manually <manual-build>` section below for more
+information.
+
+.. _manual-build:
+
+Build the Documentation Manually
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Build the documentation and ensure that the new use case file is
 displayed and the formatting looks correct. The Python packages sphinx,
@@ -326,10 +366,13 @@ If the above is shown, then METPLUS_VERSION should be set to 4.0
 
 * METPLUS_USE_CASE_CATEGORY should be one of the list items in the
   :ref:`use_case_categories` section unless you have received approval to
-  create a new category.
+  create a new category. For a new met_tool_wrapper use case, set this value
+  to met_tool_wrapper.
 
 * METPLUS_USE_CASE_NAME should be the name of the new use case without the
-  .conf extension, i.e. EnsembleStat_fcstICAP_obsMODIS_aod
+  .conf extension, i.e. EnsembleStat_fcstICAP_obsMODIS_aod. If adding a new
+  met_tool_wrapper use case, set this value to met_test_YYYYMMDD where
+  YYYYMMDD is today's date.
 
 * METPLUS_FEATURE_BRANCH should match the name of the branch you are working in
   exactly.
@@ -342,15 +385,7 @@ correctly. If the source command fails, make sure you have switched to using
 bash::
 
     source feature_ABC_desc_env.bash
-    echo $METPLUS_VERSION
-    echo $METPLUS_USE_CASE_CATEGORY
-    echo $METPLUS_USE_CASE_NAME
-    echo $METPLUS_NEW_DATA_TARFILE
-    echo $METPLUS_FEATURE_BRANCH
-    echo $METPLUS_DTC_WEB_SERVER
-    echo $METPLUS_DATA_STAGING_DIR
-    echo $METPLUS_DATA_TARFILE_DIR
-    echo $METPLUS_USER_ENV_FILE
+    printenv | grep METPLUS_
 
 .. note::
     The value for METPLUS_USER_ENV_FILE should be the name of the environment
@@ -361,6 +396,8 @@ Create sub-directories for input data
 
 Put new dataset into a directory that matches the use case directories, i.e.
 model_applications/${METPLUS_USE_CASE_CATEGORY}/${METPLUS_USE_CASE_NAME}.
+For a new met_tool_wrapper use case, put the data in a directory called
+met_test/new.
 All of the data required for the use case belongs in this directory so that it
 is clear which use case uses the data. Additional sub-directories under the
 use case directory can be used to separate out different data sources if
@@ -372,7 +409,8 @@ Verify use case config file contains correct directory
 Set directory paths in the use case config file relative to INPUT_BASE
 i.e {INPUT_BASE}/model_applications/<category>/<use_case> where
 <category> is the value you set for ${METPLUS_USE_CASE_CATEGORY} and
-<use_case> is the value you set for ${METPLUS_USE_CASE_NAME}.
+<use_case> is the value you set for ${METPLUS_USE_CASE_NAME}. For a new
+met_tool_wrapper use case, use {INPUT_BASE}/met_test/new.
 You can set {INPUT_BASE} to your local directory to test that the use case
 still runs properly.
 
@@ -384,6 +422,10 @@ the tarfile contains directories, i.e.
 model_applications/${METPLUS_USE_CASE_CATEGORY}::
 
     tar czf ${METPLUS_NEW_DATA_TARFILE} model_applications/${METPLUS_USE_CASE_CATEGORY}/${METPLUS_USE_CASE_NAME}
+
+OR for a met_tool_wrapper use case, run::
+
+    tar czf ${METPLUS_NEW_DATA_TARFILE} met_test/new
 
 Verify that the correct directory structure is found inside the tarfile::
 
@@ -458,15 +500,7 @@ variables are set properly.
 
     cd |metplus_staging_dir|
     source feature_ABC_desc_env.bash
-    echo $METPLUS_VERSION
-    echo $METPLUS_USE_CASE_CATEGORY
-    echo $METPLUS_USE_CASE_NAME
-    echo $METPLUS_NEW_DATA_TARFILE
-    echo $METPLUS_FEATURE_BRANCH
-    echo $METPLUS_DTC_WEB_SERVER
-    echo $METPLUS_DATA_STAGING_DIR
-    echo $METPLUS_DATA_TARFILE_DIR
-    echo $METPLUS_USER_ENV_FILE
+    printenv | grep METPLUS\_
 
 Create a feature branch directory in the tarfile directory
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""
@@ -486,7 +520,7 @@ This will make it easier for the person who will update the tarfiles for the
 next release to include the new data (right before the pull request is merged
 into the develop branch)::
 
-    cp ${METPLUS_DATA_STAGING_DIR}/feature_ABC_desc_env.bash ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+    cp ${METPLUS_DATA_STAGING_DIR}/${METPLUS_USER_ENV_FILE} ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
 Check if the category tarfile exists already
 """"""""""""""""""""""""""""""""""""""""""""
@@ -521,9 +555,15 @@ Untar the new data tarball into the feature branch directory::
 Verify that all of the old and new data exists in the directory that was
 created (i.e. model_applications/<category>).
 
-Create the new sample data tarball. Example::
+Create the new sample data tarball.
+
+Model Application Use Case Example::
 
     tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz model_applications/${METPLUS_USE_CASE_CATEGORY}
+
+MET Tool Wrapper Use Case Example::
+
+    tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz met_test
 
 Add volume_mount_directories file
 """""""""""""""""""""""""""""""""
@@ -579,6 +619,8 @@ properly, then delete the feature branch from dtcenter/METplus. This will avoid
 confusion if this branch diverges from the branch on the forked repository that
 will be used in the final pull request.
 
+.. _add_use_case_to_test_suite:
+
 Add use case to the test suite
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
@@ -599,11 +641,17 @@ definition line to this file and add your new use case under it. Each use case
 in that category will be found on its own line after this line.
 The use cases can be defined using 3 different formats::
 
-    <config_args>
-    <name>::<config_args>
-    <name>::<config_args>::<python_packages>
+    <index>::<config_args>
+    <index>::<name>::<config_args>
+    <index>::<name>::<config_args>::<python_packages>
 
-**<config_args>**
+**<index>**
+
+The index is the number associated with the use case so it can be referenced
+easily. The first index number in a new category should be 0.
+Each use case added should have an index that is one greater than the previous.
+
+**<index>::<config_args>**
 
 This format should only be used if the use case has only 1 configuration file
 and no additional Python package dependencies besides the ones that are
@@ -612,13 +660,13 @@ used for the use case relative to METplus/parm/use_cases. The filename of the
 config file without the .conf extension will be used as the name of the use
 case. Example::
 
-    model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
+    6::model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
 
 The above example will be named
 'PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr' and will run using the
 configuration file listed.
 
-**<name>::<config_args>**
+**<index>::<name>::<config_args>**
 
 This format is required if the use case contains multiple configuration files.
 Instead of forcing the script to guess which conf file should be used as the
@@ -626,12 +674,12 @@ name of the use case, you must explicitly define it. The name of the use case
 must be separated from the <config_args> with '::' and each conf file path or
 conf variable override must be separated by a comma. Example::
 
-    GridStat_multiple_config:: met_tool_wrapper/GridStat/GridStat.conf,met_tool_wrapper/GridStat/GridStat_forecast.conf,met_tool_wrapper/GridStat/GridStat_observation.conf
+    44::GridStat_multiple_config:: met_tool_wrapper/GridStat/GridStat.conf,met_tool_wrapper/GridStat/GridStat_forecast.conf,met_tool_wrapper/GridStat/GridStat_observation.conf
 
 The above example is named 'GridStat_multiple_config' and uses 3 .conf files.
 Use cases with only one configuration file can also use this format is desired.
 
-**<name>::<config_args>::<python_packages>**
+**<index>::<name>::<config_args>::<python_packages>**
 
 This format is used if there are additional Python packages required to run
 the use case. <python_packages> is a list of packages to install before running
@@ -639,7 +687,7 @@ the use case separated by commas.
 
 Example::
 
-    TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics:: model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf,user_env_vars.MET_PYTHON_EXE=python3::pygrib,metpy
+    8::TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics:: model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf,user_env_vars.MET_PYTHON_EXE=python3::pygrib,metpy
 
 The above example is named
 TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.
@@ -685,86 +733,107 @@ example of a script that uses Conda to install a package::
     echo Installing xesmf with conda
     conda install -c conda-forge dask netCDF4 xesmf
 
+.. _add_new_category_to_test_runs:
+
 Add new category to test runs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-If you are adding a new use case category, you will need to add a new entry
-to the main.yml file found in the .github/workflows directory in the METplus
-repository.
-Find the job in the main.yml file named "use_case_tests" and add the new
-category to the matrix categories list if it is not already there::
+Add a new entry to the main.yml file found in the .github/workflows directory
+in the METplus repository.
+Find the job in the main.yml file named "use_case_tests" and add a new entry
+in the "categories" list with the category of the new use case followed by a
+colon, then the index of the use case from the list described in the
+:ref:`add_use_case_to_test_suite` section, then another colon followed by
+"NEW". For example, if the new use case
+is found in the medium_range category with an index of 9, and the main.yml file
+has the following entries in the categories list::
 
     use_case_tests:
       name: Use Case Tests
       runs-on: ubuntu-latest
+      if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
       needs: [get_image, update_data_volumes]
       strategy:
         fail-fast: false
         matrix:
           categories:
-            - "met_tool_wrapper"
-            - "air_quality_and_comp"
-            - "climate"
-            - "convection_allowing_models:0-5"
-            - "convection_allowing_models:6+"
-            - "cryosphere"
-            - "data_assimilation"
-            - "marine_and_coastal"
-            - "medium_range:0-4"
-            - "medium_range:5"
-            - "medium_range:6+"
-            - "precipitation"
-            - "s2s,space_weather,tc_and_extra_tc"
+            - "met_tool_wrapper:0-53"
+            - "air_quality_and_comp:0"
+            - "climate:0-1"
+            - "convection_allowing_models:0"
+            - "convection_allowing_models:1"
+            - "convection_allowing_models:2-6"
+            - "convection_allowing_models:7"
+            - "convection_allowing_models:8"
+            - "cryosphere:0"
+            - "data_assimilation:0"
+            - "marine_and_coastal:0"
+            - "medium_range:0"
+            - "medium_range:1-2"
+            - "medium_range:3-5"
+            - "medium_range:6"
+            - "medium_range:7-8"
+            - "precipitation:0"
+            - "precipitation:1"
+            - "precipitation:2"
+            - "precipitation:3-8"
+            - "s2s:0"
+            - "space_weather:0-1"
+            - "tc_and_extra_tc:0-2"
 
-Multiple Categories in One Test
-"""""""""""""""""""""""""""""""
+then add the following to the list::
 
-If the use cases run quickly and you want to run multiple categories in one
-job, you can add additional categories to this argument separated by commas or
-ampersands, i.e. category1,category2. Do not include any spaces around the
-commas. Example::
+    - "medium_range:9:NEW"
 
-    "s2s,space_weather,tc_and_extra_tc"
+.. note::
+    Make sure that the indentation matches the other lines and use spaces to
+    indent instead of tabs.
+
+New use cases are added as a separate item to make reviewing the test results
+easier. A new use case will produce new output data that is not found in the
+"truth" data set which is compared the output of the use case runs to check
+if code changes altered the final results. Isolating the new output will make
+it easier to verify that the only differences are caused by the new data.
+It also makes it easier to check the size of the output data and length of time
+the use case takes to run to determine if it can be added to an existing group
+or if it should remain in its own group.
+
 
 .. _subset_category:
 
 Subset Category into Multiple Tests
 """""""""""""""""""""""""""""""""""
 
-If all of the use cases in a given category take a long time to run, you can
-separate them into multiple test jobs. Add a colon (:), then define
+Use cases can be separated into multiple test jobs.
+Add a colon (:), then define
 the cases to run for the job. Use cases are numbered
 starting with 0 and are in order of how they are found in the all_use_cases.txt
 file.
 
 The argument supports a comma-separated list of numbers. Example::
 
-    "data_assimilation:0,2,4"
-    ...
-    "data_assimilation:1,3"
+    - "data_assimilation:0,2,4"
+    - "data_assimilation:1,3"
 
 The above example will run a job with data_assimilation use cases 0, 2, and
 4, then another job with data_assimilation use cases 1 and 3.
 
 It also supports a range of numbers separated with a dash. Example::
 
-    "data_assimilation:0-3"
-    ...
-    "data_assimilation:4+"
+    - "data_assimilation:0-3"
+    - "data_assimilation:4-5"
 
 The above example will run a job with data_assimilation 0, 1, 2, and 3, then
-another job with data_assimilation 4 and higher. If you split up use cases
-into a subset, we recommend that you add a plus sign (+) to the end of the last
-number specified in case additional use cases are added to the category.
+another job with data_assimilation 4 and 5.
 
 You can also use a combination of commas and dashes to define the list of cases
 to run. Example::
 
-    "data_assimilation:0-2,4+"
+    "data_assimilation:0-2,4"
     ...
     "data_assimilation:3"
 
-The above example will run data_assimilation 0, 1, 2, 4, and above in one
+The above example will run data_assimilation 0, 1, 2, and 4 in one
 job, then data_assimilation 3 in another job.
 
 Monitoring Automated Tests
@@ -917,7 +986,9 @@ copy the feature file into the develop directory::
 Copy the data from the feature directory into the next version directory
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
-Make sure the paths are correct before copying::
+Make sure the paths are correct before copying.
+
+Model Applications Use Cases::
 
     from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/model_applications/${METPLUS_USE_CASE_CATEGORY}
     echo $from_directory
@@ -926,6 +997,18 @@ Make sure the paths are correct before copying::
     to_directory=${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}/model_applications/${METPLUS_USE_CASE_CATEGORY}
     echo $to_directory
     ls $to_directory
+
+MET Tool Wrapper Use Cases::
+
+    from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/met_test
+    echo $from_directory
+    ls $from_directory
+
+    to_directory=${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}/met_test
+    echo $to_directory
+    ls $to_directory
+
+Once you have verified the correct directories are set, copy the files::
 
     cp -r $from_directory/* $to_directory/
 
@@ -947,9 +1030,15 @@ version**, then simply remove the tarfile link::
 
     unlink sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
 
-Create the new sample data tarfile::
+Create the new sample data tarfile.
+
+Model Applications Use Cases::
 
     tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz model_applications/${METPLUS_USE_CASE_CATEGORY}
+
+MET Tool Wrapper Use Cases::
+
+    tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz met_test
 
 Update the link in the develop directory if needed
 """"""""""""""""""""""""""""""""""""""""""""""""""
@@ -989,8 +1078,32 @@ completed successfully.
 If the circle on the left side is yellow, then the run has not completed yet.
 If everything ran smoothly, clean up the files on the web server.
 
+Consider rearranging the use case groups
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If another group of use cases in the same category exists, consider adding the
+new use case to an existing group to speed up execution.
+If a new use case runs quickly (check the time next to the use case group in
+the diagram found on the Summary page of each GitHub Actions run),
+produces a reasonably small sized output data
+artifact (found at the bottom of a completed GitHub Actions run), and the same
+applies to another group of same category, it would make sense to combine them.
+In the .github/workflow/main.yml file, modify the categories list under the
+"use_case_tests" job (see :ref:`add_new_category_to_test_runs`). For example,
+if the following is found in the list::
+
+    - "met_tool_wrapper:0-53"
+
+and the new use case is defined with::
+
+    - "met_tool_wrapper:54"
+
+then combine the two list items into a single item::
+
+    - "met_tool_wrapper:0-54"
+
 Create a pull request from develop into develop-ref
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The addition of a new use case results in new output data. When this happens,
 the reference branch needs to be updated so that future pull requests will
@@ -1040,4 +1153,3 @@ Remove the tarfile and environment file from the staging directory::
 
     ls ${METPLUS_USER_ENV_FILE}
     rm ${METPLUS_USER_ENV_FILE}
-

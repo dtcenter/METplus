@@ -53,47 +53,17 @@ __all__ = ['load',
            'METplusLogFormatter',
            ]
 
-# Note: This is just a developer reference comment, in case we continue
-# extending the metplus capabilities, by following hwrf patterns.
-# These metplus configuration variables map to the following
-# HWRF variables.
-# METPLUS_BASE == HOMEmetplus, OUTPUT_BASE == WORKmetplus
-# METPLUS_CONF == CONFmetplus, METPLUS_USH == USHmetplus
-# PARM_BASE == PARMmetplus
-
 '''!@var METPLUS_BASE
 The METplus installation directory
 '''
-METPLUS_BASE = None
-
-'''!@var METPLUS_USH
-The ush/ subdirectory of the METplus installation directory
-'''
-METPLUS_USH = None
+METPLUS_BASE = str(Path(__file__).parents[2])
 
 '''!@var PARM_BASE
-The parameter directory
+The parameter directory - set to METPLUS_BASE/parm unless the
+METPLUS_PARM_BASE environment variable is set
 '''
-PARM_BASE = None
-
-if os.environ.get('METPLUS_PARM_BASE', ''):
-    PARM_BASE = os.environ['METPLUS_PARM_BASE']
-
-# Based on METPLUS_BASE, Will set METPLUS_USH, or PARM_BASE if not
-# already set in the environment.
-
-METPLUS_BASE = str(Path(__file__).parents[2])
-USHguess = os.path.join(METPLUS_BASE, 'ush')
-PARMguess = os.path.join(METPLUS_BASE, 'parm')
-if os.path.isdir(USHguess) and os.path.isdir(PARMguess):
-    if METPLUS_USH is None:
-        METPLUS_USH = USHguess
-    if PARM_BASE is None:
-        PARM_BASE = PARMguess
-
-# For METplus, this is assumed to already be set.
-if METPLUS_USH not in sys.path:
-    sys.path.append(METPLUS_USH)
+PARM_BASE = os.environ.get('METPLUS_PARM_BASE',
+                           os.path.join(METPLUS_BASE, 'parm'))
 
 # default METplus configuration files that are sourced first
 base_confs = ['metplus_config/metplus_system.conf',
@@ -263,9 +233,9 @@ def launch(file_list, moreopt):
                             % (section, option, repr(value)))
                 config.set(section, option, value)
 
-                # after each config variable override,
-                # move old sections to [config]
-                config.move_all_to_config_section()
+            # after each config variable override,
+            # move old sections to [config]
+            config.move_all_to_config_section()
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
@@ -623,7 +593,6 @@ class METplusConfig(ProdConfig):
 
             self._conf.remove_section(section)
 
-
     def find_section(self, sec, opt):
         """! Search through list of previously supported config sections
               to find variable requested. This allows the removal of these
@@ -671,7 +640,11 @@ class METplusConfig(ProdConfig):
         if sec in self.OLD_SECTIONS:
             sec = 'config'
 
-        in_template = super().getraw(sec, opt, default)
+        in_template = super().getraw(sec, opt, '')
+        # if default is set but variable was not, set variable to default value
+        if not in_template and default:
+            self.check_default(sec, opt, default)
+            return default
 
         # get inner-most tags that could potentially be other variables
         match_list = re.findall(r'\{([^}{]*)\}', in_template)
@@ -765,6 +738,11 @@ class METplusConfig(ProdConfig):
 
         if '/path/to' in dir_path:
             raise ValueError("[config] " + dir_name + " cannot be set to or contain '/path/to'")
+
+        if '\n' in dir_path:
+            raise ValueError(f"Invalid value for [config] {dir_name} "
+                             f"({dir_path}). Hint: Check that next variable "
+                             "in the config file does not start with a space")
 
         if must_exist and not os.path.exists(dir_path):
             self.logger.error(f"Path must exist: {dir_path}")

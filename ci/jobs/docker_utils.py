@@ -1,6 +1,11 @@
 import os
 import re
 
+# Utilities used by various CI jobs. Functionality includes:
+#  - Check if Docker data volumes need to be updated.
+#  - Get appropriate branch name to use to obtain/create Docker
+#    images. This is needed for pull request runs.
+
 # repository used for storing input data for development branches
 DOCKERHUB_DATA_REPO = 'dtcenter/metplus-data-dev'
 

@@ -9,7 +9,7 @@
 //
 // PrepBufr message type
 //
-message_type =  ${PB2NC_MESSAGE_TYPE} ;
+${METPLUS_MESSAGE_TYPE}
 
 //
 // Mapping of message type group name to comma-separated list of values
@@ -30,7 +30,7 @@ message_type_map = [];
 //
 // PrepBufr station ID
 //
-station_id = ${PB2NC_STATION_ID};
+${METPLUS_STATION_ID}
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -38,20 +38,14 @@ station_id = ${PB2NC_STATION_ID};
 //
 // Observation time window
 //
-obs_window = {
-  beg = ${OBS_WINDOW_BEGIN};
-  end = ${OBS_WINDOW_END};
-}
+${METPLUS_OBS_WINDOW_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 //
 // Observation retention regions
 //
-mask = {
-   grid = "${PB2NC_GRID}" ;
-   poly = "${PB2NC_POLY}" ;
-}
+${METPLUS_MASK_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -92,7 +86,7 @@ level_category = [0, 1, 4, 5, 6];
 // BUFR variable names to retain or derive.
 // If emtpy, process all available variables.
 //
-obs_bufr_var =  ${OBS_BUFR_VAR_LIST};
+${METPLUS_OBS_BUFR_VAR}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -131,18 +125,7 @@ event_stack_flag    = TOP;
 //
 // Time periods for the summarization
 //
-time_summary = {
-  flag = ${TIME_SUMMARY_FLAG};
-  beg = ${TIME_SUMMARY_BEG};
-  end = ${TIME_SUMMARY_END};
-  step = 3600;
-  width = 3600;
-  grib_code = [];
-  obs_var   = ${TIME_SUMMARY_VAR_NAMES};
-  type = ${TIME_SUMMARY_TYPES};
-  vld_freq = 0;
-  vld_thresh = 0.0;
-}
+${METPLUS_TIME_SUMMARY_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

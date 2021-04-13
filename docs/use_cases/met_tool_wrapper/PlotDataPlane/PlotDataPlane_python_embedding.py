@@ -22,6 +22,7 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_python_embedding.conf
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **Data Source:** Unknown
+# |
 
 ##############################################################################
 # METplus Components
@@ -38,6 +39,7 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_python_embedding.conf
 # It processes the following run time:
 #
 # | **Valid:** 2005-08-07 12Z
+# |
 
 ##############################################################################
 # METplus Configuration
@@ -52,10 +54,19 @@ met_tool_wrapper/PlotDataPlane/PlotDataPlane_python_embedding.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
 # This tool does not use a MET configuration file.
 #
+
+##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case calls a Python script to read the input data.
+# The Python script is stored in the MET repository: /path/to/MET/installation/share/met/python/read_ascii_numpy.py
+#
+# `read_ascii_numpy.py <https://github.com/dtcenter/MET/blob/develop/met/scripts/python/read_ascii_numpy.py>`_
 
 ##############################################################################
 # Running METplus

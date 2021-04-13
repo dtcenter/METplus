@@ -60,7 +60,7 @@ class StatAnalysisWrapper(CommandBuilder):
         'METPLUS_COV_THRESH',
         'METPLUS_ALPHA',
         'METPLUS_LINE_TYPE',
-        'METPLUS_JOB',
+        'METPLUS_JOBS',
     ]
 
     field_lists = ['FCST_VAR_LIST',
@@ -1771,14 +1771,15 @@ class StatAnalysisWrapper(CommandBuilder):
             for mp_item in mp_items:
                 if not runtime_settings_dict.get(mp_item, ''):
                     continue
-                value = (f"{mp_item.lower()} = "
-                         f"{runtime_settings_dict.get(mp_item, '')};")
+                value = util.remove_quotes(runtime_settings_dict.get(mp_item,
+                                                                     ''))
+                value = (f"{mp_item.lower()} = \"{value}\";")
                 self.env_var_dict[f'METPLUS_{mp_item}'] = value
 
-            value = f'job = ["'
+            value = f'jobs = ["'
             value += runtime_settings_dict.get('JOB', '')
             value += '"];'
-            self.env_var_dict[f'METPLUS_JOB'] = value
+            self.env_var_dict[f'METPLUS_JOBS'] = value
 
             # send environment variables to logger
             self.set_environment_variables()
