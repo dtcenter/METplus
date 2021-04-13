@@ -3,9 +3,6 @@ Continuous Integration
 
 More information on Continuous Integration (CI) coming soon!
 
-GitHub Actions
---------------
-
 METplus utilizes GitHub Actions to run processes automatically when changes
 are pushed to GitHub. These tasks include:
 
@@ -16,6 +13,66 @@ are pushed to GitHub. These tasks include:
 * Running use cases
 * Comparing use case output to truth data
 * Creating/Updating Docker data volumes with truth data to use in comparisons
+
+Workflow Control
+----------------
+
+GitHub Actions is controlled by a file in the .github/workflow directory called
+main.yml. If this file exists and is valid (no errors), GitHub Actions will
+read this file and trigger a workflow run if the triggering criteria is met.
+It can run multiple jobs in parallel or serially depending on dependency rules
+that can be set. Each job can run a series of commands or scripts called steps.
+Job steps can include "actions" with can be used to perform tasks. Many useful
+actions are provided by GitHub and external collaborators. Developers can also
+write their own custom actions to perform complex tasks to simplify a workflow.
+
+Name
+^^^^
+
+The name of a workflow can be specified to describe an overview of what is run.
+Currently METplus only has 1 workflow, but others can be added. The following
+line in the main.yml file::
+
+    name: METplus CI/CD Workflow
+
+defines the workflow that runs all of the jobs.
+
+.. figure:: figure/gha-workflow-name.png
+
+Event Control
+^^^^^^^^^^^^^
+
+The "on" keyword is used to determine which events will trigger the workflow
+to run::
+
+    on:
+      push:
+        branches:
+          - develop
+          - develop-ref
+          - feature_*
+          - main_*
+          - bugfix_*
+      pull_request:
+        types: [opened, reopened, synchronize]
+
+This configuration tells GitHub Actions to trigger the workflow when:
+
+* A push event occurs on the develop or develop-ref branch
+* A push event occurs on a branch that starts with
+  feature\_, main\_, or bugfix\_
+* A pull request is opened, reopened, or synchronized (when new changes are
+  pushed to the source branch of the pull request.
+
+Jobs
+^^^^
+
+The "jobs" keyword is used to define the jobs that are run in the workflow.
+Each item under "jobs" is a string that defines the ID of the job. This value
+can be referenced within the workflow as needed.
+
+Job Control
+-----------
 
 Default Behavior
 ^^^^^^^^^^^^^^^^

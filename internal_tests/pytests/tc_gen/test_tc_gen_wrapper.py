@@ -142,9 +142,6 @@ from metplus.wrappers.tc_gen_wrapper import TCGenWrapper
           'TC_GEN_DEV_HIT_WINDOW_END': '30'},
          {'METPLUS_DEV_HIT_WINDOW_DICT': 'dev_hit_window = {beg = -30;end = 30;}'}),
 
-        ({'TC_GEN_OPS_HIT_TDIFF': '49'},
-         {'METPLUS_OPS_HIT_TDIFF': 'ops_hit_tdiff = 49;'}),
-
         ({'TC_GEN_DISCARD_INIT_POST_GENESIS_FLAG': 'False'},
          {'METPLUS_DISCARD_INIT_POST_GENESIS_FLAG': 'discard_init_post_genesis_flag = FALSE;'}),
 
@@ -238,6 +235,34 @@ from metplus.wrappers.tc_gen_wrapper import TCGenWrapper
 
         ({'TC_GEN_NC_PAIRS_GRID': 'G004'},
          {'METPLUS_NC_PAIRS_GRID': 'nc_pairs_grid = "G004";'}),
+
+        ({'TC_GEN_GENESIS_MATCH_POINT_TO_TRACK': 'False', },
+         {'METPLUS_GENESIS_MATCH_POINT_TO_TRACK': 'genesis_match_point_to_track = FALSE;'}),
+
+        ({'TC_GEN_GENESIS_MATCH_WINDOW_BEG': '-1', },
+         {
+             'METPLUS_GENESIS_MATCH_WINDOW_DICT': 'genesis_match_window = {beg = -1;}'}),
+
+        ({'TC_GEN_GENESIS_MATCH_WINDOW_END': '2', },
+         {
+             'METPLUS_GENESIS_MATCH_WINDOW_DICT': 'genesis_match_window = {end = 2;}'}),
+
+        ({
+             'TC_GEN_GENESIS_MATCH_WINDOW_BEG': '-2',
+             'TC_GEN_GENESIS_MATCH_WINDOW_END': '1',
+         },
+         {'METPLUS_GENESIS_MATCH_WINDOW_DICT': 'genesis_match_window = {beg = -2;end = 1;}'}),
+        ({'TC_GEN_OPS_HIT_WINDOW_BEG': '1', },
+         {'METPLUS_OPS_HIT_WINDOW_DICT': 'ops_hit_window = {beg = 1;}'}),
+
+        ({'TC_GEN_OPS_HIT_WINDOW_END': '47', },
+         {'METPLUS_OPS_HIT_WINDOW_DICT': 'ops_hit_window = {end = 47;}'}),
+
+        ({
+             'TC_GEN_OPS_HIT_WINDOW_BEG': '1',
+             'TC_GEN_OPS_HIT_WINDOW_END': '47',
+         },
+         {'METPLUS_OPS_HIT_WINDOW_DICT': 'ops_hit_window = {beg = 1;end = 47;}'}),
 
     ]
 )
