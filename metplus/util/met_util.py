@@ -2403,6 +2403,9 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
     return sorted(var_list, key=lambda x: x['index'])
 
 def sub_var_info(var_info, time_info):
+    if not var_info:
+        return {}
+
     out_var_info = {}
     for key, value in var_info.items():
         if isinstance(value, list):
@@ -2424,6 +2427,9 @@ def sub_var_list(var_list, time_info):
         @param time_info dictionary containing time information
         @returns var_list with values substituted
     """
+    if not var_list:
+        return []
+
     out_var_list = []
     for var_info in var_list:
         out_var_info = sub_var_info(var_info, time_info)
