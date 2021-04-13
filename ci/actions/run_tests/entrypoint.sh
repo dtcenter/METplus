@@ -47,7 +47,7 @@ if [ "$INPUT_CATEGORIES" == "pytests" ]; then
 fi
 
 # get METviewer if used in any use cases
-all_requirements="./ci/jobs/get_requirements.py ${CATEGORIES} ${SUBSETLIST}"
+all_requirements=`./ci/jobs/get_requirements.py ${CATEGORIES} ${SUBSETLIST}`
 echo All requirements: $all_requirements
 NETWORK_ARG=""
 if [[ "$all_requirements" =~ .*"metviewer".* ]]; then
