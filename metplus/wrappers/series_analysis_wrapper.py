@@ -172,6 +172,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             # used in CommandBuilder.find_data function)
             self.handle_file_window_variables(c_dict, dtypes=['BOTH'])
 
+            prob_thresh =  self.config.getstr('config',
+                                              'BOTH_SERIES_ANALYSIS_PROB_THRESH',
+                                              '')
+            c_dict['FCST_PROB_THRESH'] = prob_thresh
+            c_dict['OBS_PROB_THRESH'] = prob_thresh
+
         # if BOTH is not set, both FCST or OBS must be set
         else:
             if (not c_dict['FCST_INPUT_TEMPLATE'] or
@@ -184,6 +190,17 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             # set *_WINDOW_* variables for FCST and OBS
             self.handle_file_window_variables(c_dict, dtypes=['FCST', 'OBS'])
+
+            c_dict['FCST_PROB_THRESH'] = (
+                self.config.getstr('config',
+                                   'FCST_SERIES_ANALYSIS_PROB_THRESH', '')
+            )
+
+            c_dict['OBS_PROB_THRESH'] = (
+                self.config.getstr('config',
+                                   'OBS_SERIES_ANALYSIS_PROB_THRESH', '')
+            )
+
 
         c_dict['TC_STAT_INPUT_DIR'] = (
             self.config.getdir('SERIES_ANALYSIS_TC_STAT_INPUT_DIR', '')
