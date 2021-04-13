@@ -269,7 +269,8 @@ class TCRMWWrapper(CommandBuilder):
                 @param time_info time dictionary to use for string substitution
                 @returns True if field list could be built, False if not.
         """
-        field_list = util.sub_var_list(c_dict['VAR_LIST_TEMP'], time_info)
+        field_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                                       time_info)
         if not field_list:
             self.log_error("Could not get field information from config.")
             return False
