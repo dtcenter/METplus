@@ -2402,6 +2402,21 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
     '''
     return sorted(var_list, key=lambda x: x['index'])
 
+def sub_var_info(var_info, time_info):
+    out_var_info = {}
+    for key, value in var_info.items():
+        if isinstance(value, list):
+            out_value = []
+            for item in value:
+                out_value.append(do_string_sub(item, **time_info))
+        else:
+            out_value = do_string_sub(value,
+                                      **time_info)
+
+        out_var_info[key] = out_value
+
+    return out_var_info
+
 def sub_var_list(var_list, time_info):
     """! Perform string substitution on var list values with time info
 
@@ -2411,18 +2426,7 @@ def sub_var_list(var_list, time_info):
     """
     out_var_list = []
     for var_info in var_list:
-        out_var_info = {}
-        for key, value in var_info.items():
-            if isinstance(value, list):
-                out_value = []
-                for item in value:
-                    out_value.append(do_string_sub(item, **time_info))
-            else:
-                out_value = do_string_sub(value,
-                                          **time_info)
-
-            out_var_info[key] = out_value
-
+        out_var_info = sub_var_info(var_info, time_info)
         out_var_list.append(out_var_info)
 
     return out_var_list
