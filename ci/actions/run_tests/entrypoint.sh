@@ -30,9 +30,6 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
 fi
 DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
 
-echo "Setting up METviewer"
-${GITHUB_WORKSPACE}/ci/jobs/python_requirements/get_metviewer.sh
-
 echo "Pulling docker image: $DOCKERHUBTAG"
 docker pull $DOCKERHUBTAG
 docker inspect --type=image $DOCKERHUBTAG > /dev/null
@@ -47,6 +44,13 @@ if [ "$INPUT_CATEGORIES" == "pytests" ]; then
   command="pip3 install pytest-cov; export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; pytest --cov=../../metplus"
   docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "$command"
   exit $?
+fi
+
+# get METviewer if used in any use cases
+all_requirements="./ci/jobs/get_requirements.py ${CATEGORIES} ${SUBSETLIST}"
+if [[ "$all_requirements" == *"metviewer"* ]]; then
+  echo "Setting up METviewer"
+  ${GITHUB_WORKSPACE}/ci/jobs/python_requirements/get_metviewer.sh
 fi
 
 # install Pillow library needed for diff testing
