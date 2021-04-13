@@ -21,7 +21,6 @@ def main():
     categories, subset_list, compare = (
         get_use_case_commands.handle_command_line_args()
     )
-    categories_list = categories.split(',')
 
     test_suite = METplusUseCaseSuite()
     test_suite.add_use_case_groups(categories, subset_list)
