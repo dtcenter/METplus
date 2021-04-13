@@ -53,7 +53,7 @@ NETWORK_ARG=""
 if [[ "$all_requirements" =~ .*"metviewer".* ]]; then
   echo "Setting up METviewer"
   ${GITHUB_WORKSPACE}/ci/jobs/python_requirements/get_metviewer.sh
-  NETWORK_ARG=--network=\"container:mysql_mv\"
+  NETWORK_ARG=--network="container:mysql_mv"
 fi
 
 # install Pillow library needed for diff testing
