@@ -84,7 +84,7 @@ met_tool_wrapper/METdbLoad/METdbLoad.conf
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
 # * **INPUT_BASE** - Path to directory where sample data tarballs are unpacked (See Datasets section to obtain tarballs). This is not required to run METplus, but it is required to run the examples in parm/use_cases
-# * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
+# * **OUTPUT_BASE** - Path to directory where METplus output will be written. This must be in a location where you have write permissions
 # * **MET_INSTALL_DIR** - Path to location where MET is installed locally
 #
 # Example User Configuration File::
