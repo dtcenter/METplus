@@ -99,7 +99,7 @@ jobs:
       fail-fast: false
       matrix:
         categories:
-          - "met_tool_wrapper:0-53"
+          - "met_tool_wrapper:0-54"
           - "air_quality_and_comp:0"
           - "climate:0-1"
           - "convection_allowing_models:0"
@@ -124,7 +124,6 @@ jobs:
           - "s2s:4"
           - "space_weather:0-1"
           - "tc_and_extra_tc:0-2"
-          - "met_tool_wrapper:54:NEW"
     steps:
       - uses: actions/download-artifact@v2
         with:
