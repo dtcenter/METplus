@@ -76,9 +76,15 @@ class MTDWrapper(MODEWrapper):
         c_dict['SINGLE_RUN'] = self.config.getbool('config',
                                                    'MTD_SINGLE_RUN',
                                                    False)
-        c_dict['SINGLE_DATA_SRC'] = self.config.getstr('config',
-                                                       'MTD_SINGLE_DATA_SRC',
-                                                       'FCST')
+        if c_dict['SINGLE_RUN']:
+            c_dict['SINGLE_DATA_SRC'] = (
+                self.config.getstr('config',
+                                   'MTD_SINGLE_DATA_SRC',
+                                   '')
+            )
+            if not c_dict['SINGLE_DATA_SRC']:
+                self.log_error('Must set MTD_SINGLE_DATA_SRC if '
+                               'MTD_SINGLE_RUN is True')
 
         c_dict['FCST_INPUT_DIR'] = (
             self.config.getdir('FCST_MTD_INPUT_DIR', '')
@@ -108,7 +114,7 @@ class MTDWrapper(MODEWrapper):
 
         # if single run for OBS, read OBS values into FCST keys
         read_type = 'FCST'
-        if c_dict['SINGLE_RUN'] and c_dict['SINGLE_DATA_SRC'] == 'OBS':
+        if c_dict['SINGLE_RUN'] and c_dict.get('SINGLE_DATA_SRC') == 'OBS':
             read_type = 'OBS'
 
         self.read_field_values(c_dict, read_type, 'FCST')
@@ -116,6 +122,12 @@ class MTDWrapper(MODEWrapper):
         # if not running single mode, also read OBS values
         if not c_dict['SINGLE_RUN']:
             self.read_field_values(c_dict, 'OBS', 'OBS')
+
+        c_dict['VAR_LIST_TEMP'] = (
+            util.parse_var_list(self.config,
+                                data_type=c_dict.get('SINGLE_DATA_SRC'),
+                                met_tool=self.app_name)
+        )
 
         return c_dict
 
@@ -190,12 +202,12 @@ class MTDWrapper(MODEWrapper):
 #        file_interval = self.c_dict['FILE_INTERVAL']
         lead_seq = util.get_lead_sequence(self.config, input_dict)
 
+        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                                     input_dict)
+
         # if only processing a single data set (FCST or OBS) then only read
         # that var list and process
         if self.c_dict['SINGLE_RUN']:
-            var_list = util.parse_var_list(self.config, input_dict,
-                                           self.c_dict['SINGLE_DATA_SRC'],
-                                           met_tool=self.app_name)
             for var_info in var_list:
                 self.run_single_mode(input_dict, var_info)
 
@@ -203,9 +215,6 @@ class MTDWrapper(MODEWrapper):
 
         # if comparing FCST and OBS data, get var list from
         # FCST/OBS or BOTH variables
-        var_list = util.parse_var_list(self.config, input_dict,
-                                       met_tool=self.app_name)
-
         # report error and exit if field info is not set
         if not var_list:
             self.log_error('No input fields were specified to MTD. You must '
@@ -279,7 +288,7 @@ class MTDWrapper(MODEWrapper):
     def run_single_mode(self, input_dict, var_info):
         single_list = []
 
-        data_src = self.c_dict['SINGLE_DATA_SRC']
+        data_src = self.c_dict.get('SINGLE_DATA_SRC')
         if data_src == 'OBS':
             find_method = self.find_obs
         else:
@@ -422,7 +431,7 @@ class MTDWrapper(MODEWrapper):
 
             fcst_file = model_path
             if self.c_dict['SINGLE_RUN']:
-                if self.c_dict['SINGLE_DATA_SRC'] == 'OBS':
+                if self.c_dict.get('SINGLE_DATA_SRC') == 'OBS':
                     fcst_file = obs_path
             else:
                 self.obs_file = obs_path

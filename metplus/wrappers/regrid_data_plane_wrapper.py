@@ -106,6 +106,12 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
                 self.log_error("FCST_REGRID_DATA_PLANE_OUTPUT_TEMPLATE must be set if "
                                "FCST_REGRID_DATA_PLANE_RUN is True")
 
+            c_dict['VAR_LIST_FCST'] = util.parse_var_list(
+                self.config,
+                data_type='FCST',
+                met_tool=self.app_name
+            )
+
 
         if self.config.getbool('config', 'OBS_REGRID_DATA_PLANE_RUN', False):
             window_types.append('OBS')
@@ -122,6 +128,12 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
             if not c_dict['OBS_OUTPUT_TEMPLATE']:
                 self.log_error("OBS_REGRID_DATA_PLANE_OUTPUT_TEMPLATE must be set if "
                                "OBS_REGRID_DATA_PLANE_RUN is True")
+
+            c_dict['VAR_LIST_OBS'] = util.parse_var_list(
+                self.config,
+                data_type='OBS',
+                met_tool=self.app_name
+            )
 
         self.handle_file_window_variables(c_dict, dtypes=window_types)
 
