@@ -77,7 +77,7 @@ met_tool_wrapper/METdbLoad/METdbLoad.conf
 #
 #        run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoad.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in METdbLoad.conf::
+# 2) Modifying the configurations in parm/metplus_config and then passing in METdbLoad.conf::
 #
 #        run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoad.conf
 #
