@@ -19,6 +19,11 @@ from metplus.util.met_util import expand_int_string_to_list
 def handle_requirements(requirements, work_dir):
     requirement_args = []
     for requirement in requirements:
+        # don't obtain METviewer here because it has to be set up outside of
+        # docker container that runs the use cases
+        if requirement.lower() == 'metviewer':
+            continue
+
         # check if get_{requirement} script exists and use it if it does
         script_path = os.path.join(work_dir,
                                    'ci',
