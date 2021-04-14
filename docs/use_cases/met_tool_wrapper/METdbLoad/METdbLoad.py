@@ -73,7 +73,7 @@ met_tool_wrapper/METdbLoad/METdbLoad.conf
 #
 # This use case can be run two ways:
 #
-# 1) Passing in METdbLoad.conf then a user-specific system configuration file::
+# 1) Passing in METdbLoad.conf followed by a user-specific system configuration file::
 #
 #        run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoad.conf -c /path/to/user_system.conf
 #
