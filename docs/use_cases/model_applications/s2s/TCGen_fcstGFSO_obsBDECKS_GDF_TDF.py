@@ -81,14 +81,18 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # Software Versions
 # -----------------
 #
-# This use case was developed with the following versions of various software and Python packages. Any deviation from these versions
+# This use case was developed with specific versions of various software and Python packages. Any deviation from these versions
 # may require re-configuration or adaptation to reproduce the results shown.
-python-3.6.3
-cartopy-0.18.0
-matplotlib-3.1.2
-MET-10.0.0
-METplus-4.0.0
-METplotpy-1.0.0
+#
+# Names and version numbers::
+#
+#  python-3.6.3
+#  cartopy-0.18.0
+#  matplotlib-3.1.2
+#  MET-10.0.0
+#  METplus-4.0.0
+#  METplotpy-1.0.0
+#
 
 ##############################################################################
 # METplus Components
