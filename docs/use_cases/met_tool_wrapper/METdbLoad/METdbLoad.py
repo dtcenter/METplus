@@ -29,7 +29,7 @@ met_tool_wrapper/METdbLoad/METdbLoad.conf
 # This use case utilizes the METplus METdbLoad wrapper to search for
 # files ending with .stat or .tcst, substitute values into an XML load
 # configuration file, and call met_db_load.py to load MET data into a
-# METviewer database.
+# database.
 
 ##############################################################################
 # METplus Workflow
