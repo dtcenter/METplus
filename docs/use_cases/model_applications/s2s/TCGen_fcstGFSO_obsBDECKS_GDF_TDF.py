@@ -58,7 +58,8 @@ model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf
 # Both forecast and observation datasets for this use case must adhere to the ATCF format.
 #
 # **Forecast data:**
-# GFDL Cyclone Tracker output configured for "genesis mode" for the Global Forecast System (GFS) model
+# GFDL Cyclone Tracker output configured for "genesis mode" for the FV3GFS model. This configuration used an experimental GFSv15 physics package,
+# and had a horizontal grid spacing of ~25 km with 64 vertical levels.
 #
 # **Observation data:**
 # Global ATCF B-decks files from the National Hurricane Center (NHC) and Joint Typhoon Warning Center (JTWC)

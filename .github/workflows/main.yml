@@ -121,9 +121,9 @@ jobs:
           - "precipitation:3-8"
           - "s2s:0"
           - "s2s:1-3"
+          - "s2s:4"
           - "space_weather:0-1"
           - "tc_and_extra_tc:0-2"
-          - "s2s:4:NEW"
     steps:
       - uses: actions/download-artifact@v2
         with:
