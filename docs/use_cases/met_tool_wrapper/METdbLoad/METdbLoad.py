@@ -9,7 +9,7 @@ met_tool_wrapper/METdbLoad/METdbLoad.conf
 # Scientific Objective
 # --------------------
 #
-# Load MET data into a METviewer database using the met_db_load.py script
+# Load MET data into a database using the met_db_load.py script
 # found in dtcenter/METdatadb
 
 ##############################################################################
