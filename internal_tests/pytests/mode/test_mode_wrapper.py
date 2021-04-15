@@ -1,0 +1,376 @@
+#!/usr/bin/env python3
+
+import os
+import sys
+import re
+import logging
+from collections import namedtuple
+import pytest
+import datetime
+
+import produtil
+
+from metplus.wrappers.mode_wrapper import MODEWrapper
+from metplus.util import met_util as util
+from metplus.util import time_util
+
+@pytest.mark.parametrize(
+    'config_overrides, env_var_values', [
+        ({'MODEL': 'my_model'},
+         {'METPLUS_MODEL': 'model = "my_model";'}),
+
+        ({'MODE_DESC': 'my_desc'},
+         {'METPLUS_DESC': 'desc = "my_desc";'}),
+
+        ({'DESC': 'my_desc'},
+         {'METPLUS_DESC': 'desc = "my_desc";'}),
+
+        ({'OBTYPE': 'my_obtype'},
+         {'METPLUS_OBTYPE': 'obtype = "my_obtype";'}),
+
+        ({'MODE_REGRID_TO_GRID': 'FCST',
+          },
+         {'METPLUS_REGRID_DICT': 'regrid = {to_grid = FCST;}'}),
+
+        ({'MODE_REGRID_METHOD': 'NEAREST',
+          },
+         {'METPLUS_REGRID_DICT': 'regrid = {method = NEAREST;}'}),
+
+        ({'MODE_REGRID_WIDTH': '1',
+          },
+         {'METPLUS_REGRID_DICT': 'regrid = {width = 1;}'}),
+
+        ({'MODE_REGRID_VLD_THRESH': '0.5',
+          },
+         {'METPLUS_REGRID_DICT': 'regrid = {vld_thresh = 0.5;}'}),
+
+        ({'MODE_REGRID_SHAPE': 'SQUARE',
+          },
+         {'METPLUS_REGRID_DICT': 'regrid = {shape = SQUARE;}'}),
+
+        ({'MODE_REGRID_TO_GRID': 'FCST',
+          'MODE_REGRID_METHOD': 'NEAREST',
+          'MODE_REGRID_WIDTH': '1',
+          'MODE_REGRID_VLD_THRESH': '0.5',
+          'MODE_REGRID_SHAPE': 'SQUARE',
+          },
+         {'METPLUS_REGRID_DICT': ('regrid = {to_grid = FCST;method = NEAREST;'
+                                  'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
+                                  )}),
+
+        ({'MODE_CLIMO_MEAN_INPUT_TEMPLATE':
+              '/some/path/climo/filename.nc',
+          },
+         {'METPLUS_CLIMO_MEAN_FILE':
+              'file_name = ["/some/path/climo/filename.nc"];',
+          }),
+        ({'MODE_CLIMO_STDEV_INPUT_TEMPLATE':
+              '/some/path/climo/stdfile.nc',
+          },
+         {'METPLUS_CLIMO_STDEV_FILE':
+              'climo_stdev = { file_name = ["/some/path/climo/stdfile.nc"]; }',
+         }),
+        # mask grid and poly (old config var)
+        ({'MODE_MASK_GRID': 'FULL',
+          'MODE_VERIFICATION_MASK_TEMPLATE': 'one, two',
+          },
+         {'METPLUS_MASK_DICT':
+              'mask = {grid = ["FULL"];poly = ["one", "two"];}',
+          }),
+        # mask grid and poly (new config var)
+        ({'MODE_MASK_GRID': 'FULL',
+          'MODE_MASK_POLY': 'one, two',
+          },
+         {'METPLUS_MASK_DICT':
+              'mask = {grid = ["FULL"];poly = ["one", "two"];}',
+          }),
+        # mask grid value
+        ({'MODE_MASK_GRID': 'FULL',
+          },
+         {'METPLUS_MASK_DICT':
+              'mask = {grid = ["FULL"];}',
+          }),
+        # mask grid empty string (should create empty list)
+        ({'MODE_MASK_GRID': '',
+          },
+         {'METPLUS_MASK_DICT':
+              'mask = {grid = [];}',
+          }),
+        # mask poly (old config var)
+        ({'MODE_VERIFICATION_MASK_TEMPLATE': 'one, two',
+          },
+         {'METPLUS_MASK_DICT':
+              'mask = {poly = ["one", "two"];}',
+          }),
+        # mask poly (new config var)
+        ({'MODE_MASK_POLY': 'one, two',
+          },
+         {'METPLUS_MASK_DICT':
+              'mask = {poly = ["one", "two"];}',
+          }),
+
+        ({'MODE_NEIGHBORHOOD_COV_THRESH': '>=0.5'},
+         {'METPLUS_NBRHD_COV_THRESH': 'cov_thresh = [>=0.5];'}),
+
+        ({'MODE_NEIGHBORHOOD_WIDTH': '1,2'},
+         {'METPLUS_NBRHD_WIDTH': 'width = [1, 2];'}),
+
+        ({'MODE_NEIGHBORHOOD_SHAPE': 'CIRCLE'},
+         {'METPLUS_NBRHD_SHAPE': 'shape = CIRCLE;'}),
+
+        ({'MODE_OUTPUT_PREFIX': 'my_output_prefix'},
+         {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_output_prefix";'}),
+
+        ({'MODE_OUTPUT_FLAG_FHO': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {fho = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_CTC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {ctc = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_CTS': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {cts = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_MCTC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {mctc = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_MCTS': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {mcts = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_CNT': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {cnt = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_SL1L2': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {sl1l2 = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_SAL1L2': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {sal1l2 = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_VL1L2': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {vl1l2 = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_VAL1L2': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {val1l2 = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_VCNT': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {vcnt = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_PCT': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pct = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_PSTD': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pstd = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_PJC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pjc = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_PRC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {prc = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_ECLV': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {eclv = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_NBRCTC': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {nbrctc = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_NBRCTS': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {nbrcts = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_NBRCNT': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {nbrcnt = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_GRAD': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {grad = STAT;}'}),
+
+        ({'MODE_OUTPUT_FLAG_DMAP': 'STAT', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {dmap = STAT;}'}),
+
+        ({
+             'MODE_OUTPUT_FLAG_FHO': 'STAT',
+             'MODE_OUTPUT_FLAG_CTC': 'STAT',
+             'MODE_OUTPUT_FLAG_CTS': 'STAT',
+             'MODE_OUTPUT_FLAG_MCTC': 'STAT',
+             'MODE_OUTPUT_FLAG_MCTS': 'STAT',
+             'MODE_OUTPUT_FLAG_CNT': 'STAT',
+             'MODE_OUTPUT_FLAG_SL1L2': 'STAT',
+             'MODE_OUTPUT_FLAG_SAL1L2': 'STAT',
+             'MODE_OUTPUT_FLAG_VL1L2': 'STAT',
+             'MODE_OUTPUT_FLAG_VAL1L2': 'STAT',
+             'MODE_OUTPUT_FLAG_VCNT': 'STAT',
+             'MODE_OUTPUT_FLAG_PCT': 'STAT',
+             'MODE_OUTPUT_FLAG_PSTD': 'STAT',
+             'MODE_OUTPUT_FLAG_PJC': 'STAT',
+             'MODE_OUTPUT_FLAG_PRC': 'STAT',
+             'MODE_OUTPUT_FLAG_ECLV': 'STAT',
+             'MODE_OUTPUT_FLAG_NBRCTC': 'STAT',
+             'MODE_OUTPUT_FLAG_NBRCTS': 'STAT',
+             'MODE_OUTPUT_FLAG_NBRCNT': 'STAT',
+             'MODE_OUTPUT_FLAG_GRAD': 'STAT',
+             'MODE_OUTPUT_FLAG_DMAP': 'STAT',
+         },
+         {
+             'METPLUS_OUTPUT_FLAG_DICT': (
+                     'output_flag = {fho = STAT;ctc = STAT;cts = STAT;'
+                     'mctc = STAT;mcts = STAT;cnt = STAT;sl1l2 = STAT;'
+                     'sal1l2 = STAT;vl1l2 = STAT;val1l2 = STAT;'
+                     'vcnt = STAT;pct = STAT;pstd = STAT;pjc = STAT;'
+                     'prc = STAT;eclv = STAT;nbrctc = STAT;nbrcts = STAT;'
+                     'nbrcnt = STAT;grad = STAT;dmap = STAT;}')}),
+
+        ({'MODE_NC_PAIRS_FLAG_LATLON': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {latlon = TRUE;}'}),
+
+        ({'MODE_NC_PAIRS_FLAG_RAW': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {raw = TRUE;}'}),
+
+        ({'MODE_NC_PAIRS_FLAG_DIFF': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {diff = TRUE;}'}),
+
+        ({'MODE_NC_PAIRS_FLAG_CLIMO': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {climo = TRUE;}'}),
+
+        ({'MODE_NC_PAIRS_FLAG_CLIMO_CDP': 'TRUE', },
+         {
+             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {climo_cdp = TRUE;}'}),
+
+        ({'MODE_NC_PAIRS_FLAG_WEIGHT': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {weight = TRUE;}'}),
+
+        ({'MODE_NC_PAIRS_FLAG_NBRHD': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {nbrhd = TRUE;}'}),
+
+        ({'MODE_NC_PAIRS_FLAG_FOURIER': 'TRUE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {fourier = TRUE;}'}),
+
+        ({'MODE_NC_PAIRS_FLAG_GRADIENT': 'TRUE', },
+         {
+             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {gradient = TRUE;}'}),
+
+        ({'MODE_NC_PAIRS_FLAG_DISTANCE_MAP': 'TRUE', },
+         {
+             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {distance_map = TRUE;}'}),
+
+        ({'MODE_NC_PAIRS_FLAG_APPLY_MASK': 'TRUE', },
+         {
+             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {apply_mask = TRUE;}'}),
+
+        ({
+             'MODE_NC_PAIRS_FLAG_LATLON': 'TRUE',
+             'MODE_NC_PAIRS_FLAG_RAW': 'TRUE',
+             'MODE_NC_PAIRS_FLAG_DIFF': 'TRUE',
+             'MODE_NC_PAIRS_FLAG_CLIMO': 'TRUE',
+             'MODE_NC_PAIRS_FLAG_CLIMO_CDP': 'TRUE',
+             'MODE_NC_PAIRS_FLAG_WEIGHT': 'TRUE',
+             'MODE_NC_PAIRS_FLAG_NBRHD': 'TRUE',
+             'MODE_NC_PAIRS_FLAG_FOURIER': 'TRUE',
+             'MODE_NC_PAIRS_FLAG_GRADIENT': 'TRUE',
+             'MODE_NC_PAIRS_FLAG_DISTANCE_MAP': 'TRUE',
+             'MODE_NC_PAIRS_FLAG_APPLY_MASK': 'TRUE',
+         },
+         {
+             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {latlon = TRUE;raw = TRUE;diff = TRUE;climo = TRUE;climo_cdp = TRUE;weight = TRUE;nbrhd = TRUE;fourier = TRUE;gradient = TRUE;distance_map = TRUE;apply_mask = TRUE;}'}),
+
+        ({'MODE_CLIMO_CDF_CDF_BINS': '1', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;}'}),
+
+        ({'MODE_CLIMO_CDF_CENTER_BINS': 'True', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {center_bins = TRUE;}'}),
+
+        ({'MODE_CLIMO_CDF_WRITE_BINS': 'False', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {write_bins = FALSE;}'}),
+
+        ({
+             'MODE_CLIMO_CDF_CDF_BINS': '1',
+             'MODE_CLIMO_CDF_CENTER_BINS': 'True',
+             'MODE_CLIMO_CDF_WRITE_BINS': 'False',
+         },
+         {
+             'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;}'}),
+
+    ]
+)
+def test_mode_single_field(metplus_config, config_overrides,
+                                env_var_values):
+    fcst_dir = '/some/path/fcst'
+    obs_dir = '/some/path/obs'
+    fcst_name = 'APCP'
+    fcst_level = 'A03'
+    obs_name = 'APCP_03'
+    obs_level_no_quotes = '(*,*)'
+    obs_level = f'"{obs_level_no_quotes}"'
+    fcst_fmt = f'field = [{{ name="{fcst_name}"; level="{fcst_level}"; }}];'
+    obs_fmt = (f'field = [{{ name="{obs_name}"; '
+               f'level="{obs_level_no_quotes}"; }}];')
+    config = metplus_config()
+
+    # set config variables to prevent command from running and bypass check
+    # if input files actually exist
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'MODE')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2005080700')
+    config.set('config', 'INIT_END', '2005080712')
+    config.set('config', 'INIT_INCREMENT', '12H')
+    config.set('config', 'LEAD_SEQ', '12H')
+    config.set('config', 'LOOP_ORDER', 'times')
+    config.set('config', 'MODE_CONFIG_FILE',
+               '{PARM_BASE}/met_config/MODEConfig_wrapped')
+    config.set('config', 'FCST_MODE_INPUT_DIR', fcst_dir)
+    config.set('config', 'OBS_MODE_INPUT_DIR', obs_dir)
+    config.set('config', 'FCST_MODE_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
+    config.set('config', 'OBS_MODE_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d%H}/obs_file')
+    config.set('config', 'MODE_OUTPUT_DIR',
+               '{OUTPUT_BASE}/MODE/output')
+    config.set('config', 'MODE_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
+
+    config.set('config', 'FCST_VAR1_NAME', fcst_name)
+    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
+    config.set('config', 'OBS_VAR1_NAME', obs_name)
+    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = MODEWrapper(config)
+    assert(wrapper.isOK)
+
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    config_file = wrapper.c_dict.get('CONFIG_FILE')
+    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    expected_cmds = [(f"{app_path} {verbosity} "
+                      f"{fcst_dir}/2005080700/fcst_file_F012 "
+                      f"{obs_dir}/2005080712/obs_file "
+                      f"{config_file} -outdir {out_dir}/2005080712"),
+                     (f"{app_path} {verbosity} "
+                      f"{fcst_dir}/2005080712/fcst_file_F012 "
+                      f"{obs_dir}/2005080800/obs_file "
+                      f"{config_file} -outdir {out_dir}/2005080800"),
+                     ]
+
+
+    all_cmds = wrapper.run_all_times()
+    print(f"ALL COMMANDS: {all_cmds}")
+
+    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert(cmd == expected_cmd)
+
+        # check that environment variables were set properly
+        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+            match = next((item for item in env_vars if
+                          item.startswith(env_var_key)), None)
+            assert(match is not None)
+            value = match.split('=', 1)[1]
+            if env_var_key == 'METPLUS_FCST_FIELD':
+                assert(value == fcst_fmt)
+            elif env_var_key == 'METPLUS_OBS_FIELD':
+                assert (value == obs_fmt)
+            else:
+                assert(env_var_values.get(env_var_key, '') == value)
