@@ -23,11 +23,11 @@ _NetCDF.conf
 # | **Observation:** HRD TDR merged_zonal_wind
 #
 # | **Location of Model forecast and Dropsonde files:** All of the input data required for this use case can be found in the sample data tarball. Click `here <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_ to download.
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | **This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
-# | ** TDR Data Source:** Hurricane Research Division: Contact: Paul Reasor Email: paul.reasor@noaa.gov  
-# | ** The data dataset used in the use case is a subset of the Merged Analysis (v2d_combined_xy_rel_merged_ships.nc).
-# | ** Thanks to HRD for providing us the dataset
+# | **TDR Data Source:** Hurricane Research Division: Contact: Paul Reasor Email: paul.reasor@noaa.gov  
+# | **The data dataset used in the use case is a subset of the Merged Analysis (v2d_combined_xy_rel_merged_ships.nc).
+# | **Thanks to HRD for providing us the dataset
 
 ##############################################################################
 # METplus Components
@@ -120,7 +120,7 @@ _NetCDF.conf
 # * grid_stat_HAFS_vs_TDR_000000L_20190829_120000V_fho.txt  
 # * grid_stat_HAFS_vs_TDR_000000L_20190829_120000V_pairs.nc  
 # * grid_stat_HAFS_vs_TDR_000000L_20190829_120000V.stat
-# The use case is run for 4 lead times valid at 2019081912, so four directories will be generated which contains similar files as above.
+# * The use case is run for 4 lead times valid at 2019081912, so four directories will be generated which contains similar files as above.
 
 ##############################################################################
 # Keywords
