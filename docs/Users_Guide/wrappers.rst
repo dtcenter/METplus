@@ -1814,6 +1814,41 @@ Configuration
 | :term:`MODE_SKIP_IF_OUTPUT_EXISTS`
 | :term:`MODE_DESC`
 | :term:`MODE_MET_CONFIG_OVERRIDES`
+| :term:`MODE_WEIGHT_CENTROID_DIST`
+| :term:`MODE_WEIGHT_BOUNDARY_DIST`
+| :term:`MODE_WEIGHT_CONVEX_HULL_DIST`
+| :term:`MODE_WEIGHT_ANGLE_DIFF`
+| :term:`MODE_WEIGHT_ASPECT_DIFF`
+| :term:`MODE_WEIGHT_AREA_RATIO`
+| :term:`MODE_WEIGHT_INT_AREA_RATIO`
+| :term:`MODE_WEIGHT_CURVATURE_RATIO`
+| :term:`MODE_WEIGHT_COMPLEXITY_RATIO`
+| :term:`MODE_WEIGHT_INTEN_PERC_RATIO`
+| :term:`MODE_WEIGHT_INTEN_PERC_VALUE`
+| :term:`MODE_MASK_GRID`
+| :term:`MODE_MASK_GRID_FLAG`
+| :term:`MODE_MASK_POLY`
+| :term:`MODE_MASK_POLY_FLAG`
+| :term:`MODE_FCST_FILTER_ATTR_NAME`
+| :term:`MODE_FCST_FILTER_ATTR_THRESH`
+| :term:`MODE_FCST_CENSOR_THRESH`
+| :term:`MODE_FCST_CENSOR_VAL`
+| :term:`MODE_FCST_VLD_THRESH`
+| :term:`MODE_OBS_FILTER_ATTR_NAME`
+| :term:`MODE_OBS_FILTER_ATTR_THRESH`
+| :term:`MODE_OBS_CENSOR_THRESH`
+| :term:`MODE_OBS_CENSOR_VAL`
+| :term:`MODE_OBS_VLD_THRESH`
+| :term:`MODE_NC_PAIRS_FLAG_LATLON`
+| :term:`MODE_NC_PAIRS_FLAG_RAW`
+| :term:`MODE_NC_PAIRS_FLAG_OBJECT_RAW`
+| :term:`MODE_NC_PAIRS_FLAG_OBJECT_ID`
+| :term:`MODE_NC_PAIRS_FLAG_CLUSTER_ID`
+| :term:`MODE_NC_PAIRS_FLAG_POLYLINES`
+| :term:`MODE_MATCH_FLAG`
+| :term:`MODE_MAX_CENTROID_DIST`
+| :term:`MODE_TOTAL_INTEREST_THRESH`
+| :term:`MODE_INTEREST_FUNCTION_CENTROID_DIST`
 | :term:`FCST_MODE_VAR<n>_NAME` (optional)
 | :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MODE_VAR<n>_THRESH` (optional)
@@ -2075,6 +2110,232 @@ Below the file contents are descriptions of each environment variable referenced
      - MET Config File
    * - :term:`MODE_MET_CONFIG_OVERRIDES`
      - n/a
+
+**${METPLUS_FCST_FILTER_ATTR_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_FILTER_ATTR_NAME`
+     - fcst.filter_attr_name
+
+**${METPLUS_FCST_FILTER_ATTR_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_FILTER_ATTR_THRESH`
+     - fcst.filter_attr_thresh
+
+**${METPLUS_FCST_CENSOR_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_CENSOR_THRESH`
+     - fcst.censor_thresh
+
+**${METPLUS_FCST_CENSOR_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_CENSOR_VAL`
+     - fcst.censor_val
+
+**${METPLUS_FCST_VLD_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_FCST_VLD_THRESH`
+     - fcst.vld_thresh
+
+**${METPLUS_OBS_FILTER_ATTR_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_FILTER_ATTR_NAME`
+     - obs.filter_attr_name
+
+**${METPLUS_OBS_FILTER_ATTR_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_FILTER_ATTR_THRESH`
+     - obs.filter_attr_thresh
+
+**${METPLUS_OBS_CENSOR_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_CENSOR_THRESH`
+     - obs.censor_thresh
+
+**${METPLUS_OBS_CENSOR_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_CENSOR_VAL`
+     - obs.censor_val
+
+**${METPLUS_OBS_VLD_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_OBS_VLD_THRESH`
+     - obs.vld_thresh
+
+**${METPLUS_MASK_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MASK_GRID`
+     - mask.grid
+   * - :term:`MODE_MASK_GRID_FLAG`
+     - mask.grid_flag
+   * - :term:`MODE_MASK_POLY`
+     - mask.poly
+   * - :term:`MODE_MASK_POLY_FLAG`
+     - mask.poly_flag
+
+**${METPLUS_MATCH_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MATCH_FLAG`
+     - match_flag
+
+**${METPLUS_WEIGHT_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_WEIGHT_CENTROID_DIST`
+     - weight.centroid_dist
+   * - :term:`MODE_WEIGHT_BOUNDARY_DIST`
+     - weight.boundary_dist
+   * - :term:`MODE_WEIGHT_CONVEX_HULL_DIST`
+     - weight.convex_hull_dist
+   * - :term:`MODE_WEIGHT_ANGLE_DIFF`
+     - weight.angle_diff
+   * - :term:`MODE_WEIGHT_ASPECT_DIFF`
+     - weight.aspect_diff
+   * - :term:`MODE_WEIGHT_AREA_RATIO`
+     - weight.area_ratio
+   * - :term:`MODE_WEIGHT_INT_AREA_RATIO`
+     - weight.int_area_ratio
+   * - :term:`MODE_WEIGHT_CURVATURE_RATIO`
+     - weight.curvature_ratio
+   * - :term:`MODE_WEIGHT_COMPLEXITY_RATIO`
+     - weight.complexity_ratio
+   * - :term:`MODE_WEIGHT_INTEN_PERC_RATIO`
+     - weight.inten_perc_ratio
+   * - :term:`MODE_WEIGHT_INTEN_PERC_VALUE`
+     - weight.inten_perc_value
+
+**${METPLUS_NC_PAIRS_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_NC_PAIRS_FLAG_LATLON`
+     - nc_pairs_flag.latlon
+   * - :term:`MODE_NC_PAIRS_FLAG_RAW`
+     - nc_pairs_flag.raw
+   * - :term:`MODE_NC_PAIRS_FLAG_OBJECT_RAW`
+     - nc_pairs_flag.object_raw
+   * - :term:`MODE_NC_PAIRS_FLAG_OBJECT_ID`
+     - nc_pairs_flag.object_id
+   * - :term:`MODE_NC_PAIRS_FLAG_CLUSTER_ID`
+     - nc_pairs_flag.cluster_id
+   * - :term:`MODE_NC_PAIRS_FLAG_POLYLINES`
+     - nc_pairs_flag.polylines
+
+**${METPLUS_MAX_CENTROID_DIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_MAX_CENTROID_DIST`
+     - max_centroid_dist
+
+**${METPLUS_INTEREST_FUNCTION_CENTROID_DIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_INTEREST_FUNCTION_CENTROID_DIST`
+     - interest_function.centroid_dist
+
+**${METPLUS_TOTAL_INTEREST_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_TOTAL_INTEREST_THRESH`
+     - total_interest_thresh
+
+
+
 
 .. _mtd_wrapper:
 
