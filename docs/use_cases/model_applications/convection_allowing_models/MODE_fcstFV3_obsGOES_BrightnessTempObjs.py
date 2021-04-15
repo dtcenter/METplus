@@ -1,5 +1,5 @@
 """
-MODE: Brightness Temperature Verification
+MODE/Grid-Stat: Brightness Temperature Verification and Distance Maps
 =========================================================================
 
 model_applications/

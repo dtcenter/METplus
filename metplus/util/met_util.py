@@ -2732,7 +2732,7 @@ def expand_int_string_to_list(int_string):
 
     if hasPlus:
         subset_list.append('+')
-    print(f"{int_string} converted to {subset_list}")
+
     return subset_list
 
 def subset_list(full_list, subset_definition):
@@ -2830,6 +2830,13 @@ def netcdf_has_var(file_path, name, level):
 
     except (AttributeError, OSError, ImportError):
         return False
+
+def generate_tmp_filename():
+    import random
+    import string
+    random_string = ''.join(random.choice(string.ascii_letters)
+                            for i in range(10))
+    return f"metplus_tmp_{random_string}"
 
 def format_level(level):
     """! Format level string to prevent NetCDF level values from creating
