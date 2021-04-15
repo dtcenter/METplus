@@ -242,7 +242,7 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_met_config(name='max_centroid_dist',
                             data_type='string',
                             metplus_configs=['MODE_MAX_CENTROID_DIST'],
-                            remove_quotes=True)
+                            extra_args={'remove_quotes': True})
 
         self.set_met_config_string(self.env_var_dict,
                                    ['MODE_INTEREST_FUNCTION_CENTROID_DIST'],
