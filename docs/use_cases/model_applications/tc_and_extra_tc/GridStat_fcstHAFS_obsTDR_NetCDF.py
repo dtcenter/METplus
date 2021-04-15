@@ -19,30 +19,36 @@ _NetCDF.conf
 # Datasets
 # --------
 #
-# | **Forecast:** HAFS zonal wind
-# | **Observation:** HRD TDR data 
+# | **Forecast:** HAFS zonal wind 
+# | **Observation:** HRD TDR merged_zonal_wind
 #
 # | **Location of Model forecast and Dropsonde files:** All of the input data required for this use case can be found in the sample data tarball. Click `here <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_ to download.
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
-# | **TDR Data Source:** `Hurricane Research Division:  https://seb.noaa.gov/pub/flight/hrd/radar/20190829H1/ `_
-#
+# | ** TDR Data Source:** Hurricane Research Division: Contact: Paul Reasor Email: paul.reasor@noaa.gov  
+# | ** The data dataset used in the use case is a subset of the Merged Analysis (v2d_combined_xy_rel_merged_ships.nc).
+# | ** Thanks to HRD for providing us the dataset
 
 ##############################################################################
 # METplus Components
 # ------------------
 #
-# This use case utilizes the METplus ASCII2NC wrapper to convert full-resolution data (frd) dopsonde point observations to NetCDF format and then compare them to gridded forecast data using PointStat.
+# The observations in the use case contains data mapped into Cartesian Grids with a horizontal grid spacing of 2 km and vertical grid spacing of 0.5 km. Hence the model output needs to be in height (km) (vertical coordinates) instead of pressure levels. Both observation and model output are available with the release. The instructions below tells how the input to the use case was prepared.  
+
+# The Hurricane Analysis and Forecast System (HAFS) (pressure levels in GRIB2 format) outputs are converted to height level (in NetCDF4 format) using METcalcpy vertical interpolation routine. Under METcalcpy/examples directory user can modify the vertical_interp_hwrf.sh or create a similar file for their own output. The $DATA_DIR is the top level output directory where the pressure level data resides. The --input and --output should point to the input and output file names resp. The --config points to a yaml file. Users should edit the yaml file, if needed. For this use case only zonal wind (u) at 4 (200m, 2000m, 4000m and 6000m) vertical levels are provided. The use case will compare the HAFS 2 km zonal wind (u) data against TDR's merged_zonal_wind at 2km. The user need to run the shell script to get the height level output in NetCDF4 format.    
+
+# This use case utilizes the METplus python embedding to read the TDR data and compare them to gridded forecast data using GridStat.
 
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# The use case runs the python embedding scripts (GridStat_fcstHAFS_obsTDR_NetCDF/read_tdr.py: to read the TDR data) and run Grid-Stat (compute statistics against HAFS model output, in height coordinates), called in this example. It processes the following run times:
-#
-# | **Valid:** 2019-08-29 12Z
-#
+# The use case runs the python embedding scripts (GridStat_fcstHAFS_obsTDR_NetCDF/read_tdr.py: to read the TDR data) and run Grid-Stat (compute statistics against HAFS model output, in height coordinates), called in this example. 
+
+# | It processes the following run times: Valid at  2019-08-29 12Z
+# | The mission number (e.g CUSTOM_LOOP_LIST = 190829H1)
+# | Height level (for TDR: OBS_VERT_LEVEL_KM = 2, HAFS: FCST_VAR1_LEVELS =  "(0,1,*,*)") 
 
 ##############################################################################
 # METplus Configuration
@@ -76,7 +82,7 @@ _NetCDF.conf
 #
 # This use case can be run two ways:
 #
-# 1) Passing in UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf then a user-specific system configuration file::
+# 1) Passing in GridStat_fcstHAFS_obsTDR_hrd.conf then a user-specific system configuration file::
 #
 #        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications//tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf -c /path/to/user_system.conf
 #
@@ -111,12 +117,15 @@ _NetCDF.conf
 # Output for this use case will be found in nam (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * point_stat_180000L_20190829_120000V.stat
+# * grid_stat_HAFS_vs_TDR_000000L_20190829_120000V_fho.txt  
+# * grid_stat_HAFS_vs_TDR_000000L_20190829_120000V_pairs.nc  
+# * grid_stat_HAFS_vs_TDR_000000L_20190829_120000V.stat
+# The use case is run for 4 lead times valid at 2019081912, so four directories will be generated which contains similar files as above.
 
 ##############################################################################
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.png'
+# sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-GridStat_fcstHAFS_obsTDR_hrd.png'
 #
 # .. note:: `TCandExtraTCAppUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_, `GridStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_

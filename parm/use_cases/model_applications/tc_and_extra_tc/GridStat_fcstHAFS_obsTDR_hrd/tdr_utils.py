@@ -3,9 +3,7 @@ import numpy as np
 import datetime as dt
 import os
 import sys
-import math
 from time import gmtime, strftime
-import matplotlib.pyplot as plt
 
 # Return valid time
 def get_valid_time(input_file, mission_name):
