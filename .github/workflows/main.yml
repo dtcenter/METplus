@@ -99,7 +99,7 @@ jobs:
       fail-fast: false
       matrix:
         categories:
-          - "met_tool_wrapper:0-53"
+          - "met_tool_wrapper:0-54"
           - "air_quality_and_comp:0"
           - "climate:0-1"
           - "convection_allowing_models:0"
@@ -121,8 +121,10 @@ jobs:
           - "precipitation:3-8"
           - "s2s:0"
           - "s2s:1-3"
+          - "s2s:4"
           - "space_weather:0-1"
           - "tc_and_extra_tc:0-2"
+          - "tc_and_extra_tc:3:NEW"
     steps:
       - uses: actions/download-artifact@v2
         with:
@@ -138,6 +140,12 @@ jobs:
           echo run_this_case=$run_this_case >> $GITHUB_ENV
           echo Ends with NEW: ${{ endsWith(matrix.categories, ':NEW') }}
           echo Run all: ${{ env.run_all_use_cases }}
+      - name: Create directories for database
+        run: |
+          mkdir -p $RUNNER_WORKSPACE/mysql
+          mkdir -p $RUNNER_WORKSPACE/output/metviewer
+          chmod a+w $RUNNER_WORKSPACE/mysql
+          chmod a+w $RUNNER_WORKSPACE/output/metviewer
       - uses: actions/checkout@v2
         if: ${{ env.run_this_case == 'true' }}
       - uses: ./ci/actions/run_tests
