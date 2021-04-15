@@ -73,6 +73,10 @@ class TCStatWrapper(CommandBuilder):
         'METPLUS_LANDFALL_END',
         'METPLUS_MATCH_POINTS',
         'METPLUS_JOBS',
+        'METPLUS_COLUMN_STR_EXC_NAME',
+        'METPLUS_COLUMN_STR_EXC_VAL',
+        'METPLUS_INIT_STR_EXC_NAME',
+        'METPLUS_INIT_STR_EXC_VAL',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -134,6 +138,27 @@ class TCStatWrapper(CommandBuilder):
         self.handle_description()
 
         self.set_met_config_for_environment_variables()
+
+        self.add_met_config(name='column_str_exc_name',
+                            data_type='list',
+                            metplus_configs=['TC_STAT_COLUMN_STR_EXC_NAME',
+                                             'TC_STAT_COLUMN_STR_EXCLUDE_NAME',
+                                            ])
+        self.add_met_config(name='column_str_exc_val',
+                            data_type='list',
+                            metplus_configs=['TC_STAT_COLUMN_STR_EXC_VAL',
+                                             'TC_STAT_COLUMN_STR_EXCLUDE_VAL',
+                                             ])
+        self.add_met_config(name='init_str_exc_name',
+                            data_type='list',
+                            metplus_configs=['TC_STAT_INIT_STR_EXC_NAME',
+                                             'TC_STAT_INIT_STR_EXCLUDE_NAME',
+                                             ])
+        self.add_met_config(name='init_str_exc_val',
+                            data_type='list',
+                            metplus_configs=['TC_STAT_INIT_STR_EXC_VAL',
+                                             'TC_STAT_INIT_STR_EXCLUDE_VAL',
+                                             ])
 
         return c_dict
 

@@ -48,7 +48,7 @@ Variables available
   Aerosol optical thickness at 550 nm over land, ocean, and land/ocean
 
 METplus Use Cases
-  Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxData%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
+  Link to `METplus Use Cases <https://metplus.readthedocs.io/en/develop/search.html?q=VxData%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
 
 Keywords
   .. note:: **Current Dataset:** VxDataVIIRS

@@ -22,6 +22,16 @@ met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf
 #  running the MET Tool tc-pairs or the METplus tc pairs wrapper is required.
 
 ##############################################################################
+# External Dependencies
+# ---------------------
+#
+# You will need to use a version of Python 3.6+ that has the following packages installed:
+#
+# * cartopy
+# * matplotlib
+#
+
+##############################################################################
 # METplus Components
 # ------------------
 #

@@ -132,6 +132,7 @@ Configuration
 | :term:`CYCLONE_PLOTTER_CIRCLE_MARKER_SIZE`
 | :term:`CYCLONE_PLOTTER_CROSS_MARKER_SIZE`
 | :term:`CYCLONE_PLOTTER_GENERATE_TRACK_ASCII`
+| :term:`CYCLONE_PLOTTER_ADD_WATERMARK`
 |
 
 .. warning:: **DEPRECATED:**
@@ -362,7 +363,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENS_ENSEMBLE_STAT_DATATYPE`
+   * - :term:`ENS_ENSEMBLE_STAT_INPUT_DATATYPE`
      - ens.file_type
 
 **${METPLUS_ENS_THRESH}**
@@ -1046,7 +1047,7 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`GRID_DIAG_MASK_POLY`
      - mask.poly
 
-.. note:: Since the default value in the MET config file for 'grid' is grid = [ "FULL" ];, setting GRID_STAT_MASK_GRID to an empty string will result in a value of grid = []; in the MET config file.
+.. note:: Since the default value in the MET config file for 'grid' is grid = [ "FULL" ];, setting GRID_DIAG_MASK_GRID to an empty string will result in a value of grid = []; in the MET config file.
 
 **${METPLUS_MET_CONFIG_OVERRIDES}**
 
@@ -1097,6 +1098,41 @@ METplus Configuration
 | :term:`GRID_STAT_REGRID_WIDTH`
 | :term:`GRID_STAT_REGRID_VLD_THRESH`
 | :term:`GRID_STAT_REGRID_SHAPE`
+| :term:`GRID_STAT_CLIMO_CDF_BINS`
+| :term:`GRID_STAT_CLIMO_CDF_CENTER_BINS`
+| :term:`GRID_STAT_CLIMO_CDF_WRITE_BINS`
+| :term:`GRID_STAT_OUTPUT_FLAG_FHO`
+| :term:`GRID_STAT_OUTPUT_FLAG_CTC`
+| :term:`GRID_STAT_OUTPUT_FLAG_CTS`
+| :term:`GRID_STAT_OUTPUT_FLAG_MCTC`
+| :term:`GRID_STAT_OUTPUT_FLAG_MCTS`
+| :term:`GRID_STAT_OUTPUT_FLAG_CNT`
+| :term:`GRID_STAT_OUTPUT_FLAG_SL1L2`
+| :term:`GRID_STAT_OUTPUT_FLAG_SAL1L2`
+| :term:`GRID_STAT_OUTPUT_FLAG_VL1L2`
+| :term:`GRID_STAT_OUTPUT_FLAG_VAL1L2`
+| :term:`GRID_STAT_OUTPUT_FLAG_VCNT`
+| :term:`GRID_STAT_OUTPUT_FLAG_PCT`
+| :term:`GRID_STAT_OUTPUT_FLAG_PSTD`
+| :term:`GRID_STAT_OUTPUT_FLAG_PJC`
+| :term:`GRID_STAT_OUTPUT_FLAG_PRC`
+| :term:`GRID_STAT_OUTPUT_FLAG_ECLV`
+| :term:`GRID_STAT_OUTPUT_FLAG_NBRCTC`
+| :term:`GRID_STAT_OUTPUT_FLAG_NBRCTS`
+| :term:`GRID_STAT_OUTPUT_FLAG_NBRCNT`
+| :term:`GRID_STAT_OUTPUT_FLAG_GRAD`
+| :term:`GRID_STAT_OUTPUT_FLAG_DMAP`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_LATLON`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_RAW`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_DIFF`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_CLIMO`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_WEIGHT`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_NBRHD`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_FOURIER`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_GRADIENT`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP`
+| :term:`GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK`
 | :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`GRID_STAT_MASK_POLY` (optional)
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
@@ -1326,6 +1362,104 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
      - n/a
 
+**${METPLUS_CLIMO_CDF_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_CLIMO_CDF_BINS`
+     - climo_cdf.cdf_bins
+   * - :term:`GRID_STAT_CLIMO_CDF_CENTER_BINS`
+     - climo_cdf.center_bins
+   * - :term:`GRID_STAT_CLIMO_CDF_WRITE_BINS`
+     - climo_cdf.write_bins
+
+**${METPLUS_OUTPUT_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_OUTPUT_FLAG_FHO`
+     - output_flag.fho
+   * - :term:`GRID_STAT_OUTPUT_FLAG_CTC`
+     - output_flag.ctc
+   * - :term:`GRID_STAT_OUTPUT_FLAG_CTS`
+     - output_flag.cts
+   * - :term:`GRID_STAT_OUTPUT_FLAG_MCTC`
+     - output_flag.mctc
+   * - :term:`GRID_STAT_OUTPUT_FLAG_MCTS`
+     - output_flag.mcts
+   * - :term:`GRID_STAT_OUTPUT_FLAG_CNT`
+     - output_flag.cnt
+   * - :term:`GRID_STAT_OUTPUT_FLAG_SL1L2`
+     - output_flag.sl1l2
+   * - :term:`GRID_STAT_OUTPUT_FLAG_SAL1L2`
+     - output_flag.sal1l2
+   * - :term:`GRID_STAT_OUTPUT_FLAG_VL1L2`
+     - output_flag.vl1l2
+   * - :term:`GRID_STAT_OUTPUT_FLAG_VAL1L2`
+     - output_flag.val1l2
+   * - :term:`GRID_STAT_OUTPUT_FLAG_VCNT`
+     - output_flag.vcnt
+   * - :term:`GRID_STAT_OUTPUT_FLAG_PCT`
+     - output_flag.pct
+   * - :term:`GRID_STAT_OUTPUT_FLAG_PSTD`
+     - output_flag.pstd
+   * - :term:`GRID_STAT_OUTPUT_FLAG_PJC`
+     - output_flag.pjc
+   * - :term:`GRID_STAT_OUTPUT_FLAG_PRC`
+     - output_flag.prc
+   * - :term:`GRID_STAT_OUTPUT_FLAG_ECLV`
+     - output_flag.eclv
+   * - :term:`GRID_STAT_OUTPUT_FLAG_NBRCTC`
+     - output_flag.nbrctc
+   * - :term:`GRID_STAT_OUTPUT_FLAG_NBRCTS`
+     - output_flag.nbrcts
+   * - :term:`GRID_STAT_OUTPUT_FLAG_NBRCNT`
+     - output_flag.nbrcnt
+   * - :term:`GRID_STAT_OUTPUT_FLAG_GRAD`
+     - output_flag.grad
+   * - :term:`GRID_STAT_OUTPUT_FLAG_DMAP`
+     - output_flag.dmap
+
+**${METPLUS_NC_PAIRS_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_LATLON`
+     - nc_pairs_flag.latlon
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_RAW`
+     - nc_pairs_flag.raw
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_DIFF`
+     - nc_pairs_flag.diff
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_CLIMO`
+     - nc_pairs_flag.climo
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_CLIMO_CDP`
+     - nc_pairs_flag.climo_cdp
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_WEIGHT`
+     - nc_pairs_flag.weight
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_NBRHD`
+     - nc_pairs_flag.nbrhd
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_FOURIER`
+     - nc_pairs_flag.fourier
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_GRADIENT`
+     - nc_pairs_flag.gradient
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP`
+     - nc_pairs_flag.distance_map
+   * - :term:`GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK`
+     - nc_pairs_flag.apply_mask
+
+
 .. _make_plots_wrapper:
 
 MakePlots
@@ -1411,6 +1545,218 @@ configuration file:
    | :term:`VERIF_GRID`
    | :term:`EVENT_EQUALIZATION`
    |
+
+.. _met_db_load_wrapper:
+
+METdbLoad
+---------
+
+Description
+~~~~~~~~~~~
+
+Used to call the met_db_load.py script from dtcenter/METdatadb to load MET
+output into a METviewer database.
+
+Configuration
+~~~~~~~~~~~~~
+
+| :term:`MET_DB_LOAD_RUNTIME_FREQ`
+| :term:`MET_DATA_DB_DIR`
+| :term:`MET_DB_LOAD_XML_FILE`
+| :term:`MET_DB_LOAD_REMOVE_TMP_XML`
+| :term:`MET_DB_LOAD_MV_HOST`
+| :term:`MET_DB_LOAD_MV_DATABASE`
+| :term:`MET_DB_LOAD_MV_USER`
+| :term:`MET_DB_LOAD_MV_PASSWORD`
+| :term:`MET_DB_LOAD_MV_VERBOSE`
+| :term:`MET_DB_LOAD_MV_INSERT_SIZE`
+| :term:`MET_DB_LOAD_MV_MODE_HEADER_DB_CHECK`
+| :term:`MET_DB_LOAD_MV_DROP_INDEXES`
+| :term:`MET_DB_LOAD_MV_APPLY_INDEXES`
+| :term:`MET_DB_LOAD_MV_GROUP`
+| :term:`MET_DB_LOAD_MV_LOAD_STAT`
+| :term:`MET_DB_LOAD_MV_LOAD_MODE`
+| :term:`MET_DB_LOAD_MV_LOAD_MTD`
+| :term:`MET_DB_LOAD_MV_LOAD_MPR`
+| :term:`MET_DB_LOAD_INPUT_TEMPLATE`
+
+.. _met_db_load-xml-conf:
+
+XML Configuration
+~~~~~~~~~~~~~~~~~
+
+Below is the XML template configuration file used for this wrapper. The wrapper
+substitutes values from the METplus configuration file into this configuration
+file. While it may appear that environment variables are used in the XML
+template file, they are not actually environment variables. The wrapper
+searches for these strings and substitutes the values as appropriate.
+
+.. literalinclude:: ../../parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoadConfig.xml
+
+**${METPLUS_MV_HOST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_HOST`
+     - <load_spec><connection><host>
+
+**${METPLUS_MV_DATABASE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_DATABASE`
+     - <load_spec><connection><database>
+
+**${METPLUS_MV_USER}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_USER`
+     - <load_spec><connection><user>
+
+**${METPLUS_MV_PASSWORD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_PASSWORD`
+     - <load_spec><connection><password>
+
+**${METPLUS_MV_VERBOSE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_VERBOSE`
+     - <load_spec><verbose>
+
+**${METPLUS_MV_INSERT_SIZE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_INSERT_SIZE`
+     - <load_spec><insert_size>
+
+**${METPLUS_MV_MODE_HEADER_DB_CHECK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_MODE_HEADER_DB_CHECK`
+     - <load_spec><mode_header_db_check>
+
+**${METPLUS_MV_DROP_INDEXES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_DROP_INDEXES`
+     - <load_spec><drop_indexes>
+
+**${METPLUS_MV_APPLY_INDEXES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_APPLY_INDEXES`
+     - <load_spec><apply_indexes>
+
+**${METPLUS_MV_GROUP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_GROUP`
+     - <load_spec><group>
+
+**${METPLUS_MV_LOAD_STAT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_LOAD_STAT`
+     - <load_spec><load_stat>
+
+**${METPLUS_MV_LOAD_MODE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_LOAD_MODE`
+     - <load_spec><load_mode>
+
+**${METPLUS_MV_LOAD_MTD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_LOAD_MTD`
+     - <load_spec><load_mtd>
+
+**${METPLUS_MV_LOAD_MPR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_LOAD_MPR`
+     - <load_spec><load_mpr>
+
+**${METPLUS_INPUT_PATHS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_INPUT_TEMPLATE`
+     - <load_val><field name="dirs"><val>
 
 .. _mode_wrapper:
 
@@ -1858,7 +2204,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MTD_FCST_INPUT_DATATYPE`
+   * - :term:`FCST_MTD_INPUT_DATATYPE`
      - fcst.file_type
 
 **${METPLUS_FCST_FIELD}**
@@ -1910,7 +2256,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`MTD_OBS_INPUT_DATATYPE`
+   * - :term:`OBS_MTD_INPUT_DATATYPE`
      - obs.file_type
 
 **${METPLUS_OBS_FIELD}**
@@ -2225,8 +2571,10 @@ Configuration
 | :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`
 | :term:`FCST_PCP_COMBINE_EXTRA_NAMES` (optional)
 | :term:`FCST_PCP_COMBINE_EXTRA_LEVELS` (optional)
+| :term:`FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES` (optional)
 | :term:`OBS_PCP_COMBINE_EXTRA_NAMES` (optional)
 | :term:`OBS_PCP_COMBINE_EXTRA_LEVELS` (optional)
+| :term:`OBS_PCP_COMBINE_EXTRA_OUTPUT_NAMES` (optional)
 | :term:`FCST_PCP_COMBINE_OUTPUT_ACCUM` (optional)
 | :term:`FCST_PCP_COMBINE_OUTPUT_NAME` (optional)
 | :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM` (optional)
@@ -2366,6 +2714,9 @@ Configuration
 | :term:`POINT_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`POINT_STAT_DESC`
 | :term:`POINT_STAT_MET_CONFIG_OVERRIDES`
+| :term:`POINT_STAT_CLIMO_CDF_BINS`
+| :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
+| :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
 | :term:`FCST_POINT_STAT_WINDOW_END` (optional)
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
@@ -2598,6 +2949,21 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`POINT_STAT_MET_CONFIG_OVERRIDES`
      - n/a
 
+**${METPLUS_CLIMO_CDF_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_CLIMO_CDF_BINS`
+     - climo_cdf.cdf_bins
+   * - :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
+     - climo_cdf.center_bins
+   * - :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
+     - climo_cdf.write_bins
+
 .. _py_embed_ingest_wrapper:
 
 PyEmbedIngest
@@ -2822,7 +3188,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`SERIES_ANALYSIS_FCST_FILE_TYPE`
+   * - :term:`FCST_SERIES_ANALYSIS_INPUT_DATATYPE`
      - fcst.file_type
 
 **${METPLUS_FCST_FIELD}**
@@ -2852,7 +3218,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`SERIES_ANALYSIS_OBS_FILE_TYPE`
+   * - :term:`OBS_SERIES_ANALYSIS_INPUT_DATATYPE`
      - obs.file_type
 
 **${METPLUS_OBS_FIELD}**
@@ -3174,7 +3540,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_VALID_BEG`
+   * - :term:`FCST_VALID_HOUR_LIST` and :term:`VALID_BEG`
      - fcst_valid_beg
 
 **${METPLUS_FCST_VALID_END}**
@@ -3185,7 +3551,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_VALID_END`
+   * - :term:`FCST_VALID_HOUR_LIST` and :term:`VALID_END`
      - fcst_valid_end
 
 **${METPLUS_FCST_VALID_HOUR}**
@@ -3207,7 +3573,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_VALID_BEG`
+   * - :term:`OBS_VALID_HOUR_LIST` and :term:`VALID_BEG`
      - obs_valid_beg
 
 **${METPLUS_OBS_VALID_END}**
@@ -3218,7 +3584,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_VALID_END`
+   * - :term:`OBS_VALID_HOUR_LIST` and :term:`VALID_END`
      - obs_valid_end
 
 **${METPLUS_OBS_VALID_HOUR}**
@@ -3240,7 +3606,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_INIT_BEG`
+   * - :term:`FCST_INIT_HOUR_LIST` and :term:`INIT_BEG`
      - fcst_init_beg
 
 **${METPLUS_FCST_INIT_END}**
@@ -3251,7 +3617,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`FCST_INIT_END`
+   * - :term:`FCST_INIT_HOUR_LIST` and :term:`INIT_END`
      - fcst_init_end
 
 **${METPLUS_FCST_INIT_HOUR}**
@@ -3273,7 +3639,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_INIT_BEG`
+   * - :term:`OBS_INIT_HOUR_LIST` and :term:`INIT_BEG`
      - obs_init_beg
 
 **${METPLUS_OBS_INIT_END}**
@@ -3284,7 +3650,7 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_INIT_END`
+   * - :term:`OBS_INIT_HOUR_LIST` and :term:`INIT_END`
      - obs_init_end
 
 **${METPLUS_OBS_INIT_HOUR}**
@@ -3500,17 +3866,20 @@ Configuration
 ~~~~~~~~~~~~~
 
 | :term:`TC_GEN_TRACK_INPUT_DIR`
-| :term:`TC_GEN_GENESIS_INPUT_DIR`
-| :term:`TC_GEN_OUTPUT_DIR`
 | :term:`TC_GEN_TRACK_INPUT_TEMPLATE`
+| :term:`TC_GEN_GENESIS_INPUT_DIR`
 | :term:`TC_GEN_GENESIS_INPUT_TEMPLATE`
+| :term:`TC_GEN_OUTPUT_DIR`
 | :term:`TC_GEN_OUTPUT_TEMPLATE`
 | :term:`LOG_TC_GEN_VERBOSITY`
 | :term:`TC_GEN_CUSTOM_LOOP_LIST`
+| :term:`TC_GEN_SKIP_IF_OUTPUT_EXISTS`
+| :term:`TC_GEN_MET_CONFIG_OVERRIDES`
 | :term:`TC_GEN_CONFIG_FILE`
-| :term:`TC_GEN_INIT_FREQUENCY`
-| :term:`TC_GEN_LEAD_WINDOW_BEGIN`
-| :term:`TC_GEN_LEAD_WINDOW_END`
+| :term:`TC_GEN_INIT_FREQ`
+| :term:`TC_GEN_VALID_FREQ`
+| :term:`TC_GEN_FCST_HR_WINDOW_BEGIN`
+| :term:`TC_GEN_FCST_HR_WINDOW_END`
 | :term:`TC_GEN_MIN_DURATION`
 | :term:`TC_GEN_FCST_GENESIS_VMAX_THRESH`
 | :term:`TC_GEN_FCST_GENESIS_MSLP_THRESH`
@@ -3518,28 +3887,66 @@ Configuration
 | :term:`TC_GEN_BEST_GENESIS_CATEGORY`
 | :term:`TC_GEN_BEST_GENESIS_VMAX_THRESH`
 | :term:`TC_GEN_BEST_GENESIS_MSLP_THRESH`
-| :term:`TC_GEN_OPER_GENESIS_TECHNIQUE`
-| :term:`TC_GEN_OPER_GENESIS_CATEGORY`
-| :term:`TC_GEN_OPER_GENESIS_VMAX_THRESH`
-| :term:`TC_GEN_OPER_GENESIS_MSLP_THRESH`
+| :term:`TC_GEN_OPER_TECHNIQUE`
 | :term:`TC_GEN_FILTER_\<n\>`
+| :term:`TC_GEN_DESC`
 | :term:`MODEL`
 | :term:`TC_GEN_STORM_ID`
 | :term:`TC_GEN_STORM_NAME`
 | :term:`TC_GEN_INIT_BEG`
 | :term:`TC_GEN_INIT_END`
+| :term:`TC_GEN_INIT_INC`
+| :term:`TC_GEN_INIT_EXC`
 | :term:`TC_GEN_VALID_BEG`
 | :term:`TC_GEN_VALID_END`
-| :term:`TC_GEN_INIT_HOUR_LIST`
+| :term:`TC_GEN_INIT_HOUR`
+| :term:`LEAD_SEQ`
 | :term:`TC_GEN_VX_MASK`
-| :term:`TC_GEN_GENESIS_WINDOW_BEGIN`
-| :term:`TC_GEN_GENESIS_WINDOW_END`
-| :term:`TC_GEN_GENESIS_RADIUS`
+| :term:`TC_GEN_BASIN_MASK`
+| :term:`TC_GEN_DLAND_THRESH`
+| :term:`TC_GEN_GENESIS_MATCH_RADIUS`
+| :term:`TC_GEN_GENESIS_MATCH_POINT_TO_TRACK`
+| :term:`TC_GEN_GENESIS_MATCH_WINDOW_BEG`
+| :term:`TC_GEN_GENESIS_MATCH_WINDOW_END`
+| :term:`TC_GEN_DEV_HIT_RADIUS`
+| :term:`TC_GEN_DEV_HIT_WINDOW_BEGIN`
+| :term:`TC_GEN_DEV_HIT_WINDOW_END`
+| :term:`TC_GEN_OPS_HIT_WINDOW_BEG`
+| :term:`TC_GEN_OPS_HIT_WINDOW_END`
+| :term:`TC_GEN_DISCARD_INIT_POST_GENESIS_FLAG`
+| :term:`TC_GEN_DEV_METHOD_FLAG`
+| :term:`TC_GEN_OPS_METHOD_FLAG`
+| :term:`TC_GEN_CI_ALPHA`
+| :term:`TC_GEN_OUTPUT_FLAG_FHO`
+| :term:`TC_GEN_OUTPUT_FLAG_CTC`
+| :term:`TC_GEN_OUTPUT_FLAG_CTS`
+| :term:`TC_GEN_OUTPUT_FLAG_GENMPR`
+| :term:`TC_GEN_NC_PAIRS_FLAG_LATLON`
+| :term:`TC_GEN_NC_PAIRS_FLAG_FCST_GENESIS`
+| :term:`TC_GEN_NC_PAIRS_FLAG_FCST_TRACKS`
+| :term:`TC_GEN_NC_PAIRS_FLAG_FCST_FY_OY`
+| :term:`TC_GEN_NC_PAIRS_FLAG_FCST_FY_ON`
+| :term:`TC_GEN_NC_PAIRS_FLAG_BEST_GENESIS`
+| :term:`TC_GEN_NC_PAIRS_FLAG_BEST_TRACKS`
+| :term:`TC_GEN_NC_PAIRS_FLAG_BEST_FY_OY`
+| :term:`TC_GEN_NC_PAIRS_FLAG_BEST_FN_OY`
+| :term:`TC_GEN_VALID_MINUS_GENESIS_DIFF_THRESH`
+| :term:`TC_GEN_BEST_UNIQUE_FLAG`
 | :term:`TC_GEN_DLAND_FILE`
-| :term:`TC_GEN_SKIP_IF_OUTPUT_EXISTS`
-| :term:`TC_GEN_DESC`
-| :term:`TC_GEN_MET_CONFIG_OVERRIDES`
-|
+| :term:`TC_GEN_BASIN_FILE`
+| :term:`TC_GEN_NC_PAIRS_GRID`
+
+.. warning:: **DEPRECATED:**
+
+   | :term:`TC_GEN_LEAD_WINDOW_BEGIN`
+   | :term:`TC_GEN_LEAD_WINDOW_END`
+   | :term:`TC_GEN_OPER_GENESIS_TECHNIQUE`
+   | :term:`TC_GEN_OPER_GENESIS_CATEGORY`
+   | :term:`TC_GEN_OPER_GENESIS_VMAX_THRESH`
+   | :term:`TC_GEN_OPER_GENESIS_MSLP_THRESH`
+   | :term:`TC_GEN_GENESIS_RADIUS`
+   | :term:`TC_GEN_GENESIS_WINDOW_BEGIN`
+   | :term:`TC_GEN_GENESIS_WINDOW_END`
 
 .. _tc-gen-met-conf:
 
@@ -3562,10 +3969,10 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_INIT_FREQUENCY`
+   * - :term:`TC_GEN_INIT_FREQ`
      - init_freq
 
-**${METPLUS_LEAD_WINDOW_DICT}**
+**${METPLUS_VALID_FREQ}**
 
 .. list-table::
    :widths: 5 5
@@ -3573,10 +3980,21 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_LEAD_WINDOW_BEGIN`
-     - lead_window.beg
-   * - :term:`TC_GEN_LEAD_WINDOW_END`
-     - lead_window.end
+   * - :term:`TC_GEN_VALID_FREQ`
+     - valid_freq
+
+**${METPLUS_FCST_HR_WINDOW_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_FCST_HR_WINDOW_BEGIN`
+     - fcst_hr_window.beg
+   * - :term:`TC_GEN_FCST_HR_WINDOW_END`
+     - fcst_hr_window.end
 
 **${METPLUS_MIN_DURATION}**
 
@@ -3619,7 +4037,7 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`TC_GEN_BEST_GENESIS_MSLP_THRESH`
      - best_genesis.mslp_thresh
 
-**${METPLUS_OPER_GENESIS_DICT}**
+**${METPLUS_OPER_TECHNIQUE}**
 
 .. list-table::
    :widths: 5 5
@@ -3627,14 +4045,8 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_OPER_GENESIS_TECHNIQUE`
-     - oper_genesis.technique
-   * - :term:`TC_GEN_OPER_GENESIS_CATEGORY`
-     - oper_genesis.category
-   * - :term:`TC_GEN_OPER_GENESIS_VMAX_THRESH`
-     - oper_genesis.vmax_thresh
-   * - :term:`TC_GEN_OPER_GENESIS_MSLP_THRESH`
-     - oper_genesis.mslp_thresh
+   * - :term:`TC_GEN_OPER_TECHNIQUE`
+     - oper_technique
 
 **${METPLUS_FILTER}**
 
@@ -3713,6 +4125,29 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`TC_GEN_INIT_END`
      - init_end
 
+**${METPLUS_INIT_INC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_INIT_INC`
+     - init_inc
+
+
+**${METPLUS_INIT_EXC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_INIT_EXC`
+     - init_exc
+
 **${METPLUS_VALID_BEG}**
 
 .. list-table::
@@ -3743,10 +4178,10 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_INIT_HOUR_LIST`
+   * - :term:`TC_GEN_INIT_HOUR`
      - init_hour
 
-**${METPLUS_LEAD_LIST}**
+**${METPLUS_LEAD}**
 
 .. list-table::
    :widths: 5 5
@@ -3768,7 +4203,7 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`TC_GEN_VX_MASK`
      - vx_mask
 
-**${METPLUS_GENESIS_WINDOW_DICT}**
+**${METPLUS_BASIN_MASK}**
 
 .. list-table::
    :widths: 5 5
@@ -3776,12 +4211,10 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_GENESIS_WINDOW_BEGIN`
-     - genesis_window.beg
-   * - :term:`TC_GEN_GENESIS_WINDOW_END`
-     - genesis_window.end
+   * - :term:`TC_GEN_BASIN_MASK`
+     - basin_mask
 
-**${METPLUS_GENESIS_RADIUS}**
+**${METPLUS_DLAND_THRESH}**
 
 .. list-table::
    :widths: 5 5
@@ -3789,8 +4222,190 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_GEN_GENESIS_RADIUS`
-     - genesis_radius
+   * - :term:`TC_GEN_DLAND_THRESH`
+     - dland_thresh
+
+**${METPLUS_DEV_HIT_WINDOW_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_DEV_HIT_WINDOW_BEGIN`
+     - dev_hit_window.beg
+   * - :term:`TC_GEN_DEV_HIT_WINDOW_END`
+     - dev_hit_window.end
+
+**${METPLUS_GENESIS_MATCH_RADIUS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_GENESIS_MATCH_RADIUS`
+     - genesis_match_radius
+
+**${METPLUS_GENESIS_MATCH_POINT_TO_TRACK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_GENESIS_MATCH_POINT_TO_TRACK`
+     - genesis_match_point_to_track
+
+**${METPLUS_GENESIS_MATCH_WINDOW_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_GENESIS_MATCH_WINDOW_BEG`
+     - genesis_match_window.beg
+   * - :term:`TC_GEN_GENESIS_MATCH_WINDOW_END`
+     - genesis_match_window.end
+
+**${METPLUS_DEV_HIT_RADIUS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_DEV_HIT_RADIUS`
+     - dev_hit_radius
+
+**${METPLUS_OPS_HIT_WINDOW_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_OPS_HIT_WINDOW_BEG`
+     - ops_hit_window.beg
+   * - :term:`TC_GEN_OPS_HIT_WINDOW_END`
+     - ops_hit_window.end
+
+**${METPLUS_DISCARD_INIT_POST_GENESIS_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_DISCARD_INIT_POST_GENESIS_FLAG`
+     - discard_init_post_genesis_flag
+
+**${METPLUS_DEV_METHOD_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_DEV_METHOD_FLAG`
+     - dev_method_flag
+
+**${METPLUS_OPS_METHOD_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_OPS_METHOD_FLAG`
+     - ops_method_flag
+
+**${METPLUS_CI_ALPHA}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_CI_ALPHA`
+     - ci_alpha
+
+**${METPLUS_OUTPUT_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_OUTPUT_FLAG_FHO`
+     - output_flag.fho
+   * - :term:`TC_GEN_OUTPUT_FLAG_CTC`
+     - output_flag.ctc
+   * - :term:`TC_GEN_OUTPUT_FLAG_CTS`
+     - output_flag.cts
+   * - :term:`TC_GEN_OUTPUT_FLAG_GENMPR`
+     - output_flag.genmpr
+
+**${METPLUS_NC_PAIRS_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_LATLON`
+     - nc_pairs_flag.latlon
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_FCST_GENESIS`
+     - nc_pairs_flag.fcst_genesis
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_FCST_TRACKS`
+     - nc_pairs_flag.fcst_tracks
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_FCST_FY_OY`
+     - nc_pairs_flag.fcst_fy_oy
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_FCST_FY_ON`
+     - nc_pairs_flag.fcst_fy_on
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_BEST_GENESIS`
+     - nc_pairs_flag.best_genesis
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_BEST_TRACKS`
+     - nc_pairs_flag.best_tracks
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_BEST_FY_OY`
+     - nc_pairs_flag.best_fy_oy
+   * - :term:`TC_GEN_NC_PAIRS_FLAG_BEST_FN_OY`
+     - nc_pairs_flag.best_fn_oy
+
+**${METPLUS_VALID_MINUS_GENESIS_DIFF_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_VALID_MINUS_GENESIS_DIFF_THRESH`
+     - valid_minus_genesis_diff_thresh
+
+**${METPLUS_BEST_UNIQUE_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_BEST_UNIQUE_FLAG`
+     - best_unique_flag
 
 **${METPLUS_DLAND_FILE}**
 
@@ -3802,6 +4417,28 @@ Below the file contents are descriptions of each environment variable referenced
      - MET Config File
    * - :term:`TC_GEN_DLAND_FILE`
      - dland_file
+
+**${METPLUS_BASIN_FILE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_BASIN_FILE`
+     - basin_file
+
+**${METPLUS_NC_PAIRS_GRID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_GEN_NC_PAIRS_GRID`
+     - nc_pairs_grid
 
 **${METPLUS_MET_CONFIG_OVERRIDES}**
 
@@ -4483,6 +5120,10 @@ Configuration
 | :term:`TC_STAT_MATCH_POINTS`
 | :term:`TC_STAT_SKIP_IF_OUTPUT_EXISTS`
 | :term:`TC_STAT_MET_CONFIG_OVERRIDES`
+| :term:`TC_STAT_COLUMN_STR_EXC_NAME`
+| :term:`TC_STAT_COLUMN_STR_EXC_VAL`
+| :term:`TC_STAT_INIT_STR_EXC_NAME`
+| :term:`TC_STAT_INIT_STR_EXC_VAL`
 |
 
 .. warning:: **DEPRECATED:**
@@ -4792,6 +5433,28 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`TC_STAT_COLUMN_STR_VAL`
      - column_str_val
 
+**${METPLUS_COLUMN_STR_EXC_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_COLUMN_STR_EXC_NAME`
+     - column_str_exc_name
+
+**${METPLUS_COLUMN_STR_EXC_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_COLUMN_STR_EXC_VAL`
+     - column_str_exc_val
+
 **${METPLUS_INIT_THRESH_NAME}**
 
 .. list-table::
@@ -4835,6 +5498,28 @@ Below the file contents are descriptions of each environment variable referenced
      - MET Config File
    * - :term:`TC_STAT_INIT_STR_VAL`
      - init_str_val
+
+**${METPLUS_INIT_STR_EXC_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_STR_EXC_NAME`
+     - init_str_exc_name
+
+**${METPLUS_INIT_STR_EXC_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_STAT_INIT_STR_EXC_VAL`
+     - init_str_exc_val
 
 **${METPLUS_WATER_ONLY}**
 

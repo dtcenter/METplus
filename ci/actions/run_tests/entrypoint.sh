@@ -1,4 +1,4 @@
-#! /bin/sh
+#! /bin/bash
 
 # The repo source code is cloned to $RUNNER_WORKSPACE/$REPO_NAME
 # Setup the workspace path to that for easier access later
@@ -14,6 +14,15 @@ GHA_DIFF_DIR=$RUNNER_WORKSPACE/diff
 
 DOCKER_ERROR_LOG_DIR=${DOCKER_DATA_DIR}/error_logs
 GHA_ERROR_LOG_DIR=$RUNNER_WORKSPACE/error_logs
+
+# get use case category, subset list, and optional NEW tag from input
+CATEGORIES=`echo $INPUT_CATEGORIES | awk -F: '{print $1}'`
+SUBSETLIST=`echo $INPUT_CATEGORIES | awk -F: '{print $2}'`
+
+# run all cases if no subset list specified
+if [ -z "${SUBSETLIST}" ]; then
+    SUBSETLIST="all"
+fi
 
 branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
@@ -37,18 +46,22 @@ if [ "$INPUT_CATEGORIES" == "pytests" ]; then
   exit $?
 fi
 
-CATEGORIES=`echo $INPUT_CATEGORIES | awk -F: '{print $1}'`
-SUBSETLIST=`echo $INPUT_CATEGORIES | awk -F: '{print $2}'`
-if [ -z "${SUBSETLIST}" ]; then
-    SUBSETLIST="all"
+# get METviewer if used in any use cases
+all_requirements=`./ci/jobs/get_requirements.py ${CATEGORIES} ${SUBSETLIST}`
+echo All requirements: $all_requirements
+NETWORK_ARG=""
+if [[ "$all_requirements" =~ .*"metviewer".* ]]; then
+  echo "Setting up METviewer"
+  ${GITHUB_WORKSPACE}/ci/jobs/python_requirements/get_metviewer.sh
+  NETWORK_ARG=--network="container:mysql_mv"
 fi
 
 # install Pillow library needed for diff testing
 # this will be replaced with better image diffing package used by METplotpy
-pip_command="pip3 install Pillow"
+pip_command="pip3 install Pillow; yum -y install poppler-utils; pip3 install pdf2image"
 
 # build command to run
-command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
+command="./ci/jobs/run_use_cases.py ${CATEGORIES} ${SUBSETLIST}"
 
 # add input volumes to run command
 # keep track of --volumes-from arguments to docker run command
@@ -58,11 +71,18 @@ VOLUMES_FROM=`${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $CATEGORIES`
 echo Input: ${VOLUMES_FROM}
 # get Docker data volumes for output data and run diffing logic
 # if running a pull request into develop or main_v* branches, not -ref branches
-if [ "$GITHUB_EVENT_NAME" == "pull_request" ] && [ "${GITHUB_BASE_REF: -4}" != "-ref" ] && ([ "${GITHUB_BASE_REF:0:7}" == "develop" ] || [ "${GITHUB_BASE_REF:0:6}" == "main_v" ]); then
+if [ "${INPUT_RUN_DIFF}" == "true" ]; then
   echo "Get Docker data volumes for output data"
 
+  # use develop branch output data volumes if not a pull request (forced diff)
+  if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
+    output_data_branch=${GITHUB_BASE_REF}
+  else
+    output_data_branch=develop
+  fi
+
   category=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh $INPUT_CATEGORIES`
-  output_category=output-${GITHUB_BASE_REF}-${category}
+  output_category=output-${output_data_branch}-${category}
 
   echo Get output data volume: ${output_category}
   OUT_VOLUMES_FROM=`${GITHUB_WORKSPACE}/ci/jobs/get_data_volumes.py $output_category`
@@ -76,6 +96,9 @@ fi
 
 echo VOLUMES_FROM: $VOLUMES_FROM
 
+echo docker ps:
+docker ps -a
+
 echo "Run Docker container: $DOCKERHUBTAG"
-echo docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
-docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
+echo docker run -e GITHUB_WORKSPACE $NETWORK_ARG -v $RUNNER_WORKSPACE/output/mysql:/var/lib/mysql -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
+docker run -e GITHUB_WORKSPACE $NETWORK_ARG -v $RUNNER_WORKSPACE/output/mysql:/var/lib/mysql -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"

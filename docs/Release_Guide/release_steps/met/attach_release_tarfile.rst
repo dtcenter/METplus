@@ -6,6 +6,6 @@ Attach Release Tarfile
 .. parsed-literal::
 
     git clone https://github.com/dtcenter/MET
-    MET/scripts/met_checkout_and_build.sh tag vX.Y.Z
+    MET/scripts/build/met_checkout_and_build.sh tag vX.Y.Z
 
 * Edit the vX.Y.Z release on GitHub by uploading the resulting tar file (met-X.Y.Z.YYYYMMDD.tar.gz) as a release asset.
