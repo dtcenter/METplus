@@ -1546,6 +1546,218 @@ configuration file:
    | :term:`EVENT_EQUALIZATION`
    |
 
+.. _met_db_load_wrapper:
+
+METdbLoad
+---------
+
+Description
+~~~~~~~~~~~
+
+Used to call the met_db_load.py script from dtcenter/METdatadb to load MET
+output into a METviewer database.
+
+Configuration
+~~~~~~~~~~~~~
+
+| :term:`MET_DB_LOAD_RUNTIME_FREQ`
+| :term:`MET_DATA_DB_DIR`
+| :term:`MET_DB_LOAD_XML_FILE`
+| :term:`MET_DB_LOAD_REMOVE_TMP_XML`
+| :term:`MET_DB_LOAD_MV_HOST`
+| :term:`MET_DB_LOAD_MV_DATABASE`
+| :term:`MET_DB_LOAD_MV_USER`
+| :term:`MET_DB_LOAD_MV_PASSWORD`
+| :term:`MET_DB_LOAD_MV_VERBOSE`
+| :term:`MET_DB_LOAD_MV_INSERT_SIZE`
+| :term:`MET_DB_LOAD_MV_MODE_HEADER_DB_CHECK`
+| :term:`MET_DB_LOAD_MV_DROP_INDEXES`
+| :term:`MET_DB_LOAD_MV_APPLY_INDEXES`
+| :term:`MET_DB_LOAD_MV_GROUP`
+| :term:`MET_DB_LOAD_MV_LOAD_STAT`
+| :term:`MET_DB_LOAD_MV_LOAD_MODE`
+| :term:`MET_DB_LOAD_MV_LOAD_MTD`
+| :term:`MET_DB_LOAD_MV_LOAD_MPR`
+| :term:`MET_DB_LOAD_INPUT_TEMPLATE`
+
+.. _met_db_load-xml-conf:
+
+XML Configuration
+~~~~~~~~~~~~~~~~~
+
+Below is the XML template configuration file used for this wrapper. The wrapper
+substitutes values from the METplus configuration file into this configuration
+file. While it may appear that environment variables are used in the XML
+template file, they are not actually environment variables. The wrapper
+searches for these strings and substitutes the values as appropriate.
+
+.. literalinclude:: ../../parm/use_cases/met_tool_wrapper/METdbLoad/METdbLoadConfig.xml
+
+**${METPLUS_MV_HOST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_HOST`
+     - <load_spec><connection><host>
+
+**${METPLUS_MV_DATABASE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_DATABASE`
+     - <load_spec><connection><database>
+
+**${METPLUS_MV_USER}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_USER`
+     - <load_spec><connection><user>
+
+**${METPLUS_MV_PASSWORD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_PASSWORD`
+     - <load_spec><connection><password>
+
+**${METPLUS_MV_VERBOSE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_VERBOSE`
+     - <load_spec><verbose>
+
+**${METPLUS_MV_INSERT_SIZE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_INSERT_SIZE`
+     - <load_spec><insert_size>
+
+**${METPLUS_MV_MODE_HEADER_DB_CHECK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_MODE_HEADER_DB_CHECK`
+     - <load_spec><mode_header_db_check>
+
+**${METPLUS_MV_DROP_INDEXES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_DROP_INDEXES`
+     - <load_spec><drop_indexes>
+
+**${METPLUS_MV_APPLY_INDEXES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_APPLY_INDEXES`
+     - <load_spec><apply_indexes>
+
+**${METPLUS_MV_GROUP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_GROUP`
+     - <load_spec><group>
+
+**${METPLUS_MV_LOAD_STAT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_LOAD_STAT`
+     - <load_spec><load_stat>
+
+**${METPLUS_MV_LOAD_MODE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_LOAD_MODE`
+     - <load_spec><load_mode>
+
+**${METPLUS_MV_LOAD_MTD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_LOAD_MTD`
+     - <load_spec><load_mtd>
+
+**${METPLUS_MV_LOAD_MPR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_MV_LOAD_MPR`
+     - <load_spec><load_mpr>
+
+**${METPLUS_INPUT_PATHS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - XML Config File
+   * - :term:`MET_DB_LOAD_INPUT_TEMPLATE`
+     - <load_val><field name="dirs"><val>
+
 .. _mode_wrapper:
 
 MODE
