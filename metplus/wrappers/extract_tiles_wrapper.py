@@ -92,6 +92,8 @@ class ExtractTilesWrapper(CommandBuilder):
         c_dict['LON_ADJ'] = self.config.getfloat('config',
                                                  'EXTRACT_TILES_LON_ADJ')
 
+        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
+                                                      met_tool=self.app_name)
         return c_dict
 
     def regrid_data_plane_init(self):
@@ -215,9 +217,7 @@ class ExtractTilesWrapper(CommandBuilder):
                                                            storm_data)
 
             # set var list from config using time info
-            var_list = util.parse_var_list(self.config,
-                                           time_info,
-                                           met_tool=self.app_name)
+            var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
 
             # set output grid and run for the forecast and observation data
             for dtype in ['FCST', 'OBS']:

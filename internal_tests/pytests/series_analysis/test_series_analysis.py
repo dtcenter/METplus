@@ -7,7 +7,7 @@ from dateutil.relativedelta import relativedelta
 
 import produtil
 
-from metplus.util import ti_get_seconds_from_lead
+from metplus.util import ti_get_seconds_from_lead, sub_var_list
 from metplus.wrappers.series_analysis_wrapper import SeriesAnalysisWrapper
 
 def series_init_wrapper(metplus_config, config_overrides=None):
@@ -464,6 +464,12 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
                                   obs_list_file)
     if os.path.exists(obs_file_path):
         os.remove(obs_file_path)
+
+    # perform string substitution on var list
+    wrapper.c_dict['VAR_LIST'] = (
+        sub_var_list(wrapper.c_dict['VAR_LIST_TEMP'],
+                     time_info)
+    )
 
     fcst_path, obs_path = wrapper.create_ascii_storm_files_list(time_info,
                                                                 storm_id,
