@@ -3,7 +3,7 @@ Grid-Stat: Verification of TC forecasts against merged TDR data
 ==============================================================================
 
 model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR
-_NetCDF.conf
+_hrd.conf
 
 """
 ##############################################################################
@@ -23,11 +23,11 @@ _NetCDF.conf
 # | **Observation:** HRD TDR merged_zonal_wind
 #
 # | **Location of Model forecast and Dropsonde files:** All of the input data required for this use case can be found in the sample data tarball. Click `here <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_ to download.
-# | **This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
 #
 # | **TDR Data Source:** Hurricane Research Division: Contact: Paul Reasor Email: paul.reasor@noaa.gov  
-# | **The data dataset used in the use case is a subset of the Merged Analysis (v2d_combined_xy_rel_merged_ships.nc).
-# | **Thanks to HRD for providing us the dataset
+# | The data dataset used in the use case is a subset of the Merged Analysis (v2d_combined_xy_rel_merged_ships.nc).
+# | Thanks to HRD for providing us the dataset
 
 ##############################################################################
 # METplus Components
@@ -56,10 +56,10 @@ _NetCDF.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_hrd.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_hrd.conf
 #
 
 ##############################################################################
@@ -84,11 +84,11 @@ _NetCDF.conf
 #
 # 1) Passing in GridStat_fcstHAFS_obsTDR_NetCDF.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications//tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications//tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_hrd.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstHAFS_obsTDR_NetCDF.conf:
+# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstHAFS_obsTDR_hrd.conf:
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_hrd.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
