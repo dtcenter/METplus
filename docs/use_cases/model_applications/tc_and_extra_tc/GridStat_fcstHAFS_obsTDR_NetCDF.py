@@ -3,7 +3,7 @@ Grid-Stat: Verification of TC forecasts against merged TDR data
 ==============================================================================
 
 model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR
-_hrd.conf
+_NetCDF.conf
 
 """
 ##############################################################################
@@ -47,6 +47,7 @@ _hrd.conf
 # The use case runs the python embedding scripts (GridStat_fcstHAFS_obsTDR_NetCDF/read_tdr.py: to read the TDR data) and run Grid-Stat (compute statistics against HAFS model output, in height coordinates), called in this example. 
 
 # | It processes the following run times: Valid at  2019-08-29 12Z
+# | Forecast lead times: 0,6,12 and 18 UTC
 # | The mission number (e.g CUSTOM_LOOP_LIST = 190829H1)
 # | Height level (for TDR: OBS_VERT_LEVEL_KM = 2, HAFS: FCST_VAR1_LEVELS =  "(0,1,*,*)") 
 
@@ -56,10 +57,10 @@ _hrd.conf
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_hrd.conf
+# with the -c option, i.e. -c parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_hrd.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 #
 
 ##############################################################################
@@ -84,11 +85,11 @@ _hrd.conf
 #
 # 1) Passing in GridStat_fcstHAFS_obsTDR_NetCDF.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications//tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_hrd.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications//tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstHAFS_obsTDR_hrd.conf:
+# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstHAFS_obsTDR_NetCDF.conf:
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_hrd.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
