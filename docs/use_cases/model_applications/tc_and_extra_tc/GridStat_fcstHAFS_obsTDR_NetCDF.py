@@ -78,6 +78,18 @@ _NetCDF.conf
 #
 
 ##############################################################################
+# Python Embedding
+# ----------------
+#
+# This use case uses a Python embedding script to read input data
+#
+# parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF/read_tdr.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF/read_tdr.py
+
+
+##############################################################################
 # Running METplus
 # ---------------
 #
