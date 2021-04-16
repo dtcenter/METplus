@@ -70,7 +70,7 @@ _NetCDF.conf
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/Ascii2NcConfig_wrapped
+# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 #
 # Note the following variables are referenced in the MET configuration file.
 #
@@ -82,7 +82,7 @@ _NetCDF.conf
 #
 # This use case can be run two ways:
 #
-# 1) Passing in GridStat_fcstHAFS_obsTDR_hrd.conf then a user-specific system configuration file::
+# 1) Passing in GridStat_fcstHAFS_obsTDR_NetCDF.conf then a user-specific system configuration file::
 #
 #        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications//tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf -c /path/to/user_system.conf
 #
@@ -126,6 +126,6 @@ _NetCDF.conf
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-GridStat_fcstHAFS_obsTDR_hrd.png'
+# sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-GridStat_fcstHAFS_obsTDR_NetCDF.png'
 #
 # .. note:: `TCandExtraTCAppUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_, `GridStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
