@@ -7,6 +7,7 @@ This chapter is a guide on configuring METplus Wrappers.
 
 Config Best Practices
 ---------------------
+
 1. Set your log level to an appropriate level:
 
    a. Debug is the most verbose and is useful when you are troubleshooting
