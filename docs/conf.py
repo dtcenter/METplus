@@ -96,6 +96,7 @@ latex_elements = {
        \usepackage{charter}
        \usepackage[defaultsans]{lato}
        \usepackage{inconsolata}
+       \setcounter{tocdepth}{3}
     ''',
                                                                             
     'sphinxsetup': \
