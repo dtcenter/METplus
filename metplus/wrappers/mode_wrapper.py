@@ -55,6 +55,8 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_MAX_CENTROID_DIST',
         'METPLUS_TOTAL_INTEREST_THRESH',
         'METPLUS_INTEREST_FUNCTION_CENTROID_DIST',
+        'METPLUS_INTEREST_FUNCTION_BOUNDARY_DIST',
+        'METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST',
     ]
 
     WEIGHTS = [
@@ -248,6 +250,18 @@ class MODEWrapper(CompareGriddedWrapper):
                                    ['MODE_INTEREST_FUNCTION_CENTROID_DIST'],
                                    'centroid_dist',
                                    'METPLUS_INTEREST_FUNCTION_CENTROID_DIST',
+                                   remove_quotes=True)
+
+        self.set_met_config_string(self.env_var_dict,
+                                   ['MODE_INTEREST_FUNCTION_BOUNDARY_DIST'],
+                                   'boundary_dist',
+                                   'METPLUS_INTEREST_FUNCTION_BOUNDARY_DIST',
+                                   remove_quotes=True)
+
+        self.set_met_config_string(self.env_var_dict,
+                                   ['MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST'],
+                                   'convex_hull_dist',
+                                   'METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST',
                                    remove_quotes=True)
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False

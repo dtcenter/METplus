@@ -33,7 +33,11 @@ ${METPLUS_REGRID_DICT}
 //
 // Approximate grid resolution (km)
 //
-${METPLUS_GRID_RES}
+// Note: grid_res is not used in the wrapped MODE config file
+//  MODE_GRID_RES can be set in the METplus config files and
+//  and referenced in any variable overrides that reference grid_res in the
+//  default file: share/met/config/MODEConfig_default
+// See parm/use_cases/met_tool_wrapper/MODE/MODE.conf for an example
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -117,15 +121,9 @@ interest_function = {
 
    ${METPLUS_INTEREST_FUNCTION_CENTROID_DIST}
 
-   boundary_dist = (
-      (            0.0, 1.0 )
-      ( 400.0/grid_res, 0.0 )
-   );
+   ${METPLUS_INTEREST_FUNCTION_BOUNDARY_DIST}
 
-   convex_hull_dist = (
-      (            0.0, 1.0 )
-      ( 400.0/grid_res, 0.0 )
-   );
+   ${METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST}
 
    angle_diff = (
       (  0.0, 1.0 )

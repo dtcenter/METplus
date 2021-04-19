@@ -421,7 +421,7 @@ class CommandBuilder:
                 # insert escape characters to allow export command to be copyable
                 clean_env = self.env[var].replace('"', r'\"').replace(r'\\"', r'\\\"')
                 line = 'export ' + var + '="' + clean_env + '"'
-
+            line = line.replace('\n', '')
             out += line + '; '
 
         return out
