@@ -87,7 +87,14 @@ _NetCDF.conf
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF/read_tdr.py
-
+#
+# The above script imports another script called tdr_utils.py in the same directory:
+#
+# parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF/tdr_utils.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF/tdr_utils.py
+#
 
 ##############################################################################
 # Running METplus
