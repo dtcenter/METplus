@@ -107,10 +107,10 @@ latex_elements = {
         HeaderFamily=\\rmfamily\\bfseries, \
         InnerLinkColor={rgb}{0,0,1}, \
         OuterLinkColor={rgb}{0,0,1}',
-                                                                                                                                           'maketitle': '\\sphinxmaketitle',  
-    #   'tableofcontents': '\\sphinxtableofcontents',
-                                                                                                                                            'printindex': ' '
-                                                                                                                                    }
+        'maketitle': '\\sphinxmaketitle',  
+        'tableofcontents': ' ',
+        'printindex': ' '
+}
 
 # Grouping the document tree into LaTeX files. List of tuples
 # (source start file, target name, title,
