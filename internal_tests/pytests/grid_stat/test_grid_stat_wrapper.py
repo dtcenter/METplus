@@ -68,7 +68,7 @@ from metplus.util import time_util
               '/some/path/climo/stdfile.nc',
           },
          {'METPLUS_CLIMO_STDEV_FILE':
-              'climo_stdev = { file_name = ["/some/path/climo/stdfile.nc"]; }',
+              'file_name = ["/some/path/climo/stdfile.nc"];',
          }),
         # mask grid and poly (old config var)
         ({'GRID_STAT_MASK_GRID': 'FULL',
