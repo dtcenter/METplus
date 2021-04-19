@@ -97,7 +97,7 @@ latex_elements = {
        \usepackage[defaultsans]{lato}
        \usepackage{inconsolata}
        \setcounter{secnumdepth}{4}
-       \setcounter{tocdepth}{4}
+       \setcounter{tocdepth}{3}
     ''',
                                                                             
     'sphinxsetup': \
