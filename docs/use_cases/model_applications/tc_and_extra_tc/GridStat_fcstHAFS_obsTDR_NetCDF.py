@@ -34,9 +34,7 @@ _NetCDF.conf
 # ------------------
 #
 # The observations in the use case contains data mapped into Cartesian Grids with a horizontal grid spacing of 2 km and vertical grid spacing of 0.5 km. Hence the model output needs to be in height (km) (vertical coordinates) instead of pressure levels. Both observation and model output are available with the release. The instructions below tells how the input to the use case was prepared.  
-
 # The Hurricane Analysis and Forecast System (HAFS) (pressure levels in GRIB2 format) outputs are converted to height level (in NetCDF4 format) using METcalcpy vertical interpolation routine. Under METcalcpy/examples directory user can modify the vertical_interp_hwrf.sh or create a similar file for their own output. The $DATA_DIR is the top level output directory where the pressure level data resides. The --input and --output should point to the input and output file names resp. The --config points to a yaml file. Users should edit the yaml file, if needed. For this use case only zonal wind (u) at 4 (200m, 2000m, 4000m and 6000m) vertical levels are provided. The use case will compare the HAFS 2 km zonal wind (u) data against TDR's merged_zonal_wind at 2km. The user need to run the shell script to get the height level output in NetCDF4 format.    
-
 # This use case utilizes the METplus python embedding to read the TDR data and compare them to gridded forecast data using GridStat.
 
 
@@ -45,11 +43,10 @@ _NetCDF.conf
 # ----------------
 #
 # The use case runs the python embedding scripts (GridStat_fcstHAFS_obsTDR_NetCDF/read_tdr.py: to read the TDR data) and run Grid-Stat (compute statistics against HAFS model output, in height coordinates), called in this example. 
-
-# | It processes the following run times: Valid at  2019-08-29 12Z
-# | Forecast lead times: 0,6,12 and 18 UTC
-# | The mission number (e.g CUSTOM_LOOP_LIST = 190829H1)
-# | Height level (for TDR: OBS_VERT_LEVEL_KM = 2, HAFS: FCST_VAR1_LEVELS =  "(0,1,*,*)") 
+# It processes the following run times: Valid at  2019-08-29 12Z
+# Forecast lead times: 0,6,12 and 18 UTC
+# The mission number (e.g CUSTOM_LOOP_LIST = 190829H1)
+# Height level (for TDR: OBS_VERT_LEVEL_KM = 2, HAFS: FCST_VAR1_LEVELS =  "(0,1,*,*)")
 
 ##############################################################################
 # METplus Configuration
@@ -106,7 +103,7 @@ _NetCDF.conf
 #
 #        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications//tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstHAFS_obsTDR_NetCDF.conf:
+# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstHAFS_obsTDR_NetCDF.conf::
 #
 #        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf
 #
