@@ -38,7 +38,6 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_MASK_POLY',
         'METPLUS_MASK_DICT',
         'METPLUS_OUTPUT_PREFIX',
-        'METPLUS_GRID_RES',
         'METPLUS_FCST_FILTER_ATTR_NAME',
         'METPLUS_FCST_FILTER_ATTR_THRESH',
         'METPLUS_FCST_CENSOR_THRESH',
