@@ -124,6 +124,7 @@ jobs:
           - "s2s:4"
           - "space_weather:0-1"
           - "tc_and_extra_tc:0-2"
+          - "tc_and_extra_tc:3"
     steps:
       - uses: actions/download-artifact@v2
         with:

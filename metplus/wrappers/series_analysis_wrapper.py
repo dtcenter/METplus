@@ -216,9 +216,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                 False)
         )
 
-        c_dict['VAR_LIST'] = util.parse_var_list(self.config,
-                                                 met_tool=self.app_name)
-        if not c_dict['VAR_LIST']:
+        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
+                                                      met_tool=self.app_name)
+        if not c_dict['VAR_LIST_TEMP']:
             self.log_error("No fields specified. Please set "
                            "[FCST/OBS]_VAR<n>_[NAME/LEVELS]")
 
@@ -362,6 +362,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         storm_list = self.get_storm_list(time_info)
         if not storm_list:
             return False
+
+        # perform string substitution on var list
+        self.c_dict['VAR_LIST'] = (
+            util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                              time_info)
+        )
 
         # loop over storm list and process for each
         # this loop will execute once if not filtering by storm ID

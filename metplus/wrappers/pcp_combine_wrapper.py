@@ -69,9 +69,20 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         else:
             if fcst_run:
                 c_dict = self.set_fcst_or_obs_dict_items('FCST', c_dict)
-
+                c_dict['VAR_LIST_FCST'] = util.parse_var_list(
+                    self.config,
+                    data_type='FCST',
+                    met_tool=self.app_name
+                )
             if obs_run:
                 c_dict = self.set_fcst_or_obs_dict_items('OBS', c_dict)
+                c_dict['VAR_LIST_OBS'] = util.parse_var_list(
+                    self.config,
+                    data_type='OBS',
+                    met_tool=self.app_name
+                )
+
+
 
         return c_dict
 
