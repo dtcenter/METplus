@@ -96,7 +96,7 @@ latex_elements = {
        \usepackage{charter}
        \usepackage[defaultsans]{lato}
        \usepackage{inconsolata}
-       \setcounter{secnumdepth}{4}
+       \setcounter{secnumdepth}{3}
        \setcounter{tocdepth}{3}
     ''',
                                                                             
