@@ -99,6 +99,9 @@ that reformat gridded data
                                    'output_prefix',
                                    'METPLUS_OUTPUT_PREFIX')
 
+        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
+                                                      met_tool=self.app_name)
+
         return c_dict
 
     def set_environment_variables(self, time_info):
@@ -176,9 +179,8 @@ that reformat gridded data
         # get verification mask if available
         self.get_verification_mask(time_info)
 
-        var_list = util.parse_var_list(self.config,
-                                       time_info,
-                                       met_tool=self.app_name)
+        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                                     time_info)
 
         if not var_list and not self.c_dict.get('VAR_LIST_OPTIONAL', False):
             self.log_error('No input fields were specified. You must set '
@@ -258,9 +260,8 @@ that reformat gridded data
               Args:
                 @param time_info dictionary containing timing information
         """
-        var_list = util.parse_var_list(self.config,
-                                       time_info,
-                                       met_tool=self.app_name)
+        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                                     time_info)
 
         # get model from first var to compare
         model_path = self.find_model(time_info,

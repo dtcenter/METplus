@@ -315,6 +315,19 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # field information for fcst and obs
         c_dict['VAR_LIST_OPTIONAL'] = True
 
+        # parse var list for ENS fields
+        c_dict['ENS_VAR_LIST_TEMP'] = util.parse_var_list(
+            self.config,
+            data_type='ENS',
+            met_tool=self.app_name
+        )
+
+        # parse optional var list for FCST and/or OBS fields
+        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(
+            self.config,
+            met_tool=self.app_name
+        )
+
         return c_dict
 
     def handle_nmep_smooth_dict(self):
@@ -461,13 +474,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.infiles.append(fcst_file_list)
 
         # parse var list for ENS fields
-        ensemble_var_list = util.parse_var_list(self.config,
-                                                time_info,
-                                                data_type='ENS',
-                                                met_tool=self.app_name)
+        ensemble_var_list = util.sub_var_list(self.c_dict['ENS_VAR_LIST_TEMP'],
+                                              time_info)
 
         # parse optional var list for FCST and/or OBS fields
-        var_list = util.parse_var_list(self.config, time_info, met_tool=self.app_name)
+        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                                     time_info)
 
         # if empty var list for FCST/OBS, use None as first var, else use first var in list
         if not var_list:

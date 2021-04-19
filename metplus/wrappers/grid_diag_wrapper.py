@@ -81,6 +81,10 @@ class GridDiagWrapper(RuntimeFreqWrapper):
 
         self.handle_censor_val_and_thresh()
 
+        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
+                                                      data_type='FCST',
+                                                      met_tool=self.app_name)
+
         c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
 
         return c_dict
@@ -194,11 +198,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
                 @param time_info time dictionary to use for string substitution
                 @returns True if field list could be built, False if not.
         """
-
-        field_list = util.parse_var_list(self.config,
-                                         time_info,
-                                         data_type='FCST',
-                                         met_tool=self.app_name)
+        field_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'], time_info)
         if not field_list:
             self.log_error("Could not get field information from config.")
             return False
