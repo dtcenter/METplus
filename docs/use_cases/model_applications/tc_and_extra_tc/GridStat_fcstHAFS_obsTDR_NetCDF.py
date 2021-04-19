@@ -42,11 +42,16 @@ _NetCDF.conf
 # METplus Workflow
 # ----------------
 #
-# The use case runs the python embedding scripts (GridStat_fcstHAFS_obsTDR_NetCDF/read_tdr.py: to read the TDR data) and run Grid-Stat (compute statistics against HAFS model output, in height coordinates), called in this example. 
+# The use case runs the python embedding scripts (GridStat_fcstHAFS_obsTDR_NetCDF/read_tdr.py: to read the TDR data) and run Grid-Stat (compute statistics against HAFS model output, in height coordinates), called in this example.
+#
 # It processes the following run times: Valid at  2019-08-29 12Z
+#
 # Forecast lead times: 0,6,12 and 18 UTC
+#
 # The mission number (e.g CUSTOM_LOOP_LIST = 190829H1)
+#
 # Height level (for TDR: OBS_VERT_LEVEL_KM = 2, HAFS: FCST_VAR1_LEVELS =  "(0,1,*,*)")
+#
 
 ##############################################################################
 # METplus Configuration
