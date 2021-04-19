@@ -108,7 +108,7 @@ latex_elements = {
         InnerLinkColor={rgb}{0,0,1}, \
         OuterLinkColor={rgb}{0,0,1}',
         'maketitle': '\\sphinxmaketitle',  
-        'tableofcontents': ' ',
+#        'tableofcontents': ' ',
         'printindex': ' '
 }
 
