@@ -1345,6 +1345,28 @@ class CommandBuilder:
             self.config.logger.error("Could not get [INIT/VALID] time information from configuration file")
             self.isOK = False
 
+    def _get_config_or_default(self, mp_config_name, get_function,
+                               default=None):
+        conf_value = ''
+
+        # if no possible METplus config variables are not set
+        if mp_config_name is None:
+            # if no default defined, return without doing anything
+            if not default:
+                return None
+
+        # if METplus config variable is set, read the value
+        else:
+            conf_value = get_function('config',
+                                      mp_config_name,
+                                      '')
+
+        # if variable is not set and there is a default defined, set default
+        if not conf_value and default:
+            conf_value = default
+
+        return conf_value
+
     def set_met_config_list(self, c_dict, mp_config, met_config_name,
                             c_dict_key=None, **kwargs):
         """! Get list from METplus configuration file and format it to be passed
@@ -1364,14 +1386,20 @@ class CommandBuilder:
                   value
                  @param remove_quotes if True, output value without quotes.
                   Default value is False
+                 @param default (Optional) if set, use this value as default
+                  if config is not set
         """
         mp_config_name = self.get_mp_config_name(mp_config)
-        if mp_config_name is None:
+        conf_value = self._get_config_or_default(
+            mp_config_name,
+            get_function=self.config.getraw,
+            default=kwargs.get('default')
+        )
+        if conf_value is None:
             return
 
-        conf_value = util.getlist(self.config.getraw('config',
-                                                     mp_config_name,
-                                                     ''))
+        # convert value from config to a list
+        conf_value = util.getlist(conf_value)
         if conf_value or kwargs.get('allow_empty', False):
             conf_value = str(conf_value)
             # if not removing quotes, escape any quotes found in list items
@@ -1404,27 +1432,28 @@ class CommandBuilder:
                   set to None (default) then use upper-case of met_config_name
                  @param remove_quotes if True, output value without quotes.
                   Default value is False
+                 @param default (Optional) if set, use this value as default
+                  if config is not set
         """
         mp_config_name = self.get_mp_config_name(mp_config)
-        if mp_config_name is None:
+        conf_value = self._get_config_or_default(
+            mp_config_name,
+            get_function=self.config.getraw,
+            default=kwargs.get('default')
+        )
+        if not conf_value:
             return
 
-        conf_value = self.config.getraw('config', mp_config_name, '')
-        if conf_value:
-            if not c_dict_key:
-                c_key = met_config_name.upper()
-            else:
-                c_key = c_dict_key
+        conf_value = util.remove_quotes(conf_value)
+        # add quotes back if remote quotes is False
+        if not kwargs.get('remove_quotes'):
+            conf_value = f'"{conf_value}"'
 
-            conf_value = util.remove_quotes(conf_value)
-            # add quotes back if remote quotes is False
-            if not kwargs.get('remove_quotes'):
-                conf_value = f'"{conf_value}"'
+        if kwargs.get('uppercase', False):
+            conf_value = conf_value.upper()
 
-            if kwargs.get('uppercase', False):
-                conf_value = conf_value.upper()
-
-            c_dict[c_key] = f'{met_config_name} = {conf_value};'
+        c_key = c_dict_key if c_dict_key else met_config_name.upper()
+        c_dict[c_key] = f'{met_config_name} = {conf_value};'
 
     def set_met_config_number(self, c_dict, num_type, mp_config,
                               met_config_name, c_dict_key=None, **kwargs):
@@ -1440,6 +1469,8 @@ class CommandBuilder:
                   to determine the key in c_dict to set (upper-case) if c_dict_key is None
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
+                 @param default (Optional) if set, use this value as default
+                  if config is not set
         """
         mp_config_name = self.get_mp_config_name(mp_config)
         if mp_config_name is None:
@@ -1465,14 +1496,16 @@ class CommandBuilder:
         self.set_met_config_number(c_dict, 'int',
                                    mp_config_name,
                                    met_config_name,
-                                   c_dict_key=c_dict_key)
+                                   c_dict_key=c_dict_key,
+                                   **kwargs)
 
     def set_met_config_float(self, c_dict, mp_config_name,
                              met_config_name, c_dict_key=None, **kwargs):
         self.set_met_config_number(c_dict, 'float',
                                    mp_config_name,
                                    met_config_name,
-                                   c_dict_key=c_dict_key)
+                                   c_dict_key=c_dict_key,
+                                   **kwargs)
 
     def set_met_config_thresh(self, c_dict, mp_config, met_config_name,
                               c_dict_key=None, **kwargs):
