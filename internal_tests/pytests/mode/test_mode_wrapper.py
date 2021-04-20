@@ -14,8 +14,52 @@ from metplus.wrappers.mode_wrapper import MODEWrapper
 from metplus.util import met_util as util
 from metplus.util import time_util
 
+fcst_dir = '/some/path/fcst'
+obs_dir = '/some/path/obs'
+fcst_name = 'APCP'
+fcst_level = 'A03'
+obs_name = 'APCP_03'
+obs_level_no_quotes = '(*,*)'
+obs_level = f'"{obs_level_no_quotes}"'
+fcst_fmt = f'field = {{ name="{fcst_name}"; level="{fcst_level}"; }};'
+obs_fmt = (f'field = {{ name="{obs_name}"; '
+           f'level="{obs_level_no_quotes}"; }};')
+
+
+def set_minimum_config_settings(config):
+    # set config variables to prevent command from running and bypass check
+    # if input files actually exist
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'MODE')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2005080700')
+    config.set('config', 'INIT_END', '2005080712')
+    config.set('config', 'INIT_INCREMENT', '12H')
+    config.set('config', 'LEAD_SEQ', '12H')
+    config.set('config', 'LOOP_ORDER', 'times')
+    config.set('config', 'MODE_CONFIG_FILE',
+               '{PARM_BASE}/met_config/MODEConfig_wrapped')
+    config.set('config', 'FCST_MODE_INPUT_DIR', fcst_dir)
+    config.set('config', 'OBS_MODE_INPUT_DIR', obs_dir)
+    config.set('config', 'FCST_MODE_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
+    config.set('config', 'OBS_MODE_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d%H}/obs_file')
+    config.set('config', 'MODE_OUTPUT_DIR',
+               '{OUTPUT_BASE}/MODE/output')
+    config.set('config', 'MODE_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
+
+    config.set('config', 'FCST_VAR1_NAME', fcst_name)
+    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
+    config.set('config', 'OBS_VAR1_NAME', obs_name)
+    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+
 @pytest.mark.parametrize(
-    'config_overrides, env_var_values', [
+    'config_overrides, expected_output', [
         ({'MODEL': 'my_model'},
          {'METPLUS_MODEL': 'model = "my_model";'}),
 
@@ -58,280 +102,213 @@ from metplus.util import time_util
                                   'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
                                   )}),
 
-        ({'MODE_CLIMO_MEAN_INPUT_TEMPLATE':
-              '/some/path/climo/filename.nc',
-          },
-         {'METPLUS_CLIMO_MEAN_FILE':
-              'file_name = ["/some/path/climo/filename.nc"];',
-          }),
-        ({'MODE_CLIMO_STDEV_INPUT_TEMPLATE':
-              '/some/path/climo/stdfile.nc',
-          },
-         {'METPLUS_CLIMO_STDEV_FILE':
-              'climo_stdev = { file_name = ["/some/path/climo/stdfile.nc"]; }',
-         }),
-        # mask grid and poly (old config var)
-        ({'MODE_MASK_GRID': 'FULL',
-          'MODE_VERIFICATION_MASK_TEMPLATE': 'one, two',
-          },
-         {'METPLUS_MASK_DICT':
-              'mask = {grid = ["FULL"];poly = ["one", "two"];}',
-          }),
-        # mask grid and poly (new config var)
-        ({'MODE_MASK_GRID': 'FULL',
-          'MODE_MASK_POLY': 'one, two',
-          },
-         {'METPLUS_MASK_DICT':
-              'mask = {grid = ["FULL"];poly = ["one", "two"];}',
-          }),
+        ({'MODE_QUILT': 'True'},
+         {'METPLUS_QUILT': 'quilt = TRUE;'}),
+
+        ({'MODE_FCST_CONV_RADIUS': '40.0/grid_res'},
+         {'METPLUS_FCST_CONV_RADIUS': 'conv_radius = [40.0/grid_res];'}),
+        ({'MODE_OBS_CONV_RADIUS': '40.0/grid_res'},
+         {'METPLUS_OBS_CONV_RADIUS': 'conv_radius = [40.0/grid_res];'}),
+
+        ({'FCST_MODE_CONV_THRESH': '>=10.0'},
+         {'METPLUS_FCST_CONV_THRESH': 'conv_thresh = [>=10.0];'}),
+        ({'OBS_MODE_CONV_THRESH': '>=10.0'},
+         {'METPLUS_OBS_CONV_THRESH': 'conv_thresh = [>=10.0];'}),
+
+        ({'FCST_MODE_MERGE_THRESH': '>=10.0'},
+         {'METPLUS_FCST_MERGE_THRESH': 'merge_thresh = [>=10.0];'}),
+        ({'OBS_MODE_MERGE_THRESH': '>=10.0'},
+         {'METPLUS_OBS_MERGE_THRESH': 'merge_thresh = [>=10.0];'}),
+
+        ({'FCST_MODE_MERGE_FLAG': 'Thresh'},
+         {'METPLUS_FCST_MERGE_FLAG': 'merge_flag = THRESH;'}),
+        ({'OBS_MODE_MERGE_FLAG': 'Thresh'},
+         {'METPLUS_OBS_MERGE_FLAG': 'merge_flag = THRESH;'}),
+
+        ({'MODE_FCST_FILTER_ATTR_NAME': 'ONE, TWO'},
+         {'METPLUS_FCST_FILTER_ATTR_NAME': 'filter_attr_name = ["ONE", "TWO"];'}),
+        ({'MODE_OBS_FILTER_ATTR_NAME': 'ONE, TWO'},
+         {'METPLUS_OBS_FILTER_ATTR_NAME': 'filter_attr_name = ["ONE", "TWO"];'}),
+
+        ({'MODE_FCST_FILTER_ATTR_THRESH': '>=1.0, >=2.0'},
+         {'METPLUS_FCST_FILTER_ATTR_THRESH': 'filter_attr_thresh = [>=1.0, >=2.0];'}),
+        ({'MODE_OBS_FILTER_ATTR_THRESH': '>=1.0, >=2.0'},
+         {'METPLUS_OBS_FILTER_ATTR_THRESH': 'filter_attr_thresh = [>=1.0, >=2.0];'}),
+
+        ({'MODE_FCST_CENSOR_THRESH': '>=1.0, >=2.0'},
+         {'METPLUS_FCST_CENSOR_THRESH': 'censor_thresh = [>=1.0, >=2.0];'}),
+        ({'MODE_OBS_CENSOR_THRESH': '>=1.0, >=2.0'},
+         {'METPLUS_OBS_CENSOR_THRESH': 'censor_thresh = [>=1.0, >=2.0];'}),
+
+        ({'MODE_FCST_CENSOR_VAL': '1.0, 2.0'},
+         {'METPLUS_FCST_CENSOR_VAL': 'censor_val = [1.0, 2.0];'}),
+        ({'MODE_OBS_CENSOR_VAL': '1.0, 2.0'},
+         {'METPLUS_OBS_CENSOR_VAL': 'censor_val = [1.0, 2.0];'}),
+
+        ({'MODE_FCST_VLD_THRESH': '0.6'},
+         {'METPLUS_FCST_VLD_THRESH': 'vld_thresh = 0.6;'}),
+        ({'MODE_OBS_VLD_THRESH': '0.6'},
+         {'METPLUS_OBS_VLD_THRESH': 'vld_thresh = 0.6;'}),
+
         # mask grid value
         ({'MODE_MASK_GRID': 'FULL',
           },
-         {'METPLUS_MASK_DICT':
-              'mask = {grid = ["FULL"];}',
-          }),
-        # mask grid empty string (should create empty list)
-        ({'MODE_MASK_GRID': '',
-          },
-         {'METPLUS_MASK_DICT':
-              'mask = {grid = [];}',
+         {'METPLUS_MASK_DICT': 'mask = {grid = "FULL";}',
           }),
         # mask poly (old config var)
-        ({'MODE_VERIFICATION_MASK_TEMPLATE': 'one, two',
+        ({'MODE_VERIFICATION_MASK_TEMPLATE': 'one',
           },
-         {'METPLUS_MASK_DICT':
-              'mask = {poly = ["one", "two"];}',
+         {'METPLUS_MASK_DICT': 'mask = {poly = "one";}',
           }),
         # mask poly (new config var)
-        ({'MODE_MASK_POLY': 'one, two',
+        ({'MODE_MASK_POLY': 'one',
           },
-         {'METPLUS_MASK_DICT':
-              'mask = {poly = ["one", "two"];}',
+         {'METPLUS_MASK_DICT': 'mask = {poly = "one";}',
           }),
-
-        ({'MODE_NEIGHBORHOOD_COV_THRESH': '>=0.5'},
-         {'METPLUS_NBRHD_COV_THRESH': 'cov_thresh = [>=0.5];'}),
-
-        ({'MODE_NEIGHBORHOOD_WIDTH': '1,2'},
-         {'METPLUS_NBRHD_WIDTH': 'width = [1, 2];'}),
-
-        ({'MODE_NEIGHBORHOOD_SHAPE': 'CIRCLE'},
-         {'METPLUS_NBRHD_SHAPE': 'shape = CIRCLE;'}),
-
+        # mask poly_flag
+        ({'MODE_MASK_POLY_FLAG': 'Fcst',
+          },
+         {'METPLUS_MASK_DICT': 'mask = {poly_flag = FCST;}',
+          }),
+        # mask grid_flag
+        ({'MODE_MASK_GRID_FLAG': 'obs',
+          },
+         {'METPLUS_MASK_DICT': 'mask = {grid_flag = OBS;}',
+          }),
+        # mask all
+        ({'MODE_MASK_GRID': 'FULL',
+          'MODE_MASK_POLY': 'one',
+          'MODE_MASK_POLY_FLAG': 'Fcst',
+          'MODE_MASK_GRID_FLAG': 'obs',
+          },
+         {'METPLUS_MASK_DICT': ('mask = {grid = "FULL";poly = "one";'
+                                'grid_flag = OBS;poly_flag = FCST;}'),
+          }),
         ({'MODE_OUTPUT_PREFIX': 'my_output_prefix'},
          {'METPLUS_OUTPUT_PREFIX': 'output_prefix = "my_output_prefix";'}),
 
-        ({'MODE_OUTPUT_FLAG_FHO': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {fho = STAT;}'}),
+        ({'MODE_GRID_RES': '40.0'},
+         {'METPLUS_GRID_RES': 'grid_res = 40.0;'}),
 
-        ({'MODE_OUTPUT_FLAG_CTC': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {ctc = STAT;}'}),
+        ({'MODE_MATCH_FLAG': 'merge_both'},
+         {'METPLUS_MATCH_FLAG': 'match_flag = MERGE_BOTH;'}),
 
-        ({'MODE_OUTPUT_FLAG_CTS': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {cts = STAT;}'}),
+        # single weight values
+        ({'MODE_WEIGHT_CENTROID_DIST': '4.0', },
+         {'METPLUS_WEIGHT_DICT': 'weight = {centroid_dist = 4.0;}'}),
+        ({'MODE_WEIGHT_BOUNDARY_DIST': '4.0', },
+         {'METPLUS_WEIGHT_DICT': 'weight = {boundary_dist = 4.0;}'}),
+        ({'MODE_WEIGHT_CONVEX_HULL_DIST': '4.0', },
+         {'METPLUS_WEIGHT_DICT': 'weight = {convex_hull_dist = 4.0;}'}),
+        ({'MODE_WEIGHT_ANGLE_DIFF': '4.0', },
+         {'METPLUS_WEIGHT_DICT': 'weight = {angle_diff = 4.0;}'}),
+        ({'MODE_WEIGHT_ASPECT_DIFF': '4.0', },
+         {'METPLUS_WEIGHT_DICT': 'weight = {aspect_diff = 4.0;}'}),
+        ({'MODE_WEIGHT_AREA_RATIO': '4.0', },
+         {'METPLUS_WEIGHT_DICT': 'weight = {area_ratio = 4.0;}'}),
+        ({'MODE_WEIGHT_INT_AREA_RATIO': '4.0', },
+         {'METPLUS_WEIGHT_DICT': 'weight = {int_area_ratio = 4.0;}'}),
+        ({'MODE_WEIGHT_CURVATURE_RATIO': '4.0', },
+         {'METPLUS_WEIGHT_DICT': 'weight = {curvature_ratio = 4.0;}'}),
+        ({'MODE_WEIGHT_COMPLEXITY_RATIO': '4.0', },
+         {'METPLUS_WEIGHT_DICT': 'weight = {complexity_ratio = 4.0;}'}),
+        ({'MODE_WEIGHT_INTEN_PERC_RATIO': '4.0', },
+         {'METPLUS_WEIGHT_DICT': 'weight = {inten_perc_ratio = 4.0;}'}),
+        ({'MODE_WEIGHT_INTEN_PERC_VALUE': '40', },
+         {'METPLUS_WEIGHT_DICT': 'weight = {inten_perc_value = 40;}'}),
 
-        ({'MODE_OUTPUT_FLAG_MCTC': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {mctc = STAT;}'}),
+        # all weight values
+        ({'MODE_WEIGHT_CENTROID_DIST': '4.0',
+          'MODE_WEIGHT_BOUNDARY_DIST': '4.0',
+          'MODE_WEIGHT_CONVEX_HULL_DIST': '4.0',
+          'MODE_WEIGHT_ANGLE_DIFF': '4.0',
+          'MODE_WEIGHT_ASPECT_DIFF': '4.0',
+          'MODE_WEIGHT_AREA_RATIO': '4.0',
+          'MODE_WEIGHT_INT_AREA_RATIO': '4.0',
+          'MODE_WEIGHT_CURVATURE_RATIO': '4.0',
+          'MODE_WEIGHT_COMPLEXITY_RATIO': '4.0',
+          'MODE_WEIGHT_INTEN_PERC_RATIO': '4.0',
+          'MODE_WEIGHT_INTEN_PERC_VALUE': '40',
+          },
+         {'METPLUS_WEIGHT_DICT': ('weight = {centroid_dist = 4.0;'
+                                  'boundary_dist = 4.0;convex_hull_dist = 4.0;'
+                                  'angle_diff = 4.0;aspect_diff = 4.0;'
+                                  'area_ratio = 4.0;int_area_ratio = 4.0;'
+                                  'curvature_ratio = 4.0;'
+                                  'complexity_ratio = 4.0;'
+                                  'inten_perc_ratio = 4.0;'
+                                  'inten_perc_value = 40;}')}),
 
-        ({'MODE_OUTPUT_FLAG_MCTS': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {mcts = STAT;}'}),
+        ({'MODE_NC_PAIRS_FLAG_LATLON': 'FALSE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {latlon = FALSE;}'}),
 
-        ({'MODE_OUTPUT_FLAG_CNT': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {cnt = STAT;}'}),
+        ({'MODE_NC_PAIRS_FLAG_RAW': 'FALSE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {raw = FALSE;}'}),
 
-        ({'MODE_OUTPUT_FLAG_SL1L2': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {sl1l2 = STAT;}'}),
+        ({'MODE_NC_PAIRS_FLAG_OBJECT_RAW': 'FALSE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {object_raw = FALSE;}'}),
 
-        ({'MODE_OUTPUT_FLAG_SAL1L2': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {sal1l2 = STAT;}'}),
+        ({'MODE_NC_PAIRS_FLAG_OBJECT_ID': 'FALSE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {object_id = FALSE;}'}),
 
-        ({'MODE_OUTPUT_FLAG_VL1L2': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {vl1l2 = STAT;}'}),
+        ({'MODE_NC_PAIRS_FLAG_CLUSTER_ID': 'FALSE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {cluster_id = FALSE;}'}),
 
-        ({'MODE_OUTPUT_FLAG_VAL1L2': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {val1l2 = STAT;}'}),
-
-        ({'MODE_OUTPUT_FLAG_VCNT': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {vcnt = STAT;}'}),
-
-        ({'MODE_OUTPUT_FLAG_PCT': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pct = STAT;}'}),
-
-        ({'MODE_OUTPUT_FLAG_PSTD': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pstd = STAT;}'}),
-
-        ({'MODE_OUTPUT_FLAG_PJC': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pjc = STAT;}'}),
-
-        ({'MODE_OUTPUT_FLAG_PRC': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {prc = STAT;}'}),
-
-        ({'MODE_OUTPUT_FLAG_ECLV': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {eclv = STAT;}'}),
-
-        ({'MODE_OUTPUT_FLAG_NBRCTC': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {nbrctc = STAT;}'}),
-
-        ({'MODE_OUTPUT_FLAG_NBRCTS': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {nbrcts = STAT;}'}),
-
-        ({'MODE_OUTPUT_FLAG_NBRCNT': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {nbrcnt = STAT;}'}),
-
-        ({'MODE_OUTPUT_FLAG_GRAD': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {grad = STAT;}'}),
-
-        ({'MODE_OUTPUT_FLAG_DMAP': 'STAT', },
-         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {dmap = STAT;}'}),
-
-        ({
-             'MODE_OUTPUT_FLAG_FHO': 'STAT',
-             'MODE_OUTPUT_FLAG_CTC': 'STAT',
-             'MODE_OUTPUT_FLAG_CTS': 'STAT',
-             'MODE_OUTPUT_FLAG_MCTC': 'STAT',
-             'MODE_OUTPUT_FLAG_MCTS': 'STAT',
-             'MODE_OUTPUT_FLAG_CNT': 'STAT',
-             'MODE_OUTPUT_FLAG_SL1L2': 'STAT',
-             'MODE_OUTPUT_FLAG_SAL1L2': 'STAT',
-             'MODE_OUTPUT_FLAG_VL1L2': 'STAT',
-             'MODE_OUTPUT_FLAG_VAL1L2': 'STAT',
-             'MODE_OUTPUT_FLAG_VCNT': 'STAT',
-             'MODE_OUTPUT_FLAG_PCT': 'STAT',
-             'MODE_OUTPUT_FLAG_PSTD': 'STAT',
-             'MODE_OUTPUT_FLAG_PJC': 'STAT',
-             'MODE_OUTPUT_FLAG_PRC': 'STAT',
-             'MODE_OUTPUT_FLAG_ECLV': 'STAT',
-             'MODE_OUTPUT_FLAG_NBRCTC': 'STAT',
-             'MODE_OUTPUT_FLAG_NBRCTS': 'STAT',
-             'MODE_OUTPUT_FLAG_NBRCNT': 'STAT',
-             'MODE_OUTPUT_FLAG_GRAD': 'STAT',
-             'MODE_OUTPUT_FLAG_DMAP': 'STAT',
-         },
-         {
-             'METPLUS_OUTPUT_FLAG_DICT': (
-                     'output_flag = {fho = STAT;ctc = STAT;cts = STAT;'
-                     'mctc = STAT;mcts = STAT;cnt = STAT;sl1l2 = STAT;'
-                     'sal1l2 = STAT;vl1l2 = STAT;val1l2 = STAT;'
-                     'vcnt = STAT;pct = STAT;pstd = STAT;pjc = STAT;'
-                     'prc = STAT;eclv = STAT;nbrctc = STAT;nbrcts = STAT;'
-                     'nbrcnt = STAT;grad = STAT;dmap = STAT;}')}),
-
-        ({'MODE_NC_PAIRS_FLAG_LATLON': 'TRUE', },
-         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {latlon = TRUE;}'}),
-
-        ({'MODE_NC_PAIRS_FLAG_RAW': 'TRUE', },
-         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {raw = TRUE;}'}),
-
-        ({'MODE_NC_PAIRS_FLAG_DIFF': 'TRUE', },
-         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {diff = TRUE;}'}),
-
-        ({'MODE_NC_PAIRS_FLAG_CLIMO': 'TRUE', },
-         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {climo = TRUE;}'}),
-
-        ({'MODE_NC_PAIRS_FLAG_CLIMO_CDP': 'TRUE', },
-         {
-             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {climo_cdp = TRUE;}'}),
-
-        ({'MODE_NC_PAIRS_FLAG_WEIGHT': 'TRUE', },
-         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {weight = TRUE;}'}),
-
-        ({'MODE_NC_PAIRS_FLAG_NBRHD': 'TRUE', },
-         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {nbrhd = TRUE;}'}),
-
-        ({'MODE_NC_PAIRS_FLAG_FOURIER': 'TRUE', },
-         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {fourier = TRUE;}'}),
-
-        ({'MODE_NC_PAIRS_FLAG_GRADIENT': 'TRUE', },
-         {
-             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {gradient = TRUE;}'}),
-
-        ({'MODE_NC_PAIRS_FLAG_DISTANCE_MAP': 'TRUE', },
-         {
-             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {distance_map = TRUE;}'}),
-
-        ({'MODE_NC_PAIRS_FLAG_APPLY_MASK': 'TRUE', },
-         {
-             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {apply_mask = TRUE;}'}),
+        ({'MODE_NC_PAIRS_FLAG_POLYLINES': 'FALSE', },
+         {'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {polylines = FALSE;}'}),
 
         ({
-             'MODE_NC_PAIRS_FLAG_LATLON': 'TRUE',
-             'MODE_NC_PAIRS_FLAG_RAW': 'TRUE',
-             'MODE_NC_PAIRS_FLAG_DIFF': 'TRUE',
-             'MODE_NC_PAIRS_FLAG_CLIMO': 'TRUE',
-             'MODE_NC_PAIRS_FLAG_CLIMO_CDP': 'TRUE',
-             'MODE_NC_PAIRS_FLAG_WEIGHT': 'TRUE',
-             'MODE_NC_PAIRS_FLAG_NBRHD': 'TRUE',
-             'MODE_NC_PAIRS_FLAG_FOURIER': 'TRUE',
-             'MODE_NC_PAIRS_FLAG_GRADIENT': 'TRUE',
-             'MODE_NC_PAIRS_FLAG_DISTANCE_MAP': 'TRUE',
-             'MODE_NC_PAIRS_FLAG_APPLY_MASK': 'TRUE',
+             'MODE_NC_PAIRS_FLAG_LATLON': 'FALSE',
+             'MODE_NC_PAIRS_FLAG_RAW': 'FALSE',
+             'MODE_NC_PAIRS_FLAG_OBJECT_RAW': 'FALSE',
+             'MODE_NC_PAIRS_FLAG_OBJECT_ID': 'FALSE',
+             'MODE_NC_PAIRS_FLAG_CLUSTER_ID': 'FALSE',
+             'MODE_NC_PAIRS_FLAG_POLYLINES': 'FALSE',
          },
          {
-             'METPLUS_NC_PAIRS_FLAG_DICT': 'nc_pairs_flag = {latlon = TRUE;raw = TRUE;diff = TRUE;climo = TRUE;climo_cdp = TRUE;weight = TRUE;nbrhd = TRUE;fourier = TRUE;gradient = TRUE;distance_map = TRUE;apply_mask = TRUE;}'}),
+             'METPLUS_NC_PAIRS_FLAG_DICT': ('nc_pairs_flag = {latlon = FALSE;'
+                                            'raw = FALSE;object_raw = FALSE;'
+                                            'object_id = FALSE;'
+                                            'cluster_id = FALSE;'
+                                            'polylines = FALSE;}')}),
 
-        ({'MODE_CLIMO_CDF_CDF_BINS': '1', },
-         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;}'}),
+        ({'MODE_MAX_CENTROID_DIST': '400.0/grid_res'},
+         {'METPLUS_MAX_CENTROID_DIST': 'max_centroid_dist = 400.0/grid_res;'}),
 
-        ({'MODE_CLIMO_CDF_CENTER_BINS': 'True', },
-         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {center_bins = TRUE;}'}),
+        ({'MODE_TOTAL_INTEREST_THRESH': '0.4'},
+         {'METPLUS_TOTAL_INTEREST_THRESH': 'total_interest_thresh = 0.4;'}),
 
-        ({'MODE_CLIMO_CDF_WRITE_BINS': 'False', },
-         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {write_bins = FALSE;}'}),
+        ({'MODE_INTEREST_FUNCTION_CENTROID_DIST': ('((0.0, 2.0) '
+                                                   '(30.0/grid_res, 1.0)'
+                                                   '300.0/grid_res, 1.0))')},
+         {'METPLUS_INTEREST_FUNCTION_CENTROID_DIST': ('centroid_dist = ('
+                                                      '(0.0, 2.0) '
+                                                      '(30.0/grid_res, 1.0)'
+                                                      '300.0/grid_res, 1.0)'
+                                                      ');')}),
 
-        ({
-             'MODE_CLIMO_CDF_CDF_BINS': '1',
-             'MODE_CLIMO_CDF_CENTER_BINS': 'True',
-             'MODE_CLIMO_CDF_WRITE_BINS': 'False',
-         },
-         {
-             'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;}'}),
+        ({'MODE_INTEREST_FUNCTION_BOUNDARY_DIST': ('((0.0, 2.0) '
+                                                   '200.0/grid_res, 1.0))')},
+         {'METPLUS_INTEREST_FUNCTION_BOUNDARY_DIST': ('boundary_dist = ('
+                                                      '(0.0, 2.0) '
+                                                      '200.0/grid_res, 1.0)'
+                                                      ');')}),
+
+        ({'MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST': ('((0.0, 2.0) '
+                                                   '200.0/grid_res, 1.0))')},
+         {'METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST': ('convex_hull_dist = ('
+                                                      '(0.0, 2.0) '
+                                                      '200.0/grid_res, 1.0)'
+                                                      ');')}),
 
     ]
 )
 def test_mode_single_field(metplus_config, config_overrides,
-                                env_var_values):
-    fcst_dir = '/some/path/fcst'
-    obs_dir = '/some/path/obs'
-    fcst_name = 'APCP'
-    fcst_level = 'A03'
-    obs_name = 'APCP_03'
-    obs_level_no_quotes = '(*,*)'
-    obs_level = f'"{obs_level_no_quotes}"'
-    fcst_fmt = f'field = [{{ name="{fcst_name}"; level="{fcst_level}"; }}];'
-    obs_fmt = (f'field = [{{ name="{obs_name}"; '
-               f'level="{obs_level_no_quotes}"; }}];')
+                           expected_output):
     config = metplus_config()
 
-    # set config variables to prevent command from running and bypass check
-    # if input files actually exist
-    config.set('config', 'DO_NOT_RUN_EXE', True)
-    config.set('config', 'INPUT_MUST_EXIST', False)
-
-    # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'MODE')
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'INIT_BEG', '2005080700')
-    config.set('config', 'INIT_END', '2005080712')
-    config.set('config', 'INIT_INCREMENT', '12H')
-    config.set('config', 'LEAD_SEQ', '12H')
-    config.set('config', 'LOOP_ORDER', 'times')
-    config.set('config', 'MODE_CONFIG_FILE',
-               '{PARM_BASE}/met_config/MODEConfig_wrapped')
-    config.set('config', 'FCST_MODE_INPUT_DIR', fcst_dir)
-    config.set('config', 'OBS_MODE_INPUT_DIR', obs_dir)
-    config.set('config', 'FCST_MODE_INPUT_TEMPLATE',
-               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
-    config.set('config', 'OBS_MODE_INPUT_TEMPLATE',
-               '{valid?fmt=%Y%m%d%H}/obs_file')
-    config.set('config', 'MODE_OUTPUT_DIR',
-               '{OUTPUT_BASE}/MODE/output')
-    config.set('config', 'MODE_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
-
-    config.set('config', 'FCST_VAR1_NAME', fcst_name)
-    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
-    config.set('config', 'OBS_VAR1_NAME', obs_name)
-    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+    # set config variables needed to run
+    set_minimum_config_settings(config)
 
     # set config variable overrides
     for key, value in config_overrides.items():
@@ -358,6 +335,28 @@ def test_mode_single_field(metplus_config, config_overrides,
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
 
+    # set default values in expected output list
+    # only if they are not set and if MODE_GRID_RES is set
+    if 'MODE_GRID_RES' in config_overrides:
+        met_remove_prefixes = ['interest_function_', 'fcst_', 'obs_']
+        met_lists = ['conv_radius']
+        for name, default_val in wrapper.DEFAULT_VALUES.items():
+            if f'MODE_{name}' not in config_overrides:
+                met_name = name.lower()
+                # remove prefix that corresponds to dictionary not variable
+                for met_remove_prefix in met_remove_prefixes:
+                    if met_name.startswith(met_remove_prefix):
+                        met_name = met_name.split(met_remove_prefix)[1]
+                        break
+
+                # convert value to list if variable expects a list
+                if met_name in met_lists:
+                    default_val = f'[{default_val}]'
+
+                expected_output[f'METPLUS_{name}'] = (
+                    f'{met_name} = {default_val};'
+                )
+
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert(cmd == expected_cmd)
@@ -373,4 +372,69 @@ def test_mode_single_field(metplus_config, config_overrides,
             elif env_var_key == 'METPLUS_OBS_FIELD':
                 assert (value == obs_fmt)
             else:
-                assert(env_var_values.get(env_var_key, '') == value)
+                assert(expected_output.get(env_var_key, '') == value)
+
+@pytest.mark.parametrize(
+    'config_name, env_var_name, met_name, var_type', [
+        ('FCST_MODE_CONV_RADIUS', 'METPLUS_FCST_CONV_RADIUS',
+         'conv_radius', 'list'),
+        ('MODE_FCST_CONV_RADIUS', 'METPLUS_FCST_CONV_RADIUS',
+         'conv_radius', 'list'),
+        ('MODE_CONV_RADIUS', 'METPLUS_FCST_CONV_RADIUS',
+         'conv_radius', 'list'),
+
+        ('FCST_MODE_CONV_THRESH', 'METPLUS_FCST_CONV_THRESH',
+         'conv_thresh', 'list'),
+        ('MODE_FCST_CONV_THRESH', 'METPLUS_FCST_CONV_THRESH',
+         'conv_thresh', 'list'),
+        ('MODE_CONV_THRESH', 'METPLUS_FCST_CONV_THRESH',
+         'conv_thresh', 'list'),
+
+        ('FCST_MODE_MERGE_THRESH', 'METPLUS_FCST_MERGE_THRESH',
+         'merge_thresh', 'list'),
+        ('MODE_FCST_MERGE_THRESH', 'METPLUS_FCST_MERGE_THRESH',
+         'merge_thresh', 'list'),
+        ('MODE_MERGE_THRESH', 'METPLUS_FCST_MERGE_THRESH',
+         'merge_thresh', 'list'),
+
+        ('FCST_MODE_MERGE_FLAG', 'METPLUS_FCST_MERGE_FLAG',
+         'merge_flag', 'upper'),
+        ('MODE_FCST_MERGE_FLAG', 'METPLUS_FCST_MERGE_FLAG',
+         'merge_flag', 'upper'),
+        ('MODE_MERGE_FLAG', 'METPLUS_FCST_MERGE_FLAG',
+         'merge_flag', 'upper'),
+
+        ('FCST_MODE_VLD_THRESH', 'METPLUS_FCST_VLD_THRESH',
+         'vld_thresh', 'float'),
+        ('FCST_MODE_VALID_THRESH', 'METPLUS_FCST_VLD_THRESH',
+         'vld_thresh', 'float'),
+        ('MODE_FCST_VLD_THRESH', 'METPLUS_FCST_VLD_THRESH',
+         'vld_thresh', 'float'),
+        ('MODE_FCST_VALID_THRESH', 'METPLUS_FCST_VLD_THRESH',
+         'vld_thresh', 'float'),
+
+    ]
+)
+def test_config_synonyms(metplus_config, config_name, env_var_name,
+                         met_name, var_type):
+    """! Ensure that different METplus config variable names set the correct
+         value in the environment variables list
+    """
+    in_value = 'out_value'
+
+    if var_type == 'list':
+        out_value = f'[{in_value}]'
+    elif var_type == 'upper':
+        out_value = in_value.upper()
+    elif var_type == 'float':
+        in_value = out_value = 4.0
+
+    config = metplus_config()
+    set_minimum_config_settings(config)
+    config.set('config', config_name, in_value)
+    wrapper = MODEWrapper(config)
+    assert(wrapper.isOK)
+
+
+    expected_output = f'{met_name} = {out_value};'
+    assert(wrapper.env_var_dict[env_var_name] == expected_output)
