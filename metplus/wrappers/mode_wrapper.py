@@ -161,6 +161,7 @@ class MODEWrapper(CompareGriddedWrapper):
             self.set_met_config_list(
                 self.env_var_dict,
                 [f'{data_type}_MODE_CONV_RADIUS',
+                 f'MODE_{data_type}_CONV_RADIUS',
                  'MODE_CONV_RADIUS'],
                 'conv_radius',
                 f'METPLUS_{data_type}_CONV_RADIUS',
@@ -170,6 +171,7 @@ class MODEWrapper(CompareGriddedWrapper):
 
             self.set_met_config_list(self.env_var_dict,
                                      [f'{data_type}_MODE_CONV_THRESH',
+                                      f'MODE_{data_type}_CONV_THRESH',
                                       'MODE_CONV_THRESH'],
                                      'conv_thresh',
                                      f'METPLUS_{data_type}_CONV_THRESH',
@@ -177,6 +179,7 @@ class MODEWrapper(CompareGriddedWrapper):
 
             self.set_met_config_list(self.env_var_dict,
                                      [f'{data_type}_MODE_MERGE_THRESH',
+                                      f'MODE_{data_type}_MERGE_THRESH',
                                       'MODE_MERGE_THRESH'],
                                      'merge_thresh',
                                      f'METPLUS_{data_type}_MERGE_THRESH',
@@ -184,6 +187,7 @@ class MODEWrapper(CompareGriddedWrapper):
 
             self.set_met_config_string(self.env_var_dict,
                                        [f'{data_type}_MODE_MERGE_FLAG',
+                                        f'MODE_{data_type}_MERGE_FLAG',
                                         'MODE_MERGE_FLAG'],
                                        'merge_flag',
                                        f'METPLUS_{data_type}_MERGE_FLAG',
@@ -225,7 +229,9 @@ class MODEWrapper(CompareGriddedWrapper):
 
             self.set_met_config_float(self.env_var_dict,
                                       [f'{data_type}_MODE_VLD_THRESH',
-                                       f'MODE_{data_type}_VLD_THRESH'],
+                                       f'{data_type}_MODE_VALID_THRESH',
+                                       f'MODE_{data_type}_VLD_THRESH',
+                                       f'MODE_{data_type}_VALID_THRESH'],
                                       'vld_thresh',
                                       f'METPLUS_{data_type}_VLD_THRESH')
 
