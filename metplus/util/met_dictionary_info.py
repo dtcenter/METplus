@@ -10,22 +10,28 @@ Output Files: N/A
 """
 
 class METConfigInfo:
-    """! Stores information for a member of a MET dictionary, including
-     name of variable, list of METplus config variables that can be used
-     to set the value, the data type of the item, and any additional
-     requirements such as remove quotes or make uppercase.
+    """! Stores information for a member of a MET config variables that
+      can be used to set the value, the data type of the item,
+      optional name of environment variable to set (without METPLUS_ prefix)
+      if it differs from the name,
+      and any additional requirements such as remove quotes or make uppercase.
     """
     def __init__(self, name, data_type,
+                 env_var_name=None,
                  metplus_configs=None,
                  extra_args=None):
         self.name = name
         self.data_type = data_type
         self.metplus_configs = metplus_configs
         self.extra_args = extra_args
+        self.env_var_name = env_var_name if env_var_name else name
 
     def __repr__(self):
-        return (f'{self.__class__.__name__}({self.name}, {self.data_type}'
-               f', {self.metplus_configs}, {self.extra_args})')
+        return (f'{self.__class__.__name__}({self.name}, {self.data_type}, '
+                f'{self.env_var_name}, '
+                f'{self.metplus_configs}, '
+                f'{self.extra_args}'
+                ')')
 
     @property
     def name(self):
@@ -44,6 +50,16 @@ class METConfigInfo:
     @data_type.setter
     def data_type(self, data_type):
         self._data_type = data_type
+
+    @property
+    def env_var_name(self):
+        return self._env_var_name
+
+    @env_var_name.setter
+    def env_var_name(self, env_var_name):
+        if not isinstance(env_var_name, str):
+            raise TypeError("Name must be a string")
+        self._env_var_name = env_var_name
 
     @property
     def metplus_configs(self):
