@@ -81,9 +81,9 @@ Groups (UFS SIP WGs).
    systemconfiguration
    wrappers
    usecases
-   references
    quicksearch
    glossary
+   references
 
 ..
    Indices and tables
