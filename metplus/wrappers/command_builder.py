@@ -2018,13 +2018,15 @@ class CommandBuilder:
                 self.get_met_config(name='grid_flag',
                                     data_type='string',
                                     metplus_configs=[f'{app}_MASK_GRID_FLAG'],
-                                    extra_args={'remove_quotes': True})
+                                    extra_args={'remove_quotes': True,
+                                                'uppercase': True})
             )
             dict_items.append(
                 self.get_met_config(name='poly_flag',
                                     data_type='string',
                                     metplus_configs=[f'{app}_MASK_POLY_FLAG'],
-                                    extra_args={'remove_quotes': True})
+                                    extra_args={'remove_quotes': True,
+                                                'uppercase': True})
             )
 
         self.handle_met_config_dict(dict_name, dict_items)
