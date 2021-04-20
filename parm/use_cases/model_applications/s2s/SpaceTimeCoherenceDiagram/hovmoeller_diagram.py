@@ -9,7 +9,6 @@ import sys
 import logging
 import yaml
 import xarray as xr  # http://xarray.pydata.org/
-from netCDF4 import num2date
 import METplotpy.metplotpy.plots.hovmoeller.hovmoeller as Hovmoeller
 
 
@@ -19,12 +18,10 @@ def main():
     create a default plot, using data in the METplus data store
     """
 
-    #input_file_name = os.path.join(os.getenv('METplus_Data'),'TropicalDiagnostics','precip.erai.sfc.1p0.2x.2014-2016.nc')
-    input_file_name = '/d2/METcalcpy_Data/TropicalDiagnostics/precip.erai.sfc.1p0.2x.2014-2016.nc'
+    data_dir = os.environ.get("METplus_DATA_DIR",'/d2/METplus_Data')
+    input_file_name = os.environ.get("INPUT_FILE_NAME",'precip.erai.sfc.1p0.2x.2014-2016.nc')
     plot_config_file = os.path.join(os.getenv('METPLOTPY_BASE'), 'plots', 'config', 'hovmoeller_defaults.yaml')
-    #data_dir = os.getenv('METplus_Data')
-    data_dir = ('/d2/METplus_Data')
-    input_file = os.path.join(data_dir,input_file_name)
+    input_file = os.path.join(data_dir,'model_applications','s2s',input_file_name)
 
     """
     Read Hovmoeller YAML configuration file
