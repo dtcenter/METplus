@@ -122,7 +122,6 @@ class MODEWrapper(CompareGriddedWrapper):
                                                    '')
         if not c_dict['CONFIG_FILE']:
             self.log_error('MODE_CONFIG_FILE must be set')
-            self.isOK = False
 
         c_dict['OBS_INPUT_DIR'] = \
           self.config.getdir('OBS_MODE_INPUT_DIR', '')
@@ -131,7 +130,6 @@ class MODEWrapper(CompareGriddedWrapper):
                              'OBS_MODE_INPUT_TEMPLATE')
         if not c_dict['OBS_INPUT_TEMPLATE']:
             self.log_error('OBS_MODE_INPUT_TEMPLATE must be set')
-            self.isOK = False
 
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_MODE_INPUT_DATATYPE', '')
@@ -142,14 +140,12 @@ class MODEWrapper(CompareGriddedWrapper):
                              'FCST_MODE_INPUT_TEMPLATE')
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('OBS_MODE_INPUT_TEMPLATE must be set')
-            self.isOK = False
 
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'FCST_MODE_INPUT_DATATYPE', '')
         c_dict['OUTPUT_DIR'] = self.config.getdir('MODE_OUTPUT_DIR', '')
         if not c_dict['OUTPUT_DIR']:
             self.log_error('MODE_OUTPUT_DIR must be set')
-            self.isOK = False
 
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('config',
