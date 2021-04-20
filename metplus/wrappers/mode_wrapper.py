@@ -191,7 +191,8 @@ class MODEWrapper(CompareGriddedWrapper):
                                         'MODE_MERGE_FLAG'],
                                        'merge_flag',
                                        f'METPLUS_{data_type}_MERGE_FLAG',
-                                       remove_quotes=True)
+                                       remove_quotes=True,
+                                       uppercase=True)
 
             self.set_met_config_list(self.env_var_dict,
                                      [f'{data_type}_MODE_FILTER_ATTR_NAME',
@@ -252,7 +253,8 @@ class MODEWrapper(CompareGriddedWrapper):
                                    ['MODE_MATCH_FLAG'],
                                    'match_flag',
                                    'METPLUS_MATCH_FLAG',
-                                   remove_quotes=True)
+                                   remove_quotes=True,
+                                   uppercase=True)
 
         self.handle_weight()
         self.handle_flags('nc_pairs')
