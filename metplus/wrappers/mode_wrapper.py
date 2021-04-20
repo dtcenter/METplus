@@ -157,6 +157,18 @@ class MODEWrapper(CompareGriddedWrapper):
                                  'quilt',
                                  'METPLUS_QUILT')
 
+        self.set_met_config_float(self.env_var_dict,
+                                  'MODE_GRID_RES',
+                                  'grid_res',
+                                  'METPLUS_GRID_RES')
+
+        # if MODE_GRID_RES is not set, then unset the default values
+        defaults = self.DEFAULT_VALUES.copy()
+        if not self.env_var_dict.get('METPLUS_GRID_RES'):
+            for default_key in self.DEFAULT_VALUES:
+                defaults[default_key] = None
+
+        # read forecast and observation field variables
         for data_type in ['FCST', 'OBS']:
             self.set_met_config_list(
                 self.env_var_dict,
@@ -166,7 +178,7 @@ class MODEWrapper(CompareGriddedWrapper):
                 'conv_radius',
                 f'METPLUS_{data_type}_CONV_RADIUS',
                 remove_quotes=True,
-                default=self.DEFAULT_VALUES.get(f'{data_type}_CONV_RADIUS'),
+                default=defaults.get(f'{data_type}_CONV_RADIUS'),
             )
 
             self.set_met_config_list(self.env_var_dict,
@@ -244,11 +256,6 @@ class MODEWrapper(CompareGriddedWrapper):
                 value = self.get_env_var_value(f'METPLUS_{data_type}_{name}')
                 c_dict[f'{data_type}_{name}'] = value
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'MODE_GRID_RES',
-                                  'grid_res',
-                                  'METPLUS_GRID_RES')
-
         self.set_met_config_string(self.env_var_dict,
                                    ['MODE_MATCH_FLAG'],
                                    'match_flag',
@@ -269,7 +276,7 @@ class MODEWrapper(CompareGriddedWrapper):
             metplus_configs=['MODE_MAX_CENTROID_DIST'],
             extra_args={
                 'remove_quotes': True,
-                'default': self.DEFAULT_VALUES.get('MAX_CENTROID_DIST')
+                'default': defaults.get('MAX_CENTROID_DIST')
             }
         )
         self.add_met_config(
@@ -279,9 +286,7 @@ class MODEWrapper(CompareGriddedWrapper):
             metplus_configs=['MODE_INTEREST_FUNCTION_CENTROID_DIST'],
             extra_args={
                 'remove_quotes': True,
-                'default': self.DEFAULT_VALUES.get(
-                    'INTEREST_FUNCTION_CENTROID_DIST'
-                )
+                'default': defaults.get('INTEREST_FUNCTION_CENTROID_DIST')
             }
         )
         self.add_met_config(
@@ -291,9 +296,7 @@ class MODEWrapper(CompareGriddedWrapper):
             metplus_configs=['MODE_INTEREST_FUNCTION_BOUNDARY_DIST'],
             extra_args={
                 'remove_quotes': True,
-                'default': self.DEFAULT_VALUES.get(
-                    'INTEREST_FUNCTION_BOUNDARY_DIST'
-                )
+                'default': defaults.get('INTEREST_FUNCTION_BOUNDARY_DIST')
             }
         )
         self.add_met_config(
@@ -303,9 +306,7 @@ class MODEWrapper(CompareGriddedWrapper):
             metplus_configs=['MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST'],
             extra_args={
                 'remove_quotes': True,
-                'default': self.DEFAULT_VALUES.get(
-                    'INTEREST_FUNCTION_CONVEX_HULL_DIST'
-                )
+                'default': defaults.get('INTEREST_FUNCTION_CONVEX_HULL_DIST')
             }
         )
 
