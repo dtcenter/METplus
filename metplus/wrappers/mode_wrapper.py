@@ -38,6 +38,7 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_MASK_POLY',
         'METPLUS_MASK_DICT',
         'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_GRID_RES',
         'METPLUS_FCST_FILTER_ATTR_NAME',
         'METPLUS_FCST_FILTER_ATTR_THRESH',
         'METPLUS_FCST_CENSOR_THRESH',
@@ -151,7 +152,8 @@ class MODEWrapper(CompareGriddedWrapper):
                                       'MODE_CONV_RADIUS'],
                                      'conv_radius',
                                      f'METPLUS_{data_type}_CONV_RADIUS',
-                                     remove_quotes=True)
+                                     remove_quotes=True,
+                                     default='60.0/grid_res')
 
             self.set_met_config_list(self.env_var_dict,
                                      [f'{data_type}_MODE_CONV_THRESH',
@@ -243,25 +245,33 @@ class MODEWrapper(CompareGriddedWrapper):
         self.add_met_config(name='max_centroid_dist',
                             data_type='string',
                             metplus_configs=['MODE_MAX_CENTROID_DIST'],
-                            extra_args={'remove_quotes': True})
+                            extra_args={'remove_quotes': True,
+                                        'default': '800.0/grid_res'})
 
         self.set_met_config_string(self.env_var_dict,
                                    ['MODE_INTEREST_FUNCTION_CENTROID_DIST'],
                                    'centroid_dist',
                                    'METPLUS_INTEREST_FUNCTION_CENTROID_DIST',
-                                   remove_quotes=True)
+                                   remove_quotes=True,
+                                   default=('((0.0,1.0)'
+                                            '(60.0/grid_res,1.0)'
+                                            '(600.0/grid_res,0.0))'))
 
         self.set_met_config_string(self.env_var_dict,
                                    ['MODE_INTEREST_FUNCTION_BOUNDARY_DIST'],
                                    'boundary_dist',
                                    'METPLUS_INTEREST_FUNCTION_BOUNDARY_DIST',
-                                   remove_quotes=True)
+                                   remove_quotes=True,
+                                   default=('((0.0,1.0)'
+                                            '(400.0/grid_res,0.0))'))
 
         self.set_met_config_string(self.env_var_dict,
                                    ['MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST'],
                                    'convex_hull_dist',
                                    'METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST',
-                                   remove_quotes=True)
+                                   remove_quotes=True,
+                                   default=('((0.0,1.0)'
+                                            '(400.0/grid_res,0.0))'))
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 

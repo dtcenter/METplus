@@ -33,11 +33,8 @@ ${METPLUS_REGRID_DICT}
 //
 // Approximate grid resolution (km)
 //
-// Note: grid_res is not used in the wrapped MODE config file
-//  MODE_GRID_RES can be set in the METplus config files and
-//  and referenced in any variable overrides that reference grid_res in the
-//  default file: share/met/config/MODEConfig_default
-// See parm/use_cases/met_tool_wrapper/MODE/MODE.conf for an example
+// grid_res =
+${METPLUS_GRID_RES}
 
 ////////////////////////////////////////////////////////////////////////////////
 
