@@ -1849,6 +1849,8 @@ Configuration
 | :term:`MODE_MAX_CENTROID_DIST`
 | :term:`MODE_TOTAL_INTEREST_THRESH`
 | :term:`MODE_INTEREST_FUNCTION_CENTROID_DIST`
+| :term:`MODE_INTEREST_FUNCTION_BOUNDARY_DIST`
+| :term:`MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST`
 | :term:`FCST_MODE_VAR<n>_NAME` (optional)
 | :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MODE_VAR<n>_THRESH` (optional)
@@ -2322,6 +2324,28 @@ Below the file contents are descriptions of each environment variable referenced
      - MET Config File
    * - :term:`MODE_INTEREST_FUNCTION_CENTROID_DIST`
      - interest_function.centroid_dist
+
+**${METPLUS_INTEREST_FUNCTION_BOUNDARY_DIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_INTEREST_FUNCTION_BOUNDARY_DIST`
+     - interest_function.boundary_dist
+
+**${METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST`
+     - interest_function.convex_hull_dist
 
 **${METPLUS_TOTAL_INTEREST_THRESH}**
 

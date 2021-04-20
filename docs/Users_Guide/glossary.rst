@@ -6529,3 +6529,13 @@ METplus Configuration Glossary
      Specify the value for 'interest_function.centroid_dist' in the MET configuration file for MODE.
 
      | *Used by:* MODE
+
+   MODE_INTEREST_FUNCTION_BOUNDARY_DIST
+     Specify the value for 'interest_function.boundary_dist' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST
+     Specify the value for 'interest_function.convex_hull_dist' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
