@@ -2061,10 +2061,14 @@ class CommandBuilder:
         if output_dict is None:
             output_dict = self.env_var_dict
 
+        env_var_name = item.env_var_name.upper()
+        if not env_var_name.startswith('METPLUS_'):
+            env_var_name = f'METPLUS_{env_var_name}'
+
         set_met_config(output_dict,
                        item.metplus_configs,
                        item.name,
-                       c_dict_key=f'METPLUS_{item.name.upper()}',
+                       c_dict_key=env_var_name,
                        **item.extra_args)
         return True
 
@@ -2095,6 +2099,8 @@ class CommandBuilder:
               arguments, which includes the following:
              @param name MET config variable name to set
              @param data_type type of variable to set, i.e. string, list, bool
+             @param env_var_name environment variable name to set (uses
+              name if not set) with or without METPLUS_ prefix
              @param metplus_configs variables from METplus config that should
               be read to get the value. This can be a list of variable names
               in order of precedence (first variable is used if it is set,
