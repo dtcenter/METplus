@@ -82,6 +82,19 @@ class MODEWrapper(CompareGriddedWrapper):
         'polylines',
     ]
 
+    DEFAULT_VALUES = {
+        'FCST_CONV_RADIUS': '60.0/grid_res',
+        'OBS_CONV_RADIUS': '60.0/grid_res',
+        'MAX_CENTROID_DIST': '800.0/grid_res',
+        'INTEREST_FUNCTION_CENTROID_DIST': ('((0.0,1.0)'
+                                            '(60.0/grid_res,1.0)'
+                                            '(600.0/grid_res,0.0))'),
+        'INTEREST_FUNCTION_BOUNDARY_DIST': ('((0.0,1.0)'
+                                            '(400.0/grid_res,0.0))'),
+        'INTEREST_FUNCTION_CONVEX_HULL_DIST': ('((0.0,1.0)'
+                                               '(400.0/grid_res,0.0))'),
+    }
+
     def __init__(self, config, instance=None, config_overrides={}):
         # only set app variables if not already set by MTD (subclass)
         if not hasattr(self, 'app_name'):
@@ -150,13 +163,15 @@ class MODEWrapper(CompareGriddedWrapper):
                                  'METPLUS_QUILT')
 
         for data_type in ['FCST', 'OBS']:
-            self.set_met_config_list(self.env_var_dict,
-                                     [f'{data_type}_MODE_CONV_RADIUS',
-                                      'MODE_CONV_RADIUS'],
-                                     'conv_radius',
-                                     f'METPLUS_{data_type}_CONV_RADIUS',
-                                     remove_quotes=True,
-                                     default='60.0/grid_res')
+            self.set_met_config_list(
+                self.env_var_dict,
+                [f'{data_type}_MODE_CONV_RADIUS',
+                 'MODE_CONV_RADIUS'],
+                'conv_radius',
+                f'METPLUS_{data_type}_CONV_RADIUS',
+                remove_quotes=True,
+                default=self.DEFAULT_VALUES.get(f'{data_type}_CONV_RADIUS'),
+            )
 
             self.set_met_config_list(self.env_var_dict,
                                      [f'{data_type}_MODE_CONV_THRESH',
@@ -245,36 +260,51 @@ class MODEWrapper(CompareGriddedWrapper):
                             data_type='float',
                             metplus_configs=['MODE_TOTAL_INTEREST_THRESH'])
 
-        self.add_met_config(name='max_centroid_dist',
-                            data_type='string',
-                            metplus_configs=['MODE_MAX_CENTROID_DIST'],
-                            extra_args={'remove_quotes': True,
-                                        'default': '800.0/grid_res'})
-
-        self.set_met_config_string(self.env_var_dict,
-                                   ['MODE_INTEREST_FUNCTION_CENTROID_DIST'],
-                                   'centroid_dist',
-                                   'METPLUS_INTEREST_FUNCTION_CENTROID_DIST',
-                                   remove_quotes=True,
-                                   default=('((0.0,1.0)'
-                                            '(60.0/grid_res,1.0)'
-                                            '(600.0/grid_res,0.0))'))
-
-        self.set_met_config_string(self.env_var_dict,
-                                   ['MODE_INTEREST_FUNCTION_BOUNDARY_DIST'],
-                                   'boundary_dist',
-                                   'METPLUS_INTEREST_FUNCTION_BOUNDARY_DIST',
-                                   remove_quotes=True,
-                                   default=('((0.0,1.0)'
-                                            '(400.0/grid_res,0.0))'))
-
-        self.set_met_config_string(self.env_var_dict,
-                                   ['MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST'],
-                                   'convex_hull_dist',
-                                   'METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST',
-                                   remove_quotes=True,
-                                   default=('((0.0,1.0)'
-                                            '(400.0/grid_res,0.0))'))
+        self.add_met_config(
+            name='max_centroid_dist',
+            data_type='string',
+            metplus_configs=['MODE_MAX_CENTROID_DIST'],
+            extra_args={
+                'remove_quotes': True,
+                'default': self.DEFAULT_VALUES.get('MAX_CENTROID_DIST')
+            }
+        )
+        self.add_met_config(
+            name='centroid_dist',
+            data_type='string',
+            env_var_name='INTEREST_FUNCTION_CENTROID_DIST',
+            metplus_configs=['MODE_INTEREST_FUNCTION_CENTROID_DIST'],
+            extra_args={
+                'remove_quotes': True,
+                'default': self.DEFAULT_VALUES.get(
+                    'INTEREST_FUNCTION_CENTROID_DIST'
+                )
+            }
+        )
+        self.add_met_config(
+            name='boundary_dist',
+            data_type='string',
+            env_var_name='INTEREST_FUNCTION_BOUNDARY_DIST',
+            metplus_configs=['MODE_INTEREST_FUNCTION_BOUNDARY_DIST'],
+            extra_args={
+                'remove_quotes': True,
+                'default': self.DEFAULT_VALUES.get(
+                    'INTEREST_FUNCTION_BOUNDARY_DIST'
+                )
+            }
+        )
+        self.add_met_config(
+            name='convex_hull_dist',
+            data_type='string',
+            env_var_name='INTEREST_FUNCTION_CONVEX_HULL_DIST',
+            metplus_configs=['MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST'],
+            extra_args={
+                'remove_quotes': True,
+                'default': self.DEFAULT_VALUES.get(
+                    'INTEREST_FUNCTION_CONVEX_HULL_DIST'
+                )
+            }
+        )
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
