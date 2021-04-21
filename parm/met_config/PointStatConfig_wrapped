@@ -96,7 +96,7 @@ climo_mean = {
       shape      = SQUARE;
    }
 
-   time_interp_method = DW_MEAN;
+   time_interp_method = NEAREST;
    day_interval       = 31;
    hour_interval      = 6;
 }
@@ -170,8 +170,8 @@ interp = {
 
    type = [
       {
-         method = NEAREST;
-         width  = 1;
+         method = BILIN;
+         width  = 2;
       }
    ];
 }
