@@ -9,12 +9,14 @@
 //
 // Output model name to be written
 //
+// model =
 ${METPLUS_MODEL}
 
 //
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
+// desc =
 ${METPLUS_DESC}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -22,6 +24,7 @@ ${METPLUS_DESC}
 //
 // Verification grid
 //
+// regrid = {
 ${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,6 +58,7 @@ obs = {
 // Point observation filtering options
 // May be set separately in each "obs.field" entry
 //
+// message_type =
 ${METPLUS_MESSAGE_TYPE}
 sid_exc        = [];
 //obs_quality =
@@ -110,7 +114,6 @@ climo_stdev = {
    }
 
    time_interp_method = DW_MEAN;
-   match_month        = TRUE;
    day_interval       = 31;
    hour_interval      = 6;
 }
@@ -126,6 +129,7 @@ ${METPLUS_CLIMO_CDF_DICT}
 //
 // Point observation time window
 //
+// obs_window = {
 ${METPLUS_OBS_WINDOW_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -196,8 +200,9 @@ ${METPLUS_OUTPUT_FLAG_DICT}
 ////////////////////////////////////////////////////////////////////////////////
 
 tmp_dir        = "/tmp";
+// output_prefix =
 ${METPLUS_OUTPUT_PREFIX}
-//version        = "V9.0";
+//version        = "V10.0.0";
 
 ////////////////////////////////////////////////////////////////////////////////
 
