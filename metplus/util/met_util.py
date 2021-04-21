@@ -888,8 +888,26 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
 
     return time_t
 
-def get_start_end_interval_times(config):
-    clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
+def get_start_end_interval_times(config, warn=False):
+    """! Reads the METplusConfig object to determine the start, end, and
+      increment values based on the configuration. Based on the LOOP_BY value,
+      it will read the INIT_ or VALID_ variables TIME_FMT, BEG, END, and
+      INCREMENT and use the time format value to parse the other values.
+
+        @param config METplusConfig object to parse
+        @parm warn (optional) if True, output warnings instead of errors
+        @returns tuple of start time (datetime), end time (datetime) and
+        increment (dateutil.relativedelta) or all None values if time info
+        could not be parsed properly
+    """
+    # set function to send log messages (warning or error)
+    if warn:
+        log_function = config.logger.warning
+    else:
+        log_function = config.logger.error
+
+    clock_time_obj = datetime.datetime.strptime(config.getstr('config',
+                                                              'CLOCK_TIME'),
                                                 '%Y%m%d%H%M%S')
     use_init = is_loop_by_init(config)
     if use_init is None:
@@ -913,21 +931,23 @@ def get_start_end_interval_times(config):
     start_time = get_time_obj(start_t, time_format,
                              clock_time_obj, config.logger)
     if not start_time:
-        config.logger.error("Could not format start time")
+        log_function("Could not format start time")
         return None, None, None
 
     end_time = get_time_obj(end_t, time_format,
                             clock_time_obj, config.logger)
     if not end_time:
-        config.logger.error("Could not format end time")
+        log_function("Could not format end time")
         return None, None, None
 
-    if start_time + time_interval < start_time + datetime.timedelta(seconds=60):
-        config.logger.error("[INIT/VALID]_INCREMENT must be greater than or equal to 60 seconds")
+    if (start_time + time_interval <
+            start_time + datetime.timedelta(seconds=60)):
+        log_function('[INIT/VALID]_INCREMENT must be greater than or '
+                     'equal to 60 seconds')
         return None, None, None
 
     if start_time > end_time:
-        config.logger.error("Start time must come before end time")
+        log_function("Start time must come before end time")
         return None, None, None
 
     return start_time, end_time, time_interval
