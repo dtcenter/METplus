@@ -99,7 +99,7 @@ Use Cases by Organization:
    | `NOAA Hazardous Weather Testbed (HWT)  <https://metplus.readthedocs.io/en/develop/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_
    | `State University of New York-Stony Brook University (SUNY-SBU)  <https://metplus.readthedocs.io/en/develop/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
 
-. only:: latex
+.. only:: latex
 
    | **Developmental Testbed Center (DTC)**: *DTCOrgUseCase*
    | **National Center for Atmospheric Research (NCAR)**: *NCAROrgUseCase*
