@@ -3,34 +3,59 @@ METplus Quick Search for Use Cases
 
 .. only:: latex
 
-   .. warning:: The links in this section are used only with the online version of this user guide.
+   .. note:: Use the *keyword* after each **Use Case** to find matches in the PDF version of the User Guide.
 
 
 Use Cases by MET Tool:
 ----------------------
 
-| `ASCII2NC <https://dtcenter.github.io/METplus/develop/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
-| `CyclonePlotter <https://dtcenter.github.io/METplus/develop/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
-| `EnsembleStat <https://dtcenter.github.io/METplus/develop/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_
-| `GenVxMask <https://dtcenter.github.io/METplus/develop/search.html?q=GenVxMaskToolUseCase&check_keywords=yes&area=default>`_
-| `GridStat <https://dtcenter.github.io/METplus/develop/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
-| `GridDiag <https://dtcenter.github.io/METplus/develop/search.html?q=GridDiagToolUseCase&check_keywords=yes&area=default>`_
-| `MODE <https://dtcenter.github.io/METplus/develop/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
-| `MTD <https://dtcenter.github.io/METplus/develop/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_
-| `PB2NC <https://dtcenter.github.io/METplus/develop/search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_
-| `PCPCombine <https://dtcenter.github.io/METplus/develop/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_
-| `Point2Grid <https://dtcenter.github.io/METplus/develop/search.html?q=Point2GridToolUseCase&check_keywords=yes&area=default>`_
-| `PlotDataPlane <https://dtcenter.github.io/METplus/develop/search.html?q=PlotDataPlaneToolUseCase&check_keywords=yes&area=default>`_
-| `PointStat <https://dtcenter.github.io/METplus/develop/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
-| `RegridDataPlane <https://dtcenter.github.io/METplus/develop/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
-| `SeriesAnalysis <https://dtcenter.github.io/METplus/develop/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
-| `StatAnalysis <https://dtcenter.github.io/METplus/develop/search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
-| `TCMPRPlotter <https://dtcenter.github.io/METplus/develop/search.html?q=TCMPRPlotterUseCase&check_keywords=yes&area=default>`_
-| `TCGen <https://dtcenter.github.io/METplus/develop/search.html?q=TCGenToolUseCase&check_keywords=yes&area=default>`_
-| `TCPairs <https://dtcenter.github.io/METplus/develop/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_
-| `TCRMW <https://dtcenter.github.io/METplus/develop/search.html?q=TCRMWToolUseCase&check_keywords=yes&area=default>`_
-| `TCStat <https://dtcenter.github.io/METplus/develop/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_
+.. only:: html
 
+   | `ASCII2NC: *ASCII2NCToolUseCase* <https://metplus.readthedocs.io/en/develop/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
+   | `CyclonePlotter <https://metplus.readthedocs.io/en/develop/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
+   | `EnsembleStat <https://metplus.readthedocs.io/en/develop/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_
+   | `GenVxMask <https://metplus.readthedocs.io/en/develop/search.html?q=GenVxMaskToolUseCase&check_keywords=yes&area=default>`_
+   | `GridStat <https://metplus.readthedocs.io/en/develop/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
+   | `GridDiag <https://metplus.readthedocs.io/en/develop/search.html?q=GridDiagToolUseCase&check_keywords=yes&area=default>`_
+   | `MODE <https://metplus.readthedocs.io/en/develop/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
+   | `MTD <https://metplus.readthedocs.io/en/develop/search.html?q=MTDToolUseCase&check_keywords=yes&area=default>`_
+   | `PB2NC <https://metplus.readthedocs.io/en/develop/search.html?q=PB2NCToolUseCase&check_keywords=yes&area=default>`_
+   | `PCPCombine <https://metplus.readthedocs.io/en/develop/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_
+   | `Point2Grid <https://metplus.readthedocs.io/en/develop/search.html?q=Point2GridToolUseCase&check_keywords=yes&area=default>`_
+   | `PlotDataPlane <https://metplus.readthedocs.io/en/develop/search.html?q=PlotDataPlaneToolUseCase&check_keywords=yes&area=default>`_
+   | `PointStat <https://metplus.readthedocs.io/en/develop/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
+   | `RegridDataPlane <https://metplus.readthedocs.io/en/develop/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
+   | `SeriesAnalysis <https://metplus.readthedocs.io/en/develop/search.html?q=SeriesAnalysisUseCase&check_keywords=yes&area=default>`_
+   | `StatAnalysis <https://metplus.readthedocs.io/en/develop/search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
+   | `TCMPRPlotter <https://metplus.readthedocs.io/en/develop/search.html?q=TCMPRPlotterUseCase&check_keywords=yes&area=default>`_
+   | `TCGen <https://metplus.readthedocs.io/en/develop/search.html?q=TCGenToolUseCase&check_keywords=yes&area=default>`_
+   | `TCPairs <https://metplus.readthedocs.io/en/develop/search.html?q=TCPairsToolUseCase&check_keywords=yes&area=default>`_
+   | `TCRMW <https://metplus.readthedocs.io/en/develop/search.html?q=TCRMWToolUseCase&check_keywords=yes&area=default>`_
+   | `TCStat <https://metplus.readthedocs.io/en/develop/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_
+
+.. only:: latex
+
+   **ASCII2NC**: *ASCII2NCToolUseCase*
+   **CyclonePlotter**: *CyclonePlotterUseCase*
+   **EnsembleStat**: *EnsembleStatToolUseCase*
+   **GenVxMask**: *GenVxMaskToolUseCase*
+   **GridStat**: *GridStatToolUseCase*
+   **GridDiag**: *GridDiagToolUseCase*
+   **MODE**: *MODEToolUseCase*
+   **MTD**: *MTDToolUseCase*
+   **PB2NC**: *PB2NCToolUseCase*
+   **PCPCombine**: *PCPCombineToolUseCase*
+   **Point2Grid**: *Point2GridToolUseCase*
+   **PlotDataPlane**: *PlotDataPlaneToolUseCase*
+   **PointStat**: *PointStatToolUseCase*
+   **RegridDataPlane**: *RegridDataPlaneToolUseCase*
+   **SeriesAnalysis**: *SeriesAnalysisUseCase*
+   **StatAnalysis**: *StatAnalysisToolUseCase*
+   **TCMPRPlotter**: *TCMPRPlotterUseCase*
+   **TCGen**: *TCGenToolUseCase*
+   **TCPairs**: *TCPairsToolUseCase*
+   **TCRMW**: *TCRMWToolUseCase*
+   **TCStat**: *TCStatToolUseCase*
 
 Use Cases by Application:
 -------------------------
