@@ -155,8 +155,23 @@ climo_mean = {
    ${METPLUS_CLIMO_MEAN_HOUR_INTERVAL}
 }
 
-climo_stdev = climo_mean;
-${METPLUS_CLIMO_STDEV_FILE}
+climo_stdev = {
+
+   ${METPLUS_CLIMO_STDEV_FILE}
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape	 = SQUARE;
+   }
+
+   time_interp_method = DW_MEAN;
+   match_month        = TRUE;
+   day_interval       = 31;
+   hour_interval      = 6;
+}
 
 
 //
