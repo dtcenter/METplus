@@ -69,11 +69,6 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx_gallery.gen_gallery',
              ]
 
-# To enable PDF generation, set METPLUS_DOC_PDF environment variable
-#  sphinx 2.4.2+ and rst2pdf packages are required
-if os.environ.get('METPLUS_DOC_PDF'):
-    extensions.append('rst2pdf.pdfbuilder')
-
 # settings for ReadTheDocs PDF creation
 latex_engine = 'pdflatex'
 latex_theme = 'manual'
@@ -123,27 +118,6 @@ latex_documents = [
      'manual')
 ]
     
-# used for generating PDF
-pdf_documents = [('index',
-                  f'METplus_Users_Guide_v{version}',
-                  'METplus User\'s Guide',
-                  ('George McCabe\\'
-                   'Dan Adriaansen\\'
-                   'Minna Win-Gildenmeister\\'
-                   'Julie Prestopnik\\'
-                   'Jim Frimel\\'
-                   'John Opatz\\'
-                   'John Halley Gotway\\'
-                   'Tara Jensen\\'
-                   'Jonathan Vigh\\'
-                   'Mallory Row\\'
-                   'Christana Kalb\\'
-                   'Hank Fisher\\'
-                   'Lisa Goodrich\\'
-                   'Lindsay Blank\\'
-                   'Todd Arbetter\\'
-                   )),]
-
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
