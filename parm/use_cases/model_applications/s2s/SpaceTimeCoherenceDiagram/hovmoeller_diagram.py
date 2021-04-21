@@ -9,7 +9,6 @@ import sys
 import logging
 import yaml
 import xarray as xr  # http://xarray.pydata.org/
-#import METplotpy.metplotpy.plots.hovmoeller.hovmoeller as Hovmoeller
 import metplotpy.plots.hovmoeller.hovmoeller as Hovmoeller
 
 
@@ -25,7 +24,7 @@ def main():
     data_dir = os.environ.get("METplus_DATA_DIR","/d2/METplus_Data")
     input_file_name = os.environ.get("INPUT_FILE_NAME","precip.erai.sfc.1p0.2x.2014-2016.nc")
     plot_config_file = os.path.join(os.getenv("METPLOTPY_BASE","/d2/METplotpy/metplotpy"), "plots", "config", "hovmoeller_defaults.yaml")
-    input_file = os.path.join(data_dir,"model_applications","s2s","SpaceTimeCoherenceDiagram",input_file_name)
+    input_file = input_file_name
 
     """
     Read Hovmoeller YAML configuration file
