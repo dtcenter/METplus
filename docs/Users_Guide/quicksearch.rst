@@ -3,7 +3,7 @@ METplus Quick Search for Use Cases
 
 .. only:: pdf
 
-   **Note: the quick searches listed in this section are intended to be used only with the HTML version of this manual. They are listed here for reference only.**
+   Note: the quick searches listed here are used on with the online version of this user guide.
 
 
 Use Cases by MET Tool:
