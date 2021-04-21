@@ -21,7 +21,6 @@ def main():
     """
     Read METplus config file paramaters
     """
-    data_dir = os.environ.get("METplus_DATA_DIR","/d2/METplus_Data")
     input_file_name = os.environ.get("INPUT_FILE_NAME","precip.erai.sfc.1p0.2x.2014-2016.nc")
     plot_config_file = os.path.join(os.getenv("METPLOTPY_BASE","/d2/METplotpy/metplotpy"), "plots", "config", "hovmoeller_defaults.yaml")
     input_file = input_file_name
@@ -43,12 +42,6 @@ def main():
     logfile = "Hovmoeller_diagram.log"
     logging_level = os.environ.get("LOG_LEVEL","logging.INFO")
     logging.basicConfig(stream=logfile, level=logging_level)
-
-    if os.path.isdir(data_dir):
-        logging.info(data_dir)
-    else:
-        logging.error(data_dir + ' not found')
-        sys.exit(1)
 
     # Plot and save difficulty index figures
     """
