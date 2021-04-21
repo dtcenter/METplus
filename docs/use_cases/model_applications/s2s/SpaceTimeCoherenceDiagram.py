@@ -3,7 +3,7 @@ UserScript: Make a Hovmoeller plot
 ========================================================================
 
 s2s/SpaceTimeCoherenceDiagram
-Hovmoeller.conf
+Hovmoeller.py
 
 """
 
