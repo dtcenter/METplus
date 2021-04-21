@@ -3,7 +3,7 @@ METplus Quick Search for Use Cases
 
 .. only:: latex
 
-   .. note:: Use the *keyword* after each **use case type** to search for matches in the PDF version of the Users Guide.
+   .. note:: Use the *Keyword* after each **Use Case Type** to search for matches in the PDF version of this User's Guide.
 
 
 Use Cases by MET Tool:
@@ -89,15 +89,15 @@ Use Cases by Organization:
 
 .. only:: html
 
-   | `Developmental Testbed Center (DTC)  <https://metplus.readthedocs.io/en/develop/search.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_
-   | `National Center for Atmospheric Research (NCAR)  <https://metplus.readthedocs.io/en/develop/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
-   | `NOAA Weather Prediction Center (WPC)  <https://metplus.readthedocs.io/en/develop/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_
-   | `NOAA Space Weather Prediction Center (SWPC)  <https://metplus.readthedocs.io/en/develop/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_
-   | `NOAA Environmental Modeling Center (EMC)  <https://metplus.readthedocs.io/en/develop/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_
-   | `NOAA Global Systems Laboratory (GSL)  <https://metplus.readthedocs.io/en/develop/search.html?q=NOAAGSLOrgUseCase&check_keywords=yes&area=default>`_
-   | `NOAA Hydrometeorology Testbed (HMT)  <https://metplus.readthedocs.io/en/develop/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_
-   | `NOAA Hazardous Weather Testbed (HWT)  <https://metplus.readthedocs.io/en/develop/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_
-   | `State University of New York-Stony Brook University (SUNY-SBU)  <https://metplus.readthedocs.io/en/develop/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
+   | `Developmental Testbed Center (DTC) <https://metplus.readthedocs.io/en/develop/search.html?q=DTCOrgUseCase&check_keywords=yes&area=default>`_
+   | `National Center for Atmospheric Research (NCAR) <https://metplus.readthedocs.io/en/develop/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
+   | `NOAA Weather Prediction Center (WPC) <https://metplus.readthedocs.io/en/develop/search.html?q=NOAAWPCOrgUseCase&check_keywords=yes&area=default>`_
+   | `NOAA Space Weather Prediction Center (SWPC) <https://metplus.readthedocs.io/en/develop/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_
+   | `NOAA Environmental Modeling Center (EMC) <https://metplus.readthedocs.io/en/develop/search.html?q=NOAAEMCOrgUseCase&check_keywords=yes&area=default>`_
+   | `NOAA Global Systems Laboratory (GSL) <https://metplus.readthedocs.io/en/develop/search.html?q=NOAAGSLOrgUseCase&check_keywords=yes&area=default>`_
+   | `NOAA Hydrometeorology Testbed (HMT) <https://metplus.readthedocs.io/en/develop/search.html?q=NOAAHMTOrgUseCase&check_keywords=yes&area=default>`_
+   | `NOAA Hazardous Weather Testbed (HWT) <https://metplus.readthedocs.io/en/develop/search.html?q=NOAAHWTOrgUseCase&check_keywords=yes&area=default>`_
+   | `State University of New York-Stony Brook University (SUNY-SBU) <https://metplus.readthedocs.io/en/develop/search.html?q=SBUOrgUseCase&check_keywords=yes&area=default>`_
 
 .. only:: latex
 
@@ -121,22 +121,22 @@ Use Cases by METplus Feature:
    | `Diagnostics <https://metplus.readthedocs.io/en/develop/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
    | `Feature Relative  <https://metplus.readthedocs.io/en/develop/search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_
    | `GempakToCF <https://metplus.readthedocs.io/en/develop/search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_
-   | `Looping by Month or Year  <https://metplus.readthedocs.io/en/develop/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
-   | `List Expansion (using begin_end_incr syntax)  <https://metplus.readthedocs.io/en/develop/search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
+   | `Looping by Month or Year <https://metplus.readthedocs.io/en/develop/search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
+   | `List Expansion (using begin_end_incr syntax) <https://metplus.readthedocs.io/en/develop/search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
    | `Masking for Regions of Interest <https://metplus.readthedocs.io/en/develop/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
    | `MET_PYTHON_EXE Environment Variable  <https://metplus.readthedocs.io/en/develop/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
    | `Multiple Conf File Use <https://metplus.readthedocs.io/en/develop/search.html?q=MultiConfUseCase&check_keywords=yes&area=default>`_
    | `Observation Time Summary <https://metplus.readthedocs.io/en/develop/search.html?q=ObsTimeSummaryUseCase&check_keywords=yes&area=default>`_
    | `Observation Uncertainty <https://metplus.readthedocs.io/en/develop/search.html?q=ObsUncertaintyUseCase&check_keywords=yes&area=default>`_
    | `Python Embedding Ingest <https://metplus.readthedocs.io/en/develop/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_
-   | `Probability Generation  <https://metplus.readthedocs.io/en/develop/search.html?q=ProbabilityGenerationUseCase&check_keywords=yes&area=default>`_
-   | `Probability Verification  <https://metplus.readthedocs.io/en/develop/search.html?q=ProbabilityVerificationUseCase&check_keywords=yes&area=default>`_
+   | `Probability Generation <https://metplus.readthedocs.io/en/develop/search.html?q=ProbabilityGenerationUseCase&check_keywords=yes&area=default>`_
+   | `Probability Verification <https://metplus.readthedocs.io/en/develop/search.html?q=ProbabilityVerificationUseCase&check_keywords=yes&area=default>`_
    | `Regridding in Tool <https://metplus.readthedocs.io/en/develop/search.html?q=RegriddingInToolUseCase&check_keywords=yes&area=default>`_
    | `Revision Series <https://metplus.readthedocs.io/en/develop/search.html?q=RevisionSeriesUseCase&check_keywords=yes&area=default>`_
    | `Runtime Frequency <https://metplus.readthedocs.io/en/develop/search.html?q=RuntimeFreqUseCase&check_keywords=yes&area=default>`_
-   | `Series by Initialization  <https://metplus.readthedocs.io/en/develop/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
-   | `Series by Forecast Lead  <https://metplus.readthedocs.io/en/develop/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
-   | `Validation of Models or Analyses  <https://metplus.readthedocs.io/en/develop/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
+   | `Series by Initialization <https://metplus.readthedocs.io/en/develop/search.html?q=SeriesByInitUseCase&check_keywords=yes&area=default>`_
+   | `Series by Forecast Lead <https://metplus.readthedocs.io/en/develop/search.html?q=SeriesByLeadUseCase&check_keywords=yes&area=default>`_
+   | `Validation of Models or Analyses <https://metplus.readthedocs.io/en/develop/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
    | `User Defined Script <https://metplus.readthedocs.io/en/develop/search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_
 
 .. only:: latex
@@ -170,18 +170,18 @@ Use cases by File Format:
 
 .. only:: html
 
-   | `GEMPAK  <https://metplus.readthedocs.io/en/develop/search.html?q=GEMPAKFileUseCase&check_keywords=yes&area=default>`_
-   | `GRIB  <https://metplus.readthedocs.io/en/develop/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_
-   | `GRIB2  <https://metplus.readthedocs.io/en/develop/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_
-   | `NetCDF  <https://metplus.readthedocs.io/en/develop/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_
-   | `Python Embedding  <https://metplus.readthedocs.io/en/develop/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
-   | `prepBUFR  <https://metplus.readthedocs.io/en/develop/search.html?q=prepBUFRFileUseCase&check_keywords=yes&area=default>`_
+   | `GEMPAK <https://metplus.readthedocs.io/en/develop/search.html?q=GEMPAKFileUseCase&check_keywords=yes&area=default>`_
+   | `GRIB <https://metplus.readthedocs.io/en/develop/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_
+   | `GRIB2 <https://metplus.readthedocs.io/en/develop/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_
+   | `NetCDF <https://metplus.readthedocs.io/en/develop/search.html?q=NetCDFFileUseCase&check_keywords=yes&area=default>`_
+   | `Python Embedding <https://metplus.readthedocs.io/en/develop/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
+   | `prepBUFR <https://metplus.readthedocs.io/en/develop/search.html?q=prepBUFRFileUseCase&check_keywords=yes&area=default>`_
 
 .. only:: latex
 
-   | **GEMPAK: *GEMPAKFileUseCase*
-   | **GRIB: *GRIBFileUseCase*
-   | **GRIB2: *GRIB2FileUseCase*
-   | **NetCDF: *NetCDFFileUseCase*
-   | **Python Embedding: *PythonEmbeddingFileUseCase*
-   | **prepBUFR: *prepBUFRFileUseCase*
+   | **GEMPAK**: *GEMPAKFileUseCase*
+   | **GRIB**: *GRIBFileUseCase*
+   | **GRIB2**: *GRIB2FileUseCase*
+   | **NetCDF**: *NetCDFFileUseCase*
+   | **Python Embedding**: *PythonEmbeddingFileUseCase*
+   | **prepBUFR**: *prepBUFRFileUseCase*
