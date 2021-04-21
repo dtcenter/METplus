@@ -3,7 +3,7 @@ METplus Quick Search for Use Cases
 
 .. only:: latex
 
-   Note: the quick searches listed here are used on with the online version of this user guide.
+   .. warning:: The links in this section are used only with the online version of this user guide.
 
 
 Use Cases by MET Tool:
