@@ -861,7 +861,7 @@ def is_loop_by_init(config):
 
     return None
 
-def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
+def get_time_obj(time_from_conf, fmt, clock_time, logger=None, warn=False):
     """!Substitute today or now into [INIT/VALID]_[BEG/END] if used
         Args:
             @param time_from_conf value from [INIT/VALID]_[BEG/END] that
@@ -880,7 +880,10 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
         error_message = (f"[INIT/VALID]_TIME_FMT ({fmt}) does not match "
                          f"[INIT/VALID]_[BEG/END] ({time_str})")
         if logger:
-            logger.error(error_message)
+            if warn:
+                logger.warning(error_message)
+            else:
+                logger.error(error_message)
         else:
             print(f"ERROR: {error_message}")
 
@@ -929,13 +932,15 @@ def get_start_end_interval_times(config, warn=False):
         )
 
     start_time = get_time_obj(start_t, time_format,
-                             clock_time_obj, config.logger)
+                              clock_time_obj, config.logger,
+                              warn=warn)
     if not start_time:
         log_function("Could not format start time")
         return None, None, None
 
     end_time = get_time_obj(end_t, time_format,
-                            clock_time_obj, config.logger)
+                            clock_time_obj, config.logger,
+                            warn=warn)
     if not end_time:
         log_function("Could not format end time")
         return None, None, None
