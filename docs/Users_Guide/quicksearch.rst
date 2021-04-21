@@ -11,7 +11,7 @@ Use Cases by MET Tool:
 
 .. only:: html
 
-   | `ASCII2NC: *ASCII2NCToolUseCase* <https://metplus.readthedocs.io/en/develop/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
+   | `ASCII2NC <https://metplus.readthedocs.io/en/develop/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
    | `CyclonePlotter <https://metplus.readthedocs.io/en/develop/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
    | `EnsembleStat <https://metplus.readthedocs.io/en/develop/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_
    | `GenVxMask <https://metplus.readthedocs.io/en/develop/search.html?q=GenVxMaskToolUseCase&check_keywords=yes&area=default>`_
@@ -35,27 +35,27 @@ Use Cases by MET Tool:
 
 .. only:: latex
 
-   **ASCII2NC**: *ASCII2NCToolUseCase*
-   **CyclonePlotter**: *CyclonePlotterUseCase*
-   **EnsembleStat**: *EnsembleStatToolUseCase*
-   **GenVxMask**: *GenVxMaskToolUseCase*
-   **GridStat**: *GridStatToolUseCase*
-   **GridDiag**: *GridDiagToolUseCase*
-   **MODE**: *MODEToolUseCase*
-   **MTD**: *MTDToolUseCase*
-   **PB2NC**: *PB2NCToolUseCase*
-   **PCPCombine**: *PCPCombineToolUseCase*
-   **Point2Grid**: *Point2GridToolUseCase*
-   **PlotDataPlane**: *PlotDataPlaneToolUseCase*
-   **PointStat**: *PointStatToolUseCase*
-   **RegridDataPlane**: *RegridDataPlaneToolUseCase*
-   **SeriesAnalysis**: *SeriesAnalysisUseCase*
-   **StatAnalysis**: *StatAnalysisToolUseCase*
-   **TCMPRPlotter**: *TCMPRPlotterUseCase*
-   **TCGen**: *TCGenToolUseCase*
-   **TCPairs**: *TCPairsToolUseCase*
-   **TCRMW**: *TCRMWToolUseCase*
-   **TCStat**: *TCStatToolUseCase*
+   | **ASCII2NC**: *ASCII2NCToolUseCase*
+   | **CyclonePlotter**: *CyclonePlotterUseCase*
+   | **EnsembleStat**: *EnsembleStatToolUseCase*
+   | **GenVxMask**: *GenVxMaskToolUseCase*
+   | **GridStat**: *GridStatToolUseCase*
+   | **GridDiag**: *GridDiagToolUseCase*
+   | **MODE**: *MODEToolUseCase*
+   | **MTD**: *MTDToolUseCase*
+   | **PB2NC**: *PB2NCToolUseCase*
+   | **PCPCombine**: *PCPCombineToolUseCase*
+   | **Point2Grid**: *Point2GridToolUseCase*
+   | **PlotDataPlane**: *PlotDataPlaneToolUseCase*
+   | **PointStat**: *PointStatToolUseCase*
+   | **RegridDataPlane**: *RegridDataPlaneToolUseCase*
+   | **SeriesAnalysis**: *SeriesAnalysisUseCase*
+   | **StatAnalysis**: *StatAnalysisToolUseCase*
+   | **TCMPRPlotter**: *TCMPRPlotterUseCase*
+   | **TCGen**: *TCGenToolUseCase*
+   | **TCPairs**: *TCPairsToolUseCase*
+   | **TCRMW**: *TCRMWToolUseCase*
+   | **TCStat**: *TCStatToolUseCase*
 
 Use Cases by Application:
 -------------------------
