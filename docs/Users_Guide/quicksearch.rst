@@ -1,7 +1,7 @@
 METplus Quick Search for Use Cases
 ==================================
 
-.. only:: pdf
+.. only:: latex
 
    Note: the quick searches listed here are used on with the online version of this user guide.
 
