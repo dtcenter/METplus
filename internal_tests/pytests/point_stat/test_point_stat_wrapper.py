@@ -152,6 +152,9 @@ def point_stat_wrapper(metplus_config):
          {
              'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;}'}),
 
+        ({'POINT_STAT_OBS_QUALITY': '1, 2, 3', },
+         {'METPLUS_OBS_QUALITY': 'obs_quality = ["1", "2", "3"];'}),
+
     ]
 )
 def test_point_stat_all_fields(metplus_config, config_overrides,

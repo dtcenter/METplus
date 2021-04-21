@@ -57,7 +57,8 @@ obs = {
 //
 ${METPLUS_MESSAGE_TYPE}
 sid_exc        = [];
-obs_quality    = [ "1", "2", "3" ];
+//obs_quality =
+${METPLUS_OBS_QUALITY}
 duplicate_flag = NONE;
 obs_summary    = NONE;
 obs_perc_value = 50;

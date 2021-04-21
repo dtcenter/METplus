@@ -6539,3 +6539,8 @@ METplus Configuration Glossary
      Specify the value for 'interest_function.convex_hull_dist' in the MET configuration file for MODE.
 
      | *Used by:* MODE
+
+   POINT_STAT_OBS_QUALITY
+     Specify the value for 'obs_quality' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
