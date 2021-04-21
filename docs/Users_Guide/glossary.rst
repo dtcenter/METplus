@@ -6544,3 +6544,98 @@ METplus Configuration Glossary
      Specify the value for 'obs_quality' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_FHO
+     Specify the value for 'output_flag.fho' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_CTC
+     Specify the value for 'output_flag.ctc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_CTS
+     Specify the value for 'output_flag.cts' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_MCTC
+     Specify the value for 'output_flag.mctc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_MCTS
+     Specify the value for 'output_flag.mcts' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_CNT
+     Specify the value for 'output_flag.cnt' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_SL1L2
+     Specify the value for 'output_flag.sl1l2' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_SAL1L2
+     Specify the value for 'output_flag.sal1l2' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_VL1L2
+     Specify the value for 'output_flag.vl1l2' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_VAL1L2
+     Specify the value for 'output_flag.val1l2' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_VCNT
+     Specify the value for 'output_flag.vcnt' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_PCT
+     Specify the value for 'output_flag.pct' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_PSTD
+     Specify the value for 'output_flag.pstd' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_PJC
+     Specify the value for 'output_flag.pjc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_PRC
+     Specify the value for 'output_flag.prc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_ECNT
+     Specify the value for 'output_flag.ecnt' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_RPS
+     Specify the value for 'output_flag.rps' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_ECLV
+     Specify the value for 'output_flag.eclv' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_MPR
+     Specify the value for 'output_flag.mpr' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat

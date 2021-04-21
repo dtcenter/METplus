@@ -35,7 +35,30 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_MASK_SID',
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_CLIMO_CDF_DICT',
+        'METPLUS_OBS_QUALITY',
+        'METPLUS_OUTPUT_FLAG_DICT',
     ]
+
+    OUTPUT_FLAGS = ['fho',
+                    'ctc',
+                    'cts',
+                    'mctc',
+                    'mcts',
+                    'cnt',
+                    'sl1l2',
+                    'sal1l2',
+                    'vl1l2',
+                    'val1l2',
+                    'vcnt',
+                    'pct',
+                    'pstd',
+                    'pjc',
+                    'prc',
+                    'ecnt',
+                    'rps',
+                    'eclv',
+                    'mpr',
+                    ]
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'point_stat'
@@ -163,6 +186,12 @@ class PointStatWrapper(CompareGriddedWrapper):
                                 'POINT_STAT_ONCE_PER_FIELD',
                                 False)
         )
+
+        self.add_met_config(name='obs_quality',
+                            data_type='list',
+                            metplus_configs=['POINT_STAT_OBS_QUALITY'])
+
+        self.handle_flags('output')
 
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE '

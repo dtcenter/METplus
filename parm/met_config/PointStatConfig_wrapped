@@ -190,26 +190,8 @@ hira = {
 //
 // Statistical output types
 //
-output_flag = {
-   fho    = NONE;
-   ctc    = NONE;
-   cts    = NONE;
-   mctc   = NONE;
-   mcts   = NONE;
-   cnt    = NONE;
-   sl1l2  = STAT;
-   sal1l2 = NONE;
-   vl1l2  = STAT;
-   val1l2 = NONE;
-   vcnt   = NONE;
-   pct    = NONE;
-   pstd   = NONE;
-   pjc    = NONE;
-   prc    = NONE;
-   ecnt   = NONE; // Only for HiRA.
-   eclv   = NONE;
-   mpr    = NONE;
-}
+//output_flag = {
+${METPLUS_OUTPUT_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
