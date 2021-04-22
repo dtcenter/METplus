@@ -6539,3 +6539,133 @@ METplus Configuration Glossary
      Specify the value for 'interest_function.convex_hull_dist' in the MET configuration file for MODE.
 
      | *Used by:* MODE
+
+   POINT_STAT_OBS_QUALITY
+     Specify the value for 'obs_quality' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_FHO
+     Specify the value for 'output_flag.fho' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_CTC
+     Specify the value for 'output_flag.ctc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_CTS
+     Specify the value for 'output_flag.cts' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_MCTC
+     Specify the value for 'output_flag.mctc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_MCTS
+     Specify the value for 'output_flag.mcts' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_CNT
+     Specify the value for 'output_flag.cnt' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_SL1L2
+     Specify the value for 'output_flag.sl1l2' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_SAL1L2
+     Specify the value for 'output_flag.sal1l2' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_VL1L2
+     Specify the value for 'output_flag.vl1l2' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_VAL1L2
+     Specify the value for 'output_flag.val1l2' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_VCNT
+     Specify the value for 'output_flag.vcnt' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_PCT
+     Specify the value for 'output_flag.pct' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_PSTD
+     Specify the value for 'output_flag.pstd' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_PJC
+     Specify the value for 'output_flag.pjc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_PRC
+     Specify the value for 'output_flag.prc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_ECNT
+     Specify the value for 'output_flag.ecnt' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_RPS
+     Specify the value for 'output_flag.rps' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_ECLV
+     Specify the value for 'output_flag.eclv' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_MPR
+     Specify the value for 'output_flag.mpr' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_INTERP_VLD_THRESH
+     Specify the value for 'interp.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_INTERP_SHAPE
+     Specify the value for 'interp.shape' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_INTERP_TYPE_METHOD
+     Specify the value for 'interp.type.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_INTERP_TYPE_WIDTH
+     Specify the value for 'interp.type.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat

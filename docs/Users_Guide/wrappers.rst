@@ -3002,6 +3002,32 @@ Configuration
 | :term:`POINT_STAT_CLIMO_CDF_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
+| :term:`POINT_STAT_OBS_QUALITY`
+| :term:`POINT_STAT_OUTPUT_FLAG_FHO`
+| :term:`POINT_STAT_OUTPUT_FLAG_CTC`
+| :term:`POINT_STAT_OUTPUT_FLAG_CTS`
+| :term:`POINT_STAT_OUTPUT_FLAG_MCTC`
+| :term:`POINT_STAT_OUTPUT_FLAG_MCTS`
+| :term:`POINT_STAT_OUTPUT_FLAG_CNT`
+| :term:`POINT_STAT_OUTPUT_FLAG_SL1L2`
+| :term:`POINT_STAT_OUTPUT_FLAG_SAL1L2`
+| :term:`POINT_STAT_OUTPUT_FLAG_VL1L2`
+| :term:`POINT_STAT_OUTPUT_FLAG_VAL1L2`
+| :term:`POINT_STAT_OUTPUT_FLAG_VCNT`
+| :term:`POINT_STAT_OUTPUT_FLAG_PCT`
+| :term:`POINT_STAT_OUTPUT_FLAG_PSTD`
+| :term:`POINT_STAT_OUTPUT_FLAG_PJC`
+| :term:`POINT_STAT_OUTPUT_FLAG_PRC`
+| :term:`POINT_STAT_OUTPUT_FLAG_ECNT`
+| :term:`POINT_STAT_OUTPUT_FLAG_RPS`
+| :term:`POINT_STAT_OUTPUT_FLAG_ECLV`
+| :term:`POINT_STAT_OUTPUT_FLAG_MPR`
+| :term:`POINT_STAT_INTERP_VLD_THRESH`
+| :term:`POINT_STAT_INTERP_SHAPE`
+| :term:`POINT_STAT_INTERP_TYPE_METHOD`
+| :term:`POINT_STAT_INTERP_TYPE_WIDTH`
+| :term:`POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
 | :term:`FCST_POINT_STAT_WINDOW_END` (optional)
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
@@ -3248,6 +3274,104 @@ Below the file contents are descriptions of each environment variable referenced
      - climo_cdf.center_bins
    * - :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
      - climo_cdf.write_bins
+
+**${METPLUS_OBS_QUALITY}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_QUALITY`
+     - obs_quality
+
+**${METPLUS_OUTPUT_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OUTPUT_FLAG_FHO`
+     - output_flag.fho
+   * - :term:`POINT_STAT_OUTPUT_FLAG_CTC`
+     - output_flag.ctc
+   * - :term:`POINT_STAT_OUTPUT_FLAG_CTS`
+     - output_flag.cts
+   * - :term:`POINT_STAT_OUTPUT_FLAG_MCTC`
+     - output_flag.mctc
+   * - :term:`POINT_STAT_OUTPUT_FLAG_MCTS`
+     - output_flag.mcts
+   * - :term:`POINT_STAT_OUTPUT_FLAG_CNT`
+     - output_flag.cnt
+   * - :term:`POINT_STAT_OUTPUT_FLAG_SL1L2`
+     - output_flag.sl1l2
+   * - :term:`POINT_STAT_OUTPUT_FLAG_SAL1L2`
+     - output_flag.sal1l2
+   * - :term:`POINT_STAT_OUTPUT_FLAG_VL1L2`
+     - output_flag.vl1l2
+   * - :term:`POINT_STAT_OUTPUT_FLAG_VAL1L2`
+     - output_flag.val1l2
+   * - :term:`POINT_STAT_OUTPUT_FLAG_VCNT`
+     - output_flag.vcnt
+   * - :term:`POINT_STAT_OUTPUT_FLAG_PCT`
+     - output_flag.pct
+   * - :term:`POINT_STAT_OUTPUT_FLAG_PSTD`
+     - output_flag.pstd
+   * - :term:`POINT_STAT_OUTPUT_FLAG_PJC`
+     - output_flag.pjc
+   * - :term:`POINT_STAT_OUTPUT_FLAG_PRC`
+     - output_flag.prc
+   * - :term:`POINT_STAT_OUTPUT_FLAG_ECNT`
+     - output_flag.ecnt
+   * - :term:`POINT_STAT_OUTPUT_FLAG_RPS`
+     - output_flag.rps
+   * - :term:`POINT_STAT_OUTPUT_FLAG_ECLV`
+     - output_flag.eclv
+   * - :term:`POINT_STAT_OUTPUT_FLAG_MPR`
+     - output_flag.mpr
+
+**${METPLUS_INTERP_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_INTERP_VLD_THRESH`
+     - interp.vld_thresh
+   * - :term:`POINT_STAT_INTERP_SHAPE`
+     - interp.shape
+   * - :term:`POINT_STAT_INTERP_TYPE_METHOD`
+     - interp.type.method
+   * - :term:`POINT_STAT_INTERP_TYPE_WIDTH`
+     - interp.type.width
+
+**${METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - climo_mean.time_interp_method
+
+**${METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - climo_stdev.time_interp_method
+
 
 .. _py_embed_ingest_wrapper:
 

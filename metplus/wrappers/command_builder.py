@@ -2031,7 +2031,7 @@ class CommandBuilder:
 
         self.handle_met_config_dict(dict_name, dict_items)
 
-    def get_met_config_function(self, item_type):
+    def set_met_config_function(self, item_type):
         """! Return function to use based on item type
 
              @param item_type type of MET config variable to obtain
@@ -2056,16 +2056,39 @@ class CommandBuilder:
             return None
 
     def handle_met_config_item(self, item, output_dict=None):
-        set_met_config = self.get_met_config_function(item.data_type)
-        if not set_met_config:
-            return False
+        """! Reads info from METConfigInfo object, gets value from
+        METplusConfig, and formats it based on the specifications. Sets
+        value in output dictionary with key starting with METPLUS_.
 
+        @param item METConfigInfo object to read and determine what to get
+        @param output_dict (optional) dictionary to save formatted output
+         If unset, use self.env_var_dict.
+        """
         if output_dict is None:
             output_dict = self.env_var_dict
 
         env_var_name = item.env_var_name.upper()
         if not env_var_name.startswith('METPLUS_'):
             env_var_name = f'METPLUS_{env_var_name}'
+
+        # handle dictionary item
+        if item.data_type == 'dict':
+            env_var_name = f'{env_var_name}_DICT'
+            tmp_dict = {}
+            for child in item.children:
+                if not self.handle_met_config_item(child, tmp_dict):
+                    return False
+
+            dict_string = self.format_met_config_dict(tmp_dict,
+                                                      item.name,
+                                                      keys=None)
+            output_dict[env_var_name] = dict_string
+            return True
+
+        # handle non-dictionary item
+        set_met_config = self.set_met_config_function(item.data_type)
+        if not set_met_config:
+            return False
 
         set_met_config(output_dict,
                        item.metplus_configs,
@@ -2083,17 +2106,13 @@ class CommandBuilder:
         if output_dict is None:
             output_dict = self.env_var_dict
 
-        tmp_dict = {}
-        for item in dict_items:
-            self.handle_met_config_item(item, output_dict=tmp_dict)
+        final_met_config = self.get_met_config(
+            name=dict_name,
+            data_type='dict',
+            children=dict_items,
+        )
 
-        dict_string = self.format_met_config_dict(tmp_dict,
-                                                  dict_name,
-                                                  keys=None)
-        env_var_name = f'METPLUS_{dict_name.upper()}_DICT'
-        output_dict[env_var_name] = dict_string
-
-        return True
+        return self.handle_met_config_item(final_met_config, output_dict)
 
     def add_met_config(self, **kwargs):
         """! Create METConfigInfo object from arguments and process
