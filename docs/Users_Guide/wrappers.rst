@@ -3022,6 +3022,12 @@ Configuration
 | :term:`POINT_STAT_OUTPUT_FLAG_RPS`
 | :term:`POINT_STAT_OUTPUT_FLAG_ECLV`
 | :term:`POINT_STAT_OUTPUT_FLAG_MPR`
+| :term:`POINT_STAT_INTERP_VLD_THRESH`
+| :term:`POINT_STAT_INTERP_SHAPE`
+| :term:`POINT_STAT_INTERP_TYPE_METHOD`
+| :term:`POINT_STAT_INTERP_TYPE_WIDTH`
+| :term:`POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
 | :term:`FCST_POINT_STAT_WINDOW_END` (optional)
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
@@ -3326,6 +3332,45 @@ Below the file contents are descriptions of each environment variable referenced
      - output_flag.eclv
    * - :term:`POINT_STAT_OUTPUT_FLAG_MPR`
      - output_flag.mpr
+
+**${METPLUS_INTERP_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_INTERP_VLD_THRESH`
+     - interp.vld_thresh
+   * - :term:`POINT_STAT_INTERP_SHAPE`
+     - interp.shape
+   * - :term:`POINT_STAT_INTERP_TYPE_METHOD`
+     - interp.type.method
+   * - :term:`POINT_STAT_INTERP_TYPE_WIDTH`
+     - interp.type.width
+
+**${METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - climo_mean.time_interp_method
+
+**${METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - climo_stdev.time_interp_method
 
 
 .. _py_embed_ingest_wrapper:

@@ -236,6 +236,38 @@ def point_stat_wrapper(metplus_config):
          {
              'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {fho = BOTH;ctc = BOTH;cts = BOTH;mctc = BOTH;mcts = BOTH;cnt = BOTH;sl1l2 = BOTH;sal1l2 = BOTH;vl1l2 = BOTH;val1l2 = BOTH;vcnt = BOTH;pct = BOTH;pstd = BOTH;pjc = BOTH;prc = BOTH;ecnt = BOTH;rps = BOTH;eclv = BOTH;mpr = BOTH;}'}),
 
+        ({'POINT_STAT_INTERP_VLD_THRESH': '0.5', },
+         {'METPLUS_INTERP_DICT': 'interp = {vld_thresh = 0.5;}'}),
+
+        ({'POINT_STAT_INTERP_SHAPE': 'SQUARE', },
+         {'METPLUS_INTERP_DICT': 'interp = {shape = SQUARE;}'}),
+
+        ({'POINT_STAT_INTERP_TYPE_METHOD': 'BILIN', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {method = BILIN;}}'}),
+
+        ({'POINT_STAT_INTERP_TYPE_WIDTH': '2', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {width = 2;}}'}),
+
+        ({
+             'POINT_STAT_INTERP_VLD_THRESH': '0.5',
+             'POINT_STAT_INTERP_SHAPE': 'SQUARE',
+             'POINT_STAT_INTERP_TYPE_METHOD': 'BILIN',
+             'POINT_STAT_INTERP_TYPE_WIDTH': '2',
+         },
+         {
+             'METPLUS_INTERP_DICT': ('interp = {'
+                                     'vld_thresh = 0.5;shape = SQUARE;'
+                                     'type = {method = BILIN;width = 2;}}')}),
+
+        ({'POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
+         {'METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD': (
+                 'time_interp_method = NEAREST;'
+         )}),
+
+        ({'POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
+         {'METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD': (
+                 'time_interp_method = NEAREST;'
+         )}),
     ]
 )
 def test_point_stat_all_fields(metplus_config, config_overrides,

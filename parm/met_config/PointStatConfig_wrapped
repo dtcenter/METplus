@@ -96,7 +96,8 @@ climo_mean = {
       shape      = SQUARE;
    }
 
-   time_interp_method = NEAREST;
+   //time_interp_method =
+   ${METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD}
    day_interval       = 31;
    hour_interval      = 6;
 }
@@ -113,7 +114,8 @@ climo_stdev = {
       shape	 = SQUARE;
    }
 
-   time_interp_method = DW_MEAN;
+   //time_interp_method =
+   ${METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD}
    day_interval       = 31;
    hour_interval      = 6;
 }
@@ -164,17 +166,8 @@ boot = {
 //
 // Interpolation methods
 //
-interp = {
-   vld_thresh = 1.0;
-   shape      = SQUARE;
-
-   type = [
-      {
-         method = BILIN;
-         width  = 2;
-      }
-   ];
-}
+//interp = {
+${METPLUS_INTERP_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

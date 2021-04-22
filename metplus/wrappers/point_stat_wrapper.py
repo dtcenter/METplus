@@ -37,6 +37,9 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_CLIMO_CDF_DICT',
         'METPLUS_OBS_QUALITY',
         'METPLUS_OUTPUT_FLAG_DICT',
+        'METPLUS_INTERP_DICT',
+        'METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD',
+        'METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD',
     ]
 
     OUTPUT_FLAGS = ['fho',
@@ -192,6 +195,27 @@ class PointStatWrapper(CompareGriddedWrapper):
                             metplus_configs=['POINT_STAT_OBS_QUALITY'])
 
         self.handle_flags('output')
+
+        self.handle_interp_dict()
+
+        self.add_met_config(
+            name='time_interp_method',
+            data_type='string',
+            env_var_name='CLIMO_MEAN_TIME_INTERP_METHOD',
+            metplus_configs=['POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD'],
+            extra_args={'remove_quotes': True,
+                        'uppercase': True,
+                        },
+        )
+        self.add_met_config(
+            name='time_interp_method',
+            data_type='string',
+            env_var_name='CLIMO_STDEV_TIME_INTERP_METHOD',
+            metplus_configs=['POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD'],
+            extra_args={'remove_quotes': True,
+                        'uppercase': True,
+                        },
+        )
 
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE '
