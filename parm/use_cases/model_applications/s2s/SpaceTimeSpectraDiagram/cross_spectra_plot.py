@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 """
 This is an example script for plotting cross spectral components. The script reads in output files computed
 by the example_cross_spectra.py script and uses the plotly plotting routines in spacetime_plot.py to generate
@@ -7,7 +9,7 @@ import numpy as np
 import os
 import xarray as xr
 
-import METplotpy.metplotpy.contributed.spacetime_plot as stp
+import metplotpy.contributed.spacetime_plot.spacetime_plot as stp
 
 # location of the output files from example_cross_spectra
 # pathdata = '../data/'
@@ -42,6 +44,7 @@ for pp in np.arange(0, nplot, 1):
     var1 = vars1[pp]
     var2 = vars2[pp]
     #fin = xr.open_dataset(pathdata + 'SpaceTimeSpectra_' + filenames[pp] + '.nc')
+    print("Filename ",filenames[pp])
     fin = xr.open_dataset(filenames[pp])
     STC = fin['STC'][:, :, :]
     wnum = fin['wnum']
