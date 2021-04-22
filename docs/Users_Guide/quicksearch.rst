@@ -113,7 +113,6 @@ Use Cases by Organization:
 
 Use Cases by METplus Feature:
 -----------------------------
-<<<<<<< HEAD
 
 .. only:: html
 
