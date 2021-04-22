@@ -73,8 +73,8 @@ extensions = ['sphinx.ext.autodoc',
 latex_engine = 'pdflatex'
 latex_theme = 'manual'
 latex_logo = os.path.join('_static','METplus_logo.png')
-latex_show_pagerefs = true
-master_doc = 'Users_Guide/index'
+latex_show_pagerefs = 'true'
+latex_master_doc = 'Users_Guide/index'
 
 latex_elements = {
    # The paper size ('letterpaper' or 'a4paper').
@@ -111,7 +111,7 @@ latex_elements = {
 # (source start file, target name, title,
 #  author, documentclass [howto, manual, or own class]).
 latex_documents = [
-    (master_doc, 
+    (latex_master_doc, 
      'users_guide.tex', 
      'METplus User\'s Guide',
      ' ', 
