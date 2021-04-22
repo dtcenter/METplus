@@ -66,7 +66,7 @@ def point_stat_wrapper(metplus_config):
               '/some/path/climo/stdfile.nc',
           },
          {'METPLUS_CLIMO_STDEV_FILE':
-              'climo_stdev = { file_name = ["/some/path/climo/stdfile.nc"]; }',
+              'file_name = ["/some/path/climo/stdfile.nc"];',
          }),
         # mask grid and poly (old config var)
         ({'POINT_STAT_MASK_GRID': 'FULL',
@@ -135,6 +135,22 @@ def point_stat_wrapper(metplus_config):
               'obs_window = {beg = -2700;end = 2700;}',
           }),
 
+        ({'POINT_STAT_CLIMO_CDF_CDF_BINS': '1', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;}'}),
+
+        ({'POINT_STAT_CLIMO_CDF_CENTER_BINS': 'True', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {center_bins = TRUE;}'}),
+
+        ({'POINT_STAT_CLIMO_CDF_WRITE_BINS': 'False', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {write_bins = FALSE;}'}),
+
+        ({
+             'POINT_STAT_CLIMO_CDF_CDF_BINS': '1',
+             'POINT_STAT_CLIMO_CDF_CENTER_BINS': 'True',
+             'POINT_STAT_CLIMO_CDF_WRITE_BINS': 'False',
+         },
+         {
+             'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;}'}),
 
     ]
 )

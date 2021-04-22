@@ -46,12 +46,22 @@ if [ "$INPUT_CATEGORIES" == "pytests" ]; then
   exit $?
 fi
 
+# get METviewer if used in any use cases
+all_requirements=`./ci/jobs/get_requirements.py ${CATEGORIES} ${SUBSETLIST}`
+echo All requirements: $all_requirements
+NETWORK_ARG=""
+if [[ "$all_requirements" =~ .*"metviewer".* ]]; then
+  echo "Setting up METviewer"
+  ${GITHUB_WORKSPACE}/ci/jobs/python_requirements/get_metviewer.sh
+  NETWORK_ARG=--network="container:mysql_mv"
+fi
+
 # install Pillow library needed for diff testing
 # this will be replaced with better image diffing package used by METplotpy
-pip_command="pip3 install Pillow"
+pip_command="pip3 install Pillow; yum -y install poppler-utils; pip3 install pdf2image"
 
 # build command to run
-command="./ci/jobs/run_use_cases_docker.py ${CATEGORIES} ${SUBSETLIST}"
+command="./ci/jobs/run_use_cases.py ${CATEGORIES} ${SUBSETLIST}"
 
 # add input volumes to run command
 # keep track of --volumes-from arguments to docker run command
@@ -86,6 +96,9 @@ fi
 
 echo VOLUMES_FROM: $VOLUMES_FROM
 
+echo docker ps:
+docker ps -a
+
 echo "Run Docker container: $DOCKERHUBTAG"
-echo docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
-docker run -e GITHUB_WORKSPACE -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
+echo docker run -e GITHUB_WORKSPACE $NETWORK_ARG -v $RUNNER_WORKSPACE/output/mysql:/var/lib/mysql -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
+docker run -e GITHUB_WORKSPACE $NETWORK_ARG -v $RUNNER_WORKSPACE/output/mysql:/var/lib/mysql -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"

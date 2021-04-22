@@ -38,7 +38,6 @@ and is open to community contributions.
 
 METplus Concept
 ---------------
----------------
 METplus is the overarching, or umbrella, repository and hence framework for
 the Unified Forecast System verification capability.  It is intended to be
 extensible through adding additional capability developed by the community.

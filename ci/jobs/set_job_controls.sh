@@ -1,5 +1,9 @@
 #! /bin/bash
 
+# Run by GitHub Actions (in .github/workflows/main.yml) to parse
+# info from GitHub event and commit message from last commit before
+# a push to determine which jobs to run and which to skip.
+
 # set default status for jobs
 run_docs=true
 run_get_image=true
@@ -42,6 +46,10 @@ else
 
   if grep -q "ci-skip-use-cases" <<< "$commit_msg"; then
     run_use_cases=false
+  fi
+
+  if grep -q "ci-skip-unit-tests" <<< "$commit_msg"; then
+    run_unit_tests=false
   fi
 
   if grep -q "ci-only-docs" <<< "$commit_msg"; then

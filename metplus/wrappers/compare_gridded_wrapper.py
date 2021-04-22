@@ -99,6 +99,9 @@ that reformat gridded data
                                    'output_prefix',
                                    'METPLUS_OUTPUT_PREFIX')
 
+        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
+                                                      met_tool=self.app_name)
+
         return c_dict
 
     def set_environment_variables(self, time_info):
@@ -176,9 +179,8 @@ that reformat gridded data
         # get verification mask if available
         self.get_verification_mask(time_info)
 
-        var_list = util.parse_var_list(self.config,
-                                       time_info,
-                                       met_tool=self.app_name)
+        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                                     time_info)
 
         if not var_list and not self.c_dict.get('VAR_LIST_OPTIONAL', False):
             self.log_error('No input fields were specified. You must set '
@@ -258,9 +260,8 @@ that reformat gridded data
               Args:
                 @param time_info dictionary containing timing information
         """
-        var_list = util.parse_var_list(self.config,
-                                       time_info,
-                                       met_tool=self.app_name)
+        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                                     time_info)
 
         # get model from first var to compare
         model_path = self.find_model(time_info,
@@ -405,3 +406,28 @@ that reformat gridded data
 
         cmd += '-outdir {}'.format(self.outdir)
         return cmd
+
+    def handle_climo_cdf_dict(self):
+        app_name_upper = self.app_name.upper()
+        tmp_dict = {}
+        self.set_met_config_float(tmp_dict,
+                                  [f'{app_name_upper}_CLIMO_CDF_BINS',
+                                   f'{app_name_upper}_CLIMO_CDF_CDF_BINS'],
+                                  'cdf_bins',
+                                  'CLIMO_CDF_BINS')
+        self.set_met_config_bool(tmp_dict,
+                                 f'{app_name_upper}_CLIMO_CDF_CENTER_BINS',
+                                 'center_bins',
+                                 'CLIMO_CDF_CENTER_BINS')
+        self.set_met_config_bool(tmp_dict,
+                                 f'{app_name_upper}_CLIMO_CDF_WRITE_BINS',
+                                 'write_bins',
+                                 'CLIMO_CDF_WRITE_BINS')
+        climo_cdf = (
+            self.format_met_config_dict(tmp_dict,
+                                        'climo_cdf',
+                                        ['CLIMO_CDF_BINS',
+                                         'CLIMO_CDF_CENTER_BINS',
+                                         'CLIMO_CDF_WRITE_BINS'])
+        )
+        self.env_var_dict['METPLUS_CLIMO_CDF_DICT'] = climo_cdf

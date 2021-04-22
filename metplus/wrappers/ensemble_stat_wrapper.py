@@ -315,6 +315,19 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # field information for fcst and obs
         c_dict['VAR_LIST_OPTIONAL'] = True
 
+        # parse var list for ENS fields
+        c_dict['ENS_VAR_LIST_TEMP'] = util.parse_var_list(
+            self.config,
+            data_type='ENS',
+            met_tool=self.app_name
+        )
+
+        # parse optional var list for FCST and/or OBS fields
+        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(
+            self.config,
+            met_tool=self.app_name
+        )
+
         return c_dict
 
     def handle_nmep_smooth_dict(self):
@@ -386,29 +399,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                          'NBRHD_PROB_VLD_THRESH'])
         )
         self.env_var_dict['METPLUS_NBRHD_PROB_DICT'] = nbrhd_prob
-
-    def handle_climo_cdf_dict(self):
-        tmp_dict = {}
-        self.set_met_config_float(tmp_dict,
-                                  'ENSEMBLE_STAT_CLIMO_CDF_BINS',
-                                  'cdf_bins',
-                                  'CLIMO_CDF_BINS')
-        self.set_met_config_bool(tmp_dict,
-                                 'ENSEMBLE_STAT_CLIMO_CDF_CENTER_BINS',
-                                 'center_bins',
-                                 'CLIMO_CDF_CENTER_BINS')
-        self.set_met_config_bool(tmp_dict,
-                                 'ENSEMBLE_STAT_CLIMO_CDF_WRITE_BINS',
-                                 'write_bins',
-                                 'CLIMO_CDF_WRITE_BINS')
-        climo_cdf = (
-            self.format_met_config_dict(tmp_dict,
-                                        'climo_cdf',
-                                        ['CLIMO_CDF_BINS',
-                                         'CLIMO_CDF_CENTER_BINS',
-                                         'CLIMO_CDF_WRITE_BINS'])
-        )
-        self.env_var_dict['METPLUS_CLIMO_CDF_DICT'] = climo_cdf
 
     def handle_interp_dict(self):
         tmp_dict = {}
@@ -484,10 +474,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.infiles.append(fcst_file_list)
 
         # parse var list for ENS fields
-        ensemble_var_list = util.parse_var_list(self.config, time_info, data_type='ENS')
+        ensemble_var_list = util.sub_var_list(self.c_dict['ENS_VAR_LIST_TEMP'],
+                                              time_info)
 
         # parse optional var list for FCST and/or OBS fields
-        var_list = util.parse_var_list(self.config, time_info, met_tool=self.app_name)
+        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                                     time_info)
 
         # if empty var list for FCST/OBS, use None as first var, else use first var in list
         if not var_list:
