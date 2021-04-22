@@ -59,6 +59,10 @@ else:
 # the date in the specified format
 html_last_updated_fmt = '%c'
 
+# document that contains the root toctree directive
+root_doc = 'index'
+master_doc = 'index'
+
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
