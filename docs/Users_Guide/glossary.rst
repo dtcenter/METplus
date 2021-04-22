@@ -6669,3 +6669,48 @@ METplus Configuration Glossary
      Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
+
+   GRID_STAT_INTERP_FIELD
+     Specify the value for 'interp.field' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_INTERP_VLD_THRESH
+     Specify the value for 'interp.vld_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_INTERP_SHAPE
+     Specify the value for 'interp.shape' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_INTERP_TYPE_METHOD
+     Specify the value for 'interp.type.method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_INTERP_TYPE_WIDTH
+     Specify the value for 'interp.type.width' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_VAR_NAME
+     Specify the value for 'nc_pairs_var_name' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_GRID_WEIGHT_FLAG
+     Specify the value for 'grid_weight_flag' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat

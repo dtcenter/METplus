@@ -286,6 +286,42 @@ from metplus.util import time_util
          {
              'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;}'}),
 
+        ({'GRID_STAT_INTERP_FIELD': 'NONE', },
+         {'METPLUS_INTERP_DICT': 'interp = {field = NONE;}'}),
+
+        ({'GRID_STAT_INTERP_VLD_THRESH': '0.8', },
+         {'METPLUS_INTERP_DICT': 'interp = {vld_thresh = 0.8;}'}),
+
+        ({'GRID_STAT_INTERP_SHAPE': 'CIRCLE', },
+         {'METPLUS_INTERP_DICT': 'interp = {shape = CIRCLE;}'}),
+
+        ({'GRID_STAT_INTERP_TYPE_METHOD': 'BILIN', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {method = BILIN;}}'}),
+
+        ({'GRID_STAT_INTERP_TYPE_WIDTH': '2', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {width = 2;}}'}),
+
+        ({
+             'GRID_STAT_INTERP_FIELD': 'NONE',
+             'GRID_STAT_INTERP_VLD_THRESH': '0.8',
+             'GRID_STAT_INTERP_SHAPE': 'CIRCLE',
+             'GRID_STAT_INTERP_TYPE_METHOD': 'BILIN',
+             'GRID_STAT_INTERP_TYPE_WIDTH': '2',
+         },
+         {'METPLUS_INTERP_DICT': ('interp = {vld_thresh = 0.8;'
+                                  'shape = CIRCLE;'
+                                  'type = {method = BILIN;width = 2;}'
+                                  'field = NONE;}')}),
+
+        ({'GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
+         {'METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD': 'time_interp_method = NEAREST;'}),
+
+        ({'GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
+         {'METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD': 'time_interp_method = NEAREST;'}),
+
+        ({'GRID_STAT_GRID_WEIGHT_FLAG': 'COS_LAT', },
+         {'METPLUS_GRID_WEIGHT_FLAG': 'grid_weight_flag = COS_LAT;'}),
+
     ]
 )
 def test_grid_stat_single_field(metplus_config, config_overrides,

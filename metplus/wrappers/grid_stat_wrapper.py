@@ -42,6 +42,11 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_CLIMO_CDF_DICT',
         'METPLUS_OUTPUT_FLAG_DICT',
         'METPLUS_NC_PAIRS_FLAG_DICT',
+        'METPLUS_INTERP_DICT',
+        'METPLUS_NC_PAIRS_VAR_NAME',
+        'METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD',
+        'METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD',
+        'METPLUS_GRID_WEIGHT_FLAG',
     ]
 
     OUTPUT_FLAGS = ['fho',
@@ -182,6 +187,37 @@ class GridStatWrapper(CompareGriddedWrapper):
 
         self.handle_flags('output')
         self.handle_flags('nc_pairs')
+
+        self.handle_interp_dict(uses_field=True)
+
+        self.add_met_config(name='nc_pairs_var_name',
+                            data_type='string',
+                            metplus_configs=['GRID_STAT_NC_PAIRS_VAR_NAME'])
+
+        self.add_met_config(
+            name='time_interp_method',
+            data_type='string',
+            env_var_name='CLIMO_MEAN_TIME_INTERP_METHOD',
+            metplus_configs=['GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD'],
+            extra_args={'remove_quotes': True,
+                        'uppercase': True,
+                        },
+        )
+        self.add_met_config(
+            name='time_interp_method',
+            data_type='string',
+            env_var_name='CLIMO_STDEV_TIME_INTERP_METHOD',
+            metplus_configs=['GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD'],
+            extra_args={'remove_quotes': True,
+                        'uppercase': True,
+                        },
+        )
+
+        self.add_met_config(name='grid_weight_flag',
+                            data_type='string',
+                            metplus_configs=['GRID_STAT_GRID_WEIGHT_FLAG'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
 
         return c_dict
 

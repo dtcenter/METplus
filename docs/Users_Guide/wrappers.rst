@@ -1133,6 +1133,15 @@ METplus Configuration
 | :term:`GRID_STAT_NC_PAIRS_FLAG_GRADIENT`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK`
+| :term:`GRID_STAT_INTERP_FIELD`
+| :term:`GRID_STAT_INTERP_VLD_THRESH`
+| :term:`GRID_STAT_INTERP_SHAPE`
+| :term:`GRID_STAT_INTERP_TYPE_METHOD`
+| :term:`GRID_STAT_INTERP_TYPE_WIDTH`
+| :term:`GRID_STAT_NC_PAIRS_VAR_NAME`
+| :term:`GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`GRID_STAT_GRID_WEIGHT_FLAG`
 | :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`GRID_STAT_MASK_POLY` (optional)
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
@@ -1157,7 +1166,7 @@ METplus Configuration
 | :term:`OBS_GRID_STAT_VAR<n>_LEVELS` (optional)
 | :term:`OBS_GRID_STAT_VAR<n>_THRESH` (optional)
 | :term:`OBS_GRID_STAT_VAR<n>_OPTIONS` (optional)
-| 
+|
 
 .. warning:: **DEPRECATED**
 
@@ -1458,6 +1467,69 @@ Below the file contents are descriptions of each environment variable referenced
      - nc_pairs_flag.distance_map
    * - :term:`GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK`
      - nc_pairs_flag.apply_mask
+
+**${METPLUS_INTERP_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_INTERP_FIELD`
+     - interp.field
+   * - :term:`GRID_STAT_INTERP_VLD_THRESH`
+     - interp.vld_thresh
+   * - :term:`GRID_STAT_INTERP_SHAPE`
+     - interp.shape
+   * - :term:`GRID_STAT_INTERP_TYPE_METHOD`
+     - interp.type.method
+   * - :term:`GRID_STAT_INTERP_TYPE_WIDTH`
+     - interp.type.width
+
+**${METPLUS_NC_PAIRS_VAR_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_NC_PAIRS_VAR_NAME`
+     - nc_pairs_var_name
+
+**${METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - climo_mean.time_interp_method
+
+**${METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - climo_stdev.time_interp_method
+
+**${METPLUS_GRID_WEIGHT_FLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_GRID_WEIGHT_FLAG`
+     - grid_weight_flag
 
 
 .. _make_plots_wrapper:

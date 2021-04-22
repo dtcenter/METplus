@@ -40,7 +40,8 @@ wind_thresh 	 = [ NA ];
 wind_logic  	 = UNION;
 eclv_points      = 0.05;
 nc_pairs_var_suffix = "";
-nc_pairs_var_name = "";
+//nc_pairs_var_name =
+${METPLUS_NC_PAIRS_VAR_NAME}
 rank_corr_flag   = FALSE;
 
 //
@@ -70,7 +71,8 @@ climo_mean = {
       shape	 = SQUARE;
    }
 
-   time_interp_method = DW_MEAN;
+   //time_interp_method =
+   ${METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD}
    match_month        = TRUE;
    day_interval       = 31;
    hour_interval      = 6;
@@ -88,7 +90,8 @@ climo_stdev = {
       shape	 = SQUARE;
    }
 
-   time_interp_method = DW_MEAN;
+   //time_interp_method =
+   ${METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD}
    match_month        = TRUE;
    day_interval       = 31;
    hour_interval      = 6;
@@ -127,18 +130,8 @@ boot = {
 //
 // Data smoothing methods
 //
-interp = {
-   field      = BOTH;
-   vld_thresh = 1.0;
-   shape      = SQUARE;
-
-   type = [
-      {
-         method = NEAREST;
-         width  = 1;
-      }
-   ];
-}
+//interp = {
+${METPLUS_INTERP_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -205,7 +198,8 @@ ${METPLUS_NC_PAIRS_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
-grid_weight_flag = NONE;
+//grid_weight_flag =
+${METPLUS_GRID_WEIGHT_FLAG}
 tmp_dir          = "/tmp";
 ${METPLUS_OUTPUT_PREFIX}
 
