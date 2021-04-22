@@ -330,6 +330,7 @@ class CommandBuilder:
         tmp_dict = {}
         for edge, default_val in edges:
             input_list = [f'OBS_{app}_WINDOW_{edge}',
+                          f'{app}_OBS_WINDOW_{edge}',
                           f'OBS_WINDOW_{edge}',
                          ]
             output_key = f'OBS_WINDOW_{edge}'
