@@ -73,7 +73,7 @@ extensions = ['sphinx.ext.autodoc',
 latex_engine = 'pdflatex'
 latex_theme = 'manual'
 latex_logo = os.path.join('_static','METplus_logo.png')
-latex_show_pagerefs = 'True'
+latex_show_pagerefs = true
 master_doc = 'Users_Guide/index'
 
 latex_elements = {
