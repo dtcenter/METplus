@@ -400,47 +400,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         )
         self.env_var_dict['METPLUS_NBRHD_PROB_DICT'] = nbrhd_prob
 
-    def handle_interp_dict(self):
-        tmp_dict = {}
-        self.set_met_config_string(tmp_dict,
-                                   'ENSEMBLE_STAT_INTERP_FIELD',
-                                   'field',
-                                   'INTERP_FIELD',
-                                   remove_quotes=True)
-        self.set_met_config_float(tmp_dict,
-                                  'ENSEMBLE_STAT_INTERP_VLD_THRESH',
-                                  'vld_thresh',
-                                  'INTERP_VLD_THRESH')
-        self.set_met_config_string(tmp_dict,
-                                   'ENSEMBLE_STAT_INTERP_SHAPE',
-                                   'shape',
-                                   'INTERP_SHAPE',
-                                   remove_quotes=True)
-        self.set_met_config_string(tmp_dict,
-                                   'ENSEMBLE_STAT_INTERP_METHOD',
-                                   'method',
-                                   'INTERP_METHOD',
-                                   remove_quotes=True)
-        self.set_met_config_int(tmp_dict,
-                                'ENSEMBLE_STAT_INTERP_WIDTH',
-                                'width',
-                                'INTERP_WIDTH')
-
-        tmp_dict['INTERP_TYPE'] = self.format_met_config_type(tmp_dict,
-                                                              'interp')
-
-
-        interp = (
-            self.format_met_config_dict(tmp_dict,
-                                        'interp',
-                                        ['INTERP_FIELD',
-                                         'INTERP_VLD_THRESH',
-                                         'INTERP_SHAPE',
-                                         'INTERP_TYPE',
-                                        ])
-        )
-        self.env_var_dict['METPLUS_INTERP_DICT'] = interp
-
     def format_met_config_type(self, c_dict, dict_name):
         """! Format type item for MET config
 
