@@ -6,13 +6,112 @@ import re
 import logging
 from collections import namedtuple
 import pytest
-import datetime
+from datetime import datetime
 
 import produtil
 
 from metplus.wrappers.grid_stat_wrapper import GridStatWrapper
 from metplus.util import met_util as util
 from metplus.util import time_util
+
+fcst_dir = '/some/path/fcst'
+obs_dir = '/some/path/obs'
+fcst_name = 'APCP'
+fcst_level = 'A03'
+obs_name = 'APCP_03'
+obs_level_no_quotes = '(*,*)'
+obs_level = f'"{obs_level_no_quotes}"'
+fcst_fmt = f'field = [{{ name="{fcst_name}"; level="{fcst_level}"; }}];'
+obs_fmt = (f'field = [{{ name="{obs_name}"; '
+           f'level="{obs_level_no_quotes}"; }}];')
+time_fmt = '%Y%m%d%H'
+run_times = ['2005080700', '2005080712']
+
+def set_minimum_config_settings(config):
+    # set config variables to prevent command from running and bypass check
+    # if input files actually exist
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'GridStat')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', time_fmt)
+    config.set('config', 'INIT_BEG', run_times[0])
+    config.set('config', 'INIT_END', run_times[-1])
+    config.set('config', 'INIT_INCREMENT', '12H')
+    config.set('config', 'LEAD_SEQ', '12H')
+    config.set('config', 'LOOP_ORDER', 'times')
+    config.set('config', 'GRID_STAT_CONFIG_FILE',
+               '{PARM_BASE}/met_config/GridStatConfig_wrapped')
+    config.set('config', 'FCST_GRID_STAT_INPUT_DIR', fcst_dir)
+    config.set('config', 'OBS_GRID_STAT_INPUT_DIR', obs_dir)
+    config.set('config', 'FCST_GRID_STAT_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
+    config.set('config', 'OBS_GRID_STAT_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d%H}/obs_file')
+    config.set('config', 'GRID_STAT_OUTPUT_DIR',
+               '{OUTPUT_BASE}/GridStat/output')
+    config.set('config', 'GRID_STAT_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
+
+    config.set('config', 'FCST_VAR1_NAME', fcst_name)
+    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
+    config.set('config', 'OBS_VAR1_NAME', obs_name)
+    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+
+@pytest.mark.parametrize(
+    'config_overrides, env_var_values', [
+        # 0 no climo settings
+        ({}, {}),
+        # 1 mean template only
+        ({'GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE': 'gs_mean_{init?fmt=%Y%m%d%H}.tmpl'},
+         {'CLIMO_MEAN_FILE': '"gs_mean_YMDH.tmpl"',
+          'CLIMO_STDEV_FILE': '', }),
+        # 2 mean template and dir
+        ({'GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE': 'gs_mean_{init?fmt=%Y%m%d%H}.tmpl',
+          'GRID_STAT_CLIMO_MEAN_INPUT_DIR': '/climo/mean/dir'},
+         {'CLIMO_MEAN_FILE': '"/climo/mean/dir/gs_mean_YMDH.tmpl"',
+          'CLIMO_STDEV_FILE': '', }),
+        # 3 stdev template only
+        ({'GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE': 'gs_stdev_{init?fmt=%Y%m%d%H}.tmpl'},
+         {'CLIMO_STDEV_FILE': '"gs_stdev_YMDH.tmpl"', }),
+        # 4 stdev template and dir
+        ({'GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE': 'gs_stdev_{init?fmt=%Y%m%d%H}.tmpl',
+          'GRID_STAT_CLIMO_STDEV_INPUT_DIR': '/climo/stdev/dir'},
+         {'CLIMO_STDEV_FILE': '"/climo/stdev/dir/gs_stdev_YMDH.tmpl"', }),
+    ]
+)
+def test_handle_climo_file_variables(metplus_config, config_overrides,
+                                     env_var_values):
+    """! Ensure that old and new variables for setting climo_mean and
+     climo_stdev are set to the correct values
+    """
+    old_env_vars = ['CLIMO_MEAN_FILE',
+                    'CLIMO_STDEV_FILE']
+    config = metplus_config()
+
+    set_minimum_config_settings(config)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = GridStatWrapper(config)
+    assert(wrapper.isOK)
+
+    all_cmds = wrapper.run_all_times()
+    for (_, actual_env_vars), run_time in zip(all_cmds, run_times):
+        run_dt = datetime.strptime(run_time, time_fmt)
+        ymdh = run_dt.strftime('%Y%m%d%H')
+        print(f"ACTUAL ENV VARS: {actual_env_vars}")
+        for old_env in old_env_vars:
+            match = next((item for item in actual_env_vars if
+                          item.startswith(old_env)), None)
+            assert(match is not None)
+            actual_value = match.split('=', 1)[1]
+            expected_value = env_var_values.get(old_env, '')
+            expected_value = actual_value.replace('YMDH', ymdh)
+            assert(expected_value == actual_value)
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -61,14 +160,18 @@ from metplus.util import time_util
         ({'GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE':
               '/some/path/climo/filename.nc',
           },
-         {'METPLUS_CLIMO_MEAN_FILE':
-              'file_name = ["/some/path/climo/filename.nc"];',
+         {'METPLUS_CLIMO_MEAN_DICT':
+              'climo_mean = {file_name = ["/some/path/climo/filename.nc"];}',
+          'CLIMO_MEAN_FILE':
+              '"/some/path/climo/filename.nc"',
           }),
         ({'GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE':
               '/some/path/climo/stdfile.nc',
           },
-         {'METPLUS_CLIMO_STDEV_FILE':
-              'file_name = ["/some/path/climo/stdfile.nc"];',
+         {'METPLUS_CLIMO_STDEV_DICT':
+              'climo_stdev = {file_name = ["/some/path/climo/stdfile.nc"];}',
+          'CLIMO_STDEV_FILE':
+              '"/some/path/climo/stdfile.nc"',
          }),
         # mask grid and poly (old config var)
         ({'GRID_STAT_MASK_GRID': 'FULL',
@@ -313,11 +416,120 @@ from metplus.util import time_util
                                   'type = {method = BILIN;width = 2;}'
                                   'field = NONE;}')}),
 
+        ({'GRID_STAT_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
+         {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
+                                      '["/some/climo_mean/file.txt"];}'),
+          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
+
+        ({'GRID_STAT_CLIMO_MEAN_FIELD': 'CLM_NAME', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = ["CLM_NAME"];}'}),
+
+        ({'GRID_STAT_CLIMO_MEAN_REGRID_METHOD': 'NEAREST', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {method = NEAREST;}}'}),
+
+        ({'GRID_STAT_CLIMO_MEAN_REGRID_WIDTH': '1', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {width = 1;}}'}),
+
+        ({'GRID_STAT_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5', },
+         {
+             'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {vld_thresh = 0.5;}}'}),
+
+        ({'GRID_STAT_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
+
         ({'GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
-         {'METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD': 'time_interp_method = NEAREST;'}),
+         {
+             'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
+
+        ({'GRID_STAT_CLIMO_MEAN_MATCH_MONTH': 'True', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
+
+        ({'GRID_STAT_CLIMO_MEAN_DAY_INTERVAL': '30', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
+
+        ({'GRID_STAT_CLIMO_MEAN_HOUR_INTERVAL': '12', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {hour_interval = 12;}'}),
+
+        ({
+             'GRID_STAT_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt',
+             'GRID_STAT_CLIMO_MEAN_FIELD': 'CLM_NAME',
+             'GRID_STAT_CLIMO_MEAN_REGRID_METHOD': 'NEAREST',
+             'GRID_STAT_CLIMO_MEAN_REGRID_WIDTH': '1',
+             'GRID_STAT_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
+             'GRID_STAT_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
+             'GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
+             'GRID_STAT_CLIMO_MEAN_MATCH_MONTH': 'True',
+             'GRID_STAT_CLIMO_MEAN_DAY_INTERVAL': '30',
+             'GRID_STAT_CLIMO_MEAN_HOUR_INTERVAL': '12',
+         },
+         {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
+                                      '["/some/climo_mean/file.txt"];'
+                                      'field = ["CLM_NAME"];'
+                                      'regrid = {method = NEAREST;width = 1;'
+                                      'vld_thresh = 0.5;shape = SQUARE;}'
+                                      'time_interp_method = NEAREST;'
+                                      'match_month = TRUE;day_interval = 30;'
+                                      'hour_interval = 12;}'),
+          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
+
+        # climo stdev
+        ({'GRID_STAT_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
+         {'METPLUS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
+                                      '["/some/climo_stdev/file.txt"];}'),
+          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
+
+        ({'GRID_STAT_CLIMO_STDEV_FIELD': 'CLM_NAME', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = ["CLM_NAME"];}'}),
+
+        ({'GRID_STAT_CLIMO_STDEV_REGRID_METHOD': 'NEAREST', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {method = NEAREST;}}'}),
+
+        ({'GRID_STAT_CLIMO_STDEV_REGRID_WIDTH': '1', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {width = 1;}}'}),
+
+        ({'GRID_STAT_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {vld_thresh = 0.5;}}'}),
+
+        ({'GRID_STAT_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
 
         ({'GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
-         {'METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD': 'time_interp_method = NEAREST;'}),
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
+
+        ({'GRID_STAT_CLIMO_STDEV_MATCH_MONTH': 'True', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
+
+        ({'GRID_STAT_CLIMO_STDEV_DAY_INTERVAL': '30', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
+
+        ({'GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL': '12', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {hour_interval = 12;}'}),
+
+        ({
+             'GRID_STAT_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt',
+             'GRID_STAT_CLIMO_STDEV_FIELD': 'CLM_NAME',
+             'GRID_STAT_CLIMO_STDEV_REGRID_METHOD': 'NEAREST',
+             'GRID_STAT_CLIMO_STDEV_REGRID_WIDTH': '1',
+             'GRID_STAT_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
+             'GRID_STAT_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
+             'GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
+             'GRID_STAT_CLIMO_STDEV_MATCH_MONTH': 'True',
+             'GRID_STAT_CLIMO_STDEV_DAY_INTERVAL': '30',
+             'GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL': '12',
+         },
+         {'METPLUS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
+                                      '["/some/climo_stdev/file.txt"];'
+                                      'field = ["CLM_NAME"];'
+                                      'regrid = {method = NEAREST;width = 1;'
+                                      'vld_thresh = 0.5;shape = SQUARE;}'
+                                      'time_interp_method = NEAREST;'
+                                      'match_month = TRUE;day_interval = 30;'
+                                      'hour_interval = 12;}'),
+          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
 
         ({'GRID_STAT_GRID_WEIGHT_FLAG': 'COS_LAT', },
          {'METPLUS_GRID_WEIGHT_FLAG': 'grid_weight_flag = COS_LAT;'}),
@@ -326,48 +538,10 @@ from metplus.util import time_util
 )
 def test_grid_stat_single_field(metplus_config, config_overrides,
                                 env_var_values):
-    fcst_dir = '/some/path/fcst'
-    obs_dir = '/some/path/obs'
-    fcst_name = 'APCP'
-    fcst_level = 'A03'
-    obs_name = 'APCP_03'
-    obs_level_no_quotes = '(*,*)'
-    obs_level = f'"{obs_level_no_quotes}"'
-    fcst_fmt = f'field = [{{ name="{fcst_name}"; level="{fcst_level}"; }}];'
-    obs_fmt = (f'field = [{{ name="{obs_name}"; '
-               f'level="{obs_level_no_quotes}"; }}];')
+
     config = metplus_config()
 
-    # set config variables to prevent command from running and bypass check
-    # if input files actually exist
-    config.set('config', 'DO_NOT_RUN_EXE', True)
-    config.set('config', 'INPUT_MUST_EXIST', False)
-
-    # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'GridStat')
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'INIT_BEG', '2005080700')
-    config.set('config', 'INIT_END', '2005080712')
-    config.set('config', 'INIT_INCREMENT', '12H')
-    config.set('config', 'LEAD_SEQ', '12H')
-    config.set('config', 'LOOP_ORDER', 'times')
-    config.set('config', 'GRID_STAT_CONFIG_FILE',
-               '{PARM_BASE}/met_config/GridStatConfig_wrapped')
-    config.set('config', 'FCST_GRID_STAT_INPUT_DIR', fcst_dir)
-    config.set('config', 'OBS_GRID_STAT_INPUT_DIR', obs_dir)
-    config.set('config', 'FCST_GRID_STAT_INPUT_TEMPLATE',
-               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
-    config.set('config', 'OBS_GRID_STAT_INPUT_TEMPLATE',
-               '{valid?fmt=%Y%m%d%H}/obs_file')
-    config.set('config', 'GRID_STAT_OUTPUT_DIR',
-               '{OUTPUT_BASE}/GridStat/output')
-    config.set('config', 'GRID_STAT_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
-
-    config.set('config', 'FCST_VAR1_NAME', fcst_name)
-    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
-    config.set('config', 'OBS_VAR1_NAME', obs_name)
-    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+    set_minimum_config_settings(config)
 
     # set config variable overrides
     for key, value in config_overrides.items():
@@ -403,10 +577,10 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
             match = next((item for item in env_vars if
                           item.startswith(env_var_key)), None)
             assert(match is not None)
-            value = match.split('=', 1)[1]
+            actual_value = match.split('=', 1)[1]
             if env_var_key == 'METPLUS_FCST_FIELD':
-                assert(value == fcst_fmt)
+                assert(actual_value == fcst_fmt)
             elif env_var_key == 'METPLUS_OBS_FIELD':
-                assert (value == obs_fmt)
+                assert (actual_value == obs_fmt)
             else:
-                assert(env_var_values.get(env_var_key, '') == value)
+                assert(env_var_values.get(env_var_key, '') == actual_value)

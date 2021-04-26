@@ -59,43 +59,12 @@ ${METPLUS_OBS_FIELD}
 //
 // Climatology mean data
 //
-climo_mean = {
+//climo_mean = {
+${METPLUS_CLIMO_MEAN_DICT}
 
-   ${METPLUS_CLIMO_MEAN_FILE}
-   field     = [];
 
-   regrid = {
-      method     = NEAREST;
-      width      = 1;
-      vld_thresh = 0.5;
-      shape	 = SQUARE;
-   }
-
-   //time_interp_method =
-   ${METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD}
-   match_month        = TRUE;
-   day_interval       = 31;
-   hour_interval      = 6;
-}
-
-climo_stdev = {
-
-   ${METPLUS_CLIMO_STDEV_FILE}
-   field     = [];
-
-   regrid = {
-      method     = NEAREST;
-      width      = 1;
-      vld_thresh = 0.5;
-      shape	 = SQUARE;
-   }
-
-   //time_interp_method =
-   ${METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD}
-   match_month        = TRUE;
-   day_interval       = 31;
-   hour_interval      = 6;
-}
+//climo_stdev = {
+${METPLUS_CLIMO_STDEV_DICT}
 
 //
 // May be set separately in each "obs.field" entry

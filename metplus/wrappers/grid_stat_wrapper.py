@@ -32,8 +32,8 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_REGRID_DICT',
         'METPLUS_FCST_FIELD',
         'METPLUS_OBS_FIELD',
-        'METPLUS_CLIMO_MEAN_FILE',
-        'METPLUS_CLIMO_STDEV_FILE',
+        'METPLUS_CLIMO_MEAN_DICT',
+        'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_MASK_DICT',
         'METPLUS_NBRHD_SHAPE',
         'METPLUS_NBRHD_WIDTH',
@@ -44,9 +44,13 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_NC_PAIRS_FLAG_DICT',
         'METPLUS_INTERP_DICT',
         'METPLUS_NC_PAIRS_VAR_NAME',
-        'METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD',
-        'METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD',
         'METPLUS_GRID_WEIGHT_FLAG',
+    ]
+
+    # handle deprecated env vars used pre v4.0.0
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'CLIMO_MEAN_FILE',
+        'CLIMO_STDEV_FILE',
     ]
 
     OUTPUT_FLAGS = ['fho',
@@ -124,7 +128,7 @@ class GridStatWrapper(CompareGriddedWrapper):
           self.config.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
 
         # get climatology config variables
-        self.read_climo_wrapper_specific('GRID_STAT', c_dict)
+        self.handle_climo_dict()
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_STAT_OUTPUT_DIR', '')
         if not c_dict['OUTPUT_DIR']:
@@ -194,25 +198,6 @@ class GridStatWrapper(CompareGriddedWrapper):
                             data_type='string',
                             metplus_configs=['GRID_STAT_NC_PAIRS_VAR_NAME'])
 
-        self.add_met_config(
-            name='time_interp_method',
-            data_type='string',
-            env_var_name='CLIMO_MEAN_TIME_INTERP_METHOD',
-            metplus_configs=['GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD'],
-            extra_args={'remove_quotes': True,
-                        'uppercase': True,
-                        },
-        )
-        self.add_met_config(
-            name='time_interp_method',
-            data_type='string',
-            env_var_name='CLIMO_STDEV_TIME_INTERP_METHOD',
-            metplus_configs=['GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD'],
-            extra_args={'remove_quotes': True,
-                        'uppercase': True,
-                        },
-        )
-
         self.add_met_config(name='grid_weight_flag',
                             data_type='string',
                             metplus_configs=['GRID_STAT_GRID_WEIGHT_FLAG'],
@@ -231,9 +216,6 @@ class GridStatWrapper(CompareGriddedWrapper):
                          self.c_dict.get('FCST_FIELD', ''))
         self.add_env_var("OBS_FIELD",
                          self.c_dict.get('OBS_FIELD', ''))
-
-        # set climatology environment variables
-        self.set_climo_env_vars()
 
         self.add_env_var("FCST_TIME", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("INPUT_BASE", self.c_dict["INPUT_BASE"])
