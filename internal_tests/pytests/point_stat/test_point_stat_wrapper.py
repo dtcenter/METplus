@@ -152,6 +152,122 @@ def point_stat_wrapper(metplus_config):
          {
              'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;}'}),
 
+        ({'POINT_STAT_OBS_QUALITY': '1, 2, 3', },
+         {'METPLUS_OBS_QUALITY': 'obs_quality = ["1", "2", "3"];'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_FHO': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {fho = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_CTC': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {ctc = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_CTS': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {cts = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_MCTC': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {mctc = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_MCTS': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {mcts = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_CNT': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {cnt = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_SL1L2': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {sl1l2 = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_SAL1L2': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {sal1l2 = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_VL1L2': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {vl1l2 = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_VAL1L2': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {val1l2 = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_VCNT': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {vcnt = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_PCT': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pct = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_PSTD': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pstd = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_PJC': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pjc = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_PRC': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {prc = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_ECNT': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {ecnt = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_RPS': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {rps = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_ECLV': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {eclv = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_MPR': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {mpr = BOTH;}'}),
+
+        ({
+             'POINT_STAT_OUTPUT_FLAG_FHO': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_CTC': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_CTS': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_MCTC': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_MCTS': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_CNT': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_SL1L2': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_SAL1L2': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_VL1L2': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_VAL1L2': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_VCNT': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_PCT': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_PSTD': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_PJC': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_PRC': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_ECNT': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_RPS': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_ECLV': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_MPR': 'BOTH',
+         },
+         {
+             'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {fho = BOTH;ctc = BOTH;cts = BOTH;mctc = BOTH;mcts = BOTH;cnt = BOTH;sl1l2 = BOTH;sal1l2 = BOTH;vl1l2 = BOTH;val1l2 = BOTH;vcnt = BOTH;pct = BOTH;pstd = BOTH;pjc = BOTH;prc = BOTH;ecnt = BOTH;rps = BOTH;eclv = BOTH;mpr = BOTH;}'}),
+
+        ({'POINT_STAT_INTERP_VLD_THRESH': '0.5', },
+         {'METPLUS_INTERP_DICT': 'interp = {vld_thresh = 0.5;}'}),
+
+        ({'POINT_STAT_INTERP_SHAPE': 'SQUARE', },
+         {'METPLUS_INTERP_DICT': 'interp = {shape = SQUARE;}'}),
+
+        ({'POINT_STAT_INTERP_TYPE_METHOD': 'BILIN', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {method = BILIN;}}'}),
+
+        ({'POINT_STAT_INTERP_TYPE_WIDTH': '2', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {width = 2;}}'}),
+
+        ({
+             'POINT_STAT_INTERP_VLD_THRESH': '0.5',
+             'POINT_STAT_INTERP_SHAPE': 'SQUARE',
+             'POINT_STAT_INTERP_TYPE_METHOD': 'BILIN',
+             'POINT_STAT_INTERP_TYPE_WIDTH': '2',
+         },
+         {
+             'METPLUS_INTERP_DICT': ('interp = {'
+                                     'vld_thresh = 0.5;shape = SQUARE;'
+                                     'type = {method = BILIN;width = 2;}}')}),
+
+        ({'POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
+         {'METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD': (
+                 'time_interp_method = NEAREST;'
+         )}),
+
+        ({'POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
+         {'METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD': (
+                 'time_interp_method = NEAREST;'
+         )}),
     ]
 )
 def test_point_stat_all_fields(metplus_config, config_overrides,

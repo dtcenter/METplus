@@ -6354,3 +6354,318 @@ METplus Configuration Glossary
      Specify the value for 'ops_hit_window.end' in the MET configuration file for TCGen.
 
      | *Used by:* TCGen
+
+   MODE_FCST_FILTER_ATTR_NAME
+     Specify the value for 'fcst.filter_attr_name' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_FCST_FILTER_ATTR_THRESH
+     Specify the value for 'fcst.filter_attr_thresh' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_FCST_CENSOR_THRESH
+     Specify the value for 'fcst.censor_thresh' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_FCST_CENSOR_VAL
+     Specify the value for 'fcst.censor_val' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_FCST_VLD_THRESH
+     Specify the value for 'fcst.vld_thresh' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_OBS_FILTER_ATTR_NAME
+     Specify the value for 'obs.filter_attr_name' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_OBS_FILTER_ATTR_THRESH
+     Specify the value for 'obs.filter_attr_thresh' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_OBS_CENSOR_THRESH
+     Specify the value for 'obs.censor_thresh' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_OBS_CENSOR_VAL
+     Specify the value for 'obs.censor_val' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_OBS_VLD_THRESH
+     Specify the value for 'obs.vld_thresh' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_WEIGHT_CENTROID_DIST
+     Specify the value for 'weight.centroid_dist' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_WEIGHT_BOUNDARY_DIST
+     Specify the value for 'weight.boundary_dist' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_WEIGHT_CONVEX_HULL_DIST
+     Specify the value for 'weight.convex_hull_dist' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_WEIGHT_ANGLE_DIFF
+     Specify the value for 'weight.angle_diff' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_WEIGHT_ASPECT_DIFF
+     Specify the value for 'weight.aspect_diff' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_WEIGHT_AREA_RATIO
+     Specify the value for 'weight.area_ratio' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_WEIGHT_INT_AREA_RATIO
+     Specify the value for 'weight.int_area_ratio' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_WEIGHT_CURVATURE_RATIO
+     Specify the value for 'weight.curvature_ratio' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_WEIGHT_COMPLEXITY_RATIO
+     Specify the value for 'weight.complexity_ratio' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_WEIGHT_INTEN_PERC_RATIO
+     Specify the value for 'weight.inten_perc_ratio' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_WEIGHT_INTEN_PERC_VALUE
+     Specify the value for 'weight.inten_perc_value' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_NC_PAIRS_FLAG_LATLON
+     Specify the value for 'nc_pairs_flag.latlon' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_NC_PAIRS_FLAG_RAW
+     Specify the value for 'nc_pairs_flag.raw' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_NC_PAIRS_FLAG_OBJECT_RAW
+     Specify the value for 'nc_pairs_flag.object_raw' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_NC_PAIRS_FLAG_OBJECT_ID
+     Specify the value for 'nc_pairs_flag.object_id' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_NC_PAIRS_FLAG_CLUSTER_ID
+     Specify the value for 'nc_pairs_flag.cluster_id' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_NC_PAIRS_FLAG_POLYLINES
+     Specify the value for 'nc_pairs_flag.polylines' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_MASK_GRID
+     Specify the value for 'mask.grid' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_MASK_GRID_FLAG
+     Specify the value for 'mask.grid_flag' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_MASK_POLY
+     Specify the value for 'mask.poly' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_MASK_POLY_FLAG
+     Specify the value for 'mask.poly_flag' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_MATCH_FLAG
+     Specify the value for 'match_flag' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_MAX_CENTROID_DIST
+     Specify the value for 'max_centroid_dist' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_TOTAL_INTEREST_THRESH
+     Specify the value for 'total_interest_thresh' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_INTEREST_FUNCTION_CENTROID_DIST
+     Specify the value for 'interest_function.centroid_dist' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_INTEREST_FUNCTION_BOUNDARY_DIST
+     Specify the value for 'interest_function.boundary_dist' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST
+     Specify the value for 'interest_function.convex_hull_dist' in the MET configuration file for MODE.
+
+     | *Used by:* MODE
+
+   POINT_STAT_OBS_QUALITY
+     Specify the value for 'obs_quality' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_FHO
+     Specify the value for 'output_flag.fho' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_CTC
+     Specify the value for 'output_flag.ctc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_CTS
+     Specify the value for 'output_flag.cts' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_MCTC
+     Specify the value for 'output_flag.mctc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_MCTS
+     Specify the value for 'output_flag.mcts' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_CNT
+     Specify the value for 'output_flag.cnt' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_SL1L2
+     Specify the value for 'output_flag.sl1l2' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_SAL1L2
+     Specify the value for 'output_flag.sal1l2' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_VL1L2
+     Specify the value for 'output_flag.vl1l2' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_VAL1L2
+     Specify the value for 'output_flag.val1l2' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_VCNT
+     Specify the value for 'output_flag.vcnt' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_PCT
+     Specify the value for 'output_flag.pct' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_PSTD
+     Specify the value for 'output_flag.pstd' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_PJC
+     Specify the value for 'output_flag.pjc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_PRC
+     Specify the value for 'output_flag.prc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_ECNT
+     Specify the value for 'output_flag.ecnt' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_RPS
+     Specify the value for 'output_flag.rps' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_ECLV
+     Specify the value for 'output_flag.eclv' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OUTPUT_FLAG_MPR
+     Specify the value for 'output_flag.mpr' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_INTERP_VLD_THRESH
+     Specify the value for 'interp.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_INTERP_SHAPE
+     Specify the value for 'interp.shape' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_INTERP_TYPE_METHOD
+     Specify the value for 'interp.type.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_INTERP_TYPE_WIDTH
+     Specify the value for 'interp.type.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat

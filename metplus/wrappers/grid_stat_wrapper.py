@@ -173,8 +173,10 @@ class GridStatWrapper(CompareGriddedWrapper):
                                'GRID_STAT_NEIGHBORHOOD_SHAPE', 'SQUARE')
         )
 
-        self.handle_mask(single_value=False,
-                         c_dict=c_dict)
+        self.handle_mask(single_value=False)
+
+        # handle setting VERIFICATION_MASK for old wrapped MET config files
+        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
 
         self.handle_climo_cdf_dict()
 

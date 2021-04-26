@@ -9,12 +9,14 @@
 //
 // Output model name to be written
 //
+// model =
 ${METPLUS_MODEL}
 
 //
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
+// desc =
 ${METPLUS_DESC}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -22,6 +24,7 @@ ${METPLUS_DESC}
 //
 // Verification grid
 //
+// regrid = {
 ${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -55,9 +58,11 @@ obs = {
 // Point observation filtering options
 // May be set separately in each "obs.field" entry
 //
+// message_type =
 ${METPLUS_MESSAGE_TYPE}
 sid_exc        = [];
-obs_quality    = [ "1", "2", "3" ];
+//obs_quality =
+${METPLUS_OBS_QUALITY}
 duplicate_flag = NONE;
 obs_summary    = NONE;
 obs_perc_value = 50;
@@ -91,7 +96,8 @@ climo_mean = {
       shape      = SQUARE;
    }
 
-   time_interp_method = NEAREST;
+   //time_interp_method =
+   ${METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD}
    day_interval       = 31;
    hour_interval      = 6;
 }
@@ -108,8 +114,8 @@ climo_stdev = {
       shape	 = SQUARE;
    }
 
-   time_interp_method = DW_MEAN;
-   match_month        = TRUE;
+   //time_interp_method =
+   ${METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD}
    day_interval       = 31;
    hour_interval      = 6;
 }
@@ -125,6 +131,7 @@ ${METPLUS_CLIMO_CDF_DICT}
 //
 // Point observation time window
 //
+// obs_window = {
 ${METPLUS_OBS_WINDOW_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -159,17 +166,8 @@ boot = {
 //
 // Interpolation methods
 //
-interp = {
-   vld_thresh = 1.0;
-   shape      = SQUARE;
-
-   type = [
-      {
-         method = BILIN;
-         width  = 2;
-      }
-   ];
-}
+//interp = {
+${METPLUS_INTERP_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -189,32 +187,15 @@ hira = {
 //
 // Statistical output types
 //
-output_flag = {
-   fho    = NONE;
-   ctc    = NONE;
-   cts    = NONE;
-   mctc   = NONE;
-   mcts   = NONE;
-   cnt    = NONE;
-   sl1l2  = STAT;
-   sal1l2 = NONE;
-   vl1l2  = STAT;
-   val1l2 = NONE;
-   vcnt   = NONE;
-   pct    = NONE;
-   pstd   = NONE;
-   pjc    = NONE;
-   prc    = NONE;
-   ecnt   = NONE; // Only for HiRA.
-   eclv   = NONE;
-   mpr    = NONE;
-}
+//output_flag = {
+${METPLUS_OUTPUT_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 tmp_dir        = "/tmp";
+// output_prefix =
 ${METPLUS_OUTPUT_PREFIX}
-//version        = "V9.0";
+//version        = "V10.0.0";
 
 ////////////////////////////////////////////////////////////////////////////////
 
