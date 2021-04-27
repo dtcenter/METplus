@@ -2818,7 +2818,11 @@ Configuration
 | :term:`PB2NC_VALID_END`
 | :term:`PB2NC_CUSTOM_LOOP_LIST`
 | :term:`PB2NC_MET_CONFIG_OVERRIDES`
-|
+| :term:`PB2NC_PB_REPORT_TYPE`
+| :term:`PB2NC_LEVEL_RANGE_BEG`
+| :term:`PB2NC_LEVEL_RANGE_END`
+| :term:`PB2NC_LEVEL_CATEGORY`
+| :term:`PB2NC_QUALITY_MARK_THRESH`
 
 .. warning:: **DEPRECATED:**
 
@@ -2953,6 +2957,53 @@ Below the file contents are descriptions of each environment variable referenced
      - MET Config File
    * - :term:`PB2NC_MET_CONFIG_OVERRIDES`
      - n/a
+
+**${METPLUS_PB_REPORT_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_PB_REPORT_TYPE`
+     - pb_report_type
+
+**${METPLUS_LEVEL_RANGE_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_LEVEL_RANGE_BEG`
+     - level_range.beg
+   * - :term:`PB2NC_LEVEL_RANGE_END`
+     - level_range.end
+
+**${METPLUS_LEVEL_CATEGORY}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_LEVEL_CATEGORY`
+     - level_category
+
+**${METPLUS_QUALITY_MARK_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`PB2NC_QUALITY_MARK_THRESH`
+     - quality_mark_thresh
+
 
 .. _pcp_combine_wrapper:
 

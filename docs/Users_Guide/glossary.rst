@@ -7060,3 +7060,27 @@ METplus Configuration Glossary
      Specify the value for 'climo_stdev.hour_interval' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
+   PB2NC_PB_REPORT_TYPE
+     Specify the value for 'pb_report_type' in the MET configuration file for PB2NC.
+
+     | *Used by:* PB2NC
+
+   PB2NC_LEVEL_RANGE_BEG
+     Specify the value for 'level_range.beg' in the MET configuration file for PB2NC.
+
+     | *Used by:* PB2NC
+
+   PB2NC_LEVEL_RANGE_END
+     Specify the value for 'level_range.end' in the MET configuration file for PB2NC.
+
+     | *Used by:* PB2NC
+
+   PB2NC_LEVEL_CATEGORY
+     Specify the value for 'level_category' in the MET configuration file for PB2NC.
+
+     | *Used by:* PB2NC
+
+   PB2NC_QUALITY_MARK_THRESH
+     Specify the value for 'quality_mark_thresh' in the MET configuration file for PB2NC.
+
+     | *Used by:* PB2NC
