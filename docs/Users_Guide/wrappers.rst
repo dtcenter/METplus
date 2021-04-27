@@ -3698,16 +3698,39 @@ Configuration
 | :term:`FCST_SERIES_ANALYSIS_INPUT_DIR`
 | :term:`OBS_SERIES_ANALYSIS_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_TC_STAT_INPUT_DIR`
-| :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_DIR`
-| :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_OUTPUT_DIR`
 | :term:`FCST_SERIES_ANALYSIS_INPUT_TEMPLATE`
 | :term:`OBS_SERIES_ANALYSIS_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE`
-| :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE`
-| :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_OUTPUT_TEMPLATE`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_FIELD`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_METHOD`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_MATCH_MONTH`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_METHOD`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_MATCH_MONTH`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
 |
+
+.. warning:: **DEPRECATED:**
+
+   | :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_DIR`
+   | :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_DIR`
+   | :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE`
+   | :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE`
 
 .. _series-analysis-met-conf:
 
@@ -3845,7 +3868,7 @@ Below the file contents are descriptions of each environment variable referenced
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
-**${METPLUS_CLIMO_MEAN_FILE}**
+**${METPLUS_CLIMO_MEAN_DICT}**
 
 .. list-table::
    :widths: 5 5
@@ -3853,10 +3876,28 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE`
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME`
      - climo_mean.file_name
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_FIELD`
+     - climo_mean.field
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_METHOD`
+     - climo_mean.regrid.method
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_WIDTH`
+     - climo_mean.regrid.width
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - climo_mean.regrid.vld_thresh
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_SHAPE`
+     - climo_mean.regrid.shape
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - climo_mean.time_interp_method
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_MATCH_MONTH`
+     - climo_mean.match_month
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_DAY_INTERVAL`
+     - climo_mean.day_interval
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL`
+     - climo_mean.hour_interval
 
-**${METPLUS_CLIMO_STDEV_FILE}**
+**${METPLUS_CLIMO_STDEV_DICT}**
 
 .. list-table::
    :widths: 5 5
@@ -3864,8 +3905,27 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE`
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME`
      - climo_stdev.file_name
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD`
+     - climo_stdev.field
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_METHOD`
+     - climo_stdev.regrid.method
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_WIDTH`
+     - climo_stdev.regrid.width
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - climo_stdev.regrid.vld_thresh
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_SHAPE`
+     - climo_stdev.regrid.shape
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - climo_stdev.time_interp_method
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_MATCH_MONTH`
+     - climo_stdev.match_month
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL`
+     - climo_stdev.day_interval
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
+     - climo_stdev.hour_interval
+
 
 **${METPLUS_BLOCK_SIZE}**
 
