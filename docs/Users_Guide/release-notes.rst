@@ -96,6 +96,8 @@ METplus Version |version| release notes (|release_date|)
   * Seasonal to Subseasonal: UserScript_fcstGFS_obsERA_Blocking
   * Seasonal to Subseasonal: UserScript_obsERA_obsOnly_Blocking
   * Seasonal to Subseasonal: UserScript_obsERA_obsOnly_WeatherRegime
+  * Seasonal to Subseasonal: UserScript_obsPrecip_obsOnly_Hovmoeller
+  * Seasonal to Subseasonal: UserScript_obsPrecip_obsOnly_CrossSpectraPlot
   * TC and Extra TC: CyclonePlotter_fcstGFS_obsGFS_OPC
   * TC and Extra TC: UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF
   * TC and Extra TC: GridStat_fcstHAFS_obsTDR_NetCDF
