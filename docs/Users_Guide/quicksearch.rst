@@ -1,3 +1,5 @@
+.. _quick-search:
+
 METplus Quick Search for Use Cases
 ==================================
 

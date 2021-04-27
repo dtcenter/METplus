@@ -5915,11 +5915,6 @@ METplus Configuration Glossary
 
      | *Used by:*  MODE
 
-   MODE_MASK_POLY
-     Set the mask.poly entry in the MODE MET config file.
-
-     | *Used by:*  MODE
-
    TC_PAIRS_INIT_BEG
      Set the initialization begin time for TCpairs.
 
