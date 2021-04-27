@@ -9,17 +9,20 @@
 //
 // Output model name to be written
 //
+// model =
 ${METPLUS_MODEL}
 
 //
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
+// desc =
 ${METPLUS_DESC}
 
 //
 // Output observation type to be written
 //
+// obtype =
 ${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -27,6 +30,7 @@ ${METPLUS_OBTYPE}
 //
 // Verification grid
 //
+// regrid = {
 ${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -79,6 +83,7 @@ ${METPLUS_CLIMO_CDF_DICT}
 //
 // Verification masking regions
 //
+// mask = {
 ${METPLUS_MASK_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -111,8 +116,11 @@ ${METPLUS_INTERP_DICT}
 //
 nbrhd = {
    field      = BOTH;
+   // shape =
    ${METPLUS_NBRHD_SHAPE}
+   // width =
    ${METPLUS_NBRHD_WIDTH}
+   // cov_thresh =
    ${METPLUS_NBRHD_COV_THRESH}
    vld_thresh = 1.0;
 }
@@ -172,6 +180,7 @@ ${METPLUS_NC_PAIRS_FLAG_DICT}
 //grid_weight_flag =
 ${METPLUS_GRID_WEIGHT_FLAG}
 tmp_dir          = "/tmp";
+// output_prefix =
 ${METPLUS_OUTPUT_PREFIX}
 
 ////////////////////////////////////////////////////////////////////////////////
