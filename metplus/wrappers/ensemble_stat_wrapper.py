@@ -50,10 +50,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_ERROR_FLAG',
         'METPLUS_ENS_SSVAR_BIN_SIZE',
         'METPLUS_ENS_PHIST_BIN_SIZE',
-        'METPLUS_CLIMO_MEAN_FILE',
-        'METPLUS_CLIMO_MEAN_DAY_INTERVAL',
-        'METPLUS_CLIMO_MEAN_HOUR_INTERVAL',
-        'METPLUS_CLIMO_STDEV_FILE',
+        'METPLUS_CLIMO_MEAN_DICT',
+        'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_CLIMO_CDF_DICT',
         'METPLUS_OBS_WINDOW_DICT',
         'METPLUS_MASK_GRID',
@@ -63,6 +61,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_OUTPUT_FLAG_DICT',
         'METPLUS_ENSEMBLE_FLAG_DICT',
         'METPLUS_OUTPUT_PREFIX',
+    ]
+
+    # handle deprecated env vars used pre v4.0.0
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'CLIMO_MEAN_FILE',
+        'CLIMO_STDEV_FILE',
     ]
 
     OUTPUT_FLAGS = ['ecnt',
@@ -192,7 +196,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         )
 
         # get climatology config variables
-        self.read_climo_wrapper_specific('ENSEMBLE_STAT', c_dict)
+        self.handle_climo_dict()
 
         # need to set these so that find_data will succeed
         c_dict['OBS_POINT_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
@@ -266,14 +270,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                  'ENSEMBLE_STAT_OBS_ERROR_FLAG',
                                  'flag',
                                  'METPLUS_OBS_ERROR_FLAG')
-        self.set_met_config_int(self.env_var_dict,
-                                'ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL',
-                                'day_interval',
-                                'METPLUS_CLIMO_MEAN_DAY_INTERVAL')
-        self.set_met_config_int(self.env_var_dict,
-                                'ENSEMBLE_STAT_CLIMO_MEAN_HOUR_INTERVAL',
-                                'hour_interval',
-                                'METPLUS_CLIMO_MEAN_HOUR_INTERVAL')
         self.set_met_config_list(self.env_var_dict,
                                  'ENSEMBLE_STAT_MASK_GRID',
                                  'grid',
@@ -624,9 +620,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # CURRENT_[FCST/OBS]_[NAME/LEVEL] is substituted correctly
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))
-
-        # set climatology environment variables
-        self.set_climo_env_vars()
 
         # support old method of setting variables in MET config files
         self.add_env_var('ENS_THRESH',

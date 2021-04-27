@@ -15,6 +15,7 @@ import glob
 from datetime import datetime
 from abc import ABCMeta
 from inspect import getframeinfo, stack
+import re
 
 from .command_runner import CommandRunner
 from ..util import met_util as util
@@ -67,6 +68,9 @@ class CommandBuilder:
         ]
         if hasattr(self, 'WRAPPER_ENV_VAR_KEYS'):
             self.env_var_keys.extend(self.WRAPPER_ENV_VAR_KEYS)
+
+        if hasattr(self, 'DEPRECATED_WRAPPER_ENV_VAR_KEYS'):
+            self.env_var_keys.extend(self.DEPRECATED_WRAPPER_ENV_VAR_KEYS)
 
         # if instance is set, check for a section with the same name in the
         # METplusConfig object. If found, copy all values into the config
@@ -1417,7 +1421,8 @@ class CommandBuilder:
             else:
                 c_key = c_dict_key
 
-            c_dict[c_key] = f'{met_config_name} = {conf_value};'
+            conf_value = f'{met_config_name} = {conf_value};'
+            c_dict[c_key] = conf_value
 
     def set_met_config_string(self, c_dict, mp_config, met_config_name,
                               c_dict_key=None, **kwargs):
@@ -1720,75 +1725,156 @@ class CommandBuilder:
 
         return output_prefix
 
-    def set_climo_env_vars(self):
-        """!Set all climatology environment variables from CLIMO_<item>_FILE
-            c_dict values if they are not set to None"""
-        for climo_item in self.climo_types:
+    def _parse_extra_args(self, extra):
+        """! Check string for extra option keywords and set them to True in
+         dictionary if they are found. Supports 'remove_quotes' and 'uppercase'
 
-            # climo file is set to None if not found, so set to empty string if None
-            climo_file = (
-                util.remove_quotes(self.c_dict.get(f'CLIMO_{climo_item}_FILE'))
-            )
+            @param extra string to parse for keywords
+            @returns dictionary with extra args set if found in string
+        """
+        extra_args = {}
+        for extra_option in ['remove_quotes', 'uppercase']:
+            if extra_option in extra:
+                extra_args[extra_option] = True
+        return extra_args
 
-            climo_string = ''
-            # remove then add double quotes for file path unless empty string
-            if climo_file:
-                climo_file = f'"{util.remove_quotes(climo_file)}"'
-                climo_string = f"file_name = [{climo_file}];"
+    def handle_climo_dict(self):
+        """! Read climo mean/stdev variables with and set env_var_dict
+         appropriately. Handle previous environment variables that are used
+         by wrapped MET configs pre 4.0 (CLIMO_MEAN_FILE and CLIMO_STDEV_FILE)
 
-            # set environment variable for old method
-            self.add_env_var(f'CLIMO_{climo_item}_FILE', climo_file)
+        """
+        # define layout of climo_mean and climo_stdev dictionaries
+        climo_items = {
+            'file_name': ('list', '', None),
+            'field': ('list', '', None),
+            'regrid': ('dict', '', [
+                ('method', 'string',
+                 'uppercase,remove_quotes'),
+                ('width', 'int', ''),
+                ('vld_thresh', 'float', ''),
+                ('shape', 'string',
+                 'uppercase,remove_quotes')
+            ]),
+            'time_interp_method': ('string', 'remove_quotes,uppercase',
+                                   None),
+            'match_month': ('bool', 'uppercase', None),
+            'day_interval': ('int', '', None),
+            'hour_interval': ('int', '', None),
+        }
+        for climo_type in self.climo_types:
+            dict_name = f'climo_{climo_type.lower()}'
+            dict_items = []
 
-    def read_climo_wrapper_specific(self, met_tool, c_dict):
-        """!Read climatology directory and template values for specific MET
-         tool specified and set the values in c_dict"""
-        for climo_item in self.climo_types:
-            c_dict[f'CLIMO_{climo_item}_INPUT_DIR'] = (
-                self.config.getdir(f'{met_tool}_CLIMO_{climo_item}_INPUT_DIR',
-                                   '')
-            )
-            c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE'] = (
-                self.config.getraw('filename_templates',
-                                   f'{met_tool}_CLIMO_{climo_item}_INPUT_TEMPLATE',
-                                   '')
-            )
+            # make sure _FILE_NAME is set from INPUT_TEMPLATE/DIR if used
+            self.read_climo_file_name(climo_type)
 
-    def handle_climo(self, time_info):
-        """!Substitute time information into all climatology template values"""
-        for climo_item in self.climo_types:
-             self.handle_climo_file_item(time_info, climo_item)
+            # config prefix i.e GRID_STAT_CLIMO_MEAN_
+            metplus_prefix = f'{self.app_name.upper()}_{dict_name.upper()}_'
+            for name, (data_type, extra, kids) in climo_items.items():
+                # config name i.e. GRID_STAT_CLIMO_MEAN_FILE_NAME
+                metplus_name = f'{metplus_prefix}{name.upper()}'
+                metplus_configs = []
 
-    def handle_climo_file_item(self, time_info, climo_item):
-        """!Handle a single climatology value by substituting time information,
-            prepending input directory if provided, and
-            preprocessing file if necessary. All information is read from
-            c_dict. CLIMO_<item>_FILE in c_dict is set."""
+                if data_type != 'dict':
+                    children = None
+                    metplus_configs.append(metplus_name)
+                # if dictionary, read get children from MET config
+                else:
+                    children = []
+                    for kid, kid_type, kid_extra in kids:
+                        metplus_configs.append(f'{metplus_name}_{kid.upper()}')
+                        metplus_configs.append(
+                            f'{metplus_prefix}{kid.upper()}')
 
-        # don't process if template is not set
-        if not self.c_dict.get(f'CLIMO_{climo_item}_INPUT_TEMPLATE'):
+                        kid_args = self._parse_extra_args(kid_extra)
+                        child_item = self.get_met_config(
+                            name=kid,
+                            data_type=kid_type,
+                            metplus_configs=metplus_configs.copy(),
+                            extra_args=kid_args,
+                        )
+                        children.append(child_item)
+
+                        # reset metplus config list for next kid
+                        metplus_configs.clear()
+
+                    # set metplus_configs
+                    metplus_configs = None
+
+                # parse extra options
+                extra_args = self._parse_extra_args(extra)
+                dict_item = (
+                    self.get_met_config(
+                        name=name,
+                        data_type=data_type,
+                        metplus_configs=metplus_configs,
+                        extra_args=extra_args,
+                        children=children,
+                    )
+                )
+                dict_items.append(dict_item)
+
+            self.handle_met_config_dict(dict_name, dict_items)
+
+            # handle deprecated env vars CLIMO_MEAN_FILE and CLIMO_STDEV_FILE
+            # that are used by pre v4.0.0 wrapped MET config files
+            env_var_name = f'METPLUS_{dict_name.upper()}_DICT'
+            dict_value = self.env_var_dict.get(env_var_name, '')
+            match = re.match(r'.*file_name = \[([^\[\]]*)\];.*', dict_value)
+            if match:
+                file_name = match.group(1)
+                self.env_var_dict[f'{dict_name.upper()}_FILE'] = file_name
+
+    def read_climo_file_name(self, climo_type):
+        """! Check values for {APP}_CLIMO_{climo_type}_ variables FILE_NAME,
+        INPUT_TEMPLATE, and INPUT_DIR. If FILE_NAME is set, use it and warn
+        if the INPUT_TEMPLATE/DIR variables are also set. If FILE_NAME is not
+        set, read template and dir variables and format the values to set
+        FILE_NAME, i.e. the variables:
+          GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE = a, b
+          GRID_STAT_CLIMO_MEAN_INPUT_DIR = /some/dir
+        will set:
+          GRID_STAT_CLIMO_MEAN_FILE_NAME = /some/dir/a, some/dir/b
+        Used to support pre v4.0 variables.
+
+            @param climo_type type of climo field (mean or stdev)
+        """
+        # prefix i.e. GRID_STAT_CLIMO_MEAN_
+        prefix = f'{self.app_name.upper()}_CLIMO_{climo_type.upper()}_'
+
+        input_dir = self.config.getdir_nocheck(f'{prefix}INPUT_DIR', '')
+        input_template = self.config.getraw('config',
+                                            f'{prefix}INPUT_TEMPLATE', '')
+        file_name = self.config.getraw('config',
+                                       f'{prefix}FILE_NAME', '')
+
+        # if input template is not set, nothing to do
+        if not input_template:
             return
 
-        template = self.c_dict.get(f'CLIMO_{climo_item}_INPUT_TEMPLATE', '')
-        climo_file = do_string_sub(template,
-                                   **time_info)
-        climo_path = (
-            os.path.join(self.c_dict.get(f'CLIMO_{climo_item}_INPUT_DIR',
-                                         ''),
-                         climo_file)
-        )
+        # if input template is set and file name is also set,
+        # warn and use file name values
+        if file_name:
+            self.logger.warning(f'Both {prefix}INPUT_TEMPLATE and '
+                                f'{prefix}FILE_NAME are set. Using '
+                                f'value set in {prefix}FILE_NAME '
+                                f'({file_name})')
+            return
 
-        if not self.c_dict.get('INPUT_MUST_EXIST'):
-            output_path = climo_path
-        else:
-            self.logger.debug(f"Looking for climatology {climo_item.lower()} "
-                              f"file {climo_path}")
-            output_path = util.preprocess_file(climo_path,
-                                               '',
-                                               self.config)
+        template_list_string = input_template
+        # if file name is not set but template is, set file name from template
+        # if dir is set and not python embedding,
+        # prepend it to each template in list
+        if input_dir and input_template not in util.PYTHON_EMBEDDING_TYPES:
+            template_list = util.getlist(input_template)
+            for index, template in enumerate(template_list):
+                template_list[index] = os.path.join(input_dir, template)
 
-        self.c_dict[f'CLIMO_{climo_item}_FILE'] = output_path
-        output_fmt = f'file_name = ["{output_path}"];'
-        self.env_var_dict[f'METPLUS_CLIMO_{climo_item}_FILE'] = output_fmt
+            # change formatted list back to string
+            template_list_string = ','.join(template_list)
+
+        self.config.set('config', f'{prefix}FILE_NAME', template_list_string)
 
     def get_wrapper_or_generic_config(self, generic_config_name):
         """! Check for config variable with <APP_NAME>_ prepended first. If set

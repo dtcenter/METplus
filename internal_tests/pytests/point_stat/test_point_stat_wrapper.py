@@ -56,18 +56,6 @@ def point_stat_wrapper(metplus_config):
                                   'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
                                   )}),
 
-        ({'POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE':
-              '/some/path/climo/filename.nc',
-          },
-         {'METPLUS_CLIMO_MEAN_FILE':
-              'file_name = ["/some/path/climo/filename.nc"];',
-          }),
-        ({'POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE':
-              '/some/path/climo/stdfile.nc',
-          },
-         {'METPLUS_CLIMO_STDEV_FILE':
-              'file_name = ["/some/path/climo/stdfile.nc"];',
-         }),
         # mask grid and poly (old config var)
         ({'POINT_STAT_MASK_GRID': 'FULL',
           'POINT_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
@@ -259,15 +247,124 @@ def point_stat_wrapper(metplus_config):
                                      'vld_thresh = 0.5;shape = SQUARE;'
                                      'type = {method = BILIN;width = 2;}}')}),
 
+        ({'POINT_STAT_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
+         {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
+                                      '["/some/climo_mean/file.txt"];}'),
+          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_FIELD': 'CLM_NAME', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = ["CLM_NAME"];}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_REGRID_METHOD': 'NEAREST', },
+         {
+             'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {method = NEAREST;}}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_REGRID_WIDTH': '1', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {width = 1;}}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5', },
+         {
+             'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {vld_thresh = 0.5;}}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE', },
+         {
+             'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
+
         ({'POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
-         {'METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD': (
-                 'time_interp_method = NEAREST;'
-         )}),
+         {
+             'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_MATCH_MONTH': 'True', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_DAY_INTERVAL': '30', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_HOUR_INTERVAL': '12', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {hour_interval = 12;}'}),
+
+        ({
+             'POINT_STAT_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt',
+             'POINT_STAT_CLIMO_MEAN_FIELD': 'CLM_NAME',
+             'POINT_STAT_CLIMO_MEAN_REGRID_METHOD': 'NEAREST',
+             'POINT_STAT_CLIMO_MEAN_REGRID_WIDTH': '1',
+             'POINT_STAT_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
+             'POINT_STAT_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
+             'POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
+             'POINT_STAT_CLIMO_MEAN_MATCH_MONTH': 'True',
+             'POINT_STAT_CLIMO_MEAN_DAY_INTERVAL': '30',
+             'POINT_STAT_CLIMO_MEAN_HOUR_INTERVAL': '12',
+         },
+         {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
+                                      '["/some/climo_mean/file.txt"];'
+                                      'field = ["CLM_NAME"];'
+                                      'regrid = {method = NEAREST;width = 1;'
+                                      'vld_thresh = 0.5;shape = SQUARE;}'
+                                      'time_interp_method = NEAREST;'
+                                      'match_month = TRUE;day_interval = 30;'
+                                      'hour_interval = 12;}'),
+          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
+
+        # climo stdev
+        ({'POINT_STAT_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
+         {'METPLUS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
+                                       '["/some/climo_stdev/file.txt"];}'),
+          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_FIELD': 'CLM_NAME', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = ["CLM_NAME"];}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_REGRID_METHOD': 'NEAREST', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {method = NEAREST;}}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_REGRID_WIDTH': '1', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {width = 1;}}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {vld_thresh = 0.5;}}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
 
         ({'POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
-         {'METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD': (
-                 'time_interp_method = NEAREST;'
-         )}),
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_MATCH_MONTH': 'True', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_DAY_INTERVAL': '30', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL': '12', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {hour_interval = 12;}'}),
+
+        ({
+             'POINT_STAT_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt',
+             'POINT_STAT_CLIMO_STDEV_FIELD': 'CLM_NAME',
+             'POINT_STAT_CLIMO_STDEV_REGRID_METHOD': 'NEAREST',
+             'POINT_STAT_CLIMO_STDEV_REGRID_WIDTH': '1',
+             'POINT_STAT_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
+             'POINT_STAT_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
+             'POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
+             'POINT_STAT_CLIMO_STDEV_MATCH_MONTH': 'True',
+             'POINT_STAT_CLIMO_STDEV_DAY_INTERVAL': '30',
+             'POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL': '12',
+         },
+         {'METPLUS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
+                                       '["/some/climo_stdev/file.txt"];'
+                                       'field = ["CLM_NAME"];'
+                                       'regrid = {method = NEAREST;width = 1;'
+                                       'vld_thresh = 0.5;shape = SQUARE;}'
+                                       'time_interp_method = NEAREST;'
+                                       'match_month = TRUE;day_interval = 30;'
+                                       'hour_interval = 12;}'),
+          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
     ]
 )
 def test_point_stat_all_fields(metplus_config, config_overrides,

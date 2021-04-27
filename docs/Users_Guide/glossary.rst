@@ -639,23 +639,22 @@ METplus Configuration Glossary
      | *Used by:* ASCII2NC
 
    CLIMO_GRID_STAT_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_MEAN_INPUT_DIR`.
+     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`.
 
    GRID_STAT_CLIMO_MEAN_INPUT_DIR
-     Directory containing the climatology mean file used by GridStat. This variable is optional because you can specify the full path to a climatology file using :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`.
+     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`.
 
      | *Used by:* GridStat
 
    CLIMO_GRID_STAT_INPUT_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`.
+     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`.
 
    GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE
-     Filename template of the climatology mean file used by GridStat. See also :term:`GRID_STAT_CLIMO_MEAN_INPUT_DIR`.
-
-     | *Used by:* GridStat
+     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`.
 
    CLIMO_POINT_STAT_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_INPUT_DIR`.
+     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_FILE_NAME`.
+
 
    POINT2GRID_INPUT_TEMPLATE
      Filename template for the point file used by Point2Grid.
@@ -673,78 +672,49 @@ METplus Configuration Glossary
      | *Used by:* Point2Grid
 
    POINT_STAT_CLIMO_MEAN_INPUT_DIR
-     Directory containing the climatology mean file used by PointStat. This variable is optional because you can specify the full path to a climatology file using :term:`POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE`.
-
-     | *Used by:* PointStat
+     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_FILE_NAME`.
 
    CLIMO_POINT_STAT_INPUT_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE`.
+     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_FILE_NAME`.
 
    POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE
-
-     Filename template of the climatology file used by PointStat. See also :term:`POINT_STAT_CLIMO_MEAN_INPUT_DIR`.
-
-     | *Used by:* PointStat
+     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_FILE_NAME`.
 
    ENSEMBLE_STAT_CLIMO_MEAN_INPUT_DIR
-     Directory containing the climatology mean file used by EnsembleStat. This variable is optional because you can specify the full path to a climatology file using :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_TEMPLATE`.
-
-     | *Used by:* EnsembleStat
+     .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME`.
 
    ENSEMBLE_STAT_CLIMO_MEAN_INPUT_TEMPLATE
-     Filename template of the climatology mean file used by EnsembleStat. See also :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_DIR`.
-
-     | *Used by:* EnsembleStat
+     .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME`.
 
    SERIES_ANALYSIS_CLIMO_MEAN_INPUT_DIR
-     Directory containing the climatology mean file used by SeriesAnalysis. This variable is optional because you can specify the full path to a climatology file using :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE`.
-
-     | *Used by:* SeriesAnalysis
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME`.
 
    SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE
-     Filename template of the climatology mean file used by SeriesAnalysis. See also :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_DIR`.
-
-     | *Used by:* SeriesAnalysis
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME`.
 
    ENSEMBLE_STAT_CLIMO_STDEV_INPUT_DIR
-     Directory containing the climatology standard deviation file used by EnsembleStat. This variable is optional because you can specify the full path to a climatology file using :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_TEMPLATE`.
-
-     | *Used by:* EnsembleStat
+     .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_CLIMO_STDEV_FILE_NAME`.
 
    ENSEMBLE_STAT_CLIMO_STDEV_INPUT_TEMPLATE
-     Filename template of the climatology standard deviation file used by EnsembleStat. See also :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_DIR`.
-
-     | *Used by:* EnsembleStat
+     .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_CLIMO_STDEV_FILE_NAME`.
 
    GRID_STAT_CLIMO_STDEV_INPUT_DIR
-     Directory containing the climatology standard deviation file used by GridStat. This variable is optional because you can specify the full path to a climatology file using :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE`.
-
-     | *Used by:* GridStat
+     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_STDEV_FILE_NAME`.
 
    GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE
-     Filename template of the climatology standard deviation file used by GridStat. See also :term:`GRID_STAT_CLIMO_STDEV_INPUT_DIR`.
-
-     | *Used by:* GridStat
+     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_STDEV_FILE_NAME`.
 
    POINT_STAT_CLIMO_STDEV_INPUT_DIR
-     Directory containing the climatology standard deviation file used by PointStat. This variable is optional because you can specify the full path to a climatology file using :term:`POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE`.
-
-     | *Used by:* PointStat
+     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_STDEV_FILE_NAME`.
 
    POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE
-     Filename template of the climatology standard deviation file used by PointStat. See also :term:`POINT_STAT_CLIMO_STDEV_INPUT_DIR`.
-
-     | *Used by:* PointStat
+     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_STDEV_FILE_NAME`.
 
    SERIES_ANALYSIS_CLIMO_STDEV_INPUT_DIR
-     Directory containing the climatology standard deviation file used by SeriesAnalysis. This variable is optional because you can specify the full path to a climatology file using :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE`.
-
-     | *Used by:* SeriesAnalysis
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME`.
 
    SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE
-     Filename template of the climatology standard deviation file used by SeriesAnalysis. See also :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_DIR`.
-
-     | *Used by:* SeriesAnalysis
+     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME`.
 
    ADECK_FILE_PREFIX
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_ADECK_TEMPLATE`.
@@ -5456,15 +5426,105 @@ METplus Configuration Glossary
 
      | *Used by:*  EnsembleStat
 
+   ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'climo_mean.file_name' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_MEAN_FIELD
+     Specify the value for 'climo_mean.field' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'climo_mean.regrid.method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'climo_mean.regrid.width' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'climo_mean.regrid.vld_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'climo_mean.regrid.shape' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_MEAN_MATCH_MONTH
+     Specify the value for 'climo_mean.match_month' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
    ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL
      Specify the value for 'climo_mean.day_interval' in the MET configuration file for EnsembleStat.
 
-     | *Used by:*  EnsembleStat
+     | *Used by:* EnsembleStat
 
    ENSEMBLE_STAT_CLIMO_MEAN_HOUR_INTERVAL
      Specify the value for 'climo_mean.hour_interval' in the MET configuration file for EnsembleStat.
 
-     | *Used by:*  EnsembleStat
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'climo_stdev.file_name' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_FIELD
+     Specify the value for 'climo_stdev.field' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'climo_stdev.regrid.method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'climo_stdev.regrid.width' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'climo_stdev.regrid.vld_thresh' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'climo_stdev.regrid.shape' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_MATCH_MONTH
+     Specify the value for 'climo_stdev.match_month' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'climo_stdev.day_interval' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'climo_stdev.hour_interval' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
 
    ENSEMBLE_STAT_MASK_GRID
      Specify the value for 'mask.grid' in the MET configuration file for EnsembleStat.
@@ -6655,8 +6715,83 @@ METplus Configuration Glossary
 
      | *Used by:* PointStat
 
+   POINT_STAT_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'climo_mean.file_name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_FIELD
+     Specify the value for 'climo_mean.field' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'climo_mean.regrid.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'climo_mean.regrid.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'climo_mean.regrid.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'climo_mean.regrid.shape' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
    POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD
      Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_MATCH_MONTH
+     Specify the value for 'climo_mean.match_month' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'climo_mean.day_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'climo_mean.hour_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'climo_stdev.file_name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_FIELD
+     Specify the value for 'climo_stdev.field' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'climo_stdev.regrid.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'climo_stdev.regrid.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'climo_stdev.regrid.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'climo_stdev.regrid.shape' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
 
@@ -6665,6 +6800,266 @@ METplus Configuration Glossary
 
      | *Used by:* PointStat
 
+   POINT_STAT_CLIMO_STDEV_MATCH_MONTH
+     Specify the value for 'climo_stdev.match_month' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'climo_stdev.day_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'climo_stdev.hour_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   GRID_STAT_INTERP_FIELD
+     Specify the value for 'interp.field' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_INTERP_VLD_THRESH
+     Specify the value for 'interp.vld_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_INTERP_SHAPE
+     Specify the value for 'interp.shape' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_INTERP_TYPE_METHOD
+     Specify the value for 'interp.type.method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_INTERP_TYPE_WIDTH
+     Specify the value for 'interp.type.width' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_NC_PAIRS_VAR_NAME
+     Specify the value for 'nc_pairs_var_name' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'climo_mean.file_name' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_FIELD
+     Specify the value for 'climo_mean.field' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'climo_mean.regrid.method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'climo_mean.regrid.width' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'climo_mean.regrid.vld_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'climo_mean.regrid.shape' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_MATCH_MONTH
+     Specify the value for 'climo_mean.match_month' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'climo_mean.day_interval' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'climo_mean.hour_interval' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'climo_stdev.file_name' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_FIELD
+     Specify the value for 'climo_stdev.field' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'climo_stdev.regrid.method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'climo_stdev.regrid.width' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'climo_stdev.regrid.vld_thresh' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'climo_stdev.regrid.shape' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_MATCH_MONTH
+     Specify the value for 'climo_stdev.match_month' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'climo_stdev.day_interval' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'climo_stdev.hour_interval' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+
+   GRID_STAT_GRID_WEIGHT_FLAG
+     Specify the value for 'grid_weight_flag' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   FCST_GRID_STAT_FILE_TYPE
+     Specify the value for 'fcst.file_type' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   OBS_GRID_STAT_FILE_TYPE
+     Specify the value for 'obs.file_type' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'climo_mean.file_name' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_FIELD
+     Specify the value for 'climo_mean.field' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'climo_mean.regrid.method' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'climo_mean.regrid.width' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'climo_mean.regrid.vld_thresh' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'climo_mean.regrid.shape' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_MATCH_MONTH
+     Specify the value for 'climo_mean.match_month' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'climo_mean.day_interval' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'climo_mean.hour_interval' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'climo_stdev.file_name' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_FIELD
+     Specify the value for 'climo_stdev.field' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'climo_stdev.regrid.method' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'climo_stdev.regrid.width' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'climo_stdev.regrid.vld_thresh' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'climo_stdev.regrid.shape' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_MATCH_MONTH
+     Specify the value for 'climo_stdev.match_month' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'climo_stdev.day_interval' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'climo_stdev.hour_interval' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
    PB2NC_PB_REPORT_TYPE
      Specify the value for 'pb_report_type' in the MET configuration file for PB2NC.
 

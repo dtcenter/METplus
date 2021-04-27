@@ -81,12 +81,6 @@ that reformat gridded data
         c_dict['NEIGHBORHOOD_WIDTH'] = ''
         c_dict['NEIGHBORHOOD_SHAPE'] = ''
 
-        # initialize climatology items
-        for climo_item in self.climo_types:
-            c_dict[f'CLIMO_{climo_item}_INPUT_DIR'] = ''
-            c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE'] = ''
-            c_dict[f'CLIMO_{climo_item}_FILE'] = None
-
         self.handle_regrid(c_dict)
 
         self.handle_description()
@@ -186,8 +180,6 @@ that reformat gridded data
             self.log_error('No input fields were specified. You must set '
                            f'[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
             return None
-
-        self.handle_climo(time_info)
 
         if self.c_dict.get('ONCE_PER_FIELD', False):
             # loop over all fields and levels (and probability thresholds) and

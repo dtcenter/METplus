@@ -27,8 +27,6 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_FCST_FIELD',
         'METPLUS_OBS_FIELD',
         'METPLUS_MESSAGE_TYPE',
-        'METPLUS_CLIMO_MEAN_FILE',
-        'METPLUS_CLIMO_STDEV_FILE',
         'METPLUS_OBS_WINDOW_DICT',
         'METPLUS_MASK_GRID',
         'METPLUS_MASK_POLY',
@@ -38,8 +36,14 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_QUALITY',
         'METPLUS_OUTPUT_FLAG_DICT',
         'METPLUS_INTERP_DICT',
-        'METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD',
-        'METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD',
+        'METPLUS_CLIMO_MEAN_DICT',
+        'METPLUS_CLIMO_STDEV_DICT',
+    ]
+
+    # handle deprecated env vars used pre v4.0.0
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'CLIMO_MEAN_FILE',
+        'CLIMO_STDEV_FILE',
     ]
 
     OUTPUT_FLAGS = ['fho',
@@ -128,7 +132,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         )
 
         # get climatology config variables
-        self.read_climo_wrapper_specific('POINT_STAT', c_dict)
+        self.handle_climo_dict()
 
         # Configuration
         c_dict['CONFIG_FILE'] = (
@@ -297,8 +301,5 @@ class PointStatWrapper(CompareGriddedWrapper):
         # add additional env vars if they are specified
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))
-
-        # set climatology environment variables
-        self.set_climo_env_vars()
 
         super().set_environment_variables(time_info)
