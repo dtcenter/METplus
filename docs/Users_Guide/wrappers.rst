@@ -1076,13 +1076,9 @@ METplus Configuration
 | :term:`FCST_GRID_STAT_INPUT_DIR`
 | :term:`OBS_GRID_STAT_INPUT_DIR`
 | :term:`GRID_STAT_OUTPUT_DIR`
-| :term:`GRID_STAT_CLIMO_MEAN_INPUT_DIR`
-| :term:`GRID_STAT_CLIMO_STDEV_INPUT_DIR`
 | :term:`FCST_GRID_STAT_INPUT_TEMPLATE`
 | :term:`OBS_GRID_STAT_INPUT_TEMPLATE`
 | :term:`GRID_STAT_OUTPUT_TEMPLATE`
-| :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
-| :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
 | :term:`GRID_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`LOG_GRID_STAT_VERBOSITY`
 | :term:`GRID_STAT_OUTPUT_PREFIX`
@@ -1139,9 +1135,29 @@ METplus Configuration
 | :term:`GRID_STAT_INTERP_TYPE_METHOD`
 | :term:`GRID_STAT_INTERP_TYPE_WIDTH`
 | :term:`GRID_STAT_NC_PAIRS_VAR_NAME`
-| :term:`GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
-| :term:`GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
 | :term:`GRID_STAT_GRID_WEIGHT_FLAG`
+| :term:`FCST_GRID_STAT_FILE_TYPE`
+| :term:`OBS_GRID_STAT_FILE_TYPE`
+| :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`
+| :term:`GRID_STAT_CLIMO_MEAN_FIELD`
+| :term:`GRID_STAT_CLIMO_MEAN_REGRID_METHOD`
+| :term:`GRID_STAT_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`GRID_STAT_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`GRID_STAT_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`GRID_STAT_CLIMO_MEAN_MATCH_MONTH`
+| :term:`GRID_STAT_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`GRID_STAT_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`GRID_STAT_CLIMO_STDEV_FILE_NAME`
+| :term:`GRID_STAT_CLIMO_STDEV_FIELD`
+| :term:`GRID_STAT_CLIMO_STDEV_REGRID_METHOD`
+| :term:`GRID_STAT_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`GRID_STAT_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`GRID_STAT_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`GRID_STAT_CLIMO_STDEV_MATCH_MONTH`
+| :term:`GRID_STAT_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`GRID_STAT_MASK_POLY` (optional)
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
@@ -1174,6 +1190,10 @@ METplus Configuration
    | :term:`GRID_STAT_CONFIG`
    | :term:`CLIMO_GRID_STAT_INPUT_DIR`
    | :term:`CLIMO_GRID_STAT_INPUT_TEMPLATE`
+   | :term:`GRID_STAT_CLIMO_MEAN_INPUT_DIR`
+   | :term:`GRID_STAT_CLIMO_STDEV_INPUT_DIR`
+   | :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
+   | :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
    |
 
 .. _grid-stat-met-conf:
@@ -1260,6 +1280,17 @@ Below the file contents are descriptions of each environment variable referenced
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
+**${METPLUS_FCST_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`FCST_GRID_STAT_FILE_TYPE`
+     - fcst.file_type
+
 **${METPLUS_OBS_FIELD}**
 
 .. list-table::
@@ -1279,7 +1310,7 @@ Below the file contents are descriptions of each environment variable referenced
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
-**${METPLUS_CLIMO_MEAN_FILE}**
+**${METPLUS_OBS_FILE_TYPE}**
 
 .. list-table::
    :widths: 5 5
@@ -1287,10 +1318,40 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
+   * - :term:`OBS_GRID_STAT_FILE_TYPE`
+     - obs.file_type
+
+**${METPLUS_CLIMO_MEAN_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`
      - climo_mean.file_name
+   * - :term:`GRID_STAT_CLIMO_MEAN_FIELD`
+     - climo_mean.field
+   * - :term:`GRID_STAT_CLIMO_MEAN_REGRID_METHOD`
+     - climo_mean.regrid.method
+   * - :term:`GRID_STAT_CLIMO_MEAN_REGRID_WIDTH`
+     - climo_mean.regrid.width
+   * - :term:`GRID_STAT_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - climo_mean.regrid.vld_thresh
+   * - :term:`GRID_STAT_CLIMO_MEAN_REGRID_SHAPE`
+     - climo_mean.regrid.shape
+   * - :term:`GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - climo_mean.time_interp_method
+   * - :term:`GRID_STAT_CLIMO_MEAN_MATCH_MONTH`
+     - climo_mean.match_month
+   * - :term:`GRID_STAT_CLIMO_MEAN_DAY_INTERVAL`
+     - climo_mean.day_interval
+   * - :term:`GRID_STAT_CLIMO_MEAN_HOUR_INTERVAL`
+     - climo_mean.hour_interval
 
-**${METPLUS_CLIMO_STDEV_FILE}**
+
+**${METPLUS_CLIMO_STDEV_DICT}**
 
 .. list-table::
    :widths: 5 5
@@ -1298,8 +1359,27 @@ Below the file contents are descriptions of each environment variable referenced
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
+   * - :term:`GRID_STAT_CLIMO_STDEV_FILE_NAME`
      - climo_stdev.file_name
+   * - :term:`GRID_STAT_CLIMO_STDEV_FIELD`
+     - climo_stdev.field
+   * - :term:`GRID_STAT_CLIMO_STDEV_REGRID_METHOD`
+     - climo_stdev.regrid.method
+   * - :term:`GRID_STAT_CLIMO_STDEV_REGRID_WIDTH`
+     - climo_stdev.regrid.width
+   * - :term:`GRID_STAT_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - climo_stdev.regrid.vld_thresh
+   * - :term:`GRID_STAT_CLIMO_STDEV_REGRID_SHAPE`
+     - climo_stdev.regrid.shape
+   * - :term:`GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - climo_stdev.time_interp_method
+   * - :term:`GRID_STAT_CLIMO_STDEV_MATCH_MONTH`
+     - climo_stdev.match_month
+   * - :term:`GRID_STAT_CLIMO_STDEV_DAY_INTERVAL`
+     - climo_stdev.day_interval
+   * - :term:`GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL`
+     - climo_stdev.hour_interval
+
 
 **${METPLUS_MASK_DICT}**
 
@@ -1497,28 +1577,6 @@ Below the file contents are descriptions of each environment variable referenced
      - MET Config File
    * - :term:`GRID_STAT_NC_PAIRS_VAR_NAME`
      - nc_pairs_var_name
-
-**${METPLUS_CLIMO_MEAN_TIME_INTERP_METHOD}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
-     - climo_mean.time_interp_method
-
-**${METPLUS_CLIMO_STDEV_TIME_INTERP_METHOD}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
-     - climo_stdev.time_interp_method
 
 **${METPLUS_GRID_WEIGHT_FLAG}**
 
