@@ -26,7 +26,6 @@ jobs:
           python -m pip install --upgrade sphinx sphinx-gallery sphinx_rtd_theme
           python -m pip install python-dateutil requests Pillow
       - name: Build Documentation
-        #continue-on-error: true
         run: ./.github/jobs/build_documentation.sh
       - uses: actions/upload-artifact@v2
         if: always()
