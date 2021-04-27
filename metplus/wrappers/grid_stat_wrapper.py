@@ -45,6 +45,8 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_INTERP_DICT',
         'METPLUS_NC_PAIRS_VAR_NAME',
         'METPLUS_GRID_WEIGHT_FLAG',
+        'METPLUS_FCST_FILE_TYPE',
+        'METPLUS_OBS_FILE_TYPE',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -203,6 +205,25 @@ class GridStatWrapper(CompareGriddedWrapper):
                             metplus_configs=['GRID_STAT_GRID_WEIGHT_FLAG'],
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
+
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='FCST_FILE_TYPE',
+                            metplus_configs=['GRID_STAT_FCST_FILE_TYPE',
+                                             'FCST_GRID_STAT_FILE_TYPE',
+                                             'GRID_STAT_FILE_TYPE'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
+
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='OBS_FILE_TYPE',
+                            metplus_configs=['GRID_STAT_OBS_FILE_TYPE',
+                                             'OBS_GRID_STAT_FILE_TYPE',
+                                             'GRID_STAT_FILE_TYPE'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
+
 
         return c_dict
 

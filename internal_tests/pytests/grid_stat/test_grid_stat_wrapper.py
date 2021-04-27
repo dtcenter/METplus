@@ -534,6 +534,11 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         ({'GRID_STAT_GRID_WEIGHT_FLAG': 'COS_LAT', },
          {'METPLUS_GRID_WEIGHT_FLAG': 'grid_weight_flag = COS_LAT;'}),
 
+        ({'FCST_GRID_STAT_FILE_TYPE': 'NETCDF_NCCF', },
+         {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
+        ({'OBS_GRID_STAT_FILE_TYPE': 'NETCDF_NCCF', },
+         {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
+
     ]
 )
 def test_grid_stat_single_field(metplus_config, config_overrides,
