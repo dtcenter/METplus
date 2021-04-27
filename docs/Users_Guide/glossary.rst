@@ -6630,13 +6630,103 @@ METplus Configuration Glossary
 
      | *Used by:* PointStat
 
+   POINT_STAT_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'climo_mean.file_name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_FIELD
+     Specify the value for 'climo_mean.field' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'climo_mean.regrid.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'climo_mean.regrid.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'climo_mean.regrid.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'climo_mean.regrid.shape' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
    POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD
      Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
 
+   POINT_STAT_CLIMO_MEAN_MATCH_MONTH
+     Specify the value for 'climo_mean.match_month' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'climo_mean.day_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'climo_mean.hour_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'climo_stdev.file_name' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_FIELD
+     Specify the value for 'climo_stdev.field' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'climo_stdev.regrid.method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'climo_stdev.regrid.width' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'climo_stdev.regrid.vld_thresh' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'climo_stdev.regrid.shape' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
    POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD
      Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_MATCH_MONTH
+     Specify the value for 'climo_stdev.match_month' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'climo_stdev.day_interval' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'climo_stdev.hour_interval' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
 
