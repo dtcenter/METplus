@@ -110,7 +110,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
             assert(match is not None)
             actual_value = match.split('=', 1)[1]
             expected_value = env_var_values.get(old_env, '')
-            expected_value = actual_value.replace('YMDH', ymdh)
+            expected_value = expected_value.replace('YMDH', ymdh)
             assert(expected_value == actual_value)
 
 @pytest.mark.parametrize(
