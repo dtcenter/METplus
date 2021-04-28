@@ -81,14 +81,14 @@ Groups (UFS SIP WGs).
    systemconfiguration
    wrappers
    usecases
-   references
    quicksearch
    glossary
+   references
 
+..
+   Indices and tables
+   ==================
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   * :ref:`genindex`
+   * :ref:`modindex`
+   * :ref:`search`

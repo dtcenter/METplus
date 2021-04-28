@@ -10,7 +10,34 @@ import produtil
 from metplus.util import ti_get_seconds_from_lead, sub_var_list
 from metplus.wrappers.series_analysis_wrapper import SeriesAnalysisWrapper
 
-def series_init_wrapper(metplus_config, config_overrides=None):
+fcst_dir = '/some/fcst/dir'
+obs_dir = '/some/obs/dir'
+fcst_name = 'APCP'
+fcst_level = 'A03'
+obs_name = 'APCP_03'
+obs_level_no_quotes = '(*,*)'
+obs_level = f'"{obs_level_no_quotes}"'
+fcst_fmt = f'field = [{{ name="{fcst_name}"; level="{fcst_level}"; }}];'
+obs_fmt = (f'field = [{{ name="{obs_name}"; '
+           f'level="{obs_level_no_quotes}"; }}];')
+time_fmt = '%Y%m%d%H'
+#run_times = ['2005080700', '2005080712']
+run_times = ['2005080700',]
+stat_list = 'TOTAL,RMSE,FBAR,OBAR'
+stat_list_quotes = '", "'.join(stat_list.split(','))
+stat_list_fmt = f'cnt = ["{stat_list_quotes}"];'
+
+def get_input_dirs(config):
+    fake_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
+                                 'internal_tests',
+                                 'data')
+    stat_input_dir = os.path.join(fake_data_dir,
+                                  'stat_data')
+    tile_input_dir = os.path.join(fake_data_dir,
+                                  'tiles')
+    return stat_input_dir, tile_input_dir
+
+def series_analysis_wrapper(metplus_config, config_overrides=None):
     extra_configs = []
     extra_configs.append(os.path.join(os.path.dirname(__file__),
                                       'series_test.conf'))
@@ -21,6 +48,213 @@ def series_init_wrapper(metplus_config, config_overrides=None):
             config.set('config', key, value)
 
     return SeriesAnalysisWrapper(config)
+
+def set_minimum_config_settings(config):
+    # set config variables to prevent command from running and bypass check
+    # if input files actually exist
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'SeriesAnalysis')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', time_fmt)
+    config.set('config', 'INIT_BEG', run_times[0])
+    config.set('config', 'INIT_END', run_times[-1])
+    config.set('config', 'INIT_INCREMENT', '12H')
+    config.set('config', 'LEAD_SEQ', '12H')
+    config.set('config', 'LOOP_ORDER', 'processes')
+    config.set('config', 'SERIES_ANALYSIS_RUNTIME_FREQ',
+               'RUN_ONCE_PER_INIT_OR_VALID')
+    config.set('config', 'SERIES_ANALYSIS_CONFIG_FILE',
+               '{PARM_BASE}/met_config/SeriesAnalysisConfig_wrapped')
+    config.set('config', 'FCST_SERIES_ANALYSIS_INPUT_DIR', fcst_dir)
+    config.set('config', 'OBS_SERIES_ANALYSIS_INPUT_DIR', obs_dir)
+    config.set('config', 'FCST_SERIES_ANALYSIS_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
+    config.set('config', 'OBS_SERIES_ANALYSIS_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d%H}/obs_file')
+    config.set('config', 'SERIES_ANALYSIS_OUTPUT_DIR',
+               '{OUTPUT_BASE}/GridStat/output')
+    config.set('config', 'SERIES_ANALYSIS_OUTPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d%H}')
+
+    config.set('config', 'FCST_VAR1_NAME', fcst_name)
+    config.set('config', 'FCST_VAR1_LEVELS', fcst_level)
+    config.set('config', 'OBS_VAR1_NAME', obs_name)
+    config.set('config', 'OBS_VAR1_LEVELS', obs_level)
+
+    config.set('config', 'SERIES_ANALYSIS_STAT_LIST', stat_list)
+
+
+@pytest.mark.parametrize(
+    'config_overrides, env_var_values', [
+        # climo_mean
+        ({'SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
+         {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
+                                      '["/some/climo_mean/file.txt"];}'),
+          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_MEAN_FIELD': 'CLM_NAME', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = ["CLM_NAME"];}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_MEAN_REGRID_METHOD': 'NEAREST', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {method = NEAREST;}}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_MEAN_REGRID_WIDTH': '1', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {width = 1;}}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5', },
+         {
+             'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {vld_thresh = 0.5;}}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
+         {
+             'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_MEAN_MATCH_MONTH': 'True', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_MEAN_DAY_INTERVAL': '30', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL': '12', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {hour_interval = 12;}'}),
+
+        ({
+             'SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt',
+             'SERIES_ANALYSIS_CLIMO_MEAN_FIELD': 'CLM_NAME',
+             'SERIES_ANALYSIS_CLIMO_MEAN_REGRID_METHOD': 'NEAREST',
+             'SERIES_ANALYSIS_CLIMO_MEAN_REGRID_WIDTH': '1',
+             'SERIES_ANALYSIS_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
+             'SERIES_ANALYSIS_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
+             'SERIES_ANALYSIS_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
+             'SERIES_ANALYSIS_CLIMO_MEAN_MATCH_MONTH': 'True',
+             'SERIES_ANALYSIS_CLIMO_MEAN_DAY_INTERVAL': '30',
+             'SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL': '12',
+         },
+         {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
+                                      '["/some/climo_mean/file.txt"];'
+                                      'field = ["CLM_NAME"];'
+                                      'regrid = {method = NEAREST;width = 1;'
+                                      'vld_thresh = 0.5;shape = SQUARE;}'
+                                      'time_interp_method = NEAREST;'
+                                      'match_month = TRUE;day_interval = 30;'
+                                      'hour_interval = 12;}'),
+          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
+
+        # climo stdev
+        ({'SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
+         {'METPLUS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
+                                      '["/some/climo_stdev/file.txt"];}'),
+          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_STDEV_FIELD': 'CLM_NAME', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = ["CLM_NAME"];}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_STDEV_REGRID_METHOD': 'NEAREST', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {method = NEAREST;}}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_STDEV_REGRID_WIDTH': '1', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {width = 1;}}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {vld_thresh = 0.5;}}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_STDEV_MATCH_MONTH': 'True', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL': '30', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
+
+        ({'SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL': '12', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {hour_interval = 12;}'}),
+
+        ({
+             'SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt',
+             'SERIES_ANALYSIS_CLIMO_STDEV_FIELD': 'CLM_NAME',
+             'SERIES_ANALYSIS_CLIMO_STDEV_REGRID_METHOD': 'NEAREST',
+             'SERIES_ANALYSIS_CLIMO_STDEV_REGRID_WIDTH': '1',
+             'SERIES_ANALYSIS_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
+             'SERIES_ANALYSIS_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
+             'SERIES_ANALYSIS_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
+             'SERIES_ANALYSIS_CLIMO_STDEV_MATCH_MONTH': 'True',
+             'SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL': '30',
+             'SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL': '12',
+         },
+         {'METPLUS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
+                                      '["/some/climo_stdev/file.txt"];'
+                                      'field = ["CLM_NAME"];'
+                                      'regrid = {method = NEAREST;width = 1;'
+                                      'vld_thresh = 0.5;shape = SQUARE;}'
+                                      'time_interp_method = NEAREST;'
+                                      'match_month = TRUE;day_interval = 30;'
+                                      'hour_interval = 12;}'),
+          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
+
+    ]
+)
+def test_series_analysis_single_field(metplus_config, config_overrides,
+                                      env_var_values):
+
+    config = metplus_config()
+
+    set_minimum_config_settings(config)
+
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
+
+    wrapper = SeriesAnalysisWrapper(config)
+    assert(wrapper.isOK)
+
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+
+    config_file = wrapper.c_dict.get('CONFIG_FILE')
+    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    expected_cmds = [(f"{app_path} "
+                      f"-fcst {out_dir}/FCST_FILES "
+                      f"-obs {out_dir}/OBS_FILES "
+                      f"-out {out_dir}/2005080700 "
+                      f"-config {config_file} {verbosity}"),
+                     ]
+
+
+    all_cmds = wrapper.run_all_times()
+    print(f"ALL COMMANDS: {all_cmds}")
+
+    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert(cmd == expected_cmd)
+
+        # check that environment variables were set properly
+        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+            match = next((item for item in env_vars if
+                          item.startswith(env_var_key)), None)
+            assert(match is not None)
+            actual_value = match.split('=', 1)[1]
+            if env_var_key == 'METPLUS_FCST_FIELD':
+                assert(actual_value == fcst_fmt)
+            elif env_var_key == 'METPLUS_OBS_FIELD':
+                assert (actual_value == obs_fmt)
+            elif env_var_key == 'METPLUS_STAT_LIST':
+                assert (actual_value == stat_list_fmt)
+            else:
+                assert(env_var_values.get(env_var_key, '') == actual_value)
 
 def test_get_fcst_file_info(metplus_config):
     """ Verify that the tuple created by get_fcst_file_info is
@@ -34,7 +268,7 @@ def test_get_fcst_file_info(metplus_config):
 
     time_info = {'storm_id': storm_id, 'lead': 0, 'valid': '', 'init': ''}
 
-    wrapper = series_init_wrapper(metplus_config)
+    wrapper = series_analysis_wrapper(metplus_config)
     wrapper.c_dict['FCST_INPUT_DIR'] = '/fake/path/of/file'
     wrapper.c_dict['FCST_INPUT_TEMPLATE'] = (
         "FCST_TILE_F{lead?fmt=%3H}_gfs_4_{init?fmt=%Y%m%d}_"
@@ -67,15 +301,11 @@ def test_get_storms_list(metplus_config):
                            'ML1251072014'
                            ]
     time_info = {'init': datetime(2014, 12, 14, 00)}
-    stat_input_dir = (
-        os.path.join(config.getdir('METPLUS_BASE'),
-                     'internal_tests',
-                     'data',
-                     'stat_data')
-    )
     stat_input_template = 'fake_filter_{init?fmt=%Y%m%d_%H}.tcst'
 
-    wrapper = series_init_wrapper(metplus_config)
+    wrapper = series_analysis_wrapper(metplus_config)
+    stat_input_dir, _ = get_input_dirs(wrapper.config)
+
     wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
     wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
     wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
@@ -181,24 +411,20 @@ def test_get_all_files_and_subset(metplus_config, time_info, expect_fcst_subset,
         'INIT_INCREMENT': '12H',
         'LEAD_SEQ': '0H, 6H, 12H',
     }
-    wrapper = series_init_wrapper(metplus_config, config_overrides)
-    fake_data_dir = os.path.join(wrapper.config.getdir('METPLUS_BASE'),
-                                 'internal_tests',
-                                 'data')
-    stat_input_dir = os.path.join(fake_data_dir,
-                                  'stat_data')
+    wrapper = series_analysis_wrapper(metplus_config, config_overrides)
+
+    stat_input_dir, tile_input_dir = get_input_dirs(wrapper.config)
     stat_input_template = 'another_fake_filter_{init?fmt=%Y%m%d_%H}.tcst'
 
-    tile_input_dir = os.path.join(fake_data_dir,
-                                  'tiles')
+    wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
+    wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
+    wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
+
     fcst_input_dir = os.path.join(tile_input_dir,
                                   'fcst')
     obs_input_dir = os.path.join(tile_input_dir,
                                  'obs')
 
-    wrapper.c_dict['RUN_ONCE_PER_STORM_ID'] = True
-    wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
-    wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
     wrapper.c_dict['FCST_INPUT_DIR'] = fcst_input_dir
     wrapper.c_dict['OBS_INPUT_DIR'] = obs_input_dir
 
@@ -406,20 +632,14 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
         'INIT_INCREMENT': '12H',
     }
     all_config_overrides.update(config_overrides)
-    wrapper = series_init_wrapper(metplus_config, all_config_overrides)
-    fake_data_dir = os.path.join(wrapper.config.getdir('METPLUS_BASE'),
-                                 'internal_tests',
-                                 'data')
-    stat_input_dir = os.path.join(fake_data_dir,
-                                  'stat_data')
-    stat_input_template = 'another_fake_filter_{init?fmt=%Y%m%d_%H}.tcst'
-
-    tile_input_dir = os.path.join(fake_data_dir,
-                                  'tiles')
+    wrapper = series_analysis_wrapper(metplus_config, all_config_overrides)
+    stat_input_dir, tile_input_dir = get_input_dirs(wrapper.config)
     fcst_input_dir = os.path.join(tile_input_dir,
                                   'fcst')
     obs_input_dir = os.path.join(tile_input_dir,
-                                  'obs')
+                                 'obs')
+
+    stat_input_template = 'another_fake_filter_{init?fmt=%Y%m%d_%H}.tcst'
 
     wrapper.c_dict['TC_STAT_INPUT_DIR'] = stat_input_dir
     wrapper.c_dict['TC_STAT_INPUT_TEMPLATE'] = stat_input_template
@@ -524,7 +744,7 @@ def test_create_ascii_storm_files_list(metplus_config, config_overrides,
 )
 def test_get_ascii_filename(metplus_config, storm_id, leads,
                             expected_result):
-    wrapper = series_init_wrapper(metplus_config)
+    wrapper = series_analysis_wrapper(metplus_config)
     for data_type in ['FCST', 'OBS']:
         actual_result = wrapper.get_ascii_filename(data_type,
                                                    storm_id,
@@ -559,7 +779,7 @@ def test_get_output_dir(metplus_config, template, storm_id, label, expected_resu
     time_info = {'init': datetime(2014, 10, 31, 12, 15),
                  'valid': datetime(2014, 10, 31, 18, 15),
                  'lead': relativedelta(hours=6),}
-    wrapper = series_init_wrapper(metplus_config)
+    wrapper = series_analysis_wrapper(metplus_config)
     output_dir = '/some/fake/output/dir'
     wrapper.c_dict['OUTPUT_DIR'] = output_dir
     wrapper.c_dict['OUTPUT_TEMPLATE'] = template
@@ -570,7 +790,7 @@ def test_get_netcdf_min_max(metplus_config):
     expected_min = 0.0
     expected_max = 8.0
 
-    wrapper = series_init_wrapper(metplus_config)
+    wrapper = series_analysis_wrapper(metplus_config)
     met_install_dir = wrapper.config.getdir('MET_INSTALL_DIR')
     filepath = os.path.join(met_install_dir,
                             'share',
