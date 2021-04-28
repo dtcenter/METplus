@@ -7060,6 +7060,7 @@ METplus Configuration Glossary
      Specify the value for 'climo_stdev.hour_interval' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:* SeriesAnalysis
+
    PB2NC_PB_REPORT_TYPE
      Specify the value for 'pb_report_type' in the MET configuration file for PB2NC.
 
