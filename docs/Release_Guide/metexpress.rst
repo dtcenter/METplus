@@ -6,5 +6,4 @@ METexpress Release
    :titlesonly:
 
    metexpress_official
-   metexpress_bugfix
    metexpress_development
