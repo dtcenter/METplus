@@ -8,14 +8,14 @@ This chapter is a guide on configuring METplus Wrappers.
 Config Best Practices
 ---------------------
 
-1. Set your log level to an appropriate level:
+1. Set your log level (LOG_LEVEL) to an appropriate level:
 
-   a. Debug is the most verbose and is useful when you are troubleshooting
+   a. DEBUG is the most verbose and is useful when you are troubleshooting
       problems
-   b. Info is the default level
-   c. Warning only logs warnings, error, or critical events
-   d. Error only logs errors or critical events
-   e. Critical is the least verbose and is rarely used
+   b. INFO is the default level
+   c. WARNING only logs warnings, error, or critical events
+   d. ERROR only logs errors or critical events
+   e. CRITICAL is the least verbose and is rarely used
 
 2. Log output will be written to a log file as well as shown on the screen.
    Reviewing the log files to verify that all your processes ran cleanly is
@@ -1307,6 +1307,218 @@ Template Used: I2020101912_F006_V\*
 Files Processed::
 
     I2020101912_F006_V18
+
+.. _logging-config:
+
+Logging
+~~~~~~~
+
+Log File Information
+^^^^^^^^^^^^^^^^^^^^
+
+Where to write logs files
+
+LOG_METPLUS
+"""""""""""
+
+This defines the name of the METplus log file::
+
+    LOG_METPLUS = {LOG_DIR}/metplus.log.{LOG_TIMESTAMP_TEMPLATE}
+
+The value references :ref:`LOG_DIR<log_dir>` and
+:ref:`LOG_TIMESTAMP_TEMPLATE<log_timestamp_template>`.
+
+.. _log_dir:
+
+LOG_DIR
+"""""""
+
+This defines the directory that will contain log files. Typically this is set
+to a directory called "logs" inside the :term:`OUTPUT_BASE` directory::
+
+    LOG_DIR = {OUTPUT_BASE}/logs
+
+The value can be changed if another location to write log files is preferred.
+
+.. _log_timestamp_template:
+
+LOG_TIMESTAMP_TEMPLATE
+""""""""""""""""""""""
+
+Sets the desired timestamp format, using strftime format directives.
+It must only contain valid strftime format directives (see
+https://strftime.org).
+The current run time is substituted using the format specified unless
+:ref:`LOG_TIMESTAMP_USE_DATATIME<log_timestamp_use_datatime>`
+is set to true/yes.
+By default, a new log file is created for each METplus run::
+
+    LOG_TIMESTAMP_TEMPLATE = %Y%m%d%H%M%S
+
+This example will use the format YYYYMMDDHHMMSS, i.e. 20141231101159
+Change this value to adjust the frequency that new log files are created.
+For example, to write all log output that is generated within a day to a
+single log file, set::
+
+    LOG_TIMESTAMP_TEMPLATE = %Y%m%d
+
+This example will use the format YYYYMMDD, i.e. 20141231
+
+.. _log_timestamp_use_datatime:
+
+LOG_TIMESTAMP_USE_DATATIME
+""""""""""""""""""""""""""
+
+If set to false/no (default), write log timestamps using the current time
+when the METplus run was started::
+
+    LOG_TIMESTAMP_USE_DATATIME = no
+
+If set to true/yes, write log timstamps using the value set for
+:term:`INIT_BEG` or :term:`VALID_BEG` depending on the value set for
+:term:`LOOP_BY`. This is useful if it is desired to organize the
+log output files based on the data that was processed during the run.
+
+LOG_MET_OUTPUT_TO_METPLUS
+"""""""""""""""""""""""""
+
+If set to true/yes (default), log output from MET applications are written
+to the METplus log file::
+
+    LOG_MET_OUTPUT_TO_METPLUS = yes
+
+If set to false/no, the output is written to a separate
+file in the log directory named after the application.
+
+Log Level Information
+^^^^^^^^^^^^^^^^^^^^^
+
+How much information to log
+
+LOG_LEVEL
+"""""""""
+
+This controls the level of logging output from the METplus wrappers. It does
+not control the logging level of the actual MET applications. The possible
+values to:
+
+* CRITICAL
+* ERROR
+* WARNING
+* INFO
+* DEBUG
+* NOTSET
+
+The default logging level is INFO::
+
+    LOG_LEVEL = INFO
+
+The log output will contain messages from the level selected and above.
+If a use case is producing errors, then setting::
+
+    LOG_LEVEL = DEBUG
+
+will produce additional logging output that is helpful
+to discover the cause of the error.
+
+LOG_MET_VERBOSITY
+"""""""""""""""""
+
+This controls the logging verbosity level for all of the MET applications.
+The value can be set to an integer. Higher values produce more log output.
+The logging verbosity can also be set individually for each MET tool if more
+log output is desired for a specific application. For example::
+
+    LOG_MET_VERBOSITY = 2
+    LOG_ASCII2NC_VERBOSITY = 3
+    LOG_POINT_STAT_VERBOSITY = 4
+
+In the above example, ASCII2NC will use 3, PointStat will use 4, and
+all other MET applications with use 2.
+
+Log Formatting Information
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+How to format lines in log files
+
+.. note:: The following variables control the format of the METplus log output
+          that is written to the log files. It does not control the format of
+          the log output that is written to the screen as standard output.
+
+For more information on acceptable values, see the Python documentation for
+LogRecord:
+https://docs.python.org/3/library/logging.html#logging.LogRecord
+
+.. _log_info_line_format:
+
+LOG_INFO_LINE_FORMAT
+""""""""""""""""""""
+
+This defines the format of the INFO log messages. Setting the value to::
+
+    LOG_INFO_LINE_FORMAT = %(asctime)s.%(msecs)03d %(name)s %(levelname)s: %(message)s
+
+Produces a log file with INFO lines that match this format::
+
+    04/29 15:54:22.413 metplus INFO: Completed METplus configuration setup.
+
+The format of the timestamp is set by
+:ref:`LOG_LINE_DATE_FORMAT<log_line_date_format>`.
+
+.. _log_err_line_format:
+
+LOG_ERR_LINE_FORMAT
+"""""""""""""""""""
+
+This defines the format of the ERROR log messages. Setting the value to::
+
+    LOG_ERR_LINE_FORMAT = %(asctime)s.%(msecs)03d %(name)s (%(filename)s:%(lineno)d) %(levelname)s: %(message)s
+
+Produces a log file with ERROR lines that match this format::
+
+    04/29 16:03:34.858 metplus (met_util.py:218) ERROR: METplus has finished running but had 1 error.
+
+The format of the timestamp is set by
+:ref:`LOG_LINE_DATE_FORMAT<log_line_date_format>`.
+
+.. _log_debug_line_format:
+
+LOG_DEBUG_LINE_FORMAT
+"""""""""""""""""""""
+
+This defines the format of the DEBUG log messages. Setting the value to::
+
+    LOG_DEBUG_LINE_FORMAT = %(asctime)s.%(msecs)03d %(name)s (%(filename)s:%(lineno)d) %(levelname)s: %(message)s
+
+Produces a log file with DEBUG lines that match this format::
+
+    04/29 15:54:22.851 metplus (met_util.py:207) DEBUG: METplus took 0:00:00.850983 to run.
+
+The format of the timestamp is set by
+:ref:`LOG_LINE_DATE_FORMAT<log_line_date_format>`.
+
+.. _log_line_date_format:
+
+LOG_LINE_DATE_FORMAT
+""""""""""""""""""""
+
+This defines the format of the timestamps used in the METplus log messages.
+
+Setting the value to::
+
+    LOG_LINE_DATE_FORMAT = %m/%d %H:%M:%S
+
+Produces a log file with timestamps that match this format::
+
+    04/29 15:54:22.851
+
+LOG_LINE_FORMAT
+"""""""""""""""
+
+Defines the default formatting of each METplus log output line.
+By default, this variable is referenced in
+:ref:`LOG_ERR_LINE_FORMAT<log_err_line_format>` and
+:ref:`LOG_DEBUG_LINE_FORMAT<log_debug_line_format>`.
 
 .. _metplus-control-met:
 
