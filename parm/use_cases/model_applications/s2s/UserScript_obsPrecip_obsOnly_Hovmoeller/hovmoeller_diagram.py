@@ -10,6 +10,7 @@ import logging
 import yaml
 import xarray as xr  # http://xarray.pydata.org/
 import metplotpy.plots.hovmoeller.hovmoeller as Hovmoeller
+import metcalcpy.util.read_env_vars_in_config as readconfig
 
 
 def main():
@@ -22,15 +23,14 @@ def main():
     Read METplus config file paramaters
     """
     input_file_name = os.environ.get("INPUT_FILE_NAME","precip.erai.sfc.1p0.2x.2014-2016.nc")
-    plot_config_file = os.path.join(os.getenv("METPLOTPY_BASE","/d2/METplotpy/metplotpy"), "plots", "config", "hovmoeller_defaults.yaml")
+    plot_config_file = os.getenv("YAML_CONFIG_NAME","hovmoeller.yaml")
     input_file = input_file_name
 
     """
     Read Hovmoeller YAML configuration file
     """
     try:
-        config = yaml.load(
-            open(plot_config_file), Loader=yaml.FullLoader)
+        config = readconfig.parse_config(plot_config_file)
         logging.info(config)
     except yaml.YAMLError as exc:
         logging.error(exc)
@@ -66,7 +66,10 @@ def main():
     data = data * config['unit_conversion']
     data.attrs['units'] = config['var_units']
 
-    plot = Hovmoeller.Hovmoeller(None, time, lon, data)
+    plot_filename = config['plot_filename'][0]
+    custom_param_dict = {"plot_filename": plot_filename}
+    plot = Hovmoeller.Hovmoeller(custom_param_dict, time, lon, data)
+    logging.info(plot_filename)
     plot.save_to_file()
 
 if __name__ == '__main__':
