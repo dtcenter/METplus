@@ -248,59 +248,27 @@ shell):
     # Add METplus to $PATH
     export PATH=~/METplus/ush:$PATH
 
-Set up METplus Wrappers Configuration files
--------------------------------------------
+Set up the Default METplus Configuration File
+---------------------------------------------
 
-There are four METplus Wrappers configuration files that must be defined
-prior to running METplus Wrappers. These configuration files reside in
-the METplus_INSTALL_DIRECTORY/METplus/parm/metplus_config
+The default METplus configurations are found in
+*METplus/parm/metplus_config.conf*.
+These settings are automatically loaded at the start of
+a METplus Wrappers run and do not need to be invoked on the command line.
 
-The following configuration files are automatically loaded during a
-METplus Wrappers run and do not need to be invoked on the command line.
+These settings include:
 
--  metplus_data.conf
+* Location of MET source and build
+* Directories where input data are located
+* Logging levels for METplus and MET output
+* Location of other non-MET executables/binaries
 
-   -  data-relevant settings:
-
-      -  filename templates
-
-      -  regular expressions for input or output filenames
-
-      -  directories where input data are located
-
--  metplus_logging.conf
-
-   -  set logging levels for METplus and MET output
-
-   -  turn on/off logging to stdout (screen) or log files
-
--  metplus_runtime.conf
-
-   -  runtime-related settings:
-
-      -  location of METplus run_metplus.conf file (the conf
-         file that is a collection of all the final METplus
-         configuration files)
-
--  metplus_system.conf
-
-   -  system-related settings:
-
-      -  location of METplus source code
-
-      -  location of MET source and build
-
-      -  location of other non-MET executables/binaries
-
-      -  location of METplus parm directory
-
-They must be fully defined by replacing all variables preset to
-*</path/to>* with valid path names, or have those variables defined in a
-down-stream config file. If configuring METplus Wrappers in a common
-location for multiple users, it is recommended that the these four
-configuration files are fully defined. Individual users have the option
-to make customizations by over-riding any of these values in their own
-configuration files.
+Values in this file that are set to */path/to*
+must be set to a valid path to run METplus Wrappers. These values can either
+be set directly in this file or in a user-defined configuration file.
+If configuring METplus Wrappers in a common location for multiple users,
+it is recommended that these settings are fully defined in the default
+configuration file.
 
 Updating Configuration Files - Handling Deprecated Configuration Variables
 --------------------------------------------------------------------------
@@ -587,7 +555,7 @@ The command:
 
   run_metplus.py -c use_cases/met_tool_wrapper/GridStat/GridStat.conf
 
-will run METplus using the defaults set in the config files found in parm/metplus_config. Any variables defined in these three config files can be overridden in the parm/use_cases/GridStat/GridStat.conf file. METplus will run using the values specified in the GridStat.conf file.
+will run METplus using the defaults set in parm/metplus_config.conf. Any variables defined in these three config files can be overridden in the parm/use_cases/GridStat/GridStat.conf file. METplus will run using the values specified in the GridStat.conf file.
 
 **Example 3: Using example configuration to perform a specific evaluation (e.g. Model 1 vs. Obs 1, Model 1 vs. Obs 2, Model 2 vs. Obs 1, etc...):**
 
@@ -599,7 +567,7 @@ The command:
   -c use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf \
   -c use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf
 
-will run METplus using the defaults set in the config files in parm/metplus_config, where variables can be overridden by parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf, then by parm/use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf, then by parm/use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf. The order in which conf files are called is important. Variables that are defined in intermediate conf files will be overridden by the same variables set in the conf file following it, or the last conf file. For example, if FCST_VAR1_NAME = TMP in GridStat.conf and FCST_VAR1_NAME = TEMP in GridStat_forecast.conf, the value used will be TEMP because GridStat_forecast.conf was read after GridStat.conf.
+will run METplus using the defaults set in parm/metplus_config.conf, where variables can be overridden by parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf, then by parm/use_cases/met_tool_wrapper/GridStat/GridStat_forecast.conf, then by parm/use_cases/met_tool_wrapper/GridStat/GridStat_observation.conf. The order in which conf files are called is important. Variables that are defined in intermediate conf files will be overridden by the same variables set in the conf file following it, or the last conf file. For example, if FCST_VAR1_NAME = TMP in GridStat.conf and FCST_VAR1_NAME = TEMP in GridStat_forecast.conf, the value used will be TEMP because GridStat_forecast.conf was read after GridStat.conf.
 
 Separating configurations into multiple files can be useful if you want to compare different forecasts or observations in the same way. For example, to compare a different forecast to the observation in this example, copy GridStat_forecast.conf into a directory outside of the METplus repository (i.e. /home/user/METplus_user_config), rename it (i.e. GridStat_myforecast.conf), then change the values to match the new data set (input directory, input filename template, field name, etc.). Then you can run the new use case:
 

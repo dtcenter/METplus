@@ -34,30 +34,42 @@ Config Best Practices
 Config File Structure
 ---------------------
 
-METplus Wrappers employs a hierarchy of configuration files employed in
-METplus Wrappers. At the lowest level are the "set-and-forget" type
-configuration files that reside in the
-*<METplus_installation_dir>/parm/metplus_config*. At the next level are
-the configuration files that pertain to a user's specific needs in the
-*<METplus_installation_dir>/parm/use_cases/<specific_use_case>*.
 
-Four configuration files are required for METplus Wrappers to be fully
-configured (i.e. all keywords are defined by either whitespace or a valid
-value):
+Default Configuration File
+""""""""""""""""""""""""""
 
-  1. metplus_system
-  2. metplus_data
-  3. metplus_logging
-  4. metplus_runtime
+The default METplus configurations are found in *parm/metplus_config.conf*.
+These settings are applied to every run of the wrappers and include information
+about the user's environment, such as where the MET applications are installed
+and where sample input data can be found.
+They also include options to define where output data should be written
+and customize log output.
 
-By default, key-values that require the user's input are set to *</path/to>*.
-Make sure to replace these with the appropriate directory for your project.
+By default, key-values that require the user's input are set to **/path/to**.
+These values must be replaced with the appropriate paths for the
+installation.
 
-Additional configuration files are optional and the key-values defined there
-will override any values defined in the four mandatory METplus Wrappers
-configuration files. These additional configuration files enable users to
-use a common set of configuration files and to create customized environments
-for their verification tasks.
+Values in the default configuration file can also be overridden in a
+user-defined configuration file to change settings for an individual user
+or use case run. More information can be found in the
+:ref:`User Defined Config section<user_defined_config>`.
+
+Use Case Configuration Files
+""""""""""""""""""""""""""""
+
+Example configuration files that contain settings to run various use cases
+can be found in the *parm/use_cases* directory. There are two directories
+inside this directory.
+
+The directory named *met_tool_wrapper* contains simple use cases that run
+one wrapper at a time. They provide examples of how to configure and run
+a single wrapper to help users become familiar with the configurations
+that are available for that wrapper.
+
+The directory named **model_applications** contains sub-directories organized
+by category. These use cases often run multiple wrappers in succession to
+demonstrate more complex examples of how the tools are used for verification
+by end users.
 
 Common Config Variables
 -----------------------
@@ -1747,50 +1759,38 @@ Config Quick Start Example
 --------------------------
 **Simple Example Use Case**
 
-1. Set up the configuration file:
+* Create a user configuration file (named user_system.conf in this example)
+* Open the file with a text editor of your choice and add the following::
 
-    a. Your METplus Wrappers install directory will hereafter be referred to
-       as METplus_INSTALL
-    b. Create a user_system.conf file (wherever you wish, just make note of
-       the path to where you saved it) and under the [dir] section, do the
-       following:
+    [config]
+    MET_INSTALL_DIR = /path/to/MET
+    INPUT_BASE = /path/to/INPUT
+    OUTPUT_BASE = /path/to/OUTPUT
 
-       - set INPUT_BASE = /tmp/input
+* Replace */path/to/MET* with the full path to your MET installation,
+  i.e., /d1/projects/MET/met-10.0.0
+* Replace /path/to/INPUT with the full path to a directory that contains or
+  will contain sample input data used by the use case examples.
+* Replace /path/to/OUTPUT with the full path to a directory where you would
+  like output files to be written.
+* Run the use case: On your command line, run::
 
-         (or to some other directory that exists, as this use case does
-	  not use input data)
+    run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf -c /path/to/user_system.conf
 
-       - set OUTPUT_BASE = /tmp/output
+where /path/to/user_system.conf is the path of the user configuration file
+you created earlier.
 
-         (or to some other directory that exists where you wish to
-	 direct your output)
+* When complete, you should see the following message printed to the
+  screen upon successful completion::
 
-       - set MET_INSTALL_DIR = <path/to/your/MET>
+    "INFO: METplus has successfully finished running."
 
-         where *<path/to/your/MET>* is the full path to your MET
-	 installation:
-
-         e.g., /d1/projects/MET/met-9.0
-
-2. Run the use case:
-
-   a. On your command line, run:
-   
-      ::
-
-         run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf -c /path/to/user_system.conf
-
-      * where /path/to/user_system.conf indicates the location of the user_system.conf file you created earlier.
-
-   b. When complete, you should see the following message printed to the
-      screen upon successful completion: "INFO: METplus has successfully
-      finished running."
-      A *logs* directory with a log file will be created under the output
-      directory you specified.
-      Additionally, a metplus_final.conf file is created and saved to
-      the output directory.  It contains all the final values set by all your
-      METplus configuration files, including those from the
-      METplus_INSTALL/parm/metplus_config directory.
+A *logs* directory with a log file will be created under the output
+directory you specified.
+Additionally, a metplus_final.conf file is created and saved to
+the output directory.  It contains all the final values set by all your
+METplus configuration files, including those from the
+*parm/metplus_config.conf* file.
 
 
 **Track and Intensity Use Case with Sample Data**
@@ -1822,8 +1822,7 @@ Config Quick Start Example
    a. Your METplus Wrappers install directory will hereafter be referred
       to as METplus_INSTALL
    b. Verify that all the *</path/to>* values are replaced with valid paths
-      in the METplus_INSTALL/parm/metplus_config/metplus_data.conf and
-      METplus_INSTALL/parm/metplus_config/metplus_system.conf files
+      in METplus_INSTALL/parm/metplus_config.conf
    c. One configuration file is used in this use case,
       Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data,
       and using TCPairs which wraps the MET TC-Pairs tool (to match ADeck
@@ -1894,6 +1893,8 @@ Config Quick Start Example
          h. TK_ERR_mean.png
 
          i. TK_ERR_median.png
+
+.. _user_defined_config:
 
 User Defined Config
 -------------------
