@@ -10,13 +10,22 @@ import os
 import xarray as xr
 
 import metplotpy.contributed.spacetime_plot.spacetime_plot as stp
+import metcalcpy.util.read_env_vars_in_config as readconfig
 
-# location of the output files from example_cross_spectra
-# pathdata = '../data/'
-pathdata = os.environ.get("DATA_PATH","/d2/METplus_Data")
-# location of the plot files
-# plotpath = '../plots/'
-plotpath = './'
+
+# Read in the YAML config file
+# user can use their own, if none specified at the command line,
+# use the "default" example YAML config file, spectra_plot_coh2.py
+# Using a custom YAML reader so we can use environment variables
+plot_config_file = os.getenv("YAML_CONFIG_NAME","spectra_plot.yaml")
+
+config_dict = readconfig.parse_config(plot_config_file)
+
+# Retrieve settings from config file
+#pathdata is now set in the METplus conf file
+#pathdata = config_dict['pathdata'][0]
+plotpath = config_dict['plotpath'][0]
+print("Output path ",plotpath)
 
 # plot layout parameters
 flim = 0.5  # maximum frequency in cpd for plotting
@@ -30,7 +39,6 @@ spd = 2
 
 symmetry = "symm"      #("symm", "asymm", "latband")
 filenames = os.environ.get("INPUT_FILE_NAMES","ERAI_TRMM_P_symn,ERAI_P_D850_symn,ERAI_P_D200_symn").split(",")
-print(filenames)
 #filenames = ['ERAI_TRMM_P_symm_'+str(spd)+'spd',
 #             'ERAI_P_D850_symm_'+str(spd)+'spd',
 #             'ERAI_P_D200_symm_'+str(spd)+'spd']
@@ -43,7 +51,6 @@ for pp in np.arange(0, nplot, 1):
     # read data from file
     var1 = vars1[pp]
     var2 = vars2[pp]
-    #fin = xr.open_dataset(pathdata + 'SpaceTimeSpectra_' + filenames[pp] + '.nc')
     print("Filename ",filenames[pp])
     fin = xr.open_dataset(filenames[pp])
     STC = fin['STC'][:, :, :]
