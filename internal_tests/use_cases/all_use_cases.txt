@@ -119,7 +119,7 @@ Category: s2s
 2::UserScript_obsERA_obsOnly_Blocking:: model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.conf::cartopy,METplotpy,METcalcpy
 3::UserScript_obsERA_obsOnly_WeatherRegime:: model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.conf::cartopy,METplotpy,METcalcpy,eofs
 4::TCGen_fcstGFSO_obsBDECKS_GDF_TDF:: model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf:: cartopy,METplotpy
-5::HovmoellerDiagram:: model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf:: pyyaml,plotly,METplotpy
+5::UserScript_obsPrecip_obsOnly_Hovmoeller:: model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf:: requests,psutil,pyyaml,plotly,METplotpy
 
 
 Category: space_weather
