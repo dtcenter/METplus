@@ -35,8 +35,7 @@ Config File Structure
 ---------------------
 
 
-Default Configuration File
-""""""""""""""""""""""""""
+**Default Configuration File**
 
 The default METplus configurations are found in *parm/metplus_config.conf*.
 These settings are applied to every run of the wrappers and include information
@@ -54,8 +53,7 @@ user-defined configuration file to change settings for an individual user
 or use case run. More information can be found in the
 :ref:`User Defined Config section<user_defined_config>`.
 
-Use Case Configuration Files
-""""""""""""""""""""""""""""
+**Use Case Configuration Files**
 
 Example configuration files that contain settings to run various use cases
 can be found in the *parm/use_cases* directory. There are two directories
