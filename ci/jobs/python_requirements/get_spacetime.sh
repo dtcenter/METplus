@@ -22,3 +22,4 @@ python3 -m pip install ${work_dir}/../METcalcpy
 
 # install required packages for use case
 conda install -y -c conda-forge python-dateutil netCDF4 xarray scipy matplotlib pyngl 
+conda install -c anaconda pyyaml
