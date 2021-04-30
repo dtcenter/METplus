@@ -19,9 +19,10 @@ met_tool_wrapper/PCPCombine/PCPCombine_bucket.conf
 # | **Forecast:** GFS precipitation accumulation
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** GFS
+# |
 
 ##############################################################################
 # METplus Components
@@ -40,6 +41,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_bucket.conf
 #
 # | **Valid:** 2012-04-09_00Z
 # | **Forecast lead:** 15 hour
+# |
 
 ##############################################################################
 # METplus Configuration

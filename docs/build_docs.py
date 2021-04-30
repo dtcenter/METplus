@@ -24,7 +24,7 @@ import shlex
 import shutil
 import subprocess
 import re
-import importlib
+import importlib.util
 from datetime import datetime
 
 def run_command(command, dir_to_run=None):
@@ -35,11 +35,10 @@ def run_command(command, dir_to_run=None):
     command_out = subprocess.run(shlex.split(command),
                                  cwd=dir_to_run)
     if command_out.returncode != 0:
-        error_text = f"Could not create symbolic links by running {command}"
+        error_text = f"Command failed: {command}"
         if dir_to_run:
-            error_text += f"in {dir_to_run}"
+            error_text += f" (in {dir_to_run})"
         print(error_text)
-        sys.exit(1)
 
 def write_release_date_file(docs_dir):
     release_date_file = os.path.join(docs_dir,
@@ -59,10 +58,6 @@ def main():
     is_release = any(['release' in arg for arg in sys.argv])
     skip_doxygen = any(['skip-doxygen' in arg for arg in sys.argv])
 
-    build_pdf = os.environ.get('METPLUS_DOC_PDF')
-    if build_pdf:
-        print("PDF output enabled")
-
     # check if sphinx_gallery module is available and error/exit if not
     sphinx_gallery_spec = importlib.util.find_spec("sphinx_gallery")
     if sphinx_gallery_spec is None:
@@ -78,6 +73,9 @@ def main():
                      ]
 
     # docs directory
+    # docs_dir will be set to the directory that this script is in
+    # __file__ is a variable that contains the path to the module that is
+    # currently being imported
     docs_dir = os.path.abspath(os.path.dirname(__file__))
     package_dir = os.path.join(docs_dir,
                                os.pardir,
@@ -105,7 +103,7 @@ def main():
                                'run')
 
     # run make to generate the documentation files
-    run_command(f"make clean html {'pdf' if build_pdf else ''}",
+    run_command(f"make clean html",
                 docs_dir)
 
     if not skip_doxygen:

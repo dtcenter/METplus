@@ -7,24 +7,24 @@ METplus Components Release Note Links
 Release Notes - Latest Official Release
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* `MET <https://dtcenter.github.io/MET/latest/Users_Guide/release-notes.html>`__
-* `METviewer <https://dtcenter.github.io/METviewer/latest/Users_Guide/release-notes.html>`__
+* `MET <https://met.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
+* `METviewer <https://metviewer.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
 *  METplotpy - No Official Releases
 *  METcalcpy - No Official Releases
 *  METdatadb - No Official Releases
 * `METexpress <https://github.com/dtcenter/METexpress/releases>`__
-* `METplus Wrappers <https://dtcenter.github.io/METplus/latest/Users_Guide/release-notes.html>`__
+* `METplus Wrappers <https://metplus.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
 
 Release Notes - Development Release
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* `MET <https://dtcenter.github.io/MET/develop/Users_Guide/release-notes.html>`__
-* `METviewer <https://dtcenter.github.io/METviewer/develop/Users_Guide/release-notes.html>`__
+* `MET <https://met.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
+* `METviewer <https://metviewer.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
 * `METplotpy <https://github.com/dtcenter/METplotpy/releases>`__
 * `METcalcpy <https://github.com/dtcenter/METcalcpy/releases>`__
 *  METdatadb - No Development Releases
 *  METexpress - No Development Releases 
-* `METplus Wrappers <https://dtcenter.github.io/METplus/develop/Users_Guide/release-notes.html>`__
+* `METplus Wrappers <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
 	      
 
 When applicable, release notes are followed by the GitHub issue number which

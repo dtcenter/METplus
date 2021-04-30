@@ -44,13 +44,13 @@ nc_var_str    = "";
 //
 ens = {
 
-   ${ENS_FILE_TYPE}
+   ${METPLUS_ENS_FILE_TYPE}
 
    ${METPLUS_ENS_THRESH}
    ${METPLUS_ENS_VLD_THRESH}
    ${METPLUS_ENS_OBS_THRESH}
 
-   field = [ ${ENS_FIELD}  ];
+   ${METPLUS_ENS_FIELD}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -73,16 +73,16 @@ ${METPLUS_NMEP_SMOOTH_DICT}
 
 fcst = {
 
-   ${FCST_FILE_TYPE}
+   ${METPLUS_FCST_FILE_TYPE}
 
-   field = [ ${FCST_FIELD}  ];
+   ${METPLUS_FCST_FIELD}
 }
 
 obs = {
 
-   ${OBS_FILE_TYPE}
+   ${METPLUS_OBS_FILE_TYPE}
  
-   field = [ ${OBS_FIELD}   ];
+   ${METPLUS_OBS_FIELD}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -138,27 +138,14 @@ ${METPLUS_ENS_PHIST_BIN_SIZE}
 //
 // Climatology data
 //
-climo_mean = {
+//climo_mean = {
+${METPLUS_CLIMO_MEAN_DICT}
 
-   file_name = [ ${CLIMO_MEAN_FILE} ];
-   field     = [];
 
-   regrid = {
-      method     = NEAREST;
-      width      = 1;
-      vld_thresh = 0.5;
-      shape      = SQUARE;
-   }
+//climo_stdev = {
+${METPLUS_CLIMO_STDEV_DICT}
 
-   time_interp_method = DW_MEAN;
-   ${METPLUS_CLIMO_MEAN_DAY_INTERVAL}
-   ${METPLUS_CLIMO_MEAN_HOUR_INTERVAL}
-}
 
-climo_stdev = climo_mean;
-climo_stdev = {
-   file_name = [ ${CLIMO_STDEV_FILE} ];
-}
 
 //
 // May be set separately in each "obs.field" entry
@@ -170,10 +157,7 @@ ${METPLUS_CLIMO_CDF_DICT}
 //
 // Point observation time window
 //
-obs_window = {
-   beg = ${OBS_WINDOW_BEGIN};
-   end = ${OBS_WINDOW_END};
-}
+${METPLUS_OBS_WINDOW_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -182,7 +166,7 @@ obs_window = {
 //
 mask = {
    ${METPLUS_MASK_GRID}
-   poly = [ ${VERIF_MASK} ];
+   ${METPLUS_MASK_POLY}
    sid   = [];
    llpnt = [];
 }

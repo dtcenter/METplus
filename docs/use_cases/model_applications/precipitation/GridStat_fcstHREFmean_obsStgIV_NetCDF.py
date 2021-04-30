@@ -40,7 +40,7 @@ _obsStgIV_Netcdf.conf
 # ----------------
 #
 # The following tools are used for each run time:
-#  PCPCombine (observation) > RegridDataPlane (observation) > GridStat
+# PCPCombine (observation) > RegridDataPlane (observation) > GridStat
 #
 # This example loops by initialization time.
 # There is only one initalization time in this example so the following will be run:
@@ -49,7 +49,7 @@ _obsStgIV_Netcdf.conf
 #
 # | **Init:** 2017-05-09_12Z
 # | **Forecast lead:** 18
-#
+# |
 #
 
 ##############################################################################
@@ -67,16 +67,20 @@ _obsStgIV_Netcdf.conf
 
 ##############################################################################
 # MET Configuration
-# ---------------------
+# -----------------
 #
-# METplus sets environment variables based on the values in the METplus configuration file.
-# These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
+# METplus sets environment variables based on user settings in the METplus configuration file. 
+# See :ref:`How METplus controls MET config file settings<metplus-control-met>` for more details. 
+#
+# **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!**
+#
+# If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
+# :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
+#
+# .. note:: See the :ref:`GridStat MET Configuration<grid-stat-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_NetCDF/GridStatConfig_MEAN
-#
-# See the following files for more information about the environment variables set in this configuration file.
-#   parm/use_cases/met_tool_wrapper/GridStat.py
+# .. literalinclude:: ../../../../parm/met_config/GridStatConfig_wrapped
 
 ##############################################################################
 # Running METplus

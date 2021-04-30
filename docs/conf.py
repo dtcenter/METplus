@@ -59,6 +59,10 @@ else:
 # the date in the specified format
 html_last_updated_fmt = '%c'
 
+# document that contains the root toctree directive
+root_doc = 'index'
+master_doc = 'index'
+
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
@@ -69,32 +73,55 @@ extensions = ['sphinx.ext.autodoc',
               'sphinx_gallery.gen_gallery',
              ]
 
-# To enable PDF generation, set METPLUS_DOC_PDF environment variable
-#  sphinx 2.4.2+ and rst2pdf packages are required
-if os.environ.get('METPLUS_DOC_PDF'):
-    extensions.append('rst2pdf.pdfbuilder')
+# settings for ReadTheDocs PDF creation
+latex_engine = 'pdflatex'
+latex_theme = 'manual'
+latex_logo = os.path.join('_static','METplus_logo.png')
+latex_show_pagerefs = True
+latex_master_doc = 'Users_Guide/index'
 
-# used for generating PDF
-pdf_documents = [('index',
-                  f'METplus_Users_Guide_v{version}',
-                  'METplus User\'s Guide',
-                  ('George McCabe\\'
-                   'Dan Adriaansen\\'
-                   'Minna Win-Gildenmeister\\'
-                   'Julie Prestopnik\\'
-                   'Jim Frimel\\'
-                   'John Opatz\\'
-                   'John Halley Gotway\\'
-                   'Tara Jensen\\'
-                   'Jonathan Vigh\\'
-                   'Mallory Row\\'
-                   'Christana Kalb\\'
-                   'Hank Fisher\\'
-                   'Lisa Goodrich\\'
-                   'Lindsay Blank\\'
-                   'Todd Arbetter\\'
-                   )),]
+latex_elements = {
+   # The paper size ('letterpaper' or 'a4paper').
+   #
+   'papersize': 'letterpaper',
+   'releasename':"{version}",
+   'fncychap': '\\usepackage{fncychap}',
+   'fontpkg': '\\usepackage{amsmath,amsfonts,amssymb,amsthm}',
+                                                     
+   'figure_align':'htbp',
+   'pointsize': '11pt',
+                                        
+   'preamble': r'''
+       \usepackage{charter}
+       \usepackage[defaultsans]{lato}
+       \usepackage{inconsolata}
+       \setcounter{secnumdepth}{4}
+       \setcounter{tocdepth}{4}
+    ''',
+                                                                            
+    'sphinxsetup': \
+        'hmargin={0.7in,0.7in}, vmargin={1in,1in}, \
+        verbatimwithframe=true, \
+        TitleColor={rgb}{0,0,0}, \
+        HeaderFamily=\\rmfamily\\bfseries, \
+        InnerLinkColor={rgb}{0,0,1}, \
+        OuterLinkColor={rgb}{0,0,1}',
+        'maketitle': '\\sphinxmaketitle',  
+#        'tableofcontents': ' ',
+        'printindex': ' '
+}
 
+# Grouping the document tree into LaTeX files. List of tuples
+# (source start file, target name, title,
+#  author, documentclass [howto, manual, or own class]).
+latex_documents = [
+    (latex_master_doc, 
+     'users_guide.tex', 
+     'METplus User\'s Guide',
+     ' ', 
+     'manual')
+]
+    
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 
@@ -108,7 +135,6 @@ exclude_patterns = ['_build',
                     'use_cases',
                     'Release_Guide/release_steps',
                     'Verification_Datasets/datasets/template.rst',
-                    'Contributors_Guide/continuous_integration.rst',
                     ]
 
 # Suppress certain warning messages
@@ -123,8 +149,6 @@ suppress_warnings = ['ref.citation']
 html_theme = 'sphinx_rtd_theme'
 html_theme_path = ["_themes", ]
 html_js_files = ['pop_ver.js']
-html_theme_options = {'canonical_url': 'https://dtcenter.github.io/METplus/latest/'}
-html_theme_options['versions'] = {'latest': '../latest', 'develop': '../develop'}
 html_css_files = ['theme_override.css']
 
 # Add any paths that contain custom static files (such as style sheets) here,

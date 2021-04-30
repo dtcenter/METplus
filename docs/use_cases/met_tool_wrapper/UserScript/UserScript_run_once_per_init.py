@@ -21,6 +21,7 @@ met_tool_wrapper/UserScript/UserScript_run_once_per_init.conf
 # --------
 #
 # | **Input:** Empty test files from the METplus repository
+# |
 #
 
 ##############################################################################
@@ -40,6 +41,7 @@ met_tool_wrapper/UserScript/UserScript_run_once_per_init.conf
 # | **Init:** 2014-10-31 09:30:15
 # | **Init:** 2014-10-31 21:30:15
 # | **Init:** 2014-11-01 09:30:15
+# |
 #
 
 ##############################################################################

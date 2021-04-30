@@ -12,9 +12,17 @@ assignees: ''
 ## Describe the New Use Case ##
 *Provide a description of the new feature request here.*
 
-### Acceptance Testing ###
+### Use Case Name and Category ###
+*Provide use case name, following Contributor's Guide naming template, and list which category the use case will reside in.*
+*If a new category is needed for this use case, provide its name and brief justification*
+
+### Input Data ###
 *List input data types and sources.*
+*Provide a total input file size, keeping necessary data to a minimum.* 
+
+### Acceptance Testing ###
 *Describe tests required for new functionality.*
+*As use case develops, provide a run time here*
 
 ### Time Estimate ###
 *Estimate the amount of work required here.*
@@ -64,6 +72,7 @@ Branch name: `feature_<Issue Number>_<Description>`
 Pull request: `feature <Issue Number> <Description>`
 - [ ] Define the pull request metadata, as permissions allow.
 Select: **Reviewer(s)**, **Project(s)**, **Milestone**, and **Linked issues**
-- [ ] Iterate until the reviewer(s) accept and merge your changes.
+- [ ] Iterate until the reviewer(s) accept your changes. Merge branch into **develop**.
+- [ ] Create a second pull request to merge **develop** into **develop-ref**, following the same steps for the first pull request.
 - [ ] Delete your fork or branch.
 - [ ] Close this issue.

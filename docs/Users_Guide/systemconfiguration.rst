@@ -10,12 +10,12 @@ Config Best Practices
 
 1. Set your log level to an appropriate level:
 
-  a. Debug is the most verbose and is useful when you are troubleshooting
-     problems
-  b. Info is the default level
-  c. Warning only logs warnings, error, or critical events
-  d. Error only logs errors or critical events
-  e. Critical is the least verbose and is rarely used
+   a. Debug is the most verbose and is useful when you are troubleshooting
+      problems
+   b. Info is the default level
+   c. Warning only logs warnings, error, or critical events
+   d. Error only logs errors or critical events
+   e. Critical is the least verbose and is rarely used
 
 2. Log output will be written to a log file as well as shown on the screen.
    Reviewing the log files to verify that all your processes ran cleanly is
@@ -1308,6 +1308,229 @@ Files Processed::
 
     I2020101912_F006_V18
 
+.. _metplus-control-met:
+
+How METplus controls MET config file settings
+---------------------------------------------
+
+METplus provides powerful user control of MET tool configuration file settings. For each METplus Python wrapper
+there is a list of METplus configuration items that directly control the MET tool configuration file settings.
+**The general concept is that METplus uses a special MET configuration file for each MET tool that references 
+environment variables that are set to the value of METplus configuration options the user specifies.**
+We can see how this works by walking through some examples for GridStat. 
+
+GridStat Simple Example
+~~~~~~~~~~~~~~~~~~~~~~~
+
+First, to see a list of MET config file options that METplus can control, visit the :ref:`GridStat MET Configuration Section<grid-stat-met-conf>`. 
+There we can see that METplus supports controlling various items in the  MET config file for GridStat. One of these items is the 'file_name' variable 
+of the 'climo_mean' dictionary. The default setting for this in the MET config file looks like this::
+
+  climo_mean = {
+
+   file_name = [];
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape      = SQUARE;
+   }
+
+   time_interp_method = DW_MEAN;
+   match_month        = TRUE;
+   day_interval       = 31;
+   hour_interval      = 6;
+  }
+
+In the GridStat MET config file used by METplus, we can see this section looks a little different::
+
+  climo_mean = {
+
+   ${METPLUS_CLIMO_MEAN_FILE}
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape	 = SQUARE;
+   }
+
+   time_interp_method = DW_MEAN;
+   match_month        = TRUE;
+   day_interval       = 31;
+   hour_interval      = 6;
+  }
+
+Note the addition of **${METPLUS_CLIMO_MEAN_FILE}** where a user would normally find **file_name = [];** in a GridStat MET config file not used by METplus.
+
+The addition of **${METPLUS_CLIMO_MEAN_FILE}** tells METplus to do one of two things when GridStat is found in the :term:`PROCESS_LIST` set by the user:
+
+| 1. First set the value to the default in MET, which is the entire string **'file_name = [];'**
+| 2. If the user has set the METplus configuration item :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`, then override the default with the string the user set in this METplus conf variable
+|
+
+If the user sets the following in their METplus config file::
+
+  GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE = /path/to/my/climo_mean_file.nc
+
+METplus will set the 'file_name' variable in the 'climo_mean' dictionary in the GridStat MET config file to::
+
+  file_name = ['/path/to/my/climo_mean_file.nc'];
+
+Returning to what the entire 'climo_mean' dictionary would look like in this instance, we now see the value of :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE` 
+inserted where **${METPLUS_CLIMO_MEAN_FILE}** was::
+
+  climo_mean = {
+
+   file_name = ['/path/to/my/climo_mean_file.nc'];
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape      = SQUARE;
+   }
+
+   time_interp_method = DW_MEAN;
+   match_month        = TRUE;
+   day_interval       = 31;
+   hour_interval      = 6;
+  }
+
+Note that the above is simply for illustration purposes, and there will never be a physical GridStat config file that exists with that string written in it. The
+same substitution is made for every item supported for each wrapper. This information can be found in the 'MET Configuration' section for each wrapper in the :doc:`wrappers` chapter.
+
+GridStat Complex example
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+For more complex MET config file control, let's walk through another example. Again first we start by visiting the :ref:`GridStat MET Configuration Section<grid-stat-met-conf>` to identify which MET config options are currently supported by METplus and how to control them. For this example, we will choose the MET config file dictionary
+item 'fcst'. The default setting for this in the MET config file looks like this::
+
+  fcst = {
+
+   field = [
+      {
+        name       = "APCP";
+        level      = [ "A03" ];
+        cat_thresh = [ >0.0, >=5.0 ];
+      }
+   ];
+
+  }
+
+In the GridStat MET config file used by METplus, we can see this section looks much different::
+
+  fcst = {
+  ${METPLUS_FCST_FIELD}
+  }
+
+Here we can see that **${METPLUS_FCST_FIELD}** replaces all three of the default variables 'name', 'level', and 'cat_thresh' in the 'fcst' dictionary.
+
+The addition of **${METPLUS_FCST_FIELD}** tells METplus to do one of two things when GridStat is found in the :term:`PROCESS_LIST` set by the user:
+
+| 1. First set the value to the default in MET, which is the entire string **'field = [{name = "APCP"; level = [ "A03" ]; cat_thresh=[ >0.0, >=5.0 ];}];'**
+| 2. If the user has set any of these configuration items: :term:`FCST_VAR<n>_NAME`, :term:`FCST_VAR<n>_LEVELS`, :term:`FCST_VAR<n>_THRESH`, or :term:`FCST_VAR<n>_OPTIONS`, then override the corresponding variable in the MET config 'fcst' dictionary with the values set by the user in METplus.
+|
+
+If the user sets the following in their METplus config file::
+
+  FCST_VAR1_NAME = ASNOW
+  FCST_VAR1_LEVELS = A03, A06
+  FCST_VAR1_THRESH = >2.54, >10.0
+
+METplus will set the 'name', 'level', and 'cat_thresh' variables of the 'fcst' dictionary in the GridStat MET config file to::
+
+  field = [{name = "ASNOW"; level = [ "A03", "A06" ]; cat_thresh=[ >2.54, >10.0 ];}];
+
+Returning to what the entire 'fcst' dictionary would look like in this instance, we now see the values of :term:`FCST_VAR<n>_NAME`, :term:`FCST_VAR<n>_LEVELS`, and :term:`FCST_VAR<n>_THRESH` inserted where **${METPLUS_FCST_FIELD}** was::
+
+  fcst = {
+
+   field = [
+      {
+        name       = "ASNOW";
+        level      = [ "A03", "A06" ];
+        cat_thresh = [ >2.54, >10.0 ];
+      }
+   ];
+
+  }
+
+Note that the above is simply for illustration purposes, and there will never be a physical GridStat config file that exists with that string written in it. The
+same substitution is made for every item supported for each wrapper. This information can be found in the 'MET Configuration' section for each wrapper, in :doc:`wrappers`.
+
+.. _met-config-overrides:
+
+Overriding Unsupported MET config file settings
+-----------------------------------------------
+
+While METplus does provide configuration settings for most MET config file options, there will certainly be instances when a user wishes to control a MET config file
+option that has no corresponding METplus configuration file setting. In this instance, the user would set a special METplus configuration item to accomplish this. There
+is one of these special METplus configuration items for the following wrappers:
+
+| :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
+| :term:`ASCII2NC_MET_CONFIG_OVERRIDES`
+| :term:`GRID_DIAG_MET_CONFIG_OVERRIDES`
+| :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
+| :term:`MODE_MET_CONFIG_OVERRIDES`
+| :term:`MTD_MET_CONFIG_OVERRIDES`
+| :term:`PB2NC_MET_CONFIG_OVERRIDES`
+| :term:`POINT_STAT_MET_CONFIG_OVERRIDES`
+| :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
+| :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
+| :term:`TC_GEN_MET_CONFIG_OVERRIDES`
+| :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
+| :term:`TC_RMW_MET_CONFIG_OVERRIDES`
+| :term:`TC_STAT_MET_CONFIG_OVERRIDES`
+|
+
+These special METplus configuration items will control the value of the special environment variable **${METPLUS_MET_CONFIG_OVERRIDES}** which can be found at the bottom
+of each MET config file that METplus uses. To demonstrate how you can use this powerful feature, see the two examples below for GridStat. The general concept can be
+applied to any MET tool that supports this special configuration item in METplus (see list above).
+
+.. note:: We do not recommend modifying MET config files when using METplus. Instead, this new approach to controlling unsupported MET config options is strongly encouraged.
+
+MET Config Override GridStat Simple Example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+Let's use the example of a user running GridStat. The user has a customized GridStat verification task, and needs a specialized setting in the 'distance_map' dictionary in the MET GridStat configuration file. Here's what the default MET config file looks like::
+
+  distance_map = {
+   baddeley_p        = 2;
+   baddeley_max_dist = NA;
+   fom_alpha         = 0.1;
+   zhu_weight        = 0.5;
+  }
+
+Currently there is no support in METplus to control any of these items specifically, however they can be set using :term:`GRID_STAT_MET_CONFIG_OVERRIDES`. Recall from `How METplus controls MET config file settings`_ that METplus will utilize the default settings for each variable in the 'distance_map' dictionary. If a user wishes to override the default value of the 'baddeley_p' variable, then they would create the following entry in their METplus configuration file::
+
+  GRID_STAT_MET_CONFIG_OVERRIDES = distance_map = {baddeley_p = 10;}
+
+This is quite confusing to read since there are three '=' characters, however METplus interprets everything to the right of the first '=' character (reading left --> right) as a single string which in this case would be **'distance_map = {baddeley_p = 10;}'**. When METplus runs GridStat, it appends a special 'distance_map' dictionary to the end of the GridStat MET config file used by METplus to override the default value of the 'baddeley_p' variable in the 'distance_map' dictionary. A line would be added that looks like::
+
+  distance_map = {baddeley_p = 10;}
+
+This simply causes MET to update the value of the 'baddeley_p' variable in the 'distance_map' dictionary to be 10 instead of the default value of 2.
+
+MET Config Override GridStat Complex Example
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+The special :term:`GRID_STAT_MET_CONFIG_OVERRIDES` is quite powerful and allows the user to control multiple unsupported MET config file changes at once. In addition to setting custom 'distance_map' dictionary settings, a user could also change the 'output_flag' and 'nc_pairs_flag' settings in GridStat simultaneously by creating the following entry in their METplus config file::
+
+  GRID_STAT_MET_CONFIG_OVERRIDES = distance_map = {baddeley_p = 10;} output_flag = {eclv = NONE;} nc_pairs_flag = {latlon = TRUE;}
+
+Again, METplus is capable of correctly interpreting the above as three separate overrides that need to be appended to the end of the GridStat MET config file used by METplus at runtime::
+
+  distance_map = {baddeley_p = 10;}
+  output_flag = {eclv = NONE;}
+  nc_pairs_flag = {latlon = TRUE;}
+
+This capability opens the door to virtually complete control of all MET config file settings regardless of whether they are explicitly supported or not.
+
 Config Quick Start Example
 --------------------------
 **Simple Example Use Case**
@@ -1320,35 +1543,32 @@ Config Quick Start Example
        the path to where you saved it) and under the [dir] section, do the
        following:
 
-           -set INPUT_BASE = /tmp/input
+       - set INPUT_BASE = /tmp/input
 
-           (or to some other directory that exists, as this use case does
-	   not use input data)
+         (or to some other directory that exists, as this use case does
+	  not use input data)
 
-           -set OUTPUT_BASE = /tmp/output
+       - set OUTPUT_BASE = /tmp/output
 
-           (or to some other directory that exists where you wish to
-	   direct your output)
+         (or to some other directory that exists where you wish to
+	 direct your output)
 
-           -set MET_INSTALL_DIR = <path/to/your/MET>
+       - set MET_INSTALL_DIR = <path/to/your/MET>
 
-           where *<path/to/your/MET>* is the full path to your MET
-	   installation:
+         where *<path/to/your/MET>* is the full path to your MET
+	 installation:
 
-            e.g. /d1/projects/MET/met-9.0
-
-
-
-
-
+         e.g., /d1/projects/MET/met-9.0
 
 2. Run the use case:
 
-   a. On your command line, run::
+   a. On your command line, run:
+   
+      ::
 
-            run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf -c /path/to/user_system.conf
+         run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf -c /path/to/user_system.conf
 
-            *where /path/to/user_system.conf indicates the location of the user_system.conf file you created earlier.
+      * where /path/to/user_system.conf indicates the location of the user_system.conf file you created earlier.
 
    b. When complete, you should see the following message printed to the
       screen upon successful completion: "INFO: METplus has successfully
@@ -1363,74 +1583,78 @@ Config Quick Start Example
 
 **Track and Intensity Use Case with Sample Data**
 
-  1. Create a directory where you wish to store the sample data. Sample
-     datasets are specific to each use case and are required in order to
-     be able to run the use case.
-  2. Retrieve the sample data from the GitHub repository:
+1. Create a directory where you wish to store the sample data. Sample
+   datasets are specific to each use case and are required in order to
+   be able to run the use case.
 
-    a. In your browser, navigate to
-       https://www.github.com/dtcenter/METplus/releases
-    b. Locate the latest release
-    c. Expand the 'Assets' menu by clicking on the black triangle to the
-       left of the word 'Assets'
-    d. Click on the *sample_data-medium_range-x.y.tgz* link associated
-       with that release, where x.y refers to the release number.
-    e. Save it to the directory you created above, hereafter referred to
-       as INPUT_DATA_DIRECTORY
-    f. cd to your $INPUT_DATA_DIRECTORY and uncompress the tarball:
-       *tar xvfz sample_data-medium_range-x.y.tgz* where x.y is replaced
-       with the current release number.
-    g. when you perform a listing of the sample_data directory, the
-       INPUT_DATA_DIRECTORY/model_applications/medium_range contains the
-       data you will need for this use case
+2. Retrieve the sample data from the GitHub repository:
 
-  3. Set up the configuration file:
+   a. In your browser, navigate to
+      https://www.github.com/dtcenter/METplus/releases
+   b. Locate the latest release
+   c. Expand the 'Assets' menu by clicking on the black triangle to the
+      left of the word 'Assets'
+   d. Click on the *sample_data-medium_range-x.y.tgz* link associated
+      with that release, where x.y refers to the release number.
+   e. Save it to the directory you created above, hereafter referred to
+      as INPUT_DATA_DIRECTORY
+   f. cd to your $INPUT_DATA_DIRECTORY and uncompress the tarball:
+      *tar xvfz sample_data-medium_range-x.y.tgz* where x.y is replaced
+      with the current release number.
+   g. when you perform a listing of the sample_data directory, the
+      INPUT_DATA_DIRECTORY/model_applications/medium_range contains the
+      data you will need for this use case
 
-    a. Your METplus Wrappers install directory will hereafter be referred
-       to as METplus_INSTALL
-    b. Verify that all the *</path/to>* values are replaced with valid paths
-       in the METplus_INSTALL/parm/metplus_config/metplus_data.conf and
-       METplus_INSTALL/parm/metplus_config/metplus_system.conf files
-    c. One configuration file is used in this use case,
-       Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data,
-       and using TCPairs which wraps the MET TC-Pairs tool (to match ADeck
-       and BDeck cyclone tracks to generate matched pairs and error
-       statistics). The TCMPRPlotter is then used (wraps the MET tool
-       plot_tcmpr.R) to generate a mean and median plots for these
-       matched pairs
-    d. In your editor, open the
-       METplus_INSTALL/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
-       file and perform the following:
+3. Set up the configuration file:
+
+   a. Your METplus Wrappers install directory will hereafter be referred
+      to as METplus_INSTALL
+   b. Verify that all the *</path/to>* values are replaced with valid paths
+      in the METplus_INSTALL/parm/metplus_config/metplus_data.conf and
+      METplus_INSTALL/parm/metplus_config/metplus_system.conf files
+   c. One configuration file is used in this use case,
+      Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data,
+      and using TCPairs which wraps the MET TC-Pairs tool (to match ADeck
+      and BDeck cyclone tracks to generate matched pairs and error
+      statistics). The TCMPRPlotter is then used (wraps the MET tool
+      plot_tcmpr.R) to generate a mean and median plots for these
+      matched pairs
+
+   d. In your editor, open the
+      METplus_INSTALL/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
+      file and perform the following:
 
       1. Under the [dir] section, add the following:
 
-        a. OUTPUT_BASE to where you wish to save the output:
-	   e.g. OUTPUT_BASE = path-to-your/output_dir
-        b. INPUT_BASE = INPUT_DATA_DIRECTORY/model_applications
-        c. MET_INSTALL_DIR =
-	   path-to-your/MET-install where path-to-your/MET-install is the
-	   full path where your MET installation resides
-        d. Verify that PROCESS_LIST, under the [conf] header/section is set
-	   to TCPairs, TCMPRPlotter. This instructs METplus Wrappers to run
-	   the TCPairs wrapper first (TC-Pairs) followed by the TCMPR plotter
-	   wrapper (plot_TCMPR.R).
+         a. OUTPUT_BASE to where you wish to save the output:
+	    e.g., OUTPUT_BASE = path-to-your/output_dir
+         b. INPUT_BASE = INPUT_DATA_DIRECTORY/model_applications
+         c. MET_INSTALL_DIR =
+	    path-to-your/MET-install where path-to-your/MET-install is the
+	    full path where your MET installation resides
+         d. Verify that PROCESS_LIST, under the [conf] header/section is set
+	    to TCPairs, TCMPRPlotter. This instructs METplus Wrappers to run
+	    the TCPairs wrapper first (TC-Pairs) followed by the TCMPR plotter
+	    wrapper (plot_TCMPR.R).
 
       2. Save your changes and exit your editor
 
 
-  4. Run the use case:
+4. Run the use case:
 
-    a. Make sure you have set the following environment in your .cshrc
-       (C Shell) or .bashrc (Bash):
+   a. Make sure you have set the following environment in your .cshrc
+      (C Shell) or .bashrc (Bash):
 
       1. csh: setenv RSCRIPTS_BASE $MET_BASE/scripts/Rscripts
       2. bash: export RSCRIPTS_BASE=$MET_BASE/scripts/Rscripts
       3. Refer to section 2.7 'Set up your environment' in the
 	 :ref:`install` chapter for the full instructions on setting
 	 up the rest of your environment
-      4. On your command line, run::
+      4. On your command line, run:
+   
+         ::
 
-           run_metplus.py -c parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
+            run_metplus.py -c parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
 
       5. When complete, you will have a log file in the output directory
 	 you specified, and under the tc_pairs directory you will see
@@ -1441,31 +1665,36 @@ Config Quick Start Example
 	 format. You should have the following plots which can be viewed
 	 by any graphics viewers such as 'display' on Linux/Unix hosts:
 
-        a. AMAX_WIND-BMAX_WIND_boxplot.png
+         a. AMAX_WIND-BMAX_WIND_boxplot.png
 
-        b. AMAX_WIND-BMAX_WIND_mean.png
+         b. AMAX_WIND-BMAX_WIND_mean.png
 
-        c. AMAX_WIND-BMAX_WIND_median.png
+         c. AMAX_WIND-BMAX_WIND_median.png
 
-        d. AMSLP-BMSLP_boxplot.png
+         d. AMSLP-BMSLP_boxplot.png
 
-        e. AMSLP-BMSLP_mean.png
+         e. AMSLP-BMSLP_mean.png
 
-        f. AMSLP-BMSLP_median.png
+         f. AMSLP-BMSLP_median.png
 
-        g. TK_ERR_boxplot.png
+         g. TK_ERR_boxplot.png
 
-        h. TK_ERR_mean.png
+         h. TK_ERR_mean.png
 
-        i. TK_ERR_median.png
+         i. TK_ERR_median.png
 
 User Defined Config
 -------------------
 
 You can define your own custom config variables that will be set as
-environment variables when METplus is run. MET config files can read
-environment variables, so this is a good way to customize information that
-is read by those files. To create add a custom config variable, add a
+environment variables when METplus is run.
+
+.. note:: In previous versions of METplus, we recommended using this to control unsupported MET config file options. Since this requires also modifying the MET config file used by METplus, we no longer recommend this. Instead, we strongly encourage the user to use the new capability defined in `Overriding Unsupported MET config file settings`_.
+
+This capability is currently most useful for utilizing Python embedding where a
+user may wish to control multiple items within their Python script.
+ 
+To create add a custom config variable, add a
 section to one of your METplus config files called [user_env_vars]. Under
 this header, add as many variables as you'd like. For example, if you
 added the following to your METplus config file::
@@ -1473,13 +1702,8 @@ added the following to your METplus config file::
   [user_env_vars]
   VAR_NAME = some_text_for_feb_1_1987_run
 
-and you added the following to a MET config file that is used::
-
-  output_prefix = ${VAR_NAME}
-
-then at run time, the MET application will be run with the configuration::
-
-  output_prefix = some_text_for_feb_1_1987_run
+you could then reference this variable from within Python by accessing the environment variable
+named "VAR_NAME".
 
 You can also reference other variables in the METplus config file.
 For example::
@@ -1492,11 +1716,9 @@ For example::
 
 This is the equivalent of calling (bash example shown)::
 
-  $ export USE_CAST_TIME_ID=1987020104
+  $ export USE_CASE_TIME_ID=1987020104
 
-on the command line at the beginning of your METplus run. You can access
-the variable in the MET config file with ${USE_CASE_TIME_ID}.
-
+on the command line at the beginning of your METplus run. 
 
 Using Environment Variables as Config Variables
 -----------------------------------------------
@@ -1506,6 +1728,4 @@ variables when METplus is run. To set any METplus config variable to the
 value of a local environment variable, use the following syntax::
 
   METPLUS_CONF_VAR = {ENV[LOCAL_ENV_VAR_NAME]}
-
-:doc:`glossary`
 

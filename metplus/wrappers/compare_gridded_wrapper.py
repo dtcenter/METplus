@@ -81,12 +81,6 @@ that reformat gridded data
         c_dict['NEIGHBORHOOD_WIDTH'] = ''
         c_dict['NEIGHBORHOOD_SHAPE'] = ''
 
-        # initialize climatology items
-        for climo_item in self.climo_types:
-            c_dict[f'CLIMO_{climo_item}_INPUT_DIR'] = ''
-            c_dict[f'CLIMO_{climo_item}_INPUT_TEMPLATE'] = ''
-            c_dict[f'CLIMO_{climo_item}_FILE'] = None
-
         self.handle_regrid(c_dict)
 
         self.handle_description()
@@ -98,6 +92,9 @@ that reformat gridded data
                                    f'{self.app_name.upper()}_OUTPUT_PREFIX',
                                    'output_prefix',
                                    'METPLUS_OUTPUT_PREFIX')
+
+        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
+                                                      met_tool=self.app_name)
 
         return c_dict
 
@@ -176,16 +173,13 @@ that reformat gridded data
         # get verification mask if available
         self.get_verification_mask(time_info)
 
-        var_list = util.parse_var_list(self.config,
-                                       time_info,
-                                       met_tool=self.app_name)
+        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                                     time_info)
 
         if not var_list and not self.c_dict.get('VAR_LIST_OPTIONAL', False):
             self.log_error('No input fields were specified. You must set '
                            f'[FCST/OBS]_VAR<n>_[NAME/LEVELS].')
             return None
-
-        self.handle_climo(time_info)
 
         if self.c_dict.get('ONCE_PER_FIELD', False):
             # loop over all fields and levels (and probability thresholds) and
@@ -258,9 +252,8 @@ that reformat gridded data
               Args:
                 @param time_info dictionary containing timing information
         """
-        var_list = util.parse_var_list(self.config,
-                                       time_info,
-                                       met_tool=self.app_name)
+        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                                     time_info)
 
         # get model from first var to compare
         model_path = self.find_model(time_info,
@@ -405,3 +398,97 @@ that reformat gridded data
 
         cmd += '-outdir {}'.format(self.outdir)
         return cmd
+
+    def handle_climo_cdf_dict(self):
+        app_name_upper = self.app_name.upper()
+        tmp_dict = {}
+        self.set_met_config_float(tmp_dict,
+                                  [f'{app_name_upper}_CLIMO_CDF_BINS',
+                                   f'{app_name_upper}_CLIMO_CDF_CDF_BINS'],
+                                  'cdf_bins',
+                                  'CLIMO_CDF_BINS')
+        self.set_met_config_bool(tmp_dict,
+                                 f'{app_name_upper}_CLIMO_CDF_CENTER_BINS',
+                                 'center_bins',
+                                 'CLIMO_CDF_CENTER_BINS')
+        self.set_met_config_bool(tmp_dict,
+                                 f'{app_name_upper}_CLIMO_CDF_WRITE_BINS',
+                                 'write_bins',
+                                 'CLIMO_CDF_WRITE_BINS')
+        climo_cdf = (
+            self.format_met_config_dict(tmp_dict,
+                                        'climo_cdf',
+                                        ['CLIMO_CDF_BINS',
+                                         'CLIMO_CDF_CENTER_BINS',
+                                         'CLIMO_CDF_WRITE_BINS'])
+        )
+        self.env_var_dict['METPLUS_CLIMO_CDF_DICT'] = climo_cdf
+
+    def handle_interp_dict(self, uses_field=False):
+        """! Reads config variables for interp dictionary, i.e.
+             _INTERP_VLD_THRESH, _INTERP_SHAPE, _INTERP_METHOD, and
+             _INTERP_WIDTH. Also _INTERP_FIELD if specified
+
+            @param uses_field if True, read field variable as well
+             (default is False)
+        """
+        app = self.app_name.upper()
+
+        dict_name = 'interp'
+        dict_items = []
+
+        metplus_prefix = f'{app}_{dict_name.upper()}_'
+
+        # items to set for interp dictionary
+        # key is MET config name and used for METplus config and env var names
+        # value is a tuple of data type of item and names of any children items
+        interp_items = {
+            'vld_thresh': ('float', None),
+            'shape': ('string', None),
+            'type': ('dict', [('method', 'string'),
+                              ('width', 'int')]),
+        }
+
+        if uses_field:
+            interp_items['field'] = ('string', None)
+
+        for name, (data_type, kids) in interp_items.items():
+            metplus_name = f'{metplus_prefix}{name.upper()}'
+            metplus_configs = []
+
+            # if dictionary, read get children from MET config
+            if data_type == 'dict':
+                children = []
+                for kid, kid_type in kids:
+                    # add APP_INTERP_TYPE_METHOD and APP_INTERP_METHOD
+                    metplus_configs.append(f'{metplus_name}_{kid.upper()}')
+                    metplus_configs.append(f'{metplus_prefix}{kid.upper()}')
+
+                    child_item = self.get_met_config(
+                        name=kid,
+                        data_type=kid_type,
+                        metplus_configs=metplus_configs.copy(),
+                        extra_args={'remove_quotes': True}
+                    )
+                    children.append(child_item)
+
+                    # reset metplus config list for next kid
+                    metplus_configs.clear()
+
+                # set metplus_configs
+                metplus_configs = None
+            else:
+                children = None
+                metplus_configs.append(metplus_name)
+
+            dict_items.append(
+                self.get_met_config(
+                    name=name,
+                    data_type=data_type,
+                    metplus_configs=metplus_configs,
+                    extra_args={'remove_quotes': True},
+                    children=children,
+                )
+            )
+
+        self.handle_met_config_dict(dict_name, dict_items)

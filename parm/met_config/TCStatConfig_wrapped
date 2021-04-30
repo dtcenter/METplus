@@ -106,6 +106,15 @@ ${METPLUS_COLUMN_STR_NAME}
 ${METPLUS_COLUMN_STR_VAL}
 
 //
+// Stratify by excluding strings in non-numeric data columns.
+//
+//column_str_exc_name =
+${METPLUS_COLUMN_STR_EXC_NAME}
+
+//column_str_exc_val =
+${METPLUS_COLUMN_STR_EXC_VAL}
+
+//
 // Similar to the column_thresh options above
 //
 ${METPLUS_INIT_THRESH_NAME}
@@ -116,6 +125,15 @@ ${METPLUS_INIT_THRESH_VAL}
 //
 ${METPLUS_INIT_STR_NAME}
 ${METPLUS_INIT_STR_VAL}
+
+//
+// Similar to the column_str_exc options above
+//
+//init_str_exc_name =
+${METPLUS_INIT_STR_EXC_NAME}
+
+//init_str_exc_val =
+${METPLUS_INIT_STR_EXC_VAL}
 
 //
 // Stratify by the ADECK and BDECK distances to land.
