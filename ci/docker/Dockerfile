@@ -68,7 +68,6 @@ ARG OBTAIN_SOURCE_CODE=clone
 RUN if [ ${OBTAIN_SOURCE_CODE} != "none" ]; then \
   echo "Installing METplus package and setting default configs"; \
   cd METplus; \
-  if [  ]
   sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config.conf ||\
   sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/*.conf; \
   sed -i 's|OUTPUT_BASE = /path/to|OUTPUT_BASE = /data/output|g' parm/metplus_config.conf || \
