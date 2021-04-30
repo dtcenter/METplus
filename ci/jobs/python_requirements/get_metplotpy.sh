@@ -3,6 +3,7 @@
 pip3 install matplotlib
 pip3 install scipy
 pip3 install cmocean
+pip3 install plotly==4.9.0
 
 basedir=$(dirname "$0")
 work_dir=$basedir/../../..

@@ -30,7 +30,7 @@ UserScript_obsPrecip_obsOnly_CrossSpectraPlot.py
 # ------------------
 #
 # This use case runs the UserScript wrapper tool to run a user provided script,
-# in this case, cross-spectra.py.
+# in this case, cross_spectra_plot.py.
 #
 
 ##############################################################################
@@ -52,7 +52,7 @@ UserScript_obsPrecip_obsOnly_CrossSpectraPlot.py
 # with the -c option, i.e. -c parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot/cross-spectra_diagram.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf
 #
 
 #############################################################################
@@ -67,6 +67,16 @@ UserScript_obsPrecip_obsOnly_CrossSpectraPlot.py
 # ----------------
 #
 # There is no python embedding in this use case
+#
+
+##############################################################################
+# Python Scripts
+# ----------------
+#
+# This use case uses a Python script to perform plotting
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot/cross_spectra_plot.py
 #
 
 ##############################################################################
