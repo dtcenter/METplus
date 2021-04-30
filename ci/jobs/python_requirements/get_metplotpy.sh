@@ -3,6 +3,7 @@
 pip3 install matplotlib
 pip3 install scipy
 pip3 install cmocean
+pip3 install kaleido
 
 basedir=$(dirname "$0")
 work_dir=$basedir/../../..
