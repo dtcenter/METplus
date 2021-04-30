@@ -22,4 +22,4 @@ contour_max: 1.6
 contour_del: 0.2
 colorscale: 'BuPu'
 plot_filename: 
-- !ENV '${OUTPUT_BASE}/erai_precip2.png'
+- !ENV '${OUTPUT_DIR}/erai_precip2.png'

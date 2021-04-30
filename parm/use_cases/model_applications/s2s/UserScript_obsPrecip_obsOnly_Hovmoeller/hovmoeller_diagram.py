@@ -67,9 +67,10 @@ def main():
     data.attrs['units'] = config['var_units']
 
     plot_filename = config['plot_filename'][0]
+    print("Plot name",plot_filename)
+    logging.info(plot_filename)
     custom_param_dict = {"plot_filename": plot_filename}
     plot = Hovmoeller.Hovmoeller(custom_param_dict, time, lon, data)
-    logging.info(plot_filename)
     plot.save_to_file()
 
 if __name__ == '__main__':
