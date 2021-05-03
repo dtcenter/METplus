@@ -8,14 +8,14 @@ This chapter is a guide on configuring METplus Wrappers.
 Config Best Practices
 ---------------------
 
-1. Set your log level to an appropriate level:
+1. Set your log level (LOG_LEVEL) to an appropriate level:
 
-   a. Debug is the most verbose and is useful when you are troubleshooting
+   a. DEBUG is the most verbose and is useful when you are troubleshooting
       problems
-   b. Info is the default level
-   c. Warning only logs warnings, error, or critical events
-   d. Error only logs errors or critical events
-   e. Critical is the least verbose and is rarely used
+   b. INFO is the default level
+   c. WARNING only logs warnings, error, or critical events
+   d. ERROR only logs errors or critical events
+   e. CRITICAL is the least verbose and is rarely used
 
 2. Log output will be written to a log file as well as shown on the screen.
    Reviewing the log files to verify that all your processes ran cleanly is
@@ -34,30 +34,40 @@ Config Best Practices
 Config File Structure
 ---------------------
 
-METplus Wrappers employs a hierarchy of configuration files employed in
-METplus Wrappers. At the lowest level are the "set-and-forget" type
-configuration files that reside in the
-*<METplus_installation_dir>/parm/metplus_config*. At the next level are
-the configuration files that pertain to a user's specific needs in the
-*<METplus_installation_dir>/parm/use_cases/<specific_use_case>*.
 
-Four configuration files are required for METplus Wrappers to be fully
-configured (i.e. all keywords are defined by either whitespace or a valid
-value):
+**Default Configuration File**
 
-  1. metplus_system
-  2. metplus_data
-  3. metplus_logging
-  4. metplus_runtime
+The default METplus configurations are found in *parm/metplus_config/defaults.conf*.
+These settings are applied to every run of the wrappers and include information
+about the user's environment, such as where the MET applications are installed
+and where sample input data can be found.
+They also include options to define where output data should be written
+and customize log output.
 
-By default, key-values that require the user's input are set to *</path/to>*.
-Make sure to replace these with the appropriate directory for your project.
+By default, key-values that require the user's input are set to **/path/to**.
+These values must be replaced with the appropriate paths for the
+installation.
 
-Additional configuration files are optional and the key-values defined there
-will override any values defined in the four mandatory METplus Wrappers
-configuration files. These additional configuration files enable users to
-use a common set of configuration files and to create customized environments
-for their verification tasks.
+Values in the default configuration file can also be overridden in a
+user-defined configuration file to change settings for an individual user
+or use case run. More information can be found in the
+:ref:`User Defined Config section<user_defined_config>`.
+
+**Use Case Configuration Files**
+
+Example configuration files that contain settings to run various use cases
+can be found in the *parm/use_cases* directory. There are two directories
+inside this directory.
+
+The directory named *met_tool_wrapper* contains simple use cases that run
+one wrapper at a time. They provide examples of how to configure and run
+a single wrapper to help users become familiar with the configurations
+that are available for that wrapper.
+
+The directory named **model_applications** contains sub-directories organized
+by category. These use cases often run multiple wrappers in succession to
+demonstrate more complex examples of how the tools are used for verification
+by end users.
 
 Common Config Variables
 -----------------------
@@ -1308,6 +1318,218 @@ Files Processed::
 
     I2020101912_F006_V18
 
+.. _logging-config:
+
+Logging
+~~~~~~~
+
+Log File Information
+^^^^^^^^^^^^^^^^^^^^
+
+Where to write logs files
+
+LOG_METPLUS
+"""""""""""
+
+This defines the name of the METplus log file::
+
+    LOG_METPLUS = {LOG_DIR}/metplus.log.{LOG_TIMESTAMP_TEMPLATE}
+
+The value references :ref:`LOG_DIR<log_dir>` and
+:ref:`LOG_TIMESTAMP_TEMPLATE<log_timestamp_template>`.
+
+.. _log_dir:
+
+LOG_DIR
+"""""""
+
+This defines the directory that will contain log files. Typically this is set
+to a directory called "logs" inside the :term:`OUTPUT_BASE` directory::
+
+    LOG_DIR = {OUTPUT_BASE}/logs
+
+The value can be changed if another location to write log files is preferred.
+
+.. _log_timestamp_template:
+
+LOG_TIMESTAMP_TEMPLATE
+""""""""""""""""""""""
+
+Sets the desired timestamp format, using strftime format directives.
+It must only contain valid strftime format directives (see
+https://strftime.org).
+The current run time is substituted using the format specified unless
+:ref:`LOG_TIMESTAMP_USE_DATATIME<log_timestamp_use_datatime>`
+is set to true/yes.
+By default, a new log file is created for each METplus run::
+
+    LOG_TIMESTAMP_TEMPLATE = %Y%m%d%H%M%S
+
+This example will use the format YYYYMMDDHHMMSS, i.e. 20141231101159
+Change this value to adjust the frequency that new log files are created.
+For example, to write all log output that is generated within a day to a
+single log file, set::
+
+    LOG_TIMESTAMP_TEMPLATE = %Y%m%d
+
+This example will use the format YYYYMMDD, i.e. 20141231
+
+.. _log_timestamp_use_datatime:
+
+LOG_TIMESTAMP_USE_DATATIME
+""""""""""""""""""""""""""
+
+If set to false/no (default), write log timestamps using the current time
+when the METplus run was started::
+
+    LOG_TIMESTAMP_USE_DATATIME = no
+
+If set to true/yes, write log timstamps using the value set for
+:term:`INIT_BEG` or :term:`VALID_BEG` depending on the value set for
+:term:`LOOP_BY`. This is useful if it is desired to organize the
+log output files based on the data that was processed during the run.
+
+LOG_MET_OUTPUT_TO_METPLUS
+"""""""""""""""""""""""""
+
+If set to true/yes (default), log output from MET applications are written
+to the METplus log file::
+
+    LOG_MET_OUTPUT_TO_METPLUS = yes
+
+If set to false/no, the output is written to a separate
+file in the log directory named after the application.
+
+Log Level Information
+^^^^^^^^^^^^^^^^^^^^^
+
+How much information to log
+
+LOG_LEVEL
+"""""""""
+
+This controls the level of logging output from the METplus wrappers. It does
+not control the logging level of the actual MET applications. The possible
+values to:
+
+* CRITICAL
+* ERROR
+* WARNING
+* INFO
+* DEBUG
+* NOTSET
+
+The default logging level is INFO::
+
+    LOG_LEVEL = INFO
+
+The log output will contain messages from the level selected and above.
+If a use case is producing errors, then setting::
+
+    LOG_LEVEL = DEBUG
+
+will produce additional logging output that is helpful
+to discover the cause of the error.
+
+LOG_MET_VERBOSITY
+"""""""""""""""""
+
+This controls the logging verbosity level for all of the MET applications.
+The value can be set to an integer. Higher values produce more log output.
+The logging verbosity can also be set individually for each MET tool if more
+log output is desired for a specific application. For example::
+
+    LOG_MET_VERBOSITY = 2
+    LOG_ASCII2NC_VERBOSITY = 3
+    LOG_POINT_STAT_VERBOSITY = 4
+
+In the above example, ASCII2NC will use 3, PointStat will use 4, and
+all other MET applications with use 2.
+
+Log Formatting Information
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+How to format lines in log files
+
+.. note:: The following variables control the format of the METplus log output
+          that is written to the log files. It does not control the format of
+          the log output that is written to the screen as standard output.
+
+For more information on acceptable values, see the Python documentation for
+LogRecord:
+https://docs.python.org/3/library/logging.html#logging.LogRecord
+
+.. _log_info_line_format:
+
+LOG_INFO_LINE_FORMAT
+""""""""""""""""""""
+
+This defines the format of the INFO log messages. Setting the value to::
+
+    LOG_INFO_LINE_FORMAT = %(asctime)s.%(msecs)03d %(name)s %(levelname)s: %(message)s
+
+Produces a log file with INFO lines that match this format::
+
+    04/29 15:54:22.413 metplus INFO: Completed METplus configuration setup.
+
+The format of the timestamp is set by
+:ref:`LOG_LINE_DATE_FORMAT<log_line_date_format>`.
+
+.. _log_err_line_format:
+
+LOG_ERR_LINE_FORMAT
+"""""""""""""""""""
+
+This defines the format of the ERROR log messages. Setting the value to::
+
+    LOG_ERR_LINE_FORMAT = %(asctime)s.%(msecs)03d %(name)s (%(filename)s:%(lineno)d) %(levelname)s: %(message)s
+
+Produces a log file with ERROR lines that match this format::
+
+    04/29 16:03:34.858 metplus (met_util.py:218) ERROR: METplus has finished running but had 1 error.
+
+The format of the timestamp is set by
+:ref:`LOG_LINE_DATE_FORMAT<log_line_date_format>`.
+
+.. _log_debug_line_format:
+
+LOG_DEBUG_LINE_FORMAT
+"""""""""""""""""""""
+
+This defines the format of the DEBUG log messages. Setting the value to::
+
+    LOG_DEBUG_LINE_FORMAT = %(asctime)s.%(msecs)03d %(name)s (%(filename)s:%(lineno)d) %(levelname)s: %(message)s
+
+Produces a log file with DEBUG lines that match this format::
+
+    04/29 15:54:22.851 metplus (met_util.py:207) DEBUG: METplus took 0:00:00.850983 to run.
+
+The format of the timestamp is set by
+:ref:`LOG_LINE_DATE_FORMAT<log_line_date_format>`.
+
+.. _log_line_date_format:
+
+LOG_LINE_DATE_FORMAT
+""""""""""""""""""""
+
+This defines the format of the timestamps used in the METplus log messages.
+
+Setting the value to::
+
+    LOG_LINE_DATE_FORMAT = %m/%d %H:%M:%S
+
+Produces a log file with timestamps that match this format::
+
+    04/29 15:54:22.851
+
+LOG_LINE_FORMAT
+"""""""""""""""
+
+Defines the default formatting of each METplus log output line.
+By default, this variable is referenced in
+:ref:`LOG_ERR_LINE_FORMAT<log_err_line_format>` and
+:ref:`LOG_DEBUG_LINE_FORMAT<log_debug_line_format>`.
+
 .. _metplus-control-met:
 
 How METplus controls MET config file settings
@@ -1535,50 +1757,38 @@ Config Quick Start Example
 --------------------------
 **Simple Example Use Case**
 
-1. Set up the configuration file:
+* Create a user configuration file (named user_system.conf in this example)
+* Open the file with a text editor of your choice and add the following::
 
-    a. Your METplus Wrappers install directory will hereafter be referred to
-       as METplus_INSTALL
-    b. Create a user_system.conf file (wherever you wish, just make note of
-       the path to where you saved it) and under the [dir] section, do the
-       following:
+    [config]
+    MET_INSTALL_DIR = /path/to/MET
+    INPUT_BASE = /path/to/INPUT
+    OUTPUT_BASE = /path/to/OUTPUT
 
-       - set INPUT_BASE = /tmp/input
+* Replace */path/to/MET* with the full path to your MET installation,
+  i.e., /d1/projects/MET/met-10.0.0
+* Replace /path/to/INPUT with the full path to a directory that contains or
+  will contain sample input data used by the use case examples.
+* Replace /path/to/OUTPUT with the full path to a directory where you would
+  like output files to be written.
+* Run the use case: On your command line, run::
 
-         (or to some other directory that exists, as this use case does
-	  not use input data)
+    run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf -c /path/to/user_system.conf
 
-       - set OUTPUT_BASE = /tmp/output
+where /path/to/user_system.conf is the path of the user configuration file
+you created earlier.
 
-         (or to some other directory that exists where you wish to
-	 direct your output)
+* When complete, you should see the following message printed to the
+  screen upon successful completion::
 
-       - set MET_INSTALL_DIR = <path/to/your/MET>
+    "INFO: METplus has successfully finished running."
 
-         where *<path/to/your/MET>* is the full path to your MET
-	 installation:
-
-         e.g., /d1/projects/MET/met-9.0
-
-2. Run the use case:
-
-   a. On your command line, run:
-   
-      ::
-
-         run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf -c /path/to/user_system.conf
-
-      * where /path/to/user_system.conf indicates the location of the user_system.conf file you created earlier.
-
-   b. When complete, you should see the following message printed to the
-      screen upon successful completion: "INFO: METplus has successfully
-      finished running."
-      A *logs* directory with a log file will be created under the output
-      directory you specified.
-      Additionally, a metplus_final.conf file is created and saved to
-      the output directory.  It contains all the final values set by all your
-      METplus configuration files, including those from the
-      METplus_INSTALL/parm/metplus_config directory.
+A *logs* directory with a log file will be created under the output
+directory you specified.
+Additionally, a metplus_final.conf file is created and saved to
+the output directory.  It contains all the final values set by all your
+METplus configuration files, including those from the
+*parm/metplus_config/defaults.conf* file.
 
 
 **Track and Intensity Use Case with Sample Data**
@@ -1610,8 +1820,7 @@ Config Quick Start Example
    a. Your METplus Wrappers install directory will hereafter be referred
       to as METplus_INSTALL
    b. Verify that all the *</path/to>* values are replaced with valid paths
-      in the METplus_INSTALL/parm/metplus_config/metplus_data.conf and
-      METplus_INSTALL/parm/metplus_config/metplus_system.conf files
+      in METplus_INSTALL/parm/metplus_config/defaults.conf
    c. One configuration file is used in this use case,
       Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data,
       and using TCPairs which wraps the MET TC-Pairs tool (to match ADeck
@@ -1682,6 +1891,8 @@ Config Quick Start Example
          h. TK_ERR_mean.png
 
          i. TK_ERR_median.png
+
+.. _user_defined_config:
 
 User Defined Config
 -------------------

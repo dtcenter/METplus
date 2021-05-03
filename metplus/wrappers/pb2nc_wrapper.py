@@ -52,9 +52,7 @@ class PB2NCWrapper(CommandBuilder):
 
              Returns:
                 c_dict  - a dictionary containing the settings in the
-                configuration files (that aren't in the
-                           metplus_data, metplus_system, and metplus_runtime
-                           config files.
+                configuration files
         """
         c_dict = super().create_c_dict()
 
