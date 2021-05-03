@@ -37,7 +37,7 @@ Config File Structure
 
 **Default Configuration File**
 
-The default METplus configurations are found in *parm/metplus_config.conf*.
+The default METplus configurations are found in *parm/metplus_config/defaults.conf*.
 These settings are applied to every run of the wrappers and include information
 about the user's environment, such as where the MET applications are installed
 and where sample input data can be found.
@@ -1788,7 +1788,7 @@ directory you specified.
 Additionally, a metplus_final.conf file is created and saved to
 the output directory.  It contains all the final values set by all your
 METplus configuration files, including those from the
-*parm/metplus_config.conf* file.
+*parm/metplus_config/defaults.conf* file.
 
 
 **Track and Intensity Use Case with Sample Data**
@@ -1820,7 +1820,7 @@ METplus configuration files, including those from the
    a. Your METplus Wrappers install directory will hereafter be referred
       to as METplus_INSTALL
    b. Verify that all the *</path/to>* values are replaced with valid paths
-      in METplus_INSTALL/parm/metplus_config.conf
+      in METplus_INSTALL/parm/metplus_config/defaults.conf
    c. One configuration file is used in this use case,
       Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data,
       and using TCPairs which wraps the MET TC-Pairs tool (to match ADeck
