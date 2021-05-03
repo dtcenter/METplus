@@ -72,13 +72,19 @@ def main():
 
     # create output directory if it does not exist
     plot_dir = os.path.dirname(plot_filename)
-    if not os.path.exists(plot_dir):
-        logging.info(f"Creating output directory: {plot_dir}")
-        os.makedirs(plot_dir)
+#    if not os.path.exists(plot_dir):
+#        logging.info(f"Creating output directory: {plot_dir}")
+#        os.makedirs(plot_dir)
 
     custom_param_dict = {"plot_filename": plot_filename}
     plot = Hovmoeller.Hovmoeller(custom_param_dict, time, lon, data)
     plot.save_to_file()
+
+    # check if output file exists since save_to_file doesn't return
+    # an error code on failure
+    if not os.path.exists(plot_filename):
+        logging.error(f"Could not create output file: {plot_filename}")
+        sys.exit(1)
 
 if __name__ == '__main__':
     main()
