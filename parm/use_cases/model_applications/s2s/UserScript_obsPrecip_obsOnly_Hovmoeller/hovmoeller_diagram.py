@@ -69,6 +69,13 @@ def main():
     plot_filename = config['plot_filename'][0]
     print("Plot name",plot_filename)
     logging.info(plot_filename)
+
+    # create output directory if it does not exist
+    plot_dir = os.path.dirname(plot_filename)
+    if not os.path.exists(plot_dir):
+        logging.info(f"Creating output directory: {plot_dir}")
+        os.makedirs(plot_dir)
+
     custom_param_dict = {"plot_filename": plot_filename}
     plot = Hovmoeller.Hovmoeller(custom_param_dict, time, lon, data)
     plot.save_to_file()
