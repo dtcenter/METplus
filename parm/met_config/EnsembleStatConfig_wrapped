@@ -138,25 +138,13 @@ ${METPLUS_ENS_PHIST_BIN_SIZE}
 //
 // Climatology data
 //
-climo_mean = {
+//climo_mean = {
+${METPLUS_CLIMO_MEAN_DICT}
 
-   ${METPLUS_CLIMO_MEAN_FILE}
-   field     = [];
 
-   regrid = {
-      method     = NEAREST;
-      width      = 1;
-      vld_thresh = 0.5;
-      shape      = SQUARE;
-   }
+//climo_stdev = {
+${METPLUS_CLIMO_STDEV_DICT}
 
-   time_interp_method = DW_MEAN;
-   ${METPLUS_CLIMO_MEAN_DAY_INTERVAL}
-   ${METPLUS_CLIMO_MEAN_HOUR_INTERVAL}
-}
-
-climo_stdev = climo_mean;
-${METPLUS_CLIMO_STDEV_FILE}
 
 
 //
