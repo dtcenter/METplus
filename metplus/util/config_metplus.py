@@ -66,7 +66,7 @@ PARM_BASE = os.environ.get('METPLUS_PARM_BASE',
                            os.path.join(METPLUS_BASE, 'parm'))
 
 # default METplus configuration files that are sourced first
-BASE_CONFS = ['metplus_config.conf',
+BASE_CONFS = ['metplus_config/defaults.conf',
               # support previous location of default config files
               'metplus_config/metplus_system.conf',
               'metplus_config/metplus_data.conf',

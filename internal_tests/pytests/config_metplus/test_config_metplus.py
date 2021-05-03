@@ -18,7 +18,7 @@ def test_get_default_config_list():
                 'metplus_config/metplus_data.conf',
                 'metplus_config/metplus_runtime.conf',
                 'metplus_config/metplus_logging.conf']
-    new_list = ['metplus_config.conf']
+    new_list = ['metplus_config/defaults.conf']
     old_config = [os.path.join(old_parm_base, item) for item in old_list]
     new_config = [os.path.join(new_parm_base, item) for item in new_list]
 
