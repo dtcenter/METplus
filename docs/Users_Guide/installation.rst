@@ -115,59 +115,64 @@ that are required to run.
 Getting the METplus Wrappers source code
 ----------------------------------------
 
-The METplus Wrappers source code is available for download from a public
-GitHub repository. You can retrieve the source code through your web
+The METplus Wrappers source code is available for download from the public
+GitHub repository. The source code can retrieved through a web
 browser or the command line.
 
-Get the source code via your Web Browser
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Get the source code via Web Browser
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-If you are a new METplus Wrappers user and would like to experiment with
-the use cases, you will want to follow these instructions to retrieve
-the source code, additional documentation and sample data that
-accompanies the use cases:
+-  On your local host, create a directory where the METplus Wrappers will be
+   installed
 
--  On your local host (or wherever you wish to install the METplus
-   Wrappers code) create a directory where you want the code to reside
-
--  Open the browser of your choice and navigate to
-   https://github.com/dtcenter/METplus. You will see something like the
-   following:
-
-.. image:: ../_static/metplus_repo.png
-
--  Click on the 'releases' link, highlighted by a red circle in the
-   diagram below:
-
-.. image:: ../_static/metplus_repo_release.png
-
--  You will be redirected to another screen. The latest available
-   release appears at the top of the screen:
+-  Open a web browser and navigate to
+   https://github.com/dtcenter/METplus/releases/latest to view the
+   latest stable release.
 
 .. image:: ../_static/metplus_repo_releases_page.png
 
--  Expand the Assets menu by clicking on the black triangle to the left of the 'Assets' text (below the description of the latest release)
-
--  Click on the 'Source code' link (either the *zip* or *tar.gz*) and
-   when prompted, save it to the directory you created.
+-  Click on the 'Source code' link (either the *zip* or *tar.gz*) under Assets
+   and when prompted, save it to the directory.
 
 -  Uncompress the source code (on Linux/Unix\ *: gunzip* for zip file or
    *tar xvfz* for the tar.gz file)
 
--  Create a directory for the sample data directory for the use case you
-   are interested in running
+Get the source code via Command Line
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
--  Click on the sample data link for the use case you will run and when
-   prompted, save the file to the directory you created above. Sample
-   data are available for the following use case categories:
+- Open a shell terminal
 
+- Clone the DTCenter/METplus GitHub repository:
 
-   -  Model Applications:
-         -  Visit https://github.com/dtcenter/METplus/releases for a complete list of the latest Model Application .tgz files
+SSH::
 
-   -  MET Tool Wrapper:
-         -  Visit https://github.com/dtcenter/METplus/release for the latest single MET tool/METplus wrapper use case file
+    git@github.com:dtcenter/metplus
 
+HTTPS::
+
+    https://github.com/dtcenter/metplus
+
+Obtain Sample Input Data (optional)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+-  Create a directory to put the sample input data. This will be the directory
+   to set for the value of INPUT_BASE in the METplus Configuration.
+
+- Navigate to the sample input data web URL: https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data
+
+- Click on the vX.Y version directory that corresponds to the release to
+  install, i.e. v4.0 directory for the v4.0.0 release.
+
+-  Click on the sample data tgz file for the desired use case category or
+   categories run and when prompted, save the file to the directory created
+   above.
+
+.. note::
+    Files with the version number in the name,
+    i.e. sample_data-data_assimilation**-4.0**.tgz, have been updated since the
+    last major release. Files without the version number in the file name have
+    not changed since the last major release and could be skipped if the data
+    was already obtained with the previous release.
 
 
 METplus Wrappers directory structure
