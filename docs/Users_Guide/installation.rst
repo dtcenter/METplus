@@ -30,36 +30,85 @@ code to METplus Wrappers, please contact
 Pre-requisites
 --------------
 
+Software Requirements
+~~~~~~~~~~~~~~~~~~~~~
+
+**Minimum Requirements**
+
 The following software is required to run METplus Wrappers:
 
--  Python 3.6.3 or higher
+-  Python 3.6.3 or above
 
--  dateutil Python package
+-  MET version 10.0.0 or above
 
--  MET version 10.0 or above
+**Wrapper Specific Requirements**
 
-If running use cases that use Python embedding, MET must be installed
-with python enabled and the following Python packages installed:
+- TCMPRPlotter wrapper
 
-- xarray
+    - R version 3.2.5
 
-- numpy
+-  SeriesAnalysis wrapper
 
-- pandas
+    - ImageMagick convert utility
+      (if generating plots and/or animated images from the output)
 
-- netCDF4
+Python Package Requirements
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Some of the wrappers have additional dependencies to run.
+The version number listed next to any Python package corresponds to the version
+that was used for testing purposes. Other versions of the packages **may**
+still work but it is not guaranteed.
 
--  TCMPRPlotter wrapper requires R version 3.2.5
+**Minimum Requirements**
 
--  SeriesAnalysis wrapper requires the netCDF4 Python package and optionally
-   if generating plots and/or animated images from the output, the ImageMagick
-   convert utility is also required
+To run most of the METplus wrappers, the following packages are required:
 
--  MakePlots wrapper requires cartopy and pandas Python packages
+- dateutil (2.8)
 
--  CyclonePlotter wrapper requires cartopy and matplotlib Python packages
+Using pip::
+
+    pip3 install python-dateutil==2.8
+
+Using Conda::
+
+  conda install -c conda-forge python-dateutil=2.8
+
+
+**MET Python Embedding Requirements**
+
+If running use cases that use Python embedding, the **MET** executables
+must be installed with Python enabled
+and the following Python packages installed:
+
+- xarray (0.17.0)
+
+- numpy (1.19.2)
+
+- pandas (1.0.5)
+
+- netCDF4 (1.5.4)
+
+See the Software Installation section in the MET User's Guide
+for more information.
+
+**Wrapper Specific Requirements**
+
+Some of the wrappers have additional Python package dependencies
+that are required to run.
+
+-  SeriesAnalysis wrapper
+
+    - netCDF4 (1.5.4)
+
+-  MakePlots wrapper
+
+    - cartopy (0.17.0)
+    - pandas (1.0.5)
+
+-  CyclonePlotter wrapper
+
+    - cartopy (0.17.0)
+    - matplotlib (3.3.4)
 
 .. _getcode:
 
