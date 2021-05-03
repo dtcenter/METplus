@@ -97,7 +97,7 @@ for pp in np.arange(0, nplot, 1):
 
 # create output directory if it does not exist
 if not os.path.exists(plotpath):
-    logging.info(f"Creating output directory: {plotpath}")
+    print(f"Creating output directory: {plotpath}")
     os.makedirs(plotpath)
 
 # plot coherence
@@ -109,5 +109,5 @@ stp.plot_coherence(Coh2, Phs1, Phs2, symmetry, source, vars1, vars2, plotpath, f
 expected_file = os.path.join(plotpath,
                              'SpaceTimeCoherence_.png')
 if not os.path.exists(expected_file):
-    logging.error(f"Could not create output file: {expected_file}")
+    print(f"ERROR: Could not create output file: {expected_file}")
     sys.exit(1)
