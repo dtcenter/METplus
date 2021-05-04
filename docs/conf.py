@@ -178,7 +178,8 @@ sphinx_gallery_conf = {
 intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
 
 rst_epilog = f"""
-.. |copyright| replace:: {copyright}
+.. |copyright|    replace:: {copyright}
+.. |author_list|  replace:: {author_list}
 .. |release_date| replace:: {release_date}
 .. |release_year| replace:: {release_year}
 .. |release_info| replace:: {release_info}
