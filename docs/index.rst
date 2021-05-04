@@ -1,4 +1,4 @@
-﻿=========================
+=========================
 METplus version |version|
 =========================
 Developed by the `Developmental Testbed Center <https://dtcenter.org/>`_,
@@ -86,7 +86,7 @@ Acronyms
 * **VSDB** - Verification Statistics Data Base
 * **MODE** - Method for Object-Based Diagnostic Evaluation
 * **UFS** - Unified Forecast System
-* **SIMA** -System for Integrated Modeling of the Atmosphere
+* **SIMA** - System for Integrated Modeling of the Atmosphere
 * **ESRL** - Earth Systems Research Laboratory
 * **HIWPP** - High Impact Weather Predication Project
 * **NGGPS** - Next Generation Global Predicatio System
@@ -94,18 +94,25 @@ Acronyms
 
 Authors
 -------
+
+Many authors, listed below in alphabetical order, have contributed to the documentation of METplus.
+To cite this documentation in publications, please refer to the METplus User's Guide :ref:`Citation Instructions<citations>`.
+
 * Daniel Adriaansen [#NCAR]_
-* Minna Win-Gildenmeister [#NCAR]_
+* Todd Arbetter
+* Lindsay Blank
+* Hank Fisher [#NCAR]_
 * James Frimel [#CIR]_
+* Lisa Goodrich [#NCAR]_
+* John Halley Gotway [#NCAR]_
+* Tara Jensen [#NCAR]_
+* Christina Kalb [#NCAR]_
+* George McCabe [#NCAR]_
+* John Opatz [#NCAR]_
 * Julie Prestopnik [#NCAR]_
 * Mallory Row [#IM]_
-* John Halley Gotway [#NCAR]_
-* George McCabe [#NCAR]_
-* Tara Jensen [#NCAR]_
 * Jonathan Vigh [#NCAR]_
-* Christina Kalb [#NCAR]_
-* Hank Fisher [#NCAR]_
-* John Opatz [#NCAR]_
+* Minna Win-Gildenmeister [#NCAR]_
 
 .. rubric:: Organization
 
