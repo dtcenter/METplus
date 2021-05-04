@@ -28,12 +28,6 @@ contribution. We will then determine the
 maturity of any new verification method and coordinate the inclusion of
 the new module in a future version.
 
-This User's Guide was prepared by the developers of the METplus
-Wrappers, including Dan Adriaansen, Minna Win-Gildenmeister, George McCabe,
-Julie Prestopnik, Jim Frimel, John Opatz, John Halley Gotway,
-Tara Jensen, Jonathan Vigh, Mallory Row, Christana Kalb, Hank Fisher,
-Lisa Goodrich, Lindsay Blank, and Todd Arbetter.
-
 **Model Evaluation Tools Plus (METplus)  TERMS OF USE - IMPORTANT!**
 
 |copyright|
@@ -54,10 +48,8 @@ governing permissions and limitations under the License.
 
 The citation for this User's Guide should be:
 
-Adriaansen, D., M. Win-Gildenmeister, G. McCabe, J. Prestopnik, J. Frimel, J. Opatz,
-J. Halley Gotway, T. Jensen, J. Vigh, M. Row, C. Kalb, H. Fisher, L. Goodrich,
-L. Blank, and T. Arbetter, |release_year|: The METplus Version |version| User's Guide.
-Developmental Testbed Center.  Available at: https://github.com/dtcenter/METplus/releases.
+|author_list|, |release_year|: The METplus Version |version| User's Guide.
+Developmental Testbed Center. Available at: https://github.com/dtcenter/METplus/releases.
 
 **Acknowledgments**
 

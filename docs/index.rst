@@ -99,8 +99,11 @@ Many authors, listed below in alphabetical order, have contributed to the docume
 To cite this documentation in publications, please refer to the METplus User's Guide :ref:`Citation Instructions<citations>`.
 
 * Daniel Adriaansen [#NCAR]_
+* Todd Arbetter
+* Lindsay Blank
 * Hank Fisher [#NCAR]_
 * James Frimel [#CIR]_
+* Lisa Goodrich [#NCAR]_
 * John Halley Gotway [#NCAR]_
 * Tara Jensen [#NCAR]_
 * Christina Kalb [#NCAR]_

@@ -26,6 +26,8 @@ project = 'METplus'
 
 author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
+author_list = 'Adriaansen, D., Win-Gildenmeister, M., McCabe, G., Prestopnik, J., Frimel, J., Opatz, J., Halley Gotway, J., Jensen, T., Vigh, J., Row, M., Kalb, C., Fisher, H., Goodrich, L., Blank, L., Arbetter, T.'
+
 # The full version, including alpha/beta/rc tags
 # i.e. 4.0.0-beta1-dev
 release = __version__
