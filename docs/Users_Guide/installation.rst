@@ -1,23 +1,24 @@
 .. _install:
 
+*************************************
 Software Installation/Getting Started
-=====================================
+*************************************
 
 Introduction
-------------
+============
 
 This chapter describes how to download and set up METplus Wrappers.
 METplus Wrappers has been developed and tested on the Debian Linux
 operating system.
 
 Supported architectures
------------------------
+=======================
 
 METplus Wrappers was developed on Debian Linux and is supported on this
 platform.
 
 Programming/scripting languages
--------------------------------
+===============================
 
 METplus Wrappers is written in Python 3.6.3. It is intended to be a tool
 for the modeling community to use and adapt. As users make upgrades and
@@ -28,10 +29,10 @@ code to METplus Wrappers, please contact
 `met_help@ucar.edu <met_help@ucar.edu>`__.
 
 Pre-requisites
---------------
+==============
 
 Software Requirements
-~~~~~~~~~~~~~~~~~~~~~
+---------------------
 
 **Minimum Requirements**
 
@@ -53,7 +54,7 @@ The following software is required to run METplus Wrappers:
       (if generating plots and/or animated images from the output)
 
 Python Package Requirements
-~~~~~~~~~~~~~~~~~~~~~~~~~~~
+---------------------------
 
 The version number listed next to any Python package corresponds to the version
 that was used for testing purposes. Other versions of the packages **may**
@@ -113,14 +114,14 @@ that are required to run.
 .. _getcode:
 
 Getting the METplus Wrappers source code
-----------------------------------------
+========================================
 
 The METplus Wrappers source code is available for download from the public
 GitHub repository. The source code can retrieved through a web
 browser or the command line.
 
 Get the source code via Web Browser
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------
 
 -  On your local host, create a directory where the METplus Wrappers will be
    installed
@@ -138,7 +139,7 @@ Get the source code via Web Browser
    *tar xvfz* for the tar.gz file)
 
 Get the source code via Command Line
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+------------------------------------
 
 - Open a shell terminal
 
@@ -153,7 +154,7 @@ HTTPS::
     https://github.com/dtcenter/metplus
 
 Obtain Sample Input Data (optional)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------
 
 -  Create a directory to put the sample input data. This will be the directory
    to set for the value of INPUT_BASE in the METplus Configuration.
@@ -169,19 +170,16 @@ Obtain Sample Input Data (optional)
 
 .. note::
     Files with the version number in the name,
-    i.e. sample_data-data_assimilation**-4.0**.tgz, have been updated since the
+    i.e. sample_data-data_assimilation-4.0.tgz, have been updated since the
     last major release. Files without the version number in the file name have
     not changed since the last major release and could be skipped if the data
     was already obtained with the previous release.
 
 
 METplus Wrappers directory structure
-------------------------------------
+====================================
 
-Once you have cloned the METplus Wrappers from the GitHub repository at
-https://github.com/dtcenter/METplus to a location on your host, change
-directories to the METplus Wrappers directory. You should have the
-following directory structure::
+The METplus Wrappers source code contains the following directory structure::
 
   METplus/
     build_components/
@@ -195,6 +193,7 @@ following directory structure::
     produtil/
     README.md
     requirements.txt
+    setup.py
     ush/
 
 The top-level METplus Wrappers directory consists of a README.md file
@@ -225,10 +224,11 @@ METplus Wrappers.
 
 The produtil/ directory contains part of the external utility produtil
 
-The ush/ directory contains the Python wrappers to the MET tools.
+The ush/ directory contains the run_metplus.py script that is executed to run
+use cases
 
 Build_components and using manage_externals
--------------------------------------------
+===========================================
 
 Running build_components/build_MET.sh will
 
@@ -241,10 +241,10 @@ Building MET requires fine tuning on just about all systems, this should at leas
 the way through the process and allow just a few manual changes to get it completely built.
 
 External Components
--------------------
+===================
 
-GFDL Tracker:
-~~~~~~~~~~~~~
+GFDL Tracker
+------------
 
 -  The standalone Geophysical Fluid Dynamics Laboratory (GFDL) vortex tracker is a program that objectively analyzes forecast data to provide an estimate of the vortex center position (latitude and longitude), and track the storm for the duration of the forecast.
 
@@ -256,78 +256,49 @@ GFDL Tracker:
 
     -  Instructions on how to configure and use the GFDL tracker are found here https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_tracker_UG_v3.9a.pdf
 
-Set up your environment
------------------------
+Add ush directory to shell path (optional)
+==========================================
 
-Environment variables need to be set to allow the METplus Wrappers
-application to be run from any directory and for locating the necessary
-Python modules. There is an option to set the JLOGFILE environment
-variable, which indicates where JLOGS will be saved. JLOGS provide
-information pertinent to the configuration-file framework. If this
-environment is unset, then output from the configuration framework will
-be directed to stdout (your display).
+To call the run_metplus.py script from any directory, add the ush directory
+to the path. The following commands can be run in a terminal. They can also
+be added to the shell run commands file, i.e.
+.cshrc for csh/tcsh  or .bashrc for bash.
+For the following commands, change **/path/to** to
+the actual path to the METplus directory on your file system.
 
-Add the following information to your .cshrc (C shell) or .bashrc (Bash
-shell):
-
-.cshrc:
-~~~~~~~
-
--  Open your .cshrc file and do the following:
-
--  To your PATH, add: *<full-path-to*-*METplus*>/ush
-
--  Close your .cshrc file and run ``source ~/.cshrc``
-
--  For example:
+**csh/tcsh**:
 
 .. code-block:: tcsh
 
     # Add METplus to $PATH
-    set path = (other_path_entries ~/METplus/ush)
+    set path = (/path/to/METplus/ush $path)
 
-.bashrc/.kshrc:
-~~~~~~~~~~~~~~~
-
--  Open your .bashrc/.kshrc file and do the following:
-
--  To your PATH, add : *<full-path-to-METplus*>/ush
-
--  Close your .bashrc file and run ``source ~/.bashrc``, or ``source ~/.kshrc`` if using ksh
-
--  For example:
+**bash/ksh**:
 
 .. code-block:: bash
 
     # Add METplus to $PATH
-    export PATH=~/METplus/ush:$PATH
+    export PATH=/path/to/METplus/ush:$PATH
 
-Set up the Default METplus Configuration File
----------------------------------------------
+Set Default Configuration File for Shared Install
+=================================================
 
 The default METplus configurations are found in
-*METplus/parm/metplus_config/defaults.conf*.
-These settings are automatically loaded at the start of
-a METplus Wrappers run and do not need to be invoked on the command line.
-
-These settings include:
-
-* Location of MET source and build
-* Directories where input data are located
-* Logging levels for METplus and MET output
-* Location of other non-MET executables/binaries
-
-Values in this file that are set to */path/to*
-must be set to a valid path to run METplus Wrappers. These values can either
-be set directly in this file or in a user-defined configuration file.
+*parm/metplus_config/defaults.conf*.
 If configuring METplus Wrappers in a common location for multiple users,
-it is recommended that these settings are fully defined in the default
-configuration file.
+it is recommended that the values for **MET_INSTALL_DIR** and **INPUT_BASE**
+are set in the default configuration file. More information on how to
+set these values can be found in the
+:ref:`Default Configuration File section<default_configuration_file>`.
+
 
 Updating Configuration Files - Handling Deprecated Configuration Variables
---------------------------------------------------------------------------
+==========================================================================
 
-If you have used a previous release of METplus before, this content is important to getting started using a newly released version.
+If upgrading from a METplus version earlier than v3.0, this content is
+important to getting started using a newly released version. **If upgrading
+from METplus v3.0 and above or if installing METplus for the first time, you
+can skip this section.**
 
 METplus developers strive to allow backwards compatibility so new versions of the tools will continue to work as they did in previous versions.
 However, sometimes changes are necessary for clarity and cohesion. Many configuration variable names have changed in version 3.0 in an attempt to make their function more clear.
@@ -335,7 +306,8 @@ If any deprecated METplus configuration variables are found in a user's use case
 In some cases, simply renaming the variable is sufficient. Other changes may require more thought. The next few sections will outline a few of common changes that will need to be made. In the last section, a tool called validate_config.py is described. This tool can be used to help with this transition by automating some of the work required to update your configuration files.
 
 Simple Rename
-~~~~~~~~~~~~~
+-------------
+
 In most cases, there is a simple one-to-one relationship between a deprecated configuration variable and a valid one. In this case, renaming the variable will resolve the issue.
 
 Example::
@@ -347,7 +319,8 @@ Example::
 These cases can be handled automatically by using the :ref:`validate_config`.
 
 FCST/OBS/BOTH Variables
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
+
 Field information passed into many of the MET tools is defined with the [FCST/OBS]_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS] configuration variables.
 For example, FCST_VAR1_NAME and FCST_VAR1_LEVELS are used to define forecast name/level values that are compared to observations defined with OBS_VAR1_NAME and OBS_VAR1_LEVELS.
 
@@ -365,7 +338,8 @@ Example::
 These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes, as they may want to update differently.
 
 PCPCombine Input Levels
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
+
 Prior to METplus 3.0, the PCPCombine wrapper only allowed the user to define a single input accumulation amount to be used to build a desired accumulation. However, some data sets include more than one accumulation field.
 PCPCombine wrapper was enhanced in version 3.0 to allow users to specify a list of accumulations available in the input data.
 Instead of only being able to specify FCST_PCP_COMBINE_INPUT_LEVEL, users can now specify a list of accumulations with :term:`FCST_PCP_COMBINE_INPUT_ACCUMS`.
@@ -377,7 +351,8 @@ Example::
 These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes, as they may want to include other available input accumulations.
 
 MET Configuration Files
-~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------
+
 The METplus wrappers set environment variables that are read by the MET configuration files to customize each run. Some of the environment variables that were previously set by METplus wrappers to handle very specific use cases are no longer set in favor of using a common set of variables across the MET tools. The following are examples of changes that have occurred in METplus regarding environment variables.
 
 EnsembleStat previously set $GRID_VX to define the grid to use to regrid data within the tool. In version 3.0, MET tools that have a 'to_grid' value in the 'grid' dictionary of the MET config file have a uniformly named METplus configuration variable called <MET-tool>_REGRID_TO_GRID (i.e. :term:`ENSEMBLE_STAT_REGRID_TO_GRID`) that is used to define this value::
@@ -423,7 +398,8 @@ Example log output::
 These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes and make sure they add the appropriate recommended METplus configuration variables to their files to achieve the same behavior.
 
 SED Commands
-~~~~~~~~~~~~
+------------
+
 Running run_metplus.py with one or more configuration files that contain deprecated variables that can be fixed with a find/replace command will generate a file in the {OUTPUT_BASE} called sed_commands.txt. This file contains a list of commands that can be run to update the configuration file. Lines that start with "#Add" are intended to notify the user to add a variable to their METplus configuration file.
 
 The :ref:`validate_config` will step you through each of these commands and execute them upon your approval.
@@ -442,7 +418,8 @@ Example sed_commands.txt content::
 .. _validate_config:
 
 Validate Config Helper Script
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------
+
 The script named validate_config.py is found in the same directory as run_metplus.py. To use this script, call it with the same arguments that you would pass to run_metplus.py::
 
   run_metplus.py  -c ./my_conf.py -c ./another_config.py
@@ -526,7 +503,7 @@ Example 5 (Another MET Configuration File)::
     While the METplus developers are very diligent to include deprecated variables in this functionality, some may slip through the cracks. When upgrading to a new version of METplus, it is important to test and review your use cases to ensure they produce the same results as the previous version. Please contact met_help@ucar.edu with any questions.
 
 Running METplus Wrappers
-------------------------
+========================
 
 Running METplus Wrappers involves invoking the Python script
 run_metplus.py from any directory followed by a list of configuration
