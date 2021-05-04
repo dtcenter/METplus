@@ -19,9 +19,10 @@ met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf
 # | **Forecast:** IMERG HDF5 30 minute precipitation accumulation
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
 #
 # | **Data Source:** IMERG
+# |
 
 ##############################################################################
 # External Dependencies
@@ -56,6 +57,7 @@ met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf
 # run times:
 #
 # | **Valid:** 2018-01-02_13:30Z
+# |
 #
 
 ##############################################################################

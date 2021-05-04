@@ -56,18 +56,6 @@ def point_stat_wrapper(metplus_config):
                                   'width = 1;vld_thresh = 0.5;shape = SQUARE;}'
                                   )}),
 
-        ({'POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE':
-              '/some/path/climo/filename.nc',
-          },
-         {'METPLUS_CLIMO_MEAN_FILE':
-              'file_name = ["/some/path/climo/filename.nc"];',
-          }),
-        ({'POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE':
-              '/some/path/climo/stdfile.nc',
-          },
-         {'METPLUS_CLIMO_STDEV_FILE':
-              'climo_stdev = { file_name = ["/some/path/climo/stdfile.nc"]; }',
-         }),
         # mask grid and poly (old config var)
         ({'POINT_STAT_MASK_GRID': 'FULL',
           'POINT_STAT_VERIFICATION_MASK_TEMPLATE': 'one, two',
@@ -135,7 +123,248 @@ def point_stat_wrapper(metplus_config):
               'obs_window = {beg = -2700;end = 2700;}',
           }),
 
+        ({'POINT_STAT_CLIMO_CDF_CDF_BINS': '1', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;}'}),
 
+        ({'POINT_STAT_CLIMO_CDF_CENTER_BINS': 'True', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {center_bins = TRUE;}'}),
+
+        ({'POINT_STAT_CLIMO_CDF_WRITE_BINS': 'False', },
+         {'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {write_bins = FALSE;}'}),
+
+        ({
+             'POINT_STAT_CLIMO_CDF_CDF_BINS': '1',
+             'POINT_STAT_CLIMO_CDF_CENTER_BINS': 'True',
+             'POINT_STAT_CLIMO_CDF_WRITE_BINS': 'False',
+         },
+         {
+             'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;}'}),
+
+        ({'POINT_STAT_OBS_QUALITY': '1, 2, 3', },
+         {'METPLUS_OBS_QUALITY': 'obs_quality = ["1", "2", "3"];'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_FHO': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {fho = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_CTC': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {ctc = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_CTS': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {cts = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_MCTC': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {mctc = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_MCTS': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {mcts = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_CNT': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {cnt = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_SL1L2': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {sl1l2 = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_SAL1L2': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {sal1l2 = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_VL1L2': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {vl1l2 = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_VAL1L2': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {val1l2 = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_VCNT': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {vcnt = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_PCT': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pct = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_PSTD': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pstd = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_PJC': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {pjc = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_PRC': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {prc = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_ECNT': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {ecnt = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_RPS': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {rps = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_ECLV': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {eclv = BOTH;}'}),
+
+        ({'POINT_STAT_OUTPUT_FLAG_MPR': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {mpr = BOTH;}'}),
+
+        ({
+             'POINT_STAT_OUTPUT_FLAG_FHO': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_CTC': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_CTS': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_MCTC': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_MCTS': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_CNT': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_SL1L2': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_SAL1L2': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_VL1L2': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_VAL1L2': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_VCNT': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_PCT': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_PSTD': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_PJC': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_PRC': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_ECNT': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_RPS': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_ECLV': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_MPR': 'BOTH',
+         },
+         {
+             'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {fho = BOTH;ctc = BOTH;cts = BOTH;mctc = BOTH;mcts = BOTH;cnt = BOTH;sl1l2 = BOTH;sal1l2 = BOTH;vl1l2 = BOTH;val1l2 = BOTH;vcnt = BOTH;pct = BOTH;pstd = BOTH;pjc = BOTH;prc = BOTH;ecnt = BOTH;rps = BOTH;eclv = BOTH;mpr = BOTH;}'}),
+
+        ({'POINT_STAT_INTERP_VLD_THRESH': '0.5', },
+         {'METPLUS_INTERP_DICT': 'interp = {vld_thresh = 0.5;}'}),
+
+        ({'POINT_STAT_INTERP_SHAPE': 'SQUARE', },
+         {'METPLUS_INTERP_DICT': 'interp = {shape = SQUARE;}'}),
+
+        ({'POINT_STAT_INTERP_TYPE_METHOD': 'BILIN', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {method = BILIN;}}'}),
+
+        ({'POINT_STAT_INTERP_TYPE_WIDTH': '2', },
+         {'METPLUS_INTERP_DICT': 'interp = {type = {width = 2;}}'}),
+
+        ({
+             'POINT_STAT_INTERP_VLD_THRESH': '0.5',
+             'POINT_STAT_INTERP_SHAPE': 'SQUARE',
+             'POINT_STAT_INTERP_TYPE_METHOD': 'BILIN',
+             'POINT_STAT_INTERP_TYPE_WIDTH': '2',
+         },
+         {
+             'METPLUS_INTERP_DICT': ('interp = {'
+                                     'vld_thresh = 0.5;shape = SQUARE;'
+                                     'type = {method = BILIN;width = 2;}}')}),
+
+        ({'POINT_STAT_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt', },
+         {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
+                                      '["/some/climo_mean/file.txt"];}'),
+          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_FIELD': 'CLM_NAME', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = ["CLM_NAME"];}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_REGRID_METHOD': 'NEAREST', },
+         {
+             'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {method = NEAREST;}}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_REGRID_WIDTH': '1', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {width = 1;}}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5', },
+         {
+             'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {vld_thresh = 0.5;}}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE', },
+         {
+             'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {shape = SQUARE;}}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST', },
+         {
+             'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {time_interp_method = NEAREST;}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_MATCH_MONTH': 'True', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {match_month = TRUE;}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_DAY_INTERVAL': '30', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {day_interval = 30;}'}),
+
+        ({'POINT_STAT_CLIMO_MEAN_HOUR_INTERVAL': '12', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {hour_interval = 12;}'}),
+
+        ({
+             'POINT_STAT_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt',
+             'POINT_STAT_CLIMO_MEAN_FIELD': 'CLM_NAME',
+             'POINT_STAT_CLIMO_MEAN_REGRID_METHOD': 'NEAREST',
+             'POINT_STAT_CLIMO_MEAN_REGRID_WIDTH': '1',
+             'POINT_STAT_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
+             'POINT_STAT_CLIMO_MEAN_REGRID_SHAPE': 'SQUARE',
+             'POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD': 'NEAREST',
+             'POINT_STAT_CLIMO_MEAN_MATCH_MONTH': 'True',
+             'POINT_STAT_CLIMO_MEAN_DAY_INTERVAL': '30',
+             'POINT_STAT_CLIMO_MEAN_HOUR_INTERVAL': '12',
+         },
+         {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
+                                      '["/some/climo_mean/file.txt"];'
+                                      'field = ["CLM_NAME"];'
+                                      'regrid = {method = NEAREST;width = 1;'
+                                      'vld_thresh = 0.5;shape = SQUARE;}'
+                                      'time_interp_method = NEAREST;'
+                                      'match_month = TRUE;day_interval = 30;'
+                                      'hour_interval = 12;}'),
+          'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
+
+        # climo stdev
+        ({'POINT_STAT_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt', },
+         {'METPLUS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
+                                       '["/some/climo_stdev/file.txt"];}'),
+          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_FIELD': 'CLM_NAME', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = ["CLM_NAME"];}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_REGRID_METHOD': 'NEAREST', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {method = NEAREST;}}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_REGRID_WIDTH': '1', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {width = 1;}}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {vld_thresh = 0.5;}}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {regrid = {shape = SQUARE;}}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST', },
+         {
+             'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {time_interp_method = NEAREST;}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_MATCH_MONTH': 'True', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {match_month = TRUE;}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_DAY_INTERVAL': '30', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {day_interval = 30;}'}),
+
+        ({'POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL': '12', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {hour_interval = 12;}'}),
+
+        ({
+             'POINT_STAT_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt',
+             'POINT_STAT_CLIMO_STDEV_FIELD': 'CLM_NAME',
+             'POINT_STAT_CLIMO_STDEV_REGRID_METHOD': 'NEAREST',
+             'POINT_STAT_CLIMO_STDEV_REGRID_WIDTH': '1',
+             'POINT_STAT_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
+             'POINT_STAT_CLIMO_STDEV_REGRID_SHAPE': 'SQUARE',
+             'POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD': 'NEAREST',
+             'POINT_STAT_CLIMO_STDEV_MATCH_MONTH': 'True',
+             'POINT_STAT_CLIMO_STDEV_DAY_INTERVAL': '30',
+             'POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL': '12',
+         },
+         {'METPLUS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
+                                       '["/some/climo_stdev/file.txt"];'
+                                       'field = ["CLM_NAME"];'
+                                       'regrid = {method = NEAREST;width = 1;'
+                                       'vld_thresh = 0.5;shape = SQUARE;}'
+                                       'time_interp_method = NEAREST;'
+                                       'match_month = TRUE;day_interval = 30;'
+                                       'hour_interval = 12;}'),
+          'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
     ]
 )
 def test_point_stat_all_fields(metplus_config, config_overrides,

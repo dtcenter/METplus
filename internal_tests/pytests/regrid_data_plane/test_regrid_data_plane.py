@@ -47,120 +47,6 @@ def rdp_wrapper(metplus_config):
 
 # ------------------------ TESTS GO HERE --------------------------
 
-# conf_dict is produtil config items set before creating grid_stat wrapper instance
-# out_dict is grid_stat wrapper c_dict values set by initialization
-@pytest.mark.parametrize(
-    'conf_dict, expected_field_info_list', [
-
-        # 0) 1 item from var list
-        ({'OBS_VAR1_NAME': 'APCP',
-          'OBS_VAR1_LEVELS': "A06"},
-         [{'index': '1', 'obs_name': 'APCP', 'obs_level': 'A06'}]
-         ),
-
-        # 1) 1 item with level replaced from wrapper-specific
-        ({'OBS_VAR1_NAME': 'P06M_NONE',
-          'OBS_VAR1_LEVELS': "\"(*,*)\"",
-          'OBS_REGRID_DATA_PLANE_VAR1_INPUT_LEVEL': '"({valid?fmt=%Y%m%d_%H%M%S},*,*)"'},
-         [{'index': '1', 'obs_name': 'P06M_NONE', 'obs_level': '"(20180201_000000,*,*)"'},
-          ]
-        ),
-
-        # 2) 2 items from var list
-        ({'OBS_VAR1_NAME': 'APCP',
-          'OBS_VAR1_LEVELS': "A06",
-          'OBS_VAR2_NAME': 'ACPCP',
-          'OBS_VAR2_LEVELS': "A03",},
-         [{'index': '1', 'obs_name': 'APCP', 'obs_level': 'A06'},
-          {'index': '2', 'obs_name': 'ACPCP', 'obs_level': 'A03'},
-          ]
-         ),
-
-        # 3) 2 items from var list, 3rd from wrapper-specific
-        ({'OBS_VAR1_NAME': 'APCP',
-          'OBS_VAR1_LEVELS': "A06",
-          'OBS_VAR2_NAME': 'ACPCP',
-          'OBS_VAR2_LEVELS': "A03",
-          'OBS_REGRID_DATA_PLANE_VAR3_INPUT_FIELD_NAME': 'NAME_FOR_3'},
-         [{'index': '1', 'obs_name': 'APCP', 'obs_level': 'A06'},
-          {'index': '2', 'obs_name': 'ACPCP', 'obs_level': 'A03'},
-          {'index': '3', 'obs_name': 'NAME_FOR_3'},
-          ]
-         ),
-
-        # 4) 3 items from var list, 1 replaced and 4th from wrapper-specific
-        ({'OBS_VAR1_NAME': 'APCP',
-          'OBS_VAR1_LEVELS': "A06",
-          'OBS_VAR2_NAME': 'ACPCP',
-          'OBS_VAR2_LEVELS': "A03",
-          'OBS_VAR3_NAME': 'ACPCP',
-          'OBS_VAR3_LEVELS': "A02",
-          'OBS_REGRID_DATA_PLANE_VAR3_INPUT_FIELD_NAME': 'NAME_FOR_3',
-          'OBS_REGRID_DATA_PLANE_VAR4_INPUT_FIELD_NAME': 'NAME_FOR_4',
-          'OBS_REGRID_DATA_PLANE_VAR4_INPUT_LEVEL': 'LEVEL_FOR_4'},
-        [{'index': '1', 'obs_name': 'APCP', 'obs_level': 'A06'},
-          {'index': '2', 'obs_name': 'ACPCP', 'obs_level': 'A03'},
-          {'index': '3', 'obs_name': 'NAME_FOR_3', 'obs_level': 'A02'},
-          {'index': '4', 'obs_name': 'NAME_FOR_4', 'obs_level': 'LEVEL_FOR_4'},
-         ]
-         ),
-
-        # 5) 1 item from var list add output name
-        ({'OBS_VAR1_NAME': 'APCP',
-          'OBS_VAR1_LEVELS': "A06",
-          'OBS_REGRID_DATA_PLANE_VAR1_OUTPUT_FIELD_NAME': 'OUT_NAME',},
-         [{'index': '1', 'obs_name': 'APCP', 'obs_level': 'A06', 'obs_output_name': 'OUT_NAME'}]
-         ),
-
-        # 6) 3 items from var list, 1 replaced and 4th from wrapper-specific, add output name
-        ({'OBS_VAR1_NAME': 'APCP',
-          'OBS_VAR1_LEVELS': "A06",
-          'OBS_VAR2_NAME': 'ACPCP',
-          'OBS_VAR2_LEVELS': "A03",
-          'OBS_VAR3_NAME': 'ACPCP',
-          'OBS_VAR3_LEVELS': "A02",
-          'OBS_REGRID_DATA_PLANE_VAR3_INPUT_FIELD_NAME': 'NAME_FOR_3',
-          'OBS_REGRID_DATA_PLANE_VAR4_INPUT_FIELD_NAME': 'NAME_FOR_4',
-          'OBS_REGRID_DATA_PLANE_VAR4_INPUT_LEVEL': 'LEVEL_FOR_4',
-          'OBS_REGRID_DATA_PLANE_VAR4_OUTPUT_FIELD_NAME': 'OUT_NAME_4'},
-         [{'index': '1', 'obs_name': 'APCP', 'obs_level': 'A06'},
-          {'index': '2', 'obs_name': 'ACPCP', 'obs_level': 'A03'},
-          {'index': '3', 'obs_name': 'NAME_FOR_3', 'obs_level': 'A02'},
-          {'index': '4', 'obs_name': 'NAME_FOR_4', 'obs_level': 'LEVEL_FOR_4', 'obs_output_name': 'OUT_NAME_4'},
-          ]
-         ),
-    ]
-)
-
-def test_get_field_info_list(metplus_config, conf_dict, expected_field_info_list):
-    config = metplus_config()
-
-    data_type = 'OBS'
-
-    for key, value in conf_dict.items():
-        config.set('config', key, value)
-
-    input_dict = {'valid': datetime.datetime.strptime("201802010000", '%Y%m%d%H%M'),
-                  'lead': 0}
-    time_info = time_util.ti_calculate(input_dict)
-
-    var_list = util.parse_var_list(config, time_info, data_type=data_type)
-
-    rdp = RegridDataPlaneWrapper(config)
-
-    field_info_list = rdp.get_field_info_list(var_list, data_type, time_info)
-    print(f"FIELD INFO LIST: {field_info_list}")
-    print(f"EXPECTED FIELD INFO LIST: {expected_field_info_list}")
-    is_good = True
-    if len(field_info_list) != len(expected_field_info_list):
-        assert(False)
-
-    for actual_field, expected_field in zip(field_info_list, expected_field_info_list):
-        for key, value in expected_field.items():
-            if actual_field[key] != value:
-                print(f"{actual_field[key]} not equal to {value}")
-                is_good = False
-
 # field info is the input dictionary with name and level info to parse
 # expected_arg is the argument that should be set by the function
 # note: did not include OBS because they are handled the same way as FCST
@@ -210,34 +96,66 @@ def test_set_field_command_line_arguments(metplus_config, field_info, expected_a
     assert(rdp.args[0] == expected_arg)
 
 @pytest.mark.parametrize(
-    'field_info, input_name, expected_name', [
+    'var_list, expected_names', [
 
-        # 0) use fcst name
-        ({'fcst_output_name': 'F_NAME'},
-         "INPUT_NAME",
-          'F_NAME',
+        # 0) use output names
+        ([{'fcst_name': 'FCST_NAME_1',
+           'fcst_level': 'FCST_LEVEL_1',
+           'fcst_output_name': 'FCST_OUTPUT_NAME_1', },
+          {'fcst_name': 'FCST_NAME_2',
+           'fcst_level': 'FCST_LEVEL_2',
+           'fcst_output_name': 'FCST_OUTPUT_NAME_2', }],
+         ['FCST_OUTPUT_NAME_1','FCST_OUTPUT_NAME_2']
+         ),
+        # 1) use input names because no output name specified
+        ([{'fcst_name': 'FCST_NAME_1',
+           'fcst_level': 'FCST_LEVEL_1', },
+          {'fcst_name': 'FCST_NAME_2',
+           'fcst_level': 'FCST_LEVEL_2', }],
+         ['FCST_NAME_1', 'FCST_NAME_2']
          ),
 
-        # 1) empty fcst name, use input name
-        ({'fcst_output_name': ''},
-         "INPUT_NAME",
-         'INPUT_NAME',
+        # 2) use input name for one and output name for other
+        ([{'fcst_name': 'FCST_NAME_1',
+           'fcst_level': 'FCST_LEVEL_1', },
+          {'fcst_name': 'FCST_NAME_2',
+           'fcst_level': 'FCST_LEVEL_2',
+           'fcst_output_name': 'FCST_OUTPUT_NAME_2', }],
+         ['FCST_NAME_1', 'FCST_OUTPUT_NAME_2']
+         ),
+        # 3) use name_level because duplicates exist
+        ([{'fcst_name': 'FCST_NAME_1',
+           'fcst_level': 'FCST_LEVEL_1',
+           'fcst_output_name': 'FCST_OUTPUT_NAME', },
+          {'fcst_name': 'FCST_NAME_2',
+           'fcst_level': 'FCST_LEVEL_2',
+           'fcst_output_name': 'FCST_OUTPUT_NAME', }],
+         ['FCST_NAME_1_FCST_LEVEL_1', 'FCST_NAME_2_FCST_LEVEL_2']
+         ),
+        # 4) use name_level because duplicates exist and uses input name
+        ([{'fcst_name': 'FCST_NAME',
+           'fcst_level': 'FCST_LEVEL_1', },
+          {'fcst_name': 'FCST_NAME',
+           'fcst_level': 'FCST_LEVEL_2', }],
+         ['FCST_NAME_FCST_LEVEL_1', 'FCST_NAME_FCST_LEVEL_2']
          ),
 
-        # 2) no fcst name, use input name
-        ({'fcst_name': 'F_NAME'},
-         "INPUT_NAME",
-         'INPUT_NAME',
+        # 5) rename NetCDF level
+        ([{'fcst_name': 'FCST_NAME',
+           'fcst_level': '0,*,*', },
+          {'fcst_name': 'FCST_NAME',
+           'fcst_level': '1,*,*', }],
+         ['FCST_NAME_0_all_all', 'FCST_NAME_1_all_all']
          ),
+
     ]
 )
-def test_get_output_name(metplus_config, field_info, input_name, expected_name):
+def test_get_output_names(metplus_config, var_list, expected_names):
     data_type = 'FCST'
 
-    config = metplus_config()
-    rdp = RegridDataPlaneWrapper(config)
+    rdp = RegridDataPlaneWrapper(metplus_config())
 
-    assert(rdp.get_output_name(field_info, data_type, input_name) == expected_name)
+    assert(rdp.get_output_names(var_list, data_type) == expected_names)
 
 def test_run_rdp_once_per_field(metplus_config):
     data_type = 'FCST'

@@ -32,14 +32,64 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_REGRID_DICT',
         'METPLUS_FCST_FIELD',
         'METPLUS_OBS_FIELD',
-        'METPLUS_CLIMO_MEAN_FILE',
-        'METPLUS_CLIMO_STDEV_FILE',
+        'METPLUS_CLIMO_MEAN_DICT',
+        'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_MASK_DICT',
         'METPLUS_NBRHD_SHAPE',
         'METPLUS_NBRHD_WIDTH',
         'METPLUS_NBRHD_COV_THRESH',
         'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_CLIMO_CDF_DICT',
+        'METPLUS_OUTPUT_FLAG_DICT',
+        'METPLUS_NC_PAIRS_FLAG_DICT',
+        'METPLUS_INTERP_DICT',
+        'METPLUS_NC_PAIRS_VAR_NAME',
+        'METPLUS_GRID_WEIGHT_FLAG',
+        'METPLUS_FCST_FILE_TYPE',
+        'METPLUS_OBS_FILE_TYPE',
     ]
+
+    # handle deprecated env vars used pre v4.0.0
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'CLIMO_MEAN_FILE',
+        'CLIMO_STDEV_FILE',
+    ]
+
+    OUTPUT_FLAGS = ['fho',
+                    'ctc',
+                    'cts',
+                    'mctc',
+                    'mcts',
+                    'cnt',
+                    'sl1l2',
+                    'sal1l2',
+                    'vl1l2',
+                    'val1l2',
+                    'vcnt',
+                    'pct',
+                    'pstd',
+                    'pjc',
+                    'prc',
+                    'eclv',
+                    'nbrctc',
+                    'nbrcts',
+                    'nbrcnt',
+                    'grad',
+                    'dmap',
+                    ]
+
+    NC_PAIRS_FLAGS = ['latlon',
+                      'raw',
+                      'diff',
+                      'climo',
+                      'climo_cdp',
+                      'weight',
+                      'nbrhd',
+                      'fourier',
+                      'gradient',
+                      'distance_map',
+                      'apply_mask',
+                    ]
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'grid_stat'
@@ -80,7 +130,7 @@ class GridStatWrapper(CompareGriddedWrapper):
           self.config.getstr('config', 'FCST_GRID_STAT_INPUT_DATATYPE', '')
 
         # get climatology config variables
-        self.read_climo_wrapper_specific('GRID_STAT', c_dict)
+        self.handle_climo_dict()
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_STAT_OUTPUT_DIR', '')
         if not c_dict['OUTPUT_DIR']:
@@ -134,14 +184,46 @@ class GridStatWrapper(CompareGriddedWrapper):
                                'GRID_STAT_NEIGHBORHOOD_SHAPE', 'SQUARE')
         )
 
+        self.handle_mask(single_value=False)
 
-        self.set_met_config_list(c_dict,
-                                 'GRID_STAT_MASK_GRID',
-                                 'grid',
-                                 'MASK_GRID',
-                                 allow_empty=True)
-
+        # handle setting VERIFICATION_MASK for old wrapped MET config files
         c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
+
+        self.handle_climo_cdf_dict()
+
+        self.handle_flags('output')
+        self.handle_flags('nc_pairs')
+
+        self.handle_interp_dict(uses_field=True)
+
+        self.add_met_config(name='nc_pairs_var_name',
+                            data_type='string',
+                            metplus_configs=['GRID_STAT_NC_PAIRS_VAR_NAME'])
+
+        self.add_met_config(name='grid_weight_flag',
+                            data_type='string',
+                            metplus_configs=['GRID_STAT_GRID_WEIGHT_FLAG'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
+
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='FCST_FILE_TYPE',
+                            metplus_configs=['GRID_STAT_FCST_FILE_TYPE',
+                                             'FCST_GRID_STAT_FILE_TYPE',
+                                             'GRID_STAT_FILE_TYPE'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
+
+        self.add_met_config(name='file_type',
+                            data_type='string',
+                            env_var_name='OBS_FILE_TYPE',
+                            metplus_configs=['GRID_STAT_OBS_FILE_TYPE',
+                                             'OBS_GRID_STAT_FILE_TYPE',
+                                             'GRID_STAT_FILE_TYPE'],
+                            extra_args={'remove_quotes': True,
+                                        'uppercase': True})
+
 
         return c_dict
 
@@ -150,20 +232,11 @@ class GridStatWrapper(CompareGriddedWrapper):
             MET config file"""
         # set environment variables needed for MET application
 
-        mask_dict_string = self.format_met_config_dict(self.c_dict,
-                                                       'mask',
-                                                       ['MASK_GRID',
-                                                        'MASK_POLY'])
-        self.env_var_dict["METPLUS_MASK_DICT"] = mask_dict_string
-
         # add old method of setting env vars
         self.add_env_var("FCST_FIELD",
                          self.c_dict.get('FCST_FIELD', ''))
         self.add_env_var("OBS_FIELD",
                          self.c_dict.get('OBS_FIELD', ''))
-
-        # set climatology environment variables
-        self.set_climo_env_vars()
 
         self.add_env_var("FCST_TIME", str(time_info['lead_hours']).zfill(3))
         self.add_env_var("INPUT_BASE", self.c_dict["INPUT_BASE"])

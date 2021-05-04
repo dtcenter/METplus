@@ -52,7 +52,7 @@ Variables available
   ABI L1b Radiances
 
 METplus Use Cases
-  Link to `METplus Use Cases <https://dtcenter.github.io/METplus/develop/search.html?q=VxDataGOESLEV1B%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
+  Link to `METplus Use Cases <https://metplus.readthedocs.io/en/develop/search.html?q=VxDataGOESLEV1B%26%26UseCase&check_keywords=yes&area=default>`_ for this dataset.
 
 Keywords
   .. note:: **Current Dataset:** VxDataGOESLEV1B

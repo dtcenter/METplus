@@ -20,7 +20,8 @@ met_tool_wrapper/GenVxMask/GenVxMask.conf
 # | **Mask:** CONUS polyline file
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
-# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See 'Running METplus' section for more information.
+# | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
+# |
 #
 
 ##############################################################################
@@ -38,6 +39,7 @@ met_tool_wrapper/GenVxMask/GenVxMask.conf
 #
 # | **Initialization:** 2012-04-09_0Z
 # | **Forecast Lead:** 12 hour
+# |
 #
 # The input file is read to define the output grid and the CONUS polyline file is applied to create the mask.
 

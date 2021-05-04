@@ -8,11 +8,440 @@ import subprocess
 import shutil
 from dateutil.relativedelta import relativedelta
 from csv import reader
+import pprint
 
 import produtil
 
 from metplus.util import met_util as util
 from metplus.util import time_util
+
+@pytest.mark.parametrize(
+    'data_type, met_tool, expected_out', [
+        ('FCST', None, ['FCST_',
+                        'BOTH_',]),
+        ('OBS', None, ['OBS_',
+                       'BOTH_',]),
+        ('FCST', 'grid_stat', ['FCST_GRID_STAT_',
+                               'BOTH_GRID_STAT_',
+                               'FCST_',
+                               'BOTH_',
+                               ]),
+        ('OBS', 'extract_tiles', ['OBS_EXTRACT_TILES_',
+                                  'BOTH_EXTRACT_TILES_',
+                                  'OBS_',
+                                  'BOTH_',
+                                  ]),
+        ('ENS', None, ['ENS_']),
+        ('DATA', None, ['DATA_']),
+        ('DATA', 'tc_gen', ['DATA_TC_GEN_',
+                            'DATA_']),
+
+    ]
+)
+def test_get_field_search_prefixes(data_type, met_tool, expected_out):
+    assert(util.get_field_search_prefixes(data_type,
+                                          met_tool) == expected_out)
+
+# search prefixes are valid prefixes to append to field info variables
+# config_overrides are a dict of config vars and their values
+# search_key is the key of the field config item to check
+# expected_value is the variable that search_key is set to
+@pytest.mark.parametrize(
+    'search_prefixes, config_overrides, expected_value', [
+        (['BOTH_', 'FCST_'],
+         {'FCST_VAR1_': 'fcst_var1'},
+         'fcst_var1'
+         ),
+        (['BOTH_', 'FCST_'], {}, None),
+
+        (['BOTH_', 'FCST_'],
+         {'FCST_VAR1_': 'fcst_var1',
+          'BOTH_VAR1_': 'both_var1'},
+         'both_var1'
+         ),
+
+        (['BOTH_GRID_STAT_', 'FCST_GRID_STAT_'],
+         {'FCST_GRID_STAT_VAR1_': 'fcst_grid_stat_var1'},
+         'fcst_grid_stat_var1'
+         ),
+        (['BOTH_GRID_STAT_', 'FCST_GRID_STAT_'], {}, None),
+        (['BOTH_GRID_STAT_', 'FCST_GRID_STAT_'],
+         {'FCST_GRID_STAT_VAR1_': 'fcst_grid_stat_var1',
+          'BOTH_GRID_STAT_VAR1_': 'both_grid_stat_var1'},
+         'both_grid_stat_var1'
+         ),
+
+        (['ENS_'],
+         {'ENS_VAR1_': 'env_var1'},
+         'env_var1'
+         ),
+        (['ENS_'], {}, None),
+
+    ]
+)
+def test_get_field_config_variables(metplus_config,
+                                    search_prefixes,
+                                    config_overrides,
+                                    expected_value):
+    config = metplus_config()
+    index = '1'
+    field_info_types = ['name', 'levels', 'thresh', 'options', 'output_names']
+    for field_info_type in field_info_types:
+        for key, value in config_overrides.items():
+            config.set('config',
+                       f'{key}{field_info_type.upper()}',
+                       value)
+
+        field_configs = util.get_field_config_variables(config,
+                                                        index,
+                                                        search_prefixes)
+
+        assert(field_configs.get(field_info_type) == expected_value)
+
+@pytest.mark.parametrize(
+    'config_keys, field_key, expected_value', [
+        (['NAME',
+          ],
+         'name', 'NAME'
+         ),
+        (['NAME',
+          'INPUT_FIELD_NAME',
+          ],
+         'name', 'NAME'
+         ),
+        (['INPUT_FIELD_NAME',
+          ],
+         'name', 'INPUT_FIELD_NAME'
+         ),
+        ([], 'name', None),
+        (['LEVELS',
+          ],
+         'levels', 'LEVELS'
+         ),
+        (['LEVELS',
+          'FIELD_LEVEL',
+          ],
+         'levels', 'LEVELS'
+         ),
+        (['FIELD_LEVEL',
+          ],
+         'levels', 'FIELD_LEVEL'
+         ),
+         ([], 'levels', None),
+        (['OUTPUT_NAMES',
+          ],
+         'output_names', 'OUTPUT_NAMES'
+         ),
+        (['OUTPUT_NAMES',
+          'OUTPUT_FIELD_NAME',
+          ],
+         'output_names', 'OUTPUT_NAMES'
+         ),
+        (['OUTPUT_FIELD_NAME',
+          ],
+         'output_names', 'OUTPUT_FIELD_NAME'
+         ),
+        ([], 'output_names', None),
+    ]
+)
+def test_get_field_config_variables_synonyms(metplus_config,
+                                             config_keys,
+                                             field_key,
+                                             expected_value):
+    config = metplus_config()
+    index = '1'
+    prefix = 'BOTH_REGRID_DATA_PLANE_'
+    for key in config_keys:
+        config.set('config', f'{prefix}VAR{index}_{key}', key)
+
+    field_configs = util.get_field_config_variables(config,
+                                                    index,
+                                                    [prefix])
+
+    assert(field_configs.get(field_key) == expected_value)
+
+# ensure that the field configuration used for
+# met_tool_wrapper/EnsembleStat/EnsembleStat.conf
+# works as expected
+def test_parse_var_list_ensemble(metplus_config):
+    config = metplus_config()
+    config.set('config', 'ENS_VAR1_NAME', 'APCP')
+    config.set('config', 'ENS_VAR1_LEVELS', 'A24')
+    config.set('config', 'ENS_VAR1_THRESH', '>0.0, >=10.0')
+    config.set('config', 'ENS_VAR2_NAME', 'REFC')
+    config.set('config', 'ENS_VAR2_LEVELS', 'L0')
+    config.set('config', 'ENS_VAR2_THRESH', '>35.0')
+    config.set('config', 'ENS_VAR2_OPTIONS', 'GRIB1_ptv = 129;')
+    config.set('config', 'ENS_VAR3_NAME', 'UGRD')
+    config.set('config', 'ENS_VAR3_LEVELS', 'Z10')
+    config.set('config', 'ENS_VAR3_THRESH', '>=5.0')
+    config.set('config', 'ENS_VAR4_NAME', 'VGRD')
+    config.set('config', 'ENS_VAR4_LEVELS', 'Z10')
+    config.set('config', 'ENS_VAR4_THRESH', '>=5.0')
+    config.set('config', 'ENS_VAR5_NAME', 'WIND')
+    config.set('config', 'ENS_VAR5_LEVELS', 'Z10')
+    config.set('config', 'ENS_VAR5_THRESH', '>=5.0')
+    config.set('config', 'FCST_VAR1_NAME', 'APCP')
+    config.set('config', 'FCST_VAR1_LEVELS', 'A24')
+    config.set('config', 'FCST_VAR1_THRESH', '>0.01, >=10.0')
+    config.set('config', 'FCST_VAR1_OPTIONS', ('ens_ssvar_bin_size = 0.1; '
+                                               'ens_phist_bin_size = 0.05;'))
+    config.set('config', 'OBS_VAR1_NAME', 'APCP')
+    config.set('config', 'OBS_VAR1_LEVELS', 'A24')
+    config.set('config', 'OBS_VAR1_THRESH', '>0.01, >=10.0')
+    config.set('config', 'OBS_VAR1_OPTIONS', ('ens_ssvar_bin_size = 0.1; '
+                                              'ens_phist_bin_size = 0.05;'))
+    time_info = {}
+
+    expected_ens_list = [{'index': '1',
+                          'ens_name': 'APCP',
+                          'ens_level': 'A24',
+                          'ens_thresh': ['>0.0', '>=10.0']},
+                         {'index': '2',
+                          'ens_name': 'REFC',
+                          'ens_level': 'L0',
+                          'ens_thresh': ['>35.0']},
+                         {'index': '3',
+                          'ens_name': 'UGRD',
+                          'ens_level': 'Z10',
+                          'ens_thresh': ['>=5.0']},
+                         {'index': '4',
+                          'ens_name': 'VGRD',
+                          'ens_level': 'Z10',
+                          'ens_thresh': ['>=5.0']},
+                         {'index': '5',
+                          'ens_name': 'WIND',
+                          'ens_level': 'Z10',
+                          'ens_thresh': ['>=5.0']},
+                        ]
+    expected_var_list = [{'index': '1',
+                          'fcst_name': 'APCP',
+                          'fcst_level': 'A24',
+                          'fcst_thresh': ['>0.01', '>=10.0'],
+                          'fcst_extra': ('ens_ssvar_bin_size = 0.1; '
+                                         'ens_phist_bin_size = 0.05;'),
+                          'obs_name': 'APCP',
+                          'obs_level': 'A24',
+                          'obs_thresh': ['>0.01', '>=10.0'],
+                          'obs_extra': ('ens_ssvar_bin_size = 0.1; '
+                                        'ens_phist_bin_size = 0.05;')
+
+                          },
+                        ]
+
+    ensemble_var_list = util.parse_var_list(config, time_info,
+                                            data_type='ENS')
+
+    # parse optional var list for FCST and/or OBS fields
+    var_list = util.parse_var_list(config, time_info,
+                                   met_tool='ensemble_stat')
+
+    pp = pprint.PrettyPrinter()
+    print(f'ENSEMBLE_VAR_LIST:')
+    pp.pprint(ensemble_var_list)
+    print(f'VAR_LIST:')
+    pp.pprint(var_list)
+
+    assert(len(ensemble_var_list) == len(expected_ens_list))
+    for actual_ens, expected_ens in zip(ensemble_var_list, expected_ens_list):
+        for key, value in expected_ens.items():
+            assert(actual_ens.get(key) == value)
+
+    assert(len(var_list) == len(expected_var_list))
+    for actual_var, expected_var in zip(var_list, expected_var_list):
+        for key, value in expected_var.items():
+            assert(actual_var.get(key) == value)
+
+def test_parse_var_list_series_by(metplus_config):
+    config = metplus_config()
+    config.set('config', 'BOTH_EXTRACT_TILES_VAR1_NAME', 'RH')
+    config.set('config', 'BOTH_EXTRACT_TILES_VAR1_LEVELS', 'P850, P700')
+    config.set('config', 'BOTH_EXTRACT_TILES_VAR1_OUTPUT_NAMES',
+               'RH_850mb, RH_700mb')
+
+    config.set('config', 'BOTH_SERIES_ANALYSIS_VAR1_NAME', 'RH_850mb')
+    config.set('config', 'BOTH_SERIES_ANALYSIS_VAR1_LEVELS', 'P850')
+    config.set('config', 'BOTH_SERIES_ANALYSIS_VAR2_NAME', 'RH_700mb')
+    config.set('config', 'BOTH_SERIES_ANALYSIS_VAR2_LEVELS', 'P700')
+    time_info = {}
+
+    expected_et_list = [{'index': '1',
+                         'fcst_name': 'RH',
+                         'fcst_level': 'P850',
+                         'fcst_output_name': 'RH_850mb',
+                         'obs_name': 'RH',
+                         'obs_level': 'P850',
+                         'obs_output_name': 'RH_850mb',
+                         },
+                        {'index': '1',
+                         'fcst_name': 'RH',
+                         'fcst_level': 'P700',
+                         'fcst_output_name': 'RH_700mb',
+                         'obs_name': 'RH',
+                         'obs_level': 'P700',
+                         'obs_output_name': 'RH_700mb',
+                         },
+                        ]
+    expected_sa_list = [{'index': '1',
+                         'fcst_name': 'RH_850mb',
+                         'fcst_level': 'P850',
+                         'obs_name': 'RH_850mb',
+                         'obs_level': 'P850',
+                         },
+                        {'index': '2',
+                         'fcst_name': 'RH_700mb',
+                         'fcst_level': 'P700',
+                         'obs_name': 'RH_700mb',
+                         'obs_level': 'P700',
+                         },
+                        ]
+
+    actual_et_list = util.parse_var_list(config,
+                                         time_info=time_info,
+                                         met_tool='extract_tiles')
+
+    actual_sa_list = util.parse_var_list(config,
+                                         met_tool='series_analysis')
+
+    pp = pprint.PrettyPrinter()
+    print(f'ExtractTiles var list:')
+    pp.pprint(actual_et_list)
+    print(f'SeriesAnalysis var list:')
+    pp.pprint(actual_sa_list)
+
+    assert(len(actual_et_list) == len(expected_et_list))
+    for actual_et, expected_et in zip(actual_et_list, expected_et_list):
+        for key, value in expected_et.items():
+            assert(actual_et.get(key) == value)
+
+    assert(len(actual_sa_list) == len(expected_sa_list))
+    for actual_sa, expected_sa in zip(actual_sa_list, expected_sa_list):
+        for key, value in expected_sa.items():
+            assert(actual_sa.get(key) == value)
+
+@pytest.mark.parametrize(
+    'input_dict, expected_list', [
+        ({'init': datetime.datetime(2019, 2, 1, 6),
+          'lead': 7200, },
+         [
+             {'index': '1',
+              'fcst_name': 'FNAME_2019',
+              'fcst_level': 'Z06',
+              'obs_name': 'ONAME_2019',
+              'obs_level': 'L06',
+             },
+             {'index': '1',
+              'fcst_name': 'FNAME_2019',
+              'fcst_level': 'Z08',
+              'obs_name': 'ONAME_2019',
+              'obs_level': 'L08',
+             },
+         ]),
+        ({'init': datetime.datetime(2021, 4, 13, 9),
+          'lead': 10800, },
+         [
+             {'index': '1',
+              'fcst_name': 'FNAME_2021',
+              'fcst_level': 'Z09',
+              'obs_name': 'ONAME_2021',
+              'obs_level': 'L09',
+              },
+             {'index': '1',
+              'fcst_name': 'FNAME_2021',
+              'fcst_level': 'Z12',
+              'obs_name': 'ONAME_2021',
+              'obs_level': 'L12',
+              },
+         ]),
+    ]
+)
+def test_sub_var_list(metplus_config, input_dict, expected_list):
+    config = metplus_config()
+    config.set('config', 'FCST_VAR1_NAME', 'FNAME_{init?fmt=%Y}')
+    config.set('config', 'FCST_VAR1_LEVELS', 'Z{init?fmt=%H}, Z{valid?fmt=%H}')
+    config.set('config', 'OBS_VAR1_NAME', 'ONAME_{init?fmt=%Y}')
+    config.set('config', 'OBS_VAR1_LEVELS', 'L{init?fmt=%H}, L{valid?fmt=%H}')
+
+    time_info = time_util.ti_calculate(input_dict)
+
+    actual_temp = util.parse_var_list(config)
+
+    pp = pprint.PrettyPrinter()
+    print(f'Actual var list (before sub):')
+    pp.pprint(actual_temp)
+
+    actual_list = util.sub_var_list(actual_temp, time_info)
+    print(f'Actual var list (after sub):')
+    pp.pprint(actual_list)
+
+    assert(len(actual_list) == len(expected_list))
+    for actual, expected in zip(actual_list, expected_list):
+        for key, value in expected.items():
+            assert(actual.get(key) == value)
+
+@pytest.mark.parametrize(
+    'config_var_name, expected_indices, set_met_tool', [
+        ('FCST_GRID_STAT_VAR1_NAME', ['1'], True),
+        ('FCST_GRID_STAT_VAR2_INPUT_FIELD_NAME', ['2'], True),
+        ('FCST_GRID_STAT_VAR3_FIELD_NAME', ['3'], True),
+        ('BOTH_GRID_STAT_VAR4_NAME', ['4'], True),
+        ('BOTH_GRID_STAT_VAR5_INPUT_FIELD_NAME', ['5'], True),
+        ('BOTH_GRID_STAT_VAR6_FIELD_NAME', ['6'], True),
+        ('FCST_VAR7_NAME', ['7'], False),
+        ('FCST_VAR8_INPUT_FIELD_NAME', ['8'], False),
+        ('FCST_VAR9_FIELD_NAME', ['9'], False),
+        ('BOTH_VAR10_NAME', ['10'], False),
+        ('BOTH_VAR11_INPUT_FIELD_NAME', ['11'], False),
+        ('BOTH_VAR12_FIELD_NAME', ['12'], False),
+    ]
+)
+def test_find_var_indices_fcst(metplus_config,
+                               config_var_name,
+                               expected_indices,
+                               set_met_tool):
+    config = metplus_config()
+    data_types = ['FCST']
+    config.set('config', config_var_name, "NAME1")
+    met_tool = 'grid_stat' if set_met_tool else None
+    var_name_indices = util.find_var_name_indices(config,
+                                                  data_types=data_types,
+                                                  met_tool=met_tool)
+
+    assert(len(var_name_indices) == len(expected_indices))
+    for actual_index in var_name_indices:
+        assert(actual_index in expected_indices)
+
+def test_parse_var_list_priority_fcst(metplus_config):
+    priority_list = ['FCST_GRID_STAT_VAR1_NAME',
+                     'FCST_GRID_STAT_VAR1_INPUT_FIELD_NAME',
+                     'FCST_GRID_STAT_VAR1_FIELD_NAME',
+                     'BOTH_GRID_STAT_VAR1_NAME',
+                     'BOTH_GRID_STAT_VAR1_INPUT_FIELD_NAME',
+                     'BOTH_GRID_STAT_VAR1_FIELD_NAME',
+                     'FCST_VAR1_NAME',
+                     'FCST_VAR1_INPUT_FIELD_NAME',
+                     'FCST_VAR1_FIELD_NAME',
+                     'BOTH_VAR1_NAME',
+                     'BOTH_VAR1_INPUT_FIELD_NAME',
+                     'BOTH_VAR1_FIELD_NAME',
+                     ]
+    time_info = {}
+
+    # loop through priority list, process, then pop first value off and
+    # process again until all items have been popped.
+    # This will check that list is in priority order
+    while(priority_list):
+        config = metplus_config()
+        for key in priority_list:
+            config.set('config', key, key.lower())
+
+        var_list = util.parse_var_list(config, time_info=time_info,
+                                       data_type='FCST',
+                                       met_tool='grid_stat')
+
+        assert(len(var_list) == 1)
+        assert(var_list[0].get('fcst_name') == priority_list[0].lower())
+        priority_list.pop(0)
 
 @pytest.mark.parametrize(
     'before, after', [
@@ -271,7 +700,7 @@ def test_parse_var_list_both(metplus_config, data_type, list_created):
         assert(False)
 
     var_list = util.parse_var_list(conf, time_info=None, data_type=data_type)
-
+    print(f'var_list:{var_list}')
     for list_to_check in list_created.split(':'):
         if not var_list[0][f'{list_to_check}_name']  == "NAME1" or \
            not var_list[1][f'{list_to_check}_name']  == "NAME1" or \
@@ -402,8 +831,8 @@ def test_parse_var_list_fcst_only_options(metplus_config, data_type, list_len):
 
 @pytest.mark.parametrize(
     'met_tool, indices', [
-        (None, {'1':['FCST']}),
-        ('GRID_STAT', {'2':['FCST']}),
+        (None, {'1': ['FCST']}),
+        ('GRID_STAT', {'2': ['FCST']}),
         ('ENSEMBLE_STAT', {}),
     ]
 )
@@ -413,15 +842,13 @@ def test_find_var_indices_wrapper_specific(metplus_config, met_tool, indices):
     conf.set('config', f'{data_type}_VAR1_NAME', "NAME1")
     conf.set('config', f'{data_type}_GRID_STAT_VAR2_NAME', "GSNAME2")
 
-    var_name_indices = util.find_var_name_indices(conf, data_type=data_type,
+    var_name_indices = util.find_var_name_indices(conf, data_types=[data_type],
                                                   met_tool=met_tool)
 
     assert(var_name_indices == indices)
 
-
-
 def test_get_lead_sequence_lead(metplus_config):
-    input_dict = { 'valid' : datetime.datetime(2019, 2, 1, 13) }
+    input_dict = {'valid': datetime.datetime(2019, 2, 1, 13)}
     conf = metplus_config()
     conf.set('config', 'LEAD_SEQ', "3,6,9,12")
     test_seq = util.get_lead_sequence(conf, input_dict)
@@ -1134,36 +1561,31 @@ def test_get_storms(metplus_config, filename, expected_result):
         assert(storm_dict['header'].split()[storm_id_index] == 'STORM_ID')
 
 @pytest.mark.parametrize(
-    'config_overrides, expected_result', [
+    'config_value, expected_result', [
         # 2 items semi-colon at end
-        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;  desc = "HI_CLOUD";',},
+        ('GRIB_lvl_typ = 234;  desc = "HI_CLOUD";',
          'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
         # 2 items no semi-colon at end
-        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;  desc = "HI_CLOUD"',},
+        ('GRIB_lvl_typ = 234;  desc = "HI_CLOUD"',
          'GRIB_lvl_typ = 234; desc = "HI_CLOUD";'),
         # 1 item semi-colon at end
-        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234;',
-          },
+        ('GRIB_lvl_typ = 234;',
          'GRIB_lvl_typ = 234;'),
         # 1 item no semi-colon at end
-        ({'FCST_VAR1_OPTIONS': 'GRIB_lvl_typ = 234',
-          },
+        ('GRIB_lvl_typ = 234',
          'GRIB_lvl_typ = 234;'),
     ]
 )
-def test_get_var_items_options_semicolon(metplus_config, config_overrides,
-                                         expected_result):
-    config = metplus_config()
-    config.set('config', 'FCST_VAR1_NAME', 'FNAME')
-    config.set('config', 'FCST_VAR1_LEVELS', 'FLEVEL')
-    for key, value in config_overrides.items():
-        config.set('config', key, value)
-
-    data_type = 'FCST'
-    index = 1
+def test_format_var_items_options_semicolon(config_value,
+                                            expected_result):
     time_info = {}
 
-    _, _, _, result = util.get_var_items(config, data_type, index, time_info)
+    field_configs = {'name': 'FNAME',
+                     'levels': 'FLEVEL',
+                     'options': config_value}
+
+    var_items = util.format_var_items(field_configs, time_info)
+    result = var_items.get('extra')
     assert(result == expected_result)
 
 @pytest.mark.parametrize(
@@ -1239,3 +1661,14 @@ def test_parse_var_list_py_embed_multi_levels(metplus_config, config_overrides,
 
     for var_item, expected_result in zip(var_list, expected_results):
         assert(var_item['fcst_name'] == expected_result)
+
+@pytest.mark.parametrize(
+    'level, expected_result', [
+        ('level', 'level'),
+        ('P500', 'P500'),
+        ('*,*', 'all_all'),
+        ('1,*,*', '1_all_all'),
+    ]
+)
+def test_format_level(level, expected_result):
+    assert(util.format_level(level) == expected_result)
