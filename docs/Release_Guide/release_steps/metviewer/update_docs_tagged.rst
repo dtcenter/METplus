@@ -13,4 +13,4 @@ Update the Documentation on the Web
 * Update symbolic link for 'latest' to point to new version.
 * Commit changes and push to GitHub.
 * Verify that documentation appears in the pull-down and latest points to the
-  new version on the web: dtcenter.github.io/METplus
+  new version on the web: dtcenter.github.io/METviewer
