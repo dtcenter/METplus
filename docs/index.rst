@@ -102,7 +102,7 @@ To cite this documentation in publications, please refer to the METplus User's G
 * Todd Arbetter
 * Lindsay Blank
 * Hank Fisher [#NCAR]_
-* James Frimel [#CIR]_
+* James Frimel [#CIRA]_
 * Lisa Goodrich [#NCAR]_
 * John Halley Gotway [#NCAR]_
 * Tara Jensen [#NCAR]_
@@ -110,7 +110,7 @@ To cite this documentation in publications, please refer to the METplus User's G
 * George McCabe [#NCAR]_
 * John Opatz [#NCAR]_
 * Julie Prestopnik [#NCAR]_
-* Mallory Row [#IM]_
+* Mallory Row [#IMSG]_
 * Jonathan Vigh [#NCAR]_
 * Minna Win-Gildenmeister [#NCAR]_
 
@@ -118,10 +118,10 @@ To cite this documentation in publications, please refer to the METplus User's G
 
 .. [#NCAR] `National Center for Atmospheric Research, Research
        Applications Laboratory <https://ral.ucar.edu/>`_, `Developmental Testbed Center <https://dtcenter.org/>`_
-.. [#CIR] `Cooperative Institute for Research in the Atmosphere at
+.. [#CIRA] `Cooperative Institute for Research in the Atmosphere at
        National Oceanic and Atmospheric Administration (NOAA) Earth
        System Research Laboratory <https://www.esrl.noaa.gov/>`_
-.. [#IM] `I.M. Systems Group at NOAA Environmental Modeling Center <https://imsg.com/>`_
+.. [#IMSG] `I.M. Systems Group at NOAA Environmental Modeling Center <https://imsg.com/>`_
 
 
 .. toctree::
