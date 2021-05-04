@@ -1,7 +1,8 @@
 .. _quick-search:
 
+**********************************
 METplus Quick Search for Use Cases
-==================================
+**********************************
 
 .. only:: latex
 
@@ -9,7 +10,7 @@ METplus Quick Search for Use Cases
 
 
 Use Cases by MET Tool:
-----------------------
+======================
 
 .. only:: html
 
@@ -60,7 +61,7 @@ Use Cases by MET Tool:
    | **TCStat**: *TCStatToolUseCase*
 
 Use Cases by Application:
--------------------------
+=========================
 
 .. only:: html
 
@@ -87,7 +88,7 @@ Use Cases by Application:
    | **Tropical Cyclone and Extra-Tropical Cyclone**: *TCandExtraTCAppUseCase*
 
 Use Cases by Organization:
---------------------------
+==========================
 
 .. only:: html
 
@@ -114,7 +115,7 @@ Use Cases by Organization:
    | **State University of New York-Stony Brook University (SUNY-SBU)**: *SBUOrgUseCase*
 
 Use Cases by METplus Feature:
------------------------------
+=============================
 
 .. only:: html
 
@@ -169,7 +170,7 @@ Use Cases by METplus Feature:
    | **User Defined Script**: *UserScriptUseCase*
 
 Use cases by File Format:
--------------------------
+=========================
 
 .. only:: html
 
