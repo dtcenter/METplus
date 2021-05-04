@@ -28,8 +28,8 @@ coordinating for a GitHub pull. For more information on contributing
 code to METplus Wrappers, please contact
 `met_help@ucar.edu <met_help@ucar.edu>`__.
 
-Pre-requisites
-==============
+Requirements
+============
 
 Software Requirements
 ---------------------
@@ -50,8 +50,13 @@ The following software is required to run METplus Wrappers:
 
 -  SeriesAnalysis wrapper
 
-    - ImageMagick convert utility
-      (if generating plots and/or animated images from the output)
+    - convert (ImageMagick) utility
+      if generating plots and/or animated images from the output
+
+-  PlotDataPlane wrapper
+
+    - convert (ImageMagick) utility
+      if generating images from the Postscript output
 
 Python Package Requirements
 ---------------------------
