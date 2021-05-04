@@ -1,4 +1,4 @@
-﻿=========================
+=========================
 METplus version |version|
 =========================
 Developed by the `Developmental Testbed Center <https://dtcenter.org/>`_,
@@ -86,7 +86,7 @@ Acronyms
 * **VSDB** - Verification Statistics Data Base
 * **MODE** - Method for Object-Based Diagnostic Evaluation
 * **UFS** - Unified Forecast System
-* **SIMA** -System for Integrated Modeling of the Atmosphere
+* **SIMA** - System for Integrated Modeling of the Atmosphere
 * **ESRL** - Earth Systems Research Laboratory
 * **HIWPP** - High Impact Weather Predication Project
 * **NGGPS** - Next Generation Global Predicatio System
@@ -94,6 +94,10 @@ Acronyms
 
 Authors
 -------
+
+The following list of authors have contributed to the documentation of METplus.
+To cite this documentation in publications, please refer to the METplus User's Guide :ref:`Citation Instructions<citations>`.
+
 * Daniel Adriaansen [#NCAR]_
 * Minna Win-Gildenmeister [#NCAR]_
 * James Frimel [#CIR]_

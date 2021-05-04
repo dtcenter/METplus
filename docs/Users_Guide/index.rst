@@ -48,6 +48,8 @@ the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS
 ANY KIND, either express or implied.  See the License for the specific language
 governing permissions and limitations under the License.
 
+.. _citations:
+
 **Citations**
 
 The citation for this User's Guide should be:
@@ -63,7 +65,7 @@ We thank all the METplus sponsors including: DTC partners (NOAA, NCAR, USAF, and
 along with NOAA/Office of Atmospheric Research (OAR), NOAA/Office of Science and
 Technology Integration, NOAA/Weather Program Office (WPO, formerly Office of Weather
 and Air Quality), and the Naval Research Laboratory (NRL). Thanks also go to the
-staff at the Developmental Testbed Center for their help, advice,and many types of support.
+staff at the Developmental Testbed Center for their help, advice, and many types of support.
 We released METplus Alpha in February 2017 and would not have made a decade of
 cutting-edge verification support without those who participated in DTC planning
 workshops and the NGGPS United Forecast System Strategic Implementation Plan Working
