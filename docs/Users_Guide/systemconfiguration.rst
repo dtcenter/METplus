@@ -9,38 +9,39 @@ This chapter is a guide on configuring METplus Wrappers.
 Config Best Practices / Recommendations
 =======================================
 
-*  Set the log level (:ref:`log_level`) to an appropriate level
+* Set the log level (:ref:`log_level`) to an appropriate level. Setting the
+  value to DEBUG will generate more information in the log output.
 
-* Log output will be written to a log file as well as shown on the screen.
-  Reviewing the log files to verify that all of the processes ran cleanly is
-  recommended, as they contain more information that what is output in the
-  terminal, such as log output from the MET tools.
+* Review the log files to verify that all of the processes ran cleanly.
+  Some log output will be written to the screen, but the log files
+  contain more information, such as log output from the MET tools.
 
-* The order in which METplus config files are listed matters.
-  Each subsequent config file on the command line will override any values
-  defined in an earlier config file. It is recommended to put user-specific
-  configurations, like OUTPUT_BASE, in its own configuration file to be
-  read in last in case any information configurations are accidentally
-  defined in multiple conf files.
+* The order in which METplus config files are read by run_metplus.py matters.
+  Each subsequent config file defined on the command line will override any
+  values defined in an earlier config file. It is recommended to create a
+  :ref:`user_configuration_file` and pass it to the script last to guarantee
+  that those values are used in case any variables are accidentally defined
+  in multiple conf files.
 
-* Check the metplus_final.conf (:ref:`metplus_final_conf`) file to verify that
-  all variables are set to the expected value,
+* Check the metplus_final.conf (see :ref:`metplus_final_conf`) file to
+  verify that all variables are set to the expected value,
   as it contains all the key-values that were specified.
 
 * If configuring METplus Wrappers in a common location for multiple users:
 
     * It is recommended that the values for **MET_INSTALL_DIR** and
       **INPUT_BASE** are changed to valid values in the
-      default configuration file.
+      :ref:`default_configuration_file`.
 
     * It is recommended to leave **OUTPUT_BASE** set to the default value in
-      the default configuration file. This prevents multiple users from
+      the :ref:`default_configuration_file`. This prevents multiple users from
       accidentally writing to the same output directory.
 
 * If obtaining the METplus Wrappers with the intention of updating
-  the same local repository as new versions become available, it is recommended
-  to leave all default values in the default configuration file unchanged and
-  set them in a user configuration file that is passed into every call to
+  the same local directory as new versions become available,
+  it is recommended to leave all default values in the
+  :ref:`default_configuration_file` unchanged and set them in a
+  :ref:`user_configuration_file` that is passed into every call to
   run_metplus.py. This is done to avoid the need to change the default values
   after every update.
 
@@ -56,20 +57,21 @@ a METplus Wrappers run and do not need to be invoked on the command line.
 
 These settings include:
 
-* Location of MET source and build
+* Location of MET installation
 * Directories where input data are located
-* Logging levels for METplus and MET output
+* Directory to write output data and temporary files
+* Logging levels for METplus wrapper and MET application output
 * Location of other non-MET executables/binaries
 
 The values in this file can either be set directly in this file or
-in a :ref:`user configuration file<user_configuration_file>`.
+in a :ref:`user_configuration_file`.
 
 Required (/path/to)
 -------------------
 
 Some of the variables in this file must be changed from the default value
 before running.
-These variables are set to */path/to* by default and are described below.
+These variables are set to **/path/to** by default and are described below.
 
 .. _sys_conf_met_install_dir:
 
@@ -82,7 +84,9 @@ or 'met-X.Y.Z' and should contain at least two directories:
 share and bin (or exec on some installations). The bin directory will contain
 the MET executables, such as grid_stat.
 
-Example::
+.. image:: ../_static/met-install-dir.png
+
+Based on the directory listing output above, the following should be set::
 
     MET_INSTALL_DIR = /usr/local/met
 
@@ -101,7 +105,9 @@ should contain one or more of the following:
 * A directory called **met_test** which contains data used for the use cases
   found under parm/use_cases/met_tool_wrapper
 
-Example::
+.. image:: ../_static/input-base.png
+
+Based on the directory listing output above, the following should be set::
 
     INPUT_BASE = /d1/METplus_Data
 

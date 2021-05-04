@@ -302,4 +302,5 @@ If configuring METplus Wrappers in a common location for multiple users,
 it is recommended that the values for **MET_INSTALL_DIR** and **INPUT_BASE**
 are set in the default configuration file. More information on how to
 set these values can be found in the
-:ref:`Default Configuration File section<default_configuration_file>`.
+:ref:`Default Configuration File section<default_configuration_file>` in the
+next chapter.
