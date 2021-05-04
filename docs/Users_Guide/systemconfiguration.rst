@@ -62,7 +62,7 @@ These settings include:
 * Location of other non-MET executables/binaries
 
 The values in this file can either be set directly in this file or
-in a user-defined configuration file.
+in a :ref:`user configuration file<user_configuration_file>`.
 
 Required (/path/to)
 -------------------
@@ -70,6 +70,8 @@ Required (/path/to)
 Some of the variables in this file must be changed from the default value
 before running.
 These variables are set to */path/to* by default and are described below.
+
+.. _sys_conf_met_install_dir:
 
 MET_INSTALL_DIR
 ^^^^^^^^^^^^^^^
@@ -83,6 +85,8 @@ the MET executables, such as grid_stat.
 Example::
 
     MET_INSTALL_DIR = /usr/local/met
+
+.. _sys_conf_input_base:
 
 INPUT_BASE
 ^^^^^^^^^^
@@ -100,6 +104,8 @@ should contain one or more of the following:
 Example::
 
     INPUT_BASE = /d1/METplus_Data
+
+.. _sys_conf_output_base:
 
 OUTPUT_BASE
 ^^^^^^^^^^^
@@ -137,7 +143,11 @@ METPLUS_CONF
 ^^^^^^^^^^^^
 
 This is the path to the final METplus configuration file that contains the full
-list of all configuration variables set for a given run. This file is useful
+list of all configuration variables set for a given run.
+This includes all of the values set by the METplus configuration files that
+were passed into the script, as well as the values from the
+:ref:`default_configuration_file` and any default values set by the wrappers.
+This file is useful
 to review for debugging to see which values were actually used for the run.
 If a value set in the final conf differs from what was set in a configuration
 file passed to run_metplus.py, there is a good chance that this variable is
@@ -195,7 +205,8 @@ GEMPAKTOCF_JAR
 
 Path to the GempakToCF.jar file used to convert GEMPAK data to NetCDF format.
 This is only used if running a use case that reads GEMPAK data. The value
-should be set to the full path of the JAR file.
+should be set to the full path of the JAR file. The file can be found here:
+https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
 
 .. _logging-config:
 
@@ -411,23 +422,166 @@ By default, this variable is referenced in
 :ref:`LOG_ERR_LINE_FORMAT<log_err_line_format>` and
 :ref:`LOG_DEBUG_LINE_FORMAT<log_debug_line_format>`.
 
+.. _user_configuration_file:
+
+User Configuration File
+=======================
+
+It is recommended that users create a METplus configuration file for each
+system that they are running the METplus wrappers.
+The file can be passed into run_metplus.py after any
+:ref:`use case configuration files<use_case_configuration_files>`
+so that the settings are applied to every use case that is run.
+Multiple user configuration files can also be created on a system to
+customize different work environments.
+At a minimum, a user configuration file should set the
+:ref:`OUTPUT_BASE<sys_conf_output_base>` variable so that output files are
+created in a familiar directory.
+
+A minimal user configuration file contains::
+
+    [config]
+    OUTPUT_BASE = /my/output/base
+
+where /my/output/base is a path where the user has write permission.
+
+If using an installation of the METplus wrappers that does not have
+:ref:`MET_INSTALL_DIR<sys_conf_met_install_dir>` and/or
+:ref:`INPUT_BASE<sys_conf_input_base>` set in the
+:ref:`default configuration file<default_configuration_file>`, or if a
+different value for either variable is desired, it is appropriate to override
+these variables in a user configuration file::
+
+    [config]
+    OUTPUT_BASE = /my/output/base
+    INPUT_BASE = /my/input/base
+    MET_INSTALL_DIR = /usr/local/met-10.0.0
+
+Overriding MET_INSTALL_DIR in the user configuration file allows users to use a
+older version or test a new beta version of MET.
+Overriding INPUT_BASE can be useful when developing a new use case.
+
+Any other METplus configuration variables that are intended to be set for
+each run can be added to this file to the user's taste.
+:ref:`Logging <logging-config>` configuration variables are often set in these
+files, most commonly :ref:`LOG_LEVEL<log_level>` = DEBUG to produce additional
+log output.
+
+.. _use_case_configuration_files:
+
 Use Case Configuration Files
 ============================
 
 Example configuration files that contain settings to run various use cases
 can be found in the *parm/use_cases* directory. There are two directories
-inside this directory.
+inside this directory:
 
-The directory named *met_tool_wrapper* contains simple use cases that run
-one wrapper at a time. They provide examples of how to configure and run
-a single wrapper to help users become familiar with the configurations
-that are available for that wrapper.
+* **met_tool_wrapper** contains simple use cases that run
+  one wrapper at a time. They provide examples of how to configure and run
+  a single wrapper to help users become familiar with the configurations
+  that are available for that wrapper.
 
-The directory named **model_applications** contains sub-directories organized
-by category. These use cases often run multiple wrappers in succession to
-demonstrate more complex examples of how the tools are used for verification
-by end users.
+* **model_applications** contains directories organized
+  by category. These use cases often run multiple wrappers in succession to
+  demonstrate more complex examples of how the tools are used for verification
+  by end users.
 
+The use case configuration files found in these directories contain
+:ref:`common_config_variables` that define each use case.
+Configuration variables that are specific to a
+user's environment (INPUT_BASE, OUTPUT_BASE, MET_INSTALL_DIR, etc.) are not
+*set* in these files. However, INPUT_BASE and OUTPUT_BASE are *referenced*
+by variables that are found in these files. For example::
+
+    FCST_GRID_STAT_INPUT_DIR = {INPUT_BASE}/met_test/data/sample_fcst
+    ...
+    GRID_STAT_OUTPUT_DIR = {OUTPUT_BASE}/met_tool_wrapper/GridStat
+
+All input data read by the use case is relative to INPUT_BASE and all output
+paths for data written by the use case is relative to OUTPUT_BASE. The
+expectation is a use case can be run locally if the user's INPUT_BASE
+contains the sample data associated with the use case *AND* any additional
+dependencies (i.e. Python packages) are available.
+See the chapter titled :ref:`metplus_use_cases` to view the documentation for
+the existing use cases to see if additional dependencies are required for a
+given use case.
+
+More information about the variables set in the use case configuration files
+can be found in the :ref:`common_config_variables` section.
+
+Running METplus
+===============
+
+Example Wrapper Use Case
+------------------------
+
+* Create a :ref:`user_configuration_file`
+  (named user_system.conf in this example)
+
+* Run the Example Wrapper use case: In a terminal, run::
+
+    run_metplus.py \
+    -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf \
+    -c /path/to/user_system.conf
+
+replacing **/path/to/user_system.conf** with the path to the
+user configuration file and
+**/path/to/METplus** with the path to the location where METplus is installed
+
+The last line of the screen output should match this format::
+
+    05/04 09:42:52.277 metplus (met_util.py:212) INFO: METplus has successfully finished running.
+
+If this log message is not shown, there is likely an issue with one or more
+of the default configuration variable overrides in the user configuration file.
+
+This use case does not utilize any of the MET tools, but simply demonstrates
+how the :ref:`common_config_variables` control a use case run.
+
+If the run was successful, the line above the success message should contain
+the path to the METplus log file that was generated::
+
+    05/04 09:44:21.534 metplus (met_util.py:211) INFO: Check the log file for more information: /path/to/output/logs/metplus.log.20210504094421
+
+* Review the log file and compare it to the Example.conf use case
+  configuration file to see how the settings correspond to the result.
+
+* Review the :ref:`metplus_final.conf<metplus_final_conf>` file to see all
+  of the settings that were used in the use case.
+
+GridStat Wrapper Basic Use Case
+-------------------------------
+
+* :ref:`obtain_sample_input_data` for the **met_tool_wrapper** use cases.
+  The tarfile should be in the directory that corresponds to the
+  major/minor release and starts with sample_data-met_tool_wrapper
+
+* Create a :ref:`user_configuration_file` if you have not done so already
+  (named user_system.conf in this example). Be sure that INPUT_BASE is set to
+  the directory where the sample data tarfile was uncompressed.
+
+* Run the GridStat Wrapper basic use case: In a terminal, run::
+
+    run_metplus.py \
+    -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf \
+    -c /path/to/user_system.conf
+
+replacing **/path/to/user_system.conf** with the path to the
+user configuration file and
+**/path/to/METplus** with the path to the location where METplus is installed
+
+If the run was successful, the line above the success message should contain
+the path to the METplus log file that was generated::
+
+    05/04 09:44:21.534 metplus (met_util.py:211) INFO: Check the log file for more information: /path/to/output/logs/metplus.log.20210504094421
+
+* Review the log file and compare it to the GridStat.conf use case
+  configuration file to see how the settings correspond to the result.
+
+* Review the :ref:`metplus_final.conf<metplus_final_conf>` file to see all
+  of the settings that were used in the use case.
+
+.. _common_config_variables:
 
 Common Config Variables
 =======================
@@ -1903,168 +2057,38 @@ Again, METplus is capable of correctly interpreting the above as three separate 
 
 This capability opens the door to virtually complete control of all MET config file settings regardless of whether they are explicitly supported or not.
 
-Config Quick Start Example
-==========================
-**Simple Example Use Case**
-
-* Create a user configuration file (named user_system.conf in this example)
-* Open the file with a text editor of your choice and add the following::
-
-    [config]
-    MET_INSTALL_DIR = /path/to/MET
-    INPUT_BASE = /path/to/INPUT
-    OUTPUT_BASE = /path/to/OUTPUT
-
-* Replace */path/to/MET* with the full path to your MET installation,
-  i.e., /d1/projects/MET/met-10.0.0
-* Replace /path/to/INPUT with the full path to a directory that contains or
-  will contain sample input data used by the use case examples.
-* Replace /path/to/OUTPUT with the full path to a directory where you would
-  like output files to be written.
-* Run the use case: On your command line, run::
-
-    run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf -c /path/to/user_system.conf
-
-where /path/to/user_system.conf is the path of the user configuration file
-you created earlier.
-
-* When complete, you should see the following message printed to the
-  screen upon successful completion::
-
-    "INFO: METplus has successfully finished running."
-
-A *logs* directory with a log file will be created under the output
-directory you specified.
-Additionally, a metplus_final.conf file is created and saved to
-the output directory.  It contains all the final values set by all your
-METplus configuration files, including those from the
-*parm/metplus_config/defaults.conf* file.
-
-
-**Track and Intensity Use Case with Sample Data**
-
-1. Create a directory where you wish to store the sample data. Sample
-   datasets are specific to each use case and are required in order to
-   be able to run the use case.
-
-2. Retrieve the sample data from the GitHub repository:
-
-   a. In your browser, navigate to
-      https://www.github.com/dtcenter/METplus/releases
-   b. Locate the latest release
-   c. Expand the 'Assets' menu by clicking on the black triangle to the
-      left of the word 'Assets'
-   d. Click on the *sample_data-medium_range-x.y.tgz* link associated
-      with that release, where x.y refers to the release number.
-   e. Save it to the directory you created above, hereafter referred to
-      as INPUT_DATA_DIRECTORY
-   f. cd to your $INPUT_DATA_DIRECTORY and uncompress the tarball:
-      *tar xvfz sample_data-medium_range-x.y.tgz* where x.y is replaced
-      with the current release number.
-   g. when you perform a listing of the sample_data directory, the
-      INPUT_DATA_DIRECTORY/model_applications/medium_range contains the
-      data you will need for this use case
-
-3. Set up the configuration file:
-
-   a. Your METplus Wrappers install directory will hereafter be referred
-      to as METplus_INSTALL
-   b. Verify that all the *</path/to>* values are replaced with valid paths
-      in METplus_INSTALL/parm/metplus_config/defaults.conf
-   c. One configuration file is used in this use case,
-      Plotter_fcstGFS_obsGFS_RPlotting.conf to take cyclone track data,
-      and using TCPairs which wraps the MET TC-Pairs tool (to match ADeck
-      and BDeck cyclone tracks to generate matched pairs and error
-      statistics). The TCMPRPlotter is then used (wraps the MET tool
-      plot_tcmpr.R) to generate a mean and median plots for these
-      matched pairs
-
-   d. In your editor, open the
-      METplus_INSTALL/METplus/parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
-      file and perform the following:
-
-      1. Under the [dir] section, add the following:
-
-         a. OUTPUT_BASE to where you wish to save the output:
-	    e.g., OUTPUT_BASE = path-to-your/output_dir
-         b. INPUT_BASE = INPUT_DATA_DIRECTORY/model_applications
-         c. MET_INSTALL_DIR =
-	    path-to-your/MET-install where path-to-your/MET-install is the
-	    full path where your MET installation resides
-         d. Verify that PROCESS_LIST, under the [conf] header/section is set
-	    to TCPairs, TCMPRPlotter. This instructs METplus Wrappers to run
-	    the TCPairs wrapper first (TC-Pairs) followed by the TCMPR plotter
-	    wrapper (plot_TCMPR.R).
-
-      2. Save your changes and exit your editor
-
-
-4. Run the use case:
-
-   a. Make sure you have set the following environment in your .cshrc
-      (C Shell) or .bashrc (Bash):
-
-      1. csh: setenv RSCRIPTS_BASE $MET_BASE/scripts/Rscripts
-      2. bash: export RSCRIPTS_BASE=$MET_BASE/scripts/Rscripts
-      3. Refer to section 2.7 'Set up your environment' in the
-	 :ref:`install` chapter for the full instructions on setting
-	 up the rest of your environment
-      4. On your command line, run:
-   
-         ::
-
-            run_metplus.py -c parm/use_cases/model_applications/tc_and_extra_tc/Plotter_fcstGFS_obsGFS_RPlotting.conf
-
-      5. When complete, you will have a log file in the output directory
-	 you specified, and under the tc_pairs directory you will see
-	 .tcst files under the 201412 subdirectory. These are the matched
-	 pairs created by the MET tool Tc-pairs and can be viewed in any
-	 text editor.
-      6. Plots are generated under the tcmpr_plots subdirectory in .png
-	 format. You should have the following plots which can be viewed
-	 by any graphics viewers such as 'display' on Linux/Unix hosts:
-
-         a. AMAX_WIND-BMAX_WIND_boxplot.png
-
-         b. AMAX_WIND-BMAX_WIND_mean.png
-
-         c. AMAX_WIND-BMAX_WIND_median.png
-
-         d. AMSLP-BMSLP_boxplot.png
-
-         e. AMSLP-BMSLP_mean.png
-
-         f. AMSLP-BMSLP_median.png
-
-         g. TK_ERR_boxplot.png
-
-         h. TK_ERR_mean.png
-
-         i. TK_ERR_median.png
-
 .. _user_defined_config:
 
-User Defined Config
-===================
+User Environment Variables
+==========================
 
-You can define your own custom config variables that will be set as
-environment variables when METplus is run.
+In addition to the environment variables that the METplus wrappers set
+automatically before running applications, users can define additional
+environment variables. These environment variables will only be set in the
+environment that runs the commands, so the user's environment is preserved.
 
-.. note:: In previous versions of METplus, we recommended using this to control unsupported MET config file options. Since this requires also modifying the MET config file used by METplus, we no longer recommend this. Instead, we strongly encourage the user to use the new capability defined in `Overriding Unsupported MET config file settings`_.
-
-This capability is currently most useful for utilizing Python embedding where a
-user may wish to control multiple items within their Python script.
+This capability is useful when calling a script (such as a UserScript command
+or a Python embedding script) that requires many inputs from the user.
+Instead of calling the script and passing in all of the values as command line
+arguments, the environment variables can be read from inside the script.
  
-To create add a custom config variable, add a
-section to one of your METplus config files called [user_env_vars]. Under
-this header, add as many variables as you'd like. For example, if you
-added the following to your METplus config file::
+To set a user-defined environment variable, add a
+section to a METplus configuration files called [user_env_vars].
+Under this header, add key-value pairs as desired.
+For example, if the following is added to a METplus configuration file::
 
   [user_env_vars]
   VAR_NAME = some_text_for_feb_1_1987_run
 
-you could then reference this variable from within Python by accessing the environment variable
-named "VAR_NAME".
+then an environment variable named "VAR_NAME" set to the value
+"some_text_for_feb_1_1987_run" will be set in the environment for every command
+run by the METplus wrappers.
+
+This is the equivalent of running this bash command::
+
+  $ export VAR_NAME=some_text_for_feb_1_1987_run
+
+on the command line at the beginning of your METplus run.
 
 You can also reference other variables in the METplus config file.
 For example::
@@ -2075,18 +2099,251 @@ For example::
   [user_env_vars]
   USE_CASE_TIME_ID = {INIT_BEG}
 
-This is the equivalent of calling (bash example shown)::
+This is the equivalent of running this bash command::
 
   $ export USE_CASE_TIME_ID=1987020104
 
 on the command line at the beginning of your METplus run. 
 
-Using Environment Variables as Config Variables
-===============================================
+.. note::
+    In previous versions of METplus, we recommended using this to control
+    unsupported MET config file options. Since this requires also modifying
+    the MET config file used by METplus, we no longer recommend this.
+    Instead, we strongly encourage the user to use the new capability defined
+    in `Overriding Unsupported MET config file settings`_.
+
+Using Environment Variables to set Config Variables
+===================================================
 
 You can set METplus config variables to the value of local environment
 variables when METplus is run. To set any METplus config variable to the
 value of a local environment variable, use the following syntax::
 
-  METPLUS_CONF_VAR = {ENV[LOCAL_ENV_VAR_NAME]}
+  METPLUS_MY_VAR = {ENV[LOCAL_ENV_VAR]}
 
+If the following bash command is run before calling run_metplus.py::
+
+    export LOCAL_ENV_VAR=my_value
+
+then the METplus configuration variable METPLUS_MY_VAR will be set to my_value.
+
+
+Updating Configuration Files - Handling Deprecated Configuration Variables
+==========================================================================
+
+If upgrading from a METplus version earlier than v3.0, this content is
+important to getting started using a newly released version. **If upgrading
+from METplus v3.0 and above or if installing METplus for the first time,
+please skip this section.**
+
+METplus developers strive to allow backwards compatibility so new versions of
+the tools will continue to work as they did in previous versions.
+However, sometimes changes are necessary for clarity and cohesion.
+Many configuration variable names have changed in version 3.0 in an attempt to
+make their function more clear.
+If any deprecated METplus configuration variables are found in a user's
+use case, execution will stop immediately and an error report of all variables
+that must be updated is output.
+In some cases, simply renaming the variable is sufficient.
+Other changes may require more thought.
+The next few sections will outline a few of common changes that will need to
+be made. In the last section, a tool called validate_config.py is described.
+This tool can be used to help with this transition by automating some of the
+work required to update configuration files.
+
+Simple Rename
+-------------
+
+In most cases, there is a simple one-to-one relationship between a deprecated configuration variable and a valid one. In this case, renaming the variable will resolve the issue.
+
+Example::
+
+    (met_util.py) ERROR: DEPRECATED CONFIG ITEMS WERE FOUND. PLEASE REMOVE/REPLACE THEM FROM CONFIG FILES
+    (met_util.py) ERROR: [dir] MODEL_DATA_DIR should be replaced with EXTRACT_TILES_GRID_INPUT_DIR
+    (met_util.py) ERROR: [config] STAT_LIST should be replaced with SERIES_ANALYSIS_STAT_LIST
+
+These cases can be handled automatically by using the :ref:`validate_config`.
+
+FCST/OBS/BOTH Variables
+-----------------------
+
+Field information passed into many of the MET tools is defined with the [FCST/OBS]_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS] configuration variables.
+For example, FCST_VAR1_NAME and FCST_VAR1_LEVELS are used to define forecast name/level values that are compared to observations defined with OBS_VAR1_NAME and OBS_VAR1_LEVELS.
+
+Before METplus 3.0, users could define the FCST_* variables and omit the OBS_* variables or vice versa. In this case, it was assumed the undefined values matched the coresponding term. For example, if FCST_VAR1_NAME = TMP and OBS_VAR1_NAME is not defined, it was assumed that OBS_VAR1_NAME = TMP as well. This method was not always clear to users.
+
+Starting in METplus 3.0, users are required to either explicitly set both FCST_* and OBS_* variables or set the equivalent BOTH_* variables to make it clear that the values apply to both forecast and observation data.
+
+Example::
+
+    (met_util.py) ERROR: If FCST_VAR1_NAME is set, you must either set OBS_VAR1_NAME or change FCST_VAR1_NAME to BOTH_VAR1_NAME
+    (met_util.py) ERROR: If FCST_VAR2_NAME is set, you must either set OBS_VAR2_NAME or change FCST_VAR2_NAME to BOTH_VAR2_NAME
+    (met_util.py) ERROR: If FCST_VAR1_LEVELS is set, you must either set OBS_VAR1_LEVELS or change FCST_VAR1_LEVELS to BOTH_VAR1_LEVELS
+    (met_util.py) ERROR: If FCST_VAR2_LEVELS is set, you must either set OBS_VAR2_LEVELS or change FCST_VAR2_LEVELS to BOTH_VAR2_LEVELS
+
+These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes, as they may want to update differently.
+
+PCPCombine Input Levels
+-----------------------
+
+Prior to METplus 3.0, the PCPCombine wrapper only allowed the user to define a single input accumulation amount to be used to build a desired accumulation. However, some data sets include more than one accumulation field.
+PCPCombine wrapper was enhanced in version 3.0 to allow users to specify a list of accumulations available in the input data.
+Instead of only being able to specify FCST_PCP_COMBINE_INPUT_LEVEL, users can now specify a list of accumulations with :term:`FCST_PCP_COMBINE_INPUT_ACCUMS`.
+
+Example::
+
+    (met_util.py) ERROR: [config] OBS_PCP_COMBINE_INPUT_LEVEL should be replaced with OBS_PCP_COMBINE_INPUT_ACCUMS
+
+These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes, as they may want to include other available input accumulations.
+
+MET Configuration Files
+-----------------------
+
+The METplus wrappers set environment variables that are read by the MET configuration files to customize each run. Some of the environment variables that were previously set by METplus wrappers to handle very specific use cases are no longer set in favor of using a common set of variables across the MET tools. The following are examples of changes that have occurred in METplus regarding environment variables.
+
+EnsembleStat previously set $GRID_VX to define the grid to use to regrid data within the tool. In version 3.0, MET tools that have a 'to_grid' value in the 'grid' dictionary of the MET config file have a uniformly named METplus configuration variable called <MET-tool>_REGRID_TO_GRID (i.e. :term:`ENSEMBLE_STAT_REGRID_TO_GRID`) that is used to define this value::
+
+    Before:
+       to_grid    = ${GRID_VX};
+
+    After:
+       to_grid    = ${REGRID_TO_GRID};
+
+MET_VALID_HHMM was used by GridStat wrapper to set part of the climatology file path. This was replaced by the METplus configuration variables <MET-tool>_CLIMO_[MEAN/STDEV]_INPUT_[DIR/TEMPLATE] (i.e. :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`)::
+
+  Before:
+     file_name = [ "${INPUT_BASE}/grid_to_grid/nwprod/fix/cmean_1d.1959${MET_VALID_HHMM}" ];
+
+  After:
+     file_name = [ ${CLIMO_MEAN_FILE} ];
+
+The output_prefix variable in the MET config files was previously set by referencing variable environment variables set by METplus. This has since been changed so that output_prefix references the $OUTPUT_PREFIX environment variable. This value is now set in the METplus configuration files using the wrapper-specific configuration variable, such as :term:`GRID_STAT_OUTPUT_PREFIX` or :term:`ENSEMBLE_STAT_OUTPUT_PREFIX`::
+
+  Before:
+     output_prefix    = "${FCST_VAR}_vs_${OBS_VAR}";
+
+  After:
+     output_prefix    = "${OUTPUT_PREFIX}";
+
+Due to these changes, MET configuration files that refer to any of these deprecated environment variables will throw an error. While the :ref:`validate_config` will automatically remove any invalid environment variables that may be set in the MET configuration files, the user will be responsible for adding the corresponding METplus configuration variable to reproduce the intended behavior. The tool will give a suggested value for <MET-tool>_OUTPUT_PREFIX.
+
+Example log output::
+
+    (met_util.py) DEBUG: Checking for deprecated environment variables in: DeprecatedConfig
+    (met_util.py) ERROR: Please remove deprecated environment variable ${GRID_VX} found in MET config file: DeprecatedConfig
+    (met_util.py) ERROR: MET to_grid variable should reference ${REGRID_TO_GRID} environment variable
+    (met_util.py) INFO: Be sure to set GRID_STAT_REGRID_TO_GRID to the correct value.
+
+    (met_util.py) ERROR: Please remove deprecated environment variable ${MET_VALID_HHMM} found in MET config file: DeprecatedConfig
+    (met_util.py) ERROR: Set GRID_STAT_CLIMO_MEAN_INPUT_[DIR/TEMPLATE] in a METplus config file to set CLIMO_MEAN_FILE in a MET config
+
+    (met_util.py) ERROR: output_prefix variable should reference ${OUTPUT_PREFIX} environment variable
+    (met_util.py) INFO: You will need to add GRID_STAT_OUTPUT_PREFIX to the METplus config file that sets GRID_STAT_CONFIG_FILE. Set it to:
+    (met_util.py) INFO: GRID_STAT_OUTPUT_PREFIX = {CURRENT_FCST_NAME}_vs_{CURRENT_OBS_NAME}
+
+These cases can be handled automatically by using the :ref:`validate_config`, but users should review the suggested changes and make sure they add the appropriate recommended METplus configuration variables to their files to achieve the same behavior.
+
+SED Commands
+------------
+
+Running run_metplus.py with one or more configuration files that contain deprecated variables that can be fixed with a find/replace command will generate a file in the {OUTPUT_BASE} called sed_commands.txt. This file contains a list of commands that can be run to update the configuration file. Lines that start with "#Add" are intended to notify the user to add a variable to their METplus configuration file.
+
+The :ref:`validate_config` will step you through each of these commands and execute them upon your approval.
+
+Example sed_commands.txt content::
+
+    sed -i 's|^   to_grid    = ${GRID_VX};|   to_grid    = ${REGRID_TO_GRID};|g' DeprecatedConfig
+    #Add GRID_STAT_REGRID_TO_GRID
+    sed -i 's|^   file_name = [ "${INPUT_BASE}/grid_to_grid/nwprod/fix/cmean_1d.1959${MET_VALID_HHMM}" ];|   file_name = [ ${CLIMO_MEAN_FILE} ];|g' DeprecatedConfig
+    #Add GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE
+    sed -i 's|^output_prefix    = "${FCST_VAR}_vs_${OBS_VAR}";|output_prefix    = "${OUTPUT_PREFIX}";|g' DeprecatedConfig
+    #Add GRID_STAT_OUTPUT_PREFIX = {CURRENT_FCST_NAME}_vs_{CURRENT_OBS_NAME}
+    sed -i 's|^FCST_VAR1_NAME|BOTH_VAR1_NAME|g' deprecated.conf
+    sed -i 's|^FCST_VAR1_LEVELS|BOTH_VAR1_LEVELS|g' deprecated.conf
+
+.. _validate_config:
+
+Validate Config Helper Script
+-----------------------------
+
+The script named validate_config.py is found in the same directory as run_metplus.py. To use this script, call it with the same arguments that you would pass to run_metplus.py::
+
+  run_metplus.py  -c ./my_conf.py -c ./another_config.py
+  validate_config.py -c ./my_conf.py -c ./another_config.py
+
+You must pass a valid configuration to the script, as in you must properly set :term:`MET_INSTALL_DIR`, :term:`INPUT_BASE`, and :term:`OUTPUT_BASE`, or it will not run.
+
+The script will evaluate all of the configuration files, including any MET configuration file that is referenced in a _CONFIG_FILE variable, such as :term:`GRID_STAT_CONFIG_FILE`.  For each deprecated item that is found, the script will suggest a replacement for the file where the deprecated item was found.
+
+Example 1 (Simple Rename)::
+
+    The following replacement is suggested for ./deprecated.conf
+
+    Before:
+    STAT_LIST = TOTAL, OBAR, FBAR
+
+    After:
+    SERIES_ANALYSIS_STAT_LIST = TOTAL, OBAR, FBAR
+
+    Would you like the make this change to ./deprecated.conf? (y/n)[n]
+
+Example 2 (FCST/OBS/BOTH Variables)::
+
+    The following replacement is suggested for ./deprecated.conf
+
+    Before:
+    FCST_VAR1_NAME = TMP
+
+    After:
+    BOTH_VAR1_NAME = TMP
+
+    Would you like the make this change to ./deprecated.conf? (y/n)[n]
+
+Example 3 (PCPCombine Input Levels)::
+
+    The following replacement is suggested for ./deprecated.conf
+
+    Before:
+    OBS_PCP_COMBINE_INPUT_LEVEL = 6
+
+    After:
+    OBS_PCP_COMBINE_INPUT_ACCUMS = 6
+
+    Would you like the make this change to ./deprecated.conf? (y/n)[n]
+
+Example 4 (MET Configuration File)::
+
+    The following replacement is suggested for DeprecatedConfig
+
+    Before:
+       to_grid    = ${GRID_VX};
+
+    After:
+       to_grid    = ${REGRID_TO_GRID};
+
+    Would you like the make this change to DeprecatedConfig? (y/n)[n]
+
+    IMPORTANT: If it is not already set, add the following in the [config] section to your METplus configuration file that sets GRID_STAT_CONFIG_FILE:
+
+    GRID_STAT_REGRID_TO_GRID
+    Make this change before continuing! [OK]
+
+Example 5 (Another MET Configuration File)::
+
+  The following replacement is suggested for DeprecatedConfig
+
+  Before:
+  output_prefix    = "${FCST_VAR}_vs_${OBS_VAR}";
+
+  After:
+  output_prefix    = "${OUTPUT_PREFIX}";
+
+  Would you like the make this change to DeprecatedConfig? (y/n)[n]
+
+  IMPORTANT: If it is not already set, add the following in the [config] section to your METplus configuration file that sets GRID_STAT_CONFIG_FILE:
+
+  GRID_STAT_OUTPUT_PREFIX = {CURRENT_FCST_NAME}_vs_{CURRENT_OBS_NAME}
+  Make this change before continuing! [OK]
+
+.. note::
+    While the METplus developers are very diligent to include deprecated variables in this functionality, some may slip through the cracks. When upgrading to a new version of METplus, it is important to test and review your use cases to ensure they produce the same results as the previous version. Please contact met_help@ucar.edu with any questions.
