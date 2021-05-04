@@ -524,7 +524,7 @@ Example Wrapper Use Case
 * Create a :ref:`user_configuration_file`
   (named user_system.conf in this example)
 
-* Run the Example Wrapper use case: In a terminal, run::
+* Run the Example Wrapper use case. In a terminal, run::
 
     run_metplus.py \
     -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf \
@@ -539,7 +539,8 @@ The last line of the screen output should match this format::
     05/04 09:42:52.277 metplus (met_util.py:212) INFO: METplus has successfully finished running.
 
 If this log message is not shown, there is likely an issue with one or more
-of the default configuration variable overrides in the user configuration file.
+of the default configuration variable overrides in the
+:ref:`user_configuration_file`.
 
 This use case does not utilize any of the MET tools, but simply demonstrates
 how the :ref:`common_config_variables` control a use case run.
@@ -562,11 +563,11 @@ GridStat Wrapper Basic Use Case
   The tarfile should be in the directory that corresponds to the
   major/minor release and starts with sample_data-met_tool_wrapper
 
-* Create a :ref:`user_configuration_file` if you have not done so already
-  (named user_system.conf in this example). Be sure that INPUT_BASE is set to
-  the directory where the sample data tarfile was uncompressed.
+* Create a :ref:`user_configuration_file` (named user_system.conf in this
+  example) if you have not done so already. Ensure that **INPUT_BASE** is set
+  to the directory where the sample data tarfile was uncompressed.
 
-* Run the GridStat Wrapper basic use case: In a terminal, run::
+* Run the GridStat Wrapper basic use case. In a terminal, run::
 
     run_metplus.py \
     -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf \
@@ -577,9 +578,7 @@ user configuration file and
 **/path/to/METplus** with the path to the location where METplus is installed
 
 If the run was successful, the line above the success message should contain
-the path to the METplus log file that was generated::
-
-    05/04 09:44:21.534 metplus (met_util.py:211) INFO: Check the log file for more information: /path/to/output/logs/metplus.log.20210504094421
+the path to the METplus log file that was generated.
 
 * Review the log file and compare it to the GridStat.conf use case
   configuration file to see how the settings correspond to the result.
@@ -1842,194 +1841,205 @@ Files Processed::
 
 .. _metplus-control-met:
 
-How METplus controls MET config file settings
-=============================================
+How METplus controls MET configuration variables
+================================================
 
-METplus provides powerful user control of MET tool configuration file settings. For each METplus Python wrapper
-there is a list of METplus configuration items that directly control the MET tool configuration file settings.
-**The general concept is that METplus uses a special MET configuration file for each MET tool that references 
-environment variables that are set to the value of METplus configuration options the user specifies.**
-We can see how this works by walking through some examples for GridStat. 
+METplus provides powerful user control of MET tool configuration file settings.
+If a MET tool uses a configuration file, then the corresponding METplus wrapper
+supports METplus configuration variables that control the MET tool
+configuration file settings.
+**The METplus wrappers provide a special "wrapped" MET configuration file that
+references environment variables that are set by the wrappers based on the
+values set in the METplus configuration files.**
+The following section demonstrates a few examples using GridStat.
 
 GridStat Simple Example
 -----------------------
 
-First, to see a list of MET config file options that METplus can control, visit the :ref:`GridStat MET Configuration Section<grid-stat-met-conf>`. 
-There we can see that METplus supports controlling various items in the  MET config file for GridStat. One of these items is the 'file_name' variable 
-of the 'climo_mean' dictionary. The default setting for this in the MET config file looks like this::
+Visit the :ref:`GridStat MET Configuration <grid-stat-met-conf>` section of the
+User's Guide.
+This section contains a link to the default GridStat MET config file,
+which is found locally in **share/met/config/GridStatConfig_default** under the
+:ref:`sys_conf_met_install_dir`. Next the content of the wrapped GridStat
+configuration file (**parm/met_config/GridStatConfig_wrapped**) is displayed.
+Notice that this file is similar to the default GridStat MET config file,
+but some of the variables in the wrapped configuration file have been replaced
+with environment variables.
 
-  climo_mean = {
+GridStatConfig_**default**::
 
-   file_name = [];
-   field     = [];
+    desc = "NA";
 
-   regrid = {
-      method     = NEAREST;
-      width      = 1;
-      vld_thresh = 0.5;
-      shape      = SQUARE;
-   }
+GridStatConfig_**wrapped**::
 
-   time_interp_method = DW_MEAN;
-   match_month        = TRUE;
-   day_interval       = 31;
-   hour_interval      = 6;
-  }
+    // desc =
+    ${METPLUS_DESC}
 
-In the GridStat MET config file used by METplus, we can see this section looks a little different::
-
-  climo_mean = {
-
-   ${METPLUS_CLIMO_MEAN_FILE}
-   field     = [];
-
-   regrid = {
-      method     = NEAREST;
-      width      = 1;
-      vld_thresh = 0.5;
-      shape	 = SQUARE;
-   }
-
-   time_interp_method = DW_MEAN;
-   match_month        = TRUE;
-   day_interval       = 31;
-   hour_interval      = 6;
-  }
-
-Note the addition of **${METPLUS_CLIMO_MEAN_FILE}** where a user would normally find **file_name = [];** in a GridStat MET config file not used by METplus.
-
-The addition of **${METPLUS_CLIMO_MEAN_FILE}** tells METplus to do one of two things when GridStat is found in the :term:`PROCESS_LIST` set by the user:
-
-| 1. First set the value to the default in MET, which is the entire string **'file_name = [];'**
-| 2. If the user has set the METplus configuration item :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`, then override the default with the string the user set in this METplus conf variable
-|
+When GridStat is run, the tool first reads its default configuration file
+(GridStatConfig_**default**) and sets all of the default values. Then it reads
+the configuration file that is passed into the tool on the command line, which
+is *typically* the wrapped GridStat config file
+(parm/met_config/GridStatConfig_**wrapped**).
 
 If the user sets the following in their METplus config file::
 
-  GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE = /path/to/my/climo_mean_file.nc
+  GRID_STAT_DESC = my_description
 
-METplus will set the 'file_name' variable in the 'climo_mean' dictionary in the GridStat MET config file to::
+METplus will set the value of the ${METPLUS_DESC} environment variable to::
 
-  file_name = ['/path/to/my/climo_mean_file.nc'];
+  desc = "my_description";
 
-Returning to what the entire 'climo_mean' dictionary would look like in this instance, we now see the value of :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE` 
-inserted where **${METPLUS_CLIMO_MEAN_FILE}** was::
+Notice that the variable name and equals sign is included in the value of the
+environment variable. The default value for *desc* will be replaced with the
+new value "my_description" when the wrapped config file is read.
 
-  climo_mean = {
+If the user does not set :term:`GRID_STAT_DESC` in their METplus config files,
+then METplus will set the value of the ${METPLUS_DESC} environment variable
+to an empty string. This will result in the default value "NA" to be used.
 
-   file_name = ['/path/to/my/climo_mean_file.nc'];
-   field     = [];
+Typically for single value or array MET config variables,
+the names of the METplus config variable, environment variable, and
+MET config variable are closely related, i.e.
 
-   regrid = {
-      method     = NEAREST;
-      width      = 1;
-      vld_thresh = 0.5;
-      shape      = SQUARE;
-   }
+*           **desc**: MET config name
+* GRID_STAT_**DESC**: METplus config name
+*  $METPLUS_**DESC**: Environment variable name
 
-   time_interp_method = DW_MEAN;
-   match_month        = TRUE;
-   day_interval       = 31;
-   hour_interval      = 6;
-  }
+However, this is not always the case. Refer to the 'MET Configuration' section
+for each wrapper in the:doc:`wrappers` chapter to see the full list of
+supported variables.
 
-Note that the above is simply for illustration purposes, and there will never be a physical GridStat config file that exists with that string written in it. The
-same substitution is made for every item supported for each wrapper. This information can be found in the 'MET Configuration' section for each wrapper in the :doc:`wrappers` chapter.
+GridStat Dictionary example
+---------------------------
 
-GridStat Complex example
-------------------------
+The MET configuration files may contain dictionaries that contain multiple
+variables within a variable. For example::
 
-For more complex MET config file control, let's walk through another example. Again first we start by visiting the :ref:`GridStat MET Configuration Section<grid-stat-met-conf>` to identify which MET config options are currently supported by METplus and how to control them. For this example, we will choose the MET config file dictionary
-item 'fcst'. The default setting for this in the MET config file looks like this::
+    regrid = {
+       to_grid    = NONE;
+       method     = NEAREST;
+       width      = 1;
+       vld_thresh = 0.5;
+       shape      = SQUARE;
+    }
 
-  fcst = {
+The *regrid* dictionary contains 5 variables named *to_grid*, *method*,
+*width*, *vld_thresh*, and *shape*.
 
-   field = [
-      {
-        name       = "APCP";
-        level      = [ "A03" ];
-        cat_thresh = [ >0.0, >=5.0 ];
-      }
-   ];
+If only one or a few of the dictionary items are supported through the METplus
+wrappers, then they are handled in the same way as single value or array values
+described above. However, if the entire dictionary is supported, then it must
+be handled a little differently. The reason is MET will throw an error if it
+encounters a dictionary with no values inside, like this::
 
-  }
+    regrid = {}
 
-In the GridStat MET config file used by METplus, we can see this section looks much different::
+To handle this, the values for the entire dictionary are handled in a single
+environment variable with a name that ends with "_DICT" to signify that it sets
+values for a dictionary::
 
-  fcst = {
-  ${METPLUS_FCST_FIELD}
-  }
+    // regrid = {
+    ${METPLUS_REGRID_DICT}
 
-Here we can see that **${METPLUS_FCST_FIELD}** replaces all three of the default variables 'name', 'level', and 'cat_thresh' in the 'fcst' dictionary.
+Notice that the naming convention is still similar to the name of the MET
+config variable name.
 
-The addition of **${METPLUS_FCST_FIELD}** tells METplus to do one of two things when GridStat is found in the :term:`PROCESS_LIST` set by the user:
+Instead of a single METplus configuration variable to control the value of this
+environment variable, there are multiple variables -- one for each item of the
+dictionary::
 
-| 1. First set the value to the default in MET, which is the entire string **'field = [{name = "APCP"; level = [ "A03" ]; cat_thresh=[ >0.0, >=5.0 ];}];'**
-| 2. If the user has set any of these configuration items: :term:`FCST_VAR<n>_NAME`, :term:`FCST_VAR<n>_LEVELS`, :term:`FCST_VAR<n>_THRESH`, or :term:`FCST_VAR<n>_OPTIONS`, then override the corresponding variable in the MET config 'fcst' dictionary with the values set by the user in METplus.
-|
+* GRID_STAT_REGRID_**TO_GRID**
+* GRID_STAT_REGRID_**METHOD**
+* GRID_STAT_REGRID_**WIDTH**
+* GRID_STAT_REGRID_**VLD_THRESH**
+* GRID_STAT_REGRID_**SHAPE**
 
-If the user sets the following in their METplus config file::
+If all of these variables are unset, then the value of ${METPLUS_REGRID_DICT}
+will be an empty string. If one or more of these variables are set, then each
+item will be formatted and added to the regrid dictionary.
 
-  FCST_VAR1_NAME = ASNOW
-  FCST_VAR1_LEVELS = A03, A06
-  FCST_VAR1_THRESH = >2.54, >10.0
+If the following variable is set::
 
-METplus will set the 'name', 'level', and 'cat_thresh' variables of the 'fcst' dictionary in the GridStat MET config file to::
+    GRID_STAT_REGRID_TO_GRID = OBS
 
-  field = [{name = "ASNOW"; level = [ "A03", "A06" ]; cat_thresh=[ >2.54, >10.0 ];}];
+then ${METPLUS_REGRID_DICT} will be set to::
 
-Returning to what the entire 'fcst' dictionary would look like in this instance, we now see the values of :term:`FCST_VAR<n>_NAME`, :term:`FCST_VAR<n>_LEVELS`, and :term:`FCST_VAR<n>_THRESH` inserted where **${METPLUS_FCST_FIELD}** was::
+    regrid = {to_grid = OBS;}
 
-  fcst = {
+If the following variables are set::
 
-   field = [
-      {
-        name       = "ASNOW";
-        level      = [ "A03", "A06" ];
-        cat_thresh = [ >2.54, >10.0 ];
-      }
-   ];
+    GRID_STAT_REGRID_TO_GRID = OBS
+    GRID_STAT_REGRID_WIDTH = 2
 
-  }
+then ${METPLUS_REGRID_DICT} will be set to::
 
-Note that the above is simply for illustration purposes, and there will never be a physical GridStat config file that exists with that string written in it. The
-same substitution is made for every item supported for each wrapper. This information can be found in the 'MET Configuration' section for each wrapper, in :doc:`wrappers`.
+    regrid = {to_grid = OBS; width = 2;}
+
+When a subset of a dictionary is defined in a MET configuration file, only
+the variables that are re-defined are replaced. The other dictionary items
+that are absent will use the default value.
+
+GridStat Fields
+---------------
+
+Field information, i.e. the fcst/obs dictionary field item, is handled
+a little differently than other MET variables. Multiple fields can be
+specified for a given use case to generate a command for each field or, if
+the MET tool supports it, pass in all of the fields to a single command.
+Refer to the :ref:`Field_Info`
+section for information on how to sets these values.
 
 .. _met-config-overrides:
 
-Overriding Unsupported MET config file settings
-===============================================
+Overriding Unsupported MET configuration variables
+==================================================
 
-While METplus does provide configuration settings for most MET config file options, there will certainly be instances when a user wishes to control a MET config file
-option that has no corresponding METplus configuration file setting. In this instance, the user would set a special METplus configuration item to accomplish this. There
-is one of these special METplus configuration items for the following wrappers:
+While METplus does provide support for overriding many of the
+commonly used MET config variables through the wrappers,
+there will certainly be instances when a user wishes to control a
+MET config variable that is not supported in the METplus configuration.
+Wrappers for MET tools that utilize configuration files support a METplus
+configuration variable used to override any unsupported MET config variables.
+These variables contain the name of the MET tool (in all caps) followed by
+_MET_CONFIG_OVERRIDES. Here are some examples:
 
-| :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
-| :term:`ASCII2NC_MET_CONFIG_OVERRIDES`
-| :term:`GRID_DIAG_MET_CONFIG_OVERRIDES`
-| :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
-| :term:`MODE_MET_CONFIG_OVERRIDES`
-| :term:`MTD_MET_CONFIG_OVERRIDES`
-| :term:`PB2NC_MET_CONFIG_OVERRIDES`
-| :term:`POINT_STAT_MET_CONFIG_OVERRIDES`
-| :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
-| :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
-| :term:`TC_GEN_MET_CONFIG_OVERRIDES`
-| :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
-| :term:`TC_RMW_MET_CONFIG_OVERRIDES`
-| :term:`TC_STAT_MET_CONFIG_OVERRIDES`
-|
+* :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
+* :term:`ASCII2NC_MET_CONFIG_OVERRIDES`
+* :term:`GRID_DIAG_MET_CONFIG_OVERRIDES`
+* :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
+* :term:`MODE_MET_CONFIG_OVERRIDES`
+* :term:`MTD_MET_CONFIG_OVERRIDES`
+* :term:`PB2NC_MET_CONFIG_OVERRIDES`
+* :term:`POINT_STAT_MET_CONFIG_OVERRIDES`
+* :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
+* :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
+* :term:`TC_GEN_MET_CONFIG_OVERRIDES`
+* :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
+* :term:`TC_RMW_MET_CONFIG_OVERRIDES`
+* :term:`TC_STAT_MET_CONFIG_OVERRIDES`
 
-These special METplus configuration items will control the value of the special environment variable **${METPLUS_MET_CONFIG_OVERRIDES}** which can be found at the bottom
-of each MET config file that METplus uses. To demonstrate how you can use this powerful feature, see the two examples below for GridStat. The general concept can be
-applied to any MET tool that supports this special configuration item in METplus (see list above).
+The value set for each of these variables are set to the
+**${METPLUS_MET_CONFIG_OVERRIDES}** environment variable for the corresponding
+MET tool. This environment variable is referenced at the bottom
+of each wrapped MET configuration file, so the values are read at the end of
+of parsing, overriding any values that were set.
 
-.. note:: We do not recommend modifying MET config files when using METplus. Instead, this new approach to controlling unsupported MET config options is strongly encouraged.
+
+.. note::
+    We recommend using this approach to controlling unsupported MET
+    config options over using a modified MET configuration file, although this
+    approach is still supported. Newly added features and variable override
+    support may be more difficult to incorporate using the latter approach.
+    Please contact met_help@ucar.edu for assistance with updating a use case
+    to migrate away from using a modified MET configuration file.
 
 MET Config Override GridStat Simple Example
 -------------------------------------------
 
-Let's use the example of a user running GridStat. The user has a customized GridStat verification task, and needs a specialized setting in the 'distance_map' dictionary in the MET GridStat configuration file. Here's what the default MET config file looks like::
+Let's use the example of a user running GridStat. The user has a customized
+GridStat verification task, and needs a specialized setting in the
+'distance_map' dictionary in the MET GridStat configuration file.
+Here's what the default MET config file looks like::
 
   distance_map = {
    baddeley_p        = 2;
@@ -2038,15 +2048,30 @@ Let's use the example of a user running GridStat. The user has a customized Grid
    zhu_weight        = 0.5;
   }
 
-Currently there is no support in METplus to control any of these items specifically, however they can be set using :term:`GRID_STAT_MET_CONFIG_OVERRIDES`. Recall from `How METplus controls MET config file settings`_ that METplus will utilize the default settings for each variable in the 'distance_map' dictionary. If a user wishes to override the default value of the 'baddeley_p' variable, then they would create the following entry in their METplus configuration file::
+Currently there is no support in METplus to control any of these items
+specifically, however they can be set using
+:term:`GRID_STAT_MET_CONFIG_OVERRIDES`.
+Recall from `How METplus controls MET configuration variables`_ that METplus
+will utilize the default settings for each variable in the 'distance_map'
+dictionary. If a user wishes to override the default value of the
+'baddeley_p' variable, then they would create the following entry in their
+METplus configuration file::
 
   GRID_STAT_MET_CONFIG_OVERRIDES = distance_map = {baddeley_p = 10;}
 
-This is quite confusing to read since there are three '=' characters, however METplus interprets everything to the right of the first '=' character (reading left --> right) as a single string which in this case would be **'distance_map = {baddeley_p = 10;}'**. When METplus runs GridStat, it appends a special 'distance_map' dictionary to the end of the GridStat MET config file used by METplus to override the default value of the 'baddeley_p' variable in the 'distance_map' dictionary. A line would be added that looks like::
+This is quite confusing to read since there are three '=' characters,
+however METplus interprets everything to the right of the first '=' character
+(reading left --> right) as a single string. In this case the value is
+**'distance_map = {baddeley_p = 10;}'**.
+When METplus runs GridStat, it appends the 'distance_map' dictionary to the
+end of the wrapped GridStat MET configuration file to override the default
+value of the 'baddeley_p' variable in the 'distance_map' dictionary.
+A line would be added that looks like::
 
   distance_map = {baddeley_p = 10;}
 
-This simply causes MET to update the value of the 'baddeley_p' variable in the 'distance_map' dictionary to be 10 instead of the default value of 2.
+This causes MET to update the value of the 'baddeley_p' variable in the
+'distance_map' dictionary to be 10 instead of the default value of 2.
 
 MET Config Override GridStat Complex Example
 --------------------------------------------
@@ -2116,7 +2141,7 @@ on the command line at the beginning of your METplus run.
     unsupported MET config file options. Since this requires also modifying
     the MET config file used by METplus, we no longer recommend this.
     Instead, we strongly encourage the user to use the new capability defined
-    in `Overriding Unsupported MET config file settings`_.
+    in `Overriding Unsupported MET configuration variables`_.
 
 Using Environment Variables to set Config Variables
 ===================================================

@@ -1268,7 +1268,7 @@ Environment variables are used to control entries in this configuration file.
 The default value for each environment variable is obtained from
 (except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/GridStatConfig_default
+`MET_INSTALL_DIR/share/met/config/GridStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GridStatConfig_default>`_
 
 Below the file contents are descriptions of each environment variable
 referenced in this file and the corresponding METplus configuration item used
