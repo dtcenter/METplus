@@ -1861,7 +1861,11 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`GEMPAKTOCF_JAR` instead. Path to the GempakToCF binary file and the NetCDF jar file required to run GempakToCF.
 
    GEMPAKTOCF_JAR
-     Path to the GempakToCF.jar file to run GempakToCF. Available on the MET webpage. Must be set if running GempakToCF wrapper, if using a filename template that ends with .grd, or if specifying an \*_INPUT_DATATYPE item as GEMPAK.
+     Path to the GempakToCF.jar file to run GempakToCF.
+     The tool is available on the MET webpage here:
+     https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar.
+     Must be set if running GempakToCF wrapper, if using a filename template
+     that ends with .grd, or if specifying an \*_INPUT_DATATYPE item as GEMPAK.
 
      | *Used by:*  GempakToCF, other wrappers that will read Gempak data
 
