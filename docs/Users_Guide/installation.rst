@@ -128,8 +128,7 @@ browser or the command line.
 Get the source code via Web Browser
 -----------------------------------
 
--  On your local host, create a directory where the METplus Wrappers will be
-   installed
+-  Create a directory where the METplus Wrappers will be installed
 
 -  Open a web browser and navigate to
    https://github.com/dtcenter/METplus/releases/latest to view the
@@ -204,33 +203,35 @@ The METplus Wrappers source code contains the following directory structure::
 The top-level METplus Wrappers directory consists of a README.md file
 and several subdirectories.
 
-The build_components/ directory contains scripts that use manage_externals
+The **build_components/** directory contains scripts that use manage_externals
 and files available on dtcenter.org to download MET and start the build process
 
-The ci/ directory contains scripts that are used for creating Docker images and
-script that are used internally for automation
+The **ci/** directory contains scripts that are used for creating
+Docker images and script that are used internally for automation
 
-The docs/ directory contains documentation for users and contributors (HTML) and Doxygen
+The **docs/** directory contains documentation for users and contributors
+(HTML) and Doxygen
 files that are used to create the METplus wrapper API documentaton. The Doxygen
 documentation can be created and viewed via web browser if the developer
-has Doxygen installed on the host.  The Doxygen documentation is useful to contributors and is not
-necessary for METplus end-users.
+has Doxygen installed on the host.  The Doxygen documentation is useful to
+contributors and is not necessary for METplus end-users.
 
-The internal_tests/ directory contains test scripts that are only
+The **internal_tests/** directory contains test scripts that are only
 relevant to METplus developers and contributors.
 
-The manage_externals/ directory contains scripts used to facilitate the downloading and management
+The **manage_externals/** directory contains scripts used to
+facilitate the downloading and management
 of components that METplus interacts with such as MET and METviewer
 
-The metplus/ directory contains the wrapper scripts and utilities
+The **metplus/** directory contains the wrapper scripts and utilities
 
-The parm/ directory contains all the configuration files for MET and
+The **parm/** directory contains all the configuration files for MET and
 METplus Wrappers.
 
-The produtil/ directory contains part of the external utility produtil
+The **produtil/** directory contains part of the external utility produtil
 
-The ush/ directory contains the run_metplus.py script that is executed to run
-use cases
+The **ush/** directory contains the run_metplus.py script that is
+executed to run use cases
 
 Build_components and using manage_externals
 ===========================================
@@ -240,10 +241,11 @@ Running build_components/build_MET.sh will
 -  clone MET and METviewer from github using the manage_externals scripts
 -  grab the current MET compile script and all of the necessary external libraries
 -  build the external libraries
--  attempt to build met
+-  attempt to build MET
 
-Building MET requires fine tuning on just about all systems, this should at least get most of
-the way through the process and allow just a few manual changes to get it completely built.
+Building MET requires fine tuning on just about all systems.
+However, this should at least get most of the way through the process and
+allow just a few manual changes to build.
 
 External Components
 ===================
@@ -257,7 +259,7 @@ GFDL Tracker
 
     -  See the manage externals section of this documentation to download the GFDL vortex tracker automatically as part of the system.
 
-    -  To download and install in your own location get http://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz and follow the instructions listed in that archive to build on your system.
+    -  To download and install locally get http://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz and follow the instructions listed in that archive to build on a local system.
 
     -  Instructions on how to configure and use the GFDL tracker are found here https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_tracker_UG_v3.9a.pdf
 
@@ -266,23 +268,23 @@ Add ush directory to shell path (optional)
 
 To call the run_metplus.py script from any directory, add the ush directory
 to the path. The following commands can be run in a terminal. They can also
-be added to the shell run commands file, i.e.
-.cshrc for csh/tcsh  or .bashrc for bash.
+be added to the shell run commands file
+(.cshrc for csh/tcsh or .bashrc for bash).
 For the following commands, change **/path/to** to
-the actual path to the METplus directory on your file system.
+the actual path to the METplus directory on the local file system.
 
 **csh/tcsh**:
 
 .. code-block:: tcsh
 
-    # Add METplus to $PATH
+    # Add METplus to path
     set path = (/path/to/METplus/ush $path)
 
 **bash/ksh**:
 
 .. code-block:: bash
 
-    # Add METplus to $PATH
+    # Add METplus to path
     export PATH=/path/to/METplus/ush:$PATH
 
 Set Default Configuration File for Shared Install
@@ -302,13 +304,23 @@ Updating Configuration Files - Handling Deprecated Configuration Variables
 
 If upgrading from a METplus version earlier than v3.0, this content is
 important to getting started using a newly released version. **If upgrading
-from METplus v3.0 and above or if installing METplus for the first time, you
-can skip this section.**
+from METplus v3.0 and above or if installing METplus for the first time,
+please skip this section.**
 
-METplus developers strive to allow backwards compatibility so new versions of the tools will continue to work as they did in previous versions.
-However, sometimes changes are necessary for clarity and cohesion. Many configuration variable names have changed in version 3.0 in an attempt to make their function more clear.
-If any deprecated METplus configuration variables are found in a user's use case, execution will stop immediately and an error report of all variables that must be updated is output.
-In some cases, simply renaming the variable is sufficient. Other changes may require more thought. The next few sections will outline a few of common changes that will need to be made. In the last section, a tool called validate_config.py is described. This tool can be used to help with this transition by automating some of the work required to update your configuration files.
+METplus developers strive to allow backwards compatibility so new versions of
+the tools will continue to work as they did in previous versions.
+However, sometimes changes are necessary for clarity and cohesion.
+Many configuration variable names have changed in version 3.0 in an attempt to
+make their function more clear.
+If any deprecated METplus configuration variables are found in a user's
+use case, execution will stop immediately and an error report of all variables
+that must be updated is output.
+In some cases, simply renaming the variable is sufficient.
+Other changes may require more thought.
+The next few sections will outline a few of common changes that will need to
+be made. In the last section, a tool called validate_config.py is described.
+This tool can be used to help with this transition by automating some of the
+work required to update configuration files.
 
 Simple Rename
 -------------
@@ -511,15 +523,13 @@ Running METplus Wrappers
 ========================
 
 Running METplus Wrappers involves invoking the Python script
-run_metplus.py from any directory followed by a list of configuration
-files (file path relative to the
-*<path_to_METplus_install_dir>*/parm directory).
+run_metplus.py followed by a list of configuration files.
 
 .. note::
-   The executable named 'python3' that contains the packages required to run the
-   METplus wrappers must be found first in the path.
+   The executable named 'python3' that contains the packages required to run
+   the METplus wrappers must be found first in the path.
 
-**Example 1: Using a "default" configuration:**
+**Example 1: Using a user configuration:**
 Copy and paste the following into an empty text file and name it 'my_user_config.conf':
 
 .. code-block:: ini
@@ -527,14 +537,14 @@ Copy and paste the following into an empty text file and name it 'my_user_config
   # This is a comment, comments are defined with a # at the beginning of the line
 
   # Set the MET_INSTALL_DIR to the location of the MET install
-  [dir]
+  [config]
   MET_INSTALL_DIR = /usr/local/met-9.0
 
   # Set INPUT_BASE to the directory containing sample input data if running use cases in the repository
   # Otherwise set INPUT_BASE to any path that does not contain /path/to.
   INPUT_BASE = /tmp/input
 
-  # Set OUTPUT_BASE to a directory where you have permission to write output files
+  # Set OUTPUT_BASE to a directory where the user has write permission
   # It will be created if it does not exist
   OUTPUT_BASE = /tmp/output
 
