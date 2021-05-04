@@ -26,6 +26,8 @@ project = 'METplus'
 
 author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
+author_list = 'Adriaansen, D., Win-Gildenmeister, M., McCabe, G., Prestopnik, J., Frimel, J., Opatz, J., Halley Gotway, J., Jensen, T., Vigh, J., Row, M., Kalb, C., Fisher, H., Goodrich, L., Blank, L., Arbetter, T.'
+
 # The full version, including alpha/beta/rc tags
 # i.e. 4.0.0-beta1-dev
 release = __version__
@@ -176,7 +178,8 @@ sphinx_gallery_conf = {
 intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
 
 rst_epilog = f"""
-.. |copyright| replace:: {copyright}
+.. |copyright|    replace:: {copyright}
+.. |author_list|  replace:: {author_list}
 .. |release_date| replace:: {release_date}
 .. |release_year| replace:: {release_year}
 .. |release_info| replace:: {release_info}
