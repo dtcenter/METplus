@@ -3,7 +3,6 @@ on:
   push:
     branches:
       - develop
-      - develop-ref
       - feature_*
       - main_*
       - bugfix_*
@@ -33,7 +32,7 @@ jobs:
           name: METplus_documentation
           path: artifact/documentation
       - uses: actions/upload-artifact@v2
-        if: always()
+        if: failure()
         with:
           name: documentation_warnings.log
           path: artifact/doc_warnings.log
