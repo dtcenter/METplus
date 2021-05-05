@@ -161,7 +161,7 @@ file passed to run_metplus.py, there is a good chance that this variable is
 set in another configuration file that was passed in afterwards.
 
 The default value is a file called metplus_final.conf that is written in the
-OUTPUT_BASE directory::
+:ref:`OUTPUT_BASE<sys_conf_output_base>` directory::
 
     METPLUS_CONF = {OUTPUT_BASE}/metplus_final.conf
 
@@ -171,7 +171,8 @@ TMP_DIR
 ^^^^^^^
 
 Directory to write any temporary files created by the MET applications.
-By default, this is a directory inside the OUTPUT_BASE directory::
+By default, this is a directory inside the
+:ref:`OUTPUT_BASE<sys_conf_output_base>` directory::
 
     TMP_DIR = {OUTPUT_BASE}/tmp
 
