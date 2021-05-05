@@ -10,6 +10,6 @@ jobs:
     steps:
       - name: Run cURL Command
         run: |
-	  curl -X POST -H 'Content-type: application/json' --data
-	  '{"text":"METplus ${{ github.event.release.tag_name }} release was created: <${{ github.event.release.html_url }}>"}'
-	  ${{ secrets.SLACK_WEBHOOK }}
+          curl -X POST -H 'Content-type: application/json' --data
+          '{"text":"METplus ${{ github.event.release.tag_name }} release was created: <${{ github.event.release.html_url }}>"}'
+          ${{ secrets.SLACK_WEBHOOK }}
