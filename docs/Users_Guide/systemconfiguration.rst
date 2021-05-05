@@ -132,8 +132,9 @@ MET_BIN_DIR
 ^^^^^^^^^^^
 
 The MET bin directory contains all of the MET executables, like grid_stat.
-Typically this is a directory under MET_INSTALL_DIR named **bin**. This is the
-default value::
+Typically this is a directory under
+:ref:`MET_INSTALL_DIR<sys_conf_met_install_dir>`
+named **bin**. This is the default value::
 
     MET_BIN_DIR = {MET_INSTALL_DIR}/bin
 
