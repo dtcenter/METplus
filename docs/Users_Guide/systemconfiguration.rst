@@ -138,7 +138,7 @@ default value::
     MET_BIN_DIR = {MET_INSTALL_DIR}/bin
 
 However, some environments require these files to be contained in a directory
-named **exec** instead. If this is the case for your MET installation, then
+named **exec** instead. If this is the case for the MET installation, then
 change the value appropriately::
 
     MET_BIN_DIR = {MET_INSTALL_DIR}/exec
@@ -564,7 +564,7 @@ GridStat Wrapper Basic Use Case
   major/minor release and starts with sample_data-met_tool_wrapper
 
 * Create a :ref:`user_configuration_file` (named user_system.conf in this
-  example) if you have not done so already. Ensure that **INPUT_BASE** is set
+  example). Ensure that **INPUT_BASE** is set
   to the directory where the sample data tarfile was uncompressed.
 
 * Run the GridStat Wrapper basic use case. In a terminal, run::
@@ -759,9 +759,9 @@ is equivalent to setting::
 Grouping forecast leads is possible as well using a special version of
 the :term:`LEAD_SEQ` variable for the
 **SeriesByLead Wrapper Only**.
-If :term:`SERIES_BY_LEAD_GROUP_FCSTS` = True, then you can define groups of
-forecast leads that will be evaluated together. You can define any number of
-these groups by setting
+If :term:`SERIES_BY_LEAD_GROUP_FCSTS` = True, then groups of
+forecast leads can be defined to be evaluated together.
+You can define any number of these groups by setting
 configuration variables LEAD_SEQ_1, LEAD_SEQ_2, ..., :term:`LEAD_SEQ_\<n\>`.
 You can define the value with a
 comma-separated list of integers (currently only hours are supported here)
@@ -780,11 +780,11 @@ variable :term:`LEAD_SEQ_<n>_LABEL`. For example::
 """"""""""""""""
 
 If METplus Wrappers is configured to loop by valid time
-(:term:`LOOP_BY` = VALID), you can use INIT_SEQ instead of :term:`LEAD_SEQ`.
+(:term:`LOOP_BY` = VALID), INIT_SEQ can be used instead of :term:`LEAD_SEQ`.
 This is a list of initialization hours that are available in the data. This
-is useful if you know when the data is initialized and you need to use a
-different list of forecast leads depending on the valid time being
-evaluated. For example::
+is useful if the data initialization times are known and a
+different list of forecast leads should be used depending on the valid time
+being evaluated. For example::
 
   [config]
   LOOP_BY = VALID
@@ -795,10 +795,9 @@ forecast lead list of 0, 6, 12, 18, 24, 30, etc. and at valid time
 2019-02-01 01Z, this initialization sequence will build a forecast lead
 list of 1, 7, 13, 19, 25, 31, etc.
 
-If you utilize :term:`LEAD_SEQ`, you should restrict the forecast leads
+If using :term:`INIT_SEQ`, restrict the forecast leads
 that will be used by setting :term:`LEAD_SEQ_MIN` and :term:`LEAD_SEQ_MAX`.
-For example, if you want to only process forecast leads between 12 and 24
-you can set::
+For example, to only process forecast leads between 12 and 24 set::
 
   [config]
   LEAD_SEQ_MIN = 12
@@ -809,8 +808,8 @@ forecast lead list of 12, 18, 24 and at valid time 2019-02-01 01Z, this
 initialization sequence will build a forecast lead list of 13, 19.
 
 Setting minimum and maximum values will also affect the list of forecast
-leads if you use :term:`LEAD_SEQ`. :term:`LEAD_SEQ` takes precedence over
-:term:`INIT_SEQ`, so if you have both variables set in your configuration,
+leads if :term:`LEAD_SEQ` is used. :term:`LEAD_SEQ` takes precedence over
+:term:`INIT_SEQ`, so if both variables are set in the configuration,
 :term:`INIT_SEQ` will be ignored in favor of :term:`LEAD_SEQ`.
 
 
@@ -902,8 +901,8 @@ Example 5::
 
 This will skip the dates Dec. 31, 1999 and Oct. 31, 2014.
 
-If you only want to skip certain times for a single wrapper, you can use
-a wrapper-specific variable.
+To only skip certain times for a single wrapper, use a wrapper-specific
+variable.
 Using a wrapper-specific variable will ignore the generic SKIP_TIMES values.
 
 Example 6::
@@ -926,7 +925,7 @@ Now and Today
 To make running in realtime easier, the METplus Wrappers support defining
 the begin and end times relative to
 the current clock time. For example, if the current time is 2019-04-26 08:17
-and you start the METplus Wrappers with::
+and the METplus Wrappers is run with::
 
   [config]
   VALID_END = {now?fmt=%Y%m%d%H}
@@ -940,8 +939,8 @@ Shift Keyword
 """""""""""""
 
 You can use the 'shift' keyword to shift the current time by any number of
-seconds. For example, if you start
-the METplus Wrappers at the same clock time with::
+seconds. For example, if the METplus Wrappers are run at the
+same clock time with::
 
   [config]
   VALID_BEG = {now?fmt=%Y%m%d%H?shift=-86400}
@@ -965,10 +964,10 @@ Truncate Keyword
 
 You may want to configure the METplus Wrappers to process at 00Z, 06Z, 12Z,
 and 18Z of a given day instead of 02Z, 08Z, 14Z, and 20Z. Having to adjust
-the shift amount differently if you are running at 08Z or 09Z to get the
+the shift amount differently if running at 08Z or 09Z to get the
 times to line up would be tedious. Instead, use the 'truncate' keyword.
 The value set here is the number of seconds that is used to determine the
-interval of time to round down. If you want to process every 6 hours, set
+interval of time to round down. To process every 6 hours, set
 'truncate' to 21600 seconds::
 
   [config]
@@ -1209,7 +1208,7 @@ read forecast and observation fields.
 :term:`FCST_VAR<n>_NAME`
 ^^^^^^^^^^^^^^^^^^^^^^^^
 
-Set this to the name of a forecast variable that you want to evaluate.
+Set this to the name of a forecast variable to evaluate.
 <n> is any integer greater than or equal to 1, i.e.::
 
   [config]
@@ -1238,7 +1237,7 @@ data are the same, BOTH_VAR<n>_NAME and BOTH_VAR<n>_LEVELS can be used instead.
 
 :term:`OBS_VAR<n>_NAME`
 ^^^^^^^^^^^^^^^^^^^^^^^
-Set this to the corresponding observation variable that you want to evaluate
+Set this to the corresponding observation variable to evaluate
 with FCST_VAR<n>_NAME. If this value is set for a given <n> value, then
 the corresponding FCST_VAR<n>_NAME must be set. If the value for forecast
 and observation data are the same, BOTH_VAR<n>_NAME can be used instead.
@@ -1277,7 +1276,7 @@ This will compare:
 | RH/P250 in the forecast data to RH/P250 in the observation data
 |
 
-If you set::
+If setting::
 
   [config]
   FCST_VAR1_NAME = TMP
@@ -1296,8 +1295,9 @@ METplus Wrappers will compare:
    quotation marks so it will not be misinterpreted as a list of items.
 
 The number of level items must be equal in each list for a given comparison.
-If you define separate names for a forecast and observation, you will need
-to define separate levels for both even if they are equivalent. For example,
+If separate names for a forecast and observation are defined,
+separate levels must be defined for each even if they are equivalent.
+For example,
 setting FCST_VAR1_NAME, FCST_VAR1_LEVELS, and OBS_VAR1_NAME, but not
 setting OBS_VAR1_LEVELS will result in an error.
 
@@ -1386,7 +1386,7 @@ observation data, BOTH_VAR<n>_OPTIONS can be used instead.
 :term:`ENS_VAR<n>_THRESH` / :term:`ENS_VAR<n>_OPTIONS`:
 **Used with EnsembleStat Wrapper only.** Users may want to define the ens
 dictionary item in the MET EnsembleStat config file differently than the
-fcst dictionary item. If this is the case, you can use these variables. If
+fcst dictionary item. If this is the case, then use these variables. If
 it is not set, the values in the corresponding
 FCST_VAR<n>_[NAME/LEVELS/THRESH/OPTIONS] will be used in the ens dictionary.
 
@@ -2073,20 +2073,14 @@ A line would be added that looks like::
 This causes MET to update the value of the 'baddeley_p' variable in the
 'distance_map' dictionary to be 10 instead of the default value of 2.
 
-MET Config Override GridStat Complex Example
---------------------------------------------
+More than one MET config variables can be set using this functionality.
+Simply list all of the overrides in the same METplus configuration variable::
 
-The special :term:`GRID_STAT_MET_CONFIG_OVERRIDES` is quite powerful and allows the user to control multiple unsupported MET config file changes at once. In addition to setting custom 'distance_map' dictionary settings, a user could also change the 'output_flag' and 'nc_pairs_flag' settings in GridStat simultaneously by creating the following entry in their METplus config file::
+  GRID_STAT_MET_CONFIG_OVERRIDES = distance_map = {baddeley_p = 10;} rank_corr_flag = TRUE;
 
-  GRID_STAT_MET_CONFIG_OVERRIDES = distance_map = {baddeley_p = 10;} output_flag = {eclv = NONE;} nc_pairs_flag = {latlon = TRUE;}
-
-Again, METplus is capable of correctly interpreting the above as three separate overrides that need to be appended to the end of the GridStat MET config file used by METplus at runtime::
-
-  distance_map = {baddeley_p = 10;}
-  output_flag = {eclv = NONE;}
-  nc_pairs_flag = {latlon = TRUE;}
-
-This capability opens the door to virtually complete control of all MET config file settings regardless of whether they are explicitly supported or not.
+The values must match the format of the variables in the default MET
+configuration file with a semi-colon after single values and arrays and curly
+braces around dictionaries.
 
 .. _user_defined_config:
 
@@ -2119,7 +2113,7 @@ This is the equivalent of running this bash command::
 
   $ export VAR_NAME=some_text_for_feb_1_1987_run
 
-on the command line at the beginning of your METplus run.
+on the command line before calling run_metplus.py.
 
 You can also reference other variables in the METplus config file.
 For example::
@@ -2134,7 +2128,7 @@ This is the equivalent of running this bash command::
 
   $ export USE_CASE_TIME_ID=1987020104
 
-on the command line at the beginning of your METplus run. 
+on the command line before calling run_metplus.py.
 
 .. note::
     In previous versions of METplus, we recommended using this to control
@@ -2143,7 +2137,7 @@ on the command line at the beginning of your METplus run.
     Instead, we strongly encourage the user to use the new capability defined
     in `Overriding Unsupported MET configuration variables`_.
 
-Using Environment Variables to set Config Variables
+Setting Config Variables with Environment Variables
 ===================================================
 
 You can set METplus config variables to the value of local environment
@@ -2279,7 +2273,8 @@ SED Commands
 
 Running run_metplus.py with one or more configuration files that contain deprecated variables that can be fixed with a find/replace command will generate a file in the {OUTPUT_BASE} called sed_commands.txt. This file contains a list of commands that can be run to update the configuration file. Lines that start with "#Add" are intended to notify the user to add a variable to their METplus configuration file.
 
-The :ref:`validate_config` will step you through each of these commands and execute them upon your approval.
+The :ref:`validate_config` will step through each of these commands and
+execute them upon approval.
 
 Example sed_commands.txt content::
 
@@ -2297,7 +2292,7 @@ Example sed_commands.txt content::
 Validate Config Helper Script
 -----------------------------
 
-The script named validate_config.py is found in the same directory as run_metplus.py. To use this script, call it with the same arguments that you would pass to run_metplus.py::
+The script named validate_config.py is found in the same directory as run_metplus.py. To use this script, call it with the same arguments as run_metplus.py::
 
   run_metplus.py  -c ./my_conf.py -c ./another_config.py
   validate_config.py -c ./my_conf.py -c ./another_config.py
