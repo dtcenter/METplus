@@ -98,21 +98,7 @@ Authors
 Many authors, listed below in alphabetical order, have contributed to the documentation of METplus.
 To cite this documentation in publications, please refer to the METplus User's Guide :ref:`Citation Instructions<citations>`.
 
-* Daniel Adriaansen [#NCAR]_
-* Todd Arbetter
-* Lindsay Blank
-* Hank Fisher [#NCAR]_
-* James Frimel [#CIRA]_
-* Lisa Goodrich [#NCAR]_
-* John Halley Gotway [#NCAR]_
-* Tara Jensen [#NCAR]_
-* Christina Kalb [#NCAR]_
-* George McCabe [#NCAR]_
-* John Opatz [#NCAR]_
-* Julie Prestopnik [#NCAR]_
-* Mallory Row [#IMSG]_
-* Jonathan Vigh [#NCAR]_
-* Minna Win-Gildenmeister [#NCAR]_
+|authors_and_orgs|
 
 .. rubric:: Organization
 

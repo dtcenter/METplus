@@ -48,7 +48,7 @@ governing permissions and limitations under the License.
 
 The citation for this User's Guide should be:
 
-|author_list|, |release_year|: The METplus Version |version| User's Guide.
+|citation_authors|, |release_year|: The METplus Version |version| User's Guide.
 Developmental Testbed Center. Available at: https://github.com/dtcenter/METplus/releases.
 
 **Acknowledgments**

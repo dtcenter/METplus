@@ -4,21 +4,21 @@
 # list see the documentation:
 # https://www.sphinx-doc.org/en/master/usage/configuration.html
 
-# -- Path setup --------------------------------------------------------------
-
-# If extensions (or modules to document with autodoc) are in another directory,
-# add these directories to sys.path here. If the directory is relative to the
-# documentation root, use os.path.abspath to make it absolute, like shown here.
-#
 import os
 from datetime import datetime
 import sys
+
+# add METplus directory to path to import version and release date
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir)))
-sys.path.append(os.path.abspath("./_ext"))
+
+# add current directory to get metplus_authors functions
+sys.path.append(os.path.abspath("."))
 print(sys.path)
 
 from metplus import __version__, __release_date__
+
+from metplus_authors import get_citation_authors, get_authors_and_orgs
 
 # -- Project information -----------------------------------------------------
 
@@ -26,7 +26,8 @@ project = 'METplus'
 
 author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
-author_list = 'Adriaansen, D., Win-Gildenmeister, M., McCabe, G., Prestopnik, J., Frimel, J., Opatz, J., Halley Gotway, J., Jensen, T., Vigh, J., Row, M., Kalb, C., Fisher, H., Goodrich, L., Blank, L., Arbetter, T.'
+citation_authors = get_citation_authors()
+authors_and_orgs = get_authors_and_orgs()
 
 # The full version, including alpha/beta/rc tags
 # i.e. 4.0.0-beta1-dev
@@ -179,7 +180,8 @@ intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
 
 rst_epilog = f"""
 .. |copyright|    replace:: {copyright}
-.. |author_list|  replace:: {author_list}
+.. |citation_authors|  replace:: {citation_authors}
+.. |authors_and_orgs|  replace:: "{authors_and_orgs}"
 .. |release_date| replace:: {release_date}
 .. |release_year| replace:: {release_year}
 .. |release_info| replace:: {release_info}
