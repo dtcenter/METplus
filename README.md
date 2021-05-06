@@ -5,7 +5,6 @@ Model Evaluation Tools Plus (METplus) Repository
 [![Tests](https://github.com/DTCenter/METplus/actions/workflows/testing.yml/badge.svg?event=push)](https://github.com/DTCenter/METplus/actions/workflows/testing.yml)
 [![Docs](https://img.shields.io/badge/Documentation-latest-brightgreen.svg)](https://metplus.readthedocs.io)
 
-
 Welcome to the METplus GitHub repository hosted to the community through
 the Developmental Testbed Center (DTC).
 
