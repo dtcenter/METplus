@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Run by GitHub Actions (in .github/workflows/main.yml) to parse
+# Run by GitHub Actions (in .github/workflows/testing.yml) to parse
 # info from GitHub event and commit message from last commit before
 # a push to determine which jobs to run and which to skip.
 

@@ -1,4 +1,4 @@
-name: Release Slack Message
+name: Release Published
 on:
   release:
     types: [published]

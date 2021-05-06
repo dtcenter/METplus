@@ -11,7 +11,7 @@ What                  | Where
 :--------------------- | :------------------------------------
 MET                   | http://www.dtcenter.org/community-code
 METplus<sup>*</sup>   | https://github.com/dtcenter/METplus
-METplus guides        | https://dtcenter.github.io/METplus
+METplus guides        | https://metplus.readthedocs.io
 
 <b><sup>*</sup>The METplus GitHub repository is currently public. A user account
  is only necessary if you plan on contributing code.</b>
