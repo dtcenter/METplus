@@ -4446,7 +4446,7 @@ METplus Configuration Glossary
      | *Used by:*  TCRMW
 
    TC_RMW_REGRID_SHAPE
-     Specify the value for 'shape' in the regrid dictionary in MET configuration file for TCRMW.
+     Specify the value for 'regrid.shape' in the MET configuration file for TCRMW.
 
      | *Used by:*  TCRMW
 
@@ -4627,27 +4627,27 @@ METplus Configuration Glossary
      | *Used by:*  GridDiag
 
    GRID_DIAG_REGRID_METHOD
-     Specify the value for 'method' in the regrid dictionary in MET configuration file for grid_diag.
+     Specify the value for 'regrid.method' in the MET configuration file for grid_diag.
 
      | *Used by:*  GridDiag
 
    GRID_DIAG_REGRID_WIDTH
-     Specify the value for 'width' in the regrid dictionary in MET configuration file for grid_diag.
+     Specify the value for 'regrid.width' in the MET configuration file for grid_diag.
 
      | *Used by:*  GridDiag
 
    GRID_DIAG_REGRID_VLD_THRESH
-     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for grid_diag.
+     Specify the value for 'regrid.vld_thresh' in the MET configuration file for grid_diag.
 
      | *Used by:*  GridDiag
 
    GRID_DIAG_REGRID_SHAPE
-     Specify the value for 'shape' in the regrid dictionary in MET configuration file for grid_diag.
+     Specify the value for 'regrid.shape' in the MET configuration file for grid_diag.
 
      | *Used by:*  GridDiag
 
    GRID_DIAG_REGRID_TO_GRID
-     Specify the value for 'to_grid' in the regrid dictionary in MET configuration file for grid_diag.
+     Specify the value for 'regrid.to_grid' in the MET configuration file for grid_diag.
 
      | *Used by:*  GridDiag
 
@@ -5189,22 +5189,22 @@ METplus Configuration Glossary
      | *Used by:*  SeriesAnalysis
 
    SERIES_ANALYSIS_REGRID_METHOD
-     Specify the value for 'method' in the regrid dictionary in MET configuration file for SeriesAnalysis.
+     Specify the value for 'regrid.method' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:*  SeriesAnalysis
 
    SERIES_ANALYSIS_REGRID_WIDTH
-     Specify the value for 'width' in the regrid dictionary in MET configuration file for SeriesAnalysis.
+     Specify the value for 'regrid.width' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:*  SeriesAnalysis
 
    SERIES_ANALYSIS_REGRID_VLD_THRESH
-     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for SeriesAnalysis.
+     Specify the value for 'regrid.vld_thresh' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:*  SeriesAnalysis
 
    SERIES_ANALYSIS_REGRID_SHAPE
-     Specify the value for 'shape' in the regrid dictionary in MET configuration file for SeriesAnalysis.
+     Specify the value for 'regrid.shape' in the MET configuration file for SeriesAnalysis.
 
      | *Used by:*  SeriesAnalysis
 
@@ -5229,102 +5229,102 @@ METplus Configuration Glossary
      | *Used by:*  SeriesAnalysis
 
    ENSEMBLE_STAT_REGRID_METHOD
-     Specify the value for 'method' in the regrid dictionary in MET configuration file for EnsembleStat.
+     Specify the value for 'regrid.method' in the MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
 
    ENSEMBLE_STAT_REGRID_WIDTH
-     Specify the value for 'width' in the regrid dictionary in MET configuration file for EnsembleStat.
+     Specify the value for 'regrid.width' in the MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
 
    ENSEMBLE_STAT_REGRID_VLD_THRESH
-     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for EnsembleStat.
+     Specify the value for 'regrid.vld_thresh' in the MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
 
    ENSEMBLE_STAT_REGRID_SHAPE
-     Specify the value for 'shape' in the regrid dictionary in MET configuration file for EnsembleStat.
+     Specify the value for 'regrid.shape' in the MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
 
    GRID_STAT_REGRID_METHOD
-     Specify the value for 'method' in the regrid dictionary in MET configuration file for GridStat.
+     Specify the value for 'regrid.method' in the MET configuration file for GridStat.
 
      | *Used by:*  GridStat
 
    GRID_STAT_REGRID_WIDTH
-     Specify the value for 'width' in the regrid dictionary in MET configuration file for GridStat.
+     Specify the value for 'regrid.width' in the MET configuration file for GridStat.
 
      | *Used by:*  GridStat
 
    GRID_STAT_REGRID_VLD_THRESH
-     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for GridStat.
+     Specify the value for 'regrid.vld_thresh' in the MET configuration file for GridStat.
 
      | *Used by:*  GridStat
 
    GRID_STAT_REGRID_SHAPE
-     Specify the value for 'shape' in the regrid dictionary in MET configuration file for GridStat.
+     Specify the value for 'regrid.shape' in the MET configuration file for GridStat.
 
      | *Used by:*  GridStat
 
    MODE_REGRID_METHOD
-     Specify the value for 'method' in the regrid dictionary in MET configuration file for MODE.
+     Specify the value for 'regrid.method' in the MET configuration file for MODE.
 
      | *Used by:*  MODE
 
    MODE_REGRID_WIDTH
-     Specify the value for 'width' in the regrid dictionary in MET configuration file for MODE.
+     Specify the value for 'regrid.width' in the MET configuration file for MODE.
 
      | *Used by:*  MODE
 
    MODE_REGRID_VLD_THRESH
-     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for MODE.
+     Specify the value for 'regrid.vld_thresh' in the MET configuration file for MODE.
 
      | *Used by:*  MODE
 
    MODE_REGRID_SHAPE
-     Specify the value for 'shape' in the regrid dictionary in MET configuration file for MODE.
+     Specify the value for 'regrid.shape' in the MET configuration file for MODE.
 
      | *Used by:*  MODE
 
    MTD_REGRID_METHOD
-     Specify the value for 'method' in the regrid dictionary in MET configuration file for MTD.
+     Specify the value for 'regrid.method' in the MET configuration file for MTD.
 
      | *Used by:*  MTD
 
    MTD_REGRID_WIDTH
-     Specify the value for 'width' in the regrid dictionary in MET configuration file for MTD.
+     Specify the value for 'regrid.width' in the MET configuration file for MTD.
 
      | *Used by:*  MTD
 
    MTD_REGRID_VLD_THRESH
-     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for MTD.
+     Specify the value for 'regrid.vld_thresh' in the MET configuration file for MTD.
 
      | *Used by:*  MTD
 
    MTD_REGRID_SHAPE
-     Specify the value for 'shape' in the regrid dictionary in MET configuration file for MTD.
+     Specify the value for 'regrid.shape' in the MET configuration file for MTD.
 
      | *Used by:*  MTD
 
    POINT_STAT_REGRID_METHOD
-     Specify the value for 'method' in the regrid dictionary in MET configuration file for PointStat.
+     Specify the value for 'regrid.method' in the MET configuration file for PointStat.
 
      | *Used by:*  PointStat
 
    POINT_STAT_REGRID_WIDTH
-     Specify the value for 'width' in the regrid dictionary in MET configuration file for PointStat.
+     Specify the value for 'regrid.width' in the MET configuration file for PointStat.
 
      | *Used by:*  PointStat
 
    POINT_STAT_REGRID_VLD_THRESH
-     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for PointStat.
+     Specify the value for 'regrid.vld_thresh' in the MET configuration file for PointStat.
 
      | *Used by:*  PointStat
 
    POINT_STAT_REGRID_SHAPE
-     Specify the value for 'shape' in the regrid dictionary in MET configuration file for PointStat.
+     Specify the value for 'regrid.shape' in the MET configuration file for PointStat.
 
      | *Used by:*  PointStat
 
