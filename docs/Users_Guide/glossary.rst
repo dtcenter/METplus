@@ -4739,12 +4739,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_FCST_HR_WINDOW_END`.
 
    TC_GEN_FCST_HR_WINDOW_BEGIN
-     Specify the value of fcst_hr_window {begin} in the MET configuration file.
+     Specify the value of fcst_hr_window.begin in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_FCST_HR_WINDOW_END
-     Specify the value of fcst_hr_window {end} in the MET configuration file.
+     Specify the value of fcst_hr_window.end in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4754,32 +4754,32 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_FCST_GENESIS_VMAX_THRESH
-     Specify the value of fcst_genesis {vmax_thresh} in the MET configuration file.
+     Specify the value of fcst_genesis.vmax_thresh in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_FCST_GENESIS_MSLP_THRESH
-     Specify the value of fcst_genesis {mslp_thresh} in the MET configuration file.
+     Specify the value of fcst_genesis.mslp_thresh in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BEST_GENESIS_TECHNIQUE
-     Specify the value of best_genesis {technique} in the MET configuration file.
+     Specify the value of best_genesis.technique in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BEST_GENESIS_CATEGORY
-     Specify the value of best_genesis {category} in the MET configuration file.
+     Specify the value of best_genesis.category in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BEST_GENESIS_VMAX_THRESH
-     Specify the value of best_genesis {vmax_thresh} in the MET configuration file.
+     Specify the value of best_genesis.vmax_thresh in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BEST_GENESIS_MSLP_THRESH
-     Specify the value of best_genesis {mslp_thresh} in the MET configuration file.
+     Specify the value of best_genesis.mslp_thresh in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4873,12 +4873,12 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_DEV_HIT_WINDOW_END`.
 
    TC_GEN_DEV_HIT_WINDOW_BEGIN
-     Specify the value for dev_hit_window {begin} in the MET configuration file.
+     Specify the value for dev_hit_window.begin in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_DEV_HIT_WINDOW_END
-     Specify the value of dev_hit_window {end} in the MET configuration file.
+     Specify the value of dev_hit_window.end in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4908,67 +4908,67 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_FHO
-     Specify the value of output_flag {fho} in the MET configuration file.
+     Specify the value of output_flag.fho in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_CTC
-     Specify the value of output_flag {ctc} in the MET configuration file.
+     Specify the value of output_flag.ctc in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_CTS
-     Specify the value of output_flag {cts} in the MET configuration file.
+     Specify the value of output_flag.cts in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_GENMPR
-     Specify the value of output_flag {genmpr} in the MET configuration file.
+     Specify the value of output_flag.genmpr in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_LATLON
-     Specify the value of nc_pairs_flag {latlon} in the MET configuration file.
+     Specify the value of nc_pairs_flag.latlon in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_FCST_GENESIS
-     Specify the value of nc_pairs_flag {fcst_genesis} in the MET configuration file.
+     Specify the value of nc_pairs_flag.fcst_genesis in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_FCST_TRACKS
-     Specify the value of nc_pairs_flag {fcst_tracks} in the MET configuration file.
+     Specify the value of nc_pairs_flag.fcst_tracks in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_FCST_FY_OY
-     Specify the value of nc_pairs_flag {fcst_fy_oy} in the MET configuration file.
+     Specify the value of nc_pairs_flag.fcst_fy_oy in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_FCST_FY_ON
-     Specify the value of nc_pairs_flag {fcst_fy_on} in the MET configuration file.
+     Specify the value of nc_pairs_flag.fcst_fy_on in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_BEST_GENESIS
-     Specify the value of nc_pairs_flag {best_genesis} in the MET configuration file.
+     Specify the value of nc_pairs_flag.best_genesis in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_BEST_TRACKS
-     Specify the value of nc_pairs_flag {best_tracks} in the MET configuration file.
+     Specify the value of nc_pairs_flag.best_tracks in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_BEST_FY_OY
-     Specify the value of nc_pairs_flag {best_fy_oy} in the MET configuration file.
+     Specify the value of nc_pairs_flag.best_fy_oy in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_BEST_FN_OY
-     Specify the value of nc_pairs_flag {best_fn_oy} in the MET configuration file.
+     Specify the value of nc_pairs_flag.best_fn_oy in the MET configuration file.
 
      | *Used by:*  TCGen
 
