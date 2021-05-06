@@ -33,6 +33,13 @@ elif [ "${GITHUB_REF: -4}" == -ref ]; then
 # if not pull request or -ref branch, apply commit messages overrides
 else
 
+  # if develop or main branch, run all use cases
+  branch_name=`cut -d "/" -f3 <<< "${GITHUB_REF}"`
+  if [ "$branch_name" == "develop" ] || \
+     [ "${branch_name:0:6}" == "main_v" ]; then
+    run_use_cases=true
+  fi
+
   # check commit messages for skip or force keywords
   if grep -q "ci-skip-all" <<< "$commit_msg"; then
     run_docs=false
