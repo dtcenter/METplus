@@ -4431,17 +4431,17 @@ METplus Configuration Glossary
      | *Used by:*  TCRMW
 
    TC_RMW_REGRID_METHOD
-     Specify the value for 'method' in the regrid dictionary in MET configuration file for TCRMW.
+     Specify the value for 'regrid.method' in the MET configuration file for TCRMW.
 
      | *Used by:*  TCRMW
 
    TC_RMW_REGRID_WIDTH
-     Specify the value for 'width' in the regrid dictionary in MET configuration file for TCRMW.
+     Specify the value for 'regrid.width' in the MET configuration file for TCRMW.
 
      | *Used by:*  TCRMW
 
    TC_RMW_REGRID_VLD_THRESH
-     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for TCRMW.
+     Specify the value for 'regrid.vld_thresh' in the MET configuration file for TCRMW.
 
      | *Used by:*  TCRMW
 
