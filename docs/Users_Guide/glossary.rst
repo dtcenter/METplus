@@ -4723,12 +4723,12 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_INIT_FREQ
-     Specify the value of init_freq in the MET configuration file.
+     Specify the value of 'init_freq' in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_VALID_FREQ
-     Specify the value of valid_freq in the MET configuration file.
+     Specify the value of 'valid_freq' in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4749,7 +4749,7 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_MIN_DURATION
-     Specify the value of min_duration in the MET configuration file.
+     Specify the value of 'min_duration' in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4784,7 +4784,7 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_OPER_TECHNIQUE
-     Specify the value of oper_technique in the MET configuration file.
+     Specify the value of 'oper_technique' in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4801,7 +4801,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_OPER_TECHNIQUE`.
 
    TC_GEN_FILTER_<n>
-     Specify the values of filter in the MET configuration file where <n> is any integer.
+     Specify the values of 'filter' in the MET configuration file where <n> is any integer.
      Any quotation marks that are found inside another set of quotation marks must be preceded with a backslash
 
      | *Used by:*  TCGen
@@ -4827,12 +4827,12 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_INIT_INC
-     Specify the value of init_inc in the MET configuration file.
+     Specify the value of 'init_inc' in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_INIT_EXC
-     Specify the value of init_exc in the MET configuration file.
+     Specify the value of 'init_exc' in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4852,17 +4852,17 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_VX_MASK
-     Specify the vx_mask value to set in the MET configuration file.
+     Specify the 'vx_mask' value to set in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BASIN_MASK
-     Specify the basin_mask value to set in the MET configuration file.
+     Specify the 'basin_mask' value to set in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_DLAND_THRESH
-     Specify the value of dland_thresh in the MET configuration file.
+     Specify the value of 'dland_thresh' in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4883,27 +4883,27 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_DEV_HIT_RADIUS
-     Specify the value of dev_hit_radius in the MET configuration file.
+     Specify the value of 'dev_hit_radius' in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_DISCARD_INIT_POST_GENESIS_FLAG
-     Specify the value of discard_init_post_genesis_flag in the MET configuration file.
+     Specify the value of 'discard_init_post_genesis_flag' in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_DEV_METHOD_FLAG
-     Specify the value of dev_method_flag in the MET configuration file.
+     Specify the value of 'dev_method_flag' in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_OPS_METHOD_FLAG
-     Specify the value of ops_method_flag in the MET configuration file.
+     Specify the value of 'ops_method_flag' in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_CI_ALPHA
-     Specify the value of ci_alpha in the MET configuration file.
+     Specify the value of 'ci_alpha' in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4973,27 +4973,27 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_VALID_MINUS_GENESIS_DIFF_THRESH
-     Specify the value of valid_minus_genesis_diff_thresh in the MET configuration file.
+     Specify the value of 'valid_minus_genesis_diff_thresh' in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BEST_UNIQUE_FLAG
-     Specify the value of best_unique_flag in the MET configuration file.
+     Specify the value of 'best_unique_flag' in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BASIN_FILE
-     Specify the value of basin_file in the MET configuration file.
+     Specify the value of 'basin_file' in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_GRID
-     Specify the value of nc_pairs_grid in the MET configuration file.
+     Specify the value of 'nc_pairs_grid' in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_GENESIS_MATCH_RADIUS
-     Specify the value of genesis_match_radius in the MET configuration file.
+     Specify the value of 'genesis_match_radius' in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -5001,7 +5001,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_GENESIS_MATCH_RADIUS` and :term:`TC_GEN_DEV_HIT_RADIUS`.
 
    TC_GEN_DLAND_FILE
-     Specify the value of dland_file in the MET configuration file.
+     Specify the value of 'dland_file' in the MET configuration file.
 
      | *Used by:*  TCGen
 
