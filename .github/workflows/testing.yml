@@ -93,7 +93,7 @@ jobs:
           categories: pytests
   use_case_tests:
     name: Use Case Tests
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-18.04
     needs: [get_image, update_data_volumes]
     strategy:
       fail-fast: false
@@ -127,6 +127,7 @@ jobs:
           - "space_weather:0-1"
           - "tc_and_extra_tc:0-2"
           - "tc_and_extra_tc:3"
+          - "met_tool_wrapper:0:NEW"
     steps:
       - uses: actions/download-artifact@v2
         with:
