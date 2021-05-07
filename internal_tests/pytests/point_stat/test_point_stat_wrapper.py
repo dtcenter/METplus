@@ -1,16 +1,54 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
 import os
 import pytest
 
 from metplus.wrappers.point_stat_wrapper import PointStatWrapper
 
+fcst_dir = '/some/path/fcst'
+obs_dir = '/some/path/obs'
 
-def point_stat_wrapper(metplus_config):
-    """! Returns a default PointStatWrapper """
+def set_minimum_config_settings(config):
+    # set config variables to prevent command from running and bypass check
+    # if input files actually exist
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
 
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'PointStat')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
+    config.set('config', 'INIT_BEG', '2005080700')
+    config.set('config', 'INIT_END', '2005080712')
+    config.set('config', 'INIT_INCREMENT', '12H')
+    config.set('config', 'LEAD_SEQ', '12H')
+    config.set('config', 'LOOP_ORDER', 'times')
+
+    config.set('config', 'POINT_STAT_CONFIG_FILE',
+               '{PARM_BASE}/met_config/PointStatConfig_wrapped')
+    config.set('config', 'FCST_POINT_STAT_INPUT_DIR', fcst_dir)
+    config.set('config', 'OBS_POINT_STAT_INPUT_DIR', obs_dir)
+    config.set('config', 'FCST_POINT_STAT_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
+    config.set('config', 'OBS_POINT_STAT_INPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d%H}/obs_file')
+    config.set('config', 'POINT_STAT_OUTPUT_DIR',
+               '{OUTPUT_BASE}/GridStat/output')
+    config.set('config', 'POINT_STAT_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
+
+def test_met_dictionary_in_var_options(metplus_config):
     config = metplus_config()
-    return PointStatWrapper(config)
+    set_minimum_config_settings(config)
+
+    config.set('config', 'BOTH_VAR1_NAME', 'name')
+    config.set('config', 'BOTH_VAR1_LEVELS', 'level')
+    config.set('config', 'BOTH_VAR1_OPTIONS',
+               'interp = { type = [ { method = NEAREST; width = 1; } ] };')
+
+    wrapper = PointStatWrapper(config)
+    assert(wrapper.isOK)
+
+    all_cmds = wrapper.run_all_times()
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
@@ -372,9 +410,6 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
     level_no_quotes = '(*,*)'
     level_with_quotes = f'"{level_no_quotes}"'
 
-    fcst_dir = '/some/path/fcst'
-    obs_dir = '/some/path/obs'
-
     fcsts = [{'name': 'TMP',
               'level': 'P750-900',
               'thresh': '<=273,>273'},
@@ -413,35 +448,8 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
         fcst_fmts.append(fcst_fmt)
         obs_fmts.append(obs_fmt)
 
-
     config = metplus_config()
-
-    # set config variables to prevent command from running and bypass check
-    # if input files actually exist
-    config.set('config', 'DO_NOT_RUN_EXE', True)
-    config.set('config', 'INPUT_MUST_EXIST', False)
-
-    # set process and time config variables
-    config.set('config', 'PROCESS_LIST', 'PointStat')
-    config.set('config', 'LOOP_BY', 'INIT')
-    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H')
-    config.set('config', 'INIT_BEG', '2005080700')
-    config.set('config', 'INIT_END', '2005080712')
-    config.set('config', 'INIT_INCREMENT', '12H')
-    config.set('config', 'LEAD_SEQ', '12H')
-    config.set('config', 'LOOP_ORDER', 'times')
-
-    config.set('config', 'POINT_STAT_CONFIG_FILE',
-               '{PARM_BASE}/met_config/PointStatConfig_wrapped')
-    config.set('config', 'FCST_POINT_STAT_INPUT_DIR', fcst_dir)
-    config.set('config', 'OBS_POINT_STAT_INPUT_DIR', obs_dir)
-    config.set('config', 'FCST_POINT_STAT_INPUT_TEMPLATE',
-               '{init?fmt=%Y%m%d%H}/fcst_file_F{lead?fmt=%3H}')
-    config.set('config', 'OBS_POINT_STAT_INPUT_TEMPLATE',
-               '{valid?fmt=%Y%m%d%H}/obs_file')
-    config.set('config', 'POINT_STAT_OUTPUT_DIR',
-               '{OUTPUT_BASE}/GridStat/output')
-    config.set('config', 'POINT_STAT_OUTPUT_TEMPLATE', '{valid?fmt=%Y%m%d%H}')
+    set_minimum_config_settings(config)
 
     for index, (fcst, obs) in enumerate(zip(fcsts, obss)):
         idx = index + 1
@@ -499,4 +507,3 @@ def test_point_stat_all_fields(metplus_config, config_overrides,
                 assert (value == obs_fmt)
             else:
                 assert(env_var_values.get(env_var_key, '') == value)
-

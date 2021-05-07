@@ -2436,9 +2436,12 @@ def sub_var_info(var_info, time_info):
         if isinstance(value, list):
             out_value = []
             for item in value:
-                out_value.append(do_string_sub(item, **time_info))
+                out_value.append(do_string_sub(item,
+                                               skip_missing_tags=True,
+                                               **time_info))
         else:
             out_value = do_string_sub(value,
+                                      skip_missing_tags=True,
                                       **time_info)
 
         out_var_info[key] = out_value
