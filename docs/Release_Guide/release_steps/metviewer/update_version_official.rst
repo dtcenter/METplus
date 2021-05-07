@@ -10,5 +10,4 @@ Remove **-dev** from the version number:
 * In the develop branch, the version should match the upcoming release with -dev added to the end like X.Y.Z-betaN-dev, i.e. 4.0.0-beta1-dev
 * Remove **-dev** from the version number so that it matches the release you are creating.
 
-* Replace the word "develop" in all of the links with "vX.Y.Z", replacing the X.Y.Z with the version number.  For example, replace "develop" with "v4.0.0".
 * Save and close the file.
