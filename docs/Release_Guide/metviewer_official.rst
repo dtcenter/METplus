@@ -10,7 +10,6 @@ Create a new vX.Y.Z official release from the develop branch.
 .. include:: release_steps/checkout_develop_branch.rst
 .. include:: release_steps/metviewer/update_version_official.rst
 .. include:: release_steps/update_release_notes_official.rst
-.. include:: release_steps/metviewer/update_docs_tagged.rst
 .. include:: release_steps/merge_release_issue.rst
 .. include:: release_steps/create_release_branch.rst
 .. include:: release_steps/push_release_branch.rst
