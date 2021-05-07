@@ -7,7 +7,5 @@ Remove **-dev** from the version number:
 * The file containing the version number is located at docs/version.
 * In the METviewer/build.xml file, assign the version in the 'dist' target
 * In the METviewer/vebapp/metviewer/metviewer1.jsp file, assign the version to <div id='release'> and <title>
-* In the develop branch, the version should match the upcoming release with -dev added to the end like X.Y.Z-betaN-dev, i.e. 4.0.0-beta1-dev
-* Remove **-dev** from the version number so that it matches the release you are creating.
 
 * Save and close the file.
