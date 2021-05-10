@@ -1496,7 +1496,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`GRID_STAT_NEIGHBORHOOD_COV_THRESH`
      - nbrhd.cov_thresh
 
-**${METPLUS_OUTPUT_PREFIX**
+**${METPLUS_OUTPUT_PREFIX}**
 
 .. list-table::
    :widths: 5 5
