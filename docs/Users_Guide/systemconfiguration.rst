@@ -81,8 +81,8 @@ MET_INSTALL_DIR
 The MET installation directory is the location where the MET tools are
 installed on the system. This directory is typically named 'met' or 'met-X.Y'
 or 'met-X.Y.Z' and should contain at least two directories:
-share and bin (or exec on some installations). The bin directory will contain
-the MET executables, such as grid_stat.
+**share** and **bin** (or **exec** on some installations).
+The **bin** directory will contain the MET executables, such as grid_stat.
 
 .. image:: ../_static/met-install-dir.png
 
@@ -100,10 +100,12 @@ the use case examples found in the parm/use_cases directory. This directory
 should contain one or more of the following:
 
 * A directory called **model_applications** which contains directories that
-  correspond to each use case directory under parm/use_cases/model_applications
+  correspond to each use case directory under
+  *parm/use_cases/model_applications*
 
 * A directory called **met_test** which contains data used for the use cases
-  found under parm/use_cases/met_tool_wrapper
+  found under
+  *parm/use_cases/met_tool_wrapper*
 
 .. image:: ../_static/input-base.png
 
@@ -188,8 +190,8 @@ File list ASCII files that contain a list of file paths to pass into MET
 tools such as MODE-TimeDomain or SeriesAnalysis are also written to this
 directory.
 
-By default this is a directory called **stage** inside the OUTPUT_BASE
-directory::
+By default this is a directory called **stage** inside the
+:ref:`OUTPUT_BASE<sys_conf_output_base>` directory::
 
     STAGING_DIR = {OUTPUT_BASE}/stage
 
@@ -263,7 +265,7 @@ By default, a new log file is created for each METplus run::
 
     LOG_TIMESTAMP_TEMPLATE = %Y%m%d%H%M%S
 
-This example will use the format YYYYMMDDHHMMSS, i.e. 20141231101159
+This example will use the format YYYYMMDDHHMMSS, i.e. 20141231101159.
 Change this value to adjust the frequency that new log files are created.
 For example, to write all log output that is generated within a day to a
 single log file, set::
