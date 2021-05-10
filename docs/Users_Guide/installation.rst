@@ -8,14 +8,18 @@ Introduction
 ============
 
 This chapter describes how to download and set up METplus Wrappers.
-METplus Wrappers has been developed and tested on the Debian Linux
-operating system.
 
 Supported architectures
 =======================
 
 METplus Wrappers was developed on Debian Linux and is supported on this
-platform.
+platform. Each release listed on the
+`METplus Downloads <https://dtcenter.org/community-code/metplus/download>`_
+page includes a link to the **Existing Builds and Docker** for that version.
+The METplus team supports the installation of the METplus components on
+several operational and research high performance computing platforms,
+including those at NCAR, NOAA, and other community machines. A link to the
+pre-built METplus images on DockerHub is also provided.
 
 Programming/scripting languages
 ===============================
@@ -94,8 +98,8 @@ and the following Python packages installed:
 
 - netCDF4 (1.5.4)
 
-See the Software Installation section in the MET User's Guide
-for more information.
+See the `Software Installation <https://met.readthedocs.io/en/latest/Users_Guide/installation.html#software-installation-getting-started>`_
+section in the MET User's Guide for more information.
 
 **Wrapper Specific Requirements**
 

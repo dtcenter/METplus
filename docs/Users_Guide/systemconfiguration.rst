@@ -10,7 +10,9 @@ Config Best Practices / Recommendations
 =======================================
 
 * Set the log level (:ref:`log_level`) to an appropriate level. Setting the
-  value to DEBUG will generate more information in the log output.
+  value to DEBUG will generate more information in the log output. Users are
+  encouraged to run with DEBUG when getting started with METplus or when
+  investigating unexpected behavior.
 
 * Review the log files to verify that all of the processes ran cleanly.
   Some log output will be written to the screen, but the log files
@@ -70,8 +72,9 @@ Required (/path/to)
 -------------------
 
 Some of the variables in this file must be changed from the default value
-before running.
-These variables are set to **/path/to** by default and are described below.
+before running. These variables are set to **/path/to** by default and are
+described below. Running METplus with **/path/to** configuration entries
+present results in an error.
 
 .. _sys_conf_met_install_dir:
 
