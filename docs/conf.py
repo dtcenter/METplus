@@ -26,7 +26,33 @@ project = 'METplus'
 
 author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
-author_list = 'Adriaansen, D., Win-Gildenmeister, M., McCabe, G., Prestopnik, J., Frimel, J., Opatz, J., Halley Gotway, J., Jensen, T., Vigh, J., Row, M., Kalb, C., Fisher, H., Goodrich, L., Blank, L., Arbetter, T.'
+# list of contributing authors currently involved with the project
+# rotate this list of authors for each release
+CURRENT_AUTHORS = [
+    'Win-Gildenmeister, M.',
+    'McCabe, G.',
+    'Prestopnik, J.',
+    'Opatz, J.',
+    'Halley Gotway, J.',
+    'Jensen, T.',
+    'Vigh, J.',
+    'Row, M.',
+    'Kalb, C.',
+    'Fisher, H.',
+    'Goodrich, L.',
+    'Adriaansen, D.',
+]
+
+# list of former contributors who are no longer involved with the project
+# but still deserve citation credit
+FORMER_AUTHORS = [
+    'Frimel, J.',
+    'Blank, L.',
+    'Arbetter, T.',
+]
+
+# compile string from list of current and former authors separated by comma
+author_list = ', '.join(CURRENT_AUTHORS + FORMER_AUTHORS)
 
 # The full version, including alpha/beta/rc tags
 # i.e. 4.0.0-beta1-dev
