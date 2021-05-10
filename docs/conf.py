@@ -29,30 +29,43 @@ author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 # list of contributing authors currently involved with the project
 # rotate this list of authors for each release
 CURRENT_AUTHORS = [
-    'Win-Gildenmeister, M.',
-    'McCabe, G.',
-    'Prestopnik, J.',
-    'Opatz, J.',
-    'Halley Gotway, J.',
-    'Jensen, T.',
-    'Vigh, J.',
-    'Row, M.',
-    'Kalb, C.',
-    'Fisher, H.',
-    'Goodrich, L.',
-    'Adriaansen, D.',
+    'Minna Win-Gildenmeister',
+    'George McCabe',
+    'Julie Prestopnik',
+    'John Opatz',
+    'John Halley Gotway',
+    'Tara Jensen',
+    'Jonathan Vigh',
+    'Mallory Row',
+    'Christina Kalb',
+    'Hank Fisher',
+    'Lisa Goodrich',
+    'Dan Adriaansen',
 ]
 
 # list of former contributors who are no longer involved with the project
 # but still deserve citation credit
 FORMER_AUTHORS = [
-    'Frimel, J.',
-    'Blank, L.',
-    'Arbetter, T.',
+    'James Frimel',
+    'Lindsay Blank',
+    'Todd Arbetter',
 ]
 
+# format citation authors list
+formatted_authors = []
+for index, author in enumerate(CURRENT_AUTHORS + FORMER_AUTHORS):
+    first_name, last_name = author.split(' ', 1)
+    first_initial = first_name[0]
+    #  first name uses "Last Name, First Initial"
+    if index == 0:
+        formatted_name = f'{last_name}, {first_initial}.'
+    #  the rest uses "First Initial Last Name"
+    else:
+        formatted_name = f'{first_initial}. {last_name}'
+    formatted_authors.append(formatted_name)
+
 # compile string from list of current and former authors separated by comma
-author_list = ', '.join(CURRENT_AUTHORS + FORMER_AUTHORS)
+author_list = ', '.join(formatted_authors)
 
 # The full version, including alpha/beta/rc tags
 # i.e. 4.0.0-beta1-dev
