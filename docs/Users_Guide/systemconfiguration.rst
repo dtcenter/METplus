@@ -496,8 +496,8 @@ inside this directory:
 
 * **model_applications** contains directories organized
   by category. These use cases often run multiple wrappers in succession to
-  demonstrate more complex examples of how the tools are used for verification
-  by end users.
+  demonstrate how the tools can be used in more complex verification
+  workflows by end users.
 
 The use case configuration files found in these directories contain
 :ref:`common_config_variables` that define each use case.
@@ -677,7 +677,8 @@ The following is a configuration that will process valid time 2019-02-01 at
    VALID_END = 2019020200
    VALID_INCREMENT = 6H
 
-Note: Substituting VALID_INCREMENT = 21600 will generate the same result.
+.. note::
+    Substituting VALID_INCREMENT = 21600 will generate the same result.
 
 This will process data valid on 2019-02-01 at 00Z, 06Z, 12Z, and 18Z as well as 2019-02-02 at 00Z. For each of these valid times, the METplus wrappers can also loop over a set of forecast leads that are all valid at the current run time. See :ref:`looping_over_forecast_leads` for more information.
 
@@ -850,7 +851,7 @@ cannot be expressed in seconds unless the run time value is available.
 Skipping Times
 ^^^^^^^^^^^^^^
 
-New in 3.1 is the ability to skip certain valid times. The configuration
+Version 3.1 added the ability to skip certain valid times. The configuration
 variable :term:`SKIP_TIMES` can be used to
 provide a list of time formats each with a list of times to not process.
 The format and time list are separated by
