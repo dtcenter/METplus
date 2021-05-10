@@ -1993,6 +1993,46 @@ the MET tool supports it, pass in all of the fields to a single command.
 Refer to the :ref:`Field_Info`
 section for information on how to sets these values.
 
+.. _reconcile_default_values:
+
+Reconcile Default Values
+^^^^^^^^^^^^^^^^^^^^^^^^
+
+While adding support for setting many new MET configuration variables through
+METplus wrapper configuration variables, it was discovered that some of the
+values set in the wrapped MET config files (found in *parm/met_config*)
+were different than the MET default values
+(found in :ref:`MET_INSTALL_DIR<sys_conf_met_install_dir>`/share/met/config).
+Starting in v4.0.0, when a METplus configuration variable that overrides
+a MET variable is not set, the default MET value is used.
+Due to the disconnect between the wrapped config values and default values,
+some of the default settings will now differ if the wrapped MET configuration
+file found in *parm/met_config* is used in a use case.
+For more information regarding this logic,
+see the :ref:`metplus-control-met` section.
+
+This section lists all of the default values that have changed in the wrapped
+MET configuration files and the corresponding METplus configuration key/value
+pair to use to set the values to the previous default value. Note that any
+dictionary variables listed only include the variables inside that have
+changed, not the full set of variables that the dictionary contains.
+
+EnsembleStatConfig
+""""""""""""""""""
+
+
+.. list-table::
+   :widths: 5 5 5
+   :header-rows: 1
+
+   * - Old (Incorrect) Default Value
+     - New (Correct) Default Value
+     - METplus configuration to Set Old Value
+   * - message_type = [ "ADPSFC" ];
+     - message_type   = [ "ADPUPA" ];
+     - :term:`ENSEMBLE_STAT_MESSAGE_TYPE` = ADPSFC
+
+
 .. _met-config-overrides:
 
 Overriding Unsupported MET configuration variables
