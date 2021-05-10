@@ -36,10 +36,10 @@ You may obtain a copy of the License at
 
 http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software distributed under
-the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
-ANY KIND, either express or implied.  See the License for the specific language
-governing permissions and limitations under the License.
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations under the License.
 
 .. _citations:
 
@@ -52,15 +52,23 @@ Developmental Testbed Center. Available at: https://github.com/dtcenter/METplus/
 
 **Acknowledgments**
 
-We thank all the METplus sponsors including: DTC partners (NOAA, NCAR, USAF, and NSF),
-along with NOAA/Office of Atmospheric Research (OAR), NOAA/Office of Science and
-Technology Integration, NOAA/Weather Program Office (WPO, formerly Office of Weather
-and Air Quality), and the Naval Research Laboratory (NRL). Thanks also go to the
-staff at the Developmental Testbed Center for their help, advice, and many types of support.
+We thank all of the METplus sponsors including:
+DTC partners (NOAA, NCAR, USAF, and NSF), along with
+NOAA/Office of Atmospheric Research (OAR),
+NOAA/National Weather Service,
+NOAA/Joint Technology Transfer Program (JTTI),
+NOAA/Subseasonal to Seasonal (S2S) Project,
+NOAA/Unified Forecast System Research to Operations Project (UFS R2O),
+Met Office,
+and the
+Naval Research Laboratory (NRL).
+Thanks also go to the staff at the Developmental Testbed Center for their
+help, advice, and many types of support.
 We released METplus Alpha in February 2017 and would not have made a decade of
-cutting-edge verification support without those who participated in DTC planning
-workshops and the NGGPS United Forecast System Strategic Implementation Plan Working
-Groups (UFS SIP WGs).
+cutting-edge verification support without those who participated in
+DTC planning workshops and the United Forecast System Working Groups (UFS WGs).
+Finally, the National Center for Atmospheric Research (NCAR)
+is sponsored by NSF.
 
 
 
