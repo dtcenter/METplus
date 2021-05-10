@@ -956,7 +956,7 @@ same clock time with::
 then the value of :term:`VALID_BEG` will be set to the current clock
 time shifted by -86400 seconds (24 hours backwards), or 2019-04-25 08Z.
 
-The value defined for 'shift'  also supported :ref:`time-interval-units`
+The value defined for 'shift' also supports :ref:`time-interval-units`
 
 If :term:`VALID_INCREMENT` is set to 21600 seconds (6 hours), then the
 METplus Wrappers will process the following valid times:
@@ -1119,8 +1119,9 @@ will run in the following order::
   * GridStat   at 2019-02-03
 
 .. note::
-    If running a MET tool that processes data over a time range such as
-    SeriesAnalysis or StatAnalysis must be run with LOOP_ORDER = processes.
+    If running a MET tool that processes data over a time range, such as
+    SeriesAnalysis or StatAnalysis, the tool must be run with
+    LOOP_ORDER = processes.
 
     
 .. _Custom_Looping:
