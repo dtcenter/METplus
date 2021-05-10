@@ -18,8 +18,8 @@ platform. Each release listed on the
 page includes a link to the **Existing Builds and Docker** for that version.
 The METplus team supports the installation of the METplus components on
 several operational and research high performance computing platforms,
-including those at NCAR, NOAA, and other community machines. A link to the
-pre-built METplus images on DockerHub is also provided.
+including those at NCAR, NOAA, and other community machines.
+Pre-built METplus images on DockerHub are also provided.
 
 Programming/scripting languages
 ===============================
@@ -67,7 +67,8 @@ Python Package Requirements
 
 The version number listed next to any Python package corresponds to the version
 that was used for testing purposes. Other versions of the packages **may**
-still work but it is not guaranteed.
+still work but it is not guaranteed. Please install these packages using pip
+or conda.
 
 **Minimum Requirements**
 
@@ -79,7 +80,7 @@ Using pip::
 
     pip3 install python-dateutil==2.8
 
-Using Conda::
+Using conda::
 
   conda install -c conda-forge python-dateutil=2.8
 
@@ -103,8 +104,8 @@ section in the MET User's Guide for more information.
 
 **Wrapper Specific Requirements**
 
-Some of the wrappers have additional Python package dependencies
-that are required to run.
+The following wrappers require that additional Python packages be installed
+to run.
 
 -  SeriesAnalysis wrapper
 
@@ -126,7 +127,7 @@ Getting the METplus Wrappers source code
 ========================================
 
 The METplus Wrappers source code is available for download from the public
-GitHub repository. The source code can retrieved through a web
+GitHub repository. The source code can be retrieved through a web
 browser or the command line.
 
 Get the source code via Web Browser
@@ -155,11 +156,11 @@ Get the source code via Command Line
 
 SSH::
 
-    git@github.com:dtcenter/metplus
+    git clone git@github.com:dtcenter/metplus
 
 HTTPS::
 
-    https://github.com/dtcenter/metplus
+    git clone https://github.com/dtcenter/metplus
 
 .. _obtain_sample_input_data:
 
@@ -168,7 +169,7 @@ Obtain sample input data
 
 The use cases provided with the METplus release have sample input data
 associated with them. This step is optional but is required to be able to run
-the use cases, which is helpful to understand how the wrappers work.
+the example use cases, which illustrate how the wrappers work.
 
 -  Create a directory to put the sample input data. This will be the directory
    to set for the value of INPUT_BASE in the METplus Configuration.
@@ -186,8 +187,8 @@ the use cases, which is helpful to understand how the wrappers work.
     Files with the version number in the name,
     i.e. sample_data-data_assimilation-4.0.tgz, have been updated since the
     last major release. Files without the version number in the file name have
-    not changed since the last major release and could be skipped if the data
-    was already obtained with the previous release.
+    not changed since the last major release and can be skipped if the data
+    have already been obtained with a previous release.
 
 
 METplus Wrappers directory structure
@@ -214,16 +215,18 @@ The top-level METplus Wrappers directory consists of a README.md file
 and several subdirectories.
 
 The **build_components/** directory contains scripts that use manage_externals
-and files available on dtcenter.org to download MET and start the build process
+and files available on dtcenter.org to download MET and start
+the build process.
 
 The **ci/** directory contains scripts that are used for creating
-Docker images and script that are used internally for automation
+Docker images and scripts that are used internally for automation.
 
 The **docs/** directory contains documentation for users and contributors
 (HTML) and Doxygen
-files that are used to create the METplus wrapper API documentaton. The Doxygen
-documentation can be created and viewed via web browser if the developer
-has Doxygen installed on the host.  The Doxygen documentation is useful to
+files that are used to create the METplus wrapper API documentation. The
+Doxygen documentation can be created and viewed via web browser if the
+developer has Doxygen installed on the host.
+The Doxygen documentation is useful to
 contributors and is not necessary for METplus end-users.
 
 The **internal_tests/** directory contains test scripts that are only
@@ -231,17 +234,17 @@ relevant to METplus developers and contributors.
 
 The **manage_externals/** directory contains scripts used to
 facilitate the downloading and management
-of components that METplus interacts with such as MET and METviewer
+of components that METplus interacts with such as MET and METviewer.
 
-The **metplus/** directory contains the wrapper scripts and utilities
+The **metplus/** directory contains the wrapper scripts and utilities.
 
 The **parm/** directory contains all the configuration files for MET and
 METplus Wrappers.
 
-The **produtil/** directory contains part of the external utility produtil
+The **produtil/** directory contains part of the external utility produtil.
 
 The **ush/** directory contains the run_metplus.py script that is
-executed to run use cases
+executed to run use cases.
 
 Build_components and using manage_externals
 ===========================================
@@ -254,8 +257,8 @@ Running build_components/build_MET.sh will
 -  attempt to build MET
 
 Building MET requires fine tuning on just about all systems.
-However, this should at least get most of the way through the process and
-allow just a few manual changes to build.
+However, using manage_externals should at least get most of the way through
+the process and allow MET to be built with just a few manual changes.
 
 External Components
 ===================
@@ -263,15 +266,24 @@ External Components
 GFDL Tracker
 ------------
 
--  The standalone Geophysical Fluid Dynamics Laboratory (GFDL) vortex tracker is a program that objectively analyzes forecast data to provide an estimate of the vortex center position (latitude and longitude), and track the storm for the duration of the forecast.
+- The standalone Geophysical Fluid Dynamics Laboratory (GFDL) vortex tracker
+  is a program that objectively analyzes forecast data to provide an
+  estimate of the vortex center position (latitude and longitude),
+  and track the storm for the duration of the forecast.
 
--  Visit https://dtcenter.org/community-code/gfdl-vortex-tracker for more information
+- Visit https://dtcenter.org/community-code/gfdl-vortex-tracker for
+  more information
 
-    -  See the manage externals section of this documentation to download the GFDL vortex tracker automatically as part of the system.
+    - See the manage externals section of this documentation to download
+      the GFDL vortex tracker automatically as part of the system.
 
-    -  To download and install locally get http://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz and follow the instructions listed in that archive to build on a local system.
+    - To download and install the tracker locally, get
+      http://dtcenter.org/sites/default/files/community-code/gfdl/standalone_gfdl-vortextracker_v3.9a.tar.gz
+      and follow the instructions listed in that archive to build on
+      a local system.
 
-    -  Instructions on how to configure and use the GFDL tracker are found here https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_tracker_UG_v3.9a.pdf
+    -  Instructions on how to configure and use the GFDL tracker are found here
+       https://dtcenter.org/sites/default/files/community-code/gfdl/standalone_tracker_UG_v3.9a.pdf
 
 Add ush directory to shell path (optional)
 ==========================================
