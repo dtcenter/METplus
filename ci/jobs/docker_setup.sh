@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Run by GitHub Actions (in .github/workflows/main.yml) to build
+# Run by GitHub Actions (in .github/workflows/testing.yml) to build
 # METplus Docker image and put it up to DockerHub so it can be
 # used by the use case tests.
 # If GitHub Actions run is triggered by a fork that does not have

@@ -32,7 +32,7 @@ author_list = 'Adriaansen, D., Win-Gildenmeister, M., McCabe, G., Prestopnik, J.
 # i.e. 4.0.0-beta1-dev
 release = __version__
 
-# the stable version, displayed on front page of PDF extract X.Y version
+# the stable version, displayed on front page of PDF extract X.Y.Z version
 # from release by splitting the string into a list
 # using - as the delimeter, then getting the 1st item of the list
 # if version is beta, rc, and/or dev then set version to develop for
@@ -40,7 +40,7 @@ release = __version__
 if len(release.split('-')) > 1:
     version = 'develop'
 else:
-    version = f"{release.split('-')[0]}"
+    version = release
 
 verinfo = version
 

@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-# Run by GitHub Actions (in .github/workflows/main.yml) check DTCenter web
+# Run by GitHub Actions (in .github/workflows/testing.yml) check DTCenter web
 # server for any input data tarfiles that have been updated and need to be
 # regenerated as Docker data volumes to be used in use case tests.
 # Push new/updated data volumes up to DockerHub
