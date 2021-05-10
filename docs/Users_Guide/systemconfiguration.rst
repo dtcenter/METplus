@@ -1996,7 +1996,7 @@ section for information on how to sets these values.
 .. _reconcile_default_values:
 
 Reconcile Default Values
-^^^^^^^^^^^^^^^^^^^^^^^^
+========================
 
 While adding support for setting many new MET configuration variables through
 METplus wrapper configuration variables, it was discovered that some of the
@@ -2018,19 +2018,337 @@ dictionary variables listed only include the variables inside that have
 changed, not the full set of variables that the dictionary contains.
 
 EnsembleStatConfig
-""""""""""""""""""
+------------------
+
+message_type
+^^^^^^^^^^^^
+
++------------------+---------------------------------------------+
+| Old (Incorrect): |           message_type = [ "ADPSFC" ];      |
++------------------+---------------------------------------------+
+|  New (Correct):  |           message_type = [ "ADPUPA" ];      |
++------------------+---------------------------------------------+
+| METplus Config:  | :term:`ENSEMBLE_STAT_MESSAGE_TYPE` = ADPSFC |
++------------------+---------------------------------------------+
+
+climo_cdf.cdf_bins
+^^^^^^^^^^^^^^^^^^
+
++------------------+------------------------------------------+
+| Old (Incorrect): | | climo_cdf = {                          |
+|                  | |   cdf_bins    = 1;                     |
+|                  | | }                                      |
++------------------+------------------------------------------+
+| New (Correct):   | | climo_cdf = {                          |
+|                  | |   cdf_bins    = 10;                    |
+|                  | | }                                      |
++------------------+------------------------------------------+
+| METplus Config:  | :term:`ENSEMBLE_STAT_CLIMO_CDF_BINS` = 1 |
++------------------+------------------------------------------+
+
+mask.poly
+^^^^^^^^^
+
++------------------+--------------------------------------------------------------------------------+
+| Old (Incorrect): | | mask = {                                                                     |
+|                  | |   poly  = [ "MET_BASE/poly/HMT_masks/huc4_1605_poly.nc",                     |
+|                  | |             "MET_BASE/poly/HMT_masks/huc4_1803_poly.nc",                     |
+|                  | |             "MET_BASE/poly/HMT_masks/huc4_1804_poly.nc",                     |
+|                  | |             "MET_BASE/poly/HMT_masks/huc4_1805_poly.nc",                     |
+|                  | |             "MET_BASE/poly/HMT_masks/huc4_1806_poly.nc" ];                   |
+|                  | | }                                                                            |
++------------------+--------------------------------------------------------------------------------+
+| New (Correct):   | | mask = {                                                                     |
+|                  | |   poly  = [];                                                                |
+|                  | | }                                                                            |
++------------------+--------------------------------------------------------------------------------+
+| METplus Config:  | | :term:`ENSEMBLE_STAT_MASK_POLY` = MET_BASE/poly/HMT_masks/huc4_1605_poly.nc, |
+|                  | |   MET_BASE/poly/HMT_masks/huc4_1803_poly.nc,                                 |
+|                  | |   MET_BASE/poly/HMT_masks/huc4_1804_poly.nc,                                 |
+|                  | |   MET_BASE/poly/HMT_masks/huc4_1805_poly.nc,                                 |
+|                  | |   MET_BASE/poly/HMT_masks/huc4_1806_poly.nc                                  |
++------------------+--------------------------------------------------------------------------------+
+
+output_flag (multiple items)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
++------------------+--------------------------------------------------+
+| Old (Incorrect): | | output_flag = {                                |
+|                  | |    ecnt  = BOTH;                               |
+|                  | |    rhist = BOTH;                               |
+|                  | |    phist = BOTH;                               |
+|                  | |    orank = BOTH;                               |
+|                  | |    ssvar = BOTH;                               |
+|                  | |    relp  = BOTH;                               |
+|                  | | }                                              |
++------------------+--------------------------------------------------+
+| New (Correct):   | | output_flag = {                                |
+|                  | |    ecnt  = NONE;                               |
+|                  | |    rps   = NONE;                               |
+|                  | |    rhist = NONE;                               |
+|                  | |    phist = NONE;                               |
+|                  | |    orank = NONE;                               |
+|                  | |    ssvar = NONE;                               |
+|                  | |    relp  = NONE;                               |
+|                  | | }                                              |
++------------------+--------------------------------------------------+
+| METplus Config:  | | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ECNT` = BOTH  |
+|                  | | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_RHIST` = BOTH |
+|                  | | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_PHIST` = BOTH |
+|                  | | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_ORANK` = BOTH |
+|                  | | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_SSVAR` = BOTH |
+|                  | | :term:`ENSEMBLE_STAT_OUTPUT_FLAG_RELP` = BOTH  |
++------------------+--------------------------------------------------+
+
+GridStatConfig
+--------------
+
+cat_thresh
+^^^^^^^^^^
+
++------------------+---------------------------------------------------------------+
+| Old (Incorrect): | cat_thresh = [ NA ];                                          |
++------------------+---------------------------------------------------------------+
+| New (Correct):   | cat_thresh = [];                                              |
++------------------+---------------------------------------------------------------+
+| METplus Config:  | :term:`GRID_STAT_MET_CONFIG_OVERRIDES` = cat_thresh = [ NA ]; |
++------------------+---------------------------------------------------------------+
+
+output_flag (multiple items)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
++------------------+---------------------------------------------+
+| Old (Incorrect): | | output_flag = {                           |
+|                  | |    ctc    = STAT;                         |
+|                  | |    cts    = STAT;                         |
+|                  | |    grad   = BOTH;                         |
+|                  | | }                                         |
++------------------+---------------------------------------------+
+| New (Correct):   | | output_flag = {                           |
+|                  | |    ctc    = NONE;                         |
+|                  | |    cts    = NONE;                         |
+|                  | |    grad   = NONE;                         |
+|                  | | }                                         |
++------------------+---------------------------------------------+
+| METplus Config:  | | :term:`GRID_STAT_OUTPUT_FLAG_CTC` = STAT  |
+|                  | | :term:`GRID_STAT_OUTPUT_FLAG_CTS` = STAT  |
+|                  | | :term:`GRID_STAT_OUTPUT_FLAG_GRAD` = BOTH |
++------------------+---------------------------------------------+
+
+nc_pairs_flag (multiple items)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
++------------------+------------------------------------------------------+
+| Old (Incorrect): | | nc_pairs_flag = {                                  |
+|                  | |    latlon       = FALSE;                           |
+|                  | |    raw          = FALSE;                           |
+|                  | |    diff         = FALSE;                           |
+|                  | |    climo        = FALSE;                           |
+|                  | |    apply_mask   = FALSE;                           |
+|                  | | }                                                  |
++------------------+------------------------------------------------------+
+| New (Correct):   | | nc_pairs_flag = {                                  |
+|                  | |    latlon       = TRUE;                            |
+|                  | |    raw          = TRUE;                            |
+|                  | |    diff         = TRUE;                            |
+|                  | |    climo        = TRUE;                            |
+|                  | |    apply_mask   = TRUE;                            |
+|                  | | }                                                  |
++------------------+------------------------------------------------------+
+| METplus Config:  | | :term:`GRID_STAT_NC_PAIRS_FLAG_LATLON` = FALSE     |
+|                  | | :term:`GRID_STAT_NC_PAIRS_FLAG_RAW` = FALSE        |
+|                  | | :term:`GRID_STAT_NC_PAIRS_FLAG_DIFF` = FALSE       |
+|                  | | :term:`GRID_STAT_NC_PAIRS_FLAG_CLIMO` = FALSE      |
+|                  | | :term:`GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK` = FALSE |
++------------------+------------------------------------------------------+
 
 
-.. list-table::
-   :widths: 5 5 5
-   :header-rows: 1
+MODEConfig
+----------
 
-   * - Old (Incorrect) Default Value
-     - New (Correct) Default Value
-     - METplus configuration to Set Old Value
-   * - message_type = [ "ADPSFC" ];
-     - message_type   = [ "ADPUPA" ];
-     - :term:`ENSEMBLE_STAT_MESSAGE_TYPE` = ADPSFC
+grid_res
+^^^^^^^^
+
++------------------+----------------------------+
+| Old (Incorrect): | grid_res = 40;             |
++------------------+----------------------------+
+| New (Correct):   | grid_res = 4;              |
++------------------+----------------------------+
+| METplus Config:  | :term:`MODE_GRID_RES` = 40 |
++------------------+----------------------------+
+
+fcst.merge_thresh and fcst.merge_flag
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
++------------------+-------------------------------------------+
+| Old (Incorrect): | | fcst = {                                |
+|                  | |   merge_thresh = >=75.0;                |
+|                  | |   merge_flag         = NONE;            |
+|                  | | }                                       |
++------------------+-------------------------------------------+
+| New (Correct):   | | fcst = {                                |
+|                  | |   merge_thresh = >=1.25;                |
+|                  | |   merge_flag         = THRESH;          |
+|                  | | }                                       |
++------------------+-------------------------------------------+
+| METplus Config:  | | :term:`MODE_FCST_MERGE_THRESH` = >=75.0 |
+|                  | | :term:`MODE_FCST_MERGE_FLAG` = NONE     |
+|                  | | :term:`MODE_OBS_MERGE_THRESH` = >=75.0  |
+|                  | | :term:`MODE_OBS_MERGE_FLAG` = NONE      |
++------------------+-------------------------------------------+
+
+fcst_raw_plot.color_table
+^^^^^^^^^^^^^^^^^^^^^^^^^
+
++------------------+-------------------------------------------------------------------------------------------------------------+
+| Old (Incorrect): | | fcst_raw_plot = {                                                                                         |
+|                  | |    color_table      = "MET_BASE/colortables/mode_raw.ctable";                                             |
+|                  | | }                                                                                                         |
++------------------+-------------------------------------------------------------------------------------------------------------+
+| New (Correct):   | | fcst_raw_plot = {                                                                                         |
+|                  | |    color_table      = "MET_BASE/colortables/met_default.ctable";                                          |
+|                  | | }                                                                                                         |
++------------------+-------------------------------------------------------------------------------------------------------------+
+| METplus Config:  | :term:`MODE_MET_CONFIG_OVERRIDES` = fcst_raw_plot = {color_table = "MET_BASE/colortables/mode_raw.ctable";} |
++------------------+-------------------------------------------------------------------------------------------------------------+
+
+obs_raw_plot.color_table
+^^^^^^^^^^^^^^^^^^^^^^^^
+
++------------------+------------------------------------------------------------------------------------------------------------+
+| Old (Incorrect): | | obs_raw_plot = {                                                                                         |
+|                  | |    color_table      = "MET_BASE/colortables/mode_raw.ctable";                                            |
+|                  | | }                                                                                                        |
++------------------+------------------------------------------------------------------------------------------------------------+
+| New (Correct):   | | obs_raw_plot = {                                                                                         |
+|                  | |    color_table      = "MET_BASE/colortables/met_default.ctable";                                         |
+|                  | | }                                                                                                        |
++------------------+------------------------------------------------------------------------------------------------------------+
+| METplus Config:  | :term:`MODE_MET_CONFIG_OVERRIDES` = obs_raw_plot = {color_table = "MET_BASE/colortables/mode_raw.ctable";} |
++------------------+------------------------------------------------------------------------------------------------------------+
+
+PB2NCConfig
+-----------
+
+level_category
+^^^^^^^^^^^^^^
+
++------------------+----------------------------------------------+
+| Old (Incorrect): | level_category = [0, 1, 4, 5, 6];            |
++------------------+----------------------------------------------+
+| New (Correct):   | level_category = [];                         |
++------------------+----------------------------------------------+
+| METplus Config:  | :term:`PB2NC_LEVEL_CATEGORY` = 0, 1, 4, 5, 6 |
++------------------+----------------------------------------------+
+
+quality_mark_thresh
+^^^^^^^^^^^^^^^^^^^
+
++------------------+---------------------------------------+
+| Old (Incorrect): | quality_mark_thresh = 3;              |
++------------------+---------------------------------------+
+| New (Correct):   | quality_mark_thresh = 2;              |
++------------------+---------------------------------------+
+| METplus Config:  | :term:`PB2NC_QUALITY_MARK_THRESH` = 3 |
++------------------+---------------------------------------+
+
+time_summary.step and time_summary.width
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
++------------------+-------------------------------------------+
+| Old (Incorrect): | | time_summary = {                        |
+|                  | |   step = 3600;                          |
+|                  | |   width = 3600;                         |
+|                  | | }                                       |
++------------------+-------------------------------------------+
+| New (Correct):   | | time_summary = {                        |
+|                  | |   step = 300;                           |
+|                  | |   width = 600;                          |
+|                  | | }                                       |
++------------------+-------------------------------------------+
+| METplus Config:  | | :term:`PB2NC_TIME_SUMMARY_STEP` = 3600  |
+|                  | | :term:`PB2NC_TIME_SUMMARY_WIDTH` = 3600 |
++------------------+-------------------------------------------+
+
+PointStatConfig
+---------------
+
+regrid.method and regrid_width
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
++------------------+--------------------------------------------+
+| Old (Incorrect): | | regrid = {                               |
+|                  | |   method = BILIN;                        |
+|                  | |   width = 2;                             |
+|                  | | }                                        |
++------------------+--------------------------------------------+
+| New (Correct):   | | regrid = {                               |
+|                  | |   method = NEAREST;                      |
+|                  | |   width = 1;                             |
+|                  | | }                                        |
++------------------+--------------------------------------------+
+| METplus Config:  | | :term:`POINT_STAT_REGRID_METHOD` = BILIN |
+|                  | | :term:`POINT_STAT_REGRID_WIDTH` = 2      |
++------------------+--------------------------------------------+
+
+obs_quality
+^^^^^^^^^^^
+
++------------------+------------------------------------------+
+| Old (Incorrect): | obs_quality = [ "1", "2", "3" ];         |
++------------------+------------------------------------------+
+| New (Correct):   | obs_quality    = [];                     |
++------------------+------------------------------------------+
+| METplus Config:  | :term:`POINT_STAT_OBS_QUALITY` = 1, 2, 3 |
++------------------+------------------------------------------+
+
+climo_mean.time_interp_method and climo_stdev.time_interp_method
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
++------------------+---------------------------------------------------------------+
+| Old (Incorrect): | | climo_mean = {                                              |
+|                  | |   time_interp_method = NEAREST;                             |
+|                  | | }                                                           |
+|                  | | climo_stdev = {                                             |
+|                  | |   time_interp_method = NEAREST;                             |
+|                  | | }                                                           |
++------------------+---------------------------------------------------------------+
+| New (Correct):   | | climo_mean = {                                              |
+|                  | |   time_interp_method = DW_MEAN;                             |
+|                  | | }                                                           |
+|                  | | climo_stdev = {                                             |
+|                  | |   time_interp_method = DW_MEAN;                             |
+|                  | | }                                                           |
++------------------+---------------------------------------------------------------+
+| METplus Config:  | | :term:`POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD` = NEAREST  |
+|                  | | :term:`POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD` = NEAREST |
++------------------+---------------------------------------------------------------+
+
+interp.type.method and interp.type.width
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
++------------------+-------------------------------------------------+
+| Old (Incorrect): | | interp = {                                    |
+|                  | |    type = [                                   |
+|                  | |       {                                       |
+|                  | |          method = BILIN;                      |
+|                  | |          width  = 2;                          |
+|                  | |       }                                       |
+|                  | |    ];                                         |
+|                  | | }                                             |
++------------------+-------------------------------------------------+
+| New (Correct):   | | interp = {                                    |
+|                  | |    type = [                                   |
+|                  | |       {                                       |
+|                  | |          method = NEAREST;                    |
+|                  | |          width  = 1;                          |
+|                  | |       }                                       |
+|                  | |    ];                                         |
+|                  | | }                                             |
++------------------+-------------------------------------------------+
+| METplus Config:  | | :term:`POINT_STAT_INTERP_TYPE_METHOD` = BILIN |
+|                  | | :term:`POINT_STAT_INTERP_TYPE_WIDTH` = 2      |
++------------------+-------------------------------------------------+
 
 
 .. _met-config-overrides:
