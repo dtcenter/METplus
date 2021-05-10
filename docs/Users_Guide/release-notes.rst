@@ -1,8 +1,8 @@
 METplus Release Notes
----------------------
+=====================
 
 METplus Components Release Note Links
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-------------------------------------
 
 Release Notes - Latest Official Release
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -32,10 +32,11 @@ describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
 METplus Version |version| release notes (|release_date|)
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+--------------------------------------------------------
 
 * Bugfixes:
 
+  * **Changed default values in wrapped MET config files to align with actual default values in MET config files** (:ref:`reconcile_default_values`)
   * Fix bug causing GridStat fatal error (`#740 <https://github.com/dtcenter/METplus/issues/740>`_)
   * Add support for comparing inputs using a mix of python embedding and non-embedding (`#684 <https://github.com/dtcenter/METplus/issues/684>`_)
   * Fix quick search links (`#687 <https://github.com/dtcenter/METplus/issues/687>`_)

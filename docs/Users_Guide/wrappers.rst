@@ -1,27 +1,34 @@
+***************
 Python Wrappers
-===============
+***************
 
 This chapter provides a description of each supported Python wrapper in
 METplus Wrappers. A wrapper is generally a Python script that
 encapsulates the behavior of a corresponding MET tool. Each of these
 sections can be added to the PROCESS_LIST configuration list variable.
-The Configuration section of each wrapper section below lists the
+The METplus Configuration section of each wrapper section below lists the
 METplus Wrappers configuration variables that are specific to that
 wrapper organized by config file section. You can find more information
 about each item in the METplus Configuration Glossary.
+The MET Configuration section of each wrapper (if applicable) displays the
+wrapped MET configuration file that utilizes environment variables to override
+settings. These sections also contain a list of environment variables that
+are referenced in the wrapped MET configuration files and a table to show
+which METplus configuration variables are used to set them and which MET
+configuration variables they override.
 
 .. _ascii2nc_wrapper:
 
 ASCII2NC
---------
+========
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to configure the MET tool ASCII2NC
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`ASCII2NC_INPUT_DIR`
 | :term:`ASCII2NC_OUTPUT_DIR`
@@ -56,13 +63,20 @@ Configuration
 .. _ascii2nc-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/Ascii2NcConfig_default
+`MET_INSTALL_DIR/share/met/config/Ascii2NcConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/Ascii2NcConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/Ascii2NcConfig_wrapped
 
@@ -111,17 +125,17 @@ Below the file contents are descriptions of each environment variable referenced
 .. _cyclone_plotter_wrapper:
 
 CyclonePlotter
---------------
+==============
 
 Description
-~~~~~~~~~~~
+-----------
 
 This wrapper does not have a corresponding MET tool but instead wraps
 the logic necessary to create plots of cyclone tracks. Currently only
 the output from the MET tc-pairs tool can be plotted.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`CYCLONE_PLOTTER_INPUT_DIR`
 | :term:`CYCLONE_PLOTTER_OUTPUT_DIR`
@@ -150,15 +164,15 @@ Configuration
 .. _ensemble_stat_wrapper:
 
 EnsembleStat
-------------
+============
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to configure the MET tool ensemble_stat.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`OBS_ENSEMBLE_STAT_POINT_INPUT_DIR`
 | :term:`OBS_ENSEMBLE_STAT_GRID_INPUT_DIR`
@@ -289,13 +303,20 @@ Configuration
 .. _ens-stat-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/EnsembleStatConfig_default
+`MET_INSTALL_DIR/share/met/config/EnsembleStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/EnsembleStatConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/EnsembleStatConfig_wrapped
 
@@ -821,15 +842,15 @@ Below the file contents are descriptions of each environment variable referenced
 .. _example_wrapper:
 
 Example
---------
+=======
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to demonstrate how the METplus wrappers handle looping and building commands.
 
 Configuration
-~~~~~~~~~~~~~
+-------------
 
 | :term:`EXAMPLE_INPUT_DIR`
 | :term:`EXAMPLE_INPUT_TEMPLATE`
@@ -839,10 +860,10 @@ Configuration
 .. _extract_tiles_wrapper:
 
 ExtractTiles
-------------
+============
 
-3.5.1 Description
-~~~~~~~~~~~~~~~~~
+Description
+-----------
 
 The ExtractTiles wrapper is used to regrid and extract subregions from
 paired tropical cyclone tracks that are created by the tc_pairs_wrapper.
@@ -853,8 +874,8 @@ paired track data. This information is then used to create tiles of
 subregions. The ExtractTiles wrapper creates a 2n degree x 2m degree
 grid/tile with each storm located at the center.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 The following should be set in the METplus configuration file to define
 the dimensions and density of the tiles comprising the subregion:
@@ -900,15 +921,15 @@ the dimensions and density of the tiles comprising the subregion:
 .. _gempak_to_cf_wrapper:
 
 GempakToCF
-----------
+==========
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to configure the utility GempakToCF.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`GEMPAKTOCF_JAR`
 | :term:`GEMPAKTOCF_INPUT_DIR`
@@ -927,15 +948,15 @@ Configuration
 .. _gen_vx_mask_wrapper:
 
 GenVxMask
----------
+=========
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to configure the MET tool GenVxMask to define and generate masking regions.
 
 Configuration
-~~~~~~~~~~~~~
+-------------
 
 | :term:`GEN_VX_MASK_INPUT_DIR`
 | :term:`GEN_VX_MASK_INPUT_MASK_DIR`
@@ -954,15 +975,15 @@ Configuration
 .. _grid_diag_wrapper:
 
 GridDiag
---------
+========
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to configure the MET tool grid_diag.
 
 METplus Configuration
-~~~~~~~~~~~~~~~~~~~~~
+---------------------
 
 | :term:`GRID_DIAG_INPUT_DIR`
 | :term:`GRID_DIAG_OUTPUT_DIR`
@@ -988,13 +1009,20 @@ METplus Configuration
 .. _grid-diag-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/GridDiagConfig_default
+`MET_INSTALL_DIR/share/met/config/GridDiagConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GridDiagConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/GridDiagConfig_wrapped
 
@@ -1097,15 +1125,15 @@ Below the file contents are descriptions of each environment variable referenced
 .. _grid_stat_wrapper:
 
 GridStat
---------
+========
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to configure the MET tool grid_stat.
 
 METplus Configuration
-~~~~~~~~~~~~~~~~~~~~~
+---------------------
 
 | :term:`FCST_GRID_STAT_INPUT_DIR`
 | :term:`OBS_GRID_STAT_INPUT_DIR`
@@ -1233,13 +1261,20 @@ METplus Configuration
 .. _grid-stat-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/GridStatConfig_default
+`MET_INSTALL_DIR/share/met/config/GridStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GridStatConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/GridStatConfig_wrapped
 
@@ -1461,7 +1496,7 @@ Below the file contents are descriptions of each environment variable referenced
    * - :term:`GRID_STAT_NEIGHBORHOOD_COV_THRESH`
      - nbrhd.cov_thresh
 
-**${METPLUS_OUTPUT_PREFIX**
+**${METPLUS_OUTPUT_PREFIX}**
 
 .. list-table::
    :widths: 5 5
@@ -1625,18 +1660,18 @@ Below the file contents are descriptions of each environment variable referenced
 .. _make_plots_wrapper:
 
 MakePlots
----------
+=========
 
 Description
-~~~~~~~~~~~
+-----------
 
 The MakePlots wrapper creates various statistical plots using python
 scripts for the various METplus Wrappers use cases. This can only be run
 following StatAnalysis wrapper when LOOP_ORDER = processes. To run
 MakePlots wrapper, include MakePlots in PROCESS_LIST.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 The following values **must** be defined in the METplus Wrappers
 configuration file:
@@ -1711,16 +1746,16 @@ configuration file:
 .. _met_db_load_wrapper:
 
 METdbLoad
----------
+=========
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to call the met_db_load.py script from dtcenter/METdatadb to load MET
 output into a METviewer database.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`MET_DB_LOAD_RUNTIME_FREQ`
 | :term:`MET_DATA_DB_DIR`
@@ -1745,7 +1780,7 @@ Configuration
 .. _met_db_load-xml-conf:
 
 XML Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
 Below is the XML template configuration file used for this wrapper. The wrapper
 substitutes values from the METplus configuration file into this configuration
@@ -1923,15 +1958,15 @@ searches for these strings and substitutes the values as appropriate.
 .. _mode_wrapper:
 
 MODE
-----
+====
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to configure the MET Method for Object-based Diagnostic Evaluation tool mode.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`FCST_MODE_INPUT_DIR`
 | :term:`OBS_MODE_INPUT_DIR`
@@ -2032,13 +2067,20 @@ Configuration
 .. _mode-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/MODEConfig_default
+`MET_INSTALL_DIR/share/met/config/MODEConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/MODEConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/MODEConfig_wrapped
 
@@ -2526,15 +2568,15 @@ Below the file contents are descriptions of each environment variable referenced
 .. _mtd_wrapper:
 
 MTD
----
+===
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to configure the MET MODE Time Domain tool mtd.  This tools follows objects through time and can also be used to track objects.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`FCST_MTD_INPUT_DIR`
 | :term:`OBS_MTD_INPUT_DIR`
@@ -2581,13 +2623,20 @@ Configuration
 .. _mtd-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/MTDConfig_default
+`MET_INSTALL_DIR/share/met/config/MTDConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/MTDConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/MTDConfig_wrapped
 
@@ -2783,16 +2832,16 @@ Below the file contents are descriptions of each environment variable referenced
 .. _pb2nc_wrapper:
 
 PB2NC
------
+=====
 
 Description
-~~~~~~~~~~~
+-----------
 
 The PB2NC wrapper is a Python script that encapsulates the behavior of
 the MET pb2nc tool to convert prepBUFR files into netCDF.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`PB2NC_INPUT_DIR`
 | :term:`PB2NC_OUTPUT_DIR`
@@ -2845,13 +2894,20 @@ Configuration
 .. _pb2nc-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/PB2NCConfig_default
+`MET_INSTALL_DIR/share/met/config/PB2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PB2NCConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/PB2NCConfig_wrapped
 
@@ -3008,17 +3064,17 @@ Below the file contents are descriptions of each environment variable referenced
 .. _pcp_combine_wrapper:
 
 PCPCombine
-----------
+==========
 
 Description
-~~~~~~~~~~~
+-----------
 
 The PCPCombine wrapper is a Python script that encapsulates the MET
 PCPCombine tool. It provides the infrastructure to combine or extract
 from files to build desired accumulations.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`FCST_PCP_COMBINE_INPUT_DIR`
 | :term:`FCST_PCP_COMBINE_OUTPUT_DIR`
@@ -3103,10 +3159,10 @@ Configuration
 .. _plot_data_plane_wrapper:
 
 PlotDataPlane
--------------
+=============
 
 Description
-~~~~~~~~~~~
+-----------
 
 The PlotDataPlane wrapper is a Python script that encapsulates the MET
 plot_data_plane tool. It provides the infrastructure to read in any input that
@@ -3114,7 +3170,7 @@ MET can read and plot them. This tool is often used to verify that the data
 is mapped to the correct grid location.
 
 Configuration
-~~~~~~~~~~~~~
+-------------
 
 | :term:`PLOT_DATA_PLANE_INPUT_DIR`
 | :term:`PLOT_DATA_PLANE_OUTPUT_DIR`
@@ -3134,17 +3190,17 @@ Configuration
 .. _point2grid_wrapper:
 
 Point2Grid
-----------
+==========
 
 Description
-~~~~~~~~~~~
+-----------
 
 The Point2Grid wrapper is a Python script that encapsulates the MET
 point2grid tool. It provides the infrastructure to read in point observations
 and place them on a grid
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`POINT2GRID_INPUT_DIR`
 | :term:`POINT2GRID_OUTPUT_DIR`
@@ -3169,10 +3225,10 @@ Configuration
 .. _point_stat_wrapper:
 
 PointStat
----------
+=========
 
 Description
-~~~~~~~~~~~
+-----------
 
 The PointStat wrapper is a Python script that encapsulates the MET
 point_stat tool. It provides the infrastructure to read in gridded model
@@ -3180,7 +3236,7 @@ data and netCDF point observation data to perform grid-to-point
 (grid-to-obs) verification.
 
 Configuration
-~~~~~~~~~~~~~
+-------------
 
 | :term:`FCST_POINT_STAT_INPUT_DIR`
 | :term:`OBS_POINT_STAT_INPUT_DIR`
@@ -3301,13 +3357,20 @@ Configuration
 .. _point-stat-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/PointStatConfig_default
+`MET_INSTALL_DIR/share/met/config/PointStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PointStatConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/PointStatConfig_wrapped
 
@@ -3623,15 +3686,15 @@ Below the file contents are descriptions of each environment variable referenced
 .. _py_embed_ingest_wrapper:
 
 PyEmbedIngest
--------------
+=============
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to configure the PyEmbedIngest wrapper that runs RegridDataPlane to convert data using python embedding scripts into NetCDF so it can be read by the MET tools.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`
 | :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`
@@ -3655,15 +3718,15 @@ Configuration
 .. _regrid_data_plane_wrapper:
 
 RegridDataPlane
----------------
+===============
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to configure the MET tool regrid_data_plane which can be used to change projections of a grid with user configurable interpolation choices.  It can also be used to convert GRIB1 and GRIB2 files into netcdf files if desired.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`FCST_REGRID_DATA_PLANE_INPUT_DIR`
 | :term:`OBS_REGRID_DATA_PLANE_INPUT_DIR`
@@ -3701,10 +3764,10 @@ Configuration
 .. _series_analysis_wrapper:
 
 SeriesAnalysis
-----------------
+==============
 
 Description
-~~~~~~~~~~~
+-----------
 
 The SeriesAnalysis wrapper is used to find files and build a command that calls
 the MET tool SeriesAnalysis. It can be configured to process ranges of inputs,
@@ -3718,8 +3781,8 @@ gif images (See
 :term:`SERIES_ANALYSIS_GENERATE_PLOTS` and
 :term:`SERIES_ANALYSIS_GENERATE_ANIMATIONS`)
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`LOG_SERIES_ANALYSIS_VERBOSITY`
 | :term:`SERIES_ANALYSIS_CONFIG_FILE`
@@ -3786,13 +3849,20 @@ Configuration
 .. _series-analysis-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/SeriesAnalysisConfig_default
+`MET_INSTALL_DIR/share/met/config/SeriesAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/SeriesAnalysisConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/SeriesAnalysisConfig_wrapped
 
@@ -4034,28 +4104,28 @@ Below the file contents are descriptions of each environment variable referenced
      - n/a
 
 SeriesByInit
-------------
+============
 
 Description
-~~~~~~~~~~~
+-----------
 
 .. warning:: **This tool has been DEPRECATED. Please use SeriesAnalysis wrapper**
 
 SeriesByLead
-------------
+============
 
 Description
-~~~~~~~~~~~
+-----------
 
 .. warning:: **This tool has been DEPRECATED. Please use SeriesAnalysis wrapper**
 
 .. _stat_analysis_wrapper:
 
 StatAnalysis
-------------
+============
 
 Description
-~~~~~~~~~~~
+-----------
 
 The StatAnalysis wrapper encapsulates the behavior of the MET
 stat_analysis tool. It provides the infrastructure to summarize and
@@ -4066,8 +4136,8 @@ lines over a span of dates, to use this method set LOOP_ORDER =
 processes. To run StatAnalysis wrapper, include StatAnalysis in
 PROCESS_LIST.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 The following values must be defined in the METplus Wrappers
 configuration file for running with LOOP_ORDER = times:
@@ -4194,13 +4264,20 @@ file for running with LOOP_ORDER = processes:
 .. _stat-analysis-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/STATAnalysisConfig_default
+`MET_INSTALL_DIR/share/met/config/STATAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/STATAnalysisConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/STATAnalysisConfig_wrapped
 
@@ -4570,16 +4647,16 @@ Below the file contents are descriptions of each environment variable referenced
 .. _tc_gen_wrapper:
 
 TCGen
--------
+=====
 
 Description
-~~~~~~~~~~~
+-----------
 
 The TCGen wrapper encapsulates the behavior of the MET tc_gen tool.
 The wrapper accepts track (Adeck or Bdeck) data and Genesis data.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`TC_GEN_TRACK_INPUT_DIR`
 | :term:`TC_GEN_TRACK_INPUT_TEMPLATE`
@@ -4667,13 +4744,21 @@ Configuration
 .. _tc-gen-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/TCGenConfig_default
+`MET_INSTALL_DIR/share/met/config/TCGenConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCGenConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
 
 .. literalinclude:: ../../parm/met_config/TCGenConfig_wrapped
 
@@ -5170,19 +5255,19 @@ Below the file contents are descriptions of each environment variable referenced
 .. _tcmpr_plotter_wrapper:
 
 TCMPRPlotter
--------------
+============
 
 Description
-~~~~~~~~~~~
+-----------
 
 The TCMPRPlotter wrapper is a Python script that wraps the R script
 plot_tcmpr.R. This script is useful for plotting the calculated
 statistics for the output from the MET-TC tools. This script, and other
-R scripts are included in the MET installation. Please refer to section
-21.2.3 of the MET User's Guide for usage information.
+R scripts are included in the MET installation. Please refer to
+the MET User's Guide for usage information.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`TCMPR_PLOTTER_TCMPR_DATA_DIR`
 | :term:`TCMPR_PLOTTER_PLOT_OUTPUT_DIR`
@@ -5252,10 +5337,10 @@ set to 'yes', then set the flag
 .. _tc_pairs_wrapper:
 
 TCPairs
--------
+=======
 
 Description
-~~~~~~~~~~~
+-----------
 
 The TCPairs wrapper encapsulates the behavior of the MET tc_pairs tool.
 The wrapper accepts Adeck and Bdeck (Best track) cyclone track data in
@@ -5264,8 +5349,8 @@ provided in the METplus tutorial), or ATCF formatted track data. If data
 is in an extra tropical cyclone (non-ATCF) format, the data is
 reformatted into an ATCF format that is recognized by MET.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`TC_PAIRS_ADECK_INPUT_DIR`
 | :term:`TC_PAIRS_BDECK_INPUT_DIR`
@@ -5323,13 +5408,20 @@ Configuration
 .. _tc-pairs-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/TCPairsConfig_default
+`MET_INSTALL_DIR/share/met/config/TCPairsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCPairsConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/TCPairsConfig_wrapped
 
@@ -5490,15 +5582,15 @@ Below the file contents are descriptions of each environment variable referenced
 .. _tcrmw_wrapper:
 
 TCRMW
-------
+=====
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to configure the MET tool TC-RMW.
 
 METplus Configuration
-~~~~~~~~~~~~~~~~~~~~~
+---------------------
 
 | :term:`TC_RMW_INPUT_DIR`
 | :term:`TC_RMW_DECK_INPUT_DIR`
@@ -5538,13 +5630,20 @@ METplus Configuration
 .. _tc-rmw-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/TCRMWConfig_default
+`MET_INSTALL_DIR/share/met/config/TCRMWConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCRMWConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/TCRMWConfig_wrapped
 
@@ -5783,17 +5882,15 @@ Below the file contents are descriptions of each environment variable referenced
 .. _tc_stat_wrapper:
 
 TCStat
-------
+======
 
 Description
-~~~~~~~~~~~
+-----------
 
-Used to configure the MET tool tc_stat. This wrapper can be run by
-listing it in the PROCESS_LIST, or can be called from the ExtractTiles
-wrapper (via the MET tc-stat command line commands).
+Used to configure the MET tool tc_stat.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`TC_STAT_LOOKIN_DIR`
 | :term:`TC_STAT_OUTPUT_DIR`
@@ -5853,13 +5950,20 @@ Configuration
 .. _tc-stat-met-conf:
 
 MET Configuration
-~~~~~~~~~~~~~~~~~
+-----------------
 
-Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
 
-:term:`MET_INSTALL_DIR`/share/met/config/TCStatConfig_default
+`MET_INSTALL_DIR/share/met/config/TCStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCStatConfig_default>`_
 
-Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/TCStatConfig_wrapped
 
@@ -6317,10 +6421,10 @@ Below the file contents are descriptions of each environment variable referenced
 .. _user_script_wrapper:
 
 UserScript
-----------
+==========
 
 Description
-~~~~~~~~~~~
+-----------
 
 Used to generate user-defined commands to run in the process list. Commands
 can be run once, run once for each runtime (init/valid/lead combination) or
@@ -6331,8 +6435,8 @@ substitution to send information like the current initialization or forecast
 lead time. See :ref:`Runtime_Freq` for more information on how the value of
 :term:`USER_SCRIPT_RUNTIME_FREQ` can control how the commands are called.
 
-Configuration
-~~~~~~~~~~~~~
+METplus Configuration
+---------------------
 
 | :term:`USER_SCRIPT_RUNTIME_FREQ`
 | :term:`USER_SCRIPT_COMMAND`
