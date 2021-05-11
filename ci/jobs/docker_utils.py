@@ -13,7 +13,13 @@ DOCKERHUB_METPLUS_DATA = 'dtcenter/metplus-data'
 DOCKERHUB_METPLUS_DATA_DEV = 'dtcenter/metplus-data-dev'
 
 def get_data_repo(branch_name):
-    if branch_name.startswith('main_v'):
+    """! Branch names that start with main_v or contain only
+     digits and dots with out without a prefix 'v' will return
+     the Docker repository for release data. All others will return
+     the Docker repository for development test data.
+    """
+    if (branch_name.startswith('main_v') or
+            re.match(r'^v?[0-9.]+$', branch_name)):
         return DOCKERHUB_METPLUS_DATA
     return DOCKERHUB_METPLUS_DATA_DEV
 
