@@ -6,18 +6,34 @@ import re
 #  - Get appropriate branch name to use to obtain/create Docker
 #    images. This is needed for pull request runs.
 
-# repository used for storing input data for development branches
-DOCKERHUB_DATA_REPO = 'dtcenter/metplus-data-dev'
+# repository used for storing input data for releases
+DOCKERHUB_METPLUS_DATA = 'dtcenter/metplus-data'
 
-# URL of DockerHub repository
-DOCKERHUB_URL = f'https://hub.docker.com/v2/repositories/{DOCKERHUB_DATA_REPO}/tags'
+# repository used for storing input data for development branches
+DOCKERHUB_METPLUS_DATA_DEV = 'dtcenter/metplus-data-dev'
+
+def get_data_repo(branch_name):
+    if branch_name.startswith('main_v'):
+        return DOCKERHUB_METPLUS_DATA
+    return DOCKERHUB_METPLUS_DATA_DEV
+
+def get_dockerhub_url(branch_name):
+    data_repo = get_data_repo(branch_name)
+    return f'https://hub.docker.com/v2/repositories/{data_repo}/tags'
 
 def docker_get_volumes_last_updated(current_branch):
     import requests
-    dockerhub_request = requests.get(DOCKERHUB_URL)
+    dockerhub_url = get_dockerhub_url(current_branch)
+    dockerhub_request = requests.get(dockerhub_url)
     if dockerhub_request.status_code != 200:
-        print(f"Could not find DockerHub URL: {DOCKERHUB_URL}")
+        print(f"Could not find DockerHub URL: {dockerhub_url}")
         return None
+
+    # get version number to search for if main_vX.Y branch
+    if current_branch.startswith('main_v'):
+        current_repo = current_branch[6:]
+    else:
+        current_repo = current_branch
 
     volumes_last_updated = {}
     attempts = 0
@@ -26,7 +42,7 @@ def docker_get_volumes_last_updated(current_branch):
         results = page['results']
         for repo in results:
             repo_name = repo['name']
-            if current_branch in repo_name:
+            if current_repo in repo_name:
                 volumes_last_updated[repo_name] = repo['last_updated']
         if not page['next']:
             break
