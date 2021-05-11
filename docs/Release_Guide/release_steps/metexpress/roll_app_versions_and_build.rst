@@ -1,5 +1,5 @@
 Roll App Versions and Build
--------------------
+----------------------------
 
 * METexpress apps are versioned as major.minor.patch. The patch number is automatically rolled at each release, so if you are not rolling the major or minor numbers, no additional action is needed.
 
