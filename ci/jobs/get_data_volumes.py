@@ -38,6 +38,8 @@ def main(args):
         print("Could not get current branch. Exiting.")
         sys.exit(1)
 
+    print(f'Using branch name {branch_name} to obtain data volumes')
+
     # remove -ref from end of branch name if found
     if branch_name.endswith('-ref'):
         branch_name = branch_name[0:-4]
@@ -45,6 +47,7 @@ def main(args):
     # if running development version, use metplus-data-dev
     # if released version, i.e. vX.Y, use metplus-data
     data_repo = get_data_repo(branch_name)
+    print(f'Using data repo: {data_repo}')
 
     if branch_name.startswith('main_v'):
         branch_name = branch_name[5:]
