@@ -8,8 +8,7 @@ from ..util import met_util
 
 class UsageWrapper(CommandBuilder):
     """! A default process, prints out usage when nothing is defined in
-         the PROCESS_LIST of the parm/metplus_config/metplus_runtime.conf
-         and no lower level config files are included.
+         the PROCESS_LIST
     """
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'Usage'

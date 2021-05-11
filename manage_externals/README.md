@@ -1,6 +1,5 @@
 -- AUTOMATICALLY GENERATED FILE. DO NOT EDIT --
 
-[![Build Status](https://travis-ci.org/ESMCI/manage_externals.svg?branch=master)](https://travis-ci.org/ESMCI/manage_externals)[![Coverage Status](https://coveralls.io/repos/github/ESMCI/manage_externals/badge.svg?branch=master)](https://coveralls.io/github/ESMCI/manage_externals?branch=master)
 ```
 usage: checkout_externals [-h] [-e [EXTERNALS]] [-o] [-S] [-v] [--backtrace]
                           [-d] [--no-logging]

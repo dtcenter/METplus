@@ -1,0 +1,25 @@
+height: 800
+width: 1200
+title: ERAI Precipitation
+
+font_size: 20
+
+xaxis_title: Longitude
+yaxis_title: Time
+
+date_start: 2016-01-01
+date_end: 2016-03-31
+
+lat_max: 5
+lat_min: -5
+
+var_name: precip
+var_units: mm / day
+unit_conversion: 250
+
+contour_min: 0.2
+contour_max: 1.6
+contour_del: 0.2
+colorscale: 'BuPu'
+plot_filename: 
+- !ENV '${OUTPUT_DIR}/erai_precip2.png'
