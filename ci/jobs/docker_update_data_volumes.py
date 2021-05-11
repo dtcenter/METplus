@@ -49,9 +49,16 @@ def create_data_volumes(branch_name, volumes):
         return
 
     data_repo = get_data_repo(branch_name)
+
+    # pull arg should be develop, feature_NNN, or vX.Y
+    if branch_name.startswith('main_v'):
+        pull_arg = branch_name[5:]
+    else:
+        pull_arg = branch_name
+
     # log into docker using encrypted credentials and
     # call build_docker_images.sh script
-    cmd = (f'{BUILD_DOCKER_IMAGES} -pull {branch_name} '
+    cmd = (f'{BUILD_DOCKER_IMAGES} -pull {pull_arg} '
            f'-data {",".join(volumes)} -push {data_repo}')
     print(f'Running command: {cmd}')
     ret = subprocess.run(shlex.split(cmd), check=True)
@@ -105,7 +112,7 @@ def main():
         category = os.path.splitext(tarfile)[0].split('-')[1]
         print(f"Checking tarfile: {category}")
 
-        volume_name = f'{branch_name}-{category}'
+        volume_name = f'{web_subdir[1:]}-{category}'
         # if the data volume does not exist, create it and push it to DockerHub
         if not volume_name in volumes_last_updated.keys():
             print(f'{volume_name} data volume does not exist. Creating data volume.')
