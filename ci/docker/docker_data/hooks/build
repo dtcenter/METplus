@@ -1,3 +1,6 @@
 #!/bin/bash
 
-./build_docker_images.sh -pull $SOURCE_BRANCH -union -push dtcenter/metplus-data
+# this assumes that the DOCKER_TAG specified in the DockerHub build rules
+# is the version number in X.Y format, i.e. 4.0
+# -pull argument is expected to be vX.Y if tagged release
+./build_docker_images.sh -pull v${DOCKER_TAG} -union -push dtcenter/metplus-data
