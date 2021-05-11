@@ -73,6 +73,9 @@ def main():
     if branch_name.endswith('-ref'):
         branch_name = branch_name[0:-4]
 
+    if branch_name.startswith('main_v'):
+        branch_name = branch_name[5:]
+
     if not os.environ.get('GITHUB_WORKSPACE'):
         print("GITHUB_WORKSPACE not set. Exiting.")
         sys.exit(1)
