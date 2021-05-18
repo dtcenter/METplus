@@ -43,8 +43,8 @@ def main(args):
         branch_name = branch_name[0:-4]
 
     # if running development version, use metplus-data-dev
-    # if released version, i.e. vX.Y, use metplus-data
-    data_repo = get_data_repo(branch_name)
+    # if released version, i.e. X.Y.Z, use metplus-data
+    data_repo = get_data_repo(METPLUS_VERSION)
 
     if branch_name.startswith('main_v'):
         branch_name = branch_name[5:]
