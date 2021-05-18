@@ -11,137 +11,107 @@ import produtil
 from metplus.wrappers.tc_pairs_wrapper import TCPairsWrapper
 from metplus.util import met_util as util
 
+bdeck_template = 'b{basin?fmt=%s}q{date?fmt=%Y%m}*.gfso.{cyclone?fmt=%s}'
+adeck_template = 'a{basin?fmt=%s}q{date?fmt=%Y%m}*.gfso.{cyclone?fmt=%s}'
+edeck_template = 'e{basin?fmt=%s}q{date?fmt=%Y%m}*.gfso.{cyclone?fmt=%s}'
 
-#
-# -----------Mandatory-----------
-#  configuration and fixture to support METplus configuration files beyond
-#  the metplus_data, metplus_system, and metplus_runtime conf files.
-#
+output_template = '{basin?fmt=%s}q{date?fmt=%Y%m%d%H}.gfso.{cyclone?fmt=%s}'
 
+time_fmt = '%Y%m%d%H'
+run_times = ['2014121318']
 
-# Add a test configuration
-def pytest_addoption(parser):
-    parser.addoption("-c", action="store", help=" -c <test config file>")
+def set_minimum_config_settings(config):
+    # set config variables to prevent command from running and bypass check
+    # if input files actually exist
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
 
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'TCPairs')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', time_fmt)
+    config.set('config', 'INIT_BEG', run_times[0])
+    config.set('config', 'INIT_END', run_times[-1])
+    config.set('config', 'INIT_INCREMENT', '12H')
+    config.set('config', 'TC_PAIRS_CONFIG_FILE',
+               '{PARM_BASE}/met_config/TCPairsConfig_wrapped')
+    config.set('config', 'TC_PAIRS_BDECK_TEMPLATE', bdeck_template)
 
-#@pytest.fixture
-def cmdopt(request):
-    return request.config.getoption("-c")
+    config.set('config', 'TC_PAIRS_OUTPUT_DIR',
+               '{OUTPUT_BASE}/TCPairs/output')
+    config.set('config', 'TC_PAIRS_OUTPUT_TEMPLATE', output_template)
 
+    config.set('config', 'TC_PAIRS_READ_ALL_FILES', False)
 
-#
-# ------------Pytest fixtures that can be used for all tests ---------------
-#
-#@pytest.fixture
-def tc_pairs_wrapper(metplus_config):
-    """! Returns a default TCPairsWrapper with /path/to entries in the
-         metplus_system.conf and metplus_runtime.conf configuration
-         files.  Subsequent tests can customize the final METplus configuration
-         to over-ride these /path/to values."""
+    # can set adeck or edeck variables
+    config.set('config', 'TC_PAIRS_ADECK_TEMPLATE', adeck_template)
 
-    # Default, empty TCPairsWrapper with some configuration values set
-    # to /path/to:
-    extra_configs = []
-    extra_configs.append(os.path.join(os.path.dirname(__file__),
-                                      'tc_pairs_wrapper_test.conf'))
-    config = metplus_config(extra_configs)
-    return TCPairsWrapper(config)
+@pytest.mark.parametrize(
+    'config_overrides, env_var_values', [
+        ({}, {}),
+        ({'TC_PAIRS_BASIN': 'AL, ML'}, {'METPLUS_BASIN': 'basin = ["ML"];'}),
 
-def test_top_level_dir(metplus_config):
-    # Verify that invoking tc_pairs with top-level directories for A-deck and B-deck
-    # track files yields the expected results (for test data from Mallory, located on
-    # 'eyewall' under /d1/METplus_TC/adeck and /d1/METplus_TC/bdeck directories), an expected number of
-    # rows are in the .tcst file created.
+    ]
+)
+def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,
+                                       env_var_values):
 
-    rtcp = tc_pairs_wrapper(metplus_config)
-    if rtcp.config.getbool('config', 'TC_PAIRS_REFORMAT_DECK'):
-        pytest.skip("Skip test_top_level_dir, this is for ATCF_by_pairs data and based on TRACK_TYPE, " +
-                    "this is non-ATCF_by_pairs data.")
-    if rtcp.c_dict['READ_ALL_FILES'] is False:
-        pytest.skip("Skip, this is a test for tc-pairs via top-level input dirs.")
+    config = metplus_config()
 
-    # Capture all the available data
-    rtcp.c_dict['INIT_BEG'] = "20170101"
-    rtcp.c_dict['INIT_END'] = "20171231"
+    set_minimum_config_settings(config)
 
-    rtcp.run_all_times()
-    output_file = os.path.join(rtcp.c_dict['OUTPUT_DIR'], "tc_pairs.tcst")
-    num_lines = len(open(output_file).readlines())
+    test_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
+                                 'internal_tests',
+                                 'data',
+                                 'tc_pairs')
+    bdeck_dir = os.path.join(test_data_dir, 'bdeck')
+    adeck_dir = os.path.join(test_data_dir, 'adeck')
+    edeck_dir = os.path.join(test_data_dir, 'edeck')
 
-    # This number was obtained by running MET tc-pairs at the command line with empty values in the MET
-    # config file, match_points = False,  and then obtaining the line count of the resulting .tcst file.
-    expected_number_results = 27762
+    config.set('config', 'TC_PAIRS_BDECK_INPUT_DIR', bdeck_dir)
+    config.set('config', 'TC_PAIRS_ADECK_INPUT_DIR', adeck_dir)
 
-    # This is the expected value when match_points = True in the MET config file
-    # expected_number_results = 7299
+    # LOOP_ORDER processes runs once, times runs once per time
+    config.set('config', 'LOOP_ORDER', 'processes')
 
-    assert num_lines == expected_number_results
+    # set config variable overrides
+    for key, value in config_overrides.items():
+        config.set('config', key, value)
 
-def test_filter_by_region_nhc_data(metplus_config):
-#    pytest.skip("This test needs to be rewritten to check new filtering method")
-    # Verify that the init list is OK
-    rtcp = tc_pairs_wrapper(metplus_config)
-    # Skip if by top level dir
-    by_top_level = rtcp.c_dict['READ_ALL_FILES']
-    if by_top_level:
-        pytest.skip("This test is for data that is to be filtered")
-    # Skip if not ATCF
-    if rtcp.c_dict['REFORMAT_DECK'] and rtcp.c_dict['REFORMAT_DECK_TYPE'] == 'SBU':
-        pytest.skip("This test is for ATCF data.")
-    adeck_dir = rtcp.c_dict['ADECK_TRACK_DATA_DIR'] = '/d1/METplus_TC/NHC_from_Mallory/atcf-navy/aid'
-    bdeck_dir = rtcp.c_dict['BDECK_TRACK_DATA_DIR'] = '/d1/METplus_TC/NHC_from_Mallory/atcf-navy/btk'
-    forecast_tmpl = rtcp.c_dict['FORECAST_TMPL'] = \
-        '/d1/METplus_TC/NHC_from_Mallory/atcf-navy/aid/a{region?fmt=%s}{cyclone?fmt=%s}{date?fmt=%Y}.dat'
-    reference_tmpl = rtcp.c_dict['REFERENCE_TMPL'] =\
-        '/d1/METplus_TC/NHC_from_Mallory/atcf-navy/btk/b{region?fmt=%s}{cyclone?fmt=%s}{date?fmt=%Y}.dat'
-    region = rtcp.c_dict['BASIN'] = ['wp', 'al']
+    if 'METPLUS_INIT_BEG' not in env_var_values:
+        env_var_values['METPLUS_INIT_BEG'] = f'init_beg = "{run_times[0]}";'
 
-    # Number of expected files filtered by date for this data set: 124 atcf files for 201708* and 4 for 20170901*
-    # num_expected = 43
-    num_expected_wp_al = 45
+    if 'METPLUS_INIT_END' not in env_var_values:
+        env_var_values['METPLUS_INIT_END'] = f'init_end = "{run_times[-1]}";'
 
-    file_regex, sorted_keywords = rtcp.create_filename_regex(forecast_tmpl)
+    wrapper = TCPairsWrapper(config)
+    assert(wrapper.isOK)
 
-    all_files = []
-    for dirpath, _, filenames in os.walk(adeck_dir):
-        for f in filenames:
-            all_files.append(os.path.join(dirpath, f))
-
-    filtered_by_region = rtcp.filter_by_region(all_files, file_regex, sorted_keywords)
-    actual_num = len(filtered_by_region)
-    assert actual_num == num_expected_wp_al
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    config_file = wrapper.c_dict.get('CONFIG_FILE')
+    out_dir = wrapper.c_dict.get('OUTPUT_DIR')
+    expected_cmds = [(f"{app_path} {verbosity} "
+                      f"-bdeck {bdeck_dir}/bmlq2014123118.gfso.0104 "
+                      f"-adeck {adeck_dir}/amlq2014123118.gfso.0104 "
+                      f"-config {config_file} "
+                      f"-out {out_dir}/mlq2014121318.gfso.0104"),
+                     ]
 
 
-def test_filter_by_region_data(metplus_config):
-#    pytest.skip("This test needs to be rewritten to check new filtering method")
-    # Verify that filtering bdeck data from Mallory is correct. The bdeck data has cyclone, region/basin, and
-    # date in the filename.
+    all_cmds = wrapper.run_all_times()
+    print(f"ALL COMMANDS: {all_cmds}")
+    assert(len(all_cmds) == len(expected_cmds))
 
-    rtcp = tc_pairs_wrapper(metplus_config)
-    # Skip if by top level dir
-    by_top_level = rtcp.c_dict['READ_ALL_FILES']
-    if by_top_level:
-        pytest.skip("This test is for data that is to be filtered")
-    # Skip if not ATCF
-    if rtcp.c_dict['REFORMAT_DECK'] and rtcp.c_dict['REFORMAT_DECK_TYPE'] == 'SBU':
-        pytest.skip("This test is for ATCF data.")
+    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert(cmd == expected_cmd)
 
-    bdeck_dir = rtcp.c_dict['BDECK_TRACK_DATA_DIR'] = '/d1/METplus_TC/bdeck'
-    reference_tmpl = rtcp.c_dict['REFERENCE_TMPL'] =\
-        '/d1/METplus_TC/NHC_from_Mallory/atcf-navy/btk/b{region?fmt=%s}{cyclone?fmt=%s}{date?fmt=%Y}.dat'
-    region = rtcp.c_dict['BASIN'] = ['wp', 'al']
-
-    # 19 Files of format bal##YYYY.dat in /d1/METplus_TC/bdeck on eyewall
-    num_expected_wp_al = 19
-
-    file_regex, sorted_keywords = rtcp.create_filename_regex(reference_tmpl)
-
-    all_files = []
-    for dirpath, _, filenames in os.walk(bdeck_dir):
-        for f in filenames:
-            all_files.append(os.path.join(dirpath, f))
-
-    filtered_by_region = rtcp.filter_by_region(all_files, file_regex, sorted_keywords)
-    actual_num = len(filtered_by_region)
-    assert actual_num == num_expected_wp_al
-
+        # check that environment variables were set properly
+        for env_var_key in wrapper.WRAPPER_ENV_VAR_KEYS:
+            match = next((item for item in env_vars if
+                          item.startswith(env_var_key)), None)
+            assert(match is not None)
+            print(f'Checking env var: {env_var_key}')
+            actual_value = match.split('=', 1)[1]
+            assert(env_var_values.get(env_var_key, '') == actual_value)

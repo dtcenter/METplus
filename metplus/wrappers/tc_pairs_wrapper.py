@@ -171,18 +171,25 @@ class TCPairsWrapper(CommandBuilder):
                                 'TC_PAIRS_READ_ALL_FILES')
         )
         c_dict['OUTPUT_BASE'] = self.config.getstr('dir', 'OUTPUT_BASE')
-        c_dict['CYCLONE'] = util.getlist(
-            self.config.getstr('config', 'TC_PAIRS_CYCLONE', ''))
-        c_dict['MODEL'] = util.getlist(self.config.getstr('config',
-                                                          'MODEL', ''))
-        c_dict['STORM_ID'] = util.getlist(
-            self.config.getstr('config', 'TC_PAIRS_STORM_ID', ''))
-        c_dict['BASIN'] = util.getlist(self.config.getstr('config',
-                                                          'TC_PAIRS_BASIN',
-                                                          ''))
+        c_dict['CYCLONE_LIST'] = util.getlist(
+            self.config.getstr('config', 'TC_PAIRS_CYCLONE', '')
+        )
+        c_dict['MODEL_LIST'] = util.getlist(
+            self.config.getstr('config',
+                               'MODEL', '')
+        )
+        c_dict['STORM_ID_LIST'] = util.getlist(
+            self.config.getstr('config', 'TC_PAIRS_STORM_ID', '')
+        )
+        c_dict['BASIN_LIST'] = util.getlist(
+            self.config.getstr('config',
+                               'TC_PAIRS_BASIN',
+                               '')
+        )
         c_dict['STORM_NAME'] = util.getlist(
-            self.config.getstr('config', 'TC_PAIRS_STORM_NAME'))
-        c_dict['DLAND_FILE'] = self.config.getstr('config',
+            self.config.getraw('config', 'TC_PAIRS_STORM_NAME')
+        )
+        c_dict['DLAND_FILE'] = self.config.getraw('config',
                                                   'TC_PAIRS_DLAND_FILE')
 
         c_dict['ADECK_TEMPLATE'] = (
@@ -232,16 +239,16 @@ class TCPairsWrapper(CommandBuilder):
         c_dict['GET_ADECK'] = True if c_dict['ADECK_TEMPLATE'] else False
         c_dict['GET_EDECK'] = True if c_dict['EDECK_TEMPLATE'] else False
 
-        if c_dict['STORM_ID']:
+        if c_dict['STORM_ID_LIST']:
             # if using storm id and any other filter is set, report an error
-            if c_dict['BASIN']:
+            if c_dict['BASIN_LIST']:
                 self.log_error('Cannot filter by both BASIN and STORM_ID')
 
-            if c_dict['CYCLONE']:
+            if c_dict['CYCLONE_LIST']:
                 self.log_error('Cannot filter by both CYCLONE and STORM_ID')
 
             # check storm ID format
-            for storm_id in c_dict['STORM_ID']:
+            for storm_id in c_dict['STORM_ID_LIST']:
                 # pull out info from storm_id and process
                 match = re.match(r'(\w{2})(\d{2})(\d{4})', storm_id)
                 if not match:
@@ -262,6 +269,13 @@ class TCPairsWrapper(CommandBuilder):
 
         # if running in READ_ALL_FILES mode, call tc_pairs once and exit
         if self.c_dict['READ_ALL_FILES']:
+
+            # use full list of storm/model info if running once for all files
+            self.c_dict['STORM_ID'] = self.c_dict['STORM_ID_LIST']
+            self.c_dict['CYCLONE'] = self.c_dict['CYCLONE_LIST']
+            self.c_dict['BASIN'] = self.c_dict['BASIN_LIST']
+            self.c_dict['MODEL'] = self.c_dict['MODEL_LIST']
+
             # Set up the environment variable to be used in the tc_pairs Config
             self.set_environment_variables(None)
             self.bdeck = [self.c_dict['BDECK_DIR']]
@@ -278,6 +292,8 @@ class TCPairsWrapper(CommandBuilder):
             if self.c_dict['OUTPUT_TEMPLATE']:
                 # get output filename from template
                 time_info = time_util.ti_calculate(input_dict)
+                self.add_storm_info_to_dict(time_info)
+
                 output_file = do_string_sub(self.c_dict['OUTPUT_TEMPLATE'],
                                             **time_info)
             else:
@@ -296,12 +312,6 @@ class TCPairsWrapper(CommandBuilder):
                 self.build()
 
             return self.all_commands
-
-        # use init begin as run time (start of the storm)
-        input_dict = {'init':
-                      datetime.datetime.strptime(self.c_dict['INIT_BEG'],
-                                                 '%Y%m%d_%H%M%S')
-                      }
 
         self.run_at_time(input_dict)
         return self.all_commands
@@ -340,32 +350,18 @@ class TCPairsWrapper(CommandBuilder):
         self.c_dict['CONFIG_FILE'] = do_string_sub(self.c_dict['CONFIG_FILE'],
                                                    **time_info)
 
-        # get items to filter bdeck files
-        # set each to default wildcard character unless specified in conf
-        basin_list = ['??']
-        cyclone_list = ['*']
         model_list = ['*']
+        if self.c_dict['MODEL_LIST']:
+            model_list = self.c_dict['MODEL_LIST']
 
-        if self.c_dict['BASIN']:
-            basin_list = self.c_dict['BASIN']
-
-        if self.c_dict['CYCLONE']:
-            cyclone_list = self.c_dict['CYCLONE']
-
-        if self.c_dict['MODEL']:
-            model_list = self.c_dict['MODEL']
-
-        if self.c_dict['STORM_ID']:
-            for storm_id in self.c_dict['STORM_ID']:
+        if self.c_dict['STORM_ID_LIST']:
+            for storm_id in self.c_dict['STORM_ID_LIST']:
                 # pull out info from storm_id and process
                 match = re.match(r'(\w{2})(\d{2})(\d{4})', storm_id)
                 if not match:
                     return False
 
-                # set env var for current storm ID
-                self.env_var_dict['METPLUS_STORM_ID'] = (
-                    f"storm_id = [{storm_id}];"
-                )
+                self.c_dict['STORM_ID'] = [storm_id]
 
                 basin = match.group(1).lower()
                 cyclone = match.group(2)
@@ -380,12 +376,53 @@ class TCPairsWrapper(CommandBuilder):
                     continue
 
                 self.process_data(basin, cyclone, model_list, time_info)
-        else:
-            for basin in [basin.lower() for basin in basin_list]:
-                for cyclone in cyclone_list:
-                    self.process_data(basin, cyclone, model_list, time_info)
+
+            return True
+
+        basin_list = ['??']
+        cyclone_list = ['*']
+
+        if self.c_dict['BASIN_LIST']:
+            basin_list = self.c_dict['BASIN_LIST']
+
+        if self.c_dict['CYCLONE_LIST']:
+            cyclone_list = self.c_dict['CYCLONE_LIST']
+
+        for basin in basin_list:
+            if basin != '??':
+                self.c_dict['BASIN'] = [basin]
+            for cyclone in cyclone_list:
+                if cyclone != '*':
+                    self.c_dict['CYCLONE'] = [cyclone]
+                self.process_data(basin.lower(), cyclone, model_list, time_info)
 
         return True
+
+    def add_storm_info_to_dict(self, time_info):
+        """! Read from self.c_dict and add storm information to dictionary.
+          Assumes each value read from c_dict is a list. Set value to 'all'
+          unless there is a single item in the list.
+        """
+        storm_id = self.c_dict['STORM_ID']
+        storm_id = storm_id[0] if len(storm_id) == 1 else 'all'
+
+        storm_name = self.c_dict['STORM_NAME']
+        storm_name = storm_name[0] if len(storm_name) == 1 else 'all'
+
+        basin = self.c_dict['BASIN']
+        basin = basin[0] if len(basin) == 1 else 'all'
+
+        cyclone = self.c_dict['CYCLONE']
+        cyclone = cyclone[0] if len(cyclone) == 1 else 'all'
+
+        model = self.c_dict['MODEL']
+        model = model[0] if len(model) == 1 else 'all'
+
+        time_info['storm_id'] = storm_id
+        time_info['storm_name'] = storm_name
+        time_info['basin'] = basin
+        time_info['cyclone'] = cyclone
+        time_info['model'] = model
 
     def set_environment_variables(self, time_info):
         """! Set up all the environment variables that are assigned
@@ -412,58 +449,41 @@ class TCPairsWrapper(CommandBuilder):
         valid_end = self.get_env_var_value('METPLUS_VALID_END').strip('"')
         self.add_env_var('VALID_END', valid_end)
 
-        init_inc = self.get_env_var_value('METPLUS_INIT_INCLUDE')
-        if not init_inc:
-            init_inc = '[]'
+        init_inc = self.get_env_var_value('METPLUS_INIT_INCLUDE',
+                                          item_type='list')
         self.add_env_var('INIT_INCLUDE', init_inc)
 
-        init_exc = self.get_env_var_value('METPLUS_INIT_EXCLUDE')
-        if not init_exc:
-            init_exc = '[]'
+        init_exc = self.get_env_var_value('METPLUS_INIT_EXCLUDE',
+                                          item_type='list')
         self.add_env_var('INIT_EXCLUDE', init_exc)
 
-        model = self.get_env_var_value('METPLUS_MODEL')
-        if not model:
-            model = '[]'
+        model = self.get_env_var_value('METPLUS_MODEL',
+                                       item_type='list')
         self.add_env_var('MODEL', model)
 
         # STORM_ID
-        tmp_storm_id = self.c_dict['STORM_ID']
-        if not tmp_storm_id:
-            # Empty, use all storm_ids, indicate this to MET via '[]'
-            tmp_storm_id = '[]'
-        else:
-            # Replace ' with " and remove whitespace
-            storm_id = str(tmp_storm_id).replace("\'", "\"")
-            tmp_storm_id = ''.join(storm_id.split())
+        storm_id = '[]'
+        if self.c_dict.get('STORM_ID'):
+            storm_id = str(self.c_dict['STORM_ID']).replace("'", '"')
 
-        self.add_env_var('STORM_ID', tmp_storm_id)
+            storm_id_fmt = f"storm_id = {storm_id};"
+            self.env_var_dict['METPLUS_STORM_ID'] = storm_id_fmt
 
-        storm_id_fmt = f"storm_id = {tmp_storm_id};"
-        self.env_var_dict['METPLUS_STORM_ID'] = storm_id_fmt
+        self.add_env_var('STORM_ID', storm_id)
 
         # BASIN
-        tmp_basin = self.c_dict['BASIN']
-        if not tmp_basin:
-            # Empty, we want all basins.  Send MET '[]' to indicate that
-            # we want all the basins.
-            tmp_basin = '[]'
-        else:
-            # Replace any ' with " and remove whitespace.
-            basin = str(tmp_basin).replace("\'", "\"")
-            tmp_basin = ''.join(basin.split())
+        basin = '[]'
+        if self.c_dict.get('BASIN'):
+            basin = str(self.c_dict['BASIN']).replace("'", '"')
 
-        self.add_env_var('BASIN', tmp_basin)
+            basin_fmt = f"basin = {basin};"
+            self.env_var_dict['METPLUS_BASIN'] = basin_fmt
 
-        basin_fmt = f"basin = {tmp_basin};"
-        self.env_var_dict['METPLUS_BASIN'] = basin_fmt
+        self.add_env_var('BASIN', basin)
 
         # CYCLONE
-        tmp_cyclone = self.c_dict['CYCLONE']
-        if not tmp_cyclone:
-            # Empty, use all cyclones, send '[]' to MET.
-            tmp_cyclone = '[]'
-        else:
+        cyclone = '[]'
+        if self.c_dict.get('CYCLONE'):
             # add storm month to each cyclone item if reformatting SBU
             if self.c_dict['REFORMAT_DECK'] and \
                self.c_dict['REFORMAT_DECK_TYPE'] == 'SBU':
@@ -471,35 +491,27 @@ class TCPairsWrapper(CommandBuilder):
                     storm_month = self.c_dict['INIT_BEG'][4:6]
                 else:
                     storm_month = time_info['init'].strftime('%m')
-                tmp_cyclone = [storm_month + c for c in tmp_cyclone]
+                cyclone = [storm_month + c for c in self.c_dict['CYCLONE']]
 
-            # Replace ' with " and get rid of any whitespace
-            cyclone = str(tmp_cyclone).replace("\'", "\"")
-            tmp_cyclone = ''.join(cyclone.split())
+            cyclone = str(cyclone).replace("'", '"')
 
-        self.add_env_var('CYCLONE', tmp_cyclone)
+            cyclone_fmt = f"cyclone = {cyclone};"
+            self.env_var_dict['METPLUS_CYCLONE'] = cyclone_fmt
 
-        cyclone_fmt = f"cyclone = {tmp_cyclone};"
-        self.env_var_dict['METPLUS_CYCLONE'] = cyclone_fmt
+        self.add_env_var('CYCLONE', cyclone)
 
         # STORM_NAME
-        tmp_storm_name = self.c_dict['STORM_NAME']
-        if not tmp_storm_name:
-            # Empty, equivalent to 'STORM_NAME = "[]"; in MET config file,
-            # use all storm names.
-            tmp_storm_name = '[]'
-        else:
-            storm_name = str(tmp_storm_name).replace("\'", "\"")
-            tmp_storm_name = ''.join(storm_name.split())
+        storm_name = '[]'
+        if self.c_dict.get('STORM_NAME'):
+            storm_name = str(self.c_dict['STORM_NAME']).replace("'", '"')
 
-        self.add_env_var('STORM_NAME', tmp_storm_name)
+            storm_name_fmt = f"storm_name = {storm_name};"
+            self.env_var_dict['METPLUS_STORM_NAME'] = storm_name_fmt
 
-        storm_name_fmt = f"cyclone = {tmp_storm_name};"
-        self.env_var_dict['METPLUS_STORM_NAME'] = storm_name_fmt
+        self.add_env_var('STORM_NAME', storm_name)
 
         # DLAND_FILE
-        tmp_dland_file = self.c_dict['DLAND_FILE']
-        self.add_env_var('DLAND_FILE', str(tmp_dland_file))
+        self.add_env_var('DLAND_FILE', self.c_dict['DLAND_FILE'])
 
         super().set_environment_variables(time_info)
 
