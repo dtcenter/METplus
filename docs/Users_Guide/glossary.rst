@@ -1335,7 +1335,7 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_DERIVE_LOOKBACK
-     Specify how far to look back in time in hours to find files for running the MET pcp_combine tool in derive mode. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_DERIVE_LOOKBACK`.
+     Specify how far to look back in time in hours to find files for running the MET pcp_combine tool in derive mode. If set to 0 or unset, data will be obtained by using the input template with the current runtime instead of looking backwards in time. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_DERIVE_LOOKBACK`.
 
      | *Used by:*  PCPCombine
 
