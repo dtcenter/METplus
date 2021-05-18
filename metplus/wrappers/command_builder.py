@@ -1964,13 +1964,14 @@ class CommandBuilder:
                                  c_dict_key='METPLUS_CENSOR_VAL',
                                  remove_quotes=True)
 
-    def get_env_var_value(self, env_var_name, read_dict=None):
+    def get_env_var_value(self, env_var_name, read_dict=None, item_type=None):
         """! Read env var value, get text after the equals sign and remove the
         trailing semi-colon.
 
             @param env_var_name key to obtain
             @param read_dict (Optional) directory to read from. If unset (None)
              then read from self.env_var_dict
+            @param item_type if set to list, return [] if variable is unset
             @returns extracted value
         """
         if read_dict is None:
@@ -1978,7 +1979,11 @@ class CommandBuilder:
 
         mask_value = read_dict.get(env_var_name, '')
         if not mask_value:
-            return ''
+            if not item_type:
+                return ''
+
+            if item_type == 'list':
+                return '[]'
 
         return mask_value.split('=', 1)[1].rstrip(';').strip()
 
