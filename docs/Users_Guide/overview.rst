@@ -1,8 +1,9 @@
-﻿Overview
-========
+********
+Overview
+********
 
 Purpose and organization of the User's Guide
---------------------------------------------
+============================================
 
 The goal of this User's Guide is to equip users with the information
 needed to use the Model Evaluation Tools (MET) and its companion
@@ -22,7 +23,7 @@ information about configuring your environment and METplus Wrappers
 installation.
 
 The Developmental Testbed Center (DTC)
---------------------------------------
+======================================
 
 METplus Wrappers has been developed, and will be maintained and
 enhanced, by the Developmental Testbed Center (DTC;
@@ -46,7 +47,7 @@ METplus Wrappers major release number is six less than the MET major
 release number (e.g. MET 8.X is released with METplus Wrappers 2.X).
 
 METplus Wrappers goals and design philosophy
---------------------------------------------
+============================================
 
 METplus Wrappers is a Python scripting infrastructure for the MET tools.
 The primary goal of METplus Wrappers development is to provide MET users
@@ -75,7 +76,7 @@ centers through a publicly accessible GitHub repository. Refer to
 :ref:`getcode` for simple examples of obtaining METplus Wrappers.
 
 METplus Wrappers Components
----------------------------
+===========================
 
 The major components of the METplus Wrappers package are METplus Python
 wrappers to the MET tools, MET configuration files and a hierarchy of
@@ -83,10 +84,12 @@ METplus Wrappers configuration files. Some Python wrappers do not
 correspond to a particular MET tool, but wrap utilities to extend
 METplus functionality.
 
+.. _release-notes:
+
 .. include:: release-notes.rst
 
 Future development plans
-------------------------
+========================
 
 METplus Wrappers is an evolving application. New capabilities are
 planned in controlled, successive version releases that are synchronized
@@ -101,7 +104,7 @@ community. Issues that are in the development queue detailed in the
 `met_help@ucar.edu <met_help@ucar.edu>`__.
 
 Code support
-------------
+============
 
 Support for METplus Wrappers is provided through a MET-help e-mail
 address: met_help@ucar.edu. We will endeavor to respond to requests for

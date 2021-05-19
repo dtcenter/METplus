@@ -738,14 +738,14 @@ example of a script that uses Conda to install a package::
 Add new category to test runs
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Add a new entry to the main.yml file found in the .github/workflows directory
+Add a new entry to the testing.yml file found in the .github/workflows directory
 in the METplus repository.
-Find the job in the main.yml file named "use_case_tests" and add a new entry
+Find the job in the testing.yml file named "use_case_tests" and add a new entry
 in the "categories" list with the category of the new use case followed by a
 colon, then the index of the use case from the list described in the
 :ref:`add_use_case_to_test_suite` section, then another colon followed by
 "NEW". For example, if the new use case
-is found in the medium_range category with an index of 9, and the main.yml file
+is found in the medium_range category with an index of 9, and the testing.yml file
 has the following entries in the categories list::
 
     use_case_tests:
@@ -1088,7 +1088,7 @@ the diagram found on the Summary page of each GitHub Actions run),
 produces a reasonably small sized output data
 artifact (found at the bottom of a completed GitHub Actions run), and the same
 applies to another group of same category, it would make sense to combine them.
-In the .github/workflow/main.yml file, modify the categories list under the
+In the .github/workflow/testing.yml file, modify the categories list under the
 "use_case_tests" job (see :ref:`add_new_category_to_test_runs`). For example,
 if the following is found in the list::
 

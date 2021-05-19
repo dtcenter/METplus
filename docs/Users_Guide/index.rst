@@ -1,8 +1,7 @@
 
-
-============
+############
 User's Guide
-============
+############
 
 **Foreword: A note to METplus Wrappers users**
 
@@ -28,12 +27,6 @@ contribution. We will then determine the
 maturity of any new verification method and coordinate the inclusion of
 the new module in a future version.
 
-This User's Guide was prepared by the developers of the METplus
-Wrappers, including Dan Adriaansen, Minna Win-Gildenmeister, George McCabe,
-Julie Prestopnik, Jim Frimel, John Opatz, John Halley Gotway,
-Tara Jensen, Jonathan Vigh, Mallory Row, Christana Kalb, Hank Fisher,
-Lisa Goodrich, Lindsay Blank, and Todd Arbetter.
-
 **Model Evaluation Tools Plus (METplus)  TERMS OF USE - IMPORTANT!**
 
 |copyright|
@@ -43,31 +36,39 @@ You may obtain a copy of the License at
 
 http://www.apache.org/licenses/LICENSE-2.0
 
-Unless required by applicable law or agreed to in writing, software distributed under
-the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF
-ANY KIND, either express or implied.  See the License for the specific language
-governing permissions and limitations under the License.
+Unless required by applicable law or agreed to in writing, software distributed
+under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
+CONDITIONS OF ANY KIND, either express or implied.  See the License for the
+specific language governing permissions and limitations under the License.
+
+.. _citations:
 
 **Citations**
 
 The citation for this User's Guide should be:
 
-Adriaansen, D., M. Win-Gildenmeister, G. McCabe, J. Prestopnik, J. Frimel, J. Opatz,
-J. Halley Gotway, T. Jensen, J. Vigh, M. Row, C. Kalb, H. Fisher, L. Goodrich,
-L. Blank, and T. Arbetter, |release_year|: The METplus Version |version| User's Guide.
-Developmental Testbed Center.  Available at: https://github.com/dtcenter/METplus/releases.
+|author_list|, |release_year|: The METplus Version |version| User's Guide.
+Developmental Testbed Center. Available at: https://github.com/dtcenter/METplus/releases.
 
 **Acknowledgments**
 
-We thank all the METplus sponsors including: DTC partners (NOAA, NCAR, USAF, and NSF),
-along with NOAA/Office of Atmospheric Research (OAR), NOAA/Office of Science and
-Technology Integration, NOAA/Weather Program Office (WPO, formerly Office of Weather
-and Air Quality), and the Naval Research Laboratory (NRL). Thanks also go to the
-staff at the Developmental Testbed Center for their help, advice,and many types of support.
+We thank all of the METplus sponsors including:
+DTC partners (NOAA, NCAR, USAF, and NSF), along with
+NOAA/Office of Atmospheric Research (OAR),
+NOAA/National Weather Service,
+NOAA/Joint Technology Transfer Program (JTTI),
+NOAA/Subseasonal to Seasonal (S2S) Project,
+NOAA/Unified Forecast System Research to Operations Project (UFS R2O),
+Met Office,
+and the
+Naval Research Laboratory (NRL).
+Thanks also go to the staff at the Developmental Testbed Center for their
+help, advice, and many types of support.
 We released METplus Alpha in February 2017 and would not have made a decade of
-cutting-edge verification support without those who participated in DTC planning
-workshops and the NGGPS United Forecast System Strategic Implementation Plan Working
-Groups (UFS SIP WGs).
+cutting-edge verification support without those who participated in
+DTC planning workshops and the United Forecast System Working Groups (UFS WGs).
+Finally, the National Center for Atmospheric Research (NCAR)
+is sponsored by NSF.
 
 
 
@@ -81,14 +82,14 @@ Groups (UFS SIP WGs).
    systemconfiguration
    wrappers
    usecases
-   references
    quicksearch
    glossary
+   references
 
+..
+   Indices and tables
+   ==================
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+   * :ref:`genindex`
+   * :ref:`modindex`
+   * :ref:`search`

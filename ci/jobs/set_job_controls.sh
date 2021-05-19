@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Run by GitHub Actions (in .github/workflows/main.yml) to parse
+# Run by GitHub Actions (in .github/workflows/testing.yml) to parse
 # info from GitHub event and commit message from last commit before
 # a push to determine which jobs to run and which to skip.
 
@@ -33,6 +33,13 @@ elif [ "${GITHUB_REF: -4}" == -ref ]; then
 # if not pull request or -ref branch, apply commit messages overrides
 else
 
+  # if develop or main branch, run all use cases
+  branch_name=`cut -d "/" -f3 <<< "${GITHUB_REF}"`
+  if [ "$branch_name" == "develop" ] || \
+     [ "${branch_name:0:6}" == "main_v" ]; then
+    run_all_use_cases=true
+  fi
+
   # check commit messages for skip or force keywords
   if grep -q "ci-skip-all" <<< "$commit_msg"; then
     run_docs=false
@@ -46,6 +53,10 @@ else
 
   if grep -q "ci-skip-use-cases" <<< "$commit_msg"; then
     run_use_cases=false
+  fi
+
+  if grep -q "ci-skip-unit-tests" <<< "$commit_msg"; then
+    run_unit_tests=false
   fi
 
   if grep -q "ci-only-docs" <<< "$commit_msg"; then

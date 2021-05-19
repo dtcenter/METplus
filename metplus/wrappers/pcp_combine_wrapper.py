@@ -69,9 +69,20 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         else:
             if fcst_run:
                 c_dict = self.set_fcst_or_obs_dict_items('FCST', c_dict)
-
+                c_dict['VAR_LIST_FCST'] = util.parse_var_list(
+                    self.config,
+                    data_type='FCST',
+                    met_tool=self.app_name
+                )
             if obs_run:
                 c_dict = self.set_fcst_or_obs_dict_items('OBS', c_dict)
+                c_dict['VAR_LIST_OBS'] = util.parse_var_list(
+                    self.config,
+                    data_type='OBS',
+                    met_tool=self.app_name
+                )
+
+
 
         return c_dict
 
@@ -182,6 +193,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                       'either empty or the same length as ' +\
                       f'{d_type}_PCP_COMBINE_INPUT_ACCUMS list.'
                 self.log_error(msg)
+
+        c_dict['ALLOW_MULTIPLE_FILES'] = True
 
         return c_dict
 
@@ -1004,9 +1017,26 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.log_error(f'Invalid format for derived lookback: {lookback}')
             return
 
-        if not self.get_accumulation(time_info,
-                                     lookback,
-                                     data_src):
+        # if no lookback is specified, get files using the template without
+        # using the get accumulation logic
+        if lookback_seconds == 0:
+            self.logger.debug(f"{data_src}_PCP_COMBINE_DERIVE_LOOKBACK unset "
+                              "or set to 0. Using template to find files.")
+            accum_dict = self.c_dict['ACCUM_DICT_LIST'][0]
+            addon = self.get_addon(accum_dict, 0, time_info.get('valid', ''))
+            input_files = self.find_data(time_info,
+                                         var_info,
+                                         data_type=data_src,
+                                         return_list=True)
+            if not input_files:
+                return None
+
+            for input_file in input_files:
+                self.add_input_file(input_file, addon)
+
+        elif not self.get_accumulation(time_info,
+                                       lookback,
+                                       data_src):
             self.log_error(f'Could not find files in {in_dir} using template {in_template}')
             return None
 

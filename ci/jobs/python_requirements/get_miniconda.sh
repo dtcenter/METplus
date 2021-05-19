@@ -2,7 +2,13 @@
 
 script_dir=$(dirname "$0")
 
-python_version=`${script_dir}/../print_python_version.py`
+if [ -z "${1+x}" ]; then  
+  python_version=`${script_dir}/../print_python_version.py`
+else
+  python_version=$1
+fi
+
+echo Creating Conda environment using $python_version
 
 # these are used to obtain version of MiniConda3
 # the version determines the default version of Python

@@ -861,7 +861,7 @@ def is_loop_by_init(config):
 
     return None
 
-def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
+def get_time_obj(time_from_conf, fmt, clock_time, logger=None, warn=False):
     """!Substitute today or now into [INIT/VALID]_[BEG/END] if used
         Args:
             @param time_from_conf value from [INIT/VALID]_[BEG/END] that
@@ -880,7 +880,10 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
         error_message = (f"[INIT/VALID]_TIME_FMT ({fmt}) does not match "
                          f"[INIT/VALID]_[BEG/END] ({time_str})")
         if logger:
-            logger.error(error_message)
+            if warn:
+                logger.warning(error_message)
+            else:
+                logger.error(error_message)
         else:
             print(f"ERROR: {error_message}")
 
@@ -888,8 +891,26 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
 
     return time_t
 
-def get_start_end_interval_times(config):
-    clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
+def get_start_end_interval_times(config, warn=False):
+    """! Reads the METplusConfig object to determine the start, end, and
+      increment values based on the configuration. Based on the LOOP_BY value,
+      it will read the INIT_ or VALID_ variables TIME_FMT, BEG, END, and
+      INCREMENT and use the time format value to parse the other values.
+
+        @param config METplusConfig object to parse
+        @parm warn (optional) if True, output warnings instead of errors
+        @returns tuple of start time (datetime), end time (datetime) and
+        increment (dateutil.relativedelta) or all None values if time info
+        could not be parsed properly
+    """
+    # set function to send log messages (warning or error)
+    if warn:
+        log_function = config.logger.warning
+    else:
+        log_function = config.logger.error
+
+    clock_time_obj = datetime.datetime.strptime(config.getstr('config',
+                                                              'CLOCK_TIME'),
                                                 '%Y%m%d%H%M%S')
     use_init = is_loop_by_init(config)
     if use_init is None:
@@ -911,23 +932,27 @@ def get_start_end_interval_times(config):
         )
 
     start_time = get_time_obj(start_t, time_format,
-                             clock_time_obj, config.logger)
+                              clock_time_obj, config.logger,
+                              warn=warn)
     if not start_time:
-        config.logger.error("Could not format start time")
+        log_function("Could not format start time")
         return None, None, None
 
     end_time = get_time_obj(end_t, time_format,
-                            clock_time_obj, config.logger)
+                            clock_time_obj, config.logger,
+                            warn=warn)
     if not end_time:
-        config.logger.error("Could not format end time")
+        log_function("Could not format end time")
         return None, None, None
 
-    if start_time + time_interval < start_time + datetime.timedelta(seconds=60):
-        config.logger.error("[INIT/VALID]_INCREMENT must be greater than or equal to 60 seconds")
+    if (start_time + time_interval <
+            start_time + datetime.timedelta(seconds=60)):
+        log_function('[INIT/VALID]_INCREMENT must be greater than or '
+                     'equal to 60 seconds')
         return None, None, None
 
     if start_time > end_time:
-        config.logger.error("Start time must come before end time")
+        log_function("Start time must come before end time")
         return None, None, None
 
     return start_time, end_time, time_interval
@@ -2147,7 +2172,7 @@ def get_field_config_variables(config, index, search_prefixes):
 
     return field_configs
 
-def format_var_items(field_configs, time_info):
+def format_var_items(field_configs, time_info=None):
     """! Substitute time information into field information and format values.
 
         @param field_configs dictionary with config variable names to read
@@ -2172,15 +2197,18 @@ def format_var_items(field_configs, time_info):
         return 'Name not found'
 
     # perform string substitution on name
-    var_items['name'] = do_string_sub(search_name,
-                                      skip_missing_tags=True,
-                                      **time_info)
+    if time_info:
+        search_name = do_string_sub(search_name,
+                                    skip_missing_tags=True,
+                                    **time_info)
+    var_items['name'] = search_name
 
     # get levels, performing string substitution on each item of list
     for level in getlist(field_configs.get('levels')):
-        subbed_level = do_string_sub(level,
-                                     **time_info)
-        var_items['levels'].append(subbed_level)
+        if time_info:
+            level = do_string_sub(level,
+                                  **time_info)
+        var_items['levels'].append(level)
 
     # if no levels are found, add an empty string
     if not var_items['levels']:
@@ -2199,11 +2227,12 @@ def format_var_items(field_configs, time_info):
     # get extra options if it is set, format with semi-colons between items
     search_extra = field_configs.get('options')
     if search_extra:
-        extra = do_string_sub(search_extra,
-                              **time_info)
+        if time_info:
+            search_extra = do_string_sub(search_extra,
+                                         **time_info)
 
         # strip off empty space around each value
-        extra_list = [item.strip() for item in extra.split(';')]
+        extra_list = [item.strip() for item in search_extra.split(';')]
 
         # split up each item by semicolon, then add a semicolon to the end
         # use list(filter(None to remove empty strings from list
@@ -2219,8 +2248,9 @@ def format_var_items(field_configs, time_info):
             var_items['output_names'].append(var_items['name'])
     else:
         for out_name in getlist(out_name_str):
-            out_name = do_string_sub(out_name,
-                                     **time_info)
+            if time_info:
+                out_name = do_string_sub(out_name,
+                                         **time_info)
             var_items['output_names'].append(out_name)
 
     if len(var_items['levels']) != len(var_items['output_names']):
@@ -2271,11 +2301,11 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
     # if time_info is not passed in, set 'now' to CLOCK_TIME
     # NOTE: any attempt to use string template substitution with an item other
     # than 'now' will fail if time_info is not passed into parse_var_list
-    if time_info is None:
-        time_info = {'now': datetime.datetime.strptime(
-            config.getstr('config', 'CLOCK_TIME'),
-            '%Y%m%d%H%M%S')
-        }
+#    if time_info is None:
+#        time_info = {'now': datetime.datetime.strptime(
+#            config.getstr('config', 'CLOCK_TIME'),
+#            '%Y%m%d%H%M%S')
+#        }
 
     # var_list is a list containing an list of dictionaries
     var_list = []
@@ -2350,7 +2380,9 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
                 output_name = field_info.get('output_names')[level_index]
 
                 # substitute level in name if filename template is specified
-                subbed_name = do_string_sub(name, **sub_info)
+                subbed_name = do_string_sub(name,
+                                            skip_missing_tags=True,
+                                            **sub_info)
 
                 var_dict[f"{current_type}_name"] = subbed_name
                 var_dict[f"{current_type}_level"] = level
@@ -2394,6 +2426,44 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
             config.logger.debug(" ens_output_name:"+v['ens_output_name'])
     '''
     return sorted(var_list, key=lambda x: x['index'])
+
+def sub_var_info(var_info, time_info):
+    if not var_info:
+        return {}
+
+    out_var_info = {}
+    for key, value in var_info.items():
+        if isinstance(value, list):
+            out_value = []
+            for item in value:
+                out_value.append(do_string_sub(item,
+                                               skip_missing_tags=True,
+                                               **time_info))
+        else:
+            out_value = do_string_sub(value,
+                                      skip_missing_tags=True,
+                                      **time_info)
+
+        out_var_info[key] = out_value
+
+    return out_var_info
+
+def sub_var_list(var_list, time_info):
+    """! Perform string substitution on var list values with time info
+
+        @param var_list list of field info to substitute values into
+        @param time_info dictionary containing time information
+        @returns var_list with values substituted
+    """
+    if not var_list:
+        return []
+
+    out_var_list = []
+    for var_info in var_list:
+        out_var_info = sub_var_info(var_info, time_info)
+        out_var_list.append(out_var_info)
+
+    return out_var_list
 
 def split_level(level):
     level_type = ""
@@ -2732,7 +2802,7 @@ def expand_int_string_to_list(int_string):
 
     if hasPlus:
         subset_list.append('+')
-    print(f"{int_string} converted to {subset_list}")
+
     return subset_list
 
 def subset_list(full_list, subset_definition):
@@ -2830,6 +2900,13 @@ def netcdf_has_var(file_path, name, level):
 
     except (AttributeError, OSError, ImportError):
         return False
+
+def generate_tmp_filename():
+    import random
+    import string
+    random_string = ''.join(random.choice(string.ascii_letters)
+                            for i in range(10))
+    return f"metplus_tmp_{random_string}"
 
 def format_level(level):
     """! Format level string to prevent NetCDF level values from creating
