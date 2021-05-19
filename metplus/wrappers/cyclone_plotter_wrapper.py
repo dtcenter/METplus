@@ -19,7 +19,10 @@ try:
     import matplotlib.ticker as mticker
     import cartopy.crs as ccrs
     import cartopy.feature as cfeature
+    import cartopy
     from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+    cartopy.config['data_dir'] = os.getenv('CARTOPY_DIR', cartopy.config.get('data_dir'))
+
 except Exception as err_msg:
     WRAPPER_CANNOT_RUN = True
     EXCEPTION_ERR = err_msg
