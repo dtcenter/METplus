@@ -20,7 +20,7 @@ from RMM_OMI_util import find_input_files, find_times, compute_plot_times
 
 def run_rmm_steps(inlabel, inconfig, spd, olr_eoffile, u850_eoffile, u200_eoffile, oplot_dir):
 
-    # set dates to read
+    # Get dates to read
     fileconfig = config_metplus.replace_config_from_section(inconfig,'compute_rmm')
     use_init =  is_loop_by_init(inconfig)
     alldata_time = find_times(fileconfig, use_init)
@@ -32,8 +32,9 @@ def run_rmm_steps(inlabel, inconfig, spd, olr_eoffile, u850_eoffile, u200_eoffil
     time = np.array([t_obj['valid'] for t_obj in alldata_time],dtype='datetime64')
     ntim = len(time)
 
-    # read data from file
-    ####  NEED TO ADD LAT SLICE AS A VARIABLE...CAN do in regrid_data_plane if options work
+    # read OLR, U850, U500 data from file
+    #### This will need to be converted to the dbload versions
+    #### I've cut the domain using regrid_data_plane, so that can be omitted once switched to dbload
     ds = xr.open_dataset('UserScript_fcstGFS_obsERA_RMM/olr.1x.7920.anom7901.nc')
     olr = ds['olr'].sel(lat=slice(-15,15),time=slice(time[0],time[-1]))
     lon = ds['lon']
@@ -50,14 +51,15 @@ def run_rmm_steps(inlabel, inconfig, spd, olr_eoffile, u850_eoffile, u200_eoffil
     u200 = u200.mean('lat')
     print(u200.min(), u200.max())
 
-    ########################################
     # project data onto EOFs
+    #### The code called here goes into METcalcpy
+    #### It is currently from the compute_mjo_indices.py
     PC1, PC2 = cmi.rmm(olr[0:ntim,:], u850[0:ntim,:], u200[0:ntim,:], time, spd, 'UserScript_fcstGFS_obsERA_RMM/')
 
     print(PC1.min(), PC1.max())
 
-    ########################################
-    # plot the PC phase diagram
+    # Setup the PC phase diagram
+    ####  This grabs the time window for the plot from the configuration file
     plot_time, months, days, ntim_plot = compute_plot_times(inconfig,use_init)
     PC1_plot = PC1.sel(time=slice(plot_time[0],plot_time[-1]))
     PC2_plot = PC2.sel(time=slice(plot_time[0],plot_time[-1]))
@@ -65,9 +67,13 @@ def run_rmm_steps(inlabel, inconfig, spd, olr_eoffile, u850_eoffile, u200_eoffil
     PC2_plot = PC2_plot[0:ntim_plot]
     phase_plot_name = oplot_dir+'/'+inconfig.getstr('compute_rmm',inlabel+'_PHASE_PLOT_OUTPUT_NAME','obs_RMM_comp_phase')
     phase_plot_format = inconfig.getstr('compute_rmm',inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
+    # plot the PC phase diagram
+    ####  This will need to go into METplotpy
+    ####  It is currently in plot_mjo_indices.py
     pmi.phase_diagram('RMM',PC1_plot,PC2_plot,plot_time,months,days,phase_plot_name,phase_plot_format)
 
-    # plot PC time series
+    # Setup PC time series plot
+    ####  This grabs the time window for the plot from the configuration file
     plot_time, months, days, ntim_plot = compute_plot_times(inconfig,use_init)
     PC1 = PC1.sel(time=slice(plot_time[0],plot_time[-1]))
     PC2 = PC2.sel(time=slice(plot_time[0],plot_time[-1]))
@@ -75,6 +81,9 @@ def run_rmm_steps(inlabel, inconfig, spd, olr_eoffile, u850_eoffile, u200_eoffil
     PC2_plot = PC2_plot[0:ntim_plot]
     timeseries_plot_name = oplot_dir+'/'+inconfig.getstr('compute_rmm',inlabel+'_TIMESERIES_PLOT_OUTPUT_NAME','obs_RMM_time_series')
     timeseries_plot_format = inconfig.getstr('compute_rmm',inlabel+'_TIMESERIES_PLOT_OUTPUT_FORMAT','png')
+    # plot PC time series
+    ####  This will need to go into METplotpy
+    ####  It is currently in plot_mjo_indices.py
     pmi.pc_time_series('RMM',PC1_plot,PC2_plot,plot_time,months,days,timeseries_plot_name,timeseries_plot_format)
 
 
