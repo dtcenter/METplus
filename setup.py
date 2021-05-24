@@ -6,10 +6,10 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 with open("metplus/VERSION", "r") as fh:
-    version = fh.read()
+    version = fh.read().strip()
 
 with open("metplus/PYTHON_VERSION", "r") as fh:
-    python_version = fh.read()
+    python_version = fh.read().strip()
 
 # get list of additional files needed to add to package
 data_files = []
