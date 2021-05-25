@@ -186,7 +186,6 @@ class TCPairsWrapper(CommandBuilder):
             self.config.getbool('config',
                                 'TC_PAIRS_READ_ALL_FILES')
         )
-        c_dict['OUTPUT_BASE'] = self.config.getstr('dir', 'OUTPUT_BASE')
 
         # get list of models to process
         c_dict['MODEL_LIST'] = util.getlist(
@@ -576,6 +575,12 @@ class TCPairsWrapper(CommandBuilder):
             self.adeck = adeck_list
             self.bdeck = bdeck_list
             self.edeck = edeck_list
+
+            # change wildcard basin/cyclone to 'all' for output filename
+            if current_basin == self.WILDCARDS['basin']:
+                current_basin = 'all'
+            if current_cyclone == self.WILDCARDS['cyclone']:
+                current_cyclone = 'all'
 
             time_storm_info = time_info.copy()
             time_storm_info['basin'] = current_basin
