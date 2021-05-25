@@ -877,7 +877,6 @@ class TCPairsWrapper(CommandBuilder):
         self.c_dict['BASIN'] = self.c_dict.get('BASIN_LIST', '')
 
         # Set up the environment variable to be used in the tc_pairs Config
-        self.set_environment_variables(input_dict)
         self.bdeck = [self.c_dict['BDECK_DIR']]
 
         adeck_dir = self.c_dict['ADECK_DIR']
@@ -895,6 +894,8 @@ class TCPairsWrapper(CommandBuilder):
         if not self.find_and_check_output_file(time_info=time_storm_info,
                                                check_extension='.tcst'):
             return []
+
+        self.set_environment_variables(input_dict)
 
         self.build()
         return self.all_commands
