@@ -682,12 +682,6 @@ class TCPairsWrapper(CommandBuilder):
                       cyclone == self.WILDCARDS['cyclone']):
                     current_cyclone = match
 
-        # if basin or cyclone is a wildcard and was not extracted, set to None
-        if current_basin == self.WILDCARDS['basin']:
-            current_basin = None
-        if current_cyclone == self.WILDCARDS['cyclone']:
-            current_cyclone = None
-
         return current_basin, current_cyclone
 
     def find_a_or_e_deck_files(self, deck, basin, cyclone, time_info):
