@@ -62,7 +62,7 @@ class TCPairsWrapper(CommandBuilder):
     }
 
     REGEXES = {
-        'storm_id': r'(\w{2})(\d{2})(\d{4})',
+        'storm_id': r'^(\w{2})(\d{2})(\d{4})$',
         'basin': r'[a-zA-Z]{2}',
         'cyclone': r'[0-9]{2,4}',
     }
@@ -288,13 +288,6 @@ class TCPairsWrapper(CommandBuilder):
             if cyclone_list:
                 self.log_error('Cannot filter by both CYCLONE and STORM_ID')
 
-            # check storm ID format
-            for storm_id in storm_id_list:
-                # pull out info from storm_id and process
-                match = re.match(self.REGEXES['storm_id'], storm_id)
-                if not match:
-                    self.log_error(f'Incorrect STORM_ID format: {storm_id}')
-
             c_dict['STORM_ID_LIST'] = storm_id_list
             return
 
@@ -364,41 +357,33 @@ class TCPairsWrapper(CommandBuilder):
             self.c_dict['STORM_ID'] = [storm_id]
 
             # pull out basin, cyclone, and year from storm ID
-            basin, cyclone = self._parse_storm_id(storm_id, time_info)
+            basin, cyclone = self._parse_storm_id(storm_id)
             if not basin:
                 return
+
+            # set storm ID in time dict so it can be used in filename templates
+            time_info['storm_id'] = storm_id
 
             self.process_data(basin, cyclone, time_info)
 
         return True
 
-    def _parse_storm_id(self, storm_id, time_info=None):
-        """! Extract basin, cyclone, and year from storm_id. Check that year
-        from storm_id matches init time from time_info dictionary (if set)
+    def _parse_storm_id(self, storm_id):
+        """! Extract basin and cyclone from storm_id if possible.
 
         @param storm_id string to parse
-        @param time_info (optional) dictionary containing time information
         @returns tuple of basin and cyclone as lowercase strings or
-         (None, None) if failure
+         wildcard expressions if cannot parse info from storm_id
         """
         match = re.match(self.REGEXES['storm_id'], storm_id)
         if not match:
-            return None, None
+            self.logger.debug("Could not parse basin and cyclone from "
+                              f"storm ID ({storm_id}). Using wildcard "
+                              "for both")
+            return self.WILDCARDS['basin'], self.WILDCARDS['cyclone']
 
         basin = match.group(1).lower()
         cyclone = match.group(2)
-
-        # ensure year specified in storm ID matches init time
-        # if time info is provided
-        if time_info:
-            storm_id_year = match.group(3)
-            init_year = time_info['init'].strftime('%Y')
-            if storm_id_year != init_year:
-                msg = (f'Year specified in STORM_ID {storm_id} '
-                       f'({storm_id_year}) does not match '
-                       f'init time year {init_year}. Skipping...')
-                self.logger.warning(msg)
-                return None, None
 
         return basin, cyclone
 

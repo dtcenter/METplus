@@ -71,19 +71,19 @@ def test_read_storm_info(metplus_config, config_overrides, isOK):
     assert(wrapper.isOK == isOK)
 
 @pytest.mark.parametrize(
-    'storm_id,time_info,basin,cyclone', [
-        ('AL092011', None, 'al', '09'),
-        ('ML072011', None, 'ml', '07'),
-        ('ML072011', {'init': datetime(2011, 7, 1)}, 'ml', '07'),
-        ('ML072011', {'init': datetime(2012, 7, 1)}, None, None),
-        ('L092011', None, None, None),
-        ('L092011', {'init': datetime(2012, 7, 1)}, None, None),
+    'storm_id,basin,cyclone', [
+        ('AL092011', 'al', '09'),
+        ('ML072011', 'ml', '07'),
+        ('ML072011', 'ml', '07'),
+        # storm ID doesn't match format, so use wildcards
+        ('L092011', 'wildcard', 'wildcard'),
+        ('2020100700_F000_261N_1101W_FOF', 'wildcard', 'wildcard'),
     ]
 )
-def test_parse_storm_id(metplus_config, storm_id, basin, cyclone, time_info):
+def test_parse_storm_id(metplus_config, storm_id, basin, cyclone):
     """! Check that storm ID is parsed properly to get basin and cyclone.
-    Check that it fails properly if storm ID is incorrectly formatted or year
-    in time info does not match year in storm ID
+    Check that it returns wildcard expressions basin and cyclone cannot be
+    parsed from storm ID
     """
     config = metplus_config()
 
@@ -91,9 +91,21 @@ def test_parse_storm_id(metplus_config, storm_id, basin, cyclone, time_info):
 
     wrapper = TCPairsWrapper(config)
 
-    actual_basin, actual_cyclone = wrapper._parse_storm_id(storm_id, time_info)
-    assert actual_basin == basin
-    assert actual_cyclone == cyclone
+    actual_basin, actual_cyclone = wrapper._parse_storm_id(storm_id)
+
+    # get wildcard expression if test input is 'wildcard'
+    if basin == 'wildcard':
+        expected_basin = wrapper.WILDCARDS['basin']
+    else:
+        expected_basin = basin
+
+    if cyclone == 'wildcard':
+        expected_cyclone = wrapper.WILDCARDS['cyclone']
+    else:
+        expected_cyclone = cyclone
+
+    assert actual_basin == expected_basin
+    assert actual_cyclone == expected_cyclone
 
 @pytest.mark.parametrize(
     'basin,cyclone,expected_files,expected_wildcard', [
