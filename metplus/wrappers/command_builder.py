@@ -1606,16 +1606,16 @@ class CommandBuilder:
         return None
 
     @staticmethod
-    def format_met_config_dict(c_dict, name, keys=None):
-        """! Return formatted dictionary named <name> with any <items> if they
+    def format_met_config(type, c_dict, name, keys=None):
+        """! Return formatted variable named <name> with any <items> if they
         are set to a value. If none of the items are set, return empty string
 
         @param c_dict config dictionary to read values from
         @param name name of dictionary to create
         @param keys list of c_dict keys to use if they are set. If unset (None)
          then read all keys from c_dict
-        @returns MET config formatted dictionary if any items are set, or empty
-         string if not
+        @returns MET config formatted dictionary/list
+         if any items are set, or empty string if not
         """
         values = []
         if keys is None:
@@ -1630,7 +1630,33 @@ class CommandBuilder:
         if not values:
             return ''
 
-        return f"{name} = {{{''.join(values)}}}"
+        output = ''.join(values)
+        # add curly braces if dictionary
+        if type == 'dict':
+            output = f"{{{output}}}"
+
+        # add square braces if list
+        elif type == 'list':
+            output = f"[{output}];"
+
+        # if name is not empty, add variable name and equals sign
+        if name:
+            output = f'{name} = {output}'
+        return output
+
+    @staticmethod
+    def format_met_config_dict(c_dict, name, keys=None):
+        """! Return formatted dictionary named <name> with any <items> if they
+        are set to a value. If none of the items are set, return empty string
+
+        @param c_dict config dictionary to read values from
+        @param name name of dictionary to create
+        @param keys list of c_dict keys to use if they are set. If unset (None)
+         then read all keys from c_dict
+        @returns MET config formatted dictionary if any items are set, or empty
+         string if not
+        """
+        return format_met_config('dict', c_dict=c_dict, name=name, keys=keys)
 
     def handle_regrid(self, c_dict, set_to_grid=True):
         app_name_upper = self.app_name.upper()
@@ -2178,7 +2204,7 @@ class CommandBuilder:
 
         # handle dictionary item
         if item.data_type == 'dict':
-            env_var_name = f'{env_var_name}_DICT'
+            env_var_name = f'{env_var_name}_{item.data_type.upper()}'
             tmp_dict = {}
             for child in item.children:
                 if not self.handle_met_config_item(child, tmp_dict):
