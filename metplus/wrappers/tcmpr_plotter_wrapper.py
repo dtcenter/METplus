@@ -330,7 +330,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         if self.ylim:
             options_dict['-ylim'] = self.ylim
         if self.filter:
-            options_dict['-filter'] = self.filter
+            options_dict['-filter'] = f'"{util.remove_quotes(self.filter)}"'
         if self.filtered_tcst_data:
             options_dict['-tcst'] = self.filtered_tcst_data
         if self.dep_vars:
