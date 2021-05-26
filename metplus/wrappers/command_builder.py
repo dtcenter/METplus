@@ -2233,7 +2233,8 @@ class CommandBuilder:
               otherwise 2nd variable is used if set, etc.)
         """
         item = met_config(**kwargs)
-        self.handle_met_config_item(item)
+        output_dict = kwargs.get('output_dict')
+        self.handle_met_config_item(item, output_dict)
 
     def get_met_config(self, **kwargs):
         """! Get METConfigInfo object from arguments and return it
