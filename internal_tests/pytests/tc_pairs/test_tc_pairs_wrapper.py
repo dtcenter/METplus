@@ -326,6 +326,32 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
         # 12: valid end
         ({'TC_PAIRS_VALID_END': '20141031_14'},
          {'METPLUS_VALID_END': 'valid_end = "20141031_14";'}),
+        # 13: consensus 1 dictionary
+        ({'TC_PAIRS_CONSENSUS1_NAME': 'name1',
+          'TC_PAIRS_CONSENSUS1_MEMBERS': 'member1a, member1b',
+          'TC_PAIRS_CONSENSUS1_REQUIRED': 'true, false',
+          'TC_PAIRS_CONSENSUS1_MIN_REQ': '1'},
+         {'METPLUS_CONSENSUS_LIST': (
+        'consensus = [{name = "name1";members = ["member1a", "member1b"];'
+        'required = [true, false];min_req = 1;}];'
+         )}),
+        # 14: consensus 2 dictionaries
+        ({'TC_PAIRS_CONSENSUS1_NAME': 'name1',
+          'TC_PAIRS_CONSENSUS1_MEMBERS': 'member1a, member1b',
+          'TC_PAIRS_CONSENSUS1_REQUIRED': 'true, false',
+          'TC_PAIRS_CONSENSUS1_MIN_REQ': '1',
+          'TC_PAIRS_CONSENSUS2_NAME': 'name2',
+          'TC_PAIRS_CONSENSUS2_MEMBERS': 'member2a, member2b',
+          'TC_PAIRS_CONSENSUS2_REQUIRED': 'false, true',
+          'TC_PAIRS_CONSENSUS2_MIN_REQ': '2'
+          },
+         {'METPLUS_CONSENSUS_LIST': (
+                 'consensus = ['
+                 '{name = "name1";members = ["member1a", "member1b"];'
+                 'required = [true, false];min_req = 1;}'
+                 '{name = "name2";members = ["member2a", "member2b"];'
+                 'required = [false, true];min_req = 2;}];'
+         )}),
     ]
 )
 def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,

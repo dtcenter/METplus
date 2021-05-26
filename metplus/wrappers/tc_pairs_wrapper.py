@@ -54,6 +54,7 @@ class TCPairsWrapper(CommandBuilder):
         'METPLUS_VALID_BEG',
         'METPLUS_VALID_END',
         'METPLUS_DLAND_FILE',
+        'METPLUS_CONSENSUS_LIST',
     ]
 
     WILDCARDS = {
@@ -102,56 +103,52 @@ class TCPairsWrapper(CommandBuilder):
             self.log_error("TC_PAIRS_CONFIG_FILE is required to "
                            "run TCPairs wrapper")
 
-        self.set_met_config_string(self.env_var_dict,
-                                   ['TC_PAIRS_INIT_BEG',
-                                    'INIT_BEG'],
-                                   'init_beg',
-                                   'METPLUS_INIT_BEG')
+        self.add_met_config(name='init_beg',
+                            data_type='string',
+                            metplus_configs=['TC_PAIRS_INIT_BEG',
+                                             'INIT_BEG'])
 
-        self.set_met_config_string(self.env_var_dict,
-                                   ['TC_PAIRS_INIT_END',
-                                    'INIT_END'],
-                                   'init_end',
-                                   'METPLUS_INIT_END')
+        self.add_met_config(name='init_end',
+                            data_type='string',
+                            metplus_configs=['TC_PAIRS_INIT_END',
+                                             'INIT_END'])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 ['TC_PAIRS_INIT_INCLUDE',
-                                  'INIT_INCLUDE'],
-                                 'init_inc',
-                                 'METPLUS_INIT_INCLUDE')
+        self.add_met_config(name='init_inc',
+                            data_type='list',
+                            env_var_name='METPLUS_INIT_INCLUDE',
+                            metplus_configs=['TC_PAIRS_INIT_INCLUDE',
+                                             'INIT_INCLUDE'])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 ['TC_PAIRS_INIT_EXCLUDE',
-                                  'INIT_EXCLUDE'],
-                                 'init_exc',
-                                 'METPLUS_INIT_EXCLUDE')
+        self.add_met_config(name='init_exc',
+                            data_type='list',
+                            env_var_name='METPLUS_INIT_EXCLUDE',
+                            metplus_configs=['TC_PAIRS_INIT_EXCLUDE',
+                                             'INIT_EXCLUDE'])
 
-        self.set_met_config_string(self.env_var_dict,
-                                   ['TC_PAIRS_VALID_BEG',
-                                    'VALID_BEG'],
-                                   'valid_beg',
-                                   'METPLUS_VALID_BEG')
+        self.add_met_config(name='valid_beg',
+                            data_type='string',
+                            metplus_configs=['TC_PAIRS_VALID_BEG',
+                                             'VALID_BEG'])
 
-        self.set_met_config_string(self.env_var_dict,
-                                   ['TC_PAIRS_VALID_END',
-                                    'VALID_END'],
-                                   'valid_end',
-                                   'METPLUS_VALID_END')
+        self.add_met_config(name='valid_end',
+                            data_type='string',
+                            metplus_configs=['TC_PAIRS_VALID_END',
+                                             'VALID_END'])
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_PAIRS_DLAND_FILE',
-                                   'dland_file',
-                                   'METPLUS_DLAND_FILE')
+        self.add_met_config(name='dland_file',
+                            data_type='string',
+                            metplus_configs=['TC_PAIRS_DLAND_FILE'])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'MODEL',
-                                 'model',
-                                 'METPLUS_MODEL')
+        self.add_met_config(name='model',
+                            data_type='list',
+                            metplus_configs=['TC_PAIRS_MODEL',
+                                             'MODEL'])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'TC_PAIRS_STORM_NAME',
-                                 'storm_name',
-                                 'METPLUS_STORM_NAME')
+        self.add_met_config(name='storm_name',
+                            data_type='list',
+                            metplus_configs=['TC_PAIRS_STORM_NAME'])
+
+        self.handle_consensus()
 
         init_time_fmt = self.config.getstr('config', 'INIT_TIME_FMT')
         clock_time = datetime.datetime.strptime(
@@ -297,6 +294,68 @@ class TCPairsWrapper(CommandBuilder):
 
         if basin_list:
             c_dict['BASIN_LIST'] = basin_list
+
+    def handle_consensus(self):
+        children = [
+            'NAME',
+            'MEMBERS',
+            'REQUIRED',
+            'MIN_REQ'
+        ]
+        regex = r'^TC_PAIRS_CONSENSUS(\d+)_(\w+)$'
+        indices = util.find_indices_in_config_section(regex, self.config,
+                                                      index_index=1,
+                                                      id_index=2)
+
+        consensus_dict = {}
+        for index, items in indices.items():
+            # read all variables for each index
+            consensus_items = {}
+
+            # check if any variable found doesn't match valid variables
+            if any([item for item in items if item not in children]):
+                self.log_error("Invalid variable: "
+                               f"TC_PAIRS_CONSENSUS{index}_{item}")
+
+            self.add_met_config(
+                name='name',
+                data_type='string',
+                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_NAME'],
+                output_dict=consensus_items
+            )
+            self.add_met_config(
+                name='members',
+                data_type='list',
+                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_MEMBERS'],
+                output_dict=consensus_items
+            )
+            self.add_met_config(
+                name='required',
+                data_type='list',
+                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_REQUIRED'],
+                extra_args={'remove_quotes': True},
+                output_dict=consensus_items
+            )
+            self.add_met_config(
+                name='min_req',
+                data_type='int',
+                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_MIN_REQ'],
+                output_dict=consensus_items
+            )
+
+            self.logger.debug(f'Consensus Items: {consensus_items}')
+            # format dictionary, then add it to consensus_dict
+            dict_string = self.format_met_config('dict',
+                                                 consensus_items,
+                                                 name='')
+            consensus_dict[index] = dict_string
+
+        # format list of dictionaries
+        output_string = self.format_met_config('list',
+                                               consensus_dict,
+                                               'consensus')
+
+        self.env_var_dict['METPLUS_CONSENSUS_LIST'] = output_string
 
     def run_all_times(self):
         """! Build up the command to invoke the MET tool tc_pairs.

@@ -5380,6 +5380,10 @@ METplus Configuration
 | :term:`TC_PAIRS_CUSTOM_LOOP_LIST`
 | :term:`TC_PAIRS_DESC`
 | :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
+| :term:`TC_PAIRS_CONSENSUS<n>_NAME`
+| :term:`TC_PAIRS_CONSENSUS<n>_MEMBERS`
+| :term:`TC_PAIRS_CONSENSUS<n>_REQUIRED`
+| :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
 |
 
 .. warning:: **DEPRECATED:**
@@ -5578,6 +5582,23 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
      - n/a
+
+**${METPLUS_CONSENSUS_LIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_CONSENSUS<n>_NAME`
+     - consensus.name
+   * - :term:`TC_PAIRS_CONSENSUS<n>_MEMBERS`
+     - consensus.members
+   * - :term:`TC_PAIRS_CONSENSUS<n>_REQUIRED`
+     - consensus.required
+   * - :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
+     - consensus.min_req
 
 .. _tcrmw_wrapper:
 
