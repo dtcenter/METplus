@@ -7091,8 +7091,8 @@ METplus Configuration Glossary
 
      | *Used by:* PB2NC
 
-   FCST_SERIES_ANALAYSIS_PROB_THRESH
-     Threshold values to be used for probabilistic data in grid_stat. The value can be a single item or a comma separated list of items that must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
+   FCST_SERIES_ANALYSIS_PROB_THRESH
+     Threshold values to be used for probabilistic data in series_analysis. The value can be a single item or a comma separated list of items that must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
      
      | *Used by:* SeriesAnalysis
      
