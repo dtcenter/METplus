@@ -23,6 +23,8 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
     ARGUMENTS = {
         'config': 'string',
+        'lookin': 'string/quotes',
+        'outdir': 'string',
         'prefix': 'string',
         'title': 'string/quotes',
         'subtitle': 'string/quotes',
@@ -59,46 +61,66 @@ class TCMPRPlotterWrapper(CommandBuilder):
                          instance=instance,
                          config_overrides=config_overrides)
 
+    def create_c_dict(self):
+        c_dict = super().create_c_dict()
+
         # check if R is available, do not attempt to run if it is not
         if shutil.which('Rscript') is None:
             self.log_error('Rscript must be in the path')
 
-        self.met_install_dir = self.config.getdir('MET_INSTALL_DIR')
-        self.tcmpr_script = os.path.join(self.met_install_dir,
-                                         'share', 'met', 'Rscripts',
-                                         'plot_tcmpr.R')
+        # save MET_INSTALL_DIR to find R script and set environment variable
+        c_dict['MET_INSTALL_DIR'] = self.config.getdir('MET_INSTALL_DIR', '')
+        c_dict['TCMPR_SCRIPT'] = os.path.join(c_dict['MET_INSTALL_DIR'],
+                                              'share', 'met', 'Rscripts',
+                                              'plot_tcmpr.R')
 
-        self.logger.info(f"plot_tcmpr.R script location: {self.tcmpr_script} ")
-        if not os.path.exists(self.tcmpr_script):
-            self.log_error('plot_tcmpr.R script could be found')
+        # check that R script can be found
+        if not os.path.exists(c_dict['TCMPR_SCRIPT']):
+            self.log_error('plot_tcmpr.R script could not be found')
 
-        # The only required argument for plot_tcmpr.R, the name of
-        # the tcst file to plot.
-        self.input_data = self.config.getdir('TCMPR_PLOTTER_TCMPR_DATA_DIR',
-                                             '')
-        if not self.input_data:
+        # get input data
+        c_dict['INPUT_DATA'] = (
+            self.config.getdir('TCMPR_PLOTTER_TCMPR_DATA_DIR',
+                               '')
+        )
+        if not c_dict['INPUT_DATA']:
             self.log_error("TCMPR_PLOTTER_TCMPR_DATA_DIR must be set")
 
-        # Optional arguments
-        self.plot_config_file = self.config.getstr('config',
-                                                   'TCMPR_PLOTTER_CONFIG_FILE',
-                                                   '')
-        if not self.plot_config_file:
-            self.log_error("TCMPR_PLOTTER_CONFIG_FILE must be set")
-
-        self.output_base_dir = self.config.getdir(
+        # get output directory
+        c_dict['OUTPUT_DIR'] = self.config.getdir(
             'TCMPR_PLOTTER_PLOT_OUTPUT_DIR', ''
         )
-        if not self.output_base_dir:
+        if not c_dict['OUTPUT_DIR']:
             self.log_error("Must set TCMPR_PLOTTER_PLOT_OUTPUT_DIR")
 
-        self.read_args()
+        # get config file
+        c_dict['CONFIG_FILE'] = self.config.getraw('config',
+                                                   'TCMPR_PLOTTER_CONFIG_FILE',
+                                                   '')
+        if not c_dict['CONFIG_FILE']:
+            self.log_error("TCMPR_PLOTTER_CONFIG_FILE must be set")
 
-    def read_args(self):
+        # get time information
+        c_dict['INPUT_TIME_DICT'] = self.set_time_dict_for_single_runtime()
+        if not c_dict['INPUT_TIME_DICT']:
+            self.isOK = False
+
+        # read all optional command line arguments
+        c_dict['COMMAND_ARGS'] = self.read_optional_args()
+
+        return c_dict
+
+    def read_optional_args(self):
         """! Read config variables and add arguments to command """
         prefix = f'{self.app_name.upper()}_'
+        command_args = []
+
         for name, data_type in self.ARGUMENTS.items():
             config_name = f'{prefix}{name.upper()}'
+
+            # skip required arguments because they are handled elsewhere
+            if name == 'config' or name == 'lookin' or name == 'outdir':
+                continue
 
             # handle config name exceptions that differ from argument name
             if name == 'plot':
@@ -122,37 +144,40 @@ class TCMPRPlotterWrapper(CommandBuilder):
             else:
                 self.log_error(f"Invalid type for {name}: {data_type}")
 
-            # add quotes around value if they are not already there
-            if 'quotes' in data_type and value:
-                value = f'"{util.remove_quotes(value)}"'
-
             if value:
+                # add quotes around value if they are not already there
+                if 'quotes' in data_type:
+                    value = f'"{util.remove_quotes(value)}"'
+
                 arg_string = f'-{name}'
                 # don't add value for boolean
                 if data_type != 'bool':
                     arg_string = f'{arg_string} {value}'
 
-                self.args.append(f'{arg_string}')
+                self.logger.debug(f"Adding argument: {arg_string}")
+                command_args.append(f'{arg_string}')
+
+        return command_args
 
     def set_environment_variables(self):
         """!Set environment variables that are needed to run """
-        self.add_env_var('MET_INSTALL_DIR', self.met_install_dir)
+        self.add_env_var('MET_INSTALL_DIR', self.c_dict['MET_INSTALL_DIR'])
         super().set_environment_variables()
 
     def run_all_times(self):
         """! Builds the command for invoking tcmpr.R plot script. """
+        self.logger.debug(f"Script: {self.c_dict['TCMPR_SCRIPT']}")
+        self.logger.debug(f"Config File: {self.c_dict['CONFIG_FILE']}")
+        self.logger.debug(f"Input: {self.c_dict['INPUT_DATA']}")
+        self.logger.debug(f"Output Directory: {self.c_dict['OUTPUT_DIR']}")
 
-        self.logger.debug(f'Input: {self.input_data}')
-        self.logger.debug(f'Config File: {self.plot_config_file}')
-        self.logger.debug(f'Output Directory: {self.output_base_dir}')
-
-        self.args.append(f'-lookin {self.get_input_files()}')
-        self.args.append(f'-outdir {self.output_base_dir}')
+        self.infiles = self.get_input_files()
 
         # Create the TCMPR output directory, where the plots will be written
-        if not os.path.exists(self.output_base_dir):
-            self.logger.debug(f'Creating directory: {self.output_base_dir}')
-            os.makedirs(self.output_base_dir)
+        if not os.path.exists(self.c_dict['OUTPUT_DIR']):
+            self.logger.debug("Creating directory: "
+                              f"{self.c_dict['OUTPUT_DIR']}")
+            os.makedirs(self.c_dict['OUTPUT_DIR'])
 
         self.set_environment_variables()
         self.build()
@@ -164,18 +189,19 @@ class TCMPRPlotterWrapper(CommandBuilder):
         """! Get input file paths. If input is a directory, find all .tcst
         files inside the directory.
 
-            @returns string with file paths separated by a space
+            @returns list of file paths
         """
         # If input data is a file, create a single command and invoke R script.
-        if os.path.isfile(self.input_data):
-            self.logger.debug(f'Plotting file: {self.input_data}')
-            return self.input_data
+        if os.path.isfile(self.c_dict['INPUT_DATA']):
+            self.logger.debug(f"Plotting file: {self.c_dict['INPUT_DATA']}")
+            return [self.c_dict['INPUT_DATA']]
 
         # input is directory, so find all tcst files to process
-        self.logger.debug(f'Plotting all files in: {self.input_data}')
-        tcst_files = util.get_files(self.input_data, ".*.tcst")
+        self.logger.debug('Plotting all files in: '
+                          f"{self.c_dict['INPUT_DATA']}")
+        tcst_files = util.get_files(self.c_dict['INPUT_DATA'], ".*.tcst")
         self.logger.debug(f"Number of files: {len(tcst_files)}")
-        return ' '.join(tcst_files)
+        return sorted(tcst_files)
 
     def get_command(self):
         """! Over-ride CommandBuilder's get_command because unlike
@@ -183,5 +209,11 @@ class TCMPRPlotterWrapper(CommandBuilder):
              files differently because it wraps an R-script, plot_tcmpr.R
              rather than a typical MET tool. Build command to run from
              arguments"""
-        cmd = f"Rscript {self.tcmpr_script} {' '.join(self.args)}"
+        args = self.c_dict['COMMAND_ARGS']
+        arg_string = f" {' '.join(args)}" if args else ''
+        cmd = (f"Rscript {self.c_dict['TCMPR_SCRIPT']}"
+               f" -config {self.c_dict['CONFIG_FILE']}"
+               f"{arg_string}"
+               f" -lookin {' '.join(self.infiles)}"
+               f" -outdir {self.c_dict['OUTPUT_DIR']}")
         return cmd
