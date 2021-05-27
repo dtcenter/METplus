@@ -3808,7 +3808,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_VLD_THRESH`
 | :term:`SERIES_ANALYSIS_BLOCK_SIZE`
 | :term:`SERIES_ANALYSIS_CTS_LIST`
-| :term:`FCST_SERIES_ANALAYSIS_PROB_THRESH`
+| :term:`FCST_SERIES_ANALYSIS_PROB_THRESH`
 | :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
 | :term:`FCST_SERIES_ANALYSIS_INPUT_DIR`
 | :term:`OBS_SERIES_ANALYSIS_INPUT_DIR`
@@ -3957,7 +3957,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - fcst.field.cat_thresh
    * - :term:`FCST_VAR<n>_OPTIONS`
      - n/a
-   * - :term:`FCST_SERIES_ANALAYSIS_PROB_THRESH`
+   * - :term:`FCST_SERIES_ANALYSIS_PROB_THRESH`
      - n/a
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
