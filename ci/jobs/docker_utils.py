@@ -6,40 +6,18 @@ import re
 #  - Get appropriate branch name to use to obtain/create Docker
 #    images. This is needed for pull request runs.
 
-# repository used for storing input data for releases
-DOCKERHUB_METPLUS_DATA = 'dtcenter/metplus-data'
-
 # repository used for storing input data for development branches
-DOCKERHUB_METPLUS_DATA_DEV = 'dtcenter/metplus-data-dev'
+DOCKERHUB_DATA_REPO = 'dtcenter/metplus-data-dev'
 
-def get_data_repo(branch_name):
-    """! Branch names that start with main_v or contain only
-       digits and dots with out without a prefix 'v' will return
-       the Docker repository for release data. All others will return
-       the Docker repository for development test data.
-    """
-    if (branch_name.startswith('main_v') or
-            re.match(r'^v?[0-9.]+$', branch_name)):
-        return DOCKERHUB_METPLUS_DATA
-    return DOCKERHUB_METPLUS_DATA_DEV
-
-def get_dockerhub_url(branch_name):
-    data_repo = get_data_repo(branch_name)
-    return f'https://hub.docker.com/v2/repositories/{data_repo}/tags'
+# URL of DockerHub repository
+DOCKERHUB_URL = f'https://hub.docker.com/v2/repositories/{DOCKERHUB_DATA_REPO}/tags'
 
 def docker_get_volumes_last_updated(current_branch):
     import requests
-    dockerhub_url = get_dockerhub_url(current_branch)
-    dockerhub_request = requests.get(dockerhub_url)
+    dockerhub_request = requests.get(DOCKERHUB_URL)
     if dockerhub_request.status_code != 200:
-        print(f"Could not find DockerHub URL: {dockerhub_url}")
+        print(f"Could not find DockerHub URL: {DOCKERHUB_URL}")
         return None
-
-    # get version number to search for if main_vX.Y branch
-    if current_branch.startswith('main_v'):
-        current_repo = current_branch[6:]
-    else:
-        current_repo = current_branch
 
     volumes_last_updated = {}
     attempts = 0
@@ -48,7 +26,7 @@ def docker_get_volumes_last_updated(current_branch):
         results = page['results']
         for repo in results:
             repo_name = repo['name']
-            if current_repo in repo_name:
+            if current_branch in repo_name:
                 volumes_last_updated[repo_name] = repo['last_updated']
         if not page['next']:
             break

@@ -66,48 +66,22 @@ PARM_BASE = os.environ.get('METPLUS_PARM_BASE',
                            os.path.join(METPLUS_BASE, 'parm'))
 
 # default METplus configuration files that are sourced first
-BASE_CONFS = [
-    'metplus_config/defaults.conf',
-]
+base_confs = ['metplus_config/metplus_system.conf',
+              'metplus_config/metplus_data.conf',
+              'metplus_config/metplus_runtime.conf',
+              'metplus_config/metplus_logging.conf']
+METPLUS_BASE_CONFS = []
+parm = os.path.realpath(PARM_BASE)
+for base_conf in base_confs:
+    METPLUS_BASE_CONFS.append(os.path.join(parm,
+                                           base_conf))
 
-# support previous location of default config files
-OLD_BASE_CONFS = [
-    'metplus_config/metplus_system.conf',
-    'metplus_config/metplus_data.conf',
-    'metplus_config/metplus_runtime.conf',
-    'metplus_config/metplus_logging.conf'
-]
-
-def get_default_config_list(parm_base=None):
-    """! Get list of default METplus config files. Look through BASE_CONFS list
-    and check if each file exists under the parm base. Add each to a list
-    if they do exist.
-
-        @param parm_base directory to search for METplus config files. Uses
-         real path of PARM_BASE if it is not set (None)
-        @returns list of full paths to default METplus config files
-    """
-    default_config_list = []
-    # set parm to real path of PARM_BASE if not provided as argument
-    if parm_base is None:
-        parm_base = os.path.realpath(PARM_BASE)
-
-    # if both are found, set old base confs first so the new takes precedence
-    for base_conf in OLD_BASE_CONFS + BASE_CONFS:
-        conf_path = os.path.join(parm_base, base_conf)
-        if os.path.exists(conf_path):
-            default_config_list.append(conf_path)
-
-    return default_config_list
-
-def setup(config_inputs, logger=None, base_confs=None):
+def setup(config_inputs, logger=None, base_confs=METPLUS_BASE_CONFS):
     """!The METplus setup function.
         @param config_inputs list of configuration files or configuration
         variable overrides. Reads all configuration inputs and returns
         a configuration object.
     """
-    if base_confs is None:
-        base_confs = get_default_config_list()
 
     # Setup Task logger, Until a Conf object is created, Task logger is
     # only logging to tty, not a file.
@@ -145,7 +119,7 @@ def setup(config_inputs, logger=None, base_confs=None):
 # along with, -c some.conf and any other conf files...
 # These are than used by def launch to create a single metplus final conf file
 # that would be used by all tasks.
-def parse_launch_args(args, logger, base_confs=None):
+def parse_launch_args(args, logger, base_confs=METPLUS_BASE_CONFS):
     """!Parsed arguments to scripts that launch the METplus system.
 
     This is the argument parser for the config_metplus.py
@@ -165,8 +139,6 @@ def parse_launch_args(args, logger, base_confs=None):
     @param logger a logging.Logger for log messages"""
 
     parm = os.path.realpath(PARM_BASE)
-    if base_confs is None:
-        base_confs = get_default_config_list()
 
     # Files in this list, that don't exist or are empty,
     # will be silently ignored.

@@ -20,7 +20,7 @@ changed to
     WGRIB2
 
 The new variable is set to wgrib2 in the default config file
-(parm/metplus_config/defaults.conf). If the user is still using
+(parm/metplus_config/metplus_system.conf). If the user is still using
 WGRIB2_EXE to set to /usr/local/bin/wgrib2, this value will not be
 read and the user will have no way to know that they are setting the
 wrong variable and it is using WGRIB2 = wgrib2.

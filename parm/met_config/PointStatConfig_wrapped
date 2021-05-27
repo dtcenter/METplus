@@ -9,14 +9,12 @@
 //
 // Output model name to be written
 //
-// model =
 ${METPLUS_MODEL}
 
 //
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
-// desc =
 ${METPLUS_DESC}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +22,6 @@ ${METPLUS_DESC}
 //
 // Verification grid
 //
-// regrid = {
 ${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -58,11 +55,9 @@ obs = {
 // Point observation filtering options
 // May be set separately in each "obs.field" entry
 //
-// message_type =
 ${METPLUS_MESSAGE_TYPE}
 sid_exc        = [];
-//obs_quality =
-${METPLUS_OBS_QUALITY}
+obs_quality    = [ "1", "2", "3" ];
 duplicate_flag = NONE;
 obs_summary    = NONE;
 obs_perc_value = 50;
@@ -84,12 +79,40 @@ message_type_group_map = [
 //
 // Climatology data
 //
-//climo_mean = {
-${METPLUS_CLIMO_MEAN_DICT}
+climo_mean = {
 
+   ${METPLUS_CLIMO_MEAN_FILE}
+   field     = [];
 
-//climo_stdev = {
-${METPLUS_CLIMO_STDEV_DICT}
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape      = SQUARE;
+   }
+
+   time_interp_method = NEAREST;
+   day_interval       = 31;
+   hour_interval      = 6;
+}
+
+climo_stdev = {
+
+   ${METPLUS_CLIMO_STDEV_FILE}
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape	 = SQUARE;
+   }
+
+   time_interp_method = DW_MEAN;
+   match_month        = TRUE;
+   day_interval       = 31;
+   hour_interval      = 6;
+}
 
 //
 // May be set separately in each "obs.field" entry
@@ -102,7 +125,6 @@ ${METPLUS_CLIMO_CDF_DICT}
 //
 // Point observation time window
 //
-// obs_window = {
 ${METPLUS_OBS_WINDOW_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -137,8 +159,17 @@ boot = {
 //
 // Interpolation methods
 //
-//interp = {
-${METPLUS_INTERP_DICT}
+interp = {
+   vld_thresh = 1.0;
+   shape      = SQUARE;
+
+   type = [
+      {
+         method = BILIN;
+         width  = 2;
+      }
+   ];
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -158,15 +189,32 @@ hira = {
 //
 // Statistical output types
 //
-//output_flag = {
-${METPLUS_OUTPUT_FLAG_DICT}
+output_flag = {
+   fho    = NONE;
+   ctc    = NONE;
+   cts    = NONE;
+   mctc   = NONE;
+   mcts   = NONE;
+   cnt    = NONE;
+   sl1l2  = STAT;
+   sal1l2 = NONE;
+   vl1l2  = STAT;
+   val1l2 = NONE;
+   vcnt   = NONE;
+   pct    = NONE;
+   pstd   = NONE;
+   pjc    = NONE;
+   prc    = NONE;
+   ecnt   = NONE; // Only for HiRA.
+   eclv   = NONE;
+   mpr    = NONE;
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
 tmp_dir        = "/tmp";
-// output_prefix =
 ${METPLUS_OUTPUT_PREFIX}
-//version        = "V10.0.0";
+//version        = "V9.0";
 
 ////////////////////////////////////////////////////////////////////////////////
 

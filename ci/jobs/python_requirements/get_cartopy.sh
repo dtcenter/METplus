@@ -15,7 +15,7 @@ yum -y install geos
 yum -y install geos-devel
 pip3 install --upgrade cython numpy pyshp six
 pip3 install shapely --no-binary shapely
-pip3 install cartopy==0.18.0
+pip3 install cartopy
 
 #some cartopy functionality fails without scipy
 pip3 install scipy

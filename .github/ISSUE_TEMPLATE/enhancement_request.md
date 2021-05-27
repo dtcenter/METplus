@@ -38,8 +38,8 @@ Consider breaking the enhancement down into sub-issues.
 - [ ] Select **requestor(s)**
 
 ### Projects and Milestone ###
-- [ ] Select **Repository** and/or **Organization** level **Project(s)** or add **alert: NEED PROJECT ASSIGNMENT** label
-- [ ] Select **Milestone** as the next official version or **Future Versions**
+- [ ] Review **projects** and select relevant **Repository** and **Organization** ones or add "alert:NEED PROJECT ASSIGNMENT" label
+- [ ] Select **milestone** to next major version milestone or "Future Versions"
 
 ## Define Related Issue(s) ##
 Consider the impact to the other METplus components.
@@ -58,9 +58,7 @@ Branch name: `feature_<Issue Number>_<Description>`
 - [ ] Submit a pull request to merge into **develop**.
 Pull request: `feature <Issue Number> <Description>`
 - [ ] Define the pull request metadata, as permissions allow.
-Select: **Reviewer(s)** and **Linked issues**
-Select: **Repository** level development cycle **Project** for the next official release
-Select: **Milestone** as the next official version
+Select: **Reviewer(s)**, **Project(s)**, **Milestone**, and **Linked issues**
 - [ ] Iterate until the reviewer(s) accept and merge your changes.
 - [ ] Delete your fork or branch.
 - [ ] Close this issue.

@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Run by GitHub Actions (in .github/workflows/testing.yml and
+# Run by GitHub Actions (in .github/workflows/main.yml and
 # ci/actions/run_tests/entrypoint.sh) to get properly
 # formatted artifact name for use case output
 

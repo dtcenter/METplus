@@ -30,69 +30,15 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_FCST_CONV_THRESH',
         'METPLUS_FCST_MERGE_THRESH',
         'METPLUS_FCST_MERGE_FLAG',
-        'METPLUS_FCST_FILTER_ATTR_NAME',
-        'METPLUS_FCST_FILTER_ATTR_THRESH',
-        'METPLUS_FCST_CENSOR_THRESH',
-        'METPLUS_FCST_CENSOR_VAL',
-        'METPLUS_FCST_VLD_THRESH',
         'METPLUS_OBS_FIELD',
         'METPLUS_OBS_CONV_RADIUS',
         'METPLUS_OBS_CONV_THRESH',
         'METPLUS_OBS_MERGE_THRESH',
         'METPLUS_OBS_MERGE_FLAG',
-        'METPLUS_OBS_FILTER_ATTR_NAME',
-        'METPLUS_OBS_FILTER_ATTR_THRESH',
-        'METPLUS_OBS_CENSOR_THRESH',
-        'METPLUS_OBS_CENSOR_VAL',
-        'METPLUS_OBS_VLD_THRESH',
-        'METPLUS_MASK_DICT',
+        'METPLUS_MASK_POLY',
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_GRID_RES',
-        'METPLUS_MATCH_FLAG',
-        'METPLUS_WEIGHT_DICT',
-        'METPLUS_NC_PAIRS_FLAG_DICT',
-        'METPLUS_MAX_CENTROID_DIST',
-        'METPLUS_TOTAL_INTEREST_THRESH',
-        'METPLUS_INTEREST_FUNCTION_CENTROID_DIST',
-        'METPLUS_INTEREST_FUNCTION_BOUNDARY_DIST',
-        'METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST',
     ]
-
-    WEIGHTS = [
-        ('centroid_dist', 'float'),
-        ('boundary_dist', 'float'),
-        ('convex_hull_dist', 'float'),
-        ('angle_diff', 'float'),
-        ('aspect_diff', 'float'),
-        ('area_ratio', 'float'),
-        ('int_area_ratio', 'float'),
-        ('curvature_ratio', 'float'),
-        ('complexity_ratio', 'float'),
-        ('inten_perc_ratio', 'float'),
-        ('inten_perc_value', 'int'),
-    ]
-
-    NC_PAIRS_FLAGS = [
-        'latlon',
-        'raw',
-        'object_raw',
-        'object_id',
-        'cluster_id',
-        'polylines',
-    ]
-
-    DEFAULT_VALUES = {
-        'FCST_CONV_RADIUS': '60.0/grid_res',
-        'OBS_CONV_RADIUS': '60.0/grid_res',
-        'MAX_CENTROID_DIST': '800.0/grid_res',
-        'INTEREST_FUNCTION_CENTROID_DIST': ('((0.0,1.0)'
-                                            '(60.0/grid_res,1.0)'
-                                            '(600.0/grid_res,0.0))'),
-        'INTEREST_FUNCTION_BOUNDARY_DIST': ('((0.0,1.0)'
-                                            '(400.0/grid_res,0.0))'),
-        'INTEREST_FUNCTION_CONVEX_HULL_DIST': ('((0.0,1.0)'
-                                               '(400.0/grid_res,0.0))'),
-    }
 
     def __init__(self, config, instance=None, config_overrides={}):
         # only set app variables if not already set by MTD (subclass)
@@ -113,14 +59,12 @@ class MODEWrapper(CompareGriddedWrapper):
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
-        c_dict['VERBOSITY'] = self.config.getstr('config',
-                                                 'LOG_MODE_VERBOSITY',
+        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MODE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['CONFIG_FILE'] = self.config.getraw('config',
-                                                   'MODE_CONFIG_FILE',
-                                                   '')
+        c_dict['CONFIG_FILE'] = self.config.getraw('config', 'MODE_CONFIG_FILE', '')
         if not c_dict['CONFIG_FILE']:
             self.log_error('MODE_CONFIG_FILE must be set')
+            self.isOK = False
 
         c_dict['OBS_INPUT_DIR'] = \
           self.config.getdir('OBS_MODE_INPUT_DIR', '')
@@ -129,6 +73,7 @@ class MODEWrapper(CompareGriddedWrapper):
                              'OBS_MODE_INPUT_TEMPLATE')
         if not c_dict['OBS_INPUT_TEMPLATE']:
             self.log_error('OBS_MODE_INPUT_TEMPLATE must be set')
+            self.isOK = False
 
         c_dict['OBS_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'OBS_MODE_INPUT_DATATYPE', '')
@@ -139,12 +84,14 @@ class MODEWrapper(CompareGriddedWrapper):
                              'FCST_MODE_INPUT_TEMPLATE')
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('OBS_MODE_INPUT_TEMPLATE must be set')
+            self.isOK = False
 
         c_dict['FCST_INPUT_DATATYPE'] = \
           self.config.getstr('config', 'FCST_MODE_INPUT_DATATYPE', '')
         c_dict['OUTPUT_DIR'] = self.config.getdir('MODE_OUTPUT_DIR', '')
         if not c_dict['OUTPUT_DIR']:
             self.log_error('MODE_OUTPUT_DIR must be set')
+            self.isOK = False
 
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('config',
@@ -157,33 +104,16 @@ class MODEWrapper(CompareGriddedWrapper):
                                  'quilt',
                                  'METPLUS_QUILT')
 
-        self.set_met_config_float(self.env_var_dict,
-                                  'MODE_GRID_RES',
-                                  'grid_res',
-                                  'METPLUS_GRID_RES')
-
-        # if MODE_GRID_RES is not set, then unset the default values
-        defaults = self.DEFAULT_VALUES.copy()
-        if not self.env_var_dict.get('METPLUS_GRID_RES'):
-            for default_key in self.DEFAULT_VALUES:
-                defaults[default_key] = None
-
-        # read forecast and observation field variables
         for data_type in ['FCST', 'OBS']:
-            self.set_met_config_list(
-                self.env_var_dict,
-                [f'{data_type}_MODE_CONV_RADIUS',
-                 f'MODE_{data_type}_CONV_RADIUS',
-                 'MODE_CONV_RADIUS'],
-                'conv_radius',
-                f'METPLUS_{data_type}_CONV_RADIUS',
-                remove_quotes=True,
-                default=defaults.get(f'{data_type}_CONV_RADIUS'),
-            )
+            self.set_met_config_list(self.env_var_dict,
+                                     [f'{data_type}_MODE_CONV_RADIUS',
+                                      'MODE_CONV_RADIUS'],
+                                     'conv_radius',
+                                     f'METPLUS_{data_type}_CONV_RADIUS',
+                                     remove_quotes=True)
 
             self.set_met_config_list(self.env_var_dict,
                                      [f'{data_type}_MODE_CONV_THRESH',
-                                      f'MODE_{data_type}_CONV_THRESH',
                                       'MODE_CONV_THRESH'],
                                      'conv_thresh',
                                      f'METPLUS_{data_type}_CONV_THRESH',
@@ -191,7 +121,6 @@ class MODEWrapper(CompareGriddedWrapper):
 
             self.set_met_config_list(self.env_var_dict,
                                      [f'{data_type}_MODE_MERGE_THRESH',
-                                      f'MODE_{data_type}_MERGE_THRESH',
                                       'MODE_MERGE_THRESH'],
                                      'merge_thresh',
                                      f'METPLUS_{data_type}_MERGE_THRESH',
@@ -199,54 +128,10 @@ class MODEWrapper(CompareGriddedWrapper):
 
             self.set_met_config_string(self.env_var_dict,
                                        [f'{data_type}_MODE_MERGE_FLAG',
-                                        f'MODE_{data_type}_MERGE_FLAG',
                                         'MODE_MERGE_FLAG'],
                                        'merge_flag',
                                        f'METPLUS_{data_type}_MERGE_FLAG',
-                                       remove_quotes=True,
-                                       uppercase=True)
-
-            self.set_met_config_list(self.env_var_dict,
-                                     [f'{data_type}_MODE_FILTER_ATTR_NAME',
-                                      f'MODE_{data_type}_FILTER_ATTR_NAME',
-                                      'MODE_FILTER_ATTR_NAME'],
-                                     'filter_attr_name',
-                                     f'METPLUS_{data_type}_FILTER_ATTR_NAME')
-
-            self.set_met_config_list(self.env_var_dict,
-                                     [f'{data_type}_MODE_FILTER_ATTR_THRESH',
-                                      f'MODE_{data_type}_FILTER_ATTR_THRESH',
-                                      'MODE_FILTER_ATTR_THRESH'],
-                                     'filter_attr_thresh',
-                                     f'METPLUS_{data_type}_FILTER_ATTR_THRESH',
-                                     remove_quotes=True)
-
-            self.set_met_config_list(self.env_var_dict,
-                                     [f'{data_type}_MODE_CENSOR_THRESH',
-                                      f'MODE_{data_type}_CENSOR_THRESH',
-                                      'MODE_CENSOR_THRESH'],
-                                     'censor_thresh',
-                                     f'METPLUS_{data_type}_CENSOR_THRESH',
-                                     remove_quotes=True)
-
-            self.set_met_config_list(self.env_var_dict,
-                                     [f'{data_type}_MODE_CENSOR_VAL',
-                                      f'MODE_{data_type}_CENSOR_VAL',
-                                      f'{data_type}_MODE_CENSOR_VALUE',
-                                      f'MODE_{data_type}_CENSOR_VALUE',
-                                      'MODE_CENSOR_VAL',
-                                      'MODE_CENSOR_VALUE'],
-                                     'censor_val',
-                                     f'METPLUS_{data_type}_CENSOR_VAL',
-                                     remove_quotes=True)
-
-            self.set_met_config_float(self.env_var_dict,
-                                      [f'{data_type}_MODE_VLD_THRESH',
-                                       f'{data_type}_MODE_VALID_THRESH',
-                                       f'MODE_{data_type}_VLD_THRESH',
-                                       f'MODE_{data_type}_VALID_THRESH'],
-                                      'vld_thresh',
-                                      f'METPLUS_{data_type}_VLD_THRESH')
+                                       remove_quotes=True)
 
             # set c_dict values for old method of setting env vars
             for name in ['CONV_RADIUS',
@@ -256,59 +141,10 @@ class MODEWrapper(CompareGriddedWrapper):
                 value = self.get_env_var_value(f'METPLUS_{data_type}_{name}')
                 c_dict[f'{data_type}_{name}'] = value
 
-        self.set_met_config_string(self.env_var_dict,
-                                   ['MODE_MATCH_FLAG'],
-                                   'match_flag',
-                                   'METPLUS_MATCH_FLAG',
-                                   remove_quotes=True,
-                                   uppercase=True)
-
-        self.handle_weight()
-        self.handle_flags('nc_pairs')
-
-        self.add_met_config(name='total_interest_thresh',
-                            data_type='float',
-                            metplus_configs=['MODE_TOTAL_INTEREST_THRESH'])
-
-        self.add_met_config(
-            name='max_centroid_dist',
-            data_type='string',
-            metplus_configs=['MODE_MAX_CENTROID_DIST'],
-            extra_args={
-                'remove_quotes': True,
-                'default': defaults.get('MAX_CENTROID_DIST')
-            }
-        )
-        self.add_met_config(
-            name='centroid_dist',
-            data_type='string',
-            env_var_name='INTEREST_FUNCTION_CENTROID_DIST',
-            metplus_configs=['MODE_INTEREST_FUNCTION_CENTROID_DIST'],
-            extra_args={
-                'remove_quotes': True,
-                'default': defaults.get('INTEREST_FUNCTION_CENTROID_DIST')
-            }
-        )
-        self.add_met_config(
-            name='boundary_dist',
-            data_type='string',
-            env_var_name='INTEREST_FUNCTION_BOUNDARY_DIST',
-            metplus_configs=['MODE_INTEREST_FUNCTION_BOUNDARY_DIST'],
-            extra_args={
-                'remove_quotes': True,
-                'default': defaults.get('INTEREST_FUNCTION_BOUNDARY_DIST')
-            }
-        )
-        self.add_met_config(
-            name='convex_hull_dist',
-            data_type='string',
-            env_var_name='INTEREST_FUNCTION_CONVEX_HULL_DIST',
-            metplus_configs=['MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST'],
-            extra_args={
-                'remove_quotes': True,
-                'default': defaults.get('INTEREST_FUNCTION_CONVEX_HULL_DIST')
-            }
-        )
+        self.set_met_config_float(self.env_var_dict,
+                                  'MODE_GRID_RES',
+                                  'grid_res',
+                                  'METPLUS_GRID_RES')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = False
 
@@ -317,34 +153,11 @@ class MODEWrapper(CompareGriddedWrapper):
                                'MODE_MERGE_CONFIG_FILE', '')
             )
 
-        self.handle_mask(single_value=True,
-                         get_flags=True)
-
-        # handle setting VERIFICATION_MASK for old wrapped MET config files
-        c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
+        mask_poly = self.read_mask_poly()
+        c_dict['MASK_POLY_TEMPLATE'] = mask_poly
         c_dict['MASK_POLY_IS_LIST'] = False
 
         return c_dict
-
-    def handle_weight(self):
-        """! Read weight dictionary values and set them into env_var_list
-
-        """
-        app = self.app_name.upper()
-
-        dict_name = 'weight'
-        dict_items = []
-
-        for name, data_type in self.WEIGHTS:
-            dict_items.append(
-                self.get_met_config(
-                    name=name,
-                    data_type=data_type,
-                    metplus_configs=[f'{app}_WEIGHT_{name.upper()}'],
-                )
-            )
-
-        self.handle_met_config_dict(dict_name, dict_items)
 
     def set_environment_variables(self, time_info):
         """!Set environment variables that will be read set when running this

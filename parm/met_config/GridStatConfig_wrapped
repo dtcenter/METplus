@@ -9,20 +9,17 @@
 //
 // Output model name to be written
 //
-// model =
 ${METPLUS_MODEL}
 
 //
 // Output description to be written
 // May be set separately in each "obs.field" entry
 //
-// desc =
 ${METPLUS_DESC}
 
 //
 // Output observation type to be written
 //
-// obtype =
 ${METPLUS_OBTYPE}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +27,6 @@ ${METPLUS_OBTYPE}
 //
 // Verification grid
 //
-// regrid = {
 ${METPLUS_REGRID_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -44,20 +40,17 @@ wind_thresh 	 = [ NA ];
 wind_logic  	 = UNION;
 eclv_points      = 0.05;
 nc_pairs_var_suffix = "";
-//nc_pairs_var_name =
-${METPLUS_NC_PAIRS_VAR_NAME}
+nc_pairs_var_name = "";
 rank_corr_flag   = FALSE;
 
 //
 // Forecast and observation fields to be verified
 //
 fcst = {
-  ${METPLUS_FCST_FILE_TYPE}
-  ${METPLUS_FCST_FIELD}
+${METPLUS_FCST_FIELD}
 }
 obs = {
-  ${METPLUS_OBS_FILE_TYPE}
-  ${METPLUS_OBS_FIELD}
+${METPLUS_OBS_FIELD}
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,12 +58,41 @@ obs = {
 //
 // Climatology mean data
 //
-//climo_mean = {
-${METPLUS_CLIMO_MEAN_DICT}
+climo_mean = {
 
+   ${METPLUS_CLIMO_MEAN_FILE}
+   field     = [];
 
-//climo_stdev = {
-${METPLUS_CLIMO_STDEV_DICT}
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape	 = SQUARE;
+   }
+
+   time_interp_method = DW_MEAN;
+   match_month        = TRUE;
+   day_interval       = 31;
+   hour_interval      = 6;
+}
+
+climo_stdev = {
+
+   ${METPLUS_CLIMO_STDEV_FILE}
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape	 = SQUARE;
+   }
+
+   time_interp_method = DW_MEAN;
+   match_month        = TRUE;
+   day_interval       = 31;
+   hour_interval      = 6;
+}
 
 //
 // May be set separately in each "obs.field" entry
@@ -83,7 +105,6 @@ ${METPLUS_CLIMO_CDF_DICT}
 //
 // Verification masking regions
 //
-// mask = {
 ${METPLUS_MASK_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -106,8 +127,18 @@ boot = {
 //
 // Data smoothing methods
 //
-//interp = {
-${METPLUS_INTERP_DICT}
+interp = {
+   field      = BOTH;
+   vld_thresh = 1.0;
+   shape      = SQUARE;
+
+   type = [
+      {
+         method = NEAREST;
+         width  = 1;
+      }
+   ];
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -116,11 +147,8 @@ ${METPLUS_INTERP_DICT}
 //
 nbrhd = {
    field      = BOTH;
-   // shape =
    ${METPLUS_NBRHD_SHAPE}
-   // width =
    ${METPLUS_NBRHD_WIDTH}
-   // cov_thresh =
    ${METPLUS_NBRHD_COV_THRESH}
    vld_thresh = 1.0;
 }
@@ -177,10 +205,8 @@ ${METPLUS_NC_PAIRS_FLAG_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 
-//grid_weight_flag =
-${METPLUS_GRID_WEIGHT_FLAG}
+grid_weight_flag = NONE;
 tmp_dir          = "/tmp";
-// output_prefix =
 ${METPLUS_OUTPUT_PREFIX}
 
 ////////////////////////////////////////////////////////////////////////////////

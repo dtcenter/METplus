@@ -1,7 +1,7 @@
-METdatadb Bugfix Release
-========================
+METexpress Bugfix Release
+=========================
 
-.. |projectRepo| replace:: METdatadb
+.. |projectRepo| replace:: METexpress
 
 Create a new vX.Y.Z bugfix release from the main_vX.Y branch.
 

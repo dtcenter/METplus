@@ -1,9 +1,9 @@
 METplus Wrappers Documentation
 ==============================
 
-The files in this directory are used to build the documentation. It can be accessed here:
+The files in this directory are used to build the documentation. It can be access here:
 
-https://metplus.readthedocs.io
+https://dtcenter.github.io/METplus
 
 To build the documentation:
 ---------------------------

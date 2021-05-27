@@ -194,11 +194,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
             input_name = field_info[f'{data_type.lower()}_name']
             input_level = field_info[f'{data_type.lower()}_level']
-            input_extra = field_info.get(f'{data_type.lower()}_extra', '')
             field_text_list = self.get_field_info(data_type,
                                                   input_name,
-                                                  v_level=input_level,
-                                                  v_extra=input_extra)
+                                                  input_level)
 
             for field_text in field_text_list:
                 self.args.append(f"-field '{field_text.strip('{ }')}'")
@@ -276,11 +274,9 @@ class RegridDataPlaneWrapper(ReformatGriddedWrapper):
 
             input_name = field_info[f'{data_type.lower()}_name']
             input_level = field_info[f'{data_type.lower()}_level']
-            input_extra = field_info.get(f'{data_type.lower()}_extra', '')
             field_text_list = self.get_field_info(data_type,
                                                   input_name,
-                                                  v_level=input_level,
-                                                  v_extra=input_extra)
+                                                  input_level)
             for field_text in field_text_list:
                 self.args.append(f"-field '{field_text.strip('{ }')}'")
 
