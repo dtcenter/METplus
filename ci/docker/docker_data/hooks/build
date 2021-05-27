@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./build_docker_images.sh -version $SOURCE_BRANCH -all -union -push dtcenter/metplus-data
+./build_docker_images.sh -pull v${DOCKER_TAG} -union -push dtcenter/metplus-data

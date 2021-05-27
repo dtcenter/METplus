@@ -119,7 +119,8 @@ Category: s2s
 2::UserScript_obsERA_obsOnly_Blocking:: model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.conf::cartopy,METplotpy,METcalcpy
 3::UserScript_obsERA_obsOnly_WeatherRegime:: model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.conf::cartopy,METplotpy,METcalcpy,eofs
 4::TCGen_fcstGFSO_obsBDECKS_GDF_TDF:: model_applications/s2s/TCGen_fcstGFSO_obsBDECKS_GDF_TDF.conf:: cartopy,METplotpy
-
+5::UserScript_obsPrecip_obsOnly_Hovmoeller:: model_applications/s2s/UserScript_obsPrecip_obsOnly_Hovmoeller.conf:: requests,psutil,pyyaml,plotly,METplotpy,METcalcpy
+6:: UserScript_obsPrecip_obsOnly_CrossSpectraPlot:: model_applications/s2s/UserScript_obsPrecip_obsOnly_CrossSpectraPlot.conf:: spacetime
 
 
 Category: space_weather
@@ -131,3 +132,4 @@ Category: tc_and_extra_tc
 0::TCRMW_fcstGFS_fcstOnly_gonzalo:: model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf
 1::CyclonePlotter_fcstGFS_obsGFS_OPC:: model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf:: cartopy,matplotlib
 2::UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF:: model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf,model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF/ci_overrides.conf
+3::GridStat_fcstHAFS_obsTDR_NetCDF:: model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf::matplotlib

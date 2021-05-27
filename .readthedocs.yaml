@@ -7,7 +7,7 @@ version: 2
 
 # Build all formats (htmlzip, pdf, epub)
 #formats: all
-formats: []
+formats: [pdf]
 
 # Optionally set the version of Python and requirements required to build your
 # docs

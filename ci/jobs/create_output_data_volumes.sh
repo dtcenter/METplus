@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Run by GitHub Actions (in .github/workflows/main.yml) to create
+# Run by GitHub Actions (in .github/workflows/testing.yml) to create
 # Docker data volumes from output data to create a "truth"
 # data set to use in difference tests.
 
