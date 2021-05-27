@@ -21,6 +21,9 @@ try:
     import cartopy.feature as cfeature
     import cartopy
     from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+    ##If the script is run on a limited-internet access machine, the CARTOPY_DIR environment setting
+    ##will need to be set in the user-specific system configuration file. Review the Installation section
+    ##of the User's Guide for more details.
     if os.getenv('CARTOPY_DIR'):
         cartopy.config['data_dir'] = os.getenv('CARTOPY_DIR', cartopy.config.get('data_dir'))
 

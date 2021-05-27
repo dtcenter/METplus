@@ -132,7 +132,8 @@ Description
 
 This wrapper does not have a corresponding MET tool but instead wraps
 the logic necessary to create plots of cyclone tracks. Currently only
-the output from the MET tc-pairs tool can be plotted.
+the output from the MET tc-pairs tool can be plotted. If used on an internet-limited system,
+additional dependencies may apply. See :ref:`install` for details.
 
 METplus Configuration
 ---------------------
