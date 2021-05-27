@@ -7090,3 +7090,9 @@ METplus Configuration Glossary
      Specify the value for 'quality_mark_thresh' in the MET configuration file for PB2NC.
 
      | *Used by:* PB2NC
+
+   FCST_SERIES_ANALAYSIS_PROB_THRESH
+     Threshold values to be used for probabilistic data in grid_stat. The value can be a single item or a comma separated list of items that must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
+     
+     | *Used by:* SeriesAnalysis
+     
