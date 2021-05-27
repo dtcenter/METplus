@@ -114,8 +114,11 @@ class CommandBuilder:
 
         self.check_for_externals()
 
-        self.cmdrunner = CommandRunner(self.config, logger=self.logger,
-                                       verbose=self.c_dict['VERBOSITY'])
+        self.cmdrunner = CommandRunner(
+            self.config, logger=self.logger,
+            verbose=self.c_dict['VERBOSITY'],
+            skip_run=self.c_dict.get('DO_NOT_RUN_EXE', False),
+        )
 
         # set log name to app name by default
         # any wrappers with a name different than the primary app that is run
@@ -196,6 +199,15 @@ class CommandBuilder:
         c_dict['INPUT_MUST_EXIST'] = self.config.getbool('config',
                                                          'INPUT_MUST_EXIST',
                                                          True)
+
+        c_dict['USER_SHELL'] = self.config.getstr('config',
+                                                  'USER_SHELL',
+                                                  'bash')
+
+        c_dict['DO_NOT_RUN_EXE'] = self.config.getbool('config',
+                                                       'DO_NOT_RUN_EXE',
+                                                       False)
+
         return c_dict
 
     def clear(self):
@@ -414,7 +426,7 @@ class CommandBuilder:
                     continue
                 var_list.add(user_var)
 
-        shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
+        shell = self.c_dict.get('USER_SHELL', '').lower()
         for var in sorted(var_list):
             if shell == 'csh':
                 # TODO: Complex environment variables that have special characters
