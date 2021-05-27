@@ -1656,7 +1656,7 @@ class CommandBuilder:
         @returns MET config formatted dictionary if any items are set, or empty
          string if not
         """
-        return self.format_met_config('dict', c_dict=c_dict, name=name, keys=keys)
+        return CommandBuilder.format_met_config('dict', c_dict=c_dict, name=name, keys=keys)
 
     def handle_regrid(self, c_dict, set_to_grid=True):
         app_name_upper = self.app_name.upper()
