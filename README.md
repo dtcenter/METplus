@@ -17,9 +17,9 @@ For more information about the entire suite of tools, please visit the
 
 Support for the METplus components is provided through the
 [METplus Discussions](https://github.com/dtcenter/METplus/discussions) forum.
-Users are welcome and encouraged to answer or address each other’s questions there!  For more
+Users are welcome and encouraged to answer or address each other's questions there!  For more
 information, please read
-"[Welcome to the METplus Components Discussions](https://giithub.com/dtcenter/METplus/discussions/939)".
+"[Welcome to the METplus Components Discussions](https://github.com/dtcenter/METplus/discussions/939)".
 
 This infrastructure utilizes the NCEP produtil package, which is a platform-independent
 weather and ocean forecasting utility package developed at the National Oceanic
