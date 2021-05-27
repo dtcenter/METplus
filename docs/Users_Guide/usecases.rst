@@ -1,8 +1,5 @@
-.. _metplus_use_cases:
-
-*****************
 METplus Use Cases
-*****************
+=================
 
 .. toctree::
    :titlesonly:

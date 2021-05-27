@@ -62,8 +62,7 @@ class RuntimeFreqWrapper(CommandBuilder):
                            f" {', '.join(self.FREQ_OPTIONS)}")
 
         # get runtime information to obtain all input files
-        start, end, interval = get_start_end_interval_times(self.config,
-                                                            warn=True)
+        start, end, interval = get_start_end_interval_times(self.config)
         c_dict['START_TIME'] = start
         c_dict['END_TIME'] = end
         c_dict['TIME_INTERVAL'] = interval

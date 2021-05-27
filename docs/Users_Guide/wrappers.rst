@@ -1,34 +1,27 @@
-***************
 Python Wrappers
-***************
+===============
 
 This chapter provides a description of each supported Python wrapper in
 METplus Wrappers. A wrapper is generally a Python script that
 encapsulates the behavior of a corresponding MET tool. Each of these
 sections can be added to the PROCESS_LIST configuration list variable.
-The METplus Configuration section of each wrapper section below lists the
+The Configuration section of each wrapper section below lists the
 METplus Wrappers configuration variables that are specific to that
 wrapper organized by config file section. You can find more information
 about each item in the METplus Configuration Glossary.
-The MET Configuration section of each wrapper (if applicable) displays the
-wrapped MET configuration file that utilizes environment variables to override
-settings. These sections also contain a list of environment variables that
-are referenced in the wrapped MET configuration files and a table to show
-which METplus configuration variables are used to set them and which MET
-configuration variables they override.
 
 .. _ascii2nc_wrapper:
 
 ASCII2NC
-========
+--------
 
 Description
------------
+~~~~~~~~~~~
 
 Used to configure the MET tool ASCII2NC
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`ASCII2NC_INPUT_DIR`
 | :term:`ASCII2NC_OUTPUT_DIR`
@@ -63,20 +56,13 @@ METplus Configuration
 .. _ascii2nc-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/Ascii2NcConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/Ascii2NcConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/Ascii2NcConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/Ascii2NcConfig_wrapped
 
@@ -125,17 +111,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. _cyclone_plotter_wrapper:
 
 CyclonePlotter
-==============
+--------------
 
 Description
------------
+~~~~~~~~~~~
 
 This wrapper does not have a corresponding MET tool but instead wraps
 the logic necessary to create plots of cyclone tracks. Currently only
 the output from the MET tc-pairs tool can be plotted.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`CYCLONE_PLOTTER_INPUT_DIR`
 | :term:`CYCLONE_PLOTTER_OUTPUT_DIR`
@@ -164,24 +150,28 @@ METplus Configuration
 .. _ensemble_stat_wrapper:
 
 EnsembleStat
-============
+------------
 
 Description
------------
+~~~~~~~~~~~
 
 Used to configure the MET tool ensemble_stat.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`OBS_ENSEMBLE_STAT_POINT_INPUT_DIR`
 | :term:`OBS_ENSEMBLE_STAT_GRID_INPUT_DIR`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_DIR`
 | :term:`ENSEMBLE_STAT_OUTPUT_DIR`
+| :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_DIR`
+| :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_DIR`
 | :term:`OBS_ENSEMBLE_STAT_POINT_INPUT_TEMPLATE`
 | :term:`OBS_ENSEMBLE_STAT_GRID_INPUT_TEMPLATE`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_TEMPLATE`
 | :term:`ENSEMBLE_STAT_OUTPUT_TEMPLATE`
+| :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
+| :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
 | :term:`LOG_ENSEMBLE_STAT_VERBOSITY`
 | :term:`FCST_ENSEMBLE_STAT_INPUT_DATATYPE`
 | :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE`
@@ -225,26 +215,8 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_DUPLICATE_FLAG`
 | :term:`ENSEMBLE_STAT_SKIP_CONST`
 | :term:`ENSEMBLE_STAT_OBS_ERROR_FLAG`
-| :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME`
-| :term:`ENSEMBLE_STAT_CLIMO_MEAN_FIELD`
-| :term:`ENSEMBLE_STAT_CLIMO_MEAN_REGRID_METHOD`
-| :term:`ENSEMBLE_STAT_CLIMO_MEAN_REGRID_WIDTH`
-| :term:`ENSEMBLE_STAT_CLIMO_MEAN_REGRID_VLD_THRESH`
-| :term:`ENSEMBLE_STAT_CLIMO_MEAN_REGRID_SHAPE`
-| :term:`ENSEMBLE_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
-| :term:`ENSEMBLE_STAT_CLIMO_MEAN_MATCH_MONTH`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL`
 | :term:`ENSEMBLE_STAT_CLIMO_MEAN_HOUR_INTERVAL`
-| :term:`ENSEMBLE_STAT_CLIMO_STDEV_FILE_NAME`
-| :term:`ENSEMBLE_STAT_CLIMO_STDEV_FIELD`
-| :term:`ENSEMBLE_STAT_CLIMO_STDEV_REGRID_METHOD`
-| :term:`ENSEMBLE_STAT_CLIMO_STDEV_REGRID_WIDTH`
-| :term:`ENSEMBLE_STAT_CLIMO_STDEV_REGRID_VLD_THRESH`
-| :term:`ENSEMBLE_STAT_CLIMO_STDEV_REGRID_SHAPE`
-| :term:`ENSEMBLE_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
-| :term:`ENSEMBLE_STAT_CLIMO_STDEV_MATCH_MONTH`
-| :term:`ENSEMBLE_STAT_CLIMO_STDEV_DAY_INTERVAL`
-| :term:`ENSEMBLE_STAT_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`ENSEMBLE_STAT_MASK_GRID`
 | :term:`ENSEMBLE_STAT_CI_ALPHA`
 | :term:`ENSEMBLE_STAT_INTERP_FIELD`
@@ -295,28 +267,17 @@ METplus Configuration
    | :term:`ENSEMBLE_STAT_CONFIG`
    | :term:`ENSEMBLE_STAT_MET_OBS_ERROR_TABLE`
    | :term:`ENSEMBLE_STAT_GRID_VX`
-   | :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_DIR`
-   | :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_DIR`
-   | :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
-   | :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
 
 .. _ens-stat-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/EnsembleStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/EnsembleStatConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/EnsembleStatConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/EnsembleStatConfig_wrapped
 
@@ -619,7 +580,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`ENSEMBLE_STAT_ENS_PHIST_BIN_SIZE`
      - ens_phist_bin_size
 
-**${METPLUS_CLIMO_MEAN_DICT}**
+**${METPLUS_CLIMO_MEAN_FILE}**
 
 .. list-table::
    :widths: 5 5
@@ -627,29 +588,32 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME`
+   * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
      - climo_mean.file_name
-   * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_FIELD`
-     - climo_mean.field
-   * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_REGRID_METHOD`
-     - climo_mean.regrid.method
-   * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_REGRID_WIDTH`
-     - climo_mean.regrid.width
-   * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_REGRID_VLD_THRESH`
-     - climo_mean.regrid.vld_thresh
-   * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_REGRID_SHAPE`
-     - climo_mean.regrid.shape
-   * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
-     - climo_mean.time_interp_method
-   * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_MATCH_MONTH`
-     - climo_mean.match_month
+
+**${METPLUS_CLIMO_MEAN_DAY_INTERVAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
    * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL`
      - climo_mean.day_interval
+
+**${METPLUS_CLIMO_MEAN_HOUR_INTERVAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
    * - :term:`ENSEMBLE_STAT_CLIMO_MEAN_HOUR_INTERVAL`
      - climo_mean.hour_interval
 
-
-**${METPLUS_CLIMO_STDEV_DICT}**
+**${METPLUS_CLIMO_STDEV_FILE}**
 
 .. list-table::
    :widths: 5 5
@@ -657,27 +621,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_FILE_NAME`
+   * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
      - climo_stdev.file_name
-   * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_FIELD`
-     - climo_stdev.field
-   * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_REGRID_METHOD`
-     - climo_stdev.regrid.method
-   * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_REGRID_WIDTH`
-     - climo_stdev.regrid.width
-   * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_REGRID_VLD_THRESH`
-     - climo_stdev.regrid.vld_thresh
-   * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_REGRID_SHAPE`
-     - climo_stdev.regrid.shape
-   * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
-     - climo_stdev.time_interp_method
-   * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_MATCH_MONTH`
-     - climo_stdev.match_month
-   * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_DAY_INTERVAL`
-     - climo_stdev.day_interval
-   * - :term:`ENSEMBLE_STAT_CLIMO_STDEV_HOUR_INTERVAL`
-     - climo_stdev.hour_interval
-
 
 **${METPLUS_CLIMO_CDF_DICT}**
 
@@ -842,15 +787,15 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. _example_wrapper:
 
 Example
-=======
+--------
 
 Description
------------
+~~~~~~~~~~~
 
 Used to demonstrate how the METplus wrappers handle looping and building commands.
 
 Configuration
--------------
+~~~~~~~~~~~~~
 
 | :term:`EXAMPLE_INPUT_DIR`
 | :term:`EXAMPLE_INPUT_TEMPLATE`
@@ -860,10 +805,10 @@ Configuration
 .. _extract_tiles_wrapper:
 
 ExtractTiles
-============
+------------
 
-Description
------------
+3.5.1 Description
+~~~~~~~~~~~~~~~~~
 
 The ExtractTiles wrapper is used to regrid and extract subregions from
 paired tropical cyclone tracks that are created by the tc_pairs_wrapper.
@@ -874,8 +819,8 @@ paired track data. This information is then used to create tiles of
 subregions. The ExtractTiles wrapper creates a 2n degree x 2m degree
 grid/tile with each storm located at the center.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 The following should be set in the METplus configuration file to define
 the dimensions and density of the tiles comprising the subregion:
@@ -921,15 +866,15 @@ the dimensions and density of the tiles comprising the subregion:
 .. _gempak_to_cf_wrapper:
 
 GempakToCF
-==========
+----------
 
 Description
------------
+~~~~~~~~~~~
 
 Used to configure the utility GempakToCF.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`GEMPAKTOCF_JAR`
 | :term:`GEMPAKTOCF_INPUT_DIR`
@@ -948,15 +893,15 @@ METplus Configuration
 .. _gen_vx_mask_wrapper:
 
 GenVxMask
-=========
+---------
 
 Description
------------
+~~~~~~~~~~~
 
 Used to configure the MET tool GenVxMask to define and generate masking regions.
 
 Configuration
--------------
+~~~~~~~~~~~~~
 
 | :term:`GEN_VX_MASK_INPUT_DIR`
 | :term:`GEN_VX_MASK_INPUT_MASK_DIR`
@@ -975,15 +920,15 @@ Configuration
 .. _grid_diag_wrapper:
 
 GridDiag
-========
+--------
 
 Description
------------
+~~~~~~~~~~~
 
 Used to configure the MET tool grid_diag.
 
 METplus Configuration
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 | :term:`GRID_DIAG_INPUT_DIR`
 | :term:`GRID_DIAG_OUTPUT_DIR`
@@ -1009,20 +954,13 @@ METplus Configuration
 .. _grid-diag-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/GridDiagConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GridDiagConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/GridDiagConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/GridDiagConfig_wrapped
 
@@ -1125,22 +1063,26 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. _grid_stat_wrapper:
 
 GridStat
-========
+--------
 
 Description
------------
+~~~~~~~~~~~
 
 Used to configure the MET tool grid_stat.
 
 METplus Configuration
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 | :term:`FCST_GRID_STAT_INPUT_DIR`
 | :term:`OBS_GRID_STAT_INPUT_DIR`
 | :term:`GRID_STAT_OUTPUT_DIR`
+| :term:`GRID_STAT_CLIMO_MEAN_INPUT_DIR`
+| :term:`GRID_STAT_CLIMO_STDEV_INPUT_DIR`
 | :term:`FCST_GRID_STAT_INPUT_TEMPLATE`
 | :term:`OBS_GRID_STAT_INPUT_TEMPLATE`
 | :term:`GRID_STAT_OUTPUT_TEMPLATE`
+| :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
+| :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
 | :term:`GRID_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`LOG_GRID_STAT_VERBOSITY`
 | :term:`GRID_STAT_OUTPUT_PREFIX`
@@ -1191,35 +1133,6 @@ METplus Configuration
 | :term:`GRID_STAT_NC_PAIRS_FLAG_GRADIENT`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_DISTANCE_MAP`
 | :term:`GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK`
-| :term:`GRID_STAT_INTERP_FIELD`
-| :term:`GRID_STAT_INTERP_VLD_THRESH`
-| :term:`GRID_STAT_INTERP_SHAPE`
-| :term:`GRID_STAT_INTERP_TYPE_METHOD`
-| :term:`GRID_STAT_INTERP_TYPE_WIDTH`
-| :term:`GRID_STAT_NC_PAIRS_VAR_NAME`
-| :term:`GRID_STAT_GRID_WEIGHT_FLAG`
-| :term:`FCST_GRID_STAT_FILE_TYPE`
-| :term:`OBS_GRID_STAT_FILE_TYPE`
-| :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`
-| :term:`GRID_STAT_CLIMO_MEAN_FIELD`
-| :term:`GRID_STAT_CLIMO_MEAN_REGRID_METHOD`
-| :term:`GRID_STAT_CLIMO_MEAN_REGRID_WIDTH`
-| :term:`GRID_STAT_CLIMO_MEAN_REGRID_VLD_THRESH`
-| :term:`GRID_STAT_CLIMO_MEAN_REGRID_SHAPE`
-| :term:`GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
-| :term:`GRID_STAT_CLIMO_MEAN_MATCH_MONTH`
-| :term:`GRID_STAT_CLIMO_MEAN_DAY_INTERVAL`
-| :term:`GRID_STAT_CLIMO_MEAN_HOUR_INTERVAL`
-| :term:`GRID_STAT_CLIMO_STDEV_FILE_NAME`
-| :term:`GRID_STAT_CLIMO_STDEV_FIELD`
-| :term:`GRID_STAT_CLIMO_STDEV_REGRID_METHOD`
-| :term:`GRID_STAT_CLIMO_STDEV_REGRID_WIDTH`
-| :term:`GRID_STAT_CLIMO_STDEV_REGRID_VLD_THRESH`
-| :term:`GRID_STAT_CLIMO_STDEV_REGRID_SHAPE`
-| :term:`GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
-| :term:`GRID_STAT_CLIMO_STDEV_MATCH_MONTH`
-| :term:`GRID_STAT_CLIMO_STDEV_DAY_INTERVAL`
-| :term:`GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`GRID_STAT_MASK_POLY` (optional)
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
@@ -1244,7 +1157,7 @@ METplus Configuration
 | :term:`OBS_GRID_STAT_VAR<n>_LEVELS` (optional)
 | :term:`OBS_GRID_STAT_VAR<n>_THRESH` (optional)
 | :term:`OBS_GRID_STAT_VAR<n>_OPTIONS` (optional)
-|
+| 
 
 .. warning:: **DEPRECATED**
 
@@ -1252,29 +1165,18 @@ METplus Configuration
    | :term:`GRID_STAT_CONFIG`
    | :term:`CLIMO_GRID_STAT_INPUT_DIR`
    | :term:`CLIMO_GRID_STAT_INPUT_TEMPLATE`
-   | :term:`GRID_STAT_CLIMO_MEAN_INPUT_DIR`
-   | :term:`GRID_STAT_CLIMO_STDEV_INPUT_DIR`
-   | :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
-   | :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
    |
 
 .. _grid-stat-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/GridStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GridStatConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/GridStatConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/GridStatConfig_wrapped
 
@@ -1349,17 +1251,6 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
-**${METPLUS_FCST_FILE_TYPE}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`FCST_GRID_STAT_FILE_TYPE`
-     - fcst.file_type
-
 **${METPLUS_OBS_FIELD}**
 
 .. list-table::
@@ -1379,7 +1270,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
-**${METPLUS_OBS_FILE_TYPE}**
+**${METPLUS_CLIMO_MEAN_FILE}**
 
 .. list-table::
    :widths: 5 5
@@ -1387,39 +1278,10 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`OBS_GRID_STAT_FILE_TYPE`
-     - obs.file_type
-
-**${METPLUS_CLIMO_MEAN_DICT}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`
+   * - :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
      - climo_mean.file_name
-   * - :term:`GRID_STAT_CLIMO_MEAN_FIELD`
-     - climo_mean.field
-   * - :term:`GRID_STAT_CLIMO_MEAN_REGRID_METHOD`
-     - climo_mean.regrid.method
-   * - :term:`GRID_STAT_CLIMO_MEAN_REGRID_WIDTH`
-     - climo_mean.regrid.width
-   * - :term:`GRID_STAT_CLIMO_MEAN_REGRID_VLD_THRESH`
-     - climo_mean.regrid.vld_thresh
-   * - :term:`GRID_STAT_CLIMO_MEAN_REGRID_SHAPE`
-     - climo_mean.regrid.shape
-   * - :term:`GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
-     - climo_mean.time_interp_method
-   * - :term:`GRID_STAT_CLIMO_MEAN_MATCH_MONTH`
-     - climo_mean.match_month
-   * - :term:`GRID_STAT_CLIMO_MEAN_DAY_INTERVAL`
-     - climo_mean.day_interval
-   * - :term:`GRID_STAT_CLIMO_MEAN_HOUR_INTERVAL`
-     - climo_mean.hour_interval
 
-**${METPLUS_CLIMO_STDEV_DICT}**
+**${METPLUS_CLIMO_STDEV_FILE}**
 
 .. list-table::
    :widths: 5 5
@@ -1427,26 +1289,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`GRID_STAT_CLIMO_STDEV_FILE_NAME`
+   * - :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
      - climo_stdev.file_name
-   * - :term:`GRID_STAT_CLIMO_STDEV_FIELD`
-     - climo_stdev.field
-   * - :term:`GRID_STAT_CLIMO_STDEV_REGRID_METHOD`
-     - climo_stdev.regrid.method
-   * - :term:`GRID_STAT_CLIMO_STDEV_REGRID_WIDTH`
-     - climo_stdev.regrid.width
-   * - :term:`GRID_STAT_CLIMO_STDEV_REGRID_VLD_THRESH`
-     - climo_stdev.regrid.vld_thresh
-   * - :term:`GRID_STAT_CLIMO_STDEV_REGRID_SHAPE`
-     - climo_stdev.regrid.shape
-   * - :term:`GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
-     - climo_stdev.time_interp_method
-   * - :term:`GRID_STAT_CLIMO_STDEV_MATCH_MONTH`
-     - climo_stdev.match_month
-   * - :term:`GRID_STAT_CLIMO_STDEV_DAY_INTERVAL`
-     - climo_stdev.day_interval
-   * - :term:`GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL`
-     - climo_stdev.hour_interval
 
 **${METPLUS_MASK_DICT}**
 
@@ -1496,7 +1340,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`GRID_STAT_NEIGHBORHOOD_COV_THRESH`
      - nbrhd.cov_thresh
 
-**${METPLUS_OUTPUT_PREFIX}**
+**${METPLUS_OUTPUT_PREFIX**
 
 .. list-table::
    :widths: 5 5
@@ -1615,63 +1459,22 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`GRID_STAT_NC_PAIRS_FLAG_APPLY_MASK`
      - nc_pairs_flag.apply_mask
 
-**${METPLUS_INTERP_DICT}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GRID_STAT_INTERP_FIELD`
-     - interp.field
-   * - :term:`GRID_STAT_INTERP_VLD_THRESH`
-     - interp.vld_thresh
-   * - :term:`GRID_STAT_INTERP_SHAPE`
-     - interp.shape
-   * - :term:`GRID_STAT_INTERP_TYPE_METHOD`
-     - interp.type.method
-   * - :term:`GRID_STAT_INTERP_TYPE_WIDTH`
-     - interp.type.width
-
-**${METPLUS_NC_PAIRS_VAR_NAME}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GRID_STAT_NC_PAIRS_VAR_NAME`
-     - nc_pairs_var_name
-
-**${METPLUS_GRID_WEIGHT_FLAG}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`GRID_STAT_GRID_WEIGHT_FLAG`
-     - grid_weight_flag
-
 
 .. _make_plots_wrapper:
 
 MakePlots
-=========
+---------
 
 Description
------------
+~~~~~~~~~~~
 
 The MakePlots wrapper creates various statistical plots using python
 scripts for the various METplus Wrappers use cases. This can only be run
 following StatAnalysis wrapper when LOOP_ORDER = processes. To run
 MakePlots wrapper, include MakePlots in PROCESS_LIST.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 The following values **must** be defined in the METplus Wrappers
 configuration file:
@@ -1746,16 +1549,16 @@ configuration file:
 .. _met_db_load_wrapper:
 
 METdbLoad
-=========
+---------
 
 Description
------------
+~~~~~~~~~~~
 
 Used to call the met_db_load.py script from dtcenter/METdatadb to load MET
 output into a METviewer database.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`MET_DB_LOAD_RUNTIME_FREQ`
 | :term:`MET_DATA_DB_DIR`
@@ -1780,7 +1583,7 @@ METplus Configuration
 .. _met_db_load-xml-conf:
 
 XML Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
 Below is the XML template configuration file used for this wrapper. The wrapper
 substitutes values from the METplus configuration file into this configuration
@@ -1958,15 +1761,15 @@ searches for these strings and substitutes the values as appropriate.
 .. _mode_wrapper:
 
 MODE
-====
+----
 
 Description
------------
+~~~~~~~~~~~
 
 Used to configure the MET Method for Object-based Diagnostic Evaluation tool mode.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`FCST_MODE_INPUT_DIR`
 | :term:`OBS_MODE_INPUT_DIR`
@@ -2011,43 +1814,6 @@ METplus Configuration
 | :term:`MODE_SKIP_IF_OUTPUT_EXISTS`
 | :term:`MODE_DESC`
 | :term:`MODE_MET_CONFIG_OVERRIDES`
-| :term:`MODE_WEIGHT_CENTROID_DIST`
-| :term:`MODE_WEIGHT_BOUNDARY_DIST`
-| :term:`MODE_WEIGHT_CONVEX_HULL_DIST`
-| :term:`MODE_WEIGHT_ANGLE_DIFF`
-| :term:`MODE_WEIGHT_ASPECT_DIFF`
-| :term:`MODE_WEIGHT_AREA_RATIO`
-| :term:`MODE_WEIGHT_INT_AREA_RATIO`
-| :term:`MODE_WEIGHT_CURVATURE_RATIO`
-| :term:`MODE_WEIGHT_COMPLEXITY_RATIO`
-| :term:`MODE_WEIGHT_INTEN_PERC_RATIO`
-| :term:`MODE_WEIGHT_INTEN_PERC_VALUE`
-| :term:`MODE_MASK_GRID`
-| :term:`MODE_MASK_GRID_FLAG`
-| :term:`MODE_MASK_POLY`
-| :term:`MODE_MASK_POLY_FLAG`
-| :term:`MODE_FCST_FILTER_ATTR_NAME`
-| :term:`MODE_FCST_FILTER_ATTR_THRESH`
-| :term:`MODE_FCST_CENSOR_THRESH`
-| :term:`MODE_FCST_CENSOR_VAL`
-| :term:`MODE_FCST_VLD_THRESH`
-| :term:`MODE_OBS_FILTER_ATTR_NAME`
-| :term:`MODE_OBS_FILTER_ATTR_THRESH`
-| :term:`MODE_OBS_CENSOR_THRESH`
-| :term:`MODE_OBS_CENSOR_VAL`
-| :term:`MODE_OBS_VLD_THRESH`
-| :term:`MODE_NC_PAIRS_FLAG_LATLON`
-| :term:`MODE_NC_PAIRS_FLAG_RAW`
-| :term:`MODE_NC_PAIRS_FLAG_OBJECT_RAW`
-| :term:`MODE_NC_PAIRS_FLAG_OBJECT_ID`
-| :term:`MODE_NC_PAIRS_FLAG_CLUSTER_ID`
-| :term:`MODE_NC_PAIRS_FLAG_POLYLINES`
-| :term:`MODE_MATCH_FLAG`
-| :term:`MODE_MAX_CENTROID_DIST`
-| :term:`MODE_TOTAL_INTEREST_THRESH`
-| :term:`MODE_INTEREST_FUNCTION_CENTROID_DIST`
-| :term:`MODE_INTEREST_FUNCTION_BOUNDARY_DIST`
-| :term:`MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST`
 | :term:`FCST_MODE_VAR<n>_NAME` (optional)
 | :term:`FCST_MODE_VAR<n>_LEVELS` (optional)
 | :term:`FCST_MODE_VAR<n>_THRESH` (optional)
@@ -2067,20 +1833,13 @@ METplus Configuration
 .. _mode-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/MODEConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/MODEConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/MODEConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/MODEConfig_wrapped
 
@@ -2317,266 +2076,18 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`MODE_MET_CONFIG_OVERRIDES`
      - n/a
 
-**${METPLUS_FCST_FILTER_ATTR_NAME}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_FCST_FILTER_ATTR_NAME`
-     - fcst.filter_attr_name
-
-**${METPLUS_FCST_FILTER_ATTR_THRESH}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_FCST_FILTER_ATTR_THRESH`
-     - fcst.filter_attr_thresh
-
-**${METPLUS_FCST_CENSOR_THRESH}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_FCST_CENSOR_THRESH`
-     - fcst.censor_thresh
-
-**${METPLUS_FCST_CENSOR_VAL}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_FCST_CENSOR_VAL`
-     - fcst.censor_val
-
-**${METPLUS_FCST_VLD_THRESH}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_FCST_VLD_THRESH`
-     - fcst.vld_thresh
-
-**${METPLUS_OBS_FILTER_ATTR_NAME}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_OBS_FILTER_ATTR_NAME`
-     - obs.filter_attr_name
-
-**${METPLUS_OBS_FILTER_ATTR_THRESH}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_OBS_FILTER_ATTR_THRESH`
-     - obs.filter_attr_thresh
-
-**${METPLUS_OBS_CENSOR_THRESH}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_OBS_CENSOR_THRESH`
-     - obs.censor_thresh
-
-**${METPLUS_OBS_CENSOR_VAL}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_OBS_CENSOR_VAL`
-     - obs.censor_val
-
-**${METPLUS_OBS_VLD_THRESH}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_OBS_VLD_THRESH`
-     - obs.vld_thresh
-
-**${METPLUS_MASK_DICT}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_MASK_GRID`
-     - mask.grid
-   * - :term:`MODE_MASK_GRID_FLAG`
-     - mask.grid_flag
-   * - :term:`MODE_MASK_POLY`
-     - mask.poly
-   * - :term:`MODE_MASK_POLY_FLAG`
-     - mask.poly_flag
-
-**${METPLUS_MATCH_FLAG}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_MATCH_FLAG`
-     - match_flag
-
-**${METPLUS_WEIGHT_DICT}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_WEIGHT_CENTROID_DIST`
-     - weight.centroid_dist
-   * - :term:`MODE_WEIGHT_BOUNDARY_DIST`
-     - weight.boundary_dist
-   * - :term:`MODE_WEIGHT_CONVEX_HULL_DIST`
-     - weight.convex_hull_dist
-   * - :term:`MODE_WEIGHT_ANGLE_DIFF`
-     - weight.angle_diff
-   * - :term:`MODE_WEIGHT_ASPECT_DIFF`
-     - weight.aspect_diff
-   * - :term:`MODE_WEIGHT_AREA_RATIO`
-     - weight.area_ratio
-   * - :term:`MODE_WEIGHT_INT_AREA_RATIO`
-     - weight.int_area_ratio
-   * - :term:`MODE_WEIGHT_CURVATURE_RATIO`
-     - weight.curvature_ratio
-   * - :term:`MODE_WEIGHT_COMPLEXITY_RATIO`
-     - weight.complexity_ratio
-   * - :term:`MODE_WEIGHT_INTEN_PERC_RATIO`
-     - weight.inten_perc_ratio
-   * - :term:`MODE_WEIGHT_INTEN_PERC_VALUE`
-     - weight.inten_perc_value
-
-**${METPLUS_NC_PAIRS_FLAG_DICT}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_NC_PAIRS_FLAG_LATLON`
-     - nc_pairs_flag.latlon
-   * - :term:`MODE_NC_PAIRS_FLAG_RAW`
-     - nc_pairs_flag.raw
-   * - :term:`MODE_NC_PAIRS_FLAG_OBJECT_RAW`
-     - nc_pairs_flag.object_raw
-   * - :term:`MODE_NC_PAIRS_FLAG_OBJECT_ID`
-     - nc_pairs_flag.object_id
-   * - :term:`MODE_NC_PAIRS_FLAG_CLUSTER_ID`
-     - nc_pairs_flag.cluster_id
-   * - :term:`MODE_NC_PAIRS_FLAG_POLYLINES`
-     - nc_pairs_flag.polylines
-
-**${METPLUS_MAX_CENTROID_DIST}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_MAX_CENTROID_DIST`
-     - max_centroid_dist
-
-**${METPLUS_INTEREST_FUNCTION_CENTROID_DIST}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_INTEREST_FUNCTION_CENTROID_DIST`
-     - interest_function.centroid_dist
-
-**${METPLUS_INTEREST_FUNCTION_BOUNDARY_DIST}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_INTEREST_FUNCTION_BOUNDARY_DIST`
-     - interest_function.boundary_dist
-
-**${METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST`
-     - interest_function.convex_hull_dist
-
-**${METPLUS_TOTAL_INTEREST_THRESH}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`MODE_TOTAL_INTEREST_THRESH`
-     - total_interest_thresh
-
-
-
-
 .. _mtd_wrapper:
 
 MTD
-===
+---
 
 Description
------------
+~~~~~~~~~~~
 
 Used to configure the MET MODE Time Domain tool mtd.  This tools follows objects through time and can also be used to track objects.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`FCST_MTD_INPUT_DIR`
 | :term:`OBS_MTD_INPUT_DIR`
@@ -2623,20 +2134,13 @@ METplus Configuration
 .. _mtd-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/MTDConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/MTDConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/MTDConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/MTDConfig_wrapped
 
@@ -2832,16 +2336,16 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. _pb2nc_wrapper:
 
 PB2NC
-=====
+-----
 
 Description
------------
+~~~~~~~~~~~
 
 The PB2NC wrapper is a Python script that encapsulates the behavior of
 the MET pb2nc tool to convert prepBUFR files into netCDF.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`PB2NC_INPUT_DIR`
 | :term:`PB2NC_OUTPUT_DIR`
@@ -2867,11 +2371,7 @@ METplus Configuration
 | :term:`PB2NC_VALID_END`
 | :term:`PB2NC_CUSTOM_LOOP_LIST`
 | :term:`PB2NC_MET_CONFIG_OVERRIDES`
-| :term:`PB2NC_PB_REPORT_TYPE`
-| :term:`PB2NC_LEVEL_RANGE_BEG`
-| :term:`PB2NC_LEVEL_RANGE_END`
-| :term:`PB2NC_LEVEL_CATEGORY`
-| :term:`PB2NC_QUALITY_MARK_THRESH`
+|
 
 .. warning:: **DEPRECATED:**
 
@@ -2894,20 +2394,13 @@ METplus Configuration
 .. _pb2nc-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/PB2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PB2NCConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/PB2NCConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/PB2NCConfig_wrapped
 
@@ -3014,67 +2507,20 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`PB2NC_MET_CONFIG_OVERRIDES`
      - n/a
 
-**${METPLUS_PB_REPORT_TYPE}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_PB_REPORT_TYPE`
-     - pb_report_type
-
-**${METPLUS_LEVEL_RANGE_DICT}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_LEVEL_RANGE_BEG`
-     - level_range.beg
-   * - :term:`PB2NC_LEVEL_RANGE_END`
-     - level_range.end
-
-**${METPLUS_LEVEL_CATEGORY}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_LEVEL_CATEGORY`
-     - level_category
-
-**${METPLUS_QUALITY_MARK_THRESH}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`PB2NC_QUALITY_MARK_THRESH`
-     - quality_mark_thresh
-
-
 .. _pcp_combine_wrapper:
 
 PCPCombine
-==========
+----------
 
 Description
------------
+~~~~~~~~~~~
 
 The PCPCombine wrapper is a Python script that encapsulates the MET
 PCPCombine tool. It provides the infrastructure to combine or extract
 from files to build desired accumulations.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`FCST_PCP_COMBINE_INPUT_DIR`
 | :term:`FCST_PCP_COMBINE_OUTPUT_DIR`
@@ -3159,10 +2605,10 @@ METplus Configuration
 .. _plot_data_plane_wrapper:
 
 PlotDataPlane
-=============
+-------------
 
 Description
------------
+~~~~~~~~~~~
 
 The PlotDataPlane wrapper is a Python script that encapsulates the MET
 plot_data_plane tool. It provides the infrastructure to read in any input that
@@ -3170,7 +2616,7 @@ MET can read and plot them. This tool is often used to verify that the data
 is mapped to the correct grid location.
 
 Configuration
--------------
+~~~~~~~~~~~~~
 
 | :term:`PLOT_DATA_PLANE_INPUT_DIR`
 | :term:`PLOT_DATA_PLANE_OUTPUT_DIR`
@@ -3190,17 +2636,17 @@ Configuration
 .. _point2grid_wrapper:
 
 Point2Grid
-==========
+----------
 
 Description
------------
+~~~~~~~~~~~
 
 The Point2Grid wrapper is a Python script that encapsulates the MET
 point2grid tool. It provides the infrastructure to read in point observations
 and place them on a grid
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`POINT2GRID_INPUT_DIR`
 | :term:`POINT2GRID_OUTPUT_DIR`
@@ -3225,10 +2671,10 @@ METplus Configuration
 .. _point_stat_wrapper:
 
 PointStat
-=========
+---------
 
 Description
------------
+~~~~~~~~~~~
 
 The PointStat wrapper is a Python script that encapsulates the MET
 point_stat tool. It provides the infrastructure to read in gridded model
@@ -3236,14 +2682,18 @@ data and netCDF point observation data to perform grid-to-point
 (grid-to-obs) verification.
 
 Configuration
--------------
+~~~~~~~~~~~~~
 
 | :term:`FCST_POINT_STAT_INPUT_DIR`
 | :term:`OBS_POINT_STAT_INPUT_DIR`
 | :term:`POINT_STAT_OUTPUT_DIR`
+| :term:`POINT_STAT_CLIMO_MEAN_INPUT_DIR`
+| :term:`POINT_STAT_CLIMO_STDEV_INPUT_DIR`
 | :term:`FCST_POINT_STAT_INPUT_TEMPLATE`
 | :term:`OBS_POINT_STAT_INPUT_TEMPLATE`
 | :term:`POINT_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
+| :term:`POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
+| :term:`POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
 | :term:`POINT_STAT_OUTPUT_PREFIX`
 | :term:`LOG_POINT_STAT_VERBOSITY`
 | :term:`POINT_STAT_OFFSETS`
@@ -3267,50 +2717,6 @@ Configuration
 | :term:`POINT_STAT_CLIMO_CDF_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
-| :term:`POINT_STAT_OBS_QUALITY`
-| :term:`POINT_STAT_OUTPUT_FLAG_FHO`
-| :term:`POINT_STAT_OUTPUT_FLAG_CTC`
-| :term:`POINT_STAT_OUTPUT_FLAG_CTS`
-| :term:`POINT_STAT_OUTPUT_FLAG_MCTC`
-| :term:`POINT_STAT_OUTPUT_FLAG_MCTS`
-| :term:`POINT_STAT_OUTPUT_FLAG_CNT`
-| :term:`POINT_STAT_OUTPUT_FLAG_SL1L2`
-| :term:`POINT_STAT_OUTPUT_FLAG_SAL1L2`
-| :term:`POINT_STAT_OUTPUT_FLAG_VL1L2`
-| :term:`POINT_STAT_OUTPUT_FLAG_VAL1L2`
-| :term:`POINT_STAT_OUTPUT_FLAG_VCNT`
-| :term:`POINT_STAT_OUTPUT_FLAG_PCT`
-| :term:`POINT_STAT_OUTPUT_FLAG_PSTD`
-| :term:`POINT_STAT_OUTPUT_FLAG_PJC`
-| :term:`POINT_STAT_OUTPUT_FLAG_PRC`
-| :term:`POINT_STAT_OUTPUT_FLAG_ECNT`
-| :term:`POINT_STAT_OUTPUT_FLAG_RPS`
-| :term:`POINT_STAT_OUTPUT_FLAG_ECLV`
-| :term:`POINT_STAT_OUTPUT_FLAG_MPR`
-| :term:`POINT_STAT_INTERP_VLD_THRESH`
-| :term:`POINT_STAT_INTERP_SHAPE`
-| :term:`POINT_STAT_INTERP_TYPE_METHOD`
-| :term:`POINT_STAT_INTERP_TYPE_WIDTH`
-| :term:`POINT_STAT_CLIMO_MEAN_FILE_NAME`
-| :term:`POINT_STAT_CLIMO_MEAN_FIELD`
-| :term:`POINT_STAT_CLIMO_MEAN_REGRID_METHOD`
-| :term:`POINT_STAT_CLIMO_MEAN_REGRID_WIDTH`
-| :term:`POINT_STAT_CLIMO_MEAN_REGRID_VLD_THRESH`
-| :term:`POINT_STAT_CLIMO_MEAN_REGRID_SHAPE`
-| :term:`POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
-| :term:`POINT_STAT_CLIMO_MEAN_MATCH_MONTH`
-| :term:`POINT_STAT_CLIMO_MEAN_DAY_INTERVAL`
-| :term:`POINT_STAT_CLIMO_MEAN_HOUR_INTERVAL`
-| :term:`POINT_STAT_CLIMO_STDEV_FILE_NAME`
-| :term:`POINT_STAT_CLIMO_STDEV_FIELD`
-| :term:`POINT_STAT_CLIMO_STDEV_REGRID_METHOD`
-| :term:`POINT_STAT_CLIMO_STDEV_REGRID_WIDTH`
-| :term:`POINT_STAT_CLIMO_STDEV_REGRID_VLD_THRESH`
-| :term:`POINT_STAT_CLIMO_STDEV_REGRID_SHAPE`
-| :term:`POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
-| :term:`POINT_STAT_CLIMO_STDEV_MATCH_MONTH`
-| :term:`POINT_STAT_CLIMO_STDEV_DAY_INTERVAL`
-| :term:`POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
 | :term:`FCST_POINT_STAT_WINDOW_END` (optional)
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
@@ -3348,29 +2754,18 @@ Configuration
    | :term:`REGRID_TO_GRID`
    | :term:`CLIMO_POINT_STAT_INPUT_DIR`
    | :term:`CLIMO_POINT_STAT_INPUT_TEMPLATE`
-   | :term:`POINT_STAT_CLIMO_MEAN_INPUT_DIR`
-   | :term:`POINT_STAT_CLIMO_STDEV_INPUT_DIR`
-   | :term:`POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
-   | :term:`POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
    |
 
 .. _point-stat-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/PointStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/PointStatConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/PointStatConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/PointStatConfig_wrapped
 
@@ -3464,8 +2859,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`POINT_STAT_MESSAGE_TYPE`
      - message_type
 
-
-**${METPLUS_CLIMO_MEAN_DICT}**
+**${METPLUS_CLIMO_MEAN_FILE}**
 
 .. list-table::
    :widths: 5 5
@@ -3473,28 +2867,10 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`POINT_STAT_CLIMO_MEAN_FILE_NAME`
+   * - :term:`POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE`
      - climo_mean.file_name
-   * - :term:`POINT_STAT_CLIMO_MEAN_FIELD`
-     - climo_mean.field
-   * - :term:`POINT_STAT_CLIMO_MEAN_REGRID_METHOD`
-     - climo_mean.regrid.method
-   * - :term:`POINT_STAT_CLIMO_MEAN_REGRID_WIDTH`
-     - climo_mean.regrid.width
-   * - :term:`POINT_STAT_CLIMO_MEAN_REGRID_VLD_THRESH`
-     - climo_mean.regrid.vld_thresh
-   * - :term:`POINT_STAT_CLIMO_MEAN_REGRID_SHAPE`
-     - climo_mean.regrid.shape
-   * - :term:`POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD`
-     - climo_mean.time_interp_method
-   * - :term:`POINT_STAT_CLIMO_MEAN_MATCH_MONTH`
-     - climo_mean.match_month
-   * - :term:`POINT_STAT_CLIMO_MEAN_DAY_INTERVAL`
-     - climo_mean.day_interval
-   * - :term:`POINT_STAT_CLIMO_MEAN_HOUR_INTERVAL`
-     - climo_mean.hour_interval
 
-**${METPLUS_CLIMO_STDEV_DICT}**
+**${METPLUS_CLIMO_STDEV_FILE}**
 
 .. list-table::
    :widths: 5 5
@@ -3502,27 +2878,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`POINT_STAT_CLIMO_STDEV_FILE_NAME`
+   * - :term:`POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE`
      - climo_stdev.file_name
-   * - :term:`POINT_STAT_CLIMO_STDEV_FIELD`
-     - climo_stdev.field
-   * - :term:`POINT_STAT_CLIMO_STDEV_REGRID_METHOD`
-     - climo_stdev.regrid.method
-   * - :term:`POINT_STAT_CLIMO_STDEV_REGRID_WIDTH`
-     - climo_stdev.regrid.width
-   * - :term:`POINT_STAT_CLIMO_STDEV_REGRID_VLD_THRESH`
-     - climo_stdev.regrid.vld_thresh
-   * - :term:`POINT_STAT_CLIMO_STDEV_REGRID_SHAPE`
-     - climo_stdev.regrid.shape
-   * - :term:`POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD`
-     - climo_stdev.time_interp_method
-   * - :term:`POINT_STAT_CLIMO_STDEV_MATCH_MONTH`
-     - climo_stdev.match_month
-   * - :term:`POINT_STAT_CLIMO_STDEV_DAY_INTERVAL`
-     - climo_stdev.day_interval
-   * - :term:`POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL`
-     - climo_stdev.hour_interval
-
 
 **${METPLUS_OBS_WINDOW_DICT}**
 
@@ -3607,94 +2964,18 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
      - climo_cdf.write_bins
 
-**${METPLUS_OBS_QUALITY}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`POINT_STAT_OBS_QUALITY`
-     - obs_quality
-
-**${METPLUS_OUTPUT_FLAG_DICT}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`POINT_STAT_OUTPUT_FLAG_FHO`
-     - output_flag.fho
-   * - :term:`POINT_STAT_OUTPUT_FLAG_CTC`
-     - output_flag.ctc
-   * - :term:`POINT_STAT_OUTPUT_FLAG_CTS`
-     - output_flag.cts
-   * - :term:`POINT_STAT_OUTPUT_FLAG_MCTC`
-     - output_flag.mctc
-   * - :term:`POINT_STAT_OUTPUT_FLAG_MCTS`
-     - output_flag.mcts
-   * - :term:`POINT_STAT_OUTPUT_FLAG_CNT`
-     - output_flag.cnt
-   * - :term:`POINT_STAT_OUTPUT_FLAG_SL1L2`
-     - output_flag.sl1l2
-   * - :term:`POINT_STAT_OUTPUT_FLAG_SAL1L2`
-     - output_flag.sal1l2
-   * - :term:`POINT_STAT_OUTPUT_FLAG_VL1L2`
-     - output_flag.vl1l2
-   * - :term:`POINT_STAT_OUTPUT_FLAG_VAL1L2`
-     - output_flag.val1l2
-   * - :term:`POINT_STAT_OUTPUT_FLAG_VCNT`
-     - output_flag.vcnt
-   * - :term:`POINT_STAT_OUTPUT_FLAG_PCT`
-     - output_flag.pct
-   * - :term:`POINT_STAT_OUTPUT_FLAG_PSTD`
-     - output_flag.pstd
-   * - :term:`POINT_STAT_OUTPUT_FLAG_PJC`
-     - output_flag.pjc
-   * - :term:`POINT_STAT_OUTPUT_FLAG_PRC`
-     - output_flag.prc
-   * - :term:`POINT_STAT_OUTPUT_FLAG_ECNT`
-     - output_flag.ecnt
-   * - :term:`POINT_STAT_OUTPUT_FLAG_RPS`
-     - output_flag.rps
-   * - :term:`POINT_STAT_OUTPUT_FLAG_ECLV`
-     - output_flag.eclv
-   * - :term:`POINT_STAT_OUTPUT_FLAG_MPR`
-     - output_flag.mpr
-
-**${METPLUS_INTERP_DICT}**
-
-.. list-table::
-   :widths: 5 5
-   :header-rows: 0
-
-   * - METplus Config(s)
-     - MET Config File
-   * - :term:`POINT_STAT_INTERP_VLD_THRESH`
-     - interp.vld_thresh
-   * - :term:`POINT_STAT_INTERP_SHAPE`
-     - interp.shape
-   * - :term:`POINT_STAT_INTERP_TYPE_METHOD`
-     - interp.type.method
-   * - :term:`POINT_STAT_INTERP_TYPE_WIDTH`
-     - interp.type.width
-
-
 .. _py_embed_ingest_wrapper:
 
 PyEmbedIngest
-=============
+-------------
 
 Description
------------
+~~~~~~~~~~~
 
 Used to configure the PyEmbedIngest wrapper that runs RegridDataPlane to convert data using python embedding scripts into NetCDF so it can be read by the MET tools.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`
 | :term:`PY_EMBED_INGEST_<n>_OUTPUT_TEMPLATE`
@@ -3718,15 +2999,15 @@ METplus Configuration
 .. _regrid_data_plane_wrapper:
 
 RegridDataPlane
-===============
+---------------
 
 Description
------------
+~~~~~~~~~~~
 
 Used to configure the MET tool regrid_data_plane which can be used to change projections of a grid with user configurable interpolation choices.  It can also be used to convert GRIB1 and GRIB2 files into netcdf files if desired.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`FCST_REGRID_DATA_PLANE_INPUT_DIR`
 | :term:`OBS_REGRID_DATA_PLANE_INPUT_DIR`
@@ -3764,10 +3045,10 @@ METplus Configuration
 .. _series_analysis_wrapper:
 
 SeriesAnalysis
-==============
+----------------
 
 Description
------------
+~~~~~~~~~~~
 
 The SeriesAnalysis wrapper is used to find files and build a command that calls
 the MET tool SeriesAnalysis. It can be configured to process ranges of inputs,
@@ -3781,8 +3062,8 @@ gif images (See
 :term:`SERIES_ANALYSIS_GENERATE_PLOTS` and
 :term:`SERIES_ANALYSIS_GENERATE_ANIMATIONS`)
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`LOG_SERIES_ANALYSIS_VERBOSITY`
 | :term:`SERIES_ANALYSIS_CONFIG_FILE`
@@ -3808,62 +3089,31 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_VLD_THRESH`
 | :term:`SERIES_ANALYSIS_BLOCK_SIZE`
 | :term:`SERIES_ANALYSIS_CTS_LIST`
-| :term:`FCST_SERIES_ANALYSIS_PROB_THRESH`
 | :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
 | :term:`FCST_SERIES_ANALYSIS_INPUT_DIR`
 | :term:`OBS_SERIES_ANALYSIS_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_TC_STAT_INPUT_DIR`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_DIR`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_DIR`
 | :term:`SERIES_ANALYSIS_OUTPUT_DIR`
 | :term:`FCST_SERIES_ANALYSIS_INPUT_TEMPLATE`
 | :term:`OBS_SERIES_ANALYSIS_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_TC_STAT_INPUT_TEMPLATE`
+| :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE`
+| :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE`
 | :term:`SERIES_ANALYSIS_OUTPUT_TEMPLATE`
-| :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME`
-| :term:`SERIES_ANALYSIS_CLIMO_MEAN_FIELD`
-| :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_METHOD`
-| :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_WIDTH`
-| :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_VLD_THRESH`
-| :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_SHAPE`
-| :term:`SERIES_ANALYSIS_CLIMO_MEAN_TIME_INTERP_METHOD`
-| :term:`SERIES_ANALYSIS_CLIMO_MEAN_MATCH_MONTH`
-| :term:`SERIES_ANALYSIS_CLIMO_MEAN_DAY_INTERVAL`
-| :term:`SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL`
-| :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME`
-| :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD`
-| :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_METHOD`
-| :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_WIDTH`
-| :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_VLD_THRESH`
-| :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_SHAPE`
-| :term:`SERIES_ANALYSIS_CLIMO_STDEV_TIME_INTERP_METHOD`
-| :term:`SERIES_ANALYSIS_CLIMO_STDEV_MATCH_MONTH`
-| :term:`SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL`
-| :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
 |
-
-.. warning:: **DEPRECATED:**
-
-   | :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_DIR`
-   | :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_DIR`
-   | :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE`
-   | :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE`
 
 .. _series-analysis-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/SeriesAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/SeriesAnalysisConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/SeriesAnalysisConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/SeriesAnalysisConfig_wrapped
 
@@ -3957,8 +3207,6 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - fcst.field.cat_thresh
    * - :term:`FCST_VAR<n>_OPTIONS`
      - n/a
-   * - :term:`FCST_SERIES_ANALYSIS_PROB_THRESH`
-     - n/a
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
@@ -3992,7 +3240,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. note:: For more information on controlling the observation field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
 
-**${METPLUS_CLIMO_MEAN_DICT}**
+**${METPLUS_CLIMO_MEAN_FILE}**
 
 .. list-table::
    :widths: 5 5
@@ -4000,28 +3248,10 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME`
+   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE`
      - climo_mean.file_name
-   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_FIELD`
-     - climo_mean.field
-   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_METHOD`
-     - climo_mean.regrid.method
-   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_WIDTH`
-     - climo_mean.regrid.width
-   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_VLD_THRESH`
-     - climo_mean.regrid.vld_thresh
-   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_REGRID_SHAPE`
-     - climo_mean.regrid.shape
-   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_TIME_INTERP_METHOD`
-     - climo_mean.time_interp_method
-   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_MATCH_MONTH`
-     - climo_mean.match_month
-   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_DAY_INTERVAL`
-     - climo_mean.day_interval
-   * - :term:`SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL`
-     - climo_mean.hour_interval
 
-**${METPLUS_CLIMO_STDEV_DICT}**
+**${METPLUS_CLIMO_STDEV_FILE}**
 
 .. list-table::
    :widths: 5 5
@@ -4029,27 +3259,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME`
+   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE`
      - climo_stdev.file_name
-   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_FIELD`
-     - climo_stdev.field
-   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_METHOD`
-     - climo_stdev.regrid.method
-   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_WIDTH`
-     - climo_stdev.regrid.width
-   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_VLD_THRESH`
-     - climo_stdev.regrid.vld_thresh
-   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_REGRID_SHAPE`
-     - climo_stdev.regrid.shape
-   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_TIME_INTERP_METHOD`
-     - climo_stdev.time_interp_method
-   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_MATCH_MONTH`
-     - climo_stdev.match_month
-   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL`
-     - climo_stdev.day_interval
-   * - :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
-     - climo_stdev.hour_interval
-
 
 **${METPLUS_BLOCK_SIZE}**
 
@@ -4107,28 +3318,28 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - n/a
 
 SeriesByInit
-============
+------------
 
 Description
------------
+~~~~~~~~~~~
 
 .. warning:: **This tool has been DEPRECATED. Please use SeriesAnalysis wrapper**
 
 SeriesByLead
-============
+------------
 
 Description
------------
+~~~~~~~~~~~
 
 .. warning:: **This tool has been DEPRECATED. Please use SeriesAnalysis wrapper**
 
 .. _stat_analysis_wrapper:
 
 StatAnalysis
-============
+------------
 
 Description
------------
+~~~~~~~~~~~
 
 The StatAnalysis wrapper encapsulates the behavior of the MET
 stat_analysis tool. It provides the infrastructure to summarize and
@@ -4139,8 +3350,8 @@ lines over a span of dates, to use this method set LOOP_ORDER =
 processes. To run StatAnalysis wrapper, include StatAnalysis in
 PROCESS_LIST.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 The following values must be defined in the METplus Wrappers
 configuration file for running with LOOP_ORDER = times:
@@ -4267,20 +3478,13 @@ file for running with LOOP_ORDER = processes:
 .. _stat-analysis-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/STATAnalysisConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/STATAnalysisConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/STATAnalysisConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/STATAnalysisConfig_wrapped
 
@@ -4650,16 +3854,16 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. _tc_gen_wrapper:
 
 TCGen
-=====
+-------
 
 Description
------------
+~~~~~~~~~~~
 
 The TCGen wrapper encapsulates the behavior of the MET tc_gen tool.
 The wrapper accepts track (Adeck or Bdeck) data and Genesis data.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`TC_GEN_TRACK_INPUT_DIR`
 | :term:`TC_GEN_TRACK_INPUT_TEMPLATE`
@@ -4747,21 +3951,13 @@ METplus Configuration
 .. _tc-gen-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCGenConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCGenConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/TCGenConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
-
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/TCGenConfig_wrapped
 
@@ -5258,19 +4454,19 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. _tcmpr_plotter_wrapper:
 
 TCMPRPlotter
-============
+-------------
 
 Description
------------
+~~~~~~~~~~~
 
 The TCMPRPlotter wrapper is a Python script that wraps the R script
 plot_tcmpr.R. This script is useful for plotting the calculated
 statistics for the output from the MET-TC tools. This script, and other
-R scripts are included in the MET installation. Please refer to
-the MET User's Guide for usage information.
+R scripts are included in the MET installation. Please refer to section
+21.2.3 of the MET User's Guide for usage information.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`TCMPR_PLOTTER_TCMPR_DATA_DIR`
 | :term:`TCMPR_PLOTTER_PLOT_OUTPUT_DIR`
@@ -5340,10 +4536,10 @@ set to 'yes', then set the flag
 .. _tc_pairs_wrapper:
 
 TCPairs
-=======
+-------
 
 Description
------------
+~~~~~~~~~~~
 
 The TCPairs wrapper encapsulates the behavior of the MET tc_pairs tool.
 The wrapper accepts Adeck and Bdeck (Best track) cyclone track data in
@@ -5352,8 +4548,8 @@ provided in the METplus tutorial), or ATCF formatted track data. If data
 is in an extra tropical cyclone (non-ATCF) format, the data is
 reformatted into an ATCF format that is recognized by MET.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`TC_PAIRS_ADECK_INPUT_DIR`
 | :term:`TC_PAIRS_BDECK_INPUT_DIR`
@@ -5411,20 +4607,13 @@ METplus Configuration
 .. _tc-pairs-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCPairsConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCPairsConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/TCPairsConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/TCPairsConfig_wrapped
 
@@ -5585,15 +4774,15 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. _tcrmw_wrapper:
 
 TCRMW
-=====
+------
 
 Description
------------
+~~~~~~~~~~~
 
 Used to configure the MET tool TC-RMW.
 
 METplus Configuration
----------------------
+~~~~~~~~~~~~~~~~~~~~~
 
 | :term:`TC_RMW_INPUT_DIR`
 | :term:`TC_RMW_DECK_INPUT_DIR`
@@ -5633,20 +4822,13 @@ METplus Configuration
 .. _tc-rmw-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCRMWConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCRMWConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/TCRMWConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/TCRMWConfig_wrapped
 
@@ -5885,15 +5067,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. _tc_stat_wrapper:
 
 TCStat
-======
+------
 
 Description
------------
+~~~~~~~~~~~
 
-Used to configure the MET tool tc_stat.
+Used to configure the MET tool tc_stat. This wrapper can be run by
+listing it in the PROCESS_LIST, or can be called from the ExtractTiles
+wrapper (via the MET tc-stat command line commands).
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`TC_STAT_LOOKIN_DIR`
 | :term:`TC_STAT_OUTPUT_DIR`
@@ -5953,20 +5137,13 @@ METplus Configuration
 .. _tc-stat-met-conf:
 
 MET Configuration
------------------
+~~~~~~~~~~~~~~~~~
 
-Below is the wrapped MET configuration file used for this wrapper.
-Environment variables are used to control entries in this configuration file.
-The default value for each environment variable is obtained from
-(except where noted below):
+Below is the MET configuration file used for this wrapper. Environment variables are used to control entries in this configuration file. The default value for each environment variable is obtained from (except where noted below):
 
-`MET_INSTALL_DIR/share/met/config/TCStatConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/TCStatConfig_default>`_
+:term:`MET_INSTALL_DIR`/share/met/config/TCStatConfig_default
 
-Below the file contents are descriptions of each environment variable
-referenced in this file and the corresponding METplus configuration item used
-to set the value of the environment variable. For detailed examples showing
-how METplus sets the values of these environment variables,
-see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+Below the file contents are descriptions of each environment variable referenced in this file and the corresponding METplus configuration item used to set the value of the environment variable. For detailed examples showing how METplus sets the values of these environment variables, see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
 .. literalinclude:: ../../parm/met_config/TCStatConfig_wrapped
 
@@ -6424,10 +5601,10 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 .. _user_script_wrapper:
 
 UserScript
-==========
+----------
 
 Description
------------
+~~~~~~~~~~~
 
 Used to generate user-defined commands to run in the process list. Commands
 can be run once, run once for each runtime (init/valid/lead combination) or
@@ -6438,8 +5615,8 @@ substitution to send information like the current initialization or forecast
 lead time. See :ref:`Runtime_Freq` for more information on how the value of
 :term:`USER_SCRIPT_RUNTIME_FREQ` can control how the commands are called.
 
-METplus Configuration
----------------------
+Configuration
+~~~~~~~~~~~~~
 
 | :term:`USER_SCRIPT_RUNTIME_FREQ`
 | :term:`USER_SCRIPT_COMMAND`

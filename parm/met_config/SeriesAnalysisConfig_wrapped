@@ -1,0 +1,156 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Series-Analysis configuration file.
+//
+// For additional information, see the MET_BASE/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Output model name to be written
+//
+${METPLUS_MODEL}
+
+//
+// Output description to be written
+//
+${METPLUS_DESC}
+
+//
+// Output observation type to be written
+//
+${METPLUS_OBTYPE}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification grid
+// May be set separately in each "field" entry
+//
+${METPLUS_REGRID_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+censor_thresh = [];
+censor_val    = [];
+${METPLUS_CAT_THRESH}
+cnt_thresh    = [ NA ];
+cnt_logic     = UNION;
+
+//
+// Forecast and observation fields to be verified
+//
+fcst = {
+   ${METPLUS_FCST_FILE_TYPE}
+   ${METPLUS_FCST_FIELD}
+}
+obs = {
+   ${METPLUS_OBS_FILE_TYPE}
+   ${METPLUS_OBS_FIELD}
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Climatology data
+//
+climo_mean = {
+
+   ${METPLUS_CLIMO_MEAN_FILE}
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape      = SQUARE;
+   }
+
+   time_interp_method = DW_MEAN;
+   day_interval       = 31;
+   hour_interval      = 6;
+}
+
+climo_stdev = {
+
+   ${METPLUS_CLIMO_STDEV_FILE}
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape	 = SQUARE;
+   }
+
+   time_interp_method = DW_MEAN;
+   match_month        = TRUE;
+   day_interval       = 31;
+   hour_interval      = 6;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Confidence interval settings
+//
+ci_alpha  = [ 0.05 ];
+
+boot = {
+   interval = PCTILE;
+   rep_prop = 1.0;
+   n_rep    = 0;
+   rng      = "mt19937";
+   seed     = "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification masking regions
+//
+mask = {
+   grid = "";
+   poly = "";
+}
+
+//
+// Number of grid points to be processed concurrently.  Set smaller to use
+// less memory but increase the number of passes through the data.
+//
+${METPLUS_BLOCK_SIZE}
+
+//
+// Ratio of valid matched pairs to compute statistics for a grid point
+//
+${METPLUS_VLD_THRESH}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Statistical output types
+//
+output_stats = {
+   fho    = [];
+   ctc    = [];
+   ${METPLUS_CTS_LIST}
+   mctc   = [];
+   mcts   = [];
+   ${METPLUS_STAT_LIST}
+   sl1l2  = [];
+   sal1l2 = [];
+   pct    = [];
+   pstd   = [];
+   pjc    = [];
+   prc    = [];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+rank_corr_flag = FALSE;
+tmp_dir        = "/tmp";
+//version        = "V10.0";
+
+////////////////////////////////////////////////////////////////////////////////
+
+${METPLUS_MET_CONFIG_OVERRIDES}

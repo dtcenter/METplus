@@ -1,6 +1,6 @@
 #! /bin/bash
 
-# Run by GitHub Actions (in .github/workflows/testing.yml) to build
+# Run by GitHub Actions (in .github/workflows/main.yml) to build
 # METplus Docker image and put it up to DockerHub so it can be
 # used by the use case tests.
 # If GitHub Actions run is triggered by a fork that does not have
@@ -34,17 +34,11 @@ echo "Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) secon
 echo Timing docker build with --cache-from...
 start_seconds=$SECONDS
 
-# set DOCKERFILE_PATH that is used by docker hook script get_met_version
-export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/ci/docker/Dockerfile
-
-MET_TAG=`${GITHUB_WORKSPACE}/ci/docker/hooks/get_met_version`
-echo Running docker build with MET_TAG=$MET_TAG
-
 docker build --pull --cache-from ${DOCKERHUB_TAG} \
 -t ${DOCKERHUB_TAG} \
 --build-arg OBTAIN_SOURCE_CODE='copy' \
---build-arg MET_TAG=$MET_TAG \
--f ${DOCKERFILE_PATH} ${GITHUB_WORKSPACE}
+--build-arg MET_TAG=develop \
+-f ${GITHUB_WORKSPACE}/ci/docker/Dockerfile ${GITHUB_WORKSPACE}
 
 duration=$(( SECONDS - start_seconds ))
 echo TIMING docker_setup

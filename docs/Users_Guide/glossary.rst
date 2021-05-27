@@ -1,6 +1,5 @@
-******************************
 METplus Configuration Glossary
-******************************
+==============================
 
 .. glossary::
    :sorted:
@@ -640,22 +639,23 @@ METplus Configuration Glossary
      | *Used by:* ASCII2NC
 
    CLIMO_GRID_STAT_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`.
+     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_MEAN_INPUT_DIR`.
 
    GRID_STAT_CLIMO_MEAN_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`.
+     Directory containing the climatology mean file used by GridStat. This variable is optional because you can specify the full path to a climatology file using :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`.
 
      | *Used by:* GridStat
 
    CLIMO_GRID_STAT_INPUT_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`.
+     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE`.
 
    GRID_STAT_CLIMO_MEAN_INPUT_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_MEAN_FILE_NAME`.
+     Filename template of the climatology mean file used by GridStat. See also :term:`GRID_STAT_CLIMO_MEAN_INPUT_DIR`.
+
+     | *Used by:* GridStat
 
    CLIMO_POINT_STAT_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_FILE_NAME`.
-
+     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_INPUT_DIR`.
 
    POINT2GRID_INPUT_TEMPLATE
      Filename template for the point file used by Point2Grid.
@@ -673,49 +673,78 @@ METplus Configuration Glossary
      | *Used by:* Point2Grid
 
    POINT_STAT_CLIMO_MEAN_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_FILE_NAME`.
+     Directory containing the climatology mean file used by PointStat. This variable is optional because you can specify the full path to a climatology file using :term:`POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE`.
+
+     | *Used by:* PointStat
 
    CLIMO_POINT_STAT_INPUT_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_FILE_NAME`.
+     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE`.
 
    POINT_STAT_CLIMO_MEAN_INPUT_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_MEAN_FILE_NAME`.
+
+     Filename template of the climatology file used by PointStat. See also :term:`POINT_STAT_CLIMO_MEAN_INPUT_DIR`.
+
+     | *Used by:* PointStat
 
    ENSEMBLE_STAT_CLIMO_MEAN_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME`.
+     Directory containing the climatology mean file used by EnsembleStat. This variable is optional because you can specify the full path to a climatology file using :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_TEMPLATE`.
+
+     | *Used by:* EnsembleStat
 
    ENSEMBLE_STAT_CLIMO_MEAN_INPUT_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME`.
+     Filename template of the climatology mean file used by EnsembleStat. See also :term:`ENSEMBLE_STAT_CLIMO_MEAN_INPUT_DIR`.
+
+     | *Used by:* EnsembleStat
 
    SERIES_ANALYSIS_CLIMO_MEAN_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME`.
+     Directory containing the climatology mean file used by SeriesAnalysis. This variable is optional because you can specify the full path to a climatology file using :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE`.
+
+     | *Used by:* SeriesAnalysis
 
    SERIES_ANALYSIS_CLIMO_MEAN_INPUT_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME`.
+     Filename template of the climatology mean file used by SeriesAnalysis. See also :term:`SERIES_ANALYSIS_CLIMO_MEAN_INPUT_DIR`.
+
+     | *Used by:* SeriesAnalysis
 
    ENSEMBLE_STAT_CLIMO_STDEV_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_CLIMO_STDEV_FILE_NAME`.
+     Directory containing the climatology standard deviation file used by EnsembleStat. This variable is optional because you can specify the full path to a climatology file using :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_TEMPLATE`.
+
+     | *Used by:* EnsembleStat
 
    ENSEMBLE_STAT_CLIMO_STDEV_INPUT_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_CLIMO_STDEV_FILE_NAME`.
+     Filename template of the climatology standard deviation file used by EnsembleStat. See also :term:`ENSEMBLE_STAT_CLIMO_STDEV_INPUT_DIR`.
+
+     | *Used by:* EnsembleStat
 
    GRID_STAT_CLIMO_STDEV_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_STDEV_FILE_NAME`.
+     Directory containing the climatology standard deviation file used by GridStat. This variable is optional because you can specify the full path to a climatology file using :term:`GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE`.
+
+     | *Used by:* GridStat
 
    GRID_STAT_CLIMO_STDEV_INPUT_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CLIMO_STDEV_FILE_NAME`.
+     Filename template of the climatology standard deviation file used by GridStat. See also :term:`GRID_STAT_CLIMO_STDEV_INPUT_DIR`.
+
+     | *Used by:* GridStat
 
    POINT_STAT_CLIMO_STDEV_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_STDEV_FILE_NAME`.
+     Directory containing the climatology standard deviation file used by PointStat. This variable is optional because you can specify the full path to a climatology file using :term:`POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE`.
+
+     | *Used by:* PointStat
 
    POINT_STAT_CLIMO_STDEV_INPUT_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_CLIMO_STDEV_FILE_NAME`.
+     Filename template of the climatology standard deviation file used by PointStat. See also :term:`POINT_STAT_CLIMO_STDEV_INPUT_DIR`.
+
+     | *Used by:* PointStat
 
    SERIES_ANALYSIS_CLIMO_STDEV_INPUT_DIR
-     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME`.
+     Directory containing the climatology standard deviation file used by SeriesAnalysis. This variable is optional because you can specify the full path to a climatology file using :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE`.
+
+     | *Used by:* SeriesAnalysis
 
    SERIES_ANALYSIS_CLIMO_STDEV_INPUT_TEMPLATE
-     .. warning:: **DEPRECATED:** Please use :term:`SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME`.
+     Filename template of the climatology standard deviation file used by SeriesAnalysis. See also :term:`SERIES_ANALYSIS_CLIMO_STDEV_INPUT_DIR`.
+
+     | *Used by:* SeriesAnalysis
 
    ADECK_FILE_PREFIX
      .. warning:: **DEPRECATED:** Please use :term:`TC_PAIRS_ADECK_TEMPLATE`.
@@ -1335,7 +1364,7 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_DERIVE_LOOKBACK
-     Specify how far to look back in time in hours to find files for running the MET pcp_combine tool in derive mode. If set to 0 or unset, data will be obtained by using the input template with the current runtime instead of looking backwards in time. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_DERIVE_LOOKBACK`.
+     Specify how far to look back in time in hours to find files for running the MET pcp_combine tool in derive mode. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_DERIVE_LOOKBACK`.
 
      | *Used by:*  PCPCombine
 
@@ -1861,11 +1890,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`GEMPAKTOCF_JAR` instead. Path to the GempakToCF binary file and the NetCDF jar file required to run GempakToCF.
 
    GEMPAKTOCF_JAR
-     Path to the GempakToCF.jar file to run GempakToCF.
-     The tool is available on the MET webpage here:
-     https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar.
-     Must be set if running GempakToCF wrapper, if using a filename template
-     that ends with .grd, or if specifying an \*_INPUT_DATATYPE item as GEMPAK.
+     Path to the GempakToCF.jar file to run GempakToCF. Available on the MET webpage. Must be set if running GempakToCF wrapper, if using a filename template that ends with .grd, or if specifying an \*_INPUT_DATATYPE item as GEMPAK.
 
      | *Used by:*  GempakToCF, other wrappers that will read Gempak data
 
@@ -4436,22 +4461,22 @@ METplus Configuration Glossary
      | *Used by:*  TCRMW
 
    TC_RMW_REGRID_METHOD
-     Specify the value for 'regrid.method' in the MET configuration file for TCRMW.
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for TCRMW.
 
      | *Used by:*  TCRMW
 
    TC_RMW_REGRID_WIDTH
-     Specify the value for 'regrid.width' in the MET configuration file for TCRMW.
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for TCRMW.
 
      | *Used by:*  TCRMW
 
    TC_RMW_REGRID_VLD_THRESH
-     Specify the value for 'regrid.vld_thresh' in the MET configuration file for TCRMW.
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for TCRMW.
 
      | *Used by:*  TCRMW
 
    TC_RMW_REGRID_SHAPE
-     Specify the value for 'regrid.shape' in the MET configuration file for TCRMW.
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for TCRMW.
 
      | *Used by:*  TCRMW
 
@@ -4632,27 +4657,27 @@ METplus Configuration Glossary
      | *Used by:*  GridDiag
 
    GRID_DIAG_REGRID_METHOD
-     Specify the value for 'regrid.method' in the MET configuration file for grid_diag.
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for grid_diag.
 
      | *Used by:*  GridDiag
 
    GRID_DIAG_REGRID_WIDTH
-     Specify the value for 'regrid.width' in the MET configuration file for grid_diag.
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for grid_diag.
 
      | *Used by:*  GridDiag
 
    GRID_DIAG_REGRID_VLD_THRESH
-     Specify the value for 'regrid.vld_thresh' in the MET configuration file for grid_diag.
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for grid_diag.
 
      | *Used by:*  GridDiag
 
    GRID_DIAG_REGRID_SHAPE
-     Specify the value for 'regrid.shape' in the MET configuration file for grid_diag.
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for grid_diag.
 
      | *Used by:*  GridDiag
 
    GRID_DIAG_REGRID_TO_GRID
-     Specify the value for 'regrid.to_grid' in the MET configuration file for grid_diag.
+     Specify the value for 'to_grid' in the regrid dictionary in MET configuration file for grid_diag.
 
      | *Used by:*  GridDiag
 
@@ -4728,12 +4753,12 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_INIT_FREQ
-     Specify the value of 'init_freq' in the MET configuration file.
+     Specify the value of init_freq in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_VALID_FREQ
-     Specify the value of 'valid_freq' in the MET configuration file.
+     Specify the value of valid_freq in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4744,52 +4769,52 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_FCST_HR_WINDOW_END`.
 
    TC_GEN_FCST_HR_WINDOW_BEGIN
-     Specify the value of fcst_hr_window.begin in the MET configuration file.
+     Specify the value of fcst_hr_window {begin} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_FCST_HR_WINDOW_END
-     Specify the value of fcst_hr_window.end in the MET configuration file.
+     Specify the value of fcst_hr_window {end} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_MIN_DURATION
-     Specify the value of 'min_duration' in the MET configuration file.
+     Specify the value of min_duration in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_FCST_GENESIS_VMAX_THRESH
-     Specify the value of fcst_genesis.vmax_thresh in the MET configuration file.
+     Specify the value of fcst_genesis {vmax_thresh} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_FCST_GENESIS_MSLP_THRESH
-     Specify the value of fcst_genesis.mslp_thresh in the MET configuration file.
+     Specify the value of fcst_genesis {mslp_thresh} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BEST_GENESIS_TECHNIQUE
-     Specify the value of best_genesis.technique in the MET configuration file.
+     Specify the value of best_genesis {technique} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BEST_GENESIS_CATEGORY
-     Specify the value of best_genesis.category in the MET configuration file.
+     Specify the value of best_genesis {category} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BEST_GENESIS_VMAX_THRESH
-     Specify the value of best_genesis.vmax_thresh in the MET configuration file.
+     Specify the value of best_genesis {vmax_thresh} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BEST_GENESIS_MSLP_THRESH
-     Specify the value of best_genesis.mslp_thresh in the MET configuration file.
+     Specify the value of best_genesis {mslp_thresh} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_OPER_TECHNIQUE
-     Specify the value of 'oper_technique' in the MET configuration file.
+     Specify the value of oper_technique in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4806,7 +4831,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_OPER_TECHNIQUE`.
 
    TC_GEN_FILTER_<n>
-     Specify the values of 'filter' in the MET configuration file where <n> is any integer.
+     Specify the values of filter in the MET configuration file where <n> is any integer.
      Any quotation marks that are found inside another set of quotation marks must be preceded with a backslash
 
      | *Used by:*  TCGen
@@ -4832,12 +4857,12 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_INIT_INC
-     Specify the value of 'init_inc' in the MET configuration file.
+     Specify the value of init_inc in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_INIT_EXC
-     Specify the value of 'init_exc' in the MET configuration file.
+     Specify the value of init_exc in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4857,17 +4882,17 @@ METplus Configuration Glossary
      | *Used by:*  TCGen
 
    TC_GEN_VX_MASK
-     Specify the 'vx_mask' value to set in the MET configuration file.
+     Specify the vx_mask value to set in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BASIN_MASK
-     Specify the 'basin_mask' value to set in the MET configuration file.
+     Specify the basin_mask value to set in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_DLAND_THRESH
-     Specify the value of 'dland_thresh' in the MET configuration file.
+     Specify the value of dland_thresh in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -4878,127 +4903,127 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_DEV_HIT_WINDOW_END`.
 
    TC_GEN_DEV_HIT_WINDOW_BEGIN
-     Specify the value for dev_hit_window.begin in the MET configuration file.
+     Specify the value for dev_hit_window {begin} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_DEV_HIT_WINDOW_END
-     Specify the value of dev_hit_window.end in the MET configuration file.
+     Specify the value of dev_hit_window {end} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_DEV_HIT_RADIUS
-     Specify the value of 'dev_hit_radius' in the MET configuration file.
+     Specify the value of dev_hit_radius in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_DISCARD_INIT_POST_GENESIS_FLAG
-     Specify the value of 'discard_init_post_genesis_flag' in the MET configuration file.
+     Specify the value of discard_init_post_genesis_flag in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_DEV_METHOD_FLAG
-     Specify the value of 'dev_method_flag' in the MET configuration file.
+     Specify the value of dev_method_flag in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_OPS_METHOD_FLAG
-     Specify the value of 'ops_method_flag' in the MET configuration file.
+     Specify the value of ops_method_flag in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_CI_ALPHA
-     Specify the value of 'ci_alpha' in the MET configuration file.
+     Specify the value of ci_alpha in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_FHO
-     Specify the value of output_flag.fho in the MET configuration file.
+     Specify the value of output_flag {fho} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_CTC
-     Specify the value of output_flag.ctc in the MET configuration file.
+     Specify the value of output_flag {ctc} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_CTS
-     Specify the value of output_flag.cts in the MET configuration file.
+     Specify the value of output_flag {cts} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_OUTPUT_FLAG_GENMPR
-     Specify the value of output_flag.genmpr in the MET configuration file.
+     Specify the value of output_flag {genmpr} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_LATLON
-     Specify the value of nc_pairs_flag.latlon in the MET configuration file.
+     Specify the value of nc_pairs_flag {latlon} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_FCST_GENESIS
-     Specify the value of nc_pairs_flag.fcst_genesis in the MET configuration file.
+     Specify the value of nc_pairs_flag {fcst_genesis} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_FCST_TRACKS
-     Specify the value of nc_pairs_flag.fcst_tracks in the MET configuration file.
+     Specify the value of nc_pairs_flag {fcst_tracks} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_FCST_FY_OY
-     Specify the value of nc_pairs_flag.fcst_fy_oy in the MET configuration file.
+     Specify the value of nc_pairs_flag {fcst_fy_oy} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_FCST_FY_ON
-     Specify the value of nc_pairs_flag.fcst_fy_on in the MET configuration file.
+     Specify the value of nc_pairs_flag {fcst_fy_on} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_BEST_GENESIS
-     Specify the value of nc_pairs_flag.best_genesis in the MET configuration file.
+     Specify the value of nc_pairs_flag {best_genesis} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_BEST_TRACKS
-     Specify the value of nc_pairs_flag.best_tracks in the MET configuration file.
+     Specify the value of nc_pairs_flag {best_tracks} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_BEST_FY_OY
-     Specify the value of nc_pairs_flag.best_fy_oy in the MET configuration file.
+     Specify the value of nc_pairs_flag {best_fy_oy} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_FLAG_BEST_FN_OY
-     Specify the value of nc_pairs_flag.best_fn_oy in the MET configuration file.
+     Specify the value of nc_pairs_flag {best_fn_oy} in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_VALID_MINUS_GENESIS_DIFF_THRESH
-     Specify the value of 'valid_minus_genesis_diff_thresh' in the MET configuration file.
+     Specify the value of valid_minus_genesis_diff_thresh in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BEST_UNIQUE_FLAG
-     Specify the value of 'best_unique_flag' in the MET configuration file.
+     Specify the value of best_unique_flag in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_BASIN_FILE
-     Specify the value of 'basin_file' in the MET configuration file.
+     Specify the value of basin_file in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_NC_PAIRS_GRID
-     Specify the value of 'nc_pairs_grid' in the MET configuration file.
+     Specify the value of nc_pairs_grid in the MET configuration file.
 
      | *Used by:*  TCGen
 
    TC_GEN_GENESIS_MATCH_RADIUS
-     Specify the value of 'genesis_match_radius' in the MET configuration file.
+     Specify the value of genesis_match_radius in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -5006,7 +5031,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TC_GEN_GENESIS_MATCH_RADIUS` and :term:`TC_GEN_DEV_HIT_RADIUS`.
 
    TC_GEN_DLAND_FILE
-     Specify the value of 'dland_file' in the MET configuration file.
+     Specify the value of dland_file in the MET configuration file.
 
      | *Used by:*  TCGen
 
@@ -5194,22 +5219,22 @@ METplus Configuration Glossary
      | *Used by:*  SeriesAnalysis
 
    SERIES_ANALYSIS_REGRID_METHOD
-     Specify the value for 'regrid.method' in the MET configuration file for SeriesAnalysis.
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for SeriesAnalysis.
 
      | *Used by:*  SeriesAnalysis
 
    SERIES_ANALYSIS_REGRID_WIDTH
-     Specify the value for 'regrid.width' in the MET configuration file for SeriesAnalysis.
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for SeriesAnalysis.
 
      | *Used by:*  SeriesAnalysis
 
    SERIES_ANALYSIS_REGRID_VLD_THRESH
-     Specify the value for 'regrid.vld_thresh' in the MET configuration file for SeriesAnalysis.
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for SeriesAnalysis.
 
      | *Used by:*  SeriesAnalysis
 
    SERIES_ANALYSIS_REGRID_SHAPE
-     Specify the value for 'regrid.shape' in the MET configuration file for SeriesAnalysis.
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for SeriesAnalysis.
 
      | *Used by:*  SeriesAnalysis
 
@@ -5234,102 +5259,102 @@ METplus Configuration Glossary
      | *Used by:*  SeriesAnalysis
 
    ENSEMBLE_STAT_REGRID_METHOD
-     Specify the value for 'regrid.method' in the MET configuration file for EnsembleStat.
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
 
    ENSEMBLE_STAT_REGRID_WIDTH
-     Specify the value for 'regrid.width' in the MET configuration file for EnsembleStat.
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
 
    ENSEMBLE_STAT_REGRID_VLD_THRESH
-     Specify the value for 'regrid.vld_thresh' in the MET configuration file for EnsembleStat.
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
 
    ENSEMBLE_STAT_REGRID_SHAPE
-     Specify the value for 'regrid.shape' in the MET configuration file for EnsembleStat.
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for EnsembleStat.
 
      | *Used by:*  EnsembleStat
 
    GRID_STAT_REGRID_METHOD
-     Specify the value for 'regrid.method' in the MET configuration file for GridStat.
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for GridStat.
 
      | *Used by:*  GridStat
 
    GRID_STAT_REGRID_WIDTH
-     Specify the value for 'regrid.width' in the MET configuration file for GridStat.
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for GridStat.
 
      | *Used by:*  GridStat
 
    GRID_STAT_REGRID_VLD_THRESH
-     Specify the value for 'regrid.vld_thresh' in the MET configuration file for GridStat.
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for GridStat.
 
      | *Used by:*  GridStat
 
    GRID_STAT_REGRID_SHAPE
-     Specify the value for 'regrid.shape' in the MET configuration file for GridStat.
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for GridStat.
 
      | *Used by:*  GridStat
 
    MODE_REGRID_METHOD
-     Specify the value for 'regrid.method' in the MET configuration file for MODE.
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for MODE.
 
      | *Used by:*  MODE
 
    MODE_REGRID_WIDTH
-     Specify the value for 'regrid.width' in the MET configuration file for MODE.
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for MODE.
 
      | *Used by:*  MODE
 
    MODE_REGRID_VLD_THRESH
-     Specify the value for 'regrid.vld_thresh' in the MET configuration file for MODE.
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for MODE.
 
      | *Used by:*  MODE
 
    MODE_REGRID_SHAPE
-     Specify the value for 'regrid.shape' in the MET configuration file for MODE.
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for MODE.
 
      | *Used by:*  MODE
 
    MTD_REGRID_METHOD
-     Specify the value for 'regrid.method' in the MET configuration file for MTD.
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for MTD.
 
      | *Used by:*  MTD
 
    MTD_REGRID_WIDTH
-     Specify the value for 'regrid.width' in the MET configuration file for MTD.
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for MTD.
 
      | *Used by:*  MTD
 
    MTD_REGRID_VLD_THRESH
-     Specify the value for 'regrid.vld_thresh' in the MET configuration file for MTD.
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for MTD.
 
      | *Used by:*  MTD
 
    MTD_REGRID_SHAPE
-     Specify the value for 'regrid.shape' in the MET configuration file for MTD.
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for MTD.
 
      | *Used by:*  MTD
 
    POINT_STAT_REGRID_METHOD
-     Specify the value for 'regrid.method' in the MET configuration file for PointStat.
+     Specify the value for 'method' in the regrid dictionary in MET configuration file for PointStat.
 
      | *Used by:*  PointStat
 
    POINT_STAT_REGRID_WIDTH
-     Specify the value for 'regrid.width' in the MET configuration file for PointStat.
+     Specify the value for 'width' in the regrid dictionary in MET configuration file for PointStat.
 
      | *Used by:*  PointStat
 
    POINT_STAT_REGRID_VLD_THRESH
-     Specify the value for 'regrid.vld_thresh' in the MET configuration file for PointStat.
+     Specify the value for 'vld_thresh' in the regrid dictionary in MET configuration file for PointStat.
 
      | *Used by:*  PointStat
 
    POINT_STAT_REGRID_SHAPE
-     Specify the value for 'regrid.shape' in the MET configuration file for PointStat.
+     Specify the value for 'shape' in the regrid dictionary in MET configuration file for PointStat.
 
      | *Used by:*  PointStat
 
@@ -5431,105 +5456,15 @@ METplus Configuration Glossary
 
      | *Used by:*  EnsembleStat
 
-   ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME
-     Specify the value for 'climo_mean.file_name' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_MEAN_FIELD
-     Specify the value for 'climo_mean.field' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_MEAN_REGRID_METHOD
-     Specify the value for 'climo_mean.regrid.method' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_MEAN_REGRID_WIDTH
-     Specify the value for 'climo_mean.regrid.width' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_MEAN_REGRID_VLD_THRESH
-     Specify the value for 'climo_mean.regrid.vld_thresh' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_MEAN_REGRID_SHAPE
-     Specify the value for 'climo_mean.regrid.shape' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_MEAN_TIME_INTERP_METHOD
-     Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_MEAN_MATCH_MONTH
-     Specify the value for 'climo_mean.match_month' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
    ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL
      Specify the value for 'climo_mean.day_interval' in the MET configuration file for EnsembleStat.
 
-     | *Used by:* EnsembleStat
+     | *Used by:*  EnsembleStat
 
    ENSEMBLE_STAT_CLIMO_MEAN_HOUR_INTERVAL
      Specify the value for 'climo_mean.hour_interval' in the MET configuration file for EnsembleStat.
 
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_STDEV_FILE_NAME
-     Specify the value for 'climo_stdev.file_name' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_STDEV_FIELD
-     Specify the value for 'climo_stdev.field' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_STDEV_REGRID_METHOD
-     Specify the value for 'climo_stdev.regrid.method' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_STDEV_REGRID_WIDTH
-     Specify the value for 'climo_stdev.regrid.width' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_STDEV_REGRID_VLD_THRESH
-     Specify the value for 'climo_stdev.regrid.vld_thresh' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_STDEV_REGRID_SHAPE
-     Specify the value for 'climo_stdev.regrid.shape' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_STDEV_TIME_INTERP_METHOD
-     Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_STDEV_MATCH_MONTH
-     Specify the value for 'climo_stdev.match_month' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_STDEV_DAY_INTERVAL
-     Specify the value for 'climo_stdev.day_interval' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
-
-   ENSEMBLE_STAT_CLIMO_STDEV_HOUR_INTERVAL
-     Specify the value for 'climo_stdev.hour_interval' in the MET configuration file for EnsembleStat.
-
-     | *Used by:* EnsembleStat
+     | *Used by:*  EnsembleStat
 
    ENSEMBLE_STAT_MASK_GRID
      Specify the value for 'mask.grid' in the MET configuration file for EnsembleStat.
@@ -6010,6 +5945,11 @@ METplus Configuration Glossary
 
      | *Used by:*  MODE
 
+   MODE_MASK_POLY
+     Set the mask.poly entry in the MODE MET config file.
+
+     | *Used by:*  MODE
+
    TC_PAIRS_INIT_BEG
      Set the initialization begin time for TCpairs.
 
@@ -6414,685 +6354,3 @@ METplus Configuration Glossary
      Specify the value for 'ops_hit_window.end' in the MET configuration file for TCGen.
 
      | *Used by:* TCGen
-
-   MODE_FCST_FILTER_ATTR_NAME
-     Specify the value for 'fcst.filter_attr_name' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_FCST_FILTER_ATTR_THRESH
-     Specify the value for 'fcst.filter_attr_thresh' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_FCST_CENSOR_THRESH
-     Specify the value for 'fcst.censor_thresh' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_FCST_CENSOR_VAL
-     Specify the value for 'fcst.censor_val' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_FCST_VLD_THRESH
-     Specify the value for 'fcst.vld_thresh' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_OBS_FILTER_ATTR_NAME
-     Specify the value for 'obs.filter_attr_name' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_OBS_FILTER_ATTR_THRESH
-     Specify the value for 'obs.filter_attr_thresh' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_OBS_CENSOR_THRESH
-     Specify the value for 'obs.censor_thresh' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_OBS_CENSOR_VAL
-     Specify the value for 'obs.censor_val' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_OBS_VLD_THRESH
-     Specify the value for 'obs.vld_thresh' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_WEIGHT_CENTROID_DIST
-     Specify the value for 'weight.centroid_dist' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_WEIGHT_BOUNDARY_DIST
-     Specify the value for 'weight.boundary_dist' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_WEIGHT_CONVEX_HULL_DIST
-     Specify the value for 'weight.convex_hull_dist' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_WEIGHT_ANGLE_DIFF
-     Specify the value for 'weight.angle_diff' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_WEIGHT_ASPECT_DIFF
-     Specify the value for 'weight.aspect_diff' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_WEIGHT_AREA_RATIO
-     Specify the value for 'weight.area_ratio' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_WEIGHT_INT_AREA_RATIO
-     Specify the value for 'weight.int_area_ratio' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_WEIGHT_CURVATURE_RATIO
-     Specify the value for 'weight.curvature_ratio' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_WEIGHT_COMPLEXITY_RATIO
-     Specify the value for 'weight.complexity_ratio' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_WEIGHT_INTEN_PERC_RATIO
-     Specify the value for 'weight.inten_perc_ratio' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_WEIGHT_INTEN_PERC_VALUE
-     Specify the value for 'weight.inten_perc_value' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_NC_PAIRS_FLAG_LATLON
-     Specify the value for 'nc_pairs_flag.latlon' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_NC_PAIRS_FLAG_RAW
-     Specify the value for 'nc_pairs_flag.raw' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_NC_PAIRS_FLAG_OBJECT_RAW
-     Specify the value for 'nc_pairs_flag.object_raw' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_NC_PAIRS_FLAG_OBJECT_ID
-     Specify the value for 'nc_pairs_flag.object_id' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_NC_PAIRS_FLAG_CLUSTER_ID
-     Specify the value for 'nc_pairs_flag.cluster_id' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_NC_PAIRS_FLAG_POLYLINES
-     Specify the value for 'nc_pairs_flag.polylines' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_MASK_GRID
-     Specify the value for 'mask.grid' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_MASK_GRID_FLAG
-     Specify the value for 'mask.grid_flag' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_MASK_POLY
-     Specify the value for 'mask.poly' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_MASK_POLY_FLAG
-     Specify the value for 'mask.poly_flag' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_MATCH_FLAG
-     Specify the value for 'match_flag' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_MAX_CENTROID_DIST
-     Specify the value for 'max_centroid_dist' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_TOTAL_INTEREST_THRESH
-     Specify the value for 'total_interest_thresh' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_INTEREST_FUNCTION_CENTROID_DIST
-     Specify the value for 'interest_function.centroid_dist' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_INTEREST_FUNCTION_BOUNDARY_DIST
-     Specify the value for 'interest_function.boundary_dist' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   MODE_INTEREST_FUNCTION_CONVEX_HULL_DIST
-     Specify the value for 'interest_function.convex_hull_dist' in the MET configuration file for MODE.
-
-     | *Used by:* MODE
-
-   POINT_STAT_OBS_QUALITY
-     Specify the value for 'obs_quality' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_FHO
-     Specify the value for 'output_flag.fho' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_CTC
-     Specify the value for 'output_flag.ctc' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_CTS
-     Specify the value for 'output_flag.cts' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_MCTC
-     Specify the value for 'output_flag.mctc' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_MCTS
-     Specify the value for 'output_flag.mcts' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_CNT
-     Specify the value for 'output_flag.cnt' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_SL1L2
-     Specify the value for 'output_flag.sl1l2' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_SAL1L2
-     Specify the value for 'output_flag.sal1l2' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_VL1L2
-     Specify the value for 'output_flag.vl1l2' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_VAL1L2
-     Specify the value for 'output_flag.val1l2' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_VCNT
-     Specify the value for 'output_flag.vcnt' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_PCT
-     Specify the value for 'output_flag.pct' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_PSTD
-     Specify the value for 'output_flag.pstd' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_PJC
-     Specify the value for 'output_flag.pjc' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_PRC
-     Specify the value for 'output_flag.prc' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_ECNT
-     Specify the value for 'output_flag.ecnt' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_RPS
-     Specify the value for 'output_flag.rps' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_ECLV
-     Specify the value for 'output_flag.eclv' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_OUTPUT_FLAG_MPR
-     Specify the value for 'output_flag.mpr' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_INTERP_VLD_THRESH
-     Specify the value for 'interp.vld_thresh' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_INTERP_SHAPE
-     Specify the value for 'interp.shape' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_INTERP_TYPE_METHOD
-     Specify the value for 'interp.type.method' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_INTERP_TYPE_WIDTH
-     Specify the value for 'interp.type.width' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_MEAN_FILE_NAME
-     Specify the value for 'climo_mean.file_name' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_MEAN_FIELD
-     Specify the value for 'climo_mean.field' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_MEAN_REGRID_METHOD
-     Specify the value for 'climo_mean.regrid.method' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_MEAN_REGRID_WIDTH
-     Specify the value for 'climo_mean.regrid.width' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_MEAN_REGRID_VLD_THRESH
-     Specify the value for 'climo_mean.regrid.vld_thresh' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_MEAN_REGRID_SHAPE
-     Specify the value for 'climo_mean.regrid.shape' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_MEAN_TIME_INTERP_METHOD
-     Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_MEAN_MATCH_MONTH
-     Specify the value for 'climo_mean.match_month' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_MEAN_DAY_INTERVAL
-     Specify the value for 'climo_mean.day_interval' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_MEAN_HOUR_INTERVAL
-     Specify the value for 'climo_mean.hour_interval' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_STDEV_FILE_NAME
-     Specify the value for 'climo_stdev.file_name' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_STDEV_FIELD
-     Specify the value for 'climo_stdev.field' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_STDEV_REGRID_METHOD
-     Specify the value for 'climo_stdev.regrid.method' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_STDEV_REGRID_WIDTH
-     Specify the value for 'climo_stdev.regrid.width' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_STDEV_REGRID_VLD_THRESH
-     Specify the value for 'climo_stdev.regrid.vld_thresh' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_STDEV_REGRID_SHAPE
-     Specify the value for 'climo_stdev.regrid.shape' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_STDEV_TIME_INTERP_METHOD
-     Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_STDEV_MATCH_MONTH
-     Specify the value for 'climo_stdev.match_month' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_STDEV_DAY_INTERVAL
-     Specify the value for 'climo_stdev.day_interval' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL
-     Specify the value for 'climo_stdev.hour_interval' in the MET configuration file for PointStat.
-
-     | *Used by:* PointStat
-
-   GRID_STAT_INTERP_FIELD
-     Specify the value for 'interp.field' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_INTERP_VLD_THRESH
-     Specify the value for 'interp.vld_thresh' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_INTERP_SHAPE
-     Specify the value for 'interp.shape' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_INTERP_TYPE_METHOD
-     Specify the value for 'interp.type.method' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_INTERP_TYPE_WIDTH
-     Specify the value for 'interp.type.width' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_NC_PAIRS_VAR_NAME
-     Specify the value for 'nc_pairs_var_name' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_MEAN_FILE_NAME
-     Specify the value for 'climo_mean.file_name' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_MEAN_FIELD
-     Specify the value for 'climo_mean.field' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_MEAN_REGRID_METHOD
-     Specify the value for 'climo_mean.regrid.method' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_MEAN_REGRID_WIDTH
-     Specify the value for 'climo_mean.regrid.width' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_MEAN_REGRID_VLD_THRESH
-     Specify the value for 'climo_mean.regrid.vld_thresh' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_MEAN_REGRID_SHAPE
-     Specify the value for 'climo_mean.regrid.shape' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_MEAN_TIME_INTERP_METHOD
-     Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_MEAN_MATCH_MONTH
-     Specify the value for 'climo_mean.match_month' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_MEAN_DAY_INTERVAL
-     Specify the value for 'climo_mean.day_interval' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_MEAN_HOUR_INTERVAL
-     Specify the value for 'climo_mean.hour_interval' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_STDEV_FILE_NAME
-     Specify the value for 'climo_stdev.file_name' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_STDEV_FIELD
-     Specify the value for 'climo_stdev.field' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_STDEV_REGRID_METHOD
-     Specify the value for 'climo_stdev.regrid.method' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_STDEV_REGRID_WIDTH
-     Specify the value for 'climo_stdev.regrid.width' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_STDEV_REGRID_VLD_THRESH
-     Specify the value for 'climo_stdev.regrid.vld_thresh' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_STDEV_REGRID_SHAPE
-     Specify the value for 'climo_stdev.regrid.shape' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_STDEV_TIME_INTERP_METHOD
-     Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_STDEV_MATCH_MONTH
-     Specify the value for 'climo_stdev.match_month' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_STDEV_DAY_INTERVAL
-     Specify the value for 'climo_stdev.day_interval' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL
-     Specify the value for 'climo_stdev.hour_interval' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-
-   GRID_STAT_GRID_WEIGHT_FLAG
-     Specify the value for 'grid_weight_flag' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   FCST_GRID_STAT_FILE_TYPE
-     Specify the value for 'fcst.file_type' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   OBS_GRID_STAT_FILE_TYPE
-     Specify the value for 'obs.file_type' in the MET configuration file for GridStat.
-
-     | *Used by:* GridStat
-
-   SERIES_ANALYSIS_CLIMO_MEAN_FILE_NAME
-     Specify the value for 'climo_mean.file_name' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_MEAN_FIELD
-     Specify the value for 'climo_mean.field' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_MEAN_REGRID_METHOD
-     Specify the value for 'climo_mean.regrid.method' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_MEAN_REGRID_WIDTH
-     Specify the value for 'climo_mean.regrid.width' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_MEAN_REGRID_VLD_THRESH
-     Specify the value for 'climo_mean.regrid.vld_thresh' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_MEAN_REGRID_SHAPE
-     Specify the value for 'climo_mean.regrid.shape' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_MEAN_TIME_INTERP_METHOD
-     Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_MEAN_MATCH_MONTH
-     Specify the value for 'climo_mean.match_month' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_MEAN_DAY_INTERVAL
-     Specify the value for 'climo_mean.day_interval' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_MEAN_HOUR_INTERVAL
-     Specify the value for 'climo_mean.hour_interval' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_STDEV_FILE_NAME
-     Specify the value for 'climo_stdev.file_name' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_STDEV_FIELD
-     Specify the value for 'climo_stdev.field' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_STDEV_REGRID_METHOD
-     Specify the value for 'climo_stdev.regrid.method' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_STDEV_REGRID_WIDTH
-     Specify the value for 'climo_stdev.regrid.width' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_STDEV_REGRID_VLD_THRESH
-     Specify the value for 'climo_stdev.regrid.vld_thresh' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_STDEV_REGRID_SHAPE
-     Specify the value for 'climo_stdev.regrid.shape' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_STDEV_TIME_INTERP_METHOD
-     Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_STDEV_MATCH_MONTH
-     Specify the value for 'climo_stdev.match_month' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL
-     Specify the value for 'climo_stdev.day_interval' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL
-     Specify the value for 'climo_stdev.hour_interval' in the MET configuration file for SeriesAnalysis.
-
-     | *Used by:* SeriesAnalysis
-
-   PB2NC_PB_REPORT_TYPE
-     Specify the value for 'pb_report_type' in the MET configuration file for PB2NC.
-
-     | *Used by:* PB2NC
-
-   PB2NC_LEVEL_RANGE_BEG
-     Specify the value for 'level_range.beg' in the MET configuration file for PB2NC.
-
-     | *Used by:* PB2NC
-
-   PB2NC_LEVEL_RANGE_END
-     Specify the value for 'level_range.end' in the MET configuration file for PB2NC.
-
-     | *Used by:* PB2NC
-
-   PB2NC_LEVEL_CATEGORY
-     Specify the value for 'level_category' in the MET configuration file for PB2NC.
-
-     | *Used by:* PB2NC
-
-   PB2NC_QUALITY_MARK_THRESH
-     Specify the value for 'quality_mark_thresh' in the MET configuration file for PB2NC.
-
-     | *Used by:* PB2NC
-
-   FCST_SERIES_ANALYSIS_PROB_THRESH
-     Threshold values to be used for probabilistic data in series_analysis. The value can be a single item or a comma separated list of items that must start with a comparison operator (>,>=,==,!=,<,<=,gt,ge,eq,ne,lt,le).
-     
-     | *Used by:* SeriesAnalysis
-     

@@ -18,7 +18,7 @@ Workflow Control
 ----------------
 
 GitHub Actions is controlled by a file in the .github/workflow directory called
-testing.yml. If this file exists and is valid (no errors), GitHub Actions will
+main.yml. If this file exists and is valid (no errors), GitHub Actions will
 read this file and trigger a workflow run if the triggering criteria is met.
 It can run multiple jobs in parallel or serially depending on dependency rules
 that can be set. Each job can run a series of commands or scripts called steps.
@@ -31,7 +31,7 @@ Name
 
 The name of a workflow can be specified to describe an overview of what is run.
 Currently METplus only has 1 workflow, but others can be added. The following
-line in the testing.yml file::
+line in the main.yml file::
 
     name: METplus CI/CD Workflow
 

@@ -1,8 +1,9 @@
-name: Documentation
+name: Documentation Workflow
 on:
   push:
     branches:
       - develop
+      - develop-ref
       - feature_*
       - main_*
       - bugfix_*
@@ -25,14 +26,13 @@ jobs:
           python -m pip install --upgrade sphinx sphinx-gallery sphinx_rtd_theme
           python -m pip install python-dateutil requests Pillow
       - name: Build Documentation
+        continue-on-error: true
         run: ./.github/jobs/build_documentation.sh
       - uses: actions/upload-artifact@v2
-        if: always()
         with:
           name: METplus_documentation
           path: artifact/documentation
       - uses: actions/upload-artifact@v2
-        if: failure()
         with:
           name: documentation_warnings.log
           path: artifact/doc_warnings.log

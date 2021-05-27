@@ -1,4 +1,4 @@
-=========================
+﻿=========================
 METplus version |version|
 =========================
 Developed by the `Developmental Testbed Center <https://dtcenter.org/>`_,
@@ -86,7 +86,7 @@ Acronyms
 * **VSDB** - Verification Statistics Data Base
 * **MODE** - Method for Object-Based Diagnostic Evaluation
 * **UFS** - Unified Forecast System
-* **SIMA** - System for Integrated Modeling of the Atmosphere
+* **SIMA** -System for Integrated Modeling of the Atmosphere
 * **ESRL** - Earth Systems Research Laboratory
 * **HIWPP** - High Impact Weather Predication Project
 * **NGGPS** - Next Generation Global Predicatio System
@@ -94,34 +94,27 @@ Acronyms
 
 Authors
 -------
-
-Many authors, listed below in alphabetical order, have contributed to the documentation of METplus.
-To cite this documentation in publications, please refer to the METplus User's Guide :ref:`Citation Instructions<citations>`.
-
 * Daniel Adriaansen [#NCAR]_
-* Todd Arbetter
-* Lindsay Blank
-* Hank Fisher [#NCAR]_
-* James Frimel [#CIRA]_
-* Lisa Goodrich [#NCAR]_
-* John Halley Gotway [#NCAR]_
-* Tara Jensen [#NCAR]_
-* Christina Kalb [#NCAR]_
-* George McCabe [#NCAR]_
-* John Opatz [#NCAR]_
-* Julie Prestopnik [#NCAR]_
-* Mallory Row [#IMSG]_
-* Jonathan Vigh [#NCAR]_
 * Minna Win-Gildenmeister [#NCAR]_
+* James Frimel [#CIR]_
+* Julie Prestopnik [#NCAR]_
+* Mallory Row [#IM]_
+* John Halley Gotway [#NCAR]_
+* George McCabe [#NCAR]_
+* Tara Jensen [#NCAR]_
+* Jonathan Vigh [#NCAR]_
+* Christina Kalb [#NCAR]_
+* Hank Fisher [#NCAR]_
+* John Opatz [#NCAR]_
 
 .. rubric:: Organization
 
 .. [#NCAR] `National Center for Atmospheric Research, Research
        Applications Laboratory <https://ral.ucar.edu/>`_, `Developmental Testbed Center <https://dtcenter.org/>`_
-.. [#CIRA] `Cooperative Institute for Research in the Atmosphere at
+.. [#CIR] `Cooperative Institute for Research in the Atmosphere at
        National Oceanic and Atmospheric Administration (NOAA) Earth
        System Research Laboratory <https://www.esrl.noaa.gov/>`_
-.. [#IMSG] `I.M. Systems Group at NOAA Environmental Modeling Center <https://imsg.com/>`_
+.. [#IM] `I.M. Systems Group at NOAA Environmental Modeling Center <https://imsg.com/>`_
 
 
 .. toctree::

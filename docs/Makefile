@@ -16,6 +16,9 @@ help:
 clean:
 	rm -rf $(BUILDDIR)/* $(SOURCEDIR)/generated/met_tool_wrapper $(SOURCEDIR)/generated/model_applications
 
+pdf:
+	$(SPHINXBUILD) -b pdf "$(SOURCEDIR)" _build/html
+
 .PHONY: help Makefile
 
 # Catch-all target: route all unknown targets to Sphinx using the new

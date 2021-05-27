@@ -12,66 +12,6 @@ from metplus.wrappers.command_builder import CommandBuilder
 from metplus.util import time_util
 from metplus.util import METConfigInfo as met_config
 
-
-@pytest.mark.parametrize(
-    'config_overrides, expected_value', [
-        # 0 no climo variables set
-        ({}, ''),
-        # 1 file name set only
-        ({'FILE_NAME': '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl'},
-         '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl'),
-        # 2 input template set
-        ({'INPUT_TEMPLATE': '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl'},
-         '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl'),
-        # 3 input template and dir set
-        ({'INPUT_DIR': '/mean/dir',
-          'INPUT_TEMPLATE': 'gs_climo_{init?fmt=%Y%m%d%H}.tmpl'},
-         '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl'),
-        # 4 input template and dir set multiple templates
-        ({'INPUT_DIR': '/mean/dir',
-          'INPUT_TEMPLATE': 'gs_climo_1.tmpl, gs_climo_2.tmpl'},
-         '/mean/dir/gs_climo_1.tmpl,/mean/dir/gs_climo_2.tmpl'),
-        # 5file name, input template and dir all set
-        ({'FILE_NAME': '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl',
-          'INPUT_DIR': '/mean/dir',
-          'INPUT_TEMPLATE': 'gs_climo_1.tmpl, gs_climo_2.tmpl'},
-         '/mean/dir/gs_climo_{init?fmt=%Y%m%d%H}.tmpl'),
-        # 6 input template is python embedding keyword and dir is set
-        ({'INPUT_DIR': '/mean/dir',
-          'INPUT_TEMPLATE': 'PYTHON_NUMPY'},
-         'PYTHON_NUMPY'),
-        # 7 input template is python embedding keyword and dir is set
-        ({'INPUT_DIR': '/mean/dir',
-          'INPUT_TEMPLATE': 'PYTHON_XARRAY'},
-         'PYTHON_XARRAY'),
-    ]
-)
-def test_read_climo_file_name(metplus_config, config_overrides,
-                                expected_value):
-    # name of app used for testing to read/set config variables
-    app_name = 'grid_stat'
-
-    # check mean and stdev climo variables
-    for climo_type in CommandBuilder.climo_types:
-        prefix = f'{app_name.upper()}_CLIMO_{climo_type.upper()}_'
-
-        config = metplus_config()
-
-        # set config values
-        for key, value in config_overrides.items():
-            config.set('config', f'{prefix}{key}', value)
-
-        cbw = CommandBuilder(config)
-
-        # set app_name to grid_stat for testing
-        cbw.app_name = app_name
-
-        cbw.read_climo_file_name(climo_type)
-        actual_value = cbw.config.getraw('config',
-                                         f'{prefix}FILE_NAME',
-                                         '')
-        assert(actual_value == expected_value)
-
 # ------------------------
 #  test_find_data_no_dated
 # ------------------------
@@ -789,9 +729,9 @@ def test_set_met_config_list_allow_empty(metplus_config, mp_config_name,
         ('bad_name', None),
     ]
 )
-def test_set_met_config_function(metplus_config, data_type, expected_function):
+def test_get_met_config_function(metplus_config, data_type, expected_function):
     cbw = CommandBuilder(metplus_config())
-    function_found = cbw.set_met_config_function(data_type)
+    function_found = cbw.get_met_config_function(data_type)
     function_name = function_found.__name__ if function_found else None
     assert(function_name == expected_function)
 
@@ -832,56 +772,3 @@ def test_add_met_config(metplus_config):
     print(f"env_var_dict: {cbw.env_var_dict}")
     expected_value = f'valid_freq = {value};'
     assert(cbw.env_var_dict['METPLUS_VALID_FREQ'] == expected_value)
-
-def test_handle_met_config_dict_nested(metplus_config):
-    dict_name = 'outer'
-    beg = -3
-    end = 5
-    sub_dict_name = 'inner'
-    sub_dict_value1 = 'value1'
-    sub_dict_value2 = 'value2'
-    expected_value = (
-        f'{dict_name} = {{beg = {beg};end = {end};{sub_dict_name} = '
-        f'{{var1 = {sub_dict_value1};var2 = {sub_dict_value2};}}}}'
-    )
-
-    config = metplus_config()
-    config.set('config', 'APP_OUTER_BEG', beg)
-    config.set('config', 'APP_OUTER_END', end)
-    config.set('config', 'APP_OUTER_INNER_VAR1', sub_dict_value1)
-    config.set('config', 'APP_OUTER_INNER_VAR2', sub_dict_value2)
-    cbw = CommandBuilder(config)
-
-    dict_items = []
-    item = met_config(name='beg',
-                      data_type='int',
-                      metplus_configs=['APP_OUTER_BEG'])
-    dict_items.append(item)
-    item = met_config(name='end',
-                      data_type='int',
-                      metplus_configs=['APP_OUTER_END'])
-    dict_items.append(item)
-
-    sub_dict_items = []
-    item = met_config(name='var1',
-                      data_type='string',
-                      metplus_configs=['APP_OUTER_INNER_VAR1'],
-                      extra_args={'remove_quotes': True})
-    sub_dict_items.append(item)
-    item = met_config(name='var2',
-                      data_type='string',
-                      metplus_configs=['APP_OUTER_INNER_VAR2'],
-                      extra_args={'remove_quotes': True})
-    sub_dict_items.append(item)
-
-    dict_items.append(
-        cbw.get_met_config(
-            name=sub_dict_name,
-            data_type='dict',
-            children=sub_dict_items,
-        )
-    )
-
-    cbw.handle_met_config_dict(dict_name, dict_items)
-    print(f"env_var_dict: {cbw.env_var_dict}")
-    assert(cbw.env_var_dict.get('METPLUS_OUTER_DICT') == expected_value)

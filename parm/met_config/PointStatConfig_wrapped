@@ -1,0 +1,221 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// Point-Stat configuration file.
+//
+// For additional information, see the MET_BASE/config/README file.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Output model name to be written
+//
+${METPLUS_MODEL}
+
+//
+// Output description to be written
+// May be set separately in each "obs.field" entry
+//
+${METPLUS_DESC}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification grid
+//
+${METPLUS_REGRID_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// May be set separately in each "field" entry
+//
+censor_thresh = [];
+censor_val    = [];
+cat_thresh    = [ NA ];
+cnt_thresh    = [ NA ];
+cnt_logic     = UNION;
+wind_thresh   = [ NA ];
+wind_logic    = UNION;
+eclv_points   = 0.05;
+rank_corr_flag = FALSE;
+
+//
+// Forecast and observation fields to be verified
+//
+fcst = {
+  ${METPLUS_FCST_FIELD}
+}
+
+obs = {
+  ${METPLUS_OBS_FIELD}
+}
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation filtering options
+// May be set separately in each "obs.field" entry
+//
+${METPLUS_MESSAGE_TYPE}
+sid_exc        = [];
+obs_quality    = [ "1", "2", "3" ];
+duplicate_flag = NONE;
+obs_summary    = NONE;
+obs_perc_value = 50;
+
+//
+// Mapping of message type group name to comma-separated list of values.
+//
+message_type_group_map = [
+   { key = "SURFACE"; val = "ADPSFC,SFCSHP,MSONET";               },
+   { key = "ANYAIR";  val = "AIRCAR,AIRCFT";                      },
+   { key = "ANYSFC";  val = "ADPSFC,SFCSHP,ADPUPA,PROFLR,MSONET"; },
+   { key = "ONLYSF";  val = "ADPSFC,SFCSHP";                      },
+   { key = "LANDSF";  val = "ADPSFC,MSONET";                      },
+   { key = "WATERSF"; val = "SFCSHP";                             }
+];
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Climatology data
+//
+climo_mean = {
+
+   ${METPLUS_CLIMO_MEAN_FILE}
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape      = SQUARE;
+   }
+
+   time_interp_method = NEAREST;
+   day_interval       = 31;
+   hour_interval      = 6;
+}
+
+climo_stdev = {
+
+   ${METPLUS_CLIMO_STDEV_FILE}
+   field     = [];
+
+   regrid = {
+      method     = NEAREST;
+      width      = 1;
+      vld_thresh = 0.5;
+      shape	 = SQUARE;
+   }
+
+   time_interp_method = DW_MEAN;
+   match_month        = TRUE;
+   day_interval       = 31;
+   hour_interval      = 6;
+}
+
+//
+// May be set separately in each "obs.field" entry
+//
+//climo_cdf = {
+${METPLUS_CLIMO_CDF_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Point observation time window
+//
+${METPLUS_OBS_WINDOW_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Verification masking regions
+//
+mask = {
+   ${METPLUS_MASK_GRID}
+   ${METPLUS_MASK_POLY}
+   ${METPLUS_MASK_SID}
+   llpnt = [];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Confidence interval settings
+//
+ci_alpha  = [ 0.05 ];
+
+boot = {
+   interval = PCTILE;
+   rep_prop = 1.0;
+   n_rep    = 0;
+   rng      = "mt19937";
+   seed     = "";
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Interpolation methods
+//
+interp = {
+   vld_thresh = 1.0;
+   shape      = SQUARE;
+
+   type = [
+      {
+         method = BILIN;
+         width  = 2;
+      }
+   ];
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// HiRA verification method
+//
+hira = {
+   flag       = FALSE;
+   width      = [ 2, 3, 4, 5 ];
+   vld_thresh = 1.0;
+   cov_thresh = [ ==0.25 ];
+   shape      = SQUARE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Statistical output types
+//
+output_flag = {
+   fho    = NONE;
+   ctc    = NONE;
+   cts    = NONE;
+   mctc   = NONE;
+   mcts   = NONE;
+   cnt    = NONE;
+   sl1l2  = STAT;
+   sal1l2 = NONE;
+   vl1l2  = STAT;
+   val1l2 = NONE;
+   vcnt   = NONE;
+   pct    = NONE;
+   pstd   = NONE;
+   pjc    = NONE;
+   prc    = NONE;
+   ecnt   = NONE; // Only for HiRA.
+   eclv   = NONE;
+   mpr    = NONE;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+tmp_dir        = "/tmp";
+${METPLUS_OUTPUT_PREFIX}
+//version        = "V9.0";
+
+////////////////////////////////////////////////////////////////////////////////
+
+${METPLUS_MET_CONFIG_OVERRIDES}

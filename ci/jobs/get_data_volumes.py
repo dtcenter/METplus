@@ -11,7 +11,6 @@ import subprocess
 import shlex
 
 from docker_utils import docker_get_volumes_last_updated, get_branch_name
-from docker_utils import get_data_repo, DOCKERHUB_METPLUS_DATA_DEV
 
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
                                                 os.pardir,
@@ -19,12 +18,15 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
 
 from metplus import __version__
 
-# METPLUS_VERSION should be set to develop or a release version, i.e. X.Y
+DOCKERHUB_METPLUS_DATA = 'dtcenter/metplus-data'
+DOCKERHUB_METPLUS_DATA_DEV = 'dtcenter/metplus-data-dev'
+
+# METPLUS_VERSION should be set to develop or a release version, i.e. vX.Y
 # if version is set to X.Y without -betaZ or -dev, use that version
 # otherwise use develop
 if len(__version__.split('-')) == 1:
-    # only get first 2 numbers from version, i.e. X.Y.Z will use X.Y
-    METPLUS_VERSION = '.'.join(__version__.split('.')[:2])
+    # only get first 2 numbers from version, i.e. X.Y.Z will use vX.Y
+    METPLUS_VERSION = f"v{'.'.join(__version__.split('.')[:2])}"
 
 else:
     METPLUS_VERSION = 'develop'
@@ -43,11 +45,11 @@ def main(args):
         branch_name = branch_name[0:-4]
 
     # if running development version, use metplus-data-dev
-    # if released version, i.e. X.Y.Z, use metplus-data
-    data_repo = get_data_repo(METPLUS_VERSION)
-
-    if branch_name.startswith('main_v'):
-        branch_name = branch_name[5:]
+    # if released version, i.e. vX.Y, use metplus-data
+    if METPLUS_VERSION == 'develop':
+        data_repo = DOCKERHUB_METPLUS_DATA_DEV
+    else:
+        data_repo = DOCKERHUB_METPLUS_DATA
 
     # get all docker data volumes associated with current branch
     available_volumes = docker_get_volumes_last_updated(branch_name).keys()

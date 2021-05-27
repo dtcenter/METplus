@@ -44,18 +44,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_FCST_FIELD',
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_OBS_FIELD',
-        'METPLUS_CLIMO_MEAN_DICT',
-        'METPLUS_CLIMO_STDEV_DICT',
+        'METPLUS_CLIMO_MEAN_FILE',
+        'METPLUS_CLIMO_STDEV_FILE',
         'METPLUS_BLOCK_SIZE',
         'METPLUS_VLD_THRESH',
         'METPLUS_CTS_LIST',
         'METPLUS_STAT_LIST',
-    ]
-
-    # handle deprecated env vars used pre v4.0.0
-    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
-        'CLIMO_MEAN_FILE',
-        'CLIMO_STDEV_FILE',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -275,7 +269,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                            "if SERIES_ANALYSIS_RUN_ONCE_PER_STORM_ID is True")
 
         # get climatology config variables
-        self.handle_climo_dict()
+        self.read_climo_wrapper_specific('SERIES_ANALYSIS', c_dict)
 
         # if no forecast lead sequence is specified,
         # use wildcard (*) so all leads are used
@@ -725,6 +719,8 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         time_info['fcst_beg'] = beg
         time_info['fcst_end'] = end
 
+        self.handle_climo(time_info)
+
         # build the command and run series_analysis for each variable
         for var_info in self.c_dict['VAR_LIST']:
             if self.c_dict['USING_BOTH']:
@@ -775,6 +771,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                          self.c_dict.get('FCST_FIELD', ''))
         self.add_env_var("OBS_FIELD",
                          self.c_dict.get('OBS_FIELD', ''))
+
+        # set climatology environment variables
+        self.set_climo_env_vars()
 
         # set old env var settings for backwards compatibility
         self.add_env_var('MODEL', self.c_dict.get('MODEL', ''))

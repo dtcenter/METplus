@@ -1,6 +1,18 @@
-The **defaults.conf** contains default METplus configurations that are read first when
-METplus is run. These values can be changed directly to change the default behavior.
-This is typically done when installing the wrappers on a new machine to set the
-values for **MET_INSTALL_DIR** and **INPUT_BASE** to the appropriate location on disk.
-The values can also be overridden in any METplus configuration file that is passed to
-run_metplus.py.
+There are **four config** files in this directory:
+
+1. **metplus_system.conf**
+
+   Contains information indicating the location of MET binaries and other NON-MET executables needed to run METplus.
+
+2. **metplus_data.conf**
+
+   Contains the information relevant to the data: input data location, filename templates and regex patterns for identifying data files.
+
+3. **metplus_runtime.conf**
+
+   Contains other configuration settings, process looping order, the final conf filename, and anything else needed at runtime.
+
+4. **metplus_logging.conf**
+
+   Contains all settings related to logging.
+

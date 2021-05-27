@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-# Run by GitHub Actions (in .github/workflows/testing.yml) check DTCenter web
+# Run by GitHub Actions (in .github/workflows/main.yml) check DTCenter web
 # server for any input data tarfiles that have been updated and need to be
 # regenerated as Docker data volumes to be used in use case tests.
 # Push new/updated data volumes up to DockerHub
@@ -14,7 +14,7 @@ import dateutil.parser
 from urllib.parse import urljoin
 import subprocess
 
-from docker_utils import docker_get_volumes_last_updated, get_data_repo
+from docker_utils import docker_get_volumes_last_updated, DOCKERHUB_DATA_REPO
 from docker_utils import get_branch_name
 
 # URL containing METplus sample data tarfiles
@@ -32,7 +32,7 @@ def get_tarfile_last_modified(search_dir):
     soup = BeautifulSoup(requests.get(search_dir).content,
                          'html.parser')
     tarfiles = [a_tag.get_text() for a_tag in soup.find_all('a')
-                if a_tag.get_text().startswith('sample_data')]
+                    if a_tag.get_text().startswith('sample_data')]
 
     # get last modified time of each tarfile
     tarfile_last_modified = {}
@@ -48,11 +48,9 @@ def create_data_volumes(branch_name, volumes):
         print("No volumes to build")
         return
 
-    data_repo = get_data_repo(branch_name)
-    # log into docker using encrypted credentials and
-    # call build_docker_images.sh script
+    # log into docker using encrypted credentials and call build_docker_images.sh script
     cmd = (f'{BUILD_DOCKER_IMAGES} -pull {branch_name} '
-           f'-data {",".join(volumes)} -push {data_repo}')
+           f'-data {",".join(volumes)} -push {DOCKERHUB_DATA_REPO}')
     print(f'Running command: {cmd}')
     ret = subprocess.run(shlex.split(cmd), check=True)
 
@@ -75,17 +73,11 @@ def main():
     if branch_name.endswith('-ref'):
         branch_name = branch_name[0:-4]
 
-    # search dir should be develop, feature_NNN, or vX.Y
-    if branch_name.startswith('main_v'):
-        web_subdir = branch_name[5:]
-    else:
-        web_subdir = branch_name
-
     if not os.environ.get('GITHUB_WORKSPACE'):
         print("GITHUB_WORKSPACE not set. Exiting.")
         sys.exit(1)
 
-    search_dir = f"{urljoin(WEB_DATA_DIR, web_subdir)}/"
+    search_dir = f"{urljoin(WEB_DATA_DIR, branch_name)}/"
     print(f"Looking for tarfiles in {search_dir}")
 
     dir_request = requests.get(search_dir)

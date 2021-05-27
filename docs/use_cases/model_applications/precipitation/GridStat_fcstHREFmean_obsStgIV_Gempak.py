@@ -32,7 +32,7 @@ _obsStgIV_Gempak.conf
 #
 # GempakToCF.jar
 #
-# GempakToCF is an external tool that utilizes the Unidata NetCDF-Java package. The jar file that can be used to run the utility is available here: https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
+# GempakToCF is an external tool that utilizes the Unidata NetCDF-Java package. The jar file that can be used to run the utility is available here: https://dtcenter.org/sites/default/files/community-code/utilities/GempakToCF.jar
 #
 #To enable Gempak support, you must set [exe] GEMPAKTOCF_JAR in your user METplus configuration file:
 #
