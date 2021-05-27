@@ -7,6 +7,8 @@ import os
 import shutil
 
 from ..util import met_util as util
+from ..util import time_util
+from ..util import do_string_sub
 from . import CommandBuilder
 
 class TCMPRPlotterWrapper(CommandBuilder):
@@ -80,8 +82,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
         # get input data
         c_dict['INPUT_DATA'] = (
-            self.config.getdir('TCMPR_PLOTTER_TCMPR_DATA_DIR',
-                               '')
+            self.config.getraw('config', 'TCMPR_PLOTTER_TCMPR_DATA_DIR', '')
         )
         if not c_dict['INPUT_DATA']:
             self.log_error("TCMPR_PLOTTER_TCMPR_DATA_DIR must be set")
@@ -101,9 +102,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
             self.log_error("TCMPR_PLOTTER_CONFIG_FILE must be set")
 
         # get time information
-        c_dict['INPUT_TIME_DICT'] = self.set_time_dict_for_single_runtime()
-        if not c_dict['INPUT_TIME_DICT']:
+        input_dict = self.set_time_dict_for_single_runtime()
+        if not input_dict:
             self.isOK = False
+        c_dict['TIME_INFO'] = time_util.ti_calculate(input_dict)
 
         # read all optional command line arguments
         c_dict['COMMAND_ARGS'] = self.read_optional_args()
@@ -191,17 +193,18 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
             @returns list of file paths
         """
+        input_data = do_string_sub(self.c_dict['INPUT_DATA'],
+                                   **self.c_dict['TIME_INFO'])
         # If input data is a file, create a single command and invoke R script.
-        if os.path.isfile(self.c_dict['INPUT_DATA']):
-            self.logger.debug(f"Plotting file: {self.c_dict['INPUT_DATA']}")
-            return [self.c_dict['INPUT_DATA']]
+        if os.path.isfile(input_data):
+            self.logger.debug(f"Plotting file: {input_data}")
+            return [input_data]
 
         # input is directory, so find all tcst files to process
-        self.logger.debug('Plotting all files in: '
-                          f"{self.c_dict['INPUT_DATA']}")
-        tcst_files = util.get_files(self.c_dict['INPUT_DATA'], ".*.tcst")
-        self.logger.debug(f"Number of files: {len(tcst_files)}")
-        return sorted(tcst_files)
+        self.logger.debug(f'Plotting all files in: {input_data}')
+        input_files = util.get_files(input_data, ".*.tcst")
+        self.logger.debug(f"Number of files: {len(input_files)}")
+        return sorted(input_files)
 
     def get_command(self):
         """! Over-ride CommandBuilder's get_command because unlike
