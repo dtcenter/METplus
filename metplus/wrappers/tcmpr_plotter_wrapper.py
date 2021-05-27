@@ -70,6 +70,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
         if shutil.which('Rscript') is None:
             self.log_error('Rscript must be in the path')
 
+            # if not running script, reset isOK to True for tests
+            if self.c_dict.get('DO_NOT_RUN_EXE', False):
+                self.isOK = True
+
         # save MET_INSTALL_DIR to find R script and set environment variable
         c_dict['MET_INSTALL_DIR'] = self.config.getdir('MET_INSTALL_DIR', '')
         c_dict['TCMPR_SCRIPT'] = os.path.join(c_dict['MET_INSTALL_DIR'],
