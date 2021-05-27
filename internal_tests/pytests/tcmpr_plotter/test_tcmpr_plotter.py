@@ -56,7 +56,8 @@ def set_minimum_config_settings(config):
         ({'TCMPR_PLOTTER_RP_DIFF': 'my_string'}, '-rp_diff my_string'),
         ({'TCMPR_PLOTTER_DEMO_YR': 'my_string'}, '-demo_yr my_string'),
         ({'TCMPR_PLOTTER_HFIP_BSLN': 'my_string'}, '-hfip_bsln my_string'),
-        ({'TCMPR_PLOTTER_PLOT_CONFIG_OPTS': 'my_string'}, '-plot_config my_string'),
+        ({'TCMPR_PLOTTER_PLOT_CONFIG_OPTS': 'my_string'},
+         '-plot_config my_string'),
         ({'TCMPR_PLOTTER_SAVE_DATA': 'my_string'}, '-save_data my_string'),
         # booleans True
         ({'TCMPR_PLOTTER_FOOTNOTE_FLAG': 'True'}, '-footnote_flag'),
