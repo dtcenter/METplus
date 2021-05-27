@@ -1328,27 +1328,30 @@ class CommandBuilder:
         call METplus wrapper for each time"""
         return util.loop_over_times_and_call(self.config, self)
 
-    def set_time_dict_for_single_runtime(self, c_dict):
+    def set_time_dict_for_single_runtime(self):
         # get clock time from start of execution for input time dictionary
         clock_time_obj = datetime.strptime(self.config.getstr('config',
                                                               'CLOCK_TIME'),
                                            '%Y%m%d%H%M%S')
 
         # get start run time and set INPUT_TIME_DICT
-        c_dict['INPUT_TIME_DICT'] = {'now': clock_time_obj}
+        time_info = {'now': clock_time_obj}
         start_time, _, _ = util.get_start_end_interval_times(self.config)
         if start_time:
             # set init or valid based on LOOP_BY
             use_init = util.is_loop_by_init(self.config)
             if use_init is None:
-                self.isOK = False
+                return None
             elif use_init:
-                c_dict['INPUT_TIME_DICT']['init'] = start_time
+                time_info['init'] = start_time
             else:
-                c_dict['INPUT_TIME_DICT']['valid'] = start_time
+                time_info['valid'] = start_time
         else:
-            self.config.logger.error("Could not get [INIT/VALID] time information from configuration file")
-            self.isOK = False
+            self.config.logger.error("Could not get [INIT/VALID] time "
+                                     "information from configuration file")
+            return None
+
+        return time_info
 
     def _get_config_or_default(self, mp_config_name, get_function,
                                default=None):
