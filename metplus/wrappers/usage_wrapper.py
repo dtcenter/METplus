@@ -4,7 +4,7 @@
 # @endcode#
 
 from . import CommandBuilder
-from ..util.doc_util import LOWER_TO_WRAPPER_NAME
+from ..util import met_util
 
 class UsageWrapper(CommandBuilder):
     """! A default process, prints out usage when nothing is defined in
@@ -16,7 +16,7 @@ class UsageWrapper(CommandBuilder):
                          instance=instance,
                          config_overrides=config_overrides)
         # get unique list of processes from met_util
-        self.available_processes = list(set(val for val in LOWER_TO_WRAPPER_NAME.values()))
+        self.available_processes = list(set(val for val in met_util.LOWER_TO_WRAPPER_NAME.values()))
         self.available_processes.sort()
 
     def run_all_times(self):
