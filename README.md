@@ -2,10 +2,8 @@ Model Evaluation Tools Plus (METplus) Repository
 ================================================
 
 <!-- Start of Badges -->
-[![METplus_develop](https://img.shields.io/badge/METplus-develop%20branch-blue)](#)
-[![Travis build status](https://travis-ci.com/DTCenter/METplus.svg?branch=develop)](https://travis-ci.com/DTCenter/METplus)
-[![Latest Docs](https://img.shields.io/badge/docs-latest-brightgreen.svg)](https://dtcenter.github.io/METplus/)
-
+[![Tests](https://github.com/DTCenter/METplus/actions/workflows/testing.yml/badge.svg?event=push)](https://github.com/DTCenter/METplus/actions/workflows/testing.yml)
+[![Docs](https://img.shields.io/badge/Documentation-latest-brightgreen.svg)](https://metplus.readthedocs.io)
 
 Welcome to the METplus GitHub repository hosted to the community through
 the Developmental Testbed Center (DTC).
@@ -13,10 +11,15 @@ the Developmental Testbed Center (DTC).
 METplus is a Python scripting infrastructure around the MET verification tools
 (and eventually METViewer, a tool used for plotting MET output verification statistics).
 
-Documentation for both Users and Contributors can be found here: https://dtcenter.github.io/METplus.
-For more information about the entire suite of tools, please visit the MET website
-(https://dtcenter.org/community-code/model-evaluation-tools-met) and direct questions
-to met_help@ucar.edu.
+Documentation for both Users and Contributors can be found [here](https://metplus.readthedocs.io).
+For more information about the entire suite of tools, please visit the
+[MET website](https://dtcenter.org/community-code/model-evaluation-tools-met).
+
+Support for the METplus components is provided through the
+[METplus Discussions](https://github.com/dtcenter/METplus/discussions) forum.
+Users are welcome and encouraged to answer or address each other's questions there!  For more
+information, please read
+"[Welcome to the METplus Components Discussions](https://github.com/dtcenter/METplus/discussions/939)".
 
 This infrastructure utilizes the NCEP produtil package, which is a platform-independent
 weather and ocean forecasting utility package developed at the National Oceanic

@@ -1225,8 +1225,7 @@ class StatAnalysisWrapper(CommandBuilder):
         model_indices = list(
             util.find_indices_in_config_section(r'MODEL(\d+)$',
                                                 self.config,
-                                                'config',
-                                                noID=True).keys()
+                                                index_index=1).keys()
         )
         for m in model_indices:
             model_name = self.config.getstr('config', f'MODEL{m}')

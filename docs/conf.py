@@ -26,11 +26,52 @@ project = 'METplus'
 
 author = 'UCAR/NCAR, NOAA, CSU/CIRA, and CU/CIRES'
 
+# list of contributing authors currently involved with the project
+# rotate this list of authors for each release
+CURRENT_AUTHORS = [
+    'Minna Win-Gildenmeister',
+    'George McCabe',
+    'Julie Prestopnik',
+    'John Opatz',
+    'John Halley Gotway',
+    'Tara Jensen',
+    'Jonathan Vigh',
+    'Mallory Row',
+    'Christina Kalb',
+    'Hank Fisher',
+    'Lisa Goodrich',
+    'Dan Adriaansen',
+]
+
+# list of former contributors who are no longer involved with the project
+# but still deserve citation credit
+FORMER_AUTHORS = [
+    'James Frimel',
+    'Lindsay Blank',
+    'Todd Arbetter',
+]
+
+# format citation authors list
+formatted_authors = []
+for index, author in enumerate(CURRENT_AUTHORS + FORMER_AUTHORS):
+    first_name, last_name = author.split(' ', 1)
+    first_initial = first_name[0]
+    #  first name uses "Last Name, First Initial"
+    if index == 0:
+        formatted_name = f'{last_name}, {first_initial}.'
+    #  the rest uses "First Initial Last Name"
+    else:
+        formatted_name = f'{first_initial}. {last_name}'
+    formatted_authors.append(formatted_name)
+
+# compile string from list of current and former authors separated by comma
+author_list = ', '.join(formatted_authors)
+
 # The full version, including alpha/beta/rc tags
 # i.e. 4.0.0-beta1-dev
 release = __version__
 
-# the stable version, displayed on front page of PDF extract X.Y version
+# the stable version, displayed on front page of PDF extract X.Y.Z version
 # from release by splitting the string into a list
 # using - as the delimeter, then getting the 1st item of the list
 # if version is beta, rc, and/or dev then set version to develop for
@@ -38,7 +79,7 @@ release = __version__
 if len(release.split('-')) > 1:
     version = 'develop'
 else:
-    version = f"{release.split('-')[0]}"
+    version = release
 
 verinfo = version
 
@@ -131,7 +172,6 @@ templates_path = ['_templates']
 exclude_patterns = ['_build',
                     'Thumbs.db',
                     '.DS_Store',
-                    'Users_Guide/METplus_*.rst',
                     'use_cases',
                     'Release_Guide/release_steps',
                     'Verification_Datasets/datasets/template.rst',
@@ -176,7 +216,8 @@ sphinx_gallery_conf = {
 intersphinx_mapping = {'numpy':("https://docs.scipy.org/doc/numpy/", None)}
 
 rst_epilog = f"""
-.. |copyright| replace:: {copyright}
+.. |copyright|    replace:: {copyright}
+.. |author_list|  replace:: {author_list}
 .. |release_date| replace:: {release_date}
 .. |release_year| replace:: {release_year}
 .. |release_info| replace:: {release_info}

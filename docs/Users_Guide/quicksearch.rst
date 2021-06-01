@@ -1,7 +1,8 @@
 .. _quick-search:
 
+**********************************
 METplus Quick Search for Use Cases
-==================================
+**********************************
 
 .. only:: latex
 
@@ -9,7 +10,7 @@ METplus Quick Search for Use Cases
 
 
 Use Cases by MET Tool:
-----------------------
+======================
 
 .. only:: html
 
@@ -60,19 +61,19 @@ Use Cases by MET Tool:
    | **TCStat**: *TCStatToolUseCase*
 
 Use Cases by Application:
--------------------------
+=========================
 
 .. only:: html
 
-   | `Climate <https://dtcenter.github.io/METplus/develop/search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_
-   | `Convection Allowing Models <https://dtcenter.github.io/METplus/develop/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_
-   | `Ensemble  <https://dtcenter.github.io/METplus/develop/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
-   | `Marine and Cryosphere <https://dtcenter.github.io/METplus/develop/search.html?q=MarineAndCryoAppUseCase&check_keywords=yes&area=default>`_
-   | `Medium Range <https://dtcenter.github.io/METplus/develop/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_
-   | `Precipitation <https://dtcenter.github.io/METplus/develop/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_
-   | `Space Weather <https://dtcenter.github.io/METplus/develop/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
-   | `Subseasonal to Seasonal <https://dtcenter.github.io/METplus/develop/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
-   | `Tropical Cyclone and Extra-Tropical Cyclone <https://dtcenter.github.io/METplus/develop/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
+   | `Climate <https://metplus.readthedocs.io/en/develop/search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_
+   | `Convection Allowing Models <https://metplus.readthedocs.io/en/develop/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_
+   | `Ensemble  <https://metplus.readthedocs.io/en/develop/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
+   | `Marine and Cryosphere <https://metplus.readthedocs.io/en/develop/search.html?q=MarineAndCryoAppUseCase&check_keywords=yes&area=default>`_
+   | `Medium Range <https://metplus.readthedocs.io/en/develop/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_
+   | `Precipitation <https://metplus.readthedocs.io/en/develop/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_
+   | `Space Weather <https://metplus.readthedocs.io/en/develop/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
+   | `Subseasonal to Seasonal <https://metplus.readthedocs.io/en/develop/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
+   | `Tropical Cyclone and Extra-Tropical Cyclone <https://metplus.readthedocs.io/en/develop/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
 
 .. only:: latex
 
@@ -87,7 +88,7 @@ Use Cases by Application:
    | **Tropical Cyclone and Extra-Tropical Cyclone**: *TCandExtraTCAppUseCase*
 
 Use Cases by Organization:
---------------------------
+==========================
 
 .. only:: html
 
@@ -114,7 +115,7 @@ Use Cases by Organization:
    | **State University of New York-Stony Brook University (SUNY-SBU)**: *SBUOrgUseCase*
 
 Use Cases by METplus Feature:
------------------------------
+=============================
 
 .. only:: html
 
@@ -169,7 +170,7 @@ Use Cases by METplus Feature:
    | **User Defined Script**: *UserScriptUseCase*
 
 Use cases by File Format:
--------------------------
+=========================
 
 .. only:: html
 

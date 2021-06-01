@@ -518,8 +518,7 @@ def check_for_deprecated_config(config):
                 old_regex = old.replace('<n>', r'(\d+)')
                 indicies = find_indices_in_config_section(old_regex,
                                                           config,
-                                                          'config',
-                                                          noID=True).keys()
+                                                          index_index=1).keys()
                 for index in indicies:
                     old_with_index = old.replace('<n>', index)
                     if depr_info['alt']:
@@ -1944,20 +1943,37 @@ def skip_field_info_validation(config):
 
     return True
 
-def find_indices_in_config_section(regex_expression, config, sec, noID=False):
+def find_indices_in_config_section(regex, config, sec='config',
+                                   index_index=1, id_index=None):
+    """! Use regular expression to get all config variables that match and
+    are set in the user's configuration. This is used to handle config
+    variables that have multiple indices, i.e. FCST_VAR1_NAME, FCST_VAR2_NAME,
+    etc.
+
+    @param regex regular expression to use to find variables
+    @param config METplusConfig object to search
+    @param sec (optional) config file section to search. Defaults to config
+    @param index_index 1 based number that is the regex match index for the
+     index number (default is 1)
+    @param id_index 1 based number that is the regex match index for the
+     identifier. Defaults to None which does not extract an indentifier
+
+     number and the first match is used as an identifier
+    @returns dictionary where keys are the index number and the value is a
+     list of identifiers (if noID=True) or a list containing None
+    """
     # regex expression must have 2 () items and the 2nd item must be the index
     all_conf = config.keys(sec)
     indices = {}
-    regex = re.compile(regex_expression)
+    regex = re.compile(regex)
     for conf in all_conf:
         result = regex.match(conf)
         if result is not None:
-            if noID:
-                index = result.group(1)
-                identifier = None
+            index = result.group(index_index)
+            if id_index:
+                identifier = result.group(id_index)
             else:
-                identifier = result.group(1)
-                index = result.group(2)
+                identifier = None
 
             if index not in indices:
                 indices[index] = [identifier]
@@ -2045,7 +2061,8 @@ def validate_field_info_configs(config, force_check=False):
         # find all _VAR<n>_<ext> keys in the conf files
         data_types_and_indices = find_indices_in_config_section(r"(\w+)_VAR(\d+)_"+ext,
                                                                 config,
-                                                                'config')
+                                                                index_index=2,
+                                                                id_index=1)
 
         # if BOTH_VAR<n>_ is used, set FCST and OBS to the same value
         # if FCST or OBS is used, the other must be present as well
@@ -2272,7 +2289,8 @@ def find_var_name_indices(config, data_types, met_tool=None):
     # find all <data_type>_VAR<n>_NAME keys in the conf files
     return find_indices_in_config_section(regex_string,
                                           config,
-                                          'config')
+                                          index_index=2,
+                                          id_index=1)
 
 def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
     """ read conf items and populate list of dictionaries containing
@@ -2436,9 +2454,12 @@ def sub_var_info(var_info, time_info):
         if isinstance(value, list):
             out_value = []
             for item in value:
-                out_value.append(do_string_sub(item, **time_info))
+                out_value.append(do_string_sub(item,
+                                               skip_missing_tags=True,
+                                               **time_info))
         else:
             out_value = do_string_sub(value,
+                                      skip_missing_tags=True,
                                       **time_info)
 
         out_var_info[key] = out_value

@@ -54,7 +54,19 @@ class TCPairsWrapper(CommandBuilder):
         'METPLUS_VALID_BEG',
         'METPLUS_VALID_END',
         'METPLUS_DLAND_FILE',
+        'METPLUS_CONSENSUS_LIST',
     ]
+
+    WILDCARDS = {
+        'basin': '??',
+        'cyclone': '*',
+    }
+
+    REGEXES = {
+        'storm_id': r'^(\w{2})(\d{2})(\d{4})$',
+        'basin': r'[a-zA-Z]{2}',
+        'cyclone': r'[0-9]{2,4}',
+    }
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'tc_pairs'
@@ -91,51 +103,52 @@ class TCPairsWrapper(CommandBuilder):
             self.log_error("TC_PAIRS_CONFIG_FILE is required to "
                            "run TCPairs wrapper")
 
-        self.set_met_config_string(self.env_var_dict,
-                                   ['TC_PAIRS_INIT_BEG',
-                                    'INIT_BEG'],
-                                   'init_beg',
-                                   'METPLUS_INIT_BEG')
+        self.add_met_config(name='init_beg',
+                            data_type='string',
+                            metplus_configs=['TC_PAIRS_INIT_BEG',
+                                             'INIT_BEG'])
 
-        self.set_met_config_string(self.env_var_dict,
-                                   ['TC_PAIRS_INIT_END',
-                                    'INIT_END'],
-                                   'init_end',
-                                   'METPLUS_INIT_END')
+        self.add_met_config(name='init_end',
+                            data_type='string',
+                            metplus_configs=['TC_PAIRS_INIT_END',
+                                             'INIT_END'])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 ['TC_PAIRS_INIT_INCLUDE',
-                                  'INIT_INCLUDE'],
-                                 'init_inc',
-                                 'METPLUS_INIT_INCLUDE')
+        self.add_met_config(name='init_inc',
+                            data_type='list',
+                            env_var_name='METPLUS_INIT_INCLUDE',
+                            metplus_configs=['TC_PAIRS_INIT_INCLUDE',
+                                             'INIT_INCLUDE'])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 ['TC_PAIRS_INIT_EXCLUDE',
-                                  'INIT_EXCLUDE'],
-                                 'init_inc',
-                                 'METPLUS_INIT_EXCLUDE')
+        self.add_met_config(name='init_exc',
+                            data_type='list',
+                            env_var_name='METPLUS_INIT_EXCLUDE',
+                            metplus_configs=['TC_PAIRS_INIT_EXCLUDE',
+                                             'INIT_EXCLUDE'])
 
-        self.set_met_config_string(self.env_var_dict,
-                                   ['TC_PAIRS_VALID_BEG',
-                                    'VALID_BEG'],
-                                   'valid_beg',
-                                   'METPLUS_VALID_BEG')
+        self.add_met_config(name='valid_beg',
+                            data_type='string',
+                            metplus_configs=['TC_PAIRS_VALID_BEG',
+                                             'VALID_BEG'])
 
-        self.set_met_config_string(self.env_var_dict,
-                                   ['TC_PAIRS_VALID_END',
-                                    'VALID_END'],
-                                   'valid_end',
-                                   'METPLUS_VALID_END')
+        self.add_met_config(name='valid_end',
+                            data_type='string',
+                            metplus_configs=['TC_PAIRS_VALID_END',
+                                             'VALID_END'])
 
-        self.set_met_config_string(self.env_var_dict,
-                                   'TC_PAIRS_DLAND_FILE',
-                                   'dland_file',
-                                   'METPLUS_DLAND_FILE')
+        self.add_met_config(name='dland_file',
+                            data_type='string',
+                            metplus_configs=['TC_PAIRS_DLAND_FILE'])
 
-        self.set_met_config_list(self.env_var_dict,
-                                 'MODEL',
-                                 'model',
-                                 'METPLUS_MODEL')
+        self.add_met_config(name='model',
+                            data_type='list',
+                            metplus_configs=['TC_PAIRS_MODEL',
+                                             'MODEL'])
+
+        self.add_met_config(name='storm_name',
+                            data_type='list',
+                            metplus_configs=['TC_PAIRS_STORM_NAME'])
+
+        self.handle_consensus()
 
         init_time_fmt = self.config.getstr('config', 'INIT_TIME_FMT')
         clock_time = datetime.datetime.strptime(
@@ -162,7 +175,7 @@ class TCPairsWrapper(CommandBuilder):
         c_dict['ADECK_DIR'] = \
                 self.config.getdir('TC_PAIRS_ADECK_INPUT_DIR', '')
         c_dict['BDECK_DIR'] = \
-                self.config.getdir('TC_PAIRS_BDECK_INPUT_DIR')
+                self.config.getdir('TC_PAIRS_BDECK_INPUT_DIR', '')
         c_dict['EDECK_DIR'] = \
                 self.config.getdir('TC_PAIRS_EDECK_INPUT_DIR', '')
         c_dict['OUTPUT_DIR'] = self.config.getdir('TC_PAIRS_OUTPUT_DIR')
@@ -170,19 +183,22 @@ class TCPairsWrapper(CommandBuilder):
             self.config.getbool('config',
                                 'TC_PAIRS_READ_ALL_FILES')
         )
-        c_dict['OUTPUT_BASE'] = self.config.getstr('dir', 'OUTPUT_BASE')
-        c_dict['CYCLONE'] = util.getlist(
-            self.config.getstr('config', 'TC_PAIRS_CYCLONE', ''))
-        c_dict['MODEL'] = util.getlist(self.config.getstr('config',
-                                                          'MODEL', ''))
-        c_dict['STORM_ID'] = util.getlist(
-            self.config.getstr('config', 'TC_PAIRS_STORM_ID', ''))
-        c_dict['BASIN'] = util.getlist(self.config.getstr('config',
-                                                          'TC_PAIRS_BASIN',
-                                                          ''))
-        c_dict['STORM_NAME'] = util.getlist(
-            self.config.getstr('config', 'TC_PAIRS_STORM_NAME'))
-        c_dict['DLAND_FILE'] = self.config.getstr('config',
+
+        # get list of models to process
+        c_dict['MODEL_LIST'] = util.getlist(
+            self.config.getraw('config', 'MODEL', '')
+        )
+        # if no models are requested, set list to contain a single string
+        # that is the wildcard character '*'
+        if not c_dict['MODEL_LIST']:
+            c_dict['MODEL_LIST'] = ['*']
+
+        self._read_storm_info(c_dict)
+
+        c_dict['STORM_NAME_LIST'] = util.getlist(
+            self.config.getraw('config', 'TC_PAIRS_STORM_NAME')
+        )
+        c_dict['DLAND_FILE'] = self.config.getraw('config',
                                                   'TC_PAIRS_DLAND_FILE')
 
         c_dict['ADECK_TEMPLATE'] = (
@@ -202,10 +218,16 @@ class TCPairsWrapper(CommandBuilder):
                                '')
         )
 
-        c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'TC_PAIRS_OUTPUT_TEMPLATE')
+        # handle output template
+        output_template = (
+            self.config.getraw('config', 'TC_PAIRS_OUTPUT_TEMPLATE')
         )
+        # set output name to tc_pairs if not specified
+        if not output_template:
+            output_template = 'tc_pairs'
+
+        c_dict['OUTPUT_TEMPLATE'] = output_template
+
         c_dict['SKIP_REFORMAT'] = (
             self.config.getbool('config',
                                 'TC_PAIRS_SKIP_IF_REFORMAT_EXISTS',
@@ -232,24 +254,108 @@ class TCPairsWrapper(CommandBuilder):
         c_dict['GET_ADECK'] = True if c_dict['ADECK_TEMPLATE'] else False
         c_dict['GET_EDECK'] = True if c_dict['EDECK_TEMPLATE'] else False
 
-        if c_dict['STORM_ID']:
-            # if using storm id and any other filter is set, report an error
-            if c_dict['BASIN']:
-                self.log_error('Cannot filter by both BASIN and STORM_ID')
-
-            if c_dict['CYCLONE']:
-                self.log_error('Cannot filter by both CYCLONE and STORM_ID')
-
-            # check storm ID format
-            for storm_id in c_dict['STORM_ID']:
-                # pull out info from storm_id and process
-                match = re.match(r'(\w{2})(\d{2})(\d{4})', storm_id)
-                if not match:
-                    self.log_error(f'Incorrect STORM_ID format: {storm_id}')
-
         self.handle_description()
 
         return c_dict
+
+    def _read_storm_info(self, c_dict):
+        """! Read config variables that specify the storms to process. Report
+        an error if attempting to filter by storm_id if also specifying
+        basin or cyclone. Sets c_dict depending on what is set: STORM_ID_LIST
+        if filtering by storm_id, or CYCLONE_LIST and BASIN_LIST otherwise
+
+        @param c_dict dictionary to populate with values from config
+        @returns None
+        """
+        storm_id_list = util.getlist(
+            self.config.getraw('config', 'TC_PAIRS_STORM_ID', '')
+        )
+        cyclone_list = util.getlist(
+            self.config.getraw('config', 'TC_PAIRS_CYCLONE', '')
+        )
+        basin_list = util.getlist(
+            self.config.getraw('config', 'TC_PAIRS_BASIN', '')
+        )
+
+        if storm_id_list:
+            # if using storm id and any other filter is set, report an error
+            if basin_list:
+                self.log_error('Cannot filter by both BASIN and STORM_ID')
+
+            if cyclone_list:
+                self.log_error('Cannot filter by both CYCLONE and STORM_ID')
+
+            c_dict['STORM_ID_LIST'] = storm_id_list
+            return
+
+        # if storm_id is not used, set cyclone and basin lists if they are set
+        if cyclone_list:
+            c_dict['CYCLONE_LIST'] = cyclone_list
+
+        if basin_list:
+            c_dict['BASIN_LIST'] = basin_list
+
+    def handle_consensus(self):
+        children = [
+            'NAME',
+            'MEMBERS',
+            'REQUIRED',
+            'MIN_REQ'
+        ]
+        regex = r'^TC_PAIRS_CONSENSUS(\d+)_(\w+)$'
+        indices = util.find_indices_in_config_section(regex, self.config,
+                                                      index_index=1,
+                                                      id_index=2)
+
+        consensus_dict = {}
+        for index, items in indices.items():
+            # read all variables for each index
+            consensus_items = {}
+
+            # check if any variable found doesn't match valid variables
+            if any([item for item in items if item not in children]):
+                self.log_error("Invalid variable: "
+                               f"TC_PAIRS_CONSENSUS{index}_{item}")
+
+            self.add_met_config(
+                name='name',
+                data_type='string',
+                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_NAME'],
+                output_dict=consensus_items
+            )
+            self.add_met_config(
+                name='members',
+                data_type='list',
+                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_MEMBERS'],
+                output_dict=consensus_items
+            )
+            self.add_met_config(
+                name='required',
+                data_type='list',
+                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_REQUIRED'],
+                extra_args={'remove_quotes': True},
+                output_dict=consensus_items
+            )
+            self.add_met_config(
+                name='min_req',
+                data_type='int',
+                metplus_configs=[f'TC_PAIRS_CONSENSUS{index}_MIN_REQ'],
+                output_dict=consensus_items
+            )
+
+            self.logger.debug(f'Consensus Items: {consensus_items}')
+            # format dictionary, then add it to consensus_dict
+            dict_string = self.format_met_config('dict',
+                                                 consensus_items,
+                                                 name='')
+            consensus_dict[index] = dict_string
+
+        # format list of dictionaries
+        output_string = self.format_met_config('list',
+                                               consensus_dict,
+                                               'consensus')
+
+        self.env_var_dict['METPLUS_CONSENSUS_LIST'] = output_string
 
     def run_all_times(self):
         """! Build up the command to invoke the MET tool tc_pairs.
@@ -262,46 +368,7 @@ class TCPairsWrapper(CommandBuilder):
 
         # if running in READ_ALL_FILES mode, call tc_pairs once and exit
         if self.c_dict['READ_ALL_FILES']:
-            # Set up the environment variable to be used in the tc_pairs Config
-            self.set_environment_variables(None)
-            self.bdeck = [self.c_dict['BDECK_DIR']]
-
-            adeck_dir = self.c_dict['ADECK_DIR']
-            edeck_dir = self.c_dict['EDECK_DIR']
-
-            if adeck_dir:
-                self.adeck = [adeck_dir]
-
-            if edeck_dir:
-                self.edeck = [edeck_dir]
-
-            if self.c_dict['OUTPUT_TEMPLATE']:
-                # get output filename from template
-                time_info = time_util.ti_calculate(input_dict)
-                output_file = do_string_sub(self.c_dict['OUTPUT_TEMPLATE'],
-                                            **time_info)
-            else:
-                output_file = 'tc_pairs'
-
-            self.outdir = self.c_dict['OUTPUT_DIR']
-            self.outfile = output_file
-
-            output_path = self.get_output_path()+'.tcst'
-            if os.path.isfile(output_path) and self.c_dict.get('SKIP_OUTPUT'):
-                self.logger.debug('Skip running tc_pairs because '
-                                  f'output file {output_path} already exists'
-                                  'Change TC_PAIRS_SKIP_IF_OUTPUT_EXISTS to '
-                                  'False to overwrite file')
-            else:
-                self.build()
-
-            return self.all_commands
-
-        # use init begin as run time (start of the storm)
-        input_dict = {'init':
-                      datetime.datetime.strptime(self.c_dict['INIT_BEG'],
-                                                 '%Y%m%d_%H%M%S')
-                      }
+            return self._read_all_files(input_dict)
 
         self.run_at_time(input_dict)
         return self.all_commands
@@ -318,21 +385,18 @@ class TCPairsWrapper(CommandBuilder):
                 self.logger.info(f"Processing custom string: {custom_string}")
 
             input_dict['custom'] = custom_string
-            self.run_at_time_loop_string(input_dict)
+            time_info = time_util.ti_calculate(input_dict)
+            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                self.logger.debug('Skipping run time')
+                return
 
-    def run_at_time_loop_string(self, input_dict):
+            self.run_at_time_loop_string(time_info)
+
+    def run_at_time_loop_string(self, time_info):
         """! Create the arguments to run MET tc_pairs
-             Args:
-                 input_dict dictionary containing init or valid time
-             Returns:
+
+         @param time_info dictionary containing time information
         """
-        # fill in time info dictionary
-        time_info = time_util.ti_calculate(input_dict)
-
-        if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-            self.logger.debug('Skipping run time')
-            return
-
         # set output dir
         self.outdir = self.c_dict['OUTPUT_DIR']
 
@@ -340,50 +404,71 @@ class TCPairsWrapper(CommandBuilder):
         self.c_dict['CONFIG_FILE'] = do_string_sub(self.c_dict['CONFIG_FILE'],
                                                    **time_info)
 
-        # get items to filter bdeck files
-        # set each to default wildcard character unless specified in conf
-        basin_list = ['??']
-        cyclone_list = ['*']
-        model_list = ['*']
+        if self.c_dict.get('STORM_ID_LIST'):
+            return self._loop_storm_ids(time_info)
 
-        if self.c_dict['BASIN']:
-            basin_list = self.c_dict['BASIN']
+        return self._loop_basin_and_cyclone(time_info)
 
-        if self.c_dict['CYCLONE']:
-            cyclone_list = self.c_dict['CYCLONE']
+    def _loop_storm_ids(self, time_info):
+        for storm_id in self.c_dict['STORM_ID_LIST']:
 
-        if self.c_dict['MODEL']:
-            model_list = self.c_dict['MODEL']
+            # set current storm ID to be set an environment variable
+            self.c_dict['STORM_ID'] = [storm_id]
 
-        if self.c_dict['STORM_ID']:
-            for storm_id in self.c_dict['STORM_ID']:
-                # pull out info from storm_id and process
-                match = re.match(r'(\w{2})(\d{2})(\d{4})', storm_id)
-                if not match:
-                    return False
+            # pull out basin, cyclone, and year from storm ID
+            basin, cyclone = self._parse_storm_id(storm_id)
+            if not basin:
+                return
 
-                # set env var for current storm ID
-                self.env_var_dict['METPLUS_STORM_ID'] = (
-                    f"storm_id = [{storm_id}];"
-                )
+            # set storm ID in time dict so it can be used in filename templates
+            time_info['storm_id'] = storm_id
 
-                basin = match.group(1).lower()
-                cyclone = match.group(2)
-                year = match.group(3)
+            self.process_data(basin, cyclone, time_info)
 
-                init_year = time_info['init'].strftime('%Y')
-                if year != init_year:
-                    msg = (f'Year specified in STORM_ID {storm_id} '
-                           f'({year}) does not match '
-                           f'init time year {init_year}. Skipping...')
-                    self.logger.warning(msg)
-                    continue
+        return True
 
-                self.process_data(basin, cyclone, model_list, time_info)
-        else:
-            for basin in [basin.lower() for basin in basin_list]:
-                for cyclone in cyclone_list:
-                    self.process_data(basin, cyclone, model_list, time_info)
+    def _parse_storm_id(self, storm_id):
+        """! Extract basin and cyclone from storm_id if possible.
+
+        @param storm_id string to parse
+        @returns tuple of basin and cyclone as lowercase strings or
+         wildcard expressions if cannot parse info from storm_id
+        """
+        match = re.match(self.REGEXES['storm_id'], storm_id)
+        if not match:
+            self.logger.debug("Could not parse basin and cyclone from "
+                              f"storm ID ({storm_id}). Using wildcard "
+                              "for both")
+            return self.WILDCARDS['basin'], self.WILDCARDS['cyclone']
+
+        basin = match.group(1).lower()
+        cyclone = match.group(2)
+
+        return basin, cyclone
+
+    def _loop_basin_and_cyclone(self, time_info):
+        """! Loop over basin and cyclone lists and process for each combination
+
+        @param time_info dictionary containing time information
+        """
+
+        # use list containing wildcard string if basin or cyclone are not set
+        basin_list = self.c_dict.get('BASIN_LIST',
+                                     [self.WILDCARDS['basin']])
+
+        cyclone_list = self.c_dict.get('CYCLONE_LIST',
+                                       [self.WILDCARDS['cyclone']])
+
+        for basin in basin_list:
+            # set variables to be set as environment variables
+            # unless wildcard expression is set
+            if basin != self.WILDCARDS['basin']:
+                self.c_dict['BASIN'] = [basin]
+
+            for cyclone in cyclone_list:
+                if cyclone != self.WILDCARDS['cyclone']:
+                    self.c_dict['CYCLONE'] = [cyclone]
+                self.process_data(basin.lower(), cyclone, time_info)
 
         return True
 
@@ -412,58 +497,42 @@ class TCPairsWrapper(CommandBuilder):
         valid_end = self.get_env_var_value('METPLUS_VALID_END').strip('"')
         self.add_env_var('VALID_END', valid_end)
 
-        init_inc = self.get_env_var_value('METPLUS_INIT_INCLUDE')
-        if not init_inc:
-            init_inc = '[]'
+        init_inc = self.get_env_var_value('METPLUS_INIT_INCLUDE',
+                                          item_type='list')
         self.add_env_var('INIT_INCLUDE', init_inc)
 
-        init_exc = self.get_env_var_value('METPLUS_INIT_EXCLUDE')
-        if not init_exc:
-            init_exc = '[]'
+        init_exc = self.get_env_var_value('METPLUS_INIT_EXCLUDE',
+                                          item_type='list')
         self.add_env_var('INIT_EXCLUDE', init_exc)
 
-        model = self.get_env_var_value('METPLUS_MODEL')
-        if not model:
-            model = '[]'
+        model = self.get_env_var_value('METPLUS_MODEL',
+                                       item_type='list')
         self.add_env_var('MODEL', model)
 
         # STORM_ID
-        tmp_storm_id = self.c_dict['STORM_ID']
-        if not tmp_storm_id:
-            # Empty, use all storm_ids, indicate this to MET via '[]'
-            tmp_storm_id = '[]'
-        else:
-            # Replace ' with " and remove whitespace
-            storm_id = str(tmp_storm_id).replace("\'", "\"")
-            tmp_storm_id = ''.join(storm_id.split())
+        storm_id = '[]'
+        if self.c_dict.get('STORM_ID'):
+            storm_id = str(self.c_dict['STORM_ID']).replace("'", '"')
 
-        self.add_env_var('STORM_ID', tmp_storm_id)
+            storm_id_fmt = f"storm_id = {storm_id};"
+            self.env_var_dict['METPLUS_STORM_ID'] = storm_id_fmt
 
-        storm_id_fmt = f"storm_id = {tmp_storm_id};"
-        self.env_var_dict['METPLUS_STORM_ID'] = storm_id_fmt
+        self.add_env_var('STORM_ID', storm_id)
 
         # BASIN
-        tmp_basin = self.c_dict['BASIN']
-        if not tmp_basin:
-            # Empty, we want all basins.  Send MET '[]' to indicate that
-            # we want all the basins.
-            tmp_basin = '[]'
-        else:
-            # Replace any ' with " and remove whitespace.
-            basin = str(tmp_basin).replace("\'", "\"")
-            tmp_basin = ''.join(basin.split())
+        basin = '[]'
+        if self.c_dict.get('BASIN'):
+            basin = str(self.c_dict['BASIN']).replace("'", '"')
 
-        self.add_env_var('BASIN', tmp_basin)
+            basin_fmt = f"basin = {basin};"
+            self.env_var_dict['METPLUS_BASIN'] = basin_fmt
 
-        basin_fmt = f"basin = {tmp_basin};"
-        self.env_var_dict['METPLUS_BASIN'] = basin_fmt
+        self.add_env_var('BASIN', basin)
 
         # CYCLONE
-        tmp_cyclone = self.c_dict['CYCLONE']
-        if not tmp_cyclone:
-            # Empty, use all cyclones, send '[]' to MET.
-            tmp_cyclone = '[]'
-        else:
+        cyclone = '[]'
+        if self.c_dict.get('CYCLONE'):
+            cyclone = self.c_dict.get('CYCLONE')
             # add storm month to each cyclone item if reformatting SBU
             if self.c_dict['REFORMAT_DECK'] and \
                self.c_dict['REFORMAT_DECK_TYPE'] == 'SBU':
@@ -471,120 +540,52 @@ class TCPairsWrapper(CommandBuilder):
                     storm_month = self.c_dict['INIT_BEG'][4:6]
                 else:
                     storm_month = time_info['init'].strftime('%m')
-                tmp_cyclone = [storm_month + c for c in tmp_cyclone]
+                cyclone = [storm_month + c for c in cyclone]
 
-            # Replace ' with " and get rid of any whitespace
-            cyclone = str(tmp_cyclone).replace("\'", "\"")
-            tmp_cyclone = ''.join(cyclone.split())
+            cyclone = str(cyclone).replace("'", '"')
 
-        self.add_env_var('CYCLONE', tmp_cyclone)
+            cyclone_fmt = f"cyclone = {cyclone};"
+            self.env_var_dict['METPLUS_CYCLONE'] = cyclone_fmt
 
-        cyclone_fmt = f"cyclone = {tmp_cyclone};"
-        self.env_var_dict['METPLUS_CYCLONE'] = cyclone_fmt
+        self.add_env_var('CYCLONE', cyclone)
 
         # STORM_NAME
-        tmp_storm_name = self.c_dict['STORM_NAME']
-        if not tmp_storm_name:
-            # Empty, equivalent to 'STORM_NAME = "[]"; in MET config file,
-            # use all storm names.
-            tmp_storm_name = '[]'
-        else:
-            storm_name = str(tmp_storm_name).replace("\'", "\"")
-            tmp_storm_name = ''.join(storm_name.split())
+        storm_name = '[]'
+        if self.c_dict.get('STORM_NAME'):
+            storm_name = str(self.c_dict['STORM_NAME']).replace("'", '"')
 
-        self.add_env_var('STORM_NAME', tmp_storm_name)
+            storm_name_fmt = f"storm_name = {storm_name};"
+            self.env_var_dict['METPLUS_STORM_NAME'] = storm_name_fmt
 
-        storm_name_fmt = f"cyclone = {tmp_storm_name};"
-        self.env_var_dict['METPLUS_STORM_NAME'] = storm_name_fmt
+        self.add_env_var('STORM_NAME', storm_name)
 
         # DLAND_FILE
-        tmp_dland_file = self.c_dict['DLAND_FILE']
-        self.add_env_var('DLAND_FILE', str(tmp_dland_file))
+        self.add_env_var('DLAND_FILE', self.c_dict['DLAND_FILE'])
 
         super().set_environment_variables(time_info)
 
-    def process_data(self, basin, cyclone, model_list, time_info):
+    def process_data(self, basin, cyclone, time_info):
         """!Find requested files and run tc_pairs
 
             @param basin region of storm from config
             @param cyclone ID number of cyclone from config
-            @param model_list list of models that be available
             @param time_info dictionary with timing info for current run
         """
-
-        # set regex expressions for basin and cyclone if wildcard is used
-        # cast cyclone value to integer if it is not a wildcard
-        if cyclone != '*':
-            cyclone_regex = cyclone
-        else:
-            cyclone_regex = "([0-9]{2,4})"
-
-        if basin != '??':
-            basin_regex = basin
-        else:
-            basin_regex = "([a-zA-Z]{2})"
-
-        # get search expression for bdeck files to pass to glob
-        string_sub = do_string_sub(self.c_dict['BDECK_TEMPLATE'],
-                                   basin=basin,
-                                   cyclone=cyclone,
-                                   **time_info)
-        bdeck_glob = os.path.join(self.c_dict['BDECK_DIR'],
-                                  string_sub)
-        self.logger.debug('Looking for BDECK: {}'.format(bdeck_glob))
-
-        # get all files that match expression
-        bdeck_files = sorted(glob.glob(bdeck_glob))
-
-        # if no bdeck_files found
-        if len(bdeck_files) == 0:
-            template = self.c_dict['BDECK_TEMPLATE']
-            self.log_error(f'No BDECK files found searching for basin {basin} '
-                           f'and cyclone {cyclone} using template {template}')
-            return False
+        bdeck_files, wildcard_used = self._get_bdeck(basin, cyclone, time_info)
+        if not bdeck_files:
+            return
 
         # find corresponding adeck or edeck files
         for bdeck_file in bdeck_files:
-            self.logger.debug('Found BDECK: {}'.format(bdeck_file))
+            self.logger.debug(f'Found BDECK: {bdeck_file}')
 
-            # set current basin and cyclone from bdeck file
-            # if basin or cyclone are a wildcard, these will be
-            # replaced by the value pulled from the bdeck file
-            current_basin = basin
-            current_cyclone = cyclone
-
-            # if wildcard was used in bdeck, pull out what was
-            # substituted for * to find corresponding bdeck file
-            matches = []
-            if '*' in bdeck_glob or '?' in bdeck_glob:
-                # get regex expression to pull out basin and cyclone
-                string_sub = do_string_sub(self.c_dict['BDECK_TEMPLATE'],
-                                           basin=basin_regex,
-                                           cyclone=cyclone_regex,
-                                           **time_info)
-                bdeck_regex = os.path.join(self.c_dict['BDECK_DIR'],
-                                           string_sub)
-
-                # capture wildcard values in template
-                bdeck_regex = bdeck_regex.replace('*', '(.*)')
-                bdeck_regex = bdeck_regex.replace('?', '(.)')
-
-                match = re.match(bdeck_regex, bdeck_file)
-                if match:
-                    matches = match.groups()
-                    tags = get_tags(self.c_dict['BDECK_TEMPLATE'])
-                    match_count = 0
-                    for tag in tags:
-                        # if wildcard is set for tag found, get value
-                        # if wildcard if found in template, increment index
-                        if tag == 'basin' and basin == '??':
-                            current_basin = matches[match_count]
-                            match_count += 1
-                        elif tag == 'cyclone' and cyclone == '*':
-                            current_cyclone = matches[match_count]
-                            match_count += 1
-                        elif tag == '*' or tag == '?':
-                            match_count += 1
+            # get current basin/cyclone that corresponds to bdeck
+            current_basin, current_cyclone = (
+                self._get_basin_cyclone_from_bdeck(bdeck_file, wildcard_used,
+                                                   basin, cyclone, time_info)
+            )
+            if current_basin is None or current_cyclone is None:
+                continue
 
             # create lists for deck files, put bdeck in list so it can
             # be handled the same as a and e for reformatting even though
@@ -595,14 +596,14 @@ class TCPairsWrapper(CommandBuilder):
 
             # get adeck files
             if self.c_dict['GET_ADECK']:
-                adeck_list = self.find_deck_files('A', current_basin,
-                                                  current_cyclone, model_list,
-                                                  time_info)
+                adeck_list = self.find_a_or_e_deck_files('A', current_basin,
+                                                         current_cyclone,
+                                                         time_info)
             # get edeck files
             if self.c_dict['GET_EDECK']:
-                edeck_list = self.find_deck_files('E', current_basin,
-                                                  current_cyclone, model_list,
-                                                  time_info)
+                edeck_list = self.find_a_or_e_deck_files('E', current_basin,
+                                                         current_cyclone,
+                                                         time_info)
 
             if not adeck_list and not edeck_list:
                 self.log_error('Could not find any corresponding '
@@ -619,65 +620,153 @@ class TCPairsWrapper(CommandBuilder):
             self.bdeck = bdeck_list
             self.edeck = edeck_list
 
-            if self.c_dict['OUTPUT_TEMPLATE']:
-                # get output filename from template
-                output_file = do_string_sub(self.c_dict['OUTPUT_TEMPLATE'],
-                                            basin=current_basin,
-                                            cyclone=current_cyclone,
-                                            **time_info)
-            else:
-                output_file = 'tc_pairs'
-            self.outfile = output_file
+            # change wildcard basin/cyclone to 'all' for output filename
+            if current_basin == self.WILDCARDS['basin']:
+                current_basin = 'all'
+            if current_cyclone == self.WILDCARDS['cyclone']:
+                current_cyclone = 'all'
+
+            time_storm_info = time_info.copy()
+            time_storm_info['basin'] = current_basin
+            time_storm_info['cyclone'] = current_cyclone
+            if not self.find_and_check_output_file(time_info=time_storm_info,
+                                                   check_extension='.tcst'):
+                return []
 
             # Set up the environment variable to be used in the TCPairs Config
-            # file (TC_PAIRS_CONFIG_FILE)
             self.set_environment_variables(time_info)
 
-            output_path = self.get_output_path()+'.tcst'
-            if os.path.isfile(output_path) and self.c_dict.get('SKIP_OUTPUT'):
-                self.logger.debug('Skip running tc_pairs because '
-                                  f'output file {output_path} already exists. '
-                                  'Change TC_PAIRS_SKIP_IF_OUTPUT_EXISTS to '
-                                  'False to overwrite file')
-            else:
-                self.build()
+            self.build()
 
-    def find_deck_files(self, deck, basin, cyclone, model_list, time_info):
+    def _get_bdeck(self, basin, cyclone, time_info):
+        """! Use glob to get all bdeck files that match the basin and cyclone
+
+        @param basin string to substitute for basin in template
+        @param cyclone string to substitute for cyclone in template
+        @param time_info dictionary with timing info for current run
+        @returns tuple of the list of files that match and a boolean that is
+         True if a wildcard was used to find them,
+         or (None, False) if none were found
+        """
+        # get search expression for bdeck files to pass to glob
+        bdeck_template = os.path.join(self.c_dict['BDECK_DIR'],
+                                      self.c_dict['BDECK_TEMPLATE'])
+        bdeck_glob = do_string_sub(bdeck_template,
+                                   basin=basin,
+                                   cyclone=cyclone,
+                                   **time_info)
+        self.logger.debug('Looking for BDECK: {}'.format(bdeck_glob))
+
+        # get all files that match expression
+        bdeck_files = sorted(glob.glob(bdeck_glob))
+
+        if bdeck_files:
+            wildcard_used = '*' in bdeck_glob or '?' in bdeck_glob
+            return bdeck_files, wildcard_used
+
+        # if no bdeck_files found
+        self.log_error(f'No BDECK files found searching for basin {basin} '
+                       f'and cyclone {cyclone} using template '
+                       f"{self.c_dict['BDECK_TEMPLATE']}")
+        return [], False
+
+    def _get_basin_cyclone_from_bdeck(self, bdeck_file, wildcard_used,
+                                      basin, cyclone, time_info):
+        """! Set current basin and cyclone from bdeck file.
+        If basin or cyclone are a wildcard, these will be replaced by
+        the value pulled from the bdeck file.
+        """
+        # if wildcard is not used in glob expression, return basin and cyclone
+        if not wildcard_used:
+            return basin, cyclone
+
+        # set regex expressions for basin and cyclone if wildcard is used
+        # cast cyclone value to integer if it is not a wildcard
+        if cyclone == self.WILDCARDS['cyclone']:
+            cyclone_regex = self.REGEXES['cyclone']
+        else:
+            cyclone_regex = cyclone
+
+        if basin == self.WILDCARDS['basin']:
+            basin_regex = self.REGEXES['basin']
+        else:
+            basin_regex = basin
+
+        # get regex expression to pull out basin and cyclone
+        bdeck_template = os.path.join(self.c_dict['BDECK_DIR'],
+                                      self.c_dict['BDECK_TEMPLATE'])
+        # capture any template tags as regex matches to find correct tag
+        bdeck_template = bdeck_template.replace('{', '({').replace('}', '})')
+
+        bdeck_regex = do_string_sub(bdeck_template,
+                                    basin=basin_regex,
+                                    cyclone=cyclone_regex,
+                                    **time_info)
+
+        # capture wildcard values in template - must replace ? wildcard
+        # character after substitution because ? is used in template tags
+        bdeck_regex = bdeck_regex.replace('*', '(.*)').replace('?', '(.)')
+        self.logger.debug(f'Regex to extract basin/cyclone: {bdeck_regex}')
+
+        current_basin = basin
+        current_cyclone = cyclone
+
+        match = re.match(bdeck_regex, bdeck_file)
+        if match:
+            matches = match.groups()
+            # get template tags and wildcards from template
+            tags = get_tags(bdeck_template)
+            if len(matches) != len(tags):
+                self.log_error("Number of regex match groups does not match "
+                               "number of tags found:\n"
+                               f"Regex pattern: {bdeck_template}\n"
+                               f"Matches: {matches}\nTags: {tags}")
+                return None, None
+
+            for match, tag in zip(matches, tags):
+                # if basin/cyclone if found, get value
+                if tag == 'basin' and basin == self.WILDCARDS['basin']:
+                    current_basin = match
+                elif (tag == 'cyclone' and
+                      cyclone == self.WILDCARDS['cyclone']):
+                    current_cyclone = match
+
+        return current_basin, current_cyclone
+
+    def find_a_or_e_deck_files(self, deck, basin, cyclone, time_info):
         """!Find ADECK or EDECK files that correspond to the BDECk file found
 
             @param deck type of deck (A or E)
             @param basin region of storm from config
             @param cyclone ID number of cyclone from config
-            @param model_list list of models that be available
             @param time_info dictionary with timing info for current run
         """
         deck_list = []
-        template = self.c_dict[deck+'DECK_TEMPLATE']
-        # get matching adeck wildcard expression for first model
-        string_sub = do_string_sub(template,
-                                   basin=basin,
-                                   cyclone=cyclone,
-                                   model=model_list[0],
-                                   **time_info)
-        deck_expr = os.path.join(self.c_dict[deck+'DECK_DIR'],
-                                 string_sub)
+        template = os.path.join(self.c_dict[deck+'DECK_DIR'],
+                                self.c_dict[deck+'DECK_TEMPLATE'])
 
-        # add adeck files if they exist
-        for model in model_list:
-            deck_glob = deck_expr.replace(model_list[0], model)
+        # get matching adeck wildcard expression for first model
+        deck_expr = do_string_sub(template,
+                                  basin=basin,
+                                  cyclone=cyclone,
+                                  model=self.c_dict['MODEL_LIST'][0],
+                                  **time_info)
+
+        # add adeck files if they exist for each model
+        for model in self.c_dict['MODEL_LIST']:
+            deck_glob = deck_expr.replace(self.c_dict['MODEL_LIST'][0], model)
             self.logger.debug(f'Looking for {deck}DECK file: {deck_glob} '
-                              f'using template {template}')
+                              f'for model ({model}) using template {template}')
             deck_files = glob.glob(deck_glob)
             if not deck_files:
                 continue
 
-            # there should only be 1 file that matches
-            deck_file = deck_files[0]
-
-            # if deck exists, add to list
-            if os.path.isfile(deck_file):
-                self.logger.debug('Adding {}DECK: {}'.format(deck, deck_file))
-                deck_list.append(deck_file)
+            for deck_file in deck_files:
+                # if deck exists, add to list
+                if os.path.isfile(deck_file) and deck_file not in deck_list:
+                    self.logger.debug('Adding {}DECK: {}'.format(deck,
+                                                                 deck_file))
+                    deck_list.append(deck_file)
 
         return deck_list
 
@@ -815,3 +904,70 @@ class TCPairsWrapper(CommandBuilder):
 
         csvfile.close()
         out_file.close()
+
+    def _read_all_files(self, input_dict):
+        """! Handle setting up a command that skips logic to determine which
+        files to pass into the application and instead passes in the
+        directories to search for files to let the application determine
+        which data to process
+
+        @param input_dict dictionary containing init time set from INIT_BEG
+        @returns list of tuples containing commands that are run and which env
+         vars were set for the command
+        """
+        # use full list of storm/model info if running once for all files
+        self.c_dict['STORM_ID'] = self.c_dict.get('STORM_ID_LIST', '')
+        self.c_dict['CYCLONE'] = self.c_dict.get('CYCLONE_LIST', '')
+        self.c_dict['BASIN'] = self.c_dict.get('BASIN_LIST', '')
+
+        # Set up the environment variable to be used in the tc_pairs Config
+        self.bdeck = [self.c_dict['BDECK_DIR']]
+
+        adeck_dir = self.c_dict['ADECK_DIR']
+        edeck_dir = self.c_dict['EDECK_DIR']
+
+        if adeck_dir:
+            self.adeck = [adeck_dir]
+
+        if edeck_dir:
+            self.edeck = [edeck_dir]
+
+        # get output filename from template
+        time_info = time_util.ti_calculate(input_dict)
+        time_storm_info = self._add_storm_info_to_dict(time_info)
+        if not self.find_and_check_output_file(time_info=time_storm_info,
+                                               check_extension='.tcst'):
+            return []
+
+        self.set_environment_variables(input_dict)
+
+        self.build()
+        return self.all_commands
+
+
+    def _add_storm_info_to_dict(self, time_info):
+        """! Read from self.c_dict and add storm information to dictionary.
+          Assumes each value read from c_dict is a list. Set value to 'all'
+          unless there is a single item in the list. Used to ensure that
+          output filenames do not include wildcard characters
+        """
+        time_storm_info = time_info.copy()
+        storm_id = self.c_dict.get('STORM_ID')
+        storm_id = storm_id[0] if len(storm_id) == 1 else 'all'
+
+        basin = self.c_dict.get('BASIN')
+        basin = basin[0] if len(basin) == 1 else 'all'
+
+        cyclone = self.c_dict.get('CYCLONE')
+        cyclone = cyclone[0] if len(cyclone) == 1 else 'all'
+
+        time_storm_info['storm_id'] = storm_id
+        time_storm_info['basin'] = basin
+        time_storm_info['cyclone'] = cyclone
+
+        for item in ['model', 'storm_name']:
+            value = self.c_dict.get(f'{item.upper()}_LIST')
+            value = 'all' if len(value) != 1 or value[0] == '*' else value[0]
+            time_storm_info[item] = value
+
+        return time_storm_info
