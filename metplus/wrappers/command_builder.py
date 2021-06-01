@@ -1161,8 +1161,8 @@ class CommandBuilder:
                                 "\"; " + thresh_str + "}"
 
                     # add probabilistic cat thresh if different from default ==0.1
-                    prob_cat_thresh = self.c_dict[d_type + '_PROB_THRESH']
-                    if prob_cat_thresh is not None:
+                    prob_cat_thresh = self.c_dict.get(d_type + '_PROB_THRESH')
+                    if prob_cat_thresh:
                         field += " cat_thresh=[" + prob_cat_thresh + "];"
 
                     if v_extra:
