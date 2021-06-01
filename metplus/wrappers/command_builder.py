@@ -874,33 +874,44 @@ class CommandBuilder:
 
     def find_and_check_output_file(self, time_info=None,
                                    is_directory=False,
-                                   output_path_template=None):
+                                   output_path_template=None,
+                                   check_extension=None):
         """!Build full path for expected output file and check if it exists.
-            If output file doesn't exist or it does exists and we are not skipping it
-            then return True to run the tool. Otherwise return False to not run the tool
-            Args:
-                @param time_info time dictionary to use to fill out output file template
-                @param is_directory If True, check in output directory for
-                 any files that match the pattern
-                 {app_name}_{output_prefix}*YYYYMMDD_HHMMSSV*
-                 @param output_path_template optional filename template to use
-                  If None, build output path template from c_dict's OUTPUT_DIR
-                  and OUTPUT_TEMPLATE. Default is None
-                @returns True if the app should be run or False if it should not
-        """
-        if not output_path_template:
-            output_path_template = (
-                os.path.join(self.c_dict.get('OUTPUT_DIR',
-                                             ''),
-                            self.c_dict.get('OUTPUT_TEMPLATE',
-                                            '')).rstrip('/')
-        )
+            If output file doesn't exist or it does exists and we are not
+            skipping it then return True to run the tool.
+            Otherwise return False to not run the tool
 
+            @param time_info time dictionary to use to fill out output file
+             template
+            @param is_directory If True, check in output directory for
+             any files that match the pattern
+             {app_name}_{output_prefix}*YYYYMMDD_HHMMSSV*
+            @param output_path_template optional filename template to use
+             If None, build output path template from c_dict's OUTPUT_DIR
+              and OUTPUT_TEMPLATE. Default is None
+            @param check_extension optional extension to look for output files
+             Used if output path specified in command differs from actual
+             filenames that are written (i.e. tc_pairs added .tcst extension
+             to output file path specified)
+            @returns True if the app should be run or False if it should not
+        """
+        output_path = output_path_template
+
+        # if output path template not specified, get it from
+        # c_dict keys OUTPUT_DIR and OUTPUT_TEMPLATE
+        if not output_path:
+            output_dir = self.c_dict.get('OUTPUT_DIR', '')
+            output_template = self.c_dict.get('OUTPUT_TEMPLATE', '')
+
+            # remove trailing path separator if necessary (directories)
+            output_template = output_template.rstrip(os.path.sep)
+
+            output_path = os.path.join(output_dir, output_template)
+
+        # substitute time info if provided
         if time_info:
-            output_path = do_string_sub(output_path_template,
+            output_path = do_string_sub(output_path,
                                         **time_info)
-        else:
-            output_path = output_path_template
 
         skip_if_output_exists = self.c_dict.get('SKIP_IF_OUTPUT_EXISTS', False)
 
@@ -925,6 +936,8 @@ class CommandBuilder:
             parent_dir = os.path.dirname(output_path)
             # search for {output_path}* for TCGen output
             search_path = f'{output_path}*'
+            if check_extension:
+                search_path = f'{search_path}{check_extension}'
             self.set_output_path(output_path)
 
         output_exists = bool(glob.glob(search_path))
@@ -938,7 +951,7 @@ class CommandBuilder:
             self.logger.debug(f"Creating output directory: {parent_dir}")
             os.makedirs(parent_dir)
 
-        if (not output_exists or not skip_if_output_exists):
+        if not output_exists or not skip_if_output_exists:
             return True
 
         # if the output file exists and we are supposed to skip, don't run tool
@@ -1608,16 +1621,16 @@ class CommandBuilder:
         return None
 
     @staticmethod
-    def format_met_config_dict(c_dict, name, keys=None):
-        """! Return formatted dictionary named <name> with any <items> if they
+    def format_met_config(type, c_dict, name, keys=None):
+        """! Return formatted variable named <name> with any <items> if they
         are set to a value. If none of the items are set, return empty string
 
         @param c_dict config dictionary to read values from
         @param name name of dictionary to create
         @param keys list of c_dict keys to use if they are set. If unset (None)
          then read all keys from c_dict
-        @returns MET config formatted dictionary if any items are set, or empty
-         string if not
+        @returns MET config formatted dictionary/list
+         if any items are set, or empty string if not
         """
         values = []
         if keys is None:
@@ -1632,7 +1645,33 @@ class CommandBuilder:
         if not values:
             return ''
 
-        return f"{name} = {{{''.join(values)}}}"
+        output = ''.join(values)
+        # add curly braces if dictionary
+        if type == 'dict':
+            output = f"{{{output}}}"
+
+        # add square braces if list
+        elif type == 'list':
+            output = f"[{output}];"
+
+        # if name is not empty, add variable name and equals sign
+        if name:
+            output = f'{name} = {output}'
+        return output
+
+    @staticmethod
+    def format_met_config_dict(c_dict, name, keys=None):
+        """! Return formatted dictionary named <name> with any <items> if they
+        are set to a value. If none of the items are set, return empty string
+
+        @param c_dict config dictionary to read values from
+        @param name name of dictionary to create
+        @param keys list of c_dict keys to use if they are set. If unset (None)
+         then read all keys from c_dict
+        @returns MET config formatted dictionary if any items are set, or empty
+         string if not
+        """
+        return CommandBuilder.format_met_config('dict', c_dict=c_dict, name=name, keys=keys)
 
     def handle_regrid(self, c_dict, set_to_grid=True):
         app_name_upper = self.app_name.upper()
@@ -1979,13 +2018,14 @@ class CommandBuilder:
                                  c_dict_key='METPLUS_CENSOR_VAL',
                                  remove_quotes=True)
 
-    def get_env_var_value(self, env_var_name, read_dict=None):
+    def get_env_var_value(self, env_var_name, read_dict=None, item_type=None):
         """! Read env var value, get text after the equals sign and remove the
         trailing semi-colon.
 
             @param env_var_name key to obtain
             @param read_dict (Optional) directory to read from. If unset (None)
              then read from self.env_var_dict
+            @param item_type if set to list, return [] if variable is unset
             @returns extracted value
         """
         if read_dict is None:
@@ -1993,7 +2033,11 @@ class CommandBuilder:
 
         mask_value = read_dict.get(env_var_name, '')
         if not mask_value:
-            return ''
+            if not item_type:
+                return ''
+
+            if item_type == 'list':
+                return '[]'
 
         return mask_value.split('=', 1)[1].rstrip(';').strip()
 
@@ -2175,7 +2219,7 @@ class CommandBuilder:
 
         # handle dictionary item
         if item.data_type == 'dict':
-            env_var_name = f'{env_var_name}_DICT'
+            env_var_name = f'{env_var_name}_{item.data_type.upper()}'
             tmp_dict = {}
             for child in item.children:
                 if not self.handle_met_config_item(child, tmp_dict):
@@ -2230,7 +2274,8 @@ class CommandBuilder:
               otherwise 2nd variable is used if set, etc.)
         """
         item = met_config(**kwargs)
-        self.handle_met_config_item(item)
+        output_dict = kwargs.get('output_dict')
+        self.handle_met_config_item(item, output_dict)
 
     def get_met_config(self, **kwargs):
         """! Get METConfigInfo object from arguments and return it
