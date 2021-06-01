@@ -7090,3 +7090,23 @@ METplus Configuration Glossary
      Specify the value for 'quality_mark_thresh' in the MET configuration file for PB2NC.
 
      | *Used by:* PB2NC
+
+   TC_PAIRS_CONSENSUS<n>_NAME
+     Specify the value for nth 'consensus.name' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_CONSENSUS<n>_MEMBERS
+     Specify the value for nth 'consensus.members' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_CONSENSUS<n>_REQUIRED
+     Specify the value for nth 'consensus.required' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_CONSENSUS<n>_MIN_REQ
+     Specify the value for nth 'consensus.min_req' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
