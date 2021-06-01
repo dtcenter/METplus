@@ -114,14 +114,14 @@ class TCMPRPlotterWrapper(CommandBuilder):
         # read all optional command line arguments
         c_dict['COMMAND_ARGS'] = self.read_optional_args()
         c_dict['LOOP_INFO'] = self.read_loop_info()
-        c_dict['LOOP_ARGS'] = []
+        c_dict['LOOP_ARGS'] = {}
 
         return c_dict
 
     def read_optional_args(self):
         """! Read config variables and add arguments to command """
         prefix = f'{self.app_name.upper()}_'
-        command_args = []
+        command_args = {}
 
         for name, data_type in self.ARGUMENTS.items():
             config_name = f'{prefix}{name.upper()}'
@@ -156,13 +156,12 @@ class TCMPRPlotterWrapper(CommandBuilder):
                 if 'quotes' in data_type:
                     value = f'"{util.remove_quotes(value)}"'
 
-                arg_string = f'-{name}'
                 # don't add value for boolean
-                if data_type != 'bool':
-                    arg_string = f'{arg_string} {value}'
+                if data_type == 'bool':
+                    value = ''
 
-                self.logger.debug(f"Adding argument: {arg_string}")
-                command_args.append(f'{arg_string}')
+                self.logger.debug(f"Adding argument: -{name} {value}")
+                command_args[name] = value
 
         return command_args
 
@@ -249,10 +248,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
                 # clear loop args and add arguments if they are set
                 self.c_dict['LOOP_ARGS'].clear()
                 if dep:
-                    self.c_dict['LOOP_ARGS'].append(f'-dep {dep}')
+                    self.c_dict['LOOP_ARGS']['dep'] = dep
 
                 if plot:
-                    self.c_dict['LOOP_ARGS'].append(f'-plot {plot}')
+                    self.c_dict['LOOP_ARGS']['plot'] = plot
 
                 # build and run the command
                 self.build()
@@ -276,21 +275,56 @@ class TCMPRPlotterWrapper(CommandBuilder):
         self.logger.debug(f"Number of files: {len(input_files)}")
         return sorted(input_files)
 
+    def format_arg_string(self):
+        arg_list = []
+
+        arg_dict = self.c_dict['COMMAND_ARGS']
+        loop_dict = self.c_dict['LOOP_ARGS']
+
+        # handle all optional args - use ARGUMENTS to preserve order
+        for name in self.ARGUMENTS:
+            if name in arg_dict:
+                # add dash before argument name
+                next_arg = f'-{name}'
+                # add value of argument if set (not set for boolean)
+                value = arg_dict[name]
+                if value:
+                    # perform string substitution to get value for items
+                    # that should change spaces to underscores
+                    value = do_string_sub(value, **self.c_dict['TIME_INFO'])
+
+                    # if prefix, change spaces to underscore for filename
+                    if name == 'prefix':
+                        value = value.replace(' ', '_')
+
+                    next_arg = f'{next_arg} {value}'
+
+                arg_list.append(next_arg)
+
+        # handle loop args (dep and plot)
+        for name, value in loop_dict.items():
+            next_arg = f'-{name} {value}'
+            arg_list.append(next_arg)
+
+        # return empty string if no args were set to
+        # prevent adding extra space between args before and after
+        if not arg_list:
+            return ''
+
+        # return list separated by space with an extra space at the beginning
+        return f" {' '.join(arg_list)}"
+
     def get_command(self):
         """! Builds the command to run the R script
            @rtype string
            @return Returns a command with arguments that can be run
         """
         # get arguments
-        args = self.c_dict['COMMAND_ARGS']
-        optional_arg_string = f" {' '.join(args)}" if args else ''
-        loop_args = self.c_dict['LOOP_ARGS']
-        loop_arg_string = f" {' '.join(loop_args)}" if loop_args else ''
+        arg_string = self.format_arg_string()
 
         cmd = (f"Rscript {self.c_dict['TCMPR_SCRIPT']}"
                f" -config {self.c_dict['CONFIG_FILE']}"
-               f"{optional_arg_string}"
-               f"{loop_arg_string}"
+               f"{arg_string}"
                f" -lookin {' '.join(self.infiles)}"
                f" -outdir {self.c_dict['OUTPUT_DIR']}")
 

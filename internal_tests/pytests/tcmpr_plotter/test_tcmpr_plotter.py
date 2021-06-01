@@ -166,6 +166,16 @@ def test_read_loop_info(metplus_config, config_overrides, expected_loop_args):
           'TCMPR_PLOTTER_PREFIX': 'Eta_{dep}_{plot}'},
          [('-prefix "Eta_ditem1_pitem1" -title "D Label 1A P Label 1B" '
            '-dep ditem1 -plot pitem1')]),
+        # 11: 1 dep/label, 1 plot/label use labels in title/prefix
+        #     spaces change to underscores in prefix
+        ({'TCMPR_PLOTTER_DEP_VARS': 'ditem1',
+          'TCMPR_PLOTTER_DEP_LABELS': 'D Label 1',
+          'TCMPR_PLOTTER_PLOT_TYPES': 'pitem1',
+          'TCMPR_PLOTTER_PLOT_LABELS': 'P Label 1',
+          'TCMPR_PLOTTER_TITLE': '{dep_label}A {plot_label}B',
+          'TCMPR_PLOTTER_PREFIX': 'Eta_{dep_label}_{plot_label}'},
+         [('-prefix "Eta_D_Label_1_P_Label_1" -title "D Label 1A P Label 1B" '
+           '-dep ditem1 -plot pitem1')]),
     ]
 )
 
