@@ -17,7 +17,6 @@ fi
 DOCKERHUB_TAG=dtcenter/metplus-dev:${branch_name}
 
 echo Get Docker image: ${DOCKERHUB_TAG}
-echo 'doing docker build'
 # Note: adding --build-arg <arg-name> without any value tells docker to
 #  use value from local environment (export DO_GIT_CLONE)
 
@@ -43,8 +42,7 @@ echo Running docker build with MET_TAG=$MET_TAG
 echo Setting DOCKER_BUILDKIT=1
 export DOCKER_BUILDKIT=1
 
-#docker build --pull --cache-from ${DOCKERHUB_TAG} \
-docker build --cache-from ${DOCKERHUB_TAG} \
+docker build --pull --cache-from ${DOCKERHUB_TAG} \
 -t ${DOCKERHUB_TAG} \
 --build-arg OBTAIN_SOURCE_CODE=copy \
 --build-arg MET_TAG=$MET_TAG \
