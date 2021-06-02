@@ -8,11 +8,11 @@
 # MET_TAG - tag to use for obtaining MET image (default is develop)
 #
 
-MAINTAINER George McCabe <mccabe@ucar.edu>
-
 ARG MET_TAG=develop
 
 FROM dtcenter/met:${MET_TAG}
+
+MAINTAINER George McCabe <mccabe@ucar.edu>
 
 WORKDIR /metplus
 RUN mkdir -p METplus
