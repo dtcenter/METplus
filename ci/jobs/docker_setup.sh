@@ -21,15 +21,15 @@ echo 'doing docker build'
 # Note: adding --build-arg <arg-name> without any value tells docker to
 #  use value from local environment (export DO_GIT_CLONE)
 
-echo Timing docker pull...
-start_seconds=$SECONDS
+#echo Timing docker pull...
+#start_seconds=$SECONDS
 
 # pipe result to true because it will fail if image has not yet been built
-docker pull ${DOCKERHUB_TAG} &> /dev/null || true
+#docker pull ${DOCKERHUB_TAG} &> /dev/null || true
 
-duration=$(( SECONDS - start_seconds ))
-echo TIMING docker_setup
-echo "Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
+#duration=$(( SECONDS - start_seconds ))
+#echo TIMING docker_setup
+#echo "Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
 
 echo Timing docker build with --cache-from...
 start_seconds=$SECONDS
