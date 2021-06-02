@@ -35,7 +35,7 @@ echo Timing docker build with --cache-from...
 start_seconds=$SECONDS
 
 # set DOCKERFILE_PATH that is used by docker hook script get_met_version
-export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/ci/docker/Dockerfile.copy
+export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/ci/docker/Dockerfile
 
 MET_TAG=`${GITHUB_WORKSPACE}/ci/docker/hooks/get_met_version`
 echo Running docker build with MET_TAG=$MET_TAG
@@ -43,6 +43,7 @@ echo Running docker build with MET_TAG=$MET_TAG
 #docker build --pull --cache-from ${DOCKERHUB_TAG} \
 docker build --cache-from ${DOCKERHUB_TAG} \
 -t ${DOCKERHUB_TAG} \
+--build-arg OBTAIN_SOURCE_CODE=copy \
 --build-arg MET_TAG=$MET_TAG \
 -f ${DOCKERFILE_PATH} ${GITHUB_WORKSPACE}
 
