@@ -87,7 +87,7 @@ Category: data_assimilation
 
 
 Category: marine_and_coastal
-0::PlotDataPlane_obsHYCOM_coordTripolar::model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf,user_env_vars.MET_PYTHON_EXE=/usr/local/envs/xesmf_env/bin/python3::xesmf_env
+0::PlotDataPlane_obsHYCOM_coordTripolar::model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf,user_env_vars.MET_PYTHON_EXE=/usr/local/envs/xesmf/bin/python3::xesmf
 
 
 Category: medium_range
