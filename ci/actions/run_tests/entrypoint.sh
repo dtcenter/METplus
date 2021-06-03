@@ -68,7 +68,7 @@ fi
 
 echo METPLUS_ENV_TAG=$METPLUS_ENV_TAG
 
-docker build -t metplus-run-env -f ./Dockerfile.run --build-arg METPLUS_IMAGE_TAG=$DOCKERHUB_TAG --build-arg METPLUS_ENV_TAG
+docker build -t metplus-run-env -f ./Dockerfile.run --build-arg METPLUS_IMAGE_TAG=$DOCKERHUB_TAG --build-arg METPLUS_ENV_TAG .
 
 # install Pillow library needed for diff testing
 # this will be replaced with better image diffing package used by METplotpy
