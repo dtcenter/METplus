@@ -3,10 +3,12 @@ ARG METPLUS_IMG_TAG=develop
 
 FROM dtcenter/metplus-envs:${METPLUS_ENV_TAG} as env
 
-RUN ls /usr/local/envs
+RUN echo /usr/local/envs && ls /usr/local/envs \
+  && echo /data/input && ls /data/input
 
 ARG METPLUS_IMG_TAG=develop
 
 FROM dtcenter/metplus-dev:${METPLUS_IMG_TAG}
 
 COPY --from=env /usr/local/envs /usr/local/envs/
+COPY --from=env /data/input /data/input/
