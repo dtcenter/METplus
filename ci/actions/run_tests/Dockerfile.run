@@ -1,4 +1,5 @@
 ARG METPLUS_ENV_TAG=metplus_base
+ARG METPLUS_IMG_TAG=xesmf
 
 FROM dtcenter/metplus-envs:${METPLUS_ENV_TAG} as env
 
