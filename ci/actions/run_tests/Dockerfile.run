@@ -2,6 +2,8 @@ ARG METPLUS_ENV_TAG=1.0
 
 FROM dtcenter/metplus-environments:${METPLUS_ENV_TAG} as env
 
+RUN ls /usr/local/envs
+
 ARG METPLUS_IMAGE_TAG=develop
 
 FROM dtcenter/metplus-dev:${METPLUS_IMAGE_TAG}
