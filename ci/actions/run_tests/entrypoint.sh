@@ -62,7 +62,7 @@ if [[ ! -z "${all_requirements// }" ]]; then
     if [[ "$all_requirements" =~ .*"metplotpy".* ]]; then
 	METPLUS_ENV_TAG=metplotpy
     else
-	METPLUS_ENV_TAG=1.1
+	METPLUS_ENV_TAG=xesmf
     fi
 fi
 
@@ -73,6 +73,9 @@ echo METPLUS_ENV_TAG=${METPLUS_ENV_TAG}
 echo METPLUS_IMAGE_TAG=*${METPLUS_IMAGE_TAG}*
 export METPLUS_IMAGE_TAG=`echo ${METPLUS_IMAGE_TAG} | xargs`
 echo METPLUS_IMAGE_TAG=*${METPLUS_IMAGE_TAG}*
+
+# use BuildKit to build image
+export DOCKER_BUILDKIT=1
 
 docker build -t metplus-run-env -f ./ci/actions/run_tests/Dockerfile.run --build-arg METPLUS_IMAGE_TAG --build-arg METPLUS_ENV_TAG .
 

@@ -1,6 +1,6 @@
-ARG METPLUS_ENV_TAG=1.0
+ARG METPLUS_ENV_TAG=metplus_base
 
-FROM dtcenter/metplus-environments:${METPLUS_ENV_TAG} as env
+FROM dtcenter/metplus-envs:${METPLUS_ENV_TAG} as env
 
 RUN ls /usr/local/envs
 
