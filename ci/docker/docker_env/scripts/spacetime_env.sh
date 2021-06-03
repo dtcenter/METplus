@@ -31,6 +31,6 @@ conda install -y --name ${ENV_NAME} -c conda-forge scipy
 conda install -y --name ${ENV_NAME} -c conda-forge matplotlib
 conda install -y --name ${ENV_NAME} -c conda-forge pyngl
 conda install -y --name ${ENV_NAME} -c conda-forge pyyaml
-conda install -y --name ${ENV_NAME} -c conda-forge 
+
 # tested using anaconda channel but changed to using conda-forge
 #conda install -y --name ${ENV_NAME} -c anaconda pyyaml
