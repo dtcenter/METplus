@@ -6,4 +6,3 @@ ARG METPLUS_IMAGE_TAG=develop
 
 FROM dtcenter/metplus-dev:${METPLUS_IMAGE_TAG}
 COPY --from=0 /usr/local/envs /usr/local/envs/
-
