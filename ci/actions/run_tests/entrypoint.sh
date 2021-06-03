@@ -57,7 +57,7 @@ if [[ "$all_requirements" =~ .*"metviewer".* ]]; then
 fi
 
 # determine which tag to use for dtcenter/metplus-environments
-METPLUS_ENV_TAG=""
+METPLUS_ENV_TAG="metplus_base"
 if [[ ! -z "${all_requirements// }" ]]; then
     if [[ "$all_requirements" =~ .*"metplotpy".* ]]; then
 	METPLUS_ENV_TAG=metplotpy
@@ -66,12 +66,13 @@ if [[ ! -z "${all_requirements// }" ]]; then
     fi
 fi
 
-METPLUS_IMAGE_TAG=${branch_name}
+export METPLUS_ENV_TAG
+export METPLUS_IMAGE_TAG=${branch_name}
 
-echo METPLUS_ENV_TAG=$METPLUS_ENV_TAG
-echo METPLUS_IMAGE_TAG=$METPLUS_IMAGE_TAG
+echo METPLUS_ENV_TAG=${METPLUS_ENV_TAG}
+echo METPLUS_IMAGE_TAG=${METPLUS_IMAGE_TAG}
 
-docker build -t metplus-run-env -f ci/actions/run_tests/Dockerfile.run --build-arg METPLUS_IMAGE_TAG --build-arg METPLUS_ENV_TAG .
+docker build -t metplus-run-env -f ./ci/actions/run_tests/Dockerfile.run --build-arg METPLUS_IMAGE_TAG --build-arg METPLUS_ENV_TAG .
 
 # install Pillow library needed for diff testing
 # this will be replaced with better image diffing package used by METplotpy
