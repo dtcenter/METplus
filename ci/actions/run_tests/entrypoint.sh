@@ -67,10 +67,12 @@ if [[ ! -z "${all_requirements// }" ]]; then
 fi
 
 export METPLUS_ENV_TAG
-export METPLUS_IMAGE_TAG=${branch_name}
+METPLUS_IMAGE_TAG=${branch_name}
 
 echo METPLUS_ENV_TAG=${METPLUS_ENV_TAG}
-echo METPLUS_IMAGE_TAG=${METPLUS_IMAGE_TAG}
+echo METPLUS_IMAGE_TAG=*${METPLUS_IMAGE_TAG}*
+export METPLUS_IMAGE_TAG=`echo ${METPLUS_IMAGE_TAG} | xargs`
+echo METPLUS_IMAGE_TAG=*${METPLUS_IMAGE_TAG}*
 
 docker build -t metplus-run-env -f ./ci/actions/run_tests/Dockerfile.run --build-arg METPLUS_IMAGE_TAG --build-arg METPLUS_ENV_TAG .
 
