@@ -7,7 +7,7 @@
 # permissions to push Docker images to DockerHub, the script is
 # is also called (in ci/actions/run_tests/entrypoint.sh) to
 # build the Docker image to use for each use case test group
-
+exit
 branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
   branch_name=${branch_name}-pull_request
@@ -17,7 +17,6 @@ fi
 DOCKERHUB_TAG=dtcenter/metplus-dev:${branch_name}
 
 echo Get Docker image: ${DOCKERHUB_TAG}
-echo 'doing docker build'
 # Note: adding --build-arg <arg-name> without any value tells docker to
 #  use value from local environment (export DO_GIT_CLONE)
 
@@ -40,9 +39,12 @@ export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/ci/docker/Dockerfile
 MET_TAG=`${GITHUB_WORKSPACE}/ci/docker/hooks/get_met_version`
 echo Running docker build with MET_TAG=$MET_TAG
 
+echo Setting DOCKER_BUILDKIT=1
+export DOCKER_BUILDKIT=1
+
 docker build --pull --cache-from ${DOCKERHUB_TAG} \
 -t ${DOCKERHUB_TAG} \
---build-arg OBTAIN_SOURCE_CODE='copy' \
+--build-arg OBTAIN_SOURCE_CODE=copy \
 --build-arg MET_TAG=$MET_TAG \
 -f ${DOCKERFILE_PATH} ${GITHUB_WORKSPACE}
 

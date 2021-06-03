@@ -1,0 +1,49 @@
+# This Dockerfile extends the MET image file to run METplus
+#  This variation builds the Docker image using local METplus
+# source code files that are copied into the image.
+#
+#
+# Build Arguments:
+#
+# MET_TAG - tag to use for obtaining MET image (default is develop)
+#
+
+ARG MET_TAG=develop
+
+FROM dtcenter/met:${MET_TAG}
+
+MAINTAINER George McCabe <mccabe@ucar.edu>
+
+WORKDIR /metplus
+RUN mkdir -p METplus
+COPY . METplus
+RUN if [ ! -e "METplus/ush/run_metplus.py" ]; then \
+  echo "ERROR: docker build must be run from the METplus directory"; \
+  exit 1; \
+fi
+
+RUN echo export PATH=$PATH:`pwd`/METplus/ush >> /etc/bashrc \
+ && echo setenv PATH $PATH:`pwd`/METplus/ush >> /etc/csh.cshrc
+
+# Install required packages: Pandas, Cartopy*
+#  - *dateutil, pytest
+#
+# Install nco tools for ncap2
+# Install Java 1.8.0 OpenJDK for GempakToCF.jar
+# Install pytest and netCDF4 python packages
+# Obtain GempakToCF.jar
+RUN yum -y update \
+ && yum -y install nco.x86_64 \
+ && yum -y install java-1.8.0-openjdk \
+ && python3 -m pip install pytest netCDF4 \
+ && mkdir -p /data/input \
+ && curl -L -o /data/input/GempakToCF.jar -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar || true
+
+
+# set default config variables and install package
+RUN echo "Installing METplus package and setting default configs"; \
+  cd METplus; \
+  sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/*.conf; \
+  sed -i 's|OUTPUT_BASE = /path/to|OUTPUT_BASE = /data/output|g' parm/metplus_config/*.conf; \
+  sed -i 's|INPUT_BASE = /path/to|INPUT_BASE = /data/input/METplus_Data|g' parm/metplus_config/*.conf; \
+  python3 setup.py install;

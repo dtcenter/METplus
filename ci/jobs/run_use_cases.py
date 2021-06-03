@@ -134,11 +134,13 @@ def main():
 
     isOK = True
     for cmd, reqs in all_commands:
-        if reqs:
-            reqs_fmt = f"{';'.join(reqs)};"
-        else:
-            reqs_fmt = ''
-        print(f'{reqs}\n{cmd}')
+        reqs_fmt = ''
+        print(cmd)
+#        if reqs:
+#            reqs_fmt = f"{';'.join(reqs)};"
+#        else:
+#            reqs_fmt = ''
+#        print(f'{reqs}\n{cmd}')
         full_cmd = f"{reqs_fmt}{cmd}"
         try:
             subprocess.run(full_cmd, check=True, shell=True)

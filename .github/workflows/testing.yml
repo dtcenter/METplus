@@ -109,7 +109,7 @@ jobs:
           - "convection_allowing_models:8"
           - "cryosphere:0"
           - "data_assimilation:0"
-          - "marine_and_coastal:0"
+          - "marine_and_coastal:0:NEW"
           - "medium_range:0"
           - "medium_range:1-2"
           - "medium_range:3-5"

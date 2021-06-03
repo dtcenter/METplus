@@ -41,7 +41,7 @@ fi
 
 if [ "$INPUT_CATEGORIES" == "pytests" ]; then
   echo Running Pytests
-  command="pip3 install pytest-cov; export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; pytest --cov=../../metplus"
+  command="pip3 install pytest pytest-cov; export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; pytest --cov=../../metplus"
   docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "$command"
   exit $?
 fi
@@ -55,6 +55,29 @@ if [[ "$all_requirements" =~ .*"metviewer".* ]]; then
   ${GITHUB_WORKSPACE}/ci/jobs/python_requirements/get_metviewer.sh
   NETWORK_ARG=--network="container:mysql_mv"
 fi
+
+# determine which tag to use for dtcenter/metplus-environments
+METPLUS_ENV_TAG="metplus_base"
+if [[ ! -z "${all_requirements// }" ]]; then
+    if [[ "$all_requirements" =~ .*"metplotpy".* ]]; then
+	METPLUS_ENV_TAG=metplotpy
+    else
+	METPLUS_ENV_TAG=xesmf
+    fi
+fi
+
+export METPLUS_ENV_TAG
+export METPLUS_IMG_TAG=${branch_name}
+
+echo METPLUS_ENV_TAG=${METPLUS_ENV_TAG}
+echo METPLUS_IMG_TAG=${METPLUS_IMG_TAG}
+
+export RUN_TAG=metplus-run-env
+
+# use BuildKit to build image
+export DOCKER_BUILDKIT=1
+
+docker build -t $RUN_TAG --build-arg METPLUS_IMG_TAG --build-arg METPLUS_ENV_TAG -f ./ci/actions/run_tests/Dockerfile.run .
 
 # install Pillow library needed for diff testing
 # this will be replaced with better image diffing package used by METplotpy
@@ -99,6 +122,8 @@ echo VOLUMES_FROM: $VOLUMES_FROM
 echo docker ps:
 docker ps -a
 
-echo "Run Docker container: $DOCKERHUBTAG"
-echo docker run -e GITHUB_WORKSPACE $NETWORK_ARG -v $RUNNER_WORKSPACE/output/mysql:/var/lib/mysql -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
-docker run -e GITHUB_WORKSPACE $NETWORK_ARG -v $RUNNER_WORKSPACE/output/mysql:/var/lib/mysql -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
+echo "Run Docker container: $RUN_TAG"
+#echo docker run -e GITHUB_WORKSPACE $NETWORK_ARG -v $RUNNER_WORKSPACE/output/mysql:/var/lib/mysql -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
+#docker run -e GITHUB_WORKSPACE $NETWORK_ARG -v $RUNNER_WORKSPACE/output/mysql:/var/lib/mysql -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $DOCKERHUBTAG bash -c "${pip_command};${command}"
+echo docker run -e GITHUB_WORKSPACE $NETWORK_ARG -v $RUNNER_WORKSPACE/output/mysql:/var/lib/mysql -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "${pip_command};${command}"
+docker run -e GITHUB_WORKSPACE $NETWORK_ARG -v $RUNNER_WORKSPACE/output/mysql:/var/lib/mysql -v $GHA_OUTPUT_DIR:$DOCKER_OUTPUT_DIR -v $GHA_DIFF_DIR:$DOCKER_DIFF_DIR -v $GHA_ERROR_LOG_DIR:$DOCKER_ERROR_LOG_DIR -v $WS_PATH:$GITHUB_WORKSPACE ${VOLUMES_FROM} --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "${pip_command};${command}"
