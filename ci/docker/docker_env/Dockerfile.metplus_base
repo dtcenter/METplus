@@ -1,0 +1,11 @@
+# Dockerfile to create conda environment used for use cases
+# that don't require any additional packages
+
+FROM conda/miniconda3-centos7
+
+# create conda environments
+RUN conda update -y -n base -c defaults conda \
+ && conda create -y --name metplus_base python=3.6.3 \
+ && conda install -y --name metplus_base -c conda-forge xarray==0.16.2 \
+ && conda install -y --name metplus_base -c conda-forge netcdf4==1.5.1.2 \
+ && mkdir -p /data/input
