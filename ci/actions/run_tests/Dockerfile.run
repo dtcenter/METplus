@@ -1,8 +1,9 @@
 ARG METPLUS_ENV_TAG=1.0
 
-FROM dtcenter/metplus-environments:${METPLUS_ENV_TAG}
+FROM dtcenter/metplus-environments:${METPLUS_ENV_TAG} as env
 
 ARG METPLUS_IMAGE_TAG=develop
 
 FROM dtcenter/metplus-dev:${METPLUS_IMAGE_TAG}
-COPY --from=0 /usr/local/envs /usr/local/envs/
+
+COPY --from=env /usr/local/envs /usr/local/envs/
