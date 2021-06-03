@@ -11,7 +11,7 @@
 ################################################################################
 
 # Conda environment to create
-ENV_NAME=xesmf
+ENV_NAME=xesmf_env
 
 # Conda environment to use as base for new environment
 BASE_ENV=$1

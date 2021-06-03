@@ -16,7 +16,7 @@
 ################################################################################
 
 # Conda environment to create
-ENV_NAME=spacetime
+ENV_NAME=spacetime_env
 
 # Conda environment to use as base for new environment
 # Not used in this script because Python version differs from base version

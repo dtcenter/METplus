@@ -20,7 +20,7 @@
 ################################################################################
 
 # Conda environment to create
-ENV_NAME=metplotpy
+ENV_NAME=metplotpy_env
 
 # Conda environment to use as base for new environment
 BASE_ENV=$1

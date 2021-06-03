@@ -12,7 +12,7 @@
 ################################################################################
 
 # Conda environment to create
-ENV_NAME=metdatadb
+ENV_NAME=metdatadb_env
 
 # Conda environment to use as base for new environment
 BASE_ENV=$1

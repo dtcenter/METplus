@@ -17,7 +17,7 @@
 # i.e. to use a Python package to convert GEMPAK
 
 # Conda environment to create
-ENV_NAME=gempak
+ENV_NAME=gempak_env
 
 # Conda environment to use as base for new environment
 BASE_ENV=$1

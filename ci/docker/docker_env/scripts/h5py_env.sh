@@ -11,7 +11,7 @@
 ################################################################################
 
 # Conda environment to create
-ENV_NAME=h5py
+ENV_NAME=h5py_env
 
 # Conda environment to use as base for new environment
 BASE_ENV=$1
