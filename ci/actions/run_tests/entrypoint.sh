@@ -67,17 +67,15 @@ if [[ ! -z "${all_requirements// }" ]]; then
 fi
 
 export METPLUS_ENV_TAG
-METPLUS_IMAGE_TAG=${branch_name}
+export METPLUS_IMAGE_TAG=${branch_name}
 
 echo METPLUS_ENV_TAG=${METPLUS_ENV_TAG}
-echo METPLUS_IMAGE_TAG=*${METPLUS_IMAGE_TAG}*
-export METPLUS_IMAGE_TAG=`echo ${METPLUS_IMAGE_TAG} | xargs`
-echo METPLUS_IMAGE_TAG=*${METPLUS_IMAGE_TAG}*
+echo METPLUS_IMAGE_TAG=${METPLUS_IMAGE_TAG}
 
 # use BuildKit to build image
 export DOCKER_BUILDKIT=1
 
-docker build -t metplus-run-env -f ./ci/actions/run_tests/Dockerfile.run --build-arg METPLUS_IMAGE_TAG --build-arg METPLUS_ENV_TAG .
+docker build -t metplus-run-env --build-arg METPLUS_IMAGE_TAG --build-arg METPLUS_ENV_TAG -f ./ci/actions/run_tests/Dockerfile.run .
 
 # install Pillow library needed for diff testing
 # this will be replaced with better image diffing package used by METplotpy
