@@ -14,10 +14,9 @@ from datetime import datetime
 import re
 
 from ..util import met_util as util
-from ..util import do_string_sub
+from ..util import do_string_sub, ti_calculate
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from . import CommandBuilder
-from ..util import time_util
 
 class ExtractTilesWrapper(CommandBuilder):
     """! Takes tc-pairs data and regrids paired data to an n x m grid as
@@ -198,26 +197,40 @@ class ExtractTilesWrapper(CommandBuilder):
             @param input_dict dictionary containing initialization time
         """
 
-        # loop over custom loop list. If not defined,
-        # it will run once with an empty string as the custom string
-        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
+        # loop of forecast leads and process each
+        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        for lead in lead_seq:
+            input_dict['lead'] = lead
 
-            input_dict['custom'] = custom_string
-            self.run_at_time_loop_string(input_dict)
+            # set current lead time config and environment variables
+            time_info = ti_calculate(input_dict)
 
-    def run_at_time_loop_string(self, input_dict):
+            self.logger.info(
+                f"Processing forecast lead {time_info['lead_string']}"
+            )
+
+            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                self.logger.debug('Skipping run time')
+                continue
+
+            # loop over custom loop list. If not defined,
+            # it will run once with an empty string as the custom string
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                if custom_string:
+                    self.logger.info(
+                        f"Processing custom string: {custom_string}"
+                    )
+
+                time_info['custom'] = custom_string
+                self.run_at_time_loop_string(time_info)
+
+    def run_at_time_loop_string(self, time_info):
         """!Read TCPairs track data into TCStat to filter the data. Using the
             resulting track data, run RegridDataPlane on the model data to
             create tiles centered on the storm.
 
             @param input_dict dictionary containing initialization time
         """
-
-        # Calculate other time information from available time info
-        time_info = time_util.ti_calculate(input_dict)
-
         self.logger.debug("Begin extract tiles")
         location_input = self.c_dict.get('LOCATION_INPUT')
         input_path = self.get_location_input_file(time_info, location_input)
@@ -405,7 +418,7 @@ class ExtractTilesWrapper(CommandBuilder):
             valid_dt = datetime.strptime(valid, '%Y%m%d_%H%M%S')
             input_dict['valid'] = valid_dt
 
-        time_info = time_util.ti_calculate(input_dict)
+        time_info = ti_calculate(input_dict)
 
         # add amodel to time_info dictionary for substitution
         # use AMODEL (TC_STAT) or MODEL (MTD)
