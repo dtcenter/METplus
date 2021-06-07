@@ -100,6 +100,7 @@ jobs:
       matrix:
         categories:
           - "met_tool_wrapper:0-54"
+          - "met_tool_wrapper:55:NEW"
           - "air_quality_and_comp:0"
           - "climate:0-1"
           - "convection_allowing_models:0"
