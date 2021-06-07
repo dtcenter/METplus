@@ -4,12 +4,11 @@ from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_t
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
 
 
-def find_input_files(datetime_dictlist, inconfig, intemplate):
-    template = inconfig.getraw('config',intemplate)
+def find_input_files(datetime_dictlist, intemplate):
 
     file_list = []
     for outtime in datetime_dictlist:
-        filepath = do_string_sub(template, **outtime)
+        filepath = do_string_sub(intemplate, **outtime)
         if os.path.exists(filepath):
             file_list.append(filepath)
         else:

@@ -25,7 +25,13 @@ def run_omi_steps(inlabel, inconfig, spd, olr_eoffile, oplot_dir):
     fileconfig = config_metplus.replace_config_from_section(inconfig,'compute_omi')
     use_init =  is_loop_by_init(inconfig)
     alldata_time = find_times(fileconfig, use_init)
-    olr_input_files = find_input_files(alldata_time, fileconfig, inlabel+'_OLR_INPUT_TEMPLATE')
+
+     # Get input File names and Directories
+    olr_template = os.path.join(fileconfig.getraw('config',inlabel+'_OLR_INPUT_DIR'),
+        fileconfig.getraw('config',inlabel+'_OLR_INPUT_TEMPLATE'))
+
+    # Find Files
+    olr_input_files = find_input_files(alldata_time, olr_template)
 
      # Create a time variable
     time = np.array([t_obj['valid'] for t_obj in alldata_time],dtype='datetime64')

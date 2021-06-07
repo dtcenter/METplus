@@ -12,8 +12,8 @@ import sys
 
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
-from metcalcpy.util import read_file
-import compute_mjo_indices as cmi
+#from metcalcpy.util import read_file
+import metcalcpy.contributed.rmm_omi.compute_mjo_indices as cmi
 import plot_mjo_indices as pmi
 from RMM_OMI_util import find_input_files, find_times, compute_plot_times
 
@@ -24,9 +24,19 @@ def run_rmm_steps(inlabel, inconfig, spd, olr_eoffile, u850_eoffile, u200_eoffil
     fileconfig = config_metplus.replace_config_from_section(inconfig,'compute_rmm')
     use_init =  is_loop_by_init(inconfig)
     alldata_time = find_times(fileconfig, use_init)
-    olr_input_files = find_input_files(alldata_time, fileconfig, inlabel+'_OLR_INPUT_TEMPLATE')
-    u850_input_files = find_input_files(alldata_time, fileconfig, inlabel+'_U850_INPUT_TEMPLATE')
-    u200_input_files = find_input_files(alldata_time, fileconfig, inlabel+'_U200_INPUT_TEMPLATE')
+
+    # Get input File names and Directories
+    olr_template = os.path.join(fileconfig.getraw('config',inlabel+'_OLR_INPUT_DIR'),
+        fileconfig.getraw('config',inlabel+'_OLR_INPUT_TEMPLATE'))
+    u850_template = os.path.join(fileconfig.getraw('config',inlabel+'_U850_INPUT_DIR'),
+        fileconfig.getraw('config',inlabel+'_U850_INPUT_TEMPLATE'))
+    u200_template = os.path.join(fileconfig.getraw('config',inlabel+'_U200_INPUT_DIR'),
+        fileconfig.getraw('config',inlabel+'_U200_INPUT_TEMPLATE'))
+
+    # Find Files
+    olr_input_files = find_input_files(alldata_time, olr_template)
+    u850_input_files = find_input_files(alldata_time, u850_template)
+    u200_input_files = find_input_files(alldata_time, u200_template)
 
     # Create a time variable
     time = np.array([t_obj['valid'] for t_obj in alldata_time],dtype='datetime64')
@@ -54,7 +64,7 @@ def run_rmm_steps(inlabel, inconfig, spd, olr_eoffile, u850_eoffile, u200_eoffil
     # project data onto EOFs
     #### The code called here goes into METcalcpy
     #### It is currently from the compute_mjo_indices.py
-    PC1, PC2 = cmi.rmm(olr[0:ntim,:], u850[0:ntim,:], u200[0:ntim,:], time, spd, 'UserScript_fcstGFS_obsERA_RMM/')
+    PC1, PC2 = cmi.rmm(olr[0:ntim,:], u850[0:ntim,:], u200[0:ntim,:], time, spd, olr_eoffile, u850_eoffile, u200_eoffile)
 
     print(PC1.min(), PC1.max())
 
@@ -110,7 +120,7 @@ def main():
     # Read in the EOFs and plot
     ####!! NEED TO FIX THIS BECASUE THE READ NEEDS TO BE EDITED TO ACCEPT INPUT FILES
     #################################################################################
-    EOF1, EOF2 = cmi.read_rmm_eofs()
+    EOF1, EOF2 = cmi.read_rmm_eofs(olr_eoffile, u850_eoffile, u200_eoffile)
     eof_plot_name =  oplot_dir+'/'+config.getstr('compute_rmm','EOF_PLOT_OUTPUT_NAME','RMM_EOFs')
     eof_plot_format = config.getstr('compute_rmm','EOF_PLOT_OUTPUT_FORMAT','png')
     pmi.plot_rmm_eofs(EOF1, EOF2, eof_plot_name, eof_plot_format)
