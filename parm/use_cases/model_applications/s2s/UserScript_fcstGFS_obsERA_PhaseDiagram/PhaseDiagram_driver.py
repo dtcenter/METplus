@@ -1,13 +1,19 @@
+#!/usr/bin/env python3
 """
-Read in OMI or RMM indices and plot phase diagram for specified dates. OMI values
-can be obtained from https://psl.noaa.gov/mjo/, RMM values can be obtained from 
+Driver Script to read in OMI or RMM indices and plot phase diagram for specified dates. 
+OMI values can be obtained from https://psl.noaa.gov/mjo/, RMM values can be obtained from 
 http://www.bom.gov.au/climate/mjo/graphics/rmm.74toRealtime.txt
 """
 
+import os
+import sys
 import numpy as np
 import pandas as pd
 import datetime
 
+from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
+from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
+from RMM_OMI_util import find_times
 from plot_mjo_indices import phase_diagram
 
 
@@ -18,7 +24,9 @@ def run_phasediagram_steps(inlabel, inconfig, oplot_dir):
     alldata_time = find_times(fileconfig, use_init)
 
     # which index are we plotting
-    indexname = 'RMM'  # 'RMM' or 'OMI'
+    indexname = fileconfig.getstr('config', 'PLOT_INDEX')
+    print(indexname)
+    #indexname = 'RMM'  # 'RMM' or 'OMI'
 
     # set dates to read and plot
     datestrt = 20120101
@@ -26,14 +34,19 @@ def run_phasediagram_steps(inlabel, inconfig, oplot_dir):
 
     # read data from text file
     if indexname=='OMI':
-        data = pd.read_csv('omi.1x.txt', header=None, delim_whitespace=True, names=['yyyy','mm','dd','hh','pc1','pc2','amp'])
+        data = pd.read_csv('UserScript_fcstGFS_obsERA_PhaseDiagram/omi.1x.txt', header=None, delim_whitespace=True, names=['yyyy','mm','dd','hh','pc1','pc2','amp'])
     elif indexname=='RMM':
-        data = pd.read_csv('rmm.1x.txt',  header=None, delim_whitespace=True, names=['yyyy','mm','dd', 'pc1','pc2','phase','amp','source'])
+        data = pd.read_csv('UserScript_fcstGFS_obsERA_PhaseDiagram/rmm.1x.txt',  header=None, delim_whitespace=True, names=['yyyy','mm','dd', 'pc1','pc2','phase','amp','source'])
 
     DATES = data.yyyy.values*10000 + data.mm.values*100 + data.dd.values
     MONTHS = data.mm.values
     DAYS = data.dd.values
-    #print(dates)
+    print(DATES)
+    print(type(DATES))
+    print(alldata_time)
+    exit()
+
+    # Find the dates that are requested in the RMM or OMI data
 
     istrt = np.where(DATES==datestrt)[0][0]
     ilast = np.where(DATES==datelast)[0][0]

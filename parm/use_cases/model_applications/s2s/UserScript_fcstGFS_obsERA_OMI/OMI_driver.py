@@ -1,4 +1,4 @@
-#!/usr/bin/env /usr/local/anaconda3/bin/python3
+#!/usr/bin/env python3
 """
 Driver Script to Compute RMM index from input U850, U200 and OLR data. Data is averaged from 20S-20N
 """
@@ -13,7 +13,7 @@ import pandas as pd
 
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
-from metcalcpy.util import read_file
+#from metcalcpy.util import read_file
 import compute_mjo_indices as cmi
 import plot_mjo_indices as pmi
 from RMM_OMI_util import find_input_files, find_times, compute_plot_times

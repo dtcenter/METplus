@@ -1,4 +1,4 @@
-#!/usr/bin/env /usr/local/anaconda3/bin/python3
+#!/usr/bin/env python3
 """
 Driver Script to Compute RMM index from input U850, U200 and OLR data. Data is averaged from 20S-20N
 """
