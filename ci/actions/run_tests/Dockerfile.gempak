@@ -1,0 +1,8 @@
+ARG METPLUS_IMG_TAG=develop
+
+FROM dtcenter/metplus-dev:${METPLUS_IMG_TAG}
+
+RUN yum -y update \
+ && yum -y install java-1.8.0-openjdk \
+ && mkdir -p /data/input \
+ && curl -L -o /data/input/GempakToCF.jar -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar
