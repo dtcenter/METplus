@@ -88,6 +88,7 @@ def test_get_header_indices(metplus_config,header_name, index):
         ('FCST_VALID', 4),
         ('MODEL', 1),
         ('OBJECT_CAT', 23),
+        ('OBJECT_ID', 22),
     ]
 )
 def test_get_header_indices_mtd(metplus_config, header_name, index):
@@ -125,6 +126,7 @@ def test_get_data_from_track_line(metplus_config, header_name, value):
         ('FCST_VALID', '20050807_090000'),
         ('MODEL', 'WRF'),
         ('OBJECT_CAT', 'CF001'),
+        ('OBJECT_ID', 'F001'),
     ]
 )
 def test_get_data_from_track_line_mtd(metplus_config, header_name, value):
@@ -152,7 +154,7 @@ def test_set_time_info_from_track_data(metplus_config):
         assert(time_info[key] == value)
 
 @pytest.mark.parametrize(
-        'lat, lon, expected_result', [
+    'lat, lon, expected_result', [
         (-54.9, -168.6, 'latlon 60 60 -70.0 -183.5 0.5 0.5'),
 
     ]
@@ -162,7 +164,7 @@ def test_get_grid_info(metplus_config, lat, lon, expected_result):
     assert(wrapper.get_grid_info(lat, lon, 'FCST') == expected_result)
 
 @pytest.mark.parametrize(
-        'lat, lon, expected_result', [
+    'lat, lon, expected_result', [
         (-54.9, -168.6, 'latlon 60 60 -70.0 -183.5 0.5 0.5'),
 
     ]

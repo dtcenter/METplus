@@ -35,6 +35,7 @@ class ExtractTilesWrapper(CommandBuilder):
         ],
         'MTD': [
             'OBJECT_CAT',
+            'OBJECT_ID',
             'CENTROID_LAT',
             'CENTROID_LON',
             'FCST_LEAD',
@@ -308,6 +309,12 @@ class ExtractTilesWrapper(CommandBuilder):
                                                                    fcst_line)
                 track_data['OBS'] = self.get_data_from_track_line(idx_dict,
                                                                   obs_line)
+
+                # only use lines where OBJECT_ID == OBJECT_CAT
+                if (not self.object_id_equals_cat(track_data['FCST']) or
+                        not self.object_id_equals_cat(track_data['OBS'])):
+                    continue
+
                 time_info = (
                     self.set_time_info_from_track_data(track_data['FCST'])
                 )
