@@ -255,7 +255,7 @@ class ExtractTilesWrapper(CommandBuilder):
                                            location_input)
 
         if location_input == 'MTD':
-            self.use_mtd_input(input_path)
+            self.use_mtd_input(storm_dict, idx_dict)
         else:
             self.use_tc_stat_input(storm_dict, idx_dict)
 
@@ -265,6 +265,8 @@ class ExtractTilesWrapper(CommandBuilder):
         """! Find storms in TCStat input file and create tiles using the storm.
 
          @param input_path path to TCStat file to process
+         @param idx_dict dictionary with header names as keys and the index
+          of those names as values.
         """
         # Create tiles for each storm in the storm_dict dictionary
         for storm_id, storm_lines in storm_dict.items():
@@ -281,12 +283,14 @@ class ExtractTilesWrapper(CommandBuilder):
 
                 time_info = self.set_time_info_from_track_data(storm_data,
                                                                storm_id)
-                self.call_regrid_data_plane(time_info, track_data)
+                self.call_regrid_data_plane(time_info, track_data, 'TC_STAT')
 
     def use_mtd_input(self, object_dict, idx_dict):
         """! Find lat/lons in MTD input file and create tiles from locations.
 
          @param input_path path to MTD file to process
+         @param idx_dict dictionary with header names as keys and the index
+          of those names as values.
         """
         indices = self.get_object_indices(object_dict.keys())
         if not indices:
@@ -295,6 +299,7 @@ class ExtractTilesWrapper(CommandBuilder):
 
         # loop over corresponding CF### and CO### lines
         for index in indices:
+
             fcst_lines = object_dict[f'CF{index}']
             obs_lines = object_dict[f'CO{index}']
             track_data = {}
@@ -306,7 +311,11 @@ class ExtractTilesWrapper(CommandBuilder):
                 time_info = (
                     self.set_time_info_from_track_data(track_data['FCST'])
                 )
-                self.call_regrid_data_plane(time_info, track_data)
+                self.call_regrid_data_plane(time_info, track_data, 'MTD')
+
+    @staticmethod
+    def object_id_equals_cat(track_line):
+        return track_line['OBJECT_CAT'] == track_line['OBJECT_ID']
 
     def get_location_input_file(self, time_info, input_type):
         """! Get the name of the filter file to use.
@@ -343,13 +352,14 @@ class ExtractTilesWrapper(CommandBuilder):
         return indices
 
 
-    def call_regrid_data_plane(self, time_info, track_data):
+    def call_regrid_data_plane(self, time_info, track_data, input_type):
         # set var list from config using time info
         var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
                                      time_info)
 
         for data_type in ['FCST', 'OBS']:
-            grid = self.get_grid(data_type, track_data[data_type])
+            grid = self.get_grid(data_type, track_data[data_type],
+                                 input_type)
 
             self.regrid_data_plane.c_dict['VERIFICATION_GRID'] = grid
 
@@ -426,26 +436,6 @@ class ExtractTilesWrapper(CommandBuilder):
                                              storm_data.get('MODEL', ''))
         if storm_id:
             time_info['storm_id'] = storm_id
-
-        return time_info
-
-    @staticmethod
-    def set_time_info_from_mtd_data(track_data):
-        """! Set time_info dictionary using init, lead, amodel, and storm ID
-        that was extracted from the storm data
-
-        @param track_data dictionary of data from a single line
-        @returns time info dictionary with time and amodel set
-        """
-        valid_dt = datetime.strptime(track_data['FCST_VALID'], '%Y%m%d_%H%M%S')
-        lead_hours = track_data['FCST_LEAD'][:-4]
-        input_dict = {'valid': valid_dt,
-                      'lead_hours': lead_hours,
-                      }
-        time_info = time_util.ti_calculate(input_dict)
-
-        # add amodel to time_info dictionary for substitution
-        time_info['amodel'] = track_data['MODEL']
 
         return time_info
 
