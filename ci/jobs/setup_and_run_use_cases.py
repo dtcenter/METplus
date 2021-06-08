@@ -130,9 +130,9 @@ def main():
             isOK = False
             continue
 
-        # output = subprocess.run('docker ps -a', check=True, shell=True,
-        #                         capture_output=True).stdout
-        # print(f"docker ps -a\n{output}")
+        output = subprocess.run('docker ps -a', check=True, shell=True,
+                                capture_output=True).stdout
+        print(f"docker ps -a\n{output}")
 
         full_cmd = (
             f"docker run -e GITHUB_WORKSPACE "
