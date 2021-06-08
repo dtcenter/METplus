@@ -130,8 +130,13 @@ def main():
             isOK = False
             continue
 
-        output = subprocess.run('docker ps -a', check=True, shell=True,
-                                capture_output=True).stdout
+        cmd_args = {'check': True,
+                    'shell': True,
+                    'encoding': 'utf-8',
+                    'capture_output': True,
+                    }
+        output = subprocess.run('docker ps -a',
+                                **cmd_args).stdout.strip()
         print(f"docker ps -a\n{output}")
 
         full_cmd = (
@@ -141,7 +146,7 @@ def main():
             f"{volumes_from} --workdir {github_workspace} "
             f"{run_tag} bash -c {cmd}")
         print(f"RUNNING: {full_cmd}")
-        # try:
+        try:
         #     popen = subprocess.Popen(shlex.split(full_cmd),
         #                              stdout=subprocess.PIPE,
         #                              universal_newlines=True)
@@ -150,15 +155,12 @@ def main():
         #     return_code = popen.wait()
         #     if return_code:
         #         raise subprocess.CalledProcessError(return_code, full_cmd)
-        #     # output = subprocess.run(full_cmd, check=True, shell=True,
-        #     #                         capture_output=True,
-        #     #                         stdout=PIPE,
-        #     #                         stderr=STDOUT).stdout
-        #     # print(output)
-        # except subprocess.CalledProcessError as err:
-        #     print(f"ERROR: Command failed -- {err}")
-        #     isOK = False
-        #     copy_error_logs()
+            output = subprocess.run(full_cmd, **cmd_args).stdout.strip()
+            print(output)
+        except subprocess.CalledProcessError as err:
+            print(f"ERROR: Command failed -- {err}")
+            isOK = False
+            copy_error_logs()
 
     if not isOK:
         sys.exit(1)

@@ -94,7 +94,7 @@ fi
 
 # call script to loop over use case groups to
 # get data volumes, set up run image, and run use cases
-python --version
+python3 --version
 ./${CI_JOBS_DIR}/setup_and_run_use_cases.py ${CATEGORIES} ${SUBSETLIST}
 exit $?
 
