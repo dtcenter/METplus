@@ -21,6 +21,9 @@ from docker_utils import get_branch_name
 OUTPUT_DIR = '/data/output'
 ERROR_LOG_DIR = '/data/error_logs'
 
+runner_workspace = os.environ.get('RUNNER_WORKSPACE')
+github_workspace = os.environ.get('GITHUB_WORKSPACE')
+
 docker_data_dir = '/data'
 docker_output_dir = os.path.join(docker_data_dir, 'output')
 gha_output_dir = os.path.join(runner_workspace, 'output')
@@ -85,9 +88,6 @@ def main():
 
     # use BuildKit to build image
     os.environ['DOCKER_BUILDKIT'] = '1'
-
-    runner_workspace = os.environ.get('RUNNER_WORKSPACE')
-    github_workspace = os.environ.get('GITHUB_WORKSPACE')
 
     volume_mounts = [
         f"-v {runner_workspace}/output/mysql:/var/lib/mysql",
