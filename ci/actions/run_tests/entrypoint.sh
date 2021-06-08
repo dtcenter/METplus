@@ -58,9 +58,6 @@ fi
 # running use case tests
 #
 
-echo Temporarily disable use case tests
-exit 0
-
 # set up paths for mounting directories in Docker to
 # make output available in GitHub Actions
 # NOTE: we could adjust directories so we only need to mount the
@@ -98,6 +95,7 @@ fi
 # call script to loop over use case groups to
 # get data volumes, set up run image, and run use cases
 ./${CI_JOBS_DIR}/setup_and_run_use_cases.py ${CATEGORIES} ${SUBSETLIST}
+exit $?
 
 # determine which tag to use for dtcenter/metplus-environments
 METPLUS_ENV_TAG="metplus_base"
