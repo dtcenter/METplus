@@ -124,7 +124,7 @@ def main():
         print(f"Building Docker environment/branch image...\n"
               f"Running: {docker_build_cmd}")
         try:
-            subprocess.run(docker_build_cmd, check=True, shell=True)
+            subprocess.run(shelx.split(docker_build_cmd), check=True)
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Docker Build failed: {docker_build_cmd} -- {err}")
             isOK = False
@@ -134,7 +134,7 @@ def main():
                     'encoding': 'utf-8',
                     'capture_output': True,
                     }
-        output = subprocess.run('docker ps -a',
+        output = subprocess.run(shlex.split('docker ps -a'),
                                 **cmd_args).stdout.strip()
         print(f"docker ps -a\n{output}")
 
@@ -154,7 +154,8 @@ def main():
         #     return_code = popen.wait()
         #     if return_code:
         #         raise subprocess.CalledProcessError(return_code, full_cmd)
-            output = subprocess.run(full_cmd, **cmd_args).stdout.strip()
+            output = subprocess.run(shlex.split(full_cmd),
+                                    **cmd_args).stdout.strip()
             print(output)
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Command failed -- {err}")
