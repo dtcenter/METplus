@@ -126,7 +126,8 @@ def main():
             continue
 
         print(f"docker ps -a")
-        subprocess.run('docker ps -a', check=True, shell=True)
+        subprocess.run('docker ps -a', check=True, shell=True,
+                       capture_output=True)
 
         print(cmd)
         full_cmd = (
@@ -137,7 +138,8 @@ def main():
             f"{run_tag} bash -c {cmd}")
         print(f"RUNNING: {full_cmd}")
         try:
-            subprocess.run(full_cmd, check=True, shell=True)
+            subprocess.run(full_cmd, check=True, shell=True,
+                           capture_output=True)
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Command failed: {full_cmd} -- {err}")
             isOK = False
