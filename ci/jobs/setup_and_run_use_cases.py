@@ -116,7 +116,7 @@ def main():
             f"--build-arg METPLUS_ENV_TAG={env_tag} "
             f"-f {dockerfile_dir}/{dockerfile_name} ."
         )
-        print(f"Building Docker environment/branch image..."
+        print(f"Building Docker environment/branch image...\n"
               f"Running: {docker_build_cmd}")
         try:
             subprocess.run(docker_build_cmd, check=True, shell=True)
@@ -126,7 +126,7 @@ def main():
             continue
 
         print(f"docker ps -a")
-        subprocess.run('docker ps -a')
+        subprocess.run('docker ps -a', check=True, shell=True)
 
         print(cmd)
         full_cmd = (
