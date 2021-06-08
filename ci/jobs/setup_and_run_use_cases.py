@@ -21,11 +21,17 @@ from docker_utils import get_branch_name
 OUTPUT_DIR = '/data/output'
 ERROR_LOG_DIR = '/data/error_logs'
 
+docker_data_dir = '/data'
+docker_output_dir = os.path.join(docker_data_dir, 'output')
+gha_output_dir = os.path.join(runner_workspace, 'output')
+docker_error_dir = os.path.join(docker_data_dir, 'error_logs')
+gha_error_dir = os.path.join(runner_workspace, 'error_logs')
+
 def copy_error_logs():
     """! Copy log output to error log directory if any use case failed """
-    use_case_dirs = os.listdir(OUTPUT_DIR)
+    use_case_dirs = os.listdir(gha_output_dir)
     for use_case_dir in use_case_dirs:
-        log_dir = os.path.join(OUTPUT_DIR,
+        log_dir = os.path.join(gha_output_dir,
                                use_case_dir,
                                'logs')
         if not os.path.isdir(log_dir):
@@ -41,7 +47,7 @@ def copy_error_logs():
         if not found_errors:
             continue
 
-        output_dir = os.path.join(ERROR_LOG_DIR,
+        output_dir = os.path.join(gha_error_dir,
                                   use_case_dir)
         log_files = os.listdir(log_dir)
         for log_file in log_files:
@@ -82,11 +88,7 @@ def main():
 
     runner_workspace = os.environ.get('RUNNER_WORKSPACE')
     github_workspace = os.environ.get('GITHUB_WORKSPACE')
-    docker_data_dir = '/data'
-    docker_output_dir = os.path.join(docker_data_dir, 'output')
-    gha_output_dir = os.path.join(runner_workspace, 'output')
-    docker_error_dir = os.path.join(docker_data_dir, 'error_logs')
-    gha_error_dir = os.path.join(runner_workspace, 'error_logs')
+
     volume_mounts = [
         f"-v {runner_workspace}/output/mysql:/var/lib/mysql",
         f"-v {gha_output_dir}:{docker_output_dir}",
