@@ -58,7 +58,7 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
 
             # if requirement ending with _env is set, use that version of python3 to run
             use_env = [item for item in requirements if item.endswith('_env')]
-            if use_env:
+            if use_env and host_name == 'docker':
                 python_path = f"/usr/local/envs/{use_env[0].replace('_env', '')}/bin/python3"
             else:
                 python_path = 'python3'
@@ -69,13 +69,16 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             else:
                 py_embed_arg = ''
 
+            use_case_cmds = []
             for use_case in use_case_by_requirement.use_cases:
                 output_base = os.path.join(output_top_dir, use_case.name)
                 use_case_cmd = (f"{python_path} run_metplus.py "
                                 f"{' '.join(use_case.config_args)} "
                                 f"config.OUTPUT_BASE={output_base}"
                                 f"{py_embed_arg}")
-                all_commands.append(use_case_cmd)
+                use_case_cmds.append(use_case_cmd)
+            group_commands = ';'.join(use_case_cmds)
+            all_commands.append((group_commands, requirements))
 
     return all_commands
 
