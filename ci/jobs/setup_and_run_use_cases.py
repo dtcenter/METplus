@@ -24,6 +24,9 @@ ERROR_LOG_DIR = '/data/error_logs'
 runner_workspace = os.environ.get('RUNNER_WORKSPACE')
 github_workspace = os.environ.get('GITHUB_WORKSPACE')
 
+repo_name =os.path.basename(runner_workspace)
+ws_path = os.path.join(runner_workspace, repo_name)
+
 docker_data_dir = '/data'
 docker_output_dir = os.path.join(docker_data_dir, 'output')
 gha_output_dir = os.path.join(runner_workspace, 'output')
@@ -93,7 +96,7 @@ def main():
         f"-v {runner_workspace}/output/mysql:/var/lib/mysql",
         f"-v {gha_output_dir}:{docker_output_dir}",
         f"-v {gha_error_dir}:{docker_error_dir}",
-        f"-v {github_workspace}:{github_workspace}",
+        f"-v {ws_path}:{github_workspace}",
     ]
 
     isOK = True
