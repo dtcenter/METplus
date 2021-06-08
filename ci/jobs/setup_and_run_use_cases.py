@@ -16,7 +16,7 @@ import shutil
 
 import get_use_case_commands
 import get_data_volumes
-import get_branch_name
+from docker_utils import get_branch_name
 
 OUTPUT_DIR = '/data/output'
 ERROR_LOG_DIR = '/data/error_logs'
