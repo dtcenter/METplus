@@ -57,3 +57,15 @@ docker push dtcenter/metplus-envs:spacetime
 docker build -t dtcenter/metplus-envs:metplotpy --build-arg ENV_INSTALL_SCRIPT=metplotpy_env.sh .
 docker push dtcenter/metplus-envs:metplotpy
 ```
+
+### create pytest env from metplus_base
+```
+docker build -t dtcenter/metplus-envs:pytest --build-arg ENV_INSTALL_SCRIPT=pytest_env.sh .
+docker push dtcenter/metplus-envs:pytest
+```
+
+### create diff env from metplus_base
+```
+docker build -t dtcenter/metplus-envs:diff --build-arg BASE_ENV=netcdf4 --build-arg ENV_INSTALL_SCRIPT=diff_env.sh .
+docker push dtcenter/metplus-envs:diff
+```
