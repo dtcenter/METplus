@@ -50,22 +50,34 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
     test_suite = METplusUseCaseSuite()
     test_suite.add_use_case_groups(categories, subset_list)
 
+    output_top_dir = os.environ.get('METPLUS_TEST_OUTPUT_BASE', '/data/output')
+
     for group_name, use_cases_by_requirement in test_suite.category_groups.items():
         for use_case_by_requirement in use_cases_by_requirement:
-            requirement_args = handle_requirements(use_case_by_requirement.requirements,
-                                                   work_dir)
-            all_use_case_args = []
+            requirements = use_case_by_requirement.requirements
+
+            # if requirement ending with _env is set, use that version of python3 to run
+            use_env = [item for item in requirements if item.endswith('_env')]
+            if use_env:
+                python_path = f"/usr/local/envs/{use_env[0].replace('_env', '')}/bin/python3"
+            else:
+                python_path = 'python3'
+
+            # if py_embed listed in requirements, set MET_PYTHON_EXE
+            if 'py_embed' in requirements:
+                py_embed_arg = f' user_env_vars.MET_PYTHON_EXE={python_path}'
+            else:
+                py_embed_arg = ''
+
             for use_case in use_case_by_requirement.use_cases:
-                use_case_args = f"--config {','.join(use_case.config_args)}"
-                all_use_case_args.append(use_case_args)
+                output_base = os.path.join(output_top_dir, use_case.name)
+                use_case_cmd = (f"{python_path} run_metplus.py "
+                                f"{' '.join(use_case.config_args)} "
+                                f"config.OUTPUT_BASE={output_base}"
+                                f"{py_embed_arg}")
+                all_commands.append(use_case_cmd)
 
-            all_use_case_args.append('--skip_output_check')
-            use_case_args = ' '.join(all_use_case_args)
-            cmd = (f'{work_dir}/internal_tests/use_cases/run_test_use_cases.sh '
-                   f'{host_name} {use_case_args}')
-            all_commands.append((cmd, requirement_args))
-
-    return sorted(all_commands, key = lambda x: x[1])
+    return all_commands
 
 def handle_command_line_args():
     # read command line arguments to determine which use cases to run
