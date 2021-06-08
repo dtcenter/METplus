@@ -127,11 +127,10 @@ def main():
             isOK = False
             continue
 
-        print(f"docker ps -a")
-        subprocess.run('docker ps -a', check=True, shell=True,
-                       capture_output=True)
+        output = subprocess.run('docker ps -a', check=True, shell=True,
+                                capture_output=True).stdout
+        print(f"docker ps -a\n{output}")
 
-        print(cmd)
         full_cmd = (
             f"docker run -e GITHUB_WORKSPACE "
             f"{os.environ.get('NETWORK_ARG', '')} "
@@ -140,10 +139,21 @@ def main():
             f"{run_tag} bash -c {cmd}")
         print(f"RUNNING: {full_cmd}")
         try:
-            subprocess.run(full_cmd, check=True, shell=True,
-                           capture_output=True)
+            popen = subprocess.Popen(shlex.split(full_cmd),
+                                     stdout=subprocess.PIPE,
+                                     universal_newlines=True)
+            for stdout_line in iter(popen.stdout.readline, ""):
+                yield stdout_line
+            return_code = popen.wait()
+            if return_code:
+                raise subprocess.CalledProcessError(return_code, full_cmd)
+            # output = subprocess.run(full_cmd, check=True, shell=True,
+            #                         capture_output=True,
+            #                         stdout=PIPE,
+            #                         stderr=STDOUT).stdout
+            # print(output)
         except subprocess.CalledProcessError as err:
-            print(f"ERROR: Command failed: {full_cmd} -- {err}")
+            print(f"ERROR: Command failed -- {err}")
             isOK = False
             copy_error_logs()
 
