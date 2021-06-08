@@ -4,7 +4,8 @@
 # Setup the workspace path to that for easier access later
 REPO_NAME=$(basename $RUNNER_WORKSPACE)
 WS_PATH=$RUNNER_WORKSPACE/$REPO_NAME
-
+echo WS_PATH is $WS_PATH
+echo GITHUB_WORKSPACE is $GITHUB_WORKSPACE
 # set CI jobs directory variable to easily move it
 CI_JOBS_DIR=ci/jobs
 
@@ -94,7 +95,6 @@ fi
 
 # call script to loop over use case groups to
 # get data volumes, set up run image, and run use cases
-python3 --version
 ./${CI_JOBS_DIR}/setup_and_run_use_cases.py ${CATEGORIES} ${SUBSETLIST}
 exit $?
 
