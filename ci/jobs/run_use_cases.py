@@ -122,7 +122,7 @@ def copy_to_diff_dir(file_path, data_type):
     return True
 
 def main():
-    categories, subset_list, compare = (
+    categories, subset_list, run_diff = (
         get_use_case_commands.handle_command_line_args()
     )
     categories_list = categories.split(',')
@@ -149,7 +149,7 @@ def main():
             isOK = False
             copy_error_logs()
 
-    if compare and isOK:
+    if run_diff and isOK:
         print('******************************')
         print("Comparing output to truth data")
         diff_files = compare_dir(TRUTH_DIR, OUTPUT_DIR,
