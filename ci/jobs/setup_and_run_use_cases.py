@@ -15,6 +15,8 @@ import shlex
 import shutil
 
 import get_use_case_commands
+import get_data_volumes
+import get_branch_name
 
 OUTPUT_DIR = '/data/output'
 ERROR_LOG_DIR = '/data/error_logs'
@@ -53,7 +55,7 @@ def copy_error_logs():
             shutil.copyfile(log_path, output_path)
 
 def main():
-    categories, subset_list, compare = (
+    categories, subset_list, _ = (
         get_use_case_commands.handle_command_line_args()
     )
     categories_list = categories.split(',')
@@ -62,36 +64,84 @@ def main():
                                    subset_list,
                                    work_dir=os.environ.get('GITHUB_WORKSPACE'))
     )
+    # get input data volumes
+    volumes_from = get_data_volumes.main(categories_list)
+    print(f"Input Volumes: {volumes_from}")
+
+    # build Docker image with conda environment and METplus branch image
+    branch_name = get_branch_name()
+    if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request':
+        branch_name = f"{branch_name}-pull_request"
+
+    print(f"METPLUS_IMG_TAG = {branch_name}")
+    run_tag = 'metplus-run-env'
+    dockerfile_dir = os.path.join('ci', 'actions', 'run_tests')
+
+    # use BuildKit to build image
+    os.environ['DOCKER_BUILDKIT'] = '1'
+
+    runner_workspace = os.environ.get('RUNNER_WORKSPACE')
+    github_workspace = os.environ.get('GITHUB_WORKSPACE')
+    docker_data_dir = '/data'
+    docker_output_dir = os.path.join(docker_data_dir, 'output')
+    gha_output_dir = os.path.join(runner_workspace, 'output')
+    docker_error_dir = os.path.join(docker_data_dir, 'error_logs')
+    gha_error_dir = os.path.join(runner_workspace, 'error_logs')
+    volume_mounts = [
+        f"-v {runner_workspace}/output/mysql:/var/lib/mysql",
+        f"-v {gha_output_dir}:{docker_output_dir}",
+        f"-v {gha_error_dir}:{docker_error_dir}",
+        f"-v {github_workspace}:{github_workspace}",
+    ]
 
     isOK = True
-    for cmd, reqs in all_commands:
-        reqs_fmt = ''
+    for cmd, requirements in all_commands:
+
+        # get environment image tag
+        use_env = [item for item in requirements if item.endswith('_env')]
+        if use_env:
+            env_tag = use_env[0].replace('_env', '')
+        else:
+            env_tag = 'metplus_base'
+
+        # get Dockerfile to use (gempak if using gempak)
+        if 'gempak' in requirements:
+            dockerfile_name = 'Dockerfile.gempak'
+        else:
+            dockerfile_name = 'Dockerfile.run'
+
+        docker_build_cmd = (
+            f"docker build -t {run_tag} "
+            f"--build-arg METPLUS_IMG_TAG={branch_name} "
+            f"--build-arg METPLUS_ENV_TAG={env_tag} "
+            f"-f {dockerfile_dir}/{dockerfile_name} ."
+        )
+        print(f"Building Docker environment/branch image..."
+              f"Running: {docker_build_cmd}")
+        try:
+            subprocess.run(docker_build_cmd, check=True, shell=True)
+        except subprocess.CalledProcessError as err:
+            print(f"ERROR: Docker Build failed: {docker_build_cmd} -- {err}")
+            isOK = False
+            continue
+
+        print(f"docker ps -a")
+        subprocess.run('docker ps -a')
+
         print(cmd)
-#        if reqs:
-#            reqs_fmt = f"{';'.join(reqs)};"
-#        else:
-#            reqs_fmt = ''
-#        print(f'{reqs}\n{cmd}')
-        full_cmd = f"{reqs_fmt}{cmd}"
+        full_cmd = (
+            f"docker run -e GITHUB_WORKSPACE "
+            f"{os.environ.get('NETWORK_ARG', '')} "
+            f"{' '.join(volume_mounts)} "
+            f"{volumes_from} --workdir {github_workspace} "
+            f"{run_tag} bash -c {cmd}")
+        print(f"RUNNING: {full_cmd}")
         try:
             subprocess.run(full_cmd, check=True, shell=True)
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Command failed: {full_cmd} -- {err}")
             isOK = False
             copy_error_logs()
-
-    if compare and isOK:
-        print('******************************')
-        print("Comparing output to truth data")
-        diff_files = compare_dir(TRUTH_DIR, OUTPUT_DIR,
-                                 debug=True,
-                                 save_diff=True)
-        if diff_files:
-            isOK = False
-
-            # copy difference files into directory
-            # so it can be easily downloaded and compared
-            copy_diff_output(diff_files)
 
     if not isOK:
         sys.exit(1)
