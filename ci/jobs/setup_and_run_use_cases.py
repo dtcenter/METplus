@@ -131,7 +131,6 @@ def main():
             continue
 
         cmd_args = {'check': True,
-                    'shell': True,
                     'encoding': 'utf-8',
                     'capture_output': True,
                     }
@@ -161,6 +160,8 @@ def main():
             print(f"ERROR: Command failed -- {err}")
             isOK = False
             copy_error_logs()
+
+        print("Command ran successfully.")
 
     if not isOK:
         sys.exit(1)
