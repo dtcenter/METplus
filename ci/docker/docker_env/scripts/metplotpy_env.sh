@@ -2,7 +2,7 @@
 
 ################################################################################
 # Environment: metplotpy
-# Last Updated: 2021-06-03 (mccabe@ucar.edu)
+# Last Updated: 2021-06-08 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to run METplotpy and METcalcpy
 #   Uses pip to install kaleido because
 #   could not install via Conda (glibc conflict)
@@ -14,13 +14,14 @@
 #   cartopy==0.17.0
 #   eofs==1.3.0
 #   cmocean==1.0
-#   python-kaleido==?
+#   xarray==0.16.2
+#   python-kaleido==0.2.1
 #
 # Other Content: None
 ################################################################################
 
 # Conda environment to create
-ENV_NAME=metplotpy_env
+ENV_NAME=metplotpy
 
 # Conda environment to use as base for new environment
 BASE_ENV=$1
@@ -35,4 +36,5 @@ conda install -y --name ${ENV_NAME} -c conda-forge pingouin==0.3.8
 conda install -y --name ${ENV_NAME} -c conda-forge cartopy==0.17.0
 conda install -y --name ${ENV_NAME} -c conda-forge eofs==1.3.0
 conda install -y --name ${ENV_NAME} -c conda-forge cmocean==1.0
-/usr/local/envs/${ENV_NAME}/bin/pip3 install kaleido
+conda install -y --name ${ENV_NAME} -c conda-forge xarray==0.16.2
+/usr/local/envs/${ENV_NAME}/bin/pip3 install kaleido==0.2.1

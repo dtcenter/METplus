@@ -2,17 +2,17 @@
 
 ################################################################################
 # Environment: pygrib
-# Last Updated: 2021-06-03 (mccabe@ucar.edu)
+# Last Updated: 2021-06-08 (mccabe@ucar.edu)
 # Notes: Adds Python packages needed to read GRIB data
 # Python Packages:
-#   pygrib==?
-#   metpy==?
+#   pygrib==2.0.5
+#   metpy==1.0.1
 #
 # Other Content: None
 ################################################################################
 
 # Conda environment to create
-ENV_NAME=pygrib_env
+ENV_NAME=pygrib
 
 # Conda environment to use as base for new environment
 BASE_ENV=$1
@@ -20,5 +20,5 @@ BASE_ENV=$1
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 
-conda install -y --name ${ENV_NAME} -c conda-forge pygrib
-conda install -y --name ${ENV_NAME} -c conda-forge metpy
+conda install -y --name ${ENV_NAME} -c conda-forge pygrib==2.0.5
+conda install -y --name ${ENV_NAME} -c conda-forge metpy==1.0.1
