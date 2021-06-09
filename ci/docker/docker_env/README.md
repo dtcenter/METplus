@@ -42,7 +42,7 @@ docker push dtcenter/metplus-envs:netcdf4
 
 ### create xesmf env from py_embed_base
 ```
-docker build -t dtcenter/metplus-envs:xesmf --build-arg ENV_INSTALL_SCRIPT=xesmf_env.sh .
+docker build -t dtcenter/metplus-envs:xesmf --build-arg BASE_ENV=py_embed_base --build-arg ENV_INSTALL_SCRIPT=xesmf_env.sh .
 docker push dtcenter/metplus-envs:xesmf
 ```
 
@@ -64,7 +64,7 @@ docker build -t dtcenter/metplus-envs:pytest --build-arg ENV_INSTALL_SCRIPT=pyte
 docker push dtcenter/metplus-envs:pytest
 ```
 
-### create diff env from metplus_base
+### create diff env from netcdf4
 ```
 docker build -t dtcenter/metplus-envs:diff --build-arg BASE_ENV=netcdf4 --build-arg ENV_INSTALL_SCRIPT=diff_env.sh .
 docker push dtcenter/metplus-envs:diff
