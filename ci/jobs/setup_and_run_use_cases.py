@@ -12,14 +12,10 @@ import os
 import sys
 import subprocess
 import shlex
-import shutil
 
 import get_use_case_commands
 import get_data_volumes
 from docker_utils import get_branch_name
-
-OUTPUT_DIR = '/data/output'
-ERROR_LOG_DIR = '/data/error_logs'
 
 runner_workspace = os.environ.get('RUNNER_WORKSPACE')
 github_workspace = os.environ.get('GITHUB_WORKSPACE')
@@ -30,41 +26,6 @@ ws_path = os.path.join(runner_workspace, repo_name)
 docker_data_dir = '/data'
 docker_output_dir = os.path.join(docker_data_dir, 'output')
 gha_output_dir = os.path.join(runner_workspace, 'output')
-docker_error_dir = os.path.join(docker_data_dir, 'error_logs')
-gha_error_dir = os.path.join(runner_workspace, 'error_logs')
-
-def copy_error_logs():
-    """! Copy log output to error log directory if any use case failed """
-    use_case_dirs = os.listdir(gha_output_dir)
-    for use_case_dir in use_case_dirs:
-        log_dir = os.path.join(gha_output_dir,
-                               use_case_dir,
-                               'logs')
-        if not os.path.isdir(log_dir):
-            continue
-
-        # check if there are errors in the metplus.log file and
-        # only copy directory if there are any errors
-        metplus_log = os.path.join(log_dir, 'metplus.log')
-        found_errors = False
-        with open(metplus_log, 'r') as file_handle:
-            if 'ERROR:' in file_handle.read():
-                found_errors = True
-        if not found_errors:
-            continue
-
-        output_dir = os.path.join(gha_error_dir,
-                                  use_case_dir)
-        log_files = os.listdir(log_dir)
-        for log_file in log_files:
-            log_path = os.path.join(log_dir, log_file)
-            output_path = os.path.join(output_dir, log_file)
-            print(f"Copying {log_path} to {output_path}")
-            # create output directory if it doesn't exist
-            output_dir = os.path.dirname(output_path)
-            if not os.path.exists(output_dir):
-                os.makedirs(output_dir)
-            shutil.copyfile(log_path, output_path)
 
 def main():
     categories, subset_list, _ = (
@@ -94,7 +55,6 @@ def main():
     volume_mounts = [
         f"-v {runner_workspace}/output/mysql:/var/lib/mysql",
         f"-v {gha_output_dir}:{docker_output_dir}",
-        f"-v {gha_error_dir}:{docker_error_dir}",
         f"-v {ws_path}:{github_workspace}",
     ]
 
@@ -164,11 +124,11 @@ def main():
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Command failed -- {err}")
             isOK = False
-            copy_error_logs()
 
         print("Command ran successfully.")
 
     if not isOK:
+        print("ERROR: Some commands failed.")
         sys.exit(1)
 
 if __name__ == '__main__':
