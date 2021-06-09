@@ -73,3 +73,10 @@ try:
 except subprocess.CalledProcessError as err:
     print(f"ERROR: Command failed -- {err}")
     sys.exit(1)
+
+# check if difference output was found or is not empty
+# exit non-zero if there are difference files
+diff_dir = os.path.join(WS_PATH, 'artifact', 'diff')
+if os.path.exists(diff_dir) and os.listdir(diff_dir):
+    print("ERROR: Difference output found!")
+    sys.exit(1)

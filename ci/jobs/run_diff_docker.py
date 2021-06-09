@@ -97,10 +97,8 @@ def main():
 
     # copy difference files into directory
     # so it can be easily downloaded and compared
-    if not diff_files:
-        sys.exit(1)
-
-    copy_diff_output(diff_files)
+    if diff_files:
+        copy_diff_output(diff_files)
 
 if __name__ == '__main__':
     main()
