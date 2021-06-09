@@ -125,8 +125,6 @@ def main():
             print(f"ERROR: Command failed -- {err}")
             isOK = False
 
-        print("Command ran successfully.")
-
     if not isOK:
         print("ERROR: Some commands failed.")
         sys.exit(1)
