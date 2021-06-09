@@ -154,7 +154,7 @@ jobs:
         if: ${{ env.run_this_case == 'true' }}
       - name: Get artifact name
         id: get-artifact-name
-        runs: |
+        run: |
           artifact_name=`ci/jobs/get_artifact_name.sh ${{ matrix.categories }}`
           echo ::set-output name=artifact_name::${artifact_name}
       - uses: ./ci/actions/run_tests
