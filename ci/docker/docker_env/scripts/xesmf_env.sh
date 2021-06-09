@@ -17,4 +17,4 @@ ENV_NAME=xesmf
 BASE_ENV=$1
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
-conda install -y --name ${ENV_NAME} -c conda-forge xesmf==0.3.0
+conda install -y --name ${ENV_NAME} -c conda-forge xesmf
