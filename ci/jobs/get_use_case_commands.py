@@ -56,15 +56,24 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
         for use_case_by_requirement in use_cases_by_requirement:
             requirements = use_case_by_requirement.requirements
 
-            # if requirement ending with _env is set, use that version of python3 to run
-            use_env = [item for item in requirements if item.endswith('_env')]
-            if use_env and host_name == 'docker':
-                python_path = f"/usr/local/envs/{use_env[0].replace('_env', '')}/bin/python3"
-            else:
-                python_path = 'python3'
+            add_python_to_path = ''
+            conda_env = None
 
-            # if py_embed listed in requirements, set MET_PYTHON_EXE
-            if 'py_embed' in requirements:
+            # if requirement ending with _env is set, then
+            # use that version of python3 to run
+            use_env = [item for item in requirements if item.endswith('_env')]
+            if use_env:
+                conda_env = use_env[0].replace('_env', '')
+                # if using docker, add conda bin to beginning of PATH
+                if host_name == 'docker':
+                    python_dir = os.path.join('/usr', 'local', 'envs',
+                                              conda_env, 'bin')
+                    python_path = os.path.join(python_dir, 'python3')
+                    add_python_to_path = f'export PATH={python_dir}:$PATH; '
+
+            # if py_embed listed in requirements and using a Python
+            # environment that differs from the MET env, set MET_PYTHON_EXE
+            if 'py_embed' in requirements and conda_env:
                 py_embed_arg = f' user_env_vars.MET_PYTHON_EXE={python_path}'
             else:
                 py_embed_arg = ''
@@ -72,7 +81,7 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             use_case_cmds = []
             for use_case in use_case_by_requirement.use_cases:
                 output_base = os.path.join(output_top_dir, use_case.name)
-                use_case_cmd = (f"{python_path} run_metplus.py "
+                use_case_cmd = (f"{add_python_to_path}run_metplus.py "
                                 f"{' '.join(use_case.config_args)} "
                                 f"config.OUTPUT_BASE={output_base}"
                                 f"{py_embed_arg}")
