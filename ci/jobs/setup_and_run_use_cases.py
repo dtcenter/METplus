@@ -142,17 +142,10 @@ def main():
             f"{os.environ.get('NETWORK_ARG', '')} "
             f"{' '.join(volume_mounts)} "
             f"{volumes_from} --workdir {github_workspace} "
-            f'{run_tag} bash -c "{cmd}"')
+            f'{run_tag} bash -c "echo $PATH; ls /metplus/METplus;{cmd}"')
+#            f'{run_tag} bash -c "{cmd}"')
         print(f"RUNNING: {full_cmd}")
         try:
-        #     popen = subprocess.Popen(shlex.split(full_cmd),
-        #                              stdout=subprocess.PIPE,
-        #                              universal_newlines=True)
-        #     for stdout_line in iter(popen.stdout.readline, ""):
-        #         yield stdout_line
-        #     return_code = popen.wait()
-        #     if return_code:
-        #         raise subprocess.CalledProcessError(return_code, full_cmd)
             process = subprocess.Popen(shlex.split(full_cmd),
                                        shell=False,
                                        encoding='utf-8',
@@ -168,9 +161,7 @@ def main():
             rc = process.poll()
             if rc:
                 raise subprocess.CalledProcessError(rc, full_cmd)
-#            output = subprocess.run(shlex.split(full_cmd),
-#                                    **cmd_args).stdout.strip()
-#            print(output)
+
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Command failed -- {err}")
             isOK = False
