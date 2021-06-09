@@ -7,7 +7,7 @@
 import sys
 import os
 
-# add internal_tests/use_cases directory to path so the test suite can be found
+# add METplus directory to sys path so the test suite can be found
 USE_CASES_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__),
                                              os.pardir,
                                              os.pardir))
@@ -52,16 +52,16 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
 
     output_top_dir = os.environ.get('METPLUS_TEST_OUTPUT_BASE', '/data/output')
 
-    for group_name, use_cases_by_requirement in test_suite.category_groups.items():
-        for use_case_by_requirement in use_cases_by_requirement:
-            requirements = use_case_by_requirement.requirements
+    for group_name, use_cases_by_req in test_suite.category_groups.items():
+        for use_case_by_requirement in use_cases_by_req:
+            reqs = use_case_by_requirement.requirements
 
             setup_env = 'source /etc/bashrc;'
             conda_env = None
 
             # if requirement ending with _env is set, then
             # use that version of python3 to run
-            use_env = [item for item in requirements if item.endswith('_env')]
+            use_env = [item for item in reqs if item.endswith('_env')]
             if use_env:
                 conda_env = use_env[0].replace('_env', '')
                 # if using docker, add conda bin to beginning of PATH
@@ -73,21 +73,32 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
 
             # if py_embed listed in requirements and using a Python
             # environment that differs from the MET env, set MET_PYTHON_EXE
-            if 'py_embed' in requirements and conda_env:
+            if 'py_embed' in reqs and conda_env:
                 py_embed_arg = f' user_env_vars.MET_PYTHON_EXE={python_path}'
             else:
                 py_embed_arg = ''
+
+            # add parm/use_cases path to config args if they are conf files
+            config_args = []
+            for config_arg in use_case.config_args:
+                if config_arg.endswith('.conf'):
+                    config_arg = os.path.join(work_dir, 'parm', 'use_cases',
+                                              config_arg)
+
+                config_args.append(config_arg)
+
+
 
             use_case_cmds = []
             for use_case in use_case_by_requirement.use_cases:
                 output_base = os.path.join(output_top_dir, use_case.name)
                 use_case_cmd = (f"{setup_env} run_metplus.py "
-                                f"{' '.join(use_case.config_args)} "
+                                f"{' '.join(config_args)} "
                                 f"config.OUTPUT_BASE={output_base}"
                                 f"{py_embed_arg}")
                 use_case_cmds.append(use_case_cmd)
             group_commands = ';'.join(use_case_cmds)
-            all_commands.append((group_commands, requirements))
+            all_commands.append((group_commands, reqs))
 
     return all_commands
 
