@@ -155,7 +155,6 @@ jobs:
         if: ${{ env.run_this_case == 'true' }}
         with:
           categories: ${{ matrix.categories }}
-          run_diff: ${{ env.run_diff }}
 
       # copy logs with errors to error_logs directory to save as artifact
       - name: Save error logs
@@ -172,9 +171,11 @@ jobs:
           fi
 
       # run difference testing
-      #- name: Run difference tests
-      #  if: env.run_diff && steps.run_tests.conclusion == 'success'
-      #  run:
+      - name: Run difference tests
+        if: env.run_diff && steps.run_tests.conclusion == 'success'
+        run: |
+          artifact_name=`ci/jobs/get_artifact_name.sh ${{ matrix.categories }}`
+          ci/jobs/run_diff.py ${{ matrix.categories }} $artifact_name
       # copy output data to save as artifact
       - name: Save output data
         id: save-output

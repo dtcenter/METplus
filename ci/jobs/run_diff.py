@@ -1,0 +1,43 @@
+#! /usr/bin/env python3
+
+import os
+import sys
+
+ci_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), 'ci')
+sys.path.insert(0, ci_dir)
+
+from jobs import get_data_volumes
+
+from util.diff_util import compare_dir
+
+CI_JOBS_DIR = 'ci/jobs'
+
+RUNNER_WORKSPACE = os.environ.get('RUNNER_WORKSPACE')
+GITHUB_WORKSPACE = os.environ.get('GITHUB_WORKSPACE')
+REPO_NAME = os.path.basename(RUNNER_WORKSPACE)
+WS_PATH = os.path.join(RUNNER_WORKSPACE, REPO_NAME)
+print(f"WS_PATH is {WS_PATH}")
+print(f"GITHUB_WORKSPACE is {GITHUB_WORKSPACE}")
+
+INPUT_CATEGORIES = sys.argv[1]
+artifact_name = sys.argv[2]
+
+# get output data volumes
+print("Get Docker data volumes for output data")
+
+# use develop branch output data volumes if not a pull request (forced diff)
+if os.environ.get('GITHUB_EVENT_NAME') == "pull_request":
+    output_data_branch = os.environ.get('GITHUB_BASE_REF')
+else:
+    output_data_branch = 'develop'
+
+output_category = f"output-{output_data_branch}-{artifact_name}"
+
+VOLUMES_FROM = get_data_volumes.main([output_category])
+
+print(f"Output Volumes: {VOLUMES_FROM}")
+
+cmd = f'{GITHUB_WORKSPACE}/ci/utils/diff_util.sh /data/truth /data/output save_diff'
+# run inside diff env: mount METplus code and output dir, volumes from output volumes
+print(f'docker run {VOLUMES_FROM} -v {WS_PATH}:{GITHUB_WORKSPACE} -v {RUNNER_WORKSPACE}/output:/data/output dtcenter/metplus-envs:diff bash -c "{cmd}"')
+#docker run ${VOLUMES_FROM} -v ${WS_PATH}:${GITHUB_WORKSPACE} -v ${RUNNER_WORKSPACE}/output:/data/output dtcenter/metplus-envs:diff bash -c "$cmd"
