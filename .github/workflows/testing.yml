@@ -172,10 +172,16 @@ jobs:
 
       # run difference testing
       - name: Run difference tests
+        id: run-diff
         if: env.run_diff && steps.run_tests.conclusion == 'success'
         run: |
           artifact_name=`ci/jobs/get_artifact_name.sh ${{ matrix.categories }}`
           ci/jobs/setup_and_run_diff.py ${{ matrix.categories }} $artifact_name
+          if [ $? == 0 ]; then
+            echo ::set-output name=upload_diff::true
+          else
+            echo ::set-output name=upload_diff::false
+          fi
       # copy output data to save as artifact
       - name: Save output data
         id: save-output
@@ -207,7 +213,7 @@ jobs:
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v2
         name: Upload difference data artifact
-        if: ${{ always() && steps.save-output.outputs.upload_diff }}
+        if: ${{ always() && steps.run-diff.outputs.upload_diff }}
         with:
           name: diff-${{ steps.save-output.outputs.artifact_name }}
           path: artifact/diff-${{ steps.save-output.outputs.artifact_name }}
