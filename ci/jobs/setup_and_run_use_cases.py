@@ -124,7 +124,7 @@ def main():
         print(f"Building Docker environment/branch image...\n"
               f"Running: {docker_build_cmd}")
         try:
-            subprocess.run(shelx.split(docker_build_cmd), check=True)
+            subprocess.run(shlex.split(docker_build_cmd), check=True)
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Docker Build failed: {docker_build_cmd} -- {err}")
             isOK = False
