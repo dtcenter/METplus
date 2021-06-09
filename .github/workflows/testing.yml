@@ -182,7 +182,7 @@ jobs:
       # run difference testing
       - name: Run difference tests
         id: run-diff
-        if: env.run_diff && steps.run_tests.conclusion == 'success'
+        if: ${{ env.run_diff && steps.run_tests.conclusion == 'success' }}
         run: |
           artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
           ci/jobs/setup_and_run_diff.py ${{ matrix.categories }} $artifact_name
