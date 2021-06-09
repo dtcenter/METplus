@@ -7,7 +7,7 @@
 # permissions to push Docker images to DockerHub, the script is
 # is also called (in ci/actions/run_tests/entrypoint.sh) to
 # build the Docker image to use for each use case test group
-exit
+
 branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
   branch_name=${branch_name}-pull_request
