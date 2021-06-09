@@ -157,6 +157,19 @@ jobs:
           categories: ${{ matrix.categories }}
           run_diff: ${{ env.run_diff }}
 
+      # copy logs with errors to error_logs directory to save as artifact
+      - name: Save error logs
+        id: save-errors
+        if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
+        run: >
+          ci/jobs/copy_error_logs.py
+            ${RUNNER_WORKSPACE}/output
+            ${RUNNER_WORKSPACE}/artifact/error_logs;
+          if [ -d "${RUNNER_WORKSPACE}/artifact/error_logs" ]; then
+            echo ::set-output name=upload_error_logs::true;
+          else
+            echo ::set-output name=upload_error_logs::false;
+          fi
       # copy output data to save as artifact
       - name: Save output data
         id: save-output
@@ -173,25 +186,28 @@ jobs:
           else
             echo ::set-output name=upload_diff::false
           fi
-          if [ "$( ls -A ${GITHUB_WORKSPACE}/../error_logs)" ]; then
-            mkdir -p artifact/error_logs
-            cp -r ${GITHUB_WORKSPACE}/../error_logs/* artifact/error_logs
-            echo ::set-output name=upload_error_logs::true
-          else
-            echo ::set-output name=upload_error_logs::false
-          fi
+          #if [ "$( ls -A ${GITHUB_WORKSPACE}/../error_logs)" ]; then
+          #  mkdir -p artifact/error_logs
+          #  cp -r ${GITHUB_WORKSPACE}/../error_logs/* artifact/error_logs
+          #  echo ::set-output name=upload_error_logs::true
+          #else
+          #  echo ::set-output name=upload_error_logs::false
+          #fi
       - uses: actions/upload-artifact@v2
+        name: Upload output data artifact
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         with:
           name: ${{ steps.save-output.outputs.artifact_name }}
           path: artifact/${{ steps.save-output.outputs.artifact_name }}
       - uses: actions/upload-artifact@v2
+        name: Upload error logs artifact
         if: ${{ always() && steps.save-output.outputs.upload_error_logs }}
         with:
           name: error_logs
           path: artifact/error_logs
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v2
+        name: Upload difference data artifact
         if: ${{ always() && steps.save-output.outputs.upload_diff }}
         with:
           name: diff-${{ steps.save-output.outputs.artifact_name }}
