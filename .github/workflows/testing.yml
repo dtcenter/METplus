@@ -149,9 +149,14 @@ jobs:
           chmod a+w $RUNNER_WORKSPACE/mysql
           chmod a+w $RUNNER_WORKSPACE/output/metviewer
       - name: Create directory for artifacts
-        run: mkdir -p artifact
+        run: mkdir -p artifact; ls -lh artifact
       - uses: actions/checkout@v2
         if: ${{ env.run_this_case == 'true' }}
+      - name: Get artifact name
+        id: get-artifact-name
+        runs: |
+          artifact_name=`ci/jobs/get_artifact_name.sh ${{ matrix.categories }}`
+          echo ::set-output name=artifact_name::${artifact_name}
       - uses: ./ci/actions/run_tests
         id: run_tests
         if: ${{ env.run_this_case == 'true' }}
@@ -177,7 +182,7 @@ jobs:
         id: run-diff
         if: env.run_diff && steps.run_tests.conclusion == 'success'
         run: |
-          artifact_name=`ci/jobs/get_artifact_name.sh ${{ matrix.categories }}`
+          artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
           ci/jobs/setup_and_run_diff.py ${{ matrix.categories }} $artifact_name
           if [ $? == 0 ]; then
             echo ::set-output name=upload_diff::true
@@ -189,23 +194,16 @@ jobs:
         id: save-output
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         run: |
-          artifact_name=`ci/jobs/get_artifact_name.sh ${{matrix.categories}}`
+          artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
+          ls -lh artifact
           mkdir -p artifact/${artifact_name}
           cp -r ${RUNNER_WORKSPACE}/output/* artifact/${artifact_name}/
-          echo ::set-output name=artifact_name::${artifact_name}
-          #if [ "$( ls -A ${RUNNER_WORKSPACE}/diff)" ]; then
-          #  mkdir -p artifact/diff-${artifact_name}
-          #  cp -r ${RUNNER_WORKSPACE}/diff/* artifact/diff-${artifact_name}/
-          #  echo ::set-output name=upload_diff::true
-          #else
-          #  echo ::set-output name=upload_diff::false
-          #fi
       - uses: actions/upload-artifact@v2
         name: Upload output data artifact
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         with:
-          name: ${{ steps.save-output.outputs.artifact_name }}
-          path: artifact/${{ steps.save-output.outputs.artifact_name }}
+          name: ${{ steps.get-artifact-name.outputs.artifact_name }}
+          path: artifact/${{ steps.get-artifact-name.outputs.artifact_name }}
       - uses: actions/upload-artifact@v2
         name: Upload error logs artifact
         if: ${{ always() && steps.save-errors.outputs.upload_error_logs }}
@@ -217,8 +215,8 @@ jobs:
         name: Upload difference data artifact
         if: ${{ always() && steps.run-diff.outputs.upload_diff }}
         with:
-          name: diff-${{ steps.save-output.outputs.artifact_name }}
-          path: artifact/diff-${{ steps.save-output.outputs.artifact_name }}
+          name: diff-${{ steps.get-artifact-name.outputs.artifact_name }}
+          path: artifact/diff-${{ steps.get-artifact-name.outputs.artifact_name }}
           if-no-files-found: ignore
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
