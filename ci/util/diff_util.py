@@ -460,3 +460,10 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
         return False
 
     return is_equal
+
+if __name__ == '__main__':
+    dir_a = sys.argv[1]
+    dir_b = sys.argv[2]
+    if len(sys.argv) > 3:
+        save_diff = True
+    compare_dir(dir_a, dir_b, debug=True, save_diff=save_diff)
