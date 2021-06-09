@@ -143,7 +143,7 @@ def main():
             f"{os.environ.get('NETWORK_ARG', '')} "
             f"{' '.join(volume_mounts)} "
             f"{volumes_from} --workdir {github_workspace} "
-            f"{run_tag} bash -c {cmd}")
+            f'{run_tag} bash -c "{cmd}"')
         print(f"RUNNING: {full_cmd}")
         try:
         #     popen = subprocess.Popen(shlex.split(full_cmd),
@@ -154,9 +154,21 @@ def main():
         #     return_code = popen.wait()
         #     if return_code:
         #         raise subprocess.CalledProcessError(return_code, full_cmd)
-            output = subprocess.run(shlex.split(full_cmd),
-                                    **cmd_args).stdout.strip()
-            print(output)
+            process = subprocess.Popen(shlex.split(full_cmd),
+                                       shell=False,
+                                       stdout=process.PIPE,
+                                       stderr=STDOUT)
+            # Poll process.stdout to show stdout live
+            while True:
+                output = process.stdout.readline()
+                if process.poll() is not None:
+                    break
+                if output:
+                    print output.strip()
+            rc = process.poll()
+#            output = subprocess.run(shlex.split(full_cmd),
+#                                    **cmd_args).stdout.strip()
+#            print(output)
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Command failed -- {err}")
             isOK = False
