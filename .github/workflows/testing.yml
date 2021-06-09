@@ -160,16 +160,24 @@ jobs:
       # copy logs with errors to error_logs directory to save as artifact
       - name: Save error logs
         id: save-errors
-        if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
+        if: ${{ always() && steps.run_tests.conclusion == 'failed' }}
         run: |
+          echo current dir:
+          pwd
+          ls
           ci/jobs/copy_error_logs.py \
             ${RUNNER_WORKSPACE}/output \
-            ${RUNNER_WORKSPACE}/artifact/error_logs
-          if [ -d "${RUNNER_WORKSPACE}/artifact/error_logs" ]; then
+            artifact/error_logs
+          if [ -d "artifact/error_logs" ]; then
             echo ::set-output name=upload_error_logs::true
           else
             echo ::set-output name=upload_error_logs::false
           fi
+
+      # run difference testing
+      #- name: Run difference tests
+      #  if: env.run_diff && steps.run_tests.conclusion == 'success'
+      #  run:
       # copy output data to save as artifact
       - name: Save output data
         id: save-output
