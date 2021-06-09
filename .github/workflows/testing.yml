@@ -149,11 +149,13 @@ jobs:
           chmod a+w $RUNNER_WORKSPACE/mysql
           chmod a+w $RUNNER_WORKSPACE/output/metviewer
       - name: Create directory for artifacts
-        run: mkdir -p artifact; ls -lh; whoami; echo $UID
+        if: ${{ env.run_this_case == 'true' }}
+        run: mkdir -p artifact
       - uses: actions/checkout@v2
         if: ${{ env.run_this_case == 'true' }}
       - name: Get artifact name
         id: get-artifact-name
+        if: ${{ env.run_this_case == 'true' }}
         run: |
           artifact_name=`ci/jobs/get_artifact_name.sh ${{ matrix.categories }}`
           echo ::set-output name=artifact_name::${artifact_name}
