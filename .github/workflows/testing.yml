@@ -160,7 +160,7 @@ jobs:
       # copy logs with errors to error_logs directory to save as artifact
       - name: Save error logs
         id: save-errors
-        if: ${{ always() && steps.run_tests.conclusion == 'failed' }}
+        if: ${{ always() && steps.run_tests.conclusion == 'failure' }}
         run: |
           echo current dir:
           pwd
