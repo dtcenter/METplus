@@ -161,14 +161,14 @@ jobs:
       - name: Save error logs
         id: save-errors
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
-        run: >
-          ci/jobs/copy_error_logs.py
-            ${RUNNER_WORKSPACE}/output
-            ${RUNNER_WORKSPACE}/artifact/error_logs;
+        run: |
+          ci/jobs/copy_error_logs.py \
+            ${RUNNER_WORKSPACE}/output \
+            ${RUNNER_WORKSPACE}/artifact/error_logs
           if [ -d "${RUNNER_WORKSPACE}/artifact/error_logs" ]; then
-            echo ::set-output name=upload_error_logs::true;
+            echo ::set-output name=upload_error_logs::true
           else
-            echo ::set-output name=upload_error_logs::false;
+            echo ::set-output name=upload_error_logs::false
           fi
       # copy output data to save as artifact
       - name: Save output data
