@@ -22,9 +22,10 @@ from diff_util import compare_dir
 
 TRUTH_DIR = '/data/truth'
 OUTPUT_DIR = '/data/output'
-DIFF_DIR = os.path.join(GITHUB_WORKSPACE,
-                        'artifact',
-                        'diff')
+DIFF_DIR = '/data/diff'
+# DIFF_DIR = os.path.join(GITHUB_WORKSPACE,
+#                         'artifact',
+#                         'diff')
 
 def copy_diff_output(diff_files):
     """!  Loop through difference output and copy files

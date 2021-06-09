@@ -40,6 +40,7 @@ print(f"Output Volumes: {VOLUMES_FROM}")
 volume_mounts = [
     f'-v {WS_PATH}:{GITHUB_WORKSPACE}',
     f'-v {RUNNER_WORKSPACE}/output:/data/output',
+    f'-v {RUNNER_WORKSPACE}/diff:/data/diff',
 ]
 
 mount_args = ' '.join(volume_mounts)
@@ -76,7 +77,8 @@ except subprocess.CalledProcessError as err:
 
 # check if difference output was found or is not empty
 # exit non-zero if there are difference files
-diff_dir = os.path.join(WS_PATH, 'artifact', 'diff')
+#diff_dir = os.path.join(WS_PATH, 'artifact', 'diff')
+diff_dir = os.path.join(RUNNER_WORKSPACE, 'diff')
 if os.path.exists(diff_dir) and os.listdir(diff_dir):
     print("ERROR: Difference output found!")
     sys.exit(1)

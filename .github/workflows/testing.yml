@@ -185,9 +185,11 @@ jobs:
           artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
           ci/jobs/setup_and_run_diff.py ${{ matrix.categories }} $artifact_name
           if [ $? == 0 ]; then
-            echo ::set-output name=upload_diff::true
-          else
             echo ::set-output name=upload_diff::false
+          else
+            mkdir -p artifact/diff
+            cp -r ${RUNNER_WORKSPACE}/diff/* artifact/diff/
+            echo ::set-output name=upload_diff::true
           fi
       # copy output data to save as artifact
       - name: Save output data
