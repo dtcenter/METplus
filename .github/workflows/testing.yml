@@ -149,7 +149,7 @@ jobs:
           chmod a+w $RUNNER_WORKSPACE/mysql
           chmod a+w $RUNNER_WORKSPACE/output/metviewer
       - name: Create directory for artifacts
-        run: mkdir -p artifact; ls -lh artifact
+        run: mkdir -p artifact; ls -lh; whoami; echo $UID
       - uses: actions/checkout@v2
         if: ${{ env.run_this_case == 'true' }}
       - name: Get artifact name
@@ -195,7 +195,7 @@ jobs:
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         run: |
           artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
-          ls -lh artifact
+          ls -lh
           mkdir -p artifact/${artifact_name}
           cp -r ${RUNNER_WORKSPACE}/output/* artifact/${artifact_name}/
       - uses: actions/upload-artifact@v2
