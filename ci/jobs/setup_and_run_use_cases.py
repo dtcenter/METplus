@@ -164,8 +164,10 @@ def main():
                 if process.poll() is not None:
                     break
                 if output:
-                    print output.strip()
+                    print(output.strip())
             rc = process.poll()
+            if rc:
+                raise subprocess.CalledProcessError(rc, full_cmd)
 #            output = subprocess.run(shlex.split(full_cmd),
 #                                    **cmd_args).stdout.strip()
 #            print(output)
