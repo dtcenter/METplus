@@ -142,8 +142,7 @@ def main():
             f"{os.environ.get('NETWORK_ARG', '')} "
             f"{' '.join(volume_mounts)} "
             f"{volumes_from} --workdir {github_workspace} "
-            f'{run_tag} bash -c "echo $PATH; ls /metplus/METplus;{cmd}"')
-#            f'{run_tag} bash -c "{cmd}"')
+            f'{run_tag} bash -c "{cmd}"')
         print(f"RUNNING: {full_cmd}")
         try:
             process = subprocess.Popen(shlex.split(full_cmd),
