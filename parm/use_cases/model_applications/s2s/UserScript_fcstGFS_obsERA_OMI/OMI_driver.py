@@ -49,13 +49,13 @@ def run_omi_steps(inlabel, inconfig, spd, olr_eoffile, oplot_dir):
     # project OLR onto EOFs
     #### The code called here goes into METcalcpy
     #### It is currently from the compute_mjo_indices.py
-    PC1, PC2 = cmi.omi(olr[0:ntim,:,:], time, spd, 'UserScript_fcstGFS_obsERA_OMI/')
+    PC1, PC2 = cmi.omi(olr[0:ntim,:,:], time, spd, '/d1/kalb/METplus_Data/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/EOF/')
 
     print(PC1.min(), PC1.max())
 
     # Setup the PC phase diagram
     ####  This grabs the time window for the plot from the configuration file
-    plot_time, months, days, ntim_plot = compute_plot_times(inconfig,use_init)
+    plot_time, months, days, ntim_plot = compute_plot_times(inconfig,use_init,'compute_omi','PHASE_PLOT')
     PC1_plot = PC1.sel(time=slice(plot_time[0],plot_time[-1]))
     PC2_plot = PC2.sel(time=slice(plot_time[0],plot_time[-1]))
     PC1_plot = PC1_plot[0:ntim_plot]
@@ -65,7 +65,7 @@ def run_omi_steps(inlabel, inconfig, spd, olr_eoffile, oplot_dir):
     # plot the PC phase diagram
     ####  This will need to go into METplotpy
     ####  It is currently in plot_mjo_indices.py
-    phase_diagram('OMI',PC1,PC2,plot_time,months,days,phase_plot_name,phase_plot_format)
+    pmi.phase_diagram('OMI',PC1,PC2,plot_time,months,days,phase_plot_name,phase_plot_format)
 
 
 def main():
@@ -76,7 +76,7 @@ def main():
 
     # Read in EOF filenames and number of obs per day
     olr_eoffile = config.getraw('compute_omi','OLR_EOF_FILENAME','')
-    spd = config.getint('compute_rmm','OBS_PER_DAY',1)
+    spd = config.getint('compute_omi','OBS_PER_DAY',1)
 
     # Check for an output plot directory in the configs.  Create one if it does not exist
     oplot_dir = config.getstr('compute_omi','OMI_PLOT_OUTPUT_DIR','')

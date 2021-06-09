@@ -48,15 +48,15 @@ def find_times(inconfig, use_init):
     return datetime_list
 
 
-def compute_plot_times(inconfig,use_init):
+def compute_plot_times(inconfig,use_init,config_sect,ptime_var):
     if use_init:
-        inconfig.set('compute_rmm','INIT_BEG',inconfig.getstr('compute_rmm','TIMESERIES_PLOT_INIT_BEG'))
-        inconfig.set('compute_rmm','INIT_END',inconfig.getstr('compute_rmm','TIMESERIES_PLOT_INIT_END'))
+        inconfig.set(config_sect,'INIT_BEG',inconfig.getstr(config_sect,ptime_var+'_INIT_BEG'))
+        inconfig.set(config_sect,'INIT_END',inconfig.getstr(config_sect,ptime_var+'_INIT_END'))
     else:
-        inconfig.set('compute_rmm','VALID_BEG',inconfig.getstr('compute_rmm','TIMESERIES_PLOT_VALID_BEG'))
-        inconfig.set('compute_rmm','VALID_END',inconfig.getstr('compute_rmm','TIMESERIES_PLOT_VALID_END'))
+        inconfig.set(config_sect,'VALID_BEG',inconfig.getstr(config_sect,ptime_var+'_VALID_BEG'))
+        inconfig.set(config_sect,'VALID_END',inconfig.getstr(config_sect,ptime_var+'_VALID_END'))
 
-    pltconfig = config_metplus.replace_config_from_section(inconfig,'compute_rmm')
+    pltconfig = config_metplus.replace_config_from_section(inconfig,config_sect)
     plot_alltimes = find_times(pltconfig, use_init)
     plot_time = np.array([t_obj2['valid'] for t_obj2 in plot_alltimes],dtype='datetime64')
     months = [t_obj2['valid'].month for t_obj2 in plot_alltimes]

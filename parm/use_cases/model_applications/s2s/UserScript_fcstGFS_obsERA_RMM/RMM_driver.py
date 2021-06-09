@@ -70,7 +70,7 @@ def run_rmm_steps(inlabel, inconfig, spd, olr_eoffile, u850_eoffile, u200_eoffil
 
     # Setup the PC phase diagram
     ####  This grabs the time window for the plot from the configuration file
-    plot_time, months, days, ntim_plot = compute_plot_times(inconfig,use_init)
+    plot_time, months, days, ntim_plot = compute_plot_times(inconfig,use_init,'compute_rmm')
     PC1_plot = PC1.sel(time=slice(plot_time[0],plot_time[-1]))
     PC2_plot = PC2.sel(time=slice(plot_time[0],plot_time[-1]))
     PC1_plot = PC1_plot[0:ntim_plot]
@@ -84,7 +84,7 @@ def run_rmm_steps(inlabel, inconfig, spd, olr_eoffile, u850_eoffile, u200_eoffil
 
     # Setup PC time series plot
     ####  This grabs the time window for the plot from the configuration file
-    plot_time, months, days, ntim_plot = compute_plot_times(inconfig,use_init)
+    plot_time, months, days, ntim_plot = compute_plot_times(inconfig,use_init,'compute_rmm','TIMESERIES_PLOT')
     PC1 = PC1.sel(time=slice(plot_time[0],plot_time[-1]))
     PC2 = PC2.sel(time=slice(plot_time[0],plot_time[-1]))
     PC1_plot = PC1_plot[0:ntim_plot]

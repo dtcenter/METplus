@@ -25,41 +25,55 @@ def run_phasediagram_steps(inlabel, inconfig, oplot_dir):
 
     # which index are we plotting
     indexname = fileconfig.getstr('config', 'PLOT_INDEX')
-    print(indexname)
-    #indexname = 'RMM'  # 'RMM' or 'OMI'
 
-    # set dates to read and plot
-    datestrt = 20120101
-    datelast = 20120331
+    # Get input filename and make sure it exists
+    pltfile = os.path.join(fileconfig.getraw('config',inlabel+'_PHASE_DIAGRAM_INPUT_DIR'),
+        fileconfig.getraw('config',inlabel+'_PHASE_DIAGRAM_INPUT_FILE'))
 
     # read data from text file
     if indexname=='OMI':
-        data = pd.read_csv('UserScript_fcstGFS_obsERA_PhaseDiagram/omi.1x.txt', header=None, delim_whitespace=True, names=['yyyy','mm','dd','hh','pc1','pc2','amp'])
+        data = pd.read_csv(pltfile, header=None, delim_whitespace=True, names=['yyyy','mm','dd','hh','pc1','pc2','amp'],
+            parse_dates={'dtime':['yyyy','mm','dd','hh']})
     elif indexname=='RMM':
-        data = pd.read_csv('UserScript_fcstGFS_obsERA_PhaseDiagram/rmm.1x.txt',  header=None, delim_whitespace=True, names=['yyyy','mm','dd', 'pc1','pc2','phase','amp','source'])
+        data = pd.read_csv(pltfile,  header=None, delim_whitespace=True,
+            names=['yyyy','mm','dd', 'pc1','pc2','phase','amp','source'], parse_dates={'dtime':['yyyy','mm','dd']})
 
-    DATES = data.yyyy.values*10000 + data.mm.values*100 + data.dd.values
-    MONTHS = data.mm.values
-    DAYS = data.dd.values
-    print(DATES)
-    print(type(DATES))
-    print(alldata_time)
-    exit()
+    #DATES = data.yyyy.values*10000 + data.mm.values*100 + data.dd.values
+    #MONTHS = data.mm.values
+    #DAYS = data.dd.values
+    #fdates = np.array(data.dtimes)
+    #print(fdates)
+    #exit()
+
+    keepdata = []
+    for dd in alldata_time:
+        timeloc = np.where(data.dtime == dd['valid'])
+        if len(timeloc[0]) > 0:
+            for l in timeloc[0]:
+                keepdata.append(l)
+
+    print(data.iloc[keepdata])
+    #PC1 = data.pc1[keepdata].values
+    #PC2 = data.pc2[keepdata].values
+    #print(data.dtime[keepdata].values)
+    exit()   
 
     # Find the dates that are requested in the RMM or OMI data
-
-    istrt = np.where(DATES==datestrt)[0][0]
-    ilast = np.where(DATES==datelast)[0][0]
-    print(DATES[istrt], DATES[ilast])
-    #print(istrt, ilast)
+    #datestrt = 20120101
+    #datelast = 20120331
+    #istrt = np.where(DATES==datestrt)[0][0]
+    #ilast = np.where(DATES==datelast)[0][0]
 
     # subset data to only the dates we want to plot
     dates = DATES[istrt:ilast+1]
     months = MONTHS[istrt:ilast+1]
     days = DAYS[istrt:ilast+1]
-    print(dates.min(), dates.max())
     PC1 = data.pc1.values[istrt:ilast+1]
     PC2 = data.pc2.values[istrt:ilast+1]
+
+    print(type(dates))
+    #print(dates)
+    exit()
 
     # plot the phase diagram
     phase_diagram(indexname,PC1,PC2,dates,months,days,indexname+'_phase','png')
