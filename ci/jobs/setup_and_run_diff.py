@@ -3,6 +3,7 @@
 import os
 import sys
 import subprocess
+import shlex
 
 ci_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), 'ci')
 sys.path.insert(0, ci_dir)
