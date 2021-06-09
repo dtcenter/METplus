@@ -186,21 +186,22 @@ jobs:
           ci/jobs/setup_and_run_diff.py ${{ matrix.categories }} $artifact_name
           if [ -d "${RUNNER_WORKSPACE}/diff" ]; then
             echo ::set-output name=upload_diff::true
-            mkdir -p artifact/diff
-            cp -r ${RUNNER_WORKSPACE}/diff/* artifact/diff/
+            mkdir -p artifact/diff-${artifact_name}
+            cp -r ${RUNNER_WORKSPACE}/diff/* artifact/diff-${artifact_name}
             exit 1
           else
             echo ::set-output name=upload_diff::false
           fi
+
       # copy output data to save as artifact
       - name: Save output data
         id: save-output
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         run: |
           artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
-          ls -lh
           mkdir -p artifact/${artifact_name}
           cp -r ${RUNNER_WORKSPACE}/output/* artifact/${artifact_name}/
+
       - uses: actions/upload-artifact@v2
         name: Upload output data artifact
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
