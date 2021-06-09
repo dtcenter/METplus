@@ -186,13 +186,6 @@ jobs:
           else
             echo ::set-output name=upload_diff::false
           fi
-          #if [ "$( ls -A ${GITHUB_WORKSPACE}/../error_logs)" ]; then
-          #  mkdir -p artifact/error_logs
-          #  cp -r ${GITHUB_WORKSPACE}/../error_logs/* artifact/error_logs
-          #  echo ::set-output name=upload_error_logs::true
-          #else
-          #  echo ::set-output name=upload_error_logs::false
-          #fi
       - uses: actions/upload-artifact@v2
         name: Upload output data artifact
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
@@ -201,7 +194,7 @@ jobs:
           path: artifact/${{ steps.save-output.outputs.artifact_name }}
       - uses: actions/upload-artifact@v2
         name: Upload error logs artifact
-        if: ${{ always() && steps.save-output.outputs.upload_error_logs }}
+        if: ${{ always() && steps.save-errors.outputs.upload_error_logs }}
         with:
           name: error_logs
           path: artifact/error_logs
