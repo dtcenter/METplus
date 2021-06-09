@@ -24,7 +24,7 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
       - name: Set job controls
         id: status
-        run: ${GITHUB_WORKSPACE}/ci/jobs/set_job_controls.sh
+        run: ci/jobs/set_job_controls.sh
         env:
           commit_msg: ${{ github.event.head_commit.message }}
       - uses: actions/upload-artifact@v2
@@ -48,7 +48,7 @@ jobs:
           python-version: '3.6'
       - name: Get METplus Image
         if: ${{ env.run_get_image == 'true' }}
-        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_setup.sh
+        run: ci/jobs/docker_setup.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -72,7 +72,7 @@ jobs:
         run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Update Data Volumes
         if: ${{ env.run_get_input_data == 'true' }}
-        run: ${GITHUB_WORKSPACE}/ci/jobs/docker_update_data_volumes.py
+        run: ci/jobs/docker_update_data_volumes.py
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -99,34 +99,34 @@ jobs:
       fail-fast: false
       matrix:
         categories:
-          - "met_tool_wrapper:0-54"
+#          - "met_tool_wrapper:0-54"
           - "air_quality_and_comp:0:NEW"
-          - "climate:0-1"
-          - "convection_allowing_models:0"
-          - "convection_allowing_models:1"
-          - "convection_allowing_models:2-6"
-          - "convection_allowing_models:7"
-          - "convection_allowing_models:8"
-          - "cryosphere:0"
-          - "data_assimilation:0:NEW"
-          - "marine_and_coastal:0:NEW"
-          - "medium_range:0"
-          - "medium_range:1-2:NEW"
-          - "medium_range:3-5"
-          - "medium_range:6"
-          - "medium_range:7-8"
-          - "precipitation:0"
-          - "precipitation:1"
-          - "precipitation:2"
-          - "precipitation:3-8"
-          - "s2s:0:NEW"
-          - "s2s:1-3"
-          - "s2s:4"
-          - "s2s:5"
-          - "s2s:6"
-          - "space_weather:0-1"
-          - "tc_and_extra_tc:0-2"
-          - "tc_and_extra_tc:3"
+#          - "climate:0-1"
+#          - "convection_allowing_models:0"
+#          - "convection_allowing_models:1"
+#          - "convection_allowing_models:2-6"
+#          - "convection_allowing_models:7"
+#          - "convection_allowing_models:8"
+#          - "cryosphere:0"
+#          - "data_assimilation:0:NEW"
+#          - "marine_and_coastal:0:NEW"
+#          - "medium_range:0"
+#          - "medium_range:1-2:NEW"
+#          - "medium_range:3-5"
+#          - "medium_range:6"
+#          - "medium_range:7-8"
+#          - "precipitation:0"
+#          - "precipitation:1"
+#          - "precipitation:2"
+#          - "precipitation:3-8"
+#          - "s2s:0:NEW"
+#          - "s2s:1-3"
+#          - "s2s:4"
+#          - "s2s:5"
+#          - "s2s:6"
+#          - "space_weather:0-1"
+#          - "tc_and_extra_tc:0-2"
+#          - "tc_and_extra_tc:3"
     steps:
       - uses: actions/download-artifact@v2
         with:
@@ -148,54 +148,75 @@ jobs:
           mkdir -p $RUNNER_WORKSPACE/output/metviewer
           chmod a+w $RUNNER_WORKSPACE/mysql
           chmod a+w $RUNNER_WORKSPACE/output/metviewer
+      - name: Create directory for artifacts
+        run: mkdir -p artifact; ls -lh artifact
       - uses: actions/checkout@v2
         if: ${{ env.run_this_case == 'true' }}
+      - name: Get artifact name
+        id: get-artifact-name
+        runs: |
+          artifact_name=`ci/jobs/get_artifact_name.sh ${{ matrix.categories }}`
+          echo ::set-output name=artifact_name::${artifact_name}
       - uses: ./ci/actions/run_tests
         id: run_tests
         if: ${{ env.run_this_case == 'true' }}
         with:
           categories: ${{ matrix.categories }}
-          run_diff: ${{ env.run_diff }}
 
+      # copy logs with errors to error_logs directory to save as artifact
+      - name: Save error logs
+        id: save-errors
+        if: ${{ always() && steps.run_tests.conclusion == 'failure' }}
+        run: |
+          ci/jobs/copy_error_logs.py \
+            ${RUNNER_WORKSPACE}/output \
+            artifact/error_logs
+          if [ -d "artifact/error_logs" ]; then
+            echo ::set-output name=upload_error_logs::true
+          else
+            echo ::set-output name=upload_error_logs::false
+          fi
+
+      # run difference testing
+      - name: Run difference tests
+        id: run-diff
+        if: env.run_diff && steps.run_tests.conclusion == 'success'
+        run: |
+          artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
+          ci/jobs/setup_and_run_diff.py ${{ matrix.categories }} $artifact_name
+          if [ $? == 0 ]; then
+            echo ::set-output name=upload_diff::true
+          else
+            echo ::set-output name=upload_diff::false
+          fi
       # copy output data to save as artifact
       - name: Save output data
         id: save-output
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         run: |
-          artifact_name=`${GITHUB_WORKSPACE}/ci/jobs/get_artifact_name.sh ${{matrix.categories}}`
+          artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
+          ls -lh artifact
           mkdir -p artifact/${artifact_name}
-          cp -r ${GITHUB_WORKSPACE}/../output/* artifact/${artifact_name}/
-          echo ::set-output name=artifact_name::${artifact_name}
-          if [ "$( ls -A ${GITHUB_WORKSPACE}/../diff)" ]; then
-            mkdir -p artifact/diff-${artifact_name}
-            cp -r ${GITHUB_WORKSPACE}/../diff/* artifact/diff-${artifact_name}/
-            echo ::set-output name=upload_diff::true
-          else
-            echo ::set-output name=upload_diff::false
-          fi
-          if [ "$( ls -A ${GITHUB_WORKSPACE}/../error_logs)" ]; then
-            mkdir -p artifact/error_logs
-            cp -r ${GITHUB_WORKSPACE}/../error_logs/* artifact/error_logs
-            echo ::set-output name=upload_error_logs::true
-          else
-            echo ::set-output name=upload_error_logs::false
-          fi
+          cp -r ${RUNNER_WORKSPACE}/output/* artifact/${artifact_name}/
       - uses: actions/upload-artifact@v2
+        name: Upload output data artifact
         if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
         with:
-          name: ${{ steps.save-output.outputs.artifact_name }}
-          path: artifact/${{ steps.save-output.outputs.artifact_name }}
+          name: ${{ steps.get-artifact-name.outputs.artifact_name }}
+          path: artifact/${{ steps.get-artifact-name.outputs.artifact_name }}
       - uses: actions/upload-artifact@v2
-        if: ${{ always() && steps.save-output.outputs.upload_error_logs }}
+        name: Upload error logs artifact
+        if: ${{ always() && steps.save-errors.outputs.upload_error_logs }}
         with:
           name: error_logs
           path: artifact/error_logs
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v2
-        if: ${{ always() && steps.save-output.outputs.upload_diff }}
+        name: Upload difference data artifact
+        if: ${{ always() && steps.run-diff.outputs.upload_diff }}
         with:
-          name: diff-${{ steps.save-output.outputs.artifact_name }}
-          path: artifact/diff-${{ steps.save-output.outputs.artifact_name }}
+          name: diff-${{ steps.get-artifact-name.outputs.artifact_name }}
+          path: artifact/diff-${{ steps.get-artifact-name.outputs.artifact_name }}
           if-no-files-found: ignore
   create_output_data_volumes:
     name: Create Output Docker Data Volumes
