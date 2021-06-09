@@ -5,6 +5,7 @@
 # use cases that reported errors to another directory
 
 import os
+import sys
 import shutil
 
 def main(output_data_dir, error_logs_dir):
