@@ -156,7 +156,7 @@ def main():
         #         raise subprocess.CalledProcessError(return_code, full_cmd)
             process = subprocess.Popen(shlex.split(full_cmd),
                                        shell=False,
-                                       stdout=process.PIPE,
+                                       stdout=subprocess.PIPE,
                                        stderr=STDOUT)
             # Poll process.stdout to show stdout live
             while True:
