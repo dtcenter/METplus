@@ -175,7 +175,7 @@ jobs:
         if: env.run_diff && steps.run_tests.conclusion == 'success'
         run: |
           artifact_name=`ci/jobs/get_artifact_name.sh ${{ matrix.categories }}`
-          ci/jobs/run_diff.py ${{ matrix.categories }} $artifact_name
+          ci/jobs/setup_and_run_diff.py ${{ matrix.categories }} $artifact_name
       # copy output data to save as artifact
       - name: Save output data
         id: save-output

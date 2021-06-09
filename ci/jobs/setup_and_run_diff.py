@@ -8,8 +8,6 @@ sys.path.insert(0, ci_dir)
 
 from jobs import get_data_volumes
 
-from util.diff_util import compare_dir
-
 CI_JOBS_DIR = 'ci/jobs'
 
 RUNNER_WORKSPACE = os.environ.get('RUNNER_WORKSPACE')
@@ -37,7 +35,36 @@ VOLUMES_FROM = get_data_volumes.main([output_category])
 
 print(f"Output Volumes: {VOLUMES_FROM}")
 
-cmd = f'{GITHUB_WORKSPACE}/ci/utils/diff_util.sh /data/truth /data/output save_diff'
+volume_mounts = [
+    f'-v {WS_PATH}:{GITHUB_WORKSPACE}',
+    f'-v {RUNNER_WORKSPACE}/output:/data/output',
+]
+
+mount_args = ' '.join(volume_mounts)
+
+cmd = f'{GITHUB_WORKSPACE}/{CI_JOBS_DIR}/run_diff_docker.py'
 # run inside diff env: mount METplus code and output dir, volumes from output volumes
-print(f'docker run {VOLUMES_FROM} -v {WS_PATH}:{GITHUB_WORKSPACE} -v {RUNNER_WORKSPACE}/output:/data/output dtcenter/metplus-envs:diff bash -c "{cmd}"')
-#docker run ${VOLUMES_FROM} -v ${WS_PATH}:${GITHUB_WORKSPACE} -v ${RUNNER_WORKSPACE}/output:/data/output dtcenter/metplus-envs:diff bash -c "$cmd"
+docker_cmd = (f'docker run {VOLUMES_FROM} '
+              f'{mount_args} dtcenter/metplus-envs:diff '
+              f'bash -c "{cmd}"')
+print(f'RUNNING: {docker_cmd}')
+try:
+    process = subprocess.Popen(shlex.split(docker_cmd),
+                               shell=False,
+                               encoding='utf-8',
+                               stdout=subprocess.PIPE,
+                               stderr=subprocess.STDOUT)
+    # Poll process.stdout to show stdout live
+    while True:
+        output = process.stdout.readline()
+        if process.poll() is not None:
+            break
+        if output:
+            print(output.strip())
+    rc = process.poll()
+    if rc:
+        raise subprocess.CalledProcessError(rc, full_cmd)
+
+except subprocess.CalledProcessError as err:
+    print(f"ERROR: Command failed -- {err}")
+    sys.exit(1)
