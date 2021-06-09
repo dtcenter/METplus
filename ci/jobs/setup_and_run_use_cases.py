@@ -157,7 +157,7 @@ def main():
             process = subprocess.Popen(shlex.split(full_cmd),
                                        shell=False,
                                        stdout=subprocess.PIPE,
-                                       stderr=STDOUT)
+                                       stderr=subprocess.STDOUT)
             # Poll process.stdout to show stdout live
             while True:
                 output = process.stdout.readline()
