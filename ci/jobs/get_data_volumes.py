@@ -13,23 +13,25 @@ import shlex
 from docker_utils import docker_get_volumes_last_updated, get_branch_name
 from docker_utils import get_data_repo, DOCKERHUB_METPLUS_DATA_DEV
 
-sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__),
-                                                os.pardir,
-                                                os.pardir,)))
-
-from metplus import __version__
-
-# METPLUS_VERSION should be set to develop or a release version, i.e. X.Y
-# if version is set to X.Y without -betaZ or -dev, use that version
-# otherwise use develop
-if len(__version__.split('-')) == 1:
-    # only get first 2 numbers from version, i.e. X.Y.Z will use X.Y
-    METPLUS_VERSION = '.'.join(__version__.split('.')[:2])
-
-else:
-    METPLUS_VERSION = 'develop'
-
 def main(args):
+    # get METplus version
+    version_file = os.path.abspath(os.path.join(os.path.dirname(__file__),
+                                                os.pardir,
+                                                os.pardir,
+                                                'metplus',
+                                                'VERSION'))
+    with open(version_file, 'r') as file_handle:
+        version = file_handle.read().strip()
+
+    # version should be set to develop or a release version, i.e. X.Y
+    # if version is set to X.Y without -betaZ or -dev, use that version
+    # otherwise use develop
+    if len(version.split('-')) == 1:
+        # only get first 2 numbers from version, i.e. X.Y.Z will use X.Y
+        metplus_version = '.'.join(version.split('.')[:2])
+    else:
+        metplus_version = 'develop'
+
     volume_list = []
 
     # get the name of the current branch
@@ -44,7 +46,7 @@ def main(args):
 
     # if running development version, use metplus-data-dev
     # if released version, i.e. X.Y.Z, use metplus-data
-    data_repo = get_data_repo(METPLUS_VERSION)
+    data_repo = get_data_repo(metplus_version)
 
     if branch_name.startswith('main_v'):
         branch_name = branch_name[5:]
@@ -60,7 +62,7 @@ def main(args):
 
         # if getting all input data, set volume name to METplus version
         if model_app_name == 'all_metplus_data':
-            volume_name = METPLUS_VERSION
+            volume_name = metplus_version
 
         # requested data volume is output data
         # should match output-{pr_dest_branch}-use_cases_{dataset_id}
@@ -82,11 +84,11 @@ def main(args):
 
         # if using development version and branch data volume is available
         # use it, otherwise use develop version of data volume
-        elif (METPLUS_VERSION == 'develop' and
+        elif (metplus_version == 'develop' and
               f'{branch_name}-{model_app_name}' in available_volumes):
                 volume_name = f'{branch_name}-{model_app_name}'
         else:
-            volume_name = f'{METPLUS_VERSION}-{model_app_name}'
+            volume_name = f'{metplus_version}-{model_app_name}'
 
         cmd = f'docker pull {repo_to_use}:{volume_name}'
         ret = subprocess.run(shlex.split(cmd), stdout=subprocess.DEVNULL)
@@ -110,6 +112,7 @@ def main(args):
 if __name__ == "__main__":
     # split up command line args that have commas before passing into main
     args = []
+
     for arg in sys.argv[1:]:
         args.extend(arg.split(','))
     out = main(args)
