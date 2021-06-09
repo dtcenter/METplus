@@ -85,7 +85,6 @@ def main():
     if os.environ.get('GITHUB_EVENT_NAME') == 'pull_request':
         branch_name = f"{branch_name}-pull_request"
 
-    print(f"METPLUS_IMG_TAG = {branch_name}")
     run_tag = 'metplus-run-env'
     dockerfile_dir = os.path.join('ci', 'actions', 'run_tests')
 
@@ -156,6 +155,7 @@ def main():
         #         raise subprocess.CalledProcessError(return_code, full_cmd)
             process = subprocess.Popen(shlex.split(full_cmd),
                                        shell=False,
+                                       encoding='utf-8',
                                        stdout=subprocess.PIPE,
                                        stderr=subprocess.STDOUT)
             # Poll process.stdout to show stdout live
