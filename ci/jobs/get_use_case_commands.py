@@ -78,19 +78,18 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             else:
                 py_embed_arg = ''
 
-            # add parm/use_cases path to config args if they are conf files
-            config_args = []
-            for config_arg in use_case.config_args:
-                if config_arg.endswith('.conf'):
-                    config_arg = os.path.join(work_dir, 'parm', 'use_cases',
-                                              config_arg)
-
-                config_args.append(config_arg)
-
-
-
             use_case_cmds = []
             for use_case in use_case_by_requirement.use_cases:
+                # add parm/use_cases path to config args if they are conf files
+                config_args = []
+                for config_arg in use_case.config_args:
+                    if config_arg.endswith('.conf'):
+                        config_arg = os.path.join(work_dir, 'parm',
+                                                  'use_cases',
+                                                  config_arg)
+
+                    config_args.append(config_arg)
+
                 output_base = os.path.join(output_top_dir, use_case.name)
                 use_case_cmd = (f"{setup_env} run_metplus.py "
                                 f"{' '.join(config_args)} "
