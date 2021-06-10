@@ -14,7 +14,7 @@ import datetime
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
 from RMM_OMI_util import find_times
-from plot_mjo_indices import phase_diagram
+import plot_mjo_indices as pmi
 
 
 def run_phasediagram_steps(inlabel, inconfig, oplot_dir):
@@ -38,13 +38,6 @@ def run_phasediagram_steps(inlabel, inconfig, oplot_dir):
         data = pd.read_csv(pltfile,  header=None, delim_whitespace=True,
             names=['yyyy','mm','dd', 'pc1','pc2','phase','amp','source'], parse_dates={'dtime':['yyyy','mm','dd']})
 
-    #DATES = data.yyyy.values*10000 + data.mm.values*100 + data.dd.values
-    #MONTHS = data.mm.values
-    #DAYS = data.dd.values
-    #fdates = np.array(data.dtimes)
-    #print(fdates)
-    #exit()
-
     keepdata = []
     for dd in alldata_time:
         timeloc = np.where(data.dtime == dd['valid'])
@@ -52,31 +45,17 @@ def run_phasediagram_steps(inlabel, inconfig, oplot_dir):
             for l in timeloc[0]:
                 keepdata.append(l)
 
-    print(data.iloc[keepdata])
-    #PC1 = data.pc1[keepdata].values
-    #PC2 = data.pc2[keepdata].values
-    #print(data.dtime[keepdata].values)
-    exit()   
-
-    # Find the dates that are requested in the RMM or OMI data
-    #datestrt = 20120101
-    #datelast = 20120331
-    #istrt = np.where(DATES==datestrt)[0][0]
-    #ilast = np.where(DATES==datelast)[0][0]
-
-    # subset data to only the dates we want to plot
-    dates = DATES[istrt:ilast+1]
-    months = MONTHS[istrt:ilast+1]
-    days = DAYS[istrt:ilast+1]
-    PC1 = data.pc1.values[istrt:ilast+1]
-    PC2 = data.pc2.values[istrt:ilast+1]
-
-    print(type(dates))
-    #print(dates)
-    exit()
+    pltdata = data.iloc[keepdata]
+    dates = np.array(pltdata.dtime.dt.strftime('%Y%m%d').values,dtype=int)
+    months = np.array(pltdata.dtime.dt.strftime('%m').values,dtype=int)
+    days = np.array(pltdata.dtime.dt.strftime('%d').values,dtype=int)
+    PC1 = np.array(pltdata.pc1.values)
+    PC2 = np.array(pltdata.pc2.values)
 
     # plot the phase diagram
-    phase_diagram(indexname,PC1,PC2,dates,months,days,indexname+'_phase','png')
+    phase_plot_name = oplot_dir+'/'+inconfig.getstr('phase_diagram',inlabel+'_PHASE_PLOT_OUTPUT_NAME','phase')
+    phase_plot_format = inconfig.getstr('phase_diagram',inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
+    pmi.phase_diagram(indexname,PC1,PC2,dates,months,days,phase_plot_name,'png')
 
 def main():
 
