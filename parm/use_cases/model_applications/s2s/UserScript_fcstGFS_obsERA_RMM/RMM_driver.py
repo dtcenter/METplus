@@ -14,7 +14,7 @@ from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_t
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
 #from metcalcpy.util import read_file
 import metcalcpy.contributed.rmm_omi.compute_mjo_indices as cmi
-import plot_mjo_indices as pmi
+import metplotpy.contributed.mjo_rmm_omi.plot_mjo_indices as pmi
 from RMM_OMI_util import find_input_files, find_times, compute_plot_times
 
 
@@ -113,7 +113,7 @@ def main():
     oplot_dir = config.getstr('compute_rmm','RMM_PLOT_OUTPUT_DIR','')
     if not oplot_dir:
         obase = config.getstr('config','OUTPUT_BASE')
-        oplot_dir = obase+'/'+'plots'
+        oplot_dir = os.path.join(obase,'plots')
     if not os.path.exists(oplot_dir):
         os.makedirs(oplot_dir)
 

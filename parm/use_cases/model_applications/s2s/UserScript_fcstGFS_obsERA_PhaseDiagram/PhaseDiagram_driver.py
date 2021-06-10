@@ -14,7 +14,7 @@ import datetime
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
 from RMM_OMI_util import find_times
-import plot_mjo_indices as pmi
+import metplotpy.contributed.mjo_rmm_omi.plot_mjo_indices as pmi
 
 
 def run_phasediagram_steps(inlabel, inconfig, oplot_dir):
@@ -53,7 +53,8 @@ def run_phasediagram_steps(inlabel, inconfig, oplot_dir):
     PC2 = np.array(pltdata.pc2.values)
 
     # plot the phase diagram
-    phase_plot_name = oplot_dir+'/'+inconfig.getstr('phase_diagram',inlabel+'_PHASE_PLOT_OUTPUT_NAME','phase')
+    phase_plot_name = os.path.join(oplot_dir,inconfig.getstr('phase_diagram',inlabel+'_PHASE_PLOT_OUTPUT_NAME','phase'))
+    print(phase_plot_name)
     phase_plot_format = inconfig.getstr('phase_diagram',inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
     pmi.phase_diagram(indexname,PC1,PC2,dates,months,days,phase_plot_name,'png')
 
@@ -67,7 +68,7 @@ def main():
     oplot_dir = config.getstr('phase_diagram','PHASE_DIAGRAM_PLOT_OUTPUT_DIR','')
     if not oplot_dir:
         obase = config.getstr('config','OUTPUT_BASE')
-        oplot_dir = obase+'/'+'plots'
+        oplot_dir = os.path.join(obase,'plots')
     if not os.path.exists(oplot_dir):
         os.makedirs(oplot_dir)
 
