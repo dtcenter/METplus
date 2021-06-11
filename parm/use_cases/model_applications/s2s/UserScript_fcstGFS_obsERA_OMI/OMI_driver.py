@@ -14,12 +14,12 @@ import pandas as pd
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
 #from metcalcpy.util import read_file
-import compute_mjo_indices as cmi
+import metcalcpy.contributed.rmm_omi.compute_mjo_indices as cmi
 import metplotpy.contributed.mjo_rmm_omi.plot_mjo_indices as pmi
 from RMM_OMI_util import find_input_files, find_times, compute_plot_times
 
 
-def run_omi_steps(inlabel, inconfig, spd, olr_eoffile, oplot_dir):
+def run_omi_steps(inlabel, inconfig, spd, olr_eoffile, oplot_dir, omi_path, omi1_pathname, omi2_pathname):
 
     # Get dates to read using METplus time variables
     fileconfig = config_metplus.replace_config_from_section(inconfig,'compute_omi')
@@ -49,7 +49,8 @@ def run_omi_steps(inlabel, inconfig, spd, olr_eoffile, oplot_dir):
     # project OLR onto EOFs
     #### The code called here goes into METcalcpy
     #### It is currently from the compute_mjo_indices.py
-    PC1, PC2 = cmi.omi(olr[0:ntim,:,:], time, spd, '/d1/kalb/METplus_Data/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/EOF/')
+    #PC1, PC2 = cmi.omi(olr[0:ntim,:,:], time, spd, '/d1/kalb/METplus_Data/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/EOF/')
+    PC1, PC2 = cmi.omi(olr[0:ntim,:,:], time, spd, omi1_pathname, omi2_pathname)
 
     print(PC1.min(), PC1.max())
 
@@ -91,14 +92,20 @@ def main():
     run_obs_omi = config.getbool('compute_omi','OBS_RUN', False)
     run_fcst_omi = config.getbool('compute_omi','FCST_RUN', False)
 
+    # read in the omi_path, the base directory of omi data, from config
+    omi_path = config.getraw('config', 'INPUT_BASE', '')
+    # sub-directories where eof1 and eof2 data reside
+    omi1_path = os.path.join(omi_path, 'eof1')
+    omi2_path = os.path.join(omi_path, 'eof2')
+    
     # Run the steps to compute OMM
     # Observations
     if run_obs_omi:
-        run_omi_steps('OBS', config, spd, olr_eoffile, oplot_dir)
+        run_omi_steps('OBS', config, spd, olr_eoffile, oplot_dir, omi_path, omi1_path, omi2_path)
 
     # Forecast
     if run_fcst_omi:
-        run_omi_steps('FCST', config, spd, olr_eoffile, oplot_dir)
+        run_omi_steps('FCST', config, spd, olr_eoffile, oplot_dir, omi_path, omi1_path, omi2_path)
 
 
 if __name__ == "__main__":
