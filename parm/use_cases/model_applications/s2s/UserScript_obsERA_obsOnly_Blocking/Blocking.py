@@ -46,10 +46,10 @@ class BlockingCalculation():
         ####Find latitude of maximum high-pass STD (CBL)
         mstd = np.nanstd(z500_anom_4d,axis=1)  # Standard deviation over latitudes
         mhweight = mstd * weightf              # Multiply standard deviation by weights
-        cbli = np.argmax(mhweight,axis=1)      # Find the index of the max for each year (result is year, lon)
+        cbli = np.argmax(mhweight,axis=1)      # Find the index of the max for each year (size is year, lon)
         CBL = np.zeros((len(z500_anom_4d[:,0,0,0]),len(lons)))
         for j in np.arange(0,len(yr),1):
-            CBL[j,:] = lats[cbli[j,:]]         # Return the latitude that was the max (result is year, lon) 
+            CBL[j,:] = lats[cbli[j,:]]         # Return the latitude that was the max (size is year, lon) 
 
         ###Apply Moving Average to Smooth CBL Profiles
         lt = len(lons)
