@@ -2,8 +2,7 @@
 UserScript: Make RMM plots from MJO indices 
 ========================================================================
 
-model_applications/
-s2s/UserScript_fcstGFS_obsERA_RMM.py
+model_applications/s2s/UserScript_fcstGFS_obsERA_RMM.py
 
 """
 
