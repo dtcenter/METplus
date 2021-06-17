@@ -58,7 +58,7 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             # if METplotpy, METcalcpy, or spacetime are in requirements list,
             # add command to obtain and install METplotpy and METcalcpy
             plotcalc_keywords = ['metplotpy', 'metcalcpy', 'spacetime']
-            if any([item for item in plotcalc_keywords if item in reqs.lower()]):
+            if any([item for item in plotcalc_keywords if item in str(reqs).lower()]):
                 setup_env += (f'{work_dir}/manage_externals/checkout_externals '
                               f'-e {work_dir}/ci/parm/Externals_metplotcalcpy.cfg;'
                               f'{python_path} -m pip3 install {work_dir}/../METplotpy;'
