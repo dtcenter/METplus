@@ -3355,7 +3355,7 @@ METplus Configuration Glossary
      Specify what plot types are desired for the TC Matched Pairs plotting
      tool. By default, a boxplot is generated if this is undefined in the
      configuration file. If other plots are requested and a boxplot is also
-     desired, you must explicitly listboxplot in your list of plot types.
+     desired, you must explicitly list boxplot in your list of plot types.
      Supported plot types: BOXPLOT, POINT, MEAN, MEDIAN, RELPERF
      (relative performance), RANK (time series of ranks for the first model),
      SCATTER, SKILL_MN (mean skill scores) and SKILL_MD (median skill scores).
