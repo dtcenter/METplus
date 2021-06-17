@@ -34,6 +34,7 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
 
             setup_env = 'source /etc/bashrc;'
             conda_env = None
+            python_path = 'python3'
 
             # if requirement ending with _env is set, then
             # use that version of python3 to run
@@ -46,8 +47,6 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
                                               conda_env, 'bin')
                     python_path = os.path.join(python_dir, 'python3')
                     setup_env += f' export PATH={python_dir}:$PATH;'
-                else:
-                    python_path = 'python3'
 
             # if py_embed listed in requirements and using a Python
             # environment that differs from the MET env, set MET_PYTHON_EXE
@@ -55,6 +54,14 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
                 py_embed_arg = f'user_env_vars.MET_PYTHON_EXE={python_path} '
             else:
                 py_embed_arg = ''
+
+            # if METplotpy or METcalcpy are in requirements list,
+            # add command to obtain and install them
+            if 'metplotpy' in reqs or 'metcalcpy' in reqs:
+                setup_env += (f'{work_dir}/manage_externals/checkout_externals '
+                              f'-e {work_dir}/ci/parm/Externals_metplotcalcpy.cfg;'
+                              f'{python_path} -m pip3 install {work_dir}/../METplotpy;'
+                              f'{python_path} -m pip3 install {work_dir}/../METcalcpy;')
 
             use_case_cmds = []
             for use_case in use_case_by_requirement.use_cases:
