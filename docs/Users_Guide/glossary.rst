@@ -873,7 +873,32 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_DEP_VARS` instead.
 
    TCMPR_PLOTTER_DEP_VARS
-     Corresponds to the optional flag -dep in the plot_TCMPR.R script, which is wrapped by TCMPRPlotter. The value to this flag is a comma-separated list (no whitespace) of dependent variable columns to plot ( e.g. AMSLP-BMSLP, AMAX_WIND-BMAX_WIND, TK_ERR). If this is undefined, then the default plot for TK_ERR (track error) is generated. Note, if you want the track error plot generated, in addition to other plots, then you need to explicitly list this with the other variables. Please refer to the `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_ for more details.
+     Corresponds to the optional flag -dep in the plot_TCMPR.R script, which is
+     wrapped by TCMPRPlotter. The value to this flag is a comma-separated list
+     (no whitespace) of dependent variable columns to plot ( e.g. AMSLP-BMSLP,
+     AMAX_WIND-BMAX_WIND, TK_ERR). If this is undefined, then the default plot
+     for TK_ERR (track error) is generated. The values in this list are looped
+     over to run once for each and can be referenced in other variables using
+     the {dep} tag. Note, if you want the track error
+     plot generated, in addition to other plots, then you need to explicitly
+     list this with the other variables. Please refer to the
+     `MET User's Guide <https://dtcenter.org/community-code/model-evaluation-tools-met/documentation>`_
+     for more details.
+
+     | *Used by:*  TCMPRPlotter
+
+   TCMPR_PLOTTER_DEP_LABELS
+     List of strings that correspond to the values in
+     :term:`TCMPR_PLOTTER_DEP_VARS` that can be referenced in other variables
+     to set the plot title, axis labels, etc. with the {dep_label} tag.
+
+     | *Used by:*  TCMPRPlotter
+
+
+   TCMPR_PLOTTER_PLOT_LABELS
+     List of strings that correspond to the values in
+     :term:`TCMPR_PLOTTER_PLOT_TYPES` that can be referenced in other variables
+     to set the plot title, axis labels, etc. with the {plot_label} tag.
 
      | *Used by:*  TCMPRPlotter
 
@@ -3327,7 +3352,15 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_PLOT_TYPES` instead.
 
    TCMPR_PLOTTER_PLOT_TYPES
-     Specify what plot types are desired for the TC Matched Pairs plotting tool. By default, a boxplot is generated if this is undefined in the configuration file. If other plots are requested and a boxplot is also desired, you must explicitly listboxplot in your list of plot types. Supported plot types: BOXPLOT, POINT, MEAN, MEDIAN, RELPERF (relative performance), RANK (time series of ranks for the first model), SCATTER, SKILL_MN (mean skill scores) and SKILL_MD (median skill scores).
+     Specify what plot types are desired for the TC Matched Pairs plotting
+     tool. By default, a boxplot is generated if this is undefined in the
+     configuration file. If other plots are requested and a boxplot is also
+     desired, you must explicitly listboxplot in your list of plot types.
+     Supported plot types: BOXPLOT, POINT, MEAN, MEDIAN, RELPERF
+     (relative performance), RANK (time series of ranks for the first model),
+     SCATTER, SKILL_MN (mean skill scores) and SKILL_MD (median skill scores).
+     The values in this list are looped over to run once for each and can be
+     referenced in other variables using the {plot} tag.
 
      | *Used by:*  TCMPRPlotter
 
