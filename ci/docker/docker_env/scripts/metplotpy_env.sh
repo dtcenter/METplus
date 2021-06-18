@@ -15,6 +15,7 @@
 #   eofs==1.3.0
 #   cmocean==1.0
 #   xarray==0.16.2
+#   netcdf4==1.5.6
 #   python-kaleido==0.2.1
 #
 # Other Content: None
@@ -37,4 +38,5 @@ conda install -y --name ${ENV_NAME} -c conda-forge cartopy==0.17.0
 conda install -y --name ${ENV_NAME} -c conda-forge eofs==1.3.0
 conda install -y --name ${ENV_NAME} -c conda-forge cmocean==1.0
 conda install -y --name ${ENV_NAME} -c conda-forge xarray==0.16.2
+conda install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.5.6
 /usr/local/envs/${ENV_NAME}/bin/pip3 install kaleido==0.2.1
