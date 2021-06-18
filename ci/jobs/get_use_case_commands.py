@@ -73,7 +73,7 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             if 'metdatadb' in str(reqs).lower():
                 setup_env += (
                     f'{work_dir}/manage_externals/checkout_externals'
-                    f' -e {work_dir}/ci/parm/Externals_metdatadbpy.cfg;'
+                    f' -e {work_dir}/ci/parm/Externals_metdatadb.cfg;'
                 )
 
             use_case_cmds = []

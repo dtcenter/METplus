@@ -17,13 +17,7 @@ NETCDF_EXTENSIONS = [
 SKIP_EXTENSIONS = [
     '.zip',
     '.png',
-]
-
-PDF_EXTENSIONS = [
-    '.pdf',
-]
-
-UNSUPPORTED_EXTENSIONS = [
+    '.gif',
 ]
 
 PDF_EXTENSIONS = [
@@ -51,7 +45,7 @@ def get_file_type(filepath):
         pass
 
     if file_extension in SKIP_EXTENSIONS:
-        return 'skip'
+        return f'skip {file_extension}'
 
     if file_extension in PDF_EXTENSIONS:
         return 'pdf'
@@ -151,8 +145,8 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
         return (filepath_a, '', 'file not found', '')
 
     file_type = get_file_type(filepath_a)
-    if file_type == 'skip':
-        print(f'Skipping')
+    if file_type.startswith('skip'):
+        print(f"Skipping {file_type.split(' ')[1]} file")
         return None
 
     if file_type.startswith('unsupported'):
