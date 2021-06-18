@@ -84,7 +84,7 @@
       "category": "space_weather:0-1"
     },
     {
-      "category": "tc_and_extra_tc:0-2"
+      "category": "tc_and_extra_tc:0-2",
       "new": true
     },
     {
