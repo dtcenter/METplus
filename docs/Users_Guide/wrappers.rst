@@ -3808,6 +3808,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_VLD_THRESH`
 | :term:`SERIES_ANALYSIS_BLOCK_SIZE`
 | :term:`SERIES_ANALYSIS_CTS_LIST`
+| :term:`FCST_SERIES_ANALYSIS_PROB_THRESH`
 | :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
 | :term:`FCST_SERIES_ANALYSIS_INPUT_DIR`
 | :term:`OBS_SERIES_ANALYSIS_INPUT_DIR`
@@ -3955,6 +3956,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`FCST_VAR<n>_THRESH`
      - fcst.field.cat_thresh
    * - :term:`FCST_VAR<n>_OPTIONS`
+     - n/a
+   * - :term:`FCST_SERIES_ANALYSIS_PROB_THRESH`
      - n/a
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
@@ -5296,6 +5299,8 @@ METplus Configuration
 | :term:`TCMPR_PLOTTER_FOOTNOTE_FLAG`
 | :term:`TCMPR_PLOTTER_PLOT_CONFIG_OPTS`
 | :term:`TCMPR_PLOTTER_SAVE_DATA`
+| :term:`TCMPR_PLOTTER_DEP_LABELS`
+| :term:`TCMPR_PLOTTER_PLOT_LABELS`
 |
 
 The following are TCMPR flags, if set to 'no', then don't set flag, if
@@ -5380,6 +5385,10 @@ METplus Configuration
 | :term:`TC_PAIRS_CUSTOM_LOOP_LIST`
 | :term:`TC_PAIRS_DESC`
 | :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
+| :term:`TC_PAIRS_CONSENSUS<n>_NAME`
+| :term:`TC_PAIRS_CONSENSUS<n>_MEMBERS`
+| :term:`TC_PAIRS_CONSENSUS<n>_REQUIRED`
+| :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
 |
 
 .. warning:: **DEPRECATED:**
@@ -5578,6 +5587,23 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`TC_PAIRS_MET_CONFIG_OVERRIDES`
      - n/a
+
+**${METPLUS_CONSENSUS_LIST}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_CONSENSUS<n>_NAME`
+     - consensus.name
+   * - :term:`TC_PAIRS_CONSENSUS<n>_MEMBERS`
+     - consensus.members
+   * - :term:`TC_PAIRS_CONSENSUS<n>_REQUIRED`
+     - consensus.required
+   * - :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
+     - consensus.min_req
 
 .. _tcrmw_wrapper:
 

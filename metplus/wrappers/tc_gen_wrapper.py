@@ -255,7 +255,9 @@ class TCGenWrapper(CommandBuilder):
 
         # get INPUT_TIME_DICT values since wrapper only runs
         # once (doesn't look over time)
-        self.set_time_dict_for_single_runtime(c_dict)
+        c_dict['INPUT_TIME_DICT'] = self.set_time_dict_for_single_runtime()
+        if not c_dict['INPUT_TIME_DICT']:
+            self.isOK = False
 
         return c_dict
 
