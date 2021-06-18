@@ -16,6 +16,8 @@ jobs:
   job_control:
     name: Determine which jobs to run
     runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.get-use-cases.outputs.matrix }}
     steps:
       - uses: actions/checkout@v2
       - name: Print GitHub values for reference
@@ -27,6 +29,11 @@ jobs:
         run: ci/jobs/set_job_controls.sh
         env:
           commit_msg: ${{ github.event.head_commit.message }}
+      - name: Get use cases to run
+        id: get-use-cases
+        run: |
+          matrix=$(jq 'map(. | select(has("new")) )' .github/jobs/use_case_groups_objects.json)
+          echo ::set-output name=matrix::{\"include\":$(echo $matrix)}\"
       - uses: actions/upload-artifact@v2
         with:
           name: job_control_status
@@ -94,39 +101,39 @@ jobs:
   use_case_tests:
     name: Use Case Tests
     runs-on: ubuntu-latest
-    needs: [get_image, update_data_volumes]
+    needs: [get_image, update_data_volumes, job_control]
     strategy:
       fail-fast: false
       matrix:
-        categories:
-          - "met_tool_wrapper:0-54:NEW"
-          - "air_quality_and_comp:0"
-          - "climate:0-1"
-          - "convection_allowing_models:0"
-          - "convection_allowing_models:1"
-          - "convection_allowing_models:2-6"
-          - "convection_allowing_models:7"
-          - "convection_allowing_models:8"
-          - "cryosphere:0"
-          - "data_assimilation:0"
-          - "marine_and_coastal:0"
-          - "medium_range:0"
-          - "medium_range:1-2"
-          - "medium_range:3-5"
-          - "medium_range:6"
-          - "medium_range:7-8:NEW"
-          - "precipitation:0"
-          - "precipitation:1"
-          - "precipitation:2"
-          - "precipitation:3-8"
-          - "s2s:0"
-          - "s2s:1-3:NEW"
-          - "s2s:4:NEW"
-          - "s2s:5:NEW"
-          - "s2s:6"
-          - "space_weather:0-1"
-          - "tc_and_extra_tc:0-2:NEW"
-          - "tc_and_extra_tc:3"
+        categories: ${{fromJson(needs.job_control.outputs.matrix)}}
+#          - "met_tool_wrapper:0-54:NEW"
+#          - "air_quality_and_comp:0"
+#          - "climate:0-1"
+#          - "convection_allowing_models:0"
+#          - "convection_allowing_models:1"
+#          - "convection_allowing_models:2-6"
+#          - "convection_allowing_models:7"
+#          - "convection_allowing_models:8"
+#          - "cryosphere:0"
+#          - "data_assimilation:0"
+#          - "marine_and_coastal:0"
+#          - "medium_range:0"
+#          - "medium_range:1-2"
+#          - "medium_range:3-5"
+#          - "medium_range:6"
+#          - "medium_range:7-8:NEW"
+#          - "precipitation:0"
+#          - "precipitation:1"
+#          - "precipitation:2"
+#          - "precipitation:3-8"
+#          - "s2s:0"
+#          - "s2s:1-3:NEW"
+#          - "s2s:4:NEW"
+#          - "s2s:5:NEW"
+#          - "s2s:6"
+#          - "space_weather:0-1"
+#          - "tc_and_extra_tc:0-2:NEW"
+#          - "tc_and_extra_tc:3"
     steps:
       - uses: actions/download-artifact@v2
         with:
