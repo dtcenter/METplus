@@ -16,6 +16,8 @@ sys.path.insert(0, USE_CASES_DIR)
 from internal_tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
 from metplus.util.met_util import expand_int_string_to_list
 
+METPLUS_BASE_ENV = 'metplus_base'
+
 def main(categories, subset_list, work_dir=None, host_name='docker'):
     all_commands = []
 
@@ -41,16 +43,20 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             use_env = [item for item in reqs if item.endswith('_env')]
             if use_env:
                 conda_env = use_env[0].replace('_env', '')
-                # if using docker, add conda bin to beginning of PATH
-                if host_name == 'docker':
-                    python_dir = os.path.join('/usr', 'local', 'envs',
-                                              conda_env, 'bin')
-                    python_path = os.path.join(python_dir, 'python3')
-                    setup_env += f' export PATH={python_dir}:$PATH;'
+            else:
+                # if no env is specified, use metplus base environment
+                conda_env = METPLUS_BASE_ENV
+
+            # if using docker, add conda bin to beginning of PATH
+            if host_name == 'docker':
+                python_dir = os.path.join('/usr', 'local', 'envs',
+                                          conda_env, 'bin')
+                python_path = os.path.join(python_dir, 'python3')
+                setup_env += f' export PATH={python_dir}:$PATH;'
 
             # if py_embed listed in requirements and using a Python
             # environment that differs from the MET env, set MET_PYTHON_EXE
-            if 'py_embed' in reqs and conda_env:
+            if 'py_embed' in reqs and conda_env != METPLUS_BASE_ENV:
                 py_embed_arg = f'user_env_vars.MET_PYTHON_EXE={python_path} '
             else:
                 py_embed_arg = ''
