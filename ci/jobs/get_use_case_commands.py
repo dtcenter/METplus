@@ -68,8 +68,8 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
                 setup_env += (
                     f'{work_dir}/manage_externals/checkout_externals'
                     f' -e {work_dir}/ci/parm/Externals_metplotcalcpy.cfg;'
-                    f'{python_path} -m pip install {work_dir}/METplotpy;'
-                    f'{python_path} -m pip install {work_dir}/METcalcpy;'
+                    f'{python_path} -m pip install {work_dir}/../METplotpy;'
+                    f'{python_path} -m pip install {work_dir}/../METcalcpy;'
                 )
 
             # if metdatadb is in requirements list,
@@ -77,8 +77,10 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             plotcalc_keywords = ['metplotpy', 'metcalcpy', 'spacetime']
             if 'metdatadb' in str(reqs).lower():
                 setup_env += (
+                    'cd /metplus/METplus;'
                     f'{work_dir}/manage_externals/checkout_externals'
                     f' -e {work_dir}/ci/parm/Externals_metdatadb.cfg;'
+                    'cd -;'
                 )
 
             # if metplus is in requirements list,
@@ -91,7 +93,7 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
                 setup_env += (
                     f'echo pwd; pwd; echo ls /metplus; ls /metplus;'
                     f'echo Using environment: {conda_env};'
-                    f'conda list --name {conda_env};'
+                    f'pip freeze;'
                 )
 
             use_case_cmds = []
