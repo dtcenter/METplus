@@ -17,6 +17,7 @@ NETCDF_EXTENSIONS = [
 SKIP_EXTENSIONS = [
     '.zip',
     '.png',
+    '.gif',
 ]
 
 PDF_EXTENSIONS = [
