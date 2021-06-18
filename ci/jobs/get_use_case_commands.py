@@ -35,7 +35,9 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             reqs = use_case_by_requirement.requirements
 
             setup_env = 'source /etc/bashrc;'
-            conda_env = None
+
+            # if no env is specified, use metplus base environment
+            conda_env = METPLUS_BASE_ENV
             python_path = 'python3'
 
             # if requirement ending with _env is set, then
@@ -43,9 +45,6 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             use_env = [item for item in reqs if item.endswith('_env')]
             if use_env:
                 conda_env = use_env[0].replace('_env', '')
-            else:
-                # if no env is specified, use metplus base environment
-                conda_env = METPLUS_BASE_ENV
 
             # if using docker, add conda bin to beginning of PATH
             if host_name == 'docker':
@@ -80,6 +79,19 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
                 setup_env += (
                     f'{work_dir}/manage_externals/checkout_externals'
                     f' -e {work_dir}/ci/parm/Externals_metdatadb.cfg;'
+                )
+
+            # if metplus is in requirements list,
+            # add top of METplus repo to PYTHONPATH so metplus can be imported
+            if 'metplus' in str(reqs).lower():
+                setup_env += f'export PYTHONPATH={work_dir}:$PYTHONPATH;'
+
+            # list packages in python environment that will be used
+            if host_name == 'docker':
+                setup_env += (
+                    f'echo pwd; pwd; echo ls /metplus; ls /metplus;'
+                    f'echo Using environment: {conda_env};'
+                    f'conda list --name {conda_env};'
                 )
 
             use_case_cmds = []
