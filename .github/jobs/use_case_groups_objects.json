@@ -1,94 +1,92 @@
-{
-  "all_use_cases": [
-    {
-      "category": "met_tool_wrapper:0-53",
-      "new": true
-    },
-    {
-      "category": "air_quality_and_comp:0"
-    },
-    {
-      "category": "climate:0-1"
-    },
-    {
-      "category": "convection_allowing_models:0"
-    },
-    {
-      "category": "convection_allowing_models:1"
-    },
-    {
-      "category": "convection_allowing_models:2-6"
-    },
-    {
-      "category": "convection_allowing_models:7"
-    },
-    {
-      "category": "convection_allowing_models:8"
-    },
-    {
-      "category": "cryosphere:0"
-    },
-    {
-      "category": "data_assimilation:0"
-    },
-    {
-      "category": "marine_and_coastal:0"
-    },
-    {
-      "category": "medium_range:0"
-    },
-    {
-      "category": "medium_range:1-2"
-    },
-    {
-      "category": "medium_range:3-5"
-    },
-    {
-      "category": "medium_range:6"
-    },
-    {
-      "category": "medium_range:7-8",
-      "new": true
-    },
-    {
-      "category": "precipitation:0"
-    },
-    {
-      "category": "precipitation:1"
-    },
-    {
-      "category": "precipitation:2"
-    },
-    {
-      "category": "precipitation:3-8"
-    },
-    {
-      "category": "s2s:0"
-    },
-    {
-      "category": "s2s:1-3",
-      "new": true
-    },
-    {
-      "category": "s2s:4",
-      "new": true
-    },
-    {
-      "category": "s2s:5",
-      "new": true
-    },
-    {
-      "category": "s2s:6"
-    },
-    {
-      "category": "space_weather:0-1"
-    },
-    {
-      "category": "tc_and_extra_tc:0-2",
-      "new": true
-    },
-    {
-      "category": "tc_and_extra_tc:3"
-    }
-  ]
-}
+[
+  {
+    "category": "met_tool_wrapper:0-53",
+    "new": true
+  },
+  {
+    "category": "air_quality_and_comp:0"
+  },
+  {
+    "category": "climate:0-1"
+  },
+  {
+    "category": "convection_allowing_models:0"
+  },
+  {
+    "category": "convection_allowing_models:1"
+  },
+  {
+    "category": "convection_allowing_models:2-6"
+  },
+  {
+    "category": "convection_allowing_models:7"
+  },
+  {
+    "category": "convection_allowing_models:8"
+  },
+  {
+    "category": "cryosphere:0"
+  },
+  {
+    "category": "data_assimilation:0"
+  },
+  {
+    "category": "marine_and_coastal:0"
+  },
+  {
+    "category": "medium_range:0"
+  },
+  {
+    "category": "medium_range:1-2"
+  },
+  {
+    "category": "medium_range:3-5"
+  },
+  {
+    "category": "medium_range:6"
+  },
+  {
+    "category": "medium_range:7-8",
+    "new": true
+  },
+  {
+    "category": "precipitation:0"
+  },
+  {
+    "category": "precipitation:1"
+  },
+  {
+    "category": "precipitation:2"
+  },
+  {
+    "category": "precipitation:3-8"
+  },
+  {
+    "category": "s2s:0"
+  },
+  {
+    "category": "s2s:1-3",
+    "new": true
+  },
+  {
+    "category": "s2s:4",
+    "new": true
+  },
+  {
+    "category": "s2s:5",
+    "new": true
+  },
+  {
+    "category": "s2s:6"
+  },
+  {
+    "category": "space_weather:0-1"
+  },
+  {
+    "category": "tc_and_extra_tc:0-2",
+    "new": true
+  },
+  {
+    "category": "tc_and_extra_tc:3"
+  }
+]
