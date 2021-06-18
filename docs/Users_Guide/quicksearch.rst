@@ -65,10 +65,13 @@ Use Cases by Application:
 
 .. only:: html
 
+   | `Air Quality and Composition <https://metplus.readthedocs.io/en/develop/search.html?q=AirQualityAndCompAppUseCase&check_keywords=yes&area=default>`_
    | `Climate <https://metplus.readthedocs.io/en/develop/search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_
    | `Convection Allowing Models <https://metplus.readthedocs.io/en/develop/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_
+   | `Cryosphere  <https://metplus.readthedocs.io/en/develop/search.html?q=CryosphereAppUseCase&check_keywords=yes&area=default>`_
+   | `Data Assimilation  <https://metplus.readthedocs.io/en/develop/search.html?q=DataAssimilationAppUseCase&check_keywords=yes&area=default>`_
    | `Ensemble  <https://metplus.readthedocs.io/en/develop/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
-   | `Marine and Cryosphere <https://metplus.readthedocs.io/en/develop/search.html?q=MarineAndCryoAppUseCase&check_keywords=yes&area=default>`_
+   | `Marine and Coastal <https://metplus.readthedocs.io/en/develop/search.html?q=MarineAndCoastalAppUseCase&check_keywords=yes&area=default>`_
    | `Medium Range <https://metplus.readthedocs.io/en/develop/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_
    | `Precipitation <https://metplus.readthedocs.io/en/develop/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_
    | `Space Weather <https://metplus.readthedocs.io/en/develop/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
@@ -77,10 +80,13 @@ Use Cases by Application:
 
 .. only:: latex
 
+   | **Air Quality and Composition**: *AirQualityAndCompAppUseCase*
    | **Climate**: *ClimateAppUseCase*
    | **Convection Allowing Models**: *ConvectionAllowingModelsAppUseCase*
+   | **Cryosphere**: *CryosphereAppUseCase*
+   | **Data Assimilation**: *DataAssimilationAppUseCase*
    | **Ensemble**: *EnsembleAppUseCase*
-   | **Marine and Cryosphere**: *MarineAndCryoAppUseCase*
+   | **Marine and Coastal**: *MarineAndCoastalAppUseCase*
    | **Medium Range**: *MediumRangeAppUseCase*
    | **Precipitation**: *PrecipitationAppUseCase*
    | **Space Weather**: *SpaceWeatherAppUseCase*
