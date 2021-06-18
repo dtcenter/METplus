@@ -32,7 +32,8 @@ jobs:
       - name: Get use cases to run
         id: get-use-cases
         run: |
-          matrix=$(jq 'map(. | select(has("new")) )' .github/jobs/use_case_groups_objects.json)
+#          matrix=$(jq 'map(. | select(has("new")) )' .github/jobs/use_case_groups_objects.json)
+          matrix=$(jq 'map(.)' .github/jobs/use_case_groups_objects.json)
           echo ::set-output name=matrix::{\"include\":$(echo $matrix)}\"
       - uses: actions/upload-artifact@v2
         with:
@@ -105,7 +106,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        categories: ${{fromJson(needs.job_control.outputs.matrix)}}
+        categories: ${{fromJson(needs.job_control.outputs.matrix.category)}}
 #          - "met_tool_wrapper:0-54:NEW"
 #          - "air_quality_and_comp:0"
 #          - "climate:0-1"
