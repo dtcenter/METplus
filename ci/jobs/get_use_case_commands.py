@@ -91,7 +91,6 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             # list packages in python environment that will be used
             if host_name == 'docker':
                 setup_env += (
-                    f'echo pwd; pwd; echo ls /metplus; ls /metplus;'
                     f'echo Using environment: {conda_env};'
                     f'pip freeze;'
                 )
