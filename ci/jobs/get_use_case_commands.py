@@ -61,8 +61,8 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             if any([item for item in plotcalc_keywords if item in str(reqs).lower()]):
                 setup_env += (f'{work_dir}/manage_externals/checkout_externals '
                               f'-e {work_dir}/ci/parm/Externals_metplotcalcpy.cfg;'
-                              f'{python_path} -m pip3 install {work_dir}/../METplotpy;'
-                              f'{python_path} -m pip3 install {work_dir}/../METcalcpy;')
+                              f'{python_path} -m pip install {work_dir}/../METplotpy;'
+                              f'{python_path} -m pip install {work_dir}/../METcalcpy;')
 
             use_case_cmds = []
             for use_case in use_case_by_requirement.use_cases:
