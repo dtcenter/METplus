@@ -130,6 +130,6 @@ Category: space_weather
 
 Category: tc_and_extra_tc
 0::TCRMW_fcstGFS_fcstOnly_gonzalo:: model_applications/tc_and_extra_tc/TCRMW_fcstGFS_fcstOnly_gonzalo.conf
-1::CyclonePlotter_fcstGFS_obsGFS_OPC:: model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf:: cartopy_env
+1::CyclonePlotter_fcstGFS_obsGFS_OPC:: model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf:: cycloneplotter_env
 2::UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF:: model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF.conf,model_applications/tc_and_extra_tc/UserScript_ASCII2NC_PointStat_fcstHAFS_obsFRD_NetCDF/ci_overrides.conf
 3::GridStat_fcstHAFS_obsTDR_NetCDF:: model_applications/tc_and_extra_tc/GridStat_fcstHAFS_obsTDR_NetCDF.conf:: py_embed
