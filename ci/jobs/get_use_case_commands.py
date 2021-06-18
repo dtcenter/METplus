@@ -63,8 +63,8 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
                 setup_env += (
                     f'{work_dir}/manage_externals/checkout_externals'
                     f' -e {work_dir}/ci/parm/Externals_metplotcalcpy.cfg;'
-                    f'{python_path} -m pip install {work_dir}/../METplotpy;'
-                    f'{python_path} -m pip install {work_dir}/../METcalcpy;'
+                    f'{python_path} -m pip install {work_dir}/METplotpy;'
+                    f'{python_path} -m pip install {work_dir}/METcalcpy;'
                 )
 
             # if metdatadb is in requirements list,
