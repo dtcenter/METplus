@@ -26,7 +26,7 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
     test_suite.add_use_case_groups(categories, subset_list)
 
     output_top_dir = os.environ.get('METPLUS_TEST_OUTPUT_BASE', '/data/output')
-    log_format_conf = os.path.join(work_dir, 'ci', 'parm', 'log_format.conf')
+    system_conf = os.path.join(work_dir, 'ci', 'parm', 'system.conf')
 
     for group_name, use_cases_by_req in test_suite.category_groups.items():
         for use_case_by_requirement in use_cases_by_req:
@@ -79,7 +79,7 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
                 output_base = os.path.join(output_top_dir, use_case.name)
                 use_case_cmd = (f"{setup_env} run_metplus.py"
                                 f" {' '.join(config_args)}"
-                                f" {py_embed_arg}{log_format_conf}"
+                                f" {py_embed_arg}{system_conf}"
                                 f" config.OUTPUT_BASE={output_base}")
                 use_case_cmds.append(use_case_cmd)
             group_commands = ';'.join(use_case_cmds)
