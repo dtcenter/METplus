@@ -93,7 +93,7 @@ if [[ "$all_requirements" =~ .*"metviewer".* ]]; then
   NETWORK_ARG=--network="container:mysql_mv"
 fi
 
-# export network arg so it can be read by python script
+# export network arg so it can be read by setup_and_run_use_cases.py
 export NETWORK_ARG
 
 # call script to loop over use case groups to
