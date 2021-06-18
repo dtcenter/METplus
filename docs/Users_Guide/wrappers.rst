@@ -5299,6 +5299,8 @@ METplus Configuration
 | :term:`TCMPR_PLOTTER_FOOTNOTE_FLAG`
 | :term:`TCMPR_PLOTTER_PLOT_CONFIG_OPTS`
 | :term:`TCMPR_PLOTTER_SAVE_DATA`
+| :term:`TCMPR_PLOTTER_DEP_LABELS`
+| :term:`TCMPR_PLOTTER_PLOT_LABELS`
 |
 
 The following are TCMPR flags, if set to 'no', then don't set flag, if
