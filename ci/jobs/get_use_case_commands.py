@@ -55,14 +55,26 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             else:
                 py_embed_arg = ''
 
-            # if METplotpy, METcalcpy, or spacetime are in requirements list,
+            # if metplotpy, metcalcpy, or spacetime are in requirements list,
             # add command to obtain and install METplotpy and METcalcpy
             plotcalc_keywords = ['metplotpy', 'metcalcpy', 'spacetime']
-            if any([item for item in plotcalc_keywords if item in str(reqs).lower()]):
-                setup_env += (f'{work_dir}/manage_externals/checkout_externals '
-                              f'-e {work_dir}/ci/parm/Externals_metplotcalcpy.cfg;'
-                              f'{python_path} -m pip install {work_dir}/../METplotpy;'
-                              f'{python_path} -m pip install {work_dir}/../METcalcpy;')
+            if any([item for item in plotcalc_keywords
+                    if item in str(reqs).lower()]):
+                setup_env += (
+                    f'{work_dir}/manage_externals/checkout_externals'
+                    f' -e {work_dir}/ci/parm/Externals_metplotcalcpy.cfg;'
+                    f'{python_path} -m pip install {work_dir}/../METplotpy;'
+                    f'{python_path} -m pip install {work_dir}/../METcalcpy;'
+                )
+
+            # if metdatadb is in requirements list,
+            # add command to obtain METdatadb
+            plotcalc_keywords = ['metplotpy', 'metcalcpy', 'spacetime']
+            if 'metdatadb' in str(reqs).lower():
+                setup_env += (
+                    f'{work_dir}/manage_externals/checkout_externals'
+                    f' -e {work_dir}/ci/parm/Externals_metdatadbpy.cfg;'
+                )
 
             use_case_cmds = []
             for use_case in use_case_by_requirement.use_cases:

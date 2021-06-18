@@ -93,11 +93,8 @@ if [[ "$all_requirements" =~ .*"metviewer".* ]]; then
   NETWORK_ARG=--network="container:mysql_mv"
 fi
 
-# obtain METdatadb if listed in requirements
-if [[ "$all_requirements" =~ .*"metdatadb".* ]]; then
-  echo "Setting up METdatadb"
-  ${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/python_requirements/get_metdatadb.sh
-fi
+# export network arg so it can be read by python script
+export NETWORK_ARG
 
 # call script to loop over use case groups to
 # get data volumes, set up run image, and run use cases
