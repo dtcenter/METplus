@@ -1,8 +1,5 @@
 #! /bin/bash
 
-pip3 install lxml
-pip3 install PyMySQL
-
 basedir=$(dirname "$0")
 work_dir=$basedir/../../..
 
