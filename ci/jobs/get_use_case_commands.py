@@ -66,10 +66,12 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             if any([item for item in plotcalc_keywords
                     if item in str(reqs).lower()]):
                 setup_env += (
+                    'cd /metplus/METplus;'
                     f'{work_dir}/manage_externals/checkout_externals'
                     f' -e {work_dir}/ci/parm/Externals_metplotcalcpy.cfg;'
                     f'{python_path} -m pip install {work_dir}/../METplotpy;'
                     f'{python_path} -m pip install {work_dir}/../METcalcpy;'
+                    'cd -;'
                 )
 
             # if metdatadb is in requirements list,
