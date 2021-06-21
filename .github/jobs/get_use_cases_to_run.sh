@@ -26,7 +26,7 @@ if [ "$run_use_cases" == "true" ]; then
   fi
 
   # add filter to pull out category values from object list
-  jq_filter${jq_filter}" | .category"
+  jq_filter=${jq_filter}" | .category"
 
   # add square brackets around filter to create array
   jq_filter="["${jq_filter}"]"
