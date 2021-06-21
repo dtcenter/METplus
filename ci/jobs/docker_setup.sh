@@ -1,5 +1,5 @@
 #! /bin/bash
-exit 0
+
 # Run by GitHub Actions (in .github/workflows/testing.yml) to build
 # METplus Docker image and put it up to DockerHub so it can be
 # used by the use case tests.
