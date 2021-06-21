@@ -33,7 +33,7 @@ jobs:
         id: get-use-cases
         run: |
           cat job_control_status >> $GITHUB_ENV;
-          .github/jobs/get_use_cases_to_run.sh;
+          .github/jobs/get_use_cases_to_run.sh ${{ env.run_use_cases }} ${{ env.run_all_use_cases }} ${{ env.run_unit_tests }};
           if [ $? != 0 ]; then
             echo ::set-output name=run_some_tests::true
           else
