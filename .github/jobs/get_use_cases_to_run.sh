@@ -16,28 +16,15 @@ echo Run unit tests: $run_unit_tests
 if [ "$run_use_cases" == "true" ]; then
   echo generate JQ filter to get use cases to run
 
-  # start of jq filter to get all items from JSON file
-#  jq_filter=".[]"
-
   # if only running new use cases, add to filter criteria
   if [ "$run_all_use_cases" == "false" ]; then
     echo Only run new use cases
     matrix=$(jq '.[] | select(has("new")) | .category' $use_case_groups_filepath)
-#    jq_filter=${jq_filter}" | select(has(\"new\"))"
   else
+    echo Add all available use cases
     matrix=$(jq '.[] | .category' $use_case_groups_filepath)
   fi
 
-  # add filter to pull out category values from object list
-#  jq_filter=${jq_filter}" | .category"
-
-  # add square brackets around filter to create array
-#  jq_filter="["${jq_filter}"]"
-
-#  echo Filter is $jq_filter
-
-  # perform JQ query to get list of use case groups to run
-#  matrix=$(jq --arg jq_filter "$jq_filter" '"$jq_filter"' $use_case_groups_filepath)
 fi
 
 # if unit tests will be run, add "pytests" to beginning of matrix list
