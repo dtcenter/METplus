@@ -4,6 +4,14 @@ use_case_groups_filepath=.github/jobs/use_case_groups_objects.json
 # set matrix to string of an empty array in case no use cases will be run
 matrix="[]"
 
+run_use_cases=${{ steps.status.outputs.run_use_cases }}
+run_all_use_cases=${{ steps.status.outputs.run_all_use_cases }}
+run_unit_tests=${{ steps.status.outputs.run_unit_tests }}
+
+echo Run use cases: $run_use_cases
+echo Run All use cases: $run_all_use_cases
+echo Run unit tests: $run_unit_tests
+
 # if running use cases, generate JQ filter to use
 if [ "$run_use_cases" == "true" ]; then
   echo generate JQ filter to get use cases to run
