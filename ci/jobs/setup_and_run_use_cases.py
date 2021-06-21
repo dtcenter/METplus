@@ -16,7 +16,7 @@ import shlex
 import get_use_case_commands
 import get_data_volumes
 from docker_utils import get_branch_name
-
+exit 0
 runner_workspace = os.environ.get('RUNNER_WORKSPACE')
 github_workspace = os.environ.get('GITHUB_WORKSPACE')
 
