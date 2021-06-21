@@ -31,10 +31,7 @@ jobs:
           commit_msg: ${{ github.event.head_commit.message }}
       - name: Get use cases to run
         id: get-use-cases
-        run: |
-          matrix=$(jq '[.[] | select(has("new")) | .category]' .github/jobs/use_case_groups_objects.json)
-          echo ::set-output name=matrix::{\"categories\":$(echo $matrix)}\"
-          echo $matrix
+        run: .github/jobs/get_use_cases_to_run.sh
       - uses: actions/upload-artifact@v2
         with:
           name: job_control_status
