@@ -32,7 +32,7 @@ jobs:
       - name: Get use cases to run
         id: get-use-cases
         run: |
-          matrix=$(jq 'map(.[] | select(has("new")) )' .github/jobs/use_case_groups_objects.json)
+          matrix=$(jq '.[] | select(has("new")) | {"categories": .category}' .github/jobs/use_case_groups_objects.json)
           echo ::set-output name=matrix::{\"include\":$(echo $matrix)}\"
       - uses: actions/upload-artifact@v2
         with:
@@ -104,8 +104,8 @@ jobs:
     needs: [get_image, update_data_volumes, job_control]
     strategy:
       fail-fast: false
-      matrix:
-        categories: ${{fromJson(needs.job_control.outputs.matrix.category)}}
+      matrix: ${{fromJson(needs.job_control.outputs.matrix)}}
+#        categories:
 #          - "met_tool_wrapper:0-54:NEW"
 #          - "air_quality_and_comp:0"
 #          - "climate:0-1"
@@ -139,16 +139,16 @@ jobs:
         with:
           name: job_control_status
       - run: cat job_control_status >> $GITHUB_ENV
-      - name: Check if use case group should run or be skipped
-        run: |
-          if [ "${{ env.run_use_cases == 'true' && (endsWith(matrix.categories, ':NEW') || env.run_all_use_cases) }}" == "true" ]; then
-            run_this_case=true
-          else
-            run_this_case=false
-          fi
-          echo run_this_case=$run_this_case >> $GITHUB_ENV
-          echo Ends with NEW: ${{ endsWith(matrix.categories, ':NEW') }}
-          echo Run all: ${{ env.run_all_use_cases }}
+#      - name: Check if use case group should run or be skipped
+#        run: |
+#          if [ "${{ env.run_use_cases == 'true' && (endsWith(matrix.categories, ':NEW') || env.run_all_use_cases) }}" == "true" ]; then
+#            run_this_case=true
+#          else
+#            run_this_case=false
+#          fi
+#          echo run_this_case=$run_this_case >> $GITHUB_ENV
+#          echo Ends with NEW: ${{ endsWith(matrix.categories, ':NEW') }}
+#          echo Run all: ${{ env.run_all_use_cases }}
       - name: Create directories for database
         run: |
           mkdir -p $RUNNER_WORKSPACE/mysql
@@ -156,19 +156,19 @@ jobs:
           chmod a+w $RUNNER_WORKSPACE/mysql
           chmod a+w $RUNNER_WORKSPACE/output/metviewer
       - name: Create directory for artifacts
-        if: ${{ env.run_this_case == 'true' }}
+#        if: ${{ env.run_this_case == 'true' }}
         run: mkdir -p artifact
       - uses: actions/checkout@v2
-        if: ${{ env.run_this_case == 'true' }}
+#        if: ${{ env.run_this_case == 'true' }}
       - name: Get artifact name
         id: get-artifact-name
-        if: ${{ env.run_this_case == 'true' }}
+#        if: ${{ env.run_this_case == 'true' }}
         run: |
           artifact_name=`ci/jobs/get_artifact_name.sh ${{ matrix.categories }}`
           echo ::set-output name=artifact_name::${artifact_name}
       - uses: ./ci/actions/run_tests
         id: run_tests
-        if: ${{ env.run_this_case == 'true' }}
+#        if: ${{ env.run_this_case == 'true' }}
         with:
           categories: ${{ matrix.categories }}
 
