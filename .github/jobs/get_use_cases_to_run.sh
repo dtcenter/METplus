@@ -22,7 +22,7 @@ if [ "$run_use_cases" == "true" ]; then
   # if only running new use cases, add to filter criteria
   if [ "$run_all_use_cases" == "false" ]; then
     echo Only run new use cases
-    matrix=$(jq '.[] | select(has(\"new\")) | .category' $use_case_groups_filepath)
+    matrix=$(jq '.[] | select(has("new")) | .category' $use_case_groups_filepath)
 #    jq_filter=${jq_filter}" | select(has(\"new\"))"
   else
     matrix=$(jq '.[] | .category' $use_case_groups_filepath)
