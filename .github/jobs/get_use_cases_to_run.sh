@@ -4,10 +4,6 @@ use_case_groups_filepath=.github/jobs/use_case_groups_objects.json
 # set matrix to string of an empty array in case no use cases will be run
 matrix="[]"
 
-run_use_cases=$1
-run_all_use_cases=$2
-run_unit_tests=$3
-
 echo Run use cases: $run_use_cases
 echo Run All use cases: $run_all_use_cases
 echo Run unit tests: $run_unit_tests
@@ -54,9 +50,9 @@ echo Array of groups to run is: $matrix
 # if matrix is still empty, exit 1 to fail step and skip rest of workflow
 if [ "$matrix" == "[]" ]; then
   echo No tests to run!
-  echo ::set-output name=run_some_tests::true
-  exit 0
+#  echo ::set-output name=run_some_tests::true
+  exit 1
 fi
 
-echo ::set-output name=run_some_tests::false
+#echo ::set-output name=run_some_tests::false
 echo ::set-output name=matrix::{\"categories\":$(echo $matrix)}\"

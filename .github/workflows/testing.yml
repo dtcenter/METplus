@@ -26,20 +26,14 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
       - name: Set job controls
         id: job_status
-        run: |
-          ci/jobs/set_job_controls.sh;
-          echo ::set-output name=run_use_cases::$run_use_cases;
-          echo ::set-output name=run_all_use_cases::$run_all_use_cases;
-          echo ::set-output name=run_unit_tests::$run_unit_tests
+        run: ci/jobs/set_job_controls.sh
         env:
           commit_msg: ${{ github.event.head_commit.message }}
       - name: Get use cases to run
         id: get-use-cases
         run: |
-          .github/jobs/get_use_cases_to_run.sh
-          ${{ steps.job_status.outputs.run_use_cases }}
-          ${{ steps.job_status.outputs.run_all_use_cases }}
-          ${{ steps.job_status.outputs.run_unit_tests }};
+          cat job_control_status >> $GITHUB_ENV;
+          .github/jobs/get_use_cases_to_run.sh;
           if [ $? != 0 ]; then
             echo ::set-output name=run_some_tests::true
           else
