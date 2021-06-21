@@ -54,7 +54,9 @@ echo Array of groups to run is: $matrix
 # if matrix is still empty, exit 1 to fail step and skip rest of workflow
 if [ "$matrix" == "[]" ]; then
   echo No tests to run!
-  exit 1
+  echo ::set-output name=run_some_tests::true
+  exit 0
 fi
 
+echo ::set-output name=run_some_tests::false
 echo ::set-output name=matrix::{\"categories\":$(echo $matrix)}\"

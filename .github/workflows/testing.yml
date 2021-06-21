@@ -32,10 +32,10 @@ jobs:
       - name: Get use cases to run
         id: get-use-cases
         run: |
-        .github/jobs/get_use_cases_to_run.sh
-         ${{ steps.status.outputs.run_use_cases }}
-         ${{ steps.status.outputs.run_all_use_cases }}
-         ${{ steps.status.outputs.run_unit_tests }}
+          .github/jobs/get_use_cases_to_run.sh
+          ${{ steps.status.outputs.run_use_cases }}
+          ${{ steps.status.outputs.run_all_use_cases }}
+          ${{ steps.status.outputs.run_unit_tests }}
       - uses: actions/upload-artifact@v2
         with:
           name: job_control_status
@@ -105,6 +105,7 @@ jobs:
     runs-on: ubuntu-latest
 #    needs: [get_image, update_data_volumes, job_control]
     needs: job_control
+    if: ${{ needs.job_control.outputs.run_some_tests == 'true' }}
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.job_control.outputs.matrix)}}
