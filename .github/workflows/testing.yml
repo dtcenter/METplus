@@ -25,17 +25,26 @@ jobs:
           GITHUB_CONTEXT: ${{ toJson(github) }}
         run: echo "$GITHUB_CONTEXT"
       - name: Set job controls
-        id: status
-        run: ci/jobs/set_job_controls.sh
+        id: job_status
+        run: |
+          ci/jobs/set_job_controls.sh;
+          echo ::set-output name=run_use_cases::$run_use_cases;
+          echo ::set-output name=run_all_use_cases::$run_all_use_cases;
+          echo ::set-output name=run_unit_tests::$run_unit_tests
         env:
           commit_msg: ${{ github.event.head_commit.message }}
       - name: Get use cases to run
         id: get-use-cases
         run: |
           .github/jobs/get_use_cases_to_run.sh
-          ${{ steps.status.outputs.run_use_cases }}
-          ${{ steps.status.outputs.run_all_use_cases }}
-          ${{ steps.status.outputs.run_unit_tests }}
+          ${{ steps.job_status.outputs.run_use_cases }}
+          ${{ steps.job_status.outputs.run_all_use_cases }}
+          ${{ steps.job_status.outputs.run_unit_tests }};
+          if [ $? != 0 ]; then
+            echo ::set-output name=run_some_tests::true;
+          else
+            echo ::set-output name=run_some_tests::false
+          fi
       - uses: actions/upload-artifact@v2
         with:
           name: job_control_status

@@ -86,9 +86,9 @@ else
 fi
 
 # output some job control variables so it can be read by another step
-echo ::set-output name=run_use_cases::$run_use_cases
-echo ::set-output name=run_all_use_cases::$run_all_use_cases
-echo ::set-output name=run_unit_tests::$run_unit_tests
+export run_use_cases
+export run_all_use_cases
+export run_unit_tests
 
 
 touch job_control_status
