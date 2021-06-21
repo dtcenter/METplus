@@ -41,7 +41,7 @@ jobs:
           ${{ steps.job_status.outputs.run_all_use_cases }}
           ${{ steps.job_status.outputs.run_unit_tests }};
           if [ $? != 0 ]; then
-            echo ::set-output name=run_some_tests::true;
+            echo ::set-output name=run_some_tests::true
           else
             echo ::set-output name=run_some_tests::false
           fi
