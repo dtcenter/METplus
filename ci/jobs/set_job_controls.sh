@@ -85,6 +85,12 @@ else
 
 fi
 
+# output some job control variables so it can be read by another step
+export run_use_cases
+export run_all_use_cases
+export run_unit_tests
+
+
 touch job_control_status
 echo run_docs=${run_docs} >> job_control_status
 echo run_get_image=${run_get_image} >> job_control_status
@@ -96,3 +102,6 @@ echo run_all_use_cases=${run_all_use_cases} >> job_control_status
 echo run_diff=${run_diff} >> job_control_status
 echo Job Control Settings:
 cat job_control_status
+
+# get use cases to run
+.github/jobs/get_use_cases_to_run.sh $run_use_cases $run_all_use_cases $run_unit_tests

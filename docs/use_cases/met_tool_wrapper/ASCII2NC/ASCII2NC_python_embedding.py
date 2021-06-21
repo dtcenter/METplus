@@ -10,7 +10,8 @@ _embedding.conf
 # Scientific Objective
 # --------------------
 #
-# None. Simply converting file formats so point observations can be read by the MET tools.
+# Simply converting file formats so point observations can be read by the MET
+# tools through the use of a Python script
 
 ##############################################################################
 # Datasets

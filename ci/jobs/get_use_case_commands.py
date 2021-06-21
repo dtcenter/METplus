@@ -16,6 +16,9 @@ sys.path.insert(0, USE_CASES_DIR)
 from internal_tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
 from metplus.util.met_util import expand_int_string_to_list
 
+METPLUS_BASE_ENV = 'metplus_base'
+METPLUS_DOCKER_LOC = '/metplus/METplus'
+
 def main(categories, subset_list, work_dir=None, host_name='docker'):
     all_commands = []
 
@@ -33,7 +36,9 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             reqs = use_case_by_requirement.requirements
 
             setup_env = 'source /etc/bashrc;'
-            conda_env = None
+
+            # if no env is specified, use metplus base environment
+            conda_env = METPLUS_BASE_ENV
             python_path = 'python3'
 
             # if requirement ending with _env is set, then
@@ -41,16 +46,17 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             use_env = [item for item in reqs if item.endswith('_env')]
             if use_env:
                 conda_env = use_env[0].replace('_env', '')
-                # if using docker, add conda bin to beginning of PATH
-                if host_name == 'docker':
-                    python_dir = os.path.join('/usr', 'local', 'envs',
-                                              conda_env, 'bin')
-                    python_path = os.path.join(python_dir, 'python3')
-                    setup_env += f' export PATH={python_dir}:$PATH;'
+
+            # if using docker, add conda bin to beginning of PATH
+            if host_name == 'docker':
+                python_dir = os.path.join('/usr', 'local', 'envs',
+                                          conda_env, 'bin')
+                python_path = os.path.join(python_dir, 'python3')
+                setup_env += f' export PATH={python_dir}:$PATH;'
 
             # if py_embed listed in requirements and using a Python
             # environment that differs from the MET env, set MET_PYTHON_EXE
-            if 'py_embed' in reqs and conda_env:
+            if 'py_embed' in reqs and conda_env != METPLUS_BASE_ENV:
                 py_embed_arg = f'user_env_vars.MET_PYTHON_EXE={python_path} '
             else:
                 py_embed_arg = ''
@@ -61,10 +67,12 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             if any([item for item in plotcalc_keywords
                     if item in str(reqs).lower()]):
                 setup_env += (
+                    f'cd {METPLUS_DOCKER_LOC};'
                     f'{work_dir}/manage_externals/checkout_externals'
                     f' -e {work_dir}/ci/parm/Externals_metplotcalcpy.cfg;'
-                    f'{python_path} -m pip install {work_dir}/../METplotpy;'
-                    f'{python_path} -m pip install {work_dir}/../METcalcpy;'
+                    f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METplotpy;'
+                    f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METcalcpy;'
+                    'cd -;'
                 )
 
             # if metdatadb is in requirements list,
@@ -72,8 +80,24 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             plotcalc_keywords = ['metplotpy', 'metcalcpy', 'spacetime']
             if 'metdatadb' in str(reqs).lower():
                 setup_env += (
+                    f'cd {METPLUS_DOCKER_LOC};'
                     f'{work_dir}/manage_externals/checkout_externals'
                     f' -e {work_dir}/ci/parm/Externals_metdatadb.cfg;'
+                    'cd -;'
+                )
+
+            # if metplus is in requirements list,
+            # add top of METplus repo to PYTHONPATH so metplus can be imported
+            if 'metplus' in str(reqs).lower():
+                setup_env += f'export PYTHONPATH={work_dir}:$PYTHONPATH;'
+
+            # list packages in python environment that will be used
+            if host_name == 'docker':
+                setup_env += (
+                    f'echo Using environment: {conda_env};'
+                    'echo *************************\nConda history:;'
+                    f'cat /usr/local/envs/{conda_env}/conda-meta/history;'
+                    'echo End of history.\n*************************'
                 )
 
             use_case_cmds = []
