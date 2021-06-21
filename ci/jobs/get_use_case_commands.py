@@ -17,6 +17,7 @@ from internal_tests.use_cases.metplus_use_case_suite import METplusUseCaseSuite
 from metplus.util.met_util import expand_int_string_to_list
 
 METPLUS_BASE_ENV = 'metplus_base'
+METPLUS_DOCKER_LOC = '/metplus/METplus'
 
 def main(categories, subset_list, work_dir=None, host_name='docker'):
     all_commands = []
@@ -66,11 +67,11 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             if any([item for item in plotcalc_keywords
                     if item in str(reqs).lower()]):
                 setup_env += (
-                    'cd /metplus/METplus;'
+                    f'cd {METPLUS_DOCKER_LOC};'
                     f'{work_dir}/manage_externals/checkout_externals'
                     f' -e {work_dir}/ci/parm/Externals_metplotcalcpy.cfg;'
-                    f'{python_path} -m pip install {work_dir}/../METplotpy;'
-                    f'{python_path} -m pip install {work_dir}/../METcalcpy;'
+                    f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METplotpy;'
+                    f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METcalcpy;'
                     'cd -;'
                 )
 
@@ -79,7 +80,7 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             plotcalc_keywords = ['metplotpy', 'metcalcpy', 'spacetime']
             if 'metdatadb' in str(reqs).lower():
                 setup_env += (
-                    'cd /metplus/METplus;'
+                    f'cd {METPLUS_DOCKER_LOC};'
                     f'{work_dir}/manage_externals/checkout_externals'
                     f' -e {work_dir}/ci/parm/Externals_metdatadb.cfg;'
                     'cd -;'
