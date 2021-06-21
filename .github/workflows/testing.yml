@@ -32,7 +32,7 @@ jobs:
       - name: Get use cases to run
         id: get-use-cases
         run: |
-          matrix=$(jq '.[] | select(has("new")) | .category' .github/jobs/use_case_groups_objects.json)
+          matrix=$(jq '[.[] | select(has("new")) | .category]' .github/jobs/use_case_groups_objects.json)
           echo ::set-output name=matrix::{\"categories\":$(echo $matrix)}\"
           echo $matrix
       - uses: actions/upload-artifact@v2
