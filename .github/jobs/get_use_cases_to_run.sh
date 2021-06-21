@@ -29,7 +29,7 @@ if [ "$run_use_cases" == "true" ]; then
   jq_filter=${jq_filter}" | .category"
 
   # add square brackets around filter to create array
-  jq_filter="'["${jq_filter}"]'"
+  jq_filter="["${jq_filter}"]"
 
   echo Filter is $jq_filter
 
