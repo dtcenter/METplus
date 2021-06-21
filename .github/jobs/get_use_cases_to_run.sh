@@ -29,12 +29,12 @@ if [ "$run_use_cases" == "true" ]; then
   jq_filter=${jq_filter}" | .category"
 
   # add square brackets around filter to create array
-  jq_filter="["${jq_filter}"]"
+  jq_filter="'["${jq_filter}"]'"
 
   echo Filter is $jq_filter
 
   # perform JQ query to get list of use case groups to run
-  matrix=$(jq '${jq_filter}' $use_case_groups_filepath)
+  matrix=$(jq ${jq_filter} $use_case_groups_filepath)
 fi
 
 # if unit tests will be run, add "pytests" to beginning of matrix list
