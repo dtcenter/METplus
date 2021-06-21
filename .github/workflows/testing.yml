@@ -31,7 +31,11 @@ jobs:
           commit_msg: ${{ github.event.head_commit.message }}
       - name: Get use cases to run
         id: get-use-cases
-        run: .github/jobs/get_use_cases_to_run.sh
+        run: |
+        .github/jobs/get_use_cases_to_run.sh
+         ${{ steps.status.outputs.run_use_cases }}
+         ${{ steps.status.outputs.run_all_use_cases }}
+         ${{ steps.status.outputs.run_unit_tests }}
       - uses: actions/upload-artifact@v2
         with:
           name: job_control_status
