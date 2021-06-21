@@ -31,7 +31,7 @@ fi
 if [ "$run_unit_tests" == "true" ]; then
   echo Adding unit tests to list to run
 
-  # if matrix is empty, set to a list that only includes pytests
+  # if matrix is empty, set to an array that only includes pytests
   if [ "$matrix" == "[]" ]; then
     matrix="[\"pytests\"]"
   # otherwise prepend item to list
