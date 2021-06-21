@@ -102,3 +102,6 @@ echo run_all_use_cases=${run_all_use_cases} >> job_control_status
 echo run_diff=${run_diff} >> job_control_status
 echo Job Control Settings:
 cat job_control_status
+
+# get use cases to run
+.github/jobs/get_use_cases_to_run.sh $run_use_cases $run_all_use_cases $run_run_unit_tests

@@ -17,7 +17,8 @@ jobs:
     name: Determine which jobs to run
     runs-on: ubuntu-latest
     outputs:
-      matrix: ${{ steps.get-use-cases.outputs.matrix }}
+      matrix: ${{ steps.job_status.outputs.matrix }}
+      run_some_tests: ${{ steps.job_status.outputs.run_some_tests }}
     steps:
       - uses: actions/checkout@v2
       - name: Print GitHub values for reference
@@ -26,22 +27,19 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
       - name: Set job controls
         id: job_status
-        run: |
-          ci/jobs/set_job_controls.sh;
-          echo $run_use_cases
-          echo ::set-output name=run_use_cases::${run_use_cases}
+        run: ci/jobs/set_job_controls.sh
         env:
           commit_msg: ${{ github.event.head_commit.message }}
-      - name: Get use cases to run
-        id: get-use-cases
-        run: |
-          echo $${{ steps.job_status.outputs.run_use_cases }}
-          .github/jobs/get_use_cases_to_run.sh $${{ steps.job_status.outputs.run_use_cases }}
-          if [ $? != 0 ]; then
-            echo ::set-output name=run_some_tests::true
-          else
-            echo ::set-output name=run_some_tests::false
-          fi
+#      - name: Get use cases to run
+#        id: get-use-cases
+#        run: |
+#          echo ${{ steps.job_status.outputs.run_use_cases }}
+#          .github/jobs/get_use_cases_to_run.sh ${{ steps.job_status.outputs.run_use_cases }}
+#          if [ $? != 0 ]; then
+#            echo ::set-output name=run_some_tests::true
+#          else
+#            echo ::set-output name=run_some_tests::false
+#          fi
       - uses: actions/upload-artifact@v2
         with:
           name: job_control_status
