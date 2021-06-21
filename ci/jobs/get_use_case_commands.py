@@ -97,7 +97,7 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
                     f'echo Using environment: {conda_env};'
                     'echo *************************\nConda history:;'
                     f'cat /usr/local/envs/{conda_env}/conda-meta/history;'
-                    'echo End of history.\n*************************'
+                    'echo End of history.\n*************************;'
                 )
 
             use_case_cmds = []
