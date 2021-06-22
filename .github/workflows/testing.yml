@@ -19,6 +19,10 @@ jobs:
     outputs:
       matrix: ${{ steps.job_status.outputs.matrix }}
       run_some_tests: ${{ steps.job_status.outputs.run_some_tests }}
+      run_get_image: ${{ steps.job_status.outputs.run_get_image }}
+      run_get_input_data: ${{ steps.job_status.outputs.run_get_input_data }}
+      run_diff: ${{ steps.job_status.outputs.run_diff }}
+      run_save_truth_data: ${{ steps.job_status.outputs.run_save_truth_data }}
     steps:
       - uses: actions/checkout@v2
       - name: Print GitHub values for reference
@@ -38,19 +42,13 @@ jobs:
     name: Docker Setup - Get METplus Image
     runs-on: ubuntu-latest
     needs: job_control
+    if: ${{ needs.job_control.outputs.run_get_image == 'true' }}
     steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: job_control_status
-      - run: cat job_control_status >> $GITHUB_ENV
       - uses: actions/checkout@v2
-        if: ${{ env.run_get_image == 'true' }}
       - uses: actions/setup-python@v2
-        if: ${{ env.run_get_image == 'true' }}
         with:
           python-version: '3.6'
       - name: Get METplus Image
-        if: ${{ env.run_get_image == 'true' }}
         run: .github/jobs/docker_setup.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -59,22 +57,15 @@ jobs:
     name: Docker Setup - Update Data Volumes
     runs-on: ubuntu-latest
     needs: job_control
+    if: ${{ needs.job_control.outputs.run_get_input_data == 'true' }}
     steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: job_control_status
-      - run: cat job_control_status >> $GITHUB_ENV
       - uses: actions/checkout@v2
-        if: ${{ env.run_get_input_data == 'true' }}
       - uses: actions/setup-python@v2
-        if: ${{ env.run_get_input_data == 'true' }}
         with:
           python-version: '3.6'
       - name: Install dependencies
-        if: ${{ env.run_get_input_data == 'true' }}
         run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Update Data Volumes
-        if: ${{ env.run_get_input_data == 'true' }}
         run: .github/jobs/docker_update_data_volumes.py
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
@@ -83,15 +74,11 @@ jobs:
     name: Use Case Tests
     runs-on: ubuntu-latest
     needs: [get_image, update_data_volumes, job_control]
-    if: ${{ needs.job_control.outputs.run_some_tests == 'true' }}
+    if: ${{ always() && needs.job_control.outputs.run_some_tests == 'true' }}
     strategy:
       fail-fast: false
       matrix: ${{fromJson(needs.job_control.outputs.matrix)}}
     steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: job_control_status
-      - run: cat job_control_status >> $GITHUB_ENV
       - name: Create directories for database
         run: |
           mkdir -p $RUNNER_WORKSPACE/mysql
@@ -128,7 +115,7 @@ jobs:
       # run difference testing
       - name: Run difference tests
         id: run-diff
-        if: ${{ env.run_diff == 'true' && steps.run_tests.conclusion == 'success'  && matrix.categories != 'pytests' }}
+        if: ${{ needs.job_control.outputs.run_diff == 'true' && steps.run_tests.conclusion == 'success'  && matrix.categories != 'pytests' }}
         run: |
           artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
           .github/jobs/setup_and_run_diff.py ${{ matrix.categories }} $artifact_name
@@ -174,17 +161,11 @@ jobs:
     name: Create Output Docker Data Volumes
     runs-on: ubuntu-latest
     needs: [use_case_tests]
+    if: $ {{ needs.job_control.outputs.run_save_truth_data == 'true' }}
     steps:
-      - uses: actions/download-artifact@v2
-        with:
-          name: job_control_status
-      - run: cat job_control_status >> $GITHUB_ENV
       - uses: actions/checkout@v2
-        if: ${{ env.run_save_truth_data == 'true' }}
       - uses: actions/download-artifact@v2
-        if: ${{ env.run_save_truth_data == 'true' }}
       - run: .github/jobs/create_output_data_volumes.sh
-        if: ${{ env.run_save_truth_data == 'true' }}
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
