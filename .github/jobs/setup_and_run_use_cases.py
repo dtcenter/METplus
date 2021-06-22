@@ -35,7 +35,8 @@ def main():
     all_commands = (
         get_use_case_commands.main(categories_list,
                                    subset_list,
-                                   work_dir=os.environ.get('GITHUB_WORKSPACE'))
+                                   work_dir=os.environ.get('GITHUB_WORKSPACE'),
+                                   host_name='docker')
     )
     # get input data volumes
     volumes_from = get_data_volumes.main(categories_list)
