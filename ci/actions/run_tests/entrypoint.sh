@@ -50,7 +50,7 @@ if [ "$INPUT_CATEGORIES" == "pytests" ]; then
 	 .
 
   echo Running Pytests
-  command="export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; /usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus"
+  command="mkdir /data/output; export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; /usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus"
   docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "$command"
   exit $?
 fi
