@@ -22,6 +22,12 @@ docker build -t dtcenter/metplus-envs:h5py --build-arg BASE_ENV=py_embed_base --
 docker push dtcenter/metplus-envs:h5py
 ```
 
+### create gempak env from metplus_base using Dockerfile.gempak_env
+```
+docker build -t dtcenter/metplus-envs:gempak --build-arg ENV_NAME=gempak -f ./Dockerfile.gempak_env .
+docker push dtcenter/metplus-envs:gempak
+```
+
 ### create metdatadb env from metplus_base
 ```
 docker build -t dtcenter/metplus-envs:metdatadb --build-arg ENV_NAME=metdatadb .
