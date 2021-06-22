@@ -47,7 +47,7 @@ if [ "$INPUT_CATEGORIES" == "pytests" ]; then
   docker build -t $RUN_TAG \
 	 --build-arg METPLUS_IMG_TAG \
 	 --build-arg METPLUS_ENV_TAG \
-	 -f ./ci/actions/run_tests/Dockerfile.run \
+	 -f .github/actions/run_tests/Dockerfile.run \
 	 .
 
   echo Running Pytests

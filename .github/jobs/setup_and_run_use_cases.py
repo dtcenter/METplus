@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 ################################################################################
-# Used in GitHub Actions (in ci/actions/run_tests/entrypoint.sh) to run cases
+# Used in GitHub Actions (in .github/actions/run_tests/entrypoint.sh) to run cases
 # For each use case group specified:
 #  - create input Docker data volumes and get --volumes-from arguments
 #  - build Docker image with conda environment and METplus branch image
@@ -47,7 +47,7 @@ def main():
         branch_name = f"{branch_name}-pull_request"
 
     run_tag = 'metplus-run-env'
-    dockerfile_dir = os.path.join('ci', 'actions', 'run_tests')
+    dockerfile_dir = os.path.join('.github', 'actions', 'run_tests')
 
     # use BuildKit to build image
     os.environ['DOCKER_BUILDKIT'] = '1'

@@ -106,7 +106,7 @@ jobs:
         run: |
           artifact_name=`.github/jobs/get_artifact_name.sh ${{ matrix.categories }}`
           echo ::set-output name=artifact_name::${artifact_name}
-      - uses: ./ci/actions/run_tests
+      - uses: .github/actions/run_tests
         id: run_tests
         with:
           categories: ${{ matrix.categories }}

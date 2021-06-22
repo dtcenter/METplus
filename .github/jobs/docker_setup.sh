@@ -5,7 +5,7 @@
 # used by the use case tests.
 # If GitHub Actions run is triggered by a fork that does not have
 # permissions to push Docker images to DockerHub, the script is
-# is also called (in ci/actions/run_tests/entrypoint.sh) to
+# is also called (in .github/actions/run_tests/entrypoint.sh) to
 # build the Docker image to use for each use case test group
 
 branch_name=`${GITHUB_WORKSPACE}/.github/jobs/print_branch_name.py`
