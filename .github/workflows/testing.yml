@@ -27,7 +27,7 @@ jobs:
         run: echo "$GITHUB_CONTEXT"
       - name: Set job controls
         id: job_status
-        run: ci/jobs/set_job_controls.sh
+        run: .github/jobs/set_job_controls.sh
         env:
           commit_msg: ${{ github.event.head_commit.message }}
       - uses: actions/upload-artifact@v2
@@ -51,7 +51,7 @@ jobs:
           python-version: '3.6'
       - name: Get METplus Image
         if: ${{ env.run_get_image == 'true' }}
-        run: ci/jobs/docker_setup.sh
+        run: .github/jobs/docker_setup.sh
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -75,7 +75,7 @@ jobs:
         run: python -m pip install --upgrade pip python-dateutil requests bs4
       - name: Update Data Volumes
         if: ${{ env.run_get_input_data == 'true' }}
-        run: ci/jobs/docker_update_data_volumes.py
+        run: .github/jobs/docker_update_data_volumes.py
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
@@ -104,7 +104,7 @@ jobs:
       - name: Get artifact name
         id: get-artifact-name
         run: |
-          artifact_name=`ci/jobs/get_artifact_name.sh ${{ matrix.categories }}`
+          artifact_name=`.github/jobs/get_artifact_name.sh ${{ matrix.categories }}`
           echo ::set-output name=artifact_name::${artifact_name}
       - uses: ./ci/actions/run_tests
         id: run_tests
@@ -116,7 +116,7 @@ jobs:
         id: save-errors
         if: ${{ always() && steps.run_tests.conclusion == 'failure' && matrix.categories != 'pytests' }}
         run: |
-          ci/jobs/copy_error_logs.py \
+          .github/jobs/copy_error_logs.py \
             ${RUNNER_WORKSPACE}/output \
             artifact/error_logs
           if [ -d "artifact/error_logs" ]; then
@@ -131,7 +131,7 @@ jobs:
         if: ${{ env.run_diff == 'true' && steps.run_tests.conclusion == 'success'  && matrix.categories != 'pytests' }}
         run: |
           artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
-          ci/jobs/setup_and_run_diff.py ${{ matrix.categories }} $artifact_name
+          .github/jobs/setup_and_run_diff.py ${{ matrix.categories }} $artifact_name
           if [ "$( ls -A ${RUNNER_WORKSPACE}/diff)" ]; then
             echo ::set-output name=upload_diff::true
             mkdir -p artifact/diff-${artifact_name}
@@ -183,7 +183,7 @@ jobs:
         if: ${{ env.run_save_truth_data == 'true' }}
       - uses: actions/download-artifact@v2
         if: ${{ env.run_save_truth_data == 'true' }}
-      - run: ci/jobs/create_output_data_volumes.sh
+      - run: .github/jobs/create_output_data_volumes.sh
         if: ${{ env.run_save_truth_data == 'true' }}
         env:
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}

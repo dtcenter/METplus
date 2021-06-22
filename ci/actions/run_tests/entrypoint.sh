@@ -6,7 +6,7 @@ REPO_NAME=$(basename $RUNNER_WORKSPACE)
 WS_PATH=$RUNNER_WORKSPACE/$REPO_NAME
 
 # set CI jobs directory variable to easily move it
-CI_JOBS_DIR=ci/jobs
+CI_JOBS_DIR=.github/jobs
 
 # get branch name for push or pull request events
 # add -pull_request if pull request event to keep separated

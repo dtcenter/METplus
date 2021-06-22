@@ -10,7 +10,7 @@ sys.path.insert(0, ci_dir)
 
 from jobs import get_data_volumes
 
-CI_JOBS_DIR = 'ci/jobs'
+CI_JOBS_DIR = '.github/jobs'
 
 RUNNER_WORKSPACE = os.environ.get('RUNNER_WORKSPACE')
 GITHUB_WORKSPACE = os.environ.get('GITHUB_WORKSPACE')
