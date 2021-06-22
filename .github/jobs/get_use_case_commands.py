@@ -86,13 +86,14 @@ def handle_automation_env(host_name, reqs):
         setup_env += f'export PYTHONPATH={work_dir}:$PYTHONPATH;'
 
     # list packages in python environment that will be used
-    setup_env += (
-        f'echo Using environment: dtcenter/metplus-envs:{conda_env};'
-        f'echo cat /usr/local/envs/{conda_env}/environments.yml;'
-        f'echo ----------------------------------------;'
-        f'cat /usr/local/envs/{conda_env}/environments.yml'
-        'echo ----------------------------------------;'
-    )
+    if conda_env != 'gempak':
+        setup_env += (
+            f'echo Using environment: dtcenter/metplus-envs:{conda_env};'
+            f'echo cat /usr/local/envs/{conda_env}/environments.yml;'
+            f'echo ----------------------------------------;'
+            f'cat /usr/local/envs/{conda_env}/environments.yml'
+            'echo ----------------------------------------;'
+        )
 
     return setup_env, py_embed_arg
 
