@@ -1,6 +1,6 @@
 #! /bin/bash
 
-use_case_groups_filepath=.github/jobs/use_case_groups_objects.json
+use_case_groups_filepath=.github/parm/use_case_groups_objects.json
 # set matrix to string of an empty array in case no use cases will be run
 matrix="[]"
 
@@ -19,10 +19,10 @@ if [ "$run_use_cases" == "true" ]; then
   # if only running new use cases, add to filter criteria
   if [ "$run_all_use_cases" == "false" ]; then
     echo Only run new use cases
-    matrix=$(jq '[.[] | select(has("new")) | .category]' $use_case_groups_filepath)
+    matrix=$(jq '[.[] | select(.new == true) | (.category + ":" + .index_list)]' $use_case_groups_filepath)
   else
     echo Add all available use cases
-    matrix=$(jq '[.[] | .category]' $use_case_groups_filepath)
+    matrix=$(jq '[.[] | (.category + ":" + .index_list)]' $use_case_groups_filepath)
   fi
 
 fi
