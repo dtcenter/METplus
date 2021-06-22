@@ -5,7 +5,7 @@ import sys
 import subprocess
 import shlex
 
-ci_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), 'ci')
+ci_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), '.github')
 sys.path.insert(0, ci_dir)
 
 from jobs import get_data_volumes
