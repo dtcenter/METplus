@@ -95,9 +95,9 @@ def main(categories, subset_list, work_dir=None, host_name='docker'):
             if host_name == 'docker':
                 setup_env += (
                     f'echo Using environment: {conda_env};'
-                    'echo "*************************\nConda history:";'
+                    'echo *************************; echo Conda history:;'
                     f'cat /usr/local/envs/{conda_env}/conda-meta/history;'
-                    'echo End of history.\n*************************;'
+                    'echo End of history.; echo *************************;'
                 )
 
             use_case_cmds = []
