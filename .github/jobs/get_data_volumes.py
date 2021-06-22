@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-# Run by GitHub Actions (in ci/actions/run_tests/entrypoint.sh)
+# Run by GitHub Actions (in .github/actions/run_tests/entrypoint.sh)
 # to obtain Docker data volumes for input and output data, create
 # an alias name for the volumes, and generate --volumes-from arguments
 # that are added to the Docker run command to make data available

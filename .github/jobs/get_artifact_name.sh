@@ -1,7 +1,7 @@
 #! /bin/bash
 
 # Run by GitHub Actions (in .github/workflows/testing.yml and
-# ci/actions/run_tests/entrypoint.sh) to get properly
+# .github/actions/run_tests/entrypoint.sh) to get properly
 # formatted artifact name for use case output
 
 artifact_name=$1

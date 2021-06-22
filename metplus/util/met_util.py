@@ -2781,7 +2781,7 @@ def expand_int_string_to_list(int_string):
     """! Expand string into a list of integer values. Items are separated by
     commas. Items that are formatted X-Y will be expanded into each number
     from X to Y inclusive. If the string ends with +, then add a str '+'
-    to the end of the list. Used in ci/jobs/get_use_case_commands.py
+    to the end of the list. Used in .github/jobs/get_use_case_commands.py
 
     @param int_string String containing a comma-separated list of integers
     @returns List of integers and potentially '+' as the last item

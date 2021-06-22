@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-# Used in GitHub Actions (in ci/actions/run_tests/entrypoint.sh)
+# Used in GitHub Actions (in .github/actions/run_tests/entrypoint.sh)
 # to obtain list of requirements from use case group
 
 import os

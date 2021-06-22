@@ -1,6 +1,6 @@
 #! /usr/bin/env python3
 
-# Used in GitHub Actions (in ci/actions/run_tests/entrypoint.sh)
+# Used in GitHub Actions (in .github/actions/run_tests/entrypoint.sh)
 # to obtain and run commands to run use cases from group,
 # execute difference tests if requested, copy error logs and/or
 # files that reported differences  into directory to make

@@ -9,7 +9,7 @@ if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
   exit 0
 fi
 
-branch_name=`${GITHUB_WORKSPACE}/ci/jobs/print_branch_name.py`
+branch_name=`${GITHUB_WORKSPACE}/.github/jobs/print_branch_name.py`
 
 if [ "${branch_name: -4}" != "-ref" ]; then
   echo Branch ${branch_name} is not a reference branch, so skip this step

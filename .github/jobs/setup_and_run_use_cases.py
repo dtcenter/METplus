@@ -1,7 +1,7 @@
 #! /usr/bin/env python3
 
 ################################################################################
-# Used in GitHub Actions (in ci/actions/run_tests/entrypoint.sh) to run cases
+# Used in GitHub Actions (in .github/actions/run_tests/entrypoint.sh) to run cases
 # For each use case group specified:
 #  - create input Docker data volumes and get --volumes-from arguments
 #  - build Docker image with conda environment and METplus branch image
@@ -35,7 +35,8 @@ def main():
     all_commands = (
         get_use_case_commands.main(categories_list,
                                    subset_list,
-                                   work_dir=os.environ.get('GITHUB_WORKSPACE'))
+                                   work_dir=os.environ.get('GITHUB_WORKSPACE'),
+                                   host_name='docker')
     )
     # get input data volumes
     volumes_from = get_data_volumes.main(categories_list)
@@ -47,7 +48,7 @@ def main():
         branch_name = f"{branch_name}-pull_request"
 
     run_tag = 'metplus-run-env'
-    dockerfile_dir = os.path.join('ci', 'actions', 'run_tests')
+    dockerfile_dir = os.path.join('.github', 'actions', 'run_tests')
 
     # use BuildKit to build image
     os.environ['DOCKER_BUILDKIT'] = '1'
@@ -69,7 +70,7 @@ def main():
             env_tag = 'metplus_base'
 
         # get Dockerfile to use (gempak if using gempak)
-        if 'gempak' in requirements:
+        if 'gempak' in str(requirements).lower():
             dockerfile_name = 'Dockerfile.gempak'
         else:
             dockerfile_name = 'Dockerfile.run'
