@@ -11,10 +11,10 @@
 #   scipy==1.5.1
 #   plotly==4.9.0
 #   pingouin==0.3.8
-#   cartopy==0.17.0
+#   cartopy==0.18.0
 #   eofs==1.3.0
-#   cmocean==1.0
-#   xarray==0.16.2
+#   cmocean==2.0
+#   xarray==0.17
 #   netcdf4==1.5.6
 #   python-kaleido==0.2.1
 #
@@ -34,9 +34,9 @@ conda install -y --name ${ENV_NAME} -c conda-forge matplotlib==3.3.0
 conda install -y --name ${ENV_NAME} -c conda-forge scipy==1.5.1
 conda install -y --name ${ENV_NAME} -c conda-forge plotly==4.9.0
 conda install -y --name ${ENV_NAME} -c conda-forge pingouin==0.3.8
-conda install -y --name ${ENV_NAME} -c conda-forge cartopy==0.17.0
+conda install -y --name ${ENV_NAME} -c conda-forge cartopy==0.18.0
 conda install -y --name ${ENV_NAME} -c conda-forge eofs==1.3.0
-conda install -y --name ${ENV_NAME} -c conda-forge cmocean==1.0
-conda install -y --name ${ENV_NAME} -c conda-forge xarray==0.16.2
+conda install -y --name ${ENV_NAME} -c conda-forge cmocean==2.0
+conda install -y --name ${ENV_NAME} -c conda-forge xarray==0.17
 conda install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.5.6
 /usr/local/envs/${ENV_NAME}/bin/pip3 install kaleido==0.2.1
