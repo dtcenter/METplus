@@ -114,7 +114,7 @@ jobs:
       # copy logs with errors to error_logs directory to save as artifact
       - name: Save error logs
         id: save-errors
-        if: ${{ always() && steps.run_tests.conclusion == 'failure' }}
+        if: ${{ always() && steps.run_tests.conclusion == 'failure' && matrix.categories != 'pytests' }}
         run: |
           ci/jobs/copy_error_logs.py \
             ${RUNNER_WORKSPACE}/output \
@@ -128,7 +128,7 @@ jobs:
       # run difference testing
       - name: Run difference tests
         id: run-diff
-        if: ${{ env.run_diff == 'true' && steps.run_tests.conclusion == 'success' }}
+        if: ${{ env.run_diff == 'true' && steps.run_tests.conclusion == 'success'  && matrix.categories != 'pytests' }}
         run: |
           artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
           ci/jobs/setup_and_run_diff.py ${{ matrix.categories }} $artifact_name
@@ -144,7 +144,7 @@ jobs:
       # copy output data to save as artifact
       - name: Save output data
         id: save-output
-        if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
+        if: ${{ always() && steps.run_tests.conclusion != 'skipped'  && matrix.categories != 'pytests' }}
         run: |
           artifact_name=${{ steps.get-artifact-name.outputs.artifact_name }}
           mkdir -p artifact/${artifact_name}
@@ -152,7 +152,7 @@ jobs:
 
       - uses: actions/upload-artifact@v2
         name: Upload output data artifact
-        if: ${{ always() && steps.run_tests.conclusion != 'skipped' }}
+        if: ${{ always() && steps.run_tests.conclusion != 'skipped'  && matrix.categories != 'pytests' }}
         with:
           name: ${{ steps.get-artifact-name.outputs.artifact_name }}
           path: artifact/${{ steps.get-artifact-name.outputs.artifact_name }}
@@ -165,7 +165,7 @@ jobs:
           if-no-files-found: ignore
       - uses: actions/upload-artifact@v2
         name: Upload difference data artifact
-        if: ${{ always() && steps.run-diff.outputs.upload_diff }}
+        if: ${{ always() && steps.run-diff.outputs.upload_diff == 'true' }}
         with:
           name: diff-${{ steps.get-artifact-name.outputs.artifact_name }}
           path: artifact/diff-${{ steps.get-artifact-name.outputs.artifact_name }}
