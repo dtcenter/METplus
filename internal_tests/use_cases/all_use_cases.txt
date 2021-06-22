@@ -8,7 +8,7 @@ Category: met_tool_wrapper
 6::EnsembleStat:: met_tool_wrapper/EnsembleStat/EnsembleStat.conf
 7::EnsembleStat_python_embedding:: met_tool_wrapper/EnsembleStat/EnsembleStat_python_embedding.conf
 8::Example:: met_tool_wrapper/Example/Example.conf
-9::GempakToCF:: met_tool_wrapper/GempakToCF/GempakToCF.conf
+9::GempakToCF:: met_tool_wrapper/GempakToCF/GempakToCF.conf:: gempak_env
 10::GenVxMask:: met_tool_wrapper/GenVxMask/GenVxMask.conf
 11::GenVxMask_multiple:: met_tool_wrapper/GenVxMask/GenVxMask_multiple.conf
 12::GenVxMask_with_arguments:: met_tool_wrapper/GenVxMask/GenVxMask_with_arguments.conf
@@ -104,7 +104,7 @@ Category: medium_range
 
 Category: precipitation
 0::EnsembleStat_fcstHRRRE_FcstOnly_NetCDF:: model_applications/precipitation/EnsembleStat_fcstHRRRE_FcstOnly_NetCDF.conf
-1::GridStat_fcstHREFmean_obsStgIV_Gempak:: model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf
+1::GridStat_fcstHREFmean_obsStgIV_Gempak:: model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_Gempak.conf:: gempak_env
 2::GridStat_fcstHREFmean_obsStgIV_NetCDF:: model_applications/precipitation/GridStat_fcstHREFmean_obsStgIV_NetCDF.conf
 3::GridStat_fcstGFS_obsCCPA_GRIB:: model_applications/precipitation/GridStat_fcstGFS_obsCCPA_GRIB.conf
 4::GridStat_fcstHRRR-TLE_obsStgIV_GRIB:: model_applications/precipitation/GridStat_fcstHRRR-TLE_obsStgIV_GRIB.conf
