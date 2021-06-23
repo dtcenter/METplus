@@ -32,7 +32,6 @@ echo "TIMING: docker pull ${DOCKERHUB_TAG} took `printf '%02d' $(($duration / 60
 export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/ci/docker/Dockerfile
 
 MET_TAG=`${GITHUB_WORKSPACE}/ci/docker/hooks/get_met_version`
-echo Running docker build with MET_TAG=$MET_TAG
 
 echo Setting DOCKER_BUILDKIT=1
 export DOCKER_BUILDKIT=1
