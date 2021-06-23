@@ -91,7 +91,7 @@ def handle_automation_env(host_name, reqs, work_dir):
             f'echo Using environment: dtcenter/metplus-envs:{conda_env};'
             f'echo cat /usr/local/envs/{conda_env}/environments.yml;'
             f'echo ----------------------------------------;'
-            f'cat /usr/local/envs/{conda_env}/environments.yml'
+            f'cat /usr/local/envs/{conda_env}/environments.yml;'
             'echo ----------------------------------------;'
         )
 
