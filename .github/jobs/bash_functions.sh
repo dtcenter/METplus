@@ -4,7 +4,7 @@
 function time_command {
   local start_seconds=$SECONDS
   echo "RUNNING: $*"
-  $*
+  "$@"
   local error=$?
 
   local duration=$(( SECONDS - start_seconds ))
