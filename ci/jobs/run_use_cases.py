@@ -139,7 +139,7 @@ def main():
         else:
             reqs_fmt = ''
         print(f'{reqs}\n{cmd}')
-        full_cmd = f"{reqs_fmt}{cmd}"
+        full_cmd = f"{reqs_fmt}pip3 freeze;{cmd}"
         try:
             subprocess.run(full_cmd, check=True, shell=True)
         except subprocess.CalledProcessError as err:
