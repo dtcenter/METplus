@@ -12,6 +12,7 @@ import os
 import sys
 import subprocess
 import shlex
+import time
 
 import get_use_case_commands
 import get_data_volumes
@@ -83,12 +84,18 @@ def main():
         )
         print(f"Building Docker environment/branch image...\n"
               f"Running: {docker_build_cmd}")
+        start_time = time.time()
         try:
             subprocess.run(shlex.split(docker_build_cmd), check=True)
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Docker Build failed: {docker_build_cmd} -- {err}")
             isOK = False
             continue
+
+        end_time = time.time()
+        print("TIMING: Command took "
+              f"{time.strftime('%H:%M', time.gmtime(end_time - start_time))}"
+              f" (MM:SS): '{docker_build_cmd}')")
 
         cmd_args = {'check': True,
                     'encoding': 'utf-8',
@@ -105,6 +112,7 @@ def main():
             f"{volumes_from} --workdir {github_workspace} "
             f'{run_tag} bash -c "{cmd}"')
         print(f"RUNNING: {full_cmd}")
+        start_time = time.time()
         try:
             process = subprocess.Popen(shlex.split(full_cmd),
                                        shell=False,
@@ -125,6 +133,11 @@ def main():
         except subprocess.CalledProcessError as err:
             print(f"ERROR: Command failed -- {err}")
             isOK = False
+
+        end_time = time.time()
+        print("TIMING: Command took "
+              f"{time.strftime('%H:%M', time.gmtime(end_time - start_time))}"
+              f" (MM:SS): '{full_cmd}')")
 
     if not isOK:
         print("ERROR: Some commands failed.")
