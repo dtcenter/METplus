@@ -83,7 +83,7 @@ def handle_automation_env(host_name, reqs, work_dir):
     # if metplus is in requirements list,
     # add top of METplus repo to PYTHONPATH so metplus can be imported
     if 'metplus' in str(reqs).lower():
-        setup_env += f'export PYTHONPATH={work_dir}:$PYTHONPATH;'
+        setup_env += f'export PYTHONPATH={METPLUS_DOCKER_LOC}:$PYTHONPATH;'
 
     # list packages in python environment that will be used
     if conda_env != 'gempak':
@@ -136,13 +136,14 @@ def main(categories, subset_list, work_dir=None,
                     config_args.append(config_arg)
 
                 output_base = os.path.join(output_top_dir, use_case.name)
-                use_case_cmd = (f"{setup_env} run_metplus.py"
+                use_case_cmd = (f"run_metplus.py"
                                 f" {' '.join(config_args)}"
                                 f" {py_embed_arg}{test_settings_conf}"
                                 f" config.OUTPUT_BASE={output_base}")
                 use_case_cmds.append(use_case_cmd)
 
-            group_commands = ';'.join(use_case_cmds)
+            # add commands to set up environment before use case commands
+            group_commands = f"{setup_env}{';'.join(use_case_cmds)}"
             all_commands.append((group_commands, reqs))
 
     return all_commands
