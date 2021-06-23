@@ -26,7 +26,7 @@ start_seconds=$SECONDS
 docker pull ${DOCKERHUB_TAG} &> /dev/null || true
 
 duration=$(( SECONDS - start_seconds ))
-echo "TIMING: docker pull ${DOCKERHUB_TAG} took $(($duration / 60)):$(($duration % 60)) (MM:SS)"
+echo "TIMING: docker pull ${DOCKERHUB_TAG} took `printf '%02d' $(($duration / 60))`:`printf '%02d' $(($duration % 60))` (MM:SS)"
 
 # set DOCKERFILE_PATH that is used by docker hook script get_met_version
 export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/ci/docker/Dockerfile
