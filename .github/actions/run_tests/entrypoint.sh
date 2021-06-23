@@ -8,6 +8,8 @@ WS_PATH=$RUNNER_WORKSPACE/$REPO_NAME
 # set CI jobs directory variable to easily move it
 CI_JOBS_DIR=.github/jobs
 
+source ${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/bash_functions.sh
+
 # get branch name for push or pull request events
 # add -pull_request if pull request event to keep separated
 branch_name=`${GITHUB_WORKSPACE}/${CI_JOBS_DIR}/print_branch_name.py`
@@ -17,8 +19,7 @@ fi
 
 # try to pull image from DockerHub
 DOCKERHUBTAG=dtcenter/metplus-dev:${branch_name}
-echo "Pulling docker image: $DOCKERHUBTAG"
-docker pull $DOCKERHUBTAG
+time_command docker pull $DOCKERHUBTAG
 
 # if unsuccessful (i.e. pull request from a fork)
 # then build image locally
@@ -43,16 +44,20 @@ if [ "$INPUT_CATEGORIES" == "pytests" ]; then
   # use BuildKit to build image
   export DOCKER_BUILDKIT=1
 
+  start_seconds=$SECONDS
+
   # build an image with the pytest conda env and the METplus branch image
-  docker build -t $RUN_TAG \
+  # Note: adding --build-arg <arg-name> without any value tells docker to
+  #  use value from local environment (export METPLUS_IMG_TAG)
+  time_command docker build -t $RUN_TAG \
 	 --build-arg METPLUS_IMG_TAG \
 	 --build-arg METPLUS_ENV_TAG \
 	 -f .github/actions/run_tests/Dockerfile.run \
 	 .
 
   echo Running Pytests
-  command="mkdir /data/output; export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; /usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus"
-  docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "$command"
+  command="export METPLUS_PYTEST_HOST=docker; cd internal_tests/pytests; /usr/local/envs/pytest/bin/pytest -vv --cov=../../metplus"
+  time_command docker run -v $WS_PATH:$GITHUB_WORKSPACE --workdir $GITHUB_WORKSPACE $RUN_TAG bash -c "$command"
   exit $?
 fi
 

@@ -8,30 +8,25 @@
 # is also called (in .github/actions/run_tests/entrypoint.sh) to
 # build the Docker image to use for each use case test group
 
+source ${GITHUB_WORKSPACE}/.github/jobs/bash_functions.sh
+
 branch_name=`${GITHUB_WORKSPACE}/.github/jobs/print_branch_name.py`
 if [ "$GITHUB_EVENT_NAME" == "pull_request" ]; then
   branch_name=${branch_name}-pull_request
 fi
 
-#DOCKERHUB_TAG=dtcenter/metplus-dev:${DOCKER_IMAGE}
 DOCKERHUB_TAG=dtcenter/metplus-dev:${branch_name}
 
 echo Get Docker image: ${DOCKERHUB_TAG}
-# Note: adding --build-arg <arg-name> without any value tells docker to
-#  use value from local environment (export DO_GIT_CLONE)
 
-echo Timing docker pull...
+# can't use time_command function for this command because it contains redirection
 start_seconds=$SECONDS
 
 # pipe result to true because it will fail if image has not yet been built
 docker pull ${DOCKERHUB_TAG} &> /dev/null || true
 
 duration=$(( SECONDS - start_seconds ))
-echo TIMING docker_setup
-echo "Docker pull took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
-
-echo Timing docker build with --cache-from...
-start_seconds=$SECONDS
+echo "TIMING: docker pull ${DOCKERHUB_TAG} took $(($duration / 60)):$(($duration % 60)) (MM:SS)"
 
 # set DOCKERFILE_PATH that is used by docker hook script get_met_version
 export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/ci/docker/Dockerfile
@@ -42,16 +37,11 @@ echo Running docker build with MET_TAG=$MET_TAG
 echo Setting DOCKER_BUILDKIT=1
 export DOCKER_BUILDKIT=1
 
-docker build --pull --cache-from ${DOCKERHUB_TAG} \
+time_command docker build --pull --cache-from ${DOCKERHUB_TAG} \
 -t ${DOCKERHUB_TAG} \
 --build-arg OBTAIN_SOURCE_CODE=copy \
 --build-arg MET_TAG=$MET_TAG \
 -f ${DOCKERFILE_PATH} ${GITHUB_WORKSPACE}
-
-duration=$(( SECONDS - start_seconds ))
-echo TIMING docker_setup
-echo "Docker build took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
-echo
 
 # skip docker push if credentials are not set
 if [ -z ${DOCKER_USERNAME+x} ] || [ -z ${DOCKER_PASSWORD+x} ]; then
@@ -59,19 +49,8 @@ if [ -z ${DOCKER_USERNAME+x} ] || [ -z ${DOCKER_PASSWORD+x} ]; then
     exit 0
 fi
 
-echo Timing docker push...
-start_seconds=$SECONDS
-
 echo "$DOCKER_PASSWORD" | docker login --username "$DOCKER_USERNAME" --password-stdin
-docker push ${DOCKERHUB_TAG}
+time_command docker push ${DOCKERHUB_TAG}
 
-duration=$(( SECONDS - start_seconds ))
-echo TIMING docker_setup
-echo "Docker push took $(($duration / 60)) minutes and $(($duration % 60)) seconds."
-echo
-
-echo DOCKER IMAGES after DOCKER_SETUP
+echo Running docker images
 docker images
-echo
-
-echo 'done'
