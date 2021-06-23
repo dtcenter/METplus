@@ -22,7 +22,7 @@ METPLUS_DOCKER_LOC = '/metplus/METplus'
 # keywords in requirements list that trigger obtaining METcalcpy and METplotpy
 PLOTCALC_KEYWORDS = ['metplotpy', 'metcalcpy', 'spacetime']
 
-def handle_automation_env(host_name, reqs):
+def handle_automation_env(host_name, reqs, work_dir):
     # if no env is specified, use metplus base environment
     conda_env = METPLUS_BASE_ENV
 
@@ -121,7 +121,7 @@ def main(categories, subset_list, work_dir=None,
         for use_case_by_requirement in use_cases_by_req:
             reqs = use_case_by_requirement.requirements
 
-            setup_env, py_embed_arg = handle_automation_env(host_name, reqs)
+            setup_env, py_embed_arg = handle_automation_env(host_name, reqs, work_dir)
 
             use_case_cmds = []
             for use_case in use_case_by_requirement.use_cases:
