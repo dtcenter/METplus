@@ -14,6 +14,7 @@ Use Cases by MET Tool:
 
 .. only:: html
 
+   | `ASCII2NC </search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
    | `ASCII2NC <https://metplus.readthedocs.io/en/develop/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
    | `CyclonePlotter <https://metplus.readthedocs.io/en/develop/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
    | `EnsembleStat <https://metplus.readthedocs.io/en/develop/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_
