@@ -12,9 +12,11 @@ METplus Quick Search for Use Cases
 Use Cases by MET Tool:
 ======================
 
+.. |branch| replace:: /en/feature_963_quick_search
+
 .. only:: html
 
-   | `ASCII2NCtest </search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
+   | `ASCII2NCtest <|branch|/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
    | `ASCII2NC <https://metplus.readthedocs.io/en/develop/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
    | `CyclonePlotter <https://metplus.readthedocs.io/en/develop/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
    | `EnsembleStat <https://metplus.readthedocs.io/en/develop/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_
