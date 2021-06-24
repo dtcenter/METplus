@@ -1,4 +1,4 @@
-.. _quick-search:
+. _quick-search:
 
 **********************************
 METplus Quick Search for Use Cases
@@ -11,6 +11,8 @@ METplus Quick Search for Use Cases
 
 Use Cases by MET Tool:
 ======================
+
+.. |branch| replace:: feature_963_quick_search
 
 .. only:: html
 
