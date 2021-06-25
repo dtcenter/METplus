@@ -12,12 +12,9 @@ import sys
 import warnings
 import pandas as pd
 
-from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
-from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
 #from metcalcpy.util import read_file
 import metcalcpy.contributed.rmm_omi.compute_mjo_indices as cmi
 import metplotpy.contributed.mjo_rmm_omi.plot_mjo_indices as pmi
-#from RMM_OMI_util import find_input_files, find_times, compute_plot_times, read_omi_eofs
 
 
 def read_omi_eofs(eof1_files, eof2_files):
@@ -81,13 +78,13 @@ def run_omi_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
     PC2_plot = PC2.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
 
     # Get the output name and format for the PC plase diagram
-    phase_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_NAME','obs_OMI_comp_phase'))
+    phase_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_NAME',inlabel+'_OMI_comp_phase'))
     phase_plot_format = os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
 
     # Get times for plotting
-    plot_time = PC1_plot['time'].dt.strftime("%Y-%m-%d").values
-    months = PC1_plot['time.month'].values
-    days = PC1_plot['time.day'].values
+    plot_time = np.array(PC1_plot['time'].dt.strftime("%Y-%m-%d").values)
+    months = np.array(PC1_plot['time.month'].values)
+    days = np.array(PC1_plot['time.day'].values)
 
     # plot the PC phase diagram
     pmi.phase_diagram('OMI',PC1,PC2,plot_time,months,days,phase_plot_name,phase_plot_format)
@@ -114,7 +111,7 @@ def main():
     # Check for an output plot directory in the configs.  Create one if it does not exist
     oplot_dir = os.environ.get('OMI_PLOT_OUTPUT_DIR','')
     if not oplot_dir:
-        obase = config.getstr('config','OUTPUT_BASE')
+        obase = os.environ['SCRIPT_OUTPUT_BASE']
         oplot_dir = os.path.join(obase,'plots')
     if not os.path.exists(oplot_dir):
         os.makedirs(oplot_dir)

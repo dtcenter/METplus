@@ -10,6 +10,7 @@ import sys
 import numpy as np
 import pandas as pd
 import datetime
+import warnings
 
 from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
 from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
@@ -18,17 +19,18 @@ import metplotpy.contributed.mjo_rmm_omi.plot_mjo_indices as pmi
 
 
 def run_phasediagram_steps(inlabel, inconfig, oplot_dir):
+#def run_phasediagram_steps(inlabel, oplot_dir):
 
     fileconfig = config_metplus.replace_config_from_section(inconfig,'phase_diagram')
     use_init =  is_loop_by_init(inconfig)
     alldata_time = find_times(fileconfig, use_init)
 
     # which index are we plotting
-    indexname = fileconfig.getstr('config', 'PLOT_INDEX')
+    indexname = os.environ['PLOT_INDEX']
 
     # Get input filename and make sure it exists
-    pltfile = os.path.join(fileconfig.getraw('config',inlabel+'_PHASE_DIAGRAM_INPUT_DIR'),
-        fileconfig.getraw('config',inlabel+'_PHASE_DIAGRAM_INPUT_FILE'))
+    pltfile = os.path.join(os.environ[inlabel+'_PHASE_DIAGRAM_INPUT_DIR'],
+        os.environ[inlabel+'_PHASE_DIAGRAM_INPUT_FILE'])
 
     # read data from text file
     if indexname=='OMI':
@@ -53,9 +55,10 @@ def run_phasediagram_steps(inlabel, inconfig, oplot_dir):
     PC2 = np.array(pltdata.pc2.values)
 
     # plot the phase diagram
-    phase_plot_name = os.path.join(oplot_dir,inconfig.getstr('phase_diagram',inlabel+'_PHASE_PLOT_OUTPUT_NAME','phase'))
-    print(phase_plot_name)
-    phase_plot_format = inconfig.getstr('phase_diagram',inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
+    phase_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_NAME',inlabel+'_phase'))
+    phase_plot_format = os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
+
+    # plot the phase diagram
     pmi.phase_diagram(indexname,PC1,PC2,dates,months,days,phase_plot_name,'png')
 
 def main():
@@ -65,25 +68,32 @@ def main():
     config = pre_run_setup(config_list)
 
     # Check for an output plot directory in the configs.  Create one if it does not exist
-    oplot_dir = config.getstr('phase_diagram','PHASE_DIAGRAM_PLOT_OUTPUT_DIR','')
+    oplot_dir = os.environ.get('PHASE_DIAGRAM_PLOT_OUTPUT_DIR','')
     if not oplot_dir:
-        obase = config.getstr('config','OUTPUT_BASE')
+        obase = os.environ['OUTPUT_BASE']
         oplot_dir = os.path.join(obase,'plots')
     if not os.path.exists(oplot_dir):
         os.makedirs(oplot_dir)
 
     #  Determine if doing forecast or obs
-    run_obs_phasediagram = config.getbool('phase_diagram','OBS_RUN', False)
-    run_fcst_phasediagram = config.getbool('phase_diagram','FCST_RUN', False)
+    run_obs_phasediagram = os.environ.get('RUN_OBS',False)
+    run_fcst_phasediagram = os.environ.get('FCST_RUN_FCST', False)
 
     # Run the steps to compute OMM
     # Observations
     if run_obs_phasediagram:
         run_phasediagram_steps('OBS', config, oplot_dir)
+        #run_phasediagram_steps('OBS', oplot_dir)
 
     # Forecast
     if run_fcst_phasediagram:
         run_phasediagram_steps('FCST', config, oplot_dir)
+        #run_phasediagram_steps('FCST', oplot_dir)
+
+    # nothing selected
+    if not run_obs_phasediagram and not run_fcst_phasediagram:
+        warnings.warn('Forecast and Obs runs not selected, no plots will be created')
+        warnings.warn('Set RUN_FCST or RUN_OBS in the [user_en_vars] section to generate output')
 
 
 if __name__ == "__main__":

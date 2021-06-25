@@ -12,8 +12,6 @@ import os
 import sys
 import warnings
 
-from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
-from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
 #from metcalcpy.util import read_file
 import metcalcpy.contributed.rmm_omi.compute_mjo_indices as cmi
 import metplotpy.contributed.mjo_rmm_omi.plot_mjo_indices as pmi
@@ -29,7 +27,6 @@ def read_rmm_eofs(olrfile, u850file, u200file):
     # observed EOFs from BOM Australia are saved in individual text files for each variable
     # horizontal resolution of EOFs is 2.5 degree and longitudes go from 0 - 375.5, column1 is eof1
     # column 2 is eof2 in each file
-
     EOF1 = xr.DataArray(np.empty([3,144]),dims=['var','lon'],
     coords={'var':['olr','u850','u200'], 'lon':np.arange(0,360,2.5)})
     EOF2 = xr.DataArray(np.empty([3,144]),dims=['var','lon'],
@@ -101,13 +98,13 @@ def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
     PC2_plot = PC2.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
 
     # Get the output name and format for the PC plase diagram
-    phase_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_NAME','obs_RMM_comp_phase'))
+    phase_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_NAME',inlabel+'_RMM_comp_phase'))
     phase_plot_format = os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
 
     # Get times for plotting
-    plot_time = PC1_plot['time'].dt.strftime("%Y-%m-%d").values
-    months = PC1_plot['time.month'].values
-    days = PC1_plot['time.day'].values
+    plot_time = np.array(PC1_plot['time'].dt.strftime("%Y-%m-%d").values)
+    months = np.array(PC1_plot['time.month'].values)
+    days = np.array(PC1_plot['time.day'].values)
 
     # plot the PC phase diagram
     pmi.phase_diagram('RMM',PC1_plot,PC2_plot,plot_time,months,days,phase_plot_name,phase_plot_format)
@@ -123,13 +120,13 @@ def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
     #PC2_plot = PC2_plot[0:ntim_plot]
 
     # Get the output name and format for the Time Series Plot
-    timeseries_plot_name=os.path.join(oplot_dir,os.environ.get(inlabel+'_TIMESERIES_PLOT_OUTPUT_NAME','obs_RMM_time_series'))
+    timeseries_plot_name=os.path.join(oplot_dir,os.environ.get(inlabel+'_TIMESERIES_PLOT_OUTPUT_NAME',inlabel+'_RMM_time_series'))
     timeseries_plot_format = os.environ.get(inlabel+'_TIMESERIES_PLOT_OUTPUT_FORMAT','png')
 
     # Get times for plotting
-    plot_time = PC1_plot['time'].dt.strftime("%Y-%m-%d").values
-    months = PC1_plot['time.month'].values
-    days = PC1_plot['time.day'].values
+    plot_time = np.array(PC1_plot['time'].dt.strftime("%Y-%m-%d").values)
+    months = np.array(PC1_plot['time.month'].values)
+    days = np.array(PC1_plot['time.day'].values)
 
     # plot PC time series
     pmi.pc_time_series('RMM',PC1_plot,PC2_plot,plot_time,months,days,timeseries_plot_name,timeseries_plot_format)
@@ -137,17 +134,15 @@ def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
 
 def main():
 
-    # Start configs
-    #config_list = sys.argv[1:]
-    #config = pre_run_setup(config_list)
-
     # Get Number of Obs per day
     spd = os.environ.get('OBS_PER_DAY',1)
 
     # Check for an output plot directory
     oplot_dir = os.environ.get('RMM_PLOT_OUTPUT_DIR','')
+    print(os.environ['SCRIPT_OUTPUT_BASE'])
+    exit()
     if not oplot_dir:
-        obase = config.getstr('config','OUTPUT_BASE')
+        obase = os.environ['SCRIPT_OUTPUT_BASE']
         oplot_dir = os.path.join(obase,'plots')
     if not os.path.exists(oplot_dir):
         os.makedirs(oplot_dir)
