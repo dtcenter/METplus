@@ -40,6 +40,18 @@ def run_phasediagram_steps(inlabel, inconfig, oplot_dir):
         data = pd.read_csv(pltfile,  header=None, delim_whitespace=True,
             names=['yyyy','mm','dd', 'pc1','pc2','phase','amp','source'], parse_dates={'dtime':['yyyy','mm','dd']})
 
+    # Get the file with the listing of times and format of this file
+    alldata_timefile = os.environ['OBS_PHASE_DIAGRAM_INPUT_TEXTFILE'] 
+    alldata_timefmt = os.environ['OBS_PHASE_DIAGRAM_INPUT_TIME_FMT']
+
+    # Read the file
+    with open(alldata_timefile) as at:
+        alldata_time1 = at.read().splitlines()
+
+    print(alldata_time)
+    print(alldata_time1)
+    exit()
+
     keepdata = []
     for dd in alldata_time:
         timeloc = np.where(data.dtime == dd['valid'])
@@ -47,6 +59,9 @@ def run_phasediagram_steps(inlabel, inconfig, oplot_dir):
             for l in timeloc[0]:
                 keepdata.append(l)
 
+    #print()
+    #print
+    exit()
     pltdata = data.iloc[keepdata]
     dates = np.array(pltdata.dtime.dt.strftime('%Y%m%d').values,dtype=int)
     months = np.array(pltdata.dtime.dt.strftime('%m').values,dtype=int)
