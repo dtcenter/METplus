@@ -12,9 +12,9 @@ import sys
 import warnings
 import pandas as pd
 
-#from metcalcpy.util import read_file
 import metcalcpy.contributed.rmm_omi.compute_mjo_indices as cmi
 import metplotpy.contributed.mjo_rmm_omi.plot_mjo_indices as pmi
+#from metcalcpy.util import read_file
 
 
 def read_omi_eofs(eof1_files, eof2_files):
@@ -81,13 +81,10 @@ def run_omi_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
     phase_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_NAME',inlabel+'_OMI_comp_phase'))
     phase_plot_format = os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
 
-    # Get times for plotting
-    plot_time = np.array(PC1_plot['time'].dt.strftime("%Y-%m-%d").values)
-    months = np.array(PC1_plot['time.month'].values)
-    days = np.array(PC1_plot['time.day'].values)
-
     # plot the PC phase diagram
-    pmi.phase_diagram('OMI',PC1,PC2,plot_time,months,days,phase_plot_name,phase_plot_format)
+    pmi.phase_diagram('OMI',PC1,PC2,np.array(PC1_plot['time'].dt.strftime("%Y-%m-%d").values),
+        np.array(PC1_plot['time.month'].values),np.array(PC1_plot['time.day'].values),
+        phase_plot_name,phase_plot_format)
 
 
 def main():
