@@ -18,33 +18,6 @@ import metplotpy.contributed.mjo_rmm_omi.plot_mjo_indices as pmi
 #from metcalcpy.util import read_file
 
 
-def cleanup_olr_files(obs_txtfile,fcst_txtfile,keepfiles):
-    print('OLR Exit')
-    if not keepfiles:
-        try:
-            os.remove(obs_txtfile)
-        except:
-            pass
-
-        try:
-            os.remove(fcst_txtfile)
-        except:
-            pass
-
-def cleanup_eof_files(eof1_txtfile,eof2_txtfile,keepfiles):
-    print('EOF Exit')
-    if not keepfiles:
-        try:
-            os.remove(eof1_txtfile)
-        except:
-            pass
-
-        try:
-            os.remove(eof2_txtfile)
-        except:
-            pass
-
-
 def read_omi_eofs(eof1_files, eof2_files):
     """
     Read the OMI EOFs from file and into a xarray DataArray.
@@ -74,9 +47,6 @@ def read_omi_eofs(eof1_files, eof2_files):
 
 
 def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
-
-    # Get OLR file listing
-    #olr_filetxt = os.environ[inlabel+'_OLR_OMI_INPUT_TEXTFILE']
 
     # Read the listing of EOF files
     with open(olr_filetxt) as ol:
@@ -120,12 +90,10 @@ def main():
     # Get Obs and Forecast OLR file listing
     obs_olr_filetxt = os.environ.get('OBS_OLR_OMI_INPUT_TEXTFILE','')
     fcst_olr_filetxt = os.environ.get('FCST_OLR_OMI_INPUT_TEXTFILE','')
-    atexit.register(cleanup_olr_files,obs_olr_filetxt,fcst_olr_filetxt,os.environ.get('KEEP_OLR_TEXTFILES',False))
 
     # Read in EOF filenames
     eof1_filetxt = os.environ['EOF1_INPUT_TEXTFILE']
     eof2_filetxt = os.environ['EOF2_INPUT_TEXTFILE']
-    atexit.register(cleanup_eof_files,eof1_filetxt,eof2_filetxt,os.environ.get('KEEP_EOF_TEXTFILES',False))
 
     # Read the listing of EOF files
     with open(eof1_filetxt) as ef1:
