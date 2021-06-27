@@ -18,19 +18,21 @@ import metplotpy.contributed.mjo_rmm_omi.plot_mjo_indices as pmi
 #from metcalcpy.util import read_file
 
 
-def cleanup_olr_files(obs_timefile,fcst_timefile,keepfiles):
+def cleanup_olr_files(obs_txtfile,fcst_txtfile,keepfiles):
+    print('OLR Exit')
     if not keepfiles:
         try:
-            os.remove(obs_timefile)
+            os.remove(obs_txtfile)
         except:
             pass
 
         try:
-            os.remove(fcst_timefile)
+            os.remove(fcst_txtfile)
         except:
             pass
 
 def cleanup_eof_files(eof1_txtfile,eof2_txtfile,keepfiles):
+    print('EOF Exit')
     if not keepfiles:
         try:
             os.remove(eof1_txtfile)
