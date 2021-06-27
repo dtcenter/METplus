@@ -6,7 +6,6 @@ http://www.bom.gov.au/climate/mjo/graphics/rmm.74toRealtime.txt
 """
 
 import os
-import sys
 import atexit
 import numpy as np
 import pandas as pd
@@ -89,20 +88,20 @@ def main():
         os.makedirs(oplot_dir)
 
     # Determine if doing forecast or obs
-    run_obs_phasediagram = os.environ.get('RUN_OBS',False)
-    run_fcst_phasediagram = os.environ.get('FCST_RUN_FCST', False)
+    run_obs_phasediagram = os.environ.get('RUN_OBS','False')
+    run_fcst_phasediagram = os.environ.get('FCST_RUN_FCST','False')
 
     # Run the steps to compute OMM
     # Observations
-    if run_obs_phasediagram:
+    if (run_obs_phasediagram == 'True'):
         run_phasediagram_steps('OBS', obs_timelist, oplot_dir)
 
     # Forecast
-    if run_fcst_phasediagram:
+    if (run_fcst_phasediagram == 'True'):
         run_phasediagram_steps('FCST', fcst_timelist, oplot_dir)
 
     # nothing selected
-    if not run_obs_phasediagram and not run_fcst_phasediagram:
+    if (run_obs_phasediagram == 'False') and (run_fcst_phasediagram == 'False'):
         warnings.warn('Forecast and Obs runs not selected, no plots will be created')
         warnings.warn('Set RUN_FCST or RUN_OBS in the [user_en_vars] section to generate output')
 

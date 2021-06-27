@@ -130,7 +130,7 @@ def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
 
 def main():
 
-    # Read in EOF files and EOF plot variables
+    # Get the EOF files and EOF plot variables
     olr_eoffile = os.environ['OLR_EOF_INPUT_TEXTFILE']
     u850_eoffile = os.environ['U850_EOF_INPUT_TEXTFILE']
     u200_eoffile = os.environ['U200_EOF_INPUT_TEXTFILE']
@@ -153,17 +153,17 @@ def main():
     pmi.plot_rmm_eofs(EOF1, EOF2, eof_plot_name, eof_plot_format)
 
     #  Determine if doing forecast or obs
-    run_obs_rmm = os.environ.get('RUN_OBS',False)
-    run_fcst_rmm = os.environ.get('FCST_RUN_FCST', False)
+    run_obs_rmm = os.environ.get('RUN_OBS', 'False')
+    run_fcst_rmm = os.environ.get('FCST_RUN_FCST', 'False')
 
-    if run_obs_rmm:
+    if (run_obs_rmm == 'True'):
         run_rmm_steps('OBS', spd, EOF1, EOF2, oplot_dir)
 
-    if run_fcst_rmm:
+    if (run_fcst_rmm == 'True'):
         run_rmm_steps('FCST', spd, EOF1, EOF2, oplot_dir)
 
     # nothing selected
-    if not run_obs_rmm and not run_fcst_rmm:
+    if (run_obs_rmm == 'False') and (run_fcst_rmm == 'False'):
         warnings.warn('Forecast and Obs runs not selected, nothing will be calculated')
         warnings.warn('Set RUN_FCST or RUN_OBS in the [user_en_vars] section to generate output')
 
