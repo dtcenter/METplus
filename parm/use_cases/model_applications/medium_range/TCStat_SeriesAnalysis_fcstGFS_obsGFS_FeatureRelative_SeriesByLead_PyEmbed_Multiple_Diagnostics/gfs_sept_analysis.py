@@ -10,7 +10,6 @@ import os
 import re
 import datetime as dt
 from metpy import calc as mpcalc
-from metpy.units import units
 import xarray as xr
 import cfgrib
 
@@ -51,7 +50,7 @@ def pv(input_file):
     #grbs.close()
 
     # Vars
-    grib_vars = ['t','u','v']
+    grib_vars = ['t']
 
     # Load a list of datasets, one for each variable we want
     ds_list = [cfgrib.open_datasets(input_file,backend_kwargs={'filter_by_keys':{'typeOfLevel':'isobaricInhPa','shortName':v},'indexpath':''}) for v in grib_vars]
@@ -68,13 +67,10 @@ def pv(input_file):
     # Add pressure
     ds['p'] = xr.DataArray(ds.isobaricInhPa.values*100.0,dims=['isobaricInhPa'],coords={'isobaricInhPa':ds.isobaricInhPa.values},attrs={'units':'hectopascals'}).broadcast_like(ds['t'])
 
-    # Calculate potential temperature
-    ds['theta'] = mpcalc.potential_temperature(ds['p']*units('Pa'),ds['t'])
+    # Calculate saturation equivalent potential temperature
+    ds['sept'] = mpcalc.saturation_equivalent_potential_temperature(ds['p'],ds['t'])
 
-    # Compute baroclinic PV
-    ds['pv'] = mpcalc.potential_vorticity_baroclinic(ds['theta'],ds['p']*units('Pa'),ds['u'],ds['v'],latitude=ds.latitude)
-
-    met_data = ds['pv'].mean(axis=0).values
+    met_data = ds['sept'].mean(axis=0).values
 
     return met_data
 
@@ -118,10 +114,10 @@ attrs = {
     'lead':  '00',
     'accum': '00',
         
-    'name':      'pv',
-    'long_name': 'potential_vorticity',
+    'name':      'sept',
+    'long_name': 'saturation_equivalent_potential_temperature',
     'level':     'Surface',
-    'units':     'PV Units',
+    'units':     'K',
         
     'grid': {
         'name': 'Global 0.5 Degree',

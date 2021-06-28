@@ -1,4 +1,4 @@
-# This script calculates potential vorticity (PV) from variables found in the GFS analysis model grib2 files. This script is originally from Taylor Mandelbaum, SBU. 
+# This script calculates potential vorticity (PV) from variables found in the GFS forecast model grib files. This script is originally from Taylor Mandelbaum, SBU. 
 # Adjustments have been made by Lindsay Blank, NCAR.
 # July 2020
 ###################################################################################################
@@ -10,7 +10,6 @@ import os
 import re
 import datetime as dt
 from metpy import calc as mpcalc
-from metpy.units import units
 import xarray as xr
 import cfgrib
 
@@ -22,16 +21,16 @@ def calc_pot_temp(temp,pressure):
 
 def pv(input_file):
     #g = -9.81 # Setting acceleration due to gravity constant
-    #
+
     # Initialize arrays
     #abs_vor = [] # Absolute vorticity
     #levs    = [] # Levels
     #pot_temp = [] # Potential temperature
-    #
+
     # Fill in variable arrays from input file.
     #grbs = pygrib.open(input_file)
     #grbs.rewind()
-    #
+
     #for grb in grbs:
     #    if grb.level*100 <= 10000:
     #                continue
@@ -51,7 +50,7 @@ def pv(input_file):
     #grbs.close()
 
     # Vars
-    grib_vars = ['t','u','v']
+    grib_vars = ['t']
 
     # Load a list of datasets, one for each variable we want
     ds_list = [cfgrib.open_datasets(input_file,backend_kwargs={'filter_by_keys':{'typeOfLevel':'isobaricInhPa','shortName':v},'indexpath':''}) for v in grib_vars]
@@ -66,15 +65,12 @@ def pv(input_file):
     ds = ds.sel(isobaricInhPa=ds.isobaricInhPa[ds.isobaricInhPa>=100.0].values)
 
     # Add pressure
-    ds['p'] = xr.DataArray(ds.isobaricInhPa.values*100.0,dims=['isobaricInhPa'],coords={'isobaricInhPa':ds.isobaricInhPa.values},attrs={'units':'hectopascals'}).broadcast_like(ds['t'])
+    ds['p'] = xr.DataArray(ds.isobaricInhPa.values*100.0,dims=['isobaricInhPa'],coords={'isobaricInhPa':ds.isobaricInhPa.values},attrs={'units':'hectopascals'}).broadcast_like(ds['t']) 
 
-    # Calculate potential temperature
-    ds['theta'] = mpcalc.potential_temperature(ds['p']*units('Pa'),ds['t'])
-
-    # Compute baroclinic PV
-    ds['pv'] = mpcalc.potential_vorticity_baroclinic(ds['theta'],ds['p']*units('Pa'),ds['u'],ds['v'],latitude=ds.latitude)
-
-    met_data = ds['pv'].mean(axis=0).values
+    # Calculate saturation equivalent potential temperature
+    ds['sept'] = mpcalc.saturation_equivalent_potential_temperature(ds['p'],ds['t'])
+  
+    met_data = ds['sept'].mean(axis=0).values
 
     return met_data
 
@@ -91,46 +87,42 @@ print("max", data.max())
 print("min", data.min())
 
 # Automatically fill out time information from input file.
-for token in os.path.basename(input_file).replace('-', '_').split('_'):
-    if(re.search("[0-9]{8,8}", token)):
-        ymd = dt.datetime.strptime(token[0:8],"%Y%m%d")
-    elif(re.search("^[0-9]{4}$", token)):
-        hh  = int(token[0:2])
-    elif(re.search("^[0-9]{3}$", token)):
-        day = int(token.replace("", ""))
-
+file_regex = r"^.*([0-9]{8}_[0-9]{4})_([0-9]{3}).*$"
+match = re.match(file_regex, os.path.basename(input_file).replace('-', '_'))
+if not match:
+    print(f"Could not extract time information from filename: {input_file} using regex {file_regex}")
+    sys.exit(1)
+    
+init = dt.datetime.strptime(match.group(1), '%Y%m%d_%H%M')
+lead = int(match.group(2))
+valid = init + dt.timedelta(hours=lead)
 
 print("Data Shape: " + repr(met_data.shape))
 print("Data Type:  " + repr(met_data.dtype))
 
-# GFS Analysis
-valid  = ymd  + dt.timedelta(hours=hh)
-init = valid
-#lead, rem = divmod((valid-init).total_seconds(), 3600)
-
-
 print(valid)
 print(init)
+print(lead)
 
 attrs = {
-    'valid': valid.strftime("%Y%m%d_%H%M%S"),
-    'init':  init.strftime("%Y%m%d_%H%M%S"),
-    'lead':  '00',
-    'accum': '00',
+        'valid': valid.strftime("%Y%m%d_%H%M%S"),
+        'init':  init.strftime("%Y%m%d_%H%M%S"),
+        'lead':  str(int(lead)),
+        'accum': '00',
         
-    'name':      'pv',
-    'long_name': 'potential_vorticity',
-    'level':     'Surface',
-    'units':     'PV Units',
+        'name':      'sept',
+        'long_name': 'saturation_equivalent_potential_temperature',
+        'level':     'Surface',
+        'units':     'K',
         
-    'grid': {
-        'name': 'Global 0.5 Degree',
-        'type' :   'LatLon',
-        'lat_ll' : -90.0,
-        'lon_ll' : 0.0,
-        'delta_lat' :   0.5,
-        'delta_lon' :   0.5,
-        'Nlat' :      361,
-        'Nlon' :      720,
-    }
-}
+        'grid': {
+            'name': 'Global 0.5 Degree',
+            'type' :   'LatLon',
+            'lat_ll' : -90.0,
+            'lon_ll' : 0.0,
+            'delta_lat' :   0.5,
+            'delta_lon' :   0.5,
+            'Nlat' :      361,
+            'Nlon' :      720,
+            }
+        }
