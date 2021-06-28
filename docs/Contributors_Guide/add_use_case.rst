@@ -1,12 +1,13 @@
+****************
 Adding Use Cases
-================
+****************
 
 .. |metplus_data_dir| replace:: /d2/www/dtcenter/dfiles/code/METplus/METplus_Data
 .. |metplus_staging_dir| replace:: /d2/projects/METplus/METplus_Data_Staging
 .. |dtc_web_server| replace:: mohawk.rap.ucar.edu
 
 Work in a Feature Branch
-------------------------
+========================
 
 Test and develop new use cases in a GitHub feature branch.
 More information on this process can be found in the
@@ -17,7 +18,7 @@ This branch will be the source of the pull request to merge the changes into
 the develop branch.
 
 Types of Use Cases
-------------------
+==================
 
 * Use cases that involve a single MET tool/METplus wrapper will reside
   in the *METplus/parm/use_cases/met_tool_wrapper* directory.
@@ -29,7 +30,7 @@ Types of Use Cases
 .. _use_case_categories:
 
 Use Case Categories
--------------------
+===================
 
 New MET tool wrapper use cases will be put in the repository under
 parm/use_cases/met_tool_wrapper/<MET TOOL NAME> where <MET TOOL NAME>
@@ -61,10 +62,10 @@ or are unsure which category is the most appropriate, please contact MET Help
 (met_help@ucar.edu).
 
 Use Case Content
-----------------
+================
 
 Configure New Use Case
-^^^^^^^^^^^^^^^^^^^^^^
+----------------------
 
 If creating a new MET tool wrapper use case, in the MET tool name
 sub-directory (parm/use_cases/met_tool_wrapper/<MET TOOL NAME>), each
@@ -107,7 +108,7 @@ configuration file name excluding the .conf suffix.
 .. figure:: figure/model_applications_subdir.png
 
 Use Case Rules
-^^^^^^^^^^^^^^
+--------------
 
 - The name of the use case files should conform to the guidelines listed above
   in Use Case Content.
@@ -147,10 +148,10 @@ Use Case Rules
 .. _use_case_documentation:
 
 Document New Use Case
-^^^^^^^^^^^^^^^^^^^^^
+---------------------
 
 Create a New Model Applications Docs Directory
-""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **If the use case falls under an existing Model Applications category, you can
 skip this section.**
@@ -178,7 +179,7 @@ category in the User's Guide > METplus Use Cases >
 page.
 
 Add Sphinx Documentation File
-"""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 In the corresponding documentation MET tool name directory
 (**docs**/use_cases/met_tool_wrapper/<MET TOOL NAME>) for a met_tool_wrappers
@@ -224,7 +225,7 @@ use case OR category directory for a model_applications use case
     documentation.
 
 Accessing the Documentation
-^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------
 
 It is important to ensure that the new use case files is displayed and the
 formatting looks correct. Prior to the release of METplus v4.0.0 contributors
@@ -239,7 +240,7 @@ information.
 .. _manual-build:
 
 Build the Documentation Manually
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------------
 
 Build the documentation and ensure that the new use case file is
 displayed and the formatting looks correct. The Python packages sphinx,
@@ -283,7 +284,8 @@ in your Python 3 environment::
 .. _use_case_input_data:
 
 Input Data
-----------
+==========
+
 Sample input data needed to run the use case should be provided. Please try to
 limit your input data to the minimum that is
 needed to demonstrate your use case effectively. GRIB2 files can be pared down
@@ -300,13 +302,13 @@ If the input data is in NetCDF format, the
 the file(s).
 
 Providing new data
-^^^^^^^^^^^^^^^^^^
+------------------
 
 Log into the computer where your input data resides
-"""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Switch to Bash
-""""""""""""""
+^^^^^^^^^^^^^^
 
 If you are using a shell other than bash, run "bash" to activate a bash
 shell. This will make the instructions you need to run on the DTC web server
@@ -327,7 +329,7 @@ If you are unsure which shell you use, run the following command::
     that you can copy and paste into the terminal.
 
 Download the template environment file
-""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This file is available on the DTC web server. You can use wget to download the
 file to your current working directory, or visit the URL in a browser and save
@@ -338,7 +340,7 @@ it to your computer::
 Or click this `link <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data/add_use_case_env.bash>`_.
 
 Rename env file
-"""""""""""""""
+^^^^^^^^^^^^^^^
 
 Rename this file to include your feature branch. For example, if your branch
 is feature_ABC_desc, then run::
@@ -346,7 +348,7 @@ is feature_ABC_desc, then run::
     mv add_use_case_env.bash feature_ABC_desc_env.bash
 
 Change the values of the env file
-"""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Open this file with your favorite editor and modify it to include the
 appropriate information for your use case.
@@ -378,7 +380,7 @@ If the above is shown, then METPLUS_VERSION should be set to 4.0
   exactly.
 
 Source the env file and check environment
-"""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Source your environment file and verify that the variables are set
 correctly. If the source command fails, make sure you have switched to using
@@ -392,7 +394,7 @@ bash::
     file that you just sourced.
 
 Create sub-directories for input data
-"""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Put new dataset into a directory that matches the use case directories, i.e.
 model_applications/${METPLUS_USE_CASE_CATEGORY}/${METPLUS_USE_CASE_NAME}.
@@ -404,7 +406,7 @@ use case directory can be used to separate out different data sources if
 desired.
 
 Verify use case config file contains correct directory
-""""""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Set directory paths in the use case config file relative to INPUT_BASE
 i.e {INPUT_BASE}/model_applications/<category>/<use_case> where
@@ -415,7 +417,7 @@ You can set {INPUT_BASE} to your local directory to test that the use case
 still runs properly.
 
 Create new data tarfile
-"""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^
 
 Create a tarfile on your development machine with the new dataset. Make sure
 the tarfile contains directories, i.e.
@@ -441,7 +443,7 @@ model_applications/<category>/<use_case> directory. For example::
     model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar/weight_south.nc
 
 Copy files to DTC Web Server
-""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If you have access to the internal DTC web server, copy over the tarfile and
 the environment file to the staging directory:
@@ -460,7 +462,7 @@ For an example on how to upload data to the ftp site see
 `MET Help Webpage <https://dtcenter.org/community-code/model-evaluation-tools-met/met-help-desk>`_.
 
 Adding new data to full sample data tarfile
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------------------------
 
 If you are unable to access the DTC web server to upload data or if you do
 not have permission to use the met_test shared user account, someone from the
@@ -471,7 +473,7 @@ member(s) you have been coordinating with for this work. If you are unsure who
 to contact, then please email MET Help (met_help@ucar.edu).
 
 Log into the DTC Web Server with SSH
-""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The web server is only accessible if you are on the NCAR VPN.
 
@@ -480,7 +482,7 @@ The web server is only accessible if you are on the NCAR VPN.
     ssh |dtc_web_server|
 
 Switch to the met_test user
-"""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The commands must be run as the met_test user to write into the data
 directory::
@@ -490,7 +492,7 @@ directory::
 If unable to run this command successfully, please contact a METplus developer.
 
 Setup the environment to run commands on web server
-"""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Change directory to the data staging dir,
 source the environment file you created, and make sure the environment
@@ -503,7 +505,7 @@ variables are set properly.
     printenv | grep METPLUS\_
 
 Create a feature branch directory in the tarfile directory
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 As the met_test user, create a new directory in the METplus_Data web
 directory named after the branch containing the changes for the new use case.
@@ -514,7 +516,7 @@ On the DTC web server::
     cd ${METPLUS_FEATURE_BRANCH}
 
 Copy the environment file into the feature branch directory
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 This will make it easier for the person who will update the tarfiles for the
 next release to include the new data (right before the pull request is merged
@@ -523,7 +525,7 @@ into the develop branch)::
     cp ${METPLUS_DATA_STAGING_DIR}/${METPLUS_USER_ENV_FILE} ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
 Check if the category tarfile exists already
-""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Check the symbolic link in the develop directory to determine latest tarball::
 
@@ -536,7 +538,7 @@ that no sample data tarfiles for the category are found in any of the release
 or develop directories.
 
 Add contents of existing tarfile to feature branch directory (if applicable)
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 **If you have determined that there is an existing tarfile for the category
 (from the previous step)**, then untar the sample data tarball into
@@ -546,7 +548,7 @@ step::
     tar zxf ${METPLUS_TARFILE_TO_ADD_DATA} -C ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
 Create the new tarfile
-""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^
 
 Untar the new data tarball into the feature branch directory::
 
@@ -566,7 +568,7 @@ MET Tool Wrapper Use Case Example::
     tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz met_test
 
 Add volume_mount_directories file
-"""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Copy the volume_mount_directories file from the develop directory into the
 branch directory. Update the entry for the new tarball if the mounting point
@@ -578,13 +580,13 @@ climate:model_applications/climate::
     cp ${METPLUS_DATA_TARFILE_DIR}/develop/volume_mount_directories ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
 Log out of DTC Web Server
-"""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The rest of the instructions are run on the machine where the use case was
 created and tested.
 
 Trigger Input Data Ingest
-^^^^^^^^^^^^^^^^^^^^^^^^^
+-------------------------
 
 If working in the dtcenter/METplus repository, please skip this step.
 If working in a forked METplus repository, the newly added input data will not
@@ -622,7 +624,7 @@ will be used in the final pull request.
 .. _add_use_case_to_test_suite:
 
 Add use case to the test suite
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+------------------------------
 
 In the METplus repository, there is a text file that contains the list of
 all use cases::
@@ -684,6 +686,20 @@ Use cases with only one configuration file can also use this format is desired.
 This format is used if there are additional dependencies required to run
 the use case such as a different Python environment.
 <dependencies> is a list of keywords separated by commas.
+
+Example::
+
+    0::CyclonePlotter::met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf,user_env_vars.MET_PYTHON_EXE=python3:: cycloneplotter_env
+
+See the next section for more information on valid values to supply as
+dependencies.
+
+Dependencies
+^^^^^^^^^^^^
+
+Environments
+""""""""""""
+
 The keywords that end with "_env" are Python environments created in Docker
 images using Conda that can be used to run use cases. These images are stored
 on DockerHub in dtcenter/metplus-envs and are named with a tag that corresponds
@@ -707,6 +723,8 @@ Example::
 
 The above example uses the Conda environment
 in dtcenter/metplus-envs:**spacetime** to run a user script.
+Note that only one dependency that contains the "_env" suffix can be supplied
+to a given use case.
 
 The **gempak_env** is handled a little differently. It is used if
 GempakToCF.jar is needed for a use case to convert GEMPAK data to NetCDF
@@ -715,6 +733,9 @@ environment to use for the use case, this Docker image installs Java and
 obtains the GempakToCF.jar file. When creating the Docker container to run
 the use cases, the necessary Java files are copied over into the container
 that runs the use cases so that the JAR file can be run by METplus wrappers.
+
+Other Keywords
+""""""""""""""
 
 Besides specifying Python environments,
 there are additional keywords that can be used to set up the environment
@@ -752,7 +773,8 @@ Embedding.
   package in its environment, so the package can be imported easily.
 
 
-**Creating New Python Environments**
+Creating New Python Environments
+""""""""""""""""""""""""""""""""
 
 **COMING SOON!**
 
@@ -770,59 +792,32 @@ package requirements needed to run a new use case.
 .. _add_new_category_to_test_runs:
 
 Add new category to test runs
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------
 
-Add a new entry to the testing.yml file found in the .github/workflows directory
-in the METplus repository.
-Find the job in the testing.yml file named "use_case_tests" and add a new entry
-in the "categories" list with the category of the new use case followed by a
-colon, then the index of the use case from the list described in the
-:ref:`add_use_case_to_test_suite` section, then another colon followed by
-"NEW". For example, if the new use case
-is found in the medium_range category with an index of 9, and the testing.yml file
-has the following entries in the categories list::
 
-    use_case_tests:
-      name: Use Case Tests
-      runs-on: ubuntu-latest
-      if: "!contains(github.event.head_commit.message, 'ci-doc-only')"
-      needs: [get_image, update_data_volumes]
-      strategy:
-        fail-fast: false
-        matrix:
-          categories:
-            - "met_tool_wrapper:0-53"
-            - "air_quality_and_comp:0"
-            - "climate:0-1"
-            - "convection_allowing_models:0"
-            - "convection_allowing_models:1"
-            - "convection_allowing_models:2-6"
-            - "convection_allowing_models:7"
-            - "convection_allowing_models:8"
-            - "cryosphere:0"
-            - "data_assimilation:0"
-            - "marine_and_coastal:0"
-            - "medium_range:0"
-            - "medium_range:1-2"
-            - "medium_range:3-5"
-            - "medium_range:6"
-            - "medium_range:7-8"
-            - "precipitation:0"
-            - "precipitation:1"
-            - "precipitation:2"
-            - "precipitation:3-8"
-            - "s2s:0"
-            - "space_weather:0-1"
-            - "tc_and_extra_tc:0-2"
+The **.github/parm/use_case_groups.json** file in the METplus repository
+contains a list of the use case groups to run together.
+In METplus version 4.0.0 and earlier, this list was
+found in the .github/workflows/testing.yml file.
+Add a new entry to the list that includes the category of the new use case,
+the list of indices that correspond to the index number described in the
+:ref:`add_use_case_to_test_suite` section,
+and set the "new" variable to true.
 
-then add the following to the list::
+Example::
 
-    - "medium_range:9:NEW"
+      {
+        "category": "climate",
+        "index_list": "2",
+        "new": true
+      }
 
 .. note::
-    Make sure that the indentation matches the other lines and use spaces to
-    indent instead of tabs.
+    Make sure there is a comma after the curly braces for the item that comes
+    before the new item in the list.
 
+This example adds a new use case group that contains the climate use case
+with index 2 and is marked as a "new" use case.
 New use cases are added as a separate item to make reviewing the test results
 easier. A new use case will produce new output data that is not found in the
 "truth" data set which is compared the output of the use case runs to check
@@ -836,26 +831,41 @@ or if it should remain in its own group.
 .. _subset_category:
 
 Subset Category into Multiple Tests
-"""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Use cases can be separated into multiple test jobs.
-Add a colon (:), then define
-the cases to run for the job. Use cases are numbered
-starting with 0 and are in order of how they are found in the all_use_cases.txt
-file.
+In the "index_list" value, define the cases to run for the job.
+Use cases are numbered starting with 0 and are in order of how they are
+found in the all_use_cases.txt file.
 
 The argument supports a comma-separated list of numbers. Example::
 
-    - "data_assimilation:0,2,4"
-    - "data_assimilation:1,3"
+      {
+        "category": "data_assimilation",
+        "index_list": "0,2,4",
+        "new": false
+      },
+      {
+        "category": "data_assimilation",
+        "index_list": "1,3",
+        "new": false
+      },
 
 The above example will run a job with data_assimilation use cases 0, 2, and
 4, then another job with data_assimilation use cases 1 and 3.
 
 It also supports a range of numbers separated with a dash. Example::
 
-    - "data_assimilation:0-3"
-    - "data_assimilation:4-5"
+      {
+        "category": "data_assimilation",
+        "index_list": "0-3",
+        "new": false
+      },
+      {
+        "category": "data_assimilation",
+        "index_list": "4-5",
+        "new": false
+      },
 
 The above example will run a job with data_assimilation 0, 1, 2, and 3, then
 another job with data_assimilation 4 and 5.
@@ -863,15 +873,22 @@ another job with data_assimilation 4 and 5.
 You can also use a combination of commas and dashes to define the list of cases
 to run. Example::
 
-    "data_assimilation:0-2,4"
-    ...
-    "data_assimilation:3"
+      {
+        "category": "data_assimilation",
+        "index_list": "0-2,4",
+        "new": false
+      },
+      {
+        "category": "data_assimilation",
+        "index_list": "3",
+        "new": false
+      },
 
 The above example will run data_assimilation 0, 1, 2, and 4 in one
 job, then data_assimilation 3 in another job.
 
 Monitoring Automated Tests
-^^^^^^^^^^^^^^^^^^^^^^^^^^
+--------------------------
 
 All of the use cases in the METplus repository are run via GitHub Actions to
 ensure
@@ -898,7 +915,7 @@ Click on the text next to the icon (last commit message) to see more details.
 .. _verify-new-input-data-was-found:
 
 Verifying that new input data was found
-"""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 On the left side of the window there will be a list of jobs that are run.
 Click on the job titled "Docker Setup - Update Data Volumes"
@@ -928,7 +945,7 @@ If this is the case and data should be found, repeat the instructions to stage
 the input data or contact MET Help (met_help@ucar.edu) for assistance.
 
 Verify that the use case ran successfully
-"""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 You should verify that the use case was
 actually run by referring to the appropriate section under "Jobs" that starts
@@ -937,7 +954,7 @@ filename in the log output by using the search box on the top right of the
 log output.
 
 Verify that the use case ran in a reasonable amount of time
-"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Find the last successful run of the use case category job and compare the time
 it took to run to the run that includes the new use case. The time for the job
@@ -952,7 +969,7 @@ new job for the new use case. See the :ref:`subset_category` section and the
 multiple medium_range jobs for an example.
 
 Create a Pull Request
----------------------
+=====================
 
 Create a pull request to merge the changes from your branch into the develop
 branch. More information on this process can be found in the
@@ -960,10 +977,10 @@ branch. More information on this process can be found in the
 "Open a pull request using your browser."
 
 Pull Request Reviewer Instructions
-----------------------------------
+==================================
 
 Update the develop data directory
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------
 
 Once the person reviewing the pull request has verified that the new use case
 was run successfully using the new data,
@@ -978,7 +995,7 @@ pull request is merged so that the develop branch will contain the new data.
     to be updated to handle this situation.
 
 Log into the DTC Web Server with SSH
-""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The web server is only accessible if you are on the NCAR VPN.
 
@@ -987,14 +1004,14 @@ The web server is only accessible if you are on the NCAR VPN.
     ssh |dtc_web_server|
 
 Switch to the met_test user
-"""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Commands must run as the met_test user::
 
     runas met_test
 
 Change directory to the METplus Data Directory
-""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. parsed-literal::
 
@@ -1006,7 +1023,7 @@ something like this::
     source feature_ABC_desc/feature_ABC_desc_env.sh
 
 Compare the volume_mount_directories file
-"""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Compare the feature branch file to the develop directory file::
 
@@ -1018,7 +1035,7 @@ copy the feature file into the develop directory::
     cp ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
 
 Copy the data from the feature directory into the next version directory
-""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Make sure the paths are correct before copying.
 
@@ -1075,7 +1092,7 @@ MET Tool Wrapper Use Cases::
     tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz met_test
 
 Update the link in the develop directory if needed
-""""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Check if the develop directory contains a symbolic link to an older version of
 the tarfile. Note: These commands must be run together (no other commands in
@@ -1097,10 +1114,10 @@ Check that the link now points to the new tarfile that was just created::
   ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
 
 After the Pull Request is Approved
-----------------------------------
+==================================
   
 Merge the pull request and ensure that all tests pass
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------------------------------------
 
 Merge the pull request on GitHub. Then go to the "Actions" tab and verify that
 all of the GitHub Actions tests pass for the develop branch. A green check mark
@@ -1113,7 +1130,7 @@ If the circle on the left side is yellow, then the run has not completed yet.
 If everything ran smoothly, clean up the files on the web server.
 
 Consider rearranging the use case groups
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+----------------------------------------
 
 If another group of use cases in the same category exists, consider adding the
 new use case to an existing group to speed up execution.
@@ -1137,7 +1154,7 @@ then combine the two list items into a single item::
     - "met_tool_wrapper:0-54"
 
 Create a pull request from develop into develop-ref
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+---------------------------------------------------
 
 The addition of a new use case results in new output data. When this happens,
 the reference branch needs to be updated so that future pull requests will
@@ -1153,10 +1170,10 @@ and click the green "Create pull request" button to create the pull request.
 .. figure:: figure/develop_into_develop-ref.png
 
 Clean Up DTC Web Server
-^^^^^^^^^^^^^^^^^^^^^^^
+-----------------------
 
 Remove the saved copy of the sample data tarfile
-""""""""""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Check if there are any "sav" files in the METplus version directory::
 
@@ -1167,7 +1184,7 @@ If there is more than one file with "sav" in the filename, make sure that the
 file removed is the file that was created for this feature.
 
 Remove the feature branch data directory
-""""""""""""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If more development is needed for the feature branch, do not remove the
 directory. If the work is complete, then remove the directory::
@@ -1176,7 +1193,7 @@ directory. If the work is complete, then remove the directory::
     rm -rf ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
 Clean up the staging directory
-""""""""""""""""""""""""""""""
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Remove the tarfile and environment file from the staging directory::
 
