@@ -159,10 +159,8 @@ AsianMonsoonPrecip.conf
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/climate-MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.png'
-#
-# .. note:: MODEToolUseCase, ClimateAppUseCase, NetCDFFileUseCase, NCAROrgUseCase
+#   MODEToolUseCase, ClimateAppUseCase, NetCDFFileUseCase, NCAROrgUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #  
-#  
+#   sphinx_gallery_thumbnail_path = '_static/climate-MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.png' 
