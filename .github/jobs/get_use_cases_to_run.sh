@@ -1,6 +1,6 @@
 #! /bin/bash
 
-use_case_groups_filepath=.github/parm/use_case_groups_objects.json
+use_case_groups_filepath=.github/parm/use_case_groups.json
 # set matrix to string of an empty array in case no use cases will be run
 matrix="[]"
 

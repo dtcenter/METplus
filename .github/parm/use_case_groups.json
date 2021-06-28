@@ -138,15 +138,5 @@
     "category": "tc_and_extra_tc",
     "index_list": "3",
     "new": false
-  },
-  {
-    "category": "medium_range",
-    "index_list": "7,8",
-    "new": true
-  },
-  {
-    "category": "s2s",
-    "index_list": "3",
-    "new": true
   }
 ]
