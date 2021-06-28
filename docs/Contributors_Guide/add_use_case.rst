@@ -111,7 +111,7 @@ Use Case Rules
 
 - The name of the use case files should conform to the guidelines listed above
   in Use Case Content.
-- The use case METplus configuration file should not set any variables that
+- The use case METplus configuration file should not **set** any variables that
   specific to the user's environment, such as INPUT_BASE, OUTPUT_BASE, and
   PARM_BASE, METPLUS_CONF, etc.
 - A limited number of run times should be processed so that they use case runs
@@ -643,7 +643,7 @@ The use cases can be defined using 3 different formats::
 
     <index>::<config_args>
     <index>::<name>::<config_args>
-    <index>::<name>::<config_args>::<python_packages>
+    <index>::<name>::<config_args>::<dependencies>
 
 **<index>**
 
@@ -679,59 +679,93 @@ conf variable override must be separated by a comma. Example::
 The above example is named 'GridStat_multiple_config' and uses 3 .conf files.
 Use cases with only one configuration file can also use this format is desired.
 
-**<index>::<name>::<config_args>::<python_packages>**
+**<index>::<name>::<config_args>::<dependencies>**
 
-This format is used if there are additional Python packages required to run
-the use case. <python_packages> is a list of packages to install before running
-the use case separated by commas.
+This format is used if there are additional dependencies required to run
+the use case such as a different Python environment.
+<dependencies> is a list of keywords separated by commas.
+The keywords that end with "_env" are Python environments created in Docker
+images using Conda that can be used to run use cases. These images are stored
+on DockerHub in dtcenter/metplus-envs and are named with a tag that corresponds
+to the keyword without the "_env" suffix.
+The environments were created using Docker commands via scripts that are found
+in ci/docker/docker_env. Existing keywords that set up Conda environments used
+for use cases are:
+
+* metplotpy_env
+* spacetime_env
+* xesmf_env
+* netcdf4_env
+* pygrib_env
+* metdatadb_env
+* h5py_env
+* gempak_env
 
 Example::
 
-    8::TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics:: model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf,user_env_vars.MET_PYTHON_EXE=python3::pygrib,metpy
+    spacetime_env
 
-The above example is named
-TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.
-It uses a configuration file and sets the variable MET_PYTHON_EXE from the
-user_env_vars config section to python3 (This is needed to run Python Embedding
-use cases that contain additional Python depedencies). It also needs pygrib
-and metpy Python packages to be installed before running.
+The above example uses the Conda environment
+in dtcenter/metplus-envs:**spacetime** to run a user script.
 
-**Obtaining Python Packages**
+The **gempak_env** is handled a little differently. It is used if
+GempakToCF.jar is needed for a use case to convert GEMPAK data to NetCDF
+format so it can be read by the MET tools. Instead of creating a Python
+environment to use for the use case, this Docker image installs Java and
+obtains the GempakToCF.jar file. When creating the Docker container to run
+the use cases, the necessary Java files are copied over into the container
+that runs the use cases so that the JAR file can be run by METplus wrappers.
 
-Some Python packages can be installed simply by running
-"pip3 install <package_name>" while others require their own dependencies to be
-installed as well. If pip3 is sufficient, then no additional action is
-required. If not, then a bash script can be added to the ci/jobs directory to
-handle the installation. The script should be named get_<package>.sh where
-<package> is the name of the package in all lowercase. For example, if a use
-case in all_use_cases.txt lists METcalcpy as a Python package dependency, then
-the test will look for a script called ci/jobs/get_metcalpy.sh and call it if
-it exists. If it does not exist, it will try to run "pip3 install metcalcpy"
-which would fail (as of the time of writing this documentation).
+Besides specifying Python environments,
+there are additional keywords that can be used to set up the environment
+to run a use case:
 
-Existing scripts currently include::
+* **py_embed** - Used if a different Python environment is required to
+  run a Python Embedding script. If this keyword is included with a Python
+  environment, then the MET_PYTHON_EXE environment variable will be set to
+  specify the version of Python3 that is included in that environment
 
-    ci/jobs/get_cartopy.sh
-    ci/jobs/get_metcalpy.sh
-    ci/jobs/get_metplotpy.sh
-    ci/jobs/get_pygrib.sh
-    ci/jobs/get_xesmf.sh
+Example::
 
-**Using Conda**
+    pygrib_env,py_embed
 
-If Conda (Miniconda) is needed to install the package, then script should
-contain a call to get_miniconda.sh. If Miniconda was already installed for
-another package, the script is smart enough to skip that step. Here is an
-example of a script that uses Conda to install a package::
+In this example, the dtcenter/metplus-envs:**pygrib** environment is used to
+run the use case. Since **py_embed** is also included, then the following will
+be added to the call to run_metplus.py so that the Python embedding script
+will use the **pygrib** environment to run::
 
-    #! /bin/bash
+    user_env_vars.MET_PYTHON_EXE=/usr/local/envs/pygrib/bin/python3
 
-    script_dir=$(dirname "$0")
+Please see the MET User's Guide for more information on how to use Python
+Embedding.
 
-    ${script_dir}/get_miniconda.sh
+* **metviewer** - Used if METviewer should be made available to the use case.
+  This is typically added for a METdbLoad use case that needs to populate a
+  database with MET output.
 
-    echo Installing xesmf with conda
-    conda install -c conda-forge dask netCDF4 xesmf
+* **metplus** - Used if a user script needs to call utility functions from the
+  metplus Python package. This keyword simply adds the METplus source code
+  directory to the PYTHONPATH so that the metplus.util functions can be
+  imported. Note that this keyword is not needed unless a different Python
+  environment is specified with a "_env" keyword. The version of Python that
+  is used to run typical use cases has already installed the METplus Python
+  package in its environment, so the package can be imported easily.
+
+
+**Creating New Python Environments**
+
+**COMING SOON!**
+
+In METplus v4.0.0 and earlier, a list of Python packages were added to use
+cases that required additional packages. These packages were either installed
+with pip3 or using a script. This approach was very time consuming as some
+packages take a very long time to install in Docker. The new approach involves
+creating Docker images that use Conda to create a Python environment that can
+run the use case. To see what is available in each of the existing Python
+environments, refer to the comments in the scripts found in
+**ci/docker/docker_env/scripts**. New environments must be added by a METplus
+developer, so please contact MET Help if none of these environments contain the
+package requirements needed to run a new use case.
 
 .. _add_new_category_to_test_runs:
 
