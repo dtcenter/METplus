@@ -128,9 +128,14 @@ _ConusTemp.conf
 # Keywords
 # --------
 #
+# .. note::
+#
+#   * GridStatToolUseCase 
+#   * ClimateAppUseCase
+#   * NetCDFFileUseCase 
+#   * NCAROrgUseCase 
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
 # sphinx_gallery_thumbnail_path = '_static/climate-GridStat_fcstCESM_obsGFS_ConusTemp.png'
 #
-# .. note:: `GridStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_, 
-#  `ClimateAppUseCase <https://dtcenter.github.io/METplus/search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_, 
-#  `NetCDFFileUseCase <https://dtcenter.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_, 
-#  `NCAROrgUseCase <https://dtcenter.github.io/METplus/search.html?q=NCAROrgUseCase&check_keywords=yes&area=default>`_
