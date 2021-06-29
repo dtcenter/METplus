@@ -55,16 +55,14 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 # METplus Workflow
 # ----------------
 #
-# GridStat is the only tool called in this example.
+# GridStat is the only tool called in this example. This use case will pass in the two
+# hemispheres via a custom loop list, with both the observation and forecast gridded data
+# being pulled from the files via Python Embedding. All of the desired statistics reside in the CNT line type,
+# so that is the only output requested.
 # It processes the following run time:
 #
 # | **Valid:** 2021-03-05 0Z
 # |
-
-#
-# As it is currently set, the configuration file will pass in the two hemispheres via a custom loop list,
-# with both the observation and forecast gridded data being pulled from the files via Python Embedding.
-# All of the desired statistics reside in the CNT line type, that is the only output requested.
 
 ##############################################################################
 # METplus Configuration
@@ -162,5 +160,5 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 #    `PythonEmbeddingFileUseCase <https://metplus.readthedocs.io/en/develop/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
 #    `MarineAndCoastalAppUseCase <https://metplus.readthedocs.io/en/develop/search.html?q=MarineAndCoastalAppUseCase&check_keywords=yes&area=default>`_
 #
-# sphinx_gallery_thumbnail_path = '_static/model_applications-GridStat_fcstRTOFS_obsOSTIA_iceCover.png'
+# sphinx_gallery_thumbnail_path = '_static/marine_and_coastal-GridStat_fcstRTOFS_obsOSTIA_iceCover.png'
 #
