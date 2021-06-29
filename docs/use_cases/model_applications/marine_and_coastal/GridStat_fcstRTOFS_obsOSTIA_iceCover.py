@@ -33,7 +33,7 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 #
 # You will need to use a version of Python 3.6+ that has the following packages installed:
 #
-# * sklearn.metrics
+# * scikit-learn
 # * pyproj
 # * pyresample
 #
