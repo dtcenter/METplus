@@ -81,3 +81,9 @@ docker push dtcenter/metplus-envs:diff
 docker build -t dtcenter/metplus-envs:cycloneplotter --build-arg ENV_NAME=cycloneplotter .
 docker push dtcenter/metplus-envs:cycloneplotter
 ```
+
+### create icecover env from py_embed_base
+```
+docker build -t dtcenter/metplus-envs:icecover --build-arg BASE_ENV=py_embed_base --build-arg ENV_NAME=icecover .
+docker push dtcenter/metplus-envs:icecover
+```
