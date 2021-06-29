@@ -168,6 +168,7 @@ AsianMonsoonPrecip.conf
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
-# 
-# # sphinx_gallery_thumbnail_path = '_static/climate-MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.png'
+# .. code-block:: ini
+#
+#   sphinx_gallery_thumbnail_path = '_static/climate-MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.png'
 #
