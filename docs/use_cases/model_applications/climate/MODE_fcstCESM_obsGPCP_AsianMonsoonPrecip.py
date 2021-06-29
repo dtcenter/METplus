@@ -167,7 +167,10 @@ AsianMonsoonPrecip.conf
 # .. note::
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
-# 
+#
+#
+# Keywords
+# --------
 #
 # .. note::
 #
@@ -179,12 +182,18 @@ AsianMonsoonPrecip.conf
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
+# Keywords
+# --------
+#
 # .. note::
 #
 #  MODEToolUseCase, ClimateAppUseCase, NetCDFFileUseCase, NCAROrgUseCase
 #
 #  Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
+#
+# Keywords
+# --------
 #
 # .. note::
 #
