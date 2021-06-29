@@ -196,16 +196,8 @@ AsianMonsoonPrecip.conf
 #
 #  NCAROrgUseCase
 #
-#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
-#                                                                                  #
+#  Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#                                                                                  
 #
-# .. note::
-#
-#  MODEToolUseCase
-#  ClimateAppUseCase
-#  NetCDFFileUseCase
-#  NCAROrgUseCase
-#
-#   Navigate to the :ref:`quick-search` page to discover other similar use cases. 
-#  
-#   sphinx_gallery_thumbnail_path = '_static/climate-MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.png' 
+# 
+#  sphinx_gallery_thumbnail_path = '_static/climate-MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.png' 
