@@ -12,16 +12,15 @@ UserScript_fcstGFS_obsERA_OMI.py
 # Scientific Objective
 # --------------------
 #
-# To generate ... XXXX
-# 
+# To use Outgoing Longwave Radiation (OLR) to compute the OLR based MJO Index (OMI).  Specifically, OMI is computed using OLR data between 20N and 20S.  Anomalies of OLR are then created.  The OLR anomalies are then projected onto Empirical Orthogonal Function (EOF) data that is computed for each day of the year, latitude, and longitude.  The OLR is then filtered for 20 - 96 days, and regressed onto the daily EOFs.  Finally, it's normalized and these normalized components are plotted on a phase diagram.
 # 
 
 ##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset:  XXXX
-#  * Observation dataset: XXXX
+#  * Forecast dataset:  GFS Model Outgoing Longwave Radiation
+#  * Observation dataset: ERA Reanlaysis Outgoing Longwave Radiation.
 
 ##############################################################################
 # External Dependencies
@@ -49,14 +48,14 @@ UserScript_fcstGFS_obsERA_OMI.py
 # METplus Components
 # ------------------
 #
-# This use case runs the OMI driver... XXXX
-#
+# This use case runs the OMI driver which computes OMI and creates a phase diagram. Inputs to the OMI driver include netCDF files that are in MET's netCDF version.  In addition, a txt file containing the listing of these input netCDF files is required, as well as text file listings of the EOF1 and EOF2 files.  Some optional pre-processing steps include using regrid_data_plane to either regrid your data or cut the domain t0 20N - 20S.  There are also 3 optional UserScripts that will get a listing of the input OLR, EOF1, and EOF2 files using save_input_files_txt.py. 
 #
 
 ##############################################################################
 # METplus Workflow
 # ----------------
-# XXXX
+# 
+# The OMI driver script python code is run for each lead time on the forecast and observations data. This example loops by valid time for the model pre-processing, and valid time for the other steps.  This version is set to only process the OMI calculation and creating a text file listing of the EOF files, omitting the regridding, and anomaly caluclation pre-processing steps.  However, the configurations for pre-processing are available for user reference.
 
 ##############################################################################
 # METplus Configuration
@@ -86,11 +85,12 @@ UserScript_fcstGFS_obsERA_OMI.py
 # ----------------
 #
 # The OMI driver script orchestrates the calculation of the MJO indices and 
-# the generation of three OMI plots:
+# the generation of a phase diagram OMI plot:
 # parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py:
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/save_input_files_txt.py
 #
 
 ##############################################################################
@@ -125,13 +125,14 @@ UserScript_fcstGFS_obsERA_OMI.py
 # Expected Output
 # ---------------
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
-# case will be found in XXXX 
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use case will be found in model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.  This may include the regridded data and daily averaged files.  In addition, the phase diagram plots will be generated and the output location can be specified as OMI_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent to model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/plots (relative to **OUTPUT_BASE**). 
 
 ##############################################################################
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/XXXX'
+# sphinx_gallery_thumbnail_path = '_static/s2s-OMI_phase_diagram.png'
 #
-# .. note:: `XXXX`, `S2SAppUseCase <https://dtcenter.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_ 
+# .. note:: `XXXX`, `S2SAppUseCase <https://dtcenter.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
+#  `RegridDataPlaneUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default>`_,
+#  `PCPCombineUseCase <https://dtcenter.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>`_ 

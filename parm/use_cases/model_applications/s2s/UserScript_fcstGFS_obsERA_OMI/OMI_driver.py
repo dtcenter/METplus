@@ -145,20 +145,20 @@ def main():
         os.makedirs(oplot_dir)
 
     #  Determine if doing forecast or obs
-    run_obs_omi = os.environ.get('RUN_OBS','False')
-    run_fcst_omi = os.environ.get('FCST_RUN_FCST', 'False')
+    run_obs_omi = os.environ.get('RUN_OBS','False').lower()
+    run_fcst_omi = os.environ.get('FCST_RUN_FCST', 'False').lower()
 
     # Run the steps to compute OMM
     # Observations
-    if run_obs_omi == 'True':
+    if run_obs_omi == 'true':
         run_omi_steps('OBS', obs_olr_filetxt, spd, EOF1, EOF2, oplot_dir)
 
     # Forecast
-    if run_fcst_omi == 'True':
+    if run_fcst_omi == 'true':
         run_omi_steps('FCST', fcst_olr_filetxt, spd, EOF1, EOF2, oplot_dir)
 
     # nothing selected
-    if (run_obs_omi == 'False') and (run_fcst_omi == 'False'):
+    if (run_obs_omi == 'false') and (run_fcst_omi == 'false'):
         warnings.warn('Forecast and Obs runs not selected, nothing will be calculated')
         warnings.warn('Set RUN_FCST or RUN_OBS in the [user_en_vars] section to generate output')
 
