@@ -88,6 +88,7 @@ Category: data_assimilation
 
 Category: marine_and_coastal
 0::PlotDataPlane_obsHYCOM_coordTripolar::model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf,user_env_vars.MET_PYTHON_EXE=python3::xesmf
+1::GridStat_fcstRTOFS_obsOSTIA_iceCover::model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf,user_env_vars.MET_PYTHON_EXE=python3::sklearn.metrics,pyproj,pyresample
 
 
 Category: medium_range
