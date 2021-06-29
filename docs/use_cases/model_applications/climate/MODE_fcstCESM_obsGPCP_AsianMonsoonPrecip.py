@@ -156,20 +156,7 @@ AsianMonsoonPrecip.conf
 # 2014_06_02_000000/mode_000000L_20140604_000000V_000000A_R1_T2.ps
 
 ##############################################################################
-# Keywords1
-# ---------
-#
-# * MODEToolUseCase
-# * ClimateAppUseCase
-# * NetCDFFileUseCase
-# * NCAROrgUseCase  
-#
-# .. note::
-#
-#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
-#
-#
-# Keywords2
+# Keywords
 # ---------
 #
 # .. note::
@@ -180,33 +167,6 @@ AsianMonsoonPrecip.conf
 #   * NCAROrgUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
-#
-#
-# Keywords3
-# ---------
-#
-# .. note::
-#
-#  MODEToolUseCase, ClimateAppUseCase, NetCDFFileUseCase, NCAROrgUseCase
-#
-#  Navigate to the :ref:`quick-search` page to discover other similar use cases.
-#
-#
-# Keywords4
-# ---------
-#
-# .. note::
-#
-#  MODEToolUseCase
-#
-#  ClimateAppUseCase
-#
-#  NetCDFFileUseCase
-#
-#  NCAROrgUseCase
-#
-#  Navigate to the :ref:`quick-search` page to discover other similar use cases.
-#                                                                                  
 #
 # 
 #  sphinx_gallery_thumbnail_path = '_static/climate-MODE_fcstCESM_obsGPCP_AsianMonsoonPrecip.png' 
