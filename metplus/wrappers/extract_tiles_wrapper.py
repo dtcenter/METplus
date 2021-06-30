@@ -496,8 +496,9 @@ class ExtractTilesWrapper(CommandBuilder):
         lon0 = str(util.round_0p5(adj_lon))
         lat0 = str(util.round_0p5(adj_lat))
 
-        self.logger.debug(f'{data_type} lat: {lat} => {lat0}, '
-                          f'lon: {lon} => {lon0}')
+        self.logger.debug(f'{data_type} '
+                          f'lat: {lat} (track lat) => {lat0} (lat lower left), '
+                          f'lon: {lon} (track lon) => {lon0} (lon lower left)')
 
         grid_def = f"latlon {nlat} {nlon} {lat0} {lon0} {dlat} {dlon}"
 
