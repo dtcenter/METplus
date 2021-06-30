@@ -134,11 +134,11 @@ GridStat_fcstFV3_obsGOES_BrightnessTempDmap.conf
 #
 # .. note::
 #
-#   * GridStatToolUseCase 
+#   * GridStatToolUseCase
 #   * ConvectionAllowingModelsAppUseCase
-#   * NetCDFFileUseCase 
+#   * NetCDFFileUseCase
 #   * NOAAEMCOrgUseCase
-#   * NOAAHWTOrgUseCase 
+#   * NOAAHWTOrgUseCase
 #   * ValidationUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
