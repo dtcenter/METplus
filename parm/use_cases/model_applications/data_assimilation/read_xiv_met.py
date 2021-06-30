@@ -150,20 +150,14 @@ class ASCIIInnovationFile(InnovationFile):
                      'int64','int64','object','int64','int64','object','object','int64','int64','float64','float64',\
                      'float64']
       innovdict = {self.header['column_titles'][i]:innovdtypes[i] for i in range(len(innovdtypes))}
-
-      t1 = datetime.datetime.now()
       line_list = [list(self._parse_innovation_line(line)) for line in self.file]
-      print(datetime.datetime.now()-t1)
       df = pd.DataFrame(line_list,columns=self.header['column_titles'])
-      print(datetime.datetime.now()-t1)
       return(df.astype(innovdict))
 
     def as_met_dataframe(self):
       
       # Get the whole dataframe so we can filter
-      t1 = datetime.datetime.now()
       df = self.as_dataframe()
-      print(datetime.datetime.now()-t1)
 
       # Bring in user supplied query info
       # qstr is a string of booleans to apply to non-string fields
@@ -173,7 +167,7 @@ class ASCIIInnovationFile(InnovationFile):
       # cdbstr is the substring to search the c_db_ob column for
       # cdbbeg is the beginning index of the cdb substring
       # cdbend is the ending index of the cdb substring
-      # for now, only support 1 string for each string column, and only the "&" operator for combining with qstr
+      # only supports 1 string for each string column, and only the "&" operator for combining with qstr
       qstr = os.environ.get('NRL_QUERY_STRING','')
       cpfstr = os.environ.get('NRL_CPFOB_SUBSTR','')
       cpfbeg = int(os.environ.get('NRL_CPFOB_BEGIND',0))
@@ -201,9 +195,6 @@ class ASCIIInnovationFile(InnovationFile):
       if qstr=='' and cpfstr=='' and cdbstr=='':
         print("\nNO FILTER. RETURNING ENTIRE FILE.")
       print(datetime.datetime.now()-t1)
-
-      #=============TESTING
-      #return(df)
 
       # Get the column headers and add one for "n" at the beginning
       hdrcols = self.header['column_titles']
@@ -243,25 +234,15 @@ class ASCIIInnovationFile(InnovationFile):
       requestcols = [''.join(value) for value in nrl_met_map.values()]
 
       # Identify the index of each column in each line and assign it to the object
-      print(datetime.datetime.now()-t1)
       requestinds = [x for x in range(len(hdrcols)) if hdrcols[x] in requestcols]
       self.inds = requestinds
 
       # Get a list of the NRL column name strings in the order of requestinds
       nrlcols = [hdrcols[x] for x in requestinds]
 
-      # Collect only the fields we want from the input file and store in a dataframe
-      #line_list = [list(self._parse_innovation_met_line(line,requestinds)) for line in self.file] # use parser
-      #line_list = [list(data) for data in self] # use iter
-      #print(datetime.datetime.now()-t1)
-      #df = pd.DataFrame(line_list,columns=nrlcols)
-      #print(df)
-      #print(datetime.datetime.now()-t1)
-
       # Rename NRL columns to the names MET expects
       # List to hold MET column names for corresponding NRL names
       metcols = []
-
       # For each NRL column requested (in nrlcols), loop over it and find out what MET needs to call it
       for col in nrlcols:
         # For each dictionary cross-reference item
@@ -282,7 +263,6 @@ class ASCIIInnovationFile(InnovationFile):
 
       # Replace the NRL column names with the MET column names
       df.columns = metcols
-      print(datetime.datetime.now()-t1)
 
       # Handle unset options (if any)
       if os.environ['NRL_SID_STRING']=='':
@@ -312,7 +292,6 @@ class ASCIIInnovationFile(InnovationFile):
 
       # Reorder columns so they are in the order MET expects
       df = df[list(nrl_met_map.keys())]
-      print(datetime.datetime.now()-t1)
 
       # Return the dataframe 
       return(df)
@@ -398,11 +377,9 @@ class H5InnovationFile(InnovationFile):
             counter += 1
             yarray = [ob_arr[i],bk_arr[i],t_bk_arr[i],xiv_arr[i],err_arr[i],etc_arr[i],lat,lon,p_ob_arr[i],jvar_arr[i],insty_arr[i],str(nvp),ichk_arr[i],idt_arr[i],(c_pf_ob_arr[i]).decode('utf-8'),(c_db_ob_arr[i]).decode('utf-8'),idp_arr[i],lsi_arr[i],rej_arr[i],bkerr_arr[i],cob_arr[i],resid_arr[i],1]
             yield [yarray[x] for x in self.inds]
-            #yield [n_arr[i],ob_arr[i],bk_arr[i],t_bk_arr[i],xiv_arr[i],err_arr[i],etc_arr[i],lat,lon,p_ob_arr[i],jvar_arr[i],insty_arr[i],str(nvp),ichk_arr[i],idt_arr[i],(c_pf_ob_arr[i]).decode('utf-8'),(c_db_ob_arr[i]).decode('utf-8'),idp_arr[i],lsi_arr[i],rej_arr[i],bkerr_arr[i],cob_arr[i],resid_arr[i],1]
 
     def as_dataframe(self):
 
-      t1 = datetime.datetime.now()
       # Get the column headers
       hdrcols = self.header['column_titles']
 
@@ -411,9 +388,7 @@ class H5InnovationFile(InnovationFile):
 
       # Collect each line and store in a dataframe
       line_list = [list(data) for data in self]
-      print(datetime.datetime.now()-t1)
       df = pd.DataFrame(line_list,columns=hdrcols)
-      print(datetime.datetime.now()-t1)
 
       # Return the dataframe
       return(df)
@@ -421,9 +396,7 @@ class H5InnovationFile(InnovationFile):
     def as_met_dataframe(self):
       
       # Get the whole dataframe so we can filter
-      t1 = datetime.datetime.now()
       df = self.as_dataframe()
-      print(datetime.datetime.now()-t1)
 
       # Bring in user supplied query info
       # qstr is a string of booleans to apply to non-string fields
@@ -433,7 +406,7 @@ class H5InnovationFile(InnovationFile):
       # cdbstr is the substring to search the c_db_ob column for
       # cdbbeg is the beginning index of the cdb substring
       # cdbend is the ending index of the cdb substring
-      # for now, only support 1 string for each string column, and only the "&" operator for combining with qstr
+      # only supports 1 string for each string column, and only the "&" operator for combining with qstr
       qstr = os.environ.get('NRL_QUERY_STRING','')
       cpfstr = os.environ.get('NRL_CPFOB_SUBSTR','')
       cpfbeg = int(os.environ.get('NRL_CPFOB_BEGIND',0))
@@ -461,9 +434,6 @@ class H5InnovationFile(InnovationFile):
       if qstr=='' and cpfstr=='' and cdbstr=='':
         print("\nNO FILTER. RETURNING ENTIRE FILE.")
       print(datetime.datetime.now()-t1)
-
-      #=============TESTING
-      #return(df)
 
       # Get the column headers and add one for "n" at the beginning
       hdrcols = self.header['column_titles']
@@ -503,24 +473,15 @@ class H5InnovationFile(InnovationFile):
       requestcols = [''.join(value) for value in nrl_met_map.values()]
  
       # Identify the index of each column in each line and assign it to the object
-      print(datetime.datetime.now()-t1)
       requestinds = [x for x in range(len(hdrcols)) if hdrcols[x] in requestcols]
       self.inds = requestinds
 
       # Get a list of the NRL column name strings in the order of requestinds
       nrlcols = [hdrcols[x] for x in requestinds]
 
-      # Collect only the fields we want from the input file and store in a dataframe
-      #line_list = [list(self._parse_innovation_met_line(line,requestinds)) for line in self.file] # use parser
-      #line_list = [list(data) for data in self] # use iter
-      #print(datetime.datetime.now()-t1)
-      #df = pd.DataFrame(line_list,columns=nrlcols)
-      #print(datetime.datetime.now()-t1)
-
       # Rename NRL columns to the names MET expects
       # List to hold MET column names for corresponding NRL names
       metcols = []
-
       # For each NRL column requested (in nrlcols), loop over it and find out what MET needs to call it
       for col in nrlcols:
         # For each dictionary cross-reference item
@@ -541,7 +502,6 @@ class H5InnovationFile(InnovationFile):
 
       # Replace the NRL column names with the MET column names
       df.columns = metcols
-      print(datetime.datetime.now()-t1)
       
       # Handle unset options (if any)
       if os.environ['NRL_SID_STRING']=='':
@@ -571,7 +531,6 @@ class H5InnovationFile(InnovationFile):
       
       # Reorder columns so they are in the order MET expects
       df = df[list(nrl_met_map.keys())]
-      print(datetime.datetime.now()-t1)
 
       # Return the dataframe 
       return(df)
