@@ -12,6 +12,8 @@ METplus Quick Search for Use Cases
 Use Cases by MET Tool:
 ======================
 
+.. |branch| replace:: feature_963_quick_search
+
 .. only:: html
 
    | `ASCII2NC <../search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_
