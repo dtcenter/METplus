@@ -153,17 +153,17 @@ def main():
     pmi.plot_rmm_eofs(EOF1, EOF2, eof_plot_name, eof_plot_format)
 
     #  Determine if doing forecast or obs
-    run_obs_rmm = os.environ.get('RUN_OBS', 'False')
-    run_fcst_rmm = os.environ.get('FCST_RUN_FCST', 'False')
+    run_obs_rmm = os.environ.get('RUN_OBS', 'False').lower()
+    run_fcst_rmm = os.environ.get('FCST_RUN_FCST', 'False').lower()
 
-    if (run_obs_rmm == 'True'):
+    if (run_obs_rmm == 'true'):
         run_rmm_steps('OBS', spd, EOF1, EOF2, oplot_dir)
 
-    if (run_fcst_rmm == 'True'):
+    if (run_fcst_rmm == 'true'):
         run_rmm_steps('FCST', spd, EOF1, EOF2, oplot_dir)
 
     # nothing selected
-    if (run_obs_rmm == 'False') and (run_fcst_rmm == 'False'):
+    if (run_obs_rmm == 'false') and (run_fcst_rmm == 'false'):
         warnings.warn('Forecast and Obs runs not selected, nothing will be calculated')
         warnings.warn('Set RUN_FCST or RUN_OBS in the [user_en_vars] section to generate output')
 
