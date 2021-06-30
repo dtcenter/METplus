@@ -133,7 +133,9 @@ _SurrogateSevereProb.conf
 #   * NCAROrgUseCase 
 #   * NOAAHMTOrgUseCase 
 #
-
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-SS_PP_prob.png'
 #
