@@ -7151,7 +7151,6 @@ METplus Configuration Glossary
 
      | *Used by:* SeriesAnalysis
 
-
    EXTRACT_TILES_MTD_INPUT_DIR
      Directory containing MTD output to be read by ExtractTiles.
 
