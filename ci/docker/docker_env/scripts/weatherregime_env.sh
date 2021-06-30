@@ -1,9 +1,10 @@
 #! /bin/sh
 
 ################################################################################
-# Environment: metplotpy
-# Last Updated: 2021-06-08 (mccabe@ucar.edu)
-# Notes: Adds Python packages needed to run METplotpy and METcalcpy
+# Environment: weatherregime
+# Last Updated: 2021-06-29 (mccabe@ucar.edu)
+# Notes: Adds Python packages needed to run weather regime use case
+#  METplotpy and METcalcpy
 #   Uses pip to install kaleido because
 #   could not install via Conda (glibc conflict)
 # Python Packages:
@@ -31,7 +32,7 @@ BASE_ENV=$1
 
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 conda install -y --name ${ENV_NAME} -c conda-forge scikit-learn==0.24.2
-conda install -y --name ${ENV_NAME} -c conda-forge scipy==1.5.4
+#conda install -y --name ${ENV_NAME} -c conda-forge scipy==1.5.4
 conda install -y --name ${ENV_NAME} -c conda-forge eofs==1.4.0
 conda install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.5.7
-conda install -y --name ${ENV_NAME} -c conda-forge numpy==1.19.5
+#conda install -y --name ${ENV_NAME} -c conda-forge numpy==1.19.5
