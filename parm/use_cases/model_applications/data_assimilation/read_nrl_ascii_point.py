@@ -67,7 +67,19 @@ if len(sys.argv) == 2:
         df = fobj.as_met_dataframe()
         
         # Remap the 'var' column to human strings
+        col_dtypes = {'typ':'str',
+                      'sid':'str',
+                      'vld':'str',
+                      'lat':'float64',
+                      'lon':'float64',
+                      'elv':'float64',
+                      'var':'str',
+                      'lvl':'float64',
+                      'hgt':'float64',
+                      'qc':'str',
+                      'obs':'float64'}
         df = df.replace({"var":jvar_map})
+        df = df.astype(col_dtypes)
         
         # Convert the returned dataframe into a list of lists for MET to handle
         point_data = df.values.tolist()
