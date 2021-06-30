@@ -132,7 +132,8 @@ Description
 
 This wrapper does not have a corresponding MET tool but instead wraps
 the logic necessary to create plots of cyclone tracks. Currently only
-the output from the MET tc-pairs tool can be plotted.
+the output from the MET tc-pairs tool can be plotted. If used on an internet-limited system,
+additional dependencies may apply. See :ref:`install` for details.
 
 METplus Configuration
 ---------------------
@@ -3808,6 +3809,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_VLD_THRESH`
 | :term:`SERIES_ANALYSIS_BLOCK_SIZE`
 | :term:`SERIES_ANALYSIS_CTS_LIST`
+| :term:`FCST_SERIES_ANALYSIS_PROB_THRESH`
 | :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
 | :term:`FCST_SERIES_ANALYSIS_INPUT_DIR`
 | :term:`OBS_SERIES_ANALYSIS_INPUT_DIR`
@@ -3955,6 +3957,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`FCST_VAR<n>_THRESH`
      - fcst.field.cat_thresh
    * - :term:`FCST_VAR<n>_OPTIONS`
+     - n/a
+   * - :term:`FCST_SERIES_ANALYSIS_PROB_THRESH`
      - n/a
 
 .. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
@@ -5296,6 +5300,8 @@ METplus Configuration
 | :term:`TCMPR_PLOTTER_FOOTNOTE_FLAG`
 | :term:`TCMPR_PLOTTER_PLOT_CONFIG_OPTS`
 | :term:`TCMPR_PLOTTER_SAVE_DATA`
+| :term:`TCMPR_PLOTTER_DEP_LABELS`
+| :term:`TCMPR_PLOTTER_PLOT_LABELS`
 |
 
 The following are TCMPR flags, if set to 'no', then don't set flag, if

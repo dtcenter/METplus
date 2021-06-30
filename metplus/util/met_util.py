@@ -94,16 +94,6 @@ def pre_run_setup(config_inputs):
         config.set('config', 'STAGING_DIR',
                    os.path.join(config.getdir('OUTPUT_BASE'), "stage"))
 
-    # get USER_SHELL config variable so the default value doesn't get logged
-    # at an inconvenient time (right after "COPYABLE ENVIRONMENT" but before actual
-    # copyable environment variable list)
-    config.getstr('config', 'USER_SHELL', 'bash')
-
-
-    # get DO_NOT_RUN_EXE config variable so it shows up at the beginning of execution
-    # only if the default value is used
-    config.getbool('config', 'DO_NOT_RUN_EXE', False)
-
     # handle dir to write temporary files
     handle_tmp_dir(config)
 
@@ -2791,7 +2781,7 @@ def expand_int_string_to_list(int_string):
     """! Expand string into a list of integer values. Items are separated by
     commas. Items that are formatted X-Y will be expanded into each number
     from X to Y inclusive. If the string ends with +, then add a str '+'
-    to the end of the list. Used in ci/jobs/get_use_case_commands.py
+    to the end of the list. Used in .github/jobs/get_use_case_commands.py
 
     @param int_string String containing a comma-separated list of integers
     @returns List of integers and potentially '+' as the last item
