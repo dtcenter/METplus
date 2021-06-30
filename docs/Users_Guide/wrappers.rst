@@ -1,4 +1,4 @@
-***************
+**************
 Python Wrappers
 ***************
 
@@ -867,8 +867,8 @@ Description
 -----------
 
 The ExtractTiles wrapper is used to regrid and extract subregions from
-paired tropical cyclone tracks. The tracks are created from output from
-TCStat or MTD.
+paired tropical cyclone tracks generated with TCStat, or from cluster object
+centroids generated with MODE Time Domain (MTD).
 Unlike the other wrappers, the extract_tiles_wrapper does not correspond
 to a specific MET tool. It reads track information to determine the
 lat/lon positions of the paired track data.

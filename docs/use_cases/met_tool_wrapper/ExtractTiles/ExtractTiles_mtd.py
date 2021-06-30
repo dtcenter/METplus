@@ -10,7 +10,7 @@ met_tool_wrapper/ExtractTiles/ExtractTiles_mtd.conf
 # --------------------
 #
 # Read a MODE Time Domain (MTD) output file and use the centroid latitude
-# and longitude values of the object pairs to
+# and longitude values of the MTD cluster object pairs to
 # create a cutout of forecast and observation data valid at each time.
 #
 
