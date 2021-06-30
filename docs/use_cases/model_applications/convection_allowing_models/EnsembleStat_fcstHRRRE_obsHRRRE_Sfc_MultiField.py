@@ -173,7 +173,7 @@ _Sfc_MultiField.conf
 #   * NOAAGSLOrgUseCase 
 #   * DTCOrgUseCase 
 #   * ObsUncertaintyUseCase
-#   * MaskingFeatureUseCase _ 
+#   * MaskingFeatureUseCase 
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
