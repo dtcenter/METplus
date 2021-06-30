@@ -1407,15 +1407,17 @@ def get_filepaths_for_grbfiles(base_dir):
                 continue
     return file_paths
 
-def get_storms(filter_filename):
-    """! Get each storm as identified by its STORM_ID in the filter file.
+def get_storms(filter_filename, id_only=False, sort_column='STORM_ID'):
+    """! Get each storm as identified by a column in the input file.
          Create dictionary storm ID as the key and a list of lines for that
          storm as the value.
 
          @param filter_filename name of tcst file to read and extract storm id
-         @returns 2 item tuple - 1)dictionary where key is storm ID and value is list
-          of relevant lines from tcst file, 2) header line from tcst file.
-          Also, item with key 'header' contains the header of the tcst file
+         @param sort_column column to use to sort and group storms. Default
+          value is STORM_ID
+         @returns 2 item tuple - 1)dictionary where key is storm ID and value
+          is list of relevant lines from tcst file, 2) header line from tcst
+           file. Item with key 'header' contains the header of the tcst file
     """
     # Initialize a set because we want unique storm ids.
     storm_id_list = set()
@@ -1424,15 +1426,19 @@ def get_storms(filter_filename):
         with open(filter_filename, "r") as file_handle:
             header, *lines = file_handle.readlines()
 
-        storm_id_column = header.split().index('STORM_ID')
+        storm_id_column = header.split().index(sort_column)
         for line in lines:
             storm_id_list.add(line.split()[storm_id_column])
     except (ValueError, FileNotFoundError):
+        if id_only:
+            return []
         return {}
 
     # sort the unique storm ids, copy the original
     # set by using sorted rather than sort.
     sorted_storms = sorted(storm_id_list)
+    if id_only:
+        return sorted_storms
 
     if not sorted_storms:
         return {}
@@ -1444,7 +1450,7 @@ def get_storms(filter_filename):
 
     return storm_dict
 
-def get_storm_ids(filter_filename, logger=None):
+def get_storm_ids(filter_filename):
     """! Get each storm as identified by its STORM_ID in the filter file
         save these in a set so we only save the unique ids and sort them.
         Args:
@@ -1454,23 +1460,7 @@ def get_storm_ids(filter_filename, logger=None):
         Returns:
             sorted_storms (List):  a list of unique, sorted storm ids
     """
-    # Initialize a set because we want unique storm ids.
-    storm_id_list = set()
-
-    try:
-        with open(filter_filename, "r") as file_handle:
-            header, *lines = file_handle.readlines()
-
-        storm_id_column = header.split().index('STORM_ID')
-        for line in lines:
-            storm_id_list.add(line.split()[storm_id_column])
-    except (ValueError, FileNotFoundError):
-        return []
-
-    # sort the unique storm ids, copy the original
-    # set by using sorted rather than sort.
-    sorted_storms = sorted(storm_id_list)
-    return sorted_storms
+    return get_storms(filter_filename, id_only=True)
 
 def get_files(filedir, filename_regex, logger=None):
     """! Get all the files (with a particular
