@@ -84,8 +84,13 @@ def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
     u200 = u200.mean('lat')
     print(u200.min(), u200.max())
 
+    # Get normalization factors for use 
+    rmm_norm = [float(os.environ['RMM_OLR_NORM']),float(os.environ['RMM_U850_NORM']),float(os.environ['RMM_U200_NORM'])]
+    pc_norm = [float(os.environ['PC1_NORM']),float(os.environ['PC2_NORM'])]    
+
     # project data onto EOFs
     PC1, PC2 = cmi.rmm(olr[0:ntim,:], u850[0:ntim,:], u200[0:ntim,:], time, spd, EOF1, EOF2)
+    #PC1, PC2 = cmi.rmm(olr[0:ntim,:], u850[0:ntim,:], u200[0:ntim,:], time, spd, EOF1, EOF2, rmm_norm, pc_norm)
     print(PC1.min(), PC1.max())
 
     # Get times for the PC phase diagram
