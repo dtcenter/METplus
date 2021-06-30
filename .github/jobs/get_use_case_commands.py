@@ -20,7 +20,12 @@ METPLUS_BASE_ENV = 'metplus_base'
 METPLUS_DOCKER_LOC = '/metplus/METplus'
 
 # keywords in requirements list that trigger obtaining METcalcpy and METplotpy
-PLOTCALC_KEYWORDS = ['metplotpy', 'metcalcpy', 'spacetime']
+PLOTCALC_KEYWORDS = [
+    'metplotpy',
+    'metcalcpy',
+    'spacetime',
+    'weatherregime',
+]
 
 def handle_automation_env(host_name, reqs, work_dir):
     # if no env is specified, use metplus base environment
