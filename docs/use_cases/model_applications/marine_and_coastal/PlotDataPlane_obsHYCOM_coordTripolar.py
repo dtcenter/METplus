@@ -148,5 +148,5 @@ model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
 #    `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
 #    `MarineAndCoastalAppUseCase <https://metplus.readthedocs.io/en/develop/search.html?q=MarineAndCoastalAppUseCase&check_keywords=yes&area=default>`_
 #
-# sphinx_gallery_thumbnail_path = '_static/model_applications-PlotDataPlane_obsHYCOM_coordTripolar.png'
+# sphinx_gallery_thumbnail_path = '_static/marine_and_coastal-PlotDataPlane_obsHYCOM_coordTripolar.png'
 #
