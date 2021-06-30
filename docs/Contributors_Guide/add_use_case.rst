@@ -794,7 +794,6 @@ package requirements needed to run a new use case.
 Add new category to test runs
 -----------------------------
 
-
 The **.github/parm/use_case_groups.json** file in the METplus repository
 contains a list of the use case groups to run together.
 In METplus version 4.0.0 and earlier, this list was

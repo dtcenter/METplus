@@ -10,9 +10,6 @@ METplus Quick Search for Use Cases
 
 
 Use Cases by MET Tool:
-======================
-
-.. |branch| replace:: feature_963_quick_search
 
 .. only:: html
 
@@ -67,6 +64,7 @@ Use Cases by Application:
 
 .. only:: html
 
+<<<<<<< HEAD
    | `Air Quality and Composition <../search.html?q=AirQualityAndCompAppUseCase&check_keywords=yes&area=default>`_
    | `Climate <../search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_
    | `Convection Allowing Models <../search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_
@@ -79,6 +77,17 @@ Use Cases by Application:
    | `Space Weather <../search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
    | `Subseasonal to Seasonal <../search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
    | `Tropical Cyclone and Extra-Tropical Cyclone <../search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
+=======
+   | `Climate <https://metplus.readthedocs.io/en/develop/search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_
+   | `Convection Allowing Models <https://metplus.readthedocs.io/en/develop/search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_
+   | `Ensemble  <https://metplus.readthedocs.io/en/develop/search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
+   | `Marine and Cryosphere <https://metplus.readthedocs.io/en/develop/search.html?q=MarineAndCryoAppUseCase&check_keywords=yes&area=default>`_
+   | `Medium Range <https://metplus.readthedocs.io/en/develop/search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_
+   | `Precipitation <https://metplus.readthedocs.io/en/develop/search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_
+   | `Space Weather <https://metplus.readthedocs.io/en/develop/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
+   | `Subseasonal to Seasonal <https://metplus.readthedocs.io/en/develop/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
+   | `Tropical Cyclone and Extra-Tropical Cyclone <https://metplus.readthedocs.io/en/develop/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_
+>>>>>>> develop-ref
 
 .. only:: latex
 
