@@ -109,7 +109,7 @@ def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
     # plot the PC phase diagram
     pmi.phase_diagram('RMM',PC1_pcplot,PC2_pcplot,np.array(PC1_pcplot['time'].dt.strftime("%Y-%m-%d").values),
         np.ndarray.tolist(PC1_pcplot['time.month'].values),np.ndarray.tolist(PC1_pcplot['time.day'].values),
-        phase_plot_format)
+        phase_plot_name, phase_plot_format)
 
     # Get times for the PC time series plot
     timeseries_plot_time_format = os.environ['TIMESERIES_PLOT_TIME_FMT']
