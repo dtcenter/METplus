@@ -33,6 +33,12 @@ export DOCKERFILE_PATH=${GITHUB_WORKSPACE}/ci/docker/Dockerfile
 
 MET_TAG=`${GITHUB_WORKSPACE}/ci/docker/hooks/get_met_version`
 
+# if MET_FORCE_TAG variable is set and not empty, use that version instead
+if [ ! -z "$MET_FORCE_TAG" ]; then
+    MET_TAG=$MET_FORCE_TAG
+fi
+
+echo Using MET_TAG=$MET_TAG
 echo Setting DOCKER_BUILDKIT=1
 export DOCKER_BUILDKIT=1
 
