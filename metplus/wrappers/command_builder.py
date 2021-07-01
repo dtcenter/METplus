@@ -145,6 +145,11 @@ class CommandBuilder:
         if not hasattr(self, 'WRAPPER_ENV_VAR_KEYS'):
             return
 
+        if not os.path.exists(config_file):
+            if self.c_dict.get('INPUT_MUST_EXIST', True):
+                self.log_error(f'Config file does not exist: {config_file}')
+            return
+
         # read config file content
         with open(config_file, 'r') as file_handle:
             content = file_handle.read()
@@ -2120,8 +2125,9 @@ class CommandBuilder:
         if not remove_bracket_list:
             return
 
-        for list_values in remove_bracket_list:
-            c_dict[list_values] = c_dict[list_values].strip('[]')
+        for list_value in remove_bracket_list:
+            if c_dict.get(list_value):
+                c_dict[list_value] = c_dict[list_value].strip('[]')
 
     def handle_mask(self, single_value=False, get_flags=False):
         """! Read mask dictionary values and set them into env_var_list
