@@ -96,12 +96,9 @@ class TCPairsWrapper(CommandBuilder):
         c_dict['MISSING_VAL'] = (
             self.config.getstr('config', 'TC_PAIRS_MISSING_VAL', '-9999')
         )
-        c_dict['CONFIG_FILE'] = self.config.getraw('config',
-                                                   'TC_PAIRS_CONFIG_FILE',
-                                                   '')
-        if not c_dict['CONFIG_FILE']:
-            self.log_error("TC_PAIRS_CONFIG_FILE is required to "
-                           "run TCPairs wrapper")
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('TCPairsConfig_wrapped')
 
         self.add_met_config(name='init_beg',
                             data_type='string',

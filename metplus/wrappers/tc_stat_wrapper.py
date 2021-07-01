@@ -124,16 +124,8 @@ class TCStatWrapper(CommandBuilder):
             self.log_error('No job arguments defined. '
                            'Please set TC_STAT_JOB_ARGS')
 
-        c_dict['CONFIG_FILE'] = self.config.getstr('config',
-                                                   'TC_STAT_CONFIG_FILE',
-                                                   '')
-        if not c_dict['CONFIG_FILE']:
-            default_config = os.path.join(self.config.getdir('PARM_BASE'),
-                                          'met_config',
-                                          'TCStatConfig_wrapped')
-            self.logger.debug("TC_STAT_CONFIG_FILE not set. Using "
-                              f"{default_config}")
-            c_dict['CONFIG_FILE'] = default_config
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('TCStatConfig_wrapped')
 
         self.handle_description()
 

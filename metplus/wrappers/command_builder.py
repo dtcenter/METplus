@@ -2283,3 +2283,26 @@ class CommandBuilder:
              @returns METConfigInfo object
         """
         return met_config(**kwargs)
+
+    def get_config_file(self, default_config_file=None):
+        """! Get the MET config file path for the wrapper from the
+        METplusConfig object. If unset, use the default value if provided.
+
+        @param default_config_file (optional) filename of wrapped MET config
+         file found in parm/met_config to use if config file is not set
+        @returns path to wrapped config file or None if no default is provided
+        """
+        config_name = f'{self.app_name.upper()}_CONFIG_FILE'
+        config_file = self.config.getraw('config', config_name, '')
+        if not config_file:
+            if not default_config_file:
+                return None
+
+            default_config_path = os.path.join(self.config.getdir('PARM_BASE'),
+                                               'met_config',
+                                               default_config_file)
+            self.logger.debug(f"{config_name} is not set. "
+                              f"Using {default_config_path}")
+            config_file = default_config_path
+
+        return config_file
