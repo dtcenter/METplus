@@ -162,6 +162,9 @@ view "feature_836_rtd_doc" for the METplus repository the URL would be:
   however contributors can replace the "feature_836_rtd_doc" with the
   appropriate branch name.)
   
+The URL branch name will be lowercase regardless of the actual branch letter casing,
+i.e. "feature_836_RTD_Doc" branch would be accessed by the above mentioned URL.
+  
 Read the Docs will automatically delete the documentation for a feature
 branch and a bugfix branch when the branch is deleted.
 
