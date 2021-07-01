@@ -94,7 +94,7 @@ def main():
 
         end_time = time.time()
         print("TIMING: Command took "
-              f"{time.strftime('%H:%M', time.gmtime(end_time - start_time))}"
+              f"{time.strftime('%M:%S', time.gmtime(end_time - start_time))}"
               f" (MM:SS): '{docker_build_cmd}')")
 
         cmd_args = {'check': True,
@@ -136,7 +136,7 @@ def main():
 
         end_time = time.time()
         print("TIMING: Command took "
-              f"{time.strftime('%H:%M', time.gmtime(end_time - start_time))}"
+              f"{time.strftime('%M:%S', time.gmtime(end_time - start_time))}"
               f" (MM:SS): '{full_cmd}')")
 
     if not isOK:
