@@ -53,20 +53,16 @@ if len(sys.argv) == 2:
         #   (10) string:  QC_String
         #   (11) numeric: Observation_Value
 
-        #point_data = pd.read_csv(input_file, header=None, delim_whitespace=True, keep_default_na=False,
-        #                  names=['typ', 'sid', 'vld', 'lat', 'lon', 'elv', 'var', 'lvl', 'hgt', 'qc', 'obs'],
-        #                  dtype={'typ':'str', 'sid':'str', 'vld':'str', 'var':'str', 'qc':'str'}).values.tolist()
-
         # Get a file object from the NRL input file
         fobj = inn.from_file(input_file)
 
-        # If you want everything in the file for further inspection, use as_dataframe()
-        # If you want to subset to the MET 11-column ASCII format for ASCII2NC, use as_met_dataframe() and set the corresponding METplus
-        # [user_env_vars]
-        #df = fobj.as_dataframe()
+        # Return a pandas dataframe in the MET 11-column format from the NRL innovation fdata
         df = fobj.as_met_dataframe()
-        
-        # Remap the 'var' column to human strings
+
+        # Replace the jvar values
+        df = df.replace({"var":jvar_map})
+       
+        # Force the following types for each column 
         col_dtypes = {'typ':'str',
                       'sid':'str',
                       'vld':'str',
@@ -78,7 +74,6 @@ if len(sys.argv) == 2:
                       'hgt':'float64',
                       'qc':'str',
                       'obs':'float64'}
-        df = df.replace({"var":jvar_map})
         df = df.astype(col_dtypes)
         
         # Convert the returned dataframe into a list of lists for MET to handle
