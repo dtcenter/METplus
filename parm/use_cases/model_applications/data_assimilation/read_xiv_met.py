@@ -52,6 +52,138 @@ xiv_fld = {
                 'RESID'      :       22  ,  # RESID
                 'SENS'       :       23  }  # Observation Sensitivity
 
+def create_met_dataframe(df,hdr):
+
+  # Bring in user supplied query info
+  # qstr is a string of booleans to apply to non-string fields
+  # cpfstr is the substring to search the c_pf_ob column for
+  # cpfbeg is the beginning index of the cpf substring
+  # cpfend is the ending index of the cpf substring
+  # cdbstr is the substring to search the c_db_ob column for
+  # cdbbeg is the beginning index of the cdb substring
+  # cdbend is the ending index of the cdb substring
+  # only supports 1 string for each string column, and only the "&" operator for combining with qstr
+  qstr = os.environ.get('NRL_QUERY_STRING','')
+  cpfstr = os.environ.get('NRL_CPFOB_SUBSTR','')
+  cpfbeg = int(os.environ.get('NRL_CPFOB_BEGIND',0))
+  cpfend = int(os.environ.get('NRL_CPFOB_ENDIND',16))
+  cdbstr = os.environ.get('NRL_CDBOB_SUBSTR','')
+  cdbbeg = int(os.environ.get('NRL_CDBOB_BEGIND',0))
+  cdbend = int(os.environ.get('NRL_CDBOB_ENDIND',10))
+
+  # Filter based on user requested filter strings
+  if qstr!='':
+    print("\nFILTERING USING: %s" % (qstr))
+    print("USING NEW FUNC")
+    df.query(qstr,inplace=True)
+  if cpfstr!='' and cdbstr!='':
+    print("\nFILTERING c_pf_ob USING: %s from %02d to %02d & c_db_ob %s from %02d to %02d" % (cpfstr,cpfbeg,cpfend,cdbstr,cdbbeg,cdbend))
+    df = df[df['c_pf_ob'].str.slice(start=cpfbeg,stop=cpfend,step=1).str.contains(cpfstr) & df['c_db_ob'].str.slice(start=cdbbeg,stop=cdbend,step=1).str.contains(cdbstr)]
+  if cpfstr!='' and cdbstr=='':
+    print("\nFILTERING c_pf_ob USING: %s from %02d to %02d" % (cpfstr,cpfbeg,cpfend))
+    df = df[df['c_pf_ob'].str.slice(start=cpfbeg,stop=cpfend,step=1).str.contains(cpfstr)]
+  if cpfstr=='' and cdbstr!='':
+    print("\nFILTERING c_db_ob USING: %s from %02d to %02d" % (cdbstr,cdbbeg,cdbend))
+    df = df[df['c_db_ob'].str.slice(start=cdbbeg,stop=cdbend,step=1).str.contains(cdbstr)]
+  if qstr=='' and cpfstr=='' and cdbstr=='':
+    print("\nNO FILTER. RETURNING ENTIRE FILE.")
+
+  # Get the column headers and add one for "n" at the beginning
+  hdrcols = hdr['column_titles']
+
+  # Double check there are at least some variables set. The minimum required are LAT, LON, and OBS.
+  if os.environ['NRL_LAT_STRING'] == '' or os.environ['NRL_LON_STRING'] == '' or os.environ['NRL_OBS_STRING'] == '':
+    print("\nFATAL! NRL_LAT_STRING, NRL_LON_STRING, or NRL_OBS STRING are not set. All of these must be set.")
+    exit(1)
+
+  # Define a dictionary to map values from NRL to MET values
+  nrl_met_map = {'typ':[os.environ['NRL_TYP_STRING']],
+                 'sid':[os.environ['NRL_SID_STRING']],
+                 'vld':[os.environ['NRL_VLD_STRING']],
+                 'lat':[os.environ['NRL_LAT_STRING']],
+                 'lon':[os.environ['NRL_LON_STRING']],
+                 'elv':[os.environ['NRL_ELV_STRING']],
+                 'var':[os.environ['NRL_VAR_STRING']],
+                 'lvl':[os.environ['NRL_LVL_STRING']],
+                 'hgt':[os.environ['NRL_HGT_STRING']],
+                 'qc':[os.environ['NRL_QC_STRING']],
+                 'obs':[os.environ['NRL_OBS_STRING']]}
+
+  # Set the type of each column
+  col_dtypes = {'typ':'str',
+                'sid':'str',
+                'vld':'int64',
+                'lat':'float64',
+                'lon':'float64',
+                'elv':'float64',
+                'var':'str',
+                'lvl':'float64',
+                'hgt':'float64',
+                'qc':'str',
+                'obs':'float64'}
+
+  # The list of columns we want from the file is simply the values for each key in the nrl_met_map dict
+  requestcols = [''.join(value) for value in nrl_met_map.values()]
+
+  # Identify the index of each column in each line and assign it to the object
+  requestinds = [x for x in range(len(hdrcols)) if hdrcols[x] in requestcols]
+
+  # Get a list of the NRL column name strings in the order of requestinds
+  nrlcols = [hdrcols[x] for x in requestinds]
+
+  # Rename NRL columns to the names MET expects
+  # List to hold MET column names for corresponding NRL names
+  metcols = []
+  # For each NRL column requested (in nrlcols), loop over it and find out what MET needs to call it
+  for col in nrlcols:
+    # For each dictionary cross-reference item
+    found = False
+    for key in nrl_met_map:
+      # If the nrl column name is found in the values of this dictionary item, then the key of this dictionary
+      # item is the MET column name to use
+      if col in nrl_met_map[key]:
+        found = True
+        print("\nMAPPING %s [NRL] to %s [MET]" % (col,key))
+        metcols.append(key)
+    if not found:
+      print("\nFATAL! Unable to assign [NRL] column name %s to [MET] column name" % (col))
+      exit(1)
+
+  # Drop all the columns we don't need anymore
+  df.drop(df.columns.difference(nrlcols), 1, inplace=True)
+
+  # Replace the NRL column names with the MET column names
+  df.columns = metcols
+
+  # Handle unset options (if any)
+  if os.environ['NRL_SID_STRING']=='':
+    print("\nUSING DEFAULT VALUE FOR [MET] sid")
+    df['sid'] = ['NA'] * len(df)
+  if os.environ['NRL_ELV_STRING']=='':
+    print("\nUSING DEFAULT VALUE FOR [MET] elv")
+    df['elv'] = ['-9999'] * len(df)
+  if os.environ['NRL_HGT_STRING']=='':
+    print("\nUSING DEFAULT VALUE FOR [MET] hgt")
+    df['hgt'] = ['-9999'] * len(df)
+
+  # Convert the column dtypes
+  df = df.astype(col_dtypes)
+
+  # Handle time. This is computed as cdtg_bk + tau_bk from the header, and then adding the offset (idt) in seconds
+  print("\nCOMPUTING [MET] vld from [NRL] cdtg_bk, tau_bk, and idt")
+  cdtg_bk = datetime.datetime.strptime(hdr['cdtg_bk'],'%Y%m%d%H')
+  df['center'] = [cdtg_bk+datetime.timedelta(seconds=int(hdr['tau_bk'])*3600)] * len(df)
+  df['vld'] = pd.to_datetime((df['center']+pd.to_timedelta(df['vld'],unit='S'))).dt.strftime('%Y%m%d_%H%M%S')
+
+  # Convert the time column to a string
+  df = df.astype({'vld':'str'})
+
+  # Reorder columns so they are in the order MET expects
+  df = df[list(nrl_met_map.keys())]
+
+  # Return the dataframe 
+  return df
+
 class InnovationFileError(Exception): pass
 
 class HeaderParseError(InnovationFileError): pass
@@ -152,149 +284,12 @@ class ASCIIInnovationFile(InnovationFile):
       innovdict = {self.header['column_titles'][i]:innovdtypes[i] for i in range(len(innovdtypes))}
       line_list = [list(self._parse_innovation_line(line)) for line in self.file]
       df = pd.DataFrame(line_list,columns=self.header['column_titles'])
-      return(df.astype(innovdict))
+      return df.astype(innovdict)
 
     def as_met_dataframe(self):
-      
-      # Get the whole dataframe so we can filter
-      df = self.as_dataframe()
 
-      # Bring in user supplied query info
-      # qstr is a string of booleans to apply to non-string fields
-      # cpfstr is the substring to search the c_pf_ob column for
-      # cpfbeg is the beginning index of the cpf substring
-      # cpfend is the ending index of the cpf substring
-      # cdbstr is the substring to search the c_db_ob column for
-      # cdbbeg is the beginning index of the cdb substring
-      # cdbend is the ending index of the cdb substring
-      # only supports 1 string for each string column, and only the "&" operator for combining with qstr
-      qstr = os.environ.get('NRL_QUERY_STRING','')
-      cpfstr = os.environ.get('NRL_CPFOB_SUBSTR','')
-      cpfbeg = int(os.environ.get('NRL_CPFOB_BEGIND',0))
-      cpfend = int(os.environ.get('NRL_CPFOB_ENDIND',16))
-      cdbstr = os.environ.get('NRL_CDBOB_SUBSTR','')
-      cdbbeg = int(os.environ.get('NRL_CDBOB_BEGIND',0))
-      cdbend = int(os.environ.get('NRL_CDBOB_ENDIND',10))
-     
-      # Filter based on user requested filter strings
-      if qstr!='':
-        print("\nFILTERING USING: %s" % (qstr))
-        df.query(qstr,inplace=True)
-      if cpfstr!='' and cdbstr!='':
-        print("\nFILTERING c_pf_ob USING: %s from %02d to %02d & c_db_ob %s from %02d to %02d" % (cpfstr,cpfbeg,cpfend,cdbstr,cdbbeg,cdbend))
-        #df = df[df['c_pf_ob'].str.contains(cpfstr) & df['c_db_ob'].str.contains(cdbstr)]
-        df = df[df['c_pf_ob'].str.slice(start=cpfbeg,stop=cpfend,step=1).str.contains(cpfstr) & df['c_db_ob'].str.slice(start=cdbbeg,stop=cdbend,step=1).str.contains(cdbstr)]
-      if cpfstr!='' and cdbstr=='':
-        print("\nFILTERING c_pf_ob USING: %s from %02d to %02d" % (cpfstr,cpfbeg,cpfend))
-        #df = df[df['c_pf_ob'].str.contains(cpfstr)]
-        df = df[df['c_pf_ob'].str.slice(start=cpfbeg,stop=cpfend,step=1).str.contains(cpfstr)]
-      if cpfstr=='' and cdbstr!='':
-        print("\nFILTERING c_db_ob USING: %s from %02d to %02d" % (cdbstr,cdbbeg,cdbend))
-        #df = df[df['c_db_ob'].str.contains(cdbstr)]
-        df = df[df['c_db_ob'].str.slice(start=cdbbeg,stop=cdbend,step=1).str.contains(cdbstr)]
-      if qstr=='' and cpfstr=='' and cdbstr=='':
-        print("\nNO FILTER. RETURNING ENTIRE FILE.")
-      print(datetime.datetime.now()-t1)
-
-      # Get the column headers and add one for "n" at the beginning
-      hdrcols = self.header['column_titles']
-
-      # Double check there are at least some variables set. The minimum required are LAT, LON, and OBS.
-      if os.environ['NRL_LAT_STRING'] == '' or os.environ['NRL_LON_STRING'] == '' or os.environ['NRL_OBS_STRING'] == '':
-        print("\nFATAL! NRL_LAT_STRING, NRL_LON_STRING, or NRL_OBS STRING are not set. All of these must be set.")
-        exit(1)
-
-      # Define a dictionary to map values from NRL to MET values
-      nrl_met_map = {'typ':[os.environ['NRL_TYP_STRING']],
-                     'sid':[os.environ['NRL_SID_STRING']],
-                     'vld':[os.environ['NRL_VLD_STRING']],
-                     'lat':[os.environ['NRL_LAT_STRING']],
-                     'lon':[os.environ['NRL_LON_STRING']],
-                     'elv':[os.environ['NRL_ELV_STRING']],
-                     'var':[os.environ['NRL_VAR_STRING']],
-                     'lvl':[os.environ['NRL_LVL_STRING']],
-                     'hgt':[os.environ['NRL_HGT_STRING']],
-                     'qc':[os.environ['NRL_QC_STRING']],
-                     'obs':[os.environ['NRL_OBS_STRING']]}
-
-      # Set the type of each column
-      col_dtypes = {'typ':'str',
-                    'sid':'str',
-                    'vld':'int64',
-                    'lat':'float64',
-                    'lon':'float64',
-                    'elv':'float64',
-                    'var':'str',
-                    'lvl':'float64',
-                    'hgt':'float64',
-                    'qc':'str',
-                    'obs':'float64'}
-
-      # The list of columns we want from the file is simply the values for each key in the nrl_met_map dict
-      requestcols = [''.join(value) for value in nrl_met_map.values()]
-
-      # Identify the index of each column in each line and assign it to the object
-      requestinds = [x for x in range(len(hdrcols)) if hdrcols[x] in requestcols]
-      self.inds = requestinds
-
-      # Get a list of the NRL column name strings in the order of requestinds
-      nrlcols = [hdrcols[x] for x in requestinds]
-
-      # Rename NRL columns to the names MET expects
-      # List to hold MET column names for corresponding NRL names
-      metcols = []
-      # For each NRL column requested (in nrlcols), loop over it and find out what MET needs to call it
-      for col in nrlcols:
-        # For each dictionary cross-reference item
-        found = False
-        for key in nrl_met_map:
-          # If the nrl column name is found in the values of this dictionary item, then the key of this dictionary
-          # item is the MET column name to use
-          if col in nrl_met_map[key]:
-            found = True
-            print("\nMAPPING %s [NRL] to %s [MET]" % (col,key))
-            metcols.append(key)
-        if not found:
-          print("\nFATAL! Unable to assign [NRL] column name %s to [MET] column name" % (col))
-          exit(1)
-
-      # Drop all the columns we don't need anymore
-      df.drop(df.columns.difference(nrlcols), 1, inplace=True)
-
-      # Replace the NRL column names with the MET column names
-      df.columns = metcols
-
-      # Handle unset options (if any)
-      if os.environ['NRL_SID_STRING']=='':
-        print("\nUSING DEFAULT VALUE FOR [MET] sid")
-        #sid = ['NA'] * len(df)
-        df['sid'] = ['NA'] * len(df)
-      if os.environ['NRL_ELV_STRING']=='':
-        print("\nUSING DEFAULT VALUE FOR [MET] elv")
-        #elv = ['-9999'] * len(df)
-        df['elv'] = ['-9999'] * len(df)
-      if os.environ['NRL_HGT_STRING']=='':
-        print("\nUSING DEFAULT VALUE FOR [MET] hgt")
-        #hgt = ['-9999'] * len(df)
-        df['hgt'] = ['-9999'] * len(df)
-
-      # Convert the column dtypes
-      df = df.astype(col_dtypes)
-
-      # Handle time. This is computed as cdtg_bk + tau_bk from the header, and then adding the offset (idt) in seconds
-      print("\nCOMPUTING [MET] vld from [NRL] cdtg_bk, tau_bk, and idt")
-      cdtg_bk = datetime.datetime.strptime(self.header['cdtg_bk'],'%Y%m%d%H')
-      df['center'] = [cdtg_bk+datetime.timedelta(seconds=int(self.header['tau_bk'])*3600)] * len(df)
-      df['vld'] = pd.to_datetime((df['center']+pd.to_timedelta(df['vld'],unit='S'))).dt.strftime('%Y%m%d_%H%M%S') 
-
-      # Convert the time column to a string
-      df = df.astype({'vld':'str'})
-
-      # Reorder columns so they are in the order MET expects
-      df = df[list(nrl_met_map.keys())]
-
-      # Return the dataframe 
-      return(df)
+      df = create_met_dataframe(self.as_dataframe(),self.header)
+      return df
       
 class BZInnovationFile(ASCIIInnovationFile):
     def __init__(self, filename):
@@ -391,149 +386,12 @@ class H5InnovationFile(InnovationFile):
       df = pd.DataFrame(line_list,columns=hdrcols)
 
       # Return the dataframe
-      return(df)
+      return df
 
     def as_met_dataframe(self):
-      
-      # Get the whole dataframe so we can filter
-      df = self.as_dataframe()
 
-      # Bring in user supplied query info
-      # qstr is a string of booleans to apply to non-string fields
-      # cpfstr is the substring to search the c_pf_ob column for
-      # cpfbeg is the beginning index of the cpf substring
-      # cpfend is the ending index of the cpf substring
-      # cdbstr is the substring to search the c_db_ob column for
-      # cdbbeg is the beginning index of the cdb substring
-      # cdbend is the ending index of the cdb substring
-      # only supports 1 string for each string column, and only the "&" operator for combining with qstr
-      qstr = os.environ.get('NRL_QUERY_STRING','')
-      cpfstr = os.environ.get('NRL_CPFOB_SUBSTR','')
-      cpfbeg = int(os.environ.get('NRL_CPFOB_BEGIND',0))
-      cpfend = int(os.environ.get('NRL_CPFOB_ENDIND',16))
-      cdbstr = os.environ.get('NRL_CDBOB_SUBSTR','')
-      cdbbeg = int(os.environ.get('NRL_CDBOB_BEGIND',0))
-      cdbend = int(os.environ.get('NRL_CDBOB_ENDIND',10))
-
-      # Filter based on user requested filter strings
-      if qstr!='':
-        print("\nFILTERING USING: %s" % (qstr))
-        df.query(qstr,inplace=True)
-      if cpfstr!='' and cdbstr!='':
-        print("\nFILTERING c_pf_ob USING: %s from %02d to %02d & c_db_ob %s from %02d to %02d" % (cpfstr,cpfbeg,cpfend,cdbstr,cdbbeg,cdbend))
-        #df = df[df['c_pf_ob'].str.contains(cpfstr) & df['c_db_ob'].str.contains(cdbstr)]
-        df = df[df['c_pf_ob'].str.slice(start=cpfbeg,stop=cpfend,step=1).str.contains(cpfstr) & df['c_db_ob'].str.slice(start=cdbbeg,stop=cdbend,step=1).str.contains(cdbstr)]
-      if cpfstr!='' and cdbstr=='':
-        print("\nFILTERING c_pf_ob USING: %s from %02d to %02d" % (cpfstr,cpfbeg,cpfend))
-        #df = df[df['c_pf_ob'].str.contains(cpfstr)]
-        df = df[df['c_pf_ob'].str.slice(start=cpfbeg,stop=cpfend,step=1).str.contains(cpfstr)]
-      if cpfstr=='' and cdbstr!='':
-        print("\nFILTERING c_db_ob USING: %s from %02d to %02d" % (cdbstr,cdbbeg,cdbend))
-        #df = df[df['c_db_ob'].str.contains(cdbstr)]
-        df = df[df['c_db_ob'].str.slice(start=cdbbeg,stop=cdbend,step=1).str.contains(cdbstr)]
-      if qstr=='' and cpfstr=='' and cdbstr=='':
-        print("\nNO FILTER. RETURNING ENTIRE FILE.")
-      print(datetime.datetime.now()-t1)
-
-      # Get the column headers and add one for "n" at the beginning
-      hdrcols = self.header['column_titles']
-
-      # Double check there are at least some variables set. The minimum required are LAT, LON, and OBS.
-      if os.environ['NRL_LAT_STRING'] == '' or os.environ['NRL_LON_STRING'] == '' or os.environ['NRL_OBS_STRING'] == '':
-        print("\nFATAL! NRL_LAT_STRING, NRL_LON_STRING, or NRL_OBS STRING are not set. All of these must be set.")
-        exit(1)
-
-      # Define a dictionary to map values from NRL to MET values
-      nrl_met_map = {'typ':[os.environ['NRL_TYP_STRING']],
-                     'sid':[os.environ['NRL_SID_STRING']],
-                     'vld':[os.environ['NRL_VLD_STRING']],
-                     'lat':[os.environ['NRL_LAT_STRING']],
-                     'lon':[os.environ['NRL_LON_STRING']],
-                     'elv':[os.environ['NRL_ELV_STRING']],
-                     'var':[os.environ['NRL_VAR_STRING']],
-                     'lvl':[os.environ['NRL_LVL_STRING']],
-                     'hgt':[os.environ['NRL_HGT_STRING']],
-                     'qc':[os.environ['NRL_QC_STRING']],
-                     'obs':[os.environ['NRL_OBS_STRING']]}
-
-      # Set the type of each column
-      col_dtypes = {'typ':'str',
-                    'sid':'str',
-                    'vld':'int64',
-                    'lat':'float64',
-                    'lon':'float64',
-                    'elv':'float64',
-                    'var':'str',
-                    'lvl':'float64',
-                    'hgt':'float64',
-                    'qc':'str',
-                    'obs':'float64'}
-
-      # The list of columns we want from the file is simply the values for each key in the nrl_met_map dict
-      requestcols = [''.join(value) for value in nrl_met_map.values()]
- 
-      # Identify the index of each column in each line and assign it to the object
-      requestinds = [x for x in range(len(hdrcols)) if hdrcols[x] in requestcols]
-      self.inds = requestinds
-
-      # Get a list of the NRL column name strings in the order of requestinds
-      nrlcols = [hdrcols[x] for x in requestinds]
-
-      # Rename NRL columns to the names MET expects
-      # List to hold MET column names for corresponding NRL names
-      metcols = []
-      # For each NRL column requested (in nrlcols), loop over it and find out what MET needs to call it
-      for col in nrlcols:
-        # For each dictionary cross-reference item
-        found = False
-        for key in nrl_met_map:
-          # If the nrl column name is found in the values of this dictionary item, then the key of this dictionary
-          # item is the MET column name to use
-          if col in nrl_met_map[key]:
-            found = True
-            print("\nMAPPING %s [NRL] to %s [MET]" % (col,key))
-            metcols.append(key)
-        if not found:
-          print("\nFATAL! Unable to assign [NRL] column name %s to [MET] column name" % (col))
-          exit(1)
-
-      # Drop all the columns we don't need anymore
-      df.drop(df.columns.difference(nrlcols), 1, inplace=True)
-
-      # Replace the NRL column names with the MET column names
-      df.columns = metcols
-      
-      # Handle unset options (if any)
-      if os.environ['NRL_SID_STRING']=='':
-        print("\nUSING DEFAULT VALUE FOR [MET] sid")
-        #sid = ['NA'] * len(df)
-        df['sid'] = ['NA'] * len(df)
-      if os.environ['NRL_ELV_STRING']=='':
-        print("\nUSING DEFAULT VALUE FOR [MET] elv")
-        #elv = ['-9999'] * len(df)
-        df['elv'] = ['-9999'] * len(df)
-      if os.environ['NRL_HGT_STRING']=='':
-        print("\nUSING DEFAULT VALUE FOR [MET] hgt")
-        #hgt = ['-9999'] * len(df)
-        df['hgt'] = ['-9999'] * len(df)
-      
-      # Convert the column dtypes
-      df = df.astype(col_dtypes)
-
-      # Handle time. This is computed as cdtg_bk + tau_bk from the header, and then adding the offset (idt) in seconds
-      print("\nCOMPUTING [MET] vld from [NRL] cdtg_bk, tau_bk, and idt")
-      cdtg_bk = datetime.datetime.strptime(self.header['cdtg_bk'],'%Y%m%d%H') 
-      df['center'] = [cdtg_bk+datetime.timedelta(seconds=int(self.header['tau_bk'])*3600)] * len(df)
-      df['vld'] = pd.to_datetime((df['center']+pd.to_timedelta(df['vld'],unit='S'))).dt.strftime('%Y%m%d_%H%M%S')
-
-      # Convert the time column to a string
-      df = df.astype({'vld':'str'})
-      
-      # Reorder columns so they are in the order MET expects
-      df = df[list(nrl_met_map.keys())]
-
-      # Return the dataframe 
-      return(df)
+      df = create_met_dataframe(self.as_dataframe(),self.header)
+      return df
 
 def from_file(filename):
     """Factory method for instantiating innovation object."""
