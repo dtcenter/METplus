@@ -162,11 +162,15 @@ _obsGloTEC_vx7.conf
 #
 # .. note::
 #
-#  `GridStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_,
-#  `SpaceWeatherAppUseCase <https://dtcenter.github.io/METplus/search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_,
-#  `NOAASWPCOrgUseCase  <https://dtcenter.github.io/METplus/search.html?q=NOAASWPCOrgUseCase&check_keywords=yes&area=default>`_,
-#  `CustomStringLoopingUseCase <https://dtcenter.github.io/METplus/search.html?q=CustomStringLoopingUseCase&check_keywords=yes&area=default>`_,
-#  `MaskingFeatureUseCase  <https://dtcenter.github.io/METplus/search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_,
-#  `ValidationUseCase  <https://dtcenter.github.io/METplus/search.html?q=ValidationUseCase&check_keywords=yes&area=default>`_
-    
+#   * GridStatToolUseCase
+#   * SpaceWeatherAppUseCase
+#   * NOAASWPCOrgUseCase
+#   * CustomStringLoopingUseCase
+#   * MaskingFeatureUseCase
+#   * ValidationUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
+#
 # sphinx_gallery_thumbnail_path = '_static/space_weather-GridStat_fcstGloTEC_obsGloTEC_vx7.jpg'
