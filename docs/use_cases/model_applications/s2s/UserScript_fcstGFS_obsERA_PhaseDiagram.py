@@ -1,5 +1,5 @@
 """
-UserScript: Make OMI plot from calculated MJO indices
+UserScript: Make a Phase Diagram plot from input RMM or OMI
 ===========================================================================
 
 model_applications/
@@ -87,8 +87,8 @@ UserScript_fcstGFS_obsERA_PhaseDiagram.py
 # parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/PhaseDiagram_driver.py:
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/PhaseDiagram_driver.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/save_input_files_txt.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram/PhaseDiagram_driver.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram/save_input_files_txt.py
 #
 
 ##############################################################################
@@ -101,7 +101,7 @@ UserScript_fcstGFS_obsERA_PhaseDiagram.py
 #
 #        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_OMI.py::
+# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_PhaseDiagram.py::
 #
 #        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram.conf
 #
@@ -123,7 +123,7 @@ UserScript_fcstGFS_obsERA_PhaseDiagram.py
 # Expected Output
 # ---------------
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use case will be found in model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.  This may include the regridded data and daily averaged files.  In addition, the phase diagram plots will be generated and the output location can be specified as OMI_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent to model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/plots (relative to **OUTPUT_BASE**). 
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use case will be found in model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram.  This may include the regridded data and daily averaged files.  In addition, the phase diagram plots will be generated and the output location can be specified as OMI_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent to model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/plots (relative to **OUTPUT_BASE**). 
 
 ##############################################################################
 # Keywords
