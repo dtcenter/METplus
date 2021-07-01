@@ -190,9 +190,8 @@ UserScript_fcstGFS_obsERA_RMM.py
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
 # i.e. parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_RMM.conf.  
-# The file RMM_driver.py runs the python program and  
-# UserScript_fcstGFS_obsERA_RMM/UserScript_fcstGFS_obsERA_RMM.conf sets the 
-# variables for all steps of the RMM use case.
+# The file UserScript_fcstGFS_obsERA_RMM/RMM_driver.py runs the python program and  
+# UserScript_fcstGFS_obsERA_RMM.conf sets the variables for all steps of the RMM use case.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_RMM.conf

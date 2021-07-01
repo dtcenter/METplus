@@ -4,7 +4,7 @@ UserScript: Make OMI plot from calculated MJO indices
 
 model_applications/
 s2s/
-UserScript_fcstGFS_obsERA_OMI.py
+UserScript_fcstGFS_obsERA_PhaseDiagram.py
 
 """
 
@@ -12,14 +12,14 @@ UserScript_fcstGFS_obsERA_OMI.py
 # Scientific Objective
 # --------------------
 #
-# To use Outgoing Longwave Radiation (OLR) to compute the OLR based MJO Index (OMI).  Specifically, OMI is computed using OLR data between 20N and 20S.  Anomalies of OLR are then created.  The OLR anomalies are then projected onto Empirical Orthogonal Function (EOF) data that is computed for each day of the year, latitude, and longitude.  The OLR is then filtered for 20 - 96 days, and regressed onto the daily EOFs.  Finally, it's normalized and these normalized components are plotted on a phase diagram.
+# To produce a phase diagram using either OLR based MJO Index (OMI) or the Real-time Multivariate MJO index (RMM)
 # 
 
 ##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset:  GFS Model Outgoing Longwave Radiation
+#  * Forecast dataset:  None.
 #  * Observation dataset: ERA Reanlaysis Outgoing Longwave Radiation.
 
 ##############################################################################
@@ -48,14 +48,14 @@ UserScript_fcstGFS_obsERA_OMI.py
 # METplus Components
 # ------------------
 #
-# This use case runs the OMI driver which computes OMI and creates a phase diagram. Inputs to the OMI driver include netCDF files that are in MET's netCDF version.  In addition, a txt file containing the listing of these input netCDF files is required, as well as text file listings of the EOF1 and EOF2 files.  Some optional pre-processing steps include using regrid_data_plane to either regrid your data or cut the domain t0 20N - 20S.  There are also 3 optional UserScripts that will get a listing of the input OLR, EOF1, and EOF2 files using save_input_files_txt.py. 
+# This use case runs the Phase Diagram driver which and creates a phase diagram. Inputs to the driver are a text file containing the following columns, yyyy,mm,dd,hh,pc1,pc2,amp for OMI, or yyyy,mm,dd,pc1,pc2,phase,amp,source for RMM.
 #
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 # 
-# The OMI driver script python code is run for each lead time on the forecast and observations data. This example loops by valid time for the model pre-processing, and valid time for the other steps.  This version is set to only process the OMI calculation and creating a text file listing of the EOF files, omitting the regridding, and anomaly caluclation pre-processing steps.  However, the configurations for pre-processing are available for user reference.
+# The Phase diagram driver script python code is run for each lead time on the forecast and observations data. This example loops by valid time for the model pre-processing, and valid time for the other steps.  It creates the phase diagram plot and a text file listing of the valid times to use in creating the plots.
 
 ##############################################################################
 # METplus Configuration
@@ -64,11 +64,12 @@ UserScript_fcstGFS_obsERA_OMI.py
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
 # i.e. parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.conf.  
-# The file UserScript_fcstGFS_obsERA_OMI/OMI_driver.py runs the python program and 
-# UserScript_fcstGFS_obsERA_OMI.conf sets the variables for all steps of the OMI use case.
+# The file UserScript_fcstGFS_obsERA_PhaseDiagram/PhaseDiagram_driver.py runs the python 
+# program and UserScript_fcstGFS_obsERA_PhaseDiagram.conf sets the variables for all steps 
+# of the use case.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram.conf
 
 ##############################################################################
 # MET Configuration
@@ -77,18 +78,16 @@ UserScript_fcstGFS_obsERA_OMI.py
 # METplus sets environment variables based on the values in the METplus configuration file.
 # These variables are referenced in the MET configuration file. **YOU SHOULD NOT SET ANY OF THESE ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT CALLS THE MET TOOLS!** If there is a setting in the MET configuration file that is not controlled by an environment variable, you can add additional environment variables to be set only within the METplus environment using the [user_env_vars] section of the METplus configuration files. See the 'User Defined Config' section on the 'System Configuration' page of the METplus User's Guide for more information.
 #
-#
 
 ##############################################################################
 # Python Scripts
 # ----------------
 #
-# The OMI driver script orchestrates the calculation of the MJO indices and 
-# the generation of a phase diagram OMI plot:
-# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py:
+# The phase diagram driver script orchestrates the generation of a phase diagram plot:
+# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/PhaseDiagram_driver.py:
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/PhaseDiagram_driver.py
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/save_input_files_txt.py
 #
 
@@ -100,11 +99,11 @@ UserScript_fcstGFS_obsERA_OMI.py
 #
 # 1) Passing in UserScript_fcstGFS_obsERA_OMI.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_OMI.py::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram.conf
 #
 # The following variables must be set correctly:
 #
@@ -130,9 +129,6 @@ UserScript_fcstGFS_obsERA_OMI.py
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s-OMI_phase_diagram.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s-PhaseDiagram.png'
 #
-# .. note:: `S2SAppUseCase <https://dtcenter.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_,
-#  `RegridDataPlaneUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default>`_,
-#  `PCPCombineUseCase <https://dtcenter.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>`_
- 
+# .. note:: `XXXX`, `S2SAppUseCase <https://dtcenter.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
