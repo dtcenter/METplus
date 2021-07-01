@@ -905,7 +905,6 @@ class CommandBuilder:
 
             # remove trailing path separator if necessary (directories)
             output_template = output_template.rstrip(os.path.sep)
-
             output_path = os.path.join(output_dir, output_template)
 
         # substitute time info if provided
