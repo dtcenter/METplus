@@ -5,7 +5,6 @@ from PIL import Image, ImageChops
 import numpy
 
 IMAGE_EXTENSIONS = [
-    '.png',
     '.jpg',
     '.jpeg',
 ]
@@ -17,6 +16,8 @@ NETCDF_EXTENSIONS = [
 
 SKIP_EXTENSIONS = [
     '.zip',
+    '.png',
+    '.gif',
 ]
 
 PDF_EXTENSIONS = [
@@ -44,7 +45,7 @@ def get_file_type(filepath):
         pass
 
     if file_extension in SKIP_EXTENSIONS:
-        return 'skip'
+        return f'skip {file_extension}'
 
     if file_extension in PDF_EXTENSIONS:
         return 'pdf'
@@ -144,8 +145,8 @@ def compare_files(filepath_a, filepath_b, debug=False, dir_a=None, dir_b=None,
         return (filepath_a, '', 'file not found', '')
 
     file_type = get_file_type(filepath_a)
-    if file_type == 'skip':
-        print(f'Skipping')
+    if file_type.startswith('skip'):
+        print(f"Skipping {file_type.split(' ')[1]} file")
         return None
 
     if file_type.startswith('unsupported'):
@@ -308,12 +309,43 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
         print("Comparing stat file")
         header_a = lines_a.pop(0).split()[1:]
         header_b = lines_b.pop(0).split()[1:]
+    else:
+        header_a = header_b = None
 
     if len(lines_a) != len(lines_b):
         print(f"ERROR: Different number of lines in {filepath_b}")
         print(f" File_A: {len(lines_a)}\n File_B: {len(lines_b)}")
         return False
 
+    all_good = diff_text_lines(lines_a,
+                               lines_b,
+                               dir_a=dir_a,
+                               dir_b=dir_b,
+                               print_error=False,
+                               is_file_list=is_file_list,
+                               is_stat_file=is_stat_file,
+                               header_a=header_a)
+
+    # if differences found in text file, sort and try again
+    if not all_good:
+        lines_a.sort()
+        lines_b.sort()
+        all_good = diff_text_lines(lines_a,
+                                   lines_b,
+                                   dir_a=dir_a,
+                                   dir_b=dir_b,
+                                   print_error=True,
+                                   is_file_list=is_file_list,
+                                   is_stat_file=is_stat_file,
+                                   header_a=header_a)
+
+    return all_good
+
+def diff_text_lines(lines_a, lines_b,
+                    dir_a=None, dir_b=None,
+                    print_error=False,
+                    is_file_list=False, is_stat_file=False,
+                    header_a=None):
     all_good = True
     for line_a, line_b in zip(lines_a, lines_b):
         compare_a = line_a
@@ -331,12 +363,14 @@ def compare_txt_files(filepath_a, filepath_b, dir_a=None, dir_b=None):
                 cols_b = compare_b.split()[1:]
                 for col_a, col_b, label in zip(cols_a, cols_b, header_a):
                     if col_a != col_b:
-                        print(f"ERROR: {label} differs:\n"
-                              f" A: {col_a}\n B: {col_b}")
+                        if print_error:
+                            print(f"ERROR: {label} differs:\n"
+                                  f" A: {col_a}\n B: {col_b}")
                         all_good = False
             else:
-                print(f"ERROR: Line in {filepath_b} differs\n"
-                      f" A: {compare_a}\n B: {compare_b}")
+                if print_error:
+                    print(f"ERROR: Line differs\n"
+                          f" A: {compare_a}\n B: {compare_b}")
                 all_good = False
 
     return all_good
@@ -420,3 +454,10 @@ def nc_is_equal(file_a, file_b, fields=None, debug=False):
         return False
 
     return is_equal
+
+if __name__ == '__main__':
+    dir_a = sys.argv[1]
+    dir_b = sys.argv[2]
+    if len(sys.argv) > 3:
+        save_diff = True
+    compare_dir(dir_a, dir_b, debug=True, save_diff=save_diff)

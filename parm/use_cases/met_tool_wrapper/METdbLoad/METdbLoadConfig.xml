@@ -1,0 +1,26 @@
+<load_spec>
+  <connection>
+    <host>${METPLUS_MV_HOST}</host>
+    <database>${METPLUS_MV_DATABASE}</database>
+    <user>${METPLUS_MV_USER}</user>
+    <password>${METPLUS_MV_PASSWORD}</password>
+  </connection>
+
+  <verbose>${METPLUS_MV_VERBOSE}</verbose>
+  <insert_size>${METPLUS_MV_INSERT_SIZE}</insert_size>
+  <mode_header_db_check>${METPLUS_MV_MODE_HEADER_DB_CHECK}</mode_header_db_check>
+  <drop_indexes>${METPLUS_MV_DROP_INDEXES}</drop_indexes>
+  <apply_indexes>${METPLUS_MV_APPLY_INDEXES}</apply_indexes>
+  <group>${METPLUS_MV_GROUP}</group>
+  <load_stat>${METPLUS_MV_LOAD_STAT}</load_stat>
+  <load_mode>${METPLUS_MV_LOAD_MODE}</load_mode>
+  <load_mtd>${METPLUS_MV_LOAD_MTD}</load_mtd>
+  <load_mpr>${METPLUS_MV_LOAD_MPR}</load_mpr>
+
+  <folder_tmpl>{dirs}</folder_tmpl>
+  <load_val>
+    <field name="dirs">
+      ${METPLUS_INPUT_PATHS}
+    </field>
+  </load_val>
+</load_spec>

@@ -55,12 +55,10 @@ RUN echo export PATH=$PATH:`pwd`/METplus/ush >> /etc/bashrc \
 # Install Java 1.8.0 OpenJDK for GempakToCF.jar
 # Install pytest and netCDF4 python packages
 # Obtain GempakToCF.jar
-RUN yum -y update \
- && yum -y install nco.x86_64 \
- && yum -y install java-1.8.0-openjdk \
- && python3 -m pip install pytest netCDF4 \
- && mkdir -p /data/input \
- && curl -L -o /data/input/GempakToCF.jar -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar || true
+#RUN yum -y update \
+# && yum -y install java-1.8.0-openjdk \
+# && mkdir -p /data/input \
+# && curl -L -o /data/input/GempakToCF.jar -O https://dtcenter.org/sites/default/files/community-code/metplus/utilities/GempakToCF.jar || true
 
 
 # if source code was retrieved, set default config variables and install package
@@ -68,8 +66,8 @@ ARG OBTAIN_SOURCE_CODE=clone
 RUN if [ ${OBTAIN_SOURCE_CODE} != "none" ]; then \
   echo "Installing METplus package and setting default configs"; \
   cd METplus; \
-  sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/metplus_system.conf; \
-  sed -i 's|OUTPUT_BASE = /path/to|OUTPUT_BASE = /data/output|g' parm/metplus_config/metplus_system.conf; \
-  sed -i 's|INPUT_BASE = /path/to|INPUT_BASE = /data/input/METplus_Data|g' parm/metplus_config/metplus_data.conf; \
+  sed -i 's|MET_INSTALL_DIR = /path/to|MET_INSTALL_DIR = /usr/local|g' parm/metplus_config/*.conf; \
+  sed -i 's|OUTPUT_BASE = /path/to|OUTPUT_BASE = /data/output|g' parm/metplus_config/*.conf; \
+  sed -i 's|INPUT_BASE = /path/to|INPUT_BASE = /data/input/METplus_Data|g' parm/metplus_config/*.conf; \
   python3 setup.py install; \
 fi

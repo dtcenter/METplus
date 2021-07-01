@@ -53,7 +53,7 @@ class TCGenWrapper(CommandBuilder):
         'METPLUS_GENESIS_MATCH_RADIUS',
         'METPLUS_DEV_HIT_RADIUS',
         'METPLUS_DEV_HIT_WINDOW_DICT',
-        'METPLUS_OPS_HIT_TDIFF',
+        'METPLUS_OPS_HIT_WINDOW_DICT',
         'METPLUS_DISCARD_INIT_POST_GENESIS_FLAG',
         'METPLUS_DEV_METHOD_FLAG',
         'METPLUS_OPS_METHOD_FLAG',
@@ -65,6 +65,8 @@ class TCGenWrapper(CommandBuilder):
         'METPLUS_DLAND_FILE',
         'METPLUS_BASIN_FILE',
         'METPLUS_NC_PAIRS_GRID',
+        'METPLUS_GENESIS_MATCH_POINT_TO_TRACK',
+        'METPLUS_GENESIS_MATCH_WINDOW_DICT',
     ]
 
     OUTPUT_FLAGS = ['fho',
@@ -210,9 +212,7 @@ class TCGenWrapper(CommandBuilder):
                             data_type='int',
                             metplus_configs=['TC_GEN_DEV_HIT_RADIUS'])
         self.handle_dev_hit_window()
-        self.add_met_config(name='ops_hit_tdiff',
-                            data_type='int',
-                            metplus_configs=['TC_GEN_OPS_HIT_TDIFF'])
+        self.handle_ops_hit_window()
         self.add_met_config(name='discard_init_post_genesis_flag',
                             data_type='bool',
                             metplus_configs=[
@@ -246,10 +246,18 @@ class TCGenWrapper(CommandBuilder):
         self.add_met_config(name='nc_pairs_grid',
                             data_type='string',
                             metplus_configs=['TC_GEN_NC_PAIRS_GRID'])
+        self.add_met_config(
+            name='genesis_match_point_to_track',
+            data_type='bool',
+            metplus_configs=['TC_GEN_GENESIS_MATCH_POINT_TO_TRACK']
+        )
+        self.handle_genesis_match_window()
 
         # get INPUT_TIME_DICT values since wrapper only runs
         # once (doesn't look over time)
-        self.set_time_dict_for_single_runtime(c_dict)
+        c_dict['INPUT_TIME_DICT'] = self.set_time_dict_for_single_runtime()
+        if not c_dict['INPUT_TIME_DICT']:
+            self.isOK = False
 
         return c_dict
 
@@ -288,6 +296,38 @@ class TCGenWrapper(CommandBuilder):
                        data_type='int',
                        metplus_configs=['TC_GEN_DEV_HIT_WINDOW_END',
                                         'TC_GEN_GENESIS_WINDOW_END'])
+        )
+        self.handle_met_config_dict(dict_name, dict_items)
+
+    def handle_ops_hit_window(self):
+        dict_name = 'ops_hit_window'
+        dict_items = []
+        dict_items.append(
+            self.get_met_config(name='beg',
+                       data_type='int',
+                       metplus_configs=['TC_GEN_OPS_HIT_WINDOW_BEGIN',
+                                        'TC_GEN_OPS_HIT_WINDOW_BEG',])
+        )
+        dict_items.append(
+            self.get_met_config(name='end',
+                       data_type='int',
+                       metplus_configs=['TC_GEN_OPS_HIT_WINDOW_END',])
+        )
+        self.handle_met_config_dict(dict_name, dict_items)
+
+    def handle_genesis_match_window(self):
+        dict_name = 'genesis_match_window'
+        dict_items = []
+        dict_items.append(
+            self.get_met_config(name='beg',
+                       data_type='int',
+                       metplus_configs=['TC_GEN_GENESIS_MATCH_WINDOW_BEGIN',
+                                        'TC_GEN_GENESIS_MATCH_WINDOW_BEG',])
+        )
+        dict_items.append(
+            self.get_met_config(name='end',
+                       data_type='int',
+                       metplus_configs=['TC_GEN_GENESIS_MATCH_WINDOW_END',])
         )
         self.handle_met_config_dict(dict_name, dict_items)
 

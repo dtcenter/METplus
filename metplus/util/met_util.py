@@ -94,16 +94,6 @@ def pre_run_setup(config_inputs):
         config.set('config', 'STAGING_DIR',
                    os.path.join(config.getdir('OUTPUT_BASE'), "stage"))
 
-    # get USER_SHELL config variable so the default value doesn't get logged
-    # at an inconvenient time (right after "COPYABLE ENVIRONMENT" but before actual
-    # copyable environment variable list)
-    config.getstr('config', 'USER_SHELL', 'bash')
-
-
-    # get DO_NOT_RUN_EXE config variable so it shows up at the beginning of execution
-    # only if the default value is used
-    config.getbool('config', 'DO_NOT_RUN_EXE', False)
-
     # handle dir to write temporary files
     handle_tmp_dir(config)
 
@@ -518,8 +508,7 @@ def check_for_deprecated_config(config):
                 old_regex = old.replace('<n>', r'(\d+)')
                 indicies = find_indices_in_config_section(old_regex,
                                                           config,
-                                                          'config',
-                                                          noID=True).keys()
+                                                          index_index=1).keys()
                 for index in indicies:
                     old_with_index = old.replace('<n>', index)
                     if depr_info['alt']:
@@ -861,7 +850,7 @@ def is_loop_by_init(config):
 
     return None
 
-def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
+def get_time_obj(time_from_conf, fmt, clock_time, logger=None, warn=False):
     """!Substitute today or now into [INIT/VALID]_[BEG/END] if used
         Args:
             @param time_from_conf value from [INIT/VALID]_[BEG/END] that
@@ -880,7 +869,10 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
         error_message = (f"[INIT/VALID]_TIME_FMT ({fmt}) does not match "
                          f"[INIT/VALID]_[BEG/END] ({time_str})")
         if logger:
-            logger.error(error_message)
+            if warn:
+                logger.warning(error_message)
+            else:
+                logger.error(error_message)
         else:
             print(f"ERROR: {error_message}")
 
@@ -888,8 +880,26 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
 
     return time_t
 
-def get_start_end_interval_times(config):
-    clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
+def get_start_end_interval_times(config, warn=False):
+    """! Reads the METplusConfig object to determine the start, end, and
+      increment values based on the configuration. Based on the LOOP_BY value,
+      it will read the INIT_ or VALID_ variables TIME_FMT, BEG, END, and
+      INCREMENT and use the time format value to parse the other values.
+
+        @param config METplusConfig object to parse
+        @parm warn (optional) if True, output warnings instead of errors
+        @returns tuple of start time (datetime), end time (datetime) and
+        increment (dateutil.relativedelta) or all None values if time info
+        could not be parsed properly
+    """
+    # set function to send log messages (warning or error)
+    if warn:
+        log_function = config.logger.warning
+    else:
+        log_function = config.logger.error
+
+    clock_time_obj = datetime.datetime.strptime(config.getstr('config',
+                                                              'CLOCK_TIME'),
                                                 '%Y%m%d%H%M%S')
     use_init = is_loop_by_init(config)
     if use_init is None:
@@ -911,23 +921,27 @@ def get_start_end_interval_times(config):
         )
 
     start_time = get_time_obj(start_t, time_format,
-                             clock_time_obj, config.logger)
+                              clock_time_obj, config.logger,
+                              warn=warn)
     if not start_time:
-        config.logger.error("Could not format start time")
+        log_function("Could not format start time")
         return None, None, None
 
     end_time = get_time_obj(end_t, time_format,
-                            clock_time_obj, config.logger)
+                            clock_time_obj, config.logger,
+                            warn=warn)
     if not end_time:
-        config.logger.error("Could not format end time")
+        log_function("Could not format end time")
         return None, None, None
 
-    if start_time + time_interval < start_time + datetime.timedelta(seconds=60):
-        config.logger.error("[INIT/VALID]_INCREMENT must be greater than or equal to 60 seconds")
+    if (start_time + time_interval <
+            start_time + datetime.timedelta(seconds=60)):
+        log_function('[INIT/VALID]_INCREMENT must be greater than or '
+                     'equal to 60 seconds')
         return None, None, None
 
     if start_time > end_time:
-        config.logger.error("Start time must come before end time")
+        log_function("Start time must come before end time")
         return None, None, None
 
     return start_time, end_time, time_interval
@@ -1393,15 +1407,17 @@ def get_filepaths_for_grbfiles(base_dir):
                 continue
     return file_paths
 
-def get_storms(filter_filename):
-    """! Get each storm as identified by its STORM_ID in the filter file.
+def get_storms(filter_filename, id_only=False, sort_column='STORM_ID'):
+    """! Get each storm as identified by a column in the input file.
          Create dictionary storm ID as the key and a list of lines for that
          storm as the value.
 
          @param filter_filename name of tcst file to read and extract storm id
-         @returns 2 item tuple - 1)dictionary where key is storm ID and value is list
-          of relevant lines from tcst file, 2) header line from tcst file.
-          Also, item with key 'header' contains the header of the tcst file
+         @param sort_column column to use to sort and group storms. Default
+          value is STORM_ID
+         @returns 2 item tuple - 1)dictionary where key is storm ID and value
+          is list of relevant lines from tcst file, 2) header line from tcst
+           file. Item with key 'header' contains the header of the tcst file
     """
     # Initialize a set because we want unique storm ids.
     storm_id_list = set()
@@ -1410,15 +1426,19 @@ def get_storms(filter_filename):
         with open(filter_filename, "r") as file_handle:
             header, *lines = file_handle.readlines()
 
-        storm_id_column = header.split().index('STORM_ID')
+        storm_id_column = header.split().index(sort_column)
         for line in lines:
             storm_id_list.add(line.split()[storm_id_column])
     except (ValueError, FileNotFoundError):
+        if id_only:
+            return []
         return {}
 
     # sort the unique storm ids, copy the original
     # set by using sorted rather than sort.
     sorted_storms = sorted(storm_id_list)
+    if id_only:
+        return sorted_storms
 
     if not sorted_storms:
         return {}
@@ -1430,7 +1450,7 @@ def get_storms(filter_filename):
 
     return storm_dict
 
-def get_storm_ids(filter_filename, logger=None):
+def get_storm_ids(filter_filename):
     """! Get each storm as identified by its STORM_ID in the filter file
         save these in a set so we only save the unique ids and sort them.
         Args:
@@ -1440,23 +1460,7 @@ def get_storm_ids(filter_filename, logger=None):
         Returns:
             sorted_storms (List):  a list of unique, sorted storm ids
     """
-    # Initialize a set because we want unique storm ids.
-    storm_id_list = set()
-
-    try:
-        with open(filter_filename, "r") as file_handle:
-            header, *lines = file_handle.readlines()
-
-        storm_id_column = header.split().index('STORM_ID')
-        for line in lines:
-            storm_id_list.add(line.split()[storm_id_column])
-    except (ValueError, FileNotFoundError):
-        return []
-
-    # sort the unique storm ids, copy the original
-    # set by using sorted rather than sort.
-    sorted_storms = sorted(storm_id_list)
-    return sorted_storms
+    return get_storms(filter_filename, id_only=True)
 
 def get_files(filedir, filename_regex, logger=None):
     """! Get all the files (with a particular
@@ -1660,6 +1664,9 @@ def getlist(list_str, expand_begin_end_incr=True):
         @param list_str the string being converted to a list.
         @returns list of strings formatted properly and expanded as needed
     """
+    if not list_str:
+        return []
+
     # FIRST remove surrounding comma, and spaces, form the string.
     list_str = list_str.strip().strip(',').strip()
 
@@ -1916,20 +1923,37 @@ def skip_field_info_validation(config):
 
     return True
 
-def find_indices_in_config_section(regex_expression, config, sec, noID=False):
+def find_indices_in_config_section(regex, config, sec='config',
+                                   index_index=1, id_index=None):
+    """! Use regular expression to get all config variables that match and
+    are set in the user's configuration. This is used to handle config
+    variables that have multiple indices, i.e. FCST_VAR1_NAME, FCST_VAR2_NAME,
+    etc.
+
+    @param regex regular expression to use to find variables
+    @param config METplusConfig object to search
+    @param sec (optional) config file section to search. Defaults to config
+    @param index_index 1 based number that is the regex match index for the
+     index number (default is 1)
+    @param id_index 1 based number that is the regex match index for the
+     identifier. Defaults to None which does not extract an indentifier
+
+     number and the first match is used as an identifier
+    @returns dictionary where keys are the index number and the value is a
+     list of identifiers (if noID=True) or a list containing None
+    """
     # regex expression must have 2 () items and the 2nd item must be the index
     all_conf = config.keys(sec)
     indices = {}
-    regex = re.compile(regex_expression)
+    regex = re.compile(regex)
     for conf in all_conf:
         result = regex.match(conf)
         if result is not None:
-            if noID:
-                index = result.group(1)
-                identifier = None
+            index = result.group(index_index)
+            if id_index:
+                identifier = result.group(id_index)
             else:
-                identifier = result.group(1)
-                index = result.group(2)
+                identifier = None
 
             if index not in indices:
                 indices[index] = [identifier]
@@ -2017,7 +2041,8 @@ def validate_field_info_configs(config, force_check=False):
         # find all _VAR<n>_<ext> keys in the conf files
         data_types_and_indices = find_indices_in_config_section(r"(\w+)_VAR(\d+)_"+ext,
                                                                 config,
-                                                                'config')
+                                                                index_index=2,
+                                                                id_index=1)
 
         # if BOTH_VAR<n>_ is used, set FCST and OBS to the same value
         # if FCST or OBS is used, the other must be present as well
@@ -2052,120 +2077,200 @@ def validate_field_info_configs(config, force_check=False):
 
     return all_good, all_sed_cmds
 
-def get_var_items(config, data_type, index, time_info, met_tool=None):
-    """!Get configuration variables for given data type and index
-        Args:
-            @param config: METplusConfig object
-            @param data_type: type of data to find, i.e. FCST, OBS, BOTH, or ENS
-            @param index: index of variable, i.e. _VAR<index>_NAME
-            @param met_tool: optional name of MET tool to look for wrapper specific items
-            @returns tuple containing name, level, thresh, extra values if found. If not found
-               4 empty strings are returned.
+def get_field_search_prefixes(data_type, met_tool=None):
+    """! Get list of prefixes to search for field variables.
+
+        @param data_type type of field to search for, i.e. FCST, OBS, ENS, etc.
+         Check for BOTH_ variables first only if data type is FCST or OBS
+        @param met_tool name of tool to search for variable or None if looking
+         for generic field info
+        @returns list of prefixes to search, i.e. [BOTH_, FCST_] or
+         [ENS_] or [BOTH_GRID_STAT_, OBS_GRID_STAT_]
     """
+    search_prefixes = []
+    var_strings = []
 
-    # build string to search for BOTH items, using MET tool name if provided
-    # do the same for data_type, i.e. FCST
-    # The result with either be BOTH_VAR and FCST_VAR or
-    # BOTH_<MET-tool>_VAR and FCST_<MET-tool>_VAR
-    both_var = "BOTH_"
-    data_type_var = f"{data_type}_"
+    # if met tool name is set, prioritize
+    # wrapper-specific configs before generic configs
     if met_tool:
-        both_var += f"{met_tool.upper()}_"
-        data_type_var += f"{met_tool.upper()}_"
-    both_var += "VAR"
-    data_type_var += "VAR"
+        var_strings.append(f'{met_tool.upper()}_')
 
-    # get field variable name from data type name
-    # look for BOTH_VAR<n>_NAME if looking for FCST or OBS (not ENS)
-    # return empty strings if name cannot be found from either
-    if data_type in ['FCST', 'OBS'] and config.has_option('config', f"{both_var}{index}_NAME"):
-        search_name = f"{both_var}{index}_NAME"
-    elif config.has_option('config', f"{data_type_var}{index}_NAME"):
-        search_name = f"{data_type_var}{index}_NAME"
-    else:
-        return '', '', '', ''
+    var_strings.append('')
 
-    name = do_string_sub(config.getraw('config', search_name),
-                         skip_missing_tags=True,
-                         **time_info)
+    for var_string in var_strings:
+        search_prefixes.append(f"{data_type}_{var_string}")
 
-    # get levels if available
-    levels = []
-    if data_type in ['FCST', 'OBS'] and config.has_option('config', f"{both_var}{index}_LEVELS"):
-        search_levels = f"{both_var}{index}_LEVELS"
-    else:
-        search_levels = f"{data_type_var}{index}_LEVELS"
+        # if looking for FCST or OBS, also check for BOTH prefix
+        if data_type in ['FCST', 'OBS']:
+            search_prefixes.append(f"BOTH_{var_string}")
 
-    levels = []
-    for level in getlist(config.getraw('config', search_levels, '')):
-        subbed_level = do_string_sub(level,
-                                     **time_info)
-        levels.append(subbed_level)
+    return search_prefixes
+
+def get_field_config_variables(config, index, search_prefixes):
+    """! Search for variables that are set in the config that correspond to
+     the fields requested. Some field info items have
+     synonyms that can be used if the typical name is not set. This is used
+     in RegridDataPlane wrapper.
+
+        @param config METplusConfig object to search
+        @param index of field (VAR<n>) to find
+        @param search_prefixes list of valid prefixes to search for variables
+         in the config, i.e. FCST_VAR1_ or OBS_GRID_STAT_VAR2_
+        @returns dictionary containing a config variable name to be used for
+         each field info value. If a valid config variable was not set for a
+         field info value, the value for that key will be set to None.
+    """
+    # list of field info variables to find from config
+    # used as keys for dictionaries
+    field_info_items = ['name',
+                        'levels',
+                        'thresh',
+                        'options',
+                        'output_names',
+                       ]
+
+    field_configs = {}
+    search_suffixes = {}
+
+    # initialize field configs dictionary values to None
+    # initialize dictionary of valid suffixes to search for with
+    # the capitalized version of field info name
+    for field_info_item in field_info_items:
+        field_configs[field_info_item] = None
+        search_suffixes[field_info_item] = [field_info_item.upper()]
+
+    # add alternate suffixes for config variable names to attempt
+    search_suffixes['name'].append('INPUT_FIELD_NAME')
+    search_suffixes['name'].append('FIELD_NAME')
+    search_suffixes['levels'].append('INPUT_LEVEL')
+    search_suffixes['levels'].append('FIELD_LEVEL')
+    search_suffixes['output_names'].append('OUTPUT_FIELD_NAME')
+    search_suffixes['output_names'].append('FIELD_NAME')
+
+    # look through field config keys and obtain highest priority
+    # variable name for each field config
+    for search_var, suffixes in search_suffixes.items():
+        for prefix in search_prefixes:
+
+            found = False
+            for suffix in suffixes:
+                var_name = f"{prefix}VAR{index}_{suffix}"
+                # if variable is found in config,
+                # get the value and break out of suffix loop
+                if config.has_option('config', var_name):
+                    field_configs[search_var] = config.getraw('config',
+                                                              var_name)
+                    found = True
+                    break
+
+            # if config variable was found, break out of prefix loop
+            if found:
+                break
+
+    return field_configs
+
+def format_var_items(field_configs, time_info=None):
+    """! Substitute time information into field information and format values.
+
+        @param field_configs dictionary with config variable names to read
+        @param time_info dictionary containing time info for current run
+        @returns dictionary containing name, levels, and output_names, as
+         well as thresholds and extra options if found. If not enough
+         information was set in the METplusConfig object, an empty
+         dictionary is returned.
+    """
+    # dictionary to hold field (var) item info
+    var_items = {}
+
+    # set defaults for optional items
+    var_items['levels'] = []
+    var_items['thresh'] = []
+    var_items['extra'] = ''
+    var_items['output_names'] = []
+
+    # get name, return error string if not found
+    search_name = field_configs.get('name')
+    if not search_name:
+        return 'Name not found'
+
+    # perform string substitution on name
+    if time_info:
+        search_name = do_string_sub(search_name,
+                                    skip_missing_tags=True,
+                                    **time_info)
+    var_items['name'] = search_name
+
+    # get levels, performing string substitution on each item of list
+    for level in getlist(field_configs.get('levels')):
+        if time_info:
+            level = do_string_sub(level,
+                                  **time_info)
+        var_items['levels'].append(level)
 
     # if no levels are found, add an empty string
-    if not levels:
-        levels.append('')
+    if not var_items['levels']:
+        var_items['levels'].append('')
 
-    # get thresholds if available
-    thresh = []
-    if data_type in ['FCST', 'OBS'] and config.has_option('config', f"{both_var}{index}_THRESH"):
-        search_thresh = f"{both_var}{index}_THRESH"
-    elif config.has_option('config', f"{data_type_var}{index}_THRESH"):
-        search_thresh = f"{data_type_var}{index}_THRESH"
-    else:
-        search_thresh = None
-
+    # get threshold list if it is set
+    # return error string if any thresholds not formatted properly
+    search_thresh = field_configs.get('thresh')
     if search_thresh:
-        thresh = getlist(config.getstr('config', search_thresh))
+        thresh = getlist(search_thresh)
         if not validate_thresholds(thresh):
-            config.logger.error(f"  Update {search_thresh} to match this format")
-            return '', '', '', ''
+            return 'Invalid threshold supplied'
 
-    # get extra options if available
-    extra = ""
-    if data_type in ['FCST', 'OBS'] and config.has_option('config', f"{both_var}{index}_OPTIONS"):
-        search_extra = f"{both_var}{index}_OPTIONS"
-    elif config.has_option('config', f"{data_type_var}{index}_OPTIONS"):
-        search_extra = f"{data_type_var}{index}_OPTIONS"
-    else:
-        search_extra = None
+        var_items['thresh'] = thresh
 
+    # get extra options if it is set, format with semi-colons between items
+    search_extra = field_configs.get('options')
     if search_extra:
-        extra = do_string_sub(config.getraw('config', search_extra),
-                              **time_info)
+        if time_info:
+            search_extra = do_string_sub(search_extra,
+                                         **time_info)
 
         # strip off empty space around each value
-        extra_list = [item.strip() for item in extra.split(';')]
+        extra_list = [item.strip() for item in search_extra.split(';')]
 
-        # split up each item by semicolon, then add a semicolon to the
-        # end of each item
-        # to avoid errors where the user forgot to add a semicolon at the end
+        # split up each item by semicolon, then add a semicolon to the end
         # use list(filter(None to remove empty strings from list
         extra_list = list(filter(None, extra_list))
-        extra = f"{'; '.join(extra_list)};"
+        var_items['extra'] = f"{'; '.join(extra_list)};"
 
-    return name, levels, thresh, extra
+    # get output names if they are set
+    out_name_str = field_configs.get('output_names')
 
-def find_var_name_indices(config, data_type, met_tool=None):
-
-    regex_string = ''
-    # if specific data type is requested, only get that type or BOTH
-    if data_type:
-        regex_string += f"({data_type}|BOTH)"
-    # if no data type requested, get one or more characters that are not underscore
+    # use input name for each level if not set
+    if not out_name_str:
+        for _ in var_items['levels']:
+            var_items['output_names'].append(var_items['name'])
     else:
-        regex_string += r"([^_]+)"
+        for out_name in getlist(out_name_str):
+            if time_info:
+                out_name = do_string_sub(out_name,
+                                         **time_info)
+            var_items['output_names'].append(out_name)
+
+    if len(var_items['levels']) != len(var_items['output_names']):
+        return 'Number of levels does not match number of output names'
+
+    return var_items
+
+def find_var_name_indices(config, data_types, met_tool=None):
+    data_type_regex = f"{'|'.join(data_types)}|BOTH"
+
+    regex_string = f"({data_type_regex})"
 
     # if MET tool is specified, get tool specific items
     if met_tool:
         regex_string += f"_{met_tool.upper()}"
 
-    regex_string += r"_VAR(\d+)_NAME"
+    regex_string += r"_VAR(\d+)_(NAME|INPUT_FIELD_NAME|FIELD_NAME)"
 
     # find all <data_type>_VAR<n>_NAME keys in the conf files
     return find_indices_in_config_section(regex_string,
                                           config,
-                                          'config')
+                                          index_index=2,
+                                          id_index=1)
 
 def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
     """ read conf items and populate list of dictionaries containing
@@ -2173,14 +2278,17 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
         Args:
             @param config: METplusConfig object
             @param time_info: time object for string sub, optional
-            @param data_type: data type to find. Can be FCST, OBS, or ENS. If not set, get FCST/OBS/BOTH
-            @param met_tool: optional name of MET tool to look for wrapper specific var items
+            @param data_type: data type to find. Can be FCST, OBS, or ENS.
+             If not set, get FCST/OBS/BOTH
+            @param met_tool: optional name of MET tool to look for wrapper
+             specific var items
         Returns:
             list of dictionaries with variable information
     """
 
     # validate configs again in case wrapper is not running from run_metplus
-    # this does not need to be done if parsing a specific data type, i.e. ENS or FCST
+    # this does not need to be done if parsing a specific data type,
+    # i.e. ENS or FCST
     if data_type is None:
         if not validate_field_info_configs(config)[0]:
             return []
@@ -2189,90 +2297,99 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
         return []
 
     # if time_info is not passed in, set 'now' to CLOCK_TIME
-    # NOTE: any attempt to use string template substitution with an item other than
-    #  'now' will fail if time_info is not passed into parse_var_list
-    if time_info is None:
-        time_info = { 'now' : datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
-                                                         '%Y%m%d%H%M%S') }
+    # NOTE: any attempt to use string template substitution with an item other
+    # than 'now' will fail if time_info is not passed into parse_var_list
+#    if time_info is None:
+#        time_info = {'now': datetime.datetime.strptime(
+#            config.getstr('config', 'CLOCK_TIME'),
+#            '%Y%m%d%H%M%S')
+#        }
 
     # var_list is a list containing an list of dictionaries
     var_list = []
 
-    # check if *_<MET-tool>_VAR<n>_NAME exists, if so, use that instead of generic
-    data_types_and_indices = {}
-
-    # if using wrapper specific field info, use_met_tool will be set to handle them
-    use_met_tool = None
-    if met_tool:
-        data_types_and_indices = find_var_name_indices(config, data_type, met_tool)
-
-    if not data_types_and_indices:
-        data_types_and_indices = find_var_name_indices(config, data_type)
-    # if found wrapper specific fields, pass the MET tool name to get_var_items
+    # if specific data type is requested, only get that type
+    if data_type:
+        data_types = [data_type]
+    # otherwise get both FCST and OBS
     else:
-        use_met_tool = met_tool
+        data_types = ['FCST', 'OBS']
+
+    # get indices of VAR<n> items for data type and/or met tool
+    indices = []
+    if met_tool:
+        indices = find_var_name_indices(config, data_types, met_tool).keys()
+    if not indices:
+        indices = find_var_name_indices(config, data_types).keys()
+
+    # get config name prefixes for each data type to find
+    dt_search_prefixes = {}
+    for current_type in data_types:
+        # get list of variable prefixes to search
+        prefixes = get_field_search_prefixes(current_type, met_tool)
+        dt_search_prefixes[current_type] = prefixes
 
     # loop over all possible variables and add them to list
-    for index, data_type_list in data_types_and_indices.items():
+    for index in indices:
+        field_info_list = []
+        for current_type in data_types:
+            # get dictionary of existing config variables to use
+            search_prefixes = dt_search_prefixes[current_type]
+            field_configs = get_field_config_variables(config,
+                                                       index,
+                                                       search_prefixes)
 
-        # if specific data type is requested, only get that type
-        if data_type:
-            data_type_lower = data_type.lower()
-            name, levels, thresh, extra = get_var_items(config, data_type, index, time_info,
-                                                        met_tool=use_met_tool)
-
-            if not name:
+            field_info = format_var_items(field_configs, time_info)
+            if not isinstance(field_info, dict):
+                config.logger.error(f'Could not process {current_type}_'
+                                    f'VAR{index} variables: {field_info}')
                 continue
 
-            for level in levels:
-                # add {data_type}_level to name
-                sub_info = {f'{data_type.lower()}_level': level}
-                subbed_name = do_string_sub(name, **sub_info)
-                var_dict = {f"{data_type_lower}_name": subbed_name,
-                            f"{data_type_lower}_level": level,
-                            f"{data_type_lower}_thresh": thresh,
-                            f"{data_type_lower}_extra": extra,
-                            'index': index,
-                            }
-                var_list.append(var_dict)
+            field_info['data_type'] = current_type.lower()
+            field_info_list.append(field_info)
 
-        # if FCST and OBS or BOTH are used, get and set both of them
-        else:
-            f_name, f_levels, f_thresh, f_extra = get_var_items(config, 'FCST', index,
-                                                                time_info,
-                                                                met_tool=use_met_tool)
-            o_name, o_levels, o_thresh, o_extra = get_var_items(config, 'OBS', index,
-                                                                time_info,
-                                                                met_tool=use_met_tool)
+        # check that all fields types were found
+        if not field_info_list or len(data_types) != len(field_info_list):
+            continue
 
-            # if number of levels are not equal, return an empty list
-            if len(f_levels) != len(o_levels):
-                return []
-
-            if not o_name and not f_name:
+        # check if number of levels for each field type matches
+        n_levels = len(field_info_list[0]['levels'])
+        if len(data_types) > 1:
+            if (n_levels != len(field_info_list[1]['levels'])):
                 continue
 
-            if not o_name or not f_name:
-                return []
+        # loop over levels and add all values to output dictionary
+        for level_index in range(n_levels):
+            var_dict = {}
 
-            for f_level, o_level in zip(f_levels, o_levels):
-                # add fcst_level and obs_level to name
-                sub_info = {'fcst_level': f_level,
-                            'obs_level': o_level}
-                subbed_f_name = do_string_sub(f_name, **sub_info)
-                subbed_o_name = do_string_sub(o_name, **sub_info)
-                var_dict = {"fcst_name": subbed_f_name,
-                            "fcst_level": f_level,
-                            "fcst_thresh": f_thresh,
-                            "fcst_extra": f_extra,
-                            "obs_name": subbed_o_name,
-                            "obs_level": o_level,
-                            "obs_thresh": o_thresh,
-                            "obs_extra": o_extra,
-                            'index': index,
-                            }
-                var_list.append(var_dict)
+            # get level values to use for string substitution in name
+            # used for python embedding calls that read the level value
+            sub_info = {}
+            for field_info in field_info_list:
+                dt_level = f"{field_info.get('data_type')}_level"
+                sub_info[dt_level] = field_info.get('levels')[level_index]
 
+            for field_info in field_info_list:
+                current_type = field_info.get('data_type')
+                name = field_info.get('name')
+                level = field_info.get('levels')[level_index]
+                thresh = field_info.get('thresh')
+                extra = field_info.get('extra')
+                output_name = field_info.get('output_names')[level_index]
+
+                # substitute level in name if filename template is specified
+                subbed_name = do_string_sub(name,
+                                            skip_missing_tags=True,
+                                            **sub_info)
+
+                var_dict[f"{current_type}_name"] = subbed_name
+                var_dict[f"{current_type}_level"] = level
+                var_dict[f"{current_type}_thresh"] = thresh
+                var_dict[f"{current_type}_extra"] = extra
+                var_dict[f"{current_type}_output_name"] = output_name
+
+            var_dict['index'] = index
+            var_list.append(var_dict)
 
     # extra debugging information used for developer debugging only
     '''
@@ -2285,6 +2402,8 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
             config.logger.debug(" fcst_thresh:"+str(v['fcst_thresh']))
         if 'fcst_extra' in v.keys():
             config.logger.debug(" fcst_extra:"+v['fcst_extra'])
+        if 'fcst_output_name' in v.keys():
+            config.logger.debug(" fcst_output_name:"+v['fcst_output_name'])
         if 'obs_name' in v.keys():
             config.logger.debug(" obs_name:"+v['obs_name'])
             config.logger.debug(" obs_level:"+v['obs_level'])
@@ -2292,6 +2411,8 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
             config.logger.debug(" obs_thresh:"+str(v['obs_thresh']))
         if 'obs_extra' in v.keys():
             config.logger.debug(" obs_extra:"+v['obs_extra'])
+        if 'obs_output_name' in v.keys():
+            config.logger.debug(" obs_output_name:"+v['obs_output_name'])
         if 'ens_name' in v.keys():
             config.logger.debug(" ens_name:"+v['ens_name'])
             config.logger.debug(" ens_level:"+v['ens_level'])
@@ -2299,8 +2420,48 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
             config.logger.debug(" ens_thresh:"+str(v['ens_thresh']))
         if 'ens_extra' in v.keys():
             config.logger.debug(" ens_extra:"+v['ens_extra'])
+        if 'ens_output_name' in v.keys():
+            config.logger.debug(" ens_output_name:"+v['ens_output_name'])
     '''
     return sorted(var_list, key=lambda x: x['index'])
+
+def sub_var_info(var_info, time_info):
+    if not var_info:
+        return {}
+
+    out_var_info = {}
+    for key, value in var_info.items():
+        if isinstance(value, list):
+            out_value = []
+            for item in value:
+                out_value.append(do_string_sub(item,
+                                               skip_missing_tags=True,
+                                               **time_info))
+        else:
+            out_value = do_string_sub(value,
+                                      skip_missing_tags=True,
+                                      **time_info)
+
+        out_var_info[key] = out_value
+
+    return out_var_info
+
+def sub_var_list(var_list, time_info):
+    """! Perform string substitution on var list values with time info
+
+        @param var_list list of field info to substitute values into
+        @param time_info dictionary containing time information
+        @returns var_list with values substituted
+    """
+    if not var_list:
+        return []
+
+    out_var_list = []
+    for var_info in var_list:
+        out_var_info = sub_var_info(var_info, time_info)
+        out_var_list.append(out_var_info)
+
+    return out_var_list
 
 def split_level(level):
     level_type = ""
@@ -2610,7 +2771,7 @@ def expand_int_string_to_list(int_string):
     """! Expand string into a list of integer values. Items are separated by
     commas. Items that are formatted X-Y will be expanded into each number
     from X to Y inclusive. If the string ends with +, then add a str '+'
-    to the end of the list. Used in ci/jobs/get_use_case_commands.py
+    to the end of the list. Used in .github/jobs/get_use_case_commands.py
 
     @param int_string String containing a comma-separated list of integers
     @returns List of integers and potentially '+' as the last item
@@ -2639,7 +2800,7 @@ def expand_int_string_to_list(int_string):
 
     if hasPlus:
         subset_list.append('+')
-    print(f"{int_string} converted to {subset_list}")
+
     return subset_list
 
 def subset_list(full_list, subset_definition):
@@ -2737,3 +2898,20 @@ def netcdf_has_var(file_path, name, level):
 
     except (AttributeError, OSError, ImportError):
         return False
+
+def generate_tmp_filename():
+    import random
+    import string
+    random_string = ''.join(random.choice(string.ascii_letters)
+                            for i in range(10))
+    return f"metplus_tmp_{random_string}"
+
+def format_level(level):
+    """! Format level string to prevent NetCDF level values from creating
+         filenames and field names with bad characters. Replaces '*' with 'all'
+         and ',' with '_'
+
+        @param level string of level to format
+        @returns formatted string
+    """
+    return level.replace('*', 'all').replace(',', '_')

@@ -44,12 +44,18 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_FCST_FIELD',
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_OBS_FIELD',
-        'METPLUS_CLIMO_MEAN_FILE',
-        'METPLUS_CLIMO_STDEV_FILE',
+        'METPLUS_CLIMO_MEAN_DICT',
+        'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_BLOCK_SIZE',
         'METPLUS_VLD_THRESH',
         'METPLUS_CTS_LIST',
         'METPLUS_STAT_LIST',
+    ]
+
+    # handle deprecated env vars used pre v4.0.0
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'CLIMO_MEAN_FILE',
+        'CLIMO_STDEV_FILE',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -172,6 +178,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             # used in CommandBuilder.find_data function)
             self.handle_file_window_variables(c_dict, dtypes=['BOTH'])
 
+            prob_thresh = self.config.getstr('config','BOTH_SERIES_ANALYSIS_PROB_THRESH','')
+            c_dict['FCST_PROB_THRESH'] = prob_thresh
+            c_dict['OBS_PROB_THRESH'] = prob_thresh
+
         # if BOTH is not set, both FCST or OBS must be set
         else:
             if (not c_dict['FCST_INPUT_TEMPLATE'] or
@@ -184,6 +194,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             # set *_WINDOW_* variables for FCST and OBS
             self.handle_file_window_variables(c_dict, dtypes=['FCST', 'OBS'])
+
+            c_dict['FCST_PROB_THRESH'] = (
+                    self.config.getstr('config','FCST_SERIES_ANALYSIS_PROB_THRESH','')
+            )
+
+            c_dict['OBS_PROB_THRESH'] = (
+                    self.config.getstr('config','OBS_SERIES_ANALYSIS_PROB_THRESH','')
+            )
 
         c_dict['TC_STAT_INPUT_DIR'] = (
             self.config.getdir('SERIES_ANALYSIS_TC_STAT_INPUT_DIR', '')
@@ -216,9 +234,9 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                                 False)
         )
 
-        c_dict['VAR_LIST'] = util.parse_var_list(self.config,
-                                                 met_tool=self.app_name)
-        if not c_dict['VAR_LIST']:
+        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
+                                                      met_tool=self.app_name)
+        if not c_dict['VAR_LIST_TEMP']:
             self.log_error("No fields specified. Please set "
                            "[FCST/OBS]_VAR<n>_[NAME/LEVELS]")
 
@@ -252,7 +270,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                            "if SERIES_ANALYSIS_RUN_ONCE_PER_STORM_ID is True")
 
         # get climatology config variables
-        self.read_climo_wrapper_specific('SERIES_ANALYSIS', c_dict)
+        self.handle_climo_dict()
 
         # if no forecast lead sequence is specified,
         # use wildcard (*) so all leads are used
@@ -363,6 +381,12 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         if not storm_list:
             return False
 
+        # perform string substitution on var list
+        self.c_dict['VAR_LIST'] = (
+            util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                              time_info)
+        )
+
         # loop over storm list and process for each
         # this loop will execute once if not filtering by storm ID
         for storm_id in storm_list:
@@ -417,7 +441,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # Now that we have the filter filename for the init time, let's
         # extract all the storm ids in this filter file.
-        storm_list = util.get_storm_ids(filter_file, self.logger)
+        storm_list = util.get_storm_ids(filter_file)
         if not storm_list:
             # No storms for this init time, check next init time in list
             self.logger.debug("No storms found for current runtime")
@@ -696,8 +720,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         time_info['fcst_beg'] = beg
         time_info['fcst_end'] = end
 
-        self.handle_climo(time_info)
-
         # build the command and run series_analysis for each variable
         for var_info in self.c_dict['VAR_LIST']:
             if self.c_dict['USING_BOTH']:
@@ -748,9 +770,6 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
                          self.c_dict.get('FCST_FIELD', ''))
         self.add_env_var("OBS_FIELD",
                          self.c_dict.get('OBS_FIELD', ''))
-
-        # set climatology environment variables
-        self.set_climo_env_vars()
 
         # set old env var settings for backwards compatibility
         self.add_env_var('MODEL', self.c_dict.get('MODEL', ''))

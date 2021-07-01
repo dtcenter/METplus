@@ -58,10 +58,6 @@ def main():
     is_release = any(['release' in arg for arg in sys.argv])
     skip_doxygen = any(['skip-doxygen' in arg for arg in sys.argv])
 
-    build_pdf = os.environ.get('METPLUS_DOC_PDF')
-    if build_pdf:
-        print("PDF output enabled")
-
     # check if sphinx_gallery module is available and error/exit if not
     sphinx_gallery_spec = importlib.util.find_spec("sphinx_gallery")
     if sphinx_gallery_spec is None:
@@ -107,7 +103,7 @@ def main():
                                'run')
 
     # run make to generate the documentation files
-    run_command(f"make clean html {'pdf' if build_pdf else ''}",
+    run_command(f"make clean html",
                 docs_dir)
 
     if not skip_doxygen:

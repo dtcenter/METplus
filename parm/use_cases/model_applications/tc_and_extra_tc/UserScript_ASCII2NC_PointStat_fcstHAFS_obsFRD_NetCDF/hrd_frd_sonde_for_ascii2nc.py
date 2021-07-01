@@ -10,7 +10,6 @@
 #
 ########################################################################
 
-from __future__ import print_function
 import re
 import os
 import sys
@@ -32,7 +31,7 @@ else:
 # Empty object
 my_data = pd.DataFrame()
 
-for filename in os.listdir(input_dir):
+for filename in sorted(os.listdir(input_dir)):
    input_file = os.path.join(input_dir, filename)
 
    # Open file

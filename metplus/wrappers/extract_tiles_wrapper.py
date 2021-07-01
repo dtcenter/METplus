@@ -11,17 +11,43 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 from datetime import datetime
+import re
 
 from ..util import met_util as util
-from ..util import do_string_sub
+from ..util import do_string_sub, ti_calculate
 from .regrid_data_plane_wrapper import RegridDataPlaneWrapper
 from . import CommandBuilder
-from ..util import time_util
 
 class ExtractTilesWrapper(CommandBuilder):
     """! Takes tc-pairs data and regrids paired data to an n x m grid as
          specified in the config file.
     """
+    COLUMNS_OF_INTEREST = {
+        'TC_STAT': [
+            'INIT',
+            'LEAD',
+            'VALID',
+            'ALAT',
+            'ALON',
+            'BLAT',
+            'BLON',
+            'AMODEL',
+        ],
+        'MTD': [
+            'OBJECT_CAT',
+            'OBJECT_ID',
+            'CENTROID_LAT',
+            'CENTROID_LON',
+            'FCST_LEAD',
+            'FCST_VALID',
+            'MODEL',
+        ]
+    }
+
+    SORT_COLUMN = {
+        'TC_STAT': 'STORM_ID',
+        'MTD': 'OBJECT_CAT',
+    }
 
     def __init__(self, config, instance=None, config_overrides={}):
         self.app_name = 'extract_tiles'
@@ -51,9 +77,43 @@ class ExtractTilesWrapper(CommandBuilder):
                                'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE',
                                '')
         )
+        # get MTD data dir/template to read
+        c_dict['MTD_INPUT_DIR'] = (
+            self.config.getdir('EXTRACT_TILES_MTD_INPUT_DIR', '')
+        )
+
+        c_dict['MTD_INPUT_TEMPLATE'] = (
+            self.config.getraw('filename_templates',
+                               'EXTRACT_TILES_MTD_INPUT_TEMPLATE',
+                               '')
+        )
+
+        # determine which location input to use: TCStat or MTD
+        # TC_STAT template is not set
         if not c_dict['TC_STAT_INPUT_TEMPLATE']:
-            self.log_error('Must set EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE '
-                           'to run ExtractTiles wrapper')
+            # neither are set
+            if not c_dict['MTD_INPUT_TEMPLATE']:
+                self.log_error('Must set '
+                               'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE '
+                               'or EXTRACT_TILES_MTD_INPUT_TEMPLATE '
+                               'to run ExtractTiles wrapper')
+            # MTD is set only
+            else:
+                c_dict['LOCATION_INPUT'] = 'MTD'
+        # TC_STAT is set
+        else:
+            # both are set
+            if c_dict['MTD_INPUT_TEMPLATE']:
+                self.log_error('Cannot set both '
+                               'EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE '
+                               'and EXTRACT_TILES_MTD_INPUT_TEMPLATE '
+                               'to run ExtractTiles wrapper')
+            # TC_STAT is set only
+            else:
+                c_dict['LOCATION_INPUT'] = 'TC_STAT'
+
+        if not c_dict.get('LOCATION_INPUT'):
+            self.log_error("Could not determine location input type")
 
         # get gridded input/output directory/template to read
         for data_type in ['FCST', 'OBS']:
@@ -92,6 +152,8 @@ class ExtractTilesWrapper(CommandBuilder):
         c_dict['LON_ADJ'] = self.config.getfloat('config',
                                                  'EXTRACT_TILES_LON_ADJ')
 
+        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(self.config,
+                                                      met_tool=self.app_name)
         return c_dict
 
     def regrid_data_plane_init(self):
@@ -136,108 +198,188 @@ class ExtractTilesWrapper(CommandBuilder):
             @param input_dict dictionary containing initialization time
         """
 
-        # loop over custom loop list. If not defined,
-        # it will run once with an empty string as the custom string
-        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
+        # loop of forecast leads and process each
+        lead_seq = util.get_lead_sequence(self.config, input_dict)
+        for lead in lead_seq:
+            input_dict['lead'] = lead
 
-            input_dict['custom'] = custom_string
-            self.run_at_time_loop_string(input_dict)
+            # set current lead time config and environment variables
+            time_info = ti_calculate(input_dict)
 
-    def run_at_time_loop_string(self, input_dict):
+            self.logger.info(
+                f"Processing forecast lead {time_info['lead_string']}"
+            )
+
+            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                self.logger.debug('Skipping run time')
+                continue
+
+            # loop over custom loop list. If not defined,
+            # it will run once with an empty string as the custom string
+            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+                if custom_string:
+                    self.logger.info(
+                        f"Processing custom string: {custom_string}"
+                    )
+
+                time_info['custom'] = custom_string
+                self.run_at_time_loop_string(time_info)
+
+    def run_at_time_loop_string(self, time_info):
         """!Read TCPairs track data into TCStat to filter the data. Using the
             resulting track data, run RegridDataPlane on the model data to
             create tiles centered on the storm.
 
             @param input_dict dictionary containing initialization time
         """
-
-        # Calculate other time information from available time info
-        time_info = time_util.ti_calculate(input_dict)
-
         self.logger.debug("Begin extract tiles")
-        init_fmt = time_info['init'].strftime('%Y%m%d_%H')
-
-        # Create the name of the filter file to use
-        filter_filename = (
-            do_string_sub(self.c_dict['TC_STAT_INPUT_TEMPLATE'],
-                          **time_info)
-        )
-        filter_path = os.path.join(self.c_dict['TC_STAT_INPUT_DIR'],
-                                   filter_filename)
-
-        self.logger.debug(f"Looking for input stat file: {filter_path}")
-        if not os.path.exists(filter_path):
-            self.log_error(f"Could not find input stat file: {filter_path}")
+        location_input = self.c_dict.get('LOCATION_INPUT')
+        input_path = self.get_location_input_file(time_info, location_input)
+        if not input_path:
             return
 
-        # Now get unique storm ids from the filter file
-        # store list of lines from tcst file for each storm_id as the value
-        storm_dict = util.get_storms(filter_path)
-
+        # get unique storm ids or object cats from the input file
+        # store list of lines from tcst/mtd file for each ID as the value
+        storm_dict = util.get_storms(
+            input_path,
+            sort_column=self.SORT_COLUMN[location_input]
+        )
         if not storm_dict:
             # No storms found for init time, init_fmt
-            self.logger.debug(f"No storms were found for {init_fmt}"
+            self.logger.debug("No storms were found for "
+                              f"{time_info['init'].strftime('%Y%m%d_%H')}"
                               "...continue to next in list")
             return
 
         # get indices of values from header
-        idx_dict = self.get_header_indices(storm_dict['header'])
+        idx_dict = self.get_header_indices(storm_dict['header'],
+                                           location_input)
 
+        if location_input == 'MTD':
+            self.use_mtd_input(storm_dict, idx_dict)
+        else:
+            self.use_tc_stat_input(storm_dict, idx_dict)
+
+        util.prune_empty(self.c_dict['OUTPUT_DIR'], self.logger)
+
+    def use_tc_stat_input(self, storm_dict, idx_dict):
+        """! Find storms in TCStat input file and create tiles using the storm.
+
+         @param input_path path to TCStat file to process
+         @param idx_dict dictionary with header names as keys and the index
+          of those names as values.
+        """
         # Create tiles for each storm in the storm_dict dictionary
         for storm_id, storm_lines in storm_dict.items():
             if storm_id == 'header':
                 continue
 
-            self.create_tiles_from_storm(storm_id,
-                                         storm_lines,
-                                         idx_dict)
+            # loop over storm track
+            for storm_line in storm_lines:
+                track_data = {}
+                storm_data = self.get_data_from_track_line(idx_dict,
+                                                           storm_line)
+                track_data['FCST'] = storm_data
+                track_data['OBS'] = storm_data
 
-        util.prune_empty(self.c_dict['OUTPUT_DIR'], self.logger)
+                time_info = self.set_time_info_from_track_data(storm_data,
+                                                               storm_id)
+                self.call_regrid_data_plane(time_info, track_data, 'TC_STAT')
 
-    def create_tiles_from_storm(self, storm_id, storm_lines, idx_dict):
-        """! Run RegridDataPlane to create a tile for forecast and observation
-            data for each storm track point
+    def use_mtd_input(self, object_dict, idx_dict):
+        """! Find lat/lons in MTD input file and create tiles from locations.
 
-            Args:
-                @param storm_id value from STORM_ID column to process
-                @param storm_lines Each line from tcst file for given storm id
-                @param idx_dict dictionary of indices for each header value
+         @param input_path path to MTD file to process
+         @param idx_dict dictionary with header names as keys and the index
+          of those names as values.
         """
+        indices = self.get_object_indices(object_dict.keys())
+        if not indices:
+            self.log_error(f"No non-zero OBJECT_CAT found")
+            return
 
-        # loop over storm track
-        for storm_line in storm_lines:
-            storm_data = self.get_storm_data_from_track_line(idx_dict,
-                                                             storm_line)
+        # loop over corresponding CF### and CO### lines
+        for index in indices:
 
-            time_info = self.set_time_info_from_storm_data(storm_id,
-                                                           storm_data)
+            fcst_lines = object_dict[f'CF{index}']
+            obs_lines = object_dict[f'CO{index}']
+            track_data = {}
+            for fcst_line, obs_line in zip(fcst_lines, obs_lines):
+                track_data['FCST'] = self.get_data_from_track_line(idx_dict,
+                                                                   fcst_line)
+                track_data['OBS'] = self.get_data_from_track_line(idx_dict,
+                                                                  obs_line)
 
-            # set var list from config using time info
-            var_list = util.parse_var_list(self.config,
-                                           time_info,
-                                           met_tool=self.app_name)
+                # only use lines where OBJECT_ID == OBJECT_CAT
+                if (not self.object_id_equals_cat(track_data['FCST']) or
+                        not self.object_id_equals_cat(track_data['OBS'])):
+                    continue
 
-            # set output grid and run for the forecast and observation data
-            for dtype in ['FCST', 'OBS']:
-                self.regrid_data_plane.c_dict['VERIFICATION_GRID'] = (
-                    self.get_grid(dtype, storm_data)
+                time_info = (
+                    self.set_time_info_from_track_data(track_data['FCST'])
                 )
-
-                # run RegridDataPlane wrapper
-                ret = self.regrid_data_plane.run_at_time_once(time_info,
-                                                              var_list,
-                                                              data_type=dtype)
-                self.all_commands.extend(self.regrid_data_plane.all_commands)
-                self.regrid_data_plane.all_commands.clear()
-
-                # if RegridDataPlane failed to run for FCST, skip OBS
-                if not ret:
-                    break
+                self.call_regrid_data_plane(time_info, track_data, 'MTD')
 
     @staticmethod
-    def get_header_indices(header_line):
+    def object_id_equals_cat(track_line):
+        return track_line['OBJECT_CAT'] == track_line['OBJECT_ID']
+
+    def get_location_input_file(self, time_info, input_type):
+        """! Get the name of the filter file to use.
+
+          @param time_info dictionary containing time information
+          @param input_type type of input to read: TC_STAT or MTD
+          @returns file path if found or None if not
+        """
+        input_path = os.path.join(self.c_dict[f'{input_type}_INPUT_DIR'],
+                                  self.c_dict[f'{input_type}_INPUT_TEMPLATE'])
+        input_path = do_string_sub(input_path,
+                                   **time_info)
+
+        self.logger.debug(f"Looking for {input_type} file: {input_path}")
+        if not os.path.exists(input_path):
+            self.log_error(f"Could not find {input_type} file: {input_path}")
+            return None
+
+        return input_path
+
+    @staticmethod
+    def get_object_indices(object_cats):
+        indices = set()
+        for key in object_cats:
+            match = re.match(r'CF(\d+)', key)
+            if match:
+                indices.add(match.group(1))
+
+        indices = sorted(list(indices))
+        # if no indices were found or there is 1 and it is zero, return None
+        if not indices or (len(indices) == 1 and int(indices[0]) == 0):
+            return None
+
+        return indices
+
+
+    def call_regrid_data_plane(self, time_info, track_data, input_type):
+        # set var list from config using time info
+        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                                     time_info)
+
+        for data_type in ['FCST', 'OBS']:
+            grid = self.get_grid(data_type, track_data[data_type],
+                                 input_type)
+
+            self.regrid_data_plane.c_dict['VERIFICATION_GRID'] = grid
+
+            # run RegridDataPlane wrapper
+            ret = self.regrid_data_plane.run_at_time_once(time_info,
+                                                          var_list,
+                                                          data_type=data_type)
+            self.all_commands.extend(self.regrid_data_plane.all_commands)
+            self.regrid_data_plane.all_commands.clear()
+            if not ret:
+                break
+
+    def get_header_indices(self, header_line, input_type='TC_STAT'):
         """! get indices of values from header line
 
         @param header_line first line in tcst file
@@ -246,61 +388,65 @@ class ExtractTilesWrapper(CommandBuilder):
         """
         header = header_line.split()
         idx = {}
-        for column_name in ['INIT',
-                            'LEAD',
-                            'VALID',
-                            'INIT',
-                            'ALAT',
-                            'ALON',
-                            'BLAT',
-                            'BLON',
-                            'AMODEL',
-                            ]:
+        for column_name in self.COLUMNS_OF_INTEREST[input_type]:
             idx[column_name] = header.index(column_name)
 
         return idx
 
     @staticmethod
-    def get_storm_data_from_track_line(idx_dict, storm_line):
+    def get_data_from_track_line(idx_dict, track_line):
         """! Read line from storm track and populate a dictionary with the
         relevant items
 
         @param idx_dict dictionary where key is column name and value is the
         index of that column
-        @param storm_line line from tcst storm track file to parse
+        @param track_line line from tcst storm track file to parse
         @returns dictionary containing storm data where key is column name and
         value is the value extracted from the appropriate column of the line
         """
-        storm_data = {}
-        columns = storm_line.split()
+        track_data = {}
+        columns = track_line.split()
         for column_id, index in idx_dict.items():
-            storm_data[column_id] = columns[index]
+            track_data[column_id] = columns[index]
 
-        return storm_data
+        return track_data
 
     @staticmethod
-    def set_time_info_from_storm_data(storm_id, storm_data):
+    def set_time_info_from_track_data(storm_data, storm_id=None):
         """! Set time_info dictionary using init, lead, amodel, and storm ID
-        that was extracted from the storm data
+        (if set) that was extracted from the track data
 
-        @param storm_id ID of current storm
-        @param storm_data dictionary of data from a single storm line
-        @returns time info dictionary with time, amodel, and storm_id set
+        @param storm_data dictionary of data from a single track line
+        @param storm_id (optional) ID of current storm
+        @returns time info dictionary with time, amodel, and (maybe) storm_id
         """
-        init_dt = datetime.strptime(storm_data['INIT'], '%Y%m%d_%H%M%S')
-        lead_hours = storm_data['LEAD'][:-4]
-        input_dict = {'init': init_dt,
-                      'lead_hours': lead_hours,
-                      }
-        time_info = time_util.ti_calculate(input_dict)
+        input_dict = {}
+
+        # read forecast lead from LEAD (TC_STAT) or FCST_LEAD (MTD)
+        lead = storm_data.get('LEAD',
+                              storm_data.get('FCST_LEAD'))
+        if lead:
+            input_dict['lead_hours'] = lead[:-4]
+
+        # read valid time from VALID (TC_STAT) or FCST_VALID (MTD)
+        valid = storm_data.get('VALID',
+                               storm_data.get('FCST_VALID'))
+        if valid:
+            valid_dt = datetime.strptime(valid, '%Y%m%d_%H%M%S')
+            input_dict['valid'] = valid_dt
+
+        time_info = ti_calculate(input_dict)
 
         # add amodel to time_info dictionary for substitution
-        time_info['amodel'] = storm_data['AMODEL']
-        time_info['storm_id'] = storm_id
+        # use AMODEL (TC_STAT) or MODEL (MTD)
+        time_info['amodel'] = storm_data.get('AMODEL',
+                                             storm_data.get('MODEL', ''))
+        if storm_id:
+            time_info['storm_id'] = storm_id
 
         return time_info
 
-    def get_grid(self, data_type, storm_data):
+    def get_grid(self, data_type, storm_data, input_type='TC_STAT'):
         """! Call get_grid_info based on the data type, extracting the
         appropriate lat/lon data from the storm data
 
@@ -309,18 +455,23 @@ class ExtractTilesWrapper(CommandBuilder):
         track line. Extract ALAT/ALON for FCST data and BLAT/BLON for OBS
         @returns grid info string or None if invalid data type is provided
         """
-        if data_type == 'FCST':
-            return self.get_grid_info(storm_data['ALAT'],
-                                      storm_data['ALON'],
-                                      data_type)
-        if data_type == 'OBS':
-            return self.get_grid_info(storm_data['BLAT'],
-                                      storm_data['BLON'],
-                                      data_type)
+        if input_type == 'MTD':
+            lat = 'CENTROID_LAT'
+            lon = 'CENTROID_LON'
+        elif data_type == 'FCST':
+            lat = 'ALAT'
+            lon = 'ALON'
+        elif data_type == 'OBS':
+            lat = 'BLAT'
+            lon = 'BLON'
+        else:
+            self.log_error("Invalid data type provided to get_grid: "
+                           f"{data_type}")
+            return None
 
-        self.log_error("Invalid data type provided to get_grid: "
-                       f"{data_type}")
-        return None
+        return self.get_grid_info(storm_data[lat],
+                                  storm_data[lon],
+                                  data_type)
 
     def get_grid_info(self, lat, lon, data_type):
         """! Create the grid specification string with the format:
@@ -345,8 +496,9 @@ class ExtractTilesWrapper(CommandBuilder):
         lon0 = str(util.round_0p5(adj_lon))
         lat0 = str(util.round_0p5(adj_lat))
 
-        self.logger.debug(f'{data_type} lat: {lat} => {lat0}, '
-                          f'lon: {lon} => {lon0}')
+        self.logger.debug(f'{data_type} '
+                          f'lat: {lat} (track lat) => {lat0} (lat lower left), '
+                          f'lon: {lon} (track lon) => {lon0} (lon lower left)')
 
         grid_def = f"latlon {nlat} {nlon} {lat0} {lon0} {dlat} {dlon}"
 

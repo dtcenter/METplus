@@ -50,10 +50,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_OBS_ERROR_FLAG',
         'METPLUS_ENS_SSVAR_BIN_SIZE',
         'METPLUS_ENS_PHIST_BIN_SIZE',
-        'METPLUS_CLIMO_MEAN_FILE',
-        'METPLUS_CLIMO_MEAN_DAY_INTERVAL',
-        'METPLUS_CLIMO_MEAN_HOUR_INTERVAL',
-        'METPLUS_CLIMO_STDEV_FILE',
+        'METPLUS_CLIMO_MEAN_DICT',
+        'METPLUS_CLIMO_STDEV_DICT',
         'METPLUS_CLIMO_CDF_DICT',
         'METPLUS_OBS_WINDOW_DICT',
         'METPLUS_MASK_GRID',
@@ -63,6 +61,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_OUTPUT_FLAG_DICT',
         'METPLUS_ENSEMBLE_FLAG_DICT',
         'METPLUS_OUTPUT_PREFIX',
+    ]
+
+    # handle deprecated env vars used pre v4.0.0
+    DEPRECATED_WRAPPER_ENV_VAR_KEYS = [
+        'CLIMO_MEAN_FILE',
+        'CLIMO_STDEV_FILE',
     ]
 
     OUTPUT_FLAGS = ['ecnt',
@@ -192,7 +196,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         )
 
         # get climatology config variables
-        self.read_climo_wrapper_specific('ENSEMBLE_STAT', c_dict)
+        self.handle_climo_dict()
 
         # need to set these so that find_data will succeed
         c_dict['OBS_POINT_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
@@ -266,14 +270,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                                  'ENSEMBLE_STAT_OBS_ERROR_FLAG',
                                  'flag',
                                  'METPLUS_OBS_ERROR_FLAG')
-        self.set_met_config_int(self.env_var_dict,
-                                'ENSEMBLE_STAT_CLIMO_MEAN_DAY_INTERVAL',
-                                'day_interval',
-                                'METPLUS_CLIMO_MEAN_DAY_INTERVAL')
-        self.set_met_config_int(self.env_var_dict,
-                                'ENSEMBLE_STAT_CLIMO_MEAN_HOUR_INTERVAL',
-                                'hour_interval',
-                                'METPLUS_CLIMO_MEAN_HOUR_INTERVAL')
         self.set_met_config_list(self.env_var_dict,
                                  'ENSEMBLE_STAT_MASK_GRID',
                                  'grid',
@@ -314,6 +310,19 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # signifies that the tool can be run without setting
         # field information for fcst and obs
         c_dict['VAR_LIST_OPTIONAL'] = True
+
+        # parse var list for ENS fields
+        c_dict['ENS_VAR_LIST_TEMP'] = util.parse_var_list(
+            self.config,
+            data_type='ENS',
+            met_tool=self.app_name
+        )
+
+        # parse optional var list for FCST and/or OBS fields
+        c_dict['VAR_LIST_TEMP'] = util.parse_var_list(
+            self.config,
+            met_tool=self.app_name
+        )
 
         return c_dict
 
@@ -387,47 +396,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         )
         self.env_var_dict['METPLUS_NBRHD_PROB_DICT'] = nbrhd_prob
 
-    def handle_interp_dict(self):
-        tmp_dict = {}
-        self.set_met_config_string(tmp_dict,
-                                   'ENSEMBLE_STAT_INTERP_FIELD',
-                                   'field',
-                                   'INTERP_FIELD',
-                                   remove_quotes=True)
-        self.set_met_config_float(tmp_dict,
-                                  'ENSEMBLE_STAT_INTERP_VLD_THRESH',
-                                  'vld_thresh',
-                                  'INTERP_VLD_THRESH')
-        self.set_met_config_string(tmp_dict,
-                                   'ENSEMBLE_STAT_INTERP_SHAPE',
-                                   'shape',
-                                   'INTERP_SHAPE',
-                                   remove_quotes=True)
-        self.set_met_config_string(tmp_dict,
-                                   'ENSEMBLE_STAT_INTERP_METHOD',
-                                   'method',
-                                   'INTERP_METHOD',
-                                   remove_quotes=True)
-        self.set_met_config_int(tmp_dict,
-                                'ENSEMBLE_STAT_INTERP_WIDTH',
-                                'width',
-                                'INTERP_WIDTH')
-
-        tmp_dict['INTERP_TYPE'] = self.format_met_config_type(tmp_dict,
-                                                              'interp')
-
-
-        interp = (
-            self.format_met_config_dict(tmp_dict,
-                                        'interp',
-                                        ['INTERP_FIELD',
-                                         'INTERP_VLD_THRESH',
-                                         'INTERP_SHAPE',
-                                         'INTERP_TYPE',
-                                        ])
-        )
-        self.env_var_dict['METPLUS_INTERP_DICT'] = interp
-
     def format_met_config_type(self, c_dict, dict_name):
         """! Format type item for MET config
 
@@ -461,10 +429,12 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.infiles.append(fcst_file_list)
 
         # parse var list for ENS fields
-        ensemble_var_list = util.parse_var_list(self.config, time_info, data_type='ENS')
+        ensemble_var_list = util.sub_var_list(self.c_dict['ENS_VAR_LIST_TEMP'],
+                                              time_info)
 
         # parse optional var list for FCST and/or OBS fields
-        var_list = util.parse_var_list(self.config, time_info, met_tool=self.app_name)
+        var_list = util.sub_var_list(self.c_dict['VAR_LIST_TEMP'],
+                                     time_info)
 
         # if empty var list for FCST/OBS, use None as first var, else use first var in list
         if not var_list:
@@ -650,9 +620,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         # CURRENT_[FCST/OBS]_[NAME/LEVEL] is substituted correctly
         self.add_env_var('VERIF_MASK',
                          self.c_dict.get('VERIFICATION_MASK', ''))
-
-        # set climatology environment variables
-        self.set_climo_env_vars()
 
         # support old method of setting variables in MET config files
         self.add_env_var('ENS_THRESH',
