@@ -147,19 +147,22 @@ class TCPairsWrapper(CommandBuilder):
 
         self.handle_consensus()
 
-        init_time_fmt = self.config.getstr('config', 'INIT_TIME_FMT')
         clock_time = datetime.datetime.strptime(
             self.config.getstr('config',
                                'CLOCK_TIME'),
             '%Y%m%d%H%M%S'
         )
 
-        init_beg = self.config.getraw('config', 'INIT_BEG')
-        init_beg_dt = util.get_time_obj(init_beg,
-                                        init_time_fmt,
-                                        clock_time,
-                                        logger=self.logger)
-        c_dict['INIT_BEG'] = init_beg_dt.strftime('%Y%m%d_%H%M%S')
+        init_beg = self.config.getraw('config', 'INIT_BEG', '')
+        init_time_fmt = self.config.getstr('config', 'INIT_TIME_FMT', '')
+        if not init_beg or not init_time_fmt:
+            self.log_error('INIT_BEG and INIT_TIME_FMT must be set')
+        else:
+            init_beg_dt = util.get_time_obj(init_beg,
+                                            init_time_fmt,
+                                            clock_time,
+                                            logger=self.logger)
+            c_dict['INIT_BEG'] = init_beg_dt.strftime('%Y%m%d_%H%M%S')
 
         c_dict['INIT_INCLUDE'] = util.getlist(
             self.get_wrapper_or_generic_config('INIT_INCLUDE')
@@ -175,10 +178,14 @@ class TCPairsWrapper(CommandBuilder):
                 self.config.getdir('TC_PAIRS_BDECK_INPUT_DIR', '')
         c_dict['EDECK_DIR'] = \
                 self.config.getdir('TC_PAIRS_EDECK_INPUT_DIR', '')
-        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_PAIRS_OUTPUT_DIR')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_PAIRS_OUTPUT_DIR', '')
+        if not c_dict['OUTPUT_DIR']:
+            self.log_error('TC_PAIRS_OUTPUT_DIR must be set')
+
         c_dict['READ_ALL_FILES'] = (
             self.config.getbool('config',
-                                'TC_PAIRS_READ_ALL_FILES')
+                                'TC_PAIRS_READ_ALL_FILES',
+                                False)
         )
 
         # get list of models to process
