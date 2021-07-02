@@ -6,7 +6,7 @@ Model Evaluation Tools Plus (METplus) Repository
 [![Docs](https://img.shields.io/badge/Documentation-latest-brightgreen.svg)](https://metplus.readthedocs.io)
 
 Welcome to the METplus GitHub repository hosted to the community through
-the Developmental Testbed Center (DTC).
+the Developmental Testbed Center (DTC). Test
 
 METplus is a Python scripting infrastructure around the MET verification tools
 (and eventually METViewer, a tool used for plotting MET output verification statistics).
