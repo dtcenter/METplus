@@ -126,9 +126,9 @@ met_tool_wrapper/MODE/MODE.conf
 #
 #   * MODEToolUseCase
 #   * DiagnosticsUseCase
-
+#
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
-## sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-MODE.png'
+# sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-MODE.png'
 #
