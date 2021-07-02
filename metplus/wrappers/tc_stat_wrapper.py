@@ -115,7 +115,9 @@ class TCStatWrapper(CommandBuilder):
         if not c_dict['LOOKIN_DIR']:
             self.log_error("TC_STAT_LOOKIN_DIR must be set")
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_STAT_OUTPUT_DIR')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_STAT_OUTPUT_DIR', '')
+        if not c_dict['OUTPUT_DIR']:
+            self.log_error("TC_STAT_OUTPUT_DIR must be set")
 
         c_dict['JOBS'] = getlist(self.config.getraw('config',
                                                     'TC_STAT_JOB_ARGS',
