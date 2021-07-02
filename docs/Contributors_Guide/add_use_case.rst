@@ -74,7 +74,7 @@ use case should have the following:
 * A METplus configuration file where the MET tool name follows PascalCase,
   e.g. GridStat.conf or ASCII2NC.conf.
   If the use case uses a Python embedding script, it should be
-  indicasted in the by adding "_python_embedding" to the MET tool name.
+  indicated by adding "_python_embedding" to the MET tool name.
   e.g. GridStat_python_embedding.conf
 
 If creating a new model applications use case, in the category sub-directory
