@@ -315,7 +315,7 @@ def test_mode_single_field(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = MODEWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -433,8 +433,23 @@ def test_config_synonyms(metplus_config, config_name, env_var_name,
     set_minimum_config_settings(config)
     config.set('config', config_name, in_value)
     wrapper = MODEWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
 
     expected_output = f'{met_name} = {out_value};'
     assert(wrapper.env_var_dict[env_var_name] == expected_output)
+
+def test_get_config_file(metplus_config):
+    fake_config_name = '/my/config/file'
+
+    config = metplus_config()
+    default_config_file = os.path.join(config.getdir('PARM_BASE'),
+                                       'met_config',
+                                       'MODEConfig_wrapped')
+
+    wrapper = MODEWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == default_config_file
+
+    config.set('config', 'MODE_CONFIG_FILE', fake_config_name)
+    wrapper = MODEWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name

@@ -188,7 +188,7 @@ def test_mtd_single(metplus_config):
     mw.c_dict['SINGLE_DATA_SRC'] = 'FCST'
     mw.c_dict['FCST_INPUT_DIR'] = fcst_dir
     mw.c_dict['FCST_INPUT_TEMPLATE'] = "{init?fmt=%Y%m%d}/{init?fmt=%Y%m%d}_i{init?fmt=%H}_f{lead?fmt=%.3H}_HRRRTLE_PHPT.grb2"
-    input_dict = {'init' : datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
+    input_dict = {'init': datetime.datetime.strptime("201705100300", '%Y%m%d%H%M') }
 
     mw.run_at_time(input_dict)
     single_list_file = os.path.join(mw.config.getdir('STAGING_DIR'), 'file_lists', '20170510040000_mtd_single_APCP.txt')
@@ -203,3 +203,18 @@ def test_mtd_single(metplus_config):
            single_list[1] == os.path.join(fcst_dir,'20170510', '20170510_i03_f002_HRRRTLE_PHPT.grb2') and
            single_list[2] == os.path.join(fcst_dir,'20170510', '20170510_i03_f003_HRRRTLE_PHPT.grb2')
            )
+
+def test_get_config_file(metplus_config):
+    fake_config_name = '/my/config/file'
+
+    config = metplus_config()
+    default_config_file = os.path.join(config.getdir('PARM_BASE'),
+                                       'met_config',
+                                       'MTDConfig_wrapped')
+
+    wrapper = MTDWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == default_config_file
+
+    config.set('config', 'MTD_CONFIG_FILE', fake_config_name)
+    wrapper = MTDWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name

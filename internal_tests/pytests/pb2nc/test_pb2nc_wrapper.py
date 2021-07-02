@@ -317,7 +317,7 @@ def test_pb2nc_all_fields(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = PB2NCWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -347,3 +347,18 @@ def test_pb2nc_all_fields(metplus_config, config_overrides,
             assert(match is not None)
             value = match.split('=', 1)[1]
             assert(env_var_values.get(env_var_key, '') == value)
+
+def test_get_config_file(metplus_config):
+    fake_config_name = '/my/config/file'
+
+    config = metplus_config()
+    default_config_file = os.path.join(config.getdir('PARM_BASE'),
+                                       'met_config',
+                                       'PB2NCConfig_wrapped')
+
+    wrapper = PB2NCWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == default_config_file
+
+    config.set('config', 'PB2NC_CONFIG_FILE', fake_config_name)
+    wrapper = PB2NCWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name

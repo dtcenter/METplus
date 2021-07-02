@@ -68,7 +68,7 @@ def test_read_storm_info(metplus_config, config_overrides, isOK):
         config.set('config', key, value)
 
     wrapper = TCPairsWrapper(config)
-    assert(wrapper.isOK == isOK)
+    assert wrapper.isOK == isOK
 
 @pytest.mark.parametrize(
     'storm_id,basin,cyclone', [
@@ -264,7 +264,7 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = TCPairsWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS:")
@@ -385,7 +385,7 @@ def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,
         env_var_values['METPLUS_INIT_END'] = f'init_end = "{run_times[-1]}";'
 
     wrapper = TCPairsWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -465,7 +465,7 @@ def test_tc_pairs_read_all_files(metplus_config, config_overrides,
         env_var_values['METPLUS_INIT_END'] = f'init_end = "{run_times[-1]}";'
 
     wrapper = TCPairsWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -491,3 +491,20 @@ def test_tc_pairs_read_all_files(metplus_config, config_overrides,
             print(f'Checking env var: {env_var_key}')
             actual_value = match.split('=', 1)[1]
             assert(env_var_values.get(env_var_key, '') == actual_value)
+
+def test_get_config_file(metplus_config):
+    fake_config_name = '/my/config/file'
+
+    config = metplus_config()
+    config.set('config', 'INIT_TIME_FMT', time_fmt)
+    config.set('config', 'INIT_BEG', run_times[0])
+    default_config_file = os.path.join(config.getdir('PARM_BASE'),
+                                       'met_config',
+                                       'TCPairsConfig_wrapped')
+
+    wrapper = TCPairsWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == default_config_file
+
+    config.set('config', 'TC_PAIRS_CONFIG_FILE', fake_config_name)
+    wrapper = TCPairsWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
