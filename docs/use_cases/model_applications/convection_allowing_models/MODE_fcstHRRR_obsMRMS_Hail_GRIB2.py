@@ -142,7 +142,7 @@ MODE_fcstHRRR_obsMRMS_Hail_GRIB2.conf
 #   * RegriddingInToolUseCase 
 #   * NOAAHWTOrgUseCase 
 #   * NCAROrgUseCase 
-#   * nDiagnosticsUseCase
+#   * DiagnosticsUseCase
 #
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
