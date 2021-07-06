@@ -3,9 +3,9 @@
 
 FROM conda/miniconda3-centos7
 
-# create conda environments
-RUN conda update -y -n base -c defaults conda \
- && conda create -y --name metplus_base python=3.6.8 \
- && conda install -y --name metplus_base -c conda-forge python-dateutil==2.8.1
+WORKDIR /scripts
+COPY scripts/metplus_base_env.sh .
+
+RUN ./metplus_base_env.sh
 
 RUN conda list --name metplus_base > /usr/local/envs/metplus_base/environments.yml

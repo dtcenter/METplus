@@ -4,6 +4,13 @@
 
 FROM conda/miniconda3-centos7
 
+WORKDIR /scripts
+COPY scripts/py_embed_base_env.sh .
+
+RUN ./py_embed_base_env.sh
+
+RUN conda list --name py_embed_base > /usr/local/envs/py_embed_base/environments.yml
+
 # create conda environments
 RUN conda update -y -n base -c defaults conda \
  && conda create -y --name py_embed_base python=3.6.8 \
