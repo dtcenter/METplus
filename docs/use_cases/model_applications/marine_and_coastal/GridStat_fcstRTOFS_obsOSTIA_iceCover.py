@@ -156,9 +156,14 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 # --------
 #
 # .. note::
-#    `GridStatToolUseCase <https://metplus.readthedocs.io/en/develop/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
-#    `PythonEmbeddingFileUseCase <https://metplus.readthedocs.io/en/develop/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
-#    `MarineAndCoastalAppUseCase <https://metplus.readthedocs.io/en/develop/search.html?q=MarineAndCoastalAppUseCase&check_keywords=yes&area=default>`_
+#
+#   * GridStatToolUseCase
+#   * PythonEmbeddingFileUseCase
+#   * MarineAndCoastalAppUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/marine_and_coastal-GridStat_fcstRTOFS_obsOSTIA_iceCover.png'
 #
