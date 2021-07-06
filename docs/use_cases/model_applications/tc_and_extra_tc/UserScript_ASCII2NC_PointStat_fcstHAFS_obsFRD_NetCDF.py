@@ -163,7 +163,7 @@ _NetCDF.conf
 #   * TCandExtraTCAppUseCase
 #   * UserScriptUseCase
 #   * PointStatToolUseCase
-#   * ASCII2NC
+#   * ASCII2NCToolUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
