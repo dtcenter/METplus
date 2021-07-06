@@ -142,13 +142,13 @@ Point2Grid_obsLSR_ObsOnly_PracticallyPerfect.conf
 #
 # .. note::
 #
-#   * ASCII2NC
-#   * Point2Gri
-#   * RegridDataPlane 
-#   * Python Embedding Ingest
-#   * Regridding in Tool 
-#   * NetCDF
-#   * Python Embedding 
+#   * ASCII2NCToolUseCase
+#   * Point2GridUseCase
+#   * RegridDataPlaneToolUseCase 
+#   * PyEmbedIngestToolUseCase
+#   * RegriddingInToolUseCase 
+#   * NetCDFFileUseCase
+#   * PythonEmbeddingFileUseCase 
 #   * ConvectionAllowingModelsAppUseCase
 #   * NCAROrgUseCase 
 #   * ProbabilityGenerationUseCase
