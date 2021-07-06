@@ -14,7 +14,6 @@
 # Conda environment to create
 ENV_NAME=py_embed_base
 
-conda update -y -n base -c defaults conda
 conda create -y --name ${ENV_NAME} python=3.6.8
 conda install -y --name ${ENV_NAME} -c conda-forge xarray==0.16.2
 conda install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.5.6

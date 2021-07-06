@@ -14,6 +14,5 @@
 # Conda environment to create
 ENV_NAME=metplus_base
 
-conda update -y -n base -c defaults conda
 conda create -y --name ${ENV_NAME} python=3.6.8
 conda install -y --name ${ENV_NAME} -c conda-forge python-dateutil==2.8.1
