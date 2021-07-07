@@ -37,7 +37,6 @@ setup(
     name="metplus",
     version=version,
     author="METplus",
-    author_email="met_help@ucar.edu",
     description="METplus Wrappers",
     long_description=long_description,
     long_description_content_type="text/markdown",
