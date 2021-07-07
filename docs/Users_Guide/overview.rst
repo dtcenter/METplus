@@ -108,7 +108,7 @@ Code support
 ============
 
 Support for METplus Wrappers is provided through the
-`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
 We will endeavor to respond to requests for
 help in a timely fashion. In addition, information about METplus
 Wrappers and tools that can be used with MET are provided on the
