@@ -29,8 +29,8 @@ for the modeling community to use and adapt. As users make upgrades and
 improvements to the tools, they are encouraged to offer those upgrades
 to the broader community by offering feedback to the developers or
 coordinating for a GitHub pull. For more information on contributing
-code to METplus Wrappers, please contact
-`met_help@ucar.edu <met_help@ucar.edu>`__.
+code to METplus Wrappers, please create a post in the
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
 
 Requirements
 ============

@@ -57,8 +57,9 @@ one of the following:
 * tc_and_extra_tc (Tropcial Cyclone and Extra Tropical Cyclone)
 
 If you feel that the new use case does not fall into any of these categories
-or are unsure which category is the most appropriate, please contact MET Help
-(met_help@ucar.edu).
+or are unsure which category is the most appropriate, please create a post in
+the 
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
 
 Use Case Content
 ----------------
@@ -468,7 +469,8 @@ METplus development team will have to complete the instructions in this
 section. Please let one of the team members know if this is the case.
 Comment on the GitHub issue associated with this use case and/or email the team
 member(s) you have been coordinating with for this work. If you are unsure who
-to contact, then please email MET Help (met_help@ucar.edu).
+to contact, please create a post in the
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
 
 Log into the DTC Web Server with SSH
 """"""""""""""""""""""""""""""""""""
@@ -891,7 +893,9 @@ went wrong in the previous instructions.
 .. figure:: figure/data_volume_not_found.png
 
 If this is the case and data should be found, repeat the instructions to stage
-the input data or contact MET Help (met_help@ucar.edu) for assistance.
+the input data or create a post in the
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
+for assistance.
 
 Verify that the use case ran successfully
 """""""""""""""""""""""""""""""""""""""""
