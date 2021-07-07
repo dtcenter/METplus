@@ -93,17 +93,16 @@ Future development plans
 
 METplus Wrappers is an evolving application. New capabilities are
 planned in controlled, successive version releases that are synchronized
-with MET releases. Bug fixes and user-identified problems will be
-addressed as they are found and posted to the known issues section of
-the
-`METplus Wrappers Users web page <https://dtcenter.org/community-code/model-evaluation-tools-met>`_.
-Future METplus Wrappers development plans are based on several
-contributing factors, including the needs of both the operational
-and research community. Issues that are in the development queue
-detailed in the "Issues" section of the GitHub repository. Please
-create a post in the
+with MET releases. Software bugs and user-identified problems will be
+documented using GitHub issues and fixed either in the next bugfix or
+official release. Future METplus Wrappers development plans are based
+on several contributing factors, including the needs of both the
+operational and research community. Issues that are in the development
+queue detailed in the "Issues" section of the GitHub repository.
+Please create a post in the
 `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
 with any questions.
+
 
 Code support
 ============
