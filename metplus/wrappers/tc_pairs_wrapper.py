@@ -371,12 +371,16 @@ class TCPairsWrapper(CommandBuilder):
                 self.logger.info(f"Processing custom string: {custom_string}")
 
             input_dict['custom'] = custom_string
-            time_info = time_util.ti_calculate(input_dict)
-            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                return
+            lead_seq = util.get_lead_sequence(self.config, input_dict)
+            for lead in lead_seq:
+                input_dict['lead'] = lead
+                time_info = time_util.ti_calculate(input_dict)
 
-            self.run_at_time_loop_string(time_info)
+                if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                    self.logger.debug('Skipping run time')
+                    return
+
+                self.run_at_time_loop_string(time_info)
 
     def run_at_time_loop_string(self, time_info):
         """! Create the arguments to run MET tc_pairs
