@@ -95,9 +95,6 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
                 self.log_error(f"Must set MET_DB_LOAD_MV_{name}")
             c_dict[f'MV_{name}'] = value
 
-        c_dict['IS_MET_CMD'] = False
-        c_dict['LOG_THE_OUTPUT'] = True
-
         return c_dict
 
     def get_command(self):
