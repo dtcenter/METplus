@@ -1,0 +1,124 @@
+&datein
+  inp%bcc = 20,
+  inp%byy = 16,
+  inp%bmm = 09,
+  inp%bdd = 06,
+  inp%bhh = 00,
+  inp%model = 17,
+  inp%modtyp = "regional",
+  inp%lt_units = "hours",
+  inp%file_seq = "multi",
+  inp%nesttyp = "moveable",
+/
+
+&atcfinfo
+  atcfnum = 81,
+  atcfname = "HWRF",
+  atcfymdh = 2016090600,
+  atcffreq = 100,
+/
+
+&trackerinfo
+  trkrinfo%type = "tracker",
+  trkrinfo%mslpthresh = 0.0015,
+  trkrinfo%use_backup_mslp_grad_check = "y",
+  trkrinfo%v850thresh = 1.5,
+  trkrinfo%use_backup_850_vt_check = "y",
+  trkrinfo%enable_timing = 1,
+  trkrinfo%gridtype = "regional",
+  trkrinfo%contint = 100.0,
+  trkrinfo%want_oci = T,
+  trkrinfo%out_vit = "y",
+  trkrinfo%use_land_mask = "y",
+  trkrinfo%inp_data_type = "grib",
+  trkrinfo%gribver = 1,
+  trkrinfo%g2_jpdtn = 0,
+  trkrinfo%g2_mslp_parm_id = 192,
+  trkrinfo%g1_mslp_parm_id = 2,
+  trkrinfo%g1_sfcwind_lev_typ = 105,
+  trkrinfo%g1_sfcwind_lev_val = 10,
+/
+
+&phaseinfo
+  phaseflag = "y",
+  phasescheme = "both",
+  wcore_depth = 1.0,
+/
+
+&structinfo
+  structflag = "n",
+  ikeflag = "n",
+/
+
+&fnameinfo
+  gmodname = "hwrf",
+  rundescr = "25x25",
+  atcfdescr = "EP152016",
+/
+
+&waitinfo
+  use_waitfor = "y",
+  wait_min_age = 10,
+  wait_min_size = 100,
+  wait_max_wait = 3600,
+  wait_sleeptime = 5,
+  use_per_fcst_command = "y",
+  per_fcst_command = "./deliver %[FHOUR] %[FMIN]",
+/
+
+&netcdflist
+  netcdfinfo%lat_name = "",
+  netcdfinfo%lmaskname = "",
+  netcdfinfo%lon_name = "",
+  netcdfinfo%mslpname = "",
+  netcdfinfo%netcdf_filename = "",
+  netcdfinfo%num_netcdf_vars = 0,
+  netcdfinfo%rv700name = "",
+  netcdfinfo%rv850name = "",
+  netcdfinfo%time_name = "",
+  netcdfinfo%time_units = "",
+  netcdfinfo%tmean_300_500_name = "",
+  netcdfinfo%u500name = "",
+  netcdfinfo%u700name = "",
+  netcdfinfo%u850name = "",
+  netcdfinfo%usfcname = "",
+  netcdfinfo%v500name = "",
+  netcdfinfo%v700name = "",
+  netcdfinfo%v850name = "",
+  netcdfinfo%vsfcname = "",
+  netcdfinfo%z200name = "",
+  netcdfinfo%z300name = "",
+  netcdfinfo%z350name = "",
+  netcdfinfo%z400name = "",
+  netcdfinfo%z450name = "",
+  netcdfinfo%z500name = "",
+  netcdfinfo%z550name = "",
+  netcdfinfo%z600name = "",
+  netcdfinfo%z650name = "",
+  netcdfinfo%z700name = "",
+  netcdfinfo%z750name = "",
+  netcdfinfo%z800name = "",
+  netcdfinfo%z850name = "",
+  netcdfinfo%z900name = "",
+/
+
+&parmpreflist
+  user_wants_to_track_zeta700 = "y",
+  user_wants_to_track_wcirc850 = "y",
+  user_wants_to_track_wcirc700 = "y",
+  user_wants_to_track_gph850 = "y",
+  user_wants_to_track_gph700 = "y",
+  user_wants_to_track_mslp = "y",
+  user_wants_to_track_wcircsfc = "y",
+  user_wants_to_track_zetasfc = "y",
+  user_wants_to_track_thick500850 = "y",
+  user_wants_to_track_thick200500 = "n",
+  user_wants_to_track_thick200850 = "y",
+  user_wants_to_track_zeta850 = "y",
+/
+
+&verbose
+  verb = 3,
+  verb_g2 = 0,
+/
+
