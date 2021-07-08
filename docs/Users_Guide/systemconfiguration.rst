@@ -2397,8 +2397,10 @@ of parsing, overriding any values that were set.
     config options over using a modified MET configuration file, although this
     approach is still supported. Newly added features and variable override
     support may be more difficult to incorporate using the latter approach.
-    Please contact met_help@ucar.edu for assistance with updating a use case
-    to migrate away from using a modified MET configuration file.
+    Please create a post in the
+    `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
+    for assistance with updating a use case to migrate away from using a
+    modified MET configuration file.
 
 MET Config Override GridStat Simple Example
 -------------------------------------------
@@ -2739,4 +2741,10 @@ Example 5 (Another MET Configuration File)::
   Make this change before continuing! [OK]
 
 .. note::
-    While the METplus developers are very diligent to include deprecated variables in this functionality, some may slip through the cracks. When upgrading to a new version of METplus, it is important to test and review your use cases to ensure they produce the same results as the previous version. Please contact met_help@ucar.edu with any questions.
+    While the METplus developers are very diligent to include deprecated
+    variables in this functionality, some may slip through the cracks.
+    When upgrading to a new version of METplus, it is important to test
+    and review your use cases to ensure they produce the same results as
+    the previous version. Please create a post in the
+    `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
+    with any questions.
