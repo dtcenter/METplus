@@ -18,8 +18,10 @@ from . import CommandBuilder
 class GFDLTrackerWrapper(CommandBuilder):
     """!Configures and runs GFDL Tracker"""
 
+
+
     CONFIG_NAMES = {
-        '': '',
+
     }
 
     def __init__(self, config, instance=None, config_overrides={}):

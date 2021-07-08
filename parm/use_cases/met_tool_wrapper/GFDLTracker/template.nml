@@ -1,21 +1,21 @@
 &datein
-  inp%bcc = 20,
-  inp%byy = 16,
-  inp%bmm = 09,
-  inp%bdd = 06,
-  inp%bhh = 00,
-  inp%model = 17,
-  inp%modtyp = "regional",
-  inp%lt_units = "hours",
-  inp%file_seq = "multi",
-  inp%nesttyp = "moveable",
+  inp%bcc = ${METPLUS_DATEIN_INP_BCC},
+  inp%byy = ${METPLUS_DATEIN_INP_BYY},
+  inp%bmm = ${METPLUS_DATEIN_INP_BMM},
+  inp%bdd = ${METPLUS_DATEIN_INP_BDD},
+  inp%bhh = ${METPLUS_DATEIN_INP_BHH},
+  inp%model = ${METPLUS_DATEIN_INP_MODEL},
+  inp%modtyp = ${METPLUS_DATEIN_INP_MODTYP},
+  inp%lt_units = ${METPLUS_DATEIN_INP_LT_UNITS},
+  inp%file_seq = ${METPLUS_DATEIN_INP_FILE_SEQ},
+  inp%nesttyp = ${METPLUS_DATEIN_INP_NESTTYP},
 /
 
 &atcfinfo
-  atcfnum = 81,
-  atcfname = "HWRF",
-  atcfymdh = 2016090600,
-  atcffreq = 100,
+  atcfnum = ${METPLUS_ATCFINFO_ATCFNUM},
+  atcfname = ${METPLUS_ATCFINFO_ATCFNAME},
+  atcfymdh = ${METPLUS_ATCFINFO_ATCFYMDH},
+  atcffreq = ${METPLUS_ATCFINFO_ATCFFREQ},
 /
 
 &trackerinfo
