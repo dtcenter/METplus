@@ -32,9 +32,9 @@ class BlockingCalculation():
             exit()
 
 
-    def run_CBL(self,cblinfiles,cblyrs):
+    def run_CBL(self,cblinfiles,nseasons,dseasons):
 
-        z500_anom_4d,lats,lons,yr = read_nc_met(cblinfiles,cblyrs,self.blocking_anomaly_var)
+        z500_anom_4d,lats,lons,timedict = read_nc_met(cblinfiles,self.blocking_anomaly_var,nseasons,dseasons)
 
         #Create Latitude Weight based for NH
         cos = lats
@@ -44,23 +44,24 @@ class BlockingCalculation():
         weightf = np.repeat(way[:,np.newaxis],360,axis=1)
 
         ####Find latitude of maximum high-pass STD (CBL)
+        yrlen = len(z500_anom_4d[:,0,0,0])
         mstd = np.nanstd(z500_anom_4d,axis=1)
         mhweight = mstd * weightf
         cbli = np.argmax(mhweight,axis=1)
-        CBL = np.zeros((len(z500_anom_4d[:,0,0,0]),len(lons)))
-        for j in np.arange(0,len(yr),1):
+        CBL = np.zeros((yrlen,len(lons)))
+        for j in np.arange(0,yrlen,1):
             CBL[j,:] = lats[cbli[j,:]]
 
         ###Apply Moving Average to Smooth CBL Profiles
         lt = len(lons)
-        CBLf = np.zeros((len(z500_anom_4d[:,0,0,0]),len(lons)))
+        CBLf = np.zeros((yrlen,len(lons)))
         m=int((self.smoothing_pts-1)/2.0)
         for i in np.arange(0,len(CBL[0,:]),1):
             ma_indices = np.arange(i-m,i+m+1)
             ma_indices = np.where(ma_indices >= lt,ma_indices-lt,ma_indices)
             CBLf[:,i] = np.nanmean(CBL[:,ma_indices],axis=1).astype(int)
         
-        return CBLf,lats,lons,yr,mhweight
+        return CBLf,lats,lons,mhweight,timedict
 
 
     def run_mod_blocking1d(self,a,cbl,lat,lon,meth):
@@ -97,22 +98,23 @@ class BlockingCalculation():
         return blon,BI
 
 
-    def run_Calc_IBL(self,cbl,iblinfiles,iblyr):
+    def run_Calc_IBL(self,cbl,iblinfiles,nseasons, dseasons):
 
-        z500_daily,lats,lons,yr = read_nc_met(iblinfiles,iblyr,self.blocking_var)
+        z500_daily,lats,lons,timedict = read_nc_met(iblinfiles,self.blocking_var,nseasons,dseasons)
 
         #Initilize arrays for IBLs and the blocking index
         # yr, day, lon
-        blonlong = np.zeros((len(yr),len(z500_daily[0,:,0,0]),len(lons)))
-        BI = np.zeros((len(yr),len(z500_daily[0,:,0,0]),len(lons)))
+        yrlen = len(z500_daily[:,0,0,0])
+        blonlong = np.zeros((yrlen,len(z500_daily[0,:,0,0]),len(lons)))
+        BI = np.zeros((yrlen,len(z500_daily[0,:,0,0]),len(lons)))
 
         #Using long-term mean CBL and acsessing module of mod.py
         cbl = np.nanmean(cbl,axis=0)
-        for i in np.arange(0,len(yr),1):
+        for i in np.arange(0,yrlen,1):
             blon,BI[i,:,:] = self.run_mod_blocking1d(z500_daily[i,:,:,:],cbl,lats,lons,self.block_method)
             blonlong[i,:,:] = blon
 
-        return blonlong
+        return blonlong,timedict
 
 
     def run_Calc_GIBL(self,ibl,lons):
@@ -177,7 +179,7 @@ class BlockingCalculation():
         return final_list
 
 
-    def run_Calc_Blocks(self,ibl,GIBL,lon,tsin,year):
+    def run_Calc_Blocks(self,ibl,GIBL,lon,tsin):
 
         crit = self.ibl_in_gibl
 
@@ -391,7 +393,7 @@ class BlockingCalculation():
         blocks = newblock[1:]
 
         #Create a final array with blocking longitudes. Similar to IBL/GIBL, but those that pass the duration threshold
-        blockfreq = np.zeros((len(year),len(ibl[0,:,0]),360))
+        blockfreq = np.zeros((len(ibl[:,0,0]),len(ibl[0,:,0]),360))
         savecbl=[]
         savemiddle = []
         saveyr=[]

@@ -34,6 +34,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # * datetime
 # * bisect
 # * scipy
+# * pandas
 #
 # If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
 #
@@ -82,6 +83,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking_fcstGFS_obsERA.conf
 
 ##############################################################################
 # MET Configuration
@@ -159,7 +161,10 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # for the steps requested.  This may include the regridded data, daily averaged files, running mean files, 
 # and anomaly files.  In addition, output CBL, IBL, and Blocking frequency plots can be generated.  The location
 # of these output plots can be specified as BLOCKING_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent 
-# to model_applications/s2s/Blocking/plots (relative to **OUTPUT_BASE**).
+# to OUTPUT_BASE/plots.  MET format matched pair output will also be generated for IBLs and blocks if a user runs
+# these steps on both the model and observation data.  The location the matched pair output can be specified as
+# BLOCKING_MPR_OUTPUT_DIR.  If it is not specified, plots will be sent to OUTPUT_BASE/mpr.
+#
 
 ##############################################################################
 # Keywords
