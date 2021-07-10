@@ -4,12 +4,40 @@ import os
 import numpy as np
 import datetime
 import netCDF4
+import warnings
+import atexit
 
 from Blocking import BlockingCalculation
 from metplus.util import pre_run_setup, config_metplus
 from metplotpy.contributed.blocking_s2s import plot_blocking as pb
 from metplotpy.contributed.blocking_s2s.CBL_plot import create_cbl_plot
 from Blocking_WeatherRegime_util import parse_steps, write_mpr_file
+
+
+def cleanup_anom_files(obs_anomfile, fcst_anomfile, keep_anom_files):
+    if keep_anom_files == 'false':
+        try:
+            os.remove(obs_anomfile)
+        except:
+            pass
+
+        try:
+            os.remove(fcst_anomfile)
+        except:
+            pass
+
+
+def cleanup_daily_files(obs_dailyfile, fcst_dailyfile, keep_daily_files):
+    if keep_daily_files == 'false':
+        try:
+            os.remove(obs_anomfile)
+        except:
+            pass
+
+        try:
+            os.remove(fcst_anomfile)
+        except:
+            pass
 
 
 def main():
@@ -19,8 +47,8 @@ def main():
     config = pre_run_setup(config_list)
 
     if not steps_list_obs and not steps_list_fcst:
-        print('No processing steps requested for either the model or observations,')
-        print('no data will be processed')
+        warnings.warn('No processing steps requested for either the model or observations,')
+        warnings.warn('no data will be processed')
 
 
     ######################################################################
@@ -50,13 +78,24 @@ def main():
     # Get the days per season
     dseasons = config.getint('Blocking','DAYS_PER_SEASON')
 
+    # Grab the Anomaly (CBL) text files
+    obs_cbl_filetxt = config.getstr('Blocking','OBS_CBL_INPUT_TEXTFILE','')
+    fcst_cbl_filetxt = config.getstr('Blocking','FCST_CBL_INPUT_TEXTFILE','')
+    keep_cbl_textfile = config.getstr('Blocking','KEEP_CBL_FILE_LISTING', 'False').lower()
+    atexit.register(cleanup_anom_files, obs_cbl_filetxt, fcst_cbl_filetxt, keep_cbl_textfile)
+
+    # Grab the Daily (IBL) text files
+    obs_ibl_filetxt = config.getstr('Blocking','OBS_IBL_INPUT_TEXTFILE','')
+    fcst_ibl_filetxt = config.getstr('Blocking','FCST_IBL_INPUT_TEXTFILE','')
+    keep_ibl_textfile = config.getstr('Blocking','KEEP_IBL_FILE_LISTING', 'False').lower()
+    atexit.register(cleanup_daily_files, obs_ibl_filetxt, fcst_ibl_filetxt, keep_ibl_textfile)
+
 
     # Calculate Central Blocking Latitude
     if ("CBL" in steps_list_obs):
         print('Computing Obs CBLs')
         # Read in the list of CBL files
         cbl_nseasons = config.getint('Blocking','CBL_NUM_SEASONS')
-        obs_cbl_filetxt = config.getstr('Blocking','OBS_CBL_INPUT_TEXTFILE')
         with open(obs_cbl_filetxt) as ocl:
             obs_infiles = ocl.read().splitlines()
         if len(obs_infiles) != (cbl_nseasons*dseasons):
@@ -67,7 +106,6 @@ def main():
         # Add in step to use obs for CBLS
         print('Computing Forecast CBLs')
         cbl_nseasons = config.getint('Blocking','CBL_NUM_SEASONS')
-        fcst_cbl_filetxt = config.getstr('Blocking','FCST_CBL_INPUT_TEXTFILE')
         with open(fcst_cbl_filetxt) as fcl:
             fcst_infiles = fcl.read().splitlines()
         if len(fcst_infiles) != (cbl_nseasons*dseasons):
@@ -107,7 +145,6 @@ def main():
             raise Exception('Must run observed CBLs before running IBLs.')
         print('Computing Obs IBLs')
         ibl_nseasons = config.getint('Blocking','IBL_NUM_SEASONS')
-        obs_ibl_filetxt = config.getstr('Blocking','OBS_IBL_INPUT_TEXTFILE')
         with open(obs_ibl_filetxt) as oil:
             obs_infiles = oil.read().splitlines()
         if len(obs_infiles) != (ibl_nseasons*dseasons):
@@ -119,7 +156,6 @@ def main():
             raise Exception('Must run forecast CBLs or use observed CBLs before running IBLs.')
         print('Computing Forecast IBLs')
         ibl_nseasons = config.getint('Blocking','IBL_NUM_SEASONS')
-        fcst_ibl_filetxt = config.getstr('Blocking','FCST_IBL_INPUT_TEXTFILE')
         with open(fcst_ibl_filetxt) as fil:
             fcst_infiles = fil.read().splitlines()
         if len(fcst_infiles) != (ibl_nseasons*dseasons):
