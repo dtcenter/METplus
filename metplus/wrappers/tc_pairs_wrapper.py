@@ -245,6 +245,12 @@ class TCPairsWrapper(CommandBuilder):
 
         self.handle_description()
 
+        c_dict['SKIP_LEAD_SEQ'] = (
+            self.config.getbool('config',
+                                'TC_PAIRS_SKIP_LEAD_SEQ',
+                                False)
+        )
+
         return c_dict
 
     def _read_storm_info(self, c_dict):
@@ -371,7 +377,13 @@ class TCPairsWrapper(CommandBuilder):
                 self.logger.info(f"Processing custom string: {custom_string}")
 
             input_dict['custom'] = custom_string
-            lead_seq = util.get_lead_sequence(self.config, input_dict)
+
+            # if skipping lead sequence, only run once per init/valid time
+            if self.c_dict['SKIP_LEAD_SEQ']:
+                lead_seq = [0]
+            else:
+                lead_seq = util.get_lead_sequence(self.config, input_dict)
+
             for lead in lead_seq:
                 input_dict['lead'] = lead
                 time_info = time_util.ti_calculate(input_dict)

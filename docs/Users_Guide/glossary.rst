@@ -7162,3 +7162,12 @@ METplus Configuration Glossary
      variable OR :term:`EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE` but not both.
 
      | *Used by:*  ExtractTiles
+
+   TC_PAIRS_SKIP_LEAD_SEQ
+     If True and a forecast lead sequence is set in the configuration, do not
+     loop over list of leads and process for each. This is used for feature
+     relative use cases where TCPairs is run for each storm initialization time
+     and SeriesAnalysis is configured to filter the data by forecast leads.
+     Default value is False.
+
+     | *Used by:*  TCPairs
