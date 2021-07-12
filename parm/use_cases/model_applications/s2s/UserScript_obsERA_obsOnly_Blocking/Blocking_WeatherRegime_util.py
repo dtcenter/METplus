@@ -4,6 +4,7 @@ import numpy as np
 import datetime
 from metplus.util import pre_run_setup, config_metplus
 
+
 def parse_steps(config_list):
 
     steps_config_part_fcst = [s for s in config_list if "FCST_STEPS" in s]
@@ -71,7 +72,7 @@ def write_mpr_file(data_obs,data_fcst,lats_in,lons_in,time_obs,time_fcst,mname,f
                         mf.write(format_string2 % ('V9.1',mname,'NA',time_fcst['lead'][y][dd],time_fcst['valid'][y][dd],
                             time_fcst['valid'][y][dd],time_obs['lead'][y][dd],time_obs['valid'][y][dd],
                             time_obs['valid'][y][dd],fvar,flev,ovar,olev,'ADPUPA',maskname,'NEAREST','1','NA','NA',
-                            'NA','NA','MPR' ,str(dlength),str(index_num[dpt]),'NA',lats_in[dpt],lons_in[dpt],obslev,
+                            'NA','NA','MPR',str(dlength),str(index_num[dpt]),'NA',lats_in[dpt],lons_in[dpt],obslev,
                             'NA',data_fcst[y,dd,dpt],data_obs[y,dd,dpt],'NA','NA','NA','NA'))
 
 
