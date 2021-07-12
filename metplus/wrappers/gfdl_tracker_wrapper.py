@@ -37,7 +37,7 @@ class GFDLTrackerWrapper(CommandBuilder):
         "TRACKERINFO_ENABLE_TIMING": "int",
         "TRACKERINFO_GRIDTYPE": "string",
         "TRACKERINFO_CONTINT": "float",
-        "TRACKERINFO_WANT_OCI": "string",
+        "TRACKERINFO_WANT_OCI": "string-no-quotes",
         "TRACKERINFO_OUT_VIT": "bool",
         "TRACKERINFO_USE_LAND_MASK": "bool",
         "TRACKERINFO_INP_DATA_TYPE": "string",
@@ -405,7 +405,9 @@ class GFDLTrackerWrapper(CommandBuilder):
             elif input_type == 'int' or input_type == 'float':
                 value = str(value)
             else:
-                value = f'"{remove_quotes(value)}"'
+                value = remove_quotes(value)
+                if 'no-quotes' not in input_type:
+                    value = f'"{value}"'
 
             value = do_string_sub(value,
                                   **time_info)
