@@ -14,7 +14,7 @@ import os
 import shutil
 
 from ..util import do_string_sub, ti_calculate, get_lead_sequence
-from ..util import remove_quotes
+from ..util import remove_quotes, parse_template
 from . import CommandBuilder
 
 class GFDLTrackerWrapper(CommandBuilder):
@@ -198,6 +198,9 @@ class GFDLTrackerWrapper(CommandBuilder):
             value = get_fct('config', f'GFDL_TRACKER_{name}', '')
             c_dict[f'REPLACE_CONF_{name}'] = value
 
+        # allow multiple input files
+        c_dict['ALLOW_MULTIPLE_FILES'] = True
+
         if not c_dict['INPUT_TEMPLATE']:
             self.log_error('GFDL_TRACKER_INPUT_TEMPLATE must be set')
 
@@ -297,11 +300,34 @@ class GFDLTrackerWrapper(CommandBuilder):
             time_info = ti_calculate(input_dict)
             input_files = self.find_data(time_info=time_info,
                                          return_list=True)
-            all_input_files.extend(input_files)
 
-            lead_minutes.append(time_info.get('lead_minutes'))
+            # add input files to list unless they are index files (.ix)
+            input_files = [input_file for input_file in input_files
+                           if not input_file.endswith('.ix')]
+            for input_file in input_files:
+                all_input_files.append(input_file)
+
+            if lead != '*':
+                lead_minutes.append(time_info.get('lead_minutes'))
+                continue
+
+            # extract lead time from each file found via wildcard
+            new_lead_minutes = self._get_leads_from_template(input_files)
+            lead_minutes.extend(new_lead_minutes)
 
         return all_input_files, sorted(lead_minutes)
+
+    def _get_leads_from_template(self, input_files):
+        # extract lead time from each file found via wildcard
+        lead_minutes_list = []
+        template = os.path.join(self.c_dict.get('INPUT_DIR'),
+                                self.c_dict.get('INPUT_TEMPLATE'))
+        for input_file in input_files:
+            file_time_info = parse_template(template, input_file)
+            if file_time_info:
+                lead_minutes_list.append(file_time_info.get('lead_minutes'))
+
+        return lead_minutes_list
 
     def link_files_to_output_dir(self, all_input_files, tc_vitals_file):
         all_output_files = []
