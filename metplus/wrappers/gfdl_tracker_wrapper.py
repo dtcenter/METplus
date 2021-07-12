@@ -14,6 +14,7 @@ import os
 import shutil
 
 from ..util import do_string_sub, ti_calculate, get_lead_sequence
+from ..util import remove_quotes
 from . import CommandBuilder
 
 class GFDLTrackerWrapper(CommandBuilder):
@@ -372,6 +373,7 @@ class GFDLTrackerWrapper(CommandBuilder):
         sub_dict = self.populate_sub_dict(input_dict)
 
         # open template file and replace any values encountered
+        self.logger.debug(f"Reading nml template: {template_file}")
         with open(template_file, 'r') as file_handle:
             input_lines = file_handle.read().splitlines()
 
@@ -403,12 +405,21 @@ class GFDLTrackerWrapper(CommandBuilder):
             elif input_type == 'int' or input_type == 'float':
                 value = str(value)
             else:
-                value = f'"{util.remove_quotes(value)}"'
+                value = f'"{remove_quotes(value)}"'
 
             value = do_string_sub(value,
                                   **time_info)
 
             sub_dict[f'METPLUS_{name}'] = value
+
+        # set replacement variables for time information
+        init_ymdh = time_info['init'].strftime('%Y%m%d%H')
+        sub_dict['METPLUS_DATEIN_INP_BCC'] = init_ymdh[0:2]
+        sub_dict['METPLUS_DATEIN_INP_BYY'] = init_ymdh[2:4]
+        sub_dict['METPLUS_DATEIN_INP_BMM'] = init_ymdh[4:6]
+        sub_dict['METPLUS_DATEIN_INP_BDD'] = init_ymdh[6:8]
+        sub_dict['METPLUS_DATEIN_INP_BHH'] = init_ymdh[8:10]
+        sub_dict['METPLUS_ATCFINFO_ATCFYMDH'] = init_ymdh
 
         return sub_dict
 
