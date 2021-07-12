@@ -1,11 +1,8 @@
 import os
 import netCDF4
 import numpy as np
-import pandas as pd
 import datetime
 from metplus.util import pre_run_setup, config_metplus
-#, get_start_end_interval_times, get_lead_sequence
-#from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
 
 def parse_steps(config_list):
 
@@ -41,26 +38,41 @@ def write_mpr_file(data_obs,data_fcst,lats_in,lons_in,time_obs,time_fcst,mname,f
     dlength = len(lons_in)
     bdims = data_obs.shape
 
-    na_array = ['NA']*dlength
+    index_num = np.arange(0,dlength,1)+1
+
+    # Get the length of the model, FCST_VAR, FCST_LEV, OBS_VAR, OBS_LEV, VX_MASK
+    mname_len = str(max([5,len(mname)])+3)
+    mask_len = str(max([7,len(maskname)])+3)
+    fvar_len = str(max([8,len(fvar)])+3)
+    flev_len = str(max([8,len(flev)])+3)
+    ovar_len = str(max([7,len(ovar)])+3)
+    olev_len = str(max([7,len(olev)])+3)
+
+    format_string = '%-10s %-'+mname_len+'s %-7s %-12s %-18s %-18s %-12s %-17s %-17s %-'+fvar_len+'s ' \
+        '%-'+flev_len+'s %-'+ovar_len+'s %-'+olev_len+'s %-10s %-'+mask_len+'s %-13s %-13s %-13s %-13s ' \
+        '%-13s %-13s %-13s\n'
+    format_string2 = '%-10s %-'+mname_len+'s %-7s %-12s %-18s %-18s %-12s %-17s %-17s %-'+fvar_len+'s ' \
+        '%-'+flev_len+'s %-'+ovar_len+'s %-'+olev_len+'s %-10s %-'+mask_len+'s %-13s %-13s %-13s %-13s ' \
+        '%-13s %-13s %-13s %-10s %-10s %-10s %-12.4f %-12.4f %-10s %-10s %-12.4f %-12.4f %-10s %-10s %-10s %-10s\n'
+
+     # Write the file
     for y in range(bdims[0]):
         for dd in range(bdims[1]):
-            #clat = lats_in[dd]
-            # Create a pandas array to write to a file
             if time_fcst['valid'][y][dd]:
-                mpr_dict = {'VERSION':['V9.1']*dlength,'MODEL':[mname]*dlength,'DESC':na_array,
-                    'FCST_LEAD':[time_fcst['lead'][y][dd]]*dlength,'FCST_VALID_BEG':[time_fcst['valid'][y][dd]]*dlength,
-                    'FCST_VALID_END':[time_fcst['valid'][y][dd]]*dlength,'OBS_LEAD':[time_obs['lead'][y][dd]]*dlength,
-                    'OBS_VALID_BEG':[time_obs['valid'][y][dd]]*dlength,'OBS_VALID_END':[time_obs['valid'][y][dd]]*dlength,
-                    'FCST_VAR':[fvar]*dlength,'FCST_LEV':[flev]*dlength,'OBS_VAR':[ovar]*dlength,'OBS_LEV':[olev]*dlength,
-                    'OBTYPE':['ADPUPA']*dlength,'VX_MASK':[maskname]*dlength,'INTERP_MTHD':['NEAREST']*dlength,
-                    'INTERP_PNTS':[1]*dlength,'FCST_THRESH':na_array,'OBS_THRESH':na_array,'COV_THRESH':na_array,
-                    'ALPHA':na_array,'LINE_TYPE':['MPR']*dlength,'':[dlength]*dlength,'':np.arange(0,dlength,1)+1,
-                    '':na_array,'':lats_in,'':lons_in,'':[obslev]*dlength,'':na_array,'':data_fcst[y,0,:],
-                    '':data_obs[y,0,:],'':na_array,'':na_array,'':na_array,'':na_array}
-                mpr_df = pd.DataFrame(data=mpr_dict)
-                ft_stamp = time_fcst['lead'][y][dd]+'L_'+time_fcst['valid'][y][dd][0:8]+'_'+time_fcst['valid'][y][dd][9:15]+'V'
+                ft_stamp = time_fcst['lead'][y][dd]+'L_'+time_fcst['valid'][y][dd][0:8]+'_' \
+                    +time_fcst['valid'][y][dd][9:15]+'V'
                 mpr_outfile_name = outfile+'_'+ft_stamp+'.stat'
-                mpr_df.to_csv(mpr_outfile_name,sep='\t', index=False, header=True)
+                with open(mpr_outfile_name, 'w') as mf:
+                    mf.write(format_string % ('VERSION', 'MODEL', 'DESC', 'FCST_LEAD', 'FCST_VALID_BEG', 'FCST_VALID_END',
+                        'OBS_LEAD', 'OBS_VALID_BEG', 'OBS_VALID_END', 'FCST_VAR', 'FCST_LEV', 'OBS_VAR', 'OBS_LEV',
+                        'OBTYPE', 'VX_MASK', 'INTERP_MTHD','INTERP_PNTS', 'FCST_THRESH', 'OBS_THRESH', 'COV_THRESH',
+                        'ALPHA', 'LINE_TYPE'))
+                    for dpt in range(dlength):
+                        mf.write(format_string2 % ('V9.1',mname,'NA',time_fcst['lead'][y][dd],time_fcst['valid'][y][dd],
+                            time_fcst['valid'][y][dd],time_obs['lead'][y][dd],time_obs['valid'][y][dd],
+                            time_obs['valid'][y][dd],fvar,flev,ovar,olev,'ADPUPA',maskname,'NEAREST','1','NA','NA',
+                            'NA','NA','MPR' ,str(dlength),str(index_num[dpt]),'NA',lats_in[dpt],lons_in[dpt],obslev,
+                            'NA',data_fcst[y,dd,dpt],data_obs[y,dd,dpt],'NA','NA','NA','NA'))
 
 
 def read_nc_met(infiles,invar,nseasons,dseasons):
@@ -105,16 +117,6 @@ def read_nc_met(infiles,invar,nseasons,dseasons):
         lead_list.append(lead_str)
         var_3d[i,:,:] = new_invar
 
-    #yr = np.array(yrlist)
-    #if len(var_3d[:,0,0])%float(len(yrlist)) != 0:
-    #    lowval = int(len(var_3d[:,0,0])/float(len(yrlist)))
-    #    newarrlen = (lowval+1) * float(len(yrlist))
-    #    arrexp = int(newarrlen - len(var_3d[:,0,0]))
-    #    arrfill = np.empty((arrexp,len(var_3d[0,:,0]),len(var_3d[0,0,:])),dtype=np.float)
-    #    arrfill[:] = np.nan
-    #    var_3d = np.append(var_3d,arrfill,axis=0)
-    #    print(var_3d.shape)
-    #sdim = len(var_3d[:,0,0])/float(num_seasons)
     var_4d = np.reshape(var_3d,[nseasons,dseasons,len(var_3d[0,:,0]),len(var_3d[0,0,:])])
 
     # Reshape time arrays and store them in a dictionary

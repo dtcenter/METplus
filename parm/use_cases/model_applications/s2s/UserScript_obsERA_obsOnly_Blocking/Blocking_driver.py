@@ -30,12 +30,12 @@ def cleanup_anom_files(obs_anomfile, fcst_anomfile, keep_anom_files):
 def cleanup_daily_files(obs_dailyfile, fcst_dailyfile, keep_daily_files):
     if keep_daily_files == 'false':
         try:
-            os.remove(obs_anomfile)
+            os.remove(obs_dailyfile)
         except:
             pass
 
         try:
-            os.remove(fcst_anomfile)
+            os.remove(fcst_dailyfile)
         except:
             pass
 
@@ -88,6 +88,7 @@ def main():
     obs_ibl_filetxt = config.getstr('Blocking','OBS_IBL_INPUT_TEXTFILE','')
     fcst_ibl_filetxt = config.getstr('Blocking','FCST_IBL_INPUT_TEXTFILE','')
     keep_ibl_textfile = config.getstr('Blocking','KEEP_IBL_FILE_LISTING', 'False').lower()
+    print(keep_ibl_textfile)
     atexit.register(cleanup_daily_files, obs_ibl_filetxt, fcst_ibl_filetxt, keep_ibl_textfile)
 
 
@@ -172,8 +173,8 @@ def main():
         maskname = config.getstr('Blocking','MASK_NAME','FULL')
         ibl_outfile_prefix = os.path.join(i_mpr_outdir,'IBL_stat_'+modname)
         cbls_avg = np.nanmean(cbls_obs,axis=0)
-        write_mpr_file(ibls_obs,ibls_fcst,cbls_obs,lons_obs,ibl_time_obs,ibl_time_fcst,modname,
-            'Inst_Blocked_Lats','Z500','Inst_Blocked_Lats','Z500',maskname,'500',ibl_outfile_prefix)
+        write_mpr_file(ibls_obs,ibls_fcst,cbls_avg,lons_obs,ibl_time_obs,ibl_time_fcst,modname,
+            'Inst_Blocked_Lons','Z500','Inst_Blocked_Lons','Z500',maskname,'500',ibl_outfile_prefix)
 
     # Plot IBLS
     if("PLOTIBL" in steps_list_obs) and not ("PLOTIBL" in steps_list_fcst):
@@ -232,6 +233,7 @@ def main():
         print('Computing Blocks')
         block_freq_fcst = steps_fcst.run_Calc_Blocks(ibls_fcst,gibls_fcst,lons_fcst,daynum_fcst)
 
+    # Write out a Blocking MPR file if both obs and forecast blocking calculation performed
     if ("CALCBLOCKS" in steps_list_obs) and ("CALCBLOCKS" in steps_list_fcst):
         b_mpr_outdir = os.path.join(mpr_dir,'Blocks')
         if not os.path.exists(b_mpr_outdir):
