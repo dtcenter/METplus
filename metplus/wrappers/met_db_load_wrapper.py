@@ -81,10 +81,10 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
         )
 
         # read config variables
-        for name, type in self.CONFIG_NAMES.items():
-            if type == 'int':
+        for name, input_type in self.CONFIG_NAMES.items():
+            if input_type == 'int':
                 get_fct = self.config.getint
-            elif type == 'bool':
+            elif input_type == 'bool':
                 get_fct = self.config.getbool
             else:
                 get_fct = self.config.getraw
@@ -207,9 +207,9 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
         formatted_stat_dirs = self.format_stat_dirs(stat_dirs)
         sub_dict['METPLUS_INPUT_PATHS'] = formatted_stat_dirs
 
-        for name, type in self.CONFIG_NAMES.items():
+        for name, input_type in self.CONFIG_NAMES.items():
             value = str(self.c_dict.get(f'MV_{name}'))
-            if type == 'bool':
+            if input_type == 'bool':
                 value = value.lower()
 
             value = do_string_sub(value,
