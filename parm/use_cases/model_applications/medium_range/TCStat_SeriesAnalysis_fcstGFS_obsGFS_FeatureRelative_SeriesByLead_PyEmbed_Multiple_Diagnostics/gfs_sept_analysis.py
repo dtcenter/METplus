@@ -10,6 +10,7 @@ import os
 import re
 import datetime as dt
 from metpy import calc as mpcalc
+from metpy.units import units
 import xarray as xr
 import cfgrib
 
@@ -65,10 +66,10 @@ def pv(input_file):
     ds = ds.sel(isobaricInhPa=ds.isobaricInhPa[ds.isobaricInhPa>=100.0].values)
 
     # Add pressure
-    ds['p'] = xr.DataArray(ds.isobaricInhPa.values*100.0,dims=['isobaricInhPa'],coords={'isobaricInhPa':ds.isobaricInhPa.values},attrs={'units':'hectopascals'}).broadcast_like(ds['t'])
+    ds['p'] = xr.DataArray(ds.isobaricInhPa.values,dims=['isobaricInhPa'],coords={'isobaricInhPa':ds.isobaricInhPa.values},attrs={'units':'hPa'}).broadcast_like(ds['t'])
 
     # Calculate saturation equivalent potential temperature
-    ds['sept'] = mpcalc.saturation_equivalent_potential_temperature(ds['p'],ds['t'])
+    ds['sept'] = mpcalc.saturation_equivalent_potential_temperature(ds['p']*units('Pa'),ds['t'])
 
     met_data = ds['sept'].mean(axis=0).values
 
