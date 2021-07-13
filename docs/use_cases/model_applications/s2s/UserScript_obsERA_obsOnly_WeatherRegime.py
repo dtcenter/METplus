@@ -23,6 +23,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # the frequency of occurrernce and anomalies for each cluster to give the most common
 # weather regimes.  Finally, the time frequency computes the frequency of each weather
 # regime over a user specified time frame.
+#
 
 ##############################################################################
 # Datasets
@@ -68,7 +69,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # The other steps are listed in the [user_env_vars] section of the UserScript .conf file
 # in the following format:
-# OBS_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS
+# OBS_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS+TIMEFREQ+PLOTFREQ
 #
 
 ##############################################################################
@@ -95,6 +96,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.conf
+#
 
 ##############################################################################
 # MET Configuration
@@ -107,6 +109,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.py
 # parm/use_cases/met_tool_wrapper/PCPCombine/PCPCOmbine_derive.py
+#
 
 ##############################################################################
 # Python Scripts
