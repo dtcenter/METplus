@@ -94,16 +94,6 @@ def pre_run_setup(config_inputs):
         config.set('config', 'STAGING_DIR',
                    os.path.join(config.getdir('OUTPUT_BASE'), "stage"))
 
-    # get USER_SHELL config variable so the default value doesn't get logged
-    # at an inconvenient time (right after "COPYABLE ENVIRONMENT" but before actual
-    # copyable environment variable list)
-    config.getstr('config', 'USER_SHELL', 'bash')
-
-
-    # get DO_NOT_RUN_EXE config variable so it shows up at the beginning of execution
-    # only if the default value is used
-    config.getbool('config', 'DO_NOT_RUN_EXE', False)
-
     # handle dir to write temporary files
     handle_tmp_dir(config)
 
@@ -518,8 +508,7 @@ def check_for_deprecated_config(config):
                 old_regex = old.replace('<n>', r'(\d+)')
                 indicies = find_indices_in_config_section(old_regex,
                                                           config,
-                                                          'config',
-                                                          noID=True).keys()
+                                                          index_index=1).keys()
                 for index in indicies:
                     old_with_index = old.replace('<n>', index)
                     if depr_info['alt']:
@@ -861,7 +850,7 @@ def is_loop_by_init(config):
 
     return None
 
-def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
+def get_time_obj(time_from_conf, fmt, clock_time, logger=None, warn=False):
     """!Substitute today or now into [INIT/VALID]_[BEG/END] if used
         Args:
             @param time_from_conf value from [INIT/VALID]_[BEG/END] that
@@ -880,7 +869,10 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
         error_message = (f"[INIT/VALID]_TIME_FMT ({fmt}) does not match "
                          f"[INIT/VALID]_[BEG/END] ({time_str})")
         if logger:
-            logger.error(error_message)
+            if warn:
+                logger.warning(error_message)
+            else:
+                logger.error(error_message)
         else:
             print(f"ERROR: {error_message}")
 
@@ -888,8 +880,26 @@ def get_time_obj(time_from_conf, fmt, clock_time, logger=None):
 
     return time_t
 
-def get_start_end_interval_times(config):
-    clock_time_obj = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
+def get_start_end_interval_times(config, warn=False):
+    """! Reads the METplusConfig object to determine the start, end, and
+      increment values based on the configuration. Based on the LOOP_BY value,
+      it will read the INIT_ or VALID_ variables TIME_FMT, BEG, END, and
+      INCREMENT and use the time format value to parse the other values.
+
+        @param config METplusConfig object to parse
+        @parm warn (optional) if True, output warnings instead of errors
+        @returns tuple of start time (datetime), end time (datetime) and
+        increment (dateutil.relativedelta) or all None values if time info
+        could not be parsed properly
+    """
+    # set function to send log messages (warning or error)
+    if warn:
+        log_function = config.logger.warning
+    else:
+        log_function = config.logger.error
+
+    clock_time_obj = datetime.datetime.strptime(config.getstr('config',
+                                                              'CLOCK_TIME'),
                                                 '%Y%m%d%H%M%S')
     use_init = is_loop_by_init(config)
     if use_init is None:
@@ -911,23 +921,27 @@ def get_start_end_interval_times(config):
         )
 
     start_time = get_time_obj(start_t, time_format,
-                             clock_time_obj, config.logger)
+                              clock_time_obj, config.logger,
+                              warn=warn)
     if not start_time:
-        config.logger.error("Could not format start time")
+        log_function("Could not format start time")
         return None, None, None
 
     end_time = get_time_obj(end_t, time_format,
-                            clock_time_obj, config.logger)
+                            clock_time_obj, config.logger,
+                            warn=warn)
     if not end_time:
-        config.logger.error("Could not format end time")
+        log_function("Could not format end time")
         return None, None, None
 
-    if start_time + time_interval < start_time + datetime.timedelta(seconds=60):
-        config.logger.error("[INIT/VALID]_INCREMENT must be greater than or equal to 60 seconds")
+    if (start_time + time_interval <
+            start_time + datetime.timedelta(seconds=60)):
+        log_function('[INIT/VALID]_INCREMENT must be greater than or '
+                     'equal to 60 seconds')
         return None, None, None
 
     if start_time > end_time:
-        config.logger.error("Start time must come before end time")
+        log_function("Start time must come before end time")
         return None, None, None
 
     return start_time, end_time, time_interval
@@ -1393,15 +1407,17 @@ def get_filepaths_for_grbfiles(base_dir):
                 continue
     return file_paths
 
-def get_storms(filter_filename):
-    """! Get each storm as identified by its STORM_ID in the filter file.
+def get_storms(filter_filename, id_only=False, sort_column='STORM_ID'):
+    """! Get each storm as identified by a column in the input file.
          Create dictionary storm ID as the key and a list of lines for that
          storm as the value.
 
          @param filter_filename name of tcst file to read and extract storm id
-         @returns 2 item tuple - 1)dictionary where key is storm ID and value is list
-          of relevant lines from tcst file, 2) header line from tcst file.
-          Also, item with key 'header' contains the header of the tcst file
+         @param sort_column column to use to sort and group storms. Default
+          value is STORM_ID
+         @returns 2 item tuple - 1)dictionary where key is storm ID and value
+          is list of relevant lines from tcst file, 2) header line from tcst
+           file. Item with key 'header' contains the header of the tcst file
     """
     # Initialize a set because we want unique storm ids.
     storm_id_list = set()
@@ -1410,15 +1426,19 @@ def get_storms(filter_filename):
         with open(filter_filename, "r") as file_handle:
             header, *lines = file_handle.readlines()
 
-        storm_id_column = header.split().index('STORM_ID')
+        storm_id_column = header.split().index(sort_column)
         for line in lines:
             storm_id_list.add(line.split()[storm_id_column])
     except (ValueError, FileNotFoundError):
+        if id_only:
+            return []
         return {}
 
     # sort the unique storm ids, copy the original
     # set by using sorted rather than sort.
     sorted_storms = sorted(storm_id_list)
+    if id_only:
+        return sorted_storms
 
     if not sorted_storms:
         return {}
@@ -1430,7 +1450,7 @@ def get_storms(filter_filename):
 
     return storm_dict
 
-def get_storm_ids(filter_filename, logger=None):
+def get_storm_ids(filter_filename):
     """! Get each storm as identified by its STORM_ID in the filter file
         save these in a set so we only save the unique ids and sort them.
         Args:
@@ -1440,23 +1460,7 @@ def get_storm_ids(filter_filename, logger=None):
         Returns:
             sorted_storms (List):  a list of unique, sorted storm ids
     """
-    # Initialize a set because we want unique storm ids.
-    storm_id_list = set()
-
-    try:
-        with open(filter_filename, "r") as file_handle:
-            header, *lines = file_handle.readlines()
-
-        storm_id_column = header.split().index('STORM_ID')
-        for line in lines:
-            storm_id_list.add(line.split()[storm_id_column])
-    except (ValueError, FileNotFoundError):
-        return []
-
-    # sort the unique storm ids, copy the original
-    # set by using sorted rather than sort.
-    sorted_storms = sorted(storm_id_list)
-    return sorted_storms
+    return get_storms(filter_filename, id_only=True)
 
 def get_files(filedir, filename_regex, logger=None):
     """! Get all the files (with a particular
@@ -1919,20 +1923,37 @@ def skip_field_info_validation(config):
 
     return True
 
-def find_indices_in_config_section(regex_expression, config, sec, noID=False):
+def find_indices_in_config_section(regex, config, sec='config',
+                                   index_index=1, id_index=None):
+    """! Use regular expression to get all config variables that match and
+    are set in the user's configuration. This is used to handle config
+    variables that have multiple indices, i.e. FCST_VAR1_NAME, FCST_VAR2_NAME,
+    etc.
+
+    @param regex regular expression to use to find variables
+    @param config METplusConfig object to search
+    @param sec (optional) config file section to search. Defaults to config
+    @param index_index 1 based number that is the regex match index for the
+     index number (default is 1)
+    @param id_index 1 based number that is the regex match index for the
+     identifier. Defaults to None which does not extract an indentifier
+
+     number and the first match is used as an identifier
+    @returns dictionary where keys are the index number and the value is a
+     list of identifiers (if noID=True) or a list containing None
+    """
     # regex expression must have 2 () items and the 2nd item must be the index
     all_conf = config.keys(sec)
     indices = {}
-    regex = re.compile(regex_expression)
+    regex = re.compile(regex)
     for conf in all_conf:
         result = regex.match(conf)
         if result is not None:
-            if noID:
-                index = result.group(1)
-                identifier = None
+            index = result.group(index_index)
+            if id_index:
+                identifier = result.group(id_index)
             else:
-                identifier = result.group(1)
-                index = result.group(2)
+                identifier = None
 
             if index not in indices:
                 indices[index] = [identifier]
@@ -2020,7 +2041,8 @@ def validate_field_info_configs(config, force_check=False):
         # find all _VAR<n>_<ext> keys in the conf files
         data_types_and_indices = find_indices_in_config_section(r"(\w+)_VAR(\d+)_"+ext,
                                                                 config,
-                                                                'config')
+                                                                index_index=2,
+                                                                id_index=1)
 
         # if BOTH_VAR<n>_ is used, set FCST and OBS to the same value
         # if FCST or OBS is used, the other must be present as well
@@ -2247,7 +2269,8 @@ def find_var_name_indices(config, data_types, met_tool=None):
     # find all <data_type>_VAR<n>_NAME keys in the conf files
     return find_indices_in_config_section(regex_string,
                                           config,
-                                          'config')
+                                          index_index=2,
+                                          id_index=1)
 
 def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
     """ read conf items and populate list of dictionaries containing
@@ -2411,9 +2434,12 @@ def sub_var_info(var_info, time_info):
         if isinstance(value, list):
             out_value = []
             for item in value:
-                out_value.append(do_string_sub(item, **time_info))
+                out_value.append(do_string_sub(item,
+                                               skip_missing_tags=True,
+                                               **time_info))
         else:
             out_value = do_string_sub(value,
+                                      skip_missing_tags=True,
                                       **time_info)
 
         out_var_info[key] = out_value
@@ -2745,7 +2771,7 @@ def expand_int_string_to_list(int_string):
     """! Expand string into a list of integer values. Items are separated by
     commas. Items that are formatted X-Y will be expanded into each number
     from X to Y inclusive. If the string ends with +, then add a str '+'
-    to the end of the list. Used in ci/jobs/get_use_case_commands.py
+    to the end of the list. Used in .github/jobs/get_use_case_commands.py
 
     @param int_string String containing a comma-separated list of integers
     @returns List of integers and potentially '+' as the last item

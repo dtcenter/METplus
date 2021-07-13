@@ -83,7 +83,9 @@ interp12 = REPLACE;
 //
 // Specify how consensus forecasts should be defined
 //
-consensus = [];
+//consensus =
+${METPLUS_CONSENSUS_LIST}
+
 
 //
 // Forecast lag times

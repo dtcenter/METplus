@@ -1,6 +1,7 @@
 {"name": "alert: NEED ACCOUNT KEY","color": "ffff33","description": "Need to assign an account key to this issue"}
 {"name": "alert: NEED MORE DEFINITION","color": "ffff33","description": "Not yet actionable, additional definition required"}
 {"name": "alert: NEED PROJECT ASSIGNMENT","color": "ffff33","description": "Need to assign to a release development cycle"}
+{"name": "alert: REQUIRED FOR RELEASE","color": "e400f5","description": "Required to be done for the assigned release"}
 {"name": "component: CI/CD","color": "1d76db","description": "Continuous integration and deployment issues"}
 {"name": "component: build process","color": "1d76db","description": "Build process issue"}
 {"name": "component: code cleanup","color": "1d76db","description": "Code cleanup and maintenance issue"}
@@ -31,6 +32,7 @@
 {"name": "requestor: DTC/Containers","color": "3101c1","description": "DTC Containers and Cloud Computing Project"}
 {"name": "requestor: DTC/AF V&V","color": "3101c1","description": "Air Force Verification and Validation Project"}
 {"name": "requestor: NASA/CCMC","color": "3101c1","description": "NASA Community Coordinated Modeling Center"}
+{"name": "requestor: NASA/other","color": "3101c1","description": "NASA, not otherwise specified"}
 {"name": "requestor: NCAR","color": "3101c1","description": "National Center for Atmospheric Research"}
 {"name": "requestor: NCAR/RAL","color": "3101c1","description": "NCAR Research Applications Laboratory"}
 {"name": "requestor: NCAR/MMM","color": "3101c1","description": "NCAR Meso and Microscale Meteorology Laboratory"}
@@ -53,6 +55,8 @@
 {"name": "requestor: University/other","color": "3101c1","description": "University Collaborator, not otherwise specified"}
 {"name": "requestor: University/SBU","color": "3101c1","description": "Stony Brook University"}
 {"name": "requestor: University/UIUC","color": "3101c1","description": "University of Illinois, Urbana-Champaign"}
+{"name": "required: FOR DEVELOPMENT RELEASE", "color": "e400f5", "description": "Required to be completed in the development release for the assigned project"}
+{"name": "required: FOR OFFICIAL RELEASE", "color": "e400f5", "description": "Required to be completed in the official release for the assigned milestone"}
 {"name": "type: bug","color": "e5bf7e","description": "Fix something that is not working"}
 {"name": "type: enhancement","color": "e5bf7e","description": "Improve something that it is currently doing"}
 {"name": "type: new feature","color": "e5bf7e","description": "Make it do something new"}

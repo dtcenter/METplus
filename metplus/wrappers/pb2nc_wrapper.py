@@ -30,6 +30,10 @@ class PB2NCWrapper(CommandBuilder):
         'METPLUS_MASK_DICT',
         'METPLUS_OBS_BUFR_VAR',
         'METPLUS_TIME_SUMMARY_DICT',
+        'METPLUS_PB_REPORT_TYPE',
+        'METPLUS_LEVEL_RANGE_DICT',
+        'METPLUS_LEVEL_CATEGORY',
+        'METPLUS_QUALITY_MARK_THRESH',
     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
@@ -48,9 +52,7 @@ class PB2NCWrapper(CommandBuilder):
 
              Returns:
                 c_dict  - a dictionary containing the settings in the
-                configuration files (that aren't in the
-                           metplus_data, metplus_system, and metplus_runtime
-                           config files.
+                configuration files
         """
         c_dict = super().create_c_dict()
 
@@ -136,12 +138,45 @@ class PB2NCWrapper(CommandBuilder):
             station_id = '[]'
         c_dict['STATION_ID'] = station_id
 
-        c_dict['GRID'] = self.config.getstr('config', 'PB2NC_GRID')
-        c_dict['POLY'] = self.config.getstr('config', 'PB2NC_POLY')
+        c_dict['GRID'] = self.config.getstr('config', 'PB2NC_GRID', '')
+        c_dict['POLY'] = self.config.getstr('config', 'PB2NC_POLY', '')
 
         c_dict['BUFR_VAR_LIST'] = (
             self.get_env_var_value('METPLUS_OBS_BUFR_VAR')
         )
+
+        self.add_met_config(name='pb_report_type',
+                            data_type='list',
+                            metplus_configs=['PB2NC_PB_REPORT_TYPE'],
+                            extra_args={'remove_quotes': True})
+
+        # get level_range beg and end
+        level_range_items = []
+        level_range_items.append(
+            self.get_met_config(name='beg',
+                                data_type='int',
+                                metplus_configs=['PB2NC_LEVEL_RANGE_BEG',
+                                                 'PB2NC_LEVEL_RANGE_BEGIN'])
+        )
+        level_range_items.append(
+            self.get_met_config(name='end',
+                                data_type='int',
+                                metplus_configs=['PB2NC_LEVEL_RANGE_END'])
+        )
+
+        self.add_met_config(name='level_range',
+                            data_type='dict',
+                            children=level_range_items)
+
+        self.add_met_config(name='level_category',
+                            data_type='list',
+                            metplus_configs=['PB2NC_LEVEL_CATEGORY'],
+                            extra_args={'remove_quotes': True})
+
+        self.add_met_config(name='quality_mark_thresh',
+                            data_type='int',
+                            metplus_configs=['PB2NC_QUALITY_MARK_THRESH'])
+
 
         return c_dict
 
@@ -153,26 +188,28 @@ class PB2NCWrapper(CommandBuilder):
             @param time_info dictionary containing timing info from current run
         """
         # set old method of setting env vars needed for MET config file
-        self.add_env_var("PB2NC_MESSAGE_TYPE", self.c_dict['MESSAGE_TYPE'])
-        self.add_env_var("PB2NC_STATION_ID", self.c_dict['STATION_ID'])
+        self.add_env_var("PB2NC_MESSAGE_TYPE", self.c_dict.get('MESSAGE_TYPE', ''))
+        self.add_env_var("PB2NC_STATION_ID", self.c_dict.get('STATION_ID', ''))
         self.add_env_var("OBS_WINDOW_BEGIN",
-                         str(self.c_dict['OBS_WINDOW_BEGIN']))
-        self.add_env_var("OBS_WINDOW_END", str(self.c_dict['OBS_WINDOW_END']))
-        self.add_env_var("PB2NC_GRID", self.c_dict['GRID'])
-        self.add_env_var("PB2NC_POLY", self.c_dict['POLY'])
+                         str(self.c_dict.get('OBS_WINDOW_BEGIN', '')))
+        self.add_env_var("OBS_WINDOW_END",
+                         str(self.c_dict.get('OBS_WINDOW_END', '')))
+        self.add_env_var("PB2NC_GRID", self.c_dict.get('GRID', ''))
+        self.add_env_var("PB2NC_POLY", self.c_dict.get('POLY', ''))
 
-        self.add_env_var("OBS_BUFR_VAR_LIST", self.c_dict['BUFR_VAR_LIST'])
+        self.add_env_var("OBS_BUFR_VAR_LIST", self.c_dict.get('BUFR_VAR_LIST',
+                                                              ''))
 
         self.add_env_var('TIME_SUMMARY_FLAG',
-                         self.c_dict['TIME_SUMMARY_FLAG'])
+                         self.c_dict.get('TIME_SUMMARY_FLAG', ''))
         self.add_env_var('TIME_SUMMARY_BEG',
-                         self.c_dict['TIME_SUMMARY_BEG'])
+                         self.c_dict.get('TIME_SUMMARY_BEG', ''))
         self.add_env_var('TIME_SUMMARY_END',
-                         self.c_dict['TIME_SUMMARY_END'])
+                         self.c_dict.get('TIME_SUMMARY_END', ''))
         self.add_env_var('TIME_SUMMARY_VAR_NAMES',
-                         self.c_dict['TIME_SUMMARY_VAR_NAMES'])
+                         self.c_dict.get('TIME_SUMMARY_VAR_NAMES', ''))
         self.add_env_var('TIME_SUMMARY_TYPES',
-                         self.c_dict['TIME_SUMMARY_TYPES'])
+                         self.c_dict.get('TIME_SUMMARY_TYPES', ''))
 
         super().set_environment_variables(time_info)
 

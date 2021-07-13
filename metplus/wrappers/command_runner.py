@@ -41,13 +41,14 @@ from datetime import datetime
 class CommandRunner(object):
     """! Class for Creating and Running External Programs
     """
-    def __init__(self, config, logger=None, verbose=2):
+    def __init__(self, config, logger=None, verbose=2, skip_run=False):
         """!Class for Creating and Running External Programs.
             It was intended to handle the MET executables but
             can be used by other executables."""
         self.logger = logger
         self.config = config
         self.verbose = verbose
+        self.skip_run = skip_run
         self.log_command_to_met_log = False
 
     def run_cmd(self, cmd, env=None, ismetcmd = True, log_name=None,
@@ -168,24 +169,27 @@ class CommandRunner(object):
                 else:
                     cmd_exe = exe(the_exe)[the_args].env(**env)
 
-        ret = 0
-        # run app unless DO_NOT_RUN_EXE is set to True
-        if not self.config.getbool('config', 'DO_NOT_RUN_EXE', False):
-            # get current time to calculate total time to run command
-            start_cmd_time = datetime.now()
+        # don't run app if DO_NOT_RUN_EXE is set to True
+        if self.skip_run:
+            self.logger.info("Not running command (DO_NOT_RUN_EXE = True)")
+            return 0, cmd
 
-            # run command
-            try:
-                ret = run(cmd_exe, **kwargs)
-            except:
-                ret = -1
-            else:
-                # calculate time to run
-                end_cmd_time = datetime.now()
-                total_cmd_time = end_cmd_time - start_cmd_time
-                self.logger.debug(f'Finished running {the_exe} in {total_cmd_time}')
+        # get current time to calculate total time to run command
+        start_cmd_time = datetime.now()
 
-        return (ret, cmd)
+        # run command
+        try:
+            ret = run(cmd_exe, **kwargs)
+        except:
+            ret = -1
+        else:
+            # calculate time to run
+            end_cmd_time = datetime.now()
+            total_cmd_time = end_cmd_time - start_cmd_time
+            self.logger.debug(f'Finished running {the_exe} '
+                              f'in {total_cmd_time}')
+
+        return ret, cmd
 
     # TODO: Refactor seriesbylead.
     # For now we are back to running through a shell.

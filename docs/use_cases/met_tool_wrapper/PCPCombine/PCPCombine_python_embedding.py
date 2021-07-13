@@ -128,8 +128,14 @@ met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf
 # --------
 #
 # .. note::
-#  `PCPCombineToolUseCase <https://dtcenter.github.io/METplus/search.html?q=PCPCombineToolUseCase&check_keywords=yes&area=default>`_,
-#  `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_,
-#  `MET_PYTHON_EXEUseCase <https://dtcenter.github.io/METplus/search.html?q=MET_PYTHON_EXEUseCase&check_keywords=yes&area=default>`_
+#
+#   * PCPCombineToolUseCase
+#   * PythonEmbeddingFileUseCase
+#   * MET_PYTHON_EXEUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-PCPCombine.png'
+#

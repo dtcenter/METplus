@@ -18,7 +18,7 @@ Workflow Control
 ----------------
 
 GitHub Actions is controlled by a file in the .github/workflow directory called
-main.yml. If this file exists and is valid (no errors), GitHub Actions will
+testing.yml. If this file exists and is valid (no errors), GitHub Actions will
 read this file and trigger a workflow run if the triggering criteria is met.
 It can run multiple jobs in parallel or serially depending on dependency rules
 that can be set. Each job can run a series of commands or scripts called steps.
@@ -31,7 +31,7 @@ Name
 
 The name of a workflow can be specified to describe an overview of what is run.
 Currently METplus only has 1 workflow, but others can be added. The following
-line in the main.yml file::
+line in the testing.yml file::
 
     name: METplus CI/CD Workflow
 
@@ -122,3 +122,29 @@ Here is a list of the currently supported keywords and what they control:
 * **ci-run-all-cases**: Run all use cases
 * **ci-run-diff**: Obtain truth data and run diffing logic
 * **ci-only-docs**: Only run build documentation job - skip the rest
+
+Force MET Version Used for Tests
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The tests typically use the develop version tag of the MET Docker image for
+development testing. If testing is done on a stable release, then the
+corresponding MET stable release will be used. However, there may be an
+instance where a change in MET breaks something in another METplus component,
+i.e. METplotpy or METviewer, until a corresponding change is made to that
+component. If this occurs then some of the METplus use cases may break. To
+allow the tests to run successfully in the meantime, an option was added to
+force the version of the MET tag that is used to build the METplus Docker image
+that is used for testing. In the testing.yml GitHub Actions workflow file
+(found in .github/workflows), there is a commented variable called
+MET_FORCE_TAG that can be uncommented and set to force the version of MET to
+use. This variable is found in the "get_image" job under the "env" section
+for the step named "Get METplus Image."
+
+::
+
+    - name: Get METplus Image
+      run: .github/jobs/docker_setup.sh
+      env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+          #MET_FORCE_TAG: 10.0.0

@@ -1,19 +1,72 @@
 #!/usr/bin/env python3
 
 import sys
-import pytest
 import datetime
 import os
-import subprocess
-import shutil
 from dateutil.relativedelta import relativedelta
 from csv import reader
 import pprint
-
-import produtil
+import pytest
 
 from metplus.util import met_util as util
 from metplus.util import time_util
+
+@pytest.mark.parametrize(
+    'regex,index,id,expected_result', [
+        # 0: No ID
+        (r'^FCST_VAR(\d+)_NAME$', 1, None,
+         {'1': [None],
+          '2': [None],
+          '4': [None]}),
+        # 1: ID and index 2
+        (r'(\w+)_VAR(\d+)_NAME', 2, 1,
+         {'1': ['FCST'],
+          '2': ['FCST'],
+          '4': ['FCST']}),
+        # 2: index 1, ID 2, multiple identifiers
+        (r'^FCST_VAR(\d+)_(\w+)$', 1, 2,
+         {'1': ['NAME', 'LEVELS'],
+          '2': ['NAME'],
+          '4': ['NAME']}),
+        # 3: command that StatAnalysis wrapper uses
+        (r'MODEL(\d+)$', 1, None,
+         {'1': [None],
+          '2': [None],}),
+        # 4: TCPairs conensus logic
+        (r'^TC_PAIRS_CONSENSUS(\d+)_(\w+)$', 1, 2,
+         {'1': ['NAME', 'MEMBERS', 'REQUIRED', 'MIN_REQ'],
+          '2': ['NAME', 'MEMBERS', 'REQUIRED', 'MIN_REQ']}),
+    ]
+)
+def test_find_indices_in_config_section(metplus_config, regex, index,
+                                        id, expected_result):
+    config = metplus_config()
+    config.set('config', 'FCST_VAR1_NAME', 'name1')
+    config.set('config', 'FCST_VAR1_LEVELS', 'level1')
+    config.set('config', 'FCST_VAR2_NAME', 'name2')
+    config.set('config', 'FCST_VAR4_NAME', 'name4')
+    config.set('config', 'MODEL1', 'model1')
+    config.set('config', 'MODEL2', 'model2')
+
+    config.set('config', 'TC_PAIRS_CONSENSUS1_NAME', 'name1')
+    config.set('config', 'TC_PAIRS_CONSENSUS1_MEMBERS', 'member1')
+    config.set('config', 'TC_PAIRS_CONSENSUS1_REQUIRED', 'True')
+    config.set('config', 'TC_PAIRS_CONSENSUS1_MIN_REQ', '1')
+    config.set('config', 'TC_PAIRS_CONSENSUS2_NAME', 'name2')
+    config.set('config', 'TC_PAIRS_CONSENSUS2_MEMBERS', 'member2')
+    config.set('config', 'TC_PAIRS_CONSENSUS2_REQUIRED', 'True')
+    config.set('config', 'TC_PAIRS_CONSENSUS2_MIN_REQ', '2')
+
+
+    indices = util.find_indices_in_config_section(regex, config,
+                                                  index_index=index,
+                                                  id_index=id)
+
+    pp = pprint.PrettyPrinter()
+    print(f'Indices:')
+    pp.pprint(indices)
+
+    assert indices == expected_result
 
 @pytest.mark.parametrize(
     'data_type, met_tool, expected_out', [
@@ -1559,6 +1612,34 @@ def test_get_storms(metplus_config, filename, expected_result):
     # ensure header matches expected format
     if storm_dict:
         assert(storm_dict['header'].split()[storm_id_index] == 'STORM_ID')
+
+def test_get_storms_mtd(metplus_config):
+    index = 23
+    expected_result = [
+        'header',
+        'CF001',
+        'CO001'
+    ]
+    sort_column = 'OBJECT_CAT'
+    config = metplus_config()
+    filepath = os.path.join(config.getdir('METPLUS_BASE'),
+                            'internal_tests',
+                            'data',
+                            'mtd',
+                            'fake_mtd_2d.txt')
+
+    storm_dict = util.get_storms(filepath, sort_column=sort_column)
+    print(storm_dict)
+    assert(list(storm_dict.keys()) == expected_result)
+    for storm_id in expected_result[1:]:
+        for storm_line in storm_dict[storm_id]:
+            # ensure index matches storm ID
+            assert(storm_line.split()[index] == storm_id)
+
+    # ensure header matches expected format
+    if storm_dict:
+        assert(storm_dict['header'].split()[index] == sort_column)
+
 
 @pytest.mark.parametrize(
     'config_value, expected_result', [

@@ -21,4 +21,12 @@ warning_file=${DOCS_DIR}/_build/warnings.log
 if [ -s $warning_file ]; then
   cp -r ${DOCS_DIR}/_build/warnings.log artifact/doc_warnings.log
   cp artifact/doc_warnings.log artifact/documentation
+  echo ERROR: Warnings/Errors found in documentation
+  echo Summary:
+  grep WARNING ${DOCS_DIR}/_build/warnings.log
+  grep ERROR ${DOCS_DIR}/_build/warnings.log
+  echo Review this log file or download documentation_warnings.log artifact
+  exit 1
 fi
+
+echo INFO: Documentation was built successfully.
