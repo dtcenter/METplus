@@ -20,7 +20,7 @@ class WeatherRegimeCalculation():
         self.NUMPCS = int(os.environ.get(label+'_NUM_PCS',10))
         self.wr_tstep = int(os.environ.get(label+'_WR_FREQ',7))
         self.wr_outfile_type = os.environ.get(label+'_WR_OUTPUT_FILE_TYPE','text')
-        self.wr_outfile_dir = os.environ.get('WR_OUTPUT_FILE_DIR','')
+        self.wr_outfile_dir = os.environ.get('WR_OUTPUT_FILE_DIR',os.environ['SCRIPT_OUTPUT_BASE'])
         self.wr_outfile = os.environ.get(label+'_WR_OUTPUT_FILE',label+'_WeatherRegime')
 
 
