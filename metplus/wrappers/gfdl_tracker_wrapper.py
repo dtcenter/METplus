@@ -253,8 +253,9 @@ class GFDLTrackerWrapper(CommandBuilder):
             os.makedirs(output_dir)
 
         # create sym link to output directory for all files (including tcvit)
-        all_output_files = self.link_files_to_output_dir(all_input_files,
-                                                         tc_vitals_file)
+        all_output_files, tc_vitals_out = (
+            self.link_files_to_output_dir(all_input_files, tc_vitals_file)
+        )
         if not all_output_files:
             self.log_error("Could not create symbolic links "
                            "in output directory")
@@ -282,6 +283,12 @@ class GFDLTrackerWrapper(CommandBuilder):
         # rename fort.64 output file to output filename template
         if not self.rename_fort_64_to_output_path(input_dict):
             return False
+
+        # remove sym links from output directory
+        for link_path in all_output_files:
+            self._remove_symlink(link_path)
+
+        self._remove_symlink(tc_vitals_out)
 
         return True
 
@@ -339,22 +346,25 @@ class GFDLTrackerWrapper(CommandBuilder):
             all_output_files.append(dest_path)
 
         # create symbolic links for TCVitals file
-        self._create_symlink(tc_vitals_file, output_dir)
+        tc_vitals_out = self._create_symlink(tc_vitals_file, output_dir)
 
-        return all_output_files
+        return all_output_files, tc_vitals_out
 
     def _create_symlink(self, src_path, output_dir):
         src_file = os.path.basename(src_path)
         dest_path = os.path.join(output_dir, src_file)
 
-        if os.path.islink(dest_path):
-            self.logger.debug(f"Removing existing symbolic link: {dest_path}")
-            os.unlink(dest_path)
+        self._remove_symlink(dest_path)
 
         self.logger.debug(f"Creating sym link in {output_dir} for {src_file}")
         os.symlink(src_path, dest_path)
 
         return dest_path
+
+    def _remove_symlink(self, link_path):
+        if os.path.islink(link_path):
+            self.logger.debug(f"Removing existing symbolic link: {link_path}")
+            os.unlink(link_path)
 
     def run_grib_index(self, all_output_files):
         index_script = self.c_dict.get('INDEX_APP')
