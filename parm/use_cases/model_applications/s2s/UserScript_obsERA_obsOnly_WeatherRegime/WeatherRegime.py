@@ -185,7 +185,7 @@ class WeatherRegimeCalculation():
 
         # netcdf file
         if self.wr_outfile_type=='netcdf':
-            wr_full_outfile = self.wr_outfile_dir+'/'+self.wr_outfile+'.nc'
+            wr_full_outfile = os.path.join(self.wr_outfile_dir,self.wr_outfile+'.nc')
 
             if os.path.isfile(wr_full_outfile):
                 os.remove(wr_full_outfile)
@@ -225,7 +225,7 @@ class WeatherRegimeCalculation():
 
         # text file
         if self.wr_outfile_type=='text':
-           wr_full_outfile = self.wr_outfile_dir+'/'+self.wr_outfile+'.txt'
+           wr_full_outfile = os.path.join(self.wr_outfile_dir,self.wr_outfile+'.txt')
 
            if os.path.isfile(wr_full_outfile):
                 os.remove(wr_full_outfile)
