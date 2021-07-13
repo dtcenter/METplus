@@ -59,7 +59,8 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # This use case runs the weather regime driver script which runs the steps the user
 # lists in STEPS_OBS.  The possible steps are regridding, time averaging, computing the 
 # elbow (ELBOW), plotting the elbow (PLOTELBOW), computing EOFs (EOF), plotting EOFs 
-# (PLOTEOF), computing K means (KMEANS), and plotting the K means (PLOTKMEANS).  Regridding 
+# (PLOTEOF), computing K means (KMEANS), plotting the K means (PLOTKMEANS), computing a time 
+# frequency of weather regimes (TIMEFREQ) and plotting the time frequency (PLOTFREQ).  Regridding 
 # and time averaging are set up in the UserScript .conf file and are formatted as follows:
 # PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), UserScript(script_wr)
 #
@@ -73,8 +74,8 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # The weather regime python code is run for each time for the forecast and observations 
 # data. This example loops by valid time.  This version is set to only process the weather 
-# regime steps (ELBOW, PLOTELBOW, EOF, PLOTEOF, KMEANS, PLOTKMEANS), omitting the REGRID 
-# and TIMEAVE pre-processing steps.  However, the configurations for pre-processing are
+# regime steps (ELBOW, PLOTELBOW, EOF, PLOTEOF, KMEANS, PLOTKMEANS, TIMEFREQ, PLOTFREQ), omitting 
+# the REGRID and TIMEAVE pre-processing steps.  However, the configurations for pre-processing are
 # available for user reference.
 
 ##############################################################################

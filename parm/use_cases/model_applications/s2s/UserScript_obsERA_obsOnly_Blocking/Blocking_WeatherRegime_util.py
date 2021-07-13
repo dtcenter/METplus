@@ -5,33 +5,15 @@ import datetime
 from metplus.util import pre_run_setup, config_metplus
 
 
-def parse_steps(config_list):
+def parse_steps():
 
-    steps_config_part_fcst = [s for s in config_list if "FCST_STEPS" in s]
-    steps_list_fcst = []
+    steps_param_fcst = os.environ.get('FCST_STEPS','')
+    steps_list_fcst = steps_param_fcst.split("+")
 
-    steps_config_part_obs = [s for s in config_list if "OBS_STEPS" in s]
-    steps_list_obs = []
+    steps_param_obs = os.environ.get('OBS_STEPS','')
+    steps_list_obs = steps_param_obs.split("+")
 
-    # Setup the Steps
-    if steps_config_part_fcst:
-        steps_param_fcst = steps_config_part_fcst[0].split("=")[1]
-        steps_list_fcst = steps_param_fcst.split("+")
-        config_list.remove(steps_config_part_fcst[0])
-    if steps_config_part_obs:
-        steps_param_obs = steps_config_part_obs[0].split("=")[1]
-        steps_list_obs = steps_param_obs.split("+")
-        config_list.remove(steps_config_part_obs[0])
-
-    config = pre_run_setup(config_list)
-    if not steps_config_part_fcst:
-        steps_param_fcst = config.getstr('config','FCST_STEPS','')
-        steps_list_fcst = steps_param_fcst.split("+")
-    if not steps_config_part_obs:
-        steps_param_obs = config.getstr('config','OBS_STEPS','')
-        steps_list_obs = steps_param_obs.split("+")
-
-    return steps_list_fcst, steps_list_obs, config_list 
+    return steps_list_fcst, steps_list_obs 
 
 
 def write_mpr_file(data_obs,data_fcst,lats_in,lons_in,time_obs,time_fcst,mname,fvar,flev,ovar,olev,maskname,obslev,outfile):
@@ -49,12 +31,12 @@ def write_mpr_file(data_obs,data_fcst,lats_in,lons_in,time_obs,time_fcst,mname,f
     ovar_len = str(max([7,len(ovar)])+3)
     olev_len = str(max([7,len(olev)])+3)
 
-    format_string = '%-10s %-'+mname_len+'s %-7s %-12s %-18s %-18s %-12s %-17s %-17s %-'+fvar_len+'s %-' \
-        +flev_len+'s %-'+ovar_len+'s %-'+olev_len+'s %-10s %-'+mask_len+'s %-13s %-13s %-13s %-13s %-13s' \
-        ' %-13s %-13s\n'
-    format_string2 = '%-10s %-'+mname_len+'s %-7s %-12s %-18s %-18s %-12s %-17s %-17s %-'+fvar_len+'s %-' \
-        +flev_len+'s %-'+ovar_len+'s %-'+olev_len+'s %-10s %-'+mask_len+'s %-13s %-13s %-13s %-13s %-13s' \
-        ' %-13s %-13s %-10s %-10s %-10s %-12.4f %-12.4f %-10s %-10s %-12.4f %-12.4f %-10s %-10s %-10s %-10s'
+    format_string = '%-10s %-'+mname_len+'s %-7s %-12s %-18s %-18s %-12s %-17s %-17s %-'+fvar_len+'s ' \
+        '%-'+flev_len+'s %-'+ovar_len+'s %-'+olev_len+'s %-10s %-'+mask_len+'s %-13s %-13s %-13s %-13s ' \
+        '%-13s %-13s %-13s\n'
+    format_string2 = '%-10s %-'+mname_len+'s %-7s %-12s %-18s %-18s %-12s %-17s %-17s %-'+fvar_len+'s ' \
+        '%-'+flev_len+'s %-'+ovar_len+'s %-'+olev_len+'s %-10s %-'+mask_len+'s %-13s %-13s %-13s %-13s ' \
+        '%-13s %-13s %-13s %-10s %-10s %-10s %-12.4f %-12.4f %-10s %-10s %-12.4f %-12.4f %-10s %-10s %-10s %-10s\n'
 
      # Write the file
     for y in range(bdims[0]):
@@ -64,9 +46,9 @@ def write_mpr_file(data_obs,data_fcst,lats_in,lons_in,time_obs,time_fcst,mname,f
                     +time_fcst['valid'][y][dd][9:15]+'V'
                 mpr_outfile_name = outfile+'_'+ft_stamp+'.stat'
                 with open(mpr_outfile_name, 'w') as mf:
-                    mf.write(format_string % ('VERSION', 'MODEL', 'DESC', 'FCST_LEAD', 'FCST_VALID_BEG', 'FCST_VALID_END', 
-                        'OBS_LEAD', 'OBS_VALID_BEG', 'OBS_VALID_END', 'FCST_VAR', 'FCST_LEV', 'OBS_VAR', 'OBS_LEV', 
-                        'OBTYPE', 'VX_MASK', 'INTERP_MTHD','INTERP_PNTS', 'FCST_THRESH', 'OBS_THRESH', 'COV_THRESH', 
+                    mf.write(format_string % ('VERSION', 'MODEL', 'DESC', 'FCST_LEAD', 'FCST_VALID_BEG', 'FCST_VALID_END',
+                        'OBS_LEAD', 'OBS_VALID_BEG', 'OBS_VALID_END', 'FCST_VAR', 'FCST_LEV', 'OBS_VAR', 'OBS_LEV',
+                        'OBTYPE', 'VX_MASK', 'INTERP_MTHD','INTERP_PNTS', 'FCST_THRESH', 'OBS_THRESH', 'COV_THRESH',
                         'ALPHA', 'LINE_TYPE'))
                     for dpt in range(dlength):
                         mf.write(format_string2 % ('V9.1',mname,'NA',time_fcst['lead'][y][dd],time_fcst['valid'][y][dd],

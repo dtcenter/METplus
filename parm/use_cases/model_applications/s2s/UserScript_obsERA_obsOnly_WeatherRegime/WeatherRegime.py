@@ -1,6 +1,5 @@
 import os
 import numpy as np
-#import pandas as pd
 from pylab import *
 from sklearn.cluster import KMeans
 import scipy
@@ -9,27 +8,20 @@ from scipy import stats,signal
 from numpy import ones,vstack
 from numpy.linalg import lstsq
 from eofs.standard import Eof
-from metplus.util import config_metplus
-#, get_start_end_interval_times, get_lead_sequence
-#from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate
-
-import matplotlib.pyplot as plt
-import matplotlib.colors as colors
-from mpl_toolkits.basemap import Basemap
 
 
 class WeatherRegimeCalculation():
     """Contains the programs to perform a Weather Regime Analysis
     """
-    def __init__(self,config,label):
+    def __init__(self,label):
 
-        self.wrnum = config.getint('WeatherRegime',label+'_WR_NUMBER',6)
-        self.numi = config.getint('WeatherRegime',label+'_NUM_CLUSTERS',20)
-        self.NUMPCS = config.getint('WeatherRegime',label+'_NUM_PCS',10)
-        self.wr_tstep =  config.getint('WeatherRegime',label+'_WR_FREQ',7)
-        self.wr_outfile_type = config.getstr('WeatherRegime',label+'_WR_OUTPUT_FILE_TYPE','text')
-        self.wr_outfile_dir = config.getstr('WeatherRegime','WR_OUTPUT_FILE_DIR','')
-        self.wr_outfile = config.getstr('WeatherRegime',label+'_WR_OUTPUT_FILE',label+'_WeatherRegime')
+        self.wrnum = int(os.environ.get(label+'_WR_NUMBER',6))
+        self.numi = int(os.environ.get(label+'_NUM_CLUSTERS',20))
+        self.NUMPCS = int(os.environ.get(label+'_NUM_PCS',10))
+        self.wr_tstep = int(os.environ.get(label+'_WR_FREQ',7))
+        self.wr_outfile_type = os.environ.get(label+'_WR_OUTPUT_FILE_TYPE','text')
+        self.wr_outfile_dir = os.environ.get('WR_OUTPUT_FILE_DIR','')
+        self.wr_outfile = os.environ.get(label+'_WR_OUTPUT_FILE',label+'_WeatherRegime')
 
 
     def get_cluster_fraction(self, m, label):
@@ -250,7 +242,7 @@ class WeatherRegimeCalculation():
     def compute_wr_freq(self, WR):
 
         ######## Simple Count ##########
-        WRfreq = np.zeros((self.wrnum,len(WR[:,0]),len(WR[0,:])-self.wr_tstep))
+        WRfreq = np.zeros((self.wrnum,len(WR[:,0]),len(WR[0,:])-self.wr_tstep+1))
 
         for yy in np.arange(0,len(WRfreq[0,:,0]),1):
             d1=0;d2=self.wr_tstep
@@ -260,7 +252,6 @@ class WeatherRegimeCalculation():
                     WRfreq[ww,yy,dd] = len(np.where(temp==ww)[0])
                 d1=d1+1;d2=d2+1
 
-        WRmean = np.nanmean(WRfreq,axis=1)
-        dlen_plot = len(WRfreq[0,0])
+        dlen_plot = len(WRfreq[0,0,:])
 
-        return WRmean, dlen_plot
+        return WRfreq, dlen_plot, self.wr_tstep
