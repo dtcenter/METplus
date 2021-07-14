@@ -26,10 +26,15 @@ def ivt(input_file):
     temp = [] # Temperature
     u    = [] # u-wind
     v    = [] # v-wind
+
+    # First obtain the levels we will use
+    # These are in hPa in the file, so directly compare with user supplied min/max
+    levs = sorted(set([grb.level for grb in grbs if float(grb.level) >= float(os.environ.get('IVT_LAYER_MIN_PRESSURE',100.0)) and float(grb.level) <= float(os.environ.get('IVT_LAYER_MAX_PRESSURE',1000.0))]))
     
     # Fill in variable arrays from input file.
+    grbs.rewind()
     for grb in grbs:
-        if grb.level*100 <= 10000:
+        if not grb.level in levs:
             continue
         elif np.logical_and('v-' in grb.parameterName,grb.typeOfLevel=='isobaricInhPa'):
             v.append(grb.values)        
@@ -41,7 +46,6 @@ def ivt(input_file):
             hgt.append(grb.values)
         elif np.logical_and('Specific' in grb.parameterName,grb.typeOfLevel=='isobaricInhPa'):
             q.append(grb.values)
-            levs.append(grb.level)
         
     temp = np.array(temp)
     hgt  = np.array(hgt)
@@ -53,11 +57,10 @@ def ivt(input_file):
     # If we didn't find specific humidity, look for relative humidity.
     if len(q) == 0:
         for grb in grbs:
-            if grb.level*100 <= 10000:
+            if not grb.level in levs:
                 continue
             if np.logical_and('Relative' in grb.parameterName,grb.typeOfLevel=='isobaricInhPa'):
                 q.append(grb.values)
-                levs.append(grb.level)
             
         levs = np.array(levs)
         # Clausius-Clapeyron time
