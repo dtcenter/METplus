@@ -69,7 +69,7 @@ def pv(input_file):
     ds['p'] = xr.DataArray(ds.isobaricInhPa.values,dims=['isobaricInhPa'],coords={'isobaricInhPa':ds.isobaricInhPa.values},attrs={'units':'hPa'}).broadcast_like(ds['t'])
 
     # Calculate saturation equivalent potential temperature
-    ds['sept'] = mpcalc.saturation_equivalent_potential_temperature(ds['p']*units('Pa'),ds['t'])
+    ds['sept'] = mpcalc.saturation_equivalent_potential_temperature(ds['p'].metpy.convert_units('Pa'),ds['t'])
 
     met_data = ds['sept'].mean(axis=0).values
 

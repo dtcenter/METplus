@@ -69,10 +69,10 @@ def pv(input_file):
     ds['p'] = xr.DataArray(ds.isobaricInhPa.values,dims=['isobaricInhPa'],coords={'isobaricInhPa':ds.isobaricInhPa.values},attrs={'units':'hPa'}).broadcast_like(ds['t']) 
 
     # Calculate potential temperature
-    ds['theta'] = mpcalc.potential_temperature(ds['p']*units('Pa'),ds['t'])
+    ds['theta'] = mpcalc.potential_temperature(ds['p'].metpy.convert_units('Pa'),ds['t'])
   
     # Compute baroclinic PV
-    ds['pv'] = mpcalc.potential_vorticity_baroclinic(ds['theta'],ds['p']*units('Pa'),ds['u'],ds['v'],latitude=ds.latitude)*(1.0e-6)
+    ds['pv'] = mpcalc.potential_vorticity_baroclinic(ds['theta'],ds['p'].metpy.convert_units('Pa'),ds['u'],ds['v'],latitude=ds.latitude)/(1.0e-6)
 
     met_data = ds['pv'].mean(axis=0).values
 
