@@ -14,6 +14,7 @@ import atexit
 
 import metcalcpy.contributed.rmm_omi.compute_mjo_indices as cmi
 import metplotpy.contributed.mjo_rmm_omi.plot_mjo_indices as pmi
+import METreadnc.util.read_netcdf as read_netcdf
 #from metcalcpy.util import read_file
 
 
@@ -59,6 +60,7 @@ def read_omi_eofs(eof1_files, eof2_files):
     nlat = len(EOF1['lat'])
     nlon = len(EOF1['lon'])
 
+
     for doy in range(len(eof1_files)):
         doystr = str(doy).zfill(3)
         tmp1 = pd.read_csv(eof1_files[doy], header=None, delim_whitespace=True, names=['eof1'])
@@ -77,37 +79,43 @@ def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
     with open(olr_filetxt) as ol:
         olr_input_files = ol.read().splitlines()
 
-    # read OLR data from file
-    #### This will need to be converted to the dbload versions
-    #### I've cut the domain using regrid_data_plane, so that can be omitted once switched to dbload
-    datestrt = '1979-01-01'
-    datelast = '2012-12-31'
-    time = np.arange(datestrt,datelast, dtype='datetime64[D]')
-    ntim = len(time)
-    ds = xr.open_dataset('UserScript_fcstGFS_obsERA_OMI/olr.1x.7920.anom7901.nc')
-    olr = ds['olr'].sel(lat=slice(-20,20),time=slice(time[0],time[-1]))
-    lat = ds['lat'].sel(lat=slice(-20,20))
-    lon = ds['lon']
-    print(olr.min(), olr.max())
+    netcdf_reader = read_netcdf.ReadNetCDF()
+    for input_file in olr_input_files:
+        print("OMI driver ",input_file)
+        # read OLR data from file
+        #### This will need to be converted to the dbload versions
+        #### I've cut the domain using regrid_data_plane, so that can be omitted once switched to dbload
+        #datestrt = '1979-01-01'
+        #datelast = '2012-12-31'
+        #time = np.arange(datestrt,datelast, dtype='datetime64[D]')
+        #ntim = len(time)
+        #ds = xr.open_dataset('UserScript_fcstGFS_obsERA_OMI/olr.1x.7920.anom7901.nc')
+        ds = netcdf_reader.read_into_xarray(input_file) 
+        #olr = ds['olr'].sel(lat=slice(-20,20),time=slice(time[0],time[-1]))
+        #lat = ds['lat'].sel(lat=slice(-20,20))
+        olr = ds['olr']
+        lat = ds['lat']
+        lon = ds['lon']
+        print(olr.min(), olr.max())
 
-    # project OLR onto EOFs
-    PC1, PC2 = cmi.omi(olr[0:ntim,:,:], time, spd, EOF1, EOF2)
+        # project OLR onto EOFs
+        PC1, PC2 = cmi.omi(olr[0:ntim,:,:], time, spd, EOF1, EOF2)
 
-    # Get times for the PC phase diagram
-    plase_plot_time_format = os.environ['PHASE_PLOT_TIME_FMT']
-    phase_plot_start_time = datetime.datetime.strptime(os.environ['PHASE_PLOT_TIME_BEG'],plase_plot_time_format)
-    phase_plot_end_time = datetime.datetime.strptime(os.environ['PHASE_PLOT_TIME_END'],plase_plot_time_format)
-    PC1_plot = PC1.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
-    PC2_plot = PC2.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
+        # Get times for the PC phase diagram
+        plase_plot_time_format = os.environ['PHASE_PLOT_TIME_FMT']
+        phase_plot_start_time = datetime.datetime.strptime(os.environ['PHASE_PLOT_TIME_BEG'],plase_plot_time_format)
+        phase_plot_end_time = datetime.datetime.strptime(os.environ['PHASE_PLOT_TIME_END'],plase_plot_time_format)
+        PC1_plot = PC1.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
+        PC2_plot = PC2.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
 
-    # Get the output name and format for the PC plase diagram
-    phase_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_NAME',inlabel+'_OMI_comp_phase'))
-    phase_plot_format = os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
+        # Get the output name and format for the PC plase diagram
+        phase_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_NAME',inlabel+'_OMI_comp_phase'))
+        phase_plot_format = os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
 
-    # plot the PC phase diagram
-    pmi.phase_diagram('OMI',PC1,PC2,np.array(PC1_plot['time'].dt.strftime("%Y-%m-%d").values),
-        np.array(PC1_plot['time.month'].values),np.array(PC1_plot['time.day'].values),
-        phase_plot_name,phase_plot_format)
+        # plot the PC phase diagram
+        pmi.phase_diagram('OMI',PC1,PC2,np.array(PC1_plot['time'].dt.strftime("%Y-%m-%d").values),
+            np.array(PC1_plot['time.month'].values),np.array(PC1_plot['time.day'].values),
+            phase_plot_name,phase_plot_format)
 
 
 def main():
@@ -130,6 +138,7 @@ def main():
     with open(eof2_filetxt) as ef2:
         eof2_input_files = ef2.read().splitlines()
 
+    print("OMI driver ",eof1_input_files)
     # Read in the EOFs
     EOF1, EOF2 = read_omi_eofs(eof1_input_files, eof2_input_files)
 
