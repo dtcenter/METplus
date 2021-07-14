@@ -71,7 +71,7 @@ def pv(input_file):
     # Calculate saturation equivalent potential temperature
     ds['sept'] = mpcalc.saturation_equivalent_potential_temperature(ds['p'].metpy.convert_units('Pa'),ds['t'])
 
-    met_data = ds['sept'].mean(axis=0).values
+    met_data = ds['sept'].sel(isobaricInhPa=slice(float(os.environ.get('SEPT_LAYER_MIN_PRESSURE',100.0)),float(os.environ.get('SEPT_LAYER_MAX_PRESSURE',1000.0)))).mean(axis=0).values
 
     return met_data
 
