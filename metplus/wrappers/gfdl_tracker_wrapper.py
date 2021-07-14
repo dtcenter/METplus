@@ -121,9 +121,9 @@ class GFDLTrackerWrapper(CommandBuilder):
         c_dict = super().create_c_dict()
 
         # get values from config object and set them to be accessed by wrapper
-        gfdl_tracker_base = self.config.getdir('GFDL_TRACKER_BASE', '')
-        if not gfdl_tracker_base:
-            self.log_error('GFDL_TRACKER_BASE must be set.')
+        gfdl_tracker_exec = self.config.getdir('GFDL_TRACKER_EXEC', '')
+        if not gfdl_tracker_exec:
+            self.log_error('GFDL_TRACKER_EXEC must be set.')
             return c_dict
 
         c_dict['INPUT_GRIB_VERSION'] = (
@@ -140,17 +140,15 @@ class GFDLTrackerWrapper(CommandBuilder):
                            "must be 1 or 2")
             return c_dict
 
-        c_dict['INDEX_APP'] = os.path.join(gfdl_tracker_base,
-                                              'trk_exec',
-                                              index_script_name)
+        c_dict['INDEX_APP'] = os.path.join(gfdl_tracker_exec,
+                                           index_script_name)
 
         if not os.path.exists(c_dict['INDEX_APP']):
             self.log_error("GRIB index exe does not exist: "
                            f"{c_dict['INDEX_APP']}")
 
-        c_dict['TRACKER_APP'] = os.path.join(gfdl_tracker_base,
-                                              'trk_exec',
-                                              'gettrk.exe')
+        c_dict['TRACKER_APP'] = os.path.join(gfdl_tracker_exec,
+                                             'gettrk.exe')
 
         if not os.path.exists(c_dict['TRACKER_APP']):
             self.log_error("GFDL tracker exe does not exist: "
