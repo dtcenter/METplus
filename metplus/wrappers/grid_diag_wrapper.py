@@ -163,11 +163,11 @@ class GridDiagWrapper(RuntimeFreqWrapper):
         self.clear()
 
         # subset input files as appropriate
-        input_list_files = self.subset_input_files(time_info)
-        if not input_list_files:
+        input_list_dict = self.subset_input_files(time_info)
+        if not input_list_dict:
             return
 
-        for input_list_file in input_list_files:
+        for input_list_file in input_list_dict.values():
             self.infiles.append(input_list_file)
 
         # get output path
