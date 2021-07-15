@@ -16,7 +16,7 @@ from datetime import datetime
 from ..util import met_util as util
 from ..util import time_util
 from . import RuntimeFreqWrapper
-from ..util import do_string_sub
+from ..util import do_string_sub, getlist
 
 '''!@namespace UserScriptWrapper
 @brief Parent class for wrappers that run over a grouping of times
@@ -40,6 +40,15 @@ class UserScriptWrapper(RuntimeFreqWrapper):
         if not c_dict['COMMAND_TEMPLATE']:
             self.log_error("Must supply a command to run with "
                            "USER_SCRIPT_COMMAND")
+
+        c_dict['INPUT_DIR'] = self.config.getraw('config',
+                                                 'USER_SCRIPT_INPUT_DIR',
+                                                 '')
+        c_dict['INPUT_TEMPLATES'] = getlist(
+            self.config.getraw('config',
+                               'USER_SCRIPT_INPUT_TEMPLATE',
+                               '')
+        )
 
         c_dict['IS_MET_CMD'] = False
         c_dict['LOG_THE_OUTPUT'] = True
@@ -79,6 +88,10 @@ class UserScriptWrapper(RuntimeFreqWrapper):
                         or time_info.get('valid') != '*'):
                     time_info = time_util.ti_calculate(time_info)
 
+            # create file list text files for the current run time criteria
+            # set c_dict to the input file dict to set as environment vars
+            self.c_dict['INPUT_LIST_DICT'] = self.subset_input_files(time_info)
+
             self.set_environment_variables(time_info)
 
             # substitute values from dictionary into command
@@ -97,9 +110,37 @@ class UserScriptWrapper(RuntimeFreqWrapper):
 
         return success
 
-    def get_all_files(self, custom=None):
-        """! Don't get list of all files for UserScript wrapper
+    def get_files_from_time(self, time_info):
+        """! Create dictionary containing time information (key time_info) and
+             any relevant files for that runtime. The parent implementation of
+             this function creates a dictionary and adds the time_info to it.
+             This wrapper gets all files for the current runtime and adds it to
+             the dictionary with keys 'fcst' and 'obs'
 
-            @returns True to report that no failures occurred
+             @param time_info dictionary containing time information
+             @returns dictionary containing time_info dict and any relevant
+             files with a key representing a description of that file
         """
-        return True
+        file_dict = super().get_files_from_time(time_info)
+
+        input_files = self.find_input_files(time_info)
+        if input_files is None:
+            return None
+
+        for key, value in input_files.items():
+            file_dict[key] = value
+
+        return file_dict
+
+    def set_environment_variables(self, time_info):
+        """! Set environment variables that will be read set when running this
+         tool. Wrappers could override it to set wrapper-specific values,
+         then call super version to handle user configs and printing
+
+        @param time_info dictionary containing timing info from current run
+        """
+
+        for identifier, file_path in self.c_dict['INPUT_LIST_DICT'].items():
+            self.add_env_var(f'METPLUS_{identifier.upper()}', file_path)
+
+        super().set_environment_variables(time_info)
