@@ -144,3 +144,12 @@ class UserScriptWrapper(RuntimeFreqWrapper):
             self.add_env_var(f'METPLUS_{identifier.upper()}', file_path)
 
         super().set_environment_variables(time_info)
+
+    def get_all_files(self, custom=None):
+        """! Call parent function to attempt to get files but always return
+        True because this functionality is optional
+
+        @returns True
+        """
+        super().get_all_files(custom)
+        return True
