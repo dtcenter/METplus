@@ -251,6 +251,10 @@ class RuntimeFreqWrapper(CommandBuilder):
         self.logger.debug("Finding all input files")
         all_files = []
 
+        # if start time is not set, don't loop
+        if not self.c_dict.get('START_TIME'):
+            return False
+
         # loop over all init/valid times
         loop_time = self.c_dict['START_TIME']
         while loop_time <= self.c_dict['END_TIME']:
