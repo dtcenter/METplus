@@ -122,6 +122,13 @@ met_tool_wrapper/MODE/MODE.conf
 # Keywords
 # --------
 #
+# .. note::
+#
+#   * MODEToolUseCase
+#   * DiagnosticsUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-MODE.png'
 #
-# .. note:: `MODEToolUseCase <https://dtcenter.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_, `DiagnosticsUseCase <https://dtcenter.github.io/METplus/search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_

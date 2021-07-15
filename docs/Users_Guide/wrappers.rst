@@ -132,7 +132,8 @@ Description
 
 This wrapper does not have a corresponding MET tool but instead wraps
 the logic necessary to create plots of cyclone tracks. Currently only
-the output from the MET tc-pairs tool can be plotted.
+the output from the MET tc-pairs tool can be plotted. If used on an internet-limited system,
+additional dependencies may apply. See :ref:`install` for details.
 
 METplus Configuration
 ---------------------
@@ -866,12 +867,13 @@ Description
 -----------
 
 The ExtractTiles wrapper is used to regrid and extract subregions from
-paired tropical cyclone tracks that are created by the tc_pairs_wrapper.
+paired tropical cyclone tracks generated with TCStat, or from cluster object
+centroids generated with MODE Time Domain (MTD).
 Unlike the other wrappers, the extract_tiles_wrapper does not correspond
-to a specific MET tool. It invokes the tc_stat_wrapper, which in turn
-calls the MET tc_stat tool to determine the lat/lon positions of the
-paired track data. This information is then used to create tiles of
-subregions. The ExtractTiles wrapper creates a 2n degree x 2m degree
+to a specific MET tool. It reads track information to determine the
+lat/lon positions of the paired track data.
+This information is then used to create tiles of subregions.
+The ExtractTiles wrapper creates a 2n degree x 2m degree
 grid/tile with each storm located at the center.
 
 METplus Configuration
@@ -889,6 +891,8 @@ the dimensions and density of the tiles comprising the subregion:
 | :term:`FCST_EXTRACT_TILES_OUTPUT_TEMPLATE`
 | :term:`OBS_EXTRACT_TILES_OUTPUT_TEMPLATE`
 | :term:`EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE`
+| :term:`EXTRACT_TILES_MTD_INPUT_DIR`
+| :term:`EXTRACT_TILES_MTD_INPUT_TEMPLATE`
 | :term:`EXTRACT_TILES_LON_ADJ`
 | :term:`EXTRACT_TILES_LAT_ADJ`
 | :term:`EXTRACT_TILES_NLAT`
@@ -5299,6 +5303,8 @@ METplus Configuration
 | :term:`TCMPR_PLOTTER_FOOTNOTE_FLAG`
 | :term:`TCMPR_PLOTTER_PLOT_CONFIG_OPTS`
 | :term:`TCMPR_PLOTTER_SAVE_DATA`
+| :term:`TCMPR_PLOTTER_DEP_LABELS`
+| :term:`TCMPR_PLOTTER_PLOT_LABELS`
 |
 
 The following are TCMPR flags, if set to 'no', then don't set flag, if

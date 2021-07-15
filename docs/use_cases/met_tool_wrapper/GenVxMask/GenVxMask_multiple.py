@@ -110,8 +110,13 @@ met_tool_wrapper/GenVxMask/GenVxMask_multiple.conf
 # --------
 #
 # .. note::
-#    `GenVxMaskToolUseCase <https://dtcenter.github.io/METplus/search.html?q=GenVxMaskToolUseCase&check_keywords=yes&area=default>`_,
-#    `GRIBFileUseCase  <https://dtcenter.github.io/METplus/search.html?q=GRIBFileUseCase&check_keywords=yes&area=default>`_
 #
-
+#   * GenVxMaskToolUseCase
+#   * GRIBFileUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
+#
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-GenVxMask.png'
+#
