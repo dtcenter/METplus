@@ -976,6 +976,248 @@ Configuration
 | :term:`GEN_VX_MASK_FILE_WINDOW_END`
 |
 
+.. _gfdl_tracker_wrapper:
+
+GFDLTracker
+===========
+
+Description
+-----------
+
+Used to call the GFDL Tracker applications to objectively analyze forecast data
+to provide an estimate of the vortex center position (latitude and longitude),
+and track the storm for the duration of the forecast.
+
+METplus Configuration
+---------------------
+
+| :term:`GFDL_TRACKER_BASE`
+| :term:`GFDL_TRACKER_INPUT_DIR`
+| :term:`GFDL_TRACKER_INPUT_TEMPLATE`
+| :term:`GFDL_TRACKER_TC_VITALS_INPUT_DIR`
+| :term:`GFDL_TRACKER_TC_VITALS_INPUT_TEMPLATE`
+| :term:`GFDL_TRACKER_OUTPUT_DIR`
+| :term:`GFDL_TRACKER_OUTPUT_TEMPLATE`
+| :term:`GFDL_TRACKER_GRIB_VERSION`
+| :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`
+| :term:`GFDL_TRACKER_DATEIN_INP_BCC`
+| :term:`GFDL_TRACKER_DATEIN_INP_BYY`
+| :term:`GFDL_TRACKER_DATEIN_INP_BMM`
+| :term:`GFDL_TRACKER_DATEIN_INP_BDD`
+| :term:`GFDL_TRACKER_DATEIN_INP_BHH`
+| :term:`GFDL_TRACKER_DATEIN_INP_MODEL`
+| :term:`GFDL_TRACKER_DATEIN_INP_MODTYP`
+| :term:`GFDL_TRACKER_DATEIN_INP_LT_UNITS`
+| :term:`GFDL_TRACKER_DATEIN_INP_FILE_SEQ`
+| :term:`GFDL_TRACKER_DATEIN_INP_NESTTYP`
+| :term:`GFDL_TRACKER_ATCFINFO_ATCFNUM`
+| :term:`GFDL_TRACKER_ATCFINFO_ATCFNAME`
+| :term:`GFDL_TRACKER_ATCFINFO_ATCFYMDH`
+| :term:`GFDL_TRACKER_ATCFINFO_ATCFFREQ`
+| :term:`GFDL_TRACKER_TRACKERINFO_TYPE`
+| :term:`GFDL_TRACKER_TRACKERINFO_MSLPTHRESH`
+| :term:`GFDL_TRACKER_TRACKERINFO_USE_BACKUP_MSLP_GRAD_CHECK`
+| :term:`GFDL_TRACKER_TRACKERINFO_V850THRESH`
+| :term:`GFDL_TRACKER_TRACKERINFO_USE_BACKUP_850_VT_CHECK`
+| :term:`GFDL_TRACKER_TRACKERINFO_ENABLE_TIMING`
+| :term:`GFDL_TRACKER_TRACKERINFO_GRIDTYPE`
+| :term:`GFDL_TRACKER_TRACKERINFO_CONTINT`
+| :term:`GFDL_TRACKER_TRACKERINFO_WANT_OCI`
+| :term:`GFDL_TRACKER_TRACKERINFO_OUT_VIT`
+| :term:`GFDL_TRACKER_TRACKERINFO_USE_LAND_MASK`
+| :term:`GFDL_TRACKER_TRACKERINFO_INP_DATA_TYPE`
+| :term:`GFDL_TRACKER_TRACKERINFO_GRIBVER`
+| :term:`GFDL_TRACKER_TRACKERINFO_G2_JPDTN`
+| :term:`GFDL_TRACKER_TRACKERINFO_G2_MSLP_PARM_ID`
+| :term:`GFDL_TRACKER_TRACKERINFO_G1_MSLP_PARM_ID`
+| :term:`GFDL_TRACKER_TRACKERINFO_G1_SFCWIND_LEV_TYP`
+| :term:`GFDL_TRACKER_TRACKERINFO_G1_SFCWIND_LEV_VAL`
+| :term:`GFDL_TRACKER_PHASEINFO_PHASEFLAG`
+| :term:`GFDL_TRACKER_PHASEINFO_PHASESCHEME`
+| :term:`GFDL_TRACKER_PHASEINFO_WCORE_DEPTH`
+| :term:`GFDL_TRACKER_STRUCTINFO_STRUCTFLAG`
+| :term:`GFDL_TRACKER_STRUCTINFO_IKEFLAG`
+| :term:`GFDL_TRACKER_FNAMEINFO_GMODNAME`
+| :term:`GFDL_TRACKER_FNAMEINFO_RUNDESCR`
+| :term:`GFDL_TRACKER_FNAMEINFO_ATCFDESCR`
+| :term:`GFDL_TRACKER_WAITINFO_USE_WAITFOR`
+| :term:`GFDL_TRACKER_WAITINFO_WAIT_MIN_AGE`
+| :term:`GFDL_TRACKER_WAITINFO_WAIT_MIN_SIZE`
+| :term:`GFDL_TRACKER_WAITINFO_WAIT_MAX_WAIT`
+| :term:`GFDL_TRACKER_WAITINFO_WAIT_SLEEPTIME`
+| :term:`GFDL_TRACKER_WAITINFO_USE_PER_FCST_COMMAND`
+| :term:`GFDL_TRACKER_WAITINFO_PER_FCST_COMMAND`
+| :term:`GFDL_TRACKER_NETCDFINFO_LAT_NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_LMASKNAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_LON_NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_MSLPNAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_NETCDF_FILENAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_NUM_NETCDF_VARS`
+| :term:`GFDL_TRACKER_NETCDFINFO_RV700NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_RV850NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_TIME_NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_TIME_UNITS`
+| :term:`GFDL_TRACKER_NETCDFINFO_TMEAN_300_500_NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_U500NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_U700NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_U850NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_USFCNAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_V500NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_V700NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_V850NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_VSFCNAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z200NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z300NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z350NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z400NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z450NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z500NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z550NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z600NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z650NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z700NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z750NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z800NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z850NAME`
+| :term:`GFDL_TRACKER_NETCDFINFO_Z900NAME`
+| :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_ZETA700`
+| :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_WCIRC850`
+| :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_WCIRC700`
+| :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_GPH850`
+| :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_GPH700`
+| :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_MSLP`
+| :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_WCIRCSFC`
+| :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_ZETASFC`
+| :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_THICK500850`
+| :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_THICK200500`
+| :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_THICK200850`
+| :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_ZETA850`
+| :term:`GFDL_TRACKER_VERBOSE_VERB`
+| :term:`GFDL_TRACKER_VERBOSE_VERB_G2`
+
+.. _gfdl_tracker-nml-conf:
+
+NML Configuration
+-----------------
+
+Below is the NML template configuration file used for this wrapper. The wrapper
+substitutes values from the METplus configuration file into this configuration
+file. While it may appear that environment variables are used in the NML
+template file, they are not actually environment variables. The wrapper
+searches for these strings and substitutes the values as appropriate.
+
+.. literalinclude:: ../../parm/use_cases/met_tool_wrapper/GFDLTracker/template.nml
+
+**${METPLUS_DATEIN_INP_BCC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`INIT_BEG`
+     - &datein: inp%bcc
+
+**${METPLUS_DATEIN_INP_BYY}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`INIT_BEG`
+     - &datein: inp%byy
+
+**${METPLUS_DATEIN_INP_BMM}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`INIT_BEG`
+     - &datein: inp%bmm
+
+**${METPLUS_DATEIN_INP_BDD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`INIT_BEG`
+     - &datein: inp%bdd
+
+**${METPLUS_DATEIN_INP_BHH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`INIT_BEG`
+     - &datein: inp%bhh
+
+**${METPLUS_DATEIN_INP_MODEL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_DATEIN_INP_MODEL`
+     - &datein: inp%model
+
+**${METPLUS_DATEIN_INP_MODTYP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_DATEIN_INP_MODTYP`
+     - &datein: inp%modtyp
+
+**${METPLUS_DATEIN_INP_LT_UNITS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_DATEIN_INP_LT_UNITS`
+     - &datein: inp%lt_units
+
+**${METPLUS_DATEIN_INP_FILE_SEQ}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_DATEIN_INP_FILE_SEQ`
+     - &datein: inp%file_seq
+
+**${METPLUS_DATEIN_INP_NESTTYP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_DATEIN_INP_NESTTYP`
+     - &datein: inp%nesttyp
+
 .. _grid_diag_wrapper:
 
 GridDiag
