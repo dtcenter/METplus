@@ -116,5 +116,11 @@ met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf
 # Keywords
 # --------
 #
-# .. note:: `CyclonePlotterUseCase <https://dtcenter.github.io/METplus/search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
-
+# .. note::
+#
+#   * CyclonePlotterUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
+#

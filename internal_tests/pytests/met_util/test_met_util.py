@@ -1613,6 +1613,34 @@ def test_get_storms(metplus_config, filename, expected_result):
     if storm_dict:
         assert(storm_dict['header'].split()[storm_id_index] == 'STORM_ID')
 
+def test_get_storms_mtd(metplus_config):
+    index = 23
+    expected_result = [
+        'header',
+        'CF001',
+        'CO001'
+    ]
+    sort_column = 'OBJECT_CAT'
+    config = metplus_config()
+    filepath = os.path.join(config.getdir('METPLUS_BASE'),
+                            'internal_tests',
+                            'data',
+                            'mtd',
+                            'fake_mtd_2d.txt')
+
+    storm_dict = util.get_storms(filepath, sort_column=sort_column)
+    print(storm_dict)
+    assert(list(storm_dict.keys()) == expected_result)
+    for storm_id in expected_result[1:]:
+        for storm_line in storm_dict[storm_id]:
+            # ensure index matches storm ID
+            assert(storm_line.split()[index] == storm_id)
+
+    # ensure header matches expected format
+    if storm_dict:
+        assert(storm_dict['header'].split()[index] == sort_column)
+
+
 @pytest.mark.parametrize(
     'config_value, expected_result', [
         # 2 items semi-colon at end
