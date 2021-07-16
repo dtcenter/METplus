@@ -2,36 +2,17 @@ import os
 import netCDF4
 import numpy as np
 import datetime
-from metplus.util import pre_run_setup, config_metplus
 
 
-def parse_steps(config_list):
+def parse_steps():
 
-    steps_config_part_fcst = [s for s in config_list if "FCST_STEPS" in s]
-    steps_list_fcst = []
+    steps_param_fcst = os.environ.get('FCST_STEPS','')
+    steps_list_fcst = steps_param_fcst.split("+")
 
-    steps_config_part_obs = [s for s in config_list if "OBS_STEPS" in s]
-    steps_list_obs = []
+    steps_param_obs = os.environ.get('OBS_STEPS','')
+    steps_list_obs = steps_param_obs.split("+")
 
-    # Setup the Steps
-    if steps_config_part_fcst:
-        steps_param_fcst = steps_config_part_fcst[0].split("=")[1]
-        steps_list_fcst = steps_param_fcst.split("+")
-        config_list.remove(steps_config_part_fcst[0])
-    if steps_config_part_obs:
-        steps_param_obs = steps_config_part_obs[0].split("=")[1]
-        steps_list_obs = steps_param_obs.split("+")
-        config_list.remove(steps_config_part_obs[0])
-
-    config = pre_run_setup(config_list)
-    if not steps_config_part_fcst:
-        steps_param_fcst = config.getstr('config','FCST_STEPS','')
-        steps_list_fcst = steps_param_fcst.split("+")
-    if not steps_config_part_obs:
-        steps_param_obs = config.getstr('config','OBS_STEPS','')
-        steps_list_obs = steps_param_obs.split("+")
-
-    return steps_list_fcst, steps_list_obs, config_list 
+    return steps_list_fcst, steps_list_obs
 
 
 def write_mpr_file(data_obs,data_fcst,lats_in,lons_in,time_obs,time_fcst,mname,fvar,flev,ovar,olev,maskname,obslev,outfile):

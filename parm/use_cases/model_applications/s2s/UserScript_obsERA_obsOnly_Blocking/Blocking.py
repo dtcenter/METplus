@@ -4,27 +4,27 @@ import datetime
 import bisect
 from scipy import stats
 from scipy.signal import argrelextrema
-from metplus.util import config_metplus, get_start_end_interval_times, get_lead_sequence
-from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate
+#from metplus.util import config_metplus, get_start_end_interval_times, get_lead_sequence
+#from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate
 from Blocking_WeatherRegime_util import read_nc_met
 
 class BlockingCalculation():
     """Contains the programs to calculate Blocking via the Pelly-Hoskins Method
     """
-    def __init__(self,config,label):
+    def __init__(self,label):
 
-        self.blocking_anomaly_var = config.getstr('Blocking',label+'_BLOCKING_ANOMALY_VAR','')
-        self.blocking_var = config.getstr('Blocking',label+'_BLOCKING_VAR','')
-        self.smoothing_pts = config.getint('Blocking',label+'_SMOOTHING_PTS',9)
-        lat_delta_in = config.getstr('Blocking',label+'_LAT_DELTA','-5,0,5')
+        self.blocking_anomaly_var = os.environ.get(label+'_BLOCKING_ANOMALY_VAR','Z500_ANA')
+        self.blocking_var = os.environ.get(label+'_BLOCKING_VAR','Z500')
+        self.smoothing_pts = int(os.environ.get(label+'_SMOOTHING_PTS',9))
+        lat_delta_in = os.environ.get(label+'_LAT_DELTA','-5,0,5')
         self.lat_delta = list(map(int,lat_delta_in.split(",")))
-        self.n_s_limits = config.getint('Blocking',label+'_NORTH_SOUTH_LIMITS',30)
-        self.ibl_dist = config.getint('Blocking',label+'_IBL_DIST',7)
-        self.ibl_in_gibl = config.getint('Blocking',label+'_IBL_IN_GIBL',15)
-        self.gibl_overlap = config.getint('Blocking',label+'_GIBL_OVERLAP',10)
-        self.block_time = config.getint('Blocking',label+'_BLOCK_TIME',5)  ###Should fix so it supports other times"
-        self.block_travel = config.getint('Blocking',label+'_BLOCK_TRAVEL',45)
-        self.block_method = config.getstr('Blocking',label+'_BLOCK_METHOD','PH')
+        self.n_s_limits = int(os.environ.get(label+'_NORTH_SOUTH_LIMITS',30))
+        self.ibl_dist = int(os.environ.get(label+'_IBL_DIST',7))
+        self.ibl_in_gibl = int(os.environ.get(label+'_IBL_IN_GIBL',15))
+        self.gibl_overlap = int(os.environ.get(label+'_GIBL_OVERLAP',10))
+        self.block_time = int(os.environ.get(label+'_BLOCK_TIME',5))  ###Should fix so it supports other times"
+        self.block_travel = int(os.environ.get(label+'_BLOCK_TRAVEL',45))
+        self.block_method = os.environ.get(label+'_BLOCK_METHOD','PH')
 
         # Check data requirements
         if self.smoothing_pts % 2 == 0:
