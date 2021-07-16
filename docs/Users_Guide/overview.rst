@@ -15,8 +15,9 @@ user's ability to quickly set-up and run MET. Over the next few years,
 METplus Wrappers will become the authoritative repository for
 verification of the Unified Forecast System.
 
-The METplus Wrappers User's Guide is organized as follows. An overview of METplus
-Wrappers can be found below. :ref:`install` contains basic information about how to get started with METplus
+The METplus Wrappers User's Guide is organized as follows. An overview of
+METplus Wrappers can be found below. :ref:`install` contains basic
+information about how to get started with METplus
 Wrappers - including system requirements, required software, and how to
 download METplus Wrappers. :ref:`sysconf` provides
 information about configuring your environment and METplus Wrappers
@@ -93,25 +94,25 @@ Future development plans
 
 METplus Wrappers is an evolving application. New capabilities are
 planned in controlled, successive version releases that are synchronized
-with MET releases. Bug fixes and user-identified problems will be
-addressed as they are found and posted to the known issues section of
-the METplus Wrappers Users web page
-(https://dtcenter.org/community-code/model-evaluation-tools-met). Future
-METplus Wrappers development plans are based on several contributing
-factors, including the needs of both the operational and research
-community. Issues that are in the development queue detailed in the
-"Issues" section of the GitHub repository. Please send questions to
-`met_help@ucar.edu <met_help@ucar.edu>`__.
+with MET releases. Software bugs and user-identified problems will be
+documented using GitHub issues and fixed either in the next bugfix or
+official release. Future METplus Wrappers development plans are based
+on several contributing factors, including the needs of both the
+operational and research community. Issues that are in the development
+queue detailed in the "Issues" section of the GitHub repository.
+Please create a post in the
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
+with any questions.
 
 Code support
 ============
 
-Support for METplus Wrappers is provided through a MET-help e-mail
-address: met_help@ucar.edu. We will endeavor to respond to requests for
+Support for METplus Wrappers is provided through the
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
+We will endeavor to respond to requests for
 help in a timely fashion. In addition, information about METplus
-Wrappers and tools that can be used with MET are provided on the MET
-Users web page
-(https://dtcenter.org/community-code/model-evaluation-tools-met).
+Wrappers and tools that can be used with MET are provided on the
+`MET Users web page <https://dtcenter.org/community-code/model-evaluation-tools-met>`_.
 
 We welcome comments and suggestions for improvements to METplus
 Wrappers, especially information regarding errors. Comments may be
@@ -125,5 +126,5 @@ Our goal is to continually enhance it and add to its capabilities.
 Because our time, resources, and talents can at times be limited, we welcome
 contributed code for future versions of METplus. These contributions may
 represent new use cases or new plotting functions. For more information
-on contributing code to METplus Wrappers, please contact
-`met_help@ucar.edu <met_help@ucar.edu>`__.
+on contributing code to METplus Wrappers, please create a post in the 
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.

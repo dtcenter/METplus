@@ -114,8 +114,11 @@ class CommandBuilder:
 
         self.check_for_externals()
 
-        self.cmdrunner = CommandRunner(self.config, logger=self.logger,
-                                       verbose=self.c_dict['VERBOSITY'])
+        self.cmdrunner = CommandRunner(
+            self.config, logger=self.logger,
+            verbose=self.c_dict['VERBOSITY'],
+            skip_run=self.c_dict.get('DO_NOT_RUN_EXE', False),
+        )
 
         # set log name to app name by default
         # any wrappers with a name different than the primary app that is run
@@ -196,6 +199,15 @@ class CommandBuilder:
         c_dict['INPUT_MUST_EXIST'] = self.config.getbool('config',
                                                          'INPUT_MUST_EXIST',
                                                          True)
+
+        c_dict['USER_SHELL'] = self.config.getstr('config',
+                                                  'USER_SHELL',
+                                                  'bash')
+
+        c_dict['DO_NOT_RUN_EXE'] = self.config.getbool('config',
+                                                       'DO_NOT_RUN_EXE',
+                                                       False)
+
         return c_dict
 
     def clear(self):
@@ -414,7 +426,7 @@ class CommandBuilder:
                     continue
                 var_list.add(user_var)
 
-        shell = self.config.getstr('config', 'USER_SHELL', 'bash').lower()
+        shell = self.c_dict.get('USER_SHELL', '').lower()
         for var in sorted(var_list):
             if shell == 'csh':
                 # TODO: Complex environment variables that have special characters
@@ -893,7 +905,6 @@ class CommandBuilder:
 
             # remove trailing path separator if necessary (directories)
             output_template = output_template.rstrip(os.path.sep)
-
             output_path = os.path.join(output_dir, output_template)
 
         # substitute time info if provided
@@ -1341,27 +1352,30 @@ class CommandBuilder:
         call METplus wrapper for each time"""
         return util.loop_over_times_and_call(self.config, self)
 
-    def set_time_dict_for_single_runtime(self, c_dict):
+    def set_time_dict_for_single_runtime(self):
         # get clock time from start of execution for input time dictionary
         clock_time_obj = datetime.strptime(self.config.getstr('config',
                                                               'CLOCK_TIME'),
                                            '%Y%m%d%H%M%S')
 
         # get start run time and set INPUT_TIME_DICT
-        c_dict['INPUT_TIME_DICT'] = {'now': clock_time_obj}
+        time_info = {'now': clock_time_obj}
         start_time, _, _ = util.get_start_end_interval_times(self.config)
         if start_time:
             # set init or valid based on LOOP_BY
             use_init = util.is_loop_by_init(self.config)
             if use_init is None:
-                self.isOK = False
+                return None
             elif use_init:
-                c_dict['INPUT_TIME_DICT']['init'] = start_time
+                time_info['init'] = start_time
             else:
-                c_dict['INPUT_TIME_DICT']['valid'] = start_time
+                time_info['valid'] = start_time
         else:
-            self.config.logger.error("Could not get [INIT/VALID] time information from configuration file")
-            self.isOK = False
+            self.config.logger.error("Could not get [INIT/VALID] time "
+                                     "information from configuration file")
+            return None
+
+        return time_info
 
     def _get_config_or_default(self, mp_config_name, get_function,
                                default=None):

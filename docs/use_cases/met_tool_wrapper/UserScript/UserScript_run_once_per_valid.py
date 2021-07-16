@@ -144,6 +144,10 @@ met_tool_wrapper/UserScript/UserScript_run_once_per_valid.conf
 # Keywords
 # --------
 #
-# .. note:: `UserScriptUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=UserScriptUseCase&check_keywords=yes&area=default>`_,
-#  `RuntimeFreqUseCase <https://dtcenter.github.io/METplus/search.html?q=RuntimeFreqUseCase&check_keywords=yes&area=default>`_
+# .. note::
+#
+#   * UserScriptUseCase
+#   * RuntimeFreqUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

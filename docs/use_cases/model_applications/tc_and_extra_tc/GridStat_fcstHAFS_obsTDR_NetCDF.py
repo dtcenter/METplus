@@ -148,6 +148,14 @@ _NetCDF.conf
 # Keywords
 # --------
 #
+# .. note::
+#
+#   * TCandExtraTCAppUseCase
+#   * GridStatToolUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
+#
 # sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-GridStat_fcstHAFS_obsTDR_NetCDF.png'
 #
-# .. note:: `TCandExtraTCAppUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=TCandExtraTCAppUseCase&check_keywords=yes&area=default>`_, `GridStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
