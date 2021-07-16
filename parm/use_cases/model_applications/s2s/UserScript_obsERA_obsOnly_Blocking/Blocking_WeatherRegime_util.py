@@ -2,7 +2,7 @@ import os
 import netCDF4
 import numpy as np
 import datetime
-from metplus.util import pre_run_setup, config_metplus
+#from metplus.util import pre_run_setup, config_metplus
 
 
 def parse_steps():
@@ -13,7 +13,7 @@ def parse_steps():
     steps_param_obs = os.environ.get('OBS_STEPS','')
     steps_list_obs = steps_param_obs.split("+")
 
-    return steps_list_fcst, steps_list_obs 
+    return steps_list_fcst, steps_list_obs
 
 
 def write_mpr_file(data_obs,data_fcst,lats_in,lons_in,time_obs,time_fcst,mname,fvar,flev,ovar,olev,maskname,obslev,outfile):

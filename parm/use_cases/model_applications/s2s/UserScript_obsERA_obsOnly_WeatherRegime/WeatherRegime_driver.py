@@ -4,7 +4,7 @@ import os
 import numpy as np
 import netCDF4
 import warnings
-import atexit
+#import atexit
 
 from WeatherRegime import WeatherRegimeCalculation
 from metplus.util import getlist
@@ -12,17 +12,17 @@ from metplotpy.contributed.weather_regime import plot_weather_regime as pwr
 from Blocking_WeatherRegime_util import parse_steps, read_nc_met, write_mpr_file
 
 
-def cleanup_daily_files(obs_dailyfile, fcst_dailyfile, keep_daily_files):
-    if keep_daily_files == 'false':
-        try:
-            os.remove(obs_anomfile)
-        except:
-            pass
-
-        try:
-            os.remove(fcst_anomfile)
-        except:
-            pass
+#def cleanup_daily_files(obs_dailyfile, fcst_dailyfile, keep_daily_files):
+#    if keep_daily_files == 'false':
+#        try:
+#            os.remove(obs_anomfile)
+#        except:
+#            pass
+#
+#        try:
+#            os.remove(fcst_anomfile)
+#        except:
+#            pass
 
 
 def main():
@@ -59,15 +59,17 @@ def main():
     dseasons = int(os.environ['DAYS_PER_SEASON'])
 
     # Grab the Daily text files
-    obs_wr_filetxt = os.environ.get('OBS_WR_INPUT_TEXTFILE','')
-    fcst_wr_filetxt = os.environ.get('FCST_WR_INPUT_TEXTFILE','')
-    keep_wr_textfile = os.environ.get('KEEP_WR_FILE_LISTING', 'False').lower()
-    atexit.register(cleanup_daily_files, obs_wr_filetxt, fcst_wr_filetxt, keep_wr_textfile)
+    obs_wr_filetxt = os.environ.get('METPLUS_INPUT0','')
+    fcst_wr_filetxt = os.environ.get('METPLUS_INPUT1','')
+    #keep_wr_textfile = os.environ.get('KEEP_WR_FILE_LISTING', 'False').lower()
+    #atexit.register(cleanup_daily_files, obs_wr_filetxt, fcst_wr_filetxt, keep_wr_textfile)
 
 
     if ("ELBOW" in steps_list_obs) or ("EOF" in steps_list_obs) or ("KMEANS" in steps_list_obs):
         with open(obs_wr_filetxt) as owl:
             obs_infiles = owl.read().splitlines()
+        # Remove the first line
+        obs_infiles = obs_infiles[1:]
         if len(obs_infiles) != (nseasons*dseasons):
             raise Exception('Invalid Obs data; each year must contain the same date range to calculate seasonal averages.')
         obs_invar = os.environ.get('OBS_WR_VAR','')
@@ -77,6 +79,7 @@ def main():
     if ("ELBOW" in steps_list_fcst) or ("EOF" in steps_list_fcst) or("KMEANS" in steps_list_fcst):
         with open(fcst_wr_filetxt) as fwl:
             fcst_infiles = fwl.read().splitlines()
+        fcst_infiles = fcst_infiles[1:]
         if len(fcst_infiles) != (nseasons*dseasons):
             raise Exception('Invalid Obs data; each year must contain the same date range to calculate seasonal averages.')
         fcst_invar = os.environ.get('FCST_WR_VAR','')
