@@ -80,42 +80,49 @@ def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
         olr_input_files = ol.read().splitlines()
 
     netcdf_reader = read_netcdf.ReadNetCDF()
+    ds = []
     for input_file in olr_input_files:
-        print("OMI driver ",input_file)
         # read OLR data from file
         #### This will need to be converted to the dbload versions
         #### I've cut the domain using regrid_data_plane, so that can be omitted once switched to dbload
-        #datestrt = '1979-01-01'
-        #datelast = '2012-12-31'
-        #time = np.arange(datestrt,datelast, dtype='datetime64[D]')
-        #ntim = len(time)
+        datestrt = '1979-01-01'
+        datelast = '2012-12-31'
+        time = np.arange(datestrt,datelast, dtype='datetime64[D]')
         #ds = xr.open_dataset('UserScript_fcstGFS_obsERA_OMI/olr.1x.7920.anom7901.nc')
-        ds = netcdf_reader.read_into_xarray(input_file) 
+        #ds = netcdf_reader.read_into_xarray(input_file) 
+        temp_list = ( netcdf_reader.read_into_xarray(input_file))
+        ds.append(temp_list[0])
         #olr = ds['olr'].sel(lat=slice(-20,20),time=slice(time[0],time[-1]))
         #lat = ds['lat'].sel(lat=slice(-20,20))
-        olr = ds['olr']
-        lat = ds['lat']
-        lon = ds['lon']
+        #Grab the last items and print them
+        olr = ds[-1]["olr"]
+        lat = ds[-1]["lat"]
+        lon = ds[-1]["lon"]
         print(olr.min(), olr.max())
+    everything = xr.concat(ds,"time")
+    print("everything ",everything.sizes)
+    print(time)
 
-        # project OLR onto EOFs
-        PC1, PC2 = cmi.omi(olr[0:ntim,:,:], time, spd, EOF1, EOF2)
+    # project OLR onto EOFs
+    #PC1, PC2 = cmi.omi(olr[0:ntim,:,:], time, spd, EOF1, EOF2)
+    everything.transpose("time","lat","lon")
+    PC1, PC2 = cmi.omi(everything["olr"], time, spd, EOF1, EOF2)
 
-        # Get times for the PC phase diagram
-        plase_plot_time_format = os.environ['PHASE_PLOT_TIME_FMT']
-        phase_plot_start_time = datetime.datetime.strptime(os.environ['PHASE_PLOT_TIME_BEG'],plase_plot_time_format)
-        phase_plot_end_time = datetime.datetime.strptime(os.environ['PHASE_PLOT_TIME_END'],plase_plot_time_format)
-        PC1_plot = PC1.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
-        PC2_plot = PC2.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
+    # Get times for the PC phase diagram
+    plase_plot_time_format = os.environ['PHASE_PLOT_TIME_FMT']
+    phase_plot_start_time = datetime.datetime.strptime(os.environ['PHASE_PLOT_TIME_BEG'],plase_plot_time_format)
+    phase_plot_end_time = datetime.datetime.strptime(os.environ['PHASE_PLOT_TIME_END'],plase_plot_time_format)
+    PC1_plot = PC1.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
+    PC2_plot = PC2.sel(time=slice(phase_plot_start_time,phase_plot_end_time))
 
-        # Get the output name and format for the PC plase diagram
-        phase_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_NAME',inlabel+'_OMI_comp_phase'))
-        phase_plot_format = os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
+    # Get the output name and format for the PC plase diagram
+    phase_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_NAME',inlabel+'_OMI_comp_phase'))
+    phase_plot_format = os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
 
-        # plot the PC phase diagram
-        pmi.phase_diagram('OMI',PC1,PC2,np.array(PC1_plot['time'].dt.strftime("%Y-%m-%d").values),
-            np.array(PC1_plot['time.month'].values),np.array(PC1_plot['time.day'].values),
-            phase_plot_name,phase_plot_format)
+    # plot the PC phase diagram
+    pmi.phase_diagram('OMI',PC1,PC2,np.array(PC1_plot['time'].dt.strftime("%Y-%m-%d").values),
+        np.array(PC1_plot['time.month'].values),np.array(PC1_plot['time.day'].values),
+        phase_plot_name,phase_plot_format)
 
 
 def main():
@@ -138,7 +145,6 @@ def main():
     with open(eof2_filetxt) as ef2:
         eof2_input_files = ef2.read().splitlines()
 
-    print("OMI driver ",eof1_input_files)
     # Read in the EOFs
     EOF1, EOF2 = read_omi_eofs(eof1_input_files, eof2_input_files)
 
