@@ -7171,3 +7171,38 @@ METplus Configuration Glossary
      Default value is False.
 
      | *Used by:*  TCPairs
+
+   USER_SCRIPT_INPUT_DIR
+     Optional directory to look for input files. Prepended to each input
+     template (see :term:`USER_SCRIPT_INPUT_TEMPLATE`).
+
+     | *Used by:*  UserScript
+
+   USER_SCRIPT_INPUT_TEMPLATE
+     Optional list of input templates to use to look for input files.
+     If :term:`USER_SCRIPT_INPUT_DIR` is set, prepend that path to each item.
+     When the UserScript wrapper is run, the templates defined here will be
+     used to populate a list of all of the files that match the template for
+     each run time specified. Depending on the runtime frequency defined in
+     :term:`USER_SCRIPT_RUNTIME_FREQ`, text files will be generated that
+     contain a list of the file paths that correspond to the current run.
+     If any files are not found on disk, then "missing" will be added in place
+     of the file path. Each file list text file will be named after the current
+     init/valid/lead values for that run and a label named input<n> where <n>
+     is a zero-based index of the template, i.e. a single template will be
+     labelled input0, two templates will be labelled input0 and input1, etc.
+     Custom labels can be defined with
+     :term:`USER_SCRIPT_INPUT_TEMPLATE_LABELS`. For each template, an
+     environment variable named METPLUS_FILELIST_<label> will be set to the
+     path of the appropriate file list text file. This environment variable
+     can be referenced by the user-defined script to obtain the file list.
+
+     | *Used by:*  UserScript
+
+   USER_SCRIPT_INPUT_TEMPLATE_LABELS
+     Optional list of labels that correspond to each input template defined.
+     See :term:`USER_SCRIPT_INPUT_TEMPLATE`. Each template that does not have
+     a label defined will be assigned a label with the format input<n> where
+     <n> is the zero-based index of the template in the list.
+
+     | *Used by:*  UserScript

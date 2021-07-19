@@ -6465,6 +6465,13 @@ executable and any desired arguments. The variable support filename template
 substitution to send information like the current initialization or forecast
 lead time. See :ref:`Runtime_Freq` for more information on how the value of
 :term:`USER_SCRIPT_RUNTIME_FREQ` can control how the commands are called.
+Optionally, file paths can be defined with filename templates to generate
+a file list text file that contains all existing file paths that correspond
+to the appropriate runtime frequency for the current run time. The path to
+the file list text files are set as environment variables that can be
+referenced inside the user-defined script to obtain a list of the files that
+should be processed.
+See :term:`USER_SCRIPT_INPUT_TEMPLATE` for more information.
 
 METplus Configuration
 ---------------------
