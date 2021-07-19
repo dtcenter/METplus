@@ -6473,4 +6473,7 @@ METplus Configuration
 | :term:`USER_SCRIPT_COMMAND`
 | :term:`USER_SCRIPT_CUSTOM_LOOP_LIST`
 | :term:`USER_SCRIPT_SKIP_TIMES`
+| :term:`USER_SCRIPT_INPUT_DIR` (optional)
+| :term:`USER_SCRIPT_INPUT_TEMPLATE` (optional)
+| :term:`USER_SCRIPT_INPUT_TEMPLATE_LABELS` (optional)
 |
