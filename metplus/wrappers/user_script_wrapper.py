@@ -16,7 +16,7 @@ from datetime import datetime
 from ..util import met_util as util
 from ..util import time_util
 from . import RuntimeFreqWrapper
-from ..util import do_string_sub, getlist
+from ..util import do_string_sub
 
 '''!@namespace UserScriptWrapper
 @brief Parent class for wrappers that run over a grouping of times
@@ -44,11 +44,7 @@ class UserScriptWrapper(RuntimeFreqWrapper):
         c_dict['INPUT_DIR'] = self.config.getraw('config',
                                                  'USER_SCRIPT_INPUT_DIR',
                                                  '')
-        c_dict['INPUT_TEMPLATES'] = getlist(
-            self.config.getraw('config',
-                               'USER_SCRIPT_INPUT_TEMPLATE',
-                               '')
-        )
+        self.get_input_templates(c_dict)
 
         c_dict['IS_MET_CMD'] = False
         c_dict['LOG_THE_OUTPUT'] = True
@@ -141,7 +137,8 @@ class UserScriptWrapper(RuntimeFreqWrapper):
         """
 
         for identifier, file_path in self.c_dict['INPUT_LIST_DICT'].items():
-            self.add_env_var(f'METPLUS_{identifier.upper()}', file_path)
+            self.add_env_var(f'METPLUS_FILELIST_{identifier.upper()}',
+                             file_path)
 
         super().set_environment_variables(time_info)
 

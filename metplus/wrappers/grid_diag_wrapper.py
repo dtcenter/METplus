@@ -54,9 +54,7 @@ class GridDiagWrapper(RuntimeFreqWrapper):
             self.log_error('GRID_DIAG_CONFIG_FILE required to run.')
 
         c_dict['INPUT_DIR'] = self.config.getdir('GRID_DIAG_INPUT_DIR', '')
-        c_dict['INPUT_TEMPLATES'] = util.getlist(
-            self.config.getraw('filename_templates',
-                               'GRID_DIAG_INPUT_TEMPLATE'))
+        self.get_input_templates(c_dict)
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('GRID_DIAG_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (

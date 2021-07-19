@@ -4,10 +4,10 @@ import os
 
 # Read environment variables that start with METPLUS_INPUT and
 # print list of files found in text file set as value
-
-# check inputs 0-9
-for index in range(0, 10):
-    env_var_name = f'METPLUS_INPUT{index}'
+################################################################################
+# check all METPLUS_FILELIST_ env vars
+list_keys = [key for key in os.environ if key.startswith('METPLUS_FILELIST_')]
+for env_var_name in list_keys:
     print(f'Checking environment variable: {env_var_name}')
     file_list_path = os.environ.get(env_var_name)
     if not file_list_path:

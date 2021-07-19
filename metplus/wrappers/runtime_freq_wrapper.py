@@ -17,7 +17,7 @@ from ..util import time_util
 from . import CommandBuilder
 from ..util import do_string_sub, get_start_end_interval_times, set_input_dict
 from ..util import log_runtime_banner, get_lead_sequence, is_loop_by_init
-from ..util import skip_time
+from ..util import skip_time, getlist
 
 '''!@namespace RuntimeFreqWrapper
 @brief Parent class for wrappers that run over a grouping of times
@@ -85,6 +85,39 @@ class RuntimeFreqWrapper(CommandBuilder):
                                "mode unless LOOP_ORDER = processes")
 
         return c_dict
+
+    def get_input_templates(self, c_dict):
+        app_upper = self.app_name.upper()
+        template_dict = {}
+
+        input_templates = getlist(
+            self.config.getraw('config',
+                               f'{app_upper}_INPUT_TEMPLATE',
+                               '')
+        )
+        input_template_labels = getlist(
+            self.config.getraw('config',
+                               f'{app_upper}_INPUT_TEMPLATE_LABELS',
+                               '')
+        )
+
+        # cannot have more labels than templates specified
+        if len(input_template_labels) > len(input_templates):
+            self.log_error('Cannot supply more labels than templates. '
+                           f'{app_upper}_INPUT_TEMPLATE_LABELS length must be '
+                           f'less than {app_upper}_INPUT_TEMPLATES length.')
+            return
+
+        for idx, template in enumerate(input_templates):
+            # if fewer labels than templates, fill in labels with input{idx}
+            if len(input_template_labels) <= idx:
+                label = f'input{idx}'
+            else:
+                label = input_template_labels[idx]
+
+            template_dict[label] = template
+
+        c_dict['TEMPLATE_DICT'] = template_dict
 
     def run_all_times(self):
         # loop over all custom strings
@@ -347,7 +380,10 @@ class RuntimeFreqWrapper(CommandBuilder):
               input file list if all files were found, None if not.
         """
         all_input_files = {}
-        for idx, input_template in enumerate(self.c_dict['INPUT_TEMPLATES']):
+        if not self.c_dict.get('TEMPLATE_DICT'):
+            return None
+
+        for label, input_template in self.c_dict['TEMPLATE_DICT'].items():
             self.c_dict['INPUT_TEMPLATE'] = input_template
             # if fill missing is true, data is not mandatory to find
             mandatory = not fill_missing
@@ -361,7 +397,7 @@ class RuntimeFreqWrapper(CommandBuilder):
                 # if no files are found and fill missing is set, add 'missing'
                 input_files = ['missing']
 
-            all_input_files[f'input{idx}'] = input_files
+            all_input_files[label] = input_files
 
         # return None if no matching input files were found
         if not all_input_files:
@@ -388,10 +424,14 @@ class RuntimeFreqWrapper(CommandBuilder):
             if not self.compare_time_info(time_info, file_dict['time_info']):
                 continue
 
-            input_keys = [key for key in file_dict if key.startswith('input')]
-            for input_key in input_keys:
+            for input_key in file_dict:
+                # skip time info key
+                if input_key == 'time_info':
+                    continue
+
                 if input_key not in all_input_files:
                     all_input_files[input_key] = []
+
                 all_input_files[input_key].extend(file_dict[input_key])
 
         # return None if no matching input files were found
