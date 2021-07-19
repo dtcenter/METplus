@@ -337,19 +337,29 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         return runtime_lead == filetime_lead
 
-    def find_input_files(self, time_info):
+    def find_input_files(self, time_info, fill_missing=False):
         """! Loop over list of input templates and find files for each
 
              @param time_info time dictionary to use for string substitution
+             @param fill_missing if True, add a placeholder if a file is not
+              found. Defaults to False.
              @returns Dictionary of key input number and value is list of
               input file list if all files were found, None if not.
         """
         all_input_files = {}
         for idx, input_template in enumerate(self.c_dict['INPUT_TEMPLATES']):
             self.c_dict['INPUT_TEMPLATE'] = input_template
-            input_files = self.find_data(time_info, return_list=True)
+            # if fill missing is true, data is not mandatory to find
+            mandatory = not fill_missing
+            input_files = self.find_data(time_info,
+                                         return_list=True,
+                                         mandatory=mandatory)
             if not input_files:
-                continue
+                if not fill_missing:
+                    continue
+
+                # if no files are found and fill missing is set, add 'missing'
+                input_files = ['missing']
 
             all_input_files[f'input{idx}'] = input_files
 

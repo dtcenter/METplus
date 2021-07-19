@@ -123,9 +123,9 @@ class UserScriptWrapper(RuntimeFreqWrapper):
         """
         file_dict = super().get_files_from_time(time_info)
 
-        input_files = self.find_input_files(time_info)
+        input_files = self.find_input_files(time_info, fill_missing=True)
         if input_files is None:
-            return None
+            return file_dict
 
         for key, value in input_files.items():
             file_dict[key] = value
