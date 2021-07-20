@@ -69,10 +69,10 @@ def main():
     atexit.register(cleanup_anom_files, obs_cbl_filetxt, fcst_cbl_filetxt, keep_cbl_textfile)
 
     # Grab the Daily (IBL) text files
-    #obs_ibl_filetxt = os.environ.get('METPLUS_FILELIST_OBS_IBL_INPUT','')
-    #fcst_ibl_filetxt = os.environ.get('METPLUS_FILELIST_FCST_IBL_INPUT','')
-    obs_ibl_filetxt = os.environ.get('METPLUS_FILELIST_INPUT0','')
-    fcst_ibl_filetxt = os.environ.get('METPLUS_FILELIST_INPUT1','')
+    obs_ibl_filetxt = os.environ.get('METPLUS_FILELIST_OBS_IBL_INPUT','')
+    fcst_ibl_filetxt = os.environ.get('METPLUS_FILELIST_FCST_IBL_INPUT','')
+    #obs_ibl_filetxt = os.environ.get('METPLUS_FILELIST_INPUT0','')
+    #fcst_ibl_filetxt = os.environ.get('METPLUS_FILELIST_INPUT1','')
 
 
     # Calculate Central Blocking Latitude
@@ -82,6 +82,7 @@ def main():
         cbl_nseasons = int(os.environ['CBL_NUM_SEASONS'])
         with open(obs_cbl_filetxt) as ocl:
             obs_infiles = ocl.read().splitlines()
+        obs_infiles = obs_infiles[1:]
         if len(obs_infiles) != (cbl_nseasons*dseasons):
             raise Exception('Invalid Obs data; each year must contain the same date range to calculate seasonal averages.')
         cbls_obs,lats_obs,lons_obs,mhweight_obs,cbl_time_obs = steps_obs.run_CBL(obs_infiles,cbl_nseasons,dseasons)
@@ -92,6 +93,7 @@ def main():
         cbl_nseasons = int(os.environ['CBL_NUM_SEASONS'])
         with open(fcst_cbl_filetxt) as fcl:
             fcst_infiles = fcl.read().splitlines()
+        fcst_infiles = fcst_infiles[1:]
         if len(fcst_infiles) != (cbl_nseasons*dseasons):
             raise Exception('Invalid Fcst data; each year must contain the same date range to calculate seasonal averages.')
         cbls_fcst,lats_fcst,lons_fcst,mhweight_fcst,cbl_time_fcst = steps_fcst.run_CBL(fcst_infiles,cbl_nseasons,dseasons)
