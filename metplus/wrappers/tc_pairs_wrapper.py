@@ -251,6 +251,10 @@ class TCPairsWrapper(CommandBuilder):
                                 False)
         )
 
+        # if LOOP_ORDER = processes, only run once if True
+        c_dict['RUN_ONCE'] = self.config.getbool('config',
+                                                 'TC_PAIRS_RUN_ONCE',
+                                                 True)
         return c_dict
 
     def _read_storm_info(self, c_dict):
@@ -361,6 +365,9 @@ class TCPairsWrapper(CommandBuilder):
         # if running in READ_ALL_FILES mode, call tc_pairs once and exit
         if self.c_dict['READ_ALL_FILES']:
             return self._read_all_files(input_dict)
+
+        if not self.c_dict['RUN_ONCE']:
+            return super().run_all_times()
 
         self.run_at_time(input_dict)
         return self.all_commands

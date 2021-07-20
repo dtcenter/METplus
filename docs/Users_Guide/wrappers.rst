@@ -5394,6 +5394,7 @@ METplus Configuration
 | :term:`TC_PAIRS_CONSENSUS<n>_REQUIRED`
 | :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
 | :term:`TC_PAIRS_SKIP_LEAD_SEQ`
+| :term:`TC_PAIRS_RUN_ONCE`
 |
 
 .. warning:: **DEPRECATED:**
