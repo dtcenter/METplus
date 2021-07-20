@@ -82,8 +82,6 @@ def main():
         cbl_nseasons = int(os.environ['CBL_NUM_SEASONS'])
         with open(obs_cbl_filetxt) as ocl:
             obs_infiles = ocl.read().splitlines()
-        print(obs_infiles)
-        exit()
         if len(obs_infiles) != (cbl_nseasons*dseasons):
             raise Exception('Invalid Obs data; each year must contain the same date range to calculate seasonal averages.')
         cbls_obs,lats_obs,lons_obs,mhweight_obs,cbl_time_obs = steps_obs.run_CBL(obs_infiles,cbl_nseasons,dseasons)
