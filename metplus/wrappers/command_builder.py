@@ -2283,3 +2283,23 @@ class CommandBuilder:
              @returns METConfigInfo object
         """
         return met_config(**kwargs)
+
+    def get_start_time_input_dict(self):
+        """! Get the first run time specified in config. Used if only running
+        the wrapper once (LOOP_ORDER = processes).
+
+        @returns dictionary containing time information for first run time
+        """
+        use_init = util.is_loop_by_init(self.config)
+        if use_init is None:
+            self.log_error('Could not read time info')
+            return None
+
+
+        start_time, _, _ = util.get_start_end_interval_times(self.config)
+        if start_time is None:
+            self.log_error("Could not get start time")
+            return None
+
+        input_dict = util.set_input_dict(start_time, self.config, use_init)
+        return input_dict
