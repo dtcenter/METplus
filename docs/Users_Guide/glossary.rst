@@ -7171,3 +7171,18 @@ METplus Configuration Glossary
      Default value is False.
 
      | *Used by:*  TCPairs
+
+   TC_PAIRS_RUN_ONCE
+     If True and LOOP_ORDER = processes, TCPairs will be run once using the
+     INIT_BEG or VALID_BEG value (depending on the value of LOOP_BY).
+     This is the default setting and preserves the original logic of the
+     wrapper. If this variable is set to False, then TCPairs will run once
+     for each run time iteration. If LOOP_ORDER = times, then TCPairs will
+     still run for each run time. The preferred configuration settings to
+     run TCPairs once for a range of init or valid times is to set INIT_BEG
+     to INIT_END (if LOOP_BY = INIT) and define the range of init times to
+     filter the data inside TCPairs with TC_PAIRS_INIT_BEG and
+     TC_PAIRS_INIT_END. The same applies for the VALID variables if
+     LOOP_BY = VALID.
+
+     | *Used by:*  TCPairs
