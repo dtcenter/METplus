@@ -45,17 +45,18 @@ def main():
     dseasons = int(os.environ['DAYS_PER_SEASON'])
 
     # Grab the Daily text files
-    #obs_wr_filetxt = os.environ.get('METPLUS_FILELIST_OBS_INPUT','')
-    #fcst_wr_filetxt = os.environ.get('METPLUS_FILELIST_FCST_INPUT','')
-    obs_wr_filetxt = os.environ.get('METPLUS_FILELIST_INPUT0','')
-    fcst_wr_filetxt = os.environ.get('METPLUS_FILELIST_INPUT1','')
+    obs_wr_filetxt = os.environ.get('METPLUS_FILELIST_OBS_INPUT','')
+    fcst_wr_filetxt = os.environ.get('METPLUS_FILELIST_FCST_INPUT','')
+    #obs_wr_filetxt = os.environ.get('METPLUS_FILELIST_INPUT0','')
+    #fcst_wr_filetxt = os.environ.get('METPLUS_FILELIST_INPUT1','')
 
 
     if ("ELBOW" in steps_list_obs) or ("EOF" in steps_list_obs) or ("KMEANS" in steps_list_obs):
         with open(obs_wr_filetxt) as owl:
             obs_infiles = owl.read().splitlines()
-        # Remove the first line
-        obs_infiles = obs_infiles[1:]
+        # Remove the first line if it's there
+        if (obs_infiles[0] == 'file_list'):
+            obs_infiles = obs_infiles[1:]
         if len(obs_infiles) != (nseasons*dseasons):
             raise Exception('Invalid Obs data; each year must contain the same date range to calculate seasonal averages.')
         obs_invar = os.environ.get('OBS_WR_VAR','')
@@ -65,7 +66,9 @@ def main():
     if ("ELBOW" in steps_list_fcst) or ("EOF" in steps_list_fcst) or("KMEANS" in steps_list_fcst):
         with open(fcst_wr_filetxt) as fwl:
             fcst_infiles = fwl.read().splitlines()
-        fcst_infiles = fcst_infiles[1:]
+        # Remove the first line if it's there
+        if (fcst_infiles[0] == 'file_list'):
+            fcst_infiles = fcst_infiles[1:]
         if len(fcst_infiles) != (nseasons*dseasons):
             raise Exception('Invalid Obs data; each year must contain the same date range to calculate seasonal averages.')
         fcst_invar = os.environ.get('FCST_WR_VAR','')
@@ -137,6 +140,7 @@ def main():
             z500_fcst.shape)
 
     if ("KMEANS" in steps_list_obs) and ("KMEANS" in steps_list_fcst):
+        # Write matched pair output for weather regime classification
         modname = os.environ.get('MODEL_NAME','GFS')
         maskname = os.environ.get('MASK_NAME','FULL')
         mpr_full_outdir = os.path.join(mpr_outdir,'/WeatherRegime')
@@ -174,6 +178,7 @@ def main():
         wrfreq_fcst,dlen_fcst,ts_diff_fcst = steps_fcst.compute_wr_freq(wrc_fcst)
 
     if ("TIMEFREQ" in steps_list_obs) and ("TIMEFREQ" in steps_list_fcst):
+        # Write matched pair output for frequency of each weather regime
         modname = os.environ.get('MODEL_NAME','GFS')
         maskname = os.environ.get('MASK_NAME','FULL')
         mpr_full_outdir = os.path.join(mpr_outdir,'freq')
