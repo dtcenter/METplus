@@ -18,5 +18,5 @@ ENV_NAME=cfgrib
 
 conda create -y --name ${ENV_NAME} python=3.6.8
 conda install -y --name ${ENV_NAME} -c conda-forge metpy==1.0.1
-conda install -y --name ${ENV_NAME} -c conda-forge netcdf4=1.5.6
+conda install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.5.6
 conda install -y --name ${ENV_NAME} -c conda-forge cfgrib==0.9.9.0
