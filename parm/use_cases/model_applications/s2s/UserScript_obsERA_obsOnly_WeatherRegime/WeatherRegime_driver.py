@@ -4,25 +4,11 @@ import os
 import numpy as np
 import netCDF4
 import warnings
-#import atexit
 
 from WeatherRegime import WeatherRegimeCalculation
 from metplus.util import getlist
 from metplotpy.contributed.weather_regime import plot_weather_regime as pwr
 from Blocking_WeatherRegime_util import parse_steps, read_nc_met, write_mpr_file
-
-
-#def cleanup_daily_files(obs_dailyfile, fcst_dailyfile, keep_daily_files):
-#    if keep_daily_files == 'false':
-#        try:
-#            os.remove(obs_anomfile)
-#        except:
-#            pass
-#
-#        try:
-#            os.remove(fcst_anomfile)
-#        except:
-#            pass
 
 
 def main():
@@ -59,10 +45,10 @@ def main():
     dseasons = int(os.environ['DAYS_PER_SEASON'])
 
     # Grab the Daily text files
-    obs_wr_filetxt = os.environ.get('METPLUS_INPUT0','')
-    fcst_wr_filetxt = os.environ.get('METPLUS_INPUT1','')
-    #keep_wr_textfile = os.environ.get('KEEP_WR_FILE_LISTING', 'False').lower()
-    #atexit.register(cleanup_daily_files, obs_wr_filetxt, fcst_wr_filetxt, keep_wr_textfile)
+    #obs_wr_filetxt = os.environ.get('METPLUS_FILELIST_OBS_INPUT','')
+    #fcst_wr_filetxt = os.environ.get('METPLUS_FILELIST_FCST_INPUT','')
+    obs_wr_filetxt = os.environ.get('METPLUS_FILELIST_INPUT0','')
+    fcst_wr_filetxt = os.environ.get('METPLUS_FILELIST_INPUT1','')
 
 
     if ("ELBOW" in steps_list_obs) or ("EOF" in steps_list_obs) or ("KMEANS" in steps_list_obs):
@@ -191,11 +177,6 @@ def main():
         modname = os.environ.get('MODEL_NAME','GFS')
         maskname = os.environ.get('MASK_NAME','FULL')
         mpr_full_outdir = os.path.join(mpr_outdir,'freq')
-        ## remove ##
-        #wrfreq_fcst = wrfreq_obs
-        #timedict_fcst = timedict_obs
-        #ts_diff_fcst = ts_diff_obs
-        ####
         timedict_obs_mpr = {'init':timedict_obs['init'][:,ts_diff_obs-1:],
             'valid':timedict_obs['valid'][:,ts_diff_obs-1:],'lead':timedict_obs['lead'][:,ts_diff_obs-1:]}
         timedict_fcst_mpr = {'init':timedict_fcst['init'][:,ts_diff_fcst-1:],
@@ -215,14 +196,18 @@ def main():
             raise Exception('Must run observed Frequency calculation before plotting the frequencies.')
         freq_plot_title = os.environ.get('OBS_FREQ_PLOT_TITLE','Seasonal Cycle of WR Days/Week')
         freq_plot_outname = os.path.join(oplot_dir,os.environ.get('OBS_FREQ_PLOT_OUTPUT_NAME','obs_freq'))
-        pwr.plot_wr_frequency(wrfreq_obs,wrnum_obs,dlen_obs,freq_plot_title,freq_plot_outname)
+        # Compute mean
+        wrmean_obs = np.nanmean(wrfreq_obs,axis=1)
+        pwr.plot_wr_frequency(wrmean_obs,wrnum_obs,dlen_obs,freq_plot_title,freq_plot_outname)
 
     if ("PLOTFREQ" in steps_list_fcst):
         if not ("TIMEFREQ" in steps_list_fcst):
             raise Exception('Must run forecast Frequency calculation before plotting the frequencies.')
         freq_plot_title = os.environ.get('FCST_FREQ_PLOT_TITLE','Seasonal Cycle of WR Days/Week')
         freq_plot_outname = os.path.join(oplot_dir,os.environ.get('FCST_FREQ_PLOT_OUTPUT_NAME','fcst_freq'))
-        pwr.plot_wr_frequency(wrfreq_fcst,wrnum_fcst,dlen_fcst,freq_plot_title,freq_plot_outname)
+        # Compute mean
+        wrmean_fcst = np.nanmean(wrfreq_fcst,axis=1)
+        pwr.plot_wr_frequency(wrmean_fcst,wrnum_fcst,dlen_fcst,freq_plot_title,freq_plot_outname)
 
 
 if __name__ == "__main__":

@@ -2,7 +2,6 @@ import os
 import netCDF4
 import numpy as np
 import datetime
-#from metplus.util import pre_run_setup, config_metplus
 
 
 def parse_steps():
@@ -78,7 +77,7 @@ def read_nc_met(infiles,invar,nseasons,dseasons):
     for i in range(0,len(infiles)):
 
         #Read in the data
-        if infiles[i]:
+        if (infiles[i] != 'missing'):
             indata = netCDF4.Dataset(infiles[i])
             new_invar = indata.variables[invar][:]
 

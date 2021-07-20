@@ -10,5 +10,5 @@ filelist = open(output_file,'a+')
 if os.path.isfile(input_file):
     filelist.write(input_file + '\n')
 else:
-    filelist.write('\n')
+    filelist.write('missing\n')
 filelist.close()
