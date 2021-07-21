@@ -863,13 +863,14 @@ class CommandBuilder:
         if not os.path.exists(list_dir):
             os.makedirs(list_dir, mode=0o0775)
 
-        self.logger.debug(f"Writing list of filenames to {list_path}")
+        self.logger.debug("Writing list of filenames...")
         with open(list_path, 'w') as file_handle:
             file_handle.write('file_list\n')
             for f_path in file_list:
                 self.logger.debug(f"Adding file to list: {f_path}")
                 file_handle.write(f_path + '\n')
 
+        self.logger.debug(f"Wrote list of filenames to {list_path}")
         return list_path
 
     def find_and_check_output_file(self, time_info=None,

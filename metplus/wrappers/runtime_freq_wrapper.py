@@ -17,7 +17,7 @@ from ..util import time_util
 from . import CommandBuilder
 from ..util import do_string_sub, get_start_end_interval_times, set_input_dict
 from ..util import log_runtime_banner, get_lead_sequence, is_loop_by_init
-from ..util import skip_time
+from ..util import skip_time, getlist
 
 '''!@namespace RuntimeFreqWrapper
 @brief Parent class for wrappers that run over a grouping of times
@@ -85,6 +85,39 @@ class RuntimeFreqWrapper(CommandBuilder):
                                "mode unless LOOP_ORDER = processes")
 
         return c_dict
+
+    def get_input_templates(self, c_dict):
+        app_upper = self.app_name.upper()
+        template_dict = {}
+
+        input_templates = getlist(
+            self.config.getraw('config',
+                               f'{app_upper}_INPUT_TEMPLATE',
+                               '')
+        )
+        input_template_labels = getlist(
+            self.config.getraw('config',
+                               f'{app_upper}_INPUT_TEMPLATE_LABELS',
+                               '')
+        )
+
+        # cannot have more labels than templates specified
+        if len(input_template_labels) > len(input_templates):
+            self.log_error('Cannot supply more labels than templates. '
+                           f'{app_upper}_INPUT_TEMPLATE_LABELS length must be '
+                           f'less than {app_upper}_INPUT_TEMPLATES length.')
+            return
+
+        for idx, template in enumerate(input_templates):
+            # if fewer labels than templates, fill in labels with input{idx}
+            if len(input_template_labels) <= idx:
+                label = f'input{idx}'
+            else:
+                label = input_template_labels[idx]
+
+            template_dict[label] = template
+
+        c_dict['TEMPLATE_DICT'] = template_dict
 
     def run_all_times(self):
         # loop over all custom strings
@@ -201,30 +234,45 @@ class RuntimeFreqWrapper(CommandBuilder):
               Args:
                 @param input_dict dictionary containing time information
         """
+        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
+            if custom_string:
+                self.logger.info(f"Processing custom string: {custom_string}")
 
-        # loop of forecast leads and process each
-        lead_seq = get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            input_dict['lead'] = lead
+            input_dict['custom'] = custom_string
 
-            # set current lead time config and environment variables
-            time_info = time_util.ti_calculate(input_dict)
+            # loop of forecast leads and process each
+            lead_seq = get_lead_sequence(self.config, input_dict)
+            for lead in lead_seq:
+                input_dict['lead'] = lead
 
-            self.logger.info(
-                f"Processing forecast lead {time_info['lead_string']}"
-            )
+                # set current lead time config and environment variables
+                time_info = time_util.ti_calculate(input_dict)
 
-            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                continue
+                self.logger.info(
+                    f"Processing forecast lead {time_info['lead_string']}"
+                )
 
-            # Run for given init/valid time and forecast lead combination
-            self.run_at_time_once(time_info)
+                if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                    self.logger.debug('Skipping run time')
+                    continue
+
+                # since run_all_times was not called (LOOP_BY=times) then
+                # get files for current run time
+                file_dict = self.get_files_from_time(time_info)
+                all_files = []
+                if file_dict:
+                    if isinstance(file_dict, list):
+                        all_files = file_dict
+                    else:
+                        all_files = [file_dict]
+
+                self.c_dict['ALL_FILES'] = all_files
+
+                # Run for given init/valid time and forecast lead combination
+                self.run_at_time_once(time_info)
 
     def get_all_files(self, custom=None):
-        """! Get all files that can be processed with the app. Some wrappers
-        like UserScript do not need to obtain a list of possible files. In this
-        case, the function returns an empty dictionary.
+        """! Get all files that can be processed with the app.
         @returns A dictionary where the key is the type of data that was found,
         i.e. fcst or obs, and the value is a list of files that fit in that
         category
@@ -235,6 +283,10 @@ class RuntimeFreqWrapper(CommandBuilder):
 
         self.logger.debug("Finding all input files")
         all_files = []
+
+        # if start time is not set, don't loop
+        if not self.c_dict.get('START_TIME'):
+            return False
 
         # loop over all init/valid times
         loop_time = self.c_dict['START_TIME']
@@ -256,6 +308,10 @@ class RuntimeFreqWrapper(CommandBuilder):
 
                 # set current lead time config and environment variables
                 time_info = time_util.ti_calculate(input_dict)
+
+                if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                    self.logger.debug('Skip finding files from run time')
+                    continue
 
                 file_dict = self.get_files_from_time(time_info)
                 if file_dict:
@@ -313,3 +369,109 @@ class RuntimeFreqWrapper(CommandBuilder):
             return runtime['lead'] == filetime['lead']
 
         return runtime_lead == filetime_lead
+
+    def find_input_files(self, time_info, fill_missing=False):
+        """! Loop over list of input templates and find files for each
+
+             @param time_info time dictionary to use for string substitution
+             @param fill_missing if True, add a placeholder if a file is not
+              found. Defaults to False.
+             @returns Dictionary of key input number and value is list of
+              input file list if all files were found, None if not.
+        """
+        all_input_files = {}
+        if not self.c_dict.get('TEMPLATE_DICT'):
+            return None
+
+        for label, input_template in self.c_dict['TEMPLATE_DICT'].items():
+            self.c_dict['INPUT_TEMPLATE'] = input_template
+            # if fill missing is true, data is not mandatory to find
+            mandatory = not fill_missing
+            input_files = self.find_data(time_info,
+                                         return_list=True,
+                                         mandatory=mandatory)
+            if not input_files:
+                if not fill_missing:
+                    continue
+
+                # if no files are found and fill missing is set, add 'missing'
+                input_files = ['missing']
+
+            all_input_files[label] = input_files
+
+        # return None if no matching input files were found
+        if not all_input_files:
+            return None
+
+        return all_input_files
+
+    def subset_input_files(self, time_info):
+        """! Obtain a subset of input files from the c_dict ALL_FILES based on
+             the time information for the current run.
+
+              @param time_info dictionary containing time information
+              @returns dictionary with keys of the input identifier and the
+               value is the path to a ascii file containing the list of files
+               or None if could not find any files
+        """
+        all_input_files = {}
+        if not self.c_dict.get('ALL_FILES'):
+            return all_input_files
+
+        for file_dict in self.c_dict['ALL_FILES']:
+            # compare time information for each input file
+            # add file to list of files to use if it matches
+            if not self.compare_time_info(time_info, file_dict['time_info']):
+                continue
+
+            for input_key in file_dict:
+                # skip time info key
+                if input_key == 'time_info':
+                    continue
+
+                if input_key not in all_input_files:
+                    all_input_files[input_key] = []
+
+                all_input_files[input_key].extend(file_dict[input_key])
+
+        # return None if no matching input files were found
+        if not all_input_files:
+            return all_input_files
+
+        # loop over all inputs and write a file list file for each
+        list_file_dict = {}
+        for identifier, input_files in all_input_files.items():
+            list_file_name = self.get_list_file_name(time_info, identifier)
+            list_file_path = self.write_list_file(list_file_name, input_files)
+            list_file_dict[identifier] = list_file_path
+
+        return list_file_dict
+
+    def get_list_file_name(self, time_info, identifier):
+        """! Build name of ascii file that contains a list of files to process.
+             If wildcard is set for init, valid, or lead then use the text ALL
+             in the filename.
+
+        @param time_info dictionary containing time information
+        @param identifier string to identify which input is used
+        @returns filename i.e.
+        {app_name}_files_{identifier}_init_{init}_valid_{valid}_lead_{lead}.txt
+        """
+        if time_info['init'] == '*':
+            init = 'ALL'
+        else:
+            init = time_info['init'].strftime('%Y%m%d%H%M%S')
+
+        if time_info['valid'] == '*':
+            valid = 'ALL'
+        else:
+            valid = time_info['valid'].strftime('%Y%m%d%H%M%S')
+
+        if time_info['lead'] == '*':
+            lead = 'ALL'
+        else:
+            lead = time_util.ti_get_seconds_from_lead(time_info['lead'],
+                                                      time_info['valid'])
+
+        return (f"{self.app_name}_files_{identifier}_"
+                f"init_{init}_valid_{valid}_lead_{lead}.txt")
