@@ -57,13 +57,10 @@ def pv(input_file):
     ds_list = [cfgrib.open_datasets(input_file,backend_kwargs={'filter_by_keys':{'typeOfLevel':'isobaricInhPa','shortName':v},'indexpath':''}) for v in grib_vars]
 
     # Flatten the list of lists to a single list of datasets
-    ds_flat = [x for ds in ds_list for x in ds]
+    ds_flat = [x.sel(isobaricInhPa=x.isobaricInhPa[x.isobaricInhPa>=100.0].values) for ds in ds_list for x in ds]
 
     # Merge the variables into a single dataset
     ds = xr.merge(ds_flat)
-
-    # Subset the data in the vertical
-    ds = ds.sel(isobaricInhPa=ds.isobaricInhPa[ds.isobaricInhPa>=100.0].values)
 
     # Add pressure
     ds['p'] = xr.DataArray(ds.isobaricInhPa.values,dims=['isobaricInhPa'],coords={'isobaricInhPa':ds.isobaricInhPa.values},attrs={'units':'hPa'}).broadcast_like(ds['t'])
@@ -74,7 +71,7 @@ def pv(input_file):
     # Compute baroclinic PV
     ds['pv'] = mpcalc.potential_vorticity_baroclinic(ds['theta'],ds['p'].metpy.convert_units('Pa'),ds['u'],ds['v'],latitude=ds.latitude)/(1.0e-6)
 
-    met_data = ds['pv'].sel(isobaricInhPa=slice(float(os.environ.get('PV_LAYER_MIN_PRESSURE',100.0)),float(os.environ.get('PV_LAYER_MAX_PRESSURE',1000.0)))).mean(axis=0).values
+    met_data = ds['pv'].sel(isobaricInhPa=slice(float(os.environ.get('PV_LAYER_MAX_PRESSURE',1000.0)),float(os.environ.get('PV_LAYER_MIN_PRESSURE',100.0)))).mean(axis=0).values
 
     return met_data
 
