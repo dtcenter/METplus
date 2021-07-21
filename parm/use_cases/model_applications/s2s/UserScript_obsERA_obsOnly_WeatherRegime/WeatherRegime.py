@@ -8,21 +8,20 @@ from scipy import stats,signal
 from numpy import ones,vstack
 from numpy.linalg import lstsq
 from eofs.standard import Eof
-from metplus.util import config_metplus, get_start_end_interval_times, get_lead_sequence
-from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate
 
 
 class WeatherRegimeCalculation():
     """Contains the programs to perform a Weather Regime Analysis
     """
-    def __init__(self,config,label):
+    def __init__(self,label):
 
-        self.wrnum = config.getint('WeatherRegime',label+'_WR_NUMBER',6)
-        self.numi = config.getint('WeatherRegime',label+'_NUM_CLUSTERS',20)
-        self.NUMPCS = config.getint('WeatherRegime',label+'_NUM_PCS',10)
-        self.wr_outfile_type = config.getstr('WeatherRegime',label+'_WR_OUTPUT_FILE_TYPE','text')
-        self.wr_outfile_dir = config.getstr('WeatherRegime','WR_OUTPUT_FILE_DIR','')
-        self.wr_outfile = config.getstr('WeatherRegime',label+'_WR_OUTPUT_FILE',label+'_WeatherRegime')
+        self.wrnum = int(os.environ.get(label+'_WR_NUMBER',6))
+        self.numi = int(os.environ.get(label+'_NUM_CLUSTERS',20))
+        self.NUMPCS = int(os.environ.get(label+'_NUM_PCS',10))
+        self.wr_tstep = int(os.environ.get(label+'_WR_FREQ',7))
+        self.wr_outfile_type = os.environ.get(label+'_WR_OUTPUT_FILE_TYPE','text')
+        self.wr_outfile_dir = os.environ.get('WR_OUTPUT_FILE_DIR',os.environ['SCRIPT_OUTPUT_BASE'])
+        self.wr_outfile = os.environ.get(label+'_WR_OUTPUT_FILE',label+'_WeatherRegime')
 
 
     def get_cluster_fraction(self, m, label):
@@ -130,7 +129,7 @@ class WeatherRegimeCalculation():
         return a1
 
 
-    def run_K_means(self,a1,yr,mth,day,arr_shape):
+    def run_K_means(self,a1,timedict,arr_shape):
 
         arrdims = len(arr_shape)
 
@@ -173,14 +172,20 @@ class WeatherRegimeCalculation():
         #Save Label data [YR,DAY]
         # Make some conversions first
         wrc_shape = wrc.shape
-        yr_1d = np.array(yr)
-        mth_1d = np.array(mth)
-        day_1d = np.array(day)
-        wrc_1d = np.reshape(wrc,len(mth))
+        len1d =  wrc.size
+        valid_time_1d = np.reshape(timedict['valid'],len1d)
+        yr_1d = []
+        mth_1d = []
+        day_1d = []
+        for vt1 in valid_time_1d:
+           yr_1d.append(vt1[0:4])
+           mth_1d.append(vt1[4:6])
+           day_1d.append(vt1[6:8])
+        wrc_1d = np.reshape(wrc,len1d)
 
         # netcdf file
         if self.wr_outfile_type=='netcdf':
-            wr_full_outfile = self.wr_outfile_dir+'/'+self.wr_outfile+'.nc'
+            wr_full_outfile = os.path.join(self.wr_outfile_dir,self.wr_outfile+'.nc')
 
             if os.path.isfile(wr_full_outfile):
                 os.remove(wr_full_outfile)
@@ -195,7 +200,7 @@ class WeatherRegimeCalculation():
                 ymd_arr[dd] = yr_1d[dd]+mth_1d[dd]+day_1d[dd]
 
             nc = nc4.Dataset(wr_full_outfile, 'w')
-            nc.createDimension('time', len(mth))
+            nc.createDimension('time', len(mth_1d))
             nc.Conventions = "CF-1.7"
             nc.title = "Weather Regime Classification"
             nc.institution = "NCAR DTCenter"
@@ -220,7 +225,7 @@ class WeatherRegimeCalculation():
 
         # text file
         if self.wr_outfile_type=='text':
-           wr_full_outfile = self.wr_outfile_dir+'/'+self.wr_outfile+'.txt'
+           wr_full_outfile = os.path.join(self.wr_outfile_dir,self.wr_outfile+'.txt')
 
            if os.path.isfile(wr_full_outfile):
                 os.remove(wr_full_outfile)
@@ -231,5 +236,22 @@ class WeatherRegimeCalculation():
            with open(wr_full_outfile, 'w+') as datafile_id:
                np.savetxt(datafile_id, otdata, fmt=['%6s','%3s','%4s','%6s'], header='Year Month Day WeatherRegime')
 
+        return input, self.wrnum, perc, wrc
 
-        return input, self.wrnum, perc
+
+    def compute_wr_freq(self, WR):
+
+        ######## Simple Count ##########
+        WRfreq = np.zeros((self.wrnum,len(WR[:,0]),len(WR[0,:])-self.wr_tstep+1))
+
+        for yy in np.arange(0,len(WRfreq[0,:,0]),1):
+            d1=0;d2=self.wr_tstep
+            for dd in np.arange(len(WRfreq[0,0,:])):
+                temp = WR[yy,d1:d2]
+                for ww in np.arange(self.wrnum):
+                    WRfreq[ww,yy,dd] = len(np.where(temp==ww)[0])
+                d1=d1+1;d2=d2+1
+
+        dlen_plot = len(WRfreq[0,0,:])
+
+        return WRfreq, dlen_plot, self.wr_tstep

@@ -107,9 +107,9 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
     actual_files = [item for sub in actual_files for item in sub]
     assert(actual_files == expected_files)
 
-    file_list_files = wrapper.subset_input_files(time_info)
-    assert(file_list_files is not None)
-    with open(file_list_files[0], 'r') as file_handle:
+    file_list_dict = wrapper.subset_input_files(time_info)
+    assert file_list_dict
+    with open(file_list_dict['input0'], 'r') as file_handle:
         file_list = file_handle.readlines()
 
     file_list = file_list[1:]
