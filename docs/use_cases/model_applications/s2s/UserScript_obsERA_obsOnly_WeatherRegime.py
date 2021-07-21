@@ -63,7 +63,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # files for the weather regime calculation, computing the elbow (ELBOW), plotting the elbow 
 # (PLOTELBOW), computing EOFs (EOF), plotting EOFs (PLOTEOF), computing K means (KMEANS), plotting 
 # the K means (PLOTKMEANS), computing a time frequency of weather regimes (TIMEFREQ) and plotting 
-# the time frequency (PLOTFREQ).  Regridding and time averaging are set up in the UserScript .conf file 
+# the time frequency (PLOTFREQ).  All variables are set up in the UserScript .conf file 
 # and are formatted as follows:
 # PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), UserScript(obs_wr_filelist), UserScript(script_wr)
 #

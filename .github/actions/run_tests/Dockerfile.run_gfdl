@@ -1,0 +1,11 @@
+ARG METPLUS_ENV_TAG=gfdl-tracker
+ARG METPLUS_IMG_TAG=develop
+
+FROM dtcenter/metplus-envs:${METPLUS_ENV_TAG} as env
+
+ARG METPLUS_IMG_TAG=develop
+FROM dtcenter/metplus-dev:${METPLUS_IMG_TAG}
+
+COPY --from=env /usr/local/lib/libnetcdf.so.19* /usr/local/lib/
+COPY --from=env /usr/local/lib/libnetcdff* /usr/local/lib/
+COPY --from=env /standalone_gfdl-vortextracker_v3.9a_gcc/trk_exec/* /usr/local/bin/

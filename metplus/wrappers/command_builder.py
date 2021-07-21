@@ -1297,7 +1297,7 @@ class CommandBuilder:
 
         return self.run_command(cmd)
 
-    def run_command(self, cmd):
+    def run_command(self, cmd, cmd_name=None):
         """! Run a command with the appropriate environment. Add command to
         list of all commands run.
 
@@ -1308,21 +1308,14 @@ class CommandBuilder:
         self.all_commands.append((cmd,
                                   self.print_all_envs(print_copyable=False)))
 
-        if self.instance:
-            log_name = f"{self.log_name}.{self.instance}"
-        else:
-            log_name = self.log_name
+        log_name = cmd_name if cmd_name else self.log_name
 
-        ismetcmd = self.c_dict.get('IS_MET_CMD', True)
-        run_inshell = self.c_dict.get('RUN_IN_SHELL', False)
-        log_theoutput = self.c_dict.get('LOG_THE_OUTPUT', False)
+        if self.instance:
+            log_name = f"{log_name}.{self.instance}"
 
         ret, out_cmd = self.cmdrunner.run_cmd(cmd,
                                               env=self.env,
-                                              ismetcmd=ismetcmd,
                                               log_name=log_name,
-                                              run_inshell=run_inshell,
-                                              log_theoutput=log_theoutput,
                                               copyable_env=self.get_env_copy())
         if ret:
             logfile_path = self.config.getstr('config', 'LOG_METPLUS')

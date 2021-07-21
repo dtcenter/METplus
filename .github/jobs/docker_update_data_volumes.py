@@ -46,7 +46,7 @@ def get_tarfile_last_modified(search_dir):
 def create_data_volumes(branch_name, volumes):
     if not volumes:
         print("No volumes to build")
-        return
+        return True
 
     data_repo = get_data_repo(branch_name)
     # log into docker using encrypted credentials and
@@ -57,7 +57,10 @@ def create_data_volumes(branch_name, volumes):
     ret = subprocess.run(shlex.split(cmd), check=True)
 
     if ret.returncode:
-        print(f'Command failed: {cmd}')
+        print(f'ERROR: Command failed: {cmd}')
+        return False
+
+    return True
 
 def main():
 
@@ -128,7 +131,8 @@ def main():
                   'Regenerating data volume.')
             volumes_to_create.append(category)
 
-    create_data_volumes(branch_name, volumes_to_create)
+    if not create_data_volumes(branch_name, volumes_to_create):
+        sys.exit(1)
 
 if __name__ == "__main__":
     main()
