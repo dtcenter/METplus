@@ -60,7 +60,6 @@ def read_omi_eofs(eof1_files, eof2_files):
     nlat = len(EOF1['lat'])
     nlon = len(EOF1['lon'])
 
-
     for doy in range(len(eof1_files)):
         doystr = str(doy).zfill(3)
         tmp1 = pd.read_csv(eof1_files[doy], header=None, delim_whitespace=True, names=['eof1'])
@@ -79,34 +78,37 @@ def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
     with open(olr_filetxt) as ol:
         olr_input_files = ol.read().splitlines()
 
+    #datestrt = '1979-01-01'
+    #datelast = '2012-12-31'
+    #time_old = np.arange(datestrt,datelast, dtype='datetime64[D]')
+    #ntim = len(time_old)
+    #ds_old = xr.open_dataset('UserScript_fcstGFS_obsERA_OMI/olr.1x.7920.nc')
+    #olr_old = ds_old['olr'].sel(lat=slice(-20,20),time=slice(time_old[0],time_old[-1]))
+    #lat_old = ds_old['lat'].sel(lat=slice(-20,20))
+
+    # Read in the netCDF data
     netcdf_reader = read_netcdf.ReadNetCDF()
-    ds = []
-    for input_file in olr_input_files:
-        # read OLR data from file
-        #### This will need to be converted to the dbload versions
-        #### I've cut the domain using regrid_data_plane, so that can be omitted once switched to dbload
-        datestrt = '1979-01-01'
-        datelast = '2012-12-31'
-        time = np.arange(datestrt,datelast, dtype='datetime64[D]')
-        #ds = xr.open_dataset('UserScript_fcstGFS_obsERA_OMI/olr.1x.7920.anom7901.nc')
-        #ds = netcdf_reader.read_into_xarray(input_file) 
-        temp_list = ( netcdf_reader.read_into_xarray(input_file))
-        ds.append(temp_list[0])
-        #olr = ds['olr'].sel(lat=slice(-20,20),time=slice(time[0],time[-1]))
-        #lat = ds['lat'].sel(lat=slice(-20,20))
-        #Grab the last items and print them
-        olr = ds[-1]["olr"]
-        lat = ds[-1]["lat"]
-        lon = ds[-1]["lon"]
-        print(olr.min(), olr.max())
-    everything = xr.concat(ds,"time")
-    print("everything ",everything.sizes)
-    print(time)
+    ds_orig = netcdf_reader.read_into_xarray(olr_input_files)
+
+    # Add some needed attributes
+    ds_list = []
+    time = []
+    for din in ds_orig:
+        ctime =  datetime.datetime.strptime(din['olr'].valid_time,'%Y%m%d_%H%M%S')
+        time.append(ctime.strftime('%Y-%m-%d'))
+        din = din.assign_coords(time=ctime)
+        din = din.expand_dims("time")
+        ds_list.append(din)
+    time = np.array(time,dtype='datetime64[D]')
+
+    everything = xr.concat(ds_list,"time")
+    olr = everything['olr']
+    print(olr.min(), olr.max())
 
     # project OLR onto EOFs
-    #PC1, PC2 = cmi.omi(olr[0:ntim,:,:], time, spd, EOF1, EOF2)
-    everything.transpose("time","lat","lon")
-    PC1, PC2 = cmi.omi(everything["olr"], time, spd, EOF1, EOF2)
+    #PC1, PC2 = cmi.omi(olr_old[0:ntim,:,:], time_old, spd, EOF1, EOF2)
+    PC1, PC2 = cmi.omi(olr, time, spd, EOF1, EOF2)
+    #exit()
 
     # Get times for the PC phase diagram
     plase_plot_time_format = os.environ['PHASE_PLOT_TIME_FMT']
