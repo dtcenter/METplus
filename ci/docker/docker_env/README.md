@@ -196,6 +196,23 @@ GempakToCF.jar file that is required to run use cases that read GEMPAK data. If 
 this environment locally, Java should be available on the system you are running and the
 JAR file should be downloaded from the DTC website.
 
+## gfdl-tracker (using Dockerfile.gfdl-tracker)
+
+### Docker
+
+```
+docker build -t dtcenter/metplus-envs:gfdl-tracker -f ./Dockerfile.gfdl-tracker .
+docker push dtcenter/metplus-envs:gfdl-tracker
+```
+
+### Local
+
+This environment is not a conda environment. The Dockerfile installs the GFDL
+Tracker and specific versions of the NetCDF-C and NetCDF-Fortran libraries
+needed to install the tools. It is not recommended to follow these instructions
+to install the GFDL Tracker using these steps. Please consult the documentation
+for the tool for installation instructions.
+
 
 ## pytest (from metplus_base)
 
