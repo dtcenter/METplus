@@ -18,7 +18,9 @@ See the [METplus Workflow](https://dtcenter.github.io/METplus/Contributors_Guide
 - [ ] Complete the PR definition above.
 - [ ] Ensure the PR title matches the feature or bugfix branch name.
 - [ ] Define the PR metadata, as permissions allow.
-Select: **Reviewer(s)**, **Project(s)**, and **Milestone**
-- [ ] After submitting the PR, select **Linked Issues** with the original issue number.
+Select: **Reviewer(s)**
+Select: **Organization** level software support **Project** or **Repository** level development cycle **Project**
+Select: **Milestone** as the version that will include these changes
+- [ ] After submitting the PR, select **Linked issues** with the original issue number.
 - [ ] After the PR is approved, merge your changes. If permissions do not allow this, request that the reviewer do the merge.
 - [ ] Close the linked issue and delete your feature or bugfix branch from GitHub.

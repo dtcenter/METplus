@@ -16,12 +16,15 @@ class METConfigInfo:
       optional name of environment variable to set (without METPLUS_ prefix)
       if it differs from the name,
       and any additional requirements such as remove quotes or make uppercase.
+      output_dict argument is ignored and only added to allow the argument
+      to the function that creates an instance of this object.
     """
     def __init__(self, name, data_type,
                  env_var_name=None,
                  metplus_configs=None,
                  extra_args=None,
-                 children=None):
+                 children=None,
+                 output_dict=None):
         self.name = name
         self.data_type = data_type
         self.metplus_configs = metplus_configs
@@ -101,10 +104,7 @@ class METConfigInfo:
 
         if children:
             if self.data_type != 'dict':
-                raise TypeError("data_type must be dict to have children. "
-                                f"data_type is {self.data_type}")
-
-
-
+                raise TypeError("data_type must be dict to have "
+                                f"children. data_type is {self.data_type}")
 
         self._children = children

@@ -48,8 +48,9 @@ Describe the steps to reproduce the behavior:
 - [ ] Select **requestor(s)**
 
 ### Projects and Milestone ###
-- [ ] Review **projects** and select relevant **Repository** and **Organization** ones or add "alert:NEED PROJECT ASSIGNMENT" label
-- [ ] Select **milestone** to relevant bugfix version
+- [ ] Select **Organization** level **Project** for support of the current coordinated release
+- [ ] Select **Repository** level **Project** for development toward the next official release or add **alert: NEED PROJECT ASSIGNMENT** label
+- [ ] Select **Milestone** as the next bugfix version
 
 ## Define Related Issue(s) ##
 Consider the impact to the other METplus components.
@@ -68,10 +69,15 @@ Branch name: `bugfix_<Issue Number>_main_<Version>_<Description>`
 - [ ] Submit a pull request to merge into **main_\<Version>**.
 Pull request: `bugfix <Issue Number> main_<Version> <Description>`
 - [ ] Define the pull request metadata, as permissions allow.
-Select: **Reviewer(s)**, **Project(s)**, **Milestone**, and **Linked issues**
+Select: **Reviewer(s)** and **Linked issues**
+Select: **Organization** level software support **Project** for the current coordinated release
+Select: **Milestone** as the next bugfix version
 - [ ] Iterate until the reviewer(s) accept and merge your changes.
 - [ ] Delete your fork or branch.
 - [ ] Complete the steps above to fix the bug on the **develop** branch.
 Branch name:  `bugfix_<Issue Number>_develop_<Description>`
 Pull request: `bugfix <Issue Number> develop <Description>`
+Select: **Reviewer(s)** and **Linked issues**
+Select: **Repository** level development cycle **Project** for the next official release
+Select: **Milestone** as the next official version
 - [ ] Close this issue.

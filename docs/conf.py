@@ -53,8 +53,8 @@ FORMER_AUTHORS = [
 
 # format citation authors list
 formatted_authors = []
-for index, author in enumerate(CURRENT_AUTHORS + FORMER_AUTHORS):
-    first_name, last_name = author.split(' ', 1)
+for index, author_name in enumerate(CURRENT_AUTHORS + FORMER_AUTHORS):
+    first_name, last_name = author_name.split(' ', 1)
     first_initial = first_name[0]
     #  first name uses "Last Name, First Initial"
     if index == 0:
