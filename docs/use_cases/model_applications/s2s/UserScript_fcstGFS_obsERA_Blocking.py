@@ -34,7 +34,6 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # * datetime
 # * bisect
 # * scipy
-# * pandas
 #
 # If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
 #
@@ -77,13 +76,13 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
 # i.e. parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.py.  
-# The file UserScript_fcstGFS_obsERA_Blocking.conf runs the python program, however
-# UserScript_fcstGFS_obsERA_Blocking/Blocking_fcstGFS_obsERA.conf sets the variables 
-# for all steps of the Blocking use case including data paths.
+# The file UserScript_fcstGFS_obsERA_Blocking.conf runs the python program, and the
+# variables for all steps of the Blocking calculation are given in the [user_env_vars]
+# section of the .conf file.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.conf
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking/Blocking_fcstGFS_obsERA.conf
+#
 
 ##############################################################################
 # MET Configuration
