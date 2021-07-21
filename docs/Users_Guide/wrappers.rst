@@ -1212,6 +1212,931 @@ searches for these strings and substitutes the values as appropriate.
    * - :term:`GFDL_TRACKER_DATEIN_INP_NESTTYP`
      - &datein: inp%nesttyp
 
+**${METPLUS_ATCFINFO_ATCFNUM}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_ATCFINFO_ATCFNUM`
+     - &atcfinfo: atcfnum
+
+**${METPLUS_ATCFINFO_ATCFNAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_ATCFINFO_ATCFNAME`
+     - &atcfinfo: atcfname
+
+**${METPLUS_ATCFINFO_ATCFYMDH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`INIT_BEG`
+     - &atcfinfo: atcfymdh
+
+**${METPLUS_ATCFINFO_ATCFFREQ}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_ATCFINFO_ATCFFREQ`
+     - &atcfinfo: atcffreq
+
+**${METPLUS_TRACKERINFO_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_TYPE`
+     - &trackerinfo: trkrinfo%type
+
+**${METPLUS_TRACKERINFO_MSLPTHRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_MSLPTHRESH`
+     - &trackerinfo: trkrinfo%mslpthresh
+
+**${METPLUS_TRACKERINFO_USE_BACKUP_MSLP_GRAD_CHECK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_USE_BACKUP_MSLP_GRAD_CHECK`
+     - &trackerinfo: trkrinfo%use_backup_mslp_grad_check
+
+**${METPLUS_TRACKERINFO_V850THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_V850THRESH`
+     - &trackerinfo: trkrinfo%v850thresh
+
+**${METPLUS_TRACKERINFO_USE_BACKUP_850_VT_CHECK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_USE_BACKUP_850_VT_CHECK`
+     - &trackerinfo: trkrinfo%use_backup_850_vt_check
+
+**${METPLUS_TRACKERINFO_ENABLE_TIMING}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_ENABLE_TIMING`
+     - &trackerinfo: trkrinfo%enable_timing
+
+**${METPLUS_TRACKERINFO_GRIDTYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_GRIDTYPE`
+     - &trackerinfo: trkrinfo%gridtype
+
+**${METPLUS_TRACKERINFO_CONTINT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_CONTINT`
+     - &trackerinfo: trkrinfo%contint
+
+**${METPLUS_TRACKERINFO_WANT_OCI}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_WANT_OCI`
+     - &trackerinfo: trkrinfo%want_oci
+
+**${METPLUS_TRACKERINFO_OUT_VIT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_OUT_VIT`
+     - &trackerinfo: trkrinfo%out_vit
+
+**${METPLUS_TRACKERINFO_USE_LAND_MASK}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_USE_LAND_MASK`
+     - &trackerinfo: trkrinfo%use_land_mask
+
+**${METPLUS_TRACKERINFO_INP_DATA_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_INP_DATA_TYPE`
+     - &trackerinfo: trkrinfo%inp_data_type
+
+**${METPLUS_TRACKERINFO_GRIBVER}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_GRIBVER`
+     - &trackerinfo: trkrinfo%gribver
+
+**${METPLUS_TRACKERINFO_G2_JPDTN}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_G2_JPDTN`
+     - &trackerinfo: trkrinfo%g2_jpdtn
+
+**${METPLUS_TRACKERINFO_G2_MSLP_PARM_ID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_G2_MSLP_PARM_ID`
+     - &trackerinfo: trkrinfo%g2_mslp_parm_id
+
+**${METPLUS_TRACKERINFO_G1_MSLP_PARM_ID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_G1_MSLP_PARM_ID`
+     - &trackerinfo: trkrinfo%g1_mslp_parm_id
+
+**${METPLUS_TRACKERINFO_G1_SFCWIND_LEV_TYP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_G1_SFCWIND_LEV_TYP`
+     - &trackerinfo: trkrinfo%g1_sfcwind_lev_typ
+
+**${METPLUS_TRACKERINFO_G1_SFCWIND_LEV_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_TRACKERINFO_G1_SFCWIND_LEV_VAL`
+     - &trackerinfo: trkrinfo%g1_sfcwind_lev_val
+
+**${METPLUS_PHASEINFO_PHASEFLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_PHASEINFO_PHASEFLAG`
+     - &phaseinfo: phaseflag
+
+**${METPLUS_PHASEINFO_PHASESCHEME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_PHASEINFO_PHASESCHEME`
+     - &phaseinfo: phasescheme
+
+**${METPLUS_PHASEINFO_WCORE_DEPTH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_PHASEINFO_WCORE_DEPTH`
+     - &phaseinfo: wcore_depth
+
+**${METPLUS_STRUCTINFO_STRUCTFLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_STRUCTINFO_STRUCTFLAG`
+     - &structinfo: structflag
+
+**${METPLUS_STRUCTINFO_IKEFLAG}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_STRUCTINFO_IKEFLAG`
+     - &structinfo: ikeflag
+
+**${METPLUS_FNAMEINFO_GMODNAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_FNAMEINFO_GMODNAME`
+     - &fnameinfo: gmodname
+
+**${METPLUS_FNAMEINFO_RUNDESCR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_FNAMEINFO_RUNDESCR`
+     - &fnameinfo: rundescr
+
+**${METPLUS_FNAMEINFO_ATCFDESCR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_FNAMEINFO_ATCFDESCR`
+     - &fnameinfo: atcfdescr
+
+**${METPLUS_WAITINFO_USE_WAITFOR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_WAITINFO_USE_WAITFOR`
+     - &waitinfo: use_waitfor
+
+**${METPLUS_WAITINFO_WAIT_MIN_AGE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_WAITINFO_WAIT_MIN_AGE`
+     - &waitinfo: wait_min_age
+
+**${METPLUS_WAITINFO_WAIT_MIN_SIZE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_WAITINFO_WAIT_MIN_SIZE`
+     - &waitinfo: wait_min_size
+
+**${METPLUS_WAITINFO_WAIT_MAX_WAIT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_WAITINFO_WAIT_MAX_WAIT`
+     - &waitinfo: wait_max_wait
+
+**${METPLUS_WAITINFO_WAIT_SLEEPTIME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_WAITINFO_WAIT_SLEEPTIME`
+     - &waitinfo: wait_sleeptime
+
+**${METPLUS_WAITINFO_USE_PER_FCST_COMMAND}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_WAITINFO_USE_PER_FCST_COMMAND`
+     - &waitinfo: use_per_fcst_command
+
+**${METPLUS_WAITINFO_PER_FCST_COMMAND}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_WAITINFO_PER_FCST_COMMAND`
+     - &waitinfo: per_fcst_command
+
+**${METPLUS_NETCDFINFO_LAT_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_LAT_NAME`
+     - &netcdflist: netcdfinfo%lat_name
+
+**${METPLUS_NETCDFINFO_LMASKNAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_LMASKNAME`
+     - &netcdflist: netcdfinfo%lmaskname
+
+**${METPLUS_NETCDFINFO_LON_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_LON_NAME`
+     - &netcdflist: netcdfinfo%lon_name
+
+**${METPLUS_NETCDFINFO_MSLPNAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_MSLPNAME`
+     - &netcdflist: netcdfinfo%mslpname
+
+**${METPLUS_NETCDFINFO_NETCDF_FILENAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_NETCDF_FILENAME`
+     - &netcdflist: netcdfinfo%netcdf_filename
+
+**${METPLUS_NETCDFINFO_NUM_NETCDF_VARS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_NUM_NETCDF_VARS`
+     - &netcdflist: netcdfinfo%num_netcdf_vars
+
+**${METPLUS_NETCDFINFO_RV700NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_RV700NAME`
+     - &netcdflist: netcdfinfo%rv700name
+
+**${METPLUS_NETCDFINFO_RV850NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_RV850NAME`
+     - &netcdflist: netcdfinfo%rv850name
+
+**${METPLUS_NETCDFINFO_TIME_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_TIME_NAME`
+     - &netcdflist: netcdfinfo%time_name
+
+**${METPLUS_NETCDFINFO_TIME_UNITS}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_TIME_UNITS`
+     - &netcdflist: netcdfinfo%time_units
+
+**${METPLUS_NETCDFINFO_TMEAN_300_500_NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_TMEAN_300_500_NAME`
+     - &netcdflist: netcdfinfo%tmean_300_500_name
+
+**${METPLUS_NETCDFINFO_U500NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_U500NAME`
+     - &netcdflist: netcdfinfo%u500name
+
+**${METPLUS_NETCDFINFO_U700NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_U700NAME`
+     - &netcdflist: netcdfinfo%u700name
+
+**${METPLUS_NETCDFINFO_U850NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_U850NAME`
+     - &netcdflist: netcdfinfo%u850name
+
+**${METPLUS_NETCDFINFO_USFCNAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_USFCNAME`
+     - &netcdflist: netcdfinfo%usfcname
+
+**${METPLUS_NETCDFINFO_V500NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_V500NAME`
+     - &netcdflist: netcdfinfo%v500name
+
+**${METPLUS_NETCDFINFO_V700NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_V700NAME`
+     - &netcdflist: netcdfinfo%v700name
+
+**${METPLUS_NETCDFINFO_V850NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_V850NAME`
+     - &netcdflist: netcdfinfo%v850name
+
+**${METPLUS_NETCDFINFO_VSFCNAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_VSFCNAME`
+     - &netcdflist: netcdfinfo%vsfcname
+
+**${METPLUS_NETCDFINFO_Z200NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z200NAME`
+     - &netcdflist: netcdfinfo%z200name
+
+**${METPLUS_NETCDFINFO_Z300NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z300NAME`
+     - &netcdflist: netcdfinfo%z300name
+
+**${METPLUS_NETCDFINFO_Z350NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z350NAME`
+     - &netcdflist: netcdfinfo%z350name
+
+**${METPLUS_NETCDFINFO_Z400NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z400NAME`
+     - &netcdflist: netcdfinfo%z400name
+
+**${METPLUS_NETCDFINFO_Z450NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z450NAME`
+     - &netcdflist: netcdfinfo%z450name
+
+**${METPLUS_NETCDFINFO_Z500NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z500NAME`
+     - &netcdflist: netcdfinfo%z500name
+
+**${METPLUS_NETCDFINFO_Z550NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z550NAME`
+     - &netcdflist: netcdfinfo%z550name
+
+**${METPLUS_NETCDFINFO_Z600NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z600NAME`
+     - &netcdflist: netcdfinfo%z600name
+
+**${METPLUS_NETCDFINFO_Z650NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z650NAME`
+     - &netcdflist: netcdfinfo%z650name
+
+**${METPLUS_NETCDFINFO_Z700NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z700NAME`
+     - &netcdflist: netcdfinfo%z700name
+
+**${METPLUS_NETCDFINFO_Z750NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z750NAME`
+     - &netcdflist: netcdfinfo%z750name
+
+**${METPLUS_NETCDFINFO_Z800NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z800NAME`
+     - &netcdflist: netcdfinfo%z800name
+
+**${METPLUS_NETCDFINFO_Z850NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z850NAME`
+     - &netcdflist: netcdfinfo%z850name
+
+**${METPLUS_NETCDFINFO_Z900NAME}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_NETCDFINFO_Z900NAME`
+     - &netcdflist: netcdfinfo%z900name
+
+**${METPLUS_USER_WANTS_TO_TRACK_ZETA700}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_ZETA700`
+     - &parmpreflist: user_wants_to_track_zeta700
+
+**${METPLUS_USER_WANTS_TO_TRACK_WCIRC850}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_WCIRC850`
+     - &parmpreflist: user_wants_to_track_wcirc850
+
+**${METPLUS_USER_WANTS_TO_TRACK_WCIRC700}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_WCIRC700`
+     - &parmpreflist: user_wants_to_track_wcirc700
+
+**${METPLUS_USER_WANTS_TO_TRACK_GPH850}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_GPH850`
+     - &parmpreflist: user_wants_to_track_gph850
+
+**${METPLUS_USER_WANTS_TO_TRACK_GPH700}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_GPH700`
+     - &parmpreflist: user_wants_to_track_gph700
+
+**${METPLUS_USER_WANTS_TO_TRACK_MSLP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_MSLP`
+     - &parmpreflist: user_wants_to_track_mslp
+
+**${METPLUS_USER_WANTS_TO_TRACK_WCIRCSFC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_WCIRCSFC`
+     - &parmpreflist: user_wants_to_track_wcircsfc
+
+**${METPLUS_USER_WANTS_TO_TRACK_ZETASFC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_ZETASFC`
+     - &parmpreflist: user_wants_to_track_zetasfc
+
+**${METPLUS_USER_WANTS_TO_TRACK_THICK500850}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_THICK500850`
+     - &parmpreflist: user_wants_to_track_thick500850
+
+**${METPLUS_USER_WANTS_TO_TRACK_THICK200500}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_THICK200500`
+     - &parmpreflist: user_wants_to_track_thick200500
+
+**${METPLUS_USER_WANTS_TO_TRACK_THICK200850}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_THICK200850`
+     - &parmpreflist: user_wants_to_track_thick200850
+
+**${METPLUS_USER_WANTS_TO_TRACK_ZETA850}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_ZETA850`
+     - &parmpreflist: user_wants_to_track_zeta850
+
+**${METPLUS_VERBOSE_VERB}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_VERBOSE_VERB`
+     - &verbose: verb
+
+**${METPLUS_VERBOSE_VERB_G2}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - NML Config File
+   * - :term:`GFDL_TRACKER_VERBOSE_VERB_G2`
+     - &verbose: verb_g2
+
+
 .. _grid_diag_wrapper:
 
 GridDiag
