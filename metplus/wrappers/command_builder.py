@@ -863,13 +863,14 @@ class CommandBuilder:
         if not os.path.exists(list_dir):
             os.makedirs(list_dir, mode=0o0775)
 
-        self.logger.debug(f"Writing list of filenames to {list_path}")
+        self.logger.debug("Writing list of filenames...")
         with open(list_path, 'w') as file_handle:
             file_handle.write('file_list\n')
             for f_path in file_list:
                 self.logger.debug(f"Adding file to list: {f_path}")
                 file_handle.write(f_path + '\n')
 
+        self.logger.debug(f"Wrote list of filenames to {list_path}")
         return list_path
 
     def find_and_check_output_file(self, time_info=None,
@@ -1296,7 +1297,7 @@ class CommandBuilder:
 
         return self.run_command(cmd)
 
-    def run_command(self, cmd):
+    def run_command(self, cmd, cmd_name=None):
         """! Run a command with the appropriate environment. Add command to
         list of all commands run.
 
@@ -1307,21 +1308,14 @@ class CommandBuilder:
         self.all_commands.append((cmd,
                                   self.print_all_envs(print_copyable=False)))
 
-        if self.instance:
-            log_name = f"{self.log_name}.{self.instance}"
-        else:
-            log_name = self.log_name
+        log_name = cmd_name if cmd_name else self.log_name
 
-        ismetcmd = self.c_dict.get('IS_MET_CMD', True)
-        run_inshell = self.c_dict.get('RUN_IN_SHELL', False)
-        log_theoutput = self.c_dict.get('LOG_THE_OUTPUT', False)
+        if self.instance:
+            log_name = f"{log_name}.{self.instance}"
 
         ret, out_cmd = self.cmdrunner.run_cmd(cmd,
                                               env=self.env,
-                                              ismetcmd=ismetcmd,
                                               log_name=log_name,
-                                              run_inshell=run_inshell,
-                                              log_theoutput=log_theoutput,
                                               copyable_env=self.get_env_copy())
         if ret:
             logfile_path = self.config.getstr('config', 'LOG_METPLUS')
