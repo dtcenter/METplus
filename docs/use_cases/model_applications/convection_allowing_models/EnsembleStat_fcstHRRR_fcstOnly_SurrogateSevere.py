@@ -118,6 +118,15 @@ SurrogateSevere.conf
 # Keywords
 # --------
 #
+# .. note::
+#
+#   * PCPCombineUseCase
+#   * EnsembleStatUseCase
+#   * RegridDataPlaneUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
+#
 # sphinx_gallery_thumbnail_path = '_static/convection_allowing_models-EnsembleStat_fcstHRRR_fcstOnly_SurrogateSevere.png'
 #
-# .. note:: PCPCombineUseCase, EnsembleStatUseCase, RegridDataPlaneUseCase

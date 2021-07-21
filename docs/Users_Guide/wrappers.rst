@@ -132,7 +132,8 @@ Description
 
 This wrapper does not have a corresponding MET tool but instead wraps
 the logic necessary to create plots of cyclone tracks. Currently only
-the output from the MET tc-pairs tool can be plotted.
+the output from the MET tc-pairs tool can be plotted. If used on an internet-limited system,
+additional dependencies may apply. See :ref:`install` for details.
 
 METplus Configuration
 ---------------------
@@ -866,12 +867,13 @@ Description
 -----------
 
 The ExtractTiles wrapper is used to regrid and extract subregions from
-paired tropical cyclone tracks that are created by the tc_pairs_wrapper.
+paired tropical cyclone tracks generated with TCStat, or from cluster object
+centroids generated with MODE Time Domain (MTD).
 Unlike the other wrappers, the extract_tiles_wrapper does not correspond
-to a specific MET tool. It invokes the tc_stat_wrapper, which in turn
-calls the MET tc_stat tool to determine the lat/lon positions of the
-paired track data. This information is then used to create tiles of
-subregions. The ExtractTiles wrapper creates a 2n degree x 2m degree
+to a specific MET tool. It reads track information to determine the
+lat/lon positions of the paired track data.
+This information is then used to create tiles of subregions.
+The ExtractTiles wrapper creates a 2n degree x 2m degree
 grid/tile with each storm located at the center.
 
 METplus Configuration
@@ -889,6 +891,8 @@ the dimensions and density of the tiles comprising the subregion:
 | :term:`FCST_EXTRACT_TILES_OUTPUT_TEMPLATE`
 | :term:`OBS_EXTRACT_TILES_OUTPUT_TEMPLATE`
 | :term:`EXTRACT_TILES_TC_STAT_INPUT_TEMPLATE`
+| :term:`EXTRACT_TILES_MTD_INPUT_DIR`
+| :term:`EXTRACT_TILES_MTD_INPUT_TEMPLATE`
 | :term:`EXTRACT_TILES_LON_ADJ`
 | :term:`EXTRACT_TILES_LAT_ADJ`
 | :term:`EXTRACT_TILES_NLAT`
@@ -5389,6 +5393,8 @@ METplus Configuration
 | :term:`TC_PAIRS_CONSENSUS<n>_MEMBERS`
 | :term:`TC_PAIRS_CONSENSUS<n>_REQUIRED`
 | :term:`TC_PAIRS_CONSENSUS<n>_MIN_REQ`
+| :term:`TC_PAIRS_SKIP_LEAD_SEQ`
+| :term:`TC_PAIRS_RUN_ONCE`
 |
 
 .. warning:: **DEPRECATED:**
@@ -6460,6 +6466,13 @@ executable and any desired arguments. The variable support filename template
 substitution to send information like the current initialization or forecast
 lead time. See :ref:`Runtime_Freq` for more information on how the value of
 :term:`USER_SCRIPT_RUNTIME_FREQ` can control how the commands are called.
+Optionally, file paths can be defined with filename templates to generate
+a file list text file that contains all existing file paths that correspond
+to the appropriate runtime frequency for the current run time. The path to
+the file list text files are set as environment variables that can be
+referenced inside the user-defined script to obtain a list of the files that
+should be processed.
+See :term:`USER_SCRIPT_INPUT_TEMPLATE` for more information.
 
 METplus Configuration
 ---------------------
@@ -6468,4 +6481,7 @@ METplus Configuration
 | :term:`USER_SCRIPT_COMMAND`
 | :term:`USER_SCRIPT_CUSTOM_LOOP_LIST`
 | :term:`USER_SCRIPT_SKIP_TIMES`
+| :term:`USER_SCRIPT_INPUT_DIR` (optional)
+| :term:`USER_SCRIPT_INPUT_TEMPLATE` (optional)
+| :term:`USER_SCRIPT_INPUT_TEMPLATE_LABELS` (optional)
 |

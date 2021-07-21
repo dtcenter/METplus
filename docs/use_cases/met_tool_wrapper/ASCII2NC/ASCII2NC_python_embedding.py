@@ -10,7 +10,8 @@ _embedding.conf
 # Scientific Objective
 # --------------------
 #
-# None. Simply converting file formats so point observations can be read by the MET tools.
+# Simply converting file formats so point observations can be read by the MET
+# tools through the use of a Python script
 
 ##############################################################################
 # Datasets
@@ -112,8 +113,14 @@ _embedding.conf
 # Keywords
 # --------
 #
+# .. note::
+#
+#   * ASCII2NCToolUseCase
+#   * PythonEmbeddingFileUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
+#
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-ASCII2NC.png'
 #
-# .. note::
-#  `ASCII2NCToolUseCase <https://dtcenter.github.io/METplus/search.html?q=ASCII2NCToolUseCase&check_keywords=yes&area=default>`_,
-#  `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_

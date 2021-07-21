@@ -29,8 +29,8 @@ for the modeling community to use and adapt. As users make upgrades and
 improvements to the tools, they are encouraged to offer those upgrades
 to the broader community by offering feedback to the developers or
 coordinating for a GitHub pull. For more information on contributing
-code to METplus Wrappers, please contact
-`met_help@ucar.edu <met_help@ucar.edu>`__.
+code to METplus Wrappers, please create a post in the
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
 
 Requirements
 ============
@@ -120,6 +120,8 @@ to run.
 
     - cartopy (0.17.0)
     - matplotlib (3.3.4)
+
+Cartopy, one of the dependencies of CyclonePlotter, attempts to download shapefiles from the internet to complete successfully. So if CyclonePlotter is run on a closed system (i.e. no internet), additional steps need to be taken. First, go to the Natural Earth Data webpage and download the small scale (1:110m) cultural and physical files that will have multiple extensions (e.g. .dbf, .shp, .shx). Untar these files in a noted location. Finally, create an environment variable in the user-specific system configuration file for CARTOPY_DIR, setting it to the location where the shapefiles are located. 
 
 .. _getcode:
 

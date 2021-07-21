@@ -125,6 +125,12 @@ met_tool_wrapper/StatAnalysis/StatAnalysis.conf
 # --------
 #
 # .. note::
-#  `StatAnalysisToolUseCase <https://dtcenter.github.io/METplus/search.html?q=StatAnalysisToolUseCase&check_keywords=yes&area=default>`_
+#
+#   * StatAnalysisToolUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-StatAnalysis.png'
+#

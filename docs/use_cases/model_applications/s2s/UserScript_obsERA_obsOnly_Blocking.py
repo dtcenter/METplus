@@ -176,10 +176,17 @@ UserScript_obsERA_obsOnly_Blocking.py
 # Keywords
 # --------
 #
+# .. note::
+#
+#   * RegridDataPlaneUseCase
+#   * PCPCombineUseCase
+#   * S2SAppUseCase
+#   * NetCDFFileUseCase
+#   * GRIB2FileUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
+#
 # sphinx_gallery_thumbnail_path = '_static/s2s-OBS_ERA_blocking_frequency.png'
 #
-# .. note:: `RegridDataPlaneUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default>`_,
-#  `PCPCombineUseCase <https://dtcenter.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>`_, 
-#  `S2SAppUseCase <https://dtcenter.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_, 
-#  `NetCDFFileUseCase <https://dtcenter.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_,
-#  `GRIB2FileUseCase <https://dtcenter.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_,
