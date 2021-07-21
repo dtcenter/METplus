@@ -863,13 +863,14 @@ class CommandBuilder:
         if not os.path.exists(list_dir):
             os.makedirs(list_dir, mode=0o0775)
 
-        self.logger.debug(f"Writing list of filenames to {list_path}")
+        self.logger.debug("Writing list of filenames...")
         with open(list_path, 'w') as file_handle:
             file_handle.write('file_list\n')
             for f_path in file_list:
                 self.logger.debug(f"Adding file to list: {f_path}")
                 file_handle.write(f_path + '\n')
 
+        self.logger.debug(f"Wrote list of filenames to {list_path}")
         return list_path
 
     def find_and_check_output_file(self, time_info=None,
@@ -2283,3 +2284,23 @@ class CommandBuilder:
              @returns METConfigInfo object
         """
         return met_config(**kwargs)
+
+    def get_start_time_input_dict(self):
+        """! Get the first run time specified in config. Used if only running
+        the wrapper once (LOOP_ORDER = processes).
+
+        @returns dictionary containing time information for first run time
+        """
+        use_init = util.is_loop_by_init(self.config)
+        if use_init is None:
+            self.log_error('Could not read time info')
+            return None
+
+
+        start_time, _, _ = util.get_start_end_interval_times(self.config)
+        if start_time is None:
+            self.log_error("Could not get start time")
+            return None
+
+        input_dict = util.set_input_dict(start_time, self.config, use_init)
+        return input_dict

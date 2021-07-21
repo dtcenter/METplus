@@ -61,8 +61,12 @@ def read_nc_met(infiles,invar,nseasons,dseasons):
 
     print("Reading in Data")
 
+    # Check to make sure that everything is not set to missing:
+    if all('missing' == fn for fn in infiles):
+        raise Exception('No input files found as given, check paths to input files')
+
     #Find the first non empty file name so I can get the variable sizes
-    locin = next(sub for sub in infiles if sub)
+    locin = next(sub for sub in infiles if sub != 'missing')
     indata = netCDF4.Dataset(locin)
     lats = indata.variables['lat'][:]
     lons = indata.variables['lon'][:]
@@ -77,7 +81,7 @@ def read_nc_met(infiles,invar,nseasons,dseasons):
     for i in range(0,len(infiles)):
 
         #Read in the data
-        if infiles[i]:
+        if (infiles[i] != 'missing'):
             indata = netCDF4.Dataset(infiles[i])
             new_invar = indata.variables[invar][:]
 
