@@ -48,7 +48,7 @@ UserScript_fcstGFS_obsERA_OMI.py
 # METplus Components
 # ------------------
 #
-# This use case runs the OMI driver which computes OMI and creates a phase diagram. Inputs to the OMI driver include netCDF files that are in MET's netCDF version.  In addition, a txt file containing the listing of these input netCDF files is required, as well as text file listings of the EOF1 and EOF2 files.  Some optional pre-processing steps include using regrid_data_plane to either regrid your data or cut the domain t0 20N - 20S.  There are also 3 optional UserScripts that will get a listing of the input OLR, EOF1, and EOF2 files using save_input_files_txt.py. 
+# This use case runs the OMI driver which computes OMI and creates a phase diagram. Inputs to the OMI driver include netCDF files that are in MET's netCDF version.  In addition, a txt file containing the listing of these input netCDF files is required, as well as text file listings of the EOF1 and EOF2 files.  These text files can be generated using the USER_SCRIPT_INPUT_TEMPLATES in the [create_eof_filelist] and [script_omi] sections.  Some optional pre-processing steps include using regrid_data_plane to either regrid your data or cut the domain t0 20N - 20S.
 #
 
 ##############################################################################
@@ -89,7 +89,6 @@ UserScript_fcstGFS_obsERA_OMI.py
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/save_input_files_txt.py
 #
 
 ##############################################################################

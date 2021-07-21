@@ -48,7 +48,7 @@ UserScript_fcstGFS_obsERA_RMM.py
 # METplus Components
 # ------------------
 #
-# This use case runs the OMI driver which computes OMI and creates a phase diagram. Inputs to the OMI driver include netCDF files that are in MET's netCDF version.  In addition, a txt file containing the listing of these input netCDF files is required, as well as text file listings of the EOF1 and EOF2 files.  Some optional pre-processing steps include using regrid_data_plane to either regrid your data or cut the domain t0 20N - 20S.  There are also 3 optional UserScripts that will get a listing of the input OLR, EOF1, and EOF2 files using save_input_files_txt.py. 
+# This use case runs the OMI driver which computes OMI and creates a phase diagram. Inputs to the OMI driver include netCDF files that are in MET's netCDF version.  In addition, a txt file containing the listing of these input netCDF files is required, as well as text file listings of the EOF1 and EOF2 files.  Some optional pre-processing steps include using regrid_data_plane to either regrid your data or cut the domain t0 20N - 20S. 
 #
 
 ##############################################################################
@@ -90,7 +90,6 @@ UserScript_fcstGFS_obsERA_RMM.py
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/OMI_driver.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/save_input_files_txt.py
 #
 
 ##############################################################################
@@ -174,7 +173,7 @@ UserScript_fcstGFS_obsERA_RMM.py
 # METplus Components
 # ------------------
 #
-# This use case runs the RMM driver which computes RMM and creates a phase diagram, time series, and EOF plot. Inputs to the RMM driver include netCDF files that are in MET's netCDF version.  In addition, a text file containing the listing of these input netCDF files for OLR, u850 and u200 is required.  Some optional pre-processing steps include using regrid_data_plane to either regrid your data or cut the domain t0 20N - 20S.  There are also 3 optional UserScripts that will get a listing of the input OLR, u850 and u200 files using save_input_files_txt.py.
+# This use case runs the RMM driver which computes RMM and creates a phase diagram, time series, and EOF plot. Inputs to the RMM driver include netCDF files that are in MET's netCDF version.  In addition, a text file containing the listing of these input netCDF files for OLR, u850 and u200 is required.  Some optional pre-processing steps include using regrid_data_plane to either regrid your data or cut the domain t0 20N - 20S. 
 #
 
 ##############################################################################
@@ -215,7 +214,6 @@ UserScript_fcstGFS_obsERA_RMM.py
 #
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_RMM/RMM_driver.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/save_input_files_txt.py
 #
 
 ##############################################################################
