@@ -25,14 +25,45 @@ Release Notes - Development Release
 *  METdatadb - No Development Releases
 *  METexpress - No Development Releases 
 * `METplus Wrappers <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
-	      
+
+METplus Wrappers Release Notes
+------------------------------
 
 When applicable, release notes are followed by the GitHub issue number which
 describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
-METplus Version |version| release notes (|release_date|)
---------------------------------------------------------
+METplus Version 4.1.0-beta1 Release Notes (2021-07-21)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Enhancements:
+
+  * **Improve logic of TCPairs wrapper** (`#749 <https://github.com/dtcenter/METplus/issues/749>`_)
+  * **Add support for probability field threshold in SeriesAnalysis** (`#875 <https://github.com/dtcenter/METplus/issues/875>`_)
+  * **Add support for extra field options in RegridDataPlane wrapper** (`#924 <https://github.com/dtcenter/METplus/issues/924>`_)
+  * **Improvements to TCMPRPlotter wrapper logging and output control** (`#926 <https://github.com/dtcenter/METplus/issues/926>`_)
+  * **Improve PCPCombine derive mode logic to skip lookback** (`#928 <https://github.com/dtcenter/METplus/issues/928>`_)
+  * **Update CyclonePlotter for offline/HPC usage** (`#933 <https://github.com/dtcenter/METplus/issues/933>`_)
+  * **Update GenVxMask wrapper to require setting -type** (`#960 <https://github.com/dtcenter/METplus/issues/960>`_)
+  * **Enhance TCPairs to loop by valid time and allow looping when LOOP_ORDER = processes** (`#986 <https://github.com/dtcenter/METplus/issues/986>`_)
+  * **Enhance UserScript to get a list of files that match the run times instead of using a wildcard** (`#1002 <https://github.com/dtcenter/METplus/issues/1002>`_)
+  * **Modify user diagnostic feature relative use case to use MetPy Python package** (`#759 <https://github.com/dtcenter/METplus/issues/759>`_)
+
+* New Wrappers:
+
+  * **GFDLTracker**
+
+* New Use Cases:
+
+  * Marine and Coastal: GridStat_fcstRTOFS_obsOSTIA_iceCover (`#834 <https://github.com/dtcenter/METplus/issues/834>`_)
+  * met_tool_wrapper: GFDLTracker_TC (`#615 <https://github.com/dtcenter/METplus/issues/615>`_)
+
+* Internal:
+
+  * Improve approach to obtain additional python packages needed for some use cases (`#839 <https://github.com/dtcenter/METplus/issues/839>`_)
+
+METplus Version 4.0.0 Release Notes (2021-05-10)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 * Bugfixes:
 
