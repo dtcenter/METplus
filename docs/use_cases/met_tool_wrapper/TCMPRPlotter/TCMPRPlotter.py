@@ -108,4 +108,8 @@ met_tool_wrapper/TCMPRPlotter/TCMPRPlotter.conf
 # --------
 #
 # .. note::
-#  `TCMPRPlotterUseCase <https://dtcenter.github.io/METplus/search.html?q=TCMPRPlotterUseCase&check_keywords=yes&area=default>`_
+#
+#   * TCMPRPlotterUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#

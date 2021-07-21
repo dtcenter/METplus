@@ -55,7 +55,6 @@ model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
 #
 # | **Valid:** 2020-01-27 0Z
 # |
-
 #
 # As it is currently set, the configuration file will pass in the path to the observation data,
 # as well as a path to the weights for the coordinate system. This is done in an effort to speed up running the use case.
@@ -144,9 +143,14 @@ model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf
 # --------
 #
 # .. note::
-#    `PlotDataPlaneToolUseCase <https://dtcenter.github.io/METplus/search.html?q=PlotDataPlaneToolUseCase&check_keywords=yes&area=default>`_
-#    `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/develop/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
-#    `MarineAndCoastalAppUseCase <https://metplus.readthedocs.io/en/develop/search.html?q=MarineAndCoastalAppUseCase&check_keywords=yes&area=default>`_
+#
+#   * PlotDataPlaneToolUseCase
+#   * PythonEmbeddingFileUseCase
+#   * MarineAndCoastalAppUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/marine_and_coastal-PlotDataPlane_obsHYCOM_coordTripolar.png'
 #

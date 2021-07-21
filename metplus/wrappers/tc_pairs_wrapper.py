@@ -150,19 +150,8 @@ class TCPairsWrapper(CommandBuilder):
 
         self.handle_consensus()
 
-        init_time_fmt = self.config.getstr('config', 'INIT_TIME_FMT')
-        clock_time = datetime.datetime.strptime(
-            self.config.getstr('config',
-                               'CLOCK_TIME'),
-            '%Y%m%d%H%M%S'
-        )
-
-        init_beg = self.config.getraw('config', 'INIT_BEG')
-        init_beg_dt = util.get_time_obj(init_beg,
-                                        init_time_fmt,
-                                        clock_time,
-                                        logger=self.logger)
-        c_dict['INIT_BEG'] = init_beg_dt.strftime('%Y%m%d_%H%M%S')
+        # if looping by processes, get the init or valid beg time and run once
+        c_dict['INPUT_DICT'] = self.get_start_time_input_dict()
 
         c_dict['INIT_INCLUDE'] = util.getlist(
             self.get_wrapper_or_generic_config('INIT_INCLUDE')
@@ -256,6 +245,16 @@ class TCPairsWrapper(CommandBuilder):
 
         self.handle_description()
 
+        c_dict['SKIP_LEAD_SEQ'] = (
+            self.config.getbool('config',
+                                'TC_PAIRS_SKIP_LEAD_SEQ',
+                                False)
+        )
+
+        # if LOOP_ORDER = processes, only run once if True
+        c_dict['RUN_ONCE'] = self.config.getbool('config',
+                                                 'TC_PAIRS_RUN_ONCE',
+                                                 True)
         return c_dict
 
     def _read_storm_info(self, c_dict):
@@ -360,15 +359,15 @@ class TCPairsWrapper(CommandBuilder):
     def run_all_times(self):
         """! Build up the command to invoke the MET tool tc_pairs.
         """
-        # use init begin as run time (start of the storm)
-        input_dict = {'init':
-                      datetime.datetime.strptime(self.c_dict['INIT_BEG'],
-                                                 '%Y%m%d_%H%M%S')
-                      }
+        # use first run time
+        input_dict = self.c_dict.get('INPUT_DICT')
 
         # if running in READ_ALL_FILES mode, call tc_pairs once and exit
         if self.c_dict['READ_ALL_FILES']:
             return self._read_all_files(input_dict)
+
+        if not self.c_dict['RUN_ONCE']:
+            return super().run_all_times()
 
         self.run_at_time(input_dict)
         return self.all_commands
@@ -385,12 +384,22 @@ class TCPairsWrapper(CommandBuilder):
                 self.logger.info(f"Processing custom string: {custom_string}")
 
             input_dict['custom'] = custom_string
-            time_info = time_util.ti_calculate(input_dict)
-            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                return
 
-            self.run_at_time_loop_string(time_info)
+            # if skipping lead sequence, only run once per init/valid time
+            if self.c_dict['SKIP_LEAD_SEQ']:
+                lead_seq = [0]
+            else:
+                lead_seq = util.get_lead_sequence(self.config, input_dict)
+
+            for lead in lead_seq:
+                input_dict['lead'] = lead
+                time_info = time_util.ti_calculate(input_dict)
+
+                if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                    self.logger.debug('Skipping run time')
+                    return
+
+                self.run_at_time_loop_string(time_info)
 
     def run_at_time_loop_string(self, time_info):
         """! Create the arguments to run MET tc_pairs
@@ -536,10 +545,7 @@ class TCPairsWrapper(CommandBuilder):
             # add storm month to each cyclone item if reformatting SBU
             if self.c_dict['REFORMAT_DECK'] and \
                self.c_dict['REFORMAT_DECK_TYPE'] == 'SBU':
-                if time_info is None:
-                    storm_month = self.c_dict['INIT_BEG'][4:6]
-                else:
-                    storm_month = time_info['init'].strftime('%m')
+                storm_month = time_info['init'].strftime('%m')
                 cyclone = [storm_month + c for c in cyclone]
 
             cyclone = str(cyclone).replace("'", '"')
@@ -634,7 +640,7 @@ class TCPairsWrapper(CommandBuilder):
                 return []
 
             # Set up the environment variable to be used in the TCPairs Config
-            self.set_environment_variables(time_info)
+            self.set_environment_variables(time_storm_info)
 
             self.build()
 
@@ -911,7 +917,7 @@ class TCPairsWrapper(CommandBuilder):
         directories to search for files to let the application determine
         which data to process
 
-        @param input_dict dictionary containing init time set from INIT_BEG
+        @param input_dict dictionary containing some time information
         @returns list of tuples containing commands that are run and which env
          vars were set for the command
         """
@@ -939,7 +945,7 @@ class TCPairsWrapper(CommandBuilder):
                                                check_extension='.tcst'):
             return []
 
-        self.set_environment_variables(input_dict)
+        self.set_environment_variables(time_storm_info)
 
         self.build()
         return self.all_commands
