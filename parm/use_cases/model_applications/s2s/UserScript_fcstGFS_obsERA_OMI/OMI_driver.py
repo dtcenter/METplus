@@ -10,37 +10,10 @@ import datetime
 import glob
 import os
 import warnings
-import atexit
 
 import metcalcpy.contributed.rmm_omi.compute_mjo_indices as cmi
 import metplotpy.contributed.mjo_rmm_omi.plot_mjo_indices as pmi
 import METreadnc.util.read_netcdf as read_netcdf
-
-
-def cleanup_olr_files(obs_olrfile, fcst_olrfile, keep_olr_files):
-    if keep_olr_files == 'False':
-        try:
-            os.remove(obs_olrfile)
-        except:
-            pass
-
-        try:
-            os.remove(fcst_olrfile)
-        except:
-            pass
-
-
-def cleanup_eof_files(obs_eoffile, fcst_eoffile, keep_eof_files):
-    if keep_eof_files == 'False':
-        try:
-            os.remove(obs_eoffile)
-        except:
-            pass
-
-        try:
-            os.remove(fcst_eoffile)
-        except:
-            pass
 
 
 def read_omi_eofs(eof1_files, eof2_files):
@@ -79,14 +52,6 @@ def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
     if (olr_input_files[0] == 'file_list'):
         olr_input_files = olr_input_files[1:]
 
-    #datestrt = '1979-01-01'
-    #datelast = '2012-12-31'
-    #time_old = np.arange(datestrt,datelast, dtype='datetime64[D]')
-    #ntim = len(time_old)
-    #ds_old = xr.open_dataset('UserScript_fcstGFS_obsERA_OMI/olr.1x.7920.nc')
-    #olr_old = ds_old['olr'].sel(lat=slice(-20,20),time=slice(time_old[0],time_old[-1]))
-    #lat_old = ds_old['lat'].sel(lat=slice(-20,20))
-
     # Read in the netCDF data
     netcdf_reader = read_netcdf.ReadNetCDF()
     ds_orig = netcdf_reader.read_into_xarray(olr_input_files)
@@ -107,7 +72,6 @@ def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
     print(olr.min(), olr.max())
 
     # project OLR onto EOFs
-    #PC1, PC2 = cmi.omi(olr_old[0:ntim,:,:], time_old, spd, EOF1, EOF2)
     PC1, PC2 = cmi.omi(olr, time, spd, EOF1, EOF2)
 
     # Get times for the PC phase diagram
@@ -130,26 +94,22 @@ def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
 def main():
 
     # Get Obs and Forecast OLR file listing
-    obs_olr_filetxt = os.environ.get('OBS_OLR_OMI_INPUT_TEXTFILE','')
-    fcst_olr_filetxt = os.environ.get('FCST_OLR_OMI_INPUT_TEXTFILE','')
-    keep_olr_textfile = os.environ.get('KEEP_OLR_FILE_LISTING', 'False')
-    atexit.register(cleanup_olr_files, obs_olr_filetxt, fcst_olr_filetxt, keep_olr_textfile)
-    #obs_olr_filetxt = os.environ.get('METPLUS_FILELIST_OBS_OLR_INPIT','')
-    #fcst_olr_filetxt = os.environ.get('METPLUS_FILELIST_FCST_OLR_INPUT','')
+    obs_olr_filetxt = os.environ.get('METPLUS_FILELIST_OBS_OLR_INPUT','')
+    fcst_olr_filetxt = os.environ.get('METPLUS_FILELIST_FCST_OLR_INPUT','')
 
     # Read in EOF filenames
-    eof1_filetxt = os.environ['EOF1_INPUT_TEXTFILE']
-    eof2_filetxt = os.environ['EOF2_INPUT_TEXTFILE']
-    keep_eof_textfile = os.environ.get('KEEP_EOF_FILE_LISTING', 'False')
-    atexit.register(cleanup_olr_files, eof1_filetxt, eof2_filetxt, keep_eof_textfile)
-    #eof1_filetxt = os.environ['METPLUS_FILELIST_EOF1_INPUT']
-    #eof2_filetxt = os.environ['METPLUS_FILELIST_EOF2_INPUT']
+    eof1_filetxt = os.environ['METPLUS_FILELIST_EOF1_INPUT']
+    eof2_filetxt = os.environ['METPLUS_FILELIST_EOF2_INPUT']
 
     # Read the listing of EOF files
     with open(eof1_filetxt) as ef1:
         eof1_input_files = ef1.read().splitlines()
+    if (eof1_input_files[0] == 'file_list'):
+        eof1_input_files = eof1_input_files[1:]
     with open(eof2_filetxt) as ef2:
         eof2_input_files = ef2.read().splitlines()
+    if (eof2_input_files[0] == 'file_list'):
+        eof2_input_files = eof2_input_files[1:]
 
     # Read in the EOFs
     EOF1, EOF2 = read_omi_eofs(eof1_input_files, eof2_input_files)
