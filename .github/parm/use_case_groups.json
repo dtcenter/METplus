@@ -125,6 +125,11 @@
     "new": false
   },
   {
+    "category": "s2s",
+    "index_list": "7",
+    "new": true
+  },
+  {
     "category": "space_weather",
     "index_list": "0-1",
     "new": false
