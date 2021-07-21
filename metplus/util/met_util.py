@@ -1058,6 +1058,10 @@ def get_lead_sequence(config, input_dict=None, wildcard_if_empty=False):
         return None
 
     if lead_seq:
+        # return lead sequence if wildcard characters are used
+        if lead_seq == ['*']:
+            return lead_seq
+
         out_leads = handle_lead_seq(config,
                                     lead_seq,
                                     lead_min,

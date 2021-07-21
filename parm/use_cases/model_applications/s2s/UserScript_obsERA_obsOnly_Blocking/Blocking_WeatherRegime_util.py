@@ -1,110 +1,72 @@
 import os
 import netCDF4
 import numpy as np
-from metplus.util import pre_run_setup, config_metplus, get_start_end_interval_times, get_lead_sequence
-from metplus.util import get_skip_times, skip_time, is_loop_by_init, ti_calculate, do_string_sub
-
-def parse_steps(config_list):
-
-    steps_config_part_fcst = [s for s in config_list if "FCST_STEPS" in s]
-    steps_list_fcst = []
-
-    steps_config_part_obs = [s for s in config_list if "OBS_STEPS" in s]
-    steps_list_obs = []
-
-    # Setup the Steps
-    if steps_config_part_fcst:
-        steps_param_fcst = steps_config_part_fcst[0].split("=")[1]
-        steps_list_fcst = steps_param_fcst.split("+")
-        config_list.remove(steps_config_part_fcst[0])
-    if steps_config_part_obs:
-        steps_param_obs = steps_config_part_obs[0].split("=")[1]
-        steps_list_obs = steps_param_obs.split("+")
-        config_list.remove(steps_config_part_obs[0])
-
-    config = pre_run_setup(config_list)
-    if not steps_config_part_fcst:
-        steps_param_fcst = config.getstr('config','FCST_STEPS','')
-        steps_list_fcst = steps_param_fcst.split("+")
-    if not steps_config_part_obs:
-        steps_param_obs = config.getstr('config','OBS_STEPS','')
-        steps_list_obs = steps_param_obs.split("+")
-
-    return steps_list_fcst, steps_list_obs, config_list 
+import datetime
 
 
-def find_input_files(inconfig, use_init, intemplate, secondtemplate=''):
-    loop_time, end_time, time_interval = get_start_end_interval_times(inconfig)
-    skip_times = get_skip_times(inconfig)
+def parse_steps():
 
-    start_mth = loop_time.strftime('%m')
-    template = inconfig.getraw('config',intemplate)
-    if secondtemplate:
-        template2 = inconfig.getraw('config',secondtemplate)
-        file_list2 = []
+    steps_param_fcst = os.environ.get('FCST_STEPS','')
+    steps_list_fcst = steps_param_fcst.split("+")
 
-    file_list = []
-    yr_list = []
-    mth_list = []
-    day_list = []
-    yr_full_list = []
-    if use_init:
-        timname = 'init'
-    else:
-        timname = 'valid'
-    input_dict = {}
-    input_dict['loop_by'] = timname
-    pmth = start_mth
-    while loop_time <= end_time:
-        lead_seq = get_lead_sequence(inconfig)
-        for ls in lead_seq:
-            new_time = loop_time + ls
-            input_dict[timname] = loop_time
-            input_dict['lead'] = ls
+    steps_param_obs = os.environ.get('OBS_STEPS','')
+    steps_list_obs = steps_param_obs.split("+")
 
-            outtimestuff = ti_calculate(input_dict)
-            if skip_time(outtimestuff, skip_times):
-                continue
-            cmth = outtimestuff['valid'].strftime('%m')
-            filepath = do_string_sub(template, **outtimestuff)
-            mth_list.append(cmth)
-            day_list.append(outtimestuff['valid'].strftime('%d'))
-            yr_full_list.append(outtimestuff['valid'].strftime('%Y'))
-            if secondtemplate:
-                filepath2 = do_string_sub(template2, **outtimestuff)
-                if os.path.exists(filepath) and os.path.exists(filepath2):
-                    file_list.append(filepath)
-                    file_list2.append(filepath2)
-                else:
-                    file_list.append('')
-                    file_list2.append('')
-            else:
-                if os.path.exists(filepath):
-                    file_list.append(filepath)
-                else:
-                    file_list.append('')
+    return steps_list_fcst, steps_list_obs
 
-            if (int(cmth) == int(start_mth)) and (int(pmth) != int(start_mth)):
-                yr_list.append(int(outtimestuff['valid'].strftime('%Y')))
-            pmth = cmth
 
-        loop_time += time_interval
+def write_mpr_file(data_obs,data_fcst,lats_in,lons_in,time_obs,time_fcst,mname,fvar,flev,ovar,olev,maskname,obslev,outfile):
 
-    if secondtemplate:
-        file_list = [file_list,file_list2]
-    yr_list.append(int(outtimestuff['valid'].strftime('%Y')))
+    dlength = len(lons_in)
+    bdims = data_obs.shape
 
-    if all('' == fn for fn in file_list):
-        raise Exception('No input files found as given: '+template)
+    index_num = np.arange(0,dlength,1)+1
 
-    return file_list, yr_list, mth_list, day_list, yr_full_list
+    # Get the length of the model, FCST_VAR, FCST_LEV, OBS_VAR, OBS_LEV, VX_MASK
+    mname_len = str(max([5,len(mname)])+3)
+    mask_len = str(max([7,len(maskname)])+3)
+    fvar_len = str(max([8,len(fvar)])+3)
+    flev_len = str(max([8,len(flev)])+3)
+    ovar_len = str(max([7,len(ovar)])+3)
+    olev_len = str(max([7,len(olev)])+3)
 
-def read_nc_met(infiles,yrlist,invar):
+    format_string = '%-10s %-'+mname_len+'s %-7s %-12s %-18s %-18s %-12s %-17s %-17s %-'+fvar_len+'s ' \
+        '%-'+flev_len+'s %-'+ovar_len+'s %-'+olev_len+'s %-10s %-'+mask_len+'s %-13s %-13s %-13s %-13s ' \
+        '%-13s %-13s %-13s\n'
+    format_string2 = '%-10s %-'+mname_len+'s %-7s %-12s %-18s %-18s %-12s %-17s %-17s %-'+fvar_len+'s ' \
+        '%-'+flev_len+'s %-'+ovar_len+'s %-'+olev_len+'s %-10s %-'+mask_len+'s %-13s %-13s %-13s %-13s ' \
+        '%-13s %-13s %-13s %-10s %-10s %-10s %-12.4f %-12.4f %-10s %-10s %-12.4f %-12.4f %-10s %-10s %-10s %-10s\n'
+
+     # Write the file
+    for y in range(bdims[0]):
+        for dd in range(bdims[1]):
+            if time_fcst['valid'][y][dd]:
+                ft_stamp = time_fcst['lead'][y][dd]+'L_'+time_fcst['valid'][y][dd][0:8]+'_' \
+                    +time_fcst['valid'][y][dd][9:15]+'V'
+                mpr_outfile_name = outfile+'_'+ft_stamp+'.stat'
+                with open(mpr_outfile_name, 'w') as mf:
+                    mf.write(format_string % ('VERSION', 'MODEL', 'DESC', 'FCST_LEAD', 'FCST_VALID_BEG', 'FCST_VALID_END',
+                        'OBS_LEAD', 'OBS_VALID_BEG', 'OBS_VALID_END', 'FCST_VAR', 'FCST_LEV', 'OBS_VAR', 'OBS_LEV',
+                        'OBTYPE', 'VX_MASK', 'INTERP_MTHD','INTERP_PNTS', 'FCST_THRESH', 'OBS_THRESH', 'COV_THRESH',
+                        'ALPHA', 'LINE_TYPE'))
+                    for dpt in range(dlength):
+                        mf.write(format_string2 % ('V9.1',mname,'NA',time_fcst['lead'][y][dd],time_fcst['valid'][y][dd],
+                            time_fcst['valid'][y][dd],time_obs['lead'][y][dd],time_obs['valid'][y][dd],
+                            time_obs['valid'][y][dd],fvar,flev,ovar,olev,'ADPUPA',maskname,'NEAREST','1','NA','NA',
+                            'NA','NA','MPR',str(dlength),str(index_num[dpt]),'NA',lats_in[dpt],lons_in[dpt],obslev,
+                            'NA',data_fcst[y,dd,dpt],data_obs[y,dd,dpt],'NA','NA','NA','NA'))
+
+
+def read_nc_met(infiles,invar,nseasons,dseasons):
 
     print("Reading in Data")
 
+    # Check to make sure that everything is not set to missing:
+    if all('missing' == fn for fn in infiles):
+        raise Exception('No input files found as given, check paths to input files')
+
     #Find the first non empty file name so I can get the variable sizes
-    locin = next(sub for sub in infiles if sub)
+    locin = next(sub for sub in infiles if sub != 'missing')
     indata = netCDF4.Dataset(locin)
     lats = indata.variables['lat'][:]
     lons = indata.variables['lon'][:]
@@ -112,30 +74,41 @@ def read_nc_met(infiles,yrlist,invar):
     indata.close()
 
     var_3d = np.empty([len(infiles),len(invar_arr[:,0]),len(invar_arr[0,:])])
+    init_list = []
+    valid_list = []
+    lead_list = []
 
     for i in range(0,len(infiles)):
 
         #Read in the data
-        if infiles[i]:
+        if (infiles[i] != 'missing'):
             indata = netCDF4.Dataset(infiles[i])
             new_invar = indata.variables[invar][:]
+
             init_time_str = indata.variables[invar].getncattr('init_time')
             valid_time_str = indata.variables[invar].getncattr('valid_time')
+            lead_dt = datetime.datetime.strptime(valid_time_str,'%Y%m%d_%H%M%S') - datetime.datetime.strptime(init_time_str,'%Y%m%d_%H%M%S')
+            leadmin,leadsec = divmod(lead_dt.total_seconds(), 60)
+            leadhr,leadmin = divmod(leadmin,60)
+            lead_str = str(int(leadhr)).zfill(2)+str(int(leadmin)).zfill(2)+str(int(leadsec)).zfill(2)
             indata.close()
         else:
             new_invar = np.empty((1,len(var_3d[0,:,0]),len(var_3d[0,0,:])),dtype=np.float)
+            init_time_str = ''
+            valid_time_str = ''
+            lead_str = ''
             new_invar[:] = np.nan
+        init_list.append(init_time_str)
+        valid_list.append(valid_time_str)
+        lead_list.append(lead_str)
         var_3d[i,:,:] = new_invar
 
-    yr = np.array(yrlist)
-    if len(var_3d[:,0,0])%float(len(yrlist)) != 0:
-        lowval = int(len(var_3d[:,0,0])/float(len(yrlist)))
-        newarrlen = (lowval+1) * float(len(yrlist))
-        arrexp = int(newarrlen - len(var_3d[:,0,0]))
-        arrfill = np.empty((arrexp,len(var_3d[0,:,0]),len(var_3d[0,0,:])),dtype=np.float)
-        arrfill[:] = np.nan
-        var_3d = np.append(var_3d,arrfill,axis=0)
-    sdim = len(var_3d[:,0,0])/float(len(yrlist))
-    var_4d = np.reshape(var_3d,[len(yrlist),int(sdim),len(var_3d[0,:,0]),len(var_3d[0,0,:])])
+    var_4d = np.reshape(var_3d,[nseasons,dseasons,len(var_3d[0,:,0]),len(var_3d[0,0,:])])
 
-    return var_4d,lats,lons,yr
+    # Reshape time arrays and store them in a dictionary
+    init_list_2d = np.reshape(init_list,[nseasons,dseasons])
+    valid_list_2d = np.reshape(valid_list,[nseasons,dseasons])
+    lead_list_2d = np.reshape(lead_list,[nseasons,dseasons])
+    time_dict = {'init':init_list_2d,'valid':valid_list_2d,'lead':lead_list_2d}
+
+    return var_4d,lats,lons,time_dict

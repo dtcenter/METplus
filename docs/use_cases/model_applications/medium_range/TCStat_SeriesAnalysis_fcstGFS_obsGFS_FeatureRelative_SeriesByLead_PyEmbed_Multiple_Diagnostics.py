@@ -40,11 +40,11 @@ _SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 # --------
 #
 # This use case compares the Global Forecast System (GFS) forecast to the GFS analysis for
-# hurricane Dorian. It is based on two user provided python scripts that calculate the diagnostic 
-# integrated vaport transport (IVT) and potential vorticity (PV), respectively. 
+# hurricane Dorian. It is based on three user provided python scripts that calculate the diagnostic 
+# integrated vaport transport (IVT) baroclinic potential vorticity (PV), and saturation equivalent potential temperature (SEPT), respectively. 
 # 
 #  - Variables required to calculate IVT:
-#    Levels required: all pressure levels <= 100mb
+#    Levels required: all pressure levels >= 100mb
 #    #. Temperature
 #    #. v- component of wind
 #    #. u- component of wind
@@ -52,9 +52,15 @@ _SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 #    #. Specific humidity OR Relative Humidity
 #
 #  - Variables required to calculate PV:
-#    Levels required: all pressure levels <= 100mb
-#    #. Absolute Vorticity
+#    Levels required: all pressure levels >= 100mb
+#    #. U-wind
+#    #. V-wind
 #    #. Temperature
+#
+#  - Variables required to calculate saturation equivalent potential temperature:
+#    Levels required: all pressure levels >= 100mb
+#    #. Temperature
+#
 
 #  - Forecast dataset: GFS Grid 4 Forecast
 #    GFS Forecast data can be found at the following website: https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs
@@ -78,10 +84,13 @@ _SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 # External Dependencies
 # ---------------------
 #
-# You will need to use a version of Python 3.6+ that has the following packages installed:
+# You will need to use a version of Python 3.7+ that has the following packages installed:
 #
 # * netCDF4
 # * pygrib
+# * cfgrib
+# * metpy
+# * xarray
 #
 # If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
 #
@@ -95,8 +104,8 @@ _SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 # ------------------
 #
 # This use case first runs PyEmbedIngest to run the user provided python scripts to calculate the
-# desired diagnostics (in this example, IVT and PV). PyEmbedIngest runs the RegridDataPlane tool 
-# to write IVT and PV to a MET readable netCDF file. Then TCPairs and ExtractTiles are run to 
+# desired diagnostics (in this example, IVT, PV and SEPT). PyEmbedIngest runs the RegridDataPlane tool 
+# to write IVT, PV, and SEPTto a MET readable netCDF file. Then TCPairs and ExtractTiles are run to 
 # generate matched tropical cyclone data and regrid them into appropriately-sized tiles
 # along a storm track. The MET tc-stat tool is used to filter the track data and the MET 
 # regrid-dataplane tool is used to regrid the data (GRIB1 or GRIB2 into netCDF). 
@@ -200,6 +209,12 @@ _SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_pv_fcst.py
 #
+# parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_sept_fcst.py
+#
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_sept_fcst.py
+#
+#
 #
 # parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_ivt_analysis.py
 #
@@ -211,10 +226,11 @@ _SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 # .. highlight:: python
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_pv_analysis.py
 #
+# parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_sept_analysis.py
 #
+# .. highlight:: python
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics/gfs_sept_analysis.py
 #
-
-
 
 ##############################################################################
 # Running METplus
@@ -232,7 +248,7 @@ _SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 # 2) Modifying the configurations in parm/metplus_config, then passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf::
 #
 #        run_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_IVT.conf
+#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #

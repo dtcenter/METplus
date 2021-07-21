@@ -7171,3 +7171,652 @@ METplus Configuration Glossary
      Default value is False.
 
      | *Used by:*  TCPairs
+
+   USER_SCRIPT_INPUT_DIR
+     Optional directory to look for input files. Prepended to each input
+     template (see :term:`USER_SCRIPT_INPUT_TEMPLATE`).
+
+     | *Used by:*  UserScript
+
+   USER_SCRIPT_INPUT_TEMPLATE
+     Optional list of input templates to use to look for input files.
+     If :term:`USER_SCRIPT_INPUT_DIR` is set, prepend that path to each item.
+     When the UserScript wrapper is run, the templates defined here will be
+     used to populate a list of all of the files that match the template for
+     each run time specified. Depending on the runtime frequency defined in
+     :term:`USER_SCRIPT_RUNTIME_FREQ`, text files will be generated that
+     contain a list of the file paths that correspond to the current run.
+     If any files are not found on disk, then "missing" will be added in place
+     of the file path. Each file list text file will be named after the current
+     init/valid/lead values for that run and a label named input<n> where <n>
+     is a zero-based index of the template, i.e. a single template will be
+     labelled input0, two templates will be labelled input0 and input1, etc.
+     Custom labels can be defined with
+     :term:`USER_SCRIPT_INPUT_TEMPLATE_LABELS`. For each template, an
+     environment variable named METPLUS_FILELIST_<label> will be set to the
+     path of the appropriate file list text file. This environment variable
+     can be referenced by the user-defined script to obtain the file list.
+
+     | *Used by:*  UserScript
+
+   USER_SCRIPT_INPUT_TEMPLATE_LABELS
+     Optional list of labels that correspond to each input template defined.
+     See :term:`USER_SCRIPT_INPUT_TEMPLATE`. Each template that does not have
+     a label defined will be assigned a label with the format input<n> where
+     <n> is the zero-based index of the template in the list.
+
+     | *Used by:*  UserScript
+
+   TC_PAIRS_RUN_ONCE
+     If True and LOOP_ORDER = processes, TCPairs will be run once using the
+     INIT_BEG or VALID_BEG value (depending on the value of LOOP_BY).
+     This is the default setting and preserves the original logic of the
+     wrapper. If this variable is set to False, then TCPairs will run once
+     for each run time iteration. If LOOP_ORDER = times, then TCPairs will
+     still run for each run time. The preferred configuration settings to
+     run TCPairs once for a range of init or valid times is to set INIT_BEG
+     to INIT_END (if LOOP_BY = INIT) and define the range of init times to
+     filter the data inside TCPairs with TC_PAIRS_INIT_BEG and
+     TC_PAIRS_INIT_END. The same applies for the VALID variables if
+     LOOP_BY = VALID.
+
+     | *Used by:*  TCPairs
+
+   GFDL_TRACKER_BASE
+     Path to directory that contains the GFDL Tracker executables such as
+     grbindex.exe and gettrk.exe. In many installations, this is a directory
+     named trk_exec.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_INPUT_DIR
+     Directory containing input data to read into GFDLTracker. This is optional
+     as the entire path to the data can be set with
+     :term:`GFDL_TRACKER_INPUT_TEMPLATE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_INPUT_TEMPLATE
+     Filename template that corresponds to the file naming convention of the
+     input data read into GFDLTracker. This can be a full path to a file or
+     a relative path if :term:`GFDL_TRACKER_INPUT_DIR` is set.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TC_VITALS_INPUT_DIR
+     Directory containing the TCVitals file that is required to run the
+     GFDLTracker. This is optional as the entire path to the data can be set
+     with :term:`GFDL_TRACKER_TC_VITALS_INPUT_TEMPLATE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TC_VITALS_INPUT_TEMPLATE
+     Filename template that corresponds to the file naming convention of the
+     TCVitals file that is required to run the GFDLTracker.
+     This can be a full path to a file or
+     a relative path if :term:`GFDL_TRACKER_TC_VITALS_INPUT_DIR` is set.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_OUTPUT_DIR
+     Directory to write output data created by GFDLTracker. The tracker
+     application must be run from the directory containing all of the data and
+     configuration files used, so the wrapper will call the application from
+     this directory. Symbolic links for each input file including the TCVitals
+     file will be created in this directory and removed after a successful run.
+     The fort.X files required to run the tracker will be generated in
+     this directory. Also, the input.nml file that is generated from the
+     template NML file (specified by :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`)
+     will be found in this directory.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_OUTPUT_TEMPLATE
+     The fort.64 output file that is generated from running the GFDLTracker
+     can be renamed using this variable using filename template syntax to
+     create an output file that contains useful information such as the date.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_GRIB_VERSION
+     Specifies the GRIB version of the input data. Valid values are 1 or 2.
+     This determines which application to use to create the index files
+     (grbindex.exe or grb2index.exe).
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NML_TEMPLATE_FILE
+     Path to the template NML file that matches the format of the input.nml
+     file that is used by the GFDL Tracker. This file can contain string
+     expressions that are substituted by values read from the METplus
+     configuration variables, so this path likely does not need to be modified.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_DATEIN_INP_MODEL
+     Sets the value of &datein: inp%model in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_DATEIN_INP_MODTYP
+     Sets the value of &datein: inp%modtyp in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_DATEIN_INP_LT_UNITS
+     Sets the value of &datein: inp%lt_units in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_DATEIN_INP_FILE_SEQ
+     Sets the value of &datein: inp%file_seq in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_DATEIN_INP_NESTTYP
+     Sets the value of &datein: inp%nesttyp in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_ATCFINFO_ATCFNUM
+     Sets the value of &atcfinfo: atcfnum in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_ATCFINFO_ATCFNAME
+     Sets the value of &atcfinfo: atcfname in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_ATCFINFO_ATCFFREQ
+     Sets the value of &atcfinfo: atcffreq in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_TYPE
+     Sets the value of &trackerinfo: trkrinfo%type in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_MSLPTHRESH
+     Sets the value of &trackerinfo: trkrinfo%mslpthresh in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_USE_BACKUP_MSLP_GRAD_CHECK
+     Sets the value of &trackerinfo: trkrinfo%use_backup_mslp_grad_check in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_V850THRESH
+     Sets the value of &trackerinfo: trkrinfo%v850thresh in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_USE_BACKUP_850_VT_CHECK
+     Sets the value of &trackerinfo: trkrinfo%use_backup_850_vt_check in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_ENABLE_TIMING
+     Sets the value of &trackerinfo: trkrinfo%enable_timing in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_GRIDTYPE
+     Sets the value of &trackerinfo: trkrinfo%gridtype in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_CONTINT
+     Sets the value of &trackerinfo: trkrinfo%contint in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_WANT_OCI
+     Sets the value of &trackerinfo: trkrinfo%want_oci in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_OUT_VIT
+     Sets the value of &trackerinfo: trkrinfo%out_vit in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_USE_LAND_MASK
+     Sets the value of &trackerinfo: trkrinfo%use_land_mask in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_INP_DATA_TYPE
+     Sets the value of &trackerinfo: trkrinfo%inp_data_type in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_GRIBVER
+     Sets the value of &trackerinfo: trkrinfo%gribver in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_G2_JPDTN
+     Sets the value of &trackerinfo: trkrinfo%g2_jpdtn in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_G2_MSLP_PARM_ID
+     Sets the value of &trackerinfo: trkrinfo%g2_mslp_parm_id in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_G1_MSLP_PARM_ID
+     Sets the value of &trackerinfo: trkrinfo%g1_mslp_parm_id in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_G1_SFCWIND_LEV_TYP
+     Sets the value of &trackerinfo: trkrinfo%g1_sfcwind_lev_typ in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_TRACKERINFO_G1_SFCWIND_LEV_VAL
+     Sets the value of &trackerinfo: trkrinfo%g1_sfcwind_lev_val in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_PHASEINFO_PHASEFLAG
+     Sets the value of &phaseinfo: phaseflag in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_PHASEINFO_PHASESCHEME
+     Sets the value of &phaseinfo: phasescheme in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_PHASEINFO_WCORE_DEPTH
+     Sets the value of &phaseinfo: wcore_depth in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_STRUCTINFO_STRUCTFLAG
+     Sets the value of &structinfo: structflag in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_STRUCTINFO_IKEFLAG
+     Sets the value of &structinfo: ikeflag in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_FNAMEINFO_GMODNAME
+     Sets the value of &fnameinfo: gmodname in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_FNAMEINFO_RUNDESCR
+     Sets the value of &fnameinfo: rundescr in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_FNAMEINFO_ATCFDESCR
+     Sets the value of &fnameinfo: atcfdescr in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_WAITINFO_USE_WAITFOR
+     Sets the value of &waitinfo: use_waitfor in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_WAITINFO_WAIT_MIN_AGE
+     Sets the value of &waitinfo: wait_min_age in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_WAITINFO_WAIT_MIN_SIZE
+     Sets the value of &waitinfo: wait_min_size in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_WAITINFO_WAIT_MAX_WAIT
+     Sets the value of &waitinfo: wait_max_wait in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_WAITINFO_WAIT_SLEEPTIME
+     Sets the value of &waitinfo: wait_sleeptime in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_WAITINFO_USE_PER_FCST_COMMAND
+     Sets the value of &waitinfo: use_per_fcst_command in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_WAITINFO_PER_FCST_COMMAND
+     Sets the value of &waitinfo: per_fcst_command in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_LAT_NAME
+     Sets the value of &netcdflist: netcdfinfo%lat_name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_LMASKNAME
+     Sets the value of &netcdflist: netcdfinfo%lmaskname in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_LON_NAME
+     Sets the value of &netcdflist: netcdfinfo%lon_name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_MSLPNAME
+     Sets the value of &netcdflist: netcdfinfo%mslpname in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_NETCDF_FILENAME
+     Sets the value of &netcdflist: netcdfinfo%netcdf_filename in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_NUM_NETCDF_VARS
+     Sets the value of &netcdflist: netcdfinfo%num_netcdf_vars in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_RV700NAME
+     Sets the value of &netcdflist: netcdfinfo%rv700name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_RV850NAME
+     Sets the value of &netcdflist: netcdfinfo%rv850name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_TIME_NAME
+     Sets the value of &netcdflist: netcdfinfo%time_name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_TIME_UNITS
+     Sets the value of &netcdflist: netcdfinfo%time_units in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_TMEAN_300_500_NAME
+     Sets the value of &netcdflist: netcdfinfo%tmean_300_500_name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_U500NAME
+     Sets the value of &netcdflist: netcdfinfo%u500name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_U700NAME
+     Sets the value of &netcdflist: netcdfinfo%u700name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_U850NAME
+     Sets the value of &netcdflist: netcdfinfo%u850name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_USFCNAME
+     Sets the value of &netcdflist: netcdfinfo%usfcname in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_V500NAME
+     Sets the value of &netcdflist: netcdfinfo%v500name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_V700NAME
+     Sets the value of &netcdflist: netcdfinfo%v700name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_V850NAME
+     Sets the value of &netcdflist: netcdfinfo%v850name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_VSFCNAME
+     Sets the value of &netcdflist: netcdfinfo%vsfcname in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z200NAME
+     Sets the value of &netcdflist: netcdfinfo%z200name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z300NAME
+     Sets the value of &netcdflist: netcdfinfo%z300name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z350NAME
+     Sets the value of &netcdflist: netcdfinfo%z350name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z400NAME
+     Sets the value of &netcdflist: netcdfinfo%z400name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z450NAME
+     Sets the value of &netcdflist: netcdfinfo%z450name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z500NAME
+     Sets the value of &netcdflist: netcdfinfo%z500name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z550NAME
+     Sets the value of &netcdflist: netcdfinfo%z550name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z600NAME
+     Sets the value of &netcdflist: netcdfinfo%z600name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z650NAME
+     Sets the value of &netcdflist: netcdfinfo%z650name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z700NAME
+     Sets the value of &netcdflist: netcdfinfo%z700name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z750NAME
+     Sets the value of &netcdflist: netcdfinfo%z750name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z800NAME
+     Sets the value of &netcdflist: netcdfinfo%z800name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z850NAME
+     Sets the value of &netcdflist: netcdfinfo%z850name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_NETCDFINFO_Z900NAME
+     Sets the value of &netcdflist: netcdfinfo%z900name in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_USER_WANTS_TO_TRACK_ZETA700
+     Sets the value of &parmpreflist: user_wants_to_track_zeta700 in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_USER_WANTS_TO_TRACK_WCIRC850
+     Sets the value of &parmpreflist: user_wants_to_track_wcirc850 in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_USER_WANTS_TO_TRACK_WCIRC700
+     Sets the value of &parmpreflist: user_wants_to_track_wcirc700 in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_USER_WANTS_TO_TRACK_GPH850
+     Sets the value of &parmpreflist: user_wants_to_track_gph850 in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_USER_WANTS_TO_TRACK_GPH700
+     Sets the value of &parmpreflist: user_wants_to_track_gph700 in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_USER_WANTS_TO_TRACK_MSLP
+     Sets the value of &parmpreflist: user_wants_to_track_mslp in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_USER_WANTS_TO_TRACK_WCIRCSFC
+     Sets the value of &parmpreflist: user_wants_to_track_wcircsfc in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_USER_WANTS_TO_TRACK_ZETASFC
+     Sets the value of &parmpreflist: user_wants_to_track_zetasfc in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_USER_WANTS_TO_TRACK_THICK500850
+     Sets the value of &parmpreflist: user_wants_to_track_thick500850 in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_USER_WANTS_TO_TRACK_THICK200500
+     Sets the value of &parmpreflist: user_wants_to_track_thick200500 in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_USER_WANTS_TO_TRACK_THICK200850
+     Sets the value of &parmpreflist: user_wants_to_track_thick200850 in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_USER_WANTS_TO_TRACK_ZETA850
+     Sets the value of &parmpreflist: user_wants_to_track_zeta850 in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_VERBOSE_VERB
+     Sets the value of &verbose: verb in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
+
+   GFDL_TRACKER_VERBOSE_VERB_G2
+     Sets the value of &verbose: verb_g2 in the template NML file.
+     See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
+
+     | *Used by:* GFDLTracker
