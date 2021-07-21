@@ -14,7 +14,7 @@ import warnings
 
 import metcalcpy.contributed.rmm_omi.compute_mjo_indices as cmi
 import metplotpy.contributed.mjo_rmm_omi.plot_mjo_indices as pmi
-#from metcalcpy.util import read_file
+import METreadnc.util.read_netcdf as read_netcdf
 
 
 def read_rmm_eofs(olrfile, u850file, u200file):
@@ -52,44 +52,99 @@ def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
     olr_filetxt = os.environ[inlabel+'_OLR_RMM_INPUT_TEXTFILE']
     u850_filetxt = os.environ[inlabel+'_U850_RMM_INPUT_TEXTFILE']
     u200_filetxt = os.environ[inlabel+'_U200_RMM_INPUT_TEXTFILE']
+    #olr_filetxt = os.environ['METPLUS_FILELIST_'+inlabel+'_OLR_RMM_INPUT']
+    #u850_filetxt = os.environ['METPLUS_FILELIST_'+inlabel+'_U850_RMM_INPUT']
+    #u200_filetxt = os.environ['METPLUS_FILELIST_'+inlabel+'_U200_RMM_INPUT']
 
     # Read the listing of OLR, U850, U200 files
     with open(olr_filetxt) as ol:
         olr_input_files = ol.read().splitlines()
+    if (olr_input_files[0] == 'file_list'):
+            olr_input_files = olr_input_files[1:]
     with open(u850_filetxt) as u8:
         u850_input_files = u8.read().splitlines()
+    if (u850_input_files[0] == 'file_list'):
+            u850_input_files = u850_input_files[1:]
     with open(u200_filetxt) as u2:
         u200_input_files = u2.read().splitlines()
+    if (u200_input_files[0] == 'file_list'):
+            u200_input_files = u200_input_files[1:]
 
-    # read OLR, U850, U500 data from file
+    # read OLR, U850, U200 data from file
     #### This will need to be converted to the dbload versions
     #### I've cut the domain using regrid_data_plane, so that can be omitted once switched to dbload
-    datestrt = '1979-01-01'
-    datelast = '2012-12-31'
-    time = np.arange(datestrt,datelast, dtype='datetime64[D]')
-    ntim = len(time)
-    ds = xr.open_dataset('UserScript_fcstGFS_obsERA_RMM/olr.1x.7920.anom7901.nc')
-    olr = ds['olr'].sel(lat=slice(-15,15),time=slice(time[0],time[-1]))
-    lon = ds['lon']
+    #datestrt = '1979-01-01'
+    #datelast = '2012-12-31'
+    #time = np.arange(datestrt,datelast, dtype='datetime64[D]')
+    #ntim = len(time)
+    #ds = xr.open_dataset('UserScript_fcstGFS_obsERA_RMM/olr.1x.7920.anom7901.nc')
+    #olr = ds['olr'].sel(lat=slice(-15,15),time=slice(time[0],time[-1]))
+    #lon = ds['lon']
+    #olr = olr.mean('lat')
+    #print(olr.min(), olr.max())
+
+    #ds = xr.open_dataset('UserScript_fcstGFS_obsERA_RMM/uwnd.erai.an.2p5.850.daily.anom7901.nc')
+    #u850 = ds['uwnd'].sel(lat=slice(-15,15),time=slice(time[0],time[-1]))
+    #u850 = u850.mean('lat')
+    #print(u850.min(), u850.max())
+
+    #ds = xr.open_dataset('UserScript_fcstGFS_obsERA_RMM/uwnd.erai.an.2p5.200.daily.anom7901.nc')
+    #u200 = ds['uwnd'].sel(lat=slice(-15,15),time=slice(time[0],time[-1]))
+    #u200 = u200.mean('lat')
+    #print(u200.min(), u200.max())
+
+    # Read OLR, U850, U200 data from file
+    netcdf_reader_olr = read_netcdf.ReadNetCDF()
+    ds_olr = netcdf_reader_olr.read_into_xarray(olr_input_files)
+
+    netcdf_reader_u850 = read_netcdf.ReadNetCDF()
+    ds_u850 = netcdf_reader_u850.read_into_xarray(u850_input_files)
+
+    netcdf_reader_u200 = read_netcdf.ReadNetCDF()
+    ds_u200 = netcdf_reader_u200.read_into_xarray(u200_input_files)
+
+
+    time = []
+    for din in range(len(ds_olr)):
+        colr = ds_olr[din]
+        ctime =  datetime.datetime.strptime(colr['olr'].valid_time,'%Y%m%d_%H%M%S')
+        time.append(ctime.strftime('%Y-%m-%d'))
+        colr = colr.assign_coords(time=ctime)
+        ds_olr[din] = colr.expand_dims("time")
+
+        cu850 = ds_u850[din]
+        cu850 = cu850.assign_coords(time=ctime)
+        ds_u850[din] = cu850.expand_dims("time")
+
+        cu200 = ds_u200[din]
+        cu200 = cu200.assign_coords(time=ctime)
+        ds_u200[din] = cu200.expand_dims("time")
+
+    time = np.array(time,dtype='datetime64[D]')
+
+    everything_olr = xr.concat(ds_olr,"time")
+    olr = everything_olr['olr']
     olr = olr.mean('lat')
     print(olr.min(), olr.max())
 
-    ds = xr.open_dataset('UserScript_fcstGFS_obsERA_RMM/uwnd.erai.an.2p5.850.daily.anom7901.nc')
-    u850 = ds['uwnd'].sel(lat=slice(-15,15),time=slice(time[0],time[-1]))
+    everything_u850 = xr.concat(ds_u850,"time")
+    u850 = everything_u850['uwnd850']
     u850 = u850.mean('lat')
-    print(u850.min(), u850.max())
+    print(olr.min(), olr.max())
 
-    ds = xr.open_dataset('UserScript_fcstGFS_obsERA_RMM/uwnd.erai.an.2p5.200.daily.anom7901.nc')
-    u200 = ds['uwnd'].sel(lat=slice(-15,15),time=slice(time[0],time[-1]))
+    everything_u200 = xr.concat(ds_u200,"time")
+    u200 = everything_u200['uwnd200']
     u200 = u200.mean('lat')
-    print(u200.min(), u200.max())
+    print(olr.min(), olr.max())
+    
 
     # Get normalization factors for use 
     rmm_norm = [float(os.environ['RMM_OLR_NORM']),float(os.environ['RMM_U850_NORM']),float(os.environ['RMM_U200_NORM'])]
     pc_norm = [float(os.environ['PC1_NORM']),float(os.environ['PC2_NORM'])]    
 
     # project data onto EOFs
-    PC1, PC2 = cmi.rmm(olr[0:ntim,:], u850[0:ntim,:], u200[0:ntim,:], time, spd, EOF1, EOF2, rmm_norm, pc_norm)
+    #PC1, PC2 = cmi.rmm(olr[0:ntim,:], u850[0:ntim,:], u200[0:ntim,:], time, spd, EOF1, EOF2, rmm_norm, pc_norm)
+    PC1, PC2 = cmi.rmm(olr, u850, u200, time, spd, EOF1, EOF2, rmm_norm, pc_norm)
     print(PC1.min(), PC1.max())
 
     # Get times for the PC phase diagram

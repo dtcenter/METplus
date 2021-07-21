@@ -15,7 +15,6 @@ import atexit
 import metcalcpy.contributed.rmm_omi.compute_mjo_indices as cmi
 import metplotpy.contributed.mjo_rmm_omi.plot_mjo_indices as pmi
 import METreadnc.util.read_netcdf as read_netcdf
-#from metcalcpy.util import read_file
 
 
 def cleanup_olr_files(obs_olrfile, fcst_olrfile, keep_olr_files):
@@ -77,6 +76,8 @@ def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
     # Read the listing of EOF files
     with open(olr_filetxt) as ol:
         olr_input_files = ol.read().splitlines()
+    if (olr_input_files[0] == 'file_list'):
+        olr_input_files = olr_input_files[1:]
 
     #datestrt = '1979-01-01'
     #datelast = '2012-12-31'
@@ -108,7 +109,6 @@ def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
     # project OLR onto EOFs
     #PC1, PC2 = cmi.omi(olr_old[0:ntim,:,:], time_old, spd, EOF1, EOF2)
     PC1, PC2 = cmi.omi(olr, time, spd, EOF1, EOF2)
-    #exit()
 
     # Get times for the PC phase diagram
     plase_plot_time_format = os.environ['PHASE_PLOT_TIME_FMT']
@@ -134,12 +134,16 @@ def main():
     fcst_olr_filetxt = os.environ.get('FCST_OLR_OMI_INPUT_TEXTFILE','')
     keep_olr_textfile = os.environ.get('KEEP_OLR_FILE_LISTING', 'False')
     atexit.register(cleanup_olr_files, obs_olr_filetxt, fcst_olr_filetxt, keep_olr_textfile)
+    #obs_olr_filetxt = os.environ.get('METPLUS_FILELIST_OBS_OLR_INPIT','')
+    #fcst_olr_filetxt = os.environ.get('METPLUS_FILELIST_FCST_OLR_INPUT','')
 
     # Read in EOF filenames
     eof1_filetxt = os.environ['EOF1_INPUT_TEXTFILE']
     eof2_filetxt = os.environ['EOF2_INPUT_TEXTFILE']
     keep_eof_textfile = os.environ.get('KEEP_EOF_FILE_LISTING', 'False')
     atexit.register(cleanup_olr_files, eof1_filetxt, eof2_filetxt, keep_eof_textfile)
+    #eof1_filetxt = os.environ['METPLUS_FILELIST_EOF1_INPUT']
+    #eof2_filetxt = os.environ['METPLUS_FILELIST_EOF2_INPUT']
 
     # Read the listing of EOF files
     with open(eof1_filetxt) as ef1:
