@@ -46,7 +46,7 @@ def get_tarfile_last_modified(search_dir):
 def create_data_volumes(branch_name, volumes):
     if not volumes:
         print("No volumes to build")
-        return
+        return True
 
     data_repo = get_data_repo(branch_name)
     # log into docker using encrypted credentials and
