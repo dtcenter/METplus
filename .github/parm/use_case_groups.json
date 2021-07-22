@@ -126,7 +126,17 @@
   },
   {
     "category": "s2s",
-    "index_list": "7-9",
+    "index_list": "7",
+    "new": true
+  },
+  {
+    "category": "s2s",
+    "index_list": "8",
+    "new": true
+  },
+  {
+    "category": "s2s",
+    "index_list": "9",
     "new": true
   },
   {
