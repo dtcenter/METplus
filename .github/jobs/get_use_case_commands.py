@@ -149,7 +149,7 @@ def main(categories, subset_list, work_dir=None,
                 use_case_cmds.append(use_case_cmd)
 
             # add commands to set up environment before use case commands
-            group_commands = f"{setup_env}{';'.join(use_case_cmds)}"
+            group_commands = f"{setup_env}which python3;{';'.join(use_case_cmds)}"
             all_commands.append((group_commands, reqs))
 
     return all_commands
