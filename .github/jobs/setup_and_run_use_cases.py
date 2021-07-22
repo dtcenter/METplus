@@ -70,11 +70,12 @@ def main():
         else:
             env_tag = 'metplus_base'
 
-        # get Dockerfile to use (gempak if using gempak)
+        # get Dockerfile to use
+        dockerfile_name = 'Dockerfile.run'
         if 'gempak' in str(requirements).lower():
-            dockerfile_name = 'Dockerfile.gempak'
-        else:
-            dockerfile_name = 'Dockerfile.run'
+            dockerfile_name = f'{dockerfile_name}_gempak'
+        elif 'gfdl' in str(requirements).lower():
+            dockerfile_name = f'{dockerfile_name}_gfdl'
 
         docker_build_cmd = (
             f"docker build -t {run_tag} "

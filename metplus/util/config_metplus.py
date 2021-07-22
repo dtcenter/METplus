@@ -830,10 +830,18 @@ class METplusConfig(ProdConfig):
             return default
         except ValueError:
             # check if it was an empty string and return default or False if so
-            if not super().getstr(sec, name):
+            value_string = super().getstr(sec, name)
+            if not value_string:
                 if default:
                     return default
 
+                return False
+
+            # check if value is y/Y/n/N and return True/False if so
+            value_string = util.remove_quotes(value_string)
+            if value_string.lower() == 'y':
+                return True
+            if value_string.lower() == 'n':
                 return False
 
             # if value is not correct type, log error and return None
