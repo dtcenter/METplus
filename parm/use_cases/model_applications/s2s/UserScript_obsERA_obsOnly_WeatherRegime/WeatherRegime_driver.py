@@ -47,8 +47,6 @@ def main():
     # Grab the Daily text files
     obs_wr_filetxt = os.environ.get('METPLUS_FILELIST_OBS_INPUT','')
     fcst_wr_filetxt = os.environ.get('METPLUS_FILELIST_FCST_INPUT','')
-    #obs_wr_filetxt = os.environ.get('METPLUS_FILELIST_INPUT0','')
-    #fcst_wr_filetxt = os.environ.get('METPLUS_FILELIST_INPUT1','')
 
 
     if ("ELBOW" in steps_list_obs) or ("EOF" in steps_list_obs) or ("KMEANS" in steps_list_obs):
