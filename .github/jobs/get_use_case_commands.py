@@ -80,6 +80,7 @@ def handle_automation_env(host_name, reqs, work_dir):
             f' -e {work_dir}/.github/parm/Externals_metdatadb.cfg;'
             'cd -;'
         )
+        setup_env += f'export PYTHONPATH={METPLUS_DOCKER_LOC}/../METdatadb:$PYTHONPATH;'
 
     # if gempak is in requirements list, add JRE bin to path for java
     if 'gempak' in str(reqs).lower():
