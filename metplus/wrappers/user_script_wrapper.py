@@ -96,10 +96,6 @@ class UserScriptWrapper(RuntimeFreqWrapper):
                               **time_info)
             )
 
-            # if command contains wildcard character, run in shell
-            if '*' in self.c_dict['COMMAND']:
-                self.c_dict['RUN_IN_SHELL'] = True
-
             # run command
             if not self.build():
                 success = False
