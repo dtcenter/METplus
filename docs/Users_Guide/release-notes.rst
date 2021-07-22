@@ -48,14 +48,17 @@ METplus Version 4.1.0-beta1 Release Notes (2021-07-21)
   * **Enhance TCPairs to loop by valid time and allow looping when LOOP_ORDER = processes** (`#986 <https://github.com/dtcenter/METplus/issues/986>`_)
   * **Enhance UserScript to get a list of files that match the run times instead of using a wildcard** (`#1002 <https://github.com/dtcenter/METplus/issues/1002>`_)
 
+
 * New Wrappers:
 
   * **GFDLTracker**
+
 
 * New Use Cases:
 
   * Marine and Coastal: GridStat_fcstRTOFS_obsOSTIA_iceCover (`#834 <https://github.com/dtcenter/METplus/issues/834>`_)
   * met_tool_wrapper: GFDLTracker_TC (`#615 <https://github.com/dtcenter/METplus/issues/615>`_)
+
 
 * Internal:
 
