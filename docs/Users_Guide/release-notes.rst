@@ -47,7 +47,6 @@ METplus Version 4.1.0-beta1 Release Notes (2021-07-21)
   * **Update GenVxMask wrapper to require setting -type** (`#960 <https://github.com/dtcenter/METplus/issues/960>`_)
   * **Enhance TCPairs to loop by valid time and allow looping when LOOP_ORDER = processes** (`#986 <https://github.com/dtcenter/METplus/issues/986>`_)
   * **Enhance UserScript to get a list of files that match the run times instead of using a wildcard** (`#1002 <https://github.com/dtcenter/METplus/issues/1002>`_)
-  * **Modify user diagnostic feature relative use case to use MetPy Python package** (`#759 <https://github.com/dtcenter/METplus/issues/759>`_)
 
 * New Wrappers:
 
