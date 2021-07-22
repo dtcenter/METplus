@@ -12,9 +12,15 @@ UserScript_obsERA_obsOnly_Blocking.py
 # Scientific Objective
 # --------------------
 #
-# To compute the Central Blocking Latitude, Instantaneously blocked latitudes,
-# Group Instantaneously blocked latitudes, and the frequency of atmospheric 
-# blocking using the Pelly-Hoskins Method.
+# To compute the frequency of blocking using the Pelly-Hoskins method.  Specifically
+# the blocking calculation consits of computing the Central Blocking Latitude (CBL), 
+# Instantaneousy blocked latitudes (IBL), Group Instantaneousy blocked latitudes (GIBL), 
+# and the frequency of atmospheric blocking.  The CBL calculation had an option to use an 
+# observed climatology.
+#
+# The following reference contains the specific equations and methodology used to compute 
+# blocking:
+#
 
 ##############################################################################
 # Datasets
@@ -69,6 +75,7 @@ UserScript_obsERA_obsOnly_Blocking.py
 # steps (CBL, PLOTCBL, IBL, PLOTIBL, GIBL, CALCBLOCKS, PLOTBLOCKS), omitting the regridding, 
 # time averaging, running mean, and anomaly pre-processing steps.  However, the configurations 
 # for pre-processing are available for user reference.
+#
 
 ##############################################################################
 # METplus Configuration
@@ -77,12 +84,13 @@ UserScript_obsERA_obsOnly_Blocking.py
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
 # i.e. parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.py.  
-# The file UserScript_obsERA_obsOnly_Blocking.conf runs the python program, however
-# UserScript_obsERA_obsOnly_Blocking/Regrid_PCP_obsERA_obsOnly_Blocking.conf sets the 
-# variables for all steps of the Blocking use case.
+# The file UserScript_obsERA_obsOnly_Blocking.conf runs the python program, and the 
+# variables for all steps of the Blocking use case are set in the [user_env_vars] 
+# section.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking.conf
+#
 
 ##############################################################################
 # MET Configuration
@@ -94,8 +102,8 @@ UserScript_obsERA_obsOnly_Blocking.py
 # See the following files for more information about the environment variables set in this configuration file.
 #
 # parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.py
-# parm/use_cases/met_tool_wrapper/PCPCombine/PCPCOmbine_derive.py
-# parm/use_cases/met_tool_wrapper/PCPCombine/PCPCOmbine_subtract.py
+# parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_derive.py
+# parm/use_cases/met_tool_wrapper/PCPCombine/PCPCombine_subtract.py
 
 ##############################################################################
 # Python Scripts
@@ -104,9 +112,7 @@ UserScript_obsERA_obsOnly_Blocking.py
 # This use case uses Python scripts to perform the blocking calculation
 #
 # parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking/Blocking_driver.py:
-# This script calls the requested steps in the blocking analysis for a forecast, observation, or both.  The possible
-# steps are computing CBLs, plotting CBLs, computing IBLs, plotting IBLs, computing GIBLs, computing blocks, and
-# plotting blocks.
+# This script calls the requested steps in the blocking analysis for a forecast, observation, or both.
 #
 # parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_Blocking/Blocking.py:
 # This script runs the requested steps, containing the code for computing CBLs, computing IBLs, computing GIBLs,
@@ -160,7 +166,10 @@ UserScript_obsERA_obsOnly_Blocking.py
 # for the steps requested.  This may include the regridded data, daily averaged files, running mean files, 
 # and anomaly files.  In addition, output CBL, IBL, and Blocking frequency plots can be generated.  The location
 # of these output plots can be specified as BLOCKING_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent 
-# to model_applications/s2s/Blocking/plots (relative to **OUTPUT_BASE**).
+# to OUTPUT_BASE/plots.  MET format matched pair output will also be generated for IBLs and blocks if a user runs 
+# these steps on both the model and observation data.  The location the matched pair output can be specified as 
+# BLOCKING_MPR_OUTPUT_DIR.  If it is not specified, plots will be sent to OUTPUT_BASE/mpr.
+#
 
 ##############################################################################
 # Keywords
