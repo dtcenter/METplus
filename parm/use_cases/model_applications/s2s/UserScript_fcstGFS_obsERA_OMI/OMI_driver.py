@@ -52,7 +52,7 @@ def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
     if (olr_input_files[0] == 'file_list'):
         olr_input_files = olr_input_files[1:]
 
-    # Read in the netCDF data
+    # Read in the netCDF data from a list of files
     netcdf_reader = read_netcdf.ReadNetCDF()
     ds_orig = netcdf_reader.read_into_xarray(olr_input_files)
 
