@@ -29,7 +29,7 @@ def ivt(input_file):
 
     # First obtain the levels we will use
     # These are in hPa in the file, so directly compare with user supplied min/max
-    levs = sorted(set([grb.level for grb in grbs if float(grb.level) > float(os.environ.get('IVT_LAYER_MIN_PRESSURE',100.0)) and float(grb.level) <= float(os.environ.get('IVT_LAYER_MAX_PRESSURE',1000.0))]))
+    levs = sorted(set([grb.level for grb in grbs if float(grb.level) >= float(os.environ.get('IVT_LAYER_MIN_PRESSURE',100.0)) and float(grb.level) <= float(os.environ.get('IVT_LAYER_MAX_PRESSURE',1000.0))]))
     
     # Fill in variable arrays from input file.
     grbs.rewind()
