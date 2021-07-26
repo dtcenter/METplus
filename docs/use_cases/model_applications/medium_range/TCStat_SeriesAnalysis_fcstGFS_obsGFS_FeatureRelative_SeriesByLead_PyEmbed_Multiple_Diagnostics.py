@@ -61,7 +61,6 @@ _SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 #    Levels required: all pressure levels >= 100mb
 #    #. Temperature
 #
-
 #  - Forecast dataset: GFS Grid 4 Forecast
 #    GFS Forecast data can be found at the following website: https://www.ncdc.noaa.gov/data-access/model-data/model-datasets/global-forcast-system-gfs
 #    - Initialization date: 20190830
@@ -94,7 +93,7 @@ _SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 #
 # If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
 #
-# If this is the case, you will need to set the MET_PYTHON_EXE environment variable to the path of the version of Python you want to use. If you want this version of Python to only apply to this use case, set it in the [user_env_vars] section of a METplus configuration file.:
+# If this is the case, you will need to set the MET_PYTHON_EXE environment variable to the path of the version of Python you want to use. If you want this version of Python to only apply to this use case, set it in the [user_env_vars] section of a METplus configuration file.::
 #
 #    [user_env_vars]
 #    MET_PYTHON_EXE = /path/to/python/with/required/packages/bin/python
@@ -242,13 +241,13 @@ _SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 # then a user-specific system configuration file::
 #
 #        run_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf \
-#        -c /path/to/user_system.conf
+#        /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf \
+#        /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf::
 #
 #        run_metplus.py \
-#        -c /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
+#        /path/to/METplus/parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
