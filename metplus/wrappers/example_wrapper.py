@@ -13,6 +13,7 @@ Condition codes: 0 for success, 1 for failure
 import os
 
 from ..util import do_string_sub, ti_calculate, get_lead_sequence
+from ..util import skip_time
 from . import CommandBuilder
 
 class ExampleWrapper(CommandBuilder):
@@ -69,6 +70,10 @@ class ExampleWrapper(CommandBuilder):
 
             # recalculate time info items
             time_info = ti_calculate(time_info)
+
+            if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                self.logger.debug('Skipping run time')
+                continue
 
             for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
                 if custom_string:
