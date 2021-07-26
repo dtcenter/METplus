@@ -112,7 +112,10 @@ met_tool_wrapper/PyEmbedIngest/PyEmbedIngest.conf
 # --------
 #
 # .. note::
-#   `PyEmbedIngestToolUseCase <https://dtcenter.github.io/METplus/search.html?q=PyEmbedIngestToolUseCase&check_keywords=yes&area=default>`_,
-#   `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_,
-#   `RegridDataPlaneToolUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneToolUseCase&check_keywords=yes&area=default>`_
+#
+#   * PyEmbedIngestToolUseCase
+#   * PythonEmbeddingFileUseCase
+#   * RegridDataPlaneToolUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #

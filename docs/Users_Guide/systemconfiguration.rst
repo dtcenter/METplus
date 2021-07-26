@@ -534,8 +534,8 @@ Example Wrapper Use Case
 * Run the Example Wrapper use case. In a terminal, run::
 
     run_metplus.py \
-    -c /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf \
-    -c /path/to/user_system.conf
+    /path/to/METplus/parm/use_cases/met_tool_wrapper/Example/Example.conf \
+    /path/to/user_system.conf
 
 replacing **/path/to/user_system.conf** with the path to the
 user configuration file and
@@ -577,8 +577,8 @@ GridStat Wrapper Basic Use Case
 * Run the GridStat Wrapper basic use case. In a terminal, run::
 
     run_metplus.py \
-    -c /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf \
-    -c /path/to/user_system.conf
+    /path/to/METplus/parm/use_cases/met_tool_wrapper/GridStat/GridStat.conf \
+    /path/to/user_system.conf
 
 replacing **/path/to/user_system.conf** with the path to the
 user configuration file and
@@ -2397,8 +2397,10 @@ of parsing, overriding any values that were set.
     config options over using a modified MET configuration file, although this
     approach is still supported. Newly added features and variable override
     support may be more difficult to incorporate using the latter approach.
-    Please contact met_help@ucar.edu for assistance with updating a use case
-    to migrate away from using a modified MET configuration file.
+    Please create a post in the
+    `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
+    for assistance with updating a use case to migrate away from using a
+    modified MET configuration file.
 
 MET Config Override GridStat Simple Example
 -------------------------------------------
@@ -2661,8 +2663,8 @@ Validate Config Helper Script
 
 The script named validate_config.py is found in the same directory as run_metplus.py. To use this script, call it with the same arguments as run_metplus.py::
 
-  run_metplus.py  -c ./my_conf.py -c ./another_config.py
-  validate_config.py -c ./my_conf.py -c ./another_config.py
+  run_metplus.py  ./my_conf.py ./another_config.py
+  validate_config.py ./my_conf.py ./another_config.py
 
 You must pass a valid configuration to the script, as in you must properly set :term:`MET_INSTALL_DIR`, :term:`INPUT_BASE`, and :term:`OUTPUT_BASE`, or it will not run.
 
@@ -2739,4 +2741,10 @@ Example 5 (Another MET Configuration File)::
   Make this change before continuing! [OK]
 
 .. note::
-    While the METplus developers are very diligent to include deprecated variables in this functionality, some may slip through the cracks. When upgrading to a new version of METplus, it is important to test and review your use cases to ensure they produce the same results as the previous version. Please contact met_help@ucar.edu with any questions.
+    While the METplus developers are very diligent to include deprecated
+    variables in this functionality, some may slip through the cracks.
+    When upgrading to a new version of METplus, it is important to test
+    and review your use cases to ensure they produce the same results as
+    the previous version. Please create a post in the
+    `METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_
+    with any questions.

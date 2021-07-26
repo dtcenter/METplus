@@ -3,49 +3,41 @@
 # July 2020
 ###################################################################################################
 
-import pygrib
-import numpy as np
 import sys
 import os
 import re
 import datetime as dt
-import metpy.calc as mc
+from metpy import calc as mpcalc
+from metpy.units import units
+import xarray as xr
+import cfgrib
 
 ###################################################################################################
 
-def calc_pot_temp(temp,pressure):
-    theta = temp*(1013/pressure)**(2/7)
-    return theta
-
 def pv(input_file):
-    g = -9.81 # Setting acceleration due to gravity constant
 
-    # Initialize arrays
-    abs_vor = [] # Absolute vorticity
-    levs    = [] # Levels
-    pot_temp = [] # Potential temperature
+    # Vars
+    grib_vars = ['t','u','v']
 
-    # Fill in variable arrays from input file.
-    grbs = pygrib.open(input_file)
-    grbs.rewind()
+    # Load a list of datasets, one for each variable we want
+    ds_list = [cfgrib.open_datasets(input_file,backend_kwargs={'filter_by_keys':{'typeOfLevel':'isobaricInhPa','shortName':v},'indexpath':''}) for v in grib_vars]
 
-    for grb in grbs:
-        if grb.level*100 <= 10000:
-                    continue
-        elif np.logical_and('Absolute' in grb.parameterName,grb.typeOfLevel=='isobaricInhPa'):
-            abs_vor.append(grb.values)
-            
-        elif np.logical_and('Temperature' in grb.parameterName,grb.typeOfLevel=='isobaricInhPa'):
-            pot_temp.append(calc_pot_temp(grb.values,grb.level))
-            levs.append(grb.level)
+    # Flatten the list of lists to a single list of datasets
+    ds_flat = [x.sel(isobaricInhPa=x.isobaricInhPa[x.isobaricInhPa>=100.0].values) for ds in ds_list for x in ds]
+
+    # Merge the variables into a single dataset
+    ds = xr.merge(ds_flat)
+
+    # Add pressure
+    ds['p'] = xr.DataArray(ds.isobaricInhPa.values,dims=['isobaricInhPa'],coords={'isobaricInhPa':ds.isobaricInhPa.values},attrs={'units':'hPa'}).broadcast_like(ds['t']) 
+
+    # Calculate potential temperature
+    ds['theta'] = mpcalc.potential_temperature(ds['p'].metpy.convert_units('Pa'),ds['t'])
+  
+    # Compute baroclinic PV
+    ds['pv'] = mpcalc.potential_vorticity_baroclinic(ds['theta'],ds['p'].metpy.convert_units('Pa'),ds['u'],ds['v'],latitude=ds.latitude)/(1.0e-6)
     
-    lats, lons = grb.latlons()
-    abs_vor = np.array(abs_vor)
-    pot_temp = np.array(pot_temp)
-    
-    pv = (g*((pot_temp[-1]-pot_temp[0])/((levs[-1]-levs[0])*100))*np.mean(abs_vor,axis=0))/(1e-6) #Calculate PV in PVUs 
-    met_data = pv.copy() 
-    grbs.close()
+    met_data = ds['pv'].sel(isobaricInhPa=slice(float(os.environ.get('PV_LAYER_MAX_PRESSURE',1000.0)),float(os.environ.get('PV_LAYER_MIN_PRESSURE',100.0)))).mean(axis=0).values
 
     return met_data
 

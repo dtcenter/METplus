@@ -142,9 +142,15 @@ _aod.conf
 # --------
 #
 # .. note::
-#  `EnsembleStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_,
-#  `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_,
-#  `AirQualityAndCompAppUseCase <https://dtcenter.github.io/METplus/search.html?q=AirQualityAndCompAppUseCase&check_keywords=yes&area=default>`_,
-#  `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_,
+#
+#   * EnsembleStatToolUseCase
+#   * PythonEmbeddingFileUseCase
+#   * AirQualityAndCompAppUseCase
+#   * PythonEmbeddingFileUseCase 
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/air_quality_and_comp-EnsembleStat_fcstICAP_obsMODIS_aod.png'
+#
