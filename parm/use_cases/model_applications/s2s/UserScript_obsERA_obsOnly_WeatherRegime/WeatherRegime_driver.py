@@ -48,7 +48,6 @@ def main():
     obs_wr_filetxt = os.environ.get('METPLUS_FILELIST_OBS_INPUT','')
     fcst_wr_filetxt = os.environ.get('METPLUS_FILELIST_FCST_INPUT','')
 
-
     if ("ELBOW" in steps_list_obs) or ("EOF" in steps_list_obs) or ("KMEANS" in steps_list_obs):
         with open(obs_wr_filetxt) as owl:
             obs_infiles = owl.read().splitlines()
