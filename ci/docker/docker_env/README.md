@@ -85,6 +85,21 @@ docker push dtcenter/metplus-envs:pygrib
 ./scripts/pygrib_env.sh  py_embed_base
 ```
 
+## cfgrib (from fresh Python 3.6.8 environment)
+
+### Docker
+
+```
+docker build -t dtcenter/metplus-envs:cfgrib --build-arg ENV_NAME=cfgrib .
+docker push dtcenter/metplus-envs:cfgrib
+```
+
+### Local
+
+```
+./scripts/cfgrib_env.sh
+```
+
 ## netcdf4 (from metplus_base)
 
 ### Docker

@@ -14,10 +14,10 @@ import cfgrib
 
 ###################################################################################################
 
-def pv(input_file):
+def sept(input_file):
 
     # Vars
-    grib_vars = ['t','u','v']
+    grib_vars = ['t']
 
     # Load a list of datasets, one for each variable we want
     ds_list = [cfgrib.open_datasets(input_file,backend_kwargs={'filter_by_keys':{'typeOfLevel':'isobaricInhPa','shortName':v},'indexpath':''}) for v in grib_vars]
@@ -29,15 +29,12 @@ def pv(input_file):
     ds = xr.merge(ds_flat)
 
     # Add pressure
-    ds['p'] = xr.DataArray(ds.isobaricInhPa.values,dims=['isobaricInhPa'],coords={'isobaricInhPa':ds.isobaricInhPa.values},attrs={'units':'hPa'}).broadcast_like(ds['t']) 
+    ds['p'] = xr.DataArray(ds.isobaricInhPa.values,dims=['isobaricInhPa'],coords={'isobaricInhPa':ds.isobaricInhPa.values},attrs={'units':'hPa'}).broadcast_like(ds['t'])
 
-    # Calculate potential temperature
-    ds['theta'] = mpcalc.potential_temperature(ds['p'].metpy.convert_units('Pa'),ds['t'])
-  
-    # Compute baroclinic PV
-    ds['pv'] = mpcalc.potential_vorticity_baroclinic(ds['theta'],ds['p'].metpy.convert_units('Pa'),ds['u'],ds['v'],latitude=ds.latitude)/(1.0e-6)
-    
-    met_data = ds['pv'].sel(isobaricInhPa=slice(float(os.environ.get('PV_LAYER_MAX_PRESSURE',1000.0)),float(os.environ.get('PV_LAYER_MIN_PRESSURE',100.0)))).mean(axis=0).values
+    # Calculate saturation equivalent potential temperature
+    ds['sept'] = mpcalc.saturation_equivalent_potential_temperature(ds['p'].metpy.convert_units('Pa'),ds['t'])
+
+    met_data = ds['sept'].sel(isobaricInhPa=slice(float(os.environ.get('SEPT_LAYER_MAX_PRESSURE',1000.0)),float(os.environ.get('SEPT_LAYER_MIN_PRESSURE',100.0)))).mean(axis=0).values 
 
     return met_data
 
@@ -45,7 +42,7 @@ def pv(input_file):
 
 input_file = os.path.expandvars(sys.argv[1])
 
-data = pv(input_file) #Call function to calculate PV
+data = sept(input_file) #Call function to calculate PV
 
 met_data = data
 met_data = met_data.astype('float64')
@@ -77,10 +74,10 @@ attrs = {
         'lead':  str(int(lead)),
         'accum': '00',
         
-        'name':      'pv',
-        'long_name': 'potential_vorticity',
+        'name':      'sept',
+        'long_name': 'saturation_equivalent_potential_temperature',
         'level':     'Surface',
-        'units':     'PV Units',
+        'units':     'K',
         
         'grid': {
             'name': 'Global 0.5 Degree',
