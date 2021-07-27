@@ -118,6 +118,12 @@ met_tool_wrapper/TCStat/TCStat.conf
 # --------
 #
 # .. note::
-#  `TCStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=TCStatToolUseCase&check_keywords=yes&area=default>`_
+#
+#   * TCStatToolUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-TCStat.png'
+#

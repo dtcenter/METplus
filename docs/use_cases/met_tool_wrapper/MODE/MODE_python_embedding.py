@@ -126,7 +126,14 @@ met_tool_wrapper/MODE/MODE_python_embedding.conf
 # Keywords
 # --------
 #
-# .. note:: `MODEToolUseCase <https://dtcenter.github.io/METplus/search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
-#  `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
+# .. note::
+#
+#   * MODEToolUseCase
+#   * PythonEmbeddingFileUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-MODE.png'
+#

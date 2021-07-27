@@ -132,7 +132,13 @@ met_tool_wrapper/PointStat/PointStat_python_embedding.conf
 # --------
 #
 # .. note::
-#  `PointStatToolUseCase <https://dtcenter.github.io/METplus/search.html?q=PointStatToolUseCase&check_keywords=yes&area=default>`_
-#  `PythonEmbeddingFileUseCase <https://dtcenter.github.io/METplus/search.html?q=PythonEmbeddingFileUseCase&check_keywords=yes&area=default>`_
+#
+#   * PointStatToolUseCase
+#   * PythonEmbeddingFileUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
 #
 # sphinx_gallery_thumbnail_path = '_static/met_tool_wrapper-PointStat.png'
+#

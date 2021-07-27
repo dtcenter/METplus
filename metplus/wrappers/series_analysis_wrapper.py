@@ -178,6 +178,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
             # used in CommandBuilder.find_data function)
             self.handle_file_window_variables(c_dict, dtypes=['BOTH'])
 
+            prob_thresh = self.config.getstr('config','BOTH_SERIES_ANALYSIS_PROB_THRESH','')
+            c_dict['FCST_PROB_THRESH'] = prob_thresh
+            c_dict['OBS_PROB_THRESH'] = prob_thresh
+
         # if BOTH is not set, both FCST or OBS must be set
         else:
             if (not c_dict['FCST_INPUT_TEMPLATE'] or
@@ -190,6 +194,14 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
             # set *_WINDOW_* variables for FCST and OBS
             self.handle_file_window_variables(c_dict, dtypes=['FCST', 'OBS'])
+
+            c_dict['FCST_PROB_THRESH'] = (
+                    self.config.getstr('config','FCST_SERIES_ANALYSIS_PROB_THRESH','')
+            )
+
+            c_dict['OBS_PROB_THRESH'] = (
+                    self.config.getstr('config','OBS_SERIES_ANALYSIS_PROB_THRESH','')
+            )
 
         c_dict['TC_STAT_INPUT_DIR'] = (
             self.config.getdir('SERIES_ANALYSIS_TC_STAT_INPUT_DIR', '')
@@ -429,7 +441,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # Now that we have the filter filename for the init time, let's
         # extract all the storm ids in this filter file.
-        storm_list = util.get_storm_ids(filter_file, self.logger)
+        storm_list = util.get_storm_ids(filter_file)
         if not storm_list:
             # No storms for this init time, check next init time in list
             self.logger.debug("No storms found for current runtime")

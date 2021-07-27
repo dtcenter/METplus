@@ -76,12 +76,13 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
 # i.e. parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.py.  
-# The file UserScript_fcstGFS_obsERA_Blocking.conf runs the python program, however
-# UserScript_fcstGFS_obsERA_Blocking/Blocking_fcstGFS_obsERA.conf sets the variables 
-# for all steps of the Blocking use case including data paths.
+# The file UserScript_fcstGFS_obsERA_Blocking.conf runs the python program, and the
+# variables for all steps of the Blocking calculation are given in the [user_env_vars]
+# section of the .conf file.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_Blocking.conf
+#
 
 ##############################################################################
 # MET Configuration
@@ -159,16 +160,25 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # for the steps requested.  This may include the regridded data, daily averaged files, running mean files, 
 # and anomaly files.  In addition, output CBL, IBL, and Blocking frequency plots can be generated.  The location
 # of these output plots can be specified as BLOCKING_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent 
-# to model_applications/s2s/Blocking/plots (relative to **OUTPUT_BASE**).
+# to OUTPUT_BASE/plots.  MET format matched pair output will also be generated for IBLs and blocks if a user runs
+# these steps on both the model and observation data.  The location the matched pair output can be specified as
+# BLOCKING_MPR_OUTPUT_DIR.  If it is not specified, plots will be sent to OUTPUT_BASE/mpr.
+#
 
 ##############################################################################
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s-IBL_frequency.png'
+# .. note::
 #
-# .. note:: `RegridDataPlaneUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default>`_,
-#  `PCPCombineUseCase <https://dtcenter.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>`_, 
-#  `S2SAppUseCase <https://dtcenter.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_, 
-#  `NetCDFFileUseCase <https://dtcenter.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`_,
-#  `GRIB2FileUseCase <https://dtcenter.github.io/METplus/search.html?q=GRIB2FileUseCase&check_keywords=yes&area=default>`_,
+#   * RegridDataPlaneUseCase
+#   * PCPCombineUseCase
+#   * S2SAppUseCase
+#   * NetCDFFileUseCase
+#   * GRIB2FileUseCase
+#
+#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#
+#
+#
+# sphinx_gallery_thumbnail_path = '_static/s2s-IBL_frequency.png'

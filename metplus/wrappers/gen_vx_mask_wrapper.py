@@ -68,6 +68,10 @@ class GenVxMaskWrapper(CommandBuilder):
         if not c_dict['COMMAND_OPTIONS']:
             c_dict['COMMAND_OPTIONS'] = ['']
 
+        # error if -type is not set (previously optional)
+        if not any([item for item in c_dict['COMMAND_OPTIONS'] if '-type' in item]):
+            self.log_error("Must specify -type in GEN_VX_MASK_OPTIONS")
+
         # make sure the list of mask templates is the same size as the list of
         # command line options that correspond to each mask
         if len(c_dict['MASK_INPUT_TEMPLATES']) != len(c_dict['COMMAND_OPTIONS']):
