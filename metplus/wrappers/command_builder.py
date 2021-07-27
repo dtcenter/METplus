@@ -1425,24 +1425,28 @@ class CommandBuilder:
             return
 
         # convert value from config to a list
-        conf_value = util.getlist(conf_value)
-        if conf_value or kwargs.get('allow_empty', False):
-            conf_value = str(conf_value)
-            # if not removing quotes, escape any quotes found in list items
-            if not kwargs.get('remove_quotes', False):
-                conf_value = conf_value.replace('"', '\\"')
+        conf_values = util.getlist(conf_value)
+        if conf_values or kwargs.get('allow_empty', False):
+            out_values = []
+            for conf_value in conf_values:
+                remove_quotes = kwargs.get('remove_quotes', False)
+                # if not removing quotes, escape any quotes found in list items
+                if not remove_quotes:
+                    conf_value = conf_value.replace('"', '\\"')
 
-            conf_value = conf_value.replace("'", '"')
+                conf_value = util.remove_quotes(conf_value)
+                if not remove_quotes:
+                    conf_value = f'"{conf_value}"'
 
-            if kwargs.get('remove_quotes', False):
-                conf_value = conf_value.replace('"', '')
+                out_values.append(conf_value)
+            out_value = f"[{', '.join(out_values)}]"
 
             if not c_dict_key:
                 c_key = met_config_name.upper()
             else:
                 c_key = c_dict_key
 
-            conf_value = f'{met_config_name} = {conf_value};'
+            conf_value = f'{met_config_name} = {out_value};'
             c_dict[c_key] = conf_value
 
     def set_met_config_string(self, c_dict, mp_config, met_config_name,
@@ -1794,7 +1798,7 @@ class CommandBuilder:
         # define layout of climo_mean and climo_stdev dictionaries
         climo_items = {
             'file_name': ('list', '', None),
-            'field': ('list', '', None),
+            'field': ('list', 'remove_quotes', None),
             'regrid': ('dict', '', [
                 ('method', 'string',
                  'uppercase,remove_quotes'),
