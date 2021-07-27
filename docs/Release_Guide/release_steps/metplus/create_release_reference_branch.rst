@@ -21,7 +21,7 @@ main_vX.Y branch does not break any of existing logic.
 Navigate to https://github.com/dtcenter/METplus/actions and verify that a
 *Testing* workflow was triggered on the *main_vX.Y-ref* branch.
 
-.. figure:: metplus-automation-reference-data.png
+.. figure:: /Release_Guide/release_steps/metplus/metplus-automation-reference-data.png
 
 * Wait until the entire workflow has run successfully. The final job entitled
   "Create Output Docker Data Volumes" should create Docker data volumes for
