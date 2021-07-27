@@ -80,7 +80,6 @@ def copy_to_diff_dir(file_path, data_type):
     if not os.path.exists(output_dir):
         os.makedirs(output_dir)
 
-    print(f'Copying {file_path} to\n{output_path}')
     try:
         shutil.copyfile(file_path, output_path)
     except OSError as err:
