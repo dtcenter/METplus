@@ -124,6 +124,7 @@ def compare_dir(dir_a, dir_b, debug=False, save_diff=False):
             print(f"{reason}\n  A:{filepath_a}\n  B:{filepath_b}")
             if diff_file:
                 print(f"Difference file: {diff_file}")
+            print()
     else:
         print("\nNo differences found in any files")
 
