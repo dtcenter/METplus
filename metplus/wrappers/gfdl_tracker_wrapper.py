@@ -236,7 +236,7 @@ class GFDLTrackerWrapper(CommandBuilder):
         @returns True if everything was successful, False if not
         """
         # get all input files
-        all_input_files, lead_minutes = self.get_all_input_files(input_dict)
+        all_input_files = self.get_all_input_files(input_dict)
         if not all_input_files:
             self.log_error("No input files found")
             return False
@@ -271,6 +271,7 @@ class GFDLTrackerWrapper(CommandBuilder):
         self.create_fort_14_file()
 
         # create fort.15 file with list of all forecast leads and indices
+        lead_minutes = [item.get('lead_minutes') for item in all_input_files]
         self.create_fort_15_file(lead_minutes)
 
         # substitute values from config into template.nml and
@@ -314,54 +315,63 @@ class GFDLTrackerWrapper(CommandBuilder):
             input_files = [input_file for input_file in input_files
                            if not input_file.endswith('.ix')]
             for input_file in input_files:
-                all_input_files.append(input_file)
+                file_time_info = self._get_time_info_from_template(input_file)
+                if not file_time_info:
+                    self.log_error("Could not get time info from file: "
+                                   f"{input_file}")
+                    continue
 
-            if lead != '*':
-                lead_minutes.append(time_info.get('lead_minutes'))
-                continue
+                rename = self._get_input_file_rename(file_time_info)
+                input_file_dict = {
+                    'filepath': input_file,
+                    'rename': rename,
+                    'lead_minutes': file_time_info.get('lead_minutes'),
+                }
+                all_input_files.append(input_file_dict)
 
-            # extract lead time from each file found via wildcard
-            new_lead_minutes = self._get_leads_from_template(input_files)
-            lead_minutes.extend(new_lead_minutes)
+        return all_input_files
 
-        return all_input_files, sorted(lead_minutes)
-
-    def _get_leads_from_template(self, input_files):
+    def _get_time_info_from_template(self, input_file):
         # extract lead time from each file found via wildcard
-        lead_minutes_list = []
         template = os.path.join(self.c_dict.get('INPUT_DIR'),
                                 self.c_dict.get('INPUT_TEMPLATE'))
-        for input_file in input_files:
-            file_time_info = parse_template(template, input_file)
-            if file_time_info:
-                lead_minutes_list.append(file_time_info.get('lead_minutes'))
+        file_time_info = parse_template(template, input_file)
+        if not file_time_info:
+            return None
 
-        return lead_minutes_list
+        return file_time_info
 
-    def link_files_to_output_dir(self, all_input_files, tc_vitals_file):
+    def _get_input_file_rename(self, file_time_info):
+        gmodname = remove_quotes(self.c_dict[f'REPLACE_CONF_FNAMEINFO_GMODNAME'])
+        rundescr = remove_quotes(self.c_dict[f'REPLACE_CONF_FNAMEINFO_RUNDESCR'])
+        atcfdescr = remove_quotes(self.c_dict[f'REPLACE_CONF_FNAMEINFO_ATCFDESCR'])
+        template = (f"{gmodname}.{rundescr}.{atcfdescr}."
+                    "{init?fmt=%Y%m%d%H}.f{lead?fmt=%5M}")
+        return do_string_sub(template, **file_time_info)
+
+    def link_files_to_output_dir(self, all_input_files, tc_vitals_src):
         all_output_files = []
-        output_dir = self.c_dict.get('OUTPUT_DIR')
 
         # create symbolic links for input files
-        for src_path in all_input_files:
-            dest_path = self._create_symlink(src_path, output_dir)
+        for input_file_dict in all_input_files:
+            src_path = input_file_dict.get('filepath')
+            dest_path = os.path.join(self.c_dict.get('OUTPUT_DIR'),
+                                     input_file_dict.get('rename'))
+            self._create_symlink(src_path, dest_path)
             all_output_files.append(dest_path)
 
         # create symbolic links for TCVitals file
-        tc_vitals_out = self._create_symlink(tc_vitals_file, output_dir)
+        tc_vitals_dest = os.path.join(self.c_dict.get('OUTPUT_DIR'),
+                                      os.path.basename(tc_vitals_src))
+        self._create_symlink(tc_vitals_src, tc_vitals_dest)
 
-        return all_output_files, tc_vitals_out
+        return all_output_files, tc_vitals_dest
 
-    def _create_symlink(self, src_path, output_dir):
-        src_file = os.path.basename(src_path)
-        dest_path = os.path.join(output_dir, src_file)
-
+    def _create_symlink(self, src_path, dest_path):
         self._remove_symlink(dest_path)
 
-        self.logger.debug(f"Creating sym link in {output_dir} for {src_file}")
+        self.logger.debug(f"Creating sym link {dest_path} for {src_path}")
         os.symlink(src_path, dest_path)
-
-        return dest_path
 
     def _remove_symlink(self, link_path):
         if os.path.islink(link_path):
