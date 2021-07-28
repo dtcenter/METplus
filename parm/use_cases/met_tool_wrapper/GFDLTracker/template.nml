@@ -37,6 +37,10 @@
   trkrinfo%g1_mslp_parm_id = ${METPLUS_TRACKERINFO_G1_MSLP_PARM_ID},
   trkrinfo%g1_sfcwind_lev_typ = ${METPLUS_TRACKERINFO_G1_SFCWIND_LEV_TYP},
   trkrinfo%g1_sfcwind_lev_val = ${METPLUS_TRACKERINFO_G1_SFCWIND_LEV_VAL},
+  trkrinfo%westbd = ${METPLUS_TRACKERINFO_WESTBD},
+  trkrinfo%eastbd = ${METPLUS_TRACKERINFO_EASTBD},
+  trkrinfo%southbd = ${METPLUS_TRACKERINFO_SOUTHBD},
+  trkrinfo%northbd = ${METPLUS_TRACKERINFO_NORTHBD},
 /
 
 &phaseinfo
