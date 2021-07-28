@@ -283,7 +283,7 @@ class GFDLTrackerWrapper(CommandBuilder):
             return False
 
         # rename fort.64 output file to output filename template
-        if not self.rename_fort_64_to_output_path(input_dict):
+        if not self.rename_fort_to_output_path(input_dict):
             return False
 
         # remove sym links from output directory
@@ -473,13 +473,19 @@ class GFDLTrackerWrapper(CommandBuilder):
                    f"if [ $ret != 0 ]; then false; fi")
         return self.run_command(command)
 
-    def rename_fort_64_to_output_path(self, time_info):
+    def rename_fort_to_output_path(self, time_info):
         output_dir = self.c_dict.get('OUTPUT_DIR')
 
+        run_type = remove_quotes(self.c_dict["REPLACE_CONF_TRACKERINFO_TYPE"])
+        if run_type == 'tcgen' or run_type == 'midlat':
+            fort_file = 'fort.66'
+        else:
+            fort_file = 'fort.64'
+
         # check that fort.64 file was created successfully
-        fort_64_path = os.path.join(output_dir, 'fort.64')
-        if not os.path.exists(fort_64_path):
-            self.log_error(f"Could not find output file: {fort_64_path}")
+        fort_path = os.path.join(output_dir, fort_file)
+        if not os.path.exists(fort_path):
+            self.log_error(f"Could not find output file: {fort_path}")
             return False
 
         output_path = os.path.join(output_dir,
@@ -491,10 +497,10 @@ class GFDLTrackerWrapper(CommandBuilder):
         if not os.path.exists(parent_dir):
             self.logger.debug(f"Creating output directory: {parent_dir}")
 
-        # copy fort.64 file to new file name
-        self.logger.debug(f"Copying fort.64 file to: {output_path}")
+        # copy fort.64/66 file to new file name
+        self.logger.debug(f"Copying {fort_file} file to: {output_path}")
         try:
-            shutil.copyfile(fort_64_path, output_path)
+            shutil.copyfile(fort_path, output_path)
         except OSError as err:
             self.log_error(f"Could not copy file: {err}")
             return False
