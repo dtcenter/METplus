@@ -40,6 +40,8 @@ cnt_logic     = UNION;
 wind_thresh   = [ NA ];
 wind_logic    = UNION;
 eclv_points   = 0.05;
+//hss_ec_value =
+${METPLUS_HSS_EC_VALUE}
 rank_corr_flag = FALSE;
 
 //

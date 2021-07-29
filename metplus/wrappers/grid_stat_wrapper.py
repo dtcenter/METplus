@@ -47,6 +47,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_GRID_WEIGHT_FLAG',
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_OBS_FILE_TYPE',
+        'METPLUS_HSS_EC_VALUE',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -225,6 +226,10 @@ class GridStatWrapper(CompareGriddedWrapper):
                                              'GRID_STAT_FILE_TYPE'],
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
+
+        self.add_met_config(name='hss_ec_value',
+                            data_type='float',
+                            metplus_configs=['GRID_STAT_HSS_EC_VALUE'])
 
 
         return c_dict
