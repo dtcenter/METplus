@@ -170,3 +170,18 @@ def test_get_all_files_and_subset(metplus_config, time_info, expected_subset):
 def test_get_list_file_name(metplus_config, time_info, expected_filename):
     wrapper = GridDiagWrapper(metplus_config())
     assert(wrapper.get_list_file_name(time_info, 'input0') == expected_filename)
+
+def test_get_config_file(metplus_config):
+    fake_config_name = '/my/config/file'
+
+    config = metplus_config()
+    default_config_file = os.path.join(config.getdir('PARM_BASE'),
+                                       'met_config',
+                                       'GridDiagConfig_wrapped')
+
+    wrapper = GridDiagWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == default_config_file
+
+    config.set('config', 'GRID_DIAG_CONFIG_FILE', fake_config_name)
+    wrapper = GridDiagWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name

@@ -68,7 +68,7 @@ def test_read_storm_info(metplus_config, config_overrides, isOK):
         config.set('config', key, value)
 
     wrapper = TCPairsWrapper(config)
-    assert(wrapper.isOK == isOK)
+    assert wrapper.isOK == isOK
 
 @pytest.mark.parametrize(
     'storm_id,basin,cyclone', [
@@ -511,3 +511,20 @@ def test_tc_pairs_read_all_files(metplus_config, config_overrides,
         # unset begin and end for next loop
         del env_var_values[f'METPLUS_{loop_by}_BEG']
         del env_var_values[f'METPLUS_{loop_by}_END']
+
+def test_get_config_file(metplus_config):
+    fake_config_name = '/my/config/file'
+
+    config = metplus_config()
+    config.set('config', 'INIT_TIME_FMT', time_fmt)
+    config.set('config', 'INIT_BEG', run_times[0])
+    default_config_file = os.path.join(config.getdir('PARM_BASE'),
+                                       'met_config',
+                                       'TCPairsConfig_wrapped')
+
+    wrapper = TCPairsWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == default_config_file
+
+    config.set('config', 'TC_PAIRS_CONFIG_FILE', fake_config_name)
+    wrapper = TCPairsWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name

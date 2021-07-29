@@ -104,8 +104,10 @@ class GridStatWrapper(CompareGriddedWrapper):
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  'LOG_GRID_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['CONFIG_FILE'] = self.config.getraw('config',
-                                                   'GRID_STAT_CONFIG_FILE', '')
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('GridStatConfig_wrapped')
+
         c_dict['OBS_INPUT_DIR'] = \
           self.config.getdir('OBS_GRID_STAT_INPUT_DIR', '')
         c_dict['OBS_INPUT_TEMPLATE'] = \

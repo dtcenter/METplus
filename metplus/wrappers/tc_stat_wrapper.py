@@ -115,7 +115,9 @@ class TCStatWrapper(CommandBuilder):
         if not c_dict['LOOKIN_DIR']:
             self.log_error("TC_STAT_LOOKIN_DIR must be set")
 
-        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_STAT_OUTPUT_DIR')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_STAT_OUTPUT_DIR', '')
+        if not c_dict['OUTPUT_DIR']:
+            self.log_error("TC_STAT_OUTPUT_DIR must be set")
 
         c_dict['JOBS'] = getlist(self.config.getraw('config',
                                                     'TC_STAT_JOB_ARGS',
@@ -124,16 +126,8 @@ class TCStatWrapper(CommandBuilder):
             self.log_error('No job arguments defined. '
                            'Please set TC_STAT_JOB_ARGS')
 
-        c_dict['CONFIG_FILE'] = self.config.getstr('config',
-                                                   'TC_STAT_CONFIG_FILE',
-                                                   '')
-        if not c_dict['CONFIG_FILE']:
-            default_config = os.path.join(self.config.getdir('PARM_BASE'),
-                                          'met_config',
-                                          'TCStatConfig_wrapped')
-            self.logger.debug("TC_STAT_CONFIG_FILE not set. Using "
-                              f"{default_config}")
-            c_dict['CONFIG_FILE'] = default_config
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('TCStatConfig_wrapped')
 
         self.handle_description()
 

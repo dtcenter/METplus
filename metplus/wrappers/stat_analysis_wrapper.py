@@ -154,9 +154,10 @@ class StatAnalysisWrapper(CommandBuilder):
                                c_dict['VERBOSITY'])
         )
         c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 
-                                                   'STAT_ANALYSIS_CONFIG_FILE',
-                                                   '')
+
+        # STATAnalysis config file is optional, so
+        # don't provide wrapped config file name as default value
+        c_dict['CONFIG_FILE'] = self.get_config_file()
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR',
                                                   '')

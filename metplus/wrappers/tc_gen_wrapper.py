@@ -105,10 +105,9 @@ class TCGenWrapper(CommandBuilder):
                                c_dict['VERBOSITY'])
         )
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['CONFIG_FILE'] = (
-            self.config.getraw('config',
-                               f'{app_name_upper}_CONFIG_FILE', '')
-        )
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('TCGenConfig_wrapped')
 
         c_dict['GENESIS_INPUT_DIR'] = (
             self.config.getdir(f'{app_name_upper}_GENESIS_INPUT_DIR', '')

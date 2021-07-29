@@ -116,11 +116,9 @@ class MODEWrapper(CompareGriddedWrapper):
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  'LOG_MODE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['CONFIG_FILE'] = self.config.getraw('config',
-                                                   'MODE_CONFIG_FILE',
-                                                   '')
-        if not c_dict['CONFIG_FILE']:
-            self.log_error('MODE_CONFIG_FILE must be set')
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('MODEConfig_wrapped')
 
         c_dict['OBS_INPUT_DIR'] = \
           self.config.getdir('OBS_MODE_INPUT_DIR', '')

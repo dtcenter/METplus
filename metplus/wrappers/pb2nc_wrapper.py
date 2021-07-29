@@ -88,12 +88,8 @@ class PB2NCWrapper(CommandBuilder):
                                'PB2NC_INPUT_DATATYPE', '')
         )
 
-        # Configuration
-        c_dict['CONFIG_FILE'] = self.config.getraw('config',
-                                                   'PB2NC_CONFIG_FILE',
-                                                   '')
-        if c_dict['CONFIG_FILE'] == '':
-            self.log_error('PB2NC_CONFIG_FILE is required')
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('PB2NCConfig_wrapped')
 
         self.set_met_config_list(self.env_var_dict,
                                  'PB2NC_MESSAGE_TYPE',

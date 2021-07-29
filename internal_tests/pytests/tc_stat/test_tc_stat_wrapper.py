@@ -247,3 +247,20 @@ def test_handle_jobs_create_parent_dir(metplus_config, jobs, init_dt,
 
     # remove parent dirs to clean up for next run
     cleanup_test_dirs(parent_dirs, output_dir)
+
+
+def test_get_config_file(metplus_config):
+    fake_config_name = '/my/config/file'
+
+    config = metplus_config()
+
+    default_config_file = os.path.join(config.getdir('PARM_BASE'),
+                                       'met_config',
+                                       'TCStatConfig_wrapped')
+
+    wrapper = TCStatWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == default_config_file
+
+    config.set('config', 'TC_STAT_CONFIG_FILE', fake_config_name)
+    wrapper = TCStatWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
