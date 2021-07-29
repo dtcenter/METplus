@@ -204,13 +204,10 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['OBS_GRID_FILE_WINDOW_BEGIN'] = c_dict['OBS_FILE_WINDOW_BEGIN']
         c_dict['OBS_GRID_FILE_WINDOW_END'] = c_dict['OBS_FILE_WINDOW_END']
 
-        # set the MET config file path and variables set
-        # in th config file via environment variables
-        c_dict['CONFIG_FILE'] = \
-            self.config.getraw('config', 'ENSEMBLE_STAT_CONFIG_FILE', '')
-
-        if not c_dict['CONFIG_FILE']:
-            self.log_error("Must set ENSEMBLE_STAT_CONFIG_FILE.")
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = (
+            self.get_config_file('EnsembleStatConfig_wrapped')
+        )
 
         # read by MET through environment variable, not set in MET config file
         c_dict['MET_OBS_ERR_TABLE'] = \

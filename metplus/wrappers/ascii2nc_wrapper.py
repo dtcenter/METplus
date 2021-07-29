@@ -43,9 +43,11 @@ class ASCII2NCWrapper(CommandBuilder):
                                                  'LOG_ASCII2NC_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['CONFIG_FILE'] = self.config.getraw('config',
-                                                   'ASCII2NC_CONFIG_FILE',
-                                                   '')
+
+        # ASCII2NC config file is optional, so
+        # don't provide wrapped config file name as default value
+        c_dict['CONFIG_FILE'] = self.get_config_file()
+
         c_dict['ASCII_FORMAT'] = self.config.getstr('config',
                                                     'ASCII2NC_INPUT_FORMAT',
                                                     '')

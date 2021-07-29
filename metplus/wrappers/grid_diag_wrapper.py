@@ -48,10 +48,9 @@ class GridDiagWrapper(RuntimeFreqWrapper):
                                                  'LOG_GRID_DIAG_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['CONFIG_FILE'] = self.config.getraw('config',
-                                                   'GRID_DIAG_CONFIG_FILE')
-        if not c_dict['CONFIG_FILE']:
-            self.log_error('GRID_DIAG_CONFIG_FILE required to run.')
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('GridDiagConfig_wrapped')
 
         c_dict['INPUT_DIR'] = self.config.getdir('GRID_DIAG_INPUT_DIR', '')
         self.get_input_templates(c_dict)

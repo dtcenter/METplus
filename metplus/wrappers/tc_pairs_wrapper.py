@@ -96,12 +96,9 @@ class TCPairsWrapper(CommandBuilder):
         c_dict['MISSING_VAL'] = (
             self.config.getstr('config', 'TC_PAIRS_MISSING_VAL', '-9999')
         )
-        c_dict['CONFIG_FILE'] = self.config.getraw('config',
-                                                   'TC_PAIRS_CONFIG_FILE',
-                                                   '')
-        if not c_dict['CONFIG_FILE']:
-            self.log_error("TC_PAIRS_CONFIG_FILE is required to "
-                           "run TCPairs wrapper")
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('TCPairsConfig_wrapped')
 
         self.add_met_config(name='init_beg',
                             data_type='string',
@@ -167,10 +164,14 @@ class TCPairsWrapper(CommandBuilder):
                 self.config.getdir('TC_PAIRS_BDECK_INPUT_DIR', '')
         c_dict['EDECK_DIR'] = \
                 self.config.getdir('TC_PAIRS_EDECK_INPUT_DIR', '')
-        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_PAIRS_OUTPUT_DIR')
+        c_dict['OUTPUT_DIR'] = self.config.getdir('TC_PAIRS_OUTPUT_DIR', '')
+        if not c_dict['OUTPUT_DIR']:
+            self.log_error('TC_PAIRS_OUTPUT_DIR must be set')
+
         c_dict['READ_ALL_FILES'] = (
             self.config.getbool('config',
-                                'TC_PAIRS_READ_ALL_FILES')
+                                'TC_PAIRS_READ_ALL_FILES',
+                                False)
         )
 
         # get list of models to process

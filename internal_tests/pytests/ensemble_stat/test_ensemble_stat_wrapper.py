@@ -104,7 +104,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = EnsembleStatWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     all_cmds = wrapper.run_all_times()
     for (_, actual_env_vars), run_time in zip(all_cmds, run_times):
@@ -376,8 +376,8 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                                       '["/some/climo_mean/file.txt"];}'),
           'CLIMO_MEAN_FILE': '"/some/climo_mean/file.txt"'}),
 
-        ({'ENSEMBLE_STAT_CLIMO_MEAN_FIELD': 'CLM_NAME', },
-         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = ["CLM_NAME"];}'}),
+        ({'ENSEMBLE_STAT_CLIMO_MEAN_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}', },
+         {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
 
         ({'ENSEMBLE_STAT_CLIMO_MEAN_REGRID_METHOD': 'NEAREST', },
          {'METPLUS_CLIMO_MEAN_DICT': 'climo_mean = {regrid = {method = NEAREST;}}'}),
@@ -407,7 +407,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
         ({
              'ENSEMBLE_STAT_CLIMO_MEAN_FILE_NAME': '/some/climo_mean/file.txt',
-             'ENSEMBLE_STAT_CLIMO_MEAN_FIELD': 'CLM_NAME',
+             'ENSEMBLE_STAT_CLIMO_MEAN_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
              'ENSEMBLE_STAT_CLIMO_MEAN_REGRID_METHOD': 'NEAREST',
              'ENSEMBLE_STAT_CLIMO_MEAN_REGRID_WIDTH': '1',
              'ENSEMBLE_STAT_CLIMO_MEAN_REGRID_VLD_THRESH': '0.5',
@@ -419,7 +419,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          },
          {'METPLUS_CLIMO_MEAN_DICT': ('climo_mean = {file_name = '
                                       '["/some/climo_mean/file.txt"];'
-                                      'field = ["CLM_NAME"];'
+                                      'field = [{name="CLM_NAME"; level="(0,0,*,*)";}];'
                                       'regrid = {method = NEAREST;width = 1;'
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
@@ -433,8 +433,8 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                                       '["/some/climo_stdev/file.txt"];}'),
           'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
 
-        ({'ENSEMBLE_STAT_CLIMO_STDEV_FIELD': 'CLM_NAME', },
-         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = ["CLM_NAME"];}'}),
+        ({'ENSEMBLE_STAT_CLIMO_STDEV_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}', },
+         {'METPLUS_CLIMO_STDEV_DICT': 'climo_stdev = {field = [{name="CLM_NAME"; level="(0,0,*,*)";}];}'}),
 
         ({'ENSEMBLE_STAT_CLIMO_STDEV_REGRID_METHOD': 'NEAREST', },
          {
@@ -466,7 +466,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
 
         ({
              'ENSEMBLE_STAT_CLIMO_STDEV_FILE_NAME': '/some/climo_stdev/file.txt',
-             'ENSEMBLE_STAT_CLIMO_STDEV_FIELD': 'CLM_NAME',
+             'ENSEMBLE_STAT_CLIMO_STDEV_FIELD': '{name="CLM_NAME"; level="(0,0,*,*)";}',
              'ENSEMBLE_STAT_CLIMO_STDEV_REGRID_METHOD': 'NEAREST',
              'ENSEMBLE_STAT_CLIMO_STDEV_REGRID_WIDTH': '1',
              'ENSEMBLE_STAT_CLIMO_STDEV_REGRID_VLD_THRESH': '0.5',
@@ -478,7 +478,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          },
          {'METPLUS_CLIMO_STDEV_DICT': ('climo_stdev = {file_name = '
                                       '["/some/climo_stdev/file.txt"];'
-                                      'field = ["CLM_NAME"];'
+                                      'field = [{name="CLM_NAME"; level="(0,0,*,*)";}];'
                                       'regrid = {method = NEAREST;width = 1;'
                                       'vld_thresh = 0.5;shape = SQUARE;}'
                                       'time_interp_method = NEAREST;'
@@ -499,7 +499,7 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = EnsembleStatWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -537,3 +537,18 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
                 assert (actual_value == ens_fmt)
             else:
                 assert(env_var_values.get(env_var_key, '') == actual_value)
+
+def test_get_config_file(metplus_config):
+    fake_config_name = '/my/config/file'
+
+    config = metplus_config()
+    default_config_file = os.path.join(config.getdir('PARM_BASE'),
+                                       'met_config',
+                                       'EnsembleStatConfig_wrapped')
+
+    wrapper = EnsembleStatWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == default_config_file
+
+    config.set('config', 'ENSEMBLE_STAT_CONFIG_FILE', fake_config_name)
+    wrapper = EnsembleStatWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name

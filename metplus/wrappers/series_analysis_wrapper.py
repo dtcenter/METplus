@@ -221,12 +221,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         if not c_dict['OUTPUT_DIR']:
             self.log_error("Must set SERIES_ANALYSIS_OUTPUT_DIR to run.")
 
+        # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = (
-            self.config.getraw('config',
-                               'SERIES_ANALYSIS_CONFIG_FILE')
+            self.get_config_file('SeriesAnalysisConfig_wrapped')
         )
-        if not c_dict['CONFIG_FILE']:
-            self.log_error("SERIES_ANALYSIS_CONFIG_FILE must be set")
 
         c_dict['BACKGROUND_MAP'] = (
             self.config.getbool('config',

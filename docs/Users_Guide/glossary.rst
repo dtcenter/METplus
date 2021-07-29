@@ -495,7 +495,10 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`PY_EMBED_INGEST_<n>_OUTPUT_DIR`.
 
    ASCII2NC_CONFIG_FILE
-     Path to optional configuration file read by ASCII2NC.
+     Path to optional configuration file read by ascii2nc.
+     To utilize a configuration file, set this to
+     {PARM_BASE}/parm/met_config/Ascii2NcConfig_wrapped.
+     If unset, no config file will be used.
 
      | *Used by:* ASCII2NC
 
@@ -505,12 +508,14 @@ METplus Configuration Glossary
      | *Used by:*  ASCII2NC
 
    TC_STAT_CONFIG_FILE
-     Path to optional configuration file read by TCStat.
+     Path to configuration file read by tc_stat.
+     If unset, parm/met_config/TCStatConfig_wrapped will be used.
 
      | *Used by:* TCStat
 
    TC_RMW_CONFIG_FILE
-     Path to optional configuration file read by TCRMW.
+     Path to configuration file read by tc_rmw.
+     If unset, parm/met_config/TCRMWConfig_wrapped will be used.
 
      | *Used by:* TCRMW
 
@@ -788,7 +793,7 @@ METplus Configuration Glossary
      | *Used by:*  EnsembleStat, GridStat, MODE, StatAnalysis
 
    CONFIG_FILE
-     Specific configuration file name to use for MET tools.
+     .. warning:: **DEPRECATED:** Please use :term:`TCMPR_PLOTTER_CONFIG_FILE`.
 
      | *Used by:*  TCMPRPlotter
 
@@ -968,7 +973,8 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`ENSEMBLE_STAT_CONFIG_FILE` instead.
 
    ENSEMBLE_STAT_CONFIG_FILE
-     Specify the absolute path to the configuration file for the MET ensemble_stat tool.
+     Path to configuration file read by ensemble_stat.
+     If unset, parm/met_config/EnsembleStatConfig_wrapped will be used.
 
      | *Used by:*  EnsembleStat
 
@@ -1961,7 +1967,8 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`GRID_STAT_CONFIG_FILE` instead.
 
    GRID_STAT_CONFIG_FILE
-     Specify the absolute path to the configuration file used by the MET grid_stat tool.
+     Path to configuration file read by grid_stat.
+     If unset, parm/met_config/GridStatConfig_wrapped will be used.
 
      | *Used by:*  GridStat
 
@@ -2407,7 +2414,8 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`MODE_CONFIG_FILE` instead. Path to mode configuration file.
 
    MODE_CONFIG_FILE
-     Path to mode configuration file.
+     Path to configuration file read by mode.
+     If unset, parm/met_config/MODEConfig_wrapped will be used.
 
      | *Used by:*  MODE
 
@@ -2495,7 +2503,8 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`MTD_CONFIG_FILE` instead.
 
    MTD_CONFIG_FILE
-     Path to mode-TD configuration file.
+     Path to configuration file read by mtd.
+     If unset, parm/met_config/MTDConfig_wrapped will be used.
 
      | *Used by:* MTD
 
@@ -3198,7 +3207,8 @@ METplus Configuration Glossary
      | *Used by:*  All
 
    PB2NC_CONFIG_FILE
-     Specify the absolute path to the configuration file for the MET pb2nc tool.
+     Path to configuration file read by pb2nc.
+     If unset, parm/met_config/PB2NCConfig_wrapped will be used.
 
      | *Used by:*  PB2NC
 
@@ -3367,7 +3377,8 @@ METplus Configuration Glossary
      | *Used by:*  TCMPRPlotter
 
    POINT_STAT_CONFIG_FILE
-     Specify the absolute path to the configuration file to be used with the MET point_stat tool.
+     Path to configuration file read by point_stat.
+     If unset, parm/met_config/PointStatConfig_wrapped will be used.
 
      | *Used by:*  PointStat
 
@@ -3549,7 +3560,8 @@ METplus Configuration Glossary
      | *Used by:*  TCMPRPlotter
 
    SERIES_ANALYSIS_CONFIG_FILE
-     Specify the absolute path for the configuration file to use with the MET series_analysis tool by initialization time.
+     Path to configuration file read by series_analysis.
+     If unset, parm/met_config/SeriesAnalysisConfig_wrapped will be used.
 
      | *Used by:* SeriesAnalysis
 
@@ -3670,7 +3682,10 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`STAT_ANALYSIS_CONFIG_FILE` instead.
 
    STAT_ANALYSIS_CONFIG_FILE
-     Specify the absolute path for the configuration file used with the MET stat_analysis tool. It is recommended to set this to {PARM_BASE}/use_cases/plotting/met_config/STATAnalysisConfig.
+     Path to optional configuration file read by stat_analysis.
+     To utilize a configuration file, set this to
+     {PARM_BASE}/parm/met_config/STATAnalysisConfig_wrapped.
+     If unset, no config file will be used.
 
      | *Used by:*  StatAnalysis
 
@@ -3787,7 +3802,8 @@ METplus Configuration Glossary
      | *Used by:*  TCPairs
 
    TC_PAIRS_CONFIG_FILE
-     Provide the absolute path to the configuration file for the MET tc_pairs tool.
+     Path to configuration file read by tc_pairs.
+     If unset, parm/met_config/TCPairsConfig_wrapped will be used.
 
      | *Used by:*  TCPairs
 
@@ -4652,9 +4668,10 @@ METplus Configuration Glossary
      | *Used by:* GridDiag
 
    GRID_DIAG_CONFIG_FILE
-     Specify the absolute path to the configuration file used by the MET grid_stat tool.
+     Path to configuration file read by grid_diag.
+     If unset, parm/met_config/GridDiagConfig_wrapped will be used.
 
-     | *Used by:*  GridStat
+     | *Used by:*  GridDiag
 
    GRID_DIAG_CUSTOM_LOOP_LIST
     Sets custom string loop list for a specific wrapper. See :term:`CUSTOM_LOOP_LIST`.
@@ -4758,7 +4775,8 @@ METplus Configuration Glossary
      | *Used by:* TCGen
 
    TC_GEN_CONFIG_FILE
-     Provide the absolute path to the configuration file for the MET TCGen tool.
+     Path to configuration file read by tc_gen.
+     If unset, parm/met_config/TCGenConfig_wrapped will be used.
 
      | *Used by:*  TCGen
 

@@ -145,6 +145,11 @@ class CommandBuilder:
         if not hasattr(self, 'WRAPPER_ENV_VAR_KEYS'):
             return
 
+        if not os.path.exists(config_file):
+            if self.c_dict.get('INPUT_MUST_EXIST', True):
+                self.log_error(f'Config file does not exist: {config_file}')
+            return
+
         # read config file content
         with open(config_file, 'r') as file_handle:
             content = file_handle.read()
@@ -1425,24 +1430,28 @@ class CommandBuilder:
             return
 
         # convert value from config to a list
-        conf_value = util.getlist(conf_value)
-        if conf_value or kwargs.get('allow_empty', False):
-            conf_value = str(conf_value)
-            # if not removing quotes, escape any quotes found in list items
-            if not kwargs.get('remove_quotes', False):
-                conf_value = conf_value.replace('"', '\\"')
+        conf_values = util.getlist(conf_value)
+        if conf_values or kwargs.get('allow_empty', False):
+            out_values = []
+            for conf_value in conf_values:
+                remove_quotes = kwargs.get('remove_quotes', False)
+                # if not removing quotes, escape any quotes found in list items
+                if not remove_quotes:
+                    conf_value = conf_value.replace('"', '\\"')
 
-            conf_value = conf_value.replace("'", '"')
+                conf_value = util.remove_quotes(conf_value)
+                if not remove_quotes:
+                    conf_value = f'"{conf_value}"'
 
-            if kwargs.get('remove_quotes', False):
-                conf_value = conf_value.replace('"', '')
+                out_values.append(conf_value)
+            out_value = f"[{', '.join(out_values)}]"
 
             if not c_dict_key:
                 c_key = met_config_name.upper()
             else:
                 c_key = c_dict_key
 
-            conf_value = f'{met_config_name} = {conf_value};'
+            conf_value = f'{met_config_name} = {out_value};'
             c_dict[c_key] = conf_value
 
     def set_met_config_string(self, c_dict, mp_config, met_config_name,
@@ -1794,7 +1803,7 @@ class CommandBuilder:
         # define layout of climo_mean and climo_stdev dictionaries
         climo_items = {
             'file_name': ('list', '', None),
-            'field': ('list', '', None),
+            'field': ('list', 'remove_quotes', None),
             'regrid': ('dict', '', [
                 ('method', 'string',
                  'uppercase,remove_quotes'),
@@ -2114,8 +2123,9 @@ class CommandBuilder:
         if not remove_bracket_list:
             return
 
-        for list_values in remove_bracket_list:
-            c_dict[list_values] = c_dict[list_values].strip('[]')
+        for list_value in remove_bracket_list:
+            if c_dict.get(list_value):
+                c_dict[list_value] = c_dict[list_value].strip('[]')
 
     def handle_mask(self, single_value=False, get_flags=False):
         """! Read mask dictionary values and set them into env_var_list
@@ -2277,6 +2287,29 @@ class CommandBuilder:
              @returns METConfigInfo object
         """
         return met_config(**kwargs)
+
+    def get_config_file(self, default_config_file=None):
+        """! Get the MET config file path for the wrapper from the
+        METplusConfig object. If unset, use the default value if provided.
+
+        @param default_config_file (optional) filename of wrapped MET config
+         file found in parm/met_config to use if config file is not set
+        @returns path to wrapped config file or None if no default is provided
+        """
+        config_name = f'{self.app_name.upper()}_CONFIG_FILE'
+        config_file = self.config.getraw('config', config_name, '')
+        if not config_file:
+            if not default_config_file:
+                return None
+
+            default_config_path = os.path.join(self.config.getdir('PARM_BASE'),
+                                               'met_config',
+                                               default_config_file)
+            self.logger.debug(f"{config_name} is not set. "
+                              f"Using {default_config_path}")
+            config_file = default_config_path
+
+        return config_file
 
     def get_start_time_input_dict(self):
         """! Get the first run time specified in config. Used if only running

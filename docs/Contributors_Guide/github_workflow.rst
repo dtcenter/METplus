@@ -12,6 +12,9 @@ that described in
 where new or updated code is created on a 'feature' branch that is based on
 the `NCAR/METplus GitHub 'develop' branch <https://github.com/dtcenter/METplus/tree/develop>`_.
 
+From James McCreight (WRF-Hydro team) this is a good write-up on
+`best practices for collaboration on GitHub <docs.google.com/document/d/1DxsViogPdA0uObHgNx4YFKd4ClC-m9UFcX0rO-ZJTY0/edit?pli=1#heading=h.g4dgc8a6erna>`_
+
 The feature branch is named after the corresponding GitHub issue:
 
 *feature_<Github Issue number>_<brief_description>*

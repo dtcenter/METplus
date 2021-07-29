@@ -795,3 +795,15 @@ def test_get_level_list(metplus_config, data_type, config_list, expected_list):
     saw = StatAnalysisWrapper(config)
 
     assert(saw.get_level_list(data_type) == expected_list)
+
+def test_get_config_file(metplus_config):
+    fake_config_name = '/my/config/file'
+    config = metplus_config()
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    wrapper = StatAnalysisWrapper(config)
+    assert not wrapper.c_dict['CONFIG_FILE']
+
+    config.set('config', 'STAT_ANALYSIS_CONFIG_FILE', fake_config_name)
+    wrapper = StatAnalysisWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name
