@@ -78,6 +78,7 @@ def handle_automation_env(host_name, reqs, work_dir):
             f'cd {METPLUS_DOCKER_LOC};'
             f'{work_dir}/manage_externals/checkout_externals'
             f' -e {work_dir}/.github/parm/Externals_metdatadb.cfg;'
+            f'{python_path} -m pip install {METPLUS_DOCKER_LOC}/../METdatadb;'
             'cd -;'
         )
 
