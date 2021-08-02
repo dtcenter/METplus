@@ -43,9 +43,12 @@ cnt_logic   	 = UNION;
 wind_thresh 	 = [ NA ];
 wind_logic  	 = UNION;
 eclv_points      = 0.05;
-nc_pairs_var_suffix = "";
 //nc_pairs_var_name =
 ${METPLUS_NC_PAIRS_VAR_NAME}
+nc_pairs_var_suffix = "";
+//hss_ec_value =
+${METPLUS_HSS_EC_VALUE}
+
 rank_corr_flag   = FALSE;
 
 //

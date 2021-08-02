@@ -7838,3 +7838,23 @@ METplus Configuration Glossary
      See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
 
      | *Used by:* GFDLTracker
+
+   GRID_STAT_HSS_EC_VALUE
+     Specify the value for 'hss_ec_value' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   POINT_STAT_HSS_EC_VALUE
+     Specify the value for 'hss_ec_value' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   SERIES_ANALYSIS_HSS_EC_VALUE
+     Specify the value for 'hss_ec_value' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   STAT_ANALYSIS_HSS_EC_VALUE
+     Specify the value for 'hss_ec_value' in the MET configuration file for StatAnalysis.
+
+     | *Used by:* StatAnalysis

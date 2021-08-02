@@ -38,6 +38,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_INTERP_DICT',
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
+        'METPLUS_HSS_EC_VALUE',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -218,6 +219,10 @@ class PointStatWrapper(CompareGriddedWrapper):
                         'uppercase': True,
                         },
         )
+
+        self.add_met_config(name='hss_ec_value',
+                            data_type='float',
+                            metplus_configs=['POINT_STAT_HSS_EC_VALUE'])
 
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE '

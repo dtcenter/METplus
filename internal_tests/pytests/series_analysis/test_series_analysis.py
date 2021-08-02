@@ -204,7 +204,8 @@ def set_minimum_config_settings(config):
                                       'match_month = TRUE;day_interval = 30;'
                                       'hour_interval = 12;}'),
           'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
-
+        ({'SERIES_ANALYSIS_HSS_EC_VALUE': '0.5', },
+         {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.5;'}),
     ]
 )
 def test_series_analysis_single_field(metplus_config, config_overrides,
