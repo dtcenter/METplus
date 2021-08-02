@@ -14,7 +14,7 @@ If **yes**, describe the new output and/or changes to the existing output:</br>
 - [ ] Please complete this pull request review by **[Fill in date]**.</br>
 
 ## Pull Request Checklist ##
-See the [METplus Workflow](https://dtcenter.github.io/METplus/Contributors_Guide/github_workflow.html) for details.
+See the [METplus Workflow](https://metplus.readthedocs.io/en/latest/Contributors_Guide/github_workflow.html) for details.
 - [ ] Complete the PR definition above.
 - [ ] Ensure the PR title matches the feature or bugfix branch name.
 - [ ] Define the PR metadata, as permissions allow.
