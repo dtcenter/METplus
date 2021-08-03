@@ -50,6 +50,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'METPLUS_VLD_THRESH',
         'METPLUS_CTS_LIST',
         'METPLUS_STAT_LIST',
+        'METPLUS_HSS_EC_VALUE',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -221,12 +222,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         if not c_dict['OUTPUT_DIR']:
             self.log_error("Must set SERIES_ANALYSIS_OUTPUT_DIR to run.")
 
+        # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = (
-            self.config.getraw('config',
-                               'SERIES_ANALYSIS_CONFIG_FILE')
+            self.get_config_file('SeriesAnalysisConfig_wrapped')
         )
-        if not c_dict['CONFIG_FILE']:
-            self.log_error("SERIES_ANALYSIS_CONFIG_FILE must be set")
 
         c_dict['BACKGROUND_MAP'] = (
             self.config.getbool('config',
@@ -271,6 +270,10 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
 
         # get climatology config variables
         self.handle_climo_dict()
+
+        self.add_met_config(name='hss_ec_value',
+                            data_type='float',
+                            metplus_configs=['SERIES_ANALYSIS_HSS_EC_VALUE'])
 
         # if no forecast lead sequence is specified,
         # use wildcard (*) so all leads are used

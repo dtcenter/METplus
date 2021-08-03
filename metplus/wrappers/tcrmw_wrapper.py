@@ -60,8 +60,9 @@ class TCRMWWrapper(CommandBuilder):
                                                  'LOG_TC_RMW_VERBOSITY',
                                                  c_dict['VERBOSITY'])
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-        c_dict['CONFIG_FILE'] = self.config.getraw('config',
-                                                   'TC_RMW_CONFIG_FILE', '')
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('TCRMWConfig_wrapped')
 
         c_dict['INPUT_DIR'] = self.config.getdir('TC_RMW_INPUT_DIR', '')
         c_dict['INPUT_TEMPLATE'] = self.config.getraw('filename_templates',

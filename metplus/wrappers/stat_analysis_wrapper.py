@@ -61,6 +61,7 @@ class StatAnalysisWrapper(CommandBuilder):
         'METPLUS_ALPHA',
         'METPLUS_LINE_TYPE',
         'METPLUS_JOBS',
+        'METPLUS_HSS_EC_VALUE',
     ]
 
     field_lists = ['FCST_VAR_LIST',
@@ -154,9 +155,10 @@ class StatAnalysisWrapper(CommandBuilder):
                                c_dict['VERBOSITY'])
         )
         c_dict['LOOP_ORDER'] = self.config.getstr('config', 'LOOP_ORDER')
-        c_dict['CONFIG_FILE'] = self.config.getstr('config', 
-                                                   'STAT_ANALYSIS_CONFIG_FILE',
-                                                   '')
+
+        # STATAnalysis config file is optional, so
+        # don't provide wrapped config file name as default value
+        c_dict['CONFIG_FILE'] = self.get_config_file()
 
         c_dict['OUTPUT_DIR'] = self.config.getdir('STAT_ANALYSIS_OUTPUT_DIR',
                                                   '')
@@ -223,6 +225,10 @@ class StatAnalysisWrapper(CommandBuilder):
                     c_dict['MODEL_LIST'].append(model_info['name'])
 
         c_dict = self.set_lists_loop_or_group(c_dict)
+
+        self.add_met_config(name='hss_ec_value',
+                            data_type='float',
+                            metplus_configs=['STAT_ANALYSIS_HSS_EC_VALUE'])
 
         return self.c_dict_error_check(c_dict)
 

@@ -97,7 +97,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = GridStatWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     all_cmds = wrapper.run_all_times()
     for (_, actual_env_vars), run_time in zip(all_cmds, run_times):
@@ -538,6 +538,8 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
         ({'OBS_GRID_STAT_FILE_TYPE': 'NETCDF_NCCF', },
          {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
+        ({'GRID_STAT_HSS_EC_VALUE': '0.5', },
+         {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.5;'}),
 
     ]
 )
@@ -553,7 +555,7 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
         config.set('config', key, value)
 
     wrapper = GridStatWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -589,3 +591,18 @@ def test_grid_stat_single_field(metplus_config, config_overrides,
                 assert (actual_value == obs_fmt)
             else:
                 assert(env_var_values.get(env_var_key, '') == actual_value)
+
+def test_get_config_file(metplus_config):
+    fake_config_name = '/my/config/file'
+
+    config = metplus_config()
+    default_config_file = os.path.join(config.getdir('PARM_BASE'),
+                                       'met_config',
+                                       'GridStatConfig_wrapped')
+
+    wrapper = GridStatWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == default_config_file
+
+    config.set('config', 'GRID_STAT_CONFIG_FILE', fake_config_name)
+    wrapper = GridStatWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name

@@ -62,9 +62,10 @@ class MTDWrapper(MODEWrapper):
             self.config.getraw('config',
                                'MTD_OUTPUT_TEMPLATE')
         )
-        c_dict['CONFIG_FILE'] = self.config.getraw('config',
-                                                   'MTD_CONFIG_FILE',
-                                                   '')
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('MTDConfig_wrapped')
+
         # new method of reading/setting MET config values
         self.set_met_config_int(self.env_var_dict, 'MTD_MIN_VOLUME',
                                 'min_volume', 'METPLUS_MIN_VOLUME')

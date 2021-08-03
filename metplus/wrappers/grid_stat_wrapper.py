@@ -47,6 +47,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_GRID_WEIGHT_FLAG',
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_OBS_FILE_TYPE',
+        'METPLUS_HSS_EC_VALUE',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -104,8 +105,10 @@ class GridStatWrapper(CompareGriddedWrapper):
         c_dict['VERBOSITY'] = self.config.getstr('config',
                                                  'LOG_GRID_STAT_VERBOSITY',
                                                  c_dict['VERBOSITY'])
-        c_dict['CONFIG_FILE'] = self.config.getraw('config',
-                                                   'GRID_STAT_CONFIG_FILE', '')
+
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('GridStatConfig_wrapped')
+
         c_dict['OBS_INPUT_DIR'] = \
           self.config.getdir('OBS_GRID_STAT_INPUT_DIR', '')
         c_dict['OBS_INPUT_TEMPLATE'] = \
@@ -223,6 +226,10 @@ class GridStatWrapper(CompareGriddedWrapper):
                                              'GRID_STAT_FILE_TYPE'],
                             extra_args={'remove_quotes': True,
                                         'uppercase': True})
+
+        self.add_met_config(name='hss_ec_value',
+                            data_type='float',
+                            metplus_configs=['GRID_STAT_HSS_EC_VALUE'])
 
 
         return c_dict

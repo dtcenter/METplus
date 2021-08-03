@@ -138,7 +138,7 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
                          'use_cases/met_tool_wrapper/ASCII2NC/ASCII2NC.conf',
                          config_overrides)
     )
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     input_path = wrapper.config.getraw('config', 'ASCII2NC_INPUT_TEMPLATE')
     input_dir = os.path.dirname(input_path)
@@ -157,10 +157,10 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
     config_file = wrapper.c_dict.get('CONFIG_FILE')
 
     expected_cmd = (f"{app_path} "
-                  f"{input_dir}/{input_file} "
-                  f"{output_dir}/{output_file} "
-                  f"-config {config_file} "
-                  f"{verbosity}")
+                    f"{input_dir}/{input_file} "
+                    f"{output_dir}/{output_file} "
+                    f"-config {config_file} "
+                    f"{verbosity}")
 
     assert(all_commands[0][0] == expected_cmd)
 
@@ -172,3 +172,15 @@ def test_ascii2nc_wrapper(metplus_config, config_overrides,
         value = match.split('=', 1)[1]
 
         assert (env_var_values.get(env_var_key, '') == value)
+
+def test_get_config_file(metplus_config):
+    fake_config_name = '/my/config/file'
+    config = metplus_config()
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    wrapper = ASCII2NCWrapper(config)
+    assert not wrapper.c_dict['CONFIG_FILE']
+
+    config.set('config', 'ASCII2NC_CONFIG_FILE', fake_config_name)
+    wrapper = ASCII2NCWrapper(config)
+    assert wrapper.c_dict['CONFIG_FILE'] == fake_config_name

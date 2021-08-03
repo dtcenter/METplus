@@ -38,6 +38,7 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_INTERP_DICT',
         'METPLUS_CLIMO_MEAN_DICT',
         'METPLUS_CLIMO_STDEV_DICT',
+        'METPLUS_HSS_EC_VALUE',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -134,10 +135,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         # get climatology config variables
         self.handle_climo_dict()
 
-        # Configuration
-        c_dict['CONFIG_FILE'] = (
-            self.config.getraw('config', 'POINT_STAT_CONFIG_FILE', '')
-        )
+        # get the MET config file path or use default
+        c_dict['CONFIG_FILE'] = self.get_config_file('PointStatConfig_wrapped')
 
         self.handle_obs_window_variables(c_dict)
 
@@ -221,6 +220,10 @@ class PointStatWrapper(CompareGriddedWrapper):
                         },
         )
 
+        self.add_met_config(name='hss_ec_value',
+                            data_type='float',
+                            metplus_configs=['POINT_STAT_HSS_EC_VALUE'])
+
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('Must set FCST_POINT_STAT_INPUT_TEMPLATE '
                            'in config file')
@@ -231,9 +234,6 @@ class PointStatWrapper(CompareGriddedWrapper):
 
         if not c_dict['OUTPUT_DIR']:
             self.log_error('Must set POINT_STAT_OUTPUT_DIR in config file')
-
-        if not c_dict['CONFIG_FILE']:
-            self.log_error("POINT_STAT_CONFIG_FILE must be set.")
 
         return c_dict
 

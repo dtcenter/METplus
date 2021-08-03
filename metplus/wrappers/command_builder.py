@@ -145,6 +145,11 @@ class CommandBuilder:
         if not hasattr(self, 'WRAPPER_ENV_VAR_KEYS'):
             return
 
+        if not os.path.exists(config_file):
+            if self.c_dict.get('INPUT_MUST_EXIST', True):
+                self.log_error(f'Config file does not exist: {config_file}')
+            return
+
         # read config file content
         with open(config_file, 'r') as file_handle:
             content = file_handle.read()
@@ -2118,8 +2123,9 @@ class CommandBuilder:
         if not remove_bracket_list:
             return
 
-        for list_values in remove_bracket_list:
-            c_dict[list_values] = c_dict[list_values].strip('[]')
+        for list_value in remove_bracket_list:
+            if c_dict.get(list_value):
+                c_dict[list_value] = c_dict[list_value].strip('[]')
 
     def handle_mask(self, single_value=False, get_flags=False):
         """! Read mask dictionary values and set them into env_var_list
@@ -2281,6 +2287,29 @@ class CommandBuilder:
              @returns METConfigInfo object
         """
         return met_config(**kwargs)
+
+    def get_config_file(self, default_config_file=None):
+        """! Get the MET config file path for the wrapper from the
+        METplusConfig object. If unset, use the default value if provided.
+
+        @param default_config_file (optional) filename of wrapped MET config
+         file found in parm/met_config to use if config file is not set
+        @returns path to wrapped config file or None if no default is provided
+        """
+        config_name = f'{self.app_name.upper()}_CONFIG_FILE'
+        config_file = self.config.getraw('config', config_name, '')
+        if not config_file:
+            if not default_config_file:
+                return None
+
+            default_config_path = os.path.join(self.config.getdir('PARM_BASE'),
+                                               'met_config',
+                                               default_config_file)
+            self.logger.debug(f"{config_name} is not set. "
+                              f"Using {default_config_path}")
+            config_file = default_config_path
+
+        return config_file
 
     def get_start_time_input_dict(self):
         """! Get the first run time specified in config. Used if only running
