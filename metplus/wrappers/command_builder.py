@@ -1311,7 +1311,7 @@ class CommandBuilder:
         """
         # add command to list of all commands run
         self.all_commands.append((cmd,
-                                  self.print_all_envs(print_copyable=False)))
+                                  self.print_all_envs(print_copyable=True)))
 
         log_name = cmd_name if cmd_name else self.log_name
 
