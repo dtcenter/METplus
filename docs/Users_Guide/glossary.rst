@@ -7858,3 +7858,9 @@ METplus Configuration Glossary
      Specify the value for 'hss_ec_value' in the MET configuration file for StatAnalysis.
 
      | *Used by:* StatAnalysis
+
+   GFDL_TRACKER_KEEP_INTERMEDIATE
+     If True, do not scrub intermediate files created by the tracker. Useful
+     for debugging issues.
+
+     | *Used by:* GFDLTracker

@@ -1088,6 +1088,7 @@ METplus Configuration
 | :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_ZETA850`
 | :term:`GFDL_TRACKER_VERBOSE_VERB`
 | :term:`GFDL_TRACKER_VERBOSE_VERB_G2`
+| :term:`GFDL_TRACKER_KEEP_INTERMEDIATE`
 
 .. _gfdl_tracker-nml-conf:
 
