@@ -12,6 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import shutil
+import glob
 
 from ..util import do_string_sub, ti_calculate, get_lead_sequence
 from ..util import remove_quotes, parse_template
@@ -200,6 +201,12 @@ class GFDLTrackerWrapper(CommandBuilder):
             value = get_fct('config', f'GFDL_TRACKER_{name}', '')
             c_dict[f'REPLACE_CONF_{name}'] = value
 
+        c_dict['KEEP_INTERMEDIATE'] = (
+            self.config.getbool('config',
+                                'GFDL_TRACKER_KEEP_INTERMEDIATE',
+                                False)
+        )
+
         # allow multiple input files
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
@@ -276,7 +283,8 @@ class GFDLTrackerWrapper(CommandBuilder):
 
         # substitute values from config into template.nml and
         # write input.nml to output directory
-        if not self.fill_output_nml_template(input_dict):
+        input_nml_path = self.fill_output_nml_template(input_dict)
+        if not input_nml_path:
             return False
 
         # run tracker application from output directory passing in input.nml
@@ -287,13 +295,43 @@ class GFDLTrackerWrapper(CommandBuilder):
         if not self.rename_fort_to_output_path(input_dict):
             return False
 
-        # remove sym links from output directory
-        for link_path in all_output_files:
-            self._remove_symlink(link_path)
+        # check if clean up should be skipped
+        if self.c_dict.get('KEEP_INTERMEDIATE', False):
+            return True
 
-        self._remove_symlink(tc_vitals_out)
+        # clean up files in output directory that are no longer needed
+        self.cleanup_output_dir(all_output_files,
+                                tc_vitals_out,
+                                input_nml_path)
 
         return True
+
+    def cleanup_output_dir(self, all_output_files, tc_vitals_out,
+                           input_nml_path):
+        for output_file in all_output_files:
+            # remove symbolic links for input files
+            self._remove_symlink(output_file)
+
+            # remove index files
+            index_file = f'{output_file}.ix'
+            if os.path.exists(index_file):
+                os.remove(index_file)
+
+        # remove TCVitals symbolic link
+        self._remove_symlink(tc_vitals_out)
+
+        # remove fort files
+        fort_glob = os.path.join(self.c_dict.get('OUTPUT_DIR'),
+                                 f'fort.*')
+        fort_files = glob.glob(fort_glob)
+        for fort_file in fort_files:
+            self.logger.debug(f'Removing {fort_file}')
+            os.remove(fort_file)
+
+        # remove generated input.nml file
+        if os.path.exists(input_nml_path):
+            self.logger.debug(f'Removing {input_nml_path}')
+            os.remove(input_nml_path)
 
     def get_all_input_files(self, input_dict):
         all_input_files = []
@@ -415,7 +453,7 @@ class GFDLTrackerWrapper(CommandBuilder):
     def fill_output_nml_template(self, input_dict):
         template_file = self.c_dict['NML_TEMPLATE_FILE']
         if not template_file:
-            return False
+            return None
 
         # set up dictionary of text to substitute in XML file
         sub_dict = self.populate_sub_dict(input_dict)
@@ -441,7 +479,7 @@ class GFDLTrackerWrapper(CommandBuilder):
             for line in output_lines:
                 file_handle.write(f'{line}\n')
 
-        return True
+        return out_path
 
     def populate_sub_dict(self, time_info):
         sub_dict = {}
