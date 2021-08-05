@@ -180,9 +180,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             f'{d_type}_PCP_COMBINE_CONSTANT_INIT', False
         )
 
-        # initialize custom string for tests
-        c_dict['CUSTOM_STRING'] = ''
-
         # read any additional names/levels to add to command
         c_dict[f'{d_type}_EXTRA_NAMES'] = getlist(
             self.config.getraw('config',
@@ -307,7 +304,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             input_dict['valid'] = valid_time
             input_dict['lead_seconds'] = forecast_lead
             time_info = time_util.ti_calculate(input_dict)
-            time_info['custom'] = self.c_dict['CUSTOM_STRING']
+            time_info['custom'] = self.c_dict.get('CUSTOM_STRING', '')
             fSts = do_string_sub(template,
                                  **time_info)
             search_file = os.path.join(self.input_dir,
@@ -335,7 +332,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # perform string substitution on name in case it uses filename templates
         field_name = do_string_sub(field_name,
                                    valid=search_time,
-                                   custom=self.c_dict['CUSTOM_STRING'])
+                                   custom=self.c_dict.get('CUSTOM_STRING', ''))
         addon = "'name=\"" + field_name + "\";"
 
         if not util.is_python_script(field_name) and field_level is not None:
@@ -343,7 +340,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         if field_extra:
             search_time_info = {'valid': search_time,
-                                'custom': self.c_dict['CUSTOM_STRING']}
+                                'custom': self.c_dict.get('CUSTOM_STRING', '')}
 
             field_extra = do_string_sub(field_extra,
                                         **search_time_info)
@@ -374,7 +371,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
 
         time_info = time_util.ti_calculate(input_dict)
-        time_info['custom'] = self.c_dict['CUSTOM_STRING']
+        time_info['custom'] = self.c_dict.get('CUSTOM_STRING', '')
         input_file = do_string_sub(in_template,
                                    level=int(search_accum),
                                    **time_info)
@@ -388,7 +385,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # apply string substitution to accum amount
         search_time_dict = {'valid': search_time, 'lead_seconds': lead}
         search_time_info = time_util.ti_calculate(search_time_dict)
-        search_time_info['custom'] = self.c_dict['CUSTOM_STRING']
+        search_time_info['custom'] = self.c_dict.get('CUSTOM_STRING', '')
         amount = do_string_sub(accum_dict['template'],
                                **search_time_info)
         amount = time_util.get_seconds_from_string(amount, default_unit='S', valid_time=search_time)
