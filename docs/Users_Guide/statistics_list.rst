@@ -3,8 +3,13 @@ METplus Laundry List of Statistics
 **********************************
 
 
-   5th attempt. text wrapping  This is only for the "A" items
-   
+   6th attempt. text wrapping  This is only for the "A" items
+
+/* override table no-wrap */
+.wy-table-responsive table td, .wy-table-responsive table th {
+    white-space: normal;
+}
+
  .. list-table:: Laundry list A.
     :widths: auto
     :header-rows: 1
