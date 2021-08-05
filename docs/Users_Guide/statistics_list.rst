@@ -1,7 +1,6 @@
-.. _statistics_list:
-
+**********************************
 METplus Laundry List of Statistics
-==================================
+**********************************
 
 
    2nd attempt.  This is only for the "A" items
