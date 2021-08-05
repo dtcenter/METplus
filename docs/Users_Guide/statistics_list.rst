@@ -30,8 +30,8 @@ Type           Statistics              References
 ============== ======================= ==================================
 2D Objects     For each object:        See the WWRP/WGNE JWGFVR website
 	       | Location of the
-	       | centroid in grid units
-	       Location
+	       | centroid in grid
+	       units Location
 -------------- ----------------------- ----------------------------------
 A/BAL_WIND_34  TCMPR output format:    TC-Pairs
                a/bdeck 34-knot radius
