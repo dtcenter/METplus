@@ -54,7 +54,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.field_name = None
         self.field_level = ""
         self.output_name = ""
-        self.name = ""
         self.compress = -1
         self.user_command = ''
 
@@ -263,7 +262,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.field_level = ""
         self.field_extra = ""
         self.output_name = ""
-        self.name = ""
         self.compress = -1
         self.user_command = ''
         self.extra_fields = None
@@ -537,10 +535,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         
     def get_command(self):
 
-        cmd = '{} -v {} '.format(self.app_path, self.c_dict['VERBOSITY'])
+        cmd = f"{self.app_path} -v {self.c_dict['VERBOSITY']} "
 
-        for a in self.args:
-            cmd += a + " "
+        for arg in self.args:
+            cmd += f'{arg} '
 
         if self.method == "USER_DEFINED":
             cmd += self.user_command
@@ -619,9 +617,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         if self.pcp_regex:
             cmd += f"-pcprx {self.pcp_regex} "
-
-        if self.name:
-            cmd += f"-name {self.name} "
 
         if self.compress != -1:
             cmd += f"-compress {str(self.compress)} "
@@ -1082,7 +1077,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.outdir = out_dir
         time_info['level'] = lookback_seconds
         pcp_out = do_string_sub(out_template,
-                             **time_info)
+                                **time_info)
         self.outfile = pcp_out
 
         # set STAT_LIST for data type (FCST/OBS)
