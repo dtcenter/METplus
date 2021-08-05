@@ -3,7 +3,7 @@ METplus Laundry List of Statistics
 **********************************
 
 
-   10th attempt. text wrapping NEW table  This is only for the "A" items
+   11th attempt. text wrapping NEW table  This is only for the "A" items
 
  .. list-table:: Laundry list A.
     :widths: auto
@@ -27,7 +27,7 @@ METplus Laundry List of Statistics
 
 ============== ======================= ==================================
 Type           Statistics              References
--------------- ----------------------- ----------------------------------
+============== ======================= ==================================
 2D Objects     For each object:        See the WWRP/WGNE JWGFVR website
                object:
 	       Location of the
