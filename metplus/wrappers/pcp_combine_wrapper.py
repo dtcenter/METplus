@@ -15,7 +15,7 @@ import datetime
 
 from ..util import met_util as util
 from ..util import time_util
-from ..util import do_string_sub
+from ..util import do_string_sub, getlist
 from . import ReformatGriddedWrapper
 
 '''!@namespace PCPCombineWrapper
@@ -57,103 +57,151 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.user_command = ''
 
     def create_c_dict(self):
+        """! Create dictionary from config items to be used in the wrapper
+            Allows developer to reference config items without having to know
+            the type and consolidates config get calls so it is easier to see
+            which config variables are used in the wrapper
+
+            @returns dictionary of values to use in wrapper
+        """
         c_dict = super().create_c_dict()
-        c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_PCP_COMBINE_VERBOSITY',
+        c_dict['VERBOSITY'] = self.config.getstr('config',
+                                                 'LOG_PCP_COMBINE_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
         fcst_run = self.config.getbool('config', 'FCST_PCP_COMBINE_RUN', False)
         obs_run = self.config.getbool('config', 'OBS_PCP_COMBINE_RUN', False)
 
         if not fcst_run and not obs_run:
-            self.log_error("Must set either FCST_PCP_COMBINE_RUN or OBS_PCP_COMBINE_RUN")
-        else:
-            if fcst_run:
-                c_dict = self.set_fcst_or_obs_dict_items('FCST', c_dict)
-                c_dict['VAR_LIST_FCST'] = util.parse_var_list(
-                    self.config,
-                    data_type='FCST',
-                    met_tool=self.app_name
-                )
-            if obs_run:
-                c_dict = self.set_fcst_or_obs_dict_items('OBS', c_dict)
-                c_dict['VAR_LIST_OBS'] = util.parse_var_list(
-                    self.config,
-                    data_type='OBS',
-                    met_tool=self.app_name
-                )
+            self.log_error("Must set either FCST_PCP_COMBINE_RUN or "
+                           "OBS_PCP_COMBINE_RUN")
+            return c_dict
 
-
+        if fcst_run:
+            c_dict = self.set_fcst_or_obs_dict_items('FCST', c_dict)
+            c_dict['VAR_LIST_FCST'] = util.parse_var_list(
+                self.config,
+                data_type='FCST',
+                met_tool=self.app_name
+            )
+        if obs_run:
+            c_dict = self.set_fcst_or_obs_dict_items('OBS', c_dict)
+            c_dict['VAR_LIST_OBS'] = util.parse_var_list(
+                self.config,
+                data_type='OBS',
+                met_tool=self.app_name
+            )
 
         return c_dict
 
     def set_fcst_or_obs_dict_items(self, d_type, c_dict):
-        c_dict[d_type+'_MIN_FORECAST'] = self.config.getstr('config', d_type+'_PCP_COMBINE_MIN_FORECAST', '0')
-        c_dict[d_type+'_MAX_FORECAST'] = self.config.getstr('config', d_type+'_PCP_COMBINE_MAX_FORECAST', '256H')
-        c_dict[d_type+'_INPUT_DATATYPE'] = self.config.getstr('config',
-                                              d_type+'_PCP_COMBINE_INPUT_DATATYPE', '')
-        c_dict[d_type+'_ACCUMS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_ACCUMS', ''))
-        c_dict[d_type+'_NAMES'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_NAMES', ''))
-        c_dict[d_type+'_LEVELS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_LEVELS', ''))
-        c_dict[d_type+'_OPTIONS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_OPTIONS', ''))
-        c_dict[d_type+'_OUTPUT_ACCUM'] = self.config.getstr('config', d_type+'_PCP_COMBINE_OUTPUT_ACCUM', '')
-        c_dict[d_type+'_OUTPUT_NAME'] = self.config.getstr('config', d_type+'_PCP_COMBINE_OUTPUT_NAME', '')
-        c_dict[d_type+'_INPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_INPUT_DIR', '')
-        c_dict[d_type+'_INPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                                              d_type+'_PCP_COMBINE_INPUT_TEMPLATE', '')
-        if not c_dict[d_type+'_INPUT_TEMPLATE']:
-            self.log_error(d_type + "_PCP_COMBINE_INPUT_TEMPLATE required to run")
+        c_dict[f'{d_type}_MIN_FORECAST'] = self.config.getstr(
+            'config',
+            f'{d_type}_PCP_COMBINE_MIN_FORECAST', '0'
+        )
+        c_dict[f'{d_type}_MAX_FORECAST'] = self.config.getstr(
+            'config',
+            f'{d_type}_PCP_COMBINE_MAX_FORECAST', '256H'
+        )
 
-        c_dict[d_type+'_OUTPUT_DIR'] = self.config.getdir(d_type+'_PCP_COMBINE_OUTPUT_DIR', '')
-        c_dict[d_type+'_OUTPUT_TEMPLATE'] = self.config.getraw('filename_templates',
-                                     d_type+'_PCP_COMBINE_OUTPUT_TEMPLATE')
+        c_dict[f'{d_type}_INPUT_DATATYPE'] = self.config.getstr(
+            'config',
+            f'{d_type}_PCP_COMBINE_INPUT_DATATYPE', ''
+        )
 
-        c_dict[d_type+'_STAT_LIST'] = \
-            util.getlist(self.config.getstr('config',
-                                       d_type+'_PCP_COMBINE_STAT_LIST', ''))
+        c_dict[f'{d_type}_ACCUMS'] = getlist(
+            self.config.getraw('config',
+                               f'{d_type}_PCP_COMBINE_INPUT_ACCUMS', '')
+        )
 
-        run_method = \
-            self.config.getstr('config', d_type+'_PCP_COMBINE_METHOD', '').upper()
+        c_dict[f'{d_type}_NAMES'] = getlist(
+            self.config.getraw('config',
+                               f'{d_type}_PCP_COMBINE_INPUT_NAMES', '')
+        )
+        c_dict[f'{d_type}_LEVELS'] = getlist(
+            self.config.getraw('config',
+                               f'{d_type}_PCP_COMBINE_INPUT_LEVELS', '')
+        )
+        c_dict[f'{d_type}_OPTIONS'] = getlist(
+            self.config.getraw('config',
+                               f'{d_type}_PCP_COMBINE_INPUT_OPTIONS', '')
+        )
+        c_dict[f'{d_type}_OUTPUT_ACCUM'] = self.config.getstr(
+            'config',
+            f'{d_type}_PCP_COMBINE_OUTPUT_ACCUM', ''
+        )
+        c_dict[f'{d_type}_OUTPUT_NAME'] = self.config.getstr(
+            'config',
+            f'{d_type}_PCP_COMBINE_OUTPUT_NAME', ''
+        )
+        c_dict[f'{d_type}_INPUT_DIR'] = self.config.getdir(
+            f'{d_type}_PCP_COMBINE_INPUT_DIR', ''
+        )
+        c_dict[f'{d_type}_INPUT_TEMPLATE'] = self.config.getraw(
+            'config',
+            f'{d_type}_PCP_COMBINE_INPUT_TEMPLATE'
+        )
 
-        # support run method of CUSTOM, but warn and change it to USER_DEFINED
+        c_dict[f'{d_type}_OUTPUT_DIR'] = self.config.getdir(
+            f'{d_type}_PCP_COMBINE_OUTPUT_DIR', ''
+        )
+        c_dict[f'{d_type}_OUTPUT_TEMPLATE'] = self.config.getraw(
+            'config',
+            f'{d_type}_PCP_COMBINE_OUTPUT_TEMPLATE'
+        )
+
+        c_dict[f'{d_type}_STAT_LIST'] = getlist(
+            self.config.getstr('config',
+                               f'{d_type}_PCP_COMBINE_STAT_LIST', '')
+        )
+
+        run_method = self.config.getstr(
+            'config',
+            f'{d_type}_PCP_COMBINE_METHOD', ''
+        ).upper()
+
+        # change CUSTOM (deprecated) to USER_DEFINED
         if run_method == 'CUSTOM':
-            self.logger.warning(f'{d_type}_PCP_COMBINE_RUN_METHOD should be set to USER_DEFINED. CUSTOM method is deprecated')
             run_method = 'USER_DEFINED'
+        c_dict[f'{d_type}_RUN_METHOD'] = run_method
 
-        c_dict[d_type+'_RUN_METHOD'] = run_method
+        c_dict[f'{d_type}_DERIVE_LOOKBACK'] = self.config.getstr(
+            'config',
+            f'{d_type}_PCP_COMBINE_DERIVE_LOOKBACK', '0'
+        )
 
-        c_dict[d_type+'_DERIVE_LOOKBACK'] = \
-          self.config.getstr('config', d_type+'_PCP_COMBINE_DERIVE_LOOKBACK', '0')
+        c_dict[f'{d_type}_BUCKET_INTERVAL'] = self.config.getseconds(
+            'config',
+            f'{d_type}_PCP_COMBINE_BUCKET_INTERVAL', 0
+        )
 
-        c_dict[d_type+'_BUCKET_INTERVAL'] = self.config.getseconds('config',
-                                                                   d_type+'_PCP_COMBINE_BUCKET_INTERVAL',
-                                                                   0)
-
-        c_dict[d_type + '_CONSTANT_INIT'] = self.config.getbool('config',
-                                                                d_type+'_PCP_COMBINE_CONSTANT_INIT',
-                                                                False)
+        c_dict[f'{d_type}_CONSTANT_INIT'] = self.config.getbool(
+            'config',
+            f'{d_type}_PCP_COMBINE_CONSTANT_INIT', False
+        )
 
         # initialize custom string for tests
         c_dict['CUSTOM_STRING'] = ''
 
         # read any additional names/levels to add to command
-        c_dict[d_type+'_EXTRA_NAMES'] = util.getlist(
+        c_dict[f'{d_type}_EXTRA_NAMES'] = getlist(
             self.config.getraw('config',
-                               d_type+'_PCP_COMBINE_EXTRA_NAMES', '')
+                               f'{d_type}_PCP_COMBINE_EXTRA_NAMES', '')
         )
-        c_dict[d_type+'_EXTRA_LEVELS'] = util.getlist(
+        c_dict[f'{d_type}_EXTRA_LEVELS'] = getlist(
             self.config.getraw('config',
-                               d_type+'_PCP_COMBINE_EXTRA_LEVELS', '')
+                               f'{d_type}_PCP_COMBINE_EXTRA_LEVELS', '')
         )
         # fill in missing extra level values with None
         fill_num = (len(c_dict[f'{d_type}_EXTRA_NAMES']) -
                     len(c_dict[f'{d_type}_EXTRA_LEVELS']))
         if fill_num > 0:
             for num in range(fill_num):
-                c_dict[d_type + '_EXTRA_LEVELS'].append(None)
+                c_dict[f'{d_type}_EXTRA_LEVELS'].append(None)
 
-        c_dict[d_type+'_EXTRA_OUTPUT_NAMES'] = util.getlist(
+        c_dict[f'{d_type}_EXTRA_OUTPUT_NAMES'] = getlist(
             self.config.getraw('config',
-                               d_type+'_PCP_COMBINE_EXTRA_OUTPUT_NAMES', '')
+                               f'{d_type}_PCP_COMBINE_EXTRA_OUTPUT_NAMES', '')
         )
 
         if run_method not in self.valid_run_methods:
@@ -161,35 +209,37 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                            f"{run_method}. Valid options are "
                            f"{','.join(self.valid_run_methods)}.")
 
-        if run_method == 'DERIVE' and not c_dict[d_type+'_STAT_LIST']:
-            self.log_error('Statistic list is empty. ' + \
-              'Must set ' + d_type + '_PCP_COMBINE_STAT_LIST if running ' +\
-                              'derive mode')
+        if run_method == 'DERIVE' and not c_dict[f'{d_type}_STAT_LIST']:
+            self.log_error('Statistic list is empty. Must set '
+                           f'{d_type}_PCP_COMBINE_STAT_LIST if running '
+                           'derive mode')
 
-        if not c_dict[d_type+'_INPUT_TEMPLATE'] and c_dict[d_type+'_RUN_METHOD'] != 'SUM':
-            self.log_error(f"Must set {d_type}_PCP_COMBINE_INPUT_TEMPLATE unless using SUM method")
+        if (not c_dict[f'{d_type}_INPUT_TEMPLATE'] and
+                c_dict[f'{d_type}_RUN_METHOD'] != 'SUM'):
+            self.log_error(f"Must set {d_type}_PCP_COMBINE_INPUT_TEMPLATE "
+                           "unless using SUM method")
 
-        if not c_dict[d_type+'_OUTPUT_TEMPLATE']:
+        if not c_dict[f'{d_type}_OUTPUT_TEMPLATE']:
             self.log_error(f"Must set {d_type}_PCP_COMBINE_OUTPUT_TEMPLATE")
 
         if run_method == 'DERIVE' or run_method == 'ADD':
-            if not c_dict[d_type+'_ACCUMS']:
-                self.log_error(f'{d_type}_PCP_COMBINE_INPUT_ACCUMS must be specified.')
+            if not c_dict[f'{d_type}_ACCUMS']:
+                self.log_error(f'{d_type}_PCP_COMBINE_INPUT_ACCUMS '
+                               'must be specified.')
 
             # name list should either be empty or the same length as accum list
-            if c_dict[d_type+'_NAMES'] and \
-              len(c_dict[d_type+'_ACCUMS']) != len(c_dict[d_type+'_NAMES']):
-                msg = f'{d_type}_PCP_COMBINE_INPUT_ACCUM_NAMES list should be ' +\
-                      'either empty or the same length as ' +\
-                      f'{d_type}_PCP_COMBINE_INPUT_ACCUMS list.'
-                self.log_error(msg)
+            len_names = len(c_dict[f'{d_type}_NAMES'])
+            len_accums = len(c_dict[f'{d_type}_ACCUMS'])
+            len_levels = len(c_dict[f'{d_type}_LEVELS'])
+            if c_dict[f'{d_type}_NAMES'] and len_accums != len_names:
+                self.log_error(f'{d_type}_PCP_COMBINE_INPUT_ACCUM_NAMES list '
+                               'should be either empty or the same length as '
+                               f'{d_type}_PCP_COMBINE_INPUT_ACCUMS list.')
 
-            if c_dict[d_type+'_LEVELS'] and \
-              len(c_dict[d_type+'_ACCUMS']) != len(c_dict[d_type+'_LEVELS']):
-                msg = f'{d_type}_PCP_COMBINE_INPUT_LEVELS list should be ' +\
-                      'either empty or the same length as ' +\
-                      f'{d_type}_PCP_COMBINE_INPUT_ACCUMS list.'
-                self.log_error(msg)
+            if c_dict[f'{d_type}_LEVELS'] and len_accums != len_levels:
+                self.log_error(f'{d_type}_PCP_COMBINE_INPUT_LEVELS list '
+                               'should be either empty or the same length as '
+                               f'{d_type}_PCP_COMBINE_INPUT_ACCUMS list.')
 
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
