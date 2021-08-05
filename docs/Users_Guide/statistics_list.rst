@@ -3,10 +3,7 @@ METplus Laundry List of Statistics
 **********************************
 
 
-   3nd attempt. text wrapping  This is only for the "A" items
-
-.. role:: raw-html(raw)
-    :format: html   
+   5th attempt. text wrapping  This is only for the "A" items
    
  .. list-table:: Laundry list A.
     :widths: auto
