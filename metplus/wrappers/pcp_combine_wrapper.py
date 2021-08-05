@@ -91,9 +91,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         c_dict[d_type+'_MAX_FORECAST'] = self.config.getstr('config', d_type+'_PCP_COMBINE_MAX_FORECAST', '256H')
         c_dict[d_type+'_INPUT_DATATYPE'] = self.config.getstr('config',
                                               d_type+'_PCP_COMBINE_INPUT_DATATYPE', '')
-        c_dict[d_type+'_DATA_INTERVAL'] = self.config.getint('config', d_type+'_PCP_COMBINE_DATA_INTERVAL', 1)
-        c_dict[d_type+'_TIMES_PER_FILE'] = self.config.getint('config', d_type+'_PCP_COMBINE_TIMES_PER_FILE', -1)
-        c_dict[d_type+'_IS_DAILY_FILE'] = self.config.getbool('config', d_type+'_PCP_COMBINE_IS_DAILY_FILE', False)
         c_dict[d_type+'_ACCUMS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_ACCUMS', ''))
         c_dict[d_type+'_NAMES'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_NAMES', ''))
         c_dict[d_type+'_LEVELS'] = util.getlist(self.config.getraw('config', d_type+'_PCP_COMBINE_INPUT_LEVELS', ''))
@@ -278,73 +275,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         return None, 0
 
-    def get_daily_file(self, time_info, accum, data_src, file_template):
-        """!Pull accumulation out of file that contains a full day of data
-        Args:
-          @param time_info dictionary containing timing information
-          @param accum accumulation to extract from file
-          @param data_src type of data (FCST or OBS)
-          @param file_template filename template to search
-          @rtype bool
-          @return True if file was added to output list, False if not"""
-
-        data_interval = self.c_dict[data_src + '_DATA_INTERVAL']
-        times_per_file = self.c_dict[data_src + '_TIMES_PER_FILE']
-        search_file = None
-        # loop from valid_time back to data interval * times per file
-        for i in range(0, times_per_file+1):
-            search_time = time_info['valid'] - datetime.timedelta(hours=(i * data_interval))
-            # check if file exists
-            dSts = do_string_sub(file_template,
-                                 valid=search_time,
-                                 custom=self.c_dict['CUSTOM_STRING'])
-            search_file = os.path.join(self.input_dir,
-                                       dSts)
-            search_file = util.preprocess_file(search_file,
-                                            self.c_dict[data_src+\
-                                              '_INPUT_DATATYPE'],
-                                               self.config)
-            if search_file is not None:
-                break
-
-        if search_file is None:
-            return False
-
-        diff = time_info['valid'] - search_time
-
-        # Specifying integer division // Python 3,
-        # assuming that was the intent in Python 2.
-        lead = int((diff.days * 24) // (data_interval))
-        lead += int((diff).seconds // (data_interval*3600)) - 1
-        search_time_info = { 'valid' : search_time,
-                             'custom': self.c_dict['CUSTOM_STRING']}
-
-        # get name of input level item that matches the accumulation to extract from daily file
-        accum_seconds = time_util.get_seconds_from_string(accum, 'H')
-        accum_dict_list = self.c_dict['ACCUM_DICT_LIST']
-        fname = next((item['name'] for item in accum_dict_list if item['amount'] == accum_seconds), '-1')
-        # if accumulation was not found in levels dictionary list, error and return
-        if fname == '-1':
-            self.log_error(f'Accumulation {accum} was not specified in the {data_src}'
-                              '_PCP_COMBINE_INPUT_ACCUMS list')
-            return False
-
-        # if name was not set in the input levels list, use accumulation time in MET time format
-        if fname is None:
-            addon = time_util.time_string_to_met_time(accum, default_unit='S')
-        else:
-            fname = do_string_sub(fname, **search_time_info)
-            addon = "'name=\"" + fname + "\";"
-
-            # if name is a python script, don't set level
-            if not util.is_python_script(fname):
-                addon += " level=\"(" + str(lead) + ",*,*)\";"
-
-            addon += "'"
-
-        self.add_input_file(search_file, addon)
-        return True
-
     def get_addon(self, accum_dict, search_accum, search_time):
         field_name = accum_dict['name']
         field_level = accum_dict['level']
@@ -437,9 +367,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
           @return True if full set of files to build accumulation is found
         """
         in_template = self.c_dict[data_src+'_INPUT_TEMPLATE']
-
-        if self.c_dict[data_src + '_IS_DAILY_FILE'] is True:
-            return self.get_daily_file(time_info, accum, data_src, in_template)
 
         search_time = time_info['valid']
         # last time to search is the output accumulation subtracted from the

@@ -156,7 +156,6 @@ def test_get_lowest_forecast_file_no_subdir(metplus_config):
     valid_time = datetime.datetime.strptime("201802012100", '%Y%m%d%H%M')
 
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
-#    template = util.getraw(pcw.config, 'filename_templates', dtype+'_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.input_dir = input_dir
     pcw.build_input_accum_list(dtype, {'valid': valid_time})
     out_file, fcst = pcw.getLowestForecastFile(valid_time, dtype, template)
@@ -168,19 +167,10 @@ def test_get_lowest_forecast_file_yesterday(metplus_config):
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = datetime.datetime.strptime("201802010600", '%Y%m%d%H%M')
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
-#    template = util.getraw(pcw.config, 'filename_templates', 'FCST2_PCP_COMBINE_INPUT_TEMPLATE')
     pcw.input_dir = input_dir
     pcw.build_input_accum_list(dtype, {'valid': valid_time})
     out_file, fcst = pcw.getLowestForecastFile(valid_time, dtype, template)
     assert(out_file == input_dir+"/file.2018013118f012.nc" and fcst == 43200)
-
-def test_get_daily_file(metplus_config):
-    data_src = "OBS"
-    pcw = pcp_combine_wrapper(metplus_config, data_src)
-    time_info = {'valid' : datetime.datetime.strptime("201802010000", '%Y%m%d%H%M') }
-    accum = 1
-    file_template = "file.{valid?fmt=%Y%m%d}.txt"
-    pcw.get_daily_file(time_info, accum, data_src, file_template)
 
 def test_setup_add_method(metplus_config):
     rl = "OBS"
