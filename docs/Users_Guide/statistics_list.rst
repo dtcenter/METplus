@@ -3,7 +3,7 @@ METplus Laundry List of Statistics
 **********************************
 
 
-   Attempt #29. text wrapping NEW table  This is only for a couple of items.
+   Attempt #30. text wrapping NEW table  This is only for a couple of items.
 
  .. list-table:: Laundry list A.
     :widths: auto
@@ -88,7 +88,7 @@ Examples using the glossary format:
      computed for a pair of simple objects, NetCDF files with the objects
      and raw data for further processing
 
-     | *See the WWRP/WGNE JWGFVR website for more details:*
+     | *Reference: See the WWRP/WGNE JWGFVR website for more details:*
        https://www.cawcr.gov.au/projects/verification
 
    A/BAL_WIND_34
