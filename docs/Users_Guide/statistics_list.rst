@@ -3,7 +3,7 @@ METplus Laundry List of Statistics
 **********************************
 
 
-   15th attempt. text wrapping NEW table  This is only for the "A" items
+   16th attempt. text wrapping NEW table  This is only for the "A" items
 
  .. list-table:: Laundry list A.
     :widths: auto
@@ -36,5 +36,6 @@ Type           Statistics              References
 A/BAL_WIND_34  | TCMPR output format:    TC-Pairs
                a/bdeck
 	       | 34-knot radius
+	       
 	       winds in full circle
 ============== ======================= ==================================     
