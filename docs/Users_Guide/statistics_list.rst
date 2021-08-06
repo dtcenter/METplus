@@ -74,19 +74,19 @@ A/BAL_WIND_50  | TCMPR output format:          TC-Pairs
      | *Used by:*  RegridDataPlane
 
    CUSTOM_LOOP_LIST
-   List of strings that are used to run each item in the :term:`PROCESS_LIST`
-   multiple times for each run time to allow
-   the tool to be run with different configurations. The filename
-   template tag {custom?fmt=%s} can be used throughout the
-   METplus configuration file. For example, the text can be used to supply
-   different configuration files (if the MET tool uses them) and
-   output filenames/directories. CUT
+      List of strings that are used to run each item in the :term:`PROCESS_LIST`
+      multiple times for each run time to allow
+      the tool to be run with different configurations. The filename
+      template tag {custom?fmt=%s} can be used throughout the
+      METplus configuration file. For example, the text can be used to supply
+      different configuration files (if the MET tool uses them) and
+      output filenames/directories. CUT
 
-   If unset or left blank, the wrapper will run once per run time. There
-   are also wrapper-specific configuration variables to define a custom
-   string loop list for a single wrapper, i.e.
-   :term:`SERIES_ANALYSIS_CUSTOM_LOOP_LIST` and :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`.
+      If unset or left blank, the wrapper will run once per run time. There
+      are also wrapper-specific configuration variables to define a custom
+      string loop list for a single wrapper, i.e.
+      :term:`SERIES_ANALYSIS_CUSTOM_LOOP_LIST` and :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`.
 
-     | *Used by:* Many
+      | *Used by:* Many
 
  
