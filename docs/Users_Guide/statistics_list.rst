@@ -3,7 +3,7 @@ METplus Laundry List of Statistics
 **********************************
 
 
-   Attempt #25. text wrapping NEW table  This is only for a couple of items.
+   Attempt #26. text wrapping NEW table  This is only for a couple of items.
 
  .. list-table:: Laundry list A.
     :widths: auto
@@ -65,7 +65,7 @@ A/BAL_WIND_50  | TCMPR output format:          TC-Pairs
 .. glossary::
    :sorted:
 
-   REGRID_DATA_PLANE_ONCE_PER_FIELD
+   BOB_BLA_LAW
      If True, run RegridDataPlane separately for each field name/level
      combination specified in the configuration file. See  :ref:`Field_Info`
      for more information on how fields are specified. If False,
@@ -73,7 +73,7 @@ A/BAL_WIND_50  | TCMPR output format:          TC-Pairs
 
      | *Used by:*  RegridDataPlane
 
-   CUSTOM_LOOP_LIST
+   MADE_UP_NAME
       List of strings that are used to run each item in the :term:`PROCESS_LIST`
       multiple times for each run time to allow
       the tool to be run with different configurations. The filename
