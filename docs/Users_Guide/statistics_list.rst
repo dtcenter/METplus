@@ -3,7 +3,7 @@ METplus Laundry List of Statistics
 **********************************
 
 
-   Attempt #27. text wrapping NEW table  This is only for a couple of items.
+   Attempt #28. text wrapping NEW table  This is only for a couple of items.
 
  .. list-table:: Laundry list A.
     :widths: auto
@@ -88,31 +88,18 @@ Examples using the glossary format:
       computed for a pair of simple objects, NetCDF files with the objects
       and raw data for further processing
 
-      | See the WWRP/WGNE JWGFVR website for more details:
+      | *See the WWRP/WGNE JWGFVR website for more details:*
         https://www.cawcr.gov.au/projects/verification
 
-   BOB_BLA_LAW
-     If True, run RegridDataPlane separately for each field name/level
-     combination specified in the configuration file. See  :ref:`Field_Info`
-     for more information on how fields are specified. If False,
-     run RegridDataPlane once with all of the fields specified.
+   A/BAL_WIND_34
+   TCMPR output format: a/bdeck 34-knot radius winds in full circle
 
-     | *Used by:*  RegridDataPlane
+   | *Reference:* TC-Pairs
 
-   MADE_UP_NAME
-      List of strings that are used to run each item in the :term:`PROCESS_LIST`
-      multiple times for each run time to allow
-      the tool to be run with different configurations. The filename
-      template tag {custom?fmt=%s} can be used throughout the
-      METplus configuration file. For example, the text can be used to supply
-      different configuration files (if the MET tool uses them) and
-      output filenames/directories. CUT
+ A/BAL_WIND_50
+   TCMPR output format: a/bdeck 50-knot radius winds in full circle
 
-      If unset or left blank, the wrapper will run once per run time. There
-      are also wrapper-specific configuration variables to define a custom
-      string loop list for a single wrapper, i.e.
-      :term:`SERIES_ANALYSIS_CUSTOM_LOOP_LIST` and :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`.
+   | *Reference:* TC-Pairs
 
-      | *Used by:* Many
-
+ 
  
