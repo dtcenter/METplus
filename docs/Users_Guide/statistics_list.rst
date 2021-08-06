@@ -3,7 +3,7 @@ METplus Laundry List of Statistics
 **********************************
 
 
-   Attempt #22. text wrapping NEW table  This is only for a couple of items.
+   Attempt #23. text wrapping NEW table  This is only for a couple of items.
 
  .. list-table:: Laundry list A.
     :widths: auto
@@ -31,6 +31,27 @@ Type           Statistics                      References
 2D Objects     | For each object:              | See the WWRP/WGNE
 	       | Location of the centroid      | JWGFVR website
 	       | in grid units Location
+	       | of the centroid in lat/lon
+	       | degrees, Axis angle, Length
+	       | of the enclosing rectangle,
+	       | Width of the enclosing
+	       | rectangle, Object area,
+	       | Radius of curvature of the
+	       | object defined in terms of
+	       | third order moments, Center
+	       | of curvature Ratio of the
+	       | difference between the area
+	       | of an object and the area of
+	       | its convex hull divided by
+	       | the area of the complex hull,
+	       | percentiles of intensity of
+	       | the raw field within the
+	       | object, Percentile of
+	       | intensity chosen for use in
+	       | the percentile intensity
+	       | ratio, Sum of the
+	       | intensities of the raw field
+	       | within the object, etc.... 
 -------------- ------------------------------- -----------------------------
 A/BAL_WIND_34  | TCMPR output format:          TC-Pairs
                | a/bdeck 34-knot radius
@@ -40,3 +61,6 @@ A/BAL_WIND_50  | TCMPR output format:          TC-Pairs
                | a/bdeck 50-knot radius
 	       | winds in full circle	       
 ============== =============================== =============================
+
+
+ For each object: Location of the centroid in grid units, Location of the centroid in lat/lon degrees, Axis angle, Length of the enclosing rectangle, Width of the enclosing rectangle, Object area, Radius of curvature of the object defined in terms of third order moments, Center of curvature, Ratio of the difference between the area of an object and the area of its convex hull divided by the area of the complex hull, percentiles of intensity of the raw field within the object, Percentile of intensity chosen for use in the percentile intensity ratio, Sum of the intensities of the raw field within the object, 
