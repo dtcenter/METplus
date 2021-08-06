@@ -25,18 +25,14 @@ METplus Laundry List of Statistics
       - TCMPR output format: a/bdeck 64-knot radius winds in full circle
       - TC-Pairs
 
-============== ======================= ==================================
-Type           Statistics              References
-============== ======================= ==================================
-2D Objects     | For each object:        See the WWRP/WGNE JWGFVR website
-	       Location of the
-	       
-	       | centroid in grid
-	       units Location
--------------- ----------------------- ----------------------------------
-A/BAL_WIND_34  | TCMPR output format:    TC-Pairs
-               a/bdeck
-	       
-	       | 34-knot radius
-	       winds in full circle
-============== ======================= ==================================     
+============== ========================== ==================================
+Type           Statistics                 References
+============== ========================== ==================================
+2D Objects     | For each object:         See the WWRP/WGNE JWGFVR website
+	       | Location of the centroid
+	       | in grid units Location
+-------------- -------------------------- ----------------------------------
+A/BAL_WIND_34  | TCMPR output format:       TC-Pairs
+               | a/bdeck 34-knot radius
+	       | winds in full circle
+============== ========================== ==================================
