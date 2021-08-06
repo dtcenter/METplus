@@ -3,7 +3,7 @@ METplus Laundry List of Statistics
 **********************************
 
 
-   14th attempt. text wrapping NEW table  This is only for the "A" items
+   15th attempt. text wrapping NEW table  This is only for the "A" items
 
  .. list-table:: Laundry list A.
     :widths: auto
@@ -29,11 +29,12 @@ METplus Laundry List of Statistics
 Type           Statistics              References
 ============== ======================= ==================================
 2D Objects     | For each object:        See the WWRP/WGNE JWGFVR website
-	       | Location of the
+	       Location of the
 	       | centroid in grid
-	       | units Location
+	       units Location
 -------------- ----------------------- ----------------------------------
-A/BAL_WIND_34  TCMPR output format:    TC-Pairs
-               a/bdeck 34-knot radius
+A/BAL_WIND_34  | TCMPR output format:    TC-Pairs
+               a/bdeck
+	       | 34-knot radius
 	       winds in full circle
 ============== ======================= ==================================     
