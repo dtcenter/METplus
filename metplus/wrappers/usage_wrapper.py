@@ -4,7 +4,7 @@
 # @endcode#
 
 from . import CommandBuilder
-from ..util.doc_util import LOWER_TO_WRAPPER_NAME
+from ..util import LOWER_TO_WRAPPER_NAME
 
 class UsageWrapper(CommandBuilder):
     """! A default process, prints out usage when nothing is defined in
