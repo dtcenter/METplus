@@ -107,6 +107,7 @@ def get_default_config_list(parm_base=None):
 
     if not default_config_list:
         print(f"ERROR: No default config files found in {conf_dir}")
+        print("Check if METPLUS_PARM_BASE is set and unset it if so")
         sys.exit(1)
 
     return default_config_list
