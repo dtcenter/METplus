@@ -65,6 +65,9 @@ METPLUS_PARM_BASE environment variable is set
 PARM_BASE = os.environ.get('METPLUS_PARM_BASE',
                            os.path.join(METPLUS_BASE, 'parm'))
 
+# name of directory under PARM_BASE that contains defaults
+METPLUS_CONFIG_DIR = 'metplus_config'
+
 # default METplus configuration files that are sourced first
 BASE_CONFS = [
     'defaults.conf',
@@ -92,16 +95,18 @@ def get_default_config_list(parm_base=None):
     if parm_base is None:
         parm_base = os.path.realpath(PARM_BASE)
 
+    conf_dir = os.path.join(parm_base,
+                            METPLUS_CONFIG_DIR)
+
     # if both are found, set old base confs first so the new takes precedence
     for base_conf in OLD_BASE_CONFS + BASE_CONFS:
-        conf_path = os.path.join(parm_base,
-                                 'metplus_config',
+        conf_path = os.path.join(conf_dir,
                                  base_conf)
         if os.path.exists(conf_path):
             default_config_list.append(conf_path)
 
     if not default_config_list:
-        print("ERROR: No default config files found in parm/metplus_config")
+        print(f"ERROR: No default config files found in {conf_dir}")
         sys.exit(1)
 
     return default_config_list
