@@ -67,15 +67,15 @@ PARM_BASE = os.environ.get('METPLUS_PARM_BASE',
 
 # default METplus configuration files that are sourced first
 BASE_CONFS = [
-    'metplus_config/defaults.conf',
+    'defaults.conf',
 ]
 
 # support previous location of default config files
 OLD_BASE_CONFS = [
-    'metplus_config/metplus_system.conf',
-    'metplus_config/metplus_data.conf',
-    'metplus_config/metplus_runtime.conf',
-    'metplus_config/metplus_logging.conf'
+    'metplus_system.conf',
+    'metplus_data.conf',
+    'metplus_runtime.conf',
+    'metplus_logging.conf'
 ]
 
 def get_default_config_list(parm_base=None):
@@ -94,9 +94,15 @@ def get_default_config_list(parm_base=None):
 
     # if both are found, set old base confs first so the new takes precedence
     for base_conf in OLD_BASE_CONFS + BASE_CONFS:
-        conf_path = os.path.join(parm_base, base_conf)
+        conf_path = os.path.join(parm_base,
+                                 'metplus_config',
+                                 base_conf)
         if os.path.exists(conf_path):
             default_config_list.append(conf_path)
+
+    if not default_config_list:
+        print("ERROR: No default config files found in parm/metplus_config")
+        sys.exit(1)
 
     return default_config_list
 
