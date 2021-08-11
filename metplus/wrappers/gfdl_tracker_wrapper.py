@@ -253,7 +253,8 @@ class GFDLTrackerWrapper(CommandBuilder):
         # get all input files
         all_input_files = self.get_all_input_files(input_dict)
         if not all_input_files:
-            self.log_error("No input files found")
+            self.log_error("Could not find input files in "
+                           f"{self.c_dict['INPUT_DIR']}.")
             return False
 
         # get TCVitals file
@@ -300,7 +301,7 @@ class GFDLTrackerWrapper(CommandBuilder):
             return False
 
         # run tracker application from output directory passing in input.nml
-        if not self.run_tracker():
+        if not self.run_tracker(input_nml_path):
             return False
 
         # rename fort.64 output file to output filename template
@@ -351,8 +352,7 @@ class GFDLTrackerWrapper(CommandBuilder):
         self.logger.debug(f"Copied gen vitals file {src_path} to {dest_path}")
         return True
 
-    def cleanup_output_dir(self, all_output_files, tc_vitals_out,
-                           input_nml_path):
+    def cleanup_output_dir(self, all_output_files, tc_vitals_out):
         for output_file in all_output_files:
             # remove symbolic links for input files
             self._remove_symlink(output_file)
@@ -394,6 +394,8 @@ class GFDLTrackerWrapper(CommandBuilder):
             time_info = ti_calculate(input_dict)
             input_files = self.find_data(time_info=time_info,
                                          return_list=True)
+            if not input_files:
+                return None
 
             # add input files to list unless they are index files (.ix)
             input_files = [input_file for input_file in input_files
@@ -519,7 +521,8 @@ class GFDLTrackerWrapper(CommandBuilder):
 
         # write tmp file with XML content with substituted values
         out_path = os.path.join(self.c_dict.get('OUTPUT_DIR'),
-                                'input.nml')
+                                'input.{init?fmt=%Y%m%d%H%M}.nml')
+        out_path = do_string_sub(out_path, **input_dict)
         self.logger.debug(f"Writing file: {out_path}")
         with open(out_path, 'w') as file_handle:
             for line in output_lines:
@@ -557,11 +560,11 @@ class GFDLTrackerWrapper(CommandBuilder):
 
         return sub_dict
 
-    def run_tracker(self):
+    def run_tracker(self, input_nml_path):
         output_dir = self.c_dict.get('OUTPUT_DIR')
         command = (f"cd {output_dir}; "
                    f"{self.c_dict['TRACKER_APP']} "
-                   f"< input.nml; "
+                   f"< {os.path.basename(input_nml_path)}; "
                    f"ret=$?; "
                    f"cd -; "
                    f"if [ $ret != 0 ]; then false; fi")
