@@ -186,6 +186,15 @@ class GFDLTrackerWrapper(CommandBuilder):
         c_dict['OUTPUT_DIR'] = self.config.getdir('GFDL_TRACKER_OUTPUT_DIR',
                                                   '')
 
+        # optional "gen_vitals" file that holds info about known storms
+        c_dict['GEN_VITALS_INPUT_TEMPLATE'] = (
+            self.config.getraw('config',
+                               'GFDL_TRACKER_GEN_VITALS_INPUT_TEMPLATE', '')
+        )
+        c_dict['GEN_VITALS_INPUT_DIR'] = (
+            self.config.getdir('GFDL_TRACKER_GEN_VITALS_INPUT_DIR', '')
+        )
+
         # read config variables
         for name, input_type in self.CONFIG_NAMES.items():
             if input_type == 'int':
@@ -280,6 +289,10 @@ class GFDLTrackerWrapper(CommandBuilder):
         lead_minutes = [item.get('lead_minutes') for item in all_input_files]
         self.create_fort_15_file(lead_minutes)
 
+        # if gen_vitals file is specified, copy it to fort.67
+        if not self.handle_gen_vitals(input_dict):
+            return False
+
         # substitute values from config into template.nml and
         # write input.nml to output directory
         input_nml_path = self.fill_output_nml_template(input_dict)
@@ -300,9 +313,42 @@ class GFDLTrackerWrapper(CommandBuilder):
 
         # clean up files in output directory that are no longer needed
         self.cleanup_output_dir(all_output_files,
-                                tc_vitals_out,
-                                input_nml_path)
+                                tc_vitals_out)
 
+        return True
+
+    def handle_gen_vitals(self, input_dict):
+        self.logger.debug("Checking for gen_vitals file")
+        # if template not set, do nothing
+        template = self.c_dict['GEN_VITALS_INPUT_TEMPLATE']
+        if not template:
+            self.logger.debug("No gen vitals file specified")
+            return True
+
+        # check if file exists
+        filedir = self.c_dict['GEN_VITALS_INPUT_DIR']
+        src_path = os.path.join(filedir, template)
+        src_path = do_string_sub(src_path, **input_dict)
+        if not os.path.exists(src_path):
+            self.log_error(f"Gen vitals file does not exist: {src_path}")
+            return False
+
+        # check if fort.67 already exists in output directory
+        # do not copy file if it does
+        dest_path = os.path.join(self.c_dict['OUTPUT_DIR'],
+                                 'fort.67')
+        if os.path.exists(dest_path):
+            self.logger.debug(f"Gen vitals file already exists: {dest_path}. "
+                              f"Skip linking of {src_path}")
+            return True
+
+        try:
+            shutil.copyfile(src_path, dest_path)
+        except:
+            self.log_error(f"Copy failed: from {src_path} to {dest_path}")
+            return False
+
+        self.logger.debug(f"Copied gen vitals file {src_path} to {dest_path}")
         return True
 
     def cleanup_output_dir(self, all_output_files, tc_vitals_out,
