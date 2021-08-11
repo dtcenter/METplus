@@ -12,7 +12,6 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import shutil
-import glob
 
 from ..util import do_string_sub, ti_calculate, get_lead_sequence
 from ..util import remove_quotes, parse_template
@@ -321,21 +320,22 @@ class GFDLTrackerWrapper(CommandBuilder):
         self._remove_symlink(tc_vitals_out)
 
         # remove fort files
-        fort_glob = os.path.join(self.c_dict.get('OUTPUT_DIR'),
-                                 f'fort.*')
-        fort_files = glob.glob(fort_glob)
-        for fort_file in fort_files:
-            self.logger.debug(f'Removing {fort_file}')
-            os.remove(fort_file)
-
-        # remove generated input.nml file
-        if os.path.exists(input_nml_path):
-            self.logger.debug(f'Removing {input_nml_path}')
-            os.remove(input_nml_path)
+        forts_to_remove = [
+            '61',
+            '62',
+            '63',
+            '68',
+            '69',
+        ]
+        for fort_number in forts_to_remove:
+            fort_file = os.path.join(self.c_dict.get('OUTPUT_DIR'),
+                                     f'fort.{fort_number}')
+            if os.path.exists(fort_file):
+                self.logger.debug(f'Removing {fort_file}')
+                os.remove(fort_file)
 
     def get_all_input_files(self, input_dict):
         all_input_files = []
-        lead_minutes = []
 
         # get forecast leads to loop over
         lead_seq = get_lead_sequence(self.config, input_dict)
