@@ -460,7 +460,7 @@ If you do not, upload the files to the RAL FTP::
 
 For an example on how to upload data to the ftp site see
 “How to Send Us Data” on the
-`MET Help Webpage <https://dtcenter.org/community-code/model-evaluation-tools-met/met-help-desk>`_.
+`Resources for Troubleshooting page <https://github.com/dtcenter/METplus/discussions/954>`_.
 
 Adding new data to full sample data tarfile
 -------------------------------------------
