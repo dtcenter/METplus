@@ -12,6 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import shutil
+from dateutil.relativedelta import relativedelta
 
 from ..util import do_string_sub, ti_calculate, get_lead_sequence
 from ..util import remove_quotes, parse_template
@@ -180,6 +181,10 @@ class GFDLTrackerWrapper(CommandBuilder):
             self.log_error("GFDL_TRACKER_NML_TEMPLATE_FILE does not "
                            f"exist: {c_dict['NML_TEMPLATE_FILE']}")
 
+        c_dict['SGV_TEMPLATE_FILE'] = (
+            self.config.getraw('config', 'GFDL_TRACKER_SGV_TEMPLATE_FILE', '')
+        )
+
         c_dict['OUTPUT_TEMPLATE'] = (
             self.config.getraw('config', 'GFDL_TRACKER_OUTPUT_TEMPLATE', '')
         )
@@ -218,6 +223,8 @@ class GFDLTrackerWrapper(CommandBuilder):
         # allow multiple input files
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
+        c_dict['FIRST_RUN'] = True
+
         if not c_dict['INPUT_TEMPLATE']:
             self.log_error('GFDL_TRACKER_INPUT_TEMPLATE must be set')
 
@@ -243,6 +250,8 @@ class GFDLTrackerWrapper(CommandBuilder):
 
             input_dict['custom'] = custom_string
             self.run_at_time_once(input_dict)
+
+        self.c_dict['FIRST_RUN'] = False
 
     def run_at_time_once(self, input_dict):
         """! Do some processing for the current run time (init or valid)
@@ -296,7 +305,7 @@ class GFDLTrackerWrapper(CommandBuilder):
 
         # substitute values from config into template.nml and
         # write input.nml to output directory
-        input_nml_path = self.fill_output_nml_template(input_dict)
+        input_nml_path = self.handle_templates(input_dict)
         if not input_nml_path:
             return False
 
@@ -340,7 +349,7 @@ class GFDLTrackerWrapper(CommandBuilder):
                                  'fort.67')
         if os.path.exists(dest_path):
             self.logger.debug(f"Gen vitals file already exists: {dest_path}. "
-                              f"Skip linking of {src_path}")
+                              f"Skip copying of {src_path}")
             return True
 
         try:
@@ -498,7 +507,7 @@ class GFDLTrackerWrapper(CommandBuilder):
         with open(fort_15_path, 'w') as file_handle:
             file_handle.write(write_content)
 
-    def fill_output_nml_template(self, input_dict):
+    def handle_templates(self, input_dict):
         template_file = self.c_dict['NML_TEMPLATE_FILE']
         if not template_file:
             return None
@@ -506,8 +515,30 @@ class GFDLTrackerWrapper(CommandBuilder):
         # set up dictionary of text to substitute in XML file
         sub_dict = self.populate_sub_dict(input_dict)
 
+        output_path = os.path.join(self.c_dict.get('OUTPUT_DIR'),
+                                   'input.{init?fmt=%Y%m%d%H%M}.nml')
+        output_path = do_string_sub(output_path, **input_dict)
+
         # open template file and replace any values encountered
         self.logger.debug(f"Reading nml template: {template_file}")
+        self.sub_template(template_file, output_path, sub_dict)
+
+        # only fill out sgv template file if template is specified
+        # and on a 0Z run that is not the first run time
+        if (not self.c_dict['SGV_TEMPLATE_FILE'] or
+                self.c_dict['FIRST_RUN'] or
+                input_dict['init'].strftime('%H') != '00'):
+            return output_path
+
+        sgv_template_file = self.c_dict['SGV_TEMPLATE_FILE']
+        sgv_output_path = os.path.join(self.c_dict.get('OUTPUT_DIR'),
+                                       'sgv.{init?fmt=%Y%m%d%H%M}.txt')
+        sgv_output_path = do_string_sub(sgv_output_path, **input_dict)
+        self.sub_template(sgv_template_file, sgv_output_path, sub_dict)
+
+        return output_path
+
+    def sub_template(self, template_file, output_path, sub_dict):
         with open(template_file, 'r') as file_handle:
             input_lines = file_handle.read().splitlines()
 
@@ -520,15 +551,11 @@ class GFDLTrackerWrapper(CommandBuilder):
             output_lines.append(output_line)
 
         # write tmp file with XML content with substituted values
-        out_path = os.path.join(self.c_dict.get('OUTPUT_DIR'),
-                                'input.{init?fmt=%Y%m%d%H%M}.nml')
-        out_path = do_string_sub(out_path, **input_dict)
-        self.logger.debug(f"Writing file: {out_path}")
-        with open(out_path, 'w') as file_handle:
+        self.logger.debug(f"Writing file: {output_path}")
+        with open(output_path, 'w') as file_handle:
             for line in output_lines:
                 file_handle.write(f'{line}\n')
 
-        return out_path
 
     def populate_sub_dict(self, time_info):
         sub_dict = {}
@@ -557,6 +584,25 @@ class GFDLTrackerWrapper(CommandBuilder):
         sub_dict['METPLUS_DATEIN_INP_BDD'] = init_ymdh[6:8]
         sub_dict['METPLUS_DATEIN_INP_BHH'] = init_ymdh[8:10]
         sub_dict['METPLUS_ATCFINFO_ATCFYMDH'] = init_ymdh
+
+        sub_dict['METPLUS_DATENOW_YY'] = init_ymdh[0:4]
+        sub_dict['METPLUS_DATENOW_MM'] = init_ymdh[4:6]
+        sub_dict['METPLUS_DATENOW_DD'] = init_ymdh[6:8]
+        sub_dict['METPLUS_DATENOW_HH'] = init_ymdh[8:10]
+
+        init_6ago = time_info['init'] - relativedelta(hours=6)
+        init_6ago = init_6ago.strftime('%Y%m%d%H')
+        sub_dict['METPLUS_DATE6AGO_YY'] = init_6ago[0:4]
+        sub_dict['METPLUS_DATE6AGO_MM'] = init_6ago[4:6]
+        sub_dict['METPLUS_DATE6AGO_DD'] = init_6ago[6:8]
+        sub_dict['METPLUS_DATE6AGO_HH'] = init_6ago[8:10]
+
+        init_6ahead = time_info['init'] + relativedelta(hours=6)
+        init_6ahead = init_6ahead.strftime('%Y%m%d%H')
+        sub_dict['METPLUS_DATE6AHEAD_YY'] = init_6ahead[0:4]
+        sub_dict['METPLUS_DATE6AHEAD_MM'] = init_6ahead[4:6]
+        sub_dict['METPLUS_DATE6AHEAD_DD'] = init_6ahead[6:8]
+        sub_dict['METPLUS_DATE6AHEAD_HH'] = init_6ahead[8:10]
 
         return sub_dict
 
