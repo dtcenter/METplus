@@ -2,7 +2,7 @@
   {
     "category": "met_tool_wrapper",
     "index_list": "0-55",
-    "run": false
+    "run": true
   },
   {
     "category": "air_quality_and_comp",
@@ -27,7 +27,7 @@
   {
     "category": "convection_allowing_models",
     "index_list": "2-6",
-    "run": false
+    "run": true
   },
   {
     "category": "convection_allowing_models",
@@ -82,22 +82,22 @@
   {
     "category": "precipitation",
     "index_list": "0",
-    "run": false
+    "run": true
   },
   {
     "category": "precipitation",
     "index_list": "1",
-    "run": false
+    "run": true
   },
   {
     "category": "precipitation",
     "index_list": "2",
-    "run": false
+    "run": true
   },
   {
     "category": "precipitation",
     "index_list": "3-8",
-    "run": false
+    "run": true
   },
   {
     "category": "s2s",
@@ -143,20 +143,5 @@
     "category": "tc_and_extra_tc",
     "index_list": "3",
     "run": false
-  },
-  {
-    "category": "met_tool_wrapper",
-    "index_list": "20-26",
-    "run": true
-  },
-  {
-    "category": "precipitation",
-    "index_list": "0-8",
-    "run": true
-  },
-  {
-    "category": "convection_allowing_models",
-    "index_list": "2",
-    "run": true
   }
 ]
