@@ -801,6 +801,9 @@ def skip_time(time_info, skip_times):
             @param skip_times dictionary of times to skip, i.e. {'%d': [31]} means skip 31st day
             @returns True if run time should be skipped, False if not
     """
+    if not skip_times:
+        return False
+
     for time_format, skip_time_list in skip_times.items():
         # extract time information from valid time based on skip time format
         run_time_value = time_info.get('valid')

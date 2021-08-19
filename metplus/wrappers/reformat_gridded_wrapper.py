@@ -79,7 +79,7 @@ that reformat gridded data
                 self.logger.info("Processing forecast lead {}".format(time_info['lead_string']))
 
 
-                if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
+                if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES')):
                     self.logger.debug('Skipping run time')
                     continue
 
