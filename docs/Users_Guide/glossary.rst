@@ -7838,3 +7838,30 @@ METplus Configuration Glossary
      See :term:`GFDL_TRACKER_NML_TEMPLATE_FILE`.
 
      | *Used by:* GFDLTracker
+
+   GRID_STAT_HSS_EC_VALUE
+     Specify the value for 'hss_ec_value' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   POINT_STAT_HSS_EC_VALUE
+     Specify the value for 'hss_ec_value' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   SERIES_ANALYSIS_HSS_EC_VALUE
+     Specify the value for 'hss_ec_value' in the MET configuration file for SeriesAnalysis.
+
+     | *Used by:* SeriesAnalysis
+
+   STAT_ANALYSIS_HSS_EC_VALUE
+     Specify the value for 'hss_ec_value' in the MET configuration file for StatAnalysis.
+
+     | *Used by:* StatAnalysis
+
+   TCMPR_PLOTTER_READ_ALL_FILES
+     If True, pass in input directory set by :term:`TCMPR_PLOTTER_TCMPR_DATA_DIR`
+     to the script. If False, a list of all files that end with .tcst in the input
+     directory is gathered and passed into the script. Defaults to False.
+
+     | *Used by:* TCMPRPlotter

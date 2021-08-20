@@ -61,6 +61,7 @@ class StatAnalysisWrapper(CommandBuilder):
         'METPLUS_ALPHA',
         'METPLUS_LINE_TYPE',
         'METPLUS_JOBS',
+        'METPLUS_HSS_EC_VALUE',
     ]
 
     field_lists = ['FCST_VAR_LIST',
@@ -224,6 +225,10 @@ class StatAnalysisWrapper(CommandBuilder):
                     c_dict['MODEL_LIST'].append(model_info['name'])
 
         c_dict = self.set_lists_loop_or_group(c_dict)
+
+        self.add_met_config(name='hss_ec_value',
+                            data_type='float',
+                            metplus_configs=['STAT_ANALYSIS_HSS_EC_VALUE'])
 
         return self.c_dict_error_check(c_dict)
 

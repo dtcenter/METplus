@@ -538,6 +538,8 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          {'METPLUS_FCST_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
         ({'OBS_GRID_STAT_FILE_TYPE': 'NETCDF_NCCF', },
          {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
+        ({'GRID_STAT_HSS_EC_VALUE': '0.5', },
+         {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.5;'}),
 
     ]
 )

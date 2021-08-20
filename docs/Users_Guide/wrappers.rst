@@ -2385,6 +2385,7 @@ METplus Configuration
 | :term:`GRID_STAT_CLIMO_STDEV_MATCH_MONTH`
 | :term:`GRID_STAT_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`GRID_STAT_HSS_EC_VALUE`
 | :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`GRID_STAT_MASK_POLY` (optional)
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
@@ -2820,6 +2821,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`GRID_STAT_GRID_WEIGHT_FLAG`
      - grid_weight_flag
+
+**${METPLUS_HSS_EC_VALUE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_HSS_EC_VALUE`
+     - hss_ec_value
 
 
 .. _make_plots_wrapper:
@@ -4476,6 +4488,7 @@ Configuration
 | :term:`POINT_STAT_CLIMO_STDEV_MATCH_MONTH`
 | :term:`POINT_STAT_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`POINT_STAT_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`POINT_STAT_HSS_EC_VALUE`
 | :term:`FCST_POINT_STAT_WINDOW_BEGIN` (optional)
 | :term:`FCST_POINT_STAT_WINDOW_END` (optional)
 | :term:`OBS_POINT_STAT_WINDOW_BEGIN` (optional)
@@ -4847,6 +4860,17 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`POINT_STAT_INTERP_TYPE_WIDTH`
      - interp.type.width
 
+**${METPLUS_HSS_EC_VALUE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_HSS_EC_VALUE`
+     - hss_ec_value
+
 
 .. _py_embed_ingest_wrapper:
 
@@ -5003,6 +5027,7 @@ METplus Configuration
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_MATCH_MONTH`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`SERIES_ANALYSIS_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
 |
 
 .. warning:: **DEPRECATED:**
@@ -5271,6 +5296,18 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`SERIES_ANALYSIS_MET_CONFIG_OVERRIDES`
      - n/a
 
+**${METPLUS_HSS_EC_VALUE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`SERIES_ANALYSIS_HSS_EC_VALUE`
+     - hss_ec_value
+
+
 SeriesByInit
 ============
 
@@ -5351,6 +5388,7 @@ configuration file for running with LOOP_ORDER = times:
 | :term:`COV_THRESH_LIST`
 | :term:`LINE_TYPE_LIST`
 | :term:`STAT_ANALYSIS_SKIP_IF_OUTPUT_EXISTS`
+| :term:`STAT_ANALYSIS_HSS_EC_VALUE`
 |
 
 The following values **must** be defined in the METplus Wrappers
@@ -5387,6 +5425,7 @@ file for running with LOOP_ORDER = processes:
 | :term:`INTERP_PNTS_LIST`
 | :term:`COV_THRESH_LIST`
 | :term:`ALPHA_LIST`
+| :term:`STAT_ANALYSIS_HSS_EC_VALUE`
 |
 
 .. warning:: **DEPRECATED:**
@@ -5811,6 +5850,18 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`STAT_ANALYSIS_MET_CONFIG_OVERRIDES`
      - n/a
+
+**${METPLUS_HSS_EC_VALUE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`STAT_ANALYSIS_HSS_EC_VALUE`
+     - hss_ec_value
+
 
 .. _tc_gen_wrapper:
 
@@ -6466,6 +6517,7 @@ METplus Configuration
 | :term:`TCMPR_PLOTTER_SAVE_DATA`
 | :term:`TCMPR_PLOTTER_DEP_LABELS`
 | :term:`TCMPR_PLOTTER_PLOT_LABELS`
+| :term:`TCMPR_PLOTTER_READ_ALL_FILES`
 |
 
 The following are TCMPR flags, if set to 'no', then don't set flag, if
