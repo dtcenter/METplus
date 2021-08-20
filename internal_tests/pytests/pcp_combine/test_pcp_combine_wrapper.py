@@ -634,11 +634,11 @@ def test_pcp_combine_sum_subhourly(metplus_config):
                       "-sum "
                       "20190802_180000 000500 "
                       "20190802_181500 001500 "
+                      f"-pcpdir {fcst_input_dir} "
+                      f"-pcprx 20190802_i1800_m0_f* "
                       f"{fcst_fmt} "
                       f"-name \"{fcst_output_name}\" "
-                      f"{out_dir}/5min_mem00_lag00.nc "
-                      f"-pcpdir {fcst_input_dir} "
-                      f"-pcprx 20190802_i1800_m0_f*"),
+                      f"{out_dir}/5min_mem00_lag00.nc"),
                      ]
 
     all_cmds = wrapper.run_all_times()

@@ -34,12 +34,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                          config_overrides=config_overrides)
         self.inaddons = []
         self.method = ""
-        self.pcp_dir = ""
-        self.pcp_regex = ""
-        self.init_time = -1
-        self.valid_time = -1
-        self.in_accum = -1
-        self.out_accum = -1
         self.field_name = None
         self.field_level = ""
         self.output_name = ""
@@ -241,12 +235,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         super().clear()
         self.inaddons = []
         self.method = ""
-        self.pcp_dir = ""
-        self.pcp_regex = ""
-        self.init_time = -1
-        self.valid_time = -1
-        self.in_accum = -1
-        self.out_accum = -1
         self.field_name = None
         self.field_level = ""
         self.field_extra = ""
@@ -532,27 +520,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if self.method == "USER_DEFINED":
             cmd += self.user_command
             return cmd
-        elif self.method == "SUM":
-            if self.init_time == -1:
-                self.log_error("No init time specified")
-                return None
-
-            if self.valid_time == -1:
-                self.log_error("No valid time specified")
-                return None
-
-            if self.in_accum == -1:
-                self.log_error("No input accumulation specified")
-                return None
-
-            if self.out_accum == -1:
-                self.log_error("No output accumulation specified")
-                return None
-
-            cmd += (f"-sum {self.init_time} {str(self.in_accum)} "
-                    f"{self.valid_time} {str(self.out_accum)} ")
-
-        else:
+        elif self.method != "SUM":
             if self.method == "ADD":
                 cmd += "-add "
             elif self.method == "SUBTRACT":
@@ -600,12 +568,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             os.makedirs(os.path.dirname(out_path))
 
         cmd += f"{out_path} "
-
-        if self.pcp_dir:
-            cmd += f"-pcpdir {self.pcp_dir} "
-
-        if self.pcp_regex:
-            cmd += f"-pcprx {self.pcp_regex} "
 
         if self.compress != -1:
             cmd += f"-compress {str(self.compress)} "
@@ -905,20 +867,22 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         out_accum = time_string_to_met_time(out_accum,
                                                       'H')
 
-        in_regex = util.template_to_regex(in_template, time_info,
+        pcp_regex = util.template_to_regex(in_template, time_info,
                                           self.logger)
-        in_regex_split = in_regex.split('/')
-        in_dir = os.path.join(in_dir, *in_regex_split[0:-1])
-        in_regex = in_regex_split[-1]
+        pcp_regex_split = pcp_regex.split('/')
+        pcp_dir = os.path.join(in_dir, *pcp_regex_split[0:-1])
+        pcp_regex = pcp_regex_split[-1]
 
-        self.init_time = init_time
-        self.valid_time = valid_time
-        self.in_accum = in_accum
-        self.out_accum = out_accum
-        self.pcp_dir = in_dir
-        self.pcp_regex = in_regex
+        # set arguments
+        self.args.append('-sum')
+        self.args.append(init_time)
+        self.args.append(in_accum)
+        self.args.append(valid_time)
+        self.args.append(out_accum)
+        self.args.append(f"-pcpdir {pcp_dir}")
+        self.args.append(f"-pcprx {pcp_regex}")
+
         self.outdir = out_dir
-
         pcp_out = do_string_sub(out_template,
                                 **time_info)
         self.outfile = pcp_out
