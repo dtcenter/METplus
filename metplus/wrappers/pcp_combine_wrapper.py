@@ -758,11 +758,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                            f'using template {in_template}')
             return False
 
-        # if level type is A (accum) and second lead is 0, then
+        # if data is GRIB and second lead is 0, then
         # run PCPCombine in -add mode with just the first file
-        if lead2 == 0 and level_type == 'A':
-            self.logger.debug("Subtracted accumulation is 0, so running "
-                              "ADD mode on one file")
+        if lead2 == 0 and self.c_dict[data_src+'_INPUT_DATATYPE'] == 'GRIB':
+            self.logger.debug("Subtracted accumulation is 0 for GRIB data,"
+                              " so running ADD mode on one file")
             self.args.clear()
             self.args.append('-add')
             lead = seconds_to_met_time(lead)
