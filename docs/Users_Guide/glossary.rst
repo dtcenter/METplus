@@ -1364,7 +1364,23 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:**
 
    FCST_PCP_COMBINE_DERIVE_LOOKBACK
-     Specify how far to look back in time in hours to find files for running the MET pcp_combine tool in derive mode. If set to 0 or unset, data will be obtained by using the input template with the current runtime instead of looking backwards in time. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_DERIVE_LOOKBACK`.
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_LOOKBACK` instead.
+
+   FCST_PCP_COMBINE_LOOKBACK
+     Specify how far to look back in time to find files for building
+     commands to run the pcp_combine tool in -derive or -add mode.
+     If processing precipitation accumulation data, this is equivalent to the
+     desired output accumulation to compute.
+     Units are assumed to be hours unless a time identifier such as
+     Y, m, d, H, M, S is specified at the end of the value, i.e. 30M or 1m.
+     If unset, :term:`FCST_PCP_COMBINE_OUTPUT_ACCUM` will be used.
+     If that is unset, then :term:`FCST_PCP_COMBINE_DERIVE_LOOKBACK` will be
+     used.
+     If none of the variables are set or set to 0, data will be obtained by
+     using the input template with the current runtime instead of looking
+     backwards in time.
+     A corresponding variable exists for observation data called
+     :term:`OBS_PCP_COMBINE_LOOKBACK`.
 
      | *Used by:*  PCPCombine
 
@@ -4345,27 +4361,26 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_OUTPUT_ACCUM
-     Specify desired accumulation to be built from the forecast data. Units are assumed to be hours unless a time identifier such as Y, m, d, H, M, S is specifed at the end of the value, i.e. 30M or 1m. If this variable is not set, then FCST_VAR<n>_LEVELS is used.
+     Specify desired accumulation to be built from the forecast data.
+     Synonym for :term:`FCST_PCP_COMBINE_LOOKBACK`.
 
      A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM`.
-
-     Examples:
-
-     15H
-
-     This will attempt to build a 15 hour accumulation.
 
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_OUTPUT_NAME
-     Specify the output field name from processing forecast data. If this variable is not set, then :term:`FCST_VAR<n>_NAME` is used.
+     Specify the output field name from processing forecast data.
+     If this variable is not set, then :term:`FCST_VAR<n>_NAME` is used.
 
-     A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_OUTPUT_NAME`.
+     A corresponding variable exists for observation data called
+     :term:`OBS_PCP_COMBINE_OUTPUT_NAME`.
 
      Example: APCP
 
+     | *Used by:*  PCPCombine
+
    OBS_PCP_COMBINE_OUTPUT_ACCUM
-     See :term:`FCST_PCP_COMBINE_OUTPUT_NAME`.
+     See :term:`FCST_PCP_COMBINE_LOOKBACK`.
 
      | *Used by:*  PCPCombine
 

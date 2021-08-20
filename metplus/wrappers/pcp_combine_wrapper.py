@@ -115,10 +115,21 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.config.getraw('config',
                                f'{d_type}_PCP_COMBINE_INPUT_OPTIONS', '')
         )
-        c_dict[f'{d_type}_OUTPUT_ACCUM'] = self.config.getstr(
-            'config',
-            f'{d_type}_PCP_COMBINE_OUTPUT_ACCUM', ''
-        )
+
+        # get lookback from _LOOKBACK or _OUTPUT_ACCUM or _DERIVE_LOOKBACK
+        lookback = self.config.getstr('config',
+                                      f'{d_type}_PCP_COMBINE_LOOKBACK', '')
+        if not lookback:
+            lookback = self.config.getstr(
+                'config',
+                f'{d_type}_PCP_COMBINE_OUTPUT_ACCUM', '')
+        if not lookback:
+            lookback = self.config.getstr(
+                'config',
+                f'{d_type}_PCP_COMBINE_DERIVE_LOOKBACK', ''
+            )
+        c_dict[f'{d_type}_LOOKBACK'] = lookback if lookback else 0
+
         c_dict[f'{d_type}_OUTPUT_NAME'] = self.config.getstr(
             'config',
             f'{d_type}_PCP_COMBINE_OUTPUT_NAME', ''
@@ -153,11 +164,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if run_method == 'CUSTOM':
             run_method = 'USER_DEFINED'
         c_dict[f'{d_type}_RUN_METHOD'] = run_method
-
-        c_dict[f'{d_type}_DERIVE_LOOKBACK'] = self.config.getstr(
-            'config',
-            f'{d_type}_PCP_COMBINE_DERIVE_LOOKBACK', '0'
-        )
 
         c_dict[f'{d_type}_BUCKET_INTERVAL'] = self.config.getseconds(
             'config',
@@ -633,7 +639,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             can_run = self.setup_user_method(time_info, data_src)
         elif self.method == "DERIVE":
             can_run = self.setup_derive_method(time_info, var_info, data_src)
-        elif not var_info and not self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
+        elif not var_info and not self.c_dict[f"{data_src}_LOOKBACK"]:
             self.log_error('Cannot run PCPCombine without specifying fields '
                            'to process unless running in USER_DEFINED mode. '
                            f'You must set {data_src}_VAR<n>_[NAME/LEVELS] or '
@@ -679,13 +685,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
 
-        if self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
-            accum = self.c_dict[f"{data_src}_OUTPUT_ACCUM"]
+        if self.c_dict[f"{data_src}_LOOKBACK"]:
+            accum = self.c_dict[f"{data_src}_LOOKBACK"]
             level_type = 'A'
         else:
             level = var_info[f'{data_src.lower()}_level']
             level_type, accum = util.split_level(level)
-            self.logger.warning(f'{data_src}_PCP_COMBINE_OUTPUT_ACCUM is '
+            self.logger.warning(f'{data_src}_PCP_COMBINE_LOOKBACK is '
                                 f'not set. Using {accum} from '
                                 f'{data_src}_VAR{var_info.get("index")}_LEVELS'
                                 '. It is recommended that you explicitly set '
@@ -698,7 +704,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.log_error(
                 "Could not get accumulation from "
                 f"{data_src}_VAR{var_info.get('index')}_LEVEL or "
-                f"{data_src}_PCP_COMBINE_OUTPUT_ACCUM"
+                f"{data_src}_PCP_COMBINE_LOOKBACK"
             )
             return False
 
@@ -811,16 +817,16 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
         out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
 
-        # if OUTPUT_ACCUM is set, use that instead of obs_level
+        # if LOOKBACK is set, use that instead of obs_level
         # and use obs_level as field level
-        if self.c_dict[data_src+'_OUTPUT_ACCUM']:
-            out_accum = self.c_dict[data_src+'_OUTPUT_ACCUM']
+        if self.c_dict[data_src+'_LOOKBACK']:
+            out_accum = self.c_dict[data_src+'_LOOKBACK']
         else:
             out_accum = var_info[data_src.lower()+'_level']
             if out_accum[0].isalpha():
                 out_accum = out_accum[1:]
 
-            self.logger.warning(f'{data_src}_PCP_COMBINE_OUTPUT_ACCUM is '
+            self.logger.warning(f'{data_src}_PCP_COMBINE_LOOKBACK is '
                                 f'not set. Using {out_accum} from '
                                 f'{data_src}_VAR{var_info.get("index")}_LEVELS'
                                 '. It is recommended that you explicitly set '
@@ -854,8 +860,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                                      'H',
                                                      time_info['valid'])
 
-        out_accum = time_string_to_met_time(out_accum,
-                                                      'H')
+        out_accum = time_string_to_met_time(out_accum, 'H')
 
         pcp_regex = util.template_to_regex(in_template, time_info,
                                           self.logger)
@@ -891,13 +896,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # if [FCST/OBS]_OUTPUT_[NAME/ACCUM] are set, use them instead of
         # [FCST/OBS]_VAR<n>_[NAME/LEVELS]
-        if self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
-            accum_string = self.c_dict[f"{data_src}_OUTPUT_ACCUM"]
+        if self.c_dict[f"{data_src}_LOOKBACK"]:
+            accum_string = self.c_dict[f"{data_src}_LOOKBACK"]
         else:
             level = var_info[f'{data_src.lower()}_level']
             _, accum_string = util.split_level(level)
 
-            self.logger.warning(f'{data_src}_PCP_COMBINE_OUTPUT_ACCUM is '
+            self.logger.warning(f'{data_src}_PCP_COMBINE_LOOKBACK is '
                                 f'not set. Using {accum_string} from '
                                 f'{data_src}_VAR{var_info.get("index")}_LEVELS'
                                 '. It is recommended that you explicitly set '
@@ -981,7 +986,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.build_input_accum_list(data_src, time_info)
 
         # get files
-        lookback = self.c_dict[data_src+'_DERIVE_LOOKBACK']
+        lookback = self.c_dict[data_src+'_LOOKBACK']
         lookback_seconds = get_seconds_from_string(
             lookback,
             default_unit='H',
@@ -994,7 +999,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # if no lookback is specified, get files using the template without
         # using the get accumulation logic
         if lookback_seconds == 0:
-            self.logger.debug(f"{data_src}_PCP_COMBINE_DERIVE_LOOKBACK unset "
+            self.logger.debug(f"{data_src}_PCP_COMBINE_LOOKBACK unset "
                               "or set to 0. Using template to find files.")
             accum_dict = self.c_dict['ACCUM_DICT_LIST'][0]
             addon = self.get_addon(accum_dict, 0, time_info.get('valid', ''))
@@ -1043,8 +1048,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # get output accumulation in case output template uses level
         accum_string = '0'
-        if self.c_dict[f"{data_src}_OUTPUT_ACCUM"]:
-            accum_string = self.c_dict[f"{data_src}_OUTPUT_ACCUM"]
+        if self.c_dict[f"{data_src}_LOOKBACK"]:
+            accum_string = self.c_dict[f"{data_src}_LOOKBACK"]
             _, accum_string = util.split_level(accum_string)
 
         accum_seconds = get_seconds_from_string(accum_string, 'H')
