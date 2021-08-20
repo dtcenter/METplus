@@ -1368,7 +1368,7 @@ METplus Configuration Glossary
 
    FCST_PCP_COMBINE_LOOKBACK
      Specify how far to look back in time to find files for building
-     commands to run the pcp_combine tool in -derive or -add mode.
+     commands to run the pcp_combine tool.
      If processing precipitation accumulation data, this is equivalent to the
      desired output accumulation to compute.
      Units are assumed to be hours unless a time identifier such as
@@ -1381,6 +1381,11 @@ METplus Configuration Glossary
      backwards in time.
      A corresponding variable exists for observation data called
      :term:`OBS_PCP_COMBINE_LOOKBACK`.
+
+     | *Used by:*  PCPCombine
+
+   OBS_PCP_COMBINE_LOOKBACK
+     See :term:`FCST_PCP_COMBINE_LOOKBACK`.
 
      | *Used by:*  PCPCombine
 
