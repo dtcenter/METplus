@@ -1,13 +1,7 @@
 '''
 Program Name: pcp_combine_wrapper.py
 Contact(s): George McCabe
-Abstract: Runs pcp_combine to merge multiple forecast files
-History Log:  Initial version
-Usage:
-Parameters: None
-Input Files: grib2 files
-Output Files: pcp_combine files
-Condition codes: 0 for success, 1 for failure
+Abstract: Builds commands to run MET tool pcp_combine
 '''
 
 import os
@@ -23,15 +17,10 @@ from . import ReformatGriddedWrapper
 '''!@namespace PCPCombineWrapper
 @brief Wraps the MET tool pcp_combine to combine/divide
 precipitation accumulations or derive additional fields
-Call as follows:
-@code{.sh}
-Cannot be called directly. Must use child classes.
-@endcode
-@todo add main function to be able to run alone via command line
 '''
 class PCPCombineWrapper(ReformatGriddedWrapper):
-    """!Wraps the MET tool pcp_combine to combine or divide
-    precipitation accumulations"""
+    """! Wraps the MET tool pcp_combine to combine or divide
+         precipitation accumulations """
 
     # valid values for [FCST/OBS]_PCP_COMBINE_METHOD
     valid_run_methods = ['ADD', 'SUM', 'SUBTRACT', 'DERIVE', 'USER_DEFINED']
