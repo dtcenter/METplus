@@ -84,6 +84,27 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             @param c_dict config dictionary to populate
             @returns c_dict with values for given data type set
         """
+        # handle run method
+        run_method = self.config.getstr(
+            'config',
+            f'{d_type}_PCP_COMBINE_METHOD', ''
+        ).upper()
+
+        # change CUSTOM (deprecated) to USER_DEFINED
+        if run_method == 'CUSTOM':
+            run_method = 'USER_DEFINED'
+
+        if run_method not in self.valid_run_methods:
+            self.log_error(f"Invalid value for {d_type}_PCP_COMBINE_METHOD: "
+                           f"{run_method}. Valid options are "
+                           f"{','.join(self.valid_run_methods)}.")
+            return c_dict
+
+        c_dict[f'{d_type}_RUN_METHOD'] = run_method
+
+        # get lookback from _LOOKBACK or _OUTPUT_ACCUM or _DERIVE_LOOKBACK
+        c_dict[f'{d_type}_LOOKBACK'] = self._handle_lookback(c_dict, d_type)
+
         c_dict[f'{d_type}_MIN_FORECAST'] = self.config.getstr(
             'config',
             f'{d_type}_PCP_COMBINE_MIN_FORECAST', '0'
@@ -116,20 +137,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                f'{d_type}_PCP_COMBINE_INPUT_OPTIONS', '')
         )
 
-        # get lookback from _LOOKBACK or _OUTPUT_ACCUM or _DERIVE_LOOKBACK
-        lookback = self.config.getstr('config',
-                                      f'{d_type}_PCP_COMBINE_LOOKBACK', '')
-        if not lookback:
-            lookback = self.config.getstr(
-                'config',
-                f'{d_type}_PCP_COMBINE_OUTPUT_ACCUM', '')
-        if not lookback:
-            lookback = self.config.getstr(
-                'config',
-                f'{d_type}_PCP_COMBINE_DERIVE_LOOKBACK', ''
-            )
-        c_dict[f'{d_type}_LOOKBACK'] = lookback if lookback else 0
-
         c_dict[f'{d_type}_OUTPUT_NAME'] = self.config.getstr(
             'config',
             f'{d_type}_PCP_COMBINE_OUTPUT_NAME', ''
@@ -154,16 +161,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.config.getstr('config',
                                f'{d_type}_PCP_COMBINE_STAT_LIST', '')
         )
-
-        run_method = self.config.getstr(
-            'config',
-            f'{d_type}_PCP_COMBINE_METHOD', ''
-        ).upper()
-
-        # change CUSTOM (deprecated) to USER_DEFINED
-        if run_method == 'CUSTOM':
-            run_method = 'USER_DEFINED'
-        c_dict[f'{d_type}_RUN_METHOD'] = run_method
 
         c_dict[f'{d_type}_BUCKET_INTERVAL'] = self.config.getseconds(
             'config',
@@ -195,11 +192,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.config.getraw('config',
                                f'{d_type}_PCP_COMBINE_EXTRA_OUTPUT_NAMES', '')
         )
-
-        if run_method not in self.valid_run_methods:
-            self.log_error(f"Invalid value for {d_type}_PCP_COMBINE_METHOD: "
-                           f"{run_method}. Valid options are "
-                           f"{','.join(self.valid_run_methods)}.")
 
         if run_method == 'DERIVE' and not c_dict[f'{d_type}_STAT_LIST']:
             self.log_error('Statistic list is empty. Must set '
@@ -234,6 +226,36 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                f'{d_type}_PCP_COMBINE_INPUT_ACCUMS list.')
 
         return c_dict
+
+    def _handle_lookback(self, c_dict, d_type):
+        lookback = self.config.getstr('config',
+                                      f'{d_type}_PCP_COMBINE_LOOKBACK', '')
+        if lookback:
+            return lookback
+
+        # if _PCP_COMBINE_LOOKBACK is not set
+        # prioritize DERIVE_LOOKBACK over OUTPUT_ACCUM if in -derive mode
+        # or vice versa otherwise
+        if c_dict[f'{d_type}_RUN_METHOD'] == "DERIVE":
+            ordered_synonyms = [
+                'DERIVE_LOOKBACK',
+                'OUTPUT_ACCUM',
+            ]
+        else:
+            ordered_synonyms = [
+                'OUTPUT_ACCUM',
+                'DERIVE_LOOKBACK',
+            ]
+
+        for synonym in ordered_synonyms:
+            lookback = self.config.getstr(
+                'config',
+                f'{d_type}_PCP_COMBINE_{synonym}', '')
+            if lookback:
+                return lookback
+
+        # if none of the variables are set, return integer 0
+        return 0
 
     def clear(self):
         super().clear()
