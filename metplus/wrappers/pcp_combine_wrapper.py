@@ -429,7 +429,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         """! Find files to combine to build the desired accumulation
 
           @param time_info dictionary containing time information
-          @param accum desired accumulation to build
+          @param accum desired accumulation to build in seconds
           @param data_src type of data (FCST or OBS)
           @rtype bool
           @return True if full set of files to build accumulation is found
@@ -443,7 +443,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # the file/field time backwards in time
         # If building 6 hour accumulation from 1 hour accumulation files,
         # last time to process is valid - 6 + 1
-        accum_relative = get_relativedelta(accum, 'H')
+        accum_relative = get_relativedelta(accum, 'S')
         # using 1 hour for now
         smallest_input_accum = min(
             [lev['amount'] for lev in self.c_dict['ACCUM_DICT_LIST']]
@@ -962,7 +962,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.input_dir = in_dir
 
-        if not self.get_accumulation(time_info, accum_string, data_src):
+        if not self.get_accumulation(time_info, accum_seconds, data_src):
             self.log_error(f'Could not find files to build accumulation in '
                            f'{in_dir} using template {in_template}')
             return False
@@ -1042,7 +1042,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 self.add_input_file(input_file, addon)
 
         elif not self.get_accumulation(time_info,
-                                       lookback,
+                                       lookback_seconds,
                                        data_src):
             self.log_error(f'Could not find files in {in_dir} '
                            f'using template {in_template}')

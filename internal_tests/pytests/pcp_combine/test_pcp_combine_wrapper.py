@@ -69,7 +69,8 @@ def test_get_accumulation_1_to_6(metplus_config):
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("2016090418", '%Y%m%d%H')
     time_info = time_util.ti_calculate(task_info)
-    accum = 6
+    # 6 hours in seconds
+    accum = 6 * 3600
 
     file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
         
@@ -97,7 +98,7 @@ def test_get_accumulation_6_to_6(metplus_config):
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("2016090418", '%Y%m%d%H')
     time_info = time_util.ti_calculate(task_info)
-    accum = 6
+    accum = 6 * 3600
 
     pcw.c_dict['FCST_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
     
