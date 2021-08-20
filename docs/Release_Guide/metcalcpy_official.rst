@@ -21,3 +21,4 @@ Create a new vX.Y.Z official release from the develop branch.
 .. include:: release_steps/finalize_release_on_github_official.rst
 .. include:: release_steps/metcalcpy/update_version_on_develop.rst
 .. include:: release_steps/update_docs_official.rst
+.. include:: release_steps/set_beta_deletion_reminder_official.rst

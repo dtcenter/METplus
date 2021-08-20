@@ -12,7 +12,7 @@ Update DTC Website
   * For *Full Title of Release* type "|projectRepo| Version X.Y.Z".
 
   * For *Related Community Code* select both the METplus and the |projectName|
-    options (use shift to select).
+    options (For Macs, hold the Command key to select both).
 
   * For *Version Label* type "|projectRepo| X.Y.Z betaN".
 
@@ -27,7 +27,12 @@ Update DTC Website
     * Add Link: |addTarfileStep|
 
     * Add Link: Link text should be "User's Guide" and the URL should be the top
-      level directory of the User's Guide hosted on the web.
+      level directory of the User's Guide hosted on the web. Beta releases can
+      use "develop" in the URL, but for official releases, please ensure the
+      link uses the branch name (e.g. main_v4.0) as opposed to the tag name
+      (e.g. v4.0.0).  For example, use
+      "https://metplus.readthedocs.io/en/main_v4.0/Users_Guide/" and NOT
+      "https://metplus.readthedocs.io/en/v4.0.0/Users_Guide/"
 
     * Add Link: Link text should be "Existing Builds and Docker" and the URL
       should be the latest Existing Builds page, i.e.
@@ -41,3 +46,5 @@ Update DTC Website
   * Click on "Create Release".
 
   * Click on "Save".
+
+  * |otherWebsiteUpdates|
