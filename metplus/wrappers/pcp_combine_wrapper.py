@@ -37,7 +37,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.field_name = None
         self.field_level = ""
         self.output_name = ""
-        self.user_command = ''
 
     def create_c_dict(self):
         """! Create dictionary from config items to be used in the wrapper
@@ -238,7 +237,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.field_level = ""
         self.field_extra = ""
         self.output_name = ""
-        self.user_command = ''
         self.extra_fields = None
         self.extra_output = None
 
@@ -515,10 +513,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         for arg in self.args:
             cmd += f'{arg} '
 
-        if self.method == "USER_DEFINED":
-            cmd += self.user_command
-            return cmd
-        elif self.method != "SUM":
+        if self.method != "SUM" and self.method != "USER_DEFINED":
             if self.method == "ADD":
                 cmd += "-add "
             elif self.method == "SUBTRACT":
@@ -1043,7 +1038,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             'config',
             f'{data_src}_PCP_COMBINE_COMMAND'
         )
-        self.user_command = do_string_sub(command_template, **time_info)
+        user_command = do_string_sub(command_template, **time_info)
+        self.args.extend(user_command.split())
 
         # get output accumulation in case output template uses level
         accum_string = '0'
@@ -1061,14 +1057,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         self.outfile = do_string_sub(out_template,
                                      **time_info)
-
-        out_path = self.get_output_path()
-
-        # create outdir (including subdir in outfile) if it doesn't exist
-        if not os.path.exists(os.path.dirname(out_path)):
-            os.makedirs(os.path.dirname(out_path))
-
-        self.user_command += ' ' + out_path
 
         return True
 
