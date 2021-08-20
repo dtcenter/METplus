@@ -705,6 +705,7 @@ def test_get_extra_fields(metplus_config, names, levels, out_names,
                           expected_input, expected_output):
     config = metplus_config()
     config.set('config', 'FCST_PCP_COMBINE_RUN', True)
+    config.set('config', 'FCST_PCP_COMBINE_METHOD', 'ADD')
     config.set('config', 'FCST_PCP_COMBINE_EXTRA_NAMES', names)
     config.set('config', 'FCST_PCP_COMBINE_EXTRA_LEVELS', levels)
     config.set('config', 'FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES', out_names)
