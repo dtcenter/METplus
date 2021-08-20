@@ -37,7 +37,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.field_name = None
         self.field_level = ""
         self.output_name = ""
-        self.compress = -1
         self.user_command = ''
 
     def create_c_dict(self):
@@ -239,7 +238,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.field_level = ""
         self.field_extra = ""
         self.output_name = ""
-        self.compress = -1
         self.user_command = ''
         self.extra_fields = None
         self.extra_output = None
@@ -568,9 +566,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             os.makedirs(os.path.dirname(out_path))
 
         cmd += f"{out_path} "
-
-        if self.compress != -1:
-            cmd += f"-compress {str(self.compress)} "
 
         # remove whitespace at beginning/end and return command
         return cmd.strip()
