@@ -107,7 +107,8 @@ def test_get_accumulation_6_to_6(metplus_config):
 
     pcw.get_accumulation(time_info, accum, data_src)
     in_files = pcw.infiles    
-    if  len(in_files) == 1 and input_dir+"/20160904/file.2016090418.06h" in in_files:
+    if (len(in_files) == 1 and
+            input_dir+"/20160904/file.2016090418.06h" in in_files):
         assert True
     else:
         assert False
@@ -187,21 +188,20 @@ def test_setup_add_method(metplus_config):
     var_info['fcst_level'] = "A06"
     var_info['obs_level'] = "A06"
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    output_dir = pcw.config.getdir('OUTPUT_BASE')+"/internal_tests/data/fakeout"
-    pcw.setup_add_method(time_info, var_info, rl)
+
+    assert pcw.setup_add_method(time_info, var_info, rl)
     
     in_files = pcw.infiles
-    out_file = pcw.get_output_path()
-    if len(in_files) == 6 and \
-      input_dir+"/20160904/file.2016090418.01h" in in_files and \
-      input_dir+"/20160904/file.2016090417.01h" in in_files and \
-      input_dir+"/20160904/file.2016090416.01h" in in_files and \
-      input_dir+"/20160904/file.2016090415.01h" in in_files and \
-      input_dir+"/20160904/file.2016090414.01h" in in_files and \
-      input_dir+"/20160904/file.2016090413.01h" in in_files and \
-       out_file == output_dir+"/20160904/outfile.2016090418_A06h":
+    if (len(in_files) == 6 and
+            input_dir+"/20160904/file.2016090418.01h" in in_files and
+            input_dir+"/20160904/file.2016090417.01h" in in_files and
+            input_dir+"/20160904/file.2016090416.01h" in in_files and
+            input_dir+"/20160904/file.2016090415.01h" in in_files and
+            input_dir+"/20160904/file.2016090414.01h" in in_files and
+            input_dir+"/20160904/file.2016090413.01h" in in_files):
         assert True
     else:
+        print(f"Infiles: {in_files}")
         assert False
 
 
@@ -220,13 +220,8 @@ def test_setup_sum_method(metplus_config):
     var_info['obs_extra'] = ""
     var_info['fcst_level'] = "A06"
     var_info['obs_level'] = "A06"
-    input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
-    output_dir = pcw.config.getdir('OUTPUT_BASE')+"/internal_tests/data/fakeout"
-    pcw.setup_sum_method(time_info, var_info, rl)
-    
-    in_files = pcw.infiles
-    out_file = pcw.get_output_path()    
-    assert(out_file == output_dir+"/20160904/outfile.2016090418_A06h")
+
+    assert pcw.setup_sum_method(time_info, var_info, rl)
 
 def test_setup_subtract_method(metplus_config):
     rl = "FCST"
@@ -244,8 +239,8 @@ def test_setup_subtract_method(metplus_config):
     var_info['obs_level'] = "A06"
     pcw.setup_subtract_method(time_info, var_info, rl)
     in_files = pcw.infiles
-    out_file = pcw.get_output_path()    
-    assert(len(in_files) == 2)
+
+    assert len(in_files) == 2
 
 def test_pcp_combine_add_subhourly(metplus_config):
     fcst_name = 'A000500'
@@ -290,7 +285,7 @@ def test_pcp_combine_add_subhourly(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '15M')
 
     wrapper = PCPCombineWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -309,11 +304,11 @@ def test_pcp_combine_add_subhourly(metplus_config):
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
-    assert(len(all_cmds) == len(expected_cmds))
+    assert len(all_cmds) == len(expected_cmds)
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
 def test_pcp_combine_bucket(metplus_config):
     fcst_output_name = 'APCP'
@@ -354,7 +349,7 @@ def test_pcp_combine_bucket(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '15H')
 
     wrapper = PCPCombineWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -370,11 +365,11 @@ def test_pcp_combine_bucket(metplus_config):
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
-    assert(len(all_cmds) == len(expected_cmds))
+    assert len(all_cmds) == len(expected_cmds)
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
 @pytest.mark.parametrize(
         'config_overrides, extra_fields', [
@@ -439,7 +434,7 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
         config.set('config', key, value)
 
     wrapper = PCPCombineWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -458,11 +453,11 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
-    assert(len(all_cmds) == len(expected_cmds))
+    assert len(all_cmds) == len(expected_cmds)
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
 def test_pcp_combine_loop_custom(metplus_config):
     fcst_name = 'APCP'
@@ -505,7 +500,7 @@ def test_pcp_combine_loop_custom(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_NAME', fcst_name)
 
     wrapper = PCPCombineWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -521,11 +516,11 @@ def test_pcp_combine_loop_custom(metplus_config):
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
-    assert(len(all_cmds) == len(expected_cmds))
+    assert len(all_cmds) == len(expected_cmds)
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
 def test_pcp_combine_subtract(metplus_config):
     config = metplus_config()
@@ -563,7 +558,7 @@ def test_pcp_combine_subtract(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_NAME', 'APCP')
 
     wrapper = PCPCombineWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -577,11 +572,11 @@ def test_pcp_combine_subtract(metplus_config):
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
-    assert(len(all_cmds) == len(expected_cmds))
+    assert len(all_cmds) == len(expected_cmds)
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
 def test_pcp_combine_sum_subhourly(metplus_config):
     fcst_name = 'A000500'
@@ -626,7 +621,7 @@ def test_pcp_combine_sum_subhourly(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '15M')
 
     wrapper = PCPCombineWrapper(config)
-    assert(wrapper.isOK)
+    assert wrapper.isOK
 
     app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
     verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
@@ -644,11 +639,11 @@ def test_pcp_combine_sum_subhourly(metplus_config):
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
-    assert(len(all_cmds) == len(expected_cmds))
+    assert len(all_cmds) == len(expected_cmds)
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
-        assert(cmd == expected_cmd)
+        assert cmd == expected_cmd
 
 @pytest.mark.parametrize(
     'output_name,extra_output,expected_result', [
@@ -666,7 +661,7 @@ def test_get_output_string(metplus_config, output_name, extra_output,
     wrapper.output_name = output_name
     wrapper.extra_output = extra_output
     actual_result = wrapper.get_output_string()
-    assert(actual_result == expected_result)
+    assert actual_result == expected_result
 
 
 @pytest.mark.parametrize(
@@ -714,5 +709,5 @@ def test_get_extra_fields(metplus_config, names, levels, out_names,
     wrapper = PCPCombineWrapper(config)
 
     actual_input, actual_output = wrapper.get_extra_fields('FCST')
-    assert(actual_input == expected_input)
-    assert (actual_output == expected_output)
+    assert actual_input == expected_input
+    assert actual_output == expected_output

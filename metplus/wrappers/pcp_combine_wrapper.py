@@ -656,6 +656,18 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                            f'{data_src}_PCP_COMBINE_LOOKBACK')
             return False
 
+        self.c_dict['OUTPUT_DIR'] = self.c_dict[f'{data_src}_OUTPUT_DIR']
+        self.c_dict['OUTPUT_TEMPLATE'] = (
+            self.c_dict[f'{data_src}_OUTPUT_TEMPLATE']
+        )
+
+        # get lookback/output accum seconds and add it to time info dictionary
+        lookback_seconds = self._get_lookback_seconds(time_info=time_info,
+                                                      var_info=var_info,
+                                                      data_src=data_src)
+        if lookback_seconds is None:
+            return False
+
         # if method is not USER_DEFINED or DERIVE,
         # check that field information is set
         if self.method == "USER_DEFINED":
@@ -677,19 +689,37 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.log_error("pcp_combine could not generate command")
             return False
 
-        # if output file exists and we want to skip it, warn and continue
-        outfile = self.get_output_path()
-        if os.path.exists(outfile) and self.c_dict['SKIP_IF_OUTPUT_EXISTS']:
-            self.logger.debug(f'Skip writing output file {outfile} because it '
-                              'already exists. Remove file or change '
-                              'PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS to True '
-                              'to process')
+        time_info['level'] = lookback_seconds
+        if not self.find_and_check_output_file(time_info=time_info):
             return True
 
         # set user environment variables if needed and print all envs
         self.set_environment_variables(time_info)
 
         return self.build()
+
+    def _get_lookback_seconds(self, time_info, var_info, data_src):
+        if self.c_dict[f"{data_src}_LOOKBACK"]:
+            lookback = self.c_dict[f"{data_src}_LOOKBACK"]
+        else:
+            lookback = var_info[f'{data_src.lower()}_level']
+            self.logger.warning(f'{data_src}_PCP_COMBINE_LOOKBACK is '
+                                f'not set. Using {lookback} from '
+                                f'{data_src}_VAR{var_info.get("index")}_LEVELS'
+                                '. It is recommended that you explicitly set '
+                                'the output accumulation.')
+
+        _, lookback = util.split_level(lookback)
+
+        lookback_seconds = get_seconds_from_string(
+            lookback,
+            default_unit='H',
+            valid_time=time_info['valid']
+        )
+        if lookback_seconds is None:
+            self.log_error(f'Invalid format for derived lookback: {lookback}')
+
+        return lookback_seconds
 
     def setup_subtract_method(self, time_info, var_info, data_src):
         """! Setup pcp_combine to subtract two files to build accumulation
@@ -703,11 +733,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.args.append('-subtract')
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
-        out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
 
         if self.c_dict[f"{data_src}_LOOKBACK"]:
             accum = self.c_dict[f"{data_src}_LOOKBACK"]
-            level_type = 'A'
         else:
             level = var_info[f'{data_src.lower()}_level']
             level_type, accum = util.split_level(level)
@@ -736,13 +764,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             f"accumulation by subtracting {ti_get_lead_string(lead2, False)} "
             f"from {ti_get_lead_string(lead, False)}."
         )
-
-        # set output file information
-        out_file = do_string_sub(out_template,
-                                 level=accum,
-                                 **time_info)
-        self.outfile = out_file
-        self.outdir = out_dir
 
         # get first file
         pcpSts1 = do_string_sub(in_template,
@@ -839,7 +860,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         in_accum = time_string_to_met_time(in_accum, 'H')
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
-        out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
 
         # if LOOKBACK is set, use that instead of obs_level
         # and use obs_level as field level
@@ -884,7 +904,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         out_accum = time_string_to_met_time(out_accum, 'H')
 
         pcp_regex = util.template_to_regex(in_template, time_info,
-                                          self.logger)
+                                           self.logger)
         pcp_regex_split = pcp_regex.split('/')
         pcp_dir = os.path.join(in_dir, *pcp_regex_split[0:-1])
         pcp_regex = pcp_regex_split[-1]
@@ -900,11 +920,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.args.append(out_accum)
         self.args.append(f"-pcpdir {pcp_dir}")
         self.args.append(f"-pcprx {pcp_regex}")
-
-        self.outdir = out_dir
-        pcp_out = do_string_sub(out_template,
-                                **time_info)
-        self.outfile = pcp_out
 
         return True
 
@@ -957,7 +972,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.build_input_accum_list(data_src, time_info)
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
-        out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
 
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.input_dir = in_dir
@@ -967,11 +981,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                            f'{in_dir} using template {in_template}')
             return False
 
-        self.outdir = out_dir
-        time_info['level'] = int(accum_seconds)
-        pcp_out = do_string_sub(out_template,
-                                **time_info)
-        self.outfile = pcp_out
         self.args.append("-name " + field_name)
         return True
 
@@ -985,6 +994,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
           @return path to output file
         """
         self.args.append('-derive')
+
+        # add list of statistics
+        self.args.append(','.join(self.c_dict[f"{data_src}_STAT_LIST"]))
+
         if self.c_dict[f"{data_src}_NAMES"]:
             self.field_name = self.c_dict[f"{data_src}_NAMES"][0]
 
@@ -1005,7 +1018,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             )
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
-        out_dir, out_template = self.get_dir_and_template(data_src, 'OUTPUT')
 
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.input_dir = in_dir
@@ -1048,15 +1060,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                            f'using template {in_template}')
             return False
 
-        # set output
-        self.outdir = out_dir
-        time_info['level'] = lookback_seconds
-        pcp_out = do_string_sub(out_template,
-                                **time_info)
-        self.outfile = pcp_out
-
-        # set STAT_LIST for data type (FCST/OBS)
-        self.args.append(','.join(self.c_dict[f"{data_src}_STAT_LIST"]))
         return True
 
     def setup_user_method(self, time_info, data_src):
@@ -1073,23 +1076,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         )
         user_command = do_string_sub(command_template, **time_info)
         self.args.extend(user_command.split())
-
-        # get output accumulation in case output template uses level
-        accum_string = '0'
-        if self.c_dict[f"{data_src}_LOOKBACK"]:
-            accum_string = self.c_dict[f"{data_src}_LOOKBACK"]
-            _, accum_string = util.split_level(accum_string)
-
-        accum_seconds = get_seconds_from_string(accum_string, 'H')
-        if accum_seconds is not None:
-            time_info['level'] = int(accum_seconds)
-
-        # add output path to user defined command
-        self.outdir, out_template = self.get_dir_and_template(data_src,
-                                                              'OUTPUT')
-
-        self.outfile = do_string_sub(out_template,
-                                     **time_info)
 
         return True
 
