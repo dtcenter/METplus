@@ -337,34 +337,33 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         return None, 0
 
-    def get_addon(self, accum_dict, search_accum, search_time):
+    def get_addon(self, accum_dict, search_accum, search_time, data_src):
         field_name = accum_dict['name']
         field_level = accum_dict['level']
         field_extra = accum_dict['extra']
         if field_name is None:
-            return search_accum
+            field_name = 'APCP'
+            field_level = f'A{search_accum.zfill(2)}'
+            self.logger.debug("Field name not specified. Assuming "
+                              f"{field_name}/{field_level}")
 
-        # perform string substitution on name
-        field_name = do_string_sub(field_name,
-                                   valid=search_time,
-                                   custom=self.c_dict.get('CUSTOM_STRING', ''))
-        addon = "'name=\"" + field_name + "\";"
+        field_info = self.get_field_info(d_type=data_src,
+                                         v_name=field_name,
+                                         v_level=field_level,
+                                         v_extra=field_extra,
+                                         add_curly_braces=False)
+        if not field_info:
+            return None
 
-        if not util.is_python_script(field_name) and field_level is not None:
-            addon += f" level=\"{field_level}\";"
+        search_time_info = {
+            'valid': search_time,
+            'custom': self.c_dict.get('CUSTOM_STRING', '')
+        }
 
-        if field_extra:
-            search_time_info = {'valid': search_time,
-                                'custom': self.c_dict.get('CUSTOM_STRING', '')}
-
-            field_extra = do_string_sub(field_extra,
-                                        **search_time_info)
-
-            field_extra = field_extra.replace('"', '\"')
-            addon += f" {field_extra}"
-
-        addon += "'"
-        return addon
+        # string sub values into full field info string using search time info
+        field_info = do_string_sub(field_info[0],
+                                   **search_time_info)
+        return field_info
 
     def find_input_file(self, in_template, init_time, valid_time, search_accum,
                         data_src):
@@ -508,7 +507,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
                     accum_met_time = time_string_to_met_time(accum_amount)
                     addon = self.get_addon(accum_dict, accum_met_time,
-                                           search_time)
+                                           search_time, data_src)
                     # add file to input list and
                     # step back in time to find more data
                     self.add_input_file(search_file, addon)
@@ -899,8 +898,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         out_accum = time_string_to_met_time(out_accum, 'H')
 
-        pcp_regex = util.template_to_regex(in_template, time_info,
-                                           self.logger)
+        time_info['level'] = in_accum
+        pcp_regex = util.template_to_regex(in_template, time_info)
         pcp_regex_split = pcp_regex.split('/')
         pcp_dir = os.path.join(in_dir, *pcp_regex_split[0:-1])
         pcp_regex = pcp_regex_split[-1]
@@ -1038,7 +1037,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.logger.debug(f"{data_src}_PCP_COMBINE_LOOKBACK unset "
                               "or set to 0. Using template to find files.")
             accum_dict = self.c_dict['ACCUM_DICT_LIST'][0]
-            addon = self.get_addon(accum_dict, 0, time_info.get('valid', ''))
+            addon = self.get_addon(accum_dict, 0, time_info.get('valid', ''),
+                                   data_src)
             input_files = self.find_data(time_info,
                                          var_info,
                                          data_type=data_src,

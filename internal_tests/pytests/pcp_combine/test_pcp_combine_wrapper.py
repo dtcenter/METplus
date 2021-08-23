@@ -357,9 +357,12 @@ def test_pcp_combine_bucket(metplus_config):
     expected_cmds = [(f"{app_path} {verbosity} "
                       "-add "
                       f"-name {fcst_output_name} "
-                      f"{fcst_input_dir}/2012040900_F015.grib 03 "
-                      f"{fcst_input_dir}/2012040900_F012.grib 06 "
-                      f"{fcst_input_dir}/2012040900_F006.grib 06 "
+                      f"{fcst_input_dir}/2012040900_F015.grib "
+                      "'name=\"APCP\"; level=\"A03\";' "
+                      f"{fcst_input_dir}/2012040900_F012.grib "
+                      "'name=\"APCP\"; level=\"A06\";' "
+                      f"{fcst_input_dir}/2012040900_F006.grib "
+                      "'name=\"APCP\"; level=\"A06\";' "
                       f"{out_dir}/2012040915_A015.nc"),
                      ]
 
@@ -510,7 +513,8 @@ def test_pcp_combine_loop_custom(metplus_config):
         cmd = (f"{app_path} {verbosity} "
                f"-add "
                f"-name {fcst_name} "
-               f"{fcst_input_dir}/{ens}/2009123112_02400.grib 24 "
+               f"{fcst_input_dir}/{ens}/2009123112_02400.grib "
+               "'name=\"APCP\"; level=\"A24\";' "
                f"{out_dir}/{ens}/2009123112_02400.nc")
         expected_cmds.append(cmd)
 

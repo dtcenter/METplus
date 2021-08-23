@@ -2753,7 +2753,7 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
 
     return None
 
-def template_to_regex(template, time_info, logger):
+def template_to_regex(template, time_info):
     in_template = re.sub(r'\.', '\\.', template)
     in_template = re.sub(r'{lead.*?}', '.*', in_template)
     return do_string_sub(in_template,
