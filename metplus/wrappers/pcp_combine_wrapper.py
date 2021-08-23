@@ -351,9 +351,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                          v_name=field_name,
                                          v_level=field_level,
                                          v_extra=field_extra,
-                                         add_curly_braces=False)
-        if not field_info:
-            return None
+                                         add_curly_braces=False)[0]
 
         search_time_info = {
             'valid': search_time,
@@ -361,7 +359,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         }
 
         # string sub values into full field info string using search time info
-        field_info = do_string_sub(field_info[0],
+        field_info = do_string_sub(field_info,
                                    **search_time_info)
         return field_info
 
