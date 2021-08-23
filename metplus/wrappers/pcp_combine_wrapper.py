@@ -897,10 +897,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                 **time_info
             )
 
-        time_info['level'] = get_seconds_from_string(out_accum,
-                                                     'H',
-                                                     time_info['valid'])
-
         out_accum = time_string_to_met_time(out_accum, 'H')
 
         pcp_regex = util.template_to_regex(in_template, time_info,
