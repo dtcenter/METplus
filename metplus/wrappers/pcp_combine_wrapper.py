@@ -279,7 +279,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         return data_dir, template
 
-    def getLowestForecastFile(self, valid_time, dtype, template):
+    def get_lowest_fcst_file(self, valid_time, dtype, template):
         """! Find the lowest forecast hour that corresponds to the valid time
 
           @param valid_time valid time to search
@@ -373,7 +373,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if ('{lead?' in in_template or
                 ('{init?' in in_template and '{valid?' in in_template)):
             if not self.c_dict[f'{data_src}_CONSTANT_INIT']:
-                return self.getLowestForecastFile(valid_time, data_src,
+                return self.get_lowest_fcst_file(valid_time, data_src,
                                                   in_template)
 
             # set init time and lead in time dict if init should be constant
