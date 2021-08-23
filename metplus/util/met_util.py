@@ -2471,14 +2471,27 @@ def sub_var_list(var_list, time_info):
     return out_var_list
 
 def split_level(level):
-    level_type = ""
+    """! If level value starts with a letter, then separate that letter from
+     the rest of the string. i.e. 'A03' will be returned as 'A', '03'. If no
+     level type letter is found and the level value consists of alpha-numeric
+     characters, return an empty string as the level type and the full level
+     string as the level value
+
+     @param level input string to parse/split
+     @returns tuple of level type and level value
+    """
     if not level:
         return '', ''
-    match = re.match(r'^(\w)(\d+)$', level)
+
+    match = re.match(r'^([a-zA-Z])(\w+)$', level)
     if match:
         level_type = match.group(1)
         level = match.group(2)
         return level_type, level
+
+    match = re.match(r'^[\w]+$', level)
+    if match:
+        return '', level
 
     return '', ''
 
