@@ -583,8 +583,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             if lookback:
                 return lookback
 
-        # if none of the variables are set, return integer 0
-        return 0
+        # if none of the variables are set, return None
+        return None
 
     def _get_lookback_seconds(self, time_info, var_info, data_src):
         if self.c_dict[f"{data_src}_LOOKBACK"]:
