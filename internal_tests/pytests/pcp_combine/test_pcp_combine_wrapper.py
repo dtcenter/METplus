@@ -287,7 +287,7 @@ def test_pcp_combine_add_subhourly(metplus_config):
                       f"{fcst_fmt} "
                       f"{fcst_input_dir}/20190802_i1800_m0_f1805.nc "
                       f"{fcst_fmt} "
-                      f"-name {fcst_output_name} "
+                      f'-name "{fcst_output_name}" '
                       f"{out_dir}/5min_mem00_lag00.nc"),
                      ]
 
@@ -351,7 +351,7 @@ def test_pcp_combine_bucket(metplus_config):
                       "'name=\"APCP\"; level=\"A06\";' "
                       f"{fcst_input_dir}/2012040900_F006.grib "
                       "'name=\"APCP\"; level=\"A06\";' "
-                      f"-name {fcst_output_name} "
+                      f'-name "{fcst_output_name}" '
                       f"{out_dir}/2012040915_A015.nc"),
                      ]
 
@@ -380,7 +380,7 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
     stat_list = 'sum,min,max,range,mean,stdev,vld_count'
     fcst_name = 'APCP'
     fcst_level = 'A03'
-    fcst_fmt = f'\'name="{fcst_name}"; level="{fcst_level}";\''
+    fcst_fmt = f'-field \'name="{fcst_name}"; level="{fcst_level}";\''
     config = metplus_config()
 
     test_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
@@ -433,13 +433,13 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
     expected_cmds = [(f"{app_path} {verbosity} "
                       f"-derive {stat_list} "
-                      f"{fcst_input_dir}/2005080700/24.tm00_G212 {fcst_fmt} "
-                      f"{fcst_input_dir}/2005080700/21.tm00_G212 {fcst_fmt} "
-                      f"{fcst_input_dir}/2005080700/18.tm00_G212 {fcst_fmt} "
-                      f"{fcst_input_dir}/2005080700/15.tm00_G212 {fcst_fmt} "
-                      f"{fcst_input_dir}/2005080700/12.tm00_G212 {fcst_fmt} "
-                      f"{fcst_input_dir}/2005080700/09.tm00_G212 {fcst_fmt} "
-                      f"{extra_fields}"
+                      f"{fcst_input_dir}/2005080700/24.tm00_G212 "
+                      f"{fcst_input_dir}/2005080700/21.tm00_G212 "
+                      f"{fcst_input_dir}/2005080700/18.tm00_G212 "
+                      f"{fcst_input_dir}/2005080700/15.tm00_G212 "
+                      f"{fcst_input_dir}/2005080700/12.tm00_G212 "
+                      f"{fcst_input_dir}/2005080700/09.tm00_G212 "
+                      f"{fcst_fmt} {extra_fields}"
                       f"{out_dir}/2005080700_f24_A18.nc"),
                      ]
 
@@ -503,7 +503,7 @@ def test_pcp_combine_loop_custom(metplus_config):
                f"-add "
                f"{fcst_input_dir}/{ens}/2009123112_02400.grib "
                "'name=\"APCP\"; level=\"A24\";' "
-               f"-name {fcst_name} "
+               f'-name "{fcst_name}" '
                f"{out_dir}/{ens}/2009123112_02400.nc")
         expected_cmds.append(cmd)
 
@@ -639,68 +639,68 @@ def test_pcp_combine_sum_subhourly(metplus_config):
         assert cmd == expected_cmd
 
 @pytest.mark.parametrize(
-    'output_name,extra_output,expected_result', [
-        (None, None, None),
-        ('out_name1', None, '"out_name1"'),
-        ('out_name1', '"out_name2"', '"out_name1","out_name2"'),
-        ('out_name1', '"out_name2","out_name3"',
-         '"out_name1","out_name2","out_name3"'),
+    'output_name,extra_output,expected_results', [
+        # 0
+        ('', [''], []),
+        # 1
+        ('out_name1', None, ['-name "out_name1"']),
+        # 2
+        ('out_name1', ['out_name2'], ['-name "out_name1","out_name2"']),
+        # 3
+        ('out_name1', ['out_name2', 'out_name3'],
+         ['-name "out_name1","out_name2","out_name3"']),
     ]
 )
-def test_get_output_string(metplus_config, output_name, extra_output,
-                           expected_result):
+def test_handle_name_argument(metplus_config, output_name, extra_output,
+                              expected_results):
+    data_src = 'FCST'
     config = metplus_config()
     wrapper = PCPCombineWrapper(config)
-    wrapper.output_name = output_name
-    wrapper.extra_output = extra_output
-    actual_result = wrapper.get_output_string()
-    assert actual_result == expected_result
+    wrapper.c_dict[data_src + '_EXTRA_OUTPUT_NAMES'] = extra_output
+    wrapper._handle_name_argument(output_name, data_src)
+    actual_results = wrapper.args
+    print(f"Actual: {actual_results}")
+    print(f"Expected: {expected_results}")
+    assert len(actual_results) == len(expected_results)
+    for index, expected_result in enumerate(expected_results):
+        assert actual_results[index] == expected_result
 
 
 @pytest.mark.parametrize(
-    'names,levels,out_names,expected_input,expected_output', [
-        # none specified
-        ('', '', '',
-         None, None),
-        # 1 input name, no level
-        ('input1', '', '',
-         "-field 'name=\"input1\";'", None),
-        # 1 input name, 1 level
-        ('input1', 'level1', '',
-         "-field 'name=\"input1\"; level=\"level1\";'", None),
-        # 2 input names, no levels
-        ('input1,input2', '', '',
-         "-field 'name=\"input1\";' -field 'name=\"input2\";'", None),
-        # 2 input names, 2 levels
-        ('input1,input2', 'level1,level2', '',
-         ("-field 'name=\"input1\"; level=\"level1\";' "
-          "-field 'name=\"input2\"; level=\"level2\";'"), None),
-        # 2 input names, 1 level
-        ('input1,input2', 'level1', '',
-         ("-field 'name=\"input1\"; level=\"level1\";' "
-          "-field 'name=\"input2\";'"),
-         None),
-        # 1 input name, 1 level, 1 output
-        ('input1', 'level1', 'output1',
-         "-field 'name=\"input1\"; level=\"level1\";'", '"output1"'),
-        # 2 input names, 2 levels, 2 outputs
-        ('input1,input2', 'level1,level2', 'output1,output2',
-         ("-field 'name=\"input1\"; level=\"level1\";' "
-          "-field 'name=\"input2\"; level=\"level2\";'"),
-         '"output1","output2"'),
+    'names,levels,expected_args', [
+        # 0: none specified
+        ('', '',
+         []),
+        # 1: 1 input name, no level
+        ('input1', '',
+         ["-field 'name=\"input1\";'"]),
+        # 2: 1 input name, 1 level
+         ('input1', 'level1',
+          ["-field 'name=\"input1\"; level=\"level1\";'"]),
+        # 3: 2 input names, no levels
+         ('input1,input2', '',
+          ["-field 'name=\"input1\";'", "-field 'name=\"input2\";'"]),
+        # 4: 2 input names, 2 levels
+         ('input1,input2', 'level1,level2',
+          ["-field 'name=\"input1\"; level=\"level1\";'",
+           "-field 'name=\"input2\"; level=\"level2\";'"]),
+        # 5: 2 input names, 1 level
+         ('input1,input2', 'level1',
+          ["-field 'name=\"input1\"; level=\"level1\";'",
+           "-field 'name=\"input2\";'"]),
     ]
 )
-def test_get_extra_fields(metplus_config, names, levels, out_names,
-                          expected_input, expected_output):
+def test_get_extra_fields(metplus_config, names, levels, expected_args):
     config = metplus_config()
+    data_src = 'FCST'
     config.set('config', 'FCST_PCP_COMBINE_RUN', True)
     config.set('config', 'FCST_PCP_COMBINE_METHOD', 'ADD')
     config.set('config', 'FCST_PCP_COMBINE_EXTRA_NAMES', names)
     config.set('config', 'FCST_PCP_COMBINE_EXTRA_LEVELS', levels)
-    config.set('config', 'FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES', out_names)
 
     wrapper = PCPCombineWrapper(config)
 
-    actual_input, actual_output = wrapper.get_extra_fields('FCST')
-    assert actual_input == expected_input
-    assert actual_output == expected_output
+    wrapper._handle_extra_field_arguments(data_src)
+    wrapper._handle_name_argument('', data_src)
+    for index, expected_arg in enumerate(expected_args):
+        assert wrapper.args[index] == expected_arg
