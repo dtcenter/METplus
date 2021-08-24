@@ -273,6 +273,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.log_error("pcp_combine could not generate command")
             return False
 
+        # set time info level back to lookback seconds
+        time_info['level'] = lookback_seconds
+
         self._handle_extra_field_arguments(data_src, time_info)
 
         # add -name argument
