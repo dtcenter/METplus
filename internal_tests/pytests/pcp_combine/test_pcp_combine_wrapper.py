@@ -73,9 +73,9 @@ def test_get_accumulation_1_to_6(metplus_config):
     accum = 6 * 3600
 
     file_template = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
-        
-    pcw.input_dir = input_dir
-    pcw.build_input_accum_list(data_src, time_info)
+
+    pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
+    pcw._build_input_accum_list(data_src, time_info)
 
     files_found = pcw.get_accumulation(time_info, accum, data_src)
     in_files = [item[0] for item in files_found]
@@ -97,9 +97,9 @@ def test_get_accumulation_6_to_6(metplus_config):
     accum = 6 * 3600
 
     pcw.c_dict['FCST_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}/file.{valid?fmt=%Y%m%d%H}.{level?fmt=%HH}h"
-    
-    pcw.input_dir = input_dir
-    pcw.build_input_accum_list(data_src, time_info)
+
+    pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
+    pcw._build_input_accum_list(data_src, time_info)
 
     files_found = pcw.get_accumulation(time_info, accum, data_src)
     in_files = [item[0] for item in files_found]
@@ -107,63 +107,61 @@ def test_get_accumulation_6_to_6(metplus_config):
             input_dir+"/20160904/file.2016090418.06h" in in_files)
 
 def test_get_lowest_forecast_file_dated_subdir(metplus_config):
-    dtype = "FCST"
-    pcw = pcp_combine_wrapper(metplus_config, dtype)
+    data_src = "FCST"
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = datetime.datetime.strptime("201802012100", '%Y%m%d%H%M')
-    template = pcw.config.getraw('filename_templates', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
-    pcw.input_dir = input_dir
-    pcw.build_input_accum_list(dtype, {'valid': valid_time})
-    out_file, fcst = pcw.get_lowest_fcst_file(valid_time, dtype, template)
+    pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
+    pcw._build_input_accum_list(data_src, {'valid': valid_time})
+    out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src)
     assert(out_file == input_dir+"/20180201/file.2018020118f003.nc" and fcst == 10800)
 
 def test_forecast_constant_init(metplus_config):
-    dtype = "FCST"
-    pcw = pcp_combine_wrapper(metplus_config, dtype)
+    data_src = "FCST"
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     pcw.c_dict['FCST_CONSTANT_INIT'] = True
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     init_time = datetime.datetime.strptime("2018020112", '%Y%m%d%H')
     valid_time = datetime.datetime.strptime("2018020121", '%Y%m%d%H')
-    template = pcw.config.getraw('filename_templates', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
-    pcw.input_dir = input_dir
-    out_file, fcst = pcw.find_input_file(template, init_time, valid_time, 0, dtype)
+    pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
+    out_file, fcst = pcw.find_input_file(init_time, valid_time, 0, data_src)
     assert(out_file == input_dir+"/20180201/file.2018020112f009.nc" and fcst == 32400)
 
 def test_forecast_not_constant_init(metplus_config):
-    dtype = "FCST"
-    pcw = pcp_combine_wrapper(metplus_config, dtype)
+    data_src = "FCST"
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     pcw.c_dict['FCST_CONSTANT_INIT'] = False
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     init_time = datetime.datetime.strptime("2018020112", '%Y%m%d%H')
     valid_time = datetime.datetime.strptime("2018020121", '%Y%m%d%H')
-    template = pcw.config.getraw('filename_templates', 'FCST_PCP_COMBINE_INPUT_TEMPLATE')
-    pcw.input_dir = input_dir
-    pcw.build_input_accum_list(dtype, {'valid': valid_time})
-    out_file, fcst = pcw.find_input_file(template, init_time, valid_time, 0, dtype)
+    pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
+    pcw._build_input_accum_list(data_src, {'valid': valid_time})
+    out_file, fcst = pcw.find_input_file(init_time, valid_time, 0, data_src)
     assert(out_file == input_dir+"/20180201/file.2018020118f003.nc" and fcst == 10800)
 
 
 def test_get_lowest_forecast_file_no_subdir(metplus_config):
-    dtype = "FCST"
-    pcw = pcp_combine_wrapper(metplus_config, dtype)
+    data_src = "FCST"
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = datetime.datetime.strptime("201802012100", '%Y%m%d%H%M')
-
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
-    pcw.input_dir = input_dir
-    pcw.build_input_accum_list(dtype, {'valid': valid_time})
-    out_file, fcst = pcw.get_lowest_fcst_file(valid_time, dtype, template)
+    pcw.c_dict[f'{data_src}_INPUT_TEMPLATE'] = template
+    pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
+    pcw._build_input_accum_list(data_src, {'valid': valid_time})
+    out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src)
     assert(out_file == input_dir+"/file.2018020118f003.nc" and fcst == 10800)
 
 def test_get_lowest_forecast_file_yesterday(metplus_config):
-    dtype = "FCST"
-    pcw = pcp_combine_wrapper(metplus_config, dtype)
+    data_src = "FCST"
+    pcw = pcp_combine_wrapper(metplus_config, data_src)
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/fcst"
     valid_time = datetime.datetime.strptime("201802010600", '%Y%m%d%H%M')
     template = "file.{init?fmt=%Y%m%d%H}f{lead?fmt=%HHH}.nc"
-    pcw.input_dir = input_dir
-    pcw.build_input_accum_list(dtype, {'valid': valid_time})
-    out_file, fcst = pcw.get_lowest_fcst_file(valid_time, dtype, template)
+    pcw.c_dict[f'{data_src}_INPUT_TEMPLATE'] = template
+    pcw.c_dict[f'{data_src}_INPUT_DIR'] = input_dir
+    pcw._build_input_accum_list(data_src, {'valid': valid_time})
+    out_file, fcst = pcw.get_lowest_fcst_file(valid_time, data_src)
     assert(out_file == input_dir+"/file.2018013118f012.nc" and fcst == 43200)
 
 def test_setup_add_method(metplus_config):
@@ -172,16 +170,10 @@ def test_setup_add_method(metplus_config):
     task_info = {}
     task_info['valid'] = datetime.datetime.strptime("2016090418", '%Y%m%d%H')
     time_info = time_util.ti_calculate(task_info)
-    var_info = {}
-    var_info['fcst_name'] = "APCP"
-    var_info['obs_name'] = "ACPCP"
-    var_info['fcst_extra'] = ""
-    var_info['obs_extra'] = ""
-    var_info['fcst_level'] = "A06"
-    var_info['obs_level'] = "A06"
-    input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
 
-    files_found = pcw.setup_add_method(time_info, var_info, rl)
+    input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
+    lookback = 6 * 3600
+    files_found = pcw.setup_add_method(time_info, lookback, rl)
     assert files_found
     
     in_files = [item[0] for item in files_found]
@@ -202,15 +194,8 @@ def test_setup_sum_method(metplus_config):
     task_info['valid'] = datetime.datetime.strptime("2016090418", '%Y%m%d%H')
     task_info['lead'] = 0
     time_info = time_util.ti_calculate(task_info)
-    var_info = {}
-    var_info['fcst_name'] = "APCP"
-    var_info['obs_name'] = "ACPCP"
-    var_info['fcst_extra'] = ""
-    var_info['obs_extra'] = ""
-    var_info['fcst_level'] = "A06"
-    var_info['obs_level'] = "A06"
-
-    assert pcw.setup_sum_method(time_info, var_info, rl)
+    lookback = 6 * 3600
+    assert pcw.setup_sum_method(time_info, lookback, rl)
 
 def test_setup_subtract_method(metplus_config):
     rl = "FCST"
@@ -219,15 +204,8 @@ def test_setup_subtract_method(metplus_config):
     task_info['valid'] = datetime.datetime.strptime("201609050000", '%Y%m%d%H%M')
     task_info['lead_hours'] = 9
     time_info = time_util.ti_calculate(task_info)
-    accum_seconds = 6 * 3600
-    var_info = {}
-    var_info['fcst_name'] = "APCP"
-    var_info['obs_name'] = "ACPCP"
-    var_info['fcst_extra'] = ""
-    var_info['obs_extra'] = ""
-    var_info['fcst_level'] = "A06"
-    var_info['obs_level'] = "A06"
-    files_found = pcw.setup_subtract_method(time_info, accum_seconds, rl)
+    lookback = 6 * 3600
+    files_found = pcw.setup_subtract_method(time_info, lookback, rl)
     in_files = [item[0] for item in files_found]
 
     assert len(in_files) == 2
@@ -563,6 +541,7 @@ def test_pcp_combine_subtract(metplus_config):
                       "'name=\"APCP\"; level=\"A18\";' "
                       f"{fcst_input_dir}/2005080700/15.tm00_G212 "
                       "'name=\"APCP\"; level=\"A15\";' "
+                      '-name "APCP" '
                       f"{out_dir}/2005080718_A003.nc"),
                      ]
 
