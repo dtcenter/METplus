@@ -77,19 +77,15 @@ def test_get_accumulation_1_to_6(metplus_config):
     pcw.input_dir = input_dir
     pcw.build_input_accum_list(data_src, time_info)
 
-    pcw.get_accumulation(time_info, accum, data_src)
-    in_files = pcw.infiles
-    if len(in_files) == 6 and \
-      input_dir+"/20160904/file.2016090418.01h" in in_files and \
-      input_dir+"/20160904/file.2016090417.01h" in in_files and \
-      input_dir+"/20160904/file.2016090416.01h" in in_files and \
-      input_dir+"/20160904/file.2016090415.01h" in in_files and \
-      input_dir+"/20160904/file.2016090414.01h" in in_files and \
-      input_dir+"/20160904/file.2016090413.01h" in in_files:
-        assert True
-    else:
-        assert False
-
+    files_found = pcw.get_accumulation(time_info, accum, data_src)
+    in_files = [item[0] for item in files_found]
+    assert (len(in_files) == 6 and
+            input_dir+"/20160904/file.2016090418.01h" in in_files and
+            input_dir+"/20160904/file.2016090417.01h" in in_files and
+            input_dir+"/20160904/file.2016090416.01h" in in_files and
+            input_dir+"/20160904/file.2016090415.01h" in in_files and
+            input_dir+"/20160904/file.2016090414.01h" in in_files and
+            input_dir+"/20160904/file.2016090413.01h" in in_files)
 
 def test_get_accumulation_6_to_6(metplus_config):
     data_src = "FCST"
@@ -105,14 +101,10 @@ def test_get_accumulation_6_to_6(metplus_config):
     pcw.input_dir = input_dir
     pcw.build_input_accum_list(data_src, time_info)
 
-    pcw.get_accumulation(time_info, accum, data_src)
-    in_files = pcw.infiles    
-    if (len(in_files) == 1 and
-            input_dir+"/20160904/file.2016090418.06h" in in_files):
-        assert True
-    else:
-        assert False
-
+    files_found = pcw.get_accumulation(time_info, accum, data_src)
+    in_files = [item[0] for item in files_found]
+    assert (len(in_files) == 1 and
+            input_dir+"/20160904/file.2016090418.06h" in in_files)
 
 def test_get_lowest_forecast_file_dated_subdir(metplus_config):
     dtype = "FCST"
@@ -189,21 +181,18 @@ def test_setup_add_method(metplus_config):
     var_info['obs_level'] = "A06"
     input_dir = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/accum"
 
-    assert pcw.setup_add_method(time_info, var_info, rl)
+    files_found = pcw.setup_add_method(time_info, var_info, rl)
+    assert files_found
     
-    in_files = pcw.infiles
-    if (len(in_files) == 6 and
+    in_files = [item[0] for item in files_found]
+    print(f"Infiles: {in_files}")
+    assert (len(in_files) == 6 and
             input_dir+"/20160904/file.2016090418.01h" in in_files and
             input_dir+"/20160904/file.2016090417.01h" in in_files and
             input_dir+"/20160904/file.2016090416.01h" in in_files and
             input_dir+"/20160904/file.2016090415.01h" in in_files and
             input_dir+"/20160904/file.2016090414.01h" in in_files and
-            input_dir+"/20160904/file.2016090413.01h" in in_files):
-        assert True
-    else:
-        print(f"Infiles: {in_files}")
-        assert False
-
+            input_dir+"/20160904/file.2016090413.01h" in in_files)
 
 # how to test? check output?
 def test_setup_sum_method(metplus_config):
@@ -237,8 +226,8 @@ def test_setup_subtract_method(metplus_config):
     var_info['obs_extra'] = ""
     var_info['fcst_level'] = "A06"
     var_info['obs_level'] = "A06"
-    pcw.setup_subtract_method(time_info, var_info, rl)
-    in_files = pcw.infiles
+    files_found = pcw.setup_subtract_method(time_info, var_info, rl)
+    in_files = [item[0] for item in files_found]
 
     assert len(in_files) == 2
 
@@ -292,13 +281,13 @@ def test_pcp_combine_add_subhourly(metplus_config):
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
     expected_cmds = [(f"{app_path} {verbosity} "
                       "-add "
-                      f"-name {fcst_output_name} "
                       f"{fcst_input_dir}/20190802_i1800_m0_f1815.nc "
                       f"{fcst_fmt} "
                       f"{fcst_input_dir}/20190802_i1800_m0_f1810.nc "
                       f"{fcst_fmt} "
                       f"{fcst_input_dir}/20190802_i1800_m0_f1805.nc "
                       f"{fcst_fmt} "
+                      f"-name {fcst_output_name} "
                       f"{out_dir}/5min_mem00_lag00.nc"),
                      ]
 
@@ -356,13 +345,13 @@ def test_pcp_combine_bucket(metplus_config):
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
     expected_cmds = [(f"{app_path} {verbosity} "
                       "-add "
-                      f"-name {fcst_output_name} "
                       f"{fcst_input_dir}/2012040900_F015.grib "
                       "'name=\"APCP\"; level=\"A03\";' "
                       f"{fcst_input_dir}/2012040900_F012.grib "
                       "'name=\"APCP\"; level=\"A06\";' "
                       f"{fcst_input_dir}/2012040900_F006.grib "
                       "'name=\"APCP\"; level=\"A06\";' "
+                      f"-name {fcst_output_name} "
                       f"{out_dir}/2012040915_A015.nc"),
                      ]
 
@@ -391,7 +380,7 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
     stat_list = 'sum,min,max,range,mean,stdev,vld_count'
     fcst_name = 'APCP'
     fcst_level = 'A03'
-    fcst_fmt = f'-field \'name="{fcst_name}"; level="{fcst_level}";\''
+    fcst_fmt = f'\'name="{fcst_name}"; level="{fcst_level}";\''
     config = metplus_config()
 
     test_data_dir = os.path.join(config.getdir('METPLUS_BASE'),
@@ -444,13 +433,13 @@ def test_pcp_combine_derive(metplus_config, config_overrides, extra_fields):
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
     expected_cmds = [(f"{app_path} {verbosity} "
                       f"-derive {stat_list} "
-                      f"{fcst_input_dir}/2005080700/24.tm00_G212 "
-                      f"{fcst_input_dir}/2005080700/21.tm00_G212 "
-                      f"{fcst_input_dir}/2005080700/18.tm00_G212 "
-                      f"{fcst_input_dir}/2005080700/15.tm00_G212 "
-                      f"{fcst_input_dir}/2005080700/12.tm00_G212 "
-                      f"{fcst_input_dir}/2005080700/09.tm00_G212 "
-                      f"{fcst_fmt} {extra_fields}"
+                      f"{fcst_input_dir}/2005080700/24.tm00_G212 {fcst_fmt} "
+                      f"{fcst_input_dir}/2005080700/21.tm00_G212 {fcst_fmt} "
+                      f"{fcst_input_dir}/2005080700/18.tm00_G212 {fcst_fmt} "
+                      f"{fcst_input_dir}/2005080700/15.tm00_G212 {fcst_fmt} "
+                      f"{fcst_input_dir}/2005080700/12.tm00_G212 {fcst_fmt} "
+                      f"{fcst_input_dir}/2005080700/09.tm00_G212 {fcst_fmt} "
+                      f"{extra_fields}"
                       f"{out_dir}/2005080700_f24_A18.nc"),
                      ]
 
@@ -512,9 +501,9 @@ def test_pcp_combine_loop_custom(metplus_config):
     for ens in ens_list:
         cmd = (f"{app_path} {verbosity} "
                f"-add "
-               f"-name {fcst_name} "
                f"{fcst_input_dir}/{ens}/2009123112_02400.grib "
                "'name=\"APCP\"; level=\"A24\";' "
+               f"-name {fcst_name} "
                f"{out_dir}/{ens}/2009123112_02400.nc")
         expected_cmds.append(cmd)
 

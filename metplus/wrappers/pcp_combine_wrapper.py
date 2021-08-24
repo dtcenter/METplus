@@ -32,7 +32,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         super().__init__(config,
                          instance=instance,
                          config_overrides=config_overrides)
-        self.inaddons = []
         self.method = ""
         self.field_name = None
         self.field_level = ""
@@ -259,7 +258,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
     def clear(self):
         super().clear()
-        self.inaddons = []
         self.method = ""
         self.field_name = None
         self.field_level = ""
@@ -269,8 +267,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.extra_output = None
 
     def add_input_file(self, filename, addon):
-        self.infiles.append(filename)
-        self.inaddons.append(str(addon))
+        self.args.append(filename)
+        self.args.append(addon)
 
     def get_dir_and_template(self, data_type, in_or_out):
         prefix = f'{data_type}_{in_or_out}'
@@ -468,6 +466,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                           "accumulation using "
                           f"{' or '.join(search_accum_list)} input data")
 
+        files_found = []
+
         # loop backwards in time until you have a full set of accum
         while last_time <= search_time:
             found = False
@@ -509,6 +509,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                     # add file to input list and
                     # step back in time to find more data
                     self.add_input_file(search_file, addon)
+                    files_found.append((search_file, addon))
                     self.logger.debug(f"Adding input file: {search_file} "
                                       f"with {addon}")
                     search_time = search_time - timedelta(seconds=accum_amount)
@@ -522,14 +523,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
             # if we still need to find more accum but we couldn't find it, fail
             if not found:
-                return False
+                return None
 
         # fail if no files were found or if we didn't find
         #  the entire accumulation needed
-        if not self.infiles or total_accum:
-            return False
+        if not files_found or total_accum:
+            return None
 
-        return True
+        return files_found
         
     def get_command(self):
 
@@ -537,16 +538,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         for arg in self.args:
             cmd += f'{arg} '
-
-        if self.method != "SUM" and self.method != "USER_DEFINED":
-            if len(self.infiles) == 0:
-                self.log_error("No input filenames specified")
-                return None
-
-            for idx, f in enumerate(self.infiles):
-                cmd += f + " "
-                if self.method != 'DERIVE':
-                    cmd += self.inaddons[idx] + " "
 
         # set -field options if set
         if self.field_name:
@@ -762,6 +753,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             f"from {ti_get_lead_string(lead, False)}."
         )
 
+        files_found = []
+
         # get first file
         pcpSts1 = do_string_sub(in_template,
                                 level=accum,
@@ -774,7 +767,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if file1 is None:
             self.log_error(f'Could not find {data_src} file {file1_expected} '
                            f'using template {in_template}')
-            return False
+            return None
 
         # if data is GRIB and second lead is 0, then
         # run PCPCombine in -add mode with just the first file
@@ -785,7 +778,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.args.append('-add')
             lead = seconds_to_met_time(lead)
             self.add_input_file(file1, lead)
-            return True
+            files_found.append((file1, lead))
+            return files_found
 
         # else continue building -subtract command
 
@@ -807,17 +801,17 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if file2 is None:
             self.log_error(f'Could not find {data_src} file {file2_expected} '
                            f'using template {in_template}')
-            return False
+            return None
 
         if self.c_dict[data_src+'_INPUT_DATATYPE'] == 'GRIB':
             lead = seconds_to_met_time(lead)
             lead2 = seconds_to_met_time(lead2)
         else:
             if not self.c_dict.get(f"{data_src}_NAMES"):
-                return False
+                return None
 
             if not self.c_dict.get(f"{data_src}_LEVELS"):
-                return False
+                return None
 
             field_name = self.c_dict[f"{data_src}_NAMES"][0]
             level = self.c_dict[f"{data_src}_LEVELS"][0]
@@ -833,9 +827,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         self.add_input_file(file1, lead)
         self.add_input_file(file2, lead2)
+        files_found.append((file1, lead))
+        files_found.append((file2, lead2))
 
-        return True
-
+        return files_found
 
     def setup_sum_method(self, time_info, var_info, data_src):
         """!Setup pcp_combine to build desired accumulation based on
@@ -969,13 +964,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # check _PCP_COMBINE_INPUT_DIR to get accumulation files
         self.input_dir = in_dir
 
-        if not self.get_accumulation(time_info, accum_seconds, data_src):
+        files_found = self.get_accumulation(time_info, accum_seconds, data_src)
+        if not files_found:
             self.log_error(f'Could not find files to build accumulation in '
                            f'{in_dir} using template {in_template}')
             return False
 
         self.args.append("-name " + field_name)
-        return True
+        return files_found
 
     def setup_derive_method(self, time_info, var_info, data_src):
         """!Setup pcp_combine to derive stats
@@ -991,11 +987,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # add list of statistics
         self.args.append(','.join(self.c_dict[f"{data_src}_STAT_LIST"]))
 
-        if self.c_dict[f"{data_src}_NAMES"]:
-            self.field_name = self.c_dict[f"{data_src}_NAMES"][0]
-
-        if self.c_dict[f"{data_src}_LEVELS"]:
-            self.field_level = self.c_dict[f"{data_src}_LEVELS"][0]
+        # if self.c_dict[f"{data_src}_NAMES"]:
+        #     self.field_name = self.c_dict[f"{data_src}_NAMES"][0]
+        #
+        # if self.c_dict[f"{data_src}_LEVELS"]:
+        #     self.field_level = self.c_dict[f"{data_src}_LEVELS"][0]
 
         if self.c_dict[f"{data_src}_OUTPUT_NAME"]:
             self.output_name = self.c_dict[f"{data_src}_OUTPUT_NAME"]
@@ -1027,7 +1023,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         )
         if lookback_seconds is None:
             self.log_error(f'Invalid format for derived lookback: {lookback}')
-            return False
+            return None
 
         # if no lookback is specified, get files using the template without
         # using the get accumulation logic
@@ -1042,19 +1038,23 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                                          data_type=data_src,
                                          return_list=True)
             if not input_files:
-                return False
+                return None
 
             for input_file in input_files:
                 self.add_input_file(input_file, addon)
+                files_found.append((input_file, addon))
 
-        elif not self.get_accumulation(time_info,
-                                       lookback_seconds,
-                                       data_src):
+            return files_found
+
+        files_found = self.get_accumulation(time_info,
+                                            lookback_seconds,
+                                            data_src)
+        if not files_found:
             self.log_error(f'Could not find files in {in_dir} '
                            f'using template {in_template}')
-            return False
+            return None
 
-        return True
+        return files_found
 
     def setup_user_method(self, time_info, data_src):
         """!Setup pcp_combine to call user defined command
