@@ -32,7 +32,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         super().__init__(config,
                          instance=instance,
                          config_overrides=config_overrides)
-        self.method = ""
         self.field_name = None
         self.field_level = ""
         self.output_name = ""
@@ -258,7 +257,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
     def clear(self):
         super().clear()
-        self.method = ""
         self.field_name = None
         self.field_level = ""
         self.field_extra = ""
@@ -632,10 +630,10 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         # read additional names/levels to add to command if set
         self.extra_fields, self.extra_output = self.get_extra_fields(data_src)
 
-        self.method = self.c_dict[data_src+'_RUN_METHOD']
+        method = self.c_dict[data_src+'_RUN_METHOD']
 
         #
-        if (self.method != "USER_DEFINED" and
+        if (method != "USER_DEFINED" and
                 not var_info and
                 not self.c_dict[f"{data_src}_LOOKBACK"]):
             self.log_error('Cannot run PCPCombine without specifying lookback '
@@ -658,15 +656,15 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         # if method is not USER_DEFINED or DERIVE,
         # check that field information is set
-        if self.method == "USER_DEFINED":
+        if method == "USER_DEFINED":
             can_run = self.setup_user_method(time_info, data_src)
-        elif self.method == "DERIVE":
+        elif method == "DERIVE":
             can_run = self.setup_derive_method(time_info, var_info, data_src)
-        elif self.method == "ADD":
+        elif method == "ADD":
             can_run = self.setup_add_method(time_info, var_info, data_src)
-        elif self.method == "SUM":
+        elif method == "SUM":
             can_run = self.setup_sum_method(time_info, var_info, data_src)
-        elif self.method == "SUBTRACT":
+        elif method == "SUBTRACT":
             can_run = self.setup_subtract_method(time_info, var_info, data_src)
         else:
             can_run = None
