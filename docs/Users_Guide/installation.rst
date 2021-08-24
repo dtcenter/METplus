@@ -121,6 +121,8 @@ to run.
     - cartopy (0.17.0)
     - matplotlib (3.3.4)
 
+Cartopy, one of the dependencies of CyclonePlotter, attempts to download shapefiles from the internet to complete successfully. So if CyclonePlotter is run on a closed system (i.e. no internet), additional steps need to be taken. First, go to the Natural Earth Data webpage and download the small scale (1:110m) cultural and physical files that will have multiple extensions (e.g. .dbf, .shp, .shx). Untar these files in a noted location. Finally, create an environment variable in the user-specific system configuration file for CARTOPY_DIR, setting it to the location where the shapefiles are located. 
+
 .. _getcode:
 
 Getting the METplus Wrappers source code
@@ -251,8 +253,10 @@ Build_components and using manage_externals
 
 Running build_components/build_MET.sh will
 
--  clone MET and METviewer from github using the manage_externals scripts
+-  clone METplotpy, METcalcpy and METviewer from github using the manage_externals scripts
 -  grab the current MET compile script and all of the necessary external libraries
+-  download the most recent version of MET from github
+    -  https://github.com/dtcenter/MET/releases/download/v10.0.0/met-10.0.0.20210510.tar.gz 
 -  build the external libraries
 -  attempt to build MET
 
