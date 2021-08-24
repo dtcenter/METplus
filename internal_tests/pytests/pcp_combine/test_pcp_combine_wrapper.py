@@ -219,6 +219,7 @@ def test_setup_subtract_method(metplus_config):
     task_info['valid'] = datetime.datetime.strptime("201609050000", '%Y%m%d%H%M')
     task_info['lead_hours'] = 9
     time_info = time_util.ti_calculate(task_info)
+    accum_seconds = 6 * 3600
     var_info = {}
     var_info['fcst_name'] = "APCP"
     var_info['obs_name'] = "ACPCP"
@@ -226,7 +227,7 @@ def test_setup_subtract_method(metplus_config):
     var_info['obs_extra'] = ""
     var_info['fcst_level'] = "A06"
     var_info['obs_level'] = "A06"
-    files_found = pcw.setup_subtract_method(time_info, var_info, rl)
+    files_found = pcw.setup_subtract_method(time_info, accum_seconds, rl)
     in_files = [item[0] for item in files_found]
 
     assert len(in_files) == 2
@@ -558,8 +559,10 @@ def test_pcp_combine_subtract(metplus_config):
     out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
     expected_cmds = [(f"{app_path} {verbosity} "
                       f"-subtract "
-                      f"{fcst_input_dir}/2005080700/18.tm00_G212 18 "
-                      f"{fcst_input_dir}/2005080700/15.tm00_G212 15 "
+                      f"{fcst_input_dir}/2005080700/18.tm00_G212 "
+                      "'name=\"APCP\"; level=\"A18\";' "
+                      f"{fcst_input_dir}/2005080700/15.tm00_G212 "
+                      "'name=\"APCP\"; level=\"A15\";' "
                       f"{out_dir}/2005080718_A003.nc"),
                      ]
 
