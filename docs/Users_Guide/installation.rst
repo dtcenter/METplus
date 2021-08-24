@@ -253,8 +253,10 @@ Build_components and using manage_externals
 
 Running build_components/build_MET.sh will
 
--  clone MET and METviewer from github using the manage_externals scripts
+-  clone METplotpy, METcalcpy and METviewer from github using the manage_externals scripts
 -  grab the current MET compile script and all of the necessary external libraries
+-  download the most recent version of MET from github
+    -  https://github.com/dtcenter/MET/releases/download/v10.0.0/met-10.0.0.20210510.tar.gz 
 -  build the external libraries
 -  attempt to build MET
 
