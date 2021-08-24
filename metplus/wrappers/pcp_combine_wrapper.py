@@ -258,6 +258,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         if lookback_seconds is None:
             return False
 
+        time_info['level'] = lookback_seconds
+
         # if method is not USER_DEFINED or DERIVE,
         # check that field information is set
         if method == "USER_DEFINED":
@@ -269,7 +271,8 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         elif method == "SUM":
             can_run = self.setup_sum_method(time_info, var_info, data_src)
         elif method == "SUBTRACT":
-            can_run = self.setup_subtract_method(time_info, var_info, data_src)
+            can_run = self.setup_subtract_method(time_info, lookback_seconds,
+                                                 data_src)
         else:
             can_run = None
 
@@ -281,7 +284,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         self._handle_extra_field_arguments(data_src, time_info)
 
-        time_info['level'] = lookback_seconds
+        #time_info['level'] = lookback_seconds
         if not self.find_and_check_output_file(time_info=time_info):
             return True
 
@@ -307,11 +310,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         return True
 
-    def setup_subtract_method(self, time_info, var_info, data_src):
+    def setup_subtract_method(self, time_info, accum, data_src):
         """! Setup pcp_combine to subtract two files to build accumulation
 
           @param time_info object containing timing information
-          @param var_info object containing variable information
+          @param accum accumulation amount to compute in seconds
           @params data_src data type (FCST or OBS)
           @rtype string
           @return path to output file
@@ -319,28 +322,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         self.args.append('-subtract')
 
         in_dir, in_template = self.get_dir_and_template(data_src, 'INPUT')
-
-        if self.c_dict[f"{data_src}_LOOKBACK"]:
-            accum = self.c_dict[f"{data_src}_LOOKBACK"]
-        else:
-            level = var_info[f'{data_src.lower()}_level']
-            level_type, accum = util.split_level(level)
-            self.logger.warning(f'{data_src}_PCP_COMBINE_LOOKBACK is '
-                                f'not set. Using {accum} from '
-                                f'{data_src}_VAR{var_info.get("index")}_LEVELS'
-                                '. It is recommended that you explicitly set '
-                                'the output accumulation.')
-
-        accum = get_seconds_from_string(accum,
-                                        default_unit='H',
-                                        valid_time=time_info['valid'])
-        if accum is None:
-            self.log_error(
-                "Could not get accumulation from "
-                f"{data_src}_VAR{var_info.get('index')}_LEVEL or "
-                f"{data_src}_PCP_COMBINE_LOOKBACK"
-            )
-            return False
 
         lead = time_info['lead_seconds']
         lead2 = lead - accum
@@ -353,18 +334,18 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
         files_found = []
 
+        full_template = os.path.join(self.c_dict[f'{data_src}_INPUT_DIR'],
+                                     self.c_dict[f'{data_src}_INPUT_TEMPLATE'])
+
         # get first file
-        pcpSts1 = do_string_sub(in_template,
-                                level=accum,
-                                **time_info)
-        file1_expected = os.path.join(in_dir, pcpSts1)
-        file1 = util.preprocess_file(file1_expected,
+        filepath1 = do_string_sub(full_template, **time_info)
+        file1 = util.preprocess_file(filepath1,
                                      self.c_dict[data_src+'_INPUT_DATATYPE'],
                                      self.config)
 
         if file1 is None:
-            self.log_error(f'Could not find {data_src} file {file1_expected} '
-                           f'using template {in_template}')
+            self.log_error(f'Could not find {data_src} file {filepath1} '
+                           f'using template {full_template}')
             return None
 
         # if data is GRIB and second lead is 0, then
@@ -387,51 +368,46 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         input_dict2 = {'init': time_info['init'],
                        'lead': lead2}
         time_info2 = ti_calculate(input_dict2)
+        time_info2['level'] = accum
         if hasattr(time_info, 'custom'):
             time_info2['custom'] = time_info['custom']
 
-        pcpSts2 = do_string_sub(in_template,
-                                level=accum,
-                                **time_info2)
-        file2_expected = os.path.join(in_dir, pcpSts2)
-        file2 = util.preprocess_file(file2_expected,
+        filepath2 = do_string_sub(full_template, **time_info2)
+        file2 = util.preprocess_file(filepath2,
                                      self.c_dict[data_src+'_INPUT_DATATYPE'],
                                      self.config)
 
         if file2 is None:
-            self.log_error(f'Could not find {data_src} file {file2_expected} '
-                           f'using template {in_template}')
+            self.log_error(f'Could not find {data_src} file {filepath2} '
+                           f'using template {full_template}')
             return None
 
-        if self.c_dict[data_src+'_INPUT_DATATYPE'] == 'GRIB':
-            lead = seconds_to_met_time(lead)
-            lead2 = seconds_to_met_time(lead2)
-        else:
-            if not self.c_dict.get(f"{data_src}_NAMES"):
-                return None
+        # handle field information
+        field_args = {}
+        if self.c_dict.get(f"{data_src}_NAMES"):
+            field_args['name'] = self.c_dict[f"{data_src}_NAMES"][0]
 
-            if not self.c_dict.get(f"{data_src}_LEVELS"):
-                return None
+        if self.c_dict.get(f"{data_src}_LEVELS"):
+            field_args['level'] = self.c_dict[f"{data_src}_LEVELS"][0]
 
-            field_name = self.c_dict[f"{data_src}_NAMES"][0]
-            level = self.c_dict[f"{data_src}_LEVELS"][0]
-
-            field_name_1 = do_string_sub(field_name, **time_info)
-            level_1 = do_string_sub(level, **time_info)
-            lead = ("'name=\"" + field_name_1 + "\";' " +
-                    "'level=\"" + level_1 + "\"';")
-            field_name_2 = do_string_sub(field_name, **time_info2)
-            level_2 = do_string_sub(level, **time_info2)
-            lead2 = ("'name=\"" + field_name_2 + "\"; " +
-                     "level=\"" + level_2 + "\";'")
+        field_info1 = self.get_field_string(
+            time_info=time_info,
+            search_accum=seconds_to_met_time(lead),
+            **field_args
+        )
+        field_info2 = self.get_field_string(
+            time_info=time_info2,
+            search_accum=seconds_to_met_time(lead2),
+            **field_args
+        )
 
         self.args.append(file1)
-        self.args.append(lead)
+        self.args.append(field_info1)
 
         self.args.append(file2)
-        self.args.append(lead2)
-        files_found.append((file1, lead))
-        files_found.append((file2, lead2))
+        self.args.append(field_info2)
+        files_found.append((file1, field_info1))
+        files_found.append((file2, field_info2))
 
         return files_found
 
@@ -893,7 +869,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                          level=None, extra=None):
         if name is None:
             name = 'APCP'
-            level = f'A{search_accum.zfill(2)}'
+            level = f'A{str(search_accum).zfill(2)}'
             self.logger.debug("Field name not specified. Assuming "
                               f"{name}/{level}")
 
