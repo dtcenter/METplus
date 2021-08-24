@@ -298,13 +298,13 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         return self.build()
 
     def setup_user_method(self, time_info, data_src):
-        """!Setup pcp_combine to call user defined command
-        Args:
+        """! Setup pcp_combine to call user defined command
+
           @param time_info dictionary containing timing information
-          @param var_info object containing variable information
           @params data_src data type (FCST or OBS)
           @rtype string
-          @return path to output file"""
+          @return path to output file
+        """
         command_template = self.config.getraw(
             'config',
             f'{data_src}_PCP_COMBINE_COMMAND'
@@ -414,7 +414,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         return files_found
 
     def setup_sum_method(self, time_info, lookback, data_src):
-        """!Setup pcp_combine to build desired accumulation based on
+        """! Setup pcp_combine to build desired accumulation based on
         init/valid times and accumulations
 
           @param time_info object containing timing information
@@ -461,7 +461,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         return True
 
     def setup_add_method(self, time_info, lookback, data_src):
-        """!Setup pcp_combine to add files to build desired accumulation
+        """! Setup pcp_combine to add files to build desired accumulation
 
           @param time_info dictionary containing timing information
           @param lookback accumulation amount to compute in seconds
@@ -485,7 +485,7 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         return files_found
 
     def setup_derive_method(self, time_info, lookback, var_info, data_src):
-        """!Setup pcp_combine to derive stats
+        """! Setup pcp_combine to derive stats
 
           @param time_info dictionary containing timing information
           @param lookback accumulation amount to compute in seconds
@@ -544,6 +544,19 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
         return files_found
 
     def _handle_lookback(self, c_dict, d_type):
+        """! Get value for lookback time from config.
+        [FCST/OBS]_PCP_COMBINE_LOOKBACK is used if set. If not, use synonyms
+        [FCST/OBS]_PCP_COMBINE_DERIVE_LOOKBACK or
+        [FCST/OBS]_PCP_COMBINE_OUTPUT_ACCUM. Priority of synonyms is based on
+        run method (derive mode prioritizes DERIVE_LOOKBACK, all other
+        prioritize OUTPUT_ACCUM). This is done because we want to handle the
+        lookback with the same value for all run methods, but the clearest
+        name depending on the method.
+
+            @param c_dict config dictionary to populate
+            @param d_type data type (FCST or OBS)
+            @returns lookback time / desired accumulation in seconds
+        """
         lookback = self.config.getstr('config',
                                       f'{d_type}_PCP_COMBINE_LOOKBACK', '')
         if lookback:
