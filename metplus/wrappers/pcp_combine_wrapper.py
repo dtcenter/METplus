@@ -375,7 +375,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.args.clear()
             self.args.append('-add')
             lead = seconds_to_met_time(lead)
-            self.add_input_file(file1, lead)
+
+            self.args.append(file1)
+            self.args.append(lead)
             files_found.append((file1, lead))
             return files_found
 
@@ -423,8 +425,11 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             lead2 = ("'name=\"" + field_name_2 + "\"; " +
                      "level=\"" + level_2 + "\";'")
 
-        self.add_input_file(file1, lead)
-        self.add_input_file(file2, lead2)
+        self.args.append(file1)
+        self.args.append(lead)
+
+        self.args.append(file2)
+        self.args.append(lead2)
         files_found.append((file1, lead))
         files_found.append((file2, lead2))
 
@@ -618,19 +623,18 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
             for input_file in input_files:
                 # exclude field info and set it with -field
-                self.add_input_file(input_file)
+                self.args.append(input_file)
                 files_found.append((input_file, field_info))
 
-            return files_found
-
-        files_found = self.get_accumulation(time_info,
-                                            lookback_seconds,
-                                            data_src,
-                                            field_info_after_file=False)
-        if not files_found:
-            self.log_error(f'Could not find files in {in_dir} '
-                           f'using template {in_template}')
-            return None
+        else:
+            files_found = self.get_accumulation(time_info,
+                                                lookback_seconds,
+                                                data_src,
+                                                field_info_after_file=False)
+            if not files_found:
+                self.log_error(f'Could not find files in {in_dir} '
+                               f'using template {in_template}')
+                return None
 
         # set -field name and level from first file field info
         self.args.append(f'-field {files_found[0][1]}')
@@ -694,11 +698,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.log_error(f'Invalid format for derived lookback: {lookback}')
 
         return lookback_seconds
-
-    def add_input_file(self, filename, field_info=None):
-        self.args.append(filename)
-        if field_info:
-            self.args.append(field_info)
 
     def get_dir_and_template(self, data_type, in_or_out):
         prefix = f'{data_type}_{in_or_out}'
