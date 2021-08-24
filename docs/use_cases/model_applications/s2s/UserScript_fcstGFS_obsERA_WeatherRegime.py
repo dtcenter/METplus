@@ -4,7 +4,7 @@ WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python
 
 model_applications/
 s2s/
-UserScript_obsERA_obsOnly_WeatherRegime.py
+UserScript_fcstGFS_obsERA_WeatherRegime.py
 
 """
 
@@ -14,22 +14,24 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # To perform a weather regime analysis using 500 mb height data.  There are 2 pre-
 # processing steps, RegridDataPlane and PcpCombine, and 4 steps in the weather regime 
-# analysis, elbow, EOFs, K means, and Time frequency.  The elbow and K means steps begin 
-# with K means clustering.  Elbow then computes the sum of squared distances for clusters 
-# 1 - 14 and draws a straight line from the sum of squared distance for the clusters.  
-# This helps determine the optimal cluster number by examining the largest difference 
-# between the curve and the straight line.  The EOFs step is optional.  It computes an 
-# empirical orthogonal function analysis.  The K means step uses clustering to compute 
-# the frequency of occurrernce and anomalies for each cluster to give the most common
-# weather regimes.  Finally, the time frequency computes the frequency of each weather
-# regime over a user specified time frame.
+# analysis, elbow, EOFs, K means, and the Time frequency.  The elbow and K means steps 
+# begin with K means clustering.  Elbow then computes the sum of squared distances for 
+# clusters 1 - 14 and draws a straight line from the sum of squared distance for the 
+# clusters.  This helps determine the optimal cluster number by examining the largest 
+# difference between the curve and the straight line.  The EOFs step is optional.  It 
+# computes an empirical orthogonal function analysis.  The K means step uses clustering 
+# to compute the frequency of occurrernce and anomalies for each cluster to give the most 
+# common weather regimes.  Then, the time frequency computes the frequency of each weather
+# regime over a user specified time frame.  Finally, stat_analysis can be run to compute
+# an categorical analysis of the weather regime classification or an anomaly correlation of
+# the time frequency data.
 #
 
 ##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset: None 
+#  * Forecast dataset: GFS Forecast 500 mb height. 
 #  * Observation dataset: ERA Reanlaysis 500 mb height.
 
 ##############################################################################
@@ -63,13 +65,15 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # files for the weather regime calculation, computing the elbow (ELBOW), plotting the elbow 
 # (PLOTELBOW), computing EOFs (EOF), plotting EOFs (PLOTEOF), computing K means (KMEANS), plotting 
 # the K means (PLOTKMEANS), computing a time frequency of weather regimes (TIMEFREQ) and plotting 
-# the time frequency (PLOTFREQ).  All variables are set up in the UserScript .conf file 
-# and are formatted as follows:
-# PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), UserScript(obs_wr_filelist), UserScript(script_wr)
+# the time frequency (PLOTFREQ).  All variables are set up in the UserScript .conf file.  The pre-
+# processing steps and stat_analysis are listed in the process list, and are formatted as follows:
+# 
+# PROCESS_LIST = RegridDataPlane(regrid_obs), PcpCombine(daily_mean_obs), UserScript(script_wr)
 #
 # The other steps are listed in the [user_env_vars] section of the UserScript .conf file
 # in the following format:
 # OBS_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS+TIMEFREQ+PLOTFREQ
+# FCST_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS+TIMEFREQ+PLOTFREQ
 #
 
 ##############################################################################
@@ -78,9 +82,9 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # The weather regime python code is run for each time for the forecast and observations 
 # data. This example loops by valid time.  This version is set to only process the weather 
-# regime steps (ELBOW, PLOTELBOW, EOF, PLOTEOF, KMEANS, PLOTKMEANS, TIMEFREQ, PLOTFREQ), omitting 
-# the regridding, time averaging, and creating the file list pre-processing steps.  However, the 
-# configurations for pre-processing are available for user reference.
+# regime steps (ELBOW, PLOTELBOW, EOF, PLOTEOF, KMEANS, PLOTKMEANS, TIMEFREQ, PLOTFREQ) and 
+# stat_analysis, omitting the regridding, time averaging, and creating the file list pre-processing 
+# steps.  However, the configurations for pre-processing are available for user reference.
 #
 
 ##############################################################################
@@ -89,13 +93,12 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.py.  
-# The file UserScript_obsERA_obsOnly_WeatherRegime.conf runs the python program, however
-# UserScript_obsERA_obsOnly_Blocking/WeatherRegime_obsERA_obsOnly.conf sets the variables 
-# for all steps of the Weather Regime use case including data paths.
+# i.e. parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.py.  
+# The file UserScript_fcstGFS_obsERA_WeatherRegime.conf runs the python program and
+# sets the variables for all steps of the Weather Regime use case including data paths.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.conf
 #
 
 ##############################################################################
@@ -109,6 +112,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.py
 # parm/use_cases/met_tool_wrapper/PCPCombine/PCPCOmbine_derive.py
+# parm/use_cases/met_tool_wrapper/StatAnalysis/StatAnalysis.py
 #
 
 ##############################################################################
@@ -171,13 +175,14 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use 
 # case will be found in model_applications/s2s/WeatherRegime (relative to **OUTPUT_BASE**) and will contain output 
 # for the steps requested.  This may include the regridded data, daily averaged files, a text file containing the 
-# list of input files, aweather regime output, and MET matched pair files for the weather regime classification and 
-# time frequency (if KMEANS and TIMEFREQ are run for both the forecast and observation data). In addition, output 
-# elbow, EOF, and Kmeans weather regime plots can be generated.  The location of these output plots can be specified 
-# as WR_OUTPUT_DIR.  If it is not specified, plots will be sent to {OUTPUT_BASE}/plots.  The output location for 
-# the matched pair files can be specified as WR_MPR_OUTPUT_DIR.  If it is not specified, it will be sent to 
-# {OUTPUT_BASE}/mpr.  The output weather regime text or netCDF file location is set in WR_OUTPUT_FILE_DIR.  If this 
-# is not specified, the output text/netCDF file will be sent to {OUTPUT_BASE}.
+# list of input files, and text files for the weather regime classification and time frequency (if KMEANS and 
+# TIMEFREQ are run for both the forecast and observation data). In addition, output elbow, EOF, and Kmeans weather 
+# regime plots can be generated.  The location of these output plots can be specified as WR_OUTPUT_DIR.  If it is 
+# not specified, plots will be sent to {OUTPUT_BASE}/plots.  The output location for the matched pair files can be 
+# specified as WR_MPR_OUTPUT_DIR.  If it is not specified, it will be sent to {OUTPUT_BASE}/mpr.  The output weather 
+# regime text or netCDF file location is set in WR_OUTPUT_FILE_DIR.  If this is not specified, the output text/netCDF 
+# file will be sent to {OUTPUT_BASE}.  The stat_analysis contingency table statistics and anomaly correlation files
+# will be sent to the locations given in STAT_ANALYSIS_OUTPUT_DIR for their respective configuration sections. 
 #
 
 ##############################################################################
@@ -188,6 +193,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 #   * RegridDataPlaneUseCase
 #   * PCPCombineUseCase
+#   * StatAnalysisUseCase
 #   * S2SAppUseCase
 #   * NetCDFFileUseCase
 #   * GRIB2FileUseCase
