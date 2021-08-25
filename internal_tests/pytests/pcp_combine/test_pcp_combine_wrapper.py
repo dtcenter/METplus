@@ -695,20 +695,17 @@ def test_setup_add_method_single_file(metplus_config):
     in_file = (f"{wrapper.c_dict.get('FCST_INPUT_DIR')}/"
                "20191002_prec_1hracc_75hrfcst_e00.nc")
     expected_cmds = [
-        (f"{app_path} {verbosity} "
-         "-add "
+        (f"{app_path} {verbosity} -add "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_00,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191002_23,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191002_22,*,*)\";' "
          f"{out_dir}/2019100300_prec_03hracc_e00.nc"),
-        (f"{app_path} {verbosity} "
-         "-add "
+        (f"{app_path} {verbosity} -add "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_03,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_02,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_01,*,*)\";' "
          f"{out_dir}/2019100303_prec_03hracc_e00.nc"),
-        (f"{app_path} {verbosity} "
-         "-add "
+        (f"{app_path} {verbosity} -add "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_06,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_05,*,*)\";' "
          f"{in_file} 'name=\"rf\"; level=\"(20191003_04,*,*)\";' "
