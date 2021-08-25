@@ -16,17 +16,17 @@ A/BAL_WIND_50  | TCMPR output format:          TC-Pairs
 -------------- ------------------------------- -----------------------------
 ACC            | MODE output format: Accuracy  | MODE-Tool
                | CTS output format: Accuracy   | Point-Stat Tool
-	       | including normal and          
-	       | bootstrap upper and lower
-	       | confidence limits
-	       | MCTS output format: Accuracy,
-	       | normal confidence limits
-	       | and bootstrap confidence
-	       | limits
+	       | including normal and          |
+	       | bootstrap upper and lower     |
+	       | confidence limits             |
+	       | MCTS output format: Accuracy, |
+	       | normal confidence limits      |
+	       | and bootstrap confidence      |
+	       | limits                        |
 	       | NBRCTCS output format:        | Grid-Stat Tool
-	       | Accuracy including normal
-	       | and bootstrap upper and lower
-	       | confidence limits"
+	       | Accuracy including normal     |
+	       | and bootstrap upper and lower |
+	       | confidence limits"            |
 ============== =============================== =============================
 
 
@@ -53,7 +53,8 @@ Examples using the glossary format:
      | MCTS output format: Accuracy, normal confidence limits and bootstrap
      |     confidence limits
      | NBRCTCS output format: Accuracy including normal and bootstrap upper
-     |     and lower confidence limits"   
+     |     and lower confidence limits"
+     |
      | *Tools:* MODE-Tool, Point-Stat Tool & Grid-Stat Tool
  
  
