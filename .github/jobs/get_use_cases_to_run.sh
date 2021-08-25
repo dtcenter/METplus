@@ -18,7 +18,7 @@ if [ "$run_use_cases" == "true" ]; then
 
   # if only running new use cases, add to filter criteria
   if [ "$run_all_use_cases" == "false" ]; then
-    echo Only run use cases that are marked to run every time (run = true)
+    echo "Only run use cases that are marked to run every time (run = true)"
     matrix=$(jq '[.[] | select(.run == true) | (.category + ":" + .index_list)]' $use_case_groups_filepath)
   else
     echo Add all available use cases
