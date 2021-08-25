@@ -2719,10 +2719,12 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
     if os.path.isfile(outpath):
         return outpath
 
-    # Create staging area if it does not exist
-    outdir = os.path.dirname(outpath)
-    if not os.path.exists(outdir):
-        os.makedirs(outdir, mode=0o0775)
+    # Create staging area directory only if file has compression extension
+    valid_extensions = ['gz', 'bz2', 'zip']
+    if any([os.path.isfile(f'{filename}.{ext}') for ext in valid_extensions]):
+        outdir = os.path.dirname(outpath)
+        if not os.path.exists(outdir):
+            os.makedirs(outdir, mode=0o0775)
 
     # uncompress gz, bz2, or zip file
     if os.path.isfile(filename+".gz"):
@@ -2750,6 +2752,10 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
             with open(outpath, 'wb') as f:
                 f.write(z.read(os.path.basename(filename)))
                 return outpath
+
+    # if input doesn't need to exist, return filename
+    if not config.getbool('config', 'INPUT_MUST_EXIST', True):
+        return filename
 
     return None
 
