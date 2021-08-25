@@ -14,7 +14,7 @@ A/BAL_WIND_50  | TCMPR line type:              TC-Pairs
                | a/bdeck 50-knot radius
 	       | winds in full circle	       
 -------------- ------------------------------- -----------------------------
-ACC            | MODE line type: Accuracy       | MODE-Tool
+ACC            | MODE line type: Accuracy      | MODE-Tool
                |                               |
                | CTS line type: Accuracy       | Point-Stat Tool
 	       | including normal and          |
