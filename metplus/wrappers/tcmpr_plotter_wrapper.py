@@ -117,6 +117,11 @@ class TCMPRPlotterWrapper(CommandBuilder):
         c_dict['LOOP_INFO'] = self.read_loop_info()
         c_dict['LOOP_ARGS'] = {}
 
+        # get option to pass input directory instead of finding .tcst files
+        c_dict['READ_ALL_FILES'] = (
+            self.config.getbool('config', 'TCMPR_PLOTTER_READ_ALL_FILES', False)
+        )
+
         return c_dict
 
     def read_optional_args(self):
@@ -272,6 +277,10 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
         # input is directory, so find all tcst files to process
         self.logger.debug(f'Plotting all files in: {input_data}')
+        if self.c_dict['READ_ALL_FILES']:
+            self.logger.debug('Passing in directory to R script')
+            return [input_data]
+
         input_files = util.get_files(input_data, ".*.tcst")
         self.logger.debug(f"Number of files: {len(input_files)}")
         return sorted(input_files)
