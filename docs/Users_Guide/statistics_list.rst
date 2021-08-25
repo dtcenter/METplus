@@ -11,7 +11,7 @@ METplus Laundry List of Statistics
 
     * - Type
       - Statistics
-      - References
+      - Tool
     * - 2D Objects
       - For each object: Location of the centroid in grid units, Location of the centroid in lat/lon degrees, Axis angle, Length of the enclosing rectangle, Width of the enclosing rectangle, Object area, Radius of curvature of the object defined in terms of third order moments, Center of curvature, Ratio of the difference between the area of an object and the area of its convex hull divided by the area of the complex hull, percentiles of intensity of the raw field within the object, Percentile of intensity chosen for use in the percentile intensity ratio, Sum of the intensities of the raw field within the object, 
       - See the WWRP/WGNE JWGFVR website
@@ -26,7 +26,7 @@ METplus Laundry List of Statistics
       - TC-Pairs
 
 ============== =============================== =============================
-Type           Statistics                      References
+Type           Statistics                      Tool
 ============== =============================== =============================
 2D Objects     | For each object:              | See the WWRP/WGNE
 	       | Location of the centroid      | JWGFVR website
@@ -88,18 +88,18 @@ Examples using the glossary format:
      computed for a pair of simple objects, NetCDF files with the objects
      and raw data for further processing
 
-     | *Reference: See the WWRP/WGNE JWGFVR website for more details:*
+     | *Tool: See the WWRP/WGNE JWGFVR website for more details:*
        https://www.cawcr.gov.au/projects/verification
 
    A/BAL_WIND_34
      TCMPR output format: a/bdeck 34-knot radius winds in full circle
 
-     | *Reference:* TC-Pairs
+     | *Tool:* TC-Pairs
 
    A/BAL_WIND_50
      TCMPR output format: a/bdeck 50-knot radius winds in full circle
 
-     | *Reference:* TC-Pairs
+     | *Tool:* TC-Pairs
 
  
  
