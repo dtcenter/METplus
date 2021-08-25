@@ -952,7 +952,8 @@ class CommandBuilder:
             return False
 
         # create full output dir if it doesn't already exist
-        if not os.path.exists(parent_dir):
+        if (not os.path.exists(parent_dir) and
+                not self.c_dict.get('DO_NOT_RUN_EXE', False)):
             self.logger.debug(f"Creating output directory: {parent_dir}")
             os.makedirs(parent_dir)
 
