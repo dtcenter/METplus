@@ -872,25 +872,9 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
 
     def get_command(self):
 
-        cmd = f"{self.app_path} -v {self.c_dict['VERBOSITY']} "
-
-        for arg in self.args:
-            cmd += f'{arg} '
-
-        if not self.outfile:
-            self.log_error("No output filename specified")
-            return None
-
-        out_path = self.get_output_path()
-
-        # create outdir (including subdir in outfile) if it doesn't exist
-        if not os.path.exists(os.path.dirname(out_path)):
-            os.makedirs(os.path.dirname(out_path))
-
-        cmd += f"{out_path} "
-
-        # remove whitespace at beginning/end and return command
-        return cmd.strip()
+        cmd = (f"{self.app_path} -v {self.c_dict['VERBOSITY']} "
+               f"{' '.join(self.args)} {self.get_output_path()}")
+        return cmd
 
     def _handle_extra_field_arguments(self, data_src, time_info=None):
         extra_names = self.c_dict.get(data_src + '_EXTRA_NAMES')
