@@ -638,8 +638,8 @@ def test_handle_name_argument(metplus_config, output_name, extra_output,
     ]
 )
 def test_get_extra_fields(metplus_config, names, levels, expected_args):
-    config = metplus_config()
     data_src = 'FCST'
+    config = metplus_config()
     config.set('config', 'FCST_PCP_COMBINE_RUN', True)
     config.set('config', 'FCST_PCP_COMBINE_METHOD', 'ADD')
     config.set('config', 'FCST_PCP_COMBINE_EXTRA_NAMES', names)
@@ -651,3 +651,73 @@ def test_get_extra_fields(metplus_config, names, levels, expected_args):
     wrapper._handle_name_argument('', data_src)
     for index, expected_arg in enumerate(expected_args):
         assert wrapper.args[index] == expected_arg
+
+
+def test_setup_add_method_single_file(metplus_config):
+    data_src = 'FCST'
+    config = metplus_config()
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'PCPCombine')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H%M')
+    config.set('config', 'INIT_BEG', '2019100200')
+    config.set('config', 'INIT_END', '2019100200')
+    config.set('config', 'INIT_INCREMENT', '3H')
+    config.set('config', 'LEAD_SEQ', '24,27,30')
+    config.set('config', 'LOOP_ORDER', 'times')
+
+    config.set('config', 'FCST_PCP_COMBINE_RUN', True)
+    config.set('config', 'FCST_PCP_COMBINE_METHOD', 'ADD')
+    config.set('config', 'FCST_PCP_COMBINE_CONSTANT_INIT', True)
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_DIR', '/some/input/dir')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d}_prec_1hracc_75hrfcst_e00.nc')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR', '/some/output/dir')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_TEMPLATE',
+               '{valid?fmt=%Y%m%d%H}_prec_{level?fmt=%H}hracc_e00.nc')
+    #config.set('config', 'FCST_PCP_COMBINE_INPUT_DATATYPE', 'NETCDF')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '1H')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', 'rf')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_LEVELS',
+               '"({valid?fmt=%Y%m%d_%H},*,*)"')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '3H')
+
+    wrapper = PCPCombineWrapper(config)
+    assert wrapper.isOK
+
+    all_cmds = wrapper.run_all_times()
+
+    app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+    verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+    out_dir = wrapper.c_dict.get('FCST_OUTPUT_DIR')
+    in_file = (f"{wrapper.c_dict.get('FCST_INPUT_DIR')}/"
+               "20191002_prec_1hracc_75hrfcst_e00.nc")
+    expected_cmds = [
+        (f"{app_path} {verbosity} "
+         "-add "
+         f"{in_file} 'name=\"rf\"; level=\"(20191003_00,*,*)\";' "
+         f"{in_file} 'name=\"rf\"; level=\"(20191002_23,*,*)\";' "
+         f"{in_file} 'name=\"rf\"; level=\"(20191002_22,*,*)\";' "
+         f"{out_dir}/2019100300_prec_03hracc_e00.nc"),
+        (f"{app_path} {verbosity} "
+         "-add "
+         f"{in_file} 'name=\"rf\"; level=\"(20191003_03,*,*)\";' "
+         f"{in_file} 'name=\"rf\"; level=\"(20191003_02,*,*)\";' "
+         f"{in_file} 'name=\"rf\"; level=\"(20191003_01,*,*)\";' "
+         f"{out_dir}/2019100303_prec_03hracc_e00.nc"),
+        (f"{app_path} {verbosity} "
+         "-add "
+         f"{in_file} 'name=\"rf\"; level=\"(20191003_06,*,*)\";' "
+         f"{in_file} 'name=\"rf\"; level=\"(20191003_05,*,*)\";' "
+         f"{in_file} 'name=\"rf\"; level=\"(20191003_04,*,*)\";' "
+         f"{out_dir}/2019100306_prec_03hracc_e00.nc"),
+    ]
+
+    assert len(all_cmds) == len(expected_cmds)
+
+    for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+        # ensure commands are generated as expected
+        assert cmd == expected_cmd
