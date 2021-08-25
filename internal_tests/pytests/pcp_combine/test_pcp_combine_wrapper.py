@@ -678,7 +678,6 @@ def test_setup_add_method_single_file(metplus_config):
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR', '/some/output/dir')
     config.set('config', 'FCST_PCP_COMBINE_OUTPUT_TEMPLATE',
                '{valid?fmt=%Y%m%d%H}_prec_{level?fmt=%H}hracc_e00.nc')
-    #config.set('config', 'FCST_PCP_COMBINE_INPUT_DATATYPE', 'NETCDF')
     config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '1H')
     config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', 'rf')
     config.set('config', 'FCST_PCP_COMBINE_INPUT_LEVELS',
