@@ -20,6 +20,7 @@ ACC            | MODE line type: Accuracy      | MODE-Tool
 	       | including normal and          |
 	       | bootstrap upper and lower     |
 	       | confidence limits             |
+               |                               |
 	       | MCTS line type: Accuracy,     |
 	       | normal confidence limits      |
 	       | and bootstrap confidence      |
