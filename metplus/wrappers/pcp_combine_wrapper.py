@@ -353,6 +353,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                            f'using template {full_template}')
             return None
 
+        # handle field information
+        field_args = {}
+        if self.c_dict.get(f"{data_src}_NAMES"):
+            field_args['name'] = self.c_dict[f"{data_src}_NAMES"][0]
+
+        if self.c_dict.get(f"{data_src}_LEVELS"):
+            field_args['level'] = self.c_dict[f"{data_src}_LEVELS"][0]
+
         # if data is GRIB and second lead is 0, then
         # run PCPCombine in -add mode with just the first file
         if lead2 == 0 and self.c_dict[data_src+'_INPUT_DATATYPE'] == 'GRIB':
@@ -360,11 +368,14 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
                               " so running ADD mode on one file")
             self.args.clear()
             self.args.append('-add')
-            lead = seconds_to_met_time(lead)
-
+            field_info = self.get_field_string(
+                time_info=time_info,
+                search_accum=seconds_to_met_time(lead),
+                **field_args
+            )
             self.args.append(file1)
-            self.args.append(lead)
-            files_found.append((file1, lead))
+            self.args.append(field_info)
+            files_found.append((file1, field_info))
             return files_found
 
         # else continue building -subtract command
@@ -386,14 +397,6 @@ class PCPCombineWrapper(ReformatGriddedWrapper):
             self.log_error(f'Could not find {data_src} file {filepath2} '
                            f'using template {full_template}')
             return None
-
-        # handle field information
-        field_args = {}
-        if self.c_dict.get(f"{data_src}_NAMES"):
-            field_args['name'] = self.c_dict[f"{data_src}_NAMES"][0]
-
-        if self.c_dict.get(f"{data_src}_LEVELS"):
-            field_args['level'] = self.c_dict[f"{data_src}_LEVELS"][0]
 
         field_info1 = self.get_field_string(
             time_info=time_info,
