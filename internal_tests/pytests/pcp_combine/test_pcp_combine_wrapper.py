@@ -652,8 +652,7 @@ def test_get_extra_fields(metplus_config, names, levels, expected_args):
     for index, expected_arg in enumerate(expected_args):
         assert wrapper.args[index] == expected_arg
 
-
-def test_setup_add_method_single_file(metplus_config):
+def test_add_method_single_file(metplus_config):
     data_src = 'FCST'
     config = metplus_config()
     config.set('config', 'DO_NOT_RUN_EXE', True)
@@ -717,3 +716,76 @@ def test_setup_add_method_single_file(metplus_config):
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
         assert cmd == expected_cmd
+
+def test_subtract_method_zero_accum(metplus_config):
+    data_src = 'FCST'
+    input_name = 'stratiform_rainfall_amount'
+    input_level = '"(*,*)"'
+    in_dir = '/some/input/dir'
+    out_dir = '/some/output/dir'
+    config = metplus_config()
+    config.set('config', 'DO_NOT_RUN_EXE', True)
+    config.set('config', 'INPUT_MUST_EXIST', False)
+
+    # set process and time config variables
+    config.set('config', 'PROCESS_LIST', 'PCPCombine')
+    config.set('config', 'LOOP_BY', 'INIT')
+    config.set('config', 'INIT_TIME_FMT', '%Y%m%d%H%M')
+    config.set('config', 'INIT_BEG', '2019100200')
+    config.set('config', 'INIT_END', '2019100200')
+    config.set('config', 'INIT_INCREMENT', '3H')
+    config.set('config', 'LEAD_SEQ', '1')
+    config.set('config', 'LOOP_ORDER', 'times')
+
+    config.set('config', 'FCST_PCP_COMBINE_RUN', True)
+    config.set('config', 'FCST_PCP_COMBINE_METHOD', 'SUBTRACT')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_DIR', in_dir)
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_TEMPLATE',
+               '{init?fmt=%Y%m%dT%H%M}Z_pverb{lead?fmt=%3H}.nc')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_DIR', out_dir)
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_TEMPLATE',
+               '{init?fmt=%Y%m%d%H}_f{level?fmt=%3H}.nc')
+    config.set('config', 'FCST_PCP_COMBINE_INPUT_ACCUMS', '1H')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_ACCUM', '1H')
+    config.set('config', 'FCST_PCP_COMBINE_OUTPUT_NAME', input_name)
+
+    expected_cmds_dict = {}
+    expected_cmds_dict['NETCDF'] = [
+        (f"-subtract "
+         f"{in_dir}/20191002T0000Z_pverb001.nc "
+         f"'name=\"{input_name}\"; level={input_level};' "
+         f"{in_dir}/20191002T0000Z_pverb000.nc "
+         f"'name=\"{input_name}\"; level={input_level};' "
+         f"-name \"{input_name}\" "
+         f"{out_dir}/2019100200_f001.nc"),
+    ]
+    expected_cmds_dict['GRIB'] = [
+        (f"-add "
+         f"{in_dir}/20191002T0000Z_pverb001.nc "
+         "'name=\"APCP\"; level=\"A01\";' "
+         f"-name \"{input_name}\" "
+         f"{out_dir}/2019100200_f001.nc"
+         ),
+    ]
+
+    for data_type in ['GRIB', 'NETCDF']:
+        config.set('config', 'FCST_PCP_COMBINE_INPUT_DATATYPE', data_type)
+
+        if data_type == 'NETCDF':
+            config.set('config', 'FCST_PCP_COMBINE_INPUT_NAMES', input_name)
+            config.set('config', 'FCST_PCP_COMBINE_INPUT_LEVELS', input_level)
+
+        wrapper = PCPCombineWrapper(config)
+        assert wrapper.isOK
+
+        all_cmds = wrapper.run_all_times()
+
+        app_path = os.path.join(config.getdir('MET_BIN_DIR'), wrapper.app_name)
+        verbosity = f"-v {wrapper.c_dict['VERBOSITY']}"
+        expected_cmds = [f"{app_path} {verbosity} {item}"
+                         for item in expected_cmds_dict[data_type]]
+        assert len(all_cmds) == len(expected_cmds)
+
+        for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
+            # ensure commands are generated as expected
+            assert cmd == expected_cmd
