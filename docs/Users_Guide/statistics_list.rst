@@ -15,6 +15,7 @@ A/BAL_WIND_50  | TCMPR output format:          TC-Pairs
 	       | winds in full circle	       
 -------------- ------------------------------- -----------------------------
 ACC            | MODE output format: Accuracy  | MODE-Tool
+               |                               |
                | CTS output format: Accuracy   | Point-Stat Tool
 	       | including normal and          |
 	       | bootstrap upper and lower     |
@@ -23,6 +24,7 @@ ACC            | MODE output format: Accuracy  | MODE-Tool
 	       | normal confidence limits      |
 	       | and bootstrap confidence      |
 	       | limits                        |
+	       |                               |
 	       | NBRCTCS output format:        | Grid-Stat Tool
 	       | Accuracy including normal     |
 	       | and bootstrap upper and lower |
