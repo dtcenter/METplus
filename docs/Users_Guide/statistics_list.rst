@@ -49,14 +49,15 @@ Examples using the glossary format:
      | *Tool:* TC-Pairs
 
    ACC
-     | **MODE line type**: Accuracy \ :sub:`1`
+     | **MODE line type**: Accuracy \ :sup:`1`
      | **CTS line type**: Accuracy including normal and bootstrap
-     |     upper and lower confidence limits
+     |     upper and lower confidence limits \ :sup:`2,3`
      | **MCTS line type**: Accuracy, normal confidence limits and bootstrap
-     |     confidence limits
+     |     confidence limits \ :sup:`2,3` 
      | **NBRCTCS line type**: Accuracy including normal and bootstrap upper
-     |     and lower confidence limits"
+     |     and lower confidence limits" \ :sup:`3`
      |
-     | *Tools:* \ :sub:`1` \ MODE-Tool, Point-Stat Tool & Grid-Stat Tool
+     | *Tools:* \ :sup:`1` \ MODE-Tool, \ :sup:`2` \ Point-Stat Tool
+      & \ :sup:`3` \ Grid-Stat Tool
  
  
