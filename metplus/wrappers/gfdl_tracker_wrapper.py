@@ -343,6 +343,16 @@ class GFDLTrackerWrapper(CommandBuilder):
             self.log_error(f"Gen vitals file does not exist: {src_path}")
             return False
 
+        dest_path = os.path.join(self.c_dict['OUTPUT_DIR'],
+                                 'tcvit_genesis_storms.txt')
+        try:
+            shutil.copyfile(src_path, dest_path)
+        except:
+            self.log_error(f"Copy failed: from {src_path} to {dest_path}")
+            return False
+
+        self.logger.debug(f"Copied gen vitals file {src_path} to {dest_path}")
+
         # check if fort.67 already exists in output directory
         # do not copy file if it does
         dest_path = os.path.join(self.c_dict['OUTPUT_DIR'],
