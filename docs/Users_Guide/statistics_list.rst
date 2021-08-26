@@ -29,7 +29,7 @@ ACC            | MODE line type: Accuracy      | MODE-Tool
 	       | NBRCTCS line type:            | Grid-Stat Tool
 	       | Accuracy including normal     |
 	       | and bootstrap upper and lower |
-	       | confidence limits"            |
+	       | confidence limits            |
 ============== =============================== =============================
 
 
@@ -55,7 +55,7 @@ Examples using the glossary format:
      | **MCTS line type**: Accuracy, normal confidence limits and bootstrap
      |     confidence limits \ :sup:`2,3` 
      | **NBRCTCS line type**: Accuracy including normal and bootstrap upper
-     |     and lower confidence limits" \ :sup:`3`
+     |     and lower confidence limits \ :sup:`3`
      |
      | *Tools:* \ :sup:`1` \ MODE-Tool, \ :sup:`2` \ Point-Stat Tool
       & \ :sup:`3` \ Grid-Stat Tool
