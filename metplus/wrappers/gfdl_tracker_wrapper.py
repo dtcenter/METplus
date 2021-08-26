@@ -293,7 +293,7 @@ class GFDLTrackerWrapper(CommandBuilder):
             return False
 
         # create empty fort.14 file
-        self.create_fort_14_file()
+        self.create_fort_14_file(tc_vitals_out)
 
         # create fort.15 file with list of all forecast leads and indices
         lead_minutes = [item.get('lead_minutes') for item in all_input_files]
@@ -484,11 +484,26 @@ class GFDLTrackerWrapper(CommandBuilder):
 
         return True
 
-    def create_fort_14_file(self):
+    def create_fort_14_file(self, tc_vitals_out):
         output_dir = self.c_dict.get('OUTPUT_DIR')
         fort_14_path = os.path.join(output_dir, 'fort.14')
-        self.logger.debug(f"Writing fort.14 file: {fort_14_path}")
-        with open(fort_14_path, 'w') as file_handle:
+
+        if os.path.exists(fort_14_path):
+            self.logger.debug("Removing existing fort.14 file")
+            os.remove(fort_14_path)
+
+        # if running in cyclogenesis mode (tcgen or midlat) use TCVitals
+        # file for fort.14
+        run_type = remove_quotes(self.c_dict["REPLACE_CONF_TRACKERINFO_TYPE"])
+        if run_type == 'tcgen' or run_type == 'midlat':
+            self.logger.debug("Linking TCVitals file to fort.14 "
+                              "for cyclogenesis run")
+            self._create_symlink(tc_vitals_out, fort_14_path)
+            return
+
+        # if not, create a blank file
+        self.logger.debug(f"Writing blank fort.14 file: {fort_14_path}")
+        with open(fort_14_path, 'w'):
             pass
 
     def create_fort_15_file(self, all_lead_minutes):
