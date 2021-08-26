@@ -33,7 +33,7 @@ climoDir = os.path.expandvars(sys.argv[4])
 vDate=datetime.strptime(sys.argv[5],'%Y%m%d')
 file_flag = sys.argv[6] 
 
-print('Starting Satellite GHRSST V&V at',datetime.now(),'for',vDate, ' file_flag:',file_flag)
+print('Starting Satellite SMOS V&V at',datetime.now(),'for',vDate, ' file_flag:',file_flag)
 
 pd.date_range(vDate,vDate)
 platform='SMOS'
@@ -41,7 +41,7 @@ param='sss'
 
 
 #####################################################################
-# READ GHRSST data ##################################################
+# READ SMOS data ##################################################
 #####################################################################
 
 if not os.path.exists(sssfile):
@@ -57,7 +57,6 @@ sss_data2=sss_data2.rename({'longitude':'lon','latitude':'lat'})
 # all coords need to be single precision
 sss_data2['lon']=sss_data2.lon.astype('single')
 sss_data2['lat']=sss_data2.lat.astype('single')
-#sss_data2.attrs['platform']='smos'
 sss_data2.attrs['platform']=platform
 sss_data2.attrs['units']='PSU'
 
@@ -95,9 +94,9 @@ if not os.path.exists(climoDir):
 
 vDate=pd.Timestamp(vDate)
 
-climofile="woa13_decav_t{:02n}_04v2.nc".format(vDate.month)
+climofile="woa13_decav_s{:02n}_04v2.nc".format(vDate.month)
 climo_data=xr.open_dataset(climoDir+'/'+climofile,decode_times=False)
-climo_data=climo_data['t_an'].squeeze()[0,]
+climo_data=climo_data['s_an'].squeeze()[0,]
 
 if vDate.day==15:  # even for Feb, just because
     climofile="woa13_decav_s{:02n}_04v2.nc".format(vDate.month)
