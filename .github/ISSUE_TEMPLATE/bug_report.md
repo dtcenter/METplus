@@ -2,7 +2,7 @@
 name: Bug report
 about: Fix something that's not working
 title: ''
-labels: 'type: bug'
+labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED PROJECT ASSIGNMENT, type: bug'
 assignees: ''
 
 ---
