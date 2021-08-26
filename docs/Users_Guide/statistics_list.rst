@@ -29,7 +29,7 @@ ACC            | MODE line type: Accuracy      | MODE-Tool
 	       | NBRCTCS line type:            | Grid-Stat Tool
 	       | Accuracy including normal     |
 	       | and bootstrap upper and lower |
-	       | confidence limits            |
+	       | confidence limits             |
 ============== =============================== =============================
 
 
