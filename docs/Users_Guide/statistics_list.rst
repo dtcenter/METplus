@@ -37,8 +37,7 @@ Examples using the glossary format:
 
 .. glossary::
    :sorted:
-
-  
+     
    A/BAL_WIND_34
      **TCMPR line type**: a/bdeck 34-knot radius winds in full circle
 
@@ -50,7 +49,7 @@ Examples using the glossary format:
      | *Tool:* TC-Pairs
 
    ACC
-     | **MODE line type**: Accuracy
+     | **MODE line type**: Accuracy \ :sub:`1`
      | **CTS line type**: Accuracy including normal and bootstrap
      |     upper and lower confidence limits
      | **MCTS line type**: Accuracy, normal confidence limits and bootstrap
@@ -58,6 +57,6 @@ Examples using the glossary format:
      | **NBRCTCS line type**: Accuracy including normal and bootstrap upper
      |     and lower confidence limits"
      |
-     | *Tools:* MODE-Tool, Point-Stat Tool & Grid-Stat Tool
+     | *Tools:* \ :sub:`1` \ MODE-Tool, Point-Stat Tool & Grid-Stat Tool
  
  
