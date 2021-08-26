@@ -2,7 +2,8 @@
 name: Enhancement request
 about: Improve something that it's currently doing
 title: ''
-labels: 'type: enhancement'
+labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED PROJECT
+  ASSIGNMENT, type: enhancement'
 assignees: ''
 
 ---
