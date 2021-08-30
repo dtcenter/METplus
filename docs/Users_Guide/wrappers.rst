@@ -986,7 +986,12 @@ Description
 
 Used to call the GFDL Tracker applications to objectively analyze forecast data
 to provide an estimate of the vortex center position (latitude and longitude),
-and track the storm for the duration of the forecast.
+and track the storm for the duration of the forecast. The wrapper copies files
+and uses symbolic links to ensure that input files are named and located in
+the correct place so that the tracker can read them. The wrapper also generates
+index files and other inputs that are required to run the tool and substitutes
+values into template configuration files that are read by the tracker.
+Relevant output files are renamed based on user configuration.
 
 METplus Configuration
 ---------------------
