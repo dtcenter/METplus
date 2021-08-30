@@ -6752,7 +6752,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_PAIRS_INIT_INC`
+   * - :term:`TC_PAIRS_INIT_INCLUDE`
      - init_inc
 
 **${METPLUS_INIT_EXC}**
@@ -6763,7 +6763,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_PAIRS_INIT_EXC`
+   * - :term:`TC_PAIRS_INIT_EXCLUDE`
      - init_exc
 
 **${METPLUS_VALID_INC}**
@@ -6774,7 +6774,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_PAIRS_VALID_INC`
+   * - :term:`TC_PAIRS_VALID_INCLUDE`
      - valid_inc
 
 **${METPLUS_VALID_EXC}**
@@ -6785,7 +6785,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`TC_PAIRS_VALID_EXC`
+   * - :term:`TC_PAIRS_VALID_EXCLUDE`
      - valid_exc
 
 **${METPLUS_WRITE_VALID}**
