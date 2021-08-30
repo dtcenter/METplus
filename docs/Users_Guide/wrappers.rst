@@ -4464,6 +4464,7 @@ Configuration
 | :term:`POINT_STAT_OUTPUT_FLAG_RPS`
 | :term:`POINT_STAT_OUTPUT_FLAG_ECLV`
 | :term:`POINT_STAT_OUTPUT_FLAG_MPR`
+| :term:`POINT_STAT_OUTPUT_FLAG_ORANK`
 | :term:`POINT_STAT_INTERP_VLD_THRESH`
 | :term:`POINT_STAT_INTERP_SHAPE`
 | :term:`POINT_STAT_INTERP_TYPE_METHOD`
@@ -4842,6 +4843,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - output_flag.eclv
    * - :term:`POINT_STAT_OUTPUT_FLAG_MPR`
      - output_flag.mpr
+   * - :term:`POINT_STAT_OUTPUT_FLAG_ORANK`
+     - output_flag.orank
 
 **${METPLUS_INTERP_DICT}**
 
