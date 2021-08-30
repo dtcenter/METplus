@@ -55,6 +55,9 @@ class TCPairsWrapper(CommandBuilder):
         'METPLUS_VALID_END',
         'METPLUS_DLAND_FILE',
         'METPLUS_CONSENSUS_LIST',
+        'METPLUS_WRITE_VALID',
+        'METPLUS_VALID_INC',
+        'METPLUS_VALID_EXC',
     ]
 
     WILDCARDS = {
@@ -112,15 +115,31 @@ class TCPairsWrapper(CommandBuilder):
 
         self.add_met_config(name='init_inc',
                             data_type='list',
-                            env_var_name='METPLUS_INIT_INCLUDE',
                             metplus_configs=['TC_PAIRS_INIT_INCLUDE',
+                                             'TC_PAIRS_INIT_INC',
                                              'INIT_INCLUDE'])
 
         self.add_met_config(name='init_exc',
                             data_type='list',
-                            env_var_name='METPLUS_INIT_EXCLUDE',
                             metplus_configs=['TC_PAIRS_INIT_EXCLUDE',
+                                             'TC_PAIRS_INIT_EXC',
                                              'INIT_EXCLUDE'])
+
+        self.add_met_config(name='valid_inc',
+                            data_type='list',
+                            metplus_configs=['TC_PAIRS_VALID_INCLUDE',
+                                             'TC_PAIRS_VALID_INC',
+                                             'VALID_INCLUDE'])
+
+        self.add_met_config(name='valid_exc',
+                            data_type='list',
+                            metplus_configs=['TC_PAIRS_VALID_EXCLUDE',
+                                             'TC_PAIRS_VALID_EXC',
+                                             'VALID_EXCLUDE'])
+
+        self.add_met_config(name='write_valid',
+                            data_type='list',
+                            metplus_configs=['TC_PAIRS_WRITE_VALID'])
 
         self.add_met_config(name='valid_beg',
                             data_type='string',

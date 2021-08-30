@@ -7865,3 +7865,18 @@ METplus Configuration Glossary
      directory is gathered and passed into the script. Defaults to False.
 
      | *Used by:* TCMPRPlotter
+
+   TC_PAIRS_VALID_INCLUDE
+     Specify the value for 'valid_inc' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_VALID_EXCLUDE
+     Specify the value for 'valid_exc' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_WRITE_VALID
+     Specify the value for 'write_valid' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs

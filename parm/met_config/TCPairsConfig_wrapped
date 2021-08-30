@@ -44,8 +44,18 @@ ${METPLUS_STORM_NAME}
 //
 ${METPLUS_INIT_BEG}
 ${METPLUS_INIT_END}
-${METPLUS_INIT_INCLUDE}
-${METPLUS_INIT_EXCLUDE}
+// init_inc =
+${METPLUS_INIT_INC}
+// init_exc =
+${METPLUS_INIT_EXC}
+
+// valid_inc =
+${METPLUS_VALID_INC}
+// valid_exc =
+${METPLUS_VALID_EXC}
+
+// write_valid =
+${METPLUS_WRITE_VALID}
 
 //
 // Valid model time window
