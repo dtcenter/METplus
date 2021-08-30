@@ -12,6 +12,7 @@ Condition codes: 0 for success, 1 for failure
 
 import os
 import shutil
+import glob
 from dateutil.relativedelta import relativedelta
 
 from ..util import do_string_sub, ti_calculate, get_lead_sequence
@@ -384,17 +385,10 @@ class GFDLTrackerWrapper(CommandBuilder):
         # remove TCVitals symbolic link
         self._remove_symlink(tc_vitals_out)
 
-        # remove fort files
-        forts_to_remove = [
-            '61',
-            '62',
-            '63',
-            '68',
-            '69',
-        ]
-        for fort_number in forts_to_remove:
-            fort_file = os.path.join(self.c_dict.get('OUTPUT_DIR'),
-                                     f'fort.{fort_number}')
+        # remove all fort files
+        all_forts = glob.glob(os.path.join(self.c_dict.get('OUTPUT_DIR'),
+                                           f'fort.*'))
+        for fort_file in all_forts:
             if os.path.exists(fort_file):
                 self.logger.debug(f'Removing {fort_file}')
                 os.remove(fort_file)
