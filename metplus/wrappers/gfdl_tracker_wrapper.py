@@ -389,7 +389,8 @@ class GFDLTrackerWrapper(CommandBuilder):
         all_forts = glob.glob(os.path.join(self.c_dict.get('OUTPUT_DIR'),
                                            f'fort.*'))
         for fort_file in all_forts:
-            if os.path.exists(fort_file):
+            # remove symlink if link, otherwise remove file
+            if not self._remove_symlink(fort_file):
                 self.logger.debug(f'Removing {fort_file}')
                 os.remove(fort_file)
 
@@ -476,6 +477,9 @@ class GFDLTrackerWrapper(CommandBuilder):
         if os.path.islink(link_path):
             self.logger.debug(f"Removing existing symbolic link: {link_path}")
             os.unlink(link_path)
+            return True
+
+        return False
 
     def run_grib_index(self, all_output_files):
         index_script = self.c_dict.get('INDEX_APP')
