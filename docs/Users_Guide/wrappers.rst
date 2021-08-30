@@ -992,6 +992,7 @@ the correct place so that the tracker can read them. The wrapper also generates
 index files and other inputs that are required to run the tool and substitutes
 values into template configuration files that are read by the tracker.
 Relevant output files are renamed based on user configuration.
+See :ref:`external-components-gfdl-tracker` for more information.
 
 METplus Configuration
 ---------------------

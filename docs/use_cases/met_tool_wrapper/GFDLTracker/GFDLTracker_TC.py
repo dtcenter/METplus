@@ -10,6 +10,8 @@ met_tool_wrapper/GFDLTracker/GFDLTracker_TC.conf
 # --------------------
 #
 # Setup and run GFDL Tracker applications to track tropical cyclones.
+# See :ref:`external-components-gfdl-tracker` for more information.
+#
 
 ##############################################################################
 # Datasets
