@@ -6588,6 +6588,9 @@ METplus Configuration
 | :term:`TC_PAIRS_CONFIG_FILE`
 | :term:`TC_PAIRS_INIT_INCLUDE`
 | :term:`TC_PAIRS_INIT_EXCLUDE`
+| :term:`TC_PAIRS_VALID_INCLUDE`
+| :term:`TC_PAIRS_VALID_EXCLUDE`
+| :term:`TC_PAIRS_WRITE_VALID`
 | :term:`TC_PAIRS_READ_ALL_FILES`
 | :term:`TC_PAIRS_MODEL`
 | :term:`TC_PAIRS_STORM_ID`
@@ -6743,7 +6746,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`TC_PAIRS_INIT_END`
      - init_end
 
-**${METPLUS_INIT_INCLUDE}**
+**${METPLUS_INIT_INC}**
 
 .. list-table::
    :widths: 5 5
@@ -6754,7 +6757,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`TC_PAIRS_INIT_INCLUDE`
      - init_inc
 
-**${METPLUS_INIT_EXCLUDE}**
+**${METPLUS_INIT_EXC}**
 
 .. list-table::
    :widths: 5 5
@@ -6764,6 +6767,39 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`TC_PAIRS_INIT_EXCLUDE`
      - init_exc
+
+**${METPLUS_VALID_INC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_VALID_INCLUDE`
+     - valid_inc
+
+**${METPLUS_VALID_EXC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_VALID_EXCLUDE`
+     - valid_exc
+
+**${METPLUS_WRITE_VALID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_WRITE_VALID`
+     - write_valid
 
 **${METPLUS_VALID_BEG}**
 
