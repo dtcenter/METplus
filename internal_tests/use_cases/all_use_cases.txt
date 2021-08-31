@@ -124,7 +124,7 @@ Category: s2s
 7:: UserScript_fcstGFS_obsERA_PhaseDiagram:: model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram.conf:: spacetime_env
 8:: UserScript_fcstGFS_obsERA_OMI:: model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.conf:: spacetime_env, metdatadb
 9:: UserScript_fcstGFS_obsERA_RMM:: model_applications/s2s/UserScript_fcstGFS_obsERA_RMM.conf:: spacetime_env, metdatadb
-
+10::UserScript_fcstGFS_obsERA_WeatherRegime:: model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.conf:: weatherregime_env,metplus
 
 Category: space_weather
 0::GridStat_fcstGloTEC_obsGloTEC_vx7:: model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf
