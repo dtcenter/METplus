@@ -1,0 +1,6 @@
+&datenowin   dnow%yy=${METPLUS_DATENOW_YY}, dnow%mm=${METPLUS_DATENOW_MM},
+             dnow%dd=${METPLUS_DATENOW_DD}, dnow%hh=${METPLUS_DATENOW_HH}/
+&date6agoin  d6ago%yy=${METPLUS_DATE6AGO_YY}, d6ago%mm=${METPLUS_DATE6AGO_MM},
+             d6ago%dd=${METPLUS_DATE6AGO_DD}, d6ago%hh=${METPLUS_DATE6AGO_HH}/
+&date6aheadin  d6ahead%yy=${METPLUS_DATE6AHEAD_YY}, d6ahead%mm=${METPLUS_DATE6AHEAD_MM},
+               d6ahead%dd=${METPLUS_DATE6AHEAD_DD}, d6ahead%hh=${METPLUS_DATE6AHEAD_HH}/

@@ -1247,7 +1247,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_POINT_STAT_INPUT_TEMPLATE` instead.
 
    FCST_IS_DAILY_FILE
-     .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_IS_DAILY_FILE` instead.
+     .. warning:: **DEPRECATED:**
 
    FCST_IS_PROB
      Specify whether the forecast data are probabilistic or not. Acceptable values: true/false
@@ -1361,12 +1361,31 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_INPUT_NAMES` instead.
 
    FCST_PCP_COMBINE_DATA_INTERVAL
-     Specify the accumulation interval of the forecast dataset used by the MET pcp_combine tool when processing daily input files. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_DATA_INTERVAL`.
+     .. warning:: **DEPRECATED:**
+
+   FCST_PCP_COMBINE_DERIVE_LOOKBACK
+     .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_LOOKBACK` instead.
+
+   FCST_PCP_COMBINE_LOOKBACK
+     Specify how far to look back in time to find files for building
+     commands to run the pcp_combine tool.
+     If processing precipitation accumulation data, this is equivalent to the
+     desired output accumulation to compute.
+     Units are assumed to be hours unless a time identifier such as
+     Y, m, d, H, M, S is specified at the end of the value, i.e. 30M or 1m.
+     If unset, :term:`FCST_PCP_COMBINE_OUTPUT_ACCUM` will be used.
+     If that is unset, then :term:`FCST_PCP_COMBINE_DERIVE_LOOKBACK` will be
+     used.
+     If none of the variables are set or set to 0, data will be obtained by
+     using the input template with the current runtime instead of looking
+     backwards in time.
+     A corresponding variable exists for observation data called
+     :term:`OBS_PCP_COMBINE_LOOKBACK`.
 
      | *Used by:*  PCPCombine
 
-   FCST_PCP_COMBINE_DERIVE_LOOKBACK
-     Specify how far to look back in time in hours to find files for running the MET pcp_combine tool in derive mode. If set to 0 or unset, data will be obtained by using the input template with the current runtime instead of looking backwards in time. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_DERIVE_LOOKBACK`.
+   OBS_PCP_COMBINE_LOOKBACK
+     See :term:`FCST_PCP_COMBINE_LOOKBACK`.
 
      | *Used by:*  PCPCombine
 
@@ -1389,9 +1408,7 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_IS_DAILY_FILE
-     Specify whether the forecast file is a daily file or not. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_IS_DAILY_FILE`.Acceptable values: true/false
-
-     | *Used by:*  PCPCombine
+     .. warning:: **DEPRECATED:**
 
    FCST_PCP_COMBINE_METHOD
      Specify the method to be used with the MET pcp_combine tool processing forecast data.Valid options are ADD, SUM, SUBTRACT, DERIVE, and USER_DEFINED. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_METHOD`.
@@ -1438,9 +1455,7 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_TIMES_PER_FILE
-     Specify the number of accumulation intervals of the forecast dataset used by the MET pcp_combine tool when processing daily input files. A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_TIMES_PER_FILE`.
-
-     | *Used by:*  PCPCombine
+     .. warning:: **DEPRECATED:**
 
    FCST_POINT_STAT_FILE_WINDOW_BEGIN
      See :term:`OBS_POINT_STAT_FILE_WINDOW_BEGIN`
@@ -2624,10 +2639,10 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`PB2NC_OBS_BUFR_VAR_LIST` instead.
 
    OBS_DATA_INTERVAL
-     .. warning:: **DEPRECATED:** Use :term:`OBS_PCP_COMBINE_DATA_INTERVAL` instead.
+     .. warning:: **DEPRECATED:**
 
    FCST_DATA_INTERVAL
-     .. warning:: **DEPRECATED:** Use :term:`FCST_PCP_COMBINE_DATA_INTERVAL` instead.
+     .. warning:: **DEPRECATED:**
 
    FCST_ENSEMBLE_STAT_INPUT_DATATYPE
      Specify the data type of the input directory for forecast files used with the MET ensemble_stat tool. Currently valid options are NETCDF, GRIB, and GEMPAK. If set to GEMPAK, data will automatically be converted to NetCDF via GempakToCF. Similar variables exists for observation grid and point data called :term:`OBS_ENSEMBLE_STAT_INPUT_GRID_DATATYPE` and :term:`OBS_ENSEMBLE_STAT_INPUT_POINT_DATATYPE`.
@@ -2759,7 +2774,7 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`OBS_POINT_STAT_INPUT_TEMPLATE` instead.
 
    OBS_IS_DAILY_FILE
-     .. warning:: **DEPRECATED:** Please use :term:`OBS_PCP_COMBINE_IS_DAILY_FILE` instead.
+     .. warning:: **DEPRECATED:**
 
    OBS_IS_PROB
      Used when setting OBS_* variables to process forecast data for comparisons with mtd. Specify whether the observation data are probabilistic or not. See :term:`FCST_IS_PROB` .Acceptable values: true/false
@@ -2861,10 +2876,10 @@ METplus Configuration Glossary
      .. warning:: **DEPRECATED:** Please use :term:`OBS_PCP_COMBINE_INPUT_DATATYPE` instead.
 
    OBS_TIMES_PER_FILE
-     .. warning:: **DEPRECATED:** Please use :term:`OBS_PCP_COMBINE_TIMES_PER_FILE` instead.
+     .. warning:: **DEPRECATED:**
 
    FCST_TIMES_PER_FILE
-     .. warning:: **DEPRECATED:** Please use :term:`FCST_PCP_COMBINE_TIMES_PER_FILE` instead.
+     .. warning:: **DEPRECATED:**
 
    OBS_PCP_COMBINE_<n>_FIELD_NAME
      See :term:`FCST_PCP_COMBINE_<n>_FIELD_NAME`.
@@ -2872,9 +2887,7 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    OBS_PCP_COMBINE_DATA_INTERVAL
-     See :term:`FCST_PCP_COMBINE_DATA_INTERVAL`.
-
-     | *Used by:*  PCPCombine
+     .. warning:: **DEPRECATED:**
 
    OBS_PCP_COMBINE_DERIVE_LOOKBACK
      See :term:`FCST_PCP_COMBINE_DERIVE_LOOKBACK`.
@@ -2902,9 +2915,7 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    OBS_PCP_COMBINE_IS_DAILY_FILE
-     See :term:`FCST_PCP_COMBINE_IS_DAILY_FILE`. Acceptable values: true/false
-
-     | *Used by:*  PCPCombine
+     .. warning:: **DEPRECATED:**
 
    OBS_PCP_COMBINE_METHOD
      See :term:`FCST_PCP_COMBINE_METHOD`.
@@ -2942,9 +2953,7 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    OBS_PCP_COMBINE_TIMES_PER_FILE
-     See :term:`FCST_PCP_COMBINE_TIMES_PER_FILE`.
-
-     | *Used by:*  PCPCombine
+     .. warning:: **DEPRECATED:**
 
    OBS_POINT_STAT_FILE_WINDOW_BEGIN
      Used to control the lower bound of the window around the valid time to determine if a file should be used for processing by PointStat. See :ref:`Directory_and_Filename_Template_Info` subsection called 'Using Windows to Find Valid Files.' Units are seconds. If :term:`OBS_POINT_STAT_FILE_WINDOW_BEGIN` is not set in the config file, the value of :term:`OBS_FILE_WINDOW_BEGIN` will be used instead. If both file window begin and window end values are set to 0, then METplus will require an input file with an exact time match to process.
@@ -4357,27 +4366,26 @@ METplus Configuration Glossary
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_OUTPUT_ACCUM
-     Specify desired accumulation to be built from the forecast data. Units are assumed to be hours unless a time identifier such as Y, m, d, H, M, S is specifed at the end of the value, i.e. 30M or 1m. If this variable is not set, then FCST_VAR<n>_LEVELS is used.
+     Specify desired accumulation to be built from the forecast data.
+     Synonym for :term:`FCST_PCP_COMBINE_LOOKBACK`.
 
      A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_OUTPUT_ACCUM`.
-
-     Examples:
-
-     15H
-
-     This will attempt to build a 15 hour accumulation.
 
      | *Used by:*  PCPCombine
 
    FCST_PCP_COMBINE_OUTPUT_NAME
-     Specify the output field name from processing forecast data. If this variable is not set, then :term:`FCST_VAR<n>_NAME` is used.
+     Specify the output field name from processing forecast data.
+     If this variable is not set, then :term:`FCST_VAR<n>_NAME` is used.
 
-     A corresponding variable exists for observation data called :term:`OBS_PCP_COMBINE_OUTPUT_NAME`.
+     A corresponding variable exists for observation data called
+     :term:`OBS_PCP_COMBINE_OUTPUT_NAME`.
 
      Example: APCP
 
+     | *Used by:*  PCPCombine
+
    OBS_PCP_COMBINE_OUTPUT_ACCUM
-     See :term:`FCST_PCP_COMBINE_OUTPUT_NAME`.
+     See :term:`FCST_PCP_COMBINE_LOOKBACK`.
 
      | *Used by:*  PCPCombine
 
@@ -6753,6 +6761,11 @@ METplus Configuration Glossary
 
      | *Used by:* PointStat
 
+   POINT_STAT_OUTPUT_FLAG_ORANK
+     Specify the value for 'output_flag.orank' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
    POINT_STAT_INTERP_VLD_THRESH
      Specify the value for 'interp.vld_thresh' in the MET configuration file for PointStat.
 
@@ -7859,9 +7872,30 @@ METplus Configuration Glossary
 
      | *Used by:* StatAnalysis
 
+   GFDL_TRACKER_KEEP_INTERMEDIATE
+     If True, do not scrub intermediate files created by the tracker. Useful
+     for debugging issues.
+
+     | *Used by:* GFDLTracker
+
    TCMPR_PLOTTER_READ_ALL_FILES
      If True, pass in input directory set by :term:`TCMPR_PLOTTER_TCMPR_DATA_DIR`
      to the script. If False, a list of all files that end with .tcst in the input
      directory is gathered and passed into the script. Defaults to False.
 
      | *Used by:* TCMPRPlotter
+
+   TC_PAIRS_VALID_INCLUDE
+     Specify the value for 'valid_inc' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_VALID_EXCLUDE
+     Specify the value for 'valid_exc' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs
+
+   TC_PAIRS_WRITE_VALID
+     Specify the value for 'write_valid' in the MET configuration file for TCPairs.
+
+     | *Used by:* TCPairs

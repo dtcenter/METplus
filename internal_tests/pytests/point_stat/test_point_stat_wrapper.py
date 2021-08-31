@@ -238,6 +238,9 @@ def test_met_dictionary_in_var_options(metplus_config):
         ({'POINT_STAT_OUTPUT_FLAG_MPR': 'BOTH', },
          {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {mpr = BOTH;}'}),
 
+        ({'POINT_STAT_OUTPUT_FLAG_ORANK': 'BOTH', },
+         {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {orank = BOTH;}'}),
+
         ({
              'POINT_STAT_OUTPUT_FLAG_FHO': 'BOTH',
              'POINT_STAT_OUTPUT_FLAG_CTC': 'BOTH',
@@ -258,9 +261,10 @@ def test_met_dictionary_in_var_options(metplus_config):
              'POINT_STAT_OUTPUT_FLAG_RPS': 'BOTH',
              'POINT_STAT_OUTPUT_FLAG_ECLV': 'BOTH',
              'POINT_STAT_OUTPUT_FLAG_MPR': 'BOTH',
+             'POINT_STAT_OUTPUT_FLAG_ORANK': 'BOTH',
          },
          {
-             'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {fho = BOTH;ctc = BOTH;cts = BOTH;mctc = BOTH;mcts = BOTH;cnt = BOTH;sl1l2 = BOTH;sal1l2 = BOTH;vl1l2 = BOTH;val1l2 = BOTH;vcnt = BOTH;pct = BOTH;pstd = BOTH;pjc = BOTH;prc = BOTH;ecnt = BOTH;rps = BOTH;eclv = BOTH;mpr = BOTH;}'}),
+             'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {fho = BOTH;ctc = BOTH;cts = BOTH;mctc = BOTH;mcts = BOTH;cnt = BOTH;sl1l2 = BOTH;sal1l2 = BOTH;vl1l2 = BOTH;val1l2 = BOTH;vcnt = BOTH;pct = BOTH;pstd = BOTH;pjc = BOTH;prc = BOTH;ecnt = BOTH;rps = BOTH;eclv = BOTH;mpr = BOTH;orank = BOTH;}'}),
 
         ({'POINT_STAT_INTERP_VLD_THRESH': '0.5', },
          {'METPLUS_INTERP_DICT': 'interp = {vld_thresh = 0.5;}'}),
