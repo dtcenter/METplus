@@ -801,6 +801,9 @@ def skip_time(time_info, skip_times):
             @param skip_times dictionary of times to skip, i.e. {'%d': [31]} means skip 31st day
             @returns True if run time should be skipped, False if not
     """
+    if not skip_times:
+        return False
+
     for time_format, skip_time_list in skip_times.items():
         # extract time information from valid time based on skip time format
         run_time_value = time_info.get('valid')
@@ -2468,14 +2471,27 @@ def sub_var_list(var_list, time_info):
     return out_var_list
 
 def split_level(level):
-    level_type = ""
+    """! If level value starts with a letter, then separate that letter from
+     the rest of the string. i.e. 'A03' will be returned as 'A', '03'. If no
+     level type letter is found and the level value consists of alpha-numeric
+     characters, return an empty string as the level type and the full level
+     string as the level value
+
+     @param level input string to parse/split
+     @returns tuple of level type and level value
+    """
     if not level:
         return '', ''
-    match = re.match(r'^(\w)(\d+)$', level)
+
+    match = re.match(r'^([a-zA-Z])(\w+)$', level)
     if match:
         level_type = match.group(1)
         level = match.group(2)
         return level_type, level
+
+    match = re.match(r'^[\w]+$', level)
+    if match:
+        return '', level
 
     return '', ''
 
@@ -2703,10 +2719,12 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
     if os.path.isfile(outpath):
         return outpath
 
-    # Create staging area if it does not exist
-    outdir = os.path.dirname(outpath)
-    if not os.path.exists(outdir):
-        os.makedirs(outdir, mode=0o0775)
+    # Create staging area directory only if file has compression extension
+    valid_extensions = ['gz', 'bz2', 'zip']
+    if any([os.path.isfile(f'{filename}.{ext}') for ext in valid_extensions]):
+        outdir = os.path.dirname(outpath)
+        if not os.path.exists(outdir):
+            os.makedirs(outdir, mode=0o0775)
 
     # uncompress gz, bz2, or zip file
     if os.path.isfile(filename+".gz"):
@@ -2735,9 +2753,13 @@ def preprocess_file(filename, data_type, config, allow_dir=False):
                 f.write(z.read(os.path.basename(filename)))
                 return outpath
 
+    # if input doesn't need to exist, return filename
+    if not config.getbool('config', 'INPUT_MUST_EXIST', True):
+        return filename
+
     return None
 
-def template_to_regex(template, time_info, logger):
+def template_to_regex(template, time_info):
     in_template = re.sub(r'\.', '\\.', template)
     in_template = re.sub(r'{lead.*?}', '.*', in_template)
     return do_string_sub(in_template,
