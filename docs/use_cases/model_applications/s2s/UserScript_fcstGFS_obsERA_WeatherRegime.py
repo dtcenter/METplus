@@ -4,7 +4,7 @@ WeatherRegime Calculation: RegridDataPlane, PcpCombine, and WeatherRegime python
 
 model_applications/
 s2s/
-UserScript_obsERA_obsOnly_WeatherRegime.py
+UserScript_fcstGFS_obsERA_WeatherRegime.py
 
 """
 
@@ -31,7 +31,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # Datasets
 # --------
 #
-#  * Forecast dataset: None.
+#  * Forecast dataset: GFS Forecast 500 mb height. 
 #  * Observation dataset: ERA Reanlaysis 500 mb height.
 
 ##############################################################################
@@ -73,6 +73,7 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 # The other steps are listed in the [user_env_vars] section of the UserScript .conf file
 # in the following format:
 # OBS_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS+TIMEFREQ+PLOTFREQ
+# FCST_STEPS = ELBOW+PLOTELBOW+EOF+PLOTEOF+KMEANS+PLOTKMEANS+TIMEFREQ+PLOTFREQ
 #
 
 ##############################################################################
@@ -92,12 +93,12 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.py.  
-# The file UserScript_obsERA_obsOnly_WeatherRegime.conf runs the python program and
+# i.e. parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.py.  
+# The file UserScript_fcstGFS_obsERA_WeatherRegime.conf runs the python program and
 # sets the variables for all steps of the Weather Regime use case including data paths.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.conf
 #
 
 ##############################################################################
@@ -120,23 +121,23 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # This use case uses Python scripts to perform the blocking calculation
 #
-# parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime/WeatherRegime_driver.py:
+# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime/WeatherRegime_driver.py:
 # This script calls the requested steps in the blocking analysis for a forecast, observation, or both.  The possible
 # steps are computing the elbow, computing EOFs, and computing weather regimes using k means clustering.
 #
-# parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime/WeatherRegime.py:
+# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime/WeatherRegime.py:
 # This script runs the requested steps, containing the code for computing the bend in the elbow, computing EOFs, and
 # computing weather regimes using k means clustering 
 #
-# parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime/Blocking_WeatherRegime_util.py:
+# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime/Blocking_WeatherRegime_util.py:
 # This script contains functions used by both the blocking anwd weather regime analysis, including the code for
 # determining which steps the user wants to run, and finding and reading the input files in the format from the output
 # pre-processing steps
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime/WeatherRegime_driver.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime/WeatherRegime.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime/Blocking_WeatherRegime_util.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime/WeatherRegime_driver.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime/WeatherRegime.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime/Blocking_WeatherRegime_util.py
 #
 
 ##############################################################################
@@ -145,13 +146,13 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 # This use case is run in the following ways:
 #
-# 1) Passing in UserScript_obsERA_obsOnly_WeatherRegime.py then a user-specific system configuration file::
+# 1) Passing in UserScript_fcstGFS_obsERA_WeatherRegime.py then a user-specific system configuration file::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.py -c /path/to/user_system.conf
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.py -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_obsERA_obsOnly_WeatherRegime.py::
+# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_WeatherRegime.py::
 #
-#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_WeatherRegime.py
+#        master_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.py
 #
 # The following variables must be set correctly:
 #
@@ -201,4 +202,4 @@ UserScript_obsERA_obsOnly_WeatherRegime.py
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s-OBS_ERA_weather_regime_freq.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s-OBS_ERA_weather_regime.png'
