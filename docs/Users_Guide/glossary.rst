@@ -7872,6 +7872,12 @@ METplus Configuration Glossary
 
      | *Used by:* StatAnalysis
 
+   GFDL_TRACKER_KEEP_INTERMEDIATE
+     If True, do not scrub intermediate files created by the tracker. Useful
+     for debugging issues.
+
+     | *Used by:* GFDLTracker
+
    TCMPR_PLOTTER_READ_ALL_FILES
      If True, pass in input directory set by :term:`TCMPR_PLOTTER_TCMPR_DATA_DIR`
      to the script. If False, a list of all files that end with .tcst in the input
