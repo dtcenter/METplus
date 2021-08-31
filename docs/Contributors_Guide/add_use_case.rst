@@ -1165,14 +1165,49 @@ The addition of a new use case results in new output data. When this happens,
 the reference branch needs to be updated so that future pull requests will
 compare their results to a "truth" data set that contains the new files.
 Create a pull request with "develop" as the source branch and "develop-ref" as
-the destination branch. Assign this pull request to another METplus team
-member.
+the destination branch. This is done so we can reference the pull request
+number that is responsible for the changes in the truth data to easily track
+where differences occurred.
 
-Click
-`here <https://github.com/dtcenter/METplus/compare/develop-ref...develop>`_
-and click the green "Create pull request" button to create the pull request.
+Merging develop into develop-ref often causes strange conflicts. We really
+want to update develop-ref with the latest content of develop, so follow
+these command line instructions in the METplus repository to reconcile the
+conflicts before creating the pull request.
+
+* Reconcile conflicts between develop and develop-ref branches
+
+::
+
+    git checkout develop-ref
+    git pull
+    git checkout develop
+    git pull
+    git merge -s ours develop-ref
+    git push origin develop
+
+* Next click
+  `here <https://github.com/dtcenter/METplus/compare/develop-ref...develop>`_
+  and click the green "Create pull request" button to create the pull request
 
 .. figure:: figure/develop_into_develop-ref.png
+
+* Set the name of the pull request to "Update develop-ref after #XXXX" where
+  XXXX is the pull request number that introduced the differences
+
+* Delete the template content and add the pull request number (formatted #XXXX)
+  and a brief description of what has changed. The description is optional
+  because the link to the pull request should contain this information.
+
+* Add the appropriate project and milestone values on the right hand side.
+
+* Create the pull request
+
+* Squash and merge the pull request. It is not necessary to wait for the
+  automation checks to complete for this step.
+
+* Monitor the Testing automation run for the develop-ref branch and ensure that
+  all of the use cases run successfully and the final step named
+  "Create Output Docker Data Volumes" completed successfully.
 
 Clean Up DTC Web Server
 -----------------------
