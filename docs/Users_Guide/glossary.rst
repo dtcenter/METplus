@@ -6761,6 +6761,11 @@ METplus Configuration Glossary
 
      | *Used by:* PointStat
 
+   POINT_STAT_OUTPUT_FLAG_ORANK
+     Specify the value for 'output_flag.orank' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
    POINT_STAT_INTERP_VLD_THRESH
      Specify the value for 'interp.vld_thresh' in the MET configuration file for PointStat.
 
