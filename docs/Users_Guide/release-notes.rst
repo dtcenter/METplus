@@ -33,6 +33,39 @@ When applicable, release notes are followed by the GitHub issue number which
 describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
+
+METplus Version 4.1.0-beta2 Release Notes (2021-08-31)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Enhancements:
+
+  * Add stat_analysis to the Blocking and Weather Regime processing (`#1001 <https://github.com/dtcenter/METplus/issues/1001>`_)
+  * Make output_flag.orank configurable for Point-Stat (`#1103 <https://github.com/dtcenter/METplus/issues/1103>`_)
+  * Enhance TC-Pairs wrapper to make valid_inc, valid_exc, and write_valid configurable options (`#1069 <https://github.com/dtcenter/METplus/issues/1069>`_)
+  * Add option to TCMPRPlotter to pass in directory to tc_stat instead of individual files (`#1057 <https://github.com/dtcenter/METplus/issues/1057>`_)
+  * **Add support for using filename templates for defining input level in PCPCombine** (`#1062 <https://github.com/dtcenter/METplus/issues/1062>`_)
+  * Modify wrappers that use wrapped MET config files to default to parm/met_config versions if unset (`#931 <https://github.com/dtcenter/METplus/issues/931>`_)
+  * Modify user diagnostic feature relative use case to use MetPy Python package (`#759 <https://github.com/dtcenter/METplus/issues/759>`_)
+  * Add option to pass in the input directory to TCMPRPlotter instead of finding all tcst files and passing the list (`#1084 <https://github.com/dtcenter/METplus/issues/1084>`_)
+  * Updated logic for handling _CLIMO_MEAN_FIELD variables for specifying climatology fields (`#1021 <https://github.com/dtcenter/METplus/issues/1021>`_)
+  * Add support for setting hss_ec_value in MET config files (`#951 <https://github.com/dtcenter/METplus/issues/951>`_)
+  * Update documentation to reference GitHub Discussions instead of MET Help (`#956 <https://github.com/dtcenter/METplus/issues/956>`_)
+
+* New Wrappers:
+
+* New Use Cases:
+
+  * GFDL tracker for TC genesis (`#616 <https://github.com/dtcenter/METplus/issues/616>`_)
+  * GFDL tracker for Extra-TC tracking (`#617 <https://github.com/dtcenter/METplus/issues/617>`_)
+  * RMM and OMI (driver scripts) (`#892 <https://github.com/dtcenter/METplus/issues/892>`_)
+
+* Internal:
+
+  * Make updates to the Release Guide (`#935 <https://github.com/dtcenter/METplus/issues/935>`_)
+  * Clean up GitHub wiki broken links and out-of-date information (`#237 <https://github.com/dtcenter/METplus/issues/237>`_)
+  * Add option to override MET version used for automated tests (`#936 <https://github.com/dtcenter/METplus/issues/936>`_)
+
+
 METplus Version 4.1.0-beta1 Release Notes (2021-07-21)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
