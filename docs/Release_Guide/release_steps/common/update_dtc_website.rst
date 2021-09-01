@@ -2,7 +2,7 @@ Update DTC Website
 ------------------
 
 * Navigate to the downloads page for the |projectRepo| repository at
-  www.dtcenter.org.
+  https://dtcenter.org/community-code/metplus/download
 
 * Sign in to the Drupal interface and edit the Downloads page.
 
