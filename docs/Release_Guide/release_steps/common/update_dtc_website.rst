@@ -48,7 +48,7 @@ Update DTC Website
 
   * Update the existing releases, as needed.
     
-    * For a development release, change any previous "Development"
+    * For a development release, change any previous *Development*
       versions to "Other".
       
     * For a bugfix or official release, change any previous
