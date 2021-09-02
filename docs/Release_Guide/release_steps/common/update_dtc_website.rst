@@ -17,8 +17,7 @@ Update DTC Website
   * For *Version Label* type "|projectRepo| X.Y.Z betaN".
 
   * Select the release type (*Recommended* for official or bugfix releases or
-    *Development* for development versions). If necessary, change previously
-    *Recommended* versions to *Other*.
+    *Development* for development versions). 
 
   * Enter the release date.
 
@@ -47,4 +46,17 @@ Update DTC Website
 
   * Click on "Save".
 
+  * Review the existing releases, and if necessary, change previously
+    "Recommended" versions to "Other".- Update the existing releases,
+    as needed.
+    
+    * For a development release, change any previous "Development"
+      versions to "Other".
+      
+    * For a bugfix or official release, change any previous
+      "Recommended" versions to "Other".
+      
+    * For an official release, remove the corresponding development
+      releases.
+      
   * |otherWebsiteUpdates|
