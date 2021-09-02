@@ -46,9 +46,7 @@ Update DTC Website
 
   * Click on "Save".
 
-  * Review the existing releases, and if necessary, change previously
-    "Recommended" versions to "Other".- Update the existing releases,
-    as needed.
+  * Update the existing releases, as needed.
     
     * For a development release, change any previous "Development"
       versions to "Other".
