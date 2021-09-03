@@ -9,6 +9,7 @@ METplus Database of Statistics
    
      | For each Object:
      | Location of the centroid in grid units
+     
      | Location of the centroid in lat/lon degrees
      | Axis angle, Length of the enclosing rectangle
      | Width of the enclosing rectangle
@@ -39,7 +40,7 @@ METplus Database of Statistics
      | NetCDF files with the objects and raw data for further processing
 
      | *Tool:* See the WWRP/WGNE JWGFVR website for more details:
-     https://www.cawcr.gov.au/projects/verification
+     | https://www.cawcr.gov.au/projects/verification
      
    A/BAL_WIND_34
      **TCMPR line type**: a/bdeck 34-knot radius winds in full circle
