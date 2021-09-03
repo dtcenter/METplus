@@ -6,10 +6,8 @@ METplus Database of Statistics
    :sorted:
 
    2D Objects
-   
      | For each Object:
      | Location of the centroid in grid units
-     
      | Location of the centroid in lat/lon degrees
      | Axis angle, Length of the enclosing rectangle
      | Width of the enclosing rectangle
