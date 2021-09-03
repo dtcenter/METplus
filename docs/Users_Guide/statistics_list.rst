@@ -12,24 +12,19 @@ METplus Database of Statistics
      | Axis angle, Length of the enclosing rectangle
      | Width of the enclosing rectangle
      | Object area
-     
      | Radius of curvature of the object defined in terms of third order
        moments
-     
      | Center of curvature
      | Ratio of the difference between the area of an object and the area
        of its convex hull divided by the area of the complex hull
-     
      | percentiles of intensity of the raw field within the object
      | Percentile of intensity chosen for use in the percentile intensity
        ratio
-     
      | Sum of the intensities of the raw field within the object
      |
      | For paired objects:
        Distance between two objects centroids, Minimum distance between the
        boundaries of two objects
-     
      | Minimum distance between the convex hulls of two objects
      | Difference between the axis angles of two objects
      | Ratio of the areas of two objects
