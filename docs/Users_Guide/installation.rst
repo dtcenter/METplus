@@ -267,6 +267,8 @@ the process and allow MET to be built with just a few manual changes.
 External Components
 ===================
 
+.. _external-components-gfdl-tracker:
+
 GFDL Tracker
 ------------
 

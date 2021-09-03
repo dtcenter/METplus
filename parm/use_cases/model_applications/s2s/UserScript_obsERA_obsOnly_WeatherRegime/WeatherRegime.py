@@ -164,7 +164,7 @@ class WeatherRegimeCalculation():
         #Reorder from max to min and relabel
         wrc = wr*1.0/1.0
         for i in np.arange(0,self.wrnum,1):
-            wrc[wr==ii[i]] = i
+            wrc[wr==ii[i]] = i+1
 
         perc = perc[::-1]
         input = input[::-1]
@@ -249,7 +249,7 @@ class WeatherRegimeCalculation():
             for dd in np.arange(len(WRfreq[0,0,:])):
                 temp = WR[yy,d1:d2]
                 for ww in np.arange(self.wrnum):
-                    WRfreq[ww,yy,dd] = len(np.where(temp==ww)[0])
+                    WRfreq[ww,yy,dd] = len(np.where(temp==ww+1)[0])
                 d1=d1+1;d2=d2+1
 
         dlen_plot = len(WRfreq[0,0,:])

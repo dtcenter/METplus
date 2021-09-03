@@ -55,6 +55,8 @@ Category: met_tool_wrapper
 53::METdbLoad::met_tool_wrapper/METdbLoad/METdbLoad.conf:: metdatadb_env,metviewer
 54::ExtractTiles_mtd::met_tool_wrapper/ExtractTiles/ExtractTiles_mtd.conf
 55::GFDLTracker_TC::met_tool_wrapper/GFDLTracker/GFDLTracker_TC.conf::gfdl-tracker_env
+56::GFDLTracker_ETC::met_tool_wrapper/GFDLTracker/GFDLTracker_ETC.conf::gfdl-tracker_env
+57::GFDLTracker_Genesis::met_tool_wrapper/GFDLTracker/GFDLTracker_Genesis.conf::gfdl-tracker_env
 
 Category: air_quality_and_comp
 0::EnsembleStat_fcstICAP_obsMODIS_aod::model_applications/air_quality_and_comp/EnsembleStat_fcstICAP_obsMODIS_aod.conf
@@ -124,7 +126,7 @@ Category: s2s
 7:: UserScript_fcstGFS_obsERA_PhaseDiagram:: model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram.conf:: spacetime_env
 8:: UserScript_fcstGFS_obsERA_OMI:: model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.conf:: spacetime_env, metdatadb
 9:: UserScript_fcstGFS_obsERA_RMM:: model_applications/s2s/UserScript_fcstGFS_obsERA_RMM.conf:: spacetime_env, metdatadb
-
+10::UserScript_fcstGFS_obsERA_WeatherRegime:: model_applications/s2s/UserScript_fcstGFS_obsERA_WeatherRegime.conf:: weatherregime_env,metplus
 
 Category: space_weather
 0::GridStat_fcstGloTEC_obsGloTEC_vx7:: model_applications/space_weather/GridStat_fcstGloTEC_obsGloTEC_vx7.conf

@@ -66,6 +66,7 @@ class PointStatWrapper(CompareGriddedWrapper):
                     'rps',
                     'eclv',
                     'mpr',
+                    'orank',
                     ]
 
     def __init__(self, config, instance=None, config_overrides={}):
