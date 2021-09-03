@@ -50,6 +50,78 @@ METplus Database of Statistics
 
      | *Tool:* TC-Pairs
 
+   A/BAL_WIND_64
+     **TCMPR line type**: a/bdeck 64-knot radius winds in full circle
+
+     | *Tool:* TC-Pairs
+   
+   A/BDEPTH
+     **TCMPR line type**: system depth, D-deep, M-medium, S-shallow, X-unknown
+
+     | *Tool:* TC-Pairs
+
+   A/BDIR
+     **TCMPR line type**: storm direction in compass coordinates, 0 - 359
+     degrees
+
+     | *Tool:* TC-Pairs
+     
+   A/BEYE
+     **TCMPR line type**: eye diameter, 0 through 999 nm
+
+     | *Tool:* TC-Pairs
+     
+   A/BGUSTS
+     **TCMPR line type**: gusts, 0 through 995 kts
+
+     | *Tool:* TC-Pairs
+
+   A/BMRD
+     **TCMPR line type**: radius of max winds, 0 - 999 nm
+
+     | *Tool:* TC-Pairs
+     
+   A/BNE_WIND_34
+     **TCMPR line type**: a/bdeck 34-knot radius winds in NE quadrant
+
+     | *Tool:* TC-Pairs
+     
+   A/BNE_WIND_50
+     **TCMPR line type**: a/bdeck 50-knot radius winds in NE quadrant
+
+     | *Tool:* TC-Pairs
+     
+   A/BNE_WIND_64
+     **TCMPR line type**: a/bdeck 64-knot radius winds in NE quadrant
+
+     | *Tool:* TC-Pairs
+     
+   A/BNW_WIND_34
+     **TCMPR line type**: a/bdeck 34-knot radius winds in NW quadrant
+
+     | *Tool:* TC-Pairs
+     
+   A/BNW_WIND_50
+     **TCMPR line type**: a/bdeck 50-knot radius winds in NW quadrant
+
+     | *Tool:* TC-Pairs
+     
+   A/BNW_WIND_64
+     **TCMPR line type**: a/bdeck 64-knot radius winds in NW quadrant
+
+     | *Tool:* TC-Pairs
+     
+   A/BRADP
+     **TCMPR line type**: pressure in millibars of the last closed isobar,
+     900 - 1050 mb
+
+     | *Tool:* TC-Pairs
+     
+   A/BRRP
+     **TCMPR line type**: radius of the last closed isobar in nm, 0 - 9999 nm
+
+     | *Tool:* TC-Pairs
+     
    ACC
      | **MODE line type**: Accuracy \ :sup:`1`
      | **CTS line type**: Accuracy including normal and bootstrap
