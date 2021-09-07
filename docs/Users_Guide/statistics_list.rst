@@ -6,7 +6,7 @@ METplus Database of Statistics
    :sorted:
 
    2D Objects
-     | For each Object:
+     | **For each Object:**
      | Location of the centroid in grid units
      | Location of the centroid in lat/lon degrees
      | Axis angle, Length of the enclosing rectangle
@@ -22,7 +22,7 @@ METplus Database of Statistics
        ratio
      | Sum of the intensities of the raw field within the object
      |
-     | For paired objects:
+     | **For paired objects:**
        Distance between two objects centroids, Minimum distance between the
        boundaries of two objects
      | Minimum distance between the convex hulls of two objects
@@ -122,6 +122,41 @@ METplus Database of Statistics
 
      | *Tool:* TC-Pairs
      
+   A/BSE_WIND_34
+     **TCMPR line type:** a/bdeck 34-knot radius winds in SE quadrant
+
+     | *Tool:* TC-Pairs
+     
+   A/BSE_WIND_50
+     **TCMPR line type:** a/bdeck 50-knot radius winds in SE quadrant
+
+     | *Tool:* TC-Pairs
+     
+   A/BSE_WIND_64
+     **TCMPR line type:** a/bdeck 64-knot radius winds in SE quadrant
+
+     | *Tool:* TC-Pairs
+     
+   A/BSPEED
+     **TCMPR line type:** storm speed, 0 - 999 kts
+
+     | *Tool:* TC-Pairs
+     
+   A/BSW_WIND_34
+     **TCMPR line type:** a/bdeck 34-knot radius winds in SW quadrant
+
+     | *Tool:* TC-Pairs
+     
+   A/BSW_WIND_50
+     **TCMPR line type:** a/bdeck 50-knot radius winds in SW quadrant
+
+     | *Tool:* TC-Pairs
+     
+   A/BSW_WIND_64
+     **TCMPR line type:** a/bdeck 64-knot radius winds in SW quadrant
+
+     | *Tool:* TC-Pairs
+          
    ACC
      | **MODE line type**: Accuracy \ :sup:`1`
      | **CTS line type**: Accuracy including normal and bootstrap
