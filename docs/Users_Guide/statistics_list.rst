@@ -169,4 +169,15 @@ METplus Database of Statistics
      | *Tools:* \ :sup:`1` \ MODE-Tool, \ :sup:`2` \ Point-Stat Tool
       & \ :sup:`3` \ Grid-Stat Tool
  
- 
+   ACC_NCL
+   ACC_NCU
+   ACC_BCL
+   ACC_BCU
+     | **CTS line type:** Accuracy including normal and bootstrap upper and
+     |     lower confidence limits \ :sup:`2`
+     | **MCTS line type:** Accuracy, normal confidence limits and bootstrap
+     |     confidence limits \ :sup:`2`
+     | **NBRCTCS line type:** Accuracy including normal and bootstrap upper
+     |     and lower confidence limits \ :sup:`3`
+     |
+     | *Tools:*  \ :sup:`2` \ Point-Stat Tool & \ :sup:`3` \ Grid-Stat Tool
