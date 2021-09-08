@@ -158,33 +158,22 @@ def setup(config_inputs, logger=None, base_confs=None):
 # These are than used by def launch to create a single metplus final conf file
 # that would be used by all tasks.
 def parse_launch_args(args, logger, base_confs=None):
-    """!Parsed arguments to scripts that launch the METplus system.
-
-    This is the argument parser for the config_metplus.py
-    script.  It parses the arguments (in args).
-    If something goes wrong, this function calls
-    sys.exit(1) or sys.exit(2).
+    """! Parsed arguments to scripts that launch the METplus wrappers.
 
     Options:
-    * section.variable=value --- set this value in this section, no matter what
-    * /path/to/file.conf --- read this conf file after the default conf files.
-
-    Later conf files override earlier ones.  The conf files read in
-    are:
-    * metplus.conf
+    * section.variable=value --- set this value in this section
+    * /path/to/file.conf --- read this conf file after the default conf files
 
     @param args the script arguments, after script-specific ones are removed
-    @param logger a logging.Logger for log messages"""
+    @param logger a logging.Logger for log messages
+    @returns tuple containing path to parm directory, list of config files and
+     collections.defaultdict of explicit config overrides
+    """
 
     parm = os.path.realpath(PARM_BASE)
     if base_confs is None:
         base_confs = get_default_config_list()
 
-    # Files in this list, that don't exist or are empty,
-    # will be silently ignored.
-    # infiles=[ os.path.join(parm, 'metplus.conf'),
-    #          os.path.join(parm, 'metplus.override.conf')
-    #         ]
     infiles = list()
     for base_conf in base_confs:
         infiles.append(base_conf)
@@ -234,14 +223,15 @@ def parse_launch_args(args, logger, base_confs=None):
 
     return parm, infiles, moreopt
 
-
-# This is intended to be used to create and write a final conf file
-# that is used by all tasks .... though METplus isn't being run
-# that way .... instead METplus tasks need to be able to run stand-alone
-# so each task needs to be able to initialize the conf files.
-# conf files are processed in the order they exist in the file_list
-# so each succesive element overwrites the previous.
 def launch(file_list, moreopt):
+    """! Process configuration files and explicit configuration variables
+     overrides. Subsequent configuration files override values in previously
+     read files. Explicit configuration variables are read after all config
+     files are processed.
+
+    @param file_list list of configuration files to read
+    @param moreopt explicit configuration variable overrides
+    """
     config = METplusConfig()
     logger = config.log()
 

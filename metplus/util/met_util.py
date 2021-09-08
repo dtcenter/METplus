@@ -413,7 +413,6 @@ def check_for_deprecated_config(config):
         'STAT_ANALYSIS_CONFIG': {'sec': 'config', 'alt': 'STAT_ANALYSIS_CONFIG_FILE'},
         'JOB_NAME': {'sec': 'config', 'alt': 'STAT_ANALYSIS_JOB_NAME'},
         'JOB_ARGS': {'sec': 'config', 'alt': 'STAT_ANALYSIS_JOB_ARGS'},
-        'DESC': {'sec': 'config', 'alt': 'DESC_LIST'},
         'FCST_LEAD': {'sec': 'config', 'alt': 'FCST_LEAD_LIST'},
         'FCST_VAR_NAME': {'sec': 'config', 'alt': 'FCST_VAR_LIST'},
         'FCST_VAR_LEVEL': {'sec': 'config', 'alt': 'FCST_VAR_LEVEL_LIST'},
