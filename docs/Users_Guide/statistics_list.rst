@@ -186,7 +186,7 @@ METplus Database of Statistics
      | **TCMPR line type:** adeck distance to land (nm)
      | **PROBRIRW line type:** adeck distance to land (nm)
      |
-     | *Tools:* TC-Pairs
+     | *Tool:* TC-Pairs
 
    AFSS
    AFSS_BCL
@@ -194,4 +194,63 @@ METplus Database of Statistics
      | **NBRCNT line type:** Asymptotic Fractions Skill Score including
      |     bootstrap upper and lower confidence limits
      |
-     | *Tools:* Grid-Stat Tool  
+     | *Tool:* Grid-Stat Tool  
+
+   AGEN_DLAND
+     | **GENMPR line type:** Forecast genesis event distance to land (nm)
+     |
+     | *Tool*: TC-Gen
+     
+   AGEN_FHR
+     | **GENMPR line type:** Forecast hour of genesis event
+     |
+     | *Tool*: TC-Gen
+     
+   AGEN_INIT
+     | **GENMPR line type:** Forecast initialization time
+     |
+     | *Tool*: TC-Gen
+     
+   AGEN_LAT
+     | **GENMPR line type:** Latitude position of the forecast genesis event
+     |
+     | *Tool*: TC-Gen
+     
+   AGEN_LON
+     | **GENMPR line type:** Longitude position of the forecast genesis event
+     |
+     | *Tool*: TC-Gen
+     
+   ALAT
+     | **TCMPR line type:** Latitude position of adeck model
+     | **PROBRIRW line type:** Latitude position of edeck model
+     |
+     | *Tool*: TC-Pairs
+     
+   ALON
+     | **TCMPR line type:** Longitude position of adeck model
+     | **PROBRIRW line type:** Longitude position of edeck model
+     |
+     | *Tool*: TC-Pairs
+
+   ALPHA
+     | **Point-Stat line type:** Error percent value used in confidence
+       intervals  \ :sup:`2` \
+     | **grid-stat line type:** Error percent value used in confidence
+     |     intervals  \ :sup:`3` \
+     | **wavelet-stat line type:** NA in Wavelet-Stat  \ :sup:`4` \
+     | **TC-Gen line type:** Error percent value used in confidence
+     |     intervals  \ :sup:`5` \
+     |
+     | *Tools:* \ :sup:`2` \ Point-Stat Tool,
+      \ :sup:`3` \ Grid-Stat Tool, \:sup:`4` \ Wavelet-Stat Tool,
+      \:sup:`5` \ TC-Gen
+
+   
+
+
+ | *Tools:* \ :sup:`1` \ MODE-Tool, \ :sup:`2` \ Point-Stat Tool,
+      \ :sup:`3` \ Grid-Stat Tool, \:sup:`4` \ Wavelet-Stat Tool,
+      \:sup:`5` \ TC-Gen
+
+
