@@ -133,15 +133,11 @@ def setup(config_inputs, logger=None, base_confs=None):
     else:
         config_list = config_inputs
 
-    # parm, is path to parm directory
-    # infiles, list of input conf files to be read and processed
-    # moreopt, dictionary of conf file settings, passed in from command line.
-    (parm, infiles, moreopt) = \
-        parse_launch_args(config_list,
-                          logger,
-                          base_confs=base_confs)
+    override_list = parse_launch_args(config_list, logger)
 
-    config = launch(infiles, moreopt)
+    # add default config files to override list
+    config_list = base_confs + override_list
+    config = launch(config_list)
 
     # save list of user configuration files in a variable
     config.set('config', 'METPLUS_CONFIG_FILES', ','.join(config_list))
@@ -157,7 +153,7 @@ def setup(config_inputs, logger=None, base_confs=None):
 # along with, -c some.conf and any other conf files...
 # These are than used by def launch to create a single metplus final conf file
 # that would be used by all tasks.
-def parse_launch_args(args, logger, base_confs=None):
+def parse_launch_args(args, logger):
     """! Parsed arguments to scripts that launch the METplus wrappers.
 
     Options:
@@ -169,19 +165,10 @@ def parse_launch_args(args, logger, base_confs=None):
     @returns tuple containing path to parm directory, list of config files and
      collections.defaultdict of explicit config overrides
     """
+    if not args:
+        return []
 
-    parm = os.path.realpath(PARM_BASE)
-    if base_confs is None:
-        base_confs = get_default_config_list()
-
-    infiles = list()
-    for base_conf in base_confs:
-        infiles.append(base_conf)
-
-    moreopt = collections.defaultdict(dict)
-
-    if args is None:
-        return parm, infiles, moreopt
+    override_list = []
 
     # Now look for any option and conf file arguments:
     bad = False
@@ -192,38 +179,43 @@ def parse_launch_args(args, logger, base_confs=None):
            =(?P<value>.*)$''', args[iarg])
         # check if argument is a explicit variable override
         if m:
-            logger.info('Set [%s] %s = %s' % (
-                m.group('section'), m.group('option'),
-                repr(m.group('value'))))
-            moreopt[m.group('section')][m.group('option')] = m.group('value')
+            section = m.group('section')
+            key = m.group('option')
+            value = m.group('value')
+            override_list.append((section, key, value))
+            continue
+
+        filepath = args[iarg]
         # check if argument is a path to a file that exists
-        elif os.path.exists(args[iarg]):
-            infiles.append(os.path.realpath(args[iarg]))
-        # check for config file path relative to parm directory (needed?)
-        elif os.path.exists(os.path.join(parm, args[iarg])):
-            infiles.append(os.path.join(parm, args[iarg]))
-        else:
+        if not os.path.exists(filepath):
+            logger.error(f'Invalid argument: {filepath}')
             bad = True
-            # if OS separator character (/ or \) if in argument, assume it
-            # is supposed to be a path but the file is not found
-            if os.sep in args[iarg]:
-                logger.error(f"Configuration file not found: {args[iarg]}")
-            else:
-                logger.error(f"Invalid argument: {args[iarg]}")
+            continue
 
-    for file in infiles:
-        if not os.path.isfile(file):
-            logger.error(f'Conf file is not a file: {file}')
+        # expand file path to full path
+        filepath = os.path.realpath(filepath)
+
+        # path exists but is not a file
+        if not os.path.isfile(filepath):
+            logger.error(f'Conf is not a file: {filepath}')
             bad = True
-        elif not produtil.fileop.isnonempty(file):
-            logger.warning(f'Conf file is empty: {file}')
+            continue
 
+        # warn and skip if file is empty
+        if os.stat(filepath).st_size == 0:
+            logger.warning(f'Conf file is empty: {filepath}. Skipping')
+            continue
+
+        # add file path to override list
+        override_list.append(filepath)
+
+    # exit if anything went wrong reading config arguments
     if bad:
         sys.exit(2)
 
-    return parm, infiles, moreopt
+    return override_list
 
-def launch(file_list, moreopt):
+def launch(config_list):
     """! Process configuration files and explicit configuration variables
      overrides. Subsequent configuration files override values in previously
      read files. Explicit configuration variables are read after all config
@@ -239,29 +231,22 @@ def launch(file_list, moreopt):
     config.set('config', 'CLOCK_TIME',
                datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
 
-    # Read in and parse all the conf files.
-    for filename in file_list:
-        config.read(filename)
-        logger.info("%s: Parsed this file" % (filename,))
+    # Read in and parse all the conf files and overrides
+    for config_item in config_list:
+        if isinstance(config_item, str):
+            logger.info(f"Parsing config file: {config_item}")
+            config.read(config_item)
+        else:
+            # set explicit config override
+            section, key, value = config_item
+            if not config.has_section(section):
+                config.add_section(section)
+
+            logger.info(f"Override: [{section}] {key} = {value}")
+            config.set(section, key, value)
 
         # move all config variables from old sections into the [config] section
         config.move_all_to_config_section()
-
-    # Overriding or passing in specific conf items on the command line
-    # ie. config.NEWVAR="a new var" dir.SOMEDIR=/override/dir/path
-    # If spaces, seems like you need double quotes on command line.
-    if moreopt:
-        for section, options in moreopt.items():
-            if not config.has_section(section):
-                config.add_section(section)
-            for option, value in options.items():
-                logger.info('Override: %s.%s=%s'
-                            % (section, option, repr(value)))
-                config.set(section, option, value)
-
-            # after each config variable override,
-            # move old sections to [config]
-            config.move_all_to_config_section()
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
@@ -269,9 +254,7 @@ def launch(file_list, moreopt):
     # Initialize the output directories
     util.mkdir_p(config.getdir('OUTPUT_BASE'))
 
-    # All conf files and command line options have been parsed.
-    # So lets set and add specific log variables to the conf object
-    # based on the conf log template values.
+    # set and log variables to the config object
     get_logger(config)
 
     # Determine if final METPLUS_CONF file already exists on disk.
