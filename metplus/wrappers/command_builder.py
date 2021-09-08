@@ -182,12 +182,6 @@ class CommandBuilder:
         c_dict['SKIP_TIMES'] = util.get_skip_times(self.config,
                                                    app_name)
 
-        c_dict['USE_EXPLICIT_NAME_AND_LEVEL'] = (
-            self.config.getbool('config',
-                                'USE_EXPLICIT_NAME_AND_LEVEL',
-                                False)
-            )
-
         c_dict['MANDATORY'] = (
             self.config.getbool('config',
                                 f'{app_name.upper()}_MANDATORY',
