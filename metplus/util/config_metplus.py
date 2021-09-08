@@ -201,13 +201,16 @@ def parse_launch_args(args, logger, base_confs=None):
           (?P<section>[a-zA-Z][a-zA-Z0-9_]*)
            \.(?P<option>[^=]+)
            =(?P<value>.*)$''', args[iarg])
+        # check if argument is a explicit variable override
         if m:
             logger.info('Set [%s] %s = %s' % (
                 m.group('section'), m.group('option'),
                 repr(m.group('value'))))
             moreopt[m.group('section')][m.group('option')] = m.group('value')
+        # check if argument is a path to a file that exists
         elif os.path.exists(args[iarg]):
             infiles.append(os.path.realpath(args[iarg]))
+        # check for config file path relative to parm directory (needed?)
         elif os.path.exists(os.path.join(parm, args[iarg])):
             infiles.append(os.path.join(parm, args[iarg]))
         else:
@@ -218,19 +221,17 @@ def parse_launch_args(args, logger, base_confs=None):
                 logger.error(f"Configuration file not found: {args[iarg]}")
             else:
                 logger.error(f"Invalid argument: {args[iarg]}")
+
+    for file in infiles:
+        if not os.path.isfile(file):
+            logger.error(f'Conf file is not a file: {file}')
+            bad = True
+        elif not produtil.fileop.isnonempty(file):
+            logger.warning(f'Conf file is empty: {file}')
+
     if bad:
         sys.exit(2)
 
-    for file in infiles:
-        if not os.path.exists(file):
-            logger.error(file + ': conf file does not exist.')
-            sys.exit(2)
-        elif not os.path.isfile(file):
-            logger.error(file + ': conf file is not a regular file.')
-            sys.exit(2)
-        elif not produtil.fileop.isnonempty(file):
-            logger.warning(
-                file + ': conf file is empty.  Will continue anyway.')
     return parm, infiles, moreopt
 
 
@@ -241,11 +242,6 @@ def parse_launch_args(args, logger, base_confs=None):
 # conf files are processed in the order they exist in the file_list
 # so each succesive element overwrites the previous.
 def launch(file_list, moreopt):
-    for filename in file_list:
-        if not isinstance(filename, str):
-            raise TypeError('First input to metplus.config.for_initial_job '
-                            'must be a list of strings.')
-
     config = METplusConfig()
     logger = config.log()
 
