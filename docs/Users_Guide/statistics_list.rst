@@ -235,7 +235,7 @@ METplus Database of Statistics
 
    ALPHA
      | **Point-Stat line type:** Error percent value used in confidence
-       intervals  \ :sup:`2` \
+     |     intervals  \ :sup:`2` \
      | **grid-stat line type:** Error percent value used in confidence
      |     intervals  \ :sup:`3` \
      | **wavelet-stat line type:** NA in Wavelet-Stat  \ :sup:`4` \
@@ -249,7 +249,7 @@ METplus Database of Statistics
    
 
 
- | *Tools:* \ :sup:`1` \ MODE-Tool, \ :sup:`2` \ Point-Stat Tool,
+ *Tools:* \ :sup:`1` \ MODE-Tool, \ :sup:`2` \ Point-Stat Tool,
       \ :sup:`3` \ Grid-Stat Tool, \:sup:`4` \ Wavelet-Stat Tool,
       \:sup:`5` \ TC-Gen
 
