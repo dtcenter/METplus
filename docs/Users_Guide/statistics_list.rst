@@ -243,8 +243,8 @@ METplus Database of Statistics
      |     intervals  \ :sup:`5` \
      |
      | *Tools:* \ :sup:`2` \ Point-Stat Tool,
-     |      \ :sup:`3` \ Grid-Stat Tool, \ :sup:`4` \ Wavelet-Stat Tool,
-     |      \ :sup:`5` \ TC-Gen
+      \ :sup:`3` \ Grid-Stat Tool, \ :sup:`4` \ Wavelet-Stat Tool,
+      \ :sup:`5` \ TC-Gen
 
    Key for Tools
      | *Tools:* \ :sup:`1` \ MODE-Tool, \ :sup:`2` \ Point-Stat Tool,
