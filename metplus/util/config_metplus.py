@@ -207,7 +207,7 @@ def parse_launch_args(args, logger, base_confs=None):
                 repr(m.group('value'))))
             moreopt[m.group('section')][m.group('option')] = m.group('value')
         elif os.path.exists(args[iarg]):
-            infiles.append(args[iarg])
+            infiles.append(os.path.realpath(args[iarg]))
         elif os.path.exists(os.path.join(parm, args[iarg])):
             infiles.append(os.path.join(parm, args[iarg]))
         else:
