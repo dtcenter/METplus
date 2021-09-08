@@ -615,6 +615,49 @@ class METplusConfig(ProdConfig):
 
             self._conf.remove_section(section)
 
+    def move_runtime_configs(self):
+        """! Move all config variables that are specific to the current runtime
+        environment to the [runtime] section so that they do not cause issues
+        if a user reads in the final conf from a run to run_metplus to rerun
+        """
+        from_section = 'config'
+        to_section = 'runtime'
+        RUNTIME_CONFS = [
+            'CLOCK_TIME',
+            'METPLUS_BASE',
+            'PARM_BASE',
+            'METPLUS_CONFIG_FILES',
+            'METPLUS_VERSION',
+            'MET_INSTALL_DIR',
+            'INPUT_BASE',
+            'OUTPUT_BASE',
+            'METPLUS_CONF',
+            'TMP_DIR',
+            'STAGING_DIR',
+            'CONVERT',
+            'GEMPAKTOCF_JAR',
+            'GFDL_TRACKER_EXEC',
+            'INPUT_MUST_EXIST',
+            'USER_SHELL',
+            'DO_NOT_RUN_EXE',
+            'SCRUB_STAGING_DIR',
+        ]
+        log_confs = [item for item in self.keys(from_section)
+                     if item.startswith('LOG')]
+        # create destination section if it does not exist
+        if not self.has_section(to_section):
+            self._conf.add_section(to_section)
+
+        for key in RUNTIME_CONFS + log_confs:
+            if not self.has_option(from_section, key):
+                continue
+
+            # add conf to [runtime] section
+            self.set(to_section, key, super().getraw(from_section, key))
+
+            # remove conf from [config] section
+            self._conf.remove_option(from_section, key)
+
     def find_section(self, sec, opt):
         """! Search through list of previously supported config sections
               to find variable requested. This allows the removal of these

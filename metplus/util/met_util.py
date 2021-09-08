@@ -186,28 +186,34 @@ def post_run_cleanup(config, app_name, total_errors):
         logger.info("Scrubbing staging dir: %s", staging_dir)
         shutil.rmtree(staging_dir)
 
+    # save log file path and clock time before writing final conf file
+    log_message = (f"Check the log file for more information: "
+                   f"{config.getstr('config', 'LOG_METPLUS')}")
+
+    start_clock_time = datetime.datetime.strptime(config.getstr('config',
+                                                                'CLOCK_TIME'),
+                                                  '%Y%m%d%H%M%S')
+
     # rewrite final conf so it contains all of the default values used
-    write_final_conf(config, logger)
+    write_final_conf(config)
 
     # compute time it took to run
-    start_clock_time = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
-                                                  '%Y%m%d%H%M%S')
     end_clock_time = datetime.datetime.now()
     total_run_time = end_clock_time - start_clock_time
     logger.debug(f"{app_name} took {total_run_time} to run.")
 
-    log_message = f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}"
-    if total_errors == 0:
+    if not total_errors:
         logger.info(log_message)
         logger.info(f'{app_name} has successfully finished running.')
-    else:
-        error_msg = f"{app_name} has finished running but had {total_errors} error"
-        if total_errors > 1:
-            error_msg += 's'
-        error_msg += '.'
-        logger.error(error_msg)
-        logger.info(log_message)
-        sys.exit(1)
+        return
+
+    error_msg = f"{app_name} has finished running but had {total_errors} error"
+    if total_errors > 1:
+        error_msg += 's'
+    error_msg += '.'
+    logger.error(error_msg)
+    logger.info(log_message)
+    sys.exit(1)
 
 def write_all_commands(all_commands, config):
     if not all_commands:
@@ -816,18 +822,27 @@ def skip_time(time_info, skip_times):
     # if skip time never matches, return False
     return False
 
-def write_final_conf(config, logger):
-    """!write final conf file including default values that were set during run"""
-    confloc = config.getstr('config', 'METPLUS_CONF')
-    logger.info('%s: write metplus.conf here' % (confloc,))
-    with open(confloc, 'wt') as conf_file:
-        config.write(conf_file)
+def write_final_conf(config):
+    """! Write final conf file including default values that were set during
+     run. Move variables that are specific to the user's run to the [runtime]
+     section to avoid issues such as overwriting existing log files.
 
+        @param config METplusConfig object to write to file
+     """
     # write out os environment to file for debugging
     env_file = os.path.join(config.getdir('LOG_DIR'), '.metplus_user_env')
     with open(env_file, 'w') as env_file:
         for key, value in os.environ.items():
             env_file.write('{}={}\n'.format(key, value))
+
+    final_conf = config.getstr('config', 'METPLUS_CONF')
+
+    # move runtime variables to [runtime] section
+    config.move_runtime_configs()
+
+    config.logger.info('Overwrite final conf here: %s' % (final_conf,))
+    with open(final_conf, 'wt') as conf_file:
+        config.write(conf_file)
 
 def is_loop_by_init(config):
     """!Check config variables to determine if looping by valid or init time"""
