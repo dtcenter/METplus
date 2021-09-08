@@ -192,7 +192,7 @@ def parse_launch_args(args, logger, base_confs=None):
     moreopt = collections.defaultdict(dict)
 
     if args is None:
-        return (parm, infiles, moreopt)
+        return parm, infiles, moreopt
 
     # Now look for any option and conf file arguments:
     bad = False
@@ -231,7 +231,7 @@ def parse_launch_args(args, logger, base_confs=None):
         elif not produtil.fileop.isnonempty(file):
             logger.warning(
                 file + ': conf file is empty.  Will continue anyway.')
-    return (parm, infiles, moreopt)
+    return parm, infiles, moreopt
 
 
 # This is intended to be used to create and write a final conf file
@@ -324,10 +324,6 @@ def launch(file_list, moreopt):
     for var in ('METPLUS_BASE', 'PARM_BASE'):
         expand = config.getdir(var)
         logger.info('Setting [dir] %s to %s' % (var, expand))
-
-    # Place holder for when workflow is developed in METplus.
-    # if prelaunch is not None:
-    #    prelaunch(config,logger,cycle)
 
     # writes the METPLUS_CONF used by all tasks.
     logger.info('METPLUS_CONF: %s written here.' % (confloc,))
