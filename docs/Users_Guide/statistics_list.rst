@@ -181,3 +181,17 @@ METplus Database of Statistics
      |     and lower confidence limits \ :sup:`3`
      |
      | *Tools:*  \ :sup:`2` \ Point-Stat Tool & \ :sup:`3` \ Grid-Stat Tool
+
+   ADLAND
+     | **TCMPR line type:** adeck distance to land (nm)
+     | **PROBRIRW line type:** adeck distance to land (nm)
+     |
+     | *Tools:* TC-Pairs
+
+   AFSS
+   AFSS_BCL
+   AFSS_BCU
+     | **NBRCNT line type:** Asymptotic Fractions Skill Score including
+     |     bootstrap upper and lower confidence limits
+     |
+     | *Tools:* Grid-Stat Tool  
