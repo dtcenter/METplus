@@ -252,6 +252,7 @@ def launch(config_list):
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
     # only set incorrectly because OUTPUT_BASE is set incorrectly
     # Initialize the output directories
+
     util.mkdir_p(config.getdir('OUTPUT_BASE'))
 
     # set and log variables to the config object
