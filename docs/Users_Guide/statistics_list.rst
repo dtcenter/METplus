@@ -221,3 +221,30 @@ METplus Database of Statistics
      |
      | *Tool*: TC-Gen
      
+   ALAT
+     | **TCMPR line type:** Latitude position of adeck model
+     | **PROBRIRW line type:** Latitude position of edeck model
+     |
+     | *Tool*: TC-Pairs
+     
+   ALON
+     | **TCMPR line type:** Longitude position of adeck model
+     | **PROBRIRW line type:** Longitude position of edeck model
+     |
+     | *Tool*: TC-Pairs
+
+   ALPHA
+     | **Point-Stat line type:** Error percent value used in confidence
+     |     intervals  \ :sup:`2` \
+     | **grid-stat line type:** Error percent value used in confidence
+     |     intervals  \ :sup:`3` \
+     | **wavelet-stat line type:** NA in Wavelet-Stat  \ :sup:`4` \
+     | **TC-Gen line type:** Error percent value used in confidence
+     |     intervals  \ :sup:`5` \
+     |
+     | *Tools:* \ :sup:`2` \ Point-Stat Tool,
+     |      \ :sup:`3` \ Grid-Stat Tool, \:sup:`4` \ Wavelet-Stat Tool,
+     |      \:sup:`5` \ TC-Gen
+
+   
+
