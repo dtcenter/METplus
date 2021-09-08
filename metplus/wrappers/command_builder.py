@@ -1031,26 +1031,25 @@ class CommandBuilder:
             time_info[field_item] = field_info[field_item] if field_item in field_info else ''
 
     def set_current_field_config(self, field_info=None):
-        """!Sets config variables for current fcst/obs name/level that can be referenced
-            by other config variables such as OUTPUT_PREFIX. Only sets then if CURRENT_VAR_INFO
-            is set in c_dict.
-            Args:
-                @param field_info optional dictionary containing field information. If not provided, use
-                [config] CURRENT_VAR_INFO
+        """! Sets config variables for current fcst/obs name/level that can be
+         referenced by other config variables such as OUTPUT_PREFIX.
+         Only sets then if CURRENT_VAR_INFO is set in c_dict.
+
+         @param field_info optional dictionary containing field information.
+          If not provided, use [config] CURRENT_VAR_INFO
         """
         if not field_info:
             field_info = self.c_dict.get('CURRENT_VAR_INFO', None)
 
-        if field_info is not None:
+        if field_info is None:
+            return
 
-            self.config.set('config', 'CURRENT_FCST_NAME',
-                            field_info['fcst_name'] if 'fcst_name' in field_info else '')
-            self.config.set('config', 'CURRENT_OBS_NAME',
-                            field_info['obs_name'] if 'obs_name' in field_info else '')
-            self.config.set('config', 'CURRENT_FCST_LEVEL',
-                            field_info['fcst_level'] if 'fcst_level' in field_info else '')
-            self.config.set('config', 'CURRENT_OBS_LEVEL',
-                            field_info['obs_level'] if 'obs_level' in field_info else '')
+        for fcst_or_obs in ['FCST', 'OBS']:
+            for name_or_level in ['NAME', 'LEVEL']:
+                current_var = f'CURRENT_{fcst_or_obs}_{name_or_level}'
+                name = f'{fcst_or_obs.lower()}_{name_or_level.lower()}'
+                self.config.set('config', current_var,
+                                field_info[name] if name in field_info else '')
 
     def check_for_python_embedding(self, input_type, var_info):
         """!Check if field name of given input type is a python script. If it is not, return the field name.
