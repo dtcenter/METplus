@@ -195,3 +195,29 @@ METplus Database of Statistics
      |     bootstrap upper and lower confidence limits
      |
      | *Tool:* Grid-Stat Tool  
+
+   AGEN_DLAND
+     | **GENMPR line type:** Forecast genesis event distance to land (nm)
+     |
+     | *Tool*: TC-Gen
+     
+   AGEN_FHR
+     | **GENMPR line type:** Forecast hour of genesis event
+     |
+     | *Tool*: TC-Gen
+     
+   AGEN_INIT
+     | **GENMPR line type:** Forecast initialization time
+     |
+     | *Tool*: TC-Gen
+     
+   AGEN_LAT
+     | **GENMPR line type:** Latitude position of the forecast genesis event
+     |
+     | *Tool*: TC-Gen
+     
+   AGEN_LON
+     | **GENMPR line type:** Longitude position of the forecast genesis event
+     |
+     | *Tool*: TC-Gen
+     
