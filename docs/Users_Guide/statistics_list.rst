@@ -256,7 +256,7 @@ METplus Database of Statistics
      | 
      | *Tool:* TC-Pairs
 
-   AMODEL 
+   AMODEL???
      | **TCST line type:** User provided text string designating model name
      | 
      | *Tool:* TC-Pairs
