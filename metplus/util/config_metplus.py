@@ -112,9 +112,9 @@ def get_default_config_list(parm_base=None):
 
     return default_config_list
 
-def setup(config_inputs, logger=None, base_confs=None):
+def setup(args, logger=None, base_confs=None):
     """!The METplus setup function.
-        @param config_inputs list of configuration files or configuration
+        @param args list of configuration files or configuration
         variable overrides. Reads all configuration inputs and returns
         a configuration object.
     """
@@ -128,31 +128,16 @@ def setup(config_inputs, logger=None, base_confs=None):
 
     logger.info('Starting METplus configuration setup.')
 
-    if isinstance(config_inputs, str):
-        config_list = [config_inputs]
-    else:
-        config_list = config_inputs
-
-    override_list = parse_launch_args(config_list, logger)
+    override_list = parse_launch_args(args, logger)
 
     # add default config files to override list
-    config_list = base_confs + override_list
-    config = launch(config_list)
-
-    # save list of user configuration files in a variable
-    config.set('config', 'METPLUS_CONFIG_FILES', ','.join(config_list))
+    override_list = base_confs + override_list
+    config = launch(override_list)
 
     logger.info('Completed METplus configuration setup.')
 
     return config
 
-# def parse_launch_args(args,usage,logger,PARM_BASE=None):
-# This is intended to be use to gather all the conf files on the
-# command line, along with overide options on the command line.
-# This includes the default conf files metplus.conf, metplus.override.conf
-# along with, -c some.conf and any other conf files...
-# These are than used by def launch to create a single metplus final conf file
-# that would be used by all tasks.
 def parse_launch_args(args, logger):
     """! Parsed arguments to scripts that launch the METplus wrappers.
 
@@ -168,15 +153,18 @@ def parse_launch_args(args, logger):
     if not args:
         return []
 
+    if isinstance(args, str):
+        args = [args]
+
     override_list = []
 
     # Now look for any option and conf file arguments:
     bad = False
-    for iarg in range(len(args)):
+    for arg in args:
         m = re.match(r'''(?x)
           (?P<section>[a-zA-Z][a-zA-Z0-9_]*)
            \.(?P<option>[^=]+)
-           =(?P<value>.*)$''', args[iarg])
+           =(?P<value>.*)$''', arg)
         # check if argument is a explicit variable override
         if m:
             section = m.group('section')
@@ -185,7 +173,7 @@ def parse_launch_args(args, logger):
             override_list.append((section, key, value))
             continue
 
-        filepath = args[iarg]
+        filepath = arg
         # check if argument is a path to a file that exists
         if not os.path.exists(filepath):
             logger.error(f'Invalid argument: {filepath}')
@@ -231,11 +219,13 @@ def launch(config_list):
     config.set('config', 'CLOCK_TIME',
                datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
 
+    config_format_list = []
     # Read in and parse all the conf files and overrides
     for config_item in config_list:
         if isinstance(config_item, str):
             logger.info(f"Parsing config file: {config_item}")
             config.read(config_item)
+            config_format_list.append(config_item)
         else:
             # set explicit config override
             section, key, value = config_item
@@ -244,15 +234,18 @@ def launch(config_list):
 
             logger.info(f"Override: [{section}] {key} = {value}")
             config.set(section, key, value)
+            config_format_list.append(f'{section}.{key}={value}')
 
         # move all config variables from old sections into the [config] section
         config.move_all_to_config_section()
+
+    # save list of user configuration files in a variable
+    config.set('config', 'METPLUS_CONFIG_FILES', ','.join(config_format_list))
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
     # only set incorrectly because OUTPUT_BASE is set incorrectly
     # Initialize the output directories
-
     util.mkdir_p(config.getdir('OUTPUT_BASE'))
 
     # set and log variables to the config object
