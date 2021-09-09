@@ -56,16 +56,12 @@ __all__ = ['load',
 '''!@var METPLUS_BASE
 The METplus installation directory
 '''
-METPLUS_BASE = str(Path(__file__).parents[2])
+METPLUS_BASE = os.path.realpath(str(Path(__file__).parents[2]))
 
-'''!@var PARM_BASE
-The parameter directory - set to METPLUS_BASE/parm unless the
-METPLUS_PARM_BASE environment variable is set
-'''
-PARM_BASE = os.environ.get('METPLUS_PARM_BASE',
-                           os.path.join(METPLUS_BASE, 'parm'))
+# name of directory under METPLUS_BASE that contains config files
+METPLUS_PARM_DIR = 'parm'
 
-# name of directory under PARM_BASE that contains defaults
+# name of directory under METPLUS_PARM_DIR that contains defaults
 METPLUS_CONFIG_DIR = 'metplus_config'
 
 # default METplus configuration files that are sourced first
@@ -81,21 +77,16 @@ OLD_BASE_CONFS = [
     'metplus_logging.conf'
 ]
 
-def get_default_config_list(parm_base=None):
+def get_default_config_list():
     """! Get list of default METplus config files. Look through BASE_CONFS list
     and check if each file exists under the parm base. Add each to a list
     if they do exist.
 
-        @param parm_base directory to search for METplus config files. Uses
-         real path of PARM_BASE if it is not set (None)
         @returns list of full paths to default METplus config files
     """
     default_config_list = []
-    # set parm to real path of PARM_BASE if not provided as argument
-    if parm_base is None:
-        parm_base = os.path.realpath(PARM_BASE)
-
-    conf_dir = os.path.join(parm_base,
+    conf_dir = os.path.join(METPLUS_BASE,
+                            METPLUS_PARM_DIR,
                             METPLUS_CONFIG_DIR)
 
     # if both are found, set old base confs first so the new takes precedence
@@ -107,7 +98,6 @@ def get_default_config_list(parm_base=None):
 
     if not default_config_list:
         print(f"ERROR: No default config files found in {conf_dir}")
-        print("Check if METPLUS_PARM_BASE is set and unset it if so")
         sys.exit(1)
 
     return default_config_list
@@ -134,7 +124,7 @@ def setup(args, logger=None, base_confs=None):
     override_list = base_confs + override_list
     config = launch(override_list)
 
-    logger.info('Completed METplus configuration setup.')
+    logger.debug('Completed METplus configuration setup.')
 
     return config
 
@@ -232,7 +222,7 @@ def launch(config_list):
             if not config.has_section(section):
                 config.add_section(section)
 
-            logger.info(f"Override: [{section}] {key} = {value}")
+            logger.info(f"Parsing override: [{section}] {key} = {value}")
             config.set(section, key, value)
             config_format_list.append(f'{section}.{key}={value}')
 
@@ -251,47 +241,20 @@ def launch(config_list):
     # set and log variables to the config object
     get_logger(config)
 
-    # Determine if final METPLUS_CONF file already exists on disk.
-    # If it does, use it instead.
-    confloc = config.getstr('config', 'METPLUS_CONF')
+    final_conf = config.getstr('config', 'METPLUS_CONF')
 
-    # A user my set the confloc METPLUS_CONF location in a subdir of OUTPUT_BASE
-    # or even in another parent directory altogether, so make thedirectory
-    # so the metplus_final.conf file can be written.
-    if not os.path.exists(realpath(dirname(confloc))):
-        util.mkdir_p(realpath(dirname(confloc)))
+    # create final conf directory if it doesn't already exist
+    final_conf_dir = os.path.dirname(final_conf)
+    if not os.path.exists(final_conf_dir):
+        os.makedirs(final_conf_dir)
 
-    # set METPLUS_BASE conf to location of scripts used by METplus
-    # warn if user has set METPLUS_BASE to something different
-    # in their conf file
-    user_metplus_base = config.getdir('METPLUS_BASE', METPLUS_BASE)
-    if realpath(user_metplus_base) != realpath(METPLUS_BASE):
-        logger.warning('METPLUS_BASE from the conf files has no effect.'+\
-                       ' Overriding to '+METPLUS_BASE)
-
+    # set METPLUS_BASE/PARM_BASE conf so they can be referenced in other confs
     config.set('config', 'METPLUS_BASE', METPLUS_BASE)
+    config.set('config', 'PARM_BASE', os.path.join(METPLUS_BASE,
+                                                   METPLUS_PARM_DIR))
 
-    # do the same for PARM_BASE
-    user_parm_base = config.getdir('PARM_BASE', PARM_BASE)
-    if realpath(user_parm_base) != realpath(PARM_BASE):
-        logger.error('PARM_BASE from the config ({}) '.format(user_parm_base) +\
-                     'differs from METplus parm base ({}). '.format(PARM_BASE))
-        logger.error('Please remove PARM_BASE from any config file. Set the ' +\
-                     'environment variable METPLUS_PARM_BASE to change where ' +\
-                     'the METplus wrappers look for config files.')
-        sys.exit(1)
-
-    config.set('config', 'PARM_BASE', PARM_BASE)
-
-    # print config items that are set automatically
-    for var in ('METPLUS_BASE', 'PARM_BASE'):
-        expand = config.getdir(var)
-        logger.info('Setting [dir] %s to %s' % (var, expand))
-
-    # writes the METPLUS_CONF used by all tasks.
-    logger.info('METPLUS_CONF: %s written here.' % (confloc,))
-    with open(confloc, 'wt') as f:
-        config.write(f)
+    with open(final_conf, 'wt') as file_handle:
+        config.write(file_handle)
 
     return config
 

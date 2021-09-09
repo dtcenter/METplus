@@ -2272,18 +2272,19 @@ class CommandBuilder:
         """
         config_name = f'{self.app_name.upper()}_CONFIG_FILE'
         config_file = self.config.getraw('config', config_name, '')
-        if not config_file:
-            if not default_config_file:
-                return None
+        if config_file:
+            return config_file
 
-            default_config_path = os.path.join(self.config.getdir('PARM_BASE'),
-                                               'met_config',
-                                               default_config_file)
-            self.logger.debug(f"{config_name} is not set. "
-                              f"Using {default_config_path}")
-            config_file = default_config_path
+        if not default_config_file:
+            return None
 
-        return config_file
+        default_config_path = os.path.join(self.config.getdir('METPLUS_BASE'),
+                                           'parm',
+                                           'met_config',
+                                           default_config_file)
+        self.logger.debug(f"{config_name} is not set. "
+                          f"Using {default_config_path}")
+        return default_config_path
 
     def get_start_time_input_dict(self):
         """! Get the first run time specified in config. Used if only running

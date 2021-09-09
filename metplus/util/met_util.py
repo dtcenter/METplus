@@ -68,6 +68,11 @@ def pre_run_setup(config_inputs):
                 version_number, ' '.join(sys.argv))
 
     logger.info(f"Log file: {config.getstr('config', 'LOG_METPLUS')}")
+    logger.info(f"METplus Base: {config.getdir('METPLUS_BASE')}")
+    logger.info(f"Final Conf: {config.getstr('config', 'METPLUS_CONF')}")
+    config_list = config.getstr('config', 'METPLUS_CONFIG_FILES').split(',')
+    for config_item in config_list:
+        logger.info(f"Config Input: {config_item}")
 
     # validate configuration variables
     isOK_A, isOK_B, isOK_C, isOK_D, all_sed_cmds = validate_configuration_variables(config)
