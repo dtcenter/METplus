@@ -632,6 +632,15 @@ class METplusConfig(ProdConfig):
             # remove conf from [config] section
             self._conf.remove_option(from_section, key)
 
+    def remove_current_vars(self):
+        """! Remove variables from [config] section that start with CURRENT
+        """
+        current_vars = [item for item in self.keys('config')
+                        if item.startswith('CURRENT')]
+        for current_var in current_vars:
+            if self.has_option('config', current_var):
+                self._conf.remove_option('config', current_var)
+
     def find_section(self, sec, opt):
         """! Search through list of previously supported config sections
               to find variable requested. This allows the removal of these

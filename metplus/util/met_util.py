@@ -837,6 +837,9 @@ def write_final_conf(config):
 
     final_conf = config.getstr('config', 'METPLUS_CONF')
 
+    # remove variables that start with CURRENT
+    config.remove_current_vars()
+
     # move runtime variables to [runtime] section
     config.move_runtime_configs()
 
