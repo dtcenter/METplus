@@ -601,13 +601,9 @@ class METplusConfig(ProdConfig):
         to_section = 'runtime'
         RUNTIME_CONFS = [
             'CLOCK_TIME',
-            'METPLUS_BASE',
-            'PARM_BASE',
-            'METPLUS_CONFIG_FILES',
             'METPLUS_VERSION',
             'MET_INSTALL_DIR',
-            'INPUT_BASE',
-            'OUTPUT_BASE',
+            'METPLUS_CONFIG_FILES',
             'METPLUS_CONF',
             'TMP_DIR',
             'STAGING_DIR',
@@ -618,14 +614,15 @@ class METplusConfig(ProdConfig):
             'USER_SHELL',
             'DO_NOT_RUN_EXE',
             'SCRUB_STAGING_DIR',
+            'MET_BIN_DIR',
         ]
-        log_confs = [item for item in self.keys(from_section)
-                     if item.startswith('LOG')]
+        more_run_confs = [item for item in self.keys(from_section)
+                     if item.startswith('LOG') or item.endswith('BASE')]
         # create destination section if it does not exist
         if not self.has_section(to_section):
             self._conf.add_section(to_section)
 
-        for key in RUNTIME_CONFS + log_confs:
+        for key in RUNTIME_CONFS + more_run_confs:
             if not self.has_option(from_section, key):
                 continue
 
