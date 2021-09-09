@@ -59,9 +59,13 @@ The METplus installation directory
 METPLUS_BASE = os.path.realpath(str(Path(__file__).parents[2]))
 
 # name of directory under METPLUS_BASE that contains config files
-METPLUS_PARM_DIR = 'parm'
+PARM_DIR = 'parm'
 
-# name of directory under METPLUS_PARM_DIR that contains defaults
+# set parm base to METPLUS_BASE/parm unless METPLUS_PARM_BASE env var is set
+PARM_BASE = os.environ.get('METPLUS_PARM_BASE',
+                           os.path.join(METPLUS_BASE, PARM_DIR))
+
+# name of directory under PARM_DIR that contains defaults
 METPLUS_CONFIG_DIR = 'metplus_config'
 
 # default METplus configuration files that are sourced first
@@ -77,16 +81,20 @@ OLD_BASE_CONFS = [
     'metplus_logging.conf'
 ]
 
-def get_default_config_list():
+def get_default_config_list(parm_base=None):
     """! Get list of default METplus config files. Look through BASE_CONFS list
     and check if each file exists under the parm base. Add each to a list
     if they do exist.
 
+        @param parm_base directory to search for METplus config files. Uses
+         real path of PARM_BASE if it is not set (None)
         @returns list of full paths to default METplus config files
     """
     default_config_list = []
-    conf_dir = os.path.join(METPLUS_BASE,
-                            METPLUS_PARM_DIR,
+    if parm_base is None:
+        parm_base = PARM_BASE
+
+    conf_dir = os.path.join(parm_base,
                             METPLUS_CONFIG_DIR)
 
     # if both are found, set old base confs first so the new takes precedence
@@ -250,8 +258,7 @@ def launch(config_list):
 
     # set METPLUS_BASE/PARM_BASE conf so they can be referenced in other confs
     config.set('config', 'METPLUS_BASE', METPLUS_BASE)
-    config.set('config', 'PARM_BASE', os.path.join(METPLUS_BASE,
-                                                   METPLUS_PARM_DIR))
+    config.set('config', 'PARM_BASE', PARM_BASE)
 
     with open(final_conf, 'wt') as file_handle:
         config.write(file_handle)
