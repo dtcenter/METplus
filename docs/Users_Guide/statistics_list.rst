@@ -245,11 +245,83 @@ METplus Database of Statistics
      | *Tools:* \ :sup:`2` \ Point-Stat Tool,
       \ :sup:`3` \ Grid-Stat Tool, \ :sup:`4` \ Wavelet-Stat Tool,
       \ :sup:`5` \ TC-Gen
-
+      
+   ALTK_ERR
+     | **TCMPR line type:** Along track error (nm)
+     | 
+     | *Tool:* TC-Pairs
+    
+   AMAX_WIND
+     | **TCMPR line type:** adeck maximum wind speed
+     | 
+     | *Tool:* TC-Pairs
+    
+   AMODEL
+     | **TCST line type:** User provided text string designating model name
+     | 
+     | *Tool:* TC-Pairs
+    
+   AMSLP
+     | **TCMPR line type:** adeck mean sea level pressure
+     | 
+     | *Tool:* TC-Pairs
+    
+   ANGLE_DIFF
+     | **MODE ascii object:** Difference between the axis angles of
+      two objects (in degrees)
+     | 
+     | *Tool:* MODE-Tool
+    
+   ANLY_USE
+     | **GSI diagnostic conventional MPR output:** Analysis usage (1 for
+      yes, -1 for no)
+     | 
+     | *Tool:* GSI-Tool
+    
+   ANOM_CORR_UNCNTR
+   ANOM_CORR_UNCNTR_BCL
+   ANOM_CORR_UNCNTR_BCU
+     | **CNT line type:** The uncentered Anomaly Correlation excluding
+      mean error including bootstrap upper and lower confidence limits
+     | 
+     | *Tool:* Point-Stat Tool
+    
+   ANOM_CORR
+   ANOM_CORR_NCL
+   ANOM_CORR_NCU
+   ANOM_CORR_BCL
+   ANOM_CORR_BCU
+     | **CNT line type:** The Anomaly Correlation including mean error
+      with normal and bootstrap upper and lower confidence limits
+     | 
+     | *Tool:* Point-Stat Tool
+    
+   AREA
+     | **MODE ascii object:** Object area (in grid squares) \ :sup:`1` \
+     | **MODE-time-domain 2D attribute output:** 2D cross-sectional
+      area \ :sup:`6` \ 
+     | 
+     | *Tool:* \ :sup:`1` \ MODE-Tool \ :sup:`6` \ MODE-time-domain
+    
+   AREA_RATIO
+     | **MODE ascii object:** The forecast object area divided by the
+      observation object area (unitless)
+     | **NOTE:** Prior to met-10.0.0, defined as the lesser of the
+      two object areas divided by the greater of the two"
+     | 
+     | *Tool:* MODE-Tool
+    
+   AREA_THRESH
+     | **MODE ascii object:** Area of the object containing data values
+      in the raw field that meet the object definition threshold
+      criteria (in grid squares)
+     | 
+     | *Tool:* MODE-Tool
+     
    Key for Tools
      | *Tools:* \ :sup:`1` \ MODE-Tool, \ :sup:`2` \ Point-Stat Tool,
       \ :sup:`3` \ Grid-Stat Tool, \ :sup:`4` \ Wavelet-Stat Tool,
-      \ :sup:`5` \ TC-Gen
+      \ :sup:`5` \ TC-Gen, \ :sup:`6` \ MODE-time-domain
 
 
    
