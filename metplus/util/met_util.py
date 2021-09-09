@@ -70,7 +70,7 @@ def pre_run_setup(config_inputs):
     logger.info(f"Log file: {config.getstr('config', 'LOG_METPLUS')}")
     logger.info(f"METplus Base: {config.getdir('METPLUS_BASE')}")
     logger.info(f"Final Conf: {config.getstr('config', 'METPLUS_CONF')}")
-    config_list = config.getstr('config', 'METPLUS_CONFIG_FILES').split(',')
+    config_list = config.getstr('config', 'CONFIG_INPUT').split(',')
     for config_item in config_list:
         logger.info(f"Config Input: {config_item}")
 
@@ -569,7 +569,7 @@ def check_for_deprecated_config(config):
 
 def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, w_list, e_list):
     sec = depr_info['sec']
-    config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+    config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
     # if deprecated config item is found
     if config.has_option(sec, old):
         # if it is not required to remove, add to warning list
@@ -2025,7 +2025,7 @@ def is_var_item_valid(item_list, index, ext, config):
             msg.append(f"If FCST{full_ext} is set, you must either set OBS{full_ext} or "
                        f"change FCST{full_ext} to BOTH{full_ext}")
 
-            config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+            config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
             for config_file in config_files:
                 sed_cmds.append(f"sed -i 's|^FCST{full_ext}|BOTH{full_ext}|g' {config_file}")
                 sed_cmds.append(f"sed -i 's|{{FCST{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
@@ -2043,7 +2043,7 @@ def is_var_item_valid(item_list, index, ext, config):
             msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or "
                           f"change OBS{full_ext} to BOTH{full_ext}")
 
-            config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+            config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
             for config_file in config_files:
                 sed_cmds.append(f"sed -i 's|^OBS{full_ext}|BOTH{full_ext}|g' {config_file}")
                 sed_cmds.append(f"sed -i 's|{{OBS{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")

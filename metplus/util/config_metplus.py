@@ -238,7 +238,7 @@ def launch(config_list):
         config.move_all_to_config_section()
 
     # save list of user configuration files in a variable
-    config.set('config', 'METPLUS_CONFIG_FILES', ','.join(config_format_list))
+    config.set('config', 'CONFIG_INPUT', ','.join(config_format_list))
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
@@ -573,7 +573,7 @@ class METplusConfig(ProdConfig):
             'CLOCK_TIME',
             'METPLUS_VERSION',
             'MET_INSTALL_DIR',
-            'METPLUS_CONFIG_FILES',
+            'CONFIG_INPUT',
             'METPLUS_CONF',
             'TMP_DIR',
             'STAGING_DIR',
@@ -587,7 +587,7 @@ class METplusConfig(ProdConfig):
             'MET_BIN_DIR',
         ]
         more_run_confs = [item for item in self.keys(from_section)
-                     if item.startswith('LOG') or item.endswith('BASE')]
+                          if item.startswith('LOG') or item.endswith('BASE')]
         # create destination section if it does not exist
         if not self.has_section(to_section):
             self._conf.add_section(to_section)
