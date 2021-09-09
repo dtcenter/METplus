@@ -307,7 +307,7 @@ METplus Database of Statistics
      | **MODE ascii object:** The forecast object area divided by the
       observation object area (unitless)
      | **NOTE:** Prior to met-10.0.0, defined as the lesser of the
-      two object areas divided by the greater of the two"
+      two object areas divided by the greater of the two
      | 
      | *Tool:* MODE-Tool
     
@@ -317,6 +317,33 @@ METplus Database of Statistics
       criteria (in grid squares)
      | 
      | *Tool:* MODE-Tool
+
+   ASPECT_DIFF
+     | **MODE ascii object:** Absolute value of the difference between
+      the aspect ratios of two objects (unitless)
+     | 
+     | *Tool:* MODE-Tool
+    
+   AWIND_END
+     | **PROBRIRW line type:** Forecast maximum wind speed at RI end
+     | 
+     | *Tool:* TC-Pairs
+    
+   AXIS_ANG
+     | **MODE ascii object:** Object axis angle (in degrees) \ :sup:`1` \
+     | **MODE-time-domain 2D attribute output:** Angle that the axis
+      makes with the grid x direction \ :sup:`6` \ 
+     | **MODE-time-domain 3D attribute output:** Angle that the axis plane
+      of an object makes with the grid x direction \ :sup:`6` \ 
+     | 
+     | *Tool:* \ :sup:`1` \  MODE-Tool  \ :sup:`6` \ MODE-time-domain
+    
+   AXIS_DIFF
+     | **MODE-time-domain 3D pair attribute output:** Difference in spatial
+      axis plane angles
+     | 
+     | *Tool:* MODE-time-domain
+
      
    Key for Tools
      | *Tools:* \ :sup:`1` \ MODE-Tool, \ :sup:`2` \ Point-Stat Tool,
