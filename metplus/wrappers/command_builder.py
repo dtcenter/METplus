@@ -2278,8 +2278,7 @@ class CommandBuilder:
         if not default_config_file:
             return None
 
-        default_config_path = os.path.join(self.config.getdir('METPLUS_BASE'),
-                                           'parm',
+        default_config_path = os.path.join(self.config.getdir('PARM_BASE'),
                                            'met_config',
                                            default_config_file)
         self.logger.debug(f"{config_name} is not set. "
