@@ -522,6 +522,8 @@ given use case.
 More information about the variables set in the use case configuration files
 can be found in the :ref:`common_config_variables` section.
 
+.. _running-metplus:
+
 Running METplus
 ===============
 

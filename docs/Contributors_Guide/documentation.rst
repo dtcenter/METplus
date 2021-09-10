@@ -120,12 +120,47 @@ Contributor's Guide:
 Release Guide:
 ~~~~~~~~~~~~~~
 
-Coming soon!
+* To add/modify the instructions for creating software releases for
+  any METplus component, including official, bugfix, and development
+  releases.
+
+* Each METplus component has a top level file (e.g. metplus.rst)
+  which simply contains references to files for each of the
+  releases.  For example, metplus.rst contains references to:
+    
+  * metplus_official
+  * metplus_bugfix
+  * metplus_development
+
+* Each release file (e.g. metplus_official.rst, metplus_bugfix.rst,
+  metplus_development.rst) contains, at a minimum, a replacement
+  value for the projectRepo variable and include
+  statements for each release step.  These individual steps
+  (e.g. open_release_issue.rst, clone_project_repository.rst, etc.)
+  may be common to multiple METplus components.  These common steps
+  are located in the *release_steps* directory.  However, a METplus
+  component may have different instructions from other componenets
+  (e.g. For METplus wrappers, update_version.rst,
+  create_release_extra.rst, etc.). In this case, the instructions
+  that are specific to that component are located in a subdirectory
+  of *release_steps*.  For example, files that are specific to
+  METplus wrappers are located in *release_steps/metplus*, files
+  that are specific to METcalcpy are located in
+  *release_steps/metcalcpy*.
+
+* The file for each individual step (e.g. open_release_issue.rst,
+  update_version.rst, etc.) contains the instructions for
+  completing that step for the release.  
+    
 
 Verification Datasets Guide:
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-Coming soon!
+* To add/modify any relevant datasets in attempt to create a
+  centralized catalogue of verification datasets to provide the model
+  verification community with relevant "truth" datasets. See the
+  `Verification Datasets Guide Overview <https://metplus.readthedocs.io/en/latest/Verification_Datasets/overview.html>`_
+  for more information. 
 
 .. _read-the-docs:
 

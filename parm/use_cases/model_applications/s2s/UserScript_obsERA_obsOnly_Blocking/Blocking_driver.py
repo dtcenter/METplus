@@ -148,7 +148,7 @@ def main():
         ibl_outfile_prefix = os.path.join(i_mpr_outdir,'IBL_stat_'+modname)
         cbls_avg = np.nanmean(cbls_obs,axis=0)
         write_mpr_file(ibls_obs,ibls_fcst,cbls_avg,lons_obs,ibl_time_obs,ibl_time_fcst,modname,
-            'Inst_Blocked_Lons','Z500','Inst_Blocked_Lons','Z500',maskname,'500',ibl_outfile_prefix)
+            'NA','IBLs','block','Z500','IBLs','block','Z500',maskname,'500',ibl_outfile_prefix)
 
     # Plot IBLS
     if("PLOTIBL" in steps_list_obs) and not ("PLOTIBL" in steps_list_fcst):
@@ -198,13 +198,13 @@ def main():
     if ("CALCBLOCKS" in steps_list_obs):
         if not ("GIBL" in steps_list_obs):
             raise Exception('Must run observed GIBLs before calculating blocks.')
-        print('Computing Blocks')
+        print('Computing Obs Blocks')
         block_freq_obs = steps_obs.run_Calc_Blocks(ibls_obs,gibls_obs,lons_obs,daynum_obs)
 
     if ("CALCBLOCKS" in steps_list_fcst):
         if not ("GIBL" in steps_list_fcst):
             raise Exception('Must run Forecast GIBLs before calculating blocks.')
-        print('Computing Blocks')
+        print('Computing Forecast Blocks')
         block_freq_fcst = steps_fcst.run_Calc_Blocks(ibls_fcst,gibls_fcst,lons_fcst,daynum_fcst)
 
     # Write out a Blocking MPR file if both obs and forecast blocking calculation performed
@@ -218,7 +218,7 @@ def main():
         blocks_outfile_prefix = os.path.join(b_mpr_outdir,'blocking_stat_'+modname)
         cbls_avg = np.nanmean(cbls_obs,axis=0)
         write_mpr_file(block_freq_obs,block_freq_fcst,cbls_avg,lons_obs,ibl_time_obs,ibl_time_fcst,modname,
-            'Blocked_Lon','Z500','Blocked_Lon','Z500',maskname,'500',blocks_outfile_prefix)
+            'NA','Blocks','block','Z500','Blocks','block','Z500',maskname,'500',blocks_outfile_prefix)
 
 
     # Plot Blocking Frequency

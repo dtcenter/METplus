@@ -778,8 +778,6 @@ Embedding.
 Creating New Python Environments
 """"""""""""""""""""""""""""""""
 
-**COMING SOON!**
-
 In METplus v4.0.0 and earlier, a list of Python packages were added to use
 cases that required additional packages. These packages were either installed
 with pip3 or using a script. This approach was very time consuming as some
@@ -790,6 +788,8 @@ environments, refer to the comments in the scripts found in
 **ci/docker/docker_env/scripts**. New environments must be added by a METplus
 developer, so please contact MET Help if none of these environments contain the
 package requirements needed to run a new use case.
+
+**MORE INFO COMING SOON!**
 
 .. _add_new_category_to_test_runs:
 
@@ -802,15 +802,17 @@ In METplus version 4.0.0 and earlier, this list was
 found in the .github/workflows/testing.yml file.
 Add a new entry to the list that includes the category of the new use case,
 the list of indices that correspond to the index number described in the
-:ref:`add_use_case_to_test_suite` section,
-and set the "new" variable to true.
+:ref:`add_use_case_to_test_suite` section.
+Set the "run" variable to true so that the new use case group will run in
+the automated test suite whenever a new change is pushed to GitHub. This
+allows users to test that the new use case runs successfully.
 
 Example::
 
       {
         "category": "climate",
         "index_list": "2",
-        "new": true
+        "run": true
       }
 
 .. note::
@@ -818,7 +820,7 @@ Example::
     before the new item in the list.
 
 This example adds a new use case group that contains the climate use case
-with index 2 and is marked as a "new" use case.
+with index 2 and is marked to "run" for every push.
 New use cases are added as a separate item to make reviewing the test results
 easier. A new use case will produce new output data that is not found in the
 "truth" data set which is compared the output of the use case runs to check
@@ -844,12 +846,12 @@ The argument supports a comma-separated list of numbers. Example::
       {
         "category": "data_assimilation",
         "index_list": "0,2,4",
-        "new": false
+        "run": false
       },
       {
         "category": "data_assimilation",
         "index_list": "1,3",
-        "new": false
+        "run": false
       },
 
 The above example will run a job with data_assimilation use cases 0, 2, and
@@ -860,12 +862,12 @@ It also supports a range of numbers separated with a dash. Example::
       {
         "category": "data_assimilation",
         "index_list": "0-3",
-        "new": false
+        "run": false
       },
       {
         "category": "data_assimilation",
         "index_list": "4-5",
-        "new": false
+        "run": false
       },
 
 The above example will run a job with data_assimilation 0, 1, 2, and 3, then
@@ -877,12 +879,12 @@ to run. Example::
       {
         "category": "data_assimilation",
         "index_list": "0-2,4",
-        "new": false
+        "run": false
       },
       {
         "category": "data_assimilation",
         "index_list": "3",
-        "new": false
+        "run": false
       },
 
 The above example will run data_assimilation 0, 1, 2, and 4 in one
@@ -1163,14 +1165,49 @@ The addition of a new use case results in new output data. When this happens,
 the reference branch needs to be updated so that future pull requests will
 compare their results to a "truth" data set that contains the new files.
 Create a pull request with "develop" as the source branch and "develop-ref" as
-the destination branch. Assign this pull request to another METplus team
-member.
+the destination branch. This is done so we can reference the pull request
+number that is responsible for the changes in the truth data to easily track
+where differences occurred.
 
-Click
-`here <https://github.com/dtcenter/METplus/compare/develop-ref...develop>`_
-and click the green "Create pull request" button to create the pull request.
+Merging develop into develop-ref often causes strange conflicts. We really
+want to update develop-ref with the latest content of develop, so follow
+these command line instructions in the METplus repository to reconcile the
+conflicts before creating the pull request.
+
+* Reconcile conflicts between develop and develop-ref branches
+
+::
+
+    git checkout develop-ref
+    git pull
+    git checkout develop
+    git pull
+    git merge -s ours develop-ref
+    git push origin develop
+
+* Next click
+  `here <https://github.com/dtcenter/METplus/compare/develop-ref...develop>`_
+  and click the green "Create pull request" button to create the pull request
 
 .. figure:: figure/develop_into_develop-ref.png
+
+* Set the name of the pull request to "Update develop-ref after #XXXX" where
+  XXXX is the pull request number that introduced the differences
+
+* Delete the template content and add the pull request number (formatted #XXXX)
+  and a brief description of what has changed. The description is optional
+  because the link to the pull request should contain this information.
+
+* Add the appropriate project and milestone values on the right hand side.
+
+* Create the pull request
+
+* Squash and merge the pull request. It is not necessary to wait for the
+  automation checks to complete for this step.
+
+* Monitor the Testing automation run for the develop-ref branch and ensure that
+  all of the use cases run successfully and the final step named
+  "Create Output Docker Data Volumes" completed successfully.
 
 Clean Up DTC Web Server
 -----------------------

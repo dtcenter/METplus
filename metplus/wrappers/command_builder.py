@@ -952,7 +952,8 @@ class CommandBuilder:
             return False
 
         # create full output dir if it doesn't already exist
-        if not os.path.exists(parent_dir):
+        if (not os.path.exists(parent_dir) and
+                not self.c_dict.get('DO_NOT_RUN_EXE', False)):
             self.logger.debug(f"Creating output directory: {parent_dir}")
             os.makedirs(parent_dir)
 
@@ -1090,7 +1091,8 @@ class CommandBuilder:
         self.env_var_dict[f'METPLUS_{input_type}_FILE_TYPE'] = file_type
         return file_ext
 
-    def get_field_info(self, d_type, v_name, v_level='', v_thresh=[], v_extra=''):
+    def get_field_info(self, d_type='', v_name='', v_level='', v_thresh=None,
+                       v_extra='', add_curly_braces=True):
         """! Format field information into format expected by MET config file
               Args:
                 @param v_level level of data to extract
@@ -1098,115 +1100,94 @@ class CommandBuilder:
                 @param v_name name of field to process
                 @param v_extra additional field information to add if available
                 @param d_type type of data to find i.e. FCST or OBS
+                @param add_curly_braces if True, add curly braces around each
+                 field info string. If False, add single quotes around each
+                 field info string (defaults to True)
                 @rtype string
                 @return Returns formatted field information
         """
-        # separate character from beginning of numeric level value if applicable
-        _, level = util.split_level(v_level)
+        # if thresholds are set
+        if v_thresh:
+            # if neither fcst or obs are probabilistic,
+            # pass in all thresholds as a comma-separated list for 1 field info
+            if (not self.c_dict.get('FCST_IS_PROB', False) and
+                    not self.c_dict.get('OBS_IS_PROB', False)):
+                thresholds = [','.join(v_thresh)]
+            else:
+                thresholds = v_thresh
+        # if no thresholds are specified, fail if prob field is in grib PDS
+        elif (self.c_dict.get(d_type + '_IS_PROB', False) and
+              self.c_dict.get(d_type + '_PROB_IN_GRIB_PDS', False) and
+              not util.is_python_script(v_name)):
+            self.log_error('No threshold was specified for probabilistic '
+                           'forecast GRIB data')
+            return None
+        else:
+            thresholds = [None]
 
         # list to hold field information
         fields = []
 
-        # get cat thresholds if available
-        cat_thresh = ""
-        threshs = [None]
-        if len(v_thresh) != 0:
-            threshs = v_thresh
-            cat_thresh = "cat_thresh=[ " + ','.join(threshs) + " ];"
-
-        # if neither input is probabilistic, add all cat thresholds to same field info item
-        if not self.c_dict.get('FCST_IS_PROB', False) and not self.c_dict.get('OBS_IS_PROB', False):
-            field_name = v_name
-
-            field = "{ name=\"" + field_name + "\";"
-
-            # add level if it is set
-            if v_level:
-                field += " level=\"" + util.remove_quotes(v_level) + "\";"
-
-            # add threshold if it is set
-            if cat_thresh:
-                field += ' ' + cat_thresh
-
-            # add extra info if it is set
-            if v_extra:
-                field += ' ' + v_extra
-
-            field += ' }'
-            fields.append(field)
-
-        # if either input is probabilistic, create separate item for each threshold
-        else:
-
-            # if input currently being processed if probabilistic, format accordingly
-            if self.c_dict.get(d_type + '_IS_PROB', False):
-                # if probabilistic data for either fcst or obs, thresholds are required
-                # to be specified or no field items will be created. Create a field dict
-                # item for each threshold value
-                for thresh in threshs:
-                    # if utilizing python embedding for prob input, just set the
-                    # field name to the call to the script
-                    if util.is_python_script(v_name):
-                        field = "{ name=\"" + v_name + "\"; prob=TRUE;"
-                    elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF' or \
-                      not self.c_dict[d_type + '_PROB_IN_GRIB_PDS']:
-                        field = "{ name=\"" + v_name + "\";"
-                        if v_level:
-                            field += " level=\"" + util.remove_quotes(v_level) + "\";"
-                        field += " prob=TRUE;"
-                    else:
-                        # a threshold value is required for GRIB prob DICT data
-                        if thresh is None:
-                            self.log_error('No threshold was specified for probabilistic '
-                                           'forecast GRIB data')
-                            return None
-
-                        thresh_str = ""
-                        thresh_tuple_list = util.get_threshold_via_regex(thresh)
-                        for comparison, number in thresh_tuple_list:
-                            # skip adding thresh_lo or thresh_hi if comparison is NA
-                            if comparison == 'NA':
-                                continue
-
-                            if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
-                                thresh_str += "thresh_lo=" + str(number) + "; "
-                            if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
-                                thresh_str += "thresh_hi=" + str(number) + "; "
-
-                        field = "{ name=\"PROB\"; level=\"" + v_level + \
-                                "\"; prob={ name=\"" + v_name + \
-                                "\"; " + thresh_str + "}"
-
-                    # add probabilistic cat thresh if different from default ==0.1
-                    prob_cat_thresh = self.c_dict.get(d_type + '_PROB_THRESH')
-                    if prob_cat_thresh:
-                        field += " cat_thresh=[" + prob_cat_thresh + "];"
-
-                    if v_extra:
-                        field += ' ' + v_extra
-
-                    field += ' }'
-                    fields.append(field)
+        for thresh in thresholds:
+            if (self.c_dict.get(d_type + '_PROB_IN_GRIB_PDS', False) and
+                    not util.is_python_script(v_name)):
+                field = self._handle_grib_pds_field_info(v_name, v_level,
+                                                         thresh)
             else:
-                field_name = v_name
+                # add field name
+                field = f'name="{v_name}";'
 
-                for thresh in threshs:
-                    field = "{ name=\"" + field_name + "\";"
+                if v_level:
+                    field += f' level="{util.remove_quotes(v_level)}";'
 
-                    if v_level:
-                        field += " level=\"" + util.remove_quotes(v_level) + "\";"
+                if self.c_dict.get(d_type + '_IS_PROB', False):
+                    field += " prob=TRUE;"
 
-                    if thresh is not None:
-                        field += " cat_thresh=[ " + str(thresh) + " ];"
+            # handle cat_thresh
+            if self.c_dict.get(d_type + '_IS_PROB', False):
+                # add probabilistic cat thresh if different from default ==0.1
+                cat_thresh = self.c_dict.get(d_type + '_PROB_THRESH')
+            else:
+                cat_thresh = thresh
 
-                    if v_extra:
-                        field += ' ' + v_extra
+            if cat_thresh:
+                field += f" cat_thresh=[ {cat_thresh} ];"
 
-                    field += ' }'
-                    fields.append(field)
+            # handle extra options if set
+            if v_extra:
+                field += f' {v_extra}'
+
+            # add curly braces around field info
+            if add_curly_braces:
+                field = f'{{ {field} }}'
+            # otherwise add single quotes around field info
+            else:
+                field = f"'{field}'"
+
+            # add field info string to list of fields
+            fields.append(field)
 
         # return list of field dictionary items
         return fields
+
+    def _handle_grib_pds_field_info(self, v_name, v_level, thresh):
+
+        field = f'name="PROB"; level="{v_level}"; prob={{ name="{v_name}";'
+
+        if thresh:
+            thresh_tuple_list = util.get_threshold_via_regex(thresh)
+            for comparison, number in thresh_tuple_list:
+                # skip adding thresh_lo or thresh_hi if comparison is NA
+                if comparison == 'NA':
+                    continue
+
+                if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
+                    field = f"{field} thresh_lo={number};"
+                if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
+                    field = f"{field} thresh_hi={number};"
+
+        # add closing curly brace for prob=
+        return f'{field} }}'
 
     def read_mask_poly(self):
         """! Read old or new config variables used to set mask.poly in MET
@@ -1311,7 +1292,7 @@ class CommandBuilder:
         """
         # add command to list of all commands run
         self.all_commands.append((cmd,
-                                  self.print_all_envs(print_copyable=False)))
+                                  self.print_all_envs(print_copyable=True)))
 
         log_name = cmd_name if cmd_name else self.log_name
 

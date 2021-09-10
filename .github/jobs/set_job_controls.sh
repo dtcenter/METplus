@@ -73,8 +73,12 @@ else
     run_all_use_cases=false
   fi
 
-  if grep -q "ci-run-diff" <<< "$commit_msg"; then
+  if grep -q "ci-run-all-diff" <<< "$commit_msg"; then
     run_all_use_cases=true
+    run_diff=true
+  fi
+
+  if grep -q "ci-run-diff" <<< "$commit_msg"; then
     run_diff=true
   fi
 

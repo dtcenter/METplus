@@ -15,7 +15,7 @@ def parse_steps():
     return steps_list_fcst, steps_list_obs
 
 
-def write_mpr_file(data_obs,data_fcst,lats_in,lons_in,time_obs,time_fcst,mname,fvar,flev,ovar,olev,maskname,obslev,outfile):
+def write_mpr_file(data_obs,data_fcst,lats_in,lons_in,time_obs,time_fcst,mname,desc,fvar,funit,flev,ovar,ounit,olev,maskname,obslev,outfile):
 
     dlength = len(lons_in)
     bdims = data_obs.shape
@@ -24,18 +24,22 @@ def write_mpr_file(data_obs,data_fcst,lats_in,lons_in,time_obs,time_fcst,mname,f
 
     # Get the length of the model, FCST_VAR, FCST_LEV, OBS_VAR, OBS_LEV, VX_MASK
     mname_len = str(max([5,len(mname)])+3)
+    desc_len = str(max([4,len(mname)])+1)
     mask_len = str(max([7,len(maskname)])+3)
     fvar_len = str(max([8,len(fvar)])+3)
+    funit_len = str(max([8,len(funit)])+3)
     flev_len = str(max([8,len(flev)])+3)
     ovar_len = str(max([7,len(ovar)])+3)
+    ounit_len = str(max([8,len(ounit)])+3)
     olev_len = str(max([7,len(olev)])+3)
 
-    format_string = '%-10s %-'+mname_len+'s %-7s %-12s %-18s %-18s %-12s %-17s %-17s %-'+fvar_len+'s ' \
-        '%-'+flev_len+'s %-'+ovar_len+'s %-'+olev_len+'s %-10s %-'+mask_len+'s %-13s %-13s %-13s %-13s ' \
-        '%-13s %-13s %-13s\n'
-    format_string2 = '%-10s %-'+mname_len+'s %-7s %-12s %-18s %-18s %-12s %-17s %-17s %-'+fvar_len+'s ' \
-        '%-'+flev_len+'s %-'+ovar_len+'s %-'+olev_len+'s %-10s %-'+mask_len+'s %-13s %-13s %-13s %-13s ' \
-        '%-13s %-13s %-13s %-10s %-10s %-10s %-12.4f %-12.4f %-10s %-10s %-12.4f %-12.4f %-10s %-10s %-10s %-10s\n'
+    format_string = '%-7s %-'+mname_len+'s %-'+desc_len+'s %-12s %-18s %-18s %-12s %-17s %-17s %-'+fvar_len+'s ' \
+        '%-'+funit_len+'s %-'+flev_len+'s %-'+ovar_len+'s %-'+ounit_len+'s %-'+olev_len+'s %-10s %-'+mask_len+'s ' \
+        '%-13s %-13s %-13s %-13s %-13s %-13s %-9s\n'
+    format_string2 = '%-7s %-'+mname_len+'s %-'+desc_len+'s %-12s %-18s %-18s %-12s %-17s %-17s %-'+fvar_len+'s ' \
+        '%-'+funit_len+'s %-'+flev_len+'s %-'+ovar_len+'s %-'+ounit_len+'s %-'+olev_len+'s %-10s %-'+mask_len+'s ' \
+        '%-13s %-13s %-13s %-13s %-13s %-13s %-9s %-10s %-10s %-10s %-12.4f %-12.4f %-10s %-10s %-12.4f %-12.4f ' \
+        '%-10s %-10s %-10s %-10s\n'
 
      # Write the file
     for y in range(bdims[0]):
@@ -46,15 +50,16 @@ def write_mpr_file(data_obs,data_fcst,lats_in,lons_in,time_obs,time_fcst,mname,f
                 mpr_outfile_name = outfile+'_'+ft_stamp+'.stat'
                 with open(mpr_outfile_name, 'w') as mf:
                     mf.write(format_string % ('VERSION', 'MODEL', 'DESC', 'FCST_LEAD', 'FCST_VALID_BEG', 'FCST_VALID_END',
-                        'OBS_LEAD', 'OBS_VALID_BEG', 'OBS_VALID_END', 'FCST_VAR', 'FCST_LEV', 'OBS_VAR', 'OBS_LEV',
-                        'OBTYPE', 'VX_MASK', 'INTERP_MTHD','INTERP_PNTS', 'FCST_THRESH', 'OBS_THRESH', 'COV_THRESH',
-                        'ALPHA', 'LINE_TYPE'))
+                        'OBS_LEAD', 'OBS_VALID_BEG', 'OBS_VALID_END', 'FCST_VAR', 'FCST_UNITS', 'FCST_LEV', 'OBS_VAR', 
+                        'OBS_UNITS', 'OBS_LEV', 'OBTYPE', 'VX_MASK', 'INTERP_MTHD', 'INTERP_PNTS', 'FCST_THRESH', 
+                        'OBS_THRESH', 'COV_THRESH', 'ALPHA', 'LINE_TYPE'))
                     for dpt in range(dlength):
-                        mf.write(format_string2 % ('V9.1',mname,'NA',time_fcst['lead'][y][dd],time_fcst['valid'][y][dd],
+                        mf.write(format_string2 % ('V9.1',mname,desc,time_fcst['lead'][y][dd],time_fcst['valid'][y][dd],
                             time_fcst['valid'][y][dd],time_obs['lead'][y][dd],time_obs['valid'][y][dd],
-                            time_obs['valid'][y][dd],fvar,flev,ovar,olev,'ADPUPA',maskname,'NEAREST','1','NA','NA',
-                            'NA','NA','MPR',str(dlength),str(index_num[dpt]),'NA',lats_in[dpt],lons_in[dpt],obslev,
-                            'NA',data_fcst[y,dd,dpt],data_obs[y,dd,dpt],'NA','NA','NA','NA'))
+                            time_obs['valid'][y][dd],fvar,funit,flev,ovar,ounit,olev,'ADPUPA',maskname,
+                            'NEAREST','1','NA','NA','NA','NA','MPR',str(dlength),str(index_num[dpt]),'NA',
+                            lats_in[dpt],lons_in[dpt],obslev,'NA',data_fcst[y,dd,dpt],data_obs[y,dd,dpt],'NA','NA',
+                            'NA','NA'))
 
 
 def read_nc_met(infiles,invar,nseasons,dseasons):
