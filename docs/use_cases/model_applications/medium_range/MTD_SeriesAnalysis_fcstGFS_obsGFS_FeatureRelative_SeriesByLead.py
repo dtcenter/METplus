@@ -92,12 +92,12 @@ _SeriesByLead.conf
 # If there is a setting in the MET configuration file that is currently not supported by METplus you'd like to control, please refer to:
 # :ref:`Overriding Unsupported MET config file settings<met-config-overrides>`
 #
-# **MTD_wrapped**
+# **MTDConfig_wrapped**
 #
 # .. note:: See the :ref:`MTD MET Configuration<mtd-met-conf>` section of the User's Guide for more information on the environment variables used in the file below:
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/met_config/MTD_wrapped
+# .. literalinclude:: ../../../../parm/met_config/MTDConfig_wrapped
 #
 # **SeriesAnalysisConfig_wrapped**
 #
