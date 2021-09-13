@@ -25,7 +25,7 @@ import os, sys
 if len(sys.argv) < 6:
     print("Must specify the following elements: fcst_file obs_file ice_file, climo_file, valid_date, file_flag")
     sys.exit(1)
-
+#grab input files from command line input
 rtofsfile = os.path.expandvars(sys.argv[1]) 
 sstfile = os.path.expandvars(sys.argv[2]) 
 icefile = os.path.expandvars(sys.argv[3]) 
@@ -192,14 +192,14 @@ def expand_grid(data):
 
 sst_data2=sst_data2.squeeze()
 
-print('regridding climo to obs')
+#print('regridding climo to obs')
 climo_data=climo_data.squeeze()
 climo_data=regrid(climo_data,sst_data2)
 
-print('regridding ice to obs')
+#print('regridding ice to obs')
 ice_data2=regrid(ice_data2,sst_data2)
 
-print('regridding model to obs')
+#print('regridding model to obs')
 model2=regrid(outdata,sst_data2)
 
 # combine obs ice mask with ncep
@@ -229,7 +229,7 @@ if file_flag == 'fcst':
     #trim the lat/lon grids so they match the data fields
     lat_met = model2.lat
     lon_met = model2.lon
-    print(" RTOFS Data shape: "+repr(met_data.shape))
+    #print(" RTOFS Data shape: "+repr(met_data.shape))
     v_str = vDate.strftime("%Y%m%d")
     v_str = v_str + '_000000'
     lat_ll = float(lat_met.min())

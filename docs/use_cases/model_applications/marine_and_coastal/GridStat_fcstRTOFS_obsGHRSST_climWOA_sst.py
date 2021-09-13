@@ -1,6 +1,6 @@
 """
-GridStat: Python Embedding to read and process ice cover
-========================================================
+GridStat: Python Embedding to read and process SST
+==================================================
 
 model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf
 
@@ -52,7 +52,7 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.c
 # ------------------
 #
 # This use case utilizes the METplus GridStat wrapper to generate a
-# command to run the MET tool GridStat with Python Embedding for the specified user hemispheres
+# command to run the MET tool GridStat with Python Embedding each time a field (fcst, obs, and climo) is needed.
 
 ##############################################################################
 # METplus Workflow
@@ -98,7 +98,7 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.c
 # Python Embedding
 # ----------------
 #
-# This use case uses one Python script to read forecast and observation data
+# This use case uses one Python script to read forecast, observation, and climatology data
 #
 # parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/read_rtofs_ghrsst_woa.py
 #
@@ -145,7 +145,7 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.c
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for thisIce use case will be found in 20210503 (relative to **OUTPUT_BASE**)
+# Output for thisIce use case will be found in directory 20210503 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
 # * grid_stat_SST_000000L_20210503_000000V.stat 
