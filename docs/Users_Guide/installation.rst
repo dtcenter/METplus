@@ -42,27 +42,27 @@ Software Requirements
 
 The following software is required to run METplus Wrappers:
 
--  Python 3.6.3 or above
+*  Python 3.6.3 or above
 
--  MET version 10.0.0 or above - 
+*  MET version 10.0.0 or above - 
    For information on installing MET please see the `Software Installation/Getting Started <https://met.readthedocs.io/en/latest/Users_Guide/installation.html>`_
    section of the MET User's Guide. 
 
 **Wrapper Specific Requirements**
 
-- TCMPRPlotter wrapper
+* TCMPRPlotter wrapper
 
-    - R version 3.2.5
+  * R version 3.2.5
 
--  SeriesAnalysis wrapper
+* SeriesAnalysis wrapper
 
-    - convert (ImageMagick) utility -
-      if generating plots and/or animated images from the output
+  * convert (ImageMagick) utility \-
+    if generating plots and/or animated images from the output
 
--  PlotDataPlane wrapper
+* PlotDataPlane wrapper
 
-    - convert (ImageMagick) utility - 
-      if generating images from the Postscript output
+  * convert (ImageMagick) utility \- 
+    if generating images from the Postscript output
 
 Python Package Requirements
 ---------------------------
