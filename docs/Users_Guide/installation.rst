@@ -14,7 +14,7 @@ Supported architectures
 
 METplus Wrappers was developed on Debian Linux and is supported on this
 platform. Each release listed on the
-`METplus Downloads <https://dtcenter.org/community-code/metplus/download>`__
+`METplus Downloads <https://dtcenter.org/community-code/metplus/download>`_
 page includes a link to the **Existing Builds and Docker** for that version.
 The METplus team supports the installation of the METplus components on
 several operational and research high performance computing platforms,
@@ -30,7 +30,7 @@ improvements to the tools, they are encouraged to offer those upgrades
 to the broader community by offering feedback to the developers or
 coordinating for a GitHub pull. For more information on contributing
 code to METplus Wrappers, please create a post in the
-`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`__.
+`METplus GitHub Discussions Forum <https://github.com/dtcenter/METplus/discussions>`_.
 
 Requirements
 ============
@@ -42,27 +42,28 @@ Software Requirements
 
 The following software is required to run METplus Wrappers:
 
-* Python 3.6.3 or above
-* MET version 10.0.0 or above
-   
-  * For information on installing MET please see the `Software Installation <https://met.readthedocs.io/en/latest/Users_Guide/installation.html>`__
-    section of the MET User's Guide. 
+-  Python 3.6.3 or above
+
+-  MET version 10.0.0 or above - 
+   For information on installing MET please see the `Software Installation/Getting Started <https://met.readthedocs.io/en/latest/Users_Guide/installation.html>`_
+   section of the MET User's Guide. 
+
 
 **Wrapper Specific Requirements**
 
-* TCMPRPlotter wrapper
+- TCMPRPlotter wrapper
 
-  * R version 3.2.5
+    - R version 3.2.5
 
-* SeriesAnalysis wrapper
+-  SeriesAnalysis wrapper
 
-  * convert (ImageMagick) utility
-    if generating plots and/or animated images from the output
+    - convert (ImageMagick) utility -
+      if generating plots and/or animated images from the output
 
-* PlotDataPlane wrapper
+-  PlotDataPlane wrapper
 
-  * convert (ImageMagick) utility 
-    if generating images from the Postscript output
+    - convert (ImageMagick) utility - 
+      if generating images from the Postscript output
 
 Python Package Requirements
 ---------------------------
@@ -101,7 +102,7 @@ and the following Python packages installed:
 
 - netCDF4 (1.5.4)
 
-See `Appendix F Python Embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`__
+See `Appendix F Python Embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
 section in the MET User's Guide for more information.
 
 **Wrapper Specific Requirements**
@@ -140,7 +141,7 @@ Get the source code via Web Browser
 -  Create a directory where the METplus Wrappers will be installed
 
 -  Open a web browser and go to the
-   `latest stable METplus release <https://github.com/dtcenter/METplus/releases/latest>`__.
+   `latest stable METplus release <https://github.com/dtcenter/METplus/releases/latest>`_.
 
 .. image:: ../_static/metplus_repo_releases_page.png
 
@@ -178,7 +179,7 @@ the example use cases, which illustrate how the wrappers work.
   to set for the value of INPUT_BASE in the METplus Configuration.
 
 - Go to the web page with the
-  `sample input data <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`__.
+  `sample input data <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_.
 
 - Click on the vX.Y version directory that corresponds to the release to
   install, i.e. v4.0 directory for the v4.0.0 release.
