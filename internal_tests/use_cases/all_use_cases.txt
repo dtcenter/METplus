@@ -91,7 +91,7 @@ Category: data_assimilation
 Category: marine_and_coastal
 0::PlotDataPlane_obsHYCOM_coordTripolar::model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf:: xesmf_env, py_embed
 1::GridStat_fcstRTOFS_obsOSTIA_iceCover::model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf:: icecover_env, py_embed
-2::GrdiStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf:: icecover_env, py_embed
+2::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf:: icecover_env, py_embed
 
 
 Category: medium_range
