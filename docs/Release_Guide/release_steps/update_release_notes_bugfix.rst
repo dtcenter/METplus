@@ -13,6 +13,8 @@ release. Open the following URL in a browser:
 
 * Update the release-notes.rst file found in the User's Guide directory.
 
+* Use your best judgement to apply bold formatting for any major or important changes.
+
 * When creating a bugfix release, leave the "Version X.Y.0 release notes
   (YYYYMMDD)" in place, along with any other bugfix release notes and
   add a section above for the latest bugfix release (i.e. "Version X.Y.Z
