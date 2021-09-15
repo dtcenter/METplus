@@ -166,22 +166,23 @@ _SeriesByLead.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for this use case will be found in series_analysis_lead, relative to the **OUTPUT_BASE**, and in the following directories (relative to **OUTPUT_BASE**):
+# Output for this use case will be found in series_analysis_lead directory relative to the **OUTPUT_BASE**, 
+# and in the following directories (relative to **OUTPUT_BASE**):
 #
 # * series_FHHH
 # * series_animate
 #
 # | The *series_FHHH* subdirectory will contain files that have the following format:
 #
-#   ANLY_FILES_Fhhh_to_FHHH
+#   OBS_FILES_FHHH
 #
-#   FCST_ASCII_FILES_Fhhh_to_FHHH
+#   FCST_FILES_FHHH
 #
-#   series_<varname>_<level>_<stat>.png
+#   series_Fhhh_to_FHHH_<varname>_<level>_<stat>.png
 #
-#   series_<varname>_<level>_<stat>.ps
+#   series_Fhhh_to_FHHH_<varname>_<level>_<stat>.ps
 #
-#   series_<varname>_<level>_<stat>.nc
+#   series_Fhhh_to_FHHH_<varname>_<level>_<stat>.nc
 #
 #   Where:
 #
