@@ -221,5 +221,5 @@ _SeriesByLead.conf
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/medium_range-TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.png'
+# sphinx_gallery_thumbnail_path = '_static/medium_range-MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.png'
 #
