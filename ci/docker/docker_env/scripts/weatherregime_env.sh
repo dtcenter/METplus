@@ -9,7 +9,6 @@
 #   All packages from metplotpy_env
 #   scikit-learn==0.24.2
 #   eofs==1.4.0
-#   netcdf4==1.5.7
 #
 # Other Content: None
 ################################################################################
@@ -24,4 +23,4 @@ BASE_ENV=$1
 conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 conda install -y --name ${ENV_NAME} -c conda-forge scikit-learn==0.24.2
 conda install -y --name ${ENV_NAME} -c conda-forge eofs==1.4.0
-conda install -y --name ${ENV_NAME} -c conda-forge netcdf4==1.5.7
+
