@@ -1,4 +1,4 @@
-#!/bin/env python
+#!/usr/bin/env python3
 """
 Code adapted from
 Todd Spindler
