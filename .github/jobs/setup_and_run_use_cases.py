@@ -76,6 +76,8 @@ def main():
             dockerfile_name = f'{dockerfile_name}_gempak'
         elif 'gfdl' in str(requirements).lower():
             dockerfile_name = f'{dockerfile_name}_gfdl'
+        elif 'cartopy' in str(requirements).lower():
+            dockerfile_name = f'{dockerfile_name}_cartopy'
 
         docker_build_cmd = (
             f"docker build -t {run_tag} "

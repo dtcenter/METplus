@@ -1,5 +1,5 @@
 Category: met_tool_wrapper
-0::CyclonePlotter::met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf,user_env_vars.MET_PYTHON_EXE=python3:: cycloneplotter_env
+0::CyclonePlotter::met_tool_wrapper/CyclonePlotter/CyclonePlotter.conf,user_env_vars.MET_PYTHON_EXE=python3:: cycloneplotter_env,cartopy
 1::PCPCombine_python_embedding:: met_tool_wrapper/PCPCombine/PCPCombine_python_embedding.conf:: h5py_env,py_embed
 2::ASCII2NC:: met_tool_wrapper/ASCII2NC/ASCII2NC.conf
 3::met_tool_wrapper/ASCII2NC/ASCII2NC_python_embedding.conf
