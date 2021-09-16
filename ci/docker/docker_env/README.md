@@ -165,6 +165,21 @@ will fail through the script, but it should be installed using pip3 afterwards.
 /home/met_test/.conda/envs/metplotpy/bin/pip3 install kaleido==0.2.1
 ```
 
+## weatherregime (from metplotpy_env)
+
+### Docker
+
+```
+docker build -t dtcenter/metplus-envs:weatherregime --build-arg BASE_ENV=metplotpy_env --build-arg ENV_NAME=weatherregime .
+docker push dtcenter/metplus-envs:weatherregime
+```
+
+### Local
+
+```
+./scripts/weatherregime_env.sh metplotpy_env
+```
+
 ## cycloneplotter (from metplus_base)
 
 ### Docker
