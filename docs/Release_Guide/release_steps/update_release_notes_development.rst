@@ -13,6 +13,8 @@ release. Open the following URL in a browser:
 
 * Update the release-notes.rst file found in the User's Guide directory.
 
+* Use your best judgement to apply bold formatting for any major or important changes.
+
 * If you are creating a beta1 release, remove the previous version's release
   notes, i.e. for 3.0.0-beta1, remove all 2.Y.Z notes and start a 3.0.0
   section with the format "Version X.Y.Z release notes (YYYYMMDD)".

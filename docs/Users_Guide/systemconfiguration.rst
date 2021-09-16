@@ -93,6 +93,11 @@ Based on the directory listing output above, the following should be set::
 
     MET_INSTALL_DIR = /usr/local/met
 
+For information on installing MET please see the
+`Software Installation/Getting Started <https://met.readthedocs.io/en/latest/Users_Guide/installation.html>`_
+section of the MET User's Guide.
+
+
 .. _sys_conf_input_base:
 
 INPUT_BASE
