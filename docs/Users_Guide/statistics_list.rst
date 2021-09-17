@@ -3,7 +3,6 @@ METplus Database of Statistics
 ******************************
 
 .. glossary:: statistics
-   :priority: secondary
    :sorted:
       
    2D Objects
