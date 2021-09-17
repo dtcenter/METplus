@@ -4,7 +4,7 @@ METplus Database of Statistics
 
 .. glossary:: statistics
    :sorted:
-
+      
    2D Objects
      | **For each Object:**
      | Location of the centroid in grid units
@@ -256,7 +256,8 @@ METplus Database of Statistics
      | 
      | *Tool:* TC-Pairs
 
-   AMODEL???
+     
+   :term:`AMODEL<statistics:AMODEL>`
      | **TCST line type:** User provided text string designating model name
      | 
      | *Tool:* TC-Pairs
