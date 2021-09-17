@@ -2,7 +2,7 @@
 METplus Database of Statistics
 ******************************
 
-.. glossary:: statistics
+.. glossary::statistics
    :sorted:
 
    2D Objects
