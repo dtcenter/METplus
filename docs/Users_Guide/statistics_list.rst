@@ -3,6 +3,7 @@ METplus Database of Statistics
 ******************************
 
 .. glossary:: statistics
+   :priority: secondary
    :sorted:
       
    2D Objects
@@ -256,7 +257,7 @@ METplus Database of Statistics
      | 
      | *Tool:* TC-Pairs
 
-     
+   AMODEL  
    :term:`AMODEL<statistics:AMODEL>`
      | **TCST line type:** User provided text string designating model name
      | 

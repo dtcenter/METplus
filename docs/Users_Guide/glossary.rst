@@ -2,7 +2,8 @@
 METplus Configuration Glossary
 ******************************
 
-.. glossary::
+.. glossary:: configuation
+   :priority: main
    :sorted:
 
    REGRID_DATA_PLANE_ONCE_PER_FIELD
