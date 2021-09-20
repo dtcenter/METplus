@@ -51,7 +51,12 @@
   },
   {
     "category": "marine_and_coastal",
-    "index_list": "0-2",
+    "index_list": "0-1",
+    "run": false
+  },
+  {
+    "category": "marine_and_coastal",
+    "index_list": "2",
     "run": true
   },
   {
