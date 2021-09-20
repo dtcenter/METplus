@@ -90,7 +90,7 @@ def main(args):
         else:
             volume_name = f'{metplus_version}-{model_app_name}'
 
-        full_volume_name = f'{repo_to_use}:{volume_name}')
+        full_volume_name = f'{repo_to_use}:{volume_name}'
         print(f"CREATING DATA VOLUME FROM: {full_volume_name}")
         cmd = (f'docker create --name {model_app_name} '
                f'{full_volume_name}')
