@@ -75,7 +75,10 @@ indata = indata[param][:-1,]
 indata.coords['time']=vDate
 #indata.coords['fcst']=fcst
 
-outdata=indata.copy()
+#outdata=indata.copy()
+#indata.close()
+
+outdata=indata
 
 outdata=outdata.rename({'Longitude':'lon','Latitude':'lat',})
 # all coords need to be single precision
@@ -92,9 +95,9 @@ if not os.path.exists(climoDir):
 
 vDate=pd.Timestamp(vDate)
 
-climofile="woa13_decav_t{:02n}_04v2.nc".format(vDate.month)
-climo_data=xr.open_dataset(climoDir+'/'+climofile,decode_times=False)
-climo_data=climo_data['t_an'].squeeze()[0,]
+#climofile="woa13_decav_t{:02n}_04v2.nc".format(vDate.month)
+#climo_data=xr.open_dataset(climoDir+'/'+climofile,decode_times=False)
+#climo_data=climo_data['t_an'].squeeze()[0,]
 
 if vDate.day==15:  # even for Feb, just because
     climofile="woa13_decav_t{:02n}_04v2.nc".format(vDate.month)
@@ -111,10 +114,13 @@ else:
         
     climofile1="woa13_decav_t{:02n}_04v2.nc".format(start.month)
     climofile2="woa13_decav_t{:02n}_04v2.nc".format(stop.month)
-    climo_data1=xr.open_dataset(climoDir+'/'+climofile1,decode_times=False)
-    climo_data2=xr.open_dataset(climoDir+'/'+climofile2,decode_times=False)
-    climo_data1=climo_data1['t_an'].squeeze()[0,]  # surface only
-    climo_data2=climo_data2['t_an'].squeeze()[0,]  # surface only
+    climo_xr1=xr.open_dataset(climoDir+'/'+climofile1,decode_times=False)
+    climo_xr2=xr.open_dataset(climoDir+'/'+climofile2,decode_times=False)
+    climo_data1=climo_xr1['t_an'].squeeze()[0,]  # surface only
+    climo_data2=climo_xr2['t_an'].squeeze()[0,]  # surface only
+
+    climo_xr1.close()
+    climo_xr2.close()
 
     print('climofile1 :', climofile1)
     print('climofile2 :', climofile2)
@@ -147,14 +153,16 @@ def regrid(model,obs):
     """
     regrid data to obs -- this assumes DataArrays
     """
-    model2=model.copy()
+    #model2=model.copy()
+    model2=model
     model2_lon=model2.lon.values
     model2_lat=model2.lat.values
     model2_data=model2.to_masked_array()
     if model2_lon.ndim==1:
         model2_lon,model2_lat=np.meshgrid(model2_lon,model2_lat)
 
-    obs2=obs.copy()
+    #obs2=obs.copy()
+    obs2=obs
     obs2_lon=obs2.lon.astype('single').values
     obs2_lat=obs2.lat.astype('single').values
     obs2_data=obs2.astype('single').to_masked_array()
@@ -162,9 +170,11 @@ def regrid(model,obs):
         obs2_lon,obs2_lat=np.meshgrid(obs2.lon.values,obs2.lat.values)
 
     model2_lon1=pyr.utils.wrap_longitudes(model2_lon)
-    model2_lat1=model2_lat.copy()
+    #model2_lat1=model2_lat.copy()
+    model2_lat1=model2_lat
     obs2_lon1=pyr.utils.wrap_longitudes(obs2_lon)
-    obs2_lat1=obs2_lat.copy()
+    #obs2_lat1=obs2_lat.copy()
+    obs2_lat1=obs2_lat
 
     # pyresample gausssian-weighted kd-tree interp
     # define the grids
@@ -188,6 +198,8 @@ def expand_grid(data):
     data2=data.copy()
     data2['lon']=data2.lon+360
     data3=xr.concat((data,data2),dim='lon')
+    data2.close()
+    data.close()
     return data3
 
 sst_data2=sst_data2.squeeze()
@@ -215,16 +227,16 @@ obs2.mask=np.ma.mask_or(obs2.mask,model2.mask)
 climo2.mask=obs2.mask
 model2.mask=obs2.mask
 
-obs2=xr.DataArray(obs2,coords=[sst_data2.lat.values,sst_data2.lon.values], dims=['lat','lon'])
-model2=xr.DataArray(model2,coords=[sst_data2.lat.values,sst_data2.lon.values], dims=['lat','lon'])
-climo2=xr.DataArray(climo2,coords=[sst_data2.lat.values,sst_data2.lon.values], dims=['lat','lon'])
+coord_lat = sst_data2.lat.values
+coord_lon = sst_data2.lon.values
 
-model2=expand_grid(model2)
-climo2=expand_grid(climo2)
-obs2=expand_grid(obs2)
+sst_data2.close()
 
 #Create the MET grids based on the file_flag
 if file_flag == 'fcst':
+    #model2=xr.DataArray(model2,coords=[sst_data2.lat.values,sst_data2.lon.values], dims=['lat','lon'])
+    model2=xr.DataArray(model2,coords=[coord_lat,coord_lon], dims=['lat','lon'])
+    model2=expand_grid(model2)
     met_data = model2[:,:]
     #trim the lat/lon grids so they match the data fields
     lat_met = model2.lat
@@ -265,6 +277,9 @@ if file_flag == 'fcst':
     attrs = met_data.attrs
 
 if file_flag == 'obs':
+    #obs2=xr.DataArray(obs2,coords=[sst_data2.lat.values,sst_data2.lon.values], dims=['lat','lon'])
+    obs2=xr.DataArray(obs2,coords=[coord_lat, coord_lon], dims=['lat','lon'])
+    obs2=expand_grid(obs2)
     met_data = obs2[:,:]
     #trim the lat/lon grids so they match the data fields
     lat_met = obs2.lat
@@ -304,6 +319,9 @@ if file_flag == 'obs':
     attrs = met_data.attrs
 
 if file_flag == 'climo':
+    #climo2=xr.DataArray(climo2,coords=[sst_data2.lat.values,sst_data2.lon.values], dims=['lat','lon'])
+    climo2=xr.DataArray(climo2,coords=[coord_lat, coord_lon], dims=['lat','lon'])
+    climo2=expand_grid(climo2)
     met_data = climo2[:,:]
     #modify the lat and lon grids since they need to match the data dimensions, and code cuts the last row/column of data
     lat_met = climo2.lat
