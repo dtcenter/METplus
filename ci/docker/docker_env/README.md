@@ -163,6 +163,26 @@ will fail through the script, but it should be installed using pip3 afterwards.
 ```
 ./scripts/metplotpy_env.sh metplus_base
 /home/met_test/.conda/envs/metplotpy/bin/pip3 install kaleido==0.2.1
+/home/met_test/.conda/envs/metplotpy/bin/python3 cartopy_feature_download.py cultural physical
+rm cartopy_feature_download.py
+```
+
+#### To install METplotpy and METcalcpy packages in environment
+
+```
+cd /home/met_test
+
+# git clone not necessary if repo is already available
+git clone https://github.com/dtcenter/METplotpy
+git clone https://github.com/dtcenter/METcalcpy
+
+cd /home/met_test/METplotpy
+git checkout develop
+/home/met_test/.conda/envs/metplotpy/bin/pip3 install .
+
+cd /home/met_test/METcalcpy
+git checkout develop
+/home/met_test/.conda/envs/metplotpy/bin/pip3 install .
 ```
 
 ## weatherregime (from metplotpy_env)
@@ -170,14 +190,34 @@ will fail through the script, but it should be installed using pip3 afterwards.
 ### Docker
 
 ```
-docker build -t dtcenter/metplus-envs:weatherregime --build-arg BASE_ENV=metplotpy_env --build-arg ENV_NAME=weatherregime .
+docker build -t dtcenter/metplus-envs:weatherregime --build-arg BASE_ENV=metplotpy --build-arg ENV_NAME=weatherregime .
 docker push dtcenter/metplus-envs:weatherregime
 ```
 
 ### Local
 
 ```
-./scripts/weatherregime_env.sh metplotpy_env
+./scripts/weatherregime_env.sh metplotpy
+/home/met_test/.conda/envs/weatherregime/bin/python3 cartopy_feature_download.py cultural physical
+rm cartopy_feature_download.py
+```
+
+#### To install METplotpy and METcalcpy packages in environment
+
+```
+cd /home/met_test
+
+# git clone not necessary if repo is already available
+git clone https://github.com/dtcenter/METplotpy
+git clone https://github.com/dtcenter/METcalcpy
+
+cd /home/met_test/METplotpy
+git checkout develop
+/home/met_test/.conda/envs/weatherregime/bin/pip3 install .
+
+cd /home/met_test/METcalcpy
+git checkout develop
+/home/met_test/.conda/envs/weatherregime/bin/pip3 install .
 ```
 
 ## cycloneplotter (from metplus_base)
