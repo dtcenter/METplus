@@ -9,7 +9,6 @@ import time
 import datetime
 import re
 import sys
-import pandas as pd
 from collections import namedtuple
 
 # handle if module can't be loaded to run wrapper
