@@ -419,7 +419,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         for key in pts_by_track_dict:
             lons = []
             lats = []
-            for idx, pt in enumerate(pts_by_track[key]):
+            for idx, pt in enumerate(pts_by_track_dict[key]):
                 lons.append(pt.lon)
                 lats.append(pt.lat)
 
@@ -497,10 +497,8 @@ class CyclonePlotterWrapper(CommandBuilder):
             # update the track dictionary
             track_dict[cur_unique] = sanitized_lons_and_lats
 
-        # assign to the class variable
-        # self.pts_by_track = track_dict
 
-        return pts_by_track
+        return track_dict
 
 
     @staticmethod
