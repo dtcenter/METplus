@@ -429,8 +429,15 @@ class CyclonePlotterWrapper(CommandBuilder):
             # Create the line plot for this storm track
             plt.plot(lons, lats, linestyle='-', color=pt_color, linewidth=.5, transform=prj, zorder=3)
 
-        plt.savefig("/Users/minnawin/Desktop/plot.png", dpi=800)
-
+        # Write the plot to the output directory
+        out_filename_parts = [self.init_date, '.png']
+        output_plot_name = ''.join(out_filename_parts)
+        plot_filename = os.path.join(self.output_dir, output_plot_name)
+        if self.resolution_dpi > 0:
+            plt.savefig(plot_filename, dpi=self.resolution_dpi)
+        else:
+            # use Matplotlib's default if no resolution is set in config file
+            plt.savefig(plot_filename)
 
 
     def get_plot_points(self):
