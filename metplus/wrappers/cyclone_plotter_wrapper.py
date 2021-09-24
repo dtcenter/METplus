@@ -274,18 +274,20 @@ class CyclonePlotterWrapper(CommandBuilder):
                             sanitized_df.loc[idx, 'LEAD_GROUP'] = '6'
                             sanitized_df.loc[idx, 'MARKER'] = '+'
 
-        # Write output ASCII file (csv) summarizing the information extracted from the input
-        # which will be used to generate the plot.
-        if self.gen_ascii:
-            self.logger.debug(f" output dir: {self.output_dir}")
-            util.mkdir_p(self.output_dir)
-            ascii_track_parts = [self.init_date, '.csv']
-            ascii_track_output_name = ''.join(ascii_track_parts)
-            sanitized_df_filename = os.path.join(self.output_dir, ascii_track_output_name)
+            # Write output ASCII file (csv) summarizing the information extracted from the input
+            # which will be used to generate the plot.
+            if self.gen_ascii:
+               self.logger.debug(f" output dir: {self.output_dir}")
+               util.mkdir_p(self.output_dir)
+               ascii_track_parts = [self.init_date, '.csv']
+               ascii_track_output_name = ''.join(ascii_track_parts)
+               sanitized_df_filename = os.path.join(self.output_dir, ascii_track_output_name)
 
-            sanitized_df.to_csv(sanitized_df_filename)
-            self.logger.info(f"Writing ascii track info as csv file: {sanitized_df_filename}")
-
+               sanitized_df.to_csv(sanitized_df_filename)
+               self.logger.info(f"Writing ascii track info as csv file: {sanitized_df_filename}")
+        else:
+            self.logger.error("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory, check config file.")
+            sys.exit("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory.")
         return sanitized_df
 
     def create_plot(self):
