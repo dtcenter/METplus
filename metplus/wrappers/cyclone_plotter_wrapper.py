@@ -195,9 +195,19 @@ class CyclonePlotterWrapper(CommandBuilder):
             init_hh = int(self.init_hr)
             model_name = self.model
 
-            mask = df[(df['AMODEL'] == model_name) & (df['INIT_YMD'] >= init_date) &
-                      (df['INIT_HOUR'] >= init_hh)]
+            if model_name:
+                self.logger.debug("Subsetting based on ", init_date, ", ", init_date,
+                                  ", and model:", model_name )
+                mask = df[(df['AMODEL'] == model_name) & (df['INIT_YMD'] >= init_date) &
+                          (df['INIT_HOUR'] >= init_hh)]
+            else:
+                mask = df[(df['INIT_YMD'] >= init_date) &
+                          (df['INIT_HOUR'] >= init_hh)]
+                self.logger.debug("Subsetting based on ", init_date, ", and ", init_date)
+
             user_criteria_df = mask
+            # reset the index so things are ordered properly in the new dataframe
+            user_criteria_df.reset_index(inplace=True)
 
             # Aggregate the ALON values based on unique storm id in order to sanitize the longitude values
             # that cross the International Date Line.
@@ -229,6 +239,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                 # create the track_pt tuple and add it to the storm track dictionary
                 track_pt = TrackPt(indices, cur_unique, alons)
                 storm_track_dict[cur_unique] = track_pt
+
 
             # create a new dataframe to contain the sanitized lons (i.e. the original ALONs that have
             # been cleaned up when crossing the International Date Line)
