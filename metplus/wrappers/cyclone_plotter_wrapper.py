@@ -419,7 +419,6 @@ class CyclonePlotterWrapper(CommandBuilder):
                             "time storm was able to be tracked in model")
 
         # Settings for the legend box location.
-        self.logger.debug(f"!!!!!legend font size: {self.legend_font_size}")
         ax.legend(loc='lower left', bbox_to_anchor=(0, -0.4),
                   fancybox=True, shadow=True, scatterpoints=1,
                   prop={'size':self.legend_font_size})
