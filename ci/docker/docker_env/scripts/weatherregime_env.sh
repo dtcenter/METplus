@@ -24,6 +24,7 @@ conda create -y --clone ${BASE_ENV} --name ${ENV_NAME}
 conda install -y --name ${ENV_NAME} -c conda-forge scikit-learn==0.24.2
 conda install -y --name ${ENV_NAME} -c conda-forge eofs==1.4.0
 
+rm cartopy_feature_download.py
 yum -y install wget
-wget https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py
+wget https://raw.githubusercontent.com/georgemccabe/cartopy/master/tools/cartopy_feature_download.py
 /usr/local/envs/${ENV_NAME}/bin/python3 cartopy_feature_download.py cultural physical cultural-extra
