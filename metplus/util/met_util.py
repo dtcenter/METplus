@@ -68,6 +68,11 @@ def pre_run_setup(config_inputs):
                 version_number, ' '.join(sys.argv))
 
     logger.info(f"Log file: {config.getstr('config', 'LOG_METPLUS')}")
+    logger.info(f"METplus Base: {config.getdir('METPLUS_BASE')}")
+    logger.info(f"Final Conf: {config.getstr('config', 'METPLUS_CONF')}")
+    config_list = config.getstr('config', 'CONFIG_INPUT').split(',')
+    for config_item in config_list:
+        logger.info(f"Config Input: {config_item}")
 
     # validate configuration variables
     isOK_A, isOK_B, isOK_C, isOK_D, all_sed_cmds = validate_configuration_variables(config)
@@ -186,28 +191,34 @@ def post_run_cleanup(config, app_name, total_errors):
         logger.info("Scrubbing staging dir: %s", staging_dir)
         shutil.rmtree(staging_dir)
 
+    # save log file path and clock time before writing final conf file
+    log_message = (f"Check the log file for more information: "
+                   f"{config.getstr('config', 'LOG_METPLUS')}")
+
+    start_clock_time = datetime.datetime.strptime(config.getstr('config',
+                                                                'CLOCK_TIME'),
+                                                  '%Y%m%d%H%M%S')
+
     # rewrite final conf so it contains all of the default values used
-    write_final_conf(config, logger)
+    write_final_conf(config)
 
     # compute time it took to run
-    start_clock_time = datetime.datetime.strptime(config.getstr('config', 'CLOCK_TIME'),
-                                                  '%Y%m%d%H%M%S')
     end_clock_time = datetime.datetime.now()
     total_run_time = end_clock_time - start_clock_time
     logger.debug(f"{app_name} took {total_run_time} to run.")
 
-    log_message = f"Check the log file for more information: {config.getstr('config', 'LOG_METPLUS')}"
-    if total_errors == 0:
+    if not total_errors:
         logger.info(log_message)
         logger.info(f'{app_name} has successfully finished running.')
-    else:
-        error_msg = f"{app_name} has finished running but had {total_errors} error"
-        if total_errors > 1:
-            error_msg += 's'
-        error_msg += '.'
-        logger.error(error_msg)
-        logger.info(log_message)
-        sys.exit(1)
+        return
+
+    error_msg = f"{app_name} has finished running but had {total_errors} error"
+    if total_errors > 1:
+        error_msg += 's'
+    error_msg += '.'
+    logger.error(error_msg)
+    logger.info(log_message)
+    sys.exit(1)
 
 def write_all_commands(all_commands, config):
     if not all_commands:
@@ -413,7 +424,6 @@ def check_for_deprecated_config(config):
         'STAT_ANALYSIS_CONFIG': {'sec': 'config', 'alt': 'STAT_ANALYSIS_CONFIG_FILE'},
         'JOB_NAME': {'sec': 'config', 'alt': 'STAT_ANALYSIS_JOB_NAME'},
         'JOB_ARGS': {'sec': 'config', 'alt': 'STAT_ANALYSIS_JOB_ARGS'},
-        'DESC': {'sec': 'config', 'alt': 'DESC_LIST'},
         'FCST_LEAD': {'sec': 'config', 'alt': 'FCST_LEAD_LIST'},
         'FCST_VAR_NAME': {'sec': 'config', 'alt': 'FCST_VAR_LIST'},
         'FCST_VAR_LEVEL': {'sec': 'config', 'alt': 'FCST_VAR_LEVEL_LIST'},
@@ -559,7 +569,7 @@ def check_for_deprecated_config(config):
 
 def handle_deprecated(old, alt, depr_info, config, all_sed_cmds, w_list, e_list):
     sec = depr_info['sec']
-    config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+    config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
     # if deprecated config item is found
     if config.has_option(sec, old):
         # if it is not required to remove, add to warning list
@@ -587,14 +597,11 @@ def check_for_deprecated_met_config(config):
 
     # set CURRENT_* METplus variables in case they are referenced in a
     # METplus config variable and not already set
-    current_vars = ['CURRENT_FCST_NAME',
-                    'CURRENT_OBS_NAME',
-                    'CURRENT_FCST_LEVEL',
-                    'CURRENT_OBS_LEVEL',
-                   ]
-    for current_var in current_vars:
-        if not config.has_option('config', current_var):
-            config.set('config', current_var, '')
+    for fcst_or_obs in ['FCST', 'OBS']:
+        for name_or_level in ['NAME', 'LEVEL']:
+            current_var = f'CURRENT_{fcst_or_obs}_{name_or_level}'
+            if not config.has_option('config', current_var):
+                config.set('config', current_var, '')
 
     # check if *_CONFIG_FILE if set in the METplus config file and check for
     # deprecated environment variables in those files
@@ -820,18 +827,30 @@ def skip_time(time_info, skip_times):
     # if skip time never matches, return False
     return False
 
-def write_final_conf(config, logger):
-    """!write final conf file including default values that were set during run"""
-    confloc = config.getstr('config', 'METPLUS_CONF')
-    logger.info('%s: write metplus.conf here' % (confloc,))
-    with open(confloc, 'wt') as conf_file:
-        config.write(conf_file)
+def write_final_conf(config):
+    """! Write final conf file including default values that were set during
+     run. Move variables that are specific to the user's run to the [runtime]
+     section to avoid issues such as overwriting existing log files.
 
+        @param config METplusConfig object to write to file
+     """
     # write out os environment to file for debugging
     env_file = os.path.join(config.getdir('LOG_DIR'), '.metplus_user_env')
     with open(env_file, 'w') as env_file:
         for key, value in os.environ.items():
             env_file.write('{}={}\n'.format(key, value))
+
+    final_conf = config.getstr('config', 'METPLUS_CONF')
+
+    # remove variables that start with CURRENT
+    config.remove_current_vars()
+
+    # move runtime variables to [runtime] section
+    config.move_runtime_configs()
+
+    config.logger.info('Overwrite final conf here: %s' % (final_conf,))
+    with open(final_conf, 'wt') as conf_file:
+        config.write(conf_file)
 
 def is_loop_by_init(config):
     """!Check config variables to determine if looping by valid or init time"""
@@ -2006,7 +2025,7 @@ def is_var_item_valid(item_list, index, ext, config):
             msg.append(f"If FCST{full_ext} is set, you must either set OBS{full_ext} or "
                        f"change FCST{full_ext} to BOTH{full_ext}")
 
-            config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+            config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
             for config_file in config_files:
                 sed_cmds.append(f"sed -i 's|^FCST{full_ext}|BOTH{full_ext}|g' {config_file}")
                 sed_cmds.append(f"sed -i 's|{{FCST{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")
@@ -2024,7 +2043,7 @@ def is_var_item_valid(item_list, index, ext, config):
             msg.append(f"If OBS{full_ext} is set, you must either set FCST{full_ext} or "
                           f"change OBS{full_ext} to BOTH{full_ext}")
 
-            config_files = config.getstr('config', 'METPLUS_CONFIG_FILES', '').split(',')
+            config_files = config.getstr('config', 'CONFIG_INPUT', '').split(',')
             for config_file in config_files:
                 sed_cmds.append(f"sed -i 's|^OBS{full_ext}|BOTH{full_ext}|g' {config_file}")
                 sed_cmds.append(f"sed -i 's|{{OBS{full_ext}}}|{{BOTH{full_ext}}}|g' {config_file}")

@@ -310,7 +310,6 @@ class RuntimeFreqWrapper(CommandBuilder):
                 time_info = time_util.ti_calculate(input_dict)
 
                 if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                    self.logger.debug('Skip finding files from run time')
                     continue
 
                 file_dict = self.get_files_from_time(time_info)
