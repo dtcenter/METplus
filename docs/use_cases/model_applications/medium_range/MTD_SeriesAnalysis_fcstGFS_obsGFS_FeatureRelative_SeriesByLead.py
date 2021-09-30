@@ -35,7 +35,7 @@ _SeriesByLead.conf
 #
 # This use case first runs MODE Time Domain and ExtractTiles wrappers to
 # generate tiles of data centered on objects defined using MTD. The MET
-# regrid-dataplane tool is used to regrid the data (GRIB1 or GRIB2 into netCDF).
+# regrid_data_plane tool is used to regrid the data (GRIB1 or GRIB2 into netCDF).
 # Next, a series analysis by lead time is performed on the results and plots
 # (.ps and .png) are generated for all variable-level-stat combinations from
 # the requested variables, levels, and requested statistics. The final results
@@ -74,8 +74,7 @@ _SeriesByLead.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
+# then it loads any configuration files passed to METplus via the command line.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
@@ -114,12 +113,12 @@ _SeriesByLead.conf
 #
 # 1) Passing in MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf, then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
-#        -c /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
+#        /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -127,35 +126,19 @@ _SeriesByLead.conf
 # * **OUTPUT_BASE** - Path where METplus output will be written. This must be in a location where you have write permissions
 # * **MET_INSTALL_DIR** - Path to location where MET is installed locally
 #
-#  and for the [exe] section, you will need to define the location of
-#  NON-MET executables.  If the executable is in the user's path, METplus will find it from
-#  the name. If the executable is not in the path, specify the full
-#  path to the executable here (i.e. CONVERT = /usr/bin/convert)  The following executables are required
-#  for performing series analysis use cases:
+#  If the 'convert' executable is not in the user's path, specify the full
+#  path to the executable here
 #
-#  If the executables are in the path:
+# * **CONVERT = /usr/bin/convert**
 #
-# * **CONVERT = convert**
-#
-# **NOTE:** All of these executable items must be located under the [exe] section.
-#
-#
-# If the executables are not in the path, they need to be defined:
-#
-# * **CONVERT = /path/to/convert**
-#
-# **NOTE:** All of these executable items must be located under the [exe] section.
 # Example User Configuration File::
 #
-#   [dir]
+#   [config]
 #   INPUT_BASE = /path/to/sample/input/data
 #   OUTPUT_BASE = /path/to/output/dir
 #   MET_INSTALL_DIR = /path/to/met-X.Y
-#
-#   [exe]
 #   CONVERT = /path/to/convert
 #
-# **NOTE:** The INPUT_BASE, OUTPUT_BASE, and MET_INSTALL_DIR must be located under the [dir] section, while the RM, CUT, TR, NCAP2, CONVERT, and NCDUMP must be located under the [exe] section.
 
 ##############################################################################
 # Expected Output
