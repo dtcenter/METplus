@@ -531,8 +531,8 @@ Check if the category tarfile exists already
 
 Check the symbolic link in the develop directory to determine latest tarball::
 
-    export METPLUS_TARFILE_TO_ADD_DATA=`ls -l ${METPLUS_DATA_TARFILE_DIR}/develop/sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz | sed 's|.*->||g'`
-    echo ${METPLUS_TARFILE_TO_ADD_DATA}
+    export METPLUS_EXISTING_DATA_TARFILE=`ls -l ${METPLUS_DATA_TARFILE_DIR}/develop/sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz | sed 's|.*->||g'`
+    echo ${METPLUS_EXISTING_DATA_TARFILE}
 
 **If the echo command does not contain a full path to sample data tarfile, then
 the sample data tarball may not exist yet for this category.** Double check
@@ -547,7 +547,7 @@ Add contents of existing tarfile to feature branch directory (if applicable)
 the feature branch directory. If no tarfile exists yet, you can skip this
 step::
 
-    tar zxf ${METPLUS_TARFILE_TO_ADD_DATA} -C ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
+    tar zxf ${METPLUS_EXISTING_DATA_TARFILE} -C ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
 Create the new tarfile
 ^^^^^^^^^^^^^^^^^^^^^^
