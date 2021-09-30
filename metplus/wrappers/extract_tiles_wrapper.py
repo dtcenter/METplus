@@ -300,25 +300,37 @@ class ExtractTilesWrapper(CommandBuilder):
 
         # loop over corresponding CF### and CO### lines
         for index in indices:
+            fcst_data_list = self.get_cluster_data(object_dict[f'CF{index}'],
+                                              idx_dict)
+            obs_data_list = self.get_cluster_data(object_dict[f'CO{index}'],
+                                             idx_dict)
 
-            fcst_lines = object_dict[f'CF{index}']
-            obs_lines = object_dict[f'CO{index}']
             track_data = {}
-            for fcst_line, obs_line in zip(fcst_lines, obs_lines):
-                track_data['FCST'] = self.get_data_from_track_line(idx_dict,
-                                                                   fcst_line)
-                track_data['OBS'] = self.get_data_from_track_line(idx_dict,
-                                                                  obs_line)
+            for fcst_data, obs_data in zip(fcst_data_list, obs_data_list):
+                if fcst_data.get('FCST_VALID') != obs_data.get('FCST_VALID'):
+                    self.log_error("Time mismatch in valid time between "
+                                   f"CF{index} and CO{index}: "
+                                   f"({fcst_data.get('FCST_VALID')} vs "
+                                   f"{obs_data.get('FCST_VALID')}). "
+                                   "Wrapper assumes fcst and obs cluster data "
+                                   "are in the same order.")
+                    return
 
-                # only use lines where OBJECT_ID == OBJECT_CAT
-                if (not self.object_id_equals_cat(track_data['FCST']) or
-                        not self.object_id_equals_cat(track_data['OBS'])):
-                    continue
+                track_data['FCST'] = fcst_data
+                track_data['OBS'] = obs_data
 
                 time_info = (
                     self.set_time_info_from_track_data(track_data['FCST'])
                 )
                 self.call_regrid_data_plane(time_info, track_data, 'MTD')
+
+    def get_cluster_data(self, lines, idx_dict):
+        cluster_data = []
+        for line in lines:
+            line_data = self.get_data_from_track_line(idx_dict, line)
+            if self.object_id_equals_cat(line_data):
+                cluster_data.append(line_data)
+        return cluster_data
 
     @staticmethod
     def object_id_equals_cat(track_line):

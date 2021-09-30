@@ -91,6 +91,7 @@ Category: data_assimilation
 Category: marine_and_coastal
 0::PlotDataPlane_obsHYCOM_coordTripolar::model_applications/marine_and_coastal/PlotDataPlane_obsHYCOM_coordTripolar.conf:: xesmf_env, py_embed
 1::GridStat_fcstRTOFS_obsOSTIA_iceCover::model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf:: icecover_env, py_embed
+#X::GridStat_fcstRTOFS_obsGHRSST_climWOA_sst::model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf, model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/ci_overrides.conf:: icecover_env, py_embed
 
 
 Category: medium_range
@@ -102,6 +103,7 @@ Category: medium_range
 5::UserScript_fcstGEFS_Difficulty_Index::model_applications/medium_range/UserScript_fcstGEFS_Difficulty_Index.conf:: metplotpy_env
 6::model_applications/medium_range/PointStat_fcstGFS_obsGDAS_UpperAir_MultiField_PrepBufr.conf
 7::TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics:: model_applications/medium_range/TCStat_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead_PyEmbed_Multiple_Diagnostics.conf:: cfgrib_env,py_embed
+8::MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead::model_applications/medium_range/MTD_SeriesAnalysis_fcstGFS_obsGFS_FeatureRelative_SeriesByLead.conf:: netcdf4_env
 
 
 
