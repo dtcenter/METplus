@@ -71,8 +71,7 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.c
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf
+# then it loads any configuration files passed to METplus via the command line.
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf
@@ -114,11 +113,11 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.c
 #
 # 1) Passing in GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf -c /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -128,12 +127,11 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.c
 #
 # Example User Configuration File::
 #
-#   [dir]
+#   [config]
 #   INPUT_BASE = /path/to/sample/input/data
 #   OUTPUT_BASE = /path/to/output/dir
 #   MET_INSTALL_DIR = /path/to/met-X.Y 
 #
-# **NOTE:** All of these items must be found under the [dir] section.
 #
 
 ##############################################################################
