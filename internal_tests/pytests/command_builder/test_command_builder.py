@@ -70,7 +70,7 @@ def test_read_climo_file_name(metplus_config, config_overrides,
         actual_value = cbw.config.getraw('config',
                                          f'{prefix}FILE_NAME',
                                          '')
-        assert(actual_value == expected_value)
+        assert actual_value == expected_value
 
 # ------------------------
 #  test_find_data_no_dated
@@ -100,7 +100,7 @@ def test_find_data_no_dated(metplus_config, data_type):
     pcw.c_dict[f'{data_type}INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     pcw.c_dict[f'{data_type}INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
     obs_file = pcw.find_data(time_info, v, data_type)
-    assert(obs_file == pcw.c_dict[f'{data_type}INPUT_DIR']+'/20180201_0045')
+    assert obs_file == pcw.c_dict[f'{data_type}INPUT_DIR']+'/20180201_0045'
 
 
 # if the input dir/template combination is not a path, then find_data should just return that string
@@ -127,7 +127,7 @@ def test_find_data_not_a_path(metplus_config, data_type):
     pcw.c_dict[f'{data_type}INPUT_DIR'] = ''
     pcw.c_dict[f'{data_type}INPUT_TEMPLATE'] = 'G003'
     obs_file = pcw.find_data(time_info, var_info=None, data_type=data_type)
-    assert(obs_file == 'G003')
+    assert obs_file == 'G003'
 
 def test_find_obs_no_dated(metplus_config):
     config = metplus_config()
@@ -145,7 +145,7 @@ def test_find_obs_no_dated(metplus_config):
     pcw.c_dict['OBS_INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE') + "/internal_tests/data/obs"
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = "{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}"
     obs_file = pcw.find_obs(time_info, v)
-    assert (obs_file == pcw.c_dict['OBS_INPUT_DIR'] + '/20180201_0045')
+    assert obs_file == pcw.c_dict['OBS_INPUT_DIR'] + '/20180201_0045'
 
 def test_find_obs_dated(metplus_config):
     config = metplus_config()
@@ -163,7 +163,7 @@ def test_find_obs_dated(metplus_config):
     pcw.c_dict['OBS_INPUT_DIR'] = pcw.config.getdir('METPLUS_BASE')+"/internal_tests/data/obs"
     pcw.c_dict['OBS_INPUT_TEMPLATE'] = '{valid?fmt=%Y%m%d}/{valid?fmt=%Y%m%d}_{valid?fmt=%H%M}'
     obs_file = pcw.find_obs(time_info, v)
-    assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180201/20180201_0013')
+    assert obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180201/20180201_0013'
 
 @pytest.mark.parametrize(
     'offsets, expected_file, offset_seconds', [
@@ -195,9 +195,10 @@ def test_find_obs_offset(metplus_config, offsets, expected_file, offset_seconds)
     print(f"EXPECTED FILE: {expected_file}")
 
     if expected_file is None:
-        assert(not obs_file)
+        assert not obs_file
     else:
-        assert (os.path.basename(obs_file) == expected_file and time_info['offset'] == offset_seconds)
+        assert (os.path.basename(obs_file) == expected_file and
+                time_info['offset'] == offset_seconds)
 
 def test_find_obs_dated_previous_day(metplus_config):
     config = metplus_config()
@@ -215,7 +216,7 @@ def test_find_obs_dated_previous_day(metplus_config):
     pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = -3600
     pcw.c_dict['OBS_FILE_WINDOW_END'] = 0
     obs_file = pcw.find_obs(time_info, v)
-    assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180131/20180131_2345')
+    assert obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180131/20180131_2345'
 
 def test_find_obs_dated_next_day(metplus_config):
     config = metplus_config()
@@ -233,7 +234,7 @@ def test_find_obs_dated_next_day(metplus_config):
     pcw.c_dict['OBS_FILE_WINDOW_BEGIN'] = 0
     pcw.c_dict['OBS_FILE_WINDOW_END'] = 3600
     obs_file = pcw.find_obs(time_info, v)
-    assert(obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180202/20180202_0013')
+    assert obs_file == pcw.c_dict['OBS_INPUT_DIR']+'/20180202/20180202_0013'
 
 @pytest.mark.parametrize(
     'overrides, c_dict', [
@@ -251,7 +252,7 @@ def test_override_config_in_c_dict(metplus_config, overrides, c_dict):
 
     pcw = CommandBuilder(config, config_overrides=overrides)
     for key, expected_value in c_dict.items():
-        assert(pcw.c_dict.get(key) == expected_value)
+        assert pcw.c_dict.get(key) == expected_value
 
 @pytest.mark.parametrize(
     'overrides', [
@@ -266,7 +267,7 @@ def test_override_config(metplus_config, overrides):
 
     pcw = CommandBuilder(config, config_overrides=overrides)
     for key, expected_value in overrides.items():
-        assert(pcw.config.getraw('config', key) == expected_value)
+        assert pcw.config.getraw('config', key) == expected_value
 
 # dictionary items with values will be set in [test_section]
 # items with value None will not be set, so it should use
@@ -303,7 +304,7 @@ def test_override_by_instance(metplus_config, section_items):
     pcw = CommandBuilder(config, instance='test_section')
     for key, value in section_items.items():
         expected_value = 'default' if value is None else value
-        assert(pcw.config.getraw('config', key) == expected_value)
+        assert pcw.config.getraw('config', key) == expected_value
 
 @pytest.mark.parametrize(
     'filename, file_list, output_dir', [
@@ -338,17 +339,17 @@ def test_write_list_file(metplus_config, filename, file_list, output_dir):
     cbw.write_list_file(filename, file_list, output_dir=output_dir)
 
     # ensure file was written
-    assert(os.path.exists(check_file))
+    assert os.path.exists(check_file)
     with open(check_file, 'r') as file_handle:
         lines = file_handle.readlines()
 
     # ensure number of lines written is 1 greater than provided list
     # to account for first line that contains 'file_list' text
-    assert(len(lines) == len(file_list) + 1)
+    assert len(lines) == len(file_list) + 1
 
     # ensure content of file is as expected
     for actual_line, expected_line in zip(lines[1:], file_list):
-        assert(actual_line.strip() == expected_line)
+        assert actual_line.strip() == expected_line
 
 @pytest.mark.parametrize(
     'config_overrides, expected_value', [
@@ -377,7 +378,7 @@ def test_handle_description(metplus_config, config_overrides, expected_value):
     cbw.app_name = 'grid_stat'
 
     cbw.handle_description()
-    assert(cbw.env_var_dict.get('METPLUS_DESC', '') == expected_value)
+    assert cbw.env_var_dict.get('METPLUS_DESC', '') == expected_value
 
 @pytest.mark.parametrize(
     'input, output', [
@@ -390,7 +391,7 @@ def test_handle_description(metplus_config, config_overrides, expected_value):
 )
 def test_format_regrid_to_grid(metplus_config, input, output):
     cbw = CommandBuilder(metplus_config())
-    assert(cbw.format_regrid_to_grid(input) == output)
+    assert cbw.format_regrid_to_grid(input) == output
 
 @pytest.mark.parametrize(
     'config_overrides, set_to_grid, expected_dict', [
@@ -434,9 +435,9 @@ def test_handle_regrid_old(metplus_config, config_overrides, set_to_grid,
 
     cbw.handle_regrid(c_dict, set_to_grid=set_to_grid)
 
-    assert(len(c_dict) == len(expected_dict))
+    assert len(c_dict) == len(expected_dict)
     for key, value in expected_dict.items():
-        assert(c_dict.get(key, '') == value)
+        assert c_dict.get(key, '') == value
 
 @pytest.mark.parametrize(
     'config_overrides, expected_output', [
@@ -477,7 +478,7 @@ def test_handle_regrid_new(metplus_config, config_overrides, expected_output):
     cbw.app_name = 'app'
 
     cbw.handle_regrid(cbw.c_dict)
-    assert(cbw.env_var_dict['METPLUS_REGRID_DICT'] == expected_output)
+    assert cbw.env_var_dict['METPLUS_REGRID_DICT'] == expected_output
 
 @pytest.mark.parametrize(
     'mp_config_name,met_config_name,c_dict_key,remove_quotes,expected_output', [
@@ -516,7 +517,7 @@ def test_set_met_config_string(metplus_config, mp_config_name, met_config_name,
     if key is None:
         key = met_config_name.upper()
 
-    assert(c_dict.get(key, '') == expected_output)
+    assert c_dict.get(key, '') == expected_output
 
 @pytest.mark.parametrize(
     'mp_config_name,met_config_name,c_dict_key,uppercase,expected_output, is_ok', [
@@ -566,8 +567,8 @@ def test_set_met_config_bool(metplus_config, mp_config_name, met_config_name,
     if key is None:
         key = met_config_name.upper()
 
-    assert(c_dict.get(key, '') == expected_output)
-    assert(cbw.isOK == is_ok)
+    assert c_dict.get(key, '') == expected_output
+    assert cbw.isOK == is_ok
 
 # int
 @pytest.mark.parametrize(
@@ -608,8 +609,8 @@ def test_set_met_config_int(metplus_config, mp_config_name, met_config_name,
     if key is None:
         key = met_config_name.upper()
 
-    assert(c_dict.get(key, '') == expected_output)
-    assert(cbw.isOK == is_ok)
+    assert c_dict.get(key, '') == expected_output
+    assert cbw.isOK == is_ok
 
 @pytest.mark.parametrize(
     'mp_config_name,met_config_name,c_dict_key,expected_output,is_ok', [
@@ -649,8 +650,8 @@ def test_set_met_config_float(metplus_config, mp_config_name, met_config_name,
     if key is None:
         key = met_config_name.upper()
 
-    assert(c_dict.get(key, '') == expected_output)
-    assert(cbw.isOK == is_ok)
+    assert c_dict.get(key, '') == expected_output
+    assert cbw.isOK == is_ok
 
 @pytest.mark.parametrize(
     'mp_config_name,met_config_name,c_dict_key,expected_output,is_ok', [
@@ -698,8 +699,8 @@ def test_set_met_config_thresh(metplus_config, mp_config_name, met_config_name,
     if key is None:
         key = met_config_name.upper()
 
-    assert(c_dict.get(key, '') == expected_output)
-    assert(cbw.isOK == is_ok)
+    assert c_dict.get(key, '') == expected_output
+    assert cbw.isOK == is_ok
 
 @pytest.mark.parametrize(
     'mp_config_name,met_config_name,c_dict_key,remove_quotes,expected_output', [
@@ -746,7 +747,7 @@ def test_set_met_config_list(metplus_config, mp_config_name, met_config_name,
     if key is None:
         key = met_config_name.upper()
 
-    assert(c_dict.get(key, '') == expected_output)
+    assert c_dict.get(key, '') == expected_output
 
 @pytest.mark.parametrize(
     'mp_config_name,allow_empty,expected_output', [
@@ -776,7 +777,7 @@ def test_set_met_config_list_allow_empty(metplus_config, mp_config_name,
                             met_config_name,
                             allow_empty=allow_empty)
 
-    assert(c_dict.get(mp_config_name, '') == expected_output)
+    assert c_dict.get(mp_config_name, '') == expected_output
 
 @pytest.mark.parametrize(
     'data_type, expected_function', [
@@ -831,7 +832,7 @@ def test_add_met_config(metplus_config):
                                        'TC_GEN_VALID_FREQ',])
     print(f"env_var_dict: {cbw.env_var_dict}")
     expected_value = f'valid_freq = {value};'
-    assert(cbw.env_var_dict['METPLUS_VALID_FREQ'] == expected_value)
+    assert cbw.env_var_dict['METPLUS_VALID_FREQ'] == expected_value
 
 def test_handle_met_config_dict_nested(metplus_config):
     dict_name = 'outer'
@@ -884,4 +885,4 @@ def test_handle_met_config_dict_nested(metplus_config):
 
     cbw.handle_met_config_dict(dict_name, dict_items)
     print(f"env_var_dict: {cbw.env_var_dict}")
-    assert(cbw.env_var_dict.get('METPLUS_OUTER_DICT') == expected_value)
+    assert cbw.env_var_dict.get('METPLUS_OUTER_DICT') == expected_value
