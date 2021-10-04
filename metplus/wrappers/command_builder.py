@@ -1757,13 +1757,17 @@ class CommandBuilder:
 
     def _parse_extra_args(self, extra):
         """! Check string for extra option keywords and set them to True in
-         dictionary if they are found. Supports 'remove_quotes' and 'uppercase'
+         dictionary if they are found. Supports 'remove_quotes', 'uppercase'
+         and 'allow_empty'
 
             @param extra string to parse for keywords
             @returns dictionary with extra args set if found in string
         """
         extra_args = {}
-        for extra_option in ['remove_quotes', 'uppercase']:
+        if not extra:
+            return extra_args
+
+        for extra_option in ['remove_quotes', 'uppercase', 'allow_empty']:
             if extra_option in extra:
                 extra_args[extra_option] = True
         return extra_args
