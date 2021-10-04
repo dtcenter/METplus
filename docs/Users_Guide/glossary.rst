@@ -7899,3 +7899,28 @@ METplus Configuration Glossary
      Specify the value for 'write_valid' in the MET configuration file for TCPairs.
 
      | *Used by:* TCPairs
+
+   GRID_STAT_DISTANCE_MAP_BADDELEY_P
+     Specify the value for 'distance_map.baddeley_p' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_DISTANCE_MAP_BADDELEY_MAX_DIST
+     Specify the value for 'distance_map.baddeley_max_dist' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_DISTANCE_MAP_FOM_ALPHA
+     Specify the value for 'distance_map.fom_alpha' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_DISTANCE_MAP_ZHU_WEIGHT
+     Specify the value for 'distance_map.zhu_weight' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
+
+   GRID_STAT_DISTANCE_MAP_BETA_VALUE_N
+     Specify the value for 'distance_map.beta_value(n)' in the MET configuration file for GridStat.
+
+     | *Used by:* GridStat
