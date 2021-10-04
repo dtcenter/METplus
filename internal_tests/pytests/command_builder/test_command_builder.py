@@ -806,20 +806,34 @@ def test_handle_met_config_dict(metplus_config):
     config.set('config', 'TC_GEN_FCST_HR_WINDOW_BEG', beg)
     config.set('config', 'TC_GEN_FCST_HR_WINDOW_END', end)
     cbw = CommandBuilder(config)
+    cbw.app_name = 'tc_gen'
 
-    dict_items = []
-    item = met_config(name='beg',
-                      data_type='int',
-                      metplus_configs=['TC_GEN_FCST_HR_WINDOW_BEG'])
-    dict_items.append(item)
-    item = met_config(name='end',
-                      data_type='int',
-                      metplus_configs=['TC_GEN_FCST_HR_WINDOW_END'])
-    dict_items.append(item)
+    items = {
+        'beg': 'int',
+        'end': 'int',
+    }
 
-    cbw.handle_met_config_dict(dict_name, dict_items)
+    cbw.handle_met_config_dict(dict_name, items)
     print(f"env_var_dict: {cbw.env_var_dict}")
-    assert(cbw.env_var_dict.get('METPLUS_FCST_HR_WINDOW_DICT') == expected_value)
+    actual_value = cbw.env_var_dict.get('METPLUS_FCST_HR_WINDOW_DICT')
+    assert actual_value == expected_value
+
+def test_handle_met_config_window(metplus_config):
+    dict_name = 'fcst_hr_window'
+    beg = -3
+    end = 5
+    expected_value = f'{dict_name} = {{beg = -3;end = 5;}}'
+
+    config = metplus_config()
+    config.set('config', 'TC_GEN_FCST_HR_WINDOW_BEG', beg)
+    config.set('config', 'TC_GEN_FCST_HR_WINDOW_END', end)
+    cbw = CommandBuilder(config)
+    cbw.app_name = 'tc_gen'
+
+    cbw.handle_met_config_window(dict_name)
+    print(f"env_var_dict: {cbw.env_var_dict}")
+    actual_value = cbw.env_var_dict.get('METPLUS_FCST_HR_WINDOW_DICT')
+    assert actual_value == expected_value
 
 def test_add_met_config(metplus_config):
     config = metplus_config()
@@ -852,37 +866,16 @@ def test_handle_met_config_dict_nested(metplus_config):
     config.set('config', 'APP_OUTER_INNER_VAR1', sub_dict_value1)
     config.set('config', 'APP_OUTER_INNER_VAR2', sub_dict_value2)
     cbw = CommandBuilder(config)
+    cbw.app_name = 'app'
 
-    dict_items = []
-    item = met_config(name='beg',
-                      data_type='int',
-                      metplus_configs=['APP_OUTER_BEG'])
-    dict_items.append(item)
-    item = met_config(name='end',
-                      data_type='int',
-                      metplus_configs=['APP_OUTER_END'])
-    dict_items.append(item)
+    items = {
+        'beg': 'int',
+        'end': 'int',
+        'inner': ('dict', None, {'var1': ('string', 'remove_quotes', None),
+                                 'var2': ('string', 'remove_quotes', None),
+                                 }),
+    }
 
-    sub_dict_items = []
-    item = met_config(name='var1',
-                      data_type='string',
-                      metplus_configs=['APP_OUTER_INNER_VAR1'],
-                      extra_args={'remove_quotes': True})
-    sub_dict_items.append(item)
-    item = met_config(name='var2',
-                      data_type='string',
-                      metplus_configs=['APP_OUTER_INNER_VAR2'],
-                      extra_args={'remove_quotes': True})
-    sub_dict_items.append(item)
-
-    dict_items.append(
-        cbw.get_met_config(
-            name=sub_dict_name,
-            data_type='dict',
-            children=sub_dict_items,
-        )
-    )
-
-    cbw.handle_met_config_dict(dict_name, dict_items)
+    cbw.handle_met_config_dict(dict_name, items)
     print(f"env_var_dict: {cbw.env_var_dict}")
     assert cbw.env_var_dict.get('METPLUS_OUTER_DICT') == expected_value
