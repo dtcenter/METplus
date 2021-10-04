@@ -256,9 +256,6 @@ dictionary variable. The function takes 2 arguments:
   either a string that contains the data type (see data_type above) or a tuple
   that contains the data type and additional information about the variable.
 
-Simple Example
-^^^^^^^^^^^^^^
-
 ::
 
     self.handle_met_config_dict('fcst_genesis', {
