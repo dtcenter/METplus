@@ -1,8 +1,9 @@
+*******************************************
 Basic Components of METplus Python Wrappers
-===========================================
+*******************************************
 
 CommandBuilder
---------------
+==============
 
 CommandBuilder is the parent class of all METplus wrappers. Every wrapper is a subclass of CommandBuilder or another subclass of CommandBuilder. For example, GridStatWrapper, PointStatWrapper, EnsembleStatWrapper, and MODEWrapper are all a subclass of CompareGriddedWrapper. CompareGriddedWrapper is a subclass of CommandBuilder. CommandBuilder contains instance variables that are common to every wrapper, such as config (METplusConfig object), errors (a counter of the number of errors that have occurred in the wrapper), and c_dict (a dictionary containing common information). CommandBuilder also contains use class functions that can be called within each wrapper, such as create_c_dict, clear, and find_data. More information regarding these variables and functions can be found in the Doxygen documentation (link?).
 
@@ -54,7 +55,8 @@ create_c_dict (CommandBuilder)::
         return c_dict
 
 isOK class variable
--------------------
+===================
+
 isOK is defined in CommandBuilder (ush/command_builder.py).
 
 Its function is to note a failed process while not stopping a parent process.
@@ -75,7 +77,8 @@ See MODEWrapper (ush/mode_wrapper.py) for other examples.
 
 
 run_at_time function
---------------------
+====================
+
 run_at_time runs a process for one specific time.
 This is defined in CommandBuilder.
 
@@ -97,33 +100,38 @@ This is defined in CommandBuilder.
 See ush/pb2nc_wrapper.py for an example.
 
 run_all_times function
-----------------------
+======================
+
 run_all_times loops over a series of times calling run_at_time for one process for each time
 Defined in CommandBuilder but overridden in a wrappers that process all of the data from every run time at once.
 
 See SeriesByLeadWrapper (ush/series_by_lead_wrapper.py) for an example of overridding the function
 
 get_command function
---------------------
+====================
+
 get_command assembles a MET command with arguments that can be run via the shell or the wrapper.
 It is defined in CommandBuilder but is overridden in most wrappers because the command line arguments differ for each MET tool.
 
 set_environment_variables function
-----------------------------------
+==================================
+
 Uses add_env_var function (CommandBuilder) to set any shell environment variables that MET or other METplus wrappers
 need to be set. This allows a wrapper to pass information into a MET configuration file. The MET config file refers to the environment variables.
 This is currently only set in wrappers that use MET config files, but the other wrappers will also need to set environment variables
 that are needed to be set in the environment when running, such as MET_TMP_DIR and MET_PYTHON_EXE.
 
 find_data/find_model/find_obs functions (in CommandBuilder)
------------------------------------------------------------
+===========================================================
+
 find_* uses the c_dict directory templates and then queries the file system to find the files you are looking for
 uses c_dict dictionary items [FCST/OBS]_FILE_WINDOW_[BEGIN/END], [FCST/OBS]_INPUT_[DIR/TEMPLATE], etc.
 If [FCST/OBS]_FILE_WINDOW_[BEGIN/END] are non-zero, these functions will list all files under [FCST/OBS]_INPUT_DIR and use [FCST/OBS]_INPUT_TEMPLATE to extract out time information from each file to determine which files within the file window range should be used. Some tools allow multiple files to be selected. If a tool does not allow multiple files, the file closest to the valid time is returned. If multiple files are the same distance from the valid time, the first file that was found is used.
 If a wrapper can read in multiple files, the c_dict item 'ALLOW_MULTIPLE_FILES' should be set to True.
 
 do_string_sub function
-----------------------
+======================
+
 do_string_sub is found in ush/string_template_substitution.py and is the critical function for substituting the placeholder
 values in templates with the actual values needed for running a particular wrapper
 
@@ -142,7 +150,8 @@ tc_pairs_wrapper has a good example
 time_info is a dictionary of current run time information that can be substituted into the template. See the 'Time Utilities' section for more information.
 
 Time Utilities
---------------
+==============
+
 time_util is a collection of functions to handle the idosyncracies of working with valid, initialization and observation times.
 METplus creates a dictionary containing the current time and either init or valid time::
 
