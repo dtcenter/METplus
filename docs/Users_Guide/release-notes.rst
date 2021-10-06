@@ -9,9 +9,9 @@ Release Notes - Latest Official Release
 
 * `MET <https://met.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
 * `METviewer <https://metviewer.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
-*  METplotpy - No Official Releases
-*  METcalcpy - No Official Releases
-*  METdatadb - No Official Releases
+* `METplotpy <https://metplotpy.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
+* `METcalcpy <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
+* `METdatadb <https://metdatadb.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
 * `METexpress <https://github.com/dtcenter/METexpress/releases>`__
 * `METplus Wrappers <https://metplus.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
 
@@ -20,10 +20,10 @@ Release Notes - Development Release
 
 * `MET <https://met.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
 * `METviewer <https://metviewer.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
-* `METplotpy <https://github.com/dtcenter/METplotpy/releases>`__
-* `METcalcpy <https://github.com/dtcenter/METcalcpy/releases>`__
-*  METdatadb - No Development Releases
-*  METexpress - No Development Releases 
+* `METplotpy <https://metplotpy.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
+* `METcalcpy <https://metcalcpy.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
+* `METdatadb <https://metdatadb.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
+* `METexpress <https://github.com/dtcenter/METexpress/releases>`__
 * `METplus Wrappers <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
 
 METplus Wrappers Release Notes
