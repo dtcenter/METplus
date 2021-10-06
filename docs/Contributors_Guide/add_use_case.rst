@@ -549,6 +549,15 @@ step::
 
     tar zxf ${METPLUS_EXISTING_DATA_TARFILE} -C ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
+Rename or modify existing data or data structure (if applicable)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**If the reason for your feature branch is to adjust an existing use case, such as renaming a use case
+or changing the data file,** then adjust the directory structure and/or the data files which should now
+be in your feature branch directory (from your last step). Changes to a use case name or input data for
+a preexisting use case should be separately verified to run successfully, and noted in the Pull Request form
+(described later).
+
 Create the new tarfile
 ^^^^^^^^^^^^^^^^^^^^^^
 
@@ -1046,7 +1055,7 @@ Make sure the paths are correct before copying.
 
 Model Applications Use Cases::
 
-    from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/model_applications/${METPLUS_USE_CASE_CATEGORY}
+    from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/model_applications/${METPLUS_USE_CASE_CATEGORY}/${METPLUS_USE_CASE_NAME}
     echo $from_directory
     ls $from_directory
 
@@ -1066,7 +1075,7 @@ MET Tool Wrapper Use Cases::
 
 Once you have verified the correct directories are set, copy the files::
 
-    cp -r $from_directory/* $to_directory/
+    cp -r $from_directory/ $to_directory/
 
 List the tarfile for the use case category in the next release version directory::
 
