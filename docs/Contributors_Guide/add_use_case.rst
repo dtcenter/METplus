@@ -1176,8 +1176,8 @@ Create the new sample data tarfile.
 
     tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz met_test
 
-Remove old data (if applicable
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Remove old data (if applicable)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 If the pull request notes mention an old directory path that should be removed,
 please remove that directory. Be careful not to remove any files that are
