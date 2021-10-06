@@ -58,19 +58,19 @@ class MODEWrapper(CompareGriddedWrapper):
         'METPLUS_INTEREST_FUNCTION_CONVEX_HULL_DIST',
     ]
 
-    WEIGHTS = [
-        ('centroid_dist', 'float'),
-        ('boundary_dist', 'float'),
-        ('convex_hull_dist', 'float'),
-        ('angle_diff', 'float'),
-        ('aspect_diff', 'float'),
-        ('area_ratio', 'float'),
-        ('int_area_ratio', 'float'),
-        ('curvature_ratio', 'float'),
-        ('complexity_ratio', 'float'),
-        ('inten_perc_ratio', 'float'),
-        ('inten_perc_value', 'int'),
-    ]
+    WEIGHTS = {
+        'centroid_dist': 'float',
+        'boundary_dist': 'float',
+        'convex_hull_dist': 'float',
+        'angle_diff': 'float',
+        'aspect_diff': 'float',
+        'area_ratio': 'float',
+        'int_area_ratio': 'float',
+        'curvature_ratio': 'float',
+        'complexity_ratio': 'float',
+        'inten_perc_ratio': 'float',
+        'inten_perc_value': 'int',
+    }
 
     NC_PAIRS_FLAGS = [
         'latlon',
@@ -261,7 +261,7 @@ class MODEWrapper(CompareGriddedWrapper):
                                    remove_quotes=True,
                                    uppercase=True)
 
-        self.handle_weight()
+        self.handle_met_config_dict('weight', self.WEIGHTS)
         self.handle_flags('nc_pairs')
 
         self.add_met_config(name='total_interest_thresh',
@@ -323,26 +323,6 @@ class MODEWrapper(CompareGriddedWrapper):
         c_dict['MASK_POLY_IS_LIST'] = False
 
         return c_dict
-
-    def handle_weight(self):
-        """! Read weight dictionary values and set them into env_var_list
-
-        """
-        app = self.app_name.upper()
-
-        dict_name = 'weight'
-        dict_items = []
-
-        for name, data_type in self.WEIGHTS:
-            dict_items.append(
-                self.get_met_config(
-                    name=name,
-                    data_type=data_type,
-                    metplus_configs=[f'{app}_WEIGHT_{name.upper()}'],
-                )
-            )
-
-        self.handle_met_config_dict(dict_name, dict_items)
 
     def set_environment_variables(self, time_info):
         """!Set environment variables that will be read set when running this

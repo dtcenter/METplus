@@ -44,7 +44,9 @@ The following software is required to run METplus Wrappers:
 
 -  Python 3.6.3 or above
 
--  MET version 10.0.0 or above
+-  MET version 10.0.0 or above - 
+   For information on installing MET please see the `Software Installation/Getting Started <https://met.readthedocs.io/en/latest/Users_Guide/installation.html>`_
+   section of the MET User's Guide. 
 
 **Wrapper Specific Requirements**
 
@@ -54,12 +56,12 @@ The following software is required to run METplus Wrappers:
 
 -  SeriesAnalysis wrapper
 
-    - convert (ImageMagick) utility
+    - convert (ImageMagick) utility -
       if generating plots and/or animated images from the output
 
 -  PlotDataPlane wrapper
 
-    - convert (ImageMagick) utility
+    - convert (ImageMagick) utility - 
       if generating images from the Postscript output
 
 Python Package Requirements
@@ -99,7 +101,7 @@ and the following Python packages installed:
 
 - netCDF4 (1.5.4)
 
-See the `Software Installation <https://met.readthedocs.io/en/latest/Users_Guide/installation.html#software-installation-getting-started>`_
+See `Appendix F Python Embedding <https://met.readthedocs.io/en/latest/Users_Guide/appendixF.html>`_
 section in the MET User's Guide for more information.
 
 **Wrapper Specific Requirements**
@@ -129,7 +131,7 @@ Getting the METplus Wrappers source code
 ========================================
 
 The METplus Wrappers source code is available for download from the public
-GitHub repository. The source code can be retrieved through a web
+GitHub repository. The source code can be retrieved either through a web
 browser or the command line.
 
 Get the source code via Web Browser
@@ -137,9 +139,8 @@ Get the source code via Web Browser
 
 -  Create a directory where the METplus Wrappers will be installed
 
--  Open a web browser and navigate to
-   https://github.com/dtcenter/METplus/releases/latest to view the
-   latest stable release.
+-  Open a web browser and go to the
+   `latest stable METplus release <https://github.com/dtcenter/METplus/releases/latest>`_.
 
 .. image:: ../_static/metplus_repo_releases_page.png
 
@@ -167,23 +168,24 @@ HTTPS::
 .. _obtain_sample_input_data:
 
 Obtain sample input data
-------------------------
+========================
 
 The use cases provided with the METplus release have sample input data
 associated with them. This step is optional but is required to be able to run
 the example use cases, which illustrate how the wrappers work.
 
--  Create a directory to put the sample input data. This will be the directory
-   to set for the value of INPUT_BASE in the METplus Configuration.
+- Create a directory to put the sample input data. This will be the directory
+  to set for the value of INPUT_BASE in the METplus Configuration.
 
-- Navigate to the sample input data web URL: https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data
+- Go to the web page with the
+  `sample input data <https://dtcenter.ucar.edu/dfiles/code/METplus/METplus_Data>`_.
 
 - Click on the vX.Y version directory that corresponds to the release to
   install, i.e. v4.0 directory for the v4.0.0 release.
 
--  Click on the sample data tgz file for the desired use case category or
-   categories run and when prompted, save the file to the directory created
-   above.
+- Click on the sample data tgz file for the desired use case category or
+  categories run and when prompted, save the file to the directory created
+  above.
 
 .. note::
     Files with the version number in the name,
@@ -248,24 +250,11 @@ The **produtil/** directory contains part of the external utility produtil.
 The **ush/** directory contains the run_metplus.py script that is
 executed to run use cases.
 
-Build_components and using manage_externals
-===========================================
-
-Running build_components/build_MET.sh will
-
--  clone METplotpy, METcalcpy and METviewer from github using the manage_externals scripts
--  grab the current MET compile script and all of the necessary external libraries
--  download the most recent version of MET from github
-    -  https://github.com/dtcenter/MET/releases/download/v10.0.0/met-10.0.0.20210510.tar.gz 
--  build the external libraries
--  attempt to build MET
-
-Building MET requires fine tuning on just about all systems.
-However, using manage_externals should at least get most of the way through
-the process and allow MET to be built with just a few manual changes.
 
 External Components
 ===================
+
+.. _external-components-gfdl-tracker:
 
 GFDL Tracker
 ------------

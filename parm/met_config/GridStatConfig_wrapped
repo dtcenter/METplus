@@ -156,12 +156,8 @@ gradient = {
 // Distance Map statistics
 // May be set separately in each "obs.field" entry
 //
-distance_map = {
-   baddeley_p        = 2;
-   baddeley_max_dist = NA;
-   fom_alpha         = 0.1;
-   zhu_weight        = 0.5;
-}
+//distance_map = {
+${METPLUS_DISTANCE_MAP_DICT}
 
 ////////////////////////////////////////////////////////////////////////////////
 

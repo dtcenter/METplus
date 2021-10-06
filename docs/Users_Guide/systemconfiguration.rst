@@ -93,6 +93,11 @@ Based on the directory listing output above, the following should be set::
 
     MET_INSTALL_DIR = /usr/local/met
 
+For information on installing MET please see the
+`Software Installation/Getting Started <https://met.readthedocs.io/en/latest/Users_Guide/installation.html>`_
+section of the MET User's Guide.
+
+
 .. _sys_conf_input_base:
 
 INPUT_BASE
@@ -521,6 +526,8 @@ given use case.
 
 More information about the variables set in the use case configuration files
 can be found in the :ref:`common_config_variables` section.
+
+.. _running-metplus:
 
 Running METplus
 ===============
@@ -2274,6 +2281,17 @@ time_summary.step and time_summary.width
 | METplus Config:  | | :term:`PB2NC_TIME_SUMMARY_STEP` = 3600  |
 |                  | | :term:`PB2NC_TIME_SUMMARY_WIDTH` = 3600 |
 +------------------+-------------------------------------------+
+
+pb_report_type
+^^^^^^^^^^^^^^
+
++------------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| Old (Incorrect): | pb_report_type = [ 120, 220, 221, 122, 222, 223, 224, 133, 233, 188, 288, 180, 280, 181, 182, 281, 282, 183, 284, 187, 287 ];          |
++------------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| New (Correct):   | pb_report_type    = [];                                                                                                                |
++------------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| METplus Config:  | :term:`PB2NC_PB_REPORT_TYPE` = 120, 220, 221, 122, 222, 223, 224, 133, 233, 188, 288, 180, 280, 181, 182, 281, 282, 183, 284, 187, 287 |
++------------------+----------------------------------------------------------------------------------------------------------------------------------------+
 
 PointStatConfig
 ---------------

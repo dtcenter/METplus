@@ -986,7 +986,13 @@ Description
 
 Used to call the GFDL Tracker applications to objectively analyze forecast data
 to provide an estimate of the vortex center position (latitude and longitude),
-and track the storm for the duration of the forecast.
+and track the storm for the duration of the forecast. The wrapper copies files
+and uses symbolic links to ensure that input files are named and located in
+the correct place so that the tracker can read them. The wrapper also generates
+index files and other inputs that are required to run the tool and substitutes
+values into template configuration files that are read by the tracker.
+Relevant output files are renamed based on user configuration.
+See :ref:`external-components-gfdl-tracker` for more information.
 
 METplus Configuration
 ---------------------
@@ -1088,6 +1094,7 @@ METplus Configuration
 | :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_ZETA850`
 | :term:`GFDL_TRACKER_VERBOSE_VERB`
 | :term:`GFDL_TRACKER_VERBOSE_VERB_G2`
+| :term:`GFDL_TRACKER_KEEP_INTERMEDIATE`
 
 .. _gfdl_tracker-nml-conf:
 
@@ -2386,6 +2393,11 @@ METplus Configuration
 | :term:`GRID_STAT_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`GRID_STAT_HSS_EC_VALUE`
+| :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_P`
+| :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_MAX_DIST`
+| :term:`GRID_STAT_DISTANCE_MAP_FOM_ALPHA`
+| :term:`GRID_STAT_DISTANCE_MAP_ZHU_WEIGHT`
+| :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
 | :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`GRID_STAT_MASK_POLY` (optional)
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
@@ -2833,6 +2845,24 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`GRID_STAT_HSS_EC_VALUE`
      - hss_ec_value
 
+**${METPLUS_DISTANCE_MAP_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_P`
+     - distance_map.baddeley_p
+   * - :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_MAX_DIST`
+     - distance_map.baddeley_max_dist
+   * - :term:`GRID_STAT_DISTANCE_MAP_FOM_ALPHA`
+     - distance_map.fom_alpha
+   * - :term:`GRID_STAT_DISTANCE_MAP_ZHU_WEIGHT`
+     - distance_map.zhu_weight
+   * - :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
+     - distance_map.beta_value(n)
 
 .. _make_plots_wrapper:
 
@@ -4288,18 +4318,12 @@ METplus Configuration
 | :term:`OBS_PCP_COMBINE_CONSTANT_INIT`
 | :term:`FCST_PCP_COMBINE_STAT_LIST`
 | :term:`OBS_PCP_COMBINE_STAT_LIST`
-| :term:`FCST_PCP_COMBINE_DERIVE_LOOKBACK`
-| :term:`OBS_PCP_COMBINE_DERIVE_LOOKBACK`
 | :term:`PCP_COMBINE_SKIP_IF_OUTPUT_EXISTS`
-| :term:`FCST_PCP_COMBINE_DATA_INTERVAL`
-| :term:`OBS_PCP_COMBINE_DATA_INTERVAL`
-| :term:`FCST_PCP_COMBINE_TIMES_PER_FILE`
-| :term:`OBS_PCP_COMBINE_TIMES_PER_FILE`
-| :term:`FCST_PCP_COMBINE_IS_DAILY_FILE`
-| :term:`OBS_PCP_COMBINE_IS_DAILY_FILE`
 | :term:`FCST_PCP_COMBINE_COMMAND`
 | :term:`OBS_PCP_COMBINE_COMMAND`
 | :term:`PCP_COMBINE_CUSTOM_LOOP_LIST`
+| :term:`FCST_PCP_COMBINE_LOOKBACK`
+| :term:`OBS_PCP_COMBINE_LOOKBACK`
 | :term:`FCST_PCP_COMBINE_EXTRA_NAMES` (optional)
 | :term:`FCST_PCP_COMBINE_EXTRA_LEVELS` (optional)
 | :term:`FCST_PCP_COMBINE_EXTRA_OUTPUT_NAMES` (optional)
@@ -4331,6 +4355,14 @@ METplus Configuration
    | :term:`OBS_PCP_COMBINE_INPUT_LEVEL`
    | :term:`FCST_PCP_COMBINE_<n>_FIELD_NAME`
    | :term:`OBS_PCP_COMBINE_<n>_FIELD_NAME`
+   | :term:`FCST_PCP_COMBINE_DATA_INTERVAL`
+   | :term:`OBS_PCP_COMBINE_DATA_INTERVAL`
+   | :term:`FCST_PCP_COMBINE_TIMES_PER_FILE`
+   | :term:`OBS_PCP_COMBINE_TIMES_PER_FILE`
+   | :term:`FCST_PCP_COMBINE_IS_DAILY_FILE`
+   | :term:`OBS_PCP_COMBINE_IS_DAILY_FILE`
+   | :term:`FCST_PCP_COMBINE_DERIVE_LOOKBACK`
+   | :term:`OBS_PCP_COMBINE_DERIVE_LOOKBACK`
    |
 
 .. _plot_data_plane_wrapper:
@@ -4461,6 +4493,7 @@ Configuration
 | :term:`POINT_STAT_OUTPUT_FLAG_PJC`
 | :term:`POINT_STAT_OUTPUT_FLAG_PRC`
 | :term:`POINT_STAT_OUTPUT_FLAG_ECNT`
+| :term:`POINT_STAT_OUTPUT_FLAG_ORANK`
 | :term:`POINT_STAT_OUTPUT_FLAG_RPS`
 | :term:`POINT_STAT_OUTPUT_FLAG_ECLV`
 | :term:`POINT_STAT_OUTPUT_FLAG_MPR`
@@ -4842,6 +4875,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - output_flag.eclv
    * - :term:`POINT_STAT_OUTPUT_FLAG_MPR`
      - output_flag.mpr
+   * - :term:`POINT_STAT_OUTPUT_FLAG_ORANK`
+     - output_flag.orank
 
 **${METPLUS_INTERP_DICT}**
 
@@ -6586,6 +6621,9 @@ METplus Configuration
 | :term:`TC_PAIRS_CONFIG_FILE`
 | :term:`TC_PAIRS_INIT_INCLUDE`
 | :term:`TC_PAIRS_INIT_EXCLUDE`
+| :term:`TC_PAIRS_VALID_INCLUDE`
+| :term:`TC_PAIRS_VALID_EXCLUDE`
+| :term:`TC_PAIRS_WRITE_VALID`
 | :term:`TC_PAIRS_READ_ALL_FILES`
 | :term:`TC_PAIRS_MODEL`
 | :term:`TC_PAIRS_STORM_ID`
@@ -6741,7 +6779,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`TC_PAIRS_INIT_END`
      - init_end
 
-**${METPLUS_INIT_INCLUDE}**
+**${METPLUS_INIT_INC}**
 
 .. list-table::
    :widths: 5 5
@@ -6752,7 +6790,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`TC_PAIRS_INIT_INCLUDE`
      - init_inc
 
-**${METPLUS_INIT_EXCLUDE}**
+**${METPLUS_INIT_EXC}**
 
 .. list-table::
    :widths: 5 5
@@ -6762,6 +6800,39 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`TC_PAIRS_INIT_EXCLUDE`
      - init_exc
+
+**${METPLUS_VALID_INC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_VALID_INCLUDE`
+     - valid_inc
+
+**${METPLUS_VALID_EXC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_VALID_EXCLUDE`
+     - valid_exc
+
+**${METPLUS_WRITE_VALID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_WRITE_VALID`
+     - write_valid
 
 **${METPLUS_VALID_BEG}**
 

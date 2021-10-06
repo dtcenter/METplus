@@ -6,7 +6,6 @@ import netCDF4
 import warnings
 
 from WeatherRegime import WeatherRegimeCalculation
-from metplus.util import getlist
 from metplotpy.contributed.weather_regime import plot_weather_regime as pwr
 from Blocking_WeatherRegime_util import parse_steps, read_nc_met, write_mpr_file
 
@@ -112,7 +111,7 @@ def main():
         if not ("EOF" in steps_list_obs):
             raise Exception('Must run observed EOFs before plotting observed EOFs.')
         print('Plotting Obs EOFs')
-        pltlvls_str = getlist(os.environ['EOF_PLOT_LEVELS'])
+        pltlvls_str = os.environ['EOF_PLOT_LEVELS'].split(',')
         pltlvls = [float(pp) for pp in pltlvls_str]
         eof_plot_outname = os.path.join(oplot_dir,os.environ.get('OBS_EOF_PLOT_OUTPUT_NAME','obs_eof'))
         pwr.plot_eof(eof_obs,wrnum_obs,variance_fractions_obs,lons_obs,lats_obs,eof_plot_outname,pltlvls)
@@ -121,9 +120,9 @@ def main():
         if not ("EOF" in steps_list_fcst):
             raise Exception('Must run forecast EOFs before plotting forecast EOFs.')
         print('Plotting Forecast EOFs')
-        pltlvls_str = getlist(os.environ['EOF_PLOT_LEVELS'])
+        pltlvls_str = os.environ['EOF_PLOT_LEVELS'].split(',')
         pltlvls = [float(pp) for pp in pltlvls_str]
-        eof_plot_outname = os.path.join(oplot_dir,os.environ.get('OBS_EOF_PLOT_OUTPUT_NAME','obs_eof'))
+        eof_plot_outname = os.path.join(oplot_dir,os.environ.get('FCST_EOF_PLOT_OUTPUT_NAME','fcst_eof'))
         pwr.plot_eof(eof_fcst,wrnum_fcst,variance_fractions_fcst,lons_fcst,lats_fcst,eof_plot_outname,pltlvls)
 
 
@@ -140,20 +139,20 @@ def main():
         # Write matched pair output for weather regime classification
         modname = os.environ.get('MODEL_NAME','GFS')
         maskname = os.environ.get('MASK_NAME','FULL')
-        mpr_full_outdir = os.path.join(mpr_outdir,'/WeatherRegime')
+        mpr_full_outdir = os.path.join(mpr_outdir,'WeatherRegime')
         wr_outfile_prefix = os.path.join(mpr_full_outdir,'weather_regime_stat_'+modname)
         wrc_obs_mpr = wrc_obs[:,:,np.newaxis]
         wrc_fcst_mpr = wrc_fcst[:,:,np.newaxis]
         if not os.path.exists(mpr_full_outdir):
             os.makedirs(mpr_full_outdir)
-        write_mpr_file(wrc_obs_mpr,wrc_fcst_mpr,[0.0],[0.0],timedict_obs,timedict_fcst,modname,
-            'WeatherRegimeClass','Z500','WeatherRegimeClass','Z500',maskname,'500',wr_outfile_prefix)
+        write_mpr_file(wrc_obs_mpr,wrc_fcst_mpr,[0.0],[0.0],timedict_obs,timedict_fcst,modname,'NA',
+            'WeatherRegimeClass','class','Z500','WeatherRegimeClass','class','Z500',maskname,'500',wr_outfile_prefix)
 
     if ("PLOTKMEANS" in steps_list_obs):
         if not ("KMEANS" in steps_list_obs):
             raise Exception('Must run observed Kmeans before plotting observed Kmeans.')
         print('Plotting Obs K Means')
-        pltlvls_str = getlist(os.environ['KMEANS_PLOT_LEVELS'])
+        pltlvls_str = os.environ['KMEANS_PLOT_LEVELS'].split(',')
         pltlvls = [float(pp) for pp in pltlvls_str]
         kmeans_plot_outname = os.path.join(oplot_dir,os.environ.get('OBS_KMEANS_PLOT_OUTPUT_NAME','obs_kmeans'))
         pwr.plot_K_means(kmeans_obs,wrnum_obs,lons_obs,lats_obs,perc_obs,kmeans_plot_outname,pltlvls)
@@ -162,10 +161,10 @@ def main():
         if not ("KMEANS" in steps_list_fcst):
             raise Exception('Must run forecast Kmeans before plotting forecast Kmeans.')
         print('Plotting Forecast K Means')
-        pltlvls_str = getlist(os.environ['KMEANS_PLOT_LEVELS'])
+        pltlvls_str = os.environ['KMEANS_PLOT_LEVELS'].split(',')
         pltlvls = [float(pp) for pp in pltlvls_str]
         kmeans_plot_outname = os.path.join(oplot_dir,os.environ.get('FCST_KMEANS_PLOT_OUTPUT_NAME','fcst_kmeans'))
-        pwr.plot_K_means(kmeans_fcst,wrnum_fcst,lons_fcst,lats_fcst,perc_fcts,kmeans_plot_outname,pltlvls)
+        pwr.plot_K_means(kmeans_fcst,wrnum_fcst,lons_fcst,lats_fcst,perc_fcst,kmeans_plot_outname,pltlvls)
 
 
     if ("TIMEFREQ" in steps_list_obs):
@@ -190,8 +189,8 @@ def main():
         for wrn in np.arange(wrnum_obs):
             wr_outfile_prefix = os.path.join(mpr_full_outdir,'weather_regime'+str(wrn+1).zfill(2)+'_freq_stat_'+modname)
             write_mpr_file(wrfreq_obs_mpr[wrn,:,:,:],wrfreq_fcst_mpr[wrn,:,:,:],[0.0],[0.0],timedict_obs,
-                timedict_fcst,modname,'WeatherRegimeClass','Z500','WeatherRegimeClass','Z500',maskname,'500',
-                wr_outfile_prefix)
+                timedict_fcst,modname,str(wrn+1).zfill(2),'WeatherRegimeFreq','percent','Z500','WeatherRegimeFreq',
+                'percent','Z500',maskname,'500',wr_outfile_prefix)
 
     if ("PLOTFREQ" in steps_list_obs):
         if not ("TIMEFREQ" in steps_list_obs):

@@ -121,8 +121,8 @@ def test_get_field_info_no_prob(metplus_config, key, value):
     'key, value', [
         # forecast grib name level thresh
         (['NAME', 'L0', ['gt3', '<=5'], '', 'FCST'],
-         ['{ name=\"PROB\"; level=\"L0\"; prob={ name=\"NAME\"; thresh_lo=3.0; } cat_thresh=[==0.1]; }',
-          '{ name=\"PROB\"; level=\"L0\"; prob={ name=\"NAME\"; thresh_hi=5.0; } cat_thresh=[==0.1]; }']),
+         ['{ name=\"PROB\"; level=\"L0\"; prob={ name=\"NAME\"; thresh_lo=3.0; } cat_thresh=[ ==0.1 ]; }',
+          '{ name=\"PROB\"; level=\"L0\"; prob={ name=\"NAME\"; thresh_hi=5.0; } cat_thresh=[ ==0.1 ]; }']),
 
         # obs grib name level thresh
         (['NAME', 'L0', ['gt3', '<=5'], '', 'OBS'],
@@ -130,11 +130,11 @@ def test_get_field_info_no_prob(metplus_config, key, value):
           '{ name=\"NAME\"; level=\"L0\"; cat_thresh=[ <=5 ]; }']),
 
         (['NAME', 'L0', ['gt3&&lt5'], '', 'FCST'],
-         ['{ name=\"PROB\"; level=\"L0\"; prob={ name=\"NAME\"; thresh_lo=3.0; thresh_hi=5.0; } cat_thresh=[==0.1]; }']),
+         ['{ name=\"PROB\"; level=\"L0\"; prob={ name=\"NAME\"; thresh_lo=3.0; thresh_hi=5.0; } cat_thresh=[ ==0.1 ]; }']),
 
         # fcst grib name py script
         (['/some/script/name.py args /path/of/infile.txt', '', [], '', 'FCST'],
-         ['{ name=\"/some/script/name.py args /path/of/infile.txt\"; prob=TRUE; cat_thresh=[==0.1]; }']),
+         ['{ name=\"/some/script/name.py args /path/of/infile.txt\"; prob=TRUE; cat_thresh=[ ==0.1 ]; }']),
 
         # obs name py script
         (['/some/script/name.py args /path/of/infile.txt', '', [], '', 'OBS'],
@@ -150,11 +150,11 @@ def test_get_field_info_fcst_prob_grib_pds(metplus_config, key, value):
     w.c_dict['FCST_PROB_IN_GRIB_PDS'] = True
     w.c_dict['FCST_PROB_THRESH'] = '==0.1'
 
-    field_dict = {'v_name' : key[0],
-                  'v_level' : key[1],
-                  'v_thresh' : key[2],
-                  'v_extra' : key[3],
-                  'd_type' : key[4],
+    field_dict = {'v_name': key[0],
+                  'v_level': key[1],
+                  'v_thresh': key[2],
+                  'v_extra': key[3],
+                  'd_type': key[4],
                   }
 
     fields = w.get_field_info(**field_dict)
@@ -170,8 +170,8 @@ def test_get_field_info_fcst_prob_grib_pds(metplus_config, key, value):
     'key, value', [
         # forecast grib name level thresh
         (['NAME', 'L0', ['gt3', '<=5'], '', 'FCST'],
-         ['{ name=\"NAME\"; level=\"L0\"; prob=TRUE; cat_thresh=[==0.1]; }',
-          '{ name=\"NAME\"; level=\"L0\"; prob=TRUE; cat_thresh=[==0.1]; }']),
+         ['{ name=\"NAME\"; level=\"L0\"; prob=TRUE; cat_thresh=[ ==0.1 ]; }',
+          '{ name=\"NAME\"; level=\"L0\"; prob=TRUE; cat_thresh=[ ==0.1 ]; }']),
 
         # obs grib name level thresh
         (['NAME', 'L0', ['gt3', '<=5'], '', 'OBS'],
@@ -179,11 +179,11 @@ def test_get_field_info_fcst_prob_grib_pds(metplus_config, key, value):
           '{ name=\"NAME\"; level=\"L0\"; cat_thresh=[ <=5 ]; }']),
 
         (['NAME', 'L0', ['gt3&&lt5'], '', 'FCST'],
-         ['{ name=\"NAME\"; level=\"L0\"; prob=TRUE; cat_thresh=[==0.1]; }']),
+         ['{ name=\"NAME\"; level=\"L0\"; prob=TRUE; cat_thresh=[ ==0.1 ]; }']),
 
         # fcst grib name py script
         (['/some/script/name.py args /path/of/infile.txt', '', [], '', 'FCST'],
-         ['{ name=\"/some/script/name.py args /path/of/infile.txt\"; prob=TRUE; cat_thresh=[==0.1]; }']),
+         ['{ name=\"/some/script/name.py args /path/of/infile.txt\"; prob=TRUE; cat_thresh=[ ==0.1 ]; }']),
 
         # obs name py script
         (['/some/script/name.py args /path/of/infile.txt', '', [], '', 'OBS'],

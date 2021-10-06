@@ -182,12 +182,6 @@ class CommandBuilder:
         c_dict['SKIP_TIMES'] = util.get_skip_times(self.config,
                                                    app_name)
 
-        c_dict['USE_EXPLICIT_NAME_AND_LEVEL'] = (
-            self.config.getbool('config',
-                                'USE_EXPLICIT_NAME_AND_LEVEL',
-                                False)
-            )
-
         c_dict['MANDATORY'] = (
             self.config.getbool('config',
                                 f'{app_name.upper()}_MANDATORY',
@@ -952,7 +946,8 @@ class CommandBuilder:
             return False
 
         # create full output dir if it doesn't already exist
-        if not os.path.exists(parent_dir):
+        if (not os.path.exists(parent_dir) and
+                not self.c_dict.get('DO_NOT_RUN_EXE', False)):
             self.logger.debug(f"Creating output directory: {parent_dir}")
             os.makedirs(parent_dir)
 
@@ -1036,26 +1031,25 @@ class CommandBuilder:
             time_info[field_item] = field_info[field_item] if field_item in field_info else ''
 
     def set_current_field_config(self, field_info=None):
-        """!Sets config variables for current fcst/obs name/level that can be referenced
-            by other config variables such as OUTPUT_PREFIX. Only sets then if CURRENT_VAR_INFO
-            is set in c_dict.
-            Args:
-                @param field_info optional dictionary containing field information. If not provided, use
-                [config] CURRENT_VAR_INFO
+        """! Sets config variables for current fcst/obs name/level that can be
+         referenced by other config variables such as OUTPUT_PREFIX.
+         Only sets then if CURRENT_VAR_INFO is set in c_dict.
+
+         @param field_info optional dictionary containing field information.
+          If not provided, use [config] CURRENT_VAR_INFO
         """
         if not field_info:
             field_info = self.c_dict.get('CURRENT_VAR_INFO', None)
 
-        if field_info is not None:
+        if field_info is None:
+            return
 
-            self.config.set('config', 'CURRENT_FCST_NAME',
-                            field_info['fcst_name'] if 'fcst_name' in field_info else '')
-            self.config.set('config', 'CURRENT_OBS_NAME',
-                            field_info['obs_name'] if 'obs_name' in field_info else '')
-            self.config.set('config', 'CURRENT_FCST_LEVEL',
-                            field_info['fcst_level'] if 'fcst_level' in field_info else '')
-            self.config.set('config', 'CURRENT_OBS_LEVEL',
-                            field_info['obs_level'] if 'obs_level' in field_info else '')
+        for fcst_or_obs in ['FCST', 'OBS']:
+            for name_or_level in ['NAME', 'LEVEL']:
+                current_var = f'CURRENT_{fcst_or_obs}_{name_or_level}'
+                name = f'{fcst_or_obs.lower()}_{name_or_level.lower()}'
+                self.config.set('config', current_var,
+                                field_info[name] if name in field_info else '')
 
     def check_for_python_embedding(self, input_type, var_info):
         """!Check if field name of given input type is a python script. If it is not, return the field name.
@@ -1090,7 +1084,8 @@ class CommandBuilder:
         self.env_var_dict[f'METPLUS_{input_type}_FILE_TYPE'] = file_type
         return file_ext
 
-    def get_field_info(self, d_type, v_name, v_level='', v_thresh=[], v_extra=''):
+    def get_field_info(self, d_type='', v_name='', v_level='', v_thresh=None,
+                       v_extra='', add_curly_braces=True):
         """! Format field information into format expected by MET config file
               Args:
                 @param v_level level of data to extract
@@ -1098,115 +1093,94 @@ class CommandBuilder:
                 @param v_name name of field to process
                 @param v_extra additional field information to add if available
                 @param d_type type of data to find i.e. FCST or OBS
+                @param add_curly_braces if True, add curly braces around each
+                 field info string. If False, add single quotes around each
+                 field info string (defaults to True)
                 @rtype string
                 @return Returns formatted field information
         """
-        # separate character from beginning of numeric level value if applicable
-        _, level = util.split_level(v_level)
+        # if thresholds are set
+        if v_thresh:
+            # if neither fcst or obs are probabilistic,
+            # pass in all thresholds as a comma-separated list for 1 field info
+            if (not self.c_dict.get('FCST_IS_PROB', False) and
+                    not self.c_dict.get('OBS_IS_PROB', False)):
+                thresholds = [','.join(v_thresh)]
+            else:
+                thresholds = v_thresh
+        # if no thresholds are specified, fail if prob field is in grib PDS
+        elif (self.c_dict.get(d_type + '_IS_PROB', False) and
+              self.c_dict.get(d_type + '_PROB_IN_GRIB_PDS', False) and
+              not util.is_python_script(v_name)):
+            self.log_error('No threshold was specified for probabilistic '
+                           'forecast GRIB data')
+            return None
+        else:
+            thresholds = [None]
 
         # list to hold field information
         fields = []
 
-        # get cat thresholds if available
-        cat_thresh = ""
-        threshs = [None]
-        if len(v_thresh) != 0:
-            threshs = v_thresh
-            cat_thresh = "cat_thresh=[ " + ','.join(threshs) + " ];"
-
-        # if neither input is probabilistic, add all cat thresholds to same field info item
-        if not self.c_dict.get('FCST_IS_PROB', False) and not self.c_dict.get('OBS_IS_PROB', False):
-            field_name = v_name
-
-            field = "{ name=\"" + field_name + "\";"
-
-            # add level if it is set
-            if v_level:
-                field += " level=\"" + util.remove_quotes(v_level) + "\";"
-
-            # add threshold if it is set
-            if cat_thresh:
-                field += ' ' + cat_thresh
-
-            # add extra info if it is set
-            if v_extra:
-                field += ' ' + v_extra
-
-            field += ' }'
-            fields.append(field)
-
-        # if either input is probabilistic, create separate item for each threshold
-        else:
-
-            # if input currently being processed if probabilistic, format accordingly
-            if self.c_dict.get(d_type + '_IS_PROB', False):
-                # if probabilistic data for either fcst or obs, thresholds are required
-                # to be specified or no field items will be created. Create a field dict
-                # item for each threshold value
-                for thresh in threshs:
-                    # if utilizing python embedding for prob input, just set the
-                    # field name to the call to the script
-                    if util.is_python_script(v_name):
-                        field = "{ name=\"" + v_name + "\"; prob=TRUE;"
-                    elif self.c_dict[d_type + '_INPUT_DATATYPE'] == 'NETCDF' or \
-                      not self.c_dict[d_type + '_PROB_IN_GRIB_PDS']:
-                        field = "{ name=\"" + v_name + "\";"
-                        if v_level:
-                            field += " level=\"" + util.remove_quotes(v_level) + "\";"
-                        field += " prob=TRUE;"
-                    else:
-                        # a threshold value is required for GRIB prob DICT data
-                        if thresh is None:
-                            self.log_error('No threshold was specified for probabilistic '
-                                           'forecast GRIB data')
-                            return None
-
-                        thresh_str = ""
-                        thresh_tuple_list = util.get_threshold_via_regex(thresh)
-                        for comparison, number in thresh_tuple_list:
-                            # skip adding thresh_lo or thresh_hi if comparison is NA
-                            if comparison == 'NA':
-                                continue
-
-                            if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
-                                thresh_str += "thresh_lo=" + str(number) + "; "
-                            if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
-                                thresh_str += "thresh_hi=" + str(number) + "; "
-
-                        field = "{ name=\"PROB\"; level=\"" + v_level + \
-                                "\"; prob={ name=\"" + v_name + \
-                                "\"; " + thresh_str + "}"
-
-                    # add probabilistic cat thresh if different from default ==0.1
-                    prob_cat_thresh = self.c_dict.get(d_type + '_PROB_THRESH')
-                    if prob_cat_thresh:
-                        field += " cat_thresh=[" + prob_cat_thresh + "];"
-
-                    if v_extra:
-                        field += ' ' + v_extra
-
-                    field += ' }'
-                    fields.append(field)
+        for thresh in thresholds:
+            if (self.c_dict.get(d_type + '_PROB_IN_GRIB_PDS', False) and
+                    not util.is_python_script(v_name)):
+                field = self._handle_grib_pds_field_info(v_name, v_level,
+                                                         thresh)
             else:
-                field_name = v_name
+                # add field name
+                field = f'name="{v_name}";'
 
-                for thresh in threshs:
-                    field = "{ name=\"" + field_name + "\";"
+                if v_level:
+                    field += f' level="{util.remove_quotes(v_level)}";'
 
-                    if v_level:
-                        field += " level=\"" + util.remove_quotes(v_level) + "\";"
+                if self.c_dict.get(d_type + '_IS_PROB', False):
+                    field += " prob=TRUE;"
 
-                    if thresh is not None:
-                        field += " cat_thresh=[ " + str(thresh) + " ];"
+            # handle cat_thresh
+            if self.c_dict.get(d_type + '_IS_PROB', False):
+                # add probabilistic cat thresh if different from default ==0.1
+                cat_thresh = self.c_dict.get(d_type + '_PROB_THRESH')
+            else:
+                cat_thresh = thresh
 
-                    if v_extra:
-                        field += ' ' + v_extra
+            if cat_thresh:
+                field += f" cat_thresh=[ {cat_thresh} ];"
 
-                    field += ' }'
-                    fields.append(field)
+            # handle extra options if set
+            if v_extra:
+                field += f' {v_extra}'
+
+            # add curly braces around field info
+            if add_curly_braces:
+                field = f'{{ {field} }}'
+            # otherwise add single quotes around field info
+            else:
+                field = f"'{field}'"
+
+            # add field info string to list of fields
+            fields.append(field)
 
         # return list of field dictionary items
         return fields
+
+    def _handle_grib_pds_field_info(self, v_name, v_level, thresh):
+
+        field = f'name="PROB"; level="{v_level}"; prob={{ name="{v_name}";'
+
+        if thresh:
+            thresh_tuple_list = util.get_threshold_via_regex(thresh)
+            for comparison, number in thresh_tuple_list:
+                # skip adding thresh_lo or thresh_hi if comparison is NA
+                if comparison == 'NA':
+                    continue
+
+                if comparison in ["gt", "ge", ">", ">=", "==", "eq"]:
+                    field = f"{field} thresh_lo={number};"
+                if comparison in ["lt", "le", "<", "<=", "==", "eq"]:
+                    field = f"{field} thresh_hi={number};"
+
+        # add closing curly brace for prob=
+        return f'{field} }}'
 
     def read_mask_poly(self):
         """! Read old or new config variables used to set mask.poly in MET
@@ -1311,7 +1285,7 @@ class CommandBuilder:
         """
         # add command to list of all commands run
         self.all_commands.append((cmd,
-                                  self.print_all_envs(print_copyable=False)))
+                                  self.print_all_envs(print_copyable=True)))
 
         log_name = cmd_name if cmd_name else self.log_name
 
@@ -1783,13 +1757,17 @@ class CommandBuilder:
 
     def _parse_extra_args(self, extra):
         """! Check string for extra option keywords and set them to True in
-         dictionary if they are found. Supports 'remove_quotes' and 'uppercase'
+         dictionary if they are found. Supports 'remove_quotes', 'uppercase'
+         and 'allow_empty'
 
             @param extra string to parse for keywords
             @returns dictionary with extra args set if found in string
         """
         extra_args = {}
-        for extra_option in ['remove_quotes', 'uppercase']:
+        if not extra:
+            return extra_args
+
+        for extra_option in ['remove_quotes', 'uppercase', 'allow_empty']:
             if extra_option in extra:
                 extra_args[extra_option] = True
         return extra_args
@@ -1800,78 +1778,27 @@ class CommandBuilder:
          by wrapped MET configs pre 4.0 (CLIMO_MEAN_FILE and CLIMO_STDEV_FILE)
 
         """
-        # define layout of climo_mean and climo_stdev dictionaries
-        climo_items = {
-            'file_name': ('list', '', None),
-            'field': ('list', 'remove_quotes', None),
-            'regrid': ('dict', '', [
-                ('method', 'string',
-                 'uppercase,remove_quotes'),
-                ('width', 'int', ''),
-                ('vld_thresh', 'float', ''),
-                ('shape', 'string',
-                 'uppercase,remove_quotes')
-            ]),
-            'time_interp_method': ('string', 'remove_quotes,uppercase',
-                                   None),
-            'match_month': ('bool', 'uppercase', None),
-            'day_interval': ('int', '', None),
-            'hour_interval': ('int', '', None),
+        items = {
+            'file_name': 'list',
+            'field': ('list', 'remove_quotes'),
+            'regrid': ('dict', '', {
+                'method': ('string', 'uppercase,remove_quotes'),
+                'width': 'int',
+                'vld_thresh': 'float',
+                'shape': ('string', 'uppercase,remove_quotes'),
+            }),
+            'time_interp_method': ('string', 'remove_quotes,uppercase'),
+            'match_month': ('bool', 'uppercase'),
+            'day_interval': 'int',
+            'hour_interval': 'int',
         }
         for climo_type in self.climo_types:
             dict_name = f'climo_{climo_type.lower()}'
-            dict_items = []
 
             # make sure _FILE_NAME is set from INPUT_TEMPLATE/DIR if used
             self.read_climo_file_name(climo_type)
 
-            # config prefix i.e GRID_STAT_CLIMO_MEAN_
-            metplus_prefix = f'{self.app_name.upper()}_{dict_name.upper()}_'
-            for name, (data_type, extra, kids) in climo_items.items():
-                # config name i.e. GRID_STAT_CLIMO_MEAN_FILE_NAME
-                metplus_name = f'{metplus_prefix}{name.upper()}'
-                metplus_configs = []
-
-                if data_type != 'dict':
-                    children = None
-                    metplus_configs.append(metplus_name)
-                # if dictionary, read get children from MET config
-                else:
-                    children = []
-                    for kid, kid_type, kid_extra in kids:
-                        metplus_configs.append(f'{metplus_name}_{kid.upper()}')
-                        metplus_configs.append(
-                            f'{metplus_prefix}{kid.upper()}')
-
-                        kid_args = self._parse_extra_args(kid_extra)
-                        child_item = self.get_met_config(
-                            name=kid,
-                            data_type=kid_type,
-                            metplus_configs=metplus_configs.copy(),
-                            extra_args=kid_args,
-                        )
-                        children.append(child_item)
-
-                        # reset metplus config list for next kid
-                        metplus_configs.clear()
-
-                    # set metplus_configs
-                    metplus_configs = None
-
-                # parse extra options
-                extra_args = self._parse_extra_args(extra)
-                dict_item = (
-                    self.get_met_config(
-                        name=name,
-                        data_type=data_type,
-                        metplus_configs=metplus_configs,
-                        extra_args=extra_args,
-                        children=children,
-                    )
-                )
-                dict_items.append(dict_item)
-
-            self.handle_met_config_dict(dict_name, dict_items)
+            self.handle_met_config_dict(dict_name, items)
 
             # handle deprecated env vars CLIMO_MEAN_FILE and CLIMO_STDEV_FILE
             # that are used by pre v4.0.0 wrapped MET config files
@@ -2134,51 +2061,20 @@ class CommandBuilder:
             are allowed. If False, they should be treated as as list
             @param get_flags if True, read grid_flag and poly_flag values
         """
-        app = self.app_name.upper()
-
-        dict_name = 'mask'
-        dict_items = []
-
         data_type = 'string' if single_value else 'list'
 
-        dict_items.append(
-            self.get_met_config(
-                name='grid',
-                data_type=data_type,
-                metplus_configs=[f'{app}_MASK_GRID',
-                                 f'{app}_GRID'],
-                extra_args={'allow_empty': True}
-            )
-        )
+        items = {
+            'grid': (data_type, 'allow_empty', None,
+                     ['GRID']),
+            'poly': (data_type, 'allow_empty', None,
+                     ['VERIFICATION_MASK_TEMPLATE', 'POLY']),
+        }
 
-        dict_items.append(
-            self.get_met_config(
-                name='poly',
-                data_type=data_type,
-                metplus_configs=[f'{app}_MASK_POLY',
-                                 f'{app}_VERIFICATION_MASK_TEMPLATE',
-                                 f'{app}_POLY'],
-                extra_args={'allow_empty': True}
-            )
-        )
-        # get grid_flag and poly_flag if requested
         if get_flags:
-            dict_items.append(
-                self.get_met_config(name='grid_flag',
-                                    data_type='string',
-                                    metplus_configs=[f'{app}_MASK_GRID_FLAG'],
-                                    extra_args={'remove_quotes': True,
-                                                'uppercase': True})
-            )
-            dict_items.append(
-                self.get_met_config(name='poly_flag',
-                                    data_type='string',
-                                    metplus_configs=[f'{app}_MASK_POLY_FLAG'],
-                                    extra_args={'remove_quotes': True,
-                                                'uppercase': True})
-            )
+            items['grid_flag'] = ('string', 'remove_quotes,uppercase')
+            items['poly_flag'] = ('string', 'remove_quotes,uppercase')
 
-        self.handle_met_config_dict(dict_name, dict_items)
+        self.handle_met_config_dict('mask', items)
 
     def set_met_config_function(self, item_type):
         """! Return function to use based on item type
@@ -2246,14 +2142,78 @@ class CommandBuilder:
                        **item.extra_args)
         return True
 
-    def handle_met_config_dict(self, dict_name, dict_items,
-                               output_dict=None):
+    def handle_met_config_dict(self, dict_name, items):
         """! Read config variables for MET config dictionary and set
          env_var_dict with formatted values
 
+        @params dict_name name of MET dictionary variable
+        @params items dictionary where the key is name of variable inside MET
+         dictionary and the value is info about the item (see parse_item_info
+         function for more information)
         """
-        if output_dict is None:
-            output_dict = self.env_var_dict
+        dict_items = []
+
+        # config prefix i.e GRID_STAT_CLIMO_MEAN_
+        metplus_prefix = f'{self.app_name}_{dict_name}_'.upper()
+        for name, item_info in items.items():
+            data_type, extra, kids, nicknames = self.parse_item_info(item_info)
+
+            # config name i.e. GRID_STAT_CLIMO_MEAN_FILE_NAME
+            metplus_name = f'{metplus_prefix}{name.upper()}'
+
+            # change (n) to _N i.e. distance_map.beta_value(n)
+            metplus_name = metplus_name.replace('(N)', '_N')
+            metplus_configs = []
+
+            if data_type != 'dict':
+                children = None
+                # if variable ends with _BEG, read _BEGIN first
+                if metplus_name.endswith('BEG'):
+                    metplus_configs.append(f'{metplus_name}IN')
+
+                metplus_configs.append(metplus_name)
+                if nicknames:
+                    for nickname in nicknames:
+                        metplus_configs.append(
+                            f'{self.app_name}_{nickname}'.upper()
+                        )
+
+            # if dictionary, read get children from MET config
+            else:
+                children = []
+                for kid_name, kid_info in kids.items():
+                    kid_upper = kid_name.upper()
+                    kid_type, kid_extra, _, _= self.parse_item_info(kid_info)
+
+                    metplus_configs.append(f'{metplus_name}_{kid_upper}')
+                    metplus_configs.append(f'{metplus_prefix}{kid_upper}')
+
+                    kid_args = self._parse_extra_args(kid_extra)
+                    child_item = self.get_met_config(
+                        name=kid_name,
+                        data_type=kid_type,
+                        metplus_configs=metplus_configs.copy(),
+                        extra_args=kid_args,
+                    )
+                    children.append(child_item)
+
+                    # reset metplus config list for next kid
+                    metplus_configs.clear()
+
+                # set metplus_configs
+                metplus_configs = None
+
+            extra_args = self._parse_extra_args(extra)
+            dict_item = (
+                self.get_met_config(
+                    name=name,
+                    data_type=data_type,
+                    metplus_configs=metplus_configs,
+                    extra_args=extra_args,
+                    children=children,
+                )
+            )
+            dict_items.append(dict_item)
 
         final_met_config = self.get_met_config(
             name=dict_name,
@@ -2261,7 +2221,53 @@ class CommandBuilder:
             children=dict_items,
         )
 
-        return self.handle_met_config_item(final_met_config, output_dict)
+        return self.handle_met_config_item(final_met_config, self.env_var_dict)
+
+    @staticmethod
+    def parse_item_info(item_info):
+        """! Parses info about a MET config dictionary item. The input can
+        be a single string that is the data type of the item. It can also be
+        a tuple containing 2 to 4 values. The additional values must be
+        supplied in order:
+        * extra: string of extra information about item, i.e.
+          'remove_quotes', 'uppercase', or 'allow_empty'
+        * kids: dictionary describing child values (used only for dict items)
+          where the key is the name of the variable and the value is item info
+          for the child variable in the same format as item_info that is
+          parsed in this function
+        * nicknames: list of other METplus config variable name that can be
+           used to set a value. The app name i.e. GRID_STAT_ is prepended to
+           each nickname in the list. Used for backwards compatibility for
+           METplus config variables whose name does not match the MET config
+           variable name
+
+        @param item_info string or tuple containing information about a
+         dictionary item
+        @returns tuple of data type, extra info, children, and nicknames or
+         None for each tuple value that is not set
+        """
+        if isinstance(item_info, tuple):
+            data_type, *rest = item_info
+        else:
+            data_type = item_info
+            rest = []
+
+        extra = rest.pop(0) if rest else None
+        kids = rest.pop(0) if rest else None
+        nicknames = rest.pop(0) if rest else None
+
+        return data_type, extra, kids, nicknames
+
+    def handle_met_config_window(self, dict_name):
+        """! Handle a MET config window dictionary. It is assumed that
+        the dictionary only contains 'beg' and 'end' entries that are integers.
+
+        @param dict_name name of MET dictionary
+        """
+        self.handle_met_config_dict(dict_name, {
+            'beg': 'int',
+            'end': 'int',
+        })
 
     def add_met_config(self, **kwargs):
         """! Create METConfigInfo object from arguments and process
@@ -2298,18 +2304,18 @@ class CommandBuilder:
         """
         config_name = f'{self.app_name.upper()}_CONFIG_FILE'
         config_file = self.config.getraw('config', config_name, '')
-        if not config_file:
-            if not default_config_file:
-                return None
+        if config_file:
+            return config_file
 
-            default_config_path = os.path.join(self.config.getdir('PARM_BASE'),
-                                               'met_config',
-                                               default_config_file)
-            self.logger.debug(f"{config_name} is not set. "
-                              f"Using {default_config_path}")
-            config_file = default_config_path
+        if not default_config_file:
+            return None
 
-        return config_file
+        default_config_path = os.path.join(self.config.getdir('PARM_BASE'),
+                                           'met_config',
+                                           default_config_file)
+        self.logger.debug(f"{config_name} is not set. "
+                          f"Using {default_config_path}")
+        return default_config_path
 
     def get_start_time_input_dict(self):
         """! Get the first run time specified in config. Used if only running

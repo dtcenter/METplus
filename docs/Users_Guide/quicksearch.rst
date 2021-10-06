@@ -129,6 +129,7 @@ Use Cases by METplus Feature:
    | `Diagnostics <../search.html?q=DiagnosticsUseCase&check_keywords=yes&area=default>`_
    | `Feature Relative  <../search.html?q=FeatureRelativeUseCase&check_keywords=yes&area=default>`_
    | `GempakToCF <../search.html?q=GempakToCFToolUseCase&check_keywords=yes&area=default>`_
+   | `GFDLTracker <../search.html?q=GFDLTrackerToolUseCase&check_keywords=yes&area=default>`_
    | `Looping by Month or Year <../search.html?q=LoopByMonthFeatureUseCase&check_keywords=yes&area=default>`_
    | `List Expansion (using begin_end_incr syntax) <../search.html?q=ListExpansionFeatureUseCase&check_keywords=yes&area=default>`_
    | `Masking for Regions of Interest <../search.html?q=MaskingFeatureUseCase&check_keywords=yes&area=default>`_
@@ -155,6 +156,7 @@ Use Cases by METplus Feature:
    | **Diagnostics**: *DiagnosticsUseCase*
    | **Feature Relative**: *FeatureRelativeUseCase*
    | **GempakToCF**: *GempakToCFToolUseCase*
+   | **GFDL Tracker**: *GFDLTrackerToolUseCase*
    | **Looping by Month or Year**: *LoopByMonthFeatureUseCase*
    | **List Expansion (using begin_end_incr syntax)**: *ListExpansionFeatureUseCase*
    | **Masking for Regions of Interest**: *MaskingFeatureUseCase*

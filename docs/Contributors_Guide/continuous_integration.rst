@@ -120,7 +120,10 @@ Here is a list of the currently supported keywords and what they control:
 * **ci-skip-all**: Don't run anything - skip all automation jobs
 * **ci-skip-use-cases**: Don't run any use cases
 * **ci-run-all-cases**: Run all use cases
-* **ci-run-diff**: Obtain truth data and run diffing logic
+* **ci-run-diff**: Obtain truth data and run diffing logic for
+  use cases that are marked to run
+* **ci-run-all-diff**: Obtain truth data and run diffing logic for
+  all use cases
 * **ci-only-docs**: Only run build documentation job - skip the rest
 
 Force MET Version Used for Tests

@@ -14,14 +14,18 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 # To compute the Central Blocking Latitude, Instantaneousy blocked latitudes,
 # Group Instantaneousy blocked latitudes, and the frequency of atmospheric 
-# blocking using the Pelly-Hoskins Method.
+# blocking using the Pelly-Hoskins Method.  After these are computed, contingency
+# table statistics are computed on the Instantaneous blocked latitudes and blocks
+# using stat_analysis.
+#
 
 ##############################################################################
 # Datasets
 # --------
 #
-#  * Forecast dataset: GEFS Forecast 500 mb height. 
+#  * Forecast dataset: GFS Forecast 500 mb height. 
 #  * Observation dataset: ERA Reanlaysis 500 mb height.
+#
 
 ##############################################################################
 # External Dependencies
@@ -50,14 +54,16 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # This use case runs the blocking driver script which runs the steps the user
 # lists in STEPS_OBS.  The possible steps are regridding, time averaging, computing a running 
 # mean, computing anomalies, computing CBLs (CBL), plotting CBLs (PLOTCBL), computing IBLs (IBL), 
-# plotting IBL frequency (PLOTIBL), computing GIBLs (GIBL), computing blocks (CALCBLOCKS), and 
-# plotting the blocking frequency (PLOTBLOCKS).  Regridding, time averaging, running means, and 
-# anomaloies are set up in the UserScript .conf file and are formatted as follows:
-# PROCESS_LIST = RegridDataPlane(regrid_fcst), RegridDataPlane(regrid_obs), PcpCombine(daily_mean_fcst), PcpCombine(daily_mean_obs), PcpCombine(running_mean_obs), PcpCombine(anomaly_obs), UserScript(script_blocking)
+# plotting IBL frequency (PLOTIBL), computing GIBLs (GIBL), computing blocks (CALCBLOCKS), plotting
+# the blocking frequency (PLOTBLOCKS) and using stat_analysis to compute statistics on the IBL or
+# blocking results.  Regridding, time averaging, running means, anomaloies, and stat_analysis are set 
+# up in the UserScript .conf file and are formatted as follows:
+# PROCESS_LIST = RegridDataPlane(regrid_fcst), RegridDataPlane(regrid_obs), PcpCombine(daily_mean_fcst), PcpCombine(daily_mean_obs), PcpCombine(running_mean_obs), PcpCombine(anomaly_obs), UserScript(create_cbl_filelist), UserScript(script_blocking), StatAnalysis(sanal_ibls), StatAnalysis(sanal_blocks)
 #
 # The other steps are listed in the Blocking .conf file and are formatted as follows:
-# FCST_STEPS = CBL+IBL+PLOTIBL
-# OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL
+# FCST_STEPS = CBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
+# OBS_STEPS = CBL+PLOTCBL+IBL+PLOTIBL+GILB+CALCBLOCKS+PLOTBLOCKS
+#
 
 ##############################################################################
 # METplus Workflow
@@ -65,9 +71,10 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 # The blocking python code is run for each time for the forecast and observations data. This 
 # example loops by init time for the model pre-processing, and valid time for the other steps.  
-# This version is set to only process the blocking steps (CBL, PLOTCBL, IBL, PLOTIBL), omitting 
-# the regridding, time averaging, running mean, and anomaly pre-processing steps.  However, the 
+# This version is set to only process the blocking steps (CBL, PLOTCBL, IBL, PLOTIBL) and stat_analysis, 
+# omitting the regridding, time averaging, running mean, and anomaly pre-processing steps.  However, the 
 # configurations for pre-processing are available for user reference.  
+#
 
 ##############################################################################
 # METplus Configuration
@@ -96,6 +103,8 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # parm/use_cases/met_tool_wrapper/RegridDataPlane/RegridDataPlane.py
 # parm/use_cases/met_tool_wrapper/PCPCombine/PCPCOmbine_derive.py
 # parm/use_cases/met_tool_wrapper/PCPCombine/PCPCOmbine_subtract.py
+# parm/use_cases/met_tool_wrapper/StatAnalysis/StatAnalysis.py
+#
 
 ##############################################################################
 # Python Scripts
@@ -162,7 +171,9 @@ UserScript_fcstGFS_obsERA_Blocking.py
 # of these output plots can be specified as BLOCKING_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent 
 # to OUTPUT_BASE/plots.  MET format matched pair output will also be generated for IBLs and blocks if a user runs
 # these steps on both the model and observation data.  The location the matched pair output can be specified as
-# BLOCKING_MPR_OUTPUT_DIR.  If it is not specified, plots will be sent to OUTPUT_BASE/mpr.
+# BLOCKING_MPR_OUTPUT_DIR.  If it is not specified, plots will be sent to OUTPUT_BASE/mpr.  An output contingency
+# table statistics line from stat_analysis is also generated from the IBL and Blocks matched pair files.  The 
+# location of the output is set as STAT_ANALYSIS_OUTPUT_DIR.
 #
 
 ##############################################################################
@@ -173,6 +184,7 @@ UserScript_fcstGFS_obsERA_Blocking.py
 #
 #   * RegridDataPlaneUseCase
 #   * PCPCombineUseCase
+#   * StatAnalysisUseCase
 #   * S2SAppUseCase
 #   * NetCDFFileUseCase
 #   * GRIB2FileUseCase
