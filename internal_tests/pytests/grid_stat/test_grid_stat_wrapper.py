@@ -540,6 +540,31 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
          {'METPLUS_OBS_FILE_TYPE': 'file_type = NETCDF_NCCF;'}),
         ({'GRID_STAT_HSS_EC_VALUE': '0.5', },
          {'METPLUS_HSS_EC_VALUE': 'hss_ec_value = 0.5;'}),
+        ({'GRID_STAT_DISTANCE_MAP_BADDELEY_P': '1', },
+         {'METPLUS_DISTANCE_MAP_DICT': 'distance_map = {baddeley_p = 1;}'}),
+
+        ({'GRID_STAT_DISTANCE_MAP_BADDELEY_MAX_DIST': '2.3', },
+         {'METPLUS_DISTANCE_MAP_DICT': 'distance_map = {baddeley_max_dist = 2.3;}'}),
+
+        ({'GRID_STAT_DISTANCE_MAP_FOM_ALPHA': '4.5', },
+         {'METPLUS_DISTANCE_MAP_DICT': 'distance_map = {fom_alpha = 4.5;}'}),
+
+        ({'GRID_STAT_DISTANCE_MAP_ZHU_WEIGHT': '0.5', },
+         {'METPLUS_DISTANCE_MAP_DICT': 'distance_map = {zhu_weight = 0.5;}'}),
+
+        ({'GRID_STAT_DISTANCE_MAP_BETA_VALUE_N': 'n * n / 3.0', },
+         {'METPLUS_DISTANCE_MAP_DICT': 'distance_map = {beta_value(n) = n * n / 3.0;}'}),
+        ({
+             'GRID_STAT_DISTANCE_MAP_BADDELEY_P': '1',
+             'GRID_STAT_DISTANCE_MAP_BADDELEY_MAX_DIST': '2.3',
+             'GRID_STAT_DISTANCE_MAP_FOM_ALPHA': '4.5',
+             'GRID_STAT_DISTANCE_MAP_ZHU_WEIGHT': '0.5',
+             'GRID_STAT_DISTANCE_MAP_BETA_VALUE_N': 'n * n / 3.0',
+         },
+         {'METPLUS_DISTANCE_MAP_DICT': ('distance_map = {baddeley_p = 1;'
+                                        'baddeley_max_dist = 2.3;'
+                                        'fom_alpha = 4.5;zhu_weight = 0.5;'
+                                        'beta_value(n) = n * n / 3.0;}')}),
 
     ]
 )

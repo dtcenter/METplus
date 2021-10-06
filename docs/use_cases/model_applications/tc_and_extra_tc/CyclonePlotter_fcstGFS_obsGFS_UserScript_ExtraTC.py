@@ -1,8 +1,8 @@
 """
-CyclonePlotter: Use Case for OPC (EMC) cyclone data
-===================================================
+CyclonePlotter: Extra-TC Tracker and Plotting Capabilities
+==========================================================
 
-model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
+model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.conf
 
 """
 ###########################################
@@ -72,7 +72,7 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 # with the -c option, i.e. -c /path/to/TCPairs_extra_tropical.conf
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.conf
 
 ##############################################################################
 # MET Configuration
@@ -101,10 +101,10 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 # the user input. These storms are put into separate storm files, to better mimic how TC storms are
 # typically passed to TCPairs.
 #
-# parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC/extract_opc_decks.py
+# parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC/extract_opc_decks.py
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC/extract_opc_decks.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC/extract_opc_decks.py
 #
 
 
@@ -116,7 +116,7 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 #
 # Passing in TCPairs_extra_tropical.conf then a user-specific system configuration file::
 #
-#   run_metplus.py -c /path/to/CyclonePlotter_fcstGFS_obsGFS_OPC.conf -c /path/to/user_system.conf
+#   run_metplus.py -c /path/to/CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.conf -c /path/to/user_system.conf
 #
 # The following METplus configuration variables must be set correctly to run this example.:
 #
@@ -167,7 +167,7 @@ model_applications/tc_and_extra_tc/CyclonePlotter_fcstGFS_obsGFS_OPC.conf
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-CyclonePlotter_fcstGFS_obsGFS_OPC.png'
+# sphinx_gallery_thumbnail_path = '_static/tc_and_extra_tc-CyclonePlotter_fcstGFS_obsGFS_UserScript_ExtraTC.png'
 
 
 

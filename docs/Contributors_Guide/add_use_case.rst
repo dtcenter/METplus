@@ -542,15 +542,27 @@ or develop directories.
 Add contents of existing tarfile to feature branch directory (if applicable)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-**If you have determined that there is an existing tarfile for the category
-(from the previous step)**, then untar the sample data tarball into
-the feature branch directory. If no tarfile exists yet, you can skip this
-step::
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
+
+**CONDITION 1: IF you have determined that there is an existing tarfile
+for the category (from the previous step)**,
+then untar the sample data tarball into the feature branch directory::
 
     tar zxf ${METPLUS_EXISTING_DATA_TARFILE} -C ${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}
 
-Create the new tarfile
-^^^^^^^^^^^^^^^^^^^^^^
+**CONDITION 2: If no tarfile exists yet, you can skip this step**
+
+Rename or modify existing data or data structure (if applicable)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+**If the reason for your feature branch is to adjust an existing use case, such as renaming a use case
+or changing the data file,** then adjust the directory structure and/or the data files which should now
+be in your feature branch directory (from your last step). Changes to a use case name or input data for
+a preexisting use case should be separately verified to run successfully, and noted in the Pull Request form
+(described later).
+
+Add new data to feature branch directory
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Untar the new data tarball into the feature branch directory::
 
@@ -559,13 +571,17 @@ Untar the new data tarball into the feature branch directory::
 Verify that all of the old and new data exists in the directory that was
 created (i.e. model_applications/<category>).
 
+Create the new tarfile
+^^^^^^^^^^^^^^^^^^^^^^
 Create the new sample data tarball.
 
-Model Application Use Case Example::
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
+
+**CONDITION 1:** Model Application Use Case Example::
 
     tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz model_applications/${METPLUS_USE_CASE_CATEGORY}
 
-MET Tool Wrapper Use Case Example::
+**CONDITION 2:** MET Tool Wrapper Use Case Example::
 
     tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz met_test
 
@@ -699,8 +715,8 @@ dependencies.
 Dependencies
 ^^^^^^^^^^^^
 
-Environments
-""""""""""""
+Conda Environments
+""""""""""""""""""
 
 The keywords that end with "_env" are Python environments created in Docker
 images using Conda that can be used to run use cases. These images are stored
@@ -789,7 +805,59 @@ environments, refer to the comments in the scripts found in
 developer, so please contact MET Help if none of these environments contain the
 package requirements needed to run a new use case.
 
-**MORE INFO COMING SOON!**
+A README file can be found in the ci/docker/docker_env directory that
+provides commands that can be run to recreate a Docker image if the
+conda environment needs to be updated. Please note that Docker must
+be installed on the workstation used to create new Docker images and
+a DockerHub account with access to the dtcenter repositories must
+be used to push Docker images to DockerHub.
+
+The README file also contains commands to create a conda environment
+that is used for the tests locally. Any base conda environments,
+such as metplus_base and py_embed_base, must be created locally first
+before creating an environment that builds upon these environments.
+Please note that some commands in the scripts are specific to
+the Docker environment and may need to be rerun to successfully
+build the environment locally.
+
+**Installing METplus Components**
+
+These scripts
+do not install any METplus components,
+such as metplotpy/metcalcpy/metplus, in the Python environment that
+may be needed for a use case. This is done because the automated tests
+will install and use the latest version (develop) of the packages to
+ensure that any changes to those components do not break any existing
+use cases. These packages will need to be installed by the user
+and need to be updated manually. To install these packages,
+activate the Conda environment, obtain the source code from GitHub,
+and run "pip3 install ." in the top level directory of the repository.
+
+Example::
+
+    conda activate weatherregime
+    git clone git@github.com:dtcenter/METplotpy
+    cd METplotpy
+    git checkout develop
+    git pull
+    pip3 install .
+
+**Cartopy Shapefiles**
+
+The cartopy python package automatically attempts to download
+shapefiles as needed.
+The URL that is used in cartopy version 0.18.0 and earlier no longer
+exists, so use cases that needs these files will fail if they are
+not found locally. If a conda environment uses cartopy, these
+shapefiles may need to be downloaded by the user running the use case
+even if the conda environment was created by another user.
+Cartopy provides a script that can be used to obtain these shapefiles
+from the updated URL::
+
+    wget https://raw.githubusercontent.com/SciTools/cartopy/master/tools/cartopy_feature_download.py
+    python3 cartopy_feature_download.py cultural physical cultural-extra
+
+
 
 .. _add_new_category_to_test_runs:
 
@@ -1034,19 +1102,23 @@ Compare the feature branch file to the develop directory file::
 
     diff ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
 
-**IF there is a new entry or change in the feature version**,
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
+
+**CONDITION 1: IF there is a new entry or change in the feature version**,
 copy the feature file into the develop directory::
 
     cp ${METPLUS_FEATURE_BRANCH}/volume_mount_directories develop/volume_mount_directories
 
-Copy the data from the feature directory into the next version directory
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Copy data from the feature directory into the next version directory
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Make sure the paths are correct before copying.
+**Make sure the paths are correct before copying.**
 
-Model Applications Use Cases::
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
 
-    from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/model_applications/${METPLUS_USE_CASE_CATEGORY}
+**CONDITION 1:** Model Applications Use Cases::
+
+    from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/model_applications/${METPLUS_USE_CASE_CATEGORY}/${METPLUS_USE_CASE_NAME}
     echo $from_directory
     ls $from_directory
 
@@ -1054,7 +1126,9 @@ Model Applications Use Cases::
     echo $to_directory
     ls $to_directory
 
-MET Tool Wrapper Use Cases::
+**OR**
+
+**CONDITION 2:** MET Tool Wrapper Use Cases::
 
     from_directory=${METPLUS_DATA_TARFILE_DIR}/${METPLUS_FEATURE_BRANCH}/met_test
     echo $from_directory
@@ -1066,14 +1140,16 @@ MET Tool Wrapper Use Cases::
 
 Once you have verified the correct directories are set, copy the files::
 
-    cp -r $from_directory/* $to_directory/
+    cp -r $from_directory $to_directory/
 
 List the tarfile for the use case category in the next release version directory::
 
     cd ${METPLUS_DATA_TARFILE_DIR}/v${METPLUS_VERSION}
     ls -lh sample_data-${METPLUS_USE_CASE_CATEGORY}*
 
-**IF the latest version of the tarfile is in this directory**,
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
+
+**CONDITION 1: IF the latest version of the tarfile is in this directory**,
 then rename the existing sample data tarball for
 the use case category just in case something goes wrong::
 
@@ -1081,20 +1157,31 @@ the use case category just in case something goes wrong::
 
 **OR**
 
-**IF the sample data tarfile for the category is a link to another METplus
+**CONDITION 2: IF the sample data tarfile for the category is a link to another METplus
 version**, then simply remove the tarfile link::
 
     unlink sample_data-${METPLUS_USE_CASE_CATEGORY}.tgz
 
 Create the new sample data tarfile.
 
-Model Applications Use Cases::
+**ONLY RUN THE COMMAND THAT IS APPROPRIATE TO YOUR USE CASE. READ CAREFULLY!**
+
+**CONDITION 1:** Model Applications Use Cases::
 
     tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz model_applications/${METPLUS_USE_CASE_CATEGORY}
 
-MET Tool Wrapper Use Cases::
+**OR**
+
+**CONDITION 2:** MET Tool Wrapper Use Cases::
 
     tar czf sample_data-${METPLUS_USE_CASE_CATEGORY}-${METPLUS_VERSION}.tgz met_test
+
+Remove old data (if applicable)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+If the pull request notes mention an old directory path that should be removed,
+please remove that directory. Be careful not to remove any files that are
+still needed.
 
 Update the link in the develop directory if needed
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
