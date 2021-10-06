@@ -80,14 +80,6 @@ class CyclonePlotterWrapper(CommandBuilder):
                                                 logger=self.logger)
                 self.init_date = do_string_sub(self.init_date, init=init_beg_dt)
                 self.init_hr = do_string_sub(self.init_hr, init=init_beg_dt)
-            init_end = self.config.getraw('config', 'INIT_END')
-            if init_end:
-                init_end_dt = util.get_time_obj(init_end,
-                                                init_time_fmt,
-                                                clock_time,
-                                                logger=self.logger)
-                self.init_end_date = do_string_sub(self.init_date, init=init_end_dt)
-                self.init_end_hr = do_string_sub(self.init_hr, init=init_end_dt)
 
         self.model = self.config.getstr('config', 'CYCLONE_PLOTTER_MODEL')
         self.title = self.config.getstr('config',
@@ -116,6 +108,11 @@ class CyclonePlotterWrapper(CommandBuilder):
         self.legend_font_size = (
             self.config.getint('config',
                                'CYCLONE_PLOTTER_LEGEND_FONT_SIZE')
+        )
+
+        self.central_latitude = (
+            self.config.getint('config',
+                               'CYCLONE_PLOTTER_CENTRAL_LATITUDE')
         )
 
         self.cross_marker = (
@@ -168,8 +165,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             # to create a meaningful plot.
             combined_df = combined.copy(deep=True)
             combined_df = combined.dropna(axis=0, how='any',
-                                          subset=['ALAT', 'ALON', 'STORM_ID',
-                                                  'LEAD', 'INIT', 'AMODEL', 'VALID'])
+                                          subset=self.columns_of_interest)
 
             # Retrieve and create the columns of interest
             self.logger.debug(f"Number of rows of data: {combined_df.shape[0]}")
@@ -185,10 +181,6 @@ class CyclonePlotterWrapper(CommandBuilder):
             df['VALID_HOUR'] = (df['VALID'].str[9:11]).astype(int)
             df['VALID'] = df['VALID'].astype(int)
 
-            # clean up dataframes that are no longer needed
-            del combined
-            del combined_df
-
             # Subset the dataframe to include only the data relevant to the user's criteria as
             # specified in the configuration file.
             init_date = int(self.init_date)
@@ -196,30 +188,30 @@ class CyclonePlotterWrapper(CommandBuilder):
             model_name = self.model
 
             if model_name:
-                self.logger.debug("Subsetting based on ", init_date, ", ", init_date,
-                                  ", and model:", model_name )
+                self.logger.debug("Subsetting based on " + str(init_date) + " " + str(init_hh) +
+                                  ", and model:" + model_name )
                 mask = df[(df['AMODEL'] == model_name) & (df['INIT_YMD'] >= init_date) &
                           (df['INIT_HOUR'] >= init_hh)]
             else:
                 mask = df[(df['INIT_YMD'] >= init_date) &
                           (df['INIT_HOUR'] >= init_hh)]
-                self.logger.debug("Subsetting based on ", init_date, ", and ", init_date)
+                self.logger.debug("Subsetting based on " + str(init_date) + ", and "+ str(init_hh))
 
             user_criteria_df = mask
             # reset the index so things are ordered properly in the new dataframe
             user_criteria_df.reset_index(inplace=True)
 
+
             # Aggregate the ALON values based on unique storm id in order to sanitize the longitude values
             # that cross the International Date Line.
             unique_storm_ids_set = set(user_criteria_df['STORM_ID'])
-            self.unique_storm_id = unique_storm_ids_set
             self.unique_storm_ids = list(unique_storm_ids_set)
             nunique = len(self.unique_storm_ids)
             self.logger.debug(f" {nunique} unique storm ids identified")
 
             # Use named tuples to store the relevant storm track information (their index value in the dataframe,
             # track id, and ALON values and later on the SLON (sanitized ALON values).
-            TrackPt = namedtuple("TrackPt", "indices track alons ")
+            TrackPt = namedtuple("TrackPt", "indices track alons alats")
 
             # named tuple holding "sanitized" longitudes
             SanTrackPt = namedtuple("SanTrackPt", "indices track alons slons")
@@ -230,14 +222,16 @@ class CyclonePlotterWrapper(CommandBuilder):
             for cur_unique in self.unique_storm_ids:
                 idx_list = user_criteria_df.index[user_criteria_df['STORM_ID'] == cur_unique].tolist()
                 alons = []
+                alats = []
                 indices = []
 
                 for idx in idx_list:
-                    alons.append(user_criteria_df.iloc[idx]['ALON'])
+                    alons.append(user_criteria_df.loc[idx, 'ALON'])
+                    alats.append(user_criteria_df.loc[idx, 'ALAT'])
                     indices.append(idx)
 
                 # create the track_pt tuple and add it to the storm track dictionary
-                track_pt = TrackPt(indices, cur_unique, alons)
+                track_pt = TrackPt(indices, cur_unique, alons, alats)
                 storm_track_dict[cur_unique] = track_pt
 
 
@@ -249,8 +243,10 @@ class CyclonePlotterWrapper(CommandBuilder):
             # and will contain the "sanitized" lons
             sanitized_storm_tracks = {}
             for key in storm_track_dict:
-                # sanitize the longitudes, create a new SanTrackPt named tuple and add that to a new dictionary
+                # "Sanitize" the longitudes to shift the lons that cross the International Date Line.
+                # Create a new SanTrackPt named tuple and add that to a new dictionary
                 # that keeps track of the sanitized data based on the storm id
+                # sanitized_lons = self.sanitize_lonlist(storm_track_dict[key].alons)
                 sanitized_lons = self.sanitize_lonlist(storm_track_dict[key].alons)
                 sanitized_track_pt = SanTrackPt(storm_track_dict[key].indices, storm_track_dict[key].track,
                                                   storm_track_dict[key].alons, sanitized_lons)
@@ -294,8 +290,8 @@ class CyclonePlotterWrapper(CommandBuilder):
                ascii_track_output_name = ''.join(ascii_track_parts)
                sanitized_df_filename = os.path.join(self.output_dir, ascii_track_output_name)
 
-               sanitized_df.to_csv(sanitized_df_filename)
-               self.logger.info(f"Writing ascii track info as csv file: {sanitized_df_filename}")
+               # Make sure that the dataframe is sorted by STORM_ID, INIT_YMD, INIT_HOUR, and LEAD
+               sanitized_df.sort_values(by=['STORM_ID', 'INIT_YMD', 'INIT_HOUR', 'LEAD'], inplace=True)
         else:
             self.logger.error("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory, check config file.")
             sys.exit("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory.")
@@ -309,7 +305,8 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         # Use PlateCarree projection for now
         # use central meridian for central longitude
-        cm_lon = 180
+        # cm_lon = 180 is the "default" set in the config file
+        cm_lon = self.central_latitude
         ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=cm_lon))
         prj = ccrs.PlateCarree()
         # for transforming the annotations (matplotlib to cartopy workaround from Stack Overflow)
@@ -436,8 +433,10 @@ class CyclonePlotterWrapper(CommandBuilder):
                 lons.append(pt.lon)
                 lats.append(pt.lat)
 
-            # Create the line plot for this storm track
-            plt.plot(lons, lats, linestyle='-', color=pt_color, linewidth=.5, transform=prj, zorder=3)
+            # Create the line plot for this storm track, use the Geodetic coordinate reference system
+            # to correctly connect adjacent points that have been sanitized and cross the
+            # International Date line or the Prime Meridian.
+            plt.plot(lons, lats, linestyle='-', color=pt_color, linewidth=.5, transform=ccrs.Geodetic(), zorder=3)
 
         # Write the plot to the output directory
         out_filename_parts = [self.init_date, '.png']
@@ -510,7 +509,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             sanitized_lons_and_lats = []
             indices = []
             for idx in idx_list:
-                cur_lonlat = LonLat(self.sanitized_df.iloc[idx]['SLON'], self.sanitized_df.iloc[idx]['ALAT'])
+                cur_lonlat = LonLat(self.sanitized_df.loc[idx, 'SLON'], self.sanitized_df.loc[idx, 'ALAT'])
                 sanitized_lons_and_lats.append(cur_lonlat)
                 indices.append(idx)
 
@@ -519,7 +518,6 @@ class CyclonePlotterWrapper(CommandBuilder):
 
 
         return track_dict
-
 
     @staticmethod
     def sanitize_lonlist(lon):
