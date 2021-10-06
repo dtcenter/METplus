@@ -33,6 +33,24 @@ When applicable, release notes are followed by the GitHub issue number which
 describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
+METplus Version 4.1.0-beta3 Release Notes (2021-10-06)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Enhancements:
+
+  * Add Grid-Stat configuration options for distance_map dictionary (`#1089 <https://github.com/dtcenter/METplus/issues/1089>`_)
+  * Fix installation instructions in User's Guide (`#1067 <https://github.com/dtcenter/METplus/issues/1067>`_)
+  * Add instructions to update old METplus configuration files that reference user-defined wrapped MET config files (`#1147 <https://github.com/dtcenter/METplus/issues/1147>`_)
+
+* New Use Cases:
+
+  * Satellite verification of sea surface temperature (GHRSST) against RTOFS output (`#1004 <https://github.com/dtcenter/METplus/issues/1004>`_)
+  * Feature Relative using MTD output for feature centroid lat/lon (`#641 <https://github.com/dtcenter/METplus/issues/641>`_)
+
+* Internal:
+
+  * Transition Community and Developer Support to Github Discussions (`#932 <https://github.com/dtcenter/METplus/issues/932>`_)
+  * Add documentation about the Release Guide and Verification Datasets Guide (`#874 <https://github.com/dtcenter/METplus/issues/874>`_)
 
 METplus Version 4.1.0-beta2 Release Notes (2021-08-31)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
