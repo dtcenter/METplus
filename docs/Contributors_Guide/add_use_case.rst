@@ -558,8 +558,8 @@ be in your feature branch directory (from your last step). Changes to a use case
 a preexisting use case should be separately verified to run successfully, and noted in the Pull Request form
 (described later).
 
-Create the new tarfile
-^^^^^^^^^^^^^^^^^^^^^^
+Add new data to feature branch directory
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Untar the new data tarball into the feature branch directory::
 
@@ -568,6 +568,8 @@ Untar the new data tarball into the feature branch directory::
 Verify that all of the old and new data exists in the directory that was
 created (i.e. model_applications/<category>).
 
+Create the new tarfile
+^^^^^^^^^^^^^^^^^^^^^^
 Create the new sample data tarball.
 
 Model Application Use Case Example::
