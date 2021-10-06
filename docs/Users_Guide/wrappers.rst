@@ -2393,6 +2393,11 @@ METplus Configuration
 | :term:`GRID_STAT_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`GRID_STAT_HSS_EC_VALUE`
+| :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_P`
+| :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_MAX_DIST`
+| :term:`GRID_STAT_DISTANCE_MAP_FOM_ALPHA`
+| :term:`GRID_STAT_DISTANCE_MAP_ZHU_WEIGHT`
+| :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
 | :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`GRID_STAT_MASK_POLY` (optional)
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
@@ -2840,6 +2845,24 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`GRID_STAT_HSS_EC_VALUE`
      - hss_ec_value
 
+**${METPLUS_DISTANCE_MAP_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_P`
+     - distance_map.baddeley_p
+   * - :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_MAX_DIST`
+     - distance_map.baddeley_max_dist
+   * - :term:`GRID_STAT_DISTANCE_MAP_FOM_ALPHA`
+     - distance_map.fom_alpha
+   * - :term:`GRID_STAT_DISTANCE_MAP_ZHU_WEIGHT`
+     - distance_map.zhu_weight
+   * - :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
+     - distance_map.beta_value(n)
 
 .. _make_plots_wrapper:
 

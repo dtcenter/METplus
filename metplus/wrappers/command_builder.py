@@ -1757,13 +1757,17 @@ class CommandBuilder:
 
     def _parse_extra_args(self, extra):
         """! Check string for extra option keywords and set them to True in
-         dictionary if they are found. Supports 'remove_quotes' and 'uppercase'
+         dictionary if they are found. Supports 'remove_quotes', 'uppercase'
+         and 'allow_empty'
 
             @param extra string to parse for keywords
             @returns dictionary with extra args set if found in string
         """
         extra_args = {}
-        for extra_option in ['remove_quotes', 'uppercase']:
+        if not extra:
+            return extra_args
+
+        for extra_option in ['remove_quotes', 'uppercase', 'allow_empty']:
             if extra_option in extra:
                 extra_args[extra_option] = True
         return extra_args
@@ -1774,78 +1778,27 @@ class CommandBuilder:
          by wrapped MET configs pre 4.0 (CLIMO_MEAN_FILE and CLIMO_STDEV_FILE)
 
         """
-        # define layout of climo_mean and climo_stdev dictionaries
-        climo_items = {
-            'file_name': ('list', '', None),
-            'field': ('list', 'remove_quotes', None),
-            'regrid': ('dict', '', [
-                ('method', 'string',
-                 'uppercase,remove_quotes'),
-                ('width', 'int', ''),
-                ('vld_thresh', 'float', ''),
-                ('shape', 'string',
-                 'uppercase,remove_quotes')
-            ]),
-            'time_interp_method': ('string', 'remove_quotes,uppercase',
-                                   None),
-            'match_month': ('bool', 'uppercase', None),
-            'day_interval': ('int', '', None),
-            'hour_interval': ('int', '', None),
+        items = {
+            'file_name': 'list',
+            'field': ('list', 'remove_quotes'),
+            'regrid': ('dict', '', {
+                'method': ('string', 'uppercase,remove_quotes'),
+                'width': 'int',
+                'vld_thresh': 'float',
+                'shape': ('string', 'uppercase,remove_quotes'),
+            }),
+            'time_interp_method': ('string', 'remove_quotes,uppercase'),
+            'match_month': ('bool', 'uppercase'),
+            'day_interval': 'int',
+            'hour_interval': 'int',
         }
         for climo_type in self.climo_types:
             dict_name = f'climo_{climo_type.lower()}'
-            dict_items = []
 
             # make sure _FILE_NAME is set from INPUT_TEMPLATE/DIR if used
             self.read_climo_file_name(climo_type)
 
-            # config prefix i.e GRID_STAT_CLIMO_MEAN_
-            metplus_prefix = f'{self.app_name.upper()}_{dict_name.upper()}_'
-            for name, (data_type, extra, kids) in climo_items.items():
-                # config name i.e. GRID_STAT_CLIMO_MEAN_FILE_NAME
-                metplus_name = f'{metplus_prefix}{name.upper()}'
-                metplus_configs = []
-
-                if data_type != 'dict':
-                    children = None
-                    metplus_configs.append(metplus_name)
-                # if dictionary, read get children from MET config
-                else:
-                    children = []
-                    for kid, kid_type, kid_extra in kids:
-                        metplus_configs.append(f'{metplus_name}_{kid.upper()}')
-                        metplus_configs.append(
-                            f'{metplus_prefix}{kid.upper()}')
-
-                        kid_args = self._parse_extra_args(kid_extra)
-                        child_item = self.get_met_config(
-                            name=kid,
-                            data_type=kid_type,
-                            metplus_configs=metplus_configs.copy(),
-                            extra_args=kid_args,
-                        )
-                        children.append(child_item)
-
-                        # reset metplus config list for next kid
-                        metplus_configs.clear()
-
-                    # set metplus_configs
-                    metplus_configs = None
-
-                # parse extra options
-                extra_args = self._parse_extra_args(extra)
-                dict_item = (
-                    self.get_met_config(
-                        name=name,
-                        data_type=data_type,
-                        metplus_configs=metplus_configs,
-                        extra_args=extra_args,
-                        children=children,
-                    )
-                )
-                dict_items.append(dict_item)
-
-            self.handle_met_config_dict(dict_name, dict_items)
+            self.handle_met_config_dict(dict_name, items)
 
             # handle deprecated env vars CLIMO_MEAN_FILE and CLIMO_STDEV_FILE
             # that are used by pre v4.0.0 wrapped MET config files
@@ -2108,51 +2061,20 @@ class CommandBuilder:
             are allowed. If False, they should be treated as as list
             @param get_flags if True, read grid_flag and poly_flag values
         """
-        app = self.app_name.upper()
-
-        dict_name = 'mask'
-        dict_items = []
-
         data_type = 'string' if single_value else 'list'
 
-        dict_items.append(
-            self.get_met_config(
-                name='grid',
-                data_type=data_type,
-                metplus_configs=[f'{app}_MASK_GRID',
-                                 f'{app}_GRID'],
-                extra_args={'allow_empty': True}
-            )
-        )
+        items = {
+            'grid': (data_type, 'allow_empty', None,
+                     ['GRID']),
+            'poly': (data_type, 'allow_empty', None,
+                     ['VERIFICATION_MASK_TEMPLATE', 'POLY']),
+        }
 
-        dict_items.append(
-            self.get_met_config(
-                name='poly',
-                data_type=data_type,
-                metplus_configs=[f'{app}_MASK_POLY',
-                                 f'{app}_VERIFICATION_MASK_TEMPLATE',
-                                 f'{app}_POLY'],
-                extra_args={'allow_empty': True}
-            )
-        )
-        # get grid_flag and poly_flag if requested
         if get_flags:
-            dict_items.append(
-                self.get_met_config(name='grid_flag',
-                                    data_type='string',
-                                    metplus_configs=[f'{app}_MASK_GRID_FLAG'],
-                                    extra_args={'remove_quotes': True,
-                                                'uppercase': True})
-            )
-            dict_items.append(
-                self.get_met_config(name='poly_flag',
-                                    data_type='string',
-                                    metplus_configs=[f'{app}_MASK_POLY_FLAG'],
-                                    extra_args={'remove_quotes': True,
-                                                'uppercase': True})
-            )
+            items['grid_flag'] = ('string', 'remove_quotes,uppercase')
+            items['poly_flag'] = ('string', 'remove_quotes,uppercase')
 
-        self.handle_met_config_dict(dict_name, dict_items)
+        self.handle_met_config_dict('mask', items)
 
     def set_met_config_function(self, item_type):
         """! Return function to use based on item type
@@ -2220,14 +2142,78 @@ class CommandBuilder:
                        **item.extra_args)
         return True
 
-    def handle_met_config_dict(self, dict_name, dict_items,
-                               output_dict=None):
+    def handle_met_config_dict(self, dict_name, items):
         """! Read config variables for MET config dictionary and set
          env_var_dict with formatted values
 
+        @params dict_name name of MET dictionary variable
+        @params items dictionary where the key is name of variable inside MET
+         dictionary and the value is info about the item (see parse_item_info
+         function for more information)
         """
-        if output_dict is None:
-            output_dict = self.env_var_dict
+        dict_items = []
+
+        # config prefix i.e GRID_STAT_CLIMO_MEAN_
+        metplus_prefix = f'{self.app_name}_{dict_name}_'.upper()
+        for name, item_info in items.items():
+            data_type, extra, kids, nicknames = self.parse_item_info(item_info)
+
+            # config name i.e. GRID_STAT_CLIMO_MEAN_FILE_NAME
+            metplus_name = f'{metplus_prefix}{name.upper()}'
+
+            # change (n) to _N i.e. distance_map.beta_value(n)
+            metplus_name = metplus_name.replace('(N)', '_N')
+            metplus_configs = []
+
+            if data_type != 'dict':
+                children = None
+                # if variable ends with _BEG, read _BEGIN first
+                if metplus_name.endswith('BEG'):
+                    metplus_configs.append(f'{metplus_name}IN')
+
+                metplus_configs.append(metplus_name)
+                if nicknames:
+                    for nickname in nicknames:
+                        metplus_configs.append(
+                            f'{self.app_name}_{nickname}'.upper()
+                        )
+
+            # if dictionary, read get children from MET config
+            else:
+                children = []
+                for kid_name, kid_info in kids.items():
+                    kid_upper = kid_name.upper()
+                    kid_type, kid_extra, _, _= self.parse_item_info(kid_info)
+
+                    metplus_configs.append(f'{metplus_name}_{kid_upper}')
+                    metplus_configs.append(f'{metplus_prefix}{kid_upper}')
+
+                    kid_args = self._parse_extra_args(kid_extra)
+                    child_item = self.get_met_config(
+                        name=kid_name,
+                        data_type=kid_type,
+                        metplus_configs=metplus_configs.copy(),
+                        extra_args=kid_args,
+                    )
+                    children.append(child_item)
+
+                    # reset metplus config list for next kid
+                    metplus_configs.clear()
+
+                # set metplus_configs
+                metplus_configs = None
+
+            extra_args = self._parse_extra_args(extra)
+            dict_item = (
+                self.get_met_config(
+                    name=name,
+                    data_type=data_type,
+                    metplus_configs=metplus_configs,
+                    extra_args=extra_args,
+                    children=children,
+                )
+            )
+            dict_items.append(dict_item)
 
         final_met_config = self.get_met_config(
             name=dict_name,
@@ -2235,7 +2221,53 @@ class CommandBuilder:
             children=dict_items,
         )
 
-        return self.handle_met_config_item(final_met_config, output_dict)
+        return self.handle_met_config_item(final_met_config, self.env_var_dict)
+
+    @staticmethod
+    def parse_item_info(item_info):
+        """! Parses info about a MET config dictionary item. The input can
+        be a single string that is the data type of the item. It can also be
+        a tuple containing 2 to 4 values. The additional values must be
+        supplied in order:
+        * extra: string of extra information about item, i.e.
+          'remove_quotes', 'uppercase', or 'allow_empty'
+        * kids: dictionary describing child values (used only for dict items)
+          where the key is the name of the variable and the value is item info
+          for the child variable in the same format as item_info that is
+          parsed in this function
+        * nicknames: list of other METplus config variable name that can be
+           used to set a value. The app name i.e. GRID_STAT_ is prepended to
+           each nickname in the list. Used for backwards compatibility for
+           METplus config variables whose name does not match the MET config
+           variable name
+
+        @param item_info string or tuple containing information about a
+         dictionary item
+        @returns tuple of data type, extra info, children, and nicknames or
+         None for each tuple value that is not set
+        """
+        if isinstance(item_info, tuple):
+            data_type, *rest = item_info
+        else:
+            data_type = item_info
+            rest = []
+
+        extra = rest.pop(0) if rest else None
+        kids = rest.pop(0) if rest else None
+        nicknames = rest.pop(0) if rest else None
+
+        return data_type, extra, kids, nicknames
+
+    def handle_met_config_window(self, dict_name):
+        """! Handle a MET config window dictionary. It is assumed that
+        the dictionary only contains 'beg' and 'end' entries that are integers.
+
+        @param dict_name name of MET dictionary
+        """
+        self.handle_met_config_dict(dict_name, {
+            'beg': 'int',
+            'end': 'int',
+        })
 
     def add_met_config(self, **kwargs):
         """! Create METConfigInfo object from arguments and process

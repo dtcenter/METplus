@@ -400,29 +400,11 @@ that reformat gridded data
         return cmd
 
     def handle_climo_cdf_dict(self):
-        app_name_upper = self.app_name.upper()
-        tmp_dict = {}
-        self.set_met_config_float(tmp_dict,
-                                  [f'{app_name_upper}_CLIMO_CDF_BINS',
-                                   f'{app_name_upper}_CLIMO_CDF_CDF_BINS'],
-                                  'cdf_bins',
-                                  'CLIMO_CDF_BINS')
-        self.set_met_config_bool(tmp_dict,
-                                 f'{app_name_upper}_CLIMO_CDF_CENTER_BINS',
-                                 'center_bins',
-                                 'CLIMO_CDF_CENTER_BINS')
-        self.set_met_config_bool(tmp_dict,
-                                 f'{app_name_upper}_CLIMO_CDF_WRITE_BINS',
-                                 'write_bins',
-                                 'CLIMO_CDF_WRITE_BINS')
-        climo_cdf = (
-            self.format_met_config_dict(tmp_dict,
-                                        'climo_cdf',
-                                        ['CLIMO_CDF_BINS',
-                                         'CLIMO_CDF_CENTER_BINS',
-                                         'CLIMO_CDF_WRITE_BINS'])
-        )
-        self.env_var_dict['METPLUS_CLIMO_CDF_DICT'] = climo_cdf
+        self.handle_met_config_dict('climo_cdf', {
+            'cdf_bins': ('float', None, None, ['CLIMO_CDF_BINS']),
+            'center_bins': 'bool',
+            'write_bins': 'bool',
+        })
 
     def handle_interp_dict(self, uses_field=False):
         """! Reads config variables for interp dictionary, i.e.
@@ -432,63 +414,15 @@ that reformat gridded data
             @param uses_field if True, read field variable as well
              (default is False)
         """
-        app = self.app_name.upper()
-
-        dict_name = 'interp'
-        dict_items = []
-
-        metplus_prefix = f'{app}_{dict_name.upper()}_'
-
-        # items to set for interp dictionary
-        # key is MET config name and used for METplus config and env var names
-        # value is a tuple of data type of item and names of any children items
-        interp_items = {
-            'vld_thresh': ('float', None),
-            'shape': ('string', None),
-            'type': ('dict', [('method', 'string'),
-                              ('width', 'int')]),
+        items = {
+            'vld_thresh': 'float',
+            'shape': ('string', 'remove_quotes'),
+            'type': ('dict', None, {
+                'method': ('string', 'remove_quotes'),
+                'width': 'int',
+            }),
         }
-
         if uses_field:
-            interp_items['field'] = ('string', None)
+            items['field'] = ('string', 'remove_quotes')
 
-        for name, (data_type, kids) in interp_items.items():
-            metplus_name = f'{metplus_prefix}{name.upper()}'
-            metplus_configs = []
-
-            # if dictionary, read get children from MET config
-            if data_type == 'dict':
-                children = []
-                for kid, kid_type in kids:
-                    # add APP_INTERP_TYPE_METHOD and APP_INTERP_METHOD
-                    metplus_configs.append(f'{metplus_name}_{kid.upper()}')
-                    metplus_configs.append(f'{metplus_prefix}{kid.upper()}')
-
-                    child_item = self.get_met_config(
-                        name=kid,
-                        data_type=kid_type,
-                        metplus_configs=metplus_configs.copy(),
-                        extra_args={'remove_quotes': True}
-                    )
-                    children.append(child_item)
-
-                    # reset metplus config list for next kid
-                    metplus_configs.clear()
-
-                # set metplus_configs
-                metplus_configs = None
-            else:
-                children = None
-                metplus_configs.append(metplus_name)
-
-            dict_items.append(
-                self.get_met_config(
-                    name=name,
-                    data_type=data_type,
-                    metplus_configs=metplus_configs,
-                    extra_args={'remove_quotes': True},
-                    children=children,
-                )
-            )
-
-        self.handle_met_config_dict(dict_name, dict_items)
+        self.handle_met_config_dict('interp', items)
