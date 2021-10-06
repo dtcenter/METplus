@@ -1075,7 +1075,7 @@ MET Tool Wrapper Use Cases::
 
 Once you have verified the correct directories are set, copy the files::
 
-    cp -r $from_directory/ $to_directory/
+    cp -r $from_directory $to_directory/
 
 List the tarfile for the use case category in the next release version directory::
 
