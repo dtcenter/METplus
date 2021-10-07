@@ -56,16 +56,16 @@ __all__ = ['load',
 '''!@var METPLUS_BASE
 The METplus installation directory
 '''
-METPLUS_BASE = str(Path(__file__).parents[2])
+METPLUS_BASE = os.path.realpath(str(Path(__file__).parents[2]))
 
-'''!@var PARM_BASE
-The parameter directory - set to METPLUS_BASE/parm unless the
-METPLUS_PARM_BASE environment variable is set
-'''
+# name of directory under METPLUS_BASE that contains config files
+PARM_DIR = 'parm'
+
+# set parm base to METPLUS_BASE/parm unless METPLUS_PARM_BASE env var is set
 PARM_BASE = os.environ.get('METPLUS_PARM_BASE',
-                           os.path.join(METPLUS_BASE, 'parm'))
+                           os.path.join(METPLUS_BASE, PARM_DIR))
 
-# name of directory under PARM_BASE that contains defaults
+# name of directory under PARM_DIR that contains defaults
 METPLUS_CONFIG_DIR = 'metplus_config'
 
 # default METplus configuration files that are sourced first
@@ -91,9 +91,8 @@ def get_default_config_list(parm_base=None):
         @returns list of full paths to default METplus config files
     """
     default_config_list = []
-    # set parm to real path of PARM_BASE if not provided as argument
     if parm_base is None:
-        parm_base = os.path.realpath(PARM_BASE)
+        parm_base = PARM_BASE
 
     conf_dir = os.path.join(parm_base,
                             METPLUS_CONFIG_DIR)
@@ -107,14 +106,13 @@ def get_default_config_list(parm_base=None):
 
     if not default_config_list:
         print(f"ERROR: No default config files found in {conf_dir}")
-        print("Check if METPLUS_PARM_BASE is set and unset it if so")
         sys.exit(1)
 
     return default_config_list
 
-def setup(config_inputs, logger=None, base_confs=None):
+def setup(args, logger=None, base_confs=None):
     """!The METplus setup function.
-        @param config_inputs list of configuration files or configuration
+        @param args list of configuration files or configuration
         variable overrides. Reads all configuration inputs and returns
         a configuration object.
     """
@@ -128,124 +126,90 @@ def setup(config_inputs, logger=None, base_confs=None):
 
     logger.info('Starting METplus configuration setup.')
 
-    if isinstance(config_inputs, str):
-        config_list = [config_inputs]
-    else:
-        config_list = config_inputs
+    override_list = parse_launch_args(args, logger)
 
-    # parm, is path to parm directory
-    # infiles, list of input conf files to be read and processed
-    # moreopt, dictionary of conf file settings, passed in from command line.
-    (parm, infiles, moreopt) = \
-        parse_launch_args(config_list,
-                          logger,
-                          base_confs=base_confs)
+    # add default config files to override list
+    override_list = base_confs + override_list
+    config = launch(override_list)
 
-    config = launch(infiles, moreopt)
-
-    # save list of user configuration files in a variable
-    config.set('config', 'METPLUS_CONFIG_FILES', ','.join(config_list))
-
-    logger.info('Completed METplus configuration setup.')
+    logger.debug('Completed METplus configuration setup.')
 
     return config
 
-# def parse_launch_args(args,usage,logger,PARM_BASE=None):
-# This is intended to be use to gather all the conf files on the
-# command line, along with overide options on the command line.
-# This includes the default conf files metplus.conf, metplus.override.conf
-# along with, -c some.conf and any other conf files...
-# These are than used by def launch to create a single metplus final conf file
-# that would be used by all tasks.
-def parse_launch_args(args, logger, base_confs=None):
-    """!Parsed arguments to scripts that launch the METplus system.
-
-    This is the argument parser for the config_metplus.py
-    script.  It parses the arguments (in args).
-    If something goes wrong, this function calls
-    sys.exit(1) or sys.exit(2).
+def parse_launch_args(args, logger):
+    """! Parsed arguments to scripts that launch the METplus wrappers.
 
     Options:
-    * section.variable=value --- set this value in this section, no matter what
-    * /path/to/file.conf --- read this conf file after the default conf files.
-
-    Later conf files override earlier ones.  The conf files read in
-    are:
-    * metplus.conf
+    * section.variable=value --- set this value in this section
+    * /path/to/file.conf --- read this conf file after the default conf files
 
     @param args the script arguments, after script-specific ones are removed
-    @param logger a logging.Logger for log messages"""
+    @param logger a logging.Logger for log messages
+    @returns tuple containing path to parm directory, list of config files and
+     collections.defaultdict of explicit config overrides
+    """
+    if not args:
+        return []
 
-    parm = os.path.realpath(PARM_BASE)
-    if base_confs is None:
-        base_confs = get_default_config_list()
+    if isinstance(args, str):
+        args = [args]
 
-    # Files in this list, that don't exist or are empty,
-    # will be silently ignored.
-    # infiles=[ os.path.join(parm, 'metplus.conf'),
-    #          os.path.join(parm, 'metplus.override.conf')
-    #         ]
-    infiles = list()
-    for base_conf in base_confs:
-        infiles.append(base_conf)
-
-    moreopt = collections.defaultdict(dict)
-
-    if args is None:
-        return (parm, infiles, moreopt)
+    override_list = []
 
     # Now look for any option and conf file arguments:
     bad = False
-    for iarg in range(len(args)):
+    for arg in args:
         m = re.match(r'''(?x)
           (?P<section>[a-zA-Z][a-zA-Z0-9_]*)
            \.(?P<option>[^=]+)
-           =(?P<value>.*)$''', args[iarg])
+           =(?P<value>.*)$''', arg)
+        # check if argument is a explicit variable override
         if m:
-            logger.info('Set [%s] %s = %s' % (
-                m.group('section'), m.group('option'),
-                repr(m.group('value'))))
-            moreopt[m.group('section')][m.group('option')] = m.group('value')
-        elif os.path.exists(args[iarg]):
-            infiles.append(args[iarg])
-        elif os.path.exists(os.path.join(parm, args[iarg])):
-            infiles.append(os.path.join(parm, args[iarg]))
-        else:
+            section = m.group('section')
+            key = m.group('option')
+            value = m.group('value')
+            override_list.append((section, key, value))
+            continue
+
+        filepath = arg
+        # check if argument is a path to a file that exists
+        if not os.path.exists(filepath):
+            logger.error(f'Invalid argument: {filepath}')
             bad = True
-            # if OS separator character (/ or \) if in argument, assume it
-            # is supposed to be a path but the file is not found
-            if os.sep in args[iarg]:
-                logger.error(f"Configuration file not found: {args[iarg]}")
-            else:
-                logger.error(f"Invalid argument: {args[iarg]}")
+            continue
+
+        # expand file path to full path
+        filepath = os.path.realpath(filepath)
+
+        # path exists but is not a file
+        if not os.path.isfile(filepath):
+            logger.error(f'Conf is not a file: {filepath}')
+            bad = True
+            continue
+
+        # warn and skip if file is empty
+        if os.stat(filepath).st_size == 0:
+            logger.warning(f'Conf file is empty: {filepath}. Skipping')
+            continue
+
+        # add file path to override list
+        override_list.append(filepath)
+
+    # exit if anything went wrong reading config arguments
     if bad:
         sys.exit(2)
 
-    for file in infiles:
-        if not os.path.exists(file):
-            logger.error(file + ': conf file does not exist.')
-            sys.exit(2)
-        elif not os.path.isfile(file):
-            logger.error(file + ': conf file is not a regular file.')
-            sys.exit(2)
-        elif not produtil.fileop.isnonempty(file):
-            logger.warning(
-                file + ': conf file is empty.  Will continue anyway.')
-    return (parm, infiles, moreopt)
+    return override_list
 
+def launch(config_list):
+    """! Process configuration files and explicit configuration variables
+     overrides. Subsequent configuration files override values in previously
+     read files. Explicit configuration variables are read after all config
+     files are processed.
 
-# This is intended to be used to create and write a final conf file
-# that is used by all tasks .... though METplus isn't being run
-# that way .... instead METplus tasks need to be able to run stand-alone
-# so each task needs to be able to initialize the conf files.
-# conf files are processed in the order they exist in the file_list
-# so each succesive element overwrites the previous.
-def launch(file_list, moreopt):
-    for filename in file_list:
-        if not isinstance(filename, str):
-            raise TypeError('First input to metplus.config.for_initial_job '
-                            'must be a list of strings.')
-
+    @param file_list list of configuration files to read
+    @param moreopt explicit configuration variable overrides
+    """
     config = METplusConfig()
     logger = config.log()
 
@@ -253,29 +217,28 @@ def launch(file_list, moreopt):
     config.set('config', 'CLOCK_TIME',
                datetime.datetime.now().strftime('%Y%m%d%H%M%S'))
 
-    # Read in and parse all the conf files.
-    for filename in file_list:
-        config.read(filename)
-        logger.info("%s: Parsed this file" % (filename,))
+    config_format_list = []
+    # Read in and parse all the conf files and overrides
+    for config_item in config_list:
+        if isinstance(config_item, str):
+            logger.info(f"Parsing config file: {config_item}")
+            config.read(config_item)
+            config_format_list.append(config_item)
+        else:
+            # set explicit config override
+            section, key, value = config_item
+            if not config.has_section(section):
+                config.add_section(section)
+
+            logger.info(f"Parsing override: [{section}] {key} = {value}")
+            config.set(section, key, value)
+            config_format_list.append(f'{section}.{key}={value}')
 
         # move all config variables from old sections into the [config] section
         config.move_all_to_config_section()
 
-    # Overriding or passing in specific conf items on the command line
-    # ie. config.NEWVAR="a new var" dir.SOMEDIR=/override/dir/path
-    # If spaces, seems like you need double quotes on command line.
-    if moreopt:
-        for section, options in moreopt.items():
-            if not config.has_section(section):
-                config.add_section(section)
-            for option, value in options.items():
-                logger.info('Override: %s.%s=%s'
-                            % (section, option, repr(value)))
-                config.set(section, option, value)
-
-            # after each config variable override,
-            # move old sections to [config]
-            config.move_all_to_config_section()
+    # save list of user configuration files in a variable
+    config.set('config', 'CONFIG_INPUT', ','.join(config_format_list))
 
     # get OUTPUT_BASE to make sure it is set correctly so the first error
     # that is logged relates to OUTPUT_BASE, not LOG_DIR, which is likely
@@ -283,56 +246,22 @@ def launch(file_list, moreopt):
     # Initialize the output directories
     util.mkdir_p(config.getdir('OUTPUT_BASE'))
 
-    # All conf files and command line options have been parsed.
-    # So lets set and add specific log variables to the conf object
-    # based on the conf log template values.
+    # set and log variables to the config object
     get_logger(config)
 
-    # Determine if final METPLUS_CONF file already exists on disk.
-    # If it does, use it instead.
-    confloc = config.getstr('config', 'METPLUS_CONF')
+    final_conf = config.getstr('config', 'METPLUS_CONF')
 
-    # A user my set the confloc METPLUS_CONF location in a subdir of OUTPUT_BASE
-    # or even in another parent directory altogether, so make thedirectory
-    # so the metplus_final.conf file can be written.
-    if not os.path.exists(realpath(dirname(confloc))):
-        util.mkdir_p(realpath(dirname(confloc)))
+    # create final conf directory if it doesn't already exist
+    final_conf_dir = os.path.dirname(final_conf)
+    if not os.path.exists(final_conf_dir):
+        os.makedirs(final_conf_dir)
 
-    # set METPLUS_BASE conf to location of scripts used by METplus
-    # warn if user has set METPLUS_BASE to something different
-    # in their conf file
-    user_metplus_base = config.getdir('METPLUS_BASE', METPLUS_BASE)
-    if realpath(user_metplus_base) != realpath(METPLUS_BASE):
-        logger.warning('METPLUS_BASE from the conf files has no effect.'+\
-                       ' Overriding to '+METPLUS_BASE)
-
+    # set METPLUS_BASE/PARM_BASE conf so they can be referenced in other confs
     config.set('config', 'METPLUS_BASE', METPLUS_BASE)
-
-    # do the same for PARM_BASE
-    user_parm_base = config.getdir('PARM_BASE', PARM_BASE)
-    if realpath(user_parm_base) != realpath(PARM_BASE):
-        logger.error('PARM_BASE from the config ({}) '.format(user_parm_base) +\
-                     'differs from METplus parm base ({}). '.format(PARM_BASE))
-        logger.error('Please remove PARM_BASE from any config file. Set the ' +\
-                     'environment variable METPLUS_PARM_BASE to change where ' +\
-                     'the METplus wrappers look for config files.')
-        sys.exit(1)
-
     config.set('config', 'PARM_BASE', PARM_BASE)
 
-    # print config items that are set automatically
-    for var in ('METPLUS_BASE', 'PARM_BASE'):
-        expand = config.getdir(var)
-        logger.info('Setting [dir] %s to %s' % (var, expand))
-
-    # Place holder for when workflow is developed in METplus.
-    # if prelaunch is not None:
-    #    prelaunch(config,logger,cycle)
-
-    # writes the METPLUS_CONF used by all tasks.
-    logger.info('METPLUS_CONF: %s written here.' % (confloc,))
-    with open(confloc, 'wt') as f:
-        config.write(f)
+    with open(final_conf, 'wt') as file_handle:
+        config.write(file_handle)
 
     return config
 
@@ -632,6 +561,55 @@ class METplusConfig(ProdConfig):
                          super().getraw(section, key))
 
             self._conf.remove_section(section)
+
+    def move_runtime_configs(self):
+        """! Move all config variables that are specific to the current runtime
+        environment to the [runtime] section so that they do not cause issues
+        if a user reads in the final conf from a run to run_metplus to rerun
+        """
+        from_section = 'config'
+        to_section = 'runtime'
+        RUNTIME_CONFS = [
+            'CLOCK_TIME',
+            'METPLUS_VERSION',
+            'MET_INSTALL_DIR',
+            'CONFIG_INPUT',
+            'METPLUS_CONF',
+            'TMP_DIR',
+            'STAGING_DIR',
+            'CONVERT',
+            'GEMPAKTOCF_JAR',
+            'GFDL_TRACKER_EXEC',
+            'INPUT_MUST_EXIST',
+            'USER_SHELL',
+            'DO_NOT_RUN_EXE',
+            'SCRUB_STAGING_DIR',
+            'MET_BIN_DIR',
+        ]
+        more_run_confs = [item for item in self.keys(from_section)
+                          if item.startswith('LOG') or item.endswith('BASE')]
+        # create destination section if it does not exist
+        if not self.has_section(to_section):
+            self._conf.add_section(to_section)
+
+        for key in RUNTIME_CONFS + more_run_confs:
+            if not self.has_option(from_section, key):
+                continue
+
+            # add conf to [runtime] section
+            self.set(to_section, key, super().getraw(from_section, key))
+
+            # remove conf from [config] section
+            self._conf.remove_option(from_section, key)
+
+    def remove_current_vars(self):
+        """! Remove variables from [config] section that start with CURRENT
+        """
+        current_vars = [item for item in self.keys('config')
+                        if item.startswith('CURRENT')]
+        for current_var in current_vars:
+            if self.has_option('config', current_var):
+                self._conf.remove_option('config', current_var)
 
     def find_section(self, sec, opt):
         """! Search through list of previously supported config sections

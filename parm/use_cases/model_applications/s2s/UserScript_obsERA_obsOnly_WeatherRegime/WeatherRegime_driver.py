@@ -6,7 +6,6 @@ import netCDF4
 import warnings
 
 from WeatherRegime import WeatherRegimeCalculation
-from metplus.util import getlist
 from metplotpy.contributed.weather_regime import plot_weather_regime as pwr
 from Blocking_WeatherRegime_util import parse_steps, read_nc_met, write_mpr_file
 
@@ -112,7 +111,7 @@ def main():
         if not ("EOF" in steps_list_obs):
             raise Exception('Must run observed EOFs before plotting observed EOFs.')
         print('Plotting Obs EOFs')
-        pltlvls_str = getlist(os.environ['EOF_PLOT_LEVELS'])
+        pltlvls_str = os.environ['EOF_PLOT_LEVELS'].split(',')
         pltlvls = [float(pp) for pp in pltlvls_str]
         eof_plot_outname = os.path.join(oplot_dir,os.environ.get('OBS_EOF_PLOT_OUTPUT_NAME','obs_eof'))
         pwr.plot_eof(eof_obs,wrnum_obs,variance_fractions_obs,lons_obs,lats_obs,eof_plot_outname,pltlvls)
@@ -121,7 +120,7 @@ def main():
         if not ("EOF" in steps_list_fcst):
             raise Exception('Must run forecast EOFs before plotting forecast EOFs.')
         print('Plotting Forecast EOFs')
-        pltlvls_str = getlist(os.environ['EOF_PLOT_LEVELS'])
+        pltlvls_str = os.environ['EOF_PLOT_LEVELS'].split(',')
         pltlvls = [float(pp) for pp in pltlvls_str]
         eof_plot_outname = os.path.join(oplot_dir,os.environ.get('FCST_EOF_PLOT_OUTPUT_NAME','fcst_eof'))
         pwr.plot_eof(eof_fcst,wrnum_fcst,variance_fractions_fcst,lons_fcst,lats_fcst,eof_plot_outname,pltlvls)
@@ -153,7 +152,7 @@ def main():
         if not ("KMEANS" in steps_list_obs):
             raise Exception('Must run observed Kmeans before plotting observed Kmeans.')
         print('Plotting Obs K Means')
-        pltlvls_str = getlist(os.environ['KMEANS_PLOT_LEVELS'])
+        pltlvls_str = os.environ['KMEANS_PLOT_LEVELS'].split(',')
         pltlvls = [float(pp) for pp in pltlvls_str]
         kmeans_plot_outname = os.path.join(oplot_dir,os.environ.get('OBS_KMEANS_PLOT_OUTPUT_NAME','obs_kmeans'))
         pwr.plot_K_means(kmeans_obs,wrnum_obs,lons_obs,lats_obs,perc_obs,kmeans_plot_outname,pltlvls)
@@ -162,7 +161,7 @@ def main():
         if not ("KMEANS" in steps_list_fcst):
             raise Exception('Must run forecast Kmeans before plotting forecast Kmeans.')
         print('Plotting Forecast K Means')
-        pltlvls_str = getlist(os.environ['KMEANS_PLOT_LEVELS'])
+        pltlvls_str = os.environ['KMEANS_PLOT_LEVELS'].split(',')
         pltlvls = [float(pp) for pp in pltlvls_str]
         kmeans_plot_outname = os.path.join(oplot_dir,os.environ.get('FCST_KMEANS_PLOT_OUTPUT_NAME','fcst_kmeans'))
         pwr.plot_K_means(kmeans_fcst,wrnum_fcst,lons_fcst,lats_fcst,perc_fcst,kmeans_plot_outname,pltlvls)

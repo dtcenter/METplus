@@ -148,12 +148,22 @@ class TCGenWrapper(CommandBuilder):
                             data_type='int',
                             metplus_configs=['TC_GEN_VALID_FREQUENCY',
                                              'TC_GEN_VALID_FREQ'])
-        self.handle_fcst_hr_window()
+        self.handle_met_config_window('fcst_hr_window')
         self.add_met_config(name='min_duration',
                             data_type='int',
                             metplus_configs=['TC_GEN_MIN_DURATION'])
-        self.handle_fcst_genesis()
-        self.handle_best_genesis()
+
+        self.handle_met_config_dict('fcst_genesis', {
+            'vmax_thresh': 'thresh',
+            'mslp_thresh': 'thresh',
+        })
+        self.handle_met_config_dict('best_genesis', {
+            'technique': 'string',
+            'category': 'list',
+            'vmax_thresh': 'thresh',
+            'mslp_thresh': 'thresh',
+        })
+
         self.add_met_config(name='oper_technique',
                             data_type='string',
                             metplus_configs=['TC_GEN_OPER_TECHNIQUE'])
@@ -210,8 +220,8 @@ class TCGenWrapper(CommandBuilder):
         self.add_met_config(name='dev_hit_radius',
                             data_type='int',
                             metplus_configs=['TC_GEN_DEV_HIT_RADIUS'])
-        self.handle_dev_hit_window()
-        self.handle_ops_hit_window()
+        self.handle_met_config_window('dev_hit_window')
+        self.handle_met_config_window('ops_hit_window')
         self.add_met_config(name='discard_init_post_genesis_flag',
                             data_type='bool',
                             metplus_configs=[
@@ -250,7 +260,7 @@ class TCGenWrapper(CommandBuilder):
             data_type='bool',
             metplus_configs=['TC_GEN_GENESIS_MATCH_POINT_TO_TRACK']
         )
-        self.handle_genesis_match_window()
+        self.handle_met_config_window('genesis_match_window')
 
         # get INPUT_TIME_DICT values since wrapper only runs
         # once (doesn't look over time)
@@ -259,116 +269,6 @@ class TCGenWrapper(CommandBuilder):
             self.isOK = False
 
         return c_dict
-
-    def handle_fcst_hr_window(self):
-        dict_name = 'fcst_hr_window'
-        dict_items = []
-        dict_items.append(
-            self.get_met_config(name='beg',
-                           data_type='int',
-                           metplus_configs=['TC_GEN_FCST_HR_WINDOW_BEGIN',
-                                            'TC_GEN_FCST_HR_WINDOW_BEG',
-                                            'TC_GEN_LEAD_WINDOW_BEGIN',
-                                            'TC_GEN_LEAD_WINDOW_BEG'])
-        )
-        dict_items.append(
-            self.get_met_config(name='end',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_FCST_HR_WINDOW_END',
-                                        'TC_GEN_LEAD_WINDOW_END'])
-        )
-        self.handle_met_config_dict(dict_name, dict_items)
-
-    def handle_dev_hit_window(self):
-        dict_name = 'dev_hit_window'
-        dict_items = []
-        dict_items.append(
-            self.get_met_config(name='beg',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_DEV_HIT_WINDOW_BEGIN',
-                                        'TC_GEN_DEV_HIT_WINDOW_BEG',
-                                        'TC_GEN_GENESIS_WINDOW_BEGIN',
-                                        'TC_GEN_GENESIS_WINDOW_BEG'])
-        )
-        dict_items.append(
-            self.get_met_config(name='end',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_DEV_HIT_WINDOW_END',
-                                        'TC_GEN_GENESIS_WINDOW_END'])
-        )
-        self.handle_met_config_dict(dict_name, dict_items)
-
-    def handle_ops_hit_window(self):
-        dict_name = 'ops_hit_window'
-        dict_items = []
-        dict_items.append(
-            self.get_met_config(name='beg',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_OPS_HIT_WINDOW_BEGIN',
-                                        'TC_GEN_OPS_HIT_WINDOW_BEG',])
-        )
-        dict_items.append(
-            self.get_met_config(name='end',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_OPS_HIT_WINDOW_END',])
-        )
-        self.handle_met_config_dict(dict_name, dict_items)
-
-    def handle_genesis_match_window(self):
-        dict_name = 'genesis_match_window'
-        dict_items = []
-        dict_items.append(
-            self.get_met_config(name='beg',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_GENESIS_MATCH_WINDOW_BEGIN',
-                                        'TC_GEN_GENESIS_MATCH_WINDOW_BEG',])
-        )
-        dict_items.append(
-            self.get_met_config(name='end',
-                       data_type='int',
-                       metplus_configs=['TC_GEN_GENESIS_MATCH_WINDOW_END',])
-        )
-        self.handle_met_config_dict(dict_name, dict_items)
-
-    def handle_fcst_genesis(self):
-        dict_name = 'fcst_genesis'
-        dict_items = []
-        dict_items.append(
-            self.get_met_config(name='vmax_thresh',
-                       data_type='thresh',
-                       metplus_configs=['TC_GEN_FCST_GENESIS_VMAX_THRESH'])
-        )
-        dict_items.append(
-            self.get_met_config(name='mslp_thresh',
-                       data_type='thresh',
-                       metplus_configs=['TC_GEN_FCST_GENESIS_MSLP_THRESH'])
-        )
-        self.handle_met_config_dict(dict_name, dict_items)
-
-    def handle_best_genesis(self):
-        dict_name = 'best_genesis'
-        dict_items = []
-        dict_items.append(
-            self.get_met_config(name='technique',
-                       data_type='string',
-                       metplus_configs=['TC_GEN_BEST_GENESIS_TECHNIQUE'])
-        )
-        dict_items.append(
-            self.get_met_config(name='category',
-                       data_type='list',
-                       metplus_configs=['TC_GEN_BEST_GENESIS_CATEGORY'])
-        )
-        dict_items.append(
-            self.get_met_config(name='vmax_thresh',
-                       data_type='thresh',
-                       metplus_configs=['TC_GEN_BEST_GENESIS_VMAX_THRESH'])
-        )
-        dict_items.append(
-            self.get_met_config(name='mslp_thresh',
-                       data_type='thresh',
-                       metplus_configs=['TC_GEN_BEST_GENESIS_MSLP_THRESH'])
-        )
-        self.handle_met_config_dict(dict_name, dict_items)
 
     def handle_filter(self):
         """! find all TC_GEN_FILTER_<n> values in the config files
