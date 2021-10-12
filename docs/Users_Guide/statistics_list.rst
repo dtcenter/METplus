@@ -28,7 +28,7 @@ METplus Database of Statistics
    ACC
      | **Statistics Long Name**: Accuracy \:sup:`1`
      | **Statistic Type**: Categorical
-     | **Tools**: CTS \ :sup:`2,3`, MCTS \ :sup:`2,3`, NBRCTCS \ :sup:`3` & MODE output format: Accuracy \ :sup:`1`
+     | **Tools & Statistics**: CTS \ :sup:`2,3`, MCTS \ :sup:`2,3`, NBRCTCS \ :sup:`3` & MODE output format: Accuracy \ :sup:`1`
      |
      | *Tools:* \ :sup:`1` \ MODE-Tool, \ :sup:`2` \ Point-Stat Tool
       & \ :sup:`3` \ Grid-Stat Tool
