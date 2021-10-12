@@ -18,8 +18,7 @@ METplus Database of Statistics
     - ACC
     - Categorical
     - Point-Stat Tool & MODE Tool
-    - CTS, MCTS, NBRCTS
-      MODE output format: Accuracy
+    - CTS, MCTS, NBRCTS  :raw-html:`<br />` MODE output format: Accuracy
 
 
 
