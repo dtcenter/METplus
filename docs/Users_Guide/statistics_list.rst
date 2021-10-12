@@ -2,6 +2,9 @@
 METplus Database of Statistics
 ******************************
 
+.. role:: raw-html(raw)
+   :format: html	  
+
 .. list-table:: Statistics List
   :widths: auto
   :header-rows: 1
