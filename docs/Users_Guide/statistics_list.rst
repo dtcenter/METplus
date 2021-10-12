@@ -22,8 +22,8 @@ METplus Database of Statistics
 
 
 
-#.. glossary:: statistics
-#   :sorted:
+..#.. glossary:: statistics
+..#   :sorted:
           
    ACC
      | **Statistics Long Name**: Accuracy \:sup:`1`
