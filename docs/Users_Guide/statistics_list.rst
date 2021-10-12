@@ -4,7 +4,8 @@ METplus Database of Statistics
 
 .. list-table:: Statistics List
   :widths: auto
-  :header-rows: 1		
+  :header-rows: 1
+		
   * - Statistics Long Name
     - METplus Name
     - Statistic Type
@@ -19,8 +20,8 @@ METplus Database of Statistics
 
 
 
-.. glossary:: statistics
-   :sorted:
+#.. glossary:: statistics
+#   :sorted:
           
    ACC
      | **MODE line type**: Accuracy \ :sup:`1`
