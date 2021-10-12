@@ -26,13 +26,8 @@ METplus Database of Statistics
 #   :sorted:
           
    ACC
-     | **MODE line type**: Accuracy \ :sup:`1`
-     | **CTS line type**: Accuracy including normal and bootstrap
-     |     upper and lower confidence limits \ :sup:`2,3`
-     | **MCTS line type**: Accuracy, normal confidence limits and bootstrap
-     |     confidence limits \ :sup:`2,3` 
-     | **NBRCTCS line type**: Accuracy including normal and bootstrap upper
-     |     and lower confidence limits \ :sup:`3`
+     | **Statistics Long Name**: Accuracy \:sup:`1`
+     | **Statistic Type & Tool**: CTS \ :sup:`2,3`, MCTS \ :sup:`2,3` & NBRCTCS \ :sup:`3`
      |
      | *Tools:* \ :sup:`1` \ MODE-Tool, \ :sup:`2` \ Point-Stat Tool
       & \ :sup:`3` \ Grid-Stat Tool
