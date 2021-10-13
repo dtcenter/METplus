@@ -9,7 +9,7 @@ METplus Database of Statistics
   :widths: auto
   :header-rows: 1
 		
-  * - Statistics Long Name
+  * - Statistics  :raw-html:`<br />` Long Name
     - METplus Name
     - Statistic Type
     - Tools
@@ -17,7 +17,7 @@ METplus Database of Statistics
   * - Accuracy
     - ACC
     - Categorical
-    - Point-Stat Tool & MODE Tool
+    - Point-Stat Tool  :raw-html:`<br />` & MODE Tool
     - CTS, MCTS, NBRCTS  :raw-html:`<br />` MODE output format: Accuracy
 
 
