@@ -19,7 +19,21 @@ METplus Database of Statistics
     - Categorical
     - Point-Stat Tool  :raw-html:`<br />` & MODE Tool
     - CTS, MCTS, NBRCTS  :raw-html:`<br />` MODE output format: Accuracy
-
+  * - Asymptotic Fractions Skill Score
+    - AFSS
+    -  
+    - Grid-Stat Tool
+    - NBRCNT 
+  * - Along track error (nm)
+    - ALTK_ERR
+    -  
+    - TC-Pairs Tool
+    - TCMPR 
+  * -  
+    - ANGLE_DIFF
+    -  
+    - MODE Tool
+    - MODE      
 
 
 ..#.. glossary:: statistics
