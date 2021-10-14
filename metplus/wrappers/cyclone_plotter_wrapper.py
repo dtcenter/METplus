@@ -301,17 +301,20 @@ class CyclonePlotterWrapper(CommandBuilder):
                util.mkdir_p(self.output_dir)
                ascii_track_parts = [self.init_date, '.csv']
                ascii_track_output_name = ''.join(ascii_track_parts)
-               sanitized_df_filename = os.path.join(self.output_dir, ascii_track_output_name)
+               final_df_filename = os.path.join(self.output_dir, ascii_track_output_name)
 
                # Make sure that the dataframe is sorted by STORM_ID, INIT_YMD, INIT_HOUR, and LEAD
                # to ensure that the line plot is connecting the points in the correct order.
-               sanitized_df.sort_values(by=['STORM_ID', 'INIT_YMD', 'INIT_HOUR', 'LEAD'], inplace=True)
-               sanitized_df.to_csv(sanitized_df_filename)
+               # sanitized_df.sort_values(by=['STORM_ID', 'INIT_YMD', 'INIT_HOUR', 'LEAD'],
+               #                          inplace=True).reset_index(drop=True,inplace=True)
+               # sanitized_df.reset_index(inplace=True,drop=True)
+               final_df = sanitized_df.sort_values(by=['STORM_ID', 'INIT_YMD', 'INIT_HOUR', 'LEAD'], ignore_index=True)
+               final_df.to_csv(final_df_filename)
         else:
             # The user's specified directory isn't valid, log the error and exit.
             self.logger.error("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory, check config file.")
             sys.exit("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory.")
-        return sanitized_df
+        return final_df
 
 
     def create_plot(self):
@@ -339,7 +342,6 @@ class CyclonePlotterWrapper(CommandBuilder):
         ax.set_global()
 
         # Add grid lines for longitude and latitude
-        ax.gridlines(draw_labels=False, xlocs=[180, -180])
         gl = ax.gridlines(crs=prj,
                           draw_labels=True, linewidth=1, color='gray',
                           alpha=0.5, linestyle='--')
