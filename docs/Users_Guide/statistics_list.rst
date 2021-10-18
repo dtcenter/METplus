@@ -34,15 +34,26 @@ METplus Database of Statistics
     -  
     - MODE Tool
     - MODE      
-  * - The Anomaly Correlation :raw-html:`<br />` including mean error with normal  :raw-html:`<br />` and bootstrap upper and :raw-html:`<br />` lower confidence limits
+  * - The Anomaly Correlation :raw-html:`<br />`
+    including mean error with normal  :raw-html:`<br />`
+    and bootstrap upper and :raw-html:`<br />`
+    lower confidence limits
     - ANOM_CORR
     -  
-    - Point-Stat, Grid-Stat :raw-html:`<br />` Series-Analysis :raw-html:`<br />` Stat-Analysis
+    - Point-Stat, Grid-Stat :raw-html:`<br />`
+      Series-Analysis :raw-html:`<br />`
+      Stat-Analysis
     - CNT 
-  * - The uncentered Anomaly Correlation :raw-html:`<br />` excluding mean error including  :raw-html:`<br />` bootstrap upper and lower  :raw-html:`<br />` confidence limits
-    - ANOM_CORR_UNCNTR
+  * - The uncentered Anomaly Correlation :raw-html:`<br />`
+    excluding mean error including  :raw-html:`<br />`
+    bootstrap upper and lower  :raw-html:`<br />`
+    confidence limits
+    - ANOM_CORR  :raw-html:`<br />` _UNCNTR
     -  
-    - Point-Stat, Grid-Stat :raw-html:`<br />` Series-Analysis :raw-html:`<br />` Stat-Analysis
+    - Point-Stat  :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      Series-Analysis :raw-html:`<br />`
+      Stat-Analysis
     - CNT
   * - Object area (in grid squares)
     - AREA
