@@ -19,7 +19,9 @@ METplus Database of Statistics
     - Categorical
     - Point-Stat Tool  :raw-html:`<br />`
       MODE Tool
-    - CTS, MCTS, NBRCTS  :raw-html:`<br />`
+    - CTS :raw-html:`<br />`
+      MCTS :raw-html:`<br />`
+      NBRCTS  :raw-html:`<br />`
       MODE output format: Accuracy
   * - Asymptotic Fractions Skill Score
     - AFSS
@@ -43,14 +45,15 @@ METplus Database of Statistics
       lower confidence limits
     - ANOM_CORR
     -  
-    - Point-Stat, Grid-Stat :raw-html:`<br />`
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
       Series-Analysis :raw-html:`<br />`
       Stat-Analysis
     - CNT 
-  * - The uncentered Anomaly Correlation :raw-html:`<br />`
-      excluding mean error including  :raw-html:`<br />`
-      bootstrap upper and lower  :raw-html:`<br />`
-      confidence limits
+  * - The uncentered Anomaly :raw-html:`<br />`
+      Correlation excluding mean :raw-html:`<br />`
+      error including bootstrap upper :raw-html:`<br />`
+      and lower confidence limits
     - ANOM_CORR  :raw-html:`<br />` _UNCNTR
     -  
     - Point-Stat  :raw-html:`<br />`
@@ -61,7 +64,8 @@ METplus Database of Statistics
   * - Object area (in grid squares)
     - AREA
     -  
-    - MODE and MTD
+    - MODE :raw-html:`<br />`
+      MTD
     - MODE ascii object
 
 ..#.. glossary:: statistics
