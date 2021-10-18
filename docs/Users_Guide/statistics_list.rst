@@ -29,12 +29,26 @@ METplus Database of Statistics
     -  
     - TC-Pairs Tool
     - TCMPR 
-  * -  
+  * - Difference between the axis angles of two objects (in degrees) 
     - ANGLE_DIFF
     -  
     - MODE Tool
     - MODE      
-
+  * - The Anomaly Correlation including mean error with normal and bootstrap upper and lower confidence limits
+    - ANOM_CORR
+    -  
+    - Point-Stat, Grid-Stat, Series-Analysis, Stat-Analysis
+    - CNT 
+  * - The uncentered Anomaly Correlation excluding mean error including bootstrap upper and lower confidence limits
+    - ANOM_CORR_UNCNTR
+    -  
+    - Point-Stat, Grid-Stat, Series-Analysis, Stat-Analysis
+    - CNT
+  * - Object area (in grid squares)
+    - AREA
+    -  
+    - MODE and MTD
+    - MODE ascii object
 
 ..#.. glossary:: statistics
 ..#   :sorted:
