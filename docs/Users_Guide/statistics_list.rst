@@ -17,7 +17,7 @@ METplus Database of Statistics
   * - Accuracy
     - ACC
     - Categorical
-    - Point-Stat Tool  :raw-html:`<br />` & MODE Tool
+    - Point-Stat Tool  :raw-html:`<br />` MODE Tool
     - CTS, MCTS, NBRCTS  :raw-html:`<br />` MODE output format: Accuracy
   * - Asymptotic Fractions Skill Score
     - AFSS
@@ -29,20 +29,20 @@ METplus Database of Statistics
     -  
     - TC-Pairs Tool
     - TCMPR 
-  * - Difference between the axis angles of two objects (in degrees) 
+  * - Difference between the axis :raw-html:`<br />` angles of two objects (in degrees) 
     - ANGLE_DIFF
     -  
     - MODE Tool
     - MODE      
-  * - The Anomaly Correlation including mean error with normal and bootstrap upper and lower confidence limits
+  * - The Anomaly Correlation :raw-html:`<br />` including mean error with normal  :raw-html:`<br />` and bootstrap upper and :raw-html:`<br />` lower confidence limits
     - ANOM_CORR
     -  
-    - Point-Stat, Grid-Stat, Series-Analysis, Stat-Analysis
+    - Point-Stat, Grid-Stat :raw-html:`<br />` Series-Analysis :raw-html:`<br />` Stat-Analysis
     - CNT 
-  * - The uncentered Anomaly Correlation excluding mean error including bootstrap upper and lower confidence limits
+  * - The uncentered Anomaly Correlation :raw-html:`<br />` excluding mean error including  :raw-html:`<br />` bootstrap upper and lower  :raw-html:`<br />` confidence limits
     - ANOM_CORR_UNCNTR
     -  
-    - Point-Stat, Grid-Stat, Series-Analysis, Stat-Analysis
+    - Point-Stat, Grid-Stat :raw-html:`<br />` Series-Analysis :raw-html:`<br />` Stat-Analysis
     - CNT
   * - Object area (in grid squares)
     - AREA
