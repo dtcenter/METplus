@@ -1,37 +1,109 @@
-How to Create Your Own Wrapper
-==============================
+How to Create a New Wrapper
+===========================
 
-* Create the new wrapper in the METplus/metplus/wrappers directory and name it to reflect the wrapper's function,
-  e.g.: new_tool_wrapper.py
-  You can copy example_wrapper.py or ascii2nc_wrapper.py to start.
+Naming
+------
 
+File Name
+^^^^^^^^^
 
-* Open the file for editing and change the name of the class to reflect the wrapper's function (in camel case). If the new tool falls under one of the existing tool categories, currently CompareGridded (which applies to non-gridded comparisons as well, should be renamed) and ReformatGridded, then you can make the tool a subclass of one of those classes. If not, then use CommandBuilder. Following the example above, you would rename your class::
+Create the new wrapper in the METplus/metplus/wrappers directory and
+name it to reflect the wrapper's function, e.g.: new_tool_wrapper.py is
+a wrapper around an application named "new_tool."
+You can copy example_wrapper.py to start.
+
+Class Name
+^^^^^^^^^^
+
+The name of the class should match the wrapper's function without underscores
+and with the first letter of each word capitalized followed by "Wrapper."
+For example, the new_tool wrapper would be named **NewToolWrapper**.
+
+Add entry to LOWER_TO_WRAPPER_NAME dictionary
+---------------------------------------------
+
+In metplus/util/doc_util.py, add entries to the LOWER_TO_WRAPPER_NAME
+dictionary so that the wrapper can be found in the PROCESS_LIST even if
+it is formatted differently. The key should be the wrapper name in all
+lower-case letters without any underscores. The value should be the class name
+of the wrapper without the "Wrapper" suffix. Examples::
+
+    'newtool': 'NewTool',
+    'ascii2nc': 'ASCII2NC',
+    'ensemblestat': 'EnsembleStat',
+
+The name of a tool can be formatted in different ways depending on the context.
+For example, the MET tool PCPCombine is written as Pcp-Combine in the MET
+documentation, the actual application that is run is called pcp_combine,
+and the wrapper was previously named PcpCombine (different capitalization)
+in earlier versions of METplus.
+To make things easier for the user, METplus reads in the values listed in
+PROCESS_LIST, removes all underscores, dashes, and capital letters,
+then uses the entries in this dictionary to determine the actual wrapper name.
+
+Some wrappers require multiple entries to cover all of the bases.
+For example, users may attempt to spell out MODE Time Domain instead of using
+MTD or accidentally write PointToGrid instead of Point2Grid::
+
+    'mtd': 'MTD',
+    'modetimedomain': 'MTD',
+    ...
+    'point2grid': 'Point2Grid',
+    'pointtogrid': 'Point2Grid',
+
+More than one entry is rarely needed, but
+they will not hurt anything as long as they do not cause any conflicts.
+
+Wrapper Components
+------------------
+
+Open the wrapper file for editing the new class.
+
+Rename the class to match the wrapper's class from the above sections.
+Most wrappers should be a sub-class of the CommandBuilder wrapper::
 
     class NewToolWrapper(CommandBuilder)
 
-* The new wrapper should reflect the name of the MET application without underscores because of the way the application gets called from the wrapper::
+The text 'CommandBuilder' in parenthesis makes NewToolWrapper a subclass
+of CommandBuilder.
 
-    Point2GridWrapper =  correct
-    Point_2_Grid_Wrapper = incorrect
+If the new tool falls under one of the existing tool categories,
+then you can make the tool a subclass of one of those classes.
+This should only be done if the functions in the parent class are needed
+by the new wrapper. If you are unsure, then use CommandBuilder.
 
-* Modify the init function to initialize NewExample from its base class (CommandBuilder), and to set the name and path to the MET application you are wrapping::
+Refer to the :ref:`basic_components_of_wrappers` section of the Contributor's
+Guide for more information on what should be added.
 
-    def __init__(self, config):
-        super(NewToolWrapper, self).__init__(config)
-        self.app_path = os.path.join(self.p.getdir('MET_BIN_DIR', ''),
-                                     'new_tool')
-        self.app_name = os.path.basename(self.app_path)
+Init Function
+^^^^^^^^^^^^^
 
-**NOTE**: 'new_tool' is the name of the MET tool being wrapped
+Modify the init function to initialize NewTool from its base class
+to set the self.app_name variable to name of the application.
+See the Basic Components :ref:`bc_init_function` section for more information::
 
-* Override the run_at_time method if the wrapper will be called once for each run time specified in the configuration file. If the wrapper will loop over each forecast lead (LEAD_SEQ in the METplus config file) and process once for each, then override run_at_time with the following method and put the logic to build the MET command for each run in a run_at_time_once method::
+    def __init__(self, config, instance=None, config_overrides={}):
+        self.app_name = 'new_tool'
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
+
+Run Functions
+^^^^^^^^^^^^^
+
+* Override the run_at_time method if the wrapper will be called once for each
+  valid or init time specified in the configuration file.
+  If the wrapper will loop over each forecast lead
+  (LEAD_SEQ in the METplus config file) and process once for each, then
+  override run_at_time with the following method and put the logic to build
+  the MET command for each run in a run_at_time_once method::
 
     def run_at_time(self, input_dict):
         """! Runs the MET application for a given run time. This function
         loops over the list of forecast leads and runs the application for
         each.
-        Args:
           @param input_dict dictionary containing timing information
           @returns None
           """
@@ -51,7 +123,6 @@ How to Create Your Own Wrapper
 
     def run_at_time_once(self, time_info):
         """! Process runtime and try to build command to run ascii2nc
-             Args:
                 @param time_info dictionary containing timing information
         """
         # get input files
@@ -72,7 +143,8 @@ How to Create Your Own Wrapper
         self.build_and_run_command()
 
 
-If the wrapper will not loop and process for each forecast lead, put the logic to build the command in the run_at_time method.
+If the wrapper will not loop and process for each forecast lead,
+put the logic to build the command in the run_at_time method.
 
 * It is recommended to divide up the logic into components, as illustrated above, the make the code more readable and easier to test.
 
@@ -81,10 +153,6 @@ If the wrapper will not loop and process for each forecast lead, put the logic t
 * Once you have provided all the necessary information to create the MET command, call self.build_and_run_command(). This calls self.get_command() to assemble the command and verify that the command your wrapper generated contains all of the required arguments.  You may need to override get_command() in your wrapper if your MET application is different from the example.  For instance, some MET tools require flags such as -f to precede the input filename.  You can override get_command in the wrapper to prepend the required flag to the filename in your constructed MET command.
 
 * Call self.clear() at the beginning of each loop iteration that tries to build/run a MET command to prevent inadvertently reusing/re-running commands that were previously created.
-
-* Update the METplus/ush/run_metplus.py file to recognize your wrapper by adding an import statement::
-
-    from new_tool_wrapper import NewToolWrapper
 
 * To allow your use case to use your wrapper, assign the wrapper name to PROCESS_LIST::
 
@@ -95,39 +163,6 @@ If the wrapper will not loop and process for each forecast lead, put the logic t
 
     Do not include the text "Wrapper" at the end of your wrapper name.
     The PROCESS_LIST is located under the [config] section header in your use case and/or example configuration file.
-
-* In met_util.py, add entries to the LOWER_TO_WRAPPER_NAME dictionary so that the wrapper can be found in the PROCESS_LIST even if it is formatted differently::
-
-    LOWER_TO_WRAPPER_NAME = {'ascii2nc': 'ASCII2NC',
-                         'cycloneplotter': 'CyclonePlotter',
-                         'ensemblestat': 'EnsembleStat',
-                         'example': 'Example',
-                         'extracttiles': 'ExtractTiles',
-                         'gempaktocf': 'GempakToCF',
-                         'genvxmask': 'GenVxMask',
-                         'gridstat': 'GridStat',
-                         'makeplots': 'MakePlots',
-                         'mode': 'MODE',
-                         'mtd': 'MTD',
-                         'modetimedomain': 'MTD',
-                         'pb2nc': 'PB2NC',
-                         'pcpcombine': 'PCPCombine',
-                         'pointstat': 'PointStat',
-                         'pyembedingest': 'PyEmbedIngest',
-                         'regriddataplane': 'RegridDataPlane',
-                         'seriesanalysis': 'SeriesAnalysis',
-                         'seriesbyinit': 'SeriesByInit',
-                         'seriesbylead': 'SeriesByLead',
-                         'statanalysis': 'StatAnalysis',
-                         'tcpairs': 'TCPairs',
-                         'tcstat': 'TCStat',
-                         'tcmprplotter': 'TCMPRPlotter',
-                         'usage': 'Usage',
-                         }
-
-The name of a tool can be formatted in different ways depending on the context. For example, the MET tool PCPCombine is written as Pcp-Combine in the MET documentation, the actual application that is run is called pcp_combine, and the wrapper was previously named PCPCombine (different capitalization) in earlier versions of METplus. To make things easier for the user, METplus reads in the values listed in PROCESS_LIST, removes all underscores, dashes, and capital letters, then uses the entries in this dictionary to determine the actual wrapper name.
-
-Some wrappers require multiple entries to cover all of the bases. For example, users may attempt to spell out MODE Time Domain instead of using MTD or accidentally write PointToGrid instead of Point2Grid. Additional entries will not hurt anything as long as they do not cause any conflicts.
 
 * Add a section to the Python Wrappers page of the documentation with information about the new tool including a list of all METplus configuration variables that can be used.
 
