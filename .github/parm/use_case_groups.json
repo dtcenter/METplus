@@ -1,6 +1,21 @@
 [
   {
     "category": "met_tool_wrapper",
+    "index_list": "17-18",
+    "run": true
+  },
+  {
+    "category": "medium_range",
+    "index_list": "8",
+    "run": true
+  },
+  {
+    "category": "precipitation",
+    "index_list": "5-6",
+    "run": true
+  },
+  {
+    "category": "met_tool_wrapper",
     "index_list": "0-57",
     "run": false
   },
