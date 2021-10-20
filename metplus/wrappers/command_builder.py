@@ -1314,10 +1314,11 @@ class CommandBuilder:
     # argument needed to match call
     # pylint:disable=unused-argument
     def run_at_time(self, input_dict):
-        """!Used to output error and exit if wrapper is attemped to be run with
-            LOOP_ORDER = times and the run_at_time method is not implemented"""
-        self.log_error('run_at_time not implemented for {} wrapper. '
-                          'Cannot run with LOOP_ORDER = times'.format(self.log_name))
+        """! Used to output error and exit if wrapper is attempted to be run
+         with LOOP_ORDER = times and the run_at_time method is not implemented
+        """
+        self.log_error(f'run_at_time not implemented for {self.log_name} '
+                       'wrapper. Cannot run with LOOP_ORDER = times')
         return None
 
     def run_all_times(self):
