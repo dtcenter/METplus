@@ -344,7 +344,7 @@ Creating a pull request
     `GitHub Actions <https://github.com/dtcenter/METplus/actions>`_ have
     passed.  See "All checks have passed" in the figure below. If the tests
     were not successful or if there are conflicts with the base branch,
-    ask the requestor make changes.
+    ask the requestor to make changes.
 
     .. figure:: figure/checks_pass_no_conflicts.png
     
