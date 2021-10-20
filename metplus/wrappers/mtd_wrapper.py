@@ -48,6 +48,7 @@ class MTDWrapper(MODEWrapper):
         self.obs_file = None
 
     def create_c_dict(self):
+        # call CompareGriddedWrapper's function instead of parent (MODE)
         c_dict = CompareGriddedWrapper.create_c_dict(self)
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MTD_VERBOSITY',
                                                  c_dict['VERBOSITY'])
