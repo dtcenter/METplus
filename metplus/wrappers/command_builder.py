@@ -50,7 +50,6 @@ class CommandBuilder:
         self.config = config
         self.logger = config.logger
         self.env_list = set()
-        self.debug = False
         self.args = []
         self.input_dir = ""
         self.infiles = []
