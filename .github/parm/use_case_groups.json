@@ -40,11 +40,6 @@
     "run": false
   },
   {
-    "category": "cryosphere",
-    "index_list": "0",
-    "run": false
-  },
-  {
     "category": "data_assimilation",
     "index_list": "0",
     "run": false
@@ -52,12 +47,7 @@
   {
     "category": "marine_and_cryosphere",
     "index_list": "0-2",
-    "run": false
-  },
-  {
-    "category": "marine_and_coastal",
-    "index_list": "0-1",
-    "run": false
+    "run": true
   },
   {
     "category": "medium_range",
