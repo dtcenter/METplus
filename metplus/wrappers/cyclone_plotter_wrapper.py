@@ -23,6 +23,8 @@ try:
     import cartopy.feature as cfeature
     import cartopy
     from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
+    from shapely.geometry import Point
+    from shapely.geometry.polygon import Polygon
 
     ##If the script is run on a limited-internet access machine, the CARTOPY_DIR environment setting
     ##will need to be set in the user-specific system configuration file. Review the Installation section
@@ -130,6 +132,55 @@ class CyclonePlotterWrapper(CommandBuilder):
         # very large filled circle on the plots that appears too large.
         self.cross_marker = '+'
         self.circle_marker = '.'
+
+        # Map extent, global if CYCLONE_PLOTTER_GLOBAL_PLOT is True
+        self.is_global_extent = (self.config.getbool('config',
+                       'CYCLONE_PLOTTER_GLOBAL_PLOT')
+        )
+        self.logger.debug(f"global_extent value: {self.is_global_extent}")
+
+        # User-defined map extent, lons and lats
+        if self.is_global_extent:
+            self.logger.debug("Global extent")
+        else:
+            self.logger.debug("Getting lons and lats that define the plot's extent")
+            west_lon = (self.config.getstr('config',
+                             'CYCLONE_PLOTTER_WEST_LON')
+            )
+            east_lon = (self.config.getstr('config',
+                             'CYCLONE_PLOTTER_EAST_LON')
+            )
+            north_lat = (self.config.getstr('config',
+                              'CYCLONE_PLOTTER_NORTH_LAT')
+            )
+            south_lat = (self.config.getstr('config',
+                              'CYCLONE_PLOTTER_SOUTH_LAT')
+            )
+
+            # Check for unconfigured lons and lats needed for defining the extent
+            if not west_lon:
+                self.logger.error("Missing CYCLONE_PLOTTER_WEST_LON in config file. ")
+                sys.exit("Missing the CYCLONE_PLOTTER_WEST_LON please check config file")
+            else:
+                self.west_lon = (float(west_lon))
+            if not east_lon:
+                self.logger.error("Missing CYCLONE_PLOTTER_EAST_LON in config file. ")
+                sys.exit("Missing the CYCLONE_PLOTTER_EAST_LON please check config file")
+            else:
+                self.east_lon = (float(east_lon))
+            if not south_lat:
+                self.logger.error("Missing CYCLONE_PLOTTER_SOUTH_LAT in config file. ")
+                sys.exit("Missing the CYCLONE_PLOTTER_SOUTH_LAT please check config file")
+            else:
+                self.south_lat = float(south_lat)
+            if not north_lat:
+                self.logger.error("Missing CYCLONE_PLOTTER_NORTH_LAT in config file. ")
+                sys.exit("Missing the CYCLONE_PLOTTER_NORTH_LAT please check config file")
+            else:
+                self.north_lat = float(north_lat)
+
+            self.extent_region = [self.west_lon, self.east_lon, self.south_lat, self.north_lat]
+            self.logger.debug(f"extent region: {self.extent_region}")
 
 
     def run_all_times(self):
@@ -247,6 +298,8 @@ class CyclonePlotterWrapper(CommandBuilder):
                 track_pt = TrackPt(indices, cur_unique, alons, alats)
                 storm_track_dict[cur_unique] = track_pt
 
+
+
             # create a new dataframe to contain the sanitized lons (i.e. the original ALONs that have
             # been cleaned up when crossing the International Date Line)
             sanitized_df = user_criteria_df.copy(deep=True)
@@ -294,6 +347,17 @@ class CyclonePlotterWrapper(CommandBuilder):
                             sanitized_df.loc[idx, 'LEAD_GROUP'] = '6'
                             sanitized_df.loc[idx, 'MARKER'] = self.cross_marker
 
+            # If the user has specified a region of interest rather than the global extent,
+            # subset the data even further to points that are within this region.
+            if not self.is_global_extent:
+                self.logger.debug(f"Subset the data based on the region of interest.")
+                subset_by_region_df = self.subset_by_region(sanitized_df)
+                subset_by_region_df.to_csv("/Users/minnawin/Desktop/subsetted.csv")
+                final_df = subset_by_region_df.copy(deep=True)
+                final_df.to_csv("/Users/minnawin/Desktop/final.csv")
+            else:
+                final_df = sanitized_df.copy(deep=True)
+
             # Write output ASCII file (csv) summarizing the information extracted from the input
             # which is used to generate the plot.
             if self.gen_ascii:
@@ -305,16 +369,15 @@ class CyclonePlotterWrapper(CommandBuilder):
 
                # Make sure that the dataframe is sorted by STORM_ID, INIT_YMD, INIT_HOUR, and LEAD
                # to ensure that the line plot is connecting the points in the correct order.
-               # sanitized_df.sort_values(by=['STORM_ID', 'INIT_YMD', 'INIT_HOUR', 'LEAD'],
-               #                          inplace=True).reset_index(drop=True,inplace=True)
-               # sanitized_df.reset_index(inplace=True,drop=True)
-               final_df = sanitized_df.sort_values(by=['STORM_ID', 'INIT_YMD', 'INIT_HOUR', 'LEAD'], ignore_index=True)
-               final_df.to_csv(final_df_filename)
+               final_sorted_df = final_df.sort_values(by=['STORM_ID', 'INIT_YMD', 'INIT_HOUR', 'LEAD'], ignore_index=True)
+               # final_df.reset_index(i=True,inplace=True)
+               final_sorted_df.to_csv(final_df_filename)
         else:
             # The user's specified directory isn't valid, log the error and exit.
             self.logger.error("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory, check config file.")
             sys.exit("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory.")
-        return final_df
+
+        return final_sorted_df
 
 
     def create_plot(self):
@@ -336,17 +399,24 @@ class CyclonePlotterWrapper(CommandBuilder):
         ax.coastlines()
         ax.add_feature(cfeature.OCEAN)
 
-        # keep map zoomed out to full world.  If this
-        # is absent, the default behavior is to zoom
-        # into the portion of the map that contains points.
-        ax.set_global()
+        # keep map zoomed out to full world (ie global extent) if CYCLONE_PLOTTER_GLOBAL_PLOT is
+        # yes or True, otherwise use the lons and lats defined in the config file to
+        # create a polygon (rectangular box) defining the region of interest.
+        if self.is_global_extent:
+            ax.set_global()
+            self.logger.debug("Generating a plot of the global extent")
+        else:
+            self.logger.debug(f"Generating a plot of the user-defined extent:{self.west_lon}, {self.east_lon}, "
+                              f"{self.south_lat}, {self.north_lat}")
+            ax.set_extent(self.extent_region)
 
         # Add grid lines for longitude and latitude
         gl = ax.gridlines(crs=prj,
                           draw_labels=True, linewidth=1, color='gray',
                           alpha=0.5, linestyle='--')
+
         gl.xlabels_top = False
-        gl.ylabels_left = False
+        gl.ylabels_left = True
         gl.xlines = True
         gl.xformatter = LONGITUDE_FORMATTER
         gl.yformatter = LATITUDE_FORMATTER
@@ -532,6 +602,53 @@ class CyclonePlotterWrapper(CommandBuilder):
             track_dict[cur_unique] = sanitized_lons_and_lats
 
         return track_dict
+
+
+    def subset_by_region(self, sanitized_df):
+        """
+            Args:
+               @param: sanitized_df the pandas dataframe containing
+                       the "sanitized" longitudes and other useful
+                       plotting information
+
+            Returns:
+               :return:
+        """
+        self.logger.debug("Subsetting by region...")
+
+        # Copy the sanitized_df dataframe
+        sanitized_by_region_df = sanitized_df.copy(deep=True)
+
+        points = []
+        rlons = []
+
+        for x, y in zip(sanitized_df['ALON'], sanitized_df['ALAT']):
+            # rescale the longitude from -180 to 180 degrees to 0 to 360 degrees
+            xr = (x % 360)
+            points.append(Point(xr,y))
+            rlons.append(xr)
+        sanitized_by_region_df['RLON'] = rlons
+
+        # Iterate over ALL the rows and if any point is within the polygon,
+        # save it's index so we can create a new dataframe with just the
+        # relevant data.
+        keep_idx = []
+        for index, row in sanitized_by_region_df.iterrows():
+            if (self.west_lon <= row['RLON'] <= self.east_lon) and (self.south_lat <= row['ALAT'] <= self.north_lat):
+                sanitized_by_region_df.loc[index,'INSIDE'] = True
+            else:
+                sanitized_by_region_df.loc[index,'INSIDE'] = False
+
+        # Now filter the input dataframe based on the whether points are inside
+        # the specified boundaries.
+        masked = sanitized_by_region_df[sanitized_by_region_df['INSIDE'] == True]
+        masked.reset_index(drop=True,inplace=True)
+        masked.to_csv("/Users/minnawin/Desktop/masked.csv")
+
+        if len(masked) == 0:
+            sys.exit("No data in region specified, please check your lon and lat values in the config file.")
+
+        return masked
 
 
     @staticmethod
