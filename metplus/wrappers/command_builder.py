@@ -281,7 +281,7 @@ class CommandBuilder:
 
     @staticmethod
     def format_regrid_to_grid(to_grid):
-        to_grid = to_grid.strip('"')
+        to_grid = to_grid.strip('"').upper()
         if not to_grid:
             to_grid = 'NONE'
 
@@ -1432,7 +1432,7 @@ class CommandBuilder:
                               c_dict_key=None, **kwargs):
         """! Get string from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
-             Args:
+
                  @param c_dict configuration dictionary to set
                  @param mp_config METplus configuration variable name. Assumed to be
                   in the [config] section. Value can be a comma-separated list of items.
@@ -1441,6 +1441,8 @@ class CommandBuilder:
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
                  @param remove_quotes if True, output value without quotes.
+                  Default value is False
+                 @param to_grid if True, format to_grid value
                   Default value is False
                  @param default (Optional) if set, use this value as default
                   if config is not set
@@ -1461,6 +1463,9 @@ class CommandBuilder:
 
         if kwargs.get('uppercase', False):
             conf_value = conf_value.upper()
+
+        if kwargs.get('to_grid', False):
+            conf_value = self.format_regrid_to_grid(conf_value)
 
         c_key = c_dict_key if c_dict_key else met_config_name.upper()
         c_dict[c_key] = f'{met_config_name} = {conf_value};'
@@ -1767,7 +1772,13 @@ class CommandBuilder:
         if not extra:
             return extra_args
 
-        for extra_option in ['remove_quotes', 'uppercase', 'allow_empty']:
+        valid_extras = [
+            'remove_quotes',
+            'uppercase',
+            'allow_empty',
+            'to_grid',
+        ]
+        for extra_option in valid_extras:
             if extra_option in extra:
                 extra_args[extra_option] = True
         return extra_args
