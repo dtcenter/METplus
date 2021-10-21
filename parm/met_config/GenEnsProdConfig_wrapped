@@ -17,7 +17,7 @@ ${METPLUS_MODEL}
 // May be set separately in each "obs.field" entry
 //
 //desc =
-${METPLUS_}
+${METPLUS_DESC}
 
 ////////////////////////////////////////////////////////////////////////////////
 
