@@ -949,6 +949,384 @@ METplus Configuration
    | :term:`GEMPAKTOCF_CLASSPATH`
    |
 
+.. _gen_ens_prod_wrapper:
+
+GenEnsProd
+==========
+
+Description
+-----------
+
+Used to configure the MET tool gen_ens_prod to generate ensemble products.
+
+METplus Configuration
+---------------------
+
+| :term:`GEN_ENS_PROD_INPUT_DIR`
+| :term:`GEN_ENS_PROD_INPUT_TEMPLATE`
+| :term:`GEN_ENS_PROD_CTRL_INPUT_DIR`
+| :term:`GEN_ENS_PROD_CTRL_INPUT_TEMPLATE`
+| :term:`GEN_ENS_PROD_OUTPUT_DIR`
+| :term:`GEN_ENS_PROD_OUTPUT_TEMPLATE`
+| :term:`LOG_GEN_ENS_PROD_VERBOSITY`
+| :term:`MODEL`
+| :term:`GEN_ENS_PROD_DESC`
+| :term:`GEN_ENS_PROD_REGRID_TO_GRID`
+| :term:`GEN_ENS_PROD_REGRID_METHOD`
+| :term:`GEN_ENS_PROD_REGRID_WIDTH`
+| :term:`GEN_ENS_PROD_REGRID_VLD_THRESH`
+| :term:`GEN_ENS_PROD_REGRID_SHAPE`
+| :term:`GEN_ENS_PROD_CENSOR_THRESH`
+| :term:`GEN_ENS_PROD_CENSOR_VAL`
+| :term:`GEN_ENS_PROD_CAT_THRESH`
+| :term:`GEN_ENS_PROD_NC_VAR_STR`
+| :term:`GEN_ENS_PROD_ENS_THRESH`
+| :term:`GEN_ENS_PROD_ENS_VLD_THRESH`
+| :term:`GEN_ENS_PROD_NBRHD_PROB_WIDTH`
+| :term:`GEN_ENS_PROD_NBRHD_PROB_SHAPE`
+| :term:`GEN_ENS_PROD_NBRHD_PROB_VLD_THRESH`
+| :term:`GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH`
+| :term:`GEN_ENS_PROD_NMEP_SMOOTH_SHAPE`
+| :term:`GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_DX`
+| :term:`GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_RADIUS`
+| :term:`GEN_ENS_PROD_NMEP_SMOOTH_METHOD`
+| :term:`GEN_ENS_PROD_NMEP_SMOOTH_WIDTH`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_FIELD`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_METHOD`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_MATCH_MONTH`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_FILE_NAME`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_FIELD`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_METHOD`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_MATCH_MONTH`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MEAN`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_STDEV`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MINUS`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_PLUS`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MIN`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MAX`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_RANGE`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_VLD_COUNT`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_FREQUENCY`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NEP`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
+| :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
+
+.. _gen-ens-prod-met-conf:
+
+MET Configuration
+-----------------
+
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
+
+`MET_INSTALL_DIR/share/met/config/GenEnsProdConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GenEnsProdConfig_default>`_
+
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/GenEnsProdConfig_wrapped
+
+**${METPLUS_MODEL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL`
+     - model
+
+**${METPLUS_DESC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`DESC` or :term:`GEN_ENS_PROD_DESC`
+     - desc
+
+**${METPLUS_REGRID_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_REGRID_SHAPE`
+     - regrid.shape
+   * - :term:`GEN_ENS_PROD_REGRID_METHOD`
+     - regrid.method
+   * - :term:`GEN_ENS_PROD_REGRID_WIDTH`
+     - regrid.width
+   * - :term:`GEN_ENS_PROD_REGRID_VLD_THRESH`
+     - regrid.vld_thresh
+   * - :term:`GEN_ENS_PROD_REGRID_TO_GRID`
+     - regrid.to_grid
+
+**${METPLUS_CENSOR_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_CENSOR_THRESH`
+     - censor_thresh
+
+**${METPLUS_CENSOR_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_CENSOR_VAL`
+     - censor_val
+
+**${METPLUS_CAT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_CAT_THRESH`
+     - cat_thresh
+
+**${METPLUS_NC_VAR_STR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_NC_VAR_STR`
+     - nc_var_str
+
+**${METPLUS_ENS_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_ENS_FILE_TYPE`
+     - ens.file_type
+
+**${METPLUS_ENS_ENS_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_ENS_THRESH`
+     - ens.ens_thresh
+
+**${METPLUS_ENS_VLD_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_ENS_VLD_THRESH`
+     - ens.vld_thresh
+
+**${METPLUS_ENS_FIELD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENS_VAR<n>_NAME`
+     - ens.field.name
+   * - :term:`ENS_VAR<n>_LEVELS`
+     - ens.field.level
+   * - :term:`ENS_VAR<n>_THRESH`
+     - ens.field.cat_thresh
+   * - :term:`ENS_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+**${METPLUS_NBRHD_PROB_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_NBRHD_PROB_WIDTH`
+     - nbrhd_prob.width
+   * - :term:`GEN_ENS_PROD_NBRHD_PROB_SHAPE`
+     - nbrhd_prob.shape
+   * - :term:`GEN_ENS_PROD_NBRHD_PROB_VLD_THRESH`
+     - nbrhd_prob.vld_thresh
+
+**${METPLUS_NMEP_SMOOTH_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH`
+     - nmep_smooth.vld_thresh
+   * - :term:`GEN_ENS_PROD_NMEP_SMOOTH_SHAPE`
+     - nmep_smooth.shape
+   * - :term:`GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_DX`
+     - nmep_smooth.gaussian_dx
+   * - :term:`GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_RADIUS`
+     - nmep_smooth.gaussian_radius
+   * - :term:`GEN_ENS_PROD_NMEP_SMOOTH_METHOD`
+     - nmep_smooth.type.method
+   * - :term:`GEN_ENS_PROD_NMEP_SMOOTH_WIDTH`
+     - nmep_smooth.type.width
+
+**${METPLUS_CLIMO_MEAN_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME`
+     - climo_mean.file_name
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_FIELD`
+     - climo_mean.field
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_METHOD`
+     - climo_mean.regrid.method
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_WIDTH`
+     - climo_mean.regrid.width
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - climo_mean.regrid.vld_thresh
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_SHAPE`
+     - climo_mean.regrid.shape
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - climo_mean.time_interp_method
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_MATCH_MONTH`
+     - climo_mean.match_month
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_DAY_INTERVAL`
+     - climo_mean.day_interval
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_HOUR_INTERVAL`
+     - climo_mean.hour_interval
+
+**${METPLUS_CLIMO_STDEV_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_FILE_NAME`
+     - climo_stdev.file_name
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_FIELD`
+     - climo_stdev.field
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_METHOD`
+     - climo_stdev.regrid.method
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_WIDTH`
+     - climo_stdev.regrid.width
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - climo_stdev.regrid.vld_thresh
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_SHAPE`
+     - climo_stdev.regrid.shape
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - climo_stdev.time_interp_method
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_MATCH_MONTH`
+     - climo_stdev.match_month
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_DAY_INTERVAL`
+     - climo_stdev.day_interval
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_HOUR_INTERVAL`
+     - climo_stdev.hour_interval
+
+**${METPLUS_ENSEMBLE_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON`
+     - ensemble_flag.latlon
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MEAN`
+     - ensemble_flag.mean
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_STDEV`
+     - ensemble_flag.stdev
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MINUS`
+     - ensemble_flag.minus
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_PLUS`
+     - ensemble_flag.plus
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MIN`
+     - ensemble_flag.min
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MAX`
+     - ensemble_flag.max
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_RANGE`
+     - ensemble_flag.range
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_VLD_COUNT`
+     - ensemble_flag.vld_count
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_FREQUENCY`
+     - ensemble_flag.frequency
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NEP`
+     - ensemble_flag.nep
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP`
+     - ensemble_flag.nmep
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO`
+     - ensemble_flag.climo
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
+     - ensemble_flag.climo_cdf
+
+**${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
+     - n/a
+
+
 .. _gen_vx_mask_wrapper:
 
 GenVxMask
