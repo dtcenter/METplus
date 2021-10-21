@@ -18,7 +18,7 @@ from . import CommandBuilder
 
 class ExampleWrapper(CommandBuilder):
     """!Wrapper can be used as a base to develop a new wrapper"""
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'example'
         super().__init__(config,
                          instance=instance,

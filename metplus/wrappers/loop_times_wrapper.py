@@ -15,7 +15,7 @@ and forecast lead times
 
 class LoopTimesWrapper(CommandBuilder):
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         # set app_name if not set by child class to allow tests to run
         if not hasattr(self, 'app_name'):
             self.app_name = 'loop_times'

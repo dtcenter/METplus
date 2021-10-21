@@ -44,7 +44,7 @@ class CommandBuilder:
     # name of variable to hold any MET config overrides
     MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_OVERRIDES'
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.isOK = True
         self.errors = 0
         self.config = config

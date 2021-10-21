@@ -10,7 +10,7 @@ class UsageWrapper(CommandBuilder):
     """! A default process, prints out usage when nothing is defined in
          the PROCESS_LIST
     """
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'Usage'
         super().__init__(config,
                          instance=instance,
