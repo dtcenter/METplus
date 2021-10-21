@@ -173,7 +173,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
             'type': ('dictlist', '', {'method': ('string',
                                                  'uppercase,remove_quotes'),
                                       'width': 'int',
-                                     }
+                                      }
                      )
         })
 
