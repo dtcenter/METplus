@@ -83,7 +83,7 @@ METplus Database of Statistics
       containing data values :raw-html:`<br />`
       in the raw field :raw-html:`<br />`
       that meet the object :raw-html:`<br />`
-      definition threshold :raw-html:`<br />
+      definition threshold :raw-html:`<br />`
       criteria (in grid squares)
     - AREA_THRESH
     -  
