@@ -56,10 +56,6 @@ class RuntimeFreqWrapper(CommandBuilder):
                                f'{app_name_upper}_RUNTIME_FREQ',
                                '').upper()
         )
-        if c_dict['RUNTIME_FREQ'] not in self.FREQ_OPTIONS:
-            self.log_error(f'Invalid value for {app_name_upper}_RUNTIME_FREQ: '
-                           f"({c_dict['RUNTIME_FREQ']}) Valid options include:"
-                           f" {', '.join(self.FREQ_OPTIONS)}")
 
         # get runtime information to obtain all input files
         start, end, interval = get_start_end_interval_times(self.config,
@@ -120,6 +116,14 @@ class RuntimeFreqWrapper(CommandBuilder):
         c_dict['TEMPLATE_DICT'] = template_dict
 
     def run_all_times(self):
+        if self.c_dict['RUNTIME_FREQ'] not in self.FREQ_OPTIONS:
+            self.log_error(f"Invalid value for "
+                           f"{self.app_name.upper()}_RUNTIME_FREQ: "
+                           f"({self.c_dict['RUNTIME_FREQ']}) "
+                           f"Valid options include:"
+                           f" {', '.join(self.FREQ_OPTIONS)}")
+            return None
+
         # loop over all custom strings
         for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
             if custom_string:
