@@ -3,7 +3,7 @@ Program Name: loop_times_wrapper.py
 Contact(s): George McCabe
 """
 
-from . import CommandBuilder
+from . import RuntimeFreqWrapper
 from ..util import get_lead_sequence, skip_time, ti_calculate
 
 '''!@namespace LoopTimesWrapper
@@ -13,7 +13,7 @@ and forecast lead times
 '''
 
 
-class LoopTimesWrapper(CommandBuilder):
+class LoopTimesWrapper(RuntimeFreqWrapper):
 
     def __init__(self, config, instance=None, config_overrides=None):
         # set app_name if not set by child class to allow tests to run
@@ -24,29 +24,11 @@ class LoopTimesWrapper(CommandBuilder):
                          instance=instance,
                          config_overrides=config_overrides)
 
-    def run_at_time(self, input_dict):
-        """! Runs the MET application for a given run time. This function
-             loops over the list of forecast leads and runs the application for
-             each.
+    def create_c_dict(self):
+        c_dict = super().create_c_dict()
 
-                @param input_dict dictionary containing timing information
-        """
-        for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-            if custom_string:
-                self.logger.info(f"Processing custom string: {custom_string}")
+        # set default runtime frequency to run once for each runtime
+        if not c_dict.get('RUNTIME_FREQ'):
+            c_dict['RUNTIME_FREQ'] = 'RUN_ONCE_FOR_EACH'
 
-            input_dict['custom'] = custom_string
-
-            for lead in get_lead_sequence(self.config, input_dict):
-                self.clear()
-
-                input_dict['lead'] = lead
-
-                time_info = ti_calculate(input_dict)
-
-                if skip_time(time_info, self.c_dict.get('SKIP_TIMES')):
-                    continue
-
-                self.run_at_time_once(time_info)
-
-        return True
+        return c_dict
