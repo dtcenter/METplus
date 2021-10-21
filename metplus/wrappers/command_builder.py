@@ -1774,13 +1774,13 @@ class CommandBuilder:
         if not extra:
             return extra_args
 
-        valid_extras = [
+        VALID_EXTRAS = (
             'remove_quotes',
             'uppercase',
             'allow_empty',
             'to_grid',
-        ]
-        for extra_option in valid_extras:
+        )
+        for extra_option in VALID_EXTRAS:
             if extra_option in extra:
                 extra_args[extra_option] = True
         return extra_args
