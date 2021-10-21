@@ -2197,7 +2197,7 @@ class CommandBuilder:
                 children = []
                 for kid_name, kid_info in kids.items():
                     kid_upper = kid_name.upper()
-                    kid_type, kid_extra, _, _= self.parse_item_info(kid_info)
+                    kid_type, kid_extra, _, _ = self.parse_item_info(kid_info)
 
                     metplus_configs.append(f'{metplus_name}_{kid_upper}')
                     metplus_configs.append(f'{metplus_prefix}{kid_upper}')
