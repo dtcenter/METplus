@@ -13,6 +13,7 @@ LOWER_TO_WRAPPER_NAME = {
     'extracttiles': 'ExtractTiles',
     'gempaktocf': 'GempakToCF',
     'genvxmask': 'GenVxMask',
+    'genensprod': 'GenEnsProd',
     'gfdltracker': 'GFDLTracker',
     'griddiag': 'GridDiag',
     'gridstat': 'GridStat',
