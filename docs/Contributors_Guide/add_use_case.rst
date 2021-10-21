@@ -42,13 +42,10 @@ one of the following:
 
 * air_quality_and_comp
 * climate
-* coastal
 * convection_allowing_models
-* cryosphere
 * data_assimilation
 * extremes
 * land_surface
-* marine_and_coastal
 * marine_and_cryosphere
 * medium_range
 * miscellaneous
@@ -438,7 +435,7 @@ Verify that the correct directory structure is found inside the tarfile::
 The output should show that all of the data is found under the
 model_applications/<category>/<use_case> directory. For example::
 
-    model_applications/marine_and_coastal/
+    model_applications/marine_and_cryosphere/
     model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar/
     model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar/weight_north.nc
     model_applications/marine_and_cryosphere/PlotDataPlane_obsHYCOM_coordTripolar/rtofs_glo_2ds_n048_daily_diag.nc
