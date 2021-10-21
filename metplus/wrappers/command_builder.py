@@ -1631,11 +1631,11 @@ class CommandBuilder:
 
         output = ''.join(values)
         # add curly braces if dictionary
-        if data_type == 'dict':
+        if 'dict' in data_type:
             output = f"{{{output}}}"
 
         # add square braces if list
-        elif data_type == 'list':
+        if 'list' in data_type:
             output = f"[{output}];"
 
         # if name is not empty, add variable name and equals sign
@@ -2114,7 +2114,7 @@ class CommandBuilder:
                            f"{item_type}")
             return None
 
-    def handle_met_config_item(self, item, output_dict=None):
+    def handle_met_config_item(self, item, output_dict=None, depth=0):
         """! Reads info from METConfigInfo object, gets value from
         METplusConfig, and formats it based on the specifications. Sets
         value in output dictionary with key starting with METPLUS_.
@@ -2122,6 +2122,10 @@ class CommandBuilder:
         @param item METConfigInfo object to read and determine what to get
         @param output_dict (optional) dictionary to save formatted output
          If unset, use self.env_var_dict.
+        @param depth counter to check if item being processed is nested within
+         another variable or not. If depth is 0, it is a top level variable.
+         This is used internally by this function and shouldn't be supplied
+         outside of calls within this function.
         """
         if output_dict is None:
             output_dict = self.env_var_dict
@@ -2130,17 +2134,23 @@ class CommandBuilder:
         if not env_var_name.startswith('METPLUS_'):
             env_var_name = f'METPLUS_{env_var_name}'
 
-        # handle dictionary item
-        if item.data_type == 'dict':
-            env_var_name = f'{env_var_name}_{item.data_type.upper()}'
+        # handle dictionary or dictionary list item
+        if 'dict' in item.data_type:
             tmp_dict = {}
             for child in item.children:
-                if not self.handle_met_config_item(child, tmp_dict):
+                if not self.handle_met_config_item(child, tmp_dict,
+                                                   depth=depth+1):
                     return False
 
-            dict_string = self.format_met_config_dict(tmp_dict,
-                                                      item.name,
-                                                      keys=None)
+            dict_string = self.format_met_config(item.data_type,
+                                                 tmp_dict,
+                                                 item.name,
+                                                 keys=None)
+
+            # if handling dict MET config that is not nested inside another
+            if not depth and item.data_type == 'dict':
+                env_var_name = f'{env_var_name}_DICT'
+
             output_dict[env_var_name] = dict_string
             return True
 
@@ -2179,7 +2189,7 @@ class CommandBuilder:
             metplus_name = metplus_name.replace('(N)', '_N')
             metplus_configs = []
 
-            if data_type != 'dict':
+            if 'dict' not in data_type:
                 children = None
                 # if variable ends with _BEG, read _BEGIN first
                 if metplus_name.endswith('BEG'):

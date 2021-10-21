@@ -99,11 +99,11 @@ class METConfigInfo:
 
     @children.setter
     def children(self, children):
-        if not children and self.data_type == 'dict':
+        if not children and 'dict' in self.data_type:
             raise TypeError("Must have children if data_type is dict.")
 
         if children:
-            if self.data_type != 'dict':
+            if 'dict' not in self.data_type:
                 raise TypeError("data_type must be dict to have "
                                 f"children. data_type is {self.data_type}")
 
