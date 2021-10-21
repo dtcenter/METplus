@@ -170,10 +170,10 @@ class GenEnsProdWrapper(LoopTimesWrapper):
             'shape': ('string', 'uppercase,remove_quotes'),
             'gaussian_dx': 'float',
             'gaussian_radius': 'int',
-            'type': ('dict', '', {'method': ('string',
-                                             'uppercase,remove_quotes'),
-                                  'width': 'int',
-                                  }
+            'type': ('dictlist', '', {'method': ('string',
+                                                 'uppercase,remove_quotes'),
+                                      'width': 'int',
+                                     }
                      )
         })
 
