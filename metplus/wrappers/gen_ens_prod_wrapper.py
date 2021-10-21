@@ -48,7 +48,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'weight',
     ]
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'gen_ens_prod'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR'),
                                      self.app_name)
