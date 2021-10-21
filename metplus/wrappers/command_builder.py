@@ -281,12 +281,14 @@ class CommandBuilder:
 
     @staticmethod
     def format_regrid_to_grid(to_grid):
-        to_grid = to_grid.strip('"').upper()
+        to_grid = to_grid.strip('"')
         if not to_grid:
             to_grid = 'NONE'
 
-        # if not surrounded by quotes and not NONE, FCST or OBS, add quotes
-        if to_grid not in ['NONE', 'FCST', 'OBS']:
+        # if NONE, FCST, or OBS force uppercase, otherwise add quotes
+        if to_grid.upper() in ['NONE', 'FCST', 'OBS']:
+            to_grid = to_grid.upper()
+        else:
             to_grid = f'"{to_grid}"'
 
         return to_grid
