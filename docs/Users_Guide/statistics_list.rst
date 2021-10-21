@@ -78,7 +78,7 @@ METplus Database of Statistics
     - AREA_RATIO
     -  
     - MODE Tool
-    - MODE ascii object: 
+    - MODE ascii object
   * - Area of the object :raw-html:`<br />`
       containing data values :raw-html:`<br />`
       in the raw field :raw-html:`<br />`
@@ -88,7 +88,7 @@ METplus Database of Statistics
     - AREA_THRESH
     -  
     - MODE Tool
-    - MODE ascii object: 
+    - MODE ascii object 
   * - Absolute value of :raw-html:`<br />`
       the difference :raw-html:`<br />`
       between the aspect :raw-html:`<br />`
