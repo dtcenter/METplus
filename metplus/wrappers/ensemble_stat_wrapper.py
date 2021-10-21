@@ -324,94 +324,25 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         return c_dict
 
     def handle_nmep_smooth_dict(self):
-        tmp_dict = {}
-        self.set_met_config_float(tmp_dict,
-                                  'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX',
-                                  'gaussian_dx',
-                                  'NMEP_SMOOTH_GAUSSIAN_DX')
-        self.set_met_config_float(tmp_dict,
-                                  'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS',
-                                  'gaussian_radius',
-                                  'NMEP_SMOOTH_GAUSSIAN_RADIUS')
-        self.set_met_config_float(tmp_dict,
-                                  'ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH',
-                                  'vld_thresh',
-                                  'NMEP_SMOOTH_VLD_THRESH')
-        self.set_met_config_string(tmp_dict,
-                                   'ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE',
-                                   'shape',
-                                   'NMEP_SMOOTH_SHAPE',
-                                   remove_quotes=True)
-        self.set_met_config_string(tmp_dict,
-                                   'ENSEMBLE_STAT_NMEP_SMOOTH_METHOD',
-                                   'method',
-                                   'NMEP_SMOOTH_METHOD',
-                                   remove_quotes=True)
-        self.set_met_config_int(tmp_dict,
-                                'ENSEMBLE_STAT_NMEP_SMOOTH_WIDTH',
-                                'width',
-                                'NMEP_SMOOTH_WIDTH')
-
-        tmp_dict['NMEP_SMOOTH_TYPE'] = (
-            self.format_met_config_type(tmp_dict,
-                                        'nmep_smooth')
-        )
-        nmep_smooth = (
-            self.format_met_config_dict(tmp_dict,
-                                        'nmep_smooth',
-                                        ['NMEP_SMOOTH_GAUSSIAN_RADIUS',
-                                         'NMEP_SMOOTH_GAUSSIAN_DX',
-                                         'NMEP_SMOOTH_VLD_THRESH',
-                                         'NMEP_SMOOTH_SHAPE',
-                                         'NMEP_SMOOTH_TYPE',
-                                        ])
-        )
-        self.env_var_dict['METPLUS_NMEP_SMOOTH_DICT'] = nmep_smooth
+        self.handle_met_config_dict('nmep_smooth', {
+            'vld_thresh': 'float',
+            'shape': ('string', 'uppercase,remove_quotes'),
+            'gaussian_dx': 'float',
+            'gaussian_radius': 'int',
+            'type': ('dictlist', '', {'method': ('string',
+                                                 'uppercase,remove_quotes'),
+                                      'width': 'int',
+                                      }
+                     )
+        })
 
     def handle_nbrhd_prob_dict(self):
-        tmp_dict = {}
-        self.set_met_config_list(tmp_dict,
-                                 'ENSEMBLE_STAT_NBRHD_PROB_WIDTH',
-                                 'width',
-                                 'NBRHD_PROB_WIDTH',
-                                 remove_quotes=True)
-        self.set_met_config_string(tmp_dict,
-                                   'ENSEMBLE_STAT_NBRHD_PROB_SHAPE',
-                                   'shape',
-                                   'NBRHD_PROB_SHAPE',
-                                   remove_quotes=True)
-        self.set_met_config_float(tmp_dict,
-                                  'ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH',
-                                  'vld_thresh',
-                                  'NBRHD_PROB_VLD_THRESH')
-        nbrhd_prob = (
-            self.format_met_config_dict(tmp_dict,
-                                        'nbrhd_prob',
-                                        ['NBRHD_PROB_WIDTH',
-                                         'NBRHD_PROB_SHAPE',
-                                         'NBRHD_PROB_VLD_THRESH'])
-        )
-        self.env_var_dict['METPLUS_NBRHD_PROB_DICT'] = nbrhd_prob
-
-    def format_met_config_type(self, c_dict, dict_name):
-        """! Format type item for MET config
-
-        @param c_dict dictionary to check and add item if appropriate
-        @param dict_name name of dictionary to format
-        @returns formatted string "type = [{}];" or empty string if nothing is
-         set
-        """
-        input_keys = [f'{dict_name.upper()}_METHOD',
-                      f'{dict_name.upper()}_WIDTH']
-        type_string = self.format_met_config_dict(c_dict,
-                                                  dict_name,
-                                                  input_keys)
-        if not type_string:
-            return ''
-
-        # only get value, so remove variable name and equal sign
-        type_string = type_string.split('=', 1)[1].strip()
-        return f"type = [{type_string}];"
+        self.handle_met_config_dict('nbrhd_prob', {
+            'width': ('list', 'remove_quotes'),
+            'shape': ('string', 'uppercase,remove_quotes'),
+            'vld_thresh': 'float',
+        })
+        return
 
     def run_at_time_all_fields(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination
