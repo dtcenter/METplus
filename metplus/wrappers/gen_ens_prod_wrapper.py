@@ -1,13 +1,6 @@
 """
-Program Name: example_wrapper.py
+Program Name: gen_ens_prod_wrapper.py
 Contact(s): George McCabe
-Abstract: Template for creating a new wrapper
-History Log:  Initial version
-Usage: Not meant to be run
-Parameters: None
-Input Files: None
-Output Files: None
-Condition codes: 0 for success, 1 for failure
 """
 
 import os
