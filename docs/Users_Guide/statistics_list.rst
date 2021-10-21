@@ -97,7 +97,7 @@ METplus Database of Statistics
     - ASPECT_DIFF
     -  
     - MODE Tool
-    - MODE ascii object:
+    - MODE ascii object
 
 
 ..#.. glossary:: statistics
