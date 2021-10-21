@@ -268,7 +268,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
             all_fields.extend(field_list)
 
         ens_field = ','.join(all_fields)
-        self.env_var_dict['METPLUS_ENS_FIELD'] = f"field = [ {ens_field} ];"
+        self.env_var_dict['METPLUS_ENS_FIELD'] = f"field = [{ens_field}];"
         return True
 
     def get_command(self):
