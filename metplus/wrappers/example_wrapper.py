@@ -77,10 +77,10 @@ class ExampleWrapper(CommandBuilder):
                 continue
 
             for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if not custom_string:
-                    continue
-
-                self.logger.info(f"Processing custom string: {custom_string}")
+                if custom_string:
+                    self.logger.info(
+                        f"Processing custom string: {custom_string}"
+                    )
 
                 time_info['custom'] = custom_string
 
