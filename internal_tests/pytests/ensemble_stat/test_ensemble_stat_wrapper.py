@@ -485,6 +485,61 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                                       'match_month = TRUE;day_interval = 30;'
                                       'hour_interval = 12;}'),
           'CLIMO_STDEV_FILE': '"/some/climo_stdev/file.txt"'}),
+        ({'ENSEMBLE_STAT_NBRHD_PROB_WIDTH': '5', },
+         {'METPLUS_NBRHD_PROB_DICT': 'nbrhd_prob = {width = [5];}'}),
+
+        ({'ENSEMBLE_STAT_NBRHD_PROB_SHAPE': 'circle', },
+         {'METPLUS_NBRHD_PROB_DICT': 'nbrhd_prob = {shape = CIRCLE;}'}),
+
+        ({'ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH': '0.0', },
+         {'METPLUS_NBRHD_PROB_DICT': 'nbrhd_prob = {vld_thresh = 0.0;}'}),
+
+        ({
+             'ENSEMBLE_STAT_NBRHD_PROB_WIDTH': '5',
+             'ENSEMBLE_STAT_NBRHD_PROB_SHAPE': 'CIRCLE',
+             'ENSEMBLE_STAT_NBRHD_PROB_VLD_THRESH': '0.0',
+         },
+         {
+             'METPLUS_NBRHD_PROB_DICT': (
+                     'nbrhd_prob = {width = [5];shape = CIRCLE;'
+                     'vld_thresh = 0.0;}'
+             )
+         }),
+        ({'ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH': '0.0', },
+         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {vld_thresh = 0.0;}'}),
+
+        ({'ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE': 'circle', },
+         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {shape = CIRCLE;}'}),
+
+        ({'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX': '81.27', },
+         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {gaussian_dx = 81.27;}'}),
+
+        ({'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS': '120', },
+         {
+             'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {gaussian_radius = 120;}'}),
+
+        ({'ENSEMBLE_STAT_NMEP_SMOOTH_TYPE_METHOD': 'GAUSSIAN', },
+         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {type = [{method = GAUSSIAN;}];}'}),
+
+        ({'ENSEMBLE_STAT_NMEP_SMOOTH_TYPE_WIDTH': '1', },
+         {'METPLUS_NMEP_SMOOTH_DICT': 'nmep_smooth = {type = [{width = 1;}];}'}),
+
+        ({
+             'ENSEMBLE_STAT_NMEP_SMOOTH_VLD_THRESH': '0.0',
+             'ENSEMBLE_STAT_NMEP_SMOOTH_SHAPE': 'circle',
+             'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_DX': '81.27',
+             'ENSEMBLE_STAT_NMEP_SMOOTH_GAUSSIAN_RADIUS': '120',
+             'ENSEMBLE_STAT_NMEP_SMOOTH_TYPE_METHOD': 'GAUSSIAN',
+             'ENSEMBLE_STAT_NMEP_SMOOTH_TYPE_WIDTH': '1',
+         },
+         {
+             'METPLUS_NMEP_SMOOTH_DICT': (
+                     'nmep_smooth = {vld_thresh = 0.0;shape = CIRCLE;'
+                     'gaussian_dx = 81.27;gaussian_radius = 120;'
+                     'type = [{method = GAUSSIAN;width = 1;}];}'
+             )
+         }),
+
     ]
 )
 def test_ensemble_stat_single_field(metplus_config, config_overrides,
