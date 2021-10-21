@@ -1604,10 +1604,11 @@ class CommandBuilder:
         return None
 
     @staticmethod
-    def format_met_config(type, c_dict, name, keys=None):
+    def format_met_config(data_type, c_dict, name, keys=None):
         """! Return formatted variable named <name> with any <items> if they
         are set to a value. If none of the items are set, return empty string
 
+        @param data_type type of value to format
         @param c_dict config dictionary to read values from
         @param name name of dictionary to create
         @param keys list of c_dict keys to use if they are set. If unset (None)
@@ -1630,11 +1631,11 @@ class CommandBuilder:
 
         output = ''.join(values)
         # add curly braces if dictionary
-        if type == 'dict':
+        if data_type == 'dict':
             output = f"{{{output}}}"
 
         # add square braces if list
-        elif type == 'list':
+        elif data_type == 'list':
             output = f"[{output}];"
 
         # if name is not empty, add variable name and equals sign
