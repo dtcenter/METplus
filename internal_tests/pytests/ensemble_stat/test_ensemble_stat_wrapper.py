@@ -107,6 +107,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
     assert wrapper.isOK
 
     all_cmds = wrapper.run_all_times()
+    assert len(all_cmds) == len(run_times)
     for (_, actual_env_vars), run_time in zip(all_cmds, run_times):
         run_dt = datetime.strptime(run_time, time_fmt)
         ymdh = run_dt.strftime('%Y%m%d%H')
@@ -573,6 +574,7 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
 
     all_cmds = wrapper.run_all_times()
     print(f"ALL COMMANDS: {all_cmds}")
+    assert len(all_cmds) == len(expected_cmds)
 
     for (cmd, env_vars), expected_cmd in zip(all_cmds, expected_cmds):
         # ensure commands are generated as expected
