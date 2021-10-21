@@ -67,6 +67,38 @@ METplus Database of Statistics
     - MODE :raw-html:`<br />`
       MTD
     - MODE ascii object
+  * - The forecast object area :raw-html:`<br />`
+      divided by the observation :raw-html:`<br />`
+      object area (unitless) :raw-html:`<br />`
+      NOTE: Prior to met-10.0.0, :raw-html:`<br />`
+      defined as the lesser of :raw-html:`<br />`
+      the two object areas :raw-html:`<br />`
+      divided by the greater :raw-html:`<br />`
+      of the two
+    - AREA_RATIO
+    -  
+    - MODE Tool
+    - MODE ascii object: 
+  * - Area of the object :raw-html:`<br />`
+      containing data values :raw-html:`<br />`
+      in the raw field :raw-html:`<br />`
+      that meet the object :raw-html:`<br />`
+      definition threshold :raw-html:`<br />
+      criteria (in grid squares)
+    - AREA_THRESH
+    -  
+    - MODE Tool
+    - MODE ascii object: 
+  * - Absolute value of :raw-html:`<br />`
+      the difference :raw-html:`<br />`
+      between the aspect :raw-html:`<br />`
+      ratios of two objects :raw-html:`<br />`
+      (unitless)
+    - ASPECT_DIFF
+    -  
+    - MODE Tool
+    - MODE ascii object:
+
 
 ..#.. glossary:: statistics
 ..#   :sorted:
