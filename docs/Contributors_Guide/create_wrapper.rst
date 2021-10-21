@@ -82,7 +82,7 @@ Modify the init function to initialize NewTool from its base class
 to set the self.app_name variable to name of the application.
 See the Basic Components :ref:`bc_init_function` section for more information::
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'new_tool'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)

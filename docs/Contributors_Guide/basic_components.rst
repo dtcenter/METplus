@@ -33,7 +33,7 @@ executable, relative to MET_BIN_DIR.
 The init function also calls the parent's initialization function
 using super() function::
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = "ascii2nc"
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
