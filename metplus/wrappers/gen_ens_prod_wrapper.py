@@ -111,7 +111,7 @@ class GenEnsProdWrapper(LoopTimesWrapper):
 
         self.handle_met_config_dict('regrid', {
             'to_grid': ('string', 'to_grid'),
-            'method': ('string', 'uppercase'),
+            'method': ('string', 'uppercase,remove_quotes'),
             'width': 'int',
             'vld_thresh': 'float',
             'shape': ('string', 'uppercase,remove_quotes'),
