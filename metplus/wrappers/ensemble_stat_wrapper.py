@@ -342,7 +342,6 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             'shape': ('string', 'uppercase,remove_quotes'),
             'vld_thresh': 'float',
         })
-        return
 
     def run_at_time_all_fields(self, time_info):
         """! Runs the MET application for a given time and forecast lead combination
