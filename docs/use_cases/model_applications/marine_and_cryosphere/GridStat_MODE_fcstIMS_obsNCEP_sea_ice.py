@@ -2,7 +2,7 @@
 Grid-Stat and MODE: Sea Ice Validation   
 ====================================================================================================
 
-model_applications/cryosphere/GridStat_MODE_fcstIMS
+model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS
 _obsNCEP_sea_ice.conf
 
 """
@@ -65,7 +65,7 @@ _obsNCEP_sea_ice.conf
 # any configuration files passed to METplus by the command line with the -c option.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
 #
 
 ###################################################################################################
@@ -102,10 +102,10 @@ _obsNCEP_sea_ice.conf
 #
 # 1) Passing in GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf then a user-specific system configuration file::
 #       
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf -c /path/to/user_system.conf
 #
 # 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf::
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_MODE_fcstIMS_obsNCEP_sea_ice.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -134,8 +134,8 @@ _obsNCEP_sea_ice.conf
 # A successful run will have the following output files in the location defined by {OUTPUT_BASE}, which
 # is located in the metplus_system.conf configuration file located in /path/to/METplus/parm/metplus_config.
 # This list of files should be found for every time run through METplus. 
-# GridStat output will be in model_applications/cryosphere/sea_ice/GridStat relative to the {OUTPUT_BASE}.
-# MODE output will be in model_applications/cryosphere/sea_ice/MODE relative to the {OUTPUT_BASE}.
+# GridStat output will be in model_applications/marine_and_cryosphere/sea_ice/GridStat relative to the {OUTPUT_BASE}.
+# MODE output will be in model_applications/marine_and_cryosphere/sea_ice/MODE relative to the {OUTPUT_BASE}.
 # Using the output for 20190201 as an example:
 #
 # **GridStat output**:
@@ -176,7 +176,7 @@ _obsNCEP_sea_ice.conf
 #
 #   * GridStatToolUseCase
 #   * MODEToolUseCase
-#   * CryosphereAppUseCase
+#   * MarineAndCryosphereAppUseCase
 #   * ValidationUseCase
 #   * S2SAppUseCase
 #   * NOAAEMCOrgUseCase
@@ -186,4 +186,4 @@ _obsNCEP_sea_ice.conf
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/cryosphere_GridStat_MODE_fcstIMS_obsNCEP_Sea_Ice.png'
+# sphinx_gallery_thumbnail_path = '_static/marine_and_cryosphere_GridStat_MODE_fcstIMS_obsNCEP_Sea_Ice.png'
