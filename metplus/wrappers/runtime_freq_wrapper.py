@@ -52,9 +52,9 @@ class RuntimeFreqWrapper(CommandBuilder):
         )
 
         c_dict['RUNTIME_FREQ'] = (
-            self.config.getstr('config',
-                               f'{app_name_upper}_RUNTIME_FREQ',
-                               '').upper()
+            self.config.getstr_nocheck('config',
+                                       f'{app_name_upper}_RUNTIME_FREQ',
+                                       '').upper()
         )
 
         # get runtime information to obtain all input files
