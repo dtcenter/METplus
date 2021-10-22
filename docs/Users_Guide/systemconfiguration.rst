@@ -1866,7 +1866,14 @@ supports METplus configuration variables that control the MET tool
 configuration file settings.
 **The METplus wrappers provide a special "wrapped" MET configuration file that
 references environment variables that are set by the wrappers based on the
-values set in the METplus configuration files.**
+values set in the METplus configuration files. YOU SHOULD NOT SET ANY OF THESE
+ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT
+CALLS THE MET TOOLS!**
+
+If there is a setting in the MET configuration file that is not currently
+supported by METplus you'd like to control, please refer to:
+:ref:`Overriding Unsupported MET config file settings<met-config-overrides>`.
+
 The following section demonstrates a few examples using GridStat.
 
 GridStat Simple Example
