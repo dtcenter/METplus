@@ -59,7 +59,7 @@ met_tool_wrapper/GenEnsProd/GenEnsProd.conf
 #
 # .. note::
 #     See the :ref:`GenEnsProd MET Configuration<gen-ens-prod-met-conf>`
-#     section of the User\'s Guide for more information on the environment
+#     section of the User's Guide for more information on the environment
 #     variables used in the file below.
 #
 # parm/met_config/GenEnsProdConfig_wrapped
