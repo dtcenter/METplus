@@ -1889,20 +1889,20 @@ Notice that this file is similar to the default GridStat MET config file,
 but some of the variables in the wrapped configuration file have been replaced
 with environment variables.
 
-GridStatConfig_**default**::
+GridStatConfig\_**default**::
 
     desc = "NA";
 
-GridStatConfig_**wrapped**::
+GridStatConfig\_**wrapped**::
 
     // desc =
     ${METPLUS_DESC}
 
 When GridStat is run, the tool first reads its default configuration file
-(GridStatConfig_**default**) and sets all of the default values. Then it reads
+(GridStatConfig\_**default**) and sets all of the default values. Then it reads
 the configuration file that is passed into the tool on the command line, which
 is *typically* the wrapped GridStat config file
-(parm/met_config/GridStatConfig_**wrapped**).
+(parm/met_config/GridStatConfig\_**wrapped**).
 
 If the user sets the following in their METplus config file::
 
@@ -1925,8 +1925,8 @@ the names of the METplus config variable, environment variable, and
 MET config variable are closely related, i.e.
 
 *           **desc**: MET config name
-* GRID_STAT_**DESC**: METplus config name
-*  $METPLUS_**DESC**: Environment variable name
+* GRID_STAT\_**DESC**: METplus config name
+*  $METPLUS\_**DESC**: Environment variable name
 
 However, this is not always the case. Refer to the 'MET Configuration' section
 for each wrapper in the:doc:`wrappers` chapter to see the full list of
@@ -1969,7 +1969,7 @@ config variable name.
 
 Instead of a single METplus configuration variable to control the value of this
 environment variable, there are multiple variables -- one for each item of the
-dictionary::
+dictionary:
 
 * GRID_STAT_REGRID_**TO_GRID**
 * GRID_STAT_REGRID_**METHOD**
