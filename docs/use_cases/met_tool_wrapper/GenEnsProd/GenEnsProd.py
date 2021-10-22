@@ -66,7 +66,6 @@ met_tool_wrapper/GenEnsProd/GenEnsProd.conf
 #
 # .. highlight:: bash
 # .. literalinclude:: ../../../../parm/met_config/GenEnsProdConfig_wrapped
-#
 
 ##############################################################################
 # Running METplus
