@@ -112,7 +112,7 @@ class RuntimeFreqWrapper(CommandBuilder):
         # check that the time config variables can be read correctly
         if self.c_dict['RUNTIME_FREQ'] == 'RUN_ONCE_PER_INIT_OR_VALID':
 
-            if not c_dict['START_TIME']:
+            if not self.c_dict['START_TIME']:
                 self.log_error("Could not get [INIT/VALID] time information"
                                "from configuration file")
                 return None
