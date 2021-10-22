@@ -114,7 +114,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         )
 
         # Map centered on Pacific Ocean
-        self.central_latitude = 180.0
+        self.central_longitude = 180.0
 
         self.cross_marker_size = (self.config.getint('config',
                                'CYCLONE_PLOTTER_CROSS_MARKER_SIZE')
@@ -347,14 +347,12 @@ class CyclonePlotterWrapper(CommandBuilder):
                             sanitized_df.loc[idx, 'LEAD_GROUP'] = '6'
                             sanitized_df.loc[idx, 'MARKER'] = self.cross_marker
 
-            # If the user has specified a region of interest rather than the global extent,
-            # subset the data even further to points that are within this region.
+            # If the user has specified a region of interest rather than the
+            # global extent, subset the data even further to points that are within a bounding box.
             if not self.is_global_extent:
                 self.logger.debug(f"Subset the data based on the region of interest.")
                 subset_by_region_df = self.subset_by_region(sanitized_df)
-                subset_by_region_df.to_csv("/Users/minnawin/Desktop/subsetted.csv")
                 final_df = subset_by_region_df.copy(deep=True)
-                final_df.to_csv("/Users/minnawin/Desktop/final.csv")
             else:
                 final_df = sanitized_df.copy(deep=True)
 
@@ -370,7 +368,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                # Make sure that the dataframe is sorted by STORM_ID, INIT_YMD, INIT_HOUR, and LEAD
                # to ensure that the line plot is connecting the points in the correct order.
                final_sorted_df = final_df.sort_values(by=['STORM_ID', 'INIT_YMD', 'INIT_HOUR', 'LEAD'], ignore_index=True)
-               # final_df.reset_index(i=True,inplace=True)
+               final_df.reset_index(drop=True,inplace=True)
                final_sorted_df.to_csv(final_df_filename)
         else:
             # The user's specified directory isn't valid, log the error and exit.
@@ -388,9 +386,10 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         # Use PlateCarree projection for scatter plots
         # and Geodetic projection for line plots.
-        cm_lon = self.central_latitude
-        ax = plt.axes(projection=ccrs.PlateCarree(central_longitude=cm_lon))
-        prj = ccrs.PlateCarree()
+        cm_lon = self.central_longitude
+        prj = ccrs.PlateCarree(central_longitude=cm_lon)
+        ax = plt.axes(projection=prj)
+
         # for transforming the annotations (matplotlib to cartopy workaround from Stack Overflow)
         transform = ccrs.PlateCarree()._as_mpl_transform(ax)
 
@@ -408,15 +407,19 @@ class CyclonePlotterWrapper(CommandBuilder):
         else:
             self.logger.debug(f"Generating a plot of the user-defined extent:{self.west_lon}, {self.east_lon}, "
                               f"{self.south_lat}, {self.north_lat}")
-            ax.set_extent(self.extent_region)
+            extent_list = [self.west_lon, self.east_lon, self.south_lat, self.north_lat]
+            self.logger.debug(f"Setting map extent to: {self.west_lon}, {self.east_lon}, {self.south_lat}, {self.north_lat}")
+            # Bounding box will not necessarily be centered about the 180 degree longitude, so
+            # DO NOT explicitly set the central longitude.
+            ax.set_extent(extent_list, ccrs.PlateCarree())
 
         # Add grid lines for longitude and latitude
-        gl = ax.gridlines(crs=prj,
+        gl = ax.gridlines(crs=ccrs.PlateCarree(),
                           draw_labels=True, linewidth=1, color='gray',
                           alpha=0.5, linestyle='--')
 
-        gl.xlabels_top = False
-        gl.ylabels_left = True
+        gl.top_labels = False
+        gl.left_labels = True
         gl.xlines = True
         gl.xformatter = LONGITUDE_FORMATTER
         gl.yformatter = LATITUDE_FORMATTER
@@ -479,9 +482,9 @@ class CyclonePlotterWrapper(CommandBuilder):
         # Now generate the scatter plots for the lead group 0/12 hr ('+' marker) and the
         # lead group 6/18 hr ('.' marker).
         plt.scatter(circle_lons, circle_lats, s=self.circle_marker_size, c=pt_color,
-                    marker=self.circle_marker, zorder=2, label=lead_group_0_legend, transform=prj )
+                    marker=self.circle_marker, zorder=2, label=lead_group_0_legend, transform=ccrs.PlateCarree())
         plt.scatter(cross_lons, cross_lats, s=self.cross_marker_size, c=pt_color,
-                    marker=self.cross_marker, zorder=2, label=lead_group_6_legend, transform=prj)
+                    marker=self.cross_marker, zorder=2, label=lead_group_6_legend, transform=ccrs.PlateCarree())
 
         # annotations for the scatter plots
         counter = 0
@@ -619,22 +622,11 @@ class CyclonePlotterWrapper(CommandBuilder):
         # Copy the sanitized_df dataframe
         sanitized_by_region_df = sanitized_df.copy(deep=True)
 
-        points = []
-        rlons = []
-
-        for x, y in zip(sanitized_df['ALON'], sanitized_df['ALAT']):
-            # rescale the longitude from -180 to 180 degrees to 0 to 360 degrees
-            xr = (x % 360)
-            points.append(Point(xr,y))
-            rlons.append(xr)
-        sanitized_by_region_df['RLON'] = rlons
-
         # Iterate over ALL the rows and if any point is within the polygon,
         # save it's index so we can create a new dataframe with just the
         # relevant data.
-        keep_idx = []
         for index, row in sanitized_by_region_df.iterrows():
-            if (self.west_lon <= row['RLON'] <= self.east_lon) and (self.south_lat <= row['ALAT'] <= self.north_lat):
+            if (self.west_lon <= row['ALON'] <= self.east_lon) and (self.south_lat <= row['ALAT'] <= self.north_lat):
                 sanitized_by_region_df.loc[index,'INSIDE'] = True
             else:
                 sanitized_by_region_df.loc[index,'INSIDE'] = False
@@ -643,7 +635,6 @@ class CyclonePlotterWrapper(CommandBuilder):
         # the specified boundaries.
         masked = sanitized_by_region_df[sanitized_by_region_df['INSIDE'] == True]
         masked.reset_index(drop=True,inplace=True)
-        masked.to_csv("/Users/minnawin/Desktop/masked.csv")
 
         if len(masked) == 0:
             sys.exit("No data in region specified, please check your lon and lat values in the config file.")
@@ -652,13 +643,13 @@ class CyclonePlotterWrapper(CommandBuilder):
 
 
     @staticmethod
-    def sanitize_lonlist(lon):
+    def sanitize_lonlist(lon_list):
         """
         Solution from Stack Overflow for "sanitizing" longitudes that cross the International Date Line
         https://stackoverflow.com/questions/67730660/plotting-line-across-international-dateline-with-cartopy
 
         Args:
-           @param lon:  A list of longitudes (float) that correspond to a storm track
+           @param lon_list:  A list of longitudes (float) that correspond to a storm track
 
         Returns:
             new_list: a list of "sanitized" lons that are "corrected" for crossing the
@@ -669,7 +660,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         oldval = 0
         # used to compare adjacent longitudes in a storm track
         treshold = 10
-        for ix, ea in enumerate(lon):
+        for ix, ea in enumerate(lon_list):
             diff = oldval - ea
             if (ix > 0):
                 if (diff > treshold):
