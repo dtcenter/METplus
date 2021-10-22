@@ -17,6 +17,7 @@ Use Cases by MET Tool:
    | `CyclonePlotter <../search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
    | `EnsembleStat <../search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_
    | `GenVxMask <../search.html?q=GenVxMaskToolUseCase&check_keywords=yes&area=default>`_
+   | `GenEnsProd <../search.html?q=GenEnsProdToolUseCase&check_keywords=yes&area=default>`_
    | `GridStat <../search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
    | `GridDiag <../search.html?q=GridDiagToolUseCase&check_keywords=yes&area=default>`_
    | `MODE <../search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
@@ -41,6 +42,7 @@ Use Cases by MET Tool:
    | **CyclonePlotter**: *CyclonePlotterUseCase*
    | **EnsembleStat**: *EnsembleStatToolUseCase*
    | **GenVxMask**: *GenVxMaskToolUseCase*
+   | **GenEnsProd**: *GenEnsProdToolUseCase*
    | **GridStat**: *GridStatToolUseCase*
    | **GridDiag**: *GridDiagToolUseCase*
    | **MODE**: *MODEToolUseCase*
