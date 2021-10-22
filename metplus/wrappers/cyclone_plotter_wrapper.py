@@ -23,8 +23,6 @@ try:
     import cartopy.feature as cfeature
     import cartopy
     from cartopy.mpl.gridliner import LONGITUDE_FORMATTER, LATITUDE_FORMATTER
-    from shapely.geometry import Point
-    from shapely.geometry.polygon import Polygon
 
     ##If the script is run on a limited-internet access machine, the CARTOPY_DIR environment setting
     ##will need to be set in the user-specific system configuration file. Review the Installation section
