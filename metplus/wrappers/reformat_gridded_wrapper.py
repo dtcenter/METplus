@@ -31,7 +31,7 @@ class ReformatGriddedWrapper(CommandBuilder):
     """! Common functionality to wrap similar MET applications
          that reformat gridded data
     """
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         super().__init__(config,
                          instance=instance,
                          config_overrides=config_overrides)

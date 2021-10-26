@@ -56,7 +56,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         'save': 'bool',
     }
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'tcmpr_plotter'
 
         super().__init__(config,

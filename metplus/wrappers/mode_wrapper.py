@@ -94,7 +94,7 @@ class MODEWrapper(CompareGriddedWrapper):
                                                '(400.0/grid_res,0.0))'),
     }
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         # only set app variables if not already set by MTD (subclass)
         if not hasattr(self, 'app_name'):
             self.app_name = 'mode'
