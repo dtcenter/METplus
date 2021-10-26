@@ -11,7 +11,7 @@ CommandBuilder is the parent class of all METplus wrappers.
 Every wrapper is a subclass of CommandBuilder or
 another subclass of CommandBuilder.
 For example, GridStatWrapper, PointStatWrapper, EnsembleStatWrapper,
-and MODEWrapper are all a subclass of CompareGriddedWrapper.
+and MODEWrapper are all subclasses of CompareGriddedWrapper.
 CompareGriddedWrapper is a subclass of CommandBuilder.
 CommandBuilder contains instance variables that are common to every wrapper,
 such as config (METplusConfig object), errors (a counter of the number of
