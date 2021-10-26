@@ -24,7 +24,7 @@ from ..util import do_string_sub
 '''
 
 class UserScriptWrapper(RuntimeFreqWrapper):
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = "user_script"
         super().__init__(config,
                          instance=instance,

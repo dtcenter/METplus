@@ -93,7 +93,7 @@ met_tool_wrapper/EnsembleStat/EnsembleStat.conf
 #
 # Passing in EnsembleStat.conf then a user-specific system configuration file::
 #
-#   run_metplus.py -c /path/to/METplus/parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.conf -c /path/to/user_system.conf
+#   run_metplus.py /path/to/METplus/parm/use_cases/met_tool_wrapper/EnsembleStat/EnsembleStat.conf /path/to/user_system.conf
 #
 # The following METplus configuration variables must be set correctly to run this example.:
 #
@@ -147,7 +147,7 @@ met_tool_wrapper/EnsembleStat/EnsembleStat.conf
 #   * ProbabilityGenerationAppUseCase
 #   * GRIBFileUseCase
 #
-#   Navigate to the :ref:`quick-search` page to discover other similar use cases.
+#   Navigate to :ref:`quick-search` to discover other similar use cases.
 #
 #
 #

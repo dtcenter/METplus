@@ -44,13 +44,12 @@ class CommandBuilder:
     # name of variable to hold any MET config overrides
     MET_OVERRIDES_KEY = 'METPLUS_MET_CONFIG_OVERRIDES'
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.isOK = True
         self.errors = 0
         self.config = config
         self.logger = config.logger
         self.env_list = set()
-        self.debug = False
         self.args = []
         self.input_dir = ""
         self.infiles = []
@@ -286,8 +285,10 @@ class CommandBuilder:
         if not to_grid:
             to_grid = 'NONE'
 
-        # if not surrounded by quotes and not NONE, FCST or OBS, add quotes
-        if to_grid not in ['NONE', 'FCST', 'OBS']:
+        # if NONE, FCST, or OBS force uppercase, otherwise add quotes
+        if to_grid.upper() in ['NONE', 'FCST', 'OBS']:
+            to_grid = to_grid.upper()
+        else:
             to_grid = f'"{to_grid}"'
 
         return to_grid
@@ -1314,10 +1315,11 @@ class CommandBuilder:
     # argument needed to match call
     # pylint:disable=unused-argument
     def run_at_time(self, input_dict):
-        """!Used to output error and exit if wrapper is attemped to be run with
-            LOOP_ORDER = times and the run_at_time method is not implemented"""
-        self.log_error('run_at_time not implemented for {} wrapper. '
-                          'Cannot run with LOOP_ORDER = times'.format(self.log_name))
+        """! Used to output error and exit if wrapper is attempted to be run
+         with LOOP_ORDER = times and the run_at_time method is not implemented
+        """
+        self.log_error(f'run_at_time not implemented for {self.log_name} '
+                       'wrapper. Cannot run with LOOP_ORDER = times')
         return None
 
     def run_all_times(self):
@@ -1432,7 +1434,7 @@ class CommandBuilder:
                               c_dict_key=None, **kwargs):
         """! Get string from METplus configuration file and format it to be passed
               into a MET configuration file. Set c_dict item with formatted string.
-             Args:
+
                  @param c_dict configuration dictionary to set
                  @param mp_config METplus configuration variable name. Assumed to be
                   in the [config] section. Value can be a comma-separated list of items.
@@ -1441,6 +1443,8 @@ class CommandBuilder:
                  @param c_dict_key optional argument to specify c_dict key to store result. If
                   set to None (default) then use upper-case of met_config_name
                  @param remove_quotes if True, output value without quotes.
+                  Default value is False
+                 @param to_grid if True, format to_grid value
                   Default value is False
                  @param default (Optional) if set, use this value as default
                   if config is not set
@@ -1461,6 +1465,9 @@ class CommandBuilder:
 
         if kwargs.get('uppercase', False):
             conf_value = conf_value.upper()
+
+        if kwargs.get('to_grid', False):
+            conf_value = self.format_regrid_to_grid(conf_value)
 
         c_key = c_dict_key if c_dict_key else met_config_name.upper()
         c_dict[c_key] = f'{met_config_name} = {conf_value};'
@@ -1597,10 +1604,11 @@ class CommandBuilder:
         return None
 
     @staticmethod
-    def format_met_config(type, c_dict, name, keys=None):
+    def format_met_config(data_type, c_dict, name, keys=None):
         """! Return formatted variable named <name> with any <items> if they
         are set to a value. If none of the items are set, return empty string
 
+        @param data_type type of value to format
         @param c_dict config dictionary to read values from
         @param name name of dictionary to create
         @param keys list of c_dict keys to use if they are set. If unset (None)
@@ -1623,11 +1631,11 @@ class CommandBuilder:
 
         output = ''.join(values)
         # add curly braces if dictionary
-        if type == 'dict':
+        if 'dict' in data_type:
             output = f"{{{output}}}"
 
         # add square braces if list
-        elif type == 'list':
+        if 'list' in data_type:
             output = f"[{output}];"
 
         # if name is not empty, add variable name and equals sign
@@ -1767,7 +1775,13 @@ class CommandBuilder:
         if not extra:
             return extra_args
 
-        for extra_option in ['remove_quotes', 'uppercase', 'allow_empty']:
+        VALID_EXTRAS = (
+            'remove_quotes',
+            'uppercase',
+            'allow_empty',
+            'to_grid',
+        )
+        for extra_option in VALID_EXTRAS:
             if extra_option in extra:
                 extra_args[extra_option] = True
         return extra_args
@@ -2100,7 +2114,7 @@ class CommandBuilder:
                            f"{item_type}")
             return None
 
-    def handle_met_config_item(self, item, output_dict=None):
+    def handle_met_config_item(self, item, output_dict=None, depth=0):
         """! Reads info from METConfigInfo object, gets value from
         METplusConfig, and formats it based on the specifications. Sets
         value in output dictionary with key starting with METPLUS_.
@@ -2108,6 +2122,10 @@ class CommandBuilder:
         @param item METConfigInfo object to read and determine what to get
         @param output_dict (optional) dictionary to save formatted output
          If unset, use self.env_var_dict.
+        @param depth counter to check if item being processed is nested within
+         another variable or not. If depth is 0, it is a top level variable.
+         This is used internally by this function and shouldn't be supplied
+         outside of calls within this function.
         """
         if output_dict is None:
             output_dict = self.env_var_dict
@@ -2116,17 +2134,23 @@ class CommandBuilder:
         if not env_var_name.startswith('METPLUS_'):
             env_var_name = f'METPLUS_{env_var_name}'
 
-        # handle dictionary item
-        if item.data_type == 'dict':
-            env_var_name = f'{env_var_name}_{item.data_type.upper()}'
+        # handle dictionary or dictionary list item
+        if 'dict' in item.data_type:
             tmp_dict = {}
             for child in item.children:
-                if not self.handle_met_config_item(child, tmp_dict):
+                if not self.handle_met_config_item(child, tmp_dict,
+                                                   depth=depth+1):
                     return False
 
-            dict_string = self.format_met_config_dict(tmp_dict,
-                                                      item.name,
-                                                      keys=None)
+            dict_string = self.format_met_config(item.data_type,
+                                                 tmp_dict,
+                                                 item.name,
+                                                 keys=None)
+
+            # if handling dict MET config that is not nested inside another
+            if not depth and item.data_type == 'dict':
+                env_var_name = f'{env_var_name}_DICT'
+
             output_dict[env_var_name] = dict_string
             return True
 
@@ -2165,7 +2189,7 @@ class CommandBuilder:
             metplus_name = metplus_name.replace('(N)', '_N')
             metplus_configs = []
 
-            if data_type != 'dict':
+            if 'dict' not in data_type:
                 children = None
                 # if variable ends with _BEG, read _BEGIN first
                 if metplus_name.endswith('BEG'):
@@ -2183,7 +2207,7 @@ class CommandBuilder:
                 children = []
                 for kid_name, kid_info in kids.items():
                     kid_upper = kid_name.upper()
-                    kid_type, kid_extra, _, _= self.parse_item_info(kid_info)
+                    kid_type, kid_extra, _, _ = self.parse_item_info(kid_info)
 
                     metplus_configs.append(f'{metplus_name}_{kid_upper}')
                     metplus_configs.append(f'{metplus_prefix}{kid_upper}')
