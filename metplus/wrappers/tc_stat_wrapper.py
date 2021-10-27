@@ -79,7 +79,7 @@ class TCStatWrapper(CommandBuilder):
         'METPLUS_INIT_STR_EXC_VAL',
     ]
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'tc_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)

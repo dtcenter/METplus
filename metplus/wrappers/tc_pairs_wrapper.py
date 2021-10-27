@@ -71,7 +71,7 @@ class TCPairsWrapper(CommandBuilder):
         'cyclone': r'[0-9]{2,4}',
     }
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'tc_pairs'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)

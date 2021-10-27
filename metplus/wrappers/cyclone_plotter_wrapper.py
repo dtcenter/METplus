@@ -1,3 +1,4 @@
+
 """!@namespace ExtraTropicalCyclonePlotter
 A Python class that generates plots of extra tropical cyclone forecast data,
  replicating the NCEP tropical and extra tropical cyclone tracks and
@@ -295,8 +296,6 @@ class CyclonePlotterWrapper(CommandBuilder):
                 # create the track_pt tuple and add it to the storm track dictionary
                 track_pt = TrackPt(indices, cur_unique, alons, alats)
                 storm_track_dict[cur_unique] = track_pt
-
-
 
             # create a new dataframe to contain the sanitized lons (i.e. the original ALONs that have
             # been cleaned up when crossing the International Date Line)
@@ -665,4 +664,5 @@ class CyclonePlotterWrapper(CommandBuilder):
                     ea = ea + 360
             oldval = ea
             new_list.append(ea)
+
         return new_list

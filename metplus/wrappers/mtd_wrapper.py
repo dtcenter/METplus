@@ -15,10 +15,9 @@ import os
 from ..util import met_util as util
 from ..util import time_util
 from ..util import do_string_sub
-from . import MODEWrapper
 from . import CompareGriddedWrapper
 
-class MTDWrapper(MODEWrapper):
+class MTDWrapper(CompareGriddedWrapper):
 
     WRAPPER_ENV_VAR_KEYS = [
         'METPLUS_MODEL',
@@ -37,7 +36,7 @@ class MTDWrapper(MODEWrapper):
         'METPLUS_OUTPUT_PREFIX',
     ]
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'mtd'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
@@ -48,7 +47,7 @@ class MTDWrapper(MODEWrapper):
         self.obs_file = None
 
     def create_c_dict(self):
-        c_dict = CompareGriddedWrapper.create_c_dict(self)
+        c_dict = super().create_c_dict()
         c_dict['VERBOSITY'] = self.config.getstr('config', 'LOG_MTD_VERBOSITY',
                                                  c_dict['VERBOSITY'])
 
@@ -468,7 +467,7 @@ class MTDWrapper(MODEWrapper):
         self.add_env_var("OBS_FILE_TYPE",
                          self.c_dict.get('OBS_FILE_TYPE', ''))
 
-        CompareGriddedWrapper.set_environment_variables(self, time_info)
+        super().set_environment_variables(time_info)
 
     def get_command(self):
         """! Builds the command to run the MET application
