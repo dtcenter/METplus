@@ -120,7 +120,8 @@ METplus Database of Statistics
       Skill Score
     - BAGSS
     -  
-    - Point-Stat, Grid-Stat
+    - Point-Stat, :raw-html:`<br />`
+      Grid-Stat
     - CTS :raw-html:`<br />`
       NBRCTS 
   * - Base Rate
