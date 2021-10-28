@@ -1,3 +1,5 @@
+.. _basic_components_of_wrappers:
+
 *******************************************
 Basic Components of METplus Python Wrappers
 *******************************************
@@ -5,19 +7,44 @@ Basic Components of METplus Python Wrappers
 CommandBuilder
 ==============
 
-CommandBuilder is the parent class of all METplus wrappers. Every wrapper is a subclass of CommandBuilder or another subclass of CommandBuilder. For example, GridStatWrapper, PointStatWrapper, EnsembleStatWrapper, and MODEWrapper are all a subclass of CompareGriddedWrapper. CompareGriddedWrapper is a subclass of CommandBuilder. CommandBuilder contains instance variables that are common to every wrapper, such as config (METplusConfig object), errors (a counter of the number of errors that have occurred in the wrapper), and c_dict (a dictionary containing common information). CommandBuilder also contains use class functions that can be called within each wrapper, such as create_c_dict, clear, and find_data. More information regarding these variables and functions can be found in the Doxygen documentation (link?).
+CommandBuilder is the parent class of all METplus wrappers.
+Every wrapper is a subclass of CommandBuilder or
+another subclass of CommandBuilder.
+For example, GridStatWrapper, PointStatWrapper, EnsembleStatWrapper,
+and MODEWrapper are all subclasses of CompareGriddedWrapper.
+CompareGriddedWrapper is a subclass of CommandBuilder.
+CommandBuilder contains instance variables that are common to every wrapper,
+such as config (METplusConfig object), errors (a counter of the number of
+errors that have occurred in the wrapper), and
+c_dict (a dictionary containing common information).
+CommandBuilder also contains use class functions that can be called within
+each wrapper, such as create_c_dict, clear, and find_data.
 
-Each wrapper contains an initialization function (__init__) that sets up the wrapper. Every wrapper's initialization function should at very least call the parent's initialization function (using super() function). Many wrapper also set the app_name and app_path instance variables in the initialization function. app_name is the name of the MET executable that pertains to the wrapper and app_path is the full path of the MET executable (relative to MET_BIN_DIR) that is called when the MET tool is run::
+.. _bc_init_function:
 
-    class ExampleWrapper(CommandBuilder):
-        """!Wrapper can be used as a base to develop a new wrapper"""
-        def __init__(self, config, logger):
-            super().__init__(config, logger)
-            self.app_name = 'example'
-            self.app_path = os.path.join(self.config.getdir('MET_BIN_DIR'),
-                                                             self.app_name)
+Init Function
+=============
 
-The above code block is an excerpt from the ExampleWrapper, found in ush/example_wrapper.py. The class name should always be the item that is passed into the METplus configuration variable list PROCESS_LIST with 'Wrapper' at the end. The text 'CommandBuilder' in parenthesis makes ExampleWrapper a subclass of CommandBuilder. In the __init__ function, the line starting with 'super()' calls the parent class __init__ function.
+Each wrapper contains an initialization function (__init__) that sets up the
+wrapper. It sets the app_name and app_path instance variables.
+app_name is the name of the executable that pertains to the wrapper.
+If the tool is a MET executable, app_path is set to the full path of the
+executable, relative to MET_BIN_DIR.
+The init function also calls the parent's initialization function
+using super() function::
+
+    def __init__(self, config, instance=None, config_overrides=None):
+        self.app_name = "ascii2nc"
+        self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
+                                     self.app_name)
+        super().__init__(config,
+                         instance=instance,
+                         config_overrides=config_overrides)
+
+The above code block is an excerpt from the ASCII2NCWrapper,
+found in metplus/wrappers/ascii2nc_wrapper.py.
+The class name should always be the item that is passed into the
+METplus configuration variable list PROCESS_LIST with 'Wrapper' at the end.
 
 CommandBuilder's initialization function sets default values for instance variables, initializes the CommandRunner object (used to execute shell commands), and calls the create_c_dict() function. This function is found in CommandBuilder but it is also implemented by most (eventually all) wrappers. The wrapper implementations start off by calling the parent's version of create_c_dict using super(), then adding additional dictionary items that are specific to that wrapper and finally returning the dictionary that was created. If possible, all of the calls to the 'get' functions of the cMETplusConfig object should be found in the create_c_dict function. This allows the configuration values to be referenced throughout the wrapper without the redundantly referencing the wrapper name (i.e. ASCII2NC_INPUT_DIR can be referenced as INPUT_DIR in ASCII2NC since we already it pertains to ASCII2NC) It also makes it easier to see which configuration variables are used in each wrapper.
 

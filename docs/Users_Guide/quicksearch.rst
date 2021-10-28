@@ -17,6 +17,7 @@ Use Cases by MET Tool:
    | `CyclonePlotter <../search.html?q=CyclonePlotterUseCase&check_keywords=yes&area=default>`_
    | `EnsembleStat <../search.html?q=EnsembleStatToolUseCase&check_keywords=yes&area=default>`_
    | `GenVxMask <../search.html?q=GenVxMaskToolUseCase&check_keywords=yes&area=default>`_
+   | `GenEnsProd <../search.html?q=GenEnsProdToolUseCase&check_keywords=yes&area=default>`_
    | `GridStat <../search.html?q=GridStatToolUseCase&check_keywords=yes&area=default>`_
    | `GridDiag <../search.html?q=GridDiagToolUseCase&check_keywords=yes&area=default>`_
    | `MODE <../search.html?q=MODEToolUseCase&check_keywords=yes&area=default>`_
@@ -41,6 +42,7 @@ Use Cases by MET Tool:
    | **CyclonePlotter**: *CyclonePlotterUseCase*
    | **EnsembleStat**: *EnsembleStatToolUseCase*
    | **GenVxMask**: *GenVxMaskToolUseCase*
+   | **GenEnsProd**: *GenEnsProdToolUseCase*
    | **GridStat**: *GridStatToolUseCase*
    | **GridDiag**: *GridDiagToolUseCase*
    | **MODE**: *MODEToolUseCase*
@@ -67,10 +69,9 @@ Use Cases by Application:
    | `Air Quality and Composition <../search.html?q=AirQualityAndCompAppUseCase&check_keywords=yes&area=default>`_
    | `Climate <../search.html?q=ClimateAppUseCase&check_keywords=yes&area=default>`_
    | `Convection Allowing Models <../search.html?q=ConvectionAllowingModelsAppUseCase&check_keywords=yes&area=default>`_
-   | `Cryosphere  <../search.html?q=CryosphereAppUseCase&check_keywords=yes&area=default>`_
    | `Data Assimilation  <../search.html?q=DataAssimilationAppUseCase&check_keywords=yes&area=default>`_
    | `Ensemble  <../search.html?q=EnsembleAppUseCase&check_keywords=yes&area=default>`_
-   | `Marine and Coastal <../search.html?q=MarineAndCoastalAppUseCase&check_keywords=yes&area=default>`_
+   | `Marine and Cryosphere <../search.html?q=MarineAndCryosphereAppUseCase&check_keywords=yes&area=default>`_
    | `Medium Range <../search.html?q=MediumRangeAppUseCase&check_keywords=yes&area=default>`_
    | `Precipitation <../search.html?q=PrecipitationAppUseCase&check_keywords=yes&area=default>`_
    | `Space Weather <../search.html?q=SpaceWeatherAppUseCase&check_keywords=yes&area=default>`_
@@ -82,10 +83,9 @@ Use Cases by Application:
    | **Air Quality and Composition**: *AirQualityAndCompAppUseCase*
    | **Climate**: *ClimateAppUseCase*
    | **Convection Allowing Models**: *ConvectionAllowingModelsAppUseCase*
-   | **Cryosphere**: *CryosphereAppUseCase*
    | **Data Assimilation**: *DataAssimilationAppUseCase*
    | **Ensemble**: *EnsembleAppUseCase*
-   | **Marine and Coastal**: *MarineAndCoastalAppUseCase*
+   | **Marine and Cryosphere**: *MarineAndCryosphereAppUseCase*
    | **Medium Range**: *MediumRangeAppUseCase*
    | **Precipitation**: *PrecipitationAppUseCase*
    | **Space Weather**: *SpaceWeatherAppUseCase*

@@ -7924,3 +7924,336 @@ METplus Configuration Glossary
      Specify the value for 'distance_map.beta_value(n)' in the MET configuration file for GridStat.
 
      | *Used by:* GridStat
+
+   GEN_ENS_PROD_INPUT_DIR
+     Input directory for ensemble files to use with the MET tool gen_ens_prod.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_INPUT_TEMPLATE
+     Template used to specify ensemble input filenames for the
+     MET tool gen_ens_prod.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_CTRL_INPUT_DIR
+     Input directory for optional control file to use with the
+     MET tool gen_ens_prod.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_CTRL_INPUT_TEMPLATE
+     Template used to specify an optional control filename for the
+     MET tool gen_ens_prod.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_OUTPUT_DIR
+     Specify the output directory where files from the MET gen_ens_prod
+     tool are written.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_OUTPUT_TEMPLATE
+     Specify the output filename template for files written by gen_ens_prod.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_DESC
+     Specify the value for 'desc' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_REGRID_METHOD
+     Specify the value for 'regrid.method' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_REGRID_WIDTH
+     Specify the value for 'regrid.width' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_REGRID_VLD_THRESH
+     Specify the value for 'regrid.vld_thresh' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_REGRID_SHAPE
+     Specify the value for 'regrid.shape' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_REGRID_TO_GRID
+     Specify the value for 'regrid.to_grid' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CENSOR_THRESH
+     Specify the value for 'censor_thresh' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CENSOR_VAL
+     Specify the value for 'censor_val' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CAT_THRESH
+     Specify the value for 'cat_thresh' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_NC_VAR_STR
+     Specify the value for 'nc_var_str' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_ENS_THRESH
+     Specify the value for 'ens.ens_thresh' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_ENS_VLD_THRESH
+     Specify the value for 'ens.vld_thresh' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_NBRHD_PROB_WIDTH
+     Specify the value for 'nbrhd_prob.width' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_NBRHD_PROB_SHAPE
+     Specify the value for 'nbrhd_prob.shape' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_NBRHD_PROB_VLD_THRESH
+     Specify the value for 'nbrhd_prob.vld_thresh' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_DX
+     Specify the value for 'nmep_smooth.gaussian_dx' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_RADIUS
+     Specify the value for 'nmep_smooth.gaussian_radius' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH
+     Specify the value for 'nmep_smooth.vld_thresh' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_NMEP_SMOOTH_SHAPE
+     Specify the value for 'nmep_smooth.shape' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_NMEP_SMOOTH_METHOD
+     Specify the value for 'nmep_smooth.type.method' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_NMEP_SMOOTH_WIDTH
+     Specify the value for 'nmep_smooth.type.width' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME
+     Specify the value for 'climo_mean.file_name' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_FIELD
+     Specify the value for 'climo_mean.field' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_REGRID_METHOD
+     Specify the value for 'climo_mean.regrid.method' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_REGRID_WIDTH
+     Specify the value for 'climo_mean.regrid.width' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_REGRID_VLD_THRESH
+     Specify the value for 'climo_mean.regrid.vld_thresh' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_REGRID_SHAPE
+     Specify the value for 'climo_mean.regrid.shape' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_TIME_INTERP_METHOD
+     Specify the value for 'climo_mean.time_interp_method' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_MATCH_MONTH
+     Specify the value for 'climo_mean.match_month' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_DAY_INTERVAL
+     Specify the value for 'climo_mean.day_interval' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_MEAN_HOUR_INTERVAL
+     Specify the value for 'climo_mean.hour_interval' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_FILE_NAME
+     Specify the value for 'climo_stdev.file_name' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_FIELD
+     Specify the value for 'climo_stdev.field' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_REGRID_METHOD
+     Specify the value for 'climo_stdev.regrid.method' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_REGRID_WIDTH
+     Specify the value for 'climo_stdev.regrid.width' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_REGRID_VLD_THRESH
+     Specify the value for 'climo_stdev.regrid.vld_thresh' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_REGRID_SHAPE
+     Specify the value for 'climo_stdev.regrid.shape' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_TIME_INTERP_METHOD
+     Specify the value for 'climo_stdev.time_interp_method' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_MATCH_MONTH
+     Specify the value for 'climo_stdev.match_month' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_DAY_INTERVAL
+     Specify the value for 'climo_stdev.day_interval' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_CLIMO_STDEV_HOUR_INTERVAL
+     Specify the value for 'climo_stdev.hour_interval' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON
+     Specify the value for 'ensemble_flag.latlon' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_MEAN
+     Specify the value for 'ensemble_flag.mean' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_STDEV
+     Specify the value for 'ensemble_flag.stdev' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_MINUS
+     Specify the value for 'ensemble_flag.minus' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_PLUS
+     Specify the value for 'ensemble_flag.plus' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_MIN
+     Specify the value for 'ensemble_flag.min' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_MAX
+     Specify the value for 'ensemble_flag.max' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_RANGE
+     Specify the value for 'ensemble_flag.range' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_VLD_COUNT
+     Specify the value for 'ensemble_flag.vld_count' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_FREQUENCY
+     Specify the value for 'ensemble_flag.frequency' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_NEP
+     Specify the value for 'ensemble_flag.nep' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP
+     Specify the value for 'ensemble_flag.nmep' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO
+     Specify the value for 'ensemble_flag.climo' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF
+     Specify the value for 'ensemble_flag.climo_cdf' in the MET configuration file for GenEnsProd.
+
+     | *Used by:*  GenEnsProd
+
+   LOG_GEN_ENS_PROD_VERBOSITY
+     Overrides the log verbosity for GenEnsProd only. If not set, the verbosity level is controlled by :term:`LOG_MET_VERBOSITY`.
+
+     | *Used by:* GenEnsProd
+
+   GEN_ENS_PROD_MET_CONFIG_OVERRIDES
+     Override any variables in the MET configuration file that are not
+     supported by the wrapper. This should be set to the full variable name
+     and value that you want to override, including the equal sign and the
+     ending semi-colon. The value is directly appended to the end of the
+     wrapped MET config file.
+
+     Example:
+     GEN_ENS_PROD_MET_CONFIG_OVERRIDES = desc = "override_desc"; model = "override_model";
+
+     See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
+
+     | *Used by:*  GenEnsProd
+
+   GEN_ENS_PROD_ENS_FILE_TYPE
+     Specify the value for 'ens.file_type' in the MET configuration file for GenEnsProd.
+
+     | *Used by:* GenEnsProd

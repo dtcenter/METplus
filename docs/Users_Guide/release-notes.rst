@@ -107,7 +107,7 @@ METplus Version 4.1.0-beta1 Release Notes (2021-07-21)
 
 * New Use Cases:
 
-  * Marine and Coastal: GridStat_fcstRTOFS_obsOSTIA_iceCover (`#834 <https://github.com/dtcenter/METplus/issues/834>`_)
+  * Marine and Cryosphere: GridStat_fcstRTOFS_obsOSTIA_iceCover (`#834 <https://github.com/dtcenter/METplus/issues/834>`_)
   * met_tool_wrapper: GFDLTracker_TC (`#615 <https://github.com/dtcenter/METplus/issues/615>`_)
   * Seasonal to Subseasonal: UserScript_fcstGFS_obsERA_OMI
   * Seasonal to Subseasonal: UserScript_fcstGFS_obsERA_PhaseDiagram

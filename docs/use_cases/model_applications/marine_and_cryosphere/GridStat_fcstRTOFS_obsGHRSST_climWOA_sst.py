@@ -1,15 +1,15 @@
 """
-GridStat: Python Embedding to read and process ice cover
-========================================================
+GridStat: Python Embedding to read and process SST
+==================================================
 
-model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
+model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf
 
 """
 ##############################################################################
 # Scientific Objective
 # --------------------
 #
-# This use case utilizes Python embedding to extract several statistics from the ice cover data over both pole regions, 
+# This use case utilizes Python embedding to extract several statistics from the sea surface temperature data over the globe, 
 # which was already being done in a closed system. By producing the same output via METplus, this use case
 # provides standardization and reproducible results.
 
@@ -17,9 +17,13 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 # Datasets
 # --------
 #
-# | **Forecast:** RTOFS ice cover file via Python Embedding script/file
+# | **Forecast:** RTOFS sst file via Python Embedding script/file
 #
-# | **Observation:** OSTIA ice cover file via Python Embedding script/file
+# | **Observations:** GHRSST sst file via Python Embedding script/file
+#
+# | **Sea Ice Masking:** RTOFS ice cover file via Python Embedding script/file
+#
+# | **Climatology:** WOA sst file via Python Embedding script/file
 #
 # | **Location:** All of the input data required for this use case can be found in the met_test sample data tarball. Click here to the METplus releases page and download sample data for the appropriate release: https://github.com/dtcenter/METplus/releases
 # | This tarball should be unpacked into the directory that you will set the value of INPUT_BASE. See `Running METplus`_ section for more information.
@@ -34,7 +38,6 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 # You will need to use a version of Python 3.6+ that has the following packages installed:
 #
 # * scikit-learn
-# * pyproj
 # * pyresample
 #
 # If the version of Python used to compile MET did not have these libraries at the time of compilation, you will need to add these packages or create a new Python environment with these packages.
@@ -49,19 +52,18 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 # ------------------
 #
 # This use case utilizes the METplus GridStat wrapper to generate a
-# command to run the MET tool GridStat with Python Embedding for the specified user hemispheres
+# command to run the MET tool GridStat with Python Embedding each time a field (fcst, obs, and climo) is needed.
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 #
-# GridStat is the only tool called in this example. This use case will pass in the two
-# hemispheres via a custom loop list, with both the observation and forecast gridded data
-# being pulled from the files via Python Embedding. All of the desired statistics reside in the CNT line type,
-# so that is the only output requested.
+# GridStat is the only tool called in this example. This use case will pass in both the observation, forecast, 
+# and climatology gridded data being pulled from the files via Python Embedding. All of the desired statistics 
+# reside in the CNT line type, so that is the only output requested.
 # It processes the following run time:
 #
-# | **Valid:** 2021-03-05 0Z
+# | **Valid:** 2021-05-03 0Z
 # |
 
 ##############################################################################
@@ -69,11 +71,10 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 # ---------------------
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
-# then it loads any configuration files passed to METplus via the command line
-# with the -c option, i.e. -c parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
+# then it loads any configuration files passed to METplus via the command line.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf
 
 ##############################################################################
 # MET Configuration
@@ -96,12 +97,12 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 # Python Embedding
 # ----------------
 #
-# This use case uses one Python script to read forecast and observation data
+# This use case uses one Python script to read forecast, observation, and climatology data
 #
-# parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover/read_ice_data.py
+# parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/read_rtofs_ghrsst_woa.py
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover/read_ice_data.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst/read_rtofs_ghrsst_woa.py
 #
 
 ##############################################################################
@@ -110,13 +111,13 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 #
 # This use case can be run two ways:
 #
-# 1) Passing in GridStat_fcstRTOFS_obsOSTIA_iceCover.conf then a user-specific system configuration file::
+# 1) Passing in GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf -c /path/to/user_system.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstRTOFS_obsOSTIA_iceCover.conf::
+# 2) Modifying the configurations in parm/metplus_config, then passing in GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
+#        run_metplus.py /path/to/METplus/parm/use_cases/model_applications/marine_and_cryosphere/GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.conf
 #
 # The former method is recommended. Whether you add them to a user-specific configuration file or modify the metplus_config files, the following variables must be set correctly:
 #
@@ -126,12 +127,11 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 #
 # Example User Configuration File::
 #
-#   [dir]
+#   [config]
 #   INPUT_BASE = /path/to/sample/input/data
 #   OUTPUT_BASE = /path/to/output/dir
 #   MET_INSTALL_DIR = /path/to/met-X.Y 
 #
-# **NOTE:** All of these items must be found under the [dir] section.
 #
 
 ##############################################################################
@@ -143,13 +143,12 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 #   INFO: METplus has successfully finished running.
 #
 # Refer to the value set for **OUTPUT_BASE** to find where the output data was generated.
-# Output for thisIce use case will be found in 20210305 (relative to **OUTPUT_BASE**)
+# Output for thisIce use case will be found in directory 20210503 (relative to **OUTPUT_BASE**)
 # and will contain the following files:
 #
-# * grid_stat_north_000000L_20210305_120000V_cnt.txt
-# * grid_stat_south_000000L_20210305_120000V_cnt.txt
-# * grid_stat_north_000000L_20210305_120000V.stat
-# * grid_stat_south_000000L_20210305_120000V.stat
+# * grid_stat_SST_000000L_20210503_000000V.stat 
+# * grid_stat_SST_000000L_20210503_000000V_cnt.txt 
+# * grid_stat_SST_000000L_20210503_000000V_pairs.nc 
 
 ##############################################################################
 # Keywords
@@ -159,11 +158,11 @@ model_applications/marine_and_coastal/GridStat_fcstRTOFS_obsOSTIA_iceCover.conf
 #
 #   * GridStatToolUseCase
 #   * PythonEmbeddingFileUseCase
-#   * MarineAndCoastalAppUseCase
+#   * MarineAndCryosphereAppUseCase
 #
 #   Navigate to the :ref:`quick-search` page to discover other similar use cases.
 #
 #
 #
-# sphinx_gallery_thumbnail_path = '_static/marine_and_coastal-GridStat_fcstRTOFS_obsOSTIA_iceCover.png'
-#
+# sphinx_gallery_thumbnail_path = '_static/marine_and_cryosphere-GridStat_fcstRTOFS_obsGHRSST_climWOA_sst.png'
+

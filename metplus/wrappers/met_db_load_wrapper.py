@@ -44,7 +44,7 @@ class METDbLoadWrapper(RuntimeFreqWrapper):
                     'LOAD_MPR': 'bool',
                     }
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         met_data_db_dir = config.getdir('MET_DATA_DB_DIR')
         self.app_path = os.path.join(met_data_db_dir,
                                      'METdbLoad',

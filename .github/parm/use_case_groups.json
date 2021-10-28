@@ -1,7 +1,12 @@
 [
   {
     "category": "met_tool_wrapper",
-    "index_list": "0-57",
+    "index_list": "0-29",
+    "run": false
+  },
+  {
+    "category": "met_tool_wrapper",
+    "index_list": "30-58",
     "run": false
   },
   {
@@ -40,18 +45,13 @@
     "run": false
   },
   {
-    "category": "cryosphere",
-    "index_list": "0",
-    "run": false
-  },
-  {
     "category": "data_assimilation",
     "index_list": "0",
     "run": false
   },
   {
-    "category": "marine_and_coastal",
-    "index_list": "0-1",
+    "category": "marine_and_cryosphere",
+    "index_list": "0-2",
     "run": false
   },
   {

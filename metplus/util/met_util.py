@@ -2298,18 +2298,20 @@ def find_var_name_indices(config, data_types, met_tool=None):
                                           index_index=2,
                                           id_index=1)
 
-def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
+def parse_var_list(config, time_info=None, data_type=None, met_tool=None,
+                   levels_as_list=False):
     """ read conf items and populate list of dictionaries containing
     information about each variable to be compared
-        Args:
+
             @param config: METplusConfig object
             @param time_info: time object for string sub, optional
             @param data_type: data type to find. Can be FCST, OBS, or ENS.
              If not set, get FCST/OBS/BOTH
             @param met_tool: optional name of MET tool to look for wrapper
              specific var items
-        Returns:
-            list of dictionaries with variable information
+            @param levels_as_list If true, store levels and output names as
+             a list instead of creating a field info dict for each name/level
+        @returns list of dictionaries with variable information
     """
 
     # validate configs again in case wrapper is not running from run_metplus
@@ -2321,15 +2323,6 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
     elif data_type == 'BOTH':
         config.logger.error("Cannot request BOTH explicitly in parse_var_list")
         return []
-
-    # if time_info is not passed in, set 'now' to CLOCK_TIME
-    # NOTE: any attempt to use string template substitution with an item other
-    # than 'now' will fail if time_info is not passed into parse_var_list
-#    if time_info is None:
-#        time_info = {'now': datetime.datetime.strptime(
-#            config.getstr('config', 'CLOCK_TIME'),
-#            '%Y%m%d%H%M%S')
-#        }
 
     # var_list is a list containing an list of dictionaries
     var_list = []
@@ -2383,6 +2376,21 @@ def parse_var_list(config, time_info=None, data_type=None, met_tool=None):
         if len(data_types) > 1:
             if (n_levels != len(field_info_list[1]['levels'])):
                 continue
+
+        # if requested, put all field levels in a single item
+        if levels_as_list:
+            var_dict = {}
+            for field_info in field_info_list:
+                current_type = field_info.get('data_type')
+                var_dict[f"{current_type}_name"] = field_info.get('name')
+                var_dict[f"{current_type}_level"] = field_info.get('levels')
+                var_dict[f"{current_type}_thresh"] = field_info.get('thresh')
+                var_dict[f"{current_type}_extra"] = field_info.get('extra')
+                var_dict[f"{current_type}_output_name"] = field_info.get('output_names')
+
+            var_dict['index'] = index
+            var_list.append(var_dict)
+            continue
 
         # loop over levels and add all values to output dictionary
         for level_index in range(n_levels):
