@@ -98,6 +98,36 @@ METplus Database of Statistics
     -  
     - MODE Tool
     - MODE ascii object
+  * - Object axis angle (in degrees)
+    - AXIS_ANG
+    -  
+    - MODE, MTD
+    - Attribute output
+  * - Difference in spatial axis plane angles
+    - AXIS_DIFF
+    -  
+    - MTD
+    - Attribute Output
+  * - Baddeley’s Delta Metric
+    - BADDELEY
+    -  
+    - Grid-Stat
+    - DMAP
+  * - Bias Adjusted Gilbert Skill Score
+    - BAGSS
+    -  
+    - Point-Stat, Grid-Stat
+    - CTS,  NBRCTS 
+  * - Base Rate
+    - BASER
+    -  
+    - Point-Stat Tool, Grid-Stat, Wavelet-Stat, MODE
+    - CTS, ECLV, MODE, NBRCTCS, PSTD, PJC
+  * - Bias-corrected mean squared error
+    - BCMSE
+    -  
+    - Point-Stat, Grid-Stat, Ensemble-Stat 
+    - CNT, SSVAR
 
 
 ..#.. glossary:: statistics
