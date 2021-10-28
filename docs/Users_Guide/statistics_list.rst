@@ -102,7 +102,8 @@ METplus Database of Statistics
       (in degrees)
     - AXIS_ANG
     -  
-    - MODE, MTD
+    - MODE  :raw-html:`<br />`
+      MTD
     - Attribute output
   * - Difference in spatial :raw-html:`<br />`
       axis plane angles
@@ -120,21 +121,30 @@ METplus Database of Statistics
     - BAGSS
     -  
     - Point-Stat, Grid-Stat
-    - CTS,  NBRCTS 
+    - CTS :raw-html:`<br />`
+      NBRCTS 
   * - Base Rate
     - BASER
     -  
-    - Point-Stat Tool, Grid-Stat, :raw-html:`<br />`
-      Wavelet-Stat, MODE
-    - CTS, ECLV, MODE, :raw-html:`<br />`
-      NBRCTCS, PSTD, PJC
+    - Point-Stat Tool :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      Wavelet-Stat :raw-html:`<br />`
+      MODE
+    - CTS :raw-html:`<br />`
+      ECLV :raw-html:`<br />`
+      MODE :raw-html:`<br />`
+      NBRCTCS :raw-html:`<br />`
+      PSTD :raw-html:`<br />`
+      PJC
   * - Bias-corrected mean :raw-html:`<br />`
       squared error
     - BCMSE
     -  
-    - Point-Stat, Grid-Stat, :raw-html:`<br />`
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
       Ensemble-Stat 
-    - CNT, SSVAR
+    - CNT :raw-html:`<br />`
+      SSVAR
 
 
 ..#.. glossary:: statistics
