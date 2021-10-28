@@ -98,12 +98,14 @@ METplus Database of Statistics
     -  
     - MODE Tool
     - MODE ascii object
-  * - Object axis angle (in degrees)
+  * - Object axis angle :raw-html:`<br />`
+      (in degrees)
     - AXIS_ANG
     -  
     - MODE, MTD
     - Attribute output
-  * - Difference in spatial axis plane angles
+  * - Difference in spatial :raw-html:`<br />`
+      axis plane angles
     - AXIS_DIFF
     -  
     - MTD
@@ -113,7 +115,8 @@ METplus Database of Statistics
     -  
     - Grid-Stat
     - DMAP
-  * - Bias Adjusted Gilbert Skill Score
+  * - Bias Adjusted Gilbert :raw-html:`<br />`
+      Skill Score
     - BAGSS
     -  
     - Point-Stat, Grid-Stat
@@ -121,12 +124,16 @@ METplus Database of Statistics
   * - Base Rate
     - BASER
     -  
-    - Point-Stat Tool, Grid-Stat, Wavelet-Stat, MODE
-    - CTS, ECLV, MODE, NBRCTCS, PSTD, PJC
-  * - Bias-corrected mean squared error
+    - Point-Stat Tool, Grid-Stat, :raw-html:`<br />`
+      Wavelet-Stat, MODE
+    - CTS, ECLV, MODE, :raw-html:`<br />`
+      NBRCTCS, PSTD, PJC
+  * - Bias-corrected mean :raw-html:`<br />`
+      squared error
     - BCMSE
     -  
-    - Point-Stat, Grid-Stat, Ensemble-Stat 
+    - Point-Stat, Grid-Stat, :raw-html:`<br />`
+      Ensemble-Stat 
     - CNT, SSVAR
 
 
