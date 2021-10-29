@@ -120,7 +120,7 @@ METplus Database of Statistics
       Skill Score
     - BAGSS
     -  
-    - Point-Stat, :raw-html:`<br />`
+    - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CTS :raw-html:`<br />`
       NBRCTS 
@@ -146,7 +146,38 @@ METplus Database of Statistics
       Ensemble-Stat 
     - CNT :raw-html:`<br />`
       SSVAR
-
+  * - Minimum distance between :raw-html:`<br />`
+      the boundaries of two objects
+    - BOUNDARY_DIST
+    -  
+    - MODE
+    - Attribute Output
+  * - Brier Score
+    - BRIER
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PSTD
+  * - Climatological Brier Score
+    - BRIERCL
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PSTD
+  * - Brier Skill Score relative :raw-html:`<br />`
+      to sample climatology
+    - BSS
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PSTD
+  * - Brier Skill Score relative :raw-html:`<br />`
+      to external climatology
+    - BSS_SMPL
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PSTD
 
 ..#.. glossary:: statistics
 ..#   :sorted:
