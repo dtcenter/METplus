@@ -148,7 +148,8 @@ METplus Database of Statistics
       SSVAR
   * - Minimum distance between :raw-html:`<br />`
       the boundaries of two objects
-    - BOUNDARY_DIST
+    - BOUNDARY  :raw-html:`<br />`
+      _DIST
     -  
     - MODE
     - Attribute Output
