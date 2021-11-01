@@ -183,7 +183,8 @@ METplus Database of Statistics
       is between the ith and :raw-html:`<br />`
       i+1th probability :raw-html:`<br />`
       thresholds (repeated)
-    - CALIBRATION_i
+    - CALIBRATION :raw-html:`<br />`
+      _i
     -  
     - Point-Stat
     - PJC
@@ -191,17 +192,56 @@ METplus Database of Statistics
       travelled by the 2D spatial :raw-html:`<br />`
       centroid over the lifetime :raw-html:`<br />`
       of the 3D object
-    - CDIST_TRAVELLED
+    - CDIST :raw-html:`<br />`
+      _TRAVELLED
     -  
-    - MODE-td
-    - MODE-time-domain 3D
+    - MTD
+    - MTD 3D
   * - Distance between two :raw-html:`<br />`
       objects centroids :raw-html:`<br />`
       (in grid units)
-    - CENTROID_DIST
+    - CENTROID :raw-html:`<br />`
+      _DIST
     -  
     - MODE
-    - MODE ascii object      
+    - MODE ascii object
+  * - Latitude of centroid :raw-html:`<br />`
+      Location of the centroid
+    - CENTROID_LAT
+    -  
+    - MTD :raw-html:`<br />`
+      MODE
+    - MTD 2D & 3D attribute output :raw-html:`<br />`
+      MODE ascii object
+  * - Longitude of centroid :raw-html:`<br />`
+      Location of the centroid
+    - CENTROID_LON
+    -  
+    - MTD :raw-html:`<br />`
+      MODE
+    - MTD 2D & 3D attribute output :raw-html:`<br />`
+      MODE ascii object
+  * - t coordinate of centroid
+    - CENTROID_T
+    -  
+    - MTD
+    - MTD 3D attribute output
+  * - x coordinate of centroid :raw-html:`<br />`
+      Location of the centroid
+    - CENTROID_X
+    -  
+    - MTD :raw-html:`<br />`
+      MODE
+    - MTD 2D & 3D attribute output :raw-html:`<br />`
+      MODE ascii object
+  * - y coordinate of centroid :raw-html:`<br />`
+      Location of the centroid
+    - CENTROID_Y
+    -  
+    - MTD :raw-html:`<br />`
+      MODE
+    - MTD 2D & 3D attribute output :raw-html:`<br />`
+      MODE ascii object
 
 ..#.. glossary:: statistics
 ..#   :sorted:
