@@ -179,6 +179,29 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PSTD
+  * - Calibration when forecast :raw-html:`<br />`
+      is between the ith and :raw-html:`<br />`
+      i+1th probability :raw-html:`<br />`
+      thresholds (repeated)
+    - CALIBRATION_i
+    -  
+    - Point-Stat
+    - PJC
+  * - Total great circle distance :raw-html:`<br />`
+      travelled by the 2D spatial :raw-html:`<br />`
+      centroid over the lifetime :raw-html:`<br />`
+      of the 3D object
+    - CDIST_TRAVELLED
+    -  
+    - MODE-td
+    - MODE-time-domain 3D
+  * - Distance between two :raw-html:`<br />`
+      objects centroids :raw-html:`<br />`
+      (in grid units)
+    - CENTROID_DIST
+    -  
+    - MODE
+    - MODE ascii object      
 
 ..#.. glossary:: statistics
 ..#   :sorted:
