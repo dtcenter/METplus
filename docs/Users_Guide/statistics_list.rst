@@ -207,7 +207,8 @@ METplus Database of Statistics
     - MODE ascii object
   * - Latitude of centroid :raw-html:`<br />`
       Location of the centroid
-    - CENTROID_LAT
+    - CENTROID :raw-html:`<br />`
+      _LAT
     -  
     - MTD :raw-html:`<br />`
       MODE
@@ -215,7 +216,8 @@ METplus Database of Statistics
       MODE ascii object
   * - Longitude of centroid :raw-html:`<br />`
       Location of the centroid
-    - CENTROID_LON
+    - CENTROID :raw-html:`<br />`
+      _LON
     -  
     - MTD :raw-html:`<br />`
       MODE
