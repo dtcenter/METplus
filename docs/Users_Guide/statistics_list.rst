@@ -9,16 +9,18 @@ METplus Database of Statistics
   :widths: auto
   :header-rows: 1
 		
-  * - Statistics  :raw-html:`<br />` Long Name
+  * - Statistics  :raw-html:`<br />`
+      Long Name
     - METplus Name
     - Statistic Type
     - Tools
-    - Statistics
+    - METplus :raw-html:`<br />`
+      Line Type
   * - Accuracy
     - ACC
     - Categorical
-    - Point-Stat Tool  :raw-html:`<br />`
-      MODE Tool
+    - Point-Stat   :raw-html:`<br />`
+      MODE 
     - CTS :raw-html:`<br />`
       MCTS :raw-html:`<br />`
       NBRCTS  :raw-html:`<br />`
@@ -26,23 +28,21 @@ METplus Database of Statistics
   * - Asymptotic Fractions Skill Score
     - AFSS
     -  
-    - Grid-Stat Tool
+    - Grid-Stat 
     - NBRCNT 
   * - Along track error (nm)
     - ALTK_ERR
     -  
-    - TC-Pairs Tool
+    - TC-Pairs 
     - TCMPR 
   * - Difference between the axis :raw-html:`<br />`
       angles of two objects (in degrees) 
     - ANGLE_DIFF
     -  
-    - MODE Tool
+    - MODE 
     - MODE      
-  * - The Anomaly Correlation :raw-html:`<br />`
-      including mean error with normal  :raw-html:`<br />`
-      and bootstrap upper and :raw-html:`<br />`
-      lower confidence limits
+  * - Anomaly Correlation :raw-html:`<br />`
+      including mean error
     - ANOM_CORR
     -  
     - Point-Stat :raw-html:`<br />`
@@ -50,7 +50,7 @@ METplus Database of Statistics
       Series-Analysis :raw-html:`<br />`
       Stat-Analysis
     - CNT 
-  * - The uncentered Anomaly :raw-html:`<br />`
+  * - Uncentered Anomaly :raw-html:`<br />`
       Correlation excluding mean :raw-html:`<br />`
       error including bootstrap upper :raw-html:`<br />`
       and lower confidence limits
@@ -67,7 +67,7 @@ METplus Database of Statistics
     - MODE :raw-html:`<br />`
       MTD
     - MODE ascii object
-  * - The forecast object area :raw-html:`<br />`
+  * - Forecast object area :raw-html:`<br />`
       divided by the observation :raw-html:`<br />`
       object area (unitless) :raw-html:`<br />`
       NOTE: Prior to met-10.0.0, :raw-html:`<br />`
@@ -77,7 +77,7 @@ METplus Database of Statistics
       of the two
     - AREA_RATIO
     -  
-    - MODE Tool
+    - MODE 
     - MODE ascii object
   * - Area of the object :raw-html:`<br />`
       containing data values :raw-html:`<br />`
@@ -87,7 +87,7 @@ METplus Database of Statistics
       criteria (in grid squares)
     - AREA_THRESH
     -  
-    - MODE Tool
+    - MODE 
     - MODE ascii object 
   * - Absolute value of :raw-html:`<br />`
       the difference :raw-html:`<br />`
@@ -96,7 +96,7 @@ METplus Database of Statistics
       (unitless)
     - ASPECT_DIFF
     -  
-    - MODE Tool
+    - MODE 
     - MODE ascii object
   * - Object axis angle :raw-html:`<br />`
       (in degrees)
@@ -110,7 +110,7 @@ METplus Database of Statistics
     - AXIS_DIFF
     -  
     - MTD
-    - Attribute Output
+    - Attribute output
   * - Baddeley’s Delta Metric
     - BADDELEY
     -  
@@ -127,7 +127,7 @@ METplus Database of Statistics
   * - Base Rate
     - BASER
     -  
-    - Point-Stat Tool :raw-html:`<br />`
+    - Point-Stat  :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       Wavelet-Stat :raw-html:`<br />`
       MODE
@@ -152,7 +152,7 @@ METplus Database of Statistics
       _DIST
     -  
     - MODE
-    - Attribute Output
+    - Attribute output
   * - Brier Score
     - BRIER
     -  
