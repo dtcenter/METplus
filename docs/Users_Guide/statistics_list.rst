@@ -479,5 +479,75 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Ensemble-Stat
     - CNT :raw-html:`<br />`
-      SSVAR 
+      SSVAR
+  * - Forecast rate/event :raw-html:`<br />`
+      frequency
+    - F_RATE
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - FHO :raw-html:`<br />`
+      NBRCNT 
+  * - Mean forecast wind speed
+    - F_SPEED_BAR
+    -  
+    - Point-Stat
+    - VL1L2  
+  * - Mean(f-c)
+    - FABAR
+    -  
+    - Point-Stat
+    - SAL1L2  
+  * - False alarm ratio
+    - FAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      MODE :raw-html:`<br />`
+      Grid-Stat
+    - CTS :raw-html:`<br />`
+      MODE :raw-html:`<br />`
+      NBRCTCS 
+  * - Forecast mean 
+    - FBAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Ensemble-Stat
+    - CNT :raw-html:`<br />`
+      SL1L2  :raw-html:`<br />`
+      VCNT :raw-html:`<br />`
+      SSVAR
+  * - Mean forecast normal upper:raw-html:`<br />`
+      and lower confidence:raw-html:`<br />`
+      limits
+    - FBAR_NCL
+    -  
+    - Ensemble-Stat
+    - SSVAR 
+  * - Length (speed) of the:raw-html:`<br />`
+      average forecast:raw-html:`<br />`
+      wind vector
+    - FBAR_SPEED
+    -  
+    - Point-Stat
+    - VCNT 
+  * - Frequency Bias
+    - FBIAS
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      Wavelet-Stat :raw-html:`<br />`
+      MODE
+    - CTS :raw-html:`<br />`
+      DMAP :raw-html:`<br />`
+      NBRCTCS :raw-html:`<br />`
+      ISC :raw-html:`<br />`
+      MODE 
+  * - Fractions Brier Score
+    - FBS
+    -  
+    - Grid-Stat
+    - NBRCNT
       
