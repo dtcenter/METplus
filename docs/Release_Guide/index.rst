@@ -16,6 +16,7 @@ Development Release
 -------------------
 
 **Beta**
+
 Beta releases are a pre-release of the software to give a larger group of
 users the opportunity to test the recently incorporated new features,
 enhancements, and bug fixes.  Beta releases allow for continued
@@ -24,6 +25,7 @@ possible configurations of hardware and software that exist and installation
 of beta releases allow for testing of potential conflicts.
 
 **Release Candidate (rc)**
+
 A release candidate is a version of the software that is nearly ready for
 official release but may still have a few bugs.  At this stage, all product
 features have been designed, coded, and tested through one or more beta

@@ -1,7 +1,7 @@
 METplus Release Notes
 =====================
 
-Users can view the :ref:`Stages of the METplus Release Cycle` section of
+Users can view the :ref:`releaseCycleStages` section of
 the Release Guide for descriptions of the development releases (including
 beta releases and release candidates), official releases, and bugfix
 releases for the METplus Components.
