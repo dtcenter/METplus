@@ -379,4 +379,38 @@ METplus Database of Statistics
     -  
     - MODE
     - MODE ascii object
+  * - Development methodology :raw-html:`<br />`
+      category
+    - DEV_CAT
+    -  
+    - TC-Gen
+    - GENMPR 
+  * - Absolute value
+    - DIR_ABSERR
+    -  
+    - Point-Stat
+    - VCNT 
+  * - Signed angle between :raw-html:`<br />`
+      the directions of the :raw-html:`<br />`
+      average forecast and :raw-html:`<br />`
+      observed wing vectors 
+    - DIR_ERR
+    -  
+    - Point-Stat
+    - VCNT
+  * - Difference in object :raw-html:`<br />`
+      direction of movement
+    - DIRECTION :raw-html:`<br />`
+      _DIFF
+    -  
+    - MTD
+    - MTD 3D pair attribute output
+  * - Difference in the :raw-html:`<br />`
+      lifetimes of the :raw-html:`<br />`
+      two objects
+    - DURATION :raw-html:`<br />`
+      _DIFF
+    -  
+    - MTD
+    - MTD 3D pair attribute output
       
