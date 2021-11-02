@@ -489,7 +489,8 @@ METplus Database of Statistics
     - FHO :raw-html:`<br />`
       NBRCNT 
   * - Mean forecast wind speed
-    - F_SPEED_BAR
+    - F_SPEED :raw-html:`<br />`
+      _BAR
     -  
     - Point-Stat
     - VL1L2  
@@ -550,4 +551,79 @@ METplus Database of Statistics
     -  
     - Grid-Stat
     - NBRCNT
-      
+  * - Number of forecast :raw-html:`<br />`
+      clusters
+    - fcst_clus
+    -  
+    - MODE
+    - MODE netCDF dimensions
+  * - Number of points used to :raw-html:`<br />`
+      define the hull of all :raw-html:`<br />`
+      of the cluster forecast :raw-html:`<br />`
+      objects
+    - fcst_clus_hull
+    -  
+    - MODE
+    - MODE netCDF dimensions
+  * - Forecast Cluster Convex :raw-html:`<br />`
+      Hull Point Latitude
+    - fcst_clus :raw-html:`<br />`
+      _hull_lat
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast Cluster Convex :raw-html:`<br />`
+      Hull Point Longitude
+    - fcst_clus :raw-html:`<br />`
+      _hull _lon
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of Forecast :raw-html:`<br />`
+      Cluster Convex Hull Points
+    - fcst_clus :raw-html:`<br />`
+      _hull_npts
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast Cluster Convex :raw-html:`<br />`
+      Hull Starting Index
+    - fcst_clus :raw-html:`<br />`
+      _hull_start
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast Cluster Convex :raw-html:`<br />`
+      Hull Point X-Coordinate
+    - fcst_clus :raw-html:`<br />`
+      _hull_x
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast Cluster Convex :raw-html:`<br />`
+      Hull Point Y-Coordinate
+    - fcst_clus :raw-html:`<br />`
+      _hull_y
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Cluster forecast object id :raw-html:`<br />`
+      number for each grid point
+    - fcst_clus :raw-html:`<br />`
+      _id
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast convolution :raw-html:`<br />`
+      threshold
+    - fcst_conv :raw-html:`<br />`
+      _threshold
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast convolution radius
+    - fcst_conv :raw-html:`<br />`
+      _radius
+    -  
+    - MODE
+    - MODE netCDF variables      
