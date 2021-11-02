@@ -367,13 +367,15 @@ METplus Database of Statistics
     - MODE ascii object
   * - Center of curvature :raw-html:`<br />`
       (in grid coordinates)
-    - CURVATURE_X
+    - CURVATURE :raw-html:`<br />`
+      _X
     -  
     - MODE
     - MODE ascii object
   * - Center of curvature :raw-html:`<br />`
       (in grid coordinates)
-    - CURVATURE_Y
+    - CURVATURE :raw-html:`<br />`
+      _Y
     -  
     - MODE
     - MODE ascii object
