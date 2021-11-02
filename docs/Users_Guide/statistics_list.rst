@@ -275,14 +275,15 @@ METplus Database of Statistics
       complexity divided by the :raw-html:`<br />`
       observation complexity or :raw-html:`<br />`
       its reciprocal (unitless)
-    - COMPLEXITY_RATIO
+    - COMPLEXITY :raw-html:`<br />`
+      _RATIO
     -  
     - MODE
     - MODE ascii object
   * - Minimum distance between :raw-html:`<br />`
       the convex hulls of two :raw-html:`<br />`
       objects (in grid units)
-    - CONVEX_HULL
+    - CONVEX_HULL :raw-html:`<br />`
       _DIST
     -  
     - MODE
