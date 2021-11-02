@@ -413,4 +413,71 @@ METplus Database of Statistics
     -  
     - MTD
     - MTD 3D pair attribute output
+  * - Expected correct rate :raw-html:`<br />`
+      used for MCTS HSS_EC
+    - EC_VALUE
+    -  
+    - Point-Stat
+    - MCTC 
+  * - Extreme Dependency Index :raw-html:`<br />`
+      including normal and :raw-html:`<br />`
+      bootstrap upper and :raw-html:`<br />`
+      lower confidence limits
+    - EDI
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CTS :raw-html:`<br />`
+      NBRCTS 
+  * - Extreme Dependency Score :raw-html:`<br />`
+      including normal and :raw-html:`<br />`
+      bootstrap upper and :raw-html:`<br />`
+      lower confidence limits
+    - EDS
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CTS :raw-html:`<br />`
+      NBRCTS 
+  * - Mean of absolute value :raw-html:`<br />`
+      of forecast minus :raw-html:`<br />`
+      observed gradients
+    - EGBAR
+    -  
+    - Grid-Stat
+    - GRAD 
+  * - Object end time
+    - END_TIME
+    -  
+    - MTD
+    - MTD 3D attribute output
+  * - Difference in object :raw-html:`<br />`
+      ending time steps
+    - END_TIME :raw-html:`<br />`
+      _DELTA
+    -  
+    - MTD
+    - MTD 3D pair attribute output
+  * - The unperturbed :raw-html:`<br />`
+      ensemble mean value
+    - ENS_MEAN
+    -  
+    - Ensemble-Stat
+    - ORANK 
+  * - The PERTURBED ensemble :raw-html:`<br />`
+      mean (e.g. with :raw-html:`<br />`
+      Observation Error).
+    - ENS_MEAN :raw-html:`<br />`
+      _OERR
+    -  
+    - Ensemble-Stat
+    - ORANK 
+  * - Standard deviation of :raw-html:`<br />`
+      the error
+    - ESTDEV
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Ensemble-Stat
+    - CNT :raw-html:`<br />`
+      SSVAR 
       
