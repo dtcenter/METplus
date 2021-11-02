@@ -244,4 +244,92 @@ METplus Database of Statistics
       MODE
     - MTD 2D & 3D attribute output :raw-html:`<br />`
       MODE ascii object
-
+  * - Climatological mean value
+    - CLIMO_MEAN
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Ensemble-Stat
+    - MPR :raw-html:`<br />`
+      ORANK
+  * - Climatological standard :raw-html:`<br />`
+      deviation value
+    - CLIMO_STDEV
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Ensemble-Stat
+    - MPR :raw-html:`<br />`
+      ORANK
+  * - Ratio of the difference :raw-html:`<br />`
+      between the area of an :raw-html:`<br />`
+      object and the area of :raw-html:`<br />`
+      its convex hull divided :raw-html:`<br />`
+      by the area of the :raw-html:`<br />`
+      complex hull (unitless)
+    - COMPLEXITY
+    -  
+    - MODE
+    - MODE ascii object
+  * - Ratio of complexities of :raw-html:`<br />`
+      two objects defined as :raw-html:`<br />`
+      the lesser of the forecast :raw-html:`<br />`
+      complexity divided by the :raw-html:`<br />`
+      observation complexity or :raw-html:`<br />`
+      its reciprocal (unitless)
+    - COMPLEXITY_RATIO
+    -  
+    - MODE
+    - MODE ascii object
+  * - Minimum distance between :raw-html:`<br />`
+      the convex hulls of two :raw-html:`<br />`
+      objects (in grid units)
+    - CONVEX_HULL
+      _DIST
+    -  
+    - MODE
+    - MODE ascii object
+  * - The Continuous Ranked :raw-html:`<br />`
+      Probability Score :raw-html:`<br />`
+      (normal dist.)
+    - CRPS
+    -  
+    - Ensemble-Stat
+    - ECNT
+  * - The Continuous Ranked :raw-html:`<br />`
+      Probability Score :raw-html:`<br />`
+      (empirical dist.)
+    - CRPS_EMP
+    -  
+    - Ensemble-Stat
+    - ECNT
+  * - Climatological Continuous :raw-html:`<br />`
+      Ranked Probability Score :raw-html:`<br />`
+      (normal dist.)
+    - CRPSCL
+    -  
+    - Ensemble-Stat
+    - ECNT
+  * - Climatological Continuous :raw-html:`<br />`
+      Ranked Probability Score :raw-html:`<br />`
+      (empirical dist.)
+    - CRPSCL_EMP
+    -  
+    - Ensemble-Stat
+    - ECNT
+  * - The Continuous Ranked :raw-html:`<br />`
+      Probability Skill Score :raw-html:`<br />`
+      (normal dist.)
+    - CRPSS
+    -  
+    - Ensemble-Stat
+    - ECNT
+  * - The Continuous Ranked :raw-html:`<br />`
+      Probability Skill Score :raw-html:`<br />`
+      (empirical dist.)
+    - CRPSS_EMP
+    -  
+    - Ensemble-Stat
+    - ECNT
+  * - Cross track error (nm)
+    - CRTK_ERR
+    - TC-Pairs
+    - TCMPR
