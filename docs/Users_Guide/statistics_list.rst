@@ -335,3 +335,46 @@ METplus Database of Statistics
     -
     - TC-Pairs
     - TCMPR
+  * - Critical Success Index 
+    - CSI
+    -  
+    - Point-Stat :raw-html:`<br />`
+      MODE :raw-html:`<br />`
+      Grid-Stat
+    - CTS :raw-html:`<br />`
+      MODE :raw-html:`<br />`
+      MBRCTCS
+  * - Cloud top pressure (hPa) :raw-html:`<br />`
+      Total column precip. :raw-html:`<br />`
+      water (km/m**2) :raw-html:`<br />`
+      (microwave only)
+    - CTOP_PRS :raw-html:`<br />`
+      TC_PWAT
+    -  
+    - GSI
+    - GSI diagnostic radiance :raw-html:`<br />`
+      MPR output
+  * - Radius of curvature
+    - CURVATURE
+    -  
+    - MODE
+    - MODE ascii object
+  * - Ratio of the curvature
+    - CURVATURE :raw-html:`<br />`
+      _RATIO
+    -  
+    - MODE
+    - MODE ascii object
+  * - Center of curvature :raw-html:`<br />`
+      (in grid coordinates)
+    - CURVATURE_X
+    -  
+    - MODE
+    - MODE ascii object
+  * - Center of curvature :raw-html:`<br />`
+      (in grid coordinates)
+    - CURVATURE_Y
+    -  
+    - MODE
+    - MODE ascii object
+      
