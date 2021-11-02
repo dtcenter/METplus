@@ -518,15 +518,15 @@ METplus Database of Statistics
       SL1L2  :raw-html:`<br />`
       VCNT :raw-html:`<br />`
       SSVAR
-  * - Mean forecast normal upper:raw-html:`<br />`
-      and lower confidence:raw-html:`<br />`
+  * - Mean forecast normal upper :raw-html:`<br />`
+      and lower confidence :raw-html:`<br />`
       limits
     - FBAR_NCL
     -  
     - Ensemble-Stat
     - SSVAR 
-  * - Length (speed) of the:raw-html:`<br />`
-      average forecast:raw-html:`<br />`
+  * - Length (speed) of the :raw-html:`<br />`
+      average forecast :raw-html:`<br />`
       wind vector
     - FBAR_SPEED
     -  
