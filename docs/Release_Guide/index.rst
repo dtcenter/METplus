@@ -7,6 +7,8 @@ developers for creating software releases for the METplus component
 repositories.  **This Release Guide is intended for developers creating
 releases and is not intended for users of the software.**
 
+.. _releaseCycleStages:
+
 Stages of the METplus Release Cycle
 ===================================
 
