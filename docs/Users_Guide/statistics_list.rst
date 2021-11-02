@@ -331,5 +331,6 @@ METplus Database of Statistics
     - ECNT
   * - Cross track error (nm)
     - CRTK_ERR
+    -
     - TC-Pairs
     - TCMPR
