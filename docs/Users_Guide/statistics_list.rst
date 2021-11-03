@@ -501,14 +501,12 @@ METplus Database of Statistics
   * - Forecast mean 
     - FBAR
     -  
-    - Point-Stat :raw-html:`<br />`
+    - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
-      Point-Stat :raw-html:`<br />`
-      Ensemble-Stat
-    - CNT :raw-html:`<br />`
+    - SSVAR :raw-html:`<br />`
+      CNT :raw-html:`<br />`
       SL1L2  :raw-html:`<br />`
-      VCNT :raw-html:`<br />`
-      SSVAR
+      VCNT
   * - Mean forecast normal upper :raw-html:`<br />`
       and lower confidence :raw-html:`<br />`
       limits
@@ -527,15 +525,14 @@ METplus Database of Statistics
     - FBIAS
     -  
     - Point-Stat :raw-html:`<br />`
-      Grid-Stat :raw-html:`<br />`
-      Grid-Stat :raw-html:`<br />`
       Wavelet-Stat :raw-html:`<br />`
-      MODE
+      MODE :raw-html:`<br />`
+      Grid-Stat
     - CTS :raw-html:`<br />`
-      DMAP :raw-html:`<br />`
-      NBRCTCS :raw-html:`<br />`
       ISC :raw-html:`<br />`
-      MODE 
+      MODE :raw-html:`<br />`
+      DMAP :raw-html:`<br />`
+      NBRCTCS 
   * - Fractions Brier Score
     - FBS
     -  
