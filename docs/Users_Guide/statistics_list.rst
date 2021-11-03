@@ -19,7 +19,8 @@ METplus Database of Statistics
   * - Accuracy
     - ACC
     - Categorical
-    - Point-Stat   :raw-html:`<br />`
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
       MODE 
     - CTS :raw-html:`<br />`
       MCTS :raw-html:`<br />`
@@ -187,6 +188,7 @@ METplus Database of Statistics
       _i
     -  
     - Point-Stat
+      Grid-Stat :raw-html:`<br />`
     - PJC
   * - Total great circle distance :raw-html:`<br />`
       travelled by the 2D spatial :raw-html:`<br />`
@@ -248,6 +250,7 @@ METplus Database of Statistics
     - CLIMO_MEAN
     -  
     - Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
       Ensemble-Stat
     - MPR :raw-html:`<br />`
       ORANK
@@ -256,6 +259,7 @@ METplus Database of Statistics
     - CLIMO_STDEV
     -  
     - Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
       Ensemble-Stat
     - MPR :raw-html:`<br />`
       ORANK
@@ -379,6 +383,7 @@ METplus Database of Statistics
     - DIR_ABSERR
     -  
     - Point-Stat
+      Grid-Stat :raw-html:`<br />`
     - VCNT 
   * - Signed angle between :raw-html:`<br />`
       the directions of the :raw-html:`<br />`
@@ -387,6 +392,7 @@ METplus Database of Statistics
     - DIR_ERR
     -  
     - Point-Stat
+      Grid-Stat :raw-html:`<br />`
     - VCNT
   * - Difference in object :raw-html:`<br />`
       direction of movement
@@ -408,6 +414,7 @@ METplus Database of Statistics
     - EC_VALUE
     -  
     - Point-Stat
+      Grid-Stat :raw-html:`<br />`
     - MCTC 
   * - Extreme Dependency Index :raw-html:`<br />`
       including normal and :raw-html:`<br />`
@@ -467,6 +474,7 @@ METplus Database of Statistics
     - ESTDEV
     -  
     - Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
       Ensemble-Stat
     - CNT :raw-html:`<br />`
       SSVAR
@@ -483,11 +491,13 @@ METplus Database of Statistics
       _BAR
     -  
     - Point-Stat
+      Grid-Stat :raw-html:`<br />`
     - VL1L2  
   * - Mean(f-c)
     - FABAR
     -  
     - Point-Stat
+      Grid-Stat :raw-html:`<br />`
     - SAL1L2  
   * - False alarm ratio
     - FAR
@@ -503,6 +513,7 @@ METplus Database of Statistics
     -  
     - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
     - SSVAR :raw-html:`<br />`
       CNT :raw-html:`<br />`
       SL1L2  :raw-html:`<br />`
@@ -520,6 +531,7 @@ METplus Database of Statistics
     - FBAR_SPEED
     -  
     - Point-Stat
+      Grid-Stat :raw-html:`<br />`
     - VCNT 
   * - Frequency Bias
     - FBIAS
