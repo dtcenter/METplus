@@ -211,7 +211,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                               self.input_data)
             # Get the list of all files (full file path) in this directory
             all_input_files = util.get_files(self.input_data, ".*.tcst",
-                                            self.logger)
+                                             self.logger)
 
             # read each file into pandas then concatenate them together
             df_list = [pd.read_csv(file, delim_whitespace=True) for file in all_input_files]
