@@ -188,6 +188,8 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         """
         self.sanitized_df = self.retrieve_data()
+        if not self.sanitized_df:
+            return None
         self.create_plot()
 
 
@@ -209,7 +211,7 @@ class CyclonePlotterWrapper(CommandBuilder):
                               self.input_data)
             # Get the list of all files (full file path) in this directory
             all_input_files = util.get_files(self.input_data, ".*.tcst",
-                                            self.logger)
+                                             self.logger)
 
             # read each file into pandas then concatenate them together
             df_list = [pd.read_csv(file, delim_whitespace=True) for file in all_input_files]
@@ -218,7 +220,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             # check for empty dataframe, set error message and exit
             if combined.empty:
                 self.logger.error("No data found in specified files. Please check your config file settings.")
-                sys.exit("No data found.")
+                return None
 
             # if there are any NaN values in the ALAT, ALON, STORM_ID, LEAD, INIT, AMODEL, or VALID column,
             # drop that row of data (axis=0).  We need all these columns to contain valid data in order
@@ -314,35 +316,35 @@ class CyclonePlotterWrapper(CommandBuilder):
                                                   storm_track_dict[key].alons, sanitized_lons)
                 sanitized_storm_tracks[key] = sanitized_track_pt
 
-                # fill in the sanitized dataframe, sanitized_df
-                for key in sanitized_storm_tracks:
-                    # now use the indices of the storm tracks to correctly assign the sanitized
-                    # lons to the appropriate row in the dataframe to maintain the row ordering of
-                    # the original dataframe
-                    idx_list = sanitized_storm_tracks[key].indices
+            # fill in the sanitized dataframe, sanitized_df
+            for key in sanitized_storm_tracks:
+                # now use the indices of the storm tracks to correctly assign the sanitized
+                # lons to the appropriate row in the dataframe to maintain the row ordering of
+                # the original dataframe
+                idx_list = sanitized_storm_tracks[key].indices
 
-                    for i, idx in enumerate(idx_list):
-                        sanitized_df.loc[idx,'SLON'] = sanitized_storm_tracks[key].slons[i]
+                for i, idx in enumerate(idx_list):
+                    sanitized_df.loc[idx,'SLON'] = sanitized_storm_tracks[key].slons[i]
 
-                        # Set some useful values used for plotting.
-                        # Set the IS_FIRST value to True if this is the first
-                        # point in the storm track, False
-                        # otherwise
-                        if i == 0:
-                            sanitized_df.loc[idx, 'IS_FIRST'] = True
-                        else:
-                            sanitized_df.loc[idx, 'IS_FIRST'] = False
+                    # Set some useful values used for plotting.
+                    # Set the IS_FIRST value to True if this is the first
+                    # point in the storm track, False
+                    # otherwise
+                    if i == 0:
+                        sanitized_df.loc[idx, 'IS_FIRST'] = True
+                    else:
+                        sanitized_df.loc[idx, 'IS_FIRST'] = False
 
-                        # Set the lead group to the character '0' if the valid hour is 0 or 12,
-                        # or to the charcter '6' if the valid hour is 6 or 18. Set the marker
-                        # to correspond to the valid hour: 'o' (open circle) for 0 or 12 valid hour,
-                        # or '+' (small plus/cross) for 6 or 18.
-                        if sanitized_df.loc[idx, 'VALID_HOUR'] == 0 or sanitized_df.loc[idx, 'VALID_HOUR'] == 12:
-                            sanitized_df.loc[idx, 'LEAD_GROUP'] ='0'
-                            sanitized_df.loc[idx, 'MARKER'] = self.circle_marker
-                        elif sanitized_df.loc[idx, 'VALID_HOUR'] == 6 or sanitized_df.loc[idx, 'VALID_HOUR'] == 18:
-                            sanitized_df.loc[idx, 'LEAD_GROUP'] = '6'
-                            sanitized_df.loc[idx, 'MARKER'] = self.cross_marker
+                    # Set the lead group to the character '0' if the valid hour is 0 or 12,
+                    # or to the charcter '6' if the valid hour is 6 or 18. Set the marker
+                    # to correspond to the valid hour: 'o' (open circle) for 0 or 12 valid hour,
+                    # or '+' (small plus/cross) for 6 or 18.
+                    if sanitized_df.loc[idx, 'VALID_HOUR'] == 0 or sanitized_df.loc[idx, 'VALID_HOUR'] == 12:
+                        sanitized_df.loc[idx, 'LEAD_GROUP'] ='0'
+                        sanitized_df.loc[idx, 'MARKER'] = self.circle_marker
+                    elif sanitized_df.loc[idx, 'VALID_HOUR'] == 6 or sanitized_df.loc[idx, 'VALID_HOUR'] == 18:
+                        sanitized_df.loc[idx, 'LEAD_GROUP'] = '6'
+                        sanitized_df.loc[idx, 'MARKER'] = self.cross_marker
 
             # If the user has specified a region of interest rather than the
             # global extent, subset the data even further to points that are within a bounding box.
@@ -370,7 +372,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         else:
             # The user's specified directory isn't valid, log the error and exit.
             self.logger.error("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory, check config file.")
-            sys.exit("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory.")
+            return None
 
         return final_sorted_df
 
