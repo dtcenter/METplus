@@ -344,16 +344,6 @@ METplus Database of Statistics
     - CTS :raw-html:`<br />`
       MODE :raw-html:`<br />`
       MBRCTCS
-  * - Cloud top pressure (hPa) :raw-html:`<br />`
-      Total column precip. :raw-html:`<br />`
-      water (km/m**2) :raw-html:`<br />`
-      (microwave only)
-    - CTOP_PRS :raw-html:`<br />`
-      TC_PWAT
-    -  
-    - GSI
-    - GSI diagnostic radiance :raw-html:`<br />`
-      MPR output
   * - Radius of curvature
     - CURVATURE
     -  
