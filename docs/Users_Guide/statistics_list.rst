@@ -548,7 +548,8 @@ METplus Database of Statistics
       define the hull of all :raw-html:`<br />`
       of the cluster forecast :raw-html:`<br />`
       objects
-    - fcst_clus_hull
+    - fcst_clus :raw-html:`<br />`
+      _hull
     -  
     - MODE
     - MODE netCDF dimensions
