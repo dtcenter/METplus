@@ -316,35 +316,35 @@ class CyclonePlotterWrapper(CommandBuilder):
                                                   storm_track_dict[key].alons, sanitized_lons)
                 sanitized_storm_tracks[key] = sanitized_track_pt
 
-                # fill in the sanitized dataframe, sanitized_df
-                for key in sanitized_storm_tracks:
-                    # now use the indices of the storm tracks to correctly assign the sanitized
-                    # lons to the appropriate row in the dataframe to maintain the row ordering of
-                    # the original dataframe
-                    idx_list = sanitized_storm_tracks[key].indices
+            # fill in the sanitized dataframe, sanitized_df
+            for key in sanitized_storm_tracks:
+                # now use the indices of the storm tracks to correctly assign the sanitized
+                # lons to the appropriate row in the dataframe to maintain the row ordering of
+                # the original dataframe
+                idx_list = sanitized_storm_tracks[key].indices
 
-                    for i, idx in enumerate(idx_list):
-                        sanitized_df.loc[idx,'SLON'] = sanitized_storm_tracks[key].slons[i]
+                for i, idx in enumerate(idx_list):
+                    sanitized_df.loc[idx,'SLON'] = sanitized_storm_tracks[key].slons[i]
 
-                        # Set some useful values used for plotting.
-                        # Set the IS_FIRST value to True if this is the first
-                        # point in the storm track, False
-                        # otherwise
-                        if i == 0:
-                            sanitized_df.loc[idx, 'IS_FIRST'] = True
-                        else:
-                            sanitized_df.loc[idx, 'IS_FIRST'] = False
+                    # Set some useful values used for plotting.
+                    # Set the IS_FIRST value to True if this is the first
+                    # point in the storm track, False
+                    # otherwise
+                    if i == 0:
+                        sanitized_df.loc[idx, 'IS_FIRST'] = True
+                    else:
+                        sanitized_df.loc[idx, 'IS_FIRST'] = False
 
-                        # Set the lead group to the character '0' if the valid hour is 0 or 12,
-                        # or to the charcter '6' if the valid hour is 6 or 18. Set the marker
-                        # to correspond to the valid hour: 'o' (open circle) for 0 or 12 valid hour,
-                        # or '+' (small plus/cross) for 6 or 18.
-                        if sanitized_df.loc[idx, 'VALID_HOUR'] == 0 or sanitized_df.loc[idx, 'VALID_HOUR'] == 12:
-                            sanitized_df.loc[idx, 'LEAD_GROUP'] ='0'
-                            sanitized_df.loc[idx, 'MARKER'] = self.circle_marker
-                        elif sanitized_df.loc[idx, 'VALID_HOUR'] == 6 or sanitized_df.loc[idx, 'VALID_HOUR'] == 18:
-                            sanitized_df.loc[idx, 'LEAD_GROUP'] = '6'
-                            sanitized_df.loc[idx, 'MARKER'] = self.cross_marker
+                    # Set the lead group to the character '0' if the valid hour is 0 or 12,
+                    # or to the charcter '6' if the valid hour is 6 or 18. Set the marker
+                    # to correspond to the valid hour: 'o' (open circle) for 0 or 12 valid hour,
+                    # or '+' (small plus/cross) for 6 or 18.
+                    if sanitized_df.loc[idx, 'VALID_HOUR'] == 0 or sanitized_df.loc[idx, 'VALID_HOUR'] == 12:
+                        sanitized_df.loc[idx, 'LEAD_GROUP'] ='0'
+                        sanitized_df.loc[idx, 'MARKER'] = self.circle_marker
+                    elif sanitized_df.loc[idx, 'VALID_HOUR'] == 6 or sanitized_df.loc[idx, 'VALID_HOUR'] == 18:
+                        sanitized_df.loc[idx, 'LEAD_GROUP'] = '6'
+                        sanitized_df.loc[idx, 'MARKER'] = self.cross_marker
 
             # If the user has specified a region of interest rather than the
             # global extent, subset the data even further to points that are within a bounding box.
