@@ -188,7 +188,7 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         """
         self.sanitized_df = self.retrieve_data()
-        if not self.sanitized_df:
+        if self.sanitized_df is None:
             return None
         self.create_plot()
 
