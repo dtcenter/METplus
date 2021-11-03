@@ -15,7 +15,8 @@ Stages of the METplus Release Cycle
 Development Release
 -------------------
 
-**Beta**
+Beta
+^^^^
 
 Beta releases are a pre-release of the software to give a larger group of
 users the opportunity to test the recently incorporated new features,
@@ -24,7 +25,8 @@ development and bug fixes before an official release.  There are many
 possible configurations of hardware and software that exist and installation
 of beta releases allow for testing of potential conflicts.
 
-**Release Candidate (rc)**
+Release Candidate (rc)
+^^^^^^^^^^^^^^^^^^^^^^
 
 A release candidate is a version of the software that is nearly ready for
 official release but may still have a few bugs.  At this stage, all product
