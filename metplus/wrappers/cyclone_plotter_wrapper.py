@@ -188,6 +188,8 @@ class CyclonePlotterWrapper(CommandBuilder):
 
         """
         self.sanitized_df = self.retrieve_data()
+        if not self.sanitized_df:
+            return None
         self.create_plot()
 
 
@@ -218,7 +220,7 @@ class CyclonePlotterWrapper(CommandBuilder):
             # check for empty dataframe, set error message and exit
             if combined.empty:
                 self.logger.error("No data found in specified files. Please check your config file settings.")
-                sys.exit("No data found.")
+                return None
 
             # if there are any NaN values in the ALAT, ALON, STORM_ID, LEAD, INIT, AMODEL, or VALID column,
             # drop that row of data (axis=0).  We need all these columns to contain valid data in order
@@ -370,7 +372,7 @@ class CyclonePlotterWrapper(CommandBuilder):
         else:
             # The user's specified directory isn't valid, log the error and exit.
             self.logger.error("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory, check config file.")
-            sys.exit("CYCLONE_PLOTTER_INPUT_DIR isn't a valid directory.")
+            return None
 
         return final_sorted_df
 
