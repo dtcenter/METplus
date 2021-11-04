@@ -630,3 +630,139 @@ METplus Database of Statistics
     -  
     - MODE
     - MODE netCDF variables      
+  * - Simple forecast object :raw-html:`<br />`
+      id number for each :raw-html:`<br />`
+      grid point
+    - fcst_obj :raw-html:`<br />`
+      _id
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast Object Raw :raw-html:`<br />`
+      Values
+    - fcst_obj :raw-html:`<br />`
+      _raw
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast raw values
+    - fcst_raw
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of simple  :raw-html:`<br />`
+      forecast objects
+    - fcst_simp
+    -  
+    - MODE
+    - MODE netCDF dimensions
+  * - Number of points used :raw-html:`<br />`
+      to define the boundaries :raw-html:`<br />`
+      of all of the simple :raw-html:`<br />`
+      forecast objects
+    - fcst_simp :raw-html:`<br />`
+      _bdy
+    -  
+    - MODE
+    - MODE netCDF dimensions
+  * - Forecast Simple :raw-html:`<br />`
+      Boundary PoLatitude
+    - fcst_simp :raw-html:`<br />`
+      _bdy_lat
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast Simple :raw-html:`<br />`
+      Boundary PoLongitude
+    - fcst_simp :raw-html:`<br />`
+      _bdy_lon
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of Forecast :raw-html:`<br />`
+      Simple Boundary Points
+    - fcst_simp :raw-html:`<br />`
+      _bdy_npts
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast Simple :raw-html:`<br />`
+      Boundary Starting Index
+    - fcst_simp :raw-html:`<br />`
+      _bdy_start
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast Simple :raw-html:`<br />`
+      Boundary PoX-Coordinate
+    - fcst_simp :raw-html:`<br />`
+      _bdy_x
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast Simple :raw-html:`<br />`
+      Boundary PoY-Coordinate
+    - fcst_simp :raw-html:`<br />`
+      _bdy_y
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of points used to :raw-html:`<br />`
+      define the hull of all :raw-html:`<br />`
+      of the simple forecast :raw-html:`<br />`
+      objects
+    - fcst_simp :raw-html:`<br />`
+      _hull
+    -  
+    - MODE
+    - MODE netCDF dimensions
+  * - Forecast Simple Convex :raw-html:`<br />`
+      Hull Point Latitude
+    - fcst_simp :raw-html:`<br />`
+      _hull_lat
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast Simple Convex :raw-html:`<br />`
+      Hull Point Longitude
+    - fcst_simp :raw-html:`<br />`
+      _hull_lon
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of Forecast :raw-html:`<br />`
+      Simple Convex Hull Points
+    - fcst_simp :raw-html:`<br />`
+      _hull_npts
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast Simple Convex :raw-html:`<br />`
+      Hull Starting Index
+    - fcst_simp :raw-html:`<br />`
+      _hull_start
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast Simple Convex :raw-html:`<br />`
+      Hull Point X-Coordinate
+    - fcst_simp :raw-html:`<br />`
+      _hull_x
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Forecast Simple Convex :raw-html:`<br />`
+      Hull Point Y-Coordinate
+    - fcst_simp :raw-html:`<br />`
+      _hull_y
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of thresholds  :raw-html:`<br />`
+      applied to the forecast
+    - fcst :raw-html:`<br />`
+      _thresh :raw-html:`<br />`
+      _length
+    -  
+    - MODE
+    - MODE netCDF dimensions    
