@@ -187,8 +187,8 @@ METplus Database of Statistics
     - CALIBRATION :raw-html:`<br />`
       _i
     -  
-    - Point-Stat
-      Grid-Stat :raw-html:`<br />`
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat 
     - PJC
   * - Total great circle distance :raw-html:`<br />`
       travelled by the 2D spatial :raw-html:`<br />`
@@ -382,8 +382,8 @@ METplus Database of Statistics
   * - Absolute value
     - DIR_ABSERR
     -  
-    - Point-Stat
-      Grid-Stat :raw-html:`<br />`
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
     - VCNT 
   * - Signed angle between :raw-html:`<br />`
       the directions of the :raw-html:`<br />`
@@ -391,8 +391,8 @@ METplus Database of Statistics
       observed wing vectors 
     - DIR_ERR
     -  
-    - Point-Stat
-      Grid-Stat :raw-html:`<br />`
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
     - VCNT
   * - Difference in object :raw-html:`<br />`
       direction of movement
@@ -413,8 +413,8 @@ METplus Database of Statistics
       used for MCTS HSS_EC
     - EC_VALUE
     -  
-    - Point-Stat
-      Grid-Stat :raw-html:`<br />`
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
     - MCTC 
   * - Extreme Dependency Index :raw-html:`<br />`
       including normal and :raw-html:`<br />`
