@@ -963,3 +963,72 @@ METplus Database of Statistics
     - MODE :raw-html:`<br />`
       CTC :raw-html:`<br />`
       NBRCTC
+  * - Distance between the :raw-html:`<br />`
+      forecast and Best track :raw-html:`<br />`
+      genesis events (km)
+    - GEN_DIST
+    -  
+    - TC-Gen
+    - GENMPR 
+  * - Forecast minus Best track genesis time in HHMMSS format
+    - GEN_TDIFF
+    -  
+    - TC-Gen
+    - GENMPR 
+  * - Gerrity Score and :raw-html:`<br />`
+      bootstrap confidence limits
+    - GER
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - MCTS 
+  * - Gilbert Skill Score
+    - GSS
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      MODE
+    - CTS :raw-html:`<br />`
+      NBRCTCS  :raw-html:`<br />`
+      MODE
+  * - Hit rate
+    - H_RATE
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - FHO 
+  * - Hausdorff Distance
+    - HAUSDORFF
+    -  
+    - Grid-Stat
+    - DMAP 
+  * - Hanssen and Kuipers :raw-html:`<br />`
+      Discriminant 
+    - HK
+    -  
+    - MODE :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - MODE :raw-html:`<br />`
+      MCTS :raw-html:`<br />`
+      CTS :raw-html:`<br />`
+      NBRCTS
+  * - Heidke Skill Score
+    - HSS
+    -  
+    - MODE :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - MODE :raw-html:`<br />`
+      MCTS :raw-html:`<br />`
+      CTS :raw-html:`<br />`
+      NBRCTS
+  * - Heidke Skill Score with :raw-html:`<br />`
+      user-specific expected  :raw-html:`<br />`
+      correct and bootstrap :raw-html:`<br />`
+      confidence limits
+    - HSS_EC
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - MCTS 
