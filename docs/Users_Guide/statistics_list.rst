@@ -872,5 +872,94 @@ METplus Database of Statistics
     - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - SSVAR  :raw-html:`<br />`
+    - SSVAR :raw-html:`<br />`
       SL1L2  
+  * - Pratt’s Figure of Merit :raw-html:`<br />`
+      from observation to :raw-html:`<br />`
+      forecast
+    - FOM_FO
+    -  
+    - Grid-Stat
+    - DMAP 
+  * - Maximum of FOM_FO :raw-html:`<br />`
+      and FOM_OF
+    - FOM_MAX
+    -  
+    - Grid-Stat
+    - DMAP 
+  * - Mean of FOM_FO and FOM_OF
+    - FOM_MEAN
+    -  
+    - Grid-Stat
+    - DMAP 
+  * - Minimum of FOM_FO and FOM_OF
+    - FOM_MIN
+    -  
+    - Grid-Stat
+    - DMAP 
+  * - Pratt’s Figure of Merit :raw-html:`<br />`
+      from forecast to :raw-html:`<br />`
+      observation
+    - FOM_OF
+    -  
+    - Grid-Stat
+    - DMAP 
+  * - Number of tied forecast :raw-html:`<br />`
+      ranks used in computing :raw-html:`<br />`
+      Kendall’s tau statistic
+    - FRANK_TIES
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CNT 
+  * - Root mean square forecast :raw-html:`<br />`
+      wind speed
+    - FS_RMS
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VCNT 
+  * - Fractions Skill Score :raw-html:`<br />`
+      including bootstrap upper :raw-html:`<br />`
+      and lower confidence limits
+    - FSS
+    -  
+    - Grid-Stat
+    - NBRCNT 
+  * - Standard deviation of the :raw-html:`<br />`
+      error including normal :raw-html:`<br />`
+      upper and lower  :raw-html:`<br />`
+      confidence limits
+    - FSTDEV
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - SSVAR :raw-html:`<br />`
+      CNT :raw-html:`<br />`
+      VCNT
+  * - Number of forecast events
+    - FY
+    -  
+    - Grid-Stat
+    - DMAP 
+  * - Number of forecast yes :raw-html:`<br />`
+      and observation no
+    - FY_ON
+    -  
+    - MODE :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - MODE :raw-html:`<br />`
+      CTC :raw-html:`<br />`
+      NBRCTC
+  * - Number of forecast yes :raw-html:`<br />`
+      and observation yes
+    - FY_OY
+    -  
+    - MODE :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - MODE :raw-html:`<br />`
+      CTC :raw-html:`<br />`
+      NBRCTC
