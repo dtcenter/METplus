@@ -531,8 +531,8 @@ METplus Database of Statistics
       wind vector
     - FBAR_SPEED
     -  
-    - Point-Stat
-      Grid-Stat :raw-html:`<br />`
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat 
     - VCNT 
   * - Frequency Bias
     - FBIAS
