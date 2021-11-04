@@ -490,7 +490,7 @@ METplus Database of Statistics
     - F_SPEED :raw-html:`<br />`
       _BAR
     -  
-    - Point-Stat:raw-html:`<br />`
+    - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VL1L2  
   * - Mean(f-c)
@@ -514,6 +514,7 @@ METplus Database of Statistics
     - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
+       
     - SSVAR :raw-html:`<br />`
       CNT :raw-html:`<br />`
       SL1L2  :raw-html:`<br />`
