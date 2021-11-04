@@ -970,7 +970,9 @@ METplus Database of Statistics
     -  
     - TC-Gen
     - GENMPR 
-  * - Forecast minus Best track genesis time in HHMMSS format
+  * - Forecast minus Best track :raw-html:`<br />`
+      genesis time in HHMMSS :raw-html:`<br />`
+      format
     - GEN_TDIFF
     -  
     - TC-Gen
