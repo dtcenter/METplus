@@ -22,7 +22,7 @@ if not os.path.exists(input_file):
     sys.exit(2)
 
 # Read and format the input 11-column observations
-COLUMN_NAMES = [
+COLUMN_NAMES = (
     "Message_Type",     # (1)  string
     "Station_ID",       # (2)  string
     "Valid_Time",       # (3)  string (YYYYMMDD_HHMMSS)
@@ -34,7 +34,7 @@ COLUMN_NAMES = [
     "Height",           # (9)  numeric (msl or agl)
     "QC_String",        # (10) string
     "Observation_Value" # (11) numeric
-]
+)
 
 # Create a blank dataframe based on the 11 column standard
 point_frame = pd.DataFrame(columns=COLUMN_NAMES,dtype='str')
