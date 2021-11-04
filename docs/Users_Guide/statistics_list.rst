@@ -538,14 +538,15 @@ METplus Database of Statistics
   * - Frequency Bias
     - FBIAS
     -  
-    - Point-Stat :raw-html:`<br />`
-      Wavelet-Stat :raw-html:`<br />`
+    - Wavelet-Stat :raw-html:`<br />`
       MODE :raw-html:`<br />`
-      Grid-Stat
-    - CTS :raw-html:`<br />`
-      ISC :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      .
+    - ISC :raw-html:`<br />`
       MODE :raw-html:`<br />`
       DMAP :raw-html:`<br />`
+      CTS :raw-html:`<br />`
       NBRCTCS 
   * - Fractions Brier Score
     - FBS
