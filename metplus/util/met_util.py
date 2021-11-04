@@ -1516,7 +1516,7 @@ def get_files(filedir, filename_regex, logger=None):
                 file_paths.append(filepath)
             else:
                 continue
-    return file_paths
+    return sorted(file_paths)
 
 def prune_empty(output_dir, logger):
     """! Start from the output_dir, and recursively check
