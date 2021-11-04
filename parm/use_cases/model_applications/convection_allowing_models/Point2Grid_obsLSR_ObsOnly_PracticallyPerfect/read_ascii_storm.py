@@ -21,35 +21,23 @@ if not os.path.exists(input_file):
     print("ERROR: Could not find input file")
     sys.exit(2)
 
-# Read and format the input 11-column observations:
-#   (1)  string:  Message_Type
-#   (2)  string:  Station_ID
-#   (3)  string:  Valid_Time(YYYYMMDD_HHMMSS)
-#   (4)  numeric: Lat(Deg North)
-#   (5)  numeric: Lon(Deg East)
-#   (6)  numeric: Elevation(msl)
-#   (7)  string:  Var_Name(or GRIB_Code)
-#   (8)  numeric: Level
-#   (9)  numeric: Height(msl or agl)
-#   (10) string:  QC_String
-#   (11) numeric: Observation_Value
-
-column_names = [
-    "Message_Type",
-    "Station_ID",
-    "Valid_Time",
-    "Lat",
-    "Lon",
-    "Elevation",
-    "Var_Name",
-    "Level",
-    "Height",
-    "QC_String",
-    "Observation_Value"
+# Read and format the input 11-column observations
+COLUMN_NAMES = [
+    "Message_Type",     # (1)  string
+    "Station_ID",       # (2)  string
+    "Valid_Time",       # (3)  string (YYYYMMDD_HHMMSS)
+    "Lat",              # (4)  numeric (Deg North)
+    "Lon",              # (5)  numeric (Deg East)
+    "Elevation",        # (6)  numeric (msl)
+    "Var_Name",         # (7)  string (or GRIB_Code)
+    "Level",            # (8)  numeric
+    "Height",           # (9)  numeric (msl or agl)
+    "QC_String",        # (10) string
+    "Observation_Value" # (11) numeric
 ]
 
 # Create a blank dataframe based on the 11 column standard
-point_frame = pd.DataFrame(columns=column_names,dtype='str')
+point_frame = pd.DataFrame(columns=COLUMN_NAMES,dtype='str')
 
 #Read in the Storm report, 8 columns not matching the 11 column standard
 temp_data = pd.read_csv(input_file,names=['Time', 'Fscale', 'Location', 'County','Stat','Lat', 'Lon', 'Comment'], dtype=str ,skiprows=1)
