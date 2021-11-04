@@ -496,8 +496,8 @@ METplus Database of Statistics
   * - Mean(f-c)
     - FABAR
     -  
-    - Point-Stat
-      Grid-Stat :raw-html:`<br />`
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
     - SAL1L2  
   * - False alarm ratio
     - FAR
