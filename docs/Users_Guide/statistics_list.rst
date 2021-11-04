@@ -514,7 +514,7 @@ METplus Database of Statistics
     - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
-       
+      . 
     - SSVAR :raw-html:`<br />`
       CNT :raw-html:`<br />`
       SL1L2  :raw-html:`<br />`
@@ -529,7 +529,8 @@ METplus Database of Statistics
   * - Length (speed) of the :raw-html:`<br />`
       average forecast :raw-html:`<br />`
       wind vector
-    - FBAR_SPEED
+    - FBAR  :raw-html:`<br />`
+      _SPEED
     -  
     - Point-Stat :raw-html:`<br />`
       Grid-Stat 
