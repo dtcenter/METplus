@@ -1031,4 +1031,89 @@ METplus Database of Statistics
     -  
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - MCTS 
+    - MCTS
+  * - The Ignorance Score
+    - IGN
+    -  
+    - Ensemble-Stat
+    - ECNT
+  * - Line number in ORANK file :raw-html:`<br />`
+      Index for the current :raw-html:`<br />`
+      matched pair
+    - INDEX
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      TC-Gen :raw-html:`<br />`
+      TC-Pairs :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - ORANK :raw-html:`<br />`
+      GENMPR :raw-html:`<br />`
+      TCMPR :raw-html:`<br />`
+      MPR
+  * - Best track genesis minus :raw-html:`<br />`
+      forecast initialization :raw-html:`<br />`
+      time in HHMMSS format
+    - INIT_TDIFF
+    -  
+    - TC-Gen
+    - GENMPR 
+  * - Forecaster initials
+    - INITIALS
+    -  
+    - TC-Pairs
+    - PROBRIRW  :raw-html:`<br />`
+      TCMPR
+  * - User-specified percentile :raw-html:`<br />`
+      intensity in time slice :raw-html:`<br />`
+      / inside object
+    - INTENSITY_*
+    -  
+    - MTD
+    - MTD 2D & 3D attribute output
+  * - 10th percentile intensity :raw-html:`<br />`
+      in time slice / intensity :raw-html:`<br />`
+      inside object
+    - INTENSITY_10
+    -  
+    - MTD
+    - MTD 2D &  3D attribute output
+  * - 10th, 25th, 50th, 75th, :raw-html:`<br />`
+      and 90th percentiles :raw-html:`<br />`
+      of intensity of the raw :raw-html:`<br />`
+      field within the object
+    - INTENSITY :raw-html:`<br />`
+      _10, _25, :raw-html:`<br />`
+      _50, _75, :raw-html:`<br />`
+      _90
+    -  
+    - MODE
+    - MODE ascii object
+  * - 25th percentile intensity :raw-html:`<br />`
+      in time slice / :raw-html:`<br />`
+      inside object
+    - INTENSITY_25
+    -  
+    - MTD
+    - MTD 2D & 3D attribute output
+  * - 60th percentile intensity :raw-html:`<br />`
+      in time slice /  :raw-html:`<br />`
+      inside object
+    - INTENSITY_50
+    -  
+    - MTD
+    - MTD 2D & 3D attribute output
+  * - 75th percentile intensity :raw-html:`<br />`
+      in time slice / :raw-html:`<br />`
+      inside object
+    - INTENSITY_75
+    -  
+    - MTD
+    - MTD 2D &  3D attribute output
+  * - 90th percentile intensity :raw-html:`<br />`
+      in time slice / :raw-html:`<br />`
+      inside object
+    - INTENSITY_90
+    -  
+    - MTD
+    - MTD 2D & 3D attribute output
