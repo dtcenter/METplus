@@ -765,4 +765,112 @@ METplus Database of Statistics
       _length
     -  
     - MODE
-    - MODE netCDF dimensions    
+    - MODE netCDF dimensions
+  * - Number of thresholds :raw-html:`<br />`
+      applied to the forecast
+    - fcst_thresh :raw-html:`<br />`
+      _length
+    -  
+    - MODE
+    - MODE netCDF dimensions
+  * - Direction of the average :raw-html:`<br />`
+      forecast wind vector
+    - FDIR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VCNT 
+  * - Forecast energy squared :raw-html:`<br />`
+      for this scale
+    - FENERGY
+    -  
+    - Wavelet-Stat
+    - ISC 
+  * - Mean((f-c)²)
+    - FFABAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - SAL1L2  
+  * - Average of forecast :raw-html:`<br />`
+      squared. [Mean(f²) :raw-html:`<br />`
+      Grid-Stat]
+    - FFBAR
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - SSVAR :raw-html:`<br />`
+      SL1L2  
+  * - Mean of absolute value :raw-html:`<br />`
+      of forecast gradients
+    - FGBAR
+    -  
+    - Grid-Stat
+    - GRAD 
+  * - Ratio of forecast and :raw-html:`<br />`
+      observed gradients
+    - FGOG_RATIO
+    -  
+    - Grid-Stat
+    - GRAD 
+  * - Count of events in :raw-html:`<br />`
+      forecast category i and :raw-html:`<br />`
+      observation category j
+    - Fi_Oj
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - MCTC 
+  * - Forecast mean
+    - FMEAN
+    -  
+    - MODE :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      Point-Stat
+    - MODE  :raw-html:`<br />`
+      NBRCTCS :raw-html:`<br />`
+      CTS
+  * - Number of forecast no :raw-html:`<br />`
+      and observation no
+    - FN_ON
+    -  
+    - MODE :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      Point-Stat
+    - MODE  :raw-html:`<br />`
+      NBRCTC :raw-html:`<br />`
+      CTC
+  * - Number of forecast no :raw-html:`<br />`
+      and observation yes
+    - FN_OY
+    -  
+    - MODE :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      Point-Stat
+    - MODE  :raw-html:`<br />`
+      NBRCTC :raw-html:`<br />`
+      CTC
+  * - Attributes for pairs of :raw-html:`<br />`
+      simple forecast and :raw-html:`<br />`
+      observation objects
+    - FNNN_ONNN
+    -  
+    - MODE
+    - MODE ascii object
+  * - Mean((f-c)*(o-c))
+    - FOABAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - SAL1L2  
+  * - Average product of :raw-html:`<br />`
+      forecast and observation :raw-html:`<br />`
+      / Mean(f*o)
+    - FOBAR
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - SSVAR  :raw-html:`<br />`
+      SL1L2  
