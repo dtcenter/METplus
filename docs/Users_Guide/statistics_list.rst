@@ -1122,8 +1122,7 @@ METplus Database of Statistics
   * - The percentile of :raw-html:`<br />`
       intensity chosen for use :raw-html:`<br />`
       in the PERCENTILE :raw-html:`<br />`
-      _INTENSITY_RATIO column :raw-html:`<br />`
-      (variable units) :raw-html:`<br />`
+      _INTENSITY_RATIO column
     - INTENSITY
       _NN
     -  
@@ -1196,3 +1195,42 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
+  * - Dimension of the latitude 
+    - lat
+    -  
+    - MODE
+    - MODE netCDF dimensions & variables
+  * - Length of the :raw-html:`<br />`
+      enclosing rectangle 
+    - LENGTH
+    -  
+    - MODE
+    - MODE ascii object
+  * - Level of storm  :raw-html:`<br />`
+      classification
+    - LEVEL
+    -  
+    - TC-Pairs
+    - TCMPR 
+  * - Likelihood when forecast :raw-html:`<br />`
+      is between the ith and :raw-html:`<br />`
+      i+1th probability :raw-html:`<br />`
+      thresholds repeated
+    - LIKELIHOOD :raw-html:`<br />`
+      _i
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PJC 
+  * - Logarithm of the Odds Ratio 
+    - LODDS
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CTS :raw-html:`<br />`
+      NBRCTS
+  * - Dimension of the longitude 
+    - lon
+    -  
+    - MODE
+    - MODE netCDF dimensions & variables
