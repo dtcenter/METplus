@@ -542,7 +542,6 @@ METplus Database of Statistics
       MODE :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
-      .
     - ISC :raw-html:`<br />`
       MODE :raw-html:`<br />`
       DMAP :raw-html:`<br />`
