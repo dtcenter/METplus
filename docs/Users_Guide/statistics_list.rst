@@ -542,6 +542,7 @@ METplus Database of Statistics
       MODE :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
+      .
     - ISC :raw-html:`<br />`
       MODE :raw-html:`<br />`
       DMAP :raw-html:`<br />`
@@ -1118,3 +1119,80 @@ METplus Database of Statistics
     -  
     - MTD
     - MTD 2D & 3D attribute output
+  * - The percentile of :raw-html:`<br />`
+       intensity chosen for use :raw-html:`<br />`
+       in the PERCENTILE :raw-html:`<br />`
+       _INTENSITY_RATIO column :raw-html:`<br />`
+       (variable units) :raw-html:`<br />`
+    - INTENSITY
+      _NN
+    -  
+    - MODE
+    - MODE ascii object
+  * - Sum of the intensities of :raw-html:`<br />`
+      the raw field within the :raw-html:`<br />`
+      object (variable units)
+    - INTENSITY  :raw-html:`<br />`
+      _SUM
+    -  
+    - MODE
+    - MODE ascii object
+  * - Total interest for this :raw-html:`<br />`
+      object pair
+    - INTEREST
+    -  
+    - MTD :raw-html:`<br />`
+      MODE
+    - MTD 3D pair attribute output :raw-html:`<br />`
+      MODE ascii object
+  * - Intersection area of two :raw-html:`<br />`
+      objects (in grid squares)
+    - INTERSEC  :raw-html:`<br />`
+      TION_AREA
+    -  
+    - MODE
+    - MODE ascii object
+  * - Ratio of intersection area :raw-html:`<br />`
+      to the lesser of the  :raw-html:`<br />`
+      forecast and observation :raw-html:`<br />`
+      object areas (unitless)
+    - INTERSEC :raw-html:`<br />`
+      TION_OVER :raw-html:`<br />`
+      _AREA
+    -  
+    - MODE
+    - MODE ascii object
+  * - “Volume” of object :raw-html:`<br />`
+      intersection
+    - INTERSEC :raw-html:`<br />`
+      TION_VOLUME
+    -  
+    - MTD
+    - MTD 3D pair attribute output
+  * - The Interquartile Range :raw-html:`<br />`
+      including bootstrap upper :raw-html:`<br />`
+      and lower confidence limits
+    - IQR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CNT 
+  * - The intensity scale :raw-html:`<br />`
+      skill score
+    - ISC
+    -  
+    - Wavelet-Stat
+    - ISC 
+  * - The scale at which all  :raw-html:`<br />`
+      information following :raw-html:`<br />`
+      applies
+    - ISCALE
+    -  
+    - Wavelet-Stat
+    - ISC 
+  * - Kendall’s tau statistic
+    - KT_CORR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CNT 
