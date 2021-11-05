@@ -1120,10 +1120,10 @@ METplus Database of Statistics
     - MTD
     - MTD 2D & 3D attribute output
   * - The percentile of :raw-html:`<br />`
-       intensity chosen for use :raw-html:`<br />`
-       in the PERCENTILE :raw-html:`<br />`
-       _INTENSITY_RATIO column :raw-html:`<br />`
-       (variable units) :raw-html:`<br />`
+      intensity chosen for use :raw-html:`<br />`
+      in the PERCENTILE :raw-html:`<br />`
+      _INTENSITY_RATIO column :raw-html:`<br />`
+      (variable units) :raw-html:`<br />`
     - INTENSITY
       _NN
     -  
