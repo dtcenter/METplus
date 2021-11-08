@@ -1433,3 +1433,164 @@ METplus Database of Statistics
     -  
     - Wavelet-Stat
     - ISC 
+  * - NBRCNT output format :raw-html:`<br />`
+      & observation rate
+    - O_RATE
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - NBRCNT :raw-html:`<br />`
+      FHO
+  * - Mean observed wind speed
+    - O_SPEED_BAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VL1L2  
+  * - Mean(o-c)
+    - OABAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - SAL1L2  
+  * - Average observed value :raw-html:`<br />`
+      observation mean :raw-html:`<br />`
+      Mean (o) :raw-html:`<br />`
+      & mean value
+    - OBAR
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />` .
+    - SSVAR :raw-html:`<br />`
+      CNT :raw-html:`<br />`
+      SL1L2 :raw-html:`<br />`
+      VCNT
+  * - Mean observation normal :raw-html:`<br />`
+      upper and lower :raw-html:`<br />`
+      confidence limits
+    - OBAR_NCL
+    -  
+    - Ensemble-Stat
+    - SSVAR 
+  * - Length (speed) of the :raw-html:`<br />`
+      average observed wind :raw-html:`<br />`
+      vector
+    - OBAR_SPEED
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VCNT 
+  * - Object category 
+    - OBJECT_CAT
+    -  
+    - MODE :raw-html:`<br />`
+      MTD
+    - MODE ascii object :raw-html:`<br />`
+      MTD 2D & 3D attribute output :raw-html:`<br />`
+      MTD 3D pair attribute output
+  * - Object number
+    - OBJECT_ID
+    -  
+    - MODE :raw-html:`<br />`
+      MTD
+    - MODE ascii object :raw-html:`<br />`
+      MTD 2D & 3D attribute output :raw-html:`<br />`
+      MTD 3D pair attribute output
+  * - Observation value
+    - OBS
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - ORANK :raw-html:`<br />`
+      MPR :raw-html:`<br />`
+      .
+  * - Number of observed :raw-html:`<br />`
+      clusters
+    - obs_clus
+    -  
+    - MODE
+    - MODE netCDF dimensions
+  * - Number of points used to :raw-html:`<br />`
+      define the hull of all of :raw-html:`<br />`
+      the cluster observation :raw-html:`<br />`
+      objects
+    - obs_clus :raw-html:`<br />`
+      _hull
+    -  
+    - MODE
+    - MODE netCDF dimensions
+  * - Observation Cluster Convex :raw-html:`<br />`
+      Hull Point Latitude
+    - obs_clus
+      _hull_lat
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation Cluster Convex :raw-html:`<br />`
+      Hull Point Longitude
+    - obs_clus :raw-html:`<br />`
+      _hull_lon
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of Observation :raw-html:`<br />`
+      Cluster Convex Hull Points
+    - obs_clus :raw-html:`<br />`
+      _hull_npts
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation Cluster Convex :raw-html:`<br />`
+      Hull Starting Index
+    - obs_clus :raw-html:`<br />`
+      _hull_start
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation Cluster Convex :raw-html:`<br />`
+      Hull Point X-Coordinate
+    - obs_clus :raw-html:`<br />`
+      _hull_x
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation Cluster Convex :raw-html:`<br />`
+      Hull Point Y-Coordinate
+    - obs_clus :raw-html:`<br />`
+      _hull_y
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Cluster observation object :raw-html:`<br />`
+      id number for each :raw-html:`<br />`
+      grid point
+    - obs_clus_id
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation convolution :raw-html:`<br />`
+      threshold
+    - obs_conv
+      _threshold
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation convolution :raw-html:`<br />`
+      radius
+    - obs_conv :raw-html:`<br />`
+      _radius
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Elevation of the :raw-html:`<br />`
+      observation
+    - OBS_ELV
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - ORANK :raw-html:`<br />`
+      MPR :raw-html:`<br />`
+      .
