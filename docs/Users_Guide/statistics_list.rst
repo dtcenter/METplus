@@ -1267,6 +1267,7 @@ METplus Database of Statistics
       Grid-Stat
     - ECNT :raw-html:`<br />`
       SSVAR :raw-html:`<br />`
+      .  :raw-html:`<br />`
       CNT
   * - The Mean Error of the :raw-html:`<br />`
       PERTURBED ensemble mean 
