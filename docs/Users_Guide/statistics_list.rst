@@ -1523,7 +1523,7 @@ METplus Database of Statistics
     - MODE netCDF dimensions
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Point Latitude
-    - obs_clus
+    - obs_clus :raw-html:`<br />`
       _hull_lat
     -  
     - MODE
@@ -1572,7 +1572,7 @@ METplus Database of Statistics
     - MODE netCDF variables
   * - Observation convolution :raw-html:`<br />`
       threshold
-    - obs_conv
+    - obs_conv :raw-html:`<br />`
       _threshold
     -  
     - MODE
