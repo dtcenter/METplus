@@ -1262,6 +1262,7 @@ METplus Database of Statistics
     - ME
     -  
     - Ensemble-Stat :raw-html:`<br />`
+      .  :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
     - ECNT :raw-html:`<br />`
@@ -1327,7 +1328,8 @@ METplus Database of Statistics
       Grid-Stat
     - SSVAR :raw-html:`<br />`
       ISC :raw-html:`<br />`
-      CNT
+      CNT :raw-html:`<br />`
+      .
   * - The mean squared error :raw-html:`<br />`
       skill 
     - MSESS
