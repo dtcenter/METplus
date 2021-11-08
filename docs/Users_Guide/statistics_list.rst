@@ -1596,3 +1596,178 @@ METplus Database of Statistics
     - ORANK :raw-html:`<br />`
       MPR :raw-html:`<br />`
       .
+  * - Latitude of the :raw-html:`<br />`
+      observation
+    - OBS_LAT
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - ORANK  :raw-html:`<br />`
+      MPR :raw-html:`<br />`
+      .
+  * - Longitude of the :raw-html:`<br />`
+      observation
+    - OBS_LON
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - ORANK  :raw-html:`<br />`
+      MPR :raw-html:`<br />` .
+  * - Level of the observation
+    - OBS_LVL
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - ORANK  :raw-html:`<br />`
+      MPR :raw-html:`<br />`
+      .
+  * - Simple observation object :raw-html:`<br />`
+      id number for each :raw-html:`<br />`
+      grid point
+    - obs_obj_id
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation Object Raw :raw-html:`<br />`
+      Values
+    - obs_obj_raw
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Quality control flag for :raw-html:`<br />`
+      observation
+    - OBS_QC
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - MPR 
+  * - Observation Raw Values
+    - obs_raw
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Station Identifier
+    - OBS_SID
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - ORANK  :raw-html:`<br />`
+      MPR :raw-html:`<br />` .
+  * - Number of simple :raw-html:`<br />`
+      observation objects
+    - obs_simp
+    -  
+    - MODE
+    - MODE netCDF dimensions
+  * - Number of points used :raw-html:`<br />`
+      to define the boundaries :raw-html:`<br />`
+      of the simple observation :raw-html:`<br />`
+      objects
+    - obs_simp :raw-html:`<br />`
+      _bdy
+    -  
+    - MODE
+    - MODE netCDF dimensions
+  * - Observation Simple  :raw-html:`<br />`
+      Boundary Point Latitude
+    - obs_simp :raw-html:`<br />`
+      _bdy_lat
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation Simple :raw-html:`<br />`
+      Boundary Point Longitude
+    - obs_simp :raw-html:`<br />`
+      _bdy_lon
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation Simple :raw-html:`<br />`
+      Boundary Starting Index
+    - obs_simp :raw-html:`<br />`
+      _bdy_start
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of Observation :raw-html:`<br />`
+      Simple Boundary Points
+    - obs_simp :raw-html:`<br />`
+      _bdy_npts
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation Simple Boundary :raw-html:`<br />`
+      Point X-Coordinate
+    - obs_simp :raw-html:`<br />`
+      _bdy_x
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation Simple Boundary :raw-html:`<br />`
+      Point Y-Coordinate
+    - obs_simp :raw-html:`<br />`
+      _bdy_y
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of points used to :raw-html:`<br />`
+      define the hull of the :raw-html:`<br />`
+      simple observation objects
+    - obs_simp :raw-html:`<br />`
+      _hull
+    -  
+    - MODE
+    - MODE netCDF dimensions
+  * - Observation Simple Convex :raw-html:`<br />`
+      Hull Point Latitude
+    - obs_simp :raw-html:`<br />`
+      _hull_lat
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation Simple Convex :raw-html:`<br />`
+      Hull Point Longitude
+    - obs_simp :raw-html:`<br />`
+      _hull_lon
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of Observation :raw-html:`<br />`
+      Simple Convex Hull Points
+    - obs_simp :raw-html:`<br />`
+      _hull_npts
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation Simple Convex :raw-html:`<br />`
+      Hull Starting Index
+    - obs_simp :raw-html:`<br />`
+      _hull_start
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation Simple Convex :raw-html:`<br />`
+      Hull Point X-Coordinate
+    - obs_simp :raw-html:`<br />`
+      _hull_x
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Observation Simple Convex :raw-html:`<br />`
+      Hull Point Y-Coordinate
+    - obs_simp :raw-html:`<br />`
+      _hull_y
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of thresholds :raw-html:`<br />`
+      applied to the observations
+    - obs_thresh :raw-html:`<br />`
+      _length
+    -  
+    - MODE
+    - MODE netCDF dimensions
