@@ -1381,4 +1381,52 @@ METplus Database of Statistics
     - N_ENS_VLD
     -  
     - Ensemble-Stat
-    - ORANK      
+    - ORANK
+  * - Number of simple :raw-html:`<br />`
+      forecast objects
+    - n_fcst_simp
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of simple :raw-html:`<br />`
+      observation objects
+    - n_obs_simp
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of Cost/Loss :raw-html:`<br />`
+      ratios
+    - N_PNT
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - ECLV 
+  * -  
+    - N_PROB
+    -  
+    - Ensemble-Stat
+    - Number of probability thresholds
+  * - Number of possible ranks :raw-html:`<br />`
+      for observation
+    - N_RANK
+    -  
+    - Ensemble-Stat
+    - RHIST 
+  * - Number of probability :raw-html:`<br />`
+      thresholds
+    - N_THRESH
+    -  
+    - TC-Pairs :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PROBRIRW :raw-html:`<br />`
+      PJC :raw-html:`<br />`
+      PRC :raw-html:`<br />`
+      PSTD output format :raw-html:`<br />`
+      PTC 
+  * - Total number of scales :raw-html:`<br />`
+      used in decomposition
+    - NSCALE
+    -  
+    - Wavelet-Stat
+    - ISC 
