@@ -1823,7 +1823,8 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - SAL1L2  
-  * - Average of observation squared & Mean(o²)
+  * - Average of observation :raw-html:`<br />`
+      squared & Mean(o²)
     - OOBAR
     -  
     - Ensemble-Stat :raw-html:`<br />`
