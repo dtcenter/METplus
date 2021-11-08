@@ -1771,3 +1771,127 @@ METplus Database of Statistics
     -  
     - MODE
     - MODE netCDF dimensions
+  * - Odds Ratio
+    - ODDS
+    -  
+    - MODE :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - MODE :raw-html:`<br />`
+      CTS :raw-html:`<br />`
+      NBRCTS 
+  * - Direction of the average :raw-html:`<br />`
+      observed wind vector
+    - ODIR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VCNT 
+  * - Observed energy squared :raw-html:`<br />`
+      for this scale
+    - OENERGY
+    -  
+    - Wavelet-Stat
+    - ISC 
+  * - Mean of absolute value :raw-html:`<br />`
+      of observed gradients
+    - OGBAR
+    -  
+    - Grid-Stat
+    - GRAD 
+  * - Number of observation no :raw-html:`<br />`
+      when forecast is between :raw-html:`<br />`
+      the ith and i+1th :raw-html:`<br />`
+      probability thresholds
+    - ON_i
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PTC 
+  * - Number of observation no :raw-html:`<br />`
+      when forecast is between :raw-html:`<br />`
+      the ith and i+1th :raw-html:`<br />`
+      probability thresholds
+    - ON_TP_i
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PJC 
+  * - Mean((o-c)²)
+    - OOABAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - SAL1L2  
+  * - Average of observation squared & Mean(o²)
+    - OOBAR
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - SSVAR :raw-html:`<br />`
+      SL1L2  :raw-html:`<br />` .
+  * - Operational methodology :raw-html:`<br />`
+      category (FYOY, FYON, :raw-html:`<br />`
+      FNOY, or DISCARD)
+    - OPS_CAT
+    -  
+    - TC-Gen
+    - GENMPR 
+  * - Number of tied observation :raw-html:`<br />`
+      ranks used in computing :raw-html:`<br />`
+      Kendall’s tau statistic
+    - ORANK_TIES
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CNT 
+  * - Odds Ratio Skill Score 
+    - ORSS
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CTS :raw-html:`<br />`
+      NBRCTS 
+  * - Root mean square observed :raw-html:`<br />`
+      wind speed
+    - OS_RMS
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VCNT 
+  * - Standard deviation
+    - OSTDEV
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - SSVAR :raw-html:`<br />`
+      CNT :raw-html:`<br />`
+      VCNT 
+  * - Number of observation :raw-html:`<br />`
+      events
+    - OY
+    -  
+    - Grid-Stat
+    - DMAP 
+  * - Number of observation yes :raw-html:`<br />`
+      when forecast is between :raw-html:`<br />`
+      the ith and i+1th :raw-html:`<br />`
+      probability thresholds
+    - OY_i
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PTC 
+  * - Number of observation yes :raw-html:`<br />`
+      when forecast is between :raw-html:`<br />`
+      the ith and i+1th :raw-html:`<br />`
+      probability thresholds :raw-html:`<br />`
+      as a proportion of the :raw-html:`<br />`
+      total OY (repeated)
+    - OY_TP_i
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PJC 
