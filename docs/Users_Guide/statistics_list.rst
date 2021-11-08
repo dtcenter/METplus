@@ -1421,7 +1421,9 @@ METplus Database of Statistics
     -  
     - TC-Pairs :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
-      Grid-Stat
+      Grid-Stat :raw-html:`<br />`
+      .  :raw-html:`<br />`
+      .
     - PROBRIRW :raw-html:`<br />`
       PJC :raw-html:`<br />`
       PRC :raw-html:`<br />`
