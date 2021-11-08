@@ -545,9 +545,9 @@ METplus Database of Statistics
       .
     - ISC :raw-html:`<br />`
       MODE :raw-html:`<br />`
-      DMAP :raw-html:`<br />`
       CTS :raw-html:`<br />`
-      NBRCTCS 
+      NBRCTCS :raw-html:`<br />`
+      DMAP
   * - Fractions Brier Score
     - FBS
     -  
