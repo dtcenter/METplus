@@ -1318,4 +1318,67 @@ METplus Database of Statistics
     -  
     - Grid-Stat
     - GRAD
-     
+  * - Mean squared error
+    - MSE
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Wavelet-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - SSVAR :raw-html:`<br />`
+      ISC :raw-html:`<br />`
+      CNT
+  * - The mean squared error :raw-html:`<br />`
+      skill 
+    - MSESS
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CNT 
+  * - Mean squared length of :raw-html:`<br />`
+      the vector difference :raw-html:`<br />`
+      between the forecast :raw-html:`<br />`
+      and observed winds
+    - MSVE
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VCNT 
+  * - Total number of :raw-html:`<br />`
+      probability intervals :raw-html:`<br />`
+      and current forecast run
+    - N_BIN
+    -  
+    - Ensemble-Stat
+    - PHIST :raw-html:`<br />`
+      SSVAR 
+  * - Dimension of the :raw-html:`<br />`
+      contingency table & the :raw-html:`<br />`
+      total number of :raw-html:`<br />`
+      categories in each :raw-html:`<br />`
+      dimension
+    - N_CAT
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - MCTC :raw-html:`<br />`
+      MCTS
+  * - Number of cluster objects
+    - n_clus
+    -  
+    - MODE
+    - MODE netCDF variables
+  * - Number of ensemble :raw-html:`<br />`
+      values / members
+    - N_ENS
+    -  
+    - Ensemble-Stat
+    - ECNT :raw-html:`<br />`
+      ORANK :raw-html:`<br />`
+      RELP
+  * - Number of valid :raw-html:`<br />`
+      ensemble values
+    - N_ENS_VLD
+    -  
+    - Ensemble-Stat
+    - ORANK      
