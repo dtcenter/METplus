@@ -1234,3 +1234,88 @@ METplus Database of Statistics
     -  
     - MODE
     - MODE netCDF dimensions & variables
+  * - The Median Absolute :raw-html:`<br />`
+      Deviation
+    - MAD
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CNT 
+  * - Mean absolute error
+    - MAE
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CNT  :raw-html:`<br />`
+      SAL1L2   :raw-html:`<br />`
+      SL1L2  
+  * - Magnitude & :raw-html:`<br />`
+      Multiplicative bias
+    - MBIAS
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - SSVAR  :raw-html:`<br />`
+      CNT
+  * - The Mean Error 
+    - ME
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - ECNT :raw-html:`<br />`
+      SSVAR :raw-html:`<br />`
+      CNT
+  * - The Mean Error of the :raw-html:`<br />`
+      PERTURBED ensemble mean 
+    - ME_OERR
+    -  
+    - Ensemble-Stat
+    - ECNT 
+  * - The square of the :raw-html:`<br />`
+      mean error (bias) 
+    - ME2
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CNT 
+  * - Mean-error Distance from :raw-html:`<br />`
+      observation to forecast
+    - MED_FO
+    -  
+    - Grid-Stat
+    - DMAP 
+  * - Maximum of MED_FO :raw-html:`<br />`
+      and MED_OF
+    - MED_MAX
+    -  
+    - Grid-Stat
+    - DMAP 
+  * - Mean of MED_FO :raw-html:`<br />`
+      and MED_OF
+    - MED_MEAN
+    -  
+    - Grid-Stat
+    - DMAP 
+  * - Minimum of MED_FO :raw-html:`<br />`
+      and MED_OF
+    - MED_MIN
+    -  
+    - Grid-Stat
+    - DMAP 
+  * - Mean-error Distance from :raw-html:`<br />`
+      forecast to observation
+    - MED_OF
+    -  
+    - Grid-Stat
+    - DMAP 
+  * - Mean of maximum of :raw-html:`<br />`
+      absolute values of :raw-html:`<br />`
+      forecast and observed :raw-html:`<br />`
+      gradients
+    - MGBAR
+    -  
+    - Grid-Stat
+    - GRAD
+     
