@@ -3,7 +3,8 @@ METplus Database of Statistics
 ******************************
 
 
-.. Statistics - no more that 32 characters
+.. Number of characters per line:
+   Statistics - no more that 32 characters
    METplus Name - no more than 17 characters
    Statistic Type - no more than 19 characters
    Metplus Line Type - currently unlimited (approx 33 characters)
@@ -1985,3 +1986,166 @@ METplus Database of Statistics
     - SSVAR :raw-html:`<br />`
       CNT :raw-html:`<br />`
       .  
+  * - The ith probability :raw-html:`<br />`
+      value (repeated)
+    - PROB_i
+    -  
+    - TC-Pairs
+    - PROBRIRW 
+  * - Rank of the observation
+    - RANK
+    -  
+    - Ensemble-Stat
+    - ORANK 
+  * - Count of observations :raw-html:`<br />`
+      with the i-th rank
+    - RANK_i
+    -  
+    - Ensemble-Stat
+    - RHIST 
+  * - Number of ranks used in :raw-html:`<br />`
+      computing Kendall’s tau :raw-html:`<br />`
+      statistic
+    - RANKS
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CNT 
+  * - Refinement when forecast :raw-html:`<br />`
+      is between the ith and :raw-html:`<br />`
+      i+1th probability :raw-html:`<br />`
+      thresholds (repeated)
+    - REFINEMENT :raw-html:`<br />`
+      _i
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PJC 
+  * - Reliability
+    - RELIABILITY
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PSTD output format
+  * - Number of times the i-th :raw-html:`<br />`
+      ensemble member’s value :raw-html:`<br />`
+      was closest to the :raw-html:`<br />`
+      observation (repeated). :raw-html:`<br />`
+      When n members tie, :raw-html:`<br />`
+      1/n is assigned to each :raw-html:`<br />`
+      member.
+    - RELP_i
+    -  
+    - Ensemble-Stat
+    - RELP 
+  * - Resolution
+    - RESOLUTION
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PSTD output format
+  * - Start of RI time window :raw-html:`<br />`
+      in HH format
+    - RI_BEG
+    -  
+    - TC-Pairs
+    - PROBRIRW 
+  * - End of RI time window :raw-html:`<br />`
+      in HH format
+    - RI_END
+    -  
+    - TC-Pairs
+    - PROBRIRW 
+  * - Width of RI time window :raw-html:`<br />`
+      in HH format
+    - RI_WINDOW
+    -  
+    - TC-Pairs
+    - PROBRIRW 
+  * - Root mean squared error
+    - RMSE
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      Ensemble-Stat :raw-html:`<br />`
+      .
+    - CNT :raw-html:`<br />`
+      . :raw-html:`<br />`
+      ECNT :raw-html:`<br />`
+      SSVAR
+  * - The Root Mean Square Error :raw-html:`<br />`
+      of the PERTURBED ensemble :raw-html:`<br />`
+      mean (e.g. with  :raw-html:`<br />`
+      Observation Error)
+    - RMSE_OERR
+    -  
+    - Ensemble-Stat
+    - ECNT 
+  * - Root mean squared forecast :raw-html:`<br />`
+      anomaly (f-c)
+    - RMSFA
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CNT 
+  * - Root mean squared :raw-html:`<br />`
+      observation anomaly (o-c) :raw-html:`<br />`
+      including bootstrap upper :raw-html:`<br />`
+      & lower confidence limits
+    - RMSOA
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CNT 
+  * - Square root of MSVE
+    - RMSVE
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VCNT 
+  * - Area under the receiver :raw-html:`<br />`
+      operating characteristic :raw-html:`<br />`
+      curve
+    - ROC_AUC
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PSTD outpu format
+  * - Mean of the Brier Scores :raw-html:`<br />`
+      for each RPS threshold
+    - RPS
+    -  
+    - Ensemble-Stat
+    - RPS
+  * - Mean of the reliabilities :raw-html:`<br />`
+      for each RPS threshold
+    - RPS_REL
+    -  
+    - Ensemble-Stat
+    - RPS Reliability
+  * - Mean of the resolutions :raw-html:`<br />`
+      for each RPS threshold
+    - RPS_RES
+    -  
+    - Ensemble-Stat
+    - RPS Resolution
+  * - Mean of the uncertainties :raw-html:`<br />`
+      for each RPS threshold
+    - RPS_UNC
+    -  
+    - Ensemble-Stat
+    - RPS Uncertainty
+  * - Ranked Probability Skill :raw-html:`<br />`
+      Score relative to external :raw-html:`<br />`
+      climatology
+    - RPSS
+    -  
+    - Ensemble-Stat
+    - RPS
+  * - Ranked Probability Skill :raw-html:`<br />`
+      Score relative to sample :raw-html:`<br />`
+      climatology
+    - RPSS_SMPL
+    -  
+    - Ensemble-Stat
+    - RPS
