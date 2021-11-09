@@ -3,10 +3,10 @@ METplus Database of Statistics
 ******************************
 
 
-# Statistics no more that 32 characters
-# METplus Name no more than 17 characters
-# Statistic Type no more than 19 characters
-# Metplus Line Type currently unlimited (approx 33 characters)
+.. Statistics - no more that 32 characters
+   METplus Name - no more than 17 characters
+   Statistic Type - no more than 19 characters
+   Metplus Line Type - currently unlimited (approx 33 characters)
 
 
 .. role:: raw-html(raw)
