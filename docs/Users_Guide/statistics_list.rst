@@ -2220,3 +2220,56 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
+  * - The square root or the :raw-html:`<br />`
+      spread (standard deviation) :raw-html:`<br />`
+      of the mean of the variance :raw-html:`<br />`
+      of the unperturbed ensemble :raw-html:`<br />`
+      member values at each :raw-html:`<br />`
+      observation location
+    - SPREAD
+    -  
+    - Ensemble-Stat
+    - ECNT :raw-html:`<br />`
+      ORANK
+  * - The square root or the :raw-html:`<br />`
+      spread (standard deviation) :raw-html:`<br />`
+      of the mean of the variance :raw-html:`<br />`
+      of the PERTURBED ensemble :raw-html:`<br />`
+      member values at each :raw-html:`<br />`
+      observation location
+    - SPREAD_OERR
+    -  
+    - Ensemble-Stat
+    - ECNT :raw-html:`<br />`
+      ORANK
+  * - The square root of the sum :raw-html:`<br />`
+      of unperturbed ensemble :raw-html:`<br />`
+      variance and the :raw-html:`<br />`
+      observation error variance
+    - SPREAD_PLUS :raw-html:`<br />`
+      _OERR
+    -  
+    - Ensemble-Stat
+    - ECNT :raw-html:`<br />`
+      ORANK
+  * - Object start time
+    - START_TIME
+    -  
+    - MTD
+    - MTD 3D attribute output
+  * - Difference in object :raw-html:`<br />`
+      starting time steps
+    - START_TIME :raw-html:`<br />`
+      _DELTA
+    -  
+    - MTD
+    - MTD 3D pair attribute output
+  * - Symmetric difference of :raw-html:`<br />`
+      two objects :raw-html:`<br />`
+      (in grid squares)
+    - SYMMETRIC :raw-html:`<br />`
+      _DIFF
+    -  
+    - MODE
+    - MODE ascii object
+      
