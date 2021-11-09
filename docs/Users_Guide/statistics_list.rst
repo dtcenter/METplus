@@ -2272,4 +2272,70 @@ METplus Database of Statistics
     -  
     - MODE
     - MODE ascii object
-      
+  * - The ith probability :raw-html:`<br />`
+      threshold value (repeated)
+    - THRESH_i
+    -  
+    - TC-Pairs :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      . :raw-html:`<br />`
+      .
+    - PROBRIRW  :raw-html:`<br />`
+      PJC  :raw-html:`<br />`
+      PRC :raw-html:`<br />`
+      PSTD output format :raw-html:`<br />`
+      PTC
+  * - Last probability :raw-html:`<br />`
+      threshold value
+    - THRESH_n
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PJC :raw-html:`<br />`
+      PRC :raw-html:`<br />`
+      PTC
+  * - The dimensions of the tile
+    - TILE_DIM
+    -  
+    - Wavelet-Stat
+    - ISC 
+  * - Horizontal coordinate of :raw-html:`<br />`
+      the lower left corner of :raw-html:`<br />`
+      the tile
+    - TILE_XLL
+    -  
+    - Wavelet-Stat
+    - ISC 
+  * - Vertical coordinate of :raw-html:`<br />`
+      the lower left corner :raw-html:`<br />`
+      of the tile
+    - TILE_YLL
+    -  
+    - Wavelet-Stat
+    - ISC 
+  * - Difference in t index of :raw-html:`<br />`
+      object spacetime centroid
+    - TIME :raw-html:`<br />`
+      _CENTROID :raw-html:`<br />`
+      _DELTA
+    -  
+    - MTD
+    - MTD 3D pair attribute output
+  * - Time index of slice
+    - TIME_INDEX
+    -  
+    - MTD
+    - MTD 2D attribute output
+  * - Track error of adeck :raw-html:`<br />`
+      relative to bdeck (nm)
+    - TK_ERR
+    -  
+    - TC-Pairs
+    - PROBRIRW 
+  * - Track error of adeck :raw-html:`<br />`
+      relative to bdeck (nm)
+    - TK_ERR
+    -  
+    - TC-Pairs
+    - TCMPR
