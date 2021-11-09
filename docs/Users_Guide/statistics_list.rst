@@ -1896,3 +1896,85 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PJC 
+  * - Ratio of the nth percentile :raw-html:`<br />`
+      (INTENSITY_NN column) of :raw-html:`<br />`
+      intensity of the two :raw-html:`<br />`
+      objects defined as the :raw-html:`<br />`
+      lesser of the forecast :raw-html:`<br />`
+      intensity divided by the :raw-html:`<br />`
+      observation intensity or :raw-html:`<br />`
+      its reciprocal (unitless)
+    - PERCENTILE :raw-html:`<br />`
+      _INTENSITY :raw-html:`<br />`
+      _RATIO
+    -  
+    - MODE
+    - MODE ascii object
+  * - Probability Integral :raw-html:`<br />`
+      Transform
+    - PIT
+    -  
+    - Ensemble-Stat
+    - ORANK 
+  * - Probability of false :raw-html:`<br />`
+      detection
+    - PODF
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CTS 
+  * - Probability of detecting no 
+    - PODN
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      MODE
+    - CTS :raw-html:`<br />`
+      NBRCTCS  :raw-html:`<br />`
+      MODE
+  * - Probability of detecting :raw-html:`<br />`
+      yes
+    - PODY
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat :raw-html:`<br />`
+      MODE
+    - CTS :raw-html:`<br />`
+      NBRCTCS  :raw-html:`<br />`
+      MODE
+  * - Probability of detecting :raw-html:`<br />`
+      yes when forecast is :raw-html:`<br />`
+      greater than the ith :raw-html:`<br />`
+      probability thresholds
+    - PODY_i
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PRC 
+  * - Probability of false :raw-html:`<br />`
+      detection
+    - POFD
+    -  
+    - MODE :raw-html:`<br />`
+      Grid-Stat
+    - MODE :raw-html:`<br />`
+      NBRCTCS 
+  * - Probability of false :raw-html:`<br />`
+      detection when forecast is :raw-html:`<br />`
+      greater than the ith :raw-html:`<br />`
+      probability thresholds
+    - POFD_i
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PRC 
+  * - Pearson correlation :raw-html:`<br />`
+      coefficient
+    - PR_CORR
+    -  
+    - Ensemble-Stat :raw-html:`<br />`
+      Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - SSVAR :raw-html:`<br />`
+      CNT :raw-html:`<br />`
+      .  
