@@ -1411,12 +1411,7 @@ METplus Database of Statistics
     -  
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - ECLV 
-  * -  
-    - N_PROB
-    -  
-    - Ensemble-Stat
-    - Number of probability thresholds
+    - ECLV
   * - Number of possible ranks :raw-html:`<br />`
       for observation
     - N_RANK
@@ -2339,3 +2334,84 @@ METplus Database of Statistics
     -  
     - TC-Pairs
     - TCMPR
+  * - Mean(uf-uc)
+    - UFABAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VAL1L2  
+  * - Mean(uf)
+    - UFBAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VL1L2  
+  * - Uniform Fractions Skill :raw-html:`<br />`
+      Score including bootstrap :raw-html:`<br />`
+      upper and lower :raw-html:`<br />`
+      confidence limits
+    - UFSS
+    -  
+    - Grid-Stat
+    - NBRCNT 
+  * - Uncertainty
+    - UNCERTAINTY
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - PSTD outpu format
+  * - Union area of two objects :raw-html:`<br />`
+      (in grid squares)
+    - UNION_AREA
+    -  
+    - MODE
+    - MODE ascii object
+  * - Mean(uo-uc)
+    - UOABAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VAL1L2  
+  * - Mean(uo)
+    - UOBAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VL1L2  
+  * - Mean((uf-uc)²+(vf-vc)²)
+    - UVFFABAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VAL1L2  
+  * - Mean(uf²+vf²)
+    - UVFFBAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VL1L2  
+  * - Mean((uf-uc)*(uo-uc)+ :raw-html:`<br />`
+      (vf-vc)*(vo-vc))
+    - UVFOABAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VAL1L2  
+  * - Mean(uf*uo+vf*vo)
+    - UVFOBAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VL1L2  
+  * - Mean((uo-uc)²+(vo-vc)²)
+    - UVOOABAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VAL1L2  
+  * - Mean(uo²+vo²)
+    - UVOOBAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VL1L2  
