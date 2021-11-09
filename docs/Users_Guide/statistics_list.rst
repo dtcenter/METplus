@@ -2149,3 +2149,74 @@ METplus Database of Statistics
     -  
     - Ensemble-Stat
     - RPS
+  * - S1 score
+    - S1
+    -  
+    - Grid-Stat
+    - GRAD 
+  * - S1 score with respect to :raw-html:`<br />`
+      observed gradient
+    - S1_OG
+    -  
+    - Grid-Stat
+    - GRAD 
+  * - Symmetric Extremal :raw-html:`<br />`
+      Dependency Index
+    - SEDI
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CTS :raw-html:`<br />`
+      NBRCTS 
+  * - Symmetric Extreme :raw-html:`<br />`
+      Dependency Score
+    - SEDS
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CTS :raw-html:`<br />`
+      NBRCTS 
+  * - Scatter Index
+    - SI
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CNT 
+  * - Spearman’s rank :raw-html:`<br />`
+      correlation coefficient
+    - SP_CORR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - CNT 
+  * - Spatial distance between :raw-html:`<br />`
+      (𝑥,𝑦)(x,y) coordinates of :raw-html:`<br />`
+      object spacetime centroid
+    - SPACE :raw-html:`<br />`
+      _CENTROID :raw-html:`<br />`
+      _DIST
+    -  
+    - MTD
+    - MTD 3D pair attribute output
+  * - Absolute value of SPEED_ERR
+    - SPEED :raw-html:`<br />`
+      _ABSERR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VCNT 
+  * - Difference in object speeds
+    - SPEED_DELTA
+    -  
+    - MTD
+    - MTD 3D pair attribute output
+  * - Difference between the :raw-html:`<br />`
+      length of the average :raw-html:`<br />`
+      forecast wind vector and :raw-html:`<br />`
+      the average observed wind :raw-html:`<br />`
+      vector (in the sense F - O)
+    - SPEED_ERR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VCNT 
