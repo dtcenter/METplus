@@ -2414,4 +2414,91 @@ METplus Database of Statistics
     -  
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
+    - VL1L2
+  * - Economic value of the :raw-html:`<br />`
+      base rate
+    - VALUE_BASER
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - ECLV 
+  * - Relative value for the :raw-html:`<br />`
+      ith Cost/Loss ratio
+    - VALUE_i
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - ECLV 
+  * - Maximum variance
+    - VAR_MAX
+    -  
+    - Ensemble-Stat
+    - SSVAR 
+  * - Average variance
+    - VAR_MEAN
+    -  
+    - Ensemble-Stat
+    - SSVAR 
+  * - Minimum variance
+    - VAR_MIN
+    -  
+    - Ensemble-Stat
+    - SSVAR 
+  * - Direction of the vector :raw-html:`<br />`
+      difference between the :raw-html:`<br />`
+      average forecast and :raw-html:`<br />`
+      average wind vectors
+    - VDIFF_DIR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VCNT 
+  * - Length (speed) of the :raw-html:`<br />`
+      vector difference between :raw-html:`<br />`
+      the average forecast and :raw-html:`<br />`
+      average observed wind :raw-html:`<br />`
+      vectors
+    - VDIFF_SPEED
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VCNT 
+  * - Mean(vf-vc)
+    - VFABAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VAL1L2  
+  * - Mean(vf)
+    - VFBAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
     - VL1L2  
+  * - Mean(vo-vc)
+    - VOABAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VAL1L2  
+  * - Mean(vo)
+    - VOBAR
+    -  
+    - Point-Stat :raw-html:`<br />`
+      Grid-Stat
+    - VL1L2  
+  * - Integer count of the :raw-html:`<br />`
+      number of 3D “cells” :raw-html:`<br />`
+      in an object
+    - VOLUME
+    -  
+    - MTD
+    - MTD 3D attribute output
+  * - Forecast object volume :raw-html:`<br />`
+      divided by observation :raw-html:`<br />`
+      object volume
+    - VOLUME :raw-html:`<br />`
+      _RATIO
+    -  
+    - MTD
+    - MTD 3D pair attribute output
