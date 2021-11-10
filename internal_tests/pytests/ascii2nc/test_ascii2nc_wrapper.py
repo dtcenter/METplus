@@ -88,6 +88,14 @@ def ascii2nc_wrapper(metplus_config, config_path=None, config_overrides=None):
            'grib_code = [11, 204, 211];obs_var = [];'
            'type = ["min", "max", "range", "mean", "stdev", "median", "p80"];'
            'vld_freq = 0;vld_thresh = 0.0;}')}),
+        # width as dictionary
+        ({'ASCII2NC_TIME_SUMMARY_WIDTH': '{ beg = -21600; end = 0; }'},
+         {'METPLUS_TIME_SUMMARY_DICT':
+          ('time_summary = {flag = FALSE;raw_data = FALSE;beg = "000000";'
+           'end = "235959";step = 300;width = { beg = -21600; end = 0; };'
+           'grib_code = [11, 204, 211];obs_var = [];'
+           'type = ["min", "max", "range", "mean", "stdev", "median", "p80"];'
+           'vld_freq = 0;vld_thresh = 0.0;}')}),
 
         ({'ASCII2NC_TIME_SUMMARY_GRIB_CODES': '12, 203, 212'},
          {'METPLUS_TIME_SUMMARY_DICT':
