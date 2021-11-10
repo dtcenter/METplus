@@ -48,10 +48,14 @@ def read_rmm_eofs(olrfile, u850file, u200file):
 
 def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
 
-    # Get OLR, U850, U200 file listings
+    # Get OLR, U850, U200 file listings and variable names
     olr_filetxt = os.environ['METPLUS_FILELIST_'+inlabel+'_OLR_INPUT']
     u850_filetxt = os.environ['METPLUS_FILELIST_'+inlabel+'_U850_INPUT']
     u200_filetxt = os.environ['METPLUS_FILELIST_'+inlabel+'_U200_INPUT']
+
+    olr_var = os.environ[inlabel+'_OLR_VAR_NAME']
+    u850_var = os.environ[inlabel+'_U850_VAR_NAME']
+    u200_var = os.environ[inlabel+'_U200_VAR_NAME']
 
     # Read the listing of OLR, U850, U200 files
     with open(olr_filetxt) as ol:
@@ -81,7 +85,7 @@ def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
     time = []
     for din in range(len(ds_olr)):
         colr = ds_olr[din]
-        ctime =  datetime.datetime.strptime(colr['olr'].valid_time,'%Y%m%d_%H%M%S')
+        ctime =  datetime.datetime.strptime(colr[olr_var].valid_time,'%Y%m%d_%H%M%S')
         time.append(ctime.strftime('%Y-%m-%d'))
         colr = colr.assign_coords(time=ctime)
         ds_olr[din] = colr.expand_dims("time")
@@ -97,17 +101,17 @@ def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
     time = np.array(time,dtype='datetime64[D]')
 
     everything_olr = xr.concat(ds_olr,"time")
-    olr = everything_olr['olr']
+    olr = everything_olr[olr_var]
     olr = olr.mean('lat')
     print(olr.min(), olr.max())
 
     everything_u850 = xr.concat(ds_u850,"time")
-    u850 = everything_u850['uwnd850']
+    u850 = everything_u850[u850_var]
     u850 = u850.mean('lat')
     print(u850.min(), u850.max())
 
     everything_u200 = xr.concat(ds_u200,"time")
-    u200 = everything_u200['uwnd200']
+    u200 = everything_u200[u200_var]
     u200 = u200.mean('lat')
     print(u200.min(), u200.max())
     
@@ -186,7 +190,7 @@ def main():
 
     #  Determine if doing forecast or obs
     run_obs_rmm = os.environ.get('RUN_OBS', 'False').lower()
-    run_fcst_rmm = os.environ.get('FCST_RUN_FCST', 'False').lower()
+    run_fcst_rmm = os.environ.get('RUN_FCST', 'False').lower()
 
     if (run_obs_rmm == 'true'):
         run_rmm_steps('OBS', spd, EOF1, EOF2, oplot_dir)

@@ -12,7 +12,7 @@ UserScript_fcstGFS_obsERA_OMI.py
 # Scientific Objective
 # --------------------
 #
-# To use Outgoing Longwave Radiation (OLR) to compute the OLR based MJO Index (OMI).  Specifically, OMI is computed using OLR data between 20N and 20S.  Anomalies of OLR are then created.  The OLR anomalies are then projected onto Empirical Orthogonal Function (EOF) data that is computed for each day of the year, latitude, and longitude.  The OLR is then filtered for 20 - 96 days, and regressed onto the daily EOFs.  Finally, it's normalized and these normalized components are plotted on a phase diagram.
+# To use Outgoing Longwave Radiation (OLR) to compute the OLR based MJO Index (OMI).  Specifically, OMI is computed using OLR data between 20N and 20S.  The OLR data are then projected onto Empirical Orthogonal Function (EOF) data that is computed for each day of the year, latitude, and longitude.  The OLR is then filtered for 20 - 96 days, and regressed onto the daily EOFs.  Finally, it's normalized and these normalized components are plotted on a phase diagram.  Separate phase diagrams are created for the model and observations.
 # 
 
 ##############################################################################
@@ -48,14 +48,14 @@ UserScript_fcstGFS_obsERA_OMI.py
 # METplus Components
 # ------------------
 #
-# This use case runs the OMI driver which computes OMI and creates a phase diagram. Inputs to the OMI driver include netCDF files that are in MET's netCDF version.  In addition, a txt file containing the listing of these input netCDF files is required, as well as text file listings of the EOF1 and EOF2 files.  These text files can be generated using the USER_SCRIPT_INPUT_TEMPLATES in the [create_eof_filelist] and [script_omi] sections.  Some optional pre-processing steps include using regrid_data_plane to either regrid your data or cut the domain t0 20N - 20S.
+# This use case runs the OMI driver which computes OMI and creates a phase diagram. Inputs to the OMI driver include netCDF files that are in MET's netCDF version.  In addition, a txt file containing the listing of these input netCDF files is required, as well as text file listings of the EOF1 and EOF2 files.  These text files can be generated using the USER_SCRIPT_INPUT_TEMPLATES in the [create_eof_filelist] and [script_omi] sections.  Some optional pre-processing steps include using regrid_data_plane to either regrid your data or cut the domain to 20N - 20S.
 #
 
 ##############################################################################
 # METplus Workflow
 # ----------------
 # 
-# The OMI driver script python code is run for each lead time on the forecast and observations data. This example loops by valid time for the model pre-processing, and valid time for the other steps.  This version is set to only process the OMI calculation and creating a text file listing of the EOF files, omitting the regridding, and anomaly caluclation pre-processing steps.  However, the configurations for pre-processing are available for user reference.
+# The OMI driver script python code is run for each lead time on the forecast and observations data. This example loops by valid time for the model pre-processing, and valid time for the other steps.  This version is set to only process the OMI calculation and creating a text file listing of the EOF files, omitting the creation of daily means for the model and the regridding pre-processing steps.  However, the configurations for pre-processing are available for user reference.
 
 ##############################################################################
 # METplus Configuration
@@ -129,7 +129,7 @@ UserScript_fcstGFS_obsERA_OMI.py
 # Keywords
 # --------
 #
-# sphinx_gallery_thumbnail_path = '_static/s2s-OMI_phase_diagram.png'
+# sphinx_gallery_thumbnail_path = '_static/s2s-OMI_GFS_phase_diagram.png'
 #
 # .. note:: `S2SAppUseCase <https://dtcenter.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_,
 #  `RegridDataPlaneUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default>`_,

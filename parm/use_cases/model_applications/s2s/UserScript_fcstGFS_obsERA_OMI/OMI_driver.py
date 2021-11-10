@@ -84,6 +84,7 @@ def run_omi_steps(inlabel, olr_filetxt, spd, EOF1, EOF2, oplot_dir):
 
     # Get the output name and format for the PC plase diagram
     phase_plot_name = os.path.join(oplot_dir,os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_NAME',inlabel+'_OMI_comp_phase'))
+    print(phase_plot_name)
     phase_plot_format = os.environ.get(inlabel+'_PHASE_PLOT_OUTPUT_FORMAT','png')
 
     # plot the PC phase diagram
@@ -128,7 +129,7 @@ def main():
 
     #  Determine if doing forecast or obs
     run_obs_omi = os.environ.get('RUN_OBS','False').lower()
-    run_fcst_omi = os.environ.get('FCST_RUN_FCST', 'False').lower()
+    run_fcst_omi = os.environ.get('RUN_FCST', 'False').lower()
 
     # Run the steps to compute OMM
     # Observations
