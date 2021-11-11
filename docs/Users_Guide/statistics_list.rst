@@ -42,8 +42,10 @@ METplus Database of Statistics
   * - Along track error (nm)
     - ALTK_ERR
     - Continuous 
-    - TC-Pairs, TC-Stat 
-    - TCMPR 
+    - TC-Pairs :raw-html:`<br />`
+      TC-Stat 
+    - TCMPR :raw-html:`<br />`
+      TCST
   * - Difference between the axis :raw-html:`<br />`
       angles of two objects (in degrees) 
     - ANGLE_DIFF
