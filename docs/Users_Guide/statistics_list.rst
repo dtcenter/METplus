@@ -156,27 +156,27 @@ METplus Database of Statistics
     - MODE obj
   * - Brier Score
     - BRIER
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PSTD
   * - Climatological Brier Score
     - BRIERCL
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PSTD
   * - Brier Skill Score relative :raw-html:`<br />`
       to sample climatology
     - BSS
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PSTD
   * - Brier Skill Score relative :raw-html:`<br />`
       to external climatology
     - BSS_SMPL
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PSTD
@@ -186,7 +186,7 @@ METplus Database of Statistics
       thresholds (repeated)
     - CALIBRATION :raw-html:`<br />`
       _i
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat 
     - PJC
@@ -196,59 +196,59 @@ METplus Database of Statistics
       of the 3D object
     - CDIST :raw-html:`<br />`
       _TRAVELLED
-    -  
+    - Diagnostic Attr 
     - MTD
-    - MTD 3D
+    - MTD 3D obj
   * - Distance between two :raw-html:`<br />`
       objects centroids :raw-html:`<br />`
       (in grid units)
     - CENTROID :raw-html:`<br />`
       _DIST
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
+    - MODE obj
   * - Latitude of centroid :raw-html:`<br />`
       Location of the centroid
     - CENTROID :raw-html:`<br />`
       _LAT
-    -  
+    - Diagnostic Attr 
     - MTD :raw-html:`<br />`
       MODE
-    - MTD 2D & 3D attribute output :raw-html:`<br />`
-      MODE ascii object
+    - MTD 2D & 3D obj :raw-html:`<br />`
+      MODE obj
   * - Longitude of centroid :raw-html:`<br />`
       Location of the centroid
     - CENTROID :raw-html:`<br />`
       _LON
-    -  
+    - Diagnostic Attr 
     - MTD :raw-html:`<br />`
       MODE
-    - MTD 2D & 3D attribute output :raw-html:`<br />`
-      MODE ascii object
-  * - t coordinate of centroid
+    - MTD 2D & 3D obj :raw-html:`<br />`
+      MODE obj
+  * - Time coordinate of centroid
     - CENTROID_T
-    -  
+    - Diagnostic Attr 
     - MTD
-    - MTD 3D attribute output
-  * - x coordinate of centroid :raw-html:`<br />`
+    - MTD 3D obj
+  * - X coordinate of centroid :raw-html:`<br />`
       Location of the centroid
     - CENTROID_X
-    -  
+    - Diagnostic Attr 
     - MTD :raw-html:`<br />`
       MODE
-    - MTD 2D & 3D attribute output :raw-html:`<br />`
+    - MTD 2D & 3D obj :raw-html:`<br />`
       MODE ascii object
-  * - y coordinate of centroid :raw-html:`<br />`
+  * - Y coordinate of centroid :raw-html:`<br />`
       Location of the centroid
     - CENTROID_Y
-    -  
+    - Diagnostic Attr 
     - MTD :raw-html:`<br />`
       MODE
-    - MTD 2D & 3D attribute output :raw-html:`<br />`
+    - MTD 2D & 3D obj :raw-html:`<br />`
       MODE ascii object
   * - Climatological mean value
     - CLIMO_MEAN
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       Ensemble-Stat
@@ -257,7 +257,7 @@ METplus Database of Statistics
   * - Climatological standard :raw-html:`<br />`
       deviation value
     - CLIMO_STDEV
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       Ensemble-Stat
@@ -270,9 +270,9 @@ METplus Database of Statistics
       by the area of the :raw-html:`<br />`
       complex hull (unitless)
     - COMPLEXITY
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
+    - MODE obj
   * - Ratio of complexities of :raw-html:`<br />`
       two objects defined as :raw-html:`<br />`
       the lesser of the forecast :raw-html:`<br />`
@@ -281,98 +281,98 @@ METplus Database of Statistics
       its reciprocal (unitless)
     - COMPLEXITY :raw-html:`<br />`
       _RATIO
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
+    - MODE obj
   * - Minimum distance between :raw-html:`<br />`
       the convex hulls of two :raw-html:`<br />`
       objects (in grid units)
     - CONVEX_HULL :raw-html:`<br />`
       _DIST
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
+    - MODE obj
   * - The Continuous Ranked :raw-html:`<br />`
       Probability Score :raw-html:`<br />`
       (normal dist.)
     - CRPS
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - ECNT
   * - The Continuous Ranked :raw-html:`<br />`
       Probability Score :raw-html:`<br />`
       (empirical dist.)
     - CRPS_EMP
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - ECNT
   * - Climatological Continuous :raw-html:`<br />`
       Ranked Probability Score :raw-html:`<br />`
       (normal dist.)
     - CRPSCL
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - ECNT
   * - Climatological Continuous :raw-html:`<br />`
       Ranked Probability Score :raw-html:`<br />`
       (empirical dist.)
     - CRPSCL_EMP
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - ECNT
   * - The Continuous Ranked :raw-html:`<br />`
       Probability Skill Score :raw-html:`<br />`
       (normal dist.)
     - CRPSS
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - ECNT
   * - The Continuous Ranked :raw-html:`<br />`
       Probability Skill Score :raw-html:`<br />`
       (empirical dist.)
     - CRPSS_EMP
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - ECNT
   * - Cross track error (nm)
     - CRTK_ERR
-    -
-    - TC-Pairs
-    - TCMPR
+    - Continuous
+    - TC-Pairs, TC-Stat
+    - TCMPR, TCST
   * - Critical Success Index 
     - CSI
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
-      MODE :raw-html:`<br />`
+      MODE cts :raw-html:`<br />`
       Grid-Stat
     - CTS :raw-html:`<br />`
       MODE :raw-html:`<br />`
       MBRCTCS
   * - Radius of curvature
     - CURVATURE
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
+    - MODE obj
   * - Ratio of the curvature
     - CURVATURE :raw-html:`<br />`
       _RATIO
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
+    - MODE obj
   * - Center of curvature :raw-html:`<br />`
       (in grid coordinates)
     - CURVATURE :raw-html:`<br />`
       _X
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
+    - MODE obj
   * - Center of curvature :raw-html:`<br />`
       (in grid coordinates)
     - CURVATURE :raw-html:`<br />`
       _Y
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
+    - MODE obj
   * - Development methodology :raw-html:`<br />`
       category
     - DEV_CAT
