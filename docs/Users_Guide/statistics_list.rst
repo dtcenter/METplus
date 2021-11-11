@@ -36,7 +36,7 @@ METplus Database of Statistics
       MODE output format: Accuracy
   * - Asymptotic Fractions Skill Score
     - AFSS
-    -  
+    - Neighborhood 
     - Grid-Stat 
     - NBRCNT 
   * - Along track error (nm)
