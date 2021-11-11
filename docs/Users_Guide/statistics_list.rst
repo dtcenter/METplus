@@ -4,10 +4,10 @@ METplus Database of Statistics
 
 
 .. Number of characters per line:
-   Statistics - no more that 32 characters
+   Statistic Name - no more that 32 characters
    METplus Name - no more than 17 characters
    Statistic Type - no more than 19 characters
-   Metplus Line Type - currently unlimited (approx 33 characters)
+   METplus Line Type - currently unlimited (approx 33 characters)
 
 
 .. role:: raw-html(raw)
@@ -41,19 +41,19 @@ METplus Database of Statistics
     - NBRCNT 
   * - Along track error (nm)
     - ALTK_ERR
-    -  
+    - Continuous 
     - TC-Pairs 
     - TCMPR 
   * - Difference between the axis :raw-html:`<br />`
       angles of two objects (in degrees) 
     - ANGLE_DIFF
-    -  
+    - Diagnostic Attr. 
     - MODE 
     - MODE      
   * - Anomaly Correlation :raw-html:`<br />`
       including mean error
     - ANOM_CORR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       Series-Analysis :raw-html:`<br />`
@@ -64,7 +64,7 @@ METplus Database of Statistics
       error including bootstrap upper :raw-html:`<br />`
       and lower confidence limits
     - ANOM_CORR  :raw-html:`<br />` _UNCNTR
-    -  
+    - Continuous 
     - Point-Stat  :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       Series-Analysis :raw-html:`<br />`
@@ -72,20 +72,15 @@ METplus Database of Statistics
     - CNT
   * - Object area (in grid squares)
     - AREA
-    -  
+    - Diagnostics Attr. 
     - MODE :raw-html:`<br />`
       MTD
     - MODE ascii object
   * - Forecast object area :raw-html:`<br />`
       divided by the observation :raw-html:`<br />`
-      object area (unitless) :raw-html:`<br />`
-      NOTE: Prior to met-10.0.0, :raw-html:`<br />`
-      defined as the lesser of :raw-html:`<br />`
-      the two object areas :raw-html:`<br />`
-      divided by the greater :raw-html:`<br />`
-      of the two
+      object area (unitless)
     - AREA_RATIO
-    -  
+    - Diagnostics Attr. 
     - MODE 
     - MODE ascii object
   * - Area of the object :raw-html:`<br />`
@@ -95,7 +90,7 @@ METplus Database of Statistics
       definition threshold :raw-html:`<br />`
       criteria (in grid squares)
     - AREA_THRESH
-    -  
+    - Diagnostics Attr. 
     - MODE 
     - MODE ascii object 
   * - Absolute value of :raw-html:`<br />`
@@ -104,25 +99,25 @@ METplus Database of Statistics
       ratios of two objects :raw-html:`<br />`
       (unitless)
     - ASPECT_DIFF
-    -  
+    - Diagnostics Attr. 
     - MODE 
     - MODE ascii object
   * - Object axis angle :raw-html:`<br />`
       (in degrees)
     - AXIS_ANG
-    -  
+    - Diagnostics Attr. 
     - MODE  :raw-html:`<br />`
       MTD
     - Attribute output
   * - Difference in spatial :raw-html:`<br />`
       axis plane angles
     - AXIS_DIFF
-    -  
+    - Diagnostics Attr. 
     - MTD
     - Attribute output
   * - Baddeley’s Delta Metric
     - BADDELEY
-    -  
+    - Distance Map 
     - Grid-Stat
     - DMAP
   * - Bias Adjusted Gilbert :raw-html:`<br />`
