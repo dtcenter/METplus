@@ -2342,6 +2342,11 @@ class CommandBuilder:
               in order of precedence (first variable is used if it is set,
               otherwise 2nd variable is used if set, etc.)
         """
+        # if metplus_configs is not provided, use <APP_NAME>_<MET_CONFIG_NAME>
+        if not kwargs.get('metplus_configs'):
+            kwargs['metplus_configs'] = [
+                f"{self.app_name}_{kwargs.get('name')}".upper()
+            ]
         item = met_config(**kwargs)
         output_dict = kwargs.get('output_dict')
         self.handle_met_config_item(item, output_dict)
