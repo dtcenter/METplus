@@ -33,7 +33,7 @@ METplus Database of Statistics
     - CTS :raw-html:`<br />`
       MCTS :raw-html:`<br />`
       NBRCTS  :raw-html:`<br />`
-      MODE output format: Accuracy
+      MODE cts
   * - Asymptotic Fractions Skill Score
     - AFSS
     - Neighborhood 
@@ -42,7 +42,7 @@ METplus Database of Statistics
   * - Along track error (nm)
     - ALTK_ERR
     - Continuous 
-    - TC-Pairs 
+    - TC-Pairs, TC-Stat 
     - TCMPR 
   * - Difference between the axis :raw-html:`<br />`
       angles of two objects (in degrees) 
@@ -74,14 +74,14 @@ METplus Database of Statistics
     - Diagnostic Attr 
     - MODE :raw-html:`<br />`
       MTD
-    - MODE ascii object
+    - MODE obj
   * - Forecast object area :raw-html:`<br />`
       divided by the observation :raw-html:`<br />`
       object area (unitless)
     - AREA_RATIO
     - Diagnostic Attr 
     - MODE 
-    - MODE ascii object
+    - MODE obj
   * - Area of the object :raw-html:`<br />`
       that meet the object :raw-html:`<br />`
       definition threshold :raw-html:`<br />`
@@ -89,7 +89,7 @@ METplus Database of Statistics
     - AREA_THRESH
     - Diagnostic Attr 
     - MODE 
-    - MODE ascii object 
+    - MODE obj 
   * - Absolute value of :raw-html:`<br />`
       the difference :raw-html:`<br />`
       between the aspect :raw-html:`<br />`
@@ -98,20 +98,20 @@ METplus Database of Statistics
     - ASPECT_DIFF
     - Diagnostic Attr 
     - MODE 
-    - MODE ascii object
+    - MODE obj
   * - Object axis angle :raw-html:`<br />`
       (in degrees)
     - AXIS_ANG
     - Diagnostic Attr 
     - MODE  :raw-html:`<br />`
       MTD
-    - Attribute output
+    - MTD obj
   * - Difference in spatial :raw-html:`<br />`
       axis plane angles
     - AXIS_DIFF
     - Diagnostic Attr 
     - MTD
-    - Attribute output
+    - MTD obj
   * - Baddeley’s Delta Metric
     - BADDELEY
     - Distance Map 
@@ -134,14 +134,14 @@ METplus Database of Statistics
       MODE
     - CTS :raw-html:`<br />`
       ECLV :raw-html:`<br />`
-      MODE :raw-html:`<br />`
+      MODE cts :raw-html:`<br />`
       NBRCTCS :raw-html:`<br />`
       PSTD :raw-html:`<br />`
       PJC
   * - Bias-corrected mean :raw-html:`<br />`
       squared error
     - BCMSE
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       Ensemble-Stat 
@@ -151,9 +151,9 @@ METplus Database of Statistics
       the boundaries of two objects
     - BOUNDARY  :raw-html:`<br />`
       _DIST
-    -  
+    - Diagnostic Attr 
     - MODE
-    - Attribute output
+    - MODE obj
   * - Brier Score
     - BRIER
     -  
