@@ -6,20 +6,31 @@ Abstract: Builds commands to run ioda2nc
 
 import os
 
-from ..util import met_util as util
-from ..util import time_util
-from . import CommandBuilder
 from ..util import do_string_sub
+from . import LoopTimesWrapper
 
 '''!@namespace IODA2NCWrapper
-@brief Wraps the IODA2NC tool to reformat ascii format to NetCDF
+@brief Wraps the IODA2NC tool to reformat IODA NetCDF data to MET NetCDF
 @endcode
 '''
 
 
-class IODA2NCWrapper(CommandBuilder):
+class IODA2NCWrapper(LoopTimesWrapper):
 
     WRAPPER_ENV_VAR_KEYS = [
+        'METPLUS_MESSAGE_TYPE',
+        'METPLUS_MESSAGE_TYPE_GROUP_MAP',
+        'METPLUS_MESSAGE_TYPE_MAP',
+        'METPLUS_STATION_ID',
+        'METPLUS_OBS_WINDOW_DICT',
+        'METPLUS_MASK_DICT',
+        'METPLUS_ELEVATION_RANGE_DICT',
+        'METPLUS_LEVEL_RANGE_DICT',
+        'METPLUS_OBS_VAR',
+        'METPLUS_OBS_NAME_MAP',
+        'METPLUS_METADATA_MAP',
+        'METPLUS_MISSING_THRESH',
+        'METPLUS_QUALITY_MARK_THRESH',
         'METPLUS_TIME_SUMMARY_DICT',
     ]
 
@@ -33,168 +44,66 @@ class IODA2NCWrapper(CommandBuilder):
 
     def create_c_dict(self):
         c_dict = super().create_c_dict()
-        c_dict['VERBOSITY'] = self.config.getstr('config',
-                                                 'LOG_IODA2NC_VERBOSITY',
-                                                 c_dict['VERBOSITY'])
+
+        # file I/O
         c_dict['ALLOW_MULTIPLE_FILES'] = True
-
-        # IODA2NC config file is optional, so
-        # don't provide wrapped config file name as default value
-        c_dict['CONFIG_FILE'] = self.get_config_file()
-
-        c_dict['ASCII_FORMAT'] = self.config.getstr('config',
-                                                    'IODA2NC_INPUT_FORMAT',
-                                                    '')
-        c_dict['MASK_GRID'] = self.config.getstr('config',
-                                                 'IODA2NC_MASK_GRID',
-                                                 '')
-        c_dict['MASK_POLY'] = self.config.getstr('config',
-                                                 'IODA2NC_MASK_POLY',
-                                                 '')
-        c_dict['MASK_SID'] = self.config.getstr('config',
-                                                'IODA2NC_MASK_SID',
-                                                '')
-        c_dict['OBS_INPUT_DIR'] = self.config.getdir('IODA2NC_INPUT_DIR',
-                                                     '')
+        c_dict['OBS_INPUT_DIR'] = self.config.getdir('IODA2NC_INPUT_DIR', '')
         c_dict['OBS_INPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'IODA2NC_INPUT_TEMPLATE')
+            self.config.getraw('config', 'IODA2NC_INPUT_TEMPLATE')
         )
         if not c_dict['OBS_INPUT_TEMPLATE']:
             self.log_error("IODA2NC_INPUT_TEMPLATE required to run")
 
+        # handle input file window variables
+        self.handle_file_window_variables(c_dict, dtypes=['OBS'])
+
         c_dict['OUTPUT_DIR'] = self.config.getdir('IODA2NC_OUTPUT_DIR', '')
         c_dict['OUTPUT_TEMPLATE'] = (
-            self.config.getraw('filename_templates',
-                               'IODA2NC_OUTPUT_TEMPLATE')
+            self.config.getraw('config', 'IODA2NC_OUTPUT_TEMPLATE')
         )
 
+        # optional command line arguments
+        c_dict['VALID_BEG'] = self.config.getraw('config', 'IODA2NC_VALID_BEG')
+        c_dict['VALID_END'] = self.config.getraw('config', 'IODA2NC_VALID_END')
+        c_dict['NMSG'] = self.config.getint('config', 'IODA2NC_NMSG')
+
         # MET config variables
-        self.handle_time_summary_dict(c_dict,
-                                      ['TIME_SUMMARY_GRIB_CODES',
-                                       'TIME_SUMMARY_VAR_NAMES',
-                                       'TIME_SUMMARY_TYPES']
-                                      )
+        c_dict['CONFIG_FILE'] = self.get_config_file('IODA2NCConfig_wrapped')
 
-        # handle file window variables
-        for edge in ['BEGIN', 'END']:
-            file_window = (
-                self.config.getseconds('config',
-                                       f'IODA2NC_FILE_WINDOW_{edge}',
-                                       '')
-            )
-            if file_window == '':
-                file_window = (
-                    self.config.getseconds('config',
-                                           f'OBS_FILE_WINDOW_{edge}',
-                                           0)
-                )
-
-            c_dict[f'OBS_FILE_WINDOW_{edge}'] = file_window
+        self.add_met_config(name='message_type', data_type='list')
+        self.add_met_config(name='message_type_map', data_type='list',
+                            extra_args={'remove_quotes': True})
+        self.add_met_config(name='message_type_group_map', data_type='list',
+                            extra_args={'remove_quotes': True})
+        self.add_met_config(name='station_id', data_type='list')
+        self.handle_met_config_window('obs_window')
+        self.handle_mask(single_value=True)
+        self.handle_met_config_window('elevation_range')
+        self.handle_met_config_window('level_range')
+        self.add_met_config(name='obs_var', data_type='list')
+        self.add_met_config(name='obs_name_map', data_type='list',
+                            extra_args={'remove_quotes': True})
+        self.add_met_config(name='metadata_map', data_type='list',
+                            extra_args={'remove_quotes': True})
+        self.add_met_config(name='missing_thresh', data_type='list',
+                            extra_args={'remove_quotes': True})
+        self.add_met_config(name='quality_mark_thresh', data_type='float')
+        self.handle_time_summary_dict()
 
         return c_dict
 
-    def set_environment_variables(self, time_info):
-        """!Set environment variables that will be read by the MET config file.
-            Reformat as needed. Print list of variables that were set and their values.
-            Args:
-              @param time_info dictionary containing timing info from current run"""
-        # set environment variables needed for MET application
-        self.add_env_var('TIME_SUMMARY_FLAG',
-                         self.c_dict['TIME_SUMMARY_FLAG'])
-        self.add_env_var('TIME_SUMMARY_RAW_DATA',
-                         self.c_dict['TIME_SUMMARY_RAW_DATA'])
-        self.add_env_var('TIME_SUMMARY_BEG',
-                         self.c_dict['TIME_SUMMARY_BEG'])
-        self.add_env_var('TIME_SUMMARY_END',
-                         self.c_dict['TIME_SUMMARY_END'])
-        self.add_env_var('TIME_SUMMARY_STEP',
-                         self.c_dict['TIME_SUMMARY_STEP'])
-        self.add_env_var('TIME_SUMMARY_WIDTH',
-                         self.c_dict['TIME_SUMMARY_WIDTH'])
-        self.add_env_var('TIME_SUMMARY_GRIB_CODES',
-                         self.c_dict['TIME_SUMMARY_GRIB_CODES'])
-        self.add_env_var('TIME_SUMMARY_VAR_NAMES',
-                         self.c_dict['TIME_SUMMARY_VAR_NAMES'])
-        self.add_env_var('TIME_SUMMARY_TYPES',
-                         self.c_dict['TIME_SUMMARY_TYPES'])
-        self.add_env_var('TIME_SUMMARY_VALID_FREQ',
-                         self.c_dict['TIME_SUMMARY_VALID_FREQ'])
-        self.add_env_var('TIME_SUMMARY_VALID_THRESH',
-                         self.c_dict['TIME_SUMMARY_VALID_THRESH'])
-
-        # set user environment variables
-        super().set_environment_variables(time_info)
-
     def get_command(self):
-        cmd = self.app_path
-
-        # don't run if no input or output files were found
-        if not self.infiles:
-            self.log_error("No input files were found")
-            return
-
-        if self.outfile == "":
-            self.log_error("No output file specified")
-            return
-
-        # add input files
-        for infile in self.infiles:
-            cmd += ' ' + infile
-
-        # add output path
-        out_path = self.get_output_path()
-        cmd += ' ' + out_path
-
-        parent_dir = os.path.dirname(out_path)
-        if parent_dir == '':
-            self.log_error('Must specify path to output file')
-            return None
-
-        # create full output dir if it doesn't already exist
-        if not os.path.exists(parent_dir):
-            os.makedirs(parent_dir)
-
-        # add arguments
-        cmd += ''.join(self.args)
-
-        # add verbosity
-        cmd += ' -v ' + self.c_dict['VERBOSITY']
-        return cmd
-
-    def run_at_time(self, input_dict):
-        """! Runs the MET application for a given run time. This function
-              loops over the list of forecast leads and runs the application for
-              each.
-              Args:
-                @param input_dict dictionary containing timing information
-        """
-        lead_seq = util.get_lead_sequence(self.config, input_dict)
-        for lead in lead_seq:
-            self.clear()
-            input_dict['lead'] = lead
-
-            time_info = time_util.ti_calculate(input_dict)
-
-            if util.skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                self.logger.debug('Skipping run time')
-                continue
-
-            for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
-                if custom_string:
-                    self.logger.info(f"Processing custom string: {custom_string}")
-
-                time_info['custom'] = custom_string
-
-                self.run_at_time_once(time_info)
+        return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
+                f" {self.infiles[0]} {self.get_output_path()}"
+                f" {' '.join(self.args)}")
 
     def run_at_time_once(self, time_info):
         """! Process runtime and try to build command to run ioda2nc
-             Args:
-                @param time_info dictionary containing timing information
+
+        @param time_info dictionary containing timing information
         """
         # get input files
-        if self.find_input_files(time_info) is None:
+        if not self.find_input_files(time_info):
             return
 
         # get output path
@@ -208,22 +117,13 @@ class IODA2NCWrapper(CommandBuilder):
         self.set_environment_variables(time_info)
 
         # build command and run
-        cmd = self.get_command()
-        if cmd is None:
-            self.log_error("Could not generate command")
-            return
-
-        self.build()
+        return self.build()
 
     def find_input_files(self, time_info):
-        # if using python embedding input, don't check if file exists,
-        # just substitute time info and add to input file list
-        if self.c_dict['ASCII_FORMAT'] == 'python':
-            filename = do_string_sub(self.c_dict['OBS_INPUT_TEMPLATE'],
-                                     **time_info)
-            self.infiles.append(filename)
-            return self.infiles
+        """! Get all input files for ioda2nc
 
+        @param time_info dictionary containing timing information
+        """
         # get list of files even if only one is found (return_list=True)
         obs_path = self.find_obs(time_info, var_info=None, return_list=True)
         if obs_path is None:
@@ -233,24 +133,25 @@ class IODA2NCWrapper(CommandBuilder):
         return self.infiles
 
     def set_command_line_arguments(self, time_info):
-        # add input data format if set
-        if self.c_dict['ASCII_FORMAT']:
-            self.args.append(" -format {}".format(self.c_dict['ASCII_FORMAT']))
+        """! Set all arguments for ioda2nc command.
+        Note: -obs_var will be set in wrapped MET config file, not command line
 
-        # add config file - passing through do_string_sub to get custom string if set
-        if self.c_dict['CONFIG_FILE']:
-            config_file = do_string_sub(self.c_dict['CONFIG_FILE'],
-                                        **time_info)
-            self.args.append(f" -config {config_file}")
+        @param time_info dictionary containing timing information
+        """
+        config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
+        self.args.append(f"-config {config_file}")
 
-        # add mask grid if set
-        if self.c_dict['MASK_GRID']:
-            self.args.append(" -mask_grid {}".format(self.c_dict['MASK_GRID']))
+        # if more than 1 input file was found, add them with -iodafile
+        for infile in self.infiles[1:]:
+            self.args.append(f"-iodafile {infile}")
 
-        # add mask poly if set
-        if self.c_dict['MASK_POLY']:
-            self.args.append(" -mask_poly {}".format(self.c_dict['MASK_POLY']))
+        if self.c_dict['VALID_BEG']:
+            valid_beg = do_string_sub(self.c_dict['VALID_BEG'], **time_info)
+            self.args.append(f"-valid_beg {valid_beg}")
 
-        # add mask SID if set
-        if self.c_dict['MASK_SID']:
-            self.args.append(" -mask_sid {}".format(self.c_dict['MASK_SID']))
+        if self.c_dict['VALID_END']:
+            valid_end = do_string_sub(self.c_dict['VALID_END'], **time_info)
+            self.args.append(f"-valid_end {valid_end}")
+
+        if self.c_dict['NMSG']:
+            self.args.append(f"-nmsg {self.c_dict['NMSG']}")
