@@ -47,7 +47,7 @@ METplus Database of Statistics
   * - Difference between the axis :raw-html:`<br />`
       angles of two objects (in degrees) 
     - ANGLE_DIFF
-    - Diagnostic Attr. 
+    - Diagnostic Attr 
     - MODE 
     - MODE      
   * - Anomaly Correlation :raw-html:`<br />`
@@ -61,8 +61,7 @@ METplus Database of Statistics
     - CNT 
   * - Uncentered Anomaly :raw-html:`<br />`
       Correlation excluding mean :raw-html:`<br />`
-      error including bootstrap upper :raw-html:`<br />`
-      and lower confidence limits
+      error
     - ANOM_CORR  :raw-html:`<br />` _UNCNTR
     - Continuous 
     - Point-Stat  :raw-html:`<br />`
@@ -72,7 +71,7 @@ METplus Database of Statistics
     - CNT
   * - Object area (in grid squares)
     - AREA
-    - Diagnostics Attr. 
+    - Diagnostic Attr 
     - MODE :raw-html:`<br />`
       MTD
     - MODE ascii object
@@ -80,17 +79,15 @@ METplus Database of Statistics
       divided by the observation :raw-html:`<br />`
       object area (unitless)
     - AREA_RATIO
-    - Diagnostics Attr. 
+    - Diagnostic Attr 
     - MODE 
     - MODE ascii object
   * - Area of the object :raw-html:`<br />`
-      containing data values :raw-html:`<br />`
-      in the raw field :raw-html:`<br />`
       that meet the object :raw-html:`<br />`
       definition threshold :raw-html:`<br />`
       criteria (in grid squares)
     - AREA_THRESH
-    - Diagnostics Attr. 
+    - Diagnostic Attr 
     - MODE 
     - MODE ascii object 
   * - Absolute value of :raw-html:`<br />`
@@ -99,20 +96,20 @@ METplus Database of Statistics
       ratios of two objects :raw-html:`<br />`
       (unitless)
     - ASPECT_DIFF
-    - Diagnostics Attr. 
+    - Diagnostic Attr 
     - MODE 
     - MODE ascii object
   * - Object axis angle :raw-html:`<br />`
       (in degrees)
     - AXIS_ANG
-    - Diagnostics Attr. 
+    - Diagnostic Attr 
     - MODE  :raw-html:`<br />`
       MTD
     - Attribute output
   * - Difference in spatial :raw-html:`<br />`
       axis plane angles
     - AXIS_DIFF
-    - Diagnostics Attr. 
+    - Diagnostic Attr 
     - MTD
     - Attribute output
   * - Baddeley’s Delta Metric
@@ -123,14 +120,14 @@ METplus Database of Statistics
   * - Bias Adjusted Gilbert :raw-html:`<br />`
       Skill Score
     - BAGSS
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CTS :raw-html:`<br />`
       NBRCTS 
   * - Base Rate
     - BASER
-    -  
+    - Categorical 
     - Point-Stat  :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       Wavelet-Stat :raw-html:`<br />`
