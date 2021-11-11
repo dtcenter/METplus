@@ -2012,10 +2012,11 @@ class CommandBuilder:
                                 'step',
                                 'TIME_SUMMARY_STEP')
 
-        self.set_met_config_int(tmp_dict,
-                                f'{app}_TIME_SUMMARY_WIDTH',
-                                'width',
-                                'TIME_SUMMARY_WIDTH')
+        self.set_met_config_string(tmp_dict,
+                                   f'{app}_TIME_SUMMARY_WIDTH',
+                                   'width',
+                                   'TIME_SUMMARY_WIDTH',
+                                   remove_quotes=True)
 
         self.set_met_config_list(tmp_dict,
                                  [f'{app}_TIME_SUMMARY_GRIB_CODES',
