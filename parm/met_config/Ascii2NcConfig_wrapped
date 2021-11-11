@@ -36,4 +36,6 @@ message_type_map = [
 //
 //version = "V10.0";
 
+tmp_dir = "${MET_TMP_DIR}";
+
 ${METPLUS_MET_CONFIG_OVERRIDES}
