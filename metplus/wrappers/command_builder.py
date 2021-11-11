@@ -1984,7 +1984,43 @@ class CommandBuilder:
 
         return mask_value.split('=', 1)[1].rstrip(';').strip()
 
-    def handle_time_summary_dict(self, c_dict, remove_bracket_list=None):
+    def handle_time_summary_dict(self):
+        """! Read METplusConfig variables for the MET config time_summary
+         dictionary and format values into an environment variable
+         METPLUS_TIME_SUMMARY_DICT that is referenced in the wrapped MET
+         config files.
+        """
+        self.handle_met_config_dict('time_summary', {
+            'flag': 'bool',
+            'raw_data': 'bool',
+            'beg': 'string',
+            'end': 'string',
+            'step': 'int',
+            'width': 'string',
+            'grib_code': ('list', 'remove_quotes,allow_empty', None,
+                          ['TIME_SUMMARY_GRIB_CODES']),
+            'obs_var': ('list', 'allow_empty', None,
+                        ['TIME_SUMMARY_VAR_NAMES']),
+            'type': ('list', 'allow_empty', None, ['TIME_SUMMARY_TYPES']),
+            'vld_freq': ('int', None, None, ['TIME_SUMMARY_VALID_FREQ']),
+            'vld_thresh': ('float', None, None, ['TIME_SUMMARY_VALID_THRESH']),
+        })
+
+    def handle_time_summary_legacy(self, c_dict, remove_bracket_list=None):
+        """! Read METplusConfig variables for the MET config time_summary
+         dictionary and format values into environment variable
+         METPLUS_TIME_SUMMARY_DICT as well as other environment variables
+         that contain individuals items of the time_summary dictionary
+         that were referenced in wrapped MET config files prior to METplus 4.0.
+         Developer note: If we discontinue support for legacy wrapped MET
+         config files
+
+         @param c_dict dictionary to store time_summary item values
+         @param remove_bracket_list (optional) list of items that need the
+          square brackets around the value removed because the legacy (pre 4.0)
+          wrapped MET config includes square braces around the environment
+          variable.
+        """
         tmp_dict = {}
         app = self.app_name.upper()
         self.set_met_config_bool(tmp_dict,
@@ -2053,7 +2089,7 @@ class CommandBuilder:
 
         time_summary = self.format_met_config_dict(tmp_dict,
                                                    'time_summary',
-                                                    keys=None)
+                                                   keys=None)
         self.env_var_dict['METPLUS_TIME_SUMMARY_DICT'] = time_summary
 
         # set c_dict values to support old method of setting env vars

@@ -76,11 +76,11 @@ class ASCII2NCWrapper(CommandBuilder):
         )
 
         # MET config variables
-        self.handle_time_summary_dict(c_dict,
-                                      ['TIME_SUMMARY_GRIB_CODES',
-                                       'TIME_SUMMARY_VAR_NAMES',
-                                       'TIME_SUMMARY_TYPES']
-                                      )
+        self.handle_time_summary_legacy(c_dict,
+                                        ['TIME_SUMMARY_GRIB_CODES',
+                                         'TIME_SUMMARY_VAR_NAMES',
+                                         'TIME_SUMMARY_TYPES']
+                                        )
 
         # handle file window variables
         for edge in ['BEGIN', 'END']:
