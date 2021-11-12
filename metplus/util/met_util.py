@@ -1694,7 +1694,7 @@ def getlist(list_str, expand_begin_end_incr=True):
         return []
 
     # FIRST remove surrounding comma, and spaces, form the string.
-    list_str = list_str.strip().strip(',').strip()
+    list_str = list_str.strip(';[] ').strip().strip(',').strip()
 
     # remove space around commas
     list_str = re.sub(r'\s*,\s*', ',', list_str)
