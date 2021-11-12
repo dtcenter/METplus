@@ -65,7 +65,7 @@ class IODA2NCWrapper(LoopTimesWrapper):
         # optional command line arguments
         c_dict['VALID_BEG'] = self.config.getraw('config', 'IODA2NC_VALID_BEG')
         c_dict['VALID_END'] = self.config.getraw('config', 'IODA2NC_VALID_END')
-        c_dict['NMSG'] = self.config.getint('config', 'IODA2NC_NMSG')
+        c_dict['NMSG'] = self.config.getint('config', 'IODA2NC_NMSG', 0)
 
         # MET config variables
         c_dict['CONFIG_FILE'] = self.get_config_file('IODA2NCConfig_wrapped')
@@ -87,7 +87,7 @@ class IODA2NCWrapper(LoopTimesWrapper):
                             extra_args={'remove_quotes': True})
         self.add_met_config(name='missing_thresh', data_type='list',
                             extra_args={'remove_quotes': True})
-        self.add_met_config(name='quality_mark_thresh', data_type='float')
+        self.add_met_config(name='quality_mark_thresh', data_type='int')
         self.handle_time_summary_dict()
 
         return c_dict
