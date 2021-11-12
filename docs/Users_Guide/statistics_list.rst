@@ -377,7 +377,8 @@ METplus Database of Statistics
     - Diagnostic Attr 
     - MODE
     - MODE obj
-  * - Absolute value of DIR_ERR (see below)
+  * - Absolute value of :raw-html:`<br />`
+      DIR_ERR (see below)
     - DIR_ABSERR
     - Continuous 
     - Point-Stat :raw-html:`<br />`
@@ -419,7 +420,7 @@ METplus Database of Statistics
       bootstrap upper and :raw-html:`<br />`
       lower confidence limits
     - EDI
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CTS :raw-html:`<br />`
@@ -429,7 +430,7 @@ METplus Database of Statistics
       bootstrap upper and :raw-html:`<br />`
       lower confidence limits
     - EDS
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CTS :raw-html:`<br />`
@@ -438,25 +439,25 @@ METplus Database of Statistics
       of forecast minus :raw-html:`<br />`
       observed gradients
     - EGBAR
-    -  
+    - Continuous 
     - Grid-Stat
     - GRAD 
   * - Object end time
     - END_TIME
-    -  
+    - Diagnostic Attr 
     - MTD
-    - MTD 3D attribute output
+    - MTD 3D obj
   * - Difference in object :raw-html:`<br />`
       ending time steps
     - END_TIME :raw-html:`<br />`
       _DELTA
-    -  
+    - Diagnostic Attr 
     - MTD
-    - MTD 3D pair attribute output
+    - MTD 3D pair
   * - The unperturbed :raw-html:`<br />`
       ensemble mean value
     - ENS_MEAN
-    -  
+    - Diagnostic Fld 
     - Ensemble-Stat
     - ORANK 
   * - The PERTURBED ensemble :raw-html:`<br />`
@@ -464,13 +465,13 @@ METplus Database of Statistics
       Observation Error).
     - ENS_MEAN :raw-html:`<br />`
       _OERR
-    -  
+    - Diagnostic Fld 
     - Ensemble-Stat
     - ORANK 
   * - Standard deviation of :raw-html:`<br />`
       the error
     - ESTDEV
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       Ensemble-Stat
