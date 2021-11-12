@@ -339,8 +339,10 @@ METplus Database of Statistics
   * - Cross track error (nm)
     - CRTK_ERR
     - Continuous
-    - TC-Pairs, TC-Stat
-    - TCMPR, TCST
+    - TC-Pairs :raw-html:`<br />`
+      TC-Stat 
+    - TCMPR :raw-html:`<br />`
+      TCST
   * - Critical Success Index 
     - CSI
     - Categorical 
@@ -375,24 +377,18 @@ METplus Database of Statistics
     - Diagnostic Attr 
     - MODE
     - MODE obj
-  * - Development methodology :raw-html:`<br />`
-      category
-    - DEV_CAT
-    -  
-    - TC-Gen
-    - GENMPR 
-  * - Absolute value
+  * - Absolute value of DIR_ERR (see below)
     - DIR_ABSERR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
   * - Signed angle between :raw-html:`<br />`
       the directions of the :raw-html:`<br />`
       average forecast and :raw-html:`<br />`
-      observed wing vectors 
+      observed wind vectors 
     - DIR_ERR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT
@@ -400,21 +396,21 @@ METplus Database of Statistics
       direction of movement
     - DIRECTION :raw-html:`<br />`
       _DIFF
-    -  
+    - Diagnostic Attr 
     - MTD
-    - MTD 3D pair attribute output
+    - MTD 3D obj
   * - Difference in the :raw-html:`<br />`
       lifetimes of the :raw-html:`<br />`
       two objects
     - DURATION :raw-html:`<br />`
       _DIFF
-    -  
+    - Diagnostic Attr 
     - MTD
-    - MTD 3D pair attribute output
+    - MTD 3D obj
   * - Expected correct rate :raw-html:`<br />`
       used for MCTS HSS_EC
     - EC_VALUE
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - MCTC 
