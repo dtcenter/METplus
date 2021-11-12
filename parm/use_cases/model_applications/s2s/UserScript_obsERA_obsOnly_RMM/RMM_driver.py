@@ -71,6 +71,9 @@ def run_rmm_steps(inlabel, spd, EOF1, EOF2, oplot_dir):
     if (u200_input_files[0] == 'file_list'):
             u200_input_files = u200_input_files[1:]
 
+    print(olr_input_files)
+    print(u850_input_files)
+    print(u200_input_files)
     # Read OLR, U850, U200 data from file
     netcdf_reader_olr = read_netcdf.ReadNetCDF()
     ds_olr = netcdf_reader_olr.read_into_xarray(olr_input_files)

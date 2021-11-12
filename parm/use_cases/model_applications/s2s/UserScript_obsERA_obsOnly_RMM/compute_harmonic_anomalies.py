@@ -102,7 +102,6 @@ for o in np.arange(0,len(dm_orig)):
 
     # write to a file
     cvtime = datetime.datetime.strptime(dm_orig_cur[dm_var].valid_time,'%Y%m%d_%H%M%S')
-    print(cvtime)
     citime = datetime.datetime.strptime(dm_orig_cur[dm_var].init_time,'%Y%m%d_%H%M%S')
     cltime = (cvtime - citime)
     leadmin,leadsec = divmod(cltime.total_seconds(), 60)
