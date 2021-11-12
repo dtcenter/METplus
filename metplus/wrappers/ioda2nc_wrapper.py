@@ -43,6 +43,16 @@ class IODA2NCWrapper(LoopTimesWrapper):
                          config_overrides=config_overrides)
 
     def create_c_dict(self):
+        """! Read METplusConfig object and sets values in dictionary to be
+         used by the wrapper to generate commands. Gets information regarding
+         input/output files, optional command line arguments, and values to
+         set in the wrapped MET config file. Calls self.log_error if any
+         required METplusConfig variables were not set properly which logs the
+         error and sets self.isOK to False which causes wrapper initialization
+         to fail.
+
+        @returns dictionary containing configurations for this wrapper
+        """
         c_dict = super().create_c_dict()
 
         # file I/O
@@ -93,6 +103,10 @@ class IODA2NCWrapper(LoopTimesWrapper):
         return c_dict
 
     def get_command(self):
+        """! Build the command to call ioda2nc
+
+        @returns string containing command to run
+        """
         return (f"{self.app_path} -v {self.c_dict['VERBOSITY']}"
                 f" {self.infiles[0]} {self.get_output_path()}"
                 f" {' '.join(self.args)}")
@@ -101,14 +115,16 @@ class IODA2NCWrapper(LoopTimesWrapper):
         """! Process runtime and try to build command to run ioda2nc
 
         @param time_info dictionary containing timing information
+        @returns True if command was built/run successfully or
+         False if something went wrong
         """
         # get input files
         if not self.find_input_files(time_info):
-            return
+            return False
 
         # get output path
         if not self.find_and_check_output_file(time_info):
-            return
+            return False
 
         # get other configurations for command
         self.set_command_line_arguments(time_info)
@@ -120,9 +136,10 @@ class IODA2NCWrapper(LoopTimesWrapper):
         return self.build()
 
     def find_input_files(self, time_info):
-        """! Get all input files for ioda2nc
+        """! Get all input files for ioda2nc. Sets self.infiles list.
 
         @param time_info dictionary containing timing information
+        @returns List of files that were found or None if no files were found
         """
         # get list of files even if only one is found (return_list=True)
         obs_path = self.find_obs(time_info, var_info=None, return_list=True)
