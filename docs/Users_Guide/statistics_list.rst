@@ -480,7 +480,7 @@ METplus Database of Statistics
   * - Forecast rate/event :raw-html:`<br />`
       frequency
     - F_RATE
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - FHO :raw-html:`<br />`
@@ -488,19 +488,19 @@ METplus Database of Statistics
   * - Mean forecast wind speed
     - F_SPEED :raw-html:`<br />`
       _BAR
-    -  
+    - Continous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VL1L2  
-  * - Mean(f-c)
+  * - Mean Forecast Anomaly
     - FABAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - SAL1L2  
   * - False alarm ratio
     - FAR
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       MODE :raw-html:`<br />`
       Grid-Stat
@@ -509,39 +509,30 @@ METplus Database of Statistics
       NBRCTCS 
   * - Forecast mean 
     - FBAR
-    -  
+    - Categorical 
     - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
-      . 
     - SSVAR :raw-html:`<br />`
       CNT :raw-html:`<br />`
       SL1L2  :raw-html:`<br />`
       VCNT
-  * - Mean forecast normal upper :raw-html:`<br />`
-      and lower confidence :raw-html:`<br />`
-      limits
-    - FBAR_NCL
-    -  
-    - Ensemble-Stat
-    - SSVAR 
   * - Length (speed) of the :raw-html:`<br />`
       average forecast :raw-html:`<br />`
       wind vector
     - FBAR  :raw-html:`<br />`
       _SPEED
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat 
     - VCNT 
   * - Frequency Bias
     - FBIAS
-    -  
+    - Categorical 
     - Wavelet-Stat :raw-html:`<br />`
       MODE :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
-      .
     - ISC :raw-html:`<br />`
       MODE :raw-html:`<br />`
       CTS :raw-html:`<br />`
@@ -549,253 +540,219 @@ METplus Database of Statistics
       DMAP
   * - Fractions Brier Score
     - FBS
-    -  
+    - Continuous 
     - Grid-Stat
     - NBRCNT
   * - Number of forecast :raw-html:`<br />`
       clusters
     - fcst_clus
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF dimensions
+    - MODE netCDF
   * - Number of points used to :raw-html:`<br />`
       define the hull of all :raw-html:`<br />`
       of the cluster forecast :raw-html:`<br />`
       objects
     - fcst_clus :raw-html:`<br />`
       _hull
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF dimensions
+    - MODE netCDF
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Point Latitude
     - fcst_clus :raw-html:`<br />`
       _hull_lat
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Point Longitude
     - fcst_clus :raw-html:`<br />`
       _hull _lon
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Number of Forecast :raw-html:`<br />`
       Cluster Convex Hull Points
     - fcst_clus :raw-html:`<br />`
       _hull_npts
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Starting Index
     - fcst_clus :raw-html:`<br />`
       _hull_start
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Point X-Coordinate
     - fcst_clus :raw-html:`<br />`
       _hull_x
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Point Y-Coordinate
     - fcst_clus :raw-html:`<br />`
       _hull_y
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
-  * - Cluster forecast object id :raw-html:`<br />`
-      number for each grid point
-    - fcst_clus :raw-html:`<br />`
-      _id
-    -  
-    - MODE
-    - MODE netCDF variables
-  * - Forecast convolution :raw-html:`<br />`
-      threshold
-    - fcst_conv :raw-html:`<br />`
-      _threshold
-    -  
-    - MODE
-    - MODE netCDF variables
-  * - Forecast convolution radius
-    - fcst_conv :raw-html:`<br />`
-      _radius
-    -  
-    - MODE
-    - MODE netCDF variables      
-  * - Simple forecast object :raw-html:`<br />`
-      id number for each :raw-html:`<br />`
-      grid point
-    - fcst_obj :raw-html:`<br />`
-      _id
-    -  
-    - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Forecast Object Raw :raw-html:`<br />`
       Values
     - fcst_obj :raw-html:`<br />`
       _raw
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
-  * - Forecast raw values
-    - fcst_raw
-    -  
-    - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Number of simple  :raw-html:`<br />`
       forecast objects
     - fcst_simp
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF dimensions
+    - MODE netCDF
   * - Number of points used :raw-html:`<br />`
       to define the boundaries :raw-html:`<br />`
       of all of the simple :raw-html:`<br />`
       forecast objects
     - fcst_simp :raw-html:`<br />`
       _bdy
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF dimensions
+    - MODE netCDF
   * - Forecast Simple :raw-html:`<br />`
-      Boundary PoLatitude
+      Boundary Latitude
     - fcst_simp :raw-html:`<br />`
       _bdy_lat
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Forecast Simple :raw-html:`<br />`
-      Boundary PoLongitude
+      Boundary Longitude
     - fcst_simp :raw-html:`<br />`
       _bdy_lon
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Number of Forecast :raw-html:`<br />`
       Simple Boundary Points
     - fcst_simp :raw-html:`<br />`
       _bdy_npts
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Forecast Simple :raw-html:`<br />`
       Boundary Starting Index
     - fcst_simp :raw-html:`<br />`
       _bdy_start
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Forecast Simple :raw-html:`<br />`
-      Boundary PoX-Coordinate
+      Boundary X-Coordinate
     - fcst_simp :raw-html:`<br />`
       _bdy_x
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Forecast Simple :raw-html:`<br />`
-      Boundary PoY-Coordinate
+      Boundary Y-Coordinate
     - fcst_simp :raw-html:`<br />`
       _bdy_y
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Number of points used to :raw-html:`<br />`
       define the hull of all :raw-html:`<br />`
       of the simple forecast :raw-html:`<br />`
       objects
     - fcst_simp :raw-html:`<br />`
       _hull
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF dimensions
+    - MODE netCDF
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Point Latitude
     - fcst_simp :raw-html:`<br />`
       _hull_lat
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Point Longitude
     - fcst_simp :raw-html:`<br />`
       _hull_lon
-    -  
+    - Diagnostic Attr 
     - MODE
     - MODE netCDF variables
   * - Number of Forecast :raw-html:`<br />`
       Simple Convex Hull Points
     - fcst_simp :raw-html:`<br />`
       _hull_npts
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Starting Index
     - fcst_simp :raw-html:`<br />`
       _hull_start
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Point X-Coordinate
     - fcst_simp :raw-html:`<br />`
       _hull_x
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Point Y-Coordinate
     - fcst_simp :raw-html:`<br />`
       _hull_y
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE netCDF
   * - Number of thresholds  :raw-html:`<br />`
       applied to the forecast
     - fcst :raw-html:`<br />`
       _thresh :raw-html:`<br />`
       _length
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF dimensions
+    - MODE netCDF
   * - Number of thresholds :raw-html:`<br />`
       applied to the forecast
     - fcst_thresh :raw-html:`<br />`
       _length
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF dimensions
+    - MODE netCDF
   * - Direction of the average :raw-html:`<br />`
       forecast wind vector
     - FDIR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
   * - Forecast energy squared :raw-html:`<br />`
       for this scale
     - FENERGY
-    -  
+    - Diagnostic Attr 
     - Wavelet-Stat
     - ISC 
-  * - Mean((f-c)²)
+  * - Mean Forecast Anomaly Squared
     - FFABAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - SAL1L2  
   * - Average of forecast :raw-html:`<br />`
-      squared. [Mean(f²) :raw-html:`<br />`
-      Grid-Stat]
+      squared.
     - FFBAR
-    -  
+    - Continuous 
     - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
