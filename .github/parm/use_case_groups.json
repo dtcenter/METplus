@@ -126,8 +126,13 @@
   },
   {
     "category": "s2s",
-    "index_list": "8-9",
-    "run": false
+    "index_list": "7-9",
+    "run": true
+  },
+  {
+    "category": "s2s",
+    "index_list": "10",
+    "run": true
   },
   {
     "category": "space_weather",
