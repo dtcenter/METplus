@@ -178,8 +178,12 @@ def test_met_dictionary_in_var_options(metplus_config):
          {
              'METPLUS_CLIMO_CDF_DICT': 'climo_cdf = {cdf_bins = 1.0;center_bins = TRUE;write_bins = FALSE;}'}),
 
+        ({'POINT_STAT_OBS_QUALITY_INC': '2,3,4', },
+         {'METPLUS_OBS_QUALITY_INC': 'obs_quality_inc = ["2", "3", "4"];'}),
+        ({'POINT_STAT_OBS_QUALITY_EXC': '5,6,7', },
+         {'METPLUS_OBS_QUALITY_EXC': 'obs_quality_exc = ["5", "6", "7"];'}),
         ({'POINT_STAT_OBS_QUALITY': '1, 2, 3', },
-         {'METPLUS_OBS_QUALITY': 'obs_quality = ["1", "2", "3"];'}),
+         {'METPLUS_OBS_QUALITY_INC': 'obs_quality_inc = ["1", "2", "3"];'}),
 
         ({'POINT_STAT_OUTPUT_FLAG_FHO': 'BOTH', },
          {'METPLUS_OUTPUT_FLAG_DICT': 'output_flag = {fho = BOTH;}'}),
