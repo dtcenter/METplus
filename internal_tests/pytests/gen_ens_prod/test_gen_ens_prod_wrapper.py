@@ -92,6 +92,7 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
     assert wrapper.isOK
 
     all_cmds = wrapper.run_all_times()
+    assert len(all_cmds) == len(run_times)
     for (_, actual_env_vars), run_time in zip(all_cmds, run_times):
         run_dt = datetime.strptime(run_time, time_fmt)
         ymdh = run_dt.strftime('%Y%m%d%H')
