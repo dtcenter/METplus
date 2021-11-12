@@ -1996,7 +1996,7 @@ class CommandBuilder:
             'beg': 'string',
             'end': 'string',
             'step': 'int',
-            'width': 'string',
+            'width': ('string', 'remove_quotes'),
             'grib_code': ('list', 'remove_quotes,allow_empty', None,
                           ['TIME_SUMMARY_GRIB_CODES']),
             'obs_var': ('list', 'allow_empty', None,
