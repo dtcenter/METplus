@@ -960,7 +960,6 @@ class CommandBuilder:
         with open(list_path, 'w') as file_handle:
             file_handle.write('file_list\n')
             for f_path in file_list:
-                self.logger.debug(f"Adding file to list: {f_path}")
                 file_handle.write(f_path + '\n')
 
         self.logger.debug(f"Wrote list of filenames to {list_path}")
