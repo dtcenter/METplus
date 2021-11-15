@@ -17,6 +17,7 @@ LOWER_TO_WRAPPER_NAME = {
     'gfdltracker': 'GFDLTracker',
     'griddiag': 'GridDiag',
     'gridstat': 'GridStat',
+    'ioda2nc': 'IODA2NC',
     'makeplots': 'MakePlots',
     'metdbload': 'METDbLoad',
     'mode': 'MODE',
