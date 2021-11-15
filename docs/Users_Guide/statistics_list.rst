@@ -294,14 +294,14 @@ METplus Database of Statistics
     - Diagnostic Attr 
     - MODE
     - MODE obj
-  * - The Continuous Ranked :raw-html:`<br />`
+  * - Continuous Ranked :raw-html:`<br />`
       Probability Score :raw-html:`<br />`
       (normal dist.)
     - CRPS
     - Ensemble 
     - Ensemble-Stat
     - ECNT
-  * - The Continuous Ranked :raw-html:`<br />`
+  * - Continuous Ranked :raw-html:`<br />`
       Probability Score :raw-html:`<br />`
       (empirical dist.)
     - CRPS_EMP
@@ -322,14 +322,14 @@ METplus Database of Statistics
     - Ensemble 
     - Ensemble-Stat
     - ECNT
-  * - The Continuous Ranked :raw-html:`<br />`
+  * - Continuous Ranked :raw-html:`<br />`
       Probability Skill Score :raw-html:`<br />`
       (normal dist.)
     - CRPSS
     - Ensemble 
     - Ensemble-Stat
     - ECNT
-  * - The Continuous Ranked :raw-html:`<br />`
+  * - Continuous Ranked :raw-html:`<br />`
       Probability Skill Score :raw-html:`<br />`
       (empirical dist.)
     - CRPSS_EMP
@@ -502,8 +502,8 @@ METplus Database of Statistics
     - FAR
     - Categorical 
     - Point-Stat :raw-html:`<br />`
-      MODE :raw-html:`<br />`
-      Grid-Stat
+      Grid-Stat  :raw-html:`<br />`
+      MODE
     - CTS :raw-html:`<br />`
       MODE :raw-html:`<br />`
       NBRCTCS 
@@ -761,26 +761,26 @@ METplus Database of Statistics
   * - Mean of absolute value :raw-html:`<br />`
       of forecast gradients
     - FGBAR
-    -  
+    - Continuous 
     - Grid-Stat
     - GRAD 
   * - Ratio of forecast and :raw-html:`<br />`
       observed gradients
     - FGOG_RATIO
-    -  
+    - Continuous 
     - Grid-Stat
     - GRAD 
   * - Count of events in :raw-html:`<br />`
       forecast category i and :raw-html:`<br />`
       observation category j
     - Fi_Oj
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - MCTC 
   * - Forecast mean
     - FMEAN
-    -  
+    - Continuous 
     - MODE :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       Point-Stat
@@ -790,7 +790,7 @@ METplus Database of Statistics
   * - Number of forecast no :raw-html:`<br />`
       and observation no
     - FN_ON
-    -  
+    - Categorical 
     - MODE :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       Point-Stat
@@ -800,7 +800,7 @@ METplus Database of Statistics
   * - Number of forecast no :raw-html:`<br />`
       and observation yes
     - FN_OY
-    -  
+    - Categorical 
     - MODE :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       Point-Stat
@@ -809,14 +809,17 @@ METplus Database of Statistics
       CTC
   * - Attributes for pairs of :raw-html:`<br />`
       simple forecast and :raw-html:`<br />`
-      observation objects
+      observation objects 
     - FNNN_ONNN
-    -  
+    - Diagnostic Attr 
     - MODE
     - MODE ascii object
-  * - Mean((f-c)*(o-c))
+  * - Average product of :raw-html:`<br />`
+      forecast-climo and :raw-html:`<br />`
+      observation-climo :raw-html:`<br />`
+      / Mean(f-c)*(o-c)
     - FOABAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - SAL1L2  
@@ -824,7 +827,7 @@ METplus Database of Statistics
       forecast and observation :raw-html:`<br />`
       / Mean(f*o)
     - FOBAR
-    -  
+    - Continuous 
     - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
@@ -834,60 +837,57 @@ METplus Database of Statistics
       from observation to :raw-html:`<br />`
       forecast
     - FOM_FO
-    -  
+    - Diagnostic Attr 
     - Grid-Stat
     - DMAP 
   * - Maximum of FOM_FO :raw-html:`<br />`
       and FOM_OF
     - FOM_MAX
-    -  
+    - Diagnostic Attr 
     - Grid-Stat
     - DMAP 
-  * - Mean of FOM_FO and FOM_OF
+  * - Mean of FOM_FO :raw-html:`<br />`
+      and FOM_OF :raw-html:`<br />`
     - FOM_MEAN
-    -  
+    - Diagnostic Attr 
     - Grid-Stat
     - DMAP 
   * - Minimum of FOM_FO and FOM_OF
     - FOM_MIN
-    -  
+    - Diagnostic Attr 
     - Grid-Stat
     - DMAP 
   * - Pratt’s Figure of Merit :raw-html:`<br />`
       from forecast to :raw-html:`<br />`
       observation
     - FOM_OF
-    -  
+    - Diagnostic Attr 
     - Grid-Stat
     - DMAP 
   * - Number of tied forecast :raw-html:`<br />`
       ranks used in computing :raw-html:`<br />`
       Kendall’s tau statistic
     - FRANK_TIES
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
   * - Root mean square forecast :raw-html:`<br />`
       wind speed
     - FS_RMS
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
   * - Fractions Skill Score :raw-html:`<br />`
-      including bootstrap upper :raw-html:`<br />`
-      and lower confidence limits
     - FSS
-    -  
+    - Neighborhood 
     - Grid-Stat
     - NBRCNT 
   * - Standard deviation of the :raw-html:`<br />`
-      error including normal :raw-html:`<br />`
-      upper and lower  :raw-html:`<br />`
-      confidence limits
+      error 
     - FSTDEV
-    -  
+    - Continuous 
     - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
@@ -896,13 +896,13 @@ METplus Database of Statistics
       VCNT
   * - Number of forecast events
     - FY
-    -  
+    - Categorical 
     - Grid-Stat
     - DMAP 
   * - Number of forecast yes :raw-html:`<br />`
       and observation no
     - FY_ON
-    -  
+    - Categorical 
     - MODE :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
@@ -912,7 +912,7 @@ METplus Database of Statistics
   * - Number of forecast yes :raw-html:`<br />`
       and observation yes
     - FY_OY
-    -  
+    - Categorical 
     - MODE :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
