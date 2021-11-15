@@ -672,9 +672,8 @@ class CommandBuilder:
             if os.path.sep not in full_path:
                 self.logger.debug(f"{full_path} is not a file path. "
                                   "Returning that string.")
-                if return_list:
-                    full_path = [full_path]
-                return full_path
+                check_file_list.append(full_path)
+                continue
 
             self.logger.debug(f"Looking for {data_type}INPUT file {full_path}")
 
