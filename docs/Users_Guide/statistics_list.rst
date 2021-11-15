@@ -923,26 +923,26 @@ METplus Database of Statistics
       forecast and Best track :raw-html:`<br />`
       genesis events (km)
     - GEN_DIST
-    -  
+    - Diagnostic Attr 
     - TC-Gen
     - GENMPR 
   * - Forecast minus Best track :raw-html:`<br />`
       genesis time in HHMMSS :raw-html:`<br />`
       format
     - GEN_TDIFF
-    -  
+    - Diagnostic Attr 
     - TC-Gen
     - GENMPR 
   * - Gerrity Score and :raw-html:`<br />`
       bootstrap confidence limits
     - GER
-    -  
+    - Categorical  
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - MCTS 
   * - Gilbert Skill Score
     - GSS
-    -  
+    - Categorical  
     - Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       MODE
@@ -951,191 +951,119 @@ METplus Database of Statistics
       MODE
   * - Hit rate
     - H_RATE
-    -  
+    - Categorical  
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - FHO 
   * - Hausdorff Distance
     - HAUSDORFF
-    -  
+    - Diagnostic Attr 
     - Grid-Stat
     - DMAP 
   * - Hanssen and Kuipers :raw-html:`<br />`
       Discriminant 
     - HK
-    -  
+    - Categorical 
     - MODE :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - MODE :raw-html:`<br />`
+    - MODE cts :raw-html:`<br />`
       MCTS :raw-html:`<br />`
       CTS :raw-html:`<br />`
       NBRCTS
   * - Heidke Skill Score
     - HSS
-    -  
+    - Categorical  
     - MODE :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - MODE :raw-html:`<br />`
+    - MODE cts:raw-html:`<br />`
       MCTS :raw-html:`<br />`
       CTS :raw-html:`<br />`
       NBRCTS
-  * - Heidke Skill Score with :raw-html:`<br />`
+  * - Heidke Skill Score :raw-html:`<br />`
       user-specific expected  :raw-html:`<br />`
-      correct and bootstrap :raw-html:`<br />`
-      confidence limits
+      correct
     - HSS_EC
-    -  
+    - Categorical
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - MCTS
-  * - The Ignorance Score
+  * - Ignorance Score
     - IGN
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - ECNT
-  * - Line number in ORANK file :raw-html:`<br />`
-      Index for the current :raw-html:`<br />`
-      matched pair
-    - INDEX
-    -  
-    - Ensemble-Stat :raw-html:`<br />`
-      TC-Gen :raw-html:`<br />`
-      TC-Pairs :raw-html:`<br />`
-      Point-Stat :raw-html:`<br />`
-      Grid-Stat
-    - ORANK :raw-html:`<br />`
-      GENMPR :raw-html:`<br />`
-      TCMPR :raw-html:`<br />`
-      MPR
   * - Best track genesis minus :raw-html:`<br />`
       forecast initialization :raw-html:`<br />`
       time in HHMMSS format
     - INIT_TDIFF
-    -  
+    - Diagnostic Attr 
     - TC-Gen
     - GENMPR 
-  * - Forecaster initials
-    - INITIALS
-    -  
-    - TC-Pairs
-    - PROBRIRW  :raw-html:`<br />`
-      TCMPR
-  * - User-specified percentile :raw-html:`<br />`
-      intensity in time slice :raw-html:`<br />`
-      / inside object
-    - INTENSITY_*
-    -  
-    - MTD
-    - MTD 2D & 3D attribute output
-  * - 10th percentile intensity :raw-html:`<br />`
-      in time slice / intensity :raw-html:`<br />`
-      inside object
-    - INTENSITY_10
-    -  
-    - MTD
-    - MTD 2D &  3D attribute output
   * - 10th, 25th, 50th, 75th, :raw-html:`<br />`
-      and 90th percentiles :raw-html:`<br />`
-      of intensity of the raw :raw-html:`<br />`
-      field within the object
+      90th, and user-specified :raw-html:`<br />`
+      percentiles of :raw-html:`<br />`
+      intensity of the raw :raw-html:`<br />`
+      field within the  :raw-html:`<br />`
+      object or time slice
     - INTENSITY :raw-html:`<br />`
       _10, _25, :raw-html:`<br />`
       _50, _75, :raw-html:`<br />`
-      _90
-    -  
+      _90, _NN
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
-  * - 25th percentile intensity :raw-html:`<br />`
-      in time slice / :raw-html:`<br />`
-      inside object
-    - INTENSITY_25
-    -  
-    - MTD
-    - MTD 2D & 3D attribute output
-  * - 60th percentile intensity :raw-html:`<br />`
-      in time slice /  :raw-html:`<br />`
-      inside object
-    - INTENSITY_50
-    -  
-    - MTD
-    - MTD 2D & 3D attribute output
-  * - 75th percentile intensity :raw-html:`<br />`
-      in time slice / :raw-html:`<br />`
-      inside object
-    - INTENSITY_75
-    -  
-    - MTD
-    - MTD 2D &  3D attribute output
-  * - 90th percentile intensity :raw-html:`<br />`
-      in time slice / :raw-html:`<br />`
-      inside object
-    - INTENSITY_90
-    -  
-    - MTD
-    - MTD 2D & 3D attribute output
-  * - The percentile of :raw-html:`<br />`
-      intensity chosen for use :raw-html:`<br />`
-      in the PERCENTILE :raw-html:`<br />`
-      _INTENSITY_RATIO column
-    - INTENSITY
-      _NN
-    -  
-    - MODE
-    - MODE ascii object
+    - MODE obj
   * - Sum of the intensities of :raw-html:`<br />`
       the raw field within the :raw-html:`<br />`
       object (variable units)
     - INTENSITY  :raw-html:`<br />`
       _SUM
-    -  
+    - Diagnostics Attr 
     - MODE
     - MODE ascii object
   * - Total interest for this :raw-html:`<br />`
       object pair
     - INTEREST
-    -  
+    - Diagnostic Attr 
     - MTD :raw-html:`<br />`
       MODE
-    - MTD 3D pair attribute output :raw-html:`<br />`
-      MODE ascii object
+    - MTD 3D obj :raw-html:`<br />`
+      MODE obj
   * - Intersection area of two :raw-html:`<br />`
       objects (in grid squares)
-    - INTERSEC  :raw-html:`<br />`
-      TION_AREA
-    -  
+    - INTERSECT  :raw-html:`<br />`
+      ION_AREA
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
+    - MODE obj
   * - Ratio of intersection area :raw-html:`<br />`
       to the lesser of the  :raw-html:`<br />`
       forecast and observation :raw-html:`<br />`
       object areas (unitless)
-    - INTERSEC :raw-html:`<br />`
-      TION_OVER :raw-html:`<br />`
+    - INTERSECT :raw-html:`<br />`
+      ION_OVER :raw-html:`<br />`
       _AREA
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
+    - MODE obj
   * - “Volume” of object :raw-html:`<br />`
       intersection
-    - INTERSEC :raw-html:`<br />`
-      TION_VOLUME
-    -  
+    - INTERSECT:raw-html:`<br />`
+      ION_VOLUME
+    - Diagnostic Attr 
     - MTD
-    - MTD 3D pair attribute output
-  * - The Interquartile Range :raw-html:`<br />`
-      including bootstrap upper :raw-html:`<br />`
-      and lower confidence limits
+    - MTD 3D obj
+  * - Interquartile Range :raw-html:`<br />`
     - IQR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
   * - The intensity scale :raw-html:`<br />`
       skill score
     - ISC
-    -  
+    - 
     - Wavelet-Stat
     - ISC 
   * - The scale at which all  :raw-html:`<br />`
@@ -1147,27 +1075,21 @@ METplus Database of Statistics
     - ISC 
   * - Kendall’s tau statistic
     - KT_CORR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
   * - Dimension of the latitude 
-    - lat
-    -  
+    - LAT
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF dimensions & variables
+    - MODE obj
   * - Length of the :raw-html:`<br />`
       enclosing rectangle 
     - LENGTH
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
-  * - Level of storm  :raw-html:`<br />`
-      classification
-    - LEVEL
-    -  
-    - TC-Pairs
-    - TCMPR 
+    - MODE obj
   * - Likelihood when forecast :raw-html:`<br />`
       is between the ith and :raw-html:`<br />`
       i+1th probability :raw-html:`<br />`
