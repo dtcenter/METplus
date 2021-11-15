@@ -8519,6 +8519,7 @@ METplus Configuration Glossary
      See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* IODA2NC
+
    ENSEMBLE_STAT_OBS_QUALITY_INC
      Specify the value for 'obs_quality_inc' in the MET configuration file for EnsembleStat.
 
