@@ -740,7 +740,7 @@ METplus Database of Statistics
   * - Forecast energy squared :raw-html:`<br />`
       for this scale
     - FENERGY
-    - Diagnostic Attr 
+    -  
     - Wavelet-Stat
     - ISC 
   * - Mean Forecast Anomaly Squared
@@ -761,13 +761,13 @@ METplus Database of Statistics
   * - Mean of absolute value :raw-html:`<br />`
       of forecast gradients
     - FGBAR
-    - Continuous 
+    -  
     - Grid-Stat
     - GRAD 
   * - Ratio of forecast and :raw-html:`<br />`
       observed gradients
     - FGOG_RATIO
-    - Continuous 
+    -  
     - Grid-Stat
     - GRAD 
   * - Count of events in :raw-html:`<br />`
@@ -852,7 +852,8 @@ METplus Database of Statistics
     - Diagnostic Attr 
     - Grid-Stat
     - DMAP 
-  * - Minimum of FOM_FO and FOM_OF
+  * - Minimum of FOM_FO :raw-html:`<br />`
+      and FOM_OF
     - FOM_MIN
     - Diagnostic Attr 
     - Grid-Stat
@@ -1500,7 +1501,7 @@ METplus Database of Statistics
       the ith and i+1th :raw-html:`<br />`
       probability thresholds
     - OY_i
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PTC 
@@ -1518,33 +1519,29 @@ METplus Database of Statistics
   * - Ratio of the nth percentile :raw-html:`<br />`
       (INTENSITY_NN column) of :raw-html:`<br />`
       intensity of the two :raw-html:`<br />`
-      objects defined as the :raw-html:`<br />`
-      lesser of the forecast :raw-html:`<br />`
-      intensity divided by the :raw-html:`<br />`
-      observation intensity or :raw-html:`<br />`
-      its reciprocal (unitless)
+      objects
     - PERCENTILE :raw-html:`<br />`
       _INTENSITY :raw-html:`<br />`
       _RATIO
-    -  
+    - Diagnostic Attr 
     - MODE
     - MODE ascii object
   * - Probability Integral :raw-html:`<br />`
       Transform
     - PIT
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - ORANK 
   * - Probability of false :raw-html:`<br />`
       detection
     - PODF
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CTS 
   * - Probability of detecting no 
     - PODN
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       MODE
@@ -1554,7 +1551,7 @@ METplus Database of Statistics
   * - Probability of detecting :raw-html:`<br />`
       yes
     - PODY
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       MODE
@@ -1566,14 +1563,14 @@ METplus Database of Statistics
       greater than the ith :raw-html:`<br />`
       probability thresholds
     - PODY_i
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PRC 
   * - Probability of false :raw-html:`<br />`
       detection
     - POFD
-    -  
+    - Categorical 
     - MODE :raw-html:`<br />`
       Grid-Stat
     - MODE :raw-html:`<br />`
@@ -1583,35 +1580,28 @@ METplus Database of Statistics
       greater than the ith :raw-html:`<br />`
       probability thresholds
     - POFD_i
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PRC 
   * - Pearson correlation :raw-html:`<br />`
       coefficient
     - PR_CORR
-    -  
+    - Continuous 
     - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
     - SSVAR :raw-html:`<br />`
       CNT :raw-html:`<br />`
-      .  
-  * - The ith probability :raw-html:`<br />`
-      value (repeated)
-    - PROB_i
-    -  
-    - TC-Pairs
-    - PROBRIRW 
   * - Rank of the observation
     - RANK
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - ORANK 
   * - Count of observations :raw-html:`<br />`
       with the i-th rank
     - RANK_i
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - RHIST 
   * - Number of ranks used in :raw-html:`<br />`
