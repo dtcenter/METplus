@@ -177,11 +177,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_DIR'] = \
           self.config.getdir('FCST_ENSEMBLE_STAT_INPUT_DIR', '')
 
-        # This is a raw string and will be interpreted to generate the
-        # ensemble member filenames. This may be a list of 1 or n members.
-        c_dict['FCST_INPUT_TEMPLATE'] = \
-          util.getlist(self.config.getraw('filename_templates',
-                                          'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE'))
+        c_dict['FCST_INPUT_TEMPLATE'] = (
+            self.config.getraw('config', 'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE')
+        )
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE")
 
@@ -364,11 +362,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 @param time_info dictionary containing timing information
         """
         # get ensemble model files
-        fcst_file_list = self.find_model_members(time_info)
-        if not fcst_file_list:
+        if not self.find_input_files_ensemble(time_info):
             return
-
-        self.infiles.append(fcst_file_list)
 
         # parse var list for ENS fields
         ensemble_var_list = util.sub_var_list(self.c_dict['ENS_VAR_LIST_TEMP'],
