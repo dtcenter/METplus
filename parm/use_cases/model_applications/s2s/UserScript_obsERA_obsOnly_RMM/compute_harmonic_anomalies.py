@@ -107,4 +107,5 @@ for o in np.arange(0,len(dm_orig)):
     leadmin,leadsec = divmod(cltime.total_seconds(), 60)
     leadhr,leadmin = divmod(leadmin,60)
     lead_str = str(int(leadhr)).zfill(2)+str(int(leadmin)).zfill(2)+str(int(leadsec)).zfill(2)
+    print(os.path.join(anom_output_dir,anom_output_base+'_'+lead_str+'L_'+cvtime.strftime('%Y%m%d')+'_'+cvtime.strftime('%H%M%S')+'V.nc'))
     dout.to_netcdf(os.path.join(anom_output_dir,anom_output_base+'_'+lead_str+'L_'+cvtime.strftime('%Y%m%d')+'_'+cvtime.strftime('%H%M%S')+'V.nc'))
