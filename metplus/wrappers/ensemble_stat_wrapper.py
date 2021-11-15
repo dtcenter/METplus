@@ -157,6 +157,7 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
             self.config.getint('config', 'ENSEMBLE_STAT_N_MEMBERS')
         )
 
+        # allow multiple files in CommandBuilder.find_data logic
         c_dict['ALLOW_MULTIPLE_FILES'] = True
 
         # not all input files are mandatory to be found
