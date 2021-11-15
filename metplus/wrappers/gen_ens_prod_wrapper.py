@@ -59,10 +59,6 @@ class GenEnsProdWrapper(LoopTimesWrapper):
     def create_c_dict(self):
         c_dict = super().create_c_dict()
 
-        c_dict['VERBOSITY'] = self.config.getstr('config',
-                                                 'LOG_GEN_ENS_PROD_VERBOSITY',
-                                                 c_dict['VERBOSITY'])
-
         # get the MET config file path or use default
         c_dict['CONFIG_FILE'] = self.get_config_file(
             'GenEnsProdConfig_wrapped'

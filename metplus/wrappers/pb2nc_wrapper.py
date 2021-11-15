@@ -111,7 +111,7 @@ class PB2NCWrapper(CommandBuilder):
                                  'METPLUS_OBS_BUFR_VAR',
                                  allow_empty=True)
 
-        self.handle_time_summary_dict(c_dict)
+        self.handle_time_summary_legacy(c_dict)
 
         self.handle_file_window_variables(c_dict, dtypes=['OBS'])
 

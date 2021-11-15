@@ -53,60 +53,6 @@ def set_minimum_config_settings(config):
 
 @pytest.mark.parametrize(
     'config_overrides, env_var_values', [
-        # 0 no climo settings
-        ({}, {}),
-        # 1 mean template only
-        ({'GEN_ENS_PROD_CLIMO_MEAN_INPUT_TEMPLATE': 'gs_mean_{init?fmt=%Y%m%d%H}.tmpl'},
-         {'CLIMO_MEAN_FILE': '"gs_mean_YMDH.tmpl"',
-          'CLIMO_STDEV_FILE': '', }),
-        # 2 mean template and dir
-        ({'GEN_ENS_PROD_CLIMO_MEAN_INPUT_TEMPLATE': 'gs_mean_{init?fmt=%Y%m%d%H}.tmpl',
-          'GEN_ENS_PROD_CLIMO_MEAN_INPUT_DIR': '/climo/mean/dir'},
-         {'CLIMO_MEAN_FILE': '"/climo/mean/dir/gs_mean_YMDH.tmpl"',
-          'CLIMO_STDEV_FILE': '', }),
-        # 3 stdev template only
-        ({'GEN_ENS_PROD_CLIMO_STDEV_INPUT_TEMPLATE': 'gs_stdev_{init?fmt=%Y%m%d%H}.tmpl'},
-         {'CLIMO_STDEV_FILE': '"gs_stdev_YMDH.tmpl"', }),
-        # 4 stdev template and dir
-        ({'GEN_ENS_PROD_CLIMO_STDEV_INPUT_TEMPLATE': 'gs_stdev_{init?fmt=%Y%m%d%H}.tmpl',
-          'GEN_ENS_PROD_CLIMO_STDEV_INPUT_DIR': '/climo/stdev/dir'},
-         {'CLIMO_STDEV_FILE': '"/climo/stdev/dir/gs_stdev_YMDH.tmpl"', }),
-    ]
-)
-def test_handle_climo_file_variables(metplus_config, config_overrides,
-                                     env_var_values):
-    """! Ensure that old and new variables for setting climo_mean and
-     climo_stdev are set to the correct values
-    """
-    old_env_vars = ['CLIMO_MEAN_FILE',
-                    'CLIMO_STDEV_FILE']
-    config = metplus_config()
-
-    set_minimum_config_settings(config)
-
-    # set config variable overrides
-    for key, value in config_overrides.items():
-        config.set('config', key, value)
-
-    wrapper = GenEnsProdWrapper(config)
-    assert wrapper.isOK
-
-    all_cmds = wrapper.run_all_times()
-    for (_, actual_env_vars), run_time in zip(all_cmds, run_times):
-        run_dt = datetime.strptime(run_time, time_fmt)
-        ymdh = run_dt.strftime('%Y%m%d%H')
-        print(f"ACTUAL ENV VARS: {actual_env_vars}")
-        for old_env in old_env_vars:
-            match = next((item for item in actual_env_vars if
-                          item.startswith(old_env)), None)
-            assert(match is not None)
-            actual_value = match.split('=', 1)[1]
-            expected_value = env_var_values.get(old_env, '')
-            expected_value = expected_value.replace('YMDH', ymdh)
-            assert(expected_value == actual_value)
-
-@pytest.mark.parametrize(
-    'config_overrides, env_var_values', [
         ({'MODEL': 'my_model'},
          {'METPLUS_MODEL': 'model = "my_model";'}),
 
