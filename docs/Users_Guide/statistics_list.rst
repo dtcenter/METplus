@@ -1049,7 +1049,7 @@ METplus Database of Statistics
     - MODE obj
   * - “Volume” of object :raw-html:`<br />`
       intersection
-    - INTERSECT:raw-html:`<br />`
+    - INTERSECT  :raw-html:`<br />`
       ION_VOLUME
     - Diagnostic Attr 
     - MTD
@@ -1109,7 +1109,7 @@ METplus Database of Statistics
       NBRCTS
   * - Dimension of the longitude 
     - LON
-    -  
+    - Diagnostic Attr 
     - MODE
     - MODE netCDF
   * - The Median Absolute :raw-html:`<br />`
@@ -1252,29 +1252,26 @@ METplus Database of Statistics
     - MODE netCDF variables
   * - Observation rate
     - O_RATE
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - NBRCNT :raw-html:`<br />`
       FHO
   * - Mean observed wind speed
     - O_SPEED_BAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VL1L2  
-  * - Mean(o-c)
+  * - Mean Observation Anomaly
     - OABAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - SAL1L2  
   * - Average observed value :raw-html:`<br />`
-      observation mean :raw-html:`<br />`
-      Mean (o) :raw-html:`<br />`
-      & mean value
     - OBAR
-    -  
+    - Continuous  
     - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />` .
@@ -1282,50 +1279,18 @@ METplus Database of Statistics
       CNT :raw-html:`<br />`
       SL1L2 :raw-html:`<br />`
       VCNT
-  * - Mean observation normal :raw-html:`<br />`
-      upper and lower :raw-html:`<br />`
-      confidence limits
-    - OBAR_NCL
-    -  
-    - Ensemble-Stat
-    - SSVAR 
   * - Length (speed) of the :raw-html:`<br />`
       average observed wind :raw-html:`<br />`
       vector
     - OBAR_SPEED
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
-  * - Object category 
-    - OBJECT_CAT
-    -  
-    - MODE :raw-html:`<br />`
-      MTD
-    - MODE ascii object :raw-html:`<br />`
-      MTD 2D & 3D attribute output :raw-html:`<br />`
-      MTD 3D pair attribute output
-  * - Object number
-    - OBJECT_ID
-    -  
-    - MODE :raw-html:`<br />`
-      MTD
-    - MODE ascii object :raw-html:`<br />`
-      MTD 2D & 3D attribute output :raw-html:`<br />`
-      MTD 3D pair attribute output
-  * - Observation value
-    - OBS
-    -  
-    - Ensemble-Stat :raw-html:`<br />`
-      Point-Stat :raw-html:`<br />`
-      Grid-Stat
-    - ORANK :raw-html:`<br />`
-      MPR :raw-html:`<br />`
-      .
   * - Number of observed :raw-html:`<br />`
       clusters
     - obs_clus
-    -  
+    - Diagnostic Attr 
     - MODE
     - MODE netCDF dimensions
   * - Number of points used to :raw-html:`<br />`
@@ -1334,260 +1299,105 @@ METplus Database of Statistics
       objects
     - obs_clus :raw-html:`<br />`
       _hull
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF dimensions
+    - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Point Latitude
     - obs_clus :raw-html:`<br />`
       _hull_lat
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Point Longitude
     - obs_clus :raw-html:`<br />`
       _hull_lon
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE obj
   * - Number of Observation :raw-html:`<br />`
       Cluster Convex Hull Points
     - obs_clus :raw-html:`<br />`
       _hull_npts
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Starting Index
     - obs_clus :raw-html:`<br />`
       _hull_start
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Point X-Coordinate
     - obs_clus :raw-html:`<br />`
       _hull_x
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Point Y-Coordinate
     - obs_clus :raw-html:`<br />`
       _hull_y
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
-  * - Cluster observation object :raw-html:`<br />`
-      id number for each :raw-html:`<br />`
-      grid point
-    - obs_clus_id
-    -  
-    - MODE
-    - MODE netCDF variables
-  * - Observation convolution :raw-html:`<br />`
-      threshold
-    - obs_conv :raw-html:`<br />`
-      _threshold
-    -  
-    - MODE
-    - MODE netCDF variables
-  * - Observation convolution :raw-html:`<br />`
-      radius
-    - obs_conv :raw-html:`<br />`
-      _radius
-    -  
-    - MODE
-    - MODE netCDF variables
-  * - Elevation of the :raw-html:`<br />`
-      observation
-    - OBS_ELV
-    -  
-    - Ensemble-Stat :raw-html:`<br />`
-      Point-Stat :raw-html:`<br />`
-      Grid-Stat
-    - ORANK :raw-html:`<br />`
-      MPR :raw-html:`<br />`
-      .
-  * - Latitude of the :raw-html:`<br />`
-      observation
-    - OBS_LAT
-    -  
-    - Ensemble-Stat :raw-html:`<br />`
-      Point-Stat :raw-html:`<br />`
-      Grid-Stat
-    - ORANK  :raw-html:`<br />`
-      MPR :raw-html:`<br />`
-      .
-  * - Longitude of the :raw-html:`<br />`
-      observation
-    - OBS_LON
-    -  
-    - Ensemble-Stat :raw-html:`<br />`
-      Point-Stat :raw-html:`<br />`
-      Grid-Stat
-    - ORANK  :raw-html:`<br />`
-      MPR :raw-html:`<br />` .
-  * - Level of the observation
-    - OBS_LVL
-    -  
-    - Ensemble-Stat :raw-html:`<br />`
-      Point-Stat :raw-html:`<br />`
-      Grid-Stat
-    - ORANK  :raw-html:`<br />`
-      MPR :raw-html:`<br />`
-      .
-  * - Simple observation object :raw-html:`<br />`
-      id number for each :raw-html:`<br />`
-      grid point
-    - obs_obj_id
-    -  
-    - MODE
-    - MODE netCDF variables
-  * - Observation Object Raw :raw-html:`<br />`
-      Values
-    - obs_obj_raw
-    -  
-    - MODE
-    - MODE netCDF variables
-  * - Quality control flag for :raw-html:`<br />`
-      observation
-    - OBS_QC
-    -  
-    - Point-Stat :raw-html:`<br />`
-      Grid-Stat
-    - MPR 
-  * - Observation Raw Values
-    - obs_raw
-    -  
-    - MODE
-    - MODE netCDF variables
-  * - Station Identifier
-    - OBS_SID
-    -  
-    - Ensemble-Stat :raw-html:`<br />`
-      Point-Stat :raw-html:`<br />`
-      Grid-Stat
-    - ORANK  :raw-html:`<br />`
-      MPR :raw-html:`<br />` .
+    - MODE obj
   * - Number of simple :raw-html:`<br />`
       observation objects
     - obs_simp
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF dimensions
+    - MODE obj
   * - Number of points used :raw-html:`<br />`
       to define the boundaries :raw-html:`<br />`
       of the simple observation :raw-html:`<br />`
       objects
     - obs_simp :raw-html:`<br />`
       _bdy
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF dimensions
+    - MODE obj
   * - Observation Simple  :raw-html:`<br />`
       Boundary Point Latitude
     - obs_simp :raw-html:`<br />`
       _bdy_lat
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE obj
   * - Observation Simple :raw-html:`<br />`
       Boundary Point Longitude
     - obs_simp :raw-html:`<br />`
       _bdy_lon
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
-  * - Observation Simple :raw-html:`<br />`
-      Boundary Starting Index
-    - obs_simp :raw-html:`<br />`
-      _bdy_start
-    -  
-    - MODE
-    - MODE netCDF variables
+    - MODE obj
   * - Number of Observation :raw-html:`<br />`
       Simple Boundary Points
     - obs_simp :raw-html:`<br />`
       _bdy_npts
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
-  * - Observation Simple Boundary :raw-html:`<br />`
-      Point X-Coordinate
-    - obs_simp :raw-html:`<br />`
-      _bdy_x
-    -  
-    - MODE
-    - MODE netCDF variables
-  * - Observation Simple Boundary :raw-html:`<br />`
-      Point Y-Coordinate
-    - obs_simp :raw-html:`<br />`
-      _bdy_y
-    -  
-    - MODE
-    - MODE netCDF variables
+    - MODE obj
   * - Number of points used to :raw-html:`<br />`
       define the hull of the :raw-html:`<br />`
       simple observation objects
     - obs_simp :raw-html:`<br />`
       _hull
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF dimensions
-  * - Observation Simple Convex :raw-html:`<br />`
-      Hull Point Latitude
-    - obs_simp :raw-html:`<br />`
-      _hull_lat
-    -  
-    - MODE
-    - MODE netCDF variables
-  * - Observation Simple Convex :raw-html:`<br />`
-      Hull Point Longitude
-    - obs_simp :raw-html:`<br />`
-      _hull_lon
-    -  
-    - MODE
-    - MODE netCDF variables
+    - MODE obj
   * - Number of Observation :raw-html:`<br />`
       Simple Convex Hull Points
     - obs_simp :raw-html:`<br />`
       _hull_npts
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
-  * - Observation Simple Convex :raw-html:`<br />`
-      Hull Starting Index
-    - obs_simp :raw-html:`<br />`
-      _hull_start
-    -  
-    - MODE
-    - MODE netCDF variables
-  * - Observation Simple Convex :raw-html:`<br />`
-      Hull Point X-Coordinate
-    - obs_simp :raw-html:`<br />`
-      _hull_x
-    -  
-    - MODE
-    - MODE netCDF variables
-  * - Observation Simple Convex :raw-html:`<br />`
-      Hull Point Y-Coordinate
-    - obs_simp :raw-html:`<br />`
-      _hull_y
-    -  
-    - MODE
-    - MODE netCDF variables
-  * - Number of thresholds :raw-html:`<br />`
-      applied to the observations
-    - obs_thresh :raw-html:`<br />`
-      _length
-    -  
-    - MODE
-    - MODE netCDF dimensions
+    - MODE obj
   * - Odds Ratio
     - ODDS
-    -  
+    - Categorical 
     - MODE :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
@@ -1597,7 +1407,7 @@ METplus Database of Statistics
   * - Direction of the average :raw-html:`<br />`
       observed wind vector
     - ODIR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
@@ -1613,57 +1423,51 @@ METplus Database of Statistics
     -  
     - Grid-Stat
     - GRAD 
-  * - Number of observation no :raw-html:`<br />`
+  * - Number of observation :raw-html:`<br />`
       when forecast is between :raw-html:`<br />`
       the ith and i+1th :raw-html:`<br />`
       probability thresholds
     - ON_i
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PTC 
-  * - Number of observation no :raw-html:`<br />`
+  * - Number of observation :raw-html:`<br />`
       when forecast is between :raw-html:`<br />`
       the ith and i+1th :raw-html:`<br />`
       probability thresholds
     - ON_TP_i
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PJC 
-  * - Mean((o-c)²)
+  * - Mean Squared  :raw-html:`<br />`
+      Observation Anomaly
     - OOABAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - SAL1L2  
   * - Average of observation :raw-html:`<br />`
-      squared & Mean(o²)
+      squared
     - OOBAR
-    -  
+    - Continuous
     - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
     - SSVAR :raw-html:`<br />`
-      SL1L2  :raw-html:`<br />` .
-  * - Operational methodology :raw-html:`<br />`
-      category (FYOY, FYON, :raw-html:`<br />`
-      FNOY, or DISCARD)
-    - OPS_CAT
-    -  
-    - TC-Gen
-    - GENMPR 
+      SL1L2  :raw-html:`<br />`
   * - Number of tied observation :raw-html:`<br />`
       ranks used in computing :raw-html:`<br />`
       Kendall’s tau statistic
     - ORANK_TIES
-    -  
+    - Continuous  
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
   * - Odds Ratio Skill Score 
     - ORSS
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CTS :raw-html:`<br />`
@@ -1671,13 +1475,14 @@ METplus Database of Statistics
   * - Root mean square observed :raw-html:`<br />`
       wind speed
     - OS_RMS
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
-  * - Standard deviation
+  * - Standard deviation :raw-html:`<br />`
+      of observations
     - OSTDEV
-    -  
+    - Continuous 
     - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
@@ -1687,7 +1492,7 @@ METplus Database of Statistics
   * - Number of observation :raw-html:`<br />`
       events
     - OY
-    -  
+    - Categorical 
     - Grid-Stat
     - DMAP 
   * - Number of observation yes :raw-html:`<br />`
@@ -1706,7 +1511,7 @@ METplus Database of Statistics
       as a proportion of the :raw-html:`<br />`
       total OY (repeated)
     - OY_TP_i
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PJC 
