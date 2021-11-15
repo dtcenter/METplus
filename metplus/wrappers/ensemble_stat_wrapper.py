@@ -153,11 +153,17 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         elif c_dict['OBS_GRID_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES:
             c_dict['OBS_INPUT_DATATYPE'] = c_dict['OBS_GRID_INPUT_DATATYPE']
 
-        c_dict['N_MEMBERS'] = \
-            self.config.getint('config', 'ENSEMBLE_STAT_N_MEMBERS', -1)
+        c_dict['N_MEMBERS'] = (
+            self.config.getint('config', 'ENSEMBLE_STAT_N_MEMBERS')
+        )
 
-        if c_dict['N_MEMBERS'] < 0:
-            self.log_error("Must set ENSEMBLE_STAT_N_MEMBERS to a integer > 0")
+        c_dict['ALLOW_MULTIPLE_FILES'] = True
+
+        # not all input files are mandatory to be found
+        c_dict['MANDATORY'] = False
+
+        # fill inputs that are not found with fake path to note it is missing
+        c_dict['FCST_FILL_MISSING'] = True
 
         c_dict['OBS_POINT_INPUT_DIR'] = \
           self.config.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
