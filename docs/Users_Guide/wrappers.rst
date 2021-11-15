@@ -274,6 +274,8 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT`
+| :term:`ENSEMBLE_STAT_OBS_QUALITY_INC`
+| :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
 | :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
 | :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`ENS_VAR<n>_NAME` (optional)
@@ -828,6 +830,28 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`ENSEMBLE_STAT_OUTPUT_PREFIX`
      - output_prefix
+
+**${METPLUS_OBS_QUALITY_INC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_QUALITY_INC`
+     - obs_quality_inc
+
+**${METPLUS_OBS_QUALITY_EXC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
+     - obs_quality_exc
 
 **${METPLUS_MET_CONFIG_OVERRIDES}**
 
@@ -5123,7 +5147,8 @@ Configuration
 | :term:`POINT_STAT_CLIMO_CDF_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
-| :term:`POINT_STAT_OBS_QUALITY`
+| :term:`POINT_STAT_OBS_QUALITY_INC`
+| :term:`POINT_STAT_OBS_QUALITY_EXC`
 | :term:`POINT_STAT_OUTPUT_FLAG_FHO`
 | :term:`POINT_STAT_OUTPUT_FLAG_CTC`
 | :term:`POINT_STAT_OUTPUT_FLAG_CTS`
@@ -5465,7 +5490,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
      - climo_cdf.write_bins
 
-**${METPLUS_OBS_QUALITY}**
+**${METPLUS_OBS_QUALITY_INC}**
 
 .. list-table::
    :widths: 5 5
@@ -5473,8 +5498,19 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`POINT_STAT_OBS_QUALITY`
-     - obs_quality
+   * - :term:`POINT_STAT_OBS_QUALITY_INC`
+     - obs_quality_inc
+
+**${METPLUS_OBS_QUALITY_EXC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_QUALITY_EXC`
+     - obs_quality_exc
 
 **${METPLUS_OUTPUT_FLAG_DICT}**
 

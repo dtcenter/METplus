@@ -6661,10 +6661,18 @@ METplus Configuration Glossary
 
      | *Used by:* MODE
 
-   POINT_STAT_OBS_QUALITY
-     Specify the value for 'obs_quality' in the MET configuration file for PointStat.
+   POINT_STAT_OBS_QUALITY_INC
+     Specify the value for 'obs_quality_inc' in the MET configuration file for PointStat.
 
      | *Used by:* PointStat
+
+   POINT_STAT_OBS_QUALITY_EXC
+     Specify the value for 'obs_quality_exc' in the MET configuration file for PointStat.
+
+     | *Used by:* PointStat
+
+   POINT_STAT_OBS_QUALITY
+     .. warning:: **DEPRECATED:** Please use :term:`POINT_STAT_OBS_QUALITY_INC` instead.
 
    POINT_STAT_OUTPUT_FLAG_FHO
      Specify the value for 'output_flag.fho' in the MET configuration file for PointStat.
@@ -8511,3 +8519,12 @@ METplus Configuration Glossary
      See :ref:`Overriding Unsupported MET config file settings<met-config-overrides>` for more information
 
      | *Used by:* IODA2NC
+   ENSEMBLE_STAT_OBS_QUALITY_INC
+     Specify the value for 'obs_quality_inc' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
+
+   ENSEMBLE_STAT_OBS_QUALITY_EXC
+     Specify the value for 'obs_quality_exc' in the MET configuration file for EnsembleStat.
+
+     | *Used by:* EnsembleStat
