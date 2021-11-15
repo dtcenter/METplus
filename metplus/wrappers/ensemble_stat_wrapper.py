@@ -61,6 +61,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         'METPLUS_OUTPUT_FLAG_DICT',
         'METPLUS_ENSEMBLE_FLAG_DICT',
         'METPLUS_OUTPUT_PREFIX',
+        'METPLUS_OBS_QUALITY_INC',
+        'METPLUS_OBS_QUALITY_EXC',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -298,6 +300,19 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         self.handle_obs_window_variables(c_dict)
 
         c_dict['MASK_POLY_TEMPLATE'] = self.read_mask_poly()
+
+        self.add_met_config(
+            name='obs_quality_inc',
+            data_type='list',
+            metplus_configs=['ENSEMBLE_STAT_OBS_QUALITY_INC',
+                             'ENSEMBLE_STAT_OBS_QUALITY_INCLUDE']
+        )
+        self.add_met_config(
+            name='obs_quality_exc',
+            data_type='list',
+            metplus_configs=['ENSEMBLE_STAT_OBS_QUALITY_EXC',
+                             'ENSEMBLE_STAT_OBS_QUALITY_EXCLUDE']
+        )
 
         # old method of setting MET config values
         c_dict['ENS_THRESH'] = (
