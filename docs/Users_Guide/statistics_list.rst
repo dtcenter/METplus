@@ -1096,32 +1096,32 @@ METplus Database of Statistics
       thresholds repeated
     - LIKELIHOOD :raw-html:`<br />`
       _i
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PJC 
   * - Logarithm of the Odds Ratio 
     - LODDS
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CTS :raw-html:`<br />`
       NBRCTS
   * - Dimension of the longitude 
-    - lon
+    - LON
     -  
     - MODE
-    - MODE netCDF dimensions & variables
+    - MODE netCDF
   * - The Median Absolute :raw-html:`<br />`
       Deviation
     - MAD
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
   * - Mean absolute error
     - MAE
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT  :raw-html:`<br />`
@@ -1130,7 +1130,7 @@ METplus Database of Statistics
   * - Magnitude & :raw-html:`<br />`
       Multiplicative bias
     - MBIAS
-    -  
+    - Continuous 
     - Ensemble-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
@@ -1138,56 +1138,54 @@ METplus Database of Statistics
       CNT
   * - The Mean Error 
     - ME
-    -  
+    - Continuous 
     - Ensemble-Stat :raw-html:`<br />`
-      .  :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
     - ECNT :raw-html:`<br />`
       SSVAR :raw-html:`<br />`
-      .  :raw-html:`<br />`
       CNT
   * - The Mean Error of the :raw-html:`<br />`
       PERTURBED ensemble mean 
     - ME_OERR
-    -  
+    - Continuous 
     - Ensemble-Stat
     - ECNT 
   * - The square of the :raw-html:`<br />`
       mean error (bias) 
     - ME2
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
   * - Mean-error Distance from :raw-html:`<br />`
       observation to forecast
     - MED_FO
-    -  
+    - Distance 
     - Grid-Stat
     - DMAP 
   * - Maximum of MED_FO :raw-html:`<br />`
       and MED_OF
     - MED_MAX
-    -  
+    - Distance 
     - Grid-Stat
     - DMAP 
   * - Mean of MED_FO :raw-html:`<br />`
       and MED_OF
     - MED_MEAN
-    -  
+    - Distance 
     - Grid-Stat
     - DMAP 
   * - Minimum of MED_FO :raw-html:`<br />`
       and MED_OF
     - MED_MIN
-    -  
+    - Distance 
     - Grid-Stat
     - DMAP 
   * - Mean-error Distance from :raw-html:`<br />`
       forecast to observation
     - MED_OF
-    -  
+    - Distance 
     - Grid-Stat
     - DMAP 
   * - Mean of maximum of :raw-html:`<br />`
@@ -1200,7 +1198,7 @@ METplus Database of Statistics
     - GRAD
   * - Mean squared error
     - MSE
-    -  
+    - Continuous 
     - Ensemble-Stat :raw-html:`<br />`
       Wavelet-Stat :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
@@ -1208,11 +1206,10 @@ METplus Database of Statistics
     - SSVAR :raw-html:`<br />`
       ISC :raw-html:`<br />`
       CNT :raw-html:`<br />`
-      .
   * - The mean squared error :raw-html:`<br />`
       skill 
     - MSESS
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
@@ -1221,95 +1218,39 @@ METplus Database of Statistics
       between the forecast :raw-html:`<br />`
       and observed winds
     - MSVE
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
-  * - Total number of :raw-html:`<br />`
-      probability intervals :raw-html:`<br />`
-      and current forecast run
-    - N_BIN
-    -  
-    - Ensemble-Stat
-    - PHIST :raw-html:`<br />`
-      SSVAR 
   * - Dimension of the :raw-html:`<br />`
       contingency table & the :raw-html:`<br />`
       total number of :raw-html:`<br />`
       categories in each :raw-html:`<br />`
       dimension
     - N_CAT
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - MCTC :raw-html:`<br />`
       MCTS
   * - Number of cluster objects
-    - n_clus
-    -  
+    - N_CLUS
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
-  * - Number of ensemble :raw-html:`<br />`
-      values / members
-    - N_ENS
-    -  
-    - Ensemble-Stat
-    - ECNT :raw-html:`<br />`
-      ORANK :raw-html:`<br />`
-      RELP
-  * - Number of valid :raw-html:`<br />`
-      ensemble values
-    - N_ENS_VLD
-    -  
-    - Ensemble-Stat
-    - ORANK
+    - MODE obj
   * - Number of simple :raw-html:`<br />`
       forecast objects
-    - n_fcst_simp
-    -  
+    - N_FCST_SIMP
+    - Diagnostic Attr 
     - MODE
-    - MODE netCDF variables
+    - MODE obj
   * - Number of simple :raw-html:`<br />`
       observation objects
-    - n_obs_simp
-    -  
+    - N_OBS_SIMP
+    - Diagnostic Attr 
     - MODE
     - MODE netCDF variables
-  * - Number of Cost/Loss :raw-html:`<br />`
-      ratios
-    - N_PNT
-    -  
-    - Point-Stat :raw-html:`<br />`
-      Grid-Stat
-    - ECLV
-  * - Number of possible ranks :raw-html:`<br />`
-      for observation
-    - N_RANK
-    -  
-    - Ensemble-Stat
-    - RHIST 
-  * - Number of probability :raw-html:`<br />`
-      thresholds
-    - N_THRESH
-    -  
-    - TC-Pairs :raw-html:`<br />`
-      Point-Stat :raw-html:`<br />`
-      Grid-Stat :raw-html:`<br />`
-      .  :raw-html:`<br />`
-      .
-    - PROBRIRW :raw-html:`<br />`
-      PJC :raw-html:`<br />`
-      PRC :raw-html:`<br />`
-      PSTD output format :raw-html:`<br />`
-      PTC 
-  * - Total number of scales :raw-html:`<br />`
-      used in decomposition
-    - NSCALE
-    -  
-    - Wavelet-Stat
-    - ISC 
-  * - NBRCNT output format :raw-html:`<br />`
-      & observation rate
+  * - Observation rate
     - O_RATE
     -  
     - Point-Stat :raw-html:`<br />`
