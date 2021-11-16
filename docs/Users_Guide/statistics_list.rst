@@ -1729,19 +1729,19 @@ METplus Database of Statistics
     - RPS
   * - S1 score
     - S1
-    -  
+    - Continuous 
     - Grid-Stat
     - GRAD 
   * - S1 score with respect to :raw-html:`<br />`
       observed gradient
     - S1_OG
-    -  
+    - Continuous 
     - Grid-Stat
     - GRAD 
   * - Symmetric Extremal :raw-html:`<br />`
       Dependency Index
     - SEDI
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CTS :raw-html:`<br />`
@@ -1749,21 +1749,21 @@ METplus Database of Statistics
   * - Symmetric Extreme :raw-html:`<br />`
       Dependency Score
     - SEDS
-    -  
+    - Categorical 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CTS :raw-html:`<br />`
       NBRCTS 
   * - Scatter Index
     - SI
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
   * - Spearman’s rank :raw-html:`<br />`
       correlation coefficient
     - SP_CORR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
@@ -1773,148 +1773,90 @@ METplus Database of Statistics
     - SPACE :raw-html:`<br />`
       _CENTROID :raw-html:`<br />`
       _DIST
-    -  
+    - Diagnostics Attr 
     - MTD
-    - MTD 3D pair attribute output
+    - MTD 3D obs
   * - Absolute value of SPEED_ERR
     - SPEED :raw-html:`<br />`
       _ABSERR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
   * - Difference in object speeds
     - SPEED_DELTA
-    -  
+    - Diagnostics Attr 
     - MTD
-    - MTD 3D pair attribute output
+    - MTD 3D obs
   * - Difference between the :raw-html:`<br />`
       length of the average :raw-html:`<br />`
       forecast wind vector and :raw-html:`<br />`
       the average observed wind :raw-html:`<br />`
       vector (in the sense F - O)
     - SPEED_ERR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
-  * - The square root or the :raw-html:`<br />`
-      spread (standard deviation) :raw-html:`<br />`
-      of the mean of the variance :raw-html:`<br />`
-      of the unperturbed ensemble :raw-html:`<br />`
-      member values at each :raw-html:`<br />`
-      observation location
+  * - Standard deviation :raw-html:`<br />`
+      of the mean of the :raw-html:`<br />` 
+      UNPERTURBED ensemble
     - SPREAD
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - ECNT :raw-html:`<br />`
       ORANK
-  * - The square root or the :raw-html:`<br />`
-      spread (standard deviation) :raw-html:`<br />`
-      of the mean of the variance :raw-html:`<br />`
-      of the PERTURBED ensemble :raw-html:`<br />`
-      member values at each :raw-html:`<br />`
-      observation location
+  * - Standard deviation :raw-html:`<br />`
+      of the mean of the :raw-html:`<br />` 
+      PERTURBED ensemble
     - SPREAD_OERR
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - ECNT :raw-html:`<br />`
       ORANK
-  * - The square root of the sum :raw-html:`<br />`
+  * - Standard Deviation :raw-html:`<br />`
       of unperturbed ensemble :raw-html:`<br />`
       variance and the :raw-html:`<br />`
       observation error variance
     - SPREAD_PLUS :raw-html:`<br />`
       _OERR
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - ECNT :raw-html:`<br />`
       ORANK
-  * - Object start time
-    - START_TIME
-    -  
-    - MTD
-    - MTD 3D attribute output
   * - Difference in object :raw-html:`<br />`
       starting time steps
     - START_TIME :raw-html:`<br />`
       _DELTA
-    -  
+    - Diagnostic Attr 
     - MTD
-    - MTD 3D pair attribute output
+    - MTD 3D obj
   * - Symmetric difference of :raw-html:`<br />`
       two objects :raw-html:`<br />`
       (in grid squares)
     - SYMMETRIC :raw-html:`<br />`
       _DIFF
-    -  
+    - Diagnostics Attr 
     - MODE
-    - MODE ascii object
-  * - The ith probability :raw-html:`<br />`
-      threshold value (repeated)
-    - THRESH_i
-    -  
-    - TC-Pairs :raw-html:`<br />`
-      Point-Stat :raw-html:`<br />`
-      Grid-Stat :raw-html:`<br />`
-      . :raw-html:`<br />`
-      .
-    - PROBRIRW  :raw-html:`<br />`
-      PJC  :raw-html:`<br />`
-      PRC :raw-html:`<br />`
-      PSTD output format :raw-html:`<br />`
-      PTC
-  * - Last probability :raw-html:`<br />`
-      threshold value
-    - THRESH_n
-    -  
-    - Point-Stat :raw-html:`<br />`
-      Grid-Stat
-    - PJC :raw-html:`<br />`
-      PRC :raw-html:`<br />`
-      PTC
-  * - The dimensions of the tile
-    - TILE_DIM
-    -  
-    - Wavelet-Stat
-    - ISC 
-  * - Horizontal coordinate of :raw-html:`<br />`
-      the lower left corner of :raw-html:`<br />`
-      the tile
-    - TILE_XLL
-    -  
-    - Wavelet-Stat
-    - ISC 
-  * - Vertical coordinate of :raw-html:`<br />`
-      the lower left corner :raw-html:`<br />`
-      of the tile
-    - TILE_YLL
-    -  
-    - Wavelet-Stat
-    - ISC 
+    - MODE obj
   * - Difference in t index of :raw-html:`<br />`
       object spacetime centroid
     - TIME :raw-html:`<br />`
       _CENTROID :raw-html:`<br />`
       _DELTA
-    -  
+    - Diagnostic Attr  
     - MTD
-    - MTD 3D pair attribute output
-  * - Time index of slice
-    - TIME_INDEX
-    -  
-    - MTD
-    - MTD 2D attribute output
+    - MTD 3D obj
   * - Track error of adeck :raw-html:`<br />`
       relative to bdeck (nm)
     - TK_ERR
-    -  
+    - Continuous  
     - TC-Pairs
     - PROBRIRW 
   * - Track error of adeck :raw-html:`<br />`
       relative to bdeck (nm)
     - TK_ERR
-    -  
+    - Continuous 
     - TC-Pairs
     - TCMPR
   * - Mean(uf-uc)
