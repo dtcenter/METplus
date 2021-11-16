@@ -529,7 +529,7 @@ METplus Database of Statistics
       CTS :raw-html:`<br />`
       NBRCTS
   * - Heidke Skill Score :raw-html:`<br />`
-      user-specific expected  :raw-html:`<br />`
+      user-specific expected :raw-html:`<br />`
       correct
     - HSS_EC
     - Categorical

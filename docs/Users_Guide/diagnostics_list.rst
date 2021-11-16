@@ -13,7 +13,7 @@ Diagnostics Database
 .. role:: raw-html(raw)
    :format: html	  
 
-.. list-table:: Diagnostics List
+.. list-table:: TEST List
   :widths: auto
   :header-rows: 1
 		
@@ -529,7 +529,7 @@ Diagnostics Database
     - Diagnostic 
     - MTD
     - MTD 3D obj
- * - The intensity scale :raw-html:`<br />`
+  * - The intensity scale :raw-html:`<br />`
       skill score
     - ISC
     - 
