@@ -1608,7 +1608,7 @@ METplus Database of Statistics
       computing Kendall’s tau :raw-html:`<br />`
       statistic
     - RANKS
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
@@ -1618,13 +1618,13 @@ METplus Database of Statistics
       thresholds (repeated)
     - REFINEMENT :raw-html:`<br />`
       _i
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PJC 
   * - Reliability
     - RELIABILITY
-    -  
+    - Probaility 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PSTD output format
@@ -1636,71 +1636,48 @@ METplus Database of Statistics
       1/n is assigned to each :raw-html:`<br />`
       member.
     - RELP_i
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - RELP 
   * - Resolution
     - RESOLUTION
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - PSTD output format
-  * - Start of RI time window :raw-html:`<br />`
-      in HH format
-    - RI_BEG
-    -  
-    - TC-Pairs
-    - PROBRIRW 
-  * - End of RI time window :raw-html:`<br />`
-      in HH format
-    - RI_END
-    -  
-    - TC-Pairs
-    - PROBRIRW 
-  * - Width of RI time window :raw-html:`<br />`
-      in HH format
-    - RI_WINDOW
-    -  
-    - TC-Pairs
-    - PROBRIRW 
   * - Root mean squared error
     - RMSE
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat :raw-html:`<br />`
       Ensemble-Stat :raw-html:`<br />`
-      .
     - CNT :raw-html:`<br />`
-      . :raw-html:`<br />`
       ECNT :raw-html:`<br />`
       SSVAR
-  * - The Root Mean Square Error :raw-html:`<br />`
-      of the PERTURBED ensemble :raw-html:`<br />`
-      mean (e.g. with  :raw-html:`<br />`
-      Observation Error)
+  * - Root Mean Square Error :raw-html:`<br />`
+      of the PERTURBED :raw-html:`<br />`
+      ensemble mean
     - RMSE_OERR
-    -  
+    - Continuous 
     - Ensemble-Stat
     - ECNT 
   * - Root mean squared forecast :raw-html:`<br />`
-      anomaly (f-c)
+      anomaly
     - RMSFA
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
   * - Root mean squared :raw-html:`<br />`
-      observation anomaly (o-c) :raw-html:`<br />`
-      including bootstrap upper :raw-html:`<br />`
-      & lower confidence limits
+      observation anomaly
     - RMSOA
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
   * - Square root of MSVE
     - RMSVE
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
@@ -1708,46 +1685,46 @@ METplus Database of Statistics
       operating characteristic :raw-html:`<br />`
       curve
     - ROC_AUC
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - PSTD outpu format
+    - PSTD
   * - Mean of the Brier Scores :raw-html:`<br />`
       for each RPS threshold
     - RPS
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - RPS
   * - Mean of the reliabilities :raw-html:`<br />`
       for each RPS threshold
     - RPS_REL
-    -  
+    - Ensemble 
     - Ensemble-Stat
-    - RPS Reliability
+    - RPS
   * - Mean of the resolutions :raw-html:`<br />`
       for each RPS threshold
     - RPS_RES
-    -  
+    - Ensemble 
     - Ensemble-Stat
-    - RPS Resolution
+    - RPS
   * - Mean of the uncertainties :raw-html:`<br />`
       for each RPS threshold
     - RPS_UNC
-    -  
+    - Ensemble 
     - Ensemble-Stat
-    - RPS Uncertainty
+    - RPS
   * - Ranked Probability Skill :raw-html:`<br />`
       Score relative to external :raw-html:`<br />`
       climatology
     - RPSS
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - RPS
   * - Ranked Probability Skill :raw-html:`<br />`
       Score relative to sample :raw-html:`<br />`
       climatology
     - RPSS_SMPL
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - RPS
   * - S1 score
