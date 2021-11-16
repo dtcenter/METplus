@@ -1859,114 +1859,126 @@ METplus Database of Statistics
     - Continuous 
     - TC-Pairs
     - TCMPR
-  * - Mean(uf-uc)
+  * - Mean U-component :raw-html:`<br />`
+      Forecast Anomaly
     - UFABAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VAL1L2  
-  * - Mean(uf)
+  * - Mean U-component
     - UFBAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VL1L2  
   * - Uniform Fractions Skill :raw-html:`<br />`
-      Score including bootstrap :raw-html:`<br />`
-      upper and lower :raw-html:`<br />`
-      confidence limits
+      Score
     - UFSS
-    -  
+    - Neighborhood 
     - Grid-Stat
     - NBRCNT 
-  * - Uncertainty
+  * - Variability of :raw-html:`<br />`
+      Observations
     - UNCERTAINTY
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - PSTD outpu format
-  * - Union area of two objects :raw-html:`<br />`
+    - PSTD
+  * - Union area of :raw-html:`<br />`
+      two objects :raw-html:`<br />`
       (in grid squares)
     - UNION_AREA
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
-  * - Mean(uo-uc)
+    - MODE obj
+  * - Mean U-component :raw-html:`<br />`
+      Observation Anomaly
     - UOABAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VAL1L2  
-  * - Mean(uo)
+  * - Mean U-component :raw-html:`<br />`
+      Observation
     - UOBAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VL1L2  
-  * - Mean((uf-uc)²+(vf-vc)²)
+  * - Mean U-component :raw-html:`<br />`
+      Squared  :raw-html:`<br />`
+      Forecast Anomaly :raw-html:`<br />`
+      plus Squared :raw-html:`<br />`
+      Observation :raw-html:`<br />` 
+      Anomaly
     - UVFFABAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VAL1L2  
-  * - Mean(uf²+vf²)
+  * - Mean U-component :raw-html:`<br />`
+      Squared  :raw-html:`<br />`
+      Forecast :raw-html:`<br />`
+      plus Squared :raw-html:`<br />`
+      Observation
     - UVFFBAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VL1L2  
   * - Mean((uf-uc)*(uo-uc)+ :raw-html:`<br />`
       (vf-vc)*(vo-vc))
     - UVFOABAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VAL1L2  
   * - Mean(uf*uo+vf*vo)
     - UVFOBAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VL1L2  
   * - Mean((uo-uc)²+(vo-vc)²)
     - UVOOABAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VAL1L2  
   * - Mean(uo²+vo²)
     - UVOOBAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VL1L2
   * - Economic value of the :raw-html:`<br />`
       base rate
     - VALUE_BASER
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - ECLV 
   * - Relative value for the :raw-html:`<br />`
       ith Cost/Loss ratio
     - VALUE_i
-    -  
+    - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - ECLV 
   * - Maximum variance
     - VAR_MAX
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - SSVAR 
   * - Average variance
     - VAR_MEAN
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - SSVAR 
   * - Minimum variance
     - VAR_MIN
-    -  
+    - Ensemble 
     - Ensemble-Stat
     - SSVAR 
   * - Direction of the vector :raw-html:`<br />`
@@ -1974,7 +1986,7 @@ METplus Database of Statistics
       average forecast and :raw-html:`<br />`
       average wind vectors
     - VDIFF_DIR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
@@ -1984,31 +1996,31 @@ METplus Database of Statistics
       average observed wind :raw-html:`<br />`
       vectors
     - VDIFF_SPEED
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
   * - Mean(vf-vc)
     - VFABAR
-    -  
+    - Continous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VAL1L2  
   * - Mean(vf)
     - VFBAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VL1L2  
   * - Mean(vo-vc)
     - VOABAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VAL1L2  
   * - Mean(vo)
     - VOBAR
-    -  
+    - Continuous 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VL1L2  
@@ -2016,87 +2028,81 @@ METplus Database of Statistics
       number of 3D “cells” :raw-html:`<br />`
       in an object
     - VOLUME
-    -  
+    - Diagnostic Attr 
     - MTD
-    - MTD 3D attribute output
+    - MTD 3D obj
   * - Forecast object volume :raw-html:`<br />`
       divided by observation :raw-html:`<br />`
       object volume
     - VOLUME :raw-html:`<br />`
       _RATIO
-    -  
+    - Diagnostic Attr 
     - MTD
-    - MTD 3D pair attribute output
-  * - HU or TS watch or :raw-html:`<br />`
-      warning in effect
-    - WATCH_WARN
-    -  
-    - TC-Pairs
-    - TCMPR 
+    - MTD 3D obj
   * - Width of the enclosing :raw-html:`<br />`
       rectangle (in grid units)
     - WIDTH
-    -  
+    - Diagnostic Attr 
     - MODE
-    - MODE ascii object
-  * - x component of :raw-html:`<br />`
+    - MODE obj
+  * - X component of :raw-html:`<br />`
       object velocity
     - X_DOT
-    -  
+    - Diagnostic Attr 
     - MTD
-    - MTD 3D attribute output
+    - MTD 3D obj
   * - X component position :raw-html:`<br />`
       error (nm)
     - X_ERR
-    -  
+    - Diagnostic 
     - TC-Pairs
     - PROBRIRW 
   * - X component position :raw-html:`<br />`
       error (nm)
     - X_ERR
-    -  
+    - Diagnostic 
     - TC-Pairs
     - TCMPR 
   * - y component of :raw-html:`<br />`
       object velocity
     - Y_DOT
-    -  
+    - Diagnostic 
     - MTD
-    - MTD 3D attribute output
+    - MTD 3D obj
   * - Y component position :raw-html:`<br />`
       error (nm)
     - Y_ERR
-    -  
+    - Diagnostic 
     - TC-Pairs
     - PROBRIRW :raw-html:`<br />`
       TCMPR
   * - Zhu’s Measure from :raw-html:`<br />`
       observation to forecast
     - ZHU_FO
-    -  
+    - Diagnostic 
     - Grid-Stat
     - DMAP 
   * - Maximum of ZHU_FO :raw-html:`<br />`
       and ZHU_OF
     - ZHU_MAX
-    -  
+    - Diagnostic 
     - Grid-Stat
     - DMAP 
   * - Mean of ZHU_FO :raw-html:`<br />`
       and ZHU_OF
     - ZHU_MEAN
-    -  
+    - Diagnostic 
     - Grid-Stat
     - DMAP 
   * - Minimum of ZHU_FO :raw-html:`<br />`
       and ZHU_OF
     - ZHU_MIN
-    -  
+    - Diagnostic 
     - Grid-Stat
     - DMAP 
   * - Zhu’s Measure from :raw-html:`<br />`
       forecast to observation
     - ZHU_OF
-    -  
+    - Diagnostic 
     - Grid-Stat
     - DMAP 
