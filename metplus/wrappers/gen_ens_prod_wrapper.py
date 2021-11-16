@@ -7,6 +7,7 @@ import os
 
 from ..util import do_string_sub, ti_calculate, get_lead_sequence
 from ..util import skip_time, parse_var_list, sub_var_list
+
 from . import LoopTimesWrapper
 
 class GenEnsProdWrapper(LoopTimesWrapper):
@@ -21,8 +22,8 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         'METPLUS_CAT_THRESH',
         'METPLUS_NC_VAR_STR',
         'METPLUS_ENS_FILE_TYPE',
-        'METPLUS_ENS_ENS_THRESH',
-        'METPLUS_ENS_VLD_THRESH',
+        'METPLUS_ENS_THRESH',
+        'METPLUS_VLD_THRESH',
         'METPLUS_ENS_FIELD',
         'METPLUS_NBRHD_PROB_DICT',
         'METPLUS_NMEP_SMOOTH_DICT',
@@ -65,14 +66,26 @@ class GenEnsProdWrapper(LoopTimesWrapper):
         )
 
         # get input template/dir - template is required
-        c_dict['INPUT_TEMPLATE'] = self.config.getraw(
+        c_dict['FCST_INPUT_TEMPLATE'] = self.config.getraw(
             'config',
             'GEN_ENS_PROD_INPUT_TEMPLATE'
         )
-        c_dict['INPUT_DIR'] = self.config.getdir('GEN_ENS_PROD_INPUT_DIR', '')
+        c_dict['FCST_INPUT_DIR'] = self.config.getdir('GEN_ENS_PROD_INPUT_DIR',
+                                                      '')
 
-        if not c_dict['INPUT_TEMPLATE']:
+        if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error('GEN_ENS_PROD_INPUT_TEMPLATE must be set')
+
+        # not all input files are mandatory to be found
+        c_dict['MANDATORY'] = False
+
+        # fill inputs that are not found with fake path to note it is missing
+        c_dict['FCST_FILL_MISSING'] = True
+
+        # number of expected ensemble members
+        c_dict['N_MEMBERS'] = (
+            self.config.getint('config', 'GEN_ENS_PROD_N_MEMBERS')
+        )
 
         # get ctrl (control) template/dir - optional
         c_dict['CTRL_INPUT_TEMPLATE'] = self.config.getraw(
@@ -195,20 +208,17 @@ class GenEnsProdWrapper(LoopTimesWrapper):
 
             @param time_info dictionary containing timing information
         """
-        if not self.find_field_info(time_info):
-            return False
-
-        if not self.find_input_files(time_info):
-            return False
-
-        if not self.find_and_check_output_file(time_info):
-            return False
-
         # add config file to arguments
         config_file = do_string_sub(self.c_dict['CONFIG_FILE'], **time_info)
         self.args.append(f"-config {config_file}")
 
-        if not self.find_ctrl_file(time_info):
+        if not self.find_field_info(time_info):
+            return False
+
+        if not self.find_input_files_ensemble(time_info):
+            return False
+
+        if not self.find_and_check_output_file(time_info):
             return False
 
         # set environment variables that are passed to the MET config
@@ -216,47 +226,12 @@ class GenEnsProdWrapper(LoopTimesWrapper):
 
         return self.build()
 
-    def find_input_files(self, time_info):
-        """! Get a list of all input files
-
-            @param time_info dictionary containing timing information
-            @returns True on success
-        """
-        input_files = self.find_data(time_info, return_list=True)
-        if not input_files:
-            self.log_error("Could not find any input files")
-            return False
-
-        # write file that contains list of ensemble files
-        list_filename = (f"{time_info['init_fmt']}_"
-                         f"{time_info['lead_hours']}_gen_ens_prod.txt")
-        list_file = self.write_list_file(list_filename, input_files)
-        if not list_file:
-            self.log_error("Could not write filelist file")
-            return False
-
-        self.infiles.append(list_file)
-
-        return True
-
-    def find_ctrl_file(self, time_info):
-        """! Find optional ctrl (control) file if requested
-
-            @param time_info dictionary containing timing information
-            @returns True on success or if ctrl not requested
-        """
-        if not self.c_dict['CTRL_INPUT_TEMPLATE']:
-            return True
-
-        input_file = self.find_data(time_info, data_type='CTRL')
-        if not input_file:
-            return False
-
-        self.args.append(f'-ctrl {input_file}')
-        return True
-
     def find_field_info(self, time_info):
-        # parse var list for ENS fields
+        """! parse var list for ENS fields
+
+            @param time_info dictionary containing timing information
+            @returns True if successful, False if something went wrong
+        """
         ensemble_var_list = sub_var_list(self.c_dict['ENS_VAR_LIST_TEMP'],
                                          time_info)
         all_fields = []
