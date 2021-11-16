@@ -46,7 +46,7 @@ class RuntimeFreqWrapper(CommandBuilder):
             app_name_upper = self.app_name.upper()
 
         c_dict['VERBOSITY'] = (
-            self.config.getstr('config',
+            self.config.getint('config',
                                f'LOG_{app_name_upper}_VERBOSITY',
                                c_dict['VERBOSITY'])
         )

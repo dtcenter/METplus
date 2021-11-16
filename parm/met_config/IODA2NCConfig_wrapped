@@ -1,0 +1,117 @@
+////////////////////////////////////////////////////////////////////////////////
+//
+// IODA2NC configuration file.
+//
+// For additional information, please see the MET Users Guide.
+//
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// IODA message type
+//
+// message_type = [
+${METPLUS_MESSAGE_TYPE}
+
+//
+// Mapping of message type group name to comma-separated list of values
+// Derive PRMSL only for SURFACE message types
+//
+// message_type_group_map = [
+${METPLUS_MESSAGE_TYPE_GROUP_MAP}
+
+//
+// Mapping of input IODA message types to output message types
+//
+// message_type_map = [
+${METPLUS_MESSAGE_TYPE_MAP}
+
+//
+// IODA station ID
+//
+// station_id = [
+${METPLUS_STATION_ID}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Observation time window
+//
+// obs_window = {
+${METPLUS_OBS_WINDOW_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Observation retention regions
+//
+// mask = {
+${METPLUS_MASK_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Observing location elevation
+//
+// elevation_range = {
+${METPLUS_ELEVATION_RANGE_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Vertical levels to retain
+//
+// level_range = {
+${METPLUS_LEVEL_RANGE_DICT}
+
+///////////////////////////////////////////////////////////////////////////////
+
+//
+// IODA variable names to retain or derive.
+// Use obs_bufr_map to rename variables in the output.
+// If empty or 'all', process all available variables.
+//
+// obs_var = [
+${METPLUS_OBS_VAR}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Mapping of input IODA variable names to output variables names.
+// The default IODA map, obs_var_map, is appended to this map.
+//
+// obs_name_map = [
+${METPLUS_OBS_NAME_MAP}
+
+//
+// Default mapping for Metadata.
+//
+// metadata_map = [
+${METPLUS_METADATA_MAP}
+
+// missing_thresh = [
+${METPLUS_MISSING_THRESH}
+
+////////////////////////////////////////////////////////////////////////////////
+
+// quality_mark_thresh =
+${METPLUS_QUALITY_MARK_THRESH}
+
+////////////////////////////////////////////////////////////////////////////////
+
+//
+// Time periods for the summarization
+// obs_var (string array) is added and works like grib_code (int array)
+// when use_var_id is enabled and variable names are saved.
+//
+// time_summary = {
+${METPLUS_TIME_SUMMARY_DICT}
+
+////////////////////////////////////////////////////////////////////////////////
+
+tmp_dir = "${MET_TMP_DIR}";
+
+//version = "V10.0";
+
+////////////////////////////////////////////////////////////////////////////////
+
+${METPLUS_MET_CONFIG_OVERRIDES}

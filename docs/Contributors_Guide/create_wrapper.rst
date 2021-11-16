@@ -26,11 +26,13 @@ In metplus/util/doc_util.py, add entries to the LOWER_TO_WRAPPER_NAME
 dictionary so that the wrapper can be found in the PROCESS_LIST even if
 it is formatted differently. The key should be the wrapper name in all
 lower-case letters without any underscores. The value should be the class name
-of the wrapper without the "Wrapper" suffix. Examples::
+of the wrapper without the "Wrapper" suffix. Add the new entry in the location
+to preserve alphabetical order so it is easier for other developers to find
+it. Examples::
 
-    'newtool': 'NewTool',
     'ascii2nc': 'ASCII2NC',
     'ensemblestat': 'EnsembleStat',
+    'newtool': 'NewTool',
 
 The name of a tool can be formatted in different ways depending on the context.
 For example, the MET tool PCPCombine is written as Pcp-Combine in the MET
@@ -59,6 +61,9 @@ Wrapper Components
 
 Open the wrapper file for editing the new class.
 
+Naming
+^^^^^^
+
 Rename the class to match the wrapper's class from the above sections.
 Most wrappers should be a sub-class of the CommandBuilder wrapper::
 
@@ -67,19 +72,28 @@ Most wrappers should be a sub-class of the CommandBuilder wrapper::
 The text 'CommandBuilder' in parenthesis makes NewToolWrapper a subclass
 of CommandBuilder.
 
+Find and replace can be used to rename all instances of the wrapper name in
+the file. For example, to create IODA2NC wrapper from ASCII2NC, replace
+**ascii2nc** with **ioda2nc** and **ASCII2NC** with **IODA2NC**.
+To create EnsembleStat wrapper from GridStat, replace
+**grid_stat** with **ensemble_stat** and
+**GridStat** with **EnsembleStat**.
+
+Parent Class
+^^^^^^^^^^^^
+
 If the new tool falls under one of the existing tool categories,
 then you can make the tool a subclass of one of those classes.
 This should only be done if the functions in the parent class are needed
 by the new wrapper. If you are unsure, then use CommandBuilder.
-
-Refer to the :ref:`basic_components_of_wrappers` section of the Contributor's
-Guide for more information on what should be added.
 
 Init Function
 ^^^^^^^^^^^^^
 
 Modify the init function to initialize NewTool from its base class
 to set the self.app_name variable to name of the application.
+If the application is a MET tool, then set self.app_path to the full path
+of the tool under **MET_BIN_DIR**.
 See the Basic Components :ref:`bc_init_function` section for more information::
 
     def __init__(self, config, instance=None, config_overrides=None):
@@ -89,6 +103,43 @@ See the Basic Components :ref:`bc_init_function` section for more information::
         super().__init__(config,
                          instance=instance,
                          config_overrides=config_overrides)
+
+Read Configuration Variables
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The create_c_dict function is called during the initialization step of each
+wrapper. It is where values from the self.config object are read.
+The values are stored in the **c_dict** variable that is referenced
+throughout the wrapper execution via self.c_dict.
+
+The function should always start with a call to the parent class'
+implementation of the function to read/set any variables that are common to
+all wrappers::
+
+    c_dict = super().create_c_dict()
+
+The function should also always return the c_dict variable::
+
+    return c_dict
+
+File Input/Output
+"""""""""""""""""
+
+METplus configuration variables that end with _DIR and _TEMPLATE are used
+to define the criteria to search for input files.
+
+Allow Multiple Files
+""""""""""""""""""""
+
+If the application can take more than one file as input for a given category
+(i.e. FCST, OBS, ENS, etc.) then ALLOW_MULTIPLE_FILES must be set to True::
+
+    c_dict['ALLOW_MULTIPLE_FILES'] = True
+
+This is set to False by default in CommandBuilder's create_c_dict function.
+If it is set to False and a list of files are found for an input
+(using wildcards or a list of files in the METplus config template variable)
+then the wrapper will produce an error and not build the command.
 
 Run Functions
 ^^^^^^^^^^^^^
@@ -181,6 +232,9 @@ Your use case/example configuration file is located in a directory structure lik
     METplus/docs/use_cases/met_tool_wrapper/NewTool/README.md
 
 Note the documentation file is in METplus/docs while the use case conf file is in METplus/parm
+
+Refer to the :ref:`basic_components_of_wrappers` section of the Contributor's
+Guide for more information on what should be added.
 
 Documentation
 -------------

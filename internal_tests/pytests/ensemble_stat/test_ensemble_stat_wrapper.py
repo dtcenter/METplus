@@ -540,6 +540,10 @@ def test_handle_climo_file_variables(metplus_config, config_overrides,
                      'type = [{method = GAUSSIAN;width = 1;}];}'
              )
          }),
+        ({'ENSEMBLE_STAT_OBS_QUALITY_INC': '2,3,4', },
+         {'METPLUS_OBS_QUALITY_INC': 'obs_quality_inc = ["2", "3", "4"];'}),
+        ({'ENSEMBLE_STAT_OBS_QUALITY_EXC': '5,6,7', },
+         {'METPLUS_OBS_QUALITY_EXC': 'obs_quality_exc = ["5", "6", "7"];'}),
 
     ]
 )

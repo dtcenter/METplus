@@ -274,6 +274,8 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT`
+| :term:`ENSEMBLE_STAT_OBS_QUALITY_INC`
+| :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
 | :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
 | :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`ENS_VAR<n>_NAME` (optional)
@@ -828,6 +830,28 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`ENSEMBLE_STAT_OUTPUT_PREFIX`
      - output_prefix
+
+**${METPLUS_OBS_QUALITY_INC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_QUALITY_INC`
+     - obs_quality_inc
+
+**${METPLUS_OBS_QUALITY_EXC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
+     - obs_quality_exc
 
 **${METPLUS_MET_CONFIG_OVERRIDES}**
 
@@ -3242,6 +3266,275 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
      - distance_map.beta_value(n)
 
+.. _ioda2nc_wrapper:
+
+IODA2NC
+========
+
+Description
+-----------
+
+Used to configure the MET tool ioda2nc
+
+METplus Configuration
+---------------------
+
+| :term:`IODA2NC_INPUT_DIR`
+| :term:`IODA2NC_INPUT_TEMPLATE`
+| :term:`IODA2NC_OUTPUT_DIR`
+| :term:`IODA2NC_OUTPUT_TEMPLATE`
+| :term:`LOG_IODA2NC_VERBOSITY`
+| :term:`IODA2NC_SKIP_IF_OUTPUT_EXISTS`
+| :term:`IODA2NC_CONFIG_FILE`
+| :term:`IODA2NC_FILE_WINDOW_BEG`
+| :term:`IODA2NC_FILE_WINDOW_END`
+| :term:`IODA2NC_VALID_BEG`
+| :term:`IODA2NC_VALID_END`
+| :term:`IODA2NC_NMSG`
+| :term:`IODA2NC_MESSAGE_TYPE`
+| :term:`IODA2NC_MESSAGE_TYPE_MAP`
+| :term:`IODA2NC_MESSAGE_TYPE_GROUP_MAP`
+| :term:`IODA2NC_STATION_ID`
+| :term:`IODA2NC_OBS_WINDOW_BEG`
+| :term:`IODA2NC_OBS_WINDOW_END`
+| :term:`IODA2NC_MASK_GRID`
+| :term:`IODA2NC_MASK_POLY`
+| :term:`IODA2NC_ELEVATION_RANGE_BEG`
+| :term:`IODA2NC_ELEVATION_RANGE_END`
+| :term:`IODA2NC_LEVEL_RANGE_BEG`
+| :term:`IODA2NC_LEVEL_RANGE_END`
+| :term:`IODA2NC_OBS_VAR`
+| :term:`IODA2NC_OBS_NAME_MAP`
+| :term:`IODA2NC_METADATA_MAP`
+| :term:`IODA2NC_MISSING_THRESH`
+| :term:`IODA2NC_QUALITY_MARK_THRESH`
+| :term:`IODA2NC_TIME_SUMMARY_FLAG`
+| :term:`IODA2NC_TIME_SUMMARY_RAW_DATA`
+| :term:`IODA2NC_TIME_SUMMARY_BEG`
+| :term:`IODA2NC_TIME_SUMMARY_END`
+| :term:`IODA2NC_TIME_SUMMARY_STEP`
+| :term:`IODA2NC_TIME_SUMMARY_WIDTH`
+| :term:`IODA2NC_TIME_SUMMARY_GRIB_CODE`
+| :term:`IODA2NC_TIME_SUMMARY_OBS_VAR`
+| :term:`IODA2NC_TIME_SUMMARY_TYPE`
+| :term:`IODA2NC_TIME_SUMMARY_VLD_FREQ`
+| :term:`IODA2NC_TIME_SUMMARY_VLD_THRESH`
+| :term:`IODA2NC_CUSTOM_LOOP_LIST`
+| :term:`IODA2NC_MET_CONFIG_OVERRIDES`
+
+.. _ioda2nc-met-conf:
+
+MET Configuration
+-----------------
+
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
+
+`MET_INSTALL_DIR/share/met/config/IODA2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/IODA2NCConfig_default>`_
+
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/IODA2NCConfig_wrapped
+
+**${METPLUS_MESSAGE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MESSAGE_TYPE`
+     - message_type
+
+**${METPLUS_MESSAGE_TYPE_MAP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MESSAGE_TYPE_MAP`
+     - message_type_map
+
+**${METPLUS_MESSAGE_TYPE_GROUP_MAP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MESSAGE_TYPE_GROUP_MAP`
+     - message_type_group_map
+
+**${METPLUS_STATION_ID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_STATION_ID`
+     - station_id
+
+**${METPLUS_OBS_WINDOW_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_OBS_WINDOW_BEG`
+     - obs_window.beg
+   * - :term:`IODA2NC_OBS_WINDOW_END`
+     - obs_window.end
+
+**${METPLUS_MASK_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MASK_GRID`
+     - mask.grid
+   * - :term:`IODA2NC_MASK_POLY`
+     - mask.poly
+
+**${METPLUS_ELEVATION_RANGE_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_ELEVATION_RANGE_BEG`
+     - elevation_range.beg
+   * - :term:`IODA2NC_ELEVATION_RANGE_END`
+     - elevation_range.end
+
+**${METPLUS_LEVEL_RANGE_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_LEVEL_RANGE_BEG`
+     - level_range.beg
+   * - :term:`IODA2NC_LEVEL_RANGE_END`
+     - level_range.end
+
+**${METPLUS_OBS_VAR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_OBS_VAR`
+     - obs_var
+
+**${METPLUS_OBS_NAME_MAP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_OBS_NAME_MAP`
+     - obs_name_map
+
+**${METPLUS_METADATA_MAP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_METADATA_MAP`
+     - metadata_map
+
+**${METPLUS_MISSING_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MISSING_THRESH`
+     - missing_thresh
+
+**${METPLUS_QUALITY_MARK_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_QUALITY_MARK_THRESH`
+     - quality_mark_thresh
+
+**${METPLUS_TIME_SUMMARY_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_TIME_SUMMARY_FLAG`
+     - time_summary.flag
+   * - :term:`IODA2NC_TIME_SUMMARY_RAW_DATA`
+     - time_summary.raw_data
+   * - :term:`IODA2NC_TIME_SUMMARY_BEG`
+     - time_summary.beg
+   * - :term:`IODA2NC_TIME_SUMMARY_END`
+     - time_summary.end
+   * - :term:`IODA2NC_TIME_SUMMARY_STEP`
+     - time_summary.step
+   * - :term:`IODA2NC_TIME_SUMMARY_WIDTH`
+     - time_summary.width
+   * - :term:`IODA2NC_TIME_SUMMARY_GRIB_CODE`
+     - time_summary.grib_code
+   * - :term:`IODA2NC_TIME_SUMMARY_OBS_VAR`
+     - time_summary.obs_var
+   * - :term:`IODA2NC_TIME_SUMMARY_TYPE`
+     - time_summary.type
+   * - :term:`IODA2NC_TIME_SUMMARY_VLD_FREQ`
+     - time_summary.vld_freq
+   * - :term:`IODA2NC_TIME_SUMMARY_VLD_THRESH`
+     - time_summary.vld_thresh
+
+**${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MET_CONFIG_OVERRIDES`
+     - n/a
+
 .. _make_plots_wrapper:
 
 MakePlots
@@ -4854,7 +5147,8 @@ Configuration
 | :term:`POINT_STAT_CLIMO_CDF_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
-| :term:`POINT_STAT_OBS_QUALITY`
+| :term:`POINT_STAT_OBS_QUALITY_INC`
+| :term:`POINT_STAT_OBS_QUALITY_EXC`
 | :term:`POINT_STAT_OUTPUT_FLAG_FHO`
 | :term:`POINT_STAT_OUTPUT_FLAG_CTC`
 | :term:`POINT_STAT_OUTPUT_FLAG_CTS`
@@ -5196,7 +5490,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
      - climo_cdf.write_bins
 
-**${METPLUS_OBS_QUALITY}**
+**${METPLUS_OBS_QUALITY_INC}**
 
 .. list-table::
    :widths: 5 5
@@ -5204,8 +5498,19 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`POINT_STAT_OBS_QUALITY`
-     - obs_quality
+   * - :term:`POINT_STAT_OBS_QUALITY_INC`
+     - obs_quality_inc
+
+**${METPLUS_OBS_QUALITY_EXC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_QUALITY_EXC`
+     - obs_quality_exc
 
 **${METPLUS_OUTPUT_FLAG_DICT}**
 
