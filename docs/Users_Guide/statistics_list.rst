@@ -153,7 +153,7 @@ METplus Database of Statistics
       the boundaries of two objects
     - BOUNDARY  :raw-html:`<br />`
       _DIST
-    - Diagnostic Attr 
+    - Diagnostic
     - MODE
     - MODE obj
   * - Brier Score
@@ -451,7 +451,7 @@ METplus Database of Statistics
   * - The unperturbed :raw-html:`<br />`
       ensemble mean value
     - ENS_MEAN
-    - Diagnostic Fld 
+    - Ensemble 
     - Ensemble-Stat
     - ORANK 
   * - The PERTURBED ensemble :raw-html:`<br />`
@@ -459,7 +459,7 @@ METplus Database of Statistics
       Observation Error).
     - ENS_MEAN :raw-html:`<br />`
       _OERR
-    - Diagnostic Fld 
+    - Ensemble 
     - Ensemble-Stat
     - ORANK 
   * - Standard deviation of :raw-html:`<br />`
@@ -540,190 +540,190 @@ METplus Database of Statistics
   * - Number of forecast :raw-html:`<br />`
       clusters
     - fcst_clus
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Number of points used to :raw-html:`<br />`
       define the hull of all :raw-html:`<br />`
       of the cluster forecast :raw-html:`<br />`
       objects
     - fcst_clus :raw-html:`<br />`
       _hull
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Point Latitude
     - fcst_clus :raw-html:`<br />`
       _hull_lat
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Point Longitude
     - fcst_clus :raw-html:`<br />`
       _hull _lon
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Number of Forecast :raw-html:`<br />`
       Cluster Convex Hull Points
     - fcst_clus :raw-html:`<br />`
       _hull_npts
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Starting Index
     - fcst_clus :raw-html:`<br />`
       _hull_start
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Point X-Coordinate
     - fcst_clus :raw-html:`<br />`
       _hull_x
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Point Y-Coordinate
     - fcst_clus :raw-html:`<br />`
       _hull_y
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Object Raw :raw-html:`<br />`
       Values
     - fcst_obj :raw-html:`<br />`
       _raw
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Number of simple  :raw-html:`<br />`
       forecast objects
     - fcst_simp
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Number of points used :raw-html:`<br />`
       to define the boundaries :raw-html:`<br />`
       of all of the simple :raw-html:`<br />`
       forecast objects
     - fcst_simp :raw-html:`<br />`
       _bdy
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Simple :raw-html:`<br />`
       Boundary Latitude
     - fcst_simp :raw-html:`<br />`
       _bdy_lat
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE netCDF
   * - Forecast Simple :raw-html:`<br />`
       Boundary Longitude
     - fcst_simp :raw-html:`<br />`
       _bdy_lon
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Number of Forecast :raw-html:`<br />`
       Simple Boundary Points
     - fcst_simp :raw-html:`<br />`
       _bdy_npts
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Simple :raw-html:`<br />`
       Boundary Starting Index
     - fcst_simp :raw-html:`<br />`
       _bdy_start
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Simple :raw-html:`<br />`
       Boundary X-Coordinate
     - fcst_simp :raw-html:`<br />`
       _bdy_x
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Simple :raw-html:`<br />`
       Boundary Y-Coordinate
     - fcst_simp :raw-html:`<br />`
       _bdy_y
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Number of points used to :raw-html:`<br />`
       define the hull of all :raw-html:`<br />`
       of the simple forecast :raw-html:`<br />`
       objects
     - fcst_simp :raw-html:`<br />`
       _hull
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Point Latitude
     - fcst_simp :raw-html:`<br />`
       _hull_lat
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Point Longitude
     - fcst_simp :raw-html:`<br />`
       _hull_lon
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF variables
+    - MODE obj
   * - Number of Forecast :raw-html:`<br />`
       Simple Convex Hull Points
     - fcst_simp :raw-html:`<br />`
       _hull_npts
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Starting Index
     - fcst_simp :raw-html:`<br />`
       _hull_start
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Point X-Coordinate
     - fcst_simp :raw-html:`<br />`
       _hull_x
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Simple Convex :raw-html:`<br />`
       Hull Point Y-Coordinate
     - fcst_simp :raw-html:`<br />`
       _hull_y
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Number of thresholds  :raw-html:`<br />`
       applied to the forecast
     - fcst :raw-html:`<br />`
       _thresh :raw-html:`<br />`
       _length
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Number of thresholds :raw-html:`<br />`
       applied to the forecast
     - fcst_thresh :raw-html:`<br />`
       _length
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Direction of the average :raw-html:`<br />`
       forecast wind vector
     - FDIR
@@ -805,9 +805,9 @@ METplus Database of Statistics
       simple forecast and :raw-html:`<br />`
       observation objects 
     - FNNN_ONNN
-    - Diagnostic Attr 
+    - Categorical 
     - MODE
-    - MODE ascii object
+    - MODE obj
   * - Average product of :raw-html:`<br />`
       forecast-climo and :raw-html:`<br />`
       observation-climo :raw-html:`<br />`
@@ -831,32 +831,32 @@ METplus Database of Statistics
       from observation to :raw-html:`<br />`
       forecast
     - FOM_FO
-    - Diagnostic Attr 
+    - Diagnostic 
     - Grid-Stat
     - DMAP 
   * - Maximum of FOM_FO :raw-html:`<br />`
       and FOM_OF
     - FOM_MAX
-    - Diagnostic Attr 
+    - Diagnostic 
     - Grid-Stat
     - DMAP 
   * - Mean of FOM_FO :raw-html:`<br />`
       and FOM_OF :raw-html:`<br />`
     - FOM_MEAN
-    - Diagnostic Attr 
+    - Diagnostic 
     - Grid-Stat
     - DMAP 
   * - Minimum of FOM_FO :raw-html:`<br />`
       and FOM_OF
     - FOM_MIN
-    - Diagnostic Attr 
+    - Diagnostic 
     - Grid-Stat
     - DMAP 
   * - Pratt’s Figure of Merit :raw-html:`<br />`
       from forecast to :raw-html:`<br />`
       observation
     - FOM_OF
-    - Diagnostic Attr 
+    - Diagnostic 
     - Grid-Stat
     - DMAP 
   * - Number of tied forecast :raw-html:`<br />`
@@ -918,14 +918,14 @@ METplus Database of Statistics
       forecast and Best track :raw-html:`<br />`
       genesis events (km)
     - GEN_DIST
-    - Diagnostic Attr 
+    - Diagnostic 
     - TC-Gen
     - GENMPR 
   * - Forecast minus Best track :raw-html:`<br />`
       genesis time in HHMMSS :raw-html:`<br />`
       format
     - GEN_TDIFF
-    - Diagnostic Attr 
+    - Diagnostic 
     - TC-Gen
     - GENMPR 
   * - Gerrity Score and :raw-html:`<br />`
