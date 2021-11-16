@@ -227,7 +227,7 @@ Diagnostics Database
       _hull
     - Diagnostic 
     - MODE
-    - MODE obj
+    - MODE obj      
   * - Forecast Cluster Convex :raw-html:`<br />`
       Hull Point Latitude
     - fcst_clus :raw-html:`<br />`
@@ -400,6 +400,24 @@ Diagnostics Database
     - Diagnostic 
     - MODE
     - MODE obj
+  * - Forecast energy squared :raw-html:`<br />`
+      for this scale
+    - FENERGY
+    -  
+    - Wavelet-Stat
+    - ISC
+  * - Mean of absolute value :raw-html:`<br />`
+      of forecast gradients
+    - FGBAR
+    -  
+    - Grid-Stat
+    - GRAD 
+  * - Ratio of forecast and :raw-html:`<br />`
+      observed gradients
+    - FGOG_RATIO
+    -  
+    - Grid-Stat
+    - GRAD       
   * - Pratt’s Figure of Merit :raw-html:`<br />`
       from observation to :raw-html:`<br />`
       forecast
@@ -511,6 +529,19 @@ Diagnostics Database
     - Diagnostic 
     - MTD
     - MTD 3D obj
+ * - The intensity scale :raw-html:`<br />`
+      skill score
+    - ISC
+    - 
+    - Wavelet-Stat
+    - ISC 
+  * - The scale at which all  :raw-html:`<br />`
+      information following :raw-html:`<br />`
+      applies
+    - ISCALE
+    -  
+    - Wavelet-Stat
+    - ISC      
   * - Dimension of the latitude 
     - LAT
     - Diagnostic 
@@ -527,6 +558,14 @@ Diagnostics Database
     - Diagnostic 
     - MODE
     - MODE obj
+  * - Mean of maximum of :raw-html:`<br />`
+      absolute values of :raw-html:`<br />`
+      forecast and observed :raw-html:`<br />`
+      gradients
+    - MGBAR
+    -  
+    - Grid-Stat
+    - GRAD
   * - Number of cluster objects
     - N_CLUS
     - Diagnostic 
@@ -652,6 +691,18 @@ Diagnostics Database
     - Diagnostic 
     - MODE
     - MODE obj
+  * - Observed energy squared :raw-html:`<br />`
+      for this scale
+    - OENERGY
+    -  
+    - Wavelet-Stat
+    - ISC 
+  * - Mean of absolute value :raw-html:`<br />`
+      of observed gradients
+    - OGBAR
+    -  
+    - Grid-Stat
+    - GRAD       
   * - Ratio of the nth percentile :raw-html:`<br />`
       (INTENSITY_NN column) of :raw-html:`<br />`
       intensity of the two :raw-html:`<br />`

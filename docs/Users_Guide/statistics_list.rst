@@ -352,12 +352,6 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
-  * - Forecast energy squared :raw-html:`<br />`
-      for this scale
-    - FENERGY
-    -  
-    - Wavelet-Stat
-    - ISC 
   * - Mean Forecast Anomaly Squared
     - FFABAR
     - Continuous 
@@ -373,18 +367,6 @@ METplus Database of Statistics
       Grid-Stat
     - SSVAR :raw-html:`<br />`
       SL1L2  
-  * - Mean of absolute value :raw-html:`<br />`
-      of forecast gradients
-    - FGBAR
-    -  
-    - Grid-Stat
-    - GRAD 
-  * - Ratio of forecast and :raw-html:`<br />`
-      observed gradients
-    - FGOG_RATIO
-    -  
-    - Grid-Stat
-    - GRAD 
   * - Count of events in :raw-html:`<br />`
       forecast category i and :raw-html:`<br />`
       observation category j
@@ -565,19 +547,6 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - CNT 
-  * - The intensity scale :raw-html:`<br />`
-      skill score
-    - ISC
-    - 
-    - Wavelet-Stat
-    - ISC 
-  * - The scale at which all  :raw-html:`<br />`
-      information following :raw-html:`<br />`
-      applies
-    - ISCALE
-    -  
-    - Wavelet-Stat
-    - ISC 
   * - Kendall’s tau statistic
     - KT_CORR
     - Continuous 
@@ -677,14 +646,6 @@ METplus Database of Statistics
     - Distance 
     - Grid-Stat
     - DMAP 
-  * - Mean of maximum of :raw-html:`<br />`
-      absolute values of :raw-html:`<br />`
-      forecast and observed :raw-html:`<br />`
-      gradients
-    - MGBAR
-    -  
-    - Grid-Stat
-    - GRAD
   * - Mean squared error
     - MSE
     - Continuous 
@@ -775,18 +736,6 @@ METplus Database of Statistics
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
     - VCNT 
-  * - Observed energy squared :raw-html:`<br />`
-      for this scale
-    - OENERGY
-    -  
-    - Wavelet-Stat
-    - ISC 
-  * - Mean of absolute value :raw-html:`<br />`
-      of observed gradients
-    - OGBAR
-    -  
-    - Grid-Stat
-    - GRAD 
   * - Number of observation :raw-html:`<br />`
       when forecast is between :raw-html:`<br />`
       the ith and i+1th :raw-html:`<br />`
