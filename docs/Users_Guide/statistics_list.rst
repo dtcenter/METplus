@@ -2018,7 +2018,7 @@ METplus Database of Statistics
       number of 3D “cells” :raw-html:`<br />`
       in an object
     - VOLUME
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD
     - MTD 3D obj
   * - Forecast object volume :raw-html:`<br />`
@@ -2026,19 +2026,19 @@ METplus Database of Statistics
       object volume
     - VOLUME :raw-html:`<br />`
       _RATIO
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD
     - MTD 3D obj
   * - Width of the enclosing :raw-html:`<br />`
       rectangle (in grid units)
     - WIDTH
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - X component of :raw-html:`<br />`
       object velocity
     - X_DOT
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD
     - MTD 3D obj
   * - X component position :raw-html:`<br />`
