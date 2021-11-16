@@ -9,9 +9,9 @@ Release Notes - Latest Official Release
 
 * `MET <https://met.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
 * `METviewer <https://metviewer.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
-*  METplotpy - No Official Releases
-*  METcalcpy - No Official Releases
-*  METdatadb - No Official Releases
+* `METplotpy <https://metplotpy.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
+* `METcalcpy <https://metcalcpy.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
+* `METdatadb <https://metdatadb.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
 * `METexpress <https://github.com/dtcenter/METexpress/releases>`__
 * `METplus Wrappers <https://metplus.readthedocs.io/en/latest/Users_Guide/release-notes.html>`__
 
@@ -20,10 +20,10 @@ Release Notes - Development Release
 
 * `MET <https://met.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
 * `METviewer <https://metviewer.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
-* `METplotpy <https://github.com/dtcenter/METplotpy/releases>`__
-* `METcalcpy <https://github.com/dtcenter/METcalcpy/releases>`__
-*  METdatadb - No Development Releases
-*  METexpress - No Development Releases 
+* `METplotpy <https://metplotpy.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
+* `METcalcpy <https://metcalcpy.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
+* `METdatadb <https://metdatadb.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
+* `METexpress <https://github.com/dtcenter/METexpress/releases>`__
 * `METplus Wrappers <https://metplus.readthedocs.io/en/develop/Users_Guide/release-notes.html>`__
 
 METplus Wrappers Release Notes
@@ -32,6 +32,57 @@ METplus Wrappers Release Notes
 When applicable, release notes are followed by the GitHub issue number which
 describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
+
+METplus Version 4.1.0-beta3 Release Notes (2021-10-06)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Enhancements:
+
+  * Add Grid-Stat configuration options for distance_map dictionary (`#1089 <https://github.com/dtcenter/METplus/issues/1089>`_)
+  * Fix installation instructions in User's Guide (`#1067 <https://github.com/dtcenter/METplus/issues/1067>`_)
+  * Add instructions to update old METplus configuration files that reference user-defined wrapped MET config files (`#1147 <https://github.com/dtcenter/METplus/issues/1147>`_)
+
+* New Use Cases:
+
+  * Satellite verification of sea surface temperature (GHRSST) against RTOFS output (`#1004 <https://github.com/dtcenter/METplus/issues/1004>`_)
+  * Feature Relative using MTD output for feature centroid lat/lon (`#641 <https://github.com/dtcenter/METplus/issues/641>`_)
+
+* Internal:
+
+  * Transition Community and Developer Support to Github Discussions (`#932 <https://github.com/dtcenter/METplus/issues/932>`_)
+  * Add documentation about the Release Guide and Verification Datasets Guide (`#874 <https://github.com/dtcenter/METplus/issues/874>`_)
+
+METplus Version 4.1.0-beta2 Release Notes (2021-08-31)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Enhancements:
+
+  * Add stat_analysis to the Blocking and Weather Regime processing (`#1001 <https://github.com/dtcenter/METplus/issues/1001>`_)
+  * Make output_flag.orank configurable for Point-Stat (`#1103 <https://github.com/dtcenter/METplus/issues/1103>`_)
+  * Enhance TC-Pairs wrapper to make valid_inc, valid_exc, and write_valid configurable options (`#1069 <https://github.com/dtcenter/METplus/issues/1069>`_)
+  * Add option to TCMPRPlotter to pass in directory to tc_stat instead of individual files (`#1057 <https://github.com/dtcenter/METplus/issues/1057>`_)
+  * **Add support for using filename templates for defining input level in PCPCombine** (`#1062 <https://github.com/dtcenter/METplus/issues/1062>`_)
+  * Modify wrappers that use wrapped MET config files to default to parm/met_config versions if unset (`#931 <https://github.com/dtcenter/METplus/issues/931>`_)
+  * Modify user diagnostic feature relative use case to use MetPy Python package (`#759 <https://github.com/dtcenter/METplus/issues/759>`_)
+  * Add option to pass in the input directory to TCMPRPlotter instead of finding all tcst files and passing the list (`#1084 <https://github.com/dtcenter/METplus/issues/1084>`_)
+  * Updated logic for handling _CLIMO_MEAN_FIELD variables for specifying climatology fields (`#1021 <https://github.com/dtcenter/METplus/issues/1021>`_)
+  * Add support for setting hss_ec_value in MET config files (`#951 <https://github.com/dtcenter/METplus/issues/951>`_)
+  * Update documentation to reference GitHub Discussions instead of MET Help (`#956 <https://github.com/dtcenter/METplus/issues/956>`_)
+
+* New Wrappers:
+
+* New Use Cases:
+
+  * GFDL tracker for TC genesis (`#616 <https://github.com/dtcenter/METplus/issues/616>`_)
+  * GFDL tracker for Extra-TC tracking (`#617 <https://github.com/dtcenter/METplus/issues/617>`_)
+  * RMM and OMI (driver scripts) (`#892 <https://github.com/dtcenter/METplus/issues/892>`_)
+
+* Internal:
+
+  * Make updates to the Release Guide (`#935 <https://github.com/dtcenter/METplus/issues/935>`_)
+  * Clean up GitHub wiki broken links and out-of-date information (`#237 <https://github.com/dtcenter/METplus/issues/237>`_)
+  * Add option to override MET version used for automated tests (`#936 <https://github.com/dtcenter/METplus/issues/936>`_)
+
 
 METplus Version 4.1.0-beta1 Release Notes (2021-07-21)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -56,7 +107,7 @@ METplus Version 4.1.0-beta1 Release Notes (2021-07-21)
 
 * New Use Cases:
 
-  * Marine and Coastal: GridStat_fcstRTOFS_obsOSTIA_iceCover (`#834 <https://github.com/dtcenter/METplus/issues/834>`_)
+  * Marine and Cryosphere: GridStat_fcstRTOFS_obsOSTIA_iceCover (`#834 <https://github.com/dtcenter/METplus/issues/834>`_)
   * met_tool_wrapper: GFDLTracker_TC (`#615 <https://github.com/dtcenter/METplus/issues/615>`_)
   * Seasonal to Subseasonal: UserScript_fcstGFS_obsERA_OMI
   * Seasonal to Subseasonal: UserScript_fcstGFS_obsERA_PhaseDiagram

@@ -49,12 +49,15 @@ class TCPairsWrapper(CommandBuilder):
         'METPLUS_STORM_NAME',
         'METPLUS_INIT_BEG',
         'METPLUS_INIT_END',
-        'METPLUS_INIT_INCLUDE',
-        'METPLUS_INIT_EXCLUDE',
+        'METPLUS_INIT_INC',
+        'METPLUS_INIT_EXC',
         'METPLUS_VALID_BEG',
         'METPLUS_VALID_END',
         'METPLUS_DLAND_FILE',
         'METPLUS_CONSENSUS_LIST',
+        'METPLUS_WRITE_VALID',
+        'METPLUS_VALID_INC',
+        'METPLUS_VALID_EXC',
     ]
 
     WILDCARDS = {
@@ -68,7 +71,7 @@ class TCPairsWrapper(CommandBuilder):
         'cyclone': r'[0-9]{2,4}',
     }
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'tc_pairs'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
@@ -112,15 +115,31 @@ class TCPairsWrapper(CommandBuilder):
 
         self.add_met_config(name='init_inc',
                             data_type='list',
-                            env_var_name='METPLUS_INIT_INCLUDE',
                             metplus_configs=['TC_PAIRS_INIT_INCLUDE',
+                                             'TC_PAIRS_INIT_INC',
                                              'INIT_INCLUDE'])
 
         self.add_met_config(name='init_exc',
                             data_type='list',
-                            env_var_name='METPLUS_INIT_EXCLUDE',
                             metplus_configs=['TC_PAIRS_INIT_EXCLUDE',
+                                             'TC_PAIRS_INIT_EXC',
                                              'INIT_EXCLUDE'])
+
+        self.add_met_config(name='valid_inc',
+                            data_type='list',
+                            metplus_configs=['TC_PAIRS_VALID_INCLUDE',
+                                             'TC_PAIRS_VALID_INC',
+                                             'VALID_INCLUDE'])
+
+        self.add_met_config(name='valid_exc',
+                            data_type='list',
+                            metplus_configs=['TC_PAIRS_VALID_EXCLUDE',
+                                             'TC_PAIRS_VALID_EXC',
+                                             'VALID_EXCLUDE'])
+
+        self.add_met_config(name='write_valid',
+                            data_type='list',
+                            metplus_configs=['TC_PAIRS_WRITE_VALID'])
 
         self.add_met_config(name='valid_beg',
                             data_type='string',

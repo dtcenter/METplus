@@ -33,7 +33,8 @@ class PointStatWrapper(CompareGriddedWrapper):
         'METPLUS_MASK_SID',
         'METPLUS_OUTPUT_PREFIX',
         'METPLUS_CLIMO_CDF_DICT',
-        'METPLUS_OBS_QUALITY',
+        'METPLUS_OBS_QUALITY_INC',
+        'METPLUS_OBS_QUALITY_EXC',
         'METPLUS_OUTPUT_FLAG_DICT',
         'METPLUS_INTERP_DICT',
         'METPLUS_CLIMO_MEAN_DICT',
@@ -66,9 +67,10 @@ class PointStatWrapper(CompareGriddedWrapper):
                     'rps',
                     'eclv',
                     'mpr',
+                    'orank',
                     ]
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'point_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
@@ -193,9 +195,15 @@ class PointStatWrapper(CompareGriddedWrapper):
                                 False)
         )
 
-        self.add_met_config(name='obs_quality',
+        self.add_met_config(name='obs_quality_inc',
                             data_type='list',
-                            metplus_configs=['POINT_STAT_OBS_QUALITY'])
+                            metplus_configs=['POINT_STAT_OBS_QUALITY_INC',
+                                             'POINT_STAT_OBS_QUALITY_INCLUDE',
+                                             'POINT_STAT_OBS_QUALITY'])
+        self.add_met_config(name='obs_quality_exc',
+                            data_type='list',
+                            metplus_configs=['POINT_STAT_OBS_QUALITY_EXC',
+                                             'POINT_STAT_OBS_QUALITY_EXCLUDE'])
 
         self.handle_flags('output')
 

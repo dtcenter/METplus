@@ -93,6 +93,11 @@ Based on the directory listing output above, the following should be set::
 
     MET_INSTALL_DIR = /usr/local/met
 
+For information on installing MET please see the
+`Software Installation/Getting Started <https://met.readthedocs.io/en/latest/Users_Guide/installation.html>`_
+section of the MET User's Guide.
+
+
 .. _sys_conf_input_base:
 
 INPUT_BASE
@@ -521,6 +526,8 @@ given use case.
 
 More information about the variables set in the use case configuration files
 can be found in the :ref:`common_config_variables` section.
+
+.. _running-metplus:
 
 Running METplus
 ===============
@@ -1859,7 +1866,14 @@ supports METplus configuration variables that control the MET tool
 configuration file settings.
 **The METplus wrappers provide a special "wrapped" MET configuration file that
 references environment variables that are set by the wrappers based on the
-values set in the METplus configuration files.**
+values set in the METplus configuration files. YOU SHOULD NOT SET ANY OF THESE
+ENVIRONMENT VARIABLES YOURSELF! THEY WILL BE OVERWRITTEN BY METPLUS WHEN IT
+CALLS THE MET TOOLS!**
+
+If there is a setting in the MET configuration file that is not currently
+supported by METplus you'd like to control, please refer to:
+:ref:`Overriding Unsupported MET config file settings<met-config-overrides>`.
+
 The following section demonstrates a few examples using GridStat.
 
 GridStat Simple Example
@@ -1875,20 +1889,20 @@ Notice that this file is similar to the default GridStat MET config file,
 but some of the variables in the wrapped configuration file have been replaced
 with environment variables.
 
-GridStatConfig_**default**::
+GridStatConfig\_**default**::
 
     desc = "NA";
 
-GridStatConfig_**wrapped**::
+GridStatConfig\_**wrapped**::
 
     // desc =
     ${METPLUS_DESC}
 
 When GridStat is run, the tool first reads its default configuration file
-(GridStatConfig_**default**) and sets all of the default values. Then it reads
+(GridStatConfig\_**default**) and sets all of the default values. Then it reads
 the configuration file that is passed into the tool on the command line, which
 is *typically* the wrapped GridStat config file
-(parm/met_config/GridStatConfig_**wrapped**).
+(parm/met_config/GridStatConfig\_**wrapped**).
 
 If the user sets the following in their METplus config file::
 
@@ -1911,8 +1925,8 @@ the names of the METplus config variable, environment variable, and
 MET config variable are closely related, i.e.
 
 *           **desc**: MET config name
-* GRID_STAT_**DESC**: METplus config name
-*  $METPLUS_**DESC**: Environment variable name
+* GRID_STAT\_**DESC**: METplus config name
+*  $METPLUS\_**DESC**: Environment variable name
 
 However, this is not always the case. Refer to the 'MET Configuration' section
 for each wrapper in the:doc:`wrappers` chapter to see the full list of
@@ -1955,7 +1969,7 @@ config variable name.
 
 Instead of a single METplus configuration variable to control the value of this
 environment variable, there are multiple variables -- one for each item of the
-dictionary::
+dictionary:
 
 * GRID_STAT_REGRID_**TO_GRID**
 * GRID_STAT_REGRID_**METHOD**
@@ -2274,6 +2288,17 @@ time_summary.step and time_summary.width
 | METplus Config:  | | :term:`PB2NC_TIME_SUMMARY_STEP` = 3600  |
 |                  | | :term:`PB2NC_TIME_SUMMARY_WIDTH` = 3600 |
 +------------------+-------------------------------------------+
+
+pb_report_type
+^^^^^^^^^^^^^^
+
++------------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| Old (Incorrect): | pb_report_type = [ 120, 220, 221, 122, 222, 223, 224, 133, 233, 188, 288, 180, 280, 181, 182, 281, 282, 183, 284, 187, 287 ];          |
++------------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| New (Correct):   | pb_report_type    = [];                                                                                                                |
++------------------+----------------------------------------------------------------------------------------------------------------------------------------+
+| METplus Config:  | :term:`PB2NC_PB_REPORT_TYPE` = 120, 220, 221, 122, 222, 223, 224, 133, 233, 188, 288, 180, 280, 181, 182, 281, 282, 183, 284, 187, 287 |
++------------------+----------------------------------------------------------------------------------------------------------------------------------------+
 
 PointStatConfig
 ---------------

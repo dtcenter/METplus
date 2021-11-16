@@ -10,7 +10,7 @@ The branching model employed by the METplus GitHub repository is similar to
 that described in
 `A successful Git branching model <https://nvie.com/posts/a-successful-git-branching-model/>`_,
 where new or updated code is created on a 'feature' branch that is based on
-the `NCAR/METplus GitHub 'develop' branch <https://github.com/dtcenter/METplus/tree/develop>`_.
+the `dtcenter/METplus GitHub 'develop' branch <https://github.com/dtcenter/METplus/tree/develop>`_.
 
 From James McCreight (WRF-Hydro team) this is a good write-up on
 `best practices for collaboration on GitHub <docs.google.com/document/d/1DxsViogPdA0uObHgNx4YFKd4ClC-m9UFcX0rO-ZJTY0/edit?pli=1#heading=h.g4dgc8a6erna>`_
@@ -43,7 +43,7 @@ A contributor to METplus will do the following:
 
 1.  Create a GitHub Issue to track the new contribution.
 
-2.  Fork the NCAR/METplus repository.
+2.  Fork the dtcenter/METplus repository.
 
 3.  Clone the fork to local repository.
 
@@ -76,10 +76,10 @@ Create a GitHub Issue that reflects what needs to be done
   Labels, and Milestone links located on the right hand side of the page.
 
 
-Fork the NCAR/METplus repository
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Fork the dtcenter/METplus repository
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Retrieve a copy of the source code by forking the NCAR/METplus repository
+* Retrieve a copy of the source code by forking the dtcenter/METplus repository
   into the user's own GitHub repository. Click on the **Fork** button in the upper right
   hand side of the `METplus repository <https://github.com/dtcenter/METplus>`_.
 
@@ -93,7 +93,7 @@ Fork the NCAR/METplus repository
     https://github.com/<your-github-user>/METplus
 
   where *<your-github-user>* is replaced with the user's GitHub username.
-  An entire copy of the NCAR/METplus Github repository is now in the User's area.
+  An entire copy of the dtcenter/METplus Github repository is now in the User's area.
 
 
 Clone the fork to a local repository
@@ -149,7 +149,7 @@ Set upstream remote
 Generate a feature branch from the 'develop' branch for new development
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-* Create a feature branch in the NCAR/METplus GitHub repository following this naming convention
+* Create a feature branch in the dtcenter/METplus GitHub repository following this naming convention
 
 | *feature_<Github Issue number>_<brief_description>*
 |
@@ -289,7 +289,7 @@ Open a pull request using a browser
   * A web page with four grey buttons should appear:
 
     * On the left-most button (for setting the base repository), make sure you have selected
-      'base repository:NCAR/METplus'
+      'base repository:dtcenter/METplus'
 
     * For the base button, make sure you have selected 'base:develop'
 
@@ -344,7 +344,7 @@ Creating a pull request
     `GitHub Actions <https://github.com/dtcenter/METplus/actions>`_ have
     passed.  See "All checks have passed" in the figure below. If the tests
     were not successful or if there are conflicts with the base branch,
-    ask the requestor make changes.
+    ask the requestor to make changes.
 
     .. figure:: figure/checks_pass_no_conflicts.png
     

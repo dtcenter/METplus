@@ -274,6 +274,8 @@ METplus Configuration
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_NMEP`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_RANK`
 | :term:`ENSEMBLE_STAT_ENSEMBLE_FLAG_WEIGHT`
+| :term:`ENSEMBLE_STAT_OBS_QUALITY_INC`
+| :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
 | :term:`ENSEMBLE_STAT_MET_CONFIG_OVERRIDES`
 | :term:`ENSEMBLE_STAT_VERIFICATION_MASK_TEMPLATE` (optional)
 | :term:`ENS_VAR<n>_NAME` (optional)
@@ -829,6 +831,28 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`ENSEMBLE_STAT_OUTPUT_PREFIX`
      - output_prefix
 
+**${METPLUS_OBS_QUALITY_INC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_QUALITY_INC`
+     - obs_quality_inc
+
+**${METPLUS_OBS_QUALITY_EXC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENSEMBLE_STAT_OBS_QUALITY_EXC`
+     - obs_quality_exc
+
 **${METPLUS_MET_CONFIG_OVERRIDES}**
 
 .. list-table::
@@ -949,6 +973,384 @@ METplus Configuration
    | :term:`GEMPAKTOCF_CLASSPATH`
    |
 
+.. _gen_ens_prod_wrapper:
+
+GenEnsProd
+==========
+
+Description
+-----------
+
+Used to configure the MET tool gen_ens_prod to generate ensemble products.
+
+METplus Configuration
+---------------------
+
+| :term:`GEN_ENS_PROD_INPUT_DIR`
+| :term:`GEN_ENS_PROD_INPUT_TEMPLATE`
+| :term:`GEN_ENS_PROD_CTRL_INPUT_DIR`
+| :term:`GEN_ENS_PROD_CTRL_INPUT_TEMPLATE`
+| :term:`GEN_ENS_PROD_OUTPUT_DIR`
+| :term:`GEN_ENS_PROD_OUTPUT_TEMPLATE`
+| :term:`LOG_GEN_ENS_PROD_VERBOSITY`
+| :term:`MODEL`
+| :term:`GEN_ENS_PROD_DESC`
+| :term:`GEN_ENS_PROD_REGRID_TO_GRID`
+| :term:`GEN_ENS_PROD_REGRID_METHOD`
+| :term:`GEN_ENS_PROD_REGRID_WIDTH`
+| :term:`GEN_ENS_PROD_REGRID_VLD_THRESH`
+| :term:`GEN_ENS_PROD_REGRID_SHAPE`
+| :term:`GEN_ENS_PROD_CENSOR_THRESH`
+| :term:`GEN_ENS_PROD_CENSOR_VAL`
+| :term:`GEN_ENS_PROD_CAT_THRESH`
+| :term:`GEN_ENS_PROD_NC_VAR_STR`
+| :term:`GEN_ENS_PROD_ENS_THRESH`
+| :term:`GEN_ENS_PROD_ENS_VLD_THRESH`
+| :term:`GEN_ENS_PROD_NBRHD_PROB_WIDTH`
+| :term:`GEN_ENS_PROD_NBRHD_PROB_SHAPE`
+| :term:`GEN_ENS_PROD_NBRHD_PROB_VLD_THRESH`
+| :term:`GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH`
+| :term:`GEN_ENS_PROD_NMEP_SMOOTH_SHAPE`
+| :term:`GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_DX`
+| :term:`GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_RADIUS`
+| :term:`GEN_ENS_PROD_NMEP_SMOOTH_METHOD`
+| :term:`GEN_ENS_PROD_NMEP_SMOOTH_WIDTH`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_FIELD`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_METHOD`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_WIDTH`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_VLD_THRESH`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_SHAPE`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_TIME_INTERP_METHOD`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_MATCH_MONTH`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_DAY_INTERVAL`
+| :term:`GEN_ENS_PROD_CLIMO_MEAN_HOUR_INTERVAL`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_FILE_NAME`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_FIELD`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_METHOD`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_WIDTH`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_VLD_THRESH`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_SHAPE`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_TIME_INTERP_METHOD`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_MATCH_MONTH`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_DAY_INTERVAL`
+| :term:`GEN_ENS_PROD_CLIMO_STDEV_HOUR_INTERVAL`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MEAN`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_STDEV`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MINUS`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_PLUS`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MIN`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MAX`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_RANGE`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_VLD_COUNT`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_FREQUENCY`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NEP`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO`
+| :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
+| :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
+
+.. _gen-ens-prod-met-conf:
+
+MET Configuration
+-----------------
+
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
+
+`MET_INSTALL_DIR/share/met/config/GenEnsProdConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/GenEnsProdConfig_default>`_
+
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/GenEnsProdConfig_wrapped
+
+**${METPLUS_MODEL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`MODEL`
+     - model
+
+**${METPLUS_DESC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`DESC` or :term:`GEN_ENS_PROD_DESC`
+     - desc
+
+**${METPLUS_REGRID_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_REGRID_SHAPE`
+     - regrid.shape
+   * - :term:`GEN_ENS_PROD_REGRID_METHOD`
+     - regrid.method
+   * - :term:`GEN_ENS_PROD_REGRID_WIDTH`
+     - regrid.width
+   * - :term:`GEN_ENS_PROD_REGRID_VLD_THRESH`
+     - regrid.vld_thresh
+   * - :term:`GEN_ENS_PROD_REGRID_TO_GRID`
+     - regrid.to_grid
+
+**${METPLUS_CENSOR_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_CENSOR_THRESH`
+     - censor_thresh
+
+**${METPLUS_CENSOR_VAL}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_CENSOR_VAL`
+     - censor_val
+
+**${METPLUS_CAT_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_CAT_THRESH`
+     - cat_thresh
+
+**${METPLUS_NC_VAR_STR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_NC_VAR_STR`
+     - nc_var_str
+
+**${METPLUS_ENS_FILE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_ENS_FILE_TYPE`
+     - ens.file_type
+
+**${METPLUS_ENS_ENS_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_ENS_THRESH`
+     - ens.ens_thresh
+
+**${METPLUS_ENS_VLD_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_ENS_VLD_THRESH`
+     - ens.vld_thresh
+
+**${METPLUS_ENS_FIELD}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`ENS_VAR<n>_NAME`
+     - ens.field.name
+   * - :term:`ENS_VAR<n>_LEVELS`
+     - ens.field.level
+   * - :term:`ENS_VAR<n>_THRESH`
+     - ens.field.cat_thresh
+   * - :term:`ENS_VAR<n>_OPTIONS`
+     - n/a
+
+.. note:: For more information on controlling the forecast field attributes in METplus, please see the :ref:`Field_Info` section of the User's Guide.
+
+**${METPLUS_NBRHD_PROB_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_NBRHD_PROB_WIDTH`
+     - nbrhd_prob.width
+   * - :term:`GEN_ENS_PROD_NBRHD_PROB_SHAPE`
+     - nbrhd_prob.shape
+   * - :term:`GEN_ENS_PROD_NBRHD_PROB_VLD_THRESH`
+     - nbrhd_prob.vld_thresh
+
+**${METPLUS_NMEP_SMOOTH_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_NMEP_SMOOTH_VLD_THRESH`
+     - nmep_smooth.vld_thresh
+   * - :term:`GEN_ENS_PROD_NMEP_SMOOTH_SHAPE`
+     - nmep_smooth.shape
+   * - :term:`GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_DX`
+     - nmep_smooth.gaussian_dx
+   * - :term:`GEN_ENS_PROD_NMEP_SMOOTH_GAUSSIAN_RADIUS`
+     - nmep_smooth.gaussian_radius
+   * - :term:`GEN_ENS_PROD_NMEP_SMOOTH_METHOD`
+     - nmep_smooth.type.method
+   * - :term:`GEN_ENS_PROD_NMEP_SMOOTH_WIDTH`
+     - nmep_smooth.type.width
+
+**${METPLUS_CLIMO_MEAN_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_FILE_NAME`
+     - climo_mean.file_name
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_FIELD`
+     - climo_mean.field
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_METHOD`
+     - climo_mean.regrid.method
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_WIDTH`
+     - climo_mean.regrid.width
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_VLD_THRESH`
+     - climo_mean.regrid.vld_thresh
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_REGRID_SHAPE`
+     - climo_mean.regrid.shape
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_TIME_INTERP_METHOD`
+     - climo_mean.time_interp_method
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_MATCH_MONTH`
+     - climo_mean.match_month
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_DAY_INTERVAL`
+     - climo_mean.day_interval
+   * - :term:`GEN_ENS_PROD_CLIMO_MEAN_HOUR_INTERVAL`
+     - climo_mean.hour_interval
+
+**${METPLUS_CLIMO_STDEV_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_FILE_NAME`
+     - climo_stdev.file_name
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_FIELD`
+     - climo_stdev.field
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_METHOD`
+     - climo_stdev.regrid.method
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_WIDTH`
+     - climo_stdev.regrid.width
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_VLD_THRESH`
+     - climo_stdev.regrid.vld_thresh
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_REGRID_SHAPE`
+     - climo_stdev.regrid.shape
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_TIME_INTERP_METHOD`
+     - climo_stdev.time_interp_method
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_MATCH_MONTH`
+     - climo_stdev.match_month
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_DAY_INTERVAL`
+     - climo_stdev.day_interval
+   * - :term:`GEN_ENS_PROD_CLIMO_STDEV_HOUR_INTERVAL`
+     - climo_stdev.hour_interval
+
+**${METPLUS_ENSEMBLE_FLAG_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_LATLON`
+     - ensemble_flag.latlon
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MEAN`
+     - ensemble_flag.mean
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_STDEV`
+     - ensemble_flag.stdev
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MINUS`
+     - ensemble_flag.minus
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_PLUS`
+     - ensemble_flag.plus
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MIN`
+     - ensemble_flag.min
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_MAX`
+     - ensemble_flag.max
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_RANGE`
+     - ensemble_flag.range
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_VLD_COUNT`
+     - ensemble_flag.vld_count
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_FREQUENCY`
+     - ensemble_flag.frequency
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NEP`
+     - ensemble_flag.nep
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_NMEP`
+     - ensemble_flag.nmep
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO`
+     - ensemble_flag.climo
+   * - :term:`GEN_ENS_PROD_ENSEMBLE_FLAG_CLIMO_CDF`
+     - ensemble_flag.climo_cdf
+
+**${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GEN_ENS_PROD_MET_CONFIG_OVERRIDES`
+     - n/a
+
+
 .. _gen_vx_mask_wrapper:
 
 GenVxMask
@@ -986,7 +1388,13 @@ Description
 
 Used to call the GFDL Tracker applications to objectively analyze forecast data
 to provide an estimate of the vortex center position (latitude and longitude),
-and track the storm for the duration of the forecast.
+and track the storm for the duration of the forecast. The wrapper copies files
+and uses symbolic links to ensure that input files are named and located in
+the correct place so that the tracker can read them. The wrapper also generates
+index files and other inputs that are required to run the tool and substitutes
+values into template configuration files that are read by the tracker.
+Relevant output files are renamed based on user configuration.
+See :ref:`external-components-gfdl-tracker` for more information.
 
 METplus Configuration
 ---------------------
@@ -1088,6 +1496,7 @@ METplus Configuration
 | :term:`GFDL_TRACKER_USER_WANTS_TO_TRACK_ZETA850`
 | :term:`GFDL_TRACKER_VERBOSE_VERB`
 | :term:`GFDL_TRACKER_VERBOSE_VERB_G2`
+| :term:`GFDL_TRACKER_KEEP_INTERMEDIATE`
 
 .. _gfdl_tracker-nml-conf:
 
@@ -2386,6 +2795,11 @@ METplus Configuration
 | :term:`GRID_STAT_CLIMO_STDEV_DAY_INTERVAL`
 | :term:`GRID_STAT_CLIMO_STDEV_HOUR_INTERVAL`
 | :term:`GRID_STAT_HSS_EC_VALUE`
+| :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_P`
+| :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_MAX_DIST`
+| :term:`GRID_STAT_DISTANCE_MAP_FOM_ALPHA`
+| :term:`GRID_STAT_DISTANCE_MAP_ZHU_WEIGHT`
+| :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
 | :term:`GRID_STAT_MASK_GRID` (optional)
 | :term:`GRID_STAT_MASK_POLY` (optional)
 | :term:`GRID_STAT_MET_CONFIG_OVERRIDES`
@@ -2833,6 +3247,293 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`GRID_STAT_HSS_EC_VALUE`
      - hss_ec_value
 
+**${METPLUS_DISTANCE_MAP_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_P`
+     - distance_map.baddeley_p
+   * - :term:`GRID_STAT_DISTANCE_MAP_BADDELEY_MAX_DIST`
+     - distance_map.baddeley_max_dist
+   * - :term:`GRID_STAT_DISTANCE_MAP_FOM_ALPHA`
+     - distance_map.fom_alpha
+   * - :term:`GRID_STAT_DISTANCE_MAP_ZHU_WEIGHT`
+     - distance_map.zhu_weight
+   * - :term:`GRID_STAT_DISTANCE_MAP_BETA_VALUE_N`
+     - distance_map.beta_value(n)
+
+.. _ioda2nc_wrapper:
+
+IODA2NC
+========
+
+Description
+-----------
+
+Used to configure the MET tool ioda2nc
+
+METplus Configuration
+---------------------
+
+| :term:`IODA2NC_INPUT_DIR`
+| :term:`IODA2NC_INPUT_TEMPLATE`
+| :term:`IODA2NC_OUTPUT_DIR`
+| :term:`IODA2NC_OUTPUT_TEMPLATE`
+| :term:`LOG_IODA2NC_VERBOSITY`
+| :term:`IODA2NC_SKIP_IF_OUTPUT_EXISTS`
+| :term:`IODA2NC_CONFIG_FILE`
+| :term:`IODA2NC_FILE_WINDOW_BEG`
+| :term:`IODA2NC_FILE_WINDOW_END`
+| :term:`IODA2NC_VALID_BEG`
+| :term:`IODA2NC_VALID_END`
+| :term:`IODA2NC_NMSG`
+| :term:`IODA2NC_MESSAGE_TYPE`
+| :term:`IODA2NC_MESSAGE_TYPE_MAP`
+| :term:`IODA2NC_MESSAGE_TYPE_GROUP_MAP`
+| :term:`IODA2NC_STATION_ID`
+| :term:`IODA2NC_OBS_WINDOW_BEG`
+| :term:`IODA2NC_OBS_WINDOW_END`
+| :term:`IODA2NC_MASK_GRID`
+| :term:`IODA2NC_MASK_POLY`
+| :term:`IODA2NC_ELEVATION_RANGE_BEG`
+| :term:`IODA2NC_ELEVATION_RANGE_END`
+| :term:`IODA2NC_LEVEL_RANGE_BEG`
+| :term:`IODA2NC_LEVEL_RANGE_END`
+| :term:`IODA2NC_OBS_VAR`
+| :term:`IODA2NC_OBS_NAME_MAP`
+| :term:`IODA2NC_METADATA_MAP`
+| :term:`IODA2NC_MISSING_THRESH`
+| :term:`IODA2NC_QUALITY_MARK_THRESH`
+| :term:`IODA2NC_TIME_SUMMARY_FLAG`
+| :term:`IODA2NC_TIME_SUMMARY_RAW_DATA`
+| :term:`IODA2NC_TIME_SUMMARY_BEG`
+| :term:`IODA2NC_TIME_SUMMARY_END`
+| :term:`IODA2NC_TIME_SUMMARY_STEP`
+| :term:`IODA2NC_TIME_SUMMARY_WIDTH`
+| :term:`IODA2NC_TIME_SUMMARY_GRIB_CODE`
+| :term:`IODA2NC_TIME_SUMMARY_OBS_VAR`
+| :term:`IODA2NC_TIME_SUMMARY_TYPE`
+| :term:`IODA2NC_TIME_SUMMARY_VLD_FREQ`
+| :term:`IODA2NC_TIME_SUMMARY_VLD_THRESH`
+| :term:`IODA2NC_CUSTOM_LOOP_LIST`
+| :term:`IODA2NC_MET_CONFIG_OVERRIDES`
+
+.. _ioda2nc-met-conf:
+
+MET Configuration
+-----------------
+
+Below is the wrapped MET configuration file used for this wrapper.
+Environment variables are used to control entries in this configuration file.
+The default value for each environment variable is obtained from
+(except where noted below):
+
+`MET_INSTALL_DIR/share/met/config/IODA2NCConfig_default <https://github.com/dtcenter/MET/blob/HEAD/met/data/config/IODA2NCConfig_default>`_
+
+Below the file contents are descriptions of each environment variable
+referenced in this file and the corresponding METplus configuration item used
+to set the value of the environment variable. For detailed examples showing
+how METplus sets the values of these environment variables,
+see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
+
+.. literalinclude:: ../../parm/met_config/IODA2NCConfig_wrapped
+
+**${METPLUS_MESSAGE_TYPE}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MESSAGE_TYPE`
+     - message_type
+
+**${METPLUS_MESSAGE_TYPE_MAP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MESSAGE_TYPE_MAP`
+     - message_type_map
+
+**${METPLUS_MESSAGE_TYPE_GROUP_MAP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MESSAGE_TYPE_GROUP_MAP`
+     - message_type_group_map
+
+**${METPLUS_STATION_ID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_STATION_ID`
+     - station_id
+
+**${METPLUS_OBS_WINDOW_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_OBS_WINDOW_BEG`
+     - obs_window.beg
+   * - :term:`IODA2NC_OBS_WINDOW_END`
+     - obs_window.end
+
+**${METPLUS_MASK_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MASK_GRID`
+     - mask.grid
+   * - :term:`IODA2NC_MASK_POLY`
+     - mask.poly
+
+**${METPLUS_ELEVATION_RANGE_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_ELEVATION_RANGE_BEG`
+     - elevation_range.beg
+   * - :term:`IODA2NC_ELEVATION_RANGE_END`
+     - elevation_range.end
+
+**${METPLUS_LEVEL_RANGE_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_LEVEL_RANGE_BEG`
+     - level_range.beg
+   * - :term:`IODA2NC_LEVEL_RANGE_END`
+     - level_range.end
+
+**${METPLUS_OBS_VAR}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_OBS_VAR`
+     - obs_var
+
+**${METPLUS_OBS_NAME_MAP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_OBS_NAME_MAP`
+     - obs_name_map
+
+**${METPLUS_METADATA_MAP}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_METADATA_MAP`
+     - metadata_map
+
+**${METPLUS_MISSING_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MISSING_THRESH`
+     - missing_thresh
+
+**${METPLUS_QUALITY_MARK_THRESH}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_QUALITY_MARK_THRESH`
+     - quality_mark_thresh
+
+**${METPLUS_TIME_SUMMARY_DICT}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_TIME_SUMMARY_FLAG`
+     - time_summary.flag
+   * - :term:`IODA2NC_TIME_SUMMARY_RAW_DATA`
+     - time_summary.raw_data
+   * - :term:`IODA2NC_TIME_SUMMARY_BEG`
+     - time_summary.beg
+   * - :term:`IODA2NC_TIME_SUMMARY_END`
+     - time_summary.end
+   * - :term:`IODA2NC_TIME_SUMMARY_STEP`
+     - time_summary.step
+   * - :term:`IODA2NC_TIME_SUMMARY_WIDTH`
+     - time_summary.width
+   * - :term:`IODA2NC_TIME_SUMMARY_GRIB_CODE`
+     - time_summary.grib_code
+   * - :term:`IODA2NC_TIME_SUMMARY_OBS_VAR`
+     - time_summary.obs_var
+   * - :term:`IODA2NC_TIME_SUMMARY_TYPE`
+     - time_summary.type
+   * - :term:`IODA2NC_TIME_SUMMARY_VLD_FREQ`
+     - time_summary.vld_freq
+   * - :term:`IODA2NC_TIME_SUMMARY_VLD_THRESH`
+     - time_summary.vld_thresh
+
+**${METPLUS_MET_CONFIG_OVERRIDES}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`IODA2NC_MET_CONFIG_OVERRIDES`
+     - n/a
 
 .. _make_plots_wrapper:
 
@@ -4446,7 +5147,8 @@ Configuration
 | :term:`POINT_STAT_CLIMO_CDF_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_CENTER_BINS`
 | :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
-| :term:`POINT_STAT_OBS_QUALITY`
+| :term:`POINT_STAT_OBS_QUALITY_INC`
+| :term:`POINT_STAT_OBS_QUALITY_EXC`
 | :term:`POINT_STAT_OUTPUT_FLAG_FHO`
 | :term:`POINT_STAT_OUTPUT_FLAG_CTC`
 | :term:`POINT_STAT_OUTPUT_FLAG_CTS`
@@ -4463,6 +5165,7 @@ Configuration
 | :term:`POINT_STAT_OUTPUT_FLAG_PJC`
 | :term:`POINT_STAT_OUTPUT_FLAG_PRC`
 | :term:`POINT_STAT_OUTPUT_FLAG_ECNT`
+| :term:`POINT_STAT_OUTPUT_FLAG_ORANK`
 | :term:`POINT_STAT_OUTPUT_FLAG_RPS`
 | :term:`POINT_STAT_OUTPUT_FLAG_ECLV`
 | :term:`POINT_STAT_OUTPUT_FLAG_MPR`
@@ -4787,7 +5490,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`POINT_STAT_CLIMO_CDF_WRITE_BINS`
      - climo_cdf.write_bins
 
-**${METPLUS_OBS_QUALITY}**
+**${METPLUS_OBS_QUALITY_INC}**
 
 .. list-table::
    :widths: 5 5
@@ -4795,8 +5498,19 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
 
    * - METplus Config(s)
      - MET Config File
-   * - :term:`POINT_STAT_OBS_QUALITY`
-     - obs_quality
+   * - :term:`POINT_STAT_OBS_QUALITY_INC`
+     - obs_quality_inc
+
+**${METPLUS_OBS_QUALITY_EXC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`POINT_STAT_OBS_QUALITY_EXC`
+     - obs_quality_exc
 
 **${METPLUS_OUTPUT_FLAG_DICT}**
 
@@ -4844,6 +5558,8 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - output_flag.eclv
    * - :term:`POINT_STAT_OUTPUT_FLAG_MPR`
      - output_flag.mpr
+   * - :term:`POINT_STAT_OUTPUT_FLAG_ORANK`
+     - output_flag.orank
 
 **${METPLUS_INTERP_DICT}**
 
@@ -6588,6 +7304,9 @@ METplus Configuration
 | :term:`TC_PAIRS_CONFIG_FILE`
 | :term:`TC_PAIRS_INIT_INCLUDE`
 | :term:`TC_PAIRS_INIT_EXCLUDE`
+| :term:`TC_PAIRS_VALID_INCLUDE`
+| :term:`TC_PAIRS_VALID_EXCLUDE`
+| :term:`TC_PAIRS_WRITE_VALID`
 | :term:`TC_PAIRS_READ_ALL_FILES`
 | :term:`TC_PAIRS_MODEL`
 | :term:`TC_PAIRS_STORM_ID`
@@ -6743,7 +7462,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`TC_PAIRS_INIT_END`
      - init_end
 
-**${METPLUS_INIT_INCLUDE}**
+**${METPLUS_INIT_INC}**
 
 .. list-table::
    :widths: 5 5
@@ -6754,7 +7473,7 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
    * - :term:`TC_PAIRS_INIT_INCLUDE`
      - init_inc
 
-**${METPLUS_INIT_EXCLUDE}**
+**${METPLUS_INIT_EXC}**
 
 .. list-table::
    :widths: 5 5
@@ -6764,6 +7483,39 @@ see :ref:`How METplus controls MET config file settings<metplus-control-met>`.
      - MET Config File
    * - :term:`TC_PAIRS_INIT_EXCLUDE`
      - init_exc
+
+**${METPLUS_VALID_INC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_VALID_INCLUDE`
+     - valid_inc
+
+**${METPLUS_VALID_EXC}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_VALID_EXCLUDE`
+     - valid_exc
+
+**${METPLUS_WRITE_VALID}**
+
+.. list-table::
+   :widths: 5 5
+   :header-rows: 0
+
+   * - METplus Config(s)
+     - MET Config File
+   * - :term:`TC_PAIRS_WRITE_VALID`
+     - write_valid
 
 **${METPLUS_VALID_BEG}**
 

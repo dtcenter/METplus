@@ -313,10 +313,10 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
          {'METPLUS_DLAND_FILE': 'dland_file = "my_dland.nc";'}),
         # 8: init_exc
         ({'TC_PAIRS_INIT_EXCLUDE': '20141031_14'},
-         {'METPLUS_INIT_EXCLUDE': 'init_exc = ["20141031_14"];'}),
+         {'METPLUS_INIT_EXC': 'init_exc = ["20141031_14"];'}),
         # 9: init_inc
         ({'TC_PAIRS_INIT_INCLUDE': '20141031_14'},
-         {'METPLUS_INIT_INCLUDE': 'init_inc = ["20141031_14"];'}),
+         {'METPLUS_INIT_INC': 'init_inc = ["20141031_14"];'}),
         # 10: storm name
         ({'TC_PAIRS_STORM_NAME': 'KATRINA, OTHER'},
          {'METPLUS_STORM_NAME': 'storm_name = ["KATRINA", "OTHER"];'}),
@@ -352,6 +352,15 @@ def test_tc_pairs_storm_id_lists(metplus_config, config_overrides,
                  '{name = "name2";members = ["member2a", "member2b"];'
                  'required = [false, true];min_req = 2;}];'
          )}),
+        # 15: valid_exc
+        ({'TC_PAIRS_VALID_EXCLUDE': '20141031_14'},
+         {'METPLUS_VALID_EXC': 'valid_exc = ["20141031_14"];'}),
+        # 16: valid_inc
+        ({'TC_PAIRS_VALID_INCLUDE': '20141031_14'},
+         {'METPLUS_VALID_INC': 'valid_inc = ["20141031_14"];'}),
+        # 17: write_valid
+        ({'TC_PAIRS_WRITE_VALID': '20141031_14'},
+         {'METPLUS_WRITE_VALID': 'write_valid = ["20141031_14"];'}),
     ]
 )
 def test_tc_pairs_loop_order_processes(metplus_config, config_overrides,

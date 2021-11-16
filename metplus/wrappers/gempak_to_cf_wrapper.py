@@ -24,7 +24,7 @@ from . import CommandBuilder
 
 
 class GempakToCFWrapper(CommandBuilder):
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = "GempakToCF"
         self.app_path = config.getstr('exe', 'GEMPAKTOCF_JAR', '')
         super().__init__(config,

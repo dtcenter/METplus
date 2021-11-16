@@ -36,7 +36,7 @@ class PB2NCWrapper(CommandBuilder):
         'METPLUS_QUALITY_MARK_THRESH',
     ]
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'pb2nc'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
@@ -111,7 +111,7 @@ class PB2NCWrapper(CommandBuilder):
                                  'METPLUS_OBS_BUFR_VAR',
                                  allow_empty=True)
 
-        self.handle_time_summary_dict(c_dict)
+        self.handle_time_summary_legacy(c_dict)
 
         self.handle_file_window_variables(c_dict, dtypes=['OBS'])
 

@@ -48,6 +48,7 @@ class GridStatWrapper(CompareGriddedWrapper):
         'METPLUS_FCST_FILE_TYPE',
         'METPLUS_OBS_FILE_TYPE',
         'METPLUS_HSS_EC_VALUE',
+        'METPLUS_DISTANCE_MAP_DICT',
     ]
 
     # handle deprecated env vars used pre v4.0.0
@@ -92,7 +93,7 @@ class GridStatWrapper(CompareGriddedWrapper):
                       'apply_mask',
                     ]
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'grid_stat'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)
@@ -231,6 +232,13 @@ class GridStatWrapper(CompareGriddedWrapper):
                             data_type='float',
                             metplus_configs=['GRID_STAT_HSS_EC_VALUE'])
 
+        self.handle_met_config_dict('distance_map', {
+            'baddeley_p': 'int',
+            'baddeley_max_dist': 'float',
+            'fom_alpha': 'float',
+            'zhu_weight': 'float',
+            'beta_value(n)': ('string', 'remove_quotes'),
+        })
 
         return c_dict
 

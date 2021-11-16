@@ -56,7 +56,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
         'save': 'bool',
     }
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'tcmpr_plotter'
 
         super().__init__(config,
@@ -283,7 +283,7 @@ class TCMPRPlotterWrapper(CommandBuilder):
 
         input_files = util.get_files(input_data, ".*.tcst")
         self.logger.debug(f"Number of files: {len(input_files)}")
-        return sorted(input_files)
+        return input_files
 
     def format_arg_string(self):
         arg_list = []

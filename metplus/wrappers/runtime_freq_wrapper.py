@@ -33,7 +33,7 @@ class RuntimeFreqWrapper(CommandBuilder):
                     'RUN_ONCE_FOR_EACH'
                     ]
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         super().__init__(config,
                          instance=instance,
                          config_overrides=config_overrides)
@@ -46,20 +46,16 @@ class RuntimeFreqWrapper(CommandBuilder):
             app_name_upper = self.app_name.upper()
 
         c_dict['VERBOSITY'] = (
-            self.config.getstr('config',
+            self.config.getint('config',
                                f'LOG_{app_name_upper}_VERBOSITY',
                                c_dict['VERBOSITY'])
         )
 
         c_dict['RUNTIME_FREQ'] = (
-            self.config.getstr('config',
-                               f'{app_name_upper}_RUNTIME_FREQ',
-                               '').upper()
+            self.config.getstr_nocheck('config',
+                                       f'{app_name_upper}_RUNTIME_FREQ',
+                                       '').upper()
         )
-        if c_dict['RUNTIME_FREQ'] not in self.FREQ_OPTIONS:
-            self.log_error(f'Invalid value for {app_name_upper}_RUNTIME_FREQ: '
-                           f"({c_dict['RUNTIME_FREQ']}) Valid options include:"
-                           f" {', '.join(self.FREQ_OPTIONS)}")
 
         # get runtime information to obtain all input files
         start, end, interval = get_start_end_interval_times(self.config,
@@ -67,22 +63,6 @@ class RuntimeFreqWrapper(CommandBuilder):
         c_dict['START_TIME'] = start
         c_dict['END_TIME'] = end
         c_dict['TIME_INTERVAL'] = interval
-
-        # if looping over init/valid time,
-        # check that the time config variables can be read correctly
-        if c_dict['RUNTIME_FREQ'] == 'RUN_ONCE_PER_INIT_OR_VALID':
-
-            if not c_dict['START_TIME']:
-                self.log_error("Could not get [INIT/VALID] time information"
-                               "from configuration file")
-
-        # if not running once for each runtime and loop order is not set to
-        # 'processes' report an error
-        if c_dict['RUNTIME_FREQ'] != 'RUN_ONCE_FOR_EACH':
-            loop_order = self.config.getstr('config', 'LOOP_ORDER', '').lower()
-            if loop_order != 'processes':
-                self.log_error(f"Cannot run using {c_dict['RUNTIME_FREQ']} "
-                               "mode unless LOOP_ORDER = processes")
 
         return c_dict
 
@@ -120,6 +100,32 @@ class RuntimeFreqWrapper(CommandBuilder):
         c_dict['TEMPLATE_DICT'] = template_dict
 
     def run_all_times(self):
+        if self.c_dict['RUNTIME_FREQ'] not in self.FREQ_OPTIONS:
+            self.log_error(f"Invalid value for "
+                           f"{self.app_name.upper()}_RUNTIME_FREQ: "
+                           f"({self.c_dict['RUNTIME_FREQ']}) "
+                           f"Valid options include:"
+                           f" {', '.join(self.FREQ_OPTIONS)}")
+            return None
+
+        # if looping over init/valid time,
+        # check that the time config variables can be read correctly
+        if self.c_dict['RUNTIME_FREQ'] == 'RUN_ONCE_PER_INIT_OR_VALID':
+
+            if not self.c_dict['START_TIME']:
+                self.log_error("Could not get [INIT/VALID] time information"
+                               "from configuration file")
+                return None
+
+        # if not running once for each runtime and loop order is not set to
+        # 'processes' report an error
+        if self.c_dict['RUNTIME_FREQ'] != 'RUN_ONCE_FOR_EACH':
+            loop_order = self.config.getstr('config', 'LOOP_ORDER', '').lower()
+            if loop_order != 'processes':
+                self.log_error(f"Cannot run using {self.c_dict['RUNTIME_FREQ']} "
+                               "mode unless LOOP_ORDER = processes")
+                return None
+
         # loop over all custom strings
         for custom_string in self.c_dict['CUSTOM_LOOP_LIST']:
             if custom_string:
@@ -309,8 +315,7 @@ class RuntimeFreqWrapper(CommandBuilder):
                 # set current lead time config and environment variables
                 time_info = time_util.ti_calculate(input_dict)
 
-                if skip_time(time_info, self.c_dict.get('SKIP_TIMES', {})):
-                    self.logger.debug('Skip finding files from run time')
+                if skip_time(time_info, self.c_dict.get('SKIP_TIMES')):
                     continue
 
                 file_dict = self.get_files_from_time(time_info)

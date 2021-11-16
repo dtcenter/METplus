@@ -59,7 +59,7 @@ class SeriesAnalysisWrapper(RuntimeFreqWrapper):
         'CLIMO_STDEV_FILE',
     ]
 
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'series_analysis'
         self.app_path = os.path.join(config.getdir('MET_BIN_DIR', ''),
                                      self.app_name)

@@ -24,7 +24,7 @@ VALID_PYTHON_EMBED_TYPES = ['NUMPY', 'XARRAY', 'PANDAS']
 class PyEmbedIngestWrapper(CommandBuilder):
     """!Wrapper to utilize Python Embedding in the MET tools to read in
     data using a python script"""
-    def __init__(self, config, instance=None, config_overrides={}):
+    def __init__(self, config, instance=None, config_overrides=None):
         self.app_name = 'py_embed_ingest'
         super().__init__(config,
                          instance=instance,
