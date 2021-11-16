@@ -2282,7 +2282,11 @@ def format_var_items(field_configs, time_info=None):
     return var_items
 
 def find_var_name_indices(config, data_types, met_tool=None):
-    data_type_regex = f"{'|'.join(data_types)}|BOTH"
+    data_type_regex = f"{'|'.join(data_types)}"
+
+    # if data_types includes FCST or OBS, also search for BOTH
+    if any([item for item in ['FCST', 'OBS'] if item in data_types]):
+        data_type_regex += '|BOTH'
 
     regex_string = f"({data_type_regex})"
 

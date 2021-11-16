@@ -568,10 +568,10 @@ def test_ensemble_stat_single_field(metplus_config, config_overrides,
     config_file = wrapper.c_dict.get('CONFIG_FILE')
     out_dir = wrapper.c_dict.get('OUTPUT_DIR')
     expected_cmds = [(f"{app_path} {verbosity} "
-                      f"{file_list_dir}/20050807000000_12_ensemble.txt "
+                      f"{file_list_dir}/20050807000000_12_ensemble_stat.txt "
                       f"{config_file} -outdir {out_dir}/2005080712"),
                      (f"{app_path} {verbosity} "
-                      f"{file_list_dir}/20050807120000_12_ensemble.txt "
+                      f"{file_list_dir}/20050807120000_12_ensemble_stat.txt "
                       f"{config_file} -outdir {out_dir}/2005080800"),
                      ]
 

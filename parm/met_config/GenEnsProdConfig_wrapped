@@ -53,10 +53,10 @@ ens = {
    ${METPLUS_ENS_FILE_TYPE}
 
    //ens_thresh =
-   ${METPLUS_ENS_ENS_THRESH}
+   ${METPLUS_ENS_THRESH}
 
    //vld_thresh =
-   ${METPLUS_ENS_VLD_THRESH}
+   ${METPLUS_VLD_THRESH}
 
    //field =
    ${METPLUS_ENS_FIELD}

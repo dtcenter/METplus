@@ -1,7 +1,7 @@
 ---
 name: New use case
 about: Add a new use case
-title: ''
+title: 'New Use Case:'
 labels: 'alert: NEED ACCOUNT KEY, alert: NEED MORE DEFINITION, alert: NEED PROJECT ASSIGNMENT, type: new use case'
 assignees: ''
 
