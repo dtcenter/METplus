@@ -129,9 +129,13 @@ UserScript_fcstGFS_obsERA_OMI.py
 # Keywords
 # --------
 #
+# .. note::
+#
+#   * S2SAppUseCase
+#   * RegridDataPlaneUseCase
+#   * PCPCombineUseCase
+#
+#   Navigate to :ref:`quick-search` to discover other similar use cases.
+#
 # sphinx_gallery_thumbnail_path = '_static/s2s-OMI_GFS_phase_diagram.png'
 #
-# .. note:: `S2SAppUseCase <https://dtcenter.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_,
-#  `RegridDataPlaneUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default>`_,
-#  `PCPCombineUseCase <https://dtcenter.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>`_
- 

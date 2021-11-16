@@ -129,6 +129,12 @@ UserScript_obsERA_obsOnly_PhaseDiagram.py
 # Keywords
 # --------
 #
+#
+# .. note::
+#
+#   * S2SAppUseCase
+#
+#   Navigate to :ref:`quick-search` to discover other similar use cases.
+#
 # sphinx_gallery_thumbnail_path = '_static/s2s-PhaseDiagram.png'
 #
-# .. note:: `XXXX`, `S2SAppUseCase <https://dtcenter.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_

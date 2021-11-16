@@ -133,9 +133,15 @@ UserScript_obsERA_obsOnly_RMM.py
 # Keywords
 # --------
 #
+#
+# .. note::
+#
+#   * S2SAppUseCase
+#   * NetCDFFileUseCase
+#   * RegridDataPlaneUseCase
+#   * PCPCombineUseCase
+#
+#   Navigate to :ref:`quick-search` to discover other similar use cases.
+#
 # sphinx_gallery_thumbnail_path = '_static/s2s-RMM_time_series.png'
 #
-# .. note:: `XXXX`, `S2SAppUseCase <https://dtcenter.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_, 
-#  `NetCDFFileUseCase <https://dtcenter.github.io/METplus/search.html?q=NetCDFFileUseCase&chek_keywords=yes&area=default>`
-#  `RegridDataPlaneUseCase <https://dtcenter.github.io/METplus/search.html?q=RegridDataPlaneUseCase&check_keywords=yes&area=default>`_,
-#  `PCPCombineUseCase <https://dtcenter.github.io/METplus/search.html?q=PCPCombineUseCase&check_keywords=yes&area=default>`__
