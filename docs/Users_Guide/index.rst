@@ -85,6 +85,7 @@ is sponsored by NSF.
    quicksearch
    glossary
    references
+   statistics_list
 
 ..
    Indices and tables
