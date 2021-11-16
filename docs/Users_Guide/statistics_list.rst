@@ -210,7 +210,6 @@ METplus Database of Statistics
     - MODE
     - MODE obj
   * - Latitude of centroid :raw-html:`<br />`
-      Location of the centroid
     - CENTROID :raw-html:`<br />`
       _LAT
     - Diagnostic 
@@ -219,7 +218,6 @@ METplus Database of Statistics
     - MTD 2D & 3D obj :raw-html:`<br />`
       MODE obj
   * - Longitude of centroid :raw-html:`<br />`
-      Location of the centroid
     - CENTROID :raw-html:`<br />`
       _LON
     - Diagnostic 
@@ -233,21 +231,19 @@ METplus Database of Statistics
     - MTD
     - MTD 3D obj
   * - X coordinate of centroid :raw-html:`<br />`
-      Location of the centroid
     - CENTROID_X
     - Diagnostic 
     - MTD :raw-html:`<br />`
       MODE
     - MTD 2D & 3D obj :raw-html:`<br />`
-      MODE ascii object
+      MODE obj
   * - Y coordinate of centroid :raw-html:`<br />`
-      Location of the centroid
     - CENTROID_Y
     - Diagnostic 
     - MTD :raw-html:`<br />`
       MODE
     - MTD 2D & 3D obj :raw-html:`<br />`
-      MODE ascii object
+      MODE obj
   * - Climatological mean value
     - CLIMO_MEAN
     - Continuous 
@@ -622,7 +618,7 @@ METplus Database of Statistics
       _bdy_lat
     - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - Forecast Simple :raw-html:`<br />`
       Boundary Longitude
     - fcst_simp :raw-html:`<br />`
@@ -972,7 +968,7 @@ METplus Database of Statistics
     - MODE :raw-html:`<br />`
       Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - MODE cts:raw-html:`<br />`
+    - MODE cts :raw-html:`<br />`
       MCTS :raw-html:`<br />`
       CTS :raw-html:`<br />`
       NBRCTS
@@ -1244,7 +1240,7 @@ METplus Database of Statistics
     - N_OBS_SIMP
     - Diagnostic 
     - MODE
-    - MODE netCDF variables
+    - MODE obj
   * - Observation rate
     - O_RATE
     - Categorical 
@@ -1621,7 +1617,7 @@ METplus Database of Statistics
     - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - PSTD output format
+    - PSTD
   * - Number of times the i-th :raw-html:`<br />`
       ensemble member’s value :raw-html:`<br />`
       was closest to the :raw-html:`<br />`
@@ -1638,7 +1634,7 @@ METplus Database of Statistics
     - Probability 
     - Point-Stat :raw-html:`<br />`
       Grid-Stat
-    - PSTD output format
+    - PSTD
   * - Root mean squared error
     - RMSE
     - Continuous 
