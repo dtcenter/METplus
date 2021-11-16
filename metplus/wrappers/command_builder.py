@@ -22,6 +22,7 @@ from ..util import met_util as util
 from ..util import do_string_sub, ti_calculate, get_seconds_from_string
 from ..util import config_metplus
 from ..util import METConfigInfo as met_config
+from ..util import MISSING_DATA_VALUE
 
 # pylint:disable=pointless-string-statement
 '''!@namespace CommandBuilder
@@ -659,6 +660,8 @@ class CommandBuilder:
         # then add it back after the string sub call
         saved_level = time_info.pop('level', None)
 
+        input_must_exist = self.c_dict.get('INPUT_MUST_EXIST', True)
+
         for template in template_list:
             # perform string substitution
             filename = do_string_sub(template,
@@ -671,9 +674,9 @@ class CommandBuilder:
             if os.path.sep not in full_path:
                 self.logger.debug(f"{full_path} is not a file path. "
                                   "Returning that string.")
-                if return_list:
-                    full_path = [full_path]
-                return full_path
+                check_file_list.append(full_path)
+                input_must_exist = False
+                continue
 
             self.logger.debug(f"Looking for {data_type}INPUT file {full_path}")
 
@@ -719,7 +722,7 @@ class CommandBuilder:
 
         for file_path in check_file_list:
             # if file doesn't need to exist, skip check
-            if not self.c_dict.get('INPUT_MUST_EXIST', True):
+            if not input_must_exist:
                 found_file_list.append(file_path)
                 continue
 
@@ -736,6 +739,9 @@ class CommandBuilder:
                        f"using template {template}")
                 if not mandatory or not self.c_dict.get('MANDATORY', True):
                     self.logger.warning(msg)
+                    if self.c_dict.get(f'{data_type}FILL_MISSING'):
+                        found_file_list.append(f'MISSING{file_path}')
+                        continue
                 else:
                     self.log_error(msg)
 
@@ -842,6 +848,96 @@ class CommandBuilder:
             out.append(outfile)
 
         return out
+
+    def find_input_files_ensemble(self, time_info):
+        """! Get a list of all input files and optional control file.
+        Warn and remove control file if found in ensemble list. Ensure that
+        if defined, the number of ensemble members (N_MEMBERS) corresponds to
+        the file list that was found.
+
+            @param time_info dictionary containing timing information
+            @returns True on success
+        """
+        # get list of ensemble files to process
+        input_files = self.find_model(time_info, return_list=True)
+        if not input_files:
+            self.log_error("Could not find any input files")
+            return False
+
+        # get control file if requested
+        if self.c_dict.get('CTRL_INPUT_TEMPLATE'):
+            ctrl_file = self.find_data(time_info, data_type='CTRL')
+
+            # return if requested control file was not found
+            if not ctrl_file:
+                return False
+
+            self.args.append(f'-ctrl {ctrl_file}')
+
+            # check if control file is found in ensemble list
+            if ctrl_file in input_files:
+                # warn and remove control file if found
+                self.logger.warning(f"Control file found in ensemble list: "
+                                    f"{ctrl_file}. Removing from list.")
+                input_files.remove(ctrl_file)
+
+        # compare number of files found to expected number of members
+        if not self._check_expected_ensembles(input_files):
+            return False
+
+        # write file that contains list of ensemble files
+        list_filename = (f"{time_info['init_fmt']}_"
+                         f"{time_info['lead_hours']}_{self.app_name}.txt")
+        list_file = self.write_list_file(list_filename, input_files)
+        if not list_file:
+            self.log_error("Could not write filelist file")
+            return False
+
+        self.infiles.append(list_file)
+
+        return True
+
+    def _check_expected_ensembles(self, input_files):
+        """! Helper function for find_input_files_ensemble().
+        If number of expected ensemble members was defined in the config,
+        then ensure that the number of files found correspond to the expected
+        number. If more files were found, error and return False. If fewer
+        files were found, fill in input_files list with MISSING to allow valid
+        threshold check inside MET tool to work properly.
+        """
+        num_expected = self.c_dict['N_MEMBERS']
+
+        # if expected members count is unset, skip check
+        if num_expected == MISSING_DATA_VALUE:
+            return True
+
+        num_found = len(input_files)
+
+        # error and return if more than expected number was found
+        if num_found > num_expected:
+            self.log_error(
+                "Found more files than expected! "
+                f"Found {num_found} expected {num_expected}. "
+                "Adjust wildcard expression in template or adjust "
+                "number of expected members (N_MEMBERS). "
+                f"Files found: {input_files}"
+            )
+            return False
+
+        # if fewer files found than expected, warn and add fake files
+        if num_found < num_expected:
+            self.logger.warning(
+                f"Found fewer files than expected. "
+                f"Found {num_found} expected {num_expected}"
+            )
+            # add fake files to list for ens_thresh checking
+            diff = num_expected - num_found
+            self.logger.warning(f'Adding {diff} fake files to '
+                                'ensure ens_thresh check is accurate')
+            for _ in range(0, diff, 1):
+                input_files.append('MISSING')
+
+        return True
 
     def write_list_file(self, filename, file_list, output_dir=None):
         """! Writes a file containing a list of filenames to the staging dir

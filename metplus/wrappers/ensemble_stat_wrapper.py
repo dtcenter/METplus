@@ -153,11 +153,18 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         elif c_dict['OBS_GRID_INPUT_DATATYPE'] in util.PYTHON_EMBEDDING_TYPES:
             c_dict['OBS_INPUT_DATATYPE'] = c_dict['OBS_GRID_INPUT_DATATYPE']
 
-        c_dict['N_MEMBERS'] = \
-            self.config.getint('config', 'ENSEMBLE_STAT_N_MEMBERS', -1)
+        c_dict['N_MEMBERS'] = (
+            self.config.getint('config', 'ENSEMBLE_STAT_N_MEMBERS')
+        )
 
-        if c_dict['N_MEMBERS'] < 0:
-            self.log_error("Must set ENSEMBLE_STAT_N_MEMBERS to a integer > 0")
+        # allow multiple files in CommandBuilder.find_data logic
+        c_dict['ALLOW_MULTIPLE_FILES'] = True
+
+        # not all input files are mandatory to be found
+        c_dict['MANDATORY'] = False
+
+        # fill inputs that are not found with fake path to note it is missing
+        c_dict['FCST_FILL_MISSING'] = True
 
         c_dict['OBS_POINT_INPUT_DIR'] = \
           self.config.getdir('OBS_ENSEMBLE_STAT_POINT_INPUT_DIR', '')
@@ -177,11 +184,9 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
         c_dict['FCST_INPUT_DIR'] = \
           self.config.getdir('FCST_ENSEMBLE_STAT_INPUT_DIR', '')
 
-        # This is a raw string and will be interpreted to generate the
-        # ensemble member filenames. This may be a list of 1 or n members.
-        c_dict['FCST_INPUT_TEMPLATE'] = \
-          util.getlist(self.config.getraw('filename_templates',
-                                          'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE'))
+        c_dict['FCST_INPUT_TEMPLATE'] = (
+            self.config.getraw('config', 'FCST_ENSEMBLE_STAT_INPUT_TEMPLATE')
+        )
         if not c_dict['FCST_INPUT_TEMPLATE']:
             self.log_error("Must set FCST_ENSEMBLE_STAT_INPUT_TEMPLATE")
 
@@ -364,11 +369,8 @@ class EnsembleStatWrapper(CompareGriddedWrapper):
                 @param time_info dictionary containing timing information
         """
         # get ensemble model files
-        fcst_file_list = self.find_model_members(time_info)
-        if not fcst_file_list:
+        if not self.find_input_files_ensemble(time_info):
             return
-
-        self.infiles.append(fcst_file_list)
 
         # parse var list for ENS fields
         ensemble_var_list = util.sub_var_list(self.c_dict['ENS_VAR_LIST_TEMP'],

@@ -4,7 +4,7 @@ UserScript: Make a Phase Diagram plot from input RMM or OMI
 
 model_applications/
 s2s/
-UserScript_fcstGFS_obsERA_PhaseDiagram.py
+UserScript_obsERA_obsOnly_PhaseDiagram.py
 
 """
 
@@ -63,13 +63,13 @@ UserScript_fcstGFS_obsERA_PhaseDiagram.py
 #
 # METplus first loads all of the configuration files found in parm/metplus_config,
 # then it loads any configuration files passed to METplus via the command line
-# i.e. parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI.conf.  
-# The file UserScript_fcstGFS_obsERA_PhaseDiagram/PhaseDiagram_driver.py runs the python 
-# program and UserScript_fcstGFS_obsERA_PhaseDiagram.conf sets the variables for all steps 
+# i.e. parm/use_cases/model_applications/s2s/UserScript_obsERA_obsERA_OMI.conf.  
+# The file UserScript_obsERA_obsOnly_PhaseDiagram/PhaseDiagram_driver.py runs the python 
+# program and UserScript_obsERA_obsOnly_PhaseDiagram.conf sets the variables for all steps 
 # of the use case.
 #
 # .. highlight:: bash
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram.conf
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.conf
 
 ##############################################################################
 # MET Configuration
@@ -84,11 +84,11 @@ UserScript_fcstGFS_obsERA_PhaseDiagram.py
 # ----------------
 #
 # The phase diagram driver script orchestrates the generation of a phase diagram plot:
-# parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/PhaseDiagram_driver.py:
+# parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_OMI/PhaseDiagram_driver.py:
 #
 # .. highlight:: python
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram/PhaseDiagram_driver.py
-# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram/save_input_files_txt.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram/PhaseDiagram_driver.py
+# .. literalinclude:: ../../../../parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram/save_input_files_txt.py
 #
 
 ##############################################################################
@@ -97,13 +97,13 @@ UserScript_fcstGFS_obsERA_PhaseDiagram.py
 #
 # This use case is run in the following ways:
 #
-# 1) Passing in UserScript_fcstGFS_obsERA_OMI.conf then a user-specific system configuration file::
+# 1) Passing in UserScript_obsERA_obsOnly_PhaseDiagram.conf then a user-specific system configuration file::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram.conf -c /path/to/user_system.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.conf -c /path/to/user_system.conf
 #
-# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_fcstGFS_obsERA_PhaseDiagram.py::
+# 2) Modifying the configurations in parm/metplus_config, then passing in UserScript_obsERA_obsOnly_PhaseDiagram.py::
 #
-#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram.conf
+#        run_metplus.py -c /path/to/METplus/parm/use_cases/model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.conf
 #
 # The following variables must be set correctly:
 #
@@ -123,12 +123,18 @@ UserScript_fcstGFS_obsERA_PhaseDiagram.py
 # Expected Output
 # ---------------
 #
-# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use case will be found in model_applications/s2s/UserScript_fcstGFS_obsERA_PhaseDiagram.  This may include the regridded data and daily averaged files.  In addition, the phase diagram plots will be generated and the output location can be specified as OMI_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent to model_applications/s2s/UserScript_fcstGFS_obsERA_OMI/plots (relative to **OUTPUT_BASE**). 
+# Refer to the value set for **OUTPUT_BASE** to find where the output data was generated. Output for this use case will be found in model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram.  This may include the regridded data and daily averaged files.  In addition, the phase diagram plots will be generated and the output location can be specified as PHASE_DIAGRAM_PLOT_OUTPUT_DIR.  If it is not specified, plots will be sent to model_applications/s2s/UserScript_obsERA_obsOnly_PhaseDiagram/plots (relative to **OUTPUT_BASE**). 
 
 ##############################################################################
 # Keywords
 # --------
 #
+#
+# .. note::
+#
+#   * S2SAppUseCase
+#
+#   Navigate to :ref:`quick-search` to discover other similar use cases.
+#
 # sphinx_gallery_thumbnail_path = '_static/s2s-PhaseDiagram.png'
 #
-# .. note:: `XXXX`, `S2SAppUseCase <https://dtcenter.github.io/METplus/search.html?q=S2SAppUseCase&check_keywords=yes&area=default>`_
