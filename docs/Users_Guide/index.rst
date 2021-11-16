@@ -86,6 +86,7 @@ is sponsored by NSF.
    glossary
    references
    statistics_list
+   diagnostics_list
 
 ..
    Indices and tables
