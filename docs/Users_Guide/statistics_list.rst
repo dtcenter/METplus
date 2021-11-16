@@ -447,7 +447,7 @@ METplus Database of Statistics
       _DELTA
     - Diagnostic 
     - MTD
-    - MTD 3D pair
+    - MTD 3D obj
   * - The unperturbed :raw-html:`<br />`
       ensemble mean value
     - ENS_MEAN
@@ -993,7 +993,7 @@ METplus Database of Statistics
       forecast initialization :raw-html:`<br />`
       time in HHMMSS format
     - INIT_TDIFF
-    - Diagnostic Attr 
+    - Diagnostic 
     - TC-Gen
     - GENMPR 
   * - 10th, 25th, 50th, 75th, :raw-html:`<br />`
@@ -1014,13 +1014,13 @@ METplus Database of Statistics
       object (variable units)
     - INTENSITY  :raw-html:`<br />`
       _SUM
-    - Diagnostics Attr 
+    - Diagnostics 
     - MODE
-    - MODE ascii object
+    - MODE obj
   * - Total interest for this :raw-html:`<br />`
       object pair
     - INTEREST
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD :raw-html:`<br />`
       MODE
     - MTD 3D obj :raw-html:`<br />`
@@ -1029,7 +1029,7 @@ METplus Database of Statistics
       objects (in grid squares)
     - INTERSECT  :raw-html:`<br />`
       ION_AREA
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Ratio of intersection area :raw-html:`<br />`
@@ -1039,14 +1039,14 @@ METplus Database of Statistics
     - INTERSECT :raw-html:`<br />`
       ION_OVER :raw-html:`<br />`
       _AREA
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - “Volume” of object :raw-html:`<br />`
       intersection
     - INTERSECT  :raw-html:`<br />`
       ION_VOLUME
-    - Diagnostic Attr 
+    - Diagnostic 
     - MTD
     - MTD 3D obj
   * - Interquartile Range :raw-html:`<br />`
@@ -1076,13 +1076,13 @@ METplus Database of Statistics
     - CNT 
   * - Dimension of the latitude 
     - LAT
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Length of the :raw-html:`<br />`
       enclosing rectangle 
     - LENGTH
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Likelihood when forecast :raw-html:`<br />`
@@ -1104,9 +1104,9 @@ METplus Database of Statistics
       NBRCTS
   * - Dimension of the longitude 
     - LON
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF
+    - MODE obj
   * - The Median Absolute :raw-html:`<br />`
       Deviation
     - MAD
@@ -1230,19 +1230,19 @@ METplus Database of Statistics
       MCTS
   * - Number of cluster objects
     - N_CLUS
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Number of simple :raw-html:`<br />`
       forecast objects
     - N_FCST_SIMP
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Number of simple :raw-html:`<br />`
       observation objects
     - N_OBS_SIMP
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE netCDF variables
   * - Observation rate
@@ -1285,64 +1285,64 @@ METplus Database of Statistics
   * - Number of observed :raw-html:`<br />`
       clusters
     - obs_clus
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE netCDF dimensions
+    - MODE obj
   * - Number of points used to :raw-html:`<br />`
       define the hull of all of :raw-html:`<br />`
       the cluster observation :raw-html:`<br />`
       objects
     - obs_clus :raw-html:`<br />`
       _hull
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Point Latitude
     - obs_clus :raw-html:`<br />`
       _hull_lat
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Point Longitude
     - obs_clus :raw-html:`<br />`
       _hull_lon
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Number of Observation :raw-html:`<br />`
       Cluster Convex Hull Points
     - obs_clus :raw-html:`<br />`
       _hull_npts
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Starting Index
     - obs_clus :raw-html:`<br />`
       _hull_start
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Point X-Coordinate
     - obs_clus :raw-html:`<br />`
       _hull_x
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Cluster Convex :raw-html:`<br />`
       Hull Point Y-Coordinate
     - obs_clus :raw-html:`<br />`
       _hull_y
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Number of simple :raw-html:`<br />`
       observation objects
     - obs_simp
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Number of points used :raw-html:`<br />`
@@ -1351,28 +1351,28 @@ METplus Database of Statistics
       objects
     - obs_simp :raw-html:`<br />`
       _bdy
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Simple  :raw-html:`<br />`
       Boundary Point Latitude
     - obs_simp :raw-html:`<br />`
       _bdy_lat
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Observation Simple :raw-html:`<br />`
       Boundary Point Longitude
     - obs_simp :raw-html:`<br />`
       _bdy_lon
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Number of Observation :raw-html:`<br />`
       Simple Boundary Points
     - obs_simp :raw-html:`<br />`
       _bdy_npts
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Number of points used to :raw-html:`<br />`
@@ -1380,14 +1380,14 @@ METplus Database of Statistics
       simple observation objects
     - obs_simp :raw-html:`<br />`
       _hull
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Number of Observation :raw-html:`<br />`
       Simple Convex Hull Points
     - obs_simp :raw-html:`<br />`
       _hull_npts
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
     - MODE obj
   * - Odds Ratio
@@ -1517,9 +1517,9 @@ METplus Database of Statistics
     - PERCENTILE :raw-html:`<br />`
       _INTENSITY :raw-html:`<br />`
       _RATIO
-    - Diagnostic Attr 
+    - Diagnostic 
     - MODE
-    - MODE ascii object
+    - MODE obj
   * - Probability Integral :raw-html:`<br />`
       Transform
     - PIT
