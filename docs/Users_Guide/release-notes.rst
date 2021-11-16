@@ -33,6 +33,32 @@ When applicable, release notes are followed by the GitHub issue number which
 describes the bugfix, enhancement, or new feature:
 https://github.com/dtcenter/METplus/issues
 
+METplus Version 4.1.0-beta4 Release Notes (2021-11-16)
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+* Enhancements:
+
+  * **Create an Amazon AMI containing all METplus components** (`#506 <https://github.com/dtcenter/METplus/issues/506>`_)
+  * Added support for setting a dictionary value for time_summary.width (`#1252 <https://github.com/dtcenter/METplus/issues/1252>`_)
+  * Added support for setting obs_quality_inc/exc in PointStat (`#1213 <https://github.com/dtcenter/METplus/issues/1213>`_)
+  * Properly handle list values that include square braces (`#1212 <https://github.com/dtcenter/METplus/issues/1212>`_)
+  * Reorganize the Cryosphere and Marine and Coastal use case categories into one group (`#1200 <https://github.com/dtcenter/METplus/issues/1200>`_)
+  * Update wrapped MET config files to reference MET_TMP_DIR in tmp value (`#1101 <https://github.com/dtcenter/METplus/issues/1101>`_)
+  * CyclonePlotter, create options to format output grid area to user-desired area (`#1091 <https://github.com/dtcenter/METplus/issues/1091>`_)
+  * CyclonePlotter, connected lines run over the Prime Meridian (`#1000 <https://github.com/dtcenter/METplus/issues/1000>`_)
+  * Add harmonic pre-processing to the RMM use case (`#1019 <https://github.com/dtcenter/METplus/issues/1019>`_)
+
+* New Wrappers:
+
+  * **IODA2NC** (`#1203 <https://github.com/dtcenter/METplus/issues/1203>`_)
+  * **GenEnsProd** (`#1180 <https://github.com/dtcenter/METplus/issues/1180>`_, `#1266 <https://github.com/dtcenter/METplus/issues/1266>`_)
+
+* New Use Cases:
+
+  * **IODA2NC** (`#1204 <https://github.com/dtcenter/METplus/issues/1204>`_)
+  * **GenEnsProd** (`#1180 <https://github.com/dtcenter/METplus/issues/1180>`_, `#1266 <https://github.com/dtcenter/METplus/issues/1266>`_)
+
+
 METplus Version 4.1.0-beta3 Release Notes (2021-10-06)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
